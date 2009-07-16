@@ -65,6 +65,7 @@
            03  IDZ                 PIC 9(04).
            03  IDX-K               PIC 9(04).
            03  IDX-TBL             PIC 9(04).
+           03  IDX4                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -80,6 +81,7 @@
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-FTNMONEY            PIC 9(07).
+           03  WRK-FTNSTYMD            PIC X(08).
       *
            03  WRK-DAYCNT              PIC 9(03).
       *
@@ -680,6 +682,12 @@
                MOVE    "black"             TO  P02K-MSG04-STYLE
            END-IF
            MOVE    SPA-P02K-MSG06      TO  P02K-MSG06
+           MOVE    SPA-P02K-MSG07      TO  P02K-MSG07-VALUE
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    "red"               TO  P02K-MSG07-STYLE
+           ELSE
+               MOVE    "black"             TO  P02K-MSG07-STYLE
+           END-IF
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -758,6 +766,8 @@
                    MOVE    "B10"              TO  MCP-WIDGET
                WHEN    12
                    MOVE    "B12"              TO  MCP-WIDGET
+               WHEN    99
+                   MOVE    "B01"              TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1029,6 +1039,9 @@
            MOVE    SPA-P02K-NYUGAIKBN-LIST (2)
                                        TO  SPA-P02K-NYUGAIKBN-G
            MOVE    1                   TO  SPA-P02K-CUR
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    99                  TO  SPA-P02K-CUR
+           END-IF
            .
        420-CLREA-EXT.
            EXIT.
@@ -1098,6 +1111,12 @@
       *****************************************************************
        410-KOUSIN-SEC         SECTION.
       *
+      *    負担累計入力ありは更新不可
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    "0012"              TO  SPA-ERRCD
+               MOVE    99                  TO  SPA-P02K-CUR
+               GO      TO      410-KOUSIN-EXT
+           END-IF
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD           =   SPACE
@@ -1196,6 +1215,13 @@
       *****************************************************************
        490-TOROKU-SEC         SECTION.
       *
+      *    負担累計入力ありは更新不可
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    "0012"              TO  SPA-ERRCD
+               MOVE    99                  TO  SPA-P02K-CUR
+               GO      TO      490-TOROKU-EXT
+           END-IF
+      *
       *    更新処理
            IF     (SPA-P02K-SRYDD      =   ZERO )  AND
                   (SPA-P02K-FTNMONEY   =   ZERO )
@@ -1284,7 +1310,12 @@
                    MOVE   "0"              TO  SPA-NAI24-TFTNETCKBN
                                                  (SPA-NAI24-FTNSELNUM2)
                END-IF
+      *        他院累計額を負担累計へ
+               MOVE    SPA-P02K-TAGOKEI    TO  SPA-GMN24-TNYUJGNGAK
+                                                 (SPA-NAI24-FTNSELNUM2)
            ELSE
+               MOVE    "99999999"          TO  WRK-FTNSTYMD
+               MOVE    ZERO                TO  IDX4
                PERFORM VARYING     IDX     FROM    1   BY   1
                        UNTIL      (IDX     >   SPA-FTN2-MAX )
                    IF      SPA-NAI24-TFTNSTYMD (IDX)(1:6)
@@ -1296,8 +1327,20 @@
                            MOVE   "0"          TO  SPA-NAI24-TFTNETCKBN
                                                                  (IDX)
                        END-IF
+      *                日付判定
+                       IF      SPA-NAI24-TFTNSTYMD (IDX)
+                                                   <   WRK-FTNSTYMD
+                           MOVE    SPA-NAI24-TFTNSTYMD (IDX)
+                                                   TO  WRK-FTNSTYMD
+                           MOVE    IDX             TO  IDX4
+                       END-IF
+                       MOVE    ZERO            TO  SPA-GMN24-TNYUJGNGAK
+                                                               (IDX)
                    END-IF
                END-PERFORM
+      *        他院累計額を負担累計へ
+               MOVE    SPA-P02K-TAGOKEI    TO  SPA-GMN24-TNYUJGNGAK
+                                                           (IDX4)
            END-IF
            .
        4902-FTNTBL-HEN-EXT.
@@ -1590,6 +1633,11 @@
                WHEN    "0011"
                    MOVE    "同一日が９９件以上です。"
                                                TO  SPA-ERRMSG
+               WHEN    "0012"
+                   STRING  "他一部負担累計をクリアしてから"
+                           "入力してください。"
+                                               INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  PERR

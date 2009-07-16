@@ -865,6 +865,7 @@ P02	{
 					value	varchar(9);
 				};
 				P024_NYUJGNGAK	{
+					state	int;
 					value	varchar(9);
 				};
 				P024_PTKOHFTNLST	{

@@ -4037,6 +4037,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN24-GAIJGNGAK TO  P02-P024-GAIJGNGAK
            MOVE    SPA-GMN24-NYUJGNGAK TO  P02-P024-NYUJGNGAK
       *
+           IF      SPA-NAI24-FTNETCKBN =   SPACE
+                                       OR  "0"
+               MOVE    WIDGET-NORMAL       TO  P02-P024-NYUJGNGAK-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-P024-NYUJGNGAK-STATE
+           END-IF
+      *
            .
        2001-P024-SET-EXT.
            EXIT.

@@ -606,8 +606,9 @@
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-GAIJGNGAK.
                     06  P02-VALUE   PIC X(9).
-                  05  P02-P024-NYUJGNGAK.
-                    06  P02-VALUE   PIC X(9).
+                  05  P02-P024-NYUJGNGAK-G.
+                    06  P02-P024-NYUJGNGAK-STATE   PIC S9(9)   BINARY.
+                    06  P02-P024-NYUJGNGAK   PIC X(9).
                   05  P02-P024-PTKOHFTNLST.
                     06  P02-P024-PTKOHFTN.
                       07  P02-P024-HFTNLST-COUNT    PIC S9(9)   BINARY.

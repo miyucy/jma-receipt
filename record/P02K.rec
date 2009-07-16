@@ -55,5 +55,9 @@ P02K	{
 		MSG06	{
 			value	varchar(50);
 		};
+		MSG07	{
+			style	varchar(20);
+			value	varchar(30);
+		};
 	};
 };

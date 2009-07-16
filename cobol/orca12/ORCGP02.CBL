@@ -5114,10 +5114,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "2442"
                    MOVE
-                   "上限額最新履歴の摘用終了日が入力されていません。"
+                   "上限額最新履歴の適用終了日が入力されていません。"
                                                TO  SPA-ERRMSG
                WHEN    "2443"
-                   MOVE    "公費摘用終了日以降分は複写できません。"
+                   MOVE    "公費適用終了日以降分は複写できません。"
                                                TO  SPA-ERRMSG
                WHEN    "2445"
                    MOVE    "他一部負担入力対象外公費です。"

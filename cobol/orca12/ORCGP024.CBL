@@ -136,6 +136,7 @@
       *    他一部負担入力画面へ
            03  WRK-TGAIJGNGAK-G.
                05  WRK-TGAIJGNGAK      PIC 9(07)   OCCURS   10.
+           03  WRK-TNYUJGNGAK          PIC 9(07).
            03  IDK                     PIC 9(03).
            03  IDK2                    PIC 9(03).
            03  WRK-MSG01               PIC X(50).
@@ -922,7 +923,12 @@
                WHEN    "P024_FTNTEKEDYMD"
                    MOVE    34          TO  SPA-GMN24-CUR
                WHEN    "P024_GAIJGNGAK"
-                   MOVE    35          TO  SPA-GMN24-CUR
+                   IF      SPA-NAI24-FTNETCKBN =   SPACE
+                                               OR  "0"
+                       MOVE    35          TO  SPA-GMN24-CUR
+                   ELSE
+                       MOVE    36          TO  SPA-GMN24-CUR
+                   END-IF
                WHEN    "P024_NYUJGNGAK"
                    MOVE    36          TO  SPA-GMN24-CUR
       *
@@ -1419,8 +1425,10 @@
            MOVE    LNK-DAY7-KOYOMI(7:2)
                                        TO  SPA-P02K-NAIMATU
       *    同じ年月はまとめる
+           MOVE    SPACE               TO  SPA-P02K-FTNRUIKBN
            MOVE    ZERO                TO  IDK2
            MOVE    ZERO                TO  WRK-TGAIJGNGAK-G
+           MOVE    ZERO                TO  WRK-TNYUJGNGAK
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL       IDK     >   SPA-FTN2-MAX
                IF      SPA-NAI24-FTNSELNUM2    =   IDK
@@ -1430,6 +1438,13 @@
                    ADD     1                   TO  IDK2
                    MOVE    SPA-GMN24-TGAIJGNGAK (IDK)
                                                TO  WRK-TGAIJGNGAK (IDK2)
+      *            負担累計
+                   ADD     SPA-GMN24-TNYUJGNGAK (IDK)
+                                               TO  WRK-TNYUJGNGAK
+                   IF      SPA-NAI24-TFTNETCKBN (IDX)
+                                           NOT =   "0"
+                       MOVE    "1"             TO  SPA-P02K-FTNRUIKBN
+                   END-IF
                ELSE
                    IF      SPA-NAI24-TFTNSTYMD (IDK)(1:6)
                                            =   SPA-P02K-NAI-SRYYMD(1:6)
@@ -1449,6 +1464,13 @@
                        ADD     1               TO  IDK2
                        MOVE    SPA-GMN24-TGAIJGNGAK (IDK)
                                                TO  WRK-TGAIJGNGAK (IDK2)
+      *                負担累計
+                       ADD     SPA-GMN24-TNYUJGNGAK (IDK)
+                                               TO  WRK-TNYUJGNGAK
+                       IF      SPA-NAI24-TFTNETCKBN (IDX)
+                                               NOT =   "0"
+                           MOVE    "1"         TO  SPA-P02K-FTNRUIKBN
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -1500,6 +1522,18 @@
                                            INTO    SPA-P02K-MSG06
                END-STRING
            END-IF
+      *    他一部負担累計入力
+           MOVE    SPACE               TO  SPA-P02K-MSG07
+           IF      SPA-P02K-FTNRUIKBN  =   SPACE
+               IF      WRK-TNYUJGNGAK      >   ZERO
+                   MOVE    WRK-TNYUJGNGAK      TO  WRK-Z7
+                   STRING    "他一部負担累計："
+                             WRK-Z7        DELIMITED  BY  SIZE
+                                           INTO    SPA-P02K-MSG07
+                   END-STRING
+                   MOVE    "9"             TO  SPA-P02K-FTNRUIKBN
+               END-IF
+           END-IF
       *
            MOVE    SPACE               TO  SPA-MOTOPG
       *
@@ -1521,6 +1555,9 @@
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
       *
            MOVE    "NYUGAIKBN"         TO  MCP-WIDGET
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    "B01"               TO  MCP-WIDGET
+           END-IF
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
       *
            MOVE    "P02K"              TO  SPA-SAKIPG
@@ -2677,6 +2714,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI24-TFTNEDYMD(IDX)    TO  SPA-NAI24-FTNEDYMD
            MOVE    SPA-GMN24-TGAIJGNGAK(IDX)   TO  SPA-NAI24-GAIJGNGAK
            MOVE    SPA-GMN24-TNYUJGNGAK(IDX)   TO  SPA-NAI24-NYUJGNGAK
+           MOVE    SPA-NAI24-TFTNETCKBN(IDX)   TO  SPA-NAI24-FTNETCKBN
       *
            MOVE    SPA-GMN24-TFTNSTYMD(IDX)    TO  SPA-GMN24-FTNSTYMD
            MOVE    SPA-GMN24-TFTNEDYMD(IDX)    TO  SPA-GMN24-FTNEDYMD
