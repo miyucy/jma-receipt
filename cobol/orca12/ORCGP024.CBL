@@ -1534,6 +1534,8 @@
                    END-STRING
                    MOVE    "9"             TO  SPA-P02K-FTNRUIKBN
                END-IF
+           ELSE
+               MOVE    ZERO            TO  SPA-P02K-TNYUJGNGAK
            END-IF
       *
            MOVE    SPACE               TO  SPA-MOTOPG
