@@ -5125,6 +5125,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2446"
                    MOVE    "上限額履歴を選択して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "2447"
+                   STRING  "他一部負担額が入力されています。"
+                           "開始日変更前に他一部負担を削除して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "K240"
                    STRING  "警告！！"
                            "公費負担額の設定がない公費があります。"

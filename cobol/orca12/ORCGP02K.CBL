@@ -672,7 +672,8 @@
            END-IF
            MOVE    SPA-P02K-MSG04      TO  P02K-MSG04-VALUE
            MOVE    SPA-P02K-MSG05      TO  P02K-MSG05
-           IF     (SPA-P02K-JIGOKEI    +   SPA-P02K-TAGOKEI )
+           IF     (SPA-P02K-JIGOKEI    +   SPA-P02K-TAGOKEI
+                                       +   SPA-P02K-TNYUJGNGAK )
                                        >   SPA-P02K-GAIJGNGAKKEI
       *        上限額オーバー
                MOVE    "red"               TO  P02K-MSG04-STYLE
@@ -680,6 +681,11 @@
                MOVE    "black"             TO  P02K-MSG04-STYLE
            END-IF
            MOVE    SPA-P02K-MSG06      TO  P02K-MSG06
+      *    入力不可
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    "red"               TO  P02K-MSG07-STYLE
+               MOVE    "＜入力不可＞"      TO  P02K-MSG07-VALUE
+           END-IF
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1

@@ -43,3 +43,6 @@
                 04  P02K-VALUE  PIC X(30).
               03  P02K-MSG06.
                 04  P02K-VALUE  PIC X(50).
+              03  P02K-MSG07.
+                04  P02K-MSG07-STYLE   PIC X(20).
+                04  P02K-MSG07-VALUE  PIC X(30).
