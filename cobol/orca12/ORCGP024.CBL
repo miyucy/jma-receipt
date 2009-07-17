@@ -566,7 +566,6 @@
                                                                 (IDX)
            END-PERFORM
       *
-      *TEST
       *    Á°²ó¤ÎÁªÂòÈÖ¹æ¤ÏÈ¿±Ç¤µ¤»¤Ê¤¤
            MOVE    ZERO                TO  SPA-MAE24-FTNSELNUM
            INITIALIZE                  SPA-GMN24-FTN-AREA
@@ -628,7 +627,7 @@
                  END-IF
              END-IF
            END-IF
-      *TEST
+      *
            .
        31O-SPASET-EXT.
            EXIT.
@@ -870,6 +869,8 @@
                    MOVE    "P024_NYUJGNGAK"     TO  MCP-WIDGET
                WHEN    36
                    MOVE    "BF1"                TO  MCP-WIDGET
+               WHEN    37
+                   MOVE    "BF4"                TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1299,6 +1300,27 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    ¹¹¿·ÂÐ¾ÝÊÔ½¸
+           PERFORM VARYING     IDX3    FROM    1   BY   1
+                   UNTIL      (IDX3    >   100  )
+               IF      SPA-NAI24-KOHFTN-ID (IDX3)   =   ZERO
+                    MOVE    SPA-NAI24-KOHID(SPA-NAI24-FTNSELNUM)
+                                           TO  SPA-NAI24-KOHFTN-ID
+                                                              (IDX3)
+                    MOVE    SPA-NAI24-TFTNSTYMD (SPA-NAI24-FTNSELNUM2)
+                                                            (1:6)
+                                           TO  SPA-NAI24-KOHFTN-YM
+                                                              (IDX3)
+               END-IF
+               IF     (SPA-NAI24-KOHID(SPA-NAI24-FTNSELNUM)
+                                           =   SPA-NAI24-KOHFTN-ID
+                                                                (IDX3))
+               AND    (SPA-NAI24-TFTNSTYMD (SPA-NAI24-FTNSELNUM2)(1:6)
+                                           =   SPA-NAI24-KOHFTN-YM
+                                                                 (IDX3))
+                   MOVE    100             TO  IDX3
+               END-IF
+           END-PERFORM
            .
         41611-KOHFTNETC-DEL-EXT.
            EXIT.
@@ -1388,6 +1410,7 @@
                                                LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI     TO  SPA-NAI24-TFTNEDYMD
                                                              (IDX-F)
+               MOVE    1                   TO  FLG-ENDYMD
       *        ¸øÈñ¤Î½ªÎ»Æü
                IF      SPA-NAI24-TFTNEDYMD (IDX-F)
                                            >   SPA-NAI24-TKOHEDYMD
@@ -1395,13 +1418,13 @@
                    MOVE    SPA-NAI24-TKOHEDYMD(SPA-NAI24-FTNSELNUM)
                                            TO  SPA-NAI24-TFTNEDYMD
                                                              (IDX-F)
+                   MOVE    ZERO            TO  FLG-ENDYMD
                END-IF
                MOVE    SPA-NAI24-TFTNEDYMD  (IDX-F)
                                            TO  WRK-SYMD
                PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
                MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNEDYMD
                                                             (IDX-F)
-               MOVE    1                   TO  FLG-ENDYMD
            END-IF
       *    ¸øÈñ¤Î½ªÎ»Æü
            IF      SPA-NAI24-TFTNEDYMD (IDX-F)
@@ -1434,6 +1457,7 @@
                                                (SPA-NAI24-FTNSELNUM)
                MOVE    SPA-NAI24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
                                            TO  WRK-FTNEDYMD
+              MOVE    ZERO                 TO  FLG-ENDYMD
            END-IF
            IF      FLG-ENDYMD          =   1
                MOVE    "99999999"          TO  WRK-FTNEDYMD
@@ -2748,7 +2772,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                ¹¹¿·ÂÐ¾ÝÊÔ½¸
                        PERFORM VARYING     IDX3    FROM    1   BY   1
                                UNTIL      (IDX3    >   100  )
-                           IF      SPA-NAI24-KOHFTN-ID (IDX)   =   ZERO
+                           IF      SPA-NAI24-KOHFTN-ID (IDX3)  =   ZERO
                                MOVE    SPA-NAI24-KOHID(IDX2)
                                                TO  SPA-NAI24-KOHFTN-ID
                                                                 (IDX3)
@@ -3873,7 +3897,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    CONTINUE
                ELSE
                    MOVE    "2447"          TO  SPA-ERRCD
-                   MOVE    32              TO  SPA-GMN24-CUR
+                   MOVE    37              TO  SPA-GMN24-CUR
                END-IF
            END-IF
            .
