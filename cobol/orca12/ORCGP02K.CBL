@@ -1609,7 +1609,6 @@
                WHEN    "K004"
                    STRING    "警告！！"
                              "選択中の上限額履歴の期間外の日です。"
-                             "他上限額履歴を確認して下さい。"
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0005"
