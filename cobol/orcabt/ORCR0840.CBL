@@ -164,6 +164,8 @@
       *  04.04.02    NACL-ÌçÏÆ    09/02/04  ¸¡ºº¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *  04.04.03    NACL-ÌçÏÆ    09/04/13  Ê¿À®£²£±Ç¯£µ·î²þÀµÂÐ±þ
       *  04.04.04    NACL-ÌçÏÆ    09/06/23  ÅÀÅ©´ïºà¾¦ÉÊÌ¾µ­ºÜ½¤Àµ
+      *
+      *  04.05.01    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -515,7 +517,7 @@
        01  WRK-ORCSTEN-TABLE.
            03  WRK-ORCSTEN-T                           OCCURS  350.
                05  WRK-ORCSTEN-SRYCD                   PIC X(09).
-               05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(03).
+               05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(05).
                05  WRK-ORCSTEN-COM-MEI                 PIC X(80).
            03  WRK-ORCSTEN-T2                          OCCURS   31.
                05  WRK-ORCSTEN-DAY                     PIC 9(03).
@@ -562,7 +564,7 @@
            03  WRK-TEN                                 PIC 9(09).
            03  WRK-MEISAI-CNT                          PIC 9(04).
            03  WRK-SRYCDTOTAL                          PIC 9(14).
-           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(03).
+           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(05).
            03  WRK-KSNRATE                             PIC 9V99.    
            03  WRK-YOUBUKASAN                          PIC 9(07).
            03  WRK-KYOBUKASAN                          PIC 9(07).
@@ -581,7 +583,7 @@
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
       *
-           03  WRK-SRYSURYO                            PIC 9(05)V9(03).
+           03  WRK-SRYSURYO                            PIC 9(05)V9(05).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
       *
@@ -2357,7 +2359,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
-                                          +     0.999                   
+                                          +     0.99999                   
                   COMPUTE RECE85-SRYSURYO(IDX4)                         
                                           =     WRK-SRYSURYO2           
                                           -     WRK-SRYSURYO            

@@ -173,6 +173,7 @@
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/29  ÎÅÍÜ´ü´Öµ­ºÜÊýË¡ÁªÂòµ¡Ç½
       *                                     ¡ÊµÙ¶È¾ÚÌÀÀÁµá»þ¡Ë
+      *  04.05.02    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -483,7 +484,7 @@
            03  WRK-TEN                                 PIC 9(09).
            03  WRK-MEISAI-CNT                          PIC 9(04).
            03  WRK-SRYCDTOTAL                          PIC 9(14).
-           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(03).
+           03  WRK-SURYOUTOTAL                         PIC 9(07)V9(05).
            03  WRK-KSNRATE                             PIC 9V99.    
            03  WRK-SRYCD                               PIC 9(09).   
            03  WRK-YOUBUKASAN                          PIC 9(07).
@@ -501,7 +502,7 @@
            03  WRK-TANICD                              PIC 9(03).
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
-           03  WRK-SRYSURYO                            PIC 9(05)V9(03).
+           03  WRK-SRYSURYO                            PIC 9(05)V9(05).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
@@ -1995,7 +1996,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
-                                          +     0.999                   
+                                          +     0.99999                   
                   COMPUTE RECE45-SRYSURYO(IDX4)                         
                                           =     WRK-SRYSURYO2           
                                           -     WRK-SRYSURYO            

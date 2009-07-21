@@ -41,6 +41,7 @@
       *  04.03.01    NACL-門脇    09/01/23  円摘要欄編集修正
       *
       *  04.05.01    NACL-門脇    09/06/18  円摘要欄コメント編集対応
+      *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -214,7 +215,7 @@
            03  WRK-ST                          PIC 9(03).
       *     
            03  WRK-WLINETEK                    PIC 9(03).
-           03  WRK-SRYSURYOW                   PIC X(20).
+           03  WRK-SRYSURYOW                   PIC X(24).
            03  WRK-ZAIIDX                      PIC 9(03).
            03  WRK-NAMEKETA                    PIC 9(03).
            03  WRK-YOHAKU                      PIC 9(03).
@@ -245,7 +246,7 @@
                05  TBL-ZAIW-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAIW-SRYCD           PIC  X(09).
-                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
+                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *            単位コード/単位名称有効桁数/単位名称
                    07  TBL-ZAIW-TANICD          PIC  9(03).

@@ -40,6 +40,8 @@
       *
       *  04.03.01    NACL-門脇    08/07/11  診断書明細書料の摘要欄記載対応
       *  04.03.02    NACL-門脇    08/09/25  自賠責０９５９３の集計先対応
+      *
+      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -185,7 +187,7 @@
            03  WRK-ZAIWMAX         PIC 9(03).
       *     
            03  WRK-WLINETEK                    PIC 9(03).
-           03  WRK-SRYSURYOW                   PIC X(20).
+           03  WRK-SRYSURYOW                   PIC X(24).
            03  WRK-ZAIIDX                      PIC 9(03).
            03  WRK-NAMEKETA                    PIC 9(03).
            03  WRK-YOHAKU                      PIC 9(03).
@@ -220,7 +222,7 @@
                05  TBL-ZAIW-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAIW-SRYCD           PIC  X(09).
-                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
+                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *            単位コード/単位名称有効桁数/単位名称
                    07  TBL-ZAIW-TANICD          PIC  9(03).
@@ -247,7 +249,7 @@
                05  TBL-ZAI-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAI-SRYCD           PIC  X(09).
-                   07  TBL-ZAI-SRYSURYO        PIC  9(05)V9(03).
+                   07  TBL-ZAI-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAI-SRYKAISU        PIC  9(03).
       *            単位コード/単位名称有効桁数/単位名称
                    07  TBL-ZAI-TANICD          PIC  9(03).

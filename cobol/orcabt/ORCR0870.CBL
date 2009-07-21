@@ -86,6 +86,8 @@
       *  04.04.02    NACL-門脇    09/03/11  特別な関係にある他院歴を初回
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
+      *
+      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,9 +602,9 @@
        01  TBL-SANSO-INF.
            03  TBL-SANSO-INF2       OCCURS    10.
                05  TBL-SANSO-TEN          PIC 9(09)V9(02).
-               05  TBL-SANSO-SRYSURYO     PIC 9(05)V9(03).
+               05  TBL-SANSO-SRYSURYO     PIC 9(05)V9(05).
            03  TBL-SANSO-INF3.
-               05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(03).
+               05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(05).
       *
       *    療養レセコメント情報
        01  TBL-RYOCOM-INF.

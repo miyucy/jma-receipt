@@ -411,7 +411,7 @@
            03  WRK-HENSYU-KAISU    PIC X(02).
            03  WRK-HENSYU-KAISU2   PIC X(04).
       *
-           03  WRK-RUIKEITOTAL     PIC 9(15)V9(03).
+           03  WRK-RUIKEITOTAL     PIC 9(15)V9(05).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY     PIC 9(02)   OCCURS  31.

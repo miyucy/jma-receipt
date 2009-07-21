@@ -99,6 +99,8 @@
       *  04.03.02    NACL-ÌçÏÆ    08/12/22  ÆâÉþÌôºÞÄþ¸ºÊÔ½¸½¤Àµ
       *
       *  04.04.01    NACL-ÌçÏÆ    09/02/04  ¸¡ºº¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
+      *
+      *  04.05.01    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -393,7 +395,7 @@
            03  WRK-HENSYU-KASANRITU   PIC X(01).
            03  WRK-HENSYU-KASANRITU2  PIC X(02).
       *
-           03  WRK-RUIKEITOTAL     PIC 9(15)V9(03).
+           03  WRK-RUIKEITOTAL     PIC 9(15)V9(05).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
@@ -614,9 +616,9 @@
        01  TBL-SANSO-INF.
            03  TBL-SANSO-INF2       OCCURS    10.
                05  TBL-SANSO-TEN          PIC 9(09)V9(02).
-               05  TBL-SANSO-SRYSURYO     PIC 9(05)V9(03).
+               05  TBL-SANSO-SRYSURYO     PIC 9(05)V9(05).
            03  TBL-SANSO-INF3.
-               05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(03).
+               05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(05).
       *
       *    ÌôºÞÄþ¸º¾ðÊó
        01  TBL-YAKUTEI-INF.
@@ -627,8 +629,8 @@
              05  TBL-YT1-HIKAKU.
                07  TBL-YT1-ZAITEN               PIC 9(08).
                07  TBL-YT1-SRYCDTOTAL           PIC 9(14).
-               07  TBL-YT1-SURYOUTOTAL          PIC 9(07)V9(03).
-               07  TBL-YT1-RUIKEITOTAL          PIC 9(15)V9(03).
+               07  TBL-YT1-SURYOUTOTAL          PIC 9(07)V9(05).
+               07  TBL-YT1-RUIKEITOTAL          PIC 9(15)V9(05).
                07  TBL-YT1-MEISAISU             PIC 9(04).
              05  TBL-YT1-RECE44-DAY-AREA.
                07  TBL-YT1-OCC2                 OCCURS  31.
@@ -664,15 +666,15 @@
                  07  TBL-YT2Y1-HIKAKU.
                    09  TBL-YT2Y1-ZAITEN           PIC 9(08).
                    09  TBL-YT2Y1-SRYCDTOTAL       PIC 9(14).
-                   09  TBL-YT2Y1-SURYOUTOTAL      PIC 9(07)V9(03).
-                   09  TBL-YT2Y1-RUIKEITOTAL      PIC 9(15)V9(03).
+                   09  TBL-YT2Y1-SURYOUTOTAL      PIC 9(07)V9(05).
+                   09  TBL-YT2Y1-RUIKEITOTAL      PIC 9(15)V9(05).
                    09  TBL-YT2Y1-MEISAISU         PIC 9(04).
                06  TBL-YT2Y2-OCC                  OCCURS   4.
                  07  TBL-YT2Y2-HIKAKU.
                    09  TBL-YT2Y2-ZAITEN           PIC 9(08).
                    09  TBL-YT2Y2-SRYCDTOTAL       PIC 9(14).
-                   09  TBL-YT2Y2-SURYOUTOTAL      PIC 9(07)V9(03).
-                   09  TBL-YT2Y2-RUIKEITOTAL      PIC 9(15)V9(03).
+                   09  TBL-YT2Y2-SURYOUTOTAL      PIC 9(07)V9(05).
+                   09  TBL-YT2Y2-RUIKEITOTAL      PIC 9(15)V9(05).
                    09  TBL-YT2Y2-MEISAISU         PIC 9(04).
       *
       *    ÌôºÞÄþ¸º¾ðÊó¡Ê¤Þ¤È¤áÍÑ¤ÎÊÔ½¸¥Æ¡¼¥Ö¥ë¡Ë
@@ -696,15 +698,15 @@
                  07  TBL-YT3Y1-HIKAKU.
                    09  TBL-YT3Y1-ZAITEN           PIC 9(08).
                    09  TBL-YT3Y1-SRYCDTOTAL       PIC 9(14).
-                   09  TBL-YT3Y1-SURYOUTOTAL      PIC 9(07)V9(03).
-                   09  TBL-YT3Y1-RUIKEITOTAL      PIC 9(15)V9(03).
+                   09  TBL-YT3Y1-SURYOUTOTAL      PIC 9(07)V9(05).
+                   09  TBL-YT3Y1-RUIKEITOTAL      PIC 9(15)V9(05).
                    09  TBL-YT3Y1-MEISAISU         PIC 9(04).
                06  TBL-YT3Y2-OCC                  OCCURS   4.
                  07  TBL-YT3Y2-HIKAKU.
                    09  TBL-YT3Y2-ZAITEN           PIC 9(08).
                    09  TBL-YT3Y2-SRYCDTOTAL       PIC 9(14).
-                   09  TBL-YT3Y2-SURYOUTOTAL      PIC 9(07)V9(03).
-                   09  TBL-YT3Y2-RUIKEITOTAL      PIC 9(15)V9(03).
+                   09  TBL-YT3Y2-SURYOUTOTAL      PIC 9(07)V9(05).
+                   09  TBL-YT3Y2-RUIKEITOTAL      PIC 9(15)V9(05).
                    09  TBL-YT3Y2-MEISAISU         PIC 9(04).
       *
       *    »ÀÁÇ 
