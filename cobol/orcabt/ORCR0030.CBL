@@ -2088,6 +2088,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                    ELSE
                          MOVE   1    TO  TBL-HKNFTNDATA-FLG(IDY2)
                    END-IF
+                   DISPLAY "IDX KOHNUM=" IDY2
+                           " "    RECE02-KOHNUM(IDY2)
+                   DISPLAY "JGN=" TBL-HKNFTNDATA-JGN(IDY2)
+                   DISPLAY "TAF=" TBL-HKNFTNDATA-TAF(IDY2)
+                   DISPLAY "GAI=" TBL-HKNFTNDATA-GAIRAI(IDY2)
+                   DISPLAY "NYU=" TBL-HKNFTNDATA-NYUIN(IDY2)
+                   DISPLAY "ZAN=" TBL-HKNFTNDATA-ZAN(IDY2)
+                   DISPLAY "FLG=" TBL-HKNFTNDATA-FLG(IDY2)
                 END-IF
                 IF  ((RECE02-KOHNUM(IDY2)      =  "051"   ) AND
                      (TBL-DOTANDOKU-FLG(IDY2)  =   1      ))
@@ -10795,21 +10803,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-IF
             END-IF
            END-IF
-      ****
-           IF  RECE02-KOHNUM(1) = "038"
-              IF  TBL-HKNFTNDATA-TAF(1)   <  WRK-JYOGEN-KOH
-                  COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
-                                          - TBL-HKNFTNDATA-TAF(1)
-              ELSE
-                  MOVE     ZERO          TO   WRK-JYOGEN-KOH
-              END-IF
-              IF  TBL-HKNFTNDATA-NYUIN(1) <  WRK-JYOGEN-KOH
-                  COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
-                                          - TBL-HKNFTNDATA-NYUIN(1)
-              ELSE
-                  MOVE     ZERO          TO   WRK-JYOGEN-KOH
-              END-IF
-           END-IF
+      *
+      ***  IF  RECE02-KOHNUM(1) = "038"
+      ***     IF  TBL-HKNFTNDATA-TAF(1)   <  WRK-JYOGEN-KOH
+      ***         COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+      ***                                 - TBL-HKNFTNDATA-TAF(1)
+      ***     ELSE
+      ***         MOVE     ZERO          TO   WRK-JYOGEN-KOH
+      ***     END-IF
+      ***     IF  TBL-HKNFTNDATA-NYUIN(1) <  WRK-JYOGEN-KOH
+      ***         COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+      ***                                 - TBL-HKNFTNDATA-NYUIN(1)
+      ***     ELSE
+      ***         MOVE     ZERO          TO   WRK-JYOGEN-KOH
+      ***     END-IF
+      ***  END-IF
       *
            IF  (  RECE02-ZAITAKU        =  SPACE )
            AND (((RECE02-KOHNUM(1)      = "051") AND

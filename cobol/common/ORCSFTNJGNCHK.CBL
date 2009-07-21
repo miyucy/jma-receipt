@@ -222,6 +222,7 @@
       *
            MOVE    ZERO                TO  LNK-FTNJGNCHK-RC
                                            LNK-FTNJGNCHK-KOHFTN
+                                           LNK-FTNJGNCHK-KOHFTNSKJ
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -1173,6 +1174,8 @@
            END-IF
       *
            COMPUTE LNK-FTNJGNCHK-KOHFTN = WRK-KOHFTN-HKNFTNMONEY
+           COMPUTE LNK-FTNJGNCHK-KOHFTNSKJ
+                                        = WRK-KOHFTN-HKNFTNMONEY
                                         + WRK-KOHFTN-SKJ
       *
            .
@@ -1388,6 +1391,8 @@
            END-IF
       *
            COMPUTE LNK-FTNJGNCHK-KOHFTN = WRK-KOHFTN-HKNFTNMONEY
+           COMPUTE LNK-FTNJGNCHK-KOHFTNSKJ
+                                        = WRK-KOHFTN-HKNFTNMONEY
                                         + WRK-KOHFTN-SKJ
       *
            .

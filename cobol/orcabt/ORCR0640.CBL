@@ -9685,6 +9685,14 @@
                    ELSE
                          MOVE   1    TO  TBL-HKNFTNDATA-FLG(IDY2)
                    END-IF
+                   DISPLAY "IDX KOHNUM=" IDY2
+                           " "    RECE62-KOHNUM(IDY2)
+                   DISPLAY "JGN=" TBL-HKNFTNDATA-JGN(IDY2)
+                   DISPLAY "TAF=" TBL-HKNFTNDATA-TAF(IDY2)
+                   DISPLAY "GAI=" TBL-HKNFTNDATA-GAIRAI(IDY2)
+                   DISPLAY "NYU=" TBL-HKNFTNDATA-NYUIN(IDY2)
+                   DISPLAY "ZAN=" TBL-HKNFTNDATA-ZAN(IDY2)
+                   DISPLAY "FLG=" TBL-HKNFTNDATA-FLG(IDY2)
                 END-IF
                 IF  ((RECE62-KOHNUM(IDY2)      =  "051"   ) AND
                      (TBL-DOTANDOKU-FLG(IDY2)  =   1      ))
@@ -15221,21 +15229,21 @@
              END-IF
             END-IF
            END-IF
-      ****
-           IF  RECE62-KOHNUM(1) = "038"
-              IF  TBL-HKNFTNDATA-TAF(1)    <  WRK-JYOGEN-KOH
-                  COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
-                                          - TBL-HKNFTNDATA-TAF(1)
-              ELSE
-                  MOVE     ZERO          TO   WRK-JYOGEN-KOH
-              END-IF
-              IF  TBL-HKNFTNDATA-GAIRAI(1) <  WRK-JYOGEN-KOH
-                  COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
-                                          - TBL-HKNFTNDATA-GAIRAI(1)
-              ELSE
-                  MOVE     ZERO          TO   WRK-JYOGEN-KOH
-              END-IF
-           END-IF
+      *
+      ***  IF  RECE62-KOHNUM(1) = "038"
+      ***     IF  TBL-HKNFTNDATA-TAF(1)    <  WRK-JYOGEN-KOH
+      ***         COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+      ***                                 - TBL-HKNFTNDATA-TAF(1)
+      ***     ELSE
+      ***         MOVE     ZERO          TO   WRK-JYOGEN-KOH
+      ***     END-IF
+      ***     IF  TBL-HKNFTNDATA-GAIRAI(1) <  WRK-JYOGEN-KOH
+      ***         COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+      ***                                 - TBL-HKNFTNDATA-GAIRAI(1)
+      ***     ELSE
+      ***         MOVE     ZERO          TO   WRK-JYOGEN-KOH
+      ***     END-IF
+      ***  END-IF
       *
            IF  WRK-JYOGEN-KOH  >  WRK-KOH-GENDOGAKU
                 MOVE  WRK-KOH-GENDOGAKU    TO   WRK-JYOGEN-KOH
