@@ -97,6 +97,7 @@
       *  04.03.00    NACL-¾®Æ¦Âô  08/07/08  êóáì´µ¼Ô´ÉÍý²Ã»»ÂÐ±þ
       *  04.03.00    NACL-¾®Æ¦Âô  08/07/29  ºÇ½ªÆþ±¡ÉÂ¼¼¤ÎÉ½¼¨ÄÉ²Ã
       *  04.03.00    NACL-¾®Æ¦Âô  08/08/11  ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¤ò¥µ¥Ö¥×¥í¤ËÊÑ¹¹
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/21  Æþ±¡ÎÁºï½ü¤ÎÆþ±¡²Ã»»ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4242,6 +4243,13 @@
                   (SPA-5000-NACCT-GAIHAKUKBN   =   "2")
                PERFORM 47012-GAIHAKU-CHK-SEC
            END-IF
+      *
+      *    Æþ±¡ÎÁ¤Î»þ¡¢²Ã»»Â¾¤Îºï½ü
+           MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
+           IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
+                                           =   "1"   ) 
+               PERFORM 47013-NYUINDEL-CHK-SEC
+           END-IF
       *    ÊÑ¹¹ÆþÎÏÍó
            INITIALIZE                  SPA-GMN-INPUT-41
       *
@@ -4362,6 +4370,33 @@
            END-PERFORM
            .
         47012-GAIHAKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁ¤ÈÆþ±¡²Ã»»¤Îºï½ü½èÍý
+      *****************************************************************
+       47013-NYUINDEL-CHK-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-NAI-MAX-41
+               MOVE    SPA-NAI-TBANGO (IDX)    TO  IDG
+               EVALUATE     SPA-NAI-TZAISKBKBN-41 (IDX)
+      *            Æþ±¡ÎÁ²Ã»»
+                   WHEN     "6"
+      *                Æþ±¡ÎÁ¤Ê¤·¤Îºï½ü
+                       PERFORM VARYING     IDX-D   FROM    1   BY  1
+                               UNTIL       IDX-D   >   31
+                           IF      SPA-GMN-DAY-41(IDX-D)  =   ZERO
+                               MOVE    ZERO         TO  SPA-NAI-DAY-41
+                                                           (IDX IDX-D)
+                               MOVE    SPACE        TO  SPA-GMN-TDAY-41
+                                                           (IDG IDX-D)
+                           END-IF
+                       END-PERFORM
+               END-EVALUATE
+           END-PERFORM
+           .
+       47013-NYUINDEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************
