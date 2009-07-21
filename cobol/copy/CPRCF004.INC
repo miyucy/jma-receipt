@@ -53,6 +53,7 @@
       *
       *  04.05.01    NACL-藤原    09/06/10  摘要欄下部へのコメント記載対応
       *                                     診療種別区分の追加
+      *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       ************************************************************
       *01  RECE04-REC.
            03  RECE04-KEY.
@@ -97,9 +98,9 @@
       *診療コード計
            03  RECE04-SRYCDTOTAL          PIC  9(14).
       *数量計
-           03  RECE04-SURYOUTOTAL         PIC  9(07)V9(03).
+           03  RECE04-SURYOUTOTAL         PIC  9(07)V9(05).
       *診療コード＊数量の累計
-           03  RECE04-RUIKEITOTAL         PIC  9(15)V9(03).
+           03  RECE04-RUIKEITOTAL         PIC  9(15)V9(05).
       *明細数
            03  RECE04-MEISAISU            PIC  9(04).
       *剤回数

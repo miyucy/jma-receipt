@@ -2402,6 +2402,13 @@
            MOVE    TBL-ZAIW-SRYSURYO (WRK-WIDX1 WRK-WIDX2)
                                    TO  WRK-SURYO
            MOVE    WRK-SURYO-S1    TO  WRK-SURYO-Z1
+      *
+      *    「０５９」で始まる場合は小数点以下３桁までとする
+           IF      TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) (1:3)
+                                   =   "059"
+               MOVE    "00"            TO  WRK-SURYO-S2 (4:2)
+           END-IF
+      *
            MOVE    ZERO            TO  FLG-SP
            PERFORM   VARYING   IDY   FROM    5   BY  -1
                      UNTIL     IDY           =   ZERO

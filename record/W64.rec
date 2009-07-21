@@ -35,6 +35,15 @@ W64	{
 		MEISYO	{
 			value	varchar(44);
 		};
+		HBTNUM	{
+			value	varchar(2);
+		};
+		MEISYO1	{
+			value	varchar(44);
+		};
+		HBTNUM1	{
+			value	varchar(2);
+		};
 		KOHNUM1	{
 			value	varchar(3);
 		};

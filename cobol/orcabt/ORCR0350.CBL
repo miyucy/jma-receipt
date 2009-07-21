@@ -241,6 +241,7 @@
       *                                     回数の記載の修正
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -530,7 +531,7 @@
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(2400).
-               05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
+               05  WRK-NUM             PIC ZZZZZZZZZ9.99999. 
                05  WRK-NAGASA          PIC 9(04).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
@@ -581,7 +582,7 @@
            03  WRK-TENSU               PIC 9(07).
            03  WRK-KAISU               PIC 9(03).
            03  WRK-TANKA               PIC 9(07)V9(02).
-           03  WRK-SRYSURYO            PIC 9(05)V9(03).
+           03  WRK-SRYSURYO            PIC 9(05)V9(05).
            03  WRK-FTNKBN-AREA.                            
                05  WRK-FTNKBN          PIC X(01).
                05  WRK-KOHNUM          PIC 9(01)
@@ -673,7 +674,7 @@
       *                診療種別区分
                        09  TBL-ZAIW-SRYSYUKBN       PIC  X(03).
       *                数量
-                       09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
+                       09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
       *                回数
                        09  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *                単位コード
@@ -753,7 +754,7 @@
       *            診療種別区分
                    07  TBL-KOUI-SRYSYUKBN       PIC  X(03).
       *            数量
-                   07  TBL-KOUI-SRYSURYO        PIC  9(05)V9(03).
+                   07  TBL-KOUI-SRYSURYO        PIC  9(05)V9(05).
       *            回数
                    07  TBL-KOUI-SRYKAISU        PIC  9(03).
       *            単位コード
@@ -860,7 +861,7 @@
       *            診療種別区分
                        09  WRK-KOUI-SRYSYUKBN       PIC  X(03).
       *            数量
-                       09  WRK-KOUI-SRYSURYO        PIC  9(05)V9(03).
+                       09  WRK-KOUI-SRYSURYO        PIC  9(05)V9(05).
       *            回数
                        09  WRK-KOUI-SRYKAISU        PIC  9(03).
       *            単位コード
@@ -990,7 +991,7 @@
       *診療種別区分
                    07  TBL-KASAN-RECE65-SRYSYUKBN-X     PIC  X(03).
       *数量
-                   07  TBL-KASAN-RECE65-SRYSURYO        PIC 9(05)V9(03).
+                   07  TBL-KASAN-RECE65-SRYSURYO        PIC 9(05)V9(05).
       *回数
                    07  TBL-KASAN-RECE65-SRYKAISU        PIC  9(03).
       *単位コード
@@ -1070,7 +1071,7 @@
       *            診療種別区分
                    07  TBL-KENTAI-RECE65-SRYSYUKBN       PIC  X(03).
       *            数量
-                   07  TBL-KENTAI-RECE65-SRYSURYO      PIC  9(05)V9(03).
+                   07  TBL-KENTAI-RECE65-SRYSURYO      PIC  9(05)V9(05).
       *            回数
                    07  TBL-KENTAI-RECE65-SRYKAISU        PIC  9(03).
       *            単位コード
@@ -1153,7 +1154,7 @@
       *            診療種別区分
                    07  TBL-KENSA-RECE65-SRYSYUKBN       PIC  X(03).
       *            数量
-                   07  TBL-KENSA-RECE65-SRYSURYO      PIC  9(05)V9(03).
+                   07  TBL-KENSA-RECE65-SRYSURYO      PIC  9(05)V9(05).
       *            回数
                    07  TBL-KENSA-RECE65-SRYKAISU        PIC  9(03).
       *            単位コード
@@ -5402,8 +5403,8 @@
                IF      TBL-ZAIW-SRYSURYO (1 IDX) >   ZERO
                    MOVE    TBL-ZAIW-SRYSURYO (1 IDX) TO  WRK-SRYSURYO
                    MOVE    WRK-SRYSURYO              TO  WRK-NUM
-                   MOVE    9                         TO  WRK-NAGASA
-                   MOVE    3                         TO  WRK-SYOSUU     
+                   MOVE    11                        TO  WRK-NAGASA
+                   MOVE    5                         TO  WRK-SYOSUU     
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
@@ -7239,7 +7240,7 @@
       *
       *
       *****************************************************************
-      *    出力レコード処理（数字）ZZZZZZZZZ9.999の編集
+      *    出力レコード処理（数字）ZZZZZZZZZ9.99999の編集
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *

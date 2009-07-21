@@ -380,6 +380,7 @@
       *  04.04.15    NACL-門脇    09/07/17  東京都地方公費対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -916,7 +917,7 @@
        01  WRK-ORCSTEN-TABLE.
            03  WRK-ORCSTEN-T                           OCCURS  350.
                05  WRK-ORCSTEN-SRYCD                   PIC X(09).
-               05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(03).
+               05  WRK-ORCSTEN-SURYO                   PIC 9(05)V9(05).
                05  WRK-ORCSTEN-COM-MEI                 PIC X(80).
            03  WRK-ORCSTEN-T2                          OCCURS   31.
                05  WRK-ORCSTEN-DAY                     PIC 9(03).
@@ -1026,7 +1027,7 @@
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
       *
-           03  WRK-SRYSURYO                            PIC 9(05)V9(03).
+           03  WRK-SRYSURYO                            PIC 9(05)V9(05).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
       *
@@ -3246,7 +3247,7 @@
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
-                                          +     0.999                   
+                                          +     0.99999                   
                   COMPUTE RECE65-SRYSURYO(IDX4)                         
                                           =     WRK-SRYSURYO2           
                                           -     WRK-SRYSURYO            

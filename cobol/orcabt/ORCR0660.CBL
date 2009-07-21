@@ -105,6 +105,8 @@
       *                                     載を行なう対応
       *  04.04.03    NACL-門脇    09/06/22  精神科隔離室管理加算算定日
       *                                     レセ電用コメント編集
+      *
+      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -642,9 +644,9 @@
        01  TBL-SANSO-INF.
            03  TBL-SANSO-INF2       OCCURS    10.
                05  TBL-SANSO-TEN           PIC 9(09)V9(02).
-               05  TBL-SANSO-SRYSURYO      PIC 9(05)V9(03).
+               05  TBL-SANSO-SRYSURYO      PIC 9(05)V9(05).
            03  TBL-SANSO-INF3.
-               05  TBL-KASAN-SRYSURYO      PIC 9(05)V9(03).
+               05  TBL-KASAN-SRYSURYO      PIC 9(05)V9(05).
       *
       *    療養レセコメント情報
        01  TBL-RYOCOM-INF.

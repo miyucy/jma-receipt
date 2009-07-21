@@ -131,6 +131,7 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    09/06/17  処置の記載順変更（日付順）
+      *  04.05.03    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -384,7 +385,7 @@
       *    検査の回数
            03  WRK-KENSA-KAISU                 PIC 9(05). 
       *     
-           03  WRK-SRYSURYOW                   PIC X(20).
+           03  WRK-SRYSURYOW                   PIC X(24).
            03  WRK-NAMEKETA                    PIC 9(03).
            03  WRK-YOHAKU                      PIC 9(03).
            03  WRK-WKETA                       PIC 9(03).
@@ -397,18 +398,18 @@
            03  WRK-SURYOKETA1                  PIC 9(02).
            03  WRK-SURYOKETA2                  PIC 9(02).
            03  WRK-SURYOST                     PIC 9(02).
-           03  WRK-SURYO                       PIC 9(05)V9(03).
+           03  WRK-SURYO                       PIC 9(05)V9(05).
            03  WRK-SURYO-R  REDEFINES  WRK-SURYO.
                05  WRK-SURYO-S1                PIC 9(05).
-               05  WRK-SURYO-S2                PIC 9(03).
+               05  WRK-SURYO-S2                PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1                PIC ZZZZZ.
                05  WRK-SURYO-Z2                PIC X(01).
-               05  WRK-SURYO-Z3                PIC ZZZ.
+               05  WRK-SURYO-Z3                PIC ZZZZZ.
            03  WRK-SURYO-N.
                05  WRK-SURYO-N1                PIC X(10).
                05  WRK-SURYO-N2                PIC X(02).
-               05  WRK-SURYO-N3                PIC X(06).
+               05  WRK-SURYO-N3                PIC X(10).
       *
       *    特定保険医療材料編集用
            03  WRK-RECEHENNAME                 PIC X(300).
@@ -479,7 +480,7 @@
                        09  WRK-KENSA-KENTAICOMMENT-SRYCD
                                            PIC 9(09).
                        09  WRK-KENSA-SRYCD PIC 9(09).
-                       09  WRK-KENSA-SRYSURYO PIC 9(05)V9(03).
+                       09  WRK-KENSA-SRYSURYO PIC 9(05)V9(05).
       *
        01  WRK-RECE64-ZAITEN               PIC 9(08).
       *         
@@ -511,7 +512,7 @@
                    07  WRK-RECE64-KENTAICOMMENT-SRYCD
                                                   PIC 9(09).
                    07  WRK-RECE64-SRYCD           PIC 9(09).
-                   07  WRK-RECE64-SRYSURYO        PIC 9(05)V9(03).
+                   07  WRK-RECE64-SRYSURYO        PIC 9(05)V9(05).
                05  WRK-RECE64-DAY-AREA.
                    07  WRK-RECE64-DAY-TBL         OCCURS  4.
                        09  WRK-RECE64-KAISUINF    OCCURS  31.
@@ -522,7 +523,7 @@
        01  TBL-NAME-AREA.
            03  TBL-NAME-REC      OCCURS 100.
                05  TBL-SRYCD               PIC  X(09).
-               05  TBL-SRYSURYO            PIC  9(05)V9(03).
+               05  TBL-SRYSURYO            PIC  9(05)V9(05).
       *        単位コード/単位名称有効桁数/単位名称
                05  TBL-TANICD              PIC  9(03).
                05  TBL-TANIMOJISU          PIC  9(01).
@@ -611,7 +612,7 @@
       *                診療種別区分
                        09  TBL-ZAIW-SRYSYUKBN       PIC  X(03).
       *                数量
-                       09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
+                       09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
       *                回数
                        09  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *                単位コード
@@ -3421,8 +3422,14 @@
            MOVE    TBL-ZAIW-SRYSURYO (WRK-WIDX1 WRK-WIDX2)
                                    TO  WRK-SURYO
            MOVE    WRK-SURYO-S1    TO  WRK-SURYO-Z1
+      *
+      *    「０５９」で始まる場合は小数点以下３桁までとする
+           IF      TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) (1:3)
+                                   =   "059"
+               MOVE    "00"            TO  WRK-SURYO-S2 (4:2)
+           END-IF
            MOVE    ZERO            TO  FLG-SP
-           PERFORM   VARYING   IDY   FROM    3   BY  -1
+           PERFORM   VARYING   IDY   FROM    5   BY  -1
                      UNTIL     IDY           =   ZERO
              IF  WRK-SURYO-S2(IDY:1) NOT =   ZERO
                  MOVE    1               TO  FLG-SP
@@ -3437,7 +3444,7 @@
            END-IF
       *    表示文字数カウント
            PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL     IDY           >   9
+                     UNTIL     IDY           >   11
              IF  WRK-SURYO-X (IDY:1)   NOT =   SPACE
                  IF  WRK-SURYOST           =   ZERO
                      MOVE    IDY           TO  WRK-SURYOST
