@@ -77,6 +77,9 @@
       *  04.02.02    NACL-藤原    08/09/24  平成２０年１０月改正対応
       *
       *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
+      *
+      *  04.05.01    NACL-藤原    09/07/21  表示名称の追加
+      *                                     名称２があれば優先する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -471,7 +474,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                MOVE    MCPDATA-REC         TO  SYS-2007-REC
       *
                ADD     1                   TO  IDX
-               MOVE    SYS-2007-MEISYO (1) TO  WRK-2007-MEISYO   (IDX)
+               IF      SYS-2007-MEISYO (2) =   SPACE
+                   MOVE    SYS-2007-MEISYO (1) TO  WRK-2007-MEISYO (IDX)
+               ELSE
+                   MOVE    SYS-2007-MEISYO (2) TO  WRK-2007-MEISYO (IDX)
+               END-IF
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       10
                        OR      SYS-2007-KOHNUM (IDY)   =   SPACE

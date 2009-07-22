@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-藤原    09/07/21  表示名称の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,6 +67,7 @@
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-SELNUM          PIC 9(03).
                        09  SPA-GMN-MEISYO          PIC X(44).
+                       09  SPA-GMN-MEISYO2         PIC X(44).
                        09  SPA-GMN-STYUKYMD        PIC X(10).
                        09  SPA-GMN-EDYUKYMD        PIC X(10).
                        09  SPA-GMN-KOH-KOUMOKU. 
@@ -550,6 +552,7 @@
        4101-GMN-SPA-SET-SEC       SECTION.
       *
            MOVE    W64-MEISYO          TO  SPA-GMN-MEISYO
+           MOVE    W64-MEISYO2         TO  SPA-GMN-MEISYO2
            MOVE    W64-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
            MOVE    W64-STYUKYMD        TO  SPA-GMN-STYUKYMD
            PERFORM VARYING IDX FROM    1   BY  1
@@ -579,6 +582,12 @@
       *
       *    名称
            PERFORM 41021-MEISYO-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    名称２
+           PERFORM 41021-MEISYO2-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -659,6 +668,7 @@
                MOVE    WRK-HENYMDG         TO  SPA-GMN-EDYUKYMD
       *
                MOVE    SYS-2007-MEISYO (1) TO  SPA-GMN-MEISYO
+               MOVE    SYS-2007-MEISYO (2) TO  SPA-GMN-MEISYO2
       *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-KOHNUM-MAX
@@ -848,6 +858,38 @@
       *
            .
        41021-MEISYO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    名称２入力処理
+      *****************************************************************
+       41021-MEISYO2-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-MEISYO2      =   SPACE
+      ****     IF      WRK-MCP-WIDGET      =   "MEISYO2"
+      ****         MOVE    "0007"              TO  SPA-ERRCD
+      ****     END-IF
+               CONTINUE
+           ELSE
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    SPA-GMN-MEISYO2     TO  KANACHK-MAE-INPUT
+               MOVE    44                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   "2"  )
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO2
+               ELSE
+                   MOVE    "0009"              TO  SPA-ERRCD
+               END-IF
+           END-IF 
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    15                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       41021-MEISYO2-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1178,6 +1220,7 @@
                    END-IF
                END-PERFORM
                MOVE    SPA-GMN-MEISYO      TO  SYS-2007-MEISYO (1)
+               MOVE    SPA-GMN-MEISYO2     TO  SYS-2007-MEISYO (2)
       *
                MOVE    SYS-2007-REC        TO  SYSKANRI-REC
                IF      SPA-NAI-SELNUM      =   ZERO
@@ -1298,6 +1341,7 @@
            MOVE    SPA-GMN-STYUKYMD    TO  W64-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W64-EDYUKYMD
            MOVE    SPA-GMN-MEISYO      TO  W64-MEISYO
+           MOVE    SPA-GMN-MEISYO2     TO  W64-MEISYO2
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       WRK-KOHNUM-MAX 
                MOVE    SPA-GMN-KOHNUM   (IDY)  TO  W64-KOHNUM    (IDY)
@@ -1320,7 +1364,7 @@
                PERFORM 50011-INPUT-CUR-SEC
            END-IF
       *
-         EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-GMN-CUR
              WHEN    1
                     MOVE  "SELNUM"         TO  MCP-WIDGET   
              WHEN    2
@@ -1349,6 +1393,8 @@
                     MOVE  "KOHNUM9"        TO  MCP-WIDGET   
              WHEN    14
                     MOVE  "KOHNUM10"       TO  MCP-WIDGET   
+             WHEN    15
+                    MOVE  "MEISYO2"        TO  MCP-WIDGET   
       *
              WHEN    999
                     MOVE  "B12"            TO  MCP-WIDGET   
@@ -1371,6 +1417,8 @@
                WHEN    "EDYUKYMD"
                    MOVE    4           TO  SPA-GMN-CUR
                WHEN    "MEISYO"
+                   MOVE    15          TO  SPA-GMN-CUR
+               WHEN    "MEISYO2"
                    MOVE    5           TO  SPA-GMN-CUR
                WHEN    "KOHNUM1"
                    MOVE    6           TO  SPA-GMN-CUR
