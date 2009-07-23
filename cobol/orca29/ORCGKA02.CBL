@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/23  ºßÂðÌôºÞÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -922,6 +923,7 @@
                           (HZN-JYURRK-SRYKBN3  =   "01" )  OR
                           (HZN-JYURRK-SRYKBN4  =   "01" )  OR
                           (HZN-JYURRK-SRYKBN5  =   "01" )
+                   OR     (HZN-JYURRK-SRYKBN1  =   "01" )
                        MOVE    1               TO  FLG-CHK
                    END-IF
                ELSE
@@ -992,7 +994,8 @@
                                        OR  "34"
                                        OR  "21"
                                        OR  "22"
-                                       OR  "23")
+                                       OR  "23"
+                                       OR  "14")
                    IF      SRY-SRYSYUKBN   =   "212"
                                            OR  "222"
                                            OR  "232"
@@ -1335,12 +1338,15 @@
                                        OR  "21"
                                        OR  "22"
                                        OR  "23"
+                                       OR  "14"
                                        OR  "98" )
                    IF      SRY-SRYSYUKBN   =   "212"
                                            OR  "222"
                                            OR  "232"
                                            OR  "292"
                                            OR  "982"
+                                           OR  "148"
+                                           OR  "149"
                        MOVE    1               TO  FLG-SRYACT
                    END-IF
                ELSE
@@ -3569,6 +3575,9 @@
                        MOVE    SPA-PARA-ZAIKAISU (IDX-W IDX-W2)
                                            TO  ORCSHCN30-ZAIKAISU
                                                              (IDX1 IDX2)
+                       MOVE    SPA-PARA-INPUTCOMENT (IDX-W IDX-W2)
+                                           TO  ORCSHCN30-INPUTCOMENT
+                                                             (IDX1 IDX2)
                    END-PERFORM
                END-IF
            END-PERFORM
@@ -3744,6 +3753,7 @@
                                                OR  "31"
                                                OR  "32"
                                                OR  "33"
+                                               OR  "14"
                    ADD     1               TO  IDX1
                    MOVE    IDX1            TO  ORCHCN62-ZAI-MAX
                    MOVE    SPA-PARA-ZAIKAIKEI (IDX-W)

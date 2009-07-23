@@ -23,6 +23,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.05.00     NACL-森脇    09/06/22  小数点以下５桁
+      * 04.05.00     NACL-多々納  09/07/23  在宅薬剤、コメント追加
       ************************************************************
       *
        01  ORCHCN30AREA.
@@ -44,7 +45,7 @@
                05  ORCHCN30-SURYO       PIC 9(05)V9(05).
       *        日数（回数）（外用は１回）
                05  ORCHCN30-KAISU       PIC 9(03).
-      *        （１：内服、２：頓服、３：外用、）
+      *        （１：内服、２：頓服、３：外用、４：在宅）
                05  ORCHCN30-ZAIKBN      PIC X(01).
       *        用法毎の用量（１：朝、２：昼、３：夜、４：寝、５：起床）
                05  ORCHCN30-YOURYOU-TBL.
@@ -55,4 +56,9 @@
       *        用法コード２（表示のみ）
                05  ORCHCN30-YOHOU-G.
                    07  ORCHCN30-YOHOU       PIC X(09)   OCCURS  5.
+      *        コメントコード
+               05  ORCHCN30-COMMENT-G.
+                   07  ORCHCN30-COMMENT-OCCURS  OCCURS  10.
+                       09  ORCHCN30-COMMENT-CD   PIC X(09).
+                       09  ORCHCN30-COMMENT-MEI  PIC X(80).
       *

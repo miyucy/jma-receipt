@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.00    NACL-太田   08/10/31   オン帳票バッチ起動対応
+      *  04.05.00    NACL-多々納 09/07/23   在宅・コメント対象対応
       *****************************************************************
       *
       *
@@ -64,6 +65,7 @@
            03  IDX-S               PIC 9(04).
            03  IDX-MAX             PIC 9(04).
            03  IDXA                PIC 9(04).
+           03  IDXC                PIC 9(04).
            03  IDXY                PIC 9(04).
            03  IDXY2               PIC 9(04).
            03  IDT                 PIC 9(04).
@@ -95,6 +97,10 @@
       *
                05  WRK-YOHOU-G.
                    07  WRK-YOHOU           PIC X(09)   OCCURS  5.
+      *        コメント
+               05  TBL-COMMENT-G           OCCURS   20.
+                   07  TBL-COMMENT             PIC X(09).
+                   07  TBL-INPUTCOMENT         PIC X(80).
       *
            03  WRK-ZAITENKEI            PIC 9(07).
       *
@@ -185,12 +191,18 @@
       *    PERFORM VARYING    IDX   FROM    1  BY  1
       *            UNTIL      IDX   >  ORCHCN30-MAX
       *      DISPLAY "ORCHCN30-SRYCD:" ORCHCN30-SRYCD (IDX)
+      *              ",ORCHCN30-ZAIKBN:" ORCHCN30-ZAIKBN (IDX)
+      *              ",ORCHCN30-SURYO:" ORCHCN30-SURYO (IDX)
       *              ",ORCHCN30-YSRYCD:" ORCHCN30-YSRYCD (IDX)
       *              ",ORCHCN30-YOURYOU 1:" ORCHCN30-YOURYOU (IDX 1)
       *              ",2:" ORCHCN30-YOURYOU (IDX 2)
       *              ",3:" ORCHCN30-YOURYOU (IDX 3)
       *              ",4:" ORCHCN30-YOURYOU (IDX 4)
       *              ",ORCHCN30-SRYKAISU:" ORCHCN30-SRYKAISU (IDX)
+      *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 1)
+      *       "," ORCHCN30-COMMENT-MEI (IDX 1)
+      *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 2)
+      *       "," ORCHCN30-COMMENT-MEI (IDX 2)
       *    END-PERFORM 
       *TEST
       *
@@ -357,6 +369,21 @@
                END-EVALUATE
            END-IF
       *
+      *    コメント
+           IF     (ORCSHCN30-SRYCD(IDT IDXA)(1:1)  =   "8"   )   OR
+                  (ORCSHCN30-SRYCD(IDT IDXA)(1:4)
+                                               =   "0081"
+                                               OR  "0082"
+                                               OR  "0083"
+                                               OR  "0084"
+                                               OR  "0085" )
+               ADD     1                       TO  IDXC
+               MOVE    ORCSHCN30-SRYCD (IDT IDXA)
+                                               TO  TBL-COMMENT (IDXC)
+               MOVE    ORCSHCN30-INPUTCOMENT (IDT IDXA)
+                                               TO  TBL-INPUTCOMENT
+                                                             (IDXC)
+           END-IF
       *
            .
        3001-TBLSET-EXT.
@@ -397,6 +424,16 @@
                                                             (IDY IDXY2)
                    END-IF
                END-PERFORM
+      *        コメント
+               PERFORM VARYING     IDXC    FROM    1   BY  1
+                       UNTIL      (IDXC        >   10   )   OR
+                                  (TBL-COMMENT (IDXC)  =   SPACE)
+                   MOVE    TBL-COMMENT (IDXC)  TO  ORCHCN30-COMMENT-CD
+                                                            (IDY IDXC)
+                   MOVE    TBL-INPUTCOMENT (IDXC)
+                                               TO  ORCHCN30-COMMENT-MEI
+                                                            (IDY IDXC)
+               END-PERFORM
       *
                EVALUATE    WRK-SRYKBN
       *            内服
@@ -408,6 +445,9 @@
       *            外用
                    WHEN    "23"
                        MOVE    "3"         TO  ORCHCN30-ZAIKBN(IDY)
+      *            在宅
+                   WHEN    "14"
+                       MOVE    "4"         TO  ORCHCN30-ZAIKBN(IDY)
                END-EVALUATE
            END-PERFORM
       *

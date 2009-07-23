@@ -31,6 +31,7 @@
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  ¤ªÌô¼êÄ¢ÂÐ±þ
       *  04.03.00    NACL-Â¿¡¹Ç¼  08/10/22  Êñ³çÊÝ¸±ÂÐ¾ÝÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/22  Ìô¾ð¤ËºßÂð¡¦¥³¥á¥ó¥ÈÂÐ¾Ý
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3374,7 +3375,7 @@
                        (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
                  OR   ( SPA-WKSRY-SRYSYUKBN(IDX-W) =   "980" )
       *            ÅêÌô¤Î¤ß
-                 OR   ( SPA-WKSRY-SRYKBN (IDX-W)   =   "14"  )
+      ******     OR   ( SPA-WKSRY-SRYKBN (IDX-W)   =   "14"  )
                    CONTINUE
                ELSE
                    ADD     1               TO  IDX1
@@ -3409,6 +3410,9 @@
                                                              (IDX1 IDX2)
                            MOVE    SPA-WKSRY-ZAIKAISU (IDX-W IDX-W2)
                                            TO  ORCSCH30-ZAIKAISU
+                                                             (IDX1 IDX2)
+                           MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
+                                           TO  ORCSCH30-INPUTCOMENT
                                                              (IDX1 IDX2)
                        END-IF
                    END-PERFORM
