@@ -283,6 +283,13 @@ W24	{
 		};
 		frame5	{
 			fixed11	{
+				CMB_SENTEIKBN	{
+					SENTEIKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[5];
+				};
 				CMB_SENTEI_FTNKBN	{
 					SENTEI_FTNKBN	{
 						value	varchar(22);

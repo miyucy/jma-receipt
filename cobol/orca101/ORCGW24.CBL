@@ -51,6 +51,7 @@
       *                                     É½¼¨¶èÊ¬ÂÐ±þ
       *  04.03.00    NACL-Â¿¡¹Ç¼  08.08.28  Âà±¡»þ±¡³°½èÊý¤»¤ó¶èÊ¬ÄÉ²Ã
       *  04.04.00    NACL-ÂÀÅÄ    09.07.13  ÀÁµá½ñÈ¯¹ÔÊýË¡ÄÉ²Ã
+      *  04.05.00    NACL-ÂÀÅÄ    09.07.23  ¿©»ö½é´üÃÍÀßÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -571,8 +572,14 @@
       *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥³¥ó¥Ü
            PERFORM 310-SKJSRYLST-SET-SEC
       *
+      *    ¿©»ö¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-SKJKBNLST-SET-SEC
+      *
       *    ÃÏ°è²Ã»»¥³¥ó¥Ü
            PERFORM 310-CHIIKIKSNLST-SET-SEC
+      *
+      *    ÁªÄê¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-SENTEIKBNLST-SET-SEC
       *
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-SENTEI-FTNKBNLST-SET-SEC
@@ -676,6 +683,25 @@
        310-SKJSRYLST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    ¿©»ö¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-SKJKBNLST-SET-SEC           SECTION.
+      *
+           MOVE    3               TO  SPA-GMN-W24-SKJKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-SKJKBNL    (1)
+           MOVE    "¿©¤Ê¤·"        TO  SPA-GMN-W24-SKJKBNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-SKJKBNL    (2)
+           MOVE    "¿©¤¢¤ê"        TO  SPA-GMN-W24-SKJKBNMEIL (2)
+      *
+           MOVE    "2"             TO  SPA-GMN-W24-SKJKBNL    (3)
+           MOVE    "ÆÃ¿©"          TO  SPA-GMN-W24-SKJKBNMEIL (3)
+      *
+           .
+       310-SKJKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÃÏ°è²Ã»»¥³¥ó¥Ü
       *****************************************************************
        310-CHIIKIKSNLST-SET-SEC        SECTION.
@@ -710,6 +736,24 @@
       *
            .
        310-CHIIKIKSNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÁªÄê¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-SENTEIKBNLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-SENTEIKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-SENTEIKBNL    (1)
+           MOVE    "ÁªÄêÂÐ¾Ý"
+                                   TO  SPA-GMN-W24-SENTEIKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-W24-SENTEIKBNL    (2)
+           MOVE    "ÁªÄêÂÐ¾Ý³°"
+                                   TO  SPA-GMN-W24-SENTEIKBNMEIL (2)
+      *
+           .
+       310-SENTEIKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬¥³¥ó¥Ü
@@ -1161,6 +1205,16 @@
                END-IF
            END-PERFORM
       *
+      *    ¿©»ö¶èÊ¬
+           MOVE    SYS-5000-SKJKBN     TO  WRK-CMB-CD
+           PERFORM 4200-SKJKBNLST-CHK-SEC
+           IF    ( WRK-CMB-CD      NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SKJKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SKJKBNLST (2)
+                                       TO  SPA-GMN-W24-SKJKBN-G
+           END-IF
+      *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    SYS-5000-BRMSGK-TAXKBN  TO  WRK-CMB-CD
            PERFORM 4200-BRMSGK-TAXLST-CHK-SEC
@@ -1283,6 +1337,17 @@
                END-IF
       *
            END-PERFORM
+      *
+      *    ÁªÄê¶èÊ¬
+           DISPLAY "SYS-5000-SENTEIKBN =" SYS-5000-SENTEIKBN
+           MOVE    SYS-5000-SENTEIKBN  TO  WRK-CMB-CD
+           PERFORM 4200-SENTEIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SENTEIKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SENTEIKBNLST (1)
+                                       TO  SPA-GMN-W24-SENTEIKBN-G
+           END-IF
       *
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬
            MOVE    SYS-5000-SENTEI-FTNKBN  TO  WRK-CMB-CD
@@ -1685,7 +1750,11 @@
            MOVE    W24-SYOKUJI (1)     TO  SPA-GMN-W24-SKJSRY-OCC (1)
       *
       *    ¿©»ö¿ÇÎÅ¹Ô°Ù
-           MOVE    W24-SYOKUJI (2)     TO  SPA-GMN-W24-SKJSRY-OCC (2)
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               MOVE    W24-SYOKUJI (2) TO  SPA-GMN-W24-SKJKBN-G
+           ELSE
+               MOVE    W24-SYOKUJI (2) TO  SPA-GMN-W24-SKJSRY-OCC (2)
+           END-IF
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    W24-BRMSGK-TAX      TO  SPA-GMN-W24-BRMSGK-TAX-G
@@ -1710,6 +1779,9 @@
       *
       *    ÃÏ°è²Ã»»
            MOVE    W24-CHIIKIKSN       TO  SPA-GMN-W24-CHIIKIKSN-G
+      *
+      *    ÁªÄê¶èÊ¬
+           MOVE    W24-SENTEIKBN       TO  SPA-GMN-W24-SENTEIKBN-G
       *
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬
            MOVE    W24-SENTEI-FTNKBN   TO  SPA-GMN-W24-SENTEI-FTNKBN-G
@@ -1790,12 +1862,20 @@
       *    ¿©»ö¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯½èÍý
            PERFORM VARYING IDX-SKJ     FROM    1   BY  1
                    UNTIL ( IDX-SKJ     >   CONST-SKJSRY-MAX )
-                    OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ) )
+                    OR   ( SPA-NAI-W24-SKJSRY-SRYCD (IDX-SKJ) 
+                                       =   SPACE )
                PERFORM 4101-SKJSRY-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  4102-KIHON-CHK-EXT
                END-IF
            END-PERFORM
+      *
+           IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
+               PERFORM 4101-SKJKBN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+           END-IF
       *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            PERFORM 4101-BRMSGK-TAX-CHK-SEC
@@ -1845,6 +1925,12 @@
                    GO  TO  4102-KIHON-CHK-EXT
                END-IF
            END-PERFORM
+      *
+      *    ÁªÄê¶èÊ¬
+           PERFORM 4101-SENTEIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
       *
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬
            PERFORM 4101-SENTEI-FTNKBN-CHK-SEC
@@ -2337,6 +2423,10 @@
                                    TO  SYS-5000-DSPCD (IDX1)
            END-PERFORM
       *
+      *    ÁªÄê¶èÊ¬
+           MOVE    SPA-GMN-W24-SENTEIKBN
+                                   TO  SYS-5000-SENTEIKBN
+      *
       *    ÁªÄêÆþ±¡ÉéÃ´¶èÊ¬
            MOVE    SPA-GMN-W24-SENTEI-FTNKBN
                                    TO  SYS-5000-SENTEI-FTNKBN
@@ -2420,7 +2510,8 @@
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
-               CONTINUE
+               MOVE    SPA-GMN-W24-SKJKBN
+                                   TO  SYS-5000-SKJKBN
            ELSE
                PERFORM 48111-GENZAN-EDIT-SEC
            END-IF
@@ -2528,6 +2619,24 @@
            .
       *
        4101-SKJSRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿©»ö¶èÊ¬¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4101-SKJKBN-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-W24-SKJKBN  TO  WRK-CMB-CD
+           PERFORM 4200-SKJKBNLST-CHK-SEC
+           IF    ( WRK-CMB-CD      NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SKJKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SKJKBNLST (2)
+                                       TO  SPA-GMN-W24-SKJKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-SKJKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
@@ -2913,6 +3022,25 @@
       *
            .
        4010-SRYCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÁªÄê¶èÊ¬
+      *****************************************************************
+       4101-SENTEIKBN-CHK-SEC         SECTION.
+      *
+      *    ³ºÅö¥³¡¼¥É¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
+           MOVE    SPA-GMN-W24-SENTEIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SENTEIKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-SENTEIKBNLST (1)
+                                       TO  SPA-GMN-W24-SENTEIKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SENTEIKBN-G
+           END-IF
+      *
+           .
+       4101-SENTEIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬
@@ -3346,6 +3474,30 @@
        4200-SKJSRYLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ¿©»ö¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-SKJKBNLST-CHK-SEC      SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-SKJKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-SKJKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-SKJKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-SKJKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÃÏ°è²Ã»»¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-CHIIKIKSNLST-CHK-SEC      SECTION.
@@ -3609,6 +3761,29 @@
            .
       *
        4200-TAIKSIKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÁªÄê¶èÊ¬¥µ¡¼¥Á½èÍý
+      *****************************************************************
+       4200-SENTEIKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-SENTEIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-SENTEIKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-SENTEIKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SENTEIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÁªÄêÎÅÍÜÈñ¡ÝÉéÃ´¶èÊ¬¥µ¡¼¥Á½èÍý
@@ -3909,6 +4084,9 @@
            MOVE    SPA-GMN-W24-NACCT-GAIHAKULST (1)
                                    TO  SPA-GMN-W24-NACCT-GAIHAKU-G
       *
+           MOVE    SPA-GMN-W24-SENTEIKBNLST (1)
+                                   TO  SPA-GMN-W24-SENTEIKBN-G
+      *
            MOVE    SPA-GMN-W24-SENTEI-FTNKBNLST (1)
                                    TO  SPA-GMN-W24-SENTEI-FTNKBN-G
       *
@@ -3953,9 +4131,9 @@
       *    Æþ±¡²Ã»»Ì¾¾ÎÊÔ½¸½èÍý
            PERFORM 4201-NYUKSNMEI-EDIT-SEC
       *
-      *    Æþ±¡¸º»»Ì¾¾ÎÊÔ½¸½èÍý
            IF    ( SPA-W01-EDYUKYMD   >=   CONST-H180401 )
-               CONTINUE
+               MOVE    SPA-GMN-W24-SKJKBNLST (2)
+                                   TO  SPA-GMN-W24-SKJKBN-G
            ELSE
                PERFORM 4201-GENZANMEI-EDIT-SEC
            END-IF
@@ -4261,7 +4439,6 @@
       *
            END-PERFORM
       *
-      *
       *    ¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
            MOVE    SPA-GMN-W24-BRMSGK-TAX-G TO W24-BRMSGK-TAX
            MOVE    SPA-GMN-W24-BRMSGK-TAX-MAX
@@ -4327,6 +4504,19 @@
       *
                MOVE    SPA-GMN-W24-CHIIKIKSNLST (IDX0)
                                            TO  W24-CHIIKIKSN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
+      *    ÁªÄê¶èÊ¬
+           MOVE    SPA-GMN-W24-SENTEIKBN-G
+                                           TO  W24-SENTEIKBN
+           MOVE    SPA-GMN-W24-SENTEIKBN-MAX
+                                           TO  W24-SENTEIKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-SENTEIKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-SENTEIKBNLST (IDX0)
+                                       TO  W24-SENTEIKBN-ITM (IDX0)
       *
            END-PERFORM
       *
@@ -4595,6 +4785,18 @@
       *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
+      *
+               MOVE    "Æþ±¡»þ¤Î¿©»ö"          TO  W24-LBLSYOKUJI (2)
+               MOVE    SPA-GMN-W24-SKJKBN-G    TO  W24-SYOKUJI (2)
+               MOVE    SPA-GMN-W24-SKJKBN-MAX  TO  W24-SYOKUJI-CNT (2)
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   SPA-GMN-W24-SKJKBN-MAX )
+      *
+                   MOVE    SPA-GMN-W24-SKJKBNLST (IDX1)
+                                       TO  W24-SYOKUJI-ITM (2 IDX1)
+      *
+               END-PERFORM
+      *
            ELSE
                MOVE    "Æþ±¡²Ã»»¡¦¸º»»¾ðÊó"    TO  W24-FRAME3-LABEL
            END-IF
@@ -4643,6 +4845,7 @@
            END-IF
       *
            IF    ( SPA-NAI-W24-SKJSRY-SRYCD (2)   =   SPACE )
+            AND  ( SPA-GMN-W24-SKJKBN-MAX         =   ZERO  )
                MOVE    WIDGET-INSENSITIVE
                                        TO  W24-SYOKUJI-STATE (2)
                                            W24-SYOKUJI-ITM-STATE (2)
@@ -4795,6 +4998,8 @@
                MOVE    "SHOHOUKBN"     TO MCP-WIDGET
            WHEN    061
                MOVE    "SKYSUMKBN"     TO MCP-WIDGET
+           WHEN    062
+               MOVE    "SENTEIKBN"     TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4876,6 +5081,8 @@
            WHEN    "SRYCD09"
                MOVE    038             TO  SPA-GMN-W24-CUR
            WHEN    "SRYCD10"
+               MOVE    062             TO  SPA-GMN-W24-CUR
+           WHEN    "SENTEIKBN"
                MOVE    039             TO  SPA-GMN-W24-CUR
            WHEN    "SENTEI_FTNKBN"
                EVALUATE    SPA-GMN-W24-SENTEI-FTNKBN

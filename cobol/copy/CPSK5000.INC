@@ -61,7 +61,12 @@
                    07  SYS-5000-DSPCD      PIC  X(09).
       *予備（１）
       ******   05                          PIC  X(60).
-               05                          PIC  X(58).
+               05                          PIC  X(56).
+      *入院時の食事
+               05  SYS-5000-SKJKBN         PIC  X(01).
+      *入院時の選定入院
+               05  SYS-5000-SENTEIKBN
+                                           PIC  X(01).
       *請求書発行方法
                05  SYS-5000-SKYSUMKBN
                                            PIC  X(01).

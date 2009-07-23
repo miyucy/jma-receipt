@@ -6681,6 +6681,12 @@
                                    SPA-GMN-I01-CMB-TOKNYUIN
                                    SPA-GMN-I01-CMB-KSN
       *
+           MOVE    "5000"          TO  WRK-KANRICD
+           MOVE    "*"             TO  WRK-KBNCD
+           MOVE    SPA-SYSYMD      TO  WRK-YUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5000-REC
+      *
            MOVE    SPA-GMN-I01-SHOKAI-ITM (01)
                                        TO  SPA-GMN-I01-SHOKAI
            MOVE    SPA-GMN-I01-KAIGO-ITM (01)
@@ -6689,12 +6695,27 @@
                                    TO  SPA-GMN-I01-SEIKYU
            MOVE    SPA-GMN-I01-DISPKBN-ITM (1)
                                    TO  SPA-GMN-I01-DISPKBN
-           MOVE    SPA-GMN-I01-SKJKBN-ITM (2)
-                                   TO  SPA-GMN-I01-SKJKBN
-           MOVE    SPA-GMN-I01-SENTEIKBN-ITM (1)
-                                   TO  SPA-GMN-I01-SENTEIKBN
+           MOVE    SYS-5000-SKJKBN TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SKJKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
+           ELSE
+               MOVE    "1"             TO  WRK-CMB-CD
+               PERFORM 4103-CMB-SKJKBN-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SKJKBN
+           END-IF
+           MOVE    SYS-5000-SENTEIKBN TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
+           ELSE
+               MOVE    "1"             TO  WRK-CMB-CD
+               PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
+           END-IF
       *
            PERFORM 310-CMB-USERPG-SET-SEC
+           
       *
       *    入院日にシステム日付を表示
            MOVE    SPA-SYSYMD      TO  WRK-YMD

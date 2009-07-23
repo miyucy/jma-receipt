@@ -82,7 +82,13 @@
                                                OCCURS 10.
               04  W24-FRAME5.
                 05  W24-FIXED11.
-                  06  W24-CMB-SENTEI-KBN.
+                  06  W24-CMB-SENTEIKBN.
+                    07  W24-SENTEIKBN          PIC X(28).
+                    07  W24-SENTEIKBN-CNT      PIC S9(9)
+                                               BINARY.
+                    07  W24-SENTEIKBN-ITM      PIC X(28)
+                                               OCCURS  5 TIMES.
+                  06  W24-CMB-SENTEI-FTNKBN.
                     07  W24-SENTEI-FTNKBN      PIC X(22).
                     07  W24-SENTEI-FTNKBN-CNT  PIC S9(9)
                                                BINARY.
