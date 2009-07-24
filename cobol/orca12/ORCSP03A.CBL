@@ -1958,7 +1958,9 @@
                END-IF
            END-IF
       *
-           IF      SPA-NAI-HKAKUNINYMD     >   SPA-SYSYMD
+      *    更新の時、変更時のみチェック
+           IF     (SPA-NAI-HKAKUNINYMD     >   SPA-SYSYMD )
+             AND  (SPA-NAI-HKAKUNINYMD NOT =   SPA-MAE-HKAKUNINYMD)
                MOVE    "0057"              TO  SPA-ERRCD
                MOVE    19                  TO  SPA-GMN-CUR
            END-IF

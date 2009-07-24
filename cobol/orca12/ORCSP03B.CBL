@@ -1173,8 +1173,12 @@
                    MOVE    25              TO  SPA-GMN-CUR
                    GO  TO                  1001-KKAKUNINYMD-CHK-EXT
                END-IF
+      *        確認日変更時のみ
                IF      SPA-NAI-KKAKUNINYMD(IDX-K)
                                            >   SPA-SYSYMD
+                 AND  (SPA-MAE-KKAKUNINYMD(IDX-K)
+                                       NOT =   SPA-NAI-KKAKUNINYMD
+                                                             (IDX-K))
                    MOVE    "0080"          TO  SPA-ERRCD
                    MOVE    25              TO  SPA-GMN-CUR
                    GO  TO                  1001-KKAKUNINYMD-CHK-EXT
