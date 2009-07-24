@@ -1148,12 +1148,12 @@
                MOVE    HCN03-JIHIMSG (IDX1)
                                            TO  HCN03V01-JIHIMSG (IDX1)
            END-PERFORM
-           MOVE    HCN03-JIHI (11)         TO  HCN03V01-JIHI (6)
+           MOVE    HCN03-JIHI (11)         TO  HCN03V01-JIHI (8)
            MOVE    HCN03-JIHI (12)         TO  HCN03V01-JIHI (7)
            MOVE    WRK-JIHI-TOTAL          TO  WRK-KINGAKU-Z
            MOVE    WRK-KINGAKU-Z           TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
-           MOVE    WRK-ZHENSYU24           TO  HCN03V01-JIHI (8)
+           MOVE    WRK-ZHENSYU24           TO  HCN03V01-JIHI (6)
       *
            MOVE    HCN03-SYOKUJI           TO  HCN03V01-SYOKUJI
            MOVE    HCN03-ROUJIN            TO  HCN03V01-ROUJIN
