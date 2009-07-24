@@ -162,6 +162,8 @@
       *  04.04.02    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
+      *
+      *  04.05.01    NACL-藤原    09/07/23  主科未設定患者の主科再取得対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1562,57 +1564,21 @@
              OR  (     ( RECE62-TEISYUTUSAKI   =   "6" )
                    AND ( SYS-2009-SYUKA-KOUIKI
                                            NOT =   "0" ) )
-               INITIALIZE                      ORCSSYUACCAREA
-               MOVE    RECE62-HOSPNUM  TO  SPA-HOSPNUM
-               MOVE    RECE62-SRYYM    TO  LNK-SYUACC-I-SRYYM
-               MOVE    RECE62-PTID     TO  SPA-PTID
-               MOVE    RECE62-NYUGAIKBN
-                                       TO  SPA-NYUGAIKBN
-               MOVE    SYS-2009-SYUKA-KBN
-                                       TO  SPA-SYUKA-KBN
-               MOVE    SYS-2009-SYUKA-NYUIN
-                                       TO  SPA-SYUKA-NYUIN
-               MOVE    SYS-2009-SYUKA-GAIRAI
-                                       TO  SPA-SYUKA-GAIRAI
-               MOVE    SYS-2009-SYUKA-MODE
-                                       TO  SPA-SYUKA-MODE
-               MOVE    SYS-2009-SYUKA-SELECT
-                                       TO  SPA-SYUKA-SELECT
-               MOVE    RECE62-RECESYUBETU
-                                       TO  LNK-SYUACC-IO-RECESYUBETU (1)
-               MOVE    RECE62-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
-               MOVE    RECE62-HOJOKBN-KEY
-                                       TO  LNK-SYUACC-IO-HOJOKBN     (1)
-               MOVE    RECE62-TEISYUTUSAKI
-                                       TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
-      *        精神入院か生保単独複数のとき
-               IF    ( RECE62-HKNNUM   =   SPACE      )
-               AND   ( RECE62-TEKSTYMD
-                                   NOT =   "00000000" )
-                   MOVE    RECE62-TEKSTYMD
-                                       TO  LNK-SYUACC-IO-HKNJANUM    (1)
-               END-IF 
-               MOVE    "06"            TO  LNK-SYUACC-I-KBN
-               CALL    "ORCSSYUKAMAIN" USING   SPA-AREA
-                                               ORCSSYUACCAREA
-               IF      LNK-SYUACC-IO-H-SRYKA
-                                       NOT =   SPACE
-                   MOVE    LNK-SYUACC-IO-H-SRYKA   TO  RECE62-SYUKA
-               ELSE
-                   IF      LNK-SYUACC-IO-SYUKA-INPUT (1)
-                                           NOT =   SPACE
-                       MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
-                                                       TO  RECE62-SYUKA
-                   ELSE
-                       IF      LNK-SYUACC-IO-SYUKA-AUTO (1)
-                                               NOT =   SPACE
-                           MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1) 
-                                                       TO  RECE62-SYUKA
-                       ELSE
-                           MOVE    "XX"                TO  RECE62-SYUKA
-                       END-IF
-                   END-IF
-               END-IF    
+               PERFORM 2101-SYUKA-HENSYU-SEC
+      *        主科未設定のとき主科取得を行なう
+               IF      RECE62-SYUKA            =   "XX"
+                   INITIALIZE                      ORCSSYUACCAREA
+                   MOVE    RECE62-PREFNUM      TO  SPA-PREFNUM
+                   MOVE    RECE62-SRYYM        TO  LNK-SYUACC-I-SRYYM
+                   MOVE    RECE62-BIRTHDAY     TO  SPA-BIRTHDAY
+                   MOVE    RECE62-PTID          TO  SPA-PTID
+                   MOVE    RECE62-NYUGAIKBN    TO  SPA-NYUGAIKBN
+                   MOVE   "05"                 TO  LNK-SYUACC-I-KBN
+                   CALL   "ORCSSYUKAMAIN"      USING   SPA-AREA
+                                                       ORCSSYUACCAREA
+      *
+                   PERFORM 2101-SYUKA-HENSYU-SEC
+               END-IF
       *
       *        主科設定時のみ診療科名称を設定    
                IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
@@ -1700,6 +1666,67 @@
       *
            .
        2101-RECE62-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    主科情報編集処理
+      *****************************************************************
+       2101-SYUKA-HENSYU-SEC                   SECTION.
+      *
+           INITIALIZE                      ORCSSYUACCAREA
+           MOVE    RECE62-HOSPNUM  TO  SPA-HOSPNUM
+           MOVE    RECE62-SRYYM    TO  LNK-SYUACC-I-SRYYM
+           MOVE    RECE62-PTID     TO  SPA-PTID
+           MOVE    RECE62-NYUGAIKBN
+                                   TO  SPA-NYUGAIKBN
+           MOVE    SYS-2009-SYUKA-KBN
+                                   TO  SPA-SYUKA-KBN
+           MOVE    SYS-2009-SYUKA-NYUIN
+                                   TO  SPA-SYUKA-NYUIN
+           MOVE    SYS-2009-SYUKA-GAIRAI
+                                   TO  SPA-SYUKA-GAIRAI
+           MOVE    SYS-2009-SYUKA-MODE
+                                   TO  SPA-SYUKA-MODE
+           MOVE    SYS-2009-SYUKA-SELECT
+                                   TO  SPA-SYUKA-SELECT
+           MOVE    RECE62-RECESYUBETU
+                                   TO  LNK-SYUACC-IO-RECESYUBETU (1)
+           MOVE    RECE62-HKNJANUM TO  LNK-SYUACC-IO-HKNJANUM    (1)
+           MOVE    RECE62-HOJOKBN-KEY
+                                   TO  LNK-SYUACC-IO-HOJOKBN     (1)
+           MOVE    RECE62-TEISYUTUSAKI
+                                   TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
+      *    精神入院か生保単独複数のとき
+           IF    ( RECE62-HKNNUM   =   SPACE      )
+           AND   ( RECE62-TEKSTYMD
+                               NOT =   "00000000" )
+               MOVE    RECE62-TEKSTYMD
+                                  TO  LNK-SYUACC-IO-HKNJANUM    (1)
+           END-IF 
+           MOVE    "06"            TO  LNK-SYUACC-I-KBN
+           CALL    "ORCSSYUKAMAIN" USING   SPA-AREA
+                                           ORCSSYUACCAREA
+           IF      LNK-SYUACC-IO-H-SRYKA
+                                   NOT =   SPACE
+               MOVE    LNK-SYUACC-IO-H-SRYKA   TO  RECE62-SYUKA
+           ELSE
+               IF      LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                           NOT =   SPACE
+                   MOVE    LNK-SYUACC-IO-SYUKA-INPUT (1)
+                                                   TO  RECE62-SYUKA
+               ELSE
+                   IF      LNK-SYUACC-IO-SYUKA-AUTO (1)
+                                               NOT =   SPACE
+                       MOVE    LNK-SYUACC-IO-SYUKA-AUTO (1) 
+                                                   TO  RECE62-SYUKA
+                   ELSE
+                       MOVE    "XX"                TO  RECE62-SYUKA
+                   END-IF
+               END-IF
+           END-IF    
+           .
+      *
+       2101-SYUKA-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
