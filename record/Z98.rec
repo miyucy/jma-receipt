@@ -9,32 +9,6 @@ Z98	{
 		SELNUM1	{
 			value	varchar(3);
 		};
-		SELNUM2	{
-			value	varchar(3);
-		};
-		SELNUM3	{
-			value	varchar(3);
-		};
-		SELNUM4	{
-			value	varchar(3);
-		};
-		SELNUM5	{
-			value	varchar(3);
-		};
-		scrolledwindow26	{
-			LIST	{
-				count	int;
-				row	int;
-				rowattr	int;
-				item	{
-					value1	varchar(3);
-					value2	varchar(70);
-					value3	varchar(6);
-					value4	varchar(10);
-				}	[200];
-				select	bool[200];
-			};
-		};
 		JIINCOB	{
 			JIIN	{
 				value	varchar(16);
@@ -42,16 +16,34 @@ Z98	{
 			count	int;
 			item	varchar(16)[10];
 		};
+		scrolledwindow26	{
+			hpos	int;
+			vpos	int;
+			LIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(70);
+					value2	varchar(6);
+					value3	varchar(10);
+					value4	varchar(10);
+					value5	varchar(2);
+				}	[200];
+				select	bool[200];
+			};
+		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
+		};
 		USERCOB	{
 			USER	{
 				value	varchar(10);
 			};
 			count	int;
 			item	varchar(10)[10];
-		};
-		NEXT	{
-			style	varchar(20);
-			value	varchar(20);
 		};
 	};
 };

@@ -1363,6 +1363,7 @@
                                                                (IDX)
                    END-STRING
                END-IF
+               MOVE    ICD-SRYCD           TO  SPA-KT98-GMN-SETCD (IDX)
            END-IF
       *
            .
@@ -2342,21 +2343,33 @@
                END-IF
       *
                MOVE    SPA-KT98-GMN-NAME (IDX)  TO  KT98-NAME (IDX)
-               IF    ((SPA-KT98-GMN-KISOTEN(IDX)    =   ZERO  )  AND
-                      (SPA-KT98-GMN-SRYCD(IDX)(1:1) =   "S" OR "P")) OR
-                     ((SPA-KT98-GMN-SYORI           =   "9"   )  AND
-                      (SPA-KT98-GMN-SYORI2          =   SPACE ))
-      *            セット一覧の時、セットコードを単価へ
-                   IF      SPA-KT98-GMN-SRYCD (IDX)(1:1)
-                                                   =   "P" OR "S"
-                        MOVE    SPA-KT98-GMN-SRYCD (IDX)
-                                               TO  KT98-KISOTEN (IDX)
-                   END-IF
-               ELSE
+      *        単価
+               IF     (SPA-KT98-GMN-KISOTEN(IDX)    >   ZERO  )  OR 
+                      (SPA-KT98-GMN-SRYCD(IDX)(1:1) =   "1"
+                                                   OR  "6"
+                                                   OR  "7"   )  OR
+                      (SPA-KT98-GMN-SRYCD(IDX)(1:3) =   "059"
+                                                   OR  "095"
+                                                   OR  "096" )
                    MOVE    SPA-KT98-GMN-KISOTEN(IDX)
                                                TO  WRK-TENSUS
                    MOVE    WRK-TENSUS          TO  KT98-KISOTEN (IDX)
                END-IF
+      ****     IF    ((SPA-KT98-GMN-KISOTEN(IDX)    =   ZERO  )  AND
+      *               (SPA-KT98-GMN-SRYCD(IDX)(1:1) =   "S" OR "P")) OR
+      *              ((SPA-KT98-GMN-SYORI           =   "9"   )  AND
+      *               (SPA-KT98-GMN-SYORI2          =   SPACE ))
+      *            セット一覧の時、セットコードを単価へ
+      *            IF      SPA-KT98-GMN-SRYCD (IDX)(1:1)
+      *                                            =   "P" OR "S"
+      *                 MOVE    SPA-KT98-GMN-SRYCD (IDX)
+      *                                        TO  KT98-KISOTEN (IDX)
+      *            END-IF
+      *        ELSE
+      *            MOVE    SPA-KT98-GMN-KISOTEN(IDX)
+      *                                        TO  WRK-TENSUS
+      *            MOVE    WRK-TENSUS          TO  KT98-KISOTEN (IDX)
+      ******   END-IF
       *        セット名称
                MOVE    SPA-KT98-GMN-SETCD(IDX)  TO  KT98-SETCD (IDX)
       *

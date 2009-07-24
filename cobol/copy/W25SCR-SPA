@@ -45,6 +45,8 @@
                    07  SPA-W25-NAI-KENSA.
                        09  SPA-W25-NAI-KENSANO       PIC 9(02).
                        09  SPA-W25-NAI-HOUKATU       PIC X(01).
+                   07  SPA-W25-OLD-SYORI             PIC X(01).
+                   07  SPA-W25-SENTAKU               PIC X(30).
       *
                    07  SPA-W25-GMN-TBL.
                      09  SPA-W25-GMN-TBLREC        OCCURS   200.
@@ -56,6 +58,7 @@
                        11  SPA-W25-GMN-NAME       PIC X(70).
                        11  SPA-W25-GMN-TANI       PIC X(10).
                        11  SPA-W25-GMN-KISOTEN    PIC 9(07)V99.
+                       11  SPA-W25-GMN-SETCD      PIC X(10).
       *
                        11  SPA-W25-NAI-NO         PIC 9(03).
       *        ¼«±¡ºÎÍÑ
