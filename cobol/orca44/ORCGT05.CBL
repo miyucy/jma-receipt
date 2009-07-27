@@ -27,7 +27,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.04.01    NACL-藤原    09/12/10  返戻対応
+      *  04.04.01    NACL-藤原    08/12/10  返戻対応
+      *
+      *  04.05.01    NACL-藤原    09/07/23  返戻ファイルの小文字対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -640,7 +642,9 @@
                                        TO  SPA-GMN-T05-ERRDETAIL
            EVALUATE    SPA-GMN-T05-TFILENM(SPA-NAI-T05-SELNUM)(1:6)
                WHEN    "RIhasp"
+               WHEN    "rihasp"
                WHEN    "RIuasp"
+               WHEN    "riuasp"
                    IF      SPA-GMN-T05-TUKAISU (SPA-NAI-T05-SELNUM)
                                            >   ZERO
                        MOVE    SPA-GMN-T05-TUKAISU (SPA-NAI-T05-SELNUM)   
@@ -649,6 +653,7 @@
                        MOVE    "回"        TO  SPA-GMN-T05-SELNAME2(4:)
                    END-IF
                WHEN    "RIfixf"
+               WHEN    "rifixf"
                    IF    SPA-GMN-T05-TSKAISU (SPA-NAI-T05-SELNUM)
                                            >   ZERO
                        MOVE    SPA-GMN-T05-TSKAISU (SPA-NAI-T05-SELNUM)
@@ -744,7 +749,8 @@
                MOVE    99                  TO  WRK-ERRMSG1
            END-IF
       * 
-           IF      WRK-FILENM(1:6)     =   "RECEIP"
+           IF      WRK-FILENM(1:6)     =   "RECEIP"    OR  
+                                           "receip"
                STRING  "/tmp/"             DELIMITED   BY  SIZE
                        SPA-HOSPNUM         DELIMITED   BY  SIZE
                        "RECEIPTC.HEN"      DELIMITED   BY  SIZE
@@ -851,7 +857,8 @@
            END-IF
       *
       *    返戻合計レコードチェック
-           IF      WRK-FILENM          =  "RECEIPTC.HEN"
+           IF      WRK-FILENM          =  "RECEIPTC.HEN"   OR
+                                          "receiptc.hen"
                IF      FLG-HG-CHK          =   ZERO
                    MOVE    "存在しないレコードがあります"
                                                TO  SPA-GMN-T05-ERRMSG1
@@ -862,20 +869,22 @@
            END-IF
       *
       *    送信回数チェック
-           IF      WRK-FILENM(1:6)     =  "RIhasp" OR "RIuasp"
+           IF      WRK-FILENM(1:6)     =  "RIhasp" OR "RIuasp" OR
+                                          "rihasp" OR "riuasp"
                PERFORM VARYING IDX     FROM    1   BY  1
                      UNTIL     IDX     >       IDY
                    IF      SPA-GMN-T05-TFILENM(IDX)(1:6)
-                                               =  "RIfixf"
+                                               =  "RIfixf" OR "rifixf"
                        PERFORM 7003-SEND-CHECK-SEC
                    END-IF
                END-PERFORM
            END-IF
-           IF      WRK-FILENM(1:6)     =   "RIfixf"
+           IF      WRK-FILENM(1:6)     =   "RIfixf" OR "rifixf"   
                PERFORM VARYING IDX     FROM    1   BY  1
                      UNTIL     IDX     >       IDY
                    IF      SPA-GMN-T05-TFILENM(IDX)(1:6)
                                                =   "RIhasp" OR "RIuasp"
+                                               OR  "rihasp" OR "riuasp"
                        PERFORM 7003-SEND-CHECK-SEC
                    END-IF
                END-PERFORM
@@ -918,7 +927,9 @@
       *
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RIhasp"
+               WHEN    "rihasp"
                WHEN    "RIuasp"
+               WHEN    "riuasp"
       *            受付事務点検ファイル
                    EVALUATE    MOJI-CNT
                        WHEN    26
@@ -975,6 +986,7 @@
                    END-EVALUATE
                    MOVE 11                 TO  SPILIT-CNT
                WHEN    "RIfixf"
+               WHEN    "rifixf"
       *            請求確定状況ファイル
                    EVALUATE    MOJI-CNT
                        WHEN    27
@@ -1067,11 +1079,13 @@
       *
                    MOVE    10              TO  SPILIT-CNT
                WHEN    "RECEIP"
+               WHEN    "receip"
       *            返戻データ
                    EVALUATE    MOJI-CNT
                        WHEN    12
       *                    ファイル名
-                           IF      WRK-FILENM      =   "RECEIPTC.HEN"
+                           IF      WRK-FILENM      =   "RECEIPTC.HEN" 
+                                                   OR  "receiptc.hen"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
@@ -1144,7 +1158,9 @@
                    IF      CNT-PARA            =   1
                        EVALUATE    WRK-FILENM(1:6)
                            WHEN    "RIhasp"
+                           WHEN    "rihasp"
                            WHEN    "RIuasp"
+                           WHEN    "riuasp"
                                MOVE    PARA-DATA       TO
                                                        SJISTOEUC-INDATA
                                PERFORM 7002-FILE-CONVERT-SEC
@@ -1153,11 +1169,13 @@
                                MOVE    2               TO  WK-HEAD-LINE
                                MOVE    4               TO  WK-BODY-LINE
                            WHEN    "RIfixf"
+                           WHEN    "rifixf"
                                MOVE    "オンライン請求確定状況ファイル"
                                                        TO  WRK-TITLE
                                MOVE    1               TO  WK-HEAD-LINE
                                MOVE    2               TO  WK-BODY-LINE
                            WHEN    "RECEIP"
+                           WHEN    "receip"
                                MOVE    "オンライン返戻ファイル"
                                                        TO  WRK-TITLE
                                MOVE    PARA-DATA       TO
@@ -1226,7 +1244,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-           IF      WRK-FILENM      =   "RECEIPTC.HEN"
+           IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
+                                       "receiptc.hen"
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       TBL-SYS1001-MAX
                    MOVE    TBL-SYS1001-REC (IDX)   TO  SYS-1001-REC
@@ -1261,7 +1280,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    ファイル名
            MOVE    WRK-TITLE           TO  SPA-GMN-T05-TNAIYO(IDY)
       *    審査支払機関名称
-           IF      WRK-FILENM      =   "RECEIPTC.HEN"
+           IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
+                                       "receiptc.hen" 
                MOVE    WRK-TEISYUTUSAKI    TO  SPA-NAI-T05-TFLG3 (IDY)
            ELSE
                MOVE    WRK-FILENM (7:1)    TO  SPA-NAI-T05-TFLG3 (IDY)
@@ -1271,12 +1291,30 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      IDY                 >   1
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
-                   IF    ( SPA-GMN-T05-TFILENM (IDX)
-                                           =   WRK-FILENM             )
-                   AND   ( SPA-NAI-T05-TFLG3   (IDX)
-                                           =   SPA-NAI-T05-TFLG3(IDY) )
-                       MOVE    3                   TO  WRK-ERRMSG1
-                       GO  TO  7002-FILE-CHECK-EXT
+                   IF      SPA-NAI-T05-TFLG3   (IDX)
+                                           =   SPA-NAI-T05-TFLG3 (IDY)
+                       IF      SPA-GMN-T05-TFILENM (IDX)
+                                                   =   WRK-FILENM
+                           MOVE    3               TO  WRK-ERRMSG1
+                           GO  TO  7002-FILE-CHECK-EXT
+                       END-IF
+                       IF    ( SPA-GMN-T05-TFILENM (IDX) (1:2)
+                                               =   "RI"    OR  "ri" )
+                       AND   ( WRK-FILENM (1:2)
+                                               =   "RI"    OR  "ri" )
+                       AND   ( SPA-GMN-T05-TFILENM (IDX) (3:)
+                                               =   WRK-FILENM (3:)  )
+                           MOVE    3               TO  WRK-ERRMSG1
+                           GO  TO  7002-FILE-CHECK-EXT
+                       END-IF
+                       IF    ( SPA-GMN-T05-TFILENM (IDX)
+                                               =   "RECEIPTC.HEN"
+                                               OR  "receiptc.hen" )
+                       AND   ( WRK-FILENM      =   "RECEIPTC.HEN"
+                                               OR  "receiptc.hen" )
+                           MOVE    3               TO  WRK-ERRMSG1
+                           GO  TO  7002-FILE-CHECK-EXT
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
@@ -1284,8 +1322,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    ＤＢ登録済のファイルかどうかの確認
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RIhasp"
+               WHEN    "rihasp"
                WHEN    "RIuasp"
+               WHEN    "riuasp"
                WHEN    "RIfixf"
+               WHEN    "rifixf"
                    INITIALIZE                  ONRECE-K-REC
                    MOVE   SPA-HOSPNUM      TO  ONRECE-K-HOSPNUM
                    MOVE   SPA-NAI-T05-TFLG3 (IDY)
@@ -1296,9 +1337,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  ONRECE-K-UCNT
                    EVALUATE    WRK-FILENM(1:6)
                        WHEN    "RIhasp"
+                       WHEN    "rihasp"
                        WHEN    "RIuasp"
+                       WHEN    "riuasp"
                            MOVE    "key7"          TO  WRK-MCP-PATHNAME
                        WHEN    "RIfixf"
+                       WHEN    "rifixf"
                            MOVE    SPA-GMN-T05-TSKAISU(IDY)
                                                    TO  ONRECE-K-SCNT
                            MOVE    "tbl_onrece_kanri"
@@ -1313,18 +1357,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      FLG-ONRECE-K    =   ZERO
                        EVALUATE    WRK-FILENM(1:6)
                            WHEN    "RIhasp"
+                           WHEN    "rihasp"
                            WHEN    "RIuasp"
+                           WHEN    "riuasp"
                                IF      ONRECE-K-RECV-FLG
                                                        =   1
                                    MOVE    4           TO  WRK-ERRMSG1
                                    GO  TO  7002-FILE-CHECK-EXT
                                END-IF
                            WHEN    "RIfixf"
+                           WHEN    "rifixf"
                                MOVE    4               TO  WRK-ERRMSG1
                                GO  TO  7002-FILE-CHECK-EXT
                        END-EVALUATE
                    END-IF
                WHEN    "RECEIP"
+               WHEN    "receip"
                    INITIALIZE                  HENREI-K-REC
                    MOVE   SPA-HOSPNUM      TO  HENREI-K-HOSPNUM
                    MOVE   SPA-NAI-T05-TFLG3 (IDY)
@@ -1356,6 +1404,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RECEIP"
+               WHEN    "receip"
                    ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
            END-EVALUATE
       *
@@ -1385,7 +1434,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *
       *        最後の項目は長さを減らす
-               IF      WRK-FILENM      =   "RECEIPTC.HEN"
+               IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
+                                           "receiptc.hen"
                    CONTINUE
                ELSE
                    IF      WRK-KOUMOKU-NO  =   SPILIT-CNT
@@ -1419,7 +1469,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *??
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RIhasp"
+               WHEN    "rihasp"
                WHEN    "RIuasp"
+               WHEN    "riuasp"
                    EVALUATE    WRK-KOUMOKU-NO
       *                １：診療年月
                        WHEN    1
@@ -1432,6 +1484,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            PERFORM 2404-UKE-SENDNUM-SET-SEC
                    END-EVALUATE
                WHEN    "RIfixf"
+               WHEN    "rifixf"
                    EVALUATE    WRK-KOUMOKU-NO
       *                ２：請求年月
                        WHEN    2
@@ -1485,6 +1538,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            END-IF
                    END-EVALUATE
                WHEN    "RECEIP"
+               WHEN    "receip"
                    EVALUATE    WRK-KOUMOKU-NO
       *                レコード識別情報
                        WHEN    1
@@ -1716,16 +1770,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RIhasp"
+               WHEN    "rihasp"
                WHEN    "RIuasp"
+               WHEN    "riuasp"
                    ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
                                                ERR-CNT
                WHEN    "RIfixf"
+               WHEN    "rifixf"
                    IF      PARA-DATA (1:1) =   "2"
                        ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
                        MOVE    30              TO  SPILIT-CNT
                        PERFORM 70021-HEAD-CHECK-SEC
                    END-IF
                WHEN    "RECEIP"
+               WHEN    "receip"
                    ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
                    IF      PARA-DATA (1:2) =   "HG"
                        MOVE    1               TO  FLG-HG-CHK
