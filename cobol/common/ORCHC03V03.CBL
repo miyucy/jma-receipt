@@ -58,11 +58,18 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-      *****COPY    "HC03.INC".
-           COPY    "HCM03V03B.INC"  REPLACING   //HCM03V03B//
-                                   BY          //HC03//.
+       01  PRT-REC                 PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "HCM03V03B.INC" REPLACING   //HCM03V03B//
+                                   BY          //HC03//.
+      *
+           COPY    "HCM03V02B.INC" REPLACING   //HCM03V02B//
+                                   BY          //HC03V02//.
+      *
+           COPY    "HCM03B.INC"    REPLACING   //HCM03B//
+                                   BY          //HC03V01//.
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
@@ -416,7 +423,7 @@
       *
       *
       *　　印刷用データ出力
-              WRITE  HC03
+              WRITE  PRT-REC
       *
       ******MOVE   "HC01.sh"           TO  SHELL-ID
       *     MOVE   "HC03.dia"          TO  SHELL-DIA
@@ -901,11 +908,16 @@
            MOVE    SPACE               TO  WRK-PARA
       *
            INITIALIZE                  ORCSPRGOPTIONAREA
-           IF      ORCHC03-SIZE    =   "A5"
+           EVALUATE    ORCHC03-SIZE
+           WHEN    "V1"
+               MOVE    "ORCHC03"       TO  ORCSPRGOPTION-PRGID
+           WHEN    "V2"
+               MOVE    "ORCHC03V02"    TO  ORCSPRGOPTION-PRGID
+           WHEN    "A5"
                MOVE    "ORCHC03V03A5"  TO  ORCSPRGOPTION-PRGID
-           ELSE
+           WHEN    OTHER
                MOVE    "ORCHC03V03"    TO  ORCSPRGOPTION-PRGID
-           END-IF
+           END-EVALUATE
            MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
            CALL    "ORCSPRGOPTION"     USING   SPA-AREA
                                                ORCSPRGOPTIONAREA
@@ -945,6 +957,7 @@
        300-HC03-HEN-SEC                SECTION.
       *
            INITIALIZE                  HC03
+           INITIALIZE                  PRT-REC
       *
       *    伝票番号
            MOVE    WRK-DENPNUM         TO  WRK-NO  
@@ -1266,21 +1279,42 @@
                PERFORM 3001-TUKIBETU-HEN-SEC
            END-IF
       *
-           IF    ( SYU-SRYYMD              >=  CONST-H200401 )
+           IF    ( SYU-SRYYMD          >=  CONST-H200401 )
                EVALUATE    ORCHC03-SIZE
+               WHEN    "V1"
+                   MOVE    "HCM03BN.red"       TO  WRK-FORMID
+                   PERFORM 2002-HC03V01-HEN-SEC
+                   MOVE    HC03V01             TO  PRT-REC
+               WHEN    "V2"
+                   MOVE    "HCM03V02BN.red"    TO  WRK-FORMID
+                   PERFORM 2002-HC03V02-HEN-SEC
+                   MOVE    HC03V02             TO  PRT-REC
                WHEN    "A5"
                    MOVE    "HCM03V03A5BN.red"  TO  WRK-FORMID
+                   MOVE    HC03                TO  PRT-REC
                WHEN    OTHER
                    MOVE    "HCM03V03BN.red"    TO  WRK-FORMID
+                   MOVE    HC03                TO  PRT-REC
                END-EVALUATE
            ELSE
                EVALUATE    ORCHC03-SIZE
+               WHEN    "V1"
+                   MOVE    "HCM03BO.red"       TO  WRK-FORMID
+                   PERFORM 2002-HC03V01-HEN-SEC
+                   MOVE    HC03V01             TO  PRT-REC
+               WHEN    "V2"
+                   MOVE    "HCM03V02BO.red"    TO  WRK-FORMID
+                   PERFORM 2002-HC03V02-HEN-SEC
+                   MOVE    HC03V02             TO  PRT-REC
                WHEN    "A5"
                    MOVE    "HCM03V03A5BO.red"  TO  WRK-FORMID
+                   MOVE    HC03                TO  PRT-REC
                WHEN    OTHER
                    MOVE    "HCM03V03BO.red"    TO  WRK-FORMID
+                   MOVE    HC03                TO  PRT-REC
                END-EVALUATE
            END-IF
+      *
       *
            .
        300-HC03-HEN-EXT.
@@ -1335,6 +1369,171 @@
        3001-MEISAI-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    帳票編集処理（HC03V01）
+      *****************************************************************
+       2002-HC03V01-HEN-SEC            SECTION.
+      *
+           INITIALIZE                  HC03V01
+      *
+           MOVE  HC03-NO           TO  HC03V01-NO
+           MOVE  HC03-LBLSRYYMD    TO  HC03V01-LBLSRYYMD
+           MOVE  HC03-SRYYMD       TO  HC03V01-SRYYMD
+           MOVE  HC03-KNJNAMW      TO  HC03V01-KNJNAMW
+           MOVE  HC03-KNJNO        TO  HC03V01-KNJNO
+           MOVE  HC03-MIDASI       TO  HC03V01-MIDASI
+           MOVE  HC03-HAKYMD       TO  HC03V01-HAKYMD
+           MOVE  HC03-HOKEN        TO  HC03V01-HOKEN
+           MOVE  HC03-FUTAN        TO  HC03V01-FUTAN
+           MOVE  HC03-TUKISRYKA    TO  HC03V01-TUKISRYKA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   16 )
+               MOVE  HC03-MEISAI (IDX)
+                                   TO  HC03V01-MEISAI (IDX)
+           END-PERFORM
+           MOVE  HC03-HKNRYO1      TO  HC03V01-HKNRYO1
+           MOVE  HC03-HKNRYO2      TO  HC03V01-HKNRYO2
+           MOVE  HC03-HKNRYO3      TO  HC03V01-HKNRYO3
+           MOVE  HC03-HKNRYO4      TO  HC03V01-HKNRYO4
+           MOVE  HC03-HKNRYO5      TO  HC03V01-HKNRYO5
+           MOVE  HC03-HKNRYO6      TO  HC03V01-HKNRYO6
+           MOVE  HC03-HKNRYO7      TO  HC03V01-HKNRYO7
+           MOVE  HC03-HKNRYO8      TO  HC03V01-HKNRYO8
+           MOVE  HC03-HKNRYO9      TO  HC03V01-HKNRYO9
+           MOVE  HC03-HKNRYO10     TO  HC03V01-HKNRYO10
+           MOVE  HC03-HKNRYO11     TO  HC03V01-HKNRYO11
+           MOVE  HC03-HKNRYO12     TO  HC03V01-HKNRYO12
+           MOVE  HC03-HKNRYO13     TO  HC03V01-HKNRYO13
+           MOVE  HC03-HKNRYO14     TO  HC03V01-HKNRYO14
+           MOVE  HC03-HKNRYO15     TO  HC03V01-HKNRYO15
+           MOVE  HC03-HKNRYO16     TO  HC03V01-HKNRYO16
+           MOVE  HC03-GOKTEN       TO  HC03V01-GOKTEN
+           MOVE  HC03-HOKENBUN     TO  HC03V01-HOKENBUN
+           MOVE  HC03-HOKENGAI     TO  HC03V01-HOKENGAI
+           MOVE  HC03-JIHIMSG1     TO  HC03V01-JIHIMSG1
+           MOVE  HC03-JIHIMSG2     TO  HC03V01-JIHIMSG2
+           MOVE  HC03-JIHIMSG3     TO  HC03V01-JIHIMSG3
+           MOVE  HC03-JIHIMSG4     TO  HC03V01-JIHIMSG4
+           MOVE  HC03-JIHIMSG5     TO  HC03V01-JIHIMSG5
+           MOVE  HC03-JIHI (1)     TO  HC03V01-JIHI1
+           MOVE  HC03-JIHI (2)     TO  HC03V01-JIHI2
+           MOVE  HC03-JIHI (3)     TO  HC03V01-JIHI3
+           MOVE  HC03-JIHI (4)     TO  HC03V01-JIHI4
+           MOVE  HC03-JIHI (5)     TO  HC03V01-JIHI5
+           MOVE  WRK-JIHI-TOTAL    TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G       TO  HC03V01-JIHI6
+           MOVE  HC03-JIHI (12)    TO  HC03V01-JIHI7
+           MOVE  HC03-JIHI (11)    TO  HC03V01-JIHI8
+           MOVE  HC03-YAKUZAI      TO  HC03V01-YAKUZAI
+           MOVE  HC03-ROUJIN       TO  HC03V01-ROUJIN
+           MOVE  HC03-KOUHI        TO  HC03V01-KOUHI
+           MOVE  HC03-CHOSEI       TO  HC03V01-CHOSEI
+           MOVE  HC03-KONSEIKYU    TO  HC03V01-KONSEIKYU
+           MOVE  HC03-ZENMISYU     TO  HC03V01-ZENMISYU
+           MOVE  HC03-GOUKEIGAK    TO  HC03V01-GOUKEIGAK
+           MOVE  HC03-KONNYUKIN    TO  HC03V01-KONNYUKIN
+           MOVE  HC03-IRYOADRS     TO  HC03V01-IRYOADRS
+           MOVE  HC03-IRYOMEI      TO  HC03V01-IRYOMEI
+           MOVE  HC03-IRYOTEL      TO  HC03V01-IRYOTEL
+           MOVE  HC03-MIDASHI      TO  HC03V01-MIDASHI
+           MOVE  HC03-RSIMIDASI    TO  HC03V01-RSIMIDASI
+           MOVE  HC03-RSIBUN       TO  HC03V01-RSIBUN
+           MOVE  HC03-RSIEN        TO  HC03V01-RSIEN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   10 )
+               MOVE  HC03-MEMO (IDX)
+                                   TO  HC03V01-MEMO (IDX)
+           END-PERFORM
+      *
+           .
+       2002-HC03V01-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    帳票編集処理（HC03V02）
+      *****************************************************************
+       2002-HC03V02-HEN-SEC            SECTION.
+      *
+           INITIALIZE                  HC03V02
+      *
+           MOVE  HC03-NO           TO  HC03V02-NO
+           MOVE  HC03-LBLSRYYMD    TO  HC03V02-LBLSRYYMD
+           MOVE  HC03-SRYYMD       TO  HC03V02-SRYYMD
+           MOVE  HC03-KNJNAMW      TO  HC03V02-KNJNAMW
+           MOVE  HC03-KNJNO        TO  HC03V02-KNJNO
+           MOVE  HC03-MIDASI       TO  HC03V02-MIDASI
+           MOVE  HC03-HAKYMD       TO  HC03V02-HAKYMD
+           MOVE  HC03-HOKEN        TO  HC03V02-HOKEN
+           MOVE  HC03-FUTAN        TO  HC03V02-FUTAN
+           MOVE  HC03-TUKISRYKA    TO  HC03V02-TUKISRYKA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   16 )
+               MOVE  HC03-MEISAI (IDX)
+                                   TO  HC03V02-MEISAI (IDX)
+           END-PERFORM
+           MOVE  HC03-HKNRYO1      TO  HC03V02-HKNRYO1
+           MOVE  HC03-HKNRYO2      TO  HC03V02-HKNRYO2
+           MOVE  HC03-HKNRYO3      TO  HC03V02-HKNRYO3
+           MOVE  HC03-HKNRYO4      TO  HC03V02-HKNRYO4
+           MOVE  HC03-HKNRYO5      TO  HC03V02-HKNRYO5
+           MOVE  HC03-HKNRYO6      TO  HC03V02-HKNRYO6
+           MOVE  HC03-HKNRYO7      TO  HC03V02-HKNRYO7
+           MOVE  HC03-HKNRYO8      TO  HC03V02-HKNRYO8
+           MOVE  HC03-HKNRYO9      TO  HC03V02-HKNRYO9
+           MOVE  HC03-HKNRYO10     TO  HC03V02-HKNRYO10
+           MOVE  HC03-HKNRYO11     TO  HC03V02-HKNRYO11
+           MOVE  HC03-HKNRYO12     TO  HC03V02-HKNRYO12
+           MOVE  HC03-HKNRYO13     TO  HC03V02-HKNRYO13
+           MOVE  HC03-HKNRYO14     TO  HC03V02-HKNRYO14
+           MOVE  HC03-HKNRYO15     TO  HC03V02-HKNRYO15
+           MOVE  HC03-HKNRYO16     TO  HC03V02-HKNRYO16
+           MOVE  HC03-GOKTEN       TO  HC03V02-GOKTEN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   16 )
+               MOVE  HC03-JIHIBUN (IDX)
+                                   TO  HC03V02-JIHIBUN (IDX)
+           END-PERFORM
+
+           MOVE  HC03-HOKENBUN     TO  HC03V02-HOKENBUN
+           MOVE  HC03-HOKENGAI     TO  HC03V02-HOKENGAI
+           MOVE  HC03-HOKENZEI     TO  HC03V02-HOKENZEI
+           MOVE  HC03-JIHIMSG1     TO  HC03V02-JIHIMSG1
+           MOVE  HC03-JIHIMSG2     TO  HC03V02-JIHIMSG2
+           MOVE  HC03-JIHIMSG3     TO  HC03V02-JIHIMSG3
+           MOVE  HC03-JIHIMSG4     TO  HC03V02-JIHIMSG4
+           MOVE  HC03-JIHIMSG5     TO  HC03V02-JIHIMSG5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   5 )
+               MOVE  HC03-JIHI (IDX)
+                                   TO  HC03V02-JIHI (IDX)
+           END-PERFORM
+           MOVE  HC03-JIHI (11)    TO  HC03V02-JIHI (6)
+           MOVE  HC03-JIHI (12)    TO  HC03V02-JIHI (7)
+           MOVE  HC03-YAKUZAI      TO  HC03V02-YAKUZAI
+           MOVE  HC03-ROUJIN       TO  HC03V02-ROUJIN
+           MOVE  HC03-KOUHI        TO  HC03V02-KOUHI
+           MOVE  HC03-CHOSEI       TO  HC03V02-CHOSEI
+           MOVE  HC03-KONSEIKYU    TO  HC03V02-KONSEIKYU
+           MOVE  HC03-SEIKYUZEI    TO  HC03V02-SEIKYUZEI
+           MOVE  HC03-ZENMISYU     TO  HC03V02-ZENMISYU
+           MOVE  HC03-GOUKEIGAK    TO  HC03V02-GOUKEIGAK
+           MOVE  HC03-KONNYUKIN    TO  HC03V02-KONNYUKIN
+           MOVE  HC03-IRYOADRS     TO  HC03V02-IRYOADRS
+           MOVE  HC03-IRYOMEI      TO  HC03V02-IRYOMEI
+           MOVE  HC03-IRYOTEL      TO  HC03V02-IRYOTEL
+           MOVE  HC03-MIDASHI      TO  HC03V02-MIDASHI
+           MOVE  HC03-RSIMIDASI    TO  HC03V02-RSIMIDASI
+           MOVE  HC03-RSIBUN       TO  HC03V02-RSIBUN
+           MOVE  HC03-RSIEN        TO  HC03V02-RSIEN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   10 )
+               MOVE  HC03-MEMO (IDX)
+                                   TO  HC03V02-MEMO (IDX)
+           END-PERFORM
+      *
+           .
+       2002-HC03V02-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    月別請求書兼領収書編集処理
       *****************************************************************
