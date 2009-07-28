@@ -758,7 +758,8 @@
                END-STRING
            ELSE
                STRING  "/tmp/"             DELIMITED   BY  SIZE
-                       WRK-FILENM          DELIMITED   BY  SPACE
+                       "RI"                DELIMITED   BY  SIZE
+                       WRK-FILENM (3:)     DELIMITED   BY  SPACE
                                    INTO    SPA-NAI-T05-SAVE-NAME (IDY)
                END-STRING
            END-IF
