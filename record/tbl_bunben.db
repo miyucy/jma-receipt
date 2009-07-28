@@ -5,7 +5,7 @@ tbl_bunben {
 	PTNUM			char(20);
 	SKYKBN			char(1);
 	RIYOUKBN		char(1);
-	BUNBENKBN		number(1,0);
+	BUNBENKBN		char(1);
 	RRKNUM			number(3,0);
 	TEISYUTUSAKI		char(1);
 	KANYUKBN		char(1);
