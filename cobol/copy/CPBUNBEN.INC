@@ -35,16 +35,18 @@
            03  BUNBEN-PTNUM                   PIC  X(20).
       *請求区分
            03  BUNBEN-SKYKBN                  PIC  X(01).
+      *直接支払制度利用区分
+           03  BUNBEN-RIYOUKBN                PIC  X(01).
       *分娩区分
            03  BUNBEN-BUNBENKBN               PIC  9(01).
       *入院履歴番号
            03  BUNBEN-RRKNUM                  PIC  9(03).
       *データ提出先区分
-           03  BUNBEN-TEISYUTUSAKI            PIC  9(01).
+           03  BUNBEN-TEISYUTUSAKI            PIC  X(01).
       *加入制度区分
-           03  BUNBEN-KANYUKBN                PIC  9(01).
+           03  BUNBEN-KANYUKBN                PIC  X(01).
       *本人家族区分
-           03  BUNBEN-HONKZKKBN               PIC  9(01).
+           03  BUNBEN-HONKZKKBN               PIC  X(01).
       *保険者番号
            03  BUNBEN-HKNJANUM                PIC  X(08).
       *被保険者証記号
@@ -58,13 +60,13 @@
       *出産年月日
            03  BUNBEN-BIRTHDAY                PIC  X(08).
       *死産有無区分
-           03  BUNBEN-SIZANKBN                PIC  9(01).
+           03  BUNBEN-SIZANKBN                PIC  X(01).
       *出産数
            03  BUNBEN-BIRTHCNT                PIC  9(01).
       *入院日数
            03  BUNBEN-NYUIN-DAY               PIC  9(03).
       *産科医療保証制度区分
-           03  BUNBEN-SANKAKBN                PIC  9(01).
+           03  BUNBEN-SANKAKBN                PIC  X(01).
       *明細情報
            03  BUNBEN-MEISAI-INF.
       *入院料
@@ -97,7 +99,7 @@
       *備考
            03  BUNBEN-BIKOU                   PIC  X(50).
       *更新区分
-           03  BUNBEN-UPDKBN                  PIC  9(01).
+           03  BUNBEN-UPDKBN                  PIC  X(01).
       *端末ＩＤ
            03  BUNBEN-TERMID                  PIC  X(16).
       *オペーレータＩＤ
