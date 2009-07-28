@@ -34,6 +34,8 @@
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    09/08/03  ½êÆÀ¼Ô¾ðÊó¤Î¸øÈñÆþÎÏµ¡Ç½¸þ¾å
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -55,6 +57,7 @@
        01  FLG-AREA.
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-PTKOHFTN                PIC 9(01).
+           03  FLG-PTKOHFTNETC             PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
@@ -116,6 +119,10 @@
       *    ´µ¼Ô¸øÈñÉéÃ´
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    ´µ¼Ô¸øÈñÉéÃ´Â¾±¡¥Ç¡¼¥¿
+       01  PTKOHFTNETC-REC.
+           COPY    "CPPTKOHFTNETC.INC".
       *
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
        01  HKNCOMBI-REC.
@@ -276,6 +283,8 @@
                                 TO  LNK-ORCSJGNGET-TAFTNRUIKEI
                      MOVE   LNK-ORCSJGNGET-GAIJGNGAK
                                 TO  LNK-ORCSJGNGET-NYUJGNGAK
+      *
+                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
                END-EVALUATE
            END-IF
            IF     LNK-ORCSJGNGET-SRYYM   >=   "200610"
@@ -296,6 +305,8 @@
                                 TO  LNK-ORCSJGNGET-TAFTNRUIKEI
                      MOVE   LNK-ORCSJGNGET-GAIJGNGAK
                                 TO  LNK-ORCSJGNGET-NYUJGNGAK
+      *
+                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
                END-EVALUATE
            END-IF
       *
@@ -306,12 +317,49 @@
                                 TO  LNK-ORCSJGNGET-TAFTNRUIKEI
                      MOVE   LNK-ORCSJGNGET-GAIJGNGAK
                                 TO  LNK-ORCSJGNGET-NYUJGNGAK
+      *
+                     PERFORM 1001-TAFTNRUIKEI-HENSYU-SEC
                END-EVALUATE
            END-IF
       *
            .
       *
        100-KEISAN1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Â¾°ìÉôÉéÃ´¶â³Û½¸·×
+      *****************************************************************
+       1001-TAFTNRUIKEI-HENSYU-SEC         SECTION.
+      *
+           INITIALIZE                        PTKOHFTNETC-REC
+           MOVE  LNK-ORCSJGNGET-HOSPNUM  TO  PTKOHFTNETC-HOSPNUM
+           MOVE  LNK-ORCSJGNGET-PTID     TO  PTKOHFTNETC-PTID
+           MOVE  LNK-ORCSJGNGET-KOHID    TO  PTKOHFTNETC-KOHID
+           MOVE  LNK-ORCSJGNGET-SRYYM    TO  PTKOHFTNETC-SRYYMD(1:6)
+           MOVE  "__"                    TO  PTKOHFTNETC-SRYYMD(7:2)
+           MOVE  PTKOHFTNETC-REC         TO  MCPDATA-REC
+           MOVE  "DBSELECT"              TO  MCP-FUNC
+           MOVE  "tbl_ptkohftnetc"       TO  MCP-TABLE
+           MOVE  "key2"                  TO  MCP-PATHNAME
+           CALL  "ORCDBMAIN"             USING   MCPAREA
+                                                 MCPDATA-REC
+                                                 SPA-AREA
+           IF     MCP-RC   =    ZERO
+             MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+             MOVE    "key2"              TO  MCP-PATHNAME
+             PERFORM  900-PTKOHFTNETC-READ-SEC
+             IF       FLG-PTKOHFTNETC = ZERO
+                 MOVE     1    TO   LNK-ORCSJGNGET-TAFTNFLG
+             END-IF
+           END-IF
+           MOVE      "tbl_ptkohftnetc"   TO  MCP-TABLE
+           MOVE      "key2"              TO  MCP-PATHNAME
+           PERFORM    910-DB-CLOSE-SEC
+      *
+           .
+      *
+       1001-TAFTNRUIKEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -804,6 +852,28 @@
            .
       *
        900-PTKOHFTN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñÉéÃ´Â¾±¡¥Ç¡¼¥¿¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       900-PTKOHFTNETC-READ-SEC          SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHFTNETC-REC
+               MOVE    ZERO            TO  FLG-PTKOHFTNETC
+           ELSE
+               INITIALIZE                  PTKOHFTNETC-REC
+               MOVE    1               TO  FLG-PTKOHFTNETC
+           END-IF
+      *
+           .
+      *
+       900-PTKOHFTNETC-READ-EXT.
            EXIT.
       *
       *****************************************************************

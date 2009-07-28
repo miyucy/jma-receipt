@@ -26,6 +26,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-門脇    09/08/03  所得者情報の機能追加
+      *                                     （標準負担額のみの減額）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -333,11 +335,11 @@
                  END-IF
               END-IF
       *
-              IF    TNKRRK-HKNTEKKBN  = "0" OR "2"
+              IF    TNKRRK-HKNTEKKBN  = "0" OR "2" OR "4"
                  MOVE    "1"     TO    WRK-DAY-CHI-TNK(IDX)
               END-IF
       *
-              IF  (TNKRRK-HKNTEKKBN         = "0" OR "1"      )
+              IF  (TNKRRK-HKNTEKKBN = "0" OR "1" OR "3" OR "4")
               AND (TNKRRK-SKJNINSTYMD   NOT =  SPACE          )
               AND (TNKRRK-SKJNINSTYMD      <=  WRK-SYOTOKU-YMD)
               AND (TNKRRK-EDYMD            >=  WRK-SYOTOKU-YMD)
@@ -380,11 +382,11 @@
                  MOVE    "2"     TO    WRK-DAY-SYU-TSY(IDX)
               END-IF
       *
-              IF    TSYRRK-HKNTEKKBN  = "0" OR "2"
+              IF    TSYRRK-HKNTEKKBN  = "0" OR "2" OR "4"
                  MOVE    "2"     TO    WRK-DAY-CHI-TSY(IDX)
               END-IF
       *
-              IF  (TSYRRK-HKNTEKKBN         = "0" OR "1"      )
+              IF  (TSYRRK-HKNTEKKBN = "0" OR "1" OR "3" OR "4")
               AND (TSYRRK-SKJNINSTYMD   NOT =  SPACE          )
               AND (TSYRRK-SKJNINSTYMD      <=  WRK-SYOTOKU-YMD)
               AND (TSYRRK-NINEDYMD         >=  WRK-SYOTOKU-YMD)
