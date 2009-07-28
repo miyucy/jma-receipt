@@ -145,5 +145,6 @@ db	{
 	tbl_sryacct_sub;
 	tbl_chkreigai;
 	tbl_ptkohftnetc;
+	tbl_bunben;
 
 };
