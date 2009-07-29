@@ -1170,6 +1170,9 @@
                MOVE    SPA-FTN2-MAX            TO  IDX
       *
                MOVE    "0"                 TO  SPA-NAI24-TFTNETCKBN(IDX)
+      *
+               MOVE    2                   TO  SPA-NAI24-INIT2
+      *
            ELSE
                MOVE    SPA-NAI24-FTNSELNUM2    TO  IDX
            END-IF
@@ -1479,6 +1482,9 @@
            MOVE    WRK-FTNEDYMD        TO  WRK-SYMD
            PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
            MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNEDYMD(IDX)
+      *
+           MOVE    2                   TO  SPA-NAI24-INIT2
+      *
            .
        4171-KOHFTN-COPY-SYORI-EXT.
            EXIT.

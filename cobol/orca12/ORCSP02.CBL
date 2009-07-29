@@ -4010,6 +4010,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
            MOVE    IDY                 TO  P02-P024-HFTNLST2-COUNT
+      *    追加行へ
+           IF      SPA-NAI24-INIT2     =   2
+               MOVE    IDY             TO  P02-P024-HFTNLST2-ROW
+               MOVE    ZERO            TO  SPA-NAI24-INIT2
+           END-IF
       *
            MOVE    SPA-GMN24-FTNSELNUM TO  P02-P024-FTNSELNUM
       *
