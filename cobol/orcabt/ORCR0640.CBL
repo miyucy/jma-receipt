@@ -381,6 +381,8 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.05.03    NACL-門脇    09/07/29  所得者情報の機能追加
+      *                                     （標準負担額のみの減額）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -13278,7 +13280,8 @@
       *
       *    一部負担金・食事療養費標準負担額区分の編集
       *
-           IF      RECE62-KOUREI   NOT = SPACE
+           IF      RECE62-KOUREI       NOT = SPACE
+           AND     RECE62-TEISYOTOKU   NOT = SPACE
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
                        MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN

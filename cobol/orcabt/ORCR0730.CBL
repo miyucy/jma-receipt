@@ -72,6 +72,8 @@
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/06/11  病棟別出力対応
       *  04.05.03    NACL-藤原    09/06/18  社保レセプト遍綴順対応
+      *  04.05.04    NACL-門脇    09/07/29  所得者情報の機能追加
+      *                                     （標準負担額のみの減額）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5459,7 +5461,8 @@
       *                                                                 
       *        <減、免、猶、低所得１、低所得２、３月超>            
       *                                                                
-           IF      RECE62-KOUREI   NOT = SPACE
+           IF      RECE62-KOUREI       NOT = SPACE
+           AND     RECE62-TEISYOTOKU   NOT = SPACE
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
                    WHEN    "4"
