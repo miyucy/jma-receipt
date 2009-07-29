@@ -99,6 +99,9 @@
       *
            03  WRK-MCP-WIDGET          PIC X(64).
       *
+           03  WRK-LIST-ROW            PIC S9(09).
+           03  WRK-LIST-INIT           PIC 9(01).
+      *
        01  TBL-HENSYU-AREA.
            03  TBL-HENSYU-OCC          OCCURS   100.
                05  TBL-SRYYMD          PIC X(08).
@@ -568,6 +571,7 @@
            INITIALIZE                  SPA-P02K-JIGOKEI 
            INITIALIZE                  SPA-P02K-TAGOKEI
            MOVE    ZERO                TO  SPA-P02K-MAX
+           MOVE    1                   TO  WRK-LIST-INIT
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY   1
                    UNTIL      (IDX     >   100 )
@@ -654,8 +658,17 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           IF     (WRK-LIST-INIT       =   1  )  OR
+                  (SPA-P02K-MAX        =   ZERO )
+               MOVE    ZERO                TO  WRK-LIST-ROW
+           ELSE
+               MOVE    P02K-FTNLIST-ROW    TO  WRK-LIST-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  P02K
            INITIALIZE                      P02K
+      *
+           MOVE    WRK-LIST-ROW        TO  P02K-FTNLIST-ROW
       *
            MOVE    SPA-P02K-GMN-SRYYM  TO  P02K-SRYYM
       *
@@ -708,6 +721,7 @@
                     IF      IDY                =   SPA-P02K-SELNUM
                         MOVE    "T"            TO  P02K-FTNLIST-SELECT
                                                                   (IDY)
+                        MOVE    IDY            TO  P02K-FTNLIST-ROW
                     ELSE
                         MOVE    "F"            TO  P02K-FTNLIST-SELECT
                                                                   (IDY)
@@ -715,6 +729,9 @@
                END-IF
            END-PERFORM
            MOVE    IDY                 TO  P02K-FTNLIST-COUNT
+           IF     (WRK-LIST-INIT       =   2  ) 
+               MOVE    IDY                 TO  P02K-FTNLIST-ROW
+           END-IF
       *
            MOVE    SPA-P02K-SELNUM     TO  P02K-SELNUM
       *
@@ -1128,6 +1145,7 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 420-CLREA-SEC
                MOVE    1               TO  SPA-P02K-SYORI
+               MOVE    2               TO  WRK-LIST-INIT
            END-IF
            .
        410-KOUSIN-EXT.
@@ -1153,10 +1171,10 @@
       *
            IF      SPA-P02K-IDX        =   ZERO
       *        ¿·µ¬ÄÉ²Ã
-               ADD     1                   TO  SPA-P02K-MAX
-               IF      SPA-P02K-MAX        >   50
+               IF      SPA-P02K-MAX        >=  50
                    MOVE    "0010"              TO  SPA-ERRCD
                ELSE
+                   ADD     1                   TO  SPA-P02K-MAX
                    MOVE    SPA-P02K-MAX        TO  IDX
                    MOVE    "1"                 TO  SPA-P02K-TSYORIKBN
                                                               (IDX)
