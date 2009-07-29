@@ -57,6 +57,7 @@
            03  FLG-PTKOHFTNETC     PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-FTNMONEY        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -388,20 +389,25 @@
            END-IF
            PERFORM UNTIL    FLG-SYUNOU     =   1
                MOVE    ZERO                TO  WRK-FTNMONEY
+               MOVE    ZERO                TO  FLG-FTNMONEY
                IF      SYU-KOH1HKNNUM          =   SPA-P02K-KOHNUM
                    MOVE    SYU-KOH1HKNFTNMONEY     TO  WRK-FTNMONEY
+                   MOVE    1                       TO  FLG-FTNMONEY
                END-IF
                IF      SYU-KOH2HKNNUM          =   SPA-P02K-KOHNUM
                    MOVE    SYU-KOH2HKNFTNMONEY     TO  WRK-FTNMONEY
+                   MOVE    1                       TO  FLG-FTNMONEY
                END-IF
                IF      SYU-KOH3HKNNUM          =   SPA-P02K-KOHNUM
                    MOVE    SYU-KOH3HKNFTNMONEY     TO  WRK-FTNMONEY
+                   MOVE    1                       TO  FLG-FTNMONEY
                END-IF
                IF      SYU-KOH4HKNNUM          =   SPA-P02K-KOHNUM
                    MOVE    SYU-KOH4HKNFTNMONEY     TO  WRK-FTNMONEY
+                   MOVE    1                       TO  FLG-FTNMONEY
                END-IF
       *
-               IF      WRK-FTNMONEY        >   ZERO
+               IF      FLG-FTNMONEY        =   1
                    ADD     1                   TO  IDX-TBL
                    MOVE    SYU-SRYYMD          TO  TBL-SRYYMD (IDX-TBL)
                    MOVE    SYU-NYUGAIKBN       TO  TBL-NYUGAIKBN

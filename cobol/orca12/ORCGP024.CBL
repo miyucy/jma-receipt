@@ -1166,6 +1166,10 @@
       *
            IF      SPA-NAI24-FTNSELNUM2    =   ZERO
       *        ди╡ц
+               IF      SPA-FTN2-MAX            >=  100
+                   MOVE    "2443"              TO  SPA-ERRCD
+                   GO      TO              415-KOHFTN-KOUSIN-EXT
+               END-IF
                ADD     1                       TO  SPA-FTN2-MAX
                MOVE    SPA-FTN2-MAX            TO  IDX
       *
