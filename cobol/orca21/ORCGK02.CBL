@@ -89,6 +89,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.04.00    NACL-多々納  08/11/28  処理共通対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -631,6 +632,8 @@
                    07  WRK-KYUSEI-ST       PIC X(01).
                    07  WRK-KYUSEI-ED       PIC X(01).
                05  WRK-TEIGEN-IN           PIC X(01).
+      *
+           03  WRK-SYOSINYMD-G         PIC X(09).
       *
       *    訂正時の内容保存
        01  WRK-ORCSC95AREA             PIC X(150).
@@ -2721,20 +2724,9 @@
       *
       *    初診算定なし
            MOVE    ZERO                TO  SPA-SYOSIN
-      *    初診算定日
            MOVE    SPA-SYOSIN-YMD      TO  SPA-SYOYMD
-           MOVE    SPA-SYOYMD          TO  WRK-SYMD
-           PERFORM 520-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD
-      *    同時初診
-           IF     (SPA-DOUYMD      NOT =   SPACE )
-             AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
-               MOVE    SPA-DOUYMD          TO  WRK-SYMD
-               PERFORM 520-SEIWA-HEN-SEC
-               MOVE    " ("                TO  SPA-GMN-SYOSINYMD(10:2)
-               MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD(12:9)
-               MOVE    ")"                 TO  SPA-GMN-SYOSINYMD(21:1)
-           END-IF
+      *    初診算定日画面編集
+           PERFORM 3001081-SYOSIN-HEN-SEC
       *
       *    画面用スパ編集処理
            INITIALIZE                  SPA-SCR-REC
@@ -2749,6 +2741,35 @@
       *
            .
        300108-SAISET-EXT.
+           EXIT.
+      *??
+      *****************************************************************
+      *    初診算定日画面編集処理
+      *****************************************************************
+       3001081-SYOSIN-HEN-SEC     SECTION.
+      *
+           MOVE    SPACE               TO  SPA-GMN-SYOSINYMD
+           MOVE    SPACE               TO  WRK-SYOSINYMD-G
+           MOVE    SPA-SYOYMD          TO  WRK-SYMD
+           PERFORM 520-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-SYOSINYMD
+      *    同時初診
+           IF     (SPA-DOUYMD      NOT =   SPACE )
+             AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
+               MOVE    WRK-HENYMDG         TO  WRK-SYOSINYMD-G
+      *
+               MOVE    SPA-DOUYMD          TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               MOVE    SPACE               TO  SPA-GMN-SYOSINYMD
+               STRING  WRK-SYOSINYMD-G
+                       " (" 
+                       WRK-HENYMDG
+                       ")"                 DELIMITED  BY  SIZE
+                                       INTO    SPA-GMN-SYOSINYMD
+               END-STRING
+           END-IF
+           .
+       3001081-SYOSIN-HEN-EXT.
            EXIT.
       *??
       *****************************************************************
@@ -2982,18 +3003,8 @@
       *    初診算定日
            IF     (SPA-SYOYMD      NOT =   SPACE )  AND
                   (SPA-SYOSIN          =   ZERO  )
-               MOVE    SPA-SYOYMD      TO  WRK-SYMD
-               PERFORM 520-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
-      *        同時初診
-               IF     (SPA-DOUYMD      NOT =   SPACE )
-                 AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
-                   MOVE    SPA-DOUYMD      TO  WRK-SYMD
-                   PERFORM 520-SEIWA-HEN-SEC
-                   MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
-                   MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
-                   MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
-               END-IF
+      *        初診算定日画面編集
+               PERFORM 3001081-SYOSIN-HEN-SEC
            END-IF
       *
       *    画面用スパ編集処理
@@ -3471,18 +3482,8 @@
       *    初診算定日
            IF     (SPA-SYOYMD      NOT =   SPACE )  AND
                   (SPA-SYOSIN          =   ZERO  )
-               MOVE    SPA-SYOYMD      TO  WRK-SYMD
-               PERFORM 520-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
-      *        同時初診
-               IF     (SPA-DOUYMD      NOT =   SPACE )
-                 AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
-                   MOVE    SPA-DOUYMD      TO  WRK-SYMD
-                   PERFORM 520-SEIWA-HEN-SEC
-                   MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
-                   MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
-                   MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
-               END-IF
+      *        初診算定日画面編集
+               PERFORM 3001081-SYOSIN-HEN-SEC
            END-IF
       *
       *    年齢計算
@@ -11688,24 +11689,32 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "red"           TO  K02-CONTKBN-STYLE
                    MOVE    "［確］"        TO  K02-CONTKBN-VALUE
            END-EVALUATE
+      *
+      *    リハビリ発症日
+           MOVE    ZERO               TO  IDY
+           PERFORM  VARYING   IDX     FROM    1   BY  1
+                    UNTIL     IDX         >   7
+               IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
+                   ADD     1                      TO  IDY
+                   MOVE    SPA-GMN-RIHAYMD (IDX)  TO  K02-TABOO-ITEM
+                                                             (IDY)
+               END-IF
+           END-PERFORM
       *    急性発症日
            IF      SPA-GMN-KYUSEI     NOT =   SPACE
-               MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO
-               MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM(1)
-               MOVE    1                  TO  IDY
-           ELSE
-      *    禁忌
-               MOVE    SPA-GMN-TABOO (1)  TO  K02-TABOO
-               MOVE    ZERO               TO  IDY
+               ADD     1                  TO  IDY
+               MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM(IDY)
            END-IF
+      *    禁忌
            PERFORM  VARYING   IDX     FROM    1   BY  1
-                    UNTIL     IDX         >   SPA-TABOO-MAX
+                    UNTIL    (IDX         >   SPA-TABOO-MAX )
+                          OR (IDY         >=  40   )
                ADD     1                      TO  IDY
                MOVE    SPA-GMN-TABOO (IDX)    TO  K02-TABOO-ITEM
                                                              (IDY)
            END-PERFORM
-      **** MOVE    SPA-TABOO-MAX       TO  K02-TABOO-COUNT
            MOVE    IDY                 TO  K02-TABOO-COUNT
+           MOVE    K02-TABOO-ITEM(1)   TO  K02-TABOO
       *
       *    小児科時間外
            IF      SPA-GMN-JIKANMSG    =   SPACE

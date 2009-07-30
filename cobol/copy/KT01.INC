@@ -46,7 +46,7 @@
                   05  KT01-VALUE  PIC X(62).
                 04  KT01-TABOO-COUNT  PIC S9(9)   BINARY.
                 04  KT01-TABOO-ITEM
-                        PIC X(62)   OCCURS  33 TIMES.
+                        PIC X(62)   OCCURS  40 TIMES.
               03  KT01-HKNCOMBICOMB.
                 04  KT01-HKNCOMBI.
                   05  KT01-VALUE  PIC X(65).

@@ -70,7 +70,7 @@
                 04  K02N-TABOO.
                   05  K02N-VALUE  PIC X(62).
                 04  K02N-TABOO-COUNT  PIC S9(9)   BINARY.
-                04  K02N-TABOO-ITEM   PIC X(62)   OCCURS  33 TIMES.
+                04  K02N-TABOO-ITEM   PIC X(62)   OCCURS  40 TIMES.
               03  K02N-SCROLLEDWINDOW1.
                 04  K02N-RRKLIST.
                   05  K02N-COUNT  PIC S9(9)   BINARY.

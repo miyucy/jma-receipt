@@ -42,6 +42,7 @@
       * 03.04.01     NACL-多々納  07/03/XX  リハビリ逓減追加(H19.4改正）
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
+      * 04.05.00     NACL-多々納  09/07/XX  早期リハビリテーション加算チェック
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -269,6 +270,10 @@
       *
            03  WRK-SRYKA           PIC  X(02).
       *
+      *    発症日＋３０日
+           03  WRK-KYUSEI-30               PIC X(08).
+           03  WRK-KYUSEI-30-MSG           PIC X(80).
+      *
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
            03  WRK-RIGAKU-INT2             PIC X(01).
@@ -324,6 +329,7 @@
       *
       *    リハビリの早期リハ加算テーブル
       **** COPY   "CMRIHAKSNTBL.INC".
+       01  CON-RIHAKSN                 PIC X(09)   VALUE    "180030770".
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
@@ -995,7 +1001,6 @@
                    END-IF
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
-      *************  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    ELSE
@@ -1311,8 +1316,80 @@
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
            END-IF
       *
+      *    早期リハビリ加算チェック
+           IF     (SPA-ERRCD           =   SPACE  )
+             AND  (LNK-ORCSC-PG        =   "K02"  )
+             AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-RIHAKSN )
+               IF     (SPA-HKNKBN          =   1   )
+                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *            労災はチェックなし
+                   CONTINUE
+               ELSE
+                   PERFORM 20011-RIHAKSN-CHK-SEC
+               END-IF
+           END-IF
+      *
            .
        1005-KASAN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    早期リハビリ加算チェック処理（入院）
+      *****************************************************************
+       20011-RIHAKSN-CHK-SEC                SECTION.
+      *
+      *    各リハビリ発症日判定
+           IF      WRK-KYUSEI          =   SPACE
+               IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
+                      (LNK-ORCSC-KEI-IDX        =   ZERO )
+                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                   MOVE    "K839"              TO  WRK-ERRCD
+               END-IF
+           ELSE
+      *        発症日＋３０日
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-KYUSEI          TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    30                  TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-30
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    LNK-DAY6-KOYOMI     TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  "発症日の３０日後は"  DELIMITED  BY  SIZE
+                       LNK-DAY2-EDTYMD3      DELIMITED  BY  SIZE
+                       "です"                DELIMITED  BY  SIZE
+                      INTO                 WRK-KYUSEI-30-MSG
+               END-STRING
+      *        入力日分のチェック
+               PERFORM VARYING     IDX2    FROM    1   BY  1
+                       UNTIL      (IDX2    >   31  )   OR
+                                  (WRK-ERRCD   NOT =   SPACE )
+                   IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
+                       MOVE    IDX2                TO  IDD
+                       MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+                       MOVE    IDD                 TO  WRK-SRYYMD (7:2)
+                       IF     (WRK-KYUSEI-30       <   WRK-SRYYMD)
+      *                 発生日＋３０日以上はエラー
+                            MOVE    "8047"          TO  WRK-ERRCD
+                            MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-Z)
+                            MOVE    WRK-KYUSEI-30-MSG
+                                                    TO  LNK-ORCSC-ERRMSG
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       20011-RIHAKSN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1458,7 +1535,6 @@
            END-IF
       *    労災の時、逓減コードはエラーとする
            IF     (SPA-HKNKBN          =   1   )
-      ****** AND  (SPA-RSI-HKNKBN  NOT =   "5" )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                IF      WRK-RIHA-GEN        =   "2"
                    MOVE    "8044"      TO  WRK-ERRCD
@@ -1471,23 +1547,23 @@
            PERFORM 1001121-KYUSEIYMD15-SEC
       *@@
       *    逓減開始日計算処理
-           PERFORM 100112-TEIGENYMD15-SEC
+      *    PERFORM 100112-TEIGENYMD15-SEC
       *    労災・自賠責は逓減なしとする
-           IF     (SPA-HKNKBN          =   1   )
+      *    IF     (SPA-HKNKBN          =   1   )
      ******  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-               MOVE    SPACE           TO  WRK-TEIGEN
-               MOVE    SPACE           TO  WRK-TEIGEN-YMD
-               MOVE    SPACE           TO  WRK-TEIGEN-MSG
-           END-IF
+      *      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *        MOVE    SPACE           TO  WRK-TEIGEN
+      *        MOVE    SPACE           TO  WRK-TEIGEN-YMD
+      *        MOVE    SPACE           TO  WRK-TEIGEN-MSG
+      **** END-IF
       *
       *@@
            IF     (SPA-NYUGAIKBN       =   "2" ) OR
                   (LNK-ORCSC-SYORIFLG  =   1   )
-      *        外来か訂正の時の日上限と月上限のチェックと自動逓減
+      *        外来か訂正の時の日上限と月上限のチェック
                PERFORM 2002-GAIRAI-ALL-CHK-SEC
            ELSE
-      *        入院の日上限と月上限のチェックと自動逓減
+      *        入院の日上限と月上限のチェック
                PERFORM 2001-NYUIN-ALL-CHK-SEC
            END-IF
       *

@@ -27,7 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -741,8 +742,8 @@
       *    回数入力分以外
            IF      SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "*"
       *        算定日が違った時、警告クリア
-               IF    ((WRK-NYUIN-AREA  NOT =   SPA-COM-NYUIN-AREA(IDX))
-                  OR  (WRK-KAISU       NOT =   SPA-COM-KAISU     (IDX)))
+               IF     (WRK-NYUIN-AREA  NOT =   SPA-COM-NYUIN-AREA(IDX))
+      ******      OR  (WRK-KAISU       NOT =   SPA-COM-KAISU     (IDX)))
       *            訂正時展開以外
                 AND    (ORCSC100-INIT       =   ZERO   )
                    MOVE    SPACE       TO  SPA-COM-KZMFLG(IDX)
@@ -757,25 +758,25 @@
       *****************************************************************
       *    回数再編集処理（外来）
       *****************************************************************
-       51012-KAISU-SET2-SEC             SECTION.
+      *51012-KAISU-SET2-SEC             SECTION.
       *
-           IF     (WRK-KAISU               =   ZERO   )  OR
-                  (SPA-COM-ZAIEND (IDX)    =   "1"    )
-               MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
+      *    IF     (WRK-KAISU               =   ZERO   )  OR
+      *           (SPA-COM-ZAIEND (IDX)    =   "1"    )
+      *        MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
       *        外用薬の時、入力回数を
-               IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
-                      (SPA-COM-KAISU2(IDX) >   ZERO ) AND
-                      (SPA-COM-KAISU (IDX) =   1    )
-                   MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
-               END-IF
-               IF      WRK-KAISU          =   ZERO
-                   MOVE    1              TO  WRK-KAISU
-               END-IF
-           END-IF
-           MOVE    WRK-KAISU           TO  SPA-COM-KAISU (IDX)
-           .
-       51012-KAISU-SET2-EXT.
-           EXIT.
+      *        IF     (SPA-COM-SRYKBN(IDX) =  "23"  )  AND
+      *               (SPA-COM-KAISU2(IDX) >   ZERO ) AND
+      *               (SPA-COM-KAISU (IDX) =   1    )
+      *            MOVE    SPA-COM-KAISU2 (IDX) TO  WRK-KAISU
+      *        END-IF
+      *        IF      WRK-KAISU          =   ZERO
+      *            MOVE    1              TO  WRK-KAISU
+      *        END-IF
+      *    END-IF
+      *    MOVE    WRK-KAISU           TO  SPA-COM-KAISU (IDX)
+      *    .
+      *51012-KAISU-SET2-EXT.
+      *    EXIT.
       *****************************************************************
       *    最終行に回数の入力があるかのチェック処理
       *****************************************************************

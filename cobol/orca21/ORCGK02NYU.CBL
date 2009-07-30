@@ -358,7 +358,7 @@
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
+               05  WRK-KAISU-Z     PIC ZZZ.
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
            03  WRK-GOKEI-X2.
@@ -368,10 +368,10 @@
            03  WRK-NOZ             PIC ZZ9.
       *
       *    ºÞ²ó¿ôÅù²èÌÌÊÔ½¸ÍÑ
-           03  WRK-KAISU-H         PIC X(04).
+           03  WRK-KAISU-H         PIC X(03).
       *
            03  WRK-TENSUKEI        PIC 9(08).
-           03  WRK-KAISU           PIC 9(04).
+           03  WRK-KAISU           PIC 9(03).
            03  WRK-KAISU-GOK       PIC 9(04).
            03  WRK-GMN-IDX         PIC 9(04).
       *
@@ -3811,7 +3811,7 @@
                PERFORM 510-TBLHEN-SEC
                MOVE    SPACE           TO  FLG-TOROKU
            END-IF
-     *
+      *
            .
        410121-HKNCOMBI-SAI-EXT.
            EXIT.
@@ -4419,7 +4419,7 @@
            MOVE    SPACE               TO  WRK-KAISU-H
            MOVE    ZERO                TO  IDK2
            PERFORM VARYING     IDK1    FROM    1   BY  1
-                   UNTIL       IDK1    >   4
+                   UNTIL       IDK1    >   3
                IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                    ADD     1           TO  IDK2
                    MOVE    WRK-KAISU-X (IDK1:1)
@@ -4752,6 +4752,7 @@
                       (SPA-GMN-INPUTCD(SPA-GMN-IDX - 1)(1:1)   =   "S")
       *            ÆâÉþÌôºÞ
                    MOVE    "3"                 TO  SPA-K98-GMN-SYORI
+                   MOVE    1                   TO  FLG-KOUI
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX - 1)
                        WHEN    SPACE
@@ -9507,24 +9508,31 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "¡Î³Î¡Ï"        TO  K02N-CONTKBN-VALUE
            END-EVALUATE
       *
+      *    ¥ê¥Ï¥Ó¥êÈ¯¾ÉÆü
+           MOVE    ZERO               TO  IDY
+           PERFORM  VARYING   IDX     FROM    1   BY  1
+                    UNTIL     IDX         >   7
+               IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
+                   ADD     1                      TO  IDY
+                   MOVE    SPA-GMN-RIHAYMD (IDX)  TO  K02N-TABOO-ITEM
+                                                             (IDY)
+               END-IF
+           END-PERFORM
       *    µÞÀ­È¯¾ÉÆü
            IF      SPA-GMN-KYUSEI     NOT =   SPACE
-               MOVE    SPA-GMN-KYUSEI     TO  K02N-TABOO
-               MOVE    SPA-GMN-KYUSEI     TO  K02N-TABOO-ITEM(1)
-               MOVE    1                  TO  IDY
-           ELSE
-      *    ¶Ø´÷
-               MOVE    SPA-GMN-TABOO (1)  TO  K02N-TABOO
-               MOVE    ZERO               TO  IDY
+               ADD     1                  TO  IDY
+               MOVE    SPA-GMN-KYUSEI     TO  K02N-TABOO-ITEM(IDY)
            END-IF
+      *    ¶Ø´÷
            PERFORM  VARYING   IDX     FROM    1   BY  1
-                    UNTIL     IDX         >   SPA-TABOO-MAX
+                    UNTIL    (IDX         >   SPA-TABOO-MAX )
+                          OR (IDY         >=  40            )
                ADD     1                      TO  IDY
                MOVE    SPA-GMN-TABOO (IDX)    TO  K02N-TABOO-ITEM
                                                              (IDY)
            END-PERFORM
-      **** MOVE    SPA-TABOO-MAX       TO  K02N-TABOO-COUNT
            MOVE    IDY                 TO  K02N-TABOO-COUNT
+           MOVE    K02N-TABOO-ITEM(1)  TO  K02N-TABOO
       *
       *    Â¾±¡É³ÉÕ¤±¤¢¤ê
            IF      SPA-NAI-GRPKBN      =   1
@@ -9629,7 +9637,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-KAISU  (WRK-IDX)    TO  WRK-KAISU-Z
            END-IF
            PERFORM VARYING     IDK1    FROM    1   BY  1
-                   UNTIL       IDK1    >   4
+                   UNTIL       IDK1    >   3
                IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                    ADD     1           TO  IDK2
                    MOVE    WRK-KAISU-X (IDK1:1)

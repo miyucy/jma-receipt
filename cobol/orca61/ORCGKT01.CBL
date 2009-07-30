@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -650,6 +651,8 @@
                05  WRK-HEN-PAGE1          PIC ZZZ.
                05  WRK-HEN2               PIC X(01).
                05  WRK-HEN-PAGE2          PIC ZZ.
+      *
+           03  WRK-SYOYMDG         PIC X(09).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1989,11 +1992,16 @@
       *        同時初診
                IF     (SPA-DOUYMD      NOT =   SPACE )
                  AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
+                   MOVE    WRK-HENYMDG     TO  WRK-SYOYMDG
+                   MOVE    SPACE           TO  SPA-GMN-SYOSINYMD
                    MOVE    SPA-DOUYMD      TO  WRK-SYMD
                    PERFORM 520-SEIWA-HEN-SEC
-                   MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
-                   MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
-                   MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
+                   STRING  WRK-SYOYMDG
+                           " ("
+                           WRK-HENYMDG
+                           ")"             DELIMITED  BY   SIZE
+                                           INTO    SPA-GMN-SYOSINYMD
+                   END-STRING
                END-IF
            END-IF
       *
@@ -3111,10 +3119,6 @@
                END-IF
            END-IF
       *    入院中判定
-      *TEST
-           DISPLAY "SPA-GMN-SRYDD:" SPA-GMN-SRYDD
-                  ",SPA-K02-NYUDAY:" SPA-K02-NYUDAY (SPA-NAI-SRYDD)
-      *TEST
            IF    (SPA-ERRCD            =   SPACE )  AND
                  (SPA-KIDCD            =   SPACE )
                MOVE    SPA-GMN-SRYDD       TO  IDD2
@@ -3126,8 +3130,6 @@
                    MOVE    WRK-MAE-SRYDD       TO  SPA-GMN-SRYDD
                    MOVE    WRK-MAE-SRYDD       TO  SPA-NAI-SRYDD
                END-IF
-      *TEST
-           DISPLAY "SPA-ERRCD:" SPA-ERRCD
            END-IF
       *
            IF    (SPA-ERRCD            =   SPACE )  AND
@@ -8159,24 +8161,31 @@
                    MOVE    "院内"          TO  KT01-INGAI-LABEL
            END-EVALUATE
       *
+      *    リハビリ発症日
+           MOVE    ZERO               TO  IDY
+           PERFORM  VARYING   IDX     FROM    1   BY  1
+                    UNTIL     IDX         >   7
+               IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
+                   ADD     1                      TO  IDY
+                   MOVE    SPA-GMN-RIHAYMD (IDX)  TO  KT01-TABOO-ITEM
+                                                             (IDY)
+               END-IF
+           END-PERFORM
       *    急性発症日
            IF      SPA-GMN-KYUSEI     NOT =   SPACE
-               MOVE    SPA-GMN-KYUSEI     TO  KT01-TABOO
-               MOVE    SPA-GMN-KYUSEI     TO  KT01-TABOO-ITEM(1)
-               MOVE    1                  TO  IDY
-           ELSE
-      *    禁忌
-               MOVE    SPA-GMN-TABOO (1)  TO  KT01-TABOO
-               MOVE    ZERO               TO  IDY
+               ADD     1                  TO  IDY
+               MOVE    SPA-GMN-KYUSEI     TO  KT01-TABOO-ITEM(IDY)
            END-IF
+      *    禁忌
            PERFORM  VARYING   IDX     FROM    1   BY  1
-                    UNTIL     IDX         >   SPA-TABOO-MAX
+                    UNTIL    (IDX         >   SPA-TABOO-MAX )
+                          OR (IDY         >=  40   )
                ADD     1                      TO  IDY
                MOVE    SPA-GMN-TABOO (IDX)    TO  KT01-TABOO-ITEM
                                                              (IDY)
            END-PERFORM
-      **** MOVE    SPA-TABOO-MAX       TO  KT01-TABOO-COUNT
            MOVE    IDY                 TO  KT01-TABOO-COUNT
+           MOVE    KT01-TABOO-ITEM(1)  TO  KT01-TABOO
       *
       *    施設入居中の特記事項を編集
            IF      SPA-PTTOKK-NAIYO    NOT =   SPACE

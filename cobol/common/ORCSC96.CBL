@@ -1424,6 +1424,19 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8047"
+                   STRING  "早期リハビリテーション加算を"
+                           "算定できる期間ではありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K839"
+                   STRING  "警告！！"
+                           "該当のリハビリテーション発症日が"
+                           "ありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0210"
                    STRING  "夜間・早朝加算の施設基準ではありません。"
                                                DELIMITED  BY  SIZE

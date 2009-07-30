@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 外来まとめ入力
-      *  コンポーネント名  : 初期ＳＰＡ編集処理(K01,KT01,KT01Nで使用）
+      *  コンポーネント名  : 初期ＳＰＡ編集処理
       *  管理者            : 
       *  作成日付    作業者        記述
       *  09/02/XX    NACL−多々納  新規作成
@@ -264,6 +264,21 @@
                05  WRK-SRYDD           PIC 9(02).
       *
            03  WRK-MAE-HKNCOMBI        PIC X(04).
+      *   リハビリ発症日表示
+           03  WRK-RIHABIR-AREA.
+               05  WRK-RIHABIR-OCC     OCCURS   7.
+                   07  WRK-RIHA-STR        PIC X(08).
+                   07  WRK-RIHA-END        PIC X(08).
+      *
+           03  WRK-RIHABIR-AREA2.
+               05  WRK-RIHABIR-OCC2    OCCURS   7.
+                   07  WRK-RIHA-STR2       PIC X(08).
+           03  WRK-RIHA-YMD                PIC X(08).
+           03  WRK-RIHA-GMN                PIC X(09).
+           03  WRK-RIHAMEI                 PIC X(60).
+           03  WRK-ZOGEN-MEI               PIC X(12).
+           03  WRK-ZOGEN                   PIC S9(03).
+      *
       *    禁忌１
        01  WRK-TABOO-G.
            03  WRK-TABOO               PIC X(62)
@@ -1187,6 +1202,8 @@
            PERFORM 11012-BYOMEI-HENSYU-SEC
       *    特定疾患の有無検索
       **** PERFORM 11011-TOKUTEI-SYORI-SEC
+      *    急性発生日決定
+           PERFORM 10019-KYUSEI-CHK-SEC
       *
       *    前回患者保存
            MOVE    SPA-PTID            TO  SPA-LAST-PTID
@@ -3362,6 +3379,247 @@
       *
            .
        110111-MANSEIKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    急性発生日決定処理
+      *****************************************************************
+       10019-KYUSEI-CHK-SEC            SECTION.
+      *
+      *    各リハビリ発症日
+           PERFORM 100193-RIHABIRI-YMDHEN-SEC
+      *
+           .
+       10019-KYUSEI-CHK-EXT.
+           EXIT.
+      *!!!!
+      *
+      *****************************************************************
+      *    各リハビリ発症日編集処理
+      *****************************************************************
+       100193-RIHABIRI-YMDHEN-SEC                  SECTION.
+      *
+           INITIALIZE                  SPA-GMN-RIHAYMD-TBL
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    "099800%"           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+      *
+      *    労災毎とする
+           IF      SPA-HKNKBN          =   1
+                                       OR  2
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key16"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           INITIALIZE                  WRK-RIHABIR-AREA
+           PERFORM
+               UNTIL       FLG-SANTEI      =   1
+      *        最後の発生日、当日以降は対象外
+               MOVE    SPACE               TO  WRK-YMD
+               IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y3
+               ELSE
+                   MOVE    31                  TO  IDX-Y3
+               END-IF
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING     IDX-Y2  FROM    IDX-Y3  BY  -1
+                       UNTIL       IDX-Y2  <   1
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-DD
+                       MOVE    1               TO  IDX-Y2
+                   END-IF
+               END-PERFORM
+               IF      WRK-DD              >   ZERO
+                   MOVE    SANTEI-SRYYM    TO  WRK-YMD(1:6)
+               END-IF
+      *
+               IF      WRK-YMD         NOT =   SPACE
+               EVALUATE    SANTEI-SRYCD
+      *        心大血管疾患リハビリテーション
+               WHEN    "099800111"
+                   IF      WRK-RIHA-STR(1)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(1)
+                   END-IF
+               WHEN    "099800112"
+                   IF      WRK-RIHA-END(1)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(1)
+                   END-IF
+      *        脳血管疾患リハビリテーション
+               WHEN    "099800121"
+                   IF      WRK-RIHA-STR(2)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(2)
+                   END-IF
+               WHEN    "099800122"
+                   IF      WRK-RIHA-END(2)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(2)
+                   END-IF
+      *        運動器リハビリテーション
+               WHEN    "099800131"
+                   IF      WRK-RIHA-STR(3)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(3)
+                   END-IF
+               WHEN    "099800132"
+                   IF      WRK-RIHA-END(3)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(3)
+                   END-IF
+      *        呼吸器リハビリテーション
+               WHEN    "099800141"
+                   IF      WRK-RIHA-STR(4)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(4)
+                   END-IF
+               WHEN    "099800142"
+                   IF      WRK-RIHA-END(4)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(4)
+                   END-IF
+      *        摂食機能療法終了日
+               WHEN    "099800151"
+                   IF      WRK-RIHA-STR(5)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(5)
+                   END-IF
+               WHEN    "099800152"
+                   IF      WRK-RIHA-END(5)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(5)
+                   END-IF
+      *        難病患者リハビリ
+               WHEN    "099800161"
+                   IF      WRK-RIHA-STR(6)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(6)
+                   END-IF
+               WHEN    "099800162"
+                   IF      WRK-RIHA-END(6)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(6)
+                   END-IF
+      *        障害者リハビリ
+               WHEN    "099800171"
+                   IF      WRK-RIHA-STR(7)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(7)
+                   END-IF
+               WHEN    "099800172"
+                   IF      WRK-RIHA-END(7)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(7)
+                   END-IF
+               END-EVALUATE
+      *
+               END-IF
+      *
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key16"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   7
+               IF      WRK-RIHA-STR (IDX)  NOT =   SPACE
+                   IF     (WRK-RIHA-END (IDX)  =   SPACE)
+                   OR     (WRK-RIHA-STR (IDX)  >   WRK-RIHA-END(IDX))
+                       MOVE    WRK-RIHA-STR (IDX)
+                                               TO  WRK-RIHA-STR2(IDX)
+      *                リハビリ発症日編集
+                       PERFORM 1001931-RIHA-HENKAN-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       100193-RIHABIRI-YMDHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ発症日編集処理
+      *****************************************************************
+       1001931-RIHA-HENKAN-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ZOGEN
+           EVALUATE    IDX
+               WHEN     1
+                   MOVE    150                     TO  WRK-ZOGEN
+                   MOVE    "心大血管疾患リハ開始日："  TO  WRK-RIHAMEI
+                   MOVE    "１５０日超："              TO  WRK-ZOGEN-MEI
+               WHEN    2
+                   MOVE    180                     TO  WRK-ZOGEN
+                   MOVE    "脳血管疾患リハ開始日："    TO  WRK-RIHAMEI
+                   MOVE    "１８０日超："              TO  WRK-ZOGEN-MEI
+               WHEN    3
+                   MOVE    150                     TO  WRK-ZOGEN
+                   MOVE    "運動器リハ開始日："    TO  WRK-RIHAMEI
+                   MOVE    "１５０日超："          TO  WRK-ZOGEN-MEI
+               WHEN    4
+                   MOVE    90                      TO  WRK-ZOGEN
+                   MOVE    "呼吸器リハ開始日："    TO  WRK-RIHAMEI
+                   MOVE    "９０日超："            TO  WRK-ZOGEN-MEI
+               WHEN    5
+                   MOVE    0                       TO  WRK-ZOGEN
+                   MOVE    "摂食機能療法開始日："  TO  WRK-RIHAMEI
+               WHEN    6
+                   MOVE    0                       TO  WRK-ZOGEN
+                   MOVE    "難病患者リハ開始日："  TO  WRK-RIHAMEI
+               WHEN    7
+                   MOVE    0                       TO  WRK-ZOGEN
+                   MOVE    "障害児（者）リハ開始日："  TO  WRK-RIHAMEI
+           END-EVALUATE
+      *     Ｎ日後計算
+           IF      WRK-ZOGEN           >   ZERO
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-RIHA-STR2(IDX)  TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-RIHA-YMD
+      *
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-RIHA-YMD        TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-RIHA-GMN
+           END-IF
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-RIHA-STR2(IDX)  TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+      *
+           IF      WRK-ZOGEN           =   ZERO
+               STRING  WRK-RIHAMEI         DELIMITED  BY  SPACE
+                       LNK-DAY2-EDTYMD1    DELIMITED  BY  SIZE
+                   INTO                SPA-GMN-RIHAYMD (IDX)
+               END-STRING
+           ELSE
+               STRING  WRK-RIHAMEI         DELIMITED  BY  SPACE
+                       LNK-DAY2-EDTYMD1    DELIMITED  BY  SIZE
+                       "　"                DELIMITED  BY  SIZE 
+                       WRK-ZOGEN-MEI       DELIMITED  BY  SPACE
+                       WRK-RIHA-GMN        DELIMITED  BY  SIZE
+                   INTO                SPA-GMN-RIHAYMD (IDX)
+               END-STRING
+           END-IF
+      *
+           .
+       1001931-RIHA-HENKAN-EXT.
            EXIT.
       *
       *****************************************************************

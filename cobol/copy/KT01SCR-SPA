@@ -96,6 +96,10 @@
                    07  SPA-TABOO-MAX             PIC 9(04).
       *        急性発症編集日
                05  SPA-GMN-KYUSEI                PIC X(62).
+      *        リハビリ発症日編集
+               05  SPA-GMN-RIHAYMD-TBL.
+                   07  SPA-GMN-RIHAYMD           PIC X(62)
+                                                 OCCURS   10.
       *        病名内容
                05  SPA-GMN-BYOMEITBL.
                    07  SPA-GMN-BYOMEI-TBL        OCCURS  100.
