@@ -4217,6 +4217,8 @@
                   (SPA-NAI-ALL             =   1     )
                PERFORM 47011-SYOKUJI-ALLCHK-SEC
            END-IF
+      *    Æþ±¡ÎÁ²Ã»»ºï½ü¤Î°Ù
+           MOVE    SPA-NAI-DAY-AREA-41(SPA-NAI-BANGO)  TO  SPA-SEL-DAY-G
       *
       *    ²ó¿ô¹¹¿·
            MOVE    SPA-GMN-DAY-G-41    TO  SPA-NAI-DAY-AREA-41
@@ -4246,9 +4248,17 @@
       *
       *    Æþ±¡ÎÁ¤Î»þ¡¢²Ã»»Â¾¤Îºï½ü
            MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)  TO  IDG
-           IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
+           IF     (SPA-GMN-TSRYCD (IDG)    =   "190076810"
+                                           OR  "190125310"
+                                           OR  "190130410"
+                                           OR  "190130510")
+               CONTINUE
+           ELSE
+      *        Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ°Ê³°¤È¤¹¤ë
+               IF     (SPA-NAI-TZAISKBKBN-41 (SPA-NAI-BANGO)
                                            =   "1"   ) 
-               PERFORM 47013-NYUINDEL-CHK-SEC
+                   PERFORM 47013-NYUINDEL-CHK-SEC
+               END-IF
            END-IF
       *    ÊÑ¹¹ÆþÎÏÍó
            INITIALIZE                  SPA-GMN-INPUT-41
@@ -4383,10 +4393,13 @@
                EVALUATE     SPA-NAI-TZAISKBKBN-41 (IDX)
       *            Æþ±¡ÎÁ²Ã»»
                    WHEN     "6"
-      *                Æþ±¡ÎÁ¤Ê¤·¤Îºï½ü
+      *                º£²óÆþ±¡ÎÁ¤Ê¤·¤Î»þ¡¢²Ã»»¤òºï½ü
                        PERFORM VARYING     IDX-D   FROM    1   BY  1
                                UNTIL       IDX-D   >   31
-                           IF      SPA-GMN-DAY-41(IDX-D)  =   ZERO
+                           IF     (SPA-SEL-DAY (IDX-D)
+                                               NOT =   SPA-GMN-DAY-41
+                                                            (IDX-D))
+                           AND    (SPA-GMN-DAY-41(IDX-D)  =   ZERO )
                                MOVE    ZERO         TO  SPA-NAI-DAY-41
                                                            (IDX IDX-D)
                                MOVE    SPACE        TO  SPA-GMN-TDAY-41
