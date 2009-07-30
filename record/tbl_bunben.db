@@ -87,3 +87,18 @@ path	del2 	{
 		;
 	};
 };
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_bunben_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_bunben
+			WHERE HOSPNUM      =   :HOSPNUM
+			AND   SKYYM        =   :SKYYM
+			AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+			AND   RIYOUKBN     =   '1'
+			AND   SKYKBN       <>  '0'
+		ORDER BY BUNBENKBN,HKNJANUM,NAME
+		;
+	};
+};
