@@ -34,8 +34,4 @@ data	{
 
 #include "orcadb.inc"
 #include "orcadbh.inc"
-db "xml" {
-	xml_appointreq;
-	xml_appointres;
-};
 
