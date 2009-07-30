@@ -617,6 +617,9 @@ DB_files = \
 	tbl_chkreigai.db \
 	tbl_ptkohftnetc.db \
 	tbl_bunben.db \
+	xml_appointreq.db \
+	xml_appointres.db \
+	xml_patientinfores.db \
 
 
 all:   

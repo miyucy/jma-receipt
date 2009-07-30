@@ -34,10 +34,21 @@
        CONFIGURATION       SECTION.
        INPUT-OUTPUT        SECTION.
        FILE-CONTROL.
+      *    BLOB格納情報ファイル(CSV)
+           SELECT  REQCSV-FILE     ASSIGN REQCSV    
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-REQCSV.
        DATA                DIVISION.
        FILE                    SECTION.
+      *    BLOB格納情報ファイル(CSV)
+       FD  REQCSV-FILE.
+       01  REQCSV-RECORD.
+           03  REQCSV-INFO             PIC X(5000).
       *
        WORKING-STORAGE             SECTION.
+       01  REQCSV                  PIC X(512).
+       01  STS-AREA.
+           03  STS-REQCSV          PIC X(02).
       *    スパ領域
            COPY    "COMMON-SPA".
       *    添字領域
@@ -169,6 +180,7 @@
       *
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
+           03  FLG-REQCSV              PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
            03  FLG-PTHKNINF            PIC 9(01).
@@ -229,6 +241,10 @@
            COPY    "CPORCSLOCK.INC".
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
+      *    API XML読み込み用定義体
+           COPY    "CPAPPTXMLREQ.INC".
+      *    API XML読み込み用定義体
+           COPY    "CPAPPTXMLRES.INC".
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -289,6 +305,8 @@
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "MCPDATA.INC".
+      *
+           COPY    "ORCA-BLOB".
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
             COPY    "ORCA-SPA".
@@ -320,27 +338,27 @@
            INITIALIZE        PTNUM-REC
                              IDX-AREA
                              WK-MSG
-                             APNT-RESPONSE
                              SPA-AREA
                              FLG-AREA
                              CNT-AREA
+                             XML-APPOINTRES
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE   "Patient Info"       TO  APNT-RESKEY
+      *    MOVE   "Patient Info"       TO  APNTRES-RESKEY
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-                                           APNT-INFORMATION-DATE
-           MOVE    SMCNDATE-HMS        TO  APNT-INFORMATION-TIME
+                                           APNTRES-INFORMATION-DATE
+           MOVE    SMCNDATE-HMS        TO  APNTRES-INFORMATION-TIME
       *    医療機関識別番号セット 
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE   "99"             TO  APNT-API-RESULT
-               MOVE   "ユーザID未登録" TO  APNT-API-RESULT-MSG
+               MOVE   "99"             TO  APNTRES-API-RESULT
+               MOVE   "ユーザID未登録" TO  APNTRES-API-RESULT-MSG
                GO  TO  000-MAIN-EXIT
            END-IF
       *    ＳＰＡ共通設定
@@ -364,48 +382,72 @@
       *
       * For Debug
       * ==================================================
-           MOVE    "44444"             TO  WRK-PTNUM
-           MOVE    "テスト　イッパン"  TO  WRK-NAMEKNJ
-           MOVE    "テスト　イッパン"  TO  WRK-NAMEKNA
-           MOVE    "1"                 TO  WRK-SEX
-           MOVE    "19750101"          TO  WRK-BIRTHDAY
-           MOVE    "01"                TO  WRK-SRYKA   
-           MOVE    "10001"             TO  WRK-DRCD
-           MOVE    "20090608"          TO  WRK-APPOINT-YMD
-           MOVE    1                   TO  FLG-GYOUMU-ARI
-           MOVE    ZERO                TO  WRK-HKNCOMBI
+      *    MOVE    "44444"             TO  WRK-PTNUM
+      *    MOVE    "テスト　イッパン"  TO  WRK-NAMEKNJ
+      *    MOVE    "テスト　イッパン"  TO  WRK-NAMEKNA
+      *    MOVE    "1"                 TO  WRK-SEX
+      *    MOVE    "19750101"          TO  WRK-BIRTHDAY
+      *    MOVE    "01"                TO  WRK-SRYKA   
+      *    MOVE    "10001"             TO  WRK-DRCD
+      *    MOVE    "20090608"          TO  WRK-APPOINT-YMD
+      *    MOVE    "1530"              TO  WRK-APPOINT-TIME
+      *    MOVE    1                   TO  FLG-GYOUMU-ARI
+      *    MOVE    "01"                TO  WRK-SRYNAIYO
+      *    MOVE    "01"                TO  WRK-YYKNAIYO
+      *    MOVE    ZERO                TO  WRK-HKNCOMBI
       * ==================================================
       * For Debug
-           UNSTRING    APNT-BODY       DELIMITED  BY  ","
-                                       INTO    WRK-PTNUM
-                                               WRK-APPOINT-YMD
-                                               WRK-APPOINT-TIME
-                                               WRK-APPOINT-ID
-                                               WRK-SRYKA
-                                               WRK-DRCD
-                                               WRK-SRYNAIYO
-                                               WRK-YYKNAIYO
-                                               WRK-YYKMEMO
-           END-UNSTRING
-      *
-           MOVE    ZERO                TO  APNT-API-RESULT
-           MOVE    ZERO                TO  FLG-INPUT
-           PERFORM 1001-PTINF-CHK-SEC
-           MOVE    CNT-CHECK           TO  APNT-API-RESULT
-           IF      CNT-CHECK           >   ZERO
-               DISPLAY "必須項目チェックエラー " CNT-CHECK    
-               GO  TO                  000-MAIN-EXIT
+           IF      APNTREQ-CONTENT-TYPE  =   "application/xml"
+               PERFORM 1000-APTXMLREAD-SEC
+           ELSE
+               PERFORM 1000-APTCSVREAD-SEC
            END-IF
       *
-           EVALUATE    APNT-CLASS
-           WHEN    "01"
-               DISPLAY "予約登録"    
+           MOVE    ZERO                TO  APNTRES-API-RESULT
+           MOVE    ZERO                TO  FLG-INPUT
+           DISPLAY "CNT-CHECK  = " CNT-CHECK
+           PERFORM 1001-PTINF-CHK-SEC
+           MOVE    CNT-CHECK           TO  APNTRES-API-RESULT
+           IF      CNT-CHECK           >   ZERO
+               DISPLAY "必須項目チェックエラー " CNT-CHECK    
+               DISPLAY "APNTRES-API-RESULT-MSG = "
+                        APNTRES-API-RESULT-MSG
+      *        GO  TO                  000-MAIN-EXIT
+           ELSE
+           EVALUATE    APNTREQ-CLASS
+             WHEN    "01"
+                 DISPLAY "予約登録"    
       * 入力項目の内容チェックが必要
-               PERFORM 1001-YYK-ADD-SEC
-           WHEN    "02"
-               DISPLAY "予約取消"    
-               PERFORM 1001-YYK-DELETE-SEC
-           END-EVALUATE
+                 PERFORM 1001-YYK-ADD-SEC
+             WHEN    "02"
+                 DISPLAY "予約取消"    
+                 PERFORM 1001-YYK-DELETE-SEC
+             END-EVALUATE
+           END-IF
+      *
+      *
+      *
+      *
+      *
+      *    INITIALIZE        XML-APPOINTRES
+      *    MOVE "20090716"             TO  APNTRES-INFORMATION-DATE
+      *    MOVE "01"                   TO
+      *                            APNTRES-MAIN-INSURANCE-CLASS(01)
+      *
+      *
+      *
+           DISPLAY "APNTRES-MAIN-INSURANCE-CLASS " 
+                    APNTRES-MAIN-INSURANCE-CLASS(1)
+           DISPLAY "APNTRES-MAIN-INSURANCE-NUMBER " 
+                    APNTRES-MAIN-INSURANCE-NUMBER(1)
+           DISPLAY "" 
+           DISPLAY "APNTRES-PATIENT-INFOMATION " 
+                    APNTRES-PATIENT-INFOMATION(337:10)
+           IF      APNTREQ-CONTENT-TYPE  =   "application/xml"
+                   PERFORM 1000-APTXMLMAKE-SEC
+           ELSE
+                   PERFORM 1000-APTCSVMAKE-SEC
+           END-IF
       *
            DISPLAY   "****************"
            DISPLAY   "* appoint end  *"
@@ -432,23 +474,659 @@
        900-SYSUSER-READ-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    XML情報から内容を取り出す
+      *****************************************************************
+       1000-APTXMLREAD-SEC   SECTION.
+      *
+           IF      APNTRES-OBJECT      NOT =   LOW-VALUE
+               DISPLAY "APNTRES-OBJECT not low_value"
+           END-IF
+      * XML情報取り出し
+           MOVE   "XMLOPEN"            TO  MCP-FUNC
+           MOVE    "xml_appointreq"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    APNT-BODY           TO  APNTREQ-OBJECT
+           MOVE    ZERO                TO  APNTREQ-MODE
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-APPOINTREQ
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLOPEN OK      = " MCP-RC
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+           END-IF
+      *
+      *
+           MOVE   "XMLREAD"            TO  MCP-FUNC
+           MOVE    "xml_appointreq"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE   ORCA-BLOB-OBJECT     TO  APNTREQ-OBJECT
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-APPOINTREQ
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLREAD OK      = " MCP-RC
+               DISPLAY "= " XML-APPOINTREQ
+               MOVE    APNTREQ-PATIENTID   TO  WRK-PTNUM
+               DISPLAY "req ptnum = " WRK-PTNUM
+      *        MOVE    "テスト　イッパン"  TO  WRK-NAMEKNJ
+      *        MOVE    "テスト　イッパン"  TO  WRK-NAMEKNA
+      *        MOVE    "1"                 TO  WRK-SEX
+      *        MOVE    "19750101"          TO  WRK-BIRTHDAY
+               MOVE    APNTREQ-APPOINT-DEP-CODE
+                                           TO  WRK-SRYKA   
+               MOVE    APNTREQ-APPOINT-DR-CODE
+                                           TO  WRK-DRCD
+               MOVE    APNTREQ-APPOINT-DATE
+                                           TO  WRK-APPOINT-YMD
+               MOVE    APNTREQ-APPOINT-TIME
+                                           TO  WRK-APPOINT-TIME
+               DISPLAY "APNTREQ-APPOINT-TIME = " APNTREQ-APPOINT-TIME
+               MOVE    APNTREQ-APPOINT-MEMO
+                                           TO  WRK-YYKMEMO
+               DISPLAY "APNTREQ-APPOINT-MEMO = " APNTREQ-APPOINT-MEMO
+               MOVE    APNTREQ-APPOINT-DEP-INFO
+                                           TO  WRK-SRYNAIYO
+               MOVE    APNTREQ-APPOINT-INFO
+                                           TO  WRK-YYKNAIYO
+      *        MOVE    1                   TO  FLG-GYOUMU-ARI
+      *        MOVE    ZERO                TO  WRK-HKNCOMBI
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+           END-IF
+      *
+           MOVE   'XMLCLOSE'           TO  MCP-FUNC
+           MOVE    "xml_appointreq"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE   ORCA-BLOB-OBJECT     TO  APNTREQ-OBJECT
+           CALL   'ORCDBMAIN'          USING
+                                       MCPAREA
+                                       XML-APPOINTREQ
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLCLOSE OK     = " MCP-RC
+               CONTINUE
+           END-IF
+      *
+           .
+       1000-APTXMLREAD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    CSV情報から内容を取り出す
+      *****************************************************************
+       1000-APTCSVREAD-SEC   SECTION.
+      *
+           DISPLAY "1000-APTCSVREAD-SEC start "
+      *  For Debug start
+           MOVE   "BLOBEXPORT"         TO  MCP-FUNC
+           MOVE    "blob"              TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    APNT-BODY           TO  ORCA-BLOB-OBJECT
+      *
+           STRING  "/tmp/"             DELIMITED  BY  SPACE
+                   MCP-TERM            DELIMITED  BY  SPACE
+                   ".csv"              DELIMITED  BY  SPACE
+                                       INTO   ORCA-BLOB-FILE 
+           END-STRING
+      *
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "BLOBEXPORT OK"
+               CONTINUE
+           ELSE
+               DISPLAY "BLOBEXPORT failure"
+           END-IF
+      *
+           MOVE    ORCA-BLOB-FILE      TO  REQCSV
+           DISPLAY "file name = " ORCA-BLOB-FILE
+      *
+           OPEN    INPUT     REQCSV-FILE
+      *
+           IF      STS-REQCSV          =   ZERO
+               DISPLAY "FILE OPEN OK"
+           ELSE
+               DISPLAY "FILE OPEN NG " STS-REQCSV
+           END-IF
+      *
+           READ    REQCSV-FILE
+               AT  END
+                   MOVE    1               TO  FLG-REQCSV
+               NOT AT  END
+                   MOVE    ZERO            TO  FLG-REQCSV
+           END-READ
+      *
+           UNSTRING    REQCSV-RECORD   DELIMITED  BY  ","
+                                       INTO    WRK-PTNUM
+                                               WRK-APPOINT-YMD
+                                               WRK-APPOINT-TIME
+                                               WRK-APPOINT-ID
+                                               WRK-SRYKA
+                                               WRK-DRCD
+                                               WRK-SRYNAIYO
+                                               WRK-YYKNAIYO
+                                               WRK-YYKMEMO
+           END-UNSTRING
+      *
+           CLOSE             REQCSV-FILE
+           DISPLAY "FILE PTNUM = " WRK-PTNUM
+           DISPLAY "FILE DRCD  = " WRK-DRCD
+      *
+           .
+       1000-APTCSVREAD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    XML情報書き込み処理
+      *****************************************************************
+       1000-APTXMLMAKE-SEC   SECTION.
+      *
+           MOVE   "XMLOPEN"            TO  MCP-FUNC
+           MOVE    "xml_appointres"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE   1                    TO  APNTRES-MODE
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-APPOINTRES
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLOPEN OK      = " MCP-RC
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+           END-IF
+      *
+           MOVE   "XMLWRITE"           TO  MCP-FUNC
+           MOVE    "xml_appointres"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-APPOINTRES
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLWRITE OK      = " MCP-RC
+               CONTINUE
+           ELSE
+               DISPLAY "XMLWRITE failure = " MCP-RC
+           END-IF
+      *
+           MOVE   "XMLCLOSE"           TO  MCP-FUNC
+           MOVE    "xml_appointres"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-APPOINTRES
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLCLOSE OK     = " MCP-RC
+               MOVE  APNTRES-OBJECT    TO  APNT-BODY 
+               MOVE  "application/xml" TO  APNTREQ-CONTENT-TYPE 
+           ELSE
+               DISPLAY "XMLCLOSE failure = " MCP-RC
+               DISPLAY "appoint xml write failure "
+      * CALL    "coblog"    USING   WRK-ERRMSG
+           END-IF
+      *
+          .
+       1000-APTXMLMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    CSV情報書き込み処理
+      *****************************************************************
+       1000-APTCSVMAKE-SEC   SECTION.
+      *
+           STRING  "/tmp/"             DELIMITED  BY  SPACE
+                   MCP-TERM            DELIMITED  BY  SPACE
+                   ".csv"              DELIMITED  BY  SPACE
+                                       INTO   REQCSV
+           END-STRING
+      *
+           MOVE    REQCSV              TO     ORCA-BLOB-FILE 
+           OPEN    OUTPUT    REQCSV-FILE
+           MOVE    SPACE               TO    REQCSV-RECORD
+           STRING  APNTRES-INFORMATION-DATE  DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INFORMATION-TIME  DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-API-RESULT        DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-API-RESULT-MSG    DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-DATE      DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-TIME      DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-ID        DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-DEP-CODE  DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-DEP-NAME  DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-DR-CODE   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-DR-NAME   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-APPOINT-MEMO      DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PATIENTID         DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-NAME              DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-KANANAME          DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-BIRTHDAY          DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-SEX               DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-HOME-ZIP-CODE     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-HOME-ADDRESSES    DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-CLASS(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NUMBER(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NAME(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-MARK(01)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-NUMBER(01)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-CONTINUATION(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-ASSISTANCE(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-FAMILY(01)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-POLICYHOLDER(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-START-DATE(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-END-DATE(01) DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(01 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-CLASS(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NUMBER(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NAME(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-MARK(02)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-NUMBER(02)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-CONTINUATION(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-ASSISTANCE(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-FAMILY(02)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-POLICYHOLDER(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-START-DATE(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-END-DATE(02) DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(02 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-CLASS(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NUMBER(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NAME(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-MARK(03)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-NUMBER(03)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-CONTINUATION(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-ASSISTANCE(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-FAMILY(03)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-POLICYHOLDER(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-START-DATE(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-END-DATE(03) DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(03 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-CLASS(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NUMBER(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-INSURANCE-NAME(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-MARK(04)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-NUMBER(04)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-CONTINUATION(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-ASSISTANCE(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-FAMILY(04)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-POLICYHOLDER(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-START-DATE(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-MAIN-END-DATE(04) DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NUMBER(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-NAME(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-PROVIDER-NUMBER(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-RECIPIENT-NUMBER(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-START-DATE(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   APNTRES-INSURANCE-END-DATE(04 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   INTO    REQCSV-RECORD
+           END-STRING
+      *
+           DISPLAY "out = "   REQCSV-RECORD(1:100)
+           WRITE   REQCSV-RECORD
+           CLOSE   REQCSV-FILE
+      *
+      *
+      *    INITIALIZE ORCA-BLOB
+      *    MOVE    "./in.txt"            TO     REQCSV
+      *    MOVE    REQCSV              TO     ORCA-BLOB-FILE 
+      *    OPEN    INPUT     REQCSV-FILE
+      *    READ    REQCSV-FILE
+      *    DISPLAY "in file = " REQCSV(1:10)
+      *    DISPLAY "in = " REQCSV-RECORD(1:50)
+      *    CLOSE     REQCSV-FILE
+      *
+      *
+      *
+           DISPLAY "blob file = "     ORCA-BLOB-FILE 
+           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+           MOVE    "blob"              TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           DISPLAY "blob file out = "     ORCA-BLOB-FILE 
+           IF  ORCA-BLOB-OBJECT = LOW-VALUE
+               DISPLAY "object is low value"
+           ELSE
+               DISPLAY "object is not low value"
+           END-IF
+           DISPLAY "mcp-rc = " MCP-RC
+           MOVE    ORCA-BLOB-OBJECT    TO  APNT-BODY
+           MOVE    "data/csv"          TO  APNTREQ-CONTENT-TYPE
+      *
+          .
+       1000-APTCSVMAKE-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    予約前チェックおよび予約登録
       *****************************************************************
        1001-YYK-ADD-SEC        SECTION.
       *
-           MOVE  PTINF-NAME        TO  APNT-NAME
-           MOVE  PTINF-KANANAME    TO  APNT-KANANAME
-           MOVE  PTINF-BIRTHDAY    TO  APNT-BIRTHDAY
-           MOVE  PTINF-SEX         TO  APNT-SEX
-           MOVE  PTINF-HOME-POST   TO  APNT-HOME-ZIP-CODE
-           MOVE  PTINF-HOME-ADRS   TO  APNT-HOME-ADDRESSES
+           MOVE  PTINF-NAME        TO  APNTRES-NAME
+           MOVE  PTINF-KANANAME    TO  APNTRES-KANANAME
+           MOVE  PTINF-BIRTHDAY    TO  APNTRES-BIRTHDAY
+           MOVE  PTINF-SEX         TO  APNTRES-SEX
+           MOVE  PTINF-HOME-POST   TO  APNTRES-HOME-ZIP-CODE
+           MOVE  PTINF-HOME-ADRS   TO  APNTRES-HOME-ADDRESSES
       * 
       *    排他チェック & ロック処理
            PERFORM 990-LOCK-IN-SEC
            IF  SLOCK-RETURN    NOT =   ZERO
-               MOVE   "90"           TO  APNT-API-RESULT
-               MOVE   "他端末使用中" TO  APNT-API-RESULT-MSG
+               MOVE   "90"           TO  APNTRES-API-RESULT
+               MOVE   "他端末使用中" TO  APNTRES-API-RESULT-MSG
                GO     TO             1001-YYK-ADD-EXT
            END-IF
       * 
@@ -470,18 +1148,18 @@
       *****************************************************************
        1001-YYK-DELETE-SEC     SECTION.
       *
-           MOVE  PTINF-NAME        TO  APNT-NAME
-           MOVE  PTINF-KANANAME    TO  APNT-KANANAME
-           MOVE  PTINF-BIRTHDAY    TO  APNT-BIRTHDAY
-           MOVE  PTINF-SEX         TO  APNT-SEX
-           MOVE  PTINF-HOME-POST   TO  APNT-HOME-ZIP-CODE
-           MOVE  PTINF-HOME-ADRS   TO  APNT-HOME-ADDRESSES
+           MOVE  PTINF-NAME        TO  APNTRES-NAME
+           MOVE  PTINF-KANANAME    TO  APNTRES-KANANAME
+           MOVE  PTINF-BIRTHDAY    TO  APNTRES-BIRTHDAY
+           MOVE  PTINF-SEX         TO  APNTRES-SEX
+           MOVE  PTINF-HOME-POST   TO  APNTRES-HOME-ZIP-CODE
+           MOVE  PTINF-HOME-ADRS   TO  APNTRES-HOME-ADDRESSES
       * 
       *    排他チェック & ロック処理
            PERFORM 990-LOCK-IN-SEC
            IF  SLOCK-RETURN    NOT =   ZERO
-               MOVE   "90"           TO  APNT-API-RESULT
-               MOVE   "他端末使用中" TO  APNT-API-RESULT-MSG
+               MOVE   "90"           TO  APNTRES-API-RESULT
+               MOVE   "他端末使用中" TO  APNTRES-API-RESULT-MSG
                GO     TO             1001-YYK-ADD-EXT
            END-IF
       * 
@@ -527,9 +1205,9 @@
       *    患者氏名(カナ)チェック
            PERFORM 10011-PTNAMEKNA-CHK-SEC
       *    患者性別チェック
-           PERFORM 10011-PTSEX-CHK-SEC
+      *    PERFORM 10011-PTSEX-CHK-SEC
       *    患者生年月日チェック
-           PERFORM 10011-PTBIRTHDAY-CHK-SEC
+      *    PERFORM 10011-PTBIRTHDAY-CHK-SEC
       *
            .
        1001-PTINF-CHK-EXT.
@@ -541,11 +1219,12 @@
       *****************************************************************
        10011-YYKYMD-CHK-SEC    SECTION.
       *
-           MOVE  WRK-APPOINT-YMD   TO  APNT-APPOINT-DATE
+           MOVE  WRK-APPOINT-YMD   TO  APNTRES-APPOINT-DATE
       *
            IF      WRK-APPOINT-YMD      =   SPACE
                ADD 2                   TO  CNT-CHECK
-               MOVE  "予約日未設定"    TO  APNT-API-RESULT-MSG
+               MOVE  "予約日未設定"    TO  APNTRES-API-RESULT-MSG
+               DISPLAY  "予約日未設定"   
                GO      TO      10011-YYKYMD-CHK-EXT
            END-IF
       *
@@ -556,7 +1235,8 @@
                                        ORCSGDAYAREA
            IF      SGDAY-RC            NOT =   ZERO
                ADD 2                   TO  CNT-CHECK
-               MOVE  "予約日設定誤り"  TO  APNT-API-RESULT-MSG
+               MOVE  "予約日設定誤り"  TO  APNTRES-API-RESULT-MSG
+               DISPLAY  "予約日設定誤り"  
                GO      TO      10011-YYKYMD-CHK-EXT
            END-IF
       *
@@ -569,29 +1249,33 @@
       *****************************************************************
        10011-YYKTIME-CHK-SEC   SECTION.
       *
-           MOVE  WRK-APPOINT-TIME  TO  APNT-APPOINT-TIME
+           MOVE  WRK-APPOINT-TIME  TO  APNTRES-APPOINT-TIME
       *
            IF      WRK-APPOINT-TIME     =   SPACE
                ADD 4                   TO  CNT-CHECK
-               MOVE  "予約時間未設定"  TO  APNT-API-RESULT-MSG
+               MOVE  "予約時間未設定"  TO  APNTRES-API-RESULT-MSG
+               DISPLAY   "予約時間未設定"  
                GO      TO      10011-YYKTIME-CHK-EXT
            END-IF
       *
            IF      WRK-APPOINT-TIME    NOT NUMERIC
                ADD 4                   TO  CNT-CHECK
-               MOVE  "予約時間不正"    TO  APNT-API-RESULT-MSG
+               MOVE  "予約時間不正"    TO  APNTRES-API-RESULT-MSG
+               DISPLAY   "予約時間不正"
                GO      TO      10011-YYKTIME-CHK-EXT
            END-IF
       *
            IF      WRK-APPOINT-TIME(1:2)   >=  "24" 
                ADD 4                   TO  CNT-CHECK
-               MOVE  "予約時間設定誤り"    TO  APNT-API-RESULT-MSG
+               MOVE  "予約時間設定誤り"    TO  APNTRES-API-RESULT-MSG
+               DISPLAY  "予約時間設定誤り"  
                GO      TO      10011-YYKTIME-CHK-EXT
            END-IF
       *
            IF      WRK-APPOINT-TIME(3:2)   >=  "60" 
                ADD 4                   TO  CNT-CHECK
-               MOVE  "予約時間設定誤り"    TO  APNT-API-RESULT-MSG
+               MOVE  "予約時間設定誤り"    TO  APNTRES-API-RESULT-MSG
+               DISPLAY  "予約時間設定誤り"  
                GO      TO      10011-YYKTIME-CHK-EXT
            END-IF
       *
@@ -623,9 +1307,10 @@
       *
            IF      WRK-PTNUM       =  SPACE
               DISPLAY "患者番号未設定"
-                   MOVE   "該当患者なし"   TO  APNT-API-RESULT-MSG
-                   MOVE   WRK-PTNUM        TO  APNT-PATIENTID
+                   MOVE   "該当患者なし"   TO  APNTRES-API-RESULT-MSG
+                   MOVE   WRK-PTNUM        TO  APNTRES-PATIENTID
                    ADD 1               TO  CNT-CHECK
+                   DISPLAY   "該当患者なし"
                    GO  TO              10011-PTNUM-CHK-EXT
            END-IF
       *
@@ -637,18 +1322,20 @@
                                                SPA-AREA
            IF    SPTID-RC          NOT =   ZERO
               DISPLAY "該当患者なし"
-                 MOVE   "該当患者なし" TO  APNT-API-RESULT-MSG
+                 MOVE   "該当患者なし" TO  APNTRES-API-RESULT-MSG
                  ADD 1                 TO  CNT-CHECK
+                 DISPLAY   "該当患者なし"
                  GO  TO                10011-PTNUM-CHK-EXT
            END-IF
       *
-           MOVE    SPTID-PTNUM         TO  APNT-PATIENTID
+           MOVE    SPTID-PTNUM         TO  APNTRES-PATIENTID
            MOVE    SPTID-PTID          TO  PTINF-PTID
       *
            PERFORM 1001-PTINF-GET-SEC
            IF      MCP-RC          NOT =   ZERO
                  ADD 1                 TO  CNT-CHECK
-                 MOVE   "該当患者なし" TO  APNT-API-RESULT-MSG
+                 MOVE   "該当患者なし" TO  APNTRES-API-RESULT-MSG
+                 DISPLAY   "該当患者なし"
                  GO  TO                10011-PTNUM-CHK-EXT
            END-IF
       *
@@ -661,10 +1348,10 @@
       *****************************************************************
        10011-SRYKA-CHK-SEC         SECTION.
       *
-           MOVE  WRK-SRYKA             TO  APNT-APPOINT-DEP-CODE
+           MOVE  WRK-SRYKA             TO  APNTRES-APPOINT-DEP-CODE
            IF    WRK-SRYKA             =   SPACE
-              DISPLAY "診療科設定なし"
-                 MOVE   "診療科未設定" TO  APNT-API-RESULT-MSG
+                 DISPLAY "診療科設定なし"
+                 MOVE   "診療科未設定" TO  APNTRES-API-RESULT-MSG
                  ADD 16                TO  CNT-CHECK
                  GO  TO                10011-SRYKA-CHK-EXT
            END-IF
@@ -690,10 +1377,13 @@
                PERFORM 900-SYSKANRI-READ-SEC
              IF  FLG-SYSKANRI          =   ZERO
                  MOVE    MCPDATA-REC   TO  SYS-1005-REC
+                 MOVE    SYS-1005-SRYKANAME
+                                       TO  APNTRES-APPOINT-DEP-NAME
              ELSE
                  MOVE   "診療科誤り"   
-                                       TO  APNT-API-RESULT-MSG
+                                       TO  APNTRES-API-RESULT-MSG
                  ADD 16                TO  CNT-CHECK
+                 DISPLAY   "診療科誤り"   
              END-IF
            ELSE
                INITIALIZE              SYS-1005-REC
@@ -714,10 +1404,10 @@
       *****************************************************************
        10011-DRCD-CHK-SEC          SECTION.
       *
-           MOVE  WRK-DRCD              TO  APNT-APPOINT-DR-CODE
+           MOVE  WRK-DRCD              TO  APNTRES-APPOINT-DR-CODE
            IF    WRK-DRCD              =   SPACE
               DISPLAY "ドクタ設定なし"
-                 MOVE   "ドクタ設定なし"   TO  APNT-API-RESULT-MSG
+                 MOVE   "ドクタ設定なし"   TO  APNTRES-API-RESULT-MSG
                  ADD 32                TO  CNT-CHECK
                  GO  TO                10011-DRCD-CHK-EXT
            END-IF
@@ -743,9 +1433,10 @@
                PERFORM 900-SYSKANRI-READ-SEC
              IF  FLG-SYSKANRI          =   ZERO
                  MOVE    MCPDATA-REC   TO  SYS-1010-REC
+                 MOVE    SYS-1010-NAME TO  APNTRES-APPOINT-DR-NAME
              ELSE
                  MOVE   "ドクタが存在しません"   
-                                       TO  APNT-API-RESULT-MSG
+                                       TO  APNTRES-API-RESULT-MSG
                  ADD 32                TO  CNT-CHECK
              END-IF
            ELSE
@@ -767,7 +1458,9 @@
       *****************************************************************
        10011-SRYNAIYO-CHK-SEC      SECTION.
       *
+           DISPLAY "WRK-SRYNAIYO = " WRK-SRYNAIYO
            IF      WRK-SRYNAIYO        =   SPACE
+           DISPLAY "WRK-SRYNAIYO is space " 
                MOVE "01"               TO  WRK-SRYNAIYO
            END-IF
       *
@@ -794,8 +1487,10 @@
                  MOVE    MCPDATA-REC   TO  SYS-1012-REC
              ELSE
                  MOVE   "診療内容情報が存在しません"   
-                                       TO  APNT-API-RESULT-MSG
+                                       TO  APNTRES-API-RESULT-MSG
+                 DISPLAY   "診療内容情報が存在しません"   
                  ADD 64                TO  CNT-CHECK
+                 DISPLAY "run 2"
              END-IF
            ELSE
                INITIALIZE              SYS-1012-REC
@@ -842,8 +1537,10 @@
                  MOVE    MCPDATA-REC   TO  SYS-1028-REC
              ELSE
                  MOVE   "予約内容情報が存在しません"   
-                                       TO  APNT-API-RESULT-MSG
+                                       TO  APNTRES-API-RESULT-MSG
+                 DISPLAY   "予約内容情報が存在しません"   
                  ADD 64                TO  CNT-CHECK
+                 DISPLAY "run 1"
              END-IF
            ELSE
                INITIALIZE              SYS-1028-REC
@@ -863,17 +1560,17 @@
       *****************************************************************
        10011-YYKMEMO-CHK-SEC       SECTION.
       *
-           MOVE    WRK-YYKMEMO         TO  APNT-APPOINT-MEMO
+           MOVE    WRK-YYKMEMO         TO  APNTRES-APPOINT-MEMO
            IF      WRK-YYKMEMO     NOT =   SPACE
       *        半角空白を全角空白へ
                MOVE    WRK-YYKMEMO         TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
-               MOVE    WRK-ATO-INPUT       TO  WRK-NAMEKNJ
+               MOVE    WRK-ATO-INPUT       TO  WRK-YYKMEMO
                IF      FLG-ERR             =   1
            DISPLAY "予約メモ不正 [" WRK-YYKMEMO "]"
                    MOVE   "予約メモ不正"   
-                                       TO  APNT-API-RESULT-MSG
+                                       TO  APNTRES-API-RESULT-MSG
                    ADD 256                     TO  CNT-CHECK
                    DISPLAY "cnt = "  CNT-CHECK
                    GO      TO      10011-YYKMEMO-CHK-EXT
@@ -920,6 +1617,7 @@
            MOVE    WRK-ATO-INPUT       TO  WRK-NAMEKNA
            IF      FLG-ERR             =   1
                ADD 4                       TO  CNT-CHECK
+               DISPLAY "kana err"
                GO      TO      10011-PTNAMEKNA-CHK-EXT
            END-IF
       *
@@ -945,6 +1643,7 @@
            END-PERFORM
            IF      FLG-KANA            =   1
                ADD 4                       TO  CNT-CHECK
+               DISPLAY "kana err"
                GO      TO      10011-PTNAMEKNA-CHK-EXT
            END-IF
       *
@@ -961,6 +1660,7 @@
                CONTINUE
            ELSE
                ADD 8                       TO  CNT-CHECK
+               DISPLAY "sex err"
                GO      TO      10011-PTSEX-CHK-EXT
            END-IF
       *
@@ -975,6 +1675,7 @@
       *
            IF      WRK-BIRTHDAY            =   SPACE
                ADD 16                      TO  CNT-CHECK
+               DISPLAY "birthday err"
                GO      TO      10011-PTBIRTHDAY-CHK-EXT
            END-IF
       *
@@ -985,6 +1686,7 @@
                                        ORCSGDAYAREA
            IF      SGDAY-RC            NOT =   ZERO
                ADD 16                  TO  CNT-CHECK
+               DISPLAY "date err"
                GO      TO      10011-PTBIRTHDAY-CHK-EXT
            END-IF
       *
@@ -1100,11 +1802,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    WRK-YYKID                TO  YYK-YYKID
                                                 YYKCOM-YYKID
-                                                APNT-APPOINT-ID
+                                                APNTRES-APPOINT-ID
            DISPLAY "yyk hospnum = " YYK-HOSPNUM
            DISPLAY "yyk ymd     = "  YYK-YYKYMD
            DISPLAY "yyk id      = "  YYK-YYKID
-           MOVE    YYK-YYKTIME              TO  APNT-APPOINT-TIME
+           MOVE    YYK-YYKTIME              TO  APNTRES-APPOINT-TIME
            IF      SPTID-PTID               =   ZERO
                MOVE    ZERO                 TO  YYK-PTID
            ELSE
@@ -1257,8 +1959,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                DISPLAY "yyk 1   time = " WRK-CK-TIME1
                DISPLAY "yyk 2   time = " WRK-CK-TIME2
                DISPLAY "10分 経過 していない"
-               MOVE   "98"             TO  APNT-API-RESULT
-               MOVE   "二重登録疑い"   TO  APNT-API-RESULT-MSG
+               MOVE   "98"             TO  APNTRES-API-RESULT
+               MOVE   "二重登録疑い"   TO  APNTRES-API-RESULT-MSG
            END-IF
                DISPLAY "yyk 1   time = " WRK-CK-TIME1
                DISPLAY "yyk 2   time = " WRK-CK-TIME2
@@ -1303,8 +2005,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                DISPLAY "yyk org time = " WRK-CK-TIME2
                DISPLAY "yyk 3   time = " WRK-CK-TIME3
                DISPLAY "前後1時間以内"
-               MOVE   "98"             TO  APNT-API-RESULT
-               MOVE   "二重登録疑い"   TO  APNT-API-RESULT-MSG
+               MOVE   "98"             TO  APNTRES-API-RESULT
+               MOVE   "二重登録疑い"   TO  APNTRES-API-RESULT-MSG
            END-IF
       *
            .
@@ -1339,7 +2041,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        UNTIL    (FLG-YYK       =   1)
                PERFORM 49012-YYK-CK-SEC
                IF      FLG-YYKHIT      =   1
-                 MOVE  YYK-YYKTIME     TO  APNT-APPOINT-TIME
+                 MOVE  YYK-YYKTIME     TO  APNTRES-APPOINT-TIME
                  MOVE  1               TO  FLG-YYK
                  MOVE  YYK-REC         TO  WRK-YYK-REC
                  MOVE  "1"             TO  WRK-YYK-RAIINZUMI
@@ -1421,13 +2123,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    WRK-APPOINT-YMD     TO  YYK-YYKYMD
-                                           APNT-APPOINT-DATE
+                                           APNTRES-APPOINT-DATE
            MOVE    SPTID-PTID          TO  YYK-PTID
            MOVE    WRK-SRYKA           TO  YYK-SRYKA
            MOVE    WRK-SRYNAIYO        TO  YYK-SRYNAIYO
            MOVE    WRK-DRCD            TO  YYK-DRCD
            MOVE    WRK-APPOINT-TIME    TO  YYK-KEYYYKTIME
-                                           APNT-APPOINT-TIME
+                                           APNTRES-APPOINT-TIME
            MOVE    ZERO                TO  YYK-KEYYYKTIME(3:2)
            MOVE    YYK-REC         TO  MCPDATA-REC
            MOVE    "tbl_yyk"       TO  MCP-TABLE
@@ -1479,8 +2181,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *
            IF      CNT-UKEDELETE       =  ZERO
-               MOVE   "90"             TO  APNT-API-RESULT
-               MOVE   "予約レコード無し"   TO  APNT-API-RESULT-MSG
+               MOVE   "90"             TO  APNTRES-API-RESULT
+               MOVE   "予約レコード無し"   TO  APNTRES-API-RESULT-MSG
                GO     TO               4900-SAKUJO-EXT
            END-IF
       *    ユーザ起動プログラム起動チェック
@@ -1600,14 +2302,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    予約レコードの更新
                    PERFORM 49001-YYKUPD-SEC
              ELSE
-               MOVE   "90"             TO  APNT-API-RESULT
-               MOVE   "予約患者不一致" TO  APNT-API-RESULT-MSG
+               MOVE   "90"             TO  APNTRES-API-RESULT
+               MOVE   "予約患者不一致" TO  APNTRES-API-RESULT-MSG
                GO      TO  4901-SAKUJO-EXT
              END-IF
       *
            ELSE
-               MOVE   "90"             TO  APNT-API-RESULT
-               MOVE   "予約レコード無し"   TO  APNT-API-RESULT-MSG
+               MOVE   "90"             TO  APNTRES-API-RESULT
+               MOVE   "予約レコード無し"   TO  APNTRES-API-RESULT-MSG
                GO      TO  4901-SAKUJO-EXT
            END-IF
       *
@@ -1775,15 +2477,20 @@ grpsys           CALL  "ORCDBMAIN"     USING   MCPAREA
              INITIALIZE                HKNCOMBI-REC
            END-IF
       *
+           DISPLAY "hkn ptid = "  COMB-PTID
+           DISPLAY "hkn hkndate = "  COMB-TEKSTYMD
+           DISPLAY "hkn date = "  WRK-SYSYMD-8
+           MOVE    ZERO                TO  IDX
            PERFORM UNTIL      (IDX           >    4    )            OR
                               (FLG-HKNCOMBI   =   1    )
                IF     (WRK-SYSYMD-8          >=  COMB-TEKSTYMD)  AND
                       (WRK-SYSYMD-8          <=  COMB-TEKEDYMD)  AND
                       (COMB-DELKBN           =   SPACE        )
                    ADD  1                    TO  IDX
+                   DISPLAY "hkn name = "  COMB-SYU-TANSEIDONAME
                    MOVE COMB-SYU-TANSEIDONAME
                                              TO  
-                                             APNT-MAIN-INSURANCE-NAME
+                                             APNTRES-MAIN-INSURANCE-NAME
                                              (IDX)
       *
                        INITIALIZE                  PTHKNINF-REC
@@ -1796,25 +2503,26 @@ grpsys           CALL  "ORCDBMAIN"     USING   MCPAREA
                        PERFORM 910-PTHKNINF-INV-SEC
                        MOVE    PTHKN-HKNNUM(2:2)
                                                    TO  
-                                       APNT-MAIN-INSURANCE-CLASS(IDX)
+                                       APNTRES-MAIN-INSURANCE-CLASS(IDX)
                        MOVE    PTHKN-HKNJANUM      TO
-                                       APNT-MAIN-INSURANCE-NUMBER(IDX)
+                                       APNTRES-MAIN-INSURANCE-NUMBER
+                                                   (IDX)
                        MOVE    PTHKN-KIGO          TO
-                                       APNT-MAIN-MARK(IDX)
+                                       APNTRES-MAIN-MARK(IDX)
                        MOVE    PTHKN-NUM           TO
-                                       APNT-MAIN-NUMBER(IDX)
+                                       APNTRES-MAIN-NUMBER(IDX)
                        MOVE    PTHKN-CONTKBN       TO
-                                       APNT-MAIN-CONTINUATION(IDX)
+                                       APNTRES-MAIN-CONTINUATION(IDX)
                        MOVE    PTHKN-HOJOKBN       TO
-                                       APNT-MAIN-ASSISTANCE(IDX)
+                                       APNTRES-MAIN-ASSISTANCE(IDX)
                        MOVE    PTHKN-HONKZKKBN     TO
-                                       APNT-MAIN-FAMILY(IDX)
+                                       APNTRES-MAIN-FAMILY(IDX)
                        MOVE    PTHKN-HIHKNJANAME   TO
-                                       APNT-MAIN-POLICYHOLDER(IDX)
+                                       APNTRES-MAIN-POLICYHOLDER(IDX)
                        MOVE    PTHKN-TEKSTYMD      TO
-                                       APNT-MAIN-START-DATE(IDX)
+                                       APNTRES-MAIN-START-DATE(IDX)
                        MOVE    PTHKN-TEKEDYMD      TO
-                                       APNT-MAIN-END-DATE(IDX)
+                                       APNTRES-MAIN-END-DATE(IDX)
       *   公費読み出し
                    IF      COMB-KOHHKNNUM (1)      NOT =   SPACE
                        PERFORM 20012-KOHID-HENSYU-SEC
@@ -1830,22 +2538,22 @@ grpsys           CALL  "ORCDBMAIN"     USING   MCPAREA
                            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                            PERFORM 910-PTKOHINF-INV-SEC
                            MOVE    WRK-KOHMEI (IDY1)   TO
-                                           APNT-INSURANCE-NAME
+                                           APNTRES-INSURANCE-NAME
                                                           (IDX IDY1)
                            MOVE    PTKOH-FTNJANUM      TO
-                                           APNT-PROVIDER-NUMBER
+                                           APNTRES-PROVIDER-NUMBER
                                                           (IDX IDY1)
                            MOVE    PTKOH-JKYSNUM       TO
-                                           APNT-RECIPIENT-NUMBER
+                                           APNTRES-RECIPIENT-NUMBER
                                                           (IDX IDY1)
                            MOVE    PTKOH-KOHNUM        TO
-                                           APNT-INSURANCE-NUMBER
+                                           APNTRES-INSURANCE-NUMBER
                                                           (IDX IDY1)
                            MOVE    PTKOH-TEKSTYMD      TO
-                                           APNT-INSURANCE-START-DATE
+                                           APNTRES-INSURANCE-START-DATE
                                                           (IDX IDY1)
                            MOVE    PTKOH-TEKEDYMD      TO
-                                           APNT-INSURANCE-END-DATE
+                                           APNTRES-INSURANCE-END-DATE
                                                           (IDX IDY1)
                        END-PERFORM
                    END-IF

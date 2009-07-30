@@ -1,49 +1,8 @@
 patientget {
-	request {
-		arguments {
+		argument {
 			id			varchar(20);
 		};
-    	methodtype		varchar(100);
-    	content_type	varchar(100);
-    	content_length	varchar(100);
-    	body			varchar(1024);
-	};
-	response {
-		information_date	varchar(8);
-        information_time	varchar(6);
-		api_result			varchar(2);
-		api_result_msg      varchar(100);
-        reskey              varchar(100);
-		patient_infomation	{
-        	name                varchar(100);
-        	kananame            varchar(100);
-        	birthday            varchar(08);
-        	sex                 varchar(1);
-        	address_info    {
-            	home_zip_code   varchar(07);
-            	home_addresses  varchar(100);
-        	};
-        	insurance_info  {
-            	main_insurance_class    varchar(10);
-            	main_insurance_number   varchar(10);
-            	main_insurance_name     varchar(10);
-            	main_mark               varchar(80);
-            	main_number             varchar(80);
-            	main_continuation       varchar(10);
-            	main_assistance         varchar(10);
-            	main_family             varchar(10);
-            	main_policyholder       varchar(100);
-            	main_start_date         varchar(10);
-            	main_end_date           varchar(10);
-            	public_insurance_info   {
-                	insurance_number    varchar(10);
-                	insurance_name      varchar(10);
-                	provider_number     varchar(10);
-                	recipient_number    varchar(20);
-                	insurance_start_date    varchar(10);
-                	insurance_end_date  varchar(10);
-            	} [3];
-        	} [4];
-    	};
-   	};
+		methodtype			varchar(100);
+		content_type		varchar(100);
+		body				object;
 };

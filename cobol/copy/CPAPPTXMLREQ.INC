@@ -15,10 +15,16 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  APPOINTMOD.
-            03  APNT-REQUEST.
-              04  APNTREQ-ARGUMENT.
-                05  APNTREQ-CLASS      PIC X(2).
-              04  APNTREQ-METHOD       PIC X(100).
-              04  APNTREQ-CONTENT-TYPE PIC X(100).
-              04  APNT-BODY            PIC X(8).
+        01  XML-APPOINTREQ.
+            02  APNTREQ-OBJECT         PIC X(8).
+            02  APNTREQ-MODE           PIC S9(9)   BINARY.
+            02  APNTREQ-APPOINT.
+              03  APNTREQ-PATIENTID    PIC X(20).
+              03  APNTREQ-APPOINT-DATE PIC X(8).
+              03  APNTREQ-APPOINT-TIME PIC X(4).
+              03  APNTREQ-APPOINT-ID   PIC X(5).
+              03  APNTREQ-APPOINT-DEP-CODE PIC X(2).
+              03  APNTREQ-APPOINT-DR-CODE  PIC X(5).
+              03  APNTREQ-APPOINT-DEP-INFO PIC X(2).
+              03  APNTREQ-APPOINT-INFO PIC X(2).
+              03  APNTREQ-APPOINT-MEMO PIC X(100).

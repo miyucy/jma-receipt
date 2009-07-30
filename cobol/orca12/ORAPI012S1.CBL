@@ -30,14 +30,26 @@
       *
       *****************************************************************
       *
-       ENVIRONMENT         DIVISION.
-       CONFIGURATION           SECTION.
-       INPUT-OUTPUT                SECTION.
+       ENVIRONMENT           DIVISION.
+       CONFIGURATION         SECTION.
+       INPUT-OUTPUT          SECTION.
+      *
        FILE-CONTROL.
+      *    BLOB格納情報ファイル(CSV)
+           SELECT  REQCSV-FILE     ASSIGN REQCSV
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-REQCSV.
        DATA                DIVISION.
        FILE                    SECTION.
+      *    BLOB格納情報ファイル(CSV)
+       FD  REQCSV-FILE.
+       01  REQCSV-RECORD.
+           03  REQCSV-INFO             PIC X(5000).
       *
        WORKING-STORAGE             SECTION.
+       01  REQCSV                  PIC X(512).
+       01  STS-AREA.
+           03  STS-REQCSV          PIC X(02).
       *    スパ領域
            COPY    "COMMON-SPA".
       *    添字領域
@@ -179,6 +191,10 @@
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
+           COPY    "CPPATIENTXMLRES.INC".
+      *
+           COPY    "ORCA-BLOB".
+      *
            COPY    "MCPDATA.INC".
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -216,31 +232,40 @@
            LINKAREA
            SCRAREA.
        000-MAIN                SECTION.
+           DISPLAY   "********************"
+           DISPLAY   "* patient res start*"
+           DISPLAY   "********************"
+      *
            ACCEPT  WRK-SYSYMD    FROM DATE
            MOVE    20                  TO  WRK-SYSYY
       *
            INITIALIZE        PTNUM-REC
                              IDX-AREA
                              WK-MSG
-                             PGET-RESPONSE
+                             XML-PATIENTINFORES
                              SPA-AREA
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE   "Patient Info"       TO  PGET-RESKEY
+           MOVE   "Patient Info"       TO  PTRES-RESKEY
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-                                           PGET-INFORMATION-DATE
-           MOVE    SMCNDATE-HMS        TO  PGET-INFORMATION-TIME
+                                           PTRES-INFORMATION-DATE
+           MOVE    SMCNDATE-HMS        TO  PTRES-INFORMATION-TIME
       *    医療機関識別番号セット SPA-HOSPNUM
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE   "99"             TO  PGET-API-RESULT
-               MOVE   "ユーザID未登録" TO  PGET-API-RESULT-MSG
+               MOVE   "99"             TO  PTRES-API-RESULT
+               MOVE   "ユーザID未登録" TO  PTRES-API-RESULT-MSG
+             IF    PGET-CONTENT-TYPE   =   "application/xml"
+                   PERFORM 1000-PTXMLMAKE-SEC
+             ELSE
+                   PERFORM 1000-PTCSVMAKE-SEC
+             END-IF
                GO  TO  000-MAIN-EXIT
            END-IF
       *    ＳＰＡ共通設定
@@ -261,33 +286,18 @@
                                        SPA-AREA
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
+      *    患者情報の取得
+           PERFORM 100-PATIENT-GET-SEC
       *
-      *    患者番号取得
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
-           MOVE    PGET-ID             TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-AREA
-      *
-           MOVE    ZERO                TO  PGET-API-RESULT
-      *    MOVE   1                    TO  MCP-VERSION
-      *    MOVE   1                    TO  MCP-LIMIT
-      *    MOVE   1                    TO  PTINF-HOSPNUM
-      *    MOVE   PATIENTID            TO  PTINF-PTID
-           PERFORM 1001-PTINF-GET-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE  PTINF-NAME        TO  PGET-NAME
-               MOVE  PTINF-KANANAME    TO  PGET-KANANAME
-               MOVE  PTINF-BIRTHDAY    TO  PGET-BIRTHDAY
-               MOVE  PTINF-SEX         TO  PGET-SEX
-               MOVE  PTINF-HOME-POST   TO  PGET-HOME-ZIP-CODE
-               MOVE  PTINF-HOME-ADRS   TO  PGET-HOME-ADDRESSES
-      *        MOVE  WRK-CONST-AREA    TO  PGET-HOME-ADDRESSES
-               PERFORM 1001-PTHKN-GET-SEC
+           IF      PGET-CONTENT-TYPE   =   "application/xml"
+                   PERFORM 1000-PTXMLMAKE-SEC
            ELSE
-               MOVE   "01"             TO  PGET-API-RESULT
-               MOVE   "該当患者なし"   TO  PGET-API-RESULT-MSG
+                   PERFORM 1000-PTCSVMAKE-SEC
            END-IF
+      *
+           DISPLAY   "********************"
+           DISPLAY   "* patient res end  *"
+           DISPLAY   "********************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -342,6 +352,502 @@
            END-IF
            .
        900-SYSUSER-READ-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    患者基本情報取得
+      *****************************************************************
+       100-PATIENT-GET-SEC   SECTION.
+      *
+      *    患者番号取得
+           INITIALIZE                  ORCSPTIDAREA
+           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           MOVE    PGET-ID             TO  SPTID-PTNUM
+           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+                                               SPA-AREA
+      *
+           MOVE    ZERO                TO  PTRES-API-RESULT
+           PERFORM 1001-PTINF-GET-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE  PTINF-NAME        TO  PTRES-NAME
+               MOVE  PTINF-KANANAME    TO  PTRES-KANANAME
+               MOVE  PTINF-BIRTHDAY    TO  PTRES-BIRTHDAY
+               MOVE  PTINF-SEX         TO  PTRES-SEX
+               MOVE  PTINF-HOME-POST   TO  PTRES-HOME-ZIP-CODE
+               MOVE  PTINF-HOME-ADRS   TO  PTRES-HOME-ADDRESSES
+      *        MOVE  WRK-CONST-AREA    TO  PTRES-HOME-ADDRESSES
+               PERFORM 1001-PTHKN-GET-SEC
+           ELSE
+               MOVE   "01"             TO  PTRES-API-RESULT
+               MOVE   "該当患者なし"   TO  PTRES-API-RESULT-MSG
+           END-IF
+      *
+           .
+       100-PATIENT-GET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    XML情報書き込み処理
+      *****************************************************************
+       1000-PTXMLMAKE-SEC   SECTION.
+      *
+           MOVE   "XMLOPEN"            TO  MCP-FUNC
+           MOVE    "xml_patientinfores"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE   1                    TO  PTRES-MODE
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-PATIENTINFORES
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLOPEN OK      = " MCP-RC
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+           END-IF
+      *
+           MOVE   "XMLWRITE"           TO  MCP-FUNC
+           MOVE    "xml_patientinfores"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-PATIENTINFORES
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLWRITE OK      = " MCP-RC
+               CONTINUE
+           ELSE
+               DISPLAY "XMLWRITE failure = " MCP-RC
+           END-IF
+      *
+           MOVE   "XMLCLOSE"           TO  MCP-FUNC
+           MOVE    "xml_patientinfores"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       XML-PATIENTINFORES
+                                       SPA-AREA
+           IF (MCP-RC = ZERO OR 1)
+               DISPLAY "XMLCLOSE OK     = " MCP-RC
+               MOVE  PTRES-OBJECT      TO  PGET-BODY
+               MOVE  "application/xml" TO  PGET-CONTENT-TYPE
+           ELSE
+               DISPLAY "XMLCLOSE failure = " MCP-RC
+               DISPLAY "patient res xml write failure "
+      * CALL    "coblog"    USING   WRK-ERRMSG
+           END-IF
+      *
+           .
+       1000-PTXMLMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    CSV情報書き込み処理
+      *****************************************************************
+       1000-PTCSVMAKE-SEC   SECTION.
+      *
+      *
+           STRING  "/tmp/"             DELIMITED  BY  SPACE
+                   MCP-TERM            DELIMITED  BY  SPACE
+                   ".csv"              DELIMITED  BY  SPACE
+                                       INTO   REQCSV
+           END-STRING
+      *
+           MOVE    REQCSV              TO     ORCA-BLOB-FILE 
+           OPEN    OUTPUT    REQCSV-FILE
+           MOVE    SPACE               TO    REQCSV-RECORD
+           STRING  PTRES-INFORMATION-DATE    DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INFORMATION-TIME    DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-API-RESULT          DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-API-RESULT-MSG      DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-NAME                DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-KANANAME            DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-BIRTHDAY            DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-SEX                 DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-HOME-ZIP-CODE       DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-HOME-ADDRESSES      DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-CLASS(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NUMBER(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NAME(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-MARK(01)       DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-NUMBER(01)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-CONTINUATION(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-ASSISTANCE(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-FAMILY(01)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-POLICYHOLDER(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-START-DATE(01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-END-DATE(01)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(01 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(01 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(01 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(01 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-CLASS(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NUMBER(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NAME(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-MARK(02)       DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-NUMBER(02)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-CONTINUATION(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-ASSISTANCE(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-FAMILY(02)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-POLICYHOLDER(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-START-DATE(02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-END-DATE(02)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(02 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(02 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(02 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(02 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-CLASS(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NUMBER(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NAME(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-MARK(03)       DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-NUMBER(03)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-CONTINUATION(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-ASSISTANCE(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-FAMILY(03)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-POLICYHOLDER(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-START-DATE(03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-END-DATE(03)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(03 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(03 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(03 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(03 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-CLASS(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NUMBER(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-INSURANCE-NAME(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-MARK(04)       DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-NUMBER(04)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-CONTINUATION(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-ASSISTANCE(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-FAMILY(04)     DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-POLICYHOLDER(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-START-DATE(04)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-MAIN-END-DATE(04)   DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(04 01)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(04 02)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NUMBER(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-NAME(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-PROVIDER-NUMBER(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-RECIPIENT-NUMBER(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-START-DATE(04 03)
+                                             DELIMITED BY SPACE
+                   ","                       DELIMITED BY SIZE
+                   PTRES-INSURANCE-END-DATE(04 03)
+                                             DELIMITED BY SPACE
+      *
+      *
+                   INTO    REQCSV-RECORD
+           END-STRING
+      *
+           DISPLAY "out = "   REQCSV-RECORD(1:100)
+           WRITE   REQCSV-RECORD
+           CLOSE   REQCSV-FILE
+      *
+           DISPLAY "blob file = "     ORCA-BLOB-FILE 
+           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+           MOVE    "blob"              TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           DISPLAY "blob file out = "     ORCA-BLOB-FILE 
+      *
+           IF  ORCA-BLOB-OBJECT = LOW-VALUE
+               DISPLAY "object is low value"
+           ELSE
+               DISPLAY "object is not low value"
+           END-IF
+      *
+           DISPLAY "mcp-rc = " MCP-RC
+           MOVE    ORCA-BLOB-OBJECT    TO  PGET-BODY
+           MOVE    "data/csv"          TO  PGET-CONTENT-TYPE
+      *
+      *
+          .
+       1000-PTCSVMAKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -401,7 +907,7 @@
                    ADD  1                    TO  IDX
                    MOVE COMB-SYU-TANSEIDONAME
                                              TO  
-                                             PGET-MAIN-INSURANCE-NAME
+                                             PTRES-MAIN-INSURANCE-NAME
                                              (IDX)
       *
                        INITIALIZE                  PTHKNINF-REC
@@ -414,25 +920,25 @@
                        PERFORM 910-PTHKNINF-INV-SEC
                        MOVE    PTHKN-HKNNUM(2:2)
                                                    TO  
-                                       PGET-MAIN-INSURANCE-CLASS(IDX)
+                                       PTRES-MAIN-INSURANCE-CLASS(IDX)
                        MOVE    PTHKN-HKNJANUM      TO
-                                       PGET-MAIN-INSURANCE-NUMBER(IDX)
+                                       PTRES-MAIN-INSURANCE-NUMBER(IDX)
                        MOVE    PTHKN-KIGO          TO
-                                       PGET-MAIN-MARK(IDX)
+                                       PTRES-MAIN-MARK(IDX)
                        MOVE    PTHKN-NUM           TO
-                                       PGET-MAIN-NUMBER(IDX)
+                                       PTRES-MAIN-NUMBER(IDX)
                        MOVE    PTHKN-CONTKBN       TO
-                                       PGET-MAIN-CONTINUATION(IDX)
+                                       PTRES-MAIN-CONTINUATION(IDX)
                        MOVE    PTHKN-HOJOKBN       TO
-                                       PGET-MAIN-ASSISTANCE(IDX)
+                                       PTRES-MAIN-ASSISTANCE(IDX)
                        MOVE    PTHKN-HONKZKKBN     TO
-                                       PGET-MAIN-FAMILY(IDX)
+                                       PTRES-MAIN-FAMILY(IDX)
                        MOVE    PTHKN-HIHKNJANAME   TO
-                                       PGET-MAIN-POLICYHOLDER(IDX)
+                                       PTRES-MAIN-POLICYHOLDER(IDX)
                        MOVE    PTHKN-TEKSTYMD      TO
-                                       PGET-MAIN-START-DATE(IDX)
+                                       PTRES-MAIN-START-DATE(IDX)
                        MOVE    PTHKN-TEKEDYMD      TO
-                                       PGET-MAIN-END-DATE(IDX)
+                                       PTRES-MAIN-END-DATE(IDX)
       *   公費読み出し
                    IF      COMB-KOHHKNNUM (1)      NOT =   SPACE
                        PERFORM 20012-KOHID-HENSYU-SEC
@@ -448,19 +954,19 @@
                            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                            PERFORM 910-PTKOHINF-INV-SEC
                            MOVE    WRK-KOHMEI (IDY1)   TO
-                                   PGET-INSURANCE-NAME(IDX IDY1)
+                                   PTRES-INSURANCE-NAME(IDX IDY1)
                            MOVE    PTKOH-FTNJANUM      TO
-                                   PGET-PROVIDER-NUMBER(IDX IDY1)
+                                   PTRES-PROVIDER-NUMBER(IDX IDY1)
                            MOVE    PTKOH-JKYSNUM       TO
-                                   PGET-RECIPIENT-NUMBER(IDX IDY1)
+                                   PTRES-RECIPIENT-NUMBER(IDX IDY1)
                            MOVE    PTKOH-KOHNUM        TO
-                                   PGET-INSURANCE-NUMBER
+                                   PTRES-INSURANCE-NUMBER
                                                           (IDX IDY1)
                            MOVE    PTKOH-TEKSTYMD      TO
-                                   PGET-INSURANCE-START-DATE
+                                   PTRES-INSURANCE-START-DATE
                                                           (IDX IDY1)
                            MOVE    PTKOH-TEKEDYMD      TO
-                                   PGET-INSURANCE-END-DATE
+                                   PTRES-INSURANCE-END-DATE
                                                           (IDX IDY1)
                        END-PERFORM
                    END-IF
