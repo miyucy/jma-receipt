@@ -604,7 +604,7 @@
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SEISUU         >   3     )   OR
                   (SNUM-SYOSUU         >   ZERO  )
                MOVE    "0012"              TO  SPA-ERRCD
            ELSE
@@ -1372,7 +1372,7 @@
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SEISUU         >   4     )   OR
+                  (SNUM-SEISUU         >   3     )   OR
                   (SNUM-SYOSUU         >   ZERO  )
                MOVE    "0012"              TO  SPA-ERRCD
            ELSE

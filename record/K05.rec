@@ -215,95 +215,95 @@ K05	{
 		};
 		SURYO01	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO02	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO03	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO04	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO05	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO06	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO07	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO08	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO09	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO10	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO11	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO12	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO13	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO14	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO15	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO16	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO17	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO18	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO19	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO20	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO21	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO22	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		SURYO23	{
  		    style   varchar(20);
-			value	varchar(20);
+			value	varchar(24);
 		};
 		NYUGAIKBNCOMB	{
 			NYUGAIKBN	{

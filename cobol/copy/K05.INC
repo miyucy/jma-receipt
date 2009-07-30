@@ -12,7 +12,7 @@
                 04  K05-VALUE   PIC X(80).
               03  K05-SURYO-G     OCCURS  23.
                 04  K05-SURYO-STYLE   PIC X(20).
-                04  K05-SURYO   PIC X(20).
+                04  K05-SURYO   PIC X(24).
               03  K05-NYUGAIKBNCOMB.
                 04  K05-NYUGAIKBN.
                   05  K05-VALUE   PIC X(10).

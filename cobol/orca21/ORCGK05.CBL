@@ -367,7 +367,7 @@
                05  WRK-H-SURYO        PIC X(11).
                05  WRK-H-TANINAME     PIC X(04).
                05  WRK-H-F1           PIC X(01).
-               05  WRK-H-ZAIKEI       PIC X(15).
+               05  WRK-H-ZAIKEI       PIC X(06).
       *
            03  WRK-ZAIKEI-H        PIC X(40).
            03  WRK-KAKERU          PIC X(03).

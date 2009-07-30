@@ -83,7 +83,7 @@
            03  WRK-TENSUS-X.
                05  WRK-TENSUS-Z    PIC ZZZZ9.99.
            03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
+               05  WRK-KAISU-Z     PIC ZZZ.
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
            03  WRK-KEICOM-X.
@@ -97,7 +97,7 @@
       *
       *!!  03  WRK-SURYO-H         PIC X(09).
            03  WRK-SURYO-H         PIC X(11).
-           03  WRK-KAISU-H         PIC X(04).
+           03  WRK-KAISU-H         PIC X(03).
            03  WRK-BUNGSU-H        PIC X(09).
            03  WRK-KAKERU          PIC X(01).
            03  WRK-ATAI            PIC X(20).
@@ -314,7 +314,7 @@
                MOVE    SPACE               TO  WRK-KAISU-H
            ELSE
                PERFORM VARYING     IDK1    FROM    1   BY  1
-                       UNTIL       IDK1    >   4
+                       UNTIL       IDK1    >   3
                    IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                        ADD     1           TO  IDK2
                        MOVE    WRK-KAISU-X (IDK1:1)
@@ -609,7 +609,7 @@
            MOVE    ZERO                TO  IDK2
            MOVE    SPACE               TO  WRK-KAISU-H 
            PERFORM VARYING     IDK1    FROM    1   BY  1
-                   UNTIL       IDK1    >   4
+                   UNTIL       IDK1    >   3
                IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
                    ADD     1           TO  IDK2
                    MOVE    WRK-KAISU-X (IDK1:1)

@@ -89,11 +89,11 @@
                        09  SPA-COM-TEN           PIC 9(08)V99.
       *                点数（きざみ値計算後）
                        09  SPA-COM-KISOTEN       PIC 9(08)V99.
-                       09  SPA-COM-KAISU         PIC 9(08).
+                       09  SPA-COM-KAISU         PIC 9(03).
                        09  SPA-COM-KEI           PIC 9(08).
       *                外用薬用入力用
                        09  SPA-COM-SURYO2        PIC 9(05)V9(05).
-                       09  SPA-COM-KAISU2        PIC 9(08).
+                       09  SPA-COM-KAISU2        PIC 9(03).
       *
                        09  SPA-COM-BUNGSU        PIC 9(08).
                        09  SPA-COM-INPUTCHI-G.

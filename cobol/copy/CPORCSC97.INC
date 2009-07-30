@@ -57,7 +57,7 @@
       *        数量
                    07  LNK-SC97-SURYO          PIC 9(07)V9(05).
       *        回数
-                   07  LNK-SC97-KAISU          PIC 9(04).
+                   07  LNK-SC97-KAISU          PIC 9(03).
       *        分画数
                    07  LNK-SC97-BUNGSU         PIC 9(03).
       *        その入力値

@@ -667,7 +667,7 @@
                05  WRK-H-TANINAME     PIC X(04).
                05  WRK-H-F1           PIC X(01).
       *        05  WRK-H-ZAIKEI       PIC X(15).
-               05  WRK-H-ZAIKEI       PIC X(13).
+               05  WRK-H-ZAIKEI       PIC X(14).
                05  WRK-H-KEI          PIC X(08).
       *
            03  WRK-KEI-X.
