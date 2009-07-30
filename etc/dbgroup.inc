@@ -22,3 +22,7 @@ db_group "system" {
 db_group    "blob_body" {
  type    "NativeBLOB";
 };
+#db_group "xml" {
+# type    "XMLIO";
+#};
+
