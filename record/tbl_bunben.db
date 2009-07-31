@@ -103,3 +103,27 @@ path	key2 	{
 		;
 	};
 };
+
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_bunben_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_bunben
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   RRKNUM      =   :RRKNUM
+		;
+	};
+};
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_bunben
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND   RRKNUM      =   :RRKNUM
+		;
+	};
+};
