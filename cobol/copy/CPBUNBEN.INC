@@ -101,7 +101,7 @@
       *更新区分
            03  BUNBEN-UPDKBN                  PIC  X(01).
       *保険者番号
-           03  BUNBEN-HKNJANUM_S              PIC  X(08).
+           03  BUNBEN-HKNJANUM-S              PIC  X(08).
       *端末ＩＤ
            03  BUNBEN-TERMID                  PIC  X(16).
       *オペーレータＩＤ
