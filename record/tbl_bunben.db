@@ -2,11 +2,11 @@ tbl_bunben {
 	HOSPNUM			number(2,0);
 	PTID			number(10,0);
 	SKYYM			char(6);
+	RRKNUM			number(3,0);
 	PTNUM			char(20);
 	SKYKBN			char(1);
 	RIYOUKBN		char(1);
 	BUNBENKBN		char(1);
-	RRKNUM			number(3,0);
 	TEISYUTUSAKI		char(1);
 	KANYUKBN		char(1);
 	HONKZKKBN		char(1);
@@ -42,7 +42,7 @@ tbl_bunben {
 };
 
 primary	{
-	HOSPNUM,PTID,SKYYM;
+	HOSPNUM,PTID,SKYYM,RRKNUM;
 };
 
 path	key 	{
@@ -53,6 +53,7 @@ path	key 	{
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   SKYYM       =   :SKYYM
+			AND   RRKNUM      =   :RRKNUM
 		;
 	};
 };

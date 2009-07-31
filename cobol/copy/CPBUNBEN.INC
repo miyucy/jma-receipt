@@ -31,6 +31,8 @@
                05  BUNBEN-PTID                PIC  9(10).
       *請求年月
                05  BUNBEN-SKYYM               PIC  X(06).
+      *入院履歴番号
+               05  BUNBEN-RRKNUM              PIC  9(03).
       *患者番号
            03  BUNBEN-PTNUM                   PIC  X(20).
       *請求区分
@@ -39,8 +41,6 @@
            03  BUNBEN-RIYOUKBN                PIC  X(01).
       *分娩区分
            03  BUNBEN-BUNBENKBN               PIC  9(01).
-      *入院履歴番号
-           03  BUNBEN-RRKNUM                  PIC  9(03).
       *データ提出先区分
            03  BUNBEN-TEISYUTUSAKI            PIC  X(01).
       *加入制度区分

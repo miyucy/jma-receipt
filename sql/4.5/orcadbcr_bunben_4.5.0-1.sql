@@ -8,11 +8,11 @@ create	table	tbl_bunben	(
 	HOSPNUM		smallint NOT NULL,
 	PTID		bigint DEFAULT 0 NOT NULL,
 	SKYYM		char(6) NOT NULL,
+	RRKNUM	        smallint DEFAULT 0 NOT NULL,
 	PTNUM	        char(20) NOT NULL,
 	SKYKBN		char(1) NOT NULL,
 	RIYOUKBN	char(1) NOT NULL,
 	BUNBENKBN	char(1) NOT NULL,
-	RRKNUM	        smallint DEFAULT 0 NOT NULL,
 	TEISYUTUSAKI	char(1) NOT NULL,
 	KANYUKBN	char(1) NOT NULL,
 	HONKZKKBN	char(1) NOT NULL,
@@ -48,6 +48,7 @@ create	table	tbl_bunben	(
 	Constraint "tbl_bunben_primary_key" primary key(
 		HOSPNUM,
 		PTID,
-		SKYYM
+		SKYYM,
+		RRKNUM
 	)
 );
