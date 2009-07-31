@@ -32,8 +32,9 @@ tbl_bunben {
 	ICBFTN_MONEY		number(8,0);
 	NINPUFTN_MONEY		number(8,0);
 	DAIRI_MONEY		number(8,0);
-	BIKOU			varchar(50);
+	BIKOU			varchar(60);
 	UPDKBN			char(1);
+	HKNJANUM_S		char(8);
 	TERMID			varchar(16);
 	OPID			varchar(16);
 	CREYMD			char(8);

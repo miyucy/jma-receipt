@@ -97,9 +97,11 @@
            03  BUNBEN-MEISAI-R   REDEFINES  BUNBEN-MEISAI-INF.
                05  BUNBEN-MONEY               PIC  9(08)  OCCURS 12.
       *備考
-           03  BUNBEN-BIKOU                   PIC  X(50).
+           03  BUNBEN-BIKOU                   PIC  X(60).
       *更新区分
            03  BUNBEN-UPDKBN                  PIC  X(01).
+      *保険者番号
+           03  BUNBEN-HKNJANUM_S              PIC  X(08).
       *端末ＩＤ
            03  BUNBEN-TERMID                  PIC  X(16).
       *オペーレータＩＤ
