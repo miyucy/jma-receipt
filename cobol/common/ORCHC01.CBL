@@ -54,6 +54,7 @@
       *  04.01.00    NACL-多々納  08/02/04  オンラインファイル名確認追加
       *  04.02.00    NACL-多々納  08/02/XX  記号・番号の１６文字以上対応
       *  04.04.00    NACL-多々納  08/12/03  プログラムオプション追加
+      *  04.05.00    NACL-多々納  09/07/XX  備考コメント追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -106,6 +107,7 @@
            03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-INNO            PIC 9(01).
+           03  FLG-COMEND          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -137,6 +139,10 @@
            03  IDK                 PIC 9(04).
       *---- (01.00.01) LINE ADD END   ----------------------------  
            03  IDX2-1              PIC 9(01).
+      *    備考コメント
+           03  IDX-COM                 PIC 9(04).
+           03  IDXC1                   PIC 9(04).
+           03  IDXC2                   PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -233,6 +239,13 @@
            03  WRK-BYOMEI          PIC X(100).
       *
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *    備考コメント編集
+           03  WRK-COMMENT-G.
+               05  WRK-COMMENT         PIC X(96)
+                                       OCCURS   5.
+           03  WRK-COMMENT-H           PIC X(200).
+           03  COM-MAX                 PIC 9(03).
+      *
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -262,6 +275,7 @@
            03  PARA-UTAGAIKBN          PIC X(01).
            03  PARA-NYUGAIKBN          PIC X(01).
            03  PARA-CHARTKBN           PIC X(01).
+           03  PARA-COMMENT            PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -482,6 +496,11 @@
            MOVE    "CHARTKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-CHARTKBN
+           MOVE    WRK-PARA(1:1)       TO  PARA-NYUGAIKBN
+      *    備考コメント区分
+           MOVE    "COMMENT"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-COMMENT
       *
       *    病名編集オプション設定
            IF      PARA-BYOMEIKBN      =   "0"
@@ -988,8 +1007,72 @@
                    MOVE    SPACE               TO  HC01-NUM
                END-IF
            END-IF
+      *
+      *    備考コメント編集
+           IF      PARA-COMMENT        =   "1"
+               PERFORM 200210-COMMENT-HENSYU-SEC
+           END-IF
            .
        2002-HC01-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    備考コメント編集処理
+      *****************************************************************
+       200210-COMMENT-HENSYU-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-COMMENT-G
+           MOVE    ZERO                TO  IDX-COM
+           MOVE    96                  TO  COM-MAX
+      *    コメント１
+           MOVE    PTINF-COMMENT-1     TO  WRK-COMMENT-H
+           PERFORM 2002101-COMMENT-TBLHEN-SEC
+      *    コメント２
+           MOVE    PTINF-COMMENT-2     TO  WRK-COMMENT-H
+           PERFORM 2002101-COMMENT-TBLHEN-SEC
+      *    カルテ編集
+           PERFORM VARYING IDX-COM     FROM    1   BY  1
+                   UNTIL   IDX-COM     >   5
+               MOVE    WRK-COMMENT(IDX-COM)    TO  HC01-COMMENT(IDX-COM)
+           END-PERFORM
+           .
+       200210-COMMENT-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    コメントテーブル編集処理
+      *****************************************************************
+       2002101-COMMENT-TBLHEN-SEC        SECTION.
+      *
+           MOVE    1                   TO  IDXC1
+           MOVE    ZERO                TO  FLG-COMEND
+           PERFORM
+                   UNTIL      (FLG-COMEND  =   1  )
+                           OR (IDX-COM     >=  5  )
+      *        全角半角桁数チェック
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    WRK-COMMENT-H (IDXC1:COM-MAX)
+                                           TO  KANACHK-MAE-INPUT
+               MOVE    COM-MAX             TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               ADD     1                   TO  IDX-COM
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-COMMENT (IDX-COM)
+      *
+               PERFORM VARYING     IDXC2   FROM    COM-MAX   BY  -1
+                       UNTIL       IDXC2   <   1
+                   IF      WRK-COMMENT(IDX-COM)(IDXC2:1)
+                                           NOT =   SPACE
+                       ADD     IDXC2               TO  IDXC1
+                       MOVE    1                   TO  IDXC2
+                   END-IF
+               END-PERFORM
+               IF     (IDXC1              >    200   )  OR
+                      (WRK-COMMENT-H (IDXC1:)  =    SPACE )
+                   MOVE    1                   TO  FLG-COMEND
+               END-IF
+           END-PERFORM
+           .
+       2002101-COMMENT-TBLHEN-EXT.
            EXIT.
       *****************************************************************
       *    病名処理
