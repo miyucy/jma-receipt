@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 出産一時金等代理申請・受取請求書
+      *  コンポーネント名  : 出産育児一時金等代理申請・受取請求書
       *  管理者            : 
       *  作成日付    作業者        記述
       *  09/07/28    NACL-藤原     新規作成
@@ -81,6 +81,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-CSV-INFO        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -121,6 +122,7 @@
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
       *
+           03  WRK-SRYYM           PIC X(06).
            03  WRK-SKYYM           PIC X(16).
            03  WRK-SKYYMH          PIC X(05).
            03  WRK-BIRTHDAYH       PIC X(05).
@@ -183,9 +185,12 @@
       *  
        01  WRK-CONS-AREA.
       *    コンマ
-           03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
+           03  WRK-KUGIRI          PIC X(01)   VALUE   ",".
       *    改行コード
-           03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
+           03  WRK-KAIGYO          PIC X(01)   VALUE   X"0D".
+      *    ジョブ管理ＤＢのキー値
+           03  WRK-CONS-JOB-SHELLID
+                                   PIC X(08)   VALUE   "SOKATU".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -205,6 +210,13 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
+      *
+       01  CSV-INFO-REC.
+           COPY    "CPCSV-INFO.INC".
+      *
+      *    クライアント保存
+       01  FILE-INFO-REC.
+           COPY    "CPFILE-INFO.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -316,14 +328,16 @@
                                        WRK-PARA-TEISYUTUSAKI
            END-UNSTRING
       *
-           MOVE    WRK-PARA-HOSPNUM    TO SPA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM
+                                   TO SPA-HOSPNUM
       *
       *    ステップ管理開始処理
-           MOVE    "STS"               TO  SJOBKANRI-MODE
+           MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    "ORCBGCHILDBIRTH"   TO  JOB-PGID
-           MOVE    "出産一時金等代理申請・受取請求書"
-                                    TO  JOB-SHELLMSG
+           MOVE    "ORCBGCHILDBIRTH"
+                                   TO  JOB-PGID
+           MOVE    "出産育児一時金等代理申請・受取請求書"
+                                   TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -336,11 +350,29 @@
            MOVE    WRK-LNK-DAY1-WYMD   (1:5)
                                    TO  WRK-SKYYMH
       *
+      *    診療年月（請求年月の前月）取得
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE  "61"              TO  LNK-DAY6-IRAI
+           MOVE  WRK-SYMD          TO  LNK-DAY6-KIJUN
+           MOVE  "2"               TO  LNK-DAY6-ZOGENPTN
+           MOVE  -1                TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"         USING   STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN (1:6)
+                                   TO  WRK-SRYYM
+      *
       *    システム管理情報取得 
            PERFORM 1001-SYSKANRI-HENSYU-SEC
       *
-      *    分娩管理読込   
-           PERFORM 900-BUNBEN-READ-SEC
+           IF      WRK-PARA-TEISYUTUSAKI
+                                   =   "1" OR  "2"
+               CONTINUE
+           ELSE
+               MOVE    "提出先の指定が違います" 
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -365,6 +397,7 @@
                MOVE    "医療機関情報（基本）が取得できません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
       *
            INITIALIZE                  SYS-1002-REC
@@ -381,6 +414,7 @@
                MOVE    "医療機関情報（住所）が取得できません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
       *
            IF      FLG-END             =   ZERO
@@ -395,9 +429,72 @@
            EXIT.
       *
       *****************************************************************
+      *    削除処理
+      *****************************************************************
+       1001-CSVINFO-CLEAR-SEC          SECTION.
+      *
+      *    ＣＳＶＤＢ読み込み処理
+           INITIALIZE                  CSV-INFO-REC
+           MOVE    SPA-HOSPNUM     TO  CSV-INFO-HOSPNUM
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  CSV-INFO-TBL-KEY
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  CSV-INFO-SHELLID
+           MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
+           MOVE    WRK-PARA-TEISYUTUSAKI
+                                   TO  CSV-INFO-TEISYUTUSAKI
+           PERFORM 900-CSV-INFO-READ-SEC
+           IF      FLG-CSV-INFO    =   ZERO 
+      *        クライアント保存削除処理
+               MOVE    SPACE           TO  FILE-INFO-REC
+               INITIALIZE                  FILE-INFO-REC
+               MOVE    SPA-HOSPNUM     TO  FILE-INFO-HOSPNUM
+               MOVE    CSV-INFO-TBL-KEY
+                                       TO  FILE-INFO-TBL-KEY
+               MOVE    CSV-INFO-SRYYM  TO  FILE-INFO-SRYYM
+               MOVE    CSV-INFO-SHELLID
+                                       TO  FILE-INFO-SHELLID
+               MOVE    CSV-INFO-SHORI-RENNUM
+                                       TO  FILE-INFO-SHORI-RENNUM
+               MOVE    CSV-INFO-RENNUM TO  FILE-INFO-RENNUM
+      *
+               MOVE    FILE-INFO-REC   TO  MCPDATA-REC
+               MOVE    "tbl_file_info" TO  MCP-TABLE
+               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+      *
+      *        ＣＳＶＤＢ削除処理
+               INITIALIZE                  CSV-INFO-REC
+               MOVE    SPA-HOSPNUM     TO  CSV-INFO-HOSPNUM
+               MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  CSV-INFO-TBL-KEY
+               MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  CSV-INFO-SHELLID
+               MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
+               MOVE    WRK-PARA-TEISYUTUSAKI
+                                       TO  CSV-INFO-TEISYUTUSAKI
+               MOVE    CSV-INFO-REC    TO  MCPDATA-REC
+               MOVE    "tbl_csv_info"  TO  MCP-TABLE
+               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+           END-IF
+     *    
+           .
+       1001-CSVINFO-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
+      *
+      *    削除処理
+           PERFORM 1001-CSVINFO-CLEAR-SEC
+      *
+      *    分娩管理読込
+           PERFORM 900-BUNBEN-READ-SEC
       *
            MOVE    1               TO  WRK-SEQ-NO
       *
@@ -430,6 +527,13 @@
       *    ＣＳＶ（エンドレコード）編集処理
            PERFORM 2001-CSV-END-RECORD-HENSYU-SEC
       *
+      *    分娩管理ＣＬＯＳＥ
+           MOVE    "tbl_bunben"    TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    ファイル保存情報更新
+           PERFORM 3001-FILE-INFO-INSERT-SEC
            .
        200-MAIN-EXT.
            EXIT.
@@ -669,10 +773,12 @@
            MOVE    HCN61           TO  SPRT-PRTDATA
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    "（社保）出産一時金等代理申請・受取請求書"
+                   MOVE
+                       "（社保）出産育児一時金等代理申請・受取請求書"
                                            TO  SPRT-TITLE
                WHEN    "2"
-                   MOVE    "（国保）出産一時金等代理申請・受取請求書"
+                   MOVE
+                       "（国保）出産育児一時金等代理申請・受取請求書"
                                            TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID
@@ -692,6 +798,7 @@
                MOVE    "印刷ＤＢに更新できませんでした"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        2004-PRINT-OUT-EXT.
@@ -737,10 +844,6 @@
       *    分娩機関管理番号
       *****MOVE    SYS-1001-       TO  WRK-DATA
            MOVE    10              TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *    媒体区分
-           MOVE    "3"             TO  WRK-DATA
-           MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    請求年月
            MOVE    WRK-SKYYMH      TO  WRK-DATA
@@ -932,9 +1035,26 @@
       *    入院料〜代理受取額
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       12
-               MOVE    BUNBEN-MONEY (IDXX)
-                                       TO  WRK-NUM
-               MOVE    8               TO  WRK-NAGASA
+               EVALUATE    IDXX
+                   WHEN    3
+      *                分娩介助料
+                       IF      BUNBEN-BUNBENKBN    =   "2"
+                           MOVE    BUNBEN-MONEY (IDXX)
+                                                   TO  WRK-NUM
+                            MOVE    8               TO  WRK-NAGASA
+                       END-IF
+                   WHEN    4
+      *                分娩料
+                       IF      BUNBEN-BUNBENKBN    =   "1"
+                           MOVE    BUNBEN-MONEY (IDXX)
+                                                   TO  WRK-NUM
+                            MOVE    8              TO  WRK-NAGASA
+                       END-IF
+                   WHEN    OTHER
+                       MOVE    BUNBEN-MONEY (IDXX)
+                                               TO  WRK-NUM
+                       MOVE    8               TO  WRK-NAGASA
+               END-EVALUATE
                PERFORM 5005-NUM-HENSYU-SEC
            END-PERFORM    
       *    備考
@@ -998,34 +1118,45 @@
       *****************************************************************
        500-CSVINFO-SEC                SECTION.
       *
-           INITIALIZE                      ORCSCSVINFOAREA
-           MOVE    "INS"               TO  SCSVINFO-MODE
-           MOVE    "SOKATU"            TO  SCSVINFO-TBL-KEY
+           INITIALIZE                  ORCSCSVINFOAREA
+           MOVE    "INS"           TO  SCSVINFO-MODE
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SCSVINFO-TBL-KEY
            MOVE    LNK-PRTKANRI-SHELLID 
-                                       TO  SCSVINFO-SHELLID
+                                   TO  SCSVINFO-SHELLID
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                       TO  SCSVINFO-SHORI-RENNUM
-           MOVE    LNK-PRTKANRI-RENNUM TO  SCSVINFO-RENNUM
-           MOVE    WRK-PARA-SKYYM      TO  SCSVINFO-SRYYM
-           MOVE    LNK-PRTKANRI-SKYYMD TO  SCSVINFO-SKYYMD
-           MOVE    WRK-SCSVINFO-SEQ-NO TO  SCSVINFO-SEQ-NO
+                                   TO  SCSVINFO-SHORI-RENNUM
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    1               TO  SCSVINFO-RENNUM
+               WHEN    "2"
+                   MOVE    2               TO  SCSVINFO-RENNUM
+           END-EVALUATE
+           MOVE    WRK-SRYYM       TO  SCSVINFO-SRYYM
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SCSVINFO-SKYYMD
+           MOVE    WRK-SCSVINFO-SEQ-NO
+                                   TO  SCSVINFO-SEQ-NO
            MOVE    WRK-SCSVINFO-NYUGAIKBN
-                                       TO  SCSVINFO-NYUGAIKBN
+                                   TO  SCSVINFO-NYUGAIKBN
            MOVE    WRK-PARA-TEISYUTUSAKI
-                                       TO  SCSVINFO-TEISYUTUSAKI
-           MOVE    WRK-SCSVINFO-PTID   TO  SCSVINFO-PTID
-           MOVE    WRK-REC             TO  SCSVINFO-CSVDATA
+                                   TO  SCSVINFO-TEISYUTUSAKI
+           MOVE    WRK-SCSVINFO-PTID
+                                   TO  SCSVINFO-PTID
+           MOVE    WRK-REC         TO  SCSVINFO-CSVDATA
            CALL    "ORCSCSVINFO"       USING
                                        ORCSCSVINFOAREA
                                        SPA-AREA
-           IF      SCSVINFO-RETURN     =   ZERO
-               ADD     1                   TO  CNT-OUT
+           IF      SCSVINFO-RETURN =   ZERO
+               ADD     1               TO  CNT-OUT
            ELSE
                MOVE    "ＣＳＶ用ＤＢに更新できませんでした"
-                                          TO  WRK-RECEERR
+                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
+      *
        500-CSVINFO-EXT.
            EXIT.
       *
@@ -1053,6 +1184,14 @@
            END-IF
       *
            MOVE    1               TO  FLG-END
+           .
+       500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    異常終了処理
+      *****************************************************************
+       500-COBABORT-SEC          SECTION.
       *
            MOVE    SPACE           TO  WRK-ERRMSG
            STRING  "ORCBGCHILDBIRTH "
@@ -1063,7 +1202,7 @@
            END-STRING
            CALL    "cobabort"      USING   WRK-ERRMSG
            .
-       500-ERR-HENSYU-EXT.
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1071,17 +1210,16 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
            DISPLAY "*** ORCBGCHILDBIRTH IN   "  CNT-IN
            DISPLAY "*** ORCBGCHILDBIRTH OUT  "  CNT-OUT
            DISPLAY "*** ORCBGCHILDBIRTH PAGE "  CNT-PAGE
            DISPLAY "*** ORCBGCHILDBIRTH END ***"
       *
-      *    ファイル保存情報更新
-           PERFORM 3001-FILE-INFO-INSERT-SEC
+           IF      CNT-IN          =   ZERO
+               MOVE    "対象患者がありませんでした"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *     
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -1102,15 +1240,20 @@
       *
            INITIALIZE                  ORCSFILESVAREA
            MOVE    "I"             TO  SFILESV-MODE
-           MOVE    "SOKATU"        TO  SFILESV-TBL-KEY
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  SFILESV-SHELLID  (1)
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                    TO  SFILESV-SHORI-RENNUM
                                                         (1)
-           MOVE    LNK-PRTKANRI-RENNUM
-                                   TO  SFILESV-RENNUM   (1)
-           MOVE    WRK-PARA-SKYYM  TO  SFILESV-SRYYM    (1)
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    1               TO  SFILESV-RENNUM   (1)
+               WHEN    "2"
+                   MOVE    2               TO  SFILESV-RENNUM   (1)
+           END-EVALUATE
+           MOVE    WRK-SRYYM       TO  SFILESV-SRYYM    (1)
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  SFILESV-SKYYMD   (1)
       *****MOVE    "/home/orca/"   TO  SFILESV-TO-FOLDER(1)
@@ -1124,10 +1267,10 @@
                                    TO  SFILESV-TEISYUTUSAKI  (1)
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    "（社保）出産一時金等代理申請・受取請求書"
+                   MOVE    "（社保）出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "2"
-                   MOVE    "（国保）出産一時金等代理申請・受取請求書"
+                   MOVE    "（国保）出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
            END-EVALUATE
            IF      CNT-OUT         >   ZERO
@@ -1402,6 +1545,40 @@
            .
        900-PTINF-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ＣＳＶＩＮＦＯ読み込み
+      *****************************************************************
+       900-CSV-INFO-READ-SEC       SECTION.
+      *
+           MOVE    CSV-INFO-REC    TO  MCPDATA-REC
+      *
+           MOVE    "tbl_csv_info"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_csv_info"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-CSV-INFO
+                   MOVE    MCPDATA-REC     TO  CSV-INFO-REC
+               ELSE
+                   MOVE    1               TO  FLG-CSV-INFO
+                   INITIALIZE                  CSV-INFO-REC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-CSV-INFO
+               INITIALIZE                  CSV-INFO-REC
+           END-IF
+      *
+           MOVE    "tbl_csv_info"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-CSV-INFO-READ-EXT.
+           EXIT.  
       *
       *****************************************************************
       *    医療機関編集情報読込
