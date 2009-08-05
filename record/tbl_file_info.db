@@ -138,4 +138,4 @@ path    del4    {
 		AND   SHORI_RENNUM	=   :SHORI_RENNUM 
                 ;
         };
-}
+};
