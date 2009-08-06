@@ -134,8 +134,7 @@ path    del4    {
 		AND     TBL_KEY	 	=   :TBL_KEY
 		AND     SRYYM	 	=   :SRYYM
 		AND     SHELLID  	=   :SHELLID
-		AND   RENNUM	 	=   :RENNUM
 		AND   SHORI_RENNUM	=   :SHORI_RENNUM 
-                ;
-        };
+		;
+	};
 };

@@ -373,7 +373,7 @@
                                    =   "0" OR  "1" OR  "2"
                CONTINUE
            ELSE
-               MOVE    "提出先の指定が違います" 
+               MOVE    "提出先の設定が誤っています" 
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -519,7 +519,29 @@
       *****************************************************************
        1001-CSVINFO-CLEAR-SEC          SECTION.
       *
-      *    ＣＳＶＤＢ読み込み処理
+      *    クライアント保存削除処理
+           MOVE    SPACE           TO  FILE-INFO-REC
+           INITIALIZE                  FILE-INFO-REC
+           MOVE    SPA-HOSPNUM     TO  FILE-INFO-HOSPNUM
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  FILE-INFO-TBL-KEY
+           MOVE    WRK-SRYYM       TO  FILE-INFO-SRYYM
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  FILE-INFO-SHELLID
+           EVALUATE    WRK-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    1               TO  FILE-INFO-SHORI-RENNUM
+               WHEN    "2"
+                   MOVE    2               TO  FILE-INFO-SHORI-RENNUM
+           END-EVALUATE
+      *
+           MOVE    FILE-INFO-REC   TO  MCPDATA-REC
+           MOVE    "tbl_file_info" TO  MCP-TABLE
+           MOVE    "del4"          TO  MCP-PATHNAME
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+      *    ＣＳＶＤＢ削除処理
            INITIALIZE                  CSV-INFO-REC
            MOVE    SPA-HOSPNUM     TO  CSV-INFO-HOSPNUM
            MOVE    WRK-CONS-JOB-SHELLID
@@ -529,43 +551,11 @@
            MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
            MOVE    WRK-TEISYUTUSAKI
                                    TO  CSV-INFO-TEISYUTUSAKI
-           PERFORM 900-CSV-INFO-READ-SEC
-           IF      FLG-CSV-INFO    =   ZERO 
-      *        クライアント保存削除処理
-               MOVE    SPACE           TO  FILE-INFO-REC
-               INITIALIZE                  FILE-INFO-REC
-               MOVE    SPA-HOSPNUM     TO  FILE-INFO-HOSPNUM
-               MOVE    CSV-INFO-TBL-KEY
-                                       TO  FILE-INFO-TBL-KEY
-               MOVE    CSV-INFO-SRYYM  TO  FILE-INFO-SRYYM
-               MOVE    CSV-INFO-SHELLID
-                                       TO  FILE-INFO-SHELLID
-               MOVE    CSV-INFO-SHORI-RENNUM
-                                       TO  FILE-INFO-SHORI-RENNUM
-               MOVE    CSV-INFO-RENNUM TO  FILE-INFO-RENNUM
-      *
-               MOVE    FILE-INFO-REC   TO  MCPDATA-REC
-               MOVE    "tbl_file_info" TO  MCP-TABLE
-               MOVE    "del4"          TO  MCP-PATHNAME
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               PERFORM 900-ORCDBMAIN-SEC
-      *
-      *        ＣＳＶＤＢ削除処理
-               INITIALIZE                  CSV-INFO-REC
-               MOVE    SPA-HOSPNUM     TO  CSV-INFO-HOSPNUM
-               MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  CSV-INFO-TBL-KEY
-               MOVE    LNK-PRTKANRI-SHELLID
-                                       TO  CSV-INFO-SHELLID
-               MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
-               MOVE    WRK-TEISYUTUSAKI
-                                       TO  CSV-INFO-TEISYUTUSAKI
-               MOVE    CSV-INFO-REC    TO  MCPDATA-REC
-               MOVE    "tbl_csv_info"  TO  MCP-TABLE
-               MOVE    "del4"          TO  MCP-PATHNAME
-               MOVE    "DBDELETE"      TO  MCP-FUNC
-               PERFORM 900-ORCDBMAIN-SEC
-           END-IF
+           MOVE    CSV-INFO-REC    TO  MCPDATA-REC
+           MOVE    "tbl_csv_info"  TO  MCP-TABLE
+           MOVE    "del4"          TO  MCP-PATHNAME
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
      *    
            .
        1001-CSVINFO-CLEAR-EXT.
