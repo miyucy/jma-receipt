@@ -79,16 +79,17 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+      *
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-CSV-INFO        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
+           03  CNT-IN              PIC 9(05).
+           03  CNT-OUT             PIC 9(05).
            03  CNT-PAGE            PIC 9(05).
            03  CNT-LINE            PIC 9(05).
-           03  CNT-OUT             PIC 9(05).
-           03  CNT-IN              PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -122,11 +123,13 @@
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
       *
+           03  WRK-TEISYUTUSAKI    PIC X(01).
+      *
            03  WRK-SRYYM           PIC X(06).
            03  WRK-SKYYM           PIC X(16).
            03  WRK-SKYYMH          PIC X(05).
-           03  WRK-BIRTHDAYH       PIC X(05).
-           03  WRK-CHILD-BIRTHDAYH PIC X(05).
+           03  WRK-BIRTHDAYH       PIC X(07).
+           03  WRK-CHILD-BIRTHDAYH PIC X(07).
       *
            03  WRK-9               PIC 9.
            03  WRK-ZZ9             PIC ZZ9.
@@ -136,6 +139,8 @@
            03  WRK-CONTROL-SEQ-NO  PIC 9(06).
            03  WRK-DATA-SEQ-NO     PIC 9(06).
            03  WRK-SEQ-NO          PIC 9(06).
+           03  WRK-PAGE            PIC 9(05).
+           03  WRK-OUT             PIC 9(03).
       *
            03  WRK-SCSVINFO-SEQ-NO PIC 9(06).
            03  WRK-SCSVINFO-PTID   PIC 9(10).
@@ -303,8 +308,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
-           INITIALIZE                  SUM-AREA
-           MOVE    LOW-VALUE       TO  KEY-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -329,11 +332,12 @@
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM
-                                   TO SPA-HOSPNUM
+                                   TO  SPA-HOSPNUM
+           MOVE    ZERO            TO  LNK-PRTKANRI-SHORI-RENNUM
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
+           INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBGCHILDBIRTH"
                                    TO  JOB-PGID
            MOVE    "出産育児一時金等代理申請・受取請求書"
@@ -366,7 +370,7 @@
            PERFORM 1001-SYSKANRI-HENSYU-SEC
       *
            IF      WRK-PARA-TEISYUTUSAKI
-                                   =   "1" OR  "2"
+                                   =   "0" OR  "1" OR  "2"
                CONTINUE
            ELSE
                MOVE    "提出先の指定が違います" 
@@ -429,6 +433,88 @@
            EXIT.
       *
       *****************************************************************
+      *    主処理
+      *****************************************************************
+       200-MAIN-SEC                    SECTION.
+      *
+      *    社保分作成
+           IF      WRK-PARA-TEISYUTUSAKI
+                                   =   "0" OR  "1"
+               MOVE    "1"             TO  WRK-TEISYUTUSAKI
+               PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
+           END-IF
+      *
+      *    国保分作成
+           IF      WRK-PARA-TEISYUTUSAKI
+                                   =   "0" OR  "2"
+               MOVE    "2"             TO  WRK-TEISYUTUSAKI
+               PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
+           END-IF
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    支払機関別編集処理
+      *****************************************************************
+       2001-TEISYUTUSAKI-HENSYU-SEC    SECTION.
+      *
+           INITIALIZE                  SUM-AREA
+           MOVE    LOW-VALUE       TO  KEY-AREA
+           ADD     1               TO  LNK-PRTKANRI-SHORI-RENNUM
+      *
+           MOVE    ZERO            TO  WRK-PAGE
+                                       WRK-OUT
+      *
+           MOVE    1               TO  WRK-SEQ-NO
+           MOVE    WRK-SEQ-NO      TO  WRK-CONTROL-SEQ-NO
+           MOVE    ZERO            TO  WRK-DATA-SEQ-NO
+      *
+      *    削除処理
+           PERFORM 1001-CSVINFO-CLEAR-SEC
+      *
+      *    分娩管理読込
+           PERFORM 900-BUNBEN-READ-SEC
+      *
+           PERFORM          UNTIL   FLG-END        =   1
+               ADD     1               TO  WRK-SEQ-NO
+               MOVE    WRK-SEQ-NO      TO  WRK-DATA-SEQ-NO    
+               INITIALIZE                  SUM-HKNJANUM-G
+      *
+      *        分娩区分・保険者別編集処理
+               MOVE    KEY-NEW         TO  KEY-OLD
+               PERFORM          UNTIL   FLG-END        =   1
+                                OR      KEY-NEW    NOT =   KEY-OLD
+      *            明細編集処理
+                   PERFORM 2002-BODY-PRINT-SEC
+               END-PERFORM
+      *
+      *        合計編集処理
+               PERFORM 2003-TERM-PRINT-SEC
+      *
+      *        帳票印刷処理
+               PERFORM 2004-PRINT-OUT-SEC
+      *
+               IF      FLG-END         =   1
+      *            ＣＳＶ（コントロールレコード）編集処理
+                   PERFORM 2001-CSV-CONTROL-RECORD-HENSYU-SEC
+      *
+      *            ＣＳＶ（エンドレコード）編集処理
+                   PERFORM 2001-CSV-END-RECORD-HENSYU-SEC
+               END-IF 
+           END-PERFORM
+      *
+           MOVE    "tbl_bunben"    TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    ファイル保存情報更新
+           PERFORM 3001-FILE-INFO-INSERT-SEC
+           .
+       2001-TEISYUTUSAKI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    削除処理
       *****************************************************************
        1001-CSVINFO-CLEAR-SEC          SECTION.
@@ -441,7 +527,7 @@
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  CSV-INFO-SHELLID
            MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
-           MOVE    WRK-PARA-TEISYUTUSAKI
+           MOVE    WRK-TEISYUTUSAKI
                                    TO  CSV-INFO-TEISYUTUSAKI
            PERFORM 900-CSV-INFO-READ-SEC
            IF      FLG-CSV-INFO    =   ZERO 
@@ -472,7 +558,7 @@
                MOVE    LNK-PRTKANRI-SHELLID
                                        TO  CSV-INFO-SHELLID
                MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
-               MOVE    WRK-PARA-TEISYUTUSAKI
+               MOVE    WRK-TEISYUTUSAKI
                                        TO  CSV-INFO-TEISYUTUSAKI
                MOVE    CSV-INFO-REC    TO  MCPDATA-REC
                MOVE    "tbl_csv_info"  TO  MCP-TABLE
@@ -483,59 +569,6 @@
      *    
            .
        1001-CSVINFO-CLEAR-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    主処理
-      *****************************************************************
-       200-MAIN-SEC                    SECTION.
-      *
-      *    削除処理
-           PERFORM 1001-CSVINFO-CLEAR-SEC
-      *
-      *    分娩管理読込
-           PERFORM 900-BUNBEN-READ-SEC
-      *
-           MOVE    1               TO  WRK-SEQ-NO
-      *
-           MOVE    WRK-SEQ-NO      TO  WRK-CONTROL-SEQ-NO
-           MOVE    ZERO            TO  WRK-DATA-SEQ-NO
-      *
-           PERFORM          UNTIL   FLG-END        =   1
-      *
-               ADD     1               TO  WRK-SEQ-NO
-               MOVE    WRK-SEQ-NO      TO  WRK-DATA-SEQ-NO    
-               INITIALIZE                  SUM-HKNJANUM-G
-               MOVE    KEY-NEW         TO  KEY-OLD
-      *
-               PERFORM          UNTIL   FLG-END        =   1
-                                OR      KEY-NEW    NOT =   KEY-OLD
-      *            明細編集処理
-                   PERFORM 2002-BODY-PRINT-SEC
-               END-PERFORM
-      *
-      *        合計編集処理
-               PERFORM 2003-TERM-PRINT-SEC
-      *
-      *        帳票印刷処理
-               PERFORM 2004-PRINT-OUT-SEC
-           END-PERFORM
-      *
-      *    ＣＳＶ（コントロールレコード）編集処理
-           PERFORM 2001-CSV-CONTROL-RECORD-HENSYU-SEC
-      *
-      *    ＣＳＶ（エンドレコード）編集処理
-           PERFORM 2001-CSV-END-RECORD-HENSYU-SEC
-      *
-      *    分娩管理ＣＬＯＳＥ
-           MOVE    "tbl_bunben"    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-      *    ファイル保存情報更新
-           PERFORM 3001-FILE-INFO-INSERT-SEC
-           .
-       200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -563,8 +596,9 @@
            MOVE    WRK-HOSPNAME1   TO  HCN61-HOSPNAME (1)
            MOVE    WRK-HOSPNAME2   TO  HCN61-HOSPNAME (2)
       *     
-           ADD     1               TO  CNT-PAGE
-           MOVE    CNT-PAGE        TO  WRK-ZZ9
+           ADD     1               TO  WRK-PAGE
+                                       CNT-PAGE
+           MOVE    WRK-PAGE        TO  WRK-ZZ9
            MOVE    WRK-ZZ9         TO  HCN61-PAGE
       *
            MOVE    ZERO            TO  CNT-LINE
@@ -614,8 +648,7 @@
                MOVE    BUNBEN-NAME         TO  HCN61-NAME  (CNT-LINE)
                MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-LNK-DAY1-WYMD (1:5)
-                                           TO  WRK-BIRTHDAYH
+               MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-BIRTHDAYH
                EVALUATE    WRK-LNK-DAY2-EDTYMD1-G
                    WHEN    "S"
                        MOVE    "○"            TO  HCN61-BIRTHG
@@ -635,8 +668,7 @@
                                                            (CNT-LINE)
                MOVE    BUNBEN-BIRTHDAY     TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-LNK-DAY1-WYMD (1:5)
-                                           TO  WRK-CHILD-BIRTHDAYH
+               MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-CHILD-BIRTHDAYH
                MOVE    WRK-LNK-DAY2-EDTYMD1-Y
                                            TO  HCN61-CBIRTHY (CNT-LINE)
                MOVE    WRK-LNK-DAY2-EDTYMD1-M
@@ -771,7 +803,7 @@
                                    TO  SPRT-PRIORITY
            MOVE   "HCN61.red"      TO  SPRT-PRTID
            MOVE    HCN61           TO  SPRT-PRTDATA
-           EVALUATE    WRK-PARA-TEISYUTUSAKI
+           EVALUATE    WRK-TEISYUTUSAKI
                WHEN    "1"
                    MOVE
                        "（社保）出産育児一時金等代理申請・受取請求書"
@@ -816,7 +848,7 @@
            MOVE    "1,"            TO  WRK-REC
            MOVE    2               TO  WRK-REC-LENGTH
       *    提出先
-           MOVE    WRK-PARA-TEISYUTUSAKI
+           MOVE    WRK-TEISYUTUSAKI
                                    TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1124,13 +1156,13 @@
                                    TO  SCSVINFO-TBL-KEY
            MOVE    LNK-PRTKANRI-SHELLID 
                                    TO  SCSVINFO-SHELLID
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                   TO  SCSVINFO-SHORI-RENNUM
-           EVALUATE    WRK-PARA-TEISYUTUSAKI
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SCSVINFO-RENNUM
+           EVALUATE    WRK-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    1               TO  SCSVINFO-RENNUM
+                   MOVE    1               TO  SCSVINFO-SHORI-RENNUM
                WHEN    "2"
-                   MOVE    2               TO  SCSVINFO-RENNUM
+                   MOVE    2               TO  SCSVINFO-SHORI-RENNUM
            END-EVALUATE
            MOVE    WRK-SRYYM       TO  SCSVINFO-SRYYM
            MOVE    LNK-PRTKANRI-SKYYMD
@@ -1139,7 +1171,7 @@
                                    TO  SCSVINFO-SEQ-NO
            MOVE    WRK-SCSVINFO-NYUGAIKBN
                                    TO  SCSVINFO-NYUGAIKBN
-           MOVE    WRK-PARA-TEISYUTUSAKI
+           MOVE    WRK-TEISYUTUSAKI
                                    TO  SCSVINFO-TEISYUTUSAKI
            MOVE    WRK-SCSVINFO-PTID
                                    TO  SCSVINFO-PTID
@@ -1148,7 +1180,8 @@
                                        ORCSCSVINFOAREA
                                        SPA-AREA
            IF      SCSVINFO-RETURN =   ZERO
-               ADD     1               TO  CNT-OUT
+               ADD     1               TO  WRK-OUT
+                                           CNT-OUT
            ELSE
                MOVE    "ＣＳＶ用ＤＢに更新できませんでした"
                                        TO  WRK-RECEERR
@@ -1244,14 +1277,13 @@
                                    TO  SFILESV-TBL-KEY
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  SFILESV-SHELLID  (1)
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                   TO  SFILESV-SHORI-RENNUM
-                                                        (1)
-           EVALUATE    WRK-PARA-TEISYUTUSAKI
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SFILESV-RENNUM   (1)
+           EVALUATE    WRK-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    1               TO  SFILESV-RENNUM   (1)
+                   MOVE    1               TO  SFILESV-SHORI-RENNUM (1)
                WHEN    "2"
-                   MOVE    2               TO  SFILESV-RENNUM   (1)
+                   MOVE    2               TO  SFILESV-SHORI-RENNUM (1)
            END-EVALUATE
            MOVE    WRK-SRYYM       TO  SFILESV-SRYYM    (1)
            MOVE    LNK-PRTKANRI-SKYYMD
@@ -1262,10 +1294,10 @@
                    ".UKE"              DELIMITED   BY  SIZE
                                        INTO    SFILESV-TO-DATA  (1)
            END-STRING
-           MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
-           MOVE    WRK-PARA-TEISYUTUSAKI
+           MOVE    WRK-OUT         TO  SFILESV-CNT-ALL  (1)
+           MOVE    WRK-TEISYUTUSAKI
                                    TO  SFILESV-TEISYUTUSAKI  (1)
-           EVALUATE    WRK-PARA-TEISYUTUSAKI
+           EVALUATE    WRK-TEISYUTUSAKI
                WHEN    "1"
                    MOVE    "（社保）出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
@@ -1273,7 +1305,7 @@
                    MOVE    "（国保）出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
            END-EVALUATE
-           IF      CNT-OUT         >   ZERO
+           IF      WRK-OUT         >   ZERO
                MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
            END-IF 
            MOVE    WRK-RECEERR     TO  SFILESV-ERR-MSG  (1)
@@ -1290,33 +1322,33 @@
            EXIT.
       *
       *****************************************************************
-      *    西暦変換処理
+      *    日付変換処理
       *****************************************************************
-       5002-HIZUKE-HEN-SEC        SECTION.
+       5002-HIZUKE-HEN-SEC         SECTION.
       *
-           INITIALIZE                      WRK-LNK-DAY1-AREA
-                                           WRK-LNK-DAY2-AREA
-                                           WRK-LNK-DAY3-AREA
-                                           WRK-LNK-DAY4-AREA
-                                           WRK-LNK-DAY5-AREA
-                                           WRK-LNK-DAY6-AREA
-                                           WRK-LNK-DAY7-AREA
+           INITIALIZE                  WRK-LNK-DAY1-AREA
+                                       WRK-LNK-DAY2-AREA
+                                       WRK-LNK-DAY3-AREA
+                                       WRK-LNK-DAY4-AREA
+                                       WRK-LNK-DAY5-AREA
+                                       WRK-LNK-DAY6-AREA
+                                       WRK-LNK-DAY7-AREA
       *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY2-AREA
-           MOVE    LNK-DAY2-AREA       TO  WRK-LNK-DAY2-AREA
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY2-AREA
+           MOVE    "21"            TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD        TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY2-AREA
+           MOVE    LNK-DAY2-AREA   TO  WRK-LNK-DAY2-AREA
       *
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY1-AREA
-           MOVE    "11"                TO  LNK-DAY1-IRAI
-           MOVE    WRK-SYMD            TO  LNK-DAY1-YMD
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY1-AREA
-           MOVE    LNK-DAY1-AREA       TO  WRK-LNK-DAY1-AREA
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "11"            TO  LNK-DAY1-IRAI
+           MOVE    WRK-SYMD        TO  LNK-DAY1-YMD
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY1-AREA
+           MOVE    LNK-DAY1-AREA   TO  WRK-LNK-DAY1-AREA
            .
        5002-HIZUKE-HEN-EXT.
            EXIT.
@@ -1466,12 +1498,14 @@
       *    分娩管理読込
       *****************************************************************
        900-BUNBEN-READ-SEC             SECTION.
-      *     
+      *
+           MOVE    ZERO            TO  FLG-END
+      * 
            INITIALIZE                  BUNBEN-REC
            MOVE    WRK-PARA-HOSPNUM
                                    TO  BUNBEN-HOSPNUM
            MOVE    WRK-PARA-SKYYM  TO  BUNBEN-SKYYM
-           MOVE    WRK-PARA-TEISYUTUSAKI
+           MOVE    WRK-TEISYUTUSAKI
                                    TO  BUNBEN-TEISYUTUSAKI
            MOVE    BUNBEN-REC      TO  MCPDATA-REC
            MOVE    "tbl_bunben"    TO  MCP-TABLE
@@ -1503,7 +1537,10 @@
                MOVE    BUNBEN-HKNJANUM TO  KEY-N-HKNJANUM    
                ADD     1               TO  CNT-IN
       *  
-               DISPLAY "PTNUM=" BUNBEN-PTNUM
+               DISPLAY "PTNUM="         BUNBEN-PTNUM
+                       " TEISYUTUSAKI=" BUNBEN-TEISYUTUSAKI
+                       " BUNBENKBN="    BUNBEN-BUNBENKBN
+                       " HKNJANUM="     BUNBEN-HKNJANUM
            ELSE
                MOVE    1               TO  FLG-END
                MOVE    HIGH-VALUE      TO  KEY-NEW
