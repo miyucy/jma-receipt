@@ -549,8 +549,12 @@
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  CSV-INFO-SHELLID
            MOVE    WRK-SRYYM       TO  CSV-INFO-SRYYM
-           MOVE    WRK-TEISYUTUSAKI
-                                   TO  CSV-INFO-TEISYUTUSAKI
+           EVALUATE    WRK-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    1               TO  CSV-INFO-SHORI-RENNUM
+               WHEN    "2"
+                   MOVE    2               TO  CSV-INFO-SHORI-RENNUM
+           END-EVALUATE
            MOVE    CSV-INFO-REC    TO  MCPDATA-REC
            MOVE    "tbl_csv_info"  TO  MCP-TABLE
            MOVE    "del4"          TO  MCP-PATHNAME
@@ -1524,7 +1528,8 @@
                MOVE    MCPDATA-REC     TO  BUNBEN-REC
                MOVE    BUNBEN-BUNBENKBN
                                        TO  KEY-N-BUNBENKBN
-               MOVE    BUNBEN-HKNJANUM TO  KEY-N-HKNJANUM    
+               MOVE    BUNBEN-HKNJANUM-S
+                                       TO  KEY-N-HKNJANUM    
                ADD     1               TO  CNT-IN
       *  
                DISPLAY "PTNUM="         BUNBEN-PTNUM
@@ -1572,40 +1577,6 @@
            .
        900-PTINF-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    £Ã£Ó£Ö£É£Î£Æ£ÏÆÉ¤ß¹þ¤ß
-      *****************************************************************
-       900-CSV-INFO-READ-SEC       SECTION.
-      *
-           MOVE    CSV-INFO-REC    TO  MCPDATA-REC
-      *
-           MOVE    "tbl_csv_info"  TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC          =   ZERO
-               MOVE    "tbl_csv_info"  TO  MCP-TABLE
-               MOVE    "key3"          TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC          =   ZERO
-                   MOVE    ZERO            TO  FLG-CSV-INFO
-                   MOVE    MCPDATA-REC     TO  CSV-INFO-REC
-               ELSE
-                   MOVE    1               TO  FLG-CSV-INFO
-                   INITIALIZE                  CSV-INFO-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-CSV-INFO
-               INITIALIZE                  CSV-INFO-REC
-           END-IF
-      *
-           MOVE    "tbl_csv_info"  TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       900-CSV-INFO-READ-EXT.
-           EXIT.  
       *
       *****************************************************************
       *    °åÎÅµ¡´ØÊÔ½¸¾ðÊóÆÉ¹þ
