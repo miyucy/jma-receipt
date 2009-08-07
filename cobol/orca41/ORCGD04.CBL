@@ -126,6 +126,8 @@
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
       *
+           COPY "CPLNKD04.INC".
+      *
            COPY "COMMON-SPA"               REPLACING //SPA-//
                                            BY        //WKSPA-//.
       *
@@ -1498,7 +1500,8 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           INITIALIZE                      SPA-WORK
+           INITIALIZE                      LNK-D04-AREA
+           MOVE    LNK-D04-AREA        TO  SPA-WORK
            MOVE    SPA-AREA            TO  LNK-KYOUTU
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE

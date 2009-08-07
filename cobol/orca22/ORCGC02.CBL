@@ -246,6 +246,8 @@
       *                                     病名は主病名としないようにする
       *  04.05.04    NACL-藤原    09/06/01  排他制御時の表示の変更
       *  04.05.05    NACL-藤原    09/06/02  病名の入力順対応
+      *  04.05.06    NACL-藤原    09/07/22  照会画面からの遷移対応
+      *                                     渡された病名を表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -513,6 +515,9 @@
       *
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
+      *
+      *    D04画面からの遷移情報
+           COPY    "CPLNKD04.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1255,6 +1260,9 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
                                                    OR  "KT01"
                                                    OR  "Q02"  )
            AND   ( SPA-PTNUM       NOT =   SPACE              )
+               IF      SPA-C02-MOTOPG      =   "D04"
+                   MOVE    SPA-WORK        TO  LNK-D04-BYOMEI
+               END-IF
                MOVE    SPA-PTNUM       TO  C02-PTNUM
                PERFORM 41015-PTNUM-CHK-SEC
                MOVE    SPA-HKNCOMBIMEI TO  SPA-GMN-C02-HKNCOMBIMEIH
@@ -1294,6 +1302,15 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
                        MOVE    1               TO  SPA-GMN-C02-CUR
                    END-IF    
       *************MOVE    1               TO  SPA-GMN-C02-CUR
+               END-IF
+               IF      SPA-C02-MOTOPG      =   "D04"
+                   IF      LNK-D04-BYOMEI  NOT =   SPACE
+                       MOVE    LNK-D04-BYOMEI      TO  C02-BYOMEI
+                       PERFORM 41013-BYOMEI-CHK-SEC
+                       IF      SPA-ERRCD   NOT =   SPACE
+                           MOVE    SPACE           TO  SPA-ERRCD
+                       END-IF
+                   END-IF
                END-IF
            ELSE    
                MOVE    26              TO  SPA-GMN-C02-CUR
@@ -6716,7 +6733,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-PERFORM
       *
            IF      WRK-TANDOKUKBN      =   ZERO
-               MOVE    "0076"              TO  SPA-ERRCD  
+               MOVE    "0076"              TO  SPA-ERRCD
+               MOVE    8                   TO  SPA-GMN-C02-CUR
                GO  TO  450-TOUROKU-EXT
            END-IF
       *
