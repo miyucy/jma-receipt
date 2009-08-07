@@ -836,3 +836,17 @@ path	key41 	{
 		;
 	};
 };
+
+path	key42 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key42_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+                        AND   ZAISKBKBN   =   :ZAISKBKBN
+                        AND   SRYYM       >=  :SRYYM
+                        AND   SRYYM       <=  :CREYMD
+		;
+	};
+};

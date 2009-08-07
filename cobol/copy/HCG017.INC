@@ -1,6 +1,6 @@
         01  HCG017.
             02  HCG017-SRYKBN   PIC X(20).
-            02  HCG017-SRYYM    PIC X(16).
+            02  HCG017-SRYYM    PIC X(46).
             02  HCG017-SAKYMD   PIC X(22).
             02  HCG017-PAGE PIC X(3).
             02  HCG017-NYUGAIKBN    PIC X(8).

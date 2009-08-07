@@ -18,3 +18,4 @@
                       PIC X(14)   OCCURS  5 TIMES.
               03  HCMG006-GAKU
                       PIC X(14)   OCCURS  5 TIMES.
+            02  HCMG006-KIKAN   PIC X(50).

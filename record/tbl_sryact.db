@@ -459,3 +459,19 @@ path	key16	{
 	};
 };
 
+path	key17 	{
+	DBSELECT	{
+		DECLARE tbl_sryact_key17_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_sryact a,tbl_ptinf b
+		WHERE   a.HOSPNUM        =  :HOSPNUM
+		AND     a.SRYYM          >=   :SRYYM
+		AND     a.SRYYM          <=   :CREYMD
+		AND     a.NYUGAIKBN  LIKE     :NYUGAIKBN
+		AND     a.HOSPNUM        =  b.HOSPNUM
+		AND     a.PTID          =  b.PTID
+		AND     b.TSTPTNUMKBN  <> '1'
+		ORDER   BY a.PTID,a.SRYKA,a.ZAINUM
+		;
+	};
+};
