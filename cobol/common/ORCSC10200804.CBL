@@ -143,8 +143,6 @@
       *
            03  FLG-SANTEI-ARI      PIC 9(01).
            03  FLG-FUKUSU          PIC 9(01).
-      *    Â¾°å±¡Âà±¡Æü
-           03  FLG-TAITAIIN        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -204,6 +202,30 @@
       *
            03  WRK-ERRCD           PIC X(04). 
       *
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZ.
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-TENSUS-X.
+               05  WRK-TENSUS-Z    PIC ZZZZ9.99.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+           03  WRK-BUNGSU-X.
+               05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
+           03  WRK-KEICOM-X.
+               05  WRK-KEICOM-Z    PIC ZZZZZZZ9.
+           03  WRK-KEICOMS-X.
+               05  WRK-KEICOMS-Z   PIC ZZZZ9V99.
+           03  WRK-GOKEI-X.
+               05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
+           03  WRK-NOZ             PIC ZZ9.
+      *
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEI          PIC 9(08).
+      *
       *    Ï«ºÒµßµÞ°åÎÅ´ÉÍý²Ã»»Í­Ìµ
            03  WRK-RSISYOSIN       PIC 9(04).
       *
@@ -224,6 +246,10 @@
            03  WRK-TENSU1          PIC 9(08).
       *
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-KEIYMD.
                05  WRK-KEI-YY          PIC 9(04).
@@ -324,8 +350,6 @@
       *    ËãÌôÈ½Äê
            03  WRK-DD                  PIC 9(02).
            03  IDX-N2                  PIC 9(02).
-      *    Æþ±¡»»Äê¾å¸Â
-           03  WRK-NYUCNT              PIC 9(03).
       *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
@@ -1117,7 +1141,6 @@
                IF      (SPA-NYUGAIKBN      =   "1"  )  AND
                        (LNK-ORCSC-TIMEFLG  NOT =   ZERO)  AND
                        (WRK-COM-DATAKBN(IDX-Z) =   "1" )
-               AND     (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =  ZERO )
                    PERFORM 1002-KASAN-SET-SEC
                END-IF
            END-IF
@@ -4007,8 +4030,6 @@
            MOVE    ZERO                TO  IDX-SINSATU2
       *    Ê£¿ô²Ê¡¦ÊÝ¸±
            MOVE    ZERO                TO  FLG-FUKUSU
-      *    Â¾°å±¡Âà±¡Æü
-           MOVE    ZERO                TO  FLG-TAITAIIN
       *    ¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE      )  OR
@@ -4019,8 +4040,6 @@
                    OR        (LNK-ORCSC-PG        =   "KT01" )
       *!!!
              IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
-      *          ¼£¸³¸ºÅÀÊ¬
-             OR   (WRK-COM-GENTEN (IDX-Z)   =   "1")
                CONTINUE
              ELSE
       *        ¿Ç»¡ÎÁ¤ÎÈ½Äê
@@ -4209,13 +4228,11 @@
                IF      WRK-COM-INPUTCD(IDX-Z) =   "113003510"  OR
                                                   "113003710"
                    ADD     1               TO  IDX-ZAI1
-                   MOVE   IDX-Z            TO  IDX-SYU2
                END-IF
       *            ºÆ¿Ç
                IF      WRK-COM-INPUTCD(IDX-Z) =   "113003610"  OR
                                                   "113003810"
                    ADD     1               TO  IDX-ZAI2
-                   MOVE   IDX-Z            TO  IDX-SYU2
                END-IF
       *
       *        ¸¡¿Ç¤«¤é¤Î¥³¥á¥ó¥È
@@ -4263,11 +4280,6 @@
                           (WRK-COM-TIMEFLG (IDX-Z)   NOT =   ZERO )
                        MOVE    1               TO  FLG-JIKASAN
                    END-IF
-               END-IF
-      *
-      *        Â¾°å±¡Âà±¡Æü
-               IF      WRK-COM-INPUTCD (IDX-Z) =   "099999906"
-                   MOVE    1                   TO  FLG-TAITAIIN
                END-IF
       *
              END-IF
@@ -4330,13 +4342,11 @@
       *        ¥ê¥ó¥ÑÉâ¼ð»ØÆ³´ÉÍýÎÁ
                IF      WRK-COM-INPUTCD (IDX-Z) =   "113010410"
                    MOVE    1                   TO  FLG-NYUIN
-                   MOVE    1                   TO  WRK-NYUCNT
                    PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
       *        Âà±¡»þ¶¦Æ±»ØÆ³ÎÁ£²
                IF      WRK-COM-INPUTCD (IDX-Z) =   "113008910"
                    MOVE    2                   TO  FLG-NYUIN
-                   MOVE    2                   TO  WRK-NYUCNT
                    PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
       *
@@ -4440,7 +4450,6 @@
                       (IDX-ZAI2            =   1   )  AND
                       (IDX-SYU2            >   ZERO )
                    MOVE    "1017"          TO  SPA-ERRCD
-                   MOVE    "1058"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                    GO      TO      200-ALL-SYORI-EXT
                END-IF
@@ -5100,20 +5109,6 @@
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
                MOVE    1                   TO  FLG-TAIIN
            END-IF
-      *!!!
-      *    Â¾±¡Âà±¡Æü¤¬¤¢¤ë»þ¡¢Âà±¡Æü
-           IF      FLG-TAITAIIN        =   1
-               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
-               MOVE    2                   TO  FLG-TAIIN
-           ELSE
-               IF     (SPA-TAI-TAIINYMD    =   SPACE )  OR
-                      (SPA-TAI-TAIINYMD    <=  WRK-SYOYMD)
-                   CONTINUE
-               ELSE
-                   MOVE    SPA-TAI-TAIINYMD    TO  WRK-SYOYMD
-                   MOVE    2                   TO  FLG-TAIIN
-               END-IF
-           END-IF
       *    Æ±Æü½é¿Ç¤ÎÆþÎÏ¤¬¤¢¤ë»þ
            IF     (FLG-DOUJITU         =   1 )  AND
                   (IDX-SINSATU2        >   ZERO)
@@ -5130,8 +5125,7 @@
       *@
       *    ¾®»ù»ØÆ³´ÉÍýÎÁ¤ÏÂà±¡Æü¤Î¤ßÈ½Äê¤È¤¹¤ë
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "113002210"
-               IF     (FLG-TAIIN           =   1
-                                           OR  2    ) OR
+               IF     (FLG-TAIIN           =   1    ) OR
                       (WRK-SYOYMD(1:6)     =   SPA-SRYYMD(1:6))
                    CONTINUE
                ELSE
@@ -5155,9 +5149,9 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
       *TEST
-      *         DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
-      *           ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-      *           ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+               DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
+                 ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                 ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
       *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN
@@ -5172,14 +5166,11 @@
                WHEN    WRK-KEIYMD          >   SPA-SRYYMD
       *            £±·î¸å¤ÎÁ°±Ä¶ÈÆü¤ÈÆ±¤¸»þ¡¢£Ï£Ë
                    IF      FLG-SIDOU       =   1
-                       EVALUATE    FLG-TAIIN
-                       WHEN    0
-                           MOVE    "0034"         TO  SPA-ERRCD
-                       WHEN    1
+                       IF      FLG-TAIIN       =   1
                            MOVE    "0120"         TO  SPA-ERRCD
-                       WHEN    2
-                           MOVE    "0121"         TO  SPA-ERRCD
-                       END-EVALUATE
+                       ELSE
+                           MOVE    "0034"          TO  SPA-ERRCD
+                       END-IF
                    ELSE
                        IF      WRK-KEIYMDZEN   <=   SPA-SRYYMD
                            IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
@@ -5187,34 +5178,18 @@
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                                 (IDX-Z)
-      **                       IF      FLG-TAIIN       =   1
-      *                            MOVE    "K022"          TO  SPA-ERRCD
-      *                        ELSE
-      *                            MOVE    "K002"          TO  SPA-ERRCD
-      ***                      END-IF
-                               EVALUATE    FLG-TAIIN
-                               WHEN    0
-                                   MOVE    "K002"         TO  SPA-ERRCD
-                               WHEN    1
-                                   MOVE    "K022"         TO  SPA-ERRCD
-                               WHEN    2
-                                   MOVE    "K032"         TO  SPA-ERRCD
-                               END-EVALUATE
+                               IF      FLG-TAIIN       =   1
+                                   MOVE    "K022"          TO  SPA-ERRCD
+                               ELSE
+                                   MOVE    "K002"          TO  SPA-ERRCD
+                               END-IF
                            END-IF
                        ELSE
-      *                     IF      FLG-TAIIN       =   1
-      *                         MOVE    "0120"          TO  SPA-ERRCD
-      *                     ELSE
-      *                         MOVE    "0034"          TO  SPA-ERRCD
-      *                     END-IF
-                           EVALUATE    FLG-TAIIN
-                           WHEN    0
-                               MOVE    "0034"         TO  SPA-ERRCD
-                           WHEN    1
-                               MOVE    "0120"         TO  SPA-ERRCD
-                           WHEN    2
-                               MOVE    "0121"         TO  SPA-ERRCD
-                           END-EVALUATE
+                           IF      FLG-TAIIN       =   1
+                               MOVE    "0120"          TO  SPA-ERRCD
+                           ELSE
+                               MOVE    "0034"          TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
       *!!!
@@ -5310,15 +5285,11 @@
       *
            INITIALIZE                      ORCSC91AREA
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
-      *    IF      FLG-NYUIN           =   2
-      *        MOVE    "8"                 TO  LNK-SC91-KBN
-      *    ELSE
-      *        MOVE    "9"                 TO  LNK-SC91-KBN
-      *    END-IF
-      *    ½é²óÆþ±¡ÆüÈ½Äê¤Ê¤·¤È¤¹¤ë
-           MOVE    "9"                 TO  LNK-SC91-KBN
-      *    ¾å¸Â²ó¿ô
-           MOVE    WRK-NYUCNT          TO  LNK-SC91-NYUCNT
+           IF      FLG-NYUIN           =   2
+               MOVE    "8"                 TO  LNK-SC91-KBN
+           ELSE
+               MOVE    "9"                 TO  LNK-SC91-KBN
+           END-IF
            MOVE    WRK-COM-INPUTCD (IDX-Z)
                                        TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
@@ -5334,8 +5305,8 @@
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
            END-IF
       *   £±²ó¤Î¤ß
-           IF   (WRK-COM-NYU-KAI (IDX-Z)   >   WRK-NYUCNT )  OR
-                (LNK-ORCSC-KAISU           >   WRK-NYUCNT )
+           IF   (WRK-COM-NYU-KAI (IDX-Z)   >   FLG-NYUIN )  OR
+                (LNK-ORCSC-KAISU           >   FLG-NYUIN )
                MOVE    "0212"              TO  SPA-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
            END-IF
@@ -5495,10 +5466,6 @@
       *
                 IF     (WRK-COM-SRYKBN     (IDX-Z)
                                            NOT =   "95" AND "96") AND
-      *!
-      *            ¿ÇÎÅ¼ïÊÌ¤¬ÂÐ¾Ý³°
-                       (WRK-COM-SRYSYUKBN (IDX-Z)  NOT =   "409" )  AND
-      *
                        (WRK-COM-INPUTCD(IDX-Z)(1:3)
                                            NOT =   "101"  )   AND
                        (WRK-COM-GAIKANRIKBN(IDX-Z)
