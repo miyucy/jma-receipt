@@ -1604,6 +1604,9 @@
       *****************************************************************
        480-GYOUMU-SENI-SEC             SECTION.
       *
+           MOVE    SPA-SYSYMD      TO  SPA-SRYYMD
+           MOVE    SPA-SYSYMDWH    TO  SPA-SRYYMDW
+      *
       *    入力時チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF  ( SPA-ERRCD         NOT =   SPACE )
