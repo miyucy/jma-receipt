@@ -1961,8 +1961,11 @@
       *    更新の時、変更時のみチェック
            IF     (SPA-NAI-HKAKUNINYMD     >   SPA-SYSYMD )
              AND  (SPA-NAI-HKAKUNINYMD NOT =   SPA-MAE-HKAKUNINYMD)
-               MOVE    "0057"              TO  SPA-ERRCD
-               MOVE    19                  TO  SPA-GMN-CUR
+               IF      SPA-HKN-KAKUINFLG       =   ZERO
+                   MOVE    "0057"              TO  SPA-ERRCD
+                   MOVE    19                  TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-HKN-KAKUINFLG
+               END-IF
            END-IF
       *
            .

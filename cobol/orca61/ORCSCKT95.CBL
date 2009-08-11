@@ -2458,6 +2458,12 @@
            IF      AGECHK-RJNCHK       =   4
                MOVE    3                   TO  SPA-RJN-ERR
            END-IF
+      *!!!
+      *    £È£²£°¡¥£´¤«¤éÂà¿¦¹ñÊÝ¤Ç£¶£µºÐ°Ê¾å
+           IF      AGECHK-RJNCHK       =   9
+               MOVE    9                   TO  SPA-RJN-ERR
+           END-IF
+      *!!!
            IF      AGECHK-RJNCHK       =   2
                MOVE    1                   TO  SPA-NAI-ROUFLG
            ELSE

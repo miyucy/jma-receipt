@@ -3279,6 +3279,11 @@
            IF      AGECHK-RJNCHK       =   4
                MOVE    3                   TO  SPA-RJN-ERR
            END-IF
+      *    Ｈ２０．４から退職国保で６５歳以上
+           IF      AGECHK-RJNCHK       =   9
+               MOVE    9                   TO  SPA-RJN-ERR
+           END-IF
+      *!!!
            IF      AGECHK-RJNCHK       =   2
                MOVE    1                   TO  SPA-NAI-ROUFLG
            ELSE
@@ -4939,7 +4944,7 @@
                MOVE    WRK-YMDS        TO  WRK-RSI-YMD
                MOVE    WRK-YMDS-1      TO  WRK-RSI-YMD1
            END-IF
-      *    初診算定日がＨ１８．３．３１以前であれば、改正前のコード検索
+      *    初診算定日が当日で前回初診算定日がない時、改正前のコード検索
            IF     (WRK-SYO-YMD     NOT =   WRK-SYO-YMD1 )
             AND   (WRK-SYO-YMD     NOT =   SPACE        )
             AND   (WRK-SYO-YMD         <   SPA-SRYYMD   )

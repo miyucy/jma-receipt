@@ -90,6 +90,7 @@
       *  04.04.00    NACL-多々納  08/11/28  処理共通対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
+      *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7646,7 +7647,7 @@
                    MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                    MOVE    2               TO  SPA-GMN-CUR
                    MOVE    SPACE           TO  SPA-GMN-MEISYO-G
-                                                (SPA-GMN-IDX)(1:2)
+                                                (SPA-GMN-IDX)
                    MOVE    SPA-COM-NAME (SPA-GMN-IDX)
                                            TO  SPA-GMN-MEISYO
                                                 (SPA-GMN-IDX)
@@ -10371,6 +10372,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            後期高齢者の保険がない時
                    WHEN    3
                        MOVE    "1076"              TO  SPA-ERRCD
+      *            退職国保で６５歳以上
+                   WHEN    9
+                       MOVE    "1077"              TO  SPA-ERRCD
                END-EVALUATE
            END-IF
            IF      SPA-ERRCD           =   SPACE
@@ -11146,6 +11150,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    後期高齢者の保険がない時
            IF      SPA-RJN-ERR         =   3
                MOVE    "1076"              TO  SPA-ERRCD
+           END-IF
+      *    退職国保の年齢
+           IF      SPA-RJN-ERR         =   9
+               MOVE    "1077"              TO  SPA-ERRCD
            END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1

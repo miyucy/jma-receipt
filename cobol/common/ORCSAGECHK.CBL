@@ -55,6 +55,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
       *                                     （後期高齢者、就学前判定）
       *                                     （残留邦人）
+      * 04.05.00     NACL-多々納  09/08/11  退職国保の６５歳以上判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -580,6 +581,13 @@
                                        <   70        )
       *        ６５歳以上老人公費の割合判定
                PERFORM 2001-RJNCHK65-SYORI-SEC
+           END-IF
+      *!!
+      *    Ｈ２０．４月から退職国保の年齢判定
+           IF     (AGECHK-SRYYMD       >=  "20080401")  AND
+                  (COMB-HKNNUM         =   "067"  )  AND
+                  (AGECHK-NENREI       >=  65     )
+               MOVE    9               TO  AGECHK-RJNCHK
            END-IF
       *
            .

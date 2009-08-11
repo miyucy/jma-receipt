@@ -1791,6 +1791,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "1077"
+                   STRING  "６５歳以上です。"
+                           "退職国保は対象ではありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *        Ｈ１８．１０改正から
                WHEN    "1070"
                    STRING  "老人の保険割合が２割です。"

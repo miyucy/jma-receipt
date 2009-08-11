@@ -4517,8 +4517,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "保険の確認年月日が入力エラーです。"
                                                TO  SPA-ERRMSG
                WHEN    "0057"
-                   MOVE    "保険の確認年月日に未来日が入力されました"
-                                               TO  SPA-ERRMSG
+                   STRING  "警告！"
+                           "保険の確認年月日に未来日が入力されました"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0058"
                    MOVE
                    "保険有効開始日＜有効終了日で入力して下さい。"
@@ -4582,6 +4585,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1050"
                    MOVE    "継続はＨ１５年３月３１日までの有効です。"
                                                TO  SPA-ERRMSG
+               WHEN    "1051"
+                   STRING  "６５歳以上です。"
+                           "退職国保は有効期間外となります。"
+                           "期間変更して下さい。"
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K151"
+                   STRING  "警告！！"
+                           "前期高齢者となりました。"
+                           "保険の補助区分を確認して下さい。"
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *    公費エラー
                WHEN    "0070"
                    MOVE    "負担者番号・受給者番号が入力されています"
@@ -4626,8 +4641,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "公費の確認年月日が入力エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "0080"
-                   MOVE    "公費の確認年月日に未来日が入力されました"
-                                               TO  SPA-ERRMSG
+                   STRING  "警告！"
+                           "公費の確認年月日に未来日が入力されました"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0081"
                    MOVE
                    "保険有効開始日＜有効終了日で入力して下さい。"

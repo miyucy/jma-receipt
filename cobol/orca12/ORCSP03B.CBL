@@ -1179,9 +1179,12 @@
                  AND  (SPA-MAE-KKAKUNINYMD(IDX-K)
                                        NOT =   SPA-NAI-KKAKUNINYMD
                                                              (IDX-K))
-                   MOVE    "0080"          TO  SPA-ERRCD
-                   MOVE    25              TO  SPA-GMN-CUR
-                   GO  TO                  1001-KKAKUNINYMD-CHK-EXT
+                   IF      SPA-KOH-KAKUINFLG (IDX-K)   =   ZERO
+                       MOVE    "0080"          TO  SPA-ERRCD
+                       MOVE    25              TO  SPA-GMN-CUR
+                       MOVE    1               TO  SPA-KOH-KAKUINFLG
+                                                            (IDX-K)
+                   END-IF
                END-IF
            END-IF
            .

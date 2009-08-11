@@ -266,6 +266,8 @@
                       09  SPA-NUM-KEIFLG          PIC 9(01).
       *               ¸å´ü¹âÎð¼Ô·Ù¹ð
                       09  SPA-ROU-KEIFLG          PIC 9(01).
+      *               ³ÎÇ§Ç¯·îÆü·Ù¹ð
+                      09  SPA-HKN-KAKUINFLG        PIC 9(01).
       *
       *            ÂÐ¾Ý³«»ÏÈÖ¹æ
                    07  SPA-NAI-HKNSTR              PIC 9(04).
@@ -315,6 +317,8 @@
                            11  SPA-NAI-PTKOH-KEIFLG        PIC X(01).
       *                    ¼õµë¼ÔÈÖ¹æ·Ù¹ð
                            11  SPA-NAI-JYUCHK              PIC 9(01).
+      *                    ³ÎÇ§Ç¯·îÆü·Ù¹ð
+                           11  SPA-KOH-KAKUINFLG        PIC 9(01).
       *
                        09  SPA-KOH-MAX             PIC 9(04).
       *            ÂÐ¾Ý³«»Ï°ÌÃÖ
@@ -403,6 +407,11 @@
                        09  SPA-NAI-NENREI-YY       PIC 9(03).
                        09  SPA-NAI-NENREI-MM       PIC 9(02).
       *
+      *        £¶£µºÐÅþÃ£Ç¯·îÆü
+                   07  SPA-BYMD-65.
+                       09 SPA-B65-YY               PIC 9(04).
+                       09 SPA-B65-MM               PIC 9(02).
+                       09 SPA-B65-DD               PIC 9(02).
       *        £·£°ºÐÅþÃ£Ç¯·îÆü
                    07  SPA-BYMD-70.
                        09 SPA-B70-YY               PIC 9(04).
@@ -453,6 +462,8 @@
       *£È£²£°¡¥£´
       *        ¸å´ü¹âÎð¼Ô·Ù¹ð
                05  SPA-KEI-KOUKI2             PIC 9(01).
+      *        ¹ñÊÝ·Ù¹ð
+               05  SPA-KEI-KOUKI3             PIC 9(01).
       *
       *    ÊÝ¸±¡¦¸øÈñ¾ðÊó
            03  SPA-HKNKOH-AREA.
@@ -493,6 +504,8 @@
                        09  SPA-PTHKN-NUM-KEIFLG        PIC 9(01).
       *                ¸å´ü¹âÎð¼Ô·Ù¹ð
                        09  SPA-PTHKN-ROU-KEIFLG        PIC 9(01).
+      *                ³ÎÇ§Ç¯·îÆü·Ù¹ð
+                       09  SPA-PTHKN-KAKUINFLG         PIC 9(01).
       *
                    07  SPA-PTHKN-MAX               PIC 9(04).
       *
@@ -523,6 +536,8 @@
                        09  SPA-PTKOH-MAEKAKUNINYMDW    PIC X(09).
       *                ÊÝ¸±¼Ô·Ù¹ðÉ½¼¨
                        09  SPA-PTKOH-KEIFLG            PIC X(01).
+      *                ³ÎÇ§Ç¯·îÆü·Ù¹ð
+                       09  SPA-PTKOH-KAKUINFLG         PIC 9(01).
       *
                    07  SPA-PTKOH-MAX               PIC 9(04).
       *

@@ -61,6 +61,7 @@
       * 04.04.00     NACL-多々納  08/11/28  処理共通対応
       * 04.05.00     NACL-多々納  09/05/25  回数複写追加
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.05.00     NACL-多々納  09/08/11  退職国保年齢チェック
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8052,6 +8053,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "1076"          TO  SPA-ERRCD
                            MOVE    1               TO  SPA-NAI-ROUSTR
                        END-IF
+      *            退職国保で６５歳以上
+                   WHEN    9
+                       MOVE    "1077"              TO  SPA-ERRCD
                END-EVALUATE
            END-IF
       *    保険エラーがある時、エラーとする
@@ -9046,6 +9050,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-HKN-ERR         =   4
                MOVE    "1034"              TO  SPA-ERRCD
                MOVE    5                   TO  SPA-GMN-CUR
+           END-IF
+      *    退職国保の年齢
+           IF      SPA-RJN-ERR         =   9
+               MOVE    "1077"              TO  SPA-ERRCD
            END-IF
       *
       *    入院料設定ないエラー

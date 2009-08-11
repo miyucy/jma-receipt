@@ -85,6 +85,8 @@
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.03.00    NACL-Â¿¡¹Ç¼  08/10/03  ¸øÈñÉéÃ´³Û¤ËËÌ³¤Æ»¤Î'183'ÄÉ²Ã
       *  04.04.00    NACL-Â¿¡¹Ç¼  08/12/03  ½»½ê¤«¤éÍ¹ÊØÈÖ¹æÀßÄêÄÉ²Ã
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/08/11  Âà¿¦¹ñÊÝÇ¯Îð¥Á¥§¥Ã¥¯ÄÉ²Ã
+      *                                     ¹ñÊÝÅù£·£°ºÐÅþÃ£·Ù¹ðÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -186,6 +188,7 @@
            03  FLG-HKNCHK          PIC 9(01).
            03  FLG-HKNCHK2         PIC 9(01).
            03  FLG-SEIHOGO         PIC 9(01).
+           03  FLG-HKNCHK3         PIC 9(01).
       *
            03  FLG-P02A-CHK       PIC 9(01).
       *    ¸øÈñÃ±ÆÈ¥Á¥§¥Ã¥¯
@@ -373,6 +376,12 @@
       *
            03  WRK-EDANUM              PIC 9(04).
       *
+      *!!!!
+      *    £·£°ºÐ¥Á¥§¥Ã¥¯
+           03  FLG-KOKUHO-CHK          PIC 9(01).
+           03  WRK-KOKUHO-CHK          PIC 9(04).
+      *!!!!
+      *
       *    ¸øÈñ£Ó£Ï£Ò£ÔÍÑ¡Ê£Ó£Ð£Á¤ÈÆ±¤¸ÎÎ°è¡Ë
        01  WRK-KOUHI-AREA.
       *    ¸øÈñ¾ðÊó
@@ -422,6 +431,8 @@
                    07  WRK-NAI-PTKOH-KEIFLG        PIC X(01).
       *            ¼õµë¼ÔÈÖ¹æ·Ù¹ð
                    07  WRK-NAI-JYUCHK              PIC 9(01).
+      *            ³ÎÇ§Ç¯·îÆü·Ù¹ð
+                   07  WRK-KOH-KAKUINFLG        PIC 9(01).
                05  WRK-KOH-MAX             PIC 9(04).
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¡Ê£Ó£Ð£Á¤ÈÆ±¤¸¡Ë
@@ -1409,7 +1420,9 @@
                MOVE    1                   TO  SPA-ROU-KEIFLG
            END-IF
       *!!
-           MOVE    SPA-PTHKN-KEIFLG(IDX) TO  SPA-HKNJA-KEIFLG
+           MOVE    SPA-PTHKN-KEIFLG(IDX)   TO  SPA-HKNJA-KEIFLG
+      *    ³ÎÇ§Ç¯·îÆü
+           MOVE    SPA-PTHKN-KAKUINFLG(IDX) TO  SPA-HKN-KAKUINFLG
       *
       *    ÊÝ¸±¼ÔÈÖ¹æ¡¡¸¡º÷¥Á¥§¥Ã¥¯
            INITIALIZE                    HKNJAINF-REC
@@ -1839,6 +1852,8 @@
       *        ¼õµë¼ÔÈÖ¹æ·Ù¹ð
                MOVE    1                   TO  SPA-NAI-JYUCHK(IDY)
            END-IF
+           MOVE    SPA-PTKOH-KAKUINFLG (IDX)
+                                           TO  SPA-KOH-KAKUINFLG(IDY)
       *
       *    ¸øÈñ¾ðÊó
            MOVE    SPA-GMN-KOHNUM (IDY)    TO  WRK-HKNNUM
@@ -2611,6 +2626,10 @@
                MOVE    P02-P02-HTEKSTYMD   TO  SPA-GMN-HTEKSTYMD
                MOVE    P02-P02-HTEKEDYMD   TO  SPA-GMN-HTEKEDYMD
                MOVE    P02-P02-HIHKNJANAME TO  SPA-GMN-HIHKNJANAME
+      *        ³ÎÇ§ÆüÊÑ¹¹¤Ç·Ù¹ð¥¯¥ê¥¢
+               IF      P02-P02-HKAKUNINYMD NOT =   SPA-GMN-HKAKUNINYMD
+                   MOVE    ZERO                TO  SPA-HKN-KAKUINFLG
+               END-IF
                MOVE    P02-P02-HKAKUNINYMD TO  SPA-GMN-HKAKUNINYMD
       *
            END-IF
@@ -2673,6 +2692,10 @@
            END-IF
            MOVE    P02-P02-KTEKSTYMD1  TO  SPA-GMN-KTEKSTYMD (1)
            MOVE    P02-P02-KTEKEDYMD1  TO  SPA-GMN-KTEKEDYMD (1)
+           IF      P02-P02-KKAKUNINYMD1
+                                   NOT =   SPA-GMN-KKAKUNINYMD(1)
+               MOVE    ZERO            TO  SPA-KOH-KAKUINFLG (1)
+           END-IF
            MOVE    P02-P02-KKAKUNINYMD1
                                        TO  SPA-GMN-KKAKUNINYMD(1)
       *    ¸øÈñ£²
@@ -2684,6 +2707,10 @@
            END-IF
            MOVE    P02-P02-KTEKSTYMD2  TO  SPA-GMN-KTEKSTYMD (2)
            MOVE    P02-P02-KTEKEDYMD2  TO  SPA-GMN-KTEKEDYMD (2)
+           IF      P02-P02-KKAKUNINYMD2
+                                   NOT =   SPA-GMN-KKAKUNINYMD(2)
+               MOVE    ZERO            TO  SPA-KOH-KAKUINFLG (2)
+           END-IF
            MOVE    P02-P02-KKAKUNINYMD2
                                        TO  SPA-GMN-KKAKUNINYMD(2)
       *    ¸øÈñ£³
@@ -2696,6 +2723,10 @@
            END-IF
            MOVE    P02-P02-KTEKSTYMD3  TO  SPA-GMN-KTEKSTYMD (3)
            MOVE    P02-P02-KTEKEDYMD3  TO  SPA-GMN-KTEKEDYMD (3)
+           IF      P02-P02-KKAKUNINYMD3
+                                   NOT =   SPA-GMN-KKAKUNINYMD(3)
+               MOVE    ZERO            TO  SPA-KOH-KAKUINFLG (3)
+           END-IF
            MOVE    P02-P02-KKAKUNINYMD3
                                        TO  SPA-GMN-KKAKUNINYMD(3)
            .
@@ -3427,6 +3458,9 @@
                END-IF
                MOVE    01                  TO  WRK-BDD
            END-IF
+      *    £¶£µºÐ¤ò·Þ¤¨¤ëÆü
+           MOVE    WRK-BASEYMD         TO  SPA-BYMD-65
+           COMPUTE SPA-B65-YY          =   SPA-B65-YY  +   65
       *    £·£°ºÐ¤ò·Þ¤¨¤ëÆü
            MOVE    WRK-BASEYMD         TO  SPA-BYMD-70
            COMPUTE SPA-B70-YY          =   SPA-B70-YY  +   70
@@ -4269,12 +4303,28 @@
       *    ÊÝ¸±¤È¸øÈñ¤Î´ü´Ö½ÅÊ£¥Á¥§¥Ã¥¯
            PERFORM 41033-HKNKOH-CHK-SEC
       *
+      *!!
+      *TEST
+      *    Âà¿¦¹ñÊÝ¤ÎÇ¯Îð¥Á¥§¥Ã¥¯¡Ê£È£²£°¡¥£´ ²þÀµ¡Ë
+           IF     (FLG-KOH-ADD2         =   ZERO  )
+              AND (FLG-ERRCHK           =   ZERO  )
+              AND (FLG-HKN-ADD2         =   ZERO  )
+              AND (SPA-ERRCD            =   SPACE )
+               IF     (SPA-SYSYMD          >=  "20080401" )  AND
+                      (SPA-BYMD-65         >   ZERO       )  AND
+                      (SPA-SYSYMD          >=  SPA-BYMD-65)
+                   PERFORM 410334-TAIKOKUHO-CHK-SEC
+               END-IF
+           END-IF
       *    £È£±£´¡¥£±£° ²þÀµ
       *!   IF      FLG-TOUROKU2         =   1
       *    ¸øÈñÄÉ²Ã°Ê³°
            IF      FLG-KOH-ADD2         =   ZERO
               AND  FLG-ERRCHK           =   ZERO
               AND  FLG-HKN-ADD2         =   ZERO
+              AND (SPA-ERRCD            =   SPACE )
+              AND (SPA-PIDCD            =   SPACE )
+      *!!
       *        £·£°ºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í³ä¹ç¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤³¤È
                IF     (SPA-SYSYMD          >=  "20021001" )  AND
                       (SPA-BYMD-70         >   ZERO       )  AND
@@ -4297,6 +4347,7 @@
       *
        4103-HKNKOH-TBL-EXT.
            EXIT.
+      *
       *
       ****************************************************************
       *    ÊÝ¸±²èÌÌ¤ÎÆâÍÆ¤ò£Ô£Â£Ì¤ØÊÔ½¸½èÍý
@@ -4411,6 +4462,8 @@
            MOVE    SPA-NUM-KEIFLG      TO  SPA-PTHKN-NUM-KEIFLG (IDX)
       *    ¸å´ü¹âÎð¼Ô·Ù¹ð
            MOVE    SPA-ROU-KEIFLG      TO  SPA-PTHKN-ROU-KEIFLG (IDX)
+      *    ³ÎÇ§Ç¯·îÆü
+           MOVE    SPA-HKN-KAKUINFLG   TO  SPA-PTHKN-KAKUINFLG (IDX)
       *
       *    ¿·µ¬¤Î»þÊÝ¸±£É£Ä¼èÆÀ¡ÊÏ«ºÒ¤ÏÏ«ºÒ²èÌÌ¤Ç¼èÆÀ¤¹¤ë¡Ë
            IF      SPA-NAI-HKNID       =   ZERO
@@ -4539,6 +4592,8 @@
            MOVE   SPA-NAI-PTKOH-KEIFLG(IDX)    TO  SPA-PTKOH-KEIFLG
                                                                   (IDY)
       *
+           MOVE    SPA-KOH-KAKUINFLG (IDX) TO  SPA-PTKOH-KAKUINFLG (IDY)
+      *
            .
        3102-KOH-SPATBL-HEN-EXT.
            EXIT.
@@ -4638,6 +4693,10 @@
            MOVE    ZERO                TO  FLG-RJNERR
            MOVE    ZERO                TO  FLG-RJNKOHERR
            MOVE    ZERO                TO  FLG-KOKUHO
+      *!!
+           MOVE    ZERO                TO  FLG-KOKUHO-CHK
+           MOVE    ZERO                TO  WRK-KOKUHO-CHK
+      *!!
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-PTHKN-MAX
                IF     (SPA-PTHKN-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
@@ -4773,6 +4832,31 @@
                    END-IF
                END-IF
            END-IF
+      *!!!
+      *    Á°´ü¹âÎð¼Ô¡Ê£·£°ºÐ¡Ë¤ÇÊÝ¸±¤Î´ü´ÖÊÑ¹¹¤¬¤Ê¤¤¾ì¹ç¡¢³ÎÇ§Ç¯·îÆü¥Á¥§¥Ã¥¯
+           IF      (SPA-ERRCD          =   SPACE )
+              AND  (SPA-PIDCD          =   SPACE )
+              AND  (FLG-KOKUHO-CHK     =   1     )
+               MOVE    WRK-KOKUHO-CHK      TO  IDX
+               IF     (SPA-PTHKN-KAKUNINYMD (IDX)
+                                           >=  SPA-BYMD-70 )
+                 OR   (SPA-PTHKN-KAKUNINYMD (IDX)
+                                           >=  SPA-SYSYMD  )
+                    CONTINUE
+               ELSE
+                   IF      SPA-KEI-KOUKI3      =   ZERO
+                       MOVE    "K151"              TO  SPA-ERRCD
+                       MOVE    17                  TO  SPA-GMN-CUR
+                       MOVE    1                   TO  SPA-KEI-KOUKI3
+                       INITIALIZE                  SPA-GMN-HKN-AREA
+                       MOVE    IDX             TO  SPA-NAI-HKNSTR
+                       MOVE    IDX             TO  SPA-HKN-IDX1
+                       PERFORM 3101-HOKEN-HEN-SEC
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *
            .
        410331-RJN-HKNCHK-EXT.
            EXIT.
@@ -4916,6 +5000,16 @@
                                                    =  "3" )
                            MOVE    1               TO  FLG-KOKUHO
                        END-IF
+      *!!
+      *                ³«»ÏÆü¤¬£·£°ºÐÌ¤Ëþ¤Ç½ªÎ»Æü¤¬£·£°ºÐ°Ê¾å
+                       IF     (SPA-PTHKN-TEKSTYMD (IDX)
+                                                   <   SPA-BYMD-70 ) AND
+                              (SPA-PTHKN-TEKEDYMD (IDX)
+                                                   >   SPA-BYMD-70 )
+                           MOVE    1               TO  FLG-KOKUHO-CHK
+                           MOVE    IDX             TO  WRK-KOKUHO-CHK
+                       END-IF
+      *!!
                    END-IF
       *        Á¥°÷¤ÇÊä½õ¶èÊ¬¤¢¤ê
                WHEN    "002"
@@ -4954,6 +5048,16 @@
                        AND (SPA-PTHKN-TEKEDYMD (IDX)   >=  "20080401")
                        MOVE    2                   TO  FLG-RJNCHK
                    END-IF
+      *!!
+      *                ³«»ÏÆü¤¬£·£°ºÐÌ¤Ëþ¤Ç½ªÎ»Æü¤¬£·£°ºÐ°Ê¾å
+                       IF     (SPA-PTHKN-TEKSTYMD (IDX)
+                                                   <   SPA-BYMD-70 ) AND
+                              (SPA-PTHKN-TEKEDYMD (IDX)
+                                                   >   SPA-BYMD-70 )
+                           MOVE    1               TO  FLG-KOKUHO-CHK
+                           MOVE    IDX             TO  WRK-KOKUHO-CHK
+                       END-IF
+      *!!
       *        ¶¦ºÑ
                WHEN    "031"
                WHEN    "032"
@@ -5141,6 +5245,48 @@
            .
        410333-RJN27-ENDCHK-EXT.
            EXIT.
+      *!!
+      *TEST
+      ****************************************************************
+      *    Âà¿¦¹ñÊÝ¥Á¥§¥Ã¥¯½èÍý
+      ****************************************************************
+       410334-TAIKOKUHO-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  WRK-NAI-HKNSTR
+           MOVE    ZERO                TO  FLG-HKNCHK3
+           MOVE    ZERO                TO  FLG-HKNCHK2
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   SPA-PTHKN-MAX
+               IF     (SPA-PTHKN-TEKSTYMD (IDX)    <=  SPA-SYSYMD ) AND
+                      (SPA-PTHKN-TEKEDYMD (IDX)    >=  SPA-SYSYMD ) AND
+                      (SPA-PTHKN-SAKJOKBN (IDX) NOT =  "1"        )
+                   IF     (SPA-PTHKN-HKNNUM   (IDX)    =   "067"  ) AND
+                          (SPA-PTHKN-TEKEDYMD (IDX)    >=  SPA-BYMD-65)
+                       MOVE    IDX             TO  WRK-NAI-HKNSTR
+                       MOVE    1                   TO  FLG-HKNCHK3
+                   END-IF
+      *            Â¾ÊÝ¸±
+                   IF     (SPA-PTHKN-HKNNUM (IDX)  NOT =   "067"  )
+                       MOVE    1                   TO  FLG-HKNCHK2
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-NAI-HKNSTR      >   ZERO
+               MOVE    "1051"              TO  SPA-ERRCD
+               MOVE    17                  TO  SPA-GMN-CUR
+               IF      WRK-NAI-HKNSTR      NOT =   SPA-NAI-HKNSTR
+                   INITIALIZE                  SPA-GMN-HKN-AREA
+                   MOVE    WRK-NAI-HKNSTR      TO  SPA-NAI-HKNSTR
+                   MOVE    SPA-NAI-HKNSTR      TO  IDX
+                   PERFORM 3101-HOKEN-HEN-SEC
+               END-IF
+           END-IF
+           .
+       410334-TAIKOKUHO-CHK-EXT.
+           EXIT.
+      *!!
+      *TEST
       *
       ****************************************************************
       *    ÊÝ¸±¤È¸øÈñ¤Î´ü´Ö½ÅÊ£¥Á¥§¥Ã¥¯½èÍý
