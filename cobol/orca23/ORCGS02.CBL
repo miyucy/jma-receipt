@@ -795,11 +795,11 @@
       *
                    IF  ( SPA-S01-NYUGAIKBN   =   "1" )
                        MOVE    "S03N"          TO  SPA-SAKIPG
-                       MOVE   "CHANGE"         TO  MCP-PUTTYPE
+                       MOVE   "JOIN"           TO  MCP-PUTTYPE
                        MOVE   "S03N"           TO  MCP-WINDOW
                    ELSE
                        MOVE    "S03"           TO  SPA-SAKIPG
-                       MOVE   "CHANGE"         TO  MCP-PUTTYPE
+                       MOVE   "JOIN"           TO  MCP-PUTTYPE
                        MOVE   "S03    "        TO  MCP-WINDOW
                    END-IF
       *

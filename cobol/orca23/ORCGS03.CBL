@@ -582,6 +582,7 @@
            WHEN    CONST-PROC-RRKSYU
            WHEN    CONST-PROC-TORIKESHI
       *
+               MOVE    SPA-SYSYMD      TO  SPA-NAI-NYUKINYMD
                MOVE    SPA-SYSYMD      TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-NYUKINYMD
@@ -2041,10 +2042,12 @@
       *****************************************************************
        4102-NYUKIN-KIHON-CHK-SEC       SECTION.
       *
-           PERFORM 4101-NYUKIN-CHK-SEC
-      *
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-NYUKINYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-NYUKIN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2070,6 +2073,10 @@
            PERFORM 4101-SELNUM-CHK-SEC
       *
            IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-NYUKINYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-CHOSEIIN-CHK-SEC
            END-IF
       *
@@ -2079,10 +2086,6 @@
                ELSE
                    PERFORM 4101-NYUKIN-CHK-SEC
                END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4101-NYUKINYMD-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2105,10 +2108,12 @@
       *****************************************************************
        4102-TORIKESHI-KIHON-CHK-SEC    SECTION.
       *
-           PERFORM 4102-NYUKIN-CHK-SEC
-      *
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-NYUKINYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4102-NYUKIN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2450,10 +2455,25 @@
       *****************************************************************
        4102-NYUKIN-CHK-SEC             SECTION.
       *
+           IF    ( SPA-S01-SYORINO     =   CONST-PROC-TORIKESHI )
+               MOVE    ZERO            TO  WRK-NYUKIN
+               PERFORM VARYING IDX-LST FROM    1   BY  1
+                       UNTIL ( IDX-LST >   SPA-GMN-SMEILIST-MAX )
+      *
+                   IF ( SPA-NAI-NYUKINYMD
+                                       =   SPA-NAI-TSYORIYMD (IDX-LST))
+                       COMPUTE WRK-NYUKIN
+                           =   WRK-NYUKIN
+                           +   SPA-GMN-TNYUKIN (IDX-LST)
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-TORIKESHI
                COMPUTE WRK-NYUKIN
-                   =   SPA-GMN-NYUKIN-TTL
+                   =   WRK-NYUKIN
                    +   SPA-GMN-NYUKIN
            WHEN    CONST-PROC-RRKSYU
       *
