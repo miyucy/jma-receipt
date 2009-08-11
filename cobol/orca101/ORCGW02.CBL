@@ -67,6 +67,8 @@
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/23  Í½ÌóÉ¼È¯¹ÔÄÉ²Ã
       *  04.04.00    NACL-¾®Æ¦Âô  09.01.26  ËÜ±¡Ê¬±¡ÂÐ±þ
       *                                     Ã»½Ì°åÎÅµ¡´ØÌ¾¾Î¡¡ÄÉ²Ã       
+      *  04.05.00    NACL-ÂÀÅÄ    09.06.23  ÊÝ¸±¼«ÈñËè¤Î¾ÃÈñÀÇÃ¼¿ô¶èÊ¬ÄÉ²Ã
+      *  04.05.00    NACL-ÂÀÅÄ    09.07.27  Ê¬ÊÚµ¡´Ø´ÉÍýÈÖ¹æÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -249,6 +251,7 @@
                                13  SPA-GMN-HOSPSBT1MEI
                                                       PIC X(18).
                            11  SPA-GMN-HOSPCDN        PIC X(20).
+                           11  SPA-GMN-SANKANUM       PIC 9(10).
                            11  SPA-GMN-SYOHOKBN-G.
                                13  SPA-GMN-SYOHOKBN   PIC X(01).
                                13  SPA-GMN-F6         PIC X(01).
@@ -679,6 +682,7 @@
            COPY    "W64.INC".
            COPY    "W65.INC".
            COPY    "W66.INC".
+           COPY    "W67.INC".
            COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
@@ -1558,6 +1562,11 @@
                    MOVE    2               TO  IDY
                END-IF
            END-PERFORM
+           IF    ( SYS-1001-SANKANUM   IS  NUMERIC )
+               MOVE    SYS-1001-SANKANUM   TO  SPA-GMN-SANKANUM
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN-SANKANUM
+           END-IF
            MOVE    SYS-1001-SKYPRTFLG  TO  SPA-GMN-SKYPRTFLG
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-SYKPRTFLG-MAX
@@ -2061,6 +2070,7 @@
            MOVE    W02-ROUPAYKBN       TO  SPA-GMN-ROUPAYKBN-G
            MOVE    W02-HOSPSBT1        TO  SPA-GMN-HOSPSBT1-G
            MOVE    W02-HOSPCDN         TO  SPA-GMN-HOSPCDN
+           MOVE    W02-SANKANUM        TO  SPA-GMN-SANKANUM
            MOVE    W02-SYOHOKBN        TO  SPA-GMN-SYOHOKBN-G
            MOVE    W02-SKYPRTFLG       TO  SPA-GMN-SKYPRTFLG-G
            MOVE    W02-SYOHOPRTFLG     TO  SPA-GMN-SYOHOPRTFLG-G
@@ -3711,6 +3721,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-ROUPAYKBN   TO  SYS-1001-ROUPAYKBN 
                    MOVE    SPA-GMN-HOSPSBT1    TO  SYS-1001-HOSPSBT1 
                    MOVE    SPA-GMN-HOSPCDN     TO  SYS-1001-HOSPCDN
+                   MOVE    SPA-GMN-SANKANUM    TO  SYS-1001-SANKANUM
                    MOVE    SPA-GMN-SYOHOKBN    TO  SYS-1001-SYOHOKBN
                    MOVE    SPA-GMN-SKYPRTFLG   TO  SYS-1001-SKYPRTFLG
                    MOVE    SPA-GMN-SYOHOPRTFLG TO  SYS-1001-SYOHOPRTFLG
@@ -4169,6 +4180,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ROUPAYKBN-G TO  W02-ROUPAYKBN
            MOVE    SPA-GMN-HOSPSBT1-G  TO  W02-HOSPSBT1
            MOVE    SPA-GMN-HOSPCDN     TO  W02-HOSPCDN
+           MOVE    SPA-GMN-SANKANUM    TO  W02-SANKANUM
            MOVE    SPA-GMN-SYOHOKBN-G  TO  W02-SYOHOKBN
            MOVE    SPA-GMN-SKYPRTFLG-G TO  W02-SKYPRTFLG
            MOVE    SPA-GMN-SYOHOPRTFLG-G
@@ -4850,6 +4862,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    216
                     MOVE  "DISCOUNTHASU5_J"
                                            TO   MCP-WIDGET
+                WHEN    217
+                    MOVE  "SANKANUM"
+                                           TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -4968,6 +4983,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "SYOHOKBN"
                   MOVE    12               TO  SPA-GMN-CUR
               WHEN    "HOSPCDN"
+                   MOVE    217              TO  SPA-GMN-CUR
+              WHEN    "SANKANUM"
                   MOVE    33               TO  SPA-GMN-CUR
               WHEN    "SKYPRTFLG"
                   MOVE    34               TO  SPA-GMN-CUR

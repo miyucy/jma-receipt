@@ -370,6 +370,30 @@
 	</widget>
 
 	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>SANKANUM</name>
+	  <x>180</x>
+	  <y>344</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:10 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Mar 2001 02:30:25 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>9999999999</format>
+	</widget>
+
+	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KAISETUNAME</name>
 	  <x>180</x>
@@ -717,7 +741,7 @@
 	  <class>GtkLabel</class>
 	  <name>label596</name>
 	  <x>24</x>
-	  <y>352</y>
+	  <y>376</y>
 	  <width>156</width>
 	  <height>24</height>
 	  <label>請求書発行フラグ      </label>
@@ -733,7 +757,7 @@
 	  <class>GtkLabel</class>
 	  <name>label601</name>
 	  <x>24</x>
-	  <y>400</y>
+	  <y>424</y>
 	  <width>156</width>
 	  <height>24</height>
 	  <label>前回処方表示フラグ</label>
@@ -749,7 +773,7 @@
 	  <class>GtkLabel</class>
 	  <name>label602</name>
 	  <x>24</x>
-	  <y>424</y>
+	  <y>448</y>
 	  <width>156</width>
 	  <height>24</height>
 	  <label>薬剤情報発行フラグ</label>
@@ -765,7 +789,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>DATATEISYU_COMB</name>
 	  <x>180</x>
-	  <y>576</y>
+	  <y>600</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -805,7 +829,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1621</name>
 	  <x>52</x>
-	  <y>576</y>
+	  <y>600</y>
 	  <width>128</width>
 	  <height>24</height>
 	  <label>提出方法区分</label>
@@ -821,7 +845,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1620</name>
 	  <x>52</x>
-	  <y>552</y>
+	  <y>576</y>
 	  <width>128</width>
 	  <height>24</height>
 	  <label>作成フラグ</label>
@@ -835,25 +859,9 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label1619</name>
-	  <x>24</x>
-	  <y>528</y>
-	  <width>156</width>
-	  <height>24</height>
-	  <label>データ収集</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label1666</name>
 	  <x>24</x>
-	  <y>496</y>
+	  <y>520</y>
 	  <width>156</width>
 	  <height>24</height>
 	  <label>予約票発行フラグ</label>
@@ -869,7 +877,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1664</name>
 	  <x>24</x>
-	  <y>472</y>
+	  <y>496</y>
 	  <width>156</width>
 	  <height>24</height>
 	  <label>お薬手帳発行フラグ</label>
@@ -929,7 +937,7 @@
 	  <class>GtkLabel</class>
 	  <name>label600</name>
 	  <x>16</x>
-	  <y>376</y>
+	  <y>400</y>
 	  <width>164</width>
 	  <height>24</height>
 	  <label>院外処方せん発行フラグ</label>
@@ -945,7 +953,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1623</name>
 	  <x>16</x>
-	  <y>448</y>
+	  <y>472</y>
 	  <width>164</width>
 	  <height>24</height>
 	  <label>診療費明細書発行フラグ</label>
@@ -981,22 +989,6 @@
 	  <width>156</width>
 	  <height>24</height>
 	  <label>老人支払区分          </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label571</name>
-	  <x>24</x>
-	  <y>320</y>
-	  <width>156</width>
-	  <height>24</height>
-	  <label>医療機関コード（漢字）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -1465,7 +1457,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>SKYPRTFLG_COMBO</name>
 	  <x>180</x>
-	  <y>352</y>
+	  <y>376</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1505,7 +1497,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>SYOHOPRTFLG_COMBO</name>
 	  <x>180</x>
-	  <y>376</y>
+	  <y>400</y>
 	  <width>220</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1545,7 +1537,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>ZENSYOHOFLG_COMBO</name>
 	  <x>180</x>
-	  <y>400</y>
+	  <y>424</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1585,7 +1577,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>YAKUJYOFLG_COMBO</name>
 	  <x>180</x>
-	  <y>424</y>
+	  <y>448</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1625,7 +1617,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>MEIPRTFLG_COMB</name>
 	  <x>180</x>
-	  <y>448</y>
+	  <y>472</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1665,7 +1657,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>YYKHYOFLG_COMB</name>
 	  <x>180</x>
-	  <y>496</y>
+	  <y>520</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1705,7 +1697,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>OKUSURIFLG_COMB</name>
 	  <x>180</x>
-	  <y>472</y>
+	  <y>496</y>
 	  <width>268</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1745,7 +1737,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>DATACREATE_COMB</name>
 	  <x>180</x>
-	  <y>552</y>
+	  <y>576</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -2307,6 +2299,54 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1619</name>
+	  <x>24</x>
+	  <y>552</y>
+	  <width>156</width>
+	  <height>24</height>
+	  <label>データ収集</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label571</name>
+	  <x>24</x>
+	  <y>320</y>
+	  <width>156</width>
+	  <height>24</height>
+	  <label>医療機関コード（漢字）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1674</name>
+	  <x>24</x>
+	  <y>344</y>
+	  <width>156</width>
+	  <height>24</height>
+	  <label>分娩機関管理番号</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
