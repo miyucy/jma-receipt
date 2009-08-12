@@ -437,6 +437,10 @@
        01  NRRKSRH-REC.
            COPY    "CPNRRKSRH.INC".
       *
+      *    分娩管理テーブル
+       01  BUNBEN-REC.
+           COPY    "CPBUNBEN.INC".
+      *
       *    同一患者識別テーブル
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
@@ -3421,6 +3425,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        SPA-AREA
                END-IF
            END-IF
+      *
+      *    分娩管理テーブル
+           INITIALIZE                      BUNBEN-REC
+           MOVE    SPA-HOSPNUM         TO  BUNBEN-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  BUNBEN-PTID
+           MOVE    BUNBEN-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_bunben"        TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        49911-DB-DELETE-EXT.
