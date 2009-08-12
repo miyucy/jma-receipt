@@ -34,18 +34,36 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
+      *    分娩管理ＤＢ更新用ファイル
+           SELECT  UPD-FILE        ASSIGN  BUNBENUPD
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL 
+                                   FILE    STATUS  IS  STS-BUNBENUPD.
+      *
       *    エラーファイル
-           SELECT  RECEERR-FILE    ASSIGN  RECEERR
-                                   FILE    STATUS  IS  STS-RECEERR.
+           SELECT  BUNBENERR-FILE  ASSIGN  BUNBENERR
+                                   FILE    STATUS  IS  STS-BUNBENERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
+      *    分娩管理ＤＢ更新用ファイル
+       FD  UPD-FILE.
+       01  BUNBENX-REC.
+           COPY    "CPBUNBEN.INC"  REPLACING  //BUNBEN-//
+                                   BY         //BUNBENX-//.
+      *
       *    エラーファイル
-       FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200).
+       FD  BUNBENERR-FILE.
+       01  BUNBENERR-REC           PIC X(200).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    分娩管理ＤＢ更新用ファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING   //RECE01PARA//
+                                   BY          //BUNBENUPD//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCN61.INC".
       *
@@ -58,9 +76,6 @@
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
            03  IDXX                PIC 9(03).
-           03  IDXY                PIC 9(03).
-           03  IDXZ                PIC 9(03).
-           03  IDW1                PIC 9(03).
            03  IDW2                PIC 9(04).
            03  IDZ1                PIC 9(03).
            03  IDZ2                PIC 9(03).
@@ -74,7 +89,8 @@
       *
       *    ステータス領域
        01  STS-AREA.
-           03  STS-RECEERR         PIC X(02).
+           03  STS-BUNBENERR       PIC X(02).
+           03  STS-BUNBENUPD       PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -83,6 +99,10 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-CSV-INFO        PIC 9(01).
+           03  FLG-BUNBEN          PIC 9(01).
+      *
+           03  FLG-UPDFILE         PIC 9(01). 
+           03  FLG-ERR             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -90,6 +110,7 @@
            03  CNT-OUT             PIC 9(05).
            03  CNT-PAGE            PIC 9(05).
            03  CNT-LINE            PIC 9(05).
+           03  CNT-UPDFILE         PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -114,14 +135,14 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-           03  RECEERR             PIC X(100).
+           03  BUNBENERR           PIC X(100).
            03  WRK-PARA-SKYYM      PIC X(06).
            03  WRK-PARA-TEISYUTUSAKI
                                    PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-RECEERR         PIC X(200).
+           03  WRK-BUNBENERR       PIC X(200).
       *
            03  WRK-TEISYUTUSAKI    PIC X(01).
       *
@@ -270,7 +291,7 @@
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    連絡　領域
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -326,7 +347,7 @@
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPNUM
-                                       RECEERR
+                                       BUNBENERR
                                        WRK-PARA-SKYYM
                                        WRK-PARA-TEISYUTUSAKI
            END-UNSTRING
@@ -366,6 +387,18 @@
            MOVE    LNK-DAY6-KEISAN (1:6)
                                    TO  WRK-SRYYM
       *
+      *    更新用ファイル名設定
+           MOVE    "BUNBUPD"       TO  BUNBENUPD-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  BUNBENUPD-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM
+                                   TO  BUNBENUPD-HOSPNUM
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
       *    システム管理情報取得 
            PERFORM 1001-SYSKANRI-HENSYU-SEC
       *
@@ -374,7 +407,7 @@
                CONTINUE
            ELSE
                MOVE    "提出先の設定が誤っています" 
-                                       TO  WRK-RECEERR
+                                       TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
@@ -397,9 +430,13 @@
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
+               IF      SYS-1001-SANKANUM
+                                           NOT NUMERIC
+                   MOVE    ZERO                TO  SYS-1001-SANKANUM
+               END-IF
            ELSE
                MOVE    "医療機関情報（基本）が取得できません" 
-                                           TO  WRK-RECEERR
+                                           TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
            END-IF
@@ -416,7 +453,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1002-REC
            ELSE
                MOVE    "医療機関情報（住所）が取得できません" 
-                                           TO  WRK-RECEERR
+                                           TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
            END-IF
@@ -437,6 +474,8 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
+           OPEN    OUTPUT              UPD-FILE
+      *
       *    社保分作成
            IF      WRK-PARA-TEISYUTUSAKI
                                    =   "0" OR  "1"
@@ -449,6 +488,15 @@
                                    =   "0" OR  "2"
                MOVE    "2"             TO  WRK-TEISYUTUSAKI
                PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
+           END-IF
+      *
+           CLOSE   UPD-FILE
+      *
+      *   分娩管理ＤＢ更新処理
+          IF       FLG-ERR         =   ZERO
+              IF      CNT-UPDFILE      >   ZERO
+                  PERFORM 310-BUNBEN-UPD-SEC
+              END-IF    
            END-IF
            .
        200-MAIN-EXT.
@@ -584,7 +632,13 @@
                                    TO  HCN61-HOSPCD (1:2)
            MOVE    "1"             TO  HCN61-HOSPCD (3:1) 
            MOVE    SYS-1001-HOSPCD TO  HCN61-HOSPCD (4:7)
-      *****MOVE    SYS-1001-       TO  HCN61-SANKANUM
+           IF      SYS-1001-SANKANUM
+                                   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    SYS-1001-SANKANUM
+                                       TO  HCN61-SANKANUM
+           END-IF
            MOVE    WRK-HOSPADRS1   TO  HCN61-HOSPADRS (1)
            MOVE    WRK-HOSPADRS2   TO  HCN61-HOSPADRS (2)
            MOVE    WRK-HOSPNAME1   TO  HCN61-HOSPNAME (1)
@@ -683,7 +737,7 @@
                MOVE    BUNBEN-BIRTHCNT     TO  WRK-9
                MOVE    WRK-9               TO  HCN61-BIRTHCNT (CNT-LINE)
                MOVE    BUNBEN-NYUIN-DAY    TO  WRK-ZZ9
-               MOVE    WRK-Z9              TO  HCN61-NYUINDAY (CNT-LINE)
+               MOVE    WRK-ZZ9             TO  HCN61-NYUINDAY (CNT-LINE)
                EVALUATE    BUNBEN-SANKAKBN
                    WHEN    "1"
                        MOVE    "○"            TO  HCN61-SANKAKBN
@@ -701,12 +755,22 @@
                MOVE    BUNBEN-MONEY (2)    TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCN61-RMSGK-MONEY
                                                            (CNT-LINE)
-               MOVE    BUNBEN-MONEY (3)    TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9        TO  HCN61-KAIJO-MONEY
+               IF      BUNBEN-BUNBENKBN    =   "2"
+                   MOVE    BUNBEN-MONEY (3)    TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9        TO  HCN61-KAIJO-MONEY
                                                            (CNT-LINE)
-               MOVE    BUNBEN-MONEY (4)    TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9        TO  HCN61-BUNBEN-MONEY
+               ELSE
+                   MOVE    "         -"        TO  HCN61-KAIJO-MONEY
                                                            (CNT-LINE)
+               END-IF
+               IF      BUNBEN-BUNBENKBN    =   "1"
+                   MOVE    BUNBEN-MONEY (4)    TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9        TO  HCN61-BUNBEN-MONEY
+                                                           (CNT-LINE)
+               ELSE
+                   MOVE    "         -"        TO  HCN61-BUNBEN-MONEY
+                                                           (CNT-LINE)
+               END-IF
                MOVE    BUNBEN-MONEY (5)    TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCN61-SHIN-MONEY
                                                            (CNT-LINE)
@@ -740,6 +804,8 @@
       *        ＣＳＶ（データレコード）編集処理
                PERFORM 2001-CSV-DATA-7121-RECORD-HENSYU-SEC
       *
+      *        更新用ファイル出力処理
+               PERFORM 230-UPD-FILE-HENSYU-SEC
       *        分娩管理読込   
                PERFORM 900-BUNBEN-READ-N-SEC
            END-PERFORM
@@ -751,6 +817,33 @@
  
            .
        2002-BODY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新用ファイル出力処理
+      *****************************************************************
+       230-UPD-FILE-HENSYU-SEC         SECTION.
+      *
+           MOVE    BUNBEN-REC          TO  BUNBENX-REC
+      *****INITIALIZE                      BUNBENX-XX
+           WRITE   BUNBENX-REC
+      *
+           IF      STS-BUNBENUPD         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-BUNBENERR
+               STRING "更新用ファイル 書き込みエラー STS="
+                                               DELIMITED  BY  SIZE
+                       STS-BUNBENUPD           DELIMITED  BY  SIZE
+                                               INTO    WRK-BUNBENERR
+               END-STRING                                
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF 
+      *
+           ADD     1                   TO  CNT-UPDFILE
+           .
+       230-UPD-FILE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -822,7 +915,7 @@
                CONTINUE
            ELSE
                MOVE    "印刷ＤＢに更新できませんでした"
-                                      TO  WRK-RECEERR
+                                      TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
            END-IF
@@ -868,8 +961,14 @@
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    分娩機関管理番号
-      *****MOVE    SYS-1001-       TO  WRK-DATA
-           MOVE    10              TO  WRK-NAGASA
+           IF      SYS-1001-SANKANUM
+                                   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    SYS-1001-SANKANUM
+                                       TO  WRK-DATA
+               MOVE    10              TO  WRK-NAGASA
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    請求年月
            MOVE    WRK-SKYYMH      TO  WRK-DATA
@@ -928,8 +1027,14 @@
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    分娩機関管理番号
-      *****MOVE    SYS-1001-       TO  WRK-DATA
-           MOVE    10              TO  WRK-NAGASA
+           IF      SYS-1001-SANKANUM
+                                   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    SYS-1001-SANKANUM
+                                       TO  WRK-DATA
+               MOVE    10              TO  WRK-NAGASA
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    件数
            MOVE    SUM-CNT         TO  WRK-NUM
@@ -1004,8 +1109,14 @@
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    分娩機関管理番号
-      *****MOVE    SYS-1001-       TO  WRK-DATA
-           MOVE    10              TO  WRK-NAGASA
+           IF      SYS-1001-SANKANUM
+                                   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    SYS-1001-SANKANUM
+                                       TO  WRK-DATA
+               MOVE    10              TO  WRK-NAGASA
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    加入制度区分
            MOVE    BUNBEN-KANYUKBN TO  WRK-DATA
@@ -1178,7 +1289,7 @@
                                            CNT-OUT
            ELSE
                MOVE    "ＣＳＶ用ＤＢに更新できませんでした"
-                                       TO  WRK-RECEERR
+                                       TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
            END-IF
@@ -1188,24 +1299,74 @@
            EXIT.
       *
       *****************************************************************
+      *   分娩管理ＤＢ更新処理
+      *****************************************************************
+       310-BUNBEN-UPD-SEC              SECTION.
+      *
+           OPEN    INPUT    UPD-FILE
+      *
+           PERFORM 900-UPD-FILE-READ-SEC
+           PERFORM             UNTIL   FLG-UPDFILE    =   1
+               INITIALIZE                      BUNBEN-REC
+               MOVE    BUNBENX-KEY         TO  BUNBEN-KEY
+               MOVE    BUNBEN-REC          TO  MCPDATA-REC
+               PERFORM 900-BUNBEN-INV-SEC
+               IF      FLG-BUNBEN          =   ZERO
+                   MOVE    "2"             TO  BUNBEN-SKYKBN
+                   MOVE    SMCNDATE-YMD    TO  BUNBEN-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  BUNBEN-UPHMS
+                   MOVE    BUNBEN-REC      TO  MCPDATA-REC
+                   MOVE    "DBUPDATE"      TO  MCP-FUNC
+                   MOVE    "tbl_bunben"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+grpsys             PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC          =   ZERO
+                       PERFORM 900-UPD-FILE-READ-SEC
+                   ELSE
+                       MOVE    SPACE               TO  WRK-BUNBENERR
+                       STRING "分娩管理ＤＢ　更新エラー　"
+                                               DELIMITED  BY  SIZE
+                               BUNBEN-KEY      DELIMITED  BY  SIZE
+                                               INTO    WRK-BUNBENERR
+                       END-STRING                                
+                       PERFORM 500-ERR-HENSYU-SEC
+                       PERFORM 500-COBABORT-SEC
+                   END-IF
+               ELSE
+                   STRING "分娩管理ＤＢ　読込み更新エラー　"
+                                               DELIMITED  BY  SIZE
+                           BUNBENX-KEY         DELIMITED  BY  SIZE
+                                               INTO    WRK-BUNBENERR
+                   END-STRING                                
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
+           END-PERFORM  
+      *
+           CLOSE   UPD-FILE
+           .
+       310-BUNBEN-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
-           OPEN    INPUT               RECEERR-FILE
-           IF        ( STS-RECEERR     =   ZERO )
+           OPEN    INPUT               BUNBENERR-FILE
+           IF        ( STS-BUNBENERR   =   ZERO )
                CONTINUE
            ELSE
-               OPEN    OUTPUT              RECEERR-FILE
+               OPEN    OUTPUT              BUNBENERR-FILE
       *
-               MOVE    WRK-RECEERR     TO  RECEERR-REC
-               WRITE   RECEERR-REC
-               CLOSE   RECEERR-FILE
+               MOVE    WRK-BUNBENERR   TO  BUNBENERR-REC
+               WRITE   BUNBENERR-REC
+               CLOSE   BUNBENERR-FILE
       *
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    WRK-BUNBENERR     TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
@@ -1223,7 +1384,7 @@
            MOVE    SPACE           TO  WRK-ERRMSG
            STRING  "ORCBGCHILDBIRTH "
                                    DELIMITED  BY  SIZE
-                   WRK-RECEERR     DELIMITED  BY  SIZE
+                   WRK-BUNBENERR   DELIMITED  BY  SIZE
                    LOW-VALUE       DELIMITED  BY  SIZE
                                    INTO    WRK-ERRMSG
            END-STRING
@@ -1244,7 +1405,7 @@
       *
            IF      CNT-IN          =   ZERO
                MOVE    "対象患者がありませんでした"
-                                       TO  WRK-RECEERR
+                                       TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *     
@@ -1302,8 +1463,8 @@
            IF      WRK-OUT         >   ZERO
                MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
            END-IF 
-           MOVE    WRK-RECEERR     TO  SFILESV-ERR-MSG  (1)
-           IF      WRK-RECEERR NOT =   SPACE
+           MOVE    WRK-BUNBENERR   TO  SFILESV-ERR-MSG  (1)
+           IF      WRK-BUNBENERR   NOT =   SPACE
                MOVE    "1"             TO  SFILESV-ERR-CODE (1)
            END-IF
            MOVE    "1"             TO  SFILESV-CODE-TYPE (1)
@@ -1459,6 +1620,22 @@
            EXIT.
       *
       *****************************************************************
+      *    請求管理ＤＢ更新用ファイル読込
+      *****************************************************************
+       900-UPD-FILE-READ-SEC             SECTION.
+      *
+           READ    UPD-FILE
+               AT  END
+                   MOVE    1           TO  FLG-UPDFILE
+               NOT AT  END
+                   MOVE    ZERO        TO  FLG-UPDFILE
+                   DISPLAY "UPD =" BUNBENX-KEY
+           END-READ
+           .
+       900-UPD-FILE-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
@@ -1486,7 +1663,6 @@
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    分娩管理読込
@@ -1542,6 +1718,36 @@
            END-IF
            .
        900-BUNBEN-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求管理マスタ読込
+      *****************************************************************
+       900-BUNBEN-INV-SEC         SECTION.
+      *
+           MOVE    "tbl_bunben"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_bunben"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-BUNBEN
+                   MOVE    MCPDATA-REC     TO  BUNBEN-REC
+               ELSE
+                   MOVE    1               TO  FLG-BUNBEN
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-BUNBEN
+           END-IF
+      *
+           MOVE    "tbl_bunben"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BUNBEN-INV-EXT.
            EXIT.
       *
       *****************************************************************
