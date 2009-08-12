@@ -4610,7 +4610,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "K151"
                    STRING  "警告！！"
                            "前期高齢者となりました。"
-                           "保険の補助区分を確認して下さい。"
+                           "保険を確認して下さい。"
                                                INTO    SPA-ERRMSG
                    END-STRING
       *    公費エラー
