@@ -370,30 +370,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkNumberEntry</class>
-	  <name>SANKANUM</name>
-	  <x>180</x>
-	  <y>344</y>
-	  <width>100</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:30:10 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Thu, 08 Mar 2001 02:30:25 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <format>9999999999</format>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaEntry</class>
 	  <name>KAISETUNAME</name>
 	  <x>180</x>
@@ -2347,6 +2323,34 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>SANKANUM</name>
+	  <x>180</x>
+	  <y>344</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 27 Feb 2001 06:04:06 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 27 Feb 2001 06:08:38 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
 	</widget>
       </widget>
 

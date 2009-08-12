@@ -35,7 +35,7 @@ W02	{
 					value	varchar(20);
 				};
 				SANKANUM	{
-					value	number(10);
+					value	varchar(10);
 				};
 				PREFNUM_COMBO	{
 					PREFNUM	{
