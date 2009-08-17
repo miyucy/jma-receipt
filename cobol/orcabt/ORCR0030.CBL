@@ -416,6 +416,7 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.05.03    NACL-門脇    09/08/17  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4695,10 +4696,10 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
-                   MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
-                   COMPUTE  RECE04-RUIKEITOTAL  =
-                            RECE04-RUIKEITOTAL  +
-                           (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+      ***          MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+      ***          COMPUTE  RECE04-RUIKEITOTAL  =
+      ***                   RECE04-RUIKEITOTAL  +
+      ***                  (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
       *
                    MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                    PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
@@ -4708,6 +4709,10 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                      IF  WRK-FUKA-VALUE  =  ZERO
                        CONTINUE
                      ELSE
+                       COMPUTE  RECE04-RUIKEITOTAL  =
+                                RECE04-RUIKEITOTAL  +
+                              ( WRK-FUKA-VALUE    *
+                                          SRY-SRYSURYO(IDX2))
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
                               ((WRK-FUKA-VALUE^5) * FUKA-IDX)

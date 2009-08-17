@@ -82,7 +82,7 @@
       *数量計
            03  RECE641-SURYOUTOTAL         PIC  9(07)V9(05).
       *診療コード＊数量の累計
-           03  RECE641-RUIKEITOTAL         PIC  9(15)V9(05).
+           03  RECE641-RUIKEITOTAL         PIC  9(13)V9(05).
       *明細数
            03  RECE641-MEISAISU            PIC  9(04).
       *剤回数

@@ -384,6 +384,7 @@
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.03    NACL-門脇    09/07/29  所得者情報の機能追加
       *                                     （標準負担額のみの減額）
+      *  04.05.04    NACL-門脇    09/08/17  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3180,10 +3181,10 @@
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
-                   MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
-                   COMPUTE  RECE64-RUIKEITOTAL  =
-                            RECE64-RUIKEITOTAL  +
-                           (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+      ***          MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+      ***          COMPUTE  RECE64-RUIKEITOTAL  =
+      ***                   RECE64-RUIKEITOTAL  +
+      ***                  (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
       *
                    MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                    PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
@@ -3193,6 +3194,10 @@
                      IF  WRK-FUKA-VALUE  =  ZERO
                        CONTINUE
                      ELSE
+                       COMPUTE  RECE64-RUIKEITOTAL  =
+                                RECE64-RUIKEITOTAL  +
+                              ( WRK-FUKA-VALUE    *
+                                          SRY-SRYSURYO(IDX2))
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
                               ((WRK-FUKA-VALUE^5) * FUKA-IDX)
@@ -6724,9 +6729,9 @@
                IF      NACCT-ZAISKBKBN      =       "7"
                   MOVE     199000510     TO  WRK-SRYCD
                END-IF
-               COMPUTE  RECE64-RUIKEITOTAL  =
-                        RECE64-RUIKEITOTAL  +
-                       (WRK-SRYCD  *  NSRY-SRYSURYO(IDX2))
+      ***      COMPUTE  RECE64-RUIKEITOTAL  =
+      ***               RECE64-RUIKEITOTAL  +
+      ***              (WRK-SRYCD  *  NSRY-SRYSURYO(IDX2))
                MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
                          UNTIL   FUKA-IDX   >    9
@@ -6735,6 +6740,10 @@
                  IF  WRK-FUKA-VALUE  =  ZERO
                    CONTINUE
                  ELSE
+                   COMPUTE  RECE64-RUIKEITOTAL  =
+                            RECE64-RUIKEITOTAL  +
+                          ( WRK-FUKA-VALUE    *
+                                     NSRY-SRYSURYO(IDX2))
                    COMPUTE  WRK-FUKA-KINGAKU    =
                             WRK-FUKA-KINGAKU    +
                           ((WRK-FUKA-VALUE^5) * FUKA-IDX)
@@ -9342,9 +9351,9 @@
                   COMPUTE  RECE64-MEISAISU    =  RECE64-MEISAISU
                                               +  1
       *
-                  COMPUTE  RECE64-RUIKEITOTAL =
-                           RECE64-RUIKEITOTAL +
-                          (WRK-SRYCD  *  WRK-ORCSTEN-SURYO(IDX2))
+      ***         COMPUTE  RECE64-RUIKEITOTAL =
+      ***                  RECE64-RUIKEITOTAL +
+      ***                 (WRK-SRYCD  *  WRK-ORCSTEN-SURYO(IDX2))
       *
                   MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
@@ -9354,6 +9363,10 @@
                     IF  WRK-FUKA-VALUE  =  ZERO
                       CONTINUE
                     ELSE
+                      COMPUTE  RECE64-RUIKEITOTAL  =
+                               RECE64-RUIKEITOTAL  +
+                             ( WRK-FUKA-VALUE    *
+                                    WRK-ORCSTEN-SURYO(IDX2))
                       COMPUTE  WRK-FUKA-KINGAKU    =
                                WRK-FUKA-KINGAKU    +
                              ((WRK-FUKA-VALUE^5) * FUKA-IDX)

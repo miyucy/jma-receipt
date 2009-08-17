@@ -61,7 +61,7 @@
       *数量計
                05  RECE442-SURYOUTOTAL     PIC  9(07)V9(05).
       *診療コード＊数量の累計
-               05  RECE442-RUIKEITOTAL     PIC  9(15)V9(05).
+               05  RECE442-RUIKEITOTAL     PIC  9(13)V9(05).
       *明細数
                05  RECE442-MEISAISU        PIC  9(04).
       *在宅患者訪問点滴注射管理指導料算定時の点滴注射

@@ -101,6 +101,7 @@
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -395,7 +396,7 @@
            03  WRK-HENSYU-KASANRITU   PIC X(01).
            03  WRK-HENSYU-KASANRITU2  PIC X(02).
       *
-           03  WRK-RUIKEITOTAL     PIC 9(15)V9(05).
+           03  WRK-RUIKEITOTAL     PIC 9(13)V9(05).
       *
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
@@ -630,7 +631,7 @@
                07  TBL-YT1-ZAITEN               PIC 9(08).
                07  TBL-YT1-SRYCDTOTAL           PIC 9(14).
                07  TBL-YT1-SURYOUTOTAL          PIC 9(07)V9(05).
-               07  TBL-YT1-RUIKEITOTAL          PIC 9(15)V9(05).
+               07  TBL-YT1-RUIKEITOTAL          PIC 9(13)V9(05).
                07  TBL-YT1-MEISAISU             PIC 9(04).
              05  TBL-YT1-RECE44-DAY-AREA.
                07  TBL-YT1-OCC2                 OCCURS  31.
@@ -639,7 +640,7 @@
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    並び替え用
-       01  WRK-YAKUTEI-DATA                     PIC X(636).
+       01  WRK-YAKUTEI-DATA                     PIC X(638).
       *
        01  WRK-TAIHI-YT1-KEY                    PIC X(02).
        01  WRK-YAKUTEI-ZAINUM                   PIC 9(08).
@@ -667,14 +668,14 @@
                    09  TBL-YT2Y1-ZAITEN           PIC 9(08).
                    09  TBL-YT2Y1-SRYCDTOTAL       PIC 9(14).
                    09  TBL-YT2Y1-SURYOUTOTAL      PIC 9(07)V9(05).
-                   09  TBL-YT2Y1-RUIKEITOTAL      PIC 9(15)V9(05).
+                   09  TBL-YT2Y1-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT2Y1-MEISAISU         PIC 9(04).
                06  TBL-YT2Y2-OCC                  OCCURS   4.
                  07  TBL-YT2Y2-HIKAKU.
                    09  TBL-YT2Y2-ZAITEN           PIC 9(08).
                    09  TBL-YT2Y2-SRYCDTOTAL       PIC 9(14).
                    09  TBL-YT2Y2-SURYOUTOTAL      PIC 9(07)V9(05).
-                   09  TBL-YT2Y2-RUIKEITOTAL      PIC 9(15)V9(05).
+                   09  TBL-YT2Y2-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT2Y2-MEISAISU         PIC 9(04).
       *
       *    薬剤逓減情報（まとめ用の編集テーブル）
@@ -699,14 +700,14 @@
                    09  TBL-YT3Y1-ZAITEN           PIC 9(08).
                    09  TBL-YT3Y1-SRYCDTOTAL       PIC 9(14).
                    09  TBL-YT3Y1-SURYOUTOTAL      PIC 9(07)V9(05).
-                   09  TBL-YT3Y1-RUIKEITOTAL      PIC 9(15)V9(05).
+                   09  TBL-YT3Y1-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT3Y1-MEISAISU         PIC 9(04).
                06  TBL-YT3Y2-OCC                  OCCURS   4.
                  07  TBL-YT3Y2-HIKAKU.
                    09  TBL-YT3Y2-ZAITEN           PIC 9(08).
                    09  TBL-YT3Y2-SRYCDTOTAL       PIC 9(14).
                    09  TBL-YT3Y2-SURYOUTOTAL      PIC 9(07)V9(05).
-                   09  TBL-YT3Y2-RUIKEITOTAL      PIC 9(15)V9(05).
+                   09  TBL-YT3Y2-RUIKEITOTAL      PIC 9(13)V9(05).
                    09  TBL-YT3Y2-MEISAISU         PIC 9(04).
       *
       *    酸素 

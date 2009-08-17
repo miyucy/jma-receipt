@@ -174,6 +174,7 @@
       *  04.05.01    NACL-門脇    09/06/29  療養期間記載方法選択機能
       *                                     （休業証明請求時）
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.05.03    NACL-門脇    09/08/17  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1798,10 +1799,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
-                   MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
-                   COMPUTE  RECE44-RUIKEITOTAL  =
-                            RECE44-RUIKEITOTAL  +
-                           (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+      ***          MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
+      ***          COMPUTE  RECE44-RUIKEITOTAL  =
+      ***                   RECE44-RUIKEITOTAL  +
+      ***                  (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
       *
                    MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                    PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
@@ -1811,6 +1812,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      IF  WRK-FUKA-VALUE  =  ZERO
                        CONTINUE
                      ELSE
+                       COMPUTE  RECE44-RUIKEITOTAL  =
+                                RECE44-RUIKEITOTAL  +
+                              ( WRK-FUKA-VALUE    *
+                                          SRY-SRYSURYO(IDX2))
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
                               ((WRK-FUKA-VALUE^5) * FUKA-IDX)
