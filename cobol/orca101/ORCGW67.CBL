@@ -447,7 +447,7 @@
                                TO  SPA-GMN-MEISAIKBNMEIL(7)
       *
            MOVE    "08"        TO  SPA-GMN-MEISAIKBNL   (8)
-           MOVE    "ª∫≤ ∞ÂŒ≈ ›æ⁄¿©≈Ÿ"
+           MOVE    "ª∫≤ ∞ÂŒ≈ ‰Ω˛¿©≈Ÿ"
                                TO  SPA-GMN-MEISAIKBNMEIL(8)
       *
            MOVE    "09"        TO  SPA-GMN-MEISAIKBNL   (9)
