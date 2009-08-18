@@ -888,7 +888,7 @@ P02	{
 							value	varchar(12);
 						};
 						LABL2	{
-							value	varchar(10);
+							value	varchar(12);
 						};
 						LABL3	{
 							value	varchar(4);

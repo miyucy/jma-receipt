@@ -625,7 +625,7 @@
                       07  P02-P024-LABL1.
                         08  P02-VALUE   PIC X(12).
                       07  P02-P024-LABL2.
-                        08  P02-VALUE   PIC X(10).
+                        08  P02-VALUE   PIC X(12).
                       07  P02-P024-LABL3.
                         08  P02-VALUE   PIC X(4).
                       07  P02-P024-HFTNLST2-COUNT   PIC S9(9)   BINARY.

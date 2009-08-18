@@ -582,29 +582,41 @@
                INITIALIZE                  SPA-GMN24-KOHFTNTBL2
                MOVE    1                   TO  SPA-NAI24-INIT2
            END-IF
-      *    特定の受給者番号
+      *    見出し変更
+           PERFORM 3101-KOH-MEISAI-SEC
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    認定範囲区分編集処理
+      *****************************************************************
+       3101-KOH-MEISAI-SEC              SECTION.
+      *
+      *    特定の受給者番号編集
            MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
            IF      SPA-GMN24-FTNSELNUM >   ZERO
-               IF      (SPA-NAI24-FTNSELNUM >   ZERO   )
-                   IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "051"
+               IF      (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "051" 
                                            OR  "052"
                                            OR  "015"
                                            OR  "016"
-                                           OR  "091"    )
+                                           OR  "091"
+                                           OR  "021"    )
       *               北海道の地方公費
-                     OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                            =   "183" ) AND
-                          (SPA-PREFNUM      =    01    ))
-                       MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
-                       MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
+                 OR   ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "183" ) AND
+                       (SPA-PREFNUM        =    01   )) 
+                   MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
+                   MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
                                                TO  SPA-GMN24-JKYSNUM
                                                           (13:)
-                   END-IF
                END-IF
-      *    名称
-             IF     (SPA-NAI24-FTNSELNUM >   ZERO   ) 
-                 IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+           END-IF
+      *    見出し名称
+           IF     (SPA-NAI24-FTNSELNUM >   ZERO   ) 
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "021"
                                            OR  "015"
                                            OR  "281"
@@ -613,23 +625,46 @@
                                            >=   "20060401"  )
                    MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
-                 ELSE
+               ELSE
                    MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
-                 END-IF
-      *          肝炎治療名称
-                 IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "038"       )  AND
-                        (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20080401"  )
+               END-IF
+      *
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "960"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
+                   MOVE    "外来減額（％）"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院減額（％）"     TO  SPA-GMN24-FTNMSG2
+               END-IF
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "961"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
+                   MOVE    "外来減額（円）"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院減額（円）"     TO  SPA-GMN24-FTNMSG2
+               END-IF
+      *
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "079"
+                                           OR  "024"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
+                   MOVE    "医療部分上限額"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "食事療養上限額"     TO  SPA-GMN24-FTNMSG2
+               END-IF
+      *        肝炎治療名称
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "038"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
                    MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
-                 END-IF
-             END-IF
+               END-IF
            END-IF
       *
            .
-       31O-SPASET-EXT.
+       3101-KOH-MEISAI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2335,74 +2370,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
       *
-      *    特定の受給者番号
-           MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
-           IF     (SPA-NAI24-FTNSELNUM >   ZERO   )
-              IF      (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                       =   "051" 
-                                       OR  "052"
-                                       OR  "015"
-                                       OR  "016"
-                                       OR  "091"
-                                       OR  "021"    )
-      *               北海道の地方公費
-                 OR   ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "183" ) AND
-                       (SPA-PREFNUM        =    01   )) 
-                   MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
-                   MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
-                                           TO  SPA-GMN24-JKYSNUM
-                                                          (13:)
-               END-IF
-           END-IF
-      *    名称
-           IF     (SPA-NAI24-FTNSELNUM >   ZERO   ) 
-               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "021"
-                                           OR  "015"
-                                           OR  "281"
-                                           OR  "016"     )  AND
-                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20060401"  )
-                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
-               ELSE
-                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
-               END-IF
-      *
-               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "960"   )  AND
-                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20061001"  )
-                   MOVE    "外来減額（％）"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "入院減額（％）"     TO  SPA-GMN24-FTNMSG2
-               END-IF
-               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "961"   )  AND
-                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20061001"  )
-                   MOVE    "外来減額（円）"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "入院減額（円）"     TO  SPA-GMN24-FTNMSG2
-               END-IF
-      *
-               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "079"
-                                           OR  "024"   )  AND
-                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20061001"  )
-                   MOVE    "医療部分上限額"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "食事療養上限額"     TO  SPA-GMN24-FTNMSG2
-               END-IF
-      *         肝炎治療名称
-               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
-                                           =   "038"   )  AND
-                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
-                                           >=   "20061001"  )
-                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
-                 END-IF
-           END-IF
+      *    見出し変更
+           PERFORM 3101-KOH-MEISAI-SEC
       *
       *    対象のデータをパラメタファイルより編集する
            INITIALIZE                      PARA-REC
