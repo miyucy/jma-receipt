@@ -491,7 +491,7 @@
                                TO  SPA-GMN-ETCJIHIKBNMEIL(7)
       *
            MOVE    "08"        TO  SPA-GMN-ETCJIHIKBNL   (8)
-           MOVE    "ª∫≤ ∞ÂŒ≈ ›æ⁄¿©≈Ÿ"
+           MOVE    "ª∫≤ ∞ÂŒ≈ ‰Ω˛¿©≈Ÿ"
                                TO  SPA-GMN-ETCJIHIKBNMEIL(8)
       *
            MOVE    "09"        TO  SPA-GMN-ETCJIHIKBNL   (9)
