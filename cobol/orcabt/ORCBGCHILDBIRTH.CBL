@@ -620,7 +620,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            MOVE    SPACE           TO  HCN61
       *
-           MOVE    KEY-N-HKNJANUM  TO  HCN61-HKNJANUM
+           MOVE    KEY-N-HKNJANUM  TO  WRK-HENKAN
+           MOVE    8               TO  WRK-LENGTH 
+           PERFORM 5003-DATA-RIGHT-HENSYU-SEC
+           MOVE    WRK-HENKAN      TO  HCN61-HKNJANUM
+      *
            MOVE    WRK-SKYYM       TO  HCN61-SKYYM
            EVALUATE    KEY-N-BUNBENKBN
                WHEN    1
@@ -1088,7 +1092,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    4               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *     ›∏±º‘»÷πÊ
-           MOVE    BUNBEN-HKNJANUM TO  WRK-DATA
+           MOVE    BUNBEN-HKNJANUM TO  WRK-HENKAN
+           MOVE    8               TO  WRK-LENGTH 
+           PERFORM 5003-DATA-RIGHT-HENSYU-SEC
+           MOVE    WRK-HENKAN      TO  WRK-DATA
            MOVE    8               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¿¡µ·«Ø∑Ó
