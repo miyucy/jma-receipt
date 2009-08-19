@@ -380,6 +380,7 @@
            IF      ORCSC100-KENSADEL   =   1
                MOVE    1               TO  LNK-SC93-DELSYORIFLG
            END-IF
+      *
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -428,7 +429,7 @@
       *    同日初診フラグ
            MOVE    ZERO                TO  WRK-DOUSIN
            PERFORM VARYING     IDX     FROM    SPA-MAX-LINE BY  -1
-                   UNTIL       IDX     <   1
+                   UNTIL      (IDX     <   1   )
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
                       (SPA-COM-INPUTCD (IDX)   =   SPACE )
                    CONTINUE

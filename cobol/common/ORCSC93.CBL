@@ -152,6 +152,8 @@
       *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ²Ã»»È½Äê
            03  WRK-SYONIKA-KBN         PIC X(01).
       *
+           03  WRK-ERRCD               PIC X(04).
+      *
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-DRCD                PIC X(04).
@@ -457,7 +459,15 @@
                IF      SPA-ERRCD           =   SPACE
       *            ºÞÊ¬Î¥
                    PERFORM 5101-SYRKBN-SET-SEC
+      *!!!!!!!!!!!!!
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       IF      WRK-ERRCD       =   SPACE
+                           MOVE    SPA-ERRCD       TO  WRK-ERRCD
+                       END-IF
+                       MOVE    SPACE           TO  SPA-ERRCD
+                   END-IF
                END-IF
+      *
       *        ³Æ½èÍý¤Î¥Á¥§¥Ã¥¯
                IF      SPA-ERRCD           =   SPACE
                    EVALUATE    LNK-SC93-PG
@@ -474,6 +484,10 @@
                    END-EVALUATE
                END-IF
            END-PERFORM
+      *
+           IF      WRK-ERRCD       NOT =   SPACE
+               MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           END-IF
            .
       *
        1002-ZAIBUNNRI-EXT.
@@ -2107,9 +2121,6 @@
       *****************************************************************
        200-KENSA-SORT-SEC              SECTION.
       *
-      *TEST
-           DISPLAY "C93 200-KENSA-SORT-SEC" 
-      *TEST
       *    ²èÌÌ£Ó£Ð£ÁÎÎ°è¥ï¡¼¥¯
            INITIALIZE                  WRK-GMN-REC
            INITIALIZE                  HZN-GMN-REC
@@ -2157,9 +2168,6 @@
            IF      SPA-GMN-MAX     NOT =   IDX-TBL
                MOVE    IDX-TBL         TO  SPA-GMN-MAX
            END-IF
-      *TEST
-           DISPLAY "C93 200-KENSA-SORT-EXT SPA-GMN-MAX:" SPA-GMN-MAX
-      *TEST
       *
            .
        200-KENSA-SORT-EXT.
