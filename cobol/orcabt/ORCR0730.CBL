@@ -71,6 +71,7 @@
       *  04.04.06    NACL-藤原    09/08/17  「平成２１年７月中国・九州
       *                                     北部豪雨」対応
       *                                     ２００９年７月〜対象 
+      *  04.04.07    NACL-門脇    09/08/19  出産一時金対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/06/11  病棟別出力対応
@@ -716,11 +717,13 @@
            03  FILLER          PIC X(10)   VALUE   "２３多一".
            03  FILLER          PIC X(02)   VALUE   "24".
            03  FILLER          PIC X(10)   VALUE   "２４多低".
+           03  FILLER          PIC X(02)   VALUE   "25".
+           03  FILLER          PIC X(10)   VALUE   "２５出産".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   22.
+           03  TBL-TOKKI       OCCURS   23.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX           PIC 9(02)   VALUE   22.
+       01  TBL-TOKKI-MAX           PIC 9(02)   VALUE   23.
       *
       *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.
