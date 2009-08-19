@@ -114,6 +114,13 @@ W12	{
 					count	int;
 					item	varchar(34)[5];
 				};
+				SEIHO_DSPKBN_COMBO	{
+					SEIHO_DSPKBN	{
+						value	varchar(34);
+					};
+					count	int;
+					item	varchar(34)[5];
+				};
 				PREFPRGID	{
 					value	varchar(15);
 				};

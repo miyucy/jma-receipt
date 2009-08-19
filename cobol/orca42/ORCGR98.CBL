@@ -69,6 +69,9 @@
       *  04.04.01    NACL-藤原    09/04/10  更新時に作成日を初期化しない  
       *                                     受給者番号に変更がないデータ
       *                                     は更新しない
+      * 
+      *  04.05.01    NACL-藤原    09/08/17  生保等まとめ入力画面表示順
+      *                                     設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -129,6 +132,8 @@
       *           受給者検証番号チェック区分（中国残留邦人等）
                    07  SPA-NAI-025-JKYSKENSNUMCHKKBN
                                                    PIC X(01).
+      *            生保等まとめ入力画面表示順
+                   07  SPA-NAI-200501-SEIHO-DSPKBN PIC X(01).
       *        入力項目名
                05  SPA-MCP-WIDGET                  PIC X(64).
       *
@@ -142,6 +147,7 @@
            03  FLG-MONTHLYNUM      PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01). 
+           03  FLG-SYSKANRI        PIC 9(01). 
       *     
            03  FLG-CHK             PIC 9(01).
            03  FLG-SEIHO           PIC 9(01). 
@@ -170,6 +176,8 @@
        01  WRK-AREA.
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+           03  WRK-PTKOHINF-MCP-PATHNAME
+                                   PIC X(64).
            03  WRK-KOH-IDX         PIC 9(01).
            03  WRK-CUR-IDX-X.
                05  WRK-CUR-IDX     PIC 9(02).
@@ -269,6 +277,9 @@
       *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
+      *
+      *    レセプト印刷情報
+           COPY  "CPSK200501.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -443,6 +454,31 @@
                MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SRYYM
            END-IF
       *
+      *    レセプト・総括編集情報
+           MOVE    SPACE               TO  SYS-200501-REC
+           INITIALIZE                      SYS-200501-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-200501-STYUKYMD
+                                           SYS-200501-EDYUKYMD
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+           ELSE
+               INITIALIZE                      SYS-200501-REC
+           END-IF
+      *
+           IF      SYS-200501-SEIHO-DSPKBN
+                                        =   SPACE
+               MOVE    "0"                  TO  SYS-200501-SEIHO-DSPKBN
+           END-IF
+           MOVE    SYS-200501-SEIHO-DSPKBN
+                                       TO  SPA-NAI-200501-SEIHO-DSPKBN
+      *
            MOVE    1                   TO  SPA-NAI-HYOUJIFLG
       *
            PERFORM 3101-SEH-HENSYU-SEC     
@@ -528,11 +564,21 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
+           EVALUATE    SPA-NAI-200501-SEIHO-DSPKBN
+               WHEN    "0"
+                   MOVE    "key10"     TO  WRK-PTKOHINF-MCP-PATHNAME
+               WHEN    "1"
+                   MOVE    "key11"     TO  WRK-PTKOHINF-MCP-PATHNAME
+               WHEN    "2"
+                   MOVE    "key12"     TO  WRK-PTKOHINF-MCP-PATHNAME 
+           END-EVALUATE
+           MOVE    WRK-PTKOHINF-MCP-PATHNAME
+                                   TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_ptkohinf"  TO  WRK-MCP-TABLE
-               MOVE    "key10"         TO  WRK-MCP-PATHNAME
+               MOVE    WRK-PTKOHINF-MCP-PATHNAME
+                                       TO  WRK-MCP-PATHNAME
                PERFORM 910-PTKOHINF-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-PTKOHINF
@@ -712,12 +758,14 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                END-IF
       *                                      
                MOVE    "tbl_ptkohinf"  TO  WRK-MCP-TABLE
-               MOVE    "key10"         TO  WRK-MCP-PATHNAME
+               MOVE    WRK-PTKOHINF-MCP-PATHNAME
+                                       TO  WRK-MCP-PATHNAME
                PERFORM 910-PTKOHINF-NEXT-SEC
            END-PERFORM                                 
       *    カーソルクロース
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
+           MOVE    WRK-PTKOHINF-MCP-PATHNAME
+                                   TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *    現在頁                 
            MOVE    1               TO  SPA-GMN-PAGE
@@ -2236,6 +2284,40 @@ grpsys                         MOVE    SPA-HOSPNUM
        900-HKNNUM-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       900-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-SYSKANRI-INV-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************

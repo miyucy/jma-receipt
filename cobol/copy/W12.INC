@@ -96,6 +96,12 @@
                     06  W12-COMMENT-NYUINRYO-COUNT   PIC S9(9)   BINARY.
                     06  W12-COMMENT-NYUINRYOLST
                             PIC X(34)   OCCURS  5 TIMES.
+                  05  W12-SEIHO-DSPKBN-COMBO.
+                    06  W12-SEIHO-DSPKBN.
+                      07  W12-VALUE   PIC X(34).
+                    06  W12-SEIHO-DSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SEIHO-DSPKBNLST
+                            PIC X(34)   OCCURS  5 TIMES.
                   05  W12-PREFPRGID.
                     06  W12-VALUE   PIC X(15).
                   05  W12-PREFPRGID1-STATE   PIC S9(9)   BINARY.
