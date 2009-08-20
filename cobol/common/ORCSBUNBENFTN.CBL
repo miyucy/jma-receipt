@@ -296,6 +296,10 @@
                COMPUTE LNKBUNBEN-ETC-MONEY
                    =   LNKBUNBEN-ETC-MONEY
                    +   SYU-HKNTEKMONEY
+               COMPUTE LNKBUNBEN-NYU-MONEY
+                   =   LNKBUNBEN-NYU-MONEY
+                   +   SYU-SKYMONEY-SKJ-KEI
+                   +   SYU-SKYMONEY-LIFE-KEI
            ELSE
                COMPUTE LNKBUNBEN-ICBFTN-MONEY
                    =   LNKBUNBEN-ICBFTN-MONEY
