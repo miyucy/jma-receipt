@@ -1807,7 +1807,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
-               IF      SYS-1900-PRTKBN(19)  NOT =   SPACE
+               IF      SYS-1900-PRTKBN(4)  NOT =   SPACE
       *            ∞ÂŒ≈µ°¥ÿÃææŒ ‘Ω∏æ Û
                    PERFORM 900-1901-READ-SEC
       *            ∞ÂŒ≈µ°¥ÿΩªΩÍ ‘Ω∏æ Û
@@ -1830,7 +1830,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  SYS-1901-REC
            MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
            MOVE    "1901"          TO  SYS-1901-KANRICD
-           MOVE    SYS-1900-PRTKBN(19)
+           MOVE    SYS-1900-PRTKBN(4)
                                    TO  SYS-1901-KBNCD
            MOVE    WRK-SYMD        TO  SYS-1901-STYUKYMD
                                        SYS-1901-EDYUKYMD
@@ -1857,7 +1857,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  SYS-1902-REC
            MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            MOVE    "1902"          TO  SYS-1902-KANRICD
-           MOVE    SYS-1900-PRTKBN(19)
+           MOVE    SYS-1900-PRTKBN(4)
                                    TO  SYS-1902-KBNCD
            MOVE    WRK-SYMD        TO  SYS-1902-STYUKYMD
                                        SYS-1902-EDYUKYMD
