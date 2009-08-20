@@ -128,6 +128,8 @@
       *
       *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
+      *  04.05.03    NACL-藤原    09/08/19  全件印刷時の自費レセプトの
+      *                                     印刷指定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1049,6 +1051,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            MOVE    SYS-200501-BTUNUM-PRTJYUNKBN
                                        TO
                                        SPA-NAI-2005-BTUNUM-PRTJYUNKBN
+           IF      SYS-200501-JIHI-PRTKBN
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-200501-JIHI-PRTKBN
+           END-IF
+           MOVE    SYS-200501-JIHI-PRTKBN
+                                       TO  SPA-NAI-2005-JIHI-PRTKBN
       *
       *    診療科の表示（一括作成時のみ）
            IF    ( SPA-SYUKA-KBN       =   "1"             )
@@ -2992,7 +3000,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "1"               TO  SPA-NAI-TEISYUTUSAKI(1 35)
            MOVE    "8888"            TO  SPA-NAI-SYUBETU     (1 35 1)
            MOVE    "自費"            TO  SPA-GMN-TSYURUINAME (1 35)
-           MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 35)
+           IF    ( SPA-GMN-SYOKBN    =   "T" )
+           AND   ( SPA-NAI-2005-JIHI-PRTKBN
+                                     =   "0" )
+               MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 35)
+           ELSE
+               MOVE    "F"               TO  SPA-GMN-TCHK-VALUE  (1 35)
+           END-IF
            IF      FLG-PRTNM-SET           =   ZERO
                MOVE    SPA-NAI-PRTNM-G (1)
                                      TO  SPA-GMN-TPRTNM-G    (1 35)
@@ -4278,6 +4292,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             SPA-GMN-TCHK-VALUE (1 34)
                                             SPA-GMN-TCHK-VALUE (1 35)
                                             SPA-GMN-TCHK-VALUE (1 36)
+                       IF      SPA-NAI-2005-JIHI-PRTKBN
+                                            =   "1"
+                           MOVE    "F"  TO  SPA-GMN-TCHK-VALUE  (1 35)
+                       END-IF
                    ELSE
                        PERFORM VARYING IDW FROM    1   BY  1
                                UNTIL   IDW >       WRK-CONS-PAGE-MAX
@@ -4945,6 +4963,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                             SPA-GMN-TCHK-VALUE (1 35)
                                             SPA-GMN-TCHK-VALUE (1 36)
                                             SPA-GMN-TCHK-VALUE (1 33)
+                       IF      SPA-NAI-2005-JIHI-PRTKBN
+                                            =   "1"
+                           MOVE    "F"  TO  SPA-GMN-TCHK-VALUE  (1 35)
+                       END-IF
                    ELSE
                        MOVE    "F"      TO  SPA-GMN-TCHK-VALUE (1 34)
                                             SPA-GMN-TCHK-VALUE (1 35)

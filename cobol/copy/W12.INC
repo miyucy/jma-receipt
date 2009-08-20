@@ -96,16 +96,23 @@
                     06  W12-COMMENT-NYUINRYO-COUNT   PIC S9(9)   BINARY.
                     06  W12-COMMENT-NYUINRYOLST
                             PIC X(34)   OCCURS  5 TIMES.
+                  05  W12-PREFPRGID.
+                    06  W12-VALUE   PIC X(15).
+                  05  W12-PREFPRGID1-STATE   PIC S9(9)   BINARY.
+                  05  W12-PREFPRGID1       PIC X(15).
+                  05  W12-AUTODSPKBN-COMBO.
+                    06  W12-AUTODSPKBN.
+                      07  W12-VALUE   PIC X(20).
+                    06  W12-AUTODSPKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-AUTODSPKBNLST
+                            PIC X(20)   OCCURS  2 TIMES.
                   05  W12-SEIHO-DSPKBN-COMBO.
                     06  W12-SEIHO-DSPKBN.
                       07  W12-VALUE   PIC X(34).
                     06  W12-SEIHO-DSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SEIHO-DSPKBNLST
                             PIC X(34)   OCCURS  5 TIMES.
-                  05  W12-PREFPRGID.
-                    06  W12-VALUE   PIC X(15).
-                  05  W12-PREFPRGID1-STATE   PIC S9(9)   BINARY.
-                  05  W12-PREFPRGID1       PIC X(15).
+                04  W12-FI30.
                   05  W12-SYAPRTNM.
                     06  W12-VALUE   PIC X(16).
                   05  W12-SYAPRTNM-NEXT.
@@ -142,18 +149,18 @@
                     06  W12-NEXTPRTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-NEXTPRTKBNLST
                             PIC X(16)   OCCURS  3 TIMES.
-                  05  W12-AUTODSPKBN-COMBO.
-                    06  W12-AUTODSPKBN.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-AUTODSPKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W12-AUTODSPKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
                   05  W12-PRT-CHECKKBN-COMBO.
                     06  W12-PRT-CHECKKBN.
                       07  W12-VALUE   PIC X(22).
                     06  W12-PRT-CHECKKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-PRT-CHECKKBNLST
                             PIC X(22)   OCCURS  2 TIMES.
+                  05  W12-JIHI-PRTKBN-COMBO.
+                    06  W12-JIHI-PRTKBN.
+                      07  W12-VALUE   PIC X(26).
+                    06  W12-JIHI-PRTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-JIHI-PRTKBNLST
+                            PIC X(26)   OCCURS  2 TIMES.
                   05  W12-PRTJYUNKBN4-COMBO.
                     06  W12-PRTJYUNKBN4.
                       07  W12-VALUE   PIC X(31).

@@ -114,13 +114,6 @@ W12	{
 					count	int;
 					item	varchar(34)[5];
 				};
-				SEIHO_DSPKBN_COMBO	{
-					SEIHO_DSPKBN	{
-						value	varchar(34);
-					};
-					count	int;
-					item	varchar(34)[5];
-				};
 				PREFPRGID	{
 					value	varchar(15);
 				};
@@ -128,6 +121,22 @@ W12	{
 					state	int;
 					value	varchar(15);
 				};
+				AUTODSPKBN_COMBO	{
+					AUTODSPKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				SEIHO_DSPKBN_COMBO	{
+					SEIHO_DSPKBN	{
+						value	varchar(34);
+					};
+					count	int;
+					item	varchar(34)[5];
+				};
+			};
+			fi30	{
 				SYAPRTNM	{
 					value	varchar(16);
 				};
@@ -178,19 +187,19 @@ W12	{
 					count	int;
 					item	varchar(16)[3];
 				};
-				AUTODSPKBN_COMBO	{
-					AUTODSPKBN	{
-						value	varchar(20);
-					};
-					count	int;
-					item	varchar(20)[2];
-				};
 				PRT_CHECKKBN_COMBO	{
 					PRT_CHECKKBN	{
 						value	varchar(22);
 					};
 					count	int;
 					item	varchar(22)[2];
+				};
+				JIHI_PRTKBN_COMBO	{
+					JIHI_PRTKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[2];
 				};
 				PRTJYUNKBN4_COMBO	{
 					PRTJYUNKBN4	{
