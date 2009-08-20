@@ -62,6 +62,7 @@ ld	{
 	orca107	 1; 
 	orca108	 1; 
 	orca109	 1; 
+/*	sessionend   1; */
 };
 bd	{
         orcabt;
