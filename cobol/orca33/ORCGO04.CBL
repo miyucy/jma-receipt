@@ -146,6 +146,7 @@
            03  KBT-OCC                             OCCURS  3.
                05  KBT-SKYSTYMD                    PIC X(08).
                05  KBT-SKYEDYMD                    PIC X(08).
+               05  KBT-RRKNUM                      PIC  9(3).
                05  KBT-SYU-SKYMONEY                PIC S9(9).
                05  KBT-FTN-SKYMONEY                PIC S9(9).
                05  KBT-SAGAKU                      PIC S9(9).
@@ -256,6 +257,9 @@
       *
       *    ¼ýÇ¼¹¹¿·º¹³Û¼èÆÀ
            COPY  "CPORCSS002.INC".
+      *
+      *    Ê¬ÊÚÆþ±¡¥Á¥§¥Ã¥¯¥µ¥Ö
+           COPY  "CPORCSBUNBENCHK.INC".
       *
       *    Æþ±¡ÀÁµá´ü´Ö¼èÆÀ¥µ¥Ö
            COPY    "CPORCSS006.INC".
@@ -850,9 +854,9 @@
                    MOVE    3               TO  IDX5
                WHEN    OTHER
                    EVALUATE    SPA-NAI-O04-SAKKBN-MAX
-                   WHEN    "1"
+                   WHEN    1
                        MOVE    1           TO  IDX5
-                   WHEN    "2"
+                   WHEN    2
                        MOVE    2           TO  IDX5
                    WHEN    OTHER
                        MOVE    3           TO  IDX5
@@ -866,6 +870,8 @@
                                            TO  KBT-SKYSTYMD (IDX5)
                    MOVE    PTTEIKIRRK-SKYEDYMD
                                            TO  KBT-SKYEDYMD (IDX5)
+                   MOVE    PTTEIKIRRK-RRKNUM
+                                           TO  KBT-RRKNUM   (IDX5)
                    COMPUTE KBT-SYU-SKYMONEY (IDX5)
                        =   KBT-SYU-SKYMONEY (IDX5)
                        +   SYU-SKYMONEY
@@ -896,6 +902,15 @@
                    INITIALIZE              LNK-ORCS02-REC
                                            LNK-SYUNOU-REC-T
                                            LNK-SYUDAY-REC-T
+      *
+                   INITIALIZE                  SBUNBENCHK-AREA
+                   MOVE    SPA-NAI-O04-PTID
+                                           TO  SBUNBENCHK-PTID
+                   MOVE    KBT-RRKNUM   (IDX5)
+                                           TO  SBUNBENCHK-RRKNUM
+                   CALL    "ORCSBUNBENCHK" USING
+                                           SBUNBENCHK-AREA
+                                           SPA-AREA
       *
                    INITIALIZE                  SS006-AREA
                    MOVE    SPA-NAI-O04-PTID    TO  SPA-PTID
@@ -934,7 +949,11 @@
                    END-IF
       *
                    MOVE    SPA-SYSYMD  TO  LNK-S02-SYSYMD
-                   MOVE    "1"         TO  LNK-S02-SYORI-KBN
+                   IF    ( SBUNBENCHK-BUNBEN   =   ZERO )
+                       MOVE    "1"     TO  LNK-S02-SYORI-KBN
+                   ELSE
+                       MOVE    "8"     TO  LNK-S02-SYORI-KBN
+                   END-IF
                    CALL    "ORCSNYUFTN"    USING
                                            SPA-AREA
                                            LNK-ORCS02-REC

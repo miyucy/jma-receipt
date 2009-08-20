@@ -301,6 +301,8 @@
                    =   LNKBUNBEN-ICBFTN-MONEY
                    +   SYU-HKNTEKMONEY
                    +   SYU-KOH-FTN
+                   +   SYU-SKYMONEY-SKJ-KEI
+                   +   SYU-SKYMONEY-LIFE-KEI
            END-IF
       *
            .

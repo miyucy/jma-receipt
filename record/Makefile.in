@@ -404,6 +404,7 @@ RECORD_files = \
 	appointmod.rec \
 	P02K.rec \
 	W67.rec \
+	I07.rec \
 
 DEF_files = \
 	HC01.def \
