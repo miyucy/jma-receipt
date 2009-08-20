@@ -51,6 +51,7 @@
       *  04.03.00    NACL-多々納  08/07/XX  病理診断加算・検査加算種別追加
       *  04.03.00    NACL-多々納  08/07/25  入院時初回加算自動算定追加
       *  04.04.00    NACL-多々納  09/01/09  前回検査日自動算定追加
+      *  04.05.00    NACL-多々納  09/08/20  蛋白分画、総蛋白、アルブミンの算定チェック追加
       *****************************************************************
       *
       *
@@ -237,6 +238,9 @@
            03  WRK-TNS-JGNAGE      PIC 9(02).
       *
            03  WRK-AUTOKBN         PIC X(01).
+      *
+           03  WRK-ERRMSG-1        PIC X(80).
+           03  WRK-ERRMSG-2        PIC X(80).
       *
       *    検査　判断グループ
        01  WRK-KENSA-AREA.
@@ -504,20 +508,27 @@
            03  FILLER          PIC X(14)  VALUE    "05 1 160168550".
       *    サーファクタントロプロテインＤ
            03  FILLER          PIC X(14)  VALUE    "05 1 160168450".
+      *どれか２つ
+      *    蛋白分画測定
+           03  FILLER          PIC X(14)  VALUE    "06 2 160022810".
+      *    総蛋白（ＴＰ）
+           03  FILLER          PIC X(14)  VALUE    "06 2 160017410".
+      *    アルブミン（Ａｌｂ）
+           03  FILLER          PIC X(14)  VALUE    "06 2 160018910".
       *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  8   INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  11  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
       *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   8.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
       *
       *    重複算定不可テーブル（２）
        01  TBL-KENSA-JYU2-AREA.
-      *どれか２つ
+      *どれか２つ（Ｈ１８．４から廃止）
       *    ＴＰ
            03  FILLER          PIC X(14)  VALUE    "01 2 160017410".
       *    Ａ／Ｇ
@@ -2969,6 +2980,8 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-JYU-CNT
+           MOVE    WRK-COM-NAME (IDX-Z)    TO  WRK-ERRMSG-1
+           MOVE    SPACE               TO  WRK-ERRMSG-2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   KEN-JYU-MAX)  OR
                               (SPA-ERRCD   NOT =   SPACE  )
@@ -2998,6 +3011,7 @@
                            ELSE
                                ADD     1               TO  WRK-JYU-CNT
                                MOVE    IDX2            TO  WRK-JYU-IDX
+                               PERFORM 200111-ERRMSG-HEN-SEC
                            END-IF
                        END-IF
       *                包括・入院の時は剤内
@@ -3012,6 +3026,7 @@
            IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
                MOVE    "0060"              TO  SPA-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
+               MOVE    WRK-ERRMSG-1        TO  LNK-ORCSC-ERRMSG
            END-IF
       *
       **** IF      WRK-JYU-FLG     NOT =   SPACE
@@ -3021,6 +3036,28 @@
            .
       *
        20011-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    重複エラーメッセージ編集処理
+      *****************************************************************
+       200111-ERRMSG-HEN-SEC           SECTION.
+      *
+           MOVE    WRK-ERRMSG-1        TO  WRK-ERRMSG-2
+           MOVE    SPACE               TO  WRK-ERRMSG-1
+           IF      WRK-ERRMSG-2        =   SPACE
+               MOVE    WRK-COM-NAME (IDX2) TO  WRK-ERRMSG-1
+           ELSE
+               STRING  WRK-ERRMSG-2        DELIMITED  BY  SPACE
+                       "，"                DELIMITED  BY  SIZE
+                       WRK-COM-NAME (IDX2)
+                                           DELIMITED  BY  SPACE
+                                       INTO  WRK-ERRMSG-1
+               END-STRING
+           END-IF
+           .
+      *
+       200111-ERRMSG-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3076,6 +3113,7 @@
            IF      FLG-NYUDAY          =   1
                ADD     1               TO  WRK-JYU-CNT
                MOVE    IDX2            TO  WRK-JYU-IDX
+               PERFORM 200111-ERRMSG-HEN-SEC
            END-IF
            .
        200111-JYUFUKU-NYU-EXT.

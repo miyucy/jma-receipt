@@ -2160,6 +2160,7 @@
                MOVE    LNK-NAIACCT-AREA    TO  SPA-NAIACCT-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+               MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
       *
                IF      LNK-ORCSC-KIDCD     NOT =   SPACE
                    MOVE    SPACE           TO  SPA-ERRCD
