@@ -984,6 +984,16 @@
       *****************************************************************
        4101-ZAIWEEK-CHK-SEC            SECTION.
       *
+           IF    ( SPA-GMN-ZAIWEEK     =   ZERO )
+               CONTINUE
+           ELSE
+               IF    ( SPA-GMN-ZAIWEEK >=  12 )
+                   CONTINUE
+               ELSE
+                   MOVE    "0006"      TO  SPA-ERRCD
+                   MOVE    5           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
            .
        4101-ZAIWEEK-CHK-EXT.
@@ -1922,6 +1932,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0005"
                MOVE    "請求年月＜退院月となっています"
+                                       TO  SPA-ERRMSG
+           WHEN    "0006"
+               MOVE    "在胎週数が１２週未満です"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "在胎週数を入力してください"
