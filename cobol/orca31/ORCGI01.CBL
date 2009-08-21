@@ -1223,6 +1223,10 @@
       *
                    GO  TO  300-SCREEN-EXT
                ELSE
+                   MOVE    SPA-I07-PTNUM   TO  SPA-PTNUM
+                   MOVE    SPA-I07-PTID    TO  SPA-PTID
+                   PERFORM 310-SPASET-SEC
+                   MOVE    SPA-PTNUM       TO  I01-PTNUM
                    PERFORM 4100-PTNUM-CHK-SEC
                    GO  TO  300-SCREEN-EXT
                END-IF

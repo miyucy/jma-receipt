@@ -4329,6 +4329,7 @@
       *
            INITIALIZE                      SPA-I07-AREA
            MOVE    SPA-NAI-I04-PTID    TO  SPA-I07-PTID
+           MOVE    SPA-GMN-I04-PTNUM   TO  SPA-I07-PTNUM
            MOVE    SPA-NAI-I04-PTRRKNUM
                                        TO  SPA-I07-RRKNUM
            MOVE    "I04"               TO  SPA-I07-MOTOPG
