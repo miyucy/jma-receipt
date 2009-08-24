@@ -87,6 +87,7 @@
                        SPA-GMN-KIKAN-VAL.
                        09  SPA-GMN-KIKAN-OCC       OCCURS  3.
                            11  SPA-GMN-KIKAN       PIC X(20).
+                   07  SPA-GMN-LBLINFO01           PIC X(80).
       *
                05  SPA-GMN-COMBO-AREA.
                    07  SPA-GMN-PRTKBNLST-G.
@@ -123,6 +124,7 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-QTEIKI              PIC 9(01).
+           03  FLG-TEIKIRRK            PIC 9(01).
            03  FLG-HAITA               PIC 9(01).
            03  FLG-STOP                PIC 9(01).
            03  FLG-RUN                 PIC 9(01).
@@ -195,6 +197,8 @@
            03  WRK-CMB-CD              PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM         PIC X(200).
+           03  WRK-PNT                 PIC 9(03).
+           03  WRK-LSTKBT              PIC X(06).
       *
        01  WRK-SHELL-NAME.
            05  FILLER                  PIC X(16) VALUE
@@ -244,6 +248,10 @@
       *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+      *    Äê´üÀÁµáÍúÎò
+       01  TEIKIRRK-REC.
+           COPY    "CPTEIKIRRK.INC".
       *
       *    Äê´üÀÁµá¥¯¥¨¥ê
        01  QTEIKI-REC.
@@ -603,6 +611,45 @@
        3101-DENPPRTYMD-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    ºÇ½ª°ì³ç½èÍý¼Â»ÜÆüÊÔ½¸½èÍý
+      *****************************************************************
+       3101-LASTRUNDATE-EDIT-SEC   SECTION.
+      *
+           PERFORM 900-TEIKIRRK-KEY2-SEL-SEC
+      *
+           IF    ( FLG-TEIKIRRK    =   ZERO )
+               IF    ( TEIKIRRK-UPYMD  NOT =   SPACE )
+      *
+                   MOVE    1               TO  WRK-PNT
+                   MOVE    SPACE           TO  SPA-GMN-LBLINFO01
+                   MOVE    TEIKIRRK-SRYYM  TO  WRK-SYMD
+                   MOVE    "01"            TO  WRK-SYMD(7:2)
+                   PERFORM 800-HIZUKE-HEN-SEC
+                   STRING  "Á°²ó¼Â»Ü´ü´Ö¡§"
+                           WRK-HENYMDG (1:6)   DELIMITED BY  SIZE
+                           " - "               DELIMITED BY  SIZE
+                           TEIKIRRK-KBT        DELIMITED BY  SIZE
+                           "´ü"                DELIMITED BY  SIZE
+                   INTO    SPA-GMN-LBLINFO01
+                   WITH    POINTER WRK-PNT
+                   END-STRING
+      *
+                   MOVE    TEIKIRRK-UPYMD  TO  WRK-SYMD
+                   PERFORM 800-HIZUKE-HEN-SEC
+                   STRING  "¡¡¼Â»ÜÆü¡§"    DELIMITED BY  SIZE
+                           WRK-HENYMDG     DELIMITED BY  SIZE
+                   INTO    SPA-GMN-LBLINFO01
+                   WITH    POINTER WRK-PNT
+                   END-STRING
+      *
+               END-IF
+      *
+           END-IF
+      *
+           .
+       3101-LASTRUNDATE-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    ³ÎÇ§²èÌÌ¡Ê£Ï£É£Ä£±¡Ë£Ï£Ë½èÍý
       *****************************************************************
        330-OID1-SET-SEC            SECTION.
@@ -681,6 +728,9 @@
                MOVE    SPA-O01-CHK-KIKAN02 TO  SPA-GMN-CHK-KIKAN02
                MOVE    SPA-O01-CHK-KIKAN03 TO  SPA-GMN-CHK-KIKAN03
                PERFORM 3101-DENPPRTYMD-EDIT-SEC
+      *
+               PERFORM 3101-LASTRUNDATE-EDIT-SEC
+      *
            END-IF
       *
       *
@@ -1689,6 +1739,23 @@
       *
            MOVE    SPA-NAI-DENPPRTYMD      TO  SPA-O01-DENPPRTYMD
       *
+      *
+           INITIALIZE                      SYS-5010-REC
+           MOVE    "5010"              TO  SYS-5010-KANRICD
+           MOVE    "*"                 TO  SYS-5010-KBNCD
+           MOVE    SPA-NAI-SRYYM       TO  SYS-5010-STYUKYMD
+           MOVE    "01"                TO  SYS-5010-STYUKYMD (7 : 2)
+           MOVE    SYS-5010-STYUKYMD   TO  SYS-5010-EDYUKYMD
+           MOVE    SYS-5010-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-5010-REC
+           ELSE
+               INITIALIZE                  SYS-5010-REC
+           END-IF
+      *
+           MOVE    SYS-5010-CHGWINDOWKBN   TO  SPA-O01-CHGWINDOWKBN
+      *
            MOVE    SPA-O01KYOUTU           TO  SPA-WORK
       *
            .
@@ -1810,6 +1877,8 @@
            PERFORM 3101-SRYYM-EDIT-SEC
            PERFORM 3101-TEIKI-KIKAN-GET-SEC
       *
+           PERFORM 3101-LASTRUNDATE-EDIT-SEC
+      *
            .
        490-CLEAR-EXT.
            EXIT.
@@ -1878,6 +1947,8 @@
                MOVE    SPA-GMN-DENPPRTYMD
                                        TO  O01-DENPPRTYMD
            END-IF
+      *
+           MOVE    SPA-GMN-LBLINFO01   TO  O01-LBLINFO01
       *
            MOVE    SPA-GMN-IKKATU      TO  O01-IKKATU
            MOVE    SPA-GMN-KOBETU      TO  O01-KOBETU
@@ -2357,6 +2428,33 @@
       *
            .
        900-QUERY-TEIKI-KEY11-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Äê´üÀÁµáÍúÎò¸¡º÷¡ÊKEY2¡Ë
+      *****************************************************************
+       900-TEIKIRRK-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TEIKIRRK
+           INITIALIZE                      TEIKIRRK-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  TEIKIRRK-HOSPNUM
+           MOVE    TEIKIRRK-REC        TO  MCPDATA-REC
+           MOVE    "tbl_teikirrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  TEIKIRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-TEIKIRRK
+               INITIALIZE                  TEIKIRRK-REC
+           END-IF
+      *
+           MOVE    "tbl_teikirrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-TEIKIRRK-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý

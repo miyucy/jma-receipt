@@ -20,6 +20,10 @@
                 04  W23-SAISYORIKBN        PIC X(60).
                 04  W23-SAISYORIKBN-COUNT  PIC S9(9)   BINARY.
                 04  W23-SAISYORIKBNLST     PIC X(60)   OCCURS  5 TIMES.
+              03  W23-CMB-CHGWINDOWKBN.
+                04  W23-CHGWINDOWKBN       PIC X(20).
+                04  W23-CHGWINDOWKBN-COUNT PIC S9(9)   BINARY.
+                04  W23-CHGWINDOWKBNLST    PIC X(20)   OCCURS  5 TIMES.
               03  W23-CMB-DELKBN.
                 04  W23-DELKBN             PIC X(20).
                 04  W23-DELKBN-COUNT       PIC S9(9)   BINARY.

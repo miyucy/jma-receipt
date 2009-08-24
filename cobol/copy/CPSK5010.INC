@@ -61,8 +61,10 @@
                05  SYS-5010-DELKBN          PIC  X(01).
       *        請求書発行方法区分
                05  SYS-5010-SKYSUMKBN       PIC  X(01).
+      *        自動遷移区分
+               05  SYS-5010-CHGWINDOWKBN    PIC  X(01).
       *        予備
-               05                           PIC  X(479).
+               05                           PIC  X(478).
       *端末ＩＤ
            03  SYS-5010-TERMID          PIC  X(16).
       *オペーレータＩＤ

@@ -94,6 +94,11 @@
                        09                     PIC   X(01).
                        09  SPA-GMN-SAISYORIKBNMEI
                                               PIC   X(58).
+                   07  SPA-GMN-CHGWINDOWKBN-G.
+                       09  SPA-GMN-CHGWINDOWKBN     PIC   X(01).
+                       09                     PIC   X(01).
+                       09  SPA-GMN-CHGWINDOWKBNMEI
+                                              PIC   X(18).
                    07  SPA-GMN-DELKBN-G.
                        09  SPA-GMN-DELKBN     PIC   X(01).
                        09                     PIC   X(01).
@@ -125,6 +130,13 @@
                            11                        PIC   X(01).
                            11  SPA-GMN-SAISYORIKBNMEIL
                                                      PIC   X(58).
+                   07  SPA-GMN-CHGWINDOWKBNLST-G.
+                       09  SPA-GMN-CHGWINDOWKBN-MAX   PIC   9(03).
+                       09  SPA-GMN-CHGWINDOWKBNLST    OCCURS  2.
+                           11  SPA-GMN-CHGWINDOWKBNL  PIC   X(01).
+                           11                        PIC   X(01).
+                           11  SPA-GMN-CHGWINDOWKBNMEIL
+                                                     PIC   X(18).
                    07  SPA-GMN-DELKBNLST-G.
                        09  SPA-GMN-DELKBN-MAX   PIC   9(03).
                        09  SPA-GMN-DELKBNLST    OCCURS  2.
@@ -426,6 +438,14 @@
            MOVE    SPA-GMN-SAISYORIKBNLST(1)
                                        TO  SPA-GMN-SAISYORIKBN-G
       *
+           MOVE    2                   TO  SPA-GMN-CHGWINDOWKBN-MAX
+           MOVE    "0"                 TO  SPA-GMN-CHGWINDOWKBNL(1)
+           MOVE    "自動遷移しない"    TO  SPA-GMN-CHGWINDOWKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-CHGWINDOWKBNL(2)
+           MOVE    "自動遷移する"      TO  SPA-GMN-CHGWINDOWKBNMEIL(2)
+           MOVE    SPA-GMN-CHGWINDOWKBNLST(1)
+                                       TO  SPA-GMN-CHGWINDOWKBN-G
+      *
            MOVE    2                   TO  SPA-GMN-DELKBN-MAX
            MOVE    "1"                 TO  SPA-GMN-DELKBNL(1)
            MOVE    "使用しない"        TO  SPA-GMN-DELKBNMEIL(1)
@@ -496,6 +516,17 @@
                                    =   SPA-GMN-SAISYORIKBNL (IDX1))
                    MOVE    SPA-GMN-SAISYORIKBNLST (IDX1)
                                        TO  SPA-GMN-SAISYORIKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-CHGWINDOWKBN-MAX )
+      *
+               IF    ( SYS-5010-CHGWINDOWKBN
+                                   =   SPA-GMN-CHGWINDOWKBNL (IDX1))
+                   MOVE    SPA-GMN-CHGWINDOWKBNLST (IDX1)
+                                       TO  SPA-GMN-CHGWINDOWKBN-G
                END-IF
       *
            END-PERFORM
@@ -592,6 +623,7 @@
            MOVE    W23-NYUKINKBN       TO  SPA-GMN-NYUKINKBN-G
            MOVE    W23-NYUKINPRTKBN    TO  SPA-GMN-NYUKINPRTKBN-G
            MOVE    W23-SAISYORIKBN     TO  SPA-GMN-SAISYORIKBN-G
+           MOVE    W23-CHGWINDOWKBN    TO  SPA-GMN-CHGWINDOWKBN-G
            MOVE    W23-DELKBN          TO  SPA-GMN-DELKBN-G
            MOVE    W23-SKYSUMKBN       TO  SPA-GMN-SKYSUMKBN-G
       *
@@ -636,6 +668,12 @@
       *
       *    再処理区分チェック
            PERFORM 4100-SAISYORIKBN-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    自動遷移区分チェック
+           PERFORM 4100-CHGWINDOWKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -874,6 +912,36 @@
        4100-SAISYORIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    自動遷移区分チェック処理
+      *****************************************************************
+       4100-CHGWINDOWKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-CHGWINDOWKBN-G =   SPACE )
+               MOVE    SPA-GMN-CHGWINDOWKBNLST(1)
+                                       TO  SPA-GMN-CHGWINDOWKBN-G
+               GO  TO  4100-CHGWINDOWKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-CHGWINDOWKBN-MAX )
+                     OR  ( SPA-GMN-CHGWINDOWKBN
+                                   =   SPA-GMN-CHGWINDOWKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-CHGWINDOWKBN-MAX )
+               MOVE    SPA-GMN-CHGWINDOWKBNLST(1)
+                                       TO  SPA-GMN-CHGWINDOWKBN-G
+           ELSE
+               MOVE    SPA-GMN-CHGWINDOWKBNLST(IDXA)
+                                       TO  SPA-GMN-CHGWINDOWKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-CHGWINDOWKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    削除区分チェック処理
       *****************************************************************
        4100-DELKBN-CHK-SEC          SECTION.
@@ -991,6 +1059,7 @@
            MOVE    SPA-GMN-NYUKINKBN       TO  SYS-5010-NYUKINKBN
            MOVE    SPA-GMN-NYUKINPRTKBN    TO  SYS-5010-NYUKINPRTKBN
            MOVE    SPA-GMN-SAISYORIKBN     TO  SYS-5010-SAISYORIKBN
+           MOVE    SPA-GMN-CHGWINDOWKBN    TO  SYS-5010-CHGWINDOWKBN
            MOVE    SPA-GMN-DELKBN          TO  SYS-5010-DELKBN
            MOVE    SPA-GMN-SKYSUMKBN       TO  SYS-5010-SKYSUMKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
@@ -1097,6 +1166,14 @@
                    UNTIL ( IDX1    >   SPA-GMN-SAISYORIKBN-MAX )
                MOVE    SPA-GMN-SAISYORIKBNLST(IDX1)
                                            TO  W23-SAISYORIKBNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-CHGWINDOWKBN-G  TO  W23-CHGWINDOWKBN
+           MOVE    SPA-GMN-CHGWINDOWKBN-MAX TO W23-CHGWINDOWKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-CHGWINDOWKBN-MAX )
+               MOVE    SPA-GMN-CHGWINDOWKBNLST(IDX1)
+                                           TO  W23-CHGWINDOWKBNLST(IDX1)
            END-PERFORM
       *
            MOVE    SPA-GMN-DELKBN-G        TO  W23-DELKBN
@@ -1235,6 +1312,8 @@
                    MOVE    "DELKBN"        TO  MCP-WIDGET
            WHEN    08
                    MOVE    "SKYSUMKBN"     TO  MCP-WIDGET
+           WHEN    09
+                   MOVE    "CHGWINDOWKBN"  TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -1259,6 +1338,8 @@
            WHEN    "NYUKINPRTKBN"
                    MOVE    5           TO  SPA-GMN-CUR
            WHEN    "SAISYORIKBN"
+                   MOVE    9           TO  SPA-GMN-CUR
+           WHEN    "CHGWINDOWKBN"
                    MOVE    7           TO  SPA-GMN-CUR
            WHEN    "DELKBN"
                    MOVE    8           TO  SPA-GMN-CUR

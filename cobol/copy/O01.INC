@@ -23,6 +23,7 @@
               03  O01-B13-STATE       PIC S9(9)   BINARY.
               03  O01-LBLSRYYM        PIC X(10).
               03  O01-LBLDENPPRTYMD   PIC X(10).
+              03  O01-LBLINFO01       PIC X(80).
               03  O01-CMB-PRTKBN.
                 04  O01-PRTKBN.
                   05  O01-VALUE       PIC X(20).

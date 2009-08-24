@@ -1842,6 +1842,7 @@
                    IF    ( FLG-TEIKIRRK    =   ZERO )
                        MOVE    TEIKI1P-JOBYMD  TO  TEIKIRRK-UPYMD
                        MOVE    TEIKI1P-JOBHMS  TO  TEIKIRRK-UPHMS
+                       MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                        MOVE    "tbl_teikirrk"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBUPDATE-SEC
@@ -1858,6 +1859,7 @@
                        MOVE    TEIKI1P-JOBYMD  TO  TEIKIRRK-CREYMD
                                                    TEIKIRRK-UPYMD
                        MOVE    TEIKI1P-JOBHMS  TO  TEIKIRRK-UPHMS
+                       MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                        MOVE    "tbl_teikirrk"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBINSERT-SEC

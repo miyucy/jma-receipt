@@ -282,10 +282,13 @@
                MOVE    "F12:印　刷"        TO  O99-B12-LABEL
            END-IF
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "O99    "           TO  MCP-WINDOW
+           IF    ( FLG-END             =   ZERO )
+               MOVE    "CURRENT"       TO  MCP-PUTTYPE
+               MOVE    "O99    "       TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW
+               PERFORM 900-PUT-WINDOW
+           END-IF
+      *
            .
        490-KAKUNIN-EXT.
            EXIT.
@@ -579,6 +582,9 @@
                            PERFORM 900-TEIKIPRT-ALL-SEL-SEC
                            IF    ( FLG-TEIKIPRT    =   ZERO )
                                MOVE    WIDGET-NORMAL   TO  O99-B12-STATE
+                               IF    ( SPA-O01-CHGWINDOWKBN    =   "1" )
+                                   PERFORM 4501-NEXT-GMN-SEC
+                               END-IF
                            END-IF
                        ELSE
                            MOVE    "処理対象のデータはありませんでした"

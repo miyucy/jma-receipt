@@ -38,6 +38,13 @@ W23	{
 			count	int;
 			item	varchar(60)[5];
 		};
+		CMB_CHGWINDOWKBN	{
+			CHGWINDOWKBN {
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
 		CMB_DELKBN	{
 			DELKBN {
 				value	varchar(20);

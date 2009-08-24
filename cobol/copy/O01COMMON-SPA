@@ -45,6 +45,8 @@
            03  SPA-O01-CHK-KIKAN03         PIC X(01).
       *システム日付（年月全角編集）
            03  SPA-O01-SYSYMH              PIC X(16).
+      *自動遷移区分
+           03  SPA-O01-CHGWINDOWKBN        PIC X(01).
       *警告メッセージ
            03  SPA-OIDCD                   PIC  X(04).
            03  SPA-OIDCD2                  PIC  X(04).
