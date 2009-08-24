@@ -1614,16 +1614,19 @@
            MOVE    SPA-GMN-NYUINYMD        TO  I07-NYUINYMD
            MOVE    SPA-GMN-TAIINYMD        TO  I07-TAIINYMD
       *
-           IF    ( SPA-GMN-SYAKOK          =   "1" )
+           EVALUATE    SPA-GMN-SYAKOK
+           WHEN    "1"
                MOVE    "社保"              TO  I07-SYAKOK
-           ELSE
+           WHEN    "2"
                MOVE    "国保"              TO  I07-SYAKOK
-           END-IF
+           END-EVALUATE
       *
-           IF    ( SPA-GMN-HONKZK          =   "1" )
-               MOVE    "本人"              TO  I07-HONKZK
-           ELSE
-               MOVE    "家族"              TO  I07-HONKZK
+           IF    ( SPA-GMN-SYAKOK      NOT =   SPACE )
+               IF    ( SPA-GMN-HONKZK      =   "1" )
+                   MOVE    "本人"          TO  I07-HONKZK
+               ELSE
+                   MOVE    "家族"          TO  I07-HONKZK
+               END-IF
            END-IF
       *
            MOVE    SPA-GMN-HKNJANUM        TO  I07-HKNJANUM
