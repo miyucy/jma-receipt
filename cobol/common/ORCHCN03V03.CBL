@@ -209,6 +209,7 @@
       *
       *    プログラムオプションパラメタ
        01  TPARA-AREA.
+           03  TPARA-HAKKOUBIKBN        PIC X(01).
            03  TPARA-YUKOSTYMD          PIC X(08).
            03  TPARA-YUKOEDYMD          PIC X(08).
            03  TPARA-MEMO               PIC X(80) OCCURS 10.
@@ -469,8 +470,16 @@
        100-OPTION-SELECT-SEC             SECTION.
       *
            INITIALIZE                  TPARA-AREA
+           MOVE    "0"             TO  TPARA-HAKKOUBIKBN
            MOVE    "00000000"      TO  TPARA-YUKOSTYMD
            MOVE    "99999999"      TO  TPARA-YUKOEDYMD
+      *
+      *    伝票発行日区分
+           MOVE    "HAKKOUBIKBN"   TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA        =   "0" OR "1" )
+               MOVE    WRK-PARA    TO  TPARA-HAKKOUBIKBN
+           END-IF
       *
       *    有効開始日
            MOVE    "YUKOSTYMD"     TO  WRK-PARA-NAME
@@ -547,6 +556,9 @@
            WHEN    "YUKOSTYMD"
            WHEN    "YUKOEDYMD"
                MOVE    ORCSPRGOPTION-OT-PARA(1:10)
+                                       TO  KANACHK-MAE-INPUT
+           WHEN    OTHER
+               MOVE    ORCSPRGOPTION-OT-PARA
                                        TO  KANACHK-MAE-INPUT
            END-EVALUATE
       *
@@ -722,7 +734,11 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCN03-NYUINENDYMD
       *    発行日
-           MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           IF    ( TPARA-HAKKOUBIKBN   =   "0" )
+               MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
+           ELSE
+               MOVE    SPA-SYSYMD      TO  WRK-SYMD
+           END-IF
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCN03-HAKYMD
       *
