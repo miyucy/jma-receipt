@@ -935,10 +935,19 @@
                END-IF
       *
                IF    ( SPA-ERRCD       =   SPACE )
-                   IF    ( SPA-NAI-SKYYM
+                   IF    ( SPA-GMN-BUNBENKBN       =   "1" )
+                    AND  ( SPA-NAI-TAIINYMD(7:2)  <=   "10" )
+                       IF    ( SPA-NAI-SKYYM
                                        <   SPA-NAI-TAIINYMD (1:6) )
-                       MOVE    "0005"      TO  SPA-ERRCD
-                       MOVE    2           TO  SPA-GMN-CUR
+                           MOVE    "0005"      TO  SPA-ERRCD
+                           MOVE    2           TO  SPA-GMN-CUR
+                       END-IF
+                   ELSE
+                       IF    ( SPA-NAI-SKYYM
+                                       <=  SPA-NAI-TAIINYMD (1:6) )
+                           MOVE    "0007"      TO  SPA-ERRCD
+                           MOVE    2           TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1938,6 +1947,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0006"
                MOVE    "ºßÂÛ½µ¿ô¤¬£±£²½µÌ¤Ëþ¤Ç¤¹"
+                                       TO  SPA-ERRMSG
+           WHEN    "0007"
+               MOVE    "ÀÁµáÇ¯·î¡åÂà±¡·î¤È¤Ê¤Ã¤Æ¤¤¤Þ¤¹"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "ºßÂÛ½µ¿ô¤òÆþÎÏ¤·¤Æ¤¯¤À¤µ¤¤"
