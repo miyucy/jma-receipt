@@ -528,6 +528,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                ADD     1               TO  WRK-SEQ-NO
                MOVE    WRK-SEQ-NO      TO  WRK-DATA-SEQ-NO    
                INITIALIZE                  SUM-HKNJANUM-G
+               MOVE    ZERO            TO  WRK-PAGE
       *
       *        分娩区分・保険者別編集処理
                MOVE    KEY-NEW         TO  KEY-OLD
