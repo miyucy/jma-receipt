@@ -65,7 +65,7 @@
            03  BUNBEN-BIRTHCNT                PIC  9(01).
       *入院日数
            03  BUNBEN-NYUIN-DAY               PIC  9(03).
-      *産科医療保証制度区分
+      *産科医療補償制度区分
            03  BUNBEN-SANKAKBN                PIC  X(01).
       *明細情報
            03  BUNBEN-MEISAI-INF.
@@ -83,7 +83,7 @@
                05  BUNBEN-KNS-MONEY           PIC  9(08).
       *処置・手当料
                05  BUNBEN-SYC-MONEY           PIC  9(08).
-      *産科医療保証制度
+      *産科医療補償制度
                05  BUNBEN-SNK-MONEY           PIC  9(08).
       *その他
                05  BUNBEN-ETC-MONEY           PIC  9(08).
