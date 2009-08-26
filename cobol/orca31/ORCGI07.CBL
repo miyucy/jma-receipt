@@ -1504,15 +1504,22 @@
            MOVE    SPA-GMN-SKYKBN          TO   BUNBEN-SKYKBN
            MOVE    SPA-GMN-RIYOUKBN        TO   BUNBEN-RIYOUKBN
            MOVE    SPA-GMN-BUNBENKBN       TO   BUNBEN-BUNBENKBN
-           IF    ( SPA-GMN-BUNBENKBN   =   "1" )
-               MOVE    "2"                 TO  BUNBEN-TEISYUTUSAKI
+      *
+           IF    ( SPA-GMN-RIYOUKBN        =   "0" )
+            OR   ( SPA-GMN-SYAKOK          =   SPACE )
+               CONTINUE
            ELSE
-               IF    ( SPA-GMN-SYAKOK  =   "1" )
-                   MOVE    "1"             TO  BUNBEN-TEISYUTUSAKI
-               ELSE
+               IF    ( SPA-GMN-BUNBENKBN   =   "1" )
                    MOVE    "2"             TO  BUNBEN-TEISYUTUSAKI
+               ELSE
+                   IF    ( SPA-GMN-SYAKOK  =   "1" )
+                       MOVE    "1"         TO  BUNBEN-TEISYUTUSAKI
+                   ELSE
+                       MOVE    "2"         TO  BUNBEN-TEISYUTUSAKI
+                   END-IF
                END-IF
            END-IF
+      *
            MOVE    SPA-GMN-SYAKOK          TO  BUNBEN-KANYUKBN
            MOVE    SPA-GMN-HONKZK          TO  BUNBEN-HONKZKKBN
            MOVE    SPA-GMN-HKNJANUM        TO  BUNBEN-HKNJANUM
