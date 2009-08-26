@@ -1,7 +1,7 @@
         01  HCN62.
             02  HCN62-PNUM  PIC X(20).
             02  HCN62-NAME  PIC X(30).
-            02  HCN62-JYOUTAI   PIC X(12).
+            02  HCN62-BUNBENKBN PIC X(12).
             02  HCN62-PRTYMD    PIC X(22).
             02  HCN62-BIRTHDAY  PIC X(22).
             02  HCN62-RIYOUKBN  PIC X(10).
