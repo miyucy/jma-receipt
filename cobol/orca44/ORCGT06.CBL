@@ -32,6 +32,11 @@
       *  04.04.03    NACL-藤原    09/12/10  返戻対応
       *  04.04.04    NACL-藤原    09/03/31  主科設定時の主科未設定データ
       *                                     の有無チェック
+      *
+      *  04.05.01    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
+      *                                     対応
+      *                                     ファイル出力先のデフォルト値
+      *                                     の設定も可能にする 
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -618,9 +623,17 @@
                MOVE    "1"                 TO
                                            SYS-200501-RECEDEN-LST1KBN
            END-IF 
+           IF      SYS-200501-RECEDEN-RIREKIKBN
+                                       =   SPACE
+               MOVE    "0"                 TO
+                                           SYS-200501-RECEDEN-RIREKIKBN
+           END-IF 
            MOVE    SYS-200501-RECEDEN-LST1KBN
                                        TO
                                    SPA-NAI-T06-200501-RECEDEN-LST1KBN
+           MOVE   SYS-200501-RECEDEN-RIREKIKBN
+                                       TO
+                                   SPA-NAI-T06-200501-RECEDEN-RIREKIKBN
       *
       *    レセプト編集区分情報（主科情報）
            MOVE    SPACE               TO  SYS-2009-REC
@@ -3908,6 +3921,8 @@
                                    TO  SHELLTBL-ARG24
            MOVE    SPA-NAI-T06-200501-RECEDEN-LST1KBN
                                    TO  SHELLTBL-ARG25
+           MOVE    SPA-NAI-T06-200501-RECEDEN-RIREKIKBN
+                                   TO  SHELLTBL-ARG26
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

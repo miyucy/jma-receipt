@@ -29,6 +29,11 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
+      *
+      *  04.05.01    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
+      *                                     対応
+      *                                     ファイル出力先のデフォルト値
+      *                                     の設定も可能にする 
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -206,6 +211,11 @@
                                        =   SPACE
                MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
            END-IF 
+           IF      SYS-200501-RECEDEN-DATAKBN
+                                       =   SPACE
+               MOVE    "1"                 TO
+                                           SYS-200501-RECEDEN-DATAKBN
+           END-IF 
       *
       *    クライアント保存可否情報取得サブ
            INITIALIZE                      ORCSCLIENTSVAREA
@@ -247,8 +257,10 @@
       *
            MOVE    SPA-GMN-T98-PRTKBNLST (1)
                                        TO  SPA-GMN-T98-PRTKBN-G
-           MOVE    SPA-GMN-T98-DATAKBNLST (1)
-                                       TO  SPA-GMN-T98-DATAKBN-G
+      *
+           MOVE    SYS-200501-RECEDEN-DATAKBN
+                                       TO  SPA-GMN-T98-DATAKBN
+           PERFORM 41021-DATAKBN-CHK-SEC                                 
       *
            MOVE    1               TO  SPA-GMN-T98-CUR
            .
