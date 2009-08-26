@@ -110,6 +110,7 @@
                    07  SPA-GMN-MEIPRTKBNF      PIC X(01).
                    07  SPA-GMN-MEIPRTKBNMEI    PIC X(20).
                05  SPA-GMN-LBLINFO01           PIC X(100).
+               05  SPA-GMN-LBLINFO02           PIC X(20).
                05  SPA-GMN-CMB-AREA.
                    07  SPA-GMN-RIYOUKBNLST-G.
                        09  SPA-GMN-RIYOUKBN-MAX        PIC 9(03).
@@ -904,6 +905,7 @@
            END-IF
       *
            IF    ( SPA-GMN-RIYOUKBN    =   "0" )
+            OR   ( SPA-GMN-HKNJANUM    =   ZERO )
                MOVE    SPACE           TO  SPA-GMN-SKYYM
                MOVE    ZERO            TO  SPA-NAI-SKYYM
                MOVE    "1"             TO  SPA-GMN-SKYKBN
@@ -1671,16 +1673,21 @@
                                                            (IDX-CMB)
            END-PERFORM
       *
-           IF    ( SPA-GMN-BUNBENKBN     =   "1" )
-               MOVE    "提出先：国保連合会"
-                                           TO  I07-LBLTEISYUTUSAKI
+           IF    ( SPA-GMN-RIYOUKBN      =   "0" )
+            OR   ( SPA-GMN-SYAKOK        =   SPACE )
+               CONTINUE
            ELSE
-               IF    ( SPA-GMN-SYAKOK    =   "1" )
-                   MOVE    "提出先：支払基金"
-                                           TO  I07-LBLTEISYUTUSAKI
-               ELSE
+               IF    ( SPA-GMN-BUNBENKBN     =   "1" )
                    MOVE    "提出先：国保連合会"
                                            TO  I07-LBLTEISYUTUSAKI
+               ELSE
+                   IF    ( SPA-GMN-SYAKOK    =   "1" )
+                       MOVE    "提出先：支払基金"
+                                           TO  I07-LBLTEISYUTUSAKI
+                   ELSE
+                       MOVE    "提出先：国保連合会"
+                                           TO  I07-LBLTEISYUTUSAKI
+                   END-IF
                END-IF
            END-IF
            MOVE    SPA-GMN-ZAIWEEK         TO  I07-ZAIWEEK
@@ -1736,6 +1743,11 @@
            MOVE    SPA-GMN-LBLINFO01       TO  I07-LBLINFO01
       *
            MOVE    "black"                 TO  I07-LBLINFO02-STYLE
+           IF    ( SPA-GMN-HKNJANUM        =   SPACE )
+            AND  ( SPA-GMN-RIYOUKBN        =   "1" )
+               MOVE    "red"               TO  I07-LBLINFO02-STYLE
+               MOVE    "保険者番号未入力"  TO  I07-LBLINFO02
+           END-IF
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -1758,6 +1770,7 @@
                                            I07-SANKAKBN-ITEM-STATE
       *
            IF    ( SPA-GMN-RIYOUKBN    =   "0" )
+            OR   ( SPA-GMN-HKNJANUM    =   SPACE )
                MOVE    WIDGET-INSENSITIVE
                                        TO  I07-SKYYM-STATE
                                            I07-SKYKBN-STATE
