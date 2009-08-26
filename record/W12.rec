@@ -390,6 +390,20 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				RECEDEN_RIREKI_COMBO	{
+					RECEDEN_RIREKIKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[2];
+				};
+				RECEDEN_DATAKBN_COMBO	{
+					RECEDEN_DATAKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[10];
+				};
 			};
 			fi26	{
 				PR_PRTJYUN_COMBO	{

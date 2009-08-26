@@ -313,6 +313,18 @@
                     06  W12-RECEDEN-LST2KBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-RECEDEN-LST2KBNLST
                             PIC X(20)   OCCURS  2 TIMES.
+                  05  W12-RECEDEN-RIREKIKBN-COMBO.
+                    06  W12-RECEDEN-RIREKIKBN.
+                      07  W12-VALUE   PIC X(24).
+                    06  W12-RECEDEN-RIREKIKBN-COUNT PIC S9(9)   BINARY.
+                    06  W12-RECEDEN-RIREKIKBNLST
+                            PIC X(24)   OCCURS  2 TIMES.
+                  05  W12-RECEDEN-DATAKBN-COMBO.
+                    06  W12-RECEDEN-DATAKBN.
+                      07  W12-VALUE   PIC X(40).
+                    06  W12-RECEDEN-DATAKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-RECEDEN-DATAKBNLST
+                            PIC X(40)   OCCURS  10 TIMES.
                 04  W12-FI26.
                   05  W12-PREFKBN-PRTJYUN-COMBO.
                     06  W12-PREFKBN-PRTJYUN.

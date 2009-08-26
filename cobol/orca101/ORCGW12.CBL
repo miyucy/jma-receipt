@@ -114,6 +114,10 @@
       *                                     設定対応
       *  04.05.03    NACL-藤原    09/08/19  全件印刷時の自費レセプトの
       *                                     印刷指定対応
+      *  04.05.04    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
+      *                                     対応
+      *                                     ファイル出力先のデフォルト値
+      *                                     の設定も可能にする 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,6 +318,18 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-RECEDEN-LST2KBNMEI
                                               PIC X(18).
+                       09  SPA-GMN-RECEDEN-RIREKIKBN-G.
+                           11  SPA-GMN-RECEDEN-RIREKIKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RECEDEN-RIREKIKBNMEI
+                                              PIC X(18).
+                       09  SPA-GMN-RECEDEN-DATAKBN-G.
+                           11  SPA-GMN-RECEDEN-DATAKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RECEDEN-DATAKBNMEI
+                                              PIC X(38).
                        09  SPA-GMN-SRYKAHENKBN-G.
                            11  SPA-GMN-SRYKAHENKBN
                                               PIC X(01).
@@ -815,6 +831,24 @@
                        09  SPA-GMN-RECEDEN-LST2KBNMEIL
                                               PIC X(18).
                    07  SPA-GMN-RECEDEN-LST2KBN-MAX
+                                              PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-RECEDEN-RIREKIKBNLST  OCCURS  2.
+                       09  SPA-GMN-RECEDEN-RIREKIKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RECEDEN-RIREKIKBNMEIL
+                                              PIC X(22).
+                   07  SPA-GMN-RECEDEN-RIREKIKBN-MAX
+                                              PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-RECEDEN-DATAKBNLST  OCCURS  10.
+                       09  SPA-GMN-RECEDEN-DATAKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                              PIC X(38).
+                   07  SPA-GMN-RECEDEN-DATAKBN-MAX
                                               PIC 9(02).    
       *                                        
                    07  SPA-GMN-SRYKAHENKBNLST OCCURS  2.
@@ -1679,6 +1713,37 @@
                                                                     (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-LST2KBN-MAX 
       *     
+           MOVE    "0"                 TO  SPA-GMN-RECEDEN-RIREKIKBNL(1)
+           MOVE    "行なわない"        TO  SPA-GMN-RECEDEN-RIREKIKBNMEIL
+                                                                     (1)
+           MOVE    "1"                 TO  SPA-GMN-RECEDEN-RIREKIKBNL(2)
+           MOVE    "行なう"            TO  SPA-GMN-RECEDEN-RIREKIKBNMEIL
+                                                                     (2)
+           MOVE    2                   TO  SPA-GMN-RECEDEN-RIREKIKBN-MAX 
+      *     
+           MOVE    "1"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (1)
+           MOVE    "フロッピィ"        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                                                     (1)
+           MOVE    "2"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (2)
+           MOVE    "ＭＯ"              TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                                                     (2)
+           MOVE    "3"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (3)
+           MOVE    "システム管理設定場所（フロッピィ用）"
+                                       TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                                                     (3)
+           MOVE    "4"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (4)
+           MOVE    "システム管理設定場所（ＭＯ用）"
+                                       TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                                                     (4)
+           MOVE    "5"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (5)
+           MOVE    "クライアント保存"  TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                                                     (5)
+           MOVE    "6"                 TO  SPA-GMN-RECEDEN-DATAKBNL  (6)
+           MOVE    "クライアント保存（ＣＤ−Ｒ用）"
+                                       TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+                                                                     (6)
+           MOVE    6                   TO  SPA-GMN-RECEDEN-DATAKBN-MAX
+      *       
            MOVE    "0"                 TO  SPA-GMN-SRYKAHENKBNL    (1)
            MOVE    "診療科を表示する"  TO  SPA-GMN-SRYKAHENKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-SRYKAHENKBNL    (2)
@@ -2776,6 +2841,32 @@
                END-IF
            END-PERFORM
       *
+           MOVE    SYS-200501-RECEDEN-RIREKIKBN
+                                       TO  SPA-GMN-RECEDEN-RIREKIKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-RECEDEN-RIREKIKBN-MAX
+               IF      SPA-GMN-RECEDEN-RIREKIKBN 
+                                   =   SPA-GMN-RECEDEN-RIREKIKBNL (IDY)
+                   MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (IDY)
+                                       TO  SPA-GMN-RECEDEN-RIREKIKBN-G
+                   MOVE    SPA-GMN-RECEDEN-RIREKIKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-200501-RECEDEN-DATAKBN
+                                       TO  SPA-GMN-RECEDEN-DATAKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-RECEDEN-DATAKBN-MAX
+               IF      SPA-GMN-RECEDEN-DATAKBN 
+                                   =   SPA-GMN-RECEDEN-DATAKBNL (IDY)
+                   MOVE    SPA-GMN-RECEDEN-DATAKBNLST (IDY)
+                                           TO  SPA-GMN-RECEDEN-DATAKBN-G
+                   MOVE    SPA-GMN-RECEDEN-DATAKBN-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
            MOVE    SYS-200501-KOUIKIPRTNM
                                        TO  SPA-GMN-KOUIKIPRTNM         
            MOVE    SYS-200501-KOUIKIPRTNM-NEXT
@@ -3248,6 +3339,17 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-RECEDEN-LST2KBNLST (1)
                                            TO  SPA-GMN-RECEDEN-LST2KBN-G
            END-IF                                              
+           IF     SPA-GMN-RECEDEN-RIREKIKBN
+                                       =   SPACE
+               MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (1)
+                                           TO
+                                           SPA-GMN-RECEDEN-RIREKIKBN-G
+           END-IF                                              
+           IF     SPA-GMN-RECEDEN-DATAKBN
+                                       =   SPACE
+               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (1)
+                                           TO  SPA-GMN-RECEDEN-DATAKBN-G
+           END-IF                                              
            IF     SPA-GMN-SRYKAHENKBN  =   SPACE
                MOVE    SPA-GMN-SRYKAHENKBNLST (1)
                                            TO  SPA-GMN-SRYKAHENKBN-G
@@ -3486,6 +3588,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-RECEDEN-CDRKBN  TO  SPA-GMN-RECEDEN-CDRKBN-G
            MOVE    W12-RECEDEN-LST1KBN TO  SPA-GMN-RECEDEN-LST1KBN-G
            MOVE    W12-RECEDEN-LST2KBN TO  SPA-GMN-RECEDEN-LST2KBN-G
+           MOVE    W12-RECEDEN-RIREKIKBN
+                                       TO  SPA-GMN-RECEDEN-RIREKIKBN-G
+           MOVE    W12-RECEDEN-DATAKBN TO  SPA-GMN-RECEDEN-DATAKBN-G
            MOVE    W12-SYAPRTNM-N      TO  SPA-GMN-SYAPRTNM-N
            MOVE    W12-KKHPRTNM-N      TO  SPA-GMN-KKHPRTNM-N
            MOVE    W12-SYAPRTNM-NEXT-N TO  SPA-GMN-SYAPRTNM-NEXT-N
@@ -3836,6 +3941,16 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4169-RECEDEN-LST2KBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4168-RECEDEN-RIREKIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4169-RECEDEN-DATAKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -5711,6 +5826,65 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセ電データ履歴保存設定区分チェック
+      *****************************************************************
+       4168-RECEDEN-RIREKIKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-RECEDEN-RIREKIKBN  =   SPACE
+               MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (1)
+                                       TO  SPA-GMN-RECEDEN-RIREKIKBN-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECEDEN-RIREKIKBN-MAX
+                   IF      SPA-GMN-RECEDEN-RIREKIKBN
+                                   =   SPA-GMN-RECEDEN-RIREKIKBNL (IDY)
+                       MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (IDY)
+                                           TO
+                                           SPA-GMN-RECEDEN-RIREKIKBN-G
+                       MOVE    SPA-GMN-RECEDEN-RIREKIKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-RECEDEN-RIREKIKBNMEI   =   SPACE
+                   MOVE    114                     TO  SPA-GMN-CUR
+                   MOVE    "0106"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4168-RECEDEN-RIREKIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイル出力先設定区分チェック
+      *****************************************************************
+       4169-RECEDEN-DATAKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-RECEDEN-DATAKBN  =   SPACE
+               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (1)
+                                       TO  SPA-GMN-RECEDEN-DATAKBN-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECEDEN-DATAKBN-MAX
+                   IF      SPA-GMN-RECEDEN-DATAKBN
+                                   =   SPA-GMN-RECEDEN-DATAKBNL (IDY)
+                       MOVE    SPA-GMN-RECEDEN-DATAKBNLST (IDY)
+                                           TO  SPA-GMN-RECEDEN-DATAKBN-G
+                       MOVE    SPA-GMN-RECEDEN-DATAKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-RECEDEN-DATAKBNMEI   =   SPACE
+                   MOVE    115                     TO  SPA-GMN-CUR
+                   MOVE    "0107"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4169-RECEDEN-DATAKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入退院履歴記載区分（入院外レセプトのみ）チェック
       *****************************************************************
        4144-NYUTAIINREKI-KSIKBN-CHK-SEC       SECTION.
@@ -6521,6 +6695,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYS-200501-RECEDEN-LST1KBN
            MOVE    SPA-GMN-RECEDEN-LST2KBN TO
                                            SYS-200501-RECEDEN-LST2KBN
+           MOVE    SPA-GMN-RECEDEN-RIREKIKBN   TO
+                                           SYS-200501-RECEDEN-RIREKIKBN
+           MOVE    SPA-GMN-RECEDEN-DATAKBN TO
+                                           SYS-200501-RECEDEN-DATAKBN
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -6853,6 +7031,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                             TO  W12-RECEDEN-LST1KBN
            MOVE    SPA-GMN-RECEDEN-LST2KBN-G
                                             TO  W12-RECEDEN-LST2KBN
+           MOVE    SPA-GMN-RECEDEN-RIREKIKBN-G
+                                            TO  W12-RECEDEN-RIREKIKBN
+           MOVE    SPA-GMN-RECEDEN-DATAKBN-G
+                                            TO  W12-RECEDEN-DATAKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -7451,6 +7633,22 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-RECEDEN-LST2KBN-MAX
                                        TO  W12-RECEDEN-LST2KBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RECEDEN-RIREKIKBN-MAX
+               MOVE    SPA-GMN-RECEDEN-RIREKIKBNLST (IDY)
+                                       TO  W12-RECEDEN-RIREKIKBNLST(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEDEN-RIREKIKBN-MAX
+                                       TO  W12-RECEDEN-RIREKIKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RECEDEN-DATAKBN-MAX
+               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (IDY)
+                                       TO  W12-RECEDEN-DATAKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEDEN-DATAKBN-MAX
+                                       TO  W12-RECEDEN-DATAKBN-COUNT 
      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    WIDGET-NORMAL       TO  W12-PREFPRGID1-STATE
@@ -7694,6 +7892,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0105"
                    MOVE    "光ディスク等送付書作成区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0106"
+                   MOVE    "レセ電データ履歴保存入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0107"
+                   MOVE    "ファイル出力先設定入力エラー"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1003"
@@ -7965,6 +8169,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "RECEDEN_LST1KBN"   TO   MCP-WIDGET
                 WHEN    113
                     MOVE  "RECEDEN_LST2KBN"   TO   MCP-WIDGET
+                WHEN    114
+                    MOVE  "RECEDEN_RIREKIKBN"  TO  MCP-WIDGET
+                WHEN    115
+                    MOVE  "RECEDEN_DATAKBN"    TO  MCP-WIDGET
       * 
                 WHEN    11
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
@@ -8003,7 +8211,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE    1                TO  W12-PAGENO
                 WHEN    200 THRU    214
                     MOVE    2                TO  W12-PAGENO
-                WHEN    100 THRU    113
+                WHEN    100 THRU    115
                     MOVE    3                TO  W12-PAGENO
                 WHEN    70  THRU    80
                     MOVE    4                TO  W12-PAGENO
@@ -8261,6 +8469,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "RECEDEN_LST1KBN"
                    MOVE    113         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_LST2KBN"
+                   MOVE    114         TO  SPA-GMN-CUR
+               WHEN    "RECEDEN_RIREKIKBN"
+                   MOVE    115         TO  SPA-GMN-CUR
+               WHEN    "RECEDEN_DATAKBN"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
       *

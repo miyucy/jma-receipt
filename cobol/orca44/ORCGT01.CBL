@@ -124,6 +124,10 @@
       *                                     ２００９年７月〜対象 
       *
       *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
+      *  04.05.02    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
+      *                                     対応
+      *                                     ファイル出力先のデフォルト値
+      *                                     の設定も可能にする 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -772,6 +776,16 @@ grpsys                                         SPA-AREA
                MOVE    "0"                 TO
                                            SYS-200501-RECEDEN-LST2KBN
            END-IF 
+           IF      SYS-200501-RECEDEN-RIREKIKBN
+                                       =   SPACE
+               MOVE    "0"                 TO
+                                           SYS-200501-RECEDEN-RIREKIKBN
+           END-IF 
+           IF      SYS-200501-RECEDEN-DATAKBN
+                                       =   SPACE
+               MOVE    "1"                 TO
+                                           SYS-200501-RECEDEN-DATAKBN
+           END-IF 
            MOVE    SYS-200501-KOUIKIKBN
                                        TO  SPA-NAI-200501-KOUIKIKBN
            MOVE    SYS-200501-KOUIKIRECEKBN
@@ -782,6 +796,12 @@ grpsys                                         SPA-AREA
            MOVE    SYS-200501-RECEDEN-LST2KBN
                                        TO
                                        SPA-NAI-200501-RECEDEN-LST2KBN
+           MOVE    SYS-200501-RECEDEN-RIREKIKBN
+                                       TO
+                                       SPA-NAI-200501-RECEDEN-RIREKIKBN
+           MOVE    SYS-200501-RECEDEN-DATAKBN
+                                       TO
+                                       SPA-NAI-200501-RECEDEN-DATAKBN
       *
            MOVE    WIDGET-INSENSITIVE  TO  SPA-B15-STATE
                                            SPA-B16-STATE
@@ -886,8 +906,9 @@ grpsys                                         SPA-AREA
                END-IF
            END-IF
       *
-           MOVE    SPA-GMN-DATAKBNLST (1)
-                                   TO  SPA-GMN-DATAKBN-G
+           MOVE    SPA-NAI-200501-RECEDEN-DATAKBN
+                                   TO  SPA-GMN-DATAKBN
+           PERFORM 4104-DATAKBN-CHK-SEC                                   
       *
       *    レセプト編集区分情報（主科情報）
            MOVE    SPACE               TO  SYS-2009-REC
@@ -4323,6 +4344,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                                    TO  SHELLTBL-ARG22
            MOVE    SPA-NAI-200501-RECEDEN-LST2KBN
                                    TO  SHELLTBL-ARG23
+           MOVE    SPA-NAI-200501-RECEDEN-RIREKIKBN
+                                   TO  SHELLTBL-ARG24
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
