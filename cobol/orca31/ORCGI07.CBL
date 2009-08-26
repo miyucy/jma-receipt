@@ -225,6 +225,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+           COPY    "CPORCHCN63.INC".
+           COPY    "CPONPRTDATA.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1576,6 +1579,24 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+      *
+               IF    ( SPA-GMN-MEIPRTKBN   =   "1" )
+      *
+                   CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
+                   INITIALIZE                      ONPRTDATA
+                                                   ORCHCN63AREA
+                   MOVE    SPA-I07-PTID        TO  ORCHCN63-PTID
+                   MOVE    SPA-I07-RRKNUM      TO  ORCHCN63-RRKNUM
+                   MOVE    ORCHCN63AREA        TO  ONPRTDATA-DATA
+                   MOVE    "ORCHCN63"          TO  ONPRTDATA-PGID
+                   MOVE    "01"                TO  SPA-PRT-FLG
+                   CALL    "ORCHCOMMON"        USING
+                                               SPA-AREA
+                                               ONPRTDATA
+                   MOVE    SPACE               TO  SPA-PRT-FLG
+               END-IF
+      *
                IF    ( SPA-I07-MOTOPG  =   "I04" )
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK
