@@ -228,7 +228,7 @@
            MOVE    PTINF-NAME      TO  HCN63-NAME
       *
       *    日付セット
-           MOVE    SPA-SRYYMD      TO  WRK-SYMD
+           MOVE    SPA-SYSYMD      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  HCN63-PRTYMD
       *
