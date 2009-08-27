@@ -1432,6 +1432,21 @@
                    MOVE    9               TO  SPA-GMN-CUR
                END-IF
            END-IF
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-GMN-BUNBENKBN   =   "1" )
+                AND   ( SPA-GMN-KAIJO-MONEY >   ZERO )
+                   MOVE    "1007"          TO  SPA-ERRCD
+                   MOVE    13              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-GMN-BUNBENKBN   =   "2" )
+                AND  ( SPA-GMN-BUNBEN-MONEY >   ZERO )
+                   MOVE    "1008"          TO  SPA-ERRCD
+                   MOVE    14              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
            IF    ( SPA-GMN-BIRTHCNT    =   1 )
                IF    ( SPA-ERRCD           =   SPACE )
@@ -2018,11 +2033,14 @@
                        "設定されています"  DELIMITED BY SIZE
                INTO    SPA-ERRMSG
                END-STRING
+           WHEN    "1007"
+               MOVE    "正常分娩で分娩介助料が入力されています"
+                                       TO  SPA-ERRMSG
+           WHEN    "1008"
+               MOVE    "異常分娩で分娩料が入力されています"
+                                       TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4002"
                MOVE    "更新処理に失敗しました"
-                                       TO  SPA-ERRMSG
-           WHEN    "9999"
-               MOVE    "工事中。しばらくお待ち下さい"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
