@@ -71,11 +71,13 @@
            03  SYS-1017-SETAIKBN-FLG    PIC X(01).
       *グループ医療機関患者リスト
            03  SYS-1017-GRPPTLST-FLG    PIC X(01).
+      *公費上限額履歴チェック区分
+           03  SYS-1017-KOHRRKKBN-FLG   PIC X(01).
       *予備
       **** 03  FILLER                   PIC X(495).
       **** 03  FILLER                   PIC X(493).
       **** 03  FILLER                   PIC X(490).
-           03  FILLER                   PIC X(485).
+           03  FILLER                   PIC X(484).
       *端末ＩＤ
            03  SYS-1017-TERMID          PIC  X(16).
       *オペーレータＩＤ

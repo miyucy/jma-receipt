@@ -892,6 +892,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        グループ医療機関患者リスト
                MOVE    SYS-1017-GRPPTLST-FLG
                                            TO  SPA-NAI-GRPPTLST-FLG
+      *        公費上限額履歴チェック区分
+               MOVE    SYS-1017-KOHRRKKBN-FLG
+                                           TO  SPA-NAI-KOHRRKKBN-FLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -906,6 +909,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1"                 TO  SPA-NAI-SETAIKBN-FLG
       *        グループ医療機関患者リスト
                MOVE    "0"                 TO  SPA-NAI-GRPPTLST-FLG
+      *        公費上限額履歴チェック区分
+               MOVE    "0"                 TO  SPA-NAI-KOHRRKKBN-FLG
+      *
            END-IF
            IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
                MOVE    ZERO                TO  SPA-NAI-DOUMEI-CHKFLG
@@ -936,6 +942,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            OR     (SPA-GRPHOSPKBN          =   ZERO  )
       *            本院分院のない時、表示なし
                MOVE    "0"                 TO  SPA-NAI-GRPPTLST-FLG
+           END-IF
+      *
+           IF      SPA-NAI-KOHRRKKBN-FLG   =   SPACE
+               MOVE    "0"                 TO  SPA-NAI-KOHRRKKBN-FLG
            END-IF
       *
            .

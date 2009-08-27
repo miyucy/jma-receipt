@@ -83,6 +83,8 @@
            03  SPA-NAI-SETAIKBN-FLG       PIC X(01).
       *    グループ医療機関患者リスト
            03  SPA-NAI-GRPPTLST-FLG       PIC X(01).
+      *    公費上限額履歴チェック
+           03  SPA-NAI-KOHRRKKBN-FLG      PIC X(01).
       *
       *    更新時警告あり
            03  SPA-KEI2-FLG               PIC 9(01).

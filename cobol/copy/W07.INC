@@ -279,6 +279,12 @@
                     06  W07-GRPPTLST-COUNT   PIC S9(9)   BINARY.
                     06  W07-GRPPTLST-ITEM
                             PIC X(28)   OCCURS  5 TIMES.
+                  05  W07-KOHRRK-COMB.
+                    06  W07-KOHRRK.
+                      07  W07-VALUE   PIC X(28).
+                    06  W07-KOHRRK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-KOHRRK-ITEM
+                            PIC X(28)   OCCURS  5 TIMES.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.

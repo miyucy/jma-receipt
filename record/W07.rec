@@ -377,6 +377,13 @@ W07	{
 					count	int;
 					item	varchar(28)[5];
 				};
+				KOHRRK_COMB	{
+					KOHRRK	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[5];
+				};
 			};
 			TAGNAME2    {
 			    state   int;

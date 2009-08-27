@@ -1804,8 +1804,10 @@
       *
       *    ∏¯»Ò…È√¥§Œ≈–œø•¡•ß•√•Ø
            IF      SPA-TAGU-FLG        =   ZERO
-               IF      SPA-P024-KOHKEIFLG  =   ZERO
-                   PERFORM 410132-KOHFTN-CHK-SEC
+               IF      SPA-NAI-KOHRRKKBN-FLG   =   "1"
+                   IF      SPA-P024-KOHKEIFLG  =   ZERO
+                       PERFORM 410132-KOHFTN-CHK-SEC
+                   END-IF
                END-IF
            END-IF
            .
