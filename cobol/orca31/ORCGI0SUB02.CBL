@@ -399,31 +399,12 @@
       *
                    IF    ( WRK-SAGAKU      >   ZERO )
                        IF    ( WRK-SAGAKU  >   MOTSYU-SKYMONEY(IDX-UPD))
-                           COMPUTE KONSYU-CHOSEI(IDX-SYU)
-                               =   KONSYU-SKYMONEY(IDX-SYU)
-                               *   -1
                            MOVE    ZERO    TO  KONSYU-SKYMONEY(IDX-SYU)
       *
-                           IF    ( MOTSYU-CHOSEI2(IDX-UPD)
-                                           =   ZERO )
-                               COMPUTE KONSYU-CHOSEI2(IDX-SYU)
-                                   =   MOTSYU-CHOSEI2(IDX-UPD)
-      *
-                               COMPUTE KONSYU-CHOSEI1(IDX-SYU)
-                                   =   MOTSYU-CHOSEI1(IDX-UPD)
-                                   -   MOTSYU-CHOSEI(IDX-UPD)
-                                   +   KONSYU-CHOSEI(IDX-SYU)
-                           ELSE
-                               COMPUTE KONSYU-CHOSEI1(IDX-SYU)
-                                   =   MOTSYU-CHOSEI1(IDX-UPD)
-      *
-                               COMPUTE KONSYU-CHOSEI2(IDX-SYU)
-                                   =   MOTSYU-CHOSEI2(IDX-UPD)
-                                   -   MOTSYU-CHOSEI(IDX-UPD)
-                                   +   KONSYU-CHOSEI(IDX-SYU)
-                           END-IF
-      *
-      *
+                           COMPUTE KONSYU-CHOSEI(IDX-SYU)
+                               =   MOTSYU-CHOSEI(IDX-UPD)
+                               +   WRK-SAGAKU
+                               -   MOTSYU-SKYMONEY(IDX-UPD)
                        ELSE
                            COMPUTE KONSYU-SKYMONEY(IDX-SYU)
                                =   MOTSYU-SKYMONEY(IDX-UPD)
@@ -431,10 +412,6 @@
       *
                            MOVE    MOTSYU-CHOSEI(IDX-UPD)
                                            TO  KONSYU-CHOSEI(IDX-SYU)
-                           MOVE    MOTSYU-CHOSEI1(IDX-UPD)
-                                           TO  KONSYU-CHOSEI1(IDX-SYU)
-                           MOVE    MOTSYU-CHOSEI2(IDX-UPD)
-                                           TO  KONSYU-CHOSEI2(IDX-SYU)
                        END-IF
                    ELSE
       *
@@ -444,10 +421,6 @@
       *
                        MOVE    MOTSYU-CHOSEI(IDX-UPD)
                                            TO  KONSYU-CHOSEI(IDX-SYU)
-                       MOVE    MOTSYU-CHOSEI1(IDX-UPD)
-                                           TO  KONSYU-CHOSEI1(IDX-SYU)
-                       MOVE    MOTSYU-CHOSEI2(IDX-UPD)
-                                           TO  KONSYU-CHOSEI2(IDX-SYU)
       *
                    END-IF
       *
@@ -730,15 +703,6 @@
                =   TTLSYU-HKNTEKMONEY
                +   KONSYU-HKNTEKMONEY (IDX-KON)
       *
-           IF    ( KONSYU-HKNTEKKBN  (IDX-KON) =   "1" )
-               COMPUTE SUMSYU-HKNTEKMONEY (IDX-SUM)
-                   =   SUMSYU-HKNTEKMONEY (IDX-SUM)
-                   +   KONSYU-KOH-FTN  (IDX-KON)
-               COMPUTE TTLSYU-HKNTEKMONEY
-                   =   TTLSYU-HKNTEKMONEY
-                   +   KONSYU-KOH-FTN  (IDX-KON)
-           END-IF
-      *
       *    œ∑øÕ∞Ï…Ù…È√¥∂‚
            COMPUTE SUMSYU-RJN-FTN  (IDX-SUM)
                =   SUMSYU-RJN-FTN  (IDX-SUM)
@@ -748,14 +712,12 @@
                +   KONSYU-RJN-FTN  (IDX-KON)
       *
       *    ∏¯»Ò∞Ï…Ù…È√¥∂‚
-           IF    ( KONSYU-HKNTEKKBN  (IDX-KON) =   SPACE )
-               COMPUTE SUMSYU-KOH-FTN  (IDX-SUM)
-                   =   SUMSYU-KOH-FTN  (IDX-SUM)
-                   +   KONSYU-KOH-FTN  (IDX-KON)
-               COMPUTE TTLSYU-KOH-FTN
-                   =   TTLSYU-KOH-FTN
-                   +   KONSYU-KOH-FTN  (IDX-KON)
-           END-IF
+           COMPUTE SUMSYU-KOH-FTN  (IDX-SUM)
+               =   SUMSYU-KOH-FTN  (IDX-SUM)
+               +   KONSYU-KOH-FTN  (IDX-KON)
+           COMPUTE TTLSYU-KOH-FTN
+               =   TTLSYU-KOH-FTN
+               +   KONSYU-KOH-FTN  (IDX-KON)
       *
       *    º´»Ò
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
@@ -969,28 +931,6 @@
                =   TTLSYU-RMSAGAKU
                +   KONSYU-RMSAGAKU (IDX-KON)
       *
-      *    ƒ¥¿∞∂‚
-           COMPUTE SUMSYU-CHOSEI   (IDX-SUM)
-               =   SUMSYU-CHOSEI   (IDX-SUM)
-               +   KONSYU-CHOSEI   (IDX-KON)
-           COMPUTE TTLSYU-CHOSEI
-               =   TTLSYU-CHOSEI
-               +   KONSYU-CHOSEI   (IDX-KON)
-      *
-           COMPUTE SUMSYU-CHOSEI1   (IDX-SUM)
-               =   SUMSYU-CHOSEI1   (IDX-SUM)
-               +   KONSYU-CHOSEI1   (IDX-KON)
-           COMPUTE TTLSYU-CHOSEI1
-               =   TTLSYU-CHOSEI1
-               +   KONSYU-CHOSEI1   (IDX-KON)
-      *
-           COMPUTE SUMSYU-CHOSEI2   (IDX-SUM)
-               =   SUMSYU-CHOSEI2   (IDX-SUM)
-               +   KONSYU-CHOSEI2   (IDX-KON)
-           COMPUTE TTLSYU-CHOSEI2
-               =   TTLSYU-CHOSEI2
-               +   KONSYU-CHOSEI2   (IDX-KON)
-      *
       *    ¿¡µ·∂‚≥€
            COMPUTE SUMSYU-SKYMONEY (IDX-SUM)
                =   SUMSYU-SKYMONEY (IDX-SUM)
@@ -1016,7 +956,7 @@
                +   KONSYU-UPD-TAX-SAI (IDX-KON)
       *
       *    ∏∫Ã»æ Û
-           IF    ( KONSYU-DISCOUNT-TEIRITU (IDX-KON)   =   "1" OR "2" )
+           IF    ( KONSYU-DISCOUNT-KBN (IDX-KON)   NOT =   SPACE )
                MOVE    KONSYU-DISCOUNT-KBN     (IDX-KON)
                                    TO  SUMSYU-DISCOUNT-KBN     (IDX-SUM)
                                        TTLSYU-DISCOUNT-KBN
@@ -1034,9 +974,7 @@
                                        TTLSYU-DISCOUNT-RATE
                MOVE    KONSYU-DISCOUNT-MONEY   (IDX-KON)
                                    TO  SUMSYU-DISCOUNT-MONEY   (IDX-SUM)
-               COMPUTE TTLSYU-DISCOUNT-MONEY
-                   =   TTLSYU-DISCOUNT-MONEY
-                   +   KONSYU-DISCOUNT-MONEY   (IDX-KON)
+                                       TTLSYU-DISCOUNT-MONEY
            END-IF
       *
            .

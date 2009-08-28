@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.07.00     NACL-多々納  12/10/03  区分コード複数登録対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,27 +34,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    統計メモ更新データ
-           SELECT  MST-PRGOPT  ASSIGN              ASS-PRGOPT
-                               ORGANIZATION    IS  LINE SEQUENTIAL
-                               FILE    STATUS  IS  STS-PRGOPT.
-      *
        DATA                    DIVISION.
-       FILE                    SECTION.
-      *
-       FD  MST-PRGOPT.
-       01  PRGWK-REC.
-           03  PRGWK-SYORIKBN      PIC  X(1).
-           03  PRGWK-HOSPNUM       PIC  9(2).
-           03  PRGWK-PRGID         PIC  X(25).
-           03  PRGWK-KBNCD         PIC  X(16).
-           03  PRGWK-ADDKBN        PIC  X(01).
-           03  PRGWK-TERMID        PIC  X(16).
-           03  PRGWK-OPID          PIC  X(16).
-           03  PRGWK-CREYMD        PIC  X(08).
-           03  PRGWK-UPYMD         PIC  X(08).
-           03  PRGWK-UPHMS         PIC  X(06).
-           03  PRGWK-OPTION        PIC  X(44000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -67,13 +46,11 @@
       *
       *    画面用ＳＰＡ
        01  SPA-W34.
-           03  SPA-W34-INIT-AREA.
-               05  SPA-GMN-PAGE        PIC 9(03).
-               05  SPA-GMN-NEXT        PIC 9(01).
+           03  SPA-W34-AREA.
+               05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-CUR         PIC 9(03).
       *
-           03  SPA-W34-AREA.
       *        プログラム名
                05  SPA-GMN-PRGID           PIC X(25).
                05  SPA-GMN-INPUT-G.
@@ -98,7 +75,6 @@
                05  SPA-GMN-SELNUM          PIC 9(03).
       *
            03  SPA-NAI-AREA.
-               05  SPA-NAI-B08-CNT             PIC 9(02).
                05  SPA-NAI-INPUT-G.
       *            オプション説明あり
                    07  SPA-NAI-EXP             PIC 9(01).
@@ -109,27 +85,19 @@
       *
            COPY    "ENUM-VALUE".
       *
-       01  STS-AREA.
-           03  STS-PRGOPT          PIC X(02).
-      *
-       01  ASS-AREA.
-           03  ASS-PRGOPT          PIC X(100).
-      *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PRGOPTION       PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-OK              PIC 9(01).
-           03  FLG-GMN-INIT        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(05).
            03  IDY                 PIC 9(05).
       *
-           03  IDX2                PIC 9(05).
-           03  IDX-STR             PIC 9(05).
+           03  IDX2                PIC 9(02).
       *
       *    一時領域
       *
@@ -148,11 +116,9 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
-           03  WRK-MAE-TPRGID      PIC X(25).
            03  WRK-SELNUM          PIC 9(03).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
-           03  WRK-PRGLST-ROW      PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -220,9 +186,6 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    文字列操作サブ
-           COPY    "CPORCSSTRING.INC".
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -240,7 +203,57 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -339,7 +352,6 @@
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
-                   MOVE    1               TO  FLG-GMN-INIT
            END-EVALUATE
       *
            .
@@ -353,15 +365,12 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-               WHEN    "U001"
-               WHEN    "I001"
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 490-KOUSHIN-SEC
                    ELSE
                        MOVE    1           TO  SPA-GMN-CUR
                    END-IF
                WHEN    "1003"
-               WHEN    "1004"
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 430-DELETE-SEC
                    ELSE
@@ -382,21 +391,6 @@
       *
            INITIALIZE   SPA-W34
       *
-           MOVE    1                   TO  SPA-GMN-PAGE
-           PERFORM 3101-PGLIST-HEN-SEC
-      *
-           . 
-       310-SPASET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    スパ初期編集処理
-      *****************************************************************
-       3101-PGLIST-HEN-SEC              SECTION.
-      *
-           INITIALIZE   SPA-W34-AREA
-           INITIALIZE   SPA-NAI-AREA
-      *
            MOVE    SPACE               TO  PRGOPTION-REC
            INITIALIZE                      PRGOPTION-REC
            MOVE    SPA-HOSPNUM         TO  PRGOPTION-HOSPNUM
@@ -411,64 +405,29 @@
            ELSE
                MOVE    1                   TO  FLG-PRGOPTION
            END-IF
-      *
-      *    開始
-           IF     (SPA-GMN-PAGE        =   ZERO )
-               MOVE    1                   TO  SPA-GMN-PAGE
-           END-IF
-           MOVE    ZERO                TO  SPA-GMN-NEXT
-           MOVE    ZERO                TO  SPA-TBL-MAX
-      *
-           COMPUTE IDX-STR         =   (SPA-GMN-PAGE -   1)  * 100 
-                                   +   1
-      *
-           MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDX
-           MOVE    SPACE               TO  WRK-MAE-TPRGID
            PERFORM UNTIL  (FLG-PRGOPTION   =   1   )
-                      OR  (SPA-GMN-NEXT    =   1   )
-               IF     (WRK-MAE-TPRGID      =   PRGOPTION-PRGID)
-                   CONTINUE
-               ELSE
-                   ADD     1                   TO  IDX2
-                   MOVE    PRGOPTION-PRGID     TO  WRK-MAE-TPRGID
-                   IF      IDX2                <   IDX-STR
-                       CONTINUE
-                   ELSE
-                       ADD     1                   TO  IDX
-                       IF      IDX                 >   100
-                           MOVE    1               TO  SPA-GMN-NEXT
-                       ELSE
-                           MOVE    IDX             TO  SPA-GMN-TNUM
-                                                              (IDX)
-                           MOVE    PRGOPTION-PRGID
-                                               TO  SPA-GMN-TPRGID(IDX)
-                           MOVE    IDX             TO  SPA-TBL-MAX
-                      END-IF
-                  END-IF
+                      OR  (IDX             >=  100 )
+               IF     (IDX                 =   ZERO  )
+                   OR (SPA-GMN-TPRGID (IDX)
+                                       NOT =   PRGOPTION-PRGID)
+                   ADD     1                   TO  IDX
+                   MOVE    IDX                 TO  SPA-GMN-TNUM  (IDX)
+                   MOVE    PRGOPTION-PRGID     TO  SPA-GMN-TPRGID(IDX)
                END-IF
-      *
                MOVE    "tbl_prgoption"     TO  MCP-TABLE
                MOVE    "all"               TO  MCP-PATHNAME
                PERFORM 990-PRGOPTION-READ-SEC
            END-PERFORM
-      *
            MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    終了
-      *    IF     (FLG-PRGOPTION       =   1 )
-      *        MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
-      *    ELSE
-      *        MOVE    ZERO                TO  WRK-PAGE-MAX
-      *    END-IF
-      *
-      *    MOVE    IDX                 TO  SPA-TBL-MAX
+           MOVE    IDX                 TO  SPA-TBL-MAX
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
-        3101-PGLIST-HEN-EXT.
+       310-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -487,27 +446,12 @@
       *    削除
                WHEN    "CLICKED"      ALSO    "B03"
                    PERFORM 430-DELETE-SYORI-SEC
-               WHEN    "CLICKED"      ALSO    "B08"
-      *
-                   IF    ( SPA-NAI-B08-CNT >   5 )
-                       MOVE    ZERO        TO      SPA-NAI-B08-CNT
-                   ELSE
-                       COMPUTE SPA-NAI-B08-CNT
-                           =   SPA-NAI-B08-CNT     +   1
-                   END-IF
       *    登録
                WHEN    "CLICKED"      ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
-                   MOVE    ZERO       TO      SPA-NAI-B08-CNT
       *    入力
                WHEN    "CLICKED"      ALSO    "B10"
                    PERFORM 4100-ENTER-SEC
-      *    前頁
-               WHEN    "CLICKED"      ALSO    "B06"
-                   PERFORM 460-MAE-PAGE-SEC
-      *    次頁
-               WHEN    "CLICKED"      ALSO    "B07"
-                   PERFORM 470-NEXT-PAGE-SEC
            END-EVALUATE
       *
            .
@@ -792,29 +736,6 @@
       *****************************************************************
        41023-KBNCD-CHK-SEC            SECTION.
       *
-           IF      SPA-GMN-KBNCD       =   SPACE
-      *        未選択は１
-               MOVE    SPA-GMN-KBNCDL(1)   TO  SPA-GMN-KBNCD-G
-           END-IF
-      *    半角であること
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-KBNCD       TO  KANACHK-MAE-INPUT
-           MOVE    16                  TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KBNCD
-           IF     (KANACHK-RC          =   ZERO )  AND
-                  (KANACHK-SYUBETU     =   1    )  AND
-                  (KANACHK-RC2         =   ZERO )
-      *        半角で間に空白がないこと
-               CONTINUE
-           ELSE
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN-CUR
-               GO      TO      41023-KBNCD-CHK-EXT
-           END-IF
-      *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   SPA-KBNCD-MAX ) OR
@@ -827,15 +748,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-      *        区分追加
-               IF      SPA-KBNCD-MAX       >=  50
-                   MOVE    "0004"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-GMN-CUR
-               ELSE
-                   ADD     1                   TO  SPA-KBNCD-MAX
-                   MOVE    SPA-GMN-KBNCD-G     TO  SPA-GMN-KBNCDL
-                                                        (SPA-KBNCD-MAX)
-               END-IF
+      *        未選択は１
+               MOVE    SPA-GMN-KBNCDL(1)   TO  SPA-GMN-KBNCD-G
            END-IF
            MOVE    SPA-GMN-KBNCD       TO  SPA-MAE-KBNCD
            PERFORM 410231-KBNCD-HENSYU-SEC
@@ -905,7 +819,6 @@
       *
            IF      SPA-GMN-SELNUM      =   ZERO
                PERFORM 310-SPASET-SEC
-               MOVE    1                   TO  FLG-GMN-INIT
            ELSE
                MOVE    SPACE               TO  SPA-GMN-PRGID
                INITIALIZE                  SPA-GMN-INPUT-G
@@ -916,34 +829,6 @@
       *
            .
        420-CLREA-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       前頁処理
-      *****************************************************************
-       460-MAE-PAGE-SEC              SECTION.
-      *
-           IF      SPA-GMN-PAGE        <=   1
-               MOVE    1               TO  SPA-GMN-PAGE
-           ELSE
-               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE   -   1
-           END-IF
-           PERFORM 3101-PGLIST-HEN-SEC
-           .
-       460-MAE-PAGE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       次頁処理
-      *****************************************************************
-       470-NEXT-PAGE-SEC              SECTION.
-      *
-           IF      SPA-GMN-NEXT        =   1
-               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE   +   1
-           END-IF
-           PERFORM 3101-PGLIST-HEN-SEC
-           .
-       470-NEXT-PAGE-XT.
            EXIT.
       *
       *****************************************************************
@@ -960,14 +845,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-              EVALUATE    SPA-NAI-B08-CNT
-              WHEN    2
-                  MOVE    "U001"       TO  SPA-WIDCD
-              WHEN    3
-                  MOVE    "I001"       TO  SPA-WIDCD
-              WHEN    OTHER
-                  MOVE    "1001"       TO  SPA-WIDCD
-              END-EVALUATE
+              MOVE    "1001"           TO  SPA-WIDCD
            END-IF
            .
        490-TOUROKU-EXT.
@@ -1003,18 +881,6 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-           IF    ( SPA-WIDCD     =     "U001" OR "I001" )
-               MOVE    SPACE               TO  ASS-PRGOPT
-               INITIALIZE  ASS-PRGOPT
-               STRING      "/tmp/ORCADBR-prgoption-"
-                                           DELIMITED   BY  SIZE
-                           SPA-GMN-PRGID   DELIMITED   BY  SPACE
-                           ".dat"          DELIMITED   BY  SIZE
-               INTO        ASS-PRGOPT
-               END-STRING
-               OPEN    OUTPUT    MST-PRGOPT
-           END-IF
-      *
       *    更新日取得
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
@@ -1030,10 +896,6 @@
            END-IF
       *    オプション内容登録
            PERFORM 4902-OPTION-SYORI-SEC
-      *
-           IF    ( SPA-WIDCD     =     "U001" OR "I001" )
-               CLOSE    MST-PRGOPT
-           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 310-SPASET-SEC
@@ -1109,11 +971,6 @@
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY "W34 DB INS ERR KEY:" PRGOPTION-KEY 
            END-IF
-      *
-           IF    ( SPA-WIDCD     =     "U001" OR "I001" )
-               PERFORM 4910-MSTPRGORT-EDT-SEC
-           END-IF
-      *
            .
        4908-PRGOPTION-INS-EXT.
            EXIT.
@@ -1139,48 +996,10 @@
                MOVE    "1002"              TO  SPA-ERRCD
                DISPLAY "W34 DB UPD ERR KEY:" PRGOPTION-KEY 
            END-IF
-      *
-           IF    ( SPA-WIDCD     =     "U001" OR "I001" )
-               PERFORM 4910-MSTPRGORT-EDT-SEC
-           END-IF
            .
        4909-PRGOPTION-UPD-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    プログラムオプションマスタ更新データ編集処理
-      *****************************************************************
-       4910-MSTPRGORT-EDT-SEC          SECTION.
-      *
-           INITIALIZE                      PRGWK-REC
-           MOVE    ZERO                TO  PRGWK-HOSPNUM
-           MOVE    PRGOPTION-PRGID     TO  PRGWK-PRGID
-           MOVE    PRGOPTION-KBNCD     TO  PRGWK-KBNCD
-           MOVE    "0"                 TO  PRGWK-ADDKBN
-           MOVE    SPACE               TO  PRGWK-TERMID
-           MOVE    SPACE               TO  PRGWK-OPID
-           MOVE    SPACE               TO  PRGWK-CREYMD
-           MOVE    SPACE               TO  PRGWK-UPYMD
-           MOVE    SPACE               TO  PRGWK-UPHMS
-      *
-           MOVE    "gsub"              TO  ORCSSTR-COMMAND
-           MOVE    PRGOPTION-OPTION    TO  ORCSSTR-STRING1
-           MOVE    X"0A"               TO  ORCSSTR-STRING2
-           MOVE    "\n"                TO  ORCSSTR-STRING3
-           CALL    "orcsstring" USING  ORCSSTRINGAREA
-           MOVE    ORCSSTR-STRING1     TO  PRGWK-OPTION
-      *
-           IF    ( SPA-WIDCD     =     "U001" )
-               MOVE    "U"             TO  PRGWK-SYORIKBN
-           ELSE
-               MOVE    "I"             TO  PRGWK-SYORIKBN
-           END-IF
-      *
-           WRITE   PRGWK-REC
-      *
-           .
-       4910-MSTPRGORT-EDT-EXT.
-           EXIT.
       *****************************************************************
       *       オプション内容更新処理
       *****************************************************************
@@ -1235,12 +1054,7 @@
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-CUR
            ELSE
-      *ver.4.7
-               IF      SPA-KBNCD-MAX       >   1
-                   MOVE    "1004"          TO  SPA-WIDCD
-               ELSE
-                   MOVE    "1003"          TO  SPA-WIDCD
-               END-IF
+              MOVE    "1003"           TO  SPA-WIDCD
            END-IF
             .
        430-DELETE-SYORI-EXT.
@@ -1289,8 +1103,7 @@
                    IF      PRGOPTION-KBNCD     =   SPA-GMN-KBNCD
                        PERFORM 4301-PRGOPTION-DEL-SEC
                    ELSE
-      **************   IF      SPA-GMN-KBNCD   =   "*"
-                       IF      SPA-KBNCD-MAX       <=  1
+                       IF      SPA-GMN-KBNCD   =   "*"
                            PERFORM 4301-PRGOPTION-DEL-SEC
                        END-IF
                    END-IF
@@ -1365,14 +1178,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    W34-ROW             TO  WRK-PRGLST-ROW
-      *
            MOVE    SPACE               TO  W34
            INITIALIZE                      W34
-      *
-           IF    ( FLG-GMN-INIT        =   ZERO )
-               MOVE    WRK-PRGLST-ROW  TO  W34-ROW
-           END-IF
       *
            MOVE    SPA-GMN-PRGID       TO  W34-PRGID
            MOVE    SPA-GMN-EXPLANTION  TO  W34-EXPLANTION
@@ -1401,19 +1208,6 @@
            MOVE    SPA-TBL-MAX         TO  W34-PRGLST-COUNT
       *
            MOVE    SPA-GMN-SELNUM      TO  W34-SELNUM
-      *
-      *    前頁
-           IF      SPA-GMN-PAGE            =   1
-               MOVE    WIDGET-INSENSITIVE  TO  W34-B06-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  W34-B06-STATE
-           END-IF
-      *    次頁
-           IF      SPA-GMN-NEXT            =   ZERO
-               MOVE    WIDGET-INSENSITIVE  TO  W34-B07-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  W34-B07-STATE
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1446,12 +1240,6 @@
                WHEN    "0003"
                    MOVE    "区分コードエラー"
                                                TO  SPA-ERRMSG
-               WHEN    "0004"
-                   STRING  "区分コードが５０件登録済みです。"
-                           "これ以上登録できません。"
-                                               DELIMITED  BY  SIZE
-                                                     INTO  WRK-WIDMSG
-                   END-STRING
                WHEN    "0010"
                    MOVE    "プログラム名を入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -1503,8 +1291,6 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-               WHEN    "U001"
-               WHEN    "I001"
                    STRING  "オプション情報を登録します。"
                            "よろしいですか？"
                                                DELIMITED  BY  SIZE
@@ -1516,18 +1302,9 @@
                                                DELIMITED  BY  SIZE
                                                      INTO  WRK-WIDMSG
                    END-STRING
-      *ver.4.7
-               WHEN    "1004"
-                   STRING  "表示されている区分コードのオプション情報を"
-                           "削除します。"
-                           "よろしいですか？"
-                                               DELIMITED  BY  SIZE
-                                                     INTO  WRK-WIDMSG
-                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

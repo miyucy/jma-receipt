@@ -197,9 +197,6 @@
       *    入院請求期間取得
            COPY    "CPORCSS006.INC".
       *
-      *    病名編集
-           COPY    "CPORCSMKBYOMEI.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -216,7 +213,18 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA31SCRAREA.INC".
+           COPY    "I01.INC".
+           COPY    "I02.INC".
+           COPY    "I03.INC".
+           COPY    "I04.INC".
+           COPY    "I05.INC".
+           COPY    "I06.INC".
+           COPY    "I07.INC".
+           COPY    "I0ERR.INC".
+           COPY    "I0ID1.INC".
+           COPY    "I0ID2.INC".
+           COPY    "I041.INC".
+      *
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -1047,17 +1055,7 @@
                                    TO  SPA-GMN-I02-TSRYKA (IDX2)
       *
       *    病名
-           INITIALIZE              ORCSMKBYOMEIAREA
-           MOVE    PTBYO-UTAGAIFLG
-                                   TO  SMKBYO-UTAGAIFLG
-           MOVE    PTBYO-HOSOKU-COMMENT
-                                   TO  SMKBYO-HOSOKU-COMMENT
            MOVE    PTBYO-BYOMEI
-                                   TO  SMKBYO-BYOMEI
-      *
-           CALL    "ORCSMKBYOMEI"  USING
-                                   ORCSMKBYOMEIAREA
-           MOVE    SMKBYO-BYOMEI
                                    TO  SPA-GMN-I02-TBYOMEI (IDX2)
       *
       *    開始日

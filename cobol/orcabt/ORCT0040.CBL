@@ -202,7 +202,6 @@
                05  WRK-KBTMSG              PIC X(06).
                05  WRK-MONMSG              PIC X(06).
                05  WRK-SHELLMSG            PIC X(100).
-           03  WRK-BASE-MONEY              PIC S9(08).
       *
        01  SRH-AREA.
            03  SRH-IDX                     PIC 9(05).
@@ -212,9 +211,6 @@
                    07  SRH-1041-KBNCDL     PIC X(02).
                    07  SRH-1041-BUNRUIL    PIC X(02).
                    07  SRH-1041-JYOTAIL    PIC X(01).
-      *
-       01  CONST-AREA.
-           03  CONST-H270101               PIC X(08)   VALUE "20150101".
       *
        01  ERR-EDIT-AREA.
            03  ERR-WARNING             PIC 9(01).
@@ -392,7 +388,6 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-           COPY    "CPSK1001.INC".
       *    伝票番号
            COPY    "CPSK0042.INC".
       *    入金方法
@@ -433,9 +428,6 @@
       *    収納更新差額取得
            COPY  "CPORCSS002.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       ****************************************************************
        LINKAGE                 SECTION.
       *
@@ -474,7 +466,6 @@
                                        WRK-AREA
                                        SPA-AREA
                                        SUMTEIKIKANRI-REC
-                                       TEIKI1PARA-AREA
                                        ERR-EDIT-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -491,7 +482,6 @@
                                                TEIKI1P-KBT
                                                TEIKI1P-JOBYMD
                                                TEIKI1P-JOBHMS
-           END-UNSTRING
       *
            MOVE    TEIKI1P-HOSPNUM     TO  SPA-HOSPNUM
       *
@@ -512,6 +502,18 @@
                                        JOBKANRI-REC
                                        SPA-AREA
       *
+           MOVE    TEIKI1P-ERRFILE TO  TEIKIERR
+      *
+           INITIALIZE                  ORCSTEIKI01AREA
+           MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
+           MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
+           CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
+                                           SPA-AREA
+           IF    ( STEIKI01-STOP   =   1 )
+               MOVE    "8888"      TO  ERR-ERRCD
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
@@ -530,30 +532,6 @@
            MOVE    TEIKI1P-HOSPNUM     TO  TEIKI09PARA-HOSPNUM
            MOVE    "TEIKI009"          TO  TEIKI09PARA-FILE-ID
            MOVE    TEIKI1P-TERMID      TO  TEIKI09PARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TEIKI06PARA-BASENAME    TO  SGETTEMP-BASENAMES (1)
-           MOVE    TEIKI07PARA-BASENAME    TO  SGETTEMP-BASENAMES (2)
-           MOVE    TEIKI08PARA-BASENAME    TO  SGETTEMP-BASENAMES (3)
-           MOVE    TEIKI09PARA-BASENAME    TO  SGETTEMP-BASENAMES (4)
-           MOVE    TEIKI1P-ERRFILE         TO  SGETTEMP-BASENAMES (5)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)  TO  TEIKI06PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)  TO  TEIKI07PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)  TO  TEIKI08PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)  TO  TEIKI09PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (5)  TO  TEIKIERR-FULLNAME
-      *
-           INITIALIZE                  ORCSTEIKI01AREA
-           MOVE    TEIKI1P-JOBID   TO  STEIKI01-JOBID
-           MOVE    TEIKI1P-SHELLID TO  STEIKI01-SHELLID
-           CALL    "ORCSTEIKI01"   USING   ORCSTEIKI01AREA
-                                           SPA-AREA
-           IF    ( STEIKI01-STOP   =   1 )
-               MOVE    "8888"      TO  ERR-ERRCD
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
       *
            OPEN    INPUT               TEIKI06-FILE
            OPEN    INPUT               TEIKI07-FILE
@@ -902,19 +880,6 @@
                PERFORM 20031-DENPNUM-GET-SEC
       *
                MOVE    TEIKI06-SYU-DAT TO  SYUNOU-REC
-      *
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-               MOVE    "1001"          TO  SYS-KANRICD
-               MOVE    "*"             TO  SYS-KBNCD
-               MOVE    SYU-SKYSTYMD    TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-1001-REC
-               IF    ( SYS-1001-SANKANUM   IS  NOT NUMERIC )
-                OR   ( SYS-1001-SANKANUM   =   ZERO    )
-                   MOVE    ZERO            TO  SYS-1001-SANKANUM
-               END-IF
       *
       *        患者情報読み込み
                INITIALIZE              PTINF-REC
@@ -1366,19 +1331,6 @@
       *
                MOVE    TEIKI09-SYU-DAT TO  SYUNOU-REC
       *
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-               MOVE    "1001"          TO  SYS-KANRICD
-               MOVE    "*"             TO  SYS-KBNCD
-               MOVE    SYU-SKYSTYMD    TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-1001-REC
-               IF    ( SYS-1001-SANKANUM   IS  NOT NUMERIC )
-                OR   ( SYS-1001-SANKANUM   =   ZERO    )
-                   MOVE    ZERO            TO  SYS-1001-SANKANUM
-               END-IF
-      *
       *        患者情報読み込み
                INITIALIZE              PTINF-REC
                MOVE    SYU-HOSPNUM      TO  PTINF-HOSPNUM
@@ -1746,57 +1698,16 @@
            MOVE    BUNBEN-SKYYM        TO  LNKBUNBEN-SKYYM
            MOVE    BUNBEN-SKYKBN       TO  LNKBUNBEN-SKYKBN
            MOVE    BUNBEN-BUNBENKBN    TO  LNKBUNBEN-BUNBENKBN
-           MOVE    BUNBEN-TEISYUTUSAKI TO  LNKBUNBEN-TEISYUTUSAKI
-           MOVE    BUNBEN-KANYUKBN     TO  LNKBUNBEN-KANYUKBN
-           MOVE    BUNBEN-HONKZKKBN    TO  LNKBUNBEN-HONKZKKBN
-           MOVE    BUNBEN-HKNJANUM     TO  LNKBUNBEN-HKNJANUM
-           MOVE    BUNBEN-HKNJANUM-S   TO  LNKBUNBEN-HKNJANUM-S
-           MOVE    BUNBEN-KIGO         TO  LNKBUNBEN-KIGO
-           MOVE    BUNBEN-NUM          TO  LNKBUNBEN-NUM
            MOVE    BUNBEN-BIRTHDAY     TO  LNKBUNBEN-BIRTHDAY
            MOVE    BUNBEN-ZAIWEEK      TO  LNKBUNBEN-ZAIWEEK
            MOVE    BUNBEN-SIZANKBN     TO  LNKBUNBEN-SIZANKBN
            MOVE    BUNBEN-BIRTHCNT     TO  LNKBUNBEN-BIRTHCNT
            MOVE    BUNBEN-NYUIN-DAY    TO  LNKBUNBEN-NYUIN-DAY
            MOVE    BUNBEN-SANKAKBN     TO  LNKBUNBEN-SANKAKBN
-           MOVE    BUNBEN-BIKOU        TO  LNKBUNBEN-BIKOU
            MOVE    "2"                 TO  LNKBUNBEN-UPDKBN
            MOVE    BUNBEN-CREYMD       TO  LNKBUNBEN-CREYMD
-           MOVE    BUNBEN-TEISYUTUBIKBN TO LNKBUNBEN-TEISYUTUBIKBN
       *
            MOVE    LNKBUNBEN-REC       TO  BUNBEN-REC
-      *
-           MOVE    ZERO                TO  BUNBEN-DAIRI-MONEY
-           MOVE    ZERO                TO  WRK-BASE-MONEY
-           IF    ( BUNBEN-RIYOUKBN     =   "1" )
-      *
-               EVALUATE    TRUE
-               WHEN  ( SYS-1001-SANKANUM    =   ZERO )
-               WHEN  ( BUNBEN-ZAIWEEK     <   22 )
-               WHEN  ( BUNBEN-SANKAKBN    =   "2" OR "3" )
-                   IF    ( BUNBEN-BIRTHDAY   NOT =   SPACE )
-                       EVALUATE   TRUE
-                       WHEN    ( BUNBEN-BIRTHDAY
-                                          >= CONST-H270101 )
-                           MOVE    404000  TO  WRK-BASE-MONEY
-                       WHEN    OTHER
-                           MOVE    390000  TO  WRK-BASE-MONEY
-                       END-EVALUATE
-                   END-IF
-               WHEN    OTHER
-                   MOVE    420000      TO  WRK-BASE-MONEY
-               END-EVALUATE
-      *
-               IF    ( BUNBEN-SANKAKBN    =   "3" )
-                   COMPUTE BUNBEN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   BUNBEN-BIRTHCNT
-                       +   BUNBEN-SNK-MONEY
-               ELSE
-                   COMPUTE BUNBEN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   BUNBEN-BIRTHCNT
-               END-IF
-      *
-           END-IF
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    TEIKI1P-JOBYMD      TO  BUNBEN-UPYMD
@@ -1931,7 +1842,6 @@
                    IF    ( FLG-TEIKIRRK    =   ZERO )
                        MOVE    TEIKI1P-JOBYMD  TO  TEIKIRRK-UPYMD
                        MOVE    TEIKI1P-JOBHMS  TO  TEIKIRRK-UPHMS
-                       MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                        MOVE    "tbl_teikirrk"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBUPDATE-SEC
@@ -1948,7 +1858,6 @@
                        MOVE    TEIKI1P-JOBYMD  TO  TEIKIRRK-CREYMD
                                                    TEIKIRRK-UPYMD
                        MOVE    TEIKI1P-JOBHMS  TO  TEIKIRRK-UPHMS
-                       MOVE    TEIKIRRK-REC    TO  MCPDATA-REC
                        MOVE    "tbl_teikirrk"  TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBINSERT-SEC
@@ -2308,7 +2217,6 @@
            INITIALIZE                  LNKBUNBEN-REC
            MOVE    SYU-HOSPNUM     TO  LNKBUNBEN-HOSPNUM
            MOVE    SYU-PTID        TO  LNKBUNBEN-PTID
-           MOVE    SYU-NYUGAIKBN   TO  LNKBUNBEN-NYUGAIKBN
            MOVE    SYU-NYUIN-RRKNUM
                                    TO  LNKBUNBEN-RRKNUM
            CALL    "ORCSBUNBENFTN"     USING
@@ -3034,7 +2942,6 @@
       *
            MOVE    SYU-HOSPNUM     TO  BUNBEN-HOSPNUM
            MOVE    SYU-PTID        TO  BUNBEN-PTID
-           MOVE    SYU-NYUGAIKBN   TO  BUNBEN-NYUGAIKBN
            MOVE    SYU-NYUIN-RRKNUM
                                    TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC      TO  MCPDATA-REC

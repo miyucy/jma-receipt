@@ -27,9 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.05.01    NACL-藤原    09/07/21  表示名称の追加
-      *
-      *  04.08.01    NACL-藤原    16/09/13  公費番号の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -51,6 +48,8 @@
       *    画面用ＳＰＡ
        01  SPA-W64.
            03  SPA-W64-AREA.
+               05  SPA-GMN-PAGE        PIC 9(02).
+               05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(03).
                05  SPA-GMN-CUR         PIC 9(03).
       *
@@ -62,16 +61,15 @@
                            11  SPA-GMN-TSTYUKYMD   PIC X(09).
                            11  SPA-GMN-TEDYUKYMD   PIC X(09).  
                            11  SPA-GMN-TKOHNUM     PIC X(03)
-                                                       OCCURS  20.
+                                                       OCCURS  10.
       *
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-SELNUM          PIC 9(03).
                        09  SPA-GMN-MEISYO          PIC X(44).
-                       09  SPA-GMN-MEISYO2         PIC X(44).
                        09  SPA-GMN-STYUKYMD        PIC X(10).
                        09  SPA-GMN-EDYUKYMD        PIC X(10).
                        09  SPA-GMN-KOH-KOUMOKU. 
-                           11  SPA-GMN-KOH-OCC     OCCURS  20.
+                           11  SPA-GMN-KOH-OCC     OCCURS  10.
                                13  SPA-GMN-KOHNUM  PIC X(03).
                                13  SPA-GMN-SEIDONAME
                                                    PIC X(50).
@@ -135,7 +133,7 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
        01  WRK-CONST-AREA.
-           03  WRK-KOHNUM-MAX          PIC 9(02)   VALUE   20.
+           03  WRK-KOHNUM-MAX          PIC 9(02)   VALUE   10. 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -184,7 +182,57 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -348,20 +396,11 @@
                MOVE    WRK-HENYMDG         TO  SPA-GMN-TEDYUKYMD (IDX)
       *
                MOVE    SYS-2007-MEISYO (1) TO  SPA-GMN-TMEISYO   (IDX)
-               MOVE    ZERO                TO  IDZ 
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       10
                        OR      SYS-2007-KOHNUM (IDY)   =   SPACE
-                   ADD     1               TO  IDZ
                    MOVE    SYS-2007-KOHNUM (IDY)
-                                           TO SPA-GMN-TKOHNUM (IDX IDZ)
-               END-PERFORM
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       10
-                       OR      SYS-2007-KOHNUM1(IDY)   =   SPACE
-                   ADD     1               TO  IDZ
-                   MOVE    SYS-2007-KOHNUM1(IDY)
-                                           TO SPA-GMN-TKOHNUM (IDX IDZ)
+                                           TO SPA-GMN-TKOHNUM (IDX IDY)
                END-PERFORM
       *
                MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
@@ -512,7 +551,6 @@
        4101-GMN-SPA-SET-SEC       SECTION.
       *
            MOVE    W64-MEISYO          TO  SPA-GMN-MEISYO
-           MOVE    W64-MEISYO2         TO  SPA-GMN-MEISYO2
            MOVE    W64-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
            MOVE    W64-STYUKYMD        TO  SPA-GMN-STYUKYMD
            PERFORM VARYING IDX FROM    1   BY  1
@@ -542,12 +580,6 @@
       *
       *    名称
            PERFORM 41021-MEISYO-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    名称２
-           PERFORM 41021-MEISYO2-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -628,13 +660,12 @@
                MOVE    WRK-HENYMDG         TO  SPA-GMN-EDYUKYMD
       *
                MOVE    SYS-2007-MEISYO (1) TO  SPA-GMN-MEISYO
-               MOVE    SYS-2007-MEISYO (2) TO  SPA-GMN-MEISYO2
       *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-KOHNUM-MAX
-                       OR      SPA-GMN-TKOHNUM (SPA-NAI-SELNUM IDX)
+                       OR      SYS-2007-KOHNUM (IDX)
                                    =   SPACE
-                   MOVE    SPA-GMN-TKOHNUM (SPA-NAI-SELNUM IDX)
+                   MOVE    SYS-2007-KOHNUM (IDX)
                                                TO  SPA-GMN-KOHNUM (IDX)
                    MOVE    SPACE               TO  HKNNUM-REC
                    INITIALIZE                      HKNNUM-REC
@@ -821,38 +852,6 @@
            EXIT.
       *
       *****************************************************************
-      *    名称２入力処理
-      *****************************************************************
-       41021-MEISYO2-CHK-SEC      SECTION.
-      *
-           IF      SPA-GMN-MEISYO2      =   SPACE
-      ****     IF      WRK-MCP-WIDGET      =   "MEISYO2"
-      ****         MOVE    "0007"              TO  SPA-ERRCD
-      ****     END-IF
-               CONTINUE
-           ELSE
-               INITIALIZE                      ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI 
-               MOVE    SPA-GMN-MEISYO2     TO  KANACHK-MAE-INPUT
-               MOVE    44                  TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-               IF    ( KANACHK-RC          =   ZERO )
-               AND   ( KANACHK-SYUBETU     =   "2"  )
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-MEISYO2
-               ELSE
-                   MOVE    "0009"              TO  SPA-ERRCD
-               END-IF
-           END-IF 
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    15                  TO  SPA-GMN-CUR
-           END-IF
-      *
-           .
-       41021-MEISYO2-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    公費番号チェック処理
       *****************************************************************
        41021-KOHNUM-CHK-SEC           SECTION.
@@ -888,11 +887,7 @@
                END-IF    
       *
                IF      SPA-ERRCD       NOT =   SPACE
-                   IF      IDX             <   11
-                       COMPUTE SPA-GMN-CUR     =   4   +   IDX
-                   ELSE
-                       COMPUTE SPA-GMN-CUR     =   5   +   IDX
-                   END-IF
+                   COMPUTE SPA-GMN-CUR     =   4   +   IDX
                END-IF
            END-PERFORM    
       *
@@ -910,15 +905,17 @@
       ****     MOVE    "0007"              TO  SPA-ERRCD
       ****     MOVE    4                   TO  SPA-GMN-CUR
       **** ELSE
-               MOVE    "0103"              TO  SPA-ERRCD
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       WRK-KOHNUM-MAX
-                   IF    ( SPA-GMN-KOHNUM (IDX)    NOT =   SPACE )
-                       MOVE    SPACE               TO  SPA-ERRCD
-                       MOVE    WRK-KOHNUM-MAX      TO  IDX
-                   END-IF
-               END-PERFORM
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF    ( SPA-GMN-KOHNUM (1)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (2)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (3)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (4)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (5)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (6)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (7)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (8)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (9)  =   SPACE )
+               AND   ( SPA-GMN-KOHNUM (10) =   SPACE )
+                   MOVE    "0103"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
                END-IF
       **** END-IF
@@ -954,13 +951,7 @@
                                IF      SPA-GMN-KOHNUM (IDX)
                                                =   SPA-GMN-KOHNUM (IDY)
                                    MOVE    "0109"      TO  SPA-ERRCD
-                                   IF      IDX         <   11
-                                       COMPUTE SPA-GMN-CUR =   4   +
-                                                               IDX
-                                   ELSE
-                                       COMPUTE SPA-GMN-CUR =   5   +
-                                                               IDX
-                                   END-IF
+                                   COMPUTE SPA-GMN-CUR =   4   +   IDX
                                END-IF
                            END-IF
                        END-PERFORM
@@ -1000,17 +991,12 @@
                                   END-PERFORM
                                END-IF
                            END-PERFORM
-                       END-IF
-                   END-IF
-      *
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       IF      IDX             <   11
-                           COMPUTE SPA-GMN-CUR =   4   +  IDX
-                       ELSE
-                           COMPUTE SPA-GMN-CUR =   5   +  IDX
-                       END-IF
+                       END-IF 
                    END-IF
                END-PERFORM 
+               IF      SPA-ERRCD           NOT =   SPACE
+                   MOVE    2                   TO  SPA-GMN-CUR
+               END-IF
            END-IF      
       *
            .
@@ -1180,27 +1166,19 @@
                    MOVE    SPA-NAI-EDYUKYMD    TO  SYS-2007-EDYUKYMD
                END-IF 
       *
-               INITIALIZE                      SYS-2007-KOH-AREA
-                                               SYS-2007-KOH1-AREA
                MOVE    ZERO                TO  IDY
-               PERFORM VARYING IDX FROM    1  BY  1
+               INITIALIZE                      SYS-2007-KOH-AREA
+               PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-KOHNUM-MAX
                    IF      SPA-GMN-KOHNUM (IDX)    =   SPACE
                        CONTINUE
                    ELSE
                        ADD     1               TO  IDY
-                       IF      IDY             <   11
-                           MOVE    SPA-GMN-KOHNUM (IDX)
+                       MOVE    SPA-GMN-KOHNUM (IDX)
                                                TO  SYS-2007-KOHNUM (IDY)
-                       ELSE
-                           COMPUTE IDZ =   IDY -   10
-                           MOVE    SPA-GMN-KOHNUM (IDX)
-                                               TO  SYS-2007-KOHNUM1(IDZ)
-                       END-IF
                    END-IF
                END-PERFORM
                MOVE    SPA-GMN-MEISYO      TO  SYS-2007-MEISYO (1)
-               MOVE    SPA-GMN-MEISYO2     TO  SYS-2007-MEISYO (2)
       *
                MOVE    SYS-2007-REC        TO  SYSKANRI-REC
                IF      SPA-NAI-SELNUM      =   ZERO
@@ -1321,7 +1299,6 @@
            MOVE    SPA-GMN-STYUKYMD    TO  W64-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W64-EDYUKYMD
            MOVE    SPA-GMN-MEISYO      TO  W64-MEISYO
-           MOVE    SPA-GMN-MEISYO2     TO  W64-MEISYO2
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       WRK-KOHNUM-MAX 
                MOVE    SPA-GMN-KOHNUM   (IDY)  TO  W64-KOHNUM    (IDY)
@@ -1344,60 +1321,38 @@
                PERFORM 50011-INPUT-CUR-SEC
            END-IF
       *
-           EVALUATE    SPA-GMN-CUR
-               WHEN    1
-                   MOVE    "SELNUM"        TO  MCP-WIDGET
-               WHEN    2
-                   MOVE    "STYUKYMD"      TO  MCP-WIDGET
-               WHEN    3
-                   MOVE    "EDYUKYMD"      TO  MCP-WIDGET
-               WHEN    4
-                   MOVE    "MEISYO"        TO  MCP-WIDGET
-               WHEN    5
-                   MOVE    "KOHNUM1"       TO  MCP-WIDGET
-               WHEN    6
-                   MOVE    "KOHNUM2"       TO  MCP-WIDGET
-               WHEN    7
-                   MOVE    "KOHNUM3"       TO  MCP-WIDGET
-               WHEN    8
-                   MOVE    "KOHNUM4"       TO  MCP-WIDGET
-               WHEN    9
-                   MOVE    "KOHNUM5"       TO  MCP-WIDGET
-               WHEN    10
-                   MOVE    "KOHNUM6"       TO  MCP-WIDGET
-               WHEN    11
-                   MOVE    "KOHNUM7"       TO  MCP-WIDGET
-               WHEN    12
-                   MOVE    "KOHNUM8"       TO  MCP-WIDGET
-               WHEN    13
-                   MOVE    "KOHNUM9"       TO  MCP-WIDGET
-               WHEN    14
-                   MOVE    "KOHNUM10"      TO  MCP-WIDGET
-               WHEN    15
-                   MOVE    "MEISYO2"       TO  MCP-WIDGET
-               WHEN    16
-                   MOVE    "KOHNUM11"      TO  MCP-WIDGET
-               WHEN    17
-                   MOVE    "KOHNUM12"      TO  MCP-WIDGET
-               WHEN    18
-                   MOVE    "KOHNUM13"      TO  MCP-WIDGET
-               WHEN    19
-                   MOVE    "KOHNUM14"      TO  MCP-WIDGET
-               WHEN    20
-                   MOVE    "KOHNUM15"      TO  MCP-WIDGET
-               WHEN    21
-                   MOVE    "KOHNUM16"      TO  MCP-WIDGET
-               WHEN    22
-                   MOVE    "KOHNUM17"      TO  MCP-WIDGET
-               WHEN    23
-                   MOVE    "KOHNUM18"      TO  MCP-WIDGET
-               WHEN    24
-                   MOVE    "KOHNUM19"      TO  MCP-WIDGET
-               WHEN    25
-                   MOVE    "KOHNUM20"      TO  MCP-WIDGET
+         EVALUATE    SPA-GMN-CUR
+             WHEN    1
+                    MOVE  "SELNUM"         TO  MCP-WIDGET   
+             WHEN    2
+                    MOVE  "STYUKYMD"       TO  MCP-WIDGET   
+             WHEN    3
+                    MOVE  "EDYUKYMD"       TO  MCP-WIDGET   
+             WHEN    4
+                    MOVE  "MEISYO"         TO  MCP-WIDGET   
+             WHEN    5
+                    MOVE  "KOHNUM1"        TO  MCP-WIDGET   
+             WHEN    6
+                    MOVE  "KOHNUM2"        TO  MCP-WIDGET   
+             WHEN    7
+                    MOVE  "KOHNUM3"        TO  MCP-WIDGET   
+             WHEN    8
+                    MOVE  "KOHNUM4"        TO  MCP-WIDGET   
+             WHEN    9
+                    MOVE  "KOHNUM5"        TO  MCP-WIDGET   
+             WHEN    10
+                    MOVE  "KOHNUM6"        TO  MCP-WIDGET   
+             WHEN    11
+                    MOVE  "KOHNUM7"        TO  MCP-WIDGET   
+             WHEN    12
+                    MOVE  "KOHNUM8"        TO  MCP-WIDGET   
+             WHEN    13
+                    MOVE  "KOHNUM9"        TO  MCP-WIDGET   
+             WHEN    14
+                    MOVE  "KOHNUM10"       TO  MCP-WIDGET   
       *
-               WHEN    999
-                   MOVE    "B12"           TO  MCP-WIDGET
+             WHEN    999
+                    MOVE  "B12"            TO  MCP-WIDGET   
          END-EVALUATE
       *
            .
@@ -1417,8 +1372,6 @@
                WHEN    "EDYUKYMD"
                    MOVE    4           TO  SPA-GMN-CUR
                WHEN    "MEISYO"
-                   MOVE    15          TO  SPA-GMN-CUR
-               WHEN    "MEISYO2"
                    MOVE    5           TO  SPA-GMN-CUR
                WHEN    "KOHNUM1"
                    MOVE    6           TO  SPA-GMN-CUR
@@ -1439,26 +1392,6 @@
                WHEN    "KOHNUM9"
                    MOVE    14          TO  SPA-GMN-CUR
                WHEN    "KOHNUM10"
-                   MOVE    16          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM11"
-                   MOVE    17          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM12"
-                   MOVE    18          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM13"
-                   MOVE    19          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM14"
-                   MOVE    20          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM15"
-                   MOVE    21          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM16"
-                   MOVE    22          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM17"
-                   MOVE    23          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM18"
-                   MOVE    24          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM19"
-                   MOVE    25          TO  SPA-GMN-CUR
-               WHEN    "KOHNUM20"
                    MOVE    999         TO  SPA-GMN-CUR
            END-EVALUATE
            .
@@ -1564,7 +1497,6 @@
        520-WIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
       *
            EVALUATE    SPA-WIDCD

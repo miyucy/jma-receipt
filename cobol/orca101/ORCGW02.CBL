@@ -50,7 +50,7 @@
       *  01.00.19    NACL-太田    04/07/05  請求書発行コンボ項目追加
       *  01.00.20    NACL-太田    04/07/07  入金方法情報タブ追加
       *  01.00.21    NACL-太田    04/09/30  請求額端数区分（減免無）追加
-      *  01.00.22    NACL-太田    04/12/01  更生・育成限度額日割計算区分追加
+      *  01.00.22    NACL-太田    04/12/01  更正・育成限度額日割計算区分追加
       *  01.00.23    NACL-多々納  05/09/13  入金状態の追加
       *  01.00.24    NACL-多々納  05/09/26  入金状態の追加（入院）
       *  01.00.25    NACL-多々納  05/10/14  データ収集フラグ追加
@@ -69,11 +69,6 @@
       *                                     短縮医療機関名称　追加       
       *  04.05.00    NACL-太田    09.06.23  保険自費毎の消費税端数区分追加
       *  04.05.00    NACL-太田    09.07.27  分娩機関管理番号追加
-      *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
-      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
-      *  04.06.02    NACL-伊藤    11/06/17  感染症区分送信
-      *  04.07.00    NACL-太田    11/07/14  自費名称一括登録対応
-      *  04.08.00    NACL-多々納  17/09/05  自費コード端数区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -128,10 +123,10 @@
                            11  SPA-GMN-SYOHOKBNL      PIC X(01).
                            11  SPA-GMN-F6L            PIC X(01).
                            11  SPA-GMN-SYOHOKBNMEIL   PIC X(06).
-                       09  SPA-GMN-SKYPRTFLGLST       OCCURS  9.
+                       09  SPA-GMN-SKYPRTFLGLST       OCCURS  5.
                            11  SPA-GMN-SKYPRTFLGL     PIC X(01).
                            11  SPA-GMN-F7L            PIC X(01).
-                           11  SPA-GMN-SKYPRTFLGMEIL  PIC X(30).
+                           11  SPA-GMN-SKYPRTFLGMEIL  PIC X(28).
                        09  SPA-SYKPRTFLG-MAX          PIC 9(02).
                        09  SPA-GMN-SYOHOPRTFLGLST     OCCURS  5.
                            11  SPA-GMN-SYOHOPRTFLGL   PIC X(01).
@@ -159,11 +154,11 @@
                            11  SPA-GMN-OKUSURIFLGMEIL
                                                       PIC X(34).
                        09  SPA-OKUSURIFLG-MAX         PIC 9(02).
-                       09  SPA-GMN-MEIPRTFLGLST      OCCURS  9.
-                           11  SPA-GMN-MEIPRTFLGL     PIC X(01).
+                       09  SPA-GMN-MEIPRTFLGLST      OCCURS  2.
+                           11  SPA-GMN-MEIPRTFLGL    PIC X(01).
                            11  SPA-GMN-F14L           PIC X(01).
                            11  SPA-GMN-MEIPRTFLGMEIL
-                                                      PIC X(30).
+                                                      PIC X(12).
                        09  SPA-MEIPRTFLG-MAX          PIC 9(02).
       *                予約票発行
                        09  SPA-GMN-YYKHYOFLGLST      OCCURS  5.
@@ -187,26 +182,18 @@
                            11  SPA-GMN-F11L           PIC X(01).
                            11  SPA-GMN-DISCOUNT-HASU-KBNMEIL
                                                       PIC X(30).
-      *
-                       09  SPA-GMN-DISCOUNT-HASU-KBNJLST
-                                                      OCCURS  5.
-                           11  SPA-GMN-DISCOUNT-HASU-KBNJL
+                       09  SPA-GMN-DISCOUNT-HASU-KBN2LST
+                                                      OCCURS  4.
+                           11  SPA-GMN-DISCOUNT-HASU-KBN2L
                                                       PIC X(01).
-                           11  SPA-GMN-F11L           PIC X(01).
-                           11  SPA-GMN-DISCOUNT-HASU-KBNJMEIL
-                                                      PIC X(30).
-                       09  SPA-GMN-DAISANKBNLST
-                                                      OCCURS  2.
-                           11  SPA-GMN-DAISANKBNL
-                                                      PIC X(01).
-                           11  SPA-GMN-DAISANKBNL-FL  PIC X(01).
-                           11  SPA-GMN-DAISANKBNMEIL
+                           11                         PIC X(01).
+                           11  SPA-GMN-DISCOUNT-HASU-KBN2MEIL
                                                       PIC X(30).
                        09  SPA-GMN-GENTAIKBNLST
-                                                      OCCURS  3.
+                                                      OCCURS  2.
                            11  SPA-GMN-GENTAIKBNL
                                                       PIC X(01).
-                           11  SPA-GMN-GENTAIKBNL-FL  PIC X(01).
+                           11                         PIC X(01).
                            11  SPA-GMN-GENTAIKBNMEIL
                                                       PIC X(20).
                        09  SPA-GMN-TAX-HASU-KBNLST
@@ -216,7 +203,6 @@
                            11  SPA-GMN-F12L           PIC X(01).
                            11  SPA-GMN-TAX-HASU-KBNMEIL
                                                       PIC X(30).
-                       09  SPA-GMN-TAX-HASU-KBN-MAX   PIC 9(03).
                        09  SPA-GMN-HIWARIKBNLST
                                                       OCCURS  2.
                            11  SPA-GMN-HIWARIKBNL
@@ -312,7 +298,7 @@
                                                       PIC X(01).
                                13  SPA-GMN-F14        PIC X(01).
                                13  SPA-GMN-MEIPRTFLGMEI
-                                                      PIC X(30).
+                                                      PIC X(12).
       *予約票発行区分フラグ
                            11  SPA-GMN-YYKHYOFLG-G.
                                13  SPA-GMN-YYKHYOFLG
@@ -326,25 +312,22 @@
                                13  SPA-GMN-F17        PIC X(01).
                                13  SPA-GMN-CHIHOUNUMKBNMEI
                                                       PIC X(08).
-                           11  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                      OCCURS 10.
+                           11  SPA-GMN-DISCOUNT-HASU-KBN-G.
                                13  SPA-GMN-DISCOUNT-HASU-KBN
                                                       PIC X(01).
                                13  SPA-GMN-F11        PIC X(01).
                                13  SPA-GMN-DISCOUNT-HASU-KBNMEI
                                                       PIC X(30).
-                           11  SPA-GMN-DAISANKBN-G.
-                               13  SPA-GMN-DAISANKBN
+                           11  SPA-GMN-DISCOUNT-HASU-KBN2-G.
+                               13  SPA-GMN-DISCOUNT-HASU-KBN2
                                                       PIC X(01).
-                               13  SPA-GMN-DAISANKBN-FL
-                                                      PIC X(01).
-                               13  SPA-GMN-DAISANKBNMEI
+                               13                     PIC X(01).
+                               13  SPA-GMN-DISCOUNT-HASU-KBN2MEI
                                                       PIC X(30).
                            11  SPA-GMN-GENTAIKBN-G.
                                13  SPA-GMN-GENTAIKBN
                                                       PIC X(01).
-                               13  SPA-GMN-GENTAIKBN-FL
-                                                      PIC X(01).
+                               13                     PIC X(01).
                                13  SPA-GMN-GENTAIKBNMEI
                                                       PIC X(20).
                            11  SPA-GMN-TAX-HASU-KBN-G.
@@ -389,29 +372,6 @@
                                13  SPA-GMN-DATATEISYUTU-LST  PIC X(14)
                                                       OCCURS   5.
                                13  SPA-DATATEISYUTU-MAX     PIC 9(02).
-      *                    データ感染症区分
-                           11  SPA-GMN-DATAINFECT-G.
-                               13  SPA-GMN-DATAINFECT
-                                                      PIC X(01).
-                               13  SPA-GMN-F18        PIC X(01).
-                               13  SPA-GMN-DATAINFECT-MEI
-                                                      PIC X(12).
-                           11  SPA-GMN-DATAINFECT-LST-G.
-                               13  SPA-GMN-DATAINFECT-LST  PIC X(14)
-                                                      OCCURS   5.
-                               13  SPA-GMN-DATAINFECT-MAX  PIC 9(02).
-      *
-      *H29.9            自費コード端数区分
-                        09  SPA-GMN-JIHIHASUKBN-LST-G.
-                           11  SPA-GMN-JIHIHASUKBN-LST    PIC X(40)
-                                                      OCCURS  5.
-                           11  SPA-GMN-JIHIHASUKBN-MAX    PIC 9(02).
-                        09  SPA-GMN-JIHIHASUKBN-G.
-                           11  SPA-GMN-JIHIHASUKBN    PIC X(01).
-                           11  SPA-GMN-F19            PIC X(01).
-                           11  SPA-GMN-JIHIHASUKBN-MEI
-                                                      PIC X(38).
-      *
       *----(01.00.09) LINE ADD END   ----------------------------------
                    07  SPA-GMN-1002-AREA.
                        09  SPA-GMN-POST           PIC X(07).
@@ -428,7 +388,7 @@
                        09  SPA-GMN-DISCOUNT-KBNLST    OCCURS  99.
                            11  SPA-GMN-DISCOUNT-KBNL
                                                   PIC X(02).
-                           11  SPA-GMN-1026-F1    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-DISCOUNT-KBNMEIL
                                                   PIC X(20).
                        09  SPA-GMN-DISCOUNT-KBN-MAX
@@ -437,46 +397,38 @@
                        09  SPA-GMN-DISCOUNT-KBN-G.
                            11  SPA-GMN-DISCOUNT-KBN
                                                   PIC X(02).
-                           11  SPA-GMN-1026-F2    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-DISCOUNT-KBNMEI
                                                   PIC X(20).
                        09  SPA-GMN-DISCOUNT-OBJLST    OCCURS  10.
                            11  SPA-GMN-DISCOUNT-OBJL
                                                   PIC X(01).
-                           11  SPA-GMN-1026-F3    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-DISCOUNT-OBJMEIL
                                                   PIC X(18).
                        09  SPA-GMN-DISCOUNT-OBJ-G.
                            11  SPA-GMN-DISCOUNT-OBJ
                                                   PIC X(01).
-                           11  SPA-GMN-1026-F4    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-DISCOUNT-OBJMEI
                                                   PIC X(18).
-      *H26.4
-                       09  SPA-GMN-1026-KFLG      PIC 9(01).
                    07  SPA-GMN-1027-AREA.
                        09  SPA-GMN-TEIRITULST         OCCURS  2.
                            11  SPA-GMN-TEIRITUL       PIC X(01).
-                           11  SPA-GMN-1027-F1        PIC X(01).
+                           11                         PIC X(01).
                            11  SPA-GMN-TEIRITUMEIL    PIC X(08).
                        09  SPA-GMN-TEIRITU-G.
                            11  SPA-GMN-TEIRITU        PIC X(01).
-                           11  SPA-GMN-1027-F2        PIC X(01).
+                           11                         PIC X(01).
                            11  SPA-GMN-TEIRITUMEI     PIC X(08).
                        09  SPA-GMN-DISCOUNT-RATE  PIC 9(07).
                        09  SPA-GMN-LBL-RATE       PIC X(02).
-      *H26.4
-                       09  SPA-GMN-1027-KFLG      PIC 9(01).
-      *
                    07  SPA-GMN-1018-AREA.
                        09  SPA-GMN-CONDITION-BODY PIC X(20).
                        09  SPA-GMN-CONDITION-WORD PIC X(02).
                        09  SPA-GMN-ICON-FILENAME  PIC X(100).
                    07  SPA-GMN-1013-AREA.
-                       09  SPA-GMN-GJIHINAME      PIC X(20)
-                                                  OCCURS  10.
-                       09  SPA-GMN-NJIHINAME      PIC X(20)
-                                                  OCCURS  10.
+                       09  SPA-GMN-JIHINAME       PIC X(20).
       *診療内容情報
                    07  SPA-GMN-1012-AREA.
                        09  SPA-GMN-SRYNAIYO       PIC X(20).
@@ -489,8 +441,6 @@
                            11  SPA-GMN-SRYNAIHYOJI-LST PIC X(20)
                                                        OCCURS  5.
                        09  SPA-SRYNAIHYOJI-MAX        PIC 9(02).
-                       09  SPA-1012-KFLG1         PIC 9(01).
-                       09  SPA-1012-KFLG2         PIC 9(01).
       *
                    07  SPA-GMN-1041-AREA.
                        09  SPA-GMN-NYKN-KBNCD     PIC X(02).
@@ -499,19 +449,19 @@
                        09  SPA-GMN-NYKN-BUNRUI-G.
                            11  SPA-GMN-NYKN-BUNRUI
                                                   PIC X(02).
-                           11  SPA-GMN-1041-F1    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-NYKN-BUNRUIMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-BUNRUILST OCCURS  10.
                            11  SPA-GMN-NYKN-BUNRUIL    PIC X(02).
-                           11  SPA-GMN-1041-F2         PIC X(01).
+                           11                          PIC X(01).
                            11  SPA-GMN-NYKN-BUNRUIMEIL PIC X(20).
                        09  SPA-GMN-NYKN-BUNRUI-MAX     PIC 9(03).
       *                入金状態
                        09  SPA-GMN-NYKN-JYOTAI-G.
                            11  SPA-GMN-NYKN-JYOTAI
                                                   PIC X(01).
-                           11  SPA-GMN-1041-F3    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAIMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-JYOTAILST-G.
@@ -521,7 +471,7 @@
                        09  SPA-GMN-NYKN-JYOTAI-N-G.
                            11  SPA-GMN-NYKN-JYOTAI-N
                                                   PIC X(01).
-                           11  SPA-GMN-1041-F4    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAI-NMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-JYOTAI-N-LST-G.
@@ -531,7 +481,7 @@
                        09  SPA-GMN-NYKN-JYOTAI-T-G.
                            11  SPA-GMN-NYKN-JYOTAI-T
                                                   PIC X(01).
-                           11  SPA-GMN-1041-F5    PIC X(01).
+                           11                     PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAI-TMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-JYOTAI-T-LST-G.
@@ -551,8 +501,6 @@
                            11  SPA-GMN-HYOJIKBN-LST    PIC X(20)
                                                        OCCURS  2.
                        09  SPA-HYOJIKBN-MAX        PIC 9(02).
-                       09  SPA-1028-KFLG1         PIC 9(01).
-                       09  SPA-1028-KFLG2         PIC 9(01).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -579,7 +527,6 @@
       *
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
-           03  CNT-1013            PIC 9(06).
       *
       *    添字領域
       *
@@ -588,7 +535,6 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX1                PIC 9(04).
-           03  IDX-DHASU           PIC 9(04).
       *
       *    一時領域
       *
@@ -613,14 +559,6 @@
                05  WRK-RATE-EDIT-R  REDEFINES    WRK-RATE-EDIT.
                    07  WRK-RATE-EDITR  PIC X(11).
            03  WRK-HOSPSBTW        PIC X(02).
-           03  WRK-1013-KBNCD-G.
-               05  WRK-1013-NYUGAIKBN  PIC X(01).
-               05  WRK-1013-IDX        PIC 9(01).
-           03  WRK-JIHINAME-WIDGET.
-               05  WRK-JIHINAME-WNAME  PIC X(09).
-               05  WRK-JIHINAME-WIDX   PIC 9(02).
-           03  WRK-STYUKYMD            PIC X(08).
-           03  WRK-EDYUKYMD            PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -631,28 +569,6 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
-      *
-       01  CONST-AREA.
-           03  CONST-H260401       PIC X(08) VALUE "20140401".
-           03  CONST-DHASU         PIC 9(05) VALUE 1.
-           03  CONST-DHASU2        PIC 9(05) VALUE 2.
-           03  CONST-DHASU2J       PIC 9(05) VALUE 3.
-           03  CONST-DHASU3        PIC 9(05) VALUE 4.
-           03  CONST-DHASU3J       PIC 9(05) VALUE 5.
-           03  CONST-DHASU4        PIC 9(05) VALUE 6.
-           03  CONST-DHASU4J       PIC 9(05) VALUE 7.
-           03  CONST-DHASU5J       PIC 9(05) VALUE 8.
-           03  CONST-DHASU6        PIC 9(05) VALUE 9.
-           03  CONST-DHASU6J       PIC 9(05) VALUE 10.
-           03  CONST-DHASU-MAX     PIC 9(05) VALUE 10.
-      *    感染症参加送信  
-           03  CONST-INFAJOBID     PIC 9(07)  VALUE    1.
-           03  CONST-INFASHELLID   PIC X(08)  VALUE    "INFAGREE".
-      *
-       01  SHELL-AREA.
-           03  SHELL-NAME          PIC X(17) VALUE
-                                   "infectionagree.sh".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -685,9 +601,6 @@
       *    レセプト印刷情報（主科設定）
            COPY  "CPSK2009.INC".
       *
-      *    ジョブ管理
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -701,10 +614,6 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    全角チェックパラメタ
-           COPY    "CPORCSKANACHK2.INC".
-      *    拡張文字対応
-           COPY    "CPORCSSTRING.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -712,11 +621,6 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
-      *
-      *    感染症区分送信関係により追加
-           COPY    "CPORCSJOBKANRI.INC".
-           COPY    "CPSHELLTBL.INC".
-      **** COPY    "CPORCSINFCHK.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -729,7 +633,57 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -841,17 +795,9 @@
       *
            IF      SPA-WID1-FLG    =   "OK"
                IF      SPA-WIDCD            =   "1002"
-                   IF    ( SPA-W01-KANRICD  NOT =   "1013" )
-                       PERFORM 4031-DEL-SEC
-                   ELSE
-                       PERFORM 4032-DEL-SEC
-                   END-IF
+                   PERFORM 4031-DEL-SEC
                ELSE
-                   IF    ( SPA-W01-KANRICD  NOT =   "1013" )
-                       PERFORM 490-KOUSHIN-SEC
-                   ELSE
-                       PERFORM 491-KOUSHIN-SEC
-                   END-IF
+                   PERFORM 490-KOUSHIN-SEC
                END-IF
            END-IF
       *
@@ -1052,13 +998,7 @@
            MOVE    "発行しない"       TO  SPA-GMN-MEIPRTFLGMEIL (1)
            MOVE    "1"                TO  SPA-GMN-MEIPRTFLGL    (2)
            MOVE    "発行する"         TO  SPA-GMN-MEIPRTFLGMEIL (2)
-           MOVE    "2"                TO  SPA-GMN-MEIPRTFLGL    (3)
-           MOVE    "発行する（請求あり）"
-                                      TO  SPA-GMN-MEIPRTFLGMEIL (3)
-           MOVE    "3"                TO  SPA-GMN-MEIPRTFLGL    (4)
-           MOVE    "発行する（訂正時なし）"
-                                      TO  SPA-GMN-MEIPRTFLGMEIL (4)
-           MOVE    4                  TO  SPA-MEIPRTFLG-MAX
+           MOVE    2                  TO  SPA-MEIPRTFLG-MAX
       *
            MOVE    "0"                TO  SPA-GMN-YYKHYOFLGL    (1)
            MOVE    "発行しない"       TO  SPA-GMN-YYKHYOFLGMEIL (1)
@@ -1086,52 +1026,21 @@
                                TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (4)
            MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (1)
                                TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU)
-           MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (4)
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU2)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU3)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU4)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU5J)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU6)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU6J)
       *
-           MOVE    "0"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (1)
-           MOVE    "保険分に準ずる"
-                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (1)
-           MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (2)
+           MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (1)
            MOVE    "１０円未満四捨五入"  
-                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (2)
-           MOVE    "2"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (3)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (1)
+           MOVE    "2"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (2)
            MOVE    "１０円未満切り捨て" 
-                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (3)
-           MOVE    "3"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (4)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (2)
+           MOVE    "3"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (3)
            MOVE    "１０円未満切り上げ"   
-                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (4)
-           MOVE    "4"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (5)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (3)
+           MOVE    "4"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (4)
            MOVE    "１０円未満端数処理なし"
-                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (5)
-           MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (1)
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU2J)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU3J)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU4J)
-      *
-           MOVE    "1"         TO  SPA-GMN-DAISANKBNL    (1)
-           MOVE    "負担金額１０円未満四捨五入"
-                               TO  SPA-GMN-DAISANKBNMEIL (1)
-           MOVE    "2"         TO  SPA-GMN-DAISANKBNL    (2)
-           MOVE    "負担金額１０円未満端数処理なし"
-                               TO  SPA-GMN-DAISANKBNMEIL (2)
-           MOVE    SPA-GMN-DAISANKBNLST (2)
-                                       TO  SPA-GMN-DAISANKBN-G
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (4)
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (4)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
       *
            MOVE    "1"         TO  SPA-GMN-GENTAIKBNL    (1)
            MOVE    "自費分を含む"  
@@ -1139,9 +1048,6 @@
            MOVE    "2"         TO  SPA-GMN-GENTAIKBNL    (2)
            MOVE    "自費分を除く" 
                                TO  SPA-GMN-GENTAIKBNMEIL (2)
-           MOVE    "3"         TO  SPA-GMN-GENTAIKBNL    (3)
-           MOVE    "自費分のみ"
-                               TO  SPA-GMN-GENTAIKBNMEIL (3)
       *
            MOVE    "1"         TO  SPA-GMN-TAX-HASU-KBNL    (1)
            MOVE    "１円未満四捨五入"  
@@ -1149,26 +1055,8 @@
            MOVE    "2"         TO  SPA-GMN-TAX-HASU-KBNL    (2)
            MOVE    "１円未満切り捨て" 
                                TO  SPA-GMN-TAX-HASU-KBNMEIL (2)
-           MOVE    2           TO  SPA-GMN-TAX-HASU-KBN-MAX
-           IF    ( SPA-W01-STYUKYMD   >=   CONST-H260401 )
-               MOVE    "3"     TO  SPA-GMN-TAX-HASU-KBNL    (3)
-               MOVE    "１円未満切り上げ" 
-                               TO  SPA-GMN-TAX-HASU-KBNMEIL (3)
-               MOVE    3       TO  SPA-GMN-TAX-HASU-KBN-MAX
-           END-IF
            MOVE    SPA-GMN-TAX-HASU-KBNLST (2)
                                TO  SPA-GMN-TAX-HASU-KBN-G
-      *H29.9
-      *    自費コード端数処理
-           MOVE    "1 １円未満四捨五入"
-                               TO  SPA-GMN-JIHIHASUKBN-LST (1)
-           MOVE    "2 １円未満切り捨て"
-                               TO  SPA-GMN-JIHIHASUKBN-LST (2)
-           MOVE    "3 １円未満切り上げ"
-                               TO  SPA-GMN-JIHIHASUKBN-LST (3)
-           MOVE    3           TO  SPA-GMN-JIHIHASUKBN-MAX
-           MOVE    SPA-GMN-JIHIHASUKBN-LST (2)
-                               TO  SPA-GMN-JIHIHASUKBN-G
       *
            MOVE    "1"         TO  SPA-GMN-HIWARIKBNL    (1)
            MOVE    "日割計算しない"  
@@ -1205,12 +1093,6 @@
            MOVE    "1 自動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (2)
            MOVE    "2 手動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (3)
            MOVE    3                   TO  SPA-DATATEISYUTU-MAX
-      *    感染症作成区分
-           MOVE    "0 作成しない"      TO  SPA-GMN-DATAINFECT-LST (1)
-           MOVE    "1 作成する"        TO  SPA-GMN-DATAINFECT-LST (2)
-           MOVE    "2 作成する／日"    TO  SPA-GMN-DATAINFECT-LST (3)
-           MOVE    "9 作成しない消"    TO  SPA-GMN-DATAINFECT-LST (4)
-           MOVE    4                   TO  SPA-GMN-DATAINFECT-MAX
       *    自費保険集計先区分
            MOVE    "1"                 TO  SPA-GMN-JIHIPOSITIONL (1)
            MOVE    "保険分欄（負担金額四捨五入）"
@@ -1243,6 +1125,7 @@
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1012"
+               WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1341,8 +1224,11 @@
                                                SPA-GMN-CONDITION-WORD
                        MOVE    SYS-1018-ICON-FILENAME  TO
                                                SPA-GMN-ICON-FILENAME
+      *    請求書自費名称情報
                    WHEN    "1013"
-                       CONTINUE
+                       MOVE    MCPDATA-REC         TO  SYS-1013-REC
+                       MOVE    SYS-1013-JIHINAME   TO
+                                               SPA-GMN-JIHINAME 
       *    診療内容名称情報
                    WHEN    "1012"
                        MOVE    MCPDATA-REC         TO  SYS-1012-REC
@@ -1472,30 +1358,6 @@
                                            TO  SPA-GMN-NYKN-JYOTAI-T-G
                END-EVALUATE
            END-IF 
-      *
-           IF    ( SPA-W01-KANRICD     =   "1013" )
-               IF    ( SPA-W01-SELNUM      >   ZERO )
-                   MOVE    SPA-W01-SEL-STYUKYMD    TO  WRK-STYUKYMD
-               ELSE
-                   MOVE    SPA-W01-STYUKYMD        TO  WRK-STYUKYMD
-               END-IF
-               PERFORM 3108-1013-SEL-SEC
-               IF    ( SPA-W01-SELNUM      =   ZERO )
-                AND  ( WRK-STYUKYMD    NOT =   "00000000" )
-                AND  ( CNT-1013            =   ZERO )
-                   INITIALIZE                  STS-AREA-DAY
-                   INITIALIZE                  LNK-DAY6-AREA
-                   MOVE    "61"            TO  LNK-DAY6-IRAI
-                   MOVE    WRK-STYUKYMD    TO  LNK-DAY6-KIJUN
-                   MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                   MOVE     -1             TO  LNK-DAY6-ZOGEN
-                   CALL    "ORCSDAY"           USING
-                                               STS-AREA-DAY
-                                               LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KEISAN TO  WRK-STYUKYMD
-                   PERFORM 3108-1013-SEL-SEC
-               END-IF
-           END-IF
       *
       *    レセプト情報（主科設定）
            MOVE    SPACE               TO  SYS-2009-REC
@@ -1743,8 +1605,6 @@
       *    診療費明細書発行区分空白の時、ゼロとする
            IF      SYS-1001-MEIPRTFLG  =   SPACE
                MOVE    ZERO                TO  SYS-1001-MEIPRTFLG
-      *        H22.4 改正　初期表示は　１　発行あり
-               MOVE    "1"                 TO  SYS-1001-MEIPRTFLG
            END-IF
            MOVE    SYS-1001-MEIPRTFLG  TO  SPA-GMN-MEIPRTFLG
            PERFORM VARYING IDY     FROM    1   BY  1
@@ -1794,161 +1654,21 @@
                                    =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU)
                    MOVE    4               TO  IDY
                 END-IF
            END-PERFORM
       *
-      *    請求額端数区分医保（減免無保険分） 空白の時、"4"とする
+      *    請求額端数区分（減免無） 空白の時、"4"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN2    =   SPACE
                MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN2
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
                IF      SYS-1001-DISCOUNT-HASU-KBN2
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU2)
+                                   =   SPA-GMN-DISCOUNT-HASU-KBN2L (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
                    MOVE    4               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分医保（減免無自費分） 空白の時、"0"とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN2J   =   SPACE
-               MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN2J
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       5
-               IF      SYS-1001-DISCOUNT-HASU-KBN2J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU2J)
-                   MOVE    5           TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分労災（減免無保険分） 空白の時、"4"とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN3   =   SPACE
-               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN3
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
-               IF      SYS-1001-DISCOUNT-HASU-KBN3
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU3)
-                   MOVE    4               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分労災（減免無自費分） 空白の時、"0"とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN3J   =   SPACE
-               MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN3J
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       5
-               IF      SYS-1001-DISCOUNT-HASU-KBN3J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU3J)
-                   MOVE    5               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分自賠責（減免無保険分） 空白の時、"4"とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN4   =   SPACE
-               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN4
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
-               IF      SYS-1001-DISCOUNT-HASU-KBN4
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU4)
-                   MOVE    4               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分自賠責（減免無自費分） 空白の時、"0"とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN4J   =   SPACE
-               MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN4J
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       5
-               IF      SYS-1001-DISCOUNT-HASU-KBN4J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU4J)
-                   MOVE    5               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分公害（減免無自費分） 空白の時、"4"とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN5J   =   SPACE
-               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN5J
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
-               IF      SYS-1001-DISCOUNT-HASU-KBN5J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU5J)
-                   MOVE    4               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分第三者行為（減免無保険分） 空白の時、自賠責の設定とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN6   =   SPACE
-                MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G (CONST-DHASU4)
-                                   TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU6)
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
-               IF      SYS-1001-DISCOUNT-HASU-KBN6
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU6)
-                   MOVE    4               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    請求額端数区分自賠責（減免無自費分） 空白の時、自賠責の設定とする
-           IF      SYS-1001-DISCOUNT-HASU-KBN6J   =   SPACE
-                MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G (CONST-DHASU4J)
-                                   TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                    (CONST-DHASU6J)
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       5
-               IF      SYS-1001-DISCOUNT-HASU-KBN6J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                  (CONST-DHASU6J)
-                   MOVE    5               TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    第三者行為（医療費）負担金額計算区分、空白の時"2"とする
-           IF      SYS-1001-DAISANKBN    =   SPACE
-               MOVE    "2"             TO  SYS-1001-DAISANKBN
-           END-IF
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
-               IF      SYS-1001-DAISANKBN
-                                   =   SPA-GMN-DAISANKBNL (IDY)
-                   MOVE    SPA-GMN-DAISANKBNLST (IDY)
-                                       TO  SPA-GMN-DAISANKBN-G
-                   MOVE    2               TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -1957,12 +1677,12 @@
                MOVE    "1"             TO  SYS-1001-GENTAIKBN
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       2
                IF      SYS-1001-GENTAIKBN
                                    =   SPA-GMN-GENTAIKBNL (IDY)
                    MOVE    SPA-GMN-GENTAIKBNLST (IDY)
                                        TO  SPA-GMN-GENTAIKBN-G
-                   MOVE    3               TO  IDY
+                   MOVE    2               TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -1971,34 +1691,16 @@
                MOVE    "2"             TO  SYS-1001-TAX-HASU-KBN
            END-IF
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-TAX-HASU-KBN-MAX
+                   UNTIL   IDY >       2
                IF      SYS-1001-TAX-HASU-KBN
                                        =   SPA-GMN-TAX-HASU-KBNL (IDY)
                    MOVE    SPA-GMN-TAX-HASU-KBNLST (IDY)
                                            TO  SPA-GMN-TAX-HASU-KBN-G
-                   MOVE    SPA-GMN-TAX-HASU-KBN-MAX
-                                       TO  IDY
+                   MOVE    2               TO  IDY
                 END-IF
            END-PERFORM
       *
-      *H29.9
-      *    自費コード端数 空白の時、"2"とする
-           IF      SYS-1001-JIHI-HASU-KBN   =   SPACE
-               MOVE    "2"             TO  SYS-1001-JIHI-HASU-KBN
-           END-IF
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-JIHIHASUKBN-MAX
-               IF      SYS-1001-JIHI-HASU-KBN
-                                       =   SPA-GMN-JIHIHASUKBN-LST
-                                                      (IDY)(1:1)
-                   MOVE    SPA-GMN-JIHIHASUKBN-LST (IDY)
-                                           TO  SPA-GMN-JIHIHASUKBN-G
-                   MOVE    SPA-GMN-JIHIHASUKBN-MAX
-                                           TO  IDY
-                END-IF
-           END-PERFORM
-      *
-      *    更生・育成限度額日割計算区分 空白の時、"1"とする
+      *    更正・育成限度額日割計算区分 空白の時、"1"とする
            IF      SYS-1001-HIWARIKBN   =   SPACE
                MOVE    "1"             TO  SYS-1001-HIWARIKBN
            END-IF
@@ -2042,28 +1744,6 @@
                 END-IF
            END-PERFORM
       *
-      *    データ感染症区分 空白の時、"0"とする
-           IF      SYS-1001-DATAINFECTIONKBN   =   SPACE
-               IF      SYS-1001-DATACREATEFLG  =   "1"
-                   MOVE    "1"         TO  SYS-1001-DATAINFECTIONKBN
-               ELSE
-                   MOVE    "0"         TO  SYS-1001-DATAINFECTIONKBN
-               END-IF
-           END-IF
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-DATAINFECT-MAX
-               IF      SYS-1001-DATAINFECTIONKBN
-                                       =   SPA-GMN-DATAINFECT-LST
-                                                            (IDY)(1:1)
-                   MOVE    SPA-GMN-DATAINFECT-LST (IDY)
-                                           TO  SPA-GMN-DATAINFECT-G
-                   MOVE    SPA-GMN-DATAINFECT-MAX  TO  IDY
-                END-IF
-           END-PERFORM
-      *    感染症区分の変更前を保存
-           MOVE    SYS-1001-DATAINFECTIONKBN
-                                       TO  SPA-W02-INFKBN
-      *
       *    データ提出方法区分 空白の時、"0"とする
            IF      SYS-1001-JIHIPOSITION   =   SPACE
                MOVE    "1"             TO  SYS-1001-JIHIPOSITION
@@ -2083,76 +1763,6 @@
        31091-KIHON-HENSYU-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    請求書自費名称検索処理
-      *****************************************************************
-       3108-1013-SEL-SEC               SECTION.
-      *
-           MOVE    ZERO                TO  CNT-1013
-      *
-           MOVE    SPACE               TO  SYS-1013-REC
-           INITIALIZE                      SYS-1013-REC
-           MOVE    "1013"              TO  SYS-1013-KANRICD
-           MOVE    WRK-STYUKYMD        TO  SYS-1013-STYUKYMD
-           MOVE    WRK-STYUKYMD        TO  SYS-1013-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
-           MOVE    SYS-1013-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           PERFORM     UNTIL ( FLG-SYSKANRI    =   1 )
-      *
-               MOVE    MCPDATA-REC     TO  SYS-1013-REC
-      *
-               IF   (( SYS-1013-STYUKYMD   =   "00000000" )
-                  AND( SYS-1013-EDYUKYMD   =   "00000000" ))
-                OR  (( SYS-1013-STYUKYMD   =   "99999999" )
-                  AND( SYS-1013-EDYUKYMD   =   "99999999" ))
-                   CONTINUE
-               ELSE
-      *
-                   COMPUTE CNT-1013
-                       =   CNT-1013        +   1
-      *
-                   MOVE    SYS-1013-KBNCD  TO  WRK-1013-KBNCD-G
-      *
-                   EVALUATE    SYS-1013-KBNCD
-                   WHEN    "10"
-                       MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-NJIHINAME (10)
-                   WHEN    "11"    THRU    "19"
-                       MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-NJIHINAME (WRK-1013-IDX)
-                   WHEN    "20"
-                       MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-GJIHINAME (10)
-                   WHEN    "21"    THRU    "29"
-                       MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-GJIHINAME (WRK-1013-IDX)
-                   END-EVALUATE
-               END-IF
-      *
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           . 
-       3108-1013-SEL-EXT.
-           EXIT.
       *****************************************************************
       *    割引率区分設定処理
       *****************************************************************
@@ -2354,21 +1964,13 @@
            MOVE    W02-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    W02-YYKHYOFLG       TO  SPA-GMN-YYKHYOFLG-G
            MOVE    W02-CHIHOUNUMKBN    TO  SPA-GMN-CHIHOUNUMKBN-G
-           PERFORM VARYING IDX-DHASU   FROM    1   BY  1
-                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
-               MOVE    W02-DISCOUNTHASU (IDX-DHASU)
-                                   TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                        (IDX-DHASU)
-           END-PERFORM
-           MOVE    W02-DAISANKBN       TO  SPA-GMN-DAISANKBN-G
+           MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+           MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
            MOVE    W02-GENTAIKBN       TO  SPA-GMN-GENTAIKBN-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
-      *    自費コード端数処理
-           MOVE    W02-JIHIHASUKBN     TO  SPA-GMN-JIHIHASUKBN-G
            MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
            MOVE    W02-DATACREATE      TO  SPA-GMN-DATACREATE-G
            MOVE    W02-DATATEISYU      TO  SPA-GMN-DATATEISYUTU-G
-           MOVE    W02-DATAINFECT      TO  SPA-GMN-DATAINFECT-G
            MOVE    W02-JIHIPOSITION    TO  SPA-GMN-JIHIPOSITION-G
       *
       *    連絡先情報タグ
@@ -2393,13 +1995,7 @@
            MOVE    W02-CONDITIONWORD   TO  SPA-GMN-CONDITION-WORD
            MOVE    W02-ICONFILENAME    TO  SPA-GMN-ICON-FILENAME
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   10 )
-               MOVE    W02-GJIHINAME (IDX1)
-                                       TO  SPA-GMN-GJIHINAME (IDX1)
-               MOVE    W02-NJIHINAME (IDX1)
-                                       TO  SPA-GMN-NJIHINAME (IDX1)
-           END-PERFORM
+           MOVE    W02-JIHINAME        TO  SPA-GMN-JIHINAME
       *
       *    診療内容
            MOVE    W02-SRYNAIYO        TO  SPA-GMN-SRYNAIYO
@@ -2560,15 +2156,12 @@
                PERFORM 4129-CHIHOUNUMKBN-CHK-SEC
            END-IF
       *
-           PERFORM VARYING IDX-DHASU   FROM    1   BY  1
-                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
-               IF      SPA-ERRCD       =   SPACE
-                   PERFORM 4130-DISCOUNT-HASU-KBN-CHK-SEC
-               END-IF
-           END-PERFORM
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4130-DISCOUNT-HASU-KBN-CHK-SEC
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 4132-DAISANKBN-CHK-SEC
+               PERFORM 4132-DISCOUNT-HASU-KBN2-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2592,17 +2185,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 4131-DATAINFECTION-CHK-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
                PERFORM 4131-JIHIPOSITION-CHK-SEC
-           END-IF
-      *
-      *H29.9
-      *    自費コード端数処理
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4131-JIHIHASUKBN-CHK-SEC
            END-IF
       *
            .
@@ -2635,43 +2218,18 @@
       *****************************************************************
        41021-KIHON-1013-SEC       SECTION.
       *
-           PERFORM VARYING IDX1   FROM     1   BY  1
-                   UNTIL ( IDX1   >    10 )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-GJIHINAME (IDX1)
-                                           TO  KANACHK-MAE-INPUT
-               MOVE    20                  TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-GJIHINAME (IDX1)
-               IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                      (KANACHK-SYUBETU     =   1     )
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   COMPUTE SPA-GMN-CUR =   IDX1    +   69
-               END-IF
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1   FROM     1   BY  1
-                   UNTIL ( IDX1   >    10 )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-NJIHINAME (IDX1)
-                                           TO  KANACHK-MAE-INPUT
-               MOVE    20                  TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NJIHINAME (IDX1)
-               IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                      (KANACHK-SYUBETU     =   1     )
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   COMPUTE SPA-GMN-CUR =   IDX1    +   169
-               END-IF
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-JIHINAME    TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-JIHINAME
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    70              TO  SPA-GMN-CUR
+           END-IF
       *
            .
        41021-KIHON-1013-EXT.
@@ -2689,14 +2247,6 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SRYNAIYO
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               IF      SPA-1012-KFLG1      =   ZERO
-                   MOVE    "K012"          TO  SPA-ERRCD
-                   MOVE    80              TO  SPA-GMN-CUR
-                   MOVE    1               TO  SPA-1012-KFLG1
-               END-IF
-           END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -2705,15 +2255,6 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SRYNAIYODSP
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               IF     (SPA-1012-KFLG2      =   ZERO )  AND
-                      (SPA-ERRCD           =   SPACE)
-                   MOVE    "K012"          TO  SPA-ERRCD
-                   MOVE    81              TO  SPA-GMN-CUR
-                   MOVE    1               TO  SPA-1012-KFLG2
-               END-IF
-           END-IF
       *    初期表示
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -2748,14 +2289,6 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKKBNNAME
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               IF      SPA-1028-KFLG1      =   ZERO
-                   MOVE    "K012"          TO  SPA-ERRCD
-                   MOVE    100             TO  SPA-GMN-CUR
-                   MOVE    1               TO  SPA-1028-KFLG1
-               END-IF
-           END-IF
       *
       *    予約内容一覧表示
            INITIALIZE                  ORCSKANACHKAREA
@@ -2765,15 +2298,6 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKKBNNAME1
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               IF     (SPA-1028-KFLG2      =   ZERO )  AND
-                      (SPA-ERRCD           =   SPACE)
-                   MOVE    "K012"          TO  SPA-ERRCD
-                   MOVE    101             TO  SPA-GMN-CUR
-                   MOVE    1               TO  SPA-1028-KFLG2
-               END-IF
-           END-IF
       *
       *    表示区分
            MOVE    ZERO                TO  FLG-OK
@@ -2851,6 +2375,7 @@
       *
       *    定額定率区分チェック処理
            PERFORM 4122-TEIRITU-CHK-SEC
+      *
            .
        41021-KIHON-1027-EXT.
            EXIT.
@@ -3056,40 +2581,20 @@
       *****************************************************************
        4106-KAISETUNAME-CHK-SEC        SECTION.
       *
-           IF      SPA-ENCODING        =   2
-      *        拡張漢字対応
-               INITIALIZE                  ORCSKANACHK2AREA
-               MOVE    "1"                 TO  KANACHK2-SYORI
-               MOVE    SPA-GMN-KAISETUNAME TO  KANACHK2-MAE-INPUT
-               MOVE    120                 TO  KANACHK2-MAX-CNT
-               CALL    "ORCSKANACHK2"      USING
-                                           ORCSKANACHK2AREA
-               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-KAISETUNAME
-               IF     (KANACHK2-RC     NOT =   ZERO  )  OR
-                      (KANACHK2-SYUBETU    =   1     )
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   MOVE    7               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    KANACHK2-OUT-INPUT
-                                           TO  SPA-GMN-KAISETUNAME
-               END-IF
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-KAISETUNAME TO  KANACHK-MAE-INPUT
+           MOVE    120                 TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KAISETUNAME
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    7               TO  SPA-GMN-CUR
            ELSE
-      *        拡張漢字不可
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-KAISETUNAME TO  KANACHK-MAE-INPUT
-               MOVE    120                 TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KAISETUNAME
-               IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                      (KANACHK-SYUBETU     =   1     )
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   MOVE    7               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT
-                                           TO  SPA-GMN-KAISETUNAME
-               END-IF
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-KAISETUNAME
            END-IF
       *
            .
@@ -3101,40 +2606,20 @@
       *****************************************************************
        4107-KANRINAME-CHK-SEC            SECTION.
       *
-           IF      SPA-ENCODING        =   2
-      *        拡張漢字対応
-               INITIALIZE                  ORCSKANACHK2AREA
-               MOVE    "1"                 TO  KANACHK2-SYORI
-               MOVE    SPA-GMN-KANRINAME   TO  KANACHK2-MAE-INPUT
-               MOVE    80                  TO  KANACHK2-MAX-CNT
-               CALL    "ORCSKANACHK2"      USING
-                                           ORCSKANACHK2AREA
-               MOVE    KANACHK2-MAE-INPUT   TO  SPA-GMN-KANRINAME
-               IF     (KANACHK2-RC      NOT =   ZERO  )  OR
-                       (KANACHK2-SYUBETU     =   1     )
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   MOVE    8               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    KANACHK2-OUT-INPUT
-                                           TO  SPA-GMN-KANRINAME
-               END-IF
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-KANRINAME   TO  KANACHK-MAE-INPUT
+           MOVE    80                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KANRINAME
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    8               TO  SPA-GMN-CUR
            ELSE
-      *        拡張漢字不可
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-KANRINAME   TO  KANACHK-MAE-INPUT
-               MOVE    80                  TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KANRINAME
-               IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                      (KANACHK-SYUBETU     =   1     )
-                   MOVE    "0012"          TO  SPA-ERRCD
-                   MOVE    8               TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT
-                                           TO  SPA-GMN-KANRINAME
-               END-IF
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-KANRINAME
            END-IF
       *
            .
@@ -3240,6 +2725,37 @@
            ELSE
                IF    ( SPA-GMN-SANKANUM    IS  NOT NUMERIC )
                    MOVE    "0216"      TO  SPA-ERRCD
+               END-IF
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( SPA-GMN-SANKANUM (1:2)  =   "00" )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0213"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( SPA-GMN-HOSPSBT     =   "1" OR "2" )
+                       IF    ( SPA-GMN-SANKANUM (3:1)
+                                               =   SPA-GMN-HOSPSBT )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0214"  TO  SPA-ERRCD
+                           MOVE    SPACE   TO  WRK-HOSPSBTW
+                           IF    ( SPA-GMN-HOSPSBT     =   "1" )
+                               MOVE    "１"    TO      WRK-HOSPSBTW
+                           ELSE
+                               MOVE    "２"    TO      WRK-HOSPSBTW
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( SPA-GMN-SANKANUM (4:2)
+                                       =   SPA-GMN-PREFNUM )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0215"  TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -3471,95 +2987,47 @@
        4130-DISCOUNT-HASU-KBN-CHK-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
-           IF    ( IDX-DHASU       =   CONST-DHASU2J
-                                    OR CONST-DHASU3J
-                                    OR CONST-DHASU4J
-                                    OR CONST-DHASU6J )
-             PERFORM VARYING IDY     FROM    1   BY  1
-                    UNTIL   IDY     >       5
-               IF      SPA-GMN-DISCOUNT-HASU-KBN (IDX-DHASU)
-                                       =   SPA-GMN-DISCOUNT-HASU-KBNJL
-                                                              (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                             (IDX-DHASU)
-                   MOVE    1           TO  FLG-OK
-               END-IF
-             END-PERFORM
-           ELSE
-             PERFORM VARYING IDY     FROM    1   BY  1
-                    UNTIL   IDY     >       4
-               IF      SPA-GMN-DISCOUNT-HASU-KBN (IDX-DHASU)
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SPA-GMN-DISCOUNT-HASU-KBN
                                        =   SPA-GMN-DISCOUNT-HASU-KBNL
                                                               (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-                                                             (IDX-DHASU)
                    MOVE    1           TO  FLG-OK
                END-IF
-             END-PERFORM
-           END-IF
+           END-PERFORM
            IF      FLG-OK              =   ZERO
-               EVALUATE    IDX-DHASU
-               WHEN    CONST-DHASU
-                   MOVE    "0013"      TO  SPA-ERRCD
-                   MOVE    38          TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU2
-                   MOVE    "0020"      TO  SPA-ERRCD
-                   MOVE    201         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU2J
-                   MOVE    "0207"      TO  SPA-ERRCD
-                   MOVE    211         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU3
-                   MOVE    "0208"      TO  SPA-ERRCD
-                   MOVE    212         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU3J
-                   MOVE    "0209"      TO  SPA-ERRCD
-                   MOVE    213         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU4
-                   MOVE    "0210"      TO  SPA-ERRCD
-                   MOVE    214         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU4J
-                   MOVE    "0211"      TO  SPA-ERRCD
-                   MOVE    215         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU5J
-                   MOVE    "0212"      TO  SPA-ERRCD
-                   MOVE    216         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU6
-                   MOVE    "0218"      TO  SPA-ERRCD
-                   MOVE    219         TO  SPA-GMN-CUR
-               WHEN    CONST-DHASU6J
-                   MOVE    "0219"      TO  SPA-ERRCD
-                   MOVE    220         TO  SPA-GMN-CUR
-               END-EVALUATE
+               MOVE    "0013"          TO  SPA-ERRCD
+               MOVE    38              TO  SPA-GMN-CUR
            END-IF
       *
            .
        4130-DISCOUNT-HASU-KBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    第三者行為（医療費）負担金額計算区分
+      *    請求額端数設定（減免無）
       *****************************************************************
-       4132-DAISANKBN-CHK-SEC     SECTION.
+       4132-DISCOUNT-HASU-KBN2-CHK-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
-               IF      SPA-GMN-DAISANKBN
-                                   =   SPA-GMN-DAISANKBNL
+                   UNTIL   IDY     >       4
+               IF      SPA-GMN-DISCOUNT-HASU-KBN2
+                                   =   SPA-GMN-DISCOUNT-HASU-KBN2L
                                                               (IDY)
-                   MOVE    SPA-GMN-DAISANKBNLST (IDY)
-                                   TO  SPA-GMN-DAISANKBN-G
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (IDY)
+                                   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
                    MOVE    1           TO  FLG-OK
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    "0220"          TO  SPA-ERRCD
-               MOVE    221             TO  SPA-GMN-CUR
+               MOVE    "0020"          TO  SPA-ERRCD
+               MOVE    201             TO  SPA-GMN-CUR
            END-IF
       *
            .
-       4132-DAISANKBN-CHK-EXT.
+       4132-DISCOUNT-HASU-KBN2-CHK-EXT.
            EXIT.
       *****************************************************************
       *    減免計算対象区分
@@ -3568,7 +3036,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
+                   UNTIL   IDY     >       2
                IF      SPA-GMN-GENTAIKBN
                                    =   SPA-GMN-GENTAIKBNL
                                                               (IDY)
@@ -3592,7 +3060,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       SPA-GMN-TAX-HASU-KBN-MAX
+                   UNTIL   IDY     >       2
                IF      SPA-GMN-TAX-HASU-KBN
                                        =   SPA-GMN-TAX-HASU-KBNL
                                                               (IDY)
@@ -3610,7 +3078,7 @@
        4131-TAX-HASU-KBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    更生・育成限度額日割計算区分
+      *    更正・育成限度額日割計算区分
       *****************************************************************
        4131-HIWARIKBN-CHK-SEC       SECTION.
       *
@@ -3678,37 +3146,11 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0204"          TO  SPA-ERRCD
-               MOVE    218             TO  SPA-GMN-CUR
-           END-IF
-      *
-           .
-       4131-DATATEISYUTU-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    データ収集提出方法フラグ
-      *****************************************************************
-       4131-DATAINFECTION-CHK-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       SPA-GMN-DATAINFECT-MAX
-               IF      SPA-GMN-DATAINFECT
-                                       =   SPA-GMN-DATAINFECT-LST
-                                                          (IDY)(1:1)
-                   MOVE    SPA-GMN-DATAINFECT-LST (IDY)
-                                       TO  SPA-GMN-DATAINFECT-G
-                   MOVE    SPA-GMN-DATAINFECT-MAX  TO  IDY
-                   MOVE    1           TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    "0217"          TO  SPA-ERRCD
                MOVE    204             TO  SPA-GMN-CUR
            END-IF
       *
            .
-       4131-DATAINFECTION-CHK-EXT.
+       4131-DATATEISYUTU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    自費保険集計先区分チェック処理
@@ -3733,30 +3175,6 @@
       *
            .
        4131-JIHIPOSITION-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    自費コード端数区分設定
-      *****************************************************************
-       4131-JIHIHASUKBN-CHK-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       SPA-GMN-JIHIHASUKBN-MAX
-               IF      SPA-GMN-JIHIHASUKBN
-                                       =   SPA-GMN-JIHIHASUKBN-LST
-                                                        (IDY)(1:1)
-                   MOVE    SPA-GMN-JIHIHASUKBN-LST (IDY)
-                                       TO  SPA-GMN-JIHIHASUKBN-G
-                   MOVE    1           TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    "0221"          TO  SPA-ERRCD
-               MOVE    222              TO  SPA-GMN-CUR
-           END-IF
-      *
-           .
-       4131-JIHIHASUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    郵便番号チェック処理
@@ -4105,6 +3523,7 @@
            INITIALIZE                      SYS-1001-REC
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
+               WHEN    "1013"
                WHEN    "1012"
                WHEN    "1018"
                WHEN    "1019"
@@ -4140,122 +3559,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4031-DEL-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    自費名称削除処理
-      *****************************************************************
-       4032-DEL-SEC                        SECTION.
-      *
-           PERFORM 40321-DEL-SEC
-           IF    ( SPA-ERRCD   =   SPACE )
-               MOVE   "JOIN"               TO  MCP-PUTTYPE
-               PERFORM 210-BACK
-           END-IF
-      *
-           .
-       4032-DEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    自費名称削除処理
-      *****************************************************************
-       40321-DEL-SEC                       SECTION.
-      *
-           IF    ( SPA-W01-SELNUM      >   ZERO )
-               MOVE    SPA-W01-SEL-STYUKYMD    TO  WRK-STYUKYMD
-               MOVE    SPA-W01-SEL-EDYUKYMD    TO  WRK-EDYUKYMD
-           ELSE
-               MOVE    SPA-W01-STYUKYMD        TO  WRK-STYUKYMD
-               MOVE    SPA-W01-EDYUKYMD        TO  WRK-EDYUKYMD
-           END-IF
-      *
-           MOVE    SPACE               TO  SYS-1013-REC
-           INITIALIZE                      SYS-1013-REC
-           MOVE    "1013"              TO  SYS-1013-KANRICD
-           MOVE    WRK-EDYUKYMD        TO  SYS-1013-STYUKYMD
-           MOVE    WRK-STYUKYMD        TO  SYS-1013-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
-           MOVE    SYS-1013-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               MOVE    MCPDATA-REC     TO  SYS-1013-REC
-               MOVE    SYS-1013-REC    TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 950-DBDELETE-SEC
-               IF    ( MCP-RC      NOT =   ZERO )
-                   MOVE    "1002"      TO  SPA-ERRCD
-               END-IF
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( SYS-1013-STYUKYMD   <   WRK-STYUKYMD )
-                       MOVE    SYS-1013-REC    TO  SYSKANRI-REC
-                       INITIALIZE                  STS-AREA-DAY
-                       INITIALIZE                  LNK-DAY6-AREA
-                       MOVE    "61"            TO  LNK-DAY6-IRAI
-                       MOVE    WRK-STYUKYMD    TO  LNK-DAY6-KIJUN
-                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                       MOVE    -1              TO  LNK-DAY6-ZOGEN
-                       CALL    "ORCSDAY"           USING
-                                                   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-                       MOVE    LNK-DAY6-KEISAN TO  SYS-EDYUKYMD
-                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 930-DBINSERT-SEC
-                       IF    ( MCP-RC      NOT =   ZERO )
-                           MOVE    "1002"      TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( SYS-1013-EDYUKYMD   >   WRK-EDYUKYMD )
-                       MOVE    SYS-1013-REC    TO  SYSKANRI-REC
-                       INITIALIZE                  STS-AREA-DAY
-                       INITIALIZE                  LNK-DAY6-AREA
-                       MOVE    "61"            TO  LNK-DAY6-IRAI
-                       MOVE    WRK-EDYUKYMD    TO  LNK-DAY6-KIJUN
-                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                       MOVE     1              TO  LNK-DAY6-ZOGEN
-                       CALL    "ORCSDAY"           USING
-                                                   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-                       MOVE    LNK-DAY6-KEISAN TO  SYS-STYUKYMD
-                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 930-DBINSERT-SEC
-                       IF    ( MCP-RC      NOT =   ZERO )
-                           MOVE    "1002"      TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       40321-DEL-EXT.
-           EXIT.
       *****************************************************************
       *       登録前処理
       *****************************************************************
@@ -4360,28 +3663,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SYS-1001-MEIPRTFLG
                    MOVE    SPA-GMN-CHIHOUNUMKBN
                                        TO  SYS-1001-CHIHOUNUMKBN
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN
                                        TO  SYS-1001-DISCOUNT-HASU-KBN
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU2)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN2
                                        TO  SYS-1001-DISCOUNT-HASU-KBN2
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU2J)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN2J
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU3)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN3
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU3J)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN3J
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU4)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN4
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU4J)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN4J
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU5J)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN5J
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU6)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN6
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU6J)
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN6J
-                   MOVE    SPA-GMN-DAISANKBN
-                                       TO  SYS-1001-DAISANKBN
                    MOVE    SPA-GMN-GENTAIKBN
                                        TO  SYS-1001-GENTAIKBN
                    MOVE    SPA-GMN-TAX-HASU-KBN
@@ -4392,13 +3677,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SYS-1001-DATACREATEFLG
                    MOVE    SPA-GMN-DATATEISYUTU
                                        TO  SYS-1001-DATATEISYUTUKBN
-                   MOVE    SPA-GMN-DATAINFECT
-                                       TO  SYS-1001-DATAINFECTIONKBN
                    MOVE    SPA-GMN-JIHIPOSITION
                                        TO  SYS-1001-JIHIPOSITION
-      *            自費コード端数設定
-                   MOVE    SPA-GMN-JIHIHASUKBN
-                                       TO  SYS-1001-JIHI-HASU-KBN
                    MOVE    SYS-1001-REC    TO  SYSKANRI-REC
       * 
       *    医療機関情報ー所在地、連絡先情報
@@ -4437,6 +3717,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-USERURL     TO  SYS-1003-USERURL
       *----(03.04.01)--ADD-END-----------------------------------------
                    MOVE    SYS-1003-REC        TO  SYSKANRI-REC
+      * 
+      *    医療機関情報ー請求書自費名称情報
+               WHEN    "1013"    
+                   IF      FLG-SYSKANRI        =   ZERO
+                       MOVE    MCPDATA-REC     TO  SYS-1013-REC
+                   ELSE
+                       MOVE    SPACE           TO  SYS-1013-REC
+                       INITIALIZE                  SYS-1013-REC
+                       MOVE   "1013"           TO  SYS-1013-KANRICD
+                       MOVE    SPA-W01-KBNCD   TO  SYS-1013-KBNCD
+                   END-IF 
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1013-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-1013-EDYUKYMD
+                   MOVE    SPA-GMN-JIHINAME    TO  SYS-1013-JIHINAME
+                   MOVE    SYS-1013-REC        TO  SYSKANRI-REC
+      * 
       * 
       *    診療内容名称情報
                WHEN    "1012"    
@@ -4595,17 +3891,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1001"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
            END-IF      
-      *    感染症区分変更時はデータ送信処理起動
-           IF      SPA-W02-INFKBN  NOT =   SYS-1001-DATAINFECTIONKBN
-               IF    ((SPA-W02-INFKBN              =   "0")   AND
-                      (SYS-1001-DATAINFECTIONKBN   =   "9"))  OR
-                     ((SPA-W02-INFKBN              =   "9")   AND
-                      (SYS-1001-DATAINFECTIONKBN   =   "0"))
-                       CONTINUE
-               ELSE
-                   PERFORM 800-INFECTION-AGREE-SEC
-               END-IF
-           END-IF
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            PERFORM 210-BACK 
@@ -4613,108 +3898,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        490-KOUSHIN-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    自費名称登録処理
-      *****************************************************************
-       491-KOUSHIN-SEC                 SECTION.
-      *
-           IF    ( SPA-W01-SEL-EDYUKYMD    <   SPA-W01-STYUKYMD )
-               MOVE    ZERO            TO  SPA-W01-SELNUM
-           END-IF
-           PERFORM 40321-DEL-SEC
-           IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4911-KOUSHIN-SEC
-           ELSE
-               MOVE    "1001"          TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       491-KOUSHIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    自費名称登録処理
-      *****************************************************************
-       4911-KOUSHIN-SEC                SECTION.
-      *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    "1013"              TO  SYS-KANRICD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-OPID            TO  SYS-OPID
-           MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
-           MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >   10 )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-GJIHINAME(IDX)  NOT =   SPACE )
-                   MOVE    SYSKANRI-REC   TO  SYS-1013-REC
-                   IF    ( IDX         =   10 )
-                       MOVE    "20"        TO  SYS-1013-KBNCD
-                   ELSE
-                       MOVE    "2"         TO  WRK-1013-NYUGAIKBN
-                       MOVE    IDX         TO  WRK-1013-IDX
-                       MOVE    WRK-1013-KBNCD-G
-                                           TO  SYS-1013-KBNCD
-                   END-IF
-                   MOVE    SPA-GMN-GJIHINAME(IDX)
-                                           TO  SYS-1013-JIHINAME
-                   MOVE    SYS-1013-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 930-DBINSERT-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       MOVE    "1001"      TO  SPA-ERRCD
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL ( IDX >   10 )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-NJIHINAME(IDX)  NOT =   SPACE )
-                   MOVE    SYSKANRI-REC   TO  SYS-1013-REC
-                   IF    ( IDX         =   10 )
-                       MOVE    "10"        TO  SYS-1013-KBNCD
-                   ELSE
-                       MOVE    "1"         TO  WRK-1013-NYUGAIKBN
-                       MOVE    IDX         TO  WRK-1013-IDX
-                       MOVE    WRK-1013-KBNCD-G
-                                           TO  SYS-1013-KBNCD
-                   END-IF
-                   MOVE    SPA-GMN-NJIHINAME(IDX)
-                                           TO  SYS-1013-JIHINAME
-                   MOVE    SYS-1013-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 930-DBINSERT-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       MOVE    "1001"      TO  SPA-ERRCD
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               MOVE   "JOIN"               TO  MCP-PUTTYPE
-               PERFORM 210-BACK
-           END-IF
-      *
-           .
-       4911-KOUSHIN-EXT.
-           EXIT.
       *****************************************************************
       *    基本情報で期間変更の時、所在地・広告変更処理
       *****************************************************************
@@ -4785,43 +3968,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *       割引率情報タグの関連チェック処理
+      *       連絡先情報タグの関連チェック処理
       *****************************************************************
        4901-TAG4-CHK-SEC           SECTION.
-      *
-      *    区分＝００
-           IF      SPA-W01-KBNCD       =   "00"
-               IF     (SPA-GMN-DISCOUNT-RATE   =   ZERO  )
-                  AND (SPA-GMN-TEIRITU         =   SPACE )
-                   CONTINUE
-               ELSE
-                   IF      SPA-GMN-1027-KFLG   =   ZERO
-                       MOVE    "K015"          TO  SPA-ERRCD
-                       MOVE    40              TO  SPA-GMN-CUR
-                       MOVE    1               TO  SPA-GMN-1027-KFLG
-                   END-IF
-               END-IF
-           END-IF
       *
            .
        4901-TAG4-CHK-EXT.
            EXIT.
+
       *
       *****************************************************************
-      *       減免事由タグの関連チェック処理
+      *       広告情報タグの関連チェック処理
       *****************************************************************
        4901-TAG5-CHK-SEC           SECTION.
       *
-      *    区分＝００
-           IF      SPA-W01-KBNCD       =   "00"
-               IF     (SPA-GMN-DISCOUNT-KBN    NOT =   ZERO  )
-                   IF      SPA-GMN-1026-KFLG   =   ZERO
-                       MOVE    "K010"          TO  SPA-ERRCD
-                       MOVE    51              TO  SPA-GMN-CUR
-                       MOVE    1               TO  SPA-GMN-1026-KFLG
-                   END-IF
-               END-IF
-           END-IF
            .
        4901-TAG5-CHK-EXT.
            EXIT.
@@ -4948,14 +4108,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W02-OKUSURIFLG
            MOVE    SPA-GMN-YYKHYOFLG-G
                                        TO  W02-YYKHYOFLG
-           PERFORM VARYING IDX-DHASU   FROM    1   BY  1
-                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
-               MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G (IDX-DHASU)
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G
                                        TO  W02-DISCOUNTHASU
-                                             (IDX-DHASU)
-           END-PERFORM
-           MOVE    SPA-GMN-DAISANKBN-G
-                                       TO  W02-DAISANKBN
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBN2-G
+                                       TO  W02-DISCOUNTHASU2
            MOVE    SPA-GMN-GENTAIKBN-G
                                        TO  W02-GENTAIKBN
            MOVE    SPA-GMN-TAX-HASU-KBN-G
@@ -5058,50 +4214,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-CHIHOUNUMKBN-MAX   TO  W02-CHIHOUNUMKBN-COUNT
       *
-           PERFORM VARYING IDX-DHASU   FROM   1    BY  1
-                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
-             IF    ( IDX-DHASU         =   CONST-DHASU2J
-                                        OR CONST-DHASU3J
-                                        OR CONST-DHASU4J
-                                        OR CONST-DHASU6J )
-                 PERFORM VARYING IDX FROM    1   BY  1
-                          UNTIL   IDX >       5
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST(IDX)
-                                       TO  W02-DISCOUNTHASULST
-                                               (IDX-DHASU IDX)
-                 END-PERFORM
-                 MOVE    5             TO  W02-DISCOUNTHASU-COUNT
-                                               (IDX-DHASU)
-             ELSE
-                 PERFORM VARYING IDX FROM    1   BY  1
-                          UNTIL   IDX >       4
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
-                                       TO  W02-DISCOUNTHASULST
-                                               (IDX-DHASU IDX)
-                 END-PERFORM
-                 MOVE    4             TO  W02-DISCOUNTHASU-COUNT
-                                               (IDX-DHASU)
-             END-IF
-           END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+               MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
+                                       TO  W02-DISCOUNTHASULST (IDX)
+           END-PERFORM    
+           MOVE    4                   TO  W02-DISCOUNTHASU-COUNT     
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+               MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST(IDX)
+                                       TO  W02-DISCOUNTHASU2LST (IDX)
+           END-PERFORM    
+           MOVE    4                   TO  W02-DISCOUNTHASU2-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
-               MOVE    SPA-GMN-DAISANKBNLST(IDX)
-                                       TO  W02-DAISANKBNLST (IDX)
-           END-PERFORM    
-           MOVE    2                   TO  W02-DAISANKBN-COUNT     
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
                MOVE    SPA-GMN-GENTAIKBNLST(IDX)
                                        TO  W02-GENTAIKBNLST (IDX)
            END-PERFORM    
-           MOVE    3                   TO  W02-GENTAIKBN-COUNT     
+           MOVE    2                   TO  W02-GENTAIKBN-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-TAX-HASU-KBN-MAX
+                   UNTIL   IDX >       2
                MOVE    SPA-GMN-TAX-HASU-KBNLST(IDX)
                                        TO  W02-TAXHASULST (IDX)
            END-PERFORM    
-           MOVE    SPA-GMN-TAX-HASU-KBN-MAX
-                                       TO  W02-TAXHASU-COUNT     
+           MOVE    2                   TO  W02-TAXHASU-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
                MOVE    SPA-GMN-HIWARIKBNLST(IDX)
@@ -5125,14 +4261,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-DATATEISYUTU-MAX  TO  W02-DATATEISYU-COUNT
       *
-           MOVE    SPA-GMN-DATAINFECT-G  TO  W02-DATAINFECT
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-DATAINFECT-MAX
-               MOVE    SPA-GMN-DATAINFECT-LST (IDX)
-                                       TO  W02-DATAINFECT-ITEM (IDX)
-           END-PERFORM
-           MOVE    SPA-GMN-DATAINFECT-MAX  TO  W02-DATAINFECT-COUNT
-      *
            MOVE    SPA-GMN-JIHIPOSITION-G    TO  W02-JIHIPOSITION
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       3
@@ -5140,15 +4268,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W02-JIHIPOSITION-ITEM (IDX)
            END-PERFORM
            MOVE    3                   TO  W02-JIHIPOSITION-COUNT
-      *
-      *    自費コード端数設定
-           MOVE    SPA-GMN-JIHIHASUKBN-G   TO  W02-JIHIHASUKBN
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-JIHIHASUKBN-MAX
-               MOVE    SPA-GMN-JIHIHASUKBN-LST (IDX)
-                                       TO  W02-JIHIHASUKBN-ITEM (IDX)
-           END-PERFORM
-           MOVE    3                   TO  W02-JIHIHASUKBN-COUNT
       *----(01.00.09) LINE ADD END   ----------------------------------
       *
       *    医療機関情報ー所在地、連絡先情報
@@ -5199,13 +4318,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ICON-FILENAME    TO  W02-ICONFILENAME 
       *
       *    請求書自費名称情報
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       10
-               MOVE    SPA-GMN-GJIHINAME (IDX)
-                                            TO  W02-GJIHINAME (IDX)
-               MOVE    SPA-GMN-NJIHINAME (IDX)
-                                            TO  W02-NJIHINAME (IDX)
-           END-PERFORM
+           MOVE    SPA-GMN-JIHINAME     TO  W02-JIHINAME
       *
       *    診療内容名称情報
            MOVE    SPA-GMN-SRYNAIYO    TO  W02-SRYNAIYO
@@ -5336,7 +4449,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -5389,9 +4501,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0012"
                    MOVE    "全角で入力して下さい。"
                                                TO  SPA-ERRMSG
-               WHEN    "K012"
-                   MOVE    "警告！全角で入力して下さい。"
-                                               TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "請求金端数設定（減免有）入力エラー"
                                                TO  SPA-ERRMSG
@@ -5401,22 +4510,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0015"
                    MOVE    "定率定額区分入力エラー"
                                                TO  SPA-ERRMSG
-      *H26.4
-               WHEN    "K015"
-                   STRING  "警告！"
-                           "「00　該当なし」のコードです。"
-                           "定率定額区分の設定はしないで下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K010"
-                   STRING  "警告！"
-                           "「00　該当なし」のコードです。"
-                           "割引率区分も「00　該当なし」を"
-                           "設定して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "0016"
                    MOVE    "割引対象入力エラー"
                                                TO  SPA-ERRMSG
@@ -5439,10 +4532,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "入金状態（定期請求）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE "請求金端数設定医保（減免無・保険分）入力エラー"
+                   MOVE    "請求金端数設定（減免無）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0021"
-                   MOVE    "更生・育成限度額日割計算区分入力エラー"
+                   MOVE    "更正・育成限度額日割計算区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0203"
                    MOVE    "データ収集作成フラグ入力エラー"
@@ -5455,24 +4548,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0206"
                    MOVE    "減免計算対象区分入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0207"
-                   MOVE "請求金端数設定医保（減免無・自費分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0208"
-                   MOVE "請求金端数設定労災（減免無・保険分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0209"
-                   MOVE "請求金端数設定労災（減免無・自費分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0210"
-                 MOVE "請求金端数設定自賠責（減免無・保険分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0211"
-                 MOVE "請求金端数設定自賠責（減免無・自費分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0212"
-                   MOVE "請求金端数設定公害（減免無・自費分）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0213"
                    MOVE    SPACE               TO  SPA-ERRMSG
@@ -5507,29 +4582,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED BY  SIZE
                    INTO  SPA-ERRMSG
                    END-STRING
-               WHEN    "0217"
-                   MOVE    "ＯＲＣＡサーベイランス区分入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0218"
-             MOVE "請求金端数設定第三者行為（減免無・自費分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0219"
-             MOVE "請求金端数設定第三者行為（減免無・自費分）入力エラー"
-                                               TO  SPA-ERRMSG
-               WHEN    "0220"
-                   MOVE "第三者行為（医療費）負担金額計算区分入力エラー"
-                                               TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0031"
                    MOVE    "旧総合病院であるとき主科設定はできません。"
                                                TO  SPA-ERRMSG
-               WHEN    "0221"
-                   STRING  "自費コード数量計算端数区分がありません。"
-                                               DELIMITED BY  SIZE
-                   INTO  SPA-ERRMSG
-                   END-STRING
       *----(01.00.09) LINE ADD END   ----------------------------------
                WHEN    "0032"
                    MOVE    "半角で入力して下さい。"
@@ -5585,7 +4643,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -5701,41 +4758,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "OKUSURIFLG"     TO   MCP-WIDGET
                 WHEN    210
                     MOVE  "YYKHYOFLG"      TO   MCP-WIDGET
-                WHEN    211
-                    MOVE  "DISCOUNTHASU2_J"
-                                           TO   MCP-WIDGET
-                WHEN    212
-                    MOVE  "DISCOUNTHASU3"
-                                           TO   MCP-WIDGET
-                WHEN    213
-                    MOVE  "DISCOUNTHASU3_J"
-                                           TO   MCP-WIDGET
-                WHEN    214
-                    MOVE  "DISCOUNTHASU4"
-                                           TO   MCP-WIDGET
-                WHEN    215
-                    MOVE  "DISCOUNTHASU4_J"
-                                           TO   MCP-WIDGET
-                WHEN    216
-                    MOVE  "DISCOUNTHASU5_J"
-                                           TO   MCP-WIDGET
-                WHEN    219
-                    MOVE  "DISCOUNTHASU6"
-                                           TO   MCP-WIDGET
-                WHEN    220
-                    MOVE  "DISCOUNTHASU6_J"
-                                           TO   MCP-WIDGET
-                WHEN    221
-                    MOVE  "DAISANKBN"
-                                           TO   MCP-WIDGET
-                WHEN    217
-                    MOVE  "SANKANUM"
-                                           TO   MCP-WIDGET
-                WHEN    218
-                    MOVE  "DATAINFECT"     TO   MCP-WIDGET
-      *         自費コード端数区分
-                WHEN    222
-                    MOVE  "JIHIHASUKBN"    TO   MCP-WIDGET
+                 WHEN    217
+                     MOVE  "SANKANUM"
+                                            TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -5757,45 +4782,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    62
                     MOVE  "ICONFILENAME"   TO   MCP-WIDGET
                 WHEN    70
-                    MOVE  "GJIHINAME01"    TO   MCP-WIDGET
-                WHEN    71
-                    MOVE  "GJIHINAME02"    TO   MCP-WIDGET
-                WHEN    72
-                    MOVE  "GJIHINAME03"    TO   MCP-WIDGET
-                WHEN    73
-                    MOVE  "GJIHINAME04"    TO   MCP-WIDGET
-                WHEN    74
-                    MOVE  "GJIHINAME05"    TO   MCP-WIDGET
-                WHEN    75
-                    MOVE  "GJIHINAME06"    TO   MCP-WIDGET
-                WHEN    76
-                    MOVE  "GJIHINAME07"    TO   MCP-WIDGET
-                WHEN    77
-                    MOVE  "GJIHINAME08"    TO   MCP-WIDGET
-                WHEN    78
-                    MOVE  "GJIHINAME09"    TO   MCP-WIDGET
-                WHEN    79
-                    MOVE  "GJIHINAME10"    TO   MCP-WIDGET
-                WHEN    170
-                    MOVE  "NJIHINAME01"    TO   MCP-WIDGET
-                WHEN    171
-                    MOVE  "NJIHINAME02"    TO   MCP-WIDGET
-                WHEN    172
-                    MOVE  "NJIHINAME03"    TO   MCP-WIDGET
-                WHEN    173
-                    MOVE  "NJIHINAME04"    TO   MCP-WIDGET
-                WHEN    174
-                    MOVE  "NJIHINAME05"    TO   MCP-WIDGET
-                WHEN    175
-                    MOVE  "NJIHINAME06"    TO   MCP-WIDGET
-                WHEN    176
-                    MOVE  "NJIHINAME07"    TO   MCP-WIDGET
-                WHEN    177
-                    MOVE  "NJIHINAME08"    TO   MCP-WIDGET
-                WHEN    178
-                    MOVE  "NJIHINAME09"    TO   MCP-WIDGET
-                WHEN    179
-                    MOVE  "NJIHINAME10"    TO   MCP-WIDGET
+                    MOVE  "JIHINAME"       TO   MCP-WIDGET
                 WHEN    80
                     MOVE  "SRYNAIYO"       TO   MCP-WIDGET
                 WHEN    81
@@ -5829,7 +4816,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(01.00.09) LINE ADD START ----------------------------------
                 WHEN    32  THRU    39
       *          WHEN    32  THRU    33
-                WHEN    201 THRU    222
+                WHEN    201 THRU    209
                     MOVE    0                TO  W02-PAGENO
       *----(01.00.09) LINE ADD END   ----------------------------------
                 WHEN    20  THRU    29
@@ -5843,7 +4830,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    60  THRU    69
                     MOVE    5                TO  W02-PAGENO
                 WHEN    70  THRU    79
-                WHEN   170  THRU   179
                     MOVE    6                TO  W02-PAGENO
                 WHEN    80  THRU    89
                     MOVE    7                TO  W02-PAGENO
@@ -5891,10 +4877,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "HOSPSBT1"
                   MOVE    32               TO  SPA-GMN-CUR
               WHEN    "SYOHOKBN"
-                  MOVE    12               TO  SPA-GMN-CUR
-              WHEN    "HOSPCDN"
-                   MOVE    217              TO  SPA-GMN-CUR
-              WHEN    "SANKANUM"
                   MOVE    33               TO  SPA-GMN-CUR
               WHEN    "SKYPRTFLG"
                   MOVE    34               TO  SPA-GMN-CUR
@@ -5912,50 +4894,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *********** MOVE    12               TO  SPA-GMN-CUR
                   MOVE    210              TO  SPA-GMN-CUR
               WHEN    "YYKHYOFLG"
-                  MOVE    203               TO  SPA-GMN-CUR
+                  MOVE    12               TO  SPA-GMN-CUR
+              WHEN    "HOSPCDN"
+                   MOVE    217              TO  SPA-GMN-CUR
+              WHEN    "SANKANUM"
+                  MOVE    38               TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU"
                   MOVE    201              TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU2"
-                  MOVE    211               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU2_J"
-                  MOVE    212               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU3"
-                  MOVE    213               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU3_J"
-                  MOVE    214               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU4"
-                  MOVE    215               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU4_J"
-                  MOVE    216               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU5_J"
-                  MOVE    219                TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU6"
-                  MOVE    220               TO  SPA-GMN-CUR
-              WHEN    "DISCOUNTHASU6_J"
-                  MOVE    221               TO  SPA-GMN-CUR
-              WHEN    "DAISANKBN"
-                  MOVE    39                TO  SPA-GMN-CUR
+                  MOVE    208               TO  SPA-GMN-CUR
               WHEN    "GENTAIKBN"
-                  MOVE    38               TO  SPA-GMN-CUR
+                  MOVE    39               TO  SPA-GMN-CUR
               WHEN    "TAXHASU"
-                  MOVE    205              TO  SPA-GMN-CUR
+                  MOVE    202              TO  SPA-GMN-CUR
               WHEN    "HIWARIKBN"
       *********   MOVE    01               TO  SPA-GMN-CUR
-      *H29.9      MOVE     01              TO  SPA-GMN-CUR
-                  MOVE     222             TO  SPA-GMN-CUR
-              WHEN    "JIHIHASUKBN"
-                  MOVE    01               TO  SPA-GMN-CUR
-      *
+                  MOVE    203              TO  SPA-GMN-CUR
               WHEN    "DATACREATE"
                   MOVE    204              TO  SPA-GMN-CUR
               WHEN    "DATATEISYU"
-                  MOVE    208              TO  SPA-GMN-CUR
-              WHEN    "DATAINFECT"
-                  MOVE    218              TO  SPA-GMN-CUR
+                  MOVE    205              TO  SPA-GMN-CUR
               WHEN    "JIHIPOSITION"
                   MOVE    207              TO  SPA-GMN-CUR
               WHEN    "CHIHOUNUMKBN"
-                  MOVE    202               TO  SPA-GMN-CUR
+                  MOVE    01               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"
                   MOVE    21               TO  SPA-GMN-CUR
@@ -5994,45 +4956,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "ICONFILENAME"
                   MOVE    60               TO  SPA-GMN-CUR
       *       請求書情報
-              WHEN    "GJIHINAME01"
-                  MOVE    71               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME02"
-                  MOVE    72               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME03"
-                  MOVE    73               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME04"
-                  MOVE    74               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME05"
-                  MOVE    75               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME06"
-                  MOVE    76               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME07"
-                  MOVE    77               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME08"
-                  MOVE    78               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME09"
-                  MOVE    79               TO  SPA-GMN-CUR
-              WHEN    "GJIHINAME10"
-                  MOVE    170              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME01"
-                  MOVE    171              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME02"
-                  MOVE    172              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME03"
-                  MOVE    173              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME04"
-                  MOVE    174              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME05"
-                  MOVE    175              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME06"
-                  MOVE    176              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME07"
-                  MOVE    177              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME08"
-                  MOVE    178              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME09"
-                  MOVE    179              TO  SPA-GMN-CUR
-              WHEN    "NJIHINAME10"
+              WHEN    "JIHINAME"
                   MOVE    70               TO  SPA-GMN-CUR
       *       診療内容情報
               WHEN    "SRYNAIYO"
@@ -6065,64 +4989,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        50011-CUR-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症参加送信処理
-      *****************************************************************
-       800-INFECTION-AGREE-SEC         SECTION.
-      *
-      *    INITIALIZE                  ORCSINFCHKAREA
-      *    CALL    "ORCSINFSTATE"      USING
-      *                                MCPAREA
-      *                                SPA-AREA
-      *                                ORCSINFCHKAREA
-      *
-      *    IF    ( INFCHK-RC       NOT =   ZERO )  AND
-      *          ( INFCHK-RC       NOT =   90   )
-      *        GO  TO    800-INFECTION-AGREE-EXT
-      *    END-IF
-      *    
-      *    ジョブ開始セット処理
-           MOVE    "DEL"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-           MOVE    CONST-INFAJOBID     TO  JOB-JOBID
-           MOVE    CONST-INFASHELLID   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA 
-                                           JOBKANRI-REC
-                                           SPA-AREA
-      *
-           MOVE    "JBS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-           MOVE    CONST-INFAJOBID     TO  JOB-JOBID
-           MOVE    CONST-INFASHELLID   TO  JOB-SHELLID
-           MOVE    SPA-TERMID          TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA 
-                                           JOBKANRI-REC
-                                           SPA-AREA
-      *
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
-           MOVE    SPA-TERMID          TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
-           MOVE    CONST-INFAJOBID     TO  SHELLTBL-ARG4
-           MOVE    CONST-INFASHELLID   TO  SHELLTBL-ARG5
-      *
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "daily"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           .
-       800-INFECTION-AGREE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6196,48 +5062,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ＤＢＩＮＳＥＲＴ処理
-      *****************************************************************
-       930-DBINSERT-SEC                 SECTION.
-      *
-           MOVE    "DBINSERT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       930-DBINSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢＵＰＤＡＴＥ処理
-      *****************************************************************
-       940-DBUPDATE-SEC                 SECTION.
-      *
-           MOVE    "DBUPDATE"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       940-DBUPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢＤＥＬＥＴＥ処理
-      *****************************************************************
-       950-DBDELETE-SEC                 SECTION.
-      *
-           MOVE    "DBDELETE"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       950-DBDELETE-EXT.
-           EXIT.
       *****************************************************************
       *    ＤＢクロース処理
       *****************************************************************

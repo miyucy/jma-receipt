@@ -71,112 +71,96 @@
                        09  SPA-GMN-HKNJANAME       PIC X(100).
                        09  SPA-GMN-JYKNKBN-G.
                            11  SPA-GMN-JYKNKBN     PIC X(01).
-                           11  SPA-GMN-FL01        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-JYKNKBNMEI  PIC X(14).
                        09  SPA-GMN-HKNNUM-G.
                            11  SPA-GMN-HKNNUM      PIC X(03).
-                           11  SPA-GMN-FL02        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-HKNNUMMEI   PIC X(16).
                        09  SPA-GMN-KGCHKPTN-G.
                            11  SPA-GMN-KGCHKPTN    PIC X(01).
-                           11  SPA-GMN-FL03        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGCHKPTNMEI PIC X(38).
                        09  SPA-GMN-KGSUJI-G.
                            11  SPA-GMN-KGSUJI      PIC X(01).
-                           11  SPA-GMN-FL04        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGSUJIMEI   PIC X(18).
                        09  SPA-GMN-KGKANJI-G.
                            11  SPA-GMN-KGKANJI     PIC X(01).
-                           11  SPA-GMN-FL05        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGKANJIMEI  PIC X(18).
                        09  SPA-GMN-KGABT-G.
                            11  SPA-GMN-KGABT       PIC X(01).
-                           11  SPA-GMN-FL06        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGABTMEI    PIC X(18).
                        09  SPA-GMN-KGHYPN-G.
                            11  SPA-GMN-KGHYPN      PIC X(01).
-                           11  SPA-GMN-FL07        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGHYPNMEI   PIC X(18).
                        09  SPA-GMN-KGKAKKO-G.
                            11  SPA-GMN-KGKAKKO     PIC X(01).
-                           11  SPA-GMN-FL08        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGKAKKOMEI  PIC X(18).
                        09  SPA-GMN-KGETC-G.
                            11  SPA-GMN-KGETC       PIC X(01).
-                           11  SPA-GMN-FL09        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGETCMEI    PIC X(18).
                        09  SPA-GMN-KGKANJINASHI-G.
                            11  SPA-GMN-KGKANJINASHI PIC X(01).
-                           11  SPA-GMN-FL10         PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGKANJINASHIMEI
                                                    PIC X(18).
-                       09  SPA-GMN-KGKETACHK-G.
-                           11  SPA-GMN-KGKETACHK    PIC X(01).
-                           11  SPA-GMN-FL46         PIC X(01).
-                           11  SPA-GMN-KGKETACHKMEI PIC X(18).
-                       09  SPA-GMN-KGKETAMIN-G.
-                           11  SPA-GMN-KGKETAMIN    PIC X(02).
-                           11  SPA-GMN-FL47         PIC X(01).
-                           11  SPA-GMN-KGKETAMINMEI PIC X(18).
                        09  SPA-GMN-NM1SUJI-G.
                            11  SPA-GMN-NM1SUJI     PIC X(01).
-                           11  SPA-GMN-FL11        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM1SUJIMEI  PIC X(18).
                        09  SPA-GMN-NM1KANJI-G.
                            11  SPA-GMN-NM1KANJI    PIC X(01).
-                           11  SPA-GMN-FL12        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM1KANJIMEI PIC X(18).
                        09  SPA-GMN-NM1ABT-G.
                            11  SPA-GMN-NM1ABT      PIC X(01).
-                           11  SPA-GMN-FL13        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM1ABTMEI   PIC X(18).
                        09  SPA-GMN-NM1HYPN-G.
                            11  SPA-GMN-NM1HYPN     PIC X(01).
-                           11  SPA-GMN-FL14        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM1HYPNMEI  PIC X(18).
                        09  SPA-GMN-NM1KAKKO-G.
                            11  SPA-GMN-NM1KAKKO    PIC X(01).
-                           11  SPA-GMN-FL15        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM1KAKKOMEI PIC X(18).
                        09  SPA-GMN-NM1ETC-G.
                            11  SPA-GMN-NM1ETC      PIC X(01).
-                           11  SPA-GMN-FL16        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM1ETCMEI   PIC X(18).
                        09  SPA-GMN-NMSUJINASHI-G.
                            11  SPA-GMN-NMSUJINASHI PIC X(01).
-                           11  SPA-GMN-FL17        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMSUJINASHIMEI PIC X(18).
-                       09  SPA-GMN-NMKETACHK-G.
-                           11  SPA-GMN-NMKETACHK    PIC X(01).
-                           11  SPA-GMN-FL45         PIC X(01).
-                           11  SPA-GMN-NMKETACHKMEI PIC X(18).
-                       09  SPA-GMN-NMKETAMIN-G.
-                           11  SPA-GMN-NMKETAMIN    PIC X(02).
-                           11  SPA-GMN-FL18         PIC X(01).
-                           11  SPA-GMN-NMKETAMINMEI PIC X(18).
                        09  SPA-GMN-NM2SUJI-G.
                            11  SPA-GMN-NM2SUJI     PIC X(01).
-                           11  SPA-GMN-FL20        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM2SUJIMEI  PIC X(18).
                        09  SPA-GMN-NM2KANJI-G.
                            11  SPA-GMN-NM2KANJI    PIC X(01).
-                           11  SPA-GMN-FL21        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM2KANJIMEI PIC X(18).
                        09  SPA-GMN-NM2ABT-G.
                            11  SPA-GMN-NM2ABT      PIC X(01).
-                           11  SPA-GMN-FL22        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM2ABTMEI   PIC X(18).
                        09  SPA-GMN-NM2HYPN-G.
                            11  SPA-GMN-NM2HYPN     PIC X(01).
-                           11  SPA-GMN-FL23        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM2HYPNMEI  PIC X(18).
                        09  SPA-GMN-NM2KAKKO-G.
                            11  SPA-GMN-NM2KAKKO    PIC X(01).
-                           11  SPA-GMN-FL24        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM2KAKKOMEI PIC X(18).
                        09  SPA-GMN-NM2ETC-G.
                            11  SPA-GMN-NM2ETC      PIC X(01).
-                           11  SPA-GMN-FL25        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NM2ETCMEI   PIC X(18).
                        09  SPA-GMN-STYUKYMD        PIC X(09).
                        09  SPA-GMN-EDYUKYMD        PIC X(09).
@@ -186,129 +170,105 @@
                        09  SPA-GMN-JYKNKBN-MAX     PIC 9(03).
                        09  SPA-GMN-JYKNKBNLST      OCCURS  5.
                            11  SPA-GMN-JYKNKBNL    PIC X(01).
-                           11  SPA-GMN-FL26        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-JYKNKBNMEIL PIC X(14).
                    07  SPA-GMN-HKNNUMLST-G.
                        09  SPA-GMN-HKNNUM-MAX      PIC 9(03).
                        09  SPA-GMN-HKNNUMLST       OCCURS  50.
                            11  SPA-GMN-HKNNUML     PIC X(03).
-                           11  SPA-GMN-FL27        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-HKNNUMMEIL  PIC X(16).
                    07  SPA-GMN-KGCHKPTNLST-G.
                        09  SPA-GMN-KGCHKPTN-MAX    PIC 9(03).
                        09  SPA-GMN-KGCHKPTNLST     OCCURS 5.
                            11  SPA-GMN-KGCHKPTNL   PIC X(01).
-                           11  SPA-GMN-FL28        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGCHKPTNMEIL PIC X(38).
                    07  SPA-GMN-KGSUJILST-G.
                        09  SPA-GMN-KGSUJI-MAX      PIC 9(03).
                        09  SPA-GMN-KGSUJILST       OCCURS 5.
                            11  SPA-GMN-KGSUJIL     PIC X(01).
-                           11  SPA-GMN-FL29        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGSUJIMEIL  PIC X(18).
                    07  SPA-GMN-KGKANJILST-G.
                        09  SPA-GMN-KGKANJI-MAX     PIC 9(03).
                        09  SPA-GMN-KGKANJILST      OCCURS 5.
                            11  SPA-GMN-KGKANJIL    PIC X(01).
-                           11  SPA-GMN-FL30        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGKANJIMEIL PIC X(18).
                    07  SPA-GMN-KGABTLST-G.
                        09  SPA-GMN-KGABT-MAX       PIC 9(03).
                        09  SPA-GMN-KGABTLST        OCCURS 5.
                            11  SPA-GMN-KGABTL      PIC X(01).
-                           11  SPA-GMN-FL31        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGABTMEIL   PIC X(18).
                    07  SPA-GMN-KGHYPNLST-G.
                        09  SPA-GMN-KGHYPN-MAX      PIC 9(03).
                        09  SPA-GMN-KGHYPNLST       OCCURS 5.
                            11  SPA-GMN-KGHYPNL     PIC X(01).
-                           11  SPA-GMN-FL32        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGHYPNMEIL  PIC X(18).
                    07  SPA-GMN-KGKAKKOLST-G.
                        09  SPA-GMN-KGKAKKO-MAX     PIC 9(03).
                        09  SPA-GMN-KGKAKKOLST      OCCURS 5.
                            11  SPA-GMN-KGKAKKOL    PIC X(01).
-                           11  SPA-GMN-FL33        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGKAKKOMEIL PIC X(18).
                    07  SPA-GMN-KGETCLST-G.
                        09  SPA-GMN-KGETC-MAX       PIC 9(03).
                        09  SPA-GMN-KGETCLST        OCCURS 5.
                            11  SPA-GMN-KGETCL      PIC X(01).
-                           11  SPA-GMN-FL34        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGETCMEIL   PIC X(18).
                    07  SPA-GMN-KGKANJINASHILST-G.
                        09  SPA-GMN-KGKANJINASHI-MAX PIC 9(03).
                        09  SPA-GMN-KGKANJINASHILST OCCURS 5.
                            11  SPA-GMN-KGKANJINASHIL PIC X(01).
-                           11  SPA-GMN-FL35        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-KGKANJINASHIMEIL
                                                    PIC X(18).
-                   07  SPA-GMN-KGKETACHKLST-G.
-                       09  SPA-GMN-KGKETACHK-MAX       PIC 9(03).
-                       09  SPA-GMN-KGKETACHKLST        OCCURS 5.
-                           11  SPA-GMN-KGKETACHKL      PIC X(01).
-                           11  SPA-GMN-FL49            PIC X(01).
-                           11  SPA-GMN-KGKETACHKMEIL   PIC X(18).
-                   07  SPA-GMN-KGKETAMINLST-G.
-                       09  SPA-GMN-KGKETAMIN-MAX       PIC 9(03).
-                       09  SPA-GMN-KGKETAMINLST        OCCURS 25.
-                           11  SPA-GMN-KGKETAMINL      PIC X(02).
-                           11  SPA-GMN-FL50            PIC X(01).
-                           11  SPA-GMN-KGKETAMINMEIL   PIC X(18).
                    07  SPA-GMN-NMSUJILST-G.
                        09  SPA-GMN-NMSUJI-MAX      PIC 9(03).
                        09  SPA-GMN-NMSUJILST       OCCURS 5.
                            11  SPA-GMN-NMSUJIL     PIC X(01).
-                           11  SPA-GMN-FL36        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMSUJIMEIL  PIC X(18).
                    07  SPA-GMN-NMKANJILST-G.
                        09  SPA-GMN-NMKANJI-MAX     PIC 9(03).
                        09  SPA-GMN-NMKANJILST      OCCURS 5.
                            11  SPA-GMN-NMKANJIL    PIC X(01).
-                           11  SPA-GMN-FL37        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMKANJIMEIL PIC X(18).
                    07  SPA-GMN-NMABTLST-G.
                        09  SPA-GMN-NMABT-MAX       PIC 9(03).
                        09  SPA-GMN-NMABTLST        OCCURS 5.
                            11  SPA-GMN-NMABTL      PIC X(01).
-                           11  SPA-GMN-FL38        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMABTMEIL   PIC X(18).
                    07  SPA-GMN-NMHYPNLST-G.
                        09  SPA-GMN-NMHYPN-MAX      PIC 9(03).
                        09  SPA-GMN-NMHYPNLST       OCCURS 5.
                            11  SPA-GMN-NMHYPNL     PIC X(01).
-                           11  SPA-GMN-FL39        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMHYPNMEIL  PIC X(18).
                    07  SPA-GMN-NMKAKKOLST-G.
                        09  SPA-GMN-NMKAKKO-MAX     PIC 9(03).
                        09  SPA-GMN-NMKAKKOLST      OCCURS 5.
                            11  SPA-GMN-NMKAKKOL    PIC X(01).
-                           11  SPA-GMN-FL40        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMKAKKOMEIL PIC X(18).
                    07  SPA-GMN-NMETCLST-G.
                        09  SPA-GMN-NMETC-MAX       PIC 9(03).
                        09  SPA-GMN-NMETCLST        OCCURS 5.
                            11  SPA-GMN-NMETCL      PIC X(01).
-                           11  SPA-GMN-FL41        PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMETCMEIL   PIC X(18).
                    07  SPA-GMN-NMSUJINASHILST-G.
                        09  SPA-GMN-NMSUJINASHI-MAX PIC 9(03).
                        09  SPA-GMN-NMSUJINASHILST  OCCURS 5.
                            11  SPA-GMN-NMSUJINASHIL PIC X(01).
-                           11  SPA-GMN-FL42         PIC X(01).
+                           11  FILLER              PIC X(01).
                            11  SPA-GMN-NMSUJINASHIMEIL PIC X(18).
-                   07  SPA-GMN-NMKETACHKLST-G.
-                       09  SPA-GMN-NMKETACHK-MAX       PIC 9(03).
-                       09  SPA-GMN-NMKETACHKLST        OCCURS 5.
-                           11  SPA-GMN-NMKETACHKL      PIC X(01).
-                           11  SPA-GMN-FL48            PIC X(01).
-                           11  SPA-GMN-NMKETACHKMEIL   PIC X(18).
-                   07  SPA-GMN-NMKETAMINLST-G.
-                       09  SPA-GMN-NMKETAMIN-MAX       PIC 9(03).
-                       09  SPA-GMN-NMKETAMINLST        OCCURS 15.
-                           11  SPA-GMN-NMKETAMINL      PIC X(02).
-                           11  SPA-GMN-FL43            PIC X(01).
-                           11  SPA-GMN-NMKETAMINMEIL   PIC X(18).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-CLIST-AREA.
@@ -444,7 +404,57 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE               DIVISION    USING
                                            MCPAREA
@@ -617,10 +627,6 @@
       *
            PERFORM 31011-KGETCLST-SET-SEC
       *
-           PERFORM 31011-KGKETACHKLST-SET-SEC
-      *
-           PERFORM 31011-KGKETAMINLST-SET-SEC
-      *
            PERFORM 31011-KGKANJINASHILST-SET-SEC
       *
            PERFORM 31011-NMSUJILST-SET-SEC
@@ -636,10 +642,6 @@
            PERFORM 31011-NMETCLST-SET-SEC
       *
            PERFORM 31011-NMSUJINASHILST-SET-SEC
-      *
-           PERFORM 31011-NMKETACHKLST-SET-SEC
-      *
-           PERFORM 31011-NMKETAMINLST-SET-SEC
       *
            .
        3101-COMBO-SET-EXT.
@@ -860,98 +862,6 @@
        31011-KGKANJINASHILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    記号桁数チェックコンボボックス設定処理
-      *****************************************************************
-       31011-KGKETACHKLST-SET-SEC    SECTION.
-      *
-           INITIALIZE                  SPA-GMN-KGKETACHKLST-G
-      *
-           MOVE    "0"             TO  SPA-GMN-KGKETACHKL(1)
-           MOVE    "チェックしない" TO SPA-GMN-KGKETACHKMEIL(1)
-      *
-           MOVE    "1"             TO  SPA-GMN-KGKETACHKL(2)
-           MOVE    "チェックする"
-                                   TO  SPA-GMN-KGKETACHKMEIL(2)
-      *
-           MOVE    2               TO  SPA-GMN-KGKETACHK-MAX
-      *
-           .
-       31011-KGKETACHKLST-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    記号桁数下限コンボボックス設定処理
-      *****************************************************************
-       31011-KGKETAMINLST-SET-SEC    SECTION.
-      *
-           INITIALIZE                  SPA-GMN-KGKETAMINLST-G
-      *
-           MOVE    "01"            TO  SPA-GMN-KGKETAMINL(1)
-           MOVE    "１桁"          TO  SPA-GMN-KGKETAMINMEIL(1)
-      *
-           MOVE    "02"            TO  SPA-GMN-KGKETAMINL(2)
-           MOVE    "２桁"          TO  SPA-GMN-KGKETAMINMEIL(2)
-      *
-           MOVE    "03"            TO  SPA-GMN-KGKETAMINL(3)
-           MOVE    "３桁"          TO  SPA-GMN-KGKETAMINMEIL(3)
-      *
-           MOVE    "04"            TO  SPA-GMN-KGKETAMINL(4)
-           MOVE    "４桁"          TO  SPA-GMN-KGKETAMINMEIL(4)
-      *
-           MOVE    "05"            TO  SPA-GMN-KGKETAMINL(5)
-           MOVE    "５桁"          TO  SPA-GMN-KGKETAMINMEIL(5)
-      *
-           MOVE    "06"            TO  SPA-GMN-KGKETAMINL(6)
-           MOVE    "６桁"          TO  SPA-GMN-KGKETAMINMEIL(6)
-      *
-           MOVE    "07"            TO  SPA-GMN-KGKETAMINL(7)
-           MOVE    "７桁"          TO  SPA-GMN-KGKETAMINMEIL(7)
-      *
-           MOVE    "08"            TO  SPA-GMN-KGKETAMINL(8)
-           MOVE    "８桁"          TO  SPA-GMN-KGKETAMINMEIL(8)
-      *
-           MOVE    "09"            TO  SPA-GMN-KGKETAMINL(9)
-           MOVE    "９桁"          TO  SPA-GMN-KGKETAMINMEIL(9)
-      *
-           MOVE    "10"            TO  SPA-GMN-KGKETAMINL(10)
-           MOVE    "１０桁"        TO  SPA-GMN-KGKETAMINMEIL(10)
-      *
-           MOVE    "11"            TO  SPA-GMN-KGKETAMINL(11)
-           MOVE    "１１桁"        TO  SPA-GMN-KGKETAMINMEIL(11)
-      *
-           MOVE    "12"            TO  SPA-GMN-KGKETAMINL(12)
-           MOVE    "１２桁"        TO  SPA-GMN-KGKETAMINMEIL(12)
-      *
-           MOVE    "13"            TO  SPA-GMN-KGKETAMINL(13)
-           MOVE    "１３桁"        TO  SPA-GMN-KGKETAMINMEIL(13)
-      *
-           MOVE    "14"            TO  SPA-GMN-KGKETAMINL(14)
-           MOVE    "１４桁"        TO  SPA-GMN-KGKETAMINMEIL(14)
-      *
-           MOVE    "15"            TO  SPA-GMN-KGKETAMINL(15)
-           MOVE    "１５桁"        TO  SPA-GMN-KGKETAMINMEIL(15)
-      *
-           MOVE    "16"            TO  SPA-GMN-KGKETAMINL(16)
-           MOVE    "１６桁"        TO  SPA-GMN-KGKETAMINMEIL(16)
-      *
-           MOVE    "17"            TO  SPA-GMN-KGKETAMINL(17)
-           MOVE    "１７桁"        TO  SPA-GMN-KGKETAMINMEIL(17)
-      *
-           MOVE    "18"            TO  SPA-GMN-KGKETAMINL(18)
-           MOVE    "１８桁"        TO  SPA-GMN-KGKETAMINMEIL(18)
-      *
-           MOVE    "19"            TO  SPA-GMN-KGKETAMINL(19)
-           MOVE    "１９桁"        TO  SPA-GMN-KGKETAMINMEIL(19)
-      *
-           MOVE    "20"            TO  SPA-GMN-KGKETAMINL(20)
-           MOVE    "２０桁"        TO  SPA-GMN-KGKETAMINMEIL(20)
-      *
-           MOVE    20              TO  SPA-GMN-KGKETAMIN-MAX
-      *
-           .
-       31011-KGKETAMINLST-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    番号数字チェックコンボボックス設定処理
       *****************************************************************
        31011-NMSUJILST-SET-SEC       SECTION.
@@ -1065,68 +975,6 @@
       *
            .
        31011-NMSUJINASHILST-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    番号桁数チェックコンボボックス設定処理
-      *****************************************************************
-       31011-NMKETACHKLST-SET-SEC    SECTION.
-      *
-           INITIALIZE                  SPA-GMN-NMKETACHKLST-G
-      *
-           MOVE    "0"             TO  SPA-GMN-NMKETACHKL(1)
-           MOVE    "チェックしない" TO SPA-GMN-NMKETACHKMEIL(1)
-      *
-           MOVE    "1"             TO  SPA-GMN-NMKETACHKL(2)
-           MOVE    "チェックする"
-                                   TO  SPA-GMN-NMKETACHKMEIL(2)
-      *
-           MOVE    2               TO  SPA-GMN-NMKETACHK-MAX
-      *
-           .
-       31011-NMKETACHKLST-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    番号桁数下限コンボボックス設定処理
-      *****************************************************************
-       31011-NMKETAMINLST-SET-SEC    SECTION.
-      *
-           INITIALIZE                  SPA-GMN-NMKETAMINLST-G
-      *
-           MOVE    "01"            TO  SPA-GMN-NMKETAMINL(1)
-           MOVE    "１桁"          TO  SPA-GMN-NMKETAMINMEIL(1)
-      *
-           MOVE    "02"            TO  SPA-GMN-NMKETAMINL(2)
-           MOVE    "２桁"          TO  SPA-GMN-NMKETAMINMEIL(2)
-      *
-           MOVE    "03"            TO  SPA-GMN-NMKETAMINL(3)
-           MOVE    "３桁"          TO  SPA-GMN-NMKETAMINMEIL(3)
-      *
-           MOVE    "04"            TO  SPA-GMN-NMKETAMINL(4)
-           MOVE    "４桁"          TO  SPA-GMN-NMKETAMINMEIL(4)
-      *
-           MOVE    "05"            TO  SPA-GMN-NMKETAMINL(5)
-           MOVE    "５桁"          TO  SPA-GMN-NMKETAMINMEIL(5)
-      *
-           MOVE    "06"            TO  SPA-GMN-NMKETAMINL(6)
-           MOVE    "６桁"          TO  SPA-GMN-NMKETAMINMEIL(6)
-      *
-           MOVE    "07"            TO  SPA-GMN-NMKETAMINL(7)
-           MOVE    "７桁"          TO  SPA-GMN-NMKETAMINMEIL(7)
-      *
-           MOVE    "08"            TO  SPA-GMN-NMKETAMINL(8)
-           MOVE    "８桁"          TO  SPA-GMN-NMKETAMINMEIL(8)
-      *
-           MOVE    "09"            TO  SPA-GMN-NMKETAMINL(9)
-           MOVE    "９桁"          TO  SPA-GMN-NMKETAMINMEIL(9)
-      *
-           MOVE    "10"            TO  SPA-GMN-NMKETAMINL(10)
-           MOVE    "１０桁"        TO  SPA-GMN-NMKETAMINMEIL(10)
-      *
-           MOVE    10              TO  SPA-GMN-NMKETAMIN-MAX
-      *
-           .
-       31011-NMKETAMINLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    チェック排除情報リスト編集処理
@@ -1383,12 +1231,6 @@
                MOVE    CK4-1102-KGKAKKO      TO  SPA-GMN-KGKAKKO
                MOVE    CK4-1102-KGETC        TO  SPA-GMN-KGETC
                MOVE    CK4-1102-KGKANJINASHI TO  SPA-GMN-KGKANJINASHI
-               MOVE    CK4-1102-KGKETAMIN    TO  SPA-GMN-KGKETAMIN
-               IF    ( SPA-GMN-KGKETAMIN     =   SPACE )
-                   MOVE    "0"               TO  SPA-GMN-KGKETACHK
-               ELSE
-                   MOVE    "1"               TO  SPA-GMN-KGKETACHK
-               END-IF
       *
                MOVE    CK4-1102-NM1SUJI      TO  SPA-GMN-NM1SUJI
                MOVE    CK4-1102-NM1KANJI     TO  SPA-GMN-NM1KANJI
@@ -1397,12 +1239,6 @@
                MOVE    CK4-1102-NM1KAKKO     TO  SPA-GMN-NM1KAKKO
                MOVE    CK4-1102-NM1ETC       TO  SPA-GMN-NM1ETC
                MOVE    CK4-1102-NMSUJINASHI  TO  SPA-GMN-NMSUJINASHI
-               MOVE    CK4-1102-NMKETAMIN    TO  SPA-GMN-NMKETAMIN
-               IF    ( SPA-GMN-NMKETAMIN     =   SPACE )
-                   MOVE    "0"               TO  SPA-GMN-NMKETACHK
-               ELSE
-                   MOVE    "1"               TO  SPA-GMN-NMKETACHK
-               END-IF
       *
                MOVE    CK4-1102-NM2SUJI      TO  SPA-GMN-NM2SUJI
                MOVE    CK4-1102-NM2KANJI     TO  SPA-GMN-NM2KANJI
@@ -1470,13 +1306,6 @@
                                        TO  SPA-GMN-KGETC
            MOVE    KGNMCHK-KGKANJINASHI(IDX-KGNM)
                                        TO  SPA-GMN-KGKANJINASHI
-           MOVE    KGNMCHK-KGKETAMIN  (IDX-KGNM)
-                                       TO  SPA-GMN-KGKETAMIN
-           IF    ( SPA-GMN-KGKETAMIN   =   SPACE )
-               MOVE    "0"             TO  SPA-GMN-KGKETACHK
-           ELSE
-               MOVE    "1"             TO  SPA-GMN-KGKETACHK
-           END-IF
       *
            MOVE    KGNMCHK-NM1SUJI(IDX-KGNM)
                                        TO  SPA-GMN-NM1SUJI
@@ -1492,13 +1321,6 @@
                                        TO  SPA-GMN-NM1ETC
            MOVE    KGNMCHK-NMSUJINASHI(IDX-KGNM)
                                        TO  SPA-GMN-NMSUJINASHI
-           MOVE    KGNMCHK-NMKETAMIN  (IDX-KGNM)
-                                       TO  SPA-GMN-NMKETAMIN
-           IF    ( SPA-GMN-NMKETAMIN   =   SPACE )
-               MOVE    "0"             TO  SPA-GMN-NMKETACHK
-           ELSE
-               MOVE    "1"             TO  SPA-GMN-NMKETACHK
-           END-IF
       *
            MOVE    KGNMCHK-NM2SUJI(IDX-KGNM)
                                        TO  SPA-GMN-NM2SUJI
@@ -1550,16 +1372,6 @@
            PERFORM 4200-KGKANJINASHILST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-KGKANJINASHI-G
       *
-           MOVE    SPA-GMN-KGKETACHK
-                                   TO  WRK-CMB-CD
-           PERFORM 4200-KGKETACHKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-KGKETACHK-G
-      *
-           MOVE    SPA-GMN-KGKETAMIN
-                                   TO  WRK-CMB-CD
-           PERFORM 4200-KGKETAMINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-KGKETAMIN-G
-      *
            MOVE    SPA-GMN-NM1SUJI TO  WRK-CMB-CD
            PERFORM 4200-NMSUJILST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-NM1SUJI-G
@@ -1588,16 +1400,6 @@
                                    TO  WRK-CMB-CD
            PERFORM 4200-NMSUJINASHILST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-NMSUJINASHI-G
-      *
-           MOVE    SPA-GMN-NMKETACHK
-                                   TO  WRK-CMB-CD
-           PERFORM 4200-NMKETACHKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-NMKETACHK-G
-      *
-           MOVE    SPA-GMN-NMKETAMIN
-                                   TO  WRK-CMB-CD
-           PERFORM 4200-NMKETAMINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-NMKETAMIN-G
       *
            MOVE    SPA-GMN-NM2SUJI TO  WRK-CMB-CD
            PERFORM 4200-NMSUJILST-CHK-SEC
@@ -1645,8 +1447,6 @@
            MOVE    W63-KGKAKKO         TO  SPA-GMN-KGKAKKO-G
            MOVE    W63-KGETC           TO  SPA-GMN-KGETC-G
            MOVE    W63-KGKANJINASHI    TO  SPA-GMN-KGKANJINASHI-G
-           MOVE    W63-KGKETACHK       TO  SPA-GMN-KGKETACHK-G
-           MOVE    W63-KGKETAMIN       TO  SPA-GMN-KGKETAMIN-G
       *
            MOVE    W63-NM1SUJI         TO  SPA-GMN-NM1SUJI-G
            MOVE    W63-NM1KANJI        TO  SPA-GMN-NM1KANJI-G
@@ -1655,8 +1455,6 @@
            MOVE    W63-NM1KAKKO        TO  SPA-GMN-NM1KAKKO-G
            MOVE    W63-NM1ETC          TO  SPA-GMN-NM1ETC-G
            MOVE    W63-NMSUJINASHI     TO  SPA-GMN-NMSUJINASHI-G
-           MOVE    W63-NMKETACHK       TO  SPA-GMN-NMKETACHK-G
-           MOVE    W63-NMKETAMIN       TO  SPA-GMN-NMKETAMIN-G
       *
            MOVE    W63-NM2SUJI         TO  SPA-GMN-NM2SUJI-G
            MOVE    W63-NM2KANJI        TO  SPA-GMN-NM2KANJI-G
@@ -1745,16 +1543,6 @@
                PERFORM 4101-KGKANJINASHI-CHK-SEC
            END-IF
       *
-      *    記号桁数チェックチェック
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KGKETACHK-CHK-SEC
-           END-IF
-      *
-      *    記号桁数下限チェック
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KGKETAMIN-CHK-SEC
-           END-IF
-      *
       *    番号１文字目数字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1SUJI-CHK-SEC
@@ -1788,16 +1576,6 @@
       *    番号数字無しチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NMSUJINASHI-CHK-SEC
-           END-IF
-      *
-      *    番号桁数チェックチェック
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-NMKETACHK-CHK-SEC
-           END-IF
-      *
-      *    番号桁数下限チェック
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-NMKETAMIN-CHK-SEC
            END-IF
       *
       *    番号２文字目以降数字チェック
@@ -1969,18 +1747,8 @@
                    PERFORM 900-HKNJAINF-KEY-SEL-SEC
                    MOVE    HKNJA-HKNJANAME
                                    TO  SPA-GMN-HKNJANAME
-                   IF    ( HKNJA-HKNNUM    =   "060"
-                       AND SPA-GMN-HKNNUM  =   "068" )
-                    OR   ( HKNJA-HKNNUM    =   "067"
-                       AND SPA-GMN-HKNNUM  =   "069" )
-                    OR   ( HKNJA-HKNNUM    =   "039"
-                       AND SPA-GMN-HKNNUM  =   "040" )
-                       MOVE    SPA-GMN-HKNNUM
+                   MOVE    HKNJA-HKNNUM
                                    TO  WRK-CMB-CD
-                   ELSE
-                       MOVE    HKNJA-HKNNUM
-                                   TO  WRK-CMB-CD
-                   END-IF
                    PERFORM 4200-HKNNUMLST-CHK-SEC
                    IF    ( WRK-CMB-CD  NOT =   SPACE )
                        MOVE    WRK-CMB-ITM
@@ -2223,36 +1991,6 @@
        4101-KGKANJINASHI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    記号桁数チェックチェック処理
-      *****************************************************************
-       4101-KGKETACHK-CHK-SEC          SECTION.
-      *
-           MOVE    SPA-GMN-KGKETACHK   TO  WRK-CMB-CD
-           PERFORM 4200-KGKETACHKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KGKETACHK-G
-      *
-           IF    ( SPA-GMN-KGKETACHK   =   "0" )
-               MOVE    SPACE           TO  SPA-GMN-KGKETAMIN
-           END-IF
-      *
-           .
-      *
-       4101-KGKETACHK-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    記号桁数下限チェック処理
-      *****************************************************************
-       4101-KGKETAMIN-CHK-SEC          SECTION.
-      *
-           MOVE    SPA-GMN-KGKETAMIN   TO  WRK-CMB-CD
-           PERFORM 4200-KGKETAMINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KGKETAMIN-G
-      *
-           .
-      *
-       4101-KGKETAMIN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    番号数字チェック処理
       *****************************************************************
        4101-NM1SUJI-CHK-SEC               SECTION.
@@ -2391,36 +2129,6 @@
            .
       *
        4101-NMSUJINASHI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    番号桁数チェックチェック処理
-      *****************************************************************
-       4101-NMKETACHK-CHK-SEC          SECTION.
-      *
-           MOVE    SPA-GMN-NMKETACHK   TO  WRK-CMB-CD
-           PERFORM 4200-NMKETACHKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NMKETACHK-G
-      *
-           IF    ( SPA-GMN-NMKETACHK   =   "0" )
-               MOVE    SPACE           TO  SPA-GMN-NMKETAMIN
-           END-IF
-      *
-           .
-      *
-       4101-NMKETACHK-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    番号桁数下限チェック処理
-      *****************************************************************
-       4101-NMKETAMIN-CHK-SEC          SECTION.
-      *
-           MOVE    SPA-GMN-NMKETAMIN   TO  WRK-CMB-CD
-           PERFORM 4200-NMKETAMINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NMKETAMIN-G
-      *
-           .
-      *
-       4101-NMKETAMIN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    番号数字チェック処理
@@ -2629,73 +2337,36 @@
                PERFORM 4901-RIREKI-CHK-SEC
            END-IF
       *
-      *
       *    チェック排除情報セット処理
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4701-KOUMOKU-SET-SEC
            END-IF
       *
-           PERFORM 800-MCNDATE-SEC
-      *
-      *    既存データの区分コードを更新
-           IF    ( SPA-ERRCD       =   SPACE )
-      *
-               INITIALIZE                  CHK004-REC
-               MOVE    "1102"          TO  CHK004-KANRICD
-               PERFORM 900-CHK004-KEY9-SEL-SEC
-               PERFORM UNTIL ( FLG-CHK004  NOT =   ZERO )
-                        OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-                   MOVE    CHK004-KBNCD    TO  WRK-KBNCD-G
-                   COMPUTE WRK-KBNCD   =   WRK-KBNCD   +   1
-      *
-                   MOVE    CHK004-KEY      TO  CHK004-UPDKEY
-                   MOVE    WRK-KBNCD-G     TO  CHK004-KBNCD
-                   MOVE    SMCNDATE-YMD    TO  CHK004-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  CHK004-UPHMS
-                   MOVE    "tbl_chk004"    TO  MCP-TABLE
-                   MOVE    "upd1"          TO  MCP-PATHNAME
-                   MOVE    CHK004-REC      TO  MCPDATA-REC
-                   PERFORM 910-DBUPDATE-SEC
-                   IF    ( MCP-RC          =   ZERO )
-                       CONTINUE
-                   ELSE
-                       MOVE   "4007"           TO  SPA-ERRCD
-                       MOVE    002             TO  SPA-GMN-CUR
-                   END-IF
-      *
-                   PERFORM 900-CHK004-KEY9-FET-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    "tbl_chk004"    TO  MCP-TABLE
-               MOVE    "key9"          TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           END-IF
-      *
       *    チェック排除情報マスタ追加
-           IF    ( SPA-ERRCD        =   SPACE )
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  CK4-1102-CREYMD
+                                           CK4-1102-UPYMD
+               MOVE    SMCNDATE-HMS    TO  CK4-1102-UPHMS
+               MOVE    SPA-HOSPNUM     TO  CK4-1102-HOSPNUM
                MOVE    CK4-1102-REC    TO  MCPDATA-REC
                MOVE    "tbl_chk004"    TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBINSERT-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   CONTINUE
+               IF    ( MCP-RC              =   ZERO )
+      *
+                   PERFORM 3101-CLIST-SET-SEC
+                   MOVE    2           TO  FLG-CLIST-ROW
+      *
+                   PERFORM 420-CLEAR-SEC
+      *
+                   IF    ( SPA-GMN-CLIST-MAX   >=  CONST-CLIST-MAX )
+                       MOVE    "1005"  TO  SPA-ERRCD
+                   END-IF
                ELSE
+      *            追加失敗エラー
                    MOVE   "4001"           TO  SPA-ERRCD
                    MOVE    002             TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD        =   SPACE )
-               PERFORM 3101-CLIST-SET-SEC
-               MOVE    2           TO  FLG-CLIST-ROW
-      *
-               PERFORM 420-CLEAR-SEC
-      *
-               IF    ( SPA-GMN-CLIST-MAX   >=  CONST-CLIST-MAX )
-                   MOVE    "1005"  TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -2719,11 +2390,14 @@
                MOVE    CHK004-REC       TO  CK4-1102-REC
            ELSE
                INITIALIZE                  CK4-1102-REC
-               MOVE    SPA-HOSPNUM     TO  CK4-1102-HOSPNUM
                MOVE    "1102"          TO  CK4-1102-KANRICD
-               INITIALIZE                  WRK-KBNCD-G
-               MOVE    1               TO  WRK-KBNCD
+               IF    ( WRK-KBNCD-G =   LOW-VALUE )
+                   MOVE    1           TO  WRK-KBNCD
+               ELSE
+                   COMPUTE WRK-KBNCD   =   WRK-KBNCD   +   1
+               END-IF
                MOVE    WRK-KBNCD-G     TO  CK4-1102-KBNCD
+      *
            END-IF
       *
            MOVE    SPA-NAI-STYUKYMD    TO  CK4-1102-STYUKYMD
@@ -2745,11 +2419,7 @@
            MOVE    SPA-GMN-KGKAKKO     TO  CK4-1102-KGKAKKO
            MOVE    SPA-GMN-KGETC       TO  CK4-1102-KGETC
            MOVE    SPA-GMN-KGKANJINASHI TO CK4-1102-KGKANJINASHI
-           MOVE    SPA-GMN-KGKETAMIN   TO  CK4-1102-KGKETAMIN
-                                           CK4-1102-KGKETAMAX
            MOVE    SPA-GMN-NMSUJINASHI TO  CK4-1102-NMSUJINASHI
-           MOVE    SPA-GMN-NMKETAMIN   TO  CK4-1102-NMKETAMIN
-                                           CK4-1102-NMKETAMAX
            MOVE    "0"                 TO  CK4-1102-NM1CHKPTN
            MOVE    SPA-GMN-NM1SUJI     TO  CK4-1102-NM1SUJI
            MOVE    SPA-GMN-NM1KANJI    TO  CK4-1102-NM1KANJI
@@ -3215,50 +2885,6 @@
        4200-KGKANJINASHILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    桁数チェックコンボボックスチェック処理
-      *****************************************************************
-       4200-KGKETACHKLST-CHK-SEC            SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-KGKETACHK-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-KGKETACHKL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-KGKETACHKLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-KGKETACHKLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    桁数下限コンボボックスチェック処理
-      *****************************************************************
-       4200-KGKETAMINLST-CHK-SEC            SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-KGKETAMIN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-KGKETAMINL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-KGKETAMINLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-KGKETAMINLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    番号数字コンボボックスチェック処理
       *****************************************************************
        4200-NMSUJILST-CHK-SEC            SECTION.
@@ -3413,50 +3039,6 @@
        4200-NMSUJINASHILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    桁数チェックコンボボックスチェック処理
-      *****************************************************************
-       4200-NMKETACHKLST-CHK-SEC            SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-NMKETACHK-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-NMKETACHKL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-NMKETACHKLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-NMKETACHKLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    桁数下限コンボボックスチェック処理
-      *****************************************************************
-       4200-NMKETAMINLST-CHK-SEC            SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-NMKETAMIN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-NMKETAMINL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-NMKETAMINLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-NMKETAMINLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC          SECTION.
@@ -3505,24 +3087,6 @@
                IF    ( SPA-GMN-HKNNUM-G    =   SPACE )
                    MOVE    "1009"      TO  SPA-ERRCD
                    MOVE    004         TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD               =   SPACE )
-               IF    ( SPA-GMN-KGKETACHK   =   "1" )
-                   IF    ( SPA-GMN-KGKETAMIN-G =   SPACE )
-                       MOVE    "1010"      TO  SPA-ERRCD
-                       MOVE    030         TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD               =   SPACE )
-               IF    ( SPA-GMN-NMKETACHK   =   "1" )
-                   IF    ( SPA-GMN-NMKETAMIN-G =   SPACE )
-                       MOVE    "1011"      TO  SPA-ERRCD
-                       MOVE    028         TO  SPA-GMN-CUR
-                   END-IF
                END-IF
            END-IF
       *
@@ -3774,27 +3338,6 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-KGKETACHK-G     TO  W63-KGKETACHK
-           MOVE    SPA-GMN-KGKETAMIN-G     TO  W63-KGKETAMIN
-      *
-           MOVE    SPA-GMN-KGKETACHK-MAX TO  W63-KGKETACHK-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >       SPA-GMN-KGKETACHK-MAX )
-      *
-               MOVE    SPA-GMN-KGKETACHKLST (IDX-CMB)
-                                         TO  W63-KGKETACHK-ITEM(IDX-CMB)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-KGKETAMIN-MAX TO  W63-KGKETAMIN-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >       SPA-GMN-KGKETAMIN-MAX )
-      *
-               MOVE    SPA-GMN-KGKETAMINLST (IDX-CMB)
-                                         TO  W63-KGKETAMIN-ITEM(IDX-CMB)
-      *
-           END-PERFORM
-      *
            MOVE    SPA-GMN-NM1SUJI-G       TO  W63-NM1SUJI
            MOVE    SPA-GMN-NM1KANJI-G      TO  W63-NM1KANJI
            MOVE    SPA-GMN-NM1ABT-G        TO  W63-NM1ABT
@@ -3802,8 +3345,6 @@
            MOVE    SPA-GMN-NM1KAKKO-G      TO  W63-NM1KAKKO
            MOVE    SPA-GMN-NM1ETC-G        TO  W63-NM1ETC
            MOVE    SPA-GMN-NMSUJINASHI-G   TO  W63-NMSUJINASHI
-           MOVE    SPA-GMN-NMKETACHK-G     TO  W63-NMKETACHK
-           MOVE    SPA-GMN-NMKETAMIN-G     TO  W63-NMKETAMIN
       *
            MOVE    SPA-GMN-NM2SUJI-G       TO  W63-NM2SUJI
            MOVE    SPA-GMN-NM2KANJI-G      TO  W63-NM2KANJI
@@ -3888,37 +3429,6 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-NMKETACHK-MAX TO  W63-NMKETACHK-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >       SPA-GMN-NMKETACHK-MAX )
-      *
-               MOVE    SPA-GMN-NMKETACHKLST (IDX-CMB)
-                                         TO  W63-NMKETACHK-ITEM(IDX-CMB)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-NMKETAMIN-MAX TO  W63-NMKETAMIN-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >       SPA-GMN-NMKETAMIN-MAX )
-      *
-               MOVE    SPA-GMN-NMKETAMINLST (IDX-CMB)
-                                         TO  W63-NMKETAMIN-ITEM(IDX-CMB)
-      *
-           END-PERFORM
-      *
-           MOVE    WIDGET-NORMAL          TO   W63-KGKETAMIN-STATE
-                                               W63-KGKETAMIN-ITEM-STATE
-           IF    ( SPA-GMN-KGKETACHK      =    "0" )
-               MOVE    WIDGET-INSENSITIVE TO   W63-KGKETAMIN-STATE
-                                               W63-KGKETAMIN-ITEM-STATE
-           END-IF
-      *
-           MOVE    WIDGET-NORMAL          TO   W63-NMKETAMIN-STATE
-                                               W63-NMKETAMIN-ITEM-STATE
-           IF    ( SPA-GMN-NMKETACHK      =    "0" )
-               MOVE    WIDGET-INSENSITIVE TO   W63-NMKETAMIN-STATE
-                                               W63-NMKETAMIN-ITEM-STATE
-           END-IF
       *
            EVALUATE    FLG-CLIST-ROW
            WHEN    1
@@ -4008,14 +3518,6 @@
                MOVE    "STYUKYMD"      TO  MCP-WIDGET
            WHEN    007
                MOVE    "EDYUKYMD"      TO  MCP-WIDGET
-           WHEN    028
-               MOVE    "NMKETAMIN"     TO  MCP-WIDGET
-           WHEN    029
-               MOVE    "NMKETACHK"     TO  MCP-WIDGET
-           WHEN    030
-               MOVE    "KGKETAMIN"     TO  MCP-WIDGET
-           WHEN    031
-               MOVE    "KGKETACHK"     TO  MCP-WIDGET
            WHEN    201
                MOVE    "B01"           TO  MCP-WIDGET
            WHEN    202
@@ -4062,10 +3564,6 @@
            WHEN    "KGETC"
                MOVE    014             TO  SPA-GMN-CUR
            WHEN    "KGKANJINASHI"
-               MOVE    031             TO  SPA-GMN-CUR
-           WHEN    "KGKETACHK"
-               MOVE    030             TO  SPA-GMN-CUR
-           WHEN    "KGKETAMIN"
                MOVE    015             TO  SPA-GMN-CUR
            WHEN    "NM1SUJI"
                MOVE    016             TO  SPA-GMN-CUR
@@ -4080,10 +3578,6 @@
            WHEN    "NM1ETC"
                MOVE    021             TO  SPA-GMN-CUR
            WHEN    "NMSUJINASHI"
-               MOVE    029             TO  SPA-GMN-CUR
-           WHEN    "NMKETACHK"
-               MOVE    028             TO  SPA-GMN-CUR
-           WHEN    "NMKETAMIN"
                MOVE    022             TO  SPA-GMN-CUR
            WHEN    "NM2SUJI"
                MOVE    023             TO  SPA-GMN-CUR
@@ -4124,20 +3618,6 @@
                END-IF
            END-IF
       *
-           IF  ( SPA-GMN-CUR           =   30 )
-               IF  ( W63-KGKETAMIN-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    15          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF  ( SPA-GMN-CUR           =   28 )
-               IF  ( W63-NMKETAMIN-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    22          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
            .
       *
        5012-SKIP-CUR-EXT.
@@ -4172,9 +3652,6 @@
            WHEN    "0007"
                MOVE    "有効期間終了日入力エラー"
                                            TO  SPA-ERRMSG
-           WHEN    "0008"
-               MOVE    "番号桁数の上限が下限を下回っています"
-                                           TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "選択番号を入力してください"
                                            TO  SPA-ERRMSG
@@ -4201,12 +3678,6 @@
                                            TO  SPA-ERRMSG
            WHEN    "1009"
                MOVE    "保険の種類を入力してください"
-                                           TO  SPA-ERRMSG
-           WHEN    "1010"
-               MOVE    "チェックする記号桁数を入力してください"
-                                           TO  SPA-ERRMSG
-           WHEN    "1011"
-               MOVE    "チェックする番号桁数を入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "4001"      THRU        "4999"
                MOVE    "更新処理に失敗しました"
@@ -4247,7 +3718,6 @@
       *
       *
            MOVE    SPACE           TO  WID1
-           INITIALIZE                  WID1
            MOVE    SPA-WIDCD       TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG      TO  WID1-ID1MSG
            MOVE    "B12"           TO  MCP-WIDGET
@@ -4505,52 +3975,6 @@
       *
            .
        900-CHK004-KEY3-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ４検索処理(KEY3)
-      *****************************************************************
-       900-CHK004-KEY9-SEL-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHK004
-      *
-           MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
-           MOVE    "%"                 TO  CHK004-KBNCD
-           MOVE    "99999999"          TO  CHK004-STYUKYMD
-           MOVE    "00000000"          TO  CHK004-EDYUKYMD
-           MOVE    CHK004-REC          TO  MCPDATA-REC
-      *
-           MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF ( MCP-RC                 =   ZERO )
-               MOVE    MCPDATA-REC     TO  CHK004-REC
-           ELSE
-               MOVE    1               TO  FLG-CHK004
-               INITIALIZE                  CHK004-REC
-           END-IF
-      *
-           .
-       900-CHK004-KEY9-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ４検索処理(KEY9)
-      *****************************************************************
-       900-CHK004-KEY9-FET-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHK004
-      *
-           MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key9"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF ( MCP-RC                 =   ZERO )
-               MOVE    MCPDATA-REC     TO  CHK004-REC
-           ELSE
-               MOVE    1               TO  FLG-CHK004
-               INITIALIZE                  CHK004-REC
-           END-IF
-      *
-           .
-       900-CHK004-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
