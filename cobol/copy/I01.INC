@@ -19,7 +19,6 @@
             03  I01-FIXED6.
               04  I01-B07-STT                      PIC S9(9)   BINARY.
               04  I01-B08-STT                      PIC S9(9)   BINARY.
-              04  I01-B10-STT                      PIC S9(9)   BINARY.
               04  I01-B12-STT                      PIC S9(9)   BINARY.
               04  I01-B05-STATE                    PIC S9(9)   BINARY.
               04  I01-B15-LABEL                    PIC X(10).
@@ -28,7 +27,6 @@
               04  I01-B24-LABEL                    PIC X(10).
               04  I01-B24-STATE                    PIC S9(9)   BINARY.
               04  I01-PTNUM                        PIC X(20).
-              04  I01-NAME-STYLE                   PIC X(20).
               04  I01-NAME                         PIC X(60).
               04  I01-SEX                          PIC X(4).
               04  I01-BIRTHDAY                     PIC X(9).
@@ -55,7 +53,7 @@
                 05  I01-SAGAKU-STT                 PIC S9(9)   BINARY.
                 05  I01-SAGAKU-CNT                 PIC S9(9)   BINARY.
                 05  I01-SAGAKU-ITM                 PIC X(23)
-                                                   OCCURS  99.
+                                                   OCCURS  30.
                 05  I01-SAGAKU-ITM-STT             PIC S9(9)   BINARY.
               04  I01-CMB-SKJKBN.
                 05  I01-SKJKBN                     PIC X(24).
@@ -120,7 +118,7 @@
                   06  I01-DR-STT                   PIC S9(9)   BINARY.
                   06  I01-DR-CNT                   PIC S9(9)   BINARY.
                   06  I01-DR-ITM                   PIC X(29)
-                                                   OCCURS  99.
+                                                   OCCURS  50.
                   06  I01-DR-ITM-STT               PIC S9(9)   BINARY.
               04  I01-CMB-HKNCOMBI.
                 05  I01-HKNCOMBI                   PIC X(51).
@@ -135,15 +133,8 @@
                 05  I01-TOKNYUIN-STT               PIC S9(9)   BINARY.
                 05  I01-TOKNYUIN-CNT               PIC S9(9)   BINARY.
                 05  I01-TOKNYUIN-ITM               PIC X(63)
-                                                   OCCURS  100.
+                                                   OCCURS  30.
                 05  I01-TOKNYUIN-ITM-STT           PIC S9(9)   BINARY.
-              04  I01-CMB-TOKHIGAITO.
-                05  I01-TOKHIGAITO                   PIC X(30).
-                05  I01-TOKHIGAITO-STT               PIC S9(9)   BINARY.
-                05  I01-TOKHIGAITO-CNT               PIC S9(9)   BINARY.
-                05  I01-TOKHIGAITO-ITM               PIC X(30)
-                                                     OCCURS  5.
-                05  I01-TOKHIGAITO-ITM-STT           PIC S9(9)   BINARY.
               04  I01-SNTNYUIN                     PIC X(60).
               04  I01-SNTNYUIN-STT                 PIC S9(9)   BINARY.
               04  I01-SCRW2.
@@ -181,13 +172,6 @@
                 05  I01-USERPG-ITM                PIC X(22)
                                                   OCCURS  2.
                 05  I01-USERPG-ITM-STT            PIC S9(9)   BINARY.
-              04  I01-CMB-NYUCALKBN.
-                05  I01-NYUCALKBN                 PIC X(30).
-                05  I01-NYUCALKBN-STT             PIC S9(9)   BINARY.
-                05  I01-NYUCALKBN-CNT             PIC S9(9)   BINARY.
-                05  I01-NYUCALKBN-ITM             PIC X(30)
-                                                  OCCURS  5.
-                05  I01-NYUCALKBN-ITM-STT         PIC S9(9)   BINARY.
               04  I01-LBL-BUNBENKBN               PIC X(20).
               04  I01-CMB-BUNBENKBN.
                 05  I01-BUNBENKBN                 PIC X(20).

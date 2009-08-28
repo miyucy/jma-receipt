@@ -34,8 +34,6 @@
       *  04.04.00    NACL-多々納  09.01.23  予約票発行区分追加
       *  04.04.00    NACL-小豆沢  09.01.26  本院分院対応
       *                                     短縮医療機関名称　追加       
-      *  04.06.00    NACL-伊藤    10.02.13  データ感染症区分追加
-      *  04.08.00    NACL-多々納  17.09.05  自費コード端数処理追加
       ************************************************************
        01  SYS-1001-REC.
            03  SYS-1001-KEY.
@@ -138,28 +136,11 @@
                                         PIC  X(01).
       *分娩機関管理番号
                05  SYS-1001-SANKANUM    PIC  9(10).
-      *データ感染症区分
-               05  SYS-1001-DATAINFECTIONKBN
-                                        PIC  X(01).
-      *請求額端数設定第三者行為（減免無・保険分）
-               05  SYS-1001-DISCOUNT-HASU-KBN6
-                                        PIC  X(01).
-      *請求額端数設定第三者行為（減免無・自費分）
-               05  SYS-1001-DISCOUNT-HASU-KBN6J
-                                        PIC  X(01).
-      *第三者行為（医療費）負担金額計算区分
-               05  SYS-1001-DAISANKBN   PIC  X(01).
-      *自費コード端数設定
-               05  SYS-1001-JIHI-HASU-KBN
-                                        PIC  X(01).
       *予備
       ***  03                           PIC  X(94).
       ***  03                           PIC  X(86).
       **** 03                           PIC  X(83).
-      ***  03  SYS-1001-YOBI            PIC  X(42).
-      ***  03  SYS-1001-YOBI            PIC  X(41).
-      ***  03  SYS-1001-YOBI            PIC  X(38).
-           03  SYS-1001-YOBI            PIC  X(37).
+           03                           PIC  X(42).
       *----(01.00.02) LINE ADD END   ----------------------------------
       *端末ＩＤ
            03  SYS-1001-TERMID          PIC  X(16).
@@ -171,10 +152,3 @@
            03  SYS-1001-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1001-UPHMS           PIC  X(06).
-      *主キー更新用項目
-           03  SYS-1001-UPD-KEY.
-               05  SYS-1001-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-1001-UPD-KANRICD     PIC X(04).
-               05  SYS-1001-UPD-KBNCD       PIC X(08).
-               05  SYS-1001-UPD-STYUKYMD    PIC X(08).
-               05  SYS-1001-UPD-EDYUKYMD    PIC X(08).

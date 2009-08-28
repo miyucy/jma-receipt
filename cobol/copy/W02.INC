@@ -69,9 +69,9 @@
                     06  W02-SYOHOKBN-COUNT   PIC S9(9)   BINARY.
                     06  W02-SYOHOKBNLST      PIC X(8)    OCCURS  2.
                   05  W02-SKYPRTFLG-COMBO.
-                    06  W02-SKYPRTFLG        PIC X(32).
+                    06  W02-SKYPRTFLG        PIC X(30).
                     06  W02-SKYPRTFLG-COUNT  PIC S9(9)   BINARY.
-                    06  W02-SKYPRTFLGLST     PIC X(32)   OCCURS  9.
+                    06  W02-SKYPRTFLGLST     PIC X(30)   OCCURS  5.
                   05  W02-SYOHOPRTFLG-COMBO.
                     06  W02-SYOHOPRTFLG      PIC X(30).
                     06  W02-SYOHOPRTFLG-COUNT
@@ -87,32 +87,30 @@
                     06  W02-YAKUJYOFLG-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-YAKUJYOFLGLST PIC X(30)   OCCURS  3.
-                  05  W02-DISCOUNTHASU-CMB-G.
-                    06  W02-DISCOUNTHASU-CMB-OCC      OCCURS  10.
-                      07  W02-DISCOUNTHASU-CMB.
-                        08  W02-DISCOUNTHASU     PIC X(32).
-                        08  W02-DISCOUNTHASU-COUNT
+                  05  W02-DISCOUNTHASU-COMBO.
+                    06  W02-DISCOUNTHASU     PIC X(32).
+                    06  W02-DISCOUNTHASU-COUNT
                                              PIC S9(9)   BINARY.
-                        08  W02-DISCOUNTHASULST  PIC X(32)
-                                                      OCCURS  5.
-                  05  W02-DAISANKBN-CMB.
-                    06  W02-DAISANKBN        PIC X(32).
-                    06  W02-DAISANKBN-COUNT
+                    06  W02-DISCOUNTHASULST  PIC X(32)
+                                                      OCCURS  4.
+                  05  W02-DISCOUNTHASU2-CMB.
+                    06  W02-DISCOUNTHASU2     PIC X(32).
+                    06  W02-DISCOUNTHASU2-COUNT
                                              PIC S9(9)   BINARY.
-                    06  W02-DAISANKBNLST     PIC X(32)
-                                                      OCCURS  5.
+                    06  W02-DISCOUNTHASU2LST PIC X(32)
+                                                      OCCURS  4.
                   05  W02-GENTAIKBN-CMB.
                     06  W02-GENTAIKBN        PIC X(22).
                     06  W02-GENTAIKBN-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-GENTAIKBNLST     PIC X(22)
-                                                      OCCURS  5.
+                                                      OCCURS  2.
                   05  W02-TAXHASU-COMBO.
                     06  W02-TAXHASU          PIC X(32).
                     06  W02-TAXHASU-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-TAXHASULST       PIC X(32)
-                                                      OCCURS  3.
+                                                      OCCURS  2.
                   05  W02-HIWARIKBN-COMBO.
                     06  W02-HIWARIKBN        PIC X(20).
                     06  W02-HIWARIKBN-COUNT
@@ -131,12 +129,6 @@
                     06  W02-DATATEISYU-COUNT   PIC S9(9)   BINARY.
                     06  W02-DATATEISYU-ITEM
                             PIC X(14)   OCCURS  5 TIMES.
-                  05  W02-DATAINFECT-COMB.
-                    06  W02-DATAINFECT.
-                      07  W02-VALUE   PIC X(14).
-                    06  W02-DATAINFECT-COUNT   PIC S9(9)   BINARY.
-                    06  W02-DATAINFECT-ITEM
-                            PIC X(14)   OCCURS  5 TIMES.
                   05  W02-JIHIPOSITION-COMB.
                     06  W02-JIHIPOSITION.
                       07  W02-VALUE   PIC X(40).
@@ -145,10 +137,10 @@
                             PIC X(40)   OCCURS  3 TIMES.
                   05  W02-MEIPRTFLG-COMB.
                     06  W02-MEIPRTFLG.
-                      07  W02-VALUE   PIC X(32).
+                      07  W02-VALUE   PIC X(14).
                     06  W02-MEIPRTFLG-COUNT   PIC S9(9)   BINARY.
                     06  W02-MEIPRTFLG-ITEM
-                            PIC X(32)   OCCURS  9 TIMES.
+                            PIC X(14)   OCCURS  2 TIMES.
                   05  W02-CHIHOUNUMKBN-COMB.
                     06  W02-CHIHOUNUMKBN.
                       07  W02-VALUE   PIC X(10).
@@ -167,12 +159,6 @@
                     06  W02-YYKHYOFLG-COUNT   PIC S9(9)   BINARY.
                     06  W02-YYKHYOFLG-ITEM
                             PIC X(20)   OCCURS  5 TIMES.
-                  05  W02-JIHIHASUKBN-COMB.
-                    06  W02-JIHIHASUKBN.
-                      07  W02-VALUE   PIC X(40).
-                    06  W02-JIHIHASUKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W02-JIHIHASUKBN-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
@@ -222,8 +208,8 @@
                     06  W02-VALUE   PIC X(100).
                 04  W02-N06-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED29.
-                  05  W02-GJIHINAME PIC X(20)   OCCURS 10.
-                  05  W02-NJIHINAME PIC X(20)   OCCURS 10.
+                  05  W02-JIHINAME.
+                    06  W02-VALUE   PIC X(20).
                 04  W02-N07-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED30.
                   05  W02-SRYNAIYO.
