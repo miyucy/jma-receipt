@@ -7252,6 +7252,12 @@ grpsys             PERFORM 900-DBSELECT-SEC
                END-IF                     
                MOVE    SPA-GMN-C02-NYUGAIKBN
                                        TO  WRK-PTBYO-NYUGAIKBN (IDXX)
+               IF      SPA-GMN-C02-HKNCOMBI    =   SPACE
+                   MOVE    ZERO        TO  WRK-PTBYO-HKNCOMBI  (IDXX)
+               ELSE
+                   MOVE    SPA-GMN-C02-HKNCOMBI
+                                       TO  WRK-PTBYO-HKNCOMBI  (IDXX)
+               END-IF
                MOVE    SPA-GMN-C02-BYOMEI
                                        TO  WRK-PTBYO-BYOMEI    (IDXX)
                MOVE    SPA-NAI-C02-BYOMEIMOJI
