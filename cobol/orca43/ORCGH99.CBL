@@ -776,7 +776,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        主科設定時の主科未設定のチェック（特別療養費を除く）
                IF    ( SPA-H99-RECEKA          =   "00"   )
                AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
-                   EVALUATE    RECE10-TEISYUTUSAKI
+                   EVALUATE    SPA-H99-TEISYUTUSAKI
                        WHEN    "1"
                            IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
                                MOVE    "1006"         TO  SPA-HIDCD
@@ -822,7 +822,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    主科設定時の主科未設定のチェック（特別療養費を除く）
            IF    ( SPA-H99-RECEKA          =   "00"   )
            AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
-               EVALUATE    RECE10-TEISYUTUSAKI
+               EVALUATE    SPA-H99-TEISYUTUSAKI
                    WHEN    "1"
                        IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
                            MOVE    "1006"         TO  SPA-HIDCD
