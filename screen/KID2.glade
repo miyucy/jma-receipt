@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(KID2)Á¢∫Ë™çÁîªÈù¢</title>
+  <title>(KID2)≥Œ«ß≤ËÃÃ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -77,7 +77,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>F1 Êàª„Çã</label>
+      <label>F1 Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -90,7 +90,7 @@
       <height>32</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>100</text_max_length>
+      <text_max_length>80</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -115,7 +115,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F12 ÁôªÈå≤</label>
+      <label>F12 ≈–œø</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -138,7 +138,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F5„ÄÄËñ¨Ââ§ÊÉÖÂ†±„ÄÄ</label>
+      <label>F5°°ÃÙ∫ﬁæ Û°°</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -161,7 +161,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F9 Âá¶ÊñπÁÆã„ÉªËñ¨ÊÉÖ</label>
+      <label>F9 ΩË ˝‰µ°¶ÃÙæ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -184,7 +184,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F8„ÄÄÂá¶ÊñπÁÆã„ÄÄ„ÄÄ</label>
+      <label>F8°°ΩË ˝‰µ°°°°</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -207,7 +207,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F6„ÄÄ„ÅäËñ¨ÊâãÂ∏≥„ÄÄ</label>
+      <label>F6°°§™ÃÙºÍƒ¢°°</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -216,29 +216,6 @@
       <name>B07</name>
       <x>380</x>
       <y>80</y>
-      <width>116</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F7</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
-      </signal>
-      <label>F7„ÄÄËñ¨ÊÉÖ„ÉªÊâãÂ∏≥</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B10</name>
-      <x>380</x>
-      <y>116</y>
       <width>116</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -253,7 +230,30 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F10„ÄÄÂÖ®ÈÉ®„ÄÄ„ÄÄ„ÄÄ</label>
+      <label>F7°°ÃÙæ°¶ºÍƒ¢</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>380</x>
+      <y>116</y>
+      <width>116</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F11</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
+      </signal>
+      <label>F10°°¡¥…Ù°°°°°°</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
