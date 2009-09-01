@@ -2440,26 +2440,10 @@
       *****************************************************************
        4102-NYUKIN-CHK-SEC             SECTION.
       *
-           IF    ( SPA-S01-SYORINO     =   CONST-PROC-TORIKESHI )
-               MOVE    ZERO            TO  WRK-NYUKIN
-      *
-               PERFORM VARYING IDX-LST FROM    1   BY  1
-                       UNTIL ( IDX-LST >   SPA-GMN-SMEILIST-MAX )
-      *
-                   IF ( SPA-NAI-NYUKINYMD
-                                       =   SPA-NAI-TSYORIYMD (IDX-LST))
-                       COMPUTE WRK-NYUKIN
-                           =   WRK-NYUKIN
-                           +   SPA-GMN-TNYUKIN (IDX-LST)
-                   END-IF
-      *
-               END-PERFORM
-           END-IF
-      *
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-TORIKESHI
                COMPUTE WRK-NYUKIN
-                   =   WRK-NYUKIN
+                   =   SPA-GMN-NYUKIN-TTL
                    +   SPA-GMN-NYUKIN
            WHEN    CONST-PROC-RRKSYU
       *
@@ -2479,6 +2463,22 @@
                    MOVE    2           TO  SPA-GMN-CUR
                    MOVE    "0014"      TO  SPA-ERRCD
                END-IF
+           END-IF
+      *
+           IF    ( SPA-S01-SYORINO     =   CONST-PROC-TORIKESHI )
+               MOVE    ZERO            TO  WRK-NYUKIN
+      *
+               PERFORM VARYING IDX-LST FROM    1   BY  1
+                       UNTIL ( IDX-LST >   SPA-GMN-SMEILIST-MAX )
+      *
+                   IF ( SPA-NAI-NYUKINYMD
+                                       =   SPA-NAI-TSYORIYMD (IDX-LST))
+                       COMPUTE WRK-NYUKIN
+                           =   WRK-NYUKIN
+                           +   SPA-GMN-TNYUKIN (IDX-LST)
+                   END-IF
+      *
+               END-PERFORM
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
