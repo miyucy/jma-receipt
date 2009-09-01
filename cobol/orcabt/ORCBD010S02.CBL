@@ -77,6 +77,11 @@
            03  WRK-JIHMISYU                PIC  S9(10).
            03  WRK-HS02-MAX                PIC 9(05).
            03  WRK-HS03-MAX                PIC 9(05).
+           03  WRK-KAISYU                  PIC  S9(10).
+           03  WRK-MISYU-KON               PIC  S9(10).
+           03  WRK-MISYU-ZEN               PIC  S9(10).
+           03  WRK-NYUKIN                  PIC  S9(10).
+           03  WRK-SEIKYU                  PIC  S9(10).
       *
        01  KEY-AREA.
            03  KEY-SRYKA                   PIC X(02).
@@ -216,11 +221,15 @@
                    COMPUTE WRK-HKNMISYU
                        =   WRK-HKNMISYU
                        +   SBD010S03-HKNSEIKYU (IDX-S03)
+                       +   SBD010S03-HKNGENMEN (IDX-S03)
+                       +   SBD010S03-HKNCHOSEI (IDX-S03)
                        -   SBD010S03-HKNNYUKIN (IDX-S03)
       *
                    COMPUTE WRK-JIHMISYU
                        =   WRK-JIHMISYU
                        +   SBD010S03-JIHSEIKYU (IDX-S03)
+                       +   SBD010S03-JIHGENMEN (IDX-S03)
+                       +   SBD010S03-JIHCHOSEI (IDX-S03)
                        -   SBD010S03-JIHNYUKIN (IDX-S03)
                END-IF
       *
@@ -250,6 +259,8 @@
                END-IF
       *
            END-PERFORM
+      *
+           PERFORM 2001-EDIT-MISYU-SEC
       *
            MOVE    SBD010S02-AREA      TO  TSBD010S02-AREA
       *
@@ -491,6 +502,181 @@
        20011-EDIT-SMEI-EXT.
            EXIT.
       *****************************************************************
+      *    Ì¤¼ý³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       2001-EDIT-MISYU-SEC            SECTION.
+      *
+           PERFORM VARYING IDX-S03  FROM    1   BY  1
+                   UNTIL ( IDX-S03  >   SBD010S03-MAX )
+      *
+               IF    ( SBD010S03-DAILYKEY (IDX-S03)
+                                           <   SBD010S02-STDAILYKEY )
+      *
+                   MOVE    SBD010S03-SRYKA    (IDX-S03)
+                                           TO  KEY-SRYKA
+                                               KEY-SRYKA2
+                   PERFORM 800-GET-HOKEN-SEC
+                   MOVE    WRK-HOKEN   TO  KEY-HOKEN
+      *
+                   IF    ( SBD010-SUMKBN   =   "0" )
+                       MOVE    ZERO    TO  KEY-SRYKA
+                   END-IF
+      *
+                   IF    ( SBD010-MEISAIKBN    =   "1" )
+                       MOVE    1       TO  IDX-S02
+                       PERFORM 20021-EDIT-SMEI-SEC
+                   ELSE
+                       PERFORM 2002-EDIT-SMEI-SEC
+                   END-IF
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX-S02 FROM    1   BY  1
+                   UNTIL ( IDX-S02 >   SBD010S02-MAX )
+      *
+               MOVE    SBD010S02-ZENHKNMISYU (IDX-S02)
+                                   TO  WRK-MISYU-ZEN
+               MOVE    SBD010S02-HKNNYUKIN   (IDX-S02)
+                                   TO  WRK-NYUKIN
+               COMPUTE WRK-SEIKYU
+                   =   SBD010S02-HKNSEIKYU   (IDX-S02)
+                   +   SBD010S02-HKNGENMEN   (IDX-S02)
+                   +   SBD010S02-HKNCHOSEI   (IDX-S02)
+      *
+               PERFORM 20021-EDIT-MISYU-SEC
+               COMPUTE SBD010S02-ZENHKNNYUKIN (IDX-S02)
+                   =   WRK-KAISYU
+               COMPUTE SBD010S02-KONHKNNYUKIN (IDX-S02)
+                   =   SBD010S02-HKNNYUKIN    (IDX-S02)
+                   -   WRK-KAISYU
+               COMPUTE SBD010S02-KONHKNMISYU  (IDX-S02)
+                   =   WRK-MISYU-KON
+      *
+               MOVE    SBD010S02-ZENJIHMISYU (IDX-S02)
+                                   TO  WRK-MISYU-ZEN
+               MOVE    SBD010S02-JIHNYUKIN   (IDX-S02)
+                                   TO  WRK-NYUKIN
+               COMPUTE WRK-SEIKYU
+                   =   SBD010S02-JIHSEIKYU   (IDX-S02)
+                   +   SBD010S02-JIHGENMEN   (IDX-S02)
+                   +   SBD010S02-JIHCHOSEI   (IDX-S02)
+      *
+               PERFORM 20021-EDIT-MISYU-SEC
+               COMPUTE SBD010S02-ZENJIHNYUKIN (IDX-S02)
+                   =   WRK-KAISYU
+               COMPUTE SBD010S02-KONJIHNYUKIN (IDX-S02)
+                   =   SBD010S02-JIHNYUKIN    (IDX-S02)
+                   -   WRK-KAISYU
+               COMPUTE SBD010S02-KONJIHMISYU  (IDX-S02)
+                   =   WRK-MISYU-KON
+      *
+               COMPUTE SBD010S02-ZENNYUKIN (IDX-S02)
+                   =   SBD010S02-ZENHKNNYUKIN (IDX-S02)
+                   +   SBD010S02-ZENJIHNYUKIN (IDX-S02)
+      *
+               COMPUTE SBD010S02-KONNYUKIN (IDX-S02)
+                   =   SBD010S02-KONHKNNYUKIN (IDX-S02)
+                   +   SBD010S02-KONJIHNYUKIN (IDX-S02)
+      *
+               COMPUTE SBD010S02-ZENMISYU (IDX-S02)
+                   =   SBD010S02-ZENHKNMISYU (IDX-S02)
+                   +   SBD010S02-ZENJIHMISYU (IDX-S02)
+      *
+               COMPUTE SBD010S02-KONMISYU (IDX-S02)
+                   =   SBD010S02-KONHKNMISYU (IDX-S02)
+                   +   SBD010S02-KONJIHMISYU (IDX-S02)
+           END-PERFORM
+      *
+           .
+       2001-EDIT-MISYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ì¤¼ý³Û¼ýÇ¼ÌÀºÙÊÔ½¸½èÍý
+      *****************************************************************
+       2002-EDIT-SMEI-SEC              SECTION.
+      *
+           MOVE    ZERO        TO  IDX-S02
+           PERFORM VARYING IDX0 FROM    1  BY  1
+                   UNTIL ( IDX0        >   CONST-SBD010S02-MAX )
+                    OR   ( IDX-S02 NOT =   ZERO )
+      *
+                   IF    ( SBD010S02-KEYSRYKA (IDX0)
+                                   =   KEY-SRYKA )
+                    AND  ( SBD010S02-KEYHOKEN (IDX0)
+                                   =   KEY-HOKEN )
+                    AND  ( SBD010S02-SRYKA (IDX0)
+                                   =   KEY-SRYKA2 )
+                       MOVE    IDX0    TO  IDX-S02
+                   END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-S02     >   ZERO )
+               PERFORM 20021-EDIT-SMEI-SEC
+           END-IF
+      *
+           .
+       2002-EDIT-SMEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ì¤¼ý³Û¼ýÇ¼ÌÀºÙÊÔ½¸½èÍý
+      *****************************************************************
+       20021-EDIT-SMEI-SEC             SECTION.
+      *
+           COMPUTE SBD010S02-ZENHKNMISYU (IDX-S02)
+               =   SBD010S02-ZENHKNMISYU (IDX-S02)
+               +   SBD010S03-HKNSEIKYU   (IDX-S03)
+               +   SBD010S03-HKNGENMEN   (IDX-S03)
+               +   SBD010S03-HKNCHOSEI   (IDX-S03)
+               -   SBD010S03-HKNNYUKIN   (IDX-S03)
+      *
+           COMPUTE SBD010S02-ZENJIHMISYU (IDX-S02)
+               =   SBD010S02-ZENJIHMISYU (IDX-S02)
+               +   SBD010S03-JIHSEIKYU   (IDX-S03)
+               +   SBD010S03-JIHGENMEN   (IDX-S03)
+               +   SBD010S03-JIHCHOSEI   (IDX-S03)
+               -   SBD010S03-JIHNYUKIN   (IDX-S03)
+      *
+           .
+       20021-EDIT-SMEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ì¤¼ý³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       20021-EDIT-MISYU-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  WRK-KAISYU
+           IF    ( WRK-MISYU-ZEN   >=  ZERO )
+               IF    ( WRK-NYUKIN  >=  ZERO )
+                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN )
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+                   ELSE
+                       COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+                   END-IF
+               ELSE
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+               END-IF
+           ELSE
+               IF    ( WRK-NYUKIN  >=  ZERO )
+                   IF    ( WRK-MISYU-ZEN * -1  >=  WRK-NYUKIN )
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN  * -1
+                   ELSE
+                       COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+                   END-IF
+               ELSE
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+               END-IF
+           END-IF
+      *
+           COMPUTE WRK-MISYU-KON
+               =   WRK-SEIKYU  - ( WRK-NYUKIN  -   WRK-KAISYU )
+      *
+           .
+       20021-EDIT-MISYU-EXT.
+           EXIT.
+      *****************************************************************
       *    ½ªÎ»½èÍý
       *****************************************************************
        300-END-SEC                     SECTION.
@@ -514,9 +700,21 @@
               ","  "JIHSEIKYU"
               ","  "HKNNYUKIN"
               ","  "JIHNYUKIN"
+              ","  "KONNYUKIN"
+              ","  "KONHKNNYUKIN"
+              ","  "KONJIHNYUKIN"
+              ","  "ZENNYUKIN"
+              ","  "ZENHKNNYUKIN"
+              ","  "ZENJIHNYUKIN"
               ","  "MISYU"
               ","  "HKNMISYU"
               ","  "JIHMISYU"
+              ","  "KONMISYU"
+              ","  "KONHKNMISYU"
+              ","  "KONJIHMISYU"
+              ","  "ZENMISYU"
+              ","  "ZENHKNMISYU"
+              ","  "ZENJIHMISYU"
               ","  "ETCJIHI(1)"
               ","  "ETCJIHI(2)"
               ","  "ETCJIHI(3)"
@@ -562,9 +760,21 @@
               ","  SBD010S02-JIHSEIKYU(IDX0)
               ","  SBD010S02-HKNNYUKIN(IDX0)
               ","  SBD010S02-JIHNYUKIN(IDX0)
+              ","  SBD010S02-KONNYUKIN(IDX0)
+              ","  SBD010S02-KONHKNNYUKIN(IDX0)
+              ","  SBD010S02-KONJIHNYUKIN(IDX0)
+              ","  SBD010S02-ZENNYUKIN(IDX0)
+              ","  SBD010S02-ZENHKNNYUKIN(IDX0)
+              ","  SBD010S02-ZENJIHNYUKIN(IDX0)
               ","  SBD010S02-MISYU   (IDX0)
               ","  SBD010S02-HKNMISYU(IDX0)
               ","  SBD010S02-JIHMISYU(IDX0)
+              ","  SBD010S02-KONMISYU(IDX0)
+              ","  SBD010S02-KONHKNMISYU(IDX0)
+              ","  SBD010S02-KONJIHMISYU(IDX0)
+              ","  SBD010S02-ZENMISYU(IDX0)
+              ","  SBD010S02-ZENHKNMISYU(IDX0)
+              ","  SBD010S02-ZENJIHMISYU(IDX0)
               ","  SBD010S02-ETCJIHI(IDX0 1)
               ","  SBD010S02-ETCJIHI(IDX0 2)
               ","  SBD010S02-ETCJIHI(IDX0 3)

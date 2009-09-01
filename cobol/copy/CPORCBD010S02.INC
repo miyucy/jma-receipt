@@ -47,9 +47,25 @@
                05  SBD010S02-NYUKIN       PIC  S9(10).
                05  SBD010S02-HKNNYUKIN    PIC  S9(10).
                05  SBD010S02-JIHNYUKIN    PIC  S9(10).
+               05  SBD010S02-KONNYUKIN    PIC  S9(10).
+               05  SBD010S02-KONHKNNYUKIN PIC  S9(10).
+               05  SBD010S02-KONJIHNYUKIN PIC  S9(10).
+               05  SBD010S02-ZENNYUKIN    PIC  S9(10).
+               05  SBD010S02-ZENHKNNYUKIN PIC  S9(10).
+               05  SBD010S02-ZENJIHNYUKIN PIC  S9(10).
+               05  SBD010S02-HKNKONNYUKIN PIC  S9(10).
+               05  SBD010S02-HKNZENNYUKIN PIC  S9(10).
+               05  SBD010S02-JIHKONNYUKIN PIC  S9(10).
+               05  SBD010S02-JIHZENNYUKIN PIC  S9(10).
                05  SBD010S02-MISYU        PIC  S9(10).
                05  SBD010S02-HKNMISYU     PIC  S9(10).
                05  SBD010S02-JIHMISYU     PIC  S9(10).
+               05  SBD010S02-KONMISYU     PIC  S9(10).
+               05  SBD010S02-KONHKNMISYU  PIC  S9(10).
+               05  SBD010S02-KONJIHMISYU  PIC  S9(10).
+               05  SBD010S02-ZENMISYU     PIC  S9(10).
+               05  SBD010S02-ZENHKNMISYU  PIC  S9(10).
+               05  SBD010S02-ZENJIHMISYU  PIC  S9(10).
                05  SBD010S02-ETCJIHI-OCC  OCCURS   10.
                    07  SBD010S02-ETCJIHI  PIC  S9(10).
                05  SBD010S02-HOHO-G.
