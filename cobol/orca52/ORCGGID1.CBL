@@ -74,6 +74,7 @@
            COPY    "G01.INC".
            COPY    "G02.INC".
            COPY    "G03.INC".
+           COPY    "G05.INC".
            COPY    "G99.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".

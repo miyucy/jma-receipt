@@ -262,6 +262,7 @@
            COPY    "G01.INC".
            COPY    "G02.INC".
            COPY    "G03.INC".
+           COPY    "G05.INC".
            COPY    "G99.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".
@@ -370,6 +371,8 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
+           WHEN    "G05"
+               GO  TO  300-SCREEN-EXT
            WHEN    "G99"
                PERFORM 340-G99-SET-SEC
                GO  TO  300-SCREEN-EXT
@@ -738,6 +741,9 @@
       *    次頁
            WHEN    "CLICKED"       ALSO    "B07"
                PERFORM 470-ATOGMN-SEC
+      *    個別指示
+           WHEN    "CLICKED"       ALSO    "B09"
+               PERFORM 480-G05-SENI-SEC
       *    情報削除
            WHEN    "CLICKED"       ALSO    "B11"
                PERFORM 490-JYOUHOU-DEL-SEC
@@ -1868,6 +1874,28 @@
       *
            .
        450-REPRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    個別指示画面へ
+      *****************************************************************
+       480-G05-SENI-SEC             SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "G01"               TO  SPA-MOTOPG
+           MOVE    "G05"               TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "G05   "             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       480-G05-SENI-EXT.
            EXIT.
       *
       *****************************************************************

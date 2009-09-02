@@ -153,6 +153,32 @@
                    07  SPA-NAI-G02-SRYYM           PIC 9(06).
                    07  SPA-NAI-G02-SRYYMH          PIC X(16).
                    07  SPA-NAI-G02-NYUGAIKBN       PIC X(06).
+           03  SPA-G05-AREA.
+               05  SPA-GMN-G05-CUR             PIC 9(03).
+               05  SPA-GMN-G05-PTLST-PAGE      PIC 9(05).
+               05  SPA-GMN-G05-AREA.
+                   07  SPA-GMN-G05-INPUT-AREA.
+                       09  SPA-GMN-G05-SELNUM      PIC 9(5).
+                       09  SPA-GMN-G05-PTNUM       PIC X(20).
+                       09  SPA-GMN-G05-NAME        PIC X(100).
+               05  SPA-GMN-G05-PTLST-AREA.
+                   07  SPA-GMN-G05-PTLST-MAX  PIC 9(5).
+                   07  SPA-GMN-G05-PTLST-SEL  PIC 9(5).
+                   07  SPA-GMN-G05-PTLST-NEXT PIC 9(01).
+                   07  SPA-GMN-G05-PTLST-OCC  OCCURS  200.
+                       09  SPA-GMN-G05-TNUM    PIC 9(5).
+                       09  SPA-GMN-G05-TTESTPT PIC X(1).
+                       09  SPA-GMN-G05-TPTNUM  PIC X(20).
+                       09  SPA-GMN-G05-TNAME   PIC X(100).
+               05  SPA-NAI-G05-AREA.
+                   07  SPA-NAI-G05-INPUT-AREA.
+                       09  SPA-NAI-G05-PTID        PIC  9(10).
+               05  SPA-NAI-G05-PTLST-AREA.
+                   07  SPA-NAI-G05-PTLST-OCC      OCCURS  200.
+                       09  SPA-NAI-G05-TPTID      PIC 9(10).
+                       09  SPA-NAI-G05-TRENNUM    PIC 9(04).
+                       09  SPA-NAI-G05-TUPYMD     PIC X(08).
+                       09  SPA-NAI-G05-TUPHMS     PIC X(06).
       *
            03  SPA-G99-AREA.
                05  SPA-SFILESV-AREA.

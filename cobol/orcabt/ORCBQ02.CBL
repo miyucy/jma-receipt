@@ -269,7 +269,9 @@
            PERFORM 2001-PTINF-EDIT-SEC
       *
            IF    ( FLG-END         =   ZERO )
-               PERFORM 2001-QLINK-EDIT-SEC
+               IF        ( WKBQ01-LNKKBN   =   "1" )
+                   PERFORM 2001-QLINK-EDIT-SEC
+               END-IF
            END-IF
       *
            .
@@ -440,7 +442,6 @@
       *****************************************************************
        2001-QLINK-EDIT-SEC          SECTION.
       *
-           IF        ( WKBQ01-LNKKBN   =   "1" )
                INITIALIZE                  QTORMAIN-AREA
       *
                MOVE    WKBQ01-SRYYM        TO  QTORM-SRYYM
@@ -470,29 +471,6 @@
                    MOVE    "0003"          TO  WRK-BQERRCD
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
-           ELSE
-               INITIALIZE                  QTOANY-AREA
-      *
-               MOVE    WKBQ01-SRYYM        TO  QTOANY-SRYYM
-               MOVE    WKBQ01-NYUGAIKBN    TO  QTOANY-NYUGAIKBN
-               MOVE    SMCNDATE-YMD        TO  QTOANY-CREYMD
-               MOVE    SMCNDATE-HMS        TO  QTOANY-CREHMS
-               MOVE    CNT-PTINF           TO  QTOANY-PTINF-CNT
-      *
-               PERFORM 200111-BTPARA-COMMON-SEC
-      *
-               MOVE    1                   TO  BTPARA-DSP-RENNUM
-               MOVE    1                   TO  BTPARA-RENNUM
-               MOVE    QTOANY-AREA         TO  BTPARA-INFO-PARA
-               MOVE    BTPARA-REC          TO  MCPDATA-REC
-               MOVE    "tbl_btpara"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "0003"          TO  WRK-BQERRCD
-                   PERFORM 500-ERR-HENSYU-SEC
-               END-IF
-           END-IF
       *
            IF    ( FLG-END             =   ZERO )
       *

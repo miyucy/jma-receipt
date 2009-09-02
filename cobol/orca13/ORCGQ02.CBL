@@ -245,6 +245,7 @@
            03  CONST-BTPARA-SHELLID-LNK01          PIC X(08)
                VALUE   "ORCBQL01".
            03  CONST-RECE-MAX      PIC 9(05)   VALUE 500.
+           03  CONST-TOUKEI-MAX    PIC 9(05)   VALUE 9999.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE 200.
       *
       *****************************************************************
@@ -2061,6 +2062,10 @@
       *
            IF  ( SPA-GMN-Q02-TOTAL-NUM     >   CONST-RECE-MAX )
                MOVE    WIDGET-INSENSITIVE  TO  Q02-B09-STATE
+           END-IF
+      *
+           IF  ( SPA-GMN-Q02-TOTAL-NUM     >   CONST-TOUKEI-MAX )
+               MOVE    WIDGET-INSENSITIVE  TO  Q02-B09S-STATE
            END-IF
       *
            IF    ( SPA-GSRAUTH-12          =   "1" )
