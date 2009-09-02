@@ -20,7 +20,7 @@
        PROGRAM-ID.                 ORCGG05.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : データチェック
+      *  サブシステム名    : 月次統計
       *  コンポーネント名  : 個別指示
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -862,6 +862,7 @@
                    INITIALIZE          SPA-GMN-G05-INPUT-AREA
                                        SPA-NAI-G05-INPUT-AREA
                    PERFORM 3101-EDIT-PTLST-SEC
+                   MOVE    ZERO    TO  FLG-PTLST-ROW
                ELSE
                    MOVE    "4007"  TO  SPA-ERRCD
                END-IF
