@@ -130,6 +130,8 @@
       *
       *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
+      *  04.05.03    NACL-藤原    09/08/31  未請求設定チェックを医保分のみ
+      *                                     行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2047,23 +2049,25 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            END-IF
       *
            IF      SPA-ERRCD            =   SPACE
-      *        未請求設定のチェック
-               INITIALIZE                  SYUKA-REC
-grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
-               MOVE    SPA-NAI-R01-PTID
-                                       TO  SYUKA-PTID
-               MOVE    SPA-NAI-R01-SRYYM
-                                       TO  SYUKA-SRYYM
-               MOVE    SPA-GMN-R01-NYUGAIKBN
-                                       TO  SYUKA-NYUGAIKBN
-               MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
-               MOVE    SYUKA-REC       TO  MCPDATA-REC
-               MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
-               MOVE    "key15"         TO  WRK-MCP-PATHNAME
-               PERFORM 900-SYUKA-READ-SEC
-               IF      FLG-SYUKA       =   ZERO
-                   IF      SYUKA-MISEIKYU-FLG   =   "01"
-                       MOVE    "0035"               TO  SPA-ERRCD
+      *        未請求設定のチェック（医保）
+               IF      SPA-R01-RECEKBN     =   "0"
+                   INITIALIZE                  SYUKA-REC
+                   MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
+                   MOVE    SPA-NAI-R01-PTID
+                                           TO  SYUKA-PTID
+                   MOVE    SPA-NAI-R01-SRYYM
+                                           TO  SYUKA-SRYYM
+                   MOVE    SPA-GMN-R01-NYUGAIKBN
+                                           TO  SYUKA-NYUGAIKBN
+                   MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
+                   MOVE    SYUKA-REC       TO  MCPDATA-REC
+                   MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
+                   MOVE    "key15"         TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYUKA-READ-SEC
+                   IF      FLG-SYUKA       =   ZERO
+                       IF      SYUKA-MISEIKYU-FLG   =   "01"
+                           MOVE    "0035"               TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
            ELSE
@@ -3073,7 +3077,29 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD       NOT =   SPACE   
+           IF      SPA-ERRCD           =   SPACE
+      *        未請求設定のチェック（医保）
+               IF      SPA-R01-RECEKBN     =   "0"
+                   INITIALIZE                  SYUKA-REC
+                   MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
+                   MOVE    WRK-ACCT-PTID   TO  SYUKA-PTID
+                   MOVE    WRK-ACCT-SRYYM  TO  SYUKA-SRYYM
+                   MOVE    WRK-ACCT-NYUGAIKBN
+                                           TO  SYUKA-NYUGAIKBN
+                   MOVE    "YYYY"          TO  SYUKA-RECESYUBETU
+                   MOVE    SYUKA-REC       TO  MCPDATA-REC
+                   MOVE    "tbl_syuka"     TO  WRK-MCP-TABLE
+                   MOVE    "key15"         TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYUKA-READ-SEC
+                   IF      FLG-SYUKA       =   ZERO
+                       IF      SYUKA-MISEIKYU-FLG   =   "01"
+      *********************MOVE    "0035"               TO  SPA-ERRCD
+                           MOVE    1        TO  SPA-NAI-R01-2002-TTAISYO
+                                                (SPA-NAI-R01-2002-INDEX)
+                       END-IF
+                   END-IF
+               END-IF
+           ELSE
       *        請求管理テーブルの存在チェック（医保分・公害）
                INITIALIZE                  RECE10-REC
                MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
