@@ -13,6 +13,8 @@ tbl_btpara {
 	CREYMD			char(8);
 	UPYMD			char(8);
 	UPHMS			char(6);
+	SELLIMIT		number(8),virtual;
+	SELOFFSET		number(8),virtual;
 };
 
 primary {
@@ -178,3 +180,89 @@ path	key8		{
 		;
 	};
 };
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_btpara_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_btpara
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND	SHELLID     =   :SHELLID
+			AND	JOBID       =   :JOBID
+			AND	DSP_RENNUM  =   :DSP_RENNUM
+			ORDER	BY	RENNUM
+			LIMIT    :SELLIMIT
+			OFFSET   :SELOFFSET
+		;
+	};
+};
+
+
+path	key10		{
+	DBSELECT	{
+		DECLARE tbl_btpara_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_btpara
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND	SHELLID     =   :SHELLID
+			AND	JOBID       =   :JOBID
+			AND	DSP_RENNUM  =   :DSP_RENNUM
+			ORDER	BY	RENNUM DESC
+		;
+	};
+};
+
+path	ins1	{
+	DBINSERT	{
+		INSERT  INTO
+		tbl_btpara (
+			HOSPNUM,
+			SHELLID,
+			RUN_OPID,
+			DSP_RENNUM,
+			RENNUM,
+			JOBID,
+			SCRIPTID,
+			INFO_KBN,
+			INFO_PARA,
+			TERMID,
+			OPID,
+			CREYMD,
+			UPYMD,
+			UPHMS
+		)
+		SELECT	HOSPNUM,
+			SHELLID,
+			RUN_OPID,
+			:SELLIMIT,
+			RENNUM,
+			JOBID,
+			SCRIPTID,
+			INFO_KBN,
+			INFO_PARA,
+			TERMID,
+			OPID,
+			CREYMD,
+			UPYMD,
+			UPHMS
+		FROM tbl_btpara
+		WHERE 	HOSPNUM	= :HOSPNUM
+		AND	SHELLID     =   :SHELLID
+		AND	JOBID       =   :JOBID
+		AND	DSP_RENNUM  =   :DSP_RENNUM
+		;
+	};
+};
+
+path	del4	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_btpara
+		WHERE 	HOSPNUM	= :HOSPNUM
+		AND	SHELLID     =   :SHELLID
+		AND	JOBID       =   :JOBID
+		AND	DSP_RENNUM  =   :DSP_RENNUM
+		;
+	};
+};
+
