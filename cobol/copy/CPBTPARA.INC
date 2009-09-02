@@ -55,3 +55,7 @@
            03  BTPARA-UPYMD             PIC X(08).
       *更新時間
            03  BTPARA-UPHMS             PIC X(06).
+      *LIMIT
+           03  BTPARA-SELLIMIT          PIC 9(08).
+      *OFFSET
+           03  BTPARA-SELOFFSET         PIC 9(08).
