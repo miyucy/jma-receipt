@@ -328,8 +328,8 @@
                    ELSE
                        IF    ( SBD010S02-KEYSRYKA (IDX-S02)
                                        =   SBD010S02-KEYSRYKA (IDX1))
-                           IF    ( SBD010S02-SYURRKNUM-G (IDX-S02)
-                                       >   SBD010S02-SYURRKNUM-G (IDX1))
+                           IF    ( SBD010S02-DENPEDANUM-G (IDX-S02)
+                                       >   SBD010S02-DENPEDANUM-G(IDX1))
       *
                                COMPUTE SBD010S02-RENNUM(IDX-S02)
                                    =   SBD010S02-RENNUM(IDX-S02)
@@ -491,10 +491,12 @@
                                        TO  SBD010S02-DAILYKEY (IDX-S02)
            END-IF
       *
-           MOVE    SBD010S03-SYURRKNUM (IDX-S03)
+           IF    ( SBD010S03-SYURRKNUM (IDX-S03)   >    ZERO )
+               MOVE    SBD010S03-SYURRKNUM (IDX-S03)
                                        TO  SBD010S02-SYURRKNUM (IDX-S02)
-           MOVE    SBD010S03-SYUEDANUM (IDX-S03)
+               MOVE    SBD010S03-SYUEDANUM (IDX-S03)
                                        TO  SBD010S02-SYUEDANUM (IDX-S02)
+           END-IF
       *
            MOVE    IDX-S02             TO  IDX-MISYU
       *
@@ -737,6 +739,8 @@
               ","  "HOHOMONEY(5)"
               ","  "DAILYKEY"
               ","  "SYURRKNUM"
+              ","  "SYUEDANUM"
+              ","  "RENNUM"
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SBD010S02-MAX )
@@ -797,6 +801,8 @@
               ","  SBD010S02-HOHOMONEY(IDX0 5)
               ","  SBD010S02-DAILYKEY(IDX0)
               ","  SBD010S02-SYURRKNUM(IDX0)
+              ","  SBD010S02-SYUEDANUM(IDX0)
+              ","  SBD010S02-RENNUM   (IDX0)
       *
            END-PERFORM
       *

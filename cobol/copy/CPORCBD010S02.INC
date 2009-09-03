@@ -27,7 +27,6 @@
            03  SBD010S02-OCC              OCCURS   200.
                05  SBD010S02-KEYSRYKA     PIC  X(02).
                05  SBD010S02-KEYHOKEN     PIC  9(02).
-               05  SBD010S02-DENPEDANUM   PIC  9(02).
                05  SBD010S02-SRYKA        PIC  X(02).
                05  SBD010S02-HOKEN        PIC  9(02).
                05  SBD010S02-HKNCOMBI     PIC  X(04).
@@ -75,7 +74,8 @@
                        09  SBD010S02-HOHOMONEY
                                           PIC  S9(10).
                05  SBD010S02-DAILYKEY     PIC  X(12).
-               05  SBD010S02-SYURRKNUM-G.
+               05  SBD010S02-DENPEDANUM-G.
+                   07  SBD010S02-DENPEDANUM    PIC  9(02).
                    07  SBD010S02-SYURRKNUM     PIC  9(02).
                    07  SBD010S02-SYUEDANUM     PIC  9(02).
                05  SBD010S02-RENNUM       PIC  9(09).
