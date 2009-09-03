@@ -203,7 +203,7 @@
                                            TO  SPA-SFILESV-OCC (1)
                MOVE    SPA-T06-SFILESV-IDX TO  SPA-SFILESV-IDX
                MOVE    SPA-T06-SFILESV-MAX TO  SPA-SFILESV-MAX
-               MOVE    SPA-GMN-T98-PRTKBN  TO  SPA-GMN-DATAKBN
+               MOVE    SPA-GMN-T98-DATAKBN TO  SPA-GMN-DATAKBN
                MOVE    SPA-NAI-T06-SRYYM-H TO  SPA-NAI-SKYYM 
            ELSE
                MOVE    SPA-FREE            TO  SPA-T01FREE

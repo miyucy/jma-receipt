@@ -188,10 +188,38 @@ fi
             if ! test -d  "$OUT_FOLDER"; then
                  mkdir $OUT_FOLDER
                  echo "--- mkdir rireki holder ---" >>$LOG_FILE
+            else
+                 rm $OUT_FOLDER/${RECEFILE1}.UKE*
+                 echo "--- rm rireki holder file ---" >>$LOG_FILE
             fi
             echo "--- folder name  [" $OUT_FOLDER "]" >>$LOG_FILE
-            cp ${13}${20}${RECEFILE1}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE
-            chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE
+
+            NUM=0
+            while [ $NUM -lt 100 ]
+            do
+                NUM=`expr $NUM + 1`
+                FILENUM='0'$NUM
+                echo "filenum" ${FILENUM:${#FILENUM}-2:2}
+                if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
+		    echo "先頭ファイルの処理(履歴保存)"
+                    if  test -e "${13}${20}${RECEFILE1}.UKE"; then
+                        cp ${13}${20}${RECEFILE1}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE               
+                        chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE
+	            else
+    	                echo ${13}${20}${RECEFILE1}.UKE "nothing"
+		        break
+	            fi
+                else     
+		    echo "２番目以降のファイルの処理(履歴保存)"
+	           if  test -e "${13}${20}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE"; then
+                       cp ${13}${20}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM              
+                       chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM
+                    else
+    	                echo ${13}${20}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE "nothing"
+		        break
+	            fi
+                fi
+            done 
         fi
     fi
 

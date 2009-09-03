@@ -42,7 +42,8 @@ fi
 
     LOG_FILE="/var/log/jma-receipt/${23}recept4_kobetu.log"
 
-    echo "arg12 = [" ${12} "]"  >$LOG_FILE
+    echo "arg5  = [" ${5} "]"  >$LOG_FILE
+    echo "arg12 = [" ${12} "]" >>$LOG_FILE
     echo "arg13 = [" ${13} "]" >>$LOG_FILE
     echo "arg17 = [" ${17} "]" >>$LOG_FILE
     echo "arg21 = [" ${21} "]" >>$LOG_FILE
@@ -166,17 +167,54 @@ fi
     if  [ ${26} -eq '1' ]; then
         if  [ ${21} -eq '3' ]|| [ ${21} -eq '4' ]; then
             if  [ ${12} -eq '1' ]; then
-                OUT_FOLDER="${17}${23}_Shaho_${5}_Kobetsu/"
+                OUT_FOLDER="${17}${23}_Shaho_${5}/Kobetsu/"
             else
-                OUT_FOLDER="${17}${23}_Kokuho_${5}_Kobetsu/"
+                OUT_FOLDER="${17}${23}_Kokuho_${5}/Kobetsu/"
             fi
             if ! test -d  "$OUT_FOLDER"; then
-                 mkdir $OUT_FOLDER
+                 mkdir -p $OUT_FOLDER
+##                 RC=$?
+##                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
+##                 if  [ $RC -ne '0' ]; then
+##                     ERRCD='0000'$RC
+##                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+##                     echo "--- mkdir  err   ---" >>$LOG_FILE
+##                     exit
+##                 fi
                  echo "--- mkdir rireki holder ---" >>$LOG_FILE
+            else
+                 rm $OUT_FOLDER/${RECEFILE1}.UKE*
+                 echo "--- rm rireki holder file ---" >>$LOG_FILE
             fi
             echo "--- folder name  [" $OUT_FOLDER "]" >>$LOG_FILE
             cp ${17}${23}${RECEFILE1}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE
-            chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE
+
+            NUM=0
+            while [ $NUM -lt 100 ]
+            do
+                NUM=`expr $NUM + 1`
+                FILENUM='0'$NUM
+                echo "filenum" ${FILENUM:${#FILENUM}-2:2} >>$LOG_FILE
+                if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
+		    echo "先頭ファイルの処理(履歴保存)"
+                    if  test -e "${17}${23}${RECEFILE1}.UKE"; then
+                        cp ${17}${23}${RECEFILE1}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE               
+                        chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE
+	            else
+    	                echo ${17}${23}${RECEFILE1}.UKE "nothing"
+		        break
+	            fi
+                else     
+		    echo "２番目以降のファイルの処理(履歴保存)"
+	            if  test -e "${17}${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE"; then
+                       cp ${17}${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM              
+                       chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM
+                    else
+    	                echo ${17}${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE "nothing"
+		        break
+	            fi
+                fi
+            done 
         fi
     fi
 
