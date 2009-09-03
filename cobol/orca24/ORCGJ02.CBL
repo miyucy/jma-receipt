@@ -10457,6 +10457,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-SYSKANRI        =   ZERO
                ADD     1                   TO  SYS-0041-DENPNUMMAX
+               IF      SYS-0041-DENPNUMMAX =   0
+                   ADD     1                   TO  SYS-0041-DENPNUMMAX
+               END-IF
                MOVE    SYS-0041-DENPNUMMAX
                                            TO  JYURRK-DENPNUM
       *
