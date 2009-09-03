@@ -731,6 +731,9 @@
       *    転帰区分コンボ初期処理
            PERFORM 3101-TENKIKBN-CMB-SYOKI-SEC
       *
+      *    主病名区分コンボ初期処理
+           PERFORM 3101-SYUBYOKBN-CMB-SYOKI-SEC
+      *
       *    病名検索コンボ初期処理
            PERFORM 3101-BYOMEI-CMB-SYOKI-SEC
       *
@@ -1376,6 +1379,24 @@
        3101-TENKIKBN-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
+      *    主病名区分コンボ初期処理
+      *****************************************************************
+       3101-SYUBYOKBN-CMB-SYOKI-SEC    SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-SYUBYOKBNLST-G
+      *
+           MOVE    2                   TO  SPA-GMN-Q01-SYUBYOKBNLST-MAX
+      *
+           MOVE    "0"                 TO  SPA-GMN-Q01-SYUBYOKBNL (1)
+           MOVE    "主病名でない"      TO  SPA-GMN-Q01-SYUBYOKBNMEIL (1)
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-SYUBYOKBNL (2)
+           MOVE    "主病名である"      TO  SPA-GMN-Q01-SYUBYOKBNMEIL (2)
+      *
+           .
+       3101-SYUBYOKBN-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
       *    病名検索コンボ初期処理
       *****************************************************************
        3101-BYOMEI-CMB-SYOKI-SEC       SECTION.
@@ -2004,6 +2025,9 @@
            MOVE    Q01-STTENKIYMD      TO  SPA-GMN-Q01-STTENKIYMD
            MOVE    Q01-EDTENKIYMD      TO  SPA-GMN-Q01-EDTENKIYMD
       *
+      *    主病名区分
+           MOVE    Q01-SYUBYOKBN       TO  SPA-GMN-Q01-SYUBYOKBN-G
+      *
       *    診療区分
            MOVE    Q01-SRYKBN          TO  SPA-GMN-Q01-SRYKBN-G
       *
@@ -2377,6 +2401,11 @@
            IF    ( SPA-ERRCD       =   SPACE )
       *        終了転帰日チェック
                PERFORM 4119-EDTENKIYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        主病名区分チェック
+               PERFORM 4119-SYUBYOKBN-CHK-SEC
            END-IF
       *
       *    病名コードチェック処理
@@ -4286,6 +4315,37 @@
       *
            .
        4119-EDTENKIYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    主病名区分チェック処理
+      *****************************************************************
+       4119-SYUBYOKBN-CHK-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-Q01-SYUBYOKBN-G =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    ZERO            TO  FLG-CHK
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   SPA-GMN-Q01-SYUBYOKBNLST-MAX)
+      *
+                   IF    ( SPA-GMN-Q01-SYUBYOKBN
+                                   =   SPA-GMN-Q01-SYUBYOKBNL (IDX0))
+                       MOVE    SPA-GMN-Q01-SYUBYOKBNLST (IDX0)
+                                       TO  SPA-GMN-Q01-SYUBYOKBN-G
+                       MOVE    1       TO  FLG-CHK
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF  ( FLG-CHK           =   ZERO )
+                   MOVE    "0135"      TO  SPA-ERRCD
+                   MOVE    326         TO  SPA-GMN-Q01-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4119-SYUBYOKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病名コードチェック処理
@@ -6540,6 +6600,10 @@
            PERFORM 900-QPTINF-DBESCAPE-SEC
            MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDTENKIYMD
       *
+           MOVE    SPA-GMN-Q01-SYUBYOKBN   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-SYUBYOKBN
+      *
            IF    ( SPA-GMN-Q01-RDBYOMEI-AND    =   "T" )
                MOVE    "1"                 TO  SPA-Q01-BYOMEI-JKN
            ELSE
@@ -6860,6 +6924,7 @@
             OR ( SPA-Q01-UTAGAIKBN         NOT =   SPACE )
             OR ( SPA-Q01-KYUSEIKBN         NOT =   SPACE )
             OR ( SPA-Q01-TENKIKBN          NOT =   SPACE )
+            OR ( SPA-Q01-SYUBYOKBN         NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(4)
       *
@@ -7482,6 +7547,19 @@
       *
            MOVE    SPA-GMN-Q01-EDTENKIYMD  TO  Q01-EDTENKIYMD
       *
+      *    主病名区分
+           MOVE    SPA-GMN-Q01-SYUBYOKBN-G TO  Q01-SYUBYOKBN
+      *
+           MOVE    SPA-GMN-Q01-SYUBYOKBNLST-MAX
+                                       TO  Q01-CMB-SYUBYOKBN-COUNT
+           PERFORM VARYING IDXB    FROM    1   BY  1
+                   UNTIL ( IDXB    >   SPA-GMN-Q01-SYUBYOKBNLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-SYUBYOKBNLST (IDXB)
+                                       TO  Q01-CMB-SYUBYOKBN-ITEM (IDXB)
+      *
+           END-PERFORM
+      *
       *    病名検索
            MOVE    SPA-GMN-Q01-BYOMEISEL   TO  Q01-BYOMEISEL
       *
@@ -7938,6 +8016,8 @@
                MOVE  "SRYSYUKBN"   TO  MCP-WIDGET
            WHEN   325
                MOVE  "KYUSEIKBN"   TO  MCP-WIDGET
+           WHEN   326
+               MOVE  "SYUBYOKBN"   TO  MCP-WIDGET
       *
       *    並び順タブ
            WHEN   401
@@ -8173,6 +8253,8 @@
            WHEN   "STTENKIYMD"
                MOVE  322           TO  SPA-GMN-Q01-CUR
            WHEN   "EDTENKIYMD"
+               MOVE  326           TO  SPA-GMN-Q01-CUR
+           WHEN   "SYUBYOKBN"
                MOVE  303           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD1"
                MOVE  304           TO  SPA-GMN-Q01-CUR
@@ -8246,7 +8328,7 @@
            IF    ( SPA-GMN-Q01-CUR =   322 )
                IF    ( Q01-EDTENKIYMD-STATE
                                    =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-Q01-CUR =   303
+                   COMPUTE SPA-GMN-Q01-CUR =   326
                END-IF
            END-IF
       *
@@ -8406,6 +8488,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0134"
                MOVE    "急性病名区分入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0135"
+               MOVE    "主病名区分入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
@@ -8681,7 +8766,6 @@
                MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-SELCOMMENT
                MOVE    SHODATA-ITEM    TO  Q01-SELCOMMENT
-               MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-COMMENT01
                MOVE    SHODATA-ITEM    TO  Q01-COMMENT (1)
                MOVE    1               TO  FLG-PAGENO-00
@@ -8844,6 +8928,9 @@
                MOVE    1               TO  FLG-PAGENO-02
            WHEN    SHKITEMID-EDTENKIYMD
                MOVE    SHODATA-ITEM    TO  Q01-EDTENKIYMD
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-SYUBYOKBN
+               MOVE    SHODATA-ITEM    TO  Q01-SYUBYOKBN
                MOVE    1               TO  FLG-PAGENO-02
            WHEN    SHKITEMID-RDBYOMEI
                IF    ( SHODATA-ITEM    =   "1" )
@@ -9820,6 +9907,14 @@
                MOVE    SHKITEMID-EDTENKIYMD
                                    TO  SHODATA-ITEMID
                MOVE    SPA-NAI-Q01-EDTENKIYMD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SYUBYOKBN    NOT =   SPACE )
+               MOVE    SHKITEMID-SYUBYOKBN
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SYUBYOKBN
                                    TO  SHODATA-ITEM
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF

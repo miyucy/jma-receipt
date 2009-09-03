@@ -170,6 +170,10 @@
                   06  Q01-STTENKIYMD-STATE     PIC S9(9)   BINARY.
                   06  Q01-EDTENKIYMD           PIC X(10).
                   06  Q01-EDTENKIYMD-STATE     PIC S9(9)   BINARY.
+                  06  Q01-CMB-SYUBYOKBN.
+                    07  Q01-SYUBYOKBN           PIC X(20).
+                    07  Q01-CMB-SYUBYOKBN-COUNT PIC S9(9)   BINARY.
+                    07  Q01-CMB-SYUBYOKBN-ITEM  PIC X(20)   OCCURS  5.
                   06  Q01-CMB-BYOBUN.
                     07  Q01-BYOBUN             PIC X(24).
                     07  Q01-BYOBUN-STATE       PIC S9(9)   BINARY.

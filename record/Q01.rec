@@ -474,6 +474,13 @@ Q01	{
 					value	varchar(10);
 					state	int;
 				};
+				CMB_SYUBYOKBN	{
+					SYUBYOKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[05];
+				};
 				CMB_BYOBUN	{
 					BYOBUN	{
 						value	varchar(24);
