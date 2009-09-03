@@ -173,14 +173,14 @@ fi
             fi
             if ! test -d  "$OUT_FOLDER"; then
                  mkdir -p $OUT_FOLDER
-##                 RC=$?
-##                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
-##                 if  [ $RC -ne '0' ]; then
-##                     ERRCD='0000'$RC
-##                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
-##                     echo "--- mkdir  err   ---" >>$LOG_FILE
-##                     exit
-##                 fi
+                 RC=$?
+                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
+                 if  [ $RC -ne '0' ]; then
+                     ERRCD='0077'
+                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD},${23} >> $LOG_FILE
+                     echo "--- mkdir  err   ---" >>$LOG_FILE
+                     exit
+                 fi
                  echo "--- mkdir rireki holder ---" >>$LOG_FILE
             else
                  rm $OUT_FOLDER/${RECEFILE1}.UKE*

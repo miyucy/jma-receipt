@@ -716,6 +716,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                WHEN    "0021"
                    MOVE    "【ファイルコピーでエラーが発生しました】" 
                                                TO  T99-MSG
+               WHEN    "0077"
+                   MOVE    "【履歴フォルダの作成に失敗しました】" 
+                                               TO  T99-MSG
                WHEN    "0127"
                    MOVE    "【スクリプトが実行できませんでした】" 
                                                TO  T99-MSG

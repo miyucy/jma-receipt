@@ -187,6 +187,12 @@ fi
             fi
             if ! test -d  "$OUT_FOLDER"; then
                  mkdir $OUT_FOLDER
+                 if  [ $RC -ne '0' ]; then
+                     ERRCD='0077'
+                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} >> $LOG_FILE
+                     echo "--- mkdir  err   ---" >>$LOG_FILE
+                     exit
+                 fi
                  echo "--- mkdir rireki holder ---" >>$LOG_FILE
             else
                  rm $OUT_FOLDER/${RECEFILE1}.UKE*
