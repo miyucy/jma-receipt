@@ -62,6 +62,8 @@
       *
        WORKING-STORAGE             SECTION.
       *
+       01  WKPRT-REC               PIC X(10000).
+      *
            COPY    "HCM03V03B.INC" REPLACING   //HCM03V03B//
                                    BY          //HC03//.
       *
@@ -422,6 +424,7 @@
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
+            MOVE     WKPRT-REC         TO  PRT-REC
       *
       *　　印刷用データ出力
               WRITE  PRT-REC
@@ -474,7 +477,7 @@
            MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
       *
            MOVE    WRK-FORMID          TO  SPRT-PRTID
-           MOVE    HC03                TO  SPRT-PRTDATA
+           MOVE    WKPRT-REC           TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
       *    カスタマイズＰＧの場合"2"をセットすること。
@@ -971,7 +974,7 @@
        300-HC03-HEN-SEC                SECTION.
       *
            INITIALIZE                  HC03
-           INITIALIZE                  PRT-REC
+           INITIALIZE                  WKPRT-REC
       *
       *    伝票番号
            MOVE    WRK-DENPNUM         TO  WRK-NO  
@@ -1000,10 +1003,11 @@
            MOVE    WRK-LBLSRYYMD       TO  HC03-LBLSRYYMD
            MOVE    WRK-SRYYMDG         TO  HC03-SRYYMD
       *    発行日
-           IF    ( TPARA-HAKKOUBIKBN   =   "0" )
-               MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
-           ELSE
+           IF    ( ORCHC03-MOTOID      =    1 OR 3)
+            AND  ( TPARA-HAKKOUBIKBN   =   "1" )
                MOVE    SPA-SYSYMD      TO  WRK-SYMD
+           ELSE
+               MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
            END-IF
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HC03-HAKYMD
@@ -1302,34 +1306,34 @@
                WHEN    "V1"
                    MOVE    "HCM03BN.red"       TO  WRK-FORMID
                    PERFORM 2002-HC03V01-HEN-SEC
-                   MOVE    HC03V01             TO  PRT-REC
+                   MOVE    HC03V01             TO  WKPRT-REC
                WHEN    "V2"
                    MOVE    "HCM03V02BN.red"    TO  WRK-FORMID
                    PERFORM 2002-HC03V02-HEN-SEC
-                   MOVE    HC03V02             TO  PRT-REC
+                   MOVE    HC03V02             TO  WKPRT-REC
                WHEN    "A5"
                    MOVE    "HCM03V03A5BN.red"  TO  WRK-FORMID
-                   MOVE    HC03                TO  PRT-REC
+                   MOVE    HC03                TO  WKPRT-REC
                WHEN    OTHER
                    MOVE    "HCM03V03BN.red"    TO  WRK-FORMID
-                   MOVE    HC03                TO  PRT-REC
+                   MOVE    HC03                TO  WKPRT-REC
                END-EVALUATE
            ELSE
                EVALUATE    ORCHC03-SIZE
                WHEN    "V1"
                    MOVE    "HCM03BO.red"       TO  WRK-FORMID
                    PERFORM 2002-HC03V01-HEN-SEC
-                   MOVE    HC03V01             TO  PRT-REC
+                   MOVE    HC03V01             TO  WKPRT-REC
                WHEN    "V2"
                    MOVE    "HCM03V02BO.red"    TO  WRK-FORMID
                    PERFORM 2002-HC03V02-HEN-SEC
-                   MOVE    HC03V02             TO  PRT-REC
+                   MOVE    HC03V02             TO  WKPRT-REC
                WHEN    "A5"
                    MOVE    "HCM03V03A5BO.red"  TO  WRK-FORMID
-                   MOVE    HC03                TO  PRT-REC
+                   MOVE    HC03                TO  WKPRT-REC
                WHEN    OTHER
                    MOVE    "HCM03V03BO.red"    TO  WRK-FORMID
-                   MOVE    HC03                TO  PRT-REC
+                   MOVE    HC03                TO  WKPRT-REC
                END-EVALUATE
            END-IF
       *

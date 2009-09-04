@@ -54,6 +54,7 @@ grpsyS     SELECT  BG01301-FILE    ASSIGN   BG01301PARA
        FD  BG01301-FILE.
        01  BG01301-REC.
            03  BG01301-KEY.
+               05  BG01301-RENNUM              PIC 9(06).
                05  BG01301-PTNUM               PIC X(20).
            03  BG01301-PTID                    PIC 9(10).
       *
@@ -97,6 +98,7 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  CNT-BG01301                         PIC 9(05).
            03  CNT-PAGE                            PIC 9(08).
            03  CNT-JOB-UPDCNT                      PIC 9(08).
+           03  CNT-RENNUM                          PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -119,6 +121,7 @@ grpsys     03  RECEERR                             PIC X(100).
            03  WRK-PARA-ZEROSKYKBN                 PIC X(01).
            03  WRK-PARA-SRYKA                      PIC X(02).
            03  WRK-PARA-ZENMISYUPRTKBN             PIC X(01).
+           03  WRK-PARA-SUMKBN                     PIC X(01).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -329,12 +332,25 @@ grpsys                                 RECEERR
                                        WRK-PARA-ZEROSKYKBN
                                        WRK-PARA-SRYKA
                                        WRK-PARA-ZENMISYUPRTKBN
+                                       WRK-PARA-SUMKBN
 grpsys     END-UNSTRING
       *    £Ó£Ð£Á¥¨¥ê¥¢¥»¥Ã¥È½èÍý
 grpsys     PERFORM 1001-SPA-SET-SEC
       *
            IF    ( WRK-PARA-SRYKA      NOT =   SPACE )
                MOVE    "3"             TO  WRK-PARA-HAKUHOUFLG
+           END-IF
+      *
+           IF    ( WRK-PARA-ZEROSKYKBN =   "0" OR "1" )
+               CONTINUE
+           ELSE
+               MOVE    "0"             TO  WRK-PARA-ZEROSKYKBN
+           END-IF
+      *
+           IF    ( WRK-PARA-SUMKBN     =   "0" OR "1" )
+               CONTINUE
+           ELSE
+               MOVE    "0"             TO  WRK-PARA-SUMKBN
            END-IF
       *
            MOVE    "³°Íè·îÊÌÀÁµá½ñ"    TO  WRK-TITLE
@@ -605,6 +621,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    BTPARA-INFO-PARA
                                    TO  QTOANY-AREA
       *
+           MOVE    ZERO            TO  CNT-RENNUM
            PERFORM UNTIL ( FLG-BTPARA  NOT =   ZERO )
       *
                MOVE    1           TO  FLG-TARGET
@@ -616,7 +633,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
                END-IF
       *
                IF    ( FLG-TARGET  =   1 )
+      *
+                   COMPUTE CNT-RENNUM  =   CNT-RENNUM  +   1
+      *
                    INITIALIZE          BG01301-REC
+                   MOVE    CNT-RENNUM      TO  BG01301-RENNUM
                    MOVE    QTOANY-PTNUM    TO  BG01301-PTNUM
                    MOVE    QTOANY-PTID     TO  BG01301-PTID
                    WRITE   BG01301-REC
@@ -840,6 +861,7 @@ grpsys                                     SPA-AREA
                                            SYUPARA01-GAI-MISYU-P
                                            SYUPARA01-GAI-MISYU-M
            END-IF
+           MOVE    WRK-PARA-SUMKBN     TO  SYUPARA01-TUKISUMKBN
       *
            INITIALIZE                      PARA-REC
            MOVE    "G01"               TO  PARA-GYOUMUID
@@ -919,6 +941,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "00102"         TO      WRK-FILEMEI-CD
            MOVE    WRK-FILEMEI     TO      ORCHC03-PARA-FILEMEI
            MOVE    "1"             TO      ORCHC03-PRTKBN
+           MOVE    5               TO      ORCHC03-MOTOID
       *
            MOVE    SPA-PTID        TO      SPRT-PTID
            MOVE    WRK-PARA-SRYYM  TO      SPRT-SRYYM

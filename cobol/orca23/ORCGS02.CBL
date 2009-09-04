@@ -3302,6 +3302,7 @@
                MOVE    SYU-NYUKIN-TOTAL
                                        TO  ORCHCN03-NYUKIN  (1)
                MOVE    1               TO  ORCHCN03-HAKKOFLG(1)
+               MOVE    1               TO  ORCHCN03-MOTOID
       *
                MOVE    "01"            TO  WRK-SPA-PRT-FLG
                CALL    "ORCHCN03OP"    USING   ORCHCN03AREA
@@ -3537,6 +3538,7 @@
            MOVE    C-UID               TO  ORCHC03-PARA-TERMID
            MOVE    "00102"             TO  WRK-FILEMEI-CD
            MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+           MOVE    1                   TO  ORCHC03-MOTOID
            MOVE    "02"                TO  WRK-SPA-PRT-FLG
            CALL    "ORCHC03OP"         USING
                                            WRK-SPA-AREA
@@ -3789,6 +3791,7 @@
            MOVE    C-UID               TO  ORCHC03-PARA-TERMID
            MOVE    "00102"             TO  WRK-FILEMEI-CD
            MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+           MOVE    2                   TO  ORCHC03-MOTOID
            MOVE    "03"                TO  WRK-SPA-PRT-FLG
            CALL    "ORCHC03OP"             USING
                                            WRK-SPA-AREA

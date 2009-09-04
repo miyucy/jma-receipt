@@ -2721,6 +2721,7 @@
                MOVE    SPA-TERMID          TO  ORCHC03-PARA-TERMID
                MOVE    "00102"             TO  WRK-FILEMEI-CD
                MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
+               MOVE    4                   TO  ORCHC03-MOTOID
                MOVE    "01"                TO  WRK-SPA-PRT-FLG
                CALL    WRK-GAI-SEIKYU-PG       USING
                                                WRK-SPA-AREA
@@ -2758,6 +2759,7 @@
            MOVE    WRK-SPA-STAFFCD     TO  ORCHCN03-STAFFCD
            MOVE    WRK-SPA-SYSYMD      TO  ORCHCN03-SYSYMD
            MOVE    WRK-SPA-TERMID      TO  ORCHCN03-TERMID
+           MOVE    4                   TO  ORCHCN03-MOTOID
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-SYULIST-MAX )

@@ -2764,6 +2764,7 @@
            MOVE   3                    TO  ORCHC03-HAKKOFLG
            MOVE   WRK-SKYPRT-DENPEDANUM
                                        TO  ORCHC03-DENPEDANUM
+           MOVE   3                    TO  ORCHC03-MOTOID
            MOVE  "01"                  TO  WRK-SPA-PRT-FLG
            CALL  WRK-SEIKYU-PG     USING   WRK-SPA-AREA
                                            ORCHC03AREA

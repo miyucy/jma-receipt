@@ -250,7 +250,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÁÈ¹ç¤»¼èÆÀ½èÍý
+      *    ¼ýÇ¼½¸·×½èÍý
       *****************************************************************
        2001-SYUSUM-SEC                 SECTION.
       *
@@ -264,6 +264,30 @@
                MOVE    PARA-DATA-REC       TO  SYUPARA02-AREA
       *
                PERFORM 900-SYUNOU-KEY-SEL-SEC
+               IF    ( SYUPARA01-TUKISUMKBN    =   "1" )
+                   IF    ( SYU-SKYMONEY    >   SYU-NYUKIN-TOTAL )
+                       PERFORM 20011-SYUSUM-SEC
+                   END-IF
+               ELSE
+                       PERFORM 20011-SYUSUM-SEC
+               END-IF
+      *
+               PERFORM 900-PARA-KEY6-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       2001-SYUSUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼½¸·×½èÍý
+      *****************************************************************
+       20011-SYUSUM-SEC                 SECTION.
+      *
       *
                IF    ( SYUPARA01-SKYSUMFLG =   ZERO )
                        MOVE    SYU-SRYYMD (1:6) TO WRK-SRYYM
@@ -313,16 +337,8 @@
                    END-IF
                END-IF
       *
-               PERFORM 900-PARA-KEY6-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
            .
-       2001-SYUSUM-EXT.
+       20011-SYUSUM-EXT.
            EXIT.
       *****************************************************************
       *    ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÁÈ¹ç¤»ÊÌ½¸·×½èÍý
@@ -459,9 +475,9 @@
       *ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            ADD SYU-SKYMONEY-TAX-SAI TO LNKSYU-SKYMONEY-TAX-SAI(IDX-SYU)
       *ÀÁµá¶â³Û
-           ADD SYU-SKYMONEY        TO  LNKSYU-SKYMONEY       (IDX-SYU)
+           ADD SYU-SKYMONEY        TO  LNKSYU-SKYMONEY     (IDX-SYU)
       *Æþ¶â¹ç·×³Û
-           ADD SYU-NYUKIN-TOTAL    TO  LNKSYU-NYUKIN-TOTAL   (IDX-SYU)
+           ADD SYU-NYUKIN-TOTAL    TO  LNKSYU-NYUKIN-TOTAL (IDX-SYU)
       *Ï«ºÒÊÝ¸±
            ADD SYU-RSISHOSHIN-MONEY
                                    TO  LNKSYU-RSISHOSHIN-MONEY(IDX-SYU)
@@ -601,14 +617,27 @@
       *****************************************************************
        20011-KBT-SEIKYU-HEN-SEC        SECTION.
       *
-           COMPUTE SRT-KBT-SEIKYU (IDX-SYU)
-               =   SRT-KBT-SEIKYU (IDX-SYU)
-               +   SYU-SKYMONEY
-               - ( SYU-NYUKIN-TOTAL    -   SYUPARA02-NYUKIN )
+           IF    ( SYUPARA01-TUKISUMKBN    =   "1" )
       *
-           COMPUTE SRT-KBT-NYUKIN (IDX-SYU)
-               =   SRT-KBT-NYUKIN (IDX-SYU)
-               +   SYUPARA02-NYUKIN
+               COMPUTE SRT-KBT-SEIKYU (IDX-SYU)
+                   =   SRT-KBT-SEIKYU (IDX-SYU)
+                   +   SYU-SKYMONEY
+                   -   SYU-NYUKIN-TOTAL
+      *
+               COMPUTE SRT-KBT-NYUKIN (IDX-SYU)
+                   =   SRT-KBT-NYUKIN (IDX-SYU)
+                   +   0
+           ELSE
+      *
+               COMPUTE SRT-KBT-SEIKYU (IDX-SYU)
+                   =   SRT-KBT-SEIKYU (IDX-SYU)
+                   +   SYU-SKYMONEY
+                   - ( SYU-NYUKIN-TOTAL    -   SYUPARA02-NYUKIN )
+      *
+               COMPUTE SRT-KBT-NYUKIN (IDX-SYU)
+                   =   SRT-KBT-NYUKIN (IDX-SYU)
+                   +   SYUPARA02-NYUKIN
+           END-IF
       *
            IF    ( SYU-NYUKIN-TOTAL    NOT =   SYUPARA02-NYUKIN )
                MOVE    1           TO  SRT-KBT-TUIKANYUKINFLG (IDX-SYU)

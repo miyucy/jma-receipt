@@ -467,6 +467,7 @@
                                            TO  SPRT-TITLE
            MOVE    "1"                     TO  ORCHCN03-PRTKBN
            MOVE    ORCSPRTAREA             TO  ORCHCN03-PRTAREA
+           MOVE    6                       TO  ORCHCN03-MOTOID
       *
            MOVE    ZERO            TO  FLG-SELTAIIN
            PERFORM  2001-HENSYU-SEC

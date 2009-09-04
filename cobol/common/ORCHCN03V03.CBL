@@ -734,10 +734,11 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCN03-NYUINENDYMD
       *    È¯¹ÔÆü
-           IF    ( TPARA-HAKKOUBIKBN   =   "0" )
-               MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
+           IF    ( ORCHCN03-MOTOID     =   1 OR 3 )
+            AND  ( TPARA-HAKKOUBIKBN   =   "1" )
+               MOVE    ORCHCN03-SYSYMD TO  WRK-SYMD
            ELSE
-               MOVE    SPA-SYSYMD      TO  WRK-SYMD
+               MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
            END-IF
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCN03-HAKYMD
