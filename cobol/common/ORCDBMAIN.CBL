@@ -153,6 +153,9 @@
                WHEN    "PUTWINDOW"
                    CONTINUE
                WHEN    OTHER
+                   IF  MCP-FUNC            =   "DBFETCH"
+                       MOVE    LOW-VALUE   TO  MCPDATA-REC
+                   END-IF
                    IF    ( SPA-NOCHK-HOSPNUM   =   "1" )
                        CONTINUE
                    ELSE
