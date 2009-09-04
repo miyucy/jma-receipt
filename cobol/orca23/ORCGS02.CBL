@@ -3700,7 +3700,6 @@
            MOVE    ZERO                TO  SYUPARA01-NYU-NYUKIN
            MOVE    ZERO                TO  SYUPARA01-GAI-NYUKIN
            MOVE    4                   TO  SYUPARA01-HAKKOFLG
-           MOVE    4                   TO  SYUPARA01-SKYSUMFLG
            MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
       *
            IF    ( SYS-1039-TUKISKYMISYUPRTKBN =   "0" )
@@ -3708,6 +3707,25 @@
                                            SYUPARA01-GAI-MISYU
                                            SYUPARA01-GAI-MISYU-P
                                            SYUPARA01-GAI-MISYU-M
+           END-IF
+      *
+           EVALUATE    SYS-1039-TUKIGRPKBN
+           WHEN    "1"
+               MOVE    1               TO  SYUPARA01-SKYSUMFLG
+           WHEN    "2"
+               MOVE    2               TO  SYUPARA01-SKYSUMFLG
+           WHEN    "3"
+               MOVE    3               TO  SYUPARA01-SKYSUMFLG
+           WHEN    "4"
+               MOVE    4               TO  SYUPARA01-SKYSUMFLG
+           WHEN    OTHER
+               MOVE    4               TO  SYUPARA01-SKYSUMFLG
+           END-EVALUATE
+      *
+           IF    ( SYS-1039-TUKISUMKBN     =   "1" )
+               MOVE    "1"             TO  SYUPARA01-TUKISUMKBN
+           ELSE
+               MOVE    "0"             TO  SYUPARA01-TUKISUMKBN
            END-IF
       *
            INITIALIZE                      PARA-REC

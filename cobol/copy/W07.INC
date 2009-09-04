@@ -390,11 +390,21 @@
                       07  W07-VALUE   PIC X(32).
                     06  W07-S02SKYMISYUPRT-COUNT   PIC S9(9)   BINARY.
                     06  W07-S02SKYMISYUPRT-ITEM    PIC X(32)   OCCURS 5.
+                  05  W07-TUKIGRP-COMBO.
+                    06  W07-TUKIGRP.
+                      07  W07-VALUE   PIC X(32).
+                    06  W07-TUKIGRP-COUNT          PIC S9(9) BINARY.
+                    06  W07-TUKIGRP-ITEM           PIC X(32) OCCURS 5.
                   05  W07-TUKISKYMISYUPRT-COMBO.
                     06  W07-TUKISKYMISYUPRT.
                       07  W07-VALUE   PIC X(32).
                     06  W07-TUKISKYMISYUPRT-COUNT   PIC S9(9) BINARY.
                     06  W07-TUKISKYMISYUPRT-ITEM    PIC X(32) OCCURS 5.
+                  05  W07-TUKISUM-COMBO.
+                    06  W07-TUKISUM.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-TUKISUM-COUNT          PIC S9(9) BINARY.
+                    06  W07-TUKISUM-ITEM           PIC X(40) OCCURS 5.
                   05  W07-S02SORTKBN-COMBO.
                     06  W07-S02SORTKBN.
                       07  W07-VALUE   PIC X(22).

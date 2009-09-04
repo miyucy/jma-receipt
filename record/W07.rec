@@ -513,12 +513,26 @@ W07	{
 					count	int;
 					item	varchar(32)[5];
 				};
+				TUKIGRP_COMBO	{
+					TUKIGRP		{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[5];
+				};
 				TUKISKYMISYUPRT_COMBO	{
 					TUKISKYMISYUPRT	{
 						value	varchar(32);
 					};
 					count	int;
 					item	varchar(32)[5];
+				};
+				TUKISUM_COMBO	{
+					TUKISUM		{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
 				};
 				S02SORTKBN_COMBO	{
 					S02SORTKBN{

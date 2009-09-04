@@ -106,8 +106,12 @@
                05  SYS-1039-IKTKEISANKBN        PIC X(01).
       *一括入金診療年月指定区分
                05  SYS-1039-IKTSRYYMKBN         PIC X(01).
+      *月別請求書発行方法
+               05  SYS-1039-TUKIGRPKBN          PIC X(01).
+      *月別請求書集計区分
+               05  SYS-1039-TUKISUMKBN          PIC X(01).
       *予備
-               05                       PIC  X(427).
+               05                       PIC  X(425).
       *端末ＩＤ
            03  SYS-1039-TERMID          PIC  X(16).
       *オペーレータＩＤ
