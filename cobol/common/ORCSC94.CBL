@@ -230,7 +230,8 @@
                    IF     (SPA-COM-SURYO  (IDX)     >  1  )  OR
       *            数量ゼロフラグ
                          ((SPA-SURYOZERO-FLG       =   1  )  AND
-                           (SPA-COM-SURYO (IDX)    =   0  ))
+                           (SPA-COM-SURYO (IDX)    =   0  )  AND
+                           (SPA-COM-KZMCOMPSIKIBETU    =   1 ))
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF
