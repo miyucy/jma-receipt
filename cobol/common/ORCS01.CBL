@@ -288,6 +288,7 @@
       *  04.04.05    NACL-ÌçÏÆ    09/06/11  £·£°ºÐÌ¤Ëþ¤Î¹â³Û·×»»ÂÐ±þ
       *  04.04.06    NACL-ÌçÏÆ    09/09/03  Á´¹ñÅÚÌÚ¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
       *                                     ¡ÊÆàÎÉ¸©¡Ë
+      *  04.04.07    NACL-ÌçÏÆ    09/09/07  °¦ÃÎ¸©Ã±ÆÈ£µ£±ÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/16  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ
       *  04.05.02    NACL-ÌçÏÆ    09/06/22  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
@@ -573,6 +574,11 @@
                05  WK-HONKZKKBN2           PIC  X(01).
                05  WK-KIGO2                PIC  X(80).
                05  WK-NUM2                 PIC  X(80).
+           03  WK-HKNJANUM3-TBL.
+               05  WK-HKNJANUM3            PIC  X(08).
+               05  WK-HONKZKKBN3           PIC  X(01).
+               05  WK-KIGO3                PIC  X(80).
+               05  WK-NUM3                 PIC  X(80).
       *
            03  WK-CONTKBN                  PIC  X(01).
            03  WK-CONTKBN2                 PIC  X(01).
@@ -3472,9 +3478,12 @@
            END-IF
       *
            INITIALIZE        WK-TOKATUKAI-TBL
-           IF  (WK-1001-PREFNUM      =  13     )
-           AND (COMB-KOH1HKNNUM      = "151"   )
-           AND (LNK-SYU-SRYYMD(1:6) >= "200905")
+           IF ((WK-1001-PREFNUM      =  13     ) AND
+               (COMB-KOH1HKNNUM      = "151"   ) AND
+               (LNK-SYU-SRYYMD(1:6) >= "200905"))
+           OR ((WK-1001-PREFNUM      =  23     ) AND
+               (COMB-KOH1HKNNUM      = "191"   ) AND
+               (LNK-SYU-SRYYMD(1:6) >= "200910"))
                MOVE    1     TO    WK-TOKATUKAI(1)
            END-IF
       *
@@ -3619,6 +3628,19 @@
       *
            IF      FLG-GENBUTU70           NOT =  ZERO
               MOVE   FLG-GENBUTU70   TO  LNK-SYU-SKJ-FTNGAKU(2)
+           END-IF
+      ***  IF     (LNK-S01-KOUREI-ZAITAKU-KBN  =  "1")
+           IF     (FLG-KOUREI-KBN              =  "1")
+           AND    (LNK-SYU-SRYYMD(1:6)    >= "200904")
+              IF    COMB-HOJOKBN    =   "3" OR "6" OR "7"
+                    MOVE    1        TO  LNK-SYU-SKJ-FTNGAKU(2)
+              ELSE
+                IF  FLG-SANSHOU3    =   SPACE
+                    MOVE    2        TO  LNK-SYU-SKJ-FTNGAKU(2)
+                ELSE
+                    MOVE    3        TO  LNK-SYU-SKJ-FTNGAKU(2)
+                END-IF
+              END-IF
            END-IF
       *
            IF     (LNK-S01-KOUREI-ZAITAKU-KBN  =  "1" )
@@ -4596,6 +4618,7 @@
                IF  ((COMB-KOH1HKNNUM = "051" OR "052" OR "091" ) OR
                     (WK-TOKATUKAI(1) =  1                      ))
                AND ( WK-KOH-FTNJANUM(5:3) = "601" OR "602"      )
+               AND ( WK-KOH-FTNJANUM(1:2) = "51"  OR "52"       )
                  IF     FLG-KOUREI-KBN   =   "1"
                    IF    COMB-HOJOKBN    =   "3" OR "6" OR "7"
                          MOVE    1    TO   FLG-TOKUSITU
@@ -4788,6 +4811,9 @@
                      (COMB-KOHHKNNUM(IDX-CYO) = "281"         ))
                  OR ((WK-1001-PREFNUM         =  01           ) AND
                      (COMB-KOHHKNNUM(IDX-CYO) = "183"         ))
+                 OR ((WK-1001-PREFNUM         =  23           ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) = "191"         ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200910"      ))
       *
                  OR ((WK-1001-PREFNUM         =  13           ) AND
                      (COMB-KOHHKNNUM(IDX-CYO) = "182"         ))
@@ -7525,6 +7551,10 @@
                  (COMB-KOHHKNNUM(KOH-IDX)      = "183"   )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200810"))
       *
+             OR ((WK-1001-PREFNUM              =  23     )  AND
+                 (COMB-KOHHKNNUM(KOH-IDX)      = "191"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200910"))
+      *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
       ***                                        "4" OR "5" OR "6" OR
       ***                                        "7" OR "8"          )
@@ -9487,13 +9517,25 @@
               END-IF
            END-IF.
       *
-           IF  (FLG-KOUREI-KBN   =   "1" )
-           OR  (COMB-HKNNUM      =  "060")
-              IF   WK-HKNJANUM2  = WK-HKNJANUM
-                MOVE  WK-HONKZKKBN  TO  WK-HONKZKKBN2
-                MOVE  WK-KIGO       TO  WK-KIGO2
-                MOVE  WK-NUM        TO  WK-NUM2
-              END-IF
+           MOVE   SPACE               TO  WK-HKNJANUM3-TBL.
+           IF    (COMB-HKNNUM      =   "039")
+           AND   (SYU-SYUHKNNUM    =   "039")
+             IF   WK-HKNJANUM2  = WK-HKNJANUM
+                  MOVE  WK-HONKZKKBN  TO  WK-HONKZKKBN2
+                  MOVE  WK-KIGO       TO  WK-KIGO2
+                  MOVE  WK-NUM        TO  WK-NUM2
+             END-IF
+             MOVE   WK-HKNJANUM2-TBL  TO  WK-HKNJANUM3-TBL
+             MOVE   WK-HKNJANUM-TBL   TO  WK-HKNJANUM2-TBL
+           ELSE
+             IF  (FLG-KOUREI-KBN   =   "1" )
+             OR  (COMB-HKNNUM      =  "060")
+                IF   WK-HKNJANUM2  = WK-HKNJANUM
+                  MOVE  WK-HONKZKKBN  TO  WK-HONKZKKBN2
+                  MOVE  WK-KIGO       TO  WK-KIGO2
+                  MOVE  WK-NUM        TO  WK-NUM2
+                END-IF
+             END-IF
            END-IF.
       *
            MOVE    ZERO   TO   FLG-RUITAISYO.
@@ -9539,14 +9581,15 @@
                  END-IF
            END-EVALUATE.
       *
+           IF    (COMB-HKNNUM      =   "039")
+           AND   (SYU-SYUHKNNUM    =   "039")
+             CONTINUE
+           ELSE
+             MOVE   WK-HKNJANUM2-TBL  TO  WK-HKNJANUM3-TBL
+           END-IF.
+      *
            IF  FLG-GENBUTU70    NOT =  ZERO
              IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
-               IF (COMB-KOH1HKNNUM = "972" OR "974")
-               OR (COMB-KOH2HKNNUM = "972" OR "974")
-               OR (COMB-KOH3HKNNUM = "972" OR "974")
-               OR (COMB-KOH4HKNNUM = "972" OR "974")
-                 CONTINUE
-               ELSE
                  IF  ((SYU-SRYYMD  <  WK-GEN70-YMD  ) AND
                       (SYU-SKJ-FTNGAKU(2)     = ZERO))
                  OR  ((SYU-SKJ-FTNGAKU(2) NOT = ZERO) AND
@@ -9556,9 +9599,20 @@
                     MOVE  SPACE  TO   WK-KIGO2
                     MOVE  SPACE  TO   WK-NUM2
                  END-IF
-               END-IF
              END-IF
            END-IF.
+      ***  IF  LNK-S01-KOUREI-ZAITAKU-KBN  =  "1"
+      *@   IF  FLG-KOUREI-KBN              =  "1"
+      *@     IF    WK-HKNJANUM-TBL  =  WK-HKNJANUM2-TBL
+      *@         IF   (SYU-SKJ-FTNGAKU(2) NOT = ZERO)
+      *@         AND  (SYU-SKJ-FTNGAKU(2) NOT =
+      *@                     LNK-SYU-SKJ-FTNGAKU(2) )
+      *@            MOVE   "9"   TO   WK-HONKZKKBN2
+      *@            MOVE  SPACE  TO   WK-KIGO2
+      *@            MOVE  SPACE  TO   WK-NUM2
+      *@         END-IF
+      *@     END-IF
+      *@   END-IF.
       *
       *    ¸øÈñ£É£ÄÊÔ½¸
            PERFORM  22027-KOHID-HENSYU-SEC.
@@ -13110,7 +13164,7 @@
       *
            IF     COMB-HKNNUM     = "039"
              IF   (SYU-SYUHKNNUM    =  "039"         )
-      ***    AND  (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
+             AND  (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
                IF  (SYU-KOH1HKNNUM     NOT = SPACE)
                OR  (SYU-KOH2HKNNUM     NOT = SPACE)
                OR  (SYU-KOH3HKNNUM     NOT = SPACE)
@@ -13764,6 +13818,8 @@
              WHEN         2
                IF     COMB-HKNNUM     = "039"
                  IF  ( SYU-SYUHKNNUM   = "039"          )
+                 AND ( WK-HKNJANUM2-TBL
+                                       = WK-HKNJANUM-TBL)
                  AND ((SYU-KOH1HKNNUM  = "972" OR "974") OR
                       (SYU-KOH2HKNNUM  = "972" OR "974") OR
                       (SYU-KOH3HKNNUM  = "972" OR "974") OR
@@ -13849,6 +13905,8 @@
              WHEN         1
                IF     COMB-HKNNUM     = "039"
                  IF  ( SYU-SYUHKNNUM   = "039"          )
+                 AND ( WK-HKNJANUM2-TBL
+                                       = WK-HKNJANUM-TBL)
                  AND ((SYU-KOH1HKNNUM  = "972" OR "974") OR
                       (SYU-KOH2HKNNUM  = "972" OR "974") OR
                       (SYU-KOH3HKNNUM  = "972" OR "974") OR
