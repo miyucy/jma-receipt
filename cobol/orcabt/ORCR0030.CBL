@@ -419,6 +419,7 @@
       *  04.04.19    NACL-門脇    09/09/03  全国土木＋精神、結核対応
       *                                     （奈良県）
       *  04.04.20    NACL-門脇    09/09/07  愛知県単独５１対応
+      *  04.04.21    NACL-門脇    09/09/08  長崎県地方公費対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
@@ -602,6 +603,7 @@
            03  FLG-KISAIOK                             PIC 9(01).
            03  FLG-PTNYUINRRK                          PIC 9(01).
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
+           03  FLG-KOHYONKAIME-NO                      PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -8493,7 +8495,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (SYU-SYUHKNNUM NOT = "060" AND "067") AND
                 (SYU-KOH-HKNNUM(1)(1:1)
                                  >=  "1" AND <=  "8"))
-            IF  FLG-KOHYONKAIME = 1
+           OR  ((SYS-1001-PREFNUM   = 42            ) AND
+                (SYU-KOH-HKNNUM(1)  = "186"         ))
+      *
+            MOVE     ZERO    TO   FLG-KOHYONKAIME-NO
+            IF ((SYS-1001-PREFNUM   = 42            ) AND
+                (SYU-KOH-HKNNUM(1)  = "186"         ))
+               MOVE   1      TO   FLG-KOHYONKAIME-NO
+            END-IF
+            IF  (FLG-KOHYONKAIME-NO  =  ZERO)
+            AND (FLG-KOHYONKAIME     =   1  )
               IF  FLG-TOKU75 = 3
                MOVE   22200   TO   WRK-KINGAKU
               ELSE
