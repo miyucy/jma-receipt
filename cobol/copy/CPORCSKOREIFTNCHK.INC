@@ -42,7 +42,6 @@
       *                                     マル長公費ＩＤ追加
       *  04.03.01    NACL-門脇    09/01/05  ７５歳到達月の特例区分追加
       *                                     マル長のみ区分追加
-      *  04.07.01    NACL-門脇    13/11/11  減額（円）の対応
       ************************************************************
        01  ORCSKOREIFTNCHKAREA.
       *
@@ -71,8 +70,6 @@
            03  LNK-KOREIFTNCHK-GENGAKU-RITU PIC 9(03).
       *    減額（金額）
            03  LNK-KOREIFTNCHK-GENGAKU-KIN  PIC 9(07).
-      *    減額計算フラグ
-           03  LNK-KOREIFTNCHK-GENGAKUFLG   PIC 9(01).
       *    高額４回目以降
            03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC 9(01).
       *    高齢者・若人区分
@@ -100,8 +97,6 @@
              05 LNK-KOREIFTNCHK-KOHFTNGAKU  PIC 9(07).
       *公費を含む場合の主保険の一部負担額
              05 LNK-KOREIFTNCHK-ICHIBUGAKU  PIC 9(07).
-      *公費を含む場合の主保険の一部負担額（１円単位）（判定用）
-             05 LNK-KOREIFTNCHK-ICHIBUGAKU2 PIC 9(07).
       *入　：高齢者＋地方公費の請求金額
              05 LNK-KOREIFTNCHK-CHIHOUGAKU  PIC 9(07).
       *
