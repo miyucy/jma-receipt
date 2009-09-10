@@ -297,6 +297,7 @@
                MOVE    "0"             TO  WRK-PARA-SKYKBN
            END-IF
            IF      WRK-PARA-SKYYM  =   SPACE
+               MOVE    "000000"        TO  WRK-PARA-SKYYM
                MOVE    "0"             TO  WRK-PARA-SKYKBN
            END-IF
            DISPLAY "OT PARA=" WRK-PARA-SKYYM "#" WRK-PARA-SKYKBN "#"
@@ -379,9 +380,20 @@
            PERFORM          UNTIL   FLG-END        =   1
       *        ÀÁµá¶èÊ¬ÊÌÊÔ½¸½èÍý
                MOVE    KEY-NEW         TO  KEY-OLD
-               MOVE    WRK-CONS-LINE-MAX
-                                       TO  CNT-LINE
                INITIALIZE                  SUM-OCC (2)
+      *
+      *        ¸«½Ð¤·ÊÔ½¸½èÍý
+               EVALUATE    KEY-N-SKYKBN
+                   WHEN    SPACE
+                       MOVE    "¡¡¡¡¡¡¡¡¡¡¡¡¡¡"    TO  H01-SKYKBN
+                   WHEN    "0"
+                       MOVE    "¡ÚÀÁµá¤·¤Ê¤¤¡Û"    TO  H01-SKYKBN
+                   WHEN    "1"
+                       MOVE    "¡ÚÌ¤ÀÁµá¡Û¡¡¡¡"    TO  H01-SKYKBN
+                   WHEN    "2"
+                       MOVE    "¡ÚÀÁµáºÑ¡Û¡¡¡¡"    TO  H01-SKYKBN
+               END-EVALUATE
+               PERFORM 2001-HEAD-PRINT-SEC
                PERFORM          UNTIL   FLG-END        =   1
                                 OR      KEY-N-SKYKBN
                                                    NOT =   KEY-O-SKYKBN
@@ -411,10 +423,10 @@
                    MOVE    3                TO  IDX
                    PERFORM 2003-TERM-PRINT-SEC
                END-IF
-      *
-      *        Ä¢É¼°õºþ½èÍý
-               PERFORM 2004-PRINT-OUT-SEC
            END-PERFORM
+      *
+      *    Ä¢É¼°õºþ½èÍý
+           PERFORM 2004-PRINT-OUT-SEC
       *
            MOVE    "tbl_bunben"    TO  MCP-TABLE
            MOVE    "key4"          TO  MCP-PATHNAME
@@ -443,14 +455,6 @@
                WHEN    "2"
                    MOVE    "¡Ê¹ñÊÝ¡Ë"          TO  H01-TEISYUTUSAKI
            END-EVALUATE
-           EVALUATE    KEY-N-SKYKBN
-               WHEN    "0"
-                   MOVE    "¡ÚÀÁµá¤·¤Ê¤¤¡Û"    TO  H01-SKYKBN
-               WHEN    "1"
-                   MOVE    "¡ÚÌ¤ÀÁµá¡Û"        TO  H01-SKYKBN
-               WHEN    "2"
-                   MOVE    "¡ÚÀÁµáºÑ¡Û"        TO  H01-SKYKBN
-           END-EVALUATE
       *
            MOVE    SPACE               TO  HCMSL55
            MOVE    HEAD-01             TO  HCMSL55-MOJI (1)
@@ -471,20 +475,20 @@
                PERFORM 2001-HEAD-PRINT-SEC
            END-IF
       *
+           MOVE    SPACE               TO  BODY-01
+      *    ÊÝ¸±¼ÔÈÖ¹æ
+           MOVE    BUNBEN-HKNJANUM     TO  B01-HKNJANUM
+      *    Ê¬ÊÚ¶èÊ¬
+           EVALUATE    BUNBEN-BUNBENKBN
+               WHEN    "1"
+                   MOVE    "¡¡Àµ¾ï¡¡"      TO  B01-BUNBENKBN
+               WHEN    "2"
+                   MOVE    "¡¡°Û¾ï¡¡"      TO  B01-BUNBENKBN
+           END-EVALUATE
+      *
            PERFORM          UNTIL   FLG-END        =   1
                             OR      KEY-NEW    NOT =   KEY-OLD
                             OR      CNT-LINE       >=  WRK-CONS-LINE-MAX
-      *
-               MOVE    SPACE               TO  BODY-01
-      *        ÊÝ¸±¼ÔÈÖ¹æ
-               MOVE    BUNBEN-HKNJANUM     TO  B01-HKNJANUM
-      *        Ê¬ÊÚ¶èÊ¬
-               EVALUATE    BUNBEN-BUNBENKBN
-                   WHEN    "1"
-                       MOVE    "¡¡Àµ¾ï¡¡"      TO  B01-BUNBENKBN
-                   WHEN    "2"
-                       MOVE    "¡¡°Û¾ï¡¡"      TO  B01-BUNBENKBN
-               END-EVALUATE
       *        ´µ¼ÔÈÖ¹æ
                INITIALIZE                      ORCSPTIDAREA
                MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
@@ -509,6 +513,9 @@
       *
                ADD     1               TO  CNT-LINE
                MOVE    BODY-01         TO  HCMSL55-MOJI (CNT-LINE)
+      *
+               MOVE    SPACE           TO  BODY-01
+               MOVE    "¡¡¡¡¡¡¡¡"      TO  B01-BUNBENKBN
       *
                ADD     1               TO  CNT-OUT
       *
@@ -761,7 +768,11 @@
                        END-IF
                END-EVALUATE
       *
-               MOVE    BUNBEN-SKYKBN   TO  KEY-N-SKYKBN
+               IF      WRK-PARA-SKYYM  =   "000000"
+                   MOVE    SPACE           TO  KEY-N-SKYKBN
+               ELSE
+                   MOVE    BUNBEN-SKYKBN   TO  KEY-N-SKYKBN
+               END-IF
                MOVE    BUNBEN-BUNBENKBN
                                        TO  KEY-N-BUNBENKBN
                MOVE    BUNBEN-HKNJANUM-S
@@ -772,7 +783,7 @@
                        " TEISYUTUSAKI=" BUNBEN-TEISYUTUSAKI
                        " SKYKBN="       BUNBEN-SKYKBN
                        " BUNBENKBN="    BUNBEN-BUNBENKBN
-                       " HKNJANUM="     BUNBEN-HKNJANUM
+                       " HKNJANUM="     BUNBEN-HKNJANUM-S
            ELSE
                MOVE    1               TO  FLG-END
                MOVE    HIGH-VALUE      TO  KEY-NEW
