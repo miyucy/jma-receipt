@@ -35,6 +35,7 @@ for d in scripts/daily  scripts/kaisei scripts/monthly  \
       if test -f "${SITESRCDIR}/${d}/${f}"; then
 	sed -e 's,\@jma-receipt-env\@,@jma-receipt-env@,g' \
         < "${SITESRCDIR}/${d}/${f}" > "${SITEDIR}/${d}/${f}"
+	chmod +x "${SITEDIR}/${d}/${f}"
       fi
     done
   fi
