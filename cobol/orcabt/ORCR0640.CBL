@@ -386,6 +386,8 @@
       *                                     （奈良県）
       *  04.04.21    NACL-門脇    09/09/07  愛知県単独５１対応
       *  04.04.22    NACL-門脇    09/09/08  長崎県地方公費対応
+      *  04.04.23    NACL-門脇    09/09/10  月途中に医保と生保の併用から
+      *                                     生保単独になったときの対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
@@ -5704,7 +5706,8 @@
                                 "038" AND "024" AND "079"        ) AND
                            (RECE62-KOHNUMHC(IDX1 2)      =  SPACE) AND
                            (RECE62-KOHNUMHC(IDX1 3)      =  SPACE) AND
-                           (RECE62-KOHNUMHC(IDX1 4)      =  SPACE))
+                           (RECE62-KOHNUMHC(IDX1 4)      =  SPACE) AND
+                           (RECE62-HKNNUM                =  SPACE))
                        OR ( FLG-SKJFTNNASI               =    1   )
                         CONTINUE
                        ELSE
@@ -10799,12 +10802,14 @@
              OR   ( SYU-KOH-HKNNUM(2)   =   "012" OR "025" )
              OR   ( SYU-KOH-HKNNUM(3)   =   "012" OR "025" )
              OR   ( SYU-KOH-HKNNUM(4)   =   "012" OR "025" )
+               IF   SYU-SYUHKNNUM  NOT = SPACE
                  IF  FLG-TOKU75 = 1 OR 2
                    MOVE    7500      TO   WRK-KINGAKU
                  ELSE
                    MOVE    15000     TO   WRK-KINGAKU
                  END-IF
                  PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+               END-IF
              ELSE
                IF   ( SYU-KOH-HKNNUM(1) =   "972" )
                OR   ( SYU-KOH-HKNNUM(2) =   "972" )
@@ -10907,9 +10912,10 @@
              END-IF                                              
            END-IF                                                  
       *
-           ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
-      *
-           ADD   SYU-SKJ-FTNGAKU(1)  TO  WRK-KOH-KOUGAKU
+           IF   SYU-SYUHKNNUM  NOT = SPACE
+              ADD   SYU-KOH-FTN         TO   WRK-KOH-FTN
+              ADD   SYU-SKJ-FTNGAKU(1)  TO   WRK-KOH-KOUGAKU
+           END-IF
       *
            .
        210442-HOKEN-FUTAN-HENSYU-EXT.
@@ -10969,6 +10975,7 @@
              OR   ( SYU-KOH-HKNNUM(2)   =   "012" OR "025" )
              OR   ( SYU-KOH-HKNNUM(3)   =   "012" OR "025" )
              OR   ( SYU-KOH-HKNNUM(4)   =   "012" OR "025" )
+               IF   SYU-SYUHKNNUM  NOT = SPACE
                  MOVE    1         TO   FLG-JYOGENKBN2
                  IF  FLG-KOHYONKAIME = 1
                   IF  FLG-TOKU75 = 3
@@ -10984,6 +10991,7 @@
                   END-IF
                  END-IF
                  PERFORM   2104421-ICHIBUFTN-KOH-SET-SEC
+               END-IF
              ELSE
                IF   ( SYU-KOH-HKNNUM(1) =   "972" )
                OR   ( SYU-KOH-HKNNUM(2) =   "972" )
@@ -11085,9 +11093,10 @@
              END-IF
            END-IF
       *
-           ADD   SYU-KOH-FTN   TO   WRK-KOH-FTN
-      *
-           ADD   SYU-SKJ-FTNGAKU(1)  TO  WRK-KOH-KOUGAKU
+           IF   SYU-SYUHKNNUM  NOT = SPACE
+              ADD   SYU-KOH-FTN         TO   WRK-KOH-FTN
+              ADD   SYU-SKJ-FTNGAKU(1)  TO   WRK-KOH-KOUGAKU
+           END-IF
       *
            .
        210447-HOKEN-FUTAN-HENSYU2-EXT.
@@ -12672,7 +12681,8 @@
                                              AND "038"          ) AND
                          (SYU-KOH2HKNNUM      =   SPACE         ) AND
                          (SYU-KOH3HKNNUM      =   SPACE         ) AND
-                         (SYU-KOH4HKNNUM      =   SPACE         ))
+                         (SYU-KOH4HKNNUM      =   SPACE         ) AND
+                         (RECE62-HKNNUM       =   SPACE         ))
                    OR   ((SYU-KOH1HKNNUM      =  "024" OR  "079") AND
                          (SYU-KOH2HKNNUM      =   SPACE         ) AND
                          (SYU-KOH3HKNNUM      =   SPACE         ) AND
