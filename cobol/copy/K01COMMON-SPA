@@ -154,6 +154,10 @@
                05  SPA-HKTSANTEI-FLG       PIC 9(01).
       *包括診療行為チェック（入院料）
                05  SPA-HKTNYUIN-FLG        PIC 9(01).
+      *包括診療行為チェック（小児科外来診察料）
+               05  SPA-HKTSANTEI-202       PIC 9(01).
+      *包括診療行為チェック（生活習慣病管理料）
+               05  SPA-HKTSANTEI-203       PIC 9(01).
       *@
       *腫瘍マーカー一覧展開選択
                05  SPA-AKUSEIHYOFLG        PIC  X(01).

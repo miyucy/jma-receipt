@@ -797,6 +797,9 @@
                PERFORM 1002-SYUNOU-OUT-SEC
                MOVE    SYUNOU-REC          TO  ORCSCGAIRAI-SYUNOU-REC
                                                              (IDH-GAI)
+           ELSE
+      *        収納がない場合、エラー
+               MOVE    "0051"              TO  SPA-ERRCD
            END-IF
       *
       *    剤番号テーブル

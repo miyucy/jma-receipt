@@ -128,6 +128,20 @@ W32	{
 			count	int;
 			item	varchar(20)[5];
 		};
+		SRYKBN11_COMB	{
+			SRYKBN11	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		SRYKBN12_COMB	{
+			SRYKBN12	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
                 B03	{
 			state   int;
 		};

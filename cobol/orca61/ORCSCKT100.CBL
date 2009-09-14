@@ -2401,6 +2401,8 @@
                MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
                MOVE    "2"                 TO  ORCSCHKTCHK-SYORI
                MOVE    "KT01"              TO  ORCSCHKTCHK-PG
+      *        »»ÄêÍúÎò¤«¤é¤ÎÊñ³ç¤ò¹Ô¤Ê¤¦
+               MOVE    LNK-ORCSC-KT01-AREA TO  ORCSCHKTCHK-KT01-AREA
                CALL    "ORCSCHKTCHK"       USING
                                            ORCSCHKTCHKAREA
                                            SPA-AREA
@@ -2610,6 +2612,9 @@
                        MOVE    LNK-ORCSC-AUTOKBN(IDX IDY)
                                            TO  WRK-KSN-AUTOKBN (IDX-S)
                    END-IF
+      *            Êñ³çºÞ
+                   MOVE    LNK-ORCSC-HKTKBN (IDX IDY)
+                                           TO  WRK-KSN-HKTKBN  (IDX-S)
                END-IF
            END-IF
       *    ²ó¿ô¡ÊÆþ±¡¡Ë

@@ -206,6 +206,10 @@
       *                日毎のチェックデータあり
                        09  SPA-COM-DAYCHK-FLG    PIC  9(01).
       *!????
+      *                包括コード（システム管理毎）
+                       09  SPA-COM-HOUKATU-KFLG  PIC  9(01).
+                       09  SPA-COM-HOUKATU-KFLG2 PIC  9(01).
+                       09  SPA-COM-HOUKATU-KERR  PIC  9(01).
       *                包括コード（１：包括分）
                        09  SPA-COM-HOUKATU-FLG   PIC  9(01).
                        09  SPA-COM-HOUKATU-FLG2  PIC  9(01).

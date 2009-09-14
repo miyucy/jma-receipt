@@ -562,86 +562,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label272</name>
-      <x>256</x>
-      <y>564</y>
-      <width>88</width>
-      <height>24</height>
-      <label>¿∫ø¿≤ ¿ÏÃÁ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label271</name>
-      <x>256</x>
-      <y>532</y>
-      <width>72</width>
-      <height>24</height>
-      <label>•Í•œ•”•Í</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label267</name>
-      <x>256</x>
-      <y>424</y>
-      <width>48</width>
-      <height>24</height>
-      <label>ºÍΩ—</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label266</name>
-      <x>256</x>
-      <y>388</y>
-      <width>48</width>
-      <height>24</height>
-      <label>ΩË√÷</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label265</name>
-      <x>256</x>
-      <y>352</y>
-      <width>48</width>
-      <height>24</height>
-      <label>√ÌºÕ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator2</name>
       <x>8</x>
@@ -715,22 +635,6 @@
       <width>72</width>
       <height>24</height>
       <label>ø«Œ≈∂Ë ¨</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label264</name>
-      <x>256</x>
-      <y>312</y>
-      <width>48</width>
-      <height>24</height>
-      <label>≈ÍÃÙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -943,7 +847,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN02_COMB</name>
       <x>360</x>
-      <y>348</y>
+      <y>344</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -983,7 +887,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN03_COMB</name>
       <x>360</x>
-      <y>384</y>
+      <y>376</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1023,7 +927,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN04_COMB</name>
       <x>360</x>
-      <y>420</y>
+      <y>408</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1063,7 +967,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN05_COMB</name>
       <x>360</x>
-      <y>456</y>
+      <y>440</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1103,7 +1007,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN06_COMB</name>
       <x>360</x>
-      <y>492</y>
+      <y>472</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1143,7 +1047,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN07_COMB</name>
       <x>360</x>
-      <y>528</y>
+      <y>504</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1183,7 +1087,7 @@
       <class>GtkPandaCombo</class>
       <name>SRYKBN08_COMB</name>
       <x>360</x>
-      <y>564</y>
+      <y>536</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1220,11 +1124,115 @@
     </widget>
 
     <widget>
+      <class>GtkPandaCombo</class>
+      <name>SRYKBN09_COMB</name>
+      <x>360</x>
+      <y>568</y>
+      <width>151</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>SRYKBN09</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Tue, 07 May 2002 10:15:36 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Tue, 07 May 2002 10:16:34 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>0  Ò≥Á§∑§ §§</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label266</name>
+      <x>256</x>
+      <y>376</y>
+      <width>48</width>
+      <height>24</height>
+      <label>ΩË√÷</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label267</name>
+      <x>256</x>
+      <y>408</y>
+      <width>48</width>
+      <height>24</height>
+      <label>ºÍΩ—</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label264</name>
+      <x>256</x>
+      <y>312</y>
+      <width>48</width>
+      <height>24</height>
+      <label>≈ÍÃÙ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label265</name>
+      <x>256</x>
+      <y>344</y>
+      <width>48</width>
+      <height>24</height>
+      <label>√ÌºÕ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label269</name>
       <x>256</x>
-      <y>460</y>
-      <width>48</width>
+      <y>440</y>
+      <width>100</width>
       <height>24</height>
       <label>∏°∫∫</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1239,7 +1247,7 @@
       <class>GtkLabel</class>
       <name>label268</name>
       <x>256</x>
-      <y>496</y>
+      <y>476</y>
       <width>72</width>
       <height>24</height>
       <label>≤Ë¡¸ø«√«</label>
@@ -1253,9 +1261,41 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label271</name>
+      <x>256</x>
+      <y>508</y>
+      <width>72</width>
+      <height>24</height>
+      <label>•Í•œ•”•Í</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label272</name>
+      <x>256</x>
+      <y>536</y>
+      <width>88</width>
+      <height>24</height>
+      <label>¿∫ø¿≤ ¿ÏÃÁ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label273</name>
       <x>256</x>
-      <y>600</y>
+      <y>572</y>
       <width>88</width>
       <height>24</height>
       <label> ¸ºÕ¿˛º£Œ≈</label>
@@ -1271,7 +1311,7 @@
       <class>GtkLabel</class>
       <name>label274</name>
       <x>256</x>
-      <y>636</y>
+      <y>604</y>
       <width>88</width>
       <height>24</height>
       <label>…¬Õ˝ø«√«</label>
@@ -1284,10 +1324,42 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label275</name>
+      <x>256</x>
+      <y>636</y>
+      <width>88</width>
+      <height>24</height>
+      <label>∞Â≥ÿ¥…Õ˝Œ¡</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label276</name>
+      <x>256</x>
+      <y>668</y>
+      <width>88</width>
+      <height>24</height>
+      <label>∫ﬂ¬∞ÂŒ≈</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>SRYKBN10_COMB</name>
       <x>360</x>
-      <y>632</y>
+      <y>600</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1325,9 +1397,9 @@
 
     <widget>
       <class>GtkPandaCombo</class>
-      <name>SRYKBN09_COMB</name>
+      <name>SRYKBN11_COMB</name>
       <x>360</x>
-      <y>600</y>
+      <y>632</y>
       <width>151</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -1340,7 +1412,47 @@
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>SRYKBN09</name>
+	<name>SRYKBN11</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Tue, 07 May 2002 10:15:36 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Tue, 07 May 2002 10:16:34 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>0  Ò≥Á§∑§ §§</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>SRYKBN12_COMB</name>
+      <x>360</x>
+      <y>664</y>
+      <width>151</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>SRYKBN12</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>

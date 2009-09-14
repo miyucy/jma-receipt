@@ -48,4 +48,12 @@
                        09  ORCSCHKTCHK-NYUHKTFLG   PIC 9(01).
       *                １：出来高算定日
                        09  ORCSCHKTCHK-DEKIDAFLG   PIC 9(01).
+      *外来まとめ算定履歴領域
+           03  ORCSCHKTCHK-KT01-AREA.
+               05  ORCSCHKTCHK-KT01FLG         PIC X(01).
+               05  ORCSCHKTCHK-KT01-OCC        OCCURS   100.
+                   07  ORCSCHKTCHK-KT01-SRYCD  PIC X(09).
+                   07  ORCSCHKTCHK-KT01-DAY-G.
+                       09  ORCSCHKTCHK-KT01-DAY     PIC 9(03)
+                                                  OCCURS   31.
       *

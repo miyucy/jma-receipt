@@ -512,7 +512,7 @@
        10010-SRYKBN-CHK-SEC             SECTION.
       *
            IF      LNK-ORCSC-PG        =   "K05"
-      *        ¥»¥Ã¥ÈÅÐÏ¿¤Î¥Á¥§¥Ã¥¯¤Ê¤·
+      *        Êñ³ç¿ÇÎÅ¡¡¥Á¥§¥Ã¥¯¤Ê¤·
                CONTINUE
            ELSE
       *
@@ -546,6 +546,27 @@
                            MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                        ELSE
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                   ELSE
+      *            Êñ³ç¿ÇÎÅÀßÄê»þ¤Ï¡¢ÃÖ¤­´¹¤¨¤ë
+                       IF      (SPA-HKTSANTEI-202      =   1  )  AND
+                               (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO )
+      *                    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                       IF      (SPA-HKTSANTEI-203      =   1  )  AND
+                              ((LNK-ORCSC-SEIKATU-ARI  >   ZERO )  OR
+                               (LNK-ORCSC-SEIKATU-ARI2 >   ZERO ))
+      *                    À¸³è½¬´·ÉÂ´ÉÍýÎÁ
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -1847,6 +1868,18 @@
            ELSE
                MOVE    1                   TO  FLG-SYOHO-CHK
            END-IF
+      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¦Êñ³ç¿ÇÎÅÂÐ¾Ý¤Ï»»Äê¤¢¤ê¤È¤¹¤ë
+           IF     (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO) AND
+                  (SPA-HKTSANTEI-202   =   1    )
+               MOVE    1                   TO  FLG-SYOHO-CHK
+           END-IF
+      *    À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡¦Êñ³ç¿ÇÎÅÂÐ¾Ý¤Ï»»Äê¤¢¤ê¤È¤¹¤ë
+           IF    ((LNK-ORCSC-SEIKATU-ARI   >  ZERO) OR
+                  (LNK-ORCSC-SEIKATU-ARI   >  ZERO))  AND
+                  (SPA-HKTSANTEI-203   =   1    )
+               MOVE    1                   TO  FLG-SYOHO-CHK
+           END-IF
+      *
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))   AND

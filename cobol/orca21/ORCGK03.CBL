@@ -6467,6 +6467,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "9000"
                    MOVE    "【算定履歴の更新ができませんでした】"
                                        TO  SPA-ERRMSG
+               WHEN    "0051"
+                   STRING  "中間データに不整合が発生しました。"
+                           "再度、診療行為から入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "K001"
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
       *D           MOVE    SPACE           TO  SPA-ERRMSG2

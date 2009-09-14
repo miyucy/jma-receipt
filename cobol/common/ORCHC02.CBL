@@ -2312,7 +2312,8 @@
                                                    "233"  OR
                                                    "211"  OR
                                                    "221"  OR
-                                                   "231" )
+                                                   "231"  OR
+                                                   "291" )
       *                情ま質杅潘帎
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -2328,7 +2329,8 @@
                    END-IF
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
-                                                   "232")
+                                                   "232"  OR
+                                                   "292")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
            END-EVALUATE
@@ -2340,6 +2342,8 @@
                IF     (WRK-SRYKBN          =   "21"
                                            OR  "22"
                                            OR  "23" )
+               AND   ((WRK-SRYSYUKBN       =   SPACE )
+                  OR  (WRK-SRYSYUKBN(3:1)  =   "0"   ))
                    IF     (FLG-SYOHO-IN        =   2    )
       *                管鰾醒未伕匹情ま質杅執綬
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -2352,11 +2356,11 @@
                        END-IF
                    END-IF
       *            情ま抁喟反覆擂
-                   IF      WRK-SRYSYUKBN       =   "213"
-                                               OR  "223"
-                                               OR  "233"
-                       MOVE    ZERO            TO  FLG-TAIGAI
-                   END-IF
+      ******       IF      WRK-SRYSYUKBN       =   "213"
+      *                                        OR  "223"
+      *                                        OR  "233"
+      *                MOVE    ZERO            TO  FLG-TAIGAI
+      *******       END-IF
                 END-IF
            END-IF
       *
@@ -3509,6 +3513,20 @@
                       (WRK-ZAITENKEI       =   ZERO   )
                    MOVE    1               TO  FLG-OK2
                END-IF
+      *        情ま質杅
+               IF     (WRK-SRYSYUKBN       =   "211"
+                                           OR  "221"
+                                           OR  "231"
+                                           OR  "291" )
+                   MOVE    ZERO            TO  FLG-OK2
+               END-IF
+      *        情陸質杅
+               IF     (WRK-SRYSYUKBN       =   "212"
+                                           OR  "222"
+                                           OR  "232"
+                                           OR  "292" )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
            END-IF
       *    髑泔匹﹜鰾醒互未伕及手毛覆擂﹋情ま﹌
            IF      ORCHC19-KBN         =   "5"
@@ -3517,6 +3535,20 @@
                                                "23"    )  AND
                       (WRK-ZAITENKEI       >   ZERO    )
                    MOVE    1               TO  FLG-OK2
+               END-IF
+      *        情ま質杅
+               IF     (WRK-SRYSYUKBN       =   "211"
+                                           OR  "221"
+                                           OR  "231"
+                                           OR  "291" )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+      *        情陸質杅
+               IF     (WRK-SRYSYUKBN       =   "212"
+                                           OR  "222"
+                                           OR  "232"
+                                           OR  "292" )
+                   MOVE    ZERO            TO  FLG-OK2
                END-IF
            END-IF
       *

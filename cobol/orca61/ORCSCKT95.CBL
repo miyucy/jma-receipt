@@ -1148,6 +1148,8 @@
            END-IF
            MOVE    ZERO                TO  SPA-HKTSANTEI-FLG
            MOVE    ZERO                TO  SPA-HKTNYUIN-FLG
+           MOVE    ZERO                TO  SPA-HKTSANTEI-202
+           MOVE    ZERO                TO  SPA-HKTSANTEI-203
            PERFORM UNTIL  (FLG-SYSKANRI    =   1  )
                MOVE    MCPDATA-REC         TO  SYS-1014-REC
                IF      SYS-1014-SANTEI-HOU     =   "1"
@@ -1157,6 +1159,14 @@
                        MOVE    1               TO  SPA-HKTNYUIN-FLG
                    ELSE
                        MOVE    1               TO  SPA-HKTSANTEI-FLG
+      *                ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ
+                       IF      SYS-1014-KBNCD      =   "202"
+                           MOVE    1               TO  SPA-HKTSANTEI-202
+                       END-IF
+      *                À¸³è½¬´·ÉÂ´ÉÍýÎÁ
+                       IF      SYS-1014-KBNCD      =   "203"
+                           MOVE    1               TO  SPA-HKTSANTEI-203
+                       END-IF
                    END-IF
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE

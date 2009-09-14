@@ -2524,6 +2524,9 @@
                        MOVE    LNK-ORCSC-AUTOKBN(IDX IDY)
                                            TO  WRK-KSN-AUTOKBN (IDX-S)
                    END-IF
+      *            Êñ³çºÞ
+                   MOVE    LNK-ORCSC-HKTKBN (IDX IDY)
+                                           TO  WRK-KSN-HKTKBN  (IDX-S)
                END-IF
            END-IF
       *    ²ó¿ô¡ÊÆþ±¡¡Ë

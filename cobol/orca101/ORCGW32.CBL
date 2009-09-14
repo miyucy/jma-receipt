@@ -29,6 +29,8 @@
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *  03.05.00    NACL-¬ø°π«º  07/05/02  •∞•Î°º•◊ø«Œ≈¬–±˛
       *  04.04.00    NACL-¬ø°π«º  08/12/10  Œ≈Õ‹…¬≈Ô∆˛±°Œ¡ƒ…≤√
+      *  04.05.00    NACL-¬ø°π«º  09/09/XX  À˝¿≠∞›ª˝∆©¿œ¥µº‘≥∞ÕË¥…Õ˝Œ¡°¢
+      *                                     æÆª˘≤ ≥∞ÕËø«ª°Œ¡≈˘ƒ…≤√
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -103,7 +105,7 @@
                            11  SPA-GMN-HKNCOMBIKBN-MEI PIC X(38).
       *                ø«Œ≈∂Ë ¨
                        09  SPA-GMN-SRYKBN-ARA.
-                           11  SPA-GMN-SRYKBN-TBL    OCCURS  10.
+                           11  SPA-GMN-SRYKBN-TBL    OCCURS  12.
                                13  SPA-GMN-SRYKBN-G.
                                    15  SPA-GMN-SRYKBN     PIC X(01).
                                    15  SPA-GMN-SRYKBN-F   PIC X(01).
@@ -133,6 +135,7 @@
                            11  SPA-GMN-SRYKBN-LST
                                                    PIC X(20) OCCURS  5.
                            11  SPA-SRYKBN-MAX      PIC 9(02).
+      *
                        09  SPA-GMN-SRYKBN-MAX      PIC 9(02).
       *
                05  SPA-NAIB-AREA.
@@ -520,7 +523,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-HKNCOMBIKBN-LST(2) 
            MOVE    2                   TO  SPA-HKNCOMBIKBN-MAX
       *    ø«Œ≈∂Ë ¨≤ËÃÃ
-           MOVE    10                  TO   SPA-GMN-SRYKBN-MAX
+           MOVE    12                  TO   SPA-GMN-SRYKBN-MAX
       *    ø«Œ≈∂Ë ¨° ∂¶ƒÃ°À
            MOVE    "0  Ò≥Á§∑§ §§"      TO  SPA-GMN-SRYKBN-LST (1)
            MOVE    "1  Ò≥Á§π§Î"        TO  SPA-GMN-SRYKBN-LST (2)
@@ -557,6 +560,16 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
                WHEN    "503"
                    MOVE    "Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
+      *
+               WHEN    "201"
+                   MOVE    "À˝¿≠∞›ª˝∆©¿œ¥µº‘≥∞ÕË∞Â≥ÿ¥…Õ˝Œ¡" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
+               WHEN    "202"
+                   MOVE    "æÆª˘≤ ≥∞ÕËø«ª°Œ¡" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
+               WHEN    "203"
+                   MOVE    "¿∏≥ËΩ¨¥∑…¬¥…Õ˝Œ¡" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
            END-EVALUATE
            . 
@@ -779,6 +792,15 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
                    PERFORM 200211-KBNCD-501-SEC
+               WHEN    "201"
+      *            À˝¿≠∞›ª˝∆©¿œ¥µº‘¥…Õ˝Œ¡
+                   PERFORM 200211-KBNCD-201-SEC
+               WHEN    "202"
+      *            æÆª˘≤ ≥∞ÕËø«ª°Œ¡
+                   PERFORM 200211-KBNCD-202-SEC
+               WHEN    "203"
+      *            ¿∏≥ËΩ¨¥∑…¬¥…Õ˝Œ¡
+                   PERFORM 200211-KBNCD-203-SEC
            END-EVALUATE
       *     Ò≥Á•«°º•ø§ŒÕ≠∏˙¥¸¥÷
            MOVE    SPA-HKT-YUKOSTYMD   TO  SPA-NAI-STYUKYMD
@@ -840,6 +862,73 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
        200211-KBNCD-501-EXT.
+           EXIT.
+      *****************************************************************
+      *    À˝¿≠∞›ª˝∆©¿œ¥µº‘≥∞ÕË∞Â≥ÿ¥…Õ˝ΩËÕ˝
+      *****************************************************************
+       200211-KBNCD-201-SEC       SECTION.
+      *
+      *     Ò≥ÁªªƒÍ∂Ë ¨
+           MOVE    SPA-GMN-SANTEIKBN-LST (3)   TO  SPA-GMN-SANTEIKBN-G
+           MOVE    SPA-GMN-NYUGAIKBN-LST (1)   TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    SPA-GMN-HKNCOMBIKBN-LST(1)  TO  SPA-GMN-HKNCOMBIKBN-G
+      *
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN-SRYKBN-MAX
+               MOVE    SPA-GMN-SRYKBN-LST (1)
+                                           TO  SPA-GMN-SRYKBN-G (IDX)
+           END-PERFORM
+      *
+           .
+       200211-KBNCD-201-EXT.
+           EXIT.
+      *****************************************************************
+      *    æÆª˘≤ ≥∞ÕËø«ª°Œ¡ΩËÕ˝
+      *****************************************************************
+       200211-KBNCD-202-SEC       SECTION.
+      *
+      *     Ò≥ÁªªƒÍ∂Ë ¨
+           MOVE    SPA-GMN-SANTEIKBN-LST (2)   TO  SPA-GMN-SANTEIKBN-G
+           MOVE    SPA-GMN-NYUGAIKBN-LST (1)   TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    SPA-GMN-HKNCOMBIKBN-LST(1)  TO  SPA-GMN-HKNCOMBIKBN-G
+      *
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN-SRYKBN-MAX
+      *         Ò≥Á
+               MOVE    SPA-GMN-SRYKBN-LST (2)
+                                           TO  SPA-GMN-SRYKBN-G (IDX)
+           END-PERFORM
+      *
+           .
+       200211-KBNCD-202-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿∏≥ËΩ¨¥∑…¬¥…Õ˝ΩËÕ˝
+      *****************************************************************
+       200211-KBNCD-203-SEC       SECTION.
+      *
+      *     Ò≥ÁªªƒÍ∂Ë ¨
+           MOVE    SPA-GMN-SANTEIKBN-LST (3)   TO  SPA-GMN-SANTEIKBN-G
+           MOVE    SPA-GMN-NYUGAIKBN-LST (1)   TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    SPA-GMN-HKNCOMBIKBN-LST(1)  TO  SPA-GMN-HKNCOMBIKBN-G
+      *
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN-SRYKBN-MAX
+               IF      IDX             =    1
+                                       OR   2
+                                       OR   5
+                                       OR   10
+      *            ≈ÍÃÙ°¶√ÌºÕ°¶∏°∫∫°¶…¬Õ˝ø«√«§¨ Ò≥Á
+                   MOVE    SPA-GMN-SRYKBN-LST (2)
+                                           TO  SPA-GMN-SRYKBN-G (IDX)
+               ELSE
+                   MOVE    SPA-GMN-SRYKBN-LST (1)
+                                           TO  SPA-GMN-SRYKBN-G (IDX)
+               END-IF
+           END-PERFORM
+      *
+           .
+       200211-KBNCD-203-EXT.
            EXIT.
       *****************************************************************
       *    »÷πÊ¡™¬Ú•¡•ß•√•ØΩËÕ˝
@@ -1170,6 +1259,18 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡ ªªƒÍ∆¸§« Ò≥Á
                    MOVE    SPA-GMN-SANTEIKBN-LST (2)
                                                TO  SPA-GMN-SANTEIKBN-G
+               WHEN    "201"
+      *            À˝¿≠∞›ª˝∆©¿œ¥…Õ˝Œ¡°°ªªƒÍ∑Ó§« Ò≥Á
+                   MOVE    SPA-GMN-SANTEIKBN-LST (3)
+                                               TO  SPA-GMN-SANTEIKBN-G
+               WHEN    "202"
+      *            æÆª˘≤ ≥∞ÕËø«ª°Œ¡°°ªªƒÍ∆¸§« Ò≥Á
+                   MOVE    SPA-GMN-SANTEIKBN-LST (2)
+                                               TO  SPA-GMN-SANTEIKBN-G
+               WHEN    "203"
+      *            ¿∏≥ËΩ¨¥∑…¬¥…Õ˝Œ¡°°ªªƒÍ∑Ó§« Ò≥Á
+                   MOVE    SPA-GMN-SANTEIKBN-LST (3)
+                                               TO  SPA-GMN-SANTEIKBN-G
            END-EVALUATE
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1201,6 +1302,12 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "502"
                WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
+               WHEN    "201"
+      *            À˝¿≠∞›ª˝∆©¿œ¥…Õ˝Œ¡
+               WHEN    "202"
+      *            æÆª˘≤ ≥∞ÕËø«ª°Œ¡
+               WHEN    "203"
+      *            ¿∏≥ËΩ¨¥∑…¬¥…Õ˝Œ¡
                    MOVE    SPA-GMN-NYUGAIKBN-LST (1)
                                                TO  SPA-GMN-NYUGAIKBN-G
            END-EVALUATE
@@ -1234,6 +1341,12 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "502"
                WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
+               WHEN    "201"
+      *            À˝¿≠∞›ª˝∆©¿œ¥…Õ˝Œ¡
+               WHEN    "202"
+      *            æÆª˘≤ ≥∞ÕËø«ª°Œ¡
+               WHEN    "203"
+      *            ¿∏≥ËΩ¨¥∑…¬¥…Õ˝Œ¡
                    MOVE    SPA-GMN-HKNCOMBIKBN-LST (1)
                                                TO  SPA-GMN-HKNCOMBIKBN-G
            END-EVALUATE
@@ -1837,7 +1950,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    9
                     MOVE  "HKNCOMBIKBN"    TO   MCP-WIDGET
       *         ø«Œ≈∂Ë ¨
-                WHEN    21   THRU  30
+                WHEN    21   THRU  33
                     MOVE     SPA-GMN-CUR       TO  IDX2
                     MOVE     "SRYKBN"          TO  MCP-WIDGET
                     COMPUTE  IDX2              =   IDX2   -   20
@@ -1880,7 +1993,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        COMPUTE SPA-GMN-CUR     =   IDX2
                                                +   21
       *                ππø∑§ÿ
-                       IF      IDX2            =   29
+                       IF      IDX2            =   12
                            MOVE    99          TO  SPA-GMN-CUR
                        END-IF
                    END-IF

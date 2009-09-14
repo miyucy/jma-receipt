@@ -63,6 +63,7 @@
       * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       * 04.03.00     NACL=Â¿¡¹Ç¼  08/08/07  Ï«ºÒ½é¿ÇÎÁ£È£²£°Ç¯£´·î²þÀµÂÐ±þÂ¾
       * 04.05.00     NACL=Â¿¡¹Ç¼  09/07/28  ¥ê¥Ï¥Ó¥êÈ¯¾ÉÆüÉ½¼¨ÂÐ±þ
+      * 04.05.00     NACL-Â¿¡¹Ç¼  09/09/XX  ¾®»ù²Ê³°Íè¿Ç»¡ÎÁÅùÊñ³ç¿ÇÎÅÂÐ±þ
       *****************************************************************
       *
       *
@@ -4372,9 +4373,14 @@
       *    À¸³è½¬´·ÉÂ»ØÆ³´ÉÍý²Ê¥Á¥§¥Ã¥¯
            IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                   (SPA-SEIKATU-ARI2    NOT =   ZERO )
+      *        Êñ³ç¿ÇÎÅ¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
+               IF      SPA-HKTSANTEI-203   =   ZERO
+      *
                PERFORM 5022-SEIKATU-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      700-SANTEI-CHK-EXT
+               END-IF
+      *
                END-IF
            END-IF
       *
@@ -4477,6 +4483,9 @@
                                                               (IDX)
                                    END-IF
                                END-IF
+      *                        Êñ³ç¿ÇÎÅ°Ê³°
+                               IF      SPA-HKTSANTEI-202   =   ZERO
+      *
       *                        ÆÃÄê¤Î¿ÇÎÅ¹Ô°Ù¤Ç¤¢¤ë¤³¤È
                                PERFORM 50192-SYONIKASRYCD-CHK-SEC
                                IF      FLG-SYONIKA-CHK     =   ZERO
@@ -4484,6 +4493,9 @@
                                    MOVE    "1"         TO  SPA-COM-CUR
                                                                 (IDX)
                                END-IF
+      *
+                               END-IF
+      *
                            END-IF
       *
       *                ±ý¿ÇÎÁ¤Ç¤¢¤ë¤³¤È
@@ -4493,6 +4505,8 @@
                        WHEN    "21"
                        WHEN    "22"
                        WHEN    "23"
+                           IF      SPA-HKTSANTEI-202   =   ZERO
+      *
       *                    ±¡Æâ»þ¤Î¿ÇÎÅ¼ïÊÌÊÑ¹¹
                            PERFORM 50192-SRYSYUKBN-CHK-SEC
       *
@@ -4523,7 +4537,11 @@
                                                                 (IDX)
                              END-IF
                            END-IF
+      *
+                           END-IF
                        WHEN    OTHER
+                           IF      SPA-HKTSANTEI-202   =   ZERO
+      *
                             MOVE    "0044"      TO  SPA-ERRCD
                             MOVE    "1"         TO  SPA-COM-CUR
                                                           (IDX)
@@ -4540,6 +4558,8 @@
                                MOVE    SPACE       TO  SPA-ERRCD
                                MOVE    SPACE       TO  SPA-COM-CUR
                                                                 (IDX)
+                           END-IF
+      *
                            END-IF
                    END-EVALUATE
                ELSE

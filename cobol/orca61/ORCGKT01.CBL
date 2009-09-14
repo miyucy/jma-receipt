@@ -389,6 +389,9 @@
            03  IDD                 PIC 9(02).
            03  IDX-N2              PIC 9(02).
       *
+           03  IDX-SN                  PIC 9(04).
+           03  IDX-SN2                 PIC 9(04).
+      *
            03  RRK-MAX             PIC 9(04).
       *
       *    °ì»þÎÎ°è
@@ -5860,9 +5863,8 @@
            INITIALIZE                  ORCSCHKTCHKAREA
            MOVE    "1"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "KT01"              TO  ORCSCHKTCHK-PG
-      *!!!
-      *!   »»ÄêÍúÎò¤«¤é¤ÎÊñ³ç¤ò¹Ô¤Ê¤¦¤Ê¤éÀßÄê¤¹¤ë¤³¤È
-      ****  MOVE    LNK-ORCSC-KT01-AREA TO   LNK-ORCSC-KT01-AREA
+      *    »»ÄêÍúÎò¤«¤é¤ÎÊñ³ç¤ò¹Ô¤Ê¤¦
+           PERFORM 51021-ORCSCKAISU-HEN-SEC
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
@@ -5880,6 +5882,44 @@
            .
        5109-HKTSANTEI-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    »»Äê²ó¿ôÊÔ½¸½èÍý
+      *****************************************************************
+       51021-ORCSCKAISU-HEN-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSCHKTCHK-KT01-AREA
+           MOVE    "1"                 TO  ORCSCHKTCHK-KT01FLG
+      *
+           MOVE    SPA-SRYYMD(7:2)     TO  IDD
+      *
+           MOVE    ZERO                TO  IDX-SN2
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100     )   OR
+                              (SPA-SAN-SRYCD  (IDX-SN) =   SPACE)
+               IF     (SPA-SAN-DAY-G (IDX-SN)  =   ZERO )
+               AND    (SPA-SANE-DAY-G (IDX-SN) =   ZERO )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDX-SN2
+                   MOVE    SPA-SAN-SRYCD (IDX-SN)
+                                           TO  ORCSCHKTCHK-KT01-SRYCD
+                                                              (IDX-SN2)
+                   PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                           UNTIL       IDX-N2  >   31
+                       IF      IDX-N2          <   IDD
+                           ADD     SPA-SAN-DAY (IDX-SN IDX-N2)
+                                               TO  ORCSCHKTCHK-KT01-DAY
+                                                       (IDX-SN2 IDX-N2)
+                       END-IF
+                       ADD     SPA-SANE-DAY (IDX-SN IDX-N2)
+                                               TO  ORCSCHKTCHK-KT01-DAY
+                                                       (IDX-SN2 IDX-N2)
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           .
+       51021-ORCSCKAISU-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    Êñ³ç¿ÇÎÅ¥¨¥é¡¼ºï½ü½èÍý
@@ -5889,6 +5929,7 @@
            INITIALIZE                  ORCSCHKTCHKAREA
            MOVE    "3"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "KT01"              TO  ORCSCHKTCHK-PG
+           MOVE    LNK-ORCSC-KT01-AREA TO  ORCSCHKTCHK-KT01-AREA
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
@@ -6913,15 +6954,17 @@
       *****************************************************************
        4911-HKTSANTEI-CHEK-SEC             SECTION.
       *
+      *    ³ÎÄê¤ÈÆ±¤¸
+           PERFORM 4110-KAKUTEI-SEC
       *    ¹¹¿·Á°¤Î´ðËÜ¥Á¥§¥Ã¥¯
-           PERFORM 41001-KIHON-CHK-SEC
+      *    PERFORM 41001-KIHON-CHK-SEC
       *    ¹¹¿·Á°¤Î¥Á¥§¥Ã¥¯
-           MOVE    SPACE               TO  FLG-TOROKU
+      *    MOVE    SPACE               TO  FLG-TOROKU
       *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
-           MOVE    ZERO                TO  SPA-HKTKEI-FLG
-           MOVE    1                   TO  FLG-HKTCHK
-           PERFORM 510-TBLHEN-SEC
-           MOVE    SPACE               TO  FLG-TOROKU
+      *    MOVE    ZERO                TO  SPA-HKTKEI-FLG
+      *    MOVE    1                   TO  FLG-HKTCHK
+      *    PERFORM 510-TBLHEN-SEC
+      *    MOVE    SPACE               TO  FLG-TOROKU
            .
        4911-HKTSANTEI-CHEK-EXT.
            EXIT.
@@ -7292,6 +7335,9 @@
                                            SPA-KT01
                                            SPA-SCR-REC
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+               MOVE    2                   TO  FLG-SANTEI-SYORI
+               PERFORM 6004-SANTEI-SYORI-SEC
       *        Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
                IF     (SPA-ERRCD           =   SPACE )  AND
                       (SPA-KIDCD           =   SPACE )  AND
@@ -7299,9 +7345,6 @@
                       (SPA-HKNCOMBINUM NOT =   "9999")
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
-      *
-               MOVE    2                   TO  FLG-SANTEI-SYORI
-               PERFORM 6004-SANTEI-SYORI-SEC
       *
                IF      SPA-ERRCD           =   SPACE
                    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -7424,6 +7467,9 @@
                                            SPA-KT01
                                            SPA-SCR-REC
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *        »»Äê²ó¿ôÅÐÏ¿
+               MOVE    2                   TO  FLG-SANTEI-SYORI
+               PERFORM 6004-SANTEI-SYORI-SEC
       *        Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
                IF     (SPA-ERRCD           =   SPACE )  AND
                       (SPA-KIDCD           =   SPACE )  AND
@@ -7431,9 +7477,6 @@
                       (SPA-HKNCOMBINUM NOT =   "9999")
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
-      *        »»Äê²ó¿ôÅÐÏ¿
-               MOVE    2                   TO  FLG-SANTEI-SYORI
-               PERFORM 6004-SANTEI-SYORI-SEC
       *
            END-IF
            .
