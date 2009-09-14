@@ -13,7 +13,7 @@ delete from tbl_toukeimemo where hospnum = 0;
 
 COPY tbl_toukeimemo FROM stdin;
 ORCBGCHILDBIRTH	0000	000     	00000000	99999999									請求年月　指定された請求年月の患者を処理します。\n\n提出先　　提出先を指定して下さい。０：社保及び国保\n　　　　　　　　　　　　　　　　　１：社保\n　　　　　　　　　　　　　　　　　２：国保\n\n\n			20090911	20090911	140000	0	 		
-ORCBGCHILDLST	0000	000     	00000000	99999999									請求年月　指定された請求年月の患者を処理します。\n\n処理区分　対象患者を指定して下さい。０：全患者\n　　　　　　　　　　　　　　　　　　１：請求済み\n　　　　　　　　　　　　　　　　　　２：未請求\n　　　　　　　　　　　　　　　　　　３：請求しない\n\n\n			20090911	20090911	140000	0	 		
+ORCBGCHILDLST	0000	000     	00000000	99999999									請求年月　指定された請求年月の患者を処理します。\n\n処理区分　対象患者を指定して下さい。０：全患者\n　　　　　　　　　　　　　　　　　　１：請求済み\n　　　　　　　　　　　　　　　　　　２：未請求\n　　　　　　　　　　　　　　　　　　３：請求しない\n\n※請求年月の指定が無い場合は出産育児一時金画面の請求年月が未設定の患者を処理します。\n\n\n			20090911	20090911	140000	0	 		
 \.
 
 insert into tbl_toukeimemo select a.pgid,a.kanricd,a.kbncd,a.styukymd,a.edyukymd,a.para1,a.para2,a.para3,a.para4,a.para5,
