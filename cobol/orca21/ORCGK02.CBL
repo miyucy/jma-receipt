@@ -90,7 +90,8 @@
       *  04.04.00    NACL-多々納  08/11/28  処理共通対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
-      *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック応
+      *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック対応
+      *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4813,6 +4814,14 @@
                    MOVE    3               TO  SPA-HKN-ERR
                END-IF
            END-IF
+      *!!
+      *    受診履歴が９まで登録済みの時、エラー
+           IF     (SPA-ERRCD           =   SPACE )
+              AND (SPA-KIDCD           =   SPACE )
+               MOVE    ZERO                TO  SPA-HKN-ERR
+               PERFORM 41022-JYURRK-NUM-CHK-SEC
+           END-IF
+      *!!
       *    受診履歴が３で、通常の時、警告
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
@@ -4878,6 +4887,31 @@
       *
            .
        41021-PTMEMOINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療履歴連番チェック処理
+      *****************************************************************
+       41022-JYURRK-NUM-CHK-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL      (IDX     >   SPA-GMN-MAX1 )
+                          OR  (SPA-ERRCD   NOT =   SPACE)
+      *        診療日より後の履歴は対象外
+               IF      (SPA-SRYYMD         =   SPA-NAI-RRKYMD (IDX) )
+                 AND   (SPA-SRYKA          =   SPA-NAI-RRK-SRYKA (IDX))
+                   IF      SPA-NAI-RENNUM (IDX)    =   9
+                       MOVE    "1058"              TO  SPA-ERRCD
+                       MOVE    5                   TO  SPA-HKN-ERR
+                       MOVE    6                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+               IF      (SPA-SRYYMD         >   SPA-NAI-RRKYMD (IDX))
+                   MOVE    SPA-GMN-MAX1        TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           .
+       41022-JYURRK-NUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療日入力処理
@@ -5399,6 +5433,10 @@
                END-IF
            END-IF
       *
+           IF      SPA-HKN-ERR         =   5
+               MOVE    ZERO                TO  SPA-HKN-ERR
+           END-IF
+      *
            IF      SPA-SYORIFLG        =   1
                MOVE    "0123"              TO  SPA-KIDCD
            ELSE
@@ -5459,6 +5497,14 @@
            MOVE    1               TO  SPA-GMN-PAGE
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
+      *!!
+      *    受診履歴が９まで登録済みの時、エラー
+           IF     (SPA-ERRCD           =   SPACE )
+              AND (SPA-KIDCD           =   SPACE )
+               MOVE    ZERO                TO  SPA-HKN-ERR
+               PERFORM 41022-JYURRK-NUM-CHK-SEC
+           END-IF
+      *!!
       *    訂正の時、以下の処理なし
            IF      SPA-SYORIFLG        =   1
                GO      TO      41013-SRYKA-CHANGE-EXT
@@ -10391,6 +10437,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    4
                        MOVE    "1034"              TO  SPA-ERRCD
                        MOVE    5                   TO  SPA-GMN-CUR
+      *            受診履歴上限、エラー
+                   WHEN    5
+                       MOVE    "1058"              TO  SPA-ERRCD
+                       MOVE    6                   TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
@@ -11170,6 +11220,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-HKN-ERR         =   4
                MOVE    "1034"              TO  SPA-ERRCD
                MOVE    5                   TO  SPA-GMN-CUR
+           END-IF
+      *    保険選択エラーの場合
+           IF      SPA-HKN-ERR         =   5
+               MOVE    "1058"              TO  SPA-ERRCD
+               MOVE    6                   TO  SPA-GMN-CUR
            END-IF
       *
       *    数量ゼロの場合、エラー表示しない

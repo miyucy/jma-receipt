@@ -5867,6 +5867,16 @@
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(IDX-A)
                MOVE    "1"             TO  SPA-COM-CUR    (IDX-A)
            END-IF
+      *!!
+      *    ¼õ¿ÇÍúÎò¤¬£¹¤Þ¤ÇÅÐÏ¿ºÑ¤ß¤Î»þ¡¢¥¨¥é¡¼
+           IF     (SPA-ERRCD           =   SPACE )
+               PERFORM 101514-JYURRK-NUM-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD(IDX-A)
+                   MOVE    "1"             TO  SPA-COM-CUR    (IDX-A)
+               END-IF
+           END-IF
+      *!!
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-GMN-INPUTCD(IDX-A)(5:4)
@@ -5903,6 +5913,29 @@
       *
            .
        10151-SRYKA-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅÍúÎòÏ¢ÈÖ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       101514-JYURRK-NUM-CHK-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX2    FROM    1  BY  1
+                   UNTIL      (IDX2    >   SPA-GMN-MAX1 )
+                          OR  (SPA-ERRCD   NOT =   SPACE)
+      *        ¿ÇÎÅÆü¤è¤ê¸å¤ÎÍúÎò¤ÏÂÐ¾Ý³°
+               IF      (SPA-SRYYMD         =   SPA-NAI-RRKYMD (IDX2) )
+                 AND   (WRK-SRYKA          =   SPA-NAI-RRK-SRYKA(IDX2))
+                   IF      SPA-NAI-RENNUM (IDX2)   =   9
+                       MOVE    "1058"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+               IF      (SPA-SRYYMD         >   SPA-NAI-RRKYMD (IDX2))
+                   MOVE    SPA-GMN-MAX1        TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           .
+       101514-JYURRK-NUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æ±»þ½é¿ÇÈ½Äê½èÍý

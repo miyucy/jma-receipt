@@ -40,6 +40,7 @@
       *                                     器材商品名コード対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラーメッセー変更対応
       *****************************************************************
       *
       *
@@ -233,6 +234,8 @@
            03  WRK-NYUKINRENNUM        PIC  9(02).
       *伝票状態区分
            03  WRK-DENPJTIKBN          PIC  X(01).
+      *
+           03  WRK-ERRCD               PIC X(04).
       *
            03  WRK-RENNUM-KEY          PIC 9(01).
            03  WRK-RENNUM              PIC 9(01).
@@ -1895,6 +1898,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (WRK-SRYKA-REN       >   1  )
                    ADD     1               TO  WRK-JYURRK-DOUJI-RENNUM
                ELSE
+                   IF      WRK-JYURRK-RENNUM   =   9
+                       MOVE    "XXXX"              TO  WRK-ERRCD
+                   END-IF
                    ADD     1               TO  WRK-JYURRK-RENNUM
                    IF      WRK-SRYKA-MAX   >   1
                        MOVE    1           TO  WRK-JYURRK-DOUJI-RENNUM
@@ -2889,6 +2895,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        JYURRK-KEY      DELIMITED  BY  SIZE
                                        INTO  ORCSCGAIRAI-ERRMSG
                END-STRING
+               IF       WRK-ERRCD      NOT =   SPACE
+                   MOVE    "0105"          TO  SPA-ERRCD
+                   MOVE    SPACE           TO  ORCSCGAIRAI-ERRMSG
+               END-IF
            END-IF
       *
            .
@@ -4620,6 +4630,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      JYURRK-RENNUM       =   WRK-RENNUM-KEY
                    CONTINUE
                ELSE
+                   IF      WRK-JYURRK-RENNUM   =   9
+                       MOVE    "XXXX"              TO  WRK-ERRCD
+                   END-IF
                    ADD     1                   TO  WRK-JYURRK-RENNUM
                    MOVE    JYURRK-RENNUM       TO  WRK-RENNUM-KEY
                END-IF
@@ -4663,6 +4676,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                JYURRK-KEY    DELIMITED  BY  SIZE
                                        INTO  ORCSCGAIRAI-ERRMSG
                        END-STRING
+                       IF      WRK-ERRCD       NOT =   SPACE
+                           MOVE    "0105"      TO  SPA-ERRCD
+                           MOVE    SPACE       TO  ORCSCGAIRAI-ERRMSG
+                       END-IF
                    END-IF
       *            診療会計修正
                    PERFORM 4500115-TEISEI-SRYACTUPD-SEC

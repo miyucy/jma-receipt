@@ -2096,6 +2096,13 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *VER.4.5
+               WHEN    "1058"
+                   STRING  "この診療科の当日の受診が９回登録済です。"
+                           "これ以上登録できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

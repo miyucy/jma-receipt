@@ -6436,6 +6436,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *VER.4.5
+               WHEN    "0105"
+                   STRING  "この診療科の当日の受診が９回登録済です。"
+                           "これ以上登録できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *VER.4.5
                WHEN    "0006"
                    STRING  "１日の受診履歴が１３５剤以上になります。"
                            "剤を減らして入力して下さい。"

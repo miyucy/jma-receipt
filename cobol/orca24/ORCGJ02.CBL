@@ -5608,6 +5608,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    1               TO  FLG-OK
                        END-IF
                    ELSE
+      *                連番が９であればエラー
+                       IF      SPA-RRK-RENNUM (IDX)    =   9
+                           MOVE    "0078"              TO  SPA-ERRCD
+                       END-IF
                        MOVE    1               TO  FLG-OK
                    END-IF
                END-IF
@@ -5975,6 +5979,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            診療日の追加
                    MOVE    JYURRK-RENNUM   TO  IDX-D3
                    COMPUTE IDX-D3          =   IDX-D3    +   1
+                   IF      IDX-D3          >   4
+                       MOVE    4               TO  IDX-D3
+                   END-IF
                    MOVE    ACCT-DAY (IDX-D3 IDX-D1)
                                            TO  WRK-DAY-S
                    MOVE    WRK-DAY-S       TO  ACCT-DAY (2 IDX-D2)
@@ -6418,8 +6425,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    収納の更新編集処理
       *****************************************************************
        41016131-SYUNOU-UPDSYORI-SEC      SECTION.
+      *
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    TBL-DENPNUM(IDX)    TO  SYU-DENPNUM
@@ -6922,7 +6930,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    収納作成
-           MOVE    JYURRK-HOSPNUM       TO  SYU-HOSPNUM
+           INITIALIZE                  SYUNOU-REC
+           MOVE    JYURRK-HOSPNUM      TO  SYU-HOSPNUM
            MOVE    JYURRK-PTID         TO  SYU-PTID
            MOVE    JYURRK-NYUGAIKBN    TO  SYU-NYUGAIKBN
            MOVE    HZN-JYURRK-DENPNUM  TO  SYU-DENPNUM
@@ -10457,9 +10466,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-SYSKANRI        =   ZERO
                ADD     1                   TO  SYS-0041-DENPNUMMAX
-               IF      SYS-0041-DENPNUMMAX =   0
-                   ADD     1                   TO  SYS-0041-DENPNUMMAX
-               END-IF
                MOVE    SYS-0041-DENPNUMMAX
                                            TO  JYURRK-DENPNUM
       *
@@ -13062,6 +13068,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "警告！！"
                            "当月の入院料が算定されていません。"
                            "入院料包括チェックはできません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0078"
+                   STRING  "既に変更後受診日の連番が最大数まで登録済み" 
+                           "です。診療日の追加はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO   WRK-ERRMSG
                    END-STRING
