@@ -242,6 +242,7 @@
       *  04.04.06    NACL-Æ£¸¶    09/08/17  ¡ÖÊ¿À®£²£±Ç¯£··îÃæ¹ñ¡¦¶å½£
       *                                     ËÌÉô¹ë±«¡×ÂÐ±þ
       *                                     £²£°£°£¹Ç¯£··î¡ÁÂÐ¾Ý 
+      *  04.04.07    NACL-ÌçÏÆ    09/09/15  ºë¶Ì¸©ÃÏÊý¸øÈñ¿©»öÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *  04.05.02    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
@@ -462,6 +463,7 @@
            03  IDZ4                    PIC 9(03).
            03  IDZ5                    PIC 9(03).
            03  IDZ6                    PIC 9(03).
+           03  IDZ7                    PIC 9(03).
            03  IDYY                    PIC 9(03).
            03  IDZZ                    PIC 9(03).
            03  IDWW                    PIC 9(03).
@@ -6048,8 +6050,22 @@
                                        TO  WRK-FUKUSHIFLG-SKJINF-AREA
                ELSE
                    IF    ( IDZ1            >   3     )
-                       MOVE    RECE62-FUKUSHIFLG-SKJSEIINF-AREA
-                                       TO  WRK-FUKUSHIFLG-SKJINF-AREA
+      ***              MOVE    RECE62-FUKUSHIFLG-SKJSEIINF-AREA
+      ***                              TO  WRK-FUKUSHIFLG-SKJINF-AREA
+                       PERFORM VARYING IDZ7  FROM  1  BY  1
+                                UNTIL  IDZ7   >    4
+                         IF  RECE62-FUKUSHIFLG-SKJSEI(IDZ7) = "2"
+                           EVALUATE  IDZ1
+                             WHEN     4
+                               MOVE SPACE  TO  WRK-FUKUSHIFLG-SKJ(IDZ7)
+                             WHEN     5
+                               MOVE  "1"   TO  WRK-FUKUSHIFLG-SKJ(IDZ7)
+                           END-EVALUATE
+                         ELSE
+                           MOVE  RECE62-FUKUSHIFLG-SKJSEI(IDZ7)
+                                           TO  WRK-FUKUSHIFLG-SKJ(IDZ7)
+                         END-IF
+                       END-PERFORM
                    END-IF
                END-IF
            END-IF    
