@@ -27,14 +27,6 @@ tbl_syunou_nyuin {
 	SHOKUJI9  			number(7,0);
 	SHOKUJI10_NISSU                  number(2,0);
 	SHOKUJI10  			number(7,0);
-        SHOKUJI11_NISSU                 number(2,0);
-        SHOKUJI11                       number(7,0);
-        SHOKUJI12_NISSU                 number(2,0);
-        SHOKUJI12                       number(7,0);
-        SHOKUJI13_NISSU                 number(2,0);
-        SHOKUJI13                       number(7,0);
-        SHOKUJI14_NISSU                 number(2,0);
-        SHOKUJI14                       number(7,0);
         SYUSKJ_NISSU                    number(2,0);
         SYUSKJ_RYOYOHI                  number(7,0);
         SYUSKJ_FTN                      number(7,0);
@@ -108,15 +100,9 @@ tbl_syunou_nyuin {
         DAY_30                          char(1);
         DAY_31                          char(1);
         NYUIN_RRKNUM                    number(3,0);
-        NYUINETC1                       number(7,0);
-        NYUINETC2                       number(7,0);
-        NYUINETC3                       number(7,0);
-        NYUINETC4                       number(7,0);
-        NYUINETC5                       number(7,0);
 #--
 	SELCREATEKBN			char(1),virtual;
 	SELSRYYMD			char(8),virtual;
-	SELNYUGAIKBN			char(1),virtual;
 };
 primary	{
 	HOSPNUM,NYUGAIKBN,PTID,DENPNUM;
@@ -214,60 +200,6 @@ path	all 	{
 		SELECT *
 		FROM tbl_syunou_nyuin
 			WHERE   HOSPNUM    =   :HOSPNUM
-		;
-	};
-};
-
-path	del6 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_syunou_nyuin
-		WHERE (HOSPNUM,NYUGAIKBN,PTID,DENPNUM) in (
-		SELECT HOSPNUM,NYUGAIKBN,PTID,DENPNUM
-		FROM tbl_syunou_main
-		WHERE   HOSPNUM         =    :HOSPNUM
-		AND     NYUGAIKBN       =    :NYUGAIKBN
-		AND     PTID            =    :PTID
-		AND     CREATEKBN       <>   '3'
-		AND     DENPNUM		>=   :DENPNUM
-		);
-	};
-};
-
-path	upd1 	{
-	DBUPDATE	{
-		UPDATE	tbl_syunou_nyuin
-                SET	NYUGAIKBN	=    :NYUGAIKBN
-		WHERE (HOSPNUM,NYUGAIKBN,PTID,DENPNUM) in (
-		SELECT HOSPNUM,NYUGAIKBN,PTID,DENPNUM
-		FROM tbl_syunou_main
-		WHERE   HOSPNUM         =    :HOSPNUM
-		AND     NYUGAIKBN       =    :SELNYUGAIKBN
-		AND     PTID            =    :PTID
-		AND     CREATEKBN       =    :SELCREATEKBN
-		AND     SRYYMD		LIKE :SELSRYYMD
-		);
-	};
-};
-
-path	upd3 	{
-	DBUPDATE	{
-		UPDATE	tbl_syunou_nyuin
-                SET	NYUGAIKBN	=    :NYUGAIKBN
-		WHERE (HOSPNUM,NYUGAIKBN,PTID,DENPNUM) in (
-		SELECT HOSPNUM,NYUGAIKBN,PTID,DENPNUM
-		FROM tbl_syunou_main
-		WHERE   HOSPNUM         =    :HOSPNUM
-		AND     NYUGAIKBN       =    :SELNYUGAIKBN
-		AND     PTID            =    :PTID
-		AND     DENPNUM         =    :DENPNUM
-		);
-	};
-};
-
-path	abort 	{
-	DBSELECT	{
-		error	
 		;
 	};
 };
