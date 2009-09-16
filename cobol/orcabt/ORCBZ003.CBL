@@ -46,7 +46,7 @@
       *
       *    エラーファイル
        FD  RECEERR-FILE.
-       01  RECEERR-REC             PIC X(200). 
+       01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -60,6 +60,8 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-JYURRK              PIC 9(01).
            03  FLG-HKNCOMBI            PIC 9(01).
+           03  FLG-PTINF               PIC 9(01).
+           03  FLG-BTPARA              PIC 9(01).
       *
            03  FLG-OK                  PIC 9(01).
       *
@@ -89,6 +91,7 @@
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
            03  WRK-PARA-BYOMEIFLG      PIC X(01).
+           03  WRK-PARA-KBT            PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -164,6 +167,11 @@
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
+      *    バッチパラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+           COPY    "CPQTOANY.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -171,7 +179,7 @@
       *    診療録サブ
            COPY    "CPORCHC01.INC".
       *
-      *   患者番号変換サブ
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
       *    全角変換
@@ -261,6 +269,7 @@
                                        WRK-PARA-SRYYM
                                        WRK-PARA-SRYKA
                                        WRK-PARA-BYOMEIFLG
+                                       WRK-PARA-KBT
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -522,6 +531,104 @@
            MOVE    WRK-PRTNM           TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
       *
+           IF    ( WRK-PARA-KBT        =   "1" )
+               PERFORM 210-KBT-SYORI-SEC
+           ELSE
+               PERFORM 210-ALL-SYORI-SEC
+           END-IF
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    個別患者指定処理
+      *****************************************************************
+       210-KBT-SYORI-SEC                SECTION.
+      *
+           PERFORM 900-BTPARA-KEY8-SEL-SEC
+           MOVE    BTPARA-INFO-PARA
+                                   TO  QTOANY-AREA
+      *
+           PERFORM UNTIL ( FLG-BTPARA  NOT =   ZERO )
+      *
+               MOVE    QTOANY-PTID TO  WRK-PTID
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( PTINF-TSTPTNUMKBN     = "1" )
+                   CONTINUE
+               ELSE
+      *
+      *            受診履歴検索
+                   MOVE    SPACE       TO  JYURRK-REC
+                   INITIALIZE              JYURRK-REC
+                   MOVE    SPA-HOSPNUM TO  JYURRK-HOSPNUM
+                   MOVE    QTOANY-PTID TO  JYURRK-PTID
+                   MOVE    "2"         TO  JYURRK-NYUGAIKBN
+                   MOVE    WRK-PARA-SRYYM
+                                       TO  JYURRK-SRYYMD(1:6)
+                   MOVE    "01"        TO  JYURRK-SRYYMD(7:2)
+      *
+                   IF     (PARA-SRYKAKBN       =   "1"  )
+                    AND   (WRK-PARA-SRYKA      =   "00" )
+      *                全科指定
+                       MOVE    "%"     TO  JYURRK-SRYKA
+                   ELSE
+                       MOVE    WRK-PARA-SRYKA
+                                       TO  JYURRK-SRYKA
+                   END-IF
+      *
+                   MOVE    "key45"     TO  WRK-MCP-PATHNAME
+      *
+                   MOVE    JYURRK-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF      MCP-RC      =   ZERO
+                       MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 910-JYURRK-READ-SEC
+                   ELSE
+                       MOVE    1                   TO  FLG-JYURRK
+                       INITIALIZE                      JYURRK-REC
+                   END-IF
+      *
+                   MOVE    ZERO    TO  WRK-PTID
+      *
+      *            １患者で１枚のカルテを発行する
+                   PERFORM UNTIL   FLG-JYURRK  =   1
+                            OR     WRK-PTID NOT =   ZERO
+      *
+                       PERFORM 2001-SYORI-SEC
+      *
+                       MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 910-JYURRK-READ-SEC
+      *
+                   END-PERFORM
+                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
+      *
+               END-IF
+      *
+               PERFORM 900-BTPARA-KEY8-FET-SEC
+               MOVE    BTPARA-INFO-PARA
+                                   TO  QTOANY-AREA
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       210-KBT-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    全患者指定処理
+      *****************************************************************
+       210-ALL-SYORI-SEC                SECTION.
+      *
       *    受診履歴検索
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
@@ -567,9 +674,8 @@
            PERFORM 990-DBCLOSE-SEC
       *
            .
-       200-MAIN-EXT.
+       210-ALL-SYORI-EXT.
            EXIT.
-      *
       *****************************************************************
       *    カルテ発行処理
       *****************************************************************
@@ -854,6 +960,80 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-SYSKANRI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ検索
+      *****************************************************************
+       900-BTPARA-KEY8-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-BTPARA
+      *
+           INITIALIZE                      BTPARA-REC
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
+           MOVE    "ORCBQL01"          TO  BTPARA-SHELLID
+           MOVE    2                   TO  BTPARA-JOBID
+           MOVE    2                   TO  BTPARA-DSP-RENNUM
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-BTPARA-KEY8-FET-SEC
+           ELSE
+               INITIALIZE                  BTPARA-REC
+               MOVE    1               TO  FLG-BTPARA
+           END-IF
+      *
+           .
+       900-BTPARA-KEY8-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ読込
+      *****************************************************************
+       900-BTPARA-KEY8-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-BTPARA
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BTPARA-REC
+           ELSE
+               INITIALIZE                  BTPARA-REC
+               MOVE    1               TO  FLG-BTPARA
+           END-IF
+      *
+           .
+       900-BTPARA-KEY8-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者情報検索
+      *****************************************************************
+       900-PTINF-KEY-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTINF
+      *
+           INITIALIZE                  PTINF-REC
+           MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
+           MOVE    WRK-PTID        TO  PTINF-PTID
+           MOVE    PTINF-REC       TO  MCPDATA-REC
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTINF-REC
+           ELSE
+               MOVE    1           TO  FLG-PTINF
+               INITIALIZE              PTINF-REC
+           END-IF
+      *
+           MOVE    "tbl_ptinf"     TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴読み込み処理
