@@ -187,12 +187,15 @@ fi
             fi
             if ! test -d  "$OUT_FOLDER"; then
                  mkdir $OUT_FOLDER
+                 RC=$?
+                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
                  if  [ $RC -ne '0' ]; then
                      ERRCD='0077'
                      $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} >> $LOG_FILE
                      echo "--- mkdir  err   ---" >>$LOG_FILE
                      exit
                  fi
+                 chmod -R g+r ${OUT_FOLDER}
                  echo "--- mkdir rireki holder ---" >>$LOG_FILE
             else
                  rm $OUT_FOLDER/${RECEFILE1}.UKE*
@@ -210,7 +213,7 @@ fi
 		    echo "先頭ファイルの処理(履歴保存)"
                     if  test -e "${13}${20}${RECEFILE1}.UKE"; then
                         cp ${13}${20}${RECEFILE1}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE               
-                        chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE
+                        chmod -R g+r ${OUT_FOLDER}${RECEFILE1}.UKE
 	            else
     	                echo ${13}${20}${RECEFILE1}.UKE "nothing"
 		        break
@@ -219,7 +222,7 @@ fi
 		    echo "２番目以降のファイルの処理(履歴保存)"
 	           if  test -e "${13}${20}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE"; then
                        cp ${13}${20}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM              
-                       chmod o+r ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM
+                       chmod -R g+r ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM
                     else
     	                echo ${13}${20}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE "nothing"
 		        break
