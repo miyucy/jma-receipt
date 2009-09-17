@@ -3126,12 +3126,14 @@
       *
       *    名称(フリーコメントの時、前回のコメントをのこす）
            IF    ((SPA-COM-INPUTCD (IDX-T)   =   "810000001"
-                                             OR  "008500000" )  AND
+                                             OR  "008500000"
+                                             OR  "008600000" )  AND
                   (SPA-GMN-MEISYO-G(IDX-T)   NOT =   SPACE   )) OR
                  ((SPA-COM-INPUTCD (IDX-T)(1:2)  =   "83"    ) AND
                   (SPA-GMN-MEISYO  (IDX-T)   NOT =   SPACE   ))  OR
       *         ユザーの埋め込みコメント
                  ((SPA-COM-INPUTCD (IDX-T)(1:4)  =   "0083"
+                                                 OR  "0086"
                                                  OR  "0085"  ) AND
                   (SPA-GMN-MEISYO  (IDX-T)   NOT =   SPACE   ))
                CONTINUE

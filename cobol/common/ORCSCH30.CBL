@@ -40,6 +40,7 @@
       * 04.01.00     NACL-多々納  07/12/11  起床追加
       * 04.03.00     NACL-多々納  08/10/31  包括保険を対象とする
       * 04.05.00     NACL-多々納  09/07/23  在宅薬剤、コメント対象対応
+      * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
       *****************************************************************
       *
       *
@@ -875,8 +876,7 @@
       *
       *    コメント
            IF     (TBL-SRY-SRYCD (IDXA)(1:1)   =   "8"   )   OR
-                  (TBL-SRY-SRYCD (IDXA)(1:4)   =   "0081"
-                                               OR  "0082"
+                  (TBL-SRY-SRYCD (IDXA)(1:4)   =   "0082"
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
@@ -1097,8 +1097,9 @@
       *
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   5   )  OR
-                              (WKSRY-SRYCD (IDXA) =   SPACE)
-               IF      WKSRY-SRYCD (IDXA)     =   "630010002"
+                              (WKSRY-SRYCD (IDXA)  =   SPACE)
+               IF     (WKSRY-SRYCD (IDXA)      =   "630010002" )
+                 OR   (WKSRY-SRYCD (IDXA)(1:4)     =   "0086" )
                    CONTINUE
                ELSE
                    ADD    1                        TO  IDX
@@ -1250,8 +1251,7 @@
       *    コメント
            IF     (ORCSCH30-SRYCD(IDT IDXA)(1:1)   =   "8"   )   OR
                   (ORCSCH30-SRYCD(IDT IDXA)(1:4)
-                                               =   "0081"
-                                               OR  "0082"
+                                               =   "0082"
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )

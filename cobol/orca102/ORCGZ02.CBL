@@ -39,6 +39,7 @@
       *  03.04.00    NACL-多々納  07/01/24  H19/4/1から自費総額設定追加
       *  04.02.00    NACL-多々納  08/03/07  病理診断判定追加
       *  04.03.00    NACL-多々納  08/09/19  自賠責集計等取扱追加
+      *  04.05.00    NACL-多々納  09/09/19  '0086'コメント追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -1113,7 +1114,8 @@
       *
            IF     (SPA-GMN-NAME        =   SPACE  )
                IF     (SPA-Z01-SRYCD       =  "810000001"
-                                           OR "008500000" )
+                                           OR "008500000"
+                                           OR "008600000" )
                    CONTINUE
                ELSE
                    MOVE    "1014"              TO  SPA-ERRCD
@@ -1374,7 +1376,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                               (SPA-Z01-SRYCD(1:4)  =   "0082"
                                                    OR  "0083"
                                                    OR  "0084"
-                                                   OR  "0085" )
+                                                   OR  "0085"
+                                                   OR  "0086" )
                            CONTINUE
                        ELSE
                            MOVE    "K002"          TO  SPA-ERRCD

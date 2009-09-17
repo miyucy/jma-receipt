@@ -623,7 +623,8 @@
                   (SPA-Z01GMN-SRYCD (1:4)  =   "0082"
                                            OR  "0083"
                                            OR  "0084"
-                                           OR  "0085")
+                                           OR  "0085"
+                                           OR  "0086")
                CONTINUE
            ELSE
                IF      SPA-Z01GMN-SRYCD (1:1)  =   "1"

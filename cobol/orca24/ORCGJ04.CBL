@@ -52,6 +52,7 @@
       * 04.01.00     NACL-多々納  08/01/XX  チェックマスタ変更対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.05.00     NACL-多々納  09/09/16  "0086XXXXX"コメント対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1867,6 +1868,7 @@
                    IF      PTCOM-INPUTCOMENT   NOT =   SPACE
                        IF      SRY-SRYCD (IDS)         =   "810000001"
                                                        OR  "008500000"
+                                                       OR  "008600000"
                            MOVE    PTCOM-INPUTCOMENT
                                                TO  SPA-GMN-MEISYO-G
                                                                  (IDX2)
@@ -2926,6 +2928,8 @@
                                            =   "0083"  )
                   OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0085"  )
+                  OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0086"  )
                    MOVE    "3"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                END-IF
            END-IF
@@ -3161,6 +3165,7 @@
       *
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81" )
                OR (SPA-COM-INPUTCD (SPA-GMN-IDX)       =  "008500000" )
+               OR (SPA-COM-INPUTCD (SPA-GMN-IDX)       =  "008600000" )
                MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                MOVE    "1"                 TO  SPA-COM-MEIFLG
@@ -3171,6 +3176,7 @@
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
                                                          "0084")
              OR   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0085")
+             OR   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0086")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
                      ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
@@ -3178,7 +3184,9 @@
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0083" )
                   OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
-                                           =   "0085" ))
+                                           =   "0085" )
+                  OR  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
+                                           =   "0086" ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
@@ -3190,7 +3198,8 @@
                                                        OR "84") OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
                                                        OR "0084"
-                                                       OR "0085")) AND
+                                                       OR "0085"
+                                                       OR "0086")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
       *        半角の空白を全角に置きかえる
                PERFORM 401131-MEISYO-HENKAN-SEC
@@ -3209,6 +3218,7 @@
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
                                                   OR  "008500000"
+                                                  OR  "008600000"
                MOVE    1                   TO  IDX-STR
                MOVE    80                  TO  WRK-LEN
            ELSE
@@ -5362,6 +5372,7 @@
                    IF      SPA-COM-MEIFLG (IDX1)    =   "1"
                        IF      SPA-COM-INPUTCD(IDX)    =   "810000001"
                                                        OR  "008500000"
+                                                       OR  "008600000"
                            MOVE    SPA-GMN-MEISYO-G (IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
@@ -5747,7 +5758,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                OR  "84" )  OR
                   (SPA-COM-INPUTCD(IDX)(1:4)   =   "0083"
                                                OR  "0084" )
-               IF      (SPA-COM-INPUTCD(IDX)(1:4)  =   "0085") AND
+               IF      (SPA-COM-INPUTCD(IDX)(1:4)  =   "0085"
+                                                   OR  "0086" ) AND
                        (SPA-GMN-MEISYO (IDX)   =   SPA-COM-NAME (IDX))
                    CONTINUE
                ELSE
@@ -5855,6 +5867,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *入力コメント
            IF      SPA-COM-INPUTCD(IDX)    =   "810000001"
                                            OR  "008500000"
+                                           OR  "008600000"
                MOVE    SPA-GMN-MEISYO-G (IDX)
                                            TO  PTCOM-INPUTCOMENT
            ELSE

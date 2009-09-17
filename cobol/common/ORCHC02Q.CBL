@@ -67,6 +67,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       * 04.03.00     NACL-多々納  08/08/28  退院時院外処方せん対応
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
       *****************************************************************
       *
       *
@@ -2406,7 +2407,11 @@
                        UNTIL      (IDXB    >   IDX-SRY   )
                    PERFORM VARYING     IDXA    FROM    1   BY  1
                            UNTIL      (IDXA    >   5   )
-                       IF      TBL-SRY-SRYCD (IDXB IDXA)   NOT =   SPACE
+                       IF     (TBL-SRY-SRYCD (IDXB IDXA)   =   SPACE)
+                          OR  (TBL-SRY-SRYCD (IDXB IDXA)(1:4)
+                                                           =   "0086")
+                           CONTINUE
+                       ELSE
                            ADD     1               TO  WRK-SRY-MAX
                            MOVE    TBL-SRY-SRYCD (IDXB IDXA)
                                                    TO  WRK-SRY-SRYCD
@@ -3501,7 +3506,10 @@
       *
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   5   )
-               IF      WKSRY-SRYCD (IDXA)  NOT =   SPACE
+               IF     (WKSRY-SRYCD (IDXA)      =   SPACE )
+                  OR  (WKSRY-SRYCD (IDXA)(1:4) =   "0086")
+                   CONTINUE
+               ELSE
                    ADD     1                   TO  WRK-SRY-MAX
                    MOVE    WKSRY-SRYCD (IDXA)  TO  WRK-SRY-SRYCD
                                                            (WRK-SRY-MAX)
@@ -3639,8 +3647,13 @@
                        UNTIL      (IDX-L2  >   50  )   OR
                                   (ORCHC19-SRYCD (IDX-L IDX-L2)
                                                =   SPACE )
-                   PERFORM 20041-ORCHC19-HEN-SEC
-                   MOVE    1                   TO  FLG-HENSYU
+                   IF      ORCHC19-SRYCD (IDX-L IDX-L2)(1:4)
+                                               =   "0086"
+                       CONTINUE
+                   ELSE
+                       PERFORM 20041-ORCHC19-HEN-SEC
+                       MOVE    1                   TO  FLG-HENSYU
+                   END-IF
                END-PERFORM
       *
                IF      FLG-HENSYU          =   1

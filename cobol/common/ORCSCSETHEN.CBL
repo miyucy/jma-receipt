@@ -32,6 +32,7 @@
       *  01.00.02    NACL-多々納  05/12/22  MONFUNC 対応
       *  01.00.03    NACL-多々納  06/03/02  セット期間対応
       *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -515,6 +516,7 @@
       *
            IF      ISET-INPUTCD        =   "810000001"
                                        OR  "008500000"
+                                       OR  "008600000"
                MOVE    ISET-COMMENT    TO  SPA-GMN-MEISYO-G
                                                       (SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-MEIFLG
@@ -525,6 +527,7 @@
                IF     (ISET-INPUTCD(1:2)   =   "83" )  OR
                       (ISET-INPUTCD(1:4)   =   "0083")
                   OR  (ISET-INPUTCD(1:4)   =   "0085")
+                  OR  (ISET-INPUTCD(1:4)   =   "0086")
                    MOVE    "1"         TO  SPA-COM-MEIFLG
                                                           (SPA-GMN-IDX)
                END-IF

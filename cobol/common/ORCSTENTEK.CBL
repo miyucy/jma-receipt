@@ -558,7 +558,8 @@
                               (IDX-YAK             >   ZERO ) AND
                              ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008"))
-                           IF     (SRY-SRYCD (IDX2)(1:4)   =   "0085")
+                           IF     (SRY-SRYCD (IDX2)(1:4)   =   "0085"
+                                                           OR  "0086")
                                CONTINUE
                            ELSE
                                PERFORM 10017-COMMNT-HENSYU-SEC
@@ -1063,7 +1064,8 @@
                    IF     (FLG-COMMENT          =   1   )  AND
                          ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
                           (SRY-SRYCD (IDX2)(1:3)   =   "008"))
-                       IF     (SRY-SRYCD (IDX2)(1:4)   =   "0085")
+                       IF     (SRY-SRYCD (IDX2)(1:4)   =   "0085"
+                                                       OR  "0086")
                            CONTINUE
                        ELSE
                            PERFORM 100163-KIZ-COMMNT-SEC

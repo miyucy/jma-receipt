@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
       *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック応
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4027,7 +4028,8 @@
                           (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
                                            =   "0083" 
                                            OR  "0084"
-                                           OR  "0085"    ))  AND
+                                           OR  "0085"
+                                           OR  "0086"    ))  AND
                           (SPA-GMN-MEISYO-G(SPA-GMN-IDX) 
                                        NOT =   SPACE  )
                        PERFORM 401131-MEISYO-HENKAN-SEC
@@ -4692,7 +4694,8 @@
                                            =   "83")  OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0083"
-                                           OR  "0085"  )
+                                           OR  "0085"
+                                           OR  "0086"  )
                    IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)
                                            =   "83"         )  AND
                           (SPA-COM-ATAI1 (SPA-GMN-IDX)
@@ -5470,7 +5473,8 @@
        40113-MEISYOU-CHK-SEC        SECTION.
       *
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)   =  "810000001"
-                                                   OR "008500000" )
+                                                   OR "008500000" 
+                                                   OR "008600000" )
                MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                MOVE    "1"                 TO  SPA-COM-MEIFLG
@@ -5480,7 +5484,8 @@
                                                          "84")   OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  = "0083" OR
                                                          "0084" OR
-                                                         "0085")
+                                                         "0085" OR
+                                                         "0086")
                IF     (LNK-SC97-NYURYOKU   =   ZERO )  AND
                       (FLG-IN-ATAI         =   ZERO )  AND
                       (SPA-COM-ATAI1 (SPA-GMN-IDX)
@@ -5489,7 +5494,8 @@
                                            =   "83"   )  OR
                       (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)
                                            =   "0083"
-                                           OR  "0085" ))
+                                           OR  "0085"
+                                           OR  "0086" ))
                    MOVE    WRK-MEISYO-G        TO  SPA-GMN-MEISYO-G
                                                          (SPA-GMN-IDX)
                END-IF
@@ -5501,7 +5507,8 @@
                                                        OR "84") OR
                   (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:4)  =  "0083"
                                                        OR "0084"
-                                                       OR "0085")) AND
+                                                       OR "0085"
+                                                       OR "0086")) AND
                   (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
       *
       *        半角の空白を全角に置きかえる
@@ -5520,6 +5527,7 @@
       *    フリーコメントは１桁目から
            IF      SPA-COM-INPUTCD(SPA-GMN-IDX)   =   "810000001"
                                                   OR  "008500000"
+                                                  OR  "008600000"
                MOVE    1                   TO  IDX-STR
                MOVE    80                  TO  WRK-LEN
            ELSE

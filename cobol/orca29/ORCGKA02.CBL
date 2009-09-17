@@ -28,7 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
-      *  04.05.00    NACL-多々納  09/07/23  在宅薬剤対応
+      *  04.05.00    NACL-多々納  09/09/XX  表示コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3061,8 +3061,12 @@
                    UNTIL      (IDX-W2  >   50      )  OR
                               (SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                                    =   SPACE)
-               IF      SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
-                                                   >   ZERO
+               IF     (SPA-WKSRY-SRYSURYO (IDX-W IDX-W2)
+                                                   =   ZERO )
+               OR     (SPA-WKSRY-SRYCD (IDX-W IDX-W2)(1:4)
+                                                   =   "0086" )
+                   CONTINUE
+               ELSE
                    ADD     1               TO  IDX2
                    MOVE    SPA-WKSRY-SRYCD (IDX-W IDX-W2)
                                            TO  SPA-PARA-SRYCD(IDX1 IDX2)
@@ -3456,13 +3460,13 @@
                        UNTIL      (IDX-W2  >   50      )  OR
                                       (SPA-PARA-SRYCD (IDX-W IDX-W2)
                                                    =   SPACE)
-                   IF      SPA-PARA-SRYSURYO (IDX-W IDX-W2)
-                                                   >   ZERO
+                   IF     (SPA-PARA-SRYSURYO (IDX-W IDX-W2)
+                                                   >   ZERO )
       *                後発医薬品への変更不可判定
-                       IF     (SPA-PARA-SRYCD (IDX-W IDX-W2)
+                       IF    ((SPA-PARA-SRYCD (IDX-W IDX-W2)
                                                        =   "099209903")
                          AND  (SPA-PARA-SRYSURYO (IDX-W IDX-W2 - 1)
-                                                       =   ZERO   )
+                                                       =   ZERO   ))
                           CONTINUE
                        ELSE
                            ADD     1           TO  IDX2
@@ -3777,8 +3781,12 @@
                                                    OR  "8"   )  OR
                               (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
                                                    =   "059"
-                                                   OR  "001"
-                                                   OR  "008" ))
+                                                   OR  "001" )  OR
+                              (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:4)
+                                                   =   "0082"
+                                                   OR  "0083"
+                                                   OR  "0084"
+                                                   OR  "0085" ))
       *
                            ADD     1           TO  IDX2
                            MOVE    SPA-PARA-SRYCD (IDX-W IDX-W2)

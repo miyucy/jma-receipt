@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.00    NACL-多々納  08/10/31  包括保険対象対応
+      * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
       *****************************************************************
       *
       *
@@ -796,7 +797,8 @@
                                                    "233"  OR
                                                    "211"  OR
                                                    "221"  OR
-                                                   "231" )
+                                                   "231"  OR
+                                                   "291" )
       *                院内処方種別
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -812,7 +814,8 @@
                    END-IF
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
-                                                   "232")
+                                                   "232"  OR
+                                                   "292")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
            END-EVALUATE
@@ -821,9 +824,10 @@
       *        診療会計より、点数チェック
                PERFORM 20021-SRYACCT-SYORI-SEC
       *        点数がゼロのものを院外処方分とする
-               IF     (WRK-SRYKBN          =   "21"
-                                           OR  "22"
-                                           OR  "23" )
+               IF     (WRK-SRYSYUKBN       =   "210"
+                                           OR  "220"
+                                           OR  "230" 
+                                           OR  SPACE )
                    IF     (ORCSCH62-KBN        =   "1"  )
       *                剤点数ゼロで院内処方印刷
                        IF     (ACCT-ZAITEN         =   ZERO )
@@ -835,12 +839,12 @@
                            MOVE    1               TO  FLG-TAIGAI
                        END-IF
                    END-IF
-      *            院内包括は対象
-                   IF      WRK-SRYSYUKBN       =   "213"
-                                               OR  "223"
-                                               OR  "233"
-                       MOVE    ZERO            TO  FLG-TAIGAI
-                   END-IF
+      ****         院内包括は対象
+      *            IF      WRK-SRYSYUKBN       =   "213"
+      *                                        OR  "223"
+      *                                        OR  "233"
+      *                MOVE    ZERO            TO  FLG-TAIGAI
+      *****        END-IF
                 END-IF
            END-IF
       *
@@ -937,7 +941,8 @@
                   OR  (WRK-SRY-SRYCD (IDXA)(1:3)   =   "059"
                                                    OR  "001"
                                                    OR  "008")
-                   IF      WRK-SRY-SRYCD (IDXA)    =   "630010002"
+                   IF     (WRK-SRY-SRYCD (IDXA)    =   "630010002" )
+                     OR   (WRK-SRY-SRYCD (IDXA)(1:4)   =   "0086"  )
                        CONTINUE
                    ELSE
                        ADD     1               TO  IDX-T3
@@ -1005,8 +1010,11 @@
                                                    OR  "7"
                                                    OR  "8" )
                   OR  (WRK-SRY-SRYCD (IDXA)(1:3)   =   "059"
-                                                   OR  "001"
-                                                   OR  "008")
+                                                   OR  "001")
+                  OR  (WRK-SRY-SRYCD (IDXA)(1:4)   =   "0082"
+                                                   OR  "0083"
+                                                   OR  "0084"
+                                                   OR  "0085")
                    ADD     1               TO  IDX-T3
                    MOVE    WRK-SRY-SRYCD (IDXA)
                                            TO  TBL-COM-SRYCD
@@ -1208,8 +1216,11 @@
                                                OR  "7"
                                                OR  "8"  )
                  OR   (WKSRY-SRYCD (IDXA)(1:3) =   "001"
-                                               OR  "008"
                                                OR  "059" )
+                 OR   (WKSRY-SRYCD (IDXA)(1:4) =   "0082"
+                                               OR  "0083"
+                                               OR  "0084"
+                                               OR  "0085" )
                    MOVE    WKSRY-DRCD          TO  WRK-TBL-DRCD
       *
                    ADD     1                   TO  WRK-SRY-MAX
@@ -1258,6 +1269,23 @@
                       (WRK-ZAITENKEI       =   ZERO   )
                    MOVE    1               TO  FLG-OK2
                END-IF
+      *        院外の診療種別
+               IF      WRK-SRYSYUKBN       =   "212"
+                                           OR  "222"
+                                           OR  "232"
+                                           OR  "292"
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+      *        院内の診療種別
+               IF      WRK-SRYSYUKBN       =   "211"
+                                           OR  "221"
+                                           OR  "231"
+                                           OR  "291"
+                                           OR  "213"
+                                           OR  "223"
+                                           OR  "233"
+                   MOVE    ZERO            TO  FLG-OK2
+               END-IF
            END-IF
       *    投薬で、点数がゼロのもを対象（院内）
            IF      ORCSCH62-KBN        =   "3"
@@ -1265,6 +1293,16 @@
                                                "22"  OR
                                                "23"    )  AND
                       (WRK-ZAITENKEI       >   ZERO    )
+                   MOVE    1               TO  FLG-OK2
+               END-IF
+      *        院内の診療種別
+               IF      WRK-SRYSYUKBN       =   "211"
+                                           OR  "221"
+                                           OR  "231"
+                                           OR  "291"
+                                           OR  "213"
+                                           OR  "223"
+                                           OR  "233"
                    MOVE    1               TO  FLG-OK2
                END-IF
            END-IF
@@ -1287,14 +1325,14 @@
                END-IF
            END-IF
       *    処方のみで、院内処方印刷の時
-           IF      WRK-SRYKBN          =   "21"  OR  "22" OR "23"
-               IF     (WRK-SRYSYUKBN       =   "213"  OR
-                                               "223"  OR
-                                               "233")   AND
-                      (ORCSCH62-KBN        =   "3"   )
-                   MOVE    1               TO  FLG-OK2
-               END-IF
-           END-IF
+      *    IF      WRK-SRYKBN          =   "21"  OR  "22" OR "23"
+      *        IF     (WRK-SRYSYUKBN       =   "213"  OR
+      *                                        "223"  OR
+      *                                        "233")   AND
+      *               (ORCSCH62-KBN        =   "3"   )
+      *            MOVE    1               TO  FLG-OK2
+      *        END-IF
+      *****END-IF
       *    処方コメント
            IF      WRK-SRYKBN          =   "98"
                MOVE    1               TO  FLG-OK2
@@ -1334,8 +1372,13 @@
                        UNTIL      (IDX-L2  >   50  )   OR
                                   (ORCSCH62-SRYCD (IDX-L IDX-L2)
                                                =   SPACE )
-                   PERFORM 3001-ORCSCH62-TBLSET-SEC
-                   MOVE    1                   TO  FLG-HENSYU
+                   IF      ORCSCH62-SRYCD (IDX-L IDX-L2)(1:4)
+                                               =   "0086"
+                       CONTINUE
+                   ELSE
+                       PERFORM 3001-ORCSCH62-TBLSET-SEC
+                       MOVE    1                   TO  FLG-HENSYU
+                   END-IF
                END-PERFORM
       *
                IF      FLG-HENSYU          =   1

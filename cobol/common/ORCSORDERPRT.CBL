@@ -553,6 +553,11 @@
                                                    OR  "0"
                            MOVE    1               TO  FLG-OK
                        END-IF
+      *                表示コメント対象外
+                       IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
+                                                   =   "0086"
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
       *!!
       *                出来高算定コード対象外
                        IF       LNK-WKSRY-SRYCD (IDX IDY)
@@ -605,6 +610,11 @@
                                                    =   "8"
                                                    OR  "0"
                            MOVE    1               TO  FLG-OK
+                       END-IF
+      *                表示コメント対象外
+                       IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
+                                                   =   "0086"
+                           MOVE    ZERO            TO  FLG-OK
                        END-IF
       *!!
       *                出来高算定コード対象外
@@ -819,8 +829,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "8"
                            MOVE    1               TO  FLG-OK
                        END-IF
-                       IF       LNK-WKSRY-SRYCD (IDX IDY)(1:3)
-                                                   =   "008"
+                       IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
+                                                   =   "0082"
+                                                   OR  "0083"
+                                                   OR  "0084"
+                                                   OR  "0085"
                            MOVE    1               TO  FLG-OK
                        END-IF
       *!               器材商品名
@@ -871,10 +884,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                (FLG-MAYAKU-NASI    =   ZERO )
                            MOVE    1               TO  FLG-OK
                        END-IF
-                       IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:3)
-                                                   =   "008" )  OR
-                               (LNK-WKSRY-SRYCD (IDX IDY)(1:1)
+                       IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:1)
                                                    =   "8"   )
+                           MOVE    1               TO  FLG-OK
+                       END-IF
+      *                ユーザコメント
+                       IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:4)
+                                                   =   "0082"
+                                                   OR  "0083"
+                                                   OR  "0084"
+                                                   OR  "0085")
                            MOVE    1               TO  FLG-OK
                        END-IF
                        IF       FLG-OK             =   1
@@ -922,8 +941,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "8"
                        MOVE    1               TO  FLG-OK
                    END-IF
-                   IF       LNK-WKSRY-SRYCD (IDX IDY)(1:3)
-                                               =   "008"
+      *            ユーザコメント
+                   IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
+                                                   =   "0082"
+                                                   OR  "0083"
+                                                   OR  "0084"
+                                                   OR  "0085"
                        MOVE    1               TO  FLG-OK
                    END-IF
       *!           器材商品名

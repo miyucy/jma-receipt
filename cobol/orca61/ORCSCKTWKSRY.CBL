@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1156,6 +1157,7 @@
                IF      LNK-WKSRY-INPUTCOMENT (IDX IDY)  NOT =   SPACE
                    IF      SPA-COM-INPUTCD (IDX2)       =   "810000001"
                                                         OR  "008500000"
+                                                        OR  "008600000"
                        MOVE    LNK-WKSRY-INPUTCOMENT (IDX IDY)
                                            TO  SPA-GMN-MEISYO-G (IDX2)
                        MOVE    "1"         TO  SPA-COM-MEIFLG   (IDX2)
@@ -1165,6 +1167,7 @@
                        IF     (SPA-COM-INPUTCD (IDX2)(1:2)  =   "83" )
                          OR   (SPA-COM-INPUTCD (IDX2)(1:4)  =   "0083")
                          OR   (SPA-COM-INPUTCD (IDX2)(1:4)  =   "0085")
+                         OR   (SPA-COM-INPUTCD (IDX2)(1:4)  =   "0086")
                            MOVE    "1"     TO  SPA-COM-MEIFLG   (IDX2)
                        END-IF
                    END-IF
@@ -2285,8 +2288,11 @@
                       OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
                                                      OR  "0084")
                       OR  (SPA-COM-INPUTCD(IDX)      =   "810000001"
-                                                     OR  "008500000" )
+                                                     OR  "008500000"
+                                                     OR  "008600000" )
                       OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0085" AND
+                           SPA-COM-MEIFLG (IDX)      =   "1"   )
+                      OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0086" AND
                            SPA-COM-MEIFLG (IDX)      =   "1"   )
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
@@ -2305,12 +2311,14 @@
       *                入力コメント
                        IF      SPA-COM-MEIFLG (IDX)    =   "1"
                            IF   (SPA-COM-INPUTCD(IDX)  =   "810000001"
-                                                       OR  "008500000" )
+                                                       OR  "008500000"
+                                                       OR  "008600000" )
                                MOVE    SPA-GMN-MEISYO-G (IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
                            ELSE
-                               IF  (SPA-COM-INPUTCD(IDX)(1:4) =  "0085")
+                               IF  (SPA-COM-INPUTCD(IDX)(1:4) =  "0085"
+                                                              OR "0086")
                                 AND (SPA-GMN-MEISYO (IDX)      =
                                                     SPA-COM-NAME (IDX))
                                    CONTINUE
