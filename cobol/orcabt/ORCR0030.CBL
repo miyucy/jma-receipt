@@ -422,7 +422,9 @@
       *  04.04.21    NACL-ÌçÏÆ    09/09/08  Ä¹ºê¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.04.22    NACL-ÌçÏÆ    09/09/10  ·îÅÓÃæ¤Ë°åÊÝ¤ÈÀ¸ÊÝ¤ÎÊ»ÍÑ¤«¤é
       *                                     À¸ÊÝÃ±ÆÈ¤Ë¤Ê¤Ã¤¿¤È¤­¤ÎÂÐ±þ
-      *  04.04.24    NACL-ÌçÏÆ    09/09/11  µÜºê¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.04.23    NACL-ÌçÏÆ    09/09/11  µÜºê¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.04.24    NACL-ÌçÏÆ    09/09/17  ÅìµþÅÔ¥Þ¥ë»ÒÂÐ±þ
+      *                                     ¡ÊÊ¿À®£²£±Ç¯£±£°·î¿ÇÎÅ¡Á¡Ë
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *  04.05.02    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
@@ -9303,7 +9305,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (RECE02-KOHHBTNUM(KH-IDX - 1) =  "41"))
               OR    ((SYS-1001-PREFNUM             =   13        ) AND
                      (RECE02-KOHNUM(KH-IDX - 1) =  "588"         ) AND
-                     (RECE02-SRYYM             >=  "200710"      ))
+                     (RECE02-SRYYM             >=  "200710"      ) AND
+                     (RECE02-SRYYM             <=  "200909"      ))
               OR    ((SYS-1001-PREFNUM             =   13        ) AND
                      (RECE02-KOHNUM(KH-IDX - 1) =
                        "180" OR "380" OR "181" OR "381"          ))
@@ -11275,6 +11278,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              WHEN    "13"
       *
                 IF   RECE02-SRYYM   >=  "200710"
+                AND  RECE02-SRYYM   <=  "200909"
                   PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                             UNTIL    KOHFTN-IDX     >    4
                     IF   RECE02-KOHNUM(KOHFTN-IDX) = "588"
@@ -11871,6 +11875,13 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                           RECE02-TOTALTEN(1) -
                           RECE02-TOTALTEN(2)
               END-IF
+              IF   (SYS-1001-PREFNUM   =  "13"    )
+              AND  (RECE02-KOHNUM(2)   =  "588"   )
+              AND  (RECE02-SRYYM      >=  "200910")
+                 COMPUTE  RECE02-JNISSU(3) =
+                          RECE02-JNISSU(1) -
+                          RECE02-JNISSU(2)
+              END-IF
            END-IF
       *
            IF  ( RECE02-HKNNUM       NOT = SPACE    )
@@ -11892,6 +11903,13 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                  COMPUTE  RECE02-TOTALTEN(5) =
                           RECE02-TOTALTEN(1) -
                           RECE02-TOTALTEN(2)
+              END-IF
+              IF   (SYS-1001-PREFNUM   =  "13"    )
+              AND  (RECE02-KOHNUM(3)   =  "588"   )
+              AND  (RECE02-SRYYM      >=  "200910")
+                 COMPUTE  RECE02-JNISSU(4) =
+                          RECE02-JNISSU(1) -
+                          RECE02-JNISSU(2)
               END-IF
            END-IF
       *
@@ -11915,6 +11933,13 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                           RECE02-TOTALTEN(1) -
                           RECE02-TOTALTEN(3)
               END-IF
+              IF   (SYS-1001-PREFNUM   =  "13"    )
+              AND  (RECE02-KOHNUM(3)   =  "588"   )
+              AND  (RECE02-SRYYM      >=  "200910")
+                 COMPUTE  RECE02-JNISSU(4) =
+                          RECE02-JNISSU(1) -
+                          RECE02-JNISSU(3)
+              END-IF
            END-IF
       *
            IF   SYS-1001-PREFNUM  =  "13"
@@ -11933,6 +11958,12 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                 COMPUTE  RECE02-TOTALTEN(3) =
                          RECE02-TOTALTEN(1) -
                          RECE02-TOTALTEN(2)
+                IF   (RECE02-KOHNUM(2)   =  "588"   )
+                AND  (RECE02-SRYYM      >=  "200910")
+                   COMPUTE  RECE02-JNISSU(3) =
+                            RECE02-JNISSU(1) -
+                            RECE02-JNISSU(2)
+                END-IF
              END-IF
       *
              IF  ( RECE02-HKNNUM       NOT = SPACE    )
@@ -11950,6 +11981,12 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                 COMPUTE  RECE02-TOTALTEN(4) =
                          RECE02-TOTALTEN(1) -
                          RECE02-TOTALTEN(3)
+                IF   (RECE02-KOHNUM(3)   =  "588"   )
+                AND  (RECE02-SRYYM      >=  "200910")
+                   COMPUTE  RECE02-JNISSU(4) =
+                            RECE02-JNISSU(1) -
+                            RECE02-JNISSU(3)
+                END-IF
              END-IF
       *
            END-IF
