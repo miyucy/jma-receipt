@@ -128,6 +128,9 @@
       *                                     対応
       *                                     ファイル出力先のデフォルト値
       *                                     の設定も可能にする 
+      *  04.05.03    NACL-藤原    09/09/18  「平成２１年台風第９号」対応
+      *                                     兵庫県・岡山県
+      *                                     ２００９年８月〜２０１０年１月対象 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2974,6 +2977,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                            MOVE    "2"             TO  WRK-SHELL-SYOKBN
                            PERFORM 45013-SOKATU-SYORI-SEC
                        END-IF
+      *
+      *                平成２１年台風第９号対応
+                       IF    ( SPA-PREFNUM       =   "28"    OR  "33" )
+                       AND   ( SPA-NAI-SKYYM     >=  200908           )
+                           MOVE    "1"             TO  WRK-SHELL-RECEKBN
+                           MOVE    "2"             TO  WRK-SHELL-SYOKBN
+                           PERFORM 45013-SOKATU-SYORI-SEC
+                       END-IF
                    END-IF     
            END-EVALUATE                                               
            MOVE    SPACE               TO  WRK-SHELL-SYOKBN
@@ -3357,7 +3368,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            END-IF
       *    新潟県中越沖地震対応 
       *    宮城県、岩手県地震対応 
-      *    中国・九州北部豪雨対応 
+      *    中国・九州北部豪雨対応
+      *    平成２１年台風第９号対応
            IF    ( WRK-SHELL-RECEKBN   =   "1" )
            AND   ( WRK-SHELL-SYOKBN    =   "2" )
                MOVE    "1"             TO  SHELLTBL-ARG25      
