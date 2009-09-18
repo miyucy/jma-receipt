@@ -5984,6 +5984,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      4502-SINKAI-KOU-EXT
            END-IF
            IF      WRK-ZAITEN          =   ACCT-ZAITEN
+      *
+           AND    (SPA-J04-JIHOKBN     =   ACCT-JIHOKBN )
                MOVE    ZERO            TO  FLG-SYUNOU-ERR
            ELSE
                MOVE    1               TO  FLG-SYUNOU-ERR
