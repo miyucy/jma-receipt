@@ -59,6 +59,7 @@
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
+      *  04.05.03    NACL-門脇    09/09/24  レセプト記載しないコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1528,7 +1529,8 @@
                     (TNS-TEN               =  ZERO )       )
             OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
             OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
-            OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
+            OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"
+                                           OR "0086"       )
             OR     ( SRY-SRYCD(IDX2)       =  "099999903"
                                            OR "099999904"  )
             OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
@@ -1570,7 +1572,8 @@
                       (TNS-TEN               =  ZERO )       )
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
               OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
-              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
+              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"
+                                             OR "0086"       )
               OR     ( SRY-SRYCD(IDX2)       =  "099999903"
                                              OR "099999904"  )
               OR     ((SRY-SRYSYUKBN  = "330" OR "331" OR
