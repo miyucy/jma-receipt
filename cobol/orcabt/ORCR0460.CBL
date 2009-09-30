@@ -116,6 +116,7 @@
       *                                     処方せん（乳幼児）加算編集対応
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *  04.04.02    NACL-門脇    09/09/30  検査の数量編集修正
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    09/06/17  処置の記載順変更（日付順）
@@ -1801,6 +1802,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                            INTO               TBL-NAME (IDX)
                    END-STRING
                    MOVE    ZERO               TO  TBL-YUKOKETA (IDX)
+                   MOVE    SPACE   TO   TBL-ZAIW-TANINAME(3 IDX)
                ELSE
                    MOVE    TBL-ZAIW-NAMEINF (3 IDX)
                                               TO  TBL-NAMEINF (IDX)
