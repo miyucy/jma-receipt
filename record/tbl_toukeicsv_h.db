@@ -1,0 +1,47 @@
+tbl_toukeicsv_h	{
+	HOSPNUM			number(2,0);
+	TBL_KEY			char(8);
+	RENNUM			number(4);
+	TBL_GROUP		char(14);
+	SHORI_RENNUM		number(4);
+	SHELLID			varchar(20);
+	SRYYM			varchar(6);
+	SRYYMD			varchar(8);
+	CNT			number(5);
+	NYUGAIKBN		char(1);
+	TO_FOLDER		varchar(200);
+	TO_DATA			varchar(200);
+	PUTFLG			char(1);
+	TITLE			varchar(100);
+	TERMID			varchar(32);
+	OPID			varchar(16);
+	CREYMD			varchar(8);
+};
+
+primary	{
+	HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,SHORI_RENNUM;
+};
+
+path	key		{
+	DBSELECT	{
+		DECLARE tbl_toukeicsv_h_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_toukeicsv_h
+		WHERE 	HOSPNUM		=	:HOSPNUM
+		AND	TBL_KEY		=	:TBL_KEY
+		AND	RENNUM		=	:RENNUM
+		AND	TBL_GROUP	=	:TBL_GROUP
+		AND	SHORI_RENNUM	=	:SHORI_RENNUM 
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_toukeicsv_h_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_toukeicsv_h
+		WHERE 	HOSPNUM		=	 :HOSPNUM
+ 		;
+	};
+};
