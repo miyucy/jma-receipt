@@ -298,6 +298,7 @@ SRCS = ORCHC01.CBL \
        ORCSBUNBENCHK.CBL \
        ORCHCN63.CBL \
        ORCSTOUKEICSV.CBL \
+       ORCSS011.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global
