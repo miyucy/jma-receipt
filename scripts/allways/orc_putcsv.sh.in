@@ -1,0 +1,86 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#        ＴＯＵＫＥＩＣＳＶ＿Ｂからのファイル作成
+#        ${1} HOSPNUM
+#        ${2} TBL-KEY
+#        ${3} TBL-GROUP
+#        ${4} SHORI-RENNUM
+#        ${5} RENNUM
+#        ${6} 保存場所
+#        ${7} TO-FOLDER
+#        ${8} TO-DATA
+#        ${9} 端末ｉｐアドレス
+#        ${10} ジョブＩＤ
+#        ${11} シェルＩＤ
+#        ${12} エラーファイル名 
+#        ${13} ファイル出力先
+#        ${14} コード区分（1:EUC 2:S-jis）
+#-------------------------------------------#
+#
+##      エラーファイル削除
+        rm -f ${12}
+
+        LOG_FILE="/var/log/jma-receipt/${1}orcputcsv.log"
+        FILE_1="/tmp/"${1}"PUTCSV01.txt"
+#       FILE_2=${13}${1}${8}
+        FILE_3="/tmp/"${1}${8}
+
+        rm -f $LOG_FILE
+
+        echo "arg6  = [" ${6} "]"   >$LOG_FILE
+        echo "arg9  = [" ${9} "]"   >>$LOG_FILE
+        echo "arg13 = [" ${13} "]"  >>$LOG_FILE
+        echo "arg14 = [" ${14} "]"  >>$LOG_FILE
+        echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
+        echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
+#       echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
+        echo "file3= [" $FILE_3 "]"  >> $LOG_FILE
+
+#       該当ファイル削除
+#	rm -f $FILE_2
+	rm -f $FILE_1
+	rm -f $FILE_3
+
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUTCSV -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${12} >> $LOG_FILE 2>&1
+        if  [ -e ${12} ]; then
+            exit
+        fi
+
+
+#       コード区分によりコード変換
+
+        if   [ ${14} = '2' ]; then
+            if   [ ${6} != '1' ]; then
+                 nkf -s -Lw  $FILE_1 > ${13}
+            else
+                 nkf -s -Lw  $FILE_1 > $FILE_3
+            fi
+#                 RC=$?
+#                 echo "--- nkf end   ---[" $RC  "]" >>$LOG_FILE
+#                 if  [ $RC -ne '0' ]; then
+#                     ERRCD='0000'$RC
+#                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE
+#                     echo "--- nkf err   ---" >>$LOG_FILE
+#                     exit
+#                 fi
+        else
+            if   [ ${6} != '1' ]; then
+                 cp $FILE_1  ${13}
+            else
+                 cp $FILE_1  $FILE_3
+            fi
+        fi
+         
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11},${1} >> $LOG_FILE 2>&1
+
+        exit 

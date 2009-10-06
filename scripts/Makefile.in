@@ -24,6 +24,7 @@ shell_sources = \
 	allways/print_stop.sh.in \
 	allways/preprint.sh.in \
 	allways/orc_file_del.sh.in \
+	allways/orc_putcsv.sh.in \
 	allways/tensu.sh.in \
 	allways/program_upgrade_online.sh.in \
 	allways/program_upgrade_copy.sh.in \

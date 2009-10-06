@@ -403,6 +403,12 @@ SCREEN_screen = \
 	I07.glade \
 	G05.glade \
 	I08.glade \
+	XG01.glade \
+	XG02.glade \
+	XG99.glade \
+	XGERR.glade \
+	XGID1.glade \
+	XGFIL.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

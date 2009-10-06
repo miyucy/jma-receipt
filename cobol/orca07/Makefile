@@ -1,0 +1,10 @@
+SRCS = ORCGXGFIL.CBL \
+       ORCGXGID1.CBL \
+       ORCGXGERR.CBL \
+       ORCGXG99.CBL \
+       ORCGXG02.CBL \
+       ORCGXG01.CBL \
+
+top_builddir = ../..
+include $(top_builddir)/cobol/Makefile.global
+

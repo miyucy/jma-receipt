@@ -12,9 +12,6 @@ tbl_toukeicsv_b	{
 	PUTFLG			char(1);
 	CSVDATA			varchar(20000);
 	CREYMD			varchar(8);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
-	STCNT			number(5),virtual;
-	EDCNT			number(5),virtual;
 };
 
 primary	{
@@ -46,9 +43,20 @@ path	key2		{
 		AND	RENNUM		=	:RENNUM
 		AND	TBL_GROUP	=	:TBL_GROUP
 		AND	SHORI_RENNUM	=	:SHORI_RENNUM 
-		AND	CNT		>=	:STCNT
-		AND	CNT		<=	:EDCNT
-		ORDER BY CNT
+		ORDER	 BY	CNT 
+		;
+	};
+};
+
+path    del1   {
+	DBDELETE        {
+		DELETE
+		FROM tbl_toukeicsv_b
+		WHERE 	HOSPNUM		=	:HOSPNUM
+		AND	TBL_KEY		=	:TBL_KEY
+		AND	RENNUM		=	:RENNUM
+		AND	TBL_GROUP	=	:TBL_GROUP
+		AND	SHORI_RENNUM	=	:SHORI_RENNUM 
 		;
 	};
 };

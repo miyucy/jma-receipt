@@ -36,6 +36,31 @@ path	key		{
 	};
 };
 
+path	key2		{
+	DBSELECT	{
+		DECLARE tbl_toukeicsv_h_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_toukeicsv_h
+		WHERE 	HOSPNUM		=	:HOSPNUM
+		AND	TBL_KEY		=	:TBL_KEY
+		ORDER BY  TBL_GROUP desc,RENNUM,SHORI_RENNUM
+		;
+	};
+};
+
+path    del1   {
+	DBDELETE        {
+		DELETE
+		FROM tbl_toukeicsv_h
+		WHERE 	HOSPNUM		=	:HOSPNUM
+		AND	TBL_KEY		=	:TBL_KEY
+		AND	RENNUM		=	:RENNUM
+		AND	TBL_GROUP	=	:TBL_GROUP
+		AND	SHORI_RENNUM	=	:SHORI_RENNUM 
+                ;
+        };
+};
+
 path	all	{
 	DBSELECT	{
 		DECLARE tbl_toukeicsv_h_all_csr CURSOR FOR

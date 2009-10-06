@@ -407,6 +407,12 @@ RECORD_files = \
 	I07.rec \
 	G05.rec \
 	I08.rec \
+	XG01.rec \
+	XG02.rec \
+	XG99.rec \
+	XGERR.rec \
+	XGID1.rec \
+	XGFIL.rec \
 
 DEF_files = \
 	HC01.def \

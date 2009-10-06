@@ -13,5 +13,3 @@
             03  TOUKEICSV-B-PUTFLG     PIC X(1).
             03  TOUKEICSV-B-CSVDATA    PIC X(20000).
             03  TOUKEICSV-B-CREYMD     PIC X(8).
-            03  TOUKEICSV-B-STCNT      PIC 9(5).
-            03  TOUKEICSV-B-EDCNT      PIC 9(5).
