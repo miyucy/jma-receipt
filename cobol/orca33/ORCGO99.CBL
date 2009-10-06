@@ -396,6 +396,9 @@
                    IF    ( SPA-OID1-FLG =   "PV" )
                     AND  ( CNT-UPDCNT   >   ZERO )
                        MOVE    WIDGET-NORMAL   TO  O99-B12-STATE
+                       IF    ( SPA-O01-CHGWINDOWKBN    =   "1" )
+                           PERFORM 4501-NEXT-GMN-SEC
+                       END-IF
                    END-IF
                ELSE
                    MOVE    "B01"        TO  MCP-WIDGET
