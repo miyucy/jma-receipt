@@ -32,7 +32,21 @@
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
       *
+       INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *    レセ電データ出力先チェック用ワークファイル
+           SELECT  WRK-FILE        ASSIGN  WRKPARA
+                                   FILE    STATUS  IS  STS-WRK.
+      *
+      *
        DATA                        DIVISION.
+       FILE                        SECTION.
+      *
+      *    レセ電データ出力先チェック用ワークファイル
+       FD  WRK-FILE.
+       01  WRK-R                   PIC X(10).
+      *
        WORKING-STORAGE             SECTION.
       *
       *    スパ領域
@@ -46,6 +60,9 @@
       *
            COPY    "ENUM-VALUE".
       *
+       01  STS-AREA.
+           03  STS-WRK             PIC X(02).
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -55,10 +72,24 @@
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
            03  IDX2                PIC 9(05).
+           03  IDX3                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-FILENO          PIC 9(03).
+      *
+           03  WRK-TO-FILENAME.
+               05  WRK-TO-FOLDER   PIC X(200).
+               05  WRK-TO-DATA1    PIC X(200).
+               05  WRK-TO-FILENO   PIC X(03).
+               05  WRK-TO-DATA2    PIC X(04).
+      *
+           03  WRK-COL             PIC 9(03).
+           03  WRK-XGIDMSG         PIC X(70).
+      *
+       01  WRKPARA                 PIC X(100).
       *
        01  WRK-CONS-AREA.
       *    ジョブ管理ＤＢのキー値  
@@ -79,6 +110,9 @@
       *
       *    クライアント保存可否情報取得サブ
            COPY    "CPORCSCLIENTSV.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
       *    連絡領域
@@ -176,6 +210,24 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+           EVALUATE    SPA-MOTOPG
+               WHEN    "XGID1"
+                   PERFORM 330-XGID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+           END-EVALUATE
+      *
+      *    スパ初期編集処理
+           PERFORM 310-SPASET-SEC
+      *
+           .
+       300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       310-SPASET-SEC              SECTION.
+      *
            INITIALIZE              SPA-XG02-AREA
       *
       *    クライアント保存可否情報取得サブ
@@ -199,18 +251,61 @@
            MOVE    SPA-GMN-XG02-CDKBNLST (1)
                                    TO  SPA-GMN-XG02-CDKBN-G
       *
-           STRING   SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
-                                           DELIMITED   BY  SPACE
+           INITIALIZE              WRK-TO-FILENAME
+           IF      SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
+                                   =   SPACE
+               MOVE    "/tmp/"         TO  WRK-TO-FOLDER
+           ELSE
+               MOVE    SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
+                                       TO  WRK-TO-FOLDER
+           END-IF
+           IF      SPA-NAI-TTO-DATA  (SPA-NAI-SELNUM)
+                                   =   SPACE
+               EVALUATE    SPA-XG01-MOTOPG
+                   WHEN    "L01"
+                       MOVE    "DAILY_"    TO  WRK-TO-DATA1
+                   WHEN    "G01"
+                       MOVE    "MONTHLY_"  TO  WRK-TO-DATA1
+               END-EVALUATE
+               MOVE    ".CSV"          TO  WRK-TO-DATA2
+               MOVE    SPA-NAI-FILENO  TO  WRK-FILENO
+               ADD     1               TO  WRK-FILENO
+               MOVE    WRK-FILENO      TO  WRK-TO-FILENO
+           ELSE
+               MOVE    SPA-NAI-TTO-DATA  (SPA-NAI-SELNUM)
+                                       TO  WRK-TO-DATA1
+           END-IF
+           STRING   WRK-TO-FOLDER          DELIMITED   BY  SPACE
                     "/"                    DELIMITED   BY  SIZE
-                    SPA-NAI-TTO-DATA   (SPA-NAI-SELNUM)
-                                           DELIMITED   BY  SPACE
-                                           INTO    SPA-GMN-XG02-FILENAME
+                    WRK-TO-DATA1           DELIMITED   BY  SPACE
+                    WRK-TO-FILENO          DELIMITED   BY  SPACE
+                    WRK-TO-DATA2           DELIMITED   BY  SPACE
+                                           INTO    SPA-NAI-XG02-FILENAME
            END-STRING
+           MOVE    SPA-NAI-XG02-FILENAME
+                                   TO  SPA-GMN-XG02-FILENAME
       *
            MOVE  1                 TO  SPA-GMN-XG02-CUR
       *
            .
-       300-SCREEN-EXT.
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面戻り処理
+      *****************************************************************
+       330-XGID1-SET-SEC            SECTION.
+      *
+           IF      SPA-XGID1-FLG    =   "OK"
+      *        確定処理
+               PERFORM 490-KAKUTEI-SEC
+               GO  TO  330-XGID1-SET-EXT
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-XGID1-FLG
+           MOVE    SPACE           TO  SPA-XGIDCD
+           .
+       330-XGID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -225,7 +320,7 @@
                    PERFORM 210-BACK
       *        確定
                WHEN    "CLICKED"   ALSO    "B12"
-                   PERFORM 490-KAKUTEI
+                   PERFORM 490-KAKUTEI-CHECK-SEC
            END-EVALUATE
       *
            .
@@ -327,14 +422,9 @@
       *****************************************************************
        41021-FILENAME-CHK-SEC           SECTION.
       *
-           IF      SPA-GMN-XG02-FILENAME   =   SPACE
-               STRING   SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
-                                               DELIMITED   BY  SPACE
-                        "/"                    DELIMITED   BY  SIZE
-                        SPA-NAI-TTO-DATA   (SPA-NAI-SELNUM)
-                                               DELIMITED   BY  SPACE
-                                           INTO    SPA-GMN-XG02-FILENAME
-               END-STRING
+           IF      SPA-GMN-XG02-FILENAME
+                                   =   SPACE
+               MOVE    "1001"          TO  SPA-ERRCD
            ELSE
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >       100
@@ -406,18 +496,92 @@
       *****************************************************************
        4103-KAKUTEI-CHK-SEC        SECTION.
       *
-      *    出力ファイル名未入力チェック
-           IF  (   SPA-GMN-XG02-FILENAME
-                                   =   SPACE )
-               MOVE    "1001"          TO  SPA-ERRCD
-               MOVE    1               TO  SPA-GMN-XG02-CUR
-               GO  TO  4103-KAKUTEI-CHK-EXT
+      *    ファイル名チェック
+           MOVE    SPACE           TO  SPA-NAI-XG02-TO-FOLDER
+                                       SPA-NAI-XG02-TO-DATA
+      *
+           MOVE    ZERO            TO  WRK-COL
+           INSPECT SPA-GMN-XG02-FILENAME
+                                   TALLYING    WRK-COL
+                                   FOR ALL     "/"
+            IF     SPA-GMN-XG02-FILE
+                                   =   SPACE
+                IF      WRK-COL        =   ZERO
+                   MOVE    "1003"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-GMN-XG02-CUR
+                   GO  TO  4103-KAKUTEI-CHK-EXT
+                END-IF
            END-IF
       *
-           MOVE    SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
-                                       TO  SPA-NAI-XG02-TO-FOLDER
-           MOVE    SPA-NAI-TTO-DATA   (SPA-NAI-SELNUM)
+           PERFORM VARYING IDX2    FROM    100 BY  -1
+                   UNTIL   IDX2    <       2
+               IF      SPA-GMN-XG02-FILENAME (IDX2:1)
+                                       =   "/"
+                   COMPUTE IDX3    =   IDX2    -   1
+                   MOVE    SPA-GMN-XG02-FILENAME (1:IDX3)
+                                           TO  SPA-NAI-XG02-TO-FOLDER
+                   COMPUTE IDX3    =   IDX2    +   1
+                   MOVE    SPA-GMN-XG02-FILENAME (IDX3:)
+                                           TO  SPA-NAI-XG02-TO-DATA
+                   MOVE    1               TO  IDX2
+               END-IF    
+           END-PERFORM
+      *
+      *    格納場所指定がないときファイル名にセット
+           IF    ( SPA-NAI-XG02-TO-DATA
+                                   =   SPACE )
+           AND   ( SPA-NAI-XG02-TO-FOLDER
+                                   =   SPACE )
+               MOVE    SPA-GMN-XG02-FILENAME
                                        TO  SPA-NAI-XG02-TO-DATA
+           END-IF
+      *
+      *??
+           DISPLAY "FOLDER=" SPA-NAI-XG02-TO-FOLDER "#" 
+           DISPLAY "DATA  =" SPA-NAI-XG02-TO-DATA "#"
+      *??
+      *    ファイル名が未入力
+           IF    ( SPA-NAI-XG02-TO-DATA
+                                   =   SPACE )
+               MOVE    "1002"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-XG02-CUR 
+           ELSE
+      *        クライアント保存以外のときフォルダ名が未入力
+               IF    ( SPA-GMN-XG02-FILE
+                                       =   SPACE )
+               AND   ( SPA-NAI-XG02-TO-FOLDER
+                                       =   SPACE )
+                   MOVE    "1003"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-GMN-XG02-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+           AND   ( SPA-GMN-XG02-FILE
+                                   =   SPACE )
+               MOVE    SPA-GMN-XG02-FILENAME
+                                       TO  WRKPARA
+               OPEN    INPUT               WRK-FILE
+               IF      STS-WRK             =   "00"
+                   CLOSE   WRK-FILE
+               ELSE
+                   OPEN    OUTPUT              WRK-FILE
+                   IF      STS-WRK             =   "00"
+                       CLOSE   WRK-FILE
+                       MOVE    ZERO                TO  IF-RESULT
+                       MOVE    WRKPARA             TO  IF-FILENAME
+                       CALL    "orcfiledel"    USING   ORCSFDELAREA
+                   ELSE
+                       MOVE    1                   TO  SPA-GMN-CUR
+                       MOVE    "1001"              TO  SPA-XGIDCD
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD      NOT =   SPACE
+               MOVE    SPACE           TO  SPA-NAI-XG02-TO-FOLDER
+                                           SPA-NAI-XG02-TO-DATA
+           END-IF    
            .
        4103-KAKUTEI-CHK-EXT.
            EXIT.
@@ -443,9 +607,9 @@
            EXIT.
       *
       *****************************************************************
-      *    確定処理
+      *    確定前チェック処理
       *****************************************************************
-       490-KAKUTEI                 SECTION.
+       490-KAKUTEI-CHECK-SEC       SECTION.
       *
       *    入力時チェック
            MOVE    1               TO  FLG-TOUROKU
@@ -453,7 +617,22 @@
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  490-KAKUTEI-EXT
            END-IF
+           IF    ( SPA-XGIDCD      NOT =   SPACE )
+               GO  TO  490-KAKUTEI-EXT
+           END-IF
       *
+      *    確定処理
+           PERFORM 490-KAKUTEI-SEC
+           .
+       490-KAKUTEI-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定処理
+      *****************************************************************
+       490-KAKUTEI-SEC             SECTION.
+      *
+           ADD     1               TO  SPA-NAI-FILENO
            MOVE    "OK"            TO  SPA-XGID1-FLG
       *
            PERFORM 210-BACK
@@ -474,7 +653,10 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           MOVE    SPACE           TO  LINKAREA
+           IF      SPA-XGIDCD   NOT =   SPACE
+               PERFORM 520-XGIDSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
       *
            MOVE    "CURRENT"       TO  MCP-PUTTYPE
            MOVE    "XG02"          TO  MCP-WINDOW
@@ -570,7 +752,11 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "1001"
+           WHEN    "1002"
                MOVE    "出力ファイル名が入力されていません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1003"
+               MOVE    "格納場所が入力されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
                STRING   "出力ファイル名に" DELIMITED  BY  SIZE
@@ -597,6 +783,42 @@
       *
            .
        510-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ表示処理
+      *****************************************************************
+       520-XGIDSET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-XGIDMSG
+      *
+           EVALUATE    SPA-XGIDCD
+               WHEN    "1001"
+                   STRING  "出力先がマウントできませんが、"
+                                           DELIMITED  BY  SIZE
+                           "処理を続けますか"
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-XGIDMSG
+                   END-STRING
+           END-EVALUATE
+      *
+           MOVE    SPACE           TO  XGID1
+           MOVE    SPA-XGIDCD      TO  XGID1-ID1CODE
+           MOVE    WRK-XGIDMSG     TO  XGID1-ID1MSG
+           MOVE    "B12"           TO  MCP-WIDGET
+      *
+           MOVE    "XG02"          TO  SPA-MOTOPG
+           MOVE    "XGID1"         TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "XGID1"         TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END              
+      *
+           .
+       520-XGIDSET-EXT.
            EXIT.
       *
       *****************************************************************

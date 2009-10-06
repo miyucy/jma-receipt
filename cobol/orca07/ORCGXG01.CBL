@@ -68,18 +68,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-LIST-ROW        PIC 9(01).
       *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-YMD.
-               05  SYS-YY          PIC 9(02).
-               05  SYS-MM          PIC 9(02).
-               05  SYS-DD          PIC 9(02).
-           03  WRK-SYSYMD.
-               05  WRK-SYSYY       PIC 9(04).
-               05  WRK-SYSMM       PIC 9(02).
-               05  WRK-SYSDD       PIC 9(02).
-           03  SYS-TIME            PIC X(06).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -98,11 +86,6 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
-           03  WRK-WYMD.
-               05  WRK-WGO         PIC X(01).
-               05  WRK-WYY         PIC 9(02).
-               05  WRK-WMM         PIC 9(02).
-               05  WRK-WDD         PIC 9(02).
            03  WRK-SELNUM          PIC 9(03). 
       *
            03  WRK-ZZ              PIC ZZ9.
@@ -173,9 +156,6 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-      *    クライアント保存ＤＢ制御サブ
-      *****COPY    "CPORCSFILESV.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -410,19 +390,19 @@
                    MOVE    TOUKEICSV-H-TO-FOLDER
                                            TO  SPA-NAI-TTO-FOLDER (IDX)
                END-IF
-               IF      TOUKEICSV-H-TO-DATA =   SPACE
-                   EVALUATE    SPA-XG01-MOTOPG
-                       WHEN    "L01"
-                           MOVE    "DAILY.CSV"
-                                           TO  SPA-NAI-TTO-DATA  (IDX)
-                       WHEN    "G01"
-                           MOVE    "MONTHLY.CSV"
-                                           TO  SPA-NAI-TTO-DATA  (IDX)
-                   END-EVALUATE
-               ELSE
+      *           IF      TOUKEICSV-H-TO-DATA =   SPACE
+      *               EVALUATE    SPA-XG01-MOTOPG
+      *                   WHEN    "L01"
+      *                       MOVE    "DAILY.CSV"
+      *                                       TO  SPA-NAI-TTO-DATA  (IDX)
+      *                   WHEN    "G01"
+      *                       MOVE    "MONTHLY.CSV"
+      *                                       TO  SPA-NAI-TTO-DATA  (IDX)
+      *               END-EVALUATE
+      *           ELSE
                    MOVE    TOUKEICSV-H-TO-DATA
                                            TO  SPA-NAI-TTO-DATA  (IDX)
-               END-IF
+      *           END-IF
       *                                                                                          
                MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1201,7 +1181,7 @@
            END-IF
       *
            IF      SPA-XGIDCD   NOT =   SPACE
-               PERFORM 520-TIDSET-SEC
+               PERFORM 520-XGIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
@@ -1342,7 +1322,7 @@
       *****************************************************************
       *    確認メッセージ表示処理
       *****************************************************************
-       520-TIDSET-SEC              SECTION.
+       520-XGIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-XGIDMSG
       *
@@ -1375,7 +1355,7 @@
            MOVE    1               TO  FLG-END              
       *
            .
-       520-TIDSET-EXT.
+       520-XGIDSET-EXT.
            EXIT.
       *
       *****************************************************************

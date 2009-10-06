@@ -31,9 +31,6 @@
            03  SPA-XG99-FILESV-CHK-FLG PIC 9(01).
            03  SPA-XG01-MOTOPG         PIC X(08).
       *
-           03  SPA-XG01-TO-FOLDER      PIC X(200).
-           03  SPA-XG01-TO-DATA        PIC X(200).
-      *
            03  SPA-XGIDCD              PIC X(04).
       *
            03  SPA-XGID1-AREA. 

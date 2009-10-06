@@ -162,7 +162,7 @@
            END-IF
       *
            MOVE    "B01"               TO  MCP-WIDGET
-           MOVE    SPACE               TO  LINKAREA
+      *****MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "XG99"              TO  MCP-WINDOW
@@ -362,7 +362,7 @@
                                    TO  SPA-SFILESV-TO-DATA   (IDX)
            MOVE    SPA-GMN-XG02-CDKBN
                                    TO  SPA-SFILESV-DATA-TYPE (IDX)
-           ADD     1               TO  SPA-SFILESV-MAX
+           MOVE    1               TO  SPA-SFILESV-MAX
       *
            MOVE    1               TO  SPA-XG99-FILESV-CHK-FLG
       *
