@@ -29,6 +29,7 @@
       *  Maj/Min/Rev 修正者        日付      内容
       *  03.05.01    NACL-森脇     07/06/06  グループ診療対応
       *  04.03.01    NACL-森脇     08/08/29  パラメタ増加
+      *  04.05.01    NACL-森脇     08/09/18  病棟別集計対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -83,12 +84,6 @@
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    エラーファイル 名称領域 
-grpsys*DD  COPY    "CPCOMMONDAT2.INC"
-grpsys*DD                          REPLACING   //RECE01PARA//
-grpsys*DD                          BY          //RECEERR//.
-grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    診療行為使用患者一覧ファイル
            COPY    "CPCOMMONDAT2.INC"
@@ -150,12 +145,12 @@ grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-grpsys*DD  03  WRK-PARA-HOSPID     PIC X(24).
-grpsys     03  WRK-PARA-HOSPNUM    PIC 9(02).
-grpsys     03  RECEERR             PIC X(100).
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SRYKA      PIC X(02).
+           03  WRK-PARA-SYORIKBN   PIC X(01).
            03  WRK-PARA-SRYCD      PIC X(20)
                                    OCCURS  7.
       *
@@ -200,8 +195,7 @@ grpsys     03  RECEERR             PIC X(100).
       *
        01  TPTINF-AREA.
         02 TPTINF-MAX                      PIC 9(05).
-grpsys* 02 TPTINF-CHK-HOSPID               PIC X(24).
-grpsys  02 TPTINF-CHK-HOSPNUM              PIC 9(02).
+        02 TPTINF-CHK-HOSPNUM              PIC 9(02).
         02 TPTINF-CHK-PTID                 PIC 9(10).
         02 TPTINF-FLG                      PIC 9(01).
         02 TPTINF-IDX                      PIC 9(05).
@@ -236,6 +230,7 @@ grpsys  02 TPTINF-CHK-HOSPNUM              PIC 9(02).
       *
            COPY    "CPSK1001.INC".
            COPY    "CPSK1005.INC".
+           COPY    "CPSK5001.INC".
       *
       *    入院診療会計マスター
        01  NYUINACCT-REC.
@@ -371,6 +366,7 @@ grpsys                                         RECEERR
                                                WRK-PARA-SRYYM
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-SRYKA
+                                               WRK-PARA-SYORIKBN
                                                WRK-PARA-SRYCD (1)
                                                WRK-PARA-SRYCD (2)
                                                WRK-PARA-SRYCD (3)
@@ -489,19 +485,35 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
       *
            PERFORM 1101-TSRYCD-HEN-SEC
       *
-           IF    ( WRK-PARA-SRYKA  NOT =   SPACE )
-               INITIALIZE              SYSKANRI-REC
-               MOVE    "1005"          TO  SYS-KANRICD
-grpsys         MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-               MOVE    WRK-PARA-SRYKA  TO  SYS-KBNCD
-               MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    "診療科を正しく設定してください"
+           IF    ( WRK-PARA-SYORIKBN   =   "1" )
+           AND   ( WRK-PARA-NYUGAIKBN  NOT =   "1" )
+               MOVE    "外来分は病棟別に集計できません"
                                        TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  110-PARA-HENSYU-EXT
+           END-IF
+      *
+           IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
+               IF   ( WRK-PARA-SRYKA  NOT =   SPACE )
+                   INITIALIZE              SYSKANRI-REC
+                   MOVE    "1005"          TO  SYS-KANRICD
+                   MOVE    WRK-PARA-SRYKA  TO  SYS-KBNCD
+                   MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   IF    ( FLG-SYSKANRI    =   ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    "診療科を正しく設定してください"
+                                           TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+               END-IF
+           ELSE
+               IF   ( WRK-PARA-SRYKA  NOT =   SPACE )
+                   MOVE    "病棟別の場合は診療科を入力しないでください"
+                                           TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
            END-IF
@@ -679,27 +691,20 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            PERFORM 900-SRYACT-KEY14-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
-      *
                PERFORM VARYING IDX3    FROM    1   BY  1
                        UNTIL ( IDX3    >   CONST-SRYCD-MAX )
-      *
                    IF    ( SRY-SRYCD (IDX3)    NOT =   SPACE )
                        PERFORM VARYING IDX4    FROM    1   BY  1
                                UNTIL ( IDX4    >   TSRYCD-MAX )
-      *
                            IF    ( TSRYCD-SRYCD (IDX4)
                                                =   SRY-SRYCD (IDX3) )
                                PERFORM 20011-IN01-HEN-SEC
                                MOVE    TSRYCD-MAX  TO  IDX4
                            END-IF
-      *
                        END-PERFORM
                    END-IF
-      *
                END-PERFORM
-      *
                PERFORM 900-SRYACT-KEY14-FET-SEC
-      *
            END-PERFORM
       *
            MOVE    "tbl_sryact"    TO  MCP-TABLE
@@ -727,83 +732,135 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
                GO  TO  20011-IN01-HEN-EXT
            END-IF
       *
-           INITIALIZE                  IN01-REC
-           MOVE    IDX4                TO  IN01-KEY-CDSEQ
-           MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
-           MOVE    SRY-SRYKA           TO  IN01-KEY-SRYKA
-           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-           PERFORM 900-IN01DYN-READ-SEC
-           IF    ( FLG-IN01            =   ZERO )
-      *
-               PERFORM 200111-IN01-ACCT-HEN-SEC
-      *
-               REWRITE                   IN01-REC
-      *
+           IF      WRK-PARA-SYORIKBN   NOT =   "1"
+               PERFORM 20011-SRYKA-SET-SEC
            ELSE
-               INITIALIZE                  IN01-REC
-               MOVE    IDX4                TO  IN01-KEY-CDSEQ
-               MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
-               MOVE    SRY-SRYKA           TO  IN01-KEY-SRYKA
-               MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-               MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-               MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-               MOVE    PTINF-NAME          TO  IN01-NAME
-               MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
-      *
-               PERFORM 200111-IN01-ACCT-HEN-SEC
-      *
-               WRITE                     IN01-REC
+               PERFORM 20011-NYUINACCT-GET-SEC
            END-IF
       *
            .
        20011-IN01-HEN-EXT.
            EXIT.
-      *****************************************************************
-      *    診療行為使用患者一覧診療会計情報編集処理
-      *****************************************************************
-       200111-IN01-ACCT-HEN-SEC        SECTION.
       *
-           COMPUTE IN01-KAISU   =  IN01-KAISU  +   ACCT-ZAIKAISU
+      *****************************************************************
+      *    入院会計取得処理
+      *****************************************************************
+       20011-NYUINACCT-GET-SEC     SECTION.
+      *
+      *     MOVE    ZERO            TO  FLG-NYUINACCT
+      *
+           PERFORM 900-NYUINACCT-KEY9-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+               IF    ( NACCT-ZAISKBKBN =   "5" )
+                   INITIALIZE          SS009-AREA
+                   CALL    "ORCSS009"  USING   SS009-AREA
+                                               NYUINACCT-REC
+                                               SPA-AREA
+                   IF    ( SS009-RC    =   ZERO )
+                       PERFORM 20011-BTUNUM-SET-SEC
+                   ELSE
+                       DISPLAY "ERR SS009-RC:" SS009-RC
+                   END-IF
+               END-IF
+               PERFORM 900-NYUINACCT-KEY9-FET-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       20011-NYUINACCT-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科別件数セット処理
+      *****************************************************************
+       20011-SRYKA-SET-SEC         SECTION.
+      *
+           INITIALIZE                  IN01-REC
+           MOVE    IDX4                TO  IN01-KEY-CDSEQ
+           MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
+           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+           MOVE    PTINF-NAME          TO  IN01-NAME
+           MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
+           MOVE    SRY-SRYKA           TO  IN01-KEY-SRYKA
+           PERFORM 900-IN01DYN-READ-SEC
+           COMPUTE IN01-KAISU      =   IN01-KAISU
+                                   +   ACCT-ZAIKAISU
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+               COMPUTE IN01-DAY (IDX-DAY)
+                   =   IN01-DAY (IDX-DAY)
+                   +   ACCT-DAY (1 IDX-DAY)
+           END-PERFORM
+           IF    ( FLG-IN01            =   ZERO )
+               REWRITE                 IN01-REC
+           ELSE
+               WRITE                   IN01-REC
+           END-IF
+      *
+           .
+       20011-SRYKA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    病棟別件数セット処理
+      *****************************************************************
+       20011-BTUNUM-SET-SEC        SECTION.
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
-      *
-               COMPUTE    IN01-DAY (IDX-DAY)
-                   =      IN01-DAY (IDX-DAY)
-                   +      ACCT-DAY (1 IDX-DAY)
-      *
+               IF    ( SS009-BRMNUM-DAY(IDX-DAY)   NOT =   SPACE )
+                   INITIALIZE                  IN01-REC
+                   MOVE    IDX4                TO  IN01-KEY-CDSEQ
+                   MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
+                   MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+                   MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+                   MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+                   MOVE    PTINF-NAME          TO  IN01-NAME
+                   MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
+                   MOVE    SS009-BRMNUM-DAY(IDX-DAY)(1:2)
+                                               TO  IN01-KEY-SRYKA
+                   PERFORM 900-IN01DYN-READ-SEC
+                   COMPUTE IN01-DAY (IDX-DAY)
+                       =   IN01-DAY (IDX-DAY)
+                       +   ACCT-DAY (1 IDX-DAY)
+                   COMPUTE IN01-KAISU
+                       =   IN01-KAISU
+                       +   ACCT-DAY (1 IDX-DAY)
+                   IF    ( FLG-IN01            =   ZERO )
+                       REWRITE                 IN01-REC
+                   ELSE
+                       WRITE                   IN01-REC
+                   END-IF
+               END-IF
            END-PERFORM
       *
            .
-       200111-IN01-ACCT-HEN-EXT.
+       20011-BTUNUM-SET-EXT.
            EXIT.
       *****************************************************************
       *    入院診療行為取得処理
       *****************************************************************
        20012-NYUACT-GET-SEC            SECTION.
       *
-           MOVE    ZERO            TO  FLG-NYUINACCT
-      *
            PERFORM 900-NYUINACCT-KEY27-SEL-SEC
       *
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
-      *
                IF    ( NACCT-ZAIKAISU  >   ZERO )
                    INITIALIZE          SS009-AREA
                    CALL    "ORCSS009"  USING   SS009-AREA
-                                                   NYUINACCT-REC
-grpsys                                             SPA-AREA
+                                               NYUINACCT-REC
+                                               SPA-AREA
                    IF    ( SS009-RC    =   ZERO )
                        PERFORM  20012-NSRYACT-GET-SEC
                    ELSE
                        DISPLAY "ERR SS009-RC:" SS009-RC
                    END-IF
                END-IF
-      *
                PERFORM 900-NYUINACCT-KEY27-FET-SEC
-      *
            END-PERFORM
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -820,35 +877,30 @@ grpsys                                             SPA-AREA
       *
            PERFORM VARYING IDX-NACCT   FROM    1   BY  1
                    UNTIL ( IDX-NACCT   >   SS009-HENKYAKU-MAX )
-      *
                PERFORM VARYING IDX-NSRY    FROM    1   BY  1
                        UNTIL ( IDX-NSRY    >   CONST-NSRYACT-MAX )
-      *
                    IF    ( SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                    NOT =   SPACE )
                        PERFORM VARYING IDX4    FROM    1   BY  1
                                UNTIL ( IDX4    >   TSRYCD-MAX )
-      *
                            IF    ( TSRYCD-SRYCD (IDX4)
-                                       =   SS009-SRYCD
-                                                  (IDX-NACCT IDX-NSRY) )
+                               =   SS009-SRYCD(IDX-NACCT IDX-NSRY) )
                                PERFORM 20012-IN01-HEN-SEC
                                MOVE    TSRYCD-MAX  TO  IDX4
                            END-IF
-      *
                        END-PERFORM
                    END-IF
-      *
                END-PERFORM
            END-PERFORM
       *
            .
        20012-NSRYACT-GET-EXT.
            EXIT.
+      *
       *****************************************************************
-      *    診療行為使用患者一覧ファイル編集処理
+      *    診療行為使用患者一覧診療会計情報編集処理
       *****************************************************************
-       20012-IN01-HEN-SEC              SECTION.
+       20012-IN01-HEN-SEC          SECTION.
       *
            MOVE    NACCT-PTID          TO  WRK-PTID
            PERFORM 900-PTINF-PTNUM-KEY-SEL-SEC
@@ -857,63 +909,85 @@ grpsys                                             SPA-AREA
                GO  TO  20012-IN01-HEN-EXT
            END-IF
       *
-           INITIALIZE                  IN01-REC
-           MOVE    IDX4                TO  IN01-KEY-CDSEQ
-           MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
-                                       TO  IN01-KEY-SRYCD
-           MOVE    SS009-SRYKA (IDX-NACCT)
-                                       TO  IN01-KEY-SRYKA
-           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-           PERFORM 900-IN01DYN-READ-SEC
-           IF    ( FLG-IN01            =   ZERO )
-      *
-               PERFORM 200121-IN01-ACCT-HEN-SEC
-      *
-               REWRITE                   IN01-REC
-      *
+           IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
+               PERFORM 20012-SRYKA-SET-SEC
            ELSE
-               INITIALIZE                  IN01-REC
-               MOVE    IDX4                TO  IN01-KEY-CDSEQ
-               MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
-                                           TO  IN01-KEY-SRYCD
-               MOVE    SS009-SRYKA (IDX-NACCT)
-                                           TO  IN01-KEY-SRYKA
-               MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-               MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-               MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-               MOVE    PTINF-NAME          TO  IN01-NAME
-               MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
-      *
-               PERFORM 200121-IN01-ACCT-HEN-SEC
-      *
-               WRITE                     IN01-REC
+               PERFORM 20012-BTUNUM-SET-SEC
            END-IF
       *
            .
        20012-IN01-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    診療行為使用患者一覧診療会計情報編集処理
+      *   入院診療科別セット処理
       *****************************************************************
-       200121-IN01-ACCT-HEN-SEC        SECTION.
+       20012-SRYKA-SET-SEC         SECTION.
       *
-           COMPUTE IN01-KAISU
-                =  IN01-KAISU
-                +  SS009-ZAIKAISU (IDX-NACCT)
-      *
+           INITIALIZE                  IN01-REC
+           MOVE    IDX4                TO  IN01-KEY-CDSEQ
+           MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
+                                       TO  IN01-KEY-SRYCD
+           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+           MOVE    PTINF-NAME          TO  IN01-NAME
+           MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
+           MOVE    SS009-SRYKA (IDX-NACCT)
+                                       TO  IN01-KEY-SRYKA
+           PERFORM 900-IN01DYN-READ-SEC
+           COMPUTE IN01-KAISU  =   IN01-KAISU
+                               +   SS009-ZAIKAISU (IDX-NACCT)
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
-      *
-               COMPUTE    IN01-DAY (IDX-DAY)
-                   =      IN01-DAY (IDX-DAY)
-                   +      SS009-DAY (IDX-NACCT  IDX-DAY)
-      *
+               COMPUTE IN01-DAY (IDX-DAY)
+                   =   IN01-DAY (IDX-DAY)
+                   +   SS009-DAY (IDX-NACCT  IDX-DAY)
            END-PERFORM
+           IF    ( FLG-IN01            =   ZERO )
+               REWRITE                 IN01-REC
+           ELSE
+               WRITE                   IN01-REC
+           END-IF
       *
            .
-       200121-IN01-ACCT-HEN-EXT.
+       20012-SRYKA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *   入院病棟別セット処理
+      *****************************************************************
+       20012-BTUNUM-SET-SEC         SECTION.
+      *
+           INITIALIZE                  IN01-REC
+           MOVE    IDX4                TO  IN01-KEY-CDSEQ
+           MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
+                                       TO  IN01-KEY-SRYCD
+           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+           MOVE    PTINF-NAME          TO  IN01-NAME
+           MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+               IF    ( SS009-BRMNUM-DAY(IDX-DAY)   NOT =   SPACE )
+                   MOVE    SS009-BRMNUM-DAY(IDX-DAY)(1:2)
+                                           TO  IN01-KEY-SRYKA
+                   PERFORM 900-IN01DYN-READ-SEC
+                   COMPUTE IN01-DAY (IDX-DAY)
+                       =   IN01-DAY (IDX-DAY)
+                       +   SS009-DAY (IDX-NACCT  IDX-DAY)
+                   COMPUTE IN01-KAISU
+                       =   IN01-KAISU
+                       +   SS009-DAY (IDX-NACCT  IDX-DAY)
+                   IF    ( FLG-IN01            =   ZERO )
+                       REWRITE                 IN01-REC
+                   ELSE
+                       WRITE                   IN01-REC
+                   END-IF
+               END-IF
+           END-PERFORM
+     *
+           .
+       20012-BTUNUM-SET-EXT.
            EXIT.
       *****************************************************************
       *    帳票編集<ヘッダー部>処理
@@ -927,21 +1001,32 @@ grpsys                                             SPA-AREA
            MOVE    IN01-KEY-SRYKA      TO  KEY-SRYKA
            MOVE    IN01-KEY-SRYCD      TO  KEY-SRYCD
       *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    "1005"              TO  SYS-KANRICD
-           MOVE    KEY-SRYKA           TO  SYS-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC        TO  SYS-1005-REC
+           IF      WRK-PARA-SYORIKBN   =   "1"
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "5001"              TO  SYS-KANRICD
+               MOVE    KEY-SRYKA           TO  SYS-KBNCD
+               MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC        TO  SYS-5001-REC
+               MOVE    SYS-5001-BTU-TANNAME    TO  HCG016-SRYKA
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "1005"              TO  SYS-KANRICD
+               MOVE    KEY-SRYKA           TO  SYS-KBNCD
+               MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
+               MOVE    SYS-1005-SRYKANAME  TO  HCG016-SRYKA
+           END-IF
       *
            MOVE    TSRYCD-NAME  (IN01-KEY-CDSEQ)
                                        TO  HCG016-SRYNAME
            MOVE    WRK-SRYYM-N         TO  HCG016-SRYYM
            MOVE    WRK-SAKYMD-N        TO  HCG016-SAKYMD
-      *
-           MOVE    SYS-1005-SRYKANAME  TO  HCG016-SRYKA
       *
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
                MOVE    "（入院）"      TO  HCG016-NYUGAIKBN
@@ -1495,7 +1580,7 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為使用患者一覧ファイル検索処理
       *****************************************************************
-       900-IN01DYN-READ-SEC            SECTION.
+       900-IN01DYN-READ-SEC        SECTION.
       *
            MOVE    ZERO            TO  FLG-IN01
       *
@@ -1510,18 +1595,17 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為使用患者一覧ファイル読込処理
       *****************************************************************
-       900-IN01SEQ-READ-SEC            SECTION.
+       900-IN01SEQ-READ-SEC        SECTION.
       *
            MOVE    ZERO            TO  FLG-LOOP-END
       *
-           PERFORM UNTIL ( FLG-IN01        NOT =   ZERO )
-                     OR  ( FLG-LOOP-END    NOT =   ZERO )
+           PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
+                   OR  ( FLG-LOOP-END  NOT =   ZERO )
       *
                READ    IN01-FILE   NEXT
                AT  END
                    MOVE    1           TO      FLG-IN01
                NOT AT END
-      *
                    MOVE    1           TO      FLG-LOOP-END
       *
                    EVALUATE    TRUE
@@ -1543,13 +1627,12 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為検索処理(KEY14)
       *****************************************************************
-       900-SRYACT-KEY14-SEL-SEC         SECTION.
+       900-SRYACT-KEY14-SEL-SEC    SECTION.
       *
            MOVE    ZERO            TO  FLG-SRYACT
       *
            INITIALIZE                  SRYACT-REC
-grpsys*DD  MOVE    WRK-PARA-HOSPID TO  SRY-HOSPID
-grpsys     MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    WRK-PARA-SRYYM  TO  SRY-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  SRY-NYUGAIKBN
@@ -1558,10 +1641,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    "key14"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SRYACT-REC
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
            ELSE
-               INITIALIZE              SRYACT-REC
-               MOVE    1           TO  FLG-SRYACT
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
            END-IF
       *
            .
@@ -1570,7 +1653,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
       *****************************************************************
       *    診療行為FETCH処理(KEY14)
       *****************************************************************
-       900-SRYACT-KEY14-FET-SEC        SECTION.
+       900-SRYACT-KEY14-FET-SEC    SECTION.
       *
            MOVE    ZERO            TO  FLG-SRYACT
       *
@@ -1578,10 +1661,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    "key14"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SRYACT-REC
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
            ELSE
-               INITIALIZE              SRYACT-REC
-               MOVE    1           TO  FLG-SRYACT
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
            END-IF
       *
            .
@@ -1613,21 +1696,65 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理(KEY27)
+      *    入院会計検索処理
       *****************************************************************
-       900-NYUINACCT-KEY27-SEL-SEC     SECTION.
+       900-NYUINACCT-KEY9-SEL-SEC  SECTION.
       *
-           MOVE    ZERO                TO  FLG-NYUINACCT
+           MOVE    ZERO            TO  FLG-NYUINACCT
+      *
            INITIALIZE                  NYUINACCT-REC
+           MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
+           MOVE    SRY-NYUGAIKBN   TO  NACCT-NYUGAIKBN
+           MOVE    SRY-PTID        TO  NACCT-PTID
+           MOVE    SRY-SRYYM       TO  NACCT-SRYYM
+           MOVE    "5"             TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC   TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
       *
-grpsys*DD  MOVE    WRK-PARA-HOSPID     TO  NACCT-HOSPID
-grpsys     MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    "5"                 TO  NACCT-ZAISKBKBN
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key27"             TO  MCP-PATHNAME
+           .
+       900-NYUINACCT-KEY9-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY9-FET-SEC  SECTION.
+      *
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY9-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY27-SEL-SEC SECTION.
+      *
+           MOVE    ZERO            TO  FLG-NYUINACCT
+      *
+           INITIALIZE                  NYUINACCT-REC
+           MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
+           MOVE    WRK-PARA-SRYYM  TO  NACCT-SRYYM
+           MOVE    "1"             TO  NACCT-NYUGAIKBN
+           MOVE    "5"             TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC   TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key27"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
@@ -1640,12 +1767,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
        900-NYUINACCT-KEY27-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計FETCH処理(KEY27)
+      *    入院会計検索処理
       *****************************************************************
-       900-NYUINACCT-KEY27-FET-SEC     SECTION.
+       900-NYUINACCT-KEY27-FET-SEC  SECTION.
       *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key27"             TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key27"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
@@ -1658,41 +1785,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ＤＢ検索処理（FHETCHも行う)
+      *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
       *
            .
-      *
        910-DBSELECT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢ検索処理（FHETCHは行わない)
-      *****************************************************************
-       911-DBSELECT-SEC            SECTION.
-      *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC
-      *
-           .
-      *
-       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
@@ -1700,15 +1806,11 @@ grpsys*DD                              MCPDATA-REC
        910-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
-      *
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
@@ -1717,15 +1819,11 @@ grpsys*DD                              MCPDATA-REC
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            .
-      *
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
@@ -1736,27 +1834,20 @@ grpsys*DD                              MCPDATA-REC
            MOVE    "DBOPEN"        TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC.
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC.
-
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
            .
        100-DBOPEN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
@@ -1765,22 +1856,17 @@ grpsys*DD                              MCPDATA-REC.
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC.
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
-grpsys                                     MCPDATA-REC
-grpsys                                     SPA-AREA
-grpsys*DD  CALL    "MONFUNC"           USING
-grpsys*DD                              MCPAREA
-grpsys*DD                              MCPDATA-REC.
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
            .
        900-DBDISCONNECT-EXT.
            EXIT.

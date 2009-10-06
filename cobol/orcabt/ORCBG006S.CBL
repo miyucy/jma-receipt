@@ -33,6 +33,7 @@
       *  04.02.01    NACL-森脇    08/05/27  残量廃棄対応
       *  04.03.01    NACL-森脇    08/07/29  パラメタに入外区分追加
       *  04.05.01    NACL-森脇    09/08/07  パラメタに期間範囲追加
+      *  04.05.02    NACL-森脇    08/09/18  病棟別集計対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -95,6 +96,7 @@
            03  FLG-TENSU               PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-OK                  PIC 9(01).
+           03  FLG-NYUINACCT           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -225,12 +227,20 @@
       *    診療科目情報情報
            COPY    "CPSK1005.INC".
       *
+      *    病棟情報
+           COPY    "CPSK5001.INC".
+      *
       *    点数マスタ
            COPY    "CPTENSU.INC".
       *
       *    診療会計マスタ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *
+      *    診療会計マスタ
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+
       *
       *    診療行為マスタ
        01  SRYACT-REC.
@@ -262,6 +272,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    指定診療行為件数調サブ２
+           COPY    "CPORCSS009.INC".
+      *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
@@ -290,6 +303,7 @@
            03  WRK-PARA-YKZKBN         PIC 9(01).
            03  WRK-PARA-INGAIKBN       PIC 9(01).
            03  WRK-PARA-NYUGAIKBN      PIC X(01).
+           03  WRK-PARA-SYORIKBN       PIC X(01).
            03  WRK-PARA-KIKANFLG       PIC X(01).
       *
       ******************************************************************
@@ -359,6 +373,14 @@
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
+           IF    ( WRK-PARA-SYORIKBN   =   "1" )
+           AND   ( WRK-PARA-NYUGAIKBN  NOT =   "2" )
+               MOVE    "外来分は病棟別に集計できません"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  110-PARA-HENSYU-EXT
+           END-IF
+      *
       *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 400-SEIWA-HEN-SEC
@@ -376,8 +398,13 @@
                    MOVE    "外来診療科別医薬品使用量統計（月報）"
                                            TO  WRK-DAI-MSG1
                WHEN    "2"
-                   MOVE    "入院診療科別医薬品使用量統計（月報）" 
+                   IF      WRK-PARA-SYORIKBN   =   "1"
+                       MOVE    "　入院病棟別医薬品使用量統計（月報）" 
                                            TO  WRK-DAI-MSG1
+                   ELSE
+                       MOVE    "入院診療科別医薬品使用量統計（月報）" 
+                                           TO  WRK-DAI-MSG1
+                   END-IF
            END-EVALUATE
       *
       *    対象年月編集
@@ -417,8 +444,13 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    診療科セット処理
-           PERFORM 210-MAIN-SRYKA-SEC
+           IF      WRK-PARA-SYORIKBN   =   "1"
+      *        病棟セット処理
+               PERFORM 210-MAIN-BTNUM-SEC
+           ELSE
+      *        診療科セット処理
+               PERFORM 210-MAIN-SRYKA-SEC
+           END-IF
       *
       *    データをクリアする
            OPEN    OUTPUT              TOKEI-FILE
@@ -475,7 +507,61 @@
                PERFORM 900-SYS1005-DBFETCH-SEC
            END-PERFORM
       *    診療科目編集
-           PERFORM 900-SYS1005-DBCLOSE-SEC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBCLOSECURSOR-SEC
+      *
+           EVALUATE    CNT-SRYKA
+               WHEN    1   THRU    4
+                   MOVE    5           TO  CNT-MAX
+               WHEN    5   THRU    9
+                   MOVE    10          TO  CNT-MAX
+               WHEN    10  THRU    14
+                   MOVE    15          TO  CNT-MAX
+               WHEN    15  THRU    19
+                   MOVE    20          TO  CNT-MAX
+               WHEN    20  THRU    24
+                   MOVE    25          TO  CNT-MAX
+               WHEN    25  THRU    29
+                   MOVE    30          TO  CNT-MAX
+               WHEN    30  THRU    34
+                   MOVE    35          TO  CNT-MAX
+               WHEN    35  THRU    39
+                   MOVE    40          TO  CNT-MAX
+               WHEN    40  THRU    44
+                   MOVE    45          TO  CNT-MAX
+               WHEN    45  THRU    49
+                   MOVE    50          TO  CNT-MAX
+           END-EVALUATE
+      *
+           .
+       210-MAIN-SRYKA-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病棟セット処理
+      *****************************************************************
+       210-MAIN-BTNUM-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-TAI-AREA
+           MOVE    ZERO            TO  CNT-SRYKA
+      *
+      *    病棟編集
+           PERFORM 900-SYS5001-DBSELECT-SEC
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( FLG-SYSKANRI    =   1 )
+                   OR    ( IDX             >   49  )
+               MOVE    SYS-5001-KBNCD          TO  WRK-TAI-SRYKA(IDX)
+               MOVE    SYS-5001-BTU-TANNAME    TO  WRK-TAI-NAIYO(IDX)
+               COMPUTE CNT-SRYKA   =   CNT-SRYKA   +   1
+      *        病棟編集編集
+               PERFORM 900-SYS5001-DBFETCH-SEC
+           END-PERFORM
+      *    病棟編集編集
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBCLOSECURSOR-SEC
       *
            EVALUATE    CNT-SRYKA
                WHEN    1   THRU    4
@@ -544,7 +630,7 @@
       *
            MOVE    "tbl_sryact"    TO  MCP-TABLE
            MOVE    "key17"         TO  MCP-PATHNAME
-           PERFORM 900-SRY-DBCLOSE-SEC
+           PERFORM 900-DBCLOSECURSOR-SEC
       *
             .
        220-MAIN-SRY-EXT.
@@ -565,18 +651,12 @@
            MOVE    SRY-SRYKBN      TO  ACCT-SRYKBN
            MOVE    SRY-ZAINUM      TO  ACCT-ZAINUM
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_sryacct"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_sryacct"   TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 900-ACCT-DBFETCH-SEC
+               MOVE    ZERO            TO  FLG-SRYACCT
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
            ELSE
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
@@ -584,7 +664,7 @@
       *
            MOVE    "tbl_sryacct"   TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 900-ACCT-DBCLOSE-SEC
+           PERFORM 900-DBCLOSECURSOR-SEC
       *
            IF    ( ACCT-ZAITEN     =   ZERO )  AND
                 (( ACCT-SRYKBN     =   "21" )  OR
@@ -644,6 +724,42 @@
            EXIT.
       *
       *****************************************************************
+      *    入院会計取得処理
+      *****************************************************************
+       20011-NYUINACCT-GET-SEC     SECTION.
+      *
+           MOVE    ZERO            TO  FLG-NYUINACCT
+      *
+           PERFORM 900-NYUINACCT-KEY9-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+               IF    ( NACCT-ZAISKBKBN =   "5" )
+                   INITIALIZE          SS009-AREA
+                   CALL    "ORCSS009"  USING   SS009-AREA
+                                               NYUINACCT-REC
+                                               SPA-AREA
+                   IF    ( SS009-RC    =   ZERO )
+               PERFORM 250-TOKEI-BTNUM-HIDUKE-SEC
+                   ELSE
+                       DISPLAY "ERR SS009-RC:" SS009-RC
+                   END-IF
+               END-IF
+               PERFORM 900-NYUINACCT-KEY9-FET-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       20011-NYUINACCT-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    統計編集処理（残量廃棄分）
       *****************************************************************
        250-TOKEI-CYU-HEN-SEC       SECTION.
@@ -651,6 +767,7 @@
            MOVE    SPACE           TO  WRK-SRYCD
            MOVE    ZERO            TO  WRK-SURYO
       *
+           IF      WRK-PARA-SYORIKBN   NOT =   "1"
            PERFORM 250-TOKEI-HIDUKE-SEC
       *
            IF      WRK-KAISU   =   ZERO
@@ -658,10 +775,15 @@
            END-IF
       *
            MOVE    WRK-CYUSRYCD    TO  WRK-SRYCD
-           COMPUTE WRK-SURYO       =   WRK-CYUSURYO
-                                   *   WRK-KAISU
+           MOVE    WRK-CYUSURYO    TO  WRK-SURYO
       *
            PERFORM 250-TOKEI-SET-SEC
+           ELSE
+               MOVE    WRK-CYUSRYCD    TO  WRK-SRYCD
+                  MOVE    WRK-CYUSURYO TO  WRK-SURYO
+               PERFORM 20011-NYUINACCT-GET-SEC
+
+           END-IF
       *
            .
        250-TOKEI-CYU-HEN-EXT.
@@ -734,42 +856,27 @@
            MOVE    SPACE           TO  WRK-SRYCD
            MOVE    ZERO            TO  WRK-SURYO
       *
+           IF      WRK-PARA-SYORIKBN   NOT =   "1"
            PERFORM 250-TOKEI-HIDUKE-SEC
       *
            IF      WRK-KAISU   =   ZERO
                GO  TO  250-TOKEI-HEN-EXT
            END-IF
       *
-           MOVE    SRY-SRYCD(IDX)  TO  WRK-SRYCD
-           COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX)
-                                   *   WRK-KAISU
+           MOVE    SRY-SRYCD(IDX)      TO  WRK-SRYCD
+           MOVE    SRY-SRYSURYO(IDX)   TO  WRK-SURYO
       *
            PERFORM 250-TOKEI-SET-SEC
       *
-      *    統計データ合計
-           INITIALIZE                  TOKEI-REC
-           MOVE    WRK-NYUGAIKBN   TO  TOKEI-NYUGAIKBN
-           MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
-           MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
-           MOVE    "合計"          TO  TOKEI-KANANAME
-           MOVE    "999999999"     TO  TOKEI-SRYCD
-           MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
-           PERFORM 900-TOKEI-READ-SEC
-      *
-           IF      FLG-TOKEI       =   1
-               MOVE    "合計"          TO  TOKEI-NAME
-               COMPUTE WRK-SURYO       =   TNS-TEN *   WRK-SURYO
-               MOVE    ZERO            TO  TOKEI-SRYSURYO
-               COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
-                                       +   WRK-SURYO
-               WRITE   TOKEI-REC
-               COMPUTE CNT-TOKEI       =   CNT-TOKEI   +   1
+           PERFORM 250-TOKEI-GOKEI-SET-SEC
            ELSE
-               COMPUTE WRK-SURYO       =   TNS-TEN *   WRK-SURYO
-               COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
-                                       +   WRK-SURYO
-               REWRITE TOKEI-REC
+           MOVE    SRY-SRYCD(IDX)      TO  WRK-SRYCD
+           MOVE    SRY-SRYSURYO(IDX)   TO  WRK-SURYO
+               PERFORM 20011-NYUINACCT-GET-SEC
            END-IF
+      *
+
+      *
              .
        250-TOKEI-HEN-EXT.
            EXIT.
@@ -830,6 +937,55 @@
            EXIT.
       *
       *****************************************************************
+      *    日付処理
+      *****************************************************************
+       250-TOKEI-BTNUM-HIDUKE-SEC  SECTION.
+      *
+           MOVE    ZERO            TO  WRK-KAISU
+      *
+           IF      WRK-PARA-KIKANFLG   =   "1"
+               MOVE    1                       TO  WRK-STR
+               MOVE    31                      TO  WRK-END
+           ELSE
+               MOVE    WRK-PARA-STRYMD(7:8)    TO  WRK-STR
+               MOVE    WRK-PARA-ENDYMD(7:8)    TO  WRK-END
+           END-IF
+      *
+      *    同月内
+           IF      WRK-PARA-STRYMD(1:6)    =   WRK-PARA-ENDYMD(1:6)
+               PERFORM VARYING IDX-D FROM  WRK-STR BY 1
+                       UNTIL ( IDX-D >     WRK-END )
+                       OR    ( IDX-D >     31 )
+                   PERFORM 250-TOKEI-BTUNUM-SET-SEC
+               END-PERFORM
+           ELSE
+               EVALUATE    ACCT-SRYYM
+      *            開始月
+                   WHEN    WRK-PARA-STRYMD(1:6)
+                       PERFORM VARYING IDX-D FROM  WRK-STR BY 1
+                               UNTIL   IDX-D >     31
+                           PERFORM 250-TOKEI-BTUNUM-SET-SEC
+                       END-PERFORM
+      *            終了月
+                   WHEN    WRK-PARA-ENDYMD(1:6)
+                       PERFORM VARYING IDX-D FROM  1       BY 1
+                               UNTIL   IDX-D >     WRK-END
+                           PERFORM 250-TOKEI-BTUNUM-SET-SEC
+                       END-PERFORM
+      *            間の月
+                   WHEN    OTHER
+                       PERFORM VARYING IDX-D FROM  1       BY 1
+                               UNTIL   IDX-D >     31
+                           PERFORM 250-TOKEI-BTUNUM-SET-SEC
+                       END-PERFORM
+               END-EVALUATE
+           END-IF
+      *
+           .
+       250-TOKEI-BTUNUM-HIDUKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    統計セット処理
       *****************************************************************
        250-TOKEI-SET-SEC           SECTION.
@@ -842,32 +998,131 @@
            MOVE    TNS-KANANAME    TO  TOKEI-KANANAME
            MOVE    WRK-SRYCD       TO  TOKEI-SRYCD
            MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
+           MOVE    TNS-NAME        TO  TOKEI-NAME
+           MOVE    TNS-TEN         TO  TOKEI-TEN
+           MOVE    TNS-TANINAME    TO  TOKEI-TANI
+           MOVE    ZERO            TO  TOKEI-SRYSURYO
            PERFORM 900-TOKEI-READ-SEC
+           COMPUTE WRK-GSURYO      =   WRK-SURYO
+                                   *   WRK-KAISU
+           COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
+                                   +   WRK-GSURYO
       *
            IF      FLG-TOKEI       =   1
-               INITIALIZE                  TOKEI-REC
-               MOVE    WRK-NYUGAIKBN   TO  TOKEI-NYUGAIKBN
-               MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
-               MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
-               MOVE    TNS-KANANAME    TO  TOKEI-KANANAME
-               MOVE    WRK-SRYCD       TO  TOKEI-SRYCD
-               MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
-               MOVE    TNS-NAME        TO  TOKEI-NAME
-               MOVE    TNS-TEN         TO  TOKEI-TEN
-               MOVE    TNS-TANINAME    TO  TOKEI-TANI
-               MOVE    ZERO            TO  TOKEI-SRYSURYO
-               COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
-                                       +   WRK-SURYO
                WRITE   TOKEI-REC
-               COMPUTE CNT-TOKEI       =   CNT-TOKEI   +   1
+               COMPUTE CNT-TOKEI   =   CNT-TOKEI   +   1
            ELSE
-               COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
-                                       +   WRK-SURYO
                REWRITE TOKEI-REC
            END-IF
       *
            .
        250-TOKEI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計セット処理
+      *****************************************************************
+       250-TOKEI-BTUNUM-SET-SEC    SECTION.
+      *
+           IF    ( SS009-BRMNUM-DAY(IDX-D)   =   SPACE )
+            OR    ( ACCT-DAY (1 IDX-D)        =   ZERO )
+               GO  TO   250-TOKEI-BTUNUM-SET-EXT
+           END-IF
+      *
+      *    統計データ検索
+           INITIALIZE                  TOKEI-REC
+           MOVE    WRK-NYUGAIKBN   TO  TOKEI-NYUGAIKBN
+           MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
+           MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
+           MOVE    TNS-KANANAME    TO  TOKEI-KANANAME
+           MOVE    WRK-SRYCD       TO  TOKEI-SRYCD
+           MOVE    SS009-BRMNUM-DAY(IDX-D)(1:2)
+                                   TO  TOKEI-SRYKA
+           MOVE    TNS-NAME        TO  TOKEI-NAME
+           MOVE    TNS-TEN         TO  TOKEI-TEN
+           MOVE    TNS-TANINAME    TO  TOKEI-TANI
+           MOVE    ZERO            TO  TOKEI-SRYSURYO
+           PERFORM 900-TOKEI-READ-SEC
+           COMPUTE WRK-GSURYO      =   WRK-SURYO
+                                   *   ACCT-DAY (1 IDX-D)
+           COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
+                                   +   WRK-GSURYO
+      *
+           IF      FLG-TOKEI       =   1
+               WRITE   TOKEI-REC
+               COMPUTE CNT-TOKEI       =   CNT-TOKEI   +   1
+           ELSE
+               REWRITE TOKEI-REC
+           END-IF
+           IF      WRK-GSURYO   NOT =   ZERO
+               PERFORM   250-TOKEI-BTUNUM-GOKEI-SET-SEC 
+           END-IF
+      *
+           .
+       250-TOKEI-BTUNUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計セット処理
+      *****************************************************************
+       250-TOKEI-GOKEI-SET-SEC           SECTION.
+      *
+      *    統計データ合計
+           INITIALIZE                  TOKEI-REC
+           MOVE    WRK-NYUGAIKBN   TO  TOKEI-NYUGAIKBN
+           MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
+           MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
+           MOVE    "合計"          TO  TOKEI-KANANAME
+           MOVE    "999999999"     TO  TOKEI-SRYCD
+           MOVE    ACCT-SRYKA      TO  TOKEI-SRYKA
+           MOVE    "合計"          TO  TOKEI-NAME
+           MOVE    ZERO            TO  TOKEI-SRYSURYO
+           PERFORM 900-TOKEI-READ-SEC
+           COMPUTE WRK-GSURYO      =   TNS-TEN *   WRK-SURYO
+           COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
+                                   +   WRK-GSURYO
+      *
+           IF      FLG-TOKEI       =   1
+               WRITE   TOKEI-REC
+               COMPUTE CNT-TOKEI   =   CNT-TOKEI   +   1
+           ELSE
+               REWRITE TOKEI-REC
+           END-IF
+      *
+           .
+       250-TOKEI-GOKEI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計セット処理
+      *****************************************************************
+       250-TOKEI-BTUNUM-GOKEI-SET-SEC           SECTION.
+      *
+      *    統計データ合計
+           INITIALIZE                  TOKEI-REC
+           MOVE    WRK-NYUGAIKBN   TO  TOKEI-NYUGAIKBN
+           MOVE    WRK-INGAIKBN    TO  TOKEI-INGAIKBN
+           MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
+           MOVE    "合計"          TO  TOKEI-KANANAME
+           MOVE    "999999999"     TO  TOKEI-SRYCD
+           MOVE    SS009-BRMNUM-DAY(IDX-D)(1:2)
+                                   TO  TOKEI-SRYKA
+           MOVE    "合計"          TO  TOKEI-NAME
+           MOVE    ZERO            TO  TOKEI-SRYSURYO
+           PERFORM 900-TOKEI-READ-SEC
+           COMPUTE WRK-GSURYO      =   TNS-TEN *   WRK-SURYO
+           COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
+                                   +   WRK-GSURYO
+      *
+           IF      FLG-TOKEI       =   1
+               WRITE   TOKEI-REC
+               COMPUTE CNT-TOKEI   =   CNT-TOKEI   +   1
+           ELSE
+               REWRITE TOKEI-REC
+           END-IF
+      *
+           .
+       250-TOKEI-GOKEI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1345,11 +1600,7 @@
       *****************************************************************
        900-ACCT-DBFETCH-SEC        SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SRYACCT
                MOVE    MCPDATA-REC     TO  SRYACCT-REC
@@ -1362,21 +1613,6 @@
            EXIT.
       *
       *****************************************************************
-      *    診療会計マスタクローズ処理
-      *****************************************************************
-       900-ACCT-DBCLOSE-SEC        SECTION.
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
-           .
-       900-ACCT-DBCLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *     診療行為マスタ検索処理
       *****************************************************************
        900-SRY-DBFETCH-SEC         SECTION.
@@ -1385,12 +1621,7 @@
            MOVE    ZERO            TO  FLG-OK
            PERFORM UNTIL  ( FLG-OK     =   1 )
                    OR     ( FLG-SRYACT =   1 )
-               MOVE    "DBFETCH"       TO  MCP-FUNC
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
+               PERFORM 900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-SRYACT
                    MOVE    MCPDATA-REC     TO  SRYACT-REC
@@ -1416,21 +1647,6 @@
       *
            .
        900-SRY-DBFETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為マスタクローズ処理
-      *****************************************************************
-       900-SRY-DBCLOSE-SEC         SECTION.
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
-           .
-       900-SRY-DBCLOSE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1488,43 +1704,22 @@
                                            TNS-YUKOEDYMD
                MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
                MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
-               MOVE    "DBSELECT"      TO  MCP-FUNC
                MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               PERFORM 900-DBSELECT-SEC
                IF      MCP-RC          =   ZERO
-                   MOVE    "DBFETCH"       TO  MCP-FUNC
-                   MOVE    "tbl_tensu"     TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-                   IF      MCP-RC              =   ZERO
-                       MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
-                       MOVE    ZERO            TO  FLG-TENSU
-      *
-      *                点数マスタ退避ワークに編集する
-                       PERFORM 9001-TTNS-HEN-SEC
-                   ELSE
-                       INITIALIZE                  TNS-TENSU-REC
-                       MOVE    1               TO  FLG-TENSU
-                   END-IF
+                   MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+                   MOVE    ZERO            TO  FLG-TENSU
+      *            点数マスタ退避ワークに編集する
+                   PERFORM 9001-TTNS-HEN-SEC
                ELSE
                    INITIALIZE                  TNS-TENSU-REC
                    MOVE    1               TO  FLG-TENSU
                END-IF
       *
-               MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
                MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+               PERFORM 900-DBCLOSECURSOR-SEC
            END-IF
       *
            .
@@ -1585,17 +1780,15 @@
                                        SYS-1005-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC    TO  MCPDATA-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC          =   ZERO
-               PERFORM 900-SYS1005-DBFETCH-SEC
+               MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    MCPDATA-REC     TO  SYS-1005-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYS-1005-REC
            END-IF
       *
            .
@@ -1603,22 +1796,19 @@
            EXIT.
       *
       *****************************************************************
-      *     管理マスタ診療科検索処理
+      *     管理マス検索処理
       *****************************************************************
        900-SYS1005-DBFETCH-SEC     SECTION.
       *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           PERFORM 900-DBFETCH-SEC
            IF     MCP-RC           =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYS-1005-REC
            END-IF
       *
            .
@@ -1626,19 +1816,144 @@
            EXIT.
       *
       *****************************************************************
-      *    管理マスタ診療科クローズ処理
+      *    管理マスタ病棟検索
       *****************************************************************
-       900-SYS1005-DBCLOSE-SEC     SECTION.
+       900-SYS5001-DBSELECT-SEC    SECTION.
       *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           INITIALIZE                  SYS-5001-REC
+           MOVE    "5001"          TO  SYS-5001-KANRICD
+           MOVE    WRK-PARA-STRYMD TO  SYS-5001-STYUKYMD
+                                       SYS-5001-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-5001-HOSPNUM
+           MOVE    SYS-5001-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    MCPDATA-REC     TO  SYS-5001-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYS-5001-REC
+           END-IF
+      *
+           .
+       900-SYS5001-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     管理マス検索処理
+      *****************************************************************
+       900-SYS5001-DBFETCH-SEC     SECTION.
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBFETCH-SEC
+           IF     MCP-RC           =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    MCPDATA-REC     TO  SYS-5001-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYS-5001-REC
+           END-IF
+      *
+           .
+       900-SYS5001-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY9-SEL-SEC  SECTION.
+      *
+           MOVE    ZERO            TO  FLG-NYUINACCT
+      *
+           INITIALIZE                  NYUINACCT-REC
+           MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
+           MOVE    SRY-NYUGAIKBN   TO  NACCT-NYUGAIKBN
+           MOVE    SRY-PTID        TO  NACCT-PTID
+           MOVE    SRY-SRYYM       TO  NACCT-SRYYM
+           MOVE    "5"             TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC   TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    ZERO            TO  FLG-NYUINACCT
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY9-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY9-FET-SEC  SECTION.
+      *
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key9"          TO  MCP-PATHNAME
+           PERFORM 900-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    ZERO            TO  FLG-NYUINACCT
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY9-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC            SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
+           IF      MCP-RC          =   ZERO
+               PERFORM 900-DBFETCH-SEC
+           END-IF
+      *
            .
-       900-SYS1005-DBCLOSE-EXT.
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC             SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＣＬＯＳＥ処理
+      *****************************************************************
+       900-DBCLOSECURSOR-SEC       SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       900-DBCLOSECURSOR-EXT.
            EXIT.
       *
       *****************************************************************
