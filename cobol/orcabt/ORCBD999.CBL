@@ -176,9 +176,21 @@
                                    PIC X(01).
       *    出力先ファイル名
        01  WRK-TO-DATA.
+           03  WRK-TO-DATA-HOSPNUM PIC 9(02).
            03  FILLER              PIC X(07)   VALUE   "nikkei_".
            03  WRK-TO-DATA-SRYYMD  PIC X(08).
            03  FILLER              PIC X(04)   VALUE   ".csv".
+      *
+       01  WRK-HEN-YMD-IN.
+           03  WRK-HEN-YY-IN       PIC X(04).
+           03  WRK-HEN-MM-IN       PIC X(02).
+           03  WRK-HEN-DD-IN       PIC X(02).
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
       *
       *    ヘッダー情報
        01  CSV-HEAD-01.
@@ -490,7 +502,7 @@
        120-BD00801-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -1069,7 +1081,7 @@
            EXIT.
       *
       *****************************************************************
-      *    終了　　処理
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1146,13 +1158,17 @@
       *
       *    作成年月日          
            MOVE    LNK-PRTKANRI-SKYYMD
-                                   TO  WRK-DATA
-           MOVE    8               TO  WRK-NAGASA
+                                   TO  WRK-HEN-YMD-IN
+           PERFORM 5006-YMD-HENSYU-SEC
+           MOVE    WRK-HEN-YMD-OT  TO  WRK-DATA
+           MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療年月日
            MOVE    WRK-PARA-SYORIYMD
-                                   TO  WRK-DATA
-           MOVE    8               TO  WRK-NAGASA
+                                   TO  WRK-HEN-YMD-IN
+           PERFORM 5006-YMD-HENSYU-SEC
+           MOVE    WRK-HEN-YMD-OT  TO  WRK-DATA
+           MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    伝票番号
            MOVE    SYU-DENPNUM     TO  WRK-NUM
@@ -1175,8 +1191,10 @@
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    生年月日
-           MOVE    PTINF-BIRTHDAY  TO  WRK-DATA
-           MOVE    8               TO  WRK-NAGASA
+           MOVE    PTINF-BIRTHDAY  TO  WRK-HEN-YMD-IN
+           PERFORM 5006-YMD-HENSYU-SEC
+           MOVE    WRK-HEN-YMD-OT  TO  WRK-DATA
+           MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    自宅−郵便番号
            MOVE    PTINF-HOME-POST TO  WRK-DATA
@@ -1349,6 +1367,7 @@
            MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
            MOVE    WRK-PARA-SYORIYMD
                                    TO  WRK-TO-DATA-SRYYMD
+           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
            MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
            MOVE    "日計表（診療年月日）"
@@ -1469,6 +1488,20 @@
            MOVE    ZERO                TO  WRK-NUM    
            .
        5005-NUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       5006-YMD-HENSYU-SEC                 SECTION.
+      *
+           MOVE    WRK-HEN-YY-IN   TO  WRK-HEN-YY-OT
+           MOVE    WRK-HEN-MM-IN   TO  WRK-HEN-MM-OT
+           MOVE    WRK-HEN-DD-IN   TO  WRK-HEN-DD-OT
+      *
+           MOVE    SPACE           TO  WRK-HEN-YMD-IN
+           .
+       5006-YMD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
