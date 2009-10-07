@@ -206,15 +206,31 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "社保本人".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+              "社保本人（点数）".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "社保家族".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "社保家族（点数）".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "国保".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "国保（点数）".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "後期高齢".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "後期高齢（点数）".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "公費単独".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "公費単独（点数）".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "自費".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "自費（点数）".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "労災".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -1182,11 +1198,19 @@
            END-EVALUATE
            MOVE    12              TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
+      *
       *    社保本人
            IF      IDX                 =   1
                MOVE    WRK-MONEY           TO  WRK-NUM
            END-IF
            MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+      *    社保本人（点数）
+           IF      IDX                 =   1
+               MOVE    SYU-TOTAL-HKNTEN    TO  WRK-NUM
+           END-IF
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
       *    社保家族
@@ -1196,11 +1220,25 @@
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
+      *    社保家族（点数）
+           IF      IDX                 =   2
+               MOVE    SYU-TOTAL-HKNTEN    TO  WRK-NUM
+           END-IF
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
       *    国保
            IF      IDX                 =   3
                MOVE    WRK-MONEY           TO  WRK-NUM
            END-IF
            MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+      *    国保（点数）
+           IF      IDX                 =   3
+               MOVE    SYU-TOTAL-HKNTEN    TO  WRK-NUM
+           END-IF
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
       *    後期高齢
@@ -1210,11 +1248,25 @@
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
+      *    後期高齢（点数）
+           IF      IDX                 =   4
+               MOVE    SYU-TOTAL-HKNTEN    TO  WRK-NUM
+           END-IF
+           MOVE    7                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
       *    公費単独
            IF      IDX                 =   5
                MOVE    WRK-MONEY           TO  WRK-NUM
            END-IF
            MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+      *    公費単独（点数）
+           IF      IDX                 =   5
+               MOVE    SYU-TOTAL-HKNTEN    TO  WRK-NUM
+           END-IF
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
       *    自費
@@ -1224,6 +1276,13 @@
                MOVE    WRK-JIHI            TO  WRK-NUM
            END-IF
            MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5005-NUM-HENSYU-SEC
+      *
+      *    自費（点数）
+           IF      IDX                 =   6
+               MOVE    SYU-TOTAL-HKNTEN    TO  WRK-NUM
+           END-IF
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
       *    労災
