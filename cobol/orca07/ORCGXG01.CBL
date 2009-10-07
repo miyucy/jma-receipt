@@ -553,14 +553,8 @@
            MOVE    SPA-GMN-XG02-FILENAME
                                        TO  SHELLTBL-ARG13
            MOVE    SPA-GMN-XG02-CDKBN  TO  SHELLTBL-ARG14
-           EVALUATE    SPA-XG01-MOTOPG
-               WHEN    "L01"
-                   MOVE    SPA-NAI-TSRYYMD (SPA-NAI-SELNUM)
-                                           TO  SHELLTBL-ARG15
-               WHEN    "G01"
-                   MOVE    SPA-NAI-TSRYYM  (SPA-NAI-SELNUM)
-                                           TO  SHELLTBL-ARG15
-           END-EVALUATE 
+           MOVE    SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
+                                       TO  SHELLTBL-ARG15
       *
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG16
            MOVE    SPA-OPID            TO  SHELLTBL-ARG17
@@ -1256,7 +1250,8 @@
                MOVE    SPA-GMN-TSRYYMD   (IDX) TO  XG01-TSRYYMD   (IDX)
                MOVE    SPA-GMN-TSHORI-TITLE (IDX)  TO
                                                XG01-TSHORI-TITLE  (IDX)
-               MOVE    SPA-GMN-TPRT-TITLE(IDX) TO  XG01-TPRT-TITLE(IDX)
+               MOVE    SPA-GMN-TPRT-TITLE(IDX) (1:60)
+                                               TO  XG01-TPRT-TITLE(IDX)
                MOVE    SPA-GMN-TPUTFLG   (IDX) TO  XG01-TPUTFLG   (IDX)
       *       
                IF      IDX             =   SPA-NAI-SELNUM

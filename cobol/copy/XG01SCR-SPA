@@ -42,7 +42,7 @@
                            11  SPA-GMN-TSRYYMD     PIC X(09).
                            11  SPA-GMN-TSHORI-TITLE
                                                    PIC X(20).
-                           11  SPA-GMN-TPRT-TITLE  PIC X(60).
+                           11  SPA-GMN-TPRT-TITLE  PIC X(100).
                            11  SPA-GMN-TPUTFLG     PIC X(02).
                    07  SPA-GMN-BODY.        
                        09  SPA-GMN-SELNUM          PIC 9(03).

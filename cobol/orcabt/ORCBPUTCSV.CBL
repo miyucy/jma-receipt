@@ -96,16 +96,12 @@
                05  WRK-PARA-TO-DATA        PIC X(200).
                05  WRK-PARA-JOBID          PIC 9(07).
                05  WRK-PARA-SHELLID        PIC X(08).
-               05  WRK-PARA-SRYYMD         PIC X(08).
-           03  WRK-CSVERR                  PIC X(200). 
+               05  WRK-PARA-TITLE          PIC X(100).
+      *
+           03  WRK-CSVERR          PIC X(200). 
+           03  WRK-ERRMSG          PIC X(300).
       *
            03  WRK-JOBNAME         PIC X(40).
-      *
-           03  WRK-SYMD.
-               05  WRK-SYY         PIC 9(04).
-               05  WRK-SMM         PIC 9(02).
-               05  WRK-SDD         PIC 9(02).
-           03  WRK-HENYMDG         PIC X(22).
       *   
            COPY    "CMJOBNAME.INC".
       *
@@ -178,7 +174,7 @@
                                                WRK-PARA-TO-DATA 
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-SRYYMD
+                                               WRK-PARA-TITLE
                                                CSVERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM
@@ -193,31 +189,39 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBPUTCSV"    TO  JOB-PGID
       *
-           MOVE    SPACE         TO  WRK-JOBNAME
-           SET     TBL-IDX             TO  1
-           SEARCH      MNAME-TBL-OCC      VARYING   TBL-IDX
-               AT   END
-                 MOVE    SPACE         TO  WRK-JOBNAME
-               WHEN    WRK-PARA-TBL-KEY    =   MNAME-SHELLID
-                                                  (TBL-IDX)
-                   MOVE    MNAME-JOBNAME (TBL-IDX)
-                                       TO  WRK-JOBNAME
-           END-SEARCH
-           MOVE    WRK-PARA-SRYYMD
-                                   TO  WRK-SYMD
-           PERFORM 500-YMD-HENSYU-SEC
-           STRING  WRK-JOBNAME     DELIMITED  BY  SPACE 
-                   "ＣＳＶ作成（"  DELIMITED  BY  SIZE
-                   WRK-HENYMDG     DELIMITED  BY  SPACE
-                   "）"            DELIMITED  BY  SIZE
-                                   INTO       JOB-SHELLMSG
-           END-STRING
+           IF      WRK-PARA-TITLE   =   SPACE
+               MOVE    SPACE         TO  WRK-JOBNAME
+               SET     TBL-IDX             TO  1
+               SEARCH      MNAME-TBL-OCC      VARYING   TBL-IDX
+                   AT   END
+                     MOVE    SPACE         TO  WRK-JOBNAME
+                   WHEN    WRK-PARA-TBL-KEY    =   MNAME-SHELLID
+                                                      (TBL-IDX)
+                       MOVE    MNAME-JOBNAME (TBL-IDX)
+                                           TO  WRK-JOBNAME
+               END-SEARCH
+               STRING  WRK-JOBNAME     DELIMITED  BY  SPACE 
+                       "ＣＳＶ作成"    DELIMITED  BY  SIZE
+                                       INTO       JOB-SHELLMSG
+               END-STRING
+           ELSE
+               MOVE    WRK-PARA-TITLE  TO  JOB-SHELLMSG
+           END-IF
            PERFORM 900-CALL-ORCSJOB-SEC
       *
            OPEN    OUTPUT              CSV-FILE
-           IF      STS-CSV      NOT =   ZERO
-               DISPLAY "STS=" STS-CSV
-           END-IF    
+           IF      STS-CSV         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-CSVERR
+               STRING "ＣＳＶデータファイルＯＰＥＮエラー STS="
+                                                   DELIMITED  BY  SIZE
+                       STS-CSV                     DELIMITED  BY  SIZE
+                                           INTO    WRK-CSVERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
       *
            PERFORM 900-TOUKEICSV-B-START-SEC   
            .
@@ -231,6 +235,19 @@
       *    
            MOVE    TOUKEICSV-B-CSVDATA TO  CSV-REC
            WRITE   CSV-REC
+           IF      STS-CSV         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-CSVERR
+               STRING "ＣＳＶデータファイル書き込みエラー STS="
+                                                   DELIMITED  BY  SIZE
+                       STS-CSV                     DELIMITED  BY  SIZE
+                                           INTO    WRK-CSVERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-CSV
       *
            PERFORM 900-TOUKEICSV-B-READ-SEC   
@@ -267,6 +284,25 @@
            EXIT.
       *
       *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBPUTCSV "       DELIMITED  BY  SIZE
+                   WRK-CSVERR          DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -295,25 +331,6 @@
            DISPLAY "*** ORCBPUTCSV END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付変換処理（西暦→全角）
-      *****************************************************************
-       500-YMD-HENSYU-SEC         SECTION.
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY2-AREA
-           MOVE    "21"            TO  LNK-DAY2-IRAI
-           MOVE    WRK-SYMD        TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING
-                                       STS-AREA-DAY
-                                       LNK-DAY2-AREA
-           MOVE    LNK-DAY2-EDTYMD3
-                                   TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG     REPLACING   ALL "  "    BY  "　"
-           .
-       500-YMD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

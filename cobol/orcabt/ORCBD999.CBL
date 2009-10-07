@@ -413,7 +413,7 @@
                                    TO  JOB-SHELLID
       *
            MOVE    "ORCBD999"      TO  JOB-PGID
-           MOVE    "日計表（診療年月日）"
+           MOVE    "日計ＣＳＶ作成（診療年月日）"
                                    TO  JOB-SHELLMSG
       *
            PERFORM 800-ORCSJOB-SEC
@@ -1003,7 +1003,7 @@
       *----(04.02.01)--UPD-START---
       *     MOVE    "HCM41V01.red"  TO  SPRT-PRTID
            MOVE    "HCM41V02.red"  TO  SPRT-PRTID
-           MOVE    "日計表（診療年月日）"
+           MOVE    "日計ＣＳＶ作成（診療年月日）"
                                        TO  SPRT-TITLE
            MOVE    HCM41            TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
@@ -1370,7 +1370,7 @@
            MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
            MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "日計表（診療年月日）"
+           MOVE    "日計ＣＳＶ作成（診療年月日）"
                                    TO  STOUKEICSV-TITLE
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  STOUKEICSV-TERMID
