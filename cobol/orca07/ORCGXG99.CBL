@@ -424,7 +424,7 @@
       *
            EVALUATE    JOB-ERRCD
                WHEN    "0001"
-                   MOVE    "【ファイルがありません】" 
+                   MOVE    "【ファイルの作成に失敗しました】" 
                                                TO  XG99-MSG
                WHEN    "0002"
                    MOVE    "【ｆｄｄが起動されていません】" 

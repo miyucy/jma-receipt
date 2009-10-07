@@ -44,7 +44,6 @@ fi
         echo "arg9  = [" ${9} "]"   >>$LOG_FILE
         echo "arg13 = [" ${13} "]"  >>$LOG_FILE
         echo "arg14 = [" ${14} "]"  >>$LOG_FILE
-        echo "arg15 = [" ${15} "]"  >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
         echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
 #       echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
@@ -69,19 +68,27 @@ fi
             else
                  nkf -s -Lw  $FILE_1 > $FILE_3
             fi
-#                 RC=$?
-#                 echo "--- nkf end   ---[" $RC  "]" >>$LOG_FILE
-#                 if  [ $RC -ne '0' ]; then
-#                     ERRCD='0000'$RC
-#                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE
-#                     echo "--- nkf err   ---" >>$LOG_FILE
-#                     exit
-#                 fi
+            RC=$?
+            echo "--- nkf end   ---[" $RC  "]" >>$LOG_FILE
+            if  [ $RC -ne '0' ]; then
+                ERRCD='0000'$RC
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE
+                echo "--- nkf err   ---" >>$LOG_FILE
+                exit
+            fi
         else
             if   [ ${6} != '1' ]; then
                  cp $FILE_1  ${13}
             else
                  cp $FILE_1  $FILE_3
+            fi
+            RC=$?
+            echo "--- cp end   ---[" $RC  "]" >>$LOG_FILE
+            if  [ $RC -ne '0' ]; then
+                ERRCD='0000'$RC
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE
+                echo "--- cp err   ---" >>$LOG_FILE
+                exit
             fi
         fi
          

@@ -58,15 +58,15 @@
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿
        01  CSVPARA.
-           03  FILLER              PIC X(05) VALUE "/tmp/".
+           03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  CSVPARA-HOSPNUM     PIC 9(02).
            03  FILLER              PIC X(06)   VALUE 
-                                               "PUTCSV".
+                                                       "PUTCSV".
            03  CSVPARA-RENNUM      PIC 9(02)   VALUE   1.
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //CSVERR//.
+           COPY    "CPERRFL.INC"   REPLACING   //ERRFLPARA//
+                                   BY          //CSVERR//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -210,18 +210,6 @@
            PERFORM 900-CALL-ORCSJOB-SEC
       *
            OPEN    OUTPUT              CSV-FILE
-           IF      STS-CSV         =   "00"
-               CONTINUE
-           ELSE
-               MOVE    SPACE               TO  WRK-CSVERR
-               STRING "£Ã£Ó£Ö¥Ç¡¼¥¿¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î¥¨¥é¡¼ STS="
-                                                   DELIMITED  BY  SIZE
-                       STS-CSV                     DELIMITED  BY  SIZE
-                                           INTO    WRK-CSVERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               PERFORM 500-COBABORT-SEC
-           END-IF
       *
            PERFORM 900-TOUKEICSV-B-START-SEC   
            .
@@ -233,7 +221,9 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
-           MOVE    TOUKEICSV-B-CSVDATA TO  CSV-REC
+           MOVE    TOUKEICSV-B-CSVDATA
+                                   TO  CSV-REC
+      *
            WRITE   CSV-REC
            IF      STS-CSV         =   "00"
                CONTINUE
