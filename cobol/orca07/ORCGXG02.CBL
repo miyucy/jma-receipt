@@ -256,9 +256,23 @@
                                    =   SPACE
                MOVE    "/tmp/"         TO  WRK-TO-FOLDER
            ELSE
-               MOVE    SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
-                                       TO  WRK-TO-FOLDER
+               PERFORM VARYING IDX2    FROM    200 BY  -1
+                       UNTIL   IDX2    <       2
+                   IF      SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM) (IDX2:1)
+                                           =   "/"
+                       COMPUTE IDX3    =   IDX2    -   1
+                       MOVE    SPA-NAI-TTO-FOLDER
+                                           (SPA-NAI-SELNUM) (1:IDX3)
+                                               TO  WRK-TO-FOLDER
+                       MOVE    1               TO  IDX2
+                   END-IF    
+               END-PERFORM
+               IF      WRK-TO-FOLDER   =   SPACE
+                   MOVE    SPA-NAI-TTO-FOLDER (SPA-NAI-SELNUM)
+                                           TO  WRK-TO-FOLDER
+               END-IF
            END-IF
+      *
            IF      SPA-NAI-TTO-DATA  (SPA-NAI-SELNUM)
                                    =   SPACE
                EVALUATE    SPA-XG01-MOTOPG
@@ -536,10 +550,6 @@
                                        TO  SPA-NAI-XG02-TO-DATA
            END-IF
       *
-      *??
-           DISPLAY "FOLDER=" SPA-NAI-XG02-TO-FOLDER "#" 
-           DISPLAY "DATA  =" SPA-NAI-XG02-TO-DATA "#"
-      *??
       *    ファイル名が未入力
            IF    ( SPA-NAI-XG02-TO-DATA
                                    =   SPACE )

@@ -25,6 +25,8 @@
       *  01.00.02    MCC-太田     02/12/19  定期請求追加
       *  01.00.03    NACL-太田    03/10/14  入院患者照会追加
       *  01.00.04    NACL-藤原    03/12/03  統計データ作成追加
+      *
+      *  04.05.01    NACL-藤原    09/10/01  統計ＣＳＶ出力追加
       *****************************************************************
        01  MNAME-DATA-REC.
            03  FILLER               PIC X(08)   VALUE   "RECEPT1".
@@ -105,10 +107,14 @@
            03  FILLER               PIC X(40)   VALUE
                                     "データ収集".
       *
+           03  FILLER               PIC X(08)   VALUE   "PUTCSV".
+           03  FILLER               PIC X(40)   VALUE
+                                    "統計ＣＳＶ出力".
+      *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      23  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      24  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   23.
+       01  MNAME-MAX                PIC 9(04)   VALUE   24.
       *

@@ -303,8 +303,8 @@
            INITIALIZE                  SPA-XG01FREE
                                        SPA-XG01KYOUTU
       *
-           PERFORM 310-SPASET-SEC
            MOVE    WRK-MOTOPG      TO  SPA-XG01-MOTOPG
+           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -317,7 +317,12 @@
       *
            INITIALIZE                      TOUKEICSV-H-REC
            MOVE    SPA-HOSPNUM         TO  TOUKEICSV-H-HOSPNUM
-           MOVE    SPA-JOB-SHELLID     TO  TOUKEICSV-H-TBL-KEY
+           EVALUATE    SPA-XG01-MOTOPG
+               WHEN    "L01"
+                   MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
+               WHEN    "G01"
+                   MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
+           END-EVALUATE 
            MOVE    TOUKEICSV-H-REC     TO  MCPDATA-REC
            MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -390,20 +395,8 @@
                    MOVE    TOUKEICSV-H-TO-FOLDER
                                            TO  SPA-NAI-TTO-FOLDER (IDX)
                END-IF
-      *           IF      TOUKEICSV-H-TO-DATA =   SPACE
-      *               EVALUATE    SPA-XG01-MOTOPG
-      *                   WHEN    "L01"
-      *                       MOVE    "DAILY.CSV"
-      *                                       TO  SPA-NAI-TTO-DATA  (IDX)
-      *                   WHEN    "G01"
-      *                       MOVE    "MONTHLY.CSV"
-      *                                       TO  SPA-NAI-TTO-DATA  (IDX)
-      *               END-EVALUATE
-      *           ELSE
-                   MOVE    TOUKEICSV-H-TO-DATA
+               MOVE    TOUKEICSV-H-TO-DATA
                                            TO  SPA-NAI-TTO-DATA  (IDX)
-      *           END-IF
-      *                                                                                          
                MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-TOUKEICSV-H-READ-N-SEC
@@ -791,7 +784,12 @@
       *    Åý·×£Ã£Ó£Ö´ÉÍý£Ä£Â¤Î¥Á¥§¥Ã¥¯
            INITIALIZE                      TOUKEICSV-H-REC
            MOVE    SPA-HOSPNUM         TO  TOUKEICSV-H-HOSPNUM
-           MOVE    SPA-JOB-SHELLID     TO  TOUKEICSV-H-TBL-KEY
+           EVALUATE    SPA-XG01-MOTOPG
+               WHEN    "L01"
+                   MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
+               WHEN    "G01"
+                   MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
+           END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-H-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-H-RENNUM
            MOVE    SPA-GMN-SHORI-RENNUM
@@ -811,12 +809,12 @@
            IF      FLG-TOUKEICSV-H     =   1
                MOVE    "0005"              TO  SPA-ERRCD
            ELSE
-      *        Ì¤½èÍý¤Î¥Ç¡¼¥¿¤Î¤È¤­
-               IF      TOUKEICSV-H-PUTFLG  =   SPACE
-                   MOVE    "1003"              TO  SPA-XGIDCD
-               ELSE
+      *****    Ì¤½èÍý¤Î¥Ç¡¼¥¿¤Î¤È¤­
+      *****    IF      TOUKEICSV-H-PUTFLG  =   SPACE
+      *****        MOVE    "1003"              TO  SPA-XGIDCD
+      *****    ELSE
                    MOVE    "1002"              TO  SPA-XGIDCD
-               END-IF
+      *****    END-IF
            END-IF
       *
            MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
@@ -833,7 +831,12 @@
       *         
            INITIALIZE                  TOUKEICSV-H-REC
            MOVE    SPA-HOSPNUM     TO  TOUKEICSV-H-HOSPNUM
-           MOVE    SPA-JOB-SHELLID     TO  TOUKEICSV-H-TBL-KEY
+           EVALUATE    SPA-XG01-MOTOPG
+               WHEN    "L01"
+                   MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
+               WHEN    "G01"
+                   MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
+           END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-H-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-H-RENNUM
            MOVE    SPA-GMN-SHORI-RENNUM
@@ -851,7 +854,12 @@
       *         
            INITIALIZE                      TOUKEICSV-B-REC
            MOVE    SPA-HOSPNUM         TO  TOUKEICSV-B-HOSPNUM
-           MOVE    SPA-JOB-SHELLID     TO  TOUKEICSV-H-TBL-KEY
+           EVALUATE    SPA-XG01-MOTOPG
+               WHEN    "L01"
+                   MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
+               WHEN    "G01"
+                   MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
+           END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-B-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-B-RENNUM
            MOVE    SPA-GMN-SHORI-RENNUM
@@ -918,7 +926,12 @@
       *    Åý·×£Ã£Ó£Ö´ÉÍý£Ä£Â¤Î¥Á¥§¥Ã¥¯
            INITIALIZE                      TOUKEICSV-H-REC
            MOVE    SPA-HOSPNUM         TO  TOUKEICSV-H-HOSPNUM
-           MOVE    SPA-JOB-SHELLID     TO  TOUKEICSV-H-TBL-KEY
+           EVALUATE    SPA-XG01-MOTOPG
+               WHEN    "L01"
+                   MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
+               WHEN    "G01"
+                   MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
+           END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-H-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-H-RENNUM
            MOVE    SPA-GMN-SHORI-RENNUM
