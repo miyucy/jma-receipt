@@ -96,7 +96,18 @@
                05  WRK-PARA-TO-DATA        PIC X(200).
                05  WRK-PARA-JOBID          PIC 9(07).
                05  WRK-PARA-SHELLID        PIC X(08).
+               05  WRK-PARA-SRYYMD         PIC X(08).
            03  WRK-CSVERR                  PIC X(200). 
+      *
+           03  WRK-JOBNAME         PIC X(40).
+      *
+           03  WRK-SYMD.
+               05  WRK-SYY         PIC 9(04).
+               05  WRK-SMM         PIC 9(02).
+               05  WRK-SDD         PIC 9(02).
+           03  WRK-HENYMDG         PIC X(22).
+      *   
+           COPY    "CMJOBNAME.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -115,6 +126,10 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -163,6 +178,7 @@
                                                WRK-PARA-TO-DATA 
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-SRYYMD
                                                CSVERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM
@@ -170,17 +186,32 @@
       *
            MOVE    SPA-HOSPNUM     TO  CSVPARA-HOSPNUM
       *
-      *??
-           DISPLAY "CSVPARA=" CSVPARA "#" 
-      *??
            PERFORM 100-DBOPEN-SEC
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBPUTCSV"    TO  JOB-PGID
-           MOVE    "統計ＣＳＶデータ作成"
-                                   TO  JOB-SHELLMSG
+      *
+           MOVE    SPACE         TO  WRK-JOBNAME
+           SET     TBL-IDX             TO  1
+           SEARCH      MNAME-TBL-OCC      VARYING   TBL-IDX
+               AT   END
+                 MOVE    SPACE         TO  WRK-JOBNAME
+               WHEN    WRK-PARA-TBL-KEY    =   MNAME-SHELLID
+                                                  (TBL-IDX)
+                   MOVE    MNAME-JOBNAME (TBL-IDX)
+                                       TO  WRK-JOBNAME
+           END-SEARCH
+           MOVE    WRK-PARA-SRYYMD
+                                   TO  WRK-SYMD
+           PERFORM 500-YMD-HENSYU-SEC
+           STRING  WRK-JOBNAME     DELIMITED  BY  SPACE 
+                   "ＣＳＶ作成（"  DELIMITED  BY  SIZE
+                   WRK-HENYMDG     DELIMITED  BY  SPACE
+                   "）"            DELIMITED  BY  SIZE
+                                   INTO       JOB-SHELLMSG
+           END-STRING
            PERFORM 900-CALL-ORCSJOB-SEC
       *
            OPEN    OUTPUT              CSV-FILE
@@ -264,6 +295,25 @@
            DISPLAY "*** ORCBPUTCSV END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付変換処理（西暦→全角）
+      *****************************************************************
+       500-YMD-HENSYU-SEC         SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY2-AREA
+           MOVE    "21"            TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD        TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           MOVE    LNK-DAY2-EDTYMD3
+                                   TO  WRK-HENYMDG
+           INSPECT WRK-HENYMDG     REPLACING   ALL "  "    BY  "　"
+           .
+       500-YMD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

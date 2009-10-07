@@ -25,6 +25,7 @@ fi
 #        ${12} エラーファイル名 
 #        ${13} ファイル出力先
 #        ${14} コード区分（1:EUC 2:S-jis）
+#        ${15} 診療年月（診療年月日）
 #-------------------------------------------#
 #
 ##      エラーファイル削除
@@ -38,9 +39,12 @@ fi
         rm -f $LOG_FILE
 
         echo "arg6  = [" ${6} "]"   >$LOG_FILE
+        echo "arg7  = [" ${7} "]"   >>$LOG_FILE
+        echo "arg8  = [" ${8} "]"   >>$LOG_FILE
         echo "arg9  = [" ${9} "]"   >>$LOG_FILE
         echo "arg13 = [" ${13} "]"  >>$LOG_FILE
         echo "arg14 = [" ${14} "]"  >>$LOG_FILE
+        echo "arg15 = [" ${15} "]"  >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
         echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
 #       echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
@@ -51,7 +55,7 @@ fi
 	rm -f $FILE_1
 	rm -f $FILE_3
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUTCSV -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${12} >> $LOG_FILE 2>&1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPUTCSV -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${15},${12} >> $LOG_FILE 2>&1
         if  [ -e ${12} ]; then
             exit
         fi

@@ -350,6 +350,7 @@
                                                TO
                                                SPA-GMN-TTBL-GROUP (IDX)
                                                WRK-TOUKEICSV-H-TBL-GROUP
+                   MOVE    TOUKEICSV-H-SRYYM   TO  SPA-NAI-TSRYYM (IDX)
                    IF      TOUKEICSV-H-SRYYM
                                            NOT =   SPACE   AND ZERO
                        MOVE    TOUKEICSV-H-SRYYM
@@ -359,6 +360,7 @@
                        MOVE    WRK-HENYMDG(1:6)
                                                TO  SPA-GMN-TSRYYM (IDX)
                    END-IF
+                   MOVE    TOUKEICSV-H-SRYYMD  TO  SPA-NAI-TSRYYMD(IDX)
                    IF      TOUKEICSV-H-SRYYMD
                                            NOT =   SPACE   AND ZERO
                        MOVE    TOUKEICSV-H-SRYYMD
@@ -551,6 +553,14 @@
            MOVE    SPA-GMN-XG02-FILENAME
                                        TO  SHELLTBL-ARG13
            MOVE    SPA-GMN-XG02-CDKBN  TO  SHELLTBL-ARG14
+           EVALUATE    SPA-XG01-MOTOPG
+               WHEN    "L01"
+                   MOVE    SPA-NAI-TSRYYMD (SPA-NAI-SELNUM)
+                                           TO  SHELLTBL-ARG15
+               WHEN    "G01"
+                   MOVE    SPA-NAI-TSRYYM  (SPA-NAI-SELNUM)
+                                           TO  SHELLTBL-ARG15
+           END-EVALUATE 
       *
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG16
            MOVE    SPA-OPID            TO  SHELLTBL-ARG17

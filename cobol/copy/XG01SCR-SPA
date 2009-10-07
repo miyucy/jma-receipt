@@ -62,6 +62,8 @@
                            11  SPA-NAI-TPUTFLG     PIC X(01).
                            11  SPA-NAI-TTO-FOLDER  PIC X(200).
                            11  SPA-NAI-TTO-DATA    PIC X(200).
+                           11  SPA-NAI-TSRYYM      PIC X(06).
+                           11  SPA-NAI-TSRYYMD     PIC X(08).
       *
                05  SPA-NAI-FILENO                  PIC 9(03).
       *
