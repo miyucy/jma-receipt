@@ -23,6 +23,7 @@
                     06  XG01-TKENSU        PIC X(5).
                     06  XG01-TSRYYM        PIC X(6).
                     06  XG01-TSRYYMD       PIC X(9).
+                    06  XG01-TNYUGAIKBN    PIC X(2).
                     06  XG01-TSHORI-TITLE  PIC X(20).
                     06  XG01-TPRT-TITLE    PIC X(60).
                     06  XG01-TPUTFLG       PIC X(2).

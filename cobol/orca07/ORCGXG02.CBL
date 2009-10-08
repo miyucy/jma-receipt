@@ -277,9 +277,15 @@
                                    =   SPACE
                EVALUATE    SPA-XG01-MOTOPG
                    WHEN    "L01"
-                       MOVE    "DAILY_"    TO  WRK-TO-DATA1
+                       STRING  SPA-HOSPNUM     DELIMITED   BY  SIZE 
+                               "DAILY_"        DELIMITED   BY  SIZE
+                                               INTO  WRK-TO-DATA1
+                       END-STRING
                    WHEN    "G01"
-                       MOVE    "MONTHLY_"  TO  WRK-TO-DATA1
+                       STRING  SPA-HOSPNUM     DELIMITED   BY  SIZE 
+                               "MONTHLY_"      DELIMITED   BY  SIZE
+                                               INTO  WRK-TO-DATA1
+                       END-STRING
                END-EVALUATE
                MOVE    ".CSV"          TO  WRK-TO-DATA2
                MOVE    SPA-NAI-FILENO  TO  WRK-FILENO

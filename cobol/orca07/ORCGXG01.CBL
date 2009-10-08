@@ -368,6 +368,14 @@
                        PERFORM 5002-HIZUKE-HEN-SEC
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-TSRYYMD(IDX)
                    END-IF
+                   EVALUATE    TOUKEICSV-H-NYUGAIKBN
+                       WHEN    "1"
+                           MOVE    "Æþ"        TO  SPA-GMN-TNYUGAIKBN
+                                                                  (IDX)
+                       WHEN    "2"
+                           MOVE    "³°"        TO  SPA-GMN-TNYUGAIKBN
+                                                                  (IDX)
+                   END-EVALUATE
                    SET     TBL-IDX             TO  1
                    SEARCH      MNAME-TBL-OCC      VARYING   TBL-IDX
                        AT   END
@@ -1254,6 +1262,7 @@
                MOVE    WRK-KENSU               TO  XG01-TKENSU    (IDX)
                MOVE    SPA-GMN-TSRYYM    (IDX) TO  XG01-TSRYYM    (IDX)
                MOVE    SPA-GMN-TSRYYMD   (IDX) TO  XG01-TSRYYMD   (IDX)
+               MOVE    SPA-GMN-TNYUGAIKBN(IDX) TO  XG01-TNYUGAIKBN(IDX)
                MOVE    SPA-GMN-TSHORI-TITLE (IDX)  TO
                                                XG01-TSHORI-TITLE  (IDX)
                MOVE    SPA-GMN-TPRT-TITLE(IDX) (1:60)

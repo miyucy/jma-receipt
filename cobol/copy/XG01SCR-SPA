@@ -40,6 +40,7 @@
                            11  SPA-GMN-TKENSU      PIC 9(05).
                            11  SPA-GMN-TSRYYM      PIC X(06).
                            11  SPA-GMN-TSRYYMD     PIC X(09).
+                           11  SPA-GMN-TNYUGAIKBN  PIC X(02).
                            11  SPA-GMN-TSHORI-TITLE
                                                    PIC X(20).
                            11  SPA-GMN-TPRT-TITLE  PIC X(100).
