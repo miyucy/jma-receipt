@@ -11,6 +11,7 @@ create	table	tbl_toukeicsv_h	(
 	NYUGAIKBN	char(1),
 	TO_FOLDER	varchar(200),
 	TO_DATA		varchar(200),
+	CODE_TYPE	char(1),
 	PUTFLG		char(1),
 	TITLE		varchar(100),
 	TERMID		varchar(32),

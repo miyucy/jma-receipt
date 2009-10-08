@@ -51,6 +51,8 @@
            03  STOUKEICSV-TO-FOLDER    PIC X(200).
       *    Àè¥Õ¥¡¥¤¥ëÌ¾
            03  STOUKEICSV-TO-DATA      PIC X(200).
+      *    ¥³¡¼¥É¶èÊ¬¡Ê¶õÇò¡¢£±¡§£Ó¡Ý£ê£é£ó £²¡§£Å£Õ£Ã¡Ë
+           03  STOUKEICSV-CODE-TYPE    PIC X(01).
       *    Ä¢É¼¥¿¥¤¥È¥ë
            03  STOUKEICSV-TITLE        PIC X(100).
       *    Ä¢É¼¥Ç¡¼¥¿

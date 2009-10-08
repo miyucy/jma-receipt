@@ -398,7 +398,10 @@
                                            TO  SPA-NAI-TTO-FOLDER (IDX)
                END-IF
                MOVE    TOUKEICSV-H-TO-DATA
-                                           TO  SPA-NAI-TTO-DATA  (IDX)
+                                           TO  SPA-NAI-TTO-DATA   (IDX)
+               MOVE    TOUKEICSV-H-CODE-TYPE
+                                           TO  SPA-NAI-TCODE-TYPE (IDX)
+      *
                MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-TOUKEICSV-H-READ-N-SEC
@@ -533,8 +536,11 @@
            ELSE
                MOVE    SPA-GMN-XG02-FILE   TO  SHELLTBL-ARG6
            END-IF
-           MOVE    SPA-NAI-XG02-TO-FOLDER
-                                       TO  SHELLTBL-ARG7
+           STRING  SPA-NAI-XG02-TO-FOLDER
+                                       DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE 
+                                       INTO  SHELLTBL-ARG7
+           END-STRING
            MOVE    SPA-NAI-XG02-TO-DATA
                                        TO  SHELLTBL-ARG8
       *    ipアドレス取得

@@ -169,6 +169,8 @@
                MOVE    STOUKEICSV-TO-FOLDER
                                            TO  TOUKEICSV-H-TO-FOLDER
                MOVE    STOUKEICSV-TO-DATA  TO  TOUKEICSV-H-TO-DATA
+               MOVE    STOUKEICSV-CODE-TYPE
+                                           TO  TOUKEICSV-H-CODE-TYPE
                MOVE    STOUKEICSV-TITLE    TO  TOUKEICSV-H-TITLE
                MOVE    STOUKEICSV-TERMID   TO  TOUKEICSV-H-TERMID
                MOVE    STOUKEICSV-OPID     TO  TOUKEICSV-H-OPID

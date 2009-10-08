@@ -356,8 +356,11 @@
                    SPA-NAI-XG02-TO-DATA    DELIMITED  BY  SPACE
                                    INTO  SPA-SFILESV-FOR-DATA  (IDX)
            END-STRING
-           MOVE    SPA-NAI-XG02-TO-FOLDER
-                                   TO  SPA-SFILESV-TO-FOLDER (IDX)
+           STRING  SPA-NAI-XG02-TO-FOLDER
+                                       DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE 
+                                       INTO  SPA-SFILESV-TO-FOLDER(IDX)
+           END-STRING
            MOVE    SPA-NAI-XG02-TO-DATA
                                    TO  SPA-SFILESV-TO-DATA   (IDX)
            MOVE    SPA-GMN-XG02-CDKBN

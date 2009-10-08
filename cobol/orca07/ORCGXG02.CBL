@@ -299,6 +299,17 @@
            MOVE    SPA-NAI-XG02-FILENAME
                                    TO  SPA-GMN-XG02-FILENAME
       *
+           PERFORM VARYING IDX2    FROM   1   BY  1
+                   UNTIL   IDX2    >      SPA-GMN-XG02-CDKBN-MAX
+               IF      SPA-NAI-TCODE-TYPE (SPA-NAI-SELNUM)
+                                   =   SPA-GMN-XG02-CDKBNL (IDX2)
+                   MOVE    SPA-GMN-XG02-CDKBNLST (IDX2)
+                                           TO  SPA-GMN-XG02-CDKBN-G
+                   MOVE    SPA-GMN-XG02-CDKBN-MAX
+                                           TO  IDX2
+               END-IF
+           END-PERFORM        
+      *
            MOVE  1                 TO  SPA-GMN-XG02-CUR
       *
            .
@@ -461,16 +472,20 @@
       *****************************************************************
        41022-FILE-CHK-SEC          SECTION.
       *
-           PERFORM VARYING IDX2 FROM    1   BY  1
-                   UNTIL   IDX2 >       SPA-GMN-XG02-FILE-MAX
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-XG02-FILE-MAX
                IF        SPA-GMN-XG02-FILE
-                                   =   SPA-GMN-XG02-FILEL (IDX2)
-                   MOVE    SPA-GMN-XG02-FILEMEIL (IDX2)
-                                           TO  SPA-GMN-XG02-FILEMEI
+                                       =   SPA-GMN-XG02-FILEL (IDX2)
+                   MOVE    SPA-GMN-XG02-FILELST (IDX2)
+                                           TO  SPA-GMN-XG02-FILE-G
                    MOVE    SPA-GMN-XG02-FILE-MAX
                                            TO  IDX2
                END-IF
            END-PERFORM        
+           IF      SPA-GMN-XG02-CDKBNMEI
+                                   =   SPACE  
+               MOVE    SPACE           TO  SPA-GMN-XG02-CDKBN-G
+           END-IF
            .
        41022-FILE-CHK-EXT.
            EXIT.
@@ -478,28 +493,22 @@
       *****************************************************************
       *    文字コードチェック処理
       *****************************************************************
-       41023-CDKBN-CHK-SEC           SECTION.
+       41023-CDKBN-CHK-SEC         SECTION.
       *
-           IF      SPA-GMN-XG02-CDKBN  =   SPACE
-               IF      SPA-GMN-XG02-FILE   =   "1"
-                   MOVE    SPA-GMN-XG02-CDKBNLST (1)
-                                           TO  SPA-GMN-XG02-CDKBN-G
-               END-IF
-           ELSE
-               PERFORM VARYING IDX2    FROM   1   BY  1
-                       UNTIL   IDX2    >      SPA-GMN-XG02-CDKBN-MAX
-                   IF        SPA-GMN-XG02-CDKBN
+           PERFORM VARYING IDX2    FROM   1   BY  1
+                   UNTIL   IDX2    >      SPA-GMN-XG02-CDKBN-MAX
+               IF      SPA-GMN-XG02-CDKBN
                                        =   SPA-GMN-XG02-CDKBNL (IDX2)
-                       MOVE    SPA-GMN-XG02-CDKBNMEIL (IDX2)
-                                               TO  SPA-GMN-XG02-CDKBNMEI
-                       MOVE    SPA-GMN-XG02-CDKBN-MAX
-                                               TO  IDX2
-                   END-IF
-               END-PERFORM        
-               IF      SPA-GMN-XG02-CDKBNMEI   =   SPACE  
-                   MOVE    SPA-GMN-XG02-CDKBNLST (1)
+                   MOVE    SPA-GMN-XG02-CDKBNLST (IDX2)
                                            TO  SPA-GMN-XG02-CDKBN-G
+                   MOVE    SPA-GMN-XG02-CDKBN-MAX
+                                           TO  IDX2
                END-IF
+           END-PERFORM        
+           IF      SPA-GMN-XG02-CDKBNMEI
+                                   =   SPACE  
+               MOVE    SPA-GMN-XG02-CDKBNLST (1)
+                                       TO  SPA-GMN-XG02-CDKBN-G
            END-IF
            .
        41023-CDKBN-CHK-EXT.

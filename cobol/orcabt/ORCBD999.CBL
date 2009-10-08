@@ -1369,6 +1369,7 @@
                                    TO  WRK-TO-DATA-SRYYMD
            MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
            MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
+           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
            MOVE    "Æü·×£Ã£Ó£ÖºîÀ®¡Ê¿ÇÎÅÇ¯·îÆü¡Ë"
                                    TO  STOUKEICSV-TITLE
