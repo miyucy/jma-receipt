@@ -27,9 +27,10 @@ XG01	{
 					value4	varchar(5);
 					value5	varchar(6);
 					value6	varchar(9);
-					value7	varchar(20);
-					value8	varchar(60);
-					value9	varchar(2);
+					value7	varchar(2);
+					value8	varchar(20);
+					value9	varchar(60);
+					value10	varchar(2);
 				}	[100];
 				select	bool[100];
 			};
