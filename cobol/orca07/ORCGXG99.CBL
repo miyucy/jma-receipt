@@ -397,12 +397,14 @@
       *
            INITIALIZE                      XGFIL 
            MOVE    ORCA-BLOB-OBJECT    TO  XGFIL-OBJECTDATA
-           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
-                                       DELIMITED  BY  SPACE
-                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       DELIMITED  BY  SPACE
-                                       INTO  XGFIL-ENTRY1
-           END-STRING
+      *****STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+      *****                            DELIMITED  BY  SPACE
+      *****        SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+      *****                            DELIMITED  BY  SPACE
+      *****                            INTO  XGFIL-ENTRY1
+      *****END-STRING
+           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       TO  XGFIL-ENTRY1
            MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
                                        TO  XGFIL-TITLE
            MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
