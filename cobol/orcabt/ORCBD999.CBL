@@ -1373,10 +1373,6 @@
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
            MOVE    "Æü·×£Ã£Ó£ÖºîÀ®¡Ê¿ÇÎÅÇ¯·îÆü¡Ë"
                                    TO  STOUKEICSV-TITLE
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  STOUKEICSV-TERMID
-           MOVE    LNK-PRTKANRI-OPID
-                                   TO  STOUKEICSV-OPID
       *
            CALL    "ORCSTOUKEICSV"     USING
                                        ORCSTOUKEICSVAREA

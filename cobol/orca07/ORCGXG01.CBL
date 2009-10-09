@@ -273,6 +273,7 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "XG99" 
                    PERFORM 340-XG99-SET-SEC
+                   PERFORM 310-SPASET-SEC
                    GO  TO  300-SCREEN-EXT
                WHEN    "XGID1"
                    PERFORM 330-XGID1-SET-SEC
@@ -314,6 +315,9 @@
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
+      *
+           INITIALIZE                      SPA-GMN-AREA
+                                           SPA-NAI-AREA
       *
            INITIALIZE                      TOUKEICSV-H-REC
            MOVE    SPA-HOSPNUM         TO  TOUKEICSV-H-HOSPNUM
@@ -461,6 +465,8 @@
            MOVE    SPACE           TO  SPA-XGID1-FLG
                                        SPA-XG99-FLG
            MOVE    SPACE           TO  SPA-XGIDCD
+      *
+           INITIALIZE                  SPA-XG99-AREA
            .
        340-XG99-SET-EXT.
            EXIT.

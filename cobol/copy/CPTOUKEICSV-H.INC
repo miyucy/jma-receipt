@@ -32,9 +32,9 @@
            03  TOUKEICSV-H-PUTFLG      PIC X(1).
       *    処理タイトル
            03  TOUKEICSV-H-TITLE       PIC X(100).
-      *    端末ＩＤ
-           03  TOUKEICSV-H-TERMID      PIC X(32).
-      *    オペレータＩＤ
-           03  TOUKEICSV-H-OPID        PIC X(16).
       *    作成日
            03  TOUKEICSV-H-CREYMD      PIC X(8).
+      *    更新年月日
+           03  TOUKEICSV-H-UPYMD       PIC  X(08).
+      *    更新時間
+           03  TOUKEICSV-H-UPHMS       PIC  X(06).

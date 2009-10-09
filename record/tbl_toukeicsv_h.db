@@ -14,9 +14,9 @@ tbl_toukeicsv_h	{
 	CODE_TYPE		char(1);
 	PUTFLG			char(1);
 	TITLE			varchar(100);
-	TERMID			varchar(32);
-	OPID			varchar(16);
 	CREYMD			varchar(8);
+	UPYMD			char(8);
+	UPHMS			char(6);
 };
 
 primary	{

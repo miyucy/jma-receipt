@@ -57,7 +57,3 @@
            03  STOUKEICSV-TITLE        PIC X(100).
       *    Ä¢É¼¥Ç¡¼¥¿
            03  STOUKEICSV-CSVDATA      PIC X(20000).
-      *    Ã¼Ëö£É£Ä
-           03  STOUKEICSV-TERMID       PIC X(64).
-      *    ¥ª¥Ú¥ì¡¼¥¿£É£Ä
-           03  STOUKEICSV-OPID         PIC X(16).

@@ -58,6 +58,9 @@
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
       *
+      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -86,6 +89,8 @@
            EVALUATE    STOUKEICSV-MODE
                WHEN    "INS"
                        PERFORM 110-INS-SEC
+               WHEN    "UPD"
+                       PERFORM 120-UPD-SEC
                WHEN    "DEL"
                        PERFORM 140-DEL-SEC
                WHEN    OTHER
@@ -96,6 +101,7 @@
        000-PROC-EXT.
            EXIT PROGRAM
            .
+      *
       *****************************************************************
       *    Åý·×£Ã£Ó£Ö£Ä£ÂÄÉ²Ã½èÍý
       *****************************************************************
@@ -115,16 +121,6 @@
       *
            .
        110-INS-EXT.
-           EXIT.
-      * 
-      *****************************************************************
-      *    ºï½ü½èÍý
-      *****************************************************************
-       140-DEL-SEC                 SECTION.
-      *
-      *
-           .
-       140-DEL-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -172,8 +168,6 @@
                MOVE    STOUKEICSV-CODE-TYPE
                                            TO  TOUKEICSV-H-CODE-TYPE
                MOVE    STOUKEICSV-TITLE    TO  TOUKEICSV-H-TITLE
-               MOVE    STOUKEICSV-TERMID   TO  TOUKEICSV-H-TERMID
-               MOVE    STOUKEICSV-OPID     TO  TOUKEICSV-H-OPID
            END-IF
       *
            MOVE    STOUKEICSV-TBL-GROUP(1:8)
@@ -226,12 +220,7 @@
            MOVE    STOUKEICSV-SRYYM    TO  TOUKEICSV-B-SRYYM
            MOVE    STOUKEICSV-SRYYMD   TO  TOUKEICSV-B-SRYYMD
            MOVE    STOUKEICSV-PTID     TO  TOUKEICSV-B-PTID 
-           MOVE    TOUKEICSV-H-CNT     TO  TOUKEICSV-B-CNT
-           IF      STOUKEICSV-PUTFLG         =   "1"
-               MOVE    "1"                 TO  TOUKEICSV-B-PUTFLG
-           ELSE
-               MOVE    SPACE               TO  TOUKEICSV-B-PUTFLG
-           END-IF
+           MOVE    TOUKEICSV-H-CNT     TO  TOUKEICSV-B-SEQ-NO
            MOVE    STOUKEICSV-CSVDATA  TO  TOUKEICSV-B-CSVDATA
            MOVE    STOUKEICSV-TBL-GROUP(1:8)
                                        TO  TOUKEICSV-B-CREYMD
@@ -253,6 +242,65 @@
       *
            .
        1102-TOUKEICSV-B-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Åý·×£Ã£Ó£Ö£Ä£Â¹¹¿·½èÍý
+      *****************************************************************
+       120-UPD-SEC                 SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+      *    Åý·×£Ã£Ó£Ö´ÉÍý£Ä£Â¹¹¿·½èÍý
+           MOVE    SPACE               TO  TOUKEICSV-H-REC
+           INITIALIZE                      TOUKEICSV-H-REC
+           MOVE    SPA-HOSPNUM         TO  TOUKEICSV-H-HOSPNUM
+           MOVE    STOUKEICSV-TBL-KEY  TO  TOUKEICSV-H-TBL-KEY
+           MOVE    STOUKEICSV-RENNUM   TO  TOUKEICSV-H-RENNUM
+           MOVE    STOUKEICSV-TBL-GROUP
+                                       TO  TOUKEICSV-H-TBL-GROUP
+           MOVE    STOUKEICSV-SHORI-RENNUM
+                                       TO  TOUKEICSV-H-SHORI-RENNUM
+           MOVE    TOUKEICSV-H-REC     TO  MCPDATA-REC
+           PERFORM 900-TOUKEICSV-H-INV-SEC
+           IF      FLG-TOUKEICSV-H     =   ZERO
+               MOVE    "1"                 TO  TOUKEICSV-H-PUTFLG
+               MOVE    SMCNDATE-YMD        TO  TOUKEICSV-H-UPYMD
+               MOVE    SMCNDATE-HMS        TO  TOUKEICSV-H-UPHMS
+      *
+               MOVE    TOUKEICSV-H-REC     TO  MCPDATA-REC
+               MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+      *
+               IF      MCP-RC     =   ZERO
+                   MOVE  MCP-RC            TO  STOUKEICSV-RETURN
+               ELSE
+                   DISPLAY "TOUKEICSV-H UPDATE ERR MCP-RC = ["
+                                  MCP-RC  " " TOUKEICSV-H-KEY  "]"
+                   MOVE  MCP-RC            TO  STOUKEICSV-RETURN
+                   GO  TO  120-UPD-EXT
+               END-IF
+           ELSE
+               DISPLAY "TOUKEICSV-H UPDATE NOT FOUND KEY = ["
+                                           TOUKEICSV-H-KEY  "]"
+               MOVE  9                TO  STOUKEICSV-RETURN
+               GO  TO  120-UPD-EXT
+           END-IF
+      *
+           .
+       120-UPD-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ºï½ü½èÍý
+      *****************************************************************
+       140-DEL-SEC                 SECTION.
+      *
+      *
+           .
+       140-DEL-EXT.
            EXIT.
       *
       *****************************************************************

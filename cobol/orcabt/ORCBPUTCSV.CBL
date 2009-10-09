@@ -120,6 +120,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    統計ＣＳＶ制御サブ
+           COPY    "CPORCSTOUKEICSV.INC".
+      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
@@ -291,8 +294,6 @@
            EXIT.
       *
       *****************************************************************
-      *
-      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -307,6 +308,9 @@
                MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-CSVERR
                PERFORM 500-ERR-HENSYU-SEC
+           ELSE
+      *        統計ＣＳＶ更新処理
+               PERFORM 3001-TOUKEICSV-UPDATE-SEC
            END-IF
       *
       *    ステップ管理終了処理
@@ -321,6 +325,37 @@
            DISPLAY "*** ORCBPUTCSV END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計ＣＳＶ更新処理
+      *****************************************************************
+       3001-TOUKEICSV-UPDATE-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSTOUKEICSVAREA
+           MOVE    "UPD"           TO  STOUKEICSV-MODE
+           MOVE    WRK-PARA-TBL-KEY
+                                   TO  STOUKEICSV-TBL-KEY
+           MOVE    WRK-PARA-RENNUM TO  STOUKEICSV-RENNUM
+           MOVE    WRK-PARA-TBL-GROUP
+                                   TO  STOUKEICSV-TBL-GROUP
+           MOVE    WRK-PARA-SHORI-RENNUM
+                                   TO  STOUKEICSV-SHORI-RENNUM
+      *
+           CALL    "ORCSTOUKEICSV"     USING
+                                       ORCSTOUKEICSVAREA
+                                       SPA-AREA
+           IF      STOUKEICSV-RETURN   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
+                                      TO  WRK-CSVERR
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+           .
+      *
+       3001-TOUKEICSV-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
