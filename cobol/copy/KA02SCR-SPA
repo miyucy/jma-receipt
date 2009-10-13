@@ -113,6 +113,10 @@
                                13  SPA-GMN-TTANMEI     PIC X(02).
                                13  SPA-GMN-TYOBI1      PIC X(02).
                                13  SPA-GMN-TZAIKEI     PIC X(40).
+                           11  SPA-GMN-HEN2  REDEFINES
+                                               SPA-GMN-HEN1.
+                               13  SPA-GMN-TYOBI3      PIC X(10).
+                               13  SPA-GMN-TKANSURYO   PIC X(30).
       *
                        09  SPA-NAI-TSRYCD        PIC  X(09).
                        09  SPA-NAI-TWNUM         PIC  9(03).
@@ -131,9 +135,12 @@
                    07  SPA-GMN-INPUT-TBL     OCCURS   50.
                        09  SPA-GMN-INPUT     PIC X(100).
                        09  SPA-GMN-SURYO     PIC X(12).
+                       09  SPA-GMN-KEISURYO  PIC X(12).
       *
                        09  SPA-NAI-SURYO     PIC 9(05)V9(5).
+                       09  SPA-NAI-KANSURYO  PIC 9(05)V9(5).
                        09  SPA-NAI-SRYCD     PIC X(09).
+                       09  SPA-NAI-KANZANCHI   PIC  9(5)V9(5).
                    07  SPA-INPUT-MAX         PIC 9(04).
                    07  SPA-INPUT-PAGE        PIC 9(02).
                    07  SPA-GMN-SRYKBN        PIC X(02).
@@ -211,6 +218,10 @@
                                13  SPA-KA021-TTANMEI     PIC X(02).
                                13  SPA-KA021-TYOBI1      PIC X(02).
                                13  SPA-KA021-TZAIKEI     PIC X(40).
+                           11  SPA-KA021-HEN2  REDEFINES
+                                               SPA-KA021-HEN1.
+                               13  SPA-KA021-TYOBI3      PIC X(10).
+                               13  SPA-KA021-TKANSURYO   PIC X(30).
       *
                        09  SPA-KA021NAI-TSRYCD        PIC  X(09).
                        09  SPA-KA021NAI-TWNUM         PIC  9(03).

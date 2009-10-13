@@ -63,6 +63,7 @@
       *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤対応
       *  04.01.01    NACL-多々納  08/01/XX  チェックマスタ変更対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
       *****************************************************************
       *
       *
@@ -143,6 +144,7 @@
            03  IDX-Y3              PIC 9(02).
       *
            03  IDM                 PIC 9(04).
+           03  IDM2                PIC 9(04).
       *
            03  IDX-T2              PIC 9(04).
            03  IDX-T3              PIC 9(04).
@@ -156,6 +158,7 @@
            03  WRK-TANINAME        PIC X(04).
       *
            03  WRK-MEISYO          PIC X(80).
+           03  WRK-MEISYO-2        PIC X(80).
       *   きざみ値行為再計算用
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
@@ -164,13 +167,13 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(05).
-      *    03  WRK-SURYO-X.
-      *        05  WRK-SURYO-Z1    PIC ZZZZZ.
-      *        05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
-      *                            PIC ZZZZ9.
-      *        05  WRK-SURYO-Z2    PIC X(01).
-      *        05  WRK-SURYO-Z3    PIC ZZZZZ.
-      *    03  WRK-SURYO-H         PIC X(20).
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1    PIC ZZZZZ.
+               05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
+                                   PIC ZZZZ9.
+               05  WRK-SURYO-Z2    PIC X(01).
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
+           03  WRK-SURYO-H         PIC X(20).
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -226,6 +229,14 @@
            03  WRK-TEI-CNT             PIC 9(03).
            03  FLG-SYO-ERR             PIC 9(01).
            03  WRK-DAYERR              PIC 9(02).
+      *ver.4.5
+      *    換算値計算エラー
+           03  WRK-SURYO-KEI       PIC 9(10)V9(8).
+           03  WRK-SURYO-KEI-R     REDEFINES   WRK-SURYO-KEI.
+               05  WRK-SURYO-KEI1  PIC 9(05).
+               05  WRK-SURYO-KEI2  PIC 9(05).
+               05  WRK-SURYO-KEI3  PIC 9(05).
+               05  WRK-SURYO-KEI4  PIC 9(03).
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -1060,6 +1071,29 @@
                                                           (IDX-T)
                END-IF
            END-IF
+      *ver.4.5
+      *    換算値入力等は、Ｈ２０年４月からとする
+           IF     (SPA-SRYYMD      <   "20080401" )
+              AND (SPA-ERRCD       =   SPACE      )
+               IF     (LNK-SC97-INKBNFLG1  =   "1"  )  OR
+                      (LNK-SC97-INKBNFLG2  =   "1"  )  OR
+                      (LNK-SC97-CONTFLG    =   "1"  )
+                   MOVE    "0206"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *    薬剤のみ
+           IF     (SPA-ERRCD       =   SPACE      )
+               IF     (LNK-SC97-INKBNFLG1  =   "1"  )  AND
+                      (SPA-COM-INPUTCD (IDX-T)(1:1)
+                                       NOT =   "6" )
+                   MOVE    "0207"              TO  SPA-ERRCD
+               END-IF
+               IF     (LNK-SC97-INKBNFLG2  =   "1"  )  AND
+                      (SPA-COM-INPUTCD (IDX-T)(1:1)
+                                       NOT =   "6" )
+                   MOVE    "0203"              TO  SPA-ERRCD
+               END-IF
+           END-IF
            .
        2001-INPUTCD-CHECK-EXT.
            EXIT.
@@ -1122,6 +1156,29 @@
                END-IF
       *!!
            END-IF
+      *
+      *ver.4.5
+           MOVE    ZERO            TO  SPA-COM-KANSURYO  (IDX-T)
+           MOVE    SPACE           TO  SPA-COM-TANDKKBN (IDX-T)
+           MOVE    SPACE           TO  SPA-COM-INPUTNAIF (IDX-T)
+           MOVE    SPACE           TO  SPA-COM-INPUTCONT (IDX-T)
+      *    薬剤の換算値、１種類入力
+           IF     (LNK-SC92-SRYCD (1:1)    =   "6" )
+               PERFORM 20023-KANSAN-HEN-SEC
+           END-IF
+      *    継続コメント
+           IF      LNK-SC97-CONTFLG    =   "1"
+               IF     (LNK-SC92-SRYCD (1:1)    =   "8"   )  OR
+                      (LNK-SC92-SRYCD (1:3)    =   "008" )
+                   MOVE    "1"             TO  SPA-COM-INPUTCONT
+                                                             (IDX-T)
+               ELSE
+                   MOVE    "0205"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
+               END-IF
+           END-IF
+      *ver.4.5
+      *
            MOVE    SPA-COM-SURYO(IDX-T)
                                        TO  SPA-COM-SURYO2(IDX-T)
       *
@@ -1189,6 +1246,62 @@
       *
            .
        20021-BUNGSU-HENSYU-EXT.
+           EXIT.
+      *
+      *ver.4.5
+      *****************************************************************
+      *    薬剤の換算値、１種類入力処理
+      *****************************************************************
+       20023-KANSAN-HEN-SEC             SECTION.
+      *
+      *    換算値入力
+           IF      LNK-SC97-INKBNFLG1  =   "1"
+               IF      TNSP-KANZANCHI       >  ZERO
+                   COMPUTE WRK-SURYO-KEI   =  LNK-SC97-SURYO
+                                           *  TNSP-KANZANCHI
+      *            数量の桁あふれエラー
+                   IF     (WRK-SURYO-KEI1  NOT =   ZERO )
+                       OR (WRK-SURYO-KEI4  NOT =   ZERO )
+                       MOVE    "0202"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR
+                                                         (IDX-T)
+                   END-IF
+                   COMPUTE SPA-COM-SURYO(IDX-T)  =  LNK-SC97-SURYO
+                                                 *  TNSP-KANZANCHI
+                   MOVE    LNK-SC97-SURYO      TO  SPA-COM-KANSURYO
+                                                           (IDX-T)
+      *           外来投薬で、１種類設定可能かの判定
+                   IF      (SPA-COM-SRYKBN (IDX-T) =   "21"  )
+                   AND     (SPA-NYUGAIKBN          =   "2"   )
+      *                ｇ、�咫，髻（顱　■蹌譟，髻）�
+                       IF    ((TNS-TANICD          =   "032"
+                                                   OR  "033")  AND 
+                              (TNSP-KANZANTANICD   =  "018"))
+                       OR    ((TNS-TANICD          =   "036") AND
+                              (TNSP-KANZANTANICD   =   "007"))
+                           MOVE    "1"             TO  SPA-COM-TANDKKBN
+                                                               (IDX-T)
+                       END-IF
+                   END-IF
+               ELSE
+      *            換算値設定なし
+                   MOVE    "0204"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
+               END-IF
+           END-IF
+      *    内服１種類入力
+           IF      LNK-SC97-INKBNFLG2  =   "1"
+               IF      (SPA-COM-SRYKBN (IDX-T) =   "21"  )
+               AND     (SPA-NYUGAIKBN          =   "2"   )
+                   MOVE    "1"             TO  SPA-COM-INPUTNAIF (IDX-T)
+                   MOVE    "1"             TO  SPA-COM-TANDKKBN(IDX-T)
+               ELSE
+                   MOVE    "0203"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
+               END-IF
+           END-IF
+           .
+       20023-KANSAN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3483,9 +3596,81 @@
                                INTO             WRK-MEISYO
                    END-STRING
            END-EVALUATE
+      *TEST
+      *ver.4.5（削除かも〜）
+      *    換算値あり
+           IF     (TNSP-KANZANTANINAME =   SPACE )
+               OR (TNSP-KANZANCHI      =   ZERO  )
+               CONTINUE
+           ELSE
+               MOVE    TNSP-KANZANCHI      TO  WRK-SURYO
+               PERFORM 2001-SURYO-HEN-SEC
+               MOVE    WRK-MEISYO          TO  WRK-MEISYO-2
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING  WRK-MEISYO-2        DELIMITED   BY  SPACE
+                       "〔"
+                       WRK-SURYO-H          DELIMITED   BY  SPACE
+                       "／"
+                       TNSP-KANZANTANINAME     DELIMITED   BY  SPACE
+                       "〕"                    DELIMITED   BY  SIZE
+                       INTO                WRK-MEISYO
+               END-STRING
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-MEISYO          TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-MEISYO
+                END-IF
+           END-IF
+      *TEST
+      *TEST
            .
        3002-KOUHATU-MEISYO-EXT.
            EXIT.
+      *TEST
+      *ver.4.5（削除かも〜）
+      *****************************************************************
+      *    数量表示用編集処理
+      *****************************************************************
+       2001-SURYO-HEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    SPACE               TO  WRK-SURYO-H
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDM     FROM    5  BY  -1
+                   UNTIL       IDM     <   1
+               IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SURYO-Z3        NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO-Z2
+               IF      WRK-SURYO-X(1:5)    =   SPACE
+                   MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+               END-IF
+           END-IF
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDM     FROM    1  BY  1
+                   UNTIL       IDM     >   11
+               IF      WRK-SURYO-X (IDM:1) NOT =   SPACE
+                   ADD     1               TO  IDM2
+                   MOVE    WRK-SURYO-X (IDM:1) TO  WRK-SURYO-H(IDM2:1)
+               END-IF
+           END-PERFORM
+           .
+       2001-SURYO-HEN-EXT.
+           EXIT.
+      *TEST
+      *TEST
       ******************************************************************
       *     後発医薬品変更再編集処理
       *****************************************************************
@@ -3965,7 +4150,14 @@
            MOVE    TNSP-ZENKNSKBN      TO  SPA-COM-ZENKNSKBN (IDX-T)
       *    入力チェック区分
            MOVE    TNSP-INPCHKKBN      TO  SPA-COM-INPCHKKBN  (IDX-T)
-      *
+      *ver.4.5
+      *    数量換算単位コード
+           MOVE    TNSP-KANZANTANICD   TO  SPA-COM-KANZANTANICD (IDX-T)
+      *    数量換算単位名称
+      *    MOVE    TNSP-KANZANTANINAME TO  SPA-COM-KANZANTANINAME(IDX-T)
+      *    数量換算値
+           MOVE    TNSP-KANZANCHI      TO  SPA-COM-KANZANCHI (IDX-T)
+      *ver.4.5
            .
        3006-TENSUPLUS-HEN-EXT.
            EXIT.
@@ -4134,6 +4326,14 @@
                                        TO  TNS-KZMCOMPSIKIBETU
                MOVE    SPA-COM-DATAKBN (IDX-T)
                                        TO  TNS-DATAKBN
+      *        換算値用
+               MOVE    SPA-COM-KANZANCHI (IDX-T)
+                                       TO  TNSP-KANZANCHI
+               MOVE    SPA-COM-KANZANTANICD (IDX-T)
+                                       TO  TNSP-KANZANTANICD
+               MOVE    SPA-COM-TANICD (IDX-T)
+                                       TO  TNS-TANICD
+      *
                PERFORM 200-INPUT-SURYO-CHK-SEC
            END-IF
       *
@@ -4327,7 +4527,8 @@
            END-IF
       *!
       *    附加情報の上限回数設定
-           IF     (TNS-SRYCD(1:1)      =   "1" ) AND
+           IF     (TNS-SRYCD(1:1)      =   "1"
+                                       OR  "6"  ) AND
                   (FLG-TENSU           =   ZERO)
                PERFORM 9101-TENSUPLUS-SYORI-SEC
            ELSE

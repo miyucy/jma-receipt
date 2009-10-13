@@ -656,6 +656,21 @@
                            MOVE    "1"             TO  SPA-COM-CUR(IDX)
                        END-IF
                    END-IF
+      *ver.4.5.0
+      *            処置読み替え対象外はＨ２０年４月から
+                   IF      WRK-SRYSYUKBN       =   "409"
+                       IF      SPA-SRYYMD          <   "20080401"
+                           MOVE    "0501"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
+                       IF     (SPA-HKNKBN          =   1   )
+                         AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0502"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
+                   END-IF
                WHEN    OTHER
       *        その他
                    IF      FLG-JIHI            =   1
@@ -1706,6 +1721,16 @@
                GO      TO      51011-SRYSYUKBN-KBN-EXT
            END-IF
       *
+      *ver.4.5.0
+      *    労災読み替え対象外処置
+           IF     (WRK-SRYSYUKBN           =   "409" )  AND
+                  (SPA-COM-TNSSRYKBN (IDX) =   "40"  )
+               MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
+               MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
+               MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN   (IDX)
+               GO      TO      51011-SRYSYUKBN-KBN-EXT
+           END-IF
+      *
       *    皮下筋肉注射の振替えなしの時、そのまま
            IF     (IDX                     >   1     )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:4)   =   ".312" ) AND
@@ -2249,8 +2274,8 @@
                    ADD     1               TO  IDX-TBL
                    MOVE    WRK-GMN-TBL (IDX-2)
                                                TO  SPA-GMN-TBL(IDX-TBL)
-                   IF     (SPA-COM-KAISU  (IDX-TBL)  >  1 ) AND
-                          (SPA-COM-KAIFLG (IDX-TBL)  =  "1")
+                   IF     (SPA-COM-KAISU  (IDX-TBL)  >  1 )
+                     AND  (SPA-COM-KAIFLG (IDX-TBL)  =  "1")
                        CONTINUE
                    ELSE
                        IF      SPA-COM-KAIFLG (IDX-TBL)  =   "1"
@@ -2272,10 +2297,11 @@
                    COMPUTE IDX-5               =   IDX-2  +  1
                    PERFORM VARYING     IDX-4   FROM    IDX-5   BY  1
                            UNTIL       IDX-4   >   SPA-MAX-LINE
-                       IF     (WRK-COM-INPUTCD (IDX-4) (1:1)
+                       IF    ((WRK-COM-INPUTCD (IDX-4) (1:1)
                                                    =   "8"    )  OR
                               (WRK-COM-INPUTCD (IDX-4) (1:3)
-                                                   =   "008"  )
+                                                   =   "008"  ))
+                       AND    (WRK-COM-KAISU  (IDX-4)  <= 1 )
                            ADD     1               TO  IDX-TBL
                            MOVE    WRK-GMN-TBL (IDX-4)
                                                    TO  SPA-GMN-TBL
@@ -2283,6 +2309,16 @@
                            MOVE    SPACE           TO  WRK-GMN-TBL
                                                              (IDX-4)
                            MOVE    IDX-4           TO  IDX-2
+      *                    回数削除
+                           IF      SPA-COM-KAIFLG (IDX-TBL)  =   "1"
+                               MOVE    SPACE           TO  WRK-INPUTCD
+                               STRING  SPA-GMN-INPUTCD(IDX-TBL)
+                                                   DELIMITED  BY  "*"
+                                                   INTO    WRK-INPUTCD
+                               END-STRING
+                               MOVE    WRK-INPUTCD TO  SPA-GMN-INPUTCD
+                                                            (IDX-TBL)
+                           END-IF
                            MOVE    SPACE           TO  SPA-COM-KAIFLG
                                                               (IDX-TBL)
                            MOVE    SPACE           TO  SPA-COM-ZAIEND

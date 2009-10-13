@@ -41,6 +41,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラーメッセー変更対応
+      *  04.05.00    NACL-多々納  09/10/XX  換算値入力・多剤投与他対応
       *****************************************************************
       *
       *
@@ -3177,6 +3178,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-WKSRY-INPUTCHI-G(IDX1 IDX2)
                                            TO  ORCSCZAICHK-INPUTCHI-G
                                                              (IDX-ATO)
+                   MOVE    LNK-WKSRY-KANSURYO(IDX1 IDX2)
+                                               TO  ORCSCZAICHK-KANSURYO
+                                                             (IDX-ATO)
+                   MOVE    LNK-WKSRY-INPUTKBN(IDX1 IDX2)
+                                               TO  ORCSCZAICHK-INPUTKBN
+                                                             (IDX-ATO)
                END-PERFORM
            END-PERFORM
       *
@@ -3594,6 +3601,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-WKSRY-JIHIMONEY (IDX IDX-SIN)
                                                TO  SRY-JIHIMONEY
                                                             (IDX-SIN)
+      *            換算値数量
+                   MOVE    LNK-WKSRY-KANSURYO(IDX IDX-SIN)
+                                               TO  SRY-KANSURYO
+                                                            (IDX-SIN)
+                   EVALUATE    LNK-WKSRY-INPUTKBN(IDX IDX-SIN)
+      *            関連コメント指示
+                       WHEN    "1"
+                           MOVE    "2"             TO  SRY-MEISKYFLG
+                                                            (IDX-SIN)
+      *            多剤投与指示
+                       WHEN    "2"
+                           MOVE    "3"             TO  SRY-MEISKYFLG
+                                                            (IDX-SIN)
+                   END-EVALUATE
       *            患者コメント作成
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")

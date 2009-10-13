@@ -4701,6 +4701,18 @@
               IF       SRY-MEISKYFLG (IDX) =   "1"
                    MOVE    "T"             TO  WKSRY-AUTOKBN  (IDX)
                END-IF
+      *ver.4.5
+      *        換算値
+               MOVE    SRY-KANSURYO (IDX)  TO  WKSRY-KANSURYO (IDX)
+      *        関連コメント指示
+               IF       SRY-MEISKYFLG (IDX) =   "2"
+                   MOVE    "1"             TO  WKSRY-INPUTKBN (IDX)
+               END-IF
+      *        内服種類数指示
+               IF       SRY-MEISKYFLG (IDX) =   "3"
+                   MOVE    "2"             TO  WKSRY-INPUTKBN (IDX)
+               END-IF
+      *
       *!!
                MOVE    IDX                 TO  IDX-W
                ADD     1                   TO  IDX-KAI
@@ -5654,7 +5666,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *    附加情報の上限回数設定
            IF     (FLG-TENSU           =   ZERO )  AND
-                  (TNS-SRYCD(1:1)      =   "1"  )
+                  (TNS-SRYCD(1:1)      =   "1"
+                                       OR  "6"  )
                PERFORM 9101-TENSUPLUS-SYORI-SEC
            END-IF
       *

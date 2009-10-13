@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/09  処理区分 5 内容変更追加
       *  04.05.00    NACL-多々納  09/07/23  コメント追加
+      *  04.05.00    NACL-多々納  09/10/XX  換算値数量追加
       ************************************************************
       *
        01  ORCSCH30AREA.
@@ -45,6 +46,7 @@
                    07  ORCSCH30-NAI-TBL         OCCURS   50.
                        09  ORCSCH30-SRYCD           PIC  X(09).
                        09  ORCSCH30-SRYSURYO        PIC  9(05)V9(05).
+                       09  ORCSCH30-KANSURYO        PIC  9(05)V9(05).
                        09  ORCSCH30-SRYKAISU        PIC  9(03).
                        09  ORCSCH30-ZAIKAISU        PIC  9(03).
                        09  ORCSCH30-INPUTCOMENT     PIC  X(80).

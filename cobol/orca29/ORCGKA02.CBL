@@ -28,7 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
-      *  04.05.00    NACL-多々納  09/09/XX  表示コメント対応
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,6 +106,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -116,6 +117,7 @@
            03  FLG-SP              PIC 9(01).
            03  FLG-YAKUZAI         PIC 9(01).
            03  FLG-HENKOU          PIC 9(01).
+           03  FLG-KANSAN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -226,6 +228,16 @@
            03  WRK-KA02-MEILIST-ROW    PIC S9(09).
            03  FLG-GMN-INIT1           PIC  9(01).
            03  FLG-GMN-INIT2           PIC  9(01).
+      *    換算値数量表示用
+           03  WRK-TSURYO              PIC X(30).
+           03  WRK-G-SURYO             PIC X(30).
+           03  IDM2                    PIC 9(04).
+           03  IDM3                    PIC 9(04).
+           03  WRK-KANSURYO            PIC X(12).
+           03  WRK-SHO                 PIC 9(04).
+           03  WRK-AMARI               PIC 9(04).
+           03  WRK-KANZANTANINAME      PIC X(08).
+           03  WRK-KANSURYO-9          PIC 9(05)V9(05).
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -275,6 +287,10 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    入力コードマスタ−
        01  INPUTCD-REC.
@@ -1503,6 +1519,10 @@
                    IF      SRY-MEISKYFLG (IDX) =   "1"
                        MOVE    "T"             TO  WKSRY-AUTOKBN  (IDY)
                    END-IF
+      *ver.4.5
+      *            換算値
+                   MOVE    SRY-KANSURYO (IDX)  TO  WKSRY-KANSURYO (IDY)
+      *
       *!!
                    MOVE    SRY-INPUTNUM (IDX)  TO  WKSRY-INPUTNUM (IDY)
                    MOVE    SRY-JIHIMONEY(IDX)  TO  WKSRY-JIHIMONEY(IDY)
@@ -1604,6 +1624,13 @@
       *
       *     ＊日数　編集 （最終行に追加）
             PERFORM 31013-KAISU-HEN-SEC
+            IF      SPA-GMN-TZAIKEI (IDG)   =   SPACE
+                                            OR  ALL "　"
+                CONTINUE
+            ELSE
+                ADD    1                    TO  IDG
+                MOVE    SPA-WKSRY-MAX       TO  SPA-NAI-TBANGO    (IDG)
+            END-IF
             MOVE    WRK-ZAIKEIJ         TO  SPA-GMN-TZAIKEI (IDG)
             MOVE    1                   TO  SPA-NAI-KAIFLG  (IDG)
       *
@@ -1801,6 +1828,38 @@
            INSPECT SPA-GMN-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+      *ver.4.5
+      *    換算値数量（薬剤）
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)  =   "6"   )
+               PERFORM 980-TENSUPLUS-READ-SEC
+      *
+               IF     (TNSP-KANZANTANINAME =   SPACE )  AND
+                      (TNSP-KANZANCHI      =   1     )
+                   MOVE    ZERO                TO  TNSP-KANZANCHI
+               END-IF
+               MOVE    TNSP-KANZANCHI      TO  SPA-WKSRY-KANZANCHI
+                                                   (SPA-WKSRY-MAX IDX-W)
+               MOVE    TNSP-KANZANTANINAME TO  SPA-WKSRY-KANZANTANINAME
+                                                   (SPA-WKSRY-MAX IDX-W)
+      *        換算値数量設定あり
+               IF      TNSP-KANZANCHI       >  ZERO
+                   IF      LNK-WKSRY-SRYSURYO (IDX IDZ)
+                                            =  (TNSP-KANZANCHI
+                                            *  LNK-WKSRY-KANSURYO
+                                                          (IDX IDZ) )
+                       MOVE    LNK-WKSRY-KANSURYO (IDX IDZ)
+                                               TO  SPA-WKSRY-KANSURYO
+                                                 (SPA-WKSRY-MAX IDX-W)
+                   ELSE
+                       MOVE    ZERO         TO  SPA-WKSRY-KANSURYO
+                                                 (SPA-WKSRY-MAX IDX-W)
+                   END-IF
+                   PERFORM 310129-KANSURYO-HEN-SEC
+               ELSE
+                   MOVE    ZERO         TO  SPA-WKSRY-KANSURYO
+                                                  (SPA-WKSRY-MAX IDX-W)
+               END-IF
+           END-IF
       *
       *    コメント以外の最終行セット
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"
@@ -1811,6 +1870,82 @@
       *
            .
        31012-ZAIMEI-HEN-EXT.
+           EXIT.
+      *ver.4.5
+      *****************************************************************
+      *   換算値数量編集処理
+      *****************************************************************
+       310129-KANSURYO-HEN-SEC                  SECTION.
+      *
+      *    次行へ編集
+           ADD    1                    TO  IDG
+           MOVE    SPA-WKSRY-MAX       TO  SPA-NAI-TBANGO    (IDG)
+      *
+           MOVE    SPA-WKSRY-KANSURYO (SPA-WKSRY-MAX IDX-W)
+                                       TO  WRK-SURYO
+           MOVE    SPA-WKSRY-KANZANTANINAME (SPA-WKSRY-MAX IDX-W)
+                                       TO  WRK-KANZANTANINAME
+           PERFORM 3101291-KANSURYO-HENKAN-SEC
+      *
+           INSPECT SPA-GMN-TMEISYO(IDG) REPLACING
+                                               ALL "  "  BY  "　"
+      *
+           .
+       310129-KANSURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   換算値数量編集処理
+      *****************************************************************
+       3101291-KANSURYO-HENKAN-SEC                  SECTION.
+      *
+           PERFORM 310121-SURYO-HEN-SEC
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           MOVE    SPACE               TO  WRK-TSURYO
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-SURYO-J(IDM:1)    =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-SURYO-J(IDM:2)    =   "　"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-SURYO-J(IDM:2)
+                                               TO  WRK-TSURYO
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      WRK-SURYO           =   ZERO
+               MOVE    SPACE               TO  WRK-TSURYO
+           END-IF
+      *    数量換算単位名称
+           MOVE    WRK-KANZANTANINAME  TO  WRK-TSURYO  (IDM2:)
+           MOVE    SPACE               TO  WRK-G-SURYO
+           STRING  "（"
+                   WRK-TSURYO
+                   "）"                DELIMITED  BY  SPACE
+                                       INTO    WRK-G-SURYO
+           END-STRING
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDM     FROM    1   BY  1
+                   UNTIL      (IDM     >   30  )
+                         OR   (WRK-G-SURYO (IDM:1) =   SPACE )
+               ADD     1               TO  IDM2
+           END-PERFORM
+           COMPUTE IDM3                =   30
+                                       -   IDM2
+                                       +   1
+           MOVE    SPACE                   TO  SPA-GMN-TKANSURYO
+                                                    (IDG)
+           MOVE    WRK-G-SURYO(1:IDM2)     TO  SPA-GMN-TKANSURYO
+                                                    (IDG)(IDM3:IDM2)
+      *
+           .
+       3101291-KANSURYO-HENKAN-EXT.
            EXIT.
       *****************************************************************
       *     薬剤服用コメントの時、再編集処理
@@ -2279,6 +2414,14 @@
                    END-IF
                END-IF
       *!
+               IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:1)   =   "6" )
+                 AND  (SPA-WKSRY-KANSURYO (IDX-W IDX)  >   ZERO)
+                   MOVE    SPA-WKSRY-KANSURYO (IDX-W IDX)
+                                           TO  SPA-NAI-KANSURYO(IDX)
+               END-IF
+               MOVE    SPA-WKSRY-KANZANCHI (IDX-W IDX)
+                                           TO  SPA-NAI-KANZANCHI (IDX)
+      *!
       *        用量割合再編集
                IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:7)   =   "0992000")
                   AND (SPA-WKSRY-SRYSURYO (IDX-W IDX) NOT =   ZERO     )
@@ -2288,6 +2431,12 @@
                    MOVE    SPA-WKSRY-NAME (IDX-W IDX)
                                            TO  SPA-GMN-INPUT (IDX)
                END-IF
+      *VER.4.5
+               IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:1)   =   "6")
+                  AND (SPA-WKSRY-KANZANCHI (IDX-W IDX)    >   ZERO)
+                    PERFORM 41031-INPUT-MEISYO5-SEC
+               END-IF
+      *!
                PERFORM 400411-SUURYO-HEN-SEC
                MOVE    IDX             TO  SPA-INPUT-MAX
            END-PERFORM
@@ -2326,9 +2475,54 @@
                MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
            END-IF
       *
-           MOVE    WRK-SURYO-X         TO  SPA-GMN-SURYO (IDX)
+           IF      SPA-NAI-KANSURYO (IDX)  >   ZERO
+               MOVE    WRK-SURYO-X         TO  SPA-GMN-KEISURYO (IDX)
+               PERFORM 404111-KANSURYO-GHEN-SEC
+           ELSE
+               MOVE    WRK-SURYO-X         TO  SPA-GMN-SURYO (IDX)
+           END-IF
+      *
            .
        400411-SUURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    換算値数量編集処理
+      *****************************************************************
+       404111-KANSURYO-GHEN-SEC          SECTION.
+      *
+           MOVE    SPA-NAI-KANSURYO (IDX)  TO  WRK-SURYO
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO                TO  FLG-SP
+           PERFORM VARYING     IDM     FROM    5   BY  -1
+                   UNTIL       IDM     <   1
+               IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
+                   MOVE    1               TO  FLG-SP
+               END-IF
+               IF      FLG-SP          =   1
+                   MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
+               END-IF
+           END-PERFORM
+           IF      WRK-SURYO-Z3        NOT =   SPACE
+               MOVE    "."                 TO  WRK-SURYO-Z2
+               MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
+           PERFORM VARYING     IDM     FROM    11  BY  -1
+                   UNTIL       IDM     <   1
+              IF      WRK-SURYO-X (IDM:1)  NOT =   SPACE
+                  STRING  WRK-SURYO-X(1:IDM)   DELIMITED  BY  SIZE 
+                          "A"                  DELIMITED  BY  SIZE
+                                       INTO   SPA-GMN-SURYO (IDX)
+                  END-STRING
+                  MOVE    1            TO  IDM
+               END-IF
+           END-PERFORM
+           .
+       404111-KANSURYO-GHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2642,25 +2836,82 @@
                IF     (SPA-GMN-INPUT (IDX)     =   SPACE )  OR
                       (SPA-GMN-SURYO (IDX)     =   SPACE )
                    MOVE    ZERO           TO  SPA-NAI-SURYO(IDX)
+                   MOVE    ZERO           TO  SPA-NAI-KANSURYO(IDX)
+                   MOVE    SPACE          TO  SPA-GMN-KEISURYO(IDX)
                ELSE
-                   INITIALIZE                      ORCSNUMAREA
-                   MOVE    SPA-GMN-SURYO (IDX) TO  SNUM-INX
-                   CALL    "ORCSNUM"           USING
-                                               ORCSNUMAREA
-                   IF     (SNUM-RC        NOT =   ZERO  )   OR
-                          (SNUM-MINKBN        =   "1"   )   OR
-                          (SNUM-SEISUU        >   5     )   OR
-                          (SNUM-SYOSUU        >   5     )
-                       MOVE    "0005"         TO  SPA-ERRCD
-                       COMPUTE SPA-GMN-CUR    =   IDY   +   10
-                   ELSE
-                       MOVE    SNUM-OUTNUM     TO  SPA-NAI-SURYO(IDX)
-                       PERFORM 400411-SUURYO-HEN-SEC
-                   END-IF
+                   PERFORM 41031-SURYO-KANCHEK-SEC
+      ***          INITIALIZE                      ORCSNUMAREA
+      *            MOVE    SPA-GMN-SURYO (IDX) TO  SNUM-INX
+      *            CALL    "ORCSNUM"           USING
+      *                                        ORCSNUMAREA
+      *            IF     (SNUM-RC        NOT =   ZERO  )   OR
+      *                   (SNUM-MINKBN        =   "1"   )   OR
+      *                   (SNUM-SEISUU        >   5     )   OR
+      *                   (SNUM-SYOSUU        >   5     )
+      *                MOVE    "0005"         TO  SPA-ERRCD
+      *                COMPUTE SPA-GMN-CUR    =   IDY   +   10
+      *            ELSE
+      *                MOVE    SNUM-OUTNUM     TO  SPA-NAI-SURYO(IDX)
+      *                PERFORM 400411-SUURYO-HEN-SEC
+      *****        END-IF
                END-IF
            END-PERFORM
            .
        4103-SURYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    換算数量チェック処理
+      *****************************************************************
+       41031-SURYO-KANCHEK-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SURYO-X
+           MOVE    ZERO                TO  FLG-KANSAN
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDM     FROM    1   BY  1
+                   UNTIL       IDM     >   12
+               IF      SPA-GMN-SURYO (IDX) (IDM:1)  =   "A"
+                                                    OR  "a"
+                   MOVE    1               TO  FLG-KANSAN
+               ELSE
+                   ADD     1               TO  IDM2
+                   MOVE    SPA-GMN-SURYO (IDX) (IDM:1) 
+                                           TO  WRK-SURYO-X (IDM2:1)
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    WRK-SURYO-X         TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN         =   "1"   )   OR
+                  (SNUM-SEISUU         >   5     )   OR
+                  (SNUM-SYOSUU         >   5     )
+               MOVE    "0005"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  SPA-NAI-SURYO(IDX)
+           END-IF
+           IF     (FLG-KANSAN          =   1   )  AND
+                  (SPA-NAI-KANZANCHI (IDX) =   ZERO )
+               MOVE    "0020"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      FLG-KANSAN          =   ZERO
+                   MOVE    ZERO            TO  SPA-NAI-KANSURYO(IDX)
+               ELSE
+                   MOVE    SPA-NAI-SURYO (IDX)
+                                           TO  SPA-NAI-KANSURYO(IDX)
+                   COMPUTE SPA-NAI-SURYO (IDX)
+                                           =   SPA-NAI-KANSURYO (IDX)
+                                           *   SPA-NAI-KANZANCHI (IDX)
+               END-IF
+               PERFORM 400411-SUURYO-HEN-SEC
+           ELSE
+               COMPUTE SPA-GMN-CUR         =   IDY   +   10
+           END-IF
+           .
+       41031-SURYO-KANCHEK-EXT.
            EXIT.
       *****************************************************************
       *    更新前チェック処理
@@ -2828,6 +3079,8 @@
                                            =  SPA-NAI-SRYCD (IDX)
                    MOVE    SPA-NAI-SURYO (IDX)
                                    TO  SPA-WKSRY-SRYSURYO (IDX-W IDX)
+                   MOVE    SPA-NAI-KANSURYO (IDX)
+                                   TO  SPA-WKSRY-KANSURYO (IDX-W IDX)
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-NISUU       TO  SPA-WKSRY-ZAIKAIKEI(IDX-W)
@@ -2871,6 +3124,22 @@
                                                =   ZERO
                            MOVE    "削"        TO  SPA-GMN-TFLG (IDG)
                        END-IF
+      *!!
+      *                換算値入力
+                       IF     (SPA-WKSRY-SRYCD (IDX-W IDX)(1:1)
+                                                   =   "6"    )
+                       AND    (SPA-WKSRY-KANZANCHI(IDX-W IDX)
+                                                   >   ZERO   )
+                           ADD     1               TO  IDG
+                           MOVE    SPA-WKSRY-KANSURYO (IDX-W IDX)
+                                                   TO  WRK-SURYO
+                           MOVE    SPA-WKSRY-KANZANTANINAME (IDX-W IDX)
+                                               TO  WRK-KANZANTANINAME
+                           PERFORM 3101291-KANSURYO-HENKAN-SEC
+                           INSPECT SPA-GMN-TMEISYO(IDG) REPLACING
+                                               ALL "  "  BY  "　"
+                       END-IF
+      *!!
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -2923,6 +3192,48 @@
            .
        41031-INPUT-MEISYO4-EXT.
            EXIT.
+      *****************************************************************
+      *     換算値編集処理
+      *****************************************************************
+       41031-INPUT-MEISYO5-SEC        SECTION.
+      *
+           MOVE    SPA-WKSRY-KANZANCHI (IDX-W IDX)
+                                       TO  WRK-SURYO
+           PERFORM 310121-SURYO-HEN-SEC
+           MOVE    SPACE               TO  WRK-KANSURYO
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDM     FROM    1   BY  1
+                   UNTIL       IDM     >   11
+               IF      WRK-SURYO-X(IDM:1)  NOT =   SPACE
+                   ADD     1               TO  IDM2
+                   MOVE    WRK-SURYO-X(IDM:1)
+                                           TO  WRK-KANSURYO(IDM2:1)
+               END-IF
+           END-PERFORM
+           STRING  "["                 DELIMITED  BY  SIZE
+                   WRK-KANSURYO        DELIMITED  BY  SPACE
+                   "]"                 DELIMITED  BY  SIZE
+                                       INTO    WRK-G-SURYO
+           END-STRING
+           COMPUTE IDM2                =   IDM2   +   2
+           DIVIDE  IDM2        BY  2   GIVING  WRK-SHO
+                                       REMAINDER WRK-AMARI
+           IF      WRK-AMARI       NOT =   ZERO
+               ADD     1               TO  IDM2
+           END-IF
+           MOVE    SPA-WKSRY-NAME (IDX-W IDX)
+                                       TO  WRK-MEISYO
+           MOVE    WRK-MEISYO          TO  SPA-GMN-INPUT (IDX)
+           COMPUTE IDM3                =   60
+                                       -   IDM2
+                                       +   1
+           MOVE    WRK-G-SURYO (1:IDM2)
+                                       TO  SPA-GMN-INPUT (IDX)
+                                             (IDM3:IDM2)
+           .
+       41031-INPUT-MEISYO5-EXT.
+           EXIT.
+      *!
       *!
       *****************************************************************
       *    選択印刷処理
@@ -3084,6 +3395,15 @@
                                                              (IDX1 IDX2)
                    MOVE    SPA-WKSRY-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  SPA-PARA-INPUTCOMENT
+                                                             (IDX1 IDX2)
+                   MOVE    SPA-WKSRY-KANSURYO (IDX-W IDX-W2)
+                                           TO  SPA-PARA-KANSURYO
+                                                             (IDX1 IDX2)
+                   MOVE    SPA-WKSRY-KANZANCHI (IDX-W IDX-W2)
+                                           TO  SPA-PARA-KANZANCHI
+                                                             (IDX1 IDX2)
+                   MOVE    SPA-WKSRY-KANZANTANINAME (IDX-W IDX-W2)
+                                           TO  SPA-PARA-KANZANTANINAME
                                                              (IDX1 IDX2)
       *
                    MOVE    SPA-WKSRY-ERRKBN (IDX-W IDX-W2)
@@ -3573,6 +3893,9 @@
                        MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
                                            TO  ORCSHCN30-SRYSURYO
                                                              (IDX1 IDX2)
+                       MOVE    SPA-PARA-KANSURYO (IDX-W IDX-W2)
+                                           TO  ORCSHCN30-KANSURYO
+                                                             (IDX1 IDX2)
                        MOVE    SPA-PARA-SRYKAISU (IDX-W IDX-W2)
                                            TO  ORCSHCN30-SRYKAISU
                                                              (IDX1 IDX2)
@@ -3793,6 +4116,9 @@
                                            TO  ORCHCN62-SRYCD(IDX1 IDX2)
                            MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
                                            TO  ORCHCN62-SRYSURYO
+                                                             (IDX1 IDX2)
+                           MOVE    SPA-PARA-KANSURYO (IDX-W IDX-W2)
+                                           TO  ORCHCN62-KANSURYO
                                                              (IDX1 IDX2)
                            MOVE    SPA-PARA-SRYKAISU (IDX-W IDX-W2)
                                            TO  ORCHCN62-SRYKAISU
@@ -4072,6 +4398,8 @@
                                   (IDX-STR >   50  )
                    MOVE    SPA-GMN-SURYO (IDX-STR)
                                            TO   KA02-SUURYO(IDX)
+                   MOVE    SPA-GMN-KEISURYO (IDX-STR)
+                                           TO   KA02-KEISUURYO(IDX)
                    EVALUATE    IDX
                        WHEN    1
                            MOVE    SPA-GMN-INPUT (IDX-STR)
@@ -4645,6 +4973,42 @@
       *
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       980-TENSUPLUS-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   INITIALIZE                  TENSUPLUS-REC
+                   MOVE    1                   TO  FLG-TENSUPLUS
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       980-TENSUPLUS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

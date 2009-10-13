@@ -49,13 +49,13 @@
                   05  KA01-MEILIST-COUNT  PIC S9(9)   BINARY.
                   05  KA01-MEILIST-ROW    PIC S9(9)   BINARY.
                   05  KA01-MEILIST-ROWATTR    PIC S9(9)   BINARY.
-                  05  KA01-ITEM       OCCURS  200 TIMES.
+                  05  KA01-ITEM       OCCURS  400 TIMES.
                     06  KA01-MNUM   PIC X(3).
                     06  KA01-MSYORI PIC X(2).
                     06  KA01-MDEL   PIC X(2).
                     06  KA01-MEISAI PIC X(200).
                   05  KA01-MEILIST-SELECT
-                          PIC X       OCCURS  200 TIMES.
+                          PIC X       OCCURS  400 TIMES.
               03  KA01-SYORIMEI.
                 04  KA01-SYORIMEI-STYLE  PIC X(20).
                 04  KA01-SYORIMEI-VALUE  PIC X(20).
@@ -78,3 +78,5 @@
                 04  KA01-SUURYO  PIC X(12).
               03  KA01-KOUFUYMD.
                 04  KA01-VALUE  PIC X(9).
+              03  KA01-KEISUURYO-G  OCCURS  6.
+                04  KA01-KEISUURYO  PIC X(12).

@@ -60,6 +60,9 @@
                        09  ORCSCZAICHK-INPUTCHI-G.
                            11  ORCSCZAICHK-ATAI    PIC  X(08)
                                                         OCCURS  3.
+      *                換算値数量
+                       09  ORCSCZAICHK-KANSURYO    PIC  9(05)V9(05).
+                       09  ORCSCZAICHK-INPUTKBN    PIC  X(01).
       *出力
            03  ORCSCZAICHK-OUT-AREA.
       *    対象剤番号

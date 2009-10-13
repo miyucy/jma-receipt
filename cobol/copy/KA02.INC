@@ -83,6 +83,8 @@
               03  KA02-DAY-G.
                 04  KA02-DAY         PIC X(3)
                                      OCCURS   31.
+              03  KA02-KEISUURYO-G  OCCURS  5.
+                04  KA02-KEISUURYO  PIC X(12).
               03  KA02-B04.
                 04  KA02-B04-LABEL  PIC X(10).
               03  KA02-B09S.

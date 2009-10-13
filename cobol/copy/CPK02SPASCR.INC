@@ -38,6 +38,7 @@
       * 04.00.00     NACL-多々納  07/09/XX  テーブル４００へ
       * 04.02.00     NACL-多々納  08/03/XX  画像等手術支援
       *                                     麻酔識別追加
+      * 04.05.00     NACL-多々納  09/10/02  換算値入力他対応
       ************************************************************
       *
       *01  SPA-K02SCR-REC.
@@ -220,6 +221,16 @@
       *ver.4.3
       *                検体検査１０項目（入院初回加算用）
                        09  SPA-COM-HOUKNS-10     PIC  9(01).
+      *ver.4.5.0
+      *                換算値入力用
+                       09  SPA-COM-KANSURYO       PIC 9(05)V9(05).
+      *                内服１種類区分
+                       09  SPA-COM-TANDKKBN       PIC X(01).
+      *                種類数指示入力
+                       09  SPA-COM-INPUTNAIF      PIC X(01).
+      *                継続コメント入力
+                       09  SPA-COM-INPUTCONT      PIC X(01).
+      *ver.4.5.0
       *
       *        診療会計附加項目
                        09  SPA-COM-PLUS-AREA.
@@ -371,6 +382,10 @@
                        09  SPA-COM-ZENKNSKBN           PIC 9(01).
       *                入力チェック区分
                        09  SPA-COM-INPCHKKBN           PIC 9(01).
+      *                数量換算単位
+                       09  SPA-COM-KANZANTANICD        PIC X(03).
+      *                数量換算値
+                       09  SPA-COM-KANZANCHI           PIC 9(05)V9(05).
       *    点数マスタ薬剤附加情報より
       *                内服算定
                        09  SPA-COM-NAIFUKUKBN          PIC 9(01).

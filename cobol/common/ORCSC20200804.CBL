@@ -48,6 +48,7 @@
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.03.00    NACL-Â¿¡¹Ç¼  08/08/18  ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»Ã±ÆÈÂÐ±þ
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/02/XX  ³°Íè¤Þ¤È¤áÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/XX  Â¿ºÞÅêÍ¿ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -512,7 +513,7 @@
        10010-SRYKBN-CHK-SEC             SECTION.
       *
            IF      LNK-ORCSC-PG        =   "K05"
-      *        Êñ³ç¿ÇÎÅ¡¡¥Á¥§¥Ã¥¯¤Ê¤·
+      *        ¥»¥Ã¥ÈÅÐÏ¿¤Î¥Á¥§¥Ã¥¯¤Ê¤·
                CONTINUE
            ELSE
       *
@@ -546,27 +547,6 @@
                            MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                        ELSE
-                           MOVE    "0"             TO  WRK-SRYSYUKBN
-                                                               (3:1) 
-                           MOVE    "0"             TO  WRK-GMN-INPUTCD
-                                                        (IDX-Z)(4:1)
-                           PERFORM 100101-SRYSYUMEI-HEN-SEC
-                       END-IF
-                   ELSE
-      *            Êñ³ç¿ÇÎÅÀßÄê»þ¤Ï¡¢ÃÖ¤­´¹¤¨¤ë
-                       IF      (SPA-HKTSANTEI-202      =   1  )  AND
-                               (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO )
-      *                    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ
-                           MOVE    "0"             TO  WRK-SRYSYUKBN
-                                                               (3:1) 
-                           MOVE    "0"             TO  WRK-GMN-INPUTCD
-                                                        (IDX-Z)(4:1)
-                           PERFORM 100101-SRYSYUMEI-HEN-SEC
-                       END-IF
-                       IF      (SPA-HKTSANTEI-203      =   1  )  AND
-                              ((LNK-ORCSC-SEIKATU-ARI  >   ZERO )  OR
-                               (LNK-ORCSC-SEIKATU-ARI2 >   ZERO ))
-      *                    À¸³è½¬´·ÉÂ´ÉÍýÎÁ
                            MOVE    "0"             TO  WRK-SRYSYUKBN
                                                                (3:1) 
                            MOVE    "0"             TO  WRK-GMN-INPUTCD
@@ -1643,9 +1623,11 @@
            IF      (FLG-NAIFUKU            =   1  )   AND
                    (WRK-COM-INPUTCD(IDX)(1:1)  =   "6"   )
       *        ºÞ¿ô²Ã»»
-               IF      WRK-COM-ZAIGATAKBN (IDX)    =   1  OR
+               IF     (WRK-COM-ZAIGATAKBN (IDX)    =   1  OR
                                                        2  OR
-                                                       3
+                                                       3   )
+      *            ¼ïÎà¿ô»Ø¼¨ÆþÎÏ¤Ê¤·
+               AND    (WRK-COM-TANDKKBN (IDX)  NOT =  "1"  )
                    MOVE    1               TO  WRK-KONGO
                ELSE
       *            Ê´ºÕ¥³¡¼¥É¤¬¤¢¤ë»þ¡¢º®¹ç¤È¤¹¤ë
@@ -1868,18 +1850,6 @@
            ELSE
                MOVE    1                   TO  FLG-SYOHO-CHK
            END-IF
-      *    ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¦Êñ³ç¿ÇÎÅÂÐ¾Ý¤Ï»»Äê¤¢¤ê¤È¤¹¤ë
-           IF     (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO) AND
-                  (SPA-HKTSANTEI-202   =   1    )
-               MOVE    1                   TO  FLG-SYOHO-CHK
-           END-IF
-      *    À¸³è½¬´·ÉÂ´ÉÍýÎÁ¡¦Êñ³ç¿ÇÎÅÂÐ¾Ý¤Ï»»Äê¤¢¤ê¤È¤¹¤ë
-           IF    ((LNK-ORCSC-SEIKATU-ARI   >  ZERO) OR
-                  (LNK-ORCSC-SEIKATU-ARI   >  ZERO))  AND
-                  (SPA-HKTSANTEI-203   =   1    )
-               MOVE    1                   TO  FLG-SYOHO-CHK
-           END-IF
-      *
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))   AND

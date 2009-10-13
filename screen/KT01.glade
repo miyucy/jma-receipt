@@ -481,14 +481,14 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>GOKEITEN</name>
-      <x>904</x>
+      <x>900</x>
       <y>444</y>
-      <width>80</width>
+      <width>88</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>15</text_max_length>
-      <text></text>
+      <text>123456789</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>

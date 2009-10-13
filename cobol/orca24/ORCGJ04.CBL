@@ -771,6 +771,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-J04
@@ -822,12 +823,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-      *    DISPLAY "*** ORCSNPL    START  ***"
-      *
-      *    INITIALIZE                  FLG-AREA
-      *    INITIALIZE                  STS-AREA
-      *    INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "JERR"
@@ -1766,7 +1761,6 @@
                    END-IF
                END-IF
            END-IF
-      *!!
       *
       *    明細編集
            ADD     1                   TO  IDX2
@@ -1790,10 +1784,21 @@
            END-IF
       *!!
       *    器材商品コード
-           IF      SRY-MEISKYFLG (IDX) =   "1"
+           IF      SRY-MEISKYFLG (IDS) =   "1"
                MOVE    "1"                 TO  SPA-COM-AUTOKBN2 (IDX2)
            END-IF
       *!!
+      *ver.4.5
+      *    換算値
+           MOVE    SRY-KANSURYO (IDS)  TO  SPA-COM-KANSURYO (IDX2)
+      *    関連コメント指示
+           IF       SRY-MEISKYFLG (IDS) =   "2"
+               MOVE    "1"             TO  SPA-COM-INPUTCONT (IDX2)
+           END-IF
+      *    内服種類数指示
+           IF       SRY-MEISKYFLG (IDS) =   "3"
+               MOVE    "1"                TO  SPA-COM-INPUTNAIF (IDX2)
+           END-IF
       *
       *    回数を編集
            MOVE    IDX2                TO  IDXS

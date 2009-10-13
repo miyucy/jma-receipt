@@ -37,6 +37,7 @@
       * 04.01.00     NACL-多々納  07/10/XX  テーブル４００対応
       * 04.04.00     NACL=多々納  09/01/30  本院分院対応
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.05.00     NACL-多々納  09/10/XX  換算値入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -103,68 +104,6 @@
       *    画面用共通スパ領域
            COPY    "K02SCR-SPA".
       *
-      *    画面スパ領域
-      *01  SPA-K09.
-      *    03  SPA-K09-AREA.
-      *********05  SPA-K09GMN-CUR                PIC 9(02).
-      *
-      ****     05  SPA-GMN-NYUGAIKBN-G.
-      *            07  SPA-GMN-NYUGAIKBN           PIC X(01).
-      *            07  SPA-GMN-NYUGAIKBN-F1        PIC X(01).
-      *            07  SPA-GMN-NYUGAIKBN-MEI       PIC X(08).
-      *        05  SPA-GMN-NYUGAIKBN-LIST.
-      *            07  SPA-GMN-NYUGAIKBN-LST       PIC X(10)
-      *                                            OCCURS   2.
-      *****        07  SPA-NYUGAIKBN-MAX           PIC 9(02).
-      *
-      *        05  SPA-GMN-SRYKBN-G.
-      *            07  SPA-GMN-SRYKBN              PIC X(02).
-      *            07  SPA-GMN-SRYKBN-F1           PIC X(01).
-      *            07  SPA-GMN-SRYKBN-MEI          PIC X(20).
-      *        05  SPA-GMN-SRYKBN-LIST.
-      *            07  SPA-GMN-SRYKBN-LST          PIC X(23)
-      *                                            OCCURS  20.
-      *********    07  SPA-SRYKBN-MAX              PIC 9(03).
-      *
-      *        05  SPA-GMN-TBL.
-      *            07  SPA-GMN-TBLREC-G  OCCURS  800.
-      *                09  SPA-GMN-TBANGO      PIC 9(03).
-      *                09  SPA-GMN-TMEISYO     PIC X(200).
-      *                09  SPA-GMN-TMEISYO-1   REDEFINES
-      *                                            SPA-GMN-TMEISYO.
-      *                    11  SPA-GMN-TYOBI0      PIC X(02).
-      *                    11  SPA-GMN-TMEISYO1    PIC X(196).
-      *                09  SPA-GMN-TMEISYO-2   REDEFINES
-      *                                        SPA-GMN-TMEISYO.
-      *                    11  SPA-GMN-TMEISYO2    PIC X(44).
-      *                    11  SPA-GMN-HEN1.
-      *                        13  SPA-GMN-TSURYOU     PIC X(18).
-      *                        13  SPA-GMN-TTANI1      PIC X(08).
-      *                        13  SPA-GMN-TTANMEI     PIC X(06).
-      *                        13  SPA-GMN-TTANI2      PIC X(04).
-      *                        13  SPA-GMN-TYOBI1      PIC X(14).
-      *                    11  SPA-GMN-HEN2    REDEFINES
-      *                                        SPA-GMN-HEN1.
-      *                        13  SPA-GMN-TZAIKEI     PIC X(40).
-      *
-      *                09  SPA-NAI-TBANGO        PIC  9(03).
-      *        05  SPA-GMN-MAX2                  PIC 9(04).
-      *        05  SPA-NAI-MAX2                  PIC 9(04).
-      *
-      *        05  SPA-GMN-DOSEL             PIC X(40).
-      *        05  SPA-NAI-DOSEL-G.
-      *            07  SPA-NAI-DOSEL         PIC 9(03)
-      *                                      OCCURS   135.
-      *            07  SPA-NAI-DOSEL-MAX     PIC 9(03).
-      *
-      *        05  SPA-NAI-AREA.
-      *
-      *            07  SPA-NAI-TBL.
-      *                09  SPA-NAI-TBLREC            OCCURS   800.
-      *                    11  SPA-NAI-ZAINUM        PIC  9(08).
-      *                    11  SPA-NAI-SRYKBN        PIC  X(02).
-      *                09  SPA-SEL-IDX               PIC  9(02).
-      *                09  SPA-SEL-RENNUM            PIC  9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -186,6 +125,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -369,6 +309,10 @@
       *
            03  WRK-PATH                PIC X(64).
       *
+      *    換算値数量表示用
+           03  WRK-TSURYO              PIC X(30).
+           03  IDM2                    PIC 9(04).
+      *
       *    コラムリスト位置
            03  WRK-K09-RRKLIST-ROW     PIC S9(09).
            03  WRK-K09-MEILIST-ROW     PIC S9(09).
@@ -415,6 +359,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    入力コードマスタ−
        01  INPUTCD-REC.
@@ -2131,6 +2078,18 @@
                    IF      SRY-MEISKYFLG (IDX) =   "1"
                        MOVE    "T"             TO  WKSRY-AUTOKBN  (IDY)
                    END-IF
+      *ver.4.5
+      *            換算値
+                   MOVE    SRY-KANSURYO (IDX)  TO  WKSRY-KANSURYO (IDY)
+      *            関連コメント指示
+                   IF       SRY-MEISKYFLG (IDX) =   "2"
+                       MOVE    "1"             TO  WKSRY-INPUTKBN (IDY)
+                   END-IF
+      *            内服種類数指示
+                   IF       SRY-MEISKYFLG (IDX) =   "3"
+                       MOVE    "2"             TO  WKSRY-INPUTKBN (IDY)
+                   END-IF
+      *
       *!!
       *            自動発生の中心静脈注射のみ選択可能とする
                    IF     (SRY-AUTOKBN (IDX)   =   "3" )  AND
@@ -2538,6 +2497,12 @@
            INSPECT SPA-GMN-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TTANI2  (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+      *ver.4.5
+      *    換算値数量（薬剤）
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)  =   "6" )
+              AND (LNK-WKSRY-KANSURYO(IDX IDZ) NOT =   ZERO )
+               PERFORM 310123-KANSURYO-HEN-SEC
+           END-IF
       *
       *    コメント以外の最終行セット
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"
@@ -2819,6 +2784,59 @@
       **** END-PERFORM
            .
        310122-BUNSU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   換算値数量編集処理
+      *****************************************************************
+       310123-KANSURYO-HEN-SEC                  SECTION.
+      *
+           PERFORM 980-TENSUPLUS-READ-SEC
+           IF     (FLG-TENSUPLUS       =   1    )
+             OR   (IDG                 >=  MAX-LINE )
+               GO      TO      310123-KANSURYO-HEN-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDG
+           MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
+      *
+           MOVE    LNK-WKSRY-KANSURYO (IDX IDZ)  TO  WRK-SURYO
+           PERFORM 310121-SURYO-HEN-SEC
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           MOVE    SPACE               TO  WRK-TSURYO
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-SURYO-J-G(IDM:1)    =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-SURYO-J-G(IDM:2)    =   "　"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-SURYO-J-G(IDM:2)
+                                               TO  WRK-TSURYO
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    数量換算単位名称
+           MOVE    TNSP-KANZANTANINAME TO  WRK-TSURYO  (IDM2:)
+           MOVE    SPACE               TO  SPA-GMN-TSURYOU4 (IDG)
+           STRING  "（"
+                   WRK-TSURYO
+                   "）"                DELIMITED  BY  SPACE
+                                       INTO    SPA-GMN-TSURYOU4 (IDG)
+      *
+           INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI2  (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+           .
+       310123-KANSURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3774,6 +3792,42 @@
       *
            .
        930-INPUTCD-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       980-TENSUPLUS-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   INITIALIZE                  TENSUPLUS-REC
+                   MOVE    1                   TO  FLG-TENSUPLUS
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       980-TENSUPLUS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

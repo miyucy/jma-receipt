@@ -51,6 +51,7 @@ tbl_orderprt {
 	SRYSURYO2     			number(10,5);
 	SRYKAISU     			number(3,0);
         INPUTCOMENT         	        varchar(80);
+	KANSURYO     			number(10,5);
 	TERMID   			varchar(64);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

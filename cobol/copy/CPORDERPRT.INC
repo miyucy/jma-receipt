@@ -75,6 +75,8 @@
                05  ORDERPRT-SRYKAISU          PIC 9(03).
       *  入力コメント（フリーコメント等）
                05  ORDERPRT-INPUTCOMENT       PIC X(80).
+      *  換算値数量
+               05  ORDERPRT-KANSURYO          PIC 9(05)V9(5).
       *
       *端末ＩＤ
            03  ORDERPRT-TERMID            PIC  X(64).

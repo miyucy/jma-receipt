@@ -41,6 +41,7 @@
       * 04.03.00     NACL-多々納  08/10/31  包括保険を対象とする
       * 04.05.00     NACL-多々納  09/07/23  在宅薬剤、コメント対象対応
       * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
+      * 04.05.00     NACL-多々納  09/10/XX  換算値数量対応
       *****************************************************************
       *
       *
@@ -111,6 +112,7 @@
                05  WRK-TBL-OCC             OCCURS   99.
                    07  TBL-SRYCD           PIC X(09).
                    07  TBL-SURYO           PIC 9(05)V9(05).
+                   07  TBL-KANSURYO        PIC 9(05)V9(05).
                    07  TBL-YOURYOU         PIC 9(05)V9(05)
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
@@ -164,6 +166,8 @@
                05  TBL-SRY-MEISKYFLG       PIC  X(01).
       *自動算定区分
                05  TBL-SRY-AUTOKBN         PIC  X(01).
+      *換算値数量
+               05  TBL-SRY-KANSURYO        PIC  9(05)V9(05).
       *名称入力番号
                05  TBL-SRY-INPUTNUM        PIC  9(03).
       *名称
@@ -272,26 +276,27 @@
            END-EVALUATE
       *
       *TEST
-      *    DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
-      *    DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
-      *    PERFORM VARYING    IDX   FROM    1  BY  1
-      *            UNTIL      IDX   >  ORCHC30-MAX
-      *      DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
-      *              ",ORCHC30-SURYO:" ORCHC30-SURYO (IDX)
-      *              ",ORCHC30-ZAIKBN:" ORCHC30-ZAIKBN (IDX)
-      *              ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
-      *              ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
-      *              ",2:" ORCHC30-YOURYOU (IDX 2)
-      *              ",3:" ORCHC30-YOURYOU (IDX 3)
-      *              ",4:" ORCHC30-YOURYOU (IDX 4)
-      *              ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
+           DISPLAY "ORCSCH30-KBN:" ORCSCH30-KBN
+           DISPLAY "ORCHC30-MAX:" ORCHC30-MAX
+           PERFORM VARYING    IDX   FROM    1  BY  1
+                   UNTIL      IDX   >  ORCHC30-MAX
+             DISPLAY "ORCHC30-SRYCD:" ORCHC30-SRYCD (IDX)
+                     ",ORCHC30-SURYO:" ORCHC30-SURYO (IDX)
+                     ",ORCHC30-KANSURYO:" ORCHC30-KANSURYO (IDX)
+                     ",ORCHC30-ZAIKBN:" ORCHC30-ZAIKBN (IDX)
+                     ",ORCHC30-YSRYCD:" ORCHC30-YSRYCD (IDX)
+                     ",ORCHC30-YOURYOU 1:" ORCHC30-YOURYOU (IDX 1)
+                     ",2:" ORCHC30-YOURYOU (IDX 2)
+                     ",3:" ORCHC30-YOURYOU (IDX 3)
+                     ",4:" ORCHC30-YOURYOU (IDX 4)
+                     ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
       *      DISPLAY "ORCHC30-COMMENT1:"  ORCHC30-COMMENT-CD (IDX 1)
       *                 "," ORCHC30-COMMENT-MEI (IDX 1)
       *      IF      ORCHC30-COMMENT-CD (IDX 2) NOT =   SPACE
       *      DISPLAY "ORCHC30-COMMENT2:"  ORCHC30-COMMENT-CD (IDX 2)
       *                 "," ORCHC30-COMMENT-MEI (IDX 2)
       *      END-IF
-      *    END-PERFORM 
+           END-PERFORM 
       *TEST
       *
       *    印刷処理へ
@@ -651,6 +656,9 @@
                            MOVE    SRY-INPUTNUM(IDXA)
                                                    TO  TBL-SRY-INPUTNUM
                                                                 (IDX)
+                           MOVE    SRY-KANSURYO (IDXA)
+                                                   TO  TBL-SRY-KANSURYO
+                                                                (IDX)
                            MOVE    IDX             TO  TBL-SRY-MAX
                        END-IF
                    END-PERFORM
@@ -812,6 +820,7 @@
                END-IF
                MOVE    TBL-SRY-SRYCD (IDXA)    TO  TBL-SRYCD (IDX-S)
                MOVE    TBL-SRY-SRYSURYO (IDXA) TO  TBL-SURYO (IDX-S)
+               MOVE    TBL-SRY-KANSURYO (IDXA) TO  TBL-KANSURYO (IDX-S)
       *        外用の日数
                IF     (WRK-SRYKBN          =   "23"  )  AND
                       (TBL-SRY-SRYKAISU (IDXA) >   1     )
@@ -925,6 +934,7 @@
                MOVE    ORCHC30-MAX         TO  IDY
                MOVE    TBL-SRYCD (IDX)     TO  ORCHC30-SRYCD (IDY)
                MOVE    TBL-SURYO (IDX)     TO  ORCHC30-SURYO (IDY)
+               MOVE    TBL-KANSURYO (IDX)  TO  ORCHC30-KANSURYO (IDY)
                PERFORM VARYING     IDXY    FROM    1   BY  1
                        UNTIL       IDXY        >   5
                    MOVE    TBL-YOURYOU (IDX IDXY)
@@ -1111,6 +1121,8 @@
                                                                 (IDX)
                    MOVE    WKSRY-AUTOKBN (IDXA)    TO  TBL-SRY-AUTOKBN
                                                                 (IDX)
+                   MOVE    WKSRY-KANSURYO (IDXA)   TO  TBL-SRY-KANSURYO
+                                                                (IDX)
                    MOVE    ZERO                    TO  TBL-SRY-INPUTNUM
                                                                 (IDX)
       *            名称
@@ -1183,6 +1195,8 @@
                END-IF
                MOVE    ORCSCH30-SRYCD(IDT IDXA)    TO  TBL-SRYCD (IDX-S)
                MOVE    ORCSCH30-SRYSURYO(IDT IDXA) TO  TBL-SURYO (IDX-S)
+               MOVE    ORCSCH30-KANSURYO(IDT IDXA) TO  TBL-KANSURYO
+                                                                 (IDX-S)
       *        外用の日数
                IF      (ORCSCH30-SRYKBN (IDT)          =   "23" )  AND
                        (ORCSCH30-SRYKAISU(IDT IDXA)    >   1 )

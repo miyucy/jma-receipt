@@ -46,4 +46,5 @@
                        09  ORCSCH62-SRYSURYO        PIC  9(05)V9(05).
                        09  ORCSCH62-SRYKAISU        PIC  9(03).
                        09  ORCSCH62-INPUTCOMENT     PIC  X(80).
+                       09  ORCSCH62-KANSURYO        PIC  9(05)V9(05).
       *

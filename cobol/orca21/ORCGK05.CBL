@@ -46,6 +46,7 @@
       *  04.03.00    NACL-多々納  08/07/24  前回ＣＤ追加
       *  04.05.00    NACL-多々納  09/06/XX  撮影料等の数量ゼロ対応
       *                                     数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -342,6 +343,7 @@
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-SETCODE         PIC X(06).
       *
+           03  WRK-KANSURYO        PIC 9(05)V9(05).
       *
        01  WRK-GMNGYO-AREA.
            03  WRK-MAP-MAX         PIC 9(04).
@@ -1222,6 +1224,15 @@
                           (SPA-COM-INPUTCD(IDX)(1:1)  =   "6" )
                        PERFORM 31034-HAIKI-CHKI-SEC
                    END-IF
+      *            換算値×換算値数量＝数量へ変更
+                   IF      SPA-COM-KANSURYO (IDX)  >   ZERO
+                       COMPUTE WRK-KANSURYO    =   SPA-COM-KANZANCHI
+                                                             (IDX)
+                                               *   SPA-COM-KANSURYO
+                                                             (IDX)
+                       MOVE    WRK-KANSURYO    TO  SPA-COM-SURYO (IDX)
+                       MOVE    WRK-KANSURYO    TO  SPA-COM-SURYO2(IDX)
+                   END-IF
       *
       *            回数の入力
                    IF      SPA-COM-KAIFLG (IDX)  =   "1"
@@ -1442,6 +1453,27 @@
                                        TO  SPA-COM-BUNGSU (IDX2)
       *
            MOVE    SPA-COM-INPUTCD (IDX2)  TO  SPA-GMN-INPUTCD  (IDX2)
+      *!!
+      *ver.4.5.0
+      *    内服１種類区分
+           IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "6"  )  AND
+                  (LNK-WKSRY-INPUTKBN(IDX IDY) =   "2"  )
+                MOVE    "1"                TO  SPA-COM-INPUTNAIF (IDX2)
+           END-IF
+      *    コメントの継続
+           IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "8"  )  OR
+                  (SPA-COM-INPUTCD (IDX2)(1:3) =   "008")
+               IF     (LNK-WKSRY-INPUTKBN (IDX IDY)    =   "1" )
+                   MOVE    "1"             TO  SPA-COM-INPUTCONT (IDX2)
+               END-IF
+           END-IF
+      *    換算値入力
+           IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "6"  )  AND
+                  (LNK-WKSRY-KANSURYO (IDX IDY) >   ZERO )
+               MOVE    LNK-WKSRY-KANSURYO (IDX IDY)
+                                           TO  SPA-COM-KANSURYO (IDX2)
+            END-IF
+      *!!
       *
       *    約束セットの時、以下処理なし
            IF      LNK-WKSRY-SRYCD(IDX IDY)(1:1) =   "S"
@@ -3732,6 +3764,20 @@
                                                           (SPA-GMN-IDX)
                    END-IF
                END-IF
+      *        換算値
+               MOVE    ISET-KANSURYO       TO  SPA-COM-KANSURYO
+                                                           (SPA-GMN-IDX)
+      *        関係コメント指示
+               IF      ISET-INPUTKBN       =   "1"
+                    MOVE    "1"            TO  SPA-COM-INPUTCONT
+                                                           (SPA-GMN-IDX)
+               END-IF
+      *        内服１種類区分
+               IF      ISET-INPUTKBN       =   "2"
+                    MOVE    "1"            TO  SPA-COM-INPUTNAIF
+                                                           (SPA-GMN-IDX)
+               END-IF
+      *
                MOVE    SPA-COM-SURYO (SPA-GMN-IDX)
                                        TO  SPA-COM-SURYO2(SPA-GMN-IDX)
                IF      ISET-SURYO2     =   ZERO
@@ -3919,6 +3965,22 @@
                                            SPA-AREA
            MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
       *
+      *ver.4.5
+           IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
+                                       =   "6"     ) AND
+                  (ISET-KANSURYO       >   ZERO    )
+               IF      ISET-SURYO1         =  (ISET-KANSURYO
+                                           *   SPA-COM-KANZANCHI
+                                                     (SPA-GMN-IDX) )
+                  CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  SPA-COM-KANSURYO
+                                                          (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1     TO  SPA-COM-SURYO
+                                                          (SPA-GMN-IDX)
+               END-IF
+           END-IF
+      *
       *    点数マスタなしのエラーは表示する
            IF      SPA-ERRCD           =   "0001"
                IF      SPA-COM-SET (SPA-GMN-IDX)   =  "1"
@@ -4071,6 +4133,19 @@
                MOVE    ISET-ATAI (02)  TO  SPA-COM-ATAI2 (SPA-GMN-IDX)
                MOVE    ISET-ATAI (03)  TO  SPA-COM-ATAI3 (SPA-GMN-IDX)
                MOVE    ISET-ATAI (04)  TO  SPA-COM-ATAI4 (SPA-GMN-IDX)
+      *        換算値
+               MOVE    ISET-KANSURYO       TO  SPA-COM-KANSURYO
+                                                           (SPA-GMN-IDX)
+      *        関係コメント指示
+               IF      ISET-INPUTKBN       =   "1"
+                    MOVE    "1"            TO  SPA-COM-INPUTCONT
+                                                           (SPA-GMN-IDX)
+               END-IF
+      *        内服１種類区分
+               IF      ISET-INPUTKBN       =   "2"
+                    MOVE    "1"            TO  SPA-COM-INPUTNAIF
+                                                           (SPA-GMN-IDX)
+               END-IF
       *
       *        約束処方の時、画面表示なし
                IF      SPA-GMN-INPUTCD(WRK-GMN-IDX)(1:1)   =   "S"
@@ -4124,6 +4199,21 @@
                                                SPA-SCR-REC
                                                SPA-AREA
                    MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
+      *ver.4.5
+                   IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
+                                               =   "6"     ) AND
+                          (ISET-KANSURYO       >   ZERO    )
+                       IF      ISET-SURYO1     =  (ISET-KANSURYO
+                                               *   SPA-COM-KANZANCHI
+                                                     (SPA-GMN-IDX) )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  SPA-COM-KANSURYO
+                                                          (SPA-GMN-IDX)
+                           MOVE    ISET-SURYO1     TO  SPA-COM-SURYO
+                                                          (SPA-GMN-IDX)
+                       END-IF
+                   END-IF
       *
       *            点数マスタなしのエラーは表示する
                    IF      SPA-ERRCD           =   "0001"
@@ -4868,8 +4958,14 @@
                                                        (SPA-GMN-IDX)
            END-IF
       *
-      *    半角の空白を全角に置きかえる
-           PERFORM 401131-MEISYO-HENKAN-SEC
+           IF    ((SPA-COM-INPUTCD (SPA-GMN-IDX)(1:2)  =  "81"
+                                                       OR "83"
+                                                       OR "84") OR
+                  (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =  "008" )) AND
+                  (SPA-GMN-MEISYO-G(SPA-GMN-IDX) NOT =   SPACE)
+      *        半角の空白を全角に置きかえる
+               PERFORM 401131-MEISYO-HENKAN-SEC
+           END-IF
       *
            .
        40113-MEISYOU-CHK-EXT.
@@ -6041,6 +6137,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COM-ATAI2(IDX)  TO  ISET-ATAI2
                MOVE    SPA-COM-ATAI3(IDX)  TO  ISET-ATAI3
                MOVE    SPA-COM-ATAI4(IDX)  TO  ISET-ATAI4
+           END-IF
+      *    換算値
+           MOVE    SPA-COM-KANSURYO (IDX)  TO  ISET-KANSURYO
+      *    関係コメント指示
+           IF      SPA-COM-INPUTCONT (IDX) =   "1"
+               MOVE    "1"                 TO  ISET-INPUTKBN
+           END-IF
+      *    内服１種類区分
+           IF      SPA-COM-INPUTNAIF (IDX)     =   "1"
+               MOVE    "2"                 TO  ISET-INPUTKBN
            END-IF
            .
        4100221-INPUTSET-HEN-EXT.

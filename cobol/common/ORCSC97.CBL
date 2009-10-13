@@ -34,6 +34,7 @@
       *  01.00.04    NACL-多々納  05/11/22  MONFUNC 対応 他
       *  01.00.05    NACL-多々納  06/01/19  コメント８４対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
       *****************************************************************
       *
       *
@@ -118,6 +119,12 @@
            03  FLG-SP              PIC 9(02).
            03  FLG-AST             PIC 9(02).
            03  FLG-AUTO            PIC 9(02).
+      *ver.4.5
+           03  FLG-AINPUT          PIC 9(01).
+           03  FLG-BINPUT          PIC 9(01).
+           03  FLG-CINPUT          PIC 9(01).
+           03  FLG-SEND            PIC 9(01).
+      *
            03  FLG-JKNKSN          PIC 9(01).
            03  WRK-IDX-FT          PIC 9(02).
            03  WRK-CD-MCNT         PIC 9(02).
@@ -1197,6 +1204,10 @@
            MOVE    SPACE               TO  WRK-MOJI3
            MOVE    SPACE               TO  WRK-MOJI4
            MOVE    ZERO                TO  FLG-AUTO
+      *    換算値入力
+           MOVE    ZERO                TO  FLG-AINPUT
+           MOVE    ZERO                TO  FLG-BINPUT
+           MOVE    ZERO                TO  FLG-CINPUT
       *
       *    コード以外の全角数字を半角とする
            COMPUTE IDX-D               =   WRK-CD-MCNT
@@ -1242,50 +1253,39 @@
                                                    TO  WRK-CD
                                                        (WRK-CD-MCNT:1)
                        END-IF
-      *---             数量編集
-                       IF     (FLG-SP          =   1    )  AND
-                              (FLG-AST         =   ZERO )
-                           ADD     1               TO  WRK-SUR-MCNT
-                           MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                                   TO  WRK-SUR
-                                                       (WRK-SUR-MCNT:1)
+      *ver.4.5
+      *                換算値・多剤入力区分
+                       MOVE    ZERO                TO  FLG-SEND
+                       IF     (FLG-SP          >=  1    )
+                         AND  (FLG-AST         =   ZERO )
+      *****              AND  (WRK-SUR-MCNT    >   ZERO )
+      *                    多剤入力区分
+                           IF       (LNK-SC97-INPUTCD(IDX:1)
+                                                   =   "A"
+                                                   OR  "a"  )
+                               MOVE    1               TO  FLG-AINPUT
+                               MOVE    1               TO  FLG-SEND
+                           END-IF
+      *                    １種類入力区分
+                           IF       (LNK-SC97-INPUTCD(IDX:1)
+                                                   =   "I"
+                                                   OR  "i"  )
+                               MOVE    1               TO  FLG-BINPUT
+                               MOVE    1               TO  FLG-SEND
+                           END-IF
+      *                    継続コメント
+                           IF       (LNK-SC97-INPUTCD(IDX:1)
+                                                   =   "C"
+                                                   OR  "c"  )
+                               MOVE    1               TO  FLG-CINPUT
+                               MOVE    1               TO  FLG-SEND
+                           END-IF
                        END-IF
-      *---             回数編集
-                       IF      FLG-AST         =   1
-                           ADD     1               TO  WRK-ACCT-MCNT
-                           MOVE    LNK-SC97-INPUTCD (IDX:1)
-                                                   TO  WRK-KAI
-                                                      (WRK-ACCT-MCNT:1)
+                       IF      FLG-SEND        =   ZERO
+      *---             数量以下編集
+                           PERFORM 4101121-MOJI-SURYO-SET-SEC
                        END-IF
-      *---             その他値
-                       IF     (FLG-SP          =   1    )  AND
-                              (FLG-AST         =   0    )
-                           ADD     1               TO  WRK-MCNT1
-                           MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                                   TO  WRK-MOJI1
-                                                          (WRK-MCNT1:1)
-                       END-IF
-                       IF     (FLG-SP          =   2    )  AND
-                              (FLG-AST         =   0    )
-                           ADD     1               TO  WRK-MCNT2
-                           MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                                   TO  WRK-MOJI2
-                                                          (WRK-MCNT2:1)
-                       END-IF
-                       IF     (FLG-SP          =   3    )  AND
-                              (FLG-AST         =   0    )
-                           ADD     1               TO  WRK-MCNT3
-                           MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                                   TO  WRK-MOJI3
-                                                          (WRK-MCNT3:1)
-                       END-IF
-                       IF     (FLG-SP          =   4    )  AND
-                              (FLG-AST         =   0    )
-                           ADD     1               TO  WRK-MCNT4
-                           MOVE    LNK-SC97-INPUTCD(IDX:1)
-                                                   TO  WRK-MOJI4
-                                                          (WRK-MCNT4:1)
-                       END-IF
+      *ver.4.5
                    END-EVALUATE
            END-PERFORM
       *
@@ -1341,16 +1341,36 @@
                        MOVE    ZERO            TO  LNK-SC97-SURYOFLG
                    END-IF
                END-IF
+           END-IF
       *
-               IF      LNK-SC97-SURYO   >   ZERO
-                   IF      FLG-AUTO         =   1
-                       MOVE    "1"          TO  LNK-SC97-AUTOFLG2
-                   END-IF
+           END-IF
+      *
+           IF      LNK-SC97-SURYO   >   ZERO
+               IF      FLG-AUTO         =   1
+                   MOVE    "1"          TO  LNK-SC97-AUTOFLG2
                END-IF
-      *
+           END-IF
+      *ver.4.5
+      *    換算値入力数量
+           IF      LNK-SC97-SURYO   >   ZERO
+               IF      FLG-AINPUT       =   1
+                   MOVE    "1"          TO  LNK-SC97-INKBNFLG1
+               END-IF
+           ELSE
+               IF      FLG-AINPUT       =   1
+                   MOVE    "0205"           TO  SPA-ERRCD
+               END-IF
            END-IF
       *
+      *    数量指示区分
+           IF      FLG-BINPUT       =   1
+               MOVE    "1"          TO  LNK-SC97-INKBNFLG2
            END-IF
+      *    継続コメント指示区分
+           IF      FLG-CINPUT       =   1
+               MOVE    "1"          TO  LNK-SC97-CONTFLG
+           END-IF
+      *TEST
       *
       *    回数（＊があるが、回数が入力されてない時、＊削除する）
            IF     (FLG-AST             =   1    )  AND
@@ -1457,6 +1477,54 @@
            MOVE    WRK-MCNT4           TO  LNK-SC97-MCNT4
            .
        4101121-MOJI-SET-EXT.
+           EXIT.
+      *
+      *ver.4.5
+      *****************************************************************
+      *    数量以下変換処理
+      *****************************************************************
+       4101121-MOJI-SURYO-SET-SEC       SECTION.
+      *
+      *--- 数量編集
+           IF     (FLG-SP          =   1    )  AND
+                  (FLG-AST         =   ZERO )
+                ADD     1              TO  WRK-SUR-MCNT
+                MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                       TO  WRK-SUR (WRK-SUR-MCNT:1)
+           END-IF
+      *--- 回数編集
+           IF      FLG-AST         =   1
+               ADD     1               TO  WRK-ACCT-MCNT
+               MOVE    LNK-SC97-INPUTCD (IDX:1)
+                                       TO  WRK-KAI  (WRK-ACCT-MCNT:1)
+           END-IF
+      *--- その他値
+           IF     (FLG-SP          =   1    )  AND
+                  (FLG-AST         =   0    )
+               ADD     1               TO  WRK-MCNT1
+               MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                       TO  WRK-MOJI1  (WRK-MCNT1:1)
+           END-IF
+           IF     (FLG-SP          =   2    )  AND
+                  (FLG-AST         =   0    )
+               ADD     1               TO  WRK-MCNT2
+               MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                       TO  WRK-MOJI2  (WRK-MCNT2:1)
+           END-IF
+           IF     (FLG-SP          =   3    )  AND
+                  (FLG-AST         =   0    )
+               ADD     1               TO  WRK-MCNT3
+               MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                       TO  WRK-MOJI3  (WRK-MCNT3:1)
+           END-IF
+           IF     (FLG-SP          =   4    )  AND
+                  (FLG-AST         =   0    )
+               ADD     1               TO  WRK-MCNT4
+               MOVE    LNK-SC97-INPUTCD(IDX:1)
+                                       TO  WRK-MOJI4   (WRK-MCNT4:1)
+           END-IF
+           .
+       4101121-MOJI-SURYO-SET-EXT.
            EXIT.
       *
       *****************************************************************

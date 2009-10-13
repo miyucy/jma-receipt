@@ -175,6 +175,15 @@
       *    コラムリスト位置
            03  WRK-KA02-MEILIST-ROW    PIC S9(09).
            03  FLG-GMN-INIT1           PIC  9(01).
+      *    換算値数量表示用
+           03  WRK-TSURYO              PIC X(30).
+           03  WRK-G-SURYO             PIC X(30).
+           03  IDM2                    PIC 9(04).
+           03  IDM3                    PIC 9(04).
+           03  WRK-KANSURYO            PIC X(12).
+           03  WRK-SHO                 PIC 9(04).
+           03  WRK-AMARI               PIC 9(04).
+           03  WRK-KANZANTANINAME      PIC X(08).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -665,6 +674,11 @@
            INSPECT SPA-KA021-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-KA021-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-KA021-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+      *ver.4.5
+      *    換算値数量設定あり
+           IF      SPA-PARA-KANZANCHI (IDX IDZ)    >  ZERO
+               PERFORM 310129-KANSURYO-HEN-SEC
+           END-IF
       *
       *    コメント以外の最終行セット
            IF      SPA-PARA-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"
@@ -675,6 +689,81 @@
       *
            .
        31012-ZAIMEI-HEN-EXT.
+           EXIT.
+      *ver.4.5
+      *****************************************************************
+      *   換算値数量編集処理
+      *****************************************************************
+       310129-KANSURYO-HEN-SEC                  SECTION.
+      *
+      *    次行へ編集
+           ADD     1                   TO  IDG
+           MOVE    IDX                 TO  SPA-KA021NAI-TBANGO    (IDG)
+      *
+           MOVE    SPA-PARA-KANSURYO (IDX IDZ)  TO  WRK-SURYO
+           MOVE    SPA-PARA-KANZANTANINAME (IDX IDZ)
+                                       TO  WRK-KANZANTANINAME
+           PERFORM 3101291-KANSURYO-HENKAN-SEC
+      *
+           INSPECT SPA-KA021-TMEISYO(IDG) REPLACING
+                                               ALL "  "  BY  "　"
+      *
+           .
+       310129-KANSURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   換算値数量編集処理
+      *****************************************************************
+       3101291-KANSURYO-HENKAN-SEC                  SECTION.
+      *
+           PERFORM 310121-SURYO-HEN-SEC
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           MOVE    SPACE               TO  WRK-TSURYO
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-SURYO-J(IDM:1)    =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-SURYO-J(IDM:2)    =   "　"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-SURYO-J(IDM:2)
+                                               TO  WRK-TSURYO
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      WRK-SURYO           =   ZERO
+               MOVE    SPACE               TO  WRK-TSURYO
+           END-IF
+      *    数量換算単位名称
+           MOVE    WRK-KANZANTANINAME  TO  WRK-TSURYO  (IDM2:)
+           MOVE    SPACE               TO  WRK-G-SURYO
+           STRING  "（"
+                   WRK-TSURYO
+                   "）"                DELIMITED  BY  SPACE
+                                       INTO    WRK-G-SURYO
+           END-STRING
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDM     FROM    1   BY  1
+                   UNTIL      (IDM     >   30  )
+                         OR   (WRK-G-SURYO (IDM:1) =   SPACE )
+               ADD     1               TO  IDM2
+           END-PERFORM
+           COMPUTE IDM3                =   30
+                                       -   IDM2
+                                       +   1
+           MOVE    SPACE                   TO  SPA-KA021-TKANSURYO
+                                                    (IDG)
+           MOVE    WRK-G-SURYO(1:IDM2)     TO  SPA-KA021-TKANSURYO
+                                                    (IDG)(IDM3:IDM2)
+      *
+           .
+       3101291-KANSURYO-HENKAN-EXT.
            EXIT.
       *****************************************************************
       *     薬剤服用コメントの時、再編集処理

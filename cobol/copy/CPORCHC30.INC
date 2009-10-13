@@ -50,6 +50,8 @@
                                            OCCURS   5.
       *        外用日数（日数入力があった時のみ）
                05  ORCHC30-SRYKAISU        PIC 9(03).
+      *        換算値数量（１日量）
+               05  ORCHC30-KANSURYO    PIC 9(05)V9(05).
       *        用法コード２（表示のみ）
                05  ORCHC30-YOHOU-G.
                    07  ORCHC30-YOHOU       PIC X(09)   OCCURS  5.

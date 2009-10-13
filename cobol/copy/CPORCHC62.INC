@@ -54,4 +54,6 @@
                        09  ORCHC62-SRYKAISU        PIC  9(03).
       *                コメント名称
                        09  ORCHC62-INPUTCOMENT     PIC  X(80).
+      *                換算値数量
+                       09  ORCHC62-KANSURYO        PIC  9(05)V9(05).
       *

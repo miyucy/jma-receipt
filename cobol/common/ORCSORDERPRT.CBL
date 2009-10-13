@@ -34,6 +34,7 @@
       *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
       *  04.03.00    NACL-多々納  08/08/26  院外処方対応追加
       *  04.04.00    NACL-多々納  08/12/22  出来高算定コード対応
+      *  04.05.00    NACL-多々納  09/10/XX  換算値数量追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -729,6 +730,8 @@
                                        TO  ORDERPRT-SRYCD
            MOVE    LNK-WKSRY-SRYSURYO (IDX IDY)
                                        TO  ORDERPRT-SRYSURYO
+           MOVE    LNK-WKSRY-KANSURYO (IDX IDY)
+                                       TO  ORDERPRT-KANSURYO
       *    数量（外用の個別数量）
       *    外用の回数を編集
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "23"

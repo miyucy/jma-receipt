@@ -5438,6 +5438,10 @@
       *
                 IF     (WRK-COM-SRYKBN     (IDX-Z)
                                            NOT =   "95" AND "96") AND
+      *!
+      *            ø«Œ≈ºÔ Ã§¨¬–æ›≥∞
+                       (WRK-COM-SRYSYUKBN (IDX-Z)  NOT =   "409" )  AND
+      *
                        (WRK-COM-INPUTCD(IDX-Z)(1:3)
                                            NOT =   "101"  )   AND
                        (WRK-COM-GAIKANRIKBN(IDX-Z)

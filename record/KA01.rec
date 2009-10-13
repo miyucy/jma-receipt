@@ -72,8 +72,8 @@ KA01	{
 					value1	varchar(2);
 					value2	varchar(2);
 					value3	varchar(200);
-				}	[200];
-				select	bool[200];
+				}	[400];
+				select	bool[400];
 			};
 		};
 		SYORIMEI	{
@@ -118,6 +118,24 @@ KA01	{
 		};
 		KOUFUYMD	{
 			value	varchar(9);
+		};
+		KEISUURYO1	{
+			value	varchar(12);
+		};
+		KEISUURYO2	{
+			value	varchar(12);
+		};
+		KEISUURYO3	{
+			value	varchar(12);
+		};
+		KEISUURYO4	{
+			value	varchar(12);
+		};
+		KEISUURYO5	{
+			value	varchar(12);
+		};
+		KEISUURYO6	{
+			value	varchar(12);
 		};
 	};
 };

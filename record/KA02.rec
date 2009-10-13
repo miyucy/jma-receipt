@@ -211,6 +211,21 @@ KA02	{
 		DAY31	{
 			value	varchar(3);
 		};
+		KEISUURYO1	{
+			value	varchar(12);
+		};
+		KEISUURYO2	{
+			value	varchar(12);
+		};
+		KEISUURYO3	{
+			value	varchar(12);
+		};
+		KEISUURYO4	{
+			value	varchar(12);
+		};
+		KEISUURYO5	{
+			value	varchar(12);
+		};
 		B04	{
 			label	varchar(10);
 		};

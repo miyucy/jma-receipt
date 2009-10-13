@@ -84,6 +84,12 @@
                    07  LNK-SC97-MCNT4          PIC 9(02).
       *        残量廃棄
                    07  LNK-SC97-AUTOFLG2        PIC X(01).
+      *        換算値入力
+                   07  LNK-SC97-INKBNFLG1       PIC X(01).
+      *        内服種類数
+                   07  LNK-SC97-INKBNFLG2       PIC X(01).
+      *        継続コメント
+                   07  LNK-SC97-CONTFLG         PIC X(01).
       *
       *        検索画面へ
                05  LNK-SC97-KENSAKU        PIC X(01).

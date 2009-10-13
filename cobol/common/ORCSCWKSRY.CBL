@@ -36,6 +36,7 @@
       *  03.05.01    NACL-多々納  07/07/19  "0085XXXXX"コメント対応
       *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
       *  04.05.00    NACL-多々納  09/09/16  "0086XXXXX"コメント対応
+      *  04.05.00    NACL-多々納  09/10/02  換算値数値他対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,8 +98,9 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
-           03  FLG-TENSU          PIC 9(01).
-           03  FLG-SYUNOU         PIC 9(01).
+           03  FLG-TENSU           PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-SYORIFLG        PIC 9(01).
@@ -206,6 +208,8 @@
       *
            03  WRK-HOUKATU-ZAI         PIC 9(01).
       *
+           03  WRK-KANSURYO            PIC 9(05)V9(5).
+      *
       *画面最大行
       *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
@@ -222,6 +226,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    収納マスタワーク
        01  SYUNOU-REC.
@@ -1135,6 +1142,20 @@
                                        TO  SPA-COM-BUNGSU (IDX2)
            END-IF
       *!!
+      *    内服１種類区分
+           IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "6"  )  AND
+                  (LNK-WKSRY-INPUTKBN(IDX IDY) =   "2"  )
+                MOVE    "1"                TO  SPA-COM-INPUTNAIF (IDX2)
+           END-IF
+      *    コメントの継続
+           IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "8"  )  OR
+                  (SPA-COM-INPUTCD (IDX2)(1:3) =   "008")
+               IF     (LNK-WKSRY-INPUTKBN (IDX IDY)    =   "1" )
+                   MOVE    "1"             TO  SPA-COM-INPUTCONT (IDX2)
+               END-IF
+           END-IF
+      *!!
+      *!!
       *    外用の回数を編集
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "23"
                MOVE    LNK-WKSRY-SRYKAISU (IDX IDY)
@@ -1162,6 +1183,34 @@
                                        TO  SPA-COM-KAISU (IDX2)
                MOVE    SPA-COM-SURYO2  (IDX2)
                                        TO  SPA-COM-SURYO (IDX2)
+           END-IF
+      *ver.4.5.0
+      *    換算値入力
+           IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "6"  )  AND
+                  (LNK-WKSRY-KANSURYO (IDX IDY) >   ZERO )
+      *        点数マスタの換算値×換算値数量＝数量の時のみ設定
+               MOVE    SPA-COM-INPUTCD (IDX2)  TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   PERFORM 9101-TENSUPLUS-SYORI-SEC
+                   COMPUTE WRK-KANSURYO    =  (TNSP-KANZANCHI
+                                           *   LNK-WKSRY-KANSURYO
+                                                          (IDX IDY))
+                   IF      WRK-KANSURYO    =   LNK-WKSRY-SRYSURYO
+                                                          (IDX IDY)
+                       MOVE    LNK-WKSRY-KANSURYO (IDX IDY)
+                                           TO  SPA-COM-KANSURYO (IDX2)
+      *                外用薬は÷回数
+                       IF      LNK-WKSRY-SRYKBN (IDX)  =   "23"
+                           COMPUTE WRK-KANSURYO   =  LNK-WKSRY-KANSURYO
+                                                          (IDX IDY)
+                                                   /   SPA-COM-KAISU2
+                                                            (IDX2)
+                           MOVE    WRK-KANSURYO
+                                           TO  SPA-COM-KANSURYO (IDX2)
+                       END-IF
+                   END-IF
+               END-IF
            END-IF
       *!!
            IF      LNK-WKSRY-INPUTCD (IDX IDY) =   SPACE
@@ -2065,6 +2114,27 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            END-IF
                        END-IF
                    END-IF
+      *ver.4.5
+      *            継続コメント
+                   IF      SPA-COM-INPUTCONT (IDX)     =   "1"
+                       MOVE    "1"             TO  WKSRY-INPUTKBN(IDY)
+                   END-IF
+      *            換算値数量入力
+                   IF      SPA-COM-KANSURYO (IDX)  NOT =   ZERO
+                       MOVE    SPA-COM-KANSURYO (IDX)
+                                               TO  WKSRY-KANSURYO(IDY)
+      *                外用薬は＊回数を登録
+                       IF      SPA-COM-SRYKBN  (IDX)   =   "23"
+                           COMPUTE  WKSRY-KANSURYO(IDY)
+                                               =   SPA-COM-KANSURYO(IDX)
+                                               *   WKSRY-SRYKAISU (IDY) 
+                       END-IF
+                   END-IF
+      *            内服１種類区分
+                   IF      SPA-COM-INPUTNAIF (IDX)     =   "1"
+                       MOVE    "2"             TO  WKSRY-INPUTKBN(IDY)
+                   END-IF
+      *!!!!
       *
                    MOVE    SPA-COM-KAISU  (IDX)   TO  WRK-KAISUKEI
       *            画面の計を集計する（１剤で１件）
@@ -2072,13 +2142,26 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPA-COM-TENSU  (IDX)   TO  WRK-TENSUKEI
       *                各計を編集する
                        MOVE    SPA-COM-SYUTEN1(IDX)   TO  WRK-SYUTEN1
-      ***********      MOVE    SPA-COM-SYUTEN2 (IDX)  TO  WRK-SYUTEN2
+      *
+                       IF     (SPA-COM-SYUTEN2 (IDX)  >   ZERO )
+                        AND   (WRK-SYUTEN2            =   ZERO )
+                           MOVE    SPA-COM-SYUTEN2 (IDX)
+                                                      TO  WRK-SYUTEN2
+                       END-IF
                        MOVE    SPA-COM-YKZTEN  (IDX)  TO  WRK-YKZTEN
                        MOVE    SPA-COM-KIZAITEN(IDX)  TO  WRK-KIZAITEN
                    END-IF
       *            労災読み替え点数編集
-                   IF     (SPA-COM-SYUTEN2 (IDX)   >   ZERO  )
-                       MOVE    SPA-COM-SYUTEN2 (IDX)  TO  WRK-SYUTEN2
+                   IF     (SPA-HKNKBN          =   1   )
+                     AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *              診療種別
+                     AND  (SPA-COM-SRYSYUKBN (IDX)
+                                        NOT =   "409" )
+                       IF     (SPA-COM-SYUTEN2 (IDX)   >   ZERO  )
+                       AND    (SPA-COM-RSIGIRI (IDX)   =   1     )
+                           MOVE    SPA-COM-SYUTEN2 (IDX)
+                                                   TO  WRK-SYUTEN2
+                       END-IF
                    END-IF
       *
                    IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
@@ -3800,6 +3883,36 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       9101-TENSUPLUS-SYORI-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+               MOVE    ZERO                TO  FLG-TENSUPLUS
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       9101-TENSUPLUS-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

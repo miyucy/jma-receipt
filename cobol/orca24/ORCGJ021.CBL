@@ -2236,6 +2236,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                              (IDX)
                    MOVE    SRY-SRYKAISU(IDX2)  TO  ORCSCZAICHK-SRYKAISU
                                                              (IDX)
+      *            換算値数量
+                   MOVE    SRY-KANSURYO(IDX2)  TO  ORCSCZAICHK-KANSURYO
+                                                             (IDX)
+      *            多剤投与・関連コメント
+                   EVALUATE    SRY-MEISKYFLG (IDX2)
+                       WHEN    "2"
+                           MOVE    "1"         TO  ORCSCZAICHK-INPUTKBN
+                                                             (IDX)
+                       WHEN    "3"
+                           MOVE    "2"         TO  ORCSCZAICHK-INPUTKBN
+                                                             (IDX)
+                   END-EVALUATE
+      *
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
                           (SRY-SRYCD (IDX2)(1:3)   =   "008")
                        MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM

@@ -1502,6 +1502,52 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *TEST
+      *ver.4.5
+               WHEN    "0202"
+                   STRING   "換算値×数量の桁数がオーバーします。"
+                            "数量を変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0203"
+                   STRING   "種類数指示は外来の内服薬剤のみ入力可能"
+                            "です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0204"
+                   STRING   "数量換算値の設定がありません。"
+                            "換算値入力はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0205"
+                   STRING   "数量を入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0206"
+                   STRING   "換算値入力、種類数指示、関係コメント指示は"
+                            "Ｈ２０年４月からの機能です。"
+                            "入力できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0207"
+                   STRING   "換算値入力は薬剤のみ入力できます。"
+                            "換算値入力はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0220"
+                   STRING   "診療科の受診履歴は最大件数登録済みです。"
+                            "この診療科での入力はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *TEST
       *
            END-EVALUATE
            .
@@ -2095,13 +2141,6 @@
                            "必ず登録して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
-                   END-STRING
-      *VER.4.5
-               WHEN    "1058"
-                   STRING  "この診療科の当日の受診が９回登録済です。"
-                           "これ以上登録できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
                    END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD

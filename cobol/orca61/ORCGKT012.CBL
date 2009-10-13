@@ -100,6 +100,7 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
+           03  FLG-TENSUPLUS       PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -290,6 +291,10 @@
            03  FLG-GMN-INIT1           PIC  9(01).
            03  FLG-GMN-INIT2           PIC  9(01).
       *
+      *    換算値数量表示用
+           03  WRK-TSURYO              PIC X(30).
+           03  IDM2                    PIC 9(04).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -323,6 +328,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    点数マスタ付加コード
+        01 TENSUPLUS-REC.
+           COPY    "CPTENSUPLUS.INC".
       *
       *    入力コードマスタ−
        01  INPUTCD-REC.
@@ -1920,6 +1928,18 @@
                    IF      SRY-MEISKYFLG (IDX) =   "1"
                        MOVE    "T"             TO  WKSRY-AUTOKBN  (IDY)
                    END-IF
+      *ver.4.5
+      *            換算値
+                   MOVE    SRY-KANSURYO (IDX)  TO  WKSRY-KANSURYO (IDY)
+      *            関連コメント指示
+                   IF       SRY-MEISKYFLG (IDX) =   "2"
+                       MOVE    "1"             TO  WKSRY-INPUTKBN (IDY)
+                   END-IF
+      *            内服種類数指示
+                   IF       SRY-MEISKYFLG (IDX) =   "3"
+                       MOVE    "2"             TO  WKSRY-INPUTKBN (IDY)
+                   END-IF
+      *
       *!!
       *            自動発生の中心静脈注射のみ選択可能とする
                    IF     (SRY-AUTOKBN (IDX)   =   "3" )  AND
@@ -2327,6 +2347,12 @@
            INSPECT SPA-GMN-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TTANI2  (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+      *ver.4.5
+      *    換算値数量（薬剤）
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)  =   "6" )
+              AND (LNK-WKSRY-KANSURYO(IDX IDZ) NOT =   ZERO )
+               PERFORM 310123-KANSURYO-HEN-SEC
+           END-IF
       *
       *    コメント以外の最終行セット
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"
@@ -2587,6 +2613,60 @@
            .
        310122-BUNSU-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *   換算値数量編集処理
+      *****************************************************************
+       310123-KANSURYO-HEN-SEC                  SECTION.
+      *
+           PERFORM 980-TENSUPLUS-READ-SEC
+           IF     (FLG-TENSUPLUS       =   1    )
+             OR   (IDG                 >=  MAX-LINE )
+               GO      TO      310123-KANSURYO-HEN-EXT
+           END-IF
+      *
+           ADD     1                   TO  IDG
+           MOVE    SPA-NAI-MAX2        TO  SPA-NAI-TBANGO    (IDG)
+      *
+           MOVE    LNK-WKSRY-KANSURYO (IDX IDZ)  TO  WRK-SURYO
+           PERFORM 310121-SURYO-HEN-SEC
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           MOVE    SPACE               TO  WRK-TSURYO
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-SURYO-J-G(IDM:1)    =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-SURYO-J-G(IDM:2)    =   "　"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-SURYO-J-G(IDM:2)
+                                               TO  WRK-TSURYO
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    数量換算単位名称
+           MOVE    TNSP-KANZANTANINAME TO  WRK-TSURYO  (IDM2:)
+           MOVE    SPACE               TO  SPA-GMN-TSURYOU4 (IDG)
+           STRING  "（"
+                   WRK-TSURYO
+                   "）"                DELIMITED  BY  SPACE
+                                       INTO    SPA-GMN-TSURYOU4 (IDG)
+      *
+           INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI2  (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
+           .
+       310123-KANSURYO-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *   入力コードの画面用再編集処理
@@ -3527,6 +3607,42 @@
       *
            .
        930-INPUTCD-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ付加情報より編集処理
+      *****************************************************************
+       980-TENSUPLUS-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS-REC
+           INITIALIZE                      TENSUPLUS-REC
+           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
+           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS
+               ELSE
+                   INITIALIZE                  TENSUPLUS-REC
+                   MOVE    1                   TO  FLG-TENSUPLUS
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS
+               INITIALIZE                      TENSUPLUS-REC
+           END-IF
+           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       980-TENSUPLUS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

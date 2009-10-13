@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  05/11/22  MONFUNC 対応
       *  03.04.00    NACL-多々納  07/02/XX  包括診療対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
       *****************************************************************
       *
       *
@@ -85,6 +86,8 @@
                    07  TBL-MAE-INPUTCOMENT PIC  X(80).
                    07  TBL-MAE-ATAI-G.
                        09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
+                   07  TBL-MAE-KANSURYO    PIC  9(05)V9(05).
+                   07  TBL-MAE-INPUTKBN    PIC  X(01).
            03  TBL-ATO-AREA.
                05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
@@ -93,6 +96,8 @@
                    07  TBL-ATO-INPUTCOMENT PIC  X(80).
                    07  TBL-ATO-ATAI-G.
                        09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
+                   07  TBL-ATO-KANSURYO    PIC  9(05)V9(05).
+                   07  TBL-ATO-INPUTKBN    PIC  X(01).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -318,6 +323,19 @@
                                                              (IDX-SIN)
                        MOVE    SRY-SRYKAISU(IDX2)  TO  TBL-MAE-SRYKAISU
                                                              (IDX-SIN)
+      *                換算値数量
+                       MOVE    SRY-KANSURYO(IDX2)  TO  TBL-MAE-KANSURYO
+                                                             (IDX-SIN)
+      *                多剤投与・関連コメント
+                       EVALUATE    SRY-MEISKYFLG (IDX2)
+                           WHEN    "2"
+                               MOVE    "1"         TO  TBL-MAE-INPUTKBN
+                                                             (IDX-SIN)
+                           WHEN    "3"
+                               MOVE    "2"         TO  TBL-MAE-INPUTKBN
+                                                             (IDX-SIN)
+                       END-EVALUATE
+      *
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008")
                            MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
@@ -366,6 +384,10 @@
                MOVE    ORCSCZAICHK-INPUTCHI-G (IDX1)
                                            TO  TBL-ATO-ATAI-G
                                                               (IDX-ATO)
+               MOVE    ORCSCZAICHK-KANSURYO (IDX1)
+                                           TO  TBL-ATO-KANSURYO(IDX-ATO)
+               MOVE    ORCSCZAICHK-INPUTKBN (IDX1)
+                                           TO  TBL-ATO-INPUTKBN(IDX-ATO)
            END-PERFORM
       *
       *    診療行為数が違う

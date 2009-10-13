@@ -1936,6 +1936,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0034"              TO  SPA-ERRCD
                MOVE    39                  TO  SPA-GMN-CUR
            END-IF
+      *
+      *    換算値単位の判定
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-KANZANTANICD        =   SPACE
+                                                   OR  "0000"
+                   IF      SPA-GMN-KANZANCHI   NOT =   ZERO
+                       MOVE    "0037"              TO  SPA-ERRCD
+                       MOVE    29                  TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+                   IF      SPA-GMN-KANZANCHI       =   ZERO
+                       MOVE    "0038"              TO  SPA-ERRCD
+                       MOVE    30                  TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      * 
       *    投与量
            PERFORM VARYING IDX1        FROM    1   BY  1
                    UNTIL  (IDX1        >   10   )  OR
@@ -3132,6 +3149,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    29                  TO  SPA-GMN-CUR
            END-IF
       *
+      *    単位コードと一致しないこと
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-KANZANTANICD    =   SPA-GMN-TANICD
+                   MOVE    "0035"              TO  SPA-ERRCD
+                   MOVE    29                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *    単位コード 000 はエラー
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-KANZANTANICD    =   "000"
+                   MOVE    "0036"              TO  SPA-ERRCD
+                   MOVE    29                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            .
        524-KANZANTANICDCHK-EXT.
            EXIT.
@@ -4129,6 +4160,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                WHEN    "0019"
                    MOVE    "換算単位がありません"
+                                                 TO  SPA-ERRMSG
+      *ver.4.5
+               WHEN    "0035"
+                   STRING  "単位コードと数量換算単位が同じです。"
+                           "数量換算単位を変更して下さい。"
+                                                 DELIMITED  BY  SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0036"
+                   MOVE    "数量換算単位は 000 の選択はできません"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0037"
+                   MOVE    "数量換算単位を設定して下さい"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0038"
+                   MOVE    "数量換算値を入力して下さい"
                                                  TO  SPA-ERRMSG
       *
                WHEN    "0020"

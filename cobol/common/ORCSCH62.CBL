@@ -28,7 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.00    NACL-多々納  08/10/31  包括保険対象対応
-      * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応他
+      *  04.05.00    NACL-多々納  09/10/XX  換算値数量対応
       *****************************************************************
       *
       *
@@ -149,6 +150,8 @@
                        09  TBL-SRYCD           PIC  X(09).
       *                数量
                        09  TBL-SRYSURYO        PIC  9(05)V9(05).
+      *                換算値数量
+                       09  TBL-KANSURYO        PIC  9(05)V9(05).
       *                回数（外用薬）
                        09  TBL-SRYKAISU        PIC  9(03).
       *                名称入力番号
@@ -180,6 +183,8 @@
                05  WRK-SRY-AUTOKBN         PIC  X(01).
       *名称入力番号
                05  WRK-SRY-INPUTNUM        PIC  9(03).
+      *換算値数量
+               05  WRK-SRY-KANSURYO        PIC  9(05)V9(05).
       *自費金額
                05  WRK-SRY-JIHIMONEY       PIC  9(07).
       *名称
@@ -406,6 +411,9 @@
                    MOVE    TBL-SRYSURYO (IDX-T1 IDX-T2 IDX-T3)
                                            TO  ORCHC62-SRYSURYO
                                                    (IDX-T2 IDX-T3)
+                   MOVE    TBL-KANSURYO (IDX-T1 IDX-T2 IDX-T3)
+                                           TO  ORCHC62-KANSURYO
+                                                   (IDX-T2 IDX-T3)
                    MOVE    TBL-SRYKAISU (IDX-T1 IDX-T2 IDX-T3)
                                            TO  ORCHC62-SRYKAISU
                                                    (IDX-T2 IDX-T3)
@@ -452,6 +460,7 @@
       *       IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
       *      DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
       *              ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
+      *              ",KANSURYO:" ORCHC62-KANSURYO (IDX IDY)
       *            ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
       *       END-IF
       *        END-PERFORM 
@@ -870,6 +879,9 @@
                            MOVE    TBL-SRY-MEISKYFLG (IDXB IDXA)
                                                    TO  WRK-SRY-MEISKYFLG
                                                            (WRK-SRY-MAX)
+                           MOVE    TBL-SRY-KANSURYO (IDXB IDXA)
+                                                   TO  WRK-SRY-KANSURYO
+                                                           (WRK-SRY-MAX)
                            MOVE    TBL-SRY-AUTOKBN (IDXB IDXA)
                                                    TO  WRK-SRY-AUTOKBN
                                                            (WRK-SRY-MAX)
@@ -951,6 +963,9 @@
                                                   (IDX-T1 IDX-T2 IDX-T3)
                        MOVE    WRK-SRY-SRYSURYO (IDXA)
                                                TO  TBL-SRYSURYO
+                                                  (IDX-T1 IDX-T2 IDX-T3)
+                       MOVE    WRK-SRY-KANSURYO (IDXA)
+                                               TO  TBL-KANSURYO
                                                   (IDX-T1 IDX-T2 IDX-T3)
                        MOVE    WRK-SRY-SRYKAISU (IDXA)
                                                TO  TBL-SRYKAISU
@@ -1235,6 +1250,9 @@
                    MOVE    WKSRY-AUTOKBN (IDXA)
                                                TO  WRK-SRY-AUTOKBN
                                                            (WRK-SRY-MAX)
+                   MOVE    WKSRY-KANSURYO (IDXA)
+                                               TO  WRK-SRY-KANSURYO
+                                                         (WRK-SRY-MAX)
                    MOVE    ZERO                TO  WRK-SRY-INPUTNUM
                                                            (WRK-SRY-MAX)
                    MOVE    WKSRY-JIHIMONEY (IDXA)
@@ -1404,6 +1422,9 @@
                                                           (WRK-SRY-MAX)
            MOVE    ORCSCH62-SRYKAISU (IDX-L IDX-L2)
                                        TO  WRK-SRY-SRYKAISU
+                                                          (WRK-SRY-MAX)
+           MOVE    ORCSCH62-KANSURYO (IDX-L IDX-L2)
+                                       TO  WRK-SRY-KANSURYO
                                                           (WRK-SRY-MAX)
            IF    ((ORCSCH62-SRYCD (IDX-L IDX-L2)(1:1)
                                        =    "8")   OR

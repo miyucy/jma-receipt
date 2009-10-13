@@ -89,6 +89,7 @@
                05  WRK-TBL-OCC             OCCURS   99.
                    07  TBL-SRYCD           PIC X(09).
                    07  TBL-SURYO           PIC 9(05)V9(05).
+                   07  TBL-KANSURYO        PIC 9(05)V9(05).
                    07  TBL-YOURYOU         PIC 9(05)V9(05)
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
@@ -305,6 +306,8 @@
                                            TO  TBL-SRYCD (IDX-S)
                MOVE    ORCSHCN30-SRYSURYO(IDT IDXA)
                                            TO  TBL-SURYO (IDX-S)
+               MOVE    ORCSHCN30-KANSURYO(IDT IDXA)
+                                           TO  TBL-KANSURYO (IDX-S)
       *        外用の日数
                IF      (ORCSHCN30-SRYKBN (IDT)          =   "23" )  AND
                        (ORCSHCN30-SRYKAISU(IDT IDXA)    >   1 )
@@ -400,6 +403,7 @@
                MOVE    ORCHCN30-MAX        TO  IDY
                MOVE    TBL-SRYCD (IDX)     TO  ORCHCN30-SRYCD (IDY)
                MOVE    TBL-SURYO (IDX)     TO  ORCHCN30-SURYO (IDY)
+               MOVE    TBL-KANSURYO (IDX)  TO  ORCHCN30-KANSURYO (IDY)
                PERFORM VARYING     IDXY    FROM    1   BY  1
                        UNTIL       IDXY        >   5
                    MOVE    TBL-YOURYOU (IDX IDXY)

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−多々納 02/10/18  入院追加
       *  01.00.02    NACL-多々納  03/06/17  回数編集修正
+      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値入力他対応
       *****************************************************************
       *
       *
@@ -189,8 +190,9 @@
       *
       *    自費の時、０とする
            IF      SPA-COM-SRYKBN (IDX)    =   "95"  OR  "96"
-               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7") OR
+               IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "6" OR "7" ) OR
                       (WRK-MOJI                    =   "8" OR "7" )
+               OR     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )
                    CONTINUE
                ELSE
                    MOVE    "0"                 TO  WRK-MOJI
@@ -231,12 +233,19 @@
       *            数量ゼロフラグ
                          ((SPA-SURYOZERO-FLG       =   1  )  AND
                            (SPA-COM-SURYO (IDX)    =   0  )  AND
-                           (SPA-COM-KZMCOMPSIKIBETU    =   1 ))
+                           (SPA-COM-KZMCOMPSIKIBETU (IDX)
+                                               NOT =   0 ))
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF
       *            医薬品     数量・回数
                WHEN    "6"
+                   MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
+      *            換算値
+                   IF      SPA-COM-KANSURYO (IDX)    >   ZERO
+                       MOVE    SPA-COM-KANSURYO (IDX)    TO  WRK-SURYO
+                   END-IF
+                   PERFORM 2001-SURYO-HEN-SEC
       *            特定器材   数量・回数
                WHEN    "7"
                    MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
@@ -349,6 +358,25 @@
                ADD     1                   TO  IDK2
                MOVE    "@"                 TO  WRK-SURYO-H (IDK2:1)
            END-IF
+      *ver.4.5
+      *    換算値入力
+           IF     (SPA-COM-KANSURYO (IDX)  >   ZERO )  AND
+                  (IDK2                    >   ZERO )
+               ADD     1                   TO  IDK2
+               MOVE    "A"                 TO  WRK-SURYO-H (IDK2:1)
+           END-IF
+      *    換算値
+           IF     (SPA-COM-INPUTNAIF (IDX) =   "1"  )
+      *    AND    (IDK2                    >   ZERO )
+               ADD     1                   TO  IDK2
+               MOVE    "I"                 TO  WRK-SURYO-H (IDK2:1)
+           END-IF
+      *    コメント
+           IF     (SPA-COM-INPUTCONT (IDX) =   "1"  )
+               ADD     1                   TO  IDK2
+               MOVE    "C"                 TO  WRK-SURYO-H (IDK2:1)
+           END-IF
+      *ver.4.5
       *
       *    入力値再編集
       *     文字列調査の開始位置　取得
@@ -386,7 +414,22 @@
                        WRK-KAISU-H             DELIMITED   BY  SPACE
                        INTO                    SPA-GMN-INPUTCD(IDX)
                END-STRING
+      *!!!!
+      *    継続コメント
+               IF      WRK-SURYO-H         NOT =   SPACE
+                 MOVE    SPACE               TO  SPA-GMN-INPUTCD(IDX)
+                 STRING  WRK-HEN-INPUTCD         DELIMITED   BY  SPACE
+                         " "                     DELIMITED   BY  SIZE
+                         WRK-SURYO-H             DELIMITED   BY  SPACE
+                         " "                     DELIMITED   BY  SIZE
+                         WRK-ATAI                DELIMITED   BY  "  "
+                         WRK-KAKERU              DELIMITED   BY  SPACE
+                         WRK-KAISU-H             DELIMITED   BY  SPACE
+                         INTO                    SPA-GMN-INPUTCD(IDX)
+                 END-STRING
+               END-IF
            END-IF
+      *
            IF      WRK-JIKAN       NOT =   SPACE
                MOVE    SPACE               TO  WRK-HEN-INPUTCD
                STRING  WRK-JIKAN               DELIMITED   BY  SPACE

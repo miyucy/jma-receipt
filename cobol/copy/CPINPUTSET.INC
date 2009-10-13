@@ -21,6 +21,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  09/10/02  入力区分、換算入力数量追加
       ************************************************************
       *01 INPUTSET-REC.
            03 ISET-KEY.
@@ -56,6 +57,10 @@
                05 ISET-ATAI4           PIC  X(08).
            03  ISET-ATAI-AREA-R        REDEFINES    ISET-ATAI-AREA.
                05 ISET-ATAI            PIC  X(08)   OCCURS  4.
+      *入力区分（１：関係コメント指示、２：内服種類数指示）
+           03 ISET-INPUTKBN            PIC  X(01).
+      *換算入力数量
+           03 ISET-KANSURYO            PIC  9(05)V9(5).
       *端末ＩＤ
            03 ISET-TERMID              PIC  X(16).
       *オペレータＩＤ

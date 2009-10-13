@@ -52,6 +52,7 @@
       *  04.03.01    NACL=多々納  08/08/07  労災初診料Ｈ２０年４月改正対応他
       *  04.04.00    NACL=多々納  08/11/27  入院一括関連対応
       *  04.04.00    NACL=多々納  09/01/30  本院分院対応
+      *  04.05.00    NACL=多々納  09/10/30  多剤投与・換算値入力他対応
       *****************************************************************
       *
       *
@@ -5764,6 +5765,18 @@
                    MOVE    "T"             TO  WKSRY-AUTOKBN  (IDX)
                END-IF
       *!!
+      *ver.4.5
+      *        換算値
+               MOVE    SRY-KANSURYO (IDX)  TO  WKSRY-KANSURYO (IDX)
+      *        関連コメント指示
+               IF       SRY-MEISKYFLG (IDX) =   "2"
+                   MOVE    "1"             TO  WKSRY-INPUTKBN (IDX)
+               END-IF
+      *        内服種類数指示
+               IF       SRY-MEISKYFLG (IDX) =   "3"
+                   MOVE    "2"             TO  WKSRY-INPUTKBN (IDX)
+               END-IF
+      *
                MOVE    IDX                 TO  IDX-W
                ADD     1                   TO  IDX-KAI
       *        訂正の時、時間外の自動発生の有無

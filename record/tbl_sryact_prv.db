@@ -16,6 +16,7 @@ tbl_sryact_prv {
 	AUTOKBN1			char(1);
 	INPUTNUM1			number(3,0);
 	JIHIMONEY1			number(7,0);
+	KANSURYO1			number(10,5);
 	SRYCD2				char(9);
 	SRYSURYO2			number(10,5);
 	SRYKAISU2			number(3,0);
@@ -23,6 +24,7 @@ tbl_sryact_prv {
 	AUTOKBN2			char(1);
 	INPUTNUM2			number(3,0);
 	JIHIMONEY2			number(7,0);
+	KANSURYO2			number(10,5);
 	SRYCD3				char(9);
 	SRYSURYO3			number(10,5);
 	SRYKAISU3			number(3,0);
@@ -30,6 +32,7 @@ tbl_sryact_prv {
 	AUTOKBN3			char(1);
 	INPUTNUM3			number(3,0);
 	JIHIMONEY3			number(7,0);
+	KANSURYO3			number(10,5);
 	SRYCD4				char(9);
 	SRYSURYO4			number(10,5);
 	SRYKAISU4			number(3,0);
@@ -37,6 +40,7 @@ tbl_sryact_prv {
 	AUTOKBN4			char(1);
 	INPUTNUM4			number(3,0);
 	JIHIMONEY4			number(7,0);
+	KANSURYO4			number(10,5);
 	SRYCD5				char(9);
 	SRYSURYO5			number(10,5);
 	SRYKAISU5			number(3,0);
@@ -44,6 +48,7 @@ tbl_sryact_prv {
 	AUTOKBN5			char(1);
 	INPUTNUM5			number(3,0);
 	JIHIMONEY5			number(7,0);
+	KANSURYO5			number(10,5);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

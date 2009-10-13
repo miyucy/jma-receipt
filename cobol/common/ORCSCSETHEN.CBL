@@ -33,6 +33,7 @@
       *  01.00.03    NACL-多々納  06/03/02  セット期間対応
       *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
+      *  04.05.00    NACL-多々納  09/10/XX  換算値入力・関係コメント指示等対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -537,6 +538,21 @@
            MOVE    ISET-ATAI (02)  TO  SPA-COM-ATAI2 (SPA-GMN-IDX)
            MOVE    ISET-ATAI (03)  TO  SPA-COM-ATAI3 (SPA-GMN-IDX)
            MOVE    ISET-ATAI (04)  TO  SPA-COM-ATAI4 (SPA-GMN-IDX)
+      *    換算値
+           MOVE    ISET-KANSURYO       TO  SPA-COM-KANSURYO
+                                                           (SPA-GMN-IDX)
+      *    関係コメント指示
+           IF      ISET-INPUTKBN       =   "1"
+                MOVE    "1"            TO  SPA-COM-INPUTCONT
+                                                           (SPA-GMN-IDX)
+           END-IF
+      *    内服１種類区分
+           IF      SPA-NYUGAIKBN       =   "2"
+               IF      ISET-INPUTKBN       =   "2"
+                   MOVE    "1"             TO  SPA-COM-INPUTNAIF
+                                                           (SPA-GMN-IDX)
+               END-IF
+           END-IF
       *
            .
        1001-INSET-HEN-EXT.
@@ -571,6 +587,24 @@
                                        SPA-SCR-REC
                                        SPA-AREA
            MOVE    LNK-SC92-GMN-IDX    TO  SPA-GMN-IDX
+      *
+      *ver.4.5
+           IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1)
+                                       =   "6"   )  AND
+                  (ISET-KANSURYO       >   ZERO  )
+               IF      ISET-SURYO1     =  (ISET-KANSURYO
+                                       *   SPA-COM-KANZANCHI
+                                                  (SPA-GMN-IDX))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  SPA-COM-KANSURYO
+                                                      (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1     TO  SPA-COM-SURYO
+                                                      (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1     TO  SPA-COM-SURYO2
+                                                      (SPA-GMN-IDX)
+               END-IF
+           END-IF
       *
       *    点数マスタなしのエラーは表示する
            IF      SPA-ERRCD           =   "0001"
