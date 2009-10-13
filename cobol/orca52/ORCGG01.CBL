@@ -46,6 +46,8 @@
       *  01.00.15    NACL-藤原    03/11/12  統計データ作成画面の追加
       *  01.00.16    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
+      *
+      *  04.05.01    NACL-藤原    09/10/01  統計ＣＳＶ出力対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -360,7 +362,8 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01" )
+               IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01"
+                                                  OR "XG01"           )
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-G01FREE
                    INITIALIZE              SPA-G01KYOUTU
@@ -744,6 +747,9 @@
       *    個別指示
            WHEN    "CLICKED"       ALSO    "B09"
                PERFORM 480-G05-SENI-SEC
+      *    ＣＳＶ出力
+           WHEN    "CLICKED"       ALSO    "B10"
+               PERFORM 490-PUTCSV-SEC
       *    情報削除
            WHEN    "CLICKED"       ALSO    "B11"
                PERFORM 490-JYOUHOU-DEL-SEC
@@ -1946,6 +1952,39 @@
            .
        480-G03-SENI-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ＣＳＶ出力画面へ
+      *****************************************************************
+       490-PUTCSV-SEC             SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-G01FREE         TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "G01"               TO  SPA-MOTOPG
+           MOVE    "XG01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SPA-JOB-SHELLID
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XG01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-PUTCSV-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    処理確認処理
       *****************************************************************
