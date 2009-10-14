@@ -126,6 +126,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-TOUKEIERR    PIC X(100).
            03  WRK-PARA-SYORIYMD   PIC X(08).
+           03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-SORTKBN    PIC X(01).
       *
       *    一時領域
@@ -398,6 +399,7 @@
                                        WRK-PARA-HOSPNUM
                                        TOUKEIERR
                                        WRK-PARA-SYORIYMD
+                                       WRK-PARA-PRTKBN
                                        WRK-PARA-SORTKBN
            MOVE    WRK-PARA-HOSPNUM TO SPA-HOSPNUM
       *
@@ -982,6 +984,13 @@
       *****************************************************************
        390-PRINT-OUT-SEC           SECTION.
       *
+      *    「１：印刷する」以外は処理しない
+           IF      WRK-PARA-PRTKBN =   "1"
+               CONTINUE
+           ELSE
+               GO  TO   390-PRINT-OUT-EXT
+           END-IF
+      *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"           TO  SPRT-MODE
            MOVE    LNK-PRTKANRI-RENNUM
@@ -1098,7 +1107,9 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    CNT-PAGE        TO  JOB-UPDCNT
+           IF      WRK-PARA-PRTKBN =   "1"
+               MOVE    CNT-PAGE        TO  JOB-UPDCNT
+           END-IF
       *
            PERFORM 800-ORCSJOB-SEC
       *
