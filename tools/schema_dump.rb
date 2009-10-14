@@ -52,7 +52,7 @@ def vschema_parse(schema)
     next if line =~ /^--/
     next if line =~ /^SET/
     line.gsub!(/, /,",\n           ")
-    line.gsub!(/(OR |AND |FROM |WHERE |LEFT |USING |GROUP |ON )/){|s|
+    line.gsub!(/(OR |AND |FROM |WHERE |LEFT |USING |GROUP |UNION |ON )/){|s|
       sprintf("\n%11s", s)
     }
     line.gsub!(/[^\s+](SELECT )/){|s|
