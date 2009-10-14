@@ -409,6 +409,11 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "140004".
+           05 PIC  X(30)   VALUE   "保険組合せが正しく作成されてい".
+           05 PIC  X(30)   VALUE   "ません。保険または公費情報を確".
+           05 PIC  X(30)   VALUE   "認してください                ".
+      *
       *    ** 15xxxx 投与禁忌薬剤と病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "150001".
@@ -489,7 +494,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  84.
+           05 ERRMES-OCC   OCCURS  85.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   84.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   85.

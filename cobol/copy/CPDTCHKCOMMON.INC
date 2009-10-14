@@ -30,6 +30,7 @@
            03  THKNID-IDX                              PIC 9(05).
            03  THKNID-OCC                              OCCURS 20.
                05  THKNID-HKNID                        PIC 9(10).
+               05  THKNID-HKNNUM                       PIC X(03).
                05  THKNID-HKNID-DAY-G.
                    07  THKNID-HKNID-DAY                PIC 9(01)
                                                        OCCURS  31.
@@ -40,6 +41,7 @@
            03  TKOHID-IDX                              PIC 9(05).
            03  TKOHID-OCC                              OCCURS 20.
                05  TKOHID-KOHID                        PIC 9(10).
+               05  TKOHID-KOHNUM                       PIC X(03).
                05  TKOHID-KOHID-DAY-G.
                    07  TKOHID-KOHID-DAY                PIC 9(01)
                                                        OCCURS  31.
