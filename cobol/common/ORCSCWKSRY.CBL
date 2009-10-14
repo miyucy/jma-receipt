@@ -1214,6 +1214,7 @@
       *           外来投薬で、１種類設定可能かの判定
                    IF      (SPA-COM-SRYKBN (IDX2)  =   "21"  )
                    AND     (SPA-NYUGAIKBN          =   "2"   )
+                   AND     (SPA-COM-KANSURYO(IDX2) NOT =   ZERO )
       *                ｇ、�咫，髻（顱　■蹌譟，髻）�
                        IF    ((TNS-TANICD          =   "032"
                                                    OR  "033")  AND 

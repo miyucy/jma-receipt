@@ -1099,6 +1099,7 @@
            IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "6"  )  AND
                   (LNK-WKSRY-INPUTKBN(IDX IDY) =   "2"  )
                 MOVE    "1"                TO  SPA-COM-INPUTNAIF (IDX2)
+                MOVE    "1"                TO  SPA-COM-TANDKKBN  (IDX2)
            END-IF
       *    コメントの継続
            IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "8"  )  OR
@@ -1159,6 +1160,20 @@
                                                =   LNK-WKSRY-KANSURYO
                                                           (IDX IDY)
                                                /   SPA-COM-KAISU2(IDX2)
+                       END-IF
+                   END-IF
+      *           外来投薬で、１種類設定可能かの判定
+                   IF      (SPA-COM-SRYKBN (IDX2)  =   "21"  )
+                   AND     (SPA-NYUGAIKBN          =   "2"   )
+                   AND     (SPA-COM-KANSURYO(IDX2) NOT =   ZERO  )
+      *                ｇ、�咫，髻（顱　■蹌譟，髻）�
+                       IF    ((TNS-TANICD          =   "032"
+                                                   OR  "033")  AND 
+                              (TNSP-KANZANTANICD   =  "018"))
+                       OR    ((TNS-TANICD          =   "036") AND
+                              (TNSP-KANZANTANICD   =   "007"))
+                           MOVE    "1"             TO  SPA-COM-TANDKKBN
+                                                                (IDX2)
                        END-IF
                    END-IF
                END-IF
