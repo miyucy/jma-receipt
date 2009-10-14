@@ -407,10 +407,14 @@
                    ELSE
                        MOVE    WRK-COM-KISOTEN (IDX-Z)  TO  WRK-TANKA
                    END-IF
-                   COMPUTE WRK-KINGAK-9    =   WRK-TANKA
-                                           *   WRK-COM-SURYO(IDX-Z)
-                                           +   0.5
-                   MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
+                   IF      WRK-COM-KZMCOMPSIKIBETU (IDX-Z)  =   "1"
+                       MOVE    WRK-TANKA           TO  WRK-KINGAK
+                   ELSE
+                       COMPUTE WRK-KINGAK-9    =   WRK-TANKA
+                                               *   WRK-COM-SURYO(IDX-Z)
+                                               +   0.5
+                       MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
+                   END-IF
       *        ÅÀ¿ô
                WHEN    3
                WHEN    4
