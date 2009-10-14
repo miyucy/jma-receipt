@@ -160,6 +160,10 @@
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
+       01  WRK-PTCOM-REC.
+           COPY    "CPPTCOM.INC"   REPLACING
+                                     //PTCOM-// BY //WRK-PTCOM-//.
+      *
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
@@ -567,8 +571,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM
                    UNTIL       FLG-PTCOM      =   1
                MOVE    PTCOM-REC           TO  MCPDATA-REC
+               MOVE    PTCOM-REC           TO  WRK-PTCOM-REC
 	       PERFORM 1001-PTCOMPRV-CHK-SEC
 	       IF      FLG-PTCOM           =   1
+                   MOVE    WRK-PTCOM-REC       TO  MCPDATA-REC
                    MOVE    "DBINSERT"      TO  MCP-FUNC
                    MOVE    "tbl_ptcom_prv" TO  MCP-TABLE
                    MOVE    "key"           TO  MCP-PATHNAME
