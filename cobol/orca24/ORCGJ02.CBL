@@ -212,6 +212,8 @@
            03  FLG-HKN-CHK         PIC 9(01).
            03  FLG-DEKIDAKA        PIC 9(01).
       *
+           03  FLG-RSIGAIRAI        PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -523,6 +525,8 @@
       *    回数
            03  WRK-CNT-TUKI            PIC 9(03).
            03  WRK-DAYCNT              PIC 9(03).
+      *    労災読み替え判定
+           03  WRK-RSAI-GAIRAITEN      PIC 9(08).
       *    プレビュー用
            03  WRK-RSI-CNT             PIC 9(03).
            03  WRK-JIB-CNT             PIC 9(03).
@@ -2634,6 +2638,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    ZERO            TO  FLG-YAKUSOKU
       *
+           MOVE    ZERO                TO  FLG-RSIGAIRAI
+      *
            MOVE    ZERO                TO  WRK-HOUKNS-CNT
            MOVE    ZERO                TO  WRK-HOUKNS-IDX
            MOVE    SPACE               TO  WRK-HOUKNS-NAME
@@ -2675,6 +2681,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 3009-INPUT-MEISYO-SEC
            END-IF
       *!
+      *!!
+      *    労災読み替え判定
+           IF      FLG-RSIGAIRAI       =   ZERO
+               MOVE    ZERO                TO  SPA-NAI-SYUTEN2 (IDX)
+           END-IF
+      *!!
       *
            IF      IDG                 >   400
                GO      TO      3101-SRYACCT-SPA-EXT
@@ -3026,8 +3038,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        OR  "120000410" )  AND
                   (SRY-AUTOKBN (IDZ)   =   "3"         )
                MOVE    1               TO  SPA-NAI-NYUAUTO  (IDX)
-           END-IF
+            END-IF
       *!!
+      *
+      *    労災読み替え点数判定
+           IF     (SRY-NYUGAIKBN       =   "2"   )  AND
+                  (SRY-SRYCD(IDZ)(1:3) =   "101" )  AND
+                  (TNS-SRYKBN          =   "12"  )  AND
+                  (TNS-GAIKANRIKBN     =   2     )
+               MOVE    TNS-TEN             TO  WRK-RSAI-GAIRAITEN
+           END-IF
+      *
+           IF     (SRY-NYUGAIKBN       =   "2"   )  AND
+                  (SRY-SRYSYUKBN   NOT =   "409" )  AND
+                  (SRY-SRYCD(IDZ)(1:1)
+                                       =   "1"   )  AND
+                  (TNS-DATAKBN         =   "1"   )  AND
+                  (TNS-GAIKANRIKBN     =   1     )  AND
+                  (TNS-TEN             =   SPA-NAI-SYUTEN2(IDX)) AND
+                  (TNS-TEN             <   WRK-RSAI-GAIRAITEN )
+               MOVE    1               TO  FLG-RSIGAIRAI
+           END-IF
+      *!!!
       *    コメント以外の最終行セット
            IF      SRY-SRYCD  (IDZ)(1:1)   =   "0"  OR  "8"
                CONTINUE
@@ -8626,83 +8658,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
       *
-      *!!!
-      *!!!
-      *!!!
-           GO      TO  410181-ZENGETU-SYORI1-EXT
-           MOVE    ZERO                TO  SPA-RRK-MAX
-           INITIALIZE                  SPA-GMN-RRKTBL
-           INITIALIZE                  SPA-NAI-RRKTBL
-           MOVE    ZERO                TO  SPA-GMN-MAX
-           INITIALIZE                  SPA-GMN-TBL
-           INITIALIZE                  SPA-NAI-TBL
-           INITIALIZE                  SPA-GMN-INPUT
-           INITIALIZE                  SPA-GMN-NYUIN-AREA
-      *
-      *    入外区分・病床数
-           PERFORM 3009-NYUGAIKBN-HEN-SEC
-      *    診療科一覧編集
-           PERFORM 3005-SRYKA-HEN-SEC
-      *
-      *    保険一覧編集
-           PERFORM 3008-HKNCOMBI-HEN-SEC
-      *
-      *    受診履歴より
-           IF      SPA-NAI-SRYKA-FLG   =   0
-               MOVE    SPACE               TO  SPA-J01-SRYKA
-               MOVE    SPACE               TO  SPA-J01-SRYKAMEI
-           END-IF
-      *    全科
-           IF      SPA-NAI-SRYKA-FLG   =   2
-               MOVE    SPA-GMN-SRYKA-LIST(01)
-                                           TO  SPA-GMN-SRYKA-G
-               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
-               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
-           END-IF
-      *    入院が存在するかのチェック
-           IF      SPA-BEDSU           >   ZERO
-               PERFORM 410101-NYUINRRK-CHK-SEC
-               PERFORM 410102-NYUINRRK-LST-SEC
-           END-IF
-      *    受診履歴より診療科決定
-           IF      SPA-J01-SRYKA       =   SPACE
-               PERFORM 310310-JYURRK-CHK-SEC
-               IF      SPA-J01-SRYKA       =   SPACE
-                   MOVE    "0020"          TO  SPA-ERRCD
-                   MOVE    07              TO  SPA-GMN-CUR
-                   GO      TO       410181-ZENGETU-SYORI1-EXT
-               END-IF
-           END-IF
-      *
-           PERFORM 3101-SRYKA-HEN-SEC
-      *?   入院が存在するかのチェック
-      *    IF      SPA-BEDSU           >   ZERO
-      *        PERFORM 410101-NYUINRRK-CHK-SEC
-      *        PERFORM 410102-NYUINRRK-LST-SEC
-      *?   END-IF
-      *
-      *    受診履歴編集
-           PERFORM 3103-JYURRK-HEN-SEC
-      *
-      *    保存用パラメタ作成
-           PERFORM 4201-SRYACCT-PARA-SEC
-           MOVE    1                   TO  SPA-GMN-PAGE
-           MOVE    1                   TO  SPA-STRNUM
-      *
-      *    診療会計マスターより編集をする
-           PERFORM 410181-SRYACCT-HEN-SEC
-      *
-           IF      SPA-RRK-MAX         =   ZERO
-              AND  SPA-GMN-MAX         =   ZERO
-               IF      SPA-SRYKA-MAX       =   1
-                   MOVE    07              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    06              TO  SPA-GMN-CUR
-               END-IF
-           ELSE
-               MOVE    1               TO  SPA-GMN-CUR
-           END-IF
-      *
            .
        410181-ZENGETU-SYORI1-EXT.
            EXIT.
@@ -8737,6 +8692,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  SPA-GMN-TBL
            INITIALIZE                  SPA-NAI-TBL
            INITIALIZE                  SPA-GMN-INPUT
+           MOVE    ZERO                TO  WRK-RSAI-GAIRAITEN
       *
       *    パラメタより診療会計マスターを編集
            INITIALIZE                      PARA-REC
