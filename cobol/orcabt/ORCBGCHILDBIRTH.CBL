@@ -192,19 +192,19 @@
            03  WRK-HOSPTEL         PIC X(15).
       *
       *     ±¦¤Å¤áÊÔ½¸ÍÑ     
-           03  WRK-HENKAN              PIC X(20).
-           03  WRK-LENGTH              PIC 9(02).
-           03  WRK-HENSYU              PIC X(20).
+           03  WRK-HENKAN          PIC X(20).
+           03  WRK-LENGTH          PIC 9(02).
+           03  WRK-HENSYU          PIC X(20).
       *    ½ÐÎÏ¥Ç¡¼¥¿ÊÔ½¸ÍÑ
-           03  WRK-REC                 PIC X(2500).
-           03  WRK-REC-LENGTH          PIC 9(04).
+           03  WRK-REC             PIC X(2500).
+           03  WRK-REC-LENGTH      PIC 9(04).
            03  WRK-HENSYU-AREA.
-               05  WRK-DATA            PIC X(2400).
-               05  WRK-NUM             PIC ZZZZZZZZZ9.99999. 
-               05  WRK-NAGASA          PIC 9(04).
-               05  WRK-ST              PIC 9(02). 
-               05  WRK-SYOSUU          PIC 9(01).
-               05  WRK-END             PIC 9(01).
+               05  WRK-DATA        PIC X(2400).
+               05  WRK-NUM         PIC ZZZZZZZZZ9.99999. 
+               05  WRK-NAGASA      PIC 9(04).
+               05  WRK-ST          PIC 9(02). 
+               05  WRK-SYOSUU      PIC 9(01).
+               05  WRK-END         PIC 9(01).
       *
       *    ÀÁµáÇ¯·î
            03  WRK-SYMD.
@@ -215,8 +215,22 @@
            03  WRK-ERRMSG          PIC X(300).
       *
       *   ¥ï¡¼¥¯ÆüÉÕÊÑ´¹¥µ¥ÖÊÖµÑÃÍ
-           COPY    "CPORCSDAY.INC" REPLACING  //LNK-DAY//
-                                   BY         //WRK-LNK-DAY//.
+           COPY    "CPORCSDAY.INC" REPLACING   //LNK-DAY//
+                                   BY          //WRK-LNK-DAY//.
+      *
+      *    Ê£¿ôËçÍÑÏ¢ÈÖ
+           03  WRK-HEN-PAGE-AREA.
+               05  WRK-PAGE1       PIC ZZ9.
+               05  WRK-PAGE-HEN    PIC X(01).
+               05  WRK-PAGE2       PIC ZZ9.
+      *
+      *    ÀÁµá½ñÂàÈòÍÑ
+       01  TABLE-AREA.
+           03  TBL-LIST-MAX        PIC 9(02).
+           03  TBL-LIST-OCC        OCCURS  99.
+               05  TBL-LIST-PRTDATA
+                                   PIC X(10000).
+               05  TBL-LIST-FORMID PIC X(20).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -538,7 +552,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *****************************************************************
        2001-TEISYUTUSAKI-HENSYU-SEC    SECTION.
       *
+           INITIALIZE                  TABLE-AREA
            INITIALIZE                  SUM-AREA
+      *
            MOVE    LOW-VALUE       TO  KEY-AREA
            ADD     1               TO  LNK-PRTKANRI-SHORI-RENNUM
       *
@@ -560,6 +576,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            PERFORM          UNTIL   FLG-END        =   1
                INITIALIZE                  SUM-TBL-OCC (1)
                MOVE    ZERO            TO  WRK-PAGE
+               INITIALIZE                  TABLE-AREA
       *
       *        Ê¬ÊÚ¶èÊ¬¡¦ÊÝ¸±¼ÔÊÌÊÔ½¸½èÍý
                MOVE    KEY-NEW         TO  KEY-OLD
@@ -572,9 +589,23 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *        ¹ç·×ÊÔ½¸½èÍý
                PERFORM 2003-TERM-PRINT-SEC
       *
+      *        Ä¢É¼³ÊÇ¼½èÍý
+               PERFORM 2006-TABLE-SET-SEC
+      *
       *        Ä¢É¼°õºþ½èÍý
-               MOVE   "HCN61"          TO  WRK-PRTID
-               PERFORM 2004-PRINT-OUT-SEC
+               PERFORM VARYING IDYY    FROM    1   BY  1
+                       UNTIL   IDYY    >       TBL-LIST-MAX
+                       OR      FLG-ERR >       ZERO
+                   MOVE    SPACE               TO  WRK-HEN-PAGE-AREA
+                   MOVE    IDYY                TO  WRK-PAGE1
+                   MOVE    "/"                 TO  WRK-PAGE-HEN
+                   MOVE    TBL-LIST-MAX        TO  WRK-PAGE2
+                   MOVE    TBL-LIST-PRTDATA (IDYY)
+                                               TO  HCN61
+                   MOVE    WRK-HEN-PAGE-AREA   TO  HCN61-PAGE
+                   MOVE   "HCN61"          TO  WRK-PRTID
+                   PERFORM 2004-PRINT-OUT-SEC
+               END-PERFORM
       *
                IF      FLG-END         =   1
       *            £Ã£Ó£Ö¡Ê¥Ç¡¼¥¿¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
@@ -874,8 +905,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
       *    Ä¢É¼°õºþ½èÍý
            IF      KEY-NEW         =   KEY-OLD
-               MOVE   "HCN61"          TO  WRK-PRTID
-               PERFORM 2004-PRINT-OUT-SEC
+      *        Ä¢É¼³ÊÇ¼½èÍý
+               PERFORM 2006-TABLE-SET-SEC
            END-IF
  
            .
@@ -1188,6 +1219,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            END-IF
            .
        2004-PRINT-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼³ÊÇ¼½èÍý
+      *****************************************************************
+       2006-TABLE-SET-SEC          SECTION.
+      *
+           ADD     1               TO  TBL-LIST-MAX
+      * 
+           MOVE    "HCN61.red"     TO  TBL-LIST-FORMID  (TBL-LIST-MAX)
+           MOVE    HCN61           TO  TBL-LIST-PRTDATA (TBL-LIST-MAX)
+      *
+           .
+       2006-TABLE-SET-EXT.
            EXIT.
       *
       *****************************************************************
