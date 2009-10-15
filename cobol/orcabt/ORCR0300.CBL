@@ -298,6 +298,9 @@
       *  04.04.06    NACL-藤原    09/08/17  「平成２１年７月中国・九州
       *                                     北部豪雨」対応
       *                                     ２００９年７月〜対象 
+      *  04.04.07    NACL-藤原    09/10/14  １３医学管理・１４在宅で
+      *                                     告示区分１が基本項目以外のとき
+      *                                     点数・回数の記載を行う
       *
       *  04.05.01    NACL-藤原    09/06/10  摘要欄下部へのコメント記載対応
       *                                     診療種別区分の追加
@@ -3753,7 +3756,7 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
       *        
                IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
                    IF      TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
-                                           NOT =   "1"
+                                           NOT =   "1" AND "3" AND "5"
                        MOVE    WRK-TBLMAX1         TO  FLG-KOKUJISKBKBN1
                    END-IF
                    IF    ( TBL-KOUI-KOKUJISKBKBN1(WRK-TBLMAX1)
@@ -3766,7 +3769,7 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                END-IF
            END-IF
            .
-       200711-KOUI-TAIHI-EXT.
+       2007111-KOUI-TAIHI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
