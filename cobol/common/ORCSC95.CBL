@@ -4037,6 +4037,9 @@
                                    MOVE    PTBYO-TENKIYMD  TO
                                                            WRK-TENKIYMD
                                END-IF
+                           ELSE
+      *                        転帰日が入院日以降は継続とする
+                               MOVE    1           TO  FLG-TENKI
                            END-IF
                    END-EVALUATE
                END-IF
@@ -4067,7 +4070,7 @@
                    ELSE
                        IF      WRK-CHIYUYMD        <   WRK-TENKIYMD
       *                入院日より前の時、初診算定へ
-                       AND    (WRK-TENKIYMD        >  SPA-K02N-NYUINYMD)
+      ***              AND    (WRK-TENKIYMD        <  SPA-K02N-NYUINYMD)
                            MOVE    1               TO  FLG-CHIYU
                        END-IF
                    END-IF
