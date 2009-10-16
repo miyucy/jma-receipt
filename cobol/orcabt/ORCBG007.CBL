@@ -94,6 +94,7 @@
            03  FLG-PTINF                           PIC 9(01).
            03  FLG-LOOPEND                         PIC 9(01).
            03  FLG-KIKAN-DAY                       PIC 9(01).
+           03  FLG-BTPARA                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -207,6 +208,10 @@
                05  SORTKEY4-HOKENBUNRUI            PIC X(01).
                05  SORTKEY4-PTNUM                  PIC X(20).
                05  SORTKEY4-DUMMY                  PIC X(107).
+      *    個別指示順
+           03  SORTKEY5-KEY    REDEFINES           SORTKEY1-KEY.
+               05  SORTKEY5-RENNUM                 PIC 9(10).
+               05  SORTKEY5-DUMMY                  PIC X(120).
       *
        01  KEY-AREA.
            03  KEY-SRYKA                           PIC X(02).
@@ -217,6 +222,14 @@
            03  ERR-PTNUM                           PIC X(20).
            03  ERR-ERRMSG                          PIC X(80).
            03  ERR-HEN-ERRMSG                      PIC X(80).
+      *
+       01  CONST-AREA.
+           03  CONST-BTPARA-SHELLID        PIC X(08)
+                                           VALUE   "ORCBQL01".
+           03  CONST-BTPARA-JOBID          PIC 9(07)
+                                           VALUE   2.
+           03  CONST-BTPARA-DSP-RENNUM     PIC 9(03)
+                                           VALUE   2.
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -239,6 +252,11 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+           COPY    "CPQTOANY.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -409,6 +427,7 @@ grpsys     END-UNSTRING
            END-IF
       *
            IF    ( WRK-PARA-PTNUM      NOT =   SPACE )
+            AND  ( WRK-PARA-PTNUM      NOT =   "*" )
                MOVE    "4"             TO  WRK-PARA-SRTKBN
            END-IF
       *
@@ -581,26 +600,23 @@ grpsys     END-UNSTRING
       *    入院全患者
            WHEN        "1"         ALSO SPACE
                PERFORM 210-NYU-ALL-HEN-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  200-MAIN-EXT
-               END-IF
       *    外来全患者
            WHEN        "2"         ALSO SPACE
                PERFORM 210-GAI-ALL-HEN-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  200-MAIN-EXT
-               END-IF
       *    入院指定患者
            WHEN        "1"         ALSO NOT SPACE
       *    外来指定患者
            WHEN        "2"         ALSO NOT SPACE
-               PERFORM 210-KJN-HEN-SEC
-               IF    ( FLG-END     NOT =   ZERO )
-                   GO  TO  200-MAIN-EXT
+               IF    ( WRK-PARA-PTNUM  =   "*" )
+                   PERFORM 210-KBT-HEN-SEC
+               ELSE
+                   PERFORM 210-KJN-HEN-SEC
                END-IF
            END-EVALUATE
       *
-           PERFORM 2101-KAIKEI-HEN-SEC
+           IF    ( FLG-END     =   ZERO )
+               PERFORM 2101-KAIKEI-HEN-SEC
+           END-IF
       *
            MOVE    1                   TO  FLG-END
       *
@@ -638,25 +654,7 @@ grpsys     END-UNSTRING
            PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
                     OR   ( FLG-END         NOT =   ZERO )
       *
-               MOVE    PTNYUINRRK-PTID     TO  WRK-SEL-PTID
-               PERFORM 800-PTINF-PTNUM-SEL-SEC
-               IF    ( FLG-END     =   1 )
-                   GO  TO  2101-NYU-BG00701-HEN-EXT
-               END-IF
-               IF    ( PTINF-TSTPTNUMKBN   =   "1" )
-                   CONTINUE
-               ELSE
-      *
-                   MOVE    PTNYUINRRK-PTID     TO  WRK-PTID
-                   PERFORM 800-ORCSS001-SEC
-      *
-                   IF    ( SS001-SRYKA-MAX     >   ZERO )
-                       PERFORM 21011-NYU-BG00701-OUT-SEC
-                       IF    ( FLG-END     =   1 )
-                           GO  TO  2101-NYU-BG00701-HEN-EXT
-                       END-IF
-                   END-IF
-               END-IF
+               PERFORM 21011-NYU-BG00701-HEN-SEC
       *
                PERFORM 900-PTNYUINRRK-KEY43-FET-SEC
       *
@@ -670,6 +668,89 @@ grpsys     END-UNSTRING
       *
            .
        2101-NYU-BG00701-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計カード編集処理−個別指示患者−
+      *****************************************************************
+       210-KBT-HEN-SEC             SECTION.
+      *
+           OPEN    OUTPUT  BG00701-FILE
+           MOVE    ZERO            TO  CNT-BG00701
+      *
+           MOVE    ZERO            TO  KEY-PTID
+      *
+           PERFORM 900-BTPARA-KEY8-SEL-SEC
+           MOVE    BTPARA-INFO-PARA        TO  QTOANY-AREA
+      *
+           PERFORM UNTIL ( FLG-BTPARA  NOT =   ZERO )
+                    OR   ( FLG-END     NOT =   ZERO )
+      *
+               IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
+                   PERFORM 900-PTNYUINRRK-KEY44-SEL-SEC
+                   IF    ( FLG-PTNYUINRRK  =   ZERO )
+                       PERFORM 21011-NYU-BG00701-HEN-SEC
+                   END-IF
+               ELSE
+                   PERFORM 900-SRYACCT-KEY9-SEL-SEC
+                   IF    ( FLG-SRYACCT     =   ZERO )
+                       PERFORM 21011-GAI-BG00701-HEN-SEC
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-BTPARA-KEY8-FET-SEC
+               MOVE    BTPARA-INFO-PARA    TO  QTOANY-AREA
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           CLOSE   BG00701-FILE
+      *
+           .
+       210-KBT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計カード編集処理−入院個別指示患者−
+      *****************************************************************
+       210-NYU-KBT-HEN-SEC             SECTION.
+      *
+           PERFORM 900-PTNYUINRRK-KEY44-SEL-SEC
+           IF    ( FLG-PTNYUINRRK  =   ZERO )
+               PERFORM 21011-NYU-BG00701-HEN-SEC
+           END-IF
+      *
+           .
+       210-NYU-KBT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル編集処理
+      *****************************************************************
+       21011-NYU-BG00701-HEN-SEC       SECTION.
+      *
+           MOVE    PTNYUINRRK-PTID     TO  WRK-SEL-PTID
+           PERFORM 800-PTINF-PTNUM-SEL-SEC
+           IF    ( FLG-END     =   1 )
+               GO  TO  21011-NYU-BG00701-HEN-EXT
+           END-IF
+           IF    ( PTINF-TSTPTNUMKBN   =   "1" )
+               CONTINUE
+           ELSE
+      *
+               MOVE    PTNYUINRRK-PTID     TO  WRK-PTID
+               PERFORM 800-ORCSS001-SEC
+      *
+               IF    ( SS001-SRYKA-MAX     >   ZERO )
+                   PERFORM 21011-NYU-BG00701-OUT-SEC
+                   IF    ( FLG-END     =   1 )
+                       GO  TO  21011-NYU-BG00701-HEN-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       21011-NYU-BG00701-HEN-EXT.
            EXIT.
       *****************************************************************
       *    処理対象患者ファイル出力処理（入院）
@@ -801,6 +882,12 @@ grpsys     END-UNSTRING
                MOVE    PTNUM-PTNUM         TO  SORTKEY4-PTNUM
                MOVE    SORTKEY4-KEY        TO  BG00701-KEY
            END-EVALUATE
+      *
+           IF    ( WRK-PARA-SRTKBN         =   "5" )
+            AND  ( WRK-PARA-PTNUM          =   "*" )
+               MOVE    CNT-BG00701         TO  SORTKEY5-RENNUM
+               MOVE    SORTKEY5-KEY        TO  BG00701-KEY
+           END-IF
       *
            MOVE    PTNUM-PTID              TO  BG00701-PTID
            MOVE    SS001-SRYKA (IDX1)      TO  BG00701-SRYKA
@@ -941,57 +1028,67 @@ grpsys     END-UNSTRING
       *
            MOVE    ZERO            TO  FLG-SRYACCT
       *
-           PERFORM 900-SRYACCT-KEY51-SEL-SEC
+           PERFORM 900-SRYACCT-KEY8-SEL-SEC
       *
            MOVE    ZERO            TO  KEY-PTID
       *
            PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
                     OR   ( FLG-END     NOT =   ZERO )
       *
-               IF    ( KEY-PTID            =   ZERO )
-                OR   ( KEY-PTID        NOT =   ACCT-PTID )
+               PERFORM 21011-GAI-BG00701-HEN-SEC
       *
-                   MOVE    ACCT-PTID   TO  WRK-SEL-PTID
-                   PERFORM 800-PTINF-PTNUM-SEL-SEC
-                   IF    ( FLG-END     =   1 )
-                       GO  TO  2101-GAI-BG00701-HEN-EXT
-                   END-IF
-      *
-                   MOVE    ACCT-PTID       TO  WRK-PTID
-                   PERFORM 800-ORCSS001-SEC
-      *
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL ( IDX1    >   SS001-SRYKA-MAX )
-      *
-                       IF    ( SS001-SRYKA (IDX1)  =   ZERO )
-                        OR   ( SS001-SRYKA-DAY-OCC (IDX1 WRK-NYUGAI)
-                                               NOT =   ZERO )
-      *
-                           INITIALIZE          LASTRRK-REC
-                           PERFORM 21011-BG00701-WRITE-SEC
-                           IF    ( FLG-END     =   1 )
-                               GO  TO  2101-GAI-BG00701-HEN-EXT
-                           END-IF
-                       END-IF
-      *
-                   END-PERFORM
-      *
-                   MOVE    ACCT-PTID       TO  KEY-PTID
-      *
-               END-IF
-      *
-               PERFORM 900-SRYACCT-KEY51-FET-SEC
+               PERFORM 900-SRYACCT-KEY8-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_sryacct"   TO  MCP-TABLE
-           MOVE    "key51"         TO  MCP-PATHNAME
+           MOVE    "key8"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   BG00701-FILE
       *
            .
        2101-GAI-BG00701-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル出力処理（外来）
+      *****************************************************************
+       21011-GAI-BG00701-HEN-SEC       SECTION.
+      *
+           IF    ( KEY-PTID            =   ZERO )
+            OR   ( KEY-PTID        NOT =   ACCT-PTID )
+      *
+               MOVE    ACCT-PTID   TO  WRK-SEL-PTID
+               PERFORM 800-PTINF-PTNUM-SEL-SEC
+               IF    ( FLG-END     =   1 )
+                   GO  TO  21011-GAI-BG00701-HEN-EXT
+               END-IF
+      *
+               MOVE    ACCT-PTID       TO  WRK-PTID
+               PERFORM 800-ORCSS001-SEC
+      *
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   SS001-SRYKA-MAX )
+      *
+                   IF    ( SS001-SRYKA (IDX1)  =   ZERO )
+                    OR   ( SS001-SRYKA-DAY-OCC (IDX1 WRK-NYUGAI)
+                                           NOT =   ZERO )
+      *
+                       INITIALIZE          LASTRRK-REC
+                       PERFORM 21011-BG00701-WRITE-SEC
+                       IF    ( FLG-END     =   1 )
+                           GO  TO  21011-GAI-BG00701-HEN-EXT
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+               MOVE    ACCT-PTID       TO  KEY-PTID
+      *
+           END-IF
+      *
+           .
+       21011-GAI-BG00701-HEN-EXT.
            EXIT.
       *****************************************************************
       *    会計カード編集処理
@@ -1478,35 +1575,68 @@ grpsys     END-UNSTRING
        900-PTNYUINRRK-KEY43-FET-EXT.
            EXIT.
       *****************************************************************
-      *    診療会計検索処理(KEY51)
+      *    入院履歴検索処理
       *****************************************************************
-       900-SRYACCT-KEY51-SEL-SEC       SECTION.
+       900-PTNYUINRRK-KEY44-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+      *    対象患者抽出
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    QTOANY-PTID         TO  PTNYUINRRK-PTID
+           MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD
+           MOVE    WRK-EDDAY           TO  PTNYUINRRK-TENNYUYMD(7:2)
+           MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENSTUYMD
+           MOVE    WRK-STDAY           TO  PTNYUINRRK-TENSTUYMD(7:2)
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key44"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE                  PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key44"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTNYUINRRK-KEY43-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計検索処理
+      *****************************************************************
+       900-SRYACCT-KEY8-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SRYACCT
       *
-           INITIALIZE                  SRYACCT-REC
+           INITIALIZE                   SRYACCT-REC
            MOVE    SPA-HOSPNUM      TO  ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  ACCT-NYUGAIKBN
            MOVE    WRK-PARA-SRYYM  TO  ACCT-SRYYM
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key51"             TO  MCP-PATHNAME
+           MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               PERFORM 900-SRYACCT-KEY51-FET-SEC
+               PERFORM 900-SRYACCT-KEY8-FET-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
       *
            .
-       900-SRYACCT-KEY51-SEL-EXT.
+       900-SRYACCT-KEY8-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    診療会計FETCH処理(KEY51)
+      *    診療会計FETCH処理
       *****************************************************************
-       900-SRYACCT-KEY51-FET-SEC       SECTION.
+       900-SRYACCT-KEY8-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SRYACCT
            MOVE    ZERO                TO  FLG-LOOPEND
@@ -1515,7 +1645,7 @@ grpsys     END-UNSTRING
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
                MOVE    "tbl_sryacct"   TO  MCP-TABLE
-               MOVE    "key51"         TO  MCP-PATHNAME
+               MOVE    "key8"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC TO  SRYACCT-REC
@@ -1536,7 +1666,73 @@ grpsys     END-UNSTRING
            END-PERFORM
       *
            .
-       900-SRYACCT-KEY51-FET-EXT.
+       900-SRYACCT-KEY8-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計検索処理
+      *****************************************************************
+       900-SRYACCT-KEY9-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+      *
+           INITIALIZE                   SRYACCT-REC
+           MOVE    SPA-HOSPNUM      TO  ACCT-HOSPNUM
+           MOVE    WRK-PARA-NYUGAIKBN
+                                   TO  ACCT-NYUGAIKBN
+           MOVE    QTOANY-PTID     TO  ACCT-PTID
+           MOVE    WRK-PARA-SRYYM  TO  ACCT-SRYYM
+           MOVE    SRYACCT-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-SRYACCT-KEY9-FET-SEC
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SRYACCT-KEY9-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計FETCH処理
+      *****************************************************************
+       900-SRYACCT-KEY9-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+           MOVE    ZERO                TO  FLG-LOOPEND
+      *
+           PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key9"          TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC TO  SRYACCT-REC
+      *
+                   PERFORM VARYING IDX-DAY FROM    WRK-STDAY   BY  1
+                           UNTIL ( IDX-DAY >       WRK-EDDAY )
+                            OR   ( FLG-LOOPEND =   1 )
+      *
+                       IF    ( ACCT-DAY (1 IDX-DAY)  >   ZERO )
+                           MOVE    1   TO  FLG-LOOPEND
+                       END-IF
+      *
+                   END-PERFORM
+      *
+               ELSE
+                   MOVE    1           TO  FLG-SRYACCT
+               END-IF
+           END-PERFORM
+      *
+           .
+       900-SRYACCT-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
       *    患者情報検索処理(KEY)
@@ -1622,6 +1818,56 @@ grpsys     END-UNSTRING
       *
            .
        900-PTNUM-KEY4-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ検索処理
+      *****************************************************************
+       900-BTPARA-KEY8-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BTPARA
+      *
+           INITIALIZE                  BTPARA-REC
+           MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
+           MOVE    CONST-BTPARA-SHELLID
+                                   TO  BTPARA-SHELLID
+           MOVE    CONST-BTPARA-JOBID
+                                   TO  BTPARA-JOBID
+           MOVE    CONST-BTPARA-DSP-RENNUM
+                                   TO  BTPARA-DSP-RENNUM
+      *
+           MOVE    BTPARA-REC      TO  MCPDATA-REC
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BTPARA-REC
+           ELSE
+               INITIALIZE              BTPARA-REC
+               MOVE    1           TO  FLG-BTPARA
+           END-IF
+      *
+           .
+       900-BTPARA-KEY8-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ検索処理
+      *****************************************************************
+       900-BTPARA-KEY8-FET-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BTPARA
+      *
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BTPARA-REC
+           ELSE
+               INITIALIZE              BTPARA-REC
+               MOVE    1           TO  FLG-BTPARA
+           END-IF
+      *
+           .
+       900-BTPARA-KEY8-FET-EXT.
            EXIT.
       *****************************************************************
       *    処理対象患者ファイル読込処理

@@ -101,6 +101,7 @@
            03  FLG-CLEAR                       PIC 9(01).
            03  FLG-EXSYOKUJI                   PIC 9(01).
            03  FLG-SKJZAIPTN                   PIC 9(01).
+           03  FLG-SKJFTN                      PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -131,6 +132,8 @@
            03  IDX-KHN                         PIC 9(05).
            03  IDX-TAX                         PIC 9(05).
            03  IDX-SKJ                         PIC 9(05).
+           03  IDX-WSYOKUJI                    PIC 9(05).
+           03  IDX-KANKYO                      PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -164,6 +167,10 @@
                05  WRK-SKJ-TEN-TOKSYOKU        PIC 9(08).
                05  WRK-SKJ-TEN-SYOKUDO         PIC 9(08).
                05  WRK-SKJ-TEN-FKSKONDATE      PIC 9(08).
+               03  WRK-SKJ-TEN-SKJFTN-IPN      PIC 9(08).
+               03  WRK-SKJ-TEN-SKJFTN-TEI2     PIC 9(08).
+               03  WRK-SKJ-TEN-SKJFTN-TEI2-90  PIC 9(08).
+               03  WRK-SKJ-TEN-SKJFTN-TEI1     PIC 9(08).
            03  WRK-LIFE-TEN-G.
                05  WRK-LIFE-TEN-RYOYO1         PIC 9(08).
                05  WRK-LIFE-TEN-RYOYO2         PIC 9(08).
@@ -285,7 +292,7 @@
       *        ¥½¡¼¥ÈÍÑÈÖ¹æ
                05  WSYOKUJI-NUM                PIC 9(03).
       *        ´Ä¶­ÎÅÍÜºÞ¥Õ¥é¥°
-               05  WSYOKUJI-KANKYO             PIC 9(01).
+               05  WSYOKUJI-KANKYO             PIC 9(03).
       *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¹ç·×
                05  WSYOKUJI-SRYCDTOTAL         PIC 9(14).
       *        ¿ôÎÌ¹ç·×
@@ -328,8 +335,10 @@
                    07  WSKJH1804-CNT-SKJRYOYO2 PIC 9(05).
                    07  WSKJH1804-CNT-TOKSYOKU  PIC 9(05).
                    07  WSKJH1804-CNT-SYOKUDO   PIC 9(05).
+                   07  WSKJH1804-CNT-SKJFTN    PIC 9(05).
+                   07  WSKJH1804-CNT-KANFTN    PIC 9(05).
                05  WSKJH1804-SRYCD-CNT-OCC     REDEFINES
-                   WSKJH1804-SRYCD-CNT-VAL     OCCURS  7.
+                   WSKJH1804-SRYCD-CNT-VAL     OCCURS  9.
                    07  WSKJH1804-SRYCD-CNT     PIC 9(05).
       *
       *    Æþ±¡ÎÁ²Ã»»
@@ -457,6 +466,18 @@
       *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë´Ä¶­ÎÅÍÜ
            03  CONST-LIFE-KANKYO2              PIC X(09)
                                                    VALUE "197001810".
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+           03  CONST-SKJFTN-IPN                PIC X(09)
+                                                   VALUE "197000810".
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+           03  CONST-SKJFTN-TEI2               PIC X(09)
+                                                   VALUE "197000910".
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+           03  CONST-SKJFTN-TEI2-90            PIC X(09)
+                                                   VALUE "197001010".
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+           03  CONST-SKJFTN-TEI1               PIC X(09)
+                                                   VALUE "197001110".
       *
            03  CONST-SKJ-COMMENT-G.
                05  CONST-SKJ-COMMENT-VAL.
@@ -481,6 +502,11 @@
            02  WSKJNACCT-OCC                   OCCURS  3.
            COPY    "CPNYUINACCT.INC"   REPLACING   //NACCT-//
                                        BY          //WSKJNACCT-//.
+      *
+       01  TSKJFTN-AREA.
+           03  TSKJFTN-OCC                     OCCURS  31.
+               05  TSKJFTN-SRYCD               PIC X(09).
+               05  TSKJFTN-MONEY               PIC 9(10).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -543,6 +569,9 @@
       *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
            COPY    "CPORCSNYUINDAY.INC".
       *
+      *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
+           COPY    "CPORCSSYOTOKU.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -580,6 +609,7 @@
                                            WNYUINKSN-AREA
                                            WRYYTAN-AREA
                                            WSKJNACCT-AREA
+                                           TSKJFTN-AREA
       *
            INITIALIZE                      HCM34S01-HENKYAKU-AREA
            MOVE    ZERO                TO  HCM34S01-RC
@@ -703,6 +733,11 @@
                MOVE    1                   TO  FLG-EXSYOKUJI
            END-IF
       *
+           IF    ( HCM34S01-SANTEIYM       >=  CONST-H1804 )
+            AND  ( HCM34S01-SKJFTN         =   "1" )
+               MOVE    1                   TO  FLG-SKJFTN
+           END-IF
+      *
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -778,9 +813,22 @@
                    DISPLAY "ORCSNYULIFE ERR:" LNK-NYULIFE-RC
                    INITIALIZE              ORCSNYULIFE-AREA
                END-IF
+               INITIALIZE                  ORCSSYOTOKUAREA
+               MOVE    HCM34S01-HOSPNUM    TO  LNK-SYOTOKU-HOSPNUM
+               MOVE    HCM34S01-PTID       TO  LNK-SYOTOKU-PTID
+               MOVE    HCM34S01-SANTEIYM   TO  LNK-SYOTOKU-SRYYM
+               CALL    "ORCSSYOTOKU"       USING
+                                           ORCSSYOTOKUAREA
+                                           SPA-AREA
+               IF    ( LNK-SYOTOKU-RC  NOT =         ZERO )
+                    DISPLAY "ORCSSYTOKU RC = " LNK-SYOTOKU-RC
+                    INITIALIZE                 ORCSSYOTOKUAREA
+               END-IF
            ELSE
                INITIALIZE                      ORCSNYULIFE-AREA
+               INITIALIZE                      ORCSSYOTOKUAREA
            END-IF
+      *
       *
            INITIALIZE  ORCSNYUINDAY-AREA
            MOVE    HCM34S01-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
@@ -2409,6 +2457,69 @@
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-FKSKONDATE
            END-IF
       *
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+           MOVE    CONST-SKJFTN-IPN    TO  WRK-TNS-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU           =   ZERO )
+               MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-IPN
+           END-IF
+      *
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+           MOVE    CONST-SKJFTN-TEI2    TO  WRK-TNS-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU           =   ZERO )
+               MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-TEI2
+           END-IF
+      *
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+           MOVE    CONST-SKJFTN-TEI2-90 TO WRK-TNS-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU           =   ZERO )
+               MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-TEI2-90
+           END-IF
+      *
+      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+           MOVE    CONST-SKJFTN-TEI1   TO WRK-TNS-SRYCD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU           =   ZERO )
+               MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-TEI1
+           END-IF
+      *
+           PERFORM VARYING IDXD    FROM    1   BY  1
+                   UNTIL ( IDXD    >   31 )
+      *
+               IF    ( FLG-NYUINDAY (IDXD)     =   1 )
+      *
+                   EVALUATE    LNK-SYOTOKU-SKJKBN(IDXD)
+      *            Äã½êÆÀ£²
+                   WHEN    "2"
+                       MOVE   CONST-SKJFTN-TEI2
+                                         TO  TSKJFTN-SRYCD(IDXD)
+                       MOVE   WRK-SKJ-TEN-SKJFTN-TEI2
+                                         TO  TSKJFTN-MONEY(IDXD)
+      *            Äã½êÆÀ£²¡Ê£¹£°Æü±Û¤¨¡Ë
+                   WHEN    "3"
+                       MOVE   CONST-SKJFTN-TEI2-90
+                                         TO  TSKJFTN-SRYCD(IDXD)
+                       MOVE   WRK-SKJ-TEN-SKJFTN-TEI2-90
+                                         TO  TSKJFTN-MONEY(IDXD)
+      *            Äã½êÆÀ£±
+                   WHEN    "1"
+                   WHEN    "4"
+                       MOVE   CONST-SKJFTN-TEI1
+                                         TO  TSKJFTN-SRYCD(IDXD)
+                       MOVE   WRK-SKJ-TEN-SKJFTN-TEI1
+                                         TO  TSKJFTN-MONEY(IDXD)
+                   WHEN    OTHER
+                       MOVE   CONST-SKJFTN-IPN
+                                         TO  TSKJFTN-SRYCD(IDXD)
+                       MOVE   WRK-SKJ-TEN-SKJFTN-IPN
+                                         TO  TSKJFTN-MONEY(IDXD)
+                   END-EVALUATE
+               END-IF
+      *
+           END-PERFORM
+      *
            .
        20011-SKJ-KHNTEN-GET-EXT.
            EXIT.
@@ -2553,10 +2664,40 @@
            MOVE    ZERO                TO  IDX5
       *
            IF    ( FLG-EXSYOKUJI       =   ZERO )
-               EVALUATE    NACCT-DAY (IDXD)
-               WHEN  1
-                   EVALUATE    WRK-SHOKUJIRYOYO
-                   WHEN    1
+               EVALUATE    FLG-SKJZAIPTN
+               WHEN    ZERO
+                   EVALUATE    NACCT-DAY (IDXD)
+                   WHEN  1
+                       EVALUATE    WRK-SHOKUJIRYOYO
+                       WHEN    1
+      *
+      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+                           PERFORM 2001111-SKJ-RYOYO1-SET-SEC
+      *
+      *                    ÆÃÊÌ´ÉÍý²Ã»»
+                           PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
+      *
+      *                    ¿©Æ²²Ã»»
+                           PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
+                       WHEN  2
+      *
+      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+                           PERFORM 2001111-SKJ-RYOYO2-SET-SEC
+                       END-EVALUATE
+                   WHEN  2
+      *
+      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+                       PERFORM 2001111-SKJ-RYOYO1-SET-SEC
+      *
+      *                ÆÃÊÌ´ÉÍý²Ã»»
+                       PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
+      *
+      *                ÆÃÊÌ¿©²Ã»»
+                       PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
+      *
+      *                ¿©Æ²²Ã»»
+                       PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
+                   WHEN  3
       *
       *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
                        PERFORM 2001111-SKJ-RYOYO1-SET-SEC
@@ -2566,55 +2707,30 @@
       *
       *                ¿©Æ²²Ã»»
                        PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
-                   WHEN  2
       *
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
-                       PERFORM 2001111-SKJ-RYOYO2-SET-SEC
+      *                Ê£¿ô¸¥Î©²Ã»»
+                       PERFORM 2001111-SKJ-FKSKONDATE-SET-SEC
+      *
+                   WHEN  4
+      *
+      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+                       PERFORM 2001111-SKJ-RYOYO1-SET-SEC
+      *
+      *                ÆÃÊÌ´ÉÍý²Ã»»
+                       PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
+      *
+      *                ÆÃÊÌ¿©²Ã»»
+                       PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
+      *
+      *                ¿©Æ²²Ã»»
+                       PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
+      *
+      *                Ê£¿ô¸¥Î©²Ã»»
+                       PERFORM 2001111-SKJ-FKSKONDATE-SET-SEC
+      *
                    END-EVALUATE
                WHEN  2
-      *
-      *            Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
-                   PERFORM 2001111-SKJ-RYOYO1-SET-SEC
-      *
-      *            ÆÃÊÌ´ÉÍý²Ã»»
-                   PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
-      *
-      *            ÆÃÊÌ¿©²Ã»»
-                   PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
-      *
-      *            ¿©Æ²²Ã»»
-                   PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
-               WHEN  3
-      *
-      *            Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
-                   PERFORM 2001111-SKJ-RYOYO1-SET-SEC
-      *
-      *            ÆÃÊÌ´ÉÍý²Ã»»
-                   PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
-      *
-      *            ¿©Æ²²Ã»»
-                   PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
-      *
-      *            Ê£¿ô¸¥Î©²Ã»»
-                   PERFORM 2001111-SKJ-FKSKONDATE-SET-SEC
-      *
-               WHEN  4
-      *
-      *            Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
-                   PERFORM 2001111-SKJ-RYOYO1-SET-SEC
-      *
-      *            ÆÃÊÌ´ÉÍý²Ã»»
-                   PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
-      *
-      *            ÆÃÊÌ¿©²Ã»»
-                   PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
-      *
-      *            ¿©Æ²²Ã»»
-                   PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
-      *
-      *            Ê£¿ô¸¥Î©²Ã»»
-                   PERFORM 2001111-SKJ-FKSKONDATE-SET-SEC
-      *
+                   PERFORM 2001111-SKJ-SKJFTN-SET-SEC
                END-EVALUATE
            ELSE
                EVALUATE    FLG-SKJZAIPTN
@@ -2649,6 +2765,8 @@
                     AND  ( NACCT-DAY (IDXD)    =   1  OR 2 )
                        PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
                    END-IF
+               WHEN    2
+                   PERFORM 2001111-SKJ-SKJFTN-SET-SEC
                END-EVALUATE
            END-IF
       *
@@ -2826,6 +2944,29 @@
        2001111-SKJ-FKSKONDATE-SET-EXT.
            EXIT.
       *****************************************************************
+      *    ´µ¼Ô¿©»öÉéÃ´ÀßÄê½èÍý
+      *****************************************************************
+       2001111-SKJ-SKJFTN-SET-SEC      SECTION.
+      *
+           IF    ( TSKJFTN-SRYCD (IDXD) =   SPACE )
+               CONTINUE
+           ELSE
+               IF    ( IDX5                <   5 )
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    TSKJFTN-SRYCD (IDXD)
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   COMPUTE WRK-SKJ-ZAITEN
+                       =   WRK-SKJ-ZAITEN
+                       +   TSKJFTN-MONEY (IDXD)
+               END-IF
+           END-IF
+      *
+      *
+           .
+       2001111-SKJ-SKJFTN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    À¸³èÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
       *****************************************************************
        200111-SEIKATU-SRYCD-GET-SEC    SECTION.
@@ -2834,32 +2975,37 @@
            MOVE    ZERO                TO  IDX5
       *
            IF    ( FLG-EXSYOKUJI       =   ZERO )
-               EVALUATE    NACCT-DAY (IDXD)
-               WHEN  1
-                   EVALUATE    WRK-SHOKUJIRYOYO
-                   WHEN    1
+               EVALUATE    FLG-SKJZAIPTN
+               WHEN    ZERO
+                   EVALUATE    NACCT-DAY (IDXD)
+                   WHEN  1
+                       EVALUATE    WRK-SHOKUJIRYOYO
+                       WHEN    1
+      *
+      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
+                           PERFORM 2001111-LIFE-RYOYO1-SET-SEC
+      *
+      *                    ¿©Æ²²Ã»»
+                           PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
+                       WHEN  2
+      *
+      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë
+                           PERFORM 2001111-LIFE-RYOYO2-SET-SEC
+                       END-EVALUATE
+                   WHEN  2
       *
       *                Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
                        PERFORM 2001111-LIFE-RYOYO1-SET-SEC
       *
+      *                ÆÃÊÌ¿©²Ã»»
+                       PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
+      *
       *                ¿©Æ²²Ã»»
                        PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
-                   WHEN  2
       *
-      *                Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë
-                       PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                    END-EVALUATE
-               WHEN  2
-      *
-      *            Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
-                   PERFORM 2001111-LIFE-RYOYO1-SET-SEC
-      *
-      *            ÆÃÊÌ¿©²Ã»»
-                   PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
-      *
-      *            ¿©Æ²²Ã»»
-                   PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
-      *
+               WHEN    2
+                   PERFORM 2001111-LIFE-SKJFTN-SET-SEC
                END-EVALUATE
            ELSE
                EVALUATE    FLG-SKJZAIPTN
@@ -2895,6 +3041,8 @@
                     AND  ( NACCT-DAY (IDXD)    =   1  OR 2 )
                        PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
                    END-IF
+               WHEN    2
+                   PERFORM 2001111-LIFE-SKJFTN-SET-SEC
                END-EVALUATE
            END-IF
       *
@@ -2990,6 +3138,29 @@
        20011111-LIFE-SYOKUDO-SET-EXT.
            EXIT.
       *****************************************************************
+      *    ´µ¼Ô¿©»öÉéÃ´ÀßÄê½èÍý
+      *****************************************************************
+       2001111-LIFE-SKJFTN-SET-SEC     SECTION.
+      *
+           IF    ( LNK-NYULIFE-SKJFTN-SRYCD (IDXD) =   SPACE )
+               CONTINUE
+           ELSE
+               IF    ( IDX5                <   5 )
+                   COMPUTE IDX5    =   IDX5    +   1
+                   MOVE    LNK-NYULIFE-SKJFTN-SRYCD (IDXD)
+                                           TO  WRK-SKJ-SRYCD (IDX5)
+      *
+                   COMPUTE WRK-SKJ-ZAITEN
+                       =   WRK-SKJ-ZAITEN
+                       +   LNK-NYULIFE-SKJFTN-MONEY (IDXD)
+               END-IF
+           END-IF
+      *
+      *
+           .
+       2001111-LIFE-SKJFTN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý
       *****************************************************************
        200111-SYOKUJI-KHNINF-SET-SEC   SECTION.
@@ -3075,12 +3246,21 @@
            PERFORM 20021-SYOKUDOKSN-CHK-SEC
       *
            IF    ( FLG-EXSYOKUJI   =   ZERO )
+               MOVE    ZERO            TO      FLG-SKJZAIPTN
                PERFORM 20021-SYOKUJI-HEN-SEC
+               IF    ( FLG-SKJFTN  =   1 )
+                   MOVE    2           TO      FLG-SKJZAIPTN
+                   PERFORM 20021-SYOKUJI-HEN-SEC
+               END-IF
            ELSE
                MOVE    ZERO            TO      FLG-SKJZAIPTN
                PERFORM 20021-SYOKUJI-HEN-SEC
                MOVE    1               TO      FLG-SKJZAIPTN
                PERFORM 20021-SYOKUJI-HEN-SEC
+               IF    ( FLG-SKJFTN  =   1 )
+                   MOVE    2           TO      FLG-SKJZAIPTN
+                   PERFORM 20021-SYOKUJI-HEN-SEC
+               END-IF
            END-IF
       *
            IF    ( HCM34S01-SANTEIYM   >=  CONST-H1810 )
@@ -3099,7 +3279,7 @@
        20021-SKJ-SRYCDTTL-HEN-SEC      SECTION.
       *
            PERFORM VARYING IDXG    FROM    1   BY  1
-                   UNTIL ( IDXG    >   7 )
+                   UNTIL ( IDXG    >   9 )
       *
                IF    ( WSKJH1804-SRYCD-CNT (IDXG)
                                    >   ZERO )
@@ -3371,6 +3551,16 @@
                        =   WSKJH1804-CNT-SYOKUDO
                        +   1
                END-IF
+               IF    ( WRK-SKJ-SRYCD (IDXF)
+                                   NOT =   SPACE )
+                   IF    ( WRK-SKJ-SRYCD (IDXF)
+                                   =   TSKJFTN-SRYCD (IDXD))
+                       COMPUTE WSKJH1804-CNT-SKJFTN
+                           =   WSKJH1804-CNT-SKJFTN
+                           +   1
+      *
+                   END-IF
+               END-IF
            END-PERFORM
       *
            .
@@ -3440,6 +3630,16 @@
                        +   1
       *
                END-IF
+               IF    ( WRK-SKJ-SRYCD (IDXF)
+                                   NOT =   SPACE )
+                   IF    ( WRK-SKJ-SRYCD (IDXF)
+                                   =   LNK-NYULIFE-SKJFTN-SRYCD (IDXD))
+                       COMPUTE WSKJH1804-CNT-SKJFTN
+                           =   WSKJH1804-CNT-SKJFTN
+                           +   1
+      *
+                   END-IF
+               END-IF
            END-PERFORM
       *
            .
@@ -3449,6 +3649,8 @@
       *    ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý
       *****************************************************************
        20021-SYOKUJI-KHNINF-SET-SEC    SECTION.
+      *
+           MOVE    ZERO                TO  IDX-WSYOKUJI
       *
            MOVE    ZERO                TO  IDXB
       *
@@ -3475,6 +3677,7 @@
                    MOVE    CONST-WSYOKUJI-MAX  TO  WSYOKUJI-OCC1-MAX
                    MOVE    1                   TO  FLG-OVER
                ELSE
+                   MOVE    WSYOKUJI-OCC1-MAX   TO  IDX-WSYOKUJI
                    MOVE    WSYOKUJI-OCC1-MAX   TO  IDXB
                    MOVE    IDXB                TO  WSYOKUJI-NUM(IDXB)
                    MOVE    WSKJH1804-SRYCDTOTAL
@@ -3557,6 +3760,13 @@
                MOVE    CONST-SKJ-SYOKUDO
                                    TO  WSYOKUJI-SRYCD(IDXB IDXC)
            END-IF
+           IF    ( WSKJH1804-CNT-SKJFTN        >   ZERO )
+               COMPUTE IDXC    =   IDXC  +     1
+               MOVE    WSKJH1804-CNT-SKJFTN
+                                   TO  WSYOKUJI-SURYO(IDXB IDXC)
+               MOVE    TSKJFTN-SRYCD (IDXD)
+                                   TO  WSYOKUJI-SRYCD(IDXB IDXC)
+           END-IF
       *
            .
        200211-SYOKUJI-KHNINF-SET-EXT.
@@ -3618,6 +3828,20 @@
                MOVE    CONST-LIFE-SYOKUDO
                                    TO  WSYOKUJI-SRYCD(IDXB IDXC)
            END-IF
+           IF    ( WSKJH1804-CNT-SKJFTN        >   ZERO )
+               COMPUTE IDXC    =   IDXC  +     1
+               MOVE    WSKJH1804-CNT-SKJFTN
+                                   TO  WSYOKUJI-SURYO(IDXB IDXC)
+               MOVE    LNK-NYULIFE-SKJFTN-SRYCD (IDXD)
+                                   TO  WSYOKUJI-SRYCD(IDXB IDXC)
+           END-IF
+           IF    ( WSKJH1804-CNT-KANFTN        >   ZERO )
+               COMPUTE IDXC    =   IDXC  +     1
+               MOVE    WSKJH1804-CNT-KANFTN
+                                   TO  WSYOKUJI-SURYO(IDXB IDXC)
+               MOVE    LNK-NYULIFE-KANFTN-SRYCD (IDXD)
+                                   TO  WSYOKUJI-SRYCD(IDXB IDXC)
+           END-IF
       *
            MOVE    1               TO  WSYOKUJI-LIFE (IDXB)
       *
@@ -3658,7 +3882,7 @@
                        UNTIL ( IDXH    >   WSYOKUJI-OCC1-MAX - 1 )
                    IF    ( WSYOKUJI-LIFE (IDXH)    =   1 )
                        IF    ( WSYOKUJI-NUM (IDXB)
-                                       =   SPACE )
+                                       =   ZERO )
                         OR   ( WSYOKUJI-NUM (IDXH)
                                        >   WSYOKUJI-NUM (IDXB) )
                            MOVE    WSYOKUJI-NUM (IDXH)
@@ -3705,10 +3929,52 @@
                                            TO  WSYOKUJI-DAY (IDXB IDXD)
                END-PERFORM
                MOVE    1                   TO  WSYOKUJI-LIFE(IDXB)
+      *
+               MOVE    IDXB                TO  IDX-KANKYO
+               PERFORM 200211-KANKYOFTN-HEN-SEC
+      *
            END-IF
       *
            .
        20021-KANKYO-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡»þÀ¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³ÛÊÔ½¸½èÍý
+      *****************************************************************
+       200211-KANKYOFTN-HEN-SEC            SECTION.
+      *
+           PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+      *
+               IF    ( CNT-KANKYO-DAY (IDXD)   >   ZERO )
+                   IF    ( LNK-NYULIFE-KANFTN-SRYCD (IDXD)
+                                           =   SPACE )
+                       CONTINUE
+                   ELSE
+                       INITIALIZE          WSKJH1804-AREA
+                       MOVE    LNK-NYULIFE-KANFTN-SRYCD (IDXD)
+                                       TO  WRK-SRYCD-NUM
+                       MOVE    WRK-SRYCD-NUM
+                                       TO  WSKJH1804-SRYCDTOTAL
+                       MOVE    1       TO  WSKJH1804-SURYOTOTAL
+                       MOVE    LNK-NYULIFE-KANFTN-MONEY (IDXD)
+                                       TO  WSKJH1804-ZAITEN
+                       MOVE    1       TO  WSKJH1804-MEISAISU
+                       MOVE    1       TO  WSKJH1804-CNT-KANFTN
+                       PERFORM 20021-SYOKUJI-ZAI-EDIT-SEC
+                       IF    ( IDX-WSYOKUJI    >   ZERO )
+                           MOVE    WSYOKUJI-NUM (IDX-KANKYO)
+                                       TO   WSYOKUJI-NUM (IDX-WSYOKUJI)
+                           COMPUTE WSYOKUJI-KANKYO (IDX-WSYOKUJI)
+                               =   100 +   IDXD
+                       END-IF
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200211-KANKYOFTN-HEN-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡ÎÁ²Ã»»ÊÔ½¸½èÍý
@@ -4239,7 +4505,7 @@
       *
                COMPUTE SRT-MAX =   SRT-MAX +   1
       *
-               MOVE    "99"                TO  SRT-SRYKBN   (SRT-MAX)
+               MOVE    "95"                TO  SRT-SRYKBN   (SRT-MAX)
       *
                MOVE    1                   TO  SRT-PRIORITY (SRT-MAX)
       *
