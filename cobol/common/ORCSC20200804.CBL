@@ -454,7 +454,12 @@
                    WHEN    "*"
                        CONTINUE
                    WHEN    "."
-                       PERFORM 10010-SRYKBN-CHK-SEC
+                       IF      LNK-ORCSC-PG        =   "K05"
+      *                   セット登録のチェックなし
+                           CONTINUE
+                       ELSE
+                           PERFORM 10010-SRYKBN-CHK-SEC
+                       END-IF
       *
                    WHEN    OTHER
       *                編集チェックへ
@@ -512,11 +517,6 @@
       *****************************************************************
        10010-SRYKBN-CHK-SEC             SECTION.
       *
-           IF      LNK-ORCSC-PG        =   "K05"
-      *        セット登録のチェックなし
-               CONTINUE
-           ELSE
-      *
            MOVE    WRK-COM-SRYSYUKBN (IDX-Z)
                                        TO  WRK-SRYSYUKBN
            EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
@@ -554,6 +554,27 @@
                            PERFORM 100101-SRYSYUMEI-HEN-SEC
                        END-IF
                    END-IF
+      *            生活習慣病指導管理料チェック
+                   IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
+                          (SPA-SEIKATU-ARI2    NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                   END-IF
+      *            小児科外来診察料チェック
+                   IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
+                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                   END-IF
       *        WHEN    "212"
       *        WHEN    "222"
       *        WHEN    "232"
@@ -573,8 +594,6 @@
                                                              (IDX-Z)
                    END-IF
            END-EVALUATE
-      *
-           END-IF
            .
        10010-SRYKBN-CHK-EXT.
            EXIT.
