@@ -238,6 +238,7 @@
       *                                     変換処理を行なうようにする
       *                                     入力のコードクリアも行なう
       *  04.04.03    NACL-藤原    09/03/23  外来まとめからの遷移対応
+      *  04.04.04    NACL-藤原    09/10/16  保険組合せの名称の編集方法の変更
       *
       *  04.05.01    NACL-藤原    09/05/27  複数病名登録時の保険組み合わせ対応
       *  04.05.02    NACL-藤原    09/05/28  照会画面からの遷移対応
@@ -1625,7 +1626,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-NAI-C02-THKNCOMBINUM(IDX)
            MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-NAI-C02-THKNCOMBIMEI(IDX)
-                                           SPA-GMN-C02-HKNCOMBIMEIL(IDX)
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX) (1:34)
+                                       TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-C02-HKNCOMBIMEIL(IDX)
       *                                 
            MOVE    ORCSHKN-NAI-TEKSTYMD (IDX)
                                        TO  SPA-NAI-C02-TEKSTYMD(IDX)
