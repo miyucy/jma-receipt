@@ -399,8 +399,8 @@
                05  WRK-RSI-SONOTA-KBN              PIC X(01).
                05  WRK-RSI-SONOTA-TEN              PIC 9(08).
            03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
-           03  WRK-RUIKEITOTAL                     PIC 9(15)V9(05).
-           03  WRK-RUIKEITOTAL2                    PIC 9(15)V9(05).
+           03  WRK-RUIKEITOTAL                     PIC 9(15).
+           03  WRK-RUIKEITOTAL2                    PIC 9(15).
            03  WRK-ZAINUM                          PIC 9(08).
            03  WRK-HBTSRYKA-G.
                05  WRK-HBTSRYKA-HBTKA              PIC X(02) OCCURS  31.
@@ -3297,9 +3297,12 @@
                            =   WRK-TNSTEN   +   TNS-TEN
       *
                       MOVE     SRY-SRYCD(IDX20) TO  WRK-SRYCD-9
-                      COMPUTE  WRK-RUIKEITOTAL =
-                               WRK-RUIKEITOTAL +
-                             ( WRK-SRYCD-9     *    SRY-SRYSURYO(IDX20))
+                      MOVE     SRY-SRYSURYO(IDX20)
+                                                TO  WRK-SURYO
+                       COMPUTE WRK-RUIKEITOTAL
+                           =   WRK-RUIKEITOTAL
+                           + ( WRK-SRYCD-9     *    WRK-SURYO-S1 )
+                           + ( WRK-SRYCD-9     *    WRK-SURYO-S2 )
       *
                        MOVE     SRY-SRYCD(IDX20) TO  WRK-CALCSRYCD-G
       *
