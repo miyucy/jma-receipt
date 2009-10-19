@@ -19,7 +19,7 @@ create	table	tbl_toukeicsv_b	(
 	CREYMD		char(8),
 	UPYMD		char(8),
 	UPHMS		char(6),
-	primary	key(
+	Constraint "tbl_toukeicsv_b_primary_key" primary key(
 		HOSPNUM,
 		TBL_KEY,
 		RENNUM,
