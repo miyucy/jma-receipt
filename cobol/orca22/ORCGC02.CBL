@@ -2851,15 +2851,15 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
                                MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
                                                        TO  PTBYO-SRYYMD
                                MOVE    ZERO            TO  PTBYO-RENNUM
-                               MOVE    SPACE           TO  PTBYO-DLTFLG
+                               MOVE    "1"             TO  PTBYO-DLTFLG
                                MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
                                MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
                                MOVE    "key34"         TO
                                                        WRK-MCP-PATHNAME
                                PERFORM 900-PTBYO-INV-SEC
-      *                        同一診療科、開始日で９９件のとき
-                               IF      PTBYO-RENNUM    =   99
-                                   MOVE    "0088"          TO  SPA-ERRCD
+      *                        同一診療科、開始日で削除分がないとき
+                               IF      PTBYO-RENNUM    =   ZERO
+                                  MOVE    "0088"           TO  SPA-ERRCD
                                END-IF
                                GO  TO  41011-BANGO-HEN-EXT
                            END-IF
@@ -6773,14 +6773,13 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
                    MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
                    MOVE    ZERO                TO  PTBYO-RENNUM
-                   MOVE    SPACE               TO  PTBYO-DLTFLG
+                   MOVE    "1"                 TO  PTBYO-DLTFLG
                    MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
                    MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
                    MOVE    "key34"             TO  WRK-MCP-PATHNAME
                    PERFORM 900-PTBYO-INV-SEC
-      *            同一診療科、開始日で９９件のとき
-                   COMPUTE IDXX    =   PTBYO-RENNUM
-                                   +   SPA-NAI-C02-BYOMEICD-MAX
+      *            同一診療科、開始日で削除分以外が９９件のとき
+                   COMPUTE IDXX    =   IDXX    -   PTBYO-RENNUM
                    IF      IDXX                >   99
                        MOVE    "0088"          TO  SPA-ERRCD
                    END-IF
@@ -9682,7 +9681,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                WHEN    "0034"
                    STRING  "これ以上追加できません、"
                                                DELIMITED  BY  SIZE
-                           "削除一覧から削除処理を行なって下さい"
+                           "削除一覧を確認し削除処理を行なって下さい"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
@@ -9728,7 +9727,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    END-STRING
                WHEN    "0056"
                    STRING
-                       "行指定での追加処理または変更処理"
+                       "変更処理または行指定での追加処理"
                                                DELIMITED   BY  SIZE 
                        "のときは複数病名の入力はできません"
                                                DELIMITED   BY  SIZE 
@@ -9845,7 +9844,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    "患者番号の入力がありません" 
                                                    TO  SPA-ERRMSG
                WHEN    "0087"
-                   MOVE    "行指定での追加処理時は入力できません"
+                   MOVE
+               "行指定での追加処理時は診療科、開始日の変更はできません"
                                                TO  SPA-ERRMSG
                WHEN    "0088"
                    MOVE
