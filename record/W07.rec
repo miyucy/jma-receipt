@@ -285,6 +285,13 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				INITAUTO_COMB	{
+					INITAUTO	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;
