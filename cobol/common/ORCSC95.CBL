@@ -851,6 +851,13 @@
                    MOVE    SYS-1008-NYUKENSA-FLG
                                            TO  SPA-NYUKENSA-FLG
                END-IF
+      *        ¿Ç»¡ÎÁ¼«Æ°È¯À¸
+               IF      SYS-1008-INITAUTO-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-INITAUTO-FLG
+               ELSE
+                   MOVE    SYS-1008-INITAUTO-FLG
+                                           TO  SPA-INITAUTO-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -877,6 +884,8 @@
                MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
                MOVE    "1"                 TO  SPA-BYOMEIAUTO-FLG
                MOVE    "0"                 TO  SPA-NYUKENSA-FLG
+      *        ¿Ç»¡ÎÁ¼«Æ°È¯À¸
+               MOVE    "1"                 TO  SPA-INITAUTO-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -6219,9 +6228,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     1                   TO  WRK-ZAINUM
                END-IF
       *        ¿Ç»¡ÎÁ¤Îºï½ü
-               IF      WKSRY-SRYKBN        =   "11"  OR
+               IF     (WKSRY-SRYKBN        =   "11"  OR
                                                "12"  OR
-                                               "13"
+                                               "13"  )
+      *        ½éºÆ¿Ç¼«Æ°È¯À¸¤¢¤ê¤Î¤ß
+               AND    (SPA-INITAUTO-FLG    =   "1"   )
                    PERFORM 3002-SRYKBN-CHK-SEC
                END-IF
                IF      FLG-CHK             =   ZERO

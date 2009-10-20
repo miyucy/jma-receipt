@@ -1674,6 +1674,12 @@
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "1058"
+                   STRING  "初診算定日がありません。"
+                           "初診算定日を登録して下さい。"
+                                           DELIMITED   BY  SIZE
+                                           INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1018"
                    MOVE
                    "対象患者の中途終了データはありません。"

@@ -106,6 +106,7 @@
       *                                     一括計算方法追加
       *  04.05.00    NACL-多々納  09/08/28  公費上限額履歴チェック追加
       *  04.05.00    NACL-太田    09/09/04  月別請求書発行方法、集計区分追加
+      *  04.05.00    NACL-多々納  09/10/16  初診再診料自動算定区分追加他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -320,6 +321,16 @@
                        09  SPA-GMN-NYUKENSA-COMB.
                            11  SPA-GMN-NYUKENSA-LIST      PIC X(12)
                                                            OCCURS  2.
+      *
+      *                初診再診料の自動発生
+                       09  SPA-GMN-INITAUTO-G.
+                           11  SPA-GMN-INITAUTO       PIC X(01).
+                           11  SPA-GMN-INITAUTO-F     PIC X(01).
+                           11  SPA-GMN-INITAUTO-MEI   PIC X(10).
+                       09  SPA-GMN-INITAUTO-COMB.
+                           11  SPA-GMN-INITAUTO-LIST       PIC X(12)
+                                                           OCCURS  2.
+                       09  SPA-GMN-INITAUTO-MAX            PIC 9(02).
       *
                    07  SPA-GMN-PAGE2-AREA.
       *                カルテの病名対象
@@ -1447,6 +1458,11 @@
            MOVE    "1 包括分入力をする"
                                        TO  SPA-GMN-HOUKATU-LIST(2)
       *
+      *    初診再診料自動発生
+           MOVE    "0 算定しない"      TO  SPA-GMN-INITAUTO-LIST(1)
+           MOVE    "1 算定する"        TO  SPA-GMN-INITAUTO-LIST(2)
+           MOVE    2                   TO  SPA-GMN-INITAUTO-MAX
+      *
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-S04SHIHARAILST(1)
            MOVE    "1 日別証明書"      TO  SPA-GMN-S04SHIHARAILST(2)
@@ -2066,6 +2082,9 @@
       *        入院時初回加算の自動発生
                MOVE    SYS-1008-NYUKENSA-FLG
                                        TO  SPA-GMN-NYUKENSA
+      *        初診再診料の自動発生
+               MOVE    SYS-1008-INITAUTO-FLG
+                                       TO  SPA-GMN-INITAUTO
       *
       *        時間外加算チェック
                MOVE    SYS-1008-JIKANTOKU-CHK
@@ -2470,7 +2489,22 @@
                END-IF
            END-PERFORM
       *
-            MOVE    2                  TO  SPA-GMN-CUR
+      *    初診再診料の自動発生（初期表示は算定する）
+           IF      SPA-GMN-INITAUTO     =   SPACE
+               MOVE    "1"              TO  SPA-GMN-INITAUTO
+           END-IF
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-INITAUTO
+                                       =   SPA-GMN-INITAUTO-LIST(IDY)
+                                                              (1:1)
+                   MOVE    SPA-GMN-INITAUTO-LIST(IDY)
+                                               TO SPA-GMN-INITAUTO-G
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *
+            MOVE    1                  TO  SPA-GMN-CUR
       *
            . 
        310-SPASET-1007-EXT.
@@ -4135,6 +4169,8 @@
            MOVE    W07-BYOMEIAUTO      TO  SPA-GMN-BYOMEIAUTO-G
       *    入院時初回加算の自動発生
            MOVE    W07-NYUKENSA        TO  SPA-GMN-NYUKENSA-G
+      *    初診再診料の自動発生
+           MOVE    W07-INITAUTO        TO  SPA-GMN-INITAUTO-G
       *
            MOVE    W07-LASTKIKAN       TO  SPA-GMN-LAST-KIKAN
       *
@@ -4277,13 +4313,29 @@
       *
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1007"
-      *            調剤技術基本料チェック
+      *            外来診察料チェック
                    IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4100-DATA-CHK-SEC
+                       PERFORM 4100-INITAUTO-CHK-SEC
+                   END-IF
+      *            育児栄養加算チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-DATA07-CHK-SEC
                    END-IF
       *            診療科チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4102-SRYKACD-CHK-SEC
+                   END-IF
+      *            療養担当手当チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-DATA05-CHK-SEC
+                   END-IF
+      *            病名からの自動発生
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-BYOMEIAUTO-CHK-SEC
+                   END-IF
+      *            中途終了展開時の自動発生
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-CHUTOTENKAI-CHK-SEC
                    END-IF
       *            入院初診料自動算定チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -4293,17 +4345,25 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-JIKANTOKU-CHK-SEC
                    END-IF
+      *            特定薬剤治療管理チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-DATA06-CHK-SEC
+                   END-IF
+      *            調剤技術基本料から薬剤情報提供料チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4100-DATA-CHK-SEC
+                   END-IF
       *            画像診断管理加算１
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-GAZOUKSN1-CHK-SEC
                    END-IF
-      *            相互作用チェック期間
+      *            検体検査加算自動発生）
                    IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4100-KIKAN-CHK2-SEC
+                       PERFORM 4103-KENSAAUTO-CHK-SEC
                    END-IF
-      *            中途終了展開時の自動発生
+      *            入院時初回加算の自動発生
                    IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-CHUTOTENKAI-CHK-SEC
+                       PERFORM 4103-NYUKENSA-CHK-SEC
                    END-IF
       *            訂正時の自動発生
                    IF      SPA-ERRCD           =   SPACE
@@ -4313,21 +4373,13 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-TEISEITOKU-CHK-SEC
                    END-IF
-      *            検体検査加算自動発生）
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-KENSAAUTO-CHK-SEC
-                   END-IF
       *            訂正時の自動発生（入院）
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-TEINYUAUTO-CHK-SEC
                    END-IF
-      *            病名からの自動発生
+      *            相互作用チェック期間
                    IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-BYOMEIAUTO-CHK-SEC
-                   END-IF
-      *            入院時初回加算の自動発生
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 4103-NYUKENSA-CHK-SEC
+                       PERFORM 4100-KIKAN-CHK2-SEC
                    END-IF
       *            外来管理加算チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -4664,6 +4716,140 @@
            .
        4102-KIHON-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    初診再診料自動算定チェック処理
+      *****************************************************************
+       4100-INITAUTO-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-INITAUTO-MAX
+               IF      SPA-GMN-INITAUTO
+                                       =   SPA-GMN-INITAUTO-LIST(IDY)
+                                                               (1:1)
+                   MOVE    SPA-GMN-INITAUTO-LIST (IDY)
+                                           TO  SPA-GMN-NYUSYOSIN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0020"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+               IF      SPA-GMN-INITAUTO    =   "0"
+      *            算定しないのクリア
+                   PERFORM 41001-INITAUTO-HEN-SEC
+               END-IF
+           END-IF
+      *
+          .
+       4100-INITAUTO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初診再診料算定なしの初期表示処理
+      *****************************************************************
+       41001-INITAUTO-HEN-SEC       SECTION.
+      *
+      *    中途終了展開時の自動発生
+           MOVE    "0"                 TO  SPA-GMN-CHUTOTENKAI
+      *    病名からの自動発生
+           MOVE    "0"                 TO  SPA-GMN-BYOMEIAUTO
+      *    期間
+           MOVE    ZERO                TO  SPA-GMN-LAST-KIKAN
+      *    育児自動診療科
+           MOVE    SPACE           TO  SPA-GMN-SRYKACD
+           MOVE    SPACE           TO  SPA-GMN-SRYKAMEI
+      *    育児自動算定
+           MOVE    ZERO                TO  SPA-GMN-DATA(7)
+      *    療養担当手当
+           MOVE    ZERO                TO  SPA-GMN-DATA(5)
+           .
+       41001-INITAUTO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    育児栄養加算チェック
+      *****************************************************************
+       4100-DATA07-CHK-SEC       SECTION.
+      *
+           MOVE    7                   TO  IDX
+      *    初診再診料算定なし
+           IF      SPA-GMN-INITAUTO    =   "0"
+               MOVE    "0"             TO  SPA-GMN-DATA (IDX)
+           END-IF
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-DATA (IDX)
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-DATA-G(IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK             =   ZERO
+               MOVE    "0010"             TO SPA-ERRCD
+               MOVE    2                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       4100-DATA07-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    療養担当手当チェック
+      *****************************************************************
+       4100-DATA05-CHK-SEC       SECTION.
+      *
+           MOVE    5                   TO  IDX
+      *    初診再診料算定なし
+           IF      SPA-GMN-INITAUTO    =   "0"
+               MOVE    "0"             TO  SPA-GMN-DATA (IDX)
+           END-IF
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-DATA (IDX)
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-DATA-G(IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK             =   ZERO
+               MOVE    "0008"             TO SPA-ERRCD
+               MOVE    4                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       4100-DATA05-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定薬剤治療管理料チェック
+      *****************************************************************
+       4100-DATA06-CHK-SEC       SECTION.
+      *
+           MOVE    6                   TO  IDX
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-DATA (IDX)
+                                       =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-DATA-G(IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK             =   ZERO
+               MOVE    "0009"             TO SPA-ERRCD
+               MOVE    10                 TO  SPA-GMN-CUR
+           END-IF
+           .
+       4100-DATA06-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    調剤技術基本料チェック
@@ -4671,7 +4857,7 @@
        4100-DATA-CHK-SEC       SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   7   )
+                   UNTIL      (IDX     >   4   )
                    OR         (SPA-ERRCD   NOT =   SPACE )
                MOVE    ZERO                TO  FLG-OK
       *
@@ -4704,21 +4890,17 @@
                    EVALUATE    IDX
                        WHEN    1
                            MOVE    "0001"             TO SPA-ERRCD
+                           MOVE    11                 TO  SPA-GMN-CUR
                        WHEN    2
                            MOVE    "0002"             TO SPA-ERRCD
+                           MOVE    12                 TO  SPA-GMN-CUR
                        WHEN    3
                            MOVE    "0003"             TO SPA-ERRCD
+                           MOVE    13                 TO  SPA-GMN-CUR
                        WHEN    4
                            MOVE    "0004"             TO SPA-ERRCD
-                       WHEN    5
-                           MOVE    "0008"             TO SPA-ERRCD
-                       WHEN    6
-                           MOVE    "0009"             TO SPA-ERRCD
-                       WHEN    7
-                           MOVE    "0010"             TO SPA-ERRCD
+                           MOVE    14                 TO  SPA-GMN-CUR
                    END-EVALUATE
-                   MOVE    IDX             TO  SPA-GMN-CUR
-                   ADD     1               TO  SPA-GMN-CUR
                END-IF
            END-PERFORM
            .
@@ -4752,7 +4934,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0013"              TO  SPA-ERRCD
-               MOVE    13                  TO  SPA-GMN-CUR
+               MOVE    8                   TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4777,7 +4959,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0018"              TO  SPA-ERRCD
-               MOVE    18                  TO  SPA-GMN-CUR
+               MOVE    15                  TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4801,7 +4983,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0019"              TO  SPA-ERRCD
-               MOVE    68                  TO  SPA-GMN-CUR
+               MOVE    7                   TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4825,7 +5007,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0080"              TO  SPA-ERRCD
-               MOVE    80                  TO  SPA-GMN-CUR
+               MOVE    18                  TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4849,7 +5031,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0083"              TO  SPA-ERRCD
-               MOVE    86                  TO  SPA-GMN-CUR
+               MOVE    20                  TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4873,7 +5055,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0084"              TO  SPA-ERRCD
-               MOVE    87                  TO  SPA-GMN-CUR
+               MOVE    5                   TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4897,7 +5079,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0085"              TO  SPA-ERRCD
-               MOVE    88                  TO  SPA-GMN-CUR
+               MOVE    17                  TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4921,7 +5103,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0081"              TO  SPA-ERRCD
-               MOVE    81                  TO  SPA-GMN-CUR
+               MOVE    19                  TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4946,7 +5128,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0082"              TO  SPA-ERRCD
-               MOVE    84                  TO  SPA-GMN-CUR
+               MOVE    16                  TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4971,7 +5153,7 @@
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0017"              TO  SPA-ERRCD
-               MOVE    17                  TO  SPA-GMN-CUR
+               MOVE    9                   TO  SPA-GMN-CUR
            END-IF
       *
           .
@@ -4995,7 +5177,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    11              TO  SPA-GMN-CUR
+               MOVE    31              TO  SPA-GMN-CUR
                MOVE    "0006"          TO  SPA-ERRCD
            END-IF
       *
@@ -5030,7 +5212,7 @@
                        MOVE    SYS-1005-SRYKANAME1
                                                TO  SPA-GMN-SRYKAMEI
                    ELSE
-                       MOVE    9               TO  SPA-GMN-CUR
+                       MOVE    3               TO  SPA-GMN-CUR
                        MOVE    SPACE           TO  SPA-GMN-SRYKAMEI
                        MOVE    "0011"          TO  SPA-ERRCD
                    END-IF
@@ -5060,7 +5242,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    12              TO  SPA-GMN-CUR
+               MOVE    32              TO  SPA-GMN-CUR
                MOVE    "0012"          TO  SPA-ERRCD
            END-IF
       *
@@ -5085,7 +5267,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    14              TO  SPA-GMN-CUR
+               MOVE    33              TO  SPA-GMN-CUR
                MOVE    "0015"          TO  SPA-ERRCD
            END-IF
       *
@@ -5110,7 +5292,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    15              TO  SPA-GMN-CUR
+               MOVE    34              TO  SPA-GMN-CUR
                MOVE    "0016"          TO  SPA-ERRCD
            END-IF
       *
@@ -5135,7 +5317,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    67              TO  SPA-GMN-CUR
+               MOVE    81              TO  SPA-GMN-CUR
                MOVE    "0034"          TO  SPA-ERRCD
            END-IF
       *
@@ -5159,7 +5341,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    69              TO  SPA-GMN-CUR
+               MOVE    82              TO  SPA-GMN-CUR
                MOVE    "0037"          TO  SPA-ERRCD
            END-IF
       *
@@ -5183,7 +5365,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    85              TO  SPA-GMN-CUR
+               MOVE    83              TO  SPA-GMN-CUR
                MOVE    "0040"          TO  SPA-ERRCD
            END-IF
       *
@@ -5519,7 +5701,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    16              TO  SPA-GMN-CUR
+               MOVE    84              TO  SPA-GMN-CUR
                MOVE    "0014"          TO  SPA-ERRCD
            END-IF
       *
@@ -5543,7 +5725,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    82              TO  SPA-GMN-CUR
+               MOVE    85              TO  SPA-GMN-CUR
                MOVE    "0038"          TO  SPA-ERRCD
            END-IF
       *
@@ -5568,7 +5750,7 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    83              TO  SPA-GMN-CUR
+               MOVE    86              TO  SPA-GMN-CUR
                MOVE    "0039"          TO  SPA-ERRCD
            END-IF
       *
@@ -7820,6 +8002,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-BYOMEIAUTO      TO  SYS-1008-BYOMEIAUTO-FLG
       *    入院時初回加算の自動発生
            MOVE    SPA-GMN-NYUKENSA        TO  SYS-1008-NYUKENSA-FLG
+      *    初診再診料の自動発生
+           MOVE    SPA-GMN-INITAUTO        TO  SYS-1008-INITAUTO-FLG
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -8559,6 +8743,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-NYUKENSA-ITEM(IDY)
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-NYUKENSA-COUNT
+      *    初診再診料の自動発生
+           MOVE    SPA-GMN-INITAUTO-G    TO  W07-INITAUTO
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-INITAUTO-MAX
+               MOVE    SPA-GMN-INITAUTO-LIST(IDY)
+                                       TO  W07-INITAUTO-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-INITAUTO-MAX    TO  W07-INITAUTO-COUNT
       *
       *    時間外加算チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK-G TO  W07-JIKANTOKU-CHK
@@ -9452,6 +9644,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0040"
                    MOVE    "前回保険組合せ相違チェックエラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0020"
+                   MOVE    "外来初診・再診料区分エラー"
+                                                       TO  SPA-ERRMSG
       *        
                WHEN    "1001"
                    MOVE    "カルテの病名対象区分がありません。"
@@ -9727,66 +9922,71 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            EVALUATE    SPA-GMN-CUR
+               WHEN    1
+                   MOVE  "INITAUTO"        TO   MCP-WIDGET
                WHEN    2
-                   MOVE  "DATA01"          TO   MCP-WIDGET
-               WHEN    3
-                   MOVE  "DATA02"          TO   MCP-WIDGET
-               WHEN    4
-                   MOVE  "DATA03"          TO   MCP-WIDGET
-               WHEN    5
-                   MOVE  "DATA04"          TO   MCP-WIDGET
-               WHEN    6
-                   MOVE  "DATA05"          TO   MCP-WIDGET
-               WHEN    7
-                   MOVE  "DATA06"          TO   MCP-WIDGET
-               WHEN    8
                    MOVE  "DATA07"          TO   MCP-WIDGET
-               WHEN    9
+               WHEN    3
                    MOVE  "SRYKACD"         TO   MCP-WIDGET
-               WHEN    13
-                   MOVE  "NYUSYOSIN"       TO   MCP-WIDGET
-               WHEN    10
-                   MOVE  "KIKAN"           TO   MCP-WIDGET
-               WHEN    11
-                   MOVE  "GAIKANKBN"       TO   MCP-WIDGET
-               WHEN    12
-                   MOVE  "GAIMOVE"         TO   MCP-WIDGET
-               WHEN    14
-                   MOVE  "SURYOZERO"       TO   MCP-WIDGET
-               WHEN    15
-                   MOVE  "CHOKICHK"        TO   MCP-WIDGET
-               WHEN    16
-                   MOVE  "HOUKATU"         TO   MCP-WIDGET
-               WHEN    17
-                   MOVE  "JIKANTOKUNYU"    TO   MCP-WIDGET
-               WHEN    18
-                   MOVE  "GAZOUKSN1"       TO   MCP-WIDGET
-               WHEN    19
-                   MOVE  "LASTKIKAN"       TO   MCP-WIDGET
-               WHEN    67
-                   MOVE  "CLEARCHK"        TO   MCP-WIDGET
-               WHEN    68
-                   MOVE  "CHUTOTENKAI"     TO   MCP-WIDGET
-               WHEN    69
-                   MOVE  "YAKJYOCHK"       TO   MCP-WIDGET
-               WHEN    85
-                   MOVE  "ZENHKNCHK"       TO   MCP-WIDGET
-               WHEN    80
-                   MOVE  "TEISEI"          TO   MCP-WIDGET
-               WHEN    81
-                   MOVE  "TEISEITOKU"      TO   MCP-WIDGET
-               WHEN    82
-                   MOVE  "BYOHYOKBN"       TO   MCP-WIDGET
-               WHEN    83
-                   MOVE  "ZAIJUNKBN"       TO   MCP-WIDGET
-               WHEN    84
-                   MOVE  "KENSAAUTO"       TO   MCP-WIDGET
-               WHEN    86
-                   MOVE  "TEINYUAUTO"      TO   MCP-WIDGET
-               WHEN    87
+               WHEN    4
+                   MOVE  "DATA05"          TO   MCP-WIDGET
+               WHEN    5 
                    MOVE  "BYOMEIAUTO"      TO   MCP-WIDGET
-               WHEN    88
+               WHEN    6 
+                   MOVE  "LASTKIKAN"       TO   MCP-WIDGET
+               WHEN    7 
+                   MOVE  "CHUTOTENKAI"     TO   MCP-WIDGET
+               WHEN    8
+                   MOVE  "NYUSYOSIN"       TO   MCP-WIDGET
+               WHEN    9 
+                   MOVE  "JIKANTOKUNYU"    TO   MCP-WIDGET
+               WHEN    10
+                   MOVE  "DATA06"          TO   MCP-WIDGET
+      *
+               WHEN    11
+                   MOVE  "DATA01"          TO   MCP-WIDGET
+               WHEN    12
+                   MOVE  "DATA02"          TO   MCP-WIDGET
+               WHEN    13
+                   MOVE  "DATA03"          TO   MCP-WIDGET
+               WHEN    14
+                   MOVE  "DATA04"          TO   MCP-WIDGET
+               WHEN    15
+                   MOVE  "GAZOUKSN1"       TO   MCP-WIDGET
+               WHEN    16
+                   MOVE  "KENSAAUTO"       TO   MCP-WIDGET
+               WHEN    17
                    MOVE  "NYUKENSA"        TO   MCP-WIDGET
+               WHEN    18
+                   MOVE  "TEISEI"          TO   MCP-WIDGET
+               WHEN    19
+                   MOVE  "TEISEITOKU"      TO   MCP-WIDGET
+               WHEN    20
+                   MOVE  "TEINYUAUTO"      TO   MCP-WIDGET
+      *
+               WHEN    30
+                   MOVE  "KIKAN"           TO   MCP-WIDGET
+               WHEN    31
+                   MOVE  "GAIKANKBN"       TO   MCP-WIDGET
+               WHEN    32
+                   MOVE  "GAIMOVE"         TO   MCP-WIDGET
+               WHEN    33
+                   MOVE  "SURYOZERO"       TO   MCP-WIDGET
+               WHEN    34
+                   MOVE  "CHOKICHK"        TO   MCP-WIDGET
+      *
+               WHEN    81
+                   MOVE  "CLEARCHK"        TO   MCP-WIDGET
+               WHEN    82
+                   MOVE  "YAKJYOCHK"       TO   MCP-WIDGET
+               WHEN    83
+                   MOVE  "ZENHKNCHK"       TO   MCP-WIDGET
+               WHEN    84
+                   MOVE  "HOUKATU"         TO   MCP-WIDGET
+               WHEN    85
+                   MOVE  "BYOHYOKBN"       TO   MCP-WIDGET
+               WHEN    86
+                   MOVE  "ZAIJUNKBN"       TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -10043,76 +10243,70 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        50011-CUR-SET-SEC           SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
-               WHEN    "DATA01"
-                   MOVE    3               TO  SPA-GMN-CUR
-               WHEN    "DATA02"
-                   MOVE    4               TO  SPA-GMN-CUR
-               WHEN    "DATA03"
-                   MOVE    5               TO  SPA-GMN-CUR
-               WHEN    "DATA04"
-                   MOVE    6               TO  SPA-GMN-CUR
-               WHEN    "DATA05"
-                   MOVE    7               TO  SPA-GMN-CUR
-               WHEN    "DATA06"
-                   MOVE    8               TO  SPA-GMN-CUR
+               WHEN    "INITAUTO"
+                   IF      SPA-GMN-INITAUTO    =   "0"
+                       MOVE    8               TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    2               TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "DATA07"
                    IF      SPA-GMN-DATA(7)     =   "1"
-                       MOVE    9           TO  SPA-GMN-CUR
+                       MOVE    3           TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    13          TO  SPA-GMN-CUR
+                       MOVE    4           TO  SPA-GMN-CUR
                    END-IF
                WHEN    "SRYKACD"
-                   MOVE    13              TO  SPA-GMN-CUR
-               WHEN    "NYUSYOSIN"
-                   MOVE    17              TO  SPA-GMN-CUR
-               WHEN    "JIKANTOKUNYU"
-                   MOVE    18              TO  SPA-GMN-CUR
-               WHEN    "GAZOUKSN1"
-                   MOVE    19              TO  SPA-GMN-CUR
-               WHEN    "LASTKIKAN"
-      ************ MOVE    10              TO  SPA-GMN-CUR
-                   MOVE    68              TO  SPA-GMN-CUR
-               WHEN    "CHUTOTENKAI"
-                   MOVE    80              TO  SPA-GMN-CUR
-               WHEN    "TEISEI"
-                   MOVE    81              TO  SPA-GMN-CUR
-               WHEN    "TEISEITOKU"
-                   MOVE    84              TO  SPA-GMN-CUR
-               WHEN    "KENSAAUTO"
-                   MOVE    86              TO  SPA-GMN-CUR
-               WHEN    "TEINYUAUTO"
-                   MOVE    87              TO  SPA-GMN-CUR
+                   MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "DATA05"
+                   MOVE    5               TO  SPA-GMN-CUR
                WHEN    "BYOMEIAUTO"
-                   MOVE    88              TO  SPA-GMN-CUR
-               WHEN    "NYUKENSA"
+                   MOVE    6               TO  SPA-GMN-CUR
+               WHEN    "LASTKIKAN"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "CHUTOTENKAI"
+                   MOVE    8               TO  SPA-GMN-CUR
+               WHEN    "NYUSYOSIN"
+                   MOVE    9               TO  SPA-GMN-CUR
+               WHEN    "JIKANTOKUNYU"
                    MOVE    10              TO  SPA-GMN-CUR
-      *
-               WHEN    "KIKAN"
+               WHEN    "DATA06"
                    MOVE    11              TO  SPA-GMN-CUR
-               WHEN    "GAIKANKBN"
+               WHEN    "DATA01"
                    MOVE    12              TO  SPA-GMN-CUR
-               WHEN    "GAIMOVE"
+               WHEN    "DATA02"
+                   MOVE    13              TO  SPA-GMN-CUR
+               WHEN    "DATA03"
                    MOVE    14              TO  SPA-GMN-CUR
-               WHEN    "SURYOZERO"
+               WHEN    "DATA04"
                    MOVE    15              TO  SPA-GMN-CUR
-               WHEN    "CHOKICHK"
-      ************ MOVE    16              TO  SPA-GMN-CUR
-                   MOVE    50              TO  SPA-GMN-CUR
-               WHEN    "CLEARCHK"
-      ************ MOVE    16              TO  SPA-GMN-CUR
-                   MOVE    69              TO  SPA-GMN-CUR
-               WHEN    "YAKJYOCHK"
-      ************ MOVE    16              TO  SPA-GMN-CUR
-                   MOVE    85              TO  SPA-GMN-CUR
-               WHEN    "ZENHKNCHK"
+               WHEN    "GAZOUKSN1"
                    MOVE    16              TO  SPA-GMN-CUR
+               WHEN    "KENSAAUTO"
+                   MOVE    17              TO  SPA-GMN-CUR
+               WHEN    "NYUKENSA"
+                   MOVE    18              TO  SPA-GMN-CUR
+               WHEN    "TEISEI"
+                   MOVE    19              TO  SPA-GMN-CUR
+               WHEN    "TEISEITOKU"
+                   MOVE    20              TO  SPA-GMN-CUR
+               WHEN    "TEINYUAUTO"
+                   MOVE    30              TO  SPA-GMN-CUR
+               WHEN    "KIKAN"
+                   MOVE    31              TO  SPA-GMN-CUR
+               WHEN    "GAIKANKBN"
+                   MOVE    32              TO  SPA-GMN-CUR
+               WHEN    "GAIMOVE"
+                   MOVE    33              TO  SPA-GMN-CUR
+               WHEN    "SURYOZERO"
+                   MOVE    34              TO  SPA-GMN-CUR
+               WHEN    "CHOKICHK"
+                   MOVE    50              TO  SPA-GMN-CUR
       *        時間外加算チェック
                WHEN    "JIKANTOKU_CHK"
                    IF      SPA-GMN-JIKANTOKU-CHK   =   "1"
                        MOVE    51          TO  SPA-GMN-CUR
                    ELSE
-      *****************MOVE    16          TO  SPA-GMN-CUR
-                       MOVE    67          TO  SPA-GMN-CUR
+                       MOVE    81          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "JIKANW1_HH1"
                    MOVE    52              TO  SPA-GMN-CUR
@@ -10145,16 +10339,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "JIKANS2_HH2"
                    MOVE    66              TO  SPA-GMN-CUR
                WHEN    "JIKANS2_MM2"
-      ************ MOVE    16              TO  SPA-GMN-CUR
-                   MOVE    67              TO  SPA-GMN-CUR
-      *
-      ******   WHEN    "CLEARCHK"
-      *******      MOVE    17              TO  SPA-GMN-CUR
-               WHEN    "HOUKATU"
-      *********    MOVE    99              TO  SPA-GMN-CUR
+                   MOVE    81              TO  SPA-GMN-CUR
+               WHEN    "CLEARCHK"
                    MOVE    82              TO  SPA-GMN-CUR
-               WHEN    "BYOHYOKBN"
+               WHEN    "YAKJYOCHK"
                    MOVE    83              TO  SPA-GMN-CUR
+               WHEN    "ZENHKNCHK"
+                   MOVE    84              TO  SPA-GMN-CUR
+      *
+               WHEN    "HOUKATU"
+                   MOVE    85              TO  SPA-GMN-CUR
+               WHEN    "BYOHYOKBN"
+                   MOVE    86              TO  SPA-GMN-CUR
                WHEN    "ZAIJUNKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *        患者登録情報

@@ -64,6 +64,7 @@
       * 04.03.00     NACL=多々納  08/08/07  労災初診料Ｈ２０年４月改正対応他
       * 04.05.00     NACL=多々納  09/07/28  リハビリ発症日表示対応
       * 04.05.00     NACL-多々納  09/09/XX  小児科外来診察料等包括診療対応
+      * 04.05.00     NACL-多々納  09/10/20  初診再診自動発生なし対応
       *****************************************************************
       *
       *
@@ -2338,6 +2339,12 @@
                MOVE    1                   TO  FLG-ERR
            END-IF
       *
+      *    外来で自動発生なし
+           IF     (SPA-NYUGAIKBN       =   "2"  )
+             AND  (SPA-INITAUTO-FLG    =   "0"  )
+               MOVE    1                   TO  FLG-ERR
+           END-IF
+      *
            IF      FLG-ERR             =   ZERO
       *        労災の初診料算定
                IF     (SPA-HKNKBN          =   1   )
@@ -4505,7 +4512,7 @@
                        WHEN    "21"
                        WHEN    "22"
                        WHEN    "23"
-                           IF      SPA-HKTSANTEI-202   =   ZERO
+                         IF      SPA-HKTSANTEI-202   =   ZERO
       *
       *                    院内時の診療種別変更
                            PERFORM 50192-SRYSYUKBN-CHK-SEC
@@ -4537,8 +4544,7 @@
                                                                 (IDX)
                              END-IF
                            END-IF
-      *
-                           END-IF
+                         END-IF
                        WHEN    OTHER
                            IF      SPA-HKTSANTEI-202   =   ZERO
       *
@@ -5276,6 +5282,10 @@
                   (SPA-WKSRY-KARTE-FLG =   1   )
                MOVE    ZERO                TO  FLG-HENKAN
            END-IF
+      *    診察料自動発生なし時CLAIMもなし
+           IF     (SPA-INITAUTO-FLG    =   "0" )
+               MOVE    ZERO                TO  FLG-HENKAN
+           END-IF
       *    診察料変換
            IF      FLG-HENKAN          =   1
       *        時間外なし
@@ -5416,6 +5426,10 @@
       *
       *    ＤＵＭＭＹ診察料の変更をおこなわない
            IF      FLG-DUMMY           =   1
+               MOVE    ZERO                TO  FLG-HENKAN
+           END-IF
+      *    診察料自動発生なし時、変更もなし
+           IF     (SPA-INITAUTO-FLG    =   "0" )
                MOVE    ZERO                TO  FLG-HENKAN
            END-IF
       *    診察料変換処理
@@ -5904,6 +5918,8 @@
                   (SPA-ERRCD           =   SPACE)  AND
                   (LNK-SC10S-SYORI     =   "A"
                                        OR  "D"   )
+      *    診察料自動発生ありのみ
+           AND    (SPA-INITAUTO-FLG    =   "1"   )
       *        同時初診判定
                PERFORM 101510-DOUJI-CHK-SEC
                IF      FLG-DOUSYOSIN       =   ZERO
@@ -6432,6 +6448,8 @@
                   (LNK-SC10S-SYORI     =   "A"
                                        OR  "D"   )
               AND (WRK-HKNCOMBI    NOT =   "9999" )
+      *    診察料自動発生ありのみ
+           AND    (SPA-INITAUTO-FLG    =   "1"   )
                PERFORM 101521-HKNCOMBI-HEN-SEC
            END-IF
       *

@@ -5276,6 +5276,7 @@
            END-PERFORM
       *
            IF      FLG-OK              =   1
+           AND    (SPA-INITAUTO-FLG    =   "1" )
       *        他保険あり確認メッセージ表示
                MOVE    "0119"              TO  SPA-KIDCD
            END-IF
@@ -5441,7 +5442,11 @@
            IF      SPA-SYORIFLG        =   1
                MOVE    "0123"              TO  SPA-KIDCD
            ELSE
-               MOVE    "0107"              TO  SPA-KIDCD
+               IF      SPA-GMN-MAX         >   ZERO
+                   MOVE    "0107"              TO  SPA-KIDCD
+               ELSE
+                   PERFORM 41013-SRYKA-CHANGE-SEC
+               END-IF
            END-IF
       *
            .
@@ -6012,6 +6017,8 @@
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
               AND (SPA-COM-HKNCOMBI(SPA-GMN-IDX)
                                        NOT =   "9999" )
+      *       診察料自動発生なしは対象外
+              AND (SPA-INITAUTO-FLG    =   "1"        )
       *
                MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
@@ -6030,6 +6037,8 @@
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
               AND (SPA-COM-HKNCOMBI(SPA-GMN-IDX)
                                        NOT =   "9999" )
+      *       診察料自動発生なしは対象外
+              AND (SPA-INITAUTO-FLG    =   "1"        )
       *
                PERFORM 4101122-SYOSIN-SAISIN-SEC
                IF      FLG-OK          NOT =   ZERO
@@ -12155,17 +12164,33 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *
                WHEN    "0100"
-                   STRING  "当日に受診があります。"
-                      "ＯＫで同日再診、ＮＯで訂正表示を行います。"
+                   IF      (SPA-INITAUTO-FLG    =   "0"  )
+                       STRING  "当日に受診があります。"
+                       "ＯＫで同日再診入力、ＮＯで訂正表示を行います。"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
-                   END-STRING
+                       END-STRING
+                   ELSE
+                       STRING  "当日に受診があります。"
+                       "ＯＫで同日再診、ＮＯで訂正表示を行います。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                       END-STRING
+                   END-IF
                WHEN    "0131"
-                   STRING  "当日に受診があります。"
-                      "ＯＫで訂正、ＮＯで同日再診表示を行います。"
+                   IF      (SPA-INITAUTO-FLG    =   "0"  )
+                       STRING  "当日に受診があります。"
+                       "ＯＫで訂正、ＮＯで同日再診入力をして下さい。"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
-                   END-STRING
+                       END-STRING
+                   ELSE
+                       STRING  "当日に受診があります。"
+                       "ＯＫで訂正、ＮＯで同日再診表示を行います。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                       END-STRING
+                   END-IF
                WHEN    "0102"
                    MOVE    "外来管理加算は算定できません。削除します"
                                        TO  WRK-KIDMSG

@@ -4200,11 +4200,13 @@
                IF      WRK-COM-INPUTCD(IDX-Z) =   "113003510"  OR
                                                   "113003710"
                    ADD     1               TO  IDX-ZAI1
+                   MOVE   IDX-Z            TO  IDX-SYU2
                END-IF
       *            再診
                IF      WRK-COM-INPUTCD(IDX-Z) =   "113003610"  OR
                                                   "113003810"
                    ADD     1               TO  IDX-ZAI2
+                   MOVE   IDX-Z            TO  IDX-SYU2
                END-IF
       *
       *        検診からのコメント
@@ -4422,6 +4424,7 @@
                       (IDX-ZAI2            =   1   )  AND
                       (IDX-SYU2            >   ZERO )
                    MOVE    "1017"          TO  SPA-ERRCD
+                   MOVE    "1058"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                    GO      TO      200-ALL-SYORI-EXT
                END-IF
