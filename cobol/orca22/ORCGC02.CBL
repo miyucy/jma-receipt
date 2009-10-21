@@ -2140,6 +2140,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 900-PTBYO-INV-SEC
            IF      FLG-PTBYOMEI        =   ZERO
+               IF      PTBYO-RENNUM        =   99
+                   MOVE    "0089"              TO  SPA-ERRCD
+                   GO  TO  3201-BYOMEI-COPY-KOUSIN-EXT
+               END-IF
                MOVE    PTBYO-RENNUM        TO  WRK-RENNUM
            END-IF
            ADD     1                   TO  WRK-RENNUM
@@ -2270,6 +2274,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 900-PTBYO-INV-SEC
            IF      FLG-PTBYOMEI        =   ZERO
+               IF      PTBYO-RENNUM        =   99
+                   MOVE    "0089"              TO  SPA-ERRCD
+                   GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
+               END-IF
                MOVE    PTBYO-RENNUM        TO  WRK-RENNUM
            END-IF
            ADD     1                   TO  WRK-RENNUM
@@ -2311,7 +2319,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "1002"                  TO  SPA-ERRCD
                DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" WRK-PTBYO-COPY-KEY
-                   GO  TO  45022-PTBYOMEI-UPDATE-EXT
+                   GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
                END-IF
            END-IF
            .
@@ -9848,6 +9856,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                "行指定での追加処理時は診療科、開始日の変更はできません"
                                                TO  SPA-ERRMSG
                WHEN    "0088"
+                   MOVE
+                   "指定された診療科の開始日にはこれ以上追加できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0089"
                    MOVE
                    "指定された診療科の開始日にはこれ以上追加できません"
                                                TO  SPA-ERRMSG
