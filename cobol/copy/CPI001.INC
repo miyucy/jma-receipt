@@ -32,6 +32,8 @@
            03  I001-HOME-ADRS              PIC  X(200).
       *自宅−番地方書
            03  I001-HOME-BANTI             PIC  X(200).
+      *死亡区分
+           03  I001-DEATHKBN               PIC  X(01).
       *病棟番号
            03  I001-BTUNUM                 PIC  X(02).
       *病室番号

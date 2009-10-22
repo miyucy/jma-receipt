@@ -12,6 +12,7 @@ view_I001 {
 	HOME_POST			varchar(7);
 	HOME_ADRS			varchar(200);
 	HOME_BANTI 			varchar(200);
+	DEATHKBN 			char(1);
 	BTUNUM			char(2);
 	BRMNUM			char(8);
 	NYUINKA			char(2);

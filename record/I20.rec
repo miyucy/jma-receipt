@@ -81,6 +81,13 @@ I20	{
 			count	int;
 			item	varchar(23)[50];
 		};
+		DEATHKBNCOMBO	{
+			DEATHKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[05];
+		};
 		SRT1KBNCOMBO{
 			SRT1KBN {
 				value	varchar(22);
