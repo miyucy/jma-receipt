@@ -856,6 +856,13 @@
                                        MCPDATA-REC
                                        SPA-AREA
       *
+      *    死亡区分
+           MOVE    "0"                 TO  SPA-GMN-DEATHKBNL (1)
+           MOVE    "1"                 TO  SPA-GMN-DEATHKBNL (2)
+           MOVE    "未設定"            TO  SPA-GMN-DEATHKBNMEIL (1)
+           MOVE    "死亡"              TO  SPA-GMN-DEATHKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-DEATHKBN-MAX
+      *
       *    並び順
            MOVE    "1"                 TO  SPA-GMN-SRTKBNL (1)
            MOVE    "2"                 TO  SPA-GMN-SRTKBNL (2)
@@ -1144,6 +1151,7 @@
            MOVE    I20-JOTAI           TO  SPA-GMN-JOTAI-G
            MOVE    I20-CHKTESTPT       TO  SPA-GMN-CHKTESTPT
            MOVE    I20-TAIINCD         TO  SPA-GMN-TAIINCD-G
+           MOVE    I20-DEATHKBN        TO  SPA-GMN-DEATHKBN-G
            MOVE    I20-SRT1KBN         TO  SPA-GMN-SRT1KBN-G
            MOVE    I20-SRT2KBN         TO  SPA-GMN-SRT2KBN-G
            MOVE    I20-SRT3KBN         TO  SPA-GMN-SRT3KBN-G
@@ -1214,6 +1222,10 @@
       *    退院事由
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 41030-TAIINCD-CHK-SEC
+           END-IF
+      *    死亡区分
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41030-DEATHKBN-CHK-SEC
            END-IF
       *    並び順１
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1646,6 +1658,34 @@
            END-IF            
            .
        41030-TAIINCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    死亡区分入力処理
+      *****************************************************************
+       41030-DEATHKBN-CHK-SEC          SECTION.
+      *
+           MOVE    19                  TO  SPA-GMN-CUR
+      *
+           IF      SPA-GMN-DEATHKBN    =   SPACE
+               CONTINUE
+           ELSE    
+               MOVE    ZERO               TO  WRK-HENFLG
+               PERFORM VARYING IDY FROM   1   BY  1
+                       UNTIL   IDY >      SPA-GMN-DEATHKBN-MAX
+                       OR      WRK-HENFLG =   1
+                   IF      SPA-GMN-DEATHKBN 
+                                      =   SPA-GMN-DEATHKBNL (IDY)
+                       MOVE    SPA-GMN-DEATHKBNLST (IDY)
+                                         TO  SPA-GMN-DEATHKBN-G
+                       MOVE    "1"       TO  WRK-HENFLG
+                   END-IF
+               END-PERFORM
+               IF      WRK-HENFLG         =   ZERO
+                   MOVE    "0014"               TO  SPA-ERRCD
+               END-IF
+           END-IF            
+           .
+       41030-DEATHKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    並び順区分チェック処理
@@ -2659,6 +2699,25 @@
                MOVE    1                   TO  FLG-JYOKEN
            END-IF    
       *
+      *    死亡区分
+           IF      SPA-GMN-DEATHKBN     =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM 45011-JYOKEN-HENSYU-SEC
+               IF    ( SPA-GMN-DEATHKBN =   "0" )
+                   STRING  "deathkbn <> '1'"   DELIMITED  BY  SIZE                        
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               ELSE
+                   STRING  "deathkbn  = '1'"   DELIMITED  BY  SIZE                        
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+               MOVE    1                   TO  FLG-JYOKEN
+           END-IF    
+      *
       *    テスト患者
            IF      SPA-GMN-CHKTESTPT   =   "T"
                CONTINUE
@@ -3264,6 +3323,7 @@
            MOVE    SPA-GMN-JOTAI-G     TO  I20-JOTAI
            MOVE    SPA-GMN-CHKTESTPT   TO  I20-CHKTESTPT
            MOVE    SPA-GMN-TAIINCD-G   TO  I20-TAIINCD
+           MOVE    SPA-GMN-DEATHKBN-G  TO  I20-DEATHKBN
            MOVE    SPA-GMN-SRT1KBN-G   TO  I20-SRT1KBN
            MOVE    SPA-GMN-SRT2KBN-G   TO  I20-SRT2KBN
            MOVE    SPA-GMN-SRT3KBN-G   TO  I20-SRT3KBN
@@ -3301,6 +3361,13 @@
                MOVE    SPA-GMN-TAIINCDLST (IDX) TO  I20-TAIINCDLST (IDX)
            END-PERFORM
            MOVE    SPA-GMN-TAIINCD-MAX  TO  I20-TAIINCD-COUNT
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-GMN-DEATHKBN-MAX
+               MOVE    SPA-GMN-DEATHKBNLST (IDX)
+                                        TO  I20-DEATHKBNLST (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-DEATHKBN-MAX TO  I20-DEATHKBN-COUNT
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-SRTKBN-MAX
@@ -3423,6 +3490,8 @@
                    MOVE  "SRT3KBN"         TO  MCP-WIDGET 
                WHEN    16
                    MOVE  "TAIINCD"         TO  MCP-WIDGET 
+               WHEN    19
+                   MOVE  "DEATHKBN"        TO  MCP-WIDGET 
            END-EVALUATE
       *
            .
@@ -3468,6 +3537,8 @@
                WHEN    "EDTAIINYMD"
                    MOVE    8                   TO  SPA-GMN-CUR
                WHEN    "TAIINCD"
+                   MOVE    19                  TO  SPA-GMN-CUR
+               WHEN    "DEATHKBN"
                    MOVE    15                  TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -3509,6 +3580,8 @@
                    MOVE    "終了退院日入力エラー"      TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "退院事由入力エラー"        TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "死亡区分入力エラー"        TO  SPA-ERRMSG
                WHEN    "0101"
                    MOVE    "開始入院日が終了年月日より大きいです" 
                                                        TO  SPA-ERRMSG

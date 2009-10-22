@@ -61,6 +61,10 @@
                 04  I20-TAIINCD         PIC X(23).
                 04  I20-TAIINCD-COUNT   PIC S9(9)   BINARY.
                 04  I20-TAIINCDLST      PIC X(23)   OCCURS  50 TIMES.
+              03  I20-DEATHKBNCOMBO.
+                04  I20-DEATHKBN         PIC X(10).
+                04  I20-DEATHKBN-COUNT   PIC S9(9)   BINARY.
+                04  I20-DEATHKBNLST      PIC X(10)   OCCURS  5 TIMES.
               03  I20-SRT1KBNCOMBO.
                 04  I20-SRT1KBN         PIC X(22).
                 04  I20-SRT1KBN-COUNT   PIC S9(9)   BINARY.
