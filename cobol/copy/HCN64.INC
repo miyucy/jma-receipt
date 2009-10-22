@@ -9,7 +9,11 @@
             02  HCN64-HOSPSBT
                     PIC X(2)    OCCURS  3 TIMES.
             02  HCN64-SKYYM PIC X(16).
-            02  HCN64-RECEYMD   PIC X(22).
+            02  HCN64-RECEYMD.
+              03  HCN64-RECEG PIC X(4).
+              03  HCN64-RECEY PIC X(4).
+              03  HCN64-RECEM PIC X(4).
+              03  HCN64-RECED PIC X(4).
             02  HCN64-DATAKBN
                     PIC X(2)    OCCURS  3 TIMES.
             02  HCN64-DATACNT   PIC X(2).
