@@ -134,6 +134,7 @@
              END-IF
            END-IF
       *
+           MOVE    ZERO                    TO  FLG-ARI
            SET     TBLLOCK-IDX             TO  1
            SEARCH  ORC-LOCKCONST-TX        VARYING   TBLLOCK-IDX
                AT   END
@@ -145,7 +146,7 @@
                                               TO  SGYOUMU-CODE 
            END-SEARCH
       *
-           IF      SGYOUMU-CODE        =   ZERO
+           IF      FLG-ARI             =   ZERO
                    MOVE  999           TO  SGYOUMU-CODE
            END-IF
       *
