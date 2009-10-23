@@ -893,8 +893,8 @@
                GO  TO   250-TOKEI-HIDUKE-EXT
            END-IF
       *
-           MOVE    WRK-PARA-STRYMD(7:8)    TO  WRK-STR
-           MOVE    WRK-PARA-ENDYMD(7:8)    TO  WRK-END
+           MOVE    WRK-PARA-STRYMD(7:2)    TO  WRK-STR
+           MOVE    WRK-PARA-ENDYMD(7:2)    TO  WRK-END
       *
       *    同月内
            IF      WRK-PARA-STRYMD(1:6)    =   WRK-PARA-ENDYMD(1:6)
@@ -947,8 +947,8 @@
                MOVE    1                       TO  WRK-STR
                MOVE    31                      TO  WRK-END
            ELSE
-               MOVE    WRK-PARA-STRYMD(7:8)    TO  WRK-STR
-               MOVE    WRK-PARA-ENDYMD(7:8)    TO  WRK-END
+               MOVE    WRK-PARA-STRYMD(7:2)    TO  WRK-STR
+               MOVE    WRK-PARA-ENDYMD(7:2)    TO  WRK-END
            END-IF
       *
       *    同月内

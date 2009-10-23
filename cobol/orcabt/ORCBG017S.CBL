@@ -754,8 +754,8 @@
       *****************************************************************
        200111-HIDUKE-CHK-SEC              SECTION.
       *
-           MOVE    WRK-PARA-STRYMD(7:8)    TO  WRK-STR
-           MOVE    WRK-PARA-ENDYMD(7:8)    TO  WRK-END
+           MOVE    WRK-PARA-STRYMD(7:2)    TO  WRK-STR
+           MOVE    WRK-PARA-ENDYMD(7:2)    TO  WRK-END
       *
       *    同月内
            IF      WRK-PARA-STRYMD(1:6)    =   WRK-PARA-ENDYMD(1:6)
@@ -994,8 +994,8 @@
       *****************************************************************
        200121-HIDUKE-CHK-SEC              SECTION.
       *
-           MOVE    WRK-PARA-STRYMD(7:8)    TO  WRK-STR
-           MOVE    WRK-PARA-ENDYMD(7:8)    TO  WRK-END
+           MOVE    WRK-PARA-STRYMD(7:2)    TO  WRK-STR
+           MOVE    WRK-PARA-ENDYMD(7:2)    TO  WRK-END
       *
       *    同月内
            IF      WRK-PARA-STRYMD(1:6)    =   WRK-PARA-ENDYMD(1:6)
