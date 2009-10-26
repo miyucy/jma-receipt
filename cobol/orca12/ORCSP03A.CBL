@@ -126,6 +126,8 @@
       *
            03  WRK-CNT                 PIC 9(04).
       *
+           03  WRK-SEINAME             PIC X(100).
+      *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT       PIC X(100).
@@ -1903,15 +1905,24 @@
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1        =   ZERO
-               MOVE    50                  TO  IDX-S1
+               MOVE    SPA-GMN-NAME        TO  WRK-SEINAME
            ELSE
-               COMPUTE IDX-S1              =    ORCSSTR-NUM1
-                                           -    1
-           END-IF
       *TEST
            DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
             ",ORCSSTR-NUM2:"  ORCSSTR-NUM2 
-               ",IDX-S1:" IDX-S1
+      *TEST
+               MOVE    ORCSSTR-NUM1        TO  IDX-S1
+               MOVE    ORCSSTR-NUM2        TO  IDX-S2
+               INITIALIZE                  ORCSSTRINGAREA
+               MOVE    "substr"            TO  ORCSSTR-COMMAND
+               MOVE    SPA-GMN-NAME        TO  ORCSSTR-STRING1
+               MOVE    1                   TO  ORCSSTR-NUM1
+               COMPUTE ORCSSTR-NUM2        =   IDX-S1
+                                           -   1
+               CALL    "orcsstring"        USING
+                                           ORCSSTRINGAREA
+               MOVE    ORCSSTR-STRING2     TO  WRK-SEINAME
+           END-IF
       *
       *    国保、退職国保の場合
            IF     (SPA-GMN-HKNNUM      =   "060"
@@ -1927,7 +1938,8 @@
                       (SPA-GMN-SETAINUSI   =   SPA-GMN-NAME)
                    IF      SPA-NAI-SETAIKBN-FLG   =   "1"
       *            世帯主名が空白で氏名と同じ時、姓だけ
-                        MOVE    SPA-GMN-NAME(1:IDX-S1)
+      ************      MOVE    SPA-GMN-NAME(1:IDX-S1)
+                        MOVE    WRK-SEINAME
                                                  TO  SPA-GMN-SETAINUSI
                    END-IF
                END-IF
@@ -1937,11 +1949,13 @@
                       (SPA-GMN-SETAINUSI   NOT =   SPA-GMN-NAME)
                    MOVE    SPA-GMN-SETAINUSI   TO  SPA-GMN-HIHKNJANAME
                ELSE
-                   MOVE    SPA-GMN-NAME(1:IDX-S1)
+      *****        MOVE    SPA-GMN-NAME(1:IDX-S1)
+                   MOVE    WRK-SEINAME
                                                  TO  SPA-GMN-HIHKNJANAME
       *            世帯主名が空白で氏名と同じ時、姓だけ
                    IF      SPA-NAI-SETAIKBN-FLG   =   "1"
-                       MOVE    SPA-GMN-NAME(1:IDX-S1)
+      *****            MOVE    SPA-GMN-NAME(1:IDX-S1)
+                       MOVE    WRK-SEINAME
                                                  TO  SPA-GMN-SETAINUSI
                    END-IF
                END-IF
