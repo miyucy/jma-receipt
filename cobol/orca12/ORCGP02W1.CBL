@@ -3500,7 +3500,7 @@
       *        半角空白を全角空白へ
                MOVE    SPA-GMN-NICKNAME    TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-LEN
-               PERFORM 890-HALF-ZEN-SEC
+               PERFORM 891-HALF-ZEN2-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NICKNAME
                IF      FLG-ERR             =   1
                    MOVE    "0027"              TO  SPA-ERRCD

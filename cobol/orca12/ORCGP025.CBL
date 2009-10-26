@@ -206,6 +206,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ（拡張漢字）
+           COPY    "CPORCSKANACHK2.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -827,7 +829,7 @@
            MOVE    P02-P025-TNAME      TO  SPA-GMN25-TKYU-NAME
       *    半角空白を全角空白へ
            MOVE    SPA-GMN25-TKYU-NAME TO  WRK-MAE-INPUT
-           PERFORM 890-HALF-ZEN-SEC
+           PERFORM 891-HALF-ZEN2-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-NAME
            IF      SPA-ERRCD           =   SPACE
                MOVE    5                   TO  SPA-GMN25-CUR
@@ -847,7 +849,7 @@
            MOVE    P02-P025-TNICKNAME      TO  SPA-GMN25-TKYU-NICKNAME
       *    半角空白を全角空白へ
            MOVE    SPA-GMN25-TKYU-NICKNAME TO  WRK-MAE-INPUT
-           PERFORM 890-HALF-ZEN-SEC
+           PERFORM 891-HALF-ZEN2-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-NICKNAME
            IF      SPA-ERRCD           =   SPACE
                MOVE    6                   TO  SPA-GMN25-CUR
@@ -880,6 +882,29 @@
       *
            .
        890-HALF-ZEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理（拡張漢字対応）
+      *****************************************************************
+       891-HALF-ZEN2-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
+           MOVE    50                  TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"       USING
+                                       ORCSKANACHK2AREA
+           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU     =   1     )
+               MOVE    "2530"              TO  SPA-ERRCD
+               MOVE    KANACHK2-MAE-INPUT   TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    KANACHK2-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       891-HALF-ZEN2-EXT.
            EXIT.
       *
       *****************************************************************
