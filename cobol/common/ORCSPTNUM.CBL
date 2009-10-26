@@ -150,21 +150,21 @@
            IF      KANACHK2-RC      NOT =   ZERO
       *        º®ºß¥¨¥é¡¼
                MOVE    99              TO  SPTNUM-RC
-               MOVE    ZERO            TO  KANACHK-MAX
-               MOVE    9               TO  KANACHK-SYUBETU
+               MOVE    ZERO            TO  KANACHK2-MAX
+               MOVE    9               TO  KANACHK2-SYUBETU
            END-IF
       *    ºÇÂç·å¿ô¤¬£²£°°Ê¾å¤Î»þ¡¢£²£°¤È¤¹¤ë
-           IF      KANACHK-MAX         >   20
-               MOVE    20                  TO  KANACHK-MAX
+           IF      KANACHK2-MAX         >   20
+               MOVE    20               TO  KANACHK2-MAX
            END-IF
       *
-           EVALUATE    KANACHK-SYUBETU
+           EVALUATE    KANACHK2-SYUBETU
                WHEN    1
       *            È¾³Ñ¡Ê´µ¼ÔÈÖ¹æ¡Ë
                    PERFORM 100-PTID-SET-SEC
                WHEN    2
       *            Á´³Ñ¡Ê´µ¼Ô»áÌ¾¡Ë
-                   MOVE    KANACHK-OUT-INPUT   TO  SPTNUM-PTNUM
+                   MOVE    KANACHK2-OUT-INPUT   TO  SPTNUM-PTNUM
                    PERFORM 200-NAME-SET-SEC
       *
                WHEN    OTHER
@@ -289,9 +289,9 @@
       *
            MOVE    2                   TO  SPTNUM-SYUBETU
       *
-           MOVE    SPTNUM-PTNUM(1:KANACHK-MAX)
+           MOVE    SPTNUM-PTNUM(1:KANACHK2-MAX)
                                        TO  WRK-NAME
-           COMPUTE IDX                 =   KANACHK-MAX  +  1
+           COMPUTE IDX                 =   KANACHK2-MAX  +  1
            MOVE    "%"                 TO  WRK-NAME(IDX:1)
       *    ÉôÊ¬¸¡º÷
            PERFORM 201-NAME-HEN-SEC
@@ -369,7 +369,7 @@
            MOVE    SPACE               TO  WRK-NAME2
            MOVE    1                   TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >   KANACHK-MAX
+                   UNTIL       IDX     >   KANACHK2-MAX
                IF      SPTNUM-PTNUM(IDX:2) =   "¡ö"
                    COMPUTE IDX3            =   IDX     +  2
                    IF      SPTNUM-PTNUM (IDX3:2)    =   "¡¡"
@@ -380,7 +380,7 @@
                    ELSE
                        MOVE    SPTNUM-PTNUM(IDX3:) TO  WRK-NAME2
                    END-IF
-                   MOVE    KANACHK-MAX             TO  IDX
+                   MOVE    KANACHK2-MAX             TO  IDX
                ELSE
                    MOVE    SPTNUM-PTNUM(IDX:2)     TO  WRK-NAME1
                                                                (IDX2:2)

@@ -375,15 +375,6 @@
            IF      KANACHK2-MAX-CNT     =   ZERO
                MOVE    100                 TO  KANACHK2-MAX-CNT
            END-IF
-      *    拡張漢字有無
-           INITIALIZE                  ORCSSTRINGAREA
-           MOVE    "check"             TO  ORCSSTR-COMMAND
-           MOVE    KANACHK2-OUT-INPUT   TO  ORCSSTR-STRING1
-           CALL    "orcsstring"        USING
-                                       ORCSSTRINGAREA
-           IF      ORCSSTR-NUM1    NOT =   ZERO
-               MOVE    1               TO  KANACHK2-RC4
-           END-IF
       *
            .
        1000-KOUMOKU-CHK-EXT.
@@ -480,6 +471,16 @@
       *    全角空白判定処理
       *****************************************************************
        1003-ZENSPACE-CHK-SEC           SECTION.
+      *
+      *    拡張漢字有無
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "check"             TO  ORCSSTR-COMMAND
+           MOVE    KANACHK2-OUT-INPUT   TO  ORCSSTR-STRING1
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1    NOT =   ZERO
+               MOVE    1               TO  KANACHK2-RC4
+           END-IF
       *
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
