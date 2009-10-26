@@ -271,10 +271,11 @@
                        09  SPA-GMN-ZENHKNCHK-G.
                            11  SPA-GMN-ZENHKNCHK           PIC X(01).
                            11  SPA-GMN-ZENHKNCHK-F1        PIC X(01).
-                           11  SPA-GMN-ZENHKNCHK-MEI       PIC X(20).
+                           11  SPA-GMN-ZENHKNCHK-MEI       PIC X(28).
                        09  SPA-GMN-ZENHKNCHK-COMB.
-                           11  SPA-GMN-ZENHKNCHK-LIST      PIC X(22)
-                                                           OCCURS  2.
+                           11  SPA-GMN-ZENHKNCHK-LIST      PIC X(30)
+                                                           OCCURS  3.
+                       09  SPA-ZENHKNCHK-MAX               PIC 9(02).
       *                病名表示区分
                        09  SPA-GMN-BYOHYOKBN-G.
                            11  SPA-GMN-BYOHYOKBN           PIC X(01).
@@ -1526,6 +1527,9 @@
                                        TO  SPA-GMN-ZENHKNCHK-LIST(1)
            MOVE    "1 チェックする"
                                        TO  SPA-GMN-ZENHKNCHK-LIST(2)
+           MOVE    "2 チェックする（すべて）"
+                                       TO  SPA-GMN-ZENHKNCHK-LIST(3)
+           MOVE    3                   TO  SPA-ZENHKNCHK-MAX
       *    病名表示区分
            MOVE    "0 表示しない"      TO  SPA-GMN-BYOHYOKBN-LIST(1)
            MOVE    "1 表示する"        TO  SPA-GMN-BYOHYOKBN-LIST(2)
@@ -2391,6 +2395,9 @@
                                                TO  SPA-GMN-ZENHKNCHK-G
                 WHEN    "1"
                     MOVE    SPA-GMN-ZENHKNCHK-LIST(2)
+                                               TO  SPA-GMN-ZENHKNCHK-G
+                WHEN    "2"
+                    MOVE    SPA-GMN-ZENHKNCHK-LIST(3)
                                                TO  SPA-GMN-ZENHKNCHK-G
                 WHEN    OTHER
                     MOVE    SPA-GMN-ZENHKNCHK-LIST(1)
@@ -5355,7 +5362,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-ZENHKNCHK-MAX
                IF      SPA-GMN-ZENHKNCHK
                                       =   SPA-GMN-ZENHKNCHK-LIST(IDX)
                                                                 (1:1)
@@ -8679,11 +8686,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    前回保険組合せ相違チェック
            MOVE    SPA-GMN-ZENHKNCHK-G  TO  W07-ZENHKNCHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-ZENHKNCHK-MAX
                MOVE    SPA-GMN-ZENHKNCHK-LIST (IDX)
                                        TO  W07-ZENHKNCHK-ITEM(IDX)
            END-PERFORM
-           MOVE    2                   TO  W07-ZENHKNCHK-COUNT
+           MOVE    SPA-ZENHKNCHK-MAX   TO  W07-ZENHKNCHK-COUNT
       *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU

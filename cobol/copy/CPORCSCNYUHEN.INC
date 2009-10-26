@@ -51,4 +51,6 @@
                05  ORCSCNYUHEN-MAE-TAIINYMD        PIC X(08).
       *        瘉蔽轉情ゥ
                05  ORCSCNYUHEN-LAST-TAIINYMD       PIC X(08).
+      *        職啣情轉情ゥ
+               05  ORCSCNYUHEN-TAI-TAIINYMD        PIC X(08).
       *

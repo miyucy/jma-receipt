@@ -143,6 +143,8 @@
       *
            03  FLG-SANTEI-ARI      PIC 9(01).
            03  FLG-FUKUSU          PIC 9(01).
+      *    Â¾°å±¡Âà±¡Æü
+           03  FLG-TAITAIIN        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -4002,6 +4004,8 @@
            MOVE    ZERO                TO  IDX-SINSATU2
       *    Ê£¿ô²Ê¡¦ÊÝ¸±
            MOVE    ZERO                TO  FLG-FUKUSU
+      *    Â¾°å±¡Âà±¡Æü
+           MOVE    ZERO                TO  FLG-TAITAIIN
       *    ¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE      )  OR
@@ -4254,6 +4258,11 @@
                           (WRK-COM-TIMEFLG (IDX-Z)   NOT =   ZERO )
                        MOVE    1               TO  FLG-JIKASAN
                    END-IF
+               END-IF
+      *
+      *        Â¾°å±¡Âà±¡Æü
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "099999906"
+                   MOVE    1                   TO  FLG-TAITAIIN
                END-IF
       *
              END-IF
@@ -5084,6 +5093,20 @@
                MOVE    LNK-ORCSC-TAIINYMD  TO  WRK-SYOYMD
                MOVE    1                   TO  FLG-TAIIN
            END-IF
+      *!!!
+      *    Â¾±¡Âà±¡Æü¤¬¤¢¤ë»þ¡¢Âà±¡Æü
+           IF      FLG-TAITAIIN        =   1
+               MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
+               MOVE    2                   TO  FLG-TAIIN
+           ELSE
+               IF     (SPA-TAI-TAIINYMD    =   SPACE )  OR
+                      (SPA-TAI-TAIINYMD    <=  WRK-SYOYMD)
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-TAI-TAIINYMD    TO  WRK-SYOYMD
+                   MOVE    2                   TO  FLG-TAIIN
+               END-IF
+           END-IF
       *    Æ±Æü½é¿Ç¤ÎÆþÎÏ¤¬¤¢¤ë»þ
            IF     (FLG-DOUJITU         =   1 )  AND
                   (IDX-SINSATU2        >   ZERO)
@@ -5100,7 +5123,8 @@
       *@
       *    ¾®»ù»ØÆ³´ÉÍýÎÁ¤ÏÂà±¡Æü¤Î¤ßÈ½Äê¤È¤¹¤ë
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "113002210"
-               IF     (FLG-TAIIN           =   1    ) OR
+               IF     (FLG-TAIIN           =   1
+                                           OR  2    ) OR
                       (WRK-SYOYMD(1:6)     =   SPA-SRYYMD(1:6))
                    CONTINUE
                ELSE
@@ -5141,11 +5165,14 @@
                WHEN    WRK-KEIYMD          >   SPA-SRYYMD
       *            £±·î¸å¤ÎÁ°±Ä¶ÈÆü¤ÈÆ±¤¸»þ¡¢£Ï£Ë
                    IF      FLG-SIDOU       =   1
-                       IF      FLG-TAIIN       =   1
+                       EVALUATE    FLG-TAIIN
+                       WHEN    0
+                           MOVE    "0034"         TO  SPA-ERRCD
+                       WHEN    1
                            MOVE    "0120"         TO  SPA-ERRCD
-                       ELSE
-                           MOVE    "0034"          TO  SPA-ERRCD
-                       END-IF
+                       WHEN    2
+                           MOVE    "0121"         TO  SPA-ERRCD
+                       END-EVALUATE
                    ELSE
                        IF      WRK-KEIYMDZEN   <=   SPA-SRYYMD
                            IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
@@ -5153,18 +5180,34 @@
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                                 (IDX-Z)
-                               IF      FLG-TAIIN       =   1
-                                   MOVE    "K022"          TO  SPA-ERRCD
-                               ELSE
-                                   MOVE    "K002"          TO  SPA-ERRCD
-                               END-IF
+      **                       IF      FLG-TAIIN       =   1
+      *                            MOVE    "K022"          TO  SPA-ERRCD
+      *                        ELSE
+      *                            MOVE    "K002"          TO  SPA-ERRCD
+      ***                      END-IF
+                               EVALUATE    FLG-TAIIN
+                               WHEN    0
+                                   MOVE    "K002"         TO  SPA-ERRCD
+                               WHEN    1
+                                   MOVE    "K022"         TO  SPA-ERRCD
+                               WHEN    2
+                                   MOVE    "K032"         TO  SPA-ERRCD
+                               END-EVALUATE
                            END-IF
                        ELSE
-                           IF      FLG-TAIIN       =   1
-                               MOVE    "0120"          TO  SPA-ERRCD
-                           ELSE
-                               MOVE    "0034"          TO  SPA-ERRCD
-                           END-IF
+      *                     IF      FLG-TAIIN       =   1
+      *                         MOVE    "0120"          TO  SPA-ERRCD
+      *                     ELSE
+      *                         MOVE    "0034"          TO  SPA-ERRCD
+      *                     END-IF
+                           EVALUATE    FLG-TAIIN
+                           WHEN    0
+                               MOVE    "0034"         TO  SPA-ERRCD
+                           WHEN    1
+                               MOVE    "0120"         TO  SPA-ERRCD
+                           WHEN    2
+                               MOVE    "0121"         TO  SPA-ERRCD
+                           END-EVALUATE
                        END-IF
                    END-IF
       *!!!

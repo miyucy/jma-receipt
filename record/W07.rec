@@ -224,10 +224,10 @@ W07	{
 				};
 				ZENHKNCHK_COMB	{
 					ZENHKNCHK	{
-						value	varchar(22);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(22)[3];
+					item	varchar(30)[3];
 				};
 				TEISEI_COMB	{
 					TEISEI	{

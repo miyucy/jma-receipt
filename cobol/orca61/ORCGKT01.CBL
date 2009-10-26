@@ -315,6 +315,9 @@
            03  FLG-COPYOK              PIC 9(01).
            03  FLG-SRYYM-HEN           PIC 9(01).
       *
+           03  FLG-TEI-ARI             PIC 9(01).
+           03  FLG-SANTEI              PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -413,6 +416,10 @@
            03  WRK-SRYYM.
                05  WRK-SRYYY       PIC 9(04).
                05  WRK-SRYMM       PIC 9(02).
+           03  WRK-YMD.
+               05  WRK-YM          PIC X(04).
+               05  WRK-DD          PIC X(02).
+           03  WRK-DD-1            PIC 9(02).
       *
            03  WRK-TOUYMD.
                05  WRK-TOUYY       PIC 9(04).
@@ -2346,6 +2353,9 @@
                MOVE    ORCSCNYUHEN-MAE-TAIINYMD
                                            TO  SPA-K02N-TAIINYMD
            END-IF
+      *    Â¾°å±¡Âà±¡Æü
+           MOVE    ORCSCNYUHEN-TAI-TAIINYMD
+                                           TO  SPA-TAI-TAIINYMD
       *    Æþ±¡Ãæ¤Î»þ¡¢¥¨¥é¡¼¤È¤¹¤ë
            MOVE    ZERO                TO  SPA-NAI-NYUIN
            IF      FLG-NYUIN           =   1
@@ -2354,6 +2364,15 @@
            ELSE
                MOVE    ZERO                TO  SPA-NAI-NYUIN-ERR
            END-IF
+      *!!
+      *    Â¾°å±¡Âà±¡Æü¤Î»»ÄêÍúÎòÊÔ½¸
+           IF      FLG-NYUIN           =   ZERO
+               PERFORM 1009-SANTEI-HEN-SEC
+           END-IF
+      *TEST
+           DISPLAY "SPA-TAI-TAIINYMD:"
+                    SPA-TAI-TAIINYMD
+      *TEST
            .
        3109-NYUIN-CHK-EXT.
            EXIT.
@@ -2608,6 +2627,86 @@
       *
            .
        32012-SRYACT-HEN2-EXT.
+           EXIT.
+      *****************************************************************
+      *    »»ÄêÍúÎò¤«¤éÂ¾±¡Âà±¡ÆüÊÔ½¸½èÍý
+      *****************************************************************
+       1009-SANTEI-HEN-SEC             SECTION.
+      *
+      *    Â¾°å±¡Âà±¡Æü
+           MOVE    "099999906"         TO  WRK-SRYCD
+      *
+           MOVE    ZERO                TO  FLG-TEI-ARI
+      **   IF      SPA-SYORIFLG        =   1
+      *        PERFORM VARYING    IDX-T    FROM    1   BY  1
+      *                UNTIL     (IDX-T    >   SPA-MAX-LINE )  OR
+      *                          (SPA-K02-TEI-SRYCD(IDX-T) =   SPACE)
+      *            IF      SPA-K02-TEI-SRYCD(IDX-T)    =   WRK-SRYCD
+      *                MOVE    1               TO  FLG-TEI-ARI
+      *                MOVE    SPA-MAX-LINE    TO  IDX-T
+      *            END-IF
+      *        END-PERFORM
+      **** END-IF
+           MOVE    SPACE               TO  WRK-YMD
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *        ¿ÇÎÅÆü°ÊÁ°¤Î»»ÄêÆü
+               IF      SANTEI-SRYYM    =   SPA-SRYYMD(1:6)
+                   MOVE    SPA-SRYYMD(7:2) TO  IDX-Y3
+      *            ÄûÀµ¤Çº£²ó»»Äê¤Ç¤¢¤ì¤Ð¡¢Á°Æü¤Þ¤Ç¤òÂÐ¾Ý
+                   IF      FLG-TEI-ARI     =   1
+                       COMPUTE IDX-Y3          =    IDX-Y3  -  1
+                   END-IF
+               ELSE
+                   MOVE    31              TO  IDX-Y3
+               END-IF
+               MOVE    ZERO                TO  WRK-DD-1
+               PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                       UNTIL       IDX-Y2      >   IDX-Y3
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-DD-1
+                   END-IF
+               END-PERFORM
+               IF      WRK-DD-1            >   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                   MOVE    WRK-DD-1            TO  WRK-DD
+                   MOVE    1                   TO  FLG-SANTEI
+               END-IF
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      WRK-YMD         NOT =   SPACE
+               IF      WRK-YMD         >   SPA-TAI-TAIINYMD
+                   MOVE    WRK-YMD     TO  SPA-TAI-TAIINYMD
+               END-IF
+           END-IF
+           .
+       1009-SANTEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8984,6 +9083,24 @@
       *
            .
        960-KANRIMST-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    »»ÄêÎò¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       920-SANTEI-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       920-SANTEI-READ-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý

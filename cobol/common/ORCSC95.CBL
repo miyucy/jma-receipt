@@ -3041,7 +3041,8 @@
                PERFORM 1001311-HKNCOMBI-SET-SEC
       *        前回の保険組合せとの判定
                IF     (WRK-MAE-HKNCOMBI    NOT =   SPACE )
-                 AND  (SPA-ZENHKNCHK-FLG       =   "1"   )
+                 AND  (SPA-ZENHKNCHK-FLG       =   "1"
+                                               OR  "2"   )
                    PERFORM 1001312-MAE-HKNCOMBICHEK-SEC
                END-IF
            END-IF
@@ -3141,6 +3142,10 @@
                                                <   COMB-TEKEDYMD)
                        MOVE    1               TO  SPA-HKNCHK-FLG
                    END-IF
+               END-IF
+      *        すべてチェックの時
+               IF      SPA-ZENHKNCHK-FLG   =   "2"
+                   MOVE    1               TO  SPA-HKNCHK-FLG
                END-IF
            ELSE
       *        前回が削除

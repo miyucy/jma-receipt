@@ -93,6 +93,7 @@
       *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック対応
       *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラー対応
       *  04.05.00    NACL-多々納  09/09/16  "0086XXXXX"コメント対応
+      *  04.05.00    NACL-多々納  09/10/26  他医院退院反映対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -239,7 +240,7 @@
       *    セット処理有無
            03  FLG-SETSYORI        PIC 9(01).
            03  FLG-SET             PIC 9(01).
-           03  FLG-SET-HEN             PIC 9(01).
+           03  FLG-SET-HEN         PIC 9(01).
            03  FLG-YAKUSOKU        PIC 9(01).
            03  FLG-MAE             PIC 9(01).
       *    剤チェック対象外
@@ -322,6 +323,9 @@
       *    包括診療用
            03  FLG-HKTCHK              PIC 9(01).
            03  FLG-HOUKATU-ZAI         PIC 9(01).
+      *
+           03  FLG-TEI-ARI             PIC 9(01).
+           03  FLG-SANTEI              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -411,6 +415,10 @@
            03  WRK-SRYYM.
                05  WRK-SRYYY       PIC 9(04).
                05  WRK-SRYMM       PIC 9(02).
+           03  WRK-YMD.
+               05  WRK-YM          PIC X(06).
+               05  WRK-DD          PIC X(02).
+           03  WRK-DD-1            PIC 9(02).
       *
            03  WRK-TOUYMD.
                05  WRK-TOUYY       PIC 9(04).
@@ -3899,6 +3907,9 @@
                                            TO  SPA-NAI-LASTTAIIN
            MOVE    ORCSCNYUHEN-MAE-TAIINYMD
                                            TO  SPA-K02N-TAIINYMD
+      *    他医院退院日
+           MOVE    ORCSCNYUHEN-TAI-TAIINYMD
+                                           TO  SPA-TAI-TAIINYMD
       *    入院中の時、エラーとする
            MOVE    ZERO                TO  SPA-NAI-NYUIN
            IF      FLG-NYUIN           =   1
@@ -3911,136 +3922,12 @@
                    MOVE    ZERO                TO  SPA-GMN-CUR
                END-IF
            END-IF
-      *!!!
-      *!!!
-      *!!!
-      *!!!
-           GO      TO  3109-NYUIN-CHK-EXT
-      *!!!
-      *!!!
-      *
-           MOVE    ZERO                TO  SPA-NAI-NYUIN
-           MOVE    ZERO                TO  FLG-NYUIN
-      *    入院日
-           MOVE    SPACE               TO  SPA-K02N-NYUINYMD
-           MOVE    SPACE               TO  SPA-K02N-TAIINYMD
-           MOVE    SPACE               TO  SPA-NAI-LASTTAIIN
-           INITIALIZE                      SPA-K02-NYUIN-AREA
-           MOVE    ZERO                TO  SPA-K02N-NYUINFLG
-           MOVE    SPACE               TO  WRK-TAIINYMD
-           MOVE    SPACE               TO  WRK-LASTTAIINYMD
-      *
-      *    入院履歴判定
-           MOVE    SPACE               TO  PTNYUINRRK-REC
-           INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key33"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key33"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-      *    入院が１件もないとき、外来とする
-           IF      FLG-PTNYUINRRK      =   1
-               MOVE    ZERO                TO  FLG-NYUIN
+      *!!
+      *    他医院退院日の算定履歴編集
+           IF      FLG-NYUIN           =   ZERO
+               PERFORM 1009-SANTEI-HEN-SEC
            END-IF
       *
-           PERFORM
-                   UNTIL      (FLG-PTNYUINRRK      =   1 )
-      *!!!!!!!!!!!!!!      OR (FLG-NYUIN           =   1 )
-      *        入院中
-               IF     (PTNYUINRRK-NYUINYMD     <=  SPA-NAI-SRYYMD) AND
-                      (PTNYUINRRK-TAIINYMD     >=  SPA-NAI-SRYYMD) 
-                   IF     (PTNYUINRRK-TAIINYMD     =   SPA-NAI-SRYYMD)
-                       OR (PTNYUINRRK-NYUINYMD     =   SPA-NAI-SRYYMD)
-      *                当日入退院
-                       CONTINUE
-                   ELSE
-      *                入院中
-                       MOVE    1                   TO  FLG-NYUIN
-                   END-IF
-      *            入院日
-                   MOVE    PTNYUINRRK-NYUINYMD
-                                               TO  SPA-K02N-NYUINYMD
-                   MOVE    PTNYUINRRK-TAIINYMD
-                                               TO  SPA-K02N-TAIINYMD
-               END-IF
-      *        入院期間設定
-               IF     (PTNYUINRRK-NYUINYMD(1:6)
-                                           <=  SPA-NAI-SRYYMD(1:6)) AND
-                      (PTNYUINRRK-TAIINYMD (1:6)
-                                           >=  SPA-NAI-SRYYMD(1:6)) 
-                   IF      PTNYUINRRK-TAIINYMD(1:6)
-                                               =   SPA-NAI-SRYYMD(1:6)
-                       MOVE    PTNYUINRRK-TAIINYMD(7:2)
-                                                   TO  WRK-EDDD
-                   ELSE
-                       MOVE    31                  TO  WRK-EDDD
-                   END-IF
-                   IF      PTNYUINRRK-NYUINYMD(1:6)
-                                               =   SPA-NAI-SRYYMD(1:6)
-                       MOVE    PTNYUINRRK-NYUINYMD(7:2)
-                                                   TO  WRK-STDD
-                   ELSE
-                       MOVE    1                   TO  WRK-STDD
-                   END-IF
-      *            入院中
-                   PERFORM VARYING IDX-D2  FROM    WRK-STDD BY  1
-                           UNTIL   IDX-D2  >   WRK-EDDD
-                       MOVE    1               TO  SPA-K02-NYUDAY
-                                                             (IDX-D2)
-                   END-PERFORM
-               END-IF
-      *
-      *        診療日以前の最終退院日
-               IF     (PTNYUINRRK-TAIINYMD     <=  SPA-NAI-SRYYMD ) AND
-                     ((WRK-TAIINYMD            =   SPACE      )  OR
-                      (PTNYUINRRK-TAIINYMD     >   WRK-TAIINYMD ))
-                   MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-TAIINYMD
-               END-IF
-      *        最終退院日
-               IF     (WRK-LASTTAIINYMD        =   SPACE      )  OR
-                      (PTNYUINRRK-TAIINYMD     >   WRK-LASTTAIINYMD)
-                   MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-LASTTAIINYMD
-               END-IF
-      *
-      *        入院中でなく当月の入院有無
-               IF     (PTNYUINRRK-NYUINYMD(1:6)    =   SPA-NAI-SRYYMD
-                                                              (1:6)) OR
-                      (PTNYUINRRK-TAIINYMD(1:6)    =   SPA-NAI-SRYYMD
-                                                              (1:6))
-                   MOVE    1                   TO  SPA-K02N-NYUINFLG
-               END-IF
-      *
-               MOVE    "key33"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key33"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    入院中の時、エラーとする
-           MOVE    ZERO                TO  SPA-NAI-NYUIN
-           IF      FLG-NYUIN           =   1
-      *        保険にアフターケアがあれば対象
-               IF     (SPA-NAI-SRYYMD      >=  "20060401" )
-                   PERFORM 31091-NYUIN-HKNCHK-SEC
-               END-IF
-               IF      FLG-NYUIN           =   1
-                   MOVE    "0121"              TO  SPA-KIDCD
-                   MOVE    ZERO                TO  SPA-GMN-CUR
-               END-IF
-           ELSE
-      *        最終退院日の設定
-               MOVE    WRK-TAIINYMD        TO  SPA-K02N-TAIINYMD
-               MOVE    WRK-LASTTAIINYMD    TO  SPA-NAI-LASTTAIIN
-           END-IF
            .
        3109-NYUIN-CHK-EXT.
            EXIT.
@@ -4105,6 +3992,86 @@
            END-IF
            .
        31091-NYUIN-HKNCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴から他院退院日編集処理
+      *****************************************************************
+       1009-SANTEI-HEN-SEC             SECTION.
+      *
+      *    他医院退院日
+           MOVE    "099999906"         TO  WRK-SRYCD
+      *
+           MOVE    ZERO                TO  FLG-TEI-ARI
+           IF      SPA-SYORIFLG        =   1
+               PERFORM VARYING    IDX-T    FROM    1   BY  1
+                       UNTIL     (IDX-T    >   SPA-MAX-LINE )  OR
+                                 (SPA-K02-TEI-SRYCD(IDX-T) =   SPACE)
+                   IF      SPA-K02-TEI-SRYCD(IDX-T)    =   WRK-SRYCD
+                       MOVE    1               TO  FLG-TEI-ARI
+                       MOVE    SPA-MAX-LINE    TO  IDX-T
+                   END-IF
+               END-PERFORM
+           END-IF
+           MOVE    SPACE               TO  WRK-YMD
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           PERFORM UNTIL       FLG-SANTEI          =   1
+      *        診療日以前の算定日
+               IF      SANTEI-SRYYM    =   SPA-SRYYMD(1:6)
+                   MOVE    SPA-SRYYMD(7:2) TO  IDX-Y3
+      *            訂正で今回算定であれば、前日までを対象
+                   IF      FLG-TEI-ARI     =   1
+                       COMPUTE IDX-Y3          =    IDX-Y3  -  1
+                   END-IF
+               ELSE
+                   MOVE    31              TO  IDX-Y3
+               END-IF
+               MOVE    ZERO                TO  WRK-DD-1
+               PERFORM VARYING     IDX-Y2  FROM    1  BY  1
+                       UNTIL       IDX-Y2      >   IDX-Y3
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-DD-1
+                   END-IF
+               END-PERFORM
+               IF      WRK-DD-1            >   ZERO
+                   MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
+                   MOVE    WRK-DD-1            TO  WRK-DD
+                   MOVE    1                   TO  FLG-SANTEI
+               END-IF
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      WRK-YMD         NOT =   SPACE
+               IF      WRK-YMD         >   SPA-TAI-TAIINYMD
+                   MOVE    WRK-YMD     TO  SPA-TAI-TAIINYMD
+               END-IF
+           END-IF
+           .
+       1009-SANTEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12752,6 +12719,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-PTMEMOINF-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    算定歴マスタ読み込み
+      *****************************************************************
+       920-SANTEI-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEI-REC
+               MOVE    ZERO                TO  FLG-SANTEI
+           ELSE
+               INITIALIZE                      SANTEI-REC
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           .
+       920-SANTEI-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

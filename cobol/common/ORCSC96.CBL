@@ -255,6 +255,12 @@
                    MOVE
                    "退院日より、１月以内です。算定できません。"
                                        TO  SPA-ERRMSG
+               WHEN    "0121"
+                   STRING  "他院退院日より、１月以内です。"
+                           "算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0035"
                    MOVE
                    "剤内に手技料は１件です。剤を終了して下さい。"
@@ -1988,6 +1994,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "K022"
                    MOVE    "警告！退院日より１月以内です"
+                                       TO  SPA-ERRMSG
+               WHEN    "K032"
+                   MOVE    "警告！他院退院日より１月以内です"
                                        TO  SPA-ERRMSG
                WHEN    "K003"
                    MOVE    "警告！撮影料は１回目の手技料が算定できます"

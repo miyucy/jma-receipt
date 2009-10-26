@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/26  Â¾±¡Âà±¡ÆüÂÐ±þ
       *****************************************************************
       *
       *
@@ -64,6 +65,8 @@
            03  WRK-SYMD                PIC X(08).
            03  WRK-OLD-NYUINYMD        PIC X(08).
            03  WRK-OLD-TAIINYMD        PIC X(08).
+      *
+           03  WRK-TAI-TAIINYMD        PIC X(08).
       *
            03  WRK-TAIINYMD            PIC X(08).
            03  WRK-LASTTAIINYMD        PIC X(08).
@@ -177,6 +180,7 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    SPACE               TO  WRK-OLD-NYUINYMD
            MOVE    SPACE               TO  WRK-OLD-TAIINYMD
+           MOVE    SPACE               TO  WRK-TAI-TAIINYMD
            PERFORM
                    UNTIL      (FLG-PTNYUINRRK      =   1 )
                           OR  (FLG-SYORI-END       =   1 )
@@ -209,6 +213,16 @@
                MOVE    PTNYUINRRK-TAIINYMD TO  WRK-OLD-TAIINYMD
            END-IF
       *
+      *       Â¾±¡Âà±¡ÆüÊÔ½¸
+               IF      (SPA-NYUGAIKBN       =   "2" )
+                AND    (PTNYUINRRK-JTIKBN   =   "5" )
+                   IF     (PTNYUINRRK-TAIINYMD <   WRK-SRYYMD )
+                     AND ((WRK-TAI-TAIINYMD    =   SPACE     )   OR
+                          (WRK-TAI-TAIINYMD    <   PTNYUINRRK-TAIINYMD))
+                       MOVE    PTNYUINRRK-TAIINYMD  TO  WRK-TAI-TAIINYMD
+                   END-IF
+               END-IF
+      *
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 910-PTNYUINRRK-READ-SEC
@@ -220,7 +234,9 @@
       *    ºÇ½ªÂà±¡Æü¤ÎÀßÄê
            MOVE    WRK-TAIINYMD        TO  ORCSCNYUHEN-MAE-TAIINYMD
            MOVE    WRK-LASTTAIINYMD    TO  ORCSCNYUHEN-LAST-TAIINYMD
-	   .
+      *    Â¾°å±¡Âà±¡Æü
+           MOVE    WRK-TAI-TAIINYMD    TO  ORCSCNYUHEN-TAI-TAIINYMD
+           .
        100-MAIN-SYORI-EXT.
            EXIT.
       *

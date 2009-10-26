@@ -357,6 +357,8 @@
                        09  SPA-NYUHKT-OCCURS   OCCURS   31.
                            11  SPA-NYUHKTFLG       PIC 9(01).
                            11  SPA-DEKIDAFLG       PIC 9(01).
+      *        Â¾±¡Âà±¡Æü
+               05  SPA-TAI-TAIINYMD            PIC X(08).
       *
       *Ê£¿ô¿ÇÎÅ²ÊÍÑ
            03  SPA-FUKU-AREA.
