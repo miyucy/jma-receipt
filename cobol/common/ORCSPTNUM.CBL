@@ -99,6 +99,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
@@ -138,14 +140,14 @@
       *    患者番号構成編集
            PERFORM 1000-SYS1009-HEN-SEC
       *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPTNUM-PTNUM        TO  KANACHK-MAE-INPUT
-           MOVE    20                  TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPTNUM-PTNUM
-           IF      KANACHK-RC      NOT =   ZERO
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    SPTNUM-PTNUM        TO  KANACHK2-MAE-INPUT
+           MOVE    20                  TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-MAE-INPUT  TO  SPTNUM-PTNUM
+           IF      KANACHK2-RC      NOT =   ZERO
       *        混在エラー
                MOVE    99              TO  SPTNUM-RC
                MOVE    ZERO            TO  KANACHK-MAX
