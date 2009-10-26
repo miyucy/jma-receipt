@@ -283,6 +283,11 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ（拡張漢字）
+           COPY    "CPORCSKANACHK2.INC".
+      *
+      *    拡張文字対応
+           COPY    "CPORCSSTRING.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1848,7 +1853,8 @@
            IF      SPA-GMN-HIHKNJANAME    NOT =   SPACE
                MOVE    SPA-GMN-HIHKNJANAME TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
+      *        拡張漢字登録
+               PERFORM 891-HALF-ZEN2-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-HIHKNJANAME
                IF      FLG-ERR         NOT =   ZERO
                    MOVE    "0055"              TO  SPA-ERRCD
@@ -1881,15 +1887,31 @@
        10011-HIHKNJANAME-HENSYU-SEC     SECTION.
       *
       *    姓の判定
-           MOVE    ZERO                TO  IDX-S1
-           PERFORM VARYING     IDX-S2  FROM    1   BY  2
-                   UNTIL       IDX-S2  >   50
-               IF      SPA-GMN-NAME(IDX-S2:2)     =   "　"
-                   MOVE    50              TO  IDX-S2
-               ELSE
-                   ADD     2               TO  IDX-S1
-               END-IF
-           END-PERFORM
+      *    MOVE    ZERO                TO  IDX-S1
+      *    PERFORM VARYING     IDX-S2  FROM    1   BY  2
+      *            UNTIL       IDX-S2  >   50
+      *        IF      SPA-GMN-NAME(IDX-S2:2)     =   "　"
+      *            MOVE    50              TO  IDX-S2
+      *        ELSE
+      *            ADD     2               TO  IDX-S1
+      *        END-IF
+      *    END-PERFORM
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    SPA-GMN-NAME        TO  ORCSSTR-STRING1
+           MOVE    "　"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   ZERO
+               MOVE    50                  TO  IDX-S1
+           ELSE
+               COMPUTE IDX-S1              =    ORCSSTR-NUM1
+                                           -    1
+           END-IF
+      *TEST
+           DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
+            ",ORCSSTR-NUM2:"  ORCSSTR-NUM2 
+               ",IDX-S1:" IDX-S1
       *
       *    国保、退職国保の場合
            IF     (SPA-GMN-HKNNUM      =   "060"
@@ -3077,6 +3099,33 @@
       *
            .
        890-HALF-ZEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理
+      *****************************************************************
+       891-HALF-ZEN2-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
+           MOVE    WRK-MAX             TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU    =   1     )
+               MOVE    1                   TO  FLG-ERR
+               MOVE    KANACHK2-MAE-INPUT  TO  WRK-ATO-INPUT
+               IF      KANACHK2-SYUBETU        =   1
+                   MOVE    2                   TO  FLG-ERR
+               END-IF
+           ELSE
+               MOVE    KANACHK2-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       891-HALF-ZEN2-EXT.
            EXIT.
       *****************************************************************
       *    全角空白チェック処理

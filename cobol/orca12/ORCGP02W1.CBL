@@ -740,6 +740,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ（拡張漢字）
+           COPY    "CPORCSKANACHK2.INC".
       *
            COPY    "CPORCXKANACONV.INC".
       *
@@ -3844,7 +3846,7 @@
       *        半角空白を全角空白へ
                MOVE    SPA-GMN-SETAINUSI   TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-LEN
-               PERFORM 890-HALF-ZEN-SEC
+               PERFORM 891-HALF-ZEN2-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-SETAINUSI
                IF      FLG-ERR             =   1
                    MOVE    "0033"              TO  SPA-ERRCD
@@ -7598,19 +7600,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        891-HALF-ZEN2-SEC         SECTION.
       *
-           INITIALIZE                  ORCXKANACONVAREA
-           MOVE    50                  TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
-           MOVE    1                   TO  KANACONV-CONV-FLAG
-           MOVE    271                 TO  KANACONV-CHAR-TYPE
-           MOVE    WRK-MAE-INPUT       TO  KANACONV-INDATA
-           CALL    "kanaconv"          USING ORCXKANACONVAREA
-           IF      KANACONV-RETURN     =   ZERO
-               MOVE    ZERO                TO  FLG-ERR
-               MOVE    KANACONV-OUTDATA    TO  WRK-ATO-INPUT
-           ELSE
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-MAE-INPUT  TO  WRK-MAE-INPUT
+           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU    =   1     )
                MOVE    1                   TO  FLG-ERR
-               MOVE    KANACONV-OUTDATA    TO  WRK-ATO-INPUT
+               MOVE    KANACHK2-MAE-INPUT  TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    ZERO                TO  FLG-ERR
+               MOVE    KANACHK2-OUT-INPUT  TO  WRK-ATO-INPUT
            END-IF
       *
            .
