@@ -199,6 +199,16 @@
            03  WRK-HKNNUM          PIC X(03).
            03  WRK-HONKZKKBN-MEI   PIC X(02).
       *
+           03  WRK-E-NAME          PIC X(30).
+           03  WRK-H-NAME          PIC X(30).
+           03  WRK-H-NAME-G.
+               05  WRK-H-NAME1         PIC X(30).
+               05  WRK-H-NAME2         PIC X(30).
+               05  WRK-H-NAME3         PIC X(30).
+               05  WRK-H-NAME4         PIC X(30).
+               05  WRK-H-NAME5         PIC X(30).
+               05  WRK-H-NAME6         PIC X(30).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -240,6 +250,11 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ（拡張）
+           COPY    "CPORCSKANACHK2.INC".
+      *
+      *    拡張文字対応
+           COPY    "CPORCSSTRING.INC".
       *
       *    前回来院日設定パラメタ
            COPY    "CPORCSLASTYMD.INC".
@@ -559,18 +574,18 @@
        209-NAMEKEN-SEC                 SECTION.
       *
       *    全角変換処理
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
-           MOVE    SPA-GMN-NAMEKEN TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAMEKEN
-           IF      ( KANACHK-RC    =   ZERO )
-               MOVE    KANACHK-OUT-INPUT
-                                   TO  SPA-GMN-NAMEKEN
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "2"                 TO  KANACHK2-SYORI
+           MOVE    SPA-GMN-NAMEKEN     TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAMEKEN
+           IF      ( KANACHK2-RC       =   ZERO )
+               MOVE    KANACHK2-OUT-INPUT
+                                       TO  SPA-GMN-NAMEKEN
            END-IF
            IF      SPA-GMN-NAMEKEN     =   SPACE
-               MOVE    SPACE           TO  SPA-NAI-NAMEKEN
+               MOVE    SPACE               TO  SPA-NAI-NAMEKEN
            ELSE
                MOVE    SPACE               TO  SPA-NAI-NAMEKEN
       *        氏名検索用編集
@@ -588,26 +603,54 @@
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-           MOVE    1                   TO  IDX2
-           PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >   KANACHK-MAX
-               IF      SPA-GMN-NAMEKEN(IDX:2)  =   "＊"
-                   COMPUTE IDX3            =   IDX     +  2
-                   IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "　"
-                       COMPUTE IDX3            =   IDX3     +  2
-                   END-IF
-                   IF      SPA-GMN-NAMEKEN (IDX3:) =   SPACE
-                       MOVE    SPACE               TO  WRK-NAME2
-                   ELSE
-                       MOVE    SPA-GMN-NAMEKEN (IDX3:) TO  WRK-NAME2
-                   END-IF
-                   MOVE    KANACHK-MAX             TO  IDX
-               ELSE
-                   MOVE    SPA-GMN-NAMEKEN (IDX:2) TO  WRK-NAME1
-                                                               (IDX2:2)
-                   ADD     2                   TO  IDX2
+      *    ＊は名前とする
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    SPA-GMN-NAMEKEN     TO  ORCSSTR-STRING1
+           MOVE    "＊"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   ZERO
+               MOVE    SPA-GMN-NAMEKEN     TO  WRK-NAME1
+           ELSE
+               UNSTRING    SPA-GMN-NAMEKEN
+                   DELIMITED   BY  "＊"
+                   INTO                WRK-NAME1
+                                       WRK-NAME2
+               END-UNSTRING
+      *TEST
+           DISPLAY "WRK-NAME2:" WRK-NAME2
+           DISPLAY "WRK-NAME1:" WRK-NAME1
+      *TEST
+      *        名前の全角空白を削除する
+               IF      WRK-NAME2        NOT =   SPACE
+                   MOVE    WRK-NAME2            TO  WRK-H-NAME
+                   PERFORM 2011-SPACEHEN-SEC
+                   MOVE    WRK-E-NAME           TO  WRK-NAME2
                END-IF
-           END-PERFORM
+           END-IF
+      *    MOVE    SPACE               TO  WRK-NAME1
+      *    MOVE    SPACE               TO  WRK-NAME2
+      *    MOVE    1                   TO  IDX2
+      *    PERFORM VARYING     IDX     FROM    1   BY  2
+      *            UNTIL       IDX     >   KANACHK-MAX
+      *        IF      SPA-GMN-NAMEKEN(IDX:2)  =   "＊"
+      *            COMPUTE IDX3            =   IDX     +  2
+      *            IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "　"
+      *                COMPUTE IDX3            =   IDX3     +  2
+      *            END-IF
+      *            IF      SPA-GMN-NAMEKEN (IDX3:) =   SPACE
+      *                MOVE    SPACE               TO  WRK-NAME2
+      *            ELSE
+      *                MOVE    SPA-GMN-NAMEKEN (IDX3:) TO  WRK-NAME2
+      *            END-IF
+      *            MOVE    KANACHK-MAX             TO  IDX
+      *        ELSE
+      *            MOVE    SPA-GMN-NAMEKEN (IDX:2) TO  WRK-NAME1
+      *                                                        (IDX2:2)
+      *            ADD     2                   TO  IDX2
+      *        END-IF
+      **** END-PERFORM
       *
            MOVE    SPACE           TO  SPA-NAI-NAMEKEN
            IF     (WRK-NAME1       NOT =   SPACE ) AND
@@ -639,6 +682,39 @@
       *
            .
        2091-NAME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角空白を削除処理
+      *****************************************************************
+       2011-SPACEHEN-SEC        SECTION.
+      *
+      *    全角空白までを姓とする
+           MOVE    SPACE               TO  WRK-E-NAME
+           MOVE    SPACE               TO  WRK-H-NAME-G
+           UNSTRING    WRK-H-NAME
+                   DELIMITED   BY  "　"
+                   INTO                WRK-H-NAME1
+                                       WRK-H-NAME2
+                                       WRK-H-NAME3
+                                       WRK-H-NAME4
+                                       WRK-H-NAME5
+                                       WRK-H-NAME6
+           END-UNSTRING
+      *
+           STRING  WRK-H-NAME1
+                   WRK-H-NAME2
+                   WRK-H-NAME3
+                   WRK-H-NAME4
+                   WRK-H-NAME5
+                   WRK-H-NAME6
+                   DELIMITED   BY  SPACE
+                   INTO                WRK-E-NAME
+           END-STRING
+      *test
+            DISPLAY "WRK-H-NAME:" WRK-H-NAME
+            DISPLAY "WRK-E-NAME:" WRK-E-NAME
+           .
+       2011-SPACEHEN-EXT.
            EXIT.
       *
       *****************************************************************

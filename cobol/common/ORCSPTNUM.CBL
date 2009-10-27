@@ -61,6 +61,9 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
       *
+           03  IDX-S1              PIC 9(04).
+           03  IDX-S2              PIC 9(04).
+      *
       *    ワーク領域
        01  WRK-AREA.
            03  WRK-PTNUM           PIC X(20).
@@ -69,6 +72,16 @@
            03  WRK-NAME            PIC X(50).
            03  WRK-NAME1           PIC X(50).
            03  WRK-NAME2           PIC X(50).
+      *
+           03  WRK-E-NAME          PIC X(50).
+           03  WRK-H-NAME          PIC X(50).
+           03  WRK-H-NAME-G.
+               05  WRK-H-NAME1         PIC X(50).
+               05  WRK-H-NAME2         PIC X(50).
+               05  WRK-H-NAME3         PIC X(50).
+               05  WRK-H-NAME4         PIC X(50).
+               05  WRK-H-NAME5         PIC X(50).
+               05  WRK-H-NAME6         PIC X(50).
       *
       *    保存スパ領域
            COPY    "COMMON-SPA"      REPLACING
@@ -103,6 +116,9 @@
            COPY    "CPORCSKANACHK2.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    拡張文字対応
+           COPY    "CPORCSSTRING.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -291,8 +307,8 @@
       *
            MOVE    SPTNUM-PTNUM(1:KANACHK2-MAX)
                                        TO  WRK-NAME
-           COMPUTE IDX                 =   KANACHK2-MAX  +  1
-           MOVE    "%"                 TO  WRK-NAME(IDX:1)
+      *    COMPUTE IDX                 =   KANACHK2-MAX  +  1
+      *    MOVE    "%"                 TO  WRK-NAME(IDX:1)
       *    部分検索
            PERFORM 201-NAME-HEN-SEC
       *
@@ -364,29 +380,62 @@
       *    氏名部分検索編集処理
       *****************************************************************
        201-NAME-HEN-SEC                 SECTION.
+      *TEST
+           DISPLAY "WRK-NAME:" WRK-NAME
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-           MOVE    1                   TO  IDX2
-           PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >   KANACHK2-MAX
-               IF      SPTNUM-PTNUM(IDX:2) =   "＊"
-                   COMPUTE IDX3            =   IDX     +  2
-                   IF      SPTNUM-PTNUM (IDX3:2)    =   "　"
-                       COMPUTE IDX3            =   IDX3     +  2
-                   END-IF
-                   IF      SPTNUM-PTNUM (IDX3:) =   SPACE
-                       MOVE    SPACE               TO  WRK-NAME2
-                   ELSE
-                       MOVE    SPTNUM-PTNUM(IDX3:) TO  WRK-NAME2
-                   END-IF
-                   MOVE    KANACHK2-MAX             TO  IDX
-               ELSE
-                   MOVE    SPTNUM-PTNUM(IDX:2)     TO  WRK-NAME1
-                                                               (IDX2:2)
-                   ADD     2                       TO  IDX2
+      *    ＊は氏名で検索とする
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "＊"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   ZERO
+               MOVE    WRK-NAME            TO  WRK-NAME1
+           ELSE
+               UNSTRING    WRK-NAME
+                   DELIMITED   BY  "＊"
+                   INTO                WRK-NAME1
+                                       WRK-NAME2
+               END-UNSTRING
+      *TEST
+           DISPLAY "WRK-NAME2:" WRK-NAME2
+           DISPLAY "WRK-NAME1:" WRK-NAME1
+      *TEST
+      *        全角空白を削除する
+               IF      WRK-NAME1        NOT =   SPACE
+                   MOVE    WRK-NAME1            TO  WRK-H-NAME
+                   PERFORM 2011-SPACEHEN-SEC
+                   MOVE    WRK-E-NAME           TO  WRK-NAME1
                END-IF
-           END-PERFORM
+               IF      WRK-NAME2        NOT =   SPACE
+                   MOVE    WRK-NAME2            TO  WRK-H-NAME
+                   PERFORM 2011-SPACEHEN-SEC
+                   MOVE    WRK-E-NAME           TO  WRK-NAME2
+               END-IF
+           END-IF
+      ***  MOVE    1                   TO  IDX2
+      *    PERFORM VARYING     IDX     FROM    1   BY  2
+      *            UNTIL       IDX     >   KANACHK2-MAX
+      *        IF      SPTNUM-PTNUM(IDX:2) =   "＊"
+      *            COMPUTE IDX3            =   IDX     +  2
+      *            IF      SPTNUM-PTNUM (IDX3:2)    =   "　"
+      *                COMPUTE IDX3            =   IDX3     +  2
+      *            END-IF
+      *            IF      SPTNUM-PTNUM (IDX3:) =   SPACE
+      **               MOVE    SPACE               TO  WRK-NAME2
+      *            ELSE
+      *                MOVE    SPTNUM-PTNUM(IDX3:) TO  WRK-NAME2
+      *            END-IF
+      *            MOVE    KANACHK2-MAX             TO  IDX
+      *        ELSE
+      *            MOVE    SPTNUM-PTNUM(IDX:2)     TO  WRK-NAME1
+      *                                                        (IDX2:2)
+      *            ADD     2                       TO  IDX2
+      *        END-IF
+      **** END-PERFORM
       *
            IF     (WRK-NAME1       NOT =   SPACE ) AND
                   (WRK-NAME2       NOT =   SPACE )
@@ -409,9 +458,53 @@
                                        INTO    WRK-NAME
                END-STRING
            END-IF
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2           =   SPACE )
+               MOVE    SPACE           TO  WRK-NAME
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME
+               END-STRING
+           END-IF
+      *TEST
+           DISPLAY "END WRK-NAME:" WRK-NAME
       *
            .
        201-NAME-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角空白を削除処理
+      *****************************************************************
+       2011-SPACEHEN-SEC        SECTION.
+      *
+      *    全角空白までを姓とする
+           MOVE    SPACE               TO  WRK-E-NAME
+           MOVE    SPACE               TO  WRK-H-NAME-G
+           UNSTRING    WRK-H-NAME
+                   DELIMITED   BY  "　"
+                   INTO                WRK-H-NAME1
+                                       WRK-H-NAME2
+                                       WRK-H-NAME3
+                                       WRK-H-NAME4
+                                       WRK-H-NAME5
+                                       WRK-H-NAME6
+           END-UNSTRING
+      *
+           STRING  WRK-H-NAME1
+                   WRK-H-NAME2
+                   WRK-H-NAME3
+                   WRK-H-NAME4
+                   WRK-H-NAME5
+                   WRK-H-NAME6
+                   DELIMITED   BY  SPACE
+                   INTO                WRK-E-NAME
+           END-STRING
+      *test
+            DISPLAY "WRK-H-NAME:" WRK-H-NAME
+            DISPLAY "WRK-E-NAME:" WRK-E-NAME
+           .
+       2011-SPACEHEN-EXT.
            EXIT.
       *
       *****************************************************************
