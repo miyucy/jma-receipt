@@ -142,6 +142,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ（拡張）
+           COPY    "CPORCSKANACHK2.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -403,7 +405,7 @@
                    MOVE    SPA-GMN-P100-KANJINAME (IDX1)
                                                TO  WRK-MAE-INPUT
                    MOVE    50                  TO  WRK-MAX
-                   PERFORM 890-HALF-ZEN-SEC
+                   PERFORM 890-HALF-ZEN2-SEC
                    MOVE    WRK-ATO-INPUT   TO  SPA-GMN-P100-KANJINAME
                                                                (IDX1)
                    IF      SPA-ERRCD           =   SPACE
@@ -854,11 +856,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
-      *    IF  ( WRK-MAE-INPUT  =      SPACE )
-      *        MOVE    SPACE    TO     WRK-ATO-INPUT
-      *        GO  TO  890-HALF-ZEN-EXT
-      *    END-IF
-      *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
@@ -875,6 +872,29 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        890-HALF-ZEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理
+      *****************************************************************
+       890-HALF-ZEN2-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    WRK-MAX             TO  KANACHK2-MAX-CNT
+           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU     =   1     )
+               MOVE    "0002"               TO  SPA-ERRCD
+               MOVE    KANACHK2-MAE-INPUT   TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    KANACHK2-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       890-HALF-ZEN2-EXT.
            EXIT.
       *
       *****************************************************************
