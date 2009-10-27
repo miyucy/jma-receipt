@@ -355,6 +355,10 @@
       *
       *    カナチェック
            COPY  "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
+      *    拡張文字対応
+           COPY    "CPORCSSTRING.INC".
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
@@ -2035,20 +2039,20 @@
            IF      SPA-GMN-NAME        =   SPACE
                CONTINUE
            ELSE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
-               MOVE    80                  TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING 
-                                           ORCSKANACHKAREA
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAME
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI
+               MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
+               MOVE    80                  TO  KANACHK2-MAX-CNT
+               CALL    "ORCSKANACHK2"      USING 
+                                           ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT   TO  SPA-GMN-NAME
       *
-               IF      (KANACHK-RC         NOT =  0)  OR
-                       (KANACHK-SYUBETU    NOT =  2)
+               IF      (KANACHK2-RC         NOT =  0)  OR
+                       (KANACHK2-SYUBETU    NOT =  2)
                    MOVE    "0011"              TO  SPA-ERRCD
                    MOVE    8                   TO  SPA-GMN-CUR
                ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+                   MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-NAME
                END-IF
            END-IF
            . 
