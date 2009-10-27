@@ -33,6 +33,7 @@
       *  03.03.00    NACL-多々納   06/10/06  名前検索の追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.04.00    NACL-多々納  09/01/29  本院分院対応
+      *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -76,12 +77,7 @@
            03  WRK-E-NAME          PIC X(50).
            03  WRK-H-NAME          PIC X(50).
            03  WRK-H-NAME-G.
-               05  WRK-H-NAME1         PIC X(50).
-               05  WRK-H-NAME2         PIC X(50).
-               05  WRK-H-NAME3         PIC X(50).
-               05  WRK-H-NAME4         PIC X(50).
-               05  WRK-H-NAME5         PIC X(50).
-               05  WRK-H-NAME6         PIC X(50).
+               05  WRK-H-NAME1         PIC X(02).
       *
       *    保存スパ領域
            COPY    "COMMON-SPA"      REPLACING
@@ -380,8 +376,6 @@
       *    氏名部分検索編集処理
       *****************************************************************
        201-NAME-HEN-SEC                 SECTION.
-      *TEST
-           DISPLAY "WRK-NAME:" WRK-NAME
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
@@ -400,16 +394,7 @@
                    INTO                WRK-NAME1
                                        WRK-NAME2
                END-UNSTRING
-      *TEST
-           DISPLAY "WRK-NAME2:" WRK-NAME2
-           DISPLAY "WRK-NAME1:" WRK-NAME1
-      *TEST
       *        全角空白を削除する
-               IF      WRK-NAME1        NOT =   SPACE
-                   MOVE    WRK-NAME1            TO  WRK-H-NAME
-                   PERFORM 2011-SPACEHEN-SEC
-                   MOVE    WRK-E-NAME           TO  WRK-NAME1
-               END-IF
                IF      WRK-NAME2        NOT =   SPACE
                    MOVE    WRK-NAME2            TO  WRK-H-NAME
                    PERFORM 2011-SPACEHEN-SEC
@@ -466,8 +451,6 @@
                                        INTO    WRK-NAME
                END-STRING
            END-IF
-      *TEST
-           DISPLAY "END WRK-NAME:" WRK-NAME
       *
            .
        201-NAME-HEN-EXT.
@@ -478,31 +461,25 @@
       *****************************************************************
        2011-SPACEHEN-SEC        SECTION.
       *
-      *    全角空白までを姓とする
            MOVE    SPACE               TO  WRK-E-NAME
-           MOVE    SPACE               TO  WRK-H-NAME-G
-           UNSTRING    WRK-H-NAME
-                   DELIMITED   BY  "　"
+           MOVE    SPACE               TO  WRK-H-NAME1
+      *    １桁目の全角空白削除
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    WRK-H-NAME          TO  ORCSSTR-STRING1
+           MOVE    "　"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   1
+               MOVE    SPACE               TO  WRK-E-NAME
+               MOVE    SPACE               TO  WRK-H-NAME1
+               UNSTRING    WRK-H-NAME
                    INTO                WRK-H-NAME1
-                                       WRK-H-NAME2
-                                       WRK-H-NAME3
-                                       WRK-H-NAME4
-                                       WRK-H-NAME5
-                                       WRK-H-NAME6
-           END-UNSTRING
-      *
-           STRING  WRK-H-NAME1
-                   WRK-H-NAME2
-                   WRK-H-NAME3
-                   WRK-H-NAME4
-                   WRK-H-NAME5
-                   WRK-H-NAME6
-                   DELIMITED   BY  SPACE
-                   INTO                WRK-E-NAME
-           END-STRING
-      *test
-            DISPLAY "WRK-H-NAME:" WRK-H-NAME
-            DISPLAY "WRK-E-NAME:" WRK-E-NAME
+                                       WRK-E-NAME
+               END-UNSTRING
+           ELSE
+               MOVE    WRK-H-NAME          TO  WRK-E-NAME
+           END-IF
            .
        2011-SPACEHEN-EXT.
            EXIT.

@@ -38,6 +38,7 @@
       *  04.01.00    NACL-多々納  08/01/30  予約内容テーブル対応
       *  04.03.00    NACL-多々納  08/06/18  初期表示設定対応
       *  04.04.00    NACL-多々納  09/01/16  予約メモ・予約票対応
+      *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -191,6 +192,10 @@
       *
            03  WRK-YID1MSG             PIC X(80).
       *
+           03  WRK-E-NAME              PIC X(50).
+           03  WRK-H-NAME              PIC X(50).
+           03  WRK-H-NAME1             PIC X(02).
+      *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
        01  WRK-SORT-AREA.
@@ -300,6 +305,11 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
+      *    拡張文字対応
+           COPY    "CPORCSSTRING.INC".
+      *
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
@@ -1662,18 +1672,18 @@
            END-IF
       *
       *    全角半角チェック
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-YYKNAME     TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKNAME
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    SPA-GMN-YYKNAME     TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU    =   1     )
+               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-YYKNAME
                MOVE    "0017"              TO  SPA-ERRCD
                GO      TO      41014-YYKNAME-EXT
            ELSE
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-YYKNAME
+               MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-YYKNAME
            END-IF
       *
            MOVE    SPACE           TO  WRK-KNJ
@@ -1807,26 +1817,28 @@
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-           MOVE    1                   TO  IDX2
-           PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >   KANACHK-MAX
-               IF      SPA-GMN-YYKNAME (IDX:2) =   "＊"
-                   COMPUTE IDX3            =   IDX     +  2
-                   IF      SPA-GMN-YYKNAME (IDX3:2)    =   "　"
-                       COMPUTE IDX3            =   IDX3     +  2
-                   END-IF
-                   IF      SPA-GMN-YYKNAME (IDX3:) =   SPACE
-                       MOVE    SPACE               TO  WRK-NAME2
-                   ELSE
-                       MOVE    SPA-GMN-YYKNAME(IDX3:) TO  WRK-NAME2
-                   END-IF
-                   MOVE    KANACHK-MAX             TO  IDX
-               ELSE
-                   MOVE    SPA-GMN-YYKNAME(IDX:2)  TO  WRK-NAME1
-                                                               (IDX2:2)
-                   ADD     2                       TO  IDX2
+      *    ＊は名前とする
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    SPA-GMN-YYKNAME     TO  ORCSSTR-STRING1
+           MOVE    "＊"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   ZERO
+               MOVE    SPA-GMN-YYKNAME     TO  WRK-NAME1
+           ELSE
+               UNSTRING     SPA-GMN-YYKNAME
+                            DELIMITED   BY  "＊"
+                            INTO            WRK-NAME1
+                                            WRK-NAME2
+               END-UNSTRING
+      *        名前の全角空白を削除する
+               IF      WRK-NAME2        NOT =   SPACE
+                   MOVE    WRK-NAME2            TO  WRK-H-NAME
+                   PERFORM 2011-SPACEHEN-SEC
+                   MOVE    WRK-E-NAME           TO  WRK-NAME2
                END-IF
-           END-PERFORM
+           END-IF
       *
            IF     (WRK-NAME1       NOT =   SPACE ) AND
                   (WRK-NAME2       NOT =   SPACE )
@@ -1852,6 +1864,33 @@
       *
            .
        410141-NAME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角空白を削除処理
+      *****************************************************************
+       2011-SPACEHEN-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-E-NAME
+           MOVE    SPACE               TO  WRK-H-NAME1
+      *    １桁目の全角空白削除
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    WRK-H-NAME          TO  ORCSSTR-STRING1
+           MOVE    "　"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   1
+               MOVE    SPACE               TO  WRK-E-NAME
+               MOVE    SPACE               TO  WRK-H-NAME1
+               UNSTRING    WRK-H-NAME
+                   INTO                WRK-H-NAME1
+                                       WRK-E-NAME
+               END-UNSTRING
+           ELSE
+               MOVE    WRK-H-NAME          TO  WRK-E-NAME
+           END-IF
+           .
+       2011-SPACEHEN-EXT.
            EXIT.
       *****************************************************************
       *    患者マスタ編集処理

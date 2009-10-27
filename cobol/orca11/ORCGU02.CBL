@@ -74,6 +74,7 @@
       *                                     ＱＲ受付削除
       *  03.05.02    NACL-多々納  07/08/28  公費期限切れ追加他
       *  04.05.00    NACL-多々納  09/05/29  性別表示追加、400明細
+      *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -228,6 +229,10 @@
            03  WRK-HKNCOMBI            PIC X(100).
       *
            03  WRK-RENNUM              PIC 9(02).
+      *
+           03  WRK-E-NAME              PIC X(50).
+           03  WRK-H-NAME              PIC X(50).
+           03  WRK-H-NAME1             PIC X(02).
       *
       *    公費期限切れ表示用
        01  WRK-KOH-AREA.
@@ -410,6 +415,11 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    全角チェックパラメタ（拡張)
+           COPY    "CPORCSKANACHK2.INC".
+      *    拡張文字対応
+           COPY    "CPORCSSTRING.INC".
       *
       *    カルテパラメタ
            COPY    "CPORCHC01.INC".
@@ -1941,25 +1951,25 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
        41021-KNJKEN-HEN-SEC        SECTION.
       *
       *    全角チェック
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAME
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU    =   1     )
+               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAME
                MOVE    "0003"              TO  SPA-ERRCD
                GO      TO      41021-KNJKEN-HEN-EXT
            ELSE
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
            END-IF
       *
            MOVE    SPA-GMN-NAME        TO  WRK-NAME-KEY
-           IF      KANACHK-MAX         <   50
-               COMPUTE IDX                 =   KANACHK-MAX  +  1
-               MOVE    "%"                 TO  WRK-NAME-KEY(IDX:1)
-           END-IF
+      **** IF      KANACHK2-MAX        <   50
+      *        COMPUTE IDX                 =   KANACHK-MAX  +  1
+      *        MOVE    "%"                 TO  WRK-NAME-KEY(IDX:1)
+      *****END-IF
       *    部分検索
            PERFORM 201-NAME-HEN-SEC
       *    漢字検索
@@ -2008,27 +2018,57 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-           MOVE    1                   TO  IDX2
-           PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >   KANACHK-MAX
-               IF      SPA-GMN-NAME(IDX:2) =   "＊"
-                   COMPUTE IDX3            =   IDX     +  2
-                   IF      SPA-GMN-NAME (IDX3:2)    =   "　"
-                       COMPUTE IDX3            =   IDX3     +  2
-                   END-IF
-                   IF      SPA-GMN-NAME (IDX3:) =   SPACE
-                       MOVE    SPACE               TO  WRK-NAME2
-                   ELSE
-                       MOVE    SPA-GMN-NAME(IDX3:) TO  WRK-NAME2
-                   END-IF
-                   MOVE    KANACHK-MAX             TO  IDX
-               ELSE
-                   MOVE    SPA-GMN-NAME(IDX:2)     TO  WRK-NAME1
-                                                               (IDX2:2)
-                   ADD     2                       TO  IDX2
+      *    ＊は名前とする
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    SPA-GMN-NAME        TO  ORCSSTR-STRING1
+           MOVE    "＊"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   ZERO
+               MOVE    SPA-GMN-NAME        TO  WRK-NAME1
+           ELSE
+               UNSTRING     SPA-GMN-NAME
+                            DELIMITED   BY  "＊"
+                            INTO            WRK-NAME1
+                                            WRK-NAME2
+               END-UNSTRING
+      *        名前の全角空白を削除する
+               IF      WRK-NAME2        NOT =   SPACE
+                   MOVE    WRK-NAME2            TO  WRK-H-NAME
+                   PERFORM 2011-SPACEHEN-SEC
+                   MOVE    WRK-E-NAME           TO  WRK-NAME2
                END-IF
-           END-PERFORM
+           END-IF
+      **** MOVE    1                   TO  IDX2
+      *    PERFORM VARYING     IDX     FROM    1   BY  2
+      *            UNTIL       IDX     >   KANACHK-MAX
+      *        IF      SPA-GMN-NAME(IDX:2) =   "＊"
+      *            COMPUTE IDX3            =   IDX     +  2
+      *            IF      SPA-GMN-NAME (IDX3:2)    =   "　"
+      *                COMPUTE IDX3            =   IDX3     +  2
+      *            END-IF
+      *            IF      SPA-GMN-NAME (IDX3:) =   SPACE
+      *                MOVE    SPACE               TO  WRK-NAME2
+      *            ELSE
+      *                MOVE    SPA-GMN-NAME(IDX3:) TO  WRK-NAME2
+      *            END-IF
+      *:           MOVE    KANACHK-MAX             TO  IDX
+      *        ELSE
+      *            MOVE    SPA-GMN-NAME(IDX:2)     TO  WRK-NAME1
+      *                                                        (IDX2:2)
+      *            ADD     2                       TO  IDX2
+      *        END-IF
+      **** END-PERFORM
       *
+           IF     (WRK-NAME1       NOT =   SPACE ) AND
+                  (WRK-NAME2           =   SPACE )
+               MOVE    SPACE               TO  WRK-NAME-KEY
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                                       INTO    WRK-NAME-KEY
+               END-STRING
+           END-IF
            IF     (WRK-NAME1       NOT =   SPACE ) AND
                   (WRK-NAME2       NOT =   SPACE )
                MOVE    SPACE               TO  WRK-NAME-KEY
@@ -2053,6 +2093,33 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            .
        201-NAME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角空白を削除処理
+      *****************************************************************
+       2011-SPACEHEN-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-E-NAME
+           MOVE    SPACE               TO  WRK-H-NAME1
+      *    １桁目の全角空白削除
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    WRK-H-NAME          TO  ORCSSTR-STRING1
+           MOVE    "　"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM1        =   1
+               MOVE    SPACE               TO  WRK-E-NAME
+               MOVE    SPACE               TO  WRK-H-NAME1
+               UNSTRING    WRK-H-NAME
+                   INTO                WRK-H-NAME1
+                                       WRK-E-NAME
+               END-UNSTRING
+           ELSE
+               MOVE    WRK-H-NAME          TO  WRK-E-NAME
+           END-IF
+           .
+       2011-SPACEHEN-EXT.
            EXIT.
       *
       *****************************************************************

@@ -113,6 +113,8 @@
       *----(00.00.02)--ADD-START---
       *    Á´³ÑÈ¾³ÑÊÑ´¹¥µ¥Ö
            COPY    "CPORCSKANACHK.INC".
+      *    Á´³ÑÈ¾³ÑÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSKANACHK2.INC".
       *----(00.00.02)--ADD-END-----
       *
       *    £Ä£Â¸¡º÷
@@ -361,16 +363,16 @@
        4121-JYOKEN-CHK-SEC         SECTION.
       *
       *----(01.00.02)--ADD-START---
-           INITIALIZE              ORCSKANACHKAREA
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    SPA-GMN-JYOKEN  TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-JYOKEN
+           INITIALIZE              ORCSKANACHK2AREA
+           MOVE    "1"             TO  KANACHK2-SYORI
+           MOVE    SPA-GMN-JYOKEN  TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"       USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-JYOKEN
       *    Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
-           IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
-                 ( KANACHK-RC          NOT =   ZERO )  OR
-                 ( KANACHK-RC2             =   7    )
+           IF    ( KANACHK2-SYUBETU     NOT =   2    )  OR
+                 ( KANACHK2-RC          NOT =   ZERO )  OR
+                 ( KANACHK2-RC2             =   7    )
                MOVE    "0002"      TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-CUR
                GO  TO  4121-JYOKEN-CHK-EXT
@@ -488,16 +490,16 @@
        4123-NAIYO-CHK-SEC         SECTION.
       *
       *----(01.00.02)--ADD-START---
-           INITIALIZE              ORCSKANACHKAREA
-           MOVE    "1"             TO  KANACHK-SYORI
-           MOVE    SPA-GMN-NAIYO   TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAIYO
+           INITIALIZE              ORCSKANACHK2AREA
+           MOVE    "1"             TO  KANACHK2-SYORI
+           MOVE    SPA-GMN-NAIYO   TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-NAIYO
       *    Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
-           IF    ( KANACHK-SYUBETU     NOT =   2    )  OR
-                 ( KANACHK-RC          NOT =   ZERO )  OR
-                 ( KANACHK-RC2             =   7    )
+           IF    ( KANACHK2-SYUBETU    NOT =   2    )  OR
+                 ( KANACHK2-RC         NOT =   ZERO )  OR
+                 ( KANACHK2-RC2            =   7    )
                MOVE    "0002"      TO  SPA-ERRCD
                MOVE    4               TO  SPA-GMN-CUR
                GO  TO  4123-NAIYO-CHK-EXT
