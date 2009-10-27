@@ -931,6 +931,14 @@
                =   TTLSYU-RMSAGAKU
                +   KONSYU-RMSAGAKU (IDX-KON)
       *
+      *    Ä´À°¶â
+           COMPUTE SUMSYU-CHOSEI   (IDX-SUM)
+               =   SUMSYU-CHOSEI   (IDX-SUM)
+               +   KONSYU-CHOSEI   (IDX-KON)
+           COMPUTE TTLSYU-CHOSEI
+               =   TTLSYU-CHOSEI
+               +   KONSYU-CHOSEI   (IDX-KON)
+      *
       *    ÀÁµá¶â³Û
            COMPUTE SUMSYU-SKYMONEY (IDX-SUM)
                =   SUMSYU-SKYMONEY (IDX-SUM)
