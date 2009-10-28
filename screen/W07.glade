@@ -1134,22 +1134,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label244</name>
-	  <x>524</x>
-	  <y>208</y>
-	  <width>188</width>
-	  <height>24</height>
-	  <label>時間外加算（小児科特例）</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label246</name>
 	  <x>760</x>
 	  <y>236</y>
@@ -1806,22 +1790,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label269</name>
-	  <x>528</x>
-	  <y>344</y>
-	  <width>188</width>
-	  <height>24</height>
-	  <label>患者取消確認チェック</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label284</name>
 	  <x>528</x>
 	  <y>376</y>
@@ -1911,70 +1879,6 @@
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label245</name>
-	  <x>544</x>
-	  <y>236</y>
-	  <width>184</width>
-	  <height>20</height>
-	  <label>チェック除外時間（平日）１</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label249</name>
-	  <x>544</x>
-	  <y>260</y>
-	  <width>184</width>
-	  <height>20</height>
-	  <label>（平日）２</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>1</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label250</name>
-	  <x>544</x>
-	  <y>284</y>
-	  <width>184</width>
-	  <height>20</height>
-	  <label>（土曜）１</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>1</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label251</name>
-	  <x>544</x>
-	  <y>308</y>
-	  <width>184</width>
-	  <height>20</height>
-	  <label>（土曜）２</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>1</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -3124,6 +3028,102 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label244</name>
+	  <x>524</x>
+	  <y>208</y>
+	  <width>188</width>
+	  <height>24</height>
+	  <label>時間外加算（小児科特例）</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label269</name>
+	  <x>528</x>
+	  <y>344</y>
+	  <width>188</width>
+	  <height>24</height>
+	  <label>患者取消確認チェック</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label245</name>
+	  <x>544</x>
+	  <y>236</y>
+	  <width>184</width>
+	  <height>20</height>
+	  <label>チェック除外時間（平日）１</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label249</name>
+	  <x>544</x>
+	  <y>260</y>
+	  <width>184</width>
+	  <height>20</height>
+	  <label>（平日）２</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label251</name>
+	  <x>544</x>
+	  <y>308</y>
+	  <width>184</width>
+	  <height>20</height>
+	  <label>（土曜）２</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label250</name>
+	  <x>544</x>
+	  <y>284</y>
+	  <width>184</width>
+	  <height>20</height>
+	  <label>（土曜）１</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
