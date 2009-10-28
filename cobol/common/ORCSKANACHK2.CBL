@@ -375,6 +375,20 @@
            IF      KANACHK2-MAX-CNT     =   ZERO
                MOVE    100                 TO  KANACHK2-MAX-CNT
            END-IF
+      *    ³ÈÄ¥´Á»úÍ­Ìµ
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "check"             TO  ORCSSTR-COMMAND
+           MOVE    KANACHK2-OUT-INPUT   TO  ORCSSTR-STRING1
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           IF      ORCSSTR-NUM2    NOT =   ZERO
+               MOVE    1               TO  KANACHK2-RC4
+           END-IF
+      *TEST
+           DISPLAY "1000-KOUMOKU-CHK"
+           DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
+           DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
+                 ",ORCSSTR-NUM2:"  ORCSSTR-NUM2
       *
            .
        1000-KOUMOKU-CHK-EXT.
@@ -478,9 +492,14 @@
            MOVE    KANACHK2-OUT-INPUT   TO  ORCSSTR-STRING1
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
-           IF      ORCSSTR-NUM1    NOT =   ZERO
+           IF      ORCSSTR-NUM2    NOT =   ZERO
                MOVE    1               TO  KANACHK2-RC4
            END-IF
+      *TEST
+           DISPLAY "1003-ZENSPACE-CHK-SEC"
+           DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
+           DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
+                 ",ORCSSTR-NUM2:"  ORCSSTR-NUM2
       *
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
