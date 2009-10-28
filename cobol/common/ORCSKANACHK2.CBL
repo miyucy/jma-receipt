@@ -24,6 +24,7 @@
       *  返却エラーコード  : 0:正常　1:半角混在、２：変換エラー
       *  管理者            : 
       *  作成日付    作業者        記述
+      *  09/10/27    NACL−多々納  新規作成
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -523,7 +524,6 @@
       *    全部空白
            IF     (KANACHK2-RC4        =   ZERO  )
            AND    (KANACHK2-RC3    NOT =   ZERO  )
-      *        最後が空白、または、全部空白
                MOVE    ZERO                TO  FLG-ZENKAKU1
                MOVE    ZERO                TO  FLG-ZENKAKU2
                PERFORM VARYING     IDX     FROM    1   BY  1
