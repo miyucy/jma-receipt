@@ -93,6 +93,8 @@
       *
            03  WRK-IDX1                PIC 9(04).
            03  WRK-IDX2                PIC 9(04).
+      *    全角文字数
+           03  WRK-MAX-MOJI            PIC S9(9)  BINARY.
       *
       *    変換テーブル
        01  TBL-HENKAN-AREA.
@@ -360,7 +362,7 @@
            MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    256                 TO  KANACONV-CHAR-TYPE
-           MOVE    KANACHK2-MAE-INPUT   TO  KANACONV-INDATA
+           MOVE    KANACHK2-MAE-INPUT  TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
       *
            MOVE    KANACONV-OUTDATA    TO  KANACHK2-MAE-INPUT
@@ -378,7 +380,7 @@
       *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
-           MOVE    KANACHK2-OUT-INPUT   TO  ORCSSTR-STRING1
+           MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM2    NOT =   ZERO
@@ -486,20 +488,13 @@
       *****************************************************************
        1003-ZENSPACE-CHK-SEC           SECTION.
       *
-      *    拡張漢字有無
+      *    最大文字数
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
-           MOVE    KANACHK2-OUT-INPUT   TO  ORCSSTR-STRING1
+           MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
-           IF      ORCSSTR-NUM2    NOT =   ZERO
-               MOVE    1               TO  KANACHK2-RC4
-           END-IF
-      *TEST
-           DISPLAY "1003-ZENSPACE-CHK-SEC"
-           DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
-           DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
-                 ",ORCSSTR-NUM2:"  ORCSSTR-NUM2
+           MOVE    ORCSSTR-NUM1        TO  WRK-MAX-MOJI
       *
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
@@ -509,37 +504,49 @@
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1    NOT =   ZERO
       *        全角空白あり
-               MOVE    1               TO  KANACHK2-RC3
+               MOVE    1                   TO  KANACHK2-RC3
+      *        最終文字判定
+               INITIALIZE                  ORCSSTRINGAREA
+               MOVE    "substr"            TO  ORCSSTR-COMMAND
+               MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
+               MOVE    WRK-MAX-MOJI        TO  ORCSSTR-NUM1
+               COMPUTE ORCSSTR-NUM2        =   WRK-MAX-MOJI
+                                           +   1
+               CALL    "orcsstring"        USING
+                                           ORCSSTRINGAREA
+               IF      ORCSSTR-STRING2     =   "　"
+      *            最後が全角空白
+                   MOVE    3               TO  KANACHK2-RC3
+               END-IF
            END-IF
       *
-           IF      KANACHK2-RC4         =   ZERO
-           MOVE    ZERO                TO  FLG-ZENKAKU1
-           MOVE    ZERO                TO  FLG-ZENKAKU2
-           MOVE    ZERO                TO  WRK-IDX1
-           MOVE    ZERO                TO  WRK-IDX2
-           PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >   KANACHK2-MAX
-               IF      KANACHK2-OUT-INPUT(IDX:2)    =   "　"
-                   MOVE    1               TO  FLG-ZENKAKU2
-                   MOVE    IDX             TO  WRK-IDX2
-               ELSE
-                   MOVE    1               TO  FLG-ZENKAKU1
-                   MOVE    IDX             TO  WRK-IDX1
-               END-IF
-           END-PERFORM
-           IF      FLG-ZENKAKU2        =   1
-               IF      FLG-ZENKAKU1        =   1
-      *            全角空白あり
-                   MOVE    1               TO  KANACHK2-RC3
-      *            最後が全角空白
-                   IF      WRK-IDX1        <   WRK-IDX2
-                       MOVE    3               TO  KANACHK2-RC3
+      *    全部空白
+           IF     (KANACHK2-RC4        =   ZERO  )
+           AND    (KANACHK2-RC3    NOT =   ZERO  )
+      *        最後が空白、または、全部空白
+               MOVE    ZERO                TO  FLG-ZENKAKU1
+               MOVE    ZERO                TO  FLG-ZENKAKU2
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   WRK-MAX-MOJI
+                   INITIALIZE                  ORCSSTRINGAREA
+                   MOVE    "substr"            TO  ORCSSTR-COMMAND
+                   MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
+                   MOVE    IDX                 TO  ORCSSTR-NUM1
+                   COMPUTE ORCSSTR-NUM2        =   IDX
+                                               +   1
+                   CALL    "orcsstring"        USING
+                                               ORCSSTRINGAREA
+                   IF      ORCSSTR-STRING2     =   "　"
+      *                全角空白
+                       MOVE    1               TO  FLG-ZENKAKU2
+                   ELSE
+                       MOVE    1               TO  FLG-ZENKAKU1
                    END-IF
-               ELSE
+               END-PERFORM
+               IF      FLG-ZENKAKU1        =   ZERO
       *            全角空白のみ
                    MOVE    2               TO  KANACHK2-RC3
                END-IF
-           END-IF
            END-IF
            .
        1003-ZENSPACE-CHK-EXT.
