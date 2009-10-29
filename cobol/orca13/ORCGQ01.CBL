@@ -211,6 +211,7 @@
            03  WRK-STSRYYMD             PIC X(08).
            03  WRK-KOHNAME              PIC X(80).
            03  WRK-FTNJANUM             PIC X(08).
+           03  WRK-ORCSSTR-NUM1         PIC 9(03).
       *
       *
        01  WRK-WIDGET-AREA.
@@ -353,6 +354,10 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    文字列操作サブ
+           COPY    "CPORCSSTRING.INC".
+      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -371,6 +376,9 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    全角チェックパラメタ(拡張文字対応版)
+           COPY    "CPORCSKANACHK2.INC".
       *
       *    部分一致文字列編集
            COPY    "CPORCSADDSIGN.INC".
@@ -3236,10 +3244,10 @@
       *    全角変換処理
            MOVE    SPA-GMN-Q01-KANANAME(IDX1)
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-KANACHK-CHK-SEC
+           PERFORM 801-KANACHK2-CHK-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-ZENKAKU-CHG-SEC
+           PERFORM 801-ZENKAKU-CHG-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-KANANAME(IDX1)
       *
@@ -3257,10 +3265,10 @@
       *    全角変換処理
            MOVE    SPA-GMN-Q01-NAME(IDX1)
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-KANACHK-CHK-SEC
+           PERFORM 801-KANACHK2-CHK-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-ZENKAKU-CHG-SEC
+           PERFORM 801-ZENKAKU-CHG-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-NAME(IDX1)
       *
@@ -6673,26 +6681,47 @@
        49011-EDIT-SRHNAME-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-NAME-G
-           MOVE    1                   TO  IDXD
-           PERFORM VARYING IDXF    FROM    1   BY  2
-                   UNTIL ( IDXF    >   200 )
-               IF    ( WRK-NAME (IDXF:2)   =   "＊" )
-                   COMPUTE IDXE    =   IDXF    +   2
-                   IF    ( WRK-NAME (IDXE:2)   =   "　" )
-                       COMPUTE IDXE            =   IDXE     +  2
-                   END-IF
-                   IF    ( WRK-NAME (IDXE:)    =   SPACE )
-                       MOVE    SPACE               TO  WRK-NAME2
-                   ELSE
-                       MOVE    WRK-NAME (IDXE:)    TO  WRK-NAME2
-                   END-IF
-                   MOVE    200                 TO  IDXF
+      *
+           MOVE    "sub"               TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "＊　"              TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING3
+           CALL    "orcsstring" USING  ORCSSTRINGAREA
+           MOVE    ORCSSTR-STRING1     TO  WRK-NAME
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "＊"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring" USING  ORCSSTRINGAREA
+           MOVE    ORCSSTR-NUM1        TO  WRK-ORCSSTR-NUM1
+           IF    ( ORCSSTR-NUM1        >   ZERO )
+               IF    ( ORCSSTR-NUM1    =   1 )
+                   MOVE    "substr"    TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME    TO  ORCSSTR-STRING1
+                   COMPUTE ORCSSTR-NUM1    =   2
+                   COMPUTE ORCSSTR-NUM2    =   0
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2
+                                       TO  WRK-NAME2
                ELSE
-                       MOVE    WRK-NAME (IDXF:2)   TO  WRK-NAME1
-                                                               (IDXD:2)
-                       COMPUTE IDXD    =   IDXD    +   2
+                   MOVE    "substr"    TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME    TO  ORCSSTR-STRING1
+                   COMPUTE ORCSSTR-NUM2    =   ORCSSTR-NUM1    -   1
+                   COMPUTE ORCSSTR-NUM1    =   1
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2
+                                       TO  WRK-NAME1
+                   MOVE    "substr"    TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME    TO  ORCSSTR-STRING1
+                   COMPUTE ORCSSTR-NUM1    =   WRK-ORCSSTR-NUM1
+                                           +   1
+                   COMPUTE ORCSSTR-NUM2    =   0
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2
+                                       TO  WRK-NAME2
                END-IF
-           END-PERFORM
+           ELSE
+               MOVE    WRK-NAME        TO  WRK-NAME1
+           END-IF
       *
            MOVE    SPACE           TO  WRK-NAME
            IF    ( WRK-NAME1       NOT =   SPACE )
@@ -10230,6 +10259,32 @@
        800-KANACHK-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    全角半角チェック処理
+      *****************************************************************
+       801-KANACHK2-CHK-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"             TO  KANACHK2-SYORI
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"   USING   ORCSKANACHK2AREA
+           IF      ( KANACHK2-RC   =   ZERO )
+               MOVE    KANACHK2-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+           ELSE
+               IF    ( KANACHK2-RC2 =   7 )
+                   MOVE    KANACHK2-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               ELSE
+                   MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               END-IF
+           END-IF
+      *
+           .
+       801-KANACHK2-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    検索文字列編集処理
       *****************************************************************
        800-SELWORD-SEC                 SECTION.
@@ -10376,6 +10431,34 @@
       *
            .
        800-ZENKAKU-CHG-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       801-ZENKAKU-CHG-SEC             SECTION.
+      *
+           INITIALIZE                  WRK-KANACHK-OUT-INPUT
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "2"             TO  KANACHK2-SYORI
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"  USING   ORCSKANACHK2AREA
+           IF      ( KANACHK2-RC   =   ZERO )
+               MOVE    KANACHK2-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+           ELSE
+               IF    ( KANACHK2-RC2 =   7 )
+                   MOVE    KANACHK2-OUT-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               ELSE
+                   MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  WRK-KANACHK-OUT-INPUT
+               END-IF
+           END-IF
+      *
+           .
+       801-ZENKAKU-CHG-EXT.
            EXIT.
       *****************************************************************
       *    月末日取得処理

@@ -166,6 +166,7 @@
                07  WRK-FILENM      PIC X(100).
                07  WRK-FILENM-FOLDER 
                                    PIC X(100).
+           03  WRK-ORCSSTR-NUM1    PIC 9(03). 
       *
        01  WRK-ROW-AREA.
            03  WRK-KANJYALST-ROW   PIC S9(9)   BINARY.
@@ -297,8 +298,14 @@
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
+      *    文字列操作サブ
+           COPY    "CPORCSSTRING.INC".
+      *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    半角チェックサブ（拡張漢字対応版）
+           COPY    "CPORCSKANACHK2.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -1296,14 +1303,14 @@
       *
       *    半角チェック
       *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI 
-           MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
-           IF      KANACHK-RC          =   ZERO
-           AND     KANACHK-SYUBETU     =   "2"
-               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI 
+           MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING   ORCSKANACHK2AREA
+           MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
+           IF      KANACHK2-RC          =   ZERO
+           AND     KANACHK2-SYUBETU     =   "2"
+               MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
            ELSE
                MOVE    "0002"              TO  SPA-ERRCD
            END-IF
@@ -2740,26 +2747,47 @@
        49011-EDIT-SRHNAME-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-NAME-G
-           MOVE    1                   TO  IDXD
-           PERFORM VARYING IDXF    FROM    1   BY  2
-                   UNTIL ( IDXF    >   200 )
-               IF    ( WRK-NAME (IDXF:2)   =   "＊" )
-                   COMPUTE IDXE    =   IDXF    +   2
-                   IF    ( WRK-NAME (IDXE:2)   =   "　" )
-                       COMPUTE IDXE            =   IDXE     +  2
-                   END-IF
-                   IF    ( WRK-NAME (IDXE:)    =   SPACE )
-                       MOVE    SPACE               TO  WRK-NAME2
-                   ELSE
-                       MOVE    WRK-NAME (IDXE:)    TO  WRK-NAME2
-                   END-IF
-                   MOVE    200                 TO  IDXF
+      *
+           MOVE    "sub"               TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "＊　"              TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING3
+           CALL    "orcsstring" USING  ORCSSTRINGAREA
+           MOVE    ORCSSTR-STRING1     TO  WRK-NAME
+           MOVE    "search"            TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "＊"                TO  ORCSSTR-STRING2
+           CALL    "orcsstring" USING  ORCSSTRINGAREA
+           MOVE    ORCSSTR-NUM1        TO  WRK-ORCSSTR-NUM1
+           IF    ( ORCSSTR-NUM1        >   ZERO )
+               IF    ( ORCSSTR-NUM1    =   1 )
+                   MOVE    "substr"    TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME    TO  ORCSSTR-STRING1
+                   COMPUTE ORCSSTR-NUM1    =   2
+                   COMPUTE ORCSSTR-NUM2    =   0
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2
+                                       TO  WRK-NAME2
                ELSE
-                       MOVE    WRK-NAME (IDXF:2)   TO  WRK-NAME1
-                                                               (IDXD:2)
-                       COMPUTE IDXD    =   IDXD    +   2
+                   MOVE    "substr"    TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME    TO  ORCSSTR-STRING1
+                   COMPUTE ORCSSTR-NUM2    =   ORCSSTR-NUM1    -   1
+                   COMPUTE ORCSSTR-NUM1    =   1
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2
+                                       TO  WRK-NAME1
+                   MOVE    "substr"    TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME    TO  ORCSSTR-STRING1
+                   COMPUTE ORCSSTR-NUM1    =   WRK-ORCSSTR-NUM1
+                                           +   1
+                   COMPUTE ORCSSTR-NUM2    =   0
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2
+                                       TO  WRK-NAME2
                END-IF
-           END-PERFORM
+           ELSE
+               MOVE    WRK-NAME        TO  WRK-NAME1
+           END-IF
       *
            MOVE    SPACE           TO  WRK-NAME
            IF    ( WRK-NAME1       NOT =   SPACE )
