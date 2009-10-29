@@ -510,6 +510,12 @@ jis213_substr(
 
 	in = data->str1;
 	data->str2[0] = 0;
+	if (data->num1 <= 0) {
+		data->num1 = STR_SIZE;
+	}
+	if (data->num2 <= 0) {
+		data->num2 = STR_SIZE;
+	}
 	if (data->num1 > data->num2) {
 		swp = data->num1;
 		data->num1 = data->num2;
