@@ -1772,11 +1772,11 @@
       *    漢字検索
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-           STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
-                   "%"                 DELIMITED  BY  SIZE
+      ***  STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
+      *            "%"                 DELIMITED  BY  SIZE
       **************************       INTO    PTINF-NAME
-                                       INTO    WRK-NAME-KEY
-           END-STRING
+      *                                INTO    WRK-NAME-KEY
+      ***  END-STRING
       *    部分検索
            PERFORM 410141-NAME-HEN-SEC
            MOVE    WRK-NAME-KEY        TO  PTINF-NAME
@@ -1829,7 +1829,7 @@
            MOVE    "＊"                TO  ORCSSTR-STRING3
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
-           MOVE    ORCSSTR-STRING1     TO  WRK-NAME
+           MOVE    ORCSSTR-STRING1     TO  WRK-NAME-KEY
       *    ＊は名前とする
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
