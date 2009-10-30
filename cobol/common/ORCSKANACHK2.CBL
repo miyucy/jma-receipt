@@ -338,12 +338,12 @@
                END-EVALUATE
            END-IF
       *TEST
-           DISPLAY "KANACHK2-MAE-INPUT:" KANACHK2-MAE-INPUT (1:50)
-           DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
-           DISPLAY "KANACHK2-RC :" KANACHK2-RC 
-                 ",KANACHK2-RC2:" KANACHK2-RC2
-                 ",KANACHK2-RC3:" KANACHK2-RC3
-                 ",KANACHK2-RC4:" KANACHK2-RC4
+      *    DISPLAY "KANACHK2-MAE-INPUT:" KANACHK2-MAE-INPUT (1:50)
+      *    DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
+      *    DISPLAY "KANACHK2-RC :" KANACHK2-RC 
+      *          ",KANACHK2-RC2:" KANACHK2-RC2
+      *          ",KANACHK2-RC3:" KANACHK2-RC3
+      *          ",KANACHK2-RC4:" KANACHK2-RC4
       *
            .
        000-PROC-EXT.
@@ -388,10 +388,10 @@
                MOVE    1               TO  KANACHK2-RC4
            END-IF
       *TEST
-           DISPLAY "1000-KOUMOKU-CHK"
-           DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
-           DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
-                 ",ORCSSTR-NUM2:"  ORCSSTR-NUM2
+      *    DISPLAY "1000-KOUMOKU-CHK"
+      *    DISPLAY "KANACHK2-OUT-INPUT:" KANACHK2-OUT-INPUT (1:50)
+      *    DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
+      **         ",ORCSSTR-NUM2:"  ORCSSTR-NUM2
       *
            .
        1000-KOUMOKU-CHK-EXT.
