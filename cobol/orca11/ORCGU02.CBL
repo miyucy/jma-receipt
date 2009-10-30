@@ -146,6 +146,9 @@
            03  IDZ                     PIC 9(04).
            03  IDX-C                   PIC 9(04).
       *
+           03  IDX-S1                  PIC 9(04).
+           03  IDX-S2                  PIC 9(04).
+      *
       *    £Ã£Ì£Á£É£Í¥Õ¥¡¥¤¥ëÌ¾
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -2018,27 +2021,51 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
+           MOVE    SPA-GMN-NAME        TO  WRK-NAME
+      *    ¡ö¤Î¼¡¤Î¡¡ºï½ü
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "sub"               TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "¡ö¡¡"              TO  ORCSSTR-STRING2
+           MOVE    "¡ö"                TO  ORCSSTR-STRING3
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           MOVE    ORCSSTR-STRING1     TO  WRK-NAME
       *    ¡ö¤ÏÌ¾Á°¤È¤¹¤ë
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
-           MOVE    SPA-GMN-NAME        TO  ORCSSTR-STRING1
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
            MOVE    "¡ö"                TO  ORCSSTR-STRING2
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1        =   ZERO
-               MOVE    SPA-GMN-NAME        TO  WRK-NAME1
+               MOVE    WRK-NAME            TO  WRK-NAME1
            ELSE
-               UNSTRING     SPA-GMN-NAME
-                            DELIMITED   BY  "¡ö"
-                            INTO            WRK-NAME1
-                                            WRK-NAME2
-               END-UNSTRING
-      *        Ì¾Á°¤ÎÁ´³Ñ¶õÇò¤òºï½ü¤¹¤ë
-               IF      WRK-NAME2        NOT =   SPACE
-                   MOVE    WRK-NAME2            TO  WRK-H-NAME
-                   PERFORM 2011-SPACEHEN-SEC
-                   MOVE    WRK-E-NAME           TO  WRK-NAME2
+               MOVE    ORCSSTR-NUM1        TO  IDX-S1
+               MOVE    ORCSSTR-NUM2        TO  IDX-S2
+               IF      ORCSSTR-NUM1        =   1
+                   MOVE    SPACE               TO  WRK-NAME1
+               ELSE
+                   INITIALIZE                  ORCSSTRINGAREA
+                   MOVE    "substr"            TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+                   MOVE    1                   TO  ORCSSTR-NUM1
+                   COMPUTE ORCSSTR-NUM2        =   IDX-S1
+                                               -   1
+                   CALL    "orcsstring"        USING
+                                               ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2     TO  WRK-NAME1
                END-IF
+      *
+               INITIALIZE                  ORCSSTRINGAREA
+               MOVE    "substr"            TO  ORCSSTR-COMMAND
+               MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+               COMPUTE ORCSSTR-NUM1        =   IDX-S1
+                                           +   1
+               MOVE    0                   TO  ORCSSTR-NUM2
+               CALL    "orcsstring"        USING
+                                           ORCSSTRINGAREA
+               MOVE    ORCSSTR-STRING2     TO  WRK-NAME2
            END-IF
       **** MOVE    1                   TO  IDX2
       *    PERFORM VARYING     IDX     FROM    1   BY  2
@@ -2093,33 +2120,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            .
        201-NAME-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    Á´³Ñ¶õÇò¤òºï½ü½èÍý
-      *****************************************************************
-       2011-SPACEHEN-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-E-NAME
-           MOVE    SPACE               TO  WRK-H-NAME1
-      *    £±·åÌÜ¤ÎÁ´³Ñ¶õÇòºï½ü
-           INITIALIZE                  ORCSSTRINGAREA
-           MOVE    "search"            TO  ORCSSTR-COMMAND
-           MOVE    WRK-H-NAME          TO  ORCSSTR-STRING1
-           MOVE    "¡¡"                TO  ORCSSTR-STRING2
-           CALL    "orcsstring"        USING
-                                       ORCSSTRINGAREA
-           IF      ORCSSTR-NUM1        =   1
-               MOVE    SPACE               TO  WRK-E-NAME
-               MOVE    SPACE               TO  WRK-H-NAME1
-               UNSTRING    WRK-H-NAME
-                   INTO                WRK-H-NAME1
-                                       WRK-E-NAME
-               END-UNSTRING
-           ELSE
-               MOVE    WRK-H-NAME          TO  WRK-E-NAME
-           END-IF
-           .
-       2011-SPACEHEN-EXT.
            EXIT.
       *
       *****************************************************************

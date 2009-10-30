@@ -147,6 +147,9 @@
            03  IDX4                PIC 9(04).
            03  IDK                 PIC 9(04).
       *
+           03  IDX-S1              PIC 9(04).
+           03  IDX-S2              PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -159,7 +162,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-MOJISU          PIC 9(04).
-           03  WRK-NAME            PIC X(15).
+           03  WRK-NAME            PIC X(30).
            03  WRK-YY              PIC 9(02).
            03  WRK-SAKIPG          PIC X(08).
            03  WRK-NAME1           PIC X(30).
@@ -597,30 +600,59 @@
       *****************************************************************
        2091-NAME-HEN-SEC                 SECTION.
       *
+           MOVE    SPA-GMN-NAMEKEN     TO  WRK-NAME
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
+      *    ＊の次の　削除
+           INITIALIZE                  ORCSSTRINGAREA
+           MOVE    "sub"               TO  ORCSSTR-COMMAND
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+           MOVE    "＊　"              TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING3
+           CALL    "orcsstring"        USING
+                                       ORCSSTRINGAREA
+           MOVE    ORCSSTR-STRING1     TO  WRK-NAME
       *    ＊は名前とする
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
-           MOVE    SPA-GMN-NAMEKEN     TO  ORCSSTR-STRING1
+           MOVE    WRK-NAME            TO  ORCSSTR-STRING1
            MOVE    "＊"                TO  ORCSSTR-STRING2
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1        =   ZERO
-               MOVE    SPA-GMN-NAMEKEN     TO  WRK-NAME1
+               MOVE    WRK-NAME            TO  WRK-NAME1
            ELSE
-               UNSTRING    SPA-GMN-NAMEKEN
-                   DELIMITED   BY  "＊"
-                   INTO                WRK-NAME1
-                                       WRK-NAME2
-               END-UNSTRING
-      *        名前の全角空白を削除する
-               IF      WRK-NAME2        NOT =   SPACE
-                   MOVE    WRK-NAME2            TO  WRK-H-NAME
-                   PERFORM 2011-SPACEHEN-SEC
-                   MOVE    WRK-E-NAME           TO  WRK-NAME2
+               MOVE    ORCSSTR-NUM1        TO  IDX-S1
+               MOVE    ORCSSTR-NUM2        TO  IDX-S2
+               IF      ORCSSTR-NUM1        =   1
+                   MOVE    SPACE               TO  WRK-NAME1
+               ELSE
+                   INITIALIZE                  ORCSSTRINGAREA
+                   MOVE    "substr"            TO  ORCSSTR-COMMAND
+                   MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+                   MOVE    1                   TO  ORCSSTR-NUM1
+                   COMPUTE ORCSSTR-NUM2        =   IDX-S1
+                                               -   1
+                   CALL    "orcsstring"        USING
+                                               ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING2     TO  WRK-NAME1
                END-IF
+      *
+               INITIALIZE                  ORCSSTRINGAREA
+               MOVE    "substr"            TO  ORCSSTR-COMMAND
+               MOVE    WRK-NAME            TO  ORCSSTR-STRING1
+               COMPUTE ORCSSTR-NUM1        =   IDX-S1
+                                           +   1
+               MOVE    0                   TO  ORCSSTR-NUM2
+               CALL    "orcsstring"        USING
+                                           ORCSSTRINGAREA
+               MOVE    ORCSSTR-STRING2     TO  WRK-NAME2
            END-IF
+      *TEST
+           DISPLAY "SPA-GMN-NAMEKEN:" SPA-GMN-NAMEKEN
+           DISPLAY "WRK-NAME1:" WRK-NAME1
+           DISPLAY "WRK-NAME2:" WRK-NAME2
+           
       *    MOVE    SPACE               TO  WRK-NAME1
       *    MOVE    SPACE               TO  WRK-NAME2
       *    MOVE    1                   TO  IDX2
@@ -674,33 +706,6 @@
       *
            .
        2091-NAME-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    全角空白を削除処理
-      *****************************************************************
-       2011-SPACEHEN-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-E-NAME
-           MOVE    SPACE               TO  WRK-H-NAME1
-      *    １桁目の全角空白削除
-           INITIALIZE                  ORCSSTRINGAREA
-           MOVE    "search"            TO  ORCSSTR-COMMAND
-           MOVE    WRK-H-NAME          TO  ORCSSTR-STRING1
-           MOVE    "　"                TO  ORCSSTR-STRING2
-           CALL    "orcsstring"        USING
-                                       ORCSSTRINGAREA
-           IF      ORCSSTR-NUM1        =   1
-               MOVE    SPACE               TO  WRK-E-NAME
-               MOVE    SPACE               TO  WRK-H-NAME1
-               UNSTRING    WRK-H-NAME
-                   INTO                WRK-H-NAME1
-                                       WRK-E-NAME
-               END-UNSTRING
-           ELSE
-               MOVE    WRK-H-NAME          TO  WRK-E-NAME
-           END-IF
-           .
-       2011-SPACEHEN-EXT.
            EXIT.
       *
       *****************************************************************
