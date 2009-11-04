@@ -76,7 +76,9 @@
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/09/24  平成２０年１０月改正対応
       *
-      *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
+      *  04.04.01    NACL-藤原    08/12/10  オンライン返戻対応
+      *  04.04.02    NACL-藤原    09/11/04  公費番号まとめの編集方法訂正
+      *                                     公費が６つ以上のとき
       *
       *  04.05.01    NACL-藤原    09/07/21  表示名称の追加
       *                                     名称２があれば優先する
@@ -1466,7 +1468,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                    PERFORM VARYING IDZ1    FROM    1   BY  1
                            UNTIL   IDZ1    >       WRK-2007-MAX
                        PERFORM VARYING IDZ2    FROM    1   BY  1
-                               UNTIL   IDZ2    >       5
+                               UNTIL   IDZ2    >       10
                                OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
                                                =   SPACE
                            IF      RECE10-KOHNUM (IDZ)

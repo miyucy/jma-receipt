@@ -31,7 +31,9 @@
       *                                     による作成
       *  04.02.02    NACL-藤原    08/05/15  公費番号まとめの編集方法訂正
       *
-      *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
+      *  04.04.01    NACL-藤原    08/12/10  オンライン返戻対応
+      *  04.04.02    NACL-藤原    09/11/04  公費番号まとめの編集方法訂正
+      *                                     公費が６つ以上のとき
       *
       *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
       *  04.05.02    NACL-藤原    09/07/08  公費再掲欄への地方公費記載
@@ -912,7 +914,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                        PERFORM VARYING IDZ1    FROM    1   BY  1
                                UNTIL   IDZ1    >       WRK-2007-MAX
                            PERFORM VARYING IDZ2    FROM    1   BY  1
-                                   UNTIL   IDZ2    >       5
+                                   UNTIL   IDZ2    >       10
                                    OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
                                                    =   SPACE
                                IF      RECE10-KOHNUM (IDZ)

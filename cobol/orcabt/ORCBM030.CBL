@@ -57,7 +57,9 @@
       *  04.01.01    NACL-Æ£¸¶    07/10/24  Áí³çÉ½¤ÎÃÏÊý¸øÈñµ­ºÜÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/05/15  ¸øÈñÈÖ¹æ¤Þ¤È¤á¤ÎÊÔ½¸ÊýË¡ÄûÀµ
       *
-      *  04.04.01    NACL-Æ£¸¶    09/12/10  ¥ª¥ó¥é¥¤¥óÊÖÌáÂÐ±þ
+      *  04.04.01    NACL-Æ£¸¶    08/12/10  ¥ª¥ó¥é¥¤¥óÊÖÌáÂÐ±þ
+      *  04.04.02    NACL-Æ£¸¶    09/11/04  ¸øÈñÈÖ¹æ¤Þ¤È¤á¤ÎÊÔ½¸ÊýË¡ÄûÀµ
+      *                                     ¸øÈñ¤¬£¶¤Ä°Ê¾å¤Î¤È¤­
       *
       *  04.05.01    NACL-Æ£¸¶    09/07/08  ¸øÈñºÆ·ÇÍó¤Ø¤ÎÃÏÊý¸øÈñµ­ºÜ
       *                                     ÀßÄêÂÐ±þ
@@ -916,7 +918,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                        PERFORM VARYING IDZ1    FROM    1   BY  1
                                UNTIL   IDZ1    >       WRK-2007-MAX
                            PERFORM VARYING IDZ2    FROM    1   BY  1
-                                   UNTIL   IDZ2    >       5
+                                   UNTIL   IDZ2    >       10
                                    OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
                                                    =   SPACE
                                IF      RECE10-KOHNUM (IDZ)
