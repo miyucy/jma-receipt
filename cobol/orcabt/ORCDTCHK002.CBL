@@ -1500,6 +1500,10 @@
                                        TO  SRH-1040-FTNJANUMCHKL(IDX5)
                MOVE    SYS-1040-JKYSNUMCHK
                                        TO  SRH-1040-JKYSNUMCHKL (IDX5)
+               MOVE    SYS-1040-JKYSHANKAKUCHK
+                                   TO  SRH-1040-JKYSHANKAKUCHKL (IDX5)
+               MOVE    SYS-1040-JKYSZENKAKUCHK
+                                   TO  SRH-1040-JKYSZENKAKUCHKL (IDX5)
       *
       *        システム管理マスタ読込処理
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -4111,6 +4115,33 @@
            IF    ( PTKOH-JKYSNUM       NOT =   SPACE )
             AND  ( PTKOH-KOHNUM        NOT =   "012" )
             AND  ( PTKOH-KOHNUM        NOT =   "025" )
+               IF    ( SRH-1040-JKYSHANKAKUCHK =   "2" )
+                   MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-HANKAKU-CHK-SEC
+                       DISPLAY "HANKAKU" FLG-KANACHK
+                   IF  ( FLG-KANACHK       =   ZERO )
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030007"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
+                   END-IF
+               END-IF
+               IF    ( SRH-1040-JKYSZENKAKUCHK =   "2" )
+                   MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-CHK-SEC
+                       DISPLAY "ZENKAKU" FLG-KANACHK
+                   IF  ( FLG-KANACHK       =   ZERO )
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030008"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
+                   END-IF
+               END-IF
+      *
                MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
                IF  ( FLG-KANACHK       NOT =   ZERO )
@@ -9442,6 +9473,8 @@
       *
            MOVE    SPACE               TO  SRH-1040-FTNJANUMCHK
                                            SRH-1040-JKYSNUMCHK
+           MOVE    "1"                 TO  SRH-1040-JKYSHANKAKUCHK
+                                           SRH-1040-JKYSZENKAKUCHK
       *
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1040-MAX )
@@ -9450,6 +9483,10 @@
                                        TO  SRH-1040-FTNJANUMCHK
                    MOVE    SRH-1040-JKYSNUMCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSNUMCHK
+                   MOVE    SRH-1040-JKYSHANKAKUCHKL  (SRH-IDX)
+                                       TO  SRH-1040-JKYSHANKAKUCHK
+                   MOVE    SRH-1040-JKYSZENKAKUCHKL  (SRH-IDX)
+                                       TO  SRH-1040-JKYSZENKAKUCHK
                    MOVE    SRH-1040-MAX
                                        TO  SRH-IDX
                END-IF
@@ -10295,6 +10332,31 @@
       *
            .
        800-HANKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角ェック
+      *****************************************************************
+       800-ZENKAKU-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KANACHK
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
+               GO  TO  800-HANKAKU-CHK-EXT
+           END-IF
+      *
+           MOVE    300                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    15                  TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                       TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+      *
+           .
+       800-ZENKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    全角変換処理

@@ -135,6 +135,16 @@
            05 PIC  X(30)   VALUE   "公費情報の受給者番号に外字が入".
            05 PIC  X(30)   VALUE   "力されています                ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030007".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号に半角文字".
+           05 PIC  X(30)   VALUE   "が入力されています            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030008".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号に全角文字".
+           05 PIC  X(30)   VALUE   "が入力されています            ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 04xxxx 保険適応年齢
       *                            +---------+---------+---------+.
@@ -494,7 +504,8 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  85.
+           05 ERRMES-OCC   OCCURS  87.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   85.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   87
+         .

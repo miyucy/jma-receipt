@@ -315,11 +315,15 @@
                05  SRH-1040-KOHNUM                 PIC X(03).
                05  SRH-1040-FTNJANUMCHK            PIC X(01).
                05  SRH-1040-JKYSNUMCHK             PIC X(01).
+               05  SRH-1040-JKYSHANKAKUCHK         PIC X(01).
+               05  SRH-1040-JKYSZENKAKUCHK         PIC X(01).
                05  SRH-1040-MAX                    PIC 9(05).
                05  SRH-1040-OCC                    OCCURS  100.
                    07  SRH-1040-KOHNUML            PIC X(03).
                    07  SRH-1040-FTNJANUMCHKL       PIC X(01).
                    07  SRH-1040-JKYSNUMCHKL        PIC X(01).
+                   07  SRH-1040-JKYSHANKAKUCHKL    PIC X(01).
+                   07  SRH-1040-JKYSZENKAKUCHKL    PIC X(01).
            03  SRH-1102-DAT.
                05  SRH-1102-HKNJANUM               PIC X(08).
                05  SRH-1102-HKNNUM                 PIC X(03).

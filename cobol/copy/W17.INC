@@ -45,5 +45,13 @@
                 04  W17-JKSNUM          PIC X(16).
                 04  W17-JKSNUM-COUNT    PIC S9(9)   BINARY.
                 04  W17-JKSNUM-ITEM     PIC X(16)   OCCURS  2 TIMES.
+            03  W17-JKSHANKAKUCOMBO.
+                04  W17-JKSHANKAKU       PIC X(20).
+                04  W17-JKSHANKAKU-COUNT PIC S9(9)   BINARY.
+                04  W17-JKSHANKAKU-ITEM  PIC X(20)   OCCURS  5 TIMES.
+            03  W17-JKSZENKAKUCOMBO.
+                04  W17-JKSZENKAKU       PIC X(20).
+                04  W17-JKSZENKAKU-COUNT PIC S9(9)   BINARY.
+                04  W17-JKSZENKAKU-ITEM  PIC X(20)   OCCURS  5 TIMES.
             03  W17-YUKOSTYMD       PIC X(10).
             03  W17-YUKOEDYMD       PIC X(10).

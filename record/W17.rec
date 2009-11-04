@@ -44,6 +44,20 @@ W17	{
 			count	int;
 			item	varchar(16)[2];
 		};
+		JKSHANKAKUCOMBO	{
+			JKSHANKAKU	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		JKSZENKAKUCOMBO	{
+			JKSZENKAKU	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
 		YUKOSTYMD	{
 			value	varchar(10);
 		};

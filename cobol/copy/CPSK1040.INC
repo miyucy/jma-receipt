@@ -42,8 +42,14 @@
                05  SYS-1040-FTNJANUMCHK PIC  X(01).
       *受給者番号抜けチェック
                05  SYS-1040-JKYSNUMCHK  PIC  X(01).
+      *受給者番号半角文字許可
+               05  SYS-1040-JKYSHANKAKUCHK
+                                        PIC  X(01).
+      *受給者番号全角文字許可
+               05  SYS-1040-JKYSZENKAKUCHK
+                                        PIC  X(01).
       *予備
-               05                       PIC  X(498).
+               05                       PIC  X(496).
       *端末ＩＤ
            03  SYS-1040-TERMID          PIC  X(16).
       *オペーレータＩＤ
