@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-小豆沢  09/11/04  分娩管理テーブル追加
-      *  04.05.00    NACL-小豆沢  09/11/05  自由構成にも対応（数字型のみ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -63,8 +62,7 @@
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //BPTNUMCHG//.
-      *
-           COPY    "CPRECEERR.INC".
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
@@ -110,6 +108,7 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
+           03  RECEERR                             PIC X(100).
            03  WRK-PARA-KBN                        PIC X(01).
       *
       *    一時領域
@@ -188,9 +187,6 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -238,8 +234,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
-      *
-           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -294,24 +288,13 @@
       *
            PERFORM   900-CALL-ORCSJOB-SEC
       *
-           MOVE    "STP"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    3                   TO  JOB-STOPFLG
-           PERFORM   900-CALL-ORCSJOB-SEC
-      *
            MOVE    WRK-PARA-HOSPNUM    TO  BPTNUMCHGPARA-HOSPNUM
            MOVE    "BCHKS01"           TO  BPTNUMCHGPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BPTNUMCHGPARA-TERMID
       *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BPTNUMCHGPARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BPTNUMCHGPARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  RECEERR
+      *
+      **     MOVE    "RECEERR"           TO  RECEERR-FILE-ID
+      **     MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -384,9 +367,8 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM     910-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI  =   ZERO
-                     IF  (SYS-1009-PTNUMKSIKBN  =  "1")  AND
-                         (SYS-1009-JIYKSIKBN    =  "0"  OR  "1")
-                           MOVE "自由構成の英数字型は処理できません。"
+                     IF   SYS-1009-PTNUMKSIKBN  =  "1"
+                           MOVE "自由構成時は処理できません。"
                                           TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
                      ELSE
@@ -421,20 +403,6 @@
            MOVE     ZERO      TO    WRK-KETA
       *
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *       自由構成
-              WHEN    "1"
-                  EVALUATE    WRK-PARA-KBN
-                     WHEN    "1"
-                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 1
-                     WHEN    "2"
-                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 2
-                     WHEN    "3"
-                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 3
-                     WHEN    "4"
-                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 4
-                     WHEN    "5"
-                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 5
-                  END-EVALUATE
       *       標準構成
               WHEN    "2"
                   EVALUATE    WRK-PARA-KBN
@@ -465,38 +433,25 @@
                   END-EVALUATE
            END-EVALUATE
       *
-           EVALUATE    SYS-1009-PTNUMKSIKBN
-      *       自由構成
-              WHEN    "1"
-               IF     WRK-KETA     >     20
-                   MOVE    "桁数が２０桁を超えています。"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-               END-IF
-      *       標準構成
-              WHEN    "2"
-      *       拡張構成
-              WHEN    "3"
-               IF     WRK-KETA     <=     10
-                   IF    SYS-1009-PTNUMKSIKBN    =   "3"
-                       MOVE    ZERO       TO    WRK-KETA2
-                       COMPUTE   WRK-KETA2    =    WRK-KETA   +
+           IF     WRK-KETA     <=     10
+               IF    SYS-1009-PTNUMKSIKBN    =   "3"
+                   MOVE    ZERO       TO    WRK-KETA2
+                   COMPUTE   WRK-KETA2    =    WRK-KETA   +
                                                SYS-1009-KKCKSIMAEKETA +
                                                SYS-1009-KKCKSIATOKETA
-                       IF   WRK-KETA2    <=   20
-                           CONTINUE
-                       ELSE
+                   IF   WRK-KETA2    <=   20
+                       CONTINUE
+                   ELSE
                        MOVE "拡張構成の総桁数が２０桁を超えています。"
-                                           TO  WRK-RECEERR
-                           PERFORM 500-ERR-HENSYU-SEC
-                       END-IF
+                                       TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
                    END-IF
-               ELSE
-                   MOVE    "連番号桁数が１０桁を超えています。"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
                END-IF
-           END-EVALUATE
+           ELSE
+               MOVE    "連番号桁数が１０桁を超えています。"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
            .
        1001-KETASU-CHK-EXT.
            EXIT.
@@ -1013,8 +968,6 @@
                PERFORM     910-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI  =   ZERO
                    EVALUATE  SYS-1009-PTNUMKSIKBN
-                       WHEN  "1"
-                          MOVE  WRK-KETA  TO  SYS-1009-JIYKSIKETA
                        WHEN  "2"
                           MOVE  WRK-KETA  TO  SYS-1009-HJNKSIRENNUMKETA
                        WHEN  "3"
@@ -1077,25 +1030,6 @@
            END-EVALUATE
       *
            EVALUATE  SYS-1009-PTNUMKSIKBN
-      *       自由構成
-              WHEN  "1"
-                  EVALUATE    WRK-PARA-KBN
-                      WHEN    "1"
-                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(2:19)
-                          MOVE   "0"          TO  WRK-PTNUM2(1:1)
-                      WHEN    "2"
-                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(3:18)
-                          MOVE   "00"         TO  WRK-PTNUM2(1:2)
-                      WHEN    "3"
-                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(4:17)
-                          MOVE   "000"        TO  WRK-PTNUM2(1:3)
-                      WHEN    "4"
-                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(5:16)
-                          MOVE   "0000"       TO  WRK-PTNUM2(1:4)
-                      WHEN    "5"
-                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(6:15)
-                          MOVE   "00000"      TO  WRK-PTNUM2(1:5)
-                      END-EVALUATE
       *       標準構成
               WHEN  "2"
                   EVALUATE   SYS-1009-HJNKSIKBN
