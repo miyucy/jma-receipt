@@ -1443,6 +1443,32 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *!!
+               WHEN    "K840"
+                   STRING  "警告！！"
+                           "入院日から６月以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K841"
+                   STRING  "警告！！"
+                           "入院日から３月以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K842"
+                   STRING  "警告！！"
+                           "初回入院日から６月以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K843"
+                   STRING  "警告！！"
+                           "初回入院日から３月以上です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *!!
                WHEN    "0210"
                    STRING  "夜間・早朝加算の施設基準ではありません。"
                                                DELIMITED  BY  SIZE
