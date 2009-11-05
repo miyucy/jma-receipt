@@ -48,8 +48,6 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.03.00    NACL-多々納  08/08/18  特定疾患処方管理加算単独対応
       *  04.04.00    NACL-多々納  09/02/XX  外来まとめ対応
-      *  04.05.00    NACL-多々納  09/10/XX  多剤投与対応
-      *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -174,16 +172,24 @@
            03  WRK-ERRCD3          PIC X(04). 
            03  WRK-ERRCD6          PIC X(04). 
       *
-           03  WRK-SYOKEIS         PIC 9(08)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V9(4).
            03  WRK-SYOKEI          PIC 9(08).
       *
-           03  WRK-TENSUKEI        PIC 9(08)V9(4).
+           03  WRK-ZAIKEI          PIC 9(08)V99.
+           03  WRK-GAIKEI          PIC 9(08)V99.
+           03  WRK-GAITEN          PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZTEN          PIC 9(08).
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-MAISU           PIC 9(08).
+           03  WRK-KEIMAI          PIC 9(08).
+           03  WRK-TENSUKEI        PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-TENSU-KEISAN.
-               05  WRK-TENSU-GAI       PIC 9(08)V9(2).
-               05  WRK-TENSU-KEI       PIC 9(08)V9(2).
+               05  WRK-TENSU-GAI       PIC 9(08)V99.
+               05  WRK-TENSU-KEI       PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-GEN    PIC 9(08).
@@ -209,7 +215,7 @@
                05  WRK-SANTEN-9        PIC 9(08)V99.
                05  WRK-TENKEI          PIC 9(08).
                05  WRK-ZAITEN          PIC 9(08).
-               05  WRK-ZAITEN-G        PIC 9(08)V9(8).
+               05  WRK-ZAITEN-G        PIC 9(08)V9(4).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
       *    保険毎の逓減計算
@@ -221,7 +227,6 @@
                05  WRK-SANTEN-KEI      PIC 9(08).
                05  WRK-HKNKEI-TBL      OCCURS   5.
                    07  WRK-HKNKEI-COMBI    PIC X(04).
-                   07  WRK-HKNKEI-CHIKEN   PIC X(01).
                    07  WRK-HKNKEI-KEIKEI   PIC 9(08).
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
@@ -249,22 +254,13 @@
       *
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
-           03  WRK-CHIKENKBN           PIC X(01).
       *    薬剤毎の保険
-           03  WRK-HKNCOMBI-AREA.
-               05  WRK-NAI-HKNCOMBI        PIC X(04).
-               05  WRK-GAI-HKNCOMBI        PIC X(04).
-               05  WRK-MADO1-HKNCOMBI      PIC X(04).
-               05  WRK-MADO2-HKNCOMBI      PIC X(04).
-               05  WRK-CHOU-HKNCOMBI       PIC X(04).
-               05  WRK-SYO-HKNCOMBI        PIC X(04).
-      *        治験区分
-               05  WRK-NAI-CHIKENKBN       PIC X(01).
-               05  WRK-GAI-CHIKENKBN       PIC X(01).
-               05  WRK-MADO1-CHIKENKBN     PIC X(01).
-               05  WRK-MADO2-CHIKENKBN     PIC X(01).
-               05  WRK-CHOU-CHIKENKBN      PIC X(01).
-               05  WRK-SYO-CHIKENKBN       PIC X(01).
+           03  WRK-NAI-HKNCOMBI        PIC X(04).
+           03  WRK-GAI-HKNCOMBI        PIC X(04).
+           03  WRK-MADO1-HKNCOMBI      PIC X(04).
+           03  WRK-MADO2-HKNCOMBI      PIC X(04).
+           03  WRK-CHOU-HKNCOMBI       PIC X(04).
+           03  WRK-SYO-HKNCOMBI        PIC X(04).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -285,7 +281,6 @@
            03  TBL-SRYKA-OCC           OCCURS   10.
                05  TBL-SRYKA           PIC X(02).
                05  TBL-HKNCOMBI        PIC X(04).
-               05  TBL-CHIKENKBN       PIC X(01).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -466,12 +461,7 @@
                    WHEN    "*"
                        CONTINUE
                    WHEN    "."
-                       IF      LNK-ORCSC-PG        =   "K05"
-      *                   セット登録のチェックなし
-                           CONTINUE
-                       ELSE
-                           PERFORM 10010-SRYKBN-CHK-SEC
-                       END-IF
+                       PERFORM 10010-SRYKBN-CHK-SEC
       *
                    WHEN    OTHER
       *                編集チェックへ
@@ -529,6 +519,11 @@
       *****************************************************************
        10010-SRYKBN-CHK-SEC             SECTION.
       *
+           IF      LNK-ORCSC-PG        =   "K05"
+      *        セット登録のチェックなし
+               CONTINUE
+           ELSE
+      *
            MOVE    WRK-COM-SRYSYUKBN (IDX-Z)
                                        TO  WRK-SRYSYUKBN
            EVALUATE    WRK-GMN-INPUTCD(IDX-Z)(2:3)
@@ -566,27 +561,6 @@
                            PERFORM 100101-SRYSYUMEI-HEN-SEC
                        END-IF
                    END-IF
-      *            生活習慣病指導管理料チェック
-                   IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
-                          (SPA-SEIKATU-ARI2    NOT =   ZERO )
-                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
-                           MOVE    "0"             TO  WRK-SRYSYUKBN
-                                                               (3:1) 
-                           MOVE    "0"             TO  WRK-GMN-INPUTCD
-                                                        (IDX-Z)(4:1)
-                           PERFORM 100101-SRYSYUMEI-HEN-SEC
-                       END-IF
-                   END-IF
-      *            小児科外来診察料チェック
-                   IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
-                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
-                           MOVE    "0"             TO  WRK-SRYSYUKBN
-                                                               (3:1) 
-                           MOVE    "0"             TO  WRK-GMN-INPUTCD
-                                                        (IDX-Z)(4:1)
-                           PERFORM 100101-SRYSYUMEI-HEN-SEC
-                       END-IF
-                   END-IF
       *        WHEN    "212"
       *        WHEN    "222"
       *        WHEN    "232"
@@ -606,6 +580,8 @@
                                                              (IDX-Z)
                    END-IF
            END-EVALUATE
+      *
+           END-IF
            .
        10010-SRYKBN-CHK-EXT.
            EXIT.
@@ -1071,12 +1047,6 @@
                              ((WRK-GMN-INPUTCD(IDX) =   SPACE) AND
                               (WRK-COM-INPUTCD(IDX) =   SPACE))
       *
-             IF   (WRK-COM-YAKUHYO (IDX)       =   "1"  )  OR
-                  (WRK-GMN-INPUTCD (IDX)(1:1)  =   "."  )  OR
-                  (WRK-COM-HKNCOMBI (IDX)      =   "9999")
-               CONTINUE
-             ELSE
-      *
                IF     (WRK-COM-SRYKBN(IDX)(1:1)    =   "2" )  OR
                       (WRK-COM-SRYSYUKBN(IDX)      =   "820")
                   OR  (WRK-COM-SRYSYUKBN(IDX)      =   "980")
@@ -1088,6 +1058,7 @@
                                               TO  WRK-COM-HKNCOMBI(IDX)
                    END-IF
       *@
+                   IF     WRK-COM-HKNCOMBI (IDX)  NOT =   "9999"
                    PERFORM VARYING     IDX-KA  FROM    1   BY  1
                            UNTIL       IDX-KA  >   10
                        IF      TBL-SRYKA (IDX-KA)  =   SPACE
@@ -1096,17 +1067,15 @@
                            MOVE    WRK-COM-HKNCOMBI(IDX)
                                                        TO  TBL-HKNCOMBI
                                                               (IDX-KA)
-                           MOVE    WRK-COM-CHIKENKBN(IDX)
-                                                       TO  TBL-CHIKENKBN
-                                                              (IDX-KA)
                        END-IF
                        IF      TBL-SRYKA (IDX-KA)  =   WRK-COM-SRYKA
                                                                (IDX)
                            MOVE    10              TO  IDX-KA
                        END-IF
                    END-PERFORM
+      *@
+                   END-IF
                END-IF
-             END-IF
            END-PERFORM
       *
            MOVE    ZERO                TO  IDXS
@@ -1119,7 +1088,6 @@
                           OR  (SPA-ERRCD       NOT =   SPACE)
                MOVE    TBL-SRYKA (IDX-KA)      TO  WRK-SRYKA
                MOVE    TBL-HKNCOMBI(IDX-KA)    TO  WRK-HKNCOMBI
-               MOVE    TBL-CHIKENKBN(IDX-KA)   TO  WRK-CHIKENKBN
       *
                MOVE    ZERO            TO  FLG-TOKUTEI
                PERFORM VARYING     IDX-KA2 FROM    1   BY  1
@@ -1175,7 +1143,12 @@
            MOVE    ZERO                TO  FLG-ZAIEND
            MOVE    ZERO                TO  IDX-CHOKI
       *
-           INITIALIZE                  WRK-HKNCOMBI-AREA
+           MOVE    SPACE               TO  WRK-NAI-HKNCOMBI
+           MOVE    SPACE               TO  WRK-GAI-HKNCOMBI
+           MOVE    SPACE               TO  WRK-MADO1-HKNCOMBI
+           MOVE    SPACE               TO  WRK-MADO2-HKNCOMBI
+           MOVE    SPACE               TO  WRK-CHOU-HKNCOMBI
+           MOVE    SPACE               TO  WRK-SYO-HKNCOMBI
       *
            INITIALIZE                  WRK-ZAIKEI-AREA
            INITIALIZE                  TBL-NYUINDAY-AREA
@@ -1190,8 +1163,6 @@
       *
            IF     (WRK-COM-SRYKA (IDX)     =   WRK-SRYKA  )
             AND   (WRK-COM-HKNCOMBI (IDX)  NOT =   "9999" )
-      *        薬評対象外
-            AND   (WRK-COM-YAKUHYO  (IDX)  =   SPACE  )
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
       *        投薬の時、薬剤コードがあること
@@ -1211,16 +1182,11 @@
                        IF      WRK-NAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-NAI-HKNCOMBI
-                           MOVE    WRK-COM-CHIKENKBN(IDX)
-                                                   TO  WRK-NAI-CHIKENKBN
                        END-IF
                        IF      WRK-CNT-HKN         =   ZERO
                            MOVE    1               TO  WRK-CNT-HKN
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-HKNKEI-COMBI
-                                                      (WRK-CNT-HKN)
-                           MOVE    WRK-COM-CHIKENKBN(IDX)
-                                                   TO  WRK-HKNKEI-CHIKEN
                                                       (WRK-CNT-HKN)
                        END-IF
                    WHEN    "212"
@@ -1231,8 +1197,6 @@
                        IF      WRK-NAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-NAI-HKNCOMBI
-                           MOVE    WRK-COM-CHIKENKBN(IDX)
-                                                   TO  WRK-NAI-CHIKENKBN
                        END-IF
                    WHEN    "222"
                        MOVE     1              TO  FLG-TONPUK2
@@ -1241,8 +1205,6 @@
                        IF      WRK-GAI-HKNCOMBI    =   SPACE
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-GAI-HKNCOMBI
-                           MOVE    WRK-COM-CHIKENKBN(IDX)
-                                                   TO  WRK-GAI-CHIKENKBN
                        END-IF
                    WHEN    "232"
                        MOVE     1              TO  FLG-GAIYAK2
@@ -1276,8 +1238,6 @@
                            MOVE    IDX             TO  IDX-SYOHOU
                            MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-SYO-HKNCOMBI
-                           MOVE    WRK-COM-CHIKENKBN(IDX)
-                                                   TO  WRK-SYO-CHIKENKBN
                        END-IF
                END-EVALUATE
       *        後発医薬品への変更チェック
@@ -1592,8 +1552,6 @@
                               (FLG-YAKUZAI-ARI       =   1    )
       *@
            IF      WRK-COM-HKNCOMBI (IDX3)  NOT =   "9999"
-      *        薬評対象外
-            AND   (WRK-COM-YAKUHYO  (IDX3)  =   SPACE  )
                IF      WRK-COM-INPUTCD(IDX3)(1:1)  =   "6"
                    MOVE    1              TO  FLG-YAKUZAI-ARI
                ELSE
@@ -1630,9 +1588,6 @@
                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                            TO  WRK-HKNKEI-COMBI
                                                       (WRK-CNT-HKN)
-                   MOVE    WRK-COM-CHIKENKBN(IDX)
-                                           TO  WRK-HKNKEI-CHIKEN
-                                                      (WRK-CNT-HKN)
                END-IF
            END-IF
       *
@@ -1652,15 +1607,11 @@
                                IF      WRK-MADO2-HKNCOMBI  =   SPACE
                                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-MADO2-HKNCOMBI
-                                   MOVE    WRK-COM-CHIKENKBN(IDX)
-                                               TO  WRK-MADO2-CHIKENKBN
                                END-IF
                            ELSE
                                IF      WRK-MADO1-HKNCOMBI  =   SPACE
                                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-MADO1-HKNCOMBI
-                                   MOVE    WRK-COM-CHIKENKBN(IDX)
-                                               TO  WRK-MADO1-CHIKENKBN
                                END-IF
                            END-IF
                        END-IF
@@ -1679,11 +1630,9 @@
            IF      (FLG-NAIFUKU            =   1  )   AND
                    (WRK-COM-INPUTCD(IDX)(1:1)  =   "6"   )
       *        剤数加算
-               IF     (WRK-COM-ZAIGATAKBN (IDX)    =   1  OR
+               IF      WRK-COM-ZAIGATAKBN (IDX)    =   1  OR
                                                        2  OR
-                                                       3   )
-      *            種類数指示入力なし
-               AND    (WRK-COM-TANDKKBN (IDX)  NOT =  "1"  )
+                                                       3
                    MOVE    1               TO  WRK-KONGO
                ELSE
       *            粉砕コードがある時、混合とする
@@ -1780,18 +1729,14 @@
                END-IF
            END-IF
       *
-      *    長期投薬品チェック（内服と外用のみ）
+      *    長期投薬品チェック
            IF      (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
-                   (WRK-CHK-SRYSYUKBN(1:2)    =   "21"
-                                              OR  "23"
-                                              OR  "29" )  AND
+                   (WRK-CHK-SRYSYUKBN (1:1)   =   "2"  )  AND
                    (WRK-COM-KAISU (IDX)       >=  28   )
                MOVE    1                   TO  FLG-CHOUKI
                IF      WRK-CHOU-HKNCOMBI   =   SPACE
                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-CHOU-HKNCOMBI
-                   MOVE    WRK-COM-CHIKENKBN(IDX)
-                                               TO  WRK-CHOU-CHIKENKBN
                END-IF
            END-IF
       *    外用の場合
@@ -1802,8 +1747,6 @@
                IF      WRK-CHOU-HKNCOMBI   =   SPACE
                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-CHOU-HKNCOMBI
-                   MOVE    WRK-COM-CHIKENKBN(IDX)
-                                               TO  WRK-CHOU-CHIKENKBN
                END-IF
            END-IF
       *
@@ -1886,12 +1829,10 @@
                IF     (WRK-CHOU-HKNCOMBI   NOT =   WRK-HKNCOMBI) AND
                       (WRK-CHOU-HKNCOMBI   NOT =   SPACE       )
                    MOVE    WRK-CHOU-HKNCOMBI   TO  WRK-HKNCOMBI
-                   MOVE    WRK-CHOU-CHIKENKBN  TO  WRK-CHIKENKBN
                END-IF
            END-IF
            IF      WRK-SYO-HKNCOMBI    NOT =   SPACE
                MOVE    WRK-SYO-HKNCOMBI    TO  WRK-HKNCOMBI
-               MOVE    WRK-SYO-CHIKENKBN   TO  WRK-CHIKENKBN
            END-IF
       *
       *    処方箋を交付する診察料を算定している場合、算定なし
@@ -2205,8 +2146,7 @@
                MOVE    9               TO  SPA-TOKUTEIFLG
            ELSE
       *        算定可能
-      ****     MOVE    "0113"          TO  LNK-ORCSC-KIDCD
-      *!!!
+      ******   MOVE    "0113"          TO  LNK-ORCSC-KIDCD
       *        警告チェック
                MOVE    "120002570"         TO  WRK-SRYCD
                MOVE    WRK-SRYKA           TO  SPA-TOKUTEI-SRYKA
@@ -2256,16 +2196,12 @@
            IF      WRK-MADO1-HKNCOMBI  NOT =   SPACE
       *        内服
                MOVE    WRK-MADO1-HKNCOMBI  TO  WRK-NAI-HKNCOMBI
-               MOVE    WRK-MADO1-CHIKENKBN TO  WRK-NAI-CHIKENKBN
                MOVE    WRK-MADO1-HKNCOMBI  TO  WRK-HKNCOMBI
-               MOVE    WRK-MADO1-CHIKENKBN TO  WRK-CHIKENKBN
            ELSE
       *        外用
                IF      WRK-MADO2-HKNCOMBI  NOT =   SPACE
                    MOVE    WRK-MADO2-HKNCOMBI  TO  WRK-GAI-HKNCOMBI
-                   MOVE    WRK-MADO2-CHIKENKBN TO  WRK-GAI-CHIKENKBN
                    MOVE    WRK-MADO2-HKNCOMBI  TO  WRK-HKNCOMBI
-                   MOVE    WRK-MADO2-CHIKENKBN TO  WRK-CHIKENKBN
                END-IF
            END-IF
       *    長期投薬加算算定時、保険の変更
@@ -2275,7 +2211,6 @@
                    IF     (WRK-MADO1-HKNCOMBI      =   SPACE )  AND
                           (WRK-MADO2-HKNCOMBI      =   SPACE )
                        MOVE    WRK-CHOU-HKNCOMBI   TO  WRK-HKNCOMBI
-                       MOVE    WRK-CHOU-CHIKENKBN  TO  WRK-CHIKENKBN
                    END-IF
                END-IF
            END-IF
@@ -2316,8 +2251,6 @@
                                                          (02 IDXS)
                    MOVE    WRK-NAI-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                          (02 IDXS)
-                   MOVE    WRK-NAI-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
-                                                         (02 IDXS)
                END-IF
            END-IF
       *    外用調剤料加算
@@ -2331,8 +2264,6 @@
                    MOVE    "23"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
                    MOVE    WRK-GAI-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
-                                                         (02 IDXS)
-                   MOVE    WRK-GAI-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
                                                          (02 IDXS)
                END-IF
            END-IF
@@ -2488,9 +2419,6 @@
                                                          (02 IDXS)
                        MOVE    WRK-CHOU-HKNCOMBI
                                                TO  LNK-ORCSC-HKNCOMBI
-                                                         (02 IDXS)
-                       MOVE    WRK-CHOU-CHIKENKBN
-                                               TO  LNK-ORCSC-CHIKENKBN
                                                          (02 IDXS)
       *                自動発生分としない
       *T               MOVE    "1"             TO  LNK-ORCSC-AUTOKBN
@@ -2803,6 +2731,8 @@
            IF      FLG-ERR             =   1
                MOVE    9               TO  SPA-TOKUTEIFLG
            ELSE
+      *        算定可能
+      *****    MOVE    "0113"          TO  LNK-ORCSC-KIDCD
       *!!!
       *        警告チェック
                MOVE    "120002270"         TO  WRK-SRYCD
@@ -2881,6 +2811,7 @@
            .
        300212-CHOKI-KEI-EXT.
            EXIT.
+      *!!!!
       *
       *****************************************************************
       *    薬剤料逓減自動算定処理
@@ -2896,8 +2827,6 @@
       *
              IF     (WRK-COM-SRYKA(IDX)    =   WRK-SRYKA  )
                 AND (WRK-COM-HKNCOMBI(IDX) NOT =   "9999" )
-      *        薬評対象外
-               AND  (WRK-COM-YAKUHYO (IDX) =   SPACE  )
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
       *        院内の内服薬チェック
@@ -2979,9 +2908,6 @@
                    MOVE    WRK-HKNKEI-COMBI (IDX-GEN)
                                            TO  LNK-ORCSC-HKNCOMBI
                                                          (02 IDXS)
-                   MOVE    WRK-HKNKEI-CHIKEN(IDX-GEN)
-                                           TO  LNK-ORCSC-CHIKENKBN
-                                                         (02 IDXS)
                END-IF
            END-PERFORM
            .
@@ -3040,7 +2966,6 @@
                MOVE    "210"               TO  WRK-COM-SRYSYUKBN(IDX-S)
                MOVE    WRK-SRYKA           TO  WRK-COM-SRYKA    (IDX-S)
                MOVE    WRK-HKNCOMBI        TO  WRK-COM-HKNCOMBI (IDX-S)
-               MOVE    WRK-CHIKENKBN       TO  WRK-COM-CHIKENKBN(IDX-S)
            ELSE
                MOVE    WRK-COM-SRYKBN (IDX-S + 1)
                                            TO  WRK-COM-SRYKBN(IDX-S)
@@ -3051,8 +2976,6 @@
                                            TO  WRK-COM-SRYKA    (IDX-S)
                MOVE    WRK-COM-HKNCOMBI  (IDX-S + 1)
                                            TO  WRK-COM-HKNCOMBI (IDX-S)
-               MOVE    WRK-COM-CHIKENKBN  (IDX-S + 1)
-                                           TO  WRK-COM-CHIKENKBN(IDX-S)
            END-IF
       *
       *    自動追加分（入力時に追加）
@@ -3536,8 +3459,6 @@
                                                          (02 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                          (02 IDXS)
-               MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
-                                                         (02 IDXS)
                IF      WRK-SRYCD (1:1)     =   "1"
                    MOVE    TNS-SANTEIRRKKBN
                                            TO  LNK-ORCSC-SANTEIRRKKBN
@@ -3753,8 +3674,6 @@
                MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                          (02 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
-                                                         (02 IDXS)
-               MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
                                                          (02 IDXS)
                IF      WRK-SRYCD (1:1)     =   "1"
                    MOVE    TNS-SANTEIRRKKBN
@@ -4030,10 +3949,9 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-      *ver.4.8
-      *               IF      IDX-Y3              >   4
-      *                    MOVE    4               TO  IDX-Y3
-      ****            END-IF
+                      IF      IDX-Y3              >   4
+                           MOVE    4               TO  IDX-Y3
+                      END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -4181,8 +4099,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
