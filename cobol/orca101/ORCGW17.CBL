@@ -60,8 +60,12 @@
                        09  SPA-GMN-KOUHICL     PIC X(20).
                        09  SPA-GMN-FTNNUMCL    PIC X(14).
                        09  SPA-GMN-JKSNUMCL    PIC X(14).
+                       09  SPA-GMN-FTSHANKAKUCL PIC X(1).
+                       09  SPA-GMN-FTSZENKAKUCL PIC X(1).
+                       09  SPA-GMN-FTSNUMERICCL PIC X(1).
                        09  SPA-GMN-JKSHANKAKUCL PIC X(1).
                        09  SPA-GMN-JKSZENKAKUCL PIC X(1).
+                       09  SPA-GMN-JKSNUMERICCL PIC X(1).
                        09  SPA-GMN-STYMDCL     PIC X(9).
                        09  SPA-GMN-EDYMDCL     PIC X(9).
                    07  SPA-GMN-CLIST-MAX       PIC 9(03).
@@ -78,6 +82,21 @@
                        09  SPA-GMN-JKSCD       PIC X(01).
                        09  FILLER              PIC X(01).
                        09  SPA-GMN-JKSMEI      PIC X(14).
+                   07  SPA-GMN-FTSHANKAKU-G.
+                       09  SPA-GMN-FTSHANKAKUCD PIC X(01).
+                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FTSHANKAKUMEI
+                                               PIC X(18).
+                   07  SPA-GMN-FTSZENKAKU-G.
+                       09  SPA-GMN-FTSZENKAKUCD PIC X(01).
+                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FTSZENKAKUMEI
+                                               PIC X(18).
+                   07  SPA-GMN-FTSNUMERIC-G.
+                       09  SPA-GMN-FTSNUMERICCD PIC X(01).
+                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FTSNUMERICMEI
+                                               PIC X(18).
                    07  SPA-GMN-JKSHANKAKU-G.
                        09  SPA-GMN-JKSHANKAKUCD PIC X(01).
                        09  FILLER              PIC X(01).
@@ -87,6 +106,11 @@
                        09  SPA-GMN-JKSZENKAKUCD PIC X(01).
                        09  FILLER              PIC X(01).
                        09  SPA-GMN-JKSZENKAKUMEI
+                                               PIC X(18).
+                   07  SPA-GMN-JKSNUMERIC-G.
+                       09  SPA-GMN-JKSNUMERICCD PIC X(01).
+                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-JKSNUMERICMEI
                                                PIC X(18).
                    07  SPA-GMN-YUKOSTYMD   PIC X(09).
                    07  SPA-GMN-YUKOEDYMD   PIC X(09).
@@ -112,6 +136,26 @@
                        09  SPA-GMN-JKSMEIL     PIC X(14).
                    07  SPA-GMN-JKSNUM-MAX  PIC 9(04).
       *
+               05  SPA-GMN-FTSHANKAKUCOMBO-AREA.
+                   07  SPA-GMN-FTSHANKAKU-LIST OCCURS 2.
+                       09  SPA-GMN-FTSHANKAKUCDL    PIC X(01).
+                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FTSHANKAKUMEIL   PIC X(18).
+                   07  SPA-GMN-FTSHANKAKU-MAX       PIC 9(04).
+               05  SPA-GMN-FTSZENKAKUCOMBO-AREA.
+                   07  SPA-GMN-FTSZENKAKU-LIST OCCURS 2.
+                       09  SPA-GMN-FTSZENKAKUCDL    PIC X(01).
+                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FTSZENKAKUMEIL   PIC X(18).
+                   07  SPA-GMN-FTSZENKAKU-MAX       PIC 9(04).
+      *
+               05  SPA-GMN-FTSNUMERICCOMBO-AREA.
+                   07  SPA-GMN-FTSNUMERIC-LIST OCCURS 2.
+                       09  SPA-GMN-FTSNUMERICCDL    PIC X(01).
+                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FTSNUMERICMEIL   PIC X(18).
+                   07  SPA-GMN-FTSNUMERIC-MAX       PIC 9(04).
+      *
                05  SPA-GMN-JKSHANKAKUCOMBO-AREA.
                    07  SPA-GMN-JKSHANKAKU-LIST OCCURS 2.
                        09  SPA-GMN-JKSHANKAKUCDL    PIC X(01).
@@ -124,6 +168,13 @@
                        09  FILLER                  PIC X(01).
                        09  SPA-GMN-JKSZENKAKUMEIL   PIC X(18).
                    07  SPA-GMN-JKSZENKAKU-MAX       PIC 9(04).
+      *
+               05  SPA-GMN-JKSNUMERICCOMBO-AREA.
+                   07  SPA-GMN-JKSNUMERIC-LIST OCCURS 2.
+                       09  SPA-GMN-JKSNUMERICCDL    PIC X(01).
+                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-JKSNUMERICMEIL   PIC X(18).
+                   07  SPA-GMN-JKSNUMERIC-MAX       PIC 9(04).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-CHECKLIST   OCCURS  100.
@@ -431,6 +482,33 @@
            MOVE    SPA-GMN-JKSNUM-LIST(1)
                                    TO  SPA-GMN-JKSNUM-G
       *
+      *    負担者番号半角
+           MOVE    "1"                 TO  SPA-GMN-FTSHANKAKUCDL(1)
+           MOVE    "認める"            TO  SPA-GMN-FTSHANKAKUMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-FTSHANKAKUCDL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-FTSHANKAKUMEIL(2)
+           MOVE    2                   TO  SPA-GMN-FTSHANKAKU-MAX
+           MOVE    SPA-GMN-FTSHANKAKU-LIST(1)
+                                       TO  SPA-GMN-FTSHANKAKU-G
+      *
+      *    負担者番号全角
+           MOVE    "1"                 TO  SPA-GMN-FTSZENKAKUCDL(1)
+           MOVE    "認める"            TO  SPA-GMN-FTSZENKAKUMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-FTSZENKAKUCDL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-FTSZENKAKUMEIL(2)
+           MOVE    2                   TO  SPA-GMN-FTSZENKAKU-MAX
+           MOVE    SPA-GMN-FTSZENKAKU-LIST(1)
+                                       TO  SPA-GMN-FTSZENKAKU-G
+      *
+      *    負担者番号数字チェック
+           MOVE    "1"                 TO  SPA-GMN-FTSNUMERICCDL(1)
+           MOVE    "認める"            TO  SPA-GMN-FTSNUMERICMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-FTSNUMERICCDL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-FTSNUMERICMEIL(2)
+           MOVE    2                   TO  SPA-GMN-FTSNUMERIC-MAX
+           MOVE    SPA-GMN-FTSNUMERIC-LIST(1)
+                                       TO  SPA-GMN-FTSNUMERIC-G
+      *
       *    受給者番号半角
            MOVE    "1"                 TO  SPA-GMN-JKSHANKAKUCDL(1)
            MOVE    "認める"            TO  SPA-GMN-JKSHANKAKUMEIL(1)
@@ -448,6 +526,15 @@
            MOVE    2                   TO  SPA-GMN-JKSZENKAKU-MAX
            MOVE    SPA-GMN-JKSZENKAKU-LIST(1)
                                        TO  SPA-GMN-JKSZENKAKU-G
+      *
+      *    受給者番号数字チェック
+           MOVE    "1"                 TO  SPA-GMN-JKSNUMERICCDL(1)
+           MOVE    "認める"            TO  SPA-GMN-JKSNUMERICMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-JKSNUMERICCDL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-JKSNUMERICMEIL(2)
+           MOVE    2                   TO  SPA-GMN-JKSNUMERIC-MAX
+           MOVE    SPA-GMN-JKSNUMERIC-LIST(1)
+                                       TO  SPA-GMN-JKSNUMERIC-G
       *
       *    コンボ項目設定処理
            PERFORM 3101-HKNNUM-COMBO-SET-SEC
@@ -613,6 +700,33 @@
                MOVE    SYS-1040-JKYSNUMCHK
                                    TO  SPA-GMN-JKSNUMCL(IDX-LST)
       *
+      *        負担者番号半角
+               IF    ( SYS-1040-FTNJHANKAKUCHK
+                                   =   SPACE )
+                   MOVE    "1"     TO  SPA-GMN-FTSHANKAKUCL(IDX-LST)
+               ELSE
+                   MOVE    SYS-1040-FTNJHANKAKUCHK
+                                   TO  SPA-GMN-FTSHANKAKUCL(IDX-LST)
+               END-IF
+      *
+      *        負担者番号全角
+               IF    ( SYS-1040-FTNJZENKAKUCHK
+                                   =   SPACE )
+                   MOVE    "1"     TO  SPA-GMN-FTSZENKAKUCL(IDX-LST)
+               ELSE
+                   MOVE    SYS-1040-FTNJZENKAKUCHK
+                                   TO  SPA-GMN-FTSZENKAKUCL(IDX-LST)
+               END-IF
+      *
+      *        負担者番号数字チェック
+               IF    ( SYS-1040-FTNJNUMERICCHK
+                                   =   SPACE )
+                   MOVE    "1"     TO  SPA-GMN-FTSNUMERICCL(IDX-LST)
+               ELSE
+                   MOVE    SYS-1040-FTNJNUMERICCHK
+                                   TO  SPA-GMN-FTSNUMERICCL(IDX-LST)
+               END-IF
+      *
       *        受給者番号半角
                IF    ( SYS-1040-JKYSHANKAKUCHK
                                    =   SPACE )
@@ -629,6 +743,15 @@
                ELSE
                    MOVE    SYS-1040-JKYSZENKAKUCHK
                                    TO  SPA-GMN-JKSZENKAKUCL(IDX-LST)
+               END-IF
+      *
+      *        受給者番号数字チェック
+               IF    ( SYS-1040-JKYSNUMERICCHK
+                                   =   SPACE )
+                   MOVE    "1"     TO  SPA-GMN-JKSNUMERICCL(IDX-LST)
+               ELSE
+                   MOVE    SYS-1040-JKYSNUMERICCHK
+                                   TO  SPA-GMN-JKSNUMERICCL(IDX-LST)
                END-IF
       *
       *        有効開始日付
@@ -805,12 +928,24 @@
       *    受給者番号コンボ
            MOVE    SPA-GMN-JKSNUMCL(IDX-LST)
                                    TO  SPA-GMN-JKSNUM-G
+      *    負担者番号半角コンボ
+           MOVE    SPA-GMN-FTSHANKAKUCL(IDX-LST)
+                                   TO  SPA-GMN-FTSHANKAKU-G
+      *    負担者番号全角コンボ
+           MOVE    SPA-GMN-FTSZENKAKUCL(IDX-LST)
+                                   TO  SPA-GMN-FTSZENKAKU-G
+      *    負担者番号数字コンボ
+           MOVE    SPA-GMN-FTSNUMERICCL(IDX-LST)
+                                   TO  SPA-GMN-FTSNUMERIC-G
       *    受給者番号半角コンボ
            MOVE    SPA-GMN-JKSHANKAKUCL(IDX-LST)
                                    TO  SPA-GMN-JKSHANKAKU-G
       *    受給者番号全角コンボ
            MOVE    SPA-GMN-JKSZENKAKUCL(IDX-LST)
                                    TO  SPA-GMN-JKSZENKAKU-G
+      *    受給者番号数字コンボ
+           MOVE    SPA-GMN-JKSNUMERICCL(IDX-LST)
+                                   TO  SPA-GMN-JKSNUMERIC-G
       *
       *    公費コンボの内容を再セット
            PERFORM 3101-HKNNUM-COMBO-SET-SEC
@@ -833,10 +968,18 @@
            MOVE    W17-FTSNUM      TO  SPA-GMN-FTSNUM-G
       *    受給者番号コンボ
            MOVE    W17-JKSNUM      TO  SPA-GMN-JKSNUM-G
+      *    負担者番号半角コンボ
+           MOVE    W17-FTSHANKAKU   TO  SPA-GMN-FTSHANKAKU-G
+      *    負担者番号全角コンボ
+           MOVE    W17-FTSZENKAKU   TO  SPA-GMN-FTSZENKAKU-G
+      *    負担者番号数字コンボ
+           MOVE    W17-FTSNUMERIC   TO  SPA-GMN-FTSNUMERIC-G
       *    受給者番号半角コンボ
            MOVE    W17-JKSHANKAKU   TO  SPA-GMN-JKSHANKAKU-G
       *    受給者番号全角コンボ
            MOVE    W17-JKSZENKAKU   TO  SPA-GMN-JKSZENKAKU-G
+      *    受給者番号数字コンボ
+           MOVE    W17-JKSNUMERIC   TO  SPA-GMN-JKSNUMERIC-G
       *    有効期間開始日
            MOVE    W17-YUKOSTYMD   TO  SPA-GMN-YUKOSTYMD
       *    有効期間終了日
@@ -884,6 +1027,24 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
+      *    負担者番号半角コンボチェック
+           PERFORM 4114-FTSHANKAKU-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    負担者番号全角コンボチェック
+           PERFORM 4114-FTSZENKAKU-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    負担者番号数字コンボチェック
+           PERFORM 4114-FTSNUMERIC-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
       *    受給者番号半角コンボチェック
            PERFORM 4114-JKSHANKAKU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -892,6 +1053,12 @@
       *
       *    受給者番号全角コンボチェック
            PERFORM 4114-JKSZENKAKU-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    受給者番号数字コンボチェック
+           PERFORM 4114-JKSNUMERIC-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1082,6 +1249,91 @@
        4114-JKSNUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    負担者番号半角編集処理
+      *****************************************************************
+       4114-FTSHANKAKU-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-FTSHANKAKU-G     =   SPACE )
+               MOVE    SPA-GMN-FTSHANKAKU-LIST(1)
+                                   TO  SPA-GMN-FTSHANKAKU-G
+           END-IF
+      *
+           PERFORM VARYING IDX-FTS FROM    1   BY   1
+                   UNTIL ( IDX-FTS >   SPA-GMN-FTSHANKAKU-MAX )
+                   OR    ( SPA-GMN-FTSHANKAKUCD
+                                   =   SPA-GMN-FTSHANKAKUCDL(IDX-FTS))
+               CONTINUE
+           END-PERFORM
+      *
+           IF      IDX-FTS   <=  SPA-GMN-FTSHANKAKU-MAX
+               MOVE    SPA-GMN-FTSHANKAKU-LIST(IDX-FTS)
+                                       TO  SPA-GMN-FTSHANKAKU-G
+           ELSE
+               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    007             TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       4114-FTSHANKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    負担者番号全角編集処理
+      *****************************************************************
+       4114-FTSZENKAKU-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-FTSZENKAKU-G     =   SPACE )
+               MOVE    SPA-GMN-FTSZENKAKU-LIST(1)
+                                   TO  SPA-GMN-FTSZENKAKU-G
+           END-IF
+      *
+           PERFORM VARYING IDX-FTS FROM    1   BY   1
+                   UNTIL ( IDX-FTS >   SPA-GMN-FTSZENKAKU-MAX )
+                   OR    ( SPA-GMN-FTSZENKAKUCD
+                                   =   SPA-GMN-FTSZENKAKUCDL(IDX-FTS))
+               CONTINUE
+           END-PERFORM
+      *
+           IF      IDX-FTS   <=  SPA-GMN-FTSZENKAKU-MAX
+               MOVE    SPA-GMN-FTSZENKAKU-LIST(IDX-FTS)
+                                       TO  SPA-GMN-FTSZENKAKU-G
+           ELSE
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    008             TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       4114-FTSZENKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    負担者番号数字編集処理
+      *****************************************************************
+       4114-FTSNUMERIC-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-FTSNUMERIC-G     =   SPACE )
+               MOVE    SPA-GMN-FTSNUMERIC-LIST(1)
+                                   TO  SPA-GMN-FTSNUMERIC-G
+           END-IF
+      *
+           PERFORM VARYING IDX-FTS FROM    1   BY   1
+                   UNTIL ( IDX-FTS >   SPA-GMN-FTSNUMERIC-MAX )
+                   OR    ( SPA-GMN-FTSNUMERICCD
+                                   =   SPA-GMN-FTSNUMERICCDL(IDX-FTS))
+               CONTINUE
+           END-PERFORM
+      *
+           IF      IDX-FTS   <=  SPA-GMN-FTSNUMERIC-MAX
+               MOVE    SPA-GMN-FTSNUMERIC-LIST(IDX-FTS)
+                                       TO  SPA-GMN-FTSNUMERIC-G
+           ELSE
+               MOVE    "0015"          TO  SPA-ERRCD
+               MOVE    011             TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       4114-FTSNUMERIC-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    受給者番号半角編集処理
       *****************************************************************
        4114-JKSHANKAKU-CHK-SEC          SECTION.
@@ -1102,8 +1354,8 @@
                MOVE    SPA-GMN-JKSHANKAKU-LIST(IDX-JKS)
                                        TO  SPA-GMN-JKSHANKAKU-G
            ELSE
-               MOVE    "0007"          TO  SPA-ERRCD
-               MOVE    007             TO  SPA-GMN-CUR
+               MOVE    "0013"          TO  SPA-ERRCD
+               MOVE    009             TO  SPA-GMN-CUR
            END-IF
            .
       *
@@ -1130,12 +1382,40 @@
                MOVE    SPA-GMN-JKSZENKAKU-LIST(IDX-JKS)
                                        TO  SPA-GMN-JKSZENKAKU-G
            ELSE
-               MOVE    "0009"          TO  SPA-ERRCD
-               MOVE    008             TO  SPA-GMN-CUR
+               MOVE    "0014"          TO  SPA-ERRCD
+               MOVE    010             TO  SPA-GMN-CUR
            END-IF
            .
       *
        4114-JKSZENKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    受給者番号数字編集処理
+      *****************************************************************
+       4114-JKSNUMERIC-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-JKSNUMERIC-G     =   SPACE )
+               MOVE    SPA-GMN-JKSNUMERIC-LIST(1)
+                                   TO  SPA-GMN-JKSNUMERIC-G
+           END-IF
+      *
+           PERFORM VARYING IDX-JKS FROM    1   BY   1
+                   UNTIL ( IDX-JKS >   SPA-GMN-JKSNUMERIC-MAX )
+                   OR    ( SPA-GMN-JKSNUMERICCD
+                                   =   SPA-GMN-JKSNUMERICCDL(IDX-JKS))
+               CONTINUE
+           END-PERFORM
+      *
+           IF      IDX-JKS   <=  SPA-GMN-JKSNUMERIC-MAX
+               MOVE    SPA-GMN-JKSNUMERIC-LIST(IDX-JKS)
+                                       TO  SPA-GMN-JKSNUMERIC-G
+           ELSE
+               MOVE    "0016"          TO  SPA-ERRCD
+               MOVE    012             TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       4114-JKSNUMERIC-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1175,12 +1455,24 @@
       *    受給者番号抜け初期値セット
            MOVE    SPA-GMN-JKSNUM-LIST(1)
                                    TO  SPA-GMN-JKSNUM-G
+      *    負担者番号半角初期値セット
+           MOVE    SPA-GMN-FTSHANKAKU-LIST(1)
+                                   TO  SPA-GMN-FTSHANKAKU-G
+      *    負担者番号全角初期値セット
+           MOVE    SPA-GMN-FTSZENKAKU-LIST(1)
+                                   TO  SPA-GMN-FTSZENKAKU-G
+      *    負担者番号数字初期値セット
+           MOVE    SPA-GMN-FTSNUMERIC-LIST(1)
+                                   TO  SPA-GMN-FTSNUMERIC-G
       *    受給者番号半角初期値セット
            MOVE    SPA-GMN-JKSHANKAKU-LIST(1)
                                    TO  SPA-GMN-JKSHANKAKU-G
       *    受給者番号全角初期値セット
            MOVE    SPA-GMN-JKSZENKAKU-LIST(1)
                                    TO  SPA-GMN-JKSZENKAKU-G
+      *    受給者番号数字初期値セット
+           MOVE    SPA-GMN-JKSNUMERIC-LIST(1)
+                                   TO  SPA-GMN-JKSNUMERIC-G
       *
       *    有効開始日初期値セット
            MOVE    "00000000"      TO  SPA-GMN-YUKOSTYMD
@@ -1279,10 +1571,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  SYS-1040-EDYUKYMD
            MOVE    SPA-GMN-FTSCD   TO  SYS-1040-FTNJANUMCHK
            MOVE    SPA-GMN-JKSCD   TO  SYS-1040-JKYSNUMCHK
+           MOVE    SPA-GMN-FTSHANKAKUCD
+                                   TO  SYS-1040-FTNJHANKAKUCHK
+           MOVE    SPA-GMN-FTSZENKAKUCD
+                                   TO  SYS-1040-FTNJZENKAKUCHK
+           MOVE    SPA-GMN-FTSNUMERICCD
+                                   TO  SYS-1040-FTNJNUMERICCHK
            MOVE    SPA-GMN-JKSHANKAKUCD
                                    TO  SYS-1040-JKYSHANKAKUCHK
            MOVE    SPA-GMN-JKSZENKAKUCD
                                    TO  SYS-1040-JKYSZENKAKUCHK
+           MOVE    SPA-GMN-JKSNUMERICCD
+                                   TO  SYS-1040-JKYSNUMERICCHK
       *
            IF    ( WRK-UPDKBN          =   "UPD" )
       *        更新時間
@@ -1640,6 +1940,36 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-JKSNUM-MAX  TO  W17-JKSNUM-COUNT
       *
+      *    負担者番号半角チェック
+           MOVE    SPA-GMN-FTSHANKAKU-G TO  W17-FTSHANKAKU
+           PERFORM VARYING IDX-FTS     FROM    1   BY  1
+                   UNTIL   IDX-FTS     >       SPA-GMN-FTSHANKAKU-MAX
+               MOVE    SPA-GMN-FTSHANKAKU-LIST(IDX-FTS)
+                                       TO  W17-FTSHANKAKU-ITEM(IDX-FTS)
+           END-PERFORM
+           MOVE    SPA-GMN-FTSHANKAKU-MAX
+                                       TO  W17-FTSHANKAKU-COUNT
+      *
+      *    負担者番号全角チェック
+           MOVE    SPA-GMN-FTSZENKAKU-G TO  W17-FTSZENKAKU
+           PERFORM VARYING IDX-FTS     FROM    1   BY  1
+                   UNTIL   IDX-FTS     >       SPA-GMN-FTSZENKAKU-MAX
+               MOVE    SPA-GMN-FTSZENKAKU-LIST(IDX-FTS)
+                                       TO  W17-FTSZENKAKU-ITEM(IDX-FTS)
+           END-PERFORM
+           MOVE    SPA-GMN-FTSZENKAKU-MAX
+                                       TO  W17-FTSZENKAKU-COUNT
+      *
+      *    負担者番号数字チェック
+           MOVE    SPA-GMN-FTSNUMERIC-G TO  W17-FTSNUMERIC
+           PERFORM VARYING IDX-FTS     FROM    1   BY  1
+                   UNTIL   IDX-FTS     >       SPA-GMN-FTSNUMERIC-MAX
+               MOVE    SPA-GMN-FTSNUMERIC-LIST(IDX-FTS)
+                                       TO  W17-FTSNUMERIC-ITEM(IDX-FTS)
+           END-PERFORM
+           MOVE    SPA-GMN-FTSNUMERIC-MAX
+                                       TO  W17-FTSNUMERIC-COUNT
+      *
       *    受給者番号半角チェック
            MOVE    SPA-GMN-JKSHANKAKU-G TO  W17-JKSHANKAKU
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
@@ -1659,6 +1989,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-JKSZENKAKU-MAX
                                        TO  W17-JKSZENKAKU-COUNT
+      *
+      *    受給者番号数字チェック
+           MOVE    SPA-GMN-JKSNUMERIC-G TO  W17-JKSNUMERIC
+           PERFORM VARYING IDX-JKS     FROM    1   BY  1
+                   UNTIL   IDX-JKS     >       SPA-GMN-JKSNUMERIC-MAX
+               MOVE    SPA-GMN-JKSNUMERIC-LIST(IDX-JKS)
+                                       TO  W17-JKSNUMERIC-ITEM(IDX-JKS)
+           END-PERFORM
+           MOVE    SPA-GMN-JKSNUMERIC-MAX
+                                       TO  W17-JKSNUMERIC-COUNT
       *
       *    有効開始日
            MOVE    SPA-GMN-YUKOSTYMD   TO  W17-YUKOSTYMD
@@ -1711,9 +2051,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    006
                    MOVE    "YUKOEDYMD"     TO  MCP-WIDGET
                WHEN    007
-                   MOVE    "JKSHANKAKU"     TO  MCP-WIDGET
+                   MOVE    "FTSHANKAKU"     TO  MCP-WIDGET
                WHEN    008
+                   MOVE    "FTSZENKAKU"     TO  MCP-WIDGET
+               WHEN    009
+                   MOVE    "JKSHANKAKU"     TO  MCP-WIDGET
+               WHEN    010
                    MOVE    "JKSZENKAKU"     TO  MCP-WIDGET
+               WHEN    011
+                   MOVE    "FTSNUMERIC"     TO  MCP-WIDGET
+               WHEN    012
+                   MOVE    "JKSNUMERIC"     TO  MCP-WIDGET
                WHEN    201
                    MOVE    "B01"           TO  MCP-WIDGET
                WHEN    202
@@ -1747,9 +2095,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    004             TO  SPA-GMN-CUR
                WHEN    "JKSNUM"
                    MOVE    007             TO  SPA-GMN-CUR
-               WHEN    "JKSHANKAKU"
+               WHEN    "FTSHANKAKU"
                    MOVE    008             TO  SPA-GMN-CUR
+               WHEN    "FTSZENKAKU"
+                   MOVE    011             TO  SPA-GMN-CUR
+               WHEN    "FTSNUMERIC"
+                   MOVE    009             TO  SPA-GMN-CUR
+               WHEN    "JKSHANKAKU"
+                   MOVE    010             TO  SPA-GMN-CUR
                WHEN    "JKSZENKAKU"
+                   MOVE    012             TO  SPA-GMN-CUR
+               WHEN    "JKSNUMERIC"
                    MOVE    005             TO  SPA-GMN-CUR
                WHEN    "YUKOSTYMD"
                    MOVE    006             TO  SPA-GMN-CUR
@@ -1778,10 +2134,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "公費番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "負担者番号抜けフラグ入力エラー"
+                   MOVE    "負担者番号抜けチェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "受給者番号抜けフラグ入力エラー"
+                   MOVE    "受給者番号抜けチェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "有効期間開始日入力エラー"
@@ -1789,17 +2145,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0006"
                    MOVE    "有効期間終了日入力エラー"
                                            TO  SPA-ERRMSG
-               WHEN    "0007"
-                   MOVE    "半角文字チェック入力エラー"
-                                           TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "有効開始日付より前の日付になっています"
                                            TO  SPA-ERRMSG
-               WHEN    "0009"
-                   MOVE    "全角文字チェック入力エラー"
-                                           TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "日付が正しくありません"
+                                           TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "負担者番号半角文字チェック入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "負担者番号全角文字チェック入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "受給者番号半角文字チェック入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "受給者番号全角文字チェック入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "負担者番号数字チェック入力エラー"
+                                           TO  SPA-ERRMSG
+               WHEN    "0016"
+                   MOVE    "受給者番号数字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "1101"
                    MOVE    "対象のデータが選択されています"

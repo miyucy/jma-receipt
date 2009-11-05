@@ -786,6 +786,15 @@
                                                PIC X(09).
                        09   CONST-TSANTEICD-TYPE
                                                PIC X(02).
+           03  CONST-NUM-G.
+               05  CONST-NUM-VAL               PIC X(10)
+                                               VALUE   "01234567890".
+               05  CONST-NUM-R         REDEFINES   CONST-NUM-VAL.
+                   07  CONST-NUM               PIC X(01)   OCCURS    10.
+               05  CONST-ZENNUM-VAL            PIC X(20)
+                                       VALUE   "£°£±£²£³£´£µ£¶£·£¸£¹".
+               05  CONST-ZENNUM-R      REDEFINES   CONST-ZENNUM-VAL.
+                   07  CONST-ZENNUM            PIC X(02)   OCCURS    10.
            03  CONST-H039                      PIC X(03)   VALUE "039".
            03  CONST-H009                      PIC X(03)   VALUE "009".
            03  CONST-H2004                 PIC X(06)   VALUE "200804".
@@ -918,6 +927,9 @@
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
+      *
+      *    Ê¸»úÎóÁàºî¥µ¥Ö
+           COPY    "CPORCSSTRING.INC".
       *
       *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
            COPY    "CPORCSJOBKANRI.INC".
@@ -1500,10 +1512,18 @@
                                        TO  SRH-1040-FTNJANUMCHKL(IDX5)
                MOVE    SYS-1040-JKYSNUMCHK
                                        TO  SRH-1040-JKYSNUMCHKL (IDX5)
+               MOVE    SYS-1040-FTNJHANKAKUCHK
+                                   TO  SRH-1040-FTNJHANKAKUCHKL (IDX5)
+               MOVE    SYS-1040-FTNJZENKAKUCHK
+                                   TO  SRH-1040-FTNJZENKAKUCHKL (IDX5)
+               MOVE    SYS-1040-FTNJNUMERICCHK
+                                   TO  SRH-1040-FTNJNUMERICCHKL (IDX5)
                MOVE    SYS-1040-JKYSHANKAKUCHK
                                    TO  SRH-1040-JKYSHANKAKUCHKL (IDX5)
                MOVE    SYS-1040-JKYSZENKAKUCHK
                                    TO  SRH-1040-JKYSZENKAKUCHKL (IDX5)
+               MOVE    SYS-1040-JKYSNUMERICCHK
+                                   TO  SRH-1040-JKYSNUMERICCHKL (IDX5)
       *
       *        ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ½èÍý
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -4087,6 +4107,32 @@
            END-IF
       *
            IF    ( PTKOH-FTNJANUM      NOT =   SPACE )
+      *
+               IF    ( SRH-1040-FTNJHANKAKUCHK =   "2" )
+                   MOVE    PTKOH-FTNJANUM      TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-HANKAKU-CHK-SEC
+                   IF  ( FLG-KANACHK       =   ZERO )
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030007"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
+                   END-IF
+               END-IF
+               IF    ( SRH-1040-FTNJZENKAKUCHK =   "2" )
+                   MOVE    PTKOH-FTNJANUM      TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-CHK-SEC
+                   IF  ( FLG-KANACHK       =   ZERO )
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030008"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
+                   END-IF
+               END-IF
+      *
                MOVE    PTKOH-FTNJANUM  TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
                IF  ( FLG-KANACHK       NOT =   ZERO )
@@ -4110,6 +4156,42 @@
                        END-IF
                    END-IF
                END-IF
+      *
+               IF    ( SRH-1040-FTNJNUMERICCHK =   "2" )
+                   MOVE    "gsub"      TO  ORCSSTR-COMMAND
+                   MOVE    PTKOH-FTNJANUM
+                                       TO  ORCSSTR-STRING1
+                   MOVE    "A"         TO  ORCSSTR-STRING2
+                   MOVE    "B"         TO  ORCSSTR-STRING3
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   10 )
+                       MOVE    "gsub"  TO  ORCSSTR-COMMAND
+                       MOVE    CONST-NUM (IDX0)
+                                       TO  ORCSSTR-STRING2
+                       MOVE    "A"     TO  ORCSSTR-STRING3
+                       CALL    "orcsstring" USING  ORCSSTRINGAREA
+                       MOVE    "gsub"  TO  ORCSSTR-COMMAND
+                       MOVE    CONST-ZENNUM (IDX0)
+                                       TO  ORCSSTR-STRING2
+                       MOVE    "AA"    TO  ORCSSTR-STRING3
+                       CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   END-PERFORM
+                   INSPECT ORCSSTR-STRING1 REPLACING ALL "A" BY  " "
+                   DISPLAY "PTKOH-FTNJANUM["  PTKOH-FTNJANUM "]"
+                   DISPLAY "ORCSSTR-STRING1["  ORCSSTR-STRING1 (1:8) "]"
+                   IF    ( ORCSSTR-STRING1 =   SPACE )
+                       CONTINUE
+                   ELSE
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030011"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            IF    ( PTKOH-JKYSNUM       NOT =   SPACE )
@@ -4118,11 +4200,10 @@
                IF    ( SRH-1040-JKYSHANKAKUCHK =   "2" )
                    MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                    PERFORM 800-HANKAKU-CHK-SEC
-                       DISPLAY "HANKAKU" FLG-KANACHK
                    IF  ( FLG-KANACHK       =   ZERO )
                        MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                        MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                       MOVE    "030007"        TO  WRK-ERRCD
+                       MOVE    "030009"        TO  WRK-ERRCD
                        MOVE    SPACE           TO  WRK-ERRMES-PLUS
                        INITIALIZE              TERRINF-AREA
                        PERFORM 212-ERRMES-HEN-SEC
@@ -4131,11 +4212,10 @@
                IF    ( SRH-1040-JKYSZENKAKUCHK =   "2" )
                    MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                    PERFORM 800-ZENKAKU-CHK-SEC
-                       DISPLAY "ZENKAKU" FLG-KANACHK
                    IF  ( FLG-KANACHK       =   ZERO )
                        MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                        MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                       MOVE    "030008"        TO  WRK-ERRCD
+                       MOVE    "030010"        TO  WRK-ERRCD
                        MOVE    SPACE           TO  WRK-ERRMES-PLUS
                        INITIALIZE              TERRINF-AREA
                        PERFORM 212-ERRMES-HEN-SEC
@@ -4163,6 +4243,41 @@
                            MOVE    1           TO  FLG-CHKEND (3)
                            GO  TO  200111-FTNJKYNUM-CHK-EXT
                        END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( SRH-1040-JKYSNUMERICCHK =   "2" )
+                   MOVE    "gsub"      TO  ORCSSTR-COMMAND
+                   MOVE    PTKOH-JKYSNUM
+                                       TO  ORCSSTR-STRING1
+                   MOVE    "A"         TO  ORCSSTR-STRING2
+                   MOVE    "B"         TO  ORCSSTR-STRING3
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   10 )
+                       MOVE    "gsub"  TO  ORCSSTR-COMMAND
+                       MOVE    CONST-NUM (IDX0)
+                                       TO  ORCSSTR-STRING2
+                       MOVE    "A"     TO  ORCSSTR-STRING3
+                       CALL    "orcsstring" USING  ORCSSTRINGAREA
+                       MOVE    "gsub"  TO  ORCSSTR-COMMAND
+                       MOVE    CONST-ZENNUM (IDX0)
+                                       TO  ORCSSTR-STRING2
+                       MOVE    "AA"    TO  ORCSSTR-STRING3
+                       CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   END-PERFORM
+                   INSPECT ORCSSTR-STRING1 REPLACING ALL "A" BY  " "
+                   DISPLAY "PTKOH-JKYSNUM["  PTKOH-JKYSNUM "]"
+                   DISPLAY "ORCSSTR-STRING1["  ORCSSTR-STRING1(1:10) "]"
+                   IF    ( ORCSSTR-STRING1 =   SPACE )
+                       CONTINUE
+                   ELSE
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030012"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
                    END-IF
                END-IF
            END-IF
@@ -9473,8 +9588,12 @@
       *
            MOVE    SPACE               TO  SRH-1040-FTNJANUMCHK
                                            SRH-1040-JKYSNUMCHK
-           MOVE    "1"                 TO  SRH-1040-JKYSHANKAKUCHK
+           MOVE    "1"                 TO  SRH-1040-FTNJHANKAKUCHK
+                                           SRH-1040-FTNJZENKAKUCHK
+                                           SRH-1040-FTNJNUMERICCHK
+                                           SRH-1040-JKYSHANKAKUCHK
                                            SRH-1040-JKYSZENKAKUCHK
+                                           SRH-1040-JKYSNUMERICCHK
       *
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1040-MAX )
@@ -9483,10 +9602,18 @@
                                        TO  SRH-1040-FTNJANUMCHK
                    MOVE    SRH-1040-JKYSNUMCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSNUMCHK
+                   MOVE    SRH-1040-FTNJHANKAKUCHKL  (SRH-IDX)
+                                       TO  SRH-1040-FTNJHANKAKUCHK
+                   MOVE    SRH-1040-FTNJZENKAKUCHKL  (SRH-IDX)
+                                       TO  SRH-1040-FTNJZENKAKUCHK
+                   MOVE    SRH-1040-FTNJNUMERICCHKL  (SRH-IDX)
+                                       TO  SRH-1040-FTNJNUMERICCHK
                    MOVE    SRH-1040-JKYSHANKAKUCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSHANKAKUCHK
                    MOVE    SRH-1040-JKYSZENKAKUCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSZENKAKUCHK
+                   MOVE    SRH-1040-JKYSNUMERICCHKL  (SRH-IDX)
+                                       TO  SRH-1040-JKYSNUMERICCHK
                    MOVE    SRH-1040-MAX
                                        TO  SRH-IDX
                END-IF

@@ -44,6 +44,27 @@ W17	{
 			count	int;
 			item	varchar(16)[2];
 		};
+		FTSHANKAKUCOMBO	{
+			FTSHANKAKU	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		FTSZENKAKUCOMBO	{
+			FTSZENKAKU	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		FTSNUMERICCOMBO	{
+			FTSNUMERIC	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
 		JKSHANKAKUCOMBO	{
 			JKSHANKAKU	{
 				value	varchar(20);
@@ -53,6 +74,13 @@ W17	{
 		};
 		JKSZENKAKUCOMBO	{
 			JKSZENKAKU	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		JKSNUMERICCOMBO	{
+			JKSNUMERIC	{
 				value	varchar(20);
 			};
 			count	int;

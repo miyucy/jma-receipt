@@ -496,7 +496,7 @@
       <class>GtkPandaEntry</class>
       <name>YUKOSTYMD</name>
       <x>152</x>
-      <y>640</y>
+      <y>668</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -524,7 +524,7 @@
       <class>GtkPandaEntry</class>
       <name>YUKOEDYMD</name>
       <x>304</x>
-      <y>640</y>
+      <y>668</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -600,7 +600,7 @@
       <class>GtkLabel</class>
       <name>label248</name>
       <x>232</x>
-      <y>640</y>
+      <y>668</y>
       <width>24</width>
       <height>24</height>
       <label>〜</label>
@@ -616,7 +616,7 @@
       <class>GtkLabel</class>
       <name>label247</name>
       <x>256</x>
-      <y>640</y>
+      <y>668</y>
       <width>48</width>
       <height>24</height>
       <label>終了日</label>
@@ -759,8 +759,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>label245</name>
-      <x>36</x>
-      <y>640</y>
+      <x>32</x>
+      <y>668</y>
       <width>64</width>
       <height>24</height>
       <label>有効期間</label>
@@ -814,25 +814,9 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label302</name>
-      <x>36</x>
-      <y>552</y>
-      <width>224</width>
-      <height>24</height>
-      <label>＜受給者番号入力内容チェック＞</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label246</name>
       <x>104</x>
-      <y>640</y>
+      <y>668</y>
       <width>48</width>
       <height>24</height>
       <label>開始日</label>
@@ -846,12 +830,28 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label304</name>
-      <x>36</x>
-      <y>608</y>
-      <width>152</width>
+      <name>label302</name>
+      <x>388</x>
+      <y>548</y>
+      <width>224</width>
       <height>24</height>
-      <label>全角文字</label>
+      <label>＜受給者番号入力内容チェック＞</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label305</name>
+      <x>40</x>
+      <y>548</y>
+      <width>224</width>
+      <height>24</height>
+      <label>＜負担者番号入力内容チェック＞</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -863,8 +863,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>label303</name>
-      <x>36</x>
-      <y>580</y>
+      <x>388</x>
+      <y>576</y>
       <width>152</width>
       <height>24</height>
       <label>半角文字</label>
@@ -877,10 +877,42 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label306</name>
+      <x>40</x>
+      <y>576</y>
+      <width>152</width>
+      <height>24</height>
+      <label>半角文字</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label304</name>
+      <x>388</x>
+      <y>604</y>
+      <width>152</width>
+      <height>24</height>
+      <label>全角文字</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>JKSHANKAKUCOMBO</name>
-      <x>188</x>
-      <y>580</y>
+      <x>540</x>
+      <y>576</y>
       <width>144</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -918,9 +950,97 @@
 
     <widget>
       <class>GtkPandaCombo</class>
-      <name>JKSZENKAKUCOMBO</name>
+      <name>FTSHANKAKUCOMBO</name>
       <x>188</x>
-      <y>608</y>
+      <y>576</y>
+      <width>144</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>FTSHANKAKU</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:02:42 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:03:05 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>1 認める</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label307</name>
+      <x>40</x>
+      <y>604</y>
+      <width>152</width>
+      <height>24</height>
+      <label>全角文字</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label308</name>
+      <x>40</x>
+      <y>632</y>
+      <width>152</width>
+      <height>24</height>
+      <label>数字以外の入力</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label309</name>
+      <x>388</x>
+      <y>632</y>
+      <width>152</width>
+      <height>24</height>
+      <label>数字以外の入力</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>JKSZENKAKUCOMBO</name>
+      <x>540</x>
+      <y>604</y>
       <width>144</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -934,6 +1054,126 @@
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
 	<name>JKSZENKAKU</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:02:42 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:03:05 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>1 認める</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>FTSZENKAKUCOMBO</name>
+      <x>188</x>
+      <y>604</y>
+      <width>144</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>FTSZENKAKU</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:02:42 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:03:05 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>1 認める</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>FTSNUMERICCOMBO</name>
+      <x>188</x>
+      <y>632</y>
+      <width>144</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>FTSNUMERIC</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:02:42 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 05 Apr 2004 05:03:05 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>20</text_max_length>
+	<text>1 認める</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>JKSNUMERICCOMBO</name>
+      <x>540</x>
+      <y>632</y>
+      <width>144</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>JKSNUMERIC</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>

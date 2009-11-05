@@ -137,13 +137,33 @@
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "030007".
-           05 PIC  X(30)   VALUE   "公費情報の受給者番号に半角文字".
+           05 PIC  X(30)   VALUE   "公費情報の負担者番号に半角文字".
            05 PIC  X(30)   VALUE   "が入力されています            ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "030008".
+           05 PIC  X(30)   VALUE   "公費情報の負担者番号に全角文字".
+           05 PIC  X(30)   VALUE   "が入力されています            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030009".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号に半角文字".
+           05 PIC  X(30)   VALUE   "が入力されています            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030010".
            05 PIC  X(30)   VALUE   "公費情報の受給者番号に全角文字".
            05 PIC  X(30)   VALUE   "が入力されています            ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030011".
+           05 PIC  X(30)   VALUE   "公費情報の負担者番号が入力誤り".
+           05 PIC  X(30)   VALUE   "です                          ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030012".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号が入力誤り".
+           05 PIC  X(30)   VALUE   "です                          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 04xxxx 保険適応年齢
@@ -504,8 +524,8 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  87.
+           05 ERRMES-OCC   OCCURS  91.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   87
+         03  ERRMES-MAX                PIC 9(05)   VALUE   91
          .
