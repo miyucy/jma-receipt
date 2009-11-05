@@ -1627,6 +1627,7 @@
       *
       *        特定疾患処方管理加算の算定確認
                WHEN    "0113"
+               WHEN    "0213"
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    2                   TO  SPA-TOKUTEIFLG
                    ELSE
@@ -1640,6 +1641,7 @@
                    PERFORM 41002-KOUSIN-SYORI-SEC
       *        長期投与加算の算定確認
                WHEN    "0130"
+               WHEN    "0230"
                    IF      SPA-KID1-FLG        =   "OK"
                        MOVE    2                   TO  SPA-CHOKITOFLG
                    ELSE
@@ -8784,6 +8786,22 @@
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *!!!!
+               WHEN    "0213"
+                   STRING  "特定疾患処方管理加算が算定できます。"
+                            "ＯＫで自動算定します。"
+                            "（併用算定警告該当有）"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0230"
+                   STRING  "長期投薬加算が算定できます。"
+                           "ＯＫで自動算定します。"
+                            "（併用算定警告該当有）"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+      *!!!!
                WHEN    "0116"
                    STRING  "診療行為内容をクリアします。"
                            "よろしいですか？"
@@ -8850,6 +8868,9 @@
                WHEN    "0190"
                WHEN    "2001"
                WHEN    "2002"
+      *
+               WHEN    "0230"
+               WHEN    "0213"
                    MOVE    "ＮＯ"            TO  KTID1-B01
            END-EVALUATE
       *
