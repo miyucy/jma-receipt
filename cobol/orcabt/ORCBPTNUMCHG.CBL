@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-小豆沢  09/11/04  分娩管理テーブル追加
+      *  04.05.00    NACL-小豆沢  09/11/05  自由構成にも対応（数字型のみ）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -367,8 +368,9 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM     910-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI  =   ZERO
-                     IF   SYS-1009-PTNUMKSIKBN  =  "1"
-                           MOVE "自由構成時は処理できません。"
+                     IF  (SYS-1009-PTNUMKSIKBN  =  "1")  AND
+                         (SYS-1009-JIYKSIKBN    =  "0"  OR  "1")
+                           MOVE "自由構成の英数字型は処理できません。"
                                           TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
                      ELSE
@@ -403,6 +405,20 @@
            MOVE     ZERO      TO    WRK-KETA
       *
            EVALUATE    SYS-1009-PTNUMKSIKBN
+      *       自由構成
+              WHEN    "1"
+                  EVALUATE    WRK-PARA-KBN
+                     WHEN    "1"
+                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 1
+                     WHEN    "2"
+                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 2
+                     WHEN    "3"
+                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 3
+                     WHEN    "4"
+                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 4
+                     WHEN    "5"
+                       COMPUTE WRK-KETA = SYS-1009-JIYKSIKETA + 5
+                  END-EVALUATE
       *       標準構成
               WHEN    "2"
                   EVALUATE    WRK-PARA-KBN
@@ -433,25 +449,38 @@
                   END-EVALUATE
            END-EVALUATE
       *
-           IF     WRK-KETA     <=     10
-               IF    SYS-1009-PTNUMKSIKBN    =   "3"
-                   MOVE    ZERO       TO    WRK-KETA2
-                   COMPUTE   WRK-KETA2    =    WRK-KETA   +
+           EVALUATE    SYS-1009-PTNUMKSIKBN
+      *       自由構成
+              WHEN    "1"
+               IF     WRK-KETA     >     20
+                   MOVE    "桁数が２０桁を超えています。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
+      *       標準構成
+              WHEN    "2"
+      *       拡張構成
+              WHEN    "3"
+               IF     WRK-KETA     <=     10
+                   IF    SYS-1009-PTNUMKSIKBN    =   "3"
+                       MOVE    ZERO       TO    WRK-KETA2
+                       COMPUTE   WRK-KETA2    =    WRK-KETA   +
                                                SYS-1009-KKCKSIMAEKETA +
                                                SYS-1009-KKCKSIATOKETA
-                   IF   WRK-KETA2    <=   20
-                       CONTINUE
-                   ELSE
+                       IF   WRK-KETA2    <=   20
+                           CONTINUE
+                       ELSE
                        MOVE "拡張構成の総桁数が２０桁を超えています。"
-                                       TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
+                                           TO  WRK-RECEERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                       END-IF
                    END-IF
+               ELSE
+                   MOVE    "連番号桁数が１０桁を超えています。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
                END-IF
-           ELSE
-               MOVE    "連番号桁数が１０桁を超えています。"
-                                       TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
+           END-EVALUATE
            .
        1001-KETASU-CHK-EXT.
            EXIT.
@@ -968,6 +997,8 @@
                PERFORM     910-SYSKANRI-READ-SEC
                IF    FLG-SYSKANRI  =   ZERO
                    EVALUATE  SYS-1009-PTNUMKSIKBN
+                       WHEN  "1"
+                          MOVE  WRK-KETA  TO  SYS-1009-JIYKSIKETA
                        WHEN  "2"
                           MOVE  WRK-KETA  TO  SYS-1009-HJNKSIRENNUMKETA
                        WHEN  "3"
@@ -1030,6 +1061,25 @@
            END-EVALUATE
       *
            EVALUATE  SYS-1009-PTNUMKSIKBN
+      *       自由構成
+              WHEN  "1"
+                  EVALUATE    WRK-PARA-KBN
+                      WHEN    "1"
+                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(2:19)
+                          MOVE   "0"          TO  WRK-PTNUM2(1:1)
+                      WHEN    "2"
+                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(3:18)
+                          MOVE   "00"         TO  WRK-PTNUM2(1:2)
+                      WHEN    "3"
+                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(4:17)
+                          MOVE   "000"        TO  WRK-PTNUM2(1:3)
+                      WHEN    "4"
+                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(5:16)
+                          MOVE   "0000"       TO  WRK-PTNUM2(1:4)
+                      WHEN    "5"
+                          MOVE   WRK-PTNUM    TO  WRK-PTNUM2(6:15)
+                          MOVE   "00000"      TO  WRK-PTNUM2(1:5)
+                      END-EVALUATE
       *       標準構成
               WHEN  "2"
                   EVALUATE   SYS-1009-HJNKSIKBN
