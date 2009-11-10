@@ -28,3 +28,5 @@
                05  SDTCHK04-KAKKO          PIC 9(01).
                05  SDTCHK04-ETC            PIC 9(01).
                05  SDTCHK04-SPACE          PIC 9(01).
+               05  SDTCHK04-KETA.
+                   07  SDTCHK04-KETA9      PIC 9(02).

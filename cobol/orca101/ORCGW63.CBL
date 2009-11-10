@@ -138,6 +138,14 @@
                            11  SPA-GMN-NMSUJINASHI PIC X(01).
                            11  FILLER              PIC X(01).
                            11  SPA-GMN-NMSUJINASHIMEI PIC X(18).
+                       09  SPA-GMN-NMKETAMIN-G.
+                           11  SPA-GMN-NMKETAMIN    PIC X(02).
+                           11  FILLER               PIC X(01).
+                           11  SPA-GMN-NMKETAMINMEI PIC X(18).
+                       09  SPA-GMN-NMKETAMAX-G.
+                           11  SPA-GMN-NMKETAMAX    PIC X(02).
+                           11  FILLER               PIC X(01).
+                           11  SPA-GMN-NMKETAMAXMEI PIC X(18).
                        09  SPA-GMN-NM2SUJI-G.
                            11  SPA-GMN-NM2SUJI     PIC X(01).
                            11  FILLER              PIC X(01).
@@ -269,6 +277,18 @@
                            11  SPA-GMN-NMSUJINASHIL PIC X(01).
                            11  FILLER              PIC X(01).
                            11  SPA-GMN-NMSUJINASHIMEIL PIC X(18).
+                   07  SPA-GMN-NMKETAMINLST-G.
+                       09  SPA-GMN-NMKETAMIN-MAX       PIC 9(03).
+                       09  SPA-GMN-NMKETAMINLST        OCCURS 15.
+                           11  SPA-GMN-NMKETAMINL      PIC X(02).
+                           11  FILLER                  PIC X(01).
+                           11  SPA-GMN-NMKETAMINMEIL   PIC X(18).
+                   07  SPA-GMN-NMKETAMAXLST-G.
+                       09  SPA-GMN-NMKETAMAX-MAX       PIC 9(03).
+                       09  SPA-GMN-NMKETAMAXLST        OCCURS 15.
+                           11  SPA-GMN-NMKETAMAXL      PIC X(02).
+                           11  FILLER                  PIC X(01).
+                           11  SPA-GMN-NMKETAMAXMEIL   PIC X(18).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-CLIST-AREA.
@@ -283,6 +303,7 @@
                        09  SPA-NAI-EDYUKYMD        PIC X(08).
                        09  SPA-NAI-HKNJANUMLEN     PIC 9(05).
                        09  SPA-NAI-HKNNUM-BF       PIC X(03).
+                       09  SPA-NAI-NMKETAMIN-BF    PIC X(03).
       *
                05  SPA-MOT-AREA.
                    07  SPA-MOT-KBNCD           PIC X(08).
@@ -643,6 +664,10 @@
       *
            PERFORM 31011-NMSUJINASHILST-SET-SEC
       *
+           PERFORM 31011-NMKETAMINLST-SET-SEC
+      *
+           PERFORM 31011-NMKETAMAXLST-SET-SEC
+      *
            .
        3101-COMBO-SET-EXT.
            EXIT.
@@ -977,6 +1002,90 @@
        31011-NMSUJINASHILST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    番号桁数下限コンボボックス設定処理
+      *****************************************************************
+       31011-NMKETAMINLST-SET-SEC    SECTION.
+      *
+           INITIALIZE                  SPA-GMN-NMKETAMINLST-G
+      *
+           MOVE    "01"            TO  SPA-GMN-NMKETAMINL(1)
+           MOVE    "１桁"          TO  SPA-GMN-NMKETAMINMEIL(1)
+      *
+           MOVE    "02"            TO  SPA-GMN-NMKETAMINL(2)
+           MOVE    "２桁"          TO  SPA-GMN-NMKETAMINMEIL(2)
+      *
+           MOVE    "03"            TO  SPA-GMN-NMKETAMINL(3)
+           MOVE    "３桁"          TO  SPA-GMN-NMKETAMINMEIL(3)
+      *
+           MOVE    "04"            TO  SPA-GMN-NMKETAMINL(4)
+           MOVE    "４桁"          TO  SPA-GMN-NMKETAMINMEIL(4)
+      *
+           MOVE    "05"            TO  SPA-GMN-NMKETAMINL(5)
+           MOVE    "５桁"          TO  SPA-GMN-NMKETAMINMEIL(5)
+      *
+           MOVE    "06"            TO  SPA-GMN-NMKETAMINL(6)
+           MOVE    "６桁"          TO  SPA-GMN-NMKETAMINMEIL(6)
+      *
+           MOVE    "07"            TO  SPA-GMN-NMKETAMINL(7)
+           MOVE    "７桁"          TO  SPA-GMN-NMKETAMINMEIL(7)
+      *
+           MOVE    "08"            TO  SPA-GMN-NMKETAMINL(8)
+           MOVE    "８桁"          TO  SPA-GMN-NMKETAMINMEIL(8)
+      *
+           MOVE    "09"            TO  SPA-GMN-NMKETAMINL(9)
+           MOVE    "９桁"          TO  SPA-GMN-NMKETAMINMEIL(9)
+      *
+           MOVE    "10"            TO  SPA-GMN-NMKETAMINL(10)
+           MOVE    "１０桁"        TO  SPA-GMN-NMKETAMINMEIL(10)
+      *
+           MOVE    10              TO  SPA-GMN-NMKETAMIN-MAX
+      *
+           .
+       31011-NMKETAMINLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    番号桁数上限コンボボックス設定処理
+      *****************************************************************
+       31011-NMKETAMAXLST-SET-SEC    SECTION.
+      *
+           INITIALIZE                  SPA-GMN-NMKETAMAXLST-G
+      *
+           MOVE    "01"            TO  SPA-GMN-NMKETAMAXL(1)
+           MOVE    "１桁"          TO  SPA-GMN-NMKETAMAXMEIL(1)
+      *
+           MOVE    "02"            TO  SPA-GMN-NMKETAMAXL(2)
+           MOVE    "２桁"          TO  SPA-GMN-NMKETAMAXMEIL(2)
+      *
+           MOVE    "03"            TO  SPA-GMN-NMKETAMAXL(3)
+           MOVE    "３桁"          TO  SPA-GMN-NMKETAMAXMEIL(3)
+      *
+           MOVE    "04"            TO  SPA-GMN-NMKETAMAXL(4)
+           MOVE    "４桁"          TO  SPA-GMN-NMKETAMAXMEIL(4)
+      *
+           MOVE    "05"            TO  SPA-GMN-NMKETAMAXL(5)
+           MOVE    "５桁"          TO  SPA-GMN-NMKETAMAXMEIL(5)
+      *
+           MOVE    "06"            TO  SPA-GMN-NMKETAMAXL(6)
+           MOVE    "６桁"          TO  SPA-GMN-NMKETAMAXMEIL(6)
+      *
+           MOVE    "07"            TO  SPA-GMN-NMKETAMAXL(7)
+           MOVE    "７桁"          TO  SPA-GMN-NMKETAMAXMEIL(7)
+      *
+           MOVE    "08"            TO  SPA-GMN-NMKETAMAXL(8)
+           MOVE    "８桁"          TO  SPA-GMN-NMKETAMAXMEIL(8)
+      *
+           MOVE    "09"            TO  SPA-GMN-NMKETAMAXL(9)
+           MOVE    "９桁"          TO  SPA-GMN-NMKETAMAXMEIL(9)
+      *
+           MOVE    "10"            TO  SPA-GMN-NMKETAMAXL(10)
+           MOVE    "１０桁"        TO  SPA-GMN-NMKETAMAXMEIL(10)
+      *
+           MOVE    10              TO  SPA-GMN-NMKETAMAX-MAX
+      *
+           .
+       31011-NMKETAMAXLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    チェック排除情報リスト編集処理
       *****************************************************************
        3101-CLIST-SET-SEC          SECTION.
@@ -1239,6 +1348,9 @@
                MOVE    CK4-1102-NM1KAKKO     TO  SPA-GMN-NM1KAKKO
                MOVE    CK4-1102-NM1ETC       TO  SPA-GMN-NM1ETC
                MOVE    CK4-1102-NMSUJINASHI  TO  SPA-GMN-NMSUJINASHI
+               MOVE    CK4-1102-NMKETAMIN    TO  SPA-GMN-NMKETAMIN
+                                                 SPA-NAI-NMKETAMIN-BF
+               MOVE    CK4-1102-NMKETAMAX    TO  SPA-GMN-NMKETAMAX
       *
                MOVE    CK4-1102-NM2SUJI      TO  SPA-GMN-NM2SUJI
                MOVE    CK4-1102-NM2KANJI     TO  SPA-GMN-NM2KANJI
@@ -1321,6 +1433,9 @@
                                        TO  SPA-GMN-NM1ETC
            MOVE    KGNMCHK-NMSUJINASHI(IDX-KGNM)
                                        TO  SPA-GMN-NMSUJINASHI
+           MOVE    SPACE               TO  SPA-GMN-NMKETAMIN
+                                           SPA-NAI-NMKETAMIN-BF
+           MOVE    SPACE               TO  SPA-GMN-NMKETAMAX
       *
            MOVE    KGNMCHK-NM2SUJI(IDX-KGNM)
                                        TO  SPA-GMN-NM2SUJI
@@ -1401,6 +1516,17 @@
            PERFORM 4200-NMSUJINASHILST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-NMSUJINASHI-G
       *
+           MOVE    SPA-GMN-NMKETAMIN
+                                   TO  WRK-CMB-CD
+           PERFORM 4200-NMKETAMINLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-NMKETAMIN-G
+           MOVE    SPA-GMN-NMKETAMIN TO SPA-NAI-NMKETAMIN-BF
+      *
+           MOVE    SPA-GMN-NMKETAMAX
+                                   TO  WRK-CMB-CD
+           PERFORM 4200-NMKETAMAXLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-NMKETAMAX-G
+      *
            MOVE    SPA-GMN-NM2SUJI TO  WRK-CMB-CD
            PERFORM 4200-NMSUJILST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-NM2SUJI-G
@@ -1455,6 +1581,8 @@
            MOVE    W63-NM1KAKKO        TO  SPA-GMN-NM1KAKKO-G
            MOVE    W63-NM1ETC          TO  SPA-GMN-NM1ETC-G
            MOVE    W63-NMSUJINASHI     TO  SPA-GMN-NMSUJINASHI-G
+           MOVE    W63-NMKETAMIN       TO  SPA-GMN-NMKETAMIN-G
+           MOVE    W63-NMKETAMAX       TO  SPA-GMN-NMKETAMAX-G
       *
            MOVE    W63-NM2SUJI         TO  SPA-GMN-NM2SUJI-G
            MOVE    W63-NM2KANJI        TO  SPA-GMN-NM2KANJI-G
@@ -1576,6 +1704,16 @@
       *    番号数字無しチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NMSUJINASHI-CHK-SEC
+           END-IF
+      *
+      *    番号桁数下限チェック
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-NMKETAMIN-CHK-SEC
+           END-IF
+      *
+      *    番号桁数上限チェック
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-NMKETAMAX-CHK-SEC
            END-IF
       *
       *    番号２文字目以降数字チェック
@@ -2141,6 +2279,47 @@
        4101-NMSUJINASHI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    番号桁数下限チェック処理
+      *****************************************************************
+       4101-NMKETAMIN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-NMKETAMIN   TO  WRK-CMB-CD
+           PERFORM 4200-NMKETAMINLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NMKETAMIN-G
+      *
+           IF    ( SPA-NAI-NMKETAMIN-BF    =   SPACE )
+            AND  ( SPA-GMN-NMKETAMAX       =   SPACE )
+               MOVE    SPA-GMN-NMKETAMIN   TO  SPA-GMN-NMKETAMAX
+           END-IF
+      *
+           MOVE    SPA-GMN-NMKETAMIN   TO  SPA-NAI-NMKETAMIN-BF
+      *
+           .
+      *
+       4101-NMKETAMIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    番号桁数上限チェック処理
+      *****************************************************************
+       4101-NMKETAMAX-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-NMKETAMAX   TO  WRK-CMB-CD
+           PERFORM 4200-NMKETAMAXLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-NMKETAMAX-G
+      *
+           IF    ( SPA-GMN-NMKETAMIN   NOT =   SPACE )
+            AND  ( SPA-GMN-NMKETAMAX   NOT =   SPACE )
+               IF    ( SPA-GMN-NMKETAMIN   >   SPA-GMN-NMKETAMAX )
+                   MOVE    "0008"      TO  SPA-ERRCD
+                   MOVE   29           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4101-NMKETAMAX-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    番号数字チェック処理
       *****************************************************************
        4101-NM2SUJI-CHK-SEC               SECTION.
@@ -2430,6 +2609,8 @@
            MOVE    SPA-GMN-KGETC       TO  CK4-1102-KGETC
            MOVE    SPA-GMN-KGKANJINASHI TO CK4-1102-KGKANJINASHI
            MOVE    SPA-GMN-NMSUJINASHI TO  CK4-1102-NMSUJINASHI
+           MOVE    SPA-GMN-NMKETAMIN   TO  CK4-1102-NMKETAMIN
+           MOVE    SPA-GMN-NMKETAMAX   TO  CK4-1102-NMKETAMAX
            MOVE    "0"                 TO  CK4-1102-NM1CHKPTN
            MOVE    SPA-GMN-NM1SUJI     TO  CK4-1102-NM1SUJI
            MOVE    SPA-GMN-NM1KANJI    TO  CK4-1102-NM1KANJI
@@ -3049,6 +3230,50 @@
        4200-NMSUJINASHILST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    桁数下限コンボボックスチェック処理
+      *****************************************************************
+       4200-NMKETAMINLST-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-NMKETAMIN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-NMKETAMINL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-NMKETAMINLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-NMKETAMINLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    桁数上限コンボボックスチェック処理
+      *****************************************************************
+       4200-NMKETAMAXLST-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-NMKETAMAX-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-NMKETAMAXL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-NMKETAMAXLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-NMKETAMAXLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC          SECTION.
@@ -3355,6 +3580,8 @@
            MOVE    SPA-GMN-NM1KAKKO-G      TO  W63-NM1KAKKO
            MOVE    SPA-GMN-NM1ETC-G        TO  W63-NM1ETC
            MOVE    SPA-GMN-NMSUJINASHI-G   TO  W63-NMSUJINASHI
+           MOVE    SPA-GMN-NMKETAMIN-G     TO  W63-NMKETAMIN
+           MOVE    SPA-GMN-NMKETAMAX-G     TO  W63-NMKETAMAX
       *
            MOVE    SPA-GMN-NM2SUJI-G       TO  W63-NM2SUJI
            MOVE    SPA-GMN-NM2KANJI-G      TO  W63-NM2KANJI
@@ -3436,6 +3663,24 @@
       *
                MOVE    SPA-GMN-NMSUJINASHILST (IDX-CMB)
                                    TO  W63-NMSUJINASHI-ITEM (IDX-CMB)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-NMKETAMIN-MAX TO  W63-NMKETAMIN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >       SPA-GMN-NMKETAMIN-MAX )
+      *
+               MOVE    SPA-GMN-NMKETAMINLST (IDX-CMB)
+                                         TO  W63-NMKETAMIN-ITEM(IDX-CMB)
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-NMKETAMAX-MAX TO  W63-NMKETAMAX-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >       SPA-GMN-NMKETAMAX-MAX )
+      *
+               MOVE    SPA-GMN-NMKETAMAXLST (IDX-CMB)
+                                         TO  W63-NMKETAMAX-ITEM(IDX-CMB)
       *
            END-PERFORM
       *
@@ -3528,6 +3773,10 @@
                MOVE    "STYUKYMD"      TO  MCP-WIDGET
            WHEN    007
                MOVE    "EDYUKYMD"      TO  MCP-WIDGET
+           WHEN    028
+               MOVE    "NMKETAMIN"     TO  MCP-WIDGET
+           WHEN    029
+               MOVE    "NMKETAMAX"     TO  MCP-WIDGET
            WHEN    201
                MOVE    "B01"           TO  MCP-WIDGET
            WHEN    202
@@ -3588,6 +3837,10 @@
            WHEN    "NM1ETC"
                MOVE    021             TO  SPA-GMN-CUR
            WHEN    "NMSUJINASHI"
+               MOVE    028             TO  SPA-GMN-CUR
+           WHEN    "NMKETAMIN"
+               MOVE    029             TO  SPA-GMN-CUR
+           WHEN    "NMKETAMAX"
                MOVE    022             TO  SPA-GMN-CUR
            WHEN    "NM2SUJI"
                MOVE    023             TO  SPA-GMN-CUR
@@ -3661,6 +3914,9 @@
                                            TO  SPA-ERRMSG
            WHEN    "0007"
                MOVE    "有効期間終了日入力エラー"
+                                           TO  SPA-ERRMSG
+           WHEN    "0008"
+               MOVE    "番号桁数の上限が下限を下回っています"
                                            TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "選択番号を入力してください"

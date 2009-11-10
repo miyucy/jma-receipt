@@ -97,8 +97,12 @@
                05  CK4-1102-NM2ETC         PIC  X(01).
       *更新チェック用ダミー
                05  CK4-1102-UPDDUMMY       PIC  X(01).
+      *番号桁数下限
+               05  CK4-1102-NMKETAMIN      PIC  X(02).
+      *番号桁数上限
+               05  CK4-1102-NMKETAMAX      PIC  X(02).
       *
-               05                          PIC  X(460).
+               05                          PIC  X(456).
       *端末ＩＤ
            03  CK4-1102-TERMID             PIC  X(16).
       *オペーレータＩＤ

@@ -106,6 +106,7 @@
                                        IDX-AREA
                                        WRK-AREA
                                        SDTCHK04-OT
+           MOVE    ZERO            TO  SDTCHK04-KETA9
            .
        100-INIT-EXT.
            EXIT.
@@ -138,6 +139,8 @@
                        MOVE    1   TO  SDTCHK04-SPACE
                    END-IF
                END-EVALUATE
+      *
+               COMPUTE SDTCHK04-KETA9  =   SDTCHK04-KETA9  +   1
       *
            END-PERFORM
       *

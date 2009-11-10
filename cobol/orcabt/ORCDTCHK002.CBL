@@ -1733,6 +1733,10 @@
                MOVE    CK4-1102-NM2ETC TO SRH-1102-NM2ETCL      (IDX5)
                MOVE    CK4-1102-UPDDUMMY
                                        TO SRH-1102-UPDDUMMYL    (IDX5)
+               MOVE    CK4-1102-NMKETAMIN
+                                       TO SRH-1102-NMKETAMINL    (IDX5)
+               MOVE    CK4-1102-NMKETAMAX
+                                       TO SRH-1102-NMKETAMAXL    (IDX5)
       *
                MOVE    "tbl_chk004"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -3883,17 +3887,6 @@
            MOVE    ZERO            TO  FLG-HKNNUMERR
       *
            INITIALIZE                  SDTCHK04AREA
-           MOVE    PTHKN-NUM       TO  SDTCHK04-KIGONUM
-           CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
-                                           SPA-AREA
-      *
-           IF    ( SRH-1102-NMSUJINASHI    =   "2" )
-               IF    ( SDTCHK04-SUJI       =   ZERO )
-                   MOVE    1       TO  FLG-HKNNUMERR
-               END-IF
-           END-IF
-      *
-           INITIALIZE                  SDTCHK04AREA
            MOVE    PTHKN-NUM(1:2)  TO  SDTCHK04-KIGONUM
            CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
                                            SPA-AREA
@@ -3935,12 +3928,35 @@
                END-IF
            END-IF
       *
-           IF    ( FLG-HKNNUMERR  =   1 )
+           INITIALIZE                  SDTCHK04AREA
+           MOVE    PTHKN-NUM       TO  SDTCHK04-KIGONUM
+           CALL    "ORCSDTCHK04"   USING   SDTCHK04AREA
+                                           SPA-AREA
+      *
+           IF    ( SRH-1102-NMSUJINASHI    =   "2" )
                IF    ( SDTCHK04-SUJI       =   ZERO )
-                   MOVE    "020011"    TO  WRK-ERRCD
-               ELSE
-                   MOVE    "020010"    TO  WRK-ERRCD
+                   MOVE    2       TO  FLG-HKNNUMERR
                END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-NMKETAMIN  NOT =   SPACE )
+               IF    ( SRH-1102-NMKETAMIN  >   SDTCHK04-KETA )
+                   MOVE    2       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-NMKETAMAX  NOT =   SPACE )
+               IF    ( SRH-1102-NMKETAMAX  <   SDTCHK04-KETA )
+                   MOVE    2       TO  FLG-HKNNUMERR
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-HKNNUMERR  =   1 )
+               MOVE    "020010"    TO  WRK-ERRCD
+               PERFORM 2001111-HKN-NUM-ERR-SET-SEC
+           END-IF
+           IF    ( FLG-HKNNUMERR  =   2 )
+               MOVE    "020011"    TO  WRK-ERRCD
                PERFORM 2001111-HKN-NUM-ERR-SET-SEC
            END-IF
       *
@@ -4178,8 +4194,6 @@
                        CALL    "orcsstring" USING  ORCSSTRINGAREA
                    END-PERFORM
                    INSPECT ORCSSTR-STRING1 REPLACING ALL "A" BY  " "
-                   DISPLAY "PTKOH-FTNJANUM["  PTKOH-FTNJANUM "]"
-                   DISPLAY "ORCSSTR-STRING1["  ORCSSTR-STRING1 (1:8) "]"
                    IF    ( ORCSSTR-STRING1 =   SPACE )
                        CONTINUE
                    ELSE
@@ -4267,8 +4281,6 @@
                        CALL    "orcsstring" USING  ORCSSTRINGAREA
                    END-PERFORM
                    INSPECT ORCSSTR-STRING1 REPLACING ALL "A" BY  " "
-                   DISPLAY "PTKOH-JKYSNUM["  PTKOH-JKYSNUM "]"
-                   DISPLAY "ORCSSTR-STRING1["  ORCSSTR-STRING1(1:10) "]"
                    IF    ( ORCSSTR-STRING1 =   SPACE )
                        CONTINUE
                    ELSE
@@ -9633,7 +9645,6 @@
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1102-MAX )
                     OR   ( FLG-HIT     NOT =   ZERO )
-      *
                IF    ( SRH-1102-JYKNKBNL (SRH-IDX)
                                        =   "0" )
                    IF    ( SRH-1102-HKNJANUML (SRH-IDX)
@@ -9699,6 +9710,10 @@
                                        TO  SRH-1102-NM1ETC
                        MOVE    SRH-1102-NMSUJINASHIL (SRH-IDX)
                                        TO  SRH-1102-NMSUJINASHI
+                       MOVE    SRH-1102-NMKETAMINL (SRH-IDX)
+                                       TO  SRH-1102-NMKETAMIN
+                       MOVE    SRH-1102-NMKETAMAXL (SRH-IDX)
+                                       TO  SRH-1102-NMKETAMAX
       *
                        MOVE    SRH-1102-NM2SUJIL (SRH-IDX)
                                        TO  SRH-1102-NM2SUJI
