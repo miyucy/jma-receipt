@@ -68,6 +68,8 @@
       *  04.04.04    NACL-藤原    09/08/17  「平成２１年７月中国・九州
       *                                     北部豪雨」対応
       *                                     ２００９年７月〜対象 
+      *  04.04.05    NACL-藤原    09/10/21  月途中の負担者番号変更対応
+      *                                     （自立支援の公費単独） 
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
@@ -6149,6 +6151,15 @@
       *    帳票編集<保険履歴情報>処理
       *****************************************************************
        370-HC101-HKN-RIREKI-HEN-SEC      SECTION.
+      *
+      *    公費単独以外は保険履歴の記載をしない
+           IF    ( RECE02-HKNNUM       =   SPACE )
+           AND   ( RECE02-KOHNUM (1)
+                                   NOT =   SPACE )
+           AND   ( RECE02-KOHNUM (2)
+                                   NOT =   SPACE )
+               GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
+           END-IF
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-RIREKI-MAX  
