@@ -249,6 +249,7 @@
       *  04.05.05    NACL-藤原    09/06/02  病名の入力順対応
       *  04.05.06    NACL-藤原    09/07/22  照会画面からの遷移対応
       *                                     渡された病名を表示
+      *  04.05.07    NACL-藤原    09/11/11  病名の入力順対応を中止
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2813,88 +2814,88 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    C02-BANGO       TO  SPA-GMN-C02-BANGO-X
                    END-IF
                ELSE
-      *            病名指定行追加処理
-                   IF      C02-BANGO (1:1) =   "+"
-                     INITIALIZE                  ORCSNUMAREA
-                     MOVE    C02-BANGO (2:)      TO  SNUM-INX
-                     CALL    "ORCSNUM"           USING
-                                                 ORCSNUMAREA
-                     IF      SNUM-RC             =   ZERO
-                       MOVE    C02-BANGO         TO  SPA-GMN-C02-BANGO-X
+      *************病名指定行追加処理
+      *****        IF      C02-BANGO (1:1) =   "+"
+      *****          INITIALIZE                  ORCSNUMAREA
+      *****          MOVE    C02-BANGO (2:)      TO  SNUM-INX
+      *****          CALL    "ORCSNUM"           USING
+      *****                                      ORCSNUMAREA
+      *****          IF      SNUM-RC             =   ZERO
+      *****            MOVE    C02-BANGO         TO  SPA-GMN-C02-BANGO-X
       *
-                       COMPUTE WRK-BANGO
-                                   =   SNUM-OUTNUM
-                                   - ( SPA-GMN-C02-PAGE    -   1 )
-                                   *   WRK-CONS-C02-MAX
+      *****            COMPUTE WRK-BANGO
+      *****                        =   SNUM-OUTNUM
+      *****                        - ( SPA-GMN-C02-PAGE    -   1 )
+      *****                        *   WRK-CONS-C02-MAX
       *
-                       IF    ( WRK-BANGO       >   SPA-GMN-C02-MAX )
-                       OR    ( WRK-BANGO       <   1               )
-                           MOVE    "0012"          TO  SPA-ERRCD
-                       ELSE
+      *****            IF    ( WRK-BANGO       >   SPA-GMN-C02-MAX )
+      *****            OR    ( WRK-BANGO       <   1               )
+      *****                MOVE    "0012"          TO  SPA-ERRCD
+      *****            ELSE
       *
       *                    病名数のチェック
-                           INITIALIZE                  PTBYOMEI-REC
-grpsys                     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-                           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                           MOVE    SPA-NAI-C02-TSRYKA (WRK-BANGO)
-                                                       TO  PTBYO-SRYKA
-                           MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
-                                                       TO  PTBYO-SRYYMD
-                           MOVE    ZERO                TO  PTBYO-RENNUM
-                           MOVE    "%"                 TO  PTBYO-DLTFLG
-                           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                           MOVE    "key34"             TO
-                                                       WRK-MCP-PATHNAME
-                           PERFORM 900-PTBYO-INV-SEC
-      *                    同一診療科、開始日で９９件のとき（削除分含む）
-                           IF      PTBYO-RENNUM        =   99
-                               MOVE    "0034"          TO  SPA-ERRCD
-                               INITIALIZE                  PTBYOMEI-REC
-grpsys                         MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
-                               MOVE    SPA-NAI-C02-PTID
-                                                       TO  PTBYO-PTID
-                               MOVE    SPA-NAI-C02-TSRYKA (WRK-BANGO)
-                                                       TO  PTBYO-SRYKA
-                               MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
-                                                       TO  PTBYO-SRYYMD
-                               MOVE    ZERO            TO  PTBYO-RENNUM
-                               MOVE    "1"             TO  PTBYO-DLTFLG
-                               MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-                               MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
-                               MOVE    "key34"         TO
-                                                       WRK-MCP-PATHNAME
-                               PERFORM 900-PTBYO-INV-SEC
+      *****                INITIALIZE                  PTBYOMEI-REC
+grpsys*****                MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+      *****                MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+      *****                MOVE    SPA-NAI-C02-TSRYKA (WRK-BANGO)
+      *****                                            TO  PTBYO-SRYKA
+      *****                MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
+      *****                                            TO  PTBYO-SRYYMD
+      *****                MOVE    ZERO                TO  PTBYO-RENNUM
+      *****                MOVE    "%"                 TO  PTBYO-DLTFLG
+      *****                MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+      *****                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+      *****                MOVE    "key34"             TO
+      *****                                            WRK-MCP-PATHNAME
+      *****                PERFORM 900-PTBYO-INV-SEC
+      *****                同一診療科、開始日で９９件のとき（削除分含む）
+      *****                IF      PTBYO-RENNUM        =   99
+      *****                    MOVE    "0034"          TO  SPA-ERRCD
+      *****                    INITIALIZE                  PTBYOMEI-REC
+grpsys*****                    MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
+      *****                    MOVE    SPA-NAI-C02-PTID
+      *****                                            TO  PTBYO-PTID
+      *****                    MOVE    SPA-NAI-C02-TSRYKA (WRK-BANGO)
+      *****                                            TO  PTBYO-SRYKA
+      *****                    MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
+      *****                                            TO  PTBYO-SRYYMD
+      *****                    MOVE    ZERO            TO  PTBYO-RENNUM
+      *****                    MOVE    "1"             TO  PTBYO-DLTFLG
+      *****                    MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
+      *****                    MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
+      *****                    MOVE    "key34"         TO
+      *****                                            WRK-MCP-PATHNAME
+      *****                    PERFORM 900-PTBYO-INV-SEC
       *                        同一診療科、開始日で削除分がないとき
-                               IF      PTBYO-RENNUM    =   ZERO
-                                  MOVE    "0088"           TO  SPA-ERRCD
-                               END-IF
-                               GO  TO  41011-BANGO-HEN-EXT
-                           END-IF
+      *****                    IF      PTBYO-RENNUM    =   ZERO
+      *****                       MOVE    "0088"           TO  SPA-ERRCD
+      *****                    END-IF
+      *****                    GO  TO  41011-BANGO-HEN-EXT
+      *****                END-IF
       * 
-                           MOVE    WRK-BANGO       TO
-                                               SPA-NAI-C02-SELNO-INSERT     
+      *****                MOVE    WRK-BANGO       TO
+      *****                                    SPA-NAI-C02-SELNO-INSERT     
       *
-                           MOVE    SPA-GMN-C02-TSRYYMD (WRK-BANGO)
-                                               TO  SPA-GMN-C02-SRYYMD
-                           MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
-                                               TO  SPA-NAI-C02-SRYYMD
-                           MOVE    SPA-NAI-C02-TSRYKA (WRK-BANGO)
-                                               TO  SPA-GMN-C02-BSRYKA
-                           IF      SPA-NAI-C02-SELNO-INSERT
-                                               <   10
-                               MOVE    SPA-NAI-C02-SELNO-INSERT
-                                                       TO  C02-BYO-ROW
-                           ELSE
-                               COMPUTE C02-BYO-ROW     =   
-                                       SPA-NAI-C02-SELNO-INSERT    -   5
-                           END-IF
-                           MOVE    2               TO  SPA-GMN-C02-CUR 
-                       END-IF
-                     ELSE
-                       MOVE    "0012"          TO  SPA-ERRCD
-                     END-IF
-                   ELSE
+      *****                MOVE    SPA-GMN-C02-TSRYYMD (WRK-BANGO)
+      *****                                    TO  SPA-GMN-C02-SRYYMD
+      *****                MOVE    SPA-NAI-C02-TSRYYMD (WRK-BANGO)
+      *****                                    TO  SPA-NAI-C02-SRYYMD
+      *****                MOVE    SPA-NAI-C02-TSRYKA (WRK-BANGO)
+      *****                                    TO  SPA-GMN-C02-BSRYKA
+      *****                IF      SPA-NAI-C02-SELNO-INSERT
+      *****                                    <   10
+      *****                    MOVE    SPA-NAI-C02-SELNO-INSERT
+      *****                                            TO  C02-BYO-ROW
+      *****                ELSE
+      *****                    COMPUTE C02-BYO-ROW     =   
+      *****                            SPA-NAI-C02-SELNO-INSERT    -   5
+      *****                END-IF
+      *****                MOVE    2               TO  SPA-GMN-C02-CUR 
+      *****            END-IF
+      *****          ELSE
+      *****            MOVE    "0012"          TO  SPA-ERRCD
+      *****          END-IF
+      *****        ELSE
                      INITIALIZE                  ORCSNUMAREA
                      MOVE    C02-BANGO       TO  SNUM-INX
                      CALL    "ORCSNUM"           USING
@@ -2921,7 +2922,7 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
                      ELSE
                        MOVE    "0012"          TO  SPA-ERRCD
                      END-IF
-                 END-IF
+      *****        END-IF
                END-IF
            END-IF
       *
