@@ -292,6 +292,12 @@
                    MOVE    ZERO        TO  FLG-TARGET
            END-IF
       *
+           IF    ( SYU-NYUIN-RRKNUM    =   MYSYU-NYUIN-RRKNUM )
+               CONTINUE
+           ELSE
+                   MOVE    ZERO        TO  FLG-TARGET
+           END-IF
+      *
            IF    ( SYU-GRP-HAKHOUFLG   =   MYSYU-GRP-HAKHOUFLG )
                CONTINUE
            ELSE
