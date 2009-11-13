@@ -257,6 +257,7 @@ bind    "ORCBM540"      "OpenCOBOL";
 bind    "ORCBM040"      "OpenCOBOL";
 bind    "ORCBM041"      "OpenCOBOL";
 bind    "ORCBPUTCSV"     "OpenCOBOL";
+bind    "ORCBCRENYU"    "OpenCOBOL";
 
 
 #include "orcadb.inc"

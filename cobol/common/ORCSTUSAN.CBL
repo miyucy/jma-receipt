@@ -194,7 +194,7 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           PERFORM 800-DISPLAY-SEC
+      *     PERFORM 800-DISPLAY-SEC
       *
            .
        000-PROC-EXT.
