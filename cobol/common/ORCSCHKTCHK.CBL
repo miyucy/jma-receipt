@@ -1250,6 +1250,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                        MOVE    LNK-ORCSC-SRYCD (IDX-L1 IDX-L2)
                                                    TO  WRK-SRYCD
                        PERFORM 30021-SRYCD-CHECK-SEC
+                   END-IF
                END-PERFORM
            END-PERFORM
       *     Ò≥Áø«Œ≈•≥°º•… ‘Ω∏

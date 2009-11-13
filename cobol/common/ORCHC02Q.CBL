@@ -362,7 +362,7 @@
                    07  WRK-FIL41           PIC X(46).
                    07  WRK-SURYOU4         PIC X(22).
                    07  WRK-TANI4           PIC X(12).
-                   07  WRK-FIL11           PIC X(06).
+                   07  WRK-FIL42           PIC X(06).
       *    ÌôºÞÌ¾ÊÔ½¸
        01  WRK-MEISAI-AREA.
            03  WRK-M-NAME              PIC X(100).

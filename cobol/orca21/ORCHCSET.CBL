@@ -181,7 +181,6 @@
            03  WRK-SURYO-HEN           PIC X(11).
            03  IDM                     PIC 9(04).
            03  IDM2                    PIC 9(04).
-           03  FLG-SP                  PIC 9(01).
       *
       *    °õºþÆâÍÆ
        01  HEAD-01.
@@ -234,7 +233,7 @@
                05  B01N-NAME3              PIC X(58).
                05  B01N-YOBI33             PIC X(08).
                05  B01N-TANINAME3          PIC X(04).
-               05  B01N-YOBI34             PIC X(14).
+               05  B01N-YOBI34             PIC X(10).
       *
        01  BODY-01.
            03  B01-YOBI1               PIC X(06).
@@ -430,7 +429,7 @@
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
-           MOVE    "HCPOM"             TO  HC01PARA-FORM-ID
+           MOVE    "HCPO"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
       *

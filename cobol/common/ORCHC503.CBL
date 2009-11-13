@@ -205,7 +205,7 @@
                    07  WRK-SURYOU          PIC X(22).
                    07  WRK-TANI            PIC X(12).
                    07  WRK-KAISUU          PIC X(06).
-                   07  WRK-FIL11           PIC X(02).
+     ********      07  WRK-FIL11           PIC X(02).
                05  WRK-NAIYOU-R3           REDEFINES   WRK-NAIYOU-Z.
                    07  WRK-FIL20           PIC X(02).
                    07  WRK-MEISYOU3        PIC X(100).
