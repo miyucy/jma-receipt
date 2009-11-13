@@ -33,11 +33,11 @@
                    07  SPA-W25-GMN-CUR               PIC 9(03).
       *
                    07  SPA-W25-GMN-SELNUM-G.
-                       09  SPA-W25-GMN-SELNUM        PIC X(03)
-                                                 OCCURS  5.
+                       09  SPA-W25-GMN-SELNUM        PIC X(03).
+      ********                                   OCCURS  5.
                    07  SPA-W25-NAI-SELNUM-G.
-                       09  SPA-W25-NAI-SELNUM        PIC 9(03)
-                                                     OCCURS  5.
+                       09  SPA-W25-NAI-SELNUM        PIC 9(03).
+      ********                                       OCCURS  5.
                    07  SPA-W25-GMN-INPUT             PIC X(22).
                    07  SPA-W25-GMN-SYORI             PIC X(01).
                    07  SPA-W25-GMN-SYORI2            PIC X(01).
