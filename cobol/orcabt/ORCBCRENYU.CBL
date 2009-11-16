@@ -522,6 +522,10 @@
                PERFORM  910-PTNYUINRRK-READ-SEC
                PERFORM  UNTIL  FLG-PTNYUINRRK    =    1
                        MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
+      *
+      *                患者番号検索
+                       PERFORM 900-PTNUM-KEY-SEL-SEC
+      *
       *                入院会計存在チェック
                        PERFORM    2001-NYUINACCT-CHK-SEC
                        IF         FLG-NYUINACCTARI   =    ZERO
@@ -530,6 +534,9 @@
                             PERFORM     2001-NYUINACCT-MAECHK-SEC
       *                     入院会計作成処理
                             PERFORM     2001-NYUINACCT-INS-SEC
+                       ELSE
+                            DISPLAY "CRENYU PTNUM = " PTNUM-PTNUM
+                                    " NYUIN-ACCT ALREADY"
                        END-IF
                    MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
                    MOVE    "key27"              TO      MCP-PATHNAME
@@ -658,7 +665,12 @@
        2001-NYUINACCT-INS-SEC          SECTION.
       *
            IF    FLG-NYUINACCT-MAE-CHK     =    1
+               DISPLAY "CRENYU PTNUM = " PTNUM-PTNUM
+                       " NYUIN-ACCT CREATE"
                PERFORM     410191-KAIKEI-SAKUSEI-SEC
+           ELSE
+               DISPLAY "CRENYU PTNUM = " PTNUM-PTNUM
+                       " ZENGETSU NYUIN-ACCT NOTHING"
            END-IF
       *
            .
