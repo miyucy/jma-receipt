@@ -670,7 +670,7 @@
                PERFORM     410191-KAIKEI-SAKUSEI-SEC
            ELSE
                DISPLAY "CRENYU PTNUM = " PTNUM-PTNUM
-                       " ZENGETSU NYUIN-ACCT NOTHING"
+                       " NYUIN-ACCT ZENGETSU NOTHING"
            END-IF
       *
            .

@@ -212,25 +212,35 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-      *
-           DISPLAY "FLG-SKYST-TAIIN =" FLG-SKYST-TAIIN
-           DISPLAY "FLG-SKYST-NYUIN =" FLG-SKYST-NYUIN
-           DISPLAY "FLG-SKYED-TAIIN =" FLG-SKYED-TAIIN
-           DISPLAY "FLG-SKYED-NYUIN =" FLG-SKYED-NYUIN
-           DISPLAY "WRK-SKYST-SKJ   =" WRK-SKYST-SKJ
-           DISPLAY "WRK-SKYED-SKJ   =" WRK-SKYED-SKJ
-      *
-           DISPLAY "======================"
-           DISPLAY "SS006-SKYSTYMD       =" SS006-SKYSTYMD
-           DISPLAY "SS006-DOJITUFLG-ST   =" SS006-DOJITUFLG-ST
-           DISPLAY "SS006-TIMEKBN-ST     =" SS006-TIMEKBN-ST
-           DISPLAY "SS006-SKYEDYMD       =" SS006-SKYEDYMD
-           DISPLAY "SS006-DOJITUFLG-ED   =" SS006-DOJITUFLG-ED
-           DISPLAY "SS006-TIMEKBN-ED     =" SS006-TIMEKBN-ED
-           DISPLAY "======================"
+      *     PERFORM 800-DISPLAY-SEC
       *
            .
        300-END-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½ªÎ»½èÍý
+      *****************************************************************
+       800-DISPLAY-SEC                     SECTION.
+      *
+      **     DISPLAY "FLG-SKYST-TAIIN =" FLG-SKYST-TAIIN
+      **     DISPLAY "FLG-SKYST-NYUIN =" FLG-SKYST-NYUIN
+      **     DISPLAY "FLG-SKYED-TAIIN =" FLG-SKYED-TAIIN
+      **     DISPLAY "FLG-SKYED-NYUIN =" FLG-SKYED-NYUIN
+      **     DISPLAY "WRK-SKYST-SKJ   =" WRK-SKYST-SKJ
+      **     DISPLAY "WRK-SKYED-SKJ   =" WRK-SKYED-SKJ
+      *
+      **     DISPLAY "======================"
+      **     DISPLAY "SS006-SKYSTYMD       =" SS006-SKYSTYMD
+      **     DISPLAY "SS006-DOJITUFLG-ST   =" SS006-DOJITUFLG-ST
+      **     DISPLAY "SS006-TIMEKBN-ST     =" SS006-TIMEKBN-ST
+      **     DISPLAY "SS006-SKYEDYMD       =" SS006-SKYEDYMD
+      **     DISPLAY "SS006-DOJITUFLG-ED   =" SS006-DOJITUFLG-ED
+      **     DISPLAY "SS006-TIMEKBN-ED     =" SS006-TIMEKBN-ED
+      **     DISPLAY "======================"
+      *
+           .
+       800-DISPLAY-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡ÍúÎò¸¡º÷½èÍý

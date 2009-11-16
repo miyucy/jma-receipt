@@ -412,7 +412,7 @@
                END-PERFORM
            END-IF
       *
-           DISPLAY "WRK-SZYMD =" WRK-SZYMD
+      *     DISPLAY "WRK-SZYMD =" WRK-SZYMD
       *
            MOVE    "tbl_ptnyuinrrk" TO  MCP-TABLE
            MOVE    "key4"           TO  MCP-PATHNAME
