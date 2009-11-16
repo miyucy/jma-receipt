@@ -47,11 +47,6 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *     レセプト明細ファイル 名称領域 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE62//.
-      *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"
                                    REPLACING  //ERRFLPARA//
@@ -119,7 +114,6 @@
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-           03  RECEERR                             PIC X(100).
       *
       *    一時領域
        01  WRK-AREA.
