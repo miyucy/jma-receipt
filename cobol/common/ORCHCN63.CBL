@@ -427,7 +427,7 @@
       *
       *    印刷用ファイル作成
            MOVE    SPA-HOSPNUM     TO  HC01PARA-HOSPNUM
-           MOVE    "HCN63"         TO  HC01PARA-FORM-ID
+           MOVE    "HC63"          TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    1               TO  HC01PARA-CNT
