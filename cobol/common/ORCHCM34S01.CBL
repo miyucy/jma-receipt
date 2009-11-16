@@ -810,7 +810,7 @@
                                            ORCSNYULIFE-AREA
                                            SPA-AREA
                IF    ( LNK-NYULIFE-RC  NOT =   ZERO )
-                   DISPLAY "ORCSNYULIFE ERR:" LNK-NYULIFE-RC
+      *            DISPLAY "ORCSNYULIFE ERR:" LNK-NYULIFE-RC
                    INITIALIZE              ORCSNYULIFE-AREA
                END-IF
                INITIALIZE                  ORCSSYOTOKUAREA
@@ -821,7 +821,7 @@
                                            ORCSSYOTOKUAREA
                                            SPA-AREA
                IF    ( LNK-SYOTOKU-RC  NOT =         ZERO )
-                    DISPLAY "ORCSSYTOKU RC = " LNK-SYOTOKU-RC
+      *             DISPLAY "ORCSSYTOKU RC = " LNK-SYOTOKU-RC
                     INITIALIZE                 ORCSSYOTOKUAREA
                END-IF
            ELSE
@@ -838,7 +838,7 @@
                                            ORCSNYUINDAY-AREA
                                            SPA-AREA
            IF    ( LNK-NYUINDAY-RC     NOT =   ZERO )
-                   DISPLAY "ORCSNYUINDAY ERR:" LNK-NYUINDAY-RC
+      *            DISPLAY "ORCSNYUINDAY ERR:" LNK-NYUINDAY-RC
                    INITIALIZE              ORCSNYUINDAY-AREA
            END-IF
       *
