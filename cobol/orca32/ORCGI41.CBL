@@ -232,6 +232,11 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-GMN-SRYYM       PIC X(06).
            03  WRK-NAI-SRYYM       PIC X(06).
+      *    月末日算定領域
+           03  WRK-MATSUYMD.
+               05  WRK-MATSUYY     PIC 9(04).
+               05  WRK-MATSUMM     PIC 9(02).
+               05  WRK-MATSUDD     PIC 9(02).
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
            03  WRK-PATHNAME        PIC X(20).
@@ -1994,14 +1999,27 @@
                            END-PERFORM
                        ELSE
                            IF    NACCT-SRYCDTOTAL   =   197000570
+      *                      月末日を取得
+                             INITIALIZE                 STS-AREA-DAY
+                             INITIALIZE                 LNK-DAY7-AREA
+                             MOVE     "71"        TO    LNK-DAY7-IRAI
+                             MOVE     NACCT-SRYYM TO    LNK-DAY7-YM
+                             CALL  "ORCSDAY"    USING   STS-AREA-DAY
+                                                        LNK-DAY7-AREA
+                             MOVE    LNK-DAY7-KOYOMI
+                                                  TO   WRK-MATSUYMD
+      *
                              MOVE      1          TO   SPA-SHOKUDOU-OFF
-                             PERFORM  VARYING IDX-SHOKUDOU  FROM 1 BY 1
-                                    UNTIL  (IDX-SHOKUDOU  >  31)  OR
-                                           (SPA-SHOKUDOU-OFF  =  ZERO)
-                               IF   NACCT-DAY(IDX-SHOKUDOU)  NOT = ZERO
-                                   MOVE   ZERO  TO  SPA-SHOKUDOU-OFF
-                               END-IF
-                             END-PERFORM
+                             IF   NACCT-DAY(WRK-MATSUDD)  NOT = ZERO
+                                 MOVE   ZERO  TO  SPA-SHOKUDOU-OFF
+                             END-IF
+      *                       PERFORM  VARYING IDX-SHOKUDOU  FROM 1 BY 1
+      *                              UNTIL  (IDX-SHOKUDOU  >  31)  OR
+      *                                     (SPA-SHOKUDOU-OFF  =  ZERO)
+      *                         IF   NACCT-DAY(IDX-SHOKUDOU)  NOT = ZERO
+      *                             MOVE   ZERO  TO  SPA-SHOKUDOU-OFF
+      *                         END-IF
+      *                       END-PERFORM
                            END-IF
                        END-IF
       *            最終日の保険組合せを退避（次月会計の作成用）

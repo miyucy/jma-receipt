@@ -161,6 +161,11 @@
            03  WRK-TNS-YMD                         PIC X(08).
            03  WRK-NAIYO                           PIC X(100).
            03  WRK-KANACHK-MAE-INPUT               PIC X(400).
+      *    月末日算定領域
+           03  WRK-MATSUYMD.
+               05  WRK-MATSUYY                     PIC 9(04).
+               05  WRK-MATSUMM                     PIC 9(02).
+               05  WRK-MATSUDD                     PIC 9(02).
       *
       *    プレイルーム、保育士加算加算退避領域
            03  WRK-BTU-HIKSISUKBN                  PIC X(01).
@@ -194,6 +199,7 @@
                                    PIC 9(04).
            03  WRK-TAIHI-SRYKA     PIC X(02).
            03  WRK-TAIHI-SHOKUJI   PIC 9(02).
+           03  WRK-TAIHI-SHOKUDOU  PIC 9(02).
            03  WRK-TAIHI-HKN       PIC 9(04).
            03  WRK-ZOGENPTN        PIC X(01).
            03  WRK-ZOGEN           PIC S9(05).
@@ -694,6 +700,7 @@
        2001-NYUINACCT-MAECHK-SEC          SECTION.
       *
            MOVE    ZERO                TO  WRK-TAIHI-SHOKUJI
+           MOVE    ZERO                TO  WRK-TAIHI-SHOKUDOU
            MOVE    ZERO                TO  WRK-TAIHI-HKN
       *
            MOVE    ZERO                TO  FLG-NYUINACCT-MAE-CHK
@@ -728,6 +735,21 @@
                                     MOVE  1   TO  IDX-SHOKUJI
                                 END-IF
                        END-PERFORM
+                   END-IF
+      *            食堂加算
+                   IF    ( NACCT-ZAISKBKBN     =    "4"    )   AND
+                         (NACCT-SRYCDTOTAL     =   197000570)
+      *                  月末日を取得
+                         INITIALIZE                 STS-AREA-DAY
+                         INITIALIZE                 LNK-DAY7-AREA
+                         MOVE     "71"        TO    LNK-DAY7-IRAI
+                         MOVE     NACCT-SRYYM TO    LNK-DAY7-YM
+                         CALL  "ORCSDAY"    USING   STS-AREA-DAY
+                                                    LNK-DAY7-AREA
+                         MOVE    LNK-DAY7-KOYOMI
+                                              TO    WRK-MATSUYMD
+                         MOVE  NACCT-DAY(WRK-MATSUDD)
+                                              TO    WRK-TAIHI-SHOKUDOU
                    END-IF
       *            保険組合せ
                    IF    ( NACCT-ZAISKBKBN     =    "5"    )
@@ -2113,6 +2135,9 @@
                    MOVE    "197000570"     TO
                                            LNK-SCNYUACCT-SHOKUDO-SRYCD
                    MOVE    1               TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   IF      WRK-TAIHI-SHOKUDOU   =   0
+                        MOVE   0           TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   END-IF
                END-IF
            END-IF
       *    保険組合せ
@@ -2274,6 +2299,9 @@
                    MOVE    "197000570"     TO
                                            LNK-SCNYUACCT-SHOKUDO-SRYCD
                    MOVE    1               TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   IF      WRK-TAIHI-SHOKUDOU   =   0
+                        MOVE   0           TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   END-IF
                END-IF
            END-IF
       *    保険組合せ

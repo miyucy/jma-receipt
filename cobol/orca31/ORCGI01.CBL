@@ -10951,7 +10951,7 @@
                     MOVE     "197000570"    TO
                                 LNK-SCNYUACCT-SHOKUDO-SRYCD
                     MOVE    1   TO   LNK-SCNYUACCT-SHOKUDO-KBN
-                    IF   PTNYUINRRK-SKJKBN   =   SPACE
+                    IF   PTNYUINRRK-SKJKBN   =   "0"
                          MOVE   ZERO     TO  LNK-SCNYUACCT-SHOKUDO-KBN
                     END-IF
                END-IF
