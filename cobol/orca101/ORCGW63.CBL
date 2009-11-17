@@ -1582,7 +1582,7 @@
            MOVE    W63-NM1ETC          TO  SPA-GMN-NM1ETC-G
            MOVE    W63-NMSUJINASHI     TO  SPA-GMN-NMSUJINASHI-G
            MOVE    W63-NMKETAMIN       TO  SPA-GMN-NMKETAMIN-G
-           MOVE    W63-NMKETAMAX       TO  SPA-GMN-NMKETAMAX-G
+      *    MOVE    W63-NMKETAMAX       TO  SPA-GMN-NMKETAMAX-G
       *
            MOVE    W63-NM2SUJI         TO  SPA-GMN-NM2SUJI-G
            MOVE    W63-NM2KANJI        TO  SPA-GMN-NM2KANJI-G
@@ -1712,9 +1712,9 @@
            END-IF
       *
       *    番号桁数上限チェック
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-NMKETAMAX-CHK-SEC
-           END-IF
+      *    IF    ( SPA-ERRCD   =   SPACE )
+      *        PERFORM 4101-NMKETAMAX-CHK-SEC
+      *    END-IF
       *
       *    番号２文字目以降数字チェック
            IF    ( SPA-ERRCD   =   SPACE )
@@ -2610,7 +2610,8 @@
            MOVE    SPA-GMN-KGKANJINASHI TO CK4-1102-KGKANJINASHI
            MOVE    SPA-GMN-NMSUJINASHI TO  CK4-1102-NMSUJINASHI
            MOVE    SPA-GMN-NMKETAMIN   TO  CK4-1102-NMKETAMIN
-           MOVE    SPA-GMN-NMKETAMAX   TO  CK4-1102-NMKETAMAX
+                                           CK4-1102-NMKETAMAX
+      *    MOVE    SPA-GMN-NMKETAMAX   TO  CK4-1102-NMKETAMAX
            MOVE    "0"                 TO  CK4-1102-NM1CHKPTN
            MOVE    SPA-GMN-NM1SUJI     TO  CK4-1102-NM1SUJI
            MOVE    SPA-GMN-NM1KANJI    TO  CK4-1102-NM1KANJI
@@ -3581,7 +3582,7 @@
            MOVE    SPA-GMN-NM1ETC-G        TO  W63-NM1ETC
            MOVE    SPA-GMN-NMSUJINASHI-G   TO  W63-NMSUJINASHI
            MOVE    SPA-GMN-NMKETAMIN-G     TO  W63-NMKETAMIN
-           MOVE    SPA-GMN-NMKETAMAX-G     TO  W63-NMKETAMAX
+      *    MOVE    SPA-GMN-NMKETAMAX-G     TO  W63-NMKETAMAX
       *
            MOVE    SPA-GMN-NM2SUJI-G       TO  W63-NM2SUJI
            MOVE    SPA-GMN-NM2KANJI-G      TO  W63-NM2KANJI
@@ -3675,14 +3676,14 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-NMKETAMAX-MAX TO  W63-NMKETAMAX-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >       SPA-GMN-NMKETAMAX-MAX )
+      *    MOVE    SPA-GMN-NMKETAMAX-MAX TO  W63-NMKETAMAX-COUNT
+      *    PERFORM VARYING IDX-CMB FROM    1   BY  1
+      *            UNTIL ( IDX-CMB >       SPA-GMN-NMKETAMAX-MAX )
       *
-               MOVE    SPA-GMN-NMKETAMAXLST (IDX-CMB)
-                                         TO  W63-NMKETAMAX-ITEM(IDX-CMB)
+      *        MOVE    SPA-GMN-NMKETAMAXLST (IDX-CMB)
+      *                                  TO  W63-NMKETAMAX-ITEM(IDX-CMB)
       *
-           END-PERFORM
+      *    END-PERFORM
       *
       *
            EVALUATE    FLG-CLIST-ROW
@@ -3775,8 +3776,8 @@
                MOVE    "EDYUKYMD"      TO  MCP-WIDGET
            WHEN    028
                MOVE    "NMKETAMIN"     TO  MCP-WIDGET
-           WHEN    029
-               MOVE    "NMKETAMAX"     TO  MCP-WIDGET
+      *    WHEN    029
+      *        MOVE    "NMKETAMAX"     TO  MCP-WIDGET
            WHEN    201
                MOVE    "B01"           TO  MCP-WIDGET
            WHEN    202
@@ -3839,9 +3840,10 @@
            WHEN    "NMSUJINASHI"
                MOVE    028             TO  SPA-GMN-CUR
            WHEN    "NMKETAMIN"
-               MOVE    029             TO  SPA-GMN-CUR
-           WHEN    "NMKETAMAX"
                MOVE    022             TO  SPA-GMN-CUR
+      *        MOVE    029             TO  SPA-GMN-CUR
+      *    WHEN    "NMKETAMAX"
+      *        MOVE    022             TO  SPA-GMN-CUR
            WHEN    "NM2SUJI"
                MOVE    023             TO  SPA-GMN-CUR
            WHEN    "NM2KANJI"
