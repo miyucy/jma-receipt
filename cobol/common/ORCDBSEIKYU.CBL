@@ -26,6 +26,10 @@
       *  作成日付    作業者        記述
       *  09/02/24    NACL-太田     新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      *  04.05.01    NACL-藤原    09/11/13  特記事項照会対応
+      *                                     特記事項略称追加
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -224,6 +228,11 @@
            MOVE    RECE10-TOKKI (3)        TO  SKYMAIN-TOKKI (3)
            MOVE    RECE10-TOKKI (4)        TO  SKYMAIN-TOKKI (4)
            MOVE    RECE10-TOKKI (5)        TO  SKYMAIN-TOKKI (5)
+           MOVE    RECE10-TOKKINM (1)      TO  SKYMAIN-TOKKINM (1)
+           MOVE    RECE10-TOKKINM (2)      TO  SKYMAIN-TOKKINM (2)
+           MOVE    RECE10-TOKKINM (3)      TO  SKYMAIN-TOKKINM (3)
+           MOVE    RECE10-TOKKINM (4)      TO  SKYMAIN-TOKKINM (4)
+           MOVE    RECE10-TOKKINM (5)      TO  SKYMAIN-TOKKINM (5)
            MOVE    RECE10-FLG   (1)        TO  SKYMAIN-FLG   (1)
            MOVE    RECE10-FLG   (2)        TO  SKYMAIN-FLG   (2)
            MOVE    RECE10-FLG   (3)        TO  SKYMAIN-FLG   (3)
@@ -315,6 +324,11 @@
            MOVE    SKYMAIN-TOKKI (3)       TO  RECE10-TOKKI (3)
            MOVE    SKYMAIN-TOKKI (4)       TO  RECE10-TOKKI (4)
            MOVE    SKYMAIN-TOKKI (5)       TO  RECE10-TOKKI (5)
+           MOVE    SKYMAIN-TOKKINM (1)     TO  RECE10-TOKKINM (1)
+           MOVE    SKYMAIN-TOKKINM (2)     TO  RECE10-TOKKINM (2)
+           MOVE    SKYMAIN-TOKKINM (3)     TO  RECE10-TOKKINM (3)
+           MOVE    SKYMAIN-TOKKINM (4)     TO  RECE10-TOKKINM (4)
+           MOVE    SKYMAIN-TOKKINM (5)     TO  RECE10-TOKKINM (5)
            MOVE    SKYMAIN-FLG   (1)       TO  RECE10-FLG   (1)
            MOVE    SKYMAIN-FLG   (2)       TO  RECE10-FLG   (2)
            MOVE    SKYMAIN-FLG   (3)       TO  RECE10-FLG   (3)

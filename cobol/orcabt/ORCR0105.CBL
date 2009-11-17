@@ -76,6 +76,8 @@
       *  04.05.03    NACL-Æ£¸¶    09/09/18  ¡ÖÊ¿À®£²£±Ç¯ÂæÉ÷Âè£¹¹æ¡×ÂÐ±þ
       *                                     Ê¼¸Ë¸©¡¦²¬»³¸©
       *                                     £²£°£°£¹Ç¯£¸·î¡Á£²£°£±£°Ç¯£±·îÂÐ¾Ý 
+      *  04.05.04    NACL-Æ£¸¶    09/11/13  ÆÃµ­»ö¹à¾È²ñÂÐ±þ
+      *                                     ÆÃµ­»ö¹àÎ¬¾ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -292,6 +294,7 @@
            03  IDXX                PIC 9(03).
            03  IDWW                PIC 9(03).
            03  IDXY                PIC 9(03).
+           03  IDXZ                PIC 9(03).
            03  IDZZ                PIC 9(03).
       *
            03  IDA                 PIC 9(04).
@@ -407,7 +410,13 @@
            03  WRK-SUM-TENSU       PIC 9(08).
       *
            03  WRK-TOKKI           PIC X(02).
-           03  WRK-TOKKI-X         PIC X(04).
+           03  WRK-TOKKI-X         PIC X(12).
+           03  WRK-TOKKINM         PIC X(12).
+           03  WRK-TOKKI-AREA.
+               05  WRK-TOKKI-OCC   OCCURS  10. 
+                   07  WRK-TOKKI-O PIC X(02).
+                   07  WRK-TOKKINM-O
+                                   PIC X(12).
       *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
@@ -8037,11 +8046,21 @@
                                        TO  RECE10-SHOKUJIFTNKBN
       *
       *    ÆÃµ­»ö¹à
+           INITIALIZE                  WRK-TOKKI-AREA
+      *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX                 >   5     )
                    OR    ( RECE02-TOKKI (IDX)  =   SPACE )
                MOVE    SPACE               TO  WRK-TOKKI-X
                MOVE    RECE02-TOKKI (IDX)  TO  WRK-TOKKI
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL ( IDY             >   TBL-TOKKI-MAX  )
+                   IF      RECE02-TOKKI(IDX)   =   TBL-TOKKICD(IDY)
+                       MOVE    TBL-TOKKINAME(IDY)
+                                                TO  WRK-TOKKINM
+                       MOVE    TBL-TOKKI-MAX    TO  IDY
+                   END-IF
+               END-PERFORM
                PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
            END-PERFORM
       *
@@ -8054,6 +8073,7 @@
                    MOVE    RECE02-PTTOKKI-NAIYO (IDX) 
                                                TO  WRK-TOKKI-X
                    MOVE    SPACE               TO  WRK-TOKKI
+                                                   WRK-TOKKINM
                    PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                END-PERFORM
                PERFORM VARYING IDX     FROM    1   BY  1
@@ -8061,6 +8081,7 @@
                        OR      RECE02-PTTOKKI-CD (IDX)
                                                =   SPACE
                    MOVE    SPACE               TO  WRK-TOKKI-X
+                                                   WRK-TOKKINM
                    MOVE    RECE02-PTTOKKI-CD (IDX) 
                                                TO  WRK-TOKKI
                    PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
@@ -8076,6 +8097,7 @@
                        MOVE    RECE02-2006-TOKKI (IDX) 
                                                    TO  WRK-TOKKI-X
                        MOVE    SPACE               TO  WRK-TOKKI
+                                                       WRK-TOKKINM
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
@@ -8087,6 +8109,7 @@
                    IF      RECE02-2006-RECEDEN-TOKKI (IDX)
                                            NOT =   SPACE
                        MOVE    SPACE               TO  WRK-TOKKI-X
+                                                       WRK-TOKKINM
                        MOVE    RECE02-2006-RECEDEN-TOKKI (IDX) 
                                                    TO  WRK-TOKKI
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
@@ -8103,6 +8126,7 @@
                        MOVE    RECE11-HC06-TOKKI (IDX)
                                                    TO  WRK-TOKKI-X
                        MOVE    SPACE               TO  WRK-TOKKI
+                                                       WRK-TOKKINM
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
@@ -8111,11 +8135,39 @@
                    IF      RECE11-TOKKI (IDX)
                                            NOT =   SPACE
                        MOVE    SPACE               TO  WRK-TOKKI-X
+                                                       WRK-TOKKINM
                        MOVE    RECE11-TOKKI (IDX)  TO  WRK-TOKKI
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *    ÆÃµ­»ö¹à¥³¡¼¥É¤Î¤¢¤ëÆÃµ­»ö¹à¤«¤éÊÔ½¸¤¹¤ë
+           MOVE    ZERO            TO  IDY
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+                   OR      WRK-TOKKI-OCC (IDX)
+                                   =   SPACE
+                   OR      IDY     =   5
+               IF      WRK-TOKKI-O (IDX)
+                                   NOT =   SPACE
+                   ADD     1                   TO  IDY
+                   MOVE    WRK-TOKKI-O   (IDX) TO  RECE10-TOKKI   (IDY)
+                   MOVE    WRK-TOKKINM-O (IDX) TO  RECE10-TOKKINM (IDY)
+               END-IF
+           END-PERFORM
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+                   OR      WRK-TOKKI-OCC (IDX)
+                                   =   SPACE
+                   OR      IDY     =   5
+               IF      WRK-TOKKI-O (IDX)
+                                       =   SPACE
+                   ADD     1                   TO  IDY
+                   MOVE    WRK-TOKKI-O   (IDX) TO  RECE10-TOKKI   (IDY)
+                   MOVE    WRK-TOKKINM-O (IDX) TO  RECE10-TOKKINM (IDY)
+               END-IF
+           END-PERFORM
       *
       *    µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
            IF    ( RECE02-PREFNUM      =   "03"    OR  "04" )
@@ -8183,7 +8235,7 @@
       *****************************************************************
        39041-RECE10-TOKKI-HENSYU-SEC        SECTION.
       *
-      *    Á´³Ñ¿ô»ú¤Î¤È¤­È¾³Ñ¿ô»ú¤ËÊÑ´¹ 
+      *    Á´³Ñ¿ô»ú¤Î¤È¤­È¾³Ñ¿ô»ú¤ËÊÑ´¹¡¢»Ä¤ê¤ÏÌ¾¾Î¤Ë¥»¥Ã¥È
            IF      WRK-TOKKI-X     NOT =   SPACE    
                MOVE    ZERO                TO  IDXY
                INITIALIZE                      ORCSKANACHKAREA
@@ -8192,6 +8244,7 @@
                CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
                IF    ( KANACHK-RC          =   ZERO )
                AND   ( KANACHK-SYUBETU     =   "2"  )
+                   MOVE    WRK-TOKKI-X         TO  WRK-TOKKINM
                    PERFORM VARYING IDY     FROM    1   BY  2
                            UNTIL   IDY     >       4
                            OR      WRK-TOKKI-X (IDY:2)
@@ -8200,24 +8253,45 @@
                                UNTIL   IDXX    >       10
                            IF      WRK-TOKKI-X (IDY:2)
                                                =   TBL-SUUJI-X(IDXX)
-                               ADD     1               TO  IDXY
+                               ADD     1           TO  IDXY
                                MOVE    TBL-SUUJI-9(IDXX)
                                                    TO  WRK-TOKKI(IDXY:1)
+                               MOVE    SPACE       TO  WRK-TOKKINM
+                               COMPUTE IDXZ    =   IDY     +   2
+                               MOVE    WRK-TOKKI-X (IDXZ:)
+                                                   TO  WRK-TOKKINM
                            END-IF
                        END-PERFORM
                    END-PERFORM
                END-IF
            END-IF
       *    
-           IF      WRK-TOKKI        NOT =   SPACE
+           IF    ( WRK-TOKKI       NOT =   SPACE )
+           OR    ( WRK-TOKKINM     NOT =   SPACE )
                PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       5
-                   IF      RECE10-TOKKI (IDY)
-                                       =   SPACE
-                       MOVE    WRK-TOKKI   TO  RECE10-TOKKI (IDY)
+                       UNTIL   IDY     >       10
+                   IF    ( WRK-TOKKI-O (IDY)
+                                           =   SPACE )
+                   AND   ( WRK-TOKKINM-O (IDY)
+                                           =   SPACE )
+                       MOVE    WRK-TOKKI       TO  WRK-TOKKI-O   (IDY)
+                       MOVE    WRK-TOKKINM     TO  WRK-TOKKINM-O (IDY)
                    END-IF
-                   IF      WRK-TOKKI   =   RECE10-TOKKI (IDY)
-                       MOVE    5           TO  IDY
+                   IF    ( WRK-TOKKI       NOT =   SPACE )
+                   AND   ( WRK-TOKKINM     NOT =   SPACE )
+                       IF    ( WRK-TOKKI       =   WRK-TOKKI-O   (IDY) )
+                           MOVE    10              TO  IDY
+                       END-IF
+                   ELSE
+                       IF      WRK-TOKKI   NOT =   SPACE
+                           IF      WRK-TOKKI   =   WRK-TOKKI-O (IDY)
+                               MOVE    10              TO  IDY
+                           END-IF
+                       ELSE
+                           IF      WRK-TOKKINM =   WRK-TOKKINM-O (IDY)
+                               MOVE    10              TO  IDY
+                           END-IF
+                       END-IF
                    END-IF
                END-PERFORM      
            END-IF    
