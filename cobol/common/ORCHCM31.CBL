@@ -48,8 +48,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    帳票
-           COPY    "HCM31G.INC".
-           COPY    "HCM31N.INC".
+           COPY    "HCM31GV02.INC" REPLACING   //HCM31GV02//
+                                   BY          //HCM31G//.
+           COPY    "HCM31NV02.INC" REPLACING   //HCM31NV02//
+                                   BY          //HCM31N//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -76,6 +78,8 @@
            03  IDX4                PIC 9(05).
            03  IDX-SRH             PIC 9(05).
            03  IDX-LINE            PIC 9(05).
+           03  IDX-TJNISSU         PIC 9(05).
+           03  IDX-DAY             PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -110,7 +114,8 @@
                05  WRK-HENSYU-OCC  OCCURS  2001.
                    07  WRK-HENSYU-KEY.
                        09  WRK-NYUGAIKBN  PIC X(01).
-                       09  WRK-HIDUKE PIC X(08).
+                       09  WRK-HIDUKE     PIC X(08).
+                       09  WRK-EDHIDUKE   PIC X(08).
                    07  WRK-TENSU      PIC S9(07).
                    07  WRK-HOKEN      PIC S9(11).
                    07  WRK-SYOKUJI    PIC S9(11).
@@ -138,6 +143,7 @@
            03  WRK-Z7              PIC Z,ZZZ,ZZZ.
            03  WRK-Z9              PIC ---,---,---.
            03  WRK-KINGAKU         PIC S9(11).
+           03  WRK-ZZZZ9           PIC ZZZZ9.
            03  WRK-ZZZZZZ9         PIC Z,ZZZ,ZZ9.
            03  WRK-ZZZZZZZZ9       PIC ---,---,--9.
            03  WRK-HOJOKBN         PIC X(01).
@@ -155,6 +161,17 @@
                                            PIC X(04).
                    07  SRH-COMB-HOJOKBNL   PIC X(01).
       *
+       01  TJNISSU-AREA.
+           03  TJNISSU-NYU         PIC 9(05).
+           03  TJNISSU-GAI         PIC 9(05).
+           03  TJNISSU-MAX         PIC 9(05).
+           03  TJNISSU-OCC         OCCURS  1000.
+               05  TJNISSU-NYUGAIKBN
+                                   PIC X(01).
+               05  TJNISSU-YMD     PIC X(08).
+               05  TJNISSU-GEN     PIC 9(01).
+               05  TJNISSU-HIT     PIC 9(01).
+      *
        01  KEY-AREA.
            03  KEY-NYUGAIKBN       PIC X(01).
       *
@@ -162,6 +179,7 @@
            03  CONST-HEN-MAX       PIC 9(05)   VALUE   2000.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE   30.
            03  CONST-SRH-COMB-MAX  PIC 9(03)   VALUE   100.
+           03  CONST-TJNISSU-MAX   PIC 9(05)   VALUE   1000.
       *----(03.04.01)--ADD-START---
            03  CONST-H190401       PIC X(08)   VALUE   "20070401".
       *----(03.04.01)--ADD-END-----
@@ -204,6 +222,9 @@
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    初診・再診取得サブ
+           COPY    "CPORCSS003.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -262,8 +283,15 @@
            INITIALIZE                  ORCHCM31-OT-AREA
            INITIALIZE                  SRH-AREA
            INITIALIZE                  KEY-AREA
+           INITIALIZE                  TJNISSU-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
+      *
+      *    初診／再診判定サブ初期処理
+           INITIALIZE                      SS003-AREA
+           MOVE    ZERO            TO      SS003-SYORIKBN
+           CALL    "ORCSS003"      USING   SS003-AREA
+                                           SPA-AREA
       *
       *    医療機関情報−基本情報読み込み
            PERFORM 900-SYS1001-READ-SEC
@@ -433,6 +461,42 @@
            MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           IF    ( ORCHCM31-KIKANKBN   =   "1" )
+               PERFORM VARYING IDX4    FROM    1   BY  1
+                       UNTIL ( IDX4    >   WRK-HEN-MAX )
+                   PERFORM 230-TAISYO-CHK-SEC
+                   IF    ( FLG-TAISYO  =   1 )
+                       PERFORM VARYING IDX-TJNISSU FROM    1   BY  1
+                               UNTIL ( IDX-TJNISSU >   TJNISSU-MAX )
+                           IF    ( TJNISSU-YMD (IDX-TJNISSU)
+                                       >=  WRK-HIDUKE (IDX4))
+                            AND  ( TJNISSU-YMD (IDX-TJNISSU)
+                                       <=  WRK-EDHIDUKE (IDX4))
+                               MOVE    1   TO  TJNISSU-HIT (IDX-TJNISSU)
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+      *
+               PERFORM VARYING IDX-TJNISSU FROM    1   BY  1
+                       UNTIL ( IDX-TJNISSU >   TJNISSU-MAX )
+      *
+                   IF    ( TJNISSU-HIT (IDX-TJNISSU)
+                                           =   1 )
+                    AND  ( TJNISSU-GEN (IDX-TJNISSU)
+                                           =   ZERO )
+                       IF    ( TJNISSU-NYUGAIKBN (IDX-TJNISSU)
+                                               =   "1" )
+                           COMPUTE TJNISSU-NYU =   TJNISSU-NYU +   1
+                       ELSE
+                           COMPUTE TJNISSU-GAI =   TJNISSU-GAI +   1
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-IF
+      *
            .
        210-HENSYU-EXT.
            EXIT.
@@ -470,6 +534,11 @@
                                        WRK-FTNMONEY
                                        WRK-SKJMONEY
                                        WRK-JIHIMONEY
+      *
+           IF    ( SYU-SRYYMD >=   ORCHCM31-STRSRYYMD )
+            AND  ( SYU-SRYYMD <=   ORCHCM31-ENDSRYYMD )
+               PERFORM 2101-TJNISSU-HEN-SEC
+           END-IF
       *
            IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
       *
@@ -541,9 +610,17 @@
                     OR   ( IDX2    NOT =   ZERO )
       *
                IF    ( SYU-NYUGAIKBN
-                                   =   WRK-NYUGAIKBN(IDX1) )
-                AND  ( SYU-SRYYMD  =   WRK-HIDUKE (IDX1) )
-                   MOVE    IDX1    TO  IDX2
+                                   =   "1" )
+                   IF    ( SYU-NYUGAIKBN   =   WRK-NYUGAIKBN(IDX1) )
+                    AND  ( SYU-SKYSTYMD    =   WRK-HIDUKE (IDX1) )
+                    AND  ( SYU-SKYEDYMD    =   WRK-EDHIDUKE (IDX1) )
+                       MOVE    IDX1    TO  IDX2
+                   END-IF
+               ELSE
+                   IF    ( SYU-NYUGAIKBN   =   WRK-NYUGAIKBN(IDX1) )
+                    AND  ( SYU-SRYYMD      =   WRK-HIDUKE (IDX1) )
+                       MOVE    IDX1    TO  IDX2
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -558,7 +635,13 @@
                MOVE    WRK-HEN-MAX TO  IDX2
       *
                MOVE    SYU-NYUGAIKBN   TO  WRK-NYUGAIKBN (IDX2)
-               MOVE    SYU-SRYYMD      TO  WRK-HIDUKE (IDX2)
+               IF    ( SYU-NYUGAIKBN   =   "1" )
+                   MOVE    SYU-SKYSTYMD    TO  WRK-HIDUKE (IDX2)
+                   MOVE    SYU-SKYEDYMD    TO  WRK-EDHIDUKE (IDX2)
+               ELSE
+                   MOVE    SYU-SRYYMD      TO  WRK-HIDUKE (IDX2)
+                                               WRK-EDHIDUKE (IDX2)
+               END-IF
       *
            END-IF
       *
@@ -619,6 +702,61 @@
       *
            .
        2101-SRYKIKAN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    実日数編集処理
+      *****************************************************************
+       2101-TJNISSU-HEN-SEC            SECTION.
+      *
+           INITIALIZE                          SS003-AREA
+           MOVE    "1"                 TO      SS003-SYORIKBN
+           MOVE    SYU-HOSPNUM         TO      SS003-HOSPNUM
+           MOVE    SYU-NYUGAIKBN       TO      SS003-NYUGAIKBN
+           MOVE    SYU-PTID            TO      SS003-PTID
+           MOVE    SYU-DENPNUM         TO      SS003-DENPNUM
+           CALL    "ORCSS003"          USING   SS003-AREA
+                                               SPA-AREA
+      *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+             IF    ( SS003-JNISSU-YMD (IDX-DAY)
+                                   NOT =   SPACE )
+                 PERFORM VARYING IDX-TJNISSU FROM    1   BY  1
+                         UNTIL ( IDX-TJNISSU >   CONST-TJNISSU-MAX )
+                     IF    ( TJNISSU-YMD (IDX-TJNISSU)
+                                       =   SPACE )
+                         MOVE    IDX-TJNISSU
+                                   TO  TJNISSU-MAX
+                         MOVE    SS003-NYUGAIKBN
+                                   TO  TJNISSU-NYUGAIKBN (IDX-TJNISSU)
+                         MOVE    SS003-JNISSU-YMD (IDX-DAY)
+                                   TO  TJNISSU-YMD (IDX-TJNISSU)
+                         MOVE    SS003-JNISSU-GEN(IDX-DAY)
+                                   TO  TJNISSU-GEN (IDX-TJNISSU)
+                         MOVE    CONST-TJNISSU-MAX
+                                   TO  IDX-TJNISSU
+                     ELSE
+                         IF    ( TJNISSU-NYUGAIKBN (IDX-TJNISSU)
+                                       =   SS003-NYUGAIKBN )
+                          AND  ( TJNISSU-YMD (IDX-TJNISSU)
+                                       =   SS003-JNISSU-YMD (IDX-DAY))
+                           IF  ( SS003-JNISSU-GEN (IDX-DAY)
+                                       NOT =   ZERO )
+                               MOVE    SS003-JNISSU-GEN(IDX-DAY)
+                                       TO  TJNISSU-GEN (IDX-TJNISSU)
+                           END-IF
+                           MOVE    CONST-TJNISSU-MAX
+                                       TO  IDX-TJNISSU
+                         END-IF
+                     END-IF
+                 END-PERFORM
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       2101-TJNISSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ情報取得処理
@@ -846,6 +984,15 @@
                MOVE    "支払日"        TO  HCM31N-LABELYMD
            ELSE
                MOVE    "診療日"        TO  HCM31N-LABELYMD
+               MOVE    "実日数"        TO  HCM31N-LBLJNISSU1
+               MOVE    "日"            TO  HCM31N-LBLJNISSU2
+               IF    ( KEY-NYUGAIKBN   =   "1" )
+                   MOVE    TJNISSU-NYU TO  WRK-ZZZZ9
+                   MOVE    WRK-ZZZZ9   TO  HCM31N-JNISSU
+               ELSE
+                   MOVE    TJNISSU-GAI TO  WRK-ZZZZ9
+                   MOVE    WRK-ZZZZ9   TO  HCM31N-JNISSU
+               END-IF
            END-IF
       *
            .
@@ -863,18 +1010,20 @@
            END-IF
       *
       *    日付
-           MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           IF    ( ORCHCM31-SUMKBN     =   "1" )
-               MOVE    WRK-HENYMDG(1:10)
-                                       TO  HCM31N-SRYYY(CNT-LINE)
-               STRING  "　　"              DELIMITED   BY  SIZE
-                       WRK-HENYMDG(11:)    DELIMITED   BY  SIZE
-               INTO    HCM31N-SRYMMDD(CNT-LINE)
-               END-STRING
+           IF    ( ORCHCM31-KIKANKBN       =   "1" )
+            AND  ( WRK-NYUGAIKBN(IDX4)     =   "1" )
+               MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  HCM31N-SKYSTYMD(CNT-LINE)
+               MOVE    "〜"                TO  HCM31N-SKYEDYMD(CNT-LINE)
+               MOVE    WRK-EDHIDUKE(IDX4)  TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG TO  HCM31N-SKYEDYMD(CNT-LINE)(3:)
            ELSE
-               MOVE    WRK-HENYMDG(11:12)
-                                       TO  HCM31N-SRYYMD(CNT-LINE)
+               MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG(1:10)   TO  HCM31N-SRYYY2 (CNT-LINE)
+               MOVE    WRK-HENYMDG(11:)    TO  HCM31N-SRYYMD2(CNT-LINE)
            END-IF
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
@@ -982,11 +1131,11 @@
        250-PRINT-SEC                   SECTION.
       *
            IF    ( KEY-NYUGAIKBN       =   "1" )
-               MOVE    "HCM31N.red"    TO  SPRT-PRTID
+               MOVE    "HCM31NV02.red" TO  SPRT-PRTID
                MOVE    HCM31N          TO  SPRT-PRTDATA
            ELSE
                PERFORM 2501-HCM31G-HEN-SEC
-               MOVE    "HCM31G.red"    TO  SPRT-PRTID
+               MOVE    "HCM31GV02.red" TO  SPRT-PRTID
                MOVE    HCM31G          TO  SPRT-PRTDATA
            END-IF
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -1019,16 +1168,17 @@
            MOVE    HCM31N-HAKKOYMD     TO  HCM31G-HAKKOYMD
            MOVE    HCM31N-PAGE         TO  HCM31G-PAGE
            MOVE    HCM31N-LABELYMD     TO  HCM31G-LABELYMD
+           MOVE    HCM31N-LBLJNISSU1   TO  HCM31G-LBLJNISSU1
+           MOVE    HCM31N-LBLJNISSU2   TO  HCM31G-LBLJNISSU2
+           MOVE    HCM31N-JNISSU       TO  HCM31G-JNISSU
       *
            PERFORM VARYING IDX-LINE    FROM    1   BY  1
                    UNTIL ( IDX-LINE    >   CONST-LINE-MAX )
       *
-                MOVE    HCM31N-SRYYMD   (IDX-LINE)
-                                       TO  HCM31G-SRYYMD   (IDX-LINE)
-                MOVE    HCM31N-SRYYY   (IDX-LINE)
-                                       TO  HCM31G-SRYYY    (IDX-LINE)
-                MOVE    HCM31N-SRYMMDD (IDX-LINE)
-                                       TO  HCM31G-SRYMMDD  (IDX-LINE)
+                MOVE    HCM31N-SRYYY2 (IDX-LINE)
+                                       TO  HCM31G-SRYYY2   (IDX-LINE)
+                MOVE    HCM31N-SRYYMD2 (IDX-LINE)
+                                       TO  HCM31G-SRYYMD2  (IDX-LINE)
                 MOVE    HCM31N-HKNTEN   (IDX-LINE)
                                        TO  HCM31G-HKNTEN   (IDX-LINE)
                 MOVE    HCM31N-TEN      (IDX-LINE)

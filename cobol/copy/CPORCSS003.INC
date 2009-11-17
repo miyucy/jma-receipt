@@ -37,3 +37,6 @@
                 05  SS003-JIKANGAI-KBN     PIC X(01).
                 05  SS003-SRYCD-KAISU      PIC 9(05)
                                            OCCURS   20.
+                05  SS003-JNISSU-OCC       OCCURS   31.
+                    07  SS003-JNISSU-YMD   PIC X(08).
+                    07  SS003-JNISSU-GEN   PIC 9(01).

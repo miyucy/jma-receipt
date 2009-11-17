@@ -43,9 +43,11 @@
       *
       *    フラグ領域
        01  FLG-AREA.
+           03  FLG-SYUNOU                      PIC 9(01).
            03  FLG-JYURRK                      PIC 9(01).
            03  FLG-SRYACCT                     PIC 9(01).
            03  FLG-SRYACT                      PIC 9(01).
+           03  FLG-PTNYUINRRK                  PIC 9(01).
            03  FLG-TENSU                       PIC 9(01).
            03  FLG-END                         PIC 9(01).
       *
@@ -58,17 +60,18 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SYOSAISIN-KBN               PIC X(01).
-           03  WRK-JNISSUGEN-KBN               PIC X(01).
-           03  WRK-JIKANGAI-KBN                PIC X(01).
            03  WRK-SRYYMD.
                05  WRK-SRYYM                   PIC X(06).
                05  WRK-SRYDAY                  PIC 9(02).
-      *
+           03  WRK-JNISSU-KBN-G.
+               05  WRK-SYOSAISIN-KBN           PIC X(01).
+               05  WRK-JNISSUGEN-KBN           PIC X(01).
+               05  WRK-JIKANGAI-KBN            PIC X(01).
       *
        01  CONST-AREA.
-           03  CONST-ZAINUM-MAX                PIC 9(05)   VALUE 15.
-           03  CONST-SRYCD-MAX                 PIC 9(05)   VALUE 5.
+           03  CONST-ZAINUM-MAX            PIC 9(05)   VALUE 15.
+           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
+           03  CONST-H180401               PIC X(08)   VALUE "20060401".
       *
       *
            COPY    "CPTTNS.INC".
@@ -77,6 +80,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *    診療会計
        01  SRYACCT-REC.
@@ -90,14 +96,22 @@
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
+      *    収納
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
+      *
       *    点数マスタ−
            COPY    "CPTENSU.INC".
-      *
-      *
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    入院会計作成パラ
+           COPY    "CPORCHCM34S01.INC".
+      *
+      *    入院請求期間取得サブ
+           COPY    "CPORCSS006.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -149,10 +163,6 @@
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
-           INITIALIZE                  WRK-SYOSAISIN-KBN
-                                       WRK-JNISSUGEN-KBN
-                                       WRK-JIKANGAI-KBN
-      *
            MOVE    ZERO            TO  FLG-END
       *
            .
@@ -166,19 +176,52 @@
            IF    ( SS003-SYORIKBN  =   ZERO )
                INITIALIZE              TTNS-AREA
            ELSE
-               PERFORM 2001-JYURRK-CHK-SEC
-               MOVE    WRK-SYOSAISIN-KBN
-                                   TO  SS003-SYOSAISIN-KBN
-               MOVE    WRK-JNISSUGEN-KBN
-                                   TO  SS003-JNISSUGEN-KBN
-               MOVE    WRK-JIKANGAI-KBN
-                                   TO  SS003-JIKANGAI-KBN
+               IF    ( SS003-NYUGAIKBN =   "1" )
+                   PERFORM 2001-SYUNOU-CHK-SEC
+               ELSE
+                   PERFORM 2001-JYURRK-CHK-SEC
+                   MOVE    WRK-SYOSAISIN-KBN   TO  SS003-SYOSAISIN-KBN
+                   MOVE    WRK-JNISSUGEN-KBN   TO  SS003-JNISSUGEN-KBN
+                   MOVE    WRK-JIKANGAI-KBN    TO  SS003-JIKANGAI-KBN
+               END-IF
            END-IF
       *
            .
        200-MAIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    収納チェック処理
+      *****************************************************************
+       2001-SYUNOU-CHK-SEC             SECTION.
+      *
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+           PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+      *
+           INITIALIZE                      SS006-AREA
+           MOVE    SYU-SKYSTYMD        TO  SS006-SKYSTYMD
+           MOVE    SYU-SKYEDYMD        TO  SS006-SKYEDYMD
+           IF    ( SYU-CREATEKBN       =   "1" )
+               IF    ( SYU-SKYEDYMD    =   PTNYUINRRK-TAIINYMD )
+                   MOVE    "1"         TO  SS006-SKYKBN
+               ELSE
+                   MOVE    "2"         TO  SS006-SKYKBN
+               END-IF
+           ELSE
+               MOVE    SYU-CREATEKBN   TO  SS006-SKYKBN
+           END-IF
+           CALL    "ORCSS006"              USING
+                                           SS006-AREA
+                                           SPA-AREA
+      *
+           PERFORM 2002-SRYACCT-CHK-SEC
+      *
+           PERFORM 2002-NYUINACCT-CHK-SEC
+      *
+           .
+       2001-SYUNOU-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    受診履歴チェック処理
       *****************************************************************
@@ -270,6 +313,142 @@
                INITIALIZE                  SRYACCT-REC
            END-IF
       *
+           PERFORM 20011-SRYACCT-CHK-SEC
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key31"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF    ( WRK-SYOSAISIN-KBN NOT =   SPACE )
+               MOVE    WRK-SRYYMD  TO  SS003-JNISSU-YMD
+                                                (WRK-SRYDAY)
+           END-IF
+           IF    ( WRK-JNISSUGEN-KBN NOT =   SPACE )
+               MOVE    WRK-SRYYMD  TO  SS003-JNISSU-YMD
+                                                (WRK-SRYDAY)
+               MOVE    1           TO  SS003-JNISSU-GEN
+                                                (WRK-SRYDAY)
+           END-IF
+      *
+           .
+       2001-SRYACCT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計チェック処理
+      *****************************************************************
+       2002-SRYACCT-CHK-SEC            SECTION.
+      *
+           PERFORM 900-SRYACCT-KEY22-SEL-SEC
+      *
+           MOVE    ACCT-SRYYM          TO  WRK-SRYYM
+           PERFORM VARYING WRK-SRYDAY  FROM    1   BY  1
+                   UNTIL ( WRK-SRYDAY  >   31 )
+      *
+               MOVE    1               TO  IDX-KAISU
+      *
+               IF    ( WRK-SRYYMD      >=  SYU-SKYSTYMD )
+                AND  ( WRK-SRYYMD      <=  SYU-SKYEDYMD )
+                   IF    ( SS006-DOJITUFLG-ST  =   "1" )
+                    AND  ( WRK-SRYYMD          =   SYU-SKYSTYMD )
+                       CONTINUE
+                   ELSE
+                       PERFORM 20011-SRYACCT-CHK-SEC
+                       IF    ( WRK-SYOSAISIN-KBN NOT =   SPACE )
+                           MOVE    WRK-SRYYMD  TO  SS003-JNISSU-YMD
+                                                            (WRK-SRYDAY)
+                       END-IF
+                       IF    ( WRK-JNISSUGEN-KBN NOT =   SPACE )
+                           MOVE    WRK-SRYYMD  TO  SS003-JNISSU-YMD
+                                                            (WRK-SRYDAY)
+                           MOVE    1           TO  SS003-JNISSU-GEN
+                                                            (WRK-SRYDAY)
+                       END-IF
+                       IF    ( ACCT-ZAITEN    NOT =    ZERO)
+                        AND  ( ACCT-ZAIKAISU  NOT =    ZERO)
+                            IF   ACCT-SRYKBN  =   "95" OR  "96"
+                                CONTINUE
+                            ELSE
+                                MOVE    WRK-SRYYMD
+                                               TO SS003-JNISSU-YMD
+                                                            (WRK-SRYDAY)
+                            END-IF
+                       END-IF
+                       INITIALIZE          WRK-JNISSU-KBN-G
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-SRYACCT-KEY22-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key22"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       2002-SRYACCT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計チェック処理
+      *****************************************************************
+       2002-NYUINACCT-CHK-SEC          SECTION.
+      *
+           INITIALIZE                      HCM34S01-AREA
+           MOVE    SYU-HOSPNUM         TO  HCM34S01-HOSPNUM
+           MOVE    SYU-PTID            TO  HCM34S01-PTID
+           MOVE    SYU-SRYYMD(1:6)     TO  HCM34S01-SANTEIYM
+           MOVE    "1"                 TO  HCM34S01-KIKANKBN
+           MOVE    SYU-SKYSTYMD        TO  HCM34S01-SKYSTYMD
+           MOVE    SYU-SKYEDYMD        TO  HCM34S01-SKYEDYMD
+           IF    ( SYU-SKYSTYMD        <   CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ST  TO  HCM34S01-DOJITUFLG-ST
+               MOVE    SS006-TIMEKBN-ST    TO  HCM34S01-TIMEKBN-ST
+           END-IF
+           IF    ( SYU-SKYEDYMD        <  CONST-H180401 )
+               CONTINUE
+           ELSE
+               MOVE    SS006-DOJITUFLG-ED  TO  HCM34S01-DOJITUFLG-ED
+               MOVE    SS006-TIMEKBN-ED    TO  HCM34S01-TIMEKBN-ED
+           END-IF
+           MOVE    SYU-HKNCOMBINUM     TO  HCM34S01-HKNCOMBI
+           MOVE    SYU-SYUHKNNUM       TO  HCM34S01-HKNNUM
+      *
+           IF      SYU-SYUHKNNUM       =   "971"
+                                       OR  "973"
+               CALL    "ORCHCM34S02"       USING
+                                           HCM34S01-AREA
+                                           SPA-AREA
+           ELSE
+               CALL    "ORCHCM34S01"       USING
+                                           HCM34S01-AREA
+                                           SPA-AREA
+           END-IF
+           MOVE    SYU-SKYSTYMD        TO  WRK-SRYYM
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   HCM34S01-HENKYAKU-MAX )
+               IF    ( HCM34S01-ZAISKBKBN (IDX0)
+                                   =   "1" OR  "2" )
+                   PERFORM VARYING WRK-SRYDAY  FROM    1   BY  1
+                           UNTIL ( WRK-SRYDAY  >   31 )
+                       IF    ( HCM34S01-DAY (IDX0 WRK-SRYDAY)
+                                       >   ZERO )
+                           MOVE    WRK-SRYYMD
+                                       TO  SS003-JNISSU-YMD
+                                                    (WRK-SRYDAY)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       2002-NYUINACCT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計チェック処理
+      *****************************************************************
+       20011-SRYACCT-CHK-SEC            SECTION.
       *
            IF   (( ACCT-ZAITEN     NOT =   ZERO )
              AND ( ACCT-DAY (IDX-KAISU WRK-SRYDAY)
@@ -289,12 +468,9 @@
       *
            END-IF
       *
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key31"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       2001-SRYACCT-CHK-EXT.
+       20011-SRYACCT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療行為チェック処理
@@ -471,6 +647,13 @@
            DISPLAY "SS003-SRYCD-KAISU(5)= " 
                     SS003-SRYCD-KAISU(5)
       *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   31 )
+      *
+               DISPLAY IDX0 ":JYMD[" SS003-JNISSU-YMD(IDX0) "]"
+                            " JGEN[" SS003-JNISSU-GEN(IDX0) "]"
+           END-PERFORM
+      *
            .
        800-DISPLAY-EXT.
            EXIT.
@@ -560,6 +743,113 @@
       *
            .
        9001-TTNS-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスタ検索処理
+      *****************************************************************
+       900-SYUNOU-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SS003-HOSPNUM       TO  SYU-HOSPNUM
+           MOVE    SS003-PTID          TO  SYU-PTID
+           MOVE    SS003-NYUGAIKBN     TO  SYU-NYUGAIKBN
+           MOVE    SS003-DENPNUM       TO  SYU-DENPNUM
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYUNOU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者入院履歴検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SYU-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SYU-PTID            TO  PTNYUINRRK-PTID
+           MOVE    SYU-NYUIN-RRKNUM    TO  PTNYUINRRK-RRKNUM
+           MOVE    1                   TO  PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+                   INITIALIZE              PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTNYUINRRK-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計照会検索処理
+      *****************************************************************
+       900-SRYACCT-KEY22-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+      *
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SS003-HOSPNUM       TO  ACCT-HOSPNUM
+           MOVE    SS003-PTID          TO  ACCT-PTID
+           MOVE    SS003-NYUGAIKBN     TO  ACCT-NYUGAIKBN
+           MOVE    SYU-SKYSTYMD(1:6)   TO  ACCT-SRYYM
+           MOVE    SYU-HKNCOMBINUM     TO  ACCT-HKNCOMBI
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key22"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC        NOT =   ZERO )
+               MOVE    1               TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           END-IF
+      *
+           .
+       900-SRYACCT-KEY22-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計照会FETCH処理
+      *****************************************************************
+       900-SRYACCT-KEY22-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key22"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-SRYACCT
+           ELSE
+               INITIALIZE                  SRYACCT-REC
+               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+           END-IF
+      *
+           .
+       900-SRYACCT-KEY22-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
