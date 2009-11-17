@@ -6,6 +6,9 @@ I01	{
 		B08	{
 			state	int;
 		};
+		B10	{
+			state	int;
+		};
 		B12	{
 			state	int;
 		};

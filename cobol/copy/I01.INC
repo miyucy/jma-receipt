@@ -19,6 +19,7 @@
             03  I01-FIXED6.
               04  I01-B07-STT                      PIC S9(9)   BINARY.
               04  I01-B08-STT                      PIC S9(9)   BINARY.
+              04  I01-B10-STT                      PIC S9(9)   BINARY.
               04  I01-B12-STT                      PIC S9(9)   BINARY.
               04  I01-B05-STATE                    PIC S9(9)   BINARY.
               04  I01-B15-LABEL                    PIC X(10).
