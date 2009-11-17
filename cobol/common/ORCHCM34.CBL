@@ -72,8 +72,8 @@
          02  HCM34ACCT-DAT.
            COPY    "CPSRYACCT.INC"         REPLACING   //ACCT-//
                                            BY          //HCM34ACCT-//.
-           03  HCM34ACCT-RUIKEITOTAL               PIC 9(15)V9(05).
-           03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15)V9(05).
+           03  HCM34ACCT-RUIKEITOTAL               PIC 9(15).
+           03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15).
            03  HCM34ACCT-SRT-SRYCD                 PIC X(09).
            03  HCM34ACCT-SRT-SRYSYUKBN             PIC X(03).
            03  HCM34ACCT-SRT-SRYCOMMENT            PIC 9(01).
@@ -738,8 +738,8 @@
                                        INDEXED WKSRYACCT-IDX.
            COPY    "CPSRYACCT.INC"
                    REPLACING   //ACCT-//  BY //WKACCT-//.
-               03 WKACCT-RUIKEITOTAL      PIC 9(15)V9(05).
-               03 WKACCT-RUIKEITOTAL2     PIC 9(15)V9(05).
+               03 WKACCT-RUIKEITOTAL      PIC 9(15).
+               03 WKACCT-RUIKEITOTAL2     PIC 9(15).
                03 WKACCT-SRT-SRYCD        PIC X(09).
                03 WKACCT-SRT-SRYSYUKBN    PIC X(03).
                03 WKACCT-SRT-SRYCOMMENT   PIC 9(01).

@@ -60,16 +60,14 @@
                        17  SPA-GMN-W24-SKJSRYMEI       PIC X(26).
       *            ø©ªˆ∂Ë ¨
                    13  SPA-GMN-W24-SKJKBN-G.
-                     15  SPA-GMN-W24-SKJKBN-OCC        OCCURS  5.
-                       17  SPA-GMN-W24-SKJKBN          PIC X(01).
-                       17  SPA-GMN-W24-SKJKBNFL        PIC X(01).
-                       17  SPA-GMN-W24-SKJKBNMEI       PIC X(26).
+                       15  SPA-GMN-W24-SKJKBN          PIC X(01).
+                       15  SPA-GMN-W24-SKJKBNFL        PIC X(01).
+                       15  SPA-GMN-W24-SKJKBNMEI       PIC X(26).
       *            ¡™ƒÍ∆˛±°∂Ë ¨
                    13  SPA-GMN-W24-SENTEIKBN-G.
-                     15  SPA-GMN-W24-SENTEIKBN-OCC     OCCURS  5.
-                       17  SPA-GMN-W24-SENTEIKBN       PIC X(01).
-                       17  SPA-GMN-W24-SENTEIKBNFL     PIC X(01).
-                       17  SPA-GMN-W24-SENTEIKBNMEI    PIC X(26).
+                       15  SPA-GMN-W24-SENTEIKBN       PIC X(01).
+                       15  SPA-GMN-W24-SENTEIKBNFL     PIC X(01).
+                       15  SPA-GMN-W24-SENTEIKBNMEI    PIC X(26).
       *
       *          ººŒ¡∫π≥€æ√»Ò¿«∂Ë ¨
                  11  SPA-GMN-W24-BRMSGK-TAX-G.

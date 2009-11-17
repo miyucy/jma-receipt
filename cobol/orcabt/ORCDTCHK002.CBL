@@ -202,14 +202,6 @@
       *    データチェック共通コピー句
            COPY    "CPDTCHKCOMMON.INC".
       *
-       01  TKOHID-AREA2.
-           03  TKOHID-OCC2                             OCCURS 20.
-               05  TKOHID-KOHNUM                       PIC 9(10).
-      *
-       01  THKNID-AREA2.
-           03  THKNID-OCC2                             OCCURS 20.
-               05  THKNID-HKNNUM                       PIC 9(10).
-      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-DTCHK003                            PIC X(02).
@@ -788,7 +780,7 @@
                                                PIC X(02).
            03  CONST-NUM-G.
                05  CONST-NUM-VAL               PIC X(10)
-                                               VALUE   "01234567890".
+                                               VALUE   "0123456789".
                05  CONST-NUM-R         REDEFINES   CONST-NUM-VAL.
                    07  CONST-NUM               PIC X(01)   OCCURS    10.
                05  CONST-ZENNUM-VAL            PIC X(20)
@@ -1906,9 +1898,7 @@
        200111-TAIHI-AREA-INIT-SEC      SECTION.
       *
            INITIALIZE                  THKNID-AREA
-                                       THKNID-AREA2
                                        TKOHID-AREA
-                                       TKOHID-AREA2
                                        THKNCOMBI-AREA
                                        TNACCT-KKN-AREA
                                        TKHNRYO-HKNCOMBI-AREA
