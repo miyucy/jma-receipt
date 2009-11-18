@@ -1047,6 +1047,7 @@
            ELSE
       *        混在エラー
                MOVE    1               TO  KANACHK-RC
+               MOVE    WRK-KANACONV-MAXLEN TO  KANACHK-MAX
            END-IF
       *
            IF      WRK-KANACONV-OUTDATA    =   SPACE
@@ -1310,7 +1311,8 @@
                    GO  TO  431-EFFECT-SET-EXT
                END-IF
                IF      WRK-NAIYOU(1001:)   NOT =   SPACE
-                   MOVE    "0009"      TO  SPA-ERRCD
+                   COMPUTE IDX-KET    =   IDX-STR1 / 2
+                   MOVE    "0017"      TO  SPA-ERRCD
                    MOVE    5           TO  SPA-GMN-CUR
                    GO  TO  431-EFFECT-SET-EXT
                END-IF
@@ -1344,7 +1346,8 @@
                END-IF
       *        文字数オーバーチェック
                IF      WRK-NAIYOU(2001:)    NOT = SPACE
-                   MOVE    "0009"      TO  SPA-ERRCD
+                   COMPUTE IDX-KET    =   IDX-STR1 / 2
+                   MOVE    "0018"      TO  SPA-ERRCD
                    MOVE    9           TO  SPA-GMN-CUR
                    GO  TO  431-CAUTION-SET-EXT
                END-IF
@@ -1377,7 +1380,8 @@
                    GO  TO  431-COLOR-SET-EXT
                END-IF
                IF      WRK-NAIYOU(181:)    NOT = SPACE
-                   MOVE    "0009"      TO  SPA-ERRCD
+                   COMPUTE IDX-KET    =   IDX-STR1 / 2
+                   MOVE    "0019"      TO  SPA-ERRCD
                    MOVE    6           TO  SPA-GMN-CUR
                    GO  TO  431-COLOR-SET-EXT
                END-IF
@@ -1410,7 +1414,8 @@
                     GO  TO  431-SHAPE-SET-EXT
                END-IF
                IF      WRK-NAIYOU(181:)    NOT = SPACE
-                   MOVE    "0009"      TO  SPA-ERRCD
+                   COMPUTE IDX-KET    =   IDX-STR1 / 2
+                   MOVE    "0020"      TO  SPA-ERRCD
                    MOVE    7           TO  SPA-GMN-CUR
                    GO  TO  431-SHAPE-SET-EXT
                END-IF
@@ -1443,7 +1448,8 @@
                    GO  TO  431-MARK-SET-EXT
                END-IF
                IF      WRK-NAIYOU(181:)    NOT = SPACE
-                   MOVE    "0009"      TO  SPA-ERRCD
+                   COMPUTE IDX-KET    =   IDX-STR1 / 2
+                   MOVE    "0021"      TO  SPA-ERRCD
                    MOVE    8           TO  SPA-GMN-CUR
                    GO  TO  431-MARK-SET-EXT
                END-IF
@@ -2259,6 +2265,41 @@ grpsys     CALL    "ORCDBMAIN"         USING
                WHEN    "0016"
                    MOVE    "枠内に納まるよう編集して下さい"
                                            TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    SPACE           TO  SPA-ERRMSG
+                   STRING   "効能効果：文字数超過（" DELIMITED BY SIZE
+                            IDX-KET                  DELIMITED BY SIZE
+                            "/0500）"                DELIMITED BY SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0018"
+                   MOVE    SPACE           TO  SPA-ERRMSG
+                   STRING   "注意事項：文字数超過（" DELIMITED BY SIZE
+                            IDX-KET                  DELIMITED BY SIZE
+                            "/1000）"                DELIMITED BY SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0019"
+                   MOVE    SPACE           TO  SPA-ERRMSG
+                   STRING   "色：文字数超過（"       DELIMITED BY SIZE
+                            IDX-KET                  DELIMITED BY SIZE
+                            "/0090）"                DELIMITED BY SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0020"
+                   MOVE    SPACE           TO  SPA-ERRMSG
+                   STRING   "形：文字数超過（"       DELIMITED BY SIZE
+                            IDX-KET                  DELIMITED BY SIZE
+                            "/0090）"                DELIMITED BY SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0021"
+                   MOVE    SPACE           TO  SPA-ERRMSG
+                   STRING   "記号：文字数超過（"     DELIMITED BY SIZE
+                            IDX-KET                  DELIMITED BY SIZE
+                            "/0090）"                DELIMITED BY SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "登録できませんでした"
                                            TO  SPA-ERRMSG
