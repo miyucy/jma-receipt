@@ -263,6 +263,15 @@
        01  CONST-AREA.
            03  CONST-H200401                       PIC X(08)
                                                    VALUE   "20080401".
+           03  CONST-NUM-G.
+               05  CONST-NUM-VAL               PIC X(10)
+                                               VALUE   "0123456789".
+               05  CONST-NUM-R         REDEFINES   CONST-NUM-VAL.
+                   07  CONST-NUM               PIC X(01)   OCCURS    10.
+               05  CONST-ZENNUM-VAL            PIC X(20)
+                                       VALUE   "£°£±£²£³£´£µ£¶£·£¸£¹".
+               05  CONST-ZENNUM-R      REDEFINES   CONST-ZENNUM-VAL.
+                   07  CONST-ZENNUM            PIC X(02)   OCCURS    10.
            03  CONST-SEX-AREA.
                05  FILLER                          PIC X(10)
                    VALUE   "  ¤¹¤Ù¤Æ¡¡".
@@ -1177,73 +1186,73 @@
            MOVE    23              TO  SPA-GMN-Q01-TOKKIINFOLST-MAX
       *
            MOVE    "01"            TO  SPA-GMN-Q01-TOKKIINFOL    (01)
-           MOVE    "£°£±¸ø"        TO  SPA-GMN-Q01-TOKKIINFOMEIL (01)
+           MOVE    "¸ø"            TO  SPA-GMN-Q01-TOKKIINFOMEIL (01)
       *
            MOVE    "02"            TO  SPA-GMN-Q01-TOKKIINFOL    (02)
-           MOVE    "£°£²Ä¹"        TO  SPA-GMN-Q01-TOKKIINFOMEIL (02)
+           MOVE    "Ä¹"            TO  SPA-GMN-Q01-TOKKIINFOMEIL (02)
       *
            MOVE    "03"            TO  SPA-GMN-Q01-TOKKIINFOL    (03)
-           MOVE    "£°£³Ä¹½è"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (03)
+           MOVE    "Ä¹½è"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (03)
       *
            MOVE    "04"            TO  SPA-GMN-Q01-TOKKIINFOL    (04)
-           MOVE    "£°£´¸åÊÝ"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (04)
+           MOVE    "¸åÊÝ"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (04)
       *
            MOVE    "07"            TO  SPA-GMN-Q01-TOKKIINFOL    (05)
-           MOVE    "£°£·Ï·Ê»"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (05)
+           MOVE    "Ï·Ê»"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (05)
       *
            MOVE    "08"            TO  SPA-GMN-Q01-TOKKIINFOL    (06)
-           MOVE    "£°£¸Ï··ò"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (06)
+           MOVE    "Ï··ò"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (06)
       *
            MOVE    "09"            TO  SPA-GMN-Q01-TOKKIINFOL    (07)
-           MOVE    "£°£¹»Ü"        TO  SPA-GMN-Q01-TOKKIINFOMEIL (07)
+           MOVE    "»Ü"            TO  SPA-GMN-Q01-TOKKIINFOMEIL (07)
       *
            MOVE    "10"            TO  SPA-GMN-Q01-TOKKIINFOL    (08)
-           MOVE    "£±£°Âè»°"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (08)
+           MOVE    "Âè»°"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (08)
       *
            MOVE    "11"            TO  SPA-GMN-Q01-TOKKIINFOL    (09)
-           MOVE    "£±£±Ìô¼£"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (09)
+           MOVE    "Ìô¼£"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (09)
       *
            MOVE    "12"            TO  SPA-GMN-Q01-TOKKIINFOL    (10)
-           MOVE    "£±£²´ï¼£"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (10)
+           MOVE    "´ï¼£"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (10)
       *
            MOVE    "13"            TO  SPA-GMN-Q01-TOKKIINFOL    (11)
-           MOVE    "£±£³Àè¿Ê"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (11)
+           MOVE    "Àè¿Ê"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (11)
       *
            MOVE    "14"            TO  SPA-GMN-Q01-TOKKIINFOL    (12)
-           MOVE    "£±£´À©Ä¶"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (12)
+           MOVE    "À©Ä¶"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (12)
       *
            MOVE    "15"            TO  SPA-GMN-Q01-TOKKIINFOL    (13)
-           MOVE    "£±£µ·Ð²á"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (13)
+           MOVE    "·Ð²á"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (13)
       *
            MOVE    "16"            TO  SPA-GMN-Q01-TOKKIINFOL    (14)
-           MOVE    "£±£¶Ä¹£²"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (14)
+           MOVE    "Ä¹£²"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (14)
       *
            MOVE    "17"            TO  SPA-GMN-Q01-TOKKIINFOL    (15)
-           MOVE    "£±£·¾å°Ì"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (15)
+           MOVE    "¾å°Ì"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (15)
       *
            MOVE    "18"            TO  SPA-GMN-Q01-TOKKIINFOL    (16)
-           MOVE    "£±£¸°ìÈÌ"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (16)
+           MOVE    "°ìÈÌ"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (16)
       *
            MOVE    "19"            TO  SPA-GMN-Q01-TOKKIINFOL    (17)
-           MOVE    "£±£¹Äã½ê"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (17)
+           MOVE    "Äã½ê"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (17)
       *
            MOVE    "20"            TO  SPA-GMN-Q01-TOKKIINFOL    (18)
-           MOVE    "£²£°Æó³ä"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (18)
+           MOVE    "Æó³ä"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (18)
       *
            MOVE    "21"            TO  SPA-GMN-Q01-TOKKIINFOL    (19)
-           MOVE    "£²£±¹âÈ¾"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (19)
+           MOVE    "¹âÈ¾"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (19)
       *
            MOVE    "22"            TO  SPA-GMN-Q01-TOKKIINFOL    (20)
-           MOVE    "£²£²Â¿¾å"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (20)
+           MOVE    "Â¿¾å"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (20)
       *
            MOVE    "23"            TO  SPA-GMN-Q01-TOKKIINFOL    (21)
-           MOVE    "£²£³Â¿°ì"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (21)
+           MOVE    "Â¿°ì"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (21)
       *
            MOVE    "24"            TO  SPA-GMN-Q01-TOKKIINFOL    (22)
-           MOVE    "£²£´Â¿Äã"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (22)
+           MOVE    "Â¿Äã"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (22)
       *
            MOVE    "25"            TO  SPA-GMN-Q01-TOKKIINFOL    (23)
-           MOVE    "£²£µ½Ð»º"      TO  SPA-GMN-Q01-TOKKIINFOMEIL (23)
+           MOVE    "½Ð»º"          TO  SPA-GMN-Q01-TOKKIINFOMEIL (23)
       *
            .
        3101-TOKKIINFO-CMB-SYOKI-EXT.
@@ -3852,6 +3861,46 @@
            PERFORM 801-ZENKAKU-CHG-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-TOKKINAME
+      *
+           MOVE    SPACE           TO  WRK-TOKKICD
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   10 )
+               IF    ( SPA-GMN-Q01-TOKKINAME (1:2)
+                                   =   CONST-ZENNUM (IDX0))
+                   MOVE    CONST-NUM (IDX0)
+                                   TO  WRK-TOKKICD (1:1)
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   10 )
+               IF    ( SPA-GMN-Q01-TOKKINAME (3:2)
+                                   =   CONST-ZENNUM (IDX0))
+                   MOVE    CONST-NUM (IDX0)
+                                   TO  WRK-TOKKICD (2:1)
+               END-IF
+           END-PERFORM
+      *
+           EVALUATE    TRUE
+           WHEN   ( WRK-TOKKICD    IS  NUMERIC )
+               MOVE    WRK-TOKKICD TO  SPA-GMN-Q01-TOKKICD
+               MOVE    SPA-GMN-Q01-TOKKICD
+                                   TO  SPA-NAI-Q01-TOKKICD-BF
+               MOVE    SPA-GMN-Q01-TOKKINAME (5:)
+                                   TO  WRK-KANACHK-MAE-INPUT
+               MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  SPA-GMN-Q01-TOKKINAME
+           WHEN   ( WRK-TOKKICD (1:1)
+                                   IS  NUMERIC )
+               MOVE    "0"         TO  SPA-GMN-Q01-TOKKICD(1:1)
+               MOVE    WRK-TOKKICD TO  SPA-GMN-Q01-TOKKICD(2:1)
+               MOVE    SPA-GMN-Q01-TOKKICD
+                                   TO  SPA-NAI-Q01-TOKKICD-BF
+               MOVE    SPA-GMN-Q01-TOKKINAME (3:)
+                                   TO  WRK-KANACHK-MAE-INPUT
+               MOVE    WRK-KANACHK-MAE-INPUT
+                                   TO  SPA-GMN-Q01-TOKKINAME
+           END-EVALUATE
       *
            .
        4117-TOKKINAME-CHK-EXT.
@@ -6711,26 +6760,7 @@
       *
            MOVE    SPA-GMN-Q01-TOKKINAME   TO  QUERY-PTINF-DBSTR
            PERFORM 900-QPTINF-DBESCAPE-SEC
-           IF    ( QUERY-PTINF-DBSTR (1:2)
-                                           =   "£°" OR "£±" OR "£²"
-                                            OR "£³" OR "£´" OR "£µ"
-                                            OR "£¶" OR "£·" OR "£¸"
-                                            OR "£¹")
-               IF    ( QUERY-PTINF-DBSTR (3:2)
-                                           =   "£°" OR "£±" OR "£²"
-                                            OR "£³" OR "£´" OR "£µ"
-                                            OR "£¶" OR "£·" OR "£¸"
-                                            OR "£¹")
-                   MOVE    QUERY-PTINF-DBSTR(5:)
-                                           TO  SPA-Q01-TOKKINAME
-               ELSE
-                   MOVE    QUERY-PTINF-DBSTR(3:)
-                                           TO  SPA-Q01-TOKKINAME
-               END-IF
-           ELSE
-                   MOVE    QUERY-PTINF-DBSTR
-                                           TO  SPA-Q01-TOKKINAME
-           END-IF
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-TOKKINAME
       *
       *    ÊÝ¸±¡¡¸øÈñ
            IF    ( SPA-GMN-Q01-RDKOHNUM-AND    =   "T" )
@@ -9064,6 +9094,12 @@
            WHEN    SHKITEMID-EDTSYYM
                MOVE    SHODATA-ITEM    TO  Q01-EDTSYYM
                MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-TOKKICD
+               MOVE    SHODATA-ITEM    TO  Q01-TOKKICD
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-TOKKINAME
+               MOVE    SHODATA-ITEM    TO  Q01-TOKKINAME
+               MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-HONKZKKBN
                MOVE    SHODATA-ITEM    TO  Q01-HONKZKKBN
                MOVE    1               TO  FLG-PAGENO-01
@@ -9815,6 +9851,22 @@
                MOVE    SHKITEMID-EDTSYYM
                                    TO  SHODATA-ITEMID
                MOVE    SPA-NAI-Q01-EDTSYYM
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TOKKICD     NOT =   SPACE )
+               MOVE    SHKITEMID-TOKKICD
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TOKKICD
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-TOKKINAME   NOT =   SPACE )
+               MOVE    SHKITEMID-TOKKINAME
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-TOKKINAME
                                    TO  SHODATA-ITEM
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF
