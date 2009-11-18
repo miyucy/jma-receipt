@@ -133,11 +133,6 @@
                                13  SPA-GMN-Q01-JYUSHO
                                                        PIC X(50)
                                                        OCCURS  5.
-      *                    ¥«¥Ê»áÌ¾
-                           11  SPA-GMN-Q01-KANANAMETBL.
-                               13  SPA-GMN-Q01-KANANAME
-                                                       PIC X(50)
-                                                       OCCURS  5.
       *                    ´Á»ú»áÌ¾
                            11  SPA-GMN-Q01-NAMETBL.
                                13  SPA-GMN-Q01-NAME    PIC X(50)
@@ -215,6 +210,13 @@
                                13  SPA-GMN-Q01-STTSYSKBTMEI  PIC X(08).
       *                    Äã½êÆÀ½ªÎ»·î
                            11  SPA-GMN-Q01-EDTSYYM     PIC X(10).
+      *                    ÆÃµ­»ö¹à
+                           11  SPA-GMN-Q01-TOKKICD           PIC X(02).
+                           11  SPA-GMN-Q01-TOKKINAME         PIC X(12).
+                           11  SPA-GMN-Q01-TOKKIINFO-G.
+                               13  SPA-GMN-Q01-TOKKIINFO     PIC X(02).
+                               13  SPA-GMN-Q01-TOKKIINFOFL   PIC X(01).
+                               13  SPA-GMN-Q01-TOKKIINFOMEI  PIC X(30).
       *                ÊÝ¸±¡¡¸øÈñ
                        09  SPA-GMN-Q01-HOKEN-AREA.
                            11  SPA-GMN-Q01-HONKZKKBN-G.
@@ -422,6 +424,7 @@
                            11  SPA-NAI-Q01-EDLASTYMD   PIC X(08).
                            11  SPA-NAI-Q01-STTSYYM     PIC X(08).
                            11  SPA-NAI-Q01-EDTSYYM     PIC X(08).
+                           11  SPA-NAI-Q01-TOKKICD-BF  PIC X(02).
       *                ÊÝ¸±¡¡¸øÈñ
                        09  SPA-NAI-Q01-HOKEN-AREA.
                            11  SPA-NAI-Q01-HOKEN-DMY   PIC X(01).
@@ -517,6 +520,20 @@
                                13  SPA-GMN-Q01-TEL-TOL     PIC X(01).
                                13  SPA-GMN-Q01-TEL-TOFLL   PIC X(01).
                                13  SPA-GMN-Q01-TEL-TOMEIL  PIC X(18).
+                       09  SPA-GMN-Q01-TOKKILST-G.
+                           11  SPA-GMN-Q01-TOKKILST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-TOKKILST        OCCURS  50.
+                               13  SPA-GMN-Q01-TOKKIL      PIC X(02).
+                               13  SPA-GMN-Q01-TOKKIFLL    PIC X(01).
+                               13  SPA-GMN-Q01-TOKKIMEIL   PIC X(30).
+                       09  SPA-GMN-Q01-TOKKIINFOLST-G.
+                           11  SPA-GMN-Q01-TOKKIINFOLST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-TOKKIINFOLST      OCCURS  50.
+                               13  SPA-GMN-Q01-TOKKIINFOL    PIC X(02).
+                               13  SPA-GMN-Q01-TOKKIINFOFLL  PIC X(01).
+                               13  SPA-GMN-Q01-TOKKIINFOMEIL PIC X(30).
                        09  SPA-GMN-Q01-HONKZKKBNLST-G.
                            11  SPA-GMN-Q01-HONKZKKBNLST-MAX
                                                             PIC 9(05).
@@ -906,7 +923,7 @@
                05  SPA-Q01-Q02-SENI-AREA.
                    07  SPA-Q01-GAITO-TBL.
                        09  SPA-Q01-GTBL                PIC X(01)
-                                                       OCCURS  11.
+                                                       OCCURS  12.
                    07  SPA-Q01-AGE-CALC-KBN            PIC 9(01).
                    07  SPA-Q01-STSRYYMD                PIC X(08).
                    07  SPA-Q01-EDSRYYMD                PIC X(08).
@@ -928,9 +945,6 @@
                        09  SPA-Q01-CHKTSTPT            PIC X.
                        09  SPA-Q01-JYUSHO-G.
                            11  SPA-Q01-JYUSHO          PIC X(50)
-                                                       OCCURS  5.
-                       09  SPA-Q01-KANANAME-G.
-                           11  SPA-Q01-KANANAME        PIC X(50)
                                                        OCCURS  5.
                        09  SPA-Q01-NAME-G.
                            11  SPA-Q01-NAME            PIC X(50)
@@ -961,6 +975,9 @@
                            11  SPA-Q01-STTSYYM         PIC X(08).
                            11  SPA-Q01-STTSYSKBT       PIC X(01).
                            11  SPA-Q01-EDTSYYM         PIC X(08).
+                       09  SPA-Q01-TOKKI-G.
+                           11  SPA-Q01-TOKKICD         PIC X(02).
+                           11  SPA-Q01-TOKKINAME       PIC X(12).
       *            ÊÝ¸±¡¡¸øÈñ
                    07  SPA-Q01-HOKEN-AREA.
                        09  SPA-Q01-HONKZKKBN           PIC X(01).

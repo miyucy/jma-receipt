@@ -63,8 +63,6 @@
                     07  Q01-POST               PIC X(07)   OCCURS 5.
                   06  Q01-JYUSHO-TBL.
                     07  Q01-JYUSHO             PIC X(50)   OCCURS 5.
-                  06  Q01-KANANAME-TBL.
-                    07  Q01-KANANAME           PIC X(50)   OCCURS 5.
                   06  Q01-NAME-TBL.
                     07  Q01-NAME               PIC X(50)   OCCURS 5.
                   06  Q01-CMB-CONDITION1-TBL.
@@ -121,6 +119,12 @@
                   06  Q01-EDTSYYM                  PIC X(10).
                   06  Q01-EDTSYYM-STATE            PIC S9(9)   BINARY.
                   06  Q01-LBLTSY                   PIC X(02).
+                  06  Q01-TOKKICD                  PIC X(02).
+                  06  Q01-TOKKINAME                PIC X(12).
+                  06  Q01-CMB-TOKKIINFO.
+                    07  Q01-TOKKIINFO              PIC X(33).
+                    07  Q01-CMB-TOKKIINFO-COUNT    PIC S9(9) BINARY.
+                    07  Q01-CMB-TOKKIINFO-ITEM     PIC X(33) OCCURS 50.
                 05  Q01-FIXED17.
                   06  Q01-CMB-HONKZKKBN.
                     07  Q01-HONKZKKBN          PIC X(10).

@@ -122,21 +122,6 @@ Q01	{
 				JYUSHO5	{
 					value	varchar(50);
 				};
-				KANANAME1	{
-					value	varchar(50);
-				};
-				KANANAME2	{
-					value	varchar(50);
-				};
-				KANANAME3	{
-					value	varchar(50);
-				};
-				KANANAME4	{
-					value	varchar(50);
-				};
-				KANANAME5	{
-					value	varchar(50);
-				};
 				NAME1	{
 					value	varchar(50);
 				};
@@ -291,6 +276,19 @@ Q01	{
 				};
 				LBLTSY	{
 					value	varchar(02);
+				};
+				TOKKICD	{
+					value	varchar(02);
+				};
+				TOKKINAME	{
+					value	varchar(12);
+				};
+				CMB_TOKKIINFO{
+					TOKKIINFO{
+						value	varchar(33);
+					};
+					count	int;
+					item	varchar(33)[50];
 				};
 			};
 			fixed17	{
