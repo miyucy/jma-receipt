@@ -286,7 +286,7 @@
            END-IF
       *
       *    平成１８年４月改定対応（有床診療所入院基本料）
-           DISPLAY  "FLG-SINRYOJO-VAL-1804 = " FLG-SINRYOJO-VAL-1804
+      **     DISPLAY  "FLG-SINRYOJO-VAL-1804 = " FLG-SINRYOJO-VAL-1804
            IF   FLG-SINRYOJO-VAL-1804     =    1
                IF   SYOKIKSN-IN-KHNSRYCD  = "099999950"
                    MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD

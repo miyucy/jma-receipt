@@ -922,7 +922,7 @@
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
-           DISPLAY "SS010-RC = " SS010-RC
+      **     DISPLAY "SS010-RC = " SS010-RC
       *
            EXIT PROGRAM
       *
