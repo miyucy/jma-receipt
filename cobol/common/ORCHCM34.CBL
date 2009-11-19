@@ -3647,7 +3647,13 @@
                    MOVE    ACCT-ZAIKAISU   TO  WRK-ZAIKAISU
                    PERFORM 205-TENSUKAISU-HEN-SEC
                WHEN    "7"
-                   PERFORM 200111-JBI-RYOYO-TEATE-HEN-SEC
+                   IF    ( FLG-JIBAI           =   1 )
+                       PERFORM 200111-JBI-RYOYO-TEATE-HEN-SEC
+                   ELSE
+                       MOVE    ACCT-ZAITEN     TO  WRK-ZAITEN
+                       MOVE    ACCT-ZAIKAISU   TO  WRK-ZAIKAISU
+                       PERFORM 205-TENSUKAISU-HEN-SEC
+                   END-IF
                WHEN    "2"
                    PERFORM 200211-NISSU-HEN-SEC
                    MOVE    ACCT-ZAITEN     TO  WRK-ZAITEN
