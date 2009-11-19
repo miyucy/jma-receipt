@@ -434,6 +434,8 @@
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.03    NACL-門脇    09/08/17  小数点以下５桁対応
       *  04.05.04    NACL-門脇    09/09/24  レセプト記載しないコメント対応
+      *  04.05.05    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
+      *                                     まとめ記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -657,6 +659,7 @@
            03  IDX4                                    PIC 9(03).
            03  IDX8                                    PIC 9(02).
            03  IDXA                                    PIC 9(01).
+           03  IDXB                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
            03  IDYX                                    PIC 9(02).
            03  IDZX                                    PIC 9(02).
@@ -4647,6 +4650,13 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                                             OR "0086"       )
              OR     ( SRY-SRYCD(IDX2)       =  "099999903"
                                             OR "099999904"  )
+             OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                    "60" OR "64" OR "70" OR
+                                    "80"                   ) AND
+                     (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                     (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                     (ACCT-YKZTEN           =  ZERO        ) AND
+                     (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                   COMPUTE   RECE04-MEISAISU    =  RECE04-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -4688,6 +4698,13 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                                              OR "0086"       )
               OR     ( SRY-SRYCD(IDX2)       =  "099999903"
                                              OR "099999904"  )
+              OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
       *
                CONTINUE
       *
@@ -13516,7 +13533,12 @@ grpsys            (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
                   (FLG-REWRITE               =      1        )
                    IF    RECE05-RENNUM   =   WRK-RENNUM
                       MOVE    1              TO  FLG-REWRITE
-                      MOVE    WRK-SRYSURYO3  TO  RECE05-SRYSURYO(5)
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE05-SRYCD(IDXB)  NOT = SPACE
+                          MOVE WRK-SRYSURYO3 TO RECE05-SRYSURYO(IDXB)
+                        END-IF
+                      END-PERFORM
                       REWRITE   RECE05-REC
                    END-IF
                    READ    RECE05-FILE   NEXT
@@ -13580,7 +13602,12 @@ grpsys            (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
                   (FLG-REWRITE               =      1        )
                    IF    RECE05-RENNUM   =   WRK-RENNUM2
                       MOVE    1              TO  FLG-REWRITE
-                      MOVE   "1"             TO  RECE05-RECEPTFLG(5)
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE05-SRYCD(IDXB)  NOT = SPACE
+                          MOVE   "1"  TO   RECE05-RECEPTFLG(IDXB)
+                        END-IF
+                      END-PERFORM
                       REWRITE   RECE05-REC
                    END-IF
                    READ    RECE05-FILE   NEXT

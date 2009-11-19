@@ -58,6 +58,8 @@
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
       *  04.05.03    NACL-門脇    09/09/24  レセプト記載しないコメント対応
+      *  04.05.04    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
+      *                                     まとめ記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -202,6 +204,7 @@
            03  IDX3                                    PIC 9(03).
            03  IDX4                                    PIC 9(03).
            03  IDXA                                    PIC 9(01).
+           03  IDXB                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -1256,6 +1259,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             OR "0086"       )
              OR     ( SRY-SRYCD(IDX2)       =  "099999903"
                                             OR "099999904"  )
+             OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                    "60" OR "64" OR "70" OR
+                                    "80"                   ) AND
+                     (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                     (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                     (ACCT-JIHOKBN          =  SPACE       ) AND
+                     (ACCT-YKZTEN           =  ZERO        ) AND
+                     (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                   COMPUTE   RECE120-MEISAISU    =  RECE120-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -1279,6 +1290,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                              OR "0086"       )
               OR     ( SRY-SRYCD(IDX2)       =  "099999903"
                                              OR "099999904"  )
+              OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-JIHOKBN          =  SPACE       ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
       *
                CONTINUE
       *
@@ -3916,7 +3935,12 @@ grpsys         PERFORM 900-DBFETCH-SEC
                   (FLG-REWRITE              =      1         )
                    IF    RECE130-RENNUM   =   WRK-RENNUM
                       MOVE    1              TO  FLG-REWRITE
-                      MOVE    WRK-SRYSURYO3  TO  RECE130-SRYSURYO(5)
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE130-SRYCD(IDXB)  NOT = SPACE
+                          MOVE WRK-SRYSURYO3 TO RECE130-SRYSURYO(IDXB)
+                        END-IF
+                      END-PERFORM
                       REWRITE   RECE130-REC
                    END-IF
                    READ    RECE130-FILE   NEXT
@@ -3956,7 +3980,12 @@ grpsys         PERFORM 900-DBFETCH-SEC
                   (FLG-REWRITE              =      1         )
                    IF    RECE130-RENNUM   =   WRK-RENNUM2
                       MOVE    1              TO  FLG-REWRITE
-                      MOVE   "1"             TO  RECE130-RECEPTFLG(5)
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE130-SRYCD(IDXB)  NOT = SPACE
+                          MOVE   "1"  TO   RECE130-RECEPTFLG(IDXB)
+                        END-IF
+                      END-PERFORM
                       REWRITE   RECE130-REC
                    END-IF
                    READ    RECE130-FILE   NEXT

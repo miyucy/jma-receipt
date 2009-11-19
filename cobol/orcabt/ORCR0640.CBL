@@ -404,6 +404,8 @@
       *                                     （標準負担額のみの減額）
       *  04.05.04    NACL-門脇    09/08/17  小数点以下５桁対応
       *  04.05.05    NACL-門脇    09/09/24  レセプト記載しないコメント対応
+      *  04.05.06    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
+      *                                     まとめ記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -631,6 +633,7 @@
            03  IDX8                                    PIC 9(02).
            03  IDX9                                    PIC 9(02).
            03  IDXA                                    PIC 9(01).
+           03  IDXB                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
            03  IDYX                                    PIC 9(02).
            03  IDZX                                    PIC 9(02).
@@ -3128,6 +3131,13 @@
                     ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                     ( ACCT-SYUTEN1         =   ZERO       ) AND
                     ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+            OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                   "60" OR "64" OR "70" OR
+                                   "80"                   ) AND
+                    (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                    (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                    (ACCT-YKZTEN           =  ZERO        ) AND
+                    (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                   COMPUTE   RECE64-MEISAISU    =  RECE64-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -3189,6 +3199,13 @@
                       ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                       ( ACCT-SYUTEN1         =   ZERO       ) AND
                       ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+              OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
       *
                CONTINUE
       *
@@ -18436,7 +18453,12 @@
                   (FLG-REWRITE               =      1        )
                    IF    RECE65-RENNUM   =   WRK-RENNUM
                       MOVE    1              TO  FLG-REWRITE
-                      MOVE    WRK-SRYSURYO3  TO  RECE65-SRYSURYO(5)
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE65-SRYCD(IDXB)  NOT = SPACE
+                          MOVE WRK-SRYSURYO3 TO RECE65-SRYSURYO(IDXB)
+                        END-IF
+                      END-PERFORM
                       REWRITE   RECE65-REC
                    END-IF
                    READ    RECE65-FILE   NEXT
@@ -18502,7 +18524,12 @@
                   (FLG-REWRITE               =      1        )
                    IF    RECE65-RENNUM   =   WRK-RENNUM2
                       MOVE    1              TO  FLG-REWRITE
-                      MOVE   "1"             TO  RECE65-RECEPTFLG(5)
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE65-SRYCD(IDXB)  NOT = SPACE
+                          MOVE   "1"  TO   RECE65-RECEPTFLG(IDXB)
+                        END-IF
+                      END-PERFORM
                       REWRITE   RECE65-REC
                    END-IF
                    READ    RECE65-FILE   NEXT
