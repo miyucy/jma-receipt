@@ -10140,7 +10140,8 @@
            MOVE    WRK-TSUSAN      TO  SYOKIKSN-IN-TUSANNISSU
       *
       *    同日再入院
-           IF     FLG-JIINRRK    =     1
+           IF     (FLG-JIINRRK           =     1)   AND
+                  (PTNYUINRRK-SHOKAIKBN  =    "1")
                ADD   1             TO  SYOKIKSN-IN-TUSANNISSU
            END-IF
       *
