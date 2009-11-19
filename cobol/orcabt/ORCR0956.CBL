@@ -2103,6 +2103,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                            ELSE
                                MOVE    RECE87-SRYKBN  TO  HC29-SRYKBN
                                                            (WRK-LINETEK)
+                           END-IF
                        END-IF
                    END-IF
                END-IF
