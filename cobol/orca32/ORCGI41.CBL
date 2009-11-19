@@ -237,6 +237,10 @@
                05  WRK-MATSUYY     PIC 9(04).
                05  WRK-MATSUMM     PIC 9(02).
                05  WRK-MATSUDD     PIC 9(02).
+      *    精神科急性期治療病棟入院料の３月期間算定領域
+           03  WRK-SEISHIN-START   PIC 9(08).
+           03  WRK-SEISHIN-END     PIC 9(08).
+           03  WRK-SEISHIN-NISSU   PIC 9(08).
       *    パス名領域
            03  WRK-DBPATH          PIC X(20).
            03  WRK-PATHNAME        PIC X(20).
@@ -2843,6 +2847,130 @@
                ELSE
             MOVE "入院点数に誤りがあります。異動処理をしてください。"
                                        TO  SPA-GMN-KEIKOKU
+               END-IF
+           END-IF
+      *
+      *    精神科急性期治療病棟入院料の３月越えチェック
+           IF      SPA-GMN-KEIKOKU     =   SPACE
+      *        入院履歴から当日の入院料が精神科急性期治療病棟入院料で
+      *        あるかチェック
+               INITIALIZE                      PTNYUINRRK-REC
+               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  PTNYUINRRK-PTID
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  PTNYUINRRK-TENNYUYMD
+               MOVE    PTNYUINRRK-TENNYUYMD TO PTNYUINRRK-TENSTUYMD
+               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key41"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE   "tbl_ptnyuinrrk" TO  MCP-TABLE
+                   MOVE   "key41"          TO  MCP-PATHNAME
+                   PERFORM 970-PTNYUINRRK-READ-SEC
+                   IF  (FLG-PTNYUINRRK     =   ZERO)   AND
+                       (PTNYUINRRK-TOKUTEI-KBN  =      "2")  AND
+                       (PTNYUINRRK-TOKUTEI-NYUIN   =   "11"  OR  "12")
+      *               精神科急性期治療病棟入院料の通算日数取得
+                      INITIALIZE               ORCSTUSANAREA
+                      MOVE    SPA-HOSPNUM  TO  STUSAN-HOSPNUM
+                      MOVE    SPA-GMN-PTID TO  STUSAN-PTID
+                      MOVE    SMCNDATE-YMD TO  STUSAN-KJNYMD
+                      EVALUATE    PTNYUINRRK-TOKUTEI-NYUIN
+                          WHEN    "11"
+                              MOVE   "190121110"
+                                           TO  STUSAN-TOKUTEI-SRYCD(1)
+                              MOVE   "190066910"
+                                           TO  STUSAN-TOKUTEI-SRYCD(2)
+                          WHEN    "12"
+                              MOVE   "190121210"
+                                           TO  STUSAN-TOKUTEI-SRYCD(1)
+                              MOVE   "190067010"
+                                           TO  STUSAN-TOKUTEI-SRYCD(2)
+                      END-EVALUATE
+                      CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
+                                                      SPA-AREA
+                      IF    ( STUSAN-RC       NOT =   ZERO )
+                           DISPLAY "STUSAN-RC = " STUSAN-RC
+                           MOVE    ZERO    TO  STUSAN-NISSU07
+                      END-IF
+      *               当該入院料算定日から３月経過時点の通算日数取得
+                      MOVE    ZERO         TO     WRK-SEISHIN-START
+                      MOVE    ZERO         TO     WRK-SEISHIN-END
+                      MOVE    ZERO         TO     WRK-SEISHIN-NISSU
+                      INITIALIZE                  STS-AREA-DAY
+                      INITIALIZE                  LNK-DAY6-AREA
+                      MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+                      MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                      MOVE    "key53"             TO  MCP-PATHNAME
+                      PERFORM 910-DBSELECT-SEC
+                      IF      MCP-RC              =   ZERO
+                          MOVE   "tbl_ptnyuinrrk" TO  MCP-TABLE
+                          MOVE   "key53"          TO  MCP-PATHNAME
+                          PERFORM 970-PTNYUINRRK-READ-SEC
+                          PERFORM  UNTIL
+                                  (FLG-PTNYUINRRK NOT =  ZERO)  OR
+                                  (LNK-DAY6-KIJUN NOT =  ZERO)
+                              IF  (PTNYUINRRK-TOKUTEI-KBN = "2") AND
+                                  (PTNYUINRRK-TOKUTEI-NYUIN
+                                                  =   "11"  OR  "12")
+                                  MOVE   PTNYUINRRK-TENNYUYMD
+                                                  TO  LNK-DAY6-KIJUN
+                                  DISPLAY "LNK-DAY6-KIJUN(SEI) = "
+                                           LNK-DAY6-KIJUN
+                                  MOVE     LNK-DAY6-KIJUN
+                                                  TO  WRK-SEISHIN-START
+                              END-IF
+                              MOVE   "tbl_ptnyuinrrk" TO  MCP-TABLE
+                              MOVE   "key53"      TO  MCP-PATHNAME
+                              PERFORM 970-PTNYUINRRK-READ-SEC
+                          END-PERFORM
+                      END-IF
+                      MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                      MOVE    "key53"             TO  MCP-PATHNAME
+                      PERFORM 990-DBCLOSE-SEC
+                      MOVE    "61"              TO  LNK-DAY6-IRAI
+                      MOVE    "2"               TO  LNK-DAY6-ZOGENPTN
+                      MOVE    3                 TO  LNK-DAY6-ZOGEN
+                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                        LNK-DAY6-AREA
+                      DISPLAY "LNK-DAY6-KEISAN(SEI3) = " LNK-DAY6-KEISAN
+                      MOVE    LNK-DAY6-KEISAN   TO  WRK-SEISHIN-END
+      *               精神入院の３月マイナス１日の算出
+                      INITIALIZE                    STS-AREA-DAY
+                      INITIALIZE                    LNK-DAY6-AREA
+                      MOVE    "61"              TO  LNK-DAY6-IRAI
+                      MOVE    WRK-SEISHIN-END   TO  LNK-DAY6-KIJUN
+                      MOVE    "1"               TO  LNK-DAY6-ZOGENPTN
+                      MOVE    -1                TO  LNK-DAY6-ZOGEN
+                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                        LNK-DAY6-AREA
+                      DISPLAY "LNK-DAY6-KEISAN(SEI3-1) = "
+                               LNK-DAY6-KEISAN
+                      MOVE    LNK-DAY6-KEISAN   TO  WRK-SEISHIN-END
+      *               精神入院の３月に該当する通算日数の算出
+                      INITIALIZE                    STS-AREA-DAY
+                      INITIALIZE                    LNK-DAY5-AREA
+                      MOVE    "51"              TO  LNK-DAY5-IRAI
+                      MOVE    WRK-SEISHIN-START TO  LNK-DAY5-START
+                      MOVE    WRK-SEISHIN-END   TO  LNK-DAY5-END
+                      CALL  "ORCSDAY"           USING   STS-AREA-DAY
+                                                        LNK-DAY5-AREA
+                      DISPLAY "LNK-DAY5-NISSU2 = " LNK-DAY5-NISSU2
+                   END-IF
+               END-IF
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key41"             TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *        当日の通算日数算出の為、１日加算
+               ADD       1     TO     STUSAN-NISSU07
+               DISPLAY   "SEISHINNKA STUSAN-NISSU07 = " STUSAN-NISSU07
+      *        通算日数取得の比較
+               IF   STUSAN-NISSU07         <=  LNK-DAY5-NISSU2
+                    MOVE    SPACE          TO  SPA-GMN-KEIKOKU
+               ELSE
+            MOVE "精神科急性期治療病棟入院料の算定が３月を越えています"
+                                           TO  SPA-GMN-KEIKOKU
                END-IF
            END-IF
            .
