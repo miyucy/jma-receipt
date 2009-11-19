@@ -169,16 +169,19 @@ K06	{
 				select	bool[100];
 			};
 		};
-		B02	{
-	           	state	int;
-		};
 		B03	{
 	           	state	int;
 		};
-		B04	{
+		B12	{
 	           	state	int;
 		};
-		B12	{
+		B08	{
+	           	state	int;
+		};
+		B09	{
+	           	state	int;
+		};
+		B10	{
 	           	state	int;
 		};
 	};

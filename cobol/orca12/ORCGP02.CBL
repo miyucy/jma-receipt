@@ -314,6 +314,10 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *    »»ÄêÍúÎò
+       01  SANTEIPLUS-REC.
+           COPY    "CPSANTEIPLUS.INC".
+      *
       *    ¼ýÇ¼¥Þ¥¹¥¿¥ï¡¼¥¯
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
@@ -2959,6 +2963,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    »»ÄêÍúÎòÉÕ²Ã
+           INITIALIZE                      SANTEIPLUS-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEIPLUS-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  SANTEIPLUS-PTID
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *

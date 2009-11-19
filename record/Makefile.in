@@ -413,6 +413,8 @@ RECORD_files = \
 	XGERR.rec \
 	XGID1.rec \
 	XGFIL.rec \
+	K061.rec \
+	K062.rec \
 
 DEF_files = \
 	HC01.def \
@@ -632,6 +634,7 @@ DB_files = \
 	xml_appointreq.db \
 	xml_appointres.db \
 	xml_patientinfores.db \
+	tbl_santeiplus.db \
 
 
 all:   

@@ -996,3 +996,16 @@ path	key45 	{
 		;
 	};
 };
+
+path	key46 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key46_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   HKNCOMBINUM <>  '9999'
+			ORDER   BY        SRYYMD
+		;
+	};
+};

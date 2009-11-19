@@ -1,0 +1,67 @@
+K061	{
+	fixed1	{
+		SELNUM	{
+			value	number(3);
+		};
+		SRYCD	{
+			state	int;
+			value	varchar(9);
+		};
+		SRYMEI	{
+			value	varchar(80);
+		};
+		SANYMD	{
+			state	int;
+			value	varchar(11);
+		};
+		SYOYMD	{
+			state	int;
+			value	varchar(11);
+		};
+		KAISU	{
+			state	int;
+			value	number(3);
+		};
+		HKNCOMBI	{
+			state	int;
+			value	varchar(4);
+		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			RRKLIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(9);
+					value2	varchar(80);
+					value3	varchar(9);
+					value4	varchar(9);
+					value5	varchar(2);
+					value6	varchar(20);
+					value7	varchar(6);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		MIDASI	{
+			style	varchar(20);
+			value	varchar(160);
+		};
+		HKNCOMBIMEI	{
+			value	varchar(30);
+		};
+		LSTYMD	{
+			state	int;
+			value	varchar(11);
+		};
+		MIDASI2	{
+			value	varchar(10);
+		};
+		B08	{
+	           	state	int;
+			label	varchar(16);
+		};
+	};
+};

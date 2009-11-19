@@ -148,5 +148,6 @@ db	{
 	tbl_bunben;
 	tbl_toukeicsv_h;
 	tbl_toukeicsv_b;
+	tbl_santeiplus;
 
 };

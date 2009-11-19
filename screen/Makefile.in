@@ -409,6 +409,8 @@ SCREEN_screen = \
 	XGERR.glade \
 	XGID1.glade \
 	XGFIL.glade \
+	K061.glade \
+	K062.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

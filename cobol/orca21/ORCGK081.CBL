@@ -182,6 +182,8 @@
            COPY    "K051.INC".
            COPY    "K052.INC".
            COPY    "K06.INC".
+           COPY    "K061.INC".
+           COPY    "K062.INC".
            COPY    "K07.INC".
            COPY    "K08.INC".
            COPY    "K081.INC".

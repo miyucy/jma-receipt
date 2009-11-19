@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>K06</name>
-  <program_name>K06</program_name>
+  <name>K062</name>
+  <program_name>K062</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -12,9 +12,9 @@
 
 <widget>
   <class>GtkWindow</class>
-  <name>K06</name>
-  <width>1024</width>
-  <height>768</height>
+  <name>K062</name>
+  <width>784</width>
+  <height>325</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -30,105 +30,24 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(K06)»»ÄêÍúÎò¾È²ñ</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
+  <title>(K062)»»ÄêÍúÎò¾È²ñ¡¼¥ê¥Ï¥Ó¥ê¥³¥á¥ó¥ÈÅÐÏ¿</title>
+  <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
-  <modal>False</modal>
+  <modal>True</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_class>jma-receipt.dialog</wmclass_class>
 
   <widget>
     <class>GtkFixed</class>
     <name>fixed5</name>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>PTNUM</name>
-      <x>16</x>
-      <y>8</y>
-      <width>158</width>
-      <height>24</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:13:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Fri, 22 Dec 2000 05:24:21 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYM</name>
-      <x>80</x>
-      <y>36</y>
-      <width>104</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:18:09 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Fri, 22 Dec 2000 05:24:40 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>7</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>KANANAME</name>
-      <x>200</x>
-      <y>8</y>
-      <width>224</width>
-      <height>24</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:13:44 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Fri, 22 Dec 2000 05:24:59 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>30</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>8</x>
-      <y>716</y>
+      <x>16</x>
+      <y>280</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -150,8 +69,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B02</name>
-      <x>88</x>
-      <y>716</y>
+      <x>132</x>
+      <y>280</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -166,15 +85,15 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:24:11 GMT</last_modification_time>
       </signal>
-      <label>¥¯¥ê¥¢</label>
+      <label>F2 ¥¯¥ê¥¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B03</name>
-      <x>168</x>
-      <y>716</y>
+      <x>216</x>
+      <y>280</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -189,38 +108,15 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:24:52 GMT</last_modification_time>
       </signal>
-      <label>ºï½ü</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B04</name>
-      <x>248</x>
-      <y>716</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F4</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:53:21 GMT</last_modification_time>
-      </signal>
-      <label></label>
+      <label>F3 ºï½ü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B05</name>
-      <x>344</x>
-      <y>716</y>
+      <x>328</x>
+      <y>280</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -235,15 +131,15 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 10 Sep 2001 02:04:58 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>F5 Á°ÊÇ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B06</name>
-      <x>424</x>
-      <y>716</y>
+      <x>408</x>
+      <y>280</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -258,124 +154,15 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:26:18 GMT</last_modification_time>
       </signal>
-      <label>Á°·î</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B07</name>
-      <x>504</x>
-      <y>716</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F7</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:26:41 GMT</last_modification_time>
-      </signal>
-      <label>¼¡·î</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B08</name>
-      <x>584</x>
-      <y>716</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 10 Sep 2001 02:05:13 GMT</last_modification_time>
-      </signal>
-      <label>¥³¥á¥ó¥È</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B09</name>
-      <x>676</x>
-      <y>716</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F9</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 06 Nov 2009 07:37:03 GMT</last_modification_time>
-      </signal>
-      <label>ÍúÎòÅÐÏ¿</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B10</name>
-      <x>756</x>
-      <y>716</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F10</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Fri, 06 Nov 2009 07:37:21 GMT</last_modification_time>
-      </signal>
-      <label>°Ü¹ÔÍúÎò</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B11</name>
-      <x>836</x>
-      <y>716</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F11</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <label></label>
+      <label>F6 ¼¡ÊÇ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>916</x>
-      <y>716</y>
+      <x>692</x>
+      <y>280</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -390,16 +177,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:28:32 GMT</last_modification_time>
       </signal>
-      <label>ÅÐÏ¿</label>
+      <label>F12 ÅÐÏ¿</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
       <name>MEISYO</name>
-      <x>420</x>
-      <y>616</y>
-      <width>424</width>
+      <x>100</x>
+      <y>32</y>
+      <width>350</width>
       <height>24</height>
       <signal>
 	<name>activate</name>
@@ -422,39 +209,12 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>SEX</name>
-      <x>428</x>
-      <y>8</y>
-      <width>24</width>
-      <height>24</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<last_modification_time>Fri, 22 Dec 2000 04:30:30 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:37:59 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkNumberEntry</class>
       <name>DAY01</name>
-      <x>88</x>
-      <y>664</y>
-      <width>22</width>
+      <x>8</x>
+      <y>84</y>
+      <width>24</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
@@ -467,15 +227,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Sat, 13 Jan 2001 06:32:04 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY02</name>
-      <x>112</x>
-      <y>664</y>
+      <x>32</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -491,15 +251,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY03</name>
-      <x>136</x>
-      <y>664</y>
+      <x>56</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -515,15 +275,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY04</name>
-      <x>160</x>
-      <y>664</y>
+      <x>80</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -539,15 +299,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY05</name>
-      <x>184</x>
-      <y>664</y>
+      <x>104</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -563,15 +323,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY06</name>
-      <x>216</x>
-      <y>664</y>
+      <x>132</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -587,15 +347,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY07</name>
-      <x>240</x>
-      <y>664</y>
+      <x>156</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -611,15 +371,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY08</name>
-      <x>264</x>
-      <y>664</y>
+      <x>180</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -635,15 +395,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY09</name>
-      <x>288</x>
-      <y>664</y>
+      <x>204</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -659,15 +419,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY10</name>
-      <x>312</x>
-      <y>664</y>
+      <x>228</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -683,15 +443,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY11</name>
-      <x>344</x>
-      <y>664</y>
+      <x>256</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -707,15 +467,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY12</name>
-      <x>368</x>
-      <y>664</y>
+      <x>280</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -731,15 +491,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY13</name>
-      <x>392</x>
-      <y>664</y>
+      <x>304</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -755,15 +515,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY14</name>
-      <x>416</x>
-      <y>664</y>
+      <x>328</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -779,15 +539,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY15</name>
-      <x>440</x>
-      <y>664</y>
+      <x>352</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -803,15 +563,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY16</name>
-      <x>472</x>
-      <y>664</y>
+      <x>380</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -827,15 +587,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY17</name>
-      <x>496</x>
-      <y>664</y>
+      <x>404</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -851,15 +611,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY18</name>
-      <x>520</x>
-      <y>664</y>
+      <x>428</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -875,15 +635,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY19</name>
-      <x>544</x>
-      <y>664</y>
+      <x>452</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -899,15 +659,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY20</name>
-      <x>568</x>
-      <y>664</y>
+      <x>476</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -923,15 +683,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY21</name>
-      <x>600</x>
-      <y>664</y>
+      <x>504</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -947,15 +707,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY22</name>
-      <x>624</x>
-      <y>664</y>
+      <x>528</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -971,15 +731,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY23</name>
-      <x>648</x>
-      <y>664</y>
+      <x>552</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -995,15 +755,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY24</name>
-      <x>672</x>
-      <y>664</y>
+      <x>576</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1019,15 +779,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY25</name>
-      <x>696</x>
-      <y>664</y>
+      <x>600</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1043,15 +803,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY26</name>
-      <x>728</x>
-      <y>664</y>
+      <x>628</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1067,15 +827,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY27</name>
-      <x>752</x>
-      <y>664</y>
+      <x>652</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1091,15 +851,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY28</name>
-      <x>776</x>
-      <y>664</y>
+      <x>676</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1115,15 +875,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY29</name>
-      <x>800</x>
-      <y>664</y>
+      <x>700</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1139,15 +899,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY30</name>
-      <x>824</x>
-      <y>664</y>
+      <x>724</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1163,15 +923,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
       <class>GtkNumberEntry</class>
       <name>DAY31</name>
-      <x>856</x>
-      <y>664</y>
+      <x>752</x>
+      <y>84</y>
       <width>22</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1187,59 +947,15 @@
 	<data>CHANGED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:03:49 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
+      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label480</name>
-      <x>16</x>
-      <y>40</y>
-      <width>54</width>
-      <height>18</height>
-      <label>¿ÇÎÅÇ¯·î</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYCD</name>
-      <x>24</x>
-      <y>616</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:40:06 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:40:36 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
-      <text>123456789</text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkNumberEntry</class>
-      <name>NYUGAIKBN</name>
-      <x>108</x>
-      <y>616</y>
+      <name>SELNUM</name>
+      <x>60</x>
+      <y>136</y>
       <width>28</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1247,112 +963,6 @@
 	<name>activate</name>
 	<handler>send_event</handler>
 	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:41:09 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:41:34 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>Z</format>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>FSANTEIYMD</name>
-      <x>848</x>
-      <y>616</y>
-      <width>84</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:46:36 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:47:00 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text></text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>NAME</name>
-      <x>200</x>
-      <y>36</y>
-      <width>192</width>
-      <height>24</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:13:44 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Fri, 22 Dec 2000 05:24:59 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>30</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>BIRTHDAY</name>
-      <x>396</x>
-      <y>36</y>
-      <width>104</width>
-      <height>24</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:18:09 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Fri, 22 Dec 2000 05:24:40 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>9</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SELNUM</name>
-      <x>96</x>
-      <y>556</y>
-      <width>50</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
 	<last_modification_time>Tue, 27 Mar 2001 02:21:18 GMT</last_modification_time>
       </signal>
       <signal>
@@ -1362,259 +972,218 @@
 	<last_modification_time>Tue, 27 Mar 2001 02:21:33 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>MSANTEID</name>
-      <x>936</x>
-      <y>616</y>
-      <width>25</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 27 Mar 2001 02:21:18 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 27 Mar 2001 02:21:33 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
       <format>ZZ</format>
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
-      <name>MSANTEICNT</name>
-      <x>968</x>
-      <y>616</y>
-      <width>32</width>
+      <class>GtkPandaEntry</class>
+      <name>COMMENT01</name>
+      <x>180</x>
+      <y>136</y>
+      <width>570</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
 	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 27 Mar 2001 02:21:18 GMT</last_modification_time>
+	<last_modification_time>Mon, 09 Nov 2009 02:23:57 GMT</last_modification_time>
       </signal>
       <signal>
 	<name>changed</name>
 	<handler>entry_changed</handler>
 	<data>CHANGED</data>
-	<last_modification_time>Tue, 27 Mar 2001 02:21:33 GMT</last_modification_time>
+	<last_modification_time>Mon, 09 Nov 2009 02:24:10 GMT</last_modification_time>
       </signal>
-      <editable>False</editable>
-      <format>ZZZ</format>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>80</text_max_length>
+      <text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>NENREI</name>
-      <x>504</x>
-      <y>36</y>
-      <width>60</width>
+      <name>COMMENT02</name>
+      <x>180</x>
+      <y>160</y>
+      <width>570</width>
       <height>24</height>
+      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
 	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 21 Dec 2000 08:18:09 GMT</last_modification_time>
+	<last_modification_time>Mon, 09 Nov 2009 02:23:57 GMT</last_modification_time>
       </signal>
       <signal>
 	<name>changed</name>
 	<handler>entry_changed</handler>
 	<data>CHANGED</data>
-	<last_modification_time>Fri, 22 Dec 2000 05:24:40 GMT</last_modification_time>
+	<last_modification_time>Mon, 09 Nov 2009 02:24:10 GMT</last_modification_time>
       </signal>
-      <editable>False</editable>
+      <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>6</text_max_length>
-      <text></text>
+      <text_max_length>80</text_max_length>
+      <text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</text>
       <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
+      <xim_enabled>True</xim_enabled>
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>0</x>
-      <y>60</y>
-      <width>1012</width>
+      <class>GtkPandaEntry</class>
+      <name>COMMENT03</name>
+      <x>180</x>
+      <y>184</y>
+      <width>570</width>
       <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 09 Nov 2009 02:23:57 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 09 Nov 2009 02:24:10 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>80</text_max_length>
+      <text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>COMMENT04</name>
+      <x>180</x>
+      <y>208</y>
+      <width>570</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 09 Nov 2009 02:23:57 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 09 Nov 2009 02:24:10 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>80</text_max_length>
+      <text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>COMMENT05</name>
+      <x>180</x>
+      <y>232</y>
+      <width>570</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 09 Nov 2009 02:23:57 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 09 Nov 2009 02:24:10 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>80</text_max_length>
+      <text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B09</name>
+      <x>520</x>
+      <y>280</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F9</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:26:18 GMT</last_modification_time>
+      </signal>
+      <label>F9 Á°Æü</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>600</x>
+      <y>280</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 21 Dec 2000 08:26:18 GMT</last_modification_time>
+      </signal>
+      <label>F10 ¼¡Æü</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkHSeparator</class>
       <name>hseparator2</name>
-      <x>8</x>
-      <y>692</y>
-      <width>1012</width>
+      <x>0</x>
+      <y>260</y>
+      <width>784</width>
       <height>16</height>
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
-      <name>SRYKA</name>
-      <x>144</x>
-      <y>616</y>
-      <width>36</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:41:09 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Tue, 20 Mar 2001 23:41:34 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label288</name>
-      <x>16</x>
-      <y>560</y>
-      <width>0</width>
-      <height>16</height>
-      <label>ÊÑ¹¹ÆþÎÏÍó</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label503</name>
-      <x>28</x>
-      <y>664</y>
-      <width>56</width>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>4</x>
+      <y>112</y>
+      <width>772</width>
       <height>20</height>
-      <label>»»ÄêÆü</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label473</name>
-      <x>820</x>
-      <y>648</y>
-      <width>26</width>
-      <height>16</height>
-      <label>30</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label472</name>
-      <x>696</x>
-      <y>648</y>
-      <width>26</width>
-      <height>16</height>
-      <label>25</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label471</name>
-      <x>568</x>
-      <y>648</y>
-      <width>26</width>
-      <height>16</height>
-      <label>20</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label470</name>
-      <x>436</x>
-      <y>648</y>
-      <width>26</width>
-      <height>16</height>
-      <label>15</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label469</name>
-      <x>308</x>
-      <y>648</y>
-      <width>26</width>
-      <height>16</height>
-      <label>10</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label468</name>
-      <x>180</x>
-      <y>648</y>
-      <width>26</width>
-      <height>16</height>
-      <label>5</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
       <name>label467</name>
-      <x>88</x>
-      <y>648</y>
+      <x>8</x>
+      <y>64</y>
       <width>26</width>
       <height>16</height>
       <label>1</label>
@@ -1628,11 +1197,193 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label507</name>
-      <x>412</x>
-      <y>596</y>
-      <width>180</width>
+      <name>label468</name>
+      <x>100</x>
+      <y>64</y>
+      <width>26</width>
       <height>16</height>
+      <label>5</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label469</name>
+      <x>228</x>
+      <y>64</y>
+      <width>26</width>
+      <height>16</height>
+      <label>10</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label470</name>
+      <x>344</x>
+      <y>64</y>
+      <width>34</width>
+      <height>16</height>
+      <label>15</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label471</name>
+      <x>472</x>
+      <y>64</y>
+      <width>26</width>
+      <height>16</height>
+      <label>20</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label472</name>
+      <x>596</x>
+      <y>64</y>
+      <width>26</width>
+      <height>16</height>
+      <label>25</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label473</name>
+      <x>720</x>
+      <y>64</y>
+      <width>26</width>
+      <height>16</height>
+      <label>30</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SRYCD</name>
+      <x>12</x>
+      <y>32</y>
+      <width>85</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 25 Dec 2000 05:03:03 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 05:28:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>9</text_max_length>
+      <text>123456789</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SRYYM</name>
+      <x>648</x>
+      <y>32</y>
+      <width>64</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 25 Dec 2000 05:03:03 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Fri, 22 Dec 2000 05:28:27 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>6</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label517</name>
+      <x>24</x>
+      <y>8</y>
+      <width>64</width>
+      <height>20</height>
+      <label>¥³¡¼¥É</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label516</name>
+      <x>640</x>
+      <y>4</y>
+      <width>76</width>
+      <height>24</height>
+      <label>»»ÄêÇ¯·î</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label507</name>
+      <x>100</x>
+      <y>8</y>
+      <width>180</width>
+      <height>18</height>
       <label>Ì¾       ¾Î</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -1643,136 +1394,43 @@
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
+      <class>GtkPandaEntry</class>
       <name>HKNCOMBI</name>
-      <x>244</x>
-      <y>616</y>
-      <width>52</width>
+      <x>456</x>
+      <y>32</y>
+      <width>44</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <signal>
 	<name>activate</name>
 	<handler>send_event</handler>
 	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 20 May 2002 01:38:40 GMT</last_modification_time>
+	<last_modification_time>Mon, 25 Dec 2000 05:03:03 GMT</last_modification_time>
       </signal>
       <signal>
 	<name>changed</name>
 	<handler>entry_changed</handler>
 	<data>CHANGED</data>
-	<last_modification_time>Mon, 20 May 2002 01:38:58 GMT</last_modification_time>
+	<last_modification_time>Fri, 22 Dec 2000 05:28:27 GMT</last_modification_time>
       </signal>
-      <editable>True</editable>
-      <format>ZZZZ</format>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>4</text_max_length>
+      <text>1111</text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
-      <name>label509</name>
-      <x>928</x>
-      <y>596</y>
-      <width>36</width>
-      <height>16</height>
-      <label>½é²ó</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label510</name>
-      <x>964</x>
-      <y>596</y>
-      <width>36</width>
-      <height>16</height>
-      <label>²ó¿ô</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label508</name>
-      <x>848</x>
-      <y>596</y>
-      <width>80</width>
-      <height>16</height>
-      <label>½é²ó»»ÄêÆü</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label504</name>
-      <x>12</x>
-      <y>596</y>
-      <width>100</width>
-      <height>16</height>
-      <label>¿ÇÎÅ¥³¡¼¥É</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label505</name>
-      <x>104</x>
-      <y>596</y>
-      <width>40</width>
-      <height>16</height>
-      <label>Æþ³°</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label506</name>
-      <x>140</x>
-      <y>596</y>
-      <width>56</width>
-      <height>16</height>
-      <label>¿ÇÎÅ²Ê</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SRYKAMEI</name>
-      <x>184</x>
-      <y>616</y>
-      <width>60</width>
-      <height>24</height>
+      <name>HKNCOMBIMEI</name>
+      <x>504</x>
+      <y>32</y>
+      <width>120</width>
+      <height>22</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
-      <xalign>0.5</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1780,10 +1438,10 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label513</name>
-      <x>236</x>
-      <y>596</y>
-      <width>88</width>
+      <name>label515</name>
+      <x>444</x>
+      <y>12</y>
+      <width>96</width>
       <height>16</height>
       <label>ÊÝ¸±ÁÈ¹ç¤»</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1796,10 +1454,42 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HKNCOMBIMEI</name>
-      <x>296</x>
-      <y>616</y>
-      <width>120</width>
+      <name>label503</name>
+      <x>4</x>
+      <y>136</y>
+      <width>52</width>
+      <height>24</height>
+      <label>»»ÄêÆü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label513</name>
+      <x>92</x>
+      <y>136</y>
+      <width>60</width>
+      <height>24</height>
+      <label>¥³¥á¥ó¥È</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MUN1</name>
+      <x>152</x>
+      <y>136</y>
+      <width>28</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -1811,182 +1501,83 @@
     </widget>
 
     <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow1</name>
-      <x>16</x>
-      <y>88</y>
-      <width>996</width>
-      <height>460</height>
-      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <class>GtkLabel</class>
+      <name>MUN2</name>
+      <x>152</x>
+      <y>160</y>
+      <width>28</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
 
-      <widget>
-	<class>GtkPandaCList</class>
-	<name>SANTEILST</name>
-	<signal>
-	  <name>select_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 07 Nov 2001 06:53:11 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 07 Nov 2001 06:53:31 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>select_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 07 Nov 2001 07:05:39 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Wed, 07 Nov 2001 07:05:42 GMT</last_modification_time>
-	</signal>
-	<columns>10</columns>
-	<column_widths>35,84,31,60,80,407,69,41,28,67</column_widths>
-	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-	<show_titles>True</show_titles>
-	<shadow_type>GTK_SHADOW_IN</shadow_type>
+    <widget>
+      <class>GtkLabel</class>
+      <name>MUN3</name>
+      <x>152</x>
+      <y>184</y>
+      <width>28</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
 
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label495</name>
-	  <label>ÈÖ¹æ</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>MUN5</name>
+      <x>152</x>
+      <y>232</y>
+      <width>28</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
 
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label496</name>
-	  <label>¿ÇÎÅ¥³¡¼¥É</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>MUN4</name>
+      <x>152</x>
+      <y>208</y>
+      <width>28</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
 
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label497</name>
-	  <label>Æþ³°</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label498</name>
-	  <label>¿ÇÎÅ²Ê</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label499</name>
-	  <label>ÊÝ¸±ÁÈ¹ç¤»</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label500</name>
-	  <label>Ì¾¡¡¡¡¡¡¡¡¡¡¡¡¾Î</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label501</name>
-	  <label>½é²ó»»ÄêÆü</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label502</name>
-	  <label>½é²ó</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label511</name>
-	  <label>²ó¿ô</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label514</name>
-	  <label>»»ÄêÅÀ¿ô</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-      </widget>
+    <widget>
+      <class>GtkLabel</class>
+      <name>MIDASI</name>
+      <x>8</x>
+      <y>176</y>
+      <width>144</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

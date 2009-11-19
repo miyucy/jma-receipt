@@ -165,6 +165,10 @@
                        09  SPA-GMN-TMEISYO-1   REDEFINES
                                                    SPA-GMN-TMEISYO.
                            11  SPA-GMN-TMEISYO1    PIC X(200).
+                       09  SPA-GMN-TMEISYO-3   REDEFINES
+                                                   SPA-GMN-TMEISYO.
+                           11  SPA-GMN-TYOBI       PIC X(02).
+                           11  SPA-GMN-TMEISYO3    PIC X(198).
                        09  SPA-GMN-TMEISYO-2   REDEFINES
                                                SPA-GMN-TMEISYO.
                            11  SPA-GMN-TBANGO2     PIC X(02).
@@ -757,6 +761,8 @@
            COPY    "K051.INC".
            COPY    "K052.INC".
            COPY    "K06.INC".
+           COPY    "K061.INC".
+           COPY    "K062.INC".
            COPY    "K07.INC".
            COPY    "K08.INC".
            COPY    "K081.INC".
@@ -1862,7 +1868,7 @@
            STRING  "¡Ô"                DELIMITED  BY  SIZE
                    WRK-HKNCOMBIMEI     DELIMITED  BY  "  "
                    "¡Õ"                DELIMITED  BY  SIZE
-                  INTO  SPA-GMN-TMEISYO (IDG)(3:)
+                  INTO  SPA-GMN-TMEISYO3(IDG)
            END-STRING
       *    ºÞ½ªÎ»ÊÔ½¸
            ADD     1                   TO  IDG
@@ -1930,7 +1936,7 @@
                    "¡¡¥É¥¯¥¿¡¼¡§"      DELIMITED  BY  SIZE
                    WRK-DRCD-MEI        DELIMITED  BY  SPACE
                     "¡ä¡ä"             DELIMITED  BY  SIZE
-               INTO                    SPA-GMN-TMEISYO (IDG)(3:)
+               INTO                    SPA-GMN-TMEISYO3 (IDG)
            END-STRING
       *    ºÞ½ªÎ»ÊÔ½¸
            ADD     1                   TO  IDG
