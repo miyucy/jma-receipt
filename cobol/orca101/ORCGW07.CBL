@@ -107,6 +107,7 @@
       *  04.05.00    NACL-多々納  09/08/28  公費上限額履歴チェック追加
       *  04.05.00    NACL-太田    09/09/04  月別請求書発行方法、集計区分追加
       *  04.05.00    NACL-多々納  09/10/16  初診再診料自動算定区分追加他
+      *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -448,6 +449,16 @@
                            11  SPA-GMN-KOHRRKKBN-FLG-LIST    PIC X(28)
                                                              OCCURS  5.
                        09  SPA-GMN-KOHRRKKBN-MAX             PIC 9(02).
+      *                郵便番号自動記載チェック区分
+                       09  SPA-GMN-POSTKBN-FLG-G.
+                           11  SPA-GMN-POSTKBN-FLG           PIC X(01).
+                           11  SPA-GMN-POSTKBN-F1            PIC X(01).
+                           11  SPA-GMN-POSTKBN-MEI           PIC X(38).
+                       09  SPA-GMN-POSTKBN-FLG-COMB.
+                           11  SPA-GMN-POSTKBN-FLG-LIST      PIC X(40)
+                                                             OCCURS  5.
+                       09  SPA-GMN-POSTKBN-MAX               PIC 9(02).
+      *
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -1611,6 +1622,14 @@
            MOVE    "1 チェックする"
                                    TO  SPA-GMN-KOHRRKKBN-FLG-LIST (2)
            MOVE    2               TO  SPA-GMN-KOHRRKKBN-MAX 
+      *    公費上限額履歴チェック
+           MOVE    "0 自動記載しない"
+                                   TO  SPA-GMN-POSTKBN-FLG-LIST (1)
+           MOVE    "1 自動記載する"
+                                   TO  SPA-GMN-POSTKBN-FLG-LIST (2)
+           MOVE    "2 自動記載する（郵便番号未設定）"
+                                   TO  SPA-GMN-POSTKBN-FLG-LIST (3)
+           MOVE    3               TO  SPA-GMN-POSTKBN-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2576,6 +2595,9 @@
       *        公費上限額履歴チェック
                MOVE    SYS-1017-KOHRRKKBN-FLG
                                        TO  SPA-GMN-KOHRRKKBN-FLG
+      *        郵便番号自動記載区分
+               MOVE    SYS-1017-POSTKBN-FLG
+                                       TO  SPA-GMN-POSTKBN-FLG
            END-IF
       *
       *    初期設定
@@ -2758,6 +2780,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-KOHRRKKBN-FLG-LIST(1)
                                            TO  SPA-GMN-KOHRRKKBN-FLG-G
+           END-IF
+      *    郵便番号自動記載区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-POSTKBN-MAX
+               IF      SPA-GMN-POSTKBN-FLG
+                                       =   SPA-GMN-POSTKBN-FLG-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-POSTKBN-FLG-LIST(IDX)
+                                           TO  SPA-GMN-POSTKBN-FLG-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-POSTKBN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-POSTKBN-FLG-LIST(2)
+                                           TO  SPA-GMN-POSTKBN-FLG-G
            END-IF
       *
            MOVE    201                 TO  SPA-GMN-CUR
@@ -4229,6 +4268,7 @@
            MOVE    W07-SETAIKBN        TO  SPA-GMN-SETAIKBN-FLG-G
            MOVE    W07-GRPPTLST        TO  SPA-GMN-GRPPTLST-FLG-G
            MOVE    W07-KOHRRK          TO  SPA-GMN-KOHRRKKBN-FLG-G
+           MOVE    W07-POSTKBN         TO  SPA-GMN-POSTKBN-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -4492,6 +4532,10 @@
       *            公費上限額履歴チェック区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-KOHRRKKBN-FLG-SEC
+                   END-IF
+      *            郵便番号自動記載区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-POSTKBN-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -6118,6 +6162,31 @@
       *
           .
        4107-KOHRRKKBN-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    郵便番号自動記載区分チェック処理
+      *****************************************************************
+       4107-POSTKBN-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-POSTKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-POSTKBN-FLG
+                                       =   SPA-GMN-POSTKBN-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-POSTKBN-FLG-LIST(IDX)
+                                          TO  SPA-GMN-POSTKBN-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    215             TO  SPA-GMN-CUR
+               MOVE    "1015"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-POSTKBN-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -8085,6 +8154,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SETAIKBN-FLG    TO  SYS-1017-SETAIKBN-FLG
            MOVE    SPA-GMN-GRPPTLST-FLG    TO  SYS-1017-GRPPTLST-FLG
            MOVE    SPA-GMN-KOHRRKKBN-FLG   TO  SYS-1017-KOHRRKKBN-FLG
+           MOVE    SPA-GMN-POSTKBN-FLG     TO  SYS-1017-POSTKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -8903,7 +8973,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-KOHRRKKBN-FLG-LIST (IDX)
                                        TO  W07-KOHRRK-ITEM(IDX)
            END-PERFORM
-           MOVE    SPA-GMN-KOHRRKKBN-MAX    TO  W07-KOHRRK-COUNT
+           MOVE    SPA-GMN-KOHRRKKBN-MAX   TO  W07-KOHRRK-COUNT
+      *    郵便番号自動記載区分
+           MOVE    SPA-GMN-POSTKBN-FLG-G   TO  W07-POSTKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-POSTKBN-MAX
+               MOVE    SPA-GMN-POSTKBN-FLG-LIST (IDX)
+                                           TO  W07-POSTKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-POSTKBN-MAX     TO  W07-POSTKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -9703,6 +9781,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED BY  SIZE
                                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "1015"
+                   STRING  "郵便番号自動記載区分が"
+                           "ありません"
+                                                   DELIMITED BY  SIZE
+                                                       INTO  SPA-ERRMSG
+                   END-STRING
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -10058,6 +10142,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "GRPPTLST"        TO   MCP-WIDGET
                WHEN    214
                    MOVE  "KOHRRK"          TO   MCP-WIDGET
+               WHEN    215
+                   MOVE  "POSTKBN"         TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -10388,6 +10474,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "GRPPTLST"
                    MOVE    214              TO  SPA-GMN-CUR
                WHEN    "KOHRRK"
+                   MOVE    215              TO  SPA-GMN-CUR
+               WHEN    "POSTKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"

@@ -33,6 +33,7 @@
       *  02.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
+      *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1232,6 +1233,38 @@
       *****************************************************************
        41012-ADRS-POST-SEC         SECTION.
       *
+           EVALUATE    SPA-NAI-POSTKBN-FLG
+               WHEN     "0"
+                   MOVE    SPA-GMN21-RENRAKU-ADRS
+                                               TO  SPA-MAE-RENRAKU-ADRS
+                   MOVE    SPA-GMN21-OFFICE-ADRS
+                                               TO  SPA-MAE-OFFICE-ADRS
+                   MOVE    SPA-GMN21-KISEI-ADRS
+                                               TO  SPA-MAE-KISEI-ADRS
+               WHEN     "1"
+                   PERFORM 410121-ADRS-POSTHEN-SEC
+               WHEN     "2"
+      *            郵便番号空白時のみ
+                   IF      WRK-POST            =   SPACE
+                       PERFORM 410121-ADRS-POSTHEN-SEC
+                   ELSE
+                       MOVE    SPA-GMN21-RENRAKU-ADRS
+                                               TO  SPA-MAE-RENRAKU-ADRS
+                       MOVE    SPA-GMN21-OFFICE-ADRS
+                                               TO  SPA-MAE-OFFICE-ADRS
+                       MOVE    SPA-GMN21-KISEI-ADRS
+                                               TO  SPA-MAE-KISEI-ADRS
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       41012-ADRS-POST-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所から郵便番号編集処理
+      *****************************************************************
+       410121-ADRS-POSTHEN-SEC         SECTION.
+      *
       *    郵便番号より、住所一覧を表示する
            INITIALIZE                  SPA-P982-AREA
            MOVE    2                   TO  SPA-GMN982-KBN
@@ -1279,7 +1312,7 @@
            END-IF
       *
            .
-       41012-ADRS-POST-EXT.
+       410121-ADRS-POSTHEN-EXT.
            EXIT.
       *****************************************************************
       *    住所一覧遷移処理

@@ -88,6 +88,7 @@
       *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック追加
       *                                     国保等７０歳到達警告追加
       *  04.05.00    NACL-多々納  09/09/08  公費負担額に愛知県の'191'追加
+      *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3734,7 +3735,7 @@
                    IF     (SPA-GMN-EDITADRS-NAME
                                            NOT =   SPA-MAE-ADRS )
                       AND (SPA-MCP-WIDGET      =   "P02_ADRS"   )
-                       PERFORM 41012-ADRS-POST-SEC
+                       PERFORM 41012-ADRS-POSTCHK-SEC
                    ELSE
                        MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
                    END-IF
@@ -3746,7 +3747,27 @@
       *****************************************************************
       *    住所から郵便番号編集処理
       *****************************************************************
-       41012-ADRS-POST-SEC         SECTION.
+       41012-ADRS-POSTCHK-SEC         SECTION.
+      *
+           EVALUATE    SPA-NAI-POSTKBN-FLG
+               WHEN     "0"
+                   MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
+               WHEN     "1"
+                   PERFORM 410121-ADRS-POST-SEC
+               WHEN     "2"
+                   IF      SPA-GMN-POST        =   SPACE
+                       PERFORM 410121-ADRS-POST-SEC
+                   ELSE
+                       MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
+                   END-IF
+           END-EVALUATE
+           .
+       41012-ADRS-POSTCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所から郵便番号編集処理
+      *****************************************************************
+       410121-ADRS-POST-SEC         SECTION.
       *
       *    郵便番号より、住所一覧を表示する
            INITIALIZE                  SPA-P982-AREA
@@ -3793,7 +3814,7 @@
            END-IF
       *
            .
-       41012-ADRS-POST-EXT.
+       410121-ADRS-POST-EXT.
            EXIT.
       *****************************************************************
       *    住所一覧遷移処理

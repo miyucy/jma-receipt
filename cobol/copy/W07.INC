@@ -291,6 +291,12 @@
                     06  W07-KOHRRK-COUNT   PIC S9(9)   BINARY.
                     06  W07-KOHRRK-ITEM
                             PIC X(28)   OCCURS  5 TIMES.
+                  05  W07-POSTKBN-COMB.
+                    06  W07-POSTKBN.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-POSTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-POSTKBN-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.

@@ -895,6 +895,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ¸øÈñ¾å¸Â³ÛÍúÎò¥Á¥§¥Ã¥¯¶èÊ¬
                MOVE    SYS-1017-KOHRRKKBN-FLG
                                            TO  SPA-NAI-KOHRRKKBN-FLG
+      *        Í¹ÊØÈÖ¹æ¼«Æ°µ­ºÜ¶èÊ¬
+               MOVE    SYS-1017-POSTKBN-FLG
+                                           TO  SPA-NAI-POSTKBN-FLG
            ELSE
       *        Ì¤ÅÐÏ¿¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -911,6 +914,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0"                 TO  SPA-NAI-GRPPTLST-FLG
       *        ¸øÈñ¾å¸Â³ÛÍúÎò¥Á¥§¥Ã¥¯¶èÊ¬
                MOVE    "0"                 TO  SPA-NAI-KOHRRKKBN-FLG
+      *        Í¹ÊØÈÖ¹æ¼«Æ°µ­ºÜ¶èÊ¬
+               MOVE    "1"                 TO  SPA-NAI-POSTKBN-FLG
       *
            END-IF
            IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
@@ -946,6 +951,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-NAI-KOHRRKKBN-FLG   =   SPACE
                MOVE    "0"                 TO  SPA-NAI-KOHRRKKBN-FLG
+           END-IF
+      *
+           IF      SPA-NAI-POSTKBN-FLG     =   SPACE
+               MOVE    "1"                 TO  SPA-NAI-POSTKBN-FLG
            END-IF
       *
            .
