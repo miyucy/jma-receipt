@@ -184,6 +184,9 @@
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
+      *    一括日変換パラメタ
+           COPY    "CPORCSNDAYCHG.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -536,6 +539,23 @@
            MOVE    22                  TO  WRK-END
            PERFORM 2010-MOJI-HENKAN-SEC
            MOVE    WRK-HENKAN-ATO      TO  LNK-SC97-INPUTCD
+      *
+           INITIALIZE                      ORCSNDAYCHGAREA
+           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
+           MOVE    LNK-SC97-INPUTCD    TO  ORCSNDAYCHG-INPUTCD
+           MOVE    22                  TO  ORCSNDAYCHG-KETA
+           CALL    "ORCSNDAYCHG"       USING   SPA-AREA
+                                               ORCSNDAYCHGAREA
+           MOVE    ORCSNDAYCHG-ERRCD   TO  SPA-ERRCD
+           MOVE    ORCSNDAYCHG-INPUTCD TO  LNK-SC97-INPUTCD
+           MOVE    ORCSNDAYCHG-KAISUCNT
+                                       TO  LNK-SC97-KAISUCNT
+           MOVE    ORCSNDAYCHG-KAISU   TO  LNK-SC97-KAISU
+           MOVE    ORCSNDAYCHG-NYUIN-KAISU
+                                       TO  LNK-SC97-NYUIN-KAISU
+      *TEST
+      *TEST
+           GO      TO  1002-NYUINKAISU-EXT.
       *
       *    回数
            INITIALIZE                      WRK-NYUMOJI-AREA
