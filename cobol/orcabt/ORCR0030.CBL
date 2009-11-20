@@ -436,6 +436,8 @@
       *  04.05.04    NACL-門脇    09/09/24  レセプト記載しないコメント対応
       *  04.05.05    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
       *                                     まとめ記載対応
+      *  04.05.06    NACL-門脇    09/11/20  レセ電フォーマットコメント拡張
+      *                                     対応（残量廃棄）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1077,6 +1079,25 @@
            03  WRK-EDYMD                       PIC  X(08).
       *
            03  WRK-KOH-KINGAKU                 PIC  9(07).
+      *
+      *    数量編集用
+           03  WRK-SURYOKETA                   PIC 9(02).
+           03  WRK-SURYOKETA1                  PIC 9(02).
+           03  WRK-SURYOKETA2                  PIC 9(02).
+           03  WRK-SURYOST                     PIC 9(02).
+           03  WRK-SURYO                       PIC 9(05)V9(05).
+           03  WRK-SURYO-R  REDEFINES  WRK-SURYO.
+               05  WRK-SURYO-S1                PIC 9(05).
+               05  WRK-SURYO-S2                PIC 9(05).
+           03  WRK-SURYO-X.
+               05  WRK-SURYO-Z1                PIC ZZZZZ.
+               05  WRK-SURYO-Z2                PIC X(01).
+               05  WRK-SURYO-Z3                PIC ZZZZZ.
+           03  WRK-SURYO-N.
+               05  WRK-SURYO-N1                PIC X(10).
+               05  WRK-SURYO-N2                PIC X(02).
+               05  WRK-SURYO-N3                PIC X(10).
+           03  WRK-SRYSURYOW                   PIC X(24).
       *
       *---------------------------------------------------------------
       *  回数減算用退避領域
@@ -5148,6 +5169,32 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    END-IF
                END-IF
       *
+               IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
+                  IF  RECE05-SRYSURYO(IDX4)  NOT = ZERO
+                    PERFORM  2104413-RECE05-TENSOU-SURYO-HEN-SEC
+      *
+                    MOVE    SPACE      TO  RECE05-NAME(IDX4)
+                    MOVE    SPACE      TO  RECE05-INPUTCOMENT(IDX4)
+                    STRING  TNS-NAME          DELIMITED  BY  " "
+                            "  "              DELIMITED  BY  SIZE
+                            WRK-SRYSURYOW     DELIMITED  BY  " "
+                            RECE05-TANINAME(IDX4)
+                                              DELIMITED  BY  " "
+                            INTO              RECE05-NAME(IDX4)
+                    END-STRING
+                    MOVE  RECE05-NAME(IDX4)
+                                       TO  RECE05-INPUTCOMENT(IDX4)
+      *
+      ***           MOVE  "810000001"  TO  RECE05-SRYCD(IDX4)
+                    MOVE  ZERO         TO  RECE05-SRYSURYO(IDX4)
+                    MOVE  ZERO         TO  RECE05-TANICD(IDX4)
+                    MOVE  ZERO         TO  RECE05-TANIMOJISU(IDX4)
+                    MOVE  SPACE        TO  RECE05-TANINAME(IDX4)
+                    MOVE  ZERO         TO  RECE05-YUKOKETA(IDX4)
+                    MOVE  "2"          TO  RECE05-MEISKYFLG(IDX4)
+                  END-IF
+               END-IF
+      *
                IF          SRY-SRYKBN       =  "21"
                     IF   SRY-SRYCD(IDX2)  =  "820000047" OR 
                                              "630010002"
@@ -5927,6 +5974,126 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
            .
        2104412-RECE05-TENSOU-TANKA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    残量廃棄の数量編集処理
+      *****************************************************************
+       2104413-RECE05-TENSOU-SURYO-HEN-SEC     SECTION.
+      *
+           MOVE    SPACE           TO  WRK-SURYO-X
+           MOVE    ZERO            TO  WRK-SURYOST
+           MOVE    ZERO            TO  WRK-SURYOKETA
+           MOVE    ZERO            TO  WRK-SURYOKETA1
+           MOVE    ZERO            TO  WRK-SURYOKETA2
+           MOVE    SPACE           TO  WRK-SURYO-N
+           MOVE    SPACE           TO  WRK-SRYSURYOW
+      *
+      *    数字表示用編集（半角）
+           MOVE    RECE05-SRYSURYO(IDX4)  TO  WRK-SURYO
+           MOVE    WRK-SURYO-S1           TO  WRK-SURYO-Z1
+      *
+           MOVE    ZERO            TO  FLG-SP
+           PERFORM   VARYING   IDW   FROM    5   BY  -1
+                      UNTIL    IDW   =   ZERO
+             IF  WRK-SURYO-S2(IDW:1) NOT =   ZERO
+                 MOVE    1         TO  FLG-SP
+             END-IF
+             IF  FLG-SP  =   1
+                 MOVE    WRK-SURYO-S2(IDW:1)
+                                   TO  WRK-SURYO-Z3(IDW:1)
+             END-IF
+           END-PERFORM
+           IF  WRK-SURYO-Z3   NOT =  SPACE
+               MOVE    "."         TO  WRK-SURYO-Z2
+           END-IF
+      *    表示文字数カウント
+           PERFORM   VARYING   IDW   FROM    1   BY  1
+                      UNTIL    IDW     >    11
+             IF  WRK-SURYO-X(IDW:1)  NOT =  SPACE
+                 IF  WRK-SURYOST           =   ZERO
+                     MOVE    IDW   TO  WRK-SURYOST
+                 END-IF
+      *          数量桁数カウント(６桁目：ピリオド)
+                 ADD     1         TO  WRK-SURYOKETA
+                 IF  IDW    <   6
+                     ADD     1     TO  WRK-SURYOKETA1
+                 END-IF
+                 IF  IDW    >   6
+                     ADD     1     TO  WRK-SURYOKETA2
+                 END-IF
+             END-IF
+           END-PERFORM
+           IF  WRK-SURYOST  =   6
+               MOVE   "0"          TO  WRK-SURYO-Z1(5:1)
+               MOVE    5           TO  WRK-SURYOST
+               MOVE    1           TO  WRK-SURYOKETA1
+               ADD     1           TO  WRK-SURYOKETA
+           END-IF
+      *    全角変換
+           IF  WRK-SURYOKETA1   >   ZERO
+               INITIALIZE              WRK-CHAR-HENKAN-AREA
+               MOVE    WRK-SURYO-Z1(WRK-SURYOST:WRK-SURYOKETA1)
+                                       TO  WRK-CHAR-X
+               MOVE    WRK-SURYOKETA1  TO  WRK-CHAR-CNT
+      *
+               MOVE    1               TO  WRK-CHAR-IDX
+               PERFORM  VARYING  IDW   FROM    1   BY  1
+                         UNTIL   IDW     >   WRK-CHAR-CNT
+                   IF    WRK-CHAR-X(IDW:1)  IS  NUMERIC
+                     IF    WRK-CHAR-X(IDW:1)  =   "0"
+                        MOVE  TBL-SUJI(10)
+                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                     ELSE
+                        MOVE  WRK-CHAR-X(IDW:1)  TO  NUM-IDX
+                        MOVE  TBL-SUJI(NUM-IDX)
+                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                     END-IF
+                   ELSE
+                       MOVE    "  "    TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                   END-IF
+                   ADD     2           TO  WRK-CHAR-IDX
+               END-PERFORM
+      *
+               MOVE    WRK-CHAR-N      TO  WRK-SURYO-N1
+           END-IF
+           IF  WRK-SURYOKETA2   >   ZERO
+               MOVE    "．"            TO  WRK-SURYO-N2
+      *
+               INITIALIZE              WRK-CHAR-HENKAN-AREA
+               MOVE    WRK-SURYO-Z3(1:WRK-SURYOKETA2)
+                                       TO  WRK-CHAR-X
+               MOVE    WRK-SURYOKETA2  TO  WRK-CHAR-CNT
+      *
+               MOVE    1               TO  WRK-CHAR-IDX
+               PERFORM  VARYING  IDW   FROM    1   BY  1
+                         UNTIL   IDW     >   WRK-CHAR-CNT
+                   IF    WRK-CHAR-X(IDW:1)  IS  NUMERIC
+                     IF    WRK-CHAR-X(IDW:1)  =   "0"
+                        MOVE  TBL-SUJI(10)
+                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                     ELSE
+                        MOVE  WRK-CHAR-X(IDW:1)  TO  NUM-IDX
+                        MOVE  TBL-SUJI(NUM-IDX)
+                                       TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                     END-IF
+                   ELSE
+                       MOVE    "  "    TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                   END-IF
+                   ADD     2           TO  WRK-CHAR-IDX
+               END-PERFORM
+      *
+               MOVE    WRK-CHAR-N      TO  WRK-SURYO-N3
+           END-IF
+      *
+           STRING      WRK-SURYO-N1    DELIMITED   BY  " "
+                       WRK-SURYO-N2    DELIMITED   BY  " "
+                       WRK-SURYO-N3    DELIMITED   BY  " "
+                       INTO            WRK-SRYSURYOW
+           END-STRING
+      *
+           .
+       2104413-RECE05-TENSOU-SURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
