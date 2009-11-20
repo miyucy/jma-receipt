@@ -2875,6 +2875,7 @@
                       INITIALIZE               ORCSTUSANAREA
                       MOVE    SPA-HOSPNUM  TO  STUSAN-HOSPNUM
                       MOVE    SPA-GMN-PTID TO  STUSAN-PTID
+                      PERFORM 800-MCNDATE-SEC
                       MOVE    SMCNDATE-YMD TO  STUSAN-KJNYMD
                       EVALUATE    PTNYUINRRK-TOKUTEI-NYUIN
                           WHEN    "11"
@@ -2957,21 +2958,22 @@
                       CALL  "ORCSDAY"           USING   STS-AREA-DAY
                                                         LNK-DAY5-AREA
                       DISPLAY "LNK-DAY5-NISSU2 = " LNK-DAY5-NISSU2
+      *               ÅöÆü¤ÎÄÌ»»Æü¿ô»»½Ð¤Î°Ù¡¢£±Æü²Ã»»
+                      ADD       1     TO     STUSAN-NISSU07
+                      DISPLAY   "SEISHINNKA STUSAN-NISSU07 = "
+                                 STUSAN-NISSU07
+      *               ÄÌ»»Æü¿ô¼èÆÀ¤ÎÈæ³Ó
+                      IF   STUSAN-NISSU07         <=  LNK-DAY5-NISSU2
+                          MOVE    SPACE          TO  SPA-GMN-KEIKOKU
+                      ELSE
+            MOVE "Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ¤Î»»Äê¤¬£³·î¤ò±Û¤¨¤Æ¤¤¤Þ¤¹"
+                                                 TO  SPA-GMN-KEIKOKU
+                      END-IF
                    END-IF
                END-IF
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key41"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-      *        ÅöÆü¤ÎÄÌ»»Æü¿ô»»½Ð¤Î°Ù¡¢£±Æü²Ã»»
-               ADD       1     TO     STUSAN-NISSU07
-               DISPLAY   "SEISHINNKA STUSAN-NISSU07 = " STUSAN-NISSU07
-      *        ÄÌ»»Æü¿ô¼èÆÀ¤ÎÈæ³Ó
-               IF   STUSAN-NISSU07         <=  LNK-DAY5-NISSU2
-                    MOVE    SPACE          TO  SPA-GMN-KEIKOKU
-               ELSE
-            MOVE "Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ¤Î»»Äê¤¬£³·î¤ò±Û¤¨¤Æ¤¤¤Þ¤¹"
-                                           TO  SPA-GMN-KEIKOKU
-               END-IF
            END-IF
            .
       *
