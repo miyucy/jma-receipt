@@ -514,6 +514,11 @@
            03  WRK-TOKNYUINCD              PIC X(03).
            03  WRK-BUNBENRRKNUM            PIC 9(03).
       *
+      *    食堂加算判定領域
+           03  WRK-SHOKUJI-ASA             PIC 9(01).
+           03  WRK-SHOKUJI-HIRU            PIC 9(01).
+           03  WRK-SHOKUJI-YORU            PIC 9(01).
+      *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
            03  WRK-NENREI                  PIC 9(03).
@@ -11395,6 +11400,109 @@
            END-IF
       *
       *-------入院時食事時間区分対応ここまで-----------------------------------
+      *
+      *-------入院当日の食堂加算対応ここから-----------------------------------
+           MOVE    ZERO                TO  WRK-SHOKUJI-ASA
+           MOVE    ZERO                TO  WRK-SHOKUJI-HIRU
+           MOVE    ZERO                TO  WRK-SHOKUJI-YORU
+      *    朝食
+           MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    PTNYUINRRK-NYUINYMD(1:6)
+                                       TO  NACCT-SRYYM
+           MOVE    "key30"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-SELECT-SEC
+           MOVE    "key30"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-READ-SEC
+           IF      FLG-NYUINACCT        =   ZERO
+               MOVE     PTNYUINRRK-NYUINYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+                   MOVE    1           TO  WRK-SHOKUJI-ASA
+               END-IF
+           END-IF
+      *   入院会計マスタクローズ
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key30"     TO  MCP-PATHNAME
+           PERFORM  910-DBCLOSECURSOR-SEC
+      *
+      *    昼食
+           MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    PTNYUINRRK-NYUINYMD(1:6)
+                                       TO  NACCT-SRYYM
+           MOVE    "key31"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-SELECT-SEC
+           MOVE    "key31"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-READ-SEC
+           IF      FLG-NYUINACCT        =   ZERO
+               MOVE     PTNYUINRRK-NYUINYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+                   MOVE    1           TO  WRK-SHOKUJI-HIRU
+               END-IF
+           END-IF
+      *   入院会計マスタクローズ
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key31"     TO  MCP-PATHNAME
+           PERFORM  910-DBCLOSECURSOR-SEC
+      *
+      *    夕食
+           MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+           MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+           MOVE    PTNYUINRRK-NYUINYMD(1:6)
+                                       TO  NACCT-SRYYM
+           MOVE    "key32"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-SELECT-SEC
+           MOVE    "key32"             TO  MCP-PATHNAME
+           PERFORM  910-NYUINACCT-READ-SEC
+           IF      FLG-NYUINACCT        =   ZERO
+               MOVE     PTNYUINRRK-NYUINYMD(7:2)
+                                       TO  IDX-SHOKUJIX
+               IF   NACCT-DAY(IDX-SHOKUJI9)  =  1  OR  2
+                   MOVE    1           TO  WRK-SHOKUJI-YORU
+               END-IF
+           END-IF
+      *   入院会計マスタクローズ
+           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+           MOVE    "key32"     TO  MCP-PATHNAME
+           PERFORM  910-DBCLOSECURSOR-SEC
+      *
+      *    食堂加算の再セット
+           IF    (WRK-SHOKUJI-ASA      =   ZERO)   AND
+                 (WRK-SHOKUJI-HIRU     =   ZERO)   AND
+                 (WRK-SHOKUJI-YORU     =   ZERO)
+               MOVE    PTNYUINRRK-HOSPNUM  TO  NACCT-HOSPNUM
+               MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
+               MOVE    PTNYUINRRK-NYUINYMD(1:6)
+                                           TO  NACCT-SRYYM
+               MOVE    "key43"             TO  MCP-PATHNAME
+               PERFORM  910-NYUINACCT-SELECT-SEC
+               MOVE    "key43"             TO  MCP-PATHNAME
+               PERFORM  910-NYUINACCT-READ-SEC
+               IF      FLG-NYUINACCT        =   ZERO
+                   MOVE     PTNYUINRRK-NYUINYMD(7:2)
+                                           TO  IDX-SHOKUJIX
+                   MOVE    ZERO            TO  NACCT-DAY(IDX-SHOKUJI9)
+      *            剤回数再セット
+                   MOVE  ZERO              TO  NACCT-ZAIKAISU
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                     UNTIL     IDX-SKJ   >   31
+                        IF   NACCT-DAY(IDX-SKJ)   NOT =  0
+                             ADD   1       TO  NACCT-ZAIKAISU
+                        END-IF
+                   END-PERFORM
+                   MOVE     NYUINACCT-REC   TO  MCPDATA-REC
+                   MOVE     "tbl_nyuinacct" TO MCP-TABLE
+                   MOVE     "key"           TO  MCP-PATHNAME
+                   PERFORM  910-DBUPDATE-SEC
+               END-IF
+      *        入院会計マスタクローズ
+               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+               MOVE    "key43"     TO  MCP-PATHNAME
+               PERFORM  910-DBCLOSECURSOR-SEC
+           END-IF
+      *-------入院当日の食堂加算対応ここまで-----------------------------------
       *
            IF     IPN-NYUKAIKEI-SAKUSEI-FLG    =   "1"
                MOVE    SPACE   TO   SPA-GMN-I01-TOKNYUIN-CD
