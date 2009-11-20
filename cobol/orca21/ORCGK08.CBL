@@ -167,7 +167,7 @@
                            11  SPA-GMN-TMEISYO1    PIC X(200).
                        09  SPA-GMN-TMEISYO-3   REDEFINES
                                                    SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TYOBI       PIC X(02).
+                           11  SPA-GMN-TYOBI3      PIC X(02).
                            11  SPA-GMN-TMEISYO3    PIC X(198).
                        09  SPA-GMN-TMEISYO-2   REDEFINES
                                                SPA-GMN-TMEISYO.

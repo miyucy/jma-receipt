@@ -152,18 +152,18 @@
                05  WRK-HDD         PIC 9(02).
       *
       *    ªªƒÍÕ˙ŒÚ•∆°º•÷•Î
-       01  TBL-SANTEI-G.
-           03  TBL-SANTEI-OCC          OCCURS   100.
-               05  TBL-SANTEI-SRYCD           PIC X(09).
-               05  TBL-SANTEI-HKNCOMBI        PIC X(04).
-               05  TBL-SANTEI-SRYYM           PIC X(06).
-               05  TBL-SANTEI-FSANTEIYMD      PIC X(08).
-               05  TBL-SANTEI-DAY-G.
-                   07  TBL-SANTEI-DAY         PIC 9(03)
+       01  TBL-DAT-G.
+           03  TBL-DAT-OCC          OCCURS   100.
+               05  TBL-DAT-SRYCD           PIC X(09).
+               05  TBL-DAT-HKNCOMBI        PIC X(04).
+               05  TBL-DAT-SRYYM           PIC X(06).
+               05  TBL-DAT-FSANTEIYMD      PIC X(08).
+               05  TBL-DAT-DAY-G.
+                   07  TBL-DAT-DAY         PIC 9(03)
                                               OCCURS   31.
       *        1: £øÙ§¢§Í°¢£≤°ßºıø«Õ˙ŒÚ§¢§Í
-               05  TBL-SANTEI-SYORIKBN        PIC X(01).
-               05  TBL-SANTEI-CHKKBN          PIC X(01).
+               05  TBL-DAT-SYORIKBN        PIC X(01).
+               05  TBL-DAT-CHKKBN          PIC X(01).
       *
       *∞‹π‘ªªƒÍÕ˙ŒÚ∫Ó¿Æ
        01  TBL-IKOU-SRYCD-G.
@@ -675,7 +675,7 @@
            INITIALIZE                      SPA-K061-SELNUM
       *
            INITIALIZE                      SPA-K061-LIST-G
-           INITIALIZE                      TBL-SANTEI-G
+           INITIALIZE                      TBL-DAT-G
       *    ªªƒÍÕ˙ŒÚ∏°∫˜
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
@@ -731,12 +731,12 @@
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   100  )
                            OR (IDX     >   ZERO )
-               IF      TBL-SANTEI-SRYCD (IDY)  =   SPACE
+               IF      TBL-DAT-SRYCD (IDY)  =   SPACE
                    MOVE    IDY                 TO  IDX
                ELSE
-                   IF     (TBL-SANTEI-SRYCD (IDY)
+                   IF     (TBL-DAT-SRYCD (IDY)
                                                =   SANTEI-SRYCD)
-                      AND (TBL-SANTEI-HKNCOMBI(IDY)
+                      AND (TBL-DAT-HKNCOMBI(IDY)
                                                =   SANTEI-HKNCOMBINUM)
                        MOVE    IDY                 TO  IDX
                    END-IF
@@ -769,35 +769,35 @@
                GO      TO      3101-SANTEI-HEN-EXT
            END-IF
       *
-           IF      TBL-SANTEI-SRYCD (IDX)  NOT =   SPACE
+           IF      TBL-DAT-SRYCD (IDX)  NOT =   SPACE
       *         £øÙÕ˙ŒÚ§¨§¢§ÎæÏπÁ°¢∫«∏Â§ŒÕ˙ŒÚ§Ú¬–æ›
-               MOVE    "1"                 TO  TBL-SANTEI-SYORIKBN (IDX)
+               MOVE    "1"                 TO  TBL-DAT-SYORIKBN (IDX)
            END-IF
-           MOVE    SANTEI-SRYCD        TO  TBL-SANTEI-SRYCD (IDX)
-           MOVE    SANTEI-HKNCOMBINUM  TO  TBL-SANTEI-HKNCOMBI (IDX)
-           MOVE    SANTEI-SRYYM        TO  TBL-SANTEI-SRYYM (IDX)
-           MOVE    SANTEI-FSANTEIYMD   TO  TBL-SANTEI-FSANTEIYMD (IDX)
-           MOVE    SANTEI-DAY-AREA     TO  TBL-SANTEI-DAY-G (IDX)
+           MOVE    SANTEI-SRYCD        TO  TBL-DAT-SRYCD (IDX)
+           MOVE    SANTEI-HKNCOMBINUM  TO  TBL-DAT-HKNCOMBI (IDX)
+           MOVE    SANTEI-SRYYM        TO  TBL-DAT-SRYYM (IDX)
+           MOVE    SANTEI-FSANTEIYMD   TO  TBL-DAT-FSANTEIYMD (IDX)
+           MOVE    SANTEI-DAY-AREA     TO  TBL-DAT-DAY-G (IDX)
       *    ∫«Ω™∆¸
-           MOVE    TBL-SANTEI-SRYYM (IDX)
+           MOVE    TBL-DAT-SRYYM (IDX)
                                        TO  WRK-SRYYM
            MOVE    ZERO                TO  WRK-CNT
            MOVE    ZERO                TO  WRK-DD
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   31   )
-               IF      TBL-SANTEI-DAY (IDX IDX2)   >   ZERO
+               IF      TBL-DAT-DAY (IDX IDX2)   >   ZERO
                    MOVE    IDX2            TO  WRK-DD
                    IF     (SPA-K061-RRKYMD    NOT =   SPACE )
                      AND  (WRK-SRYYMD          >=  SPA-K061-RRKYMD )
       *                ºıø«Õ˙ŒÚ≈–œø∆¸∞ πﬂ§œ°¢ø«Œ≈π‘∞ŸÕ≠§»§π§Î
-                       MOVE    "2"             TO  TBL-SANTEI-SYORIKBN
+                       MOVE    "2"             TO  TBL-DAT-SYORIKBN
                                                                 (IDX)
                    END-IF
       *
                    ADD     1               TO  WRK-CNT
                    IF      WRK-CNT         >   1
       *                ºıø«Õ˙ŒÚ≈–œø£≤∆¸∞ æÂ
-                       MOVE    "3"             TO  TBL-SANTEI-SYORIKBN
+                       MOVE    "3"             TO  TBL-DAT-SYORIKBN
                                                                 (IDX)
                    END-IF
                END-IF
@@ -841,17 +841,17 @@
                    UNTIL      (IDY     >   TBL-IKOU-MAX )
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX     >   100  )
-                   IF      TBL-SANTEI-SRYCD (IDX)
+                   IF      TBL-DAT-SRYCD (IDX)
                                            =   TBL-IKOU-SRYCD (IDY)
                        MOVE    100             TO  IDX
                    ELSE
-                       IF      TBL-SANTEI-SRYCD (IDX)  =   SPACE
+                       IF      TBL-DAT-SRYCD (IDX)  =   SPACE
       *                    ªªƒÍÕ˙ŒÚ≈–œø»ΩƒÍ
                            MOVE    TBL-IKOU-SRYCD (IDY)    TO  WRK-SRYCD
                            PERFORM 31021-SANTEI-RRK-SEC
                            IF      FLG-SANTEI      =   1
                                MOVE    TBL-IKOU-SRYCD (IDY)
-                                               TO  TBL-SANTEI-SRYCD(IDX)
+                                               TO  TBL-DAT-SRYCD(IDX)
                            END-IF
                            MOVE    100         TO  IDX
                        END-IF
@@ -863,17 +863,17 @@
                    UNTIL      (IDY     >   TBL-RRK-MAX )
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX     >   100  )
-                   IF     (TBL-SANTEI-SRYCD (IDX)
+                   IF     (TBL-DAT-SRYCD (IDX)
                                            =   TBL-RRK-SRYCD (IDY))
                        MOVE    100             TO  IDX
                    ELSE
-                       IF      TBL-SANTEI-SRYCD (IDX)  =   SPACE
+                       IF      TBL-DAT-SRYCD (IDX)  =   SPACE
       *                    ªªƒÍÕ˙ŒÚ≈–œø»ΩƒÍ
                            MOVE    TBL-RRK-SRYCD (IDY)    TO  WRK-SRYCD
                            PERFORM 31021-SANTEI-RRK-SEC
                            IF      FLG-SANTEI      =   1
                                MOVE    TBL-RRK-SRYCD (IDY)
-                                               TO  TBL-SANTEI-SRYCD(IDX)
+                                               TO  TBL-DAT-SRYCD(IDX)
                            END-IF
                            MOVE    100         TO  IDX
                        END-IF
@@ -894,21 +894,21 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   100  )
-                         OR   (TBL-SANTEI-SRYCD (IDX)  =   SPACE)
+                         OR   (TBL-DAT-SRYCD (IDX)  =   SPACE)
       *
                ADD     1                   TO  SPA-K061-MAX
                MOVE    SPA-K061-MAX        TO  SPA-K061-TRENNUM (IDX)
-               MOVE    TBL-SANTEI-SRYCD (IDX)
+               MOVE    TBL-DAT-SRYCD (IDX)
                                            TO  SPA-K061-TSRYCD (IDX)
-               MOVE    TBL-SANTEI-SRYYM (IDX)
+               MOVE    TBL-DAT-SRYYM (IDX)
                                            TO  SPA-K061-TSRYYM (IDX)
-               MOVE    TBL-SANTEI-SRYYM (IDX)
+               MOVE    TBL-DAT-SRYYM (IDX)
                                            TO  WRK-SRYYM
                MOVE    ZERO                TO  WRK-DD
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2    >   31   )
-                   IF      TBL-SANTEI-DAY (IDX IDX2)   >   ZERO
-                       ADD     TBL-SANTEI-DAY (IDX IDX2)
+                   IF      TBL-DAT-DAY (IDX IDX2)   >   ZERO
+                       ADD     TBL-DAT-DAY (IDX IDX2)
                                                TO  SPA-K061-TKAISU (IDX)
                        MOVE    IDX2            TO  WRK-DD
                    END-IF
@@ -919,24 +919,24 @@
                    MOVE    WRK-DD          TO  WRK-SRYDD
                END-IF
                MOVE    WRK-SRYYMD          TO  SPA-K061-TSANYMD (IDX)
-               MOVE    TBL-SANTEI-FSANTEIYMD(IDX)
+               MOVE    TBL-DAT-FSANTEIYMD(IDX)
                                            TO  SPA-K061-TSYOYMD (IDX)
-               IF      TBL-SANTEI-HKNCOMBI (IDX)   =   ZERO
+               IF      TBL-DAT-HKNCOMBI (IDX)   =   ZERO
                                                    OR  SPACE
                    MOVE    SPACE           TO  SPA-K061-THKNCOMBI (IDX)
                ELSE
-                   MOVE    TBL-SANTEI-HKNCOMBI  (IDX)
+                   MOVE    TBL-DAT-HKNCOMBI  (IDX)
                                            TO  SPA-K061-THKNCOMBI (IDX)
                END-IF
       *        ΩÈø«Œ¡•¿•ﬂ°º»ΩƒÍ
-               IF      TBL-SANTEI-SRYCD (IDX)  =   "099110001"
+               IF      TBL-DAT-SRYCD (IDX)  =   "099110001"
                    IF     (SPA-K061-FSYOYMD    NOT =   SPACE )  AND
                           (SPA-K061-TSANYMD (IDX)
                                                NOT =   SPA-K061-FSYOYMD)
-                       MOVE    "9"         TO  TBL-SANTEI-SYORIKBN (IDX)
+                       MOVE    "9"         TO  TBL-DAT-SYORIKBN (IDX)
                    END-IF
                END-IF
-               MOVE    TBL-SANTEI-SYORIKBN (IDX)
+               MOVE    TBL-DAT-SYORIKBN (IDX)
                                            TO  SPA-K061-TSYORIKBN (IDX)
       *
                INITIALIZE                      TNS-TENSU-REC
@@ -973,7 +973,7 @@
                    MOVE    WRK-HKNCOMBIMEI     TO  SPA-K061-THKNCOMBIMEI
                                                                   (IDX)
                END-IF
-               EVALUATE    TBL-SANTEI-SYORIKBN (IDX)
+               EVALUATE    TBL-DAT-SYORIKBN (IDX)
                    WHEN    "1"
                        MOVE    "¬æ∆¸"          TO  SPA-K061-TKBNMEI(IDX)
                    WHEN    "2"
@@ -1028,7 +1028,7 @@
            INITIALIZE                      SPA-K061-SELNUM
       *
            INITIALIZE                      SPA-K061-LIST-G
-           INITIALIZE                      TBL-SANTEI-G
+           INITIALIZE                      TBL-DAT-G
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   TBL-RRK-MAX )
@@ -1037,7 +1037,7 @@
               PERFORM 31031-SANTEI-INIHEN-SEC
               IF      FLG-SANTEI-OK        =   ZERO
                   ADD     1                    TO  IDX
-                  MOVE    TBL-RRK-SRYCD (IDY)  TO  TBL-SANTEI-SRYCD(IDX)
+                  MOVE    TBL-RRK-SRYCD (IDY)  TO  TBL-DAT-SRYCD(IDX)
               END-IF
            END-PERFORM
       *    £”£–£¡ ‘Ω∏
@@ -1078,15 +1078,15 @@
       *        •∆°º•÷•Î ‘Ω∏
       **       IF      SANTEI-MSANTEICNT   >   ZERO
                    ADD     1                   TO  IDX
-                   MOVE    SANTEI-SRYCD        TO  TBL-SANTEI-SRYCD
+                   MOVE    SANTEI-SRYCD        TO  TBL-DAT-SRYCD
                                                                (IDX)
-                   MOVE    SANTEI-HKNCOMBINUM  TO  TBL-SANTEI-HKNCOMBI
+                   MOVE    SANTEI-HKNCOMBINUM  TO  TBL-DAT-HKNCOMBI
                                                                (IDX)
-                   MOVE    SANTEI-SRYYM        TO  TBL-SANTEI-SRYYM
+                   MOVE    SANTEI-SRYYM        TO  TBL-DAT-SRYYM
                                                                 (IDX)
-                   MOVE    SANTEI-FSANTEIYMD   TO  TBL-SANTEI-FSANTEIYMD
+                   MOVE    SANTEI-FSANTEIYMD   TO  TBL-DAT-FSANTEIYMD
                                                                 (IDX)
-                   MOVE    SANTEI-DAY-AREA     TO  TBL-SANTEI-DAY-G
+                   MOVE    SANTEI-DAY-AREA     TO  TBL-DAT-DAY-G
                                                                 (IDX)
                    MOVE    1                   TO  FLG-SANTEI-OK
       *        •∆°º•÷•Î ‘Ω∏
@@ -1149,7 +1149,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SRY-OK          =   1
-               MOVE    "P"             TO  TBL-SANTEI-SYORIKBN (IDX)
+               MOVE    "P"             TO  TBL-DAT-SYORIKBN (IDX)
            END-IF
            .
        31032-SRYACT-CHK-EXT.

@@ -552,7 +552,7 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2    >   31   )
                    IF      ACCT-DAY (1 IDX2)   >   ZERO
-                       MOVE    1               TO  SPA-K062-DAYA (IDX2)
+                       MOVE    "1"             TO  SPA-K062-DAYA (IDX2)
                    END-IF
                END-PERFORM
            END-IF
