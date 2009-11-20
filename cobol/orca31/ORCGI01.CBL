@@ -532,6 +532,7 @@
                05  WRK-DDS2                PIC 9(02).
            03  WRK-DOUJITUFLG-ST           PIC X(01).
            03  WRK-DOUJITUFLG-ED           PIC X(01).
+           03  WRK-ORG-PRINT-PG            PIC X(20).
       *
       *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ¡ÊÅ¾²Ê¡¢Å¾Åï¡Ë·×»»¥¨¥ê¥¢
        01  TN-IDX                          PIC 9(02).
@@ -2346,6 +2347,9 @@
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                MOVE    1                   TO  FLG-TEIKI-CHK
                PERFORM 480-TOUROKU-SEC
+           WHEN    "CLICKED"       ALSO    "B10"
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               PERFORM 480-TAIIN-PRT-SEC
            WHEN    "CLICKED"       ALSO    "B11"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-KARUTE-PRT-SEC
@@ -7350,6 +7354,49 @@
        480-KENSAKU-EXT.
            EXIT.
       *****************************************************************
+      *    Âà±¡¾ÚÌÀ½ñÈ¯¹Ô½èÍý
+      *****************************************************************
+       480-TAIIN-PRT-SEC              SECTION.
+      *
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  480-TAIIN-PRT-EXT
+           END-IF
+      *
+      *    °õºþÀ©¸æ¾ðÊó¼èÆÀ¥µ¥Ö
+           CALL    "ORCSONPRTSET"  USING   SPA-AREA
+      *
+           PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+           MOVE    SPA-AREA        TO  WRK-SPA-AREA
+      *
+           MOVE    "1"             TO  WRK-SPA-NYUGAIKBN
+      *
+           MOVE    PTINF-PTID      TO  WRK-SPA-PTID
+           MOVE    SPA-GMN-I01-PTNUM
+                                   TO  WRK-SPA-PTNUM
+           MOVE    PTINF-KANANAME  TO  WRK-SPA-KANANAME
+           MOVE    PTINF-NAME      TO  WRK-SPA-NAME
+           MOVE    PTINF-SEX       TO  WRK-SPA-SEX
+           MOVE    PTINF-BIRTHDAY  TO  WRK-YMD
+           PERFORM 5002-HIZUKE-CHK-SEC
+           MOVE    WRK-HENYMDG     TO  WRK-SPA-BIRTHDAYW
+           MOVE    WRK-SYMD        TO  WRK-SPA-BIRTHDAY
+           MOVE    "ORCHCN02"      TO  WRK-ORG-PRINT-PG
+           MOVE    "00000002"      TO  WRK-KBNCD
+           PERFORM 4801-PRINT-PG-EDIT-SEC
+      *
+           PERFORM 4901-PTNYUINRRK-SEL-SEC
+      *
+           MOVE    "01"            TO      WRK-SPA-PRT-FLG
+           CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
+                                           PTNYUINRRK-REC
+           MOVE    SPACE           TO      WRK-SPA-PRT-FLG
+      *
+           .
+       480-TAIIN-PRT-EXT.
+           EXIT.
+      *****************************************************************
       *    ¥«¥ë¥ÆÈ¯¹Ô½èÍý
       *****************************************************************
        480-KARUTE-PRT-SEC              SECTION.
@@ -7443,6 +7490,8 @@
       *    DISPLAY "ORCHCN01-NYUINYMD  = " ORCHCN01-NYUINYMD
       *
       *    Ä¢É¼¥×¥í¥°¥é¥àÌ¾¼èÆÀ
+           MOVE    "ORCHCN01"          TO  WRK-ORG-PRINT-PG
+           MOVE    "00000001"          TO  WRK-KBNCD
            PERFORM 4801-PRINT-PG-EDIT-SEC
       *
            CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
@@ -7580,7 +7629,7 @@
       *
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    WRK-KBNCD           TO  ORCSPRTNM-KBNCD
            MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
            MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
@@ -7590,9 +7639,8 @@
            IF    ( ORCSPRTNM-RC        =   ZERO )
               MOVE    ORCSPRTNM-PRTPG  TO  WRK-PRINT-PG
            ELSE
-               MOVE    "ORCHCN01"      TO  WRK-PRINT-PG
+               MOVE   WRK-ORG-PRINT-PG TO  WRK-PRINT-PG
            END-IF
-      *
       *
            .
        4801-PRINT-PG-EDIT-EXT.
@@ -18908,6 +18956,20 @@
                END-IF
            END-IF
       *
+      *    Âà±¡¾ÚÌÀ½ñºÆÈ¯¹Ô
+           IF    ( SPA-GMN-I01-NYUREKILST-SEL >   ZERO )
+            AND  ( SPA-GMN-I01-NYUREKILST-SEL
+                                  <=   SPA-GMN-I01-NYUREKILST-CNT )
+            AND  ( SPA-NAI-I01-TZITA-FLG (SPA-GMN-I01-NYUREKILST-SEL)
+                                   =   ZERO )
+            AND  ( SPA-NAI-I01-TTAIINYMD (SPA-GMN-I01-NYUREKILST-SEL)
+                               NOT =   SPACE )
+               MOVE    WIDGET-NORMAL   TO  I01-B10-STT
+           ELSE
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  I01-B10-STT
+           END-IF
+      *
       *    ½Ð»º°é»ù°ì»þ¶â²èÌÌ
            MOVE    WIDGET-INSENSITIVE  TO  I01-B15-STATE
            IF    ( I01-B15-LABEL   NOT =   SPACE )
@@ -18946,6 +19008,7 @@
       *
            MOVE    WRK-WIDGET-STATE    TO  I01-B07-STT
                                            I01-B08-STT
+                                           I01-B10-STT
                                            I01-B12-STT
                                            I01-IDOYMD-STT
                                            I01-BRMNUM-STT
