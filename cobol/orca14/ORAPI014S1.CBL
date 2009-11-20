@@ -1951,8 +1951,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              ELSE
                COMPUTE WRK-CK-HH1      =   WRK-CK-HH1 - 1
                COMPUTE WRK-CK-MM1      =   WRK-CK-MM1 + 60 - 10
-             ELSE
-               COMPUTE WRK-CK-MM1      =   WRK-CK-MM1 - 10
+             END-IF
+      *      ELSE
+      *        COMPUTE WRK-CK-MM1      =   WRK-CK-MM1 - 10
            END-IF
            IF      WRK-CK-TIME1        <   WRK-CK-TIME2
                MOVE    1               TO  FLG-YYKTIME
