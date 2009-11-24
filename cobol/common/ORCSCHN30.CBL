@@ -205,6 +205,10 @@
       *       "," ORCHCN30-COMMENT-MEI (IDX 1)
       *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 2)
       *       "," ORCHCN30-COMMENT-MEI (IDX 2)
+      *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 3)
+      *       "," ORCHCN30-COMMENT-MEI (IDX 3)
+      *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 4)
+      *       "," ORCHCN30-COMMENT-MEI (IDX 4)
       *    END-PERFORM 
       *TEST
       *
@@ -268,6 +272,7 @@
                INITIALIZE                      WRK-TBL-AREA
                MOVE    ZERO                TO  IDX-S
                MOVE    ZERO                TO  IDXY
+               MOVE    ZERO                TO  IDXC
                MOVE    SPACE               TO  WRK-YSRYCD
                MOVE    ORCSHCN30-ZAIKAIKEI(IDT)
                                            TO  WRK-KAISU
