@@ -2459,7 +2459,8 @@
            MOVE    SPA-K061-SANYMD (7:2)
                                        TO  SANTEI-MSANTEID
            MOVE    SPA-K061-KAISU      TO  SANTEI-MSANTEICNT
-           MOVE    SPA-K061-KAISU      TO  SANTEI-DAY (SANTEI-MSANTEID)
+           MOVE    SANTEI-MSANTEID     TO  IDX2
+           MOVE    SPA-K061-KAISU      TO  SANTEI-DAY (IDX2)
       *
            MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD

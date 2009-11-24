@@ -549,12 +549,13 @@
                       (SRY-SRYCD (4) (1:3) =   "008" ))
                OR    ((SRY-SRYCD (5) (1:1) =   "8"   ) OR
                       (SRY-SRYCD (5) (1:3) =   "008" ))
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2    >   31   )
-                   IF      ACCT-DAY (1 IDX2)   >   ZERO
-                       MOVE    "1"             TO  SPA-K062-DAYA (IDX2)
-                   END-IF
-               END-PERFORM
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL      (IDX2    >   31   )
+                       IF      ACCT-DAY (1 IDX2)   >   ZERO
+                           MOVE    "1"         TO  SPA-K062-DAYA (IDX2)
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
            .
        31032-SRYACT-CHK-EXT.
