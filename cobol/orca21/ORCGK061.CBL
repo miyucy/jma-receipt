@@ -1927,7 +1927,8 @@
                    MOVE    1               TO  SPA-K061-KAISU
                END-IF
            END-IF
-           IF      SPA-K061-KAISU      >   SPA-K061-JGNCNT
+           IF     (SPA-K061-JGNCNT     >   ZERO            )  AND
+                  (SPA-K061-KAISU      >   SPA-K061-JGNCNT )
                IF      SPA-K061-KAISU-KEI  =   ZERO
                    MOVE    "K005"          TO  SPA-ERRCD
                    MOVE    5               TO  SPA-K061-CUR
