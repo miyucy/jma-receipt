@@ -254,6 +254,7 @@
       *  04.05.04    NACL-∆£∏∂    09/09/18  °÷ ø¿Æ£≤£±«Ø¬Ê…˜¬Ë£ππÊ°◊¬–±˛
       *                                      º∏À∏©°¶≤¨ª≥∏©
       *                                     £≤£∞£∞£π«Ø£∏∑Ó°¡£≤£∞£±£∞«Ø£±∑Ó¬–æ› 
+      *  04.05.05    NACL-∆£∏∂    09/10/30  ≥»ƒ•¥¡ª˙¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1525,6 +1526,9 @@
       *    »æ≥—•¡•ß•√•Ø•µ•÷
            COPY    "CPORCSKANACHK.INC".
       *
+      *    ≥»ƒ•¥¡ª˙•¡•ß•√•Ø•µ•÷
+           COPY    "CPORCSKANACHK2.INC".
+      *
       *   ∆¸…’ —¥π•µ•÷
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -2277,11 +2281,34 @@
            MOVE    5                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ª·Ãæ
-           IF      RECE62-NAME (1:2)   =   "°°"
+           INITIALIZE                      ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    RECE62-NAME         TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING   ORCSKANACHK2AREA
+           IF      KANACHK2-RC4        =   ZERO
+               IF      RECE62-NAME (1:2)   =   "°°"
+                   IF      RECE62-KANANAME (1:2)   =   "°°"
+                       PERFORM VARYING IDX FROM    1   BY  2
+                               UNTIL   IDX >       49
+                           IF      RECE62-KANANAME (IDX:2)   =   "°°"
+                               CONTINUE
+                           ELSE     
+                               MOVE    RECE62-KANANAME (IDX:)
+                                                       TO  WRK-DATA
+                               MOVE    49              TO  IDX
+                           END-IF
+                       END-PERFORM 
+                   ELSE
+                       MOVE    RECE62-KANANAME     TO  WRK-DATA
+                   END-IF
+               ELSE
+                   MOVE    RECE62-NAME         TO  WRK-DATA
+               END-IF
+           ELSE
                IF      RECE62-KANANAME (1:2)   =   "°°"
                    PERFORM VARYING IDX FROM    1   BY  2
                            UNTIL   IDX >       49
-                       IF  RECE62-KANANAME (IDX:2)   =   "°°"
+                       IF      RECE62-KANANAME (IDX:2)   =   "°°"
                            CONTINUE
                        ELSE     
                            MOVE    RECE62-KANANAME (IDX:) TO  WRK-DATA
@@ -2291,9 +2318,7 @@
                ELSE
                    MOVE    RECE62-KANANAME     TO  WRK-DATA
                END-IF
-           ELSE
-               MOVE    RECE62-NAME         TO  WRK-DATA
-           END-IF
+           END-IF 
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ¿≠ Ã
