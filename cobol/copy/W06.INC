@@ -158,6 +158,12 @@
                     06  W06-CLIENT-SAVE-COUNT   PIC S9(9)   BINARY.
                     06  W06-CLIENT-SAVE-ITEM
                             PIC X(40)   OCCURS  2 TIMES.
+                  05  W06-USER-KANRI-COMB.
+                    06  W06-USER-KANRI.
+                      07  W06-VALUE   PIC X(40).
+                    06  W06-USER-KANRI-COUNT   PIC S9(9)   BINARY.
+                    06  W06-USER-KANRI-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W06-TGN3-STATE       PIC S9(9)   BINARY.
                 04  W06-TG3.
                   05   W06-GRPHOSPNUM  PIC X(02)   OCCURS  9 TIMES.

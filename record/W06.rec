@@ -218,6 +218,13 @@ W06	{
 					count	int;
 					item	varchar(40)[2];
 				};
+				USER_KANRI_COMB	{
+					USER_KANRI	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
 			};
               		TGN3	{
 				state   int;

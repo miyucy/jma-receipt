@@ -194,6 +194,11 @@
                        09  SPA-GMN-CLIENT-SAVE-LST PIC X(40)
                                                    OCCURS  2. 
                    07  SPA-CLIENT-SAVE-MAX    PIC 9(04).  
+      *            ユーザーログイン権限
+                   07  SPA-GMN-USER-KANRI-LSTG.
+                       09  SPA-GMN-USER-KANRI-LST  PIC X(40)
+                                                   OCCURS  5. 
+                   07  SPA-USER-KANRI-MAX      PIC 9(04).  
       *            基本情報の発行区分
                    07  SPA-1001-SKYPRTFLG      PIC  X(01).
                    07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
@@ -232,6 +237,11 @@
                        09  SPA-GMN-CLIENT-SAVE      PIC X(01).
                        09  SPA-GMN-CLIENT-SAVE-F1   PIC X(01).
                        09  SPA-GMN-CLIENT-SAVE-MEI  PIC X(24).
+      *            ユーザーログイン権限
+                   07  SPA-GMN-USER-KANRI-G. 
+                       09  SPA-GMN-USER-KANRI      PIC X(01).
+                       09  SPA-GMN-USER-KANRI-F1   PIC X(01).
+                       09  SPA-GMN-USER-KANRI-MEI  PIC X(24).
       *
                05  SPA-PAGE3-G.
       *            他院医療機関情報
@@ -632,6 +642,16 @@
            MOVE    "0 保存不可"        TO  SPA-GMN-CLIENT-SAVE-LST(1)
            MOVE    "1 保存可"          TO  SPA-GMN-CLIENT-SAVE-LST(2)
            MOVE    2                   TO  SPA-CLIENT-SAVE-MAX
+      *    ユーザーログイン権限
+           MOVE    "0 表示しない"      TO  SPA-GMN-USER-KANRI-LST(1)
+           MOVE    "1 閲覧のみ可(自院のみ)"
+                                       TO  SPA-GMN-USER-KANRI-LST(2)
+           MOVE    "2 閲覧のみ可(全て)"
+                                       TO  SPA-GMN-USER-KANRI-LST(3)
+           MOVE    "3 更新も可(自院のみ)"
+                                       TO  SPA-GMN-USER-KANRI-LST(4)
+           MOVE    "4 更新も可(全て)"  TO  SPA-GMN-USER-KANRI-LST(5)
+           MOVE    5                   TO  SPA-USER-KANRI-MAX
       *
       *    基本情報の発行フラグ
            PERFORM 3202-KIHON-HEN-SEC
@@ -1382,6 +1402,7 @@
                MOVE    SYS-1010-YAKUJYOPRTFLG  TO  SPA-GMN-YAKUJYOFLG
                MOVE    SYS-1010-FORMALFLG      TO  SPA-GMN-FORMALFLG
                MOVE    SYS-1010-CLIENT-SAVE    TO  SPA-GMN-CLIENT-SAVE
+               MOVE    SYS-1010-USER-KANRI     TO  SPA-GMN-USER-KANRI
                PERFORM 20091-PRTFLG-HEN-SEC
       *
                INITIALIZE                     SPA-PAGE3-G
@@ -1473,6 +1494,16 @@
                    MOVE    SPA-GMN-CLIENT-SAVE-LST (IDX)
                                            TO  SPA-GMN-CLIENT-SAVE-G
                    MOVE    SPA-CLIENT-SAVE-MAX TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-USER-KANRI-MAX
+               IF      SPA-GMN-USER-KANRI  =   SPA-GMN-USER-KANRI-LST
+                                                      (IDX)(1:1)
+                   MOVE    SPA-GMN-USER-KANRI-LST (IDX)
+                                           TO  SPA-GMN-USER-KANRI-G
+                   MOVE    SPA-USER-KANRI-MAX  TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1764,6 +1795,7 @@
            MOVE    W06-YAKUJYOFLG      TO  SPA-GMN-YAKUJYOFLG-G
            MOVE    W06-FORMALFLG       TO  SPA-GMN-FORMALFLG-G
            MOVE    W06-CLIENT-SAVE     TO  SPA-GMN-CLIENT-SAVE-G
+           MOVE    W06-USER-KANRI      TO  SPA-GMN-USER-KANRI-G
       *
       *    他院情報設定画面
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1857,6 +1889,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4121-CLIENT-SAVE-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-USER-KANRI-CHK-SEC
            END-IF
       *
            PERFORM VARYING IDX-GRP FROM    1   BY  1
@@ -2493,6 +2529,34 @@
        4121-CLIENT-SAVE-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ユーザーログイン権限チェック処理
+      *****************************************************************
+       4121-USER-KANRI-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-USER-KANRI-MAX
+               IF      SPA-GMN-USER-KANRI  =   SPA-GMN-USER-KANRI-LST
+                                                       (IDX)(1:1)
+                   MOVE    SPA-GMN-USER-KANRI-LST (IDX)
+                                               TO  SPA-GMN-USER-KANRI-G
+                   MOVE    1                   TO  FLG-CHK
+                   MOVE    SPA-USER-KANRI-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO )
+               IF      SPA-GMN-USER-KANRI  =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-USER-KANRI-G
+               ELSE
+                   MOVE    "0025"          TO  SPA-ERRCD
+                   MOVE    27              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4121-USER-KANRI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    他院オペレータＩＤチェック処理
       *****************************************************************
        4122-GRPUSERID-CHK-SEC          SECTION.
@@ -3026,6 +3090,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MEIPRTFLG       TO  SYS-1010-MEIPRTFLG
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1010-FORMALFLG
            MOVE    SPA-GMN-CLIENT-SAVE     TO  SYS-1010-CLIENT-SAVE
+           MOVE    SPA-GMN-USER-KANRI      TO  SYS-1010-USER-KANRI
       *
            INITIALIZE                          SYS-1010-GRPHOSPINF-G
            MOVE    ZERO                    TO  IDX-GRP
@@ -3602,6 +3667,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE  SPA-CLIENT-SAVE-MAX   TO  W06-CLIENT-SAVE-COUNT
            MOVE  SPA-GMN-CLIENT-SAVE-G TO  W06-CLIENT-SAVE
+      *    ユーザーログイン権限表示
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-USER-KANRI-MAX
+               MOVE    SPA-GMN-USER-KANRI-LST(IDX)
+                                       TO  W06-USER-KANRI-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-USER-KANRI-MAX    TO  W06-USER-KANRI-COUNT
+           MOVE  SPA-GMN-USER-KANRI-G  TO  W06-USER-KANRI
       *
       *    他院情報設定画面
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3747,6 +3820,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0024"
                    MOVE    "他院オペレータＩＤは半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0025"
+                   MOVE    "ユーザーログイン権限入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0026"
                    MOVE    "自院と他院のオペレータＩＤが重複しています"
@@ -3898,6 +3974,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "FORMALFLG"      TO   MCP-WIDGET
                 WHEN    26
                     MOVE  "CLIENT_SAVE"    TO   MCP-WIDGET
+                WHEN    27
+                    MOVE  "USER_KANRI"     TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -3986,6 +4064,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN     "FORMALFLG"
                    MOVE    26              TO  SPA-GMN-CUR
                WHEN     "CLIENT_SAVE"
+                   MOVE    27              TO  SPA-GMN-CUR
+               WHEN     "USER_KANRI"
                    MOVE    99              TO  SPA-GMN-CUR
       *    他院設定画面
                WHEN     "GRPUSERID01"  THRU    "GRPUSERID08"
