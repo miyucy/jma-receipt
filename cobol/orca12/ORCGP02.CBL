@@ -994,10 +994,8 @@
                            MOVE    SPA-GMN21-KISEI-ADRS
                                                TO  SPA-MAE-KISEI-ADRS
                        WHEN    OTHER
-                           MOVE    SPA-GMN982-TOWNNAME
-                                               TO  SPA-GMN-EDITADRS-NAME
-                           MOVE    SPA-GMN-EDITADRS-NAME
-                                               TO  SPA-MAE-ADRS
+                           MOVE    "P02 "          TO  SPA-P02-GAMEN
+                           PERFORM 3002-GMNSET-SEC
                        END-EVALUATE
                    END-IF
            END-EVALUATE

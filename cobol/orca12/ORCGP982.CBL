@@ -267,6 +267,8 @@
                                            TO  SPA-GMN982-RENNUM
                MOVE    SPA-GMN982-TTOWNNAME (IDX)
                                            TO  SPA-GMN982-TOWNNAME
+               MOVE    SPA-GMN982-TCITYNAMET (IDX)
+                                           TO  SPA-GMN982-CITYNAMET
            END-IF
            .
        300-SCREEN-EXT.
@@ -379,6 +381,20 @@
                                                                    (IDX)
                        MOVE    ADRS-EDANUM     TO  SPA-GMN982-TRENNUM
                                                                    (IDX)
+      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+                       STRING  ADRS-CITYNAME
+                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN982-TCITYNAMET
+                                                                  (IDX)
+                       END-STRING
+                       IF      ADRS-TOWNNAME
+                                           =   "°Ê²¼¤Ë·ÇºÜ¤¬¤Ê¤¤¾ì¹ç"
+                           MOVE    SPACE       TO  SPA-GMN982-TCITYNAMET
+                                                                  (IDX)
+                           MOVE    ADRS-CITYNAME
+                                               TO  SPA-GMN982-TCITYNAMET
+                                                                  (IDX)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -468,6 +484,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    INITIALIZE                  SPA-GMN982-KEY
                    MOVE    SPACE               TO  SPA-GMN982-TOWNNAME
+                   MOVE    SPACE               TO  SPA-GMN982-CITYNAMET
                    PERFORM 210-BACK
       *        Á°ÊÇ
                WHEN    "CLICKED"       ALSO    "B06"
@@ -551,6 +568,9 @@
                    MOVE    SPA-GMN982-TTOWNNAME (IDX)
                                            TO  SPA-GMN982-TOWNNAME
       *
+                   MOVE    SPA-GMN982-TCITYNAMET (IDX)
+                                           TO  SPA-GMN982-CITYNAMET
+      *
                    PERFORM 210-BACK
                END-IF
            END-IF
@@ -593,6 +613,8 @@
                MOVE    SPA-NAI982-SELNUM   TO  IDX
                MOVE    SPA-GMN982-TPOST   (IDX)
                                            TO  SPA-GMN982-POST
+               MOVE    SPACE               TO  SPA-GMN982-TOWNNAME
+               MOVE    SPACE               TO  SPA-GMN982-CITYNAMET
                PERFORM 210-BACK
            END-IF
            .
@@ -616,6 +638,8 @@
                                            TO  SPA-GMN982-RENNUM
                MOVE    SPA-GMN982-TTOWNNAME (IDX)
                                            TO  SPA-GMN982-TOWNNAME
+               MOVE    SPA-GMN982-TCITYNAMET (IDX)
+                                           TO  SPA-GMN982-CITYNAMET
       *
                PERFORM 210-BACK
            END-IF

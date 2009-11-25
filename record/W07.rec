@@ -398,6 +398,13 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				KENMEIKBN_COMB	{
+					KENMEIKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[5];
+				};
 			};
 			TAGNAME2    {
 			    state   int;

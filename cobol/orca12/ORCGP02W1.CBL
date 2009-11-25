@@ -89,6 +89,7 @@
       *                                     ¹ñÊÝÅù£·£°ºÐÅþÃ£·Ù¹ðÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/09/08  ¸øÈñÉéÃ´³Û¤Ë°¦ÃÎ¸©¤Î'191'ÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/11/20  Í¹ÊØÈÖ¹æ¼«Æ°µ­ºÜ¶èÊ¬ÄÉ²Ã
+      *                                     ÅÔÆ»ÉÜ¸©Ì¾µ­ºÜ¤Ê¤·ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -883,6 +884,8 @@
                                            TO  SPA-GMN-EDITADRS-NAME
                        MOVE    SPA-GMN-EDITADRS-NAME
                                            TO  SPA-MAE-ADRS
+                       MOVE    SPA-GMN-POST
+                                           TO  SPA-MAE-POST
                        MOVE    42          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    SPACE       TO  SPA-GMN-POST
@@ -899,15 +902,7 @@
                            MOVE    40              TO  SPA-GMN-CUR
                        END-IF
                    ELSE
-                       IF      SPA-GMN982-POST     NOT =   SPACE
-                           MOVE    SPA-GMN982-POST
-                                                   TO  SPA-GMN-POST
-                       END-IF
-                       IF      SPA-GMN982-TOWNNAME     NOT =   SPACE
-                           MOVE    SPA-GMN982-TOWNNAME
-                                               TO  SPA-GMN-EDITADRS-NAME
-                       END-IF
-                       MOVE    SPA-GMN-POST    TO  SPA-MAE-POST
+                       PERFORM 30011-P982SET-SEC
                        MOVE    42              TO  SPA-GMN-CUR
                    END-IF
                    MOVE    SPA-GMN-EDITADRS-NAME
@@ -1039,12 +1034,41 @@
                    CALL    "ORCSP03A"          USING   SPA-AREA
                                                        SPA-P02SCRAREA
                                                        SPA-P02KYOUTU
+      *        ½»½ê³ÎÇ§
+               WHEN    "1098"
+                   PERFORM 30011-P982SET-SEC
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
       *
            .
        3001-PID1-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½»½ê³ÎÇ§ÊÔ½¸½èÍý
+      *****************************************************************
+       30011-P982SET-SEC              SECTION.
+      *
+           IF      SPA-GMN982-POST     NOT =   SPACE
+               MOVE    SPA-GMN982-POST     TO  SPA-GMN-POST
+           END-IF
+      *
+           IF      SPA-GMN982-TOWNNAME NOT =   SPACE
+               IF      SPA-NAI-KENMEIKBN-FLG   =   "0"
+      *        ÅÔÆ»ÉÜ¸©Ì¾¤Ê¤·
+                   MOVE    SPA-GMN982-CITYNAMET
+                                           TO  SPA-GMN-EDITADRS-NAME
+               ELSE
+      *        ÅÔÆ»ÉÜ¸©Ì¾¤¢¤ê
+                   MOVE    SPA-GMN982-TOWNNAME
+                                           TO  SPA-GMN-EDITADRS-NAME
+               END-IF
+           END-IF
+           MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
+           MOVE    SPA-GMN-POST            TO  SPA-MAE-POST
+           .
+       30011-P982SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2563,7 +2587,6 @@
            MOVE    P02-P02-HAKKO       TO  SPA-GMN-HAKKO-G
            MOVE    P02-P02-USERPG      TO  SPA-GMN-USERPG-G
       *
-      *
            IF      P02-P02-POST        =   SPA-MAE-POST
                MOVE    ZERO                TO  FLG-IN-POST
            ELSE
@@ -3631,10 +3654,8 @@
            END-IF
       *    £±·ï¤Î»þ¡¢ÂÐ¾Ý
            IF      SPA-GMN982-MAX      =   1
-               MOVE    SPA-GMN982-POST     TO  SPA-GMN-POST
-               MOVE    SPA-GMN982-TOWNNAME TO  SPA-GMN-EDITADRS-NAME
-               MOVE    SPA-GMN-EDITADRS-NAME
-                                           TO  SPA-MAE-ADRS
+      *        ½»½ê¸¡º÷ÊÔ½¸
+               PERFORM 30011-P982SET-SEC
            ELSE
       *        ½»½ê°ìÍ÷²èÌÌ¤Ø
                PERFORM 41012-P982-SYORI-SEC
@@ -3699,6 +3720,7 @@
                    MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-EDITADRS-NAME
                    MOVE    SPA-GMN-EDITADRS-NAME
                                                TO  SPA-MAE-ADRS
+                   MOVE    SPA-GMN-POST        TO  SPA-MAE-POST
                    MOVE    1                   TO  FLG-OK
                END-IF
            END-IF
@@ -3796,10 +3818,13 @@
       *    £±·ï¤Î»þ¡¢ÂÐ¾Ý
            IF      SPA-GMN982-MAX      =   1
                IF      SPA-GMN982-POST     NOT =   SPA-GMN-POST
-                   MOVE    SPA-GMN982-POST     TO  SPA-GMN-POST
-                   MOVE    SPA-GMN982-TOWNNAME TO  SPA-GMN-EDITADRS-NAME
+      *            ½»½ê¸¡º÷ÊÔ½¸
+                   PERFORM 30011-P982SET-SEC
                ELSE
-                   IF      SPA-GMN982-TOWNNAME =   SPA-GMN-EDITADRS-NAME
+                   IF     (SPA-GMN982-TOWNNAME
+                                           =   SPA-GMN-EDITADRS-NAME)
+                   OR     (SPA-GMN982-CITYNAMET
+                                           =   SPA-GMN-EDITADRS-NAME)
                        CONTINUE
                    ELSE
                        MOVE    "1098"          TO  SPA-PIDCD

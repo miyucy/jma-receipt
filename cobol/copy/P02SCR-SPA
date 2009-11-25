@@ -1106,12 +1106,14 @@
                    07  SPA-GMN982-POST              PIC X(07).
                    07  SPA-GMN982-RENNUM            PIC 9(02).
                05  SPA-GMN982-TOWNNAME              PIC X(100).
-     *
+      *        »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+               05  SPA-GMN982-CITYNAMET             PIC X(100).
+      *
                05  SPA-GMN982-KEYNAME               PIC X(100).
-     *
+      *
                05  SPA-GMN982-SELNUM                PIC X(03).
                05  SPA-NAI982-SELNUM                PIC 9(03).
-     *
+      *
                05  SPA-GMN982-TBL-G.
                    07  SPA-GMN982-TBL               OCCURS  100.
                        09  SPA-GMN982-SEQNO         PIC 9(03).
@@ -1120,6 +1122,8 @@
                        09  SPA-GMN982-TTOWNNAME     PIC X(100).
       *
                        09  SPA-GMN982-TRENNUM       PIC 9(02).
+      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+                       09  SPA-GMN982-TCITYNAMET    PIC X(100).
                    07  SPA-GMN982-MAX               PIC 9(04).
       *
       *    P02D (Ï«ºÒÊÝ¸±ÆþÎÏ²èÌÌ¡Ë

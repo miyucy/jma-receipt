@@ -458,6 +458,15 @@
                            11  SPA-GMN-POSTKBN-FLG-LIST      PIC X(40)
                                                              OCCURS  5.
                        09  SPA-GMN-POSTKBN-MAX               PIC 9(02).
+      *                郵便番号自動記載チェック区分
+                       09  SPA-GMN-KENMEIKBN-FLG-G.
+                           11  SPA-GMN-KENMEIKBN-FLG         PIC X(01).
+                           11  SPA-GMN-KENMEIKBN-F1          PIC X(01).
+                           11  SPA-GMN-KENMEIKBN-MEI         PIC X(26).
+                       09  SPA-GMN-KENMEIKBN-FLG-COMB.
+                           11  SPA-GMN-KENMEIKBN-FLG-LIST    PIC X(28)
+                                                             OCCURS  5.
+                       09  SPA-GMN-KENMEIKBN-MAX             PIC 9(02).
       *
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
@@ -1622,7 +1631,7 @@
            MOVE    "1 チェックする"
                                    TO  SPA-GMN-KOHRRKKBN-FLG-LIST (2)
            MOVE    2               TO  SPA-GMN-KOHRRKKBN-MAX 
-      *    公費上限額履歴チェック
+      *    郵便番号自動記載区分
            MOVE    "0 自動記載しない"
                                    TO  SPA-GMN-POSTKBN-FLG-LIST (1)
            MOVE    "1 自動記載する"
@@ -1630,6 +1639,12 @@
            MOVE    "2 自動記載する（郵便番号未設定）"
                                    TO  SPA-GMN-POSTKBN-FLG-LIST (3)
            MOVE    3               TO  SPA-GMN-POSTKBN-MAX 
+      *    都道府県名記載区分
+           MOVE    "0 記載しない"
+                                   TO  SPA-GMN-KENMEIKBN-FLG-LIST (1)
+           MOVE    "1 記載する"
+                                   TO  SPA-GMN-KENMEIKBN-FLG-LIST (2)
+           MOVE    2               TO  SPA-GMN-KENMEIKBN-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2598,6 +2613,9 @@
       *        郵便番号自動記載区分
                MOVE    SYS-1017-POSTKBN-FLG
                                        TO  SPA-GMN-POSTKBN-FLG
+      *        都道府県名記載区分
+               MOVE    SYS-1017-KENMEIKBN-FLG
+                                       TO  SPA-GMN-KENMEIKBN-FLG
            END-IF
       *
       *    初期設定
@@ -2797,6 +2815,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-POSTKBN-FLG-LIST(2)
                                            TO  SPA-GMN-POSTKBN-FLG-G
+           END-IF
+      *    都道府県名記載区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KENMEIKBN-MAX
+               IF      SPA-GMN-KENMEIKBN-FLG
+                                       =   SPA-GMN-KENMEIKBN-FLG-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-KENMEIKBN-FLG-LIST(IDX)
+                                           TO  SPA-GMN-KENMEIKBN-FLG-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-KENMEIKBN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-KENMEIKBN-FLG-LIST(2)
+                                           TO  SPA-GMN-KENMEIKBN-FLG-G
            END-IF
       *
            MOVE    201                 TO  SPA-GMN-CUR
@@ -4269,6 +4304,7 @@
            MOVE    W07-GRPPTLST        TO  SPA-GMN-GRPPTLST-FLG-G
            MOVE    W07-KOHRRK          TO  SPA-GMN-KOHRRKKBN-FLG-G
            MOVE    W07-POSTKBN         TO  SPA-GMN-POSTKBN-FLG-G
+           MOVE    W07-KENMEIKBN       TO  SPA-GMN-KENMEIKBN-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -4536,6 +4572,10 @@
       *            郵便番号自動記載区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-POSTKBN-FLG-SEC
+                   END-IF
+      *            都道府県名記載区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-KENMEIKBN-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -6187,6 +6227,31 @@
       *
           .
        4107-POSTKBN-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    都道府県名記載区分チェック処理
+      *****************************************************************
+       4107-KENMEIKBN-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-KENMEIKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-KENMEIKBN-FLG
+                                       =   SPA-GMN-KENMEIKBN-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-KENMEIKBN-FLG-LIST(IDX)
+                                          TO  SPA-GMN-KENMEIKBN-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    216             TO  SPA-GMN-CUR
+               MOVE    "1016"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-KENMEIKBN-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -8155,6 +8220,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-GRPPTLST-FLG    TO  SYS-1017-GRPPTLST-FLG
            MOVE    SPA-GMN-KOHRRKKBN-FLG   TO  SYS-1017-KOHRRKKBN-FLG
            MOVE    SPA-GMN-POSTKBN-FLG     TO  SYS-1017-POSTKBN-FLG
+           MOVE    SPA-GMN-KENMEIKBN-FLG   TO  SYS-1017-KENMEIKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -8982,6 +9048,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  W07-POSTKBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-POSTKBN-MAX     TO  W07-POSTKBN-COUNT
+      *    都道府県名記載区分
+           MOVE    SPA-GMN-KENMEIKBN-FLG-G TO  W07-KENMEIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KENMEIKBN-MAX
+               MOVE    SPA-GMN-KENMEIKBN-FLG-LIST (IDX)
+                                           TO  W07-KENMEIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-KENMEIKBN-MAX   TO  W07-KENMEIKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -9787,6 +9861,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED BY  SIZE
                                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "1016"
+                   STRING  "住所都道府県名記載区分が"
+                           "ありません"
+                                                   DELIMITED BY  SIZE
+                                                       INTO  SPA-ERRMSG
+                   END-STRING
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -10144,6 +10224,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "KOHRRK"          TO   MCP-WIDGET
                WHEN    215
                    MOVE  "POSTKBN"         TO   MCP-WIDGET
+               WHEN    216
+                   MOVE  "KENMEIKBN"       TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -10476,6 +10558,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KOHRRK"
                    MOVE    215              TO  SPA-GMN-CUR
                WHEN    "POSTKBN"
+                   MOVE    216              TO  SPA-GMN-CUR
+               WHEN    "KENMEIKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"
