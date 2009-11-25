@@ -164,6 +164,7 @@
       *        1:Ê£¿ô¤¢¤ê¡¢£²¡§¼õ¿ÇÍúÎò¤¢¤ê
                05  TBL-DAT-SYORIKBN        PIC X(01).
                05  TBL-DAT-CHKKBN          PIC X(01).
+               05  TBL-DAT-SANTEIPLUS      PIC X(01).
       *
       *°Ü¹Ô»»ÄêÍúÎòºîÀ®
        01  TBL-IKOU-SRYCD-G.
@@ -983,8 +984,13 @@
                    WHEN    "9"
                        MOVE    "ÉÔ²Ä"          TO  SPA-K061-TKBNMEI(IDX)
                    WHEN    "P"
-                       MOVE    "¿ÇÎÅ"          TO  SPA-K061-TKBNMEI(IDX)
+                       MOVE    "¿Ç¡¡"          TO  SPA-K061-TKBNMEI(IDX)
                END-EVALUATE
+               MOVE    TBL-DAT-SANTEIPLUS (IDX)
+                                           TO  SPA-K061-TPLUSKBN(IDX)
+               IF      TBL-DAT-SANTEIPLUS (IDX)    =   "1"
+                   MOVE    "¥³"            TO  SPA-K061-TKBNMEI2(IDX)
+               END-IF
            END-PERFORM
            .
        31021-SPATBL-HENSYU-EXT.
@@ -1093,6 +1099,8 @@
                IF      SANTEI-MSANTEICNT   >   ZERO
       *            ¿ÇÎÅ¹Ô°ÙÍ­ÌµÈ½Äê
                    PERFORM 31032-SRYACT-CHK-SEC
+      *            ¥³¥á¥ó¥ÈÅÐÏ¿È½Äê
+                   PERFORM 31032-SANTEIPLUS-CHK-SEC
                END-IF
       *
                MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -1183,9 +1191,19 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SRYACCT         =   ZERO
-               IF     (SANTEI-HKNCOMBINUM  =   ZERO )  OR
-                      (ACCT-HKNCOMBI       =   SANTEI-HKNCOMBINUM)
+               IF     (SANTEI-HKNCOMBINUM  NOT =   ZERO )  AND
+                      (ACCT-HKNCOMBI           =   SANTEI-HKNCOMBINUM)
                    MOVE    1               TO  FLG-SRY-OK
+               END-IF
+               IF     (SANTEI-HKNCOMBINUM  =   ZERO )
+      *            Ï«ºÒ¡¦¼«ÇåÀÕÊÝ¸±°Ê³°¤ÎÊÝ¸±È½Äê
+                   MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
+                   PERFORM 31011-HKNCOMBI-SET-SEC
+                   IF      COMB-HKNNUM         =   "971"  OR  "973"
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-SRY-OK
+                   END-IF
                END-IF
            END-IF
            .
@@ -1306,6 +1324,41 @@
            END-IF
            .
        31011-HKNCOMBI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥³¥á¥ó¥ÈÅÐÏ¿È½Äê
+      *****************************************************************
+       31032-SANTEIPLUS-CHK-SEC           SECTION.
+      *
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SANTEIPLUS      =   ZERO
+               MOVE    "1"                 TO  TBL-DAT-SANTEIPLUS (IDX)
+           END-IF
+           .
+       31032-SANTEIPLUS-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3416,6 +3469,24 @@
            .
        975-SRYKARRK-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    »»ÄêÎòÉÕ²Ã¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       920-SANTEIPLUS-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEIPLUS-REC
+               MOVE    ZERO                TO  FLG-SANTEIPLUS
+           ELSE
+               INITIALIZE                      SANTEIPLUS-REC
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+      *
+           .
+       920-SANTEIPLUS-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
       *****************************************************************

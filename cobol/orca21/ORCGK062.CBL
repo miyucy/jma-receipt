@@ -589,9 +589,19 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF     (FLG-SRYACCT         =   ZERO  )
-               IF     (SANTEI-HKNCOMBINUM  =   ZERO )  OR
+               IF     (SANTEI-HKNCOMBINUM  NOT =   ZERO )  AND
                       (ACCT-HKNCOMBI       =   SANTEI-HKNCOMBINUM)
                    MOVE    1               TO  FLG-SRY-OK
+               END-IF
+               IF     (SANTEI-HKNCOMBINUM  =   ZERO )
+      *            Ï«ºÒ¡¦¼«ÇåÀÕÊÝ¸±°Ê³°¤ÎÊÝ¸±È½Äê
+                   MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
+                   PERFORM 31011-HKNCOMBI-SET-SEC
+                   IF      COMB-HKNNUM         =   "971"  OR  "973"
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-SRY-OK
+                   END-IF
                END-IF
            END-IF
            .
@@ -903,8 +913,8 @@
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-NEXT-PAGE-SEC
       *    Á°Æü
-               WHEN    "CLICKED"       ALSO    "B09"
-                   PERFORM 490-BACK-DAY-SEC
+      *        WHEN    "CLICKED"       ALSO    "B09"
+      *            PERFORM 490-BACK-DAY-SEC
       *    ¼¡Æü
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 4100-NEXT-DAY-SEC

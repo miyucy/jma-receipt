@@ -119,13 +119,17 @@
                        09  SPA-K061-TKAISU         PIC 9(03).
                        09  SPA-K061-THKNCOMBI      PIC X(04).
                        09  SPA-K061-THKNCOMBIMEI   PIC X(30).
-                       09  SPA-K061-TKBNMEI        PIC X(06).
+                       09  SPA-K061-TKBNMEI.
+                           11  SPA-K061-TKBNMEI1   PIC X(02).
+                           11  SPA-K061-TKBNMEI2   PIC X(02).
+                           11  SPA-K061-TKBNMEI3   PIC X(02).
       *
                        09  SPA-K061-TSRYYM         PIC X(06).
                        09  SPA-K061-TSANYMD        PIC X(08).
                        09  SPA-K061-TSYOYMD        PIC X(08).
                        09  SPA-K061-THKNFLG        PIC X(01).
                        09  SPA-K061-TSYORIKBN      PIC X(01).
+                       09  SPA-K061-TPLUSKBN       PIC X(01).
                    07  SPA-K061-MAX                PIC 9(03).
                05  SPA-K061-SELNUM             PIC 9(03).
       *
