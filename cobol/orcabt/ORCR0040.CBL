@@ -2994,7 +2994,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                    END-IF
                    IF   FLG-COMOKIKAE  =    1
                    AND  FLG-COMARI2    =   ZERO
-                      IF   SANTEIPLUS-COMMENT(1:12) = "手術　　　日"
+                      IF   SANTEIPLUS-COMMENT(1:8)  = "手術　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    1    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
@@ -3002,8 +3002,7 @@ grpsys                   MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                            COMPUTE  IDZ  =  IDZ - 1
                         END-IF
                       END-IF
-                      IF   SANTEIPLUS-COMMENT(1:22) =
-                                            "急性憎悪　　　月　　日"
+                      IF   SANTEIPLUS-COMMENT(1:12) = "急性憎悪　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    2    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
