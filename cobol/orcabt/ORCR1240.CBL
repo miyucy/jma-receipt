@@ -45,6 +45,7 @@
       *                                     載を行なう対応
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.05.02    NACL-門脇    09/11/25  リハビリコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -214,6 +215,9 @@
            03  FLG-COMOKIKAE2      PIC 9(01).
            03  FLG-HENSYUKIN       PIC 9(01).
            03  FLG-HANTEI          PIC 9(01).
+           03  FLG-COMARI          PIC 9(01).
+           03  FLG-COMARI2         PIC 9(01).
+           03  FLG-SANTEIPLUS      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -594,6 +598,10 @@
       *
       *    点数
            COPY    "CPTENSU.INC".
+      *
+      *    算定履歴付加
+       01  SANTEIPLUS-REC.
+           COPY    "CPSANTEIPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1385,6 +1393,8 @@
            MOVE    SPACE                 TO  WRK-KYUSEI-SRYKA
            MOVE    ZERO                  TO  WRK-KYUSEI-ZAINUM
            MOVE    ZERO                  TO  FLG-COMOKIKAE2
+           MOVE    ZERO                  TO  FLG-COMARI
+           MOVE    ZERO                  TO  FLG-COMARI2
       *
            MOVE    ZERO                  TO  IDZ
            INITIALIZE                        WRK-FREE-AREA
@@ -1530,6 +1540,16 @@
                               END-IF
                           END-EVALUATE
                        END-IF
+                       IF   FLG-COMOKIKAE  =   1
+                          IF  SRY-SRYCD(IDX12) = "840000042" OR
+                                                 "840000101"
+                            MOVE    1    TO   FLG-COMARI2
+                          ELSE
+                            MOVE    1    TO   FLG-COMARI
+                          END-IF
+                       ELSE
+                            MOVE    1    TO   FLG-COMARI
+                       END-IF
                       END-IF
                    END-PERFORM
                    MOVE    "tbl_sryact"      TO    MCP-TABLE
@@ -1541,6 +1561,67 @@
               MOVE    "tbl_sryact"      TO    MCP-TABLE
               MOVE    "key2"            TO    MCP-PATHNAME
               PERFORM   900-CLOSE-SEC
+           END-IF
+      *++++
+           IF      FLG-COMARI    =    ZERO
+              INITIALIZE                      SANTEIPLUS-REC
+              MOVE    RECE200-HOSPNUM     TO  SANTEIPLUS-HOSPNUM
+              MOVE    RECE200-PTID        TO  SANTEIPLUS-PTID
+              MOVE    WRK-KYUSEIYMD(1:6)  TO  SANTEIPLUS-SRYYM
+              MOVE    WRK-SRYCD           TO  SANTEIPLUS-SRYCD
+              MOVE    ZERO                TO  SANTEIPLUS-NYUGAIKBN
+              MOVE    ZERO                TO  SANTEIPLUS-SRYKA
+              MOVE    RECE200-HKNCOMBI    TO  SANTEIPLUS-HKNCOMBINUM
+              MOVE    WRK-KYUSEIYMD(7:2)  TO  SANTEIPLUS-DAYKEY
+              MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+              MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+              MOVE    "key2"              TO  MCP-PATHNAME
+              PERFORM 900-DBSELECT-SEC
+              IF      MCP-RC               =       ZERO
+                 MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+                 MOVE    "key2"               TO  MCP-PATHNAME
+                 PERFORM  900-SANTEIPLUS-READ-SEC
+                 PERFORM  UNTIL   FLG-SANTEIPLUS     =   1
+                   IF  SANTEIPLUS-COMMENT  NOT =  SPACE
+                      ADD     1                 TO  IDZ
+                      MOVE  SANTEIPLUS-COMMENT  TO  WK-FREE-NAME(IDZ)
+                      PERFORM   VARYING   IDX13   FROM   200   BY  -1
+                                 UNTIL    IDX13    <     1
+                        IF  WK-FREE-NAME(IDZ)(IDX13:1)  NOT =  SPACE
+                          COMPUTE  WK-FREE-YUKOKETA(IDZ)  =
+                                   IDX13    /    2
+                          MOVE     1     TO      IDX13
+                        END-IF
+                      END-PERFORM
+                   END-IF
+                   IF   FLG-COMOKIKAE  =    1
+                   AND  FLG-COMARI2    =   ZERO
+                      IF   SANTEIPLUS-COMMENT(1:12) = "手術　　　日"
+                        IF   FLG-COMOKIKAE2 = ZERO
+                           MOVE    1    TO  FLG-COMOKIKAE2
+                           MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
+                           MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
+                           COMPUTE  IDZ  =  IDZ - 1
+                        END-IF
+                      END-IF
+                      IF   SANTEIPLUS-COMMENT(1:22) =
+                                            "急性憎悪　　　月　　日"
+                        IF   FLG-COMOKIKAE2 = ZERO
+                           MOVE    2    TO  FLG-COMOKIKAE2
+                           MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
+                           MOVE  ZERO   TO  WK-FREE-YUKOKETA(IDZ)
+                           COMPUTE  IDZ  =  IDZ - 1
+                        END-IF
+                      END-IF
+                   END-IF
+                   MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+                   MOVE    "key2"               TO  MCP-PATHNAME
+                   PERFORM  900-SANTEIPLUS-READ-SEC
+                 END-PERFORM
+              END-IF
+              MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+              MOVE    "key2"               TO  MCP-PATHNAME
+              PERFORM 900-CLOSE-SEC
            END-IF
       *
            .
@@ -4885,6 +4966,24 @@
       *
            .
        900-SRYACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定履歴付加読込
+      *****************************************************************
+       900-SANTEIPLUS-READ-SEC           SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SANTEIPLUS-REC
+               MOVE    ZERO            TO  FLG-SANTEIPLUS
+           ELSE
+               INITIALIZE                  SANTEIPLUS-REC
+               MOVE    1               TO  FLG-SANTEIPLUS
+           END-IF
+      *
+           .
+       900-SANTEIPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
