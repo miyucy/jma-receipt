@@ -995,7 +995,8 @@ path	key45 	{
 			AND   HKNCOMBI   <>  '9999'
 			AND   JIHOKBN    <>  '1'
 			AND  (SRYCDTOTAL  =   197001210  OR
-		 	      SRYCDTOTAL  =   197000470)
+		 	      SRYCDTOTAL  =   197000470  OR
+		 	      SRYCDTOTAL  =   197001570)
 			ORDER  BY   SRYKA,
                                     SRYKBN,
                                     ZAINUM
