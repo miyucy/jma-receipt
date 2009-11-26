@@ -424,6 +424,9 @@
                  PERFORM 1001-YYK-DELETE-SEC
              END-EVALUATE
            END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE   "99"             TO  APNTRES-API-RESULT
+           END-IF
       *
       *
       *
@@ -526,6 +529,8 @@
                                            TO  WRK-APPOINT-YMD
                MOVE    APNTREQ-APPOINT-TIME
                                            TO  WRK-APPOINT-TIME
+               MOVE    APNTREQ-APPOINT-ID
+                                           TO  WRK-APPOINT-ID
                DISPLAY "APNTREQ-APPOINT-TIME = " APNTREQ-APPOINT-TIME
                MOVE    APNTREQ-APPOINT-MEMO
                                            TO  WRK-YYKMEMO
@@ -1726,6 +1731,7 @@
                ADD     1                   TO  YYK-YYKCNT
                IF      YYK-YYKCNT          >   999
                    MOVE    "1007"              TO  SPA-ERRCD
+                   MOVE   "ÕΩÃÛæÂ∏¬≈˛√£"   TO  APNTRES-API-RESULT-MSG
                    GO  TO  4901-YYKADD-EXT
                END-IF
            DISPLAY "ÕΩÃÛ •ÿ•√•¿ §¢§Í"
@@ -2271,6 +2277,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      WRK-APPOINT-ID   NOT NUMERIC 
                DISPLAY "ÕΩÃÛID …‘¿µ  = " WRK-APPOINT-ID
                MOVE    "0016"              TO  SPA-ERRCD
+               MOVE   "ÕΩÃÛID …‘¿µ"    TO  APNTRES-API-RESULT-MSG
                GO  TO  4901-SAKUJO-EXT
            END-IF
       *
@@ -2284,6 +2291,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-APPOINT-YMD      TO  YYK-YYKYMD
            END-IF
            MOVE    WRK-APPOINT-ID           TO  YYK-YYKID
+           MOVE    WRK-SRYKA           TO  YYK-SRYKA
+           MOVE    WRK-SRYNAIYO        TO  YYK-SRYNAIYO
+           MOVE    WRK-DRCD            TO  YYK-DRCD
+           MOVE    WRK-APPOINT-TIME    TO  YYK-KEYYYKTIME
+                                           APNTRES-APPOINT-TIME
+           MOVE    ZERO                TO  YYK-KEYYYKTIME(3:2)
       *
            PERFORM 900-YYK-READ-SEC
            IF      FLG-YYK             =   ZERO
@@ -2302,7 +2315,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    GO  TO  4901-SAKUJO-EXT
                END-IF
       *    ÕΩÃÛ•Ï•≥°º•…§Œππø∑
-                   PERFORM 49001-YYKUPD-SEC
+                   PERFORM 49031-YYKCOM-DEL-SEC
+                   PERFORM 49001-YYKHEAD-MOD-SEC
              ELSE
                MOVE   "90"             TO  APNTRES-API-RESULT
                MOVE   "ÕΩÃÛ¥µº‘…‘∞Ï√◊" TO  APNTRES-API-RESULT-MSG
