@@ -1338,6 +1338,7 @@
                  DISPLAY   "³ºÅö´µ¼Ô¤Ê¤·"
                  GO  TO                10011-PTNUM-CHK-EXT
            END-IF
+           MOVE  PTINF-NAME            TO  WRK-NAMEKNJ 
       *
            .
        10011-PTNUM-CHK-EXT.
@@ -2915,25 +2916,3 @@ grpsys           CALL  "ORCDBMAIN"     USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
-      **************************************************************************
-       010-INIT                SECTION.
-           DISPLAY 'init'
-      *    CALL    "coblog"    USING   "*************"
-      *    CALL    "coblog"    USING   "api start"
-      *    CALL    "coblog"    USING   "*************"
-           MOVE   'NEW'        TO  MCP-PUTTYPE.
-           MOVE   'windowtitle'     TO  MCP-WINDOW.
-           PERFORM 900-PUT-WINDOW.
-      **************************************************************************
-       800-CLICKED             SECTION.
-      *    CALL    "coblog"    USING   "api clicked"
-           DISPLAY 'CLICKED'
-           PERFORM 900-PUT-WINDOW.
-      **************************************************************************
-       900-PUT-WINDOW          SECTION.
-           MOVE   'PUTWINDOW'  TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-                MCPAREA.
