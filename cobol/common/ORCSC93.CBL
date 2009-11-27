@@ -98,7 +98,8 @@
       *@@
       *    悪性腫瘍指導料あり
            03  FLG-AKUSEI-ARI      PIC 9(01).
-      *@@
+      *    コメント以外あり
+           03  FLG-CONTCHK         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -331,6 +332,7 @@
                    MOVE    SPA-COM-SRYKBN (IDX)    TO  WRK-H-SRYKBN
                    ADD     1                       TO  WRK-ZAINUM
                    MOVE    ZERO                    TO  WRK-ZAI-CNT
+                   MOVE    ZERO                    TO  FLG-CONTCHK
                END-IF
       *        剤回数チェック
                EVALUATE    LNK-SC93-PG
@@ -349,11 +351,27 @@
                    CONTINUE
                ELSE
                    ADD     1                   TO  WRK-ZAI-CNT
+      *            コメント以外
+                   IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1"
+                                                       OR  "6"
+                                                       OR  "7" )  OR
+                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "059")
+                       MOVE    1                   TO  FLG-CONTCHK
+                   END-IF
                END-IF
                IF      WRK-ZAI-CNT         >   50
                    MOVE    "7006"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
                END-IF
+      *!!
+      *        継続コメントのチェック
+               IF      SPA-COM-INPUTCONT (IDX) =   "1"
+                   IF      FLG-CONTCHK         =   ZERO
+                       MOVE    "0208"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                   END-IF
+               END-IF
+      *!!
            END-PERFORM
       *
            MOVE    ZERO                TO  IDX

@@ -1572,6 +1572,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0208"
+                   STRING   "関係コメントの前に関係するコードが"
+                            "ありません。入力できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "0220"
                    STRING   "診療科の受診履歴は最大件数登録済みです。"
