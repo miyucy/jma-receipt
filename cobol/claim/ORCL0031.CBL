@@ -56,6 +56,7 @@
       *  04.04.00    NACL-竹田　  09/02/25  公害対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/06/25  薬剤情報提供料・調基判定追加
+      *  04.05.00    NACL-多々納  09/11/30  入院回数一括入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -264,6 +265,8 @@
            03  WRK-IN              PIC X(01).
            03  WRK-TEN             PIC 9(13)V9(05).
       *
+           03  WRK-INPUTCD         PIC X(50).
+      *
            03  WRK-SYSYMD.
                05  WRK-SYSYY       PIC 9(04).
                05  WRK-SYSMM       PIC 9(02).
@@ -454,6 +457,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    診療行為算定日一括入力パラメタ 
+           COPY    "CPORCSNDAYCHG.INC".
       * 
       *****************************************************************
       *    連絡　領域
@@ -2030,19 +2036,26 @@
       *    外用薬で薬剤の時、回数を編集
            IF      (TBL-WKSRY-SRYKBN (TBL-MAX)     =   "23" )
       ******** AND (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:1) =   "6" )
-      *        回数
-               MOVE    ZERO                TO  WRK-KAISU
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    LF04-KAISU (IDX1)   TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN         =   "1"   )   OR
-                      (SNUM-SEISUU         >   7     )   OR
-                      (SNUM-SYOSUU         >   3     )
-                   MOVE    1                   TO  WRK-KAISU
+      *     入院で”＊”の時はなし
+               IF      (WRK-NYUGAIKBN          =   "1" )  AND
+                       (LF04-KAISU (IDX1)(1:1) =   "*" )
+                   MOVE    LF04-KAISU (IDX1)   TO  WRK-INPUTCD
+                   PERFORM 200421-KAISU-HEN-SEC
                ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+      *            回数
+                   MOVE    ZERO                TO  WRK-KAISU
+                   INITIALIZE                      ORCSNUMAREA
+                   MOVE    LF04-KAISU (IDX1)   TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF     (SNUM-RC         NOT =   ZERO  )   OR
+                          (SNUM-MINKBN         =   "1"   )   OR
+                          (SNUM-SEISUU         >   7     )   OR
+                          (SNUM-SYOSUU         >   3     )
+                       MOVE    1                   TO  WRK-KAISU
+                   ELSE
+                       MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+                   END-IF
                END-IF
       *        総量へ変更
                IF      TBL-WKSRY-SRYSURYO (TBL-MAX IDX-S)  >   ZERO
@@ -2054,7 +2067,7 @@
                END-IF
                MOVE    WRK-KAISU       TO  TBL-WKSRY-SRYKAISU
                                                        (TBL-MAX IDX-S)
-            END-IF
+           END-IF
       *
            .
        20032-ZAITBLSET-EXT.
@@ -2216,21 +2229,29 @@
                   (TBL-WKSRY-SRYKBN(01)    =   "21"  OR  "22" OR "23")
                PERFORM 20041-YOUHOU-SET-SEC
            END-IF
-      *    剤回数計
-           MOVE    ZERO                TO  WRK-KAISU
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    LF04-KAISU (IDX3)   TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SEISUU         >   7     )   OR
-                  (SNUM-SYOSUU         >   3     )
-      **       MOVE    "0012"              TO  SPA-ERRCD
-               MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+      *    入院で”＊”の時
+           IF      (WRK-NYUGAIKBN          =   "1"   )  AND
+                   (LF04-KAISU (IDX3)(1:1) =   "*"   )
+               PERFORM 20042-IKKATU-HEN-SEC
            ELSE
-               MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+      *
+      *    剤回数計
+               MOVE    ZERO                TO  WRK-KAISU
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    LF04-KAISU (IDX3)   TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN         =   "1"   )   OR
+                      (SNUM-SEISUU         >   7     )   OR
+                      (SNUM-SYOSUU         >   3     )
+      **           MOVE    "0012"              TO  SPA-ERRCD
+                   MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  WRK-KAISU
+               END-IF
            END-IF
+      *
            IF      WRK-KAISU           =   ZERO
                MOVE    1               TO  WRK-KAISU
            END-IF
@@ -2331,6 +2352,71 @@
            .
       *
        20041-YOUHOU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   　入院回数一括チェック処理
+      *****************************************************************
+       200421-KAISU-HEN-SEC            SECTION.
+      *
+           INITIALIZE                      ORCSNDAYCHGAREA
+           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
+           MOVE    WRK-INPUTCD         TO  ORCSNDAYCHG-INPUTCD
+           MOVE    22                  TO  ORCSNDAYCHG-KETA
+           CALL    "ORCSNDAYCHG"       USING   SPA-AREA
+                                               ORCSNDAYCHGAREA
+           IF      ORCSNDAYCHG-ERRCD   =   "0001"
+      *        ２２文字オーバーはエラーとする
+               MOVE    "*/99"              TO  WRK-INPUTCD
+               MOVE    1                   TO  WRK-KAISU
+           ELSE
+               MOVE    LF04-KAISU (IDX3)   TO  WRK-INPUTCD
+               MOVE    ORCSNDAYCHG-KAISU   TO  WRK-KAISU
+           END-IF
+           IF      WRK-KAISU           =   ZERO
+               MOVE    1               TO  WRK-KAISU
+           END-IF
+           .
+      *
+       200421-KAISU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   入院回数まとめ編集処理
+      *****************************************************************
+       20042-IKKATU-HEN-SEC            SECTION.
+      *
+            MOVE    LF04-KAISU (IDX3)   TO  WRK-INPUTCD
+            PERFORM 200421-KAISU-HEN-SEC
+      *
+            IF     IDX-S               =   5
+                MOVE    TBL-WKSRYACT-REC (TBL-MAX)
+                                       TO  TBL-WKSRYACT-REC
+                                                    (TBL-MAX + 1)
+                ADD     1              TO  TBL-MAX
+                ADD     1              TO  WRK-RENNUM
+      *         連番号
+                MOVE    WRK-RENNUM     TO  TBL-WKSRY-RENNUM(TBL-MAX)
+                MOVE    ZERO           TO  IDX-S
+                INITIALIZE             TBL-WKSRY-SINRYO-TBL-G(TBL-MAX)
+           END-IF
+      *
+           ADD      1                  TO  IDX-S
+           MOVE     WRK-INPUTCD        TO  TBL-WKSRY-INPUTCD
+                                           (TBL-MAX IDX-S)
+      *    剤回数計
+           IF      TBL-WKSRY-SRYKBN(01)    =   "23" 
+      *        外用薬
+               MOVE    1                   TO  TBL-WKSRY-ZAIKAIKEI 
+                                                     (TBL-MAX)
+           ELSE
+      *        外用薬以外
+               MOVE    WRK-KAISU           TO  TBL-WKSRY-ZAIKAIKEI 
+                                                     (TBL-MAX)
+           END-IF
+           .
+      *
+       20042-IKKATU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
