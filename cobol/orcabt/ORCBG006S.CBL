@@ -374,7 +374,7 @@
        110-PARA-HENSYU-SEC         SECTION.
       *
            IF    ( WRK-PARA-SYORIKBN   =   "1" )
-           AND   ( WRK-PARA-NYUGAIKBN  NOT =   "2" )
+           AND   ( WRK-PARA-NYUGAIKBN  NOT =   "1" )
                MOVE    "外来分は病棟別に集計できません"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
@@ -394,10 +394,10 @@
                WHEN    SPACE
                    MOVE    "　　診療科別医薬品使用量統計（月報）"
                                            TO  WRK-DAI-MSG1
-               WHEN    "1"
+               WHEN    "2"
                    MOVE    "外来診療科別医薬品使用量統計（月報）"
                                            TO  WRK-DAI-MSG1
-               WHEN    "2"
+               WHEN    "1"
                    IF      WRK-PARA-SYORIKBN   =   "1"
                        MOVE    "　入院病棟別医薬品使用量統計（月報）" 
                                            TO  WRK-DAI-MSG1
@@ -1630,12 +1630,7 @@
                          ( WRK-PARA-NYUGAIKBN  =   SPACE )
                        MOVE    1               TO  FLG-OK
                    ELSE
-                       IF      SRY-NYUGAIKBN   =   "2"
-                           MOVE    "1"             TO  WRK-NYUGAIKBN
-                       END-IF
-                       IF      SRY-NYUGAIKBN   =   "1"
-                           MOVE    "2"             TO  WRK-NYUGAIKBN
-                       END-IF
+                       MOVE    SRY-NYUGAIKBN   TO  WRK-NYUGAIKBN
                        IF      WRK-PARA-NYUGAIKBN  =   WRK-NYUGAIKBN
                            MOVE    1               TO  FLG-OK
                        END-IF
