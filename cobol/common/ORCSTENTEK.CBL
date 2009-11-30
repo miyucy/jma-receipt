@@ -596,6 +596,8 @@
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )  OR
                              ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008"))
+      *                    »ÄÎÌÇÑ´þ
+                       OR     (SRY-SRYCD (IDX2)        =   "099309901")
                            CONTINUE
                        ELSE
                            MOVE    ZERO                TO  FLG-COMMENT
