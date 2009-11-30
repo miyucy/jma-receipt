@@ -37,6 +37,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/10/02  ÌôºÞ¥³¥á¥ó¥ÈÊÔ½¸ÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/11/30  ÆüËè¤ÎÉ½¼¨½çÂÐ±þ
       *****************************************************************
       *
       *
@@ -105,6 +106,9 @@
            03  IDX-YAK             PIC 9(04).
            03  IDX-C1              PIC 9(04).
            03  IDX-C               PIC 9(04).
+      *
+           03  IDX-ZAI             PIC 9(04).
+           03  IDX-DAY             PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -276,6 +280,16 @@
            03  TBL-SYUKEI-OCC          OCCURS  31.
                05  TBL-S-SEIBUTU       PIC 9(01).
                05  TBL-S-MADOKU        PIC 9(01).
+      *!!
+      *    ÆüËè¤Î½ç
+       01  TBL-ZAIDAY-AREA.
+           03  TBL-ZAIDAY-OCC             OCCURS  31.
+               05  TBL-ZAIDAY-OCC2            OCCURS  50.
+                   07  TBL-D-SRYCD         PIC X(09).
+      *
+       01  TBL-ZAI-AREA.
+           03  TBL-ZAI-OCC             OCCURS  50.
+               05  TBL-ZAI-SRYCD           PIC X(09).
       *
       *    ¼õ¿ÇÍúÎò
        01  TBL-JYURRK-AREA.
@@ -374,6 +388,7 @@
            INITIALIZE                  TBL-HEN-AREA
            INITIALIZE                  TBL-CHK-AREA
            INITIALIZE                  TBL-CHUSYARYO2-AREA
+           INITIALIZE                  TBL-ZAIDAY-AREA
       *
            INITIALIZE                  ORCSTEN-OUT-AREA
            INITIALIZE                  ORCSTEN-DAY-AREA
@@ -533,6 +548,8 @@
       *
            MOVE    ZERO                TO  IDX-YAK
            MOVE    ZERO                TO  FLG-COMMENT
+           INITIALIZE                      TBL-ZAI-AREA
+           MOVE    ZERO                TO  IDX-ZAI
       *    ¥Æ¡¼¥Ö¥ë¤Î¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¤ò¥Á¥§¥Ã¥¯¤¹¤ë
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL       IDXA        >   IDXS
@@ -552,6 +569,11 @@
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "6" )
                            PERFORM 10012-TBL-HENSYU-SEC
                            MOVE    1               TO  FLG-COMMENT
+      *
+                           ADD     1               TO  IDX-ZAI
+                           MOVE    SRY-SRYCD (IDX2)
+                                                   TO  TBL-ZAI-SRYCD
+                                                            (IDX-ZAI)
                        END-IF
       *                ÌôºÞ¤Î¥³¥á¥ó¥È
                        IF     (FLG-COMMENT          =   1   )  AND
@@ -563,6 +585,11 @@
                                CONTINUE
                            ELSE
                                PERFORM 10017-COMMNT-HENSYU-SEC
+      *
+                               ADD     1               TO  IDX-ZAI
+                               MOVE    SRY-SRYCD (IDX2)
+                                                       TO  TBL-ZAI-SRYCD
+                                                            (IDX-ZAI)
                            END-IF
                        END-IF
       *                ¥³¥á¥ó¥È¥Õ¥é¥°¥¯¥ê¥¢
@@ -600,6 +627,17 @@
            AND    (ACCT-ZAIKAISU           >   ZERO )
       *        ¿ÇÎÅ¹Ô°Ù¤è¤ê´ïºàÊÔ½¸
                PERFORM 10016-TBL-KIZAIHEN-SEC
+           END-IF
+      *
+      *    ÆüËè¤Î¥Æ¡¼¥Ö¥ëÊÔ½¸
+           IF     (TBL-SRY-SRYSYUKBN (1)   =   "330"
+                                           OR  "331"
+                                           OR  "350"
+                                           OR  "332"
+                                           OR  "352")
+           AND    (FLG-YAKU-ARI            =   1    )
+      *        ¿ÇÎÅ¹Ô°ÙºÞ½çÊÔ½¸
+               PERFORM 10017-TBL-DAYHEN-SEC
            END-IF
            .
        100-HENSYU-SYORI-EXT.
@@ -1255,6 +1293,39 @@
            EXIT.
       *
       *****************************************************************
+      *    ¿ÇÎÅ¹Ô°ÙºÞ½çÊÔ½¸ÊÔ½¸½èÍý
+      *****************************************************************
+       10017-TBL-DAYHEN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  IDX-DAY
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   31  )
+               IF      ACCT-DAY (1 IDX-D)  >   ZERO
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL      (IDX2        >   50   )
+                                 OR   (TBL-ZAI-SRYCD(IDX2) =   SPACE)
+                       PERFORM VARYING     IDX3    FROM    1   BY  1
+                               UNTIL      (IDX3        >   50   )
+                           IF     (TBL-D-SRYCD (IDX-D IDX3)
+                                                       =   SPACE )
+                               OR (TBL-D-SRYCD (IDX-D IDX3)
+                                                       =   TBL-ZAI-SRYCD
+                                                                (IDX2) )
+                               MOVE    TBL-ZAI-SRYCD(IDX2) 
+                                                       TO  TBL-D-SRYCD
+                                                           (IDX-D IDX3)
+                               MOVE    50              TO  IDX3
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           .
+       10017-TBL-DAYHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¼êµ»ÎÁ¡ÊÃæ¿´ÀÅÌ®¡ËÊÔ½¸½èÍý
       *****************************************************************
        10014-CHU-HENSYU-SEC            SECTION.
@@ -1402,20 +1473,12 @@
                MOVE    ZERO            TO  IDX
                MOVE    ZERO            TO  WRK-TENSU-GOK
                MOVE    ZERO            TO  FLG-TENTEKI
-               PERFORM VARYING     IDX-T   FROM    1   BY  1
-                       UNTIL      (IDX-T   >   50  )  OR
-                                  (TBL-SRYCD (IDX-T)   =   SPACE)
-                   IF     (TBL-DAY (IDX-T IDX-D)   >   ZERO ) OR
-                          (TBL-DAY2 (IDX-T IDX-D)  >   ZERO ) OR
-                          (TBL-DAY3 (IDX-T IDX-D)  >   ZERO )
-                       OR (TBL-DAY4 (IDX-T IDX-D)  >   ZERO )
-                       OR (TBL-DAY5 (IDX-T IDX-D)  >   ZERO )
-                       MOVE    1               TO  FLG-TENTEKI
-                       ADD     1               TO  IDX
-                       IF      IDX             <=  50
-                           PERFORM 2001-TBL-HENSYU-SEC
-                       END-IF
-                   END-IF
+               PERFORM VARYING     IDX3    FROM    1   BY  1
+                       UNTIL      (IDX3        >   50   )
+                               OR (TBL-D-SRYCD (IDX-D IDX3)
+                                               =   SPACE )
+      *            ¥³¡¼¥ÉÅÀ¿ôÊÔ½¸½èÍý
+                   PERFORM 2001-TBL-CHEK-SEC
                END-PERFORM
       *        ÅÀ¿ô·×»»
                IF      FLG-TENTEKI         =   1
@@ -1439,6 +1502,35 @@
       *
            .
        200-KEISAN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÀ¿ôÊÔ½¸¥Æ¡¼¥Ö¥ë³ÎÄê½èÍý
+      *****************************************************************
+       2001-TBL-CHEK-SEC            SECTION.
+      *
+           PERFORM VARYING     IDX-T   FROM    1   BY  1
+                   UNTIL      (IDX-T   >   50  )  OR
+                              (TBL-SRYCD (IDX-T)   =   SPACE)
+               IF     (TBL-D-SRYCD (IDX-D IDX3)
+                                           =   TBL-SRYCD (IDX-T))
+                   IF     (TBL-DAY (IDX-T IDX-D)   >   ZERO ) OR
+                          (TBL-DAY2 (IDX-T IDX-D)  >   ZERO ) OR
+                          (TBL-DAY3 (IDX-T IDX-D)  >   ZERO )
+                       OR (TBL-DAY4 (IDX-T IDX-D)  >   ZERO )
+                       OR (TBL-DAY5 (IDX-T IDX-D)  >   ZERO )
+                       MOVE    1               TO  FLG-TENTEKI
+                       ADD     1               TO  IDX
+                       IF      IDX             <=  50
+                           PERFORM 2001-TBL-HENSYU-SEC
+                       END-IF
+                   END-IF
+                   MOVE    50                 TO  IDX-T
+               END-IF
+           END-PERFORM
+      *
+           .
+       2001-TBL-CHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1554,7 +1646,6 @@
                                                (IDX-D IDX IDX-C1)
                END-IF
            END-PERFORM
-      *
            .
        200-KEISAN-SYORI-EXT.
            EXIT.
