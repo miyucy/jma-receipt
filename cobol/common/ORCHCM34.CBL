@@ -3302,26 +3302,9 @@
                       MOVE     SRY-SRYCD(IDX20) TO  WRK-SRYCD-9
                       MOVE     SRY-SRYSURYO(IDX20)
                                                 TO  WRK-SURYO
-                       COMPUTE WRK-RUIKEITOTAL
-                           =   WRK-RUIKEITOTAL
-                           + ( WRK-SRYCD-9     *    WRK-SURYO-S1 )
-                           + ( WRK-SRYCD-9     *    WRK-SURYO-S2 )
       *
-                       MOVE     SRY-SRYCD(IDX20) TO  WRK-CALCSRYCD-G
-      *
-                       PERFORM VARYING IDX0    FROM 1  BY  1
-                               UNTIL ( IDX0    >    9 )
-      *
-                           MOVE    WRK-CALCSRYCD (IDX0)
-                                               TO    WRK-NUM
-      *
-                           COMPUTE WRK-RUIKEITOTAL2
-                               =   WRK-RUIKEITOTAL2
-                               + ((WRK-NUM + 1 )
-                               *   CONST-RUIKEI2(WRK-NUM + 1))
-                               *  (10 ** ( 9 - IDX0 ))
-      *
-                       END-PERFORM
+                      MOVE     SRY-SRYCD(IDX20) TO  WRK-CALCSRYCD-G
+                      PERFORM  2001111-RUIKEITOTAL-SEC
       *
                        IF    ( WRK-SRYCD       =   SPACE )
                            IF    ( SRY-SRYCD (IDX20) (1:1)
@@ -3351,6 +3334,32 @@
       *
            .
        200111-SRYACT-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    累計合計編集処理
+      *****************************************************************
+       2001111-RUIKEITOTAL-SEC         SECTION.
+      *
+           COMPUTE WRK-RUIKEITOTAL
+               =   WRK-RUIKEITOTAL
+               + ( WRK-SRYCD-9     *    WRK-SURYO-S1 )
+               + ( WRK-SRYCD-9     *    WRK-SURYO-S2 )
+      *
+           PERFORM VARYING IDX0    FROM 1  BY  1
+                   UNTIL ( IDX0    >    9 )
+      *
+               MOVE    WRK-CALCSRYCD (IDX0)    TO    WRK-NUM
+      *
+               COMPUTE WRK-RUIKEITOTAL2
+                   =   WRK-RUIKEITOTAL2
+                   + ((WRK-NUM + 1 )
+                   *   CONST-RUIKEI2(WRK-NUM + 1))
+                   *  (10 ** ( 9 - IDX0 ))
+      *
+           END-PERFORM
+      *
+           .
+       200111-RUIKEITOTAL-EXT.
            EXIT.
       *****************************************************************
       *    診療行為状態フラグ設定処理処理
@@ -5342,6 +5351,9 @@
       *****************************************************************
        200111-HCM34ACCT-INS-SEC        SECTION.
       *
+           MOVE    ZERO                TO  WRK-RUIKEITOTAL
+                                           WRK-RUIKEITOTAL2
+      *
            COMPUTE WRK-ZAINUM  =   WRK-ZAINUM  +   1
       *
            PERFORM 200111-HCM34SRY-INS-SEC
@@ -5380,9 +5392,8 @@
       *
            MOVE    SRYACCT-REC         TO  HCM34ACCT-DAT
       *
-           MOVE    HCM34S01-RUIKEITOTAL(IDX28)
-                                       TO  HCM34ACCT-RUIKEITOTAL
-           MOVE    ZERO                TO  HCM34ACCT-RUIKEITOTAL2
+           MOVE    WRK-RUIKEITOTAL     TO  HCM34ACCT-RUIKEITOTAL
+           MOVE    WRK-RUIKEITOTAL2    TO  HCM34ACCT-RUIKEITOTAL2
            MOVE    WRK-SRYCD           TO  HCM34ACCT-SRT-SRYCD
            MOVE    WRK-SRYSYUKBN       TO  HCM34ACCT-SRT-SRYSYUKBN
            MOVE    "2"                 TO  HCM34ACCT-ACCTKBN
@@ -5469,6 +5480,13 @@
                    INITIALIZE              HCM34SRY-REC
                                            SRYACT-REC
                END-IF
+      *
+               MOVE     HCM34S01-SRYCD (IDX28 IDX30)
+                                       TO  WRK-SRYCD-9
+                                           WRK-CALCSRYCD-G
+               MOVE     HCM34S01-SURYO (IDX28 IDX30)
+                                       TO  WRK-SURYO
+               PERFORM  2001111-RUIKEITOTAL-SEC
       *
       *
            END-PERFORM
