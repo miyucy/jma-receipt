@@ -1112,13 +1112,12 @@
            MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
            MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
-           MOVE    "4"                     TO  NACCT-ZAISKBKBN
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
+           MOVE    "key43"                 TO  MCP-PATHNAME
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           =   ZERO
                MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
-               MOVE     "key17"            TO  MCP-PATHNAME
+               MOVE     "key43"            TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
                  IF   NACCT-SRYCDTOTAL     =   197000570
@@ -1138,13 +1137,13 @@
                    END-PERFORM
                  END-IF
                  MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                 MOVE    "key17"                 TO  MCP-PATHNAME
+                 MOVE    "key43"                 TO  MCP-PATHNAME
                  PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
+           MOVE    "key43"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
            DISPLAY "ORCSNYURECEDEN"
@@ -3857,6 +3856,7 @@
                                            TO  WRK-SKJFTN2-SRYCD(IDX2)
                                END-IF
                        END-EVALUATE
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
@@ -3918,6 +3918,7 @@
                                            TO  WRK-SKJFTN2-SRYCD(IDX3)
                                END-IF
                        END-EVALUATE
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
@@ -4511,8 +4512,10 @@
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                               TO  WRK-SKJ4-RYOYO(IDX1)
-                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
-                                                                 SPACE
+      *                        特別食加算は入院時食事療養（１）の場合
+      *                        のみセット
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1)  =
+                                                            "197000110"
                                    MOVE   "197000470"
                                            TO  WRK-SKJ5-TOKU-SHOKU(IDX1)
                                END-IF
@@ -4573,8 +4576,10 @@
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                               TO  WRK-SKJ4-RYOYO(IDX2)
-                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
-                                                                 SPACE
+      *                        特別食加算は入院時食事療養（１）の場合
+      *                        のみセット
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1)  =
+                                                            "197000110"
                                    MOVE   "197000470"
                                            TO  WRK-SKJ5-TOKU-SHOKU(IDX2)
                                END-IF
@@ -4584,6 +4589,7 @@
                                            TO  WRK-SKJFTN2-SRYCD(IDX2)
                                END-IF
                        END-EVALUATE
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
@@ -4634,8 +4640,10 @@
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                               TO  WRK-SKJ4-RYOYO(IDX3)
-                               IF   WRK-SYS5000-SHOKUCD(1 IDX1) NOT =
-                                                                 SPACE
+      *                        特別食加算は入院時食事療養（１）の場合
+      *                        のみセット
+                               IF   WRK-SYS5000-SHOKUCD(1 IDX1)  =
+                                                            "197000110"
                                    MOVE   "197000470"
                                            TO  WRK-SKJ5-TOKU-SHOKU(IDX3)
                                END-IF
@@ -4645,6 +4653,7 @@
                                            TO  WRK-SKJFTN2-SRYCD(IDX3)
                                END-IF
                        END-EVALUATE
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
