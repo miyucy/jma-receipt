@@ -56,6 +56,10 @@
            03  FILLER               PIC X(40)   VALUE
                                     "点数マスタ一覧".
       *
+           03  FILLER               PIC X(08)   VALUE   "TENSU2".
+           03  FILLER               PIC X(40)   VALUE
+                                    "経過措置医薬品置換マスタ一覧".
+      *
            03  FILLER               PIC X(08)   VALUE   "DAILY".
            03  FILLER               PIC X(40)   VALUE   "日次統計".
       *
@@ -112,9 +116,9 @@
                                     "統計ＣＳＶ出力".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      24  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      25  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   24.
+       01  MNAME-MAX                PIC 9(04)   VALUE   25.
       *

@@ -47,7 +47,7 @@
       *    共通パラメタ
            COPY    "Z01COMMON-SPA".
       *    画面ＳＰＡエリア
-           COPY    "Z91SCR-SPA".
+           COPY    "Z01SCR-SPA".
       *
            COPY    "ENUM-VALUE".
       *
@@ -72,19 +72,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
-      *
-       01  WRK-CONS-AREA.
-      *    システム管理ＤＢ（３００３）のキー値  
-           03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "102".
-      *    印刷管理ＤＢのキー値  
-           03  WRK-CONS-PRTKANRI-TBL-KEY
-                                   PIC X(08)   VALUE   "TENSU".
-           03  WRK-CONS-PRTKANRI-TBL-GROUP
-                                   PIC X(14)   VALUE   SPACE.
-      *    ジョブ管理ＤＢのキー値  
-           03  WRK-CONS-JOB-SHELLID
-                                   PIC X(08)   VALUE   "TENSU".
-           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -160,7 +147,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-Z01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-Z91FREE
+           MOVE    SPA-FREE        TO  SPA-Z01FREE
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -170,7 +157,7 @@
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
-           MOVE    SPA-Z91FREE     TO  SPA-FREE
+           MOVE    SPA-Z01FREE     TO  SPA-FREE
            MOVE    SPA-Z01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
@@ -250,7 +237,7 @@
       *     MOVE    SPACE               TO  SPA-ZID1-FLG
            MOVE    SPACE               TO  SPA-Z97-FLG
       *
-           MOVE    "Z91"               TO  SPA-SAKIPG
+           MOVE    SPA-Z97-MOTOPG      TO  SPA-SAKIPG
            MOVE    "Z97"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
@@ -300,7 +287,7 @@
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
-           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-Z97-JOB-KBNCD   TO  SYS-3003-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
                                            SYS-3003-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -314,7 +301,7 @@
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
-                   MOVE    WRK-CONS-JOB-SHELLID
+                   MOVE    SPA-Z97-JOB-SHELLID
                                            TO  JOB-SHELLID
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"       USING
@@ -414,7 +401,7 @@
                END-IF
           END-IF
           MOVE    IDX                     TO  Z97-COUNT    
-          IF    ( JOB-JOBID   =   SPA-Z91-JOB-JOBID )
+          IF    ( JOB-JOBID   =   SPA-Z97-JOB-JOBID )
               MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
           END-IF
            .
@@ -428,7 +415,7 @@
       *
            INITIALIZE                  ORCSFILESVAREA
            MOVE    "R"             TO  SFILESV-MODE
-           MOVE    WRK-CONS-JOB-SHELLID
+           MOVE    SPA-Z97-JOB-SHELLID
                                    TO  SFILESV-TBL-KEY
            CALL    "ORCSFILESV"    USING
                                        ORCSFILESVAREA

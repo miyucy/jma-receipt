@@ -83,7 +83,7 @@
            COPY    "Z01COMMON-SPA".
       *
       *    画面ＳＰＡエリア
-           COPY    "Z91SCR-SPA".
+           COPY    "Z01SCR-SPA".
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -264,7 +264,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-WORK        TO  SPA-Z01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-Z91FREE
+           MOVE    SPA-FREE        TO  SPA-Z01FREE
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -287,7 +287,7 @@
       *
            MOVE    SPA-Z01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-Z91FREE     TO  SPA-FREE
+           MOVE    SPA-Z01FREE     TO  SPA-FREE
       *
            .
            EXIT    PROGRAM
@@ -340,7 +340,7 @@
       *        元の画面へ戻す
                IF    (  SPA-MOTOPG     =   "XA01" OR "XB01" OR "XC01" )
                    MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
-                   MOVE    LNK-SCRSPA      TO  SPA-Z91FREE
+                   MOVE    LNK-SCRSPA      TO  SPA-Z01FREE
                    MOVE    SPA-WORK        TO  SPA-Z01KYOUTU
                    GO  TO  300-SCREEN-EXT
                END-IF
@@ -599,7 +599,7 @@
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-Z91FREE         TO  LNK-SCRSPA
+           MOVE    SPA-Z01FREE         TO  LNK-SCRSPA
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
            MOVE   "XC01   "            TO  MCP-WINDOW
@@ -1107,7 +1107,7 @@
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-Z91FREE         TO  LNK-SCRSPA
+           MOVE    SPA-Z01FREE         TO  LNK-SCRSPA
       *
       *    画面移行用のパラメタ変更
            MOVE    "Z91"               TO  SPA-MOTOPG
@@ -1137,7 +1137,7 @@
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-Z91FREE         TO  LNK-SCRSPA
+           MOVE    SPA-Z01FREE         TO  LNK-SCRSPA
       *
       *    画面移行用のパラメタ変更
            MOVE    "Z91"               TO  SPA-MOTOPG
@@ -1330,7 +1330,7 @@
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-Z01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-Z91FREE     TO  SPA-FREE
+           MOVE    SPA-Z01FREE     TO  SPA-FREE
       *
            MOVE    "LINK"          TO  MCP-STATUS
            MOVE    SPACE           TO  MCP-EVENT
@@ -1343,7 +1343,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-Z01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-Z91FREE
+           MOVE    SPA-FREE        TO  SPA-Z01FREE
       *
            MOVE  "B12"             TO  MCP-WIDGET
       *
@@ -1983,6 +1983,12 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
+           INITIALIZE                      SPA-Z97-JOB-AREA
+           MOVE    WRK-CONS-3003-KBNCD TO  SPA-Z97-JOB-KBNCD
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SPA-Z97-JOB-SHELLID
+           MOVE    SPA-Z91-JOB-JOBID   TO  SPA-Z97-JOB-JOBID
+      *
            MOVE    SPACE               TO  Z97
            MOVE    ZERO                TO  Z97-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  Z97-B12-STATE
@@ -2073,6 +2079,7 @@
            END-IF
       *
            MOVE    "Z91"                TO  SPA-MOTOPG
+                                            SPA-Z97-MOTOPG
            MOVE    "Z97"                TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE

@@ -124,13 +124,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>¾ðÊóºï½ü</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -224,13 +229,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F5</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>ºÆ°õºþ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -306,13 +316,18 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F11</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>°õºþ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1064,6 +1079,29 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B12S</name>
+      <x>920</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F12</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
+      </signal>
+      <label>½èÍý·ë²Ì</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

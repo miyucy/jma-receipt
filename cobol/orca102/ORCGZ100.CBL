@@ -46,7 +46,7 @@
       *    点数マスタ設定用共通パラメタ
            COPY    "Z01COMMON-SPA".
       *    第一画面ＳＰＡエリア
-           COPY    "Z91SCR-SPA".
+           COPY    "Z01SCR-SPA".
       *
       *    コンスタント値
            COPY    "ENUM-VALUE".
@@ -126,7 +126,7 @@
                                        WRK-AREA
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-Z01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-Z91FREE
+           MOVE    SPA-FREE        TO  SPA-Z01FREE
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -147,7 +147,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-Z91FREE     TO  SPA-FREE
+           MOVE    SPA-Z01FREE     TO  SPA-FREE
            MOVE    SPA-Z01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *

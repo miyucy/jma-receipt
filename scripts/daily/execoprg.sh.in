@@ -35,9 +35,13 @@ ERR_FILE=${15}
 HOSPNUM=${14}
 LD=051
 
-if [ ${13} = 'MONTHLY' ]; then
-  LD=052
-fi
+case ${13} in
+ 'MONTHLY')
+        LD=052;;
+ 'TENSU2')
+        LD=102;;
+esac
+
 
 OLDLOG=/home/orca/execoprg.log
 LOGFILE=/var/log/jma-receipt/${HOSPNUM}orcb${LD}.log
