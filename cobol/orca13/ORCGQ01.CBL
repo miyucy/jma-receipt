@@ -1106,17 +1106,14 @@
            INITIALIZE                      SPA-GMN-Q01-SELCOMMENTLST-G
       *
            MOVE    "1"                 TO  SPA-GMN-Q01-SELCOMMENTL   (1)
-           MOVE    "患者コメント"      TO  SPA-GMN-Q01-SELCOMMENTMEIL(1)
+           MOVE    "患者コメント・禁忌・アレルギー・感染症"
+                                       TO  SPA-GMN-Q01-SELCOMMENTMEIL(1)
       *
            MOVE    "2"                 TO  SPA-GMN-Q01-SELCOMMENTL   (2)
-           MOVE    "患者禁忌・アレルギー・感染症"
-                                       TO  SPA-GMN-Q01-SELCOMMENTMEIL(2)
-      *
-           MOVE    "3"                 TO  SPA-GMN-Q01-SELCOMMENTL   (3)
-           MOVE    "レセプトコメント"  TO  SPA-GMN-Q01-SELCOMMENTMEIL(3)
+           MOVE    "レセプトコメント"  TO  SPA-GMN-Q01-SELCOMMENTMEIL(2)
       *
            COMPUTE SPA-GMN-Q01-SELCOMMENTLST-MAX
-               =   3
+               =   2
       *
            .
        3101-SELCOMMENT-CMB-SYOKI-EXT.
@@ -3527,7 +3524,7 @@
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-COMMENT  (IDXA)
       *
-           IF    ( SPA-GMN-Q01-SELCOMMENT  =   "3" )
+           IF    ( SPA-GMN-Q01-SELCOMMENT  =   "2" )
                MOVE    SPACE       TO  WRK-RECECOM-G
                UNSTRING    SPA-GMN-Q01-COMMENT (IDXA)
                                            DELIMITED BY  ALL "　"
@@ -4133,6 +4130,11 @@
       *    患者照会検索条件チェック処理
       *****************************************************************
        4100-SELPATTERN-CHK-SEC         SECTION.
+      *
+      *    画面ＳＰＡ編集処理
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    ZERO                TO  SPA-GMN-Q01-CUR
       *
            MOVE    Q01-SELPATTERN      TO  SPA-GMN-Q01-SELPATTERN-G
       *
@@ -7214,7 +7216,7 @@
             OR ( SPA-Q01-CONDITION2-G      NOT =   SPACE )
             OR ( SPA-Q01-CONDITION3-G      NOT =   SPACE )
             OR ( SPA-Q01-GENMEN-G          NOT =   SPACE )
-            OR ((SPA-Q01-SELCOMMENT        =   "1" OR "2" )
+            OR ((SPA-Q01-SELCOMMENT        =   "1" )
              AND( SPA-Q01-COMMENT-G        NOT =   SPACE ))
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
@@ -7253,7 +7255,7 @@
            END-IF
       *
       *    該当（１１）
-           IF   (  SPA-Q01-SELCOMMENT          =   "3" )
+           IF   (  SPA-Q01-SELCOMMENT          =   "2" )
              AND(  SPA-Q01-COMMENT-G       NOT =   SPACE )
       *
               MOVE     "1"                 TO  SPA-Q01-GTBL(11)
@@ -8367,7 +8369,7 @@
            WHEN   "STPTNUM"
                MOVE  111           TO  SPA-GMN-Q01-CUR
            WHEN   "EDPTNUM"
-               MOVE  112           TO  SPA-GMN-Q01-CUR
+               MOVE  127           TO  SPA-GMN-Q01-CUR
            WHEN   "POST1"
                MOVE  113           TO  SPA-GMN-Q01-CUR
            WHEN   "JYUSHO1"
@@ -8387,7 +8389,7 @@
            WHEN   "POST5"
                MOVE  121           TO  SPA-GMN-Q01-CUR
            WHEN   "JYUSHO5"
-               MOVE  127           TO  SPA-GMN-Q01-CUR
+               MOVE  145           TO  SPA-GMN-Q01-CUR
            WHEN   "NAME1"
                MOVE  128           TO  SPA-GMN-Q01-CUR
            WHEN   "NAME2"
@@ -8397,7 +8399,7 @@
            WHEN   "NAME4"
                MOVE  131           TO  SPA-GMN-Q01-CUR
            WHEN   "NAME5"
-               MOVE  132           TO  SPA-GMN-Q01-CUR
+               MOVE  112           TO  SPA-GMN-Q01-CUR
            WHEN   "CONDITION11"
                MOVE  133           TO  SPA-GMN-Q01-CUR
            WHEN   "CONDITION12"
@@ -8415,13 +8417,13 @@
            WHEN   "CONDITION32"
                MOVE  140           TO  SPA-GMN-Q01-CUR
            WHEN   "CONDITION33"
-               MOVE  149           TO  SPA-GMN-Q01-CUR
+               MOVE  157           TO  SPA-GMN-Q01-CUR
            WHEN   "COMMENT1"
                MOVE  142           TO  SPA-GMN-Q01-CUR
            WHEN   "COMMENT2"
                MOVE  143           TO  SPA-GMN-Q01-CUR
            WHEN   "COMMENT3"
-               MOVE  145           TO  SPA-GMN-Q01-CUR
+               MOVE  149           TO  SPA-GMN-Q01-CUR
            WHEN   "TEL_TO"
                MOVE  146           TO  SPA-GMN-Q01-CUR
            WHEN   "TEL1"
@@ -8429,13 +8431,13 @@
            WHEN   "TEL2"
                MOVE  148           TO  SPA-GMN-Q01-CUR
            WHEN   "TEL3"
-               MOVE  152           TO  SPA-GMN-Q01-CUR
+               MOVE  132           TO  SPA-GMN-Q01-CUR
            WHEN   "GENMEN1"
                MOVE  150           TO  SPA-GMN-Q01-CUR
            WHEN   "GENMEN2"
                MOVE  151           TO  SPA-GMN-Q01-CUR
            WHEN   "GENMEN3"
-               MOVE  157           TO  SPA-GMN-Q01-CUR
+               MOVE  152           TO  SPA-GMN-Q01-CUR
            WHEN   "SELCOMMENT"
                MOVE  141           TO  SPA-GMN-Q01-CUR
            WHEN   "TSY"
