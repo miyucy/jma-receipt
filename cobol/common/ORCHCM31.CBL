@@ -1022,7 +1022,10 @@
            ELSE
                MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG(1:10)   TO  HCM31N-SRYYY2 (CNT-LINE)
+               IF    ( ORCHCM31-SUMKBN         =   "1" )
+                   MOVE    WRK-HENYMDG(1:10)
+                                           TO  HCM31N-SRYYY2 (CNT-LINE)
+               END-IF
                MOVE    WRK-HENYMDG(11:)    TO  HCM31N-SRYYMD2(CNT-LINE)
            END-IF
       *
