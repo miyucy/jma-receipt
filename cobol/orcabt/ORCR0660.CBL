@@ -108,6 +108,8 @@
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/11/25  リハビリコメント対応
+      *  04.05.03    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
+      *                                     対応（ファイル編集）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -177,6 +179,17 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE6559-KEY
                                    FILE    STATUS  IS  STS-RECE659.
+      *
+           SELECT  RECE655-FILE    ASSIGN  RECE655PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE655-KEY
+                                   FILE    STATUS  IS  STS-RECE655.
+           SELECT  RECE6555-FILE   ASSIGN  RECE655PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE6555-KEY
+                                   FILE    STATUS  IS  STS-RECE655.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -239,6 +252,15 @@
            COPY    "CPRCF065.INC"  REPLACING   //RECE65//
                                    BY          //RECE6559//.
       *
+       FD  RECE655-FILE.
+       01  RECE655-REC. 
+           COPY    "CPRCF0655.INC".
+      *
+       FD  RECE6555-FILE.
+       01  RECE6555-REC. 
+           COPY    "CPRCF0655.INC" REPLACING   //RECE655//
+                                   BY          //RECE6555//.
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -274,6 +296,10 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE659//.
       *
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE655//.
+      *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"
                                    REPLACING  //ERRFLPARA//
@@ -288,6 +314,7 @@
            03  STS-RECE651         PIC X(02).
            03  STS-RECE649         PIC X(02).
            03  STS-RECE659         PIC X(02).
+           03  STS-RECE655         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
@@ -295,9 +322,11 @@
            03  FLG-END             PIC 9(01).
            03  FLG-RECE62          PIC 9(01).
            03  FLG-RECE64          PIC 9(01).
+           03  FLG-RECE641         PIC 9(01).
            03  FLG-RECE649         PIC 9(01).
            03  FLG-RECE65          PIC 9(01).
            03  FLG-RECE659         PIC 9(01).
+           03  FLG-RECE651         PIC 9(01).
            03  FLG-YAKUKAN-COMMENT PIC 9(01).
            03  FLG-HINKAI-COMMENT  PIC 9(01).
            03  FLG-KYUSEI-COMMENT  PIC 9(01).
@@ -323,6 +352,7 @@
            03  FLG-COMARI          PIC 9(01).
            03  FLG-COMARI2         PIC 9(01).
            03  FLG-SANTEIPLUS      PIC 9(01).
+           03  FLG-SETCOM          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -331,6 +361,7 @@
            03  CNT-RECE65          PIC 9(06).
            03  CNT-RECE649         PIC 9(06).
            03  CNT-RECE659         PIC 9(06).
+           03  CNT-RECE655         PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
@@ -466,6 +497,10 @@
                                              OCCURS 31.
       *
            03  WRK-YAKUKAN-SRYCD     PIC X(09).
+      *
+           03  WRK-HEN-RENNUM                PIC 9(02).
+           03  WRK-HEN-SHORI-RENNUM          PIC 9(01).
+           03  WRK-HEN-SEQNO                 PIC 9(02).
       *
        01  WRK-RECE64-REC. 
            COPY    "CPRCF064.INC"  REPLACING   //RECE64//
@@ -853,6 +888,10 @@
            MOVE    WRK-PARA-TERMID     TO  RECE659PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE659PARA-HOSPNUM
       *
+           MOVE    "RECE655"           TO  RECE655PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE655PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE655PARA-HOSPNUM
+      *
            OPEN    INPUT               RECE62-FILE
       *
            OPEN    INPUT               RECE64-FILE
@@ -871,13 +910,16 @@
            OPEN    OUTPUT              RECE6559-FILE
            CLOSE                       RECE6559-FILE
       *
-           OPEN    OUTPUT              RECE641-FILE
+           OPEN    OUTPUT              RECE6555-FILE
+           CLOSE                       RECE6555-FILE
       *
-           OPEN    OUTPUT              RECE651-FILE
-      *
+           OPEN    I-O                 RECE641-FILE
            OPEN    I-O                 RECE649-FILE
       *
+           OPEN    I-O                 RECE651-FILE
            OPEN    I-O                 RECE659-FILE
+      *
+           OPEN    OUTPUT              RECE655-FILE
       *
            .
        110-FILE-OPEN-EXT.
@@ -1295,9 +1337,11 @@
              END-IF
            END-IF
       *
-      *****差込編集２********************
+      *****差込編集２**********************
            PERFORM     250-SASHIKOMI2-SEC
-      ***********************************
+      *
+      *****関係コメント編集****************
+           PERFORM     260-SETCOM-HENSYU-SEC
       *
            PERFORM 990-RECE62-READ-SEC
       *
@@ -6194,26 +6238,13 @@
       *****************************************************************
        25991-RECE659-TENSOU-SEC     SECTION.
       *
-           INITIALIZE                       RECE659-REC
-           MOVE    RECE649-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE649-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE649-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE649-PTID         TO  RECE659-PTID
-           MOVE    RECE649-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE649-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE649-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE649-HKNJANUM     TO  RECE659-HKNJANUM
-           MOVE    RECE649-HOJOKBN      TO  RECE659-HOJOKBN
-           MOVE    RECE649-TEKSTYMD     TO  RECE659-TEKSTYMD
-           MOVE    RECE649-ZAINUM       TO  RECE659-ZAINUM
-           MOVE    RECE649-ZAIREN       TO  RECE659-ZAIREN
-           START   RECE659-FILE
-               KEY IS    >=   RECE659-KEY
-               INVALID
-                   MOVE    1            TO  FLG-RECE659
-               NOT INVALID
-                   PERFORM 990-RECE659-NEXT-SEC
-           END-START
+           PERFORM  250111-RECE659-TAIHI-SEC
+      *
+      *    ＲＥＣＥ６５９ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE65
+           MOVE    SPACE                TO  WRK-RECE65XX-REC
+           INITIALIZE                       WRK-RECE65XX-REC
+      *
            PERFORM
                UNTIL  ( FLG-RECE659           =   1                    )
                OR     ( RECE649-HOSPNUM   NOT =   RECE659-HOSPNUM      )
@@ -6231,16 +6262,206 @@
                OR     ( RECE649-ZAINUM    NOT =   RECE659-ZAINUM       )
                OR     ( RECE649-ZAIREN    NOT =   RECE659-ZAIREN       )
       *
-               MOVE    RECE659-REC       TO   RECE651-REC
-               WRITE   RECE651-REC
-               ADD     1                 TO   CNT-RECE65
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   5     )
+                         OR      ( RECE659-SRYCD(IDX) =   SPACE )
+                    ADD    1             TO      IDX-RECE65
+                    MOVE   RECE659-SRYACT-TBL(IDX)
+                             TO   WRK-RECE65XX-SRYACT-TBL(IDX-RECE65 1)
+               END-PERFORM
       *
                PERFORM 990-RECE659-NEXT-SEC
       *
            END-PERFORM
       *
+      *    コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE65
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE65
+           MOVE       ZERO             TO      WRK-RENNUM
+           PERFORM    UNTIL     FLG-WRKRECE65  =    1
+                    INITIALIZE                        RECE651-REC
+                    MOVE    WRK-RECE65-KEY       TO   RECE651-KEY
+                    ADD     1                    TO   WRK-RENNUM
+                    MOVE    WRK-RENNUM           TO   RECE651-RENNUM
+                    MOVE    WRK-RECE65-KOHBUNRI  TO   RECE651-KOHBUNRI
+                    MOVE    WRK-RECE65-PTNUM     TO   RECE651-PTNUM
+                    MOVE    WRK-RECE65-SRYKA     TO   RECE651-SRYKA
+                    MOVE    WRK-RECE65-SRYKBN    TO   RECE651-SRYKBN
+                    MOVE    WRK-RECE65-SRYSYUKBN TO   RECE651-SRYSYUKBN
+                    MOVE    WRK-RECE65-JIHIMONEY TO   RECE651-JIHIMONEY
+                    PERFORM  VARYING   IDX   FROM   1   BY   1
+                             UNTIL   (IDX       >    5)   OR
+                                     (FLG-WRKRECE65   =   1)
+                       ADD         1             TO    IDX-RECE65
+                       IF  WRK-RECE65XX-SRYCD(IDX-RECE65 1) = SPACE
+                           MOVE    1             TO    FLG-WRKRECE65
+                       ELSE
+                           MOVE  WRK-RECE65XX-SRYACT-TBL(IDX-RECE65 1)
+                                            TO   RECE651-SRYACT-TBL(IDX)
+                       END-IF
+                    END-PERFORM
+                    IF   RECE651-SRYCD(1)  NOT =  SPACE
+                       WRITE   RECE651-REC
+                       ADD     1            TO   CNT-RECE65
+                    END-IF
+           END-PERFORM
+      *
            .
        25991-RECE659-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集
+      *****************************************************************
+       260-SETCOM-HENSYU-SEC     SECTION.
+      *
+      *    パラメータ６４１ファイルより編集
+           INITIALIZE                      RECE641-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE641-PTID
+           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    ZERO                TO  RECE641-ZAINUM
+      *
+           START   RECE641-FILE
+               KEY IS    >=   RECE641-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE641
+               NOT INVALID
+                   PERFORM 990-RECE641-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE641          =   1                    )
+               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
+               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
+               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
+               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
+               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
+               OR     ( RECE62-TEISYUTUSAKI
+                                         NOT =   RECE641-TEISYUTUSAKI )
+               OR     ( RECE62-RECESYUBETU
+                                         NOT =   RECE641-RECESYUBETU  )
+               OR     ( RECE62-HKNJANUM-KEY
+                                         NOT =   RECE641-HKNJANUM     )
+               OR     ( RECE62-HOJOKBN-KEY
+                                         NOT =   RECE641-HOJOKBN      )
+               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
+      *
+               IF     RECE641-SETCOMFLG   =    "1"
+                  PERFORM 2601-SETCOM-HENSYU2-SEC
+               END-IF
+      *
+               PERFORM 990-RECE641-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       260-SETCOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集２
+      *****************************************************************
+       2601-SETCOM-HENSYU2-SEC     SECTION.
+      *
+           MOVE    ZERO    TO    FLG-SETCOM
+      *
+           INITIALIZE                       RECE651-REC
+           MOVE    RECE641-HOSPNUM      TO  RECE651-HOSPNUM
+           MOVE    RECE641-SRYYM        TO  RECE651-SRYYM
+           MOVE    RECE641-NYUGAIKBN    TO  RECE651-NYUGAIKBN
+           MOVE    RECE641-PTID         TO  RECE651-PTID
+           MOVE    RECE641-RECEKA       TO  RECE651-RECEKA
+           MOVE    RECE641-TEISYUTUSAKI TO  RECE651-TEISYUTUSAKI
+           MOVE    RECE641-RECESYUBETU  TO  RECE651-RECESYUBETU
+           MOVE    RECE641-HKNJANUM     TO  RECE651-HKNJANUM
+           MOVE    RECE641-HOJOKBN      TO  RECE651-HOJOKBN
+           MOVE    RECE641-TEKSTYMD     TO  RECE651-TEKSTYMD
+           MOVE    RECE641-ZAINUM       TO  RECE651-ZAINUM
+           MOVE    RECE641-ZAIREN       TO  RECE651-ZAIREN
+           START   RECE651-FILE
+               KEY IS    >=   RECE651-KEY
+               INVALID
+                   MOVE    1            TO  FLG-RECE651
+               NOT INVALID
+                   PERFORM 990-RECE651-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE651           =   1                    )
+               OR     ( RECE641-HOSPNUM   NOT =   RECE651-HOSPNUM      )
+               OR     ( RECE641-SRYYM     NOT =   RECE651-SRYYM        )
+               OR     ( RECE641-NYUGAIKBN NOT =   RECE651-NYUGAIKBN    )
+               OR     ( RECE641-PTID      NOT =   RECE651-PTID         )
+               OR     ( RECE641-RECEKA    NOT =   RECE651-RECEKA       )
+               OR     ( RECE641-TEISYUTUSAKI
+                                          NOT =   RECE651-TEISYUTUSAKI )
+               OR     ( RECE641-RECESYUBETU
+                                          NOT =   RECE651-RECESYUBETU  )
+               OR     ( RECE641-HKNJANUM  NOT =   RECE651-HKNJANUM     )
+               OR     ( RECE641-HOJOKBN   NOT =   RECE651-HOJOKBN      )
+               OR     ( RECE641-TEKSTYMD  NOT =   RECE651-TEKSTYMD     )
+               OR     ( RECE641-ZAINUM    NOT =   RECE651-ZAINUM       )
+               OR     ( RECE641-ZAIREN    NOT =   RECE651-ZAIREN       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   5     )
+                         OR      ( RECE651-SRYCD(IDX) =   SPACE )
+                 IF   RECE651-MEISKYFLG(IDX)  =  "2"
+                    IF   (FLG-SETCOM              =  1   )
+                    AND  (RECE651-RECEDENFLG(IDX) = SPACE)
+                       ADD    1               TO  WRK-HEN-SEQNO
+                       PERFORM  26011-SETCOM-HENSYU3-SEC
+                    END-IF
+                 ELSE
+                    IF   (RECE651-SRYCD(IDX)(1:1) = "1" OR "6" OR "7")
+                    OR   (RECE651-SRYCD(IDX)(1:3) = "059"            )
+                       MOVE   1               TO  FLG-SETCOM
+                       MOVE   RECE651-RENNUM  TO  WRK-HEN-RENNUM
+                       MOVE   IDX             TO  WRK-HEN-SHORI-RENNUM
+                       MOVE   ZERO            TO  WRK-HEN-SEQNO
+                    END-IF
+                 END-IF
+               END-PERFORM
+      *
+               PERFORM 990-RECE651-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2601-SETCOM-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集３
+      *****************************************************************
+       26011-SETCOM-HENSYU3-SEC     SECTION.
+      *
+           MOVE    SPACE                 TO  RECE655-REC
+           INITIALIZE                        RECE655-REC
+      *
+           MOVE    RECE651-KEY           TO  RECE655-KEY
+      *
+           MOVE    WRK-HEN-RENNUM        TO  RECE655-RENNUM
+           MOVE    WRK-HEN-SHORI-RENNUM  TO  RECE655-SHORI-RENNUM
+           MOVE    WRK-HEN-SEQNO         TO  RECE655-SEQNO
+      *
+           MOVE    RECE651-SRYCD(IDX)    TO  RECE655-SRYCD
+           MOVE    RECE651-NAME(IDX)     TO  RECE655-NAME
+           MOVE    RECE651-INPUTCOMENT(IDX)
+                                         TO  RECE655-INPUTCOMENT
+      *
+           WRITE   RECE655-REC
+           ADD     1                     TO  CNT-RECE655
+      *
+           .
+       26011-SETCOM-HENSYU3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6339,6 +6560,7 @@
            DISPLAY "RECE659 CNT-WK  :" CNT-RECE659
            DISPLAY "RECE64  CNT-OUT :" CNT-RECE64 
            DISPLAY "RECE65  CNT-OUT :" CNT-RECE65 
+           DISPLAY "RECE655 CNT-OUT :" CNT-RECE655
            DISPLAY "*** ORCR0660 END ***"
       *
            .
@@ -6361,6 +6583,8 @@
       *
            CLOSE                       RECE649-FILE
            CLOSE                       RECE659-FILE
+      *
+           CLOSE                       RECE655-FILE
       *
            .
        310-FILE-CLOSE-EXT.
@@ -6420,6 +6644,22 @@
            EXIT.
       *
       ****************************************************************
+      *    レセプト６４１データ読み
+      ****************************************************************
+       990-RECE641-NEXT-SEC           SECTION.
+      *
+           READ    RECE641-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE641
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE641
+           END-READ
+      *
+           .
+       990-RECE641-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
       *    レセプト０５データ読み
       ****************************************************************
        990-RECE65-NEXT-SEC           SECTION.
@@ -6449,6 +6689,22 @@
       *
            .
        990-RECE659-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    レセプト６５１データ読み
+      ****************************************************************
+       990-RECE651-NEXT-SEC           SECTION.
+      *
+           READ    RECE651-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE651
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE651
+           END-READ
+      *
+           .
+       990-RECE651-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

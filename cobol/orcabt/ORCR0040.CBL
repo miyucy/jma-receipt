@@ -113,6 +113,8 @@
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
       *  04.05.03    NACL-門脇    09/11/25  リハビリコメント対応
+      *  04.05.04    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
+      *                                     対応（ファイル編集）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -182,6 +184,17 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE0559-KEY
                                    FILE    STATUS  IS  STS-RECE059.
+      *
+           SELECT  RECE055-FILE    ASSIGN  RECE055PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE055-KEY
+                                   FILE    STATUS  IS  STS-RECE055.
+           SELECT  RECE0555-FILE   ASSIGN  RECE055PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE0555-KEY
+                                   FILE    STATUS  IS  STS-RECE055.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -244,6 +257,15 @@
            COPY    "CPRCF005.INC"  REPLACING   //RECE05//
                                    BY          //RECE0559//.
       *
+       FD  RECE055-FILE.
+       01  RECE055-REC. 
+           COPY    "CPRCF0055.INC".
+      *
+       FD  RECE0555-FILE.
+       01  RECE0555-REC. 
+           COPY    "CPRCF0055.INC" REPLACING   //RECE055//
+                                   BY          //RECE0555//.
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -279,6 +301,10 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE059//.
       *
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE055//.
+      *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -292,6 +318,7 @@
            03  STS-RECE051         PIC X(02).
            03  STS-RECE049         PIC X(02).
            03  STS-RECE059         PIC X(02).
+           03  STS-RECE055         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
@@ -300,8 +327,10 @@
            03  FLG-RECE02          PIC 9(01).
            03  FLG-RECE04          PIC 9(01).
            03  FLG-RECE049         PIC 9(01).
+           03  FLG-RECE041         PIC 9(01).
            03  FLG-RECE05          PIC 9(01).
            03  FLG-RECE059         PIC 9(01).
+           03  FLG-RECE051         PIC 9(01).
            03  FLG-WRKRECE05       PIC 9(01).
            03  FLG-SHIDOU-COMMENT  PIC 9(01).
            03  FLG-HINKAI-COMMENT  PIC 9(01).
@@ -329,6 +358,7 @@
            03  FLG-COMARI          PIC 9(01).
            03  FLG-COMARI2         PIC 9(01).
            03  FLG-SANTEIPLUS      PIC 9(01).
+           03  FLG-SETCOM          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -337,6 +367,7 @@
            03  CNT-RECE05          PIC 9(06).
            03  CNT-RECE049         PIC 9(06).
            03  CNT-RECE059         PIC 9(06).
+           03  CNT-RECE055         PIC 9(06).
            03  CNT-JINZOU          PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
@@ -473,6 +504,10 @@
                                              OCCURS 31.
       *
            03  WRK-SYOUNI-FSANTEIYMD         PIC X(08).
+      *
+           03  WRK-HEN-RENNUM                PIC 9(02).
+           03  WRK-HEN-SHORI-RENNUM          PIC 9(01).
+           03  WRK-HEN-SEQNO                 PIC 9(02).
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -943,6 +978,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE049PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE059PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE059PARA-HOSPNUM
       *
+           MOVE    "RECE055"           TO  RECE055PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE055PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE055PARA-HOSPNUM
+      *
            OPEN    INPUT               RECE02-FILE
       *
            OPEN    INPUT               RECE04-FILE
@@ -961,13 +1000,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE059PARA-HOSPNUM
            OPEN    OUTPUT              RECE0559-FILE
            CLOSE                       RECE0559-FILE
       *
-           OPEN    OUTPUT              RECE041-FILE
+           OPEN    OUTPUT              RECE0555-FILE
+           CLOSE                       RECE0555-FILE
       *
-           OPEN    OUTPUT              RECE051-FILE
-      *
+           OPEN    I-O                 RECE041-FILE
            OPEN    I-O                 RECE049-FILE
       *
+           OPEN    I-O                 RECE051-FILE
            OPEN    I-O                 RECE059-FILE
+      *
+           OPEN    OUTPUT              RECE055-FILE
       *
            .
        110-FILE-OPEN-EXT.
@@ -1465,8 +1507,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *****内服薬剤料逓減に関する編集２****
            PERFORM     240-YAKUTEI-HENSYU2-SEC
       *
-      *****差込編集２********************
+      *****差込編集２**********************
            PERFORM     250-SASHIKOMI2-SEC
+      *
+      *****関係コメント編集****************
+           PERFORM     260-SETCOM-HENSYU-SEC
       *
            PERFORM 990-RECE02-READ-SEC
       *
@@ -6122,15 +6167,13 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
       *****************************************************************
        25991-RECE059-TENSOU-SEC     SECTION.
       *
-           PERFORM 800-RECE049-SET059-SEC
-           MOVE    RECE049-ZAINUM       TO  RECE059-ZAINUM
-           START   RECE059-FILE
-               KEY IS    >=   RECE059-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE059
-               NOT INVALID
-                   PERFORM 990-RECE059-NEXT-SEC
-           END-START
+           PERFORM  250111-RECE059-TAIHI-SEC
+      *
+      *    ＲＥＣＥ０５９ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE05
+           MOVE    SPACE                TO  WRK-RECE05XX-REC
+           INITIALIZE                       WRK-RECE05XX-REC
+      *
            PERFORM
                UNTIL  ( FLG-RECE059           =   1                    )
                OR     ( RECE049-HOSPNUM   NOT =   RECE059-HOSPNUM      )
@@ -6147,16 +6190,184 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                OR     ( RECE049-TEKSTYMD  NOT =   RECE059-TEKSTYMD     )
                OR     ( RECE049-ZAINUM    NOT =   RECE059-ZAINUM       )
       *
-               MOVE    RECE059-REC       TO      RECE051-REC
-               WRITE   RECE051-REC
-               ADD     1                 TO      CNT-RECE05
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   5     )
+                         OR      ( RECE059-SRYCD(IDX) =   SPACE )
+                    ADD    1             TO      IDX-RECE05
+                    MOVE   RECE059-SRYACT-TBL(IDX)
+                             TO   WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
+               END-PERFORM
       *
                PERFORM 990-RECE059-NEXT-SEC
       *
            END-PERFORM
       *
+      *    コメントを含んだ内容で中間ファイルの再作成
+           MOVE       ZERO             TO      FLG-WRKRECE05
+           MOVE       ZERO             TO      IDX
+           MOVE       ZERO             TO      IDX-RECE05
+           MOVE       ZERO             TO      WRK-RENNUM
+           PERFORM    UNTIL     FLG-WRKRECE05  =    1
+                    INITIALIZE                        RECE051-REC
+                    MOVE    WRK-RECE05-KEY       TO   RECE051-KEY
+                    ADD     1                    TO   WRK-RENNUM
+                    MOVE    WRK-RENNUM           TO   RECE051-RENNUM
+                    MOVE    WRK-RECE05-KOHBUNRI  TO   RECE051-KOHBUNRI
+                    MOVE    WRK-RECE05-PTNUM     TO   RECE051-PTNUM
+                    MOVE    WRK-RECE05-SRYKA     TO   RECE051-SRYKA
+                    MOVE    WRK-RECE05-SRYKBN    TO   RECE051-SRYKBN
+                    MOVE    WRK-RECE05-SRYSYUKBN TO   RECE051-SRYSYUKBN
+                    MOVE    WRK-RECE05-JIHIMONEY TO   RECE051-JIHIMONEY
+                    PERFORM  VARYING   IDX   FROM   1   BY   1
+                             UNTIL   (IDX       >    5)   OR
+                                     (FLG-WRKRECE05   =   1)
+                       ADD         1             TO    IDX-RECE05
+                       IF  WRK-RECE05XX-SRYCD(IDX-RECE05 1) = SPACE
+                           MOVE    1             TO    FLG-WRKRECE05
+                       ELSE
+                           MOVE  WRK-RECE05XX-SRYACT-TBL(IDX-RECE05 1)
+                                            TO   RECE051-SRYACT-TBL(IDX)
+                       END-IF
+                    END-PERFORM
+                    IF   RECE051-SRYCD(1)  NOT =  SPACE
+                       WRITE   RECE051-REC
+                       ADD     1            TO   CNT-RECE05
+                    END-IF
+           END-PERFORM
+      *
            .
        25991-RECE059-TENSOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集
+      *****************************************************************
+       260-SETCOM-HENSYU-SEC     SECTION.
+      *
+      *    パラメータ０４１ファイルより編集
+           PERFORM 800-RECE02-SET041-SEC
+           MOVE    ZERO                TO  RECE041-ZAINUM
+      *
+           START   RECE041-FILE
+               KEY IS    >=   RECE041-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE041
+               NOT INVALID
+                   PERFORM 990-RECE041-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE041          =   1                    )
+               OR     ( RECE02-HOSPNUM   NOT =   RECE041-HOSPNUM      )
+               OR     ( RECE02-SRYYM     NOT =   RECE041-SRYYM        )
+               OR     ( RECE02-NYUGAIKBN NOT =   RECE041-NYUGAIKBN    )
+               OR     ( RECE02-PTID      NOT =   RECE041-PTID         )
+               OR     ( RECE02-RECEKA    NOT =   RECE041-RECEKA       )
+               OR     ( RECE02-TEISYUTUSAKI
+                                         NOT =   RECE041-TEISYUTUSAKI )
+               OR     ( RECE02-RECESYUBETU
+                                         NOT =   RECE041-RECESYUBETU  )
+               OR     ( RECE02-HKNJANUM-KEY
+                                         NOT =   RECE041-HKNJANUM     )
+               OR     ( RECE02-HOJOKBN-KEY
+                                         NOT =   RECE041-HOJOKBN      )
+               OR     ( RECE02-TEKSTYMD  NOT =   RECE041-TEKSTYMD     )
+      *
+               IF     RECE041-SETCOMFLG   =    "1"
+                  PERFORM 2601-SETCOM-HENSYU2-SEC
+               END-IF
+      *
+               PERFORM 990-RECE041-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       260-SETCOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集２
+      *****************************************************************
+       2601-SETCOM-HENSYU2-SEC     SECTION.
+      *
+           MOVE    ZERO    TO    FLG-SETCOM
+      *
+           PERFORM 800-RECE041-SET051-SEC
+           MOVE    RECE041-ZAINUM      TO  RECE051-ZAINUM
+           START   RECE051-FILE
+               KEY IS    >=   RECE051-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE051
+               NOT INVALID
+                   PERFORM 990-RECE051-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE051           =   1                    )
+               OR     ( RECE041-HOSPNUM   NOT =   RECE051-HOSPNUM      )
+               OR     ( RECE041-SRYYM     NOT =   RECE051-SRYYM        )
+               OR     ( RECE041-NYUGAIKBN NOT =   RECE051-NYUGAIKBN    )
+               OR     ( RECE041-PTID      NOT =   RECE051-PTID         )
+               OR     ( RECE041-RECEKA    NOT =   RECE051-RECEKA       )
+               OR     ( RECE041-TEISYUTUSAKI
+                                          NOT =   RECE051-TEISYUTUSAKI )
+               OR     ( RECE041-RECESYUBETU
+                                          NOT =   RECE051-RECESYUBETU  )
+               OR     ( RECE041-HKNJANUM  NOT =   RECE051-HKNJANUM     )
+               OR     ( RECE041-HOJOKBN   NOT =   RECE051-HOJOKBN      )
+               OR     ( RECE041-TEKSTYMD  NOT =   RECE051-TEKSTYMD     )
+               OR     ( RECE041-ZAINUM    NOT =   RECE051-ZAINUM       )
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   5     )
+                         OR      ( RECE051-SRYCD(IDX) =   SPACE )
+                 IF   RECE051-MEISKYFLG(IDX)  =  "2"
+                    IF   (FLG-SETCOM              =  1   )
+                    AND  (RECE051-RECEDENFLG(IDX) = SPACE)
+                       ADD    1               TO  WRK-HEN-SEQNO
+                       PERFORM  26011-SETCOM-HENSYU3-SEC
+                    END-IF
+                 ELSE
+                    IF   (RECE051-SRYCD(IDX)(1:1) = "1" OR "6" OR "7")
+                    OR   (RECE051-SRYCD(IDX)(1:3) = "059"            )
+                       MOVE   1               TO  FLG-SETCOM
+                       MOVE   RECE051-RENNUM  TO  WRK-HEN-RENNUM
+                       MOVE   IDX             TO  WRK-HEN-SHORI-RENNUM
+                       MOVE   ZERO            TO  WRK-HEN-SEQNO
+                    END-IF
+                 END-IF
+               END-PERFORM
+      *
+               PERFORM 990-RECE051-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2601-SETCOM-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集３
+      *****************************************************************
+       26011-SETCOM-HENSYU3-SEC     SECTION.
+      *
+           MOVE    SPACE                 TO  RECE055-REC
+           INITIALIZE                        RECE055-REC
+      *
+           MOVE    RECE051-KEY           TO  RECE055-KEY
+      *
+           MOVE    WRK-HEN-RENNUM        TO  RECE055-RENNUM
+           MOVE    WRK-HEN-SHORI-RENNUM  TO  RECE055-SHORI-RENNUM
+           MOVE    WRK-HEN-SEQNO         TO  RECE055-SEQNO
+      *
+           MOVE    RECE051-SRYCD(IDX)    TO  RECE055-SRYCD
+           MOVE    RECE051-NAME(IDX)     TO  RECE055-NAME
+           MOVE    RECE051-INPUTCOMENT(IDX)
+                                         TO  RECE055-INPUTCOMENT
+      *
+           WRITE   RECE055-REC
+           ADD     1                     TO  CNT-RECE055
+      *
+           .
+       26011-SETCOM-HENSYU3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6256,6 +6467,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE059 CNT-WK  :" CNT-RECE059
            DISPLAY "RECE04  CNT-OUT :" CNT-RECE04 
            DISPLAY "RECE05  CNT-OUT :" CNT-RECE05 
+           DISPLAY "RECE055 CNT-OUT :" CNT-RECE055
            DISPLAY "*** ORCR0040 END ***"
       *
            .
@@ -6278,6 +6490,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            CLOSE                       RECE049-FILE
            CLOSE                       RECE059-FILE
+      *
+           CLOSE                       RECE055-FILE
       *
            .
        310-FILE-CLOSE-EXT.
@@ -6323,6 +6537,27 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE049-HOSPNUM
       *
            .
        800-RECE02-SET049-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト０２データ編集処理（０４１）
+      *****************************************************************
+       800-RECE02-SET041-SEC           SECTION.
+      *
+           INITIALIZE                      RECE041-REC
+           MOVE    RECE02-HOSPNUM      TO  RECE041-HOSPNUM
+           MOVE    RECE02-SRYYM        TO  RECE041-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE041-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE041-PTID
+           MOVE    RECE02-RECEKA       TO  RECE041-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE041-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE041-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE041-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE041-TEKSTYMD
+      *
+           .
+       800-RECE02-SET041-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6410,6 +6645,27 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  RECE059-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセプト０４１データ編集処理（０５１）
+      *****************************************************************
+       800-RECE041-SET051-SEC           SECTION.
+      *
+           INITIALIZE                       RECE051-REC
+           MOVE    RECE041-HOSPNUM      TO  RECE051-HOSPNUM
+           MOVE    RECE041-SRYYM        TO  RECE051-SRYYM
+           MOVE    RECE041-NYUGAIKBN    TO  RECE051-NYUGAIKBN
+           MOVE    RECE041-PTID         TO  RECE051-PTID
+           MOVE    RECE041-RECEKA       TO  RECE051-RECEKA
+           MOVE    RECE041-TEISYUTUSAKI TO  RECE051-TEISYUTUSAKI
+           MOVE    RECE041-RECESYUBETU  TO  RECE051-RECESYUBETU
+           MOVE    RECE041-HKNJANUM     TO  RECE051-HKNJANUM
+           MOVE    RECE041-HOJOKBN      TO  RECE051-HOJOKBN
+           MOVE    RECE041-TEKSTYMD     TO  RECE051-TEKSTYMD
+      *
+           .
+       800-RECE041-SET051-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    レセプト０２データ順検索処理
       *****************************************************************
        990-RECE02-READ-SEC           SECTION.
@@ -6462,6 +6718,22 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  RECE059-HOSPNUM
            EXIT.
       *
       ****************************************************************
+      *    レセプト０４１データ読み
+      ****************************************************************
+       990-RECE041-NEXT-SEC           SECTION.
+      *
+           READ    RECE041-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE041
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE041
+           END-READ
+      *
+           .
+       990-RECE041-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
       *    レセプト０５データ読み
       ****************************************************************
        990-RECE05-NEXT-SEC           SECTION.
@@ -6491,6 +6763,22 @@ grpsys     MOVE    RECE02-HOSPNUM       TO  RECE059-HOSPNUM
       *
            .
        990-RECE059-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    レセプト０５１データ読み
+      ****************************************************************
+       990-RECE051-NEXT-SEC           SECTION.
+      *
+           READ    RECE051-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE051
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE051
+           END-READ
+      *
+           .
+       990-RECE051-NEXT-EXT.
            EXIT.
       *
       *****************************************************************
