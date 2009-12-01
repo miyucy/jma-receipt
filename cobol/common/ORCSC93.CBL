@@ -370,6 +370,14 @@
                        MOVE    "0208"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
                    END-IF
+      *            入院料・食事加算はエラー
+                   IF     (SPA-ERRCD           =   SPACE )
+                   AND    (WRK-H-SRYKBN        =   "90"
+                                               OR  "92"
+                                               OR  "97"  )
+                       MOVE    "0209"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                   END-IF
                END-IF
       *!!
            END-PERFORM
