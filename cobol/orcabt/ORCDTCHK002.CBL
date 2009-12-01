@@ -9794,6 +9794,10 @@
                                        TO  SRH-1102-NM1ETC
            MOVE    KGNMCHK-NMSUJINASHI(IDX-KGNM)
                                        TO  SRH-1102-NMSUJINASHI
+           MOVE    KGNMCHK-NMKETAMIN  (IDX-KGNM)
+                                       TO  SRH-1102-NMKETAMIN
+           MOVE    KGNMCHK-NMKETAMAX  (IDX-KGNM)
+                                       TO  SRH-1102-NMKETAMAX
       *
            MOVE    KGNMCHK-NM2SUJI(IDX-KGNM)
                                        TO  SRH-1102-NM2SUJI

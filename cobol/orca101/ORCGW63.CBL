@@ -1433,9 +1433,11 @@
                                        TO  SPA-GMN-NM1ETC
            MOVE    KGNMCHK-NMSUJINASHI(IDX-KGNM)
                                        TO  SPA-GMN-NMSUJINASHI
-           MOVE    SPACE               TO  SPA-GMN-NMKETAMIN
+           MOVE    KGNMCHK-NMKETAMIN  (IDX-KGNM)
+                                       TO  SPA-GMN-NMKETAMIN
                                            SPA-NAI-NMKETAMIN-BF
-           MOVE    SPACE               TO  SPA-GMN-NMKETAMAX
+           MOVE    KGNMCHK-NMKETAMAX  (IDX-KGNM)
+                                       TO  SPA-GMN-NMKETAMAX
       *
            MOVE    KGNMCHK-NM2SUJI(IDX-KGNM)
                                        TO  SPA-GMN-NM2SUJI

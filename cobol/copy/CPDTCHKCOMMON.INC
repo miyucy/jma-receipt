@@ -346,6 +346,8 @@
                    07  SRH-1102-KGETC              PIC X(01).
                    07  SRH-1102-KGKANJINASHI       PIC X(01).
                    07  SRH-1102-NMSUJINASHI        PIC X(01).
+                   07  SRH-1102-NMKETAMIN          PIC X(02).
+                   07  SRH-1102-NMKETAMAX          PIC X(02).
                    07  SRH-1102-NM1CHKPTN          PIC X(01).
                    07  SRH-1102-NM1SUJI            PIC X(01).
                    07  SRH-1102-NM1KANJI           PIC X(01).
@@ -379,6 +381,8 @@
                    07  SRH-1102-KGETCL             PIC X(01).
                    07  SRH-1102-KGKANJINASHIL      PIC X(01).
                    07  SRH-1102-NMSUJINASHIL       PIC X(01).
+                   07  SRH-1102-NMKETAMINL         PIC X(02).
+                   07  SRH-1102-NMKETAMAXL         PIC X(02).
                    07  SRH-1102-NM1CHKPTNL         PIC X(01).
                    07  SRH-1102-NM1SUJIL           PIC X(01).
                    07  SRH-1102-NM1KANJIL          PIC X(01).
