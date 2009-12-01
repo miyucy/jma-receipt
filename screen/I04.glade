@@ -1091,7 +1091,7 @@
       <class>GtkPandaEntry</class>
       <name>ROUSYOSIN</name>
       <x>900</x>
-      <y>260</y>
+      <y>256</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1106,7 +1106,7 @@
       <class>GtkPandaEntry</class>
       <name>ROUSAISIN</name>
       <x>900</x>
-      <y>285</y>
+      <y>280</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1121,7 +1121,7 @@
       <class>GtkPandaEntry</class>
       <name>ROUSIDOU</name>
       <x>900</x>
-      <y>310</y>
+      <y>304</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1136,7 +1136,7 @@
       <class>GtkPandaEntry</class>
       <name>ROUETC</name>
       <x>900</x>
-      <y>335</y>
+      <y>328</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1151,7 +1151,7 @@
       <class>GtkPandaEntry</class>
       <name>SKYMONEY</name>
       <x>900</x>
-      <y>445</y>
+      <y>452</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1224,7 +1224,7 @@
       <class>GtkPandaEntry</class>
       <name>MISYUZAN_NYU</name>
       <x>900</x>
-      <y>475</y>
+      <y>480</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1254,7 +1254,7 @@
       <class>GtkPandaEntry</class>
       <name>RMSAGAKU</name>
       <x>900</x>
-      <y>375</y>
+      <y>360</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -1269,7 +1269,7 @@
       <class>GtkPandaEntry</class>
       <name>CHOSEI</name>
       <x>900</x>
-      <y>405</y>
+      <y>388</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -2078,8 +2078,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLRSITTL</name>
-      <x>825</x>
-      <y>235</y>
+      <x>828</x>
+      <y>232</y>
       <width>180</width>
       <height>24</height>
       <label>Ï«ºÒ¼«ÇåÊÝ¸±Å¬ÍÑÊ¬¡Ê±ß¡Ë</label>
@@ -2094,8 +2094,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLRSISYO</name>
-      <x>825</x>
-      <y>260</y>
+      <x>824</x>
+      <y>256</y>
       <width>70</width>
       <height>24</height>
       <label>½é¿Ç</label>
@@ -2110,8 +2110,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLRSISAI</name>
-      <x>825</x>
-      <y>285</y>
+      <x>824</x>
+      <y>280</y>
       <width>70</width>
       <height>24</height>
       <label>ºÆ¿Ç</label>
@@ -2126,8 +2126,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLRSISDO</name>
-      <x>825</x>
-      <y>310</y>
+      <x>824</x>
+      <y>304</y>
       <width>70</width>
       <height>24</height>
       <label>»ØÆ³</label>
@@ -2142,8 +2142,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>LBLRSIETC</name>
-      <x>825</x>
-      <y>335</y>
+      <x>824</x>
+      <y>328</y>
       <width>70</width>
       <height>24</height>
       <label>¤½¤ÎÂ¾</label>
@@ -2153,15 +2153,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator13</name>
-      <x>810</x>
-      <y>360</y>
-      <width>194</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -2288,8 +2279,8 @@
     <widget>
       <class>GtkLabel</class>
       <name>label501</name>
-      <x>815</x>
-      <y>375</y>
+      <x>816</x>
+      <y>360</y>
       <width>80</width>
       <height>24</height>
       <label>¼¼ÎÁº¹³Û</label>
@@ -2302,26 +2293,10 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label492</name>
-      <x>815</x>
-      <y>405</y>
-      <width>80</width>
-      <height>24</height>
-      <label>Ä´À°¶â</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>KANYUKIN</name>
       <x>900</x>
-      <y>505</y>
+      <y>508</y>
       <width>88</width>
       <height>24</height>
       <editable>False</editable>
@@ -2383,25 +2358,9 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label183</name>
-      <x>760</x>
-      <y>445</y>
-      <width>120</width>
-      <height>24</height>
-      <label>º£²óÆþ±¡ÀÁµá³Û</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label184</name>
       <x>760</x>
-      <y>475</y>
+      <y>480</y>
       <width>140</width>
       <height>24</height>
       <label>Á°²ó¤Þ¤Ç¤ÎÌ¤¼ý³Û</label>
@@ -2449,7 +2408,7 @@
       <class>GtkLabel</class>
       <name>label510</name>
       <x>760</x>
-      <y>505</y>
+      <y>508</y>
       <width>140</width>
       <height>24</height>
       <label>Á°²ó¤Þ¤Ç¤Î²áÆþ¶â³Û</label>
@@ -3396,6 +3355,47 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator13</name>
+      <x>808</x>
+      <y>354</y>
+      <width>194</width>
+      <height>0</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label183</name>
+      <x>760</x>
+      <y>452</y>
+      <width>120</width>
+      <height>24</height>
+      <label>º£²óÆþ±¡ÀÁµá³Û</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label492</name>
+      <x>816</x>
+      <y>388</y>
+      <width>80</width>
+      <height>24</height>
+      <label>Ä´À°¶â</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

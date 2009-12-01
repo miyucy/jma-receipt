@@ -1106,14 +1106,17 @@
            INITIALIZE                      SPA-GMN-Q01-SELCOMMENTLST-G
       *
            MOVE    "1"                 TO  SPA-GMN-Q01-SELCOMMENTL   (1)
-           MOVE    "患者コメント・禁忌・アレルギー・感染症"
-                                       TO  SPA-GMN-Q01-SELCOMMENTMEIL(1)
+           MOVE    "患者コメント"      TO  SPA-GMN-Q01-SELCOMMENTMEIL(1)
       *
            MOVE    "2"                 TO  SPA-GMN-Q01-SELCOMMENTL   (2)
-           MOVE    "レセプトコメント"  TO  SPA-GMN-Q01-SELCOMMENTMEIL(2)
+           MOVE    "患者禁忌・アレルギー・感染症"
+                                       TO  SPA-GMN-Q01-SELCOMMENTMEIL(2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-Q01-SELCOMMENTL   (3)
+           MOVE    "レセプトコメント"  TO  SPA-GMN-Q01-SELCOMMENTMEIL(3)
       *
            COMPUTE SPA-GMN-Q01-SELCOMMENTLST-MAX
-               =   2
+               =   3
       *
            .
        3101-SELCOMMENT-CMB-SYOKI-EXT.
@@ -3524,7 +3527,7 @@
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-COMMENT  (IDXA)
       *
-           IF    ( SPA-GMN-Q01-SELCOMMENT  =   "2" )
+           IF    ( SPA-GMN-Q01-SELCOMMENT  =   "3" )
                MOVE    SPACE       TO  WRK-RECECOM-G
                UNSTRING    SPA-GMN-Q01-COMMENT (IDXA)
                                            DELIMITED BY  ALL "　"
@@ -7216,7 +7219,7 @@
             OR ( SPA-Q01-CONDITION2-G      NOT =   SPACE )
             OR ( SPA-Q01-CONDITION3-G      NOT =   SPACE )
             OR ( SPA-Q01-GENMEN-G          NOT =   SPACE )
-            OR ((SPA-Q01-SELCOMMENT        =   "1" )
+            OR ((SPA-Q01-SELCOMMENT        =   "1" OR "2" )
              AND( SPA-Q01-COMMENT-G        NOT =   SPACE ))
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
@@ -7255,7 +7258,7 @@
            END-IF
       *
       *    該当（１１）
-           IF   (  SPA-Q01-SELCOMMENT          =   "2" )
+           IF   (  SPA-Q01-SELCOMMENT          =   "3" )
              AND(  SPA-Q01-COMMENT-G       NOT =   SPACE )
       *
               MOVE     "1"                 TO  SPA-Q01-GTBL(11)

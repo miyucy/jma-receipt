@@ -1405,7 +1405,7 @@
            PERFORM 10011-GENMEN-SEL-EDIT-SEC
       *
       *    ¥³¥á¥ó¥È¸¡º÷¾ò·ïÊÔ½¸½èÍý
-           IF    ( SPA-Q01-SELCOMMENT  =   "1" )
+           IF    ( SPA-Q01-SELCOMMENT  =   "1" OR "2" )
                PERFORM 10011-COMMENT-SELECT-EDIT-SEC
            END-IF
       *
@@ -2944,15 +2944,20 @@
                    MOVE    SPA-Q01-COMMENT (IDX1)  TO  WRK-STR
                    PERFORM 900-STR-LEN-GET-SEC
       *
-                   STRING  "(COMMENT_1 LIKE '" DELIMITED   BY  SIZE
+                   IF    ( SPA-Q01-SELCOMMENT      =   "1" )
+                       STRING  "(COMMENT_1 LIKE '" DELIMITED   BY  SIZE
                            SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
                            "%')OR"                 DELIMITED   BY  SIZE
                            " (COMMENT_2 LIKE '"    DELIMITED   BY  SIZE
                            SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
-                           "%')OR"                 DELIMITED   BY  SIZE
-                           "(TABOO_1 LIKE '" DELIMITED   BY  SIZE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   ELSE
+                       STRING  "(TABOO_1 LIKE '" DELIMITED   BY  SIZE
                            SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
                            "%')OR"                 DELIMITED   BY  SIZE
@@ -2976,9 +2981,10 @@
                            SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
                            "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
       *
                 END-IF
            END-PERFORM
