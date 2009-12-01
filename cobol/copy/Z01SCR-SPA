@@ -141,9 +141,9 @@
                05  SPA-Z99-FLG                 PIC 9(1).
       *    £Ú£¹£±²èÌÌ¤è¤ê
            03  SPA-Z91-AREA.
-               05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-Z91-GMN-CUR         PIC 9(02).
       *
-               05  SPA-GMN-AREA.
+               05  SPA-Z91-GMN-AREA.
                    07  SPA-GMN-SRYCHK      PIC X.
                    07  SPA-GMN-SRY         PIC X     OCCURS  2.
                    07  SPA-GMN-IYKCHK-G.
@@ -184,7 +184,7 @@
                        09  SPA-GMN-SRYENDMEIL  PIC X(14).
                    07  SPA-SRYEND-MAX          PIC 9(04).
       *
-               05  SPA-NAI-AREA.
+               05  SPA-Z91-NAI-AREA.
                    07  SPA-NAI-MSTYMD          PIC 9(08).
       *
            03  SPA-Z97-AREA.

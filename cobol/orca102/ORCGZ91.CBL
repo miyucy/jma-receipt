@@ -375,7 +375,7 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           INITIALIZE                  SPA-GMN-AREA
+           INITIALIZE                  SPA-Z91-GMN-AREA
            INITIALIZE                  SPA-GMN-SRYSTR-AREA
            INITIALIZE                  SPA-GMN-SRYEND-AREA
       *
@@ -453,7 +453,7 @@
            MOVE    SPA-SYSYMD      TO  SPA-NAI-MSTYMD
            MOVE    SPA-SYSYMDWH    TO  SPA-GMN-MSTYMD
       *
-           MOVE    1               TO  SPA-GMN-CUR
+           MOVE    1               TO  SPA-Z91-GMN-CUR
       *
            .
        310-SPASET-EXT.
@@ -558,7 +558,7 @@
                                            SPA-AREA
            END-IF
       *
-           MOVE    ZERO            TO  SPA-GMN-CUR
+           MOVE    ZERO            TO  SPA-Z91-GMN-CUR
            MOVE    ZERO            TO  IDX
            MOVE    3               TO  IDY
       *
@@ -652,7 +652,7 @@
                            MOVE    "T"         TO  SPA-GMN-SRY(1)
                            MOVE    "F"         TO  SPA-GMN-SRY(2)
                    END-EVALUATE
-                   MOVE  1             TO  SPA-GMN-CUR
+                   MOVE  1             TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "SRY1"
                    EVALUATE    SPA-GMN-SRY(1)
                        WHEN    "T"
@@ -664,19 +664,19 @@
                            MOVE    "T"         TO  SPA-GMN-SRY(1)
                            MOVE    "F"         TO  SPA-GMN-SRY(2)
                    END-EVALUATE
-                   MOVE    2           TO  SPA-GMN-CUR
+                   MOVE    2           TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "SRY2"
                    EVALUATE    SPA-GMN-SRY(2)
                        WHEN    "T"
                            MOVE    "F"         TO  SPA-GMN-SRYCHK
                            MOVE    "F"         TO  SPA-GMN-SRY(1)
                            MOVE    "F"         TO  SPA-GMN-SRY(2)
-                           MOVE    3           TO  SPA-GMN-CUR
+                           MOVE    3           TO  SPA-Z91-GMN-CUR
                        WHEN    "F"
                            MOVE    "T"         TO  SPA-GMN-SRYCHK
                            MOVE    "F"         TO  SPA-GMN-SRY(1)
                            MOVE    "T"         TO  SPA-GMN-SRY(2)
-                           MOVE    4           TO  SPA-GMN-CUR
+                           MOVE    4           TO  SPA-Z91-GMN-CUR
                    END-EVALUATE
       *        医薬品チェック
                WHEN    "CLICKED"       ALSO    "IYKCHKALL"
@@ -692,7 +692,7 @@
                                MOVE    "T"     TO  SPA-GMN-IYKCHK(IDX)
                            END-PERFORM
                    END-EVALUATE
-                   MOVE    6           TO  SPA-GMN-CUR
+                   MOVE    6           TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK1"
                    EVALUATE    SPA-GMN-IYKCHK(1)
                        WHEN    "T"
@@ -700,7 +700,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(1)
                    END-EVALUATE
-                   MOVE    7           TO  SPA-GMN-CUR
+                   MOVE    7           TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK2"
                    EVALUATE    SPA-GMN-IYKCHK(2)
                        WHEN    "T"
@@ -708,7 +708,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(2)
                    END-EVALUATE
-                   MOVE    8           TO  SPA-GMN-CUR
+                   MOVE    8           TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK3"
                    EVALUATE    SPA-GMN-IYKCHK(3)
                        WHEN    "T"
@@ -716,7 +716,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(3)
                    END-EVALUATE
-                   MOVE    9           TO  SPA-GMN-CUR
+                   MOVE    9           TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK4"
                    EVALUATE    SPA-GMN-IYKCHK(4)
                        WHEN    "T"
@@ -724,7 +724,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(4)
                    END-EVALUATE
-                   MOVE    10          TO  SPA-GMN-CUR
+                   MOVE    10          TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK5"
                    EVALUATE    SPA-GMN-IYKCHK(5)
                        WHEN    "T"
@@ -732,7 +732,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(5)
                    END-EVALUATE
-                   MOVE    11          TO  SPA-GMN-CUR
+                   MOVE    11          TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK6"
                    EVALUATE    SPA-GMN-IYKCHK(6)
                        WHEN    "T"
@@ -740,7 +740,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(6)
                    END-EVALUATE
-                   MOVE    12          TO  SPA-GMN-CUR
+                   MOVE    12          TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "IYKCHK7"
                    EVALUATE    SPA-GMN-IYKCHK(7)
                        WHEN    "T"
@@ -748,7 +748,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(7)
                    END-EVALUATE
-                   MOVE    13          TO  SPA-GMN-CUR
+                   MOVE    13          TO  SPA-Z91-GMN-CUR
       *        特定器材チェック
                WHEN    "CLICKED"       ALSO    "TOKCHK"
                    EVALUATE    SPA-GMN-TOKCHK
@@ -757,19 +757,19 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-TOKCHK
                    END-EVALUATE
-                   MOVE    14          TO  SPA-GMN-CUR
+                   MOVE    14          TO  SPA-Z91-GMN-CUR
       *        その他材料チェック
                WHEN    "CLICKED"       ALSO    "HOKACHK"
                    MOVE    Z91-HOKACHK     TO  SPA-GMN-HOKACHK
-                   MOVE    15              TO  SPA-GMN-CUR
+                   MOVE    15              TO  SPA-Z91-GMN-CUR
       *        器材商品チェック
                WHEN    "CLICKED"       ALSO    "KZICHK" 
                    MOVE    Z91-KZICHK      TO  SPA-GMN-KZICHK
-                   MOVE    31              TO  SPA-GMN-CUR
+                   MOVE    31              TO  SPA-Z91-GMN-CUR
       *        自費チェック
                WHEN    "CLICKED"       ALSO    "JIHCHK" 
                    MOVE    Z91-JIHCHK      TO  SPA-GMN-JIHCHK
-                   MOVE    16              TO  SPA-GMN-CUR
+                   MOVE    16              TO  SPA-Z91-GMN-CUR
       *        コメントチェック
                WHEN    "CLICKED"       ALSO    "COMCHKALL"
                    EVALUATE    SPA-GMN-COMCHKALL
@@ -784,7 +784,7 @@
                                MOVE    "T"     TO  SPA-GMN-COMCHK(IDX)
                            END-PERFORM
                    END-EVALUATE
-                   MOVE    17          TO  SPA-GMN-CUR
+                   MOVE    17          TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "COMCHK1"
                    EVALUATE    SPA-GMN-COMCHK(1)
                        WHEN    "T"
@@ -792,7 +792,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-COMCHK(1)
                    END-EVALUATE  
-                   MOVE    18          TO  SPA-GMN-CUR
+                   MOVE    18          TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "COMCHK2"
                    EVALUATE    SPA-GMN-COMCHK(2)
                        WHEN    "T"
@@ -800,7 +800,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-COMCHK(2)
                    END-EVALUATE
-                   MOVE    19          TO  SPA-GMN-CUR
+                   MOVE    19          TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "COMCHK3"
                    EVALUATE    SPA-GMN-COMCHK(3)
                        WHEN    "T"
@@ -808,7 +808,7 @@
                        WHEN    "F"
                            MOVE    "T"     TO  SPA-GMN-COMCHK(3)
                    END-EVALUATE
-                   MOVE  20            TO  SPA-GMN-CUR
+                   MOVE  20            TO  SPA-Z91-GMN-CUR
                WHEN    "CLICKED"       ALSO    "KEI1"
                WHEN    "CLICKED"       ALSO    "KEI2"
                    MOVE  Z91-KEI(1)            TO  SPA-GMN-KEI(1)
@@ -982,9 +982,9 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-LNKYMD          TO  SPA-GMN-MSTYMD
                MOVE    WRK-SYMD            TO  SPA-NAI-MSTYMD
-               MOVE    99                  TO  SPA-GMN-CUR
+               MOVE    99                  TO  SPA-Z91-GMN-CUR
            ELSE
-               MOVE    21                  TO  SPA-GMN-CUR
+               MOVE    21                  TO  SPA-Z91-GMN-CUR
            END-IF 
       *
            .
@@ -1006,7 +1006,7 @@
       *
            MOVE    SPA-Z91-SRYSTR  TO  SPA-Z91-SRYEND
       *
-           MOVE    5               TO  SPA-GMN-CUR
+           MOVE    5               TO  SPA-Z91-GMN-CUR
       *
            .
        400-SRYSTR-EXT.
@@ -1025,7 +1025,7 @@
                GO  TO  400-SRYEND-EXT
            END-IF
       *
-           MOVE  6               TO  SPA-GMN-CUR
+           MOVE  6               TO  SPA-Z91-GMN-CUR
       *
            .
        400-SRYEND-EXT.
@@ -1039,7 +1039,7 @@
            MOVE    ZERO            TO  FLG-OK
       *
            IF      SPA-Z91-SRYSTR      =   SPACE
-               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    4               TO  SPA-Z91-GMN-CUR
                MOVE    "0006"          TO  SPA-ERRCD
                GO  TO  410-SRYSTR-CHK-EXT
            END-IF
@@ -1055,7 +1055,7 @@
            END-PERFORM
       *
            IF      FLG-OK          =   ZERO
-               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    4               TO  SPA-Z91-GMN-CUR
                MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *
@@ -1071,7 +1071,7 @@
            MOVE    ZERO            TO  FLG-OK
       *
            IF      SPA-Z91-SRYEND      =   SPACE
-               MOVE    5               TO  SPA-GMN-CUR
+               MOVE    5               TO  SPA-Z91-GMN-CUR
                MOVE    "0006"          TO  SPA-ERRCD
                GO  TO  410-SRYEND-CHK-EXT
            END-IF
@@ -1087,12 +1087,12 @@
            END-PERFORM
       *
            IF      FLG-OK          =   ZERO
-               MOVE    5               TO  SPA-GMN-CUR
+               MOVE    5               TO  SPA-Z91-GMN-CUR
                MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *
            IF    SPA-Z91-SRYSTRL   >   SPA-Z91-SRYENDL
-               MOVE    5               TO  SPA-GMN-CUR
+               MOVE    5               TO  SPA-Z91-GMN-CUR
                MOVE    "0007"          TO  SPA-ERRCD
                GO  TO  410-SRYEND-CHK-EXT
            END-IF
@@ -1236,7 +1236,7 @@
       *
            IF      SPA-NAI-MSTYMD      =   ZERO
                MOVE    "0003"          TO  SPA-ERRCD
-               MOVE    21              TO  SPA-GMN-CUR
+               MOVE    21              TO  SPA-Z91-GMN-CUR
                GO  TO  490-PRINT-MAE-EXT
            END-IF
       *
@@ -1286,7 +1286,7 @@
       *
            IF      SPA-NAI-MSTYMD      =   ZERO
                MOVE    "0003"          TO  SPA-ERRCD
-               MOVE    21              TO  SPA-GMN-CUR
+               MOVE    21              TO  SPA-Z91-GMN-CUR
                GO  TO  490-CSV-MAE-EXT
            END-IF
       *
@@ -2212,7 +2212,7 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           EVALUATE    SPA-GMN-CUR
+           EVALUATE    SPA-Z91-GMN-CUR
                WHEN    1
                    MOVE    "SRYCHK"            TO  MCP-WIDGET
                WHEN    2
