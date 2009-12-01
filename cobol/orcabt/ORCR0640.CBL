@@ -408,6 +408,8 @@
       *                                     まとめ記載対応
       *  04.05.07    NACL-門脇    09/11/20  レセ電フォーマットコメント拡張
       *                                     対応（残量廃棄）
+      *  04.05.08    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
+      *                                     対応（ファイル編集）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -606,6 +608,7 @@
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
            03  FLG-KOUREI-KBN                          PIC 9(01).
+           03  FLG-SETCOM                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2803,6 +2806,7 @@
                                MOVE   SPACE  TO   WRK-FORMALNAME
                                MOVE   ZERO   TO   FLG-WRITE65
                                MOVE   ZERO   TO   FLG-TENTEKI
+                               MOVE   ZERO   TO   FLG-SETCOM
                                PERFORM   21011-RECE64-TENSOU-SEC
                                PERFORM   21012-RECE65-HENSYU-SEC
                                IF    FLG-WRITE65  =   1
@@ -2844,6 +2848,7 @@
                                       MOVE   SPACE  TO   WRK-FORMALNAME
                                       MOVE   ZERO   TO   FLG-WRITE65
                                       MOVE   ZERO   TO   FLG-TENTEKI
+                                      MOVE   ZERO   TO   FLG-SETCOM
                                       PERFORM   21011-RECE64-TENSOU-SEC
                                       PERFORM   21012-RECE65-HENSYU-SEC
                                       IF    FLG-WRITE65  =   1
@@ -2874,6 +2879,7 @@
                                       MOVE   SPACE  TO   WRK-FORMALNAME
                                       MOVE   ZERO   TO   FLG-WRITE65
                                       MOVE   ZERO   TO   FLG-TENTEKI
+                                      MOVE   ZERO   TO   FLG-SETCOM
                                       PERFORM   21011-RECE64-TENSOU-SEC
                                       PERFORM   21012-RECE65-HENSYU-SEC
                                       IF    FLG-WRITE65  =   1
@@ -3410,6 +3416,9 @@
                     ELSE                                                
                       MOVE WRK-SRYSURYO2  TO  RECE65-SRYSURYO(IDX4 - 1) 
                     END-IF
+                  ELSE
+                    MOVE  "1"             TO  RECE65-RECEDENFLG(IDX4)
+                    MOVE  "1"             TO  RECE65-RECEPTFLG(IDX4)
                   END-IF                                                
                ELSE                                                     
                   MOVE    SRY-SRYSURYO(IDX2)                            
@@ -3714,6 +3723,21 @@
                      END-IF
                    END-IF
                END-IF
+      **
+               IF   RECE65-MEISKYFLG(IDX4)  =  "2"
+                  IF   (FLG-SETCOM              =  1   )
+                  AND  (RECE65-RECEDENFLG(IDX4) = SPACE)
+                     MOVE  "1"            TO  RECE64-SETCOMFLG
+                  ELSE
+                     MOVE  SPACE          TO  RECE65-MEISKYFLG(IDX4)
+                  END-IF
+               ELSE
+                  IF   (RECE65-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
+                  OR   (RECE65-SRYCD(IDX4)(1:3) = "059"            )
+                     MOVE   1             TO  FLG-SETCOM
+                  END-IF
+               END-IF
+      **
               END-IF
              END-IF
             END-IF  
@@ -9067,6 +9091,7 @@
                               UNTIL   IDY     >       31
       *
                     MOVE   SPACE  TO   WRK-FORMALNAME
+                    MOVE   ZERO   TO   FLG-SETCOM
                     IF  ORCSTEN-ZAITEN(IDY)  NOT =  ZERO
       *
                        MOVE   1      TO   FLG-SIKIBETU
@@ -9119,6 +9144,7 @@
                                 OR    ORCSTEN-KIZ-ZAITEN(IDY)  =  ZERO
       *
                        MOVE   SPACE  TO   WRK-FORMALNAME
+                       MOVE   ZERO   TO   FLG-SETCOM
                        MOVE   2      TO   FLG-SIKIBETU
       *
                        INITIALIZE         WRK-ORCSTEN-TABLE
@@ -9544,9 +9570,14 @@
                   MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                   PERFORM    900-TENSU-TBL-SEC
                   IF  WRK-ORCSTEN-SRYCD(IDX2)  =  CONS-ZANHAIKI
+                    IF  RECE65-SRYSURYO(IDX4)  NOT = ZERO
                       MOVE   WRK-TANICD     TO  RECE65-TANICD(IDX4)
                       MOVE   WRK-TANIMOJISU TO  RECE65-TANIMOJISU(IDX4)
                       MOVE   WRK-TANINAME   TO  RECE65-TANINAME(IDX4)
+                    ELSE
+                      MOVE   "1"            TO  RECE65-RECEDENFLG(IDX4)
+                      MOVE   "1"            TO  RECE65-RECEPTFLG(IDX4)
+                    END-IF
                   ELSE
                       MOVE  TNS-TANICD      TO  RECE65-TANICD(IDX4)
                                                 WRK-TANICD
@@ -9719,7 +9750,21 @@
                       END-IF
                     END-IF
                   END-IF
-      *
+      **
+                  IF   RECE65-MEISKYFLG(IDX4)  =  "2"
+                     IF   (FLG-SETCOM              =  1   )
+                     AND  (RECE65-RECEDENFLG(IDX4) = SPACE)
+                        MOVE  "1"            TO  RECE64-SETCOMFLG
+                     ELSE
+                        MOVE  SPACE          TO  RECE65-MEISKYFLG(IDX4)
+                     END-IF
+                  ELSE
+                     IF   (RECE65-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
+                     OR   (RECE65-SRYCD(IDX4)(1:3) = "059"            )
+                        MOVE   1             TO  FLG-SETCOM
+                     END-IF
+                  END-IF
+      **
                 END-IF  
       *
                 ADD        1                TO  IDX2

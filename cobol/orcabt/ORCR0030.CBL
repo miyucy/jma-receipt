@@ -438,6 +438,8 @@
       *                                     まとめ記載対応
       *  04.05.06    NACL-門脇    09/11/20  レセ電フォーマットコメント拡張
       *                                     対応（残量廃棄）
+      *  04.05.07    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
+      *                                     対応（ファイル編集）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -618,6 +620,7 @@
            03  FLG-PTNYUINRRK                          PIC 9(01).
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
+           03  FLG-SETCOM                              PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -4252,6 +4255,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                MOVE  SPACE TO   WRK-FORMALNAME
                                MOVE  ZERO  TO   FLG-WRITE05
+                               MOVE  ZERO  TO   FLG-SETCOM
                                PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM 21043-RECE04-TENSOU-SEC
                                PERFORM 21044-RECE05-HENSYU-SEC
@@ -4296,6 +4300,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                       MOVE  SPACE TO   WRK-FORMALNAME
                                       MOVE  ZERO  TO   FLG-WRITE05
+                                      MOVE  ZERO  TO   FLG-SETCOM
                                       PERFORM   21043-RECE04-TENSOU-SEC
                                       PERFORM   21044-RECE05-HENSYU-SEC
                                       IF    FLG-WRITE05  =   1
@@ -4330,6 +4335,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                                     MOVE  SPACE TO   WRK-FORMALNAME
                                     MOVE  ZERO  TO   FLG-WRITE05
+                                    MOVE  ZERO  TO   FLG-SETCOM
                                     PERFORM   21043-RECE04-TENSOU-SEC
                                     PERFORM   21044-RECE05-HENSYU-SEC
                                     IF    FLG-WRITE05  =   1
@@ -5011,6 +5017,9 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                     ELSE                                                
                       MOVE WRK-SRYSURYO2  TO  RECE05-SRYSURYO(IDX4 - 1) 
                     END-IF
+                  ELSE
+                    MOVE  "1"             TO  RECE05-RECEDENFLG(IDX4)
+                    MOVE  "1"             TO  RECE05-RECEPTFLG(IDX4)
                   END-IF                                                
                ELSE                                                     
                   MOVE    SRY-SRYSURYO(IDX2)                            
@@ -5401,6 +5410,21 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    END-IF
                  END-EVALUATE
                END-IF
+      **
+               IF   RECE05-MEISKYFLG(IDX4)  =  "2"
+                  IF   (FLG-SETCOM              =  1   )
+                  AND  (RECE05-RECEDENFLG(IDX4) = SPACE)
+                     MOVE  "1"            TO  RECE04-SETCOMFLG
+                  ELSE
+                     MOVE  SPACE          TO  RECE05-MEISKYFLG(IDX4)
+                  END-IF
+               ELSE
+                  IF   (RECE05-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
+                  OR   (RECE05-SRYCD(IDX4)(1:3) = "059"            )
+                     MOVE   1             TO  FLG-SETCOM
+                  END-IF
+               END-IF
+      **
               END-IF
              END-IF  
            END-PERFORM
