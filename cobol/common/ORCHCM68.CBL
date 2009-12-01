@@ -412,6 +412,7 @@
        900-TENSU-KEY28-FET-SEC         SECTION.
       *
            MOVE    ZERO            TO  FLG-LOOPEND
+           MOVE    ZERO            TO  FLG-TENSU
       *
            PERFORM UNTIL ( FLG-TENSU   NOT =   ZERO )
                     OR   ( FLG-LOOPEND NOT =   ZERO )
@@ -475,6 +476,8 @@
       *****************************************************************
        900-SRYCDCHG-KEY2-SEL-SEC       SECTION.
       *
+           MOVE    ZERO                TO  FLG-SRYCDCHG
+      *
            INITIALIZE                  SRYCDCHG-REC 
            MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    TNS-SRYCD           TO  CHG-IPNSRYCD
@@ -500,6 +503,8 @@
       *    自院コード検索処理
       *****************************************************************
        900-INPUTCD-KEY4-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-INPUTCD
       *
            INITIALIZE                  INPUTCD-REC
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
