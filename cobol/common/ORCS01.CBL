@@ -298,6 +298,8 @@
       *  04.04.13    NACL-門脇    09/11/12  東京都地方公費神奈川県対応
       *  04.04.14    NACL-門脇    09/11/13  熊本県地方公費対応
       *  04.04.15    NACL-門脇    09/11/19  自賠責健保準拠療養担当手当対応
+      *  04.04.16    NACL-門脇    09/12/02  平成２１年５月改正対応
+      *                                     （５２の対象負担者番号追加）
       *
       *  04.05.01    NACL-門脇    09/06/16  一括再計算方法選択機能対応
       *  04.05.02    NACL-門脇    09/06/22  数量小数５桁対応
@@ -4697,10 +4699,13 @@
                   MOVE    "key8"             TO  MCP-PATHNAME
                   PERFORM  DB-CLOSE-SEC
                END-IF
-               IF  ((COMB-KOH1HKNNUM = "051" OR "052" OR "091" ) OR
-                    (WK-TOKATUKAI(1) =  1                      ))
-               AND ( WK-KOH-FTNJANUM(5:3) = "601" OR "602"      )
-               AND ( WK-KOH-FTNJANUM(1:2) = "51"  OR "52"       )
+               IF (((COMB-KOH1HKNNUM = "051" OR "052" OR "091" ) OR
+                    (WK-TOKATUKAI(1) =  1                      )) AND
+                   ( WK-KOH-FTNJANUM(5:3) = "601" OR "602"      ) AND
+                   ( WK-KOH-FTNJANUM(1:2) = "51"  OR "52"       ))
+               OR (( COMB-KOH1HKNNUM = "052"                    ) AND
+                   ( WK-KOH-FTNJANUM(5:2) = "60"                ) AND
+                   ( WK-KOH-FTNJANUM(1:2) = "52"                ))
                  IF     FLG-KOUREI-KBN   =   "1"
                    IF    COMB-HOJOKBN    =   "3" OR "6" OR "7"
                          MOVE    1    TO   FLG-TOKUSITU
