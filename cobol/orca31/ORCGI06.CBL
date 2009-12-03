@@ -3732,6 +3732,8 @@
                    CONTINUE
                ELSE
                    MOVE    "0019"      TO  SPA-ERRCD
+                   MOVE    ORCSNDAYCHG-ERRMSG
+                                       TO  WRK-ERRMSG
                    MOVE    19          TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -5791,8 +5793,12 @@
                MOVE    "食事時間入力エラー" 
                                        TO  SPA-ERRMSG
            WHEN    "0019"
-               MOVE    "一括入力欄入力エラー" 
+               IF    ( WRK-ERRMSG      =   SPACE )
+                   MOVE    "一括入力欄入力エラー" 
                                        TO  SPA-ERRMSG
+               ELSE
+                   MOVE    WRK-ERRMSG  TO  SPA-ERRMSG
+               END-IF
            WHEN    "0020"
                MOVE    "一括入力欄は半角文字で入力してください"
                                        TO  SPA-ERRMSG
