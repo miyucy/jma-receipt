@@ -3786,15 +3786,28 @@
                PERFORM   910-NYUINACCT-READ-SEC
                IF        FLG-NYUINACCT     =   ZERO
       *            食事区分のセット
-                   MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
-                   EVALUATE   SODRNACCT-ORDERID(3:2)
-                       WHEN   "01"
-                           MOVE   1     TO   NACCT-DAY(WRK-STARTYMD-D)
-                       WHEN   "02"
-                           MOVE   2     TO   NACCT-DAY(WRK-STARTYMD-D)
-                       WHEN   "05"
-                           MOVE   0     TO   NACCT-DAY(WRK-STARTYMD-D)
-                   END-EVALUATE
+      *             MOVE    SODRNACCT-STARTYMD      TO  WRK-STARTYMD
+      *             EVALUATE   SODRNACCT-ORDERID(3:2)
+      *                 WHEN   "01"
+      *                     MOVE   1     TO   NACCT-DAY(WRK-STARTYMD-D)
+      *                 WHEN   "02"
+      *                     MOVE   2     TO   NACCT-DAY(WRK-STARTYMD-D)
+      *                 WHEN   "05"
+      *                     MOVE   0     TO   NACCT-DAY(WRK-STARTYMD-D)
+      *             END-EVALUATE
+                   PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
+                            UNTIL     IDX-SKJ   >   31
+                       IF   SODRNACCT-DAY(IDX-SKJ)   =   1
+                           EVALUATE   SODRNACCT-ORDERID(3:2)
+                               WHEN   "01"
+                                   MOVE   1     TO   NACCT-DAY(IDX-SKJ)
+                               WHEN   "02"
+                                   MOVE   2     TO   NACCT-DAY(IDX-SKJ)
+                               WHEN   "05"
+                                   MOVE   0     TO   NACCT-DAY(IDX-SKJ)
+                           END-EVALUATE
+                       END-IF
+                   END-PERFORM
       *            剤回数再セット
                    MOVE  ZERO           TO  NACCT-ZAIKAISU
                    PERFORM  VARYING   IDX-SKJ FROM  1  BY  1
