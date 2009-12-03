@@ -719,7 +719,8 @@
            IF    ( LNK-ODRITEM-ITEMID (IDX-ODR)
                                        =   NCLAIMID-NYUINKAJMA
                                        OR  NCLAIMID-HKNCOMBIJMA
-                                       OR  NCLAIMID-SKJTIMEJMA  )
+                                       OR  NCLAIMID-SKJTIMEJMA  
+                                       OR  NCLAIMID-NISSUJMA )
                CONTINUE
            ELSE
                MOVE    3               TO  ODRITEM-STATUS

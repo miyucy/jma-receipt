@@ -2611,6 +2611,8 @@
       *
            MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-NISSU
            MOVE    ODRITEM-ITEM        TO  SPA-GMN-NISSU
+           DISPLAY "SPA-GMN-NISSU =" SPA-GMN-NISSU
+      *
       *
            .
        4101111-NISSU-HEN-EXT.
@@ -3709,23 +3711,32 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               INITIALIZE                  ORCSNDAYCHGAREA
-               MOVE    SPA-GMN-NISSU   TO  ORCSNDAYCHG-INPUTCD
-               MOVE    SPA-NAI-KJNYMD  TO  ORCSNDAYCHG-SRYYMD
-               MOVE    SPACE           TO  ORCSNDAYCHG-KBN
-               MOVE    50              TO  ORCSNDAYCHG-KETA
-               CALL    "ORCSNDAYCHG"       USING
-                                           SPA-AREA
-                                           ORCSNDAYCHGAREA
-               IF    ( ORCSNDAYCHG-ERRCD   =   SPACE )
+               IF    ( SPA-GMN-NISSU (1:1) =   "*" )
                    CONTINUE
                ELSE
-                   MOVE    "0019"      TO  SPA-ERRCD
-                   MOVE    ORCSNDAYCHG-ERRMSG
-                                       TO  WRK-ERRMSG
+                   MOVE    "0021"      TO  SPA-ERRCD
                    MOVE    19          TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *
+      *    IF    ( SPA-ERRCD           =   SPACE )
+      *        INITIALIZE                  ORCSNDAYCHGAREA
+      *        MOVE    SPA-GMN-NISSU   TO  ORCSNDAYCHG-INPUTCD
+      *        MOVE    SPA-NAI-KJNYMD  TO  ORCSNDAYCHG-SRYYMD
+      *        MOVE    SPACE           TO  ORCSNDAYCHG-KBN
+      *        MOVE    50              TO  ORCSNDAYCHG-KETA
+      *        CALL    "ORCSNDAYCHG"       USING
+      *                                    SPA-AREA
+      *                                    ORCSNDAYCHGAREA
+      *        IF    ( ORCSNDAYCHG-ERRCD   =   SPACE )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "0019"      TO  SPA-ERRCD
+      *            MOVE    ORCSNDAYCHG-ERRMSG
+      *                                TO  WRK-ERRMSG
+      *            MOVE    19          TO  SPA-GMN-CUR
+      *        END-IF
+      *    END-IF
       *
            .
        4101-NISSU-CHK-EXT.
@@ -5781,11 +5792,11 @@
            WHEN    "0018"
                MOVE    "食事時間入力エラー" 
                                        TO  SPA-ERRMSG
-           WHEN    "0019"
-               MOVE    WRK-ERRMSG
-                                       TO  SPA-ERRMSG
            WHEN    "0020"
                MOVE    "一括入力欄は半角文字で入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0021"
+               MOVE    "一括入力欄の一文字目は＊を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "異動歴を選択してください"
