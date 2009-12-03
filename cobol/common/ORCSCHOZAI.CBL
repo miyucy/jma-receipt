@@ -33,6 +33,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.03.00    NACL-多々納  08/08/01  保険組合せ期間チェック追加
       *  04.04.00    NACL-多々納  08/12/17  入院料包括チェック対応
+      *  04.05.00    NACL-多々納  09/12/03  前月保険組合せ終了対応
       *****************************************************************
       *
       *
@@ -84,6 +85,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX5                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDX-T               PIC 9(04).
@@ -205,7 +207,6 @@
       *
       *入院料包括
        01  TBL-NYUAREA.
-      *
            03  TBL-HKTCHKFLG-G.
                05  TBL-HKTCHKFLG-OCC        OCCURS   31.
                    07  TBL-HKTCHKFLG        PIC 9(01).
@@ -322,12 +323,10 @@
            EVALUATE    ORCSCHO-KBN
       *        通常
                WHEN    "1"
-      *            投薬の日数編集
-                   PERFORM 100-TOUYAKU-HEN-SEC
-      *
       *            入院調剤料と麻毒の確定
                    PERFORM 300-CHOZAI-HEN-SEC
-      *
+      *            投薬の日数編集
+                   PERFORM 100-TOUYAKU-HEN-SEC
       *            入院調剤料と麻毒の更新
                    PERFORM 400-SANTEI-SYORI-SEC
       *        退院処理
@@ -435,7 +434,6 @@
                PERFORM 600111-SRYACT-HEN-SEC
       *
                IF      FLG-NASI            =   ZERO
-      *
       *        回数により保存
                PERFORM VARYING     IDY2    FROM    1   BY  1
                        UNTIL       IDY2    >   31
@@ -504,9 +502,9 @@
        100111-TOU-SRYKAHEN-SEC             SECTION.
       *
            MOVE    ZERO                 TO  FLG-HKN-CHK
-           MOVE    WRK-SRYYM            TO  WRK-STYMD(1:6)
-           MOVE    IDX3                 TO  WRK-STYMD(7:2)
-           IF      IDX                  =   IDX1
+           MOVE    WRK-SRYYM            TO  WRK-STYM
+           MOVE    IDX3                 TO  WRK-STDD
+           IF      IDX             NOT  =   IDX1
       *        翌月
                COMPUTE WRK-STMM         =   WRK-STMM   +   1
                IF      WRK-STMM         >   12
@@ -514,25 +512,36 @@
                    MOVE    1                TO  WRK-STMM
                END-IF
            END-IF
-           PERFORM VARYING     IDX-H    FROM    1   BY  1
-                   UNTIL       IDX-H    >   50
-               IF      ACCT-HKNCOMBI    =   TBL-HKNCOMBINUM (IDX-H)
-                   IF     (WRK-STYMD       <   TBL-TEKSTYMD (IDX-H))
-                      OR  (WRK-STYMD       >   TBL-TEKEDYMD (IDX-H))
-                       MOVE    1               TO  FLG-HKN-CHK
+      *    保険組合せチェック
+           MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
+           PERFORM 100111-HKNCOMBI-CHK-SEC
+      *    前月分で保険組合せがない場合
+           MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
+           IF     (FLG-HKN-CHK         =   ZERO          ) AND
+                  (ACCT-SRYYM      NOT =   ORCSCHO-SRYYM )
+               PERFORM VARYING     IDX5    FROM    1   BY  1
+                       UNTIL      (IDX5    >   10  )  OR
+                                  (TBL-CHO-ZAINUM(IDX5)    =   ZERO )
+                   IF      TBL-CHO-SRYKA (IDX5)    =   ACCT-SRYKA
+                       IF      TBL-CHO-DAY (IDX5 1 IDX3)   >   ZERO
+                           MOVE    TBL-CHO-HKNCOMBI (IDX5)
+                                                   TO  WRK-HKNCOMBI
+                           MOVE    10              TO  IDX5
+                        END-IF
                    END-IF
-                   MOVE    50               TO  IDX-H
-               END-IF
-           END-PERFORM
+               END-PERFORM
+               PERFORM 100111-HKNCOMBI-CHK-SEC
+           END-IF
       *
            PERFORM VARYING     IDX-T    FROM    1   BY  1
                    UNTIL       IDX-T    >   10
                IF      TBL-TOU-SRYKA (IDX1 IDX3 IDX-T) =   SPACE
                    MOVE    ACCT-SRYKA      TO  TBL-TOU-SRYKA
                                                     (IDX1 IDX3 IDX-T)
-                   MOVE    ACCT-HKNCOMBI   TO  TBL-TOU-HKNCOMBI
+      *******      MOVE    ACCT-HKNCOMBI   TO  TBL-TOU-HKNCOMBI
+                   MOVE    WRK-HKNCOMBI    TO  TBL-TOU-HKNCOMBI
                                                     (IDX1 IDX3 IDX-T)
-                   IF      FLG-HKN-CHK         =   1
+                   IF      FLG-HKN-CHK         =   ZERO
                        MOVE    "1"             TO  TBL-TOU-HKNERR
                                                     (IDX1 IDX3 IDX-T)
                    END-IF
@@ -549,6 +558,27 @@
        100111-TOU-SRYKAHEN-EXT.
            EXIT.
       *****************************************************************
+      *    保険チェック処理
+      *****************************************************************
+       100111-HKNCOMBI-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKN-CHK
+           PERFORM VARYING     IDX-H   FROM    1   BY  1
+                   UNTIL       IDX-H   >   50
+               IF      ACCT-HKNCOMBI   =   TBL-HKNCOMBINUM (IDX-H)
+                   IF     (WRK-STYMD       <   TBL-TEKSTYMD (IDX-H))
+                      OR  (WRK-STYMD       >   TBL-TEKEDYMD (IDX-H))
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-HKN-CHK
+                   END-IF
+                   MOVE    50               TO  IDX-H
+               END-IF
+           END-PERFORM
+           .
+       100111-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    診療科・保険編集処理（麻毒）
       *****************************************************************
        100112-DOK-SRYKAHEN-SEC             SECTION.
@@ -558,9 +588,10 @@
                IF      TBL-DOK-SRYKA (IDX1 IDX3 IDX-T) =   SPACE
                    MOVE    ACCT-SRYKA      TO  TBL-DOK-SRYKA
                                                        (IDX1 IDX3 IDX-T)
-                   MOVE    ACCT-HKNCOMBI   TO  TBL-DOK-HKNCOMBI
+      *********    MOVE    ACCT-HKNCOMBI   TO  TBL-DOK-HKNCOMBI
+                   MOVE    WRK-HKNCOMBI    TO  TBL-DOK-HKNCOMBI
                                                        (IDX1 IDX3 IDX-T)
-                   IF      FLG-HKN-CHK         =   1
+                   IF      FLG-HKN-CHK         =   ZERO
                        MOVE    "1"             TO  TBL-DOK-HKNERR
                                                     (IDX1 IDX3 IDX-T)
                    END-IF
@@ -605,7 +636,7 @@
                UNTIL       (FLG-SRYACCT         =   1       )
                IF      ACCT-YKZTEN       >   ZERO
       *        包括まとめ入力は対象外とする
-               AND  (ACCT-HKNCOMBI NOT =   "9999" )
+                 AND  (ACCT-HKNCOMBI NOT =   "9999" )
       *
       *            最初の日を保存（点数マスタ検索のため）
                    MOVE    01                  TO  WRK-DD
@@ -906,7 +937,7 @@
       *        対象の保険組合せのみ編集
                IF     (COMB-DELKBN     NOT =   "1"   )  AND
                      ((SPA-SRYYMD(1:6)     >=  COMB-TEKSTYMD(1:6))
-                  AND (SPA-SRYYMD(1:6)     <=  COMB-TEKEDYMD(1:6)))
+                 AND  (SPA-SRYYMD(1:6)     <=  COMB-TEKEDYMD(1:6)))
                    ADD     1               TO  IDX
                    MOVE    COMB-HKNCOMBINUM    TO  TBL-HKNCOMBINUM
                                                                (IDX)
@@ -1154,7 +1185,7 @@
                                                          (IDX2 4 IDX)
                END-IF
            END-PERFORM
-          IF     FLG-ARI              =   1
+           IF      FLG-ARI             =   1
                GO      TO      4002-TOU-ADD-SYORI-EXT
            END-IF
       *    当日調剤料指定がない時、対象の剤へ
@@ -1224,7 +1255,6 @@
                MOVE    ZERO           TO  TBL-MAD-DAY (IDX2 4 IDX)
            END-PERFORM
            .
-      *
        4003-MAD-DEL-SYORI-EXT.
            EXIT.
       *
@@ -1335,7 +1365,6 @@
                    MOVE    10              TO  IDX2
                END-IF
            END-PERFORM
-      *
            .
        4004-MAD-ADD-SYORI-EXT.
            EXIT.
