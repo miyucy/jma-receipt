@@ -3539,7 +3539,9 @@
                    MOVE    1               TO  SPA-COM-RSIKBN (IDX-T)
                END-IF
       *        金額を点数へ置換える
-               IF      TNS-TENSIKIBETU     =   1
+               IF     (TNS-TENSIKIBETU     =   1     )
+      *         食事以外
+               AND    (TNS-SRYKBN      NOT =   "97"  )
                    COMPUTE SPA-COM-KISOTEN  (IDX-T)    =   TNS-TEN
                                                        /   10
                END-IF

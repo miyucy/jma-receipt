@@ -942,9 +942,15 @@
                END-IF
            END-IF
       *    ¶â³Û
-           COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
-                                       *   TBL-KAISU )
-                                       *   10
+           IF      TBL-SRYKBN          =   "97"
+      *        ¿©»ö¤Ï¶â³Û
+               COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
+                                           *   TBL-KAISU )
+           ELSE
+               COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
+                                           *   TBL-KAISU )
+                                           *   10
+           END-IF
       *
       *    Ä¢É¼°õºþ
            PERFORM 2005-PRINT-SYORI-SEC
