@@ -22,6 +22,8 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/07/10  器材点数追加
+      *
+      *  04.05.01    NACL-藤原    09/11/27  レセ電コメント拡張対応
       ************************************************************
        01  ORCSRECESORTAREA.
       *
@@ -44,6 +46,24 @@
       *剤内容
                05  ORCSRECESORT-IN-TBL.
                    07  ORCSRECESORT-IN-SRYCD-G  OCCURS   50.
+      *                関連コメント検索用ＫＥＹ
+                       09  ORCSRECESORT-IN-KEY.
+                           11  ORCSRECESORT-IN-KEY-HOSPNUM   PIC 9(2).
+                           11  ORCSRECESORT-IN-KEY-SRYYM     PIC 9(06).
+                           11  ORCSRECESORT-IN-KEY-NYUGAIKBN PIC X(01).
+                           11  ORCSRECESORT-IN-KEY-PTID      PIC 9(10).
+                           11  ORCSRECESORT-IN-KEY-RECEKA    PIC X(02).
+                           11  ORCSRECESORT-IN-KEY-TEISYUTUSAKI
+                                                             PIC 9(01).
+                           11  ORCSRECESORT-IN-KEY-RECESYUBETU
+                                                             PIC 9(04).
+                           11  ORCSRECESORT-IN-KEY-HKNJANUM  PIC X(08).
+                           11  ORCSRECESORT-IN-KEY-HOJOKBN   PIC X(01).
+                           11  ORCSRECESORT-IN-KEY-TEKSTYMD  PIC X(08). 
+                           11  ORCSRECESORT-IN-KEY-ZAINUM    PIC 9(08).
+                           11  ORCSRECESORT-IN-KEY-RENNUM    PIC 9(02).
+                       09  ORCSRECESORT-IN-SHORI-RENNUM
+                                                    PIC 9(01).
       *                診療コード
                        09  ORCSRECESORT-IN-SRYCD    PIC X(09).
       *                データ区分
@@ -79,6 +99,24 @@
                    07  ORCSRECESORT-TBLMAX     PIC  9(02).
       *
                    07  ORCSRECESORT-SRYCD-G         OCCURS   50.
+      *                関連コメント検索用ＫＥＹ
+                       09  ORCSRECESORT-KEY.
+                           11  ORCSRECESORT-KEY-HOSPNUM    PIC 9(2).
+                           11  ORCSRECESORT-KEY-SRYYM      PIC 9(06).
+                           11  ORCSRECESORT-KEY-NYUGAIKBN  PIC X(01).
+                           11  ORCSRECESORT-KEY-PTID       PIC 9(10).
+                           11  ORCSRECESORT-KEY-RECEKA     PIC X(02).
+                           11  ORCSRECESORT-KEY-TEISYUTUSAKI
+                                                       PIC 9(01).
+                           11  ORCSRECESORT-KEY-RECESYUBETU
+                                                       PIC 9(04).
+                           11  ORCSRECESORT-KEY-HKNJANUM   PIC X(08).
+                           11  ORCSRECESORT-KEY-HOJOKBN    PIC X(01).
+                           11  ORCSRECESORT-KEY-TEKSTYMD   PIC X(08). 
+                           11  ORCSRECESORT-KEY-ZAINUM     PIC 9(08).
+                           11  ORCSRECESORT-KEY-RENNUM     PIC 9(02).
+                       09  ORCSRECESORT-SHORI-RENNUM
+                                                    PIC 9(01).
       *                診療コード
                        09  ORCSRECESORT-SRYCD       PIC X(09).
       *                データ区分

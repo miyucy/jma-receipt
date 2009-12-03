@@ -297,6 +297,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    ORCSRECESORT-IN-RECEDENNAME (IDX2)
                                        TO  ORCSRECESORT-RECEDENNAME
                                                         (IDX IDXZ)
+      *    ´ØÏ¢¥³¥á¥ó¥È¸¡º÷ÍÑ£Ë£Å£Ù
+           MOVE    ORCSRECESORT-IN-KEY (IDX2)
+                                       TO  ORCSRECESORT-KEY
+                                                        (IDX IDXZ)
+           MOVE    ORCSRECESORT-IN-SHORI-RENNUM (IDX2)
+                                       TO  ORCSRECESORT-SHORI-RENNUM
+                                                        (IDX IDXZ)
            .
        2009-TBL-HEN-EXT.
            EXIT.
