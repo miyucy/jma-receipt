@@ -3719,24 +3719,22 @@
                END-IF
            END-IF
       *
-      *    IF    ( SPA-ERRCD           =   SPACE )
-      *        INITIALIZE                  ORCSNDAYCHGAREA
-      *        MOVE    SPA-GMN-NISSU   TO  ORCSNDAYCHG-INPUTCD
-      *        MOVE    SPA-NAI-KJNYMD  TO  ORCSNDAYCHG-SRYYMD
-      *        MOVE    SPACE           TO  ORCSNDAYCHG-KBN
-      *        MOVE    50              TO  ORCSNDAYCHG-KETA
-      *        CALL    "ORCSNDAYCHG"       USING
-      *                                    SPA-AREA
-      *                                    ORCSNDAYCHGAREA
-      *        IF    ( ORCSNDAYCHG-ERRCD   =   SPACE )
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    "0019"      TO  SPA-ERRCD
-      *            MOVE    ORCSNDAYCHG-ERRMSG
-      *                                TO  WRK-ERRMSG
-      *            MOVE    19          TO  SPA-GMN-CUR
-      *        END-IF
-      *    END-IF
+           IF    ( SPA-ERRCD           =   SPACE )
+               INITIALIZE                  ORCSNDAYCHGAREA
+               MOVE    SPA-GMN-NISSU   TO  ORCSNDAYCHG-INPUTCD
+               MOVE    SPA-NAI-KJNYMD  TO  ORCSNDAYCHG-SRYYMD
+               MOVE    SPACE           TO  ORCSNDAYCHG-KBN
+               MOVE    50              TO  ORCSNDAYCHG-KETA
+               CALL    "ORCSNDAYCHG"       USING
+                                           SPA-AREA
+                                           ORCSNDAYCHGAREA
+               IF    ( ORCSNDAYCHG-ERRCD   =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    "0019"      TO  SPA-ERRCD
+                   MOVE    19          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
            .
        4101-NISSU-CHK-EXT.
@@ -5791,6 +5789,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0018"
                MOVE    "食事時間入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0019"
+               MOVE    "一括入力欄入力エラー" 
                                        TO  SPA-ERRMSG
            WHEN    "0020"
                MOVE    "一括入力欄は半角文字で入力してください"
