@@ -179,6 +179,10 @@ I06	{
 			item	varchar(10)[5];
 			state	int;
 		};
+		NISSU	{
+			value	varchar(50);
+			state	int;
+		};
 		scrolledwindow1	{
 			ALLIDOLST	{
 				count	int;

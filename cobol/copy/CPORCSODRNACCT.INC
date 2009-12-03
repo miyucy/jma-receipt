@@ -31,6 +31,10 @@
            03  SODRNACCT-STARTYMD      PIC X(08).
       *    ³°Çñ¡¦¿©»ö»þ´Ö
            03  SODRNACCT-SKJTIME       PIC X(02).
+      *    Æü¿ô
+           03  SODRNACCT-DAY-G.
+               05  SODRNACCT-DAY       PIC 9(1)
+                                       OCCURS  31.
       *
       *    ¿ÇÎÅ²Ê¡ÊÅ¾²ÊÎò¡Ë
            03  SODRNACCT-SRYKA-G.

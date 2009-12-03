@@ -116,6 +116,7 @@
                        09  SPA-GMN-SKJTIME         PIC X(02).
                        09                          PIC X(01).
                        09  SPA-GMN-SKJTIMEMEI      PIC X(08).
+                   07  SPA-GMN-NISSU               PIC X(50).
                05  SPA-GMN-ALLIDOLIST-INPUT-AREA.
                    07  SPA-GMN-SELNUM              PIC S9(3).
                    07  SPA-GMN-UKEYMD              PIC X(10).
@@ -242,6 +243,7 @@
                        09  SPA-NAI-STS-HKNCOMBI    PIC 9(01).
                        09  SPA-NAI-STS-NYUINKA     PIC 9(01).
                        09  SPA-NAI-STS-SKJTIME     PIC 9(01).
+                       09  SPA-NAI-STS-NISSU       PIC 9(01).
                    07  SPA-NAI-BTU-G.
                        09  SPA-NAI-BTU-KHNSRYCD    PIC X(09).
                        09  SPA-NAI-BTU-SBT         PIC X(02).
@@ -376,8 +378,7 @@
                05  WRK-CHKTOKNYUINCD       PIC X(02).
            03  WRK-TAIHI-HKN               PIC X(04).
            03  WRK-I0IDMSG                 PIC X(80). 
-           03  WRK-MAE-INPUT               PIC X(100).
-           03  WRK-OUT-INPUT               PIC X(100).
+           03  WRK-INPUT                   PIC X(100).
            03  WRK-PTINF-PTID              PIC 9(10).
            03  WRK-AGE-G.
                05  WRK-AGE-Z               PIC ---9.
@@ -403,6 +404,7 @@
            03  WRK-TALLNUM                 PIC 9(05).
            03  WRK-NUMSRYCD                PIC 9(09).
            03  WRK-TOKNYUIN-SRYCDTTL       PIC 9(14).
+           03  WRK-ERRMSG                  PIC X(80).
       *
        01  WRK-ROW-AREA.
            03  WRK-ALLIDOLST-ROW           PIC S9(9).
@@ -583,6 +585,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    診療行為算定日一括入力
+           COPY    "CPORCSNDAYCHG.INC".
       *
       *    入院異動チェックサブ
            COPY    "CPORCSODR.INC".
@@ -1921,6 +1926,7 @@
            MOVE    I06-NYUKBN          TO  SPA-GMN-NYUKBN-G
            MOVE    I06-TOKNYUIN        TO  SPA-GMN-TOKNYUIN-G
            MOVE    I06-SKJTIME         TO  SPA-GMN-SKJTIME-G
+           MOVE    I06-NISSU           TO  SPA-GMN-NISSU
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2267,6 +2273,9 @@
            WHEN    NCLAIMID-SKJTIMEJMA
                PERFORM 4101111-SKJTIME-HEN-SEC
       *
+           WHEN    NCLAIMID-NISSUJMA
+               PERFORM 4101111-NISSU-HEN-SEC
+      *
            END-EVALUATE
       *
            .
@@ -2594,6 +2603,17 @@
       *
            .
        4101111-SKJTIME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    日数編集処理
+      *****************************************************************
+       4101111-NISSU-HEN-SEC         SECTION.
+      *
+           MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-NISSU
+           MOVE    ODRITEM-ITEM        TO  SPA-GMN-NISSU
+      *
+           .
+       4101111-NISSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    初回編集処理
@@ -3084,6 +3104,14 @@
            END-IF
       *
            PERFORM 4101-SKJTIME-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-NISSU-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
       *
            IF    ( SPA-GMN-TOKNYUINMEI NOT =   SPACE )
                MOVE    SPA-GMN-TOKNYUINMEI TO  SPA-GMN-SNTNYUIN
@@ -3661,6 +3689,46 @@
       *
            .
        4101-SKJTIME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日数チェック
+      *****************************************************************
+       4101-NISSU-CHK-SEC               SECTION.
+      *
+           IF    ( SPA-GMN-NISSU        =   SPACE )
+               GO  TO  4101-NISSU-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-NISSU       TO  WRK-INPUT
+           PERFORM 800-HANKAKU-CHK-SEC
+           IF    ( FLG-ERR             =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "0020"          TO  SPA-ERRCD
+               MOVE    19              TO  SPA-GMN-CUR
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               INITIALIZE                  ORCSNDAYCHGAREA
+               MOVE    SPA-GMN-NISSU   TO  ORCSNDAYCHG-INPUTCD
+               MOVE    SPA-NAI-KJNYMD  TO  ORCSNDAYCHG-SRYYMD
+               MOVE    SPACE           TO  ORCSNDAYCHG-KBN
+               MOVE    50              TO  ORCSNDAYCHG-KETA
+               CALL    "ORCSNDAYCHG"       USING
+                                           SPA-AREA
+                                           ORCSNDAYCHGAREA
+               IF    ( ORCSNDAYCHG-ERRCD   =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    "0019"      TO  SPA-ERRCD
+                   MOVE    ORCSNDAYCHG-ERRMSG
+                                       TO  WRK-ERRMSG
+                   MOVE    19          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4101-NISSU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    病棟名コンボチェック処理
@@ -4410,6 +4478,10 @@
            END-IF
       *
            IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
+               PERFORM 2300-NISSU-SET-SEC
+           END-IF
+      *
+           IF    ( CONST-ODRITEM-MAX     >   IDX-ITM )
                PERFORM 2300-NYUINKA-SET-SEC
            END-IF
       *
@@ -4816,6 +4888,25 @@
        2300-SKJTIME-SET-EXT.
            EXIT.
       *****************************************************************
+      *    日数設定処理
+      *****************************************************************
+       2300-NISSU-SET-SEC              SECTION.
+      *
+           PERFORM 2300-ODRITEM-COMMON-SET-SEC
+      *
+           MOVE    NCLAIMID-NISSUJMA TO  LNK-ODRITEM-ITEMID (IDX-ITM)
+           IF    ( SPA-NAI-STS-NISSU =   4   OR  9 )
+                MOVE    4            TO  LNK-ODRITEM-STATUS (IDX-ITM)
+           ELSE
+                MOVE    0            TO  LNK-ODRITEM-STATUS (IDX-ITM)
+           END-IF
+      *
+           MOVE    SPA-GMN-NISSU     TO  LNK-ODRITEM-ITEM (IDX-ITM)
+      *
+           .
+       2300-NISSU-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    退院事由設定処理
       *****************************************************************
        2300-TAIINCD-SET-SEC            SECTION.
@@ -5109,6 +5200,8 @@
                                        TO  I06-SKJTIME-ITEM (IDX-CMB)
            END-PERFORM
       *
+           MOVE    SPA-GMN-NISSU       TO  I06-NISSU
+      *
            MOVE    SPA-GMN-ALLIDOLST-MAX   TO  I06-ALLIDOLST-COUNT
            PERFORM VARYING IDX-LST     FROM    1   BY  1
                    UNTIL ( IDX-LST     >   SPA-GMN-ALLIDOLST-MAX )
@@ -5243,6 +5336,7 @@
                                                I06-SNTNYUIN-STATE
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
+                                               I06-NISSU-STATE
                                                I06-B06S-STATE
                                                I06-B07S-STATE
                                                I06-B12-STATE
@@ -5277,6 +5371,7 @@
                                                I06-SNTNYUIN-STATE
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
+                                               I06-NISSU-STATE
                MOVE    WIDGET-INSENSITIVE  TO  I06-B12-STATE
            ELSE
                IF    ( SPA-NAI-STATUS-ORDER    =   "2" )
@@ -5339,6 +5434,7 @@
                                                I06-HKNCOMBI-ITEM-STATE
                                                I06-SKJTIME-STATE
                                                I06-SKJTIME-ITEM-STATE
+                                               I06-NISSU-STATE
                                                I06-B12-STATE
                    WHEN    NORDERID-IDODRID
                        MOVE    WIDGET-NORMAL
@@ -5454,6 +5550,8 @@
                MOVE    "TOKNYUIN"      TO  MCP-WIDGET
            WHEN    18
                MOVE    "SKJTIME"       TO  MCP-WIDGET
+           WHEN    19
+               MOVE    "NISSU"         TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -5503,6 +5601,8 @@
            WHEN    "TOKNYUIN"
                MOVE    18              TO  SPA-GMN-CUR
            WHEN    "SKJTIME"
+               MOVE    19              TO  SPA-GMN-CUR
+           WHEN    "NISSU"
                MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -5607,6 +5707,12 @@
       *
            IF    ( SPA-GMN-CUR         =   18 )
                IF    ( I06-SKJTIME-STATE   =   WIDGET-INSENSITIVE )
+                   MOVE    19          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   19 )
+               IF    ( I06-NISSU-STATE     =   WIDGET-INSENSITIVE )
                    MOVE    212         TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -5674,6 +5780,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "0018"
                MOVE    "食事時間入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0019"
+               MOVE    WRK-ERRMSG
+                                       TO  SPA-ERRMSG
+           WHEN    "0020"
+               MOVE    "一括入力欄は半角文字で入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "異動歴を選択してください"
@@ -5760,33 +5872,6 @@
       *
            .
        520-I0IDSET-EXT.
-           EXIT.
-      *****************************************************************
-      *    カナチェック処理
-      *****************************************************************
-       800-KANA-CHK-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-ERR
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    1                   TO  FLG-ERR
-               MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT
-               IF    ( KANACHK-RC2     =   7 )
-                   MOVE    KANACHK-OUT-INPUT
-                                           TO  WRK-OUT-INPUT
-               END-IF
-           ELSE
-               MOVE    KANACHK-OUT-INPUT   TO  WRK-OUT-INPUT
-           END-IF
-      *
-           .
-       800-KANA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    老人年齢チェック
@@ -5912,6 +5997,33 @@
            .
       *
        800-ORCSNUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角文字チェック
+      *****************************************************************
+       800-HANKAKU-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+      *
+           IF  ( WRK-INPUT             =   SPACE )
+               MOVE    SPACE           TO  ORCSKANACHKAREA
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    WRK-INPUT       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  WRK-INPUT
+               IF      ( KANACHK-RC    =   ZERO )
+                   IF      ( KANACHK-SYUBETU   NOT =   1 )
+                       MOVE    1       TO  FLG-ERR
+                   END-IF
+               ELSE
+                       MOVE    1       TO  FLG-ERR
+               END-IF
+           END-IF
+      *
+           .
+       800-HANKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理(KEY10)

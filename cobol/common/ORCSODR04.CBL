@@ -63,7 +63,8 @@
            03  IDX2                    PIC 9(05).
            03  IDX3                    PIC 9(05).
            03  IDX4                    PIC 9(05).
-           03  IDX-ODR                    PIC 9(05).
+           03  IDX-ODR                 PIC 9(05).
+           03  IDX-DAY                 PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -71,11 +72,18 @@
            03  WRK-SYS-KANRICD         PIC X(04).
            03  WRK-SYS-KBNCD           PIC X(08).
            03  WRK-DIALOG              PIC 9(02).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM           PIC X(06).
+               05  WRK-SRYDD           PIC 9(02).
       *
        01  ITEM-AREA.
            03  ITEM-NYUINKA            PIC X(02).
            03  ITEM-HKNCOMBI           PIC 9(04).
            03  ITEM-SKJTIME            PIC X(02).
+           03  ITEM-NISSU              PIC X(50).
+           03  ITEM-DAY-G.
+               05  ITEM-DAY            PIC 9(01)
+                                       OCCURS  31.
       *
        01  ERRCD-AREA.
            03  ERRCD-ITEM              PIC X(04).
@@ -131,6 +139,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    診療行為算定日一括入力
+           COPY    "CPORCSNDAYCHG.INC".
       *
       *    オーダー共通サブ
            COPY    "CPORCSODRS01.INC".
@@ -258,6 +269,8 @@
                    PERFORM 20011-HKNCOMBI-CHK-SEC
                WHEN    NCLAIMID-SKJTIMEJMA
                    PERFORM 20011-SKJTIME-CHK-SEC
+               WHEN    NCLAIMID-NISSUJMA
+                   PERFORM 20011-NISSU-CHK-SEC
                END-EVALUATE
       *
            END-PERFORM
@@ -364,6 +377,17 @@
        20011-SKJTIME-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    日数チェック処理
+      *****************************************************************
+       20011-NISSU-CHK-SEC             SECTION.
+      *
+           MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
+                                   TO  ITEM-NISSU
+      *
+           .
+       20011-NISSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    項目未処理状態設定処理
       *****************************************************************
        2100-ITEM-UNPROCSTS-SET-SEC        SECTION.
@@ -419,6 +443,11 @@
            IF    ( ERRCD-ORDER     =   SPACE )
       *        入院履歴チェック処理
                PERFORM 20021-NYUINRRK-CHK-SEC
+           END-IF
+      *
+           IF    ( ERRCD-ORDER     =   SPACE )
+      *        日数チェック処理
+               PERFORM 20021-NISSU-CHK-SEC
            END-IF
       *
            IF    ( ERRCD-ORDER     =   SPACE )
@@ -517,6 +546,54 @@
       *
            .
        20021-NYUINRRK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日数チェック処理
+      *****************************************************************
+       20021-NISSU-CHK-SEC             SECTION.
+      *
+           IF    ( ITEM-NISSU (1:1)    =   "*" )
+               INITIALIZE                  ORCSNDAYCHGAREA
+               MOVE    ITEM-NISSU      TO  ORCSNDAYCHG-INPUTCD
+               MOVE    SODR-SRYYMD     TO  ORCSNDAYCHG-SRYYMD
+               MOVE    "1"             TO  ORCSNDAYCHG-KBN
+               MOVE    50              TO  ORCSNDAYCHG-KETA
+               MOVE    TRRK-NYUINYMD   TO  ORCSNDAYCHG-NYUINYMD
+               MOVE    TRRK-TAIINYMD   TO  ORCSNDAYCHG-TAIINYMD
+               CALL    "ORCSNDAYCHG"       USING
+                                           SPA-AREA
+                                           ORCSNDAYCHGAREA
+               IF    ( ORCSNDAYCHG-ERRCD   =   SPACE )
+      *
+                       PERFORM VARYING IDX-DAY FROM    1   BY  1
+                               UNTIL ( IDX-DAY >   31 )
+      *
+                           IF    ( ORCSNDAYCHG-NYU-DAY (IDX-DAY)
+                                               >   ZERO )
+                               MOVE    1   TO  ITEM-DAY (IDX-DAY)
+                           END-IF
+      *
+                       END-PERFORM
+      *
+                       IF    ( ITEM-DAY-G  =   ZERO )
+                           MOVE    "0137"  TO  ERRCD-ORDER
+                       END-IF
+      *
+               ELSE
+                   EVALUATE    ORCSNDAYCHG-ERRCD
+                   WHEN    "0002"
+                       MOVE    "0138"  TO  ERRCD-ORDER
+                   WHEN    OTHER
+                       MOVE    "0136"  TO  ERRCD-ORDER
+                   END-EVALUATE
+               END-IF
+           ELSE
+                MOVE    SODR-SRYYMD    TO  WRK-SRYYMD
+                MOVE    1              TO  ITEM-DAY (WRK-SRYDD)
+           END-IF
+      *
+           .
+       20021-NISSU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院会計チェック処理
@@ -691,6 +768,7 @@
            MOVE    SODR-UPYMD      TO  SODRNACCT-UPYMD
            MOVE    SODR-UPHMS      TO  SODRNACCT-UPHMS
            MOVE    ITEM-SKJTIME    TO  SODRNACCT-SKJTIME
+           MOVE    ITEM-DAY-G      TO  SODRNACCT-DAY-G
            MOVE    TRRK-REC        TO  LNK-PTNYUINRRK-REC
       *
            CALL    "ORCSODRNACCT"      USING

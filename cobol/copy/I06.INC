@@ -111,6 +111,9 @@
                 04  I06-SKJTIME-COUNT          PIC S9(9)   BINARY.
                 04  I06-SKJTIME-ITEM           PIC X(10)   OCCURS  5.
                 04  I06-SKJTIME-ITEM-STATE     PIC S9(9)   BINARY.
+              03  I06-NISSU-G.
+                04  I06-NISSU                  PIC X(50).
+                04  I06-NISSU-STATE            PIC S9(9)   BINARY.
               03  I06-SCROLLEDWINDOW1.
                 04  I06-ALLIDOLST.
                   05  I06-ALLIDOLST-COUNT      PIC S9(9)   BINARY.

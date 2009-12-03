@@ -565,12 +565,24 @@
                05                      PIC X(80)   VALUE
                    "選択食送信".
       *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0136".
+               05                      PIC X(80)   VALUE
+                   "食事日一括入力エラー".
+      *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0137".
+               05                      PIC X(80)   VALUE
+                   "食事日数未設定".
+      *-----------------------------------------------------------
+               05                      PIC X(04)   VALUE   "0138".
+               05                      PIC X(80)   VALUE
+                   "一括入力にて入院期間外の日付を指定".
+      *-----------------------------------------------------------
                05                      PIC X(04)   VALUE   "9001".
                05                      PIC X(80)   VALUE
                    "未使用項目".
       *-----------------------------------------------------------
            03  NCLAIMERRCD-R   REDEFINES   NCLAIMERRCD-VAL.
-               05  NCLAIMERRCD-OCC     OCCURS  136.
+               05  NCLAIMERRCD-OCC     OCCURS  139.
                    07  NCLAIMERRCDL    PIC X(04).
                    07  NCLAIMERRCDLMEI PIC X(80).
-           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   136.
+           03  NCLAIMERRCD-MAX         PIC 9(05)   VALUE   139.

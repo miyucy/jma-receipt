@@ -25,7 +25,7 @@
        01  NCLAIMID-AREA.
            03  NCLAIMID-CLASS          PIC X(20)   VALUE   "Claim010".
            03  NCLAIMID-ORDER          PIC X(20)   VALUE   "Claim011".
-           03  NCLAIMID-ITEM-MAX       PIC 9(03)   VALUE   12.
+           03  NCLAIMID-ITEM-MAX       PIC 9(03)   VALUE   13.
            03  NCLAIMID-ITEM-VAL.
              05  NCLAIMID-NYUKBN-G.
                07  NCLAIMID-NYUKBN
@@ -104,6 +104,13 @@
                                 PIC X(05)   VALUE  "00011".
                07  NCLAIMID-SKJTIMEMES
                                 PIC X(100)  VALUE  "食事時間".
+             05  NCLAIMID-NISSU-G.
+               07  NCLAIMID-NISSU
+                                PIC X(20)   VALUE  "XXXXXXX".
+               07  NCLAIMID-NISSUJMA
+                                PIC X(05)   VALUE  "00012".
+               07  NCLAIMID-NISSUMES
+                                PIC X(100)  VALUE  "一括入力".
              05  NCLAIMID-UNCHKECK-G.
                07  NCLAIMID-UNCHKECK
                                 PIC X(20)   VALUE  "XXXXXXX".
@@ -112,7 +119,7 @@
                07  NCLAIMID-UNCHKECKMES
                                 PIC X(100)  VALUE  "不明".
            03  NCLAIMID-ITEM-R          REDEFINES   NCLAIMID-ITEM-VAL.
-             05  NCLAIMID-ITEM-OCC      OCCURS  12.
+             05  NCLAIMID-ITEM-OCC      OCCURS  13.
                07  NCLAIMID-ITEM        PIC X(20).
                07  NCLAIMID-ITEMJMA     PIC X(05).
                07  NCLAIMID-ITEMMES     PIC X(100).
