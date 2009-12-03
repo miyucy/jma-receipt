@@ -53,6 +53,8 @@
       *
       *  04.05.01    NACL-藤原    09/06/10  摘要欄下部へのコメント記載対応
       *                                     診療種別区分の追加
+      *  04.05.02    NACL-藤原    09/11/27  レセ電コメント拡張対応
+      *                                     関係コメント存在フラグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -368,6 +370,7 @@ grpsys     MOVE    RECE04-HOSPNUM      TO  RECE041-HOSPNUM
            MOVE    RECE04-TOYAKUFLG    TO  RECE041-TOYAKUFLG
            MOVE    RECE04-DAY-AREA     TO  RECE041-DAY-AREA
            MOVE    RECE04-SRYSYUKBN    TO  RECE041-SRYSYUKBN
+           MOVE    RECE04-SETCOMFLG    TO  RECE041-SETCOMFLG
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-OUT
