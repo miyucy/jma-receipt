@@ -923,6 +923,9 @@
       *    食事時間チェック
            PERFORM 20011-SKJTIME-CHK-SEC
       *
+      *    日数設定処理
+           PERFORM 20011-NISSU-SET-SEC
+      *
            .
        20011-ORCSODR04-ITM-CHK-EXT.
            EXIT.
@@ -1092,6 +1095,21 @@
       *
            .
        20011-SKJTIME-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    日数項目設定処理
+      *****************************************************************
+       20011-NISSU-SET-SEC             SECTION.
+      *
+           MOVE    NCLAIMID-NISSUJMA
+                                   TO  WRK-ITEMJMA
+           MOVE    LF04-NISSU (IDXA)
+                                   TO  WRK-ITEM-G
+           MOVE    ZERO            TO  WRK-STATUS-ITEM
+           PERFORM 20011-LNK-ODRITEM-HEN-SEC
+      *
+           .
+       20011-NISSU-SET-EXT.
            EXIT.
       *****************************************************************
       *    項目出現回数チェック処理
