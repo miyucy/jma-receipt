@@ -1218,4 +1218,40 @@ path	key53 	{
 	};
 };
 
-	
+path	key54 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_main_key54_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct_main
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   HKNCOMBI   <>  '9999'
+			AND   JIHOKBN    <>  '1'
+			AND   SRYCDTOTAL  =   197000470
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
+		;
+	};
+};
+
+path	key55 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_main_key55_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct_main
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   HKNCOMBI   <>  '9999'
+			AND   JIHOKBN    <>  '1'
+			AND   SRYCDTOTAL  =   197001570
+			ORDER  BY   SRYKA,
+                                    SRYKBN,
+                                    ZAINUM
+		;
+	};
+};

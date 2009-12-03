@@ -96,6 +96,7 @@
       *                                     Ãí²Ã»»ÄÌÈÖ½ç¤Ëµ­Ï¿
       *                                     ¡¦êóáìÉ¾²Á¼Â»Ü²Ã»»¡ÊÎÅÍÜÉÂÅï¡Ë
       *                                     ¡¦êóáìÉ¾²Á¼Â»Ü²Ã»»¡ÊÍ­¾²¿ÇÎÅ½ê¡Ë
+      *  04.05.00    NACL-¾®Æ¦Âô  09/12/03  ¿ÇÎÅÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤ÎÂÐ±þ
       *****************************************************************
       *
       *
@@ -130,6 +131,7 @@
            03  FLG-TSYRRK                  PIC 9(01).
            03  FLG-TNKRRK                  PIC 9(01).
            03  FLG-TENSUWRK                PIC 9(01).
+           03  FLG-TOKU-SHOKU              PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -2712,6 +2714,9 @@
            ELSE
                PERFORM   2103-SHOKUJI-HENSHU3-SEC
            END-IF
+      *
+      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤ÎÊÔ½¸
+           PERFORM   2103-TOKU-SHOKU-HENSHU-SEC
       *
       *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê´Ä¶­ÎÅÍÜ¡Ë¤ÎÊÔ½¸
            IF  (LNK-NYURECEDEN-SANTEIYM  >=  "200610")  AND
@@ -5660,6 +5665,237 @@
       *
            .
        2103-SHOKUJI-HENSHU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤ÎÊÔ½¸
+      *****************************************************************
+       2103-TOKU-SHOKU-HENSHU-SEC        SECTION.
+      *
+      *ÆÃÊÌ¿©²Ã»»¡Ê¿©»öÎÅÍÜ¡Ë¤Î¼èÆÀ
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-NYURECEDEN-PTID     TO  ACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  ACCT-SRYYM
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key54"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key54"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT   =  1)
+                   MOVE   1                        TO  FLG-TOKU-SHOKU
+                   INITIALIZE                          HKNCOMBI-REC
+                   MOVE    LNK-NYURECEDEN-HOSPNUM  TO  COMB-HOSPNUM
+                   MOVE    LNK-NYURECEDEN-PTID     TO  COMB-PTID
+                   MOVE    ACCT-HKNCOMBI           TO  COMB-HKNCOMBINUM
+                   MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   PERFORM 910-HKNCOMBI-SELECT-SEC
+                   IF      FLG-HKNCOMBI            =   ZERO
+                       MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       PERFORM   910-HKNCOMBI-READ-SEC
+                       IF   FLG-HKNCOMBI         =  ZERO
+                            IF    ( COMB-HKNNUM   = "971" OR "973" OR
+                                                    "975")
+                                            OR
+                                  ( COMB-HKNNUM(1:2)  =    "98")
+                                MOVE    ZERO       TO  FLG-TOKU-SHOKU
+                            ELSE
+                                EVALUATE   LNK-NYURECEDEN-HKNKBN
+      *                             ¼ÒÊÝ
+                                    WHEN   "1"
+                                        IF   COMB-HKNNUM = "060"  OR
+                                                           "067"  OR
+                                                           "068"  OR
+                                                           "069"  OR
+                                                           "039"  OR
+                                                           "040"
+                                            MOVE  ZERO  TO
+                                                       FLG-TOKU-SHOKU
+                                        END-IF
+      *                             ¹ñÊÝ
+                                    WHEN   "2"
+                                        IF   COMB-HKNNUM = "060"  OR
+                                                           "067"
+                                            CONTINUE
+                                        ELSE
+                                            MOVE  ZERO  TO
+                                                       FLG-TOKU-SHOKU
+                                        END-IF
+      *                             ¹­°èÏ¢¹ç
+                                    WHEN   "3"
+                                        IF   COMB-HKNNUM = "039"
+                                            CONTINUE
+                                        ELSE
+                                            MOVE  ZERO  TO
+                                                       FLG-TOKU-SHOKU
+                                        END-IF
+                                END-EVALUATE
+                            END-IF
+                       ELSE
+                           MOVE    ZERO            TO  FLG-TOKU-SHOKU
+                       END-IF
+                   END-IF
+      *
+      *            ÊÝ¸±ÁÈ¹ç¤»¥¯¥í¡¼¥º
+                   MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM   900-CLOSE-SEC
+      *
+                   IF    FLG-TOKU-SHOKU        =   1
+                       PERFORM    VARYING   IDX1   FROM   1   BY  1
+                         UNTIL   (IDX1         >   31)     OR
+                                 (LNK-NYURECEDEN-HKNCOMBI(3 IDX1)
+                                               =   ZERO)
+                             CONTINUE
+                       END-PERFORM
+                       MOVE  ACCT-HKNCOMBI
+                                 TO   LNK-NYURECEDEN-HKNCOMBI(3 IDX1)
+                       MOVE  1   
+                                 TO   LNK-NYURECEDEN-MEISAISU(3 IDX1)
+                       MOVE   "SI"
+                                 TO   LNK-NYURECEDEN-RECSKB(3 IDX1 1)
+                       MOVE   "97"
+                                 TO   LNK-NYURECEDEN-SRYSKB(3 IDX1 1)
+                       MOVE   "197000470"
+                                 TO   LNK-NYURECEDEN-SRYCD(3 IDX1 1)
+                       MOVE   ACCT-SURYOUTOTAL
+                                 TO   LNK-NYURECEDEN-SURYO(3 IDX1 1)
+                       MOVE   ACCT-ZAITEN
+                                 TO   LNK-NYURECEDEN-TEN(3 IDX1 1)
+                       MOVE   ACCT-ZAIKAISU
+                                 TO   LNK-NYURECEDEN-KAISU(3 IDX1 1)
+                   END-IF
+      *
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key54"             TO  MCP-PATHNAME
+                   PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key54"                 TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *
+      *ÆÃÊÌ¿©²Ã»»¡ÊÀ¸³èÎÅÍÜ¡Ë¤Î¼èÆÀ
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-NYURECEDEN-PTID     TO  ACCT-PTID
+           MOVE    LNK-NYURECEDEN-SANTEIYM TO  ACCT-SRYYM
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key55"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key55"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT   =  1)
+                   MOVE   1                        TO  FLG-TOKU-SHOKU
+                   INITIALIZE                          HKNCOMBI-REC
+                   MOVE    LNK-NYURECEDEN-HOSPNUM  TO  COMB-HOSPNUM
+                   MOVE    LNK-NYURECEDEN-PTID     TO  COMB-PTID
+                   MOVE    ACCT-HKNCOMBI           TO  COMB-HKNCOMBINUM
+                   MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   PERFORM 910-HKNCOMBI-SELECT-SEC
+                   IF      FLG-HKNCOMBI            =   ZERO
+                       MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                       MOVE    "key"               TO  MCP-PATHNAME
+                       PERFORM   910-HKNCOMBI-READ-SEC
+                       IF   FLG-HKNCOMBI         =  ZERO
+                            IF    ( COMB-HKNNUM   = "971" OR "973" OR
+                                                    "975")
+                                            OR
+                                  ( COMB-HKNNUM(1:2)  =    "98")
+                                MOVE    ZERO       TO  FLG-TOKU-SHOKU
+                            ELSE
+                                EVALUATE   LNK-NYURECEDEN-HKNKBN
+      *                             ¼ÒÊÝ
+                                    WHEN   "1"
+                                        IF   COMB-HKNNUM = "060"  OR
+                                                           "067"  OR
+                                                           "068"  OR
+                                                           "069"  OR
+                                                           "039"  OR
+                                                           "040"
+                                            MOVE  ZERO  TO
+                                                       FLG-TOKU-SHOKU
+                                        END-IF
+      *                             ¹ñÊÝ
+                                    WHEN   "2"
+                                        IF   COMB-HKNNUM = "060"  OR
+                                                           "067"
+                                            CONTINUE
+                                        ELSE
+                                            MOVE  ZERO  TO
+                                                       FLG-TOKU-SHOKU
+                                        END-IF
+      *                             ¹­°èÏ¢¹ç
+                                    WHEN   "3"
+                                        IF   COMB-HKNNUM = "039"
+                                            CONTINUE
+                                        ELSE
+                                            MOVE  ZERO  TO
+                                                       FLG-TOKU-SHOKU
+                                        END-IF
+                                END-EVALUATE
+                            END-IF
+                       ELSE
+                           MOVE    ZERO            TO  FLG-TOKU-SHOKU
+                       END-IF
+                   END-IF
+      *
+      *            ÊÝ¸±ÁÈ¹ç¤»¥¯¥í¡¼¥º
+                   MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM   900-CLOSE-SEC
+      *
+                   IF    FLG-TOKU-SHOKU        =   1
+                       PERFORM    VARYING   IDX1   FROM   1   BY  1
+                         UNTIL   (IDX1         >   31)     OR
+                                 (LNK-NYURECEDEN-HKNCOMBI(4 IDX1)
+                                               =   ZERO)
+                             CONTINUE
+                       END-PERFORM
+                       MOVE  ACCT-HKNCOMBI
+                                 TO   LNK-NYURECEDEN-HKNCOMBI(4 IDX1)
+                       MOVE  1   
+                                 TO   LNK-NYURECEDEN-MEISAISU(4 IDX1)
+                       MOVE   "SI"
+                                 TO   LNK-NYURECEDEN-RECSKB(4 IDX1 1)
+                       MOVE   "97"
+                                 TO   LNK-NYURECEDEN-SRYSKB(4 IDX1 1)
+                       MOVE   "197001570"
+                                 TO   LNK-NYURECEDEN-SRYCD(4 IDX1 1)
+                       MOVE   ACCT-SURYOUTOTAL
+                                 TO   LNK-NYURECEDEN-SURYO(4 IDX1 1)
+                       MOVE   ACCT-ZAITEN
+                                 TO   LNK-NYURECEDEN-TEN(4 IDX1 1)
+                       MOVE   ACCT-ZAIKAISU
+                                 TO   LNK-NYURECEDEN-KAISU(4 IDX1 1)
+                   END-IF
+      *
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key55"             TO  MCP-PATHNAME
+                   PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key55"                 TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *
+           .
+       2103-TOKU-SHOKU-HENSHU-EXT.
            EXIT.
       *
       *****************************************************************
