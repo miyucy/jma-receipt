@@ -1103,7 +1103,7 @@
       *
            MOVE    NCLAIMID-NISSUJMA
                                    TO  WRK-ITEMJMA
-           MOVE    LF04-NISSU (IDXA)
+           MOVE    LF04-KAISU (IDXA)
                                    TO  WRK-ITEM-G
            MOVE    ZERO            TO  WRK-STATUS-ITEM
            PERFORM 20011-LNK-ODRITEM-HEN-SEC
