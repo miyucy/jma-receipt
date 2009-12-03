@@ -1104,6 +1104,9 @@
                05  WRK-SURYO-N3                PIC X(10).
            03  WRK-SRYSURYOW                   PIC X(24).
       *
+           03  WRK-SETCOM-JIDO                 PIC 9(03).
+           03  WRK-SETCOM-JIDO2                PIC 9(03).
+      *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
       *
@@ -4282,6 +4285,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE  SPACE TO   WRK-FORMALNAME
                                MOVE  ZERO  TO   FLG-WRITE05
                                MOVE  ZERO  TO   FLG-SETCOM
+                               MOVE  ZERO  TO   WRK-SETCOM-JIDO
+                               MOVE  ZERO  TO   WRK-SETCOM-JIDO2
                                PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC     
                                PERFORM 21043-RECE04-TENSOU-SEC
                                PERFORM 21044-RECE05-HENSYU-SEC
@@ -4327,6 +4332,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       MOVE  SPACE TO   WRK-FORMALNAME
                                       MOVE  ZERO  TO   FLG-WRITE05
                                       MOVE  ZERO  TO   FLG-SETCOM
+                                      MOVE  ZERO  TO   WRK-SETCOM-JIDO
+                                      MOVE  ZERO  TO   WRK-SETCOM-JIDO2
                                       PERFORM   21043-RECE04-TENSOU-SEC
                                       PERFORM   21044-RECE05-HENSYU-SEC
                                       IF    FLG-WRITE05  =   1
@@ -4362,6 +4369,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                     MOVE  SPACE TO   WRK-FORMALNAME
                                     MOVE  ZERO  TO   FLG-WRITE05
                                     MOVE  ZERO  TO   FLG-SETCOM
+                                    MOVE  ZERO  TO   WRK-SETCOM-JIDO
+                                    MOVE  ZERO  TO   WRK-SETCOM-JIDO2
                                     PERFORM   21043-RECE04-TENSOU-SEC
                                     PERFORM   21044-RECE05-HENSYU-SEC
                                     IF    FLG-WRITE05  =   1
@@ -5436,21 +5445,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    END-IF
                  END-EVALUATE
                END-IF
-      **
-               IF   RECE05-MEISKYFLG(IDX4)  =  "2"
-                  IF   (FLG-SETCOM              =  1   )
-                  AND  (RECE05-RECEDENFLG(IDX4) = SPACE)
-                     MOVE  "1"            TO  RECE04-SETCOMFLG
-                  ELSE
-                     MOVE  SPACE          TO  RECE05-MEISKYFLG(IDX4)
-                  END-IF
-               ELSE
-                  IF   (RECE05-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
-                  OR   (RECE05-SRYCD(IDX4)(1:3) = "059"            )
-                     MOVE   1             TO  FLG-SETCOM
-                  END-IF
-               END-IF
-      **
+      *
+               PERFORM 2104414-SETCOM-HENSYU-SEC
+      *
               END-IF
              END-IF  
            END-PERFORM
@@ -6144,6 +6141,63 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
            .
        2104413-RECE05-TENSOU-SURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´Ø·¸¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2104414-SETCOM-HENSYU-SEC     SECTION.
+      *
+           IF   RECE05-MEISKYFLG(IDX4)  =  "2"
+              IF   (FLG-SETCOM              =  1   )
+              AND  (RECE05-RECEDENFLG(IDX4) = SPACE)
+                 MOVE  "1"            TO  RECE04-SETCOMFLG
+              ELSE
+                 MOVE  SPACE          TO  RECE05-MEISKYFLG(IDX4)
+              END-IF
+           ELSE
+              IF   (RECE05-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
+              OR   (RECE05-SRYCD(IDX4)(1:3) = "059"            )
+                 MOVE   1             TO  FLG-SETCOM
+              END-IF
+           END-IF
+      *
+      *****
+      *
+      *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ
+           IF    RECE05-SRYCD(IDX4)   = "113000410" OR "113000510" OR
+                                        "180000110" OR "180000210"
+                 MOVE   1             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¡ÊÂ¡´ï°Ü¿¢·î¤«¤é£³·î¡Ë
+           IF    RECE05-SRYCD(IDX4)   = "113000670"
+                 MOVE   1             TO  WRK-SETCOM-JIDO2
+           END-IF
+      *    °­À­¼ðáçÆÃ°ÛÊª¼Á¼£ÎÅ´ÉÍýÎÁ
+           IF    RECE05-SRYCD(IDX4)   = "113001210" OR "113001310" OR
+                                        "113002110"
+                 MOVE   3             TO  WRK-SETCOM-JIDO
+           END-IF
+      *
+           IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
+                (RECE05-SRYCD(IDX4) = "830000014" OR "840000038"))
+           OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
+                (RECE05-SRYCD(IDX4) = "840000077"               ))
+           OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
+                (RECE05-SRYCD(IDX4) = "830000015"               ))
+      *
+                 MOVE  "1"              TO  RECE04-SETCOMFLG
+                 MOVE  "2"              TO  RECE05-MEISKYFLG(IDX4)
+                 MOVE  WRK-SETCOM-JIDO  TO  RECE05-SETCOMATFLG(IDX4)
+                 IF  (WRK-SETCOM-JIDO2   =  1         )
+                 AND (RECE05-SRYCD(IDX4) = "840000077")
+                   MOVE    2            TO  RECE05-SETCOMATFLG(IDX4)
+                 END-IF
+      *
+           END-IF
+      *
+           .
+       2104414-SETCOM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

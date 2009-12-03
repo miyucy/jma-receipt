@@ -502,6 +502,18 @@
            03  WRK-HEN-SHORI-RENNUM          PIC 9(01).
            03  WRK-HEN-SEQNO                 PIC 9(02).
       *
+           03  WRK-HEN-RENNUM-X              PIC 9(02).
+           03  WRK-HEN-SHORI-RENNUM-X        PIC 9(01).
+           03  WRK-HEN-SEQNO-X               PIC 9(02).
+      *
+           03  WRK-HEN-RENNUM-J              PIC 9(02).
+           03  WRK-HEN-SHORI-RENNUM-J        PIC 9(01).
+           03  WRK-HEN-SEQNO-J               PIC 9(02).
+      *
+           03  WRK-HEN-RENNUM-J2             PIC 9(02).
+           03  WRK-HEN-SHORI-RENNUM-J2       PIC 9(01).
+           03  WRK-HEN-SEQNO-J2              PIC 9(02).
+      *
        01  WRK-RECE64-REC. 
            COPY    "CPRCF064.INC"  REPLACING   //RECE64//
                                    BY          //WRK-RECE64//.
@@ -6373,6 +6385,16 @@
       *
            MOVE    ZERO    TO    FLG-SETCOM
       *
+           MOVE    ZERO    TO    WRK-HEN-RENNUM-X
+                                 WRK-HEN-SHORI-RENNUM-X
+                                 WRK-HEN-SEQNO-X
+           MOVE    ZERO    TO    WRK-HEN-RENNUM-J
+                                 WRK-HEN-SHORI-RENNUM-J
+                                 WRK-HEN-SEQNO-J
+           MOVE    ZERO    TO    WRK-HEN-RENNUM-J2
+                                 WRK-HEN-SHORI-RENNUM-J2
+                                 WRK-HEN-SEQNO-J2
+      *
            INITIALIZE                       RECE651-REC
            MOVE    RECE641-HOSPNUM      TO  RECE651-HOSPNUM
            MOVE    RECE641-SRYYM        TO  RECE651-SRYYM
@@ -6414,18 +6436,77 @@
                          UNTIL   ( IDX                >   5     )
                          OR      ( RECE651-SRYCD(IDX) =   SPACE )
                  IF   RECE651-MEISKYFLG(IDX)  =  "2"
-                    IF   (FLG-SETCOM              =  1   )
-                    AND  (RECE651-RECEDENFLG(IDX) = SPACE)
-                       ADD    1               TO  WRK-HEN-SEQNO
-                       PERFORM  26011-SETCOM-HENSYU3-SEC
+                    IF     RECE651-SETCOMATFLG(IDX) = ZERO
+                      IF   (FLG-SETCOM              =  1   )
+                      AND  (RECE651-RECEDENFLG(IDX) = SPACE)
+                        ADD    1                 TO  WRK-HEN-SEQNO-X
+                        MOVE   WRK-HEN-RENNUM-X  TO  WRK-HEN-RENNUM
+                        MOVE   WRK-HEN-SHORI-RENNUM-X
+                                       TO  WRK-HEN-SHORI-RENNUM
+                        MOVE   WRK-HEN-SEQNO-X   TO  WRK-HEN-SEQNO
+                        PERFORM  26011-SETCOM-HENSYU3-SEC
+                        IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
+                        AND (WRK-HEN-SHORI-RENNUM-X
+                                        = WRK-HEN-SHORI-RENNUM-J )
+                          ADD  1                 TO  WRK-HEN-SEQNO-J
+                        END-IF
+                        IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J2)
+                        AND (WRK-HEN-SHORI-RENNUM-X
+                                        = WRK-HEN-SHORI-RENNUM-J2)
+                          ADD  1                 TO  WRK-HEN-SEQNO-J2
+                        END-IF
+                      END-IF
+                    ELSE
+                      EVALUATE   RECE651-SETCOMATFLG(IDX)
+                        WHEN    1
+                        WHEN    3
+                          ADD  1                 TO  WRK-HEN-SEQNO-J
+                          MOVE WRK-HEN-RENNUM-J  TO  WRK-HEN-RENNUM
+                          MOVE WRK-HEN-SHORI-RENNUM-J
+                                       TO  WRK-HEN-SHORI-RENNUM
+                          MOVE WRK-HEN-SEQNO-J   TO  WRK-HEN-SEQNO
+                          PERFORM  26011-SETCOM-HENSYU3-SEC
+                          IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
+                          AND (WRK-HEN-SHORI-RENNUM-X
+                                          = WRK-HEN-SHORI-RENNUM-J )
+                            ADD    1             TO  WRK-HEN-SEQNO-X
+                          END-IF
+                        WHEN    2
+                          ADD  1                 TO  WRK-HEN-SEQNO-J2
+                          MOVE WRK-HEN-RENNUM-J2 TO  WRK-HEN-RENNUM
+                          MOVE WRK-HEN-SHORI-RENNUM-J2
+                                       TO  WRK-HEN-SHORI-RENNUM
+                          MOVE WRK-HEN-SEQNO-J2  TO  WRK-HEN-SEQNO
+                          PERFORM  26011-SETCOM-HENSYU3-SEC
+                          IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J2)
+                          AND (WRK-HEN-SHORI-RENNUM-X
+                                          = WRK-HEN-SHORI-RENNUM-J2)
+                            ADD    1             TO  WRK-HEN-SEQNO-X
+                          END-IF
+                      END-EVALUATE
                     END-IF
                  ELSE
                     IF   (RECE651-SRYCD(IDX)(1:1) = "1" OR "6" OR "7")
                     OR   (RECE651-SRYCD(IDX)(1:3) = "059"            )
-                       MOVE   1               TO  FLG-SETCOM
-                       MOVE   RECE651-RENNUM  TO  WRK-HEN-RENNUM
-                       MOVE   IDX             TO  WRK-HEN-SHORI-RENNUM
-                       MOVE   ZERO            TO  WRK-HEN-SEQNO
+                      MOVE   1               TO  FLG-SETCOM
+                      MOVE   RECE651-RENNUM  TO  WRK-HEN-RENNUM-X
+                      MOVE   IDX             TO  WRK-HEN-SHORI-RENNUM-X
+                      MOVE   ZERO            TO  WRK-HEN-SEQNO-X
+                    END-IF
+      *
+                    IF    RECE651-SRYCD(IDX) =
+                          "113000410" OR "113000510" OR
+                          "180000110" OR "180000210" OR
+                          "113001210" OR "113001310" OR
+                          "113002110"
+                       MOVE   RECE651-RENNUM  TO  WRK-HEN-RENNUM-J
+                       MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J
+                       MOVE   ZERO            TO  WRK-HEN-SEQNO-J
+                    END-IF
+                    IF    RECE651-SRYCD(IDX) =  "113000670"
+                       MOVE   RECE651-RENNUM  TO  WRK-HEN-RENNUM-J2
+                       MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J2
+                       MOVE   ZERO            TO  WRK-HEN-SEQNO-J2
                     END-IF
                  END-IF
                END-PERFORM
