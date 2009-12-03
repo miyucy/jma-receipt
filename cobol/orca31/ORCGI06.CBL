@@ -3723,7 +3723,7 @@
                INITIALIZE                  ORCSNDAYCHGAREA
                MOVE    SPA-GMN-NISSU   TO  ORCSNDAYCHG-INPUTCD
                MOVE    SPA-NAI-KJNYMD  TO  ORCSNDAYCHG-SRYYMD
-               MOVE    SPACE           TO  ORCSNDAYCHG-KBN
+               MOVE    "1"             TO  ORCSNDAYCHG-KBN
                MOVE    50              TO  ORCSNDAYCHG-KETA
                CALL    "ORCSNDAYCHG"       USING
                                            SPA-AREA
