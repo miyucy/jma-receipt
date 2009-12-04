@@ -131,6 +131,7 @@
            03  FLG-TSYRRK                  PIC 9(01).
            03  FLG-TNKRRK                  PIC 9(01).
            03  FLG-TENSUWRK                PIC 9(01).
+           03  FLG-TOKU-SET                PIC 9(01).
            03  FLG-TOKU-SHOKU              PIC 9(01).
       *    添字領域
        01  IDX-AREA.
@@ -604,6 +605,7 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           DISPLAY "=== ORCSNYURECEDEN START  ==="
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
@@ -613,13 +615,16 @@
       *
       *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
-           IF    ( LNK-NYURECEDEN-RC       NOT =   ZERO )
-               GO  TO  000-PROC-EXT
-           END-IF
       *
       *    主処理
            IF      LNK-NYURECEDEN-RC      =    ZERO
                PERFORM 200-MAIN-SEC
+           END-IF
+      *
+      *    診療行為入力された特別食加算の編集
+           PERFORM   2103-TOKU-SHOKU-HENSHU-SEC
+           IF        FLG-TOKU-SET        =     1
+               MOVE   ZERO             TO  LNK-NYURECEDEN-RC
            END-IF
       *
            .
@@ -2714,9 +2719,6 @@
            ELSE
                PERFORM   2103-SHOKUJI-HENSHU3-SEC
            END-IF
-      *
-      *    診療行為入力された特別食加算の編集
-           PERFORM   2103-TOKU-SHOKU-HENSHU-SEC
       *
       *    入院時生活療養（環境療養）の編集
            IF  (LNK-NYURECEDEN-SANTEIYM  >=  "200610")  AND
@@ -5672,6 +5674,8 @@
       *****************************************************************
        2103-TOKU-SHOKU-HENSHU-SEC        SECTION.
       *
+           MOVE    ZERO                    TO  FLG-TOKU-SET
+      *
       *特別食加算（食事療養）の取得
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-NYURECEDEN-HOSPNUM  TO  ACCT-HOSPNUM
@@ -5753,6 +5757,7 @@
                                                =   ZERO)
                              CONTINUE
                        END-PERFORM
+                       MOVE  1   TO   FLG-TOKU-SET
                        MOVE  ACCT-HKNCOMBI
                                  TO   LNK-NYURECEDEN-HKNCOMBI(3 IDX1)
                        MOVE  1   
@@ -5864,6 +5869,7 @@
                                                =   ZERO)
                              CONTINUE
                        END-PERFORM
+                       MOVE  1   TO   FLG-TOKU-SET
                        MOVE  ACCT-HKNCOMBI
                                  TO   LNK-NYURECEDEN-HKNCOMBI(4 IDX1)
                        MOVE  1   
