@@ -55,6 +55,7 @@
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/02/XX  µ­¹æ¡¦ÈÖ¹æ¤Î£±£¶Ê¸»ú°Ê¾åÂÐ±þ
       *  04.04.00    NACL-Â¿¡¹Ç¼  08/12/03  ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/XX  È÷¹Í¥³¥á¥ó¥ÈÄÉ²Ã
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/12/XX  È÷¹Í¶Ø´÷¡¦¥¢¥ì¥ë¥®¡¼¡¦´¶À÷¾ÉÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,6 +144,7 @@
            03  IDX-COM                 PIC 9(04).
            03  IDXC1                   PIC 9(04).
            03  IDXC2                   PIC 9(04).
+           03  IDX-STR                 PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -276,6 +278,9 @@
            03  PARA-NYUGAIKBN          PIC X(01).
            03  PARA-CHARTKBN           PIC X(01).
            03  PARA-COMMENT            PIC X(01).
+           03  PARA-TABOO              PIC X(01).
+           03  PARA-ALLERGY            PIC X(01).
+           03  PARA-KANSENSYO          PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -501,6 +506,18 @@
            MOVE    "COMMENT"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-COMMENT
+      *    È÷¹Í¶Ø´÷¶èÊ¬
+           MOVE    "TABOO"             TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-TABOO
+      *    È÷¹Í¥¢¥ì¥ë¥®¡¼¶èÊ¬
+           MOVE    "ALLERGY"           TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-ALLERGY
+      *    È÷¹Í´¶À÷¾É¶èÊ¬
+           MOVE    "KANSENSYO"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-KANSENSYO
       *
       *    ÉÂÌ¾ÊÔ½¸¥ª¥×¥·¥ç¥óÀßÄê
            IF      PARA-BYOMEIKBN      =   "0"
@@ -1008,12 +1025,93 @@
                END-IF
            END-IF
       *
+      *    È÷¹Í¶Ø´÷ÊÔ½¸
+           IF      PARA-TABOO          =   "1"
+               PERFORM 200210-TABOO-HENSYU-SEC
+           END-IF
+      *    È÷¹Í¥¢¥ì¥ë¥®¡¼ÊÔ½¸
+           IF      PARA-ALLERGY        =   "1"
+               PERFORM 200210-ALLERGY-HENSYU-SEC
+           END-IF
+      *    È÷¹Í´¶À÷¾ÉÊÔ½¸
+           IF      PARA-KANSENSYO      =   "1"
+               PERFORM 200210-KANSENSYO-HENSYU-SEC
+           END-IF
       *    È÷¹Í¥³¥á¥ó¥ÈÊÔ½¸
            IF      PARA-COMMENT        =   "1"
                PERFORM 200210-COMMENT-HENSYU-SEC
            END-IF
            .
        2002-HC01-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    È÷¹Í¶Ø´÷ÊÔ½¸½èÍý
+      *****************************************************************
+       200210-TABOO-HENSYU-SEC         SECTION.
+      *
+      *    ¶Ø´÷£±
+           MOVE    PTINF-TABOO-1       TO  WRK-COMMENT-G
+           PERFORM 200210-H01-COMMENT-SEC
+      *    ¶Ø´÷£²
+           MOVE    PTINF-TABOO-2       TO  WRK-COMMENT-G
+           PERFORM 200210-H01-COMMENT-SEC
+           .
+       200210-TABOO-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    È÷¹Í¥¢¥ì¥ë¥®¡¼ÊÔ½¸½èÍý
+      *****************************************************************
+       200210-ALLERGY-HENSYU-SEC         SECTION.
+      *
+      *    ¥¢¥ì¥ë¥®¡¼£±
+           MOVE    PTINF-ALLERGY-1     TO  WRK-COMMENT-G
+           PERFORM 200210-H01-COMMENT-SEC
+      *    ¥¢¥ì¥ë¥®¡¼£²
+           MOVE    PTINF-ALLERGY-2     TO  WRK-COMMENT-G
+           PERFORM 200210-H01-COMMENT-SEC
+           .
+       200210-ALLERGY-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    È÷¹Í´¶À÷¾ÉÊÔ½¸½èÍý
+      *****************************************************************
+       200210-KANSENSYO-HENSYU-SEC         SECTION.
+      *
+      *    ´¶À÷¾É£±
+           MOVE    PTINF-KANSENSYO-1   TO  WRK-COMMENT-G
+           PERFORM 200210-H01-COMMENT-SEC
+      *    ´¶À÷¾É£²
+           MOVE    PTINF-KANSENSYO-2   TO  WRK-COMMENT-G
+           PERFORM 200210-H01-COMMENT-SEC
+           .
+       200210-KANSENSYO-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    È÷¹ÍÍóÊÔ½¸½èÍý
+      *****************************************************************
+       200210-H01-COMMENT-SEC        SECTION.
+      *
+           MOVE    6                   TO  IDX-STR
+           PERFORM VARYING IDX-COM     FROM    1   BY  1
+                   UNTIL   IDX-COM     >   5
+               IF      HC01-COMMENT (IDX-COM)  =   SPACE
+                   MOVE    IDX-COM         TO  IDX-STR
+                   MOVE    5               TO  IDX-COM
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX-COM     FROM    1   BY  1
+                   UNTIL  (IDX-COM     >   5   )
+                   OR     (IDX-STR     >   5   )
+               IF      WRK-COMMENT(IDX-COM)    NOT =   SPACE
+                   MOVE    WRK-COMMENT(IDX-COM) 
+                                               TO  HC01-COMMENT
+                                                           (IDX-STR)
+                   ADD     1                   TO  IDX-STR
+               END-IF
+           END-PERFORM
+           .
+       200210-H01-COMMENT-EXT.
            EXIT.
       *****************************************************************
       *    È÷¹Í¥³¥á¥ó¥ÈÊÔ½¸½èÍý
@@ -1030,10 +1128,7 @@
            MOVE    PTINF-COMMENT-2     TO  WRK-COMMENT-H
            PERFORM 2002101-COMMENT-TBLHEN-SEC
       *    ¥«¥ë¥ÆÊÔ½¸
-           PERFORM VARYING IDX-COM     FROM    1   BY  1
-                   UNTIL   IDX-COM     >   5
-               MOVE    WRK-COMMENT(IDX-COM)    TO  HC01-COMMENT(IDX-COM)
-           END-PERFORM
+           PERFORM 200210-H01-COMMENT-SEC
            .
        200210-COMMENT-HENSYU-EXT.
            EXIT.
