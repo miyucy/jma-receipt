@@ -2610,8 +2610,7 @@
        4101111-NISSU-HEN-SEC         SECTION.
       *
            MOVE    ODRITEM-STATUS      TO  SPA-NAI-STS-NISSU
-           MOVE    ODRITEM-ITEM        TO  SPA-GMN-NISSU
-           DISPLAY "SPA-GMN-NISSU =" SPA-GMN-NISSU
+           MOVE    ODRITEM-MEMO        TO  SPA-GMN-NISSU
       *
       *
            .
@@ -4912,7 +4911,7 @@
                 MOVE    0            TO  LNK-ODRITEM-STATUS (IDX-ITM)
            END-IF
       *
-           MOVE    SPA-GMN-NISSU     TO  LNK-ODRITEM-ITEM (IDX-ITM)
+           MOVE    SPA-GMN-NISSU     TO  LNK-ODRITEM-MEMO   (IDX-ITM)
       *
            .
        2300-NISSU-SET-EXT.

@@ -381,7 +381,7 @@
       *****************************************************************
        20011-NISSU-CHK-SEC             SECTION.
       *
-           MOVE    LNK-ODRITEM-ITEM (IDX-ODR)
+           MOVE    LNK-ODRITEM-MEMO (IDX-ODR)
                                    TO  ITEM-NISSU
       *
            .

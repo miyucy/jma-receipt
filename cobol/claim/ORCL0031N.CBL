@@ -769,6 +769,16 @@
                ELSE
                    MOVE    SPACE   TO  LNK-ODRITEM-MEMO        (IDX-ODR)
                END-IF
+           WHEN    NCLAIMID-NISSUJMA
+               MOVE    SPACE       TO  LNK-ODRITEM-ITEM    (IDX-ODR)
+               MOVE    WRK-MEMO    TO  WRK-KANACHK-INPUT
+               PERFORM 800-HANKAKU-CHK-SEC
+               IF    ( FLG-ENTRYCHK        =   ZERO )
+                   MOVE    WRK-MEMO
+                                   TO  LNK-ODRITEM-MEMO        (IDX-ODR)
+               ELSE
+                   MOVE    SPACE   TO  LNK-ODRITEM-MEMO        (IDX-ODR)
+               END-IF
            END-EVALUATE
       *
            MOVE    WRK-STATUS-ITEM     TO  LNK-ODRITEM-STATUS  (IDX-ODR)
@@ -1103,8 +1113,9 @@
       *
            MOVE    NCLAIMID-NISSUJMA
                                    TO  WRK-ITEMJMA
+           MOVE    SPACE           TO  WRK-ITEM-G
            MOVE    LF04-KAISU (IDXA)
-                                   TO  WRK-ITEM-G
+                                   TO  WRK-MEMO
            MOVE    ZERO            TO  WRK-STATUS-ITEM
            PERFORM 20011-LNK-ODRITEM-HEN-SEC
       *
