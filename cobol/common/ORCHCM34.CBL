@@ -399,6 +399,7 @@
                05  WRK-RSI-SONOTA-KBN              PIC X(01).
                05  WRK-RSI-SONOTA-TEN              PIC 9(08).
            03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
+           03  WRK-RUIKEI                          PIC 9(15).
            03  WRK-RUIKEITOTAL                     PIC 9(15).
            03  WRK-RUIKEITOTAL2                    PIC 9(15).
            03  WRK-ZAINUM                          PIC 9(08).
@@ -3323,6 +3324,8 @@
       *
            END-PERFORM
       *
+           DISPLAY "WRK-RUIKEITOTAL2 =" WRK-RUIKEITOTAL2
+      *
            CLOSE   HCM34SRY-FILE
       *
            IF    ( FLG-SRYSTATUS   =   ZERO )
@@ -3340,6 +3343,8 @@
       *****************************************************************
        2001111-RUIKEITOTAL-SEC         SECTION.
       *
+           MOVE     ZERO           TO  WRK-RUIKEI
+      *
            COMPUTE WRK-RUIKEITOTAL
                =   WRK-RUIKEITOTAL
                + ( WRK-SRYCD-9     *    WRK-SURYO-S1 )
@@ -3350,13 +3355,16 @@
       *
                MOVE    WRK-CALCSRYCD (IDX0)    TO    WRK-NUM
       *
-               COMPUTE WRK-RUIKEITOTAL2
-                   =   WRK-RUIKEITOTAL2
+               COMPUTE WRK-RUIKEI
+                   =   WRK-RUIKEI
                    + ((WRK-NUM + 1 )
                    *   CONST-RUIKEI2(WRK-NUM + 1))
-                   *  (10 ** ( 9 - IDX0 ))
       *
            END-PERFORM
+      *
+           COMPUTE WRK-RUIKEITOTAL2
+               =   WRK-RUIKEITOTAL2
+               +   WRK-SRYCD-9 *   WRK-RUIKEI
       *
            .
        200111-RUIKEITOTAL-EXT.
