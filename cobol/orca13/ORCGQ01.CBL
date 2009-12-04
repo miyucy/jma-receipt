@@ -1112,11 +1112,8 @@
            MOVE    "患者禁忌・アレルギー・感染症"
                                        TO  SPA-GMN-Q01-SELCOMMENTMEIL(2)
       *
-           MOVE    "3"                 TO  SPA-GMN-Q01-SELCOMMENTL   (3)
-           MOVE    "レセプトコメント"  TO  SPA-GMN-Q01-SELCOMMENTMEIL(3)
-      *
            COMPUTE SPA-GMN-Q01-SELCOMMENTLST-MAX
-               =   3
+               =   2
       *
            .
        3101-SELCOMMENT-CMB-SYOKI-EXT.
@@ -2150,6 +2147,12 @@
                                        TO  SPA-GMN-Q01-SRYCD(IDXB)
            END-PERFORM
       *
+           PERFORM VARYING IDXB    FROM    1   BY  1
+                   UNTIL   IDXB    >       3
+      *        レセプトコメント
+               MOVE    Q01-RECECOM(IDXB)
+                                       TO  SPA-GMN-Q01-RECECOM(IDXB)
+           END-PERFORM
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       3
@@ -2553,6 +2556,16 @@
                     OR   ( FLG-END     NOT =   ZERO  )
       *
                PERFORM 4121-SRYCD-CHK-SEC
+      *
+           END-PERFORM
+      *
+      *    レセプトコメントチェック処理
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   3 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+                    OR   ( FLG-END     NOT =   ZERO  )
+      *
+               PERFORM 4121-RECECOM-CHK-SEC
       *
            END-PERFORM
       *
@@ -3526,31 +3539,6 @@
            PERFORM 800-KANACHK-CHK-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-COMMENT  (IDXA)
-      *
-           IF    ( SPA-GMN-Q01-SELCOMMENT  =   "3" )
-               MOVE    SPACE       TO  WRK-RECECOM-G
-               UNSTRING    SPA-GMN-Q01-COMMENT (IDXA)
-                                           DELIMITED BY  ALL "　"
-               INTO        WRK-RECECOM (1)
-                           WRK-RECECOM (2)
-                           WRK-RECECOM (3)
-                           WRK-RECECOM (4)
-                           WRK-RECECOM (5)
-               END-UNSTRING
-      *
-      *        レセコメントのキーワードは３語まで指定可能とする。
-               IF    (     WRK-RECECOM (1) NOT =   SPACE )
-                   IF    ( WRK-RECECOM (4) NOT =   SPACE )
-                       MOVE    "0132"      TO  SPA-ERRCD
-                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
-                   END-IF
-               ELSE
-                   IF    ( WRK-RECECOM (5) NOT =   SPACE )
-                       MOVE    "0132"      TO  SPA-ERRCD
-                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
-                   END-IF
-               END-IF
-            END-IF
       *
            .
        4113-COMMENT-CHK-EXT.
@@ -5175,6 +5163,46 @@
            .
       *
        4121-INPUTCD-SELECT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプトコメントチェック処理
+      *****************************************************************
+       4121-RECECOM-CHK-SEC            SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   326     +   IDXA
+      *
+           MOVE    SPA-GMN-Q01-RECECOM (IDXA)
+                                   TO  WRK-KANACHK-MAE-INPUT
+           PERFORM 800-KANACHK-CHK-SEC
+           MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-RECECOM (IDXA)
+      *
+           MOVE    SPACE       TO  WRK-RECECOM-G
+           UNSTRING    SPA-GMN-Q01-COMMENT (IDXA)
+                                   DELIMITED BY  ALL "　"
+           INTO        WRK-RECECOM (1)
+                       WRK-RECECOM (2)
+                       WRK-RECECOM (3)
+                       WRK-RECECOM (4)
+                       WRK-RECECOM (5)
+           END-UNSTRING
+      *
+      *    レセコメントのキーワードは３語まで指定可能とする。
+           IF    (     WRK-RECECOM (1) NOT =   SPACE )
+               IF    ( WRK-RECECOM (4) NOT =   SPACE )
+                   MOVE    "0132"      TO  SPA-ERRCD
+                   MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+               END-IF
+           ELSE
+               IF    ( WRK-RECECOM (5) NOT =   SPACE )
+                   MOVE    "0132"      TO  SPA-ERRCD
+                   MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4121-RECECOM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    並び順項目名チェック処理
@@ -6894,6 +6922,19 @@
                MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-SRYCD (IDXC)
            END-PERFORM
       *
+           PERFORM VARYING IDXC    FROM    1   BY  1
+                   UNTIL ( IDXC    >   3 )
+      *
+               MOVE    SPA-GMN-Q01-RECECOM (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-RECECOM (IDXC)
+      *
+               INSPECT SPA-Q01-RECECOM (IDXC)
+                       REPLACING   ALL "＊" BY  "%%"
+      *
+           END-PERFORM
+      *
       *    並び順
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   3 )
@@ -7141,6 +7182,14 @@
                        END-IF
                    END-IF
       *
+      *            レセプトコメント
+                   IF    ( SPA-Q01-RECECOM (IDX6)  NOT =   SPACE )
+                       IF    ( SPA-Q01-RECECOM (IDX6)
+                                       =   SPA-Q01-RECECOM (IDX7))
+                           MOVE    SPACE   TO  SPA-Q01-RECECOM (IDX7)
+                       END-IF
+                   END-IF
+      *
       *            電話番号
                    IF    ( SPA-Q01-TEL (IDX6)  NOT =   SPACE )
                        IF    ( SPA-Q01-TEL (IDX6)
@@ -7219,8 +7268,7 @@
             OR ( SPA-Q01-CONDITION2-G      NOT =   SPACE )
             OR ( SPA-Q01-CONDITION3-G      NOT =   SPACE )
             OR ( SPA-Q01-GENMEN-G          NOT =   SPACE )
-            OR ((SPA-Q01-SELCOMMENT        =   "1" OR "2" )
-             AND( SPA-Q01-COMMENT-G        NOT =   SPACE ))
+            OR ( SPA-Q01-COMMENT-G         NOT =   SPACE )
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-BIRTHMON          NOT =   "00" )
@@ -7258,8 +7306,7 @@
            END-IF
       *
       *    該当（１１）
-           IF   (  SPA-Q01-SELCOMMENT          =   "3" )
-             AND(  SPA-Q01-COMMENT-G       NOT =   SPACE )
+           IF   (  SPA-Q01-RECECOM-G       NOT =   SPACE )
       *
               MOVE     "1"                 TO  SPA-Q01-GTBL(11)
       *
@@ -7921,6 +7968,15 @@
       *
            END-PERFORM
       *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       3
+      *
+      *        コメント
+               MOVE    SPA-GMN-Q01-RECECOM (IDX1)
+                                           TO  Q01-RECECOM (IDX1)
+      *
+           END-PERFORM
+      *
       *    並び順
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       3
@@ -8305,6 +8361,12 @@
                MOVE  "KYUSEIKBN"   TO  MCP-WIDGET
            WHEN   326
                MOVE  "SYUBYOKBN"   TO  MCP-WIDGET
+           WHEN   327
+               MOVE  "RECECOM1"    TO  MCP-WIDGET
+           WHEN   328
+               MOVE  "RECECOM2"    TO  MCP-WIDGET
+           WHEN   329
+               MOVE  "RECECOM3"    TO  MCP-WIDGET
       *
       *    並び順タブ
            WHEN   401
@@ -8574,6 +8636,12 @@
            WHEN   "SRYCD4"
                MOVE  318           TO  SPA-GMN-Q01-CUR
            WHEN   "SRYCD5"
+               MOVE  327           TO  SPA-GMN-Q01-CUR
+           WHEN   "RECECOM1"
+               MOVE  328           TO  SPA-GMN-Q01-CUR
+           WHEN   "RECECOM2"
+               MOVE  329           TO  SPA-GMN-Q01-CUR
+           WHEN   "RECECOM3"
                MOVE  001           TO  SPA-GMN-Q01-CUR
       *
       *    並び順タブ
@@ -9325,6 +9393,15 @@
                MOVE    1               TO  FLG-PAGENO-02
            WHEN    SHKITEMID-SRYCD05
                MOVE    SHODATA-ITEM    TO  Q01-SRYCD (5)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-RECECOM01
+               MOVE    SHODATA-ITEM    TO  Q01-RECECOM (1)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-RECECOM02
+               MOVE    SHODATA-ITEM    TO  Q01-RECECOM (2)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-RECECOM03
+               MOVE    SHODATA-ITEM    TO  Q01-RECECOM (3)
                MOVE    1               TO  FLG-PAGENO-02
            WHEN    SHKITEMID-KMK01
                MOVE    SHODATA-ITEM    TO  Q01-CMB-KMK (1)
@@ -10364,6 +10441,30 @@
                MOVE    SHKITEMID-SRYCD05
                                    TO  SHODATA-ITEMID
                MOVE    SPA-GMN-Q01-SRYCD (5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RECECOM (1)  NOT =   SPACE )
+               MOVE    SHKITEMID-RECECOM01
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-RECECOM (1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RECECOM (2)  NOT =   SPACE )
+               MOVE    SHKITEMID-RECECOM02
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-RECECOM (2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-RECECOM (3)  NOT =   SPACE )
+               MOVE    SHKITEMID-RECECOM03
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-RECECOM (3)
                                    TO  SHODATA-ITEM
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF

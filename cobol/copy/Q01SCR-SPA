@@ -366,6 +366,10 @@
                                13  SPA-GMN-Q01-SRYACT
                                                        PIC X(80)
                                                        OCCURS  5. 
+      *                    レセプトコメント
+                           11  SPA-GMN-Q01-RECECOMTBL.
+                               13  SPA-GMN-Q01-RECECOM PIC X(50)
+                                                       OCCURS  3.
       *                    診療行為名テーブル
                            11  SPA-GMN-Q01-SRYACTTBL.
                                13  SPA-GMN-Q01-SRYACT-MAX  PIC 9(05).
@@ -1031,6 +1035,9 @@
                        09  SPA-Q01-SRYCD-G.
                            11  SPA-Q01-SRYCD           PIC X(09)
                                                        OCCURS  5.
+                       09  SPA-Q01-RECECOM-G.
+                           11  SPA-Q01-RECECOM         OCCURS  3
+                                                       PIC X(50).
       *
       *            並び順
                    07  SPA-Q01-NARABI-AREA.

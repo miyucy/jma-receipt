@@ -233,6 +233,8 @@
                         09  Q01-SRYLST-SRYACT  PIC X(80).
                       08  Q01-SRYLST-SELECT-TBL.
                         09  Q01-SRYLST-SELECT  PIC X   OCCURS  200.
+                  06  Q01-RECECOM-TBL.
+                    07  Q01-RECECOM            PIC X(50)   OCCURS 3.
                   06  Q01-RDBYOMEI-AND         PIC X.
                   06  Q01-RDBYOMEI-OR          PIC X.
                   06  Q01-RDSRYACT-AND         PIC X.

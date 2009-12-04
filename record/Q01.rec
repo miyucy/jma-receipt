@@ -605,6 +605,15 @@ Q01	{
 						select	bool[200];
 					};
 				};
+				RECECOM1	{
+					value	varchar(50);
+				};
+				RECECOM2{
+					value	varchar(50);
+				};
+				RECECOM3{
+					value	varchar(50);
+				};
 				RDBYOMEI_AND	{
 					value	bool;
 				};

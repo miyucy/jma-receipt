@@ -1105,10 +1105,10 @@
       *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL   (   IDX1    >   5 )
+               UNTIL   (   IDX1    >   3 )
       *
                MOVE    SPACE                   TO  WRK-ITEM-G
-               MOVE    SPA-Q01-COMMENT (IDX1)  TO  WRK-RECECOMMENT
+               MOVE    SPA-Q01-RECECOM (IDX1)  TO  WRK-RECECOMMENT
                INSPECT WRK-RECECOMMENT REPLACING   ALL "¡¡"  BY  "  "
                UNSTRING    WRK-RECECOMMENT    DELIMITED  BY  ALL " "
                                    INTO       WRK-ITEM(1)
@@ -1143,7 +1143,8 @@
                            END-IF
                            STRING  "("             DELIMITED   BY  SIZE
                                WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                               ".COMMENT  LIKE '%" DELIMITED   BY  SIZE
+                               ".COMMENT "         DELIMITED   BY  SIZE
+                               "LIKE '%"           DELIMITED   BY  SIZE
                                WRK-ITEM(IDX2)      DELIMITED   BY  SPACE
                                "%')"               DELIMITED   BY  SIZE
                            INTO    WRK-SQL
