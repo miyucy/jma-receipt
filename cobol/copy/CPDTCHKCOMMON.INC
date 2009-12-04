@@ -363,8 +363,6 @@
                    07  SRH-1102-NM2KAKKO           PIC X(01).
                    07  SRH-1102-NM2ETC             PIC X(01).
                    07  SRH-1102-UPDDUMMY           PIC X(01).
-                   07  SRH-1102-NMKETAMIN          PIC X(02).
-                   07  SRH-1102-NMKETAMAX          PIC X(02).
                05  SRH-1102-MAX                    PIC 9(05).
                05  SRH-1102-OCC                    OCCURS  200.
                    07  SRH-1102-HKNJANUML          PIC X(08).
@@ -398,5 +396,3 @@
                    07  SRH-1102-NM2KAKKOL          PIC X(01).
                    07  SRH-1102-NM2ETCL            PIC X(01).
                    07  SRH-1102-UPDDUMMYL          PIC X(01).
-                   07  SRH-1102-NMKETAMINL         PIC X(02).
-                   07  SRH-1102-NMKETAMAXL         PIC X(02).
