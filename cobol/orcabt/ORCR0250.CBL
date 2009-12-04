@@ -52,6 +52,8 @@
       *
       *  04.05.01    NACL-藤原    09/06/10  摘要欄下部へのコメント記載対応
       *                                     診療種別区分の追加
+      *  04.05.02    NACL-藤原    09/11/27  レセ電コメント拡張対応
+      *                                     関係コメント存在フラグ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -402,6 +404,7 @@
            MOVE    RECE64-NYUKSNFLG    TO  RECE641-NYUKSNFLG
            MOVE    RECE64-TOYAKUFLG    TO  RECE641-TOYAKUFLG
            MOVE    RECE64-SRYSYUKBN    TO  RECE641-SRYSYUKBN
+           MOVE    RECE64-SETCOMFLG    TO  RECE641-SETCOMFLG
       *
            WRITE   RECE641-REC
            ADD     1                   TO  CNT-OUT

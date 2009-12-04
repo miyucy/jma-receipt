@@ -61,6 +61,7 @@
                            11  ORCSRECESORT-IN-KEY-HOJOKBN   PIC X(01).
                            11  ORCSRECESORT-IN-KEY-TEKSTYMD  PIC X(08). 
                            11  ORCSRECESORT-IN-KEY-ZAINUM    PIC 9(08).
+                           11  ORCSRECESORT-IN-KEY-ZAIREN    PIC 9(02).
                            11  ORCSRECESORT-IN-KEY-RENNUM    PIC 9(02).
                        09  ORCSRECESORT-IN-SHORI-RENNUM
                                                     PIC 9(01).
@@ -114,6 +115,7 @@
                            11  ORCSRECESORT-KEY-HOJOKBN    PIC X(01).
                            11  ORCSRECESORT-KEY-TEKSTYMD   PIC X(08). 
                            11  ORCSRECESORT-KEY-ZAINUM     PIC 9(08).
+                           11  ORCSRECESORT-KEY-ZAIREN     PIC 9(02).
                            11  ORCSRECESORT-KEY-RENNUM     PIC 9(02).
                        09  ORCSRECESORT-SHORI-RENNUM
                                                     PIC 9(01).
