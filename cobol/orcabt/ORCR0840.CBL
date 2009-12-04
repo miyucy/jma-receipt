@@ -172,6 +172,7 @@
       *  04.05.03    NACL-門脇    09/09/24  レセプト記載しないコメント対応
       *  04.05.04    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
       *                                     まとめ記載対応
+      *  04.05.05    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1682,10 +1683,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                        MOVE   ZERO   TO   FLG-WRITE85
                        MOVE   ZERO   TO   FLG-TENTEKI
-                       PERFORM   2201-RECE84-TENSOU-SEC
-                       PERFORM   2202-RECE85-HENSYU-SEC
-                       IF    FLG-WRITE85  =   1
-                           PERFORM 900-RECE84-WRITE-SEC
+                       IF  (ACCT-SRYKBN     = "97"     )
+                       AND (ACCT-SRYCDTOTAL = 197000470
+                                           OR 197001570
+                                           OR 197001210)
+                         IF  (RECE82-SRYYM   >= "200604" )
+                         AND (ACCT-SRYCDTOTAL = 197000470
+                                             OR 197001570)
+                           PERFORM   2201-RECE84-TENSOU-SEC
+                           PERFORM   2202-RECE85-HENSYU-SEC
+                           IF    FLG-WRITE85  =   1
+                               PERFORM 900-RECE84-WRITE-SEC
+                           END-IF
+                         END-IF
+                       ELSE
+                         PERFORM   2201-RECE84-TENSOU-SEC
+                         PERFORM   2202-RECE85-HENSYU-SEC
+                         IF    FLG-WRITE85  =   1
+                             PERFORM 900-RECE84-WRITE-SEC
+                         END-IF
                        END-IF
                    ELSE
                        IF  (ACCT-ZAIKAISU  NOT =    ZERO) AND
@@ -1815,7 +1831,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  MOVE    "6"            TO      RECE84-ZAISKBKBN
            ELSE 
               IF   ACCT-SRYKBN = "97"
-                 MOVE    "4"            TO      RECE84-ZAISKBKBN
+      ***        MOVE    "4"            TO      RECE84-ZAISKBKBN
+                 MOVE    "9"            TO      RECE84-ZAISKBKBN
               END-IF
            END-IF
            MOVE    RECE82-PTNUM         TO      RECE84-PTNUM

@@ -412,6 +412,7 @@
       *                                     対応（残量廃棄）
       *  04.05.08    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
       *                                     対応（ファイル編集）
+      *  04.05.09    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2814,10 +2815,25 @@
                                MOVE   ZERO   TO   FLG-SETCOM
                                MOVE   ZERO   TO   WRK-SETCOM-JIDO
                                MOVE   ZERO   TO   WRK-SETCOM-JIDO2
-                               PERFORM   21011-RECE64-TENSOU-SEC
-                               PERFORM   21012-RECE65-HENSYU-SEC
-                               IF    FLG-WRITE65  =   1
-                                 PERFORM RECE64-WRITE-SEC
+                               IF  (ACCT-SRYKBN     = "97"     )
+                               AND (ACCT-SRYCDTOTAL = 197000470
+                                                   OR 197001570
+                                                   OR 197001210)
+                                 IF  (RECE62-SRYYM   >= "200604" )
+                                 AND (ACCT-SRYCDTOTAL = 197000470
+                                                     OR 197001570)
+                                   PERFORM   21011-RECE64-TENSOU-SEC
+                                   PERFORM   21012-RECE65-HENSYU-SEC
+                                   IF    FLG-WRITE65  =   1
+                                     PERFORM RECE64-WRITE-SEC
+                                   END-IF
+                                 END-IF
+                               ELSE
+                                 PERFORM   21011-RECE64-TENSOU-SEC
+                                 PERFORM   21012-RECE65-HENSYU-SEC
+                                 IF    FLG-WRITE65  =   1
+                                   PERFORM RECE64-WRITE-SEC
+                                 END-IF
                                END-IF
                            ELSE
                              IF  (ACCT-ZAIKAISU  NOT =    ZERO)   AND
@@ -2942,7 +2958,8 @@
                  MOVE    "6"            TO      RECE64-ZAISKBKBN
            ELSE 
               IF   ACCT-SRYKBN = "97"
-                 MOVE    "4"            TO      RECE64-ZAISKBKBN
+      ***        MOVE    "4"            TO      RECE64-ZAISKBKBN
+                 MOVE    "9"            TO      RECE64-ZAISKBKBN
               END-IF
            END-IF
            MOVE    ACCT-ZAINUM          TO      RECE64-ZAINUM

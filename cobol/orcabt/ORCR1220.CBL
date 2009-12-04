@@ -63,6 +63,7 @@
       *  04.05.03    NACL-門脇    09/09/24  レセプト記載しないコメント対応
       *  04.05.04    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
       *                                     まとめ記載対応
+      *  04.05.05    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1278,10 +1279,25 @@
       *
                       MOVE   ZERO   TO   FLG-WRITE230
                       MOVE   ZERO   TO   FLG-TENTEKI
-                      PERFORM   21011-RECE220-TENSOU-SEC
-                      PERFORM   21012-RECE230-HENSYU-SEC
-                      IF    FLG-WRITE230  =   1
-                        PERFORM RECE220-WRITE-SEC
+                      IF  (ACCT-SRYKBN     = "97"     )
+                      AND (ACCT-SRYCDTOTAL = 197000470
+                                          OR 197001570
+                                          OR 197001210)
+                        IF  (RECE200-SRYYM  >= "200604" )
+                        AND (ACCT-SRYCDTOTAL = 197000470
+                                            OR 197001570)
+                          PERFORM   21011-RECE220-TENSOU-SEC
+                          PERFORM   21012-RECE230-HENSYU-SEC
+                          IF    FLG-WRITE230  =   1
+                            PERFORM RECE220-WRITE-SEC
+                          END-IF
+                        END-IF
+                      ELSE
+                        PERFORM   21011-RECE220-TENSOU-SEC
+                        PERFORM   21012-RECE230-HENSYU-SEC
+                        IF    FLG-WRITE230  =   1
+                          PERFORM RECE220-WRITE-SEC
+                        END-IF
                       END-IF
                    ELSE
                       IF  (ACCT-ZAIKAISU  NOT =    ZERO)   AND
@@ -1388,7 +1404,8 @@
                  MOVE    "6"            TO      RECE220-ZAISKBKBN
            ELSE 
               IF   ACCT-SRYKBN = "97"
-                 MOVE    "4"            TO      RECE220-ZAISKBKBN
+      ***        MOVE    "4"            TO      RECE220-ZAISKBKBN
+                 MOVE    "9"            TO      RECE220-ZAISKBKBN
               END-IF
            END-IF
            MOVE    ACCT-ZAINUM          TO      RECE220-ZAINUM

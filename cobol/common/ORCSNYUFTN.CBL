@@ -111,6 +111,8 @@
       *  04.04.02    NACL-門脇    09/10/01  埼玉県地方公費対応
       *  04.04.03    NACL-門脇    09/11/05  高齢者他保険入院対応
       *  04.04.04    NACL-門脇    09/11/13  熊本県地方公費対応
+      *
+      *  04.05.01    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -177,6 +179,10 @@
        01  WRK-NYUINDAY2-TABLE.
            02  WRK-NYUINDAY2-TBL OCCURS   10.
               03 WRK-NYUINDAY2-KBN         PIC X(01)  OCCURS  31.
+      *
+       01  WRK-NYUSANTEI-TABLE.
+           02  WRK-NYUSANTEI-TBL OCCURS   10.
+              03 WRK-NYUSANTEI-KBN         PIC X(01)  OCCURS  31.
       *
       *    同日再入院テーブル
        01  WRK-DOJITU-TABLE.
@@ -575,6 +581,7 @@
                          WRK-JIBAI-TABLE
                          WRK-NYUINDAY-TABLE
                          WRK-NYUINDAY2-TABLE
+                         WRK-NYUSANTEI-TABLE
                          WRK-SYOSIN-TABLE
                          WRK-DOJITU-TABLE
                          WRK-KAIKEING-TABLE
@@ -648,6 +655,8 @@
       *
                 MOVE     WRK-NYUINDAY-TBL(IDX)
                                               TO  LNK-S02-NYUINDAY-TBL
+                MOVE     WRK-NYUSANTEI-TBL(IDX)
+                                              TO  LNK-S02-NYUSANTEI-TBL
       *
                 MOVE     WRK-KOREI-TANYUINFLG(IDX)
                                               TO  LNK-S02-KOREI-TANYUIN
@@ -775,6 +784,8 @@
       *
                 MOVE     WRK-NYUINDAY-TBL(IDX)
                                               TO  LNK-S02-NYUINDAY-TBL
+                MOVE     WRK-NYUSANTEI-TBL(IDX)
+                                              TO  LNK-S02-NYUSANTEI-TBL
       *
                 MOVE     WRK-KOREI-TANYUINFLG(IDX)
                                               TO  LNK-S02-KOREI-TANYUIN
@@ -1814,6 +1825,27 @@
               END-IF
       *
               PERFORM  KOREI-TANYUIN-HANTEI-SEC
+      *
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(1)
+                PERFORM   VARYING   IDY   FROM  1  BY   1
+                           UNTIL    IDY    >   31
+                  IF  ((WRK-DAY1X(1 IDY)        NOT =  ZERO) OR
+                       (WRK-NYUINDAY2-KBN(IDX IDY)  =   "1"))
+                  AND ( WRK-DAY5X(1 IDY)        NOT =  ZERO )
+                    MOVE  "1"  TO  WRK-NYUSANTEI-KBN(IDX IDY)
+                  END-IF
+                END-PERFORM
+              END-IF
+              IF   WRK-HANBETU-SKYYM(IDX)  =   WRK-SKYYM(2)
+                PERFORM   VARYING   IDY   FROM  1  BY   1
+                           UNTIL    IDY    >   31
+                  IF  ((WRK-DAY1X(2 IDY)        NOT =  ZERO) OR
+                       (WRK-NYUINDAY2-KBN(IDX IDY)  =   "1"))
+                  AND ( WRK-DAY5X(2 IDY)        NOT =  ZERO )
+                    MOVE  "1"  TO  WRK-NYUSANTEI-KBN(IDX IDY)
+                  END-IF
+                END-PERFORM
+              END-IF
       *
            END-PERFORM. 
       *
