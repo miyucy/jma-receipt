@@ -2772,6 +2772,14 @@
            MOVE    ZERO                TO  SPA-Z98-NEXT
            MOVE    1                   TO  SPA-Z98-PAGE
            MOVE    SPACE               TO  SPA-Z98-GMN-ALL
+      *
+           IF      SPA-Z98-OLD-SYORI   =   "U"
+               MOVE    SPACE           TO  SPA-Z98-OLD-SYORI
+           END-IF
+           MOVE    SPACE               TO  SPA-Z98-GMN-SYORI3
+           INITIALIZE                      SPA-Z98-JIIN-G
+           INITIALIZE                      SPA-Z98-USER-G
+      *
            PERFORM                     310-SPA-SET-SEC
       *T2
            IF      SPA-Z98-GMN-MAX     =   ZERO
