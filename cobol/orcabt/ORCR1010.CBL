@@ -54,6 +54,7 @@
       *  04.04.01    NACL-門脇    08/12/25  包括対応
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *  04.04.03    NACL-門脇    09/04/13  平成２１年５月改正対応
+      *  04.04.04    NACL-門脇    09/12/04  剤まとめ項目値の計算修正
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
@@ -1376,10 +1377,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
-      ***          MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
-      ***          COMPUTE  RECE120-RUIKEITOTAL  =
-      ***                   RECE120-RUIKEITOTAL  +
-      ***                  (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+                   MOVE    SRY-SRYCD(IDX2)   TO  WRK-SRYCD
       *
                    MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                    PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
@@ -1393,6 +1391,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 RECE120-RUIKEITOTAL  +
                               ( WRK-FUKA-VALUE    *
                                           SRY-SRYSURYO(IDX2))
+                       COMPUTE  RECE120-RUIKEITOTAL  =
+                                RECE120-RUIKEITOTAL  +
+                              ( WRK-FUKA-VALUE    * WRK-SRYCD)
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
                               ((WRK-FUKA-VALUE^5) * FUKA-IDX)

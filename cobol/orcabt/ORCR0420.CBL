@@ -171,6 +171,7 @@
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *  04.04.03    NACL-門脇    09/04/13  平成２１年５月改正対応
       *  04.04.04    NACL-門脇    09/11/19  自賠責健保準拠療養担当手当対応
+      *  04.04.05    NACL-門脇    09/12/04  剤まとめ項目値の計算修正
       *
       *  04.05.01    NACL-門脇    09/06/29  療養期間記載方法選択機能
       *                                     （休業証明請求時）
@@ -1822,10 +1823,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
-      ***          MOVE    SRY-SRYCD(IDX2)  TO  WRK-SRYCD
-      ***          COMPUTE  RECE44-RUIKEITOTAL  =
-      ***                   RECE44-RUIKEITOTAL  +
-      ***                  (WRK-SRYCD  *  SRY-SRYSURYO(IDX2))
+                   MOVE    SRY-SRYCD(IDX2)   TO  WRK-SRYCD
       *
                    MOVE     ZERO    TO    WRK-FUKA-KINGAKU
                    PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
@@ -1839,6 +1837,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 RECE44-RUIKEITOTAL  +
                               ( WRK-FUKA-VALUE    *
                                           SRY-SRYSURYO(IDX2))
+                       COMPUTE  RECE44-RUIKEITOTAL  =
+                                RECE44-RUIKEITOTAL  +
+                              ( WRK-FUKA-VALUE    * WRK-SRYCD)
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
                               ((WRK-FUKA-VALUE^5) * FUKA-IDX)
