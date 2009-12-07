@@ -359,6 +359,7 @@
            03  FLG-COMARI2         PIC 9(01).
            03  FLG-SANTEIPLUS      PIC 9(01).
            03  FLG-SETCOM          PIC 9(01).
+           03  FLG-MEISKY-OKIKAE   PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -368,6 +369,7 @@
            03  CNT-RECE049         PIC 9(06).
            03  CNT-RECE059         PIC 9(06).
            03  CNT-RECE055         PIC 9(06).
+           03  CNT-RECE05-RE       PIC 9(06).
            03  CNT-JINZOU          PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
            03  CNT-JUSHIN          PIC 9(06).
@@ -6338,6 +6340,8 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                OR     ( RECE041-TEKSTYMD  NOT =   RECE051-TEKSTYMD     )
                OR     ( RECE041-ZAINUM    NOT =   RECE051-ZAINUM       )
       *
+               MOVE      ZERO      TO    FLG-MEISKY-OKIKAE
+      *
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   5     )
                          OR      ( RECE051-SRYCD(IDX) =   SPACE )
@@ -6346,11 +6350,16 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                       IF   (FLG-SETCOM              =  1   )
                       AND  (RECE051-RECEDENFLG(IDX) = SPACE)
                         ADD    1                 TO  WRK-HEN-SEQNO-X
-                        MOVE   WRK-HEN-RENNUM-X  TO  WRK-HEN-RENNUM
-                        MOVE   WRK-HEN-SHORI-RENNUM-X
-                                       TO  WRK-HEN-SHORI-RENNUM
-                        MOVE   WRK-HEN-SEQNO-X   TO  WRK-HEN-SEQNO
-                        PERFORM  26011-SETCOM-HENSYU3-SEC
+                        IF   WRK-HEN-SEQNO-X  >  3
+                          MOVE   SPACE   TO  RECE051-MEISKYFLG(IDX)
+                          MOVE   1       TO  FLG-MEISKY-OKIKAE
+                        ELSE
+                          MOVE   WRK-HEN-RENNUM-X  TO  WRK-HEN-RENNUM
+                          MOVE   WRK-HEN-SHORI-RENNUM-X
+                                         TO  WRK-HEN-SHORI-RENNUM
+                          MOVE   WRK-HEN-SEQNO-X   TO  WRK-HEN-SEQNO
+                          PERFORM  26011-SETCOM-HENSYU3-SEC
+                        END-IF
                         IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
                         AND (WRK-HEN-SHORI-RENNUM-X
                                         = WRK-HEN-SHORI-RENNUM-J )
@@ -6367,11 +6376,16 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                         WHEN    1
                         WHEN    3
                           ADD  1                 TO  WRK-HEN-SEQNO-J
-                          MOVE WRK-HEN-RENNUM-J  TO  WRK-HEN-RENNUM
-                          MOVE WRK-HEN-SHORI-RENNUM-J
-                                       TO  WRK-HEN-SHORI-RENNUM
-                          MOVE WRK-HEN-SEQNO-J   TO  WRK-HEN-SEQNO
-                          PERFORM  26011-SETCOM-HENSYU3-SEC
+                          IF   WRK-HEN-SEQNO-J  >  3
+                            MOVE   SPACE   TO  RECE051-MEISKYFLG(IDX)
+                            MOVE   1       TO  FLG-MEISKY-OKIKAE
+                          ELSE
+                            MOVE WRK-HEN-RENNUM-J  TO  WRK-HEN-RENNUM
+                            MOVE WRK-HEN-SHORI-RENNUM-J
+                                         TO  WRK-HEN-SHORI-RENNUM
+                            MOVE WRK-HEN-SEQNO-J   TO  WRK-HEN-SEQNO
+                            PERFORM  26011-SETCOM-HENSYU3-SEC
+                          END-IF
                           IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
                           AND (WRK-HEN-SHORI-RENNUM-X
                                           = WRK-HEN-SHORI-RENNUM-J )
@@ -6379,11 +6393,16 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                           END-IF
                         WHEN    2
                           ADD  1                 TO  WRK-HEN-SEQNO-J2
-                          MOVE WRK-HEN-RENNUM-J2 TO  WRK-HEN-RENNUM
-                          MOVE WRK-HEN-SHORI-RENNUM-J2
-                                       TO  WRK-HEN-SHORI-RENNUM
-                          MOVE WRK-HEN-SEQNO-J2  TO  WRK-HEN-SEQNO
-                          PERFORM  26011-SETCOM-HENSYU3-SEC
+                          IF   WRK-HEN-SEQNO-J2 >  3
+                            MOVE   SPACE   TO  RECE051-MEISKYFLG(IDX)
+                            MOVE   1       TO  FLG-MEISKY-OKIKAE
+                          ELSE
+                            MOVE WRK-HEN-RENNUM-J2 TO  WRK-HEN-RENNUM
+                            MOVE WRK-HEN-SHORI-RENNUM-J2
+                                         TO  WRK-HEN-SHORI-RENNUM
+                            MOVE WRK-HEN-SEQNO-J2  TO  WRK-HEN-SEQNO
+                            PERFORM  26011-SETCOM-HENSYU3-SEC
+                          END-IF
                           IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J2)
                           AND (WRK-HEN-SHORI-RENNUM-X
                                           = WRK-HEN-SHORI-RENNUM-J2)
@@ -6416,6 +6435,11 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                     END-IF
                  END-IF
                END-PERFORM
+      *
+               IF    FLG-MEISKY-OKIKAE  =  1
+                  REWRITE   RECE051-REC
+                  ADD       1        TO   CNT-RECE05-RE
+               END-IF
       *
                PERFORM 990-RECE051-NEXT-SEC
       *
@@ -6548,6 +6572,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE059 CNT-WK  :" CNT-RECE059
            DISPLAY "RECE04  CNT-OUT :" CNT-RECE04 
            DISPLAY "RECE05  CNT-OUT :" CNT-RECE05 
+           DISPLAY "RECE05  REWRITE :" CNT-RECE05-RE
            DISPLAY "RECE055 CNT-OUT :" CNT-RECE055
            DISPLAY "*** ORCR0040 END ***"
       *
