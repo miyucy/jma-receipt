@@ -10962,6 +10962,10 @@
                                        RECE62-SHOKUJIRYOYOHI(1)
                    ADD   SYU-SYUSKJ-FTN-RECE  TO
                                        RECE62-SHOKUJIFTN(1)
+                   IF    RECE62-SRYYM      >=  "200604"
+                     ADD SYU-SYUSKJ-RYOYOHI   TO
+                                       RECE62-HENSHOKUJIRYOYOHI(1)
+                   END-IF
            END-IF
            IF      RECE62-RJNHKNNUM    NOT =  SPACE
              IF      SYU-SKJ-RYOYOHI(1)  NOT =  ZERO
@@ -10971,6 +10975,10 @@
                                        RECE62-SHOKUJIRYOYOHI(1)
                    ADD   SYU-SKJ-FTN-RECE(1)  TO
                                        RECE62-SHOKUJIFTN(1)
+                   IF    RECE62-SRYYM      >=  "200604"
+                     ADD SYU-SKJ-RYOYOHI(1)   TO
+                                       RECE62-HENSHOKUJIRYOYOHI(1)
+                   END-IF
              END-IF
            END-IF
       *
@@ -13071,6 +13079,8 @@
                               RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
                          END-IF
                      END-IF
+                     ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                   RECE62-HENSHOKUJIRYOYOHI(KH-IDX)
                   ELSE
                      ADD   SYU-SKJ-NISSU(IDX3)    TO
                                    RECE62-SHOKUJINISSU(KH-IDX)
@@ -13087,6 +13097,8 @@
                         MOVE  SPACE               TO
                                 RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
                      END-IF
+                     ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                   RECE62-HENSHOKUJIRYOYOHI(KH-IDX)
                   END-IF
                 ELSE
                   IF  ( SYU-SKJ-RYOYOHI(IDX3)   =   ZERO  )
@@ -13107,6 +13119,8 @@
                               RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
                          END-IF
                    END-IF
+                   ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                   RECE62-HENSHOKUJIRYOYOHI(KH-IDX)
                   ELSE
                    IF   ((SYU-KOH1HKNNUM  NOT =  "010" AND
                                                  "024" AND "079"
@@ -13134,6 +13148,8 @@
                         MOVE  SPACE               TO
                                 RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
                      END-IF
+                     ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                   RECE62-HENSHOKUJIRYOYOHI(KH-IDX)
                    ELSE
                      ADD   SYU-SKJ-NISSU(IDX3)    TO
                                    RECE62-SHOKUJINISSU(KH-IDX)
@@ -13150,6 +13166,8 @@
                         MOVE  SPACE               TO
                                 RECE62-FUKUSHIFLG-SKJSEI(KH-IDX - 1)
                      END-IF
+                     ADD   SYU-SKJ-RYOYOHI(IDX3)  TO
+                                   RECE62-HENSHOKUJIRYOYOHI(KH-IDX)
                    END-IF
                   END-IF
                 END-IF
@@ -17384,6 +17402,7 @@
                                       RECE62-FUKUSHIFLG-SKJSEIINF-AREA
                                       RECE62-ETC-KOH-G
                                       RECE62-HENTOTALTENINF-AREA
+                                      RECE62-HENSHOKUJIINF-AREA
                                       RECE62-NYUKHNINF2
                                       RECE62-NYUTOKINF2
                                       RECE62-KISAIFLGINF-AREA
@@ -17412,6 +17431,8 @@
                                        TO  RECE62-FTNMONEY-KOJ  (1)
            MOVE    WRK-RECE62-HENTOTALTEN   (1)
                                        TO  RECE62-HENTOTALTEN   (1)
+           MOVE    WRK-RECE62-HENSHOKUJIRYOYOHI(1)
+                                 TO  RECE62-HENSHOKUJIRYOYOHI   (1)
            MOVE    WRK-RECE62-SHOKUJIINF    (1)
                                        TO  RECE62-SHOKUJIINF    (1)
            MOVE    WRK-RECE62-NYUKHNKEI2    (1)
@@ -17486,6 +17507,8 @@
                                            TO  RECE62-NYUTOKKEI2  (IDYX)
                            MOVE    WRK-RECE62-HENTOTALTEN (IDXX)
                                            TO  RECE62-HENTOTALTEN (IDYX)
+                           MOVE    WRK-RECE62-HENSHOKUJIRYOYOHI(IDXX)
+                                     TO  RECE62-HENSHOKUJIRYOYOHI (IDYX)
                            PERFORM VARYING IDX1    FROM    1   BY  1
                                    UNTIL   IDX1    >       30
                                MOVE    WRK-RECE62-TENSU (IDX1 IDXX)

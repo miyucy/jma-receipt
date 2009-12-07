@@ -101,6 +101,8 @@
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
       *  04.04.03    NACL-藤原    09/03/25  生保まとめフラグ追加
+      *
+      *  04.05.01    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -601,6 +603,14 @@
                05  RECE62-HENTOTALTENINF  OCCURS  5.
       *合計点数（ぶん点・公費分離区分編集用）
                    07  RECE62-HENTOTALTEN PIC  9(08).
+      *
+      *食事療養費情報（ぶん点・公費分離区分編集用）
+           03  RECE62-HENSHOKUJIINF-AREA.
+               05  RECE62-HENSHOKUJIINF   OCCURS  5.
+      *食事療養費（ぶん点・公費分離区分編集用）
+                   07  RECE62-HENSHOKUJIRYOYOHI
+                                          PIC  9(09).
+      *
       *印刷順
            03  RECE62-PRTSEQ              PIC  9(03).
       *

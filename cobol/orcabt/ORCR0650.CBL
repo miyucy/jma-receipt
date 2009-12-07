@@ -40,6 +40,8 @@
       *  04.02.01    NACL-門脇    07/05/12  第３公費以降の負担区分編集
       *  04.04.01    NACL-門脇    09/09/10  月途中に医保と生保の併用から
       *                                     生保単独になったときの対応
+      *
+      *  04.05.01    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -288,30 +290,59 @@
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
-           IF (RECE62-HENTOTALTEN(2)       =      ZERO)    AND
-              (RECE62-HENTOTALTEN(3)       =      ZERO)    AND
-              (RECE62-HENTOTALTEN(4)       =      ZERO)    AND
-              (RECE62-HENTOTALTEN(5)       =      ZERO)
+           IF  (RECE62-HENTOTALTEN(2)         =    ZERO)
+           AND (RECE62-HENTOTALTEN(3)         =    ZERO)
+           AND (RECE62-HENTOTALTEN(4)         =    ZERO)
+           AND (RECE62-HENTOTALTEN(5)         =    ZERO)
+           AND (RECE62-HENSHOKUJIRYOYOHI(2)   =    ZERO)
+           AND (RECE62-HENSHOKUJIRYOYOHI(3)   =    ZERO)
+           AND (RECE62-HENSHOKUJIRYOYOHI(4)   =    ZERO)
+           AND (RECE62-HENSHOKUJIRYOYOHI(5)   =    ZERO)
                CONTINUE
            ELSE
-             IF    RECE62-HENTOTALTEN(1)   NOT =  ZERO
-               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
+             IF    RECE62-HENTOTALTEN(1)        NOT =  ZERO
+             OR    RECE62-HENSHOKUJIRYOYOHI(1)  NOT =  ZERO
+               IF ((RECE62-HENTOTALTEN(1)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(2)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(1)
+                             NOT = RECE62-HENTOTALTEN(2)      ))
+               OR ((RECE62-HENSHOKUJIRYOYOHI(1) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(2) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(1)
+                             NOT = RECE62-HENSHOKUJIRYOYOHI(2)))
                    MOVE      1          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF
-               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
+               IF ((RECE62-HENTOTALTEN(1)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(3)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(1)
+                             NOT = RECE62-HENTOTALTEN(3)      ))
+               OR ((RECE62-HENSHOKUJIRYOYOHI(1) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(3) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(1)
+                             NOT = RECE62-HENSHOKUJIRYOYOHI(3)))
                    MOVE      2          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF
-               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
+               IF ((RECE62-HENTOTALTEN(1)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(4)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(1)
+                             NOT = RECE62-HENTOTALTEN(4)      ))
+               OR ((RECE62-HENSHOKUJIRYOYOHI(1) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(4) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(1)
+                             NOT = RECE62-HENSHOKUJIRYOYOHI(4)))
                    MOVE      3          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF
-               IF (RECE62-HENTOTALTEN(5)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(5))
+               IF ((RECE62-HENTOTALTEN(1)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(5)       NOT =  ZERO   )  AND
+                   (RECE62-HENTOTALTEN(1)
+                             NOT = RECE62-HENTOTALTEN(5)      ))
+               OR ((RECE62-HENSHOKUJIRYOYOHI(1) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(5) NOT =  ZERO   )  AND
+                   (RECE62-HENSHOKUJIRYOYOHI(1)
+                             NOT = RECE62-HENSHOKUJIRYOYOHI(5)))
                    MOVE      4          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF
@@ -485,20 +516,8 @@
               END-IF
            END-IF
       *
-           IF    RECE62-HENTOTALTEN(1)   NOT  =  ZERO
-              IF    KH-IDX      NOT =   ZERO
-                     MOVE    KH-IDX      TO     RECE64-KOHBUNRI
-              END-IF
-           ELSE
-              IF    KH-IDX      NOT =   ZERO
-      ***       IF    RECE64-KOHBUNRI     =      ZERO
-                     MOVE    KH-IDX      TO     RECE64-KOHBUNRI
-      ***       ELSE
-      ***         IF  RECE62-HENTOTALTEN(2)  >  RECE62-HENTOTALTEN(3)
-      ***            MOVE    KH-IDX      TO     RECE64-KOHBUNRI
-      ***         END-IF
-      ***       END-IF
-              END-IF
+           IF    KH-IDX      NOT =   ZERO
+                MOVE    KH-IDX      TO     RECE64-KOHBUNRI
            END-IF
            .
        KOHBUNRI-SET-EXT.
@@ -544,24 +563,9 @@
                   (WK-ZAIREN            NOT =  RECE65-ZAIREN)    OR
                   (FLG-RECE65           =      1)
       *
-                   IF    RECE62-HENTOTALTEN(1)   NOT  =  ZERO
-                     IF    KH-IDX      NOT =   ZERO
-                            MOVE   KH-IDX        TO     RECE65-KOHBUNRI
-                            PERFORM      RECE65-REWRITE-SEC
-                     END-IF
-                   ELSE
-                     IF    KH-IDX      NOT =   ZERO
-      ***              IF    RECE65-KOHBUNRI     =      ZERO
-                            MOVE   KH-IDX        TO     RECE65-KOHBUNRI
-                            PERFORM      RECE65-REWRITE-SEC
-      ***              ELSE
-      ***                IF  RECE62-HENTOTALTEN(2)  >
-      ***                                         RECE62-HENTOTALTEN(3)
-      ***                   MOVE   KH-IDX        TO     RECE65-KOHBUNRI
-      ***                   PERFORM      RECE65-REWRITE-SEC
-      ***                END-IF
-      ***              END-IF
-                     END-IF
+                   IF    KH-IDX      NOT =   ZERO
+                      MOVE   KH-IDX        TO     RECE65-KOHBUNRI
+                      PERFORM      RECE65-REWRITE-SEC
                    END-IF
       *
                    PERFORM      900-RECE65-NEXT-SEC
