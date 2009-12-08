@@ -5616,6 +5616,8 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
       *****************************************************************
        200799-KANREN-COMMENT-HENSYU-SEC    SECTION.
       *
+           GO  TO  200799-KANREN-COMMENT-HENSYU-EXT
+      *
       *    関連コメントが３対を超える場合
            IF      TBL-RECE055-MAX     <=  3
                GO  TO  200799-KANREN-COMMENT-HENSYU-EXT

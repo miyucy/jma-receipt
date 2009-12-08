@@ -7036,9 +7036,6 @@
       *****************************************************************
        200799-KANREN-COMMENT-TAIHI-SEC SECTION.
       *
-      *??
-           DISPLAY "200799=" WRK-RECE655-KEY "#"
-      *??
            INITIALIZE                  TBL-RECE655-COMMENT-AREA
       *
            MOVE    WRK-RECE655-REC     TO  RECE655-REC
@@ -7112,9 +7109,6 @@
                                            TBL-RECE655-NAME
                                                (TBL-RECE655-MAX)
            END-IF
-      *??
-           DISPLAY "TBL-RECE655-MAX=" TBL-RECE655-MAX "#"
-      *??
       *
            .
        2007991-KANREN-COMMENT-TAIHI-HENSYU-EXT.
@@ -7124,6 +7118,8 @@
       *    関連コメント編集処理
       *****************************************************************
        200799-KANREN-COMMENT-HENSYU-SEC    SECTION.
+      *
+           GO  TO  200799-KANREN-COMMENT-HENSYU-EXT
       *
       *    関連コメントが３対を超える場合
            IF      TBL-RECE655-MAX     <=  3
