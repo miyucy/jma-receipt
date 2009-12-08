@@ -991,12 +991,9 @@
                   IF  WRK-HKNCOMBINUM-HKNID(IDX1)
                                             = LNK-FTNJGNCHK-HKNID
                      ADD    SYU-TOTAL-HKNTEN       TO  WRK-SEIKYU
-                     IF    SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
-                          MOVE    1           TO  FLG-SKJRYOYOHI-ARI
-                     ELSE
-                       IF  SYU-KOH1SKJ-RYOYOHI NOT =  ZERO
-                          MOVE    1           TO  FLG-SKJRYOYOHI-ARI
-                       END-IF
+                     IF  SYU-SYUSKJ-RYOYOHI   NOT = ZERO
+                     OR  SYU-KOH1SKJ-RYOYOHI  NOT = ZERO
+                        MOVE    1    TO    FLG-SKJRYOYOHI-ARI
                      END-IF
                   END-IF
                   IF  WRK-HKNCOMBINUM-KYUFUGAI(IDX1) =  1
@@ -1400,12 +1397,9 @@
                   IF  WRK-HKNCOMBINUM-HKNID(IDX1)
                                             = LNK-FTNJGNCHK-HKNID
                      ADD    SYU-TOTAL-HKNTEN  TO  WRK-SEIKYU
-                     IF    SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
-                          MOVE    1           TO  FLG-SKJRYOYOHI-ARI
-                     ELSE
-                       IF  SYU-KOH1SKJ-RYOYOHI NOT =  ZERO
-                          MOVE    1           TO  FLG-SKJRYOYOHI-ARI
-                       END-IF
+                     IF  SYU-SYUSKJ-RYOYOHI   NOT = ZERO
+                     OR  SYU-KOH1SKJ-RYOYOHI  NOT = ZERO
+                        MOVE    1    TO    FLG-SKJRYOYOHI-ARI
                      END-IF
                   END-IF
                END-IF

@@ -85,6 +85,7 @@
       *                                     £²£°£°£¹Ç¯£¸·î¡Á£²£°£±£°Ç¯£±·îÂÐ¾Ý 
       *  04.05.06    NACL-Æ£¸¶    09/11/13  ÆÃµ­»ö¹à¾È²ñÂÐ±þ
       *                                     ÆÃµ­»ö¹àÎ¬¾ÎÄÉ²Ã
+      *  04.05.07    NACL-ÌçÏÆ    09/12/04  ¿©»ö¡ÊÆÃÊÌ¿©¡Ë¤ÎÂ¾ÊÝ¸±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2310,7 +2311,8 @@
            INITIALIZE                      RECE10-REC
            MOVE    KOHSKY-KEY          TO  RECE10-KEY
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
-           MOVE    "key43"             TO  WRK-MCP-PATHNAME
+      ***  MOVE    "key43"             TO  WRK-MCP-PATHNAME
+           MOVE    "key15"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
@@ -3788,23 +3790,27 @@
       *
       *    <¿ÇÎÅ¼ÂÆü¿ô>
            IF      CNT-PAGE        =   1
-               IF      RECE62-TOTALTEN (IDX1)     >   ZERO
+               IF      RECE62-TOTALTEN (IDX1)        >   ZERO
+               OR      RECE62-SHOKUJIRYOYOHI(IDX1)   >   ZERO
                   MOVE    RECE62-JNISSU (IDX1)
                                           TO  WRK-JINISSU2Z
                   MOVE    WRK-JINISSU2    TO  HC06-JINISSU
                END-IF
-               IF      RECE62-TOTALTEN (IDX2)     >   ZERO
-                  IF  (RECE62-JNISSU (IDX1)
-                                      NOT  =   RECE62-JNISSU (IDX2))
-                  OR  (RECE62-TOTALTEN (IDX1)     =   ZERO)
-                  OR  (RECE62-JSKISAIFLG          =   "1" )
-                  OR  (RECE62-EKF-JNISSUFLG(IDX2) =   "1" )
+               IF (((RECE62-TOTALTEN(IDX2)         > ZERO         ) OR
+                    (RECE62-SHOKUJIRYOYOHI(IDX2)   > ZERO         )) AND
+                   ((RECE62-JNISSU(IDX1) NOT = RECE62-JNISSU(IDX2)) OR
+                    (RECE62-JSKISAIFLG          =   "1"           ) OR
+                    (RECE62-EKF-JNISSUFLG(IDX2) =   "1"           )))
+               OR ( (RECE62-TOTALTEN(IDX2)         > ZERO         )  AND
+                    (RECE62-TOTALTEN(IDX1)         = ZERO         ) )
+               OR ( (RECE62-SHOKUJIRYOYOHI(IDX2)   > ZERO         )  AND
+                    (RECE62-SHOKUJIRYOYOHI(IDX1)   = ZERO         ) )
                       MOVE    RECE62-JNISSU (IDX2)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
-                  END-IF
                END-IF
-               IF (( RECE62-TOTALTEN(IDX3)   > ZERO                ) AND
+               IF (((RECE62-TOTALTEN(IDX3)         > ZERO         ) OR
+                    (RECE62-SHOKUJIRYOYOHI(IDX3)   > ZERO         )) AND
                    ((RECE62-JNISSU(IDX2) NOT = RECE62-JNISSU(IDX3)) OR
                     (RECE62-JSKISAIFLG          =   "1"           ) OR
                     (RECE62-EKF-JNISSUFLG(IDX3) =   "1"           )))

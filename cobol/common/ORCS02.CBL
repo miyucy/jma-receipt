@@ -17492,7 +17492,8 @@
       **>      AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
                AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
       *           É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                  IF    LNK-SYU-DAY(IDY)  =  "2"
+                  IF    LNK-SYU-DAY(IDY)           =  "2"
+                  AND   LNK-S02-KOREI-TANYUIN      =  "1"
                     ADD     WK-ROSAITOKU97(IDY)
                                             TO  WK-SHOKUJI-NISSU
                                                 WK-SHOKUJI-NISSUL
@@ -17580,7 +17581,8 @@
       **>      AND      ( LNK-SYU-DAY(IDY)         =  "2"        )
                AND      ( LNK-SYU-DAY(IDY)         =  "1" OR "2" )
       *           É¸½àÉéÃ´³Û¡ÊÏ«ºÒÆþ±¡Ãæ¡Ë
-                  IF    LNK-SYU-DAY(IDY)  =  "2"
+                  IF    LNK-SYU-DAY(IDY)           =  "2"
+                  AND   LNK-S02-KOREI-TANYUIN      =  "1"
                     ADD     WK-ROSAITOKU97(IDY)
                                             TO  WK-SHOKUJI-NISSU
                                                 WK-SHOKUJI-NISSUS
