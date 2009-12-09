@@ -172,6 +172,7 @@
       *  04.04.03    NACL-ÌçÏÆ    09/04/13  Ê¿À®£²£±Ç¯£µ·î²þÀµÂÐ±þ
       *  04.04.04    NACL-ÌçÏÆ    09/11/19  ¼«ÇåÀÕ·òÊÝ½àµòÎÅÍÜÃ´Åö¼êÅöÂÐ±þ
       *  04.04.05    NACL-ÌçÏÆ    09/12/04  ºÞ¤Þ¤È¤á¹àÌÜÃÍ¤Î·×»»½¤Àµ
+      *  04.04.06    NACL-ÌçÏÆ    09/12/09  ½ÐÍè¹â»»Äê¡ÊºÞ¡Ë¤ÎÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/29  ÎÅÍÜ´ü´Öµ­ºÜÊýË¡ÁªÂòµ¡Ç½
       *                                     ¡ÊµÙ¶È¾ÚÌÀÀÁµá»þ¡Ë
@@ -3743,6 +3744,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(14)  =
                                  RECE41-TENSU(14)  -
@@ -3785,6 +3787,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(17)
                        COMPUTE   RECE41-TENSU(17)  =
                                  RECE41-TENSU(17)  +
@@ -4192,6 +4195,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  -
@@ -4226,6 +4230,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(10)
                        COMPUTE   RECE41-TENSU(10)  =
                                  RECE41-TENSU(10)  +
@@ -4587,6 +4592,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU-YAK(9)  =
                                  RECE41-TENSU-YAK(9)  -
@@ -4629,6 +4635,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(12)
                        COMPUTE   RECE41-TENSU-YAK(12)  =
                                  RECE41-TENSU-YAK(12)  +
@@ -5360,6 +5367,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(10)   =
                                  RECE41-TENSU(10)   -
@@ -5417,6 +5425,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(13)
                        COMPUTE   RECE41-TENSU(13)   =
                                  RECE41-TENSU(13)   +
@@ -6021,6 +6030,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                      IF   SRY-SRYCD(IDX3)         =    CONS-YAKTEIGEN
                        COMPUTE   RECE41-TENSU(16)   =
                                  RECE41-TENSU(16)   -
@@ -6063,6 +6073,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    OR    (SRY-SRYCD(IDX3) (1:3)  = "001" OR "008"   
                                                          OR "059"   )
                    OR    (SRY-SRYCD(IDX3) (1:7)  = "0992000"        )
+                   OR    (SRY-SRYCD(IDX3)        = "099999903"      )
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(20)
                        COMPUTE   RECE41-TENSU(20)   =
                                  RECE41-TENSU(20)   +
