@@ -107,6 +107,8 @@
            03  PTNYUINRRK-TAINRELKBN              PIC  X(01).
       *介護異動区分（１：介護施設からの急性増悪による異動）
            03  PTNYUINRRK-KAIGOKBN                PIC  X(01).
+      *入院カレンダー設定区分（１：入院カレンダーのゼロ設定）
+           03  PTNYUINRRK-NYUCALKBN               PIC  X(01).
       *端末ＩＤ
            03  PTNYUINRRK-TERMID                  PIC  X(16).
       *オペーレータＩＤ

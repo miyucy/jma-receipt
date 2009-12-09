@@ -37,6 +37,7 @@ tbl_ptnyuinrrk	{
 	SENTEIKBN		char(1);
 	TAINRELKBN		char(1);
 	KAIGOKBN		char(1);
+	NYUCALKBN		char(1);
 	TERMID			varchar(16);
 	OPID			varchar(16);
 	CREYMD			char(8);
