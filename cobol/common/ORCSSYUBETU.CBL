@@ -506,8 +506,8 @@ grpsys                                         SPA-AREA
                GO  TO  100-INIT-EXT
            END-IF
       *??
-           DISPLAY "AGE       =" WRK-NENREI 
-           DISPLAY " SYUGAKU  =" AGECHK-SYUGAKUKBN
+      *     DISPLAY "AGE       =" WRK-NENREI 
+      *     DISPLAY " SYUGAKU  =" AGECHK-SYUGAKUKBN
       *??
       *     
       *    レセプト編集区分情報
