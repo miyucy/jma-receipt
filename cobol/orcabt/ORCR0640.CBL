@@ -4329,12 +4329,50 @@
                  MOVE   3             TO  WRK-SETCOM-JIDO
            END-IF
       *
+      *    ΩÈø«° ∆±∆¸ £øÙø«Œ≈≤ °À
+           IF    RECE65-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
+                 MOVE   4             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    Ω˝…¬ºÍ≈ˆ∂‚∞’∏´ΩÒ∏Ú…’Œ¡
+           IF    RECE65-SRYCD(IDX4)   = CONS-SYOBYO-COMMENT
+                 MOVE   6             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    Œ≈Õ‹»Ò∆±∞’ΩÒ∏Ú…’Œ¡
+           IF    RECE65-SRYCD(IDX4)   = CONS-RYOYO-COMMENT
+                 MOVE   7             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    À¨Ã‰¥«∏Óªÿº®Œ¡
+           IF    RECE65-SRYCD(IDX4)   = CONS-HOUSIJI-COMMENT
+                 MOVE   11            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
+           IF    RECE65-SRYCD(IDX4)   = CONS-HOUMON-COMMENT1
+                 MOVE   103           TO  WRK-SETCOM-JIDO
+           END-IF
+      *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
+           IF    RECE65-SRYCD(IDX4)   = CONS-HOUSEI-COMMENT
+                 MOVE   105           TO  WRK-SETCOM-JIDO
+           END-IF
+      *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
                 (RECE65-SRYCD(IDX4) = "830000014" OR "840000038"))
            OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
                 (RECE65-SRYCD(IDX4) = "840000077"               ))
            OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
                 (RECE65-SRYCD(IDX4) = "830000015"               ))
+           OR  ((WRK-SETCOM-JIDO    =  4                        ) AND
+                (RECE65-SRYCD(IDX4) = CONS-SYODOU2-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  6                        ) AND
+                (RECE65-SRYCD(IDX4) = CONS-SYOBYO2-COMMENT
+                                   OR CONS-SYOBYO3-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  7                        ) AND
+                (RECE65-SRYCD(IDX4) = CONS-RYOYO2-COMMENT       ))
+           OR  ((WRK-SETCOM-JIDO    =  11                       ) AND
+                (RECE65-SRYCD(IDX4) = CONS-HOUSIJI2-COMMENT     ))
+           OR  ((WRK-SETCOM-JIDO    =  103                      ) AND
+                (RECE65-SRYCD(IDX4) = CONS-HOUMON-COMMENT3      ))
+           OR  ((WRK-SETCOM-JIDO    =  105                      ) AND
+                (RECE65-SRYCD(IDX4) = CONS-HOUSEI-COMMENT2      ))
       *
                  MOVE  "1"              TO  RECE64-SETCOMFLG
                  MOVE  "2"              TO  RECE65-MEISKYFLG(IDX4)

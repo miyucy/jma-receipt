@@ -3205,7 +3205,7 @@
       *
                        MOVE   TB-SANTEI-DAY(IDX)  TO  IDY
       *
-                       IF   FLG-COMMENT   =   4
+                       IF   FLG-COMMENT   =   4 OR 6
                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
                          MOVE    TBL-DAY(IDY)     

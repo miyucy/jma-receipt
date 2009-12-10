@@ -6183,12 +6183,80 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  MOVE   3             TO  WRK-SETCOM-JIDO
            END-IF
       *
+      *    初診（同日複数診療科）
+           IF    RECE05-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
+                 MOVE   4             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    傷病手当金意見書交付料
+           IF    RECE05-SRYCD(IDX4)   = CONS-SYOBYO-COMMENT
+                 MOVE   6             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    療養費同意書交付料
+           IF    RECE05-SRYCD(IDX4)   = CONS-RYOYO-COMMENT
+                 MOVE   7             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    ニコチン依存症管理料（初回）
+      *    ニコチン依存症管理料（２回目から４回目まで）
+      *    ニコチン依存症管理料（５回目）
+           IF    RECE05-SRYCD(IDX4)   = CONS-NIKOCHIN-COMMENT
+                                     OR CONS-NIKOCHIN2-COMMENT
+                                     OR CONS-NIKOCHIN3-COMMENT
+                 MOVE   8             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    重度喘息患者治療管理加算（１月目）
+      *    重度喘息患者治療管理加算（２月目以降６月目まで）
+           IF    RECE05-SRYCD(IDX4)   = CONS-ZENSOKU-COMMENT
+                                     OR CONS-ZENSOKU2-COMMENT
+                 MOVE   9             TO  WRK-SETCOM-JIDO
+           END-IF
+      *    小児特定疾患カウンセリング料（１回目）
+      *    小児特定疾患カウンセリング料（２回目）
+           IF    RECE05-SRYCD(IDX4)   = CONS-SYOUNI1-COMMENT
+                                     OR CONS-SYOUNI2-COMMENT
+                 MOVE   10            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    訪問看護指示料
+           IF    RECE05-SRYCD(IDX4)   = CONS-HOUSIJI-COMMENT
+                 MOVE   11            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    往診
+      *    特別往診
+           IF    RECE05-SRYCD(IDX4)   = CONS-OSIN-COMMENT
+                                     OR CONS-OSIN2-COMMENT
+                 MOVE   13            TO  WRK-SETCOM-JIDO
+           END-IF
+      *    在宅患者訪問診療料
+      *    在宅患者訪問診療料（居住系）
+           IF    RECE05-SRYCD(IDX4)   = CONS-ZAIHOU-COMMENT
+                                     OR CONS-ZAIHOU3-COMMENT
+                 MOVE   14            TO  WRK-SETCOM-JIDO
+           END-IF
+      *
            IF  ((WRK-SETCOM-JIDO    =  1                        ) AND
                 (RECE05-SRYCD(IDX4) = "830000014" OR "840000038"))
            OR  ((WRK-SETCOM-JIDO2   =  1                        ) AND
                 (RECE05-SRYCD(IDX4) = "840000077"               ))
            OR  ((WRK-SETCOM-JIDO    =  3                        ) AND
                 (RECE05-SRYCD(IDX4) = "830000015"               ))
+           OR  ((WRK-SETCOM-JIDO    =  4                        ) AND
+                (RECE05-SRYCD(IDX4) = CONS-SYODOU2-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  6                        ) AND
+                (RECE05-SRYCD(IDX4) = CONS-SYOBYO2-COMMENT
+                                   OR CONS-SYOBYO3-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  7                        ) AND
+                (RECE05-SRYCD(IDX4) = CONS-RYOYO2-COMMENT       ))
+           OR  ((WRK-SETCOM-JIDO    =  8                        ) AND
+                (RECE05-SRYCD(IDX4) = CONS-NIKOCHIN4-COMMENT    ))
+           OR  ((WRK-SETCOM-JIDO    =  9                        ) AND
+                (RECE05-SRYCD(IDX4) = CONS-ZENSOKU3-COMMENT     ))
+           OR  ((WRK-SETCOM-JIDO    =  10                       ) AND
+                (RECE05-SRYCD(IDX4) = CONS-SYOUNI3-COMMENT      ))
+           OR  ((WRK-SETCOM-JIDO    =  11                       ) AND
+                (RECE05-SRYCD(IDX4) = CONS-HOUSIJI2-COMMENT     ))
+           OR  ((WRK-SETCOM-JIDO    =  13                       ) AND
+                (RECE05-SRYCD(IDX4) = CONS-OSIN3-COMMENT        ))
+           OR  ((WRK-SETCOM-JIDO    =  14                       ) AND
+                (RECE05-SRYCD(IDX4) = CONS-ZAIHOU2-COMMENT      ))
       *
                  MOVE  "1"              TO  RECE04-SETCOMFLG
                  MOVE  "2"              TO  RECE05-MEISKYFLG(IDX4)
