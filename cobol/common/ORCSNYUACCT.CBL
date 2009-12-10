@@ -1917,7 +1917,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-ACT-EDYMD(7:2)  TO  IDX2
            PERFORM VARYING     IDX-D   FROM    IDX1   BY  1
                    UNTIL       IDX-D   >   IDX2
-               MOVE    WRK-ACT-DAY         TO  NACCT-DAY (IDX-D)
+      *         MOVE    WRK-ACT-DAY         TO  NACCT-DAY (IDX-D)
+               IF  (LNK-SCNYUACCT-NYUCAL-KBN  =  1)    AND
+                   (NACCT-ZAISKBKBN     =     "1"  OR  "6"  OR  "7")
+                   MOVE     ZERO        TO  NACCT-DAY (IDX-D)
+               ELSE
+                   MOVE    WRK-ACT-DAY  TO  NACCT-DAY (IDX-D)
+               END-IF
            END-PERFORM
       *
       *    TEST

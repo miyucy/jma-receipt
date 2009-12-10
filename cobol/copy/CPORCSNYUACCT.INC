@@ -79,6 +79,8 @@
            03  LNK-SCNYUACCT-SENTEI-SRYCD            PIC  X(09).
       *選定療養費開始日
            03  LNK-SCNYUACCT-SENTEI-STYMD            PIC  X(08).
+      *入院カレンダー設定区分
+           03  LNK-SCNYUACCT-NYUCAL-KBN              PIC  9(01).
       *復帰コード
            03  LNK-SCNYUACCT-RC                      PIC S9(9) BINARY.
       *
