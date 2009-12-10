@@ -366,6 +366,7 @@
       *
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               MOVE    SPACE               TO  SPA-KIDCD
            END-IF
       *
            EVALUATE    SPA-MOTOPG
