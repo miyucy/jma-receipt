@@ -3492,6 +3492,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                GO  TO  24012-RECE68-WRITE-EXT
            END-IF
       *
+           INITIALIZE                      RECE68-REC
            MOVE    RECE62-HOSPNUM      TO  RECE68-HOSPNUM
            MOVE    RECE62-SRYYM        TO  RECE68-SRYYM
            MOVE    RECE62-NYUGAIKBN    TO  RECE68-NYUGAIKBN
@@ -3510,6 +3511,10 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                MOVE    PTNYUINRRK-TAIINYMD TO  RECE68-TAIINYMD
                MOVE    PTNYUINRRK-NYUINCHUKBN
                                            TO  RECE68-NYUINCHUKBN
+      *        入院年月日と同じ初回番号のときのみセット
+               IF      PTNYUINRRK-SHONUM   =    WRK-SHONUM
+                   MOVE    WRK-SHONUM           TO  RECE68-SHONUM
+               END-IF
                WRITE   RECE68-REC
                ADD     1                   TO  CNT-RECE68
            END-IF    
