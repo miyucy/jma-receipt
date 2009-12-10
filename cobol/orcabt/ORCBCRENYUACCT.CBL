@@ -2152,6 +2152,13 @@
            IF     PTNYUINRRK-SENTEIKBN  =   "1"
                PERFORM 4801-SENTEI-SET-SEC
            END-IF
+      *    入院カレンダー未設定の判定
+           IF     PTNYUINRRK-NYUCALKBN   =   "1"
+                  MOVE   1         TO  LNK-SCNYUACCT-NYUCAL-KBN
+           ELSE
+                  MOVE   ZERO      TO  LNK-SCNYUACCT-NYUCAL-KBN
+           END-IF
+      *
       *     DISPLAY   "********ORCSNYUACCT MAE **********"
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "00"            TO  SPA-SRYKA
@@ -2315,6 +2322,13 @@
            IF     PTNYUINRRK-SENTEIKBN  =   "1"
                PERFORM 4801-SENTEI-SET-SEC
            END-IF
+      *    入院カレンダー未設定の判定
+           IF     PTNYUINRRK-NYUCALKBN   =   "1"
+                  MOVE   1         TO  LNK-SCNYUACCT-NYUCAL-KBN
+           ELSE
+                  MOVE   ZERO      TO  LNK-SCNYUACCT-NYUCAL-KBN
+           END-IF
+      *
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "00"            TO  SPA-SRYKA
            MOVE    "1"             TO  SPA-NYUGAIKBN
