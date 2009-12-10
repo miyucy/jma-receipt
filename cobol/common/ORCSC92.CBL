@@ -64,6 +64,7 @@
       *  04.01.01    NACL-多々納  08/01/XX  チェックマスタ変更対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
+      *  04.05.00    NACL-多々納  09/12/09  患者禁忌薬剤期間対応
       *****************************************************************
       *
       *
@@ -3216,6 +3217,28 @@
            IF      FLG-PTKINKI         =   ZERO
                MOVE    1               TO  SPA-COM-PTKINKI-ARI
                                                            (IDX-T)
+      *        禁忌開始日判定
+               IF     (PTKINKI-KINKSTYMD   NOT =   SPACE )
+                   IF      (SPA-NYUGAIKBN      =   "2"     )    AND
+                           (PTKINKI-KINKSTYMD  >   SPA-SRYYMD )
+      *                外来で当日が開始日以前
+                       MOVE    ZERO            TO  SPA-COM-PTKINKI-ARI
+                                                               (IDX-T)
+                   END-IF
+                   IF      (SPA-NYUGAIKBN      =   "1"   )  AND
+                           (PTKINKI-KINKSTYMD(1:6)  >=  SPA-SRYYMD(1:6))
+      *                入院で当月が開始日以前
+                       MOVE    ZERO            TO  SPA-COM-PTKINKI-ARI
+                                                               (IDX-T)
+                   END-IF
+               END-IF
+               IF     (SPA-COM-PTKINKI-ARI (IDX-T) =   1  )
+               OR     (PTKINKI-KINKSTYMD(1:6)      =  SPA-SRYYMD(1:6))
+                   MOVE    PTKINKI-KINKSTYMD
+                                       TO  SPA-COM-KINKSTYMD (IDX-T)
+                   MOVE    PTKINKI-TOUYOYMD
+                                       TO  SPA-COM-TOUYOYMD  (IDX-T)
+               END-IF
            END-IF
            MOVE    1                   TO  SPA-COM-PTKINKI (IDX-T)
            .

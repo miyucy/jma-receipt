@@ -25,6 +25,8 @@ P02Y	{
 					value3	varchar(66);
 					value4	varchar(10);
 					value5	varchar(9);
+					value6	varchar(9);
+					value7	varchar(9);
 				}	[100];
 				select	bool[100];
 			};
@@ -37,6 +39,12 @@ P02Y	{
 		};
 		INPUTCDMSG	{
 			value	varchar(21);
+		};
+		KINKSTYMD	{
+			value	varchar(11);
+		};
+		TOUYOYMD	{
+			value	varchar(11);
 		};
 		GRPHOSPNUM_COMB	{
 			GRPHOSPNUM	{

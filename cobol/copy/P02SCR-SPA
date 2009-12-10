@@ -1423,10 +1423,14 @@
                        09  SPA-P02Y-TYUKOEDYMD     PIC X(10).
                        09  SPA-P02Y-TCHNGECD       PIC X(09).
                        09  SPA-P02Y-TINPUTCD       PIC X(20).
+                       09  SPA-P02Y-TKINKSTYMDG    PIC X(10).
+                       09  SPA-P02Y-TTOUYOYMDG     PIC X(10).
       *
                        09  SPA-P02Y-TKANANAME      PIC X(80).
                        09  SPA-P02Y-TYUKOEDYMDS    PIC X(08).
                        09  SPA-P02Y-TCHNGFLG       PIC X(01).
+                       09  SPA-P02Y-TKINKSTYMD     PIC X(08).
+                       09  SPA-P02Y-TTOUYOYMD      PIC X(08).
                    07  SPA-P02Y-MAX            PIC 9(03).
                05  SPA-P02Y-SELNUM             PIC 9(03).
                05  SPA-P02Y-IDX                PIC 9(03).
@@ -1437,6 +1441,11 @@
                    07  SPA-P02Y-KEIKAMSG           PIC X(56).
                    07  SPA-P02Y-MAE-SRYCD          PIC X(09).
                    07  SPA-P02Y-INPUTCD            PIC X(22).
+                   07  SPA-P02Y-KINKSTYMDG         PIC X(11).
+                   07  SPA-P02Y-TOUYOYMDG          PIC X(11).
+      *
+                   07  SPA-P02Y-KINKSTYMD          PIC X(08).
+                   07  SPA-P02Y-TOUYOYMD           PIC X(08).
       *        À‹±° ¨±°
                05  SPA-P02Y-HOSPNUM                PIC 9(02).
                05  SPA-P02Y-PTID                   PIC 9(10).

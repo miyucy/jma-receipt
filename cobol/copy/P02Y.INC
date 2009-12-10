@@ -21,6 +21,8 @@
                     06  P02Y-TNAME  PIC X(66).
                     06  P02Y-TYUKOEDYMD PIC X(10).
                     06  P02Y-TCHNGCD    PIC X(09).
+                    06  P02Y-TTOUYOYMD  PIC X(9).
+                    06  P02Y-TKINKSTYMD PIC X(9).
                   05  P02Y-SELECT
                           PIC X       OCCURS  100 TIMES.
               03  P02Y-YUKOKIKAN.
@@ -29,6 +31,10 @@
                 04  P02Y-VALUE  PIC X(56).
               03  P02Y-INPUTCDMSG.
                 04  P02Y-VALUE  PIC X(21).
+              03  P02Y-KINKSTYMD.
+                04  P02Y-VALUE  PIC X(11).
+              03  P02Y-TOUYOYMD.
+                04  P02Y-VALUE  PIC X(11).
               03  P02Y-GRPHOSPNUM-COMB.
                 04  P02Y-GRPHOSPNUM.
                   05  P02Y-VALUE  PIC X(23).

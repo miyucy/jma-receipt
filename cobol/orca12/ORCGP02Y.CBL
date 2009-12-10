@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  09/12/09  患者禁忌薬剤期間対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,6 +65,7 @@
            03  FLG-KANJI           PIC 9(01).
            03  FLG-TENSU-OK        PIC 9(01).
            03  FLG-CHNGARI         PIC 9(01).
+           03  FLG-P02Y1           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -85,6 +87,8 @@
            03  WRK-CD-MCNT             PIC 9(02).
            03  WRK-ICD-CDSYU           PIC X(01).
            03  WRK-CHNGCD              PIC X(09).
+           03  WRK-KINKSTYMD           PIC X(08).
+           03  WRK-TOUYOYMD            PIC X(08).
       *
            03  WRK-DATA                PIC X(100).
            03  WRK-MAX-CNT             PIC 9(03).
@@ -166,6 +170,9 @@
            COPY    "CPORCSADDSIGN.INC".
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *   画面日付変換サブ
+          COPY    "CPORCSGDAY.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -322,6 +329,9 @@
                    UNTIL       IDX     >   10
                IF      SPA-P02Y1-SRYCD (IDX)   NOT =   SPACE
                    MOVE    SPA-P02Y1-SRYCD (IDX)   TO  WRK-SRYCD
+                   MOVE    SPACE                   TO  WRK-KINKSTYMD
+                   MOVE    SPACE                   TO  WRK-TOUYOYMD
+                   MOVE    1                       TO  FLG-P02Y1
       *            患者禁忌薬剤登録処理
                    PERFORM 4121-PTKINKI-INS-SEC
                END-IF
@@ -369,6 +379,9 @@
       *    禁忌薬剤編集処理
       *****************************************************************
        3001-PTKINKI-HENSYU-SEC              SECTION.
+      *
+           INITIALIZE                      SPA-P02Y-INPUT-G
+           MOVE    ZERO                TO  SPA-P02Y-SELNUM
       *
            MOVE    1                   TO  FLG-GMN-INIT
            MOVE    ZERO                TO  SPA-P02Y-MAX
@@ -446,6 +459,16 @@
                MOVE    PTKINKI-SRYCD       TO  WRK-SRYCD
                PERFORM 400211-INPUTCD-HEN-SEC
                MOVE    ICD-INPUTCD         TO  SPA-P02Y-TINPUTCD(IDX)
+      *        禁忌開始日
+               MOVE    PTKINKI-KINKSTYMD   TO  SPA-P02Y-TKINKSTYMD(IDX)
+               MOVE    PTKINKI-KINKSTYMD   TO  WRK-SYMD
+               PERFORM 800-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-P02Y-TKINKSTYMDG(IDX)
+      *        投与開始日
+               MOVE    PTKINKI-TOUYOYMD    TO  SPA-P02Y-TTOUYOYMD(IDX)
+               MOVE    PTKINKI-TOUYOYMD    TO  WRK-SYMD
+               PERFORM 800-SE-WAFORMAT-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-P02Y-TTOUYOYMDG(IDX)
            END-IF
            .
        30011-PTKINKI-HEN-EXT.
@@ -679,6 +702,10 @@
                                                TO  P02Y-TNAME (IDX)
                MOVE    SPA-P02Y-TYUKOEDYMD (IDX)
                                                TO  P02Y-TYUKOEDYMD (IDX)
+               MOVE    SPA-P02Y-TKINKSTYMDG(IDX)
+                                               TO  P02Y-TKINKSTYMD (IDX)
+               MOVE    SPA-P02Y-TTOUYOYMDG (IDX)
+                                               TO  P02Y-TTOUYOYMD (IDX)
                IF      SPA-P02Y-TCHNGFLG (IDX) =   "1"
                    CONTINUE
                ELSE
@@ -700,6 +727,8 @@
            MOVE    SPA-P02Y-KIKAN      TO  P02Y-YUKOKIKAN
            MOVE    SPA-P02Y-KEIKAMSG   TO  P02Y-KEIKAMSG
            MOVE    SPA-P02Y-INPUTCD    TO  P02Y-INPUTCDMSG
+           MOVE    SPA-P02Y-KINKSTYMDG TO  P02Y-KINKSTYMD
+           MOVE    SPA-P02Y-TOUYOYMDG  TO  P02Y-TOUYOYMD
       *
            MOVE    SPA-P02Y-GRPHOSPNUM-G   TO  P02Y-GRPHOSPNUM
       *
@@ -751,8 +780,13 @@
            IF      SPA-P02Y-CUR        =   ZERO
                EVALUATE    WRK-MCP-WIDGET
                    WHEN    "SELNUM"
-                       MOVE    93           TO  SPA-P02Y-CUR
+      ****             MOVE    93           TO  SPA-P02Y-CUR
+                       MOVE    05           TO  SPA-P02Y-CUR
                    WHEN    "SRYCD"
+                       MOVE    05           TO  SPA-P02Y-CUR
+                   WHEN    "TOUYOYMD"
+                       MOVE    06           TO  SPA-P02Y-CUR
+                   WHEN    "KINKSTYMD"
                        MOVE    99           TO  SPA-P02Y-CUR
                    WHEN    OTHER
                        MOVE    1            TO  SPA-P02Y-CUR
@@ -766,6 +800,10 @@
                    MOVE    "SRYCD"     TO  MCP-WIDGET
                WHEN    03
                    MOVE    "GRPHOSPNUM"    TO  MCP-WIDGET
+               WHEN    05
+                   MOVE    "TOUYOYMD"      TO  MCP-WIDGET
+               WHEN    06
+                   MOVE    "KINKSTYMD"     TO  MCP-WIDGET
                WHEN    93
                    MOVE    "B03"       TO  MCP-WIDGET
                WHEN    98
@@ -871,7 +909,6 @@
       *****************************************************************
        4001-SELNUM-CHK-SEC                 SECTION.
       *
-           MOVE    1                   TO  SPA-P02Y-CUR
            INITIALIZE                  SPA-P02Y-INPUT-G
            MOVE    P02Y-SELNUM         TO  SPA-P02Y-SELNUM
       *
@@ -889,16 +926,35 @@
            ELSE
                IF      IDX-TBL             =   ZERO
                    MOVE    "0001"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-P02Y-CUR
                ELSE
-                   MOVE    SPA-P02Y-TSRYCD (IDX-TBL)
-                                               TO  SPA-P02Y-SRYCD
-                   MOVE    SPA-P02Y-SRYCD      TO  P02Y-SRYCD
-                   MOVE    IDX-TBL             TO  SPA-P02Y-IDX
-                   PERFORM 4002-SRYCD-CHK-SEC
+                   PERFORM 40011-SRYCD-HENSYU-SEC
                END-IF
            END-IF
            .
        4001-SELNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一覧選択編集処理
+      *****************************************************************
+       40011-SRYCD-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPA-P02Y-TSRYCD (IDX-TBL)
+                                       TO  SPA-P02Y-SRYCD
+           MOVE    SPA-P02Y-SRYCD      TO  P02Y-SRYCD
+           MOVE    IDX-TBL             TO  SPA-P02Y-IDX
+      *    薬剤コード決定編集
+           PERFORM 40021-SRYCD-HEN-SEC
+           PERFORM 4002-KINKSTYMD-CHK-SEC
+           PERFORM 4002-TOUYOYMD-CHK-SEC
+           IF     (FLG-END             =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )
+               MOVE    SPA-P02Y-SRYCD      TO  SPA-P02Y-MAE-SRYCD
+               MOVE    5                   TO  SPA-P02Y-CUR
+           END-IF
+           .
+       40011-SRYCD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -910,8 +966,17 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            PERFORM 4002-SRYCD-CHK-SEC
-           .
       *
+           IF     (FLG-END             =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )
+               PERFORM 4002-TOUYOYMD-CHK-SEC
+           END-IF
+      *
+           IF     (FLG-END             =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )
+               PERFORM 4002-KINKSTYMD-CHK-SEC
+           END-IF
+           .
        410-INPUT-CHK-EXT.
       *
       *****************************************************************
@@ -919,9 +984,10 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
-           MOVE    P02Y-SRYCD         TO  SPA-P02Y-SRYCD
+           MOVE    P02Y-SRYCD          TO  SPA-P02Y-SRYCD
+           MOVE    P02Y-KINKSTYMD      TO  SPA-P02Y-KINKSTYMDG
+           MOVE    P02Y-TOUYOYMD       TO  SPA-P02Y-TOUYOYMDG
            .
-      *
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *
@@ -955,6 +1021,10 @@
                MOVE    "0013"              TO  SPA-ERRCD
                MOVE    SPACE               TO  SPA-P02Y-SRYCD
                MOVE    SPACE               TO  SPA-P02Y-MAE-SRYCD
+               MOVE    SPACE               TO  SPA-P02Y-KINKSTYMD
+               MOVE    SPACE               TO  SPA-P02Y-TOUYOYMD
+               MOVE    SPACE               TO  SPA-P02Y-KINKSTYMDG
+               MOVE    SPACE               TO  SPA-P02Y-TOUYOYMDG
                MOVE    ZERO                TO  SPA-P02Y-SELNUM
                MOVE    98                  TO  SPA-P02Y-CUR
                GO      TO      4002-SRYCD-CHK-EXT
@@ -979,20 +1049,38 @@
            END-IF
            IF     (FLG-END             =   ZERO  )  AND
                   (SPA-ERRCD           =   SPACE )
-      *        薬剤コード編集
+      *        薬剤コード決定編集
                PERFORM 40021-SRYCD-HEN-SEC
+               PERFORM 40023-LIST-CHK-SEC
            END-IF
            IF     (FLG-END             =   ZERO  )  AND
                   (SPA-ERRCD           =   SPACE )
                MOVE    SPA-P02Y-SRYCD      TO  SPA-P02Y-MAE-SRYCD
-               IF      SPA-P02Y-SELNUM     =   ZERO
-                   MOVE    99                  TO  SPA-P02Y-CUR
-               ELSE
-                   MOVE    93                  TO  SPA-P02Y-CUR
-               END-IF
+               MOVE    5                   TO  SPA-P02Y-CUR
+      ***      IF      SPA-P02Y-SELNUM     =   ZERO
+      *            MOVE    99                  TO  SPA-P02Y-CUR
+      *        ELSE
+      *            MOVE    93                  TO  SPA-P02Y-CUR
+      ****     END-IF
            END-IF
            .
        4002-SRYCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *  　入力コードチェック処理
+      *****************************************************************
+       40023-LIST-CHK-SEC            SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-P02Y-MAX
+               IF      SPA-P02Y-TSRYCD (IDX)   =   SPA-P02Y-SRYCD
+                   MOVE    SPA-P02Y-TNUM (IDX) TO  SPA-P02Y-SELNUM
+                   MOVE    IDX                 TO  SPA-P02Y-IDX
+                   MOVE    SPA-P02Y-MAX        TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       40023-LIST-CHK-EXT.
            EXIT.
       *****************************************************************
       *  　入力コードチェック処理
@@ -1173,8 +1261,74 @@
                MOVE    "0004"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-P02Y-CUR
            END-IF
+      *
+      *    患者禁忌薬剤検索処理
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 900-PTKINKI-SELECT-SEC
+               IF      FLG-PTKINKI         =   ZERO
+                   MOVE    PTKINKI-KINKSTYMD   TO  SPA-P02Y-KINKSTYMDG
+                   MOVE    PTKINKI-TOUYOYMD    TO  SPA-P02Y-TOUYOYMDG
+               ELSE
+                   MOVE    SPACE               TO  SPA-P02Y-KINKSTYMDG
+                   MOVE    SPACE               TO  SPA-P02Y-TOUYOYMDG
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-P02Y-SRYCD      TO  SPA-P02Y-MAE-SRYCD
+           END-IF
            .
        40021-SRYCD-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    禁忌開始日チェック処理
+      *****************************************************************
+       4002-KINKSTYMD-CHK-SEC                 SECTION.
+      *
+           IF      SPA-P02Y-KINKSTYMDG =   SPACE
+                                       OR  ZERO
+               MOVE    SPACE               TO  SPA-P02Y-KINKSTYMD
+               MOVE    SPACE               TO  SPA-P02Y-KINKSTYMDG
+           ELSE
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-P02Y-KINKSTYMDG TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-P02Y-KINKSTYMDG
+                   MOVE    SGDAY-SDAY          TO  SPA-P02Y-KINKSTYMD
+               ELSE
+                   MOVE    "0005"              TO  SPA-ERRCD
+                   MOVE    6                   TO  SPA-P02Y-CUR
+               END-IF
+           END-IF
+           .
+       4002-KINKSTYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    投与日チェック処理
+      *****************************************************************
+       4002-TOUYOYMD-CHK-SEC                 SECTION.
+      *
+           IF      SPA-P02Y-TOUYOYMDG  =   SPACE
+                                       OR  ZERO
+               MOVE    SPACE               TO  SPA-P02Y-TOUYOYMD
+               MOVE    SPACE               TO  SPA-P02Y-TOUYOYMDG
+           ELSE
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-P02Y-TOUYOYMDG  TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY         TO  SPA-P02Y-TOUYOYMDG
+                   MOVE    SGDAY-SDAY          TO  SPA-P02Y-TOUYOYMD
+               ELSE
+                   MOVE    "0006"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-P02Y-CUR
+               END-IF
+           END-IF
+           .
+       4002-TOUYOYMD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1494,6 +1648,9 @@
                       OR  ( SPA-ERRCD  NOT =   SPACE )
       *
                MOVE    PTKINKI-SRYCD       TO  WRK-SRYCD
+               MOVE    PTKINKI-KINKSTYMD   TO  WRK-KINKSTYMD
+               MOVE    PTKINKI-TOUYOYMD    TO  WRK-TOUYOYMD
+               MOVE    1                   TO  FLG-P02Y1
                PERFORM 4121-PTKINKI-INS-SEC
       *        登録済みのコードは登録しない
                IF      SPA-ERRCD           =   "1002" 
@@ -1525,15 +1682,15 @@
            PERFORM 410-INPUT-CHK-SEC
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (FLG-END             =   ZERO  )
-               IF      SPA-P02Y-SRYCD      =   SPACE
-                   MOVE    "0008"          TO  SPA-ERRCD
-                   MOVE    2               TO  SPA-P02Y-CUR
-               END-IF
+               PERFORM 4120-KANREN-CHK-SEC
            END-IF
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (FLG-END             =   ZERO  )
       *        患者禁忌薬剤登録処理
                MOVE    SPA-P02Y-SRYCD      TO  WRK-SRYCD
+               MOVE    SPA-P02Y-KINKSTYMD  TO  WRK-KINKSTYMD
+               MOVE    SPA-P02Y-TOUYOYMD   TO  WRK-TOUYOYMD
+               MOVE    ZERO                TO  FLG-P02Y1
                PERFORM 4121-PTKINKI-INS-SEC
            END-IF
       *
@@ -1547,40 +1704,47 @@
            EXIT.
       *
       *****************************************************************
+      *    登録前関連チェック処理
+      *****************************************************************
+       4120-KANREN-CHK-SEC           SECTION.
+      *
+           IF      SPA-P02Y-SRYCD      =   SPACE
+               MOVE    "0008"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-P02Y-CUR
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-P02Y-KINKSTYMD  NOT =   SPACE )
+                 AND  (SPA-P02Y-TOUYOYMD   NOT =   SPACE )
+                 AND  (SPA-P02Y-KINKSTYMD      <   SPA-P02Y-TOUYOYMD)
+                   MOVE    "0009"          TO  SPA-ERRCD
+                   MOVE    5               TO  SPA-P02Y-CUR
+               END-IF
+           END-IF
+           .
+       4120-KANREN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者禁忌薬剤登録処理
       *****************************************************************
        4121-PTKINKI-INS-SEC           SECTION.
       *
-           INITIALIZE                      PTKINKI-REC
-           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTKINKI-PTID
-           MOVE    WRK-SRYCD           TO  PTKINKI-SRYCD
-           MOVE    PTKINKI-REC         TO  MCPDATA-REC
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-PTKINKI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTKINKI
-               INITIALIZE                      PTKINKI-REC
-           END-IF
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    患者禁忌薬剤検索処理
+           PERFORM 900-PTKINKI-SELECT-SEC
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
            IF      FLG-PTKINKI         =   1
-      *        追加のみ
+      *        追加
                INITIALIZE                      PTKINKI-REC
                MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  PTKINKI-PTID
                MOVE    WRK-SRYCD           TO  PTKINKI-SRYCD
+               MOVE    WRK-KINKSTYMD       TO  PTKINKI-KINKSTYMD
+               MOVE    WRK-TOUYOYMD        TO  PTKINKI-TOUYOYMD
       *
                MOVE    SMCNDATE-YMD        TO  PTKINKI-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKINKI-UPYMD
@@ -1600,10 +1764,43 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        ",KEY:" PTKINKI-KEY
                END-IF
            ELSE
-               MOVE    "1002"              TO  SPA-ERRCD
+               IF      FLG-P02Y1           =   ZERO
+      *            登録時のみ更新
+                   PERFORM 4121-PTKINKI-UPD-SEC
+               ELSE
+                   MOVE    "1002"              TO  SPA-ERRCD
+               END-IF
            END-IF
            .
        4121-PTKINKI-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者禁忌薬剤更新処理
+      *****************************************************************
+       4121-PTKINKI-UPD-SEC             SECTION.
+      *
+           MOVE    WRK-KINKSTYMD       TO  PTKINKI-KINKSTYMD
+           MOVE    WRK-TOUYOYMD        TO  PTKINKI-TOUYOYMD
+      *
+           MOVE    SMCNDATE-YMD        TO  PTKINKI-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTKINKI-UPHMS
+           MOVE    SPA-OPID            TO  PTKINKI-OPID
+      *
+           MOVE    PTKINKI-REC         TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY "P02Y PTKINKI KEY UPD ERR:"  MCP-RC
+                       ",KEY:" PTKINKI-KEY
+           END-IF
+           .
+       4121-PTKINKI-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1681,6 +1878,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0005"
+                   STRING  "禁忌開始日暦日エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0006"
+                   STRING  "投与開始日暦日エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0007"
                    STRING  "薬剤コードではありません。"
                            "登録できません。"
@@ -1689,6 +1896,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0008"
                    STRING  "薬剤コードを入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0009"
+                   STRING  "禁忌開始日＞投与開始日で入力して下さい"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
@@ -1833,6 +2045,34 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
            .
        810-ORCSKANACHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者禁忌薬剤検索処理
+      *****************************************************************
+       900-PTKINKI-SELECT-SEC         SECTION.
+      *
+           INITIALIZE                      PTKINKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTKINKI-PTID
+           MOVE    WRK-SRYCD           TO  PTKINKI-SRYCD
+           MOVE    PTKINKI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTKINKI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTKINKI
+               INITIALIZE                      PTKINKI-REC
+           END-IF
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-PTKINKI-SELECT-EXT.
            EXIT.
       *
       *****************************************************************

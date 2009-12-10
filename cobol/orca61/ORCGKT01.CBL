@@ -6374,18 +6374,6 @@
                GO      TO      430-SANTEIRRK-EXT
            END-IF
       *
-      *    MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-      *    MOVE    SPA-GMN-PTID        TO  SPA-PTID
-      *    MOVE    SPA-GMN-NAME        TO  SPA-NAME
-      *    MOVE    SPA-GMN-KANANAME    TO  SPA-KANANAME
-      *    MOVE    SPA-GMN-SEX         TO  SPA-SEX
-      *    MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
-      *    MOVE    SPA-GMN-SRYYM       TO  SPA-SRYYMDW(1:6)
-      *    MOVE    SPA-GMN-SRYDD       TO  SPA-SRYYMDW(7:2)
-      *    MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
-      *    MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
-      *    MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
-      *
       *    保存パラメタを作成
            PERFORM 4410-WSINPARA-SEC
       *
@@ -6393,11 +6381,16 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "KT03"              TO  SPA-SAKIPG
+      **** MOVE    "KT03"              TO  SPA-SAKIPG
+           MOVE    "K06"               TO  SPA-SAKIPG
            MOVE    "KT01"              TO  SPA-MOTOPG
+           MOVE    "KT01"              TO  SPA-MOTOPG2
+      *
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    "KT03"              TO  MCP-WINDOW
+      ***  MOVE    "KT03"              TO  MCP-WINDOW
+           MOVE    "K06"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *

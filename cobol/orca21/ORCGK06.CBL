@@ -363,6 +363,11 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+      *
+           IF      LINKAREA        NOT =   SPACE
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+           END-IF
+      *
            EVALUATE    SPA-MOTOPG
                WHEN    "KID1"
       *            確認画面より
@@ -1324,7 +1329,15 @@
       *    END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+           IF      SPA-MOTOPG2         =   "KT01"
+      *        外来まとめへ
+               MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG
+               MOVE    SPACE               TO  LINKAREA
+               MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+               MOVE    SPACE               TO  SPA-MOTOPG2
+           ELSE
+               MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+           END-IF
            MOVE    "K06"               TO  SPA-MOTOPG
       *
            IF      FLG-SYORI           =   ZERO
@@ -1345,184 +1358,184 @@
       *****************************************************************
       *    追加　処理
       *****************************************************************
-       420-TUIKA-SEC                SECTION.
+      *420-TUIKA-SEC                SECTION.
       *
-           IF      SPA-GMN-RENNUM  >   ZERO
-               MOVE    "0005"              TO  SPA-ERRCD
-               GO  TO  420-TUIKA-EXT
-           END-IF
+      *    IF      SPA-GMN-RENNUM  >   ZERO
+      *        MOVE    "0005"              TO  SPA-ERRCD
+      *        GO  TO  420-TUIKA-EXT
+      *    END-IF
       *
-           IF      SPA-GMN-MAX      =   100
-               MOVE    "0002"               TO  SPA-ERRCD
-               GO      TO      420-TUIKA-EXT
-           END-IF
+      *    IF      SPA-GMN-MAX      =   100
+      *        MOVE    "0002"               TO  SPA-ERRCD
+      *        GO      TO      420-TUIKA-EXT
+      *    END-IF
       *
-           IF     (SPA-GMN-KOUMOKU  =   SPACE )  OR
-                  (SPA-GMN-SRYCD    =   SPACE )
-               MOVE    "0008"               TO  SPA-ERRCD
-               GO      TO      420-TUIKA-EXT
-           END-IF
+      *    IF     (SPA-GMN-KOUMOKU  =   SPACE )  OR
+      *           (SPA-GMN-SRYCD    =   SPACE )
+      *        MOVE    "0008"               TO  SPA-ERRCD
+      *        GO      TO      420-TUIKA-EXT
+      *    END-IF
       *
       *    確認
-           PERFORM 4102-SRYCD-CHK-SEC
-           IF      SPA-ERRCD        NOT =   SPACE
-               GO      TO      420-TUIKA-EXT
-           END-IF
+      *    PERFORM 4102-SRYCD-CHK-SEC
+      *    IF      SPA-ERRCD        NOT =   SPACE
+      *        GO      TO      420-TUIKA-EXT
+      *    END-IF
       *
       *----(01.00.01) LINE UPD START ----------------------------------
       *****COMPUTE IDY     =   SPA-GMN-MAX  +   1
-           COMPUTE IDY-CHK     =   SPA-GMN-MAX  +   1
+      *    COMPUTE IDY-CHK     =   SPA-GMN-MAX  +   1
       *----(01.00.01) LINE UPD END   ----------------------------------
-           PERFORM 4202-INTBL-CHK-SEC
-           IF      SPA-ERRCD        NOT =   SPACE
-              GO  TO  420-TUIKA-EXT
-           END-IF
+      *    PERFORM 4202-INTBL-CHK-SEC
+      *    IF      SPA-ERRCD        NOT =   SPACE
+      *       GO  TO  420-TUIKA-EXT
+      *    END-IF
       *
-           ADD     1                TO  SPA-GMN-MAX
-           MOVE    SPA-GMN-MAX      TO
-                                SPA-GMN-TRENNUM   (SPA-GMN-MAX)
+      *    ADD     1                TO  SPA-GMN-MAX
+      *    MOVE    SPA-GMN-MAX      TO
+      *                         SPA-GMN-TRENNUM   (SPA-GMN-MAX)
       *
-           MOVE    SPA-GMN-MAX          TO  IDX
-           PERFORM 4201-INTBL-SET-SEC
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-           MOVE    1                   TO  SPA-NAI-TUPDFLG (IDX)
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *
-           MOVE    1                TO  SPA-GMN-CUR  
+      *    MOVE    SPA-GMN-MAX          TO  IDX
+      *    PERFORM 4201-INTBL-SET-SEC
       *
       *----(01.00.01) LINE ADD START ----------------------------------
-           MOVE    "1"              TO  SPA-UPDFLG
+      *    MOVE    1                   TO  SPA-NAI-TUPDFLG (IDX)
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-           .
-       420-TUIKA-EXT.
-           EXIT.
+      *    MOVE    1                TO  SPA-GMN-CUR  
+      *
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *    MOVE    "1"              TO  SPA-UPDFLG
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *
+      *    .
+      *420-TUIKA-EXT.
+      ***  EXIT.
       *
       *****************************************************************
       *    入力項目重複チェック処理
       *****************************************************************
-       4202-INTBL-CHK-SEC                SECTION.
+      *4202-INTBL-CHK-SEC                SECTION.
       *
-           MOVE    SPACE                   TO  SPA-ERRCD
+      *    MOVE    SPACE                   TO  SPA-ERRCD
       *
-           MOVE    SPA-GMN-CUR             TO  WRK-GMN-CUR
-           MOVE    "ACTIVATE"              TO  MCP-EVENT
-           MOVE    2                       TO  SPA-GMN-CUR 
-           PERFORM UNTIL   SPA-GMN-CUR     =   38
-                   OR      SPA-ERRCD   NOT =   SPACE    
-               IF      IDX         =   6   OR  7 
-                   CONTINUE
-               ELSE
-                   PERFORM 5001-MAPCUR-SEC
-                   PERFORM 200-ENTRY
-               END-IF
-           END-PERFORM
-           MOVE    "CLICKED"               TO  MCP-EVENT
-           IF      SPA-ERRCD           NOT =   SPACE 
-               GO TO  4202-INTBL-CHK-EXT
-           END-IF
+      *    MOVE    SPA-GMN-CUR             TO  WRK-GMN-CUR
+      *    MOVE    "ACTIVATE"              TO  MCP-EVENT
+      *    MOVE    2                       TO  SPA-GMN-CUR 
+      *    PERFORM UNTIL   SPA-GMN-CUR     =   38
+      *            OR      SPA-ERRCD   NOT =   SPACE    
+      *        IF      IDX         =   6   OR  7 
+      *            CONTINUE
+      *        ELSE
+      *            PERFORM 5001-MAPCUR-SEC
+      *            PERFORM 200-ENTRY
+      *        END-IF
+      *    END-PERFORM
+      *    MOVE    "CLICKED"               TO  MCP-EVENT
+      *    IF      SPA-ERRCD           NOT =   SPACE 
+      *        GO TO  4202-INTBL-CHK-EXT
+      *    END-IF
       * 
-           MOVE    WRK-GMN-CUR             TO  SPA-GMN-CUR
+      *    MOVE    WRK-GMN-CUR             TO  SPA-GMN-CUR
       *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       100
-                   OR      IDX     >       SPA-GMN-MAX
+      *    PERFORM VARYING IDX     FROM    1   BY  1
+      *            UNTIL   IDX     >       100
+      *            OR      IDX     >       SPA-GMN-MAX
       *----(01.00.01) LINE UPD START ----------------------------------
       *D       IF      IDX         =   IDY 
-               IF      IDX         =   IDY-CHK
+      *        IF      IDX         =   IDY-CHK
       *----(01.00.01) LINE UPD END   ----------------------------------
-                   CONTINUE
-               ELSE
-                   IF      SPA-GMN-TSRYCD    (IDX) =  SPA-GMN-SRYCD
-                   AND     SPA-NAI-TNYUGAIKBN(IDX) =  SPA-GMN-NYUGAIKBN
-                   AND     SPA-NAI-TSRYKA    (IDX) =  SPA-GMN-SRYKA
-                   AND     SPA-NAI-THKNCOMBI (IDX) =  SPA-GMN-HKNCOMBI
+      *            CONTINUE
+      *        ELSE
+      *            IF      SPA-GMN-TSRYCD    (IDX) =  SPA-GMN-SRYCD
+      *            AND     SPA-NAI-TNYUGAIKBN(IDX) =  SPA-GMN-NYUGAIKBN
+      *            AND     SPA-NAI-TSRYKA    (IDX) =  SPA-GMN-SRYKA
+      *            AND     SPA-NAI-THKNCOMBI (IDX) =  SPA-GMN-HKNCOMBI
       *----(01.00.01) LINE UPD START ----------------------------------
       **************** MOVE    "0002"              TO  SPA-ERRCD
-                       MOVE    "0010"              TO  SPA-ERRCD
+      *                MOVE    "0010"              TO  SPA-ERRCD
       *----(01.00.01) LINE UPD END   ----------------------------------
-                       MOVE    100                 TO  IDX
-                   END-IF
-               END-IF
-           END-PERFORM
+      *                MOVE    100                 TO  IDX
+      *            END-IF
+      *        END-IF
+      *    END-PERFORM
       *
       *    保険の適用期間のチェック
-           IF      SPA-GMN-HKNCOMBI    NOT =   ZERO
-               MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
-               PERFORM 31011-HKNCOMBI-SET-SEC
-               IF      FLG-HKNCOMBI        =   ZERO
-                   MOVE    ZERO                TO  WRK-ST-SRYYMD
-                   MOVE    ZERO                TO  WRK-ED-SRYYMD
-                   MOVE    SPA-NAI-SRYYM       TO  WRK-ST-SRYYMD(1:6)
-                   MOVE    SPA-NAI-SRYYM       TO  WRK-ED-SRYYMD(1:6)
-                   PERFORM VARYING IDXS    FROM    1   BY  1
-                           UNTIL   IDXS    >       31
-                       IF      SPA-GMN-DAY (IDXS)  >   ZERO
-                           IF      WRK-STDD        =   ZERO
-                               MOVE    IDXS        TO  WRK-STDD
-                           END-IF
-                           MOVE    IDXS            TO  WRK-EDDD
-                       END-IF
-                   END-PERFORM
-                   IF      WRK-STDD        NOT =   ZERO
-                      IF  ((WRK-ST-SRYYMD  >=  WRK-COMB-TEKSTYMD )  AND
-                           (WRK-ST-SRYYMD  <=  WRK-COMB-TEKEDYMD )) AND
-                          ((WRK-ED-SRYYMD  >=  WRK-COMB-TEKSTYMD )  AND
-                           (WRK-ED-SRYYMD  <=  WRK-COMB-TEKEDYMD ))
-                         CONTINUE
-                     ELSE
+      *    IF      SPA-GMN-HKNCOMBI    NOT =   ZERO
+      *        MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
+      *        PERFORM 31011-HKNCOMBI-SET-SEC
+      *        IF      FLG-HKNCOMBI        =   ZERO
+      *            MOVE    ZERO                TO  WRK-ST-SRYYMD
+      *            MOVE    ZERO                TO  WRK-ED-SRYYMD
+      *            MOVE    SPA-NAI-SRYYM       TO  WRK-ST-SRYYMD(1:6)
+      *            MOVE    SPA-NAI-SRYYM       TO  WRK-ED-SRYYMD(1:6)
+      *            PERFORM VARYING IDXS    FROM    1   BY  1
+      *                    UNTIL   IDXS    >       31
+      *                IF      SPA-GMN-DAY (IDXS)  >   ZERO
+      *                    IF      WRK-STDD        =   ZERO
+      *                        MOVE    IDXS        TO  WRK-STDD
+      *                    END-IF
+      *                    MOVE    IDXS            TO  WRK-EDDD
+      *                END-IF
+      *            END-PERFORM
+      *            IF      WRK-STDD        NOT =   ZERO
+      *               IF  ((WRK-ST-SRYYMD  >=  WRK-COMB-TEKSTYMD )  AND
+      *                    (WRK-ST-SRYYMD  <=  WRK-COMB-TEKEDYMD )) AND
+      *                   ((WRK-ED-SRYYMD  >=  WRK-COMB-TEKSTYMD )  AND
+      *                    (WRK-ED-SRYYMD  <=  WRK-COMB-TEKEDYMD ))
+      *                  CONTINUE
+      *              ELSE
       *                  急性発生日はチェックなしとする
-                         IF      SPA-GMN-SRYCD       =   "099800101"
-                            CONTINUE
-                         ELSE
-                             MOVE    "0024"              TO  SPA-ERRCD
-                         END-IF
-                     END-IF
-                   END-IF
-               END-IF
-           END-IF
-           .
-       4202-INTBL-CHK-EXT.
-           EXIT.
+      *                  IF      SPA-GMN-SRYCD       =   "099800101"
+      *                     CONTINUE
+      *                  ELSE
+      *                      MOVE    "0024"              TO  SPA-ERRCD
+      *                  END-IF
+      *              END-IF
+      *            END-IF
+      *        END-IF
+      *    END-IF
+      *    .
+      *4202-INTBL-CHK-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    入力項目編集処理
       *****************************************************************
-       4201-INTBL-SET-SEC                  SECTION.
+      *4201-INTBL-SET-SEC                  SECTION.
       *
-           MOVE    SPA-GMN-SRYCD           TO  SPA-GMN-TSRYCD    (IDX)
-           MOVE    SPA-GMN-NYUGAIKBN       TO  SPA-NAI-TNYUGAIKBN(IDX)
-           EVALUATE    SPA-GMN-NYUGAIKBN
-               WHEN    ZERO
-                   MOVE    SPACE           TO  SPA-GMN-TNYUGAIKBN(IDX)
-               WHEN    "1"
-                       MOVE    "入"        TO  SPA-GMN-TNYUGAIKBN(IDX)
-               WHEN    "2"
-                       MOVE    "外"        TO  SPA-GMN-TNYUGAIKBN (IDX)
-           END-EVALUATE
-           MOVE    SPA-GMN-SRYKA           TO  SPA-NAI-TSRYKA    (IDX)
-           MOVE    SPA-GMN-SRYKAH          TO  SPA-GMN-TSRYKA    (IDX)
-           MOVE    SPA-GMN-HKNCOMBI        TO  SPA-NAI-THKNCOMBI (IDX)
-           MOVE    SPA-GMN-HKNCOMBIMEI     TO  SPA-GMN-THKNCOMBI (IDX)
-           MOVE    SPA-GMN-MEISYO          TO  SPA-GMN-TMEISYO   (IDX)
-           MOVE    SPA-GMN-FSANTEIYMD      TO  SPA-GMN-TFSANTEIYMD(IDX)
-           MOVE    SPA-NAI-FSANTEIYMD      TO  SPA-NAI-TFSANTEIYMD(IDX)
-           MOVE    SPA-GMN-MSANTEID        TO  SPA-GMN-TMSANTEID  (IDX)
-           MOVE    SPA-GMN-MSANTEICNT      TO  SPA-GMN-TMSANTEICNT(IDX)
+      *    MOVE    SPA-GMN-SRYCD           TO  SPA-GMN-TSRYCD    (IDX)
+      *    MOVE    SPA-GMN-NYUGAIKBN       TO  SPA-NAI-TNYUGAIKBN(IDX)
+      *    EVALUATE    SPA-GMN-NYUGAIKBN
+      *        WHEN    ZERO
+      *            MOVE    SPACE           TO  SPA-GMN-TNYUGAIKBN(IDX)
+      *        WHEN    "1"
+      *                MOVE    "入"        TO  SPA-GMN-TNYUGAIKBN(IDX)
+      *        WHEN    "2"
+      *                MOVE    "外"        TO  SPA-GMN-TNYUGAIKBN (IDX)
+      *    END-EVALUATE
+      *    MOVE    SPA-GMN-SRYKA           TO  SPA-NAI-TSRYKA    (IDX)
+      *    MOVE    SPA-GMN-SRYKAH          TO  SPA-GMN-TSRYKA    (IDX)
+      *    MOVE    SPA-GMN-HKNCOMBI        TO  SPA-NAI-THKNCOMBI (IDX)
+      *    MOVE    SPA-GMN-HKNCOMBIMEI     TO  SPA-GMN-THKNCOMBI (IDX)
+      *    MOVE    SPA-GMN-MEISYO          TO  SPA-GMN-TMEISYO   (IDX)
+      *    MOVE    SPA-GMN-FSANTEIYMD      TO  SPA-GMN-TFSANTEIYMD(IDX)
+      *:   MOVE    SPA-NAI-FSANTEIYMD      TO  SPA-NAI-TFSANTEIYMD(IDX)
+      *    MOVE    SPA-GMN-MSANTEID        TO  SPA-GMN-TMSANTEID  (IDX)
+      *    MOVE    SPA-GMN-MSANTEICNT      TO  SPA-GMN-TMSANTEICNT(IDX)
       *
-           MOVE    ZERO                TO  WRK-DAY
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY >   31
-               MOVE    SPA-GMN-DAY (IDY)   TO  SPA-NAI-TDAY(IDX IDY)
-               IF      SPA-GMN-DAY (IDY)   >   ZERO
-                   IF      WRK-DAY             =   ZERO
-                       MOVE    IDY             TO  WRK-DAY
-                   END-IF
-               END-IF
-           END-PERFORM
+      *    MOVE    ZERO                TO  WRK-DAY
+      *    PERFORM VARYING IDY     FROM    1   BY  1
+      *            UNTIL   IDY >   31
+      *        MOVE    SPA-GMN-DAY (IDY)   TO  SPA-NAI-TDAY(IDX IDY)
+      *        IF      SPA-GMN-DAY (IDY)   >   ZERO
+      *            IF      WRK-DAY             =   ZERO
+      *                MOVE    IDY             TO  WRK-DAY
+      *            END-IF
+      *        END-IF
+      *    END-PERFORM
       *
-           MOVE    WRK-DAY             TO  SPA-GMN-TMSANTEID   (IDX)
+      *    MOVE    WRK-DAY             TO  SPA-GMN-TMSANTEID   (IDX)
       *
       *****IF       WRK-DAY            =   ZERO
       *        MOVE    SPACE               TO  SPA-NAI-TFSANTEIYMD(IDX)
@@ -1540,62 +1553,62 @@
       *        END-IF
       *****END-IF
       *
-           EVALUATE   MCP-WIDGET
-               WHEN    "B02"
-                   MOVE    1               TO  SPA-NAI-TUPDFLG (IDX)
-               WHEN    "B04"
-                   MOVE    2               TO  SPA-NAI-TUPDFLG (IDX)
-           END-EVALUATE
+      *    EVALUATE   MCP-WIDGET
+      *        WHEN    "B02"
+      *            MOVE    1               TO  SPA-NAI-TUPDFLG (IDX)
+      *        WHEN    "B04"
+      *            MOVE    2               TO  SPA-NAI-TUPDFLG (IDX)
+      *    END-EVALUATE
       *
-           INITIALIZE               SPA-GMN-KOUMOKU
-                                    SPA-NAI-KOUMOKU
+      *    INITIALIZE               SPA-GMN-KOUMOKU
+      *                             SPA-NAI-KOUMOKU
       *
-          .
-       4201-INTBL-SET-EXT.
-           EXIT.
+      *   .
+      *4201-INTBL-SET-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    更新　処理
       *****************************************************************
-       430-HENKOU-SEC              SECTION.
+      *430-HENKOU-SEC              SECTION.
       *
-           IF      SPA-GMN-RENNUM  =   ZERO
-               MOVE    "0004"              TO  SPA-ERRCD
-               GO  TO  430-HENKOU-EXT
-           END-IF
+      *    IF      SPA-GMN-RENNUM  =   ZERO
+      *        MOVE    "0004"              TO  SPA-ERRCD
+      *        GO  TO  430-HENKOU-EXT
+      *    END-IF
       *    内分泌負荷試験は変更できない
-           IF      SPA-NAI-MSANTEIFLG  =   1
-               MOVE    "0030"              TO  SPA-ERRCD
-               GO  TO  430-HENKOU-EXT
-           END-IF
+      *    IF      SPA-NAI-MSANTEIFLG  =   1
+      *        MOVE    "0030"              TO  SPA-ERRCD
+      *        GO  TO  430-HENKOU-EXT
+      *    END-IF
       *
       *----(01.00.01) LINE UPD START ----------------------------------
       *****MOVE    SPA-GMN-RENNUM  TO  IDY
-           MOVE    SPA-GMN-RENNUM  TO  IDY-CHK
+      *    MOVE    SPA-GMN-RENNUM  TO  IDY-CHK
       *----(01.00.01) LINE UPD END   ----------------------------------
       *
-           PERFORM 4202-INTBL-CHK-SEC
-           IF      SPA-ERRCD        NOT =   SPACE
-              GO  TO  430-HENKOU-EXT
-           END-IF
+      *    PERFORM 4202-INTBL-CHK-SEC
+      *    IF      SPA-ERRCD        NOT =   SPACE
+      *       GO  TO  430-HENKOU-EXT
+      *    END-IF
       *
-           MOVE    SPA-GMN-RENNUM  TO  IDX
+      *    MOVE    SPA-GMN-RENNUM  TO  IDX
       *
-           PERFORM 4201-INTBL-SET-SEC
-      *
-      *----(01.00.01) LINE ADD START ----------------------------------
-           MOVE    2                   TO  SPA-NAI-TUPDFLG (IDX)
-      *----(01.00.01) LINE ADD END   ----------------------------------
-      *
-           MOVE    1                   TO  SPA-GMN-CUR 
+      *    PERFORM 4201-INTBL-SET-SEC
       *
       *----(01.00.01) LINE ADD START ----------------------------------
-           MOVE    "1"              TO  SPA-UPDFLG
+      *    MOVE    2                   TO  SPA-NAI-TUPDFLG (IDX)
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-          .
-       430-HENKOU-EXT.
-           EXIT.
+      *    MOVE    1                   TO  SPA-GMN-CUR 
+      *
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *    MOVE    "1"              TO  SPA-UPDFLG
+      *----(01.00.01) LINE ADD END   ----------------------------------
+      *
+      *   .
+      *430-HENKOU-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    削除　処理

@@ -30,6 +30,10 @@
                05  PTKINKI-PTID              PIC  9(10).
       *ÌôºÞ¥³¡¼¥É
                05  PTKINKI-SRYCD             PIC  X(09).
+      *¶Ø´÷³«»ÏÆü
+           03  PTKINKI-KINKSTYMD             PIC  X(08).
+      *ÅêÍ¿Æü
+           03  PTKINKI-TOUYOYMD              PIC  X(08).
       *Ã¼Ëö£É£Ä
            03  PTKINKI-TERMID                PIC  X(32).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

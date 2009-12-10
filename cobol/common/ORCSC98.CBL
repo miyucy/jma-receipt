@@ -52,6 +52,7 @@
            03  FLG-TOUYO-CHK1          PIC 9(01).
            03  FLG-TOUYO-CHK2          PIC 9(01).
            03  FLG-NENREI-CD           PIC 9(01).
+           03  FLG-KINKI-ARI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -62,6 +63,7 @@
            03  IDM2                PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-SET             PIC 9(04).
+           03  IDX-N2              PIC 9(02).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -87,6 +89,11 @@
                05  WRK-NEN-MM          PIC 9(02).
                05  WRK-NEN-DD          PIC 9(02).
       *
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM           PIC X(06).
+               05  WRK-SRYDD           PIC 9(02).
+           03  WRK-ERRMSG              PIC X(100).
+      *
       *    Ç¯ÎáÃ±°Ì¥Æ¡¼¥Ö¥ë
            COPY    "CMNENREICD.INC".
       *
@@ -94,6 +101,9 @@
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
       *
+      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -501,10 +511,21 @@
       *****************************************************************
        300-PTKINKI-CHK-SEC              SECTION.
       *
-           IF     SPA-COM-PTKINKI-ARI (IDX-Z)  =   1
+           MOVE    SPA-COM-PTKINKI-ARI (IDX-Z) TO  FLG-KINKI-ARI
+      *
+           IF    ((SPA-NYUGAIKBN       =   "1"   )  OR
+                  (LNK-SC98-PG         =   "KT01" ))
+            AND   (SPA-COM-KINKSTYMD (IDX-Z)   NOT =   SPACE )
+               PERFORM 3001-KINKSTYMD-CHK-SEC
+               MOVE    FLG-KINKI-ARI       TO  SPA-COM-PTKINKI-ARI
+                                                        (IDX-Z)
+           END-IF
+      *
+           IF     FLG-KINKI-ARI        =   1
                IF      SPA-COM-SET (IDX-Z)     =   "1"
                    IF      SPA-COM-KINKIFLG (IDX-SET)  =   SPACE
                        MOVE    "K210"      TO  SPA-ERRCD
+                       PERFORM 3001-KINKIERR-HEN-SEC
                        MOVE    "1"         TO  SPA-COM-KINKIFLG
                                                             (IDX-SET)
                        MOVE    "1"         TO  SPA-COM-CUR  (IDX-SET)
@@ -514,6 +535,7 @@
                ELSE
                    IF      SPA-COM-KINKIFLG (IDX-Z)  =   SPACE
                        MOVE    "K211"          TO  SPA-ERRCD
+                       PERFORM 3001-KINKIERR-HEN-SEC
                        MOVE    "1"             TO  SPA-COM-KINKIFLG
                                                                (IDX-Z)
                        MOVE    "1"             TO  SPA-COM-CUR (IDX-Z)
@@ -523,5 +545,66 @@
       *
            .
        300-PTKINKI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       3001-KINKSTYMD-CHK-SEC              SECTION.
+      *
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           MOVE    ZERO                TO  FLG-KINKI-ARI
+      *
+           PERFORM VARYING IDX-N2      FROM    1   BY  1
+                   UNTIL  (IDX-N2      >   31  )
+               IF      SPA-COM-NYUINDAY(IDX-Z IDX-N2)  >   ZERO
+                   MOVE    IDX-N2              TO  WRK-SRYDD
+                   IF      SPA-COM-KINKSTYMD (IDX-Z)
+                                               <=  WRK-SRYYMD
+                       MOVE    1                   TO  FLG-KINKI-ARI
+                       MOVE    31                  TO  IDX-N2
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       3001-KINKSTYMD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸
+      *****************************************************************
+       3001-KINKIERR-HEN-SEC              SECTION.
+      *
+           IF      SPA-COM-TOUYOYMD (IDX-Z)    NOT =   SPACE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    SPA-COM-TOUYOYMD (IDX-Z)
+                                           TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  "ÅêÍ¿³«»ÏÆü¡§"         DELIMITED  BY  SIZE
+                       LNK-DAY2-EDTYMD3       DELIMITED  BY  SPACE
+                       "¡¡"                   DELIMITED  BY  SIZE
+                                           INTO    LNK-SC98-ERRMSG
+               END-STRING
+           END-IF
+           IF      SPA-COM-KINKSTYMD(IDX-Z)    NOT =   SPACE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    SPA-COM-KINKSTYMD (IDX-Z)
+                                           TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-SC98-ERRMSG     TO  WRK-ERRMSG
+               MOVE    SPACE               TO  LNK-SC98-ERRMSG
+      *
+               STRING  WRK-ERRMSG             DELIMITED  BY  SPACE
+                       "¶Ø´÷³«»ÏÆü¡§"         DELIMITED  BY  SIZE
+                       LNK-DAY2-EDTYMD3       DELIMITED  BY  SPACE
+                                           INTO    LNK-SC98-ERRMSG
+               END-STRING
+           END-IF
+           .
+       3001-KINKIERR-HEN-EXT.
            EXIT.
       *

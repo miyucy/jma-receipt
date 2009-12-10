@@ -1766,7 +1766,8 @@
        51022-TENSUPLUS2-CHK-SEC                SECTION.
       *
            INITIALIZE                  ORCSC98AREA
-           MOVE    "K02"               TO  LNK-SC98-PG
+      **   MOVE    "K02"               TO  LNK-SC98-PG
+           MOVE    "KT01"              TO  LNK-SC98-PG
            MOVE    SPA-NENREI-YY       TO  LNK-SC98-NENREI-YY
            MOVE    SPA-NENREI-MM       TO  LNK-SC98-NENREI-MM
            MOVE    SPA-NENREI-DD       TO  LNK-SC98-NENREI-DD
