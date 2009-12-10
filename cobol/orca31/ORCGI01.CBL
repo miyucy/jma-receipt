@@ -1361,6 +1361,9 @@
       *    ユーザープログラムコンボ
            PERFORM 310-CMB-USERPG-SET-SEC
       *
+      *    入院料算定コンボ
+           PERFORM 310-CMB-NYUCALKBN-SET-SEC
+      *
       *    分娩区分コンボ
            PERFORM 310-CMB-BUNBEN-SET-SEC
       *
@@ -1996,6 +1999,25 @@
        310-CMB-USERPG-SET-EXT.
            EXIT.
       *****************************************************************
+      *    入院料算定コンボ初期処理
+      *****************************************************************
+       310-CMB-NYUCALKBN-SET-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-GMN-I01-CMB-NYUCALKBN
+      *
+           MOVE    2                   TO  SPA-GMN-I01-NYUCALKBN-CNT
+      *
+           MOVE    "1"                 TO  SPA-GMN-I01-NYUCALKBNL (01)
+           MOVE    "入院料を算定しない"
+                                       TO  SPA-GMN-I01-NYUCALKBNMEIL(01)
+      *
+           MOVE    "2"                 TO  SPA-GMN-I01-NYUCALKBNL (02)
+           MOVE    "入院料を算定する"  TO  SPA-GMN-I01-NYUCALKBNMEIL(02)
+      *
+           .
+       310-CMB-NYUCALKBN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    分娩コンボ初期処理
       *****************************************************************
        310-CMB-BUNBEN-SET-SEC          SECTION.
@@ -2530,6 +2552,8 @@
            MOVE    I01-DISPKBN         TO  SPA-GMN-I01-DISPKBN
       *    ユーザープログラム
            MOVE    I01-USERPG          TO  SPA-GMN-I01-USERPG
+      *    入院料算定
+           MOVE    I01-NYUCALKBN       TO  SPA-GMN-I01-NYUCALKBN
       *    分娩入院
            MOVE    I01-BUNBENKBN       TO  SPA-GMN-I01-BUNBEN
       *    直接利用制度利用区分
@@ -2695,6 +2719,12 @@
       *
       *    特定入院チェック処理
            PERFORM 4101-TOKNYUIN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    入院料算定チェック
+           PERFORM 4101-NYUCALKBNCHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -3117,6 +3147,18 @@
                MOVE    "1"             TO  WRK-CMB-CD
                PERFORM 4103-CMB-SENTEIKBN-CHK-SEC
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-SENTEIKBN
+           END-IF
+      *
+      *    入院料算定区分
+           MOVE    PTNYUINRRK-NYUCALKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NYUCALKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUCALKBN
+           ELSE
+               MOVE    "2"             TO  WRK-CMB-CD
+               PERFORM 4103-CMB-NYUCALKBN-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUCALKBN
            END-IF
       *
            PERFORM 41011-BUNBEN-AREA-EDIT-SEC
@@ -5971,6 +6013,26 @@
        4101-SHONUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入院料算定区分チェック処理
+      *****************************************************************
+       4101-NYUCALKBNCHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-I01-NYUCALKBN-CD
+                                       TO  WRK-CMB-CD
+           PERFORM 4103-CMB-NYUCALKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUCALKBN
+           ELSE
+               MOVE    "2"         TO  WRK-CMB-CD
+               PERFORM 4103-CMB-NYUCALKBN-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-NYUCALKBN
+           END-IF
+      *
+           .
+      *
+       4101-NYUCALKBNCHK-EXT.
+           EXIT.
+      *****************************************************************
       *    分娩区分チェック処理
       *****************************************************************
        4101-BUNBEN-CHK-SEC             SECTION.
@@ -6576,6 +6638,29 @@
        4103-CMB-KAIGO-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入院料算定コンボチェック処理
+      *****************************************************************
+       4103-CMB-NYUCALKBN-CHK-SEC     SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I01-NYUCALKBN-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I01-NYUCALKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I01-NYUCALKBN-ITM (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-NYUCALKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    分娩入院コンボチェック処理
       *****************************************************************
        4103-CMB-BUNBEN-CHK-SEC     SECTION.
@@ -6993,6 +7078,9 @@
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TIMEKBN
       *
            MOVE    ZERO            TO  SPA-GMN-I01-NYUREKILST-SEL
+      *
+           MOVE    SPA-GMN-I01-NYUCALKBN-ITM (2)
+                                   TO  SPA-GMN-I01-NYUCALKBN
       *
            .
       *
@@ -8339,6 +8427,13 @@
              END-IF
            END-IF
       *
+      *    入院料算定
+           IF    ( SPA-GMN-I01-NYUCALKBN  =   SPACE )
+               MOVE    "1048"      TO  SPA-ERRCD
+               MOVE     32         TO  SPA-GMN-I01-CUR
+               GO  TO  4801-KANREN-CHK-EXT
+           END-IF
+      *
       *    定期請求
            IF    ( SPA-GMN-I01-SEIKYU      =   SPACE )
                MOVE    "1010"      TO  SPA-ERRCD
@@ -9307,6 +9402,9 @@
       *    選定入院区分
            MOVE    SPA-GMN-I01-SENTEIKBN-CD
                                    TO  PTNYUINRRK-SENTEIKBN
+      *    入院料算定区分
+           MOVE    SPA-GMN-I01-NYUCALKBN-CD
+                                   TO  PTNYUINRRK-NYUCALKBN
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
@@ -18594,6 +18692,16 @@
       *    算定入院料
            MOVE    SPA-GMN-I01-SNTNYUIN    TO  I01-SNTNYUIN
       *
+      *    入院料算定
+           MOVE    SPA-GMN-I01-NYUCALKBN   TO  I01-NYUCALKBN
+           MOVE    SPA-GMN-I01-NYUCALKBN-CNT
+                                           TO  I01-NYUCALKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-I01-NYUCALKBN-CNT   )
+               MOVE    SPA-GMN-I01-NYUCALKBN-ITM (IDX1)
+                                           TO  I01-NYUCALKBN-ITM (IDX1)
+           END-PERFORM
+      *
       *    入院料加算
            PERFORM VARYING IDX-KSN FROM    1   BY  1
                    UNTIL ( IDX-KSN >   CONST-GMN-KSN-MAX )
@@ -18810,6 +18918,8 @@
                                        I01-TOKNYUIN-STT
                                        I01-TOKNYUIN-ITM-STT
                                        I01-SNTNYUIN-STT
+                                       I01-NYUCALKBN-STT
+                                       I01-NYUCALKBN-ITM-STT
                                        I01-KSN-STT (1)
                                        I01-KSN-ITM-STT (1)
                                        I01-KSN-STT (2)
@@ -18860,6 +18970,8 @@
                                        I01-TOKNYUIN-STT
                                        I01-TOKNYUIN-ITM-STT
                                        I01-SNTNYUIN-STT
+                                       I01-NYUCALKBN-STT
+                                       I01-NYUCALKBN-ITM-STT
                                        I01-KSN-STT (1)
                                        I01-KSN-ITM-STT (1)
                                        I01-KSN-STT (2)
@@ -19051,6 +19163,8 @@
                                            I01-TOKNYUIN-STT
                                            I01-TOKNYUIN-ITM-STT
                                            I01-SNTNYUIN-STT
+                                           I01-NYUCALKBN-STT
+                                           I01-NYUCALKBN-ITM-STT
                                            I01-KSN-STT (1)
                                            I01-KSN-ITM-STT (1)
                                            I01-KSN-STT (2)
@@ -19142,6 +19256,8 @@
                MOVE    "BUNBENKBN"     TO  MCP-WIDGET
            WHEN    31
                MOVE    "RIYOUKBN"      TO  MCP-WIDGET
+           WHEN    32
+               MOVE    "NYUCALKBN"     TO  MCP-WIDGET
            WHEN    100
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    206
@@ -19189,6 +19305,8 @@
            WHEN    "HKNCOMBI"
                MOVE    016             TO  SPA-GMN-I01-CUR
            WHEN    "TOKNYUIN"
+               MOVE    032             TO  SPA-GMN-I01-CUR
+           WHEN    "NYUCALKBN"
                MOVE    030             TO  SPA-GMN-I01-CUR
            WHEN    "BUNBENKBN"
                MOVE    031             TO  SPA-GMN-I01-CUR
@@ -19343,6 +19461,12 @@
       *
            IF    ( SPA-GMN-I01-CUR =   16  )
                IF  ( I01-TOKNYUIN-STT  =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   32
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   32  )
+               IF  ( I01-NYUCALKBN-STT     =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-I01-CUR =   30
                END-IF
            END-IF
@@ -19662,6 +19786,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "1047"
                MOVE    "入院日＜誕生日となっています"
+                                       TO  SPA-ERRMSG
+           WHEN    "1048"
+               MOVE    "入院会計を入力して下さい"
                                        TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"

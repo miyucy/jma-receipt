@@ -174,6 +174,13 @@
                 05  I01-USERPG-ITM                PIC X(22)
                                                   OCCURS  2.
                 05  I01-USERPG-ITM-STT            PIC S9(9)   BINARY.
+              04  I01-CMB-NYUCALKBN.
+                05  I01-NYUCALKBN                 PIC X(30).
+                05  I01-NYUCALKBN-STT             PIC S9(9)   BINARY.
+                05  I01-NYUCALKBN-CNT             PIC S9(9)   BINARY.
+                05  I01-NYUCALKBN-ITM             PIC X(30)
+                                                  OCCURS  5.
+                05  I01-NYUCALKBN-ITM-STT         PIC S9(9)   BINARY.
               04  I01-LBL-BUNBENKBN               PIC X(20).
               04  I01-CMB-BUNBENKBN.
                 05  I01-BUNBENKBN                 PIC X(20).

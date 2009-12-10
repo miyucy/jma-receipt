@@ -278,6 +278,15 @@ I01	{
 			item	varchar(22)[02];
 			state	int;
 		};
+		CMB_NYUCALKBN	{
+			NYUCALKBN	{
+				value	varchar(30);
+				state	int;
+			};
+			count	int;
+			item	varchar(30)[05];
+			state	int;
+		};
 		LBL_BUNBENKBN	{
 			value	varchar(20);
 		};
