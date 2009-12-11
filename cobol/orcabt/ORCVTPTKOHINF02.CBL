@@ -89,8 +89,8 @@
       *
       *    ファイル指定領域
        01  ASS-AREA.
-           03  ASS-PARA                PIC X(256).
-           03  ASS-ERR                 PIC X(256).
+           03  ASS-PARA                PIC X(256)  VALUE   SPACE.
+           03  ASS-ERR                 PIC X(256)  VALUE   SPACE.
            03  ASS-ISAM                PIC X(256)  VALUE
                "/tmp/ORCVTPTKOHINF_ISAM".
       *
@@ -477,6 +477,10 @@
       *
            EVALUATE    PARA-DATKBN
                WHEN    "02-3"
+                   IF      ASS-ERR     =   SPACE
+                       MOVE    PARA-DATA   TO  ASS-ERR
+                   END-IF
+               WHEN    "02-B"
                    MOVE    PARA-DATA   TO  ASS-ERR
                WHEN    "05-1"
                    MOVE    PARA-DATA   TO  PARA-05-1

@@ -49,6 +49,7 @@
       *  04.01.00    NACL-多々納   07/11/05  保険追加処理削除対応
       *  04.02.00    NACL-多々納   08/04/28  後期高齢者対応
       *  04.03.00    NACL-多々納   08/10/08  協会けんぽ、資格取得日対応
+      *  04.05.00    NACL-多々納   09/12/11  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -380,6 +381,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
            COPY    "CPORCXKANACONV.INC".
+      *
+      *    全角チェックパラメタ（拡張漢字対応）
+           COPY    "CPORCSKANACHK2.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -949,6 +953,8 @@
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
+      *    後ろの全角空白を削除
+           MOVE    "1"             TO  KANACHK-SYORIKBN
            MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
            MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
@@ -963,6 +969,8 @@
       *        半角を全角へ
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI
+      *            後ろの全角空白を削除
+                   MOVE    "1"             TO  KANACHK-SYORIKBN
                    MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
                    MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
                    CALL    "ORCSKANACHK"       USING
@@ -978,12 +986,56 @@
            IF      WRK-LEN         =   ZERO
                MOVE    1               TO  WRK-LEN
            END-IF
-      *    後ろの全角空白を削除
-           IF      WRK-LEN         >   1
-               PERFORM 24021-KUHAKU-DEL-SEC
-           END-IF
+      **** 後ろの全角空白を削除
+      *    IF      WRK-LEN         >   1
+      *        PERFORM 24021-KUHAKU-DEL-SEC
+      ***  END-IF
            .
        2402-ZENKAKU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角桁数・空白処理（拡張漢字対応）
+      *****************************************************************
+       2402-ZENKAKU-HEN02-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"             TO  KANACHK2-SYORI
+      *    後ろの全角空白を削除
+           MOVE    "1"             TO  KANACHK2-SYORIKBN
+           MOVE    WRK-DATA        TO  KANACHK2-MAE-INPUT
+           MOVE    WRK-CNT         TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-MAE-INPUT  TO  WRK-DATA
+           MOVE    KANACHK2-MAX        TO  WRK-LEN
+           IF      KANACHK2-RC     NOT =   ZERO
+      *        全角・半角混在エラ−
+               MOVE    3               TO  FLG-ERR
+           ELSE
+               IF      KANACHK2-SYUBETU =   1
+      *        半角を全角へ
+                   INITIALIZE                  ORCSKANACHK2AREA
+                   MOVE    "2"             TO  KANACHK2-SYORI
+      *            後ろの全角空白を削除
+                   MOVE    "1"             TO  KANACHK2-SYORIKBN
+                   MOVE    WRK-DATA        TO  KANACHK2-MAE-INPUT
+                   MOVE    WRK-CNT         TO  KANACHK2-MAX-CNT
+                   CALL    "ORCSKANACHK2"       USING
+                                               ORCSKANACHK2AREA
+                   IF      KANACHK2-RC         =   ZERO
+                       MOVE    KANACHK2-MAX         TO  WRK-LEN
+                       MOVE    KANACHK2-OUT-INPUT   TO  WRK-DATA
+                   END-IF
+               ELSE
+                   MOVE    KANACHK2-OUT-INPUT   TO  WRK-DATA
+               END-IF
+           END-IF
+           IF      WRK-LEN         =   ZERO
+               MOVE    1               TO  WRK-LEN
+           END-IF
+           .
+       2402-ZENKAKU-HEN02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1525,7 +1577,7 @@
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
-           PERFORM 2402-ZENKAKU-HEN-SEC
+           PERFORM 2402-ZENKAKU-HEN02-SEC
            IF      FLG-ERR         =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTHKN-HIHKNJANAME
