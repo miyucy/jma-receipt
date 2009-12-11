@@ -9,7 +9,7 @@ multiplex_level	aps;
 
 linkage	orcalink;
 
-blob {
+sysdata {
     space   "/tmp/blob";
     port    "/tmp/sysdata";
 };
