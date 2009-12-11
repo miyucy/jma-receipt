@@ -68,8 +68,12 @@
 @02-1:/var/tmp/ORCVTPTINF_ERR.txt
 # 患者保険情報コンバート処理
 @02-2:/var/tmp/ORCVTPTHKNINF_ERR.txt
+# 患者公費情報コンバート処理２
+@02-A:/var/tmp/ORCVTPTHKNINF02_ERR.txt
 # 患者公費情報コンバート処理
 @02-3:/var/tmp/ORCVTPTKOHINF_ERR.txt
+# 患者公費情報コンバート処理２
+@02-B:/var/tmp/ORCVTPTKOHINF02_ERR.txt
 # 保険組合せ作成処理
 @02-4:/var/tmp/ORCVTHKNCOMBI_ERR.txt
 # 入力コード情報コンバート処理
