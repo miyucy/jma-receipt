@@ -7648,6 +7648,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  ORCSKANACHK2AREA
            MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    "1"                 TO  KANACHK2-SYORIKBN
            MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
            MOVE    WRK-LEN             TO  KANACHK2-MAX-CNT
            CALL    "ORCSKANACHK2"      USING
