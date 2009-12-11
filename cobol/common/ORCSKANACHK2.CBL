@@ -98,185 +98,6 @@
       *    Á´³ÑÊ¸»ú¿ô
            03  WRK-MAX-MOJI            PIC S9(9)  BINARY.
       *
-      *    ÊÑ´¹¥Æ¡¼¥Ö¥ë
-       01  TBL-HENKAN-AREA.
-           03  FILLER              PIC X(01)   VALUE   "0".
-           03  FILLER              PIC X(02)   VALUE   "£°".
-           03  FILLER              PIC X(01)   VALUE   "1".
-           03  FILLER              PIC X(02)   VALUE   "£±".
-           03  FILLER              PIC X(01)   VALUE   "2".
-           03  FILLER              PIC X(02)   VALUE   "£²".
-           03  FILLER              PIC X(01)   VALUE   "3".
-           03  FILLER              PIC X(02)   VALUE   "£³".
-           03  FILLER              PIC X(01)   VALUE   "4".
-           03  FILLER              PIC X(02)   VALUE   "£´".
-           03  FILLER              PIC X(01)   VALUE   "5".
-           03  FILLER              PIC X(02)   VALUE   "£µ".
-           03  FILLER              PIC X(01)   VALUE   "6".
-           03  FILLER              PIC X(02)   VALUE   "£¶".
-           03  FILLER              PIC X(01)   VALUE   "7".
-           03  FILLER              PIC X(02)   VALUE   "£·".
-           03  FILLER              PIC X(01)   VALUE   "8".
-           03  FILLER              PIC X(02)   VALUE   "£¸".
-           03  FILLER              PIC X(01)   VALUE   "9".
-           03  FILLER              PIC X(02)   VALUE   "£¹".
-      *±Ñ»ú
-           03  FILLER              PIC X(01)   VALUE   "A".
-           03  FILLER              PIC X(02)   VALUE   "£Á".
-           03  FILLER              PIC X(01)   VALUE   "B".
-           03  FILLER              PIC X(02)   VALUE   "£Â".
-           03  FILLER              PIC X(01)   VALUE   "C".
-           03  FILLER              PIC X(02)   VALUE   "£Ã".
-           03  FILLER              PIC X(01)   VALUE   "D".
-           03  FILLER              PIC X(02)   VALUE   "£Ä".
-           03  FILLER              PIC X(01)   VALUE   "E".
-           03  FILLER              PIC X(02)   VALUE   "£Å".
-           03  FILLER              PIC X(01)   VALUE   "F".
-           03  FILLER              PIC X(02)   VALUE   "£Æ".
-           03  FILLER              PIC X(01)   VALUE   "G".
-           03  FILLER              PIC X(02)   VALUE   "£Ç".
-           03  FILLER              PIC X(01)   VALUE   "H".
-           03  FILLER              PIC X(02)   VALUE   "£È".
-           03  FILLER              PIC X(01)   VALUE   "I".
-           03  FILLER              PIC X(02)   VALUE   "£É".
-           03  FILLER              PIC X(01)   VALUE   "J".
-           03  FILLER              PIC X(02)   VALUE   "£Ê".
-           03  FILLER              PIC X(01)   VALUE   "K".
-           03  FILLER              PIC X(02)   VALUE   "£Ë".
-           03  FILLER              PIC X(01)   VALUE   "L".
-           03  FILLER              PIC X(02)   VALUE   "£Ì".
-           03  FILLER              PIC X(01)   VALUE   "N".
-           03  FILLER              PIC X(02)   VALUE   "£Î".
-           03  FILLER              PIC X(01)   VALUE   "M".
-           03  FILLER              PIC X(02)   VALUE   "£Í".
-           03  FILLER              PIC X(01)   VALUE   "O".
-           03  FILLER              PIC X(02)   VALUE   "£Ï".
-           03  FILLER              PIC X(01)   VALUE   "P".
-           03  FILLER              PIC X(02)   VALUE   "£Ð".
-           03  FILLER              PIC X(01)   VALUE   "Q".
-           03  FILLER              PIC X(02)   VALUE   "£Ñ".
-           03  FILLER              PIC X(01)   VALUE   "R".
-           03  FILLER              PIC X(02)   VALUE   "£Ò".
-           03  FILLER              PIC X(01)   VALUE   "S".
-           03  FILLER              PIC X(02)   VALUE   "£Ó".
-           03  FILLER              PIC X(01)   VALUE   "T".
-           03  FILLER              PIC X(02)   VALUE   "£Ô".
-           03  FILLER              PIC X(01)   VALUE   "U".
-           03  FILLER              PIC X(02)   VALUE   "£Õ".
-           03  FILLER              PIC X(01)   VALUE   "V".
-           03  FILLER              PIC X(02)   VALUE   "£Ö".
-           03  FILLER              PIC X(01)   VALUE   "W".
-           03  FILLER              PIC X(02)   VALUE   "£×".
-           03  FILLER              PIC X(01)   VALUE   "X".
-           03  FILLER              PIC X(02)   VALUE   "£Ø".
-           03  FILLER              PIC X(01)   VALUE   "Y".
-           03  FILLER              PIC X(02)   VALUE   "£Ù".
-           03  FILLER              PIC X(01)   VALUE   "Z".
-           03  FILLER              PIC X(02)   VALUE   "£Ú".
-      *±Ñ»ú
-           03  FILLER              PIC X(01)   VALUE   "a".
-           03  FILLER              PIC X(02)   VALUE   "£á".
-           03  FILLER              PIC X(01)   VALUE   "b".
-           03  FILLER              PIC X(02)   VALUE   "£â".
-           03  FILLER              PIC X(01)   VALUE   "c".
-           03  FILLER              PIC X(02)   VALUE   "£ã".
-           03  FILLER              PIC X(01)   VALUE   "d".
-           03  FILLER              PIC X(02)   VALUE   "£ä".
-           03  FILLER              PIC X(01)   VALUE   "e".
-           03  FILLER              PIC X(02)   VALUE   "£å".
-           03  FILLER              PIC X(01)   VALUE   "f".
-           03  FILLER              PIC X(02)   VALUE   "£æ".
-           03  FILLER              PIC X(01)   VALUE   "g".
-           03  FILLER              PIC X(02)   VALUE   "£ç".
-           03  FILLER              PIC X(01)   VALUE   "h".
-           03  FILLER              PIC X(02)   VALUE   "£è".
-           03  FILLER              PIC X(01)   VALUE   "i".
-           03  FILLER              PIC X(02)   VALUE   "£é".
-           03  FILLER              PIC X(01)   VALUE   "j".
-           03  FILLER              PIC X(02)   VALUE   "£ê".
-           03  FILLER              PIC X(01)   VALUE   "k".
-           03  FILLER              PIC X(02)   VALUE   "£ë".
-           03  FILLER              PIC X(01)   VALUE   "l".
-           03  FILLER              PIC X(02)   VALUE   "£ì".
-           03  FILLER              PIC X(01)   VALUE   "n".
-           03  FILLER              PIC X(02)   VALUE   "£î".
-           03  FILLER              PIC X(01)   VALUE   "m".
-           03  FILLER              PIC X(02)   VALUE   "£í".
-           03  FILLER              PIC X(01)   VALUE   "o".
-           03  FILLER              PIC X(02)   VALUE   "£ï".
-           03  FILLER              PIC X(01)   VALUE   "p".
-           03  FILLER              PIC X(02)   VALUE   "£ð".
-           03  FILLER              PIC X(01)   VALUE   "q".
-           03  FILLER              PIC X(02)   VALUE   "£ñ".
-           03  FILLER              PIC X(01)   VALUE   "r".
-           03  FILLER              PIC X(02)   VALUE   "£ò".
-           03  FILLER              PIC X(01)   VALUE   "s".
-           03  FILLER              PIC X(02)   VALUE   "£ó".
-           03  FILLER              PIC X(01)   VALUE   "t".
-           03  FILLER              PIC X(02)   VALUE   "£ô".
-           03  FILLER              PIC X(01)   VALUE   "u".
-           03  FILLER              PIC X(02)   VALUE   "£õ".
-           03  FILLER              PIC X(01)   VALUE   "v".
-           03  FILLER              PIC X(02)   VALUE   "£ö".
-           03  FILLER              PIC X(01)   VALUE   "w".
-           03  FILLER              PIC X(02)   VALUE   "£÷".
-           03  FILLER              PIC X(01)   VALUE   "x".
-           03  FILLER              PIC X(02)   VALUE   "£ø".
-           03  FILLER              PIC X(01)   VALUE   "y".
-           03  FILLER              PIC X(02)   VALUE   "£ù".
-           03  FILLER              PIC X(01)   VALUE   "z".
-           03  FILLER              PIC X(02)   VALUE   "£ú".
-      *
-           03  FILLER              PIC X(01)   VALUE   "-".
-           03  FILLER              PIC X(02)   VALUE   "¡Ý".
-           03  FILLER              PIC X(01)   VALUE   "(".
-           03  FILLER              PIC X(02)   VALUE   "¡Ê".
-           03  FILLER              PIC X(01)   VALUE   ")".
-           03  FILLER              PIC X(02)   VALUE   "¡Ë".
-           03  FILLER              PIC X(01)   VALUE   "\".
-           03  FILLER              PIC X(02)   VALUE   "¡ï".
-           03  FILLER              PIC X(01)   VALUE   ".".
-           03  FILLER              PIC X(02)   VALUE   "¡¥".
-           03  FILLER              PIC X(01)   VALUE   "/".
-           03  FILLER              PIC X(02)   VALUE   "¡¿".
-           03  FILLER              PIC X(01)   VALUE   "<".
-           03  FILLER              PIC X(02)   VALUE   "¡ã".
-           03  FILLER              PIC X(01)   VALUE   ">".
-           03  FILLER              PIC X(02)   VALUE   "¡ä".
-           03  FILLER              PIC X(01)   VALUE   "*".
-           03  FILLER              PIC X(02)   VALUE   "¡ö".
-           03  FILLER              PIC X(01)   VALUE   "?".
-           03  FILLER              PIC X(02)   VALUE   "¡©".
-           03  FILLER              PIC X(01)   VALUE   "%".
-           03  FILLER              PIC X(02)   VALUE   "¡ó".
-           03  FILLER              PIC X(01)   VALUE   "+".
-           03  FILLER              PIC X(02)   VALUE   "¡Ü".
-           03  FILLER              PIC X(01)   VALUE   "!".
-           03  FILLER              PIC X(02)   VALUE   "¡ª".
-           03  FILLER              PIC X(01)   VALUE   "#".
-           03  FILLER              PIC X(02)   VALUE   "¡ô".
-           03  FILLER              PIC X(01)   VALUE   "&".
-           03  FILLER              PIC X(02)   VALUE   "¡õ".
-           03  FILLER              PIC X(01)   VALUE   "=".
-           03  FILLER              PIC X(02)   VALUE   "¡á".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(02)   VALUE   "¡¤".
-           03  FILLER              PIC X(01)   VALUE   "_".
-           03  FILLER              PIC X(02)   VALUE   "¡²".
-           03  FILLER              PIC X(01)   VALUE   "@".
-           03  FILLER              PIC X(02)   VALUE   "¡÷".
-           03  FILLER              PIC X(01)   VALUE   "[".
-           03  FILLER              PIC X(02)   VALUE   "¡Î".
-           03  FILLER              PIC X(01)   VALUE   "]".
-           03  FILLER              PIC X(02)   VALUE   "¡Ï".
-      *
-       01  TBL-HENKAN-AREA-R           REDEFINES   TBL-HENKAN-AREA.
-           03  TBL-HENKAN-OCC          OCCURS   83
-                                       INDEXED  TBL-IDX.
-               05  TBL-HALF            PIC X(01).
-               05  TBL-ZEN             PIC X(02).
-       01  TBL-MAX                     PIC 9(04)   VALUE   83.
-      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -533,13 +354,13 @@
                MOVE    ZERO                TO  FLG-ZENKAKU1
                MOVE    ZERO                TO  FLG-ZENKAKU2
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   WRK-MAX-MOJI
+                       UNTIL      (IDX     >   WRK-MAX-MOJI )
+                              OR  (FLG-ZENKAKU1    =   1    )
                    INITIALIZE                  ORCSSTRINGAREA
                    MOVE    "substr"            TO  ORCSSTR-COMMAND
                    MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
                    MOVE    IDX                 TO  ORCSSTR-NUM1
-                   COMPUTE ORCSSTR-NUM2        =   IDX
-                                               +   1
+                   MOVE    IDX                 TO  ORCSSTR-NUM2
                    CALL    "orcsstring"        USING
                                                ORCSSTRINGAREA
                    IF      ORCSSTR-STRING2     =   "¡¡"
