@@ -262,6 +262,9 @@
            COPY    "MUID.INC".
            COPY    "M99.INC".
            COPY    "MID2.INC".
+           COPY    "MDAS.INC".
+           COPY    "MLOG.INC".
+           COPY    "MINF.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -356,6 +359,9 @@
                WHEN    "MID1"
                    PERFORM 330-MID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "MDAS"
+                   PERFORM 330-MDAS-SET-SEC
+      *             GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
       *    他のＬＤより
@@ -468,6 +474,21 @@
            EXIT.
       *
       *****************************************************************
+      *    参加同意確認画面（ＭＤＡＳ）ＯＫ処理
+      *****************************************************************
+       330-MDAS-SET-SEC             SECTION.
+      *
+           IF      SPA-MID1-FLG     =   "OK"
+               PERFORM 4901-MUID-SYORI-SEC
+           END-IF
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           .
+       330-MDAS-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -495,6 +516,9 @@
       *     設定
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-SETTEI-SYORI-SEC
+      *     感染症画面
+               WHEN    "CLICKED"       ALSO    "B04"
+                   PERFORM 480-MINF-SEC
            END-EVALUATE
       *
            .
@@ -989,10 +1013,20 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        490-SETTEI-SYORI-SEC        SECTION.
       *
            MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
-           IF      SYS-1010-KANRIAUTHFLG   =   "T"
-      *        管理者である
-               PERFORM 4901-MUID-SYORI-SEC
+           IF      SYS-1010-KANRIAUTHFLG   NOT =   "T"
+               GO  TO  490-SETTEI-SYORI-EXT
            END-IF
+      *
+      *
+           MOVE    "M98"               TO  SPA-MOTOPG
+           MOVE    "MDAS"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "MDAS"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
            .
        490-SETTEI-SYORI-EXT.
            EXIT.
@@ -1008,7 +1042,24 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            PERFORM 4902-MUID-SET-SEC
       *
-           MOVE    "USER"               TO  MCP-WIDGET
+           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-M01             TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGMUID"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
+           MOVE    SPA-FREE        TO  SPA-M01
+      *
+           MOVE    "KANANAME"           TO  MCP-WIDGET
            MOVE    "M98 "               TO  SPA-MOTOPG
            MOVE    "MUID"               TO  SPA-SAKIPG
            MOVE    "NEW"                TO  MCP-PUTTYPE
@@ -1029,6 +1080,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
            MOVE    SPA-HOSPID          TO  SPA-MUID-HOSPID
            MOVE    SPA-MUID-HOSPID     TO  MUID-HOSPID
+           MOVE    SPA-SYSYMDWH        TO  SPA-MUID-SINSEIYMD
+           MOVE    SPA-MUID-SINSEIYMD  TO  MUID-SINSEIYMD
       *
            OPEN    INPUT               USER-FILE
            IF      STS-DATA        NOT =   ZERO
@@ -1078,6 +1131,27 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            CLOSE                       USER-FILE
            .
        4902-MUID-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    感染症表示画面へ
+      *****************************************************************
+       480-MINF-SEC                SECTION.
+      *
+              MOVE    "B12"        TO  MCP-WIDGET
+      *
+              MOVE    "M98"        TO  SPA-MOTOPG
+              MOVE    "MINF"       TO  SPA-SAKIPG
+      *
+              MOVE    "CHANGE"     TO  MCP-PUTTYPE
+              MOVE    "MINF"       TO  MCP-WINDOW
+      *
+              PERFORM 900-PUT-WINDOW
+      *
+              MOVE    1            TO  FLG-END
+      *
+           .
+       480-MINF-EXT.
            EXIT.
       *
       *****************************************************************

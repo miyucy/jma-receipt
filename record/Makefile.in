@@ -415,6 +415,9 @@ RECORD_files = \
 	XGFIL.rec \
 	K061.rec \
 	K062.rec \
+	MDAS.rec \
+	MLOG.rec \
+	MINF.rec \
 
 DEF_files = \
 	HC01.def \
@@ -635,7 +638,8 @@ DB_files = \
 	xml_appointres.db \
 	xml_patientinfores.db \
 	tbl_santeiplus.db \
-
+	system.db \
+	tbl_infection.db \
 
 all:   
 

@@ -209,6 +209,9 @@
            COPY    "MUID.INC".
            COPY    "M99.INC".
            COPY    "MID2.INC".
+           COPY    "MDAS.INC".
+           COPY    "MLOG.INC".
+           COPY    "MINF.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

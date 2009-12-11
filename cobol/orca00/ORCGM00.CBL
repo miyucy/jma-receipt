@@ -247,6 +247,10 @@
            COPY    "M98.INC".
            COPY    "MUID.INC".
            COPY    "M99.INC".
+           COPY    "MID2.INC".
+           COPY    "MDAS.INC".
+           COPY    "MLOG.INC".
+           COPY    "MINF.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -377,6 +381,7 @@
                                        OR  "M95"
                                        OR  "MVER"
                                        OR  "KT01"
+                                       OR  "MLOG"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
                MOVE    SPA-SYSYMDW         TO  WRK-WYMD
@@ -1087,6 +1092,9 @@
       *        外来まとめテスト
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-KT01-SEC
+      *        LOGIN情報画面
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 470-MLOG-SEC
       *!!!!!!!
       *!!!!!!!
       *    各業務移動へ
@@ -1266,6 +1274,37 @@
            EXIT.
       *
       *****************************************************************
+      *    LOGIN情報表示画面へ
+      *****************************************************************
+       470-MLOG-SEC                    SECTION.
+      *
+      *     MOVE    SPACE                TO  MVER
+           MOVE    "M00"                TO  SPA-MOTOPG
+           MOVE    "MLOG"               TO  SPA-SAKIPG
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+           CALL    "ORCGMLOG"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "M00"                TO  SPA-MOTOPG
+           MOVE    "MLOG"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "MLOG"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END 
+      *
+           .
+       470-MLOG-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    JOBLOG表示画面へ
       *****************************************************************
        480-M98-SEC                     SECTION.
@@ -1287,6 +1326,30 @@
       *
            .
        480-M98-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    感染症表示画面へ
+      *****************************************************************
+       480-MINF-SEC                     SECTION.
+      *
+      *     IF      SPA-DATACREATEFLG   =    1
+      *       MOVE    SPACE            TO  MVER
+              MOVE    "B12"            TO  MCP-WIDGET
+      *
+              MOVE    "M00"            TO  SPA-MOTOPG
+              MOVE    "MINF"            TO  SPA-SAKIPG
+      *
+              MOVE    "CHANGE"         TO  MCP-PUTTYPE
+              MOVE    "MINF"            TO  MCP-WINDOW
+      *
+              PERFORM 900-PUT-WINDOW
+      *
+              MOVE    1                    TO  FLG-END 
+      *     END-IF
+      *
+           .
+       480-MINF-EXT.
            EXIT.
       *!!!!!!!
       *****************************************************************
