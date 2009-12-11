@@ -11,7 +11,7 @@ linkage	orcalink;
 
 blob {
     space   "/tmp/blob";
-    port    "/tmp/blog.blob";
+    port    "/tmp/sysdata";
 };
 
 wfc  {

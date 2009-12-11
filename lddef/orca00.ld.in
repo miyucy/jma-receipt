@@ -18,6 +18,9 @@ bind	"M98"		"OpenCOBOL"	"ORCGM98";
 bind	"MUID"		"OpenCOBOL"	"ORCGMUID";
 bind	"M99"		"OpenCOBOL"	"ORCGM99";
 bind	"MID2"		"OpenCOBOL"	"ORCGMID2";
+bind	"MDAS"		"OpenCOBOL"	"ORCGMDAS";
+bind	"MLOG"		"OpenCOBOL"	"ORCGMLOG";
+bind	"MINF"		"OpenCOBOL"	"ORCGMINF";
 
 multiplex_group	orca00;
 
@@ -39,6 +42,9 @@ data	{
 		MUID;
 		M99;
 		MID2;
+		MDAS;
+		MLOG;
+		MINF;
 	};
 };
 
@@ -53,6 +59,10 @@ db	{
 	tbl_sysbase;
 	tbl_mstkanri;
 	tbl_sysuser;
+	tbl_adrs;
+	tbl_infection;
+	tbl_ptinf;
+	tbl_byomei;
 };
 
 /* #include "orcadb.inc" */
