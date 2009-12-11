@@ -28,6 +28,7 @@
       *  01.00.02    NACL-多々納  04/09/30  全角エラー追加
       *  01.00.03    NACL-多々納  05/08/10  kanaconv 使用へ変更
       *  04.01.00    NACL-多々納  08/01/17  全角空白判定追加
+      *  04.05.00    NACL-多々納  09/12/11  全角空白削除追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -465,6 +466,11 @@
       *****************************************************************
        1003-ZENSPACE-CHK-SEC           SECTION.
       *
+           IF      KANACHK-SYORIKBN    =   "1"
+      *        最後の全角空白削除
+               PERFORM 10031-LASTDEL-HEN-SEC
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-ZENKAKU1
            MOVE    ZERO                TO  FLG-ZENKAKU2
            MOVE    ZERO                TO  WRK-IDX1
@@ -494,6 +500,30 @@
            END-IF
            .
        1003-ZENSPACE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    最後の全角空白削除処理
+      *****************************************************************
+       10031-LASTDEL-HEN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-IDX1
+           MOVE    SPACE               TO  WRK-MEISYO
+           COMPUTE WRK-IDX2            =   KANACHK-MAX   -  1
+           PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  -2
+                   UNTIL       IDX     <   1
+               IF      KANACHK-OUT-INPUT(IDX:2)    =   "　"
+                   CONTINUE
+               ELSE
+                   COMPUTE WRK-IDX1        =   IDX     +   1
+                   MOVE    KANACHK-OUT-INPUT(1:WRK-IDX1)
+                                               TO  WRK-MEISYO
+                   MOVE    2                   TO  IDX
+               END-IF
+           END-PERFORM
+           MOVE    WRK-MEISYO          TO  KANACHK-OUT-INPUT
+           MOVE    WRK-IDX1            TO  KANACHK-MAX
+           .
+       10031-LASTDEL-HEN-EXT.
            EXIT.
       *
       *****************************************************************

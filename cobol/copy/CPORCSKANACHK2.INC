@@ -26,6 +26,8 @@
        01  ORCSKANACHK2AREA.
       *    処理フラグ（１：チェック、２：全角変換）
            03  KANACHK2-SYORI               PIC X(01).
+      *    処理フラグ２（１：後ろの全角空白削除）
+           03  KANACHK2-SYORIKBN            PIC X(01).
       *    入力領域
            03  KANACHK2-MAE-INPUT           PIC X(1000).
       *    出力桁数（全角の最大桁数の指定（省略可））
