@@ -519,6 +519,9 @@
                                                TO  WRK-MEISYO
                    MOVE    2                   TO  IDX
                END-IF
+               IF      IDX             =   1
+                   MOVE    2               TO  IDX
+               END-IF
            END-PERFORM
            MOVE    WRK-MEISYO          TO  KANACHK-OUT-INPUT
            MOVE    WRK-IDX1            TO  KANACHK-MAX
