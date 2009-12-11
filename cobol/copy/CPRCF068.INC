@@ -24,51 +24,34 @@
       *  01.00.01    NACL-藤原    03.05.09  自院歴−入院中区分の追加
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.04.01    NACL-藤原    09/12/10  同月に初回による入院歴が複数
+      *  04.03.01    NACL-藤原    09/12/10  同月に初回による入院歴が複数
       *                                     ある場合の記録の修正 
       *                                     初回番号の追加
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *
-      *  04.07.01    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
-      *                                     を修正
-      *                                    （入院日と退院日が同じとき）
       ************************************************************
       *01  RECE68-REC.
            03  RECE68-KEY.
-               05  RECE68-KEY1.
       *医療機関ＩＤ
-                   07  RECE68-HOSPNUM      PIC 9(2).
+               05  RECE68-HOSPNUM         PIC 9(2).
       *診療年月
-                   07  RECE68-SRYYM        PIC 9(06).
+               05  RECE68-SRYYM           PIC  9(06).
       *入外区分
-                   07  RECE68-NYUGAIKBN    PIC X(01).
+               05  RECE68-NYUGAIKBN       PIC  X(01).
       *患者ＩＤ
-                   07  RECE68-PTID         PIC 9(10).
+               05  RECE68-PTID            PIC  9(10).
       *レセプト科
-                   07  RECE68-RECEKA       PIC X(02).
+               05  RECE68-RECEKA          PIC  X(02).
       *審査支払機関
-                   07  RECE68-TEISYUTUSAKI
-                                           PIC 9(01).
+               05  RECE68-TEISYUTUSAKI    PIC  9(01).
       *レセプト種別
-                   07  RECE68-RECESYUBETU  PIC 9(04).
+               05  RECE68-RECESYUBETU     PIC  9(04).
       *保険者番号        
-                   07  RECE68-HKNJANUM     PIC X(08).
+               05  RECE68-HKNJANUM        PIC  X(08).
       *補助区分
-                   07  RECE68-HOJOKBN      PIC X(01).
-      *公費ＩＤ
-                   07  RECE68-KOHID        PIC 9(10).
+               05  RECE68-HOJOKBN         PIC  X(01).
       *適用開始年月日
-                   07  RECE68-TEKSTYMD     PIC X(08). 
-      *分割区分
-                   07  RECE68-RECEIPT-KBN  PIC X(10).
+               05  RECE68-TEKSTYMD        PIC  X(08). 
       *入院年月日
                05  RECE68-NYUINYMD        PIC X(08).
-      *入院年月日連番
-               05  RECE68-NYUINYMD-SEQNO  PIC 9(01).
       *退院年月日
            03  RECE68-TAIINYMD            PIC X(08).
       *自院歴−入院中区分
