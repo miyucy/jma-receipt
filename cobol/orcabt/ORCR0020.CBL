@@ -1199,6 +1199,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                                            TO
                                                    RECE01-SRYKA (IDZZ)
                                        END-IF
+                                       IF      RECE01-SRYKA (IDZZ)
+                                                   =
+                                             WRK-SEIHO-RECE01-SRYKA
+                                                             (IDXX IDVV)
+                                           MOVE    20          TO  IDZZ
+                                       END-IF
                                    END-PERFORM
                                END-PERFORM
                                MOVE    4           TO  IDYY
