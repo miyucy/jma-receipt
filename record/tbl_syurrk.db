@@ -105,6 +105,8 @@ tbl_syurrk {
 	KOH_FTN						number(7,0);
 	YKZ_FTN 					number(7,0);
 	CHOSEI  					number(7,0);
+	CHOSEI1  					number(7,0);
+	CHOSEI2  					number(7,0);
 	HKNTEKMONEY				number(7,0);
 	DISCOUNT_KBN			char(2);
 	DISCOUNT_MONEY		number(7,0);
@@ -204,7 +206,9 @@ path	key3 	{
 path	upd1 	{
 	DBUPDATE	{
 		UPDATE tbl_syurrk
-		SET  CHOSEI   = tbl_syurrk.CHOSEI   + :CHOSEI * -1,
+		SET  CHOSEI   = tbl_syurrk.CHOSEI   + :CHOSEI  * -1,
+		     CHOSEI1  = tbl_syurrk.CHOSEI1  + :CHOSEI1 * -1,
+		     CHOSEI2  = tbl_syurrk.CHOSEI2  + :CHOSEI2 * -1,
 				 SKYMONEY = tbl_syurrk.SKYMONEY + :SKYMONEY * -1,
 				 CREYMD   = :CREYMD,
 				 UPYMD    = :UPYMD,
@@ -230,6 +234,8 @@ path	upd2 	{
 	DBUPDATE	{
 		UPDATE tbl_syurrk
 		SET  CHOSEI   = tbl_syurrk.CHOSEI   + :CHOSEI,
+                     CHOSEI1  = tbl_syurrk.CHOSEI1  + :CHOSEI1,
+                     CHOSEI2  = tbl_syurrk.CHOSEI2  + :CHOSEI2,
 				 SKYMONEY = tbl_syurrk.SKYMONEY + :SKYMONEY,
 				 CREYMD   = :CREYMD,
 				 UPYMD    = :UPYMD,
@@ -255,6 +261,8 @@ path	upd3 	{
 	DBUPDATE	{
 		UPDATE tbl_syurrk
 		SET  CHOSEI   = CHOSEI   + :CHOSEI,
+                     CHOSEI1  = CHOSEI1  + :CHOSEI1,  
+                     CHOSEI2  = CHOSEI2  + :CHOSEI2,
 				 SKYMONEY = SKYMONEY + :SKYMONEY,
 				 CREYMD   = :CREYMD,
 				 UPYMD    = :UPYMD,

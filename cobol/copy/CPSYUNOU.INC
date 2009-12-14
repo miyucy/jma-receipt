@@ -328,6 +328,14 @@
            03  SYU-KOHTAIYKZKBN        PIC  X(01).
       *調整金
            03  SYU-CHOSEI              PIC S9(07).
+           03  SYU-CHOSEI-NAIYOU.
+      *調整金内訳１
+               05  SYU-CHOSEI1         PIC S9(07).
+      *調整金内訳２
+               05  SYU-CHOSEI2         PIC S9(07).
+           03  SYU-CHOSEI-NAIYOU-R REDEFINES  SYU-CHOSEI-NAIYOU.
+               05  SYU-RCHOSEI         PIC S9(07)
+                                       OCCURS  2.
       *まとめ入力伝票番号
            03  SYU-GRP-DENPNUM         PIC 9(07).
       *まとめ入力連番

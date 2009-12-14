@@ -200,7 +200,15 @@
       *薬剤一部負担金
            03  SYURRK-YKZ-FTN             PIC S9(7).
       *調整金
-           03  SYURRK-CHOSEI              PIC S9(7).
+           03  SYURRK-CHOSEI              PIC S9(07).
+           03  SYURRK-CHOSEI-NAIYOU.
+      *調整金内訳１
+               05  SYURRK-CHOSEI1         PIC S9(07).
+      *調整金内訳２
+               05  SYURRK-CHOSEI2         PIC S9(07).
+           03  SYURRK-CHOSEI-NAIYOU-R REDEFINES  SYURRK-CHOSEI-NAIYOU.
+               05  SYURRK-RCHOSEI         PIC S9(07)
+                                          OCCURS  2.
       *保険適用金額
            03  SYURRK-HKNTEKMONEY         PIC S9(7).
       *病院減免事由区分

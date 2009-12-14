@@ -152,6 +152,8 @@ tbl_syunou_main {
 	RESE_YKZ_FTN        number(7,0);
 	KOHTAIYKZKBN		char(1);
 	CHOSEI  			number(7,0);
+	CHOSEI1  			number(7,0);
+	CHOSEI2  			number(7,0);
 	GRP_DENPNUM			number(7,0);
 	GRP_RENNUM			number(2,0);
 	GRP_SGKMONEY			number(7,0);
@@ -1433,4 +1435,31 @@ path	key71 	{
 		;
 	};
 };
+
+path	upd1 	{
+	DBUPDATE	{
+		UPDATE	tbl_syunou_main
+                SET	NYUGAIKBN	=    :NYUGAIKBN,
+		WHERE   HOSPNUM         =    :HOSPNUM
+		AND     NYUGAIKBN       =    :NYUGAIKBN
+		AND     PTID            =    :PTID
+		AND     CREATEKBN       =    :CREATEKBN
+		AND     SRYYMD		LIKE :SRYYMD
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE	tbl_syunou_main
+		WHERE   HOSPNUM         =    :HOSPNUM
+		AND     NYUGAIKBN       =    :NYUGAIKBN
+		AND     PTID            =    :PTID
+		AND     CREATEKBN       =    :CREATEKBN
+		AND     SRYYMD		LIKE :SRYYMD
+		;
+	};
+};
+
+
 

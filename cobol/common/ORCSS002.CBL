@@ -335,6 +335,8 @@ grpsys     COPY    "COMMON-SPA".
            MOVE  WKSYU-KOH-FTN             TO  SUMSYU-KOH-FTN  (IDX-SYU)
            MOVE  WKSYU-YKZ-FTN             TO  SUMSYU-YKZ-FTN  (IDX-SYU)
            MOVE  WKSYU-CHOSEI              TO  SUMSYU-CHOSEI   (IDX-SYU)
+           MOVE  WKSYU-CHOSEI1             TO  SUMSYU-CHOSEI1  (IDX-SYU)
+           MOVE  WKSYU-CHOSEI2             TO  SUMSYU-CHOSEI2  (IDX-SYU)
            MOVE  WKSYU-HKNTEKMONEY         TO  SUMSYU-HKNTEKMONEY
                                                                (IDX-SYU)
            MOVE  WKSYU-DISCOUNT-MONEY      TO  SUMSYU-DISCOUNT-MONEY
@@ -530,6 +532,14 @@ grpsys     COPY    "COMMON-SPA".
                =   SUMSYU-CHOSEI(IDX-AF)
                -   SUMSYU-CHOSEI(IDX-BF)
       *
+           COMPUTE SYURRK-CHOSEI1
+               =   SUMSYU-CHOSEI1(IDX-AF)
+               -   SUMSYU-CHOSEI1(IDX-BF)
+      *
+           COMPUTE SYURRK-CHOSEI2
+               =   SUMSYU-CHOSEI2(IDX-AF)
+               -   SUMSYU-CHOSEI2(IDX-BF)
+      *
            COMPUTE SYURRK-HKNTEKMONEY
                =   SUMSYU-HKNTEKMONEY(IDX-AF)
                -   SUMSYU-HKNTEKMONEY(IDX-BF)
@@ -674,6 +684,14 @@ grpsys     COPY    "COMMON-SPA".
                COMPUTE SYURRK-CHOSEI
                    =   LNKSYU-CHOSEI
                    -   SYU-CHOSEI
+      *
+               COMPUTE SYURRK-CHOSEI1
+                   =   LNKSYU-CHOSEI1
+                   -   SYU-CHOSEI1
+      *
+               COMPUTE SYURRK-CHOSEI2
+                   =   LNKSYU-CHOSEI2
+                   -   SYU-CHOSEI2
       *
                IF    ( SS002-IN-SYURRKUPDKBN   =   "1" )
                    COMPUTE SYURRK-SYURRKNUM

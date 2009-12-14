@@ -317,6 +317,14 @@
            03  SYUMAIN-KOHTAIYKZKBN        PIC  X(01).
       *調整金
            03  SYUMAIN-CHOSEI              PIC S9(07).
+           03  SYUMAIN-CHOSEI-NAIYOU.
+      *調整金内訳１
+               05  SYUMAIN-CHOSEI1         PIC S9(07).
+      *調整金内訳２
+               05  SYUMAIN-CHOSEI2         PIC S9(07).
+           03  SYUMAIN-CHOSEI-NAIYOU-R REDEFINES  SYUMAIN-CHOSEI-NAIYOU.
+               05  SYUMAIN-RCHOSEI         PIC S9(07)
+                                           OCCURS  2.
       *まとめ入力伝票番号
            03  SYUMAIN-GRP-DENPNUM         PIC 9(07).
       *まとめ入力連番
