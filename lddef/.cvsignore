@@ -8,6 +8,7 @@ orca03.ld
 orca04.ld
 orca05.ld
 orca06.ld
+orca07.ld
 orca11.ld
 orca12.ld
 orca13.ld
@@ -43,6 +44,7 @@ orca106.ld
 orca107.ld
 orca108.ld
 orca109.ld
+sessionend.ld
 orcabt.bd
 recept.bd
 directory

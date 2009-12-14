@@ -418,6 +418,7 @@ RECORD_files = \
 	MDAS.rec \
 	MLOG.rec \
 	MINF.rec \
+	sessionend.rec \
 
 DEF_files = \
 	HC01.def \
@@ -640,6 +641,7 @@ DB_files = \
 	tbl_santeiplus.db \
 	system.db \
 	tbl_infection.db \
+	tbl_dbcatalog.db \
 
 all:   
 
