@@ -1439,9 +1439,9 @@ path	key71 	{
 path	upd1 	{
 	DBUPDATE	{
 		UPDATE	tbl_syunou_main
-                SET	NYUGAIKBN	=    :NYUGAIKBN
+                SET	NYUGAIKBN	=    :NYUGAIKBN,
 		WHERE   HOSPNUM         =    :HOSPNUM
-		AND     NYUGAIKBN       =    '1'
+		AND     NYUGAIKBN       =    :DENPJTIKBN
 		AND     PTID            =    :PTID
 		AND     CREATEKBN       =    :CREATEKBN
 		AND     SRYYMD		LIKE :SRYYMD
@@ -1455,8 +1455,8 @@ path	del2 	{
 		WHERE   HOSPNUM         =    :HOSPNUM
 		AND     NYUGAIKBN       =    :NYUGAIKBN
 		AND     PTID            =    :PTID
-		AND     CREATEKBN       =    :CREATEKBN
-		AND     SRYYMD		LIKE :SRYYMD
+		AND     CREATEKBN       <>   3
+		AND     DENPNUM		>=   :DENPNUM
 		;
 	};
 };

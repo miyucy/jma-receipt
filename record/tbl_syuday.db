@@ -756,10 +756,23 @@ path	upd1 	{
 		UPDATE	tbl_syuday
                 SET	NYUGAIKBN	=    :NYUGAIKBN
 		WHERE   HOSPNUM         =    :HOSPNUM
-		AND     NYUGAIKBN       =    '1'
+		AND     NYUGAIKBN       =    :DAYINFFLG
 		AND     PTID            =    :PTID
 		AND     SKYYM		=    :SKYYM
 		AND     CREATEKBN       =    :CREATEKBN
+		;
+	};
+};
+
+path	del6 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syuday
+		WHERE   HOSPNUM         =    :HOSPNUM
+		AND     NYUGAIKBN       =    :NYUGAIKBN
+		AND     PTID            =    :PTID
+		AND     CREATEKBN       <>   3
+		AND     DENPNUM		>=   :DENPNUM
 		;
 	};
 };
