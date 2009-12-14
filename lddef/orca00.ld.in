@@ -63,6 +63,7 @@ db	{
 	tbl_infection;
 	tbl_ptinf;
 	tbl_byomei;
+  tbl_dbcatalog;
 };
 
 /* #include "orcadb.inc" */
