@@ -750,3 +750,17 @@ path	all 	{
 	};
 };
 
+
+path	upd1 	{
+	DBUPDATE	{
+		UPDATE	tbl_syuday
+                SET	NYUGAIKBN	=    :NYUGAIKBN
+		WHERE   HOSPNUM         =    :HOSPNUM
+		AND     NYUGAIKBN       =    '1'
+		AND     PTID            =    :PTID
+		AND     SKYYM		=    :SKYYM
+		AND     CREATEKBN       =    :CREATEKBN
+		;
+	};
+};
+
