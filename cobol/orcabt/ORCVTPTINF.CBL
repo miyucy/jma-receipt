@@ -345,6 +345,10 @@
       *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
+      *    エンコーディング取得処理
+           CALL    "ORCSENCODING"      USING    MCPAREA
+                                                SPA-AREA
+      *
       *    帳票ＯＰＥＮ処理
            OPEN    INPUT               CSV-FILE
            IF      STS-CSV         NOT =   ZERO
@@ -1013,6 +1017,22 @@
       *****************************************************************
        2402-ZENKAKU-HEN02-SEC        SECTION.
       *
+           IF      SPA-ENCODING        =   2
+      *        拡張漢字対応
+               PERFORM 24021-ZENKAKU-HEN02C-SEC
+           ELSE
+      *        拡張漢字不可
+               PERFORM 2402-ZENKAKU-HEN-SEC
+           END-IF
+           .
+       2402-ZENKAKU-HEN2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角桁数・空白処理（拡張漢字対応）
+      *****************************************************************
+       24021-ZENKAKU-HEN02C-SEC        SECTION.
+      *
            INITIALIZE                  ORCSKANACHK2AREA
            MOVE    "1"             TO  KANACHK2-SYORI
            MOVE    "1"             TO  KANACHK2-SYORIKBN
@@ -1047,7 +1067,7 @@
                MOVE    1               TO  WRK-LEN
            END-IF
            .
-       2402-ZENKAKU-HEN02-EXT.
+       24021-ZENKAKU-HEN02C-EXT.
            EXIT.
       *
       *

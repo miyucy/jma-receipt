@@ -889,22 +889,38 @@
       *****************************************************************
        891-HALF-ZEN2-SEC         SECTION.
       *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
-           MOVE    50                  TO  KANACHK2-MAX-CNT
-           CALL    "ORCSKANACHK2"       USING
-                                       ORCSKANACHK2AREA
-           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU     =   1     )
-               MOVE    "2530"              TO  SPA-ERRCD
-               MOVE    KANACHK2-MAE-INPUT   TO  WRK-ATO-INPUT
+           IF     SPA-ENCODING         =   2
+      *        拡張漢字対応
+               PERFORM 8910-HALF-ZENC2-SEC
            ELSE
-               MOVE    KANACHK2-OUT-INPUT   TO  WRK-ATO-INPUT
+      *        拡張漢字不可
+               PERFORM 890-HALF-ZEN-SEC
            END-IF
       *
            .
        891-HALF-ZEN2-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理（外字あり）
+      *****************************************************************
+       8910-HALF-ZENC2-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
+           MOVE    50                  TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
+                  (KANACHK2-SYUBETU     =   1     )
+               MOVE    "2530"              TO  SPA-ERRCD
+               MOVE    KANACHK2-MAE-INPUT  TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    KANACHK2-OUT-INPUT  TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       8910-HALF-ZENC2-EXT.
            EXIT.
       *
       *****************************************************************

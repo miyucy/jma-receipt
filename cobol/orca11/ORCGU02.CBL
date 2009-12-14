@@ -1954,18 +1954,37 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
        41021-KNJKEN-HEN-SEC        SECTION.
       *
       *    全角チェック
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU    =   1     )
-               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAME
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO      TO      41021-KNJKEN-HEN-EXT
+           IF      SPA-ENCODING        =   2
+      *        拡張漢字対応
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI
+               MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                      (KANACHK2-SYUBETU    =   1     )
+                   MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAME
+                   MOVE    "0003"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
+               END-IF
            ELSE
-               MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
+      *        拡張漢字不可
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAME
+                   MOVE    "0003"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41021-KNJKEN-HEN-EXT
            END-IF
       *
            MOVE    SPA-GMN-NAME        TO  WRK-NAME-KEY

@@ -79,6 +79,10 @@
            03  WRK-H-NAME-G.
                05  WRK-H-NAME1         PIC X(02).
       *
+           03  WRK-KANACHK-MAX         PIC 9(04).
+           03  WRK-KANACHK-SYUBETU     PIC 9(01).
+           03  WRK-KANACHK-OUT-INPUT   PIC X(1000).
+      *
       *    保存スパ領域
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
@@ -152,31 +156,55 @@
       *    患者番号構成編集
            PERFORM 1000-SYS1009-HEN-SEC
       *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    SPTNUM-PTNUM        TO  KANACHK2-MAE-INPUT
-           MOVE    20                  TO  KANACHK2-MAX-CNT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    KANACHK2-MAE-INPUT  TO  SPTNUM-PTNUM
-           IF      KANACHK2-RC      NOT =   ZERO
+           IF      SPA-ENCODING        =   2
+      *        拡張漢字対応
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI
+               MOVE    SPTNUM-PTNUM        TO  KANACHK2-MAE-INPUT
+               MOVE    20                  TO  KANACHK2-MAX-CNT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT  TO  SPTNUM-PTNUM
+               MOVE    KANACHK2-OUT-INPUT  TO  WRK-KANACHK-OUT-INPUT
+               MOVE    KANACHK2-MAX        TO  WRK-KANACHK-MAX
+               MOVE    KANACHK2-SYUBETU    TO  WRK-KANACHK-SYUBETU
+               IF      KANACHK2-RC      NOT =   ZERO
       *        混在エラー
-               MOVE    99              TO  SPTNUM-RC
-               MOVE    ZERO            TO  KANACHK2-MAX
-               MOVE    9               TO  KANACHK2-SYUBETU
+                   MOVE    99              TO  SPTNUM-RC
+                   MOVE    ZERO            TO  WRK-KANACHK-MAX
+                   MOVE    9               TO  WRK-KANACHK-SYUBETU
+               END-IF
+           ELSE
+      *        拡張漢字不可
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPTNUM-PTNUM        TO  KANACHK-MAE-INPUT
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPTNUM-PTNUM
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-KANACHK-OUT-INPUT
+               MOVE    KANACHK-MAX         TO  WRK-KANACHK-MAX
+               MOVE    KANACHK-SYUBETU     TO  WRK-KANACHK-SYUBETU
+               IF      KANACHK-RC       NOT =   ZERO
+      *        混在エラー
+                   MOVE    99              TO  SPTNUM-RC
+                   MOVE    ZERO            TO  WRK-KANACHK-MAX
+                   MOVE    9               TO  WRK-KANACHK-SYUBETU
+               END-IF
            END-IF
       *    最大桁数が２０以上の時、２０とする
-           IF      KANACHK2-MAX         >   20
-               MOVE    20               TO  KANACHK2-MAX
+           IF      WRK-KANACHK-MAX     >   20
+               MOVE    20              TO  WRK-KANACHK-MAX
            END-IF
       *
-           EVALUATE    KANACHK2-SYUBETU
+           EVALUATE    WRK-KANACHK-SYUBETU
                WHEN    1
       *            半角（患者番号）
                    PERFORM 100-PTID-SET-SEC
                WHEN    2
       *            全角（患者氏名）
-                   MOVE    KANACHK2-OUT-INPUT   TO  SPTNUM-PTNUM
+                   MOVE    WRK-KANACHK-OUT-INPUT   TO  SPTNUM-PTNUM
                    PERFORM 200-NAME-SET-SEC
       *
                WHEN    OTHER
@@ -301,7 +329,7 @@
       *
            MOVE    2                   TO  SPTNUM-SYUBETU
       *
-           MOVE    SPTNUM-PTNUM(1:KANACHK2-MAX)
+           MOVE    SPTNUM-PTNUM(1:WRK-KANACHK-MAX)
                                        TO  WRK-NAME
       *    COMPUTE IDX                 =   KANACHK2-MAX  +  1
       *    MOVE    "%"                 TO  WRK-NAME(IDX:1)
@@ -424,26 +452,6 @@
                                            ORCSSTRINGAREA
                MOVE    ORCSSTR-STRING2     TO  WRK-NAME2
            END-IF
-      ***  MOVE    1                   TO  IDX2
-      *    PERFORM VARYING     IDX     FROM    1   BY  2
-      *            UNTIL       IDX     >   KANACHK2-MAX
-      *        IF      SPTNUM-PTNUM(IDX:2) =   "＊"
-      *            COMPUTE IDX3            =   IDX     +  2
-      *            IF      SPTNUM-PTNUM (IDX3:2)    =   "　"
-      *                COMPUTE IDX3            =   IDX3     +  2
-      *            END-IF
-      *            IF      SPTNUM-PTNUM (IDX3:) =   SPACE
-      **               MOVE    SPACE               TO  WRK-NAME2
-      *            ELSE
-      *                MOVE    SPTNUM-PTNUM(IDX3:) TO  WRK-NAME2
-      *            END-IF
-      *            MOVE    KANACHK2-MAX             TO  IDX
-      *        ELSE
-      *            MOVE    SPTNUM-PTNUM(IDX:2)     TO  WRK-NAME1
-      *                                                        (IDX2:2)
-      *            ADD     2                       TO  IDX2
-      *        END-IF
-      **** END-PERFORM
       *
            IF     (WRK-NAME1       NOT =   SPACE ) AND
                   (WRK-NAME2       NOT =   SPACE )

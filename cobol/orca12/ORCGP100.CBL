@@ -879,6 +879,22 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        890-HALF-ZEN2-SEC         SECTION.
       *
+           IF     SPA-ENCODING         =   2
+      *        拡張漢字対応
+               PERFORM 8910-HALF-ZENC2-SEC
+           ELSE
+      *        拡張漢字不可
+               PERFORM 890-HALF-ZEN-SEC
+           END-IF
+      *
+           .
+       891-HALF-ZEN2-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理（外字あり）
+      *****************************************************************
+       8910-HALF-ZENC2-SEC         SECTION.
+      *
            INITIALIZE                  ORCSKANACHK2AREA
            MOVE    "1"                 TO  KANACHK2-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
@@ -894,7 +910,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       890-HALF-ZEN2-EXT.
+       8910-HALF-ZENC2-EXT.
            EXIT.
       *
       *****************************************************************

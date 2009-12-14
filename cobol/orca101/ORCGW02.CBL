@@ -2706,20 +2706,40 @@
       *****************************************************************
        4106-KAISETUNAME-CHK-SEC        SECTION.
       *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    SPA-GMN-KAISETUNAME TO  KANACHK2-MAE-INPUT
-           MOVE    120                 TO  KANACHK2-MAX-CNT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-KAISETUNAME
-           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU    =   1     )
-               MOVE    "0012"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN-CUR
+           IF      SPA-ENCODING        =   2
+      *        ³ÈÄ¥´Á»úÂÐ±þ
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI
+               MOVE    SPA-GMN-KAISETUNAME TO  KANACHK2-MAE-INPUT
+               MOVE    120                 TO  KANACHK2-MAX-CNT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-KAISETUNAME
+               IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                      (KANACHK2-SYUBETU    =   1     )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   MOVE    7               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK2-OUT-INPUT
+                                           TO  SPA-GMN-KAISETUNAME
+               END-IF
            ELSE
-               MOVE    KANACHK2-OUT-INPUT
-                                       TO  SPA-GMN-KAISETUNAME
+      *        ³ÈÄ¥´Á»úÉÔ²Ä
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-KAISETUNAME TO  KANACHK-MAE-INPUT
+               MOVE    120                 TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KAISETUNAME
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   MOVE    7               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT
+                                           TO  SPA-GMN-KAISETUNAME
+               END-IF
            END-IF
       *
            .
@@ -2731,20 +2751,40 @@
       *****************************************************************
        4107-KANRINAME-CHK-SEC            SECTION.
       *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    SPA-GMN-KANRINAME   TO  KANACHK2-MAE-INPUT
-           MOVE    80                  TO  KANACHK2-MAX-CNT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    KANACHK2-MAE-INPUT   TO  SPA-GMN-KANRINAME
-           IF     (KANACHK2-RC      NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU     =   1     )
-               MOVE    "0012"          TO  SPA-ERRCD
-               MOVE    8               TO  SPA-GMN-CUR
+           IF      SPA-ENCODING        =   2
+      *        ³ÈÄ¥´Á»úÂÐ±þ
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI
+               MOVE    SPA-GMN-KANRINAME   TO  KANACHK2-MAE-INPUT
+               MOVE    80                  TO  KANACHK2-MAX-CNT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT   TO  SPA-GMN-KANRINAME
+               IF     (KANACHK2-RC      NOT =   ZERO  )  OR
+                       (KANACHK2-SYUBETU     =   1     )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   MOVE    8               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK2-OUT-INPUT
+                                           TO  SPA-GMN-KANRINAME
+               END-IF
            ELSE
-               MOVE    KANACHK2-OUT-INPUT
-                                       TO  SPA-GMN-KANRINAME
+      *        ³ÈÄ¥´Á»úÉÔ²Ä
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-KANRINAME   TO  KANACHK-MAE-INPUT
+               MOVE    80                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KANRINAME
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   MOVE    8               TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT
+                                           TO  SPA-GMN-KANRINAME
+               END-IF
            END-IF
       *
            .

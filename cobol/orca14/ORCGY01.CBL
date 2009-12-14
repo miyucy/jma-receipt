@@ -1675,18 +1675,38 @@
            END-IF
       *
       *    全角半角チェック
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI
-           MOVE    SPA-GMN-YYKNAME     TO  KANACHK2-MAE-INPUT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           IF     (KANACHK2-RC     NOT =   ZERO  )  OR
-                  (KANACHK2-SYUBETU    =   1     )
-               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-YYKNAME
-               MOVE    "0017"              TO  SPA-ERRCD
-               GO      TO      41014-YYKNAME-EXT
+      *    全角チェック
+           IF      SPA-ENCODING        =   2
+      *        拡張漢字対応
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI
+               MOVE    SPA-GMN-YYKNAME     TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               IF     (KANACHK2-RC     NOT =   ZERO  )  OR
+                      (KANACHK2-SYUBETU    =   1     )
+                   MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-YYKNAME
+                   MOVE    "0017"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-YYKNAME
+               END-IF
            ELSE
-               MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-YYKNAME
+      *        拡張漢字不可
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-YYKNAME     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-YYKNAME
+                   MOVE    "0017"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-YYKNAME
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41014-YYKNAME-EXT
            END-IF
       *
            MOVE    SPACE           TO  WRK-KNJ

@@ -3293,10 +3293,7 @@
       *        半角空白を全角空白へ
                MOVE    SPA-GMN-NAME        TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-LEN
-      *        PERFORM 890-HALF-ZEN-SEC
-      *TEST
                PERFORM 891-HALF-ZEN2-SEC
-      *TEST
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NAME
                IF      FLG-ERR             =   1
                    MOVE    "0026"              TO  SPA-ERRCD
@@ -7646,6 +7643,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        891-HALF-ZEN2-SEC         SECTION.
       *
+           IF     SPA-ENCODING         =   2
+      *        拡張漢字対応
+               PERFORM 8910-HALF-ZENC2-SEC
+           ELSE
+      *        拡張漢字不可
+               PERFORM 890-HALF-ZEN-SEC
+           END-IF
+      *
+           .
+       891-HALF-ZEN2-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理（外字あり）
+      *****************************************************************
+       8910-HALF-ZENC2-SEC         SECTION.
+      *
            INITIALIZE                  ORCSKANACHK2AREA
            MOVE    "1"                 TO  KANACHK2-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
@@ -7663,7 +7676,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       891-HALF-ZEN2-EXT.
+       8910-HALF-ZENC2-EXT.
            EXIT.
       *
       *****************************************************************

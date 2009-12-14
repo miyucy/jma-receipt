@@ -573,15 +573,30 @@
        209-NAMEKEN-SEC                 SECTION.
       *
       *    全角変換処理
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "2"                 TO  KANACHK2-SYORI
-           MOVE    SPA-GMN-NAMEKEN     TO  KANACHK2-MAE-INPUT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAMEKEN
-           IF      ( KANACHK2-RC       =   ZERO )
-               MOVE    KANACHK2-OUT-INPUT
-                                       TO  SPA-GMN-NAMEKEN
+           IF      SPA-ENCODING        =   2
+      *        拡張漢字対応
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "2"                 TO  KANACHK2-SYORI
+               MOVE    SPA-GMN-NAMEKEN     TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT  TO  SPA-GMN-NAMEKEN
+               IF      ( KANACHK2-RC       =   ZERO )
+                   MOVE    KANACHK2-OUT-INPUT
+                                           TO  SPA-GMN-NAMEKEN
+               END-IF
+           ELSE
+      *        拡張漢字不可
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-NAMEKEN     TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAMEKEN
+               IF      ( KANACHK-RC        =   ZERO )
+                   MOVE    KANACHK-OUT-INPUT
+                                           TO  SPA-GMN-NAMEKEN
+               END-IF
            END-IF
            IF      SPA-GMN-NAMEKEN     =   SPACE
                MOVE    SPACE               TO  SPA-NAI-NAMEKEN
@@ -649,10 +664,10 @@
                MOVE    ORCSSTR-STRING2     TO  WRK-NAME2
            END-IF
       *TEST
-           DISPLAY "SPA-GMN-NAMEKEN:" SPA-GMN-NAMEKEN
-           DISPLAY "WRK-NAME1:" WRK-NAME1
-           DISPLAY "WRK-NAME2:" WRK-NAME2
-           
+      *    DISPLAY "SPA-GMN-NAMEKEN:" SPA-GMN-NAMEKEN
+      *    DISPLAY "WRK-NAME1:" WRK-NAME1
+      *    DISPLAY "WRK-NAME2:" WRK-NAME2
+      *     
       *    MOVE    SPACE               TO  WRK-NAME1
       *    MOVE    SPACE               TO  WRK-NAME2
       *    MOVE    1                   TO  IDX2

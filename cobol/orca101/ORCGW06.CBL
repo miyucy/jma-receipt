@@ -2075,6 +2075,9 @@
            IF      SPA-GMN-NAME        =   SPACE
                CONTINUE
            ELSE
+      *
+           IF      SPA-ENCODING        =   2
+      *        ³ÈÄ¥´Á»úÂÐ±þ
                INITIALIZE                  ORCSKANACHK2AREA
                MOVE    "1"                 TO  KANACHK2-SYORI
                MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
@@ -2090,6 +2093,25 @@
                ELSE
                    MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-NAME
                END-IF
+           ELSE
+      *        ³ÈÄ¥´Á»úÉÔ²Ä
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
+               MOVE    80                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING 
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-NAME
+      *
+               IF      (KANACHK-RC         NOT =  0)  OR
+                       (KANACHK-SYUBETU    NOT =  2)
+                   MOVE    "0011"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               END-IF
+           END-IF
+      *
            END-IF
            . 
        4113-NAME-CHK-EXT.

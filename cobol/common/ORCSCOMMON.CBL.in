@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.05.00     NACL-多々納  09/12/14  エンコーディング追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,6 +84,8 @@
            03  WRK-MCP-DBSTATUS    PIC X(64).
       *
            03  WRK-SYSBASE-CNT     PIC 9(03).
+      *
+           03  WRK-ERRMSG          PIC X(500).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -633,49 +636,10 @@
       *    DBエンコーディング取得処理
       *****************************************************************
        1008-DBCATLG-GET-SEC        SECTION.
-      *  エンコーディング取得処理
-           INITIALIZE                      SYSBASE-REC
-           MOVE    DBCATALOG-REC       TO  MCPDATA-REC
-           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
-           MOVE    "enc"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
-               MOVE    "enc"               TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-              MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-              DISPLAY "エンコーディング情報  = " CPDBCTG-INFO-1
-           ELSE
-              DISPLAY "ENCODING GET ERR = " MCP-RC
-           END-IF
-      *    CPDBCTG-INFO-1 = EUC_JP  or UTF8 or OTHER
       *
-           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
-           MOVE    "enc"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *  ロケール取得処理
-           INITIALIZE                      SYSBASE-REC
-           MOVE    DBCATALOG-REC       TO  MCPDATA-REC
-           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
-           MOVE    "lcl"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
-               MOVE    "lcl"               TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-              MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-              DISPLAY "ロケール情報  = " CPDBCTG-INFO-1
-           ELSE
-              DISPLAY "ENCODING GET ERR = " MCP-RC
-           END-IF
-      *    CPDBCTG-INFO-1 = EUC_JP  or UTF8 or OTHER
-      *
-           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
-           MOVE    "lcl"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    エンコーディング取得処理
+           CALL    "ORCSENCODING"      USING    MCPAREA
+                                                SPA-AREA
       *
            .
        1008-DBCATLG-GET-EXT.
