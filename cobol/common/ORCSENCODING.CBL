@@ -149,11 +149,12 @@
                MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
                MOVE    "lcl"               TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-              MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-              DISPLAY "ロケール情報  = " CPDBCTG-INFO-1
-           ELSE
-              DISPLAY "ENCODING GET ERR = " MCP-RC
+               IF      MCP-RC              =   ZERO
+                  MOVE    MCPDATA-REC         TO  DBCATALOG-REC
+                  DISPLAY "ロケール情報  = " CPDBCTG-INFO-1
+               ELSE
+                  DISPLAY "ENCODING GET ERR = " MCP-RC
+               END-IF
            END-IF
       *    CPDBCTG-INFO-1 = EUC_JP  or UTF8 or OTHER
       *
