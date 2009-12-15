@@ -229,6 +229,7 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
       *
+           MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -263,6 +264,7 @@
       *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
                MOVE    SPACE           TO  SPA-MOTOPG
+               MOVE    SPACE           TO  SPA-ERRCD
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
@@ -512,7 +514,7 @@
       * 
            DISPLAY "LISTKEY   start"
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       200
+                   UNTIL   IDX     >       200 
                IF      SPA-NAI-TERMID(IDX) NOT =    SPACE
                    DISPLAY "termid not space!!"
                    INITIALIZE        ORCA-SYSTEM
@@ -700,7 +702,12 @@
        201-SELNUM-SEC              SECTION.
       *
            MOVE    MLOG-SEL1       TO  SPA-GMN-SELNUM
-           MOVE    3               TO  SPA-GMN-CUR
+           IF      SPA-GMN-SELNUM  >   MLOG-LIST-COUNT
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    3               TO  SPA-GMN-CUR
+           END-IF
            .
        201-SELNUM-EXT.
            EXIT.
@@ -797,7 +804,11 @@
            MOVE    ZERO            TO  SPA-GMN-SELNUM
            MOVE    SPACE           TO  SPA-GMN-MEMO
       *
-           MOVE    1               TO  SPA-GMN-CUR
+           IF      SPA-NAI-SYS-CNT >   1
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        420-CLEAR-EXT.
@@ -1015,7 +1026,7 @@
       *    ユーザーリスト
            MOVE    ZERO            TO  IDY
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >   200
+                   UNTIL   IDX     >   200 
                IF      SPA-NAI-TERMID(IDX) NOT =   SPACE
                    MOVE    1               TO  FLG-OK
                    IF    ( SPA-GMN-IRYO    NOT =   "00" )  AND
