@@ -183,6 +183,8 @@
            03  WRK-PTID                PIC 9(10).
            03  WRK-GEN-SKYMONEY        PIC S9(09).
            03  WRK-GEN-CHOSEI          PIC S9(09).
+           03  WRK-GEN-CHOSEI1         PIC S9(09).
+           03  WRK-GEN-CHOSEI2         PIC S9(09).
            03  WRK-SAGAKU              PIC S9(09).
            03  WRK-STR                 PIC X(200).
            03  WRK-LEN                 PIC 9(05).
@@ -526,6 +528,8 @@
                =   GENSYU-SKYMONEY -   GENSYU-CHOSEI
       *
            MOVE    ZERO            TO  GENSYU-CHOSEI
+                                       GENSYU-CHOSEI1
+                                       GENSYU-CHOSEI2
       *
            IF    ( ZOUSYUNOU-REC   NOT =   GENSYUNOU-REC )
       *
@@ -588,6 +592,8 @@
            MOVE    TEIKI04-SYU-DAT     TO  GENSYUNOU-REC
       *
            MOVE    GENSYU-CHOSEI       TO  WRK-GEN-CHOSEI
+           MOVE    GENSYU-CHOSEI1      TO  WRK-GEN-CHOSEI1
+           MOVE    GENSYU-CHOSEI2      TO  WRK-GEN-CHOSEI2
       *
            COMPUTE WRK-GEN-SKYMONEY
                =   GENSYU-SKYMONEY     -   WRK-GEN-CHOSEI
@@ -606,18 +612,36 @@
       *
            IF    ( WRK-SAGAKU          >   ZERO )
                IF    ( WRK-SAGAKU      >   GENSYU-SKYMONEY )
-                   MOVE    ZERO            TO  ZOUSYU-SKYMONEY
-      *
                    COMPUTE ZOUSYU-CHOSEI
-                       =   WRK-GEN-CHOSEI
-                       +   WRK-SAGAKU
-                       -   GENSYU-SKYMONEY
+                       =   ZOUSYU-SKYMONEY
+                       *   -1
+                   MOVE    ZERO            TO  ZOUSYU-SKYMONEY
+                   IF    ( GENSYU-CHOSEI2  =   ZERO )
+      *
+                       COMPUTE ZOUSYU-CHOSEI2
+                           =   GENSYU-CHOSEI2
+      *
+                       COMPUTE ZOUSYU-CHOSEI1
+                           =   GENSYU-CHOSEI1
+                           -   GENSYU-CHOSEI
+                           +   ZOUSYU-CHOSEI
+                   ELSE
+                       COMPUTE ZOUSYU-CHOSEI1
+                           =   GENSYU-CHOSEI1
+      *
+                       COMPUTE ZOUSYU-CHOSEI2
+                           =   GENSYU-CHOSEI2
+                           -   GENSYU-CHOSEI
+                           +   ZOUSYU-CHOSEI
+                   END-IF
                ELSE
                    COMPUTE ZOUSYU-SKYMONEY
                        =   GENSYU-SKYMONEY
                        -   WRK-SAGAKU
       *
                    MOVE    WRK-GEN-CHOSEI  TO  ZOUSYU-CHOSEI
+                   MOVE    WRK-GEN-CHOSEI1 TO  ZOUSYU-CHOSEI1
+                   MOVE    WRK-GEN-CHOSEI2 TO  ZOUSYU-CHOSEI2
                END-IF
            ELSE
       *
@@ -626,6 +650,8 @@
                    +   WRK-GEN-CHOSEI
       *
                MOVE    WRK-GEN-CHOSEI  TO  ZOUSYU-CHOSEI
+               MOVE    WRK-GEN-CHOSEI1 TO  ZOUSYU-CHOSEI1
+               MOVE    WRK-GEN-CHOSEI2 TO  ZOUSYU-CHOSEI2
       *
            END-IF
       *

@@ -123,17 +123,27 @@
               03  O04-RSISDO    PIC S9(8).
               03  O04-RSIETC    PIC S9(8).
               03  O04-RMSAGAKU  PIC S9(8).
-              03  O04-CHOSEI    PIC S9(8).
+              03  O04-CHOSEI1   PIC S9(8).
+              03  O04-CHOSEI2   PIC S9(8).
               03  O04-SYKMONEY  PIC S9(8).
               03  O04-NYUKINGK  PIC S9(8).
               03  O04-MISYUZAN  PIC S9(8).
               03  O04-ZENMISYU-GAI  PIC S9(8).
               03  O04-ZENMISYU-NYU  PIC S9(8).
               03  O04-GOKMISYU  PIC S9(8).
-              03  O04-BTNSKY-STATE PIC S9(9)   BINARY.
-              03  O04-CHOSEIIN-G.
-                04  O04-CHOSEIIN-STATE PIC S9(9)   BINARY.
-                04  O04-CHOSEIIN       PIC S9(8).
+              03  O04-BTNCHOSEI1-STATE PIC S9(9)   BINARY.
+              03  O04-BTNCHOSEI2-STATE PIC S9(9)   BINARY.
+              03  O04-CHOSEI1IN-G.
+                04  O04-CHOSEI1IN       PIC S9(8).
+                04  O04-CHOSEI1IN-STATE PIC S9(9)   BINARY.
+              03  O04-CHOSEI2IN-G.
+                04  O04-CHOSEI2IN       PIC S9(8).
+                04  O04-CHOSEI2IN-STATE PIC S9(9)   BINARY.
+              03  O04-SKYMONEYIN-G.
+                04  O04-SKYMONEYIN-STYLE 
+                                        PIC X(20).
+                04  O04-SKYMONEYIN      PIC S9(8).
+                04  O04-SKYMONEYIN-STATE PIC S9(9)   BINARY.
               03  O04-KINGAKU   PIC S9(8).
               03  O04-NYUKINYMD.
                 04  O04-VALUE   PIC X(10).

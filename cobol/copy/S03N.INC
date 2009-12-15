@@ -130,15 +130,23 @@
               03  S03N-RSISDO    PIC S9(10).
               03  S03N-RSIETC    PIC S9(10).
               03  S03N-RMSAGAKU  PIC S9(10).
-              03  S03N-CHOSEI    PIC S9(10).
+              03  S03N-CHOSEI1   PIC S9(10).
+              03  S03N-CHOSEI2   PIC S9(10).
               03  S03N-SKYMONEY  PIC S9(10).
               03  S03N-NYUKINGK1 PIC S9(10).
               03  S03N-MISYUZAN  PIC S9(10).
               03  S03N-ZENMISYU-GAI  PIC S9(10).
               03  S03N-ZENMISYU-NYU  PIC S9(10).
               03  S03N-GOKMISYU  PIC S9(10).
-              03  S03N-CHOSEIIN  PIC S9(10).
-              03  S03N-CHOSEIIN-STATE
+              03  S03N-CHOSEI1IN  PIC S9(10).
+              03  S03N-CHOSEI1IN-STATE
+                                 PIC S9(9)   BINARY.
+              03  S03N-CHOSEI2IN  PIC S9(10).
+              03  S03N-CHOSEI2IN-STATE
+                                 PIC S9(9)   BINARY.
+              03  S03N-SKYMONEYIN-STYLE  PIC X(20).
+              03  S03N-SKYMONEYIN  PIC S9(10).
+              03  S03N-SKYMONEYIN-STATE
                                  PIC S9(9)   BINARY.
               03  S03N-NYUKINGK2 PIC S9(10).
               03  S03N-NYUKINGK2-STATE

@@ -125,6 +125,7 @@
            03  IDX7                PIC 9(05).
            03  IDX-G               PIC 9(05).
            03  IDX-SYU             PIC 9(05).
+           03  IDXC                PIC 9(05).
            03  IDXY                PIC 9(05).
            03  IDXZ                PIC 9(05).
            03  IDX-LST             PIC 9(05).
@@ -1556,6 +1557,8 @@
                        -   WKSYU-CHOSEI
       *
                    MOVE    ZERO        TO  WKSYU-CHOSEI
+                                           WKSYU-CHOSEI1
+                                           WKSYU-CHOSEI2
                END-IF
       *
       *
@@ -1569,10 +1572,15 @@
                                                    (IDX1)
                END-IF
       *
-               MOVE    WKSYU-CHOSEI    TO  SPA-NAI-I04-CHOSEI
-                                                   (IDX1)
+               MOVE    WKSYU-CHOSEI1    TO  SPA-NAI-I04-CHOSEI
+                                                   (IDX1 1)
                                            SPA-NAI-I04-CHOSEI-MOT
-                                                   (IDX1)
+                                                   (IDX1 1)
+      *
+               MOVE    WKSYU-CHOSEI2    TO  SPA-NAI-I04-CHOSEI
+                                                   (IDX1 2)
+                                           SPA-NAI-I04-CHOSEI-MOT
+                                                   (IDX1 2)
       *        MOVE    WKSYU-SKYMONEY      TO  SPA-NAI-I04-NYUKIN
       *                                            (IDX1)
                IF    ( SPA-NAI-I04-NYKNJYOTAI  =   "1" )
@@ -1699,10 +1707,14 @@
            MOVE    WKSYU-RMSAGAKU          TO  SPA-GMN-I04-RMSAGAKU
       *
       *    調整金
-           MOVE    SPA-NAI-I04-CHOSEI (WRK-LST-IDX)
-                                           TO  SPA-GMN-I04-CHOSEI
+           MOVE    SPA-NAI-I04-CHOSEI (WRK-LST-IDX 1)
+                                           TO  SPA-GMN-I04-CHOSEI (1)
                                                WRK-Z9
-           MOVE    WRK-Z9                  TO  SPA-GMN-I04-CHOSEI-X
+           MOVE    WRK-Z9                  TO  SPA-GMN-I04-CHOSEI-X (1)
+           MOVE    SPA-NAI-I04-CHOSEI (WRK-LST-IDX 2)
+                                           TO  SPA-GMN-I04-CHOSEI (2)
+                                               WRK-Z9
+           MOVE    WRK-Z9                  TO  SPA-GMN-I04-CHOSEI-X (2)
       *    今回請求額
            MOVE    SPA-NAI-I04-SEIKYU (WRK-LST-IDX)
                                            TO  SPA-GMN-I04-SEIKYU
@@ -2316,8 +2328,10 @@
            MOVE    SPA-GMN-I04-SELNUM  TO  I04-SELNUM
       *
       *    調整金
-           MOVE    SPA-GMN-I04-CHOSEI-X
-                                       TO  I04-CHOSEI
+           MOVE    SPA-GMN-I04-CHOSEI-X (1)
+                                       TO  I04-CHOSEI (1)
+           MOVE    SPA-GMN-I04-CHOSEI-X (2)
+                                       TO  I04-CHOSEI (2)
       *
       *    入金上限額
            IF    ( SPA-GMN-I04-NYKNKNRKBN-CD   =   "1" )
@@ -2641,17 +2655,9 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    WIDGET-NORMAL   TO  I04-CHOSEI-STT
+           MOVE    WIDGET-NORMAL   TO  I04-CHOSEI-STT (1)
+                                       I04-CHOSEI-STT (2)
                                        I04-NYUKIN-STT
-      *
-      *    IF    ( SPA-GMN-I04-TTLDAT-FLG  =   ZERO )
-      *        CONTINUE
-      *    ELSE
-      *        IF    ( SPA-GMN-I04-HKNCOMBILST-CNT >   1 )
-      *            MOVE    WIDGET-INSENSITIVE
-      *                            TO  I04-CHOSEI-STT
-      *        END-IF
-      *    END-IF
       *
            IF    ( SPA-GMN-I04-HKNCOMBILST-SEL =   ZERO )
                    MOVE    WIDGET-INSENSITIVE
@@ -2710,9 +2716,14 @@
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    102
-               IF    ( I04-CHOSEI-STT
+               IF    ( I04-CHOSEI-STT (1)
                                    =   WIDGET-NORMAL )
-                   MOVE    "CHOSEI"    TO  MCP-WIDGET
+                   MOVE    "CHOSEI1"   TO  MCP-WIDGET
+               END-IF
+           WHEN    103
+               IF    ( I04-CHOSEI-STT (2)
+                                   =   WIDGET-NORMAL )
+                   MOVE    "CHOSEI2"   TO  MCP-WIDGET
                END-IF
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
@@ -2745,7 +2756,9 @@
                MOVE    212             TO  SPA-GMN-I04-CUR
            WHEN    "SELNUM"
                MOVE    001             TO  SPA-GMN-I04-CUR
-           WHEN    "CHOSEI"
+           WHEN    "CHOSEI1"
+               MOVE    103             TO  SPA-GMN-I04-CUR
+           WHEN    "CHOSEI2"
                MOVE    212             TO  SPA-GMN-I04-CUR
            WHEN    "NYKNHOHO"
                MOVE    007             TO  SPA-GMN-I04-CUR
@@ -2866,9 +2879,12 @@
                    PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
       *            調整金
-                   MOVE    SPA-NAI-I04-CHOSEI (WRK-LST-IDX)
+                   MOVE    SPA-NAI-I04-CHOSEI (WRK-LST-IDX 1)
                                            TO  WRK-Z9
-                   MOVE    WRK-Z9          TO  I04-CHOSEI
+                   MOVE    WRK-Z9          TO  I04-CHOSEI (1)
+                   MOVE    SPA-NAI-I04-CHOSEI (WRK-LST-IDX 2)
+                                           TO  WRK-Z9
+                   MOVE    WRK-Z9          TO  I04-CHOSEI (2)
       *            入金額
                    MOVE    SPA-NAI-I04-NYUKIN-X (WRK-LST-IDX)
                                            TO  I04-NYUKIN
@@ -2908,7 +2924,8 @@
        4101-GMN-SPA-SET-SEC          SECTION.
       *
       *    調整金
-           MOVE    I04-CHOSEI      TO  SPA-GMN-I04-CHOSEI-X
+           MOVE    I04-CHOSEI(1)   TO  SPA-GMN-I04-CHOSEI-X (1)
+           MOVE    I04-CHOSEI(2)   TO  SPA-GMN-I04-CHOSEI-X (2)
       *
       *    入金額
            MOVE    I04-NYUKIN      TO  SPA-GMN-I04-NYUKIN-X
@@ -2950,70 +2967,62 @@
        4102-KIHON-CHK-SEC          SECTION.
       *
       *    入金の取扱いチェック処理
-           PERFORM 4100-NYKNKNRKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-NYKNKNRKBN-CHK-SEC
            END-IF
       *
       *    調整金チェック処理
-           PERFORM 4100-CHOSEI-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
+           PERFORM VARYING IDXC    FROM    1   BY  1
+                   UNTIL ( IDXC    >   2 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               PERFORM 4100-CHOSEI-CHK-SEC
+      *
+           END-PERFORM
       *
       *    入金額チェック処理
-           PERFORM 4100-NYUKIN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-NYUKIN-CHK-SEC
            END-IF
       *
       *    入金方法チェック処理
-           PERFORM 4100-NYKNHOHO-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-NYKNHOHO-CHK-SEC
            END-IF
       *
       *    請求書兼領収書発行チェック処理
-           PERFORM 4100-SKYPRTOUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-SKYPRTOUT-CHK-SEC
            END-IF
       *
       *    請求書兼領収書発行方法チェック処理
-           PERFORM 4100-SKYSUMKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-SKYSUMKBN-CHK-SEC
            END-IF
       *
       *    診療費明細書発行チェック処理
-           PERFORM 4100-SRYPRTOUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-SRYPRTOUT-CHK-SEC
            END-IF
       *
       *    退院証明書発行チェック処理
-           PERFORM 4100-TAIPRTOUT-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-TAIPRTOUT-CHK-SEC
            END-IF
       *!!
       *    院外処方せん発行チェック処理
-           PERFORM 4100-SHOHOU-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-SHOHOU-CHK-SEC
            END-IF
-      *!!
       *
       *    主治医氏名チェック処理
-           PERFORM 4100-DR-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-DR-CHK-SEC
            END-IF
       *
       *    ユーザープログラムチェック処理
-           PERFORM 4100-USERPG-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4100-USERPG-CHK-SEC
            END-IF
       *
            .
@@ -3039,14 +3048,15 @@
                                        TO  IDXZ
       *
            INITIALIZE                      ORCSNUMAREA
-           MOVE    SPA-GMN-I04-CHOSEI-X    TO  SNUM-INX
+           MOVE    SPA-GMN-I04-CHOSEI-X (IDXC)   TO  SNUM-INX
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-SEISUU         >   7     )   OR
                   (SNUM-SYOKBN         =   "1"   )
                MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    102                 TO  SPA-GMN-I04-CUR
+               COMPUTE SPA-GMN-I04-CUR
+                   =   101 +   IDXC
            ELSE
                MOVE    SNUM-OUTNUM         TO  WRK-CHOSEI
       *
@@ -3054,88 +3064,19 @@
       *
                PERFORM 4101-CHOSEI-SORT-SEC
       *
-      *=============================================================
-               DISPLAY "====== BEFORE ========"
-               PERFORM VARYING IDX0 FROM 1 BY 1
-                       UNTIL ( IDX0 > SPA-I0-SYUNOU-CNT )
-                   MOVE    SPA-I0-SYUNOU-DAT (IDX0)
-                                           TO  SYUNOU-REC
-                   DISPLAY IDX0 ":SPA-I0-SYUNOU-TTLDAT-FLG :"
-                                  SPA-I0-SYUNOU-TTLDAT-FLG (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-SYUNOU-UPDFLG     :"
-                                  SPA-I0-SYUNOU-UPDFLG (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-UPD-SKYMONEY      :"
-                                  SPA-I0-UPD-SKYMONEY (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-UPD-TAX-SAI       :"
-                                  SPA-I0-UPD-TAX-SAI (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-UPD-TAX-SAI       :"
-                                  SPA-I0-UPD-TAX-SAI (IDX0)
-                   DISPLAY IDX0 ":SYU-SKYMONEY             :"
-                                  SYU-SKYMONEY
-                   DISPLAY IDX0 ":SYU-CHOSEI               :"
-                                  SYU-CHOSEI
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU       :"
-                                  SPA-NAI-I04-SEIKYU (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU-PLUS  :"
-                                  SPA-NAI-I04-SEIKYU-PLUS (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU-KON   :"
-                                  SPA-NAI-I04-SEIKYU-KON (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU-MOT   :"
-                                  SPA-NAI-I04-SEIKYU-MOT (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-CHOSEI       :"
-                                  SPA-NAI-I04-CHOSEI (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-CHOSEI-MOT   :"
-                                  SPA-NAI-I04-CHOSEI-MOT (IDX0)
-               DISPLAY "----------------------"
-               END-PERFORM
-      *=============================================================
       *
       *        合計再計算
                PERFORM 4101-SEIKYU-KEI-SEC
       *
-               MOVE    SPA-NAI-I04-CHOSEI (IDXZ)
-                                           TO  WRK-Z9
-               MOVE    WRK-Z9              TO  SPA-GMN-I04-CHOSEI-X
-      *=============================================================
-               DISPLAY "====== AFTER ========"
-               PERFORM VARYING IDX0 FROM 1 BY 1
-                       UNTIL ( IDX0 > SPA-I0-SYUNOU-CNT )
-                   MOVE    SPA-I0-SYUNOU-DAT (IDX0)
-                                           TO  SYUNOU-REC
-                   DISPLAY IDX0 ":SPA-I0-SYUNOU-TTLDAT-FLG :"
-                                  SPA-I0-SYUNOU-TTLDAT-FLG (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-SYUNOU-UPDFLG     :"
-                                  SPA-I0-SYUNOU-UPDFLG (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-UPD-SKYMONEY      :"
-                                  SPA-I0-UPD-SKYMONEY (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-UPD-TAX-SAI       :"
-                                  SPA-I0-UPD-TAX-SAI (IDX0)
-                   DISPLAY IDX0 ":SPA-I0-UPD-TAX-SAI       :"
-                                  SPA-I0-UPD-TAX-SAI (IDX0)
-                   DISPLAY IDX0 ":SYU-SKYMONEY             :"
-                                  SYU-SKYMONEY
-                   DISPLAY IDX0 ":SYU-CHOSEI               :"
-                                  SYU-CHOSEI
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU       :"
-                                  SPA-NAI-I04-SEIKYU (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU-PLUS  :"
-                                  SPA-NAI-I04-SEIKYU-PLUS (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU-KON   :"
-                                  SPA-NAI-I04-SEIKYU-KON (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-SEIKYU-MOT   :"
-                                  SPA-NAI-I04-SEIKYU-MOT (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-CHOSEI       :"
-                                  SPA-NAI-I04-CHOSEI (IDX0)
-                   DISPLAY IDX0 ":SPA-NAI-I04-CHOSEI-MOT   :"
-                                  SPA-NAI-I04-CHOSEI-MOT (IDX0)
-               DISPLAY "----------------------"
-               END-PERFORM
-      *=============================================================
+               MOVE    SPA-NAI-I04-CHOSEI (IDXZ IDXC)
+                                       TO  WRK-Z9
+               MOVE    WRK-Z9          TO  SPA-GMN-I04-CHOSEI-X (IDXC)
       *
       *        合計額がゼロ以下の時、発行なしとする
                EVALUATE    WRK-MCP-WIDGET
       *        調整金
-               WHEN    "CHOSEI"
+               WHEN    "CHOSEI1"
+               WHEN    "CHOSEI2"
                    IF    ( SPA-GMN-I04-SEIGOK  <=  ZERO )
                        MOVE    SPA-GMN-I04-SKYPRTOUT-ITM (1)
                                                TO  SPA-GMN-I04-SKYPRTOUT
@@ -3146,26 +3087,33 @@
            END-IF
       *
       *    今回請求額がゼロ以上であること
-           MOVE    ZERO                        TO  WRK-SEIKYU
-           IF    ( SPA-I01-I04-PROCKBN =   "2" )
-            AND  ( SPA-I0-SYUNOU-UPDFLG (IDXZ)  =   ZERO )
-            AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
+           IF    ( IDXC                =   2 )
+               MOVE    ZERO                        TO  WRK-SEIKYU
+               IF    ( SPA-I01-I04-PROCKBN =   "2" )
+                AND  ( SPA-I0-SYUNOU-UPDFLG (IDXZ)  =   ZERO )
+                AND  ( SPA-NAI-I04-SAIKEISANFLG        =   1 )
       *
-               COMPUTE WRK-SEIKYU
-                   =   SPA-NAI-I04-SEIKYU (IDXZ)
-                   +   SPA-NAI-I04-SEIKYU-MOT (IDXZ)
-                   -   SPA-I0-UPD-SKYMONEY(IDXZ)
+                   COMPUTE WRK-SEIKYU
+                       =   SPA-NAI-I04-SEIKYU (IDXZ)
+                       +   SPA-NAI-I04-SEIKYU-MOT (IDXZ)
+                       -   SPA-I0-UPD-SKYMONEY(IDXZ)
       *
-               MOVE    SYU-DENPNUM TO  WRK-DENPNUM
-           ELSE
-               COMPUTE WRK-SEIKYU
-                   =   SPA-NAI-I04-SEIKYU (IDXZ)
-           END-IF
+                   MOVE    SYU-DENPNUM TO  WRK-DENPNUM
+               ELSE
+                   COMPUTE WRK-SEIKYU
+                       =   SPA-NAI-I04-SEIKYU (IDXZ)
+               END-IF
       *
-           IF     (WRK-SEIKYU          <   ZERO )
-               MOVE    "0004"      TO  SPA-ERRCD
-               MOVE    102         TO  SPA-GMN-I04-CUR
-               GO  TO  4100-CHOSEI-CHK-EXT
+               IF     (WRK-SEIKYU          <   ZERO )
+                   MOVE    "0004"      TO  SPA-ERRCD
+                   IF    ( SPA-NAI-I04-CHOSEI (IDXZ 2)
+                                       NOT =   ZERO )
+                       MOVE    103     TO  SPA-GMN-I04-CUR
+                   ELSE
+                       MOVE    102     TO  SPA-GMN-I04-CUR
+                   END-IF
+                   GO  TO  4100-CHOSEI-CHK-EXT
+               END-IF
            END-IF
       *
            .
@@ -3177,14 +3125,14 @@
        4101-CHOSEI-SORT-SEC            SECTION.
       *
            COMPUTE WRK-CHOSEITTL
-               =   SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT)
+               =   SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT IDXC)
                +   WRK-CHOSEI
-               -   SPA-NAI-I04-CHOSEI (IDX-G)
+               -   SPA-NAI-I04-CHOSEI (IDX-G IDXC)
       *
            PERFORM 41001-CHOSEI-SORT-SEC
       *
            MOVE    WRK-CHOSEITTL   TO  SPA-NAI-I04-CHOSEI
-                                       (SPA-I0-SYUNOU-CNT)
+                                       (SPA-I0-SYUNOU-CNT IDXC)
       *
            .
        4101-CHOSEI-SORT-EXT.
@@ -3196,10 +3144,10 @@
       *
            IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX-G)
                                        =   ZERO )
-               MOVE    WRK-CHOSEI  TO  SPA-NAI-I04-CHOSEI (IDX-G)
+               MOVE    WRK-CHOSEI  TO  SPA-NAI-I04-CHOSEI (IDX-G IDXC)
            ELSE
                COMPUTE WRK-CHOSEI
-                   =   WRK-CHOSEI  -   SPA-NAI-I04-CHOSEI (IDX-G)
+                   =   WRK-CHOSEI  -   SPA-NAI-I04-CHOSEI (IDX-G IDXC)
       *
                IF    ( WRK-CHOSEI  >=  ZERO )
                    PERFORM 410011-CHOSEI-SORT-SEC
@@ -3239,18 +3187,18 @@
       *
                    IF    ( FLG-TARGET  =   1 )
       *
-                       IF    ( SPA-NAI-I04-CHOSEI (IDX7)
+                       IF    ( SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                        <   ZERO )
-                           COMPUTE SPA-NAI-I04-CHOSEI (IDX7)
-                               =   SPA-NAI-I04-CHOSEI (IDX7)
+                           COMPUTE SPA-NAI-I04-CHOSEI (IDX7 IDXC)
+                               =   SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                +   WRK-CHOSEI
       *
-                           IF    ( SPA-NAI-I04-CHOSEI (IDX7)
+                           IF    ( SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                        >   ZERO )
-                               MOVE    SPA-NAI-I04-CHOSEI (IDX7)
+                               MOVE    SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                        TO  WRK-CHOSEI
                                MOVE    ZERO
-                                       TO  SPA-NAI-I04-CHOSEI (IDX7)
+                                       TO  SPA-NAI-I04-CHOSEI(IDX7 IDXC)
                            ELSE
                                MOVE    ZERO
                                        TO  WRK-CHOSEI
@@ -3283,8 +3231,8 @@
       *
                    IF    ( FLG-TARGET  =   1 )
       *
-                       COMPUTE SPA-NAI-I04-CHOSEI (IDX7)
-                           =   SPA-NAI-I04-CHOSEI (IDX7)
+                       COMPUTE SPA-NAI-I04-CHOSEI (IDX7 IDXC)
+                           =   SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                            +   WRK-CHOSEI
       *
                        MOVE    ZERO    TO  WRK-CHOSEI
@@ -3326,18 +3274,18 @@
       *
                    IF    ( FLG-TARGET  =   1 )
       *
-                       IF    ( SPA-NAI-I04-CHOSEI (IDX7)
+                       IF    ( SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                        >   ZERO )
-                           COMPUTE SPA-NAI-I04-CHOSEI (IDX7)
-                               =   SPA-NAI-I04-CHOSEI (IDX7)
+                           COMPUTE SPA-NAI-I04-CHOSEI (IDX7 IDXC)
+                               =   SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                +   WRK-CHOSEI
       *
-                           IF    ( SPA-NAI-I04-CHOSEI (IDX7)
+                           IF    ( SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                        <   ZERO )
-                               MOVE    SPA-NAI-I04-CHOSEI (IDX7)
+                               MOVE    SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                        TO  WRK-CHOSEI
                                MOVE    ZERO
-                                       TO  SPA-NAI-I04-CHOSEI (IDX7)
+                                       TO  SPA-NAI-I04-CHOSEI(IDX7 IDXC)
                            ELSE
                                MOVE    ZERO
                                        TO  WRK-CHOSEI
@@ -3371,20 +3319,20 @@
       *
                        MOVE    IDX7    TO  IDX-CHOSEI
       *
-                       COMPUTE SPA-NAI-I04-CHOSEI (IDX7)
-                           =   SPA-NAI-I04-CHOSEI (IDX7)
+                       COMPUTE SPA-NAI-I04-CHOSEI (IDX7 IDXC)
+                           =   SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                            +   WRK-CHOSEI
       *
                        COMPUTE WRK-SEIKYU
                            =   SPA-NAI-I04-SEIKYU-KON (IDX7)
                            +   SPA-NAI-I04-SEIKYU-MOT (IDX7)
-                           +   SPA-NAI-I04-CHOSEI (IDX7)
+                           +   SPA-NAI-I04-CHOSEI (IDX7 IDXC)
       *
                        IF    ( WRK-SEIKYU         >=  ZERO )
                            MOVE    ZERO    TO  WRK-CHOSEI
                        ELSE
-                           COMPUTE SPA-NAI-I04-CHOSEI (IDX7)
-                               =   SPA-NAI-I04-CHOSEI (IDX7)
+                           COMPUTE SPA-NAI-I04-CHOSEI (IDX7 IDXC)
+                               =   SPA-NAI-I04-CHOSEI (IDX7 IDXC)
                                -   WRK-SEIKYU
                            COMPUTE WRK-CHOSEI
                                =   WRK-SEIKYU
@@ -3397,8 +3345,8 @@
       *
            IF    ( WRK-CHOSEI      NOT     =   ZERO )
                IF    ( IDX-CHOSEI  NOT     =   ZERO )
-                   COMPUTE SPA-NAI-I04-CHOSEI (IDX-CHOSEI)
-                       =   SPA-NAI-I04-CHOSEI (IDX-CHOSEI)
+                   COMPUTE SPA-NAI-I04-CHOSEI (IDX-CHOSEI IDXC)
+                       =   SPA-NAI-I04-CHOSEI (IDX-CHOSEI IDXC)
                        +   WRK-CHOSEI
                END-IF
            END-IF
@@ -3759,10 +3707,11 @@
            COMPUTE WRK-IDX
                =   SPA-I0-SYUNOU-CNT   -   1
       *
-           MOVE    ZERO    TO  SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
-                               SPA-NAI-I04-SEIKYU-PLUS
-                                                  (SPA-I0-SYUNOU-CNT)
-                               SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT)
+           MOVE    ZERO
+                       TO  SPA-NAI-I04-SEIKYU (SPA-I0-SYUNOU-CNT)
+                           SPA-NAI-I04-SEIKYU-PLUS (SPA-I0-SYUNOU-CNT)
+                           SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT 1)
+                           SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT 2)
       *                        SPA-NAI-I04-NYUKIN (SPA-I0-SYUNOU-CNT)
       *
            PERFORM VARYING IDXY    FROM    1   BY  1
@@ -3775,7 +3724,8 @@
                    MOVE    ZERO
                            TO  SPA-NAI-I04-SEIKYU (IDX-SUM)
                                SPA-NAI-I04-SEIKYU-PLUS (IDX-SUM)
-                               SPA-NAI-I04-CHOSEI (IDX-SUM)
+                               SPA-NAI-I04-CHOSEI (IDX-SUM 1)
+                               SPA-NAI-I04-CHOSEI (IDX-SUM 2)
                                SPA-NAI-I04-NYUKIN (IDX-SUM)
                ELSE
       *
@@ -3784,8 +3734,10 @@
       *                今回請求額
                        COMPUTE SPA-NAI-I04-SEIKYU     (IDXY)
                            =   SPA-NAI-I04-SEIKYU-KON (IDXY)
-                           +   SPA-NAI-I04-CHOSEI     (IDXY)
-                           -   SPA-NAI-I04-CHOSEI-MOT (IDXY)
+                           +   SPA-NAI-I04-CHOSEI     (IDXY 1)
+                           -   SPA-NAI-I04-CHOSEI-MOT (IDXY 1)
+                           +   SPA-NAI-I04-CHOSEI     (IDXY 2)
+                           -   SPA-NAI-I04-CHOSEI-MOT (IDXY 2)
       *
                        MOVE    SPA-NAI-I04-SEIKYU (IDXY)
                                        TO  SPA-NAI-I04-SEIKYU-PLUS
@@ -3821,12 +3773,19 @@
                                                  (IDXY)
       *
       *                調整金額
-                       COMPUTE SPA-NAI-I04-CHOSEI (IDX-SUM)
-                           =   SPA-NAI-I04-CHOSEI (IDX-SUM)
-                           +   SPA-NAI-I04-CHOSEI (IDXY)
-                       COMPUTE SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT)
-                           =   SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT)
-                           +   SPA-NAI-I04-CHOSEI (IDXY)
+                       COMPUTE SPA-NAI-I04-CHOSEI (IDX-SUM 1)
+                           =   SPA-NAI-I04-CHOSEI (IDX-SUM 1)
+                           +   SPA-NAI-I04-CHOSEI (IDXY 1)
+                       COMPUTE SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT 1)
+                           =   SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT 1)
+                           +   SPA-NAI-I04-CHOSEI (IDXY 1)
+      *
+                       COMPUTE SPA-NAI-I04-CHOSEI (IDX-SUM 2)
+                           =   SPA-NAI-I04-CHOSEI (IDX-SUM 2)
+                           +   SPA-NAI-I04-CHOSEI (IDXY 2)
+                       COMPUTE SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT 2)
+                           =   SPA-NAI-I04-CHOSEI (SPA-I0-SYUNOU-CNT 2)
+                           +   SPA-NAI-I04-CHOSEI (IDXY 2)
       *
       *                入金額
                        COMPUTE SPA-NAI-I04-NYUKIN (IDX-SUM)
@@ -5215,8 +5174,14 @@
            MOVE    WRK-BTUNUM      TO  SYU-BYOTONUM
            MOVE    WRK-DRCD        TO  SYU-DRCD
       *
-           MOVE    SPA-NAI-I04-CHOSEI (IDX-SYU)
-                                   TO  SYU-CHOSEI
+           MOVE    SPA-NAI-I04-CHOSEI (IDX-SYU 1)
+                                   TO  SYU-CHOSEI1
+      *
+           MOVE    SPA-NAI-I04-CHOSEI (IDX-SYU 2)
+                                   TO  SYU-CHOSEI2
+           COMPUTE SYU-CHOSEI
+               =   SYU-CHOSEI1
+               +   SYU-CHOSEI2
            MOVE    WRK-SKYMONEY    TO  SYU-SKYMONEY
       *
            COMPUTE SYU-NYUKIN-TOTAL
@@ -5718,16 +5683,12 @@
                PERFORM 910-DBSELECT-SEC
            END-IF
       *
-           DISPLAY "PTID " SPA-NAI-I04-PTID " STSRYYM " WRK-STYMD (1:6)
-                   " EDSRYYM " WRK-EDYMD (1:6)
-      *
            PERFORM UNTIL ( WRK-STYMD (1:6) >   WRK-EDYMD (1:6))
                     OR   ( SPA-ERRCD  NOT  =   SPACE )
       *
                INITIALIZE                  SS010-AREA
                MOVE    SPA-NAI-I04-PTID    TO  SS010-PTID
                MOVE    WRK-STYMD (1:6)     TO  SS010-SRYYM
-               DISPLAY "PTID " SS010-PTID " SRYYM " SS010-SRYYM
                CALL    "ORCSS010"      USING   SS010-AREA
                                                SPA-AREA
                IF    ( SS010-RC        NOT =   ZERO )

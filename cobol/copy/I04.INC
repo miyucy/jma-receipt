@@ -259,10 +259,11 @@
                 04  I04-VALUE   PIC X(12).
               03  I04-RMSAGAKU.
                 04  I04-VALUE   PIC X(10).
-              03  I04-CHOSEI.
-                04  I04-VALUE   PIC X(10).
-              03  I04-CHOSEI-STT
-                                PIC S9(9)   BINARY.
+              03  I04-CHOSEI-G.
+                  05  I04-CHOSEI-OCC   OCCURS  2.
+                      07   I04-CHOSEI  PIC X(10).
+                      07   I04-CHOSEI-STT
+                                       PIC S9(9)   BINARY.
               03  I04-SELNUM.
                 04  I04-VALUE   PIC S9(2).
               03  I04-CMB-SKYPRTOUT.

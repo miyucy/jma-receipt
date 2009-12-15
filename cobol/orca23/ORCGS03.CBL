@@ -119,14 +119,17 @@
                        09  SPA-GMN-HKNGAI          PIC 9(07).
                        09  SPA-GMN-ICHIFTN         PIC 9(07).
                        09  SPA-GMN-YAKFTN          PIC 9(07).
-                       09  SPA-GMN-CHOSEI          PIC S9(07).
+                       09  SPA-GMN-CHOSEI1         PIC S9(07).
+                       09  SPA-GMN-CHOSEI2         PIC S9(07).
                        09  SPA-GMN-SKYMONEY          PIC 9(07).
                        09  SPA-GMN-ZENMISYU        PIC 9(07).
                        09  SPA-GMN-SEIGOK          PIC S9(07).
                        09  SPA-GMN-MISYU-ZAN       PIC S9(07).
                        09  SPA-GMN-NYUKIN-TTL      PIC 9(08).
                    07  SPA-GMN-INPUT-AREA.
-                       09  SPA-GMN-CHOSEIIN        PIC S9(10).
+                       09  SPA-GMN-CHOSEI1IN       PIC S9(10).
+                       09  SPA-GMN-CHOSEI2IN       PIC S9(10).
+                       09  SPA-GMN-SKYMONEYIN      PIC S9(10).
                        09  SPA-GMN-NYUKIN          PIC S9(10).
                        09  SPA-GMN-NYUKINYMD       PIC X(10).
                        09  SPA-GMN-NYKN-HOHO-G.
@@ -198,7 +201,10 @@
                        09  SPA-NAI-DISCOUNT-RATE       PIC  9(07).
                        09  SPA-NAI-DISCOUNT-MONEY      PIC  9(07).
                    07  SPA-NAI-INPUT-AREA.
+                       09  SPA-NAI-CHOSEI1IN-MOTO  PIC S9(10).
+                       09  SPA-NAI-CHOSEI2IN-MOTO  PIC S9(10).
                        09  SPA-NAI-SKYMONEY-MOTO   PIC S9(10).
+                       09  SPA-NAI-SKYMONEY        PIC S9(10).
                        09  SPA-NAI-NYUKINYMD       PIC X(08).
                        09  SPA-NAI-NYUKIN-MOTO     PIC S9(10).
                        09  SPA-NAI-DENPEDANUM      PIC 9(02).
@@ -223,6 +229,9 @@
                        09  SPA-NAI-TSYURRKNUM      PIC 9(9).
                        09  SPA-NAI-TSYUEDANUM      PIC 9(9).
                        09  SPA-NAI-TSYURRKUPDKBN   PIC X(1).
+                       09  SPA-NAI-TCHOSEI1        PIC S9(10).
+                       09  SPA-NAI-TCHOSEI2        PIC S9(10).
+                       09  SPA-NAI-TPROC-FLG       PIC 9(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -231,6 +240,7 @@
            03  FLG-SYUMEI                          PIC 9(01).
            03  FLG-SYORI                           PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
+           03  FLG-SYURRK                          PIC 9(01).
       *
            03  FLG-SMEILIST1-ROW                   PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
@@ -1035,8 +1045,11 @@
                                        +   SPA-GMN-KOHFTN
                                        +   SPA-GMN-YAKFTN
       *
-      *    Ä´À°¶â
-           MOVE    SYU-CHOSEI          TO  SPA-GMN-CHOSEI
+      *    Ä´À°¶â£±
+           MOVE    SYU-CHOSEI1         TO  SPA-GMN-CHOSEI1
+      *
+      *    Ä´À°¶â£²
+           MOVE    SYU-CHOSEI2         TO  SPA-GMN-CHOSEI2
       *
       *    Æþ¶â³Û
            MOVE    SYU-NYUKIN-TOTAL    TO  SPA-GMN-NYUKIN-TTL
@@ -1180,6 +1193,36 @@
       *
                MOVE    SMEI-NYUKIN-HOHO
                                        TO SPA-NAI-TNYKN-HOHO (IDX1)
+      *
+               EVALUATE    SPA-NAI-TJOUTAIKBN (IDX1)
+               WHEN    " "
+               WHEN    "1"
+               WHEN    "9"
+                   MOVE    1           TO  SPA-NAI-TPROC-FLG (IDX1)
+               WHEN    "3"
+               WHEN    "7"
+               WHEN    "8"
+                   MOVE    2           TO  SPA-NAI-TPROC-FLG (IDX1)
+               WHEN    "2"
+                   MOVE    3           TO  SPA-NAI-TPROC-FLG (IDX1)
+               WHEN    "4"
+               WHEN    "6"
+                   MOVE    4           TO  SPA-NAI-TPROC-FLG (IDX1)
+               END-EVALUATE
+      *
+               IF    ( SMEI-SYURRKNUM  NOT =   ZERO )
+                   PERFORM 900-SYURRK-KEY-SEL-SEC
+                   IF    ( FLG-SYURRK      =   ZERO )
+                       MOVE    SYURRK-CHOSEI1
+                                       TO  SPA-NAI-TCHOSEI1(IDX1)
+                       MOVE    SYURRK-CHOSEI2
+                                       TO  SPA-NAI-TCHOSEI2(IDX1)
+                   ELSE
+                       MOVE    ZERO    TO  SPA-NAI-TSYURRKNUM(IDX1)
+                                           SPA-NAI-TSYUEDANUM(IDX1)
+                   END-IF
+               END-IF
+      *
              END-IF
       *
                MOVE    "tbl_syumei"    TO  MCP-TABLE
@@ -1549,14 +1592,17 @@
            MOVE    SPA-GMN-HKNGAI      TO  S03-HKNTEKGAI
            MOVE    SPA-GMN-ICHIFTN     TO  S03-FTNTOTAL
            MOVE    SPA-GMN-YAKFTN      TO  S03-YKZFTN 
-           MOVE    SPA-GMN-CHOSEI      TO  S03-CHOSEI
+           MOVE    SPA-GMN-CHOSEI1     TO  S03-CHOSEI1
+           MOVE    SPA-GMN-CHOSEI2     TO  S03-CHOSEI2
            MOVE    SPA-GMN-SKYMONEY    TO  S03-SKYMONEY
            MOVE    SPA-GMN-ZENMISYU    TO  S03-ZENMISYU
            MOVE    SPA-GMN-SEIGOK      TO  S03-GOKMISYU
            MOVE    SPA-GMN-MISYU-ZAN   TO  S03-MISYUZAN
            MOVE    SPA-GMN-NYUKIN-TTL  TO  S03-NYUKINGK1
       *
-           MOVE    SPA-GMN-CHOSEIIN    TO  S03-CHOSEIIN
+           MOVE    SPA-GMN-CHOSEI1IN   TO  S03-CHOSEI1IN
+           MOVE    SPA-GMN-CHOSEI2IN   TO  S03-CHOSEI2IN
+           MOVE    SPA-GMN-SKYMONEYIN  TO  S03-SKYMONEYIN
       *
       *    Æþ¶âÍó
            EVALUATE    SPA-S01-SYORINO
@@ -1653,7 +1699,11 @@
            MOVE    SPA-GMN-RSISDO      TO  S03-RSISDO
            MOVE    SPA-GMN-RSIETC      TO  S03-RSIETC
       *
-           MOVE    WIDGET-NORMAL       TO  S03-CHOSEIIN-STATE
+           MOVE    "black"             TO  S03-SKYMONEYIN-STYLE
+      *
+           MOVE    WIDGET-NORMAL       TO  S03-CHOSEI1IN-STATE
+                                           S03-CHOSEI2IN-STATE
+                                           S03-SKYMONEYIN-STATE
                                            S03-NYUKINGK2-STATE
                                            S03-NYUKINYMD-STATE
                                            S03-NYUKINHOUHOU-STATE
@@ -1668,22 +1718,37 @@
                                            S03-NAIYOLST-STATE
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
+      *
+                MOVE    "blue"         TO  S03-SKYMONEYIN-STYLE
+      *
                IF    ( SPA-NAI-MINUS           =   "1" )
                 AND  ( SPA-NAI-DENPJTIKBN  NOT =   "6" )
                    MOVE    WIDGET-INSENSITIVE
                                            TO  S03-NYUKINHOUHOU-STATE
                                                S03-NYUKINHOUHOULST-STATE
                END-IF
+      *
+               IF    ( SPA-NAI-PROC-FLG    =   1  OR 2 )
+                   IF    ( SPA-NAI-SYURRKNUM   =   ZERO )
+                       MOVE    WIDGET-INSENSITIVE
+                                       TO  S03-CHOSEI1IN-STATE
+                                           S03-CHOSEI2IN-STATE
+                   END-IF
+               END-IF
            END-IF
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
             AND  ( SPA-NAI-PROC-FLG    =   3  OR 4)
                MOVE    WIDGET-INSENSITIVE
-                                       TO  S03-CHOSEIIN-STATE
+                                       TO  S03-CHOSEI1IN-STATE
+                                           S03-CHOSEI2IN-STATE
+                                           S03-SKYMONEYIN-STATE
            END-IF
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-SYOKAI )
-               MOVE    WIDGET-INSENSITIVE  TO  S03-CHOSEIIN-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  S03-CHOSEI1IN-STATE
+                                               S03-CHOSEI2IN-STATE
+                                               S03-SKYMONEYIN-STATE
                                                S03-NYUKINGK2-STATE
                                                S03-NYUKINYMD-STATE
                                                S03-NYUKINHOUHOU-STATE
@@ -1698,11 +1763,15 @@
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN
                                        OR  CONST-PROC-TORIKESHI )
                MOVE    WIDGET-INSENSITIVE
-                                       TO  S03-CHOSEIIN-STATE
+                                       TO  S03-CHOSEI1IN-STATE
+                                           S03-CHOSEI2IN-STATE
+                                           S03-SKYMONEYIN-STATE
            END-IF
       *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-               MOVE    WIDGET-INSENSITIVE  TO  S03-CHOSEIIN-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  S03-CHOSEI1IN-STATE
+                                               S03-CHOSEI2IN-STATE
+                                               S03-SKYMONEYIN-STATE
                                                S03-NYUKINGK2-STATE
                                                S03-NYUKINYMD-STATE
                                                S03-NYUKINHOUHOU-STATE
@@ -1807,7 +1876,9 @@
            WHEN   06
                MOVE  "NAIYO"           TO  MCP-WIDGET
            WHEN   08
-               MOVE  "CHOSEIIN"        TO  MCP-WIDGET
+               MOVE  "CHOSEI1IN"       TO  MCP-WIDGET
+           WHEN   09
+               MOVE  "CHOSEI2IN"       TO  MCP-WIDGET
            WHEN   112
                MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE
@@ -1822,15 +1893,17 @@
        5011-INPUT-CUR-SEC              SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "CHOSEIIN"
+           WHEN    "CHOSEI1IN"
+               MOVE    09              TO  SPA-GMN-CUR
+           WHEN    "CHOSEI2IN"
                MOVE    02              TO  SPA-GMN-CUR
            WHEN    "RIREKIIN"
                MOVE    02              TO  SPA-GMN-CUR
            WHEN    "NYUKINGK2"
-               MOVE    03              TO  SPA-GMN-CUR
-           WHEN    "NYUKINYMD"
                MOVE    04              TO  SPA-GMN-CUR
            WHEN    "NYUKINHOUHOU"
+               MOVE    03              TO  SPA-GMN-CUR
+           WHEN    "NYUKINYMD"
                MOVE    05              TO  SPA-GMN-CUR
            WHEN    "SKYPRT"
                MOVE    07              TO  SPA-GMN-CUR
@@ -1848,7 +1921,13 @@
        50012-CUR-SKIP-SEC              SECTION.
       *
            IF    ( SPA-GMN-CUR             =   8 )
-               IF   ( S03-CHOSEIIN-STATE   =   WIDGET-INSENSITIVE )
+               IF   ( S03-CHOSEI1IN-STATE  =   WIDGET-INSENSITIVE )
+                   MOVE    9           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR             =   9 )
+               IF   ( S03-CHOSEI2IN-STATE  =   WIDGET-INSENSITIVE )
                    MOVE    2           TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -1861,12 +1940,6 @@
       *
            IF    ( SPA-GMN-CUR             =   2 )
                IF   ( S03-NYUKINGK2-STATE  =   WIDGET-INSENSITIVE )
-                   MOVE    3           TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR             =   3 )
-               IF   ( S03-NYUKINYMD-STATE  =   WIDGET-INSENSITIVE )
                    MOVE    4           TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -1874,6 +1947,12 @@
            IF    ( SPA-GMN-CUR             =   4 )
                IF   ( S03-NYUKINHOUHOU-STATE
                                            =   WIDGET-INSENSITIVE )
+                   MOVE    3           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR             =   3 )
+               IF   ( S03-NYUKINYMD-STATE  =   WIDGET-INSENSITIVE )
                    MOVE    5           TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -2001,7 +2080,8 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    S03-CHOSEIIN        TO  SPA-GMN-CHOSEIIN
+           MOVE    S03-CHOSEI1IN       TO  SPA-GMN-CHOSEI1IN
+           MOVE    S03-CHOSEI2IN       TO  SPA-GMN-CHOSEI2IN
            MOVE    S03-NYUKINGK2       TO  SPA-GMN-NYUKIN
            MOVE    S03-NYUKINYMD       TO  SPA-GMN-NYUKINYMD
            MOVE    S03-NYUKINHOUHOU    TO  SPA-GMN-NYKN-HOHO-G
@@ -2077,7 +2157,11 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4101-CHOSEIIN-CHK-SEC
+               PERFORM 4101-CHOSEI1IN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-CHOSEI2IN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2163,7 +2247,9 @@
                    MOVE    IDX2    TO  SPA-GMN-SMEILIST-SEL
                                        SPA-GMN-SELNUM
                    IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-                       PERFORM 41001-INPUT-AREA-HEN-SEC
+                       MOVE    SPA-GMN-SELNUM
+                                   TO  S03-RIREKIIN
+                       PERFORM 4100-SELNUM-CHK-SEC
                    END-IF
       *
                    MOVE    2       TO  SPA-GMN-CUR
@@ -2173,27 +2259,6 @@
                END-IF
       *
            END-PERFORM
-      *
-           IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-DENPJTIKBN
-                               =   " " OR "1" OR "2" OR "3"
-                                OR "4" OR "6" OR "7" OR "8" OR "9" )
-                   CONTINUE
-               ELSE
-      *
-                   MOVE    "0009"  TO  SPA-ERRCD
-                   MOVE    1       TO  SPA-GMN-CUR
-      *
-                   INITIALIZE          SPA-GMN-INPUT-AREA
-                                       SPA-NAI-INPUT-AREA
-      *
-                   MOVE    SPA-SYSYMD  TO  WRK-SYMD
-                   PERFORM 800-SEIWA-HEN-SEC
-                   MOVE    WRK-HENYMDG TO  SPA-GMN-NYUKINYMD
-                   MOVE    WRK-SYMD    TO  SPA-NAI-NYUKINYMD
-      *
-               END-IF
-           END-IF
       *
            .
        4100-SMEILIST-CHK-EXT.
@@ -2296,8 +2361,21 @@
        41001-INPUT-AREA-HEN-SEC        SECTION.
       *
            MOVE    SPA-GMN-TSKYMONEY (SPA-GMN-SELNUM)
-                                       TO  SPA-GMN-CHOSEIIN
+                                       TO  SPA-GMN-SKYMONEYIN
                                            SPA-NAI-SKYMONEY-MOTO
+      *
+           MOVE    SPA-NAI-TCHOSEI1 (SPA-GMN-SELNUM)
+                                       TO  SPA-GMN-CHOSEI1IN
+                                           SPA-NAI-CHOSEI1IN-MOTO
+      *
+           MOVE    SPA-NAI-TCHOSEI2 (SPA-GMN-SELNUM)
+                                       TO  SPA-GMN-CHOSEI2IN
+                                           SPA-NAI-CHOSEI2IN-MOTO
+      *
+           COMPUTE SPA-NAI-SKYMONEY
+               =   SPA-GMN-SKYMONEYIN
+               -   SPA-NAI-CHOSEI1IN-MOTO
+               -   SPA-NAI-CHOSEI2IN-MOTO
       *
            MOVE    SPA-GMN-TNYUKIN   (SPA-GMN-SELNUM)
                                        TO  SPA-GMN-NYUKIN
@@ -2324,24 +2402,8 @@
                                        TO  SPA-NAI-DENPJTIKBN
            MOVE    SPA-NAI-TMAINUS    (SPA-GMN-SELNUM)
                                        TO  SPA-NAI-MINUS
-      *
-           MOVE    ZERO                TO  SPA-NAI-PROC-FLG
-      *
-           EVALUATE    SPA-NAI-DENPJTIKBN
-           WHEN    " "
-           WHEN    "1"
-           WHEN    "9"
-               MOVE    1               TO  SPA-NAI-PROC-FLG
-           WHEN    "3"
-           WHEN    "7"
-           WHEN    "8"
-               MOVE    2               TO  SPA-NAI-PROC-FLG
-           WHEN    "2"
-               MOVE    3               TO  SPA-NAI-PROC-FLG
-           WHEN    "4"
-           WHEN    "6"
-               MOVE    4               TO  SPA-NAI-PROC-FLG
-           END-EVALUATE
+           MOVE    SPA-NAI-TPROC-FLG  (SPA-GMN-SELNUM)
+                                       TO  SPA-NAI-PROC-FLG
       *
            .
        41001-INPUT-AREA-HEN-EXT.
@@ -2385,22 +2447,25 @@
        41011-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ä´À°¶â¥Á¥§¥Ã¥¯½èÍý
+      *    Ä´À°¶â£±¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4101-CHOSEIIN-CHK-SEC           SECTION.
-      *
-           COMPUTE WRK-SKYMONEY
-               =   SPA-GMN-SKYMONEY
-               -   SPA-NAI-SKYMONEY-MOTO
-               +   SPA-GMN-CHOSEIIN
-      *
-           IF    ( WRK-SKYMONEY    <   ZERO )
-               MOVE    "0016"      TO  SPA-ERRCD
-               MOVE    8           TO  SPA-GMN-CUR
-           END-IF
+       4101-CHOSEI1IN-CHK-SEC          SECTION.
       *
            .
-       4101-CHOSEIIN-CHK-EXT.
+       4101-CHOSEI1IN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ä´À°¶â£²¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-CHOSEI2IN-CHK-SEC          SECTION.
+      *
+           COMPUTE SPA-GMN-SKYMONEYIN
+               =   SPA-NAI-SKYMONEY
+               +   SPA-GMN-CHOSEI1IN
+               +   SPA-GMN-CHOSEI2IN
+      *
+           .
+       4101-CHOSEI2IN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Æþ¶â³Û¥Á¥§¥Ã¥¯½èÍý
@@ -2894,9 +2959,7 @@
                IF    ( SPA-S01-SYORINO
                                    =   CONST-PROC-RRKSYU )
                    COMPUTE WRK-SKYMONEY
-                       =   SPA-GMN-SKYMONEY
-                       -   SPA-NAI-SKYMONEY-MOTO
-                       +   SPA-GMN-CHOSEIIN
+                       =   SPA-GMN-SKYMONEYIN
       *
                    COMPUTE WRK-NYUKIN
                        =   SPA-GMN-NYUKIN-TTL
@@ -2905,7 +2968,7 @@
                ELSE
                    COMPUTE WRK-SKYMONEY
                        =   SPA-GMN-SKYMONEY
-                       +   SPA-GMN-CHOSEIIN
+                       +   SPA-GMN-SKYMONEYIN
       *
                    COMPUTE WRK-NYUKIN
                        =   SPA-GMN-NYUKIN-TTL
@@ -3031,6 +3094,25 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-NAI-PROC-FLG    =   1  OR  2 )
+      *
+                   COMPUTE WRK-SKYMONEY
+                      =   SPA-GMN-SKYMONEY
+                      -   SPA-NAI-SKYMONEY-MOTO
+                      +   SPA-GMN-SKYMONEYIN
+      *
+                   IF    ( WRK-SKYMONEY    <   ZERO )
+                       MOVE    "0016"      TO  SPA-ERRCD
+                       IF    ( SPA-GMN-CHOSEI2IN   NOT =   ZERO )
+                           MOVE    9       TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    8       TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
                IF    ( SPA-NAI-NYUKINYMD   =   SPACE )
                    MOVE    3           TO  SPA-GMN-CUR
                    MOVE    "0012"      TO  SPA-ERRCD
@@ -3130,14 +3212,25 @@
                WHEN    CONST-PROC-RRKSYU
       *
                    IF    ( SPA-NAI-PROC-FLG    =   1  OR  2 )
+      *
                        COMPUTE SYU-SKYMONEY
                            =   SYU-SKYMONEY
                            -   SPA-NAI-SKYMONEY-MOTO
-                           +   SPA-GMN-CHOSEIIN
+                           +   SPA-GMN-SKYMONEYIN
+      *
+                       COMPUTE SYU-CHOSEI1
+                           =   SYU-CHOSEI1
+                           -   SPA-NAI-CHOSEI1IN-MOTO
+                           +   SPA-GMN-CHOSEI1IN
+      *
+                       COMPUTE SYU-CHOSEI2
+                           =   SYU-CHOSEI2
+                           -   SPA-NAI-CHOSEI2IN-MOTO
+                           +   SPA-GMN-CHOSEI2IN
+      *
                        COMPUTE SYU-CHOSEI
-                           =   SYU-CHOSEI
-                           -   SPA-NAI-SKYMONEY-MOTO
-                           +   SPA-GMN-CHOSEIIN
+                           =   SYU-CHOSEI1
+                           +   SYU-CHOSEI2
                    END-IF
       *
                    COMPUTE SYU-NYUKIN-TOTAL
@@ -3351,7 +3444,7 @@
       *
       *        ÀÁµá¶â³Û
                IF    ( SPA-NAI-PROC-FLG    = 1 OR 2 )
-                   MOVE    SPA-GMN-CHOSEIIN
+                   MOVE    SPA-GMN-SKYMONEYIN
                                            TO  SMEI-SKYMONEY
                ELSE
                    MOVE    ZERO            TO  SMEI-SKYMONEY
@@ -3389,7 +3482,7 @@
       *        ÅÁÉ¼¾õÂÖ¶èÊ¬
                EVALUATE    SPA-NAI-PROC-FLG
                WHEN    1
-                   IF    ( SPA-GMN-CHOSEIIN   <=   ZERO )
+                   IF    ( SPA-GMN-SKYMONEYIN   <=   ZERO )
                        MOVE    SPACE   TO  SMEI-JOUTAIKBN
                    ELSE
                        MOVE    "1"     TO  SMEI-JOUTAIKBN
@@ -3675,7 +3768,7 @@
                MOVE    "Æþ¶â³Û¤¬£°±ß¤ò²¼²ó¤ê¤Þ¤¹"
                                        TO  SPA-ERRMSG
            WHEN    "0016"
-               MOVE    "ÀÁµá¶â³Û¤òÆþÎÏ¤·¤Æ¤¯¤À¤µ¤¤"
+               MOVE    "ÀÁµá¶â³Û¤¬£°±ß¤ò²¼²ó¤ê¤Þ¤¹"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
@@ -3873,6 +3966,38 @@
       *
            .
        900-SYUNOU-KEY-SEL-EXT.
+           EXIT.
+      *************************************************************
+      *    ¼ýÇ¼ÍúÎò¸¡º÷½èÍý
+      *************************************************************
+       900-SYURRK-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYURRK
+      *
+           INITIALIZE                      SYURRK-REC
+           MOVE    SMEI-HOSPNUM        TO  SYURRK-HOSPNUM
+           MOVE    SMEI-NYUGAIKBN      TO  SYURRK-NYUGAIKBN
+           MOVE    SMEI-PTID           TO  SYURRK-PTID
+           MOVE    SMEI-DENPNUM        TO  SYURRK-DENPNUM
+           MOVE    SMEI-SYURRKNUM      TO  SYURRK-SYURRKNUM
+           MOVE    SMEI-SYUEDANUM      TO  SYURRK-SYUEDANUM
+           MOVE    SYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYURRK-REC
+           ELSE
+               MOVE    1               TO  FLG-SYURRK
+               INITIALIZE                  SYURRK-REC
+           END-IF
+      *
+           MOVE    "tbl_syurrk"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYURRK-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)

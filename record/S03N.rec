@@ -304,7 +304,10 @@ S03N	{
 		RMSAGAKU	{
 			value	number(10);
 		};
-		CHOSEI	{
+		CHOSEI1	{
+			value	number(10);
+		};
+		CHOSEI2	{
 			value	number(10);
 		};
 		SKYMONEY	{
@@ -325,7 +328,16 @@ S03N	{
 		GOKMISYU	{
 			value	number(10);
 		};
-		CHOSEIIN	{
+		CHOSEI1IN	{
+			value	number(10);
+			state	int;
+		};
+		CHOSEI2IN	{
+			value	number(10);
+			state	int;
+		};
+		SKYMONEYIN	{
+			style   varchar(20);
 			value	number(10);
 			state	int;
 		};

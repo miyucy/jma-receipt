@@ -292,7 +292,10 @@ O04	{
 		RMSAGAKU	{
 			value	number(8);
 		};
-		CHOSEI	{
+		CHOSEI1	{
+			value	number(8);
+		};
+		CHOSEI2	{
 			value	number(8);
 		};
 		SYKMONEY	{
@@ -313,12 +316,24 @@ O04	{
 		GOKMISYU	{
 			value	number(8);
 		};
-		BTNSKY	{
+		BTNCHOSEI1{
 			state	int;
 		};
-		CHOSEIIN	{
+		BTNCHOSEI2{
 			state	int;
+		};
+		CHOSEI1IN	{
 			value	number(8);
+			state	int;
+		};
+		CHOSEI2IN	{
+			value	number(8);
+			state	int;
+		};
+		SKYMONEYIN	{
+			style   varchar(20);
+			value	number(8);
+			state	int;
 		};
 		KINGAKU	{
 			value	number(8);

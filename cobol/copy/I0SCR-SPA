@@ -806,8 +806,11 @@
       *                    ¼¼ÎÁº¹³Û
                            13  SPA-GMN-I04-RMSAGAKU      PIC S9(07).
       *                    Ä´À°¶â
-                           13  SPA-GMN-I04-CHOSEI        PIC S9(07).
-                           13  SPA-GMN-I04-CHOSEI-X      PIC X(10).
+                           13  SPA-GMN-I04-CHOSEI-G.
+                               15  SPA-GMN-I04-CHOSEI-OCC
+                                                         OCCURS  2.
+                                   17  SPA-GMN-I04-CHOSEI    PIC S9(07).
+                                   17  SPA-GMN-I04-CHOSEI-X  PIC X(10).
       *                    º£²óÀÁµá³Û¾ðÊó
                            13  SPA-GMN-I04-LBLSKYINF     PIC X(50).
       *                Á°²óÌ¤¼ý³Û¡Ê³°Íè¡Ë
@@ -956,8 +959,10 @@
                                                              PIC S9(07).
       *                    Ä´À°¶â
                            13  SPA-NAI-I04-CHOSEI-TBL.
-                               15  SPA-NAI-I04-CHOSEI-OCC
+                             14    SPA-NAI-I04-CHOSEI-OCC1
                                                          OCCURS    23.
+                               15  SPA-NAI-I04-CHOSEI-OCC2
+                                                         OCCURS    2.
                                    17  SPA-NAI-I04-CHOSEI    PIC S9(07).
                                    17  SPA-NAI-I04-CHOSEI-X  PIC X(10).
                                    17  SPA-NAI-I04-CHOSEI-MOT

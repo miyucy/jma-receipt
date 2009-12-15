@@ -120,7 +120,8 @@
                        09  SPA-GMN-O04-HKNGAI          PIC 9(07).
                        09  SPA-GMN-O04-ICHIFTN         PIC 9(07).
                        09  SPA-GMN-O04-YAKFTN          PIC 9(07).
-                       09  SPA-GMN-O04-CHOSEI          PIC S9(07).
+                       09  SPA-GMN-O04-CHOSEI1         PIC S9(07).
+                       09  SPA-GMN-O04-CHOSEI2         PIC S9(07).
                        09  SPA-GMN-O04-RMSAGAKU        PIC 9(07).
                        09  SPA-GMN-O04-SKYMONEY        PIC 9(07).
                        09  SPA-GMN-O04-ZENMISYU-GAI    PIC 9(07).
@@ -141,7 +142,9 @@
                        09  SPA-GMN-O04-SKY3RD          PIC S9(10).
                        09  SPA-GMN-O04-SKYSGK          PIC S9(10).
                    07  SPA-GMN-O04-INPUT-AREA.
-                       09  SPA-GMN-O04-CHOSEIIN        PIC S9(10).
+                       09  SPA-GMN-O04-CHOSEI1IN       PIC S9(10).
+                       09  SPA-GMN-O04-CHOSEI2IN       PIC S9(10).
+                       09  SPA-GMN-O04-SKYMONEYIN      PIC S9(10).
                        09  SPA-GMN-O04-NYUKIN          PIC S9(10).
                        09  SPA-GMN-O04-NYUKINYMD       PIC X(10).
                        09  SPA-GMN-O04-NYKN-HOHO-G.
@@ -232,6 +235,9 @@
                        09  SPA-NAI-O04-RSI-HKNKBN      PIC X(01).
                    07  SPA-NAI-O04-INPUT-AREA.
                        09  SPA-NAI-O04-SKYMONEY-MOTO   PIC S9(10).
+                       09  SPA-NAI-O04-SKYMONEY        PIC S9(10).
+                       09  SPA-NAI-O04-CHOSEI1-MOTO    PIC S9(10).
+                       09  SPA-NAI-O04-CHOSEI2-MOTO    PIC S9(10).
                        09  SPA-NAI-O04-MEISAIJOUTAIKBN PIC X(01).
                        09  SPA-NAI-O04-SYURRKNUM       PIC 9(09).
                        09  SPA-NAI-O04-SYUEDANUM       PIC 9(09).
@@ -258,6 +264,9 @@
                        09  SPA-NAI-O04-TSYUEDANUM      PIC 9(09).
                        09  SPA-NAI-O04-TSYURRKUPDKBN   PIC X(1).
                        09  SPA-NAI-O04-TSYORIYMD       PIC X(08).
+                       09  SPA-NAI-O04-TCHOSEI1        PIC S9(10).
+                       09  SPA-NAI-O04-TCHOSEI2        PIC S9(10).
+                       09  SPA-NAI-O04-TPROC-FLG       PIC 9(01).
       *
                05  SPA-NAI-O04-SKYTBL-AREA.
                    07  SPA-NAI-O04-SKYTBL-OCC          OCCURS  50.
