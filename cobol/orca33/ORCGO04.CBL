@@ -1480,9 +1480,10 @@
                                            O04-NYUKINHOUHOULST-STATE
       *
            IF    ( SPA-GMN-O04-SYORIKBN    =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-O04-DENPJTIKBN  =   "4" )
       *
-                   MOVE    "blue"      TO  O04-SKYMONEYIN-STYLE
+               MOVE    "blue"          TO  O04-SKYMONEYIN-STYLE
+      *
+               IF    ( SPA-NAI-O04-DENPJTIKBN  =   "4" )
       *
                    MOVE    WIDGET-INSENSITIVE
                                        TO  O04-NYUKINHOUHOU-STATE

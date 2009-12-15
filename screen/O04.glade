@@ -3281,7 +3281,7 @@
       <y>612</y>
       <width>96</width>
       <height>24</height>
-      <can_focus>True</can_focus>
+      <sensitive>False</sensitive>
       <signal>
 	<name>changed</name>
 	<handler>entry_changed</handler>
