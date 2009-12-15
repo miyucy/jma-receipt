@@ -180,8 +180,6 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPLOCKCONST.INC".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1206,7 +1204,7 @@
       *        医療機関識別番号
                MOVE    SYSUSER-HOSPNUM TO  WRK-HOSPNUM
            ELSE
-               MOVE    SPACE           TO  WRK-HOSPNUM
+               MOVE    ZERO            TO  WRK-HOSPNUM
            END-IF
       *
            .
