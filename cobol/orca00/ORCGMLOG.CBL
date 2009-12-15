@@ -221,7 +221,6 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           DISPLAY "☆☆MLOG PROC START"
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
@@ -260,7 +259,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           DISPLAY "MLOG INIT START"
       *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
                MOVE    SPACE           TO  SPA-MOTOPG
@@ -438,7 +436,6 @@
                    "%"                 DELIMITED  BY  SIZE
                                INTO    SYS-1010-TBL
            END-STRING
-           DISPLAY "SPA-HOSPNUM-TEST=" SPA-HOSPNUM
            MOVE    SPA-SYSYMD      TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD      TO  SYS-1010-EDYUKYMD
            MOVE    WRK-MCP-HOSPNUM TO  SYS-1010-HOSPNUM
@@ -482,15 +479,12 @@
       *
       *    LISTENTRY により全ての端末IDを取得する
            INITIALIZE                  ORCA-SYSTEM
-           DISPLAY "LISTENTRY start"
            MOVE    "LISTENTRY"     TO  MCP-FUNC
            MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               DISPLAY "LISTENTRY end"
                MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
            ELSE
-               DISPLAY "LISTENTRY failure"
                GO  TO  3101-LISTENTRY-EXT
            END-IF
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -500,8 +494,6 @@
       *
       *    GETVALUE によりそれぞれの端末の詳細を取得する
            PERFORM 3101-LISTKEY-SEC
-      *    DISPLAY "ORCA-SYSTEM-KEY(1) = " ORCA-SYSTEM-KEY(1)
-      *    DISPLAY "ORCA-SYSTEM-VALUE(1) = " ORCA-SYSTEM-VALUE(1)
       *
            .
        3101-LISTENTRY-EXT.
@@ -512,20 +504,16 @@
       *****************************************************************
        3101-LISTKEY-SEC            SECTION.
       * 
-           DISPLAY "LISTKEY   start"
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       200 
                IF      SPA-NAI-TERMID(IDX) NOT =    SPACE
-                   DISPLAY "termid not space!!"
                    INITIALIZE        ORCA-SYSTEM
                    MOVE    "LISTKEY"           TO  MCP-FUNC
                    MOVE    SPA-NAI-TERMID(IDX) TO  ORCA-SYSTEM-ID
                    PERFORM 900-SYSDB-INV-SEC
                    IF    ( MCP-RC          =   ZERO    OR    1 )
-                       DISPLAY "LISTKEY   end"
                        MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
                    ELSE
-                       DISPLAY "LISTKEY   failure"
                        GO  TO   3101-LISTKEY-EXT
                    END-IF
       *
@@ -570,35 +558,10 @@
            MOVE    SPA-NAI-LOGIN-C(1)      TO  ORCA-SYSTEM-KEY(10)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               DISPLAY "GETVALUE   end"
                MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
            ELSE
-               DISPLAY "GETVALUE   failure"
                GO  TO  3101-GETVALUE-EXT
            END-IF
-           DISPLAY "ORCA-SYSTEM-NUM = " ORCA-SYSTEM-NUM
-           DISPLAY "ORCA-SYSTEM-KEY(1) = " ORCA-SYSTEM-KEY(1)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(2) = " ORCA-SYSTEM-KEY(2)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(3) = " ORCA-SYSTEM-KEY(3)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(4) = " ORCA-SYSTEM-KEY(4)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(5) = " ORCA-SYSTEM-KEY(5)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(6) = " ORCA-SYSTEM-KEY(6)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(7) = " ORCA-SYSTEM-KEY(7)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(8) = " ORCA-SYSTEM-KEY(8)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(9) = " ORCA-SYSTEM-KEY(9)(1:10)
-           DISPLAY "ORCA-SYSTEM-KEY(10) = "
-                                           ORCA-SYSTEM-KEY(10)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(1) = " ORCA-SYSTEM-VALUE(1)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(2) = " ORCA-SYSTEM-VALUE(2)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(3) = " ORCA-SYSTEM-VALUE(3)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(4) = " ORCA-SYSTEM-VALUE(4)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(5) = " ORCA-SYSTEM-VALUE(5)(1:40)
-           DISPLAY "ORCA-SYSTEM-VALUE(6) = " ORCA-SYSTEM-VALUE(6)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(7) = " ORCA-SYSTEM-VALUE(7)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(8) = " ORCA-SYSTEM-VALUE(8)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(9) = " ORCA-SYSTEM-VALUE(9)(1:10)
-           DISPLAY "ORCA-SYSTEM-VALUE(10) = "
-                                           ORCA-SYSTEM-VALUE(10)(1:10)
            MOVE  ORCA-SYSTEM-VALUE(1)      TO  SPA-NAI-PROCESS-N(IDX)
            MOVE  ORCA-SYSTEM-VALUE(2)      TO  SPA-NAI-WINDOW-N(IDX)
            MOVE  ORCA-SYSTEM-VALUE(3)      TO  SPA-NAI-USER-N(IDX)
@@ -615,7 +578,6 @@
                                            WRK-MSG3
                                            WRK-MSG4
                                            WRK-MSG5
-           DISPLAY "WRK-MSG4 = " WRK-MSG4
       *    MOVE    WRK-MSG4                TO  SPA-NAI-ACCESST-N(IDX)
       *    MOVE    ORCA-SYSTEM-VALUE(6)    TO  SPA-NAI-PROCESST-N(IDX)
            MOVE    WRK-MSG4                TO  SPA-NAI-PROCESST-N(IDX)
@@ -630,7 +592,6 @@
                                            WRK-MSG3
                                            WRK-MSG4
                                            WRK-MSG5
-           DISPLAY "WRK-MSG4 = " WRK-MSG4
            MOVE    WRK-MSG4            TO  SPA-NAI-LOGIN-N(IDX)
       *
            .
@@ -717,8 +678,6 @@
       *****************************************************************
        201-SELECT-SEC              SECTION.
       *
-           DISPLAY "SELECT SEC "
-      *
            MOVE    ZERO            TO  WRK-SELNUM
       *
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -768,7 +727,6 @@
            MOVE    ZERO            TO  SPA-GMN-SELNUM
            MOVE    SPACE           TO  SPA-GMN-MEMO
            MOVE    2               TO  SPA-GMN-CUR
-           DISPLAY "203-IRYO_NO-SEC start"
       *
            .
        203-IRYO-NO-EXT.
@@ -823,8 +781,6 @@
                GO  TO  420-TERMSTOP-EXT
            END-IF
       *
-           DISPLAY "term stop sec"
-      *
            INITIALIZE                  ORCA-SYSTEM
            MOVE    "SETVALUE"      TO  MCP-FUNC
            MOVE    2               TO  ORCA-SYSTEM-NUM
@@ -837,10 +793,8 @@
            MOVE    "T"             TO  ORCA-SYSTEM-VALUE(2)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               DISPLAY "SETVALUE   end"
                MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
            ELSE
-               DISPLAY "SETVALUE   failure"
                GO  TO  420-TERMSTOP-EXT
            END-IF
       *
@@ -852,8 +806,6 @@
       *    全端末強制終了処理
       *****************************************************************
        420-ALLSTOP-SEC             SECTION.
-      *
-           DISPLAY "term all stop sec"
       *
            PERFORM VARYING IDX     FROM   1   BY  1
                    UNTIL   IDX     >   200
@@ -871,10 +823,8 @@
                    MOVE    "T"             TO  ORCA-SYSTEM-VALUE(2)
                    PERFORM 900-SYSDB-INV-SEC
                    IF    ( MCP-RC          =   ZERO    OR  1 )
-                       DISPLAY "SETVALUE   end"
                        MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
                    ELSE
-                       DISPLAY "SETVALUE   failure"
                        GO  TO   420-ALLSTOP-EXT
                    END-IF
                END-IF
@@ -892,8 +842,6 @@
       *****************************************************************
        420-SENDMSG-SEC             SECTION.
       *
-           DISPLAY "term stop sec"
-      *
            INITIALIZE                  ORCA-SYSTEM
            MOVE    "SETVALUE"      TO  MCP-FUNC
            MOVE    1               TO  ORCA-SYSTEM-NUM
@@ -903,10 +851,8 @@
            MOVE    MLOG-MES1       TO  ORCA-SYSTEM-VALUE(1)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               DISPLAY "SETVALUE   end"
                MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
            ELSE
-               DISPLAY "SETVALUE   failure"
                GO  TO   420-SENDMSG-EXT
            END-IF
       *
@@ -919,8 +865,6 @@
       *****************************************************************
        420-SENDALL-SEC             SECTION.
       *
-           DISPLAY "term stop sec"
-      *
            INITIALIZE                  ORCA-SYSTEM
            MOVE    "SETVALUEALL"   TO  MCP-FUNC
            MOVE    1               TO  ORCA-SYSTEM-NUM
@@ -930,10 +874,8 @@
            MOVE    MLOG-MES1       TO  ORCA-SYSTEM-VALUE(1)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
-               DISPLAY "SETVALUE   end"
                MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
            ELSE
-               DISPLAY "SETVALUE   failure"
                GO  TO   420-SENDALL-EXT
            END-IF
       *
@@ -997,7 +939,6 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           DISPLAY "500-GMNHEN-SEC START"
            INITIALIZE                  MLOG
       *
       *    医療機関コンボ
@@ -1063,7 +1004,6 @@
                    END-IF
                END-IF
            END-PERFORM
-           DISPLAY "500-GMNHEN-SEC END cnt= " MLOG-LIST-COUNT
       *
       *    閲覧のみの場合は非活性にする
            IF    ( SPA-NAI-USER        =   SPACE OR "0" OR "1" OR  "2" )
@@ -1098,7 +1038,6 @@
            CALL    "ORCSGYOUMUGET"     USING
                                        SPA-AREA
                                        SGYOUMU-CODE
-           DISPLAY "take gyomu_cd = " SGYOUMU-CODE
            MOVE    WRK-SAKIPG          TO  SPA-SAKIPG
            SET     TBLLOCK-IDX         TO  1
            SEARCH  ORC-LOCKCONST-TX    VARYING  TBLLOCK-IDX
@@ -1119,7 +1058,6 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           DISPLAY "SPA-GMN-CUR=" SPA-GMN-CUR
            IF      SPA-GMN-CUR        =   ZERO
                PERFORM 50011-CUR-SET-SEC
            END-IF
