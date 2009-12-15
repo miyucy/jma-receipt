@@ -65,6 +65,7 @@
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/08/06  ÄûÀµÀÁµá½ñ¹ç·×°õºþÂÐ±þ
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/05  ¤ªÌô¼êÄ¢È¯¹Ô¶èÊ¬ÄÉ²Ã
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/23  Í½ÌóÉ¼È¯¹Ô¶èÊ¬ÄÉ²Ã
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/12/15  Ä´À°¶â£²ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -281,9 +282,13 @@
       *Æþ¶â³Û
            03  WRK-NYUKIN              PIC S9(07).
            03  WRK-CHOSEI              PIC S9(07).
+           03  WRK-CHOSEI1             PIC S9(07).
+           03  WRK-CHOSEI2             PIC S9(07).
            03  WRK-HZN-NYUKIN          PIC S9(07).
       *Á°Ä´À°¶â
            03  WRK-MAE-CHOSEI          PIC S9(07).
+           03  WRK-MAE-CHOSEI1         PIC S9(07).
+           03  WRK-MAE-CHOSEI2         PIC S9(07).
       *Æþ±¡Ì¤¼ý³Û
            03  WRK-NYUIN-MISYU         PIC S9(07).
            03  WRK-HENKIN              PIC S9(07).
@@ -1260,11 +1265,19 @@
            COMPUTE SPA-GMN-ICHIFTN     =   SPA-GMN-ROUFTN
                                        +   SPA-GMN-KOHFTN
                                        +   SPA-GMN-YKZFTN
-      *    Ä´À°¶â
+      *    Ä´À°¶â¹ç·×
            MOVE    SYU-CHOSEI          TO  SPA-GMN-CHOSEI
-           MOVE    SPA-GMN-CHOSEI      TO  SPA-MAE-CHOSEI
-           MOVE    SPA-GMN-CHOSEI      TO  WRK-Z92
-           MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI-X
+           MOVE    SYU-CHOSEI          TO  SPA-MAE-CHOSEI
+      *    Ä´À°¶â£±
+           MOVE    SYU-CHOSEI1         TO  SPA-GMN-CHOSEI1
+           MOVE    SPA-GMN-CHOSEI1     TO  SPA-MAE-CHOSEI1
+           MOVE    SPA-GMN-CHOSEI1     TO  WRK-Z92
+           MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI1-X
+      *    Ä´À°¶â£²
+           MOVE    SYU-CHOSEI2         TO  SPA-GMN-CHOSEI2
+           MOVE    SPA-GMN-CHOSEI2     TO  SPA-MAE-CHOSEI2
+           MOVE    SPA-GMN-CHOSEI2     TO  WRK-Z92
+           MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI2-X
       **** Á°²óÌ¤¼ý
       *    MOVE    SPA-MISYUMONEY      TO  SPA-GMN-ZENMISYU
       *    Á°²óÌ¤¼ý³Û¤¬¥Þ¥¤¥Ê¥¹¤Î»þ¡¢Ä¶²á³Û¤È¤¹¤ë
@@ -1456,6 +1469,8 @@
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
                                                             (IDX)
                        MOVE    ZERO        TO  SPA-TMAE-CHOSEI (IDX)
+                       MOVE    ZERO        TO  SPA-TMAE-CHOSEI1(IDX)
+                       MOVE    ZERO        TO  SPA-TMAE-CHOSEI2(IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -1493,6 +1508,8 @@
                        MOVE    ZERO        TO  SPA-TEI-SKYMONEY-TAX-SAI
                                                             (IDX)
                        MOVE    ZERO        TO  SPA-TMAE-CHOSEI (IDX)
+                       MOVE    ZERO        TO  SPA-TMAE-CHOSEI1(IDX)
+                       MOVE    ZERO        TO  SPA-TMAE-CHOSEI2(IDX)
                    END-IF
                END-IF
            END-PERFORM
@@ -1530,6 +1547,8 @@
                                                             (IDX)
       *    Ä´À°³Û
            MOVE    SYU-CHOSEI          TO  SPA-TMAE-CHOSEI (IDX)
+           MOVE    SYU-CHOSEI1         TO  SPA-TMAE-CHOSEI1(IDX)
+           MOVE    SYU-CHOSEI2         TO  SPA-TMAE-CHOSEI2(IDX)
       *
            .
        31092-SYUNOU-MAE-EXT.
@@ -1571,6 +1590,8 @@
                                                              (IDX)
       *        Ä´À°¶â
                MOVE    SYUTTL-CHOSEI       TO  SPA-TMAE-CHOSEI (IDX)
+               MOVE    SYUTTL-CHOSEI1      TO  SPA-TMAE-CHOSEI1(IDX)
+               MOVE    SYUTTL-CHOSEI2      TO  SPA-TMAE-CHOSEI2(IDX)
            ELSE
       *        Æ±¤¸ÊÝ¸±¤ÎÁ°ÀÁµá³Û¤ò²Ã»»¤¹¤ë
                PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -1587,6 +1608,10 @@
                                                                   (IDX)
                        ADD     SPA-TMAE-CHOSEI  (IDX2)
                                            TO  SPA-TMAE-CHOSEI    (IDX)
+                       ADD     SPA-TMAE-CHOSEI1 (IDX2)
+                                           TO  SPA-TMAE-CHOSEI1   (IDX)
+                       ADD     SPA-TMAE-CHOSEI2 (IDX2)
+                                           TO  SPA-TMAE-CHOSEI2   (IDX)
                    END-IF
                END-PERFORM
            END-IF
@@ -1653,6 +1678,8 @@
            MOVE    ZERO                TO  SPA-NAI-SEIKYU
            MOVE    ZERO                TO  SPA-NAI-NYUKIN
            MOVE    ZERO                TO  SPA-NAI-CHOSEI
+           MOVE    ZERO                TO  SPA-NAI-CHOSEI1
+           MOVE    ZERO                TO  SPA-NAI-CHOSEI2
            MOVE    ZERO                TO  SPA-NAI-SKYMONEY-TAX-SAI
            MOVE    ZERO                TO  SPA-NAI-HENKIN
       *
@@ -1688,6 +1715,10 @@
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
                ADD     SPA-TMAE-CHOSEI (SPA-SYUNOU-IDX)
                                            TO  SPA-NAI-CHOSEI
+               ADD     SPA-TMAE-CHOSEI1(SPA-SYUNOU-IDX)
+                                           TO  SPA-NAI-CHOSEI1
+               ADD     SPA-TMAE-CHOSEI2(SPA-SYUNOU-IDX)
+                                           TO  SPA-NAI-CHOSEI2
                ADD     SPA-MAE-SKYMONEY(SPA-SYUNOU-IDX)
                                            TO  SPA-OLD-SEIKYU
       *        Æþ¶âº¹³Û
@@ -1762,6 +1793,10 @@
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
                            ADD     SPA-TMAE-CHOSEI  (IDX)
                                            TO  SPA-NAI-CHOSEI
+                           ADD     SPA-TMAE-CHOSEI1 (IDX)
+                                           TO  SPA-NAI-CHOSEI1
+                           ADD     SPA-TMAE-CHOSEI2 (IDX)
+                                           TO  SPA-NAI-CHOSEI2
                            ADD     SPA-MAE-SKYMONEY(IDX)
                                            TO  SPA-OLD-SEIKYU
                            ADD     SPA-MAE-NYUKIN-TOTAL(IDX)
@@ -1814,6 +1849,8 @@
            ADD     WRK-SYU-YKZ-FTN          TO  SYU-YKZ-FTN
       *Ä´À°¶â
            ADD     WRK-SYU-CHOSEI           TO  SYU-CHOSEI
+           ADD     WRK-SYU-CHOSEI1          TO  SYU-CHOSEI1
+           ADD     WRK-SYU-CHOSEI2          TO  SYU-CHOSEI2
       *ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            ADD     WRK-SYU-SKYMONEY-TAX-SAI TO  SYU-SKYMONEY-TAX-SAI
       *ÀÁµá¶â³Û
@@ -1846,6 +1883,10 @@
                                            TO  SPA-NAI-SKYMONEY-TAX-SAI
                ADD     SPA-TMAE-CHOSEI  (IDX)
                                            TO  SPA-NAI-CHOSEI
+               ADD     SPA-TMAE-CHOSEI1 (IDX)
+                                           TO  SPA-NAI-CHOSEI1
+               ADD     SPA-TMAE-CHOSEI2 (IDX)
+                                           TO  SPA-NAI-CHOSEI2
                ADD     SPA-MAE-SKYMONEY(IDX)
                                            TO  SPA-OLD-SEIKYU
                ADD     SPA-MAE-NYUKIN-TOTAL(IDX)
@@ -2335,7 +2376,8 @@
       *
       *    º£²óÀÁµá³Û
            COMPUTE SPA-GMN-SEIKYU      =  (SPA-NAI-SEIKYU
-                                       +   SPA-GMN-CHOSEI )
+                                       +   SPA-GMN-CHOSEI1
+                                       +   SPA-GMN-CHOSEI2)
                                        -   SPA-OLD-SEIKYU
       *?   º£²óÆþ¶â
       *    IF      SPA-GMN-SEIKYU      <   ZERO
@@ -2378,6 +2420,8 @@
       *
            MOVE    ZERO            TO  SPA-GOK-NYUKIN
            MOVE    ZERO            TO  SPA-GOK-CHOSEI
+           MOVE    ZERO            TO  SPA-GOK-CHOSEI1
+           MOVE    ZERO            TO  SPA-GOK-CHOSEI2
            MOVE    ZERO            TO  SPA-GOK-SKYMONEY
            MOVE    ZERO            TO  SPA-OLD-SKYMONEY
            MOVE    ZERO            TO  SPA-NAI-HENKIN
@@ -2387,6 +2431,8 @@
                IF      WRK-SYU-SRYKA   NOT =   ZERO
                    ADD    WRK-SYU-NYUKIN-TOTAL TO  SPA-GOK-NYUKIN
                    ADD    WRK-SYU-CHOSEI       TO  SPA-GOK-CHOSEI
+                   ADD    WRK-SYU-CHOSEI1      TO  SPA-GOK-CHOSEI1
+                   ADD    WRK-SYU-CHOSEI2      TO  SPA-GOK-CHOSEI2
                    IF     WRK-SYU-DENPNUM      =   ZERO
                        ADD    WRK-SYU-SKYMONEY     TO  SPA-GOK-SKYMONEY
       *                ÊÖ¶â¤òÆþ¶â³Û¤Ø
@@ -2779,7 +2825,8 @@
       *    Ä´À°¶â
       *    MOVE    SPA-GMN-CHOSEI      TO  WRK-Z92
       *    MOVE    WRK-Z92             TO  K03-CHOSEI
-           MOVE    SPA-GMN-CHOSEI-X    TO  K03-CHOSEI
+           MOVE    SPA-GMN-CHOSEI1-X   TO  K03-CHOSEI
+           MOVE    SPA-GMN-CHOSEI2-X   TO  K03-CHOSEI2
       *    º£²óÀÁµá³Û
       *    ·ÑÂ³¤Î»þº£²óÀÁµá³Û¤ò¥¼¥í¤¹¤ë
       *    IF      SPA-CONTKBN         =   "1"
@@ -3133,8 +3180,10 @@
                   (SPA-GMN-HKNCOMBI    =   ZERO ) OR
                   (SPA-NAI-FLG         =   1    )
                MOVE    WIDGET-INSENSITIVE  TO  K03-CHOSEI-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K03-CHOSEI2-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  K03-CHOSEI-STATE
+               MOVE    WIDGET-NORMAL       TO  K03-CHOSEI2-STATE
            END-IF
       *     Æþ¶â³Û
            IF    ((SPA-GMN-SRYKA       NOT =   ZERO ) AND
@@ -3191,6 +3240,8 @@
                    MOVE    "DRCD"            TO  MCP-WIDGET
                WHEN    06
                    MOVE    "CHOSEI"          TO  MCP-WIDGET
+               WHEN    08
+                   MOVE    "CHOSEI2"          TO  MCP-WIDGET
                WHEN    10
                    MOVE    "NYUKINKBN"       TO  MCP-WIDGET
                WHEN    11
@@ -3243,6 +3294,13 @@
                    END-IF
       *        Ä´À°¶â
                WHEN    "CHOSEI"
+      *            IF     SPA-NAI-HENFLG   =   1
+      *                MOVE    07          TO  SPA-GMN-CUR
+      *            ELSE
+                       MOVE    08          TO  SPA-GMN-CUR
+      *            END-IF
+      *        Ä´À°¶â£²
+               WHEN    "CHOSEI2"
                    IF     SPA-NAI-HENFLG   =   1
                        MOVE    07          TO  SPA-GMN-CUR
                    ELSE
@@ -3495,7 +3553,8 @@
        4101-GMN-SPA-SET-SEC          SECTION.
       *
       *    Ä´À°¶â
-           MOVE    K03-CHOSEI          TO  SPA-GMN-CHOSEI-X
+           MOVE    K03-CHOSEI          TO  SPA-GMN-CHOSEI1-X
+           MOVE    K03-CHOSEI2         TO  SPA-GMN-CHOSEI2-X
       *    Æþ¶â³Û
            MOVE    K03-NYUKIN          TO  SPA-GMN-NYUKIN-X
       *    ÊÖ¶â
@@ -3598,7 +3657,8 @@
            IF    ((SPA-GMN-NYUKINKBN   =   SPA-MAE-NYUKINKBN )  AND
                   (SPA-GMN-NYUKIN      =   SPA-MAE-NYUKIN    )  AND
                   (SPA-GMN-HENKIN      =   SPA-MAE-HENKIN    )  AND
-                  (SPA-GMN-CHOSEI      =   SPA-MAE-CHOSEI    )  AND
+                  (SPA-GMN-CHOSEI1     =   SPA-MAE-CHOSEI1   )  AND
+                  (SPA-GMN-CHOSEI2     =   SPA-MAE-CHOSEI2   )  AND
                   (FLG-TOUROKU         =   ZERO              ))
               OR  (SPA-ERRCD       NOT =   SPACE             )
                CONTINUE
@@ -3609,7 +3669,10 @@
                    MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
                    MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
                    MOVE    SPA-GMN-HENKIN      TO  SPA-MAE-HENKIN
-                   MOVE    SPA-GMN-CHOSEI      TO  SPA-MAE-CHOSEI
+                   MOVE    SPA-GMN-CHOSEI1     TO  SPA-MAE-CHOSEI1
+                   MOVE    SPA-GMN-CHOSEI2     TO  SPA-MAE-CHOSEI2
+                   COMPUTE SPA-MAE-CHOSEI      =   SPA-MAE-CHOSEI1
+                                               +   SPA-MAE-CHOSEI2
                ELSE
                    MOVE    "E"                 TO  SPA-MAE-NYUKINKBN
                END-IF
@@ -3886,6 +3949,7 @@
            EVALUATE    WRK-MCP-WIDGET
       *        Ä´À°¶âÆþÎÏ»þ¡¢¹ç·×³Û¤¬¥¼¥í°Ê²¼¤Î»þ¡¢È¯¹Ô¤Ê¤·¤È¤¹¤ë
                WHEN    "CHOSEI"
+               WHEN    "CHOSEI2"
       *            ÀÁµá³Û¤¬¥¼¥í°Ê²¼¤Î»þ¡¢ÀÁµá½ñÈ¯¹Ô¶èÊ¬ÊÑ¹¹
                    IF      SPA-SKYPRTFLG       =   "2"
                        IF      SPA-GMN-SEIGOK      <=  ZERO
@@ -3912,6 +3976,8 @@
        310511-GOK-SKYMONEY-SEC           SECTION.
       *
            MOVE    ZERO            TO  SPA-GOK-CHOSEI
+           MOVE    ZERO            TO  SPA-GOK-CHOSEI1
+           MOVE    ZERO            TO  SPA-GOK-CHOSEI2
            MOVE    ZERO            TO  SPA-GOK-SKYMONEY
            MOVE    ZERO            TO  SPA-OLD-SKYMONEY
            MOVE    ZERO            TO  SPA-GOK-NYUKIN
@@ -3921,6 +3987,8 @@
                MOVE    SPA-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
                IF      WRK-SYU-SRYKA   NOT =   ZERO
                    ADD    WRK-SYU-CHOSEI       TO  SPA-GOK-CHOSEI
+                   ADD    WRK-SYU-CHOSEI1      TO  SPA-GOK-CHOSEI1
+                   ADD    WRK-SYU-CHOSEI2      TO  SPA-GOK-CHOSEI2
                    ADD    WRK-SYU-NYUKIN-TOTAL TO  SPA-GOK-NYUKIN
                    ADD     SPA-SYU-HENKIN (IDX)    TO  SPA-NAI-HENKIN
                    IF     WRK-SYU-DENPNUM      =   ZERO
@@ -4280,7 +4348,9 @@
                                            TO  SYUNOU-REC
                IF     (WRK-SRYKA       NOT =   ZERO )  AND
                       (WRK-HKNCOMBI    NOT =   ZERO )
-                   MOVE    SPA-GMN-CHOSEI  TO  SYU-CHOSEI
+                   MOVE    SPA-GMN-CHOSEI      TO  SYU-CHOSEI
+                   MOVE    SPA-GMN-CHOSEI1     TO  SYU-CHOSEI1
+                   MOVE    SPA-GMN-CHOSEI2     TO  SYU-CHOSEI2
                END-IF
                IF      WRK-SRYKA           =   SYU-SRYKA
                    IF      SPA-GMN-DRCD        =   SPACE
@@ -4331,6 +4401,8 @@
                IF      SYU-SRYKA           =   ZERO
                    MOVE    ZERO            TO  WRK-NYUKIN
                    MOVE    ZERO            TO  WRK-CHOSEI
+                   MOVE    ZERO            TO  WRK-CHOSEI1
+                   MOVE    ZERO            TO  WRK-CHOSEI2
                    MOVE    ZERO            TO  WRK-HENKIN
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   SPA-SYUNOU-MAX
@@ -4338,15 +4410,19 @@
                                                TO  WRK-SYUNOU-REC
                        IF     (WRK-SYU-SRYKA   NOT =   ZERO  )  AND
                               (SYU-HKNCOMBINUM =   WRK-SYU-HKNCOMBINUM)
-                           ADD     WRK-SYU-CHOSEI  TO  WRK-CHOSEI
+                           ADD     WRK-SYU-CHOSEI      TO  WRK-CHOSEI
+                           ADD     WRK-SYU-CHOSEI1     TO  WRK-CHOSEI1
+                           ADD     WRK-SYU-CHOSEI2     TO  WRK-CHOSEI2
                            ADD     WRK-SYU-NYUKIN-TOTAL
-                                                   TO  WRK-NYUKIN
+                                                       TO  WRK-NYUKIN
                            ADD     SPA-SYU-HENKIN(IDX2)
-                                                   TO  WRK-HENKIN
+                                                       TO  WRK-HENKIN
                        END-IF
                    END-PERFORM
                    MOVE    WRK-NYUKIN          TO  SYU-NYUKIN-TOTAL
                    MOVE    WRK-CHOSEI          TO  SYU-CHOSEI
+                   MOVE    WRK-CHOSEI1         TO  SYU-CHOSEI1
+                   MOVE    WRK-CHOSEI2         TO  SYU-CHOSEI2
                    MOVE    SYUNOU-REC          TO  SPA-SYUNOU-REC (IDX)
       *            º£²óÆþ¶â³Û
                    MOVE    SYU-NYUKIN-TOTAL    TO  SPA-TEI-NYUKIN-TOTAL
@@ -4367,7 +4443,7 @@
        410-CHOSEI-CHK-SEC                SECTION.
       *
            INITIALIZE                      ORCSNUMAREA
-           MOVE    SPA-GMN-CHOSEI-X    TO  SNUM-INX
+           MOVE    SPA-GMN-CHOSEI1-X   TO  SNUM-INX
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -4376,12 +4452,33 @@
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    6                   TO  SPA-GMN-CUR
            ELSE
-               MOVE    SNUM-OUTNUM         TO  SPA-GMN-CHOSEI
-               MOVE    SPA-GMN-CHOSEI      TO  WRK-Z92
-               MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI-X
-               IF      SPA-GMN-CHOSEI      NOT =   ZERO
+               MOVE    SNUM-OUTNUM         TO  SPA-GMN-CHOSEI1
+               MOVE    SPA-GMN-CHOSEI1     TO  WRK-Z92
+               MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI1-X
+           END-IF
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    SPA-GMN-CHOSEI2-X   TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-SEISUU         >   7     )   OR
+                  (SNUM-SYOKBN         =   "1"   )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    08                  TO  SPA-GMN-CUR
+               END-IF
+               MOVE    "0001"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  SPA-GMN-CHOSEI2
+               MOVE    SPA-GMN-CHOSEI2     TO  WRK-Z92
+               MOVE    WRK-Z92             TO  SPA-GMN-CHOSEI2-X
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-GMN-CHOSEI1     NOT =   ZERO )  OR
+                      (SPA-GMN-CHOSEI2     NOT =   ZERO )
       *            º£²óÀÁµá³Û¤¬¥¼¥í°Ê¾å¤Ç¤¢¤ë¤³¤È
-                   COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI
+                   COMPUTE WRK-SEIKYU      =   SPA-GMN-CHOSEI1
+                                           +   SPA-GMN-CHOSEI2
                                            +   SPA-NAI-SEIKYU
                    IF     (WRK-SEIKYU          <   ZERO )  AND
                           (SPA-NAI-SEIKYU      >   ZERO )
@@ -4389,8 +4486,11 @@
                        MOVE    06                      TO  SPA-GMN-CUR
                    END-IF
                END-IF
-               IF      (SPA-GMN-CHOSEI NOT =   SPA-MAE-CHOSEI) AND
-                       (SPA-ERRCD          =   SPACE   )
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               COMPUTE SPA-GMN-CHOSEI      =   SPA-GMN-CHOSEI1
+                                           +   SPA-GMN-CHOSEI2
+               IF      (SPA-GMN-CHOSEI NOT =   SPA-MAE-CHOSEI)
       *            ÊÑ¹¹¤¬¤¢¤Ã¤¿»þ¡¢Æþ¶â³ÛÅù¤òºÆÊÔ½¸
                    PERFORM 4101-CHOSEI-HENKOU-SEC
                END-IF
@@ -4734,7 +4834,7 @@
        210-BACK                        SECTION.
       *
       *    Ä´À°¶â
-           MOVE    SPA-GMN-CHOSEI      TO  SPA-K03-CHOSEI
+      *    MOVE    SPA-GMN-CHOSEI      TO  SPA-K03-CHOSEI
       *    ÀÁµá½ñºîÀ®¶èÊ¬
       *D   MOVE    SPA-GMN-HAKFLG      TO  SPA-K03-SKYKUKBN
       *
@@ -4748,7 +4848,6 @@
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    "K02"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW

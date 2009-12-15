@@ -55,8 +55,11 @@
                    07  SPA-GMN-ICHIFTN           PIC 9(07).
                    07  SPA-GMN-JIHIGOK           PIC 9(07).
                    07  SPA-GMN-YKZFTN            PIC 9(07).
+                   07  SPA-GMN-CHOSEI1           PIC S9(07).
+                   07  SPA-GMN-CHOSEI1-X         PIC  X(10).
+                   07  SPA-GMN-CHOSEI2           PIC S9(07).
+                   07  SPA-GMN-CHOSEI2-X         PIC  X(10).
                    07  SPA-GMN-CHOSEI            PIC S9(07).
-                   07  SPA-GMN-CHOSEI-X          PIC  X(10).
                    07  SPA-GMN-SEIKYU            PIC S9(07).
       ********     07  SPA-GMN-ZENMISYU          PIC S9(07).
       ********     07  SPA-GMN-CHOKAKIN          PIC S9(07).
@@ -235,6 +238,8 @@
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).
                    07  SPA-NAI-CHOSEI            PIC S9(07).
+                   07  SPA-NAI-CHOSEI1           PIC S9(07).
+                   07  SPA-NAI-CHOSEI2           PIC S9(07).
                    07  SPA-NAI-SKYMONEY-TAX-SAI  PIC S9(07).
                    07  SPA-NAI-HENKIN            PIC S9(07).
                    07  SPA-NAI-HENKBN            PIC X(01).
@@ -244,6 +249,8 @@
       *
                    07  SPA-MAE-NYUKINKBN         PIC X(01).
                    07  SPA-MAE-CHOSEI            PIC S9(07).
+                   07  SPA-MAE-CHOSEI1           PIC S9(07).
+                   07  SPA-MAE-CHOSEI2           PIC S9(07).
                    07  SPA-MAE-NYUKIN            PIC S9(07).
                    07  SPA-MAE-HENKIN            PIC S9(07).
       *            Æþ¶âÆþÎÏ¤¢¤ê
@@ -251,6 +258,8 @@
                    07  SPA-GOK-NYUKIN            PIC S9(07).
                    07  SPA-GOK-SKYMONEY          PIC S9(07).
                    07  SPA-GOK-CHOSEI            PIC S9(07).
+                   07  SPA-GOK-CHOSEI1           PIC S9(07).
+                   07  SPA-GOK-CHOSEI2           PIC S9(07).
                    07  SPA-GOK-HENKIN            PIC S9(07).
                    07  SPA-OLD-SKYMONEY          PIC S9(07).
                    07  SPA-OLD-SEIKYU            PIC S9(07).
@@ -309,23 +318,25 @@
                05  SPA-SYUNOU-MAX              PIC 9(04).
                05  SPA-SYUNOU-IDX              PIC 9(04).
                05  SPA-SYUNOU-TBL              OCCURS  15.
-                   07  SPA-SYUNOU-REC          PIC X(2000).
+                   07  SPA-SYUNOU-REC              PIC X(2000).
       *            ÀÁµá¶â³ÛÄûÀµº¹³Û
                    07  SPA-TEI-SKYMONEY            PIC S9(07).
       *            ¾ÃÈñÀÇ¡ÊºÆ·Ç¡ËÄûÀµº¹³Û
                    07  SPA-TEI-SKYMONEY-TAX-SAI    PIC S9(07).
       *            ÄûÀµÁ°ÀÁµá¶â³Û
-                   07  SPA-MAE-SKYMONEY        PIC  9(07).
+                   07  SPA-MAE-SKYMONEY            PIC  9(07).
       *            ÄûÀµÁ°¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
                    07  SPA-MAE-SKYMONEY-TAX-SAI    PIC  9(07).
       *            ÄûÀµÁ°Æþ¶â¹ç·×³Û
-                   07  SPA-MAE-NYUKIN-TOTAL    PIC  9(07).
+                   07  SPA-MAE-NYUKIN-TOTAL        PIC  9(07).
       *            ÄûÀµÁ°Ä´À°¶â
-                   07  SPA-TMAE-CHOSEI       PIC S9(07).
+                   07  SPA-TMAE-CHOSEI             PIC S9(07).
+                   07  SPA-TMAE-CHOSEI1            PIC S9(07).
+                   07  SPA-TMAE-CHOSEI2            PIC S9(07).
       *            ÄûÀµº£²óÀÁµá³Û
-                   07  SPA-TEIKEI-SKYMONEY     PIC  9(07).
+                   07  SPA-TEIKEI-SKYMONEY         PIC  9(07).
       *            º£²óÆþ¶â³Û
-                   07  SPA-TEI-NYUKIN-TOTAL    PIC S9(07).
+                   07  SPA-TEI-NYUKIN-TOTAL        PIC S9(07).
       *H18/9
       *            º£²óÊÖ¶â³Û
                    07  SPA-SYU-HENKIN          PIC S9(07).

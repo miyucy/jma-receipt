@@ -85,6 +85,9 @@
               03  K03-CHOSEI-G.
                 04  K03-CHOSEI-STATE   PIC S9(9)   BINARY.
                 04  K03-CHOSEI   PIC X(10).
+              03  K03-CHOSEI2-G.
+                04  K03-CHOSEI2-STATE   PIC S9(9)   BINARY.
+                04  K03-CHOSEI2   PIC X(10).
               03  K03-GOKSKY.
                 04  K03-VALUE   PIC X(10).
               03  K03-MISYUZAN-G.

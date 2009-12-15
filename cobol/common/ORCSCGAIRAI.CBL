@@ -4381,6 +4381,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-KOH-FTN-ENTANI  TO  SYUTTL-KOH-FTN-ENTANI
       *調整金
            MOVE    SYU-CHOSEI          TO  SYUTTL-CHOSEI
+           MOVE    SYU-CHOSEI1         TO  SYUTTL-CHOSEI1
+           MOVE    SYU-CHOSEI2         TO  SYUTTL-CHOSEI2
       *まとめ入力差額
            MOVE    SYU-GRP-SGKMONEY    TO  SYUTTL-GRP-SGKMONEY
       *保険適用金額

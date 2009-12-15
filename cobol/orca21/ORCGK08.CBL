@@ -728,9 +728,7 @@
            COPY    "CPK02SPASCR.INC".
       *
       *    £Ä£Â¸¡º÷
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
       *
       *    ¥×¥ì¥Ó¥å¡¼ÍÑ¾ðÊó
            COPY    "CPXC01LNK.INC".
@@ -4186,6 +4184,8 @@
            ADD     WRK-SYU-YKZ-FTN         TO  SYU-YKZ-FTN
       *Ä´À°¶â
            ADD     WRK-SYU-CHOSEI          TO  SYU-CHOSEI
+           ADD     WRK-SYU-CHOSEI1         TO  SYU-CHOSEI1
+           ADD     WRK-SYU-CHOSEI2         TO  SYU-CHOSEI2
       *Ï«ºÒÊÝ¸±
            ADD     WRK-SYU-RSISHOSHIN-MONEY
                                            TO  SYU-RSISHOSHIN-MONEY

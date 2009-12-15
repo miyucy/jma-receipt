@@ -306,6 +306,7 @@
       *  04.05.02    NACL-門脇    09/06/22  数量小数５桁対応
       *  04.05.03    NACL-門脇    09/06/25  保険、自費それぞれの請求額端数
       *                                     設定機能
+      *  04.05.00    NACL-多々納  09/12/15  調整金２対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -387,6 +388,10 @@
            03  WK-CYOKI-TOKU75         PIC 9(08).
            03  WK-CYOKI-ENTANI-TOKU75  PIC 9(08).
            03  WK-CYOKI-ZAN-XXX        PIC 9(08).
+      *    調整金再計算
+           03  WRK-SYU-CHOSEI          PIC S9(07).
+           03  WRK-SYU-CHOSEI2         PIC S9(07).
+      *
        01  SHOHOUSEN-AREA.
            03  FLG-INNAI               PIC X(01).
            03  FLG-INGAI               PIC X(01).
@@ -2082,8 +2087,20 @@
            COMPUTE    WK-KEISAN         =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-CHOSEI.
            IF   WK-KEISAN  <  ZERO
+               MOVE     LNK-SYU-CHOSEI      TO  WRK-SYU-CHOSEI
                COMPUTE  LNK-SYU-CHOSEI  =   LNK-SYU-SKYMONEY
                                         *   -1
+      *!!!!
+               IF       LNK-SYU-CHOSEI2        =   ZERO
+                   MOVE    LNK-SYU-CHOSEI      TO  LNK-SYU-CHOSEI1
+                   MOVE    ZERO                TO  LNK-SYU-CHOSEI2
+               ELSE
+                   MOVE    LNK-SYU-CHOSEI2     TO  WRK-SYU-CHOSEI2
+                   COMPUTE LNK-SYU-CHOSEI2     =   WRK-SYU-CHOSEI2
+                                               -  (WRK-SYU-CHOSEI
+                                               -   LNK-SYU-CHOSEI )
+               END-IF
+      *!!!!
                MOVE   ZERO            TO   LNK-SYU-SKYMONEY
            ELSE
                MOVE   WK-KEISAN       TO   LNK-SYU-SKYMONEY

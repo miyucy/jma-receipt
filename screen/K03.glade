@@ -739,7 +739,7 @@
       <class>GtkPandaEntry</class>
       <name>CHOSEI</name>
       <x>904</x>
-      <y>296</y>
+      <y>280</y>
       <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1994,31 +1994,6 @@
       <width>62</width>
       <height>24</height>
       <label>ÅÁÉ¼ÈÖ¹æ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator9</name>
-      <x>812</x>
-      <y>276</y>
-      <width>200</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label467</name>
-      <x>816</x>
-      <y>296</y>
-      <width>80</width>
-      <height>24</height>
-      <label>Ä´À°¶â</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3384,6 +3359,75 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator9</name>
+      <x>812</x>
+      <y>256</y>
+      <width>200</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>CHOSEI2</name>
+      <x>904</x>
+      <y>308</y>
+      <width>88</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Mon, 25 Dec 2000 09:23:36 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Mon, 25 Dec 2000 09:23:48 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label467</name>
+      <x>816</x>
+      <y>280</y>
+      <width>80</width>
+      <height>24</height>
+      <label>Ä´À°¶â£±</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label503</name>
+      <x>816</x>
+      <y>308</y>
+      <width>80</width>
+      <height>24</height>
+      <label>Ä´À°¶â£²</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
