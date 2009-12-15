@@ -460,9 +460,14 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           MOVE    1               TO  SPA-GMN-CUR
            PERFORM 3101-LISTENTRY-SEC
       *
-           MOVE    1               TO  SPA-GMN-CUR
+           IF      SPA-NAI-SYS-CNT >   1
+               CONTINUE
+           ELSE
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        310-SPASET-EXT.
@@ -672,7 +677,7 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"  ALSO    "SELNUM"
+               WHEN    "ACTIVATE"  ALSO    "SELNUM01"
                    PERFORM 201-SELNUM-SEC
       *        メッセージ入力
                WHEN    "ACTIVATE"  ALSO    "MESSAGE"
@@ -694,6 +699,8 @@
       *****************************************************************
        201-SELNUM-SEC              SECTION.
       *
+           MOVE    MLOG-SEL1       TO  SPA-GMN-SELNUM
+           MOVE    3               TO  SPA-GMN-CUR
            .
        201-SELNUM-EXT.
            EXIT.
@@ -722,7 +729,7 @@
                MOVE    WRK-SELNUM      TO  SPA-GMN-SELNUM
            END-IF
       *
-           MOVE    6                   TO  SPA-GMN-CUR
+           MOVE    3                   TO  SPA-GMN-CUR
       *
            .
        201-SELECT-EXT.
@@ -733,9 +740,13 @@
       *****************************************************************
        202-MEMO-SEC                SECTION.
       *
-           MOVE    7               TO  SPA-GMN-CUR
-      *
            MOVE    MLOG-MES1       TO  SPA-GMN-MEMO
+      *
+           IF      SPA-GMN-SELNUM  NOT =   ZERO
+               MOVE    4               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    5               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        201-SELECT-EXT.
@@ -749,6 +760,7 @@
            MOVE    MLOG-IRYONO     TO  SPA-GMN-IRYONO
            MOVE    ZERO            TO  SPA-GMN-SELNUM
            MOVE    SPACE           TO  SPA-GMN-MEMO
+           MOVE    2               TO  SPA-GMN-CUR
            DISPLAY "203-IRYO_NO-SEC start"
       *
            .
@@ -794,6 +806,10 @@
       *    端末強制終了処理
       *****************************************************************
        420-TERMSTOP-SEC            SECTION.
+      *
+           IF      SPA-NAI-TERMID(SPA-GMN-SELNUM) =   MCP-TERM
+               GO  TO  420-TERMSTOP-EXT
+           END-IF
       *
            DISPLAY "term stop sec"
       *
@@ -1091,21 +1107,52 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           DISPLAY "SPA-GMN-CUR=" SPA-GMN-CUR
+           IF      SPA-GMN-CUR        =   ZERO
+               PERFORM 50011-CUR-SET-SEC
+           END-IF
            EVALUATE    SPA-GMN-CUR
                WHEN    1
                    MOVE    "IRYO_NO"      TO  MCP-WIDGET
                WHEN    2
-                   MOVE    "SELNUM01"     TO  MCP-WIDGET
+                   MOVE    "SELNUM01"       TO  MCP-WIDGET
                WHEN    3
-                   MOVE    "MESSAGE"      TO  MCP-WIDGET
+                   MOVE    "MESSAGE"         TO  MCP-WIDGET
                WHEN    4 
                    MOVE    "B05"          TO  MCP-WIDGET
+               WHEN    5 
+                   MOVE    "B06"          TO  MCP-WIDGET
                WHEN    99
                    MOVE    "B12"          TO  MCP-WIDGET
            END-EVALUATE
       *
           .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カーソル編集処理
+      *****************************************************************
+       50011-CUR-SET-SEC           SECTION.
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+           EVALUATE    MCP-WIDGET
+               WHEN    "IRYO_NO"
+                   MOVE    2           TO  SPA-GMN-CUR
+               WHEN    "SELNUM01"
+                   MOVE    3           TO  SPA-GMN-CUR
+               WHEN    "MESSAGE"
+                   MOVE    4           TO  SPA-GMN-CUR
+               WHEN    "B05"
+                   MOVE    99          TO  SPA-GMN-CUR
+               WHEN    "B06"
+                   MOVE    99          TO  SPA-GMN-CUR
+               WHEN   "B12"
+                   MOVE     1          TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+          .
+       50011-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************

@@ -1288,7 +1288,6 @@
                                        SPAAREA
                                        LINKAREA
                                        SCRAREA
-           MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "M00"                TO  SPA-MOTOPG
            MOVE    "MLOG"               TO  SPA-SAKIPG
