@@ -771,7 +771,7 @@ path	del6 	{
 		WHERE   HOSPNUM         =    :HOSPNUM
 		AND     NYUGAIKBN       =    :NYUGAIKBN
 		AND     PTID            =    :PTID
-		AND     CREATEKBN       <>   3
+		AND     CREATEKBN       <>   '3'
 		AND     DENPNUM		>=   :DENPNUM
 		;
 	};

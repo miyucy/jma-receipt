@@ -1439,7 +1439,7 @@ path	key71 	{
 path	upd1 	{
 	DBUPDATE	{
 		UPDATE	tbl_syunou_main
-                SET	NYUGAIKBN	=    :NYUGAIKBN,
+                SET	NYUGAIKBN	=    :NYUGAIKBN
 		WHERE   HOSPNUM         =    :HOSPNUM
 		AND     NYUGAIKBN       =    :DENPJTIKBN
 		AND     PTID            =    :PTID
@@ -1451,11 +1451,11 @@ path	upd1 	{
 
 path	del2 	{
 	DBDELETE	{
-		DELETE	tbl_syunou_main
+		DELETE	FROM tbl_syunou_main
 		WHERE   HOSPNUM         =    :HOSPNUM
 		AND     NYUGAIKBN       =    :NYUGAIKBN
 		AND     PTID            =    :PTID
-		AND     CREATEKBN       <>   3
+		AND     CREATEKBN       <>   '3'
 		AND     DENPNUM		>=   :DENPNUM
 		;
 	};
