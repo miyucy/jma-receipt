@@ -892,7 +892,9 @@
                        11  SPA-GMN-I04-SKY1ST          PIC S9(10).
                        11  SPA-GMN-I04-SKY2ND          PIC S9(10).
                        11  SPA-GMN-I04-SKY3RD          PIC S9(10).
+                       11  SPA-GMN-I04-SKYTAIIN        PIC S9(10).
                        11  SPA-GMN-I04-SKYSGK          PIC S9(10).
+                       11  SPA-GMN-I04-FTNTAIIN        PIC S9(10).
       *
       *            保険組み合わせリスト
                    09  SPA-GMN-I04-HKNCOMBILST.

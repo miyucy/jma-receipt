@@ -302,6 +302,7 @@ SRCS = ORCHC01.CBL \
        ORCSKANACHK2.CBL \
        ORCSNDAYCHG.CBL \
        ORCHCM68.CBL \
+       ORCSTEIKISGK.CBL \
        ORCSENCODING.CBL \
 
 top_builddir = ../..
