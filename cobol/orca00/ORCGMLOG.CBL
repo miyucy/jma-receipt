@@ -795,6 +795,7 @@
        420-CLEAR-SEC               SECTION.
       *
            MOVE    ZERO            TO  SPA-GMN-SELNUM
+           MOVE    SPACE           TO  SPA-GMN-MEMO
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
