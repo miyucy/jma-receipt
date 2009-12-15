@@ -74,6 +74,7 @@
       *  04.04.06    NACL-ÌçÏÆ    09/08/19  ½Ð»º°ì»þ¶âÂÐ±þ
       *  04.04.07    NACL-Æ£¸¶    09/10/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
       *                                     ¡Ê¼«Î©»Ù±ç¤Î¸øÈñÃ±ÆÈ¡Ë 
+      *  04.04.08    NACL-Æ£¸¶    09/12/14  Å¦Í×Íóµ­ºÜ¤Î²þÊÇ½èÍý¤Î½¤Àµ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *  04.05.02    NACL-Æ£¸¶    09/06/11  ÉÂÅïÊÌ½ÐÎÏÂÐ±þ
@@ -6445,14 +6446,14 @@
                    MOVE    1           TO  FLG-LINE   
                END-IF
       *
-               IF  WRK-LINETEK           >   WRK-TEKIYOU-LINE
+               IF  WRK-LINETEK           >=  WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
                IF      CNT-PAGE        =   1   
                    MOVE    "Ï·Ê¡"          TO  HC06-TEKIYO (WRK-LINETEK)
                ELSE
-                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                   EVALUATE    SYS-2005-NEXTPRTKBN
                        WHEN    "0"   
                            MOVE    "Ï·Ê¡"  TO  HC061-TEKIYO(WRK-LINETEK)
                        WHEN    "1"   
@@ -7236,7 +7237,7 @@
                        MOVE    WRK-KOH-HENSYU-X (IDY)
                                        TO  HC06-TEKIYO (WRK-LINETEK)
                    ELSE                    
-                       EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       EVALUATE    SYS-2005-NEXTPRTKBN
                            WHEN    "0"   
                                MOVE    WRK-KOH-HENSYU-X (IDY)
                                            TO  HC061-TEKIYO(WRK-LINETEK)
