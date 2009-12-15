@@ -311,6 +311,14 @@
            03  SYUTTL-KOH-FTN-ENTANI      PIC  9(07)V9(01).
       *調整金
            03  SYUTTL-CHOSEI              PIC S9(07).
+           03  SYUTTL-CHOSEI-NAIYOU.
+      *調整金内訳１
+               05  SYUTTL-CHOSEI1         PIC S9(07).
+      *調整金内訳２
+               05  SYUTTL-CHOSEI2         PIC S9(07).
+           03  SYUTTL-CHOSEI-NAIYOU-R REDEFINES  SYUTTL-CHOSEI-NAIYOU.
+               05  SYUTTL-RCHOSEI         PIC S9(07)
+                                          OCCURS  2.
       *まとめ入力差額
            03  SYUTTL-GRP-SGKMONEY        PIC S9(07).
       *保険適用金額

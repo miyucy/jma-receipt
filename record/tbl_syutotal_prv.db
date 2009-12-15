@@ -155,6 +155,8 @@ tbl_syutotal_prv {
 	KOH_FTN				number(7,0);
 	KOH_FTN_ENTANI			number(8,1);
 	CHOSEI  			number(7,0);
+	CHOSEI1  			number(7,0);
+	CHOSEI2  			number(7,0);
 	GRP_SGKMONEY			number(7,0);
 	HKNTEKMONEY			number(7,0);
 	DISCOUNT_KBN			char(2);
