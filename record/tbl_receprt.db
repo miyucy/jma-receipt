@@ -37,7 +37,7 @@ tbl_receprt	{
         SYUBETU_SRT2        integer;
         DRCD                char(5);
         DRCD_SRYKA          char(2);
-        SORT_1              char(10);
+        SORT_1              varchar(10);
         FORMID              char(20);
         PRTDATA             varchar(10000);
         PRTNM               char(16);
