@@ -19394,7 +19394,6 @@
                      MOVE     ZAN-KOHI2-M      TO  ZAN-KOHI2
                      MOVE     ZAN-KOHI2-M2     TO  ZAN-KOHI22
                      MOVE     ZAN-KOHI2-M3     TO  ZAN-KOHI23
-                     MOVE     1                TO  FLG-RUIKEIYO-DAY
                    END-IF
                  WHEN       2
                    MOVE       ZAN-KOHI2-M      TO  ZAN-KOHI2
@@ -19409,6 +19408,8 @@
                MOVE   ZERO      TO  ZAN-KOHI23
       *
            END-IF
+      *
+           MOVE     1           TO  FLG-RUIKEIYO-DAY
       *
            .
       *
