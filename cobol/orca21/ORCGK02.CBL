@@ -786,6 +786,10 @@
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
       *
+      *    画面スパ領域ワーク
+           COPY    "K02SCR-SPA"      REPLACING
+                                     //SPA-// BY //HZN-SPA-//.
+      *
        01  WRK-SYSTIME               PIC 9(08).
       *
       *****************************************************************
@@ -1796,9 +1800,74 @@
                                            SPA-K01KYOUTU
                                            SPA-K02
            END-IF
+      *    会計照会からの戻りの時、受診履歴判定
+           IF      SPA-MOTOPG          =   "J02"
+               PERFORM 30041-JYURRK-J02CHK-SEC
+           END-IF
       *
            .
        3004-SAI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    会計照会変更チェック処理
+      *****************************************************************
+       30041-JYURRK-J02CHK-SEC              SECTION.
+      *
+           MOVE    SPA-K02             TO  HZN-SPA-K02
+      *
+           INITIALIZE                  ORCSC95AREA
+           MOVE    "N"                 TO  LNK-SC95-KBN
+           MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
+           MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
+           MOVE    "K02"               TO  LNK-SC95-PG
+           CALL    "ORCSC95"           USING
+                                       MCPAREA
+                                       ORCSC95AREA
+                                       SPA-AREA
+                                       SPA-K01KYOUTU
+                                       HZN-SPA-K02
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-MAX1 )
+               IF      (SPA-NAI-RRKYMD  (IDX)  =   HZN-SPA-NAI-RRKYMD
+                                                                 (IDX))
+               AND    (SPA-NAI-RENNUM   (IDX)  =   HZN-SPA-NAI-RENNUM
+                                                                 (IDX))
+               AND    (SPA-NAI-RRK-SRYKA(IDX)  =   HZN-SPA-NAI-RRK-SRYKA
+                                                                 (IDX))
+               AND    (SPA-NAI-RRK-HKNCOMBI(IDX)
+                                           =   HZN-SPA-NAI-RRK-HKNCOMBI
+                                                                  (IDX))
+                   CONTINUE
+               ELSE
+                   MOVE    "K178"          TO  SPA-ERRCD
+               END-IF
+               IF      SPA-SYORIFLG        =   1
+                   IF      (SPA-SRYYMD     =   HZN-SPA-NAI-RRKYMD(IDX))
+                   AND     (SPA-RENNUM     =   HZN-SPA-NAI-RENNUM(IDX))
+                   AND     (SPA-DOUJI-RENNUM
+                                           =   HZN-SPA-NAI-DOUJI-RENNUM
+                                                                 (IDX))
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN-MAX1    NOT =   HZN-SPA-GMN-MAX1
+               MOVE    "K178"          TO  SPA-ERRCD
+           END-IF
+           MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-NAI-JYURRKFLG
+           END-IF
+           IF     (SPA-SYORIFLG        =   1  )  AND
+                  (FLG-OK              =   ZERO)
+               MOVE    "0178"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-NAI-JYURRKFLG
+           END-IF
+           .
+       30041-JYURRK-J02CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4790,7 +4859,6 @@
       *    受診履歴が９まで登録済みの時、エラー
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
-               MOVE    ZERO                TO  SPA-HKN-ERR
                PERFORM 41022-JYURRK-NUM-CHK-SEC
            END-IF
       *!!
@@ -4872,7 +4940,7 @@
                IF      (SPA-SRYYMD         =   SPA-NAI-RRKYMD (IDX) )
                  AND   (SPA-SRYKA          =   SPA-NAI-RRK-SRYKA (IDX))
                    IF      SPA-NAI-RENNUM (IDX)    =   9
-                       MOVE    "1058"              TO  SPA-ERRCD
+                       MOVE    "0220"              TO  SPA-ERRCD
                        MOVE    5                   TO  SPA-HKN-ERR
                        MOVE    6                   TO  SPA-GMN-CUR
                    END-IF
@@ -5478,7 +5546,6 @@
       *    受診履歴が９まで登録済みの時、エラー
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
-               MOVE    ZERO                TO  SPA-HKN-ERR
                PERFORM 41022-JYURRK-NUM-CHK-SEC
            END-IF
       *!!
@@ -10428,9 +10495,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    5                   TO  SPA-GMN-CUR
       *            受診履歴上限、エラー
                    WHEN    5
-                       MOVE    "1058"              TO  SPA-ERRCD
+                       MOVE    "0220"              TO  SPA-ERRCD
                        MOVE    6                   TO  SPA-GMN-CUR
                END-EVALUATE
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        会計照会で受診履歴変更
+               IF      SPA-NAI-JYURRKFLG   =   1
+                   MOVE    "0178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JYURRKFLG   =   2
+                   MOVE    "K178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+                   MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
+               END-IF
            END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41001-KIHON-CHK-EXT
@@ -11212,7 +11291,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    保険選択エラーの場合
            IF      SPA-HKN-ERR         =   5
-               MOVE    "1058"              TO  SPA-ERRCD
+               MOVE    "0220"              TO  SPA-ERRCD
                MOVE    6                   TO  SPA-GMN-CUR
            END-IF
       *
@@ -11291,6 +11370,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-LOCK        =   2
                    MOVE    "9998"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-LOCK
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-JYURRKFLG   =   1
+                   MOVE    "0178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JYURRKFLG   =   2
+                   MOVE    "K178"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
+                   MOVE    90                  TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -12037,6 +12128,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "SRYKA"         TO  MCP-WIDGET
                WHEN    07
                    MOVE    "SRYYMD"        TO  MCP-WIDGET
+               WHEN    90
+                   MOVE    "B03"           TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -12173,25 +12266,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "処理を終了します。よろしいですか？"
                                        TO  WRK-KIDMSG
                WHEN    "0105"
-                   MOVE    "保険組合せが変更されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "保険組合せが変更されました。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0106"
-                   MOVE    "同日再診が３回以上になります。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "訂正のみ行うようにして下さい。"
-                                       TO  WRK-KIDMSG(31:)
+                   STRING  "同日再診が３回以上になります。"
+                           "訂正のみ行うようにして下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0107"
-                   MOVE     "診療科が変更されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE     "現在の診療内容を残しますか？"
-                                       TO  WRK-KIDMSG(25:)
+                   STRING   "診療科が変更されました。"
+                            "現在の診療内容を残しますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0123"
-                   MOVE     "診療科が変更されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE     "よろしいですか。"
-                                       TO  WRK-KIDMSG(25:)
+                   STRING   "診療科が変更されました。"
+                            "よろしいですか。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0108"
                    STRING  "初診算定日を登録します。"
                            "現在の診療内容はクリアします。"
@@ -12266,20 +12363,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *!!!!
                WHEN    "0114"
-                   MOVE    "厚生労働大臣が定める患者の再診４回目以降へ"
-                                       TO  WRK-KIDMSG
-                   MOVE    "振替えます。よろしいですか？"
-                                       TO  WRK-KIDMSG(43:)
+                   STRING  "厚生労働大臣が定める患者の再診４回目以降へ"
+                           "振替えます。よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0115"
-                   MOVE    "人工腎臓の再診４回目以降へ振替えます。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(39:)
+                   STRING  "人工腎臓の再診４回目以降へ振替えます。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0116"
-                   MOVE    "診療行為内容をクリアします。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "診療行為内容をクリアします。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0127"
                    STRING  "ＯＫで展開中の中途終了データを削除します。"
                            "よろしいですか？"
@@ -12317,18 +12417,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO   WRK-KIDMSG
                    END-STRING
                WHEN    "0122"
-                   MOVE    "この科の中途終了データが存在します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで中途終了内容へ置換えます。"
-                                       TO  WRK-KIDMSG(41:)
+                   STRING  "この科の中途終了データが存在します。"
+                           "ＯＫで中途終了内容へ置換えます。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0124"
                    MOVE    "この科の前回内容へＯＫで置換えます。"
                                        TO  WRK-KIDMSG
                WHEN    "0125"
-                   MOVE    "患者取消が選択されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "表示内容をクリアします。よろしいですか？"
-                                       TO  WRK-KIDMSG(27:)
+                   STRING  "患者取消が選択されました。"
+                           "表示内容をクリアします。よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0160"
                    STRING  "包括検査で同じ検査があります。"
                            "ＯＫですべての同一検査を削除します。"
@@ -12336,15 +12438,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0180"
-                   MOVE    "個別療法が１０単位を超えます。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "逓減しますか？"
-                                       TO  WRK-KIDMSG(31:)
+                   STRING  "個別療法が１０単位を超えます。"
+                           "逓減しますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0190"
-                   MOVE    "包括分入力に変更されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "現在の診療内容をクリアしますか？"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "包括分入力に変更されました。"
+                           "現在の診療内容をクリアしますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "2001"
                    STRING   "内服薬剤が７種類以上になります。"
                            "逓減しますか？"

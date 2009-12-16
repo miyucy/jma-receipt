@@ -2988,13 +2988,13 @@
            END-PERFORM
       *
            IF      SPA-HKN-MAX         =   ZERO
-               CONTINUE
+      **       CONTINUE
+               MOVE    4                   TO  SPA-HKN-ERR
            ELSE
                IF      ORCSHKN-IDX         =   ZERO
                    MOVE    1               TO  ORCSHKN-IDX
                END-IF
       *
-      *TEST
       *        受診履歴から自動設定した保険組合せ
                MOVE    SPACE               TO  WRK-MAE-HKNCOMBI
                MOVE    ZERO                TO  SPA-HKNCHK-CHK
@@ -3002,7 +3002,7 @@
                       (FLG-UKETUKE-ARI     =   ZERO  )
                    MOVE    SPA-HKNCOMBINUM     TO  WRK-MAE-HKNCOMBI
                END-IF
-      *TEST
+      *
                IF      SPA-HKNCOMBINUM     =   SPACE
                    MOVE    SPA-GMN-THKNCOMBINUM (ORCSHKN-IDX)
                                            TO  SPA-HKNCOMBINUM
@@ -3173,7 +3173,7 @@
       *
            IF      FLG-HKNCOMBICHK     =   ZERO
       *        選択した保険がない場合、エラー
-      *******  MOVE   "1034"               TO  SPA-ERRCD
+      *****    MOVE   "1034"               TO  SPA-ERRCD
                MOVE    4                   TO  SPA-HKN-ERR
            ELSE
       *        保険情報編集・年齢

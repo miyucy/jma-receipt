@@ -654,6 +654,9 @@
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
       *
+      *    画面スパ領域ワーク
+           COPY    "K02SCR-SPA"      REPLACING
+                                     //SPA-// BY //HZN-SPA-//.
       *
        01  WRK-SYSTIME               PIC 9(08).
       *
@@ -1405,6 +1408,12 @@
                    MOVE    ZERO            TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
                    PERFORM 3003-GMN-HEN-SEC
+                   IF      SPA-MOTOPG      =   "J02"
+      *                会計照会からの戻りの時、受診履歴判定
+                       IF      SPA-PTID    NOT =   ZERO
+                           PERFORM 30041-JYURRK-J02CHK-SEC
+                       END-IF
+                   END-IF
            END-EVALUATE
       *
            IF      FLG-SYOKAI          =   2
@@ -1417,6 +1426,68 @@
       *
            .
        3000-SCREEN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    会計照会変更チェック処理
+      *****************************************************************
+       30041-JYURRK-J02CHK-SEC              SECTION.
+      *
+           MOVE    SPA-K02             TO  HZN-SPA-K02
+      *
+           INITIALIZE                  ORCSC95AREA
+           MOVE    "N"                 TO  LNK-SC95-KBN
+           MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
+           MOVE    SPA-SRYYMDW         TO  LNK-SC95-SRYYMDG
+           MOVE    "K02"               TO  LNK-SC95-PG
+           CALL    "ORCSC95"           USING
+                                       MCPAREA
+                                       ORCSC95AREA
+                                       SPA-AREA
+                                       SPA-K01KYOUTU
+                                       HZN-SPA-K02
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-MAX1 )
+               IF      (SPA-NAI-RRKYMD  (IDX)  =   HZN-SPA-NAI-RRKYMD
+                                                                 (IDX))
+               AND    (SPA-NAI-RENNUM   (IDX)  =   HZN-SPA-NAI-RENNUM
+                                                                 (IDX))
+               AND    (SPA-NAI-RRK-SRYKA(IDX)  =   HZN-SPA-NAI-RRK-SRYKA
+                                                                 (IDX))
+               AND    (SPA-NAI-RRK-HKNCOMBI(IDX)
+                                           =   HZN-SPA-NAI-RRK-HKNCOMBI
+                                                                  (IDX))
+                   CONTINUE
+               ELSE
+                   MOVE    "K178"          TO  SPA-ERRCD
+               END-IF
+               IF      SPA-SYORIFLG        =   1
+                   IF      (SPA-SRYYMD     =   HZN-SPA-NAI-RRKYMD(IDX))
+                   AND     (SPA-RENNUM     =   HZN-SPA-NAI-RENNUM(IDX))
+                   AND     (SPA-DOUJI-RENNUM
+                                           =   HZN-SPA-NAI-DOUJI-RENNUM
+                                                                 (IDX))
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN-MAX1    NOT =   HZN-SPA-GMN-MAX1
+               MOVE    "K178"              TO  SPA-ERRCD
+               MOVE    90                  TO  SPA-GMN-CUR
+           END-IF
+           MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-NAI-JYURRKFLG
+           END-IF
+           IF     (SPA-SYORIFLG        =   1  )  AND
+                  (FLG-OK              =   ZERO)
+               MOVE    "0178"              TO  SPA-ERRCD
+               MOVE    90                  TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-NAI-JYURRKFLG
+           END-IF
+           .
+       30041-JYURRK-J02CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8113,6 +8184,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-JYURRKFLG   =   1
+                   MOVE    "0178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JYURRKFLG   =   2
+                   MOVE    "K178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+                   MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
+               END-IF
+           END-IF
+      *
       *    診療行為入力チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41011-KOUI-ALLHEN-SEC
@@ -9141,6 +9224,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-JYURRKFLG   =   1
+                   MOVE    "0178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               END-IF
+               IF      SPA-NAI-JYURRKFLG   =   2
+                   MOVE    "K178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+                   MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
                IF      SPA-LOCK        =   2
                    MOVE    "9998"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-LOCK
@@ -9780,6 +9875,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "JIKANKBN"      TO  MCP-WIDGET
                WHEN    20
                    MOVE    "B11S"          TO  MCP-WIDGET
+               WHEN    90
+                   MOVE    "B03"           TO  MCP-WIDGET
            END-EVALUATE
       *
            .

@@ -1534,7 +1534,6 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *TEST
       *ver.4.5
                WHEN    "0202"
                    STRING   "換算値×数量の桁数がオーバーします。"
@@ -1591,7 +1590,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *TEST
       *
            END-EVALUATE
            .
@@ -2192,6 +2190,20 @@
                    STRING  "警告！"
                            "有効な保険組合せに変更しました。"
                            "必ず登録して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *ver.4.5
+               WHEN    "K178"
+                   STRING  "警告！"
+                           "会計照会で受診履歴に変更がありました。"
+                           "前回患者ボタンを押下して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0178"
+                   STRING  "会計照会で受診履歴に変更がありました。"
+                           "前回患者ボタンを押下して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
