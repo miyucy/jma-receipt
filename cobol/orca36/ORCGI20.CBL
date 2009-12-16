@@ -255,6 +255,7 @@
                VALUE   1.
            03  CONST-JOB-SHELLID       PIC X(08)
                VALUE   "ORCBI201".
+           03  CONST-UTF8              PIC 9(01)   VALUE 2.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1303,16 +1304,30 @@
       *
       *    半角チェック
       *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"                 TO  KANACHK2-SYORI 
-           MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
-           CALL    "ORCSKANACHK2"      USING   ORCSKANACHK2AREA
-           MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
-           IF      KANACHK2-RC          =   ZERO
-           AND     KANACHK2-SYUBETU     =   "2"
+           IF    ( SPA-ENCODING    =   CONST-UTF8 )
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"                 TO  KANACHK2-SYORI 
+               MOVE    SPA-GMN-NAME        TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"      USING   ORCSKANACHK2AREA
                MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
+               IF      KANACHK2-RC          =   ZERO
+               AND     KANACHK2-SYUBETU     =   "2"
+                   MOVE    KANACHK2-OUT-INPUT   TO  SPA-GMN-NAME
+               ELSE
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            ELSE
-               MOVE    "0002"              TO  SPA-ERRCD
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    SPA-GMN-NAME        TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"      USING   ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               IF      KANACHK-RC          =   ZERO
+               AND     KANACHK-SYUBETU     =   "2"
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NAME
+               ELSE
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD          =   SPACE

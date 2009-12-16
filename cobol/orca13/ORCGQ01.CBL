@@ -310,6 +310,7 @@
                                                    OCCURS  10.
            03  CONST-BYOMEI-MAX                    PIC 9(05)   VALUE 80.
            03  CONST-SELPATTERN-MAX                PIC 9(05)   VALUE 50.
+           03  CONST-UTF8                          PIC 9(01)   VALUE 2.
       *
       *    画面項目ID
            COPY    "CPSHOKAIITEMID.INC".
@@ -3356,15 +3357,29 @@
       *
            MOVE    IDXA            TO  IDX1
       *
-      *    全角変換処理
-           MOVE    SPA-GMN-Q01-NAME(IDX1)
+           IF    ( SPA-ENCODING    =   CONST-UTF8 )
+      *
+      *        全角変換処理
+               MOVE    SPA-GMN-Q01-NAME(IDX1)
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 801-KANACHK2-CHK-SEC
-           MOVE    WRK-KANACHK-OUT-INPUT
+               PERFORM 801-KANACHK2-CHK-SEC
+               MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 801-ZENKAKU-CHG-SEC
-           MOVE    WRK-KANACHK-OUT-INPUT
+               PERFORM 801-ZENKAKU-CHG-SEC
+               MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-NAME(IDX1)
+           ELSE
+      *
+      *        全角変換処理
+               MOVE    SPA-GMN-Q01-NAME(IDX1)
+                                   TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-KANACHK-CHK-SEC
+               MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-ZENKAKU-CHG-SEC
+               MOVE    WRK-KANACHK-OUT-INPUT
+                                   TO  SPA-GMN-Q01-NAME(IDX1)
+           END-IF
       *
            .
        4112-NAME-CHK-EXT.
@@ -3843,10 +3858,10 @@
       *
            MOVE    SPA-GMN-Q01-TOKKINAME
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 801-KANACHK2-CHK-SEC
+           PERFORM 800-KANACHK-CHK-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 801-ZENKAKU-CHG-SEC
+           PERFORM 800-ZENKAKU-CHG-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-TOKKINAME
       *
