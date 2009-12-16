@@ -199,6 +199,8 @@
            03  WRK-H-NAME              PIC X(50).
            03  WRK-H-NAME1             PIC X(02).
       *
+           03  WRK-YYKCNT              PIC 9(03).
+      *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
        01  WRK-SORT-AREA.
@@ -246,6 +248,11 @@
       *    スパ領域
            COPY    "COMMON-SPA"    REPLACING
                                    //SPA-// BY //HZN-SPA-//.
+      *
+      *    予約マスターワーク
+       01  HZN-YYK-REC.
+           COPY    "CPYYK.INC"      REPLACING
+                                   //YYK-// BY //HZN-YYK-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1168,6 +1175,9 @@
                        MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
                    END-IF
                    MOVE    5               TO  SPA-GMN-CUR
+      *
+               WHEN    "1001"
+                   PERFORM 41017-YYKCNT-AUTO-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-YID1CD
            MOVE    SPACE               TO  SPA-YID1-FLG
@@ -2701,6 +2711,12 @@
       *    予約患者一覧再編集
            PERFORM 4001-KNJICHI-SEC
       *
+           MOVE    SPA-SEL-YOUBI       TO  IDX-Y
+           MOVE    SPA-SEL-TIME        TO  IDX-T
+           IF      SPA-GMN-MAX     NOT =   SPA-GMN-YYKCNT  (IDX-T IDX-Y)
+               MOVE    "1001"              TO  SPA-YID1CD
+           END-IF
+      *
       *    予約処理中でなく、選択数がある時、選択番号へ
            IF      SPA-YYK-SYORI       =   ZERO
                IF      SPA-GMN-MAX      >   ZERO
@@ -2714,6 +2730,76 @@
       *
            .
        41017-KENSEL-EXT.
+           EXIT.
+      *       
+      *****************************************************************
+      *    予約件数不整合修正処理
+      *****************************************************************
+       41017-YYKCNT-AUTO-SEC             SECTION.
+      *
+           MOVE    SPA-SEL-YOUBI       TO  IDX-Y
+           MOVE    SPA-SEL-TIME        TO  IDX-T
+      *
+           INITIALIZE                  YYK-REC
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
+           MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
+           MOVE    SPA-NAI-YYYKYMD (01 IDX-Y)
+                                       TO  YYK-YYKYMD
+           MOVE    SPA-NAI-YYYKTIME (IDX-T IDX-Y)
+                                       TO  YYK-KEYYYKTIME
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-YYK
+           END-IF
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-YYKCNT
+           PERFORM 
+               UNTIL     (FLG-YYK          =   1       )
+               IF      YYK-YYKID           =   ZERO
+                   MOVE    YYK-REC         TO  HZN-YYK-REC
+               ELSE
+                   ADD     1               TO  IDX
+               END-IF
+      *
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      HZN-YYK-YYKCNT      NOT =   IDX
+               MOVE    HZN-YYK-REC         TO  YYK-REC
+               MOVE    IDX                 TO  YYK-YYKCNT
+      *
+               MOVE    YYK-REC             TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF      MCP-RC          NOT =  ZERO
+                   MOVE    "1010"          TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    YYK-YYKCNT          TO  SPA-GMN-YYKCNT
+                                                       (IDX-T IDX-Y)
+           END-IF
+           .
+       41017-YYKCNT-AUTO-EXT.
            EXIT.
       *       
       *****************************************************************
@@ -3436,6 +3522,7 @@
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+               MOVE    SPA-OPID            TO  YYK-OPID
       *
                MOVE    YYK-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -3468,6 +3555,7 @@
                MOVE    SMCNDATE-YMD        TO  YYK-CREYMD
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+               MOVE    SPA-OPID            TO  YYK-OPID
       *
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3543,6 +3631,7 @@
            MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
            MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       *
+           MOVE    SPA-OPID            TO  YYK-OPID
       *
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3589,6 +3678,7 @@
                MOVE    SMCNDATE-YMD        TO  YYKCOM-CREYMD
                MOVE    SMCNDATE-YMD        TO  YYKCOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYKCOM-UPHMS
+               MOVE    SPA-OPID            TO  YYKCOM-OPID
       *
                MOVE    YYKCOM-REC          TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3634,6 +3724,7 @@
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+               MOVE    SPA-OPID            TO  YYK-OPID
       *
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3679,6 +3770,7 @@
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+               MOVE    SPA-OPID            TO  YYK-OPID
       *
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3934,6 +4026,7 @@
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+               MOVE    SPA-OPID            TO  YYK-OPID
       *
       *        更新
                MOVE    YYK-REC             TO  MCPDATA-REC
@@ -4628,6 +4721,12 @@
                WHEN    "0101"
                    STRING  "予約氏名で該当の患者が１件存在します。"
                            "患者番号を編集しますか？"
+                                           DELIMITED  BY  SIZE
+                                           INTO    WRK-YID1MSG
+                   END-STRING
+               WHEN    "1001"
+                   STRING  "予約件数と予約登録一覧が不整合です。"
+                           "件数を再登録します。"
                                            DELIMITED  BY  SIZE
                                            INTO    WRK-YID1MSG
                    END-STRING
