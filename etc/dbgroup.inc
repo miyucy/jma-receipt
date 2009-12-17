@@ -2,6 +2,7 @@ db_group {
  type "PostgreSQL";
  port "";
  name "orca";
+ encoding "euc-jisx0213";
  redirect "log";
 };
 db_group "log" {
@@ -12,17 +13,3 @@ db_group "log" {
  file "/var/lib/jma-receipt/dbredirector/orca.log";
  redirect_port "localhost";
 };
-db_group "shell" {
- type "Shell";
- priority 1000;
-};
-db_group "system" {
- type "System";
-};
-db_group    "blob_body" {
- type    "NativeBLOB";
-};
-#db_group "xml" {
-# type    "XMLIO";
-#};
-
