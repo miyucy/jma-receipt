@@ -2,7 +2,6 @@ db_group {
  type "PostgreSQL";
  port "";
  name "orca";
- encoding "euc-jisx0213";
  redirect "log";
 };
 db_group "log" {
