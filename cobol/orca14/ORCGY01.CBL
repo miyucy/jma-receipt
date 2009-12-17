@@ -171,6 +171,7 @@
            03  WRK-NAME2           PIC X(50).
       *
            03  WRK-YYKID           PIC 9(02).
+           03  WRK-YYKCNT          PIC 9(02).
       *
            03  WRK-ERRMSG          PIC X(40).
            03  WRK-PATH            PIC X(64).
@@ -1176,8 +1177,6 @@
                    END-IF
                    MOVE    5               TO  SPA-GMN-CUR
       *
-               WHEN    "1001"
-                   PERFORM 41017-YYKCNT-AUTO-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-YID1CD
            MOVE    SPACE               TO  SPA-YID1-FLG
@@ -2711,12 +2710,6 @@
       *    Í½Ìó´µ¼Ô°ìÍ÷ºÆÊÔ½¸
            PERFORM 4001-KNJICHI-SEC
       *
-           MOVE    SPA-SEL-YOUBI       TO  IDX-Y
-           MOVE    SPA-SEL-TIME        TO  IDX-T
-           IF      SPA-GMN-MAX     NOT =   SPA-GMN-YYKCNT  (IDX-T IDX-Y)
-               MOVE    "1001"              TO  SPA-YID1CD
-           END-IF
-      *
       *    Í½Ìó½èÍýÃæ¤Ç¤Ê¤¯¡¢ÁªÂò¿ô¤¬¤¢¤ë»þ¡¢ÁªÂòÈÖ¹æ¤Ø
            IF      SPA-YYK-SYORI       =   ZERO
                IF      SPA-GMN-MAX      >   ZERO
@@ -2730,76 +2723,6 @@
       *
            .
        41017-KENSEL-EXT.
-           EXIT.
-      *       
-      *****************************************************************
-      *    Í½Ìó·ï¿ôÉÔÀ°¹ç½¤Àµ½èÍý
-      *****************************************************************
-       41017-YYKCNT-AUTO-SEC             SECTION.
-      *
-           MOVE    SPA-SEL-YOUBI       TO  IDX-Y
-           MOVE    SPA-SEL-TIME        TO  IDX-T
-      *
-           INITIALIZE                  YYK-REC
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
-           MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
-           MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
-           MOVE    SPA-NAI-YYYKYMD (01 IDX-Y)
-                                       TO  YYK-YYKYMD
-           MOVE    SPA-NAI-YYYKTIME (IDX-T IDX-Y)
-                                       TO  YYK-KEYYYKTIME
-      *
-           MOVE    YYK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-YOYAKU-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-YYK
-           END-IF
-           MOVE    ZERO                TO  IDX
-           MOVE    ZERO                TO  WRK-YYKCNT
-           PERFORM 
-               UNTIL     (FLG-YYK          =   1       )
-               IF      YYK-YYKID           =   ZERO
-                   MOVE    YYK-REC         TO  HZN-YYK-REC
-               ELSE
-                   ADD     1               TO  IDX
-               END-IF
-      *
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-YOYAKU-READ-SEC
-           END-PERFORM
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      HZN-YYK-YYKCNT      NOT =   IDX
-               MOVE    HZN-YYK-REC         TO  YYK-REC
-               MOVE    IDX                 TO  YYK-YYKCNT
-      *
-               MOVE    YYK-REC             TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-               IF      MCP-RC          NOT =  ZERO
-                   MOVE    "1010"          TO  SPA-ERRCD
-               END-IF
-      *
-               MOVE    YYK-YYKCNT          TO  SPA-GMN-YYKCNT
-                                                       (IDX-T IDX-Y)
-           END-IF
-           .
-       41017-YYKCNT-AUTO-EXT.
            EXIT.
       *       
       *****************************************************************
@@ -3502,6 +3425,40 @@
       *****************************************************************
        4901-YYKADD-SEC             SECTION.
       *
+      *    ÌÀºÙ¥ì¥³¡¼¥ÉºÇÂç·ï¿ô
+           MOVE    SPACE               TO  YYK-REC
+           INITIALIZE                      YYK-REC
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
+           MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
+           MOVE    SPA-NAI-YYKYMD      TO  YYK-YYKYMD
+           MOVE    SPA-NAI-KYYKTIME    TO  YYK-KEYYYKTIME
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    "key7"              TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           ELSE
+                MOVE    1              TO  FLG-YYK
+           END-IF
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    ZERO                TO  WRK-YYKID
+           IF      FLG-YYK             =   ZERO
+               MOVE    YYK-YYKID           TO  WRK-YYKID
+               IF      WRK-YYKID           =   99
+                   MOVE    "1013"          TO  SPA-ERRCD
+                   GO      TO      4901-YYKADD-EXT
+               END-IF
+               ADD     1                   TO  WRK-YYKID
+           END-IF
+      *
       *    Í½Ìó£É£Ä¡á£°£°¸¡º÷
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
@@ -3513,7 +3470,7 @@
            PERFORM 910-YOYAKU-INV-SEC
            IF      FLG-YYK             =   ZERO
                ADD     1                   TO  YYK-YYKCNT
-               MOVE    YYK-YYKCNT          TO  WRK-YYKID
+               MOVE    YYK-YYKCNT          TO  WRK-YYKCNT
       *        ºÇÂç·ï¿ô½¤Àµ¡Ê¥·¥¹¥Æ¥àÆüÉÕ¤è¤ê¸å¤ÎÆü¡Ë
                IF     (YYK-YYKYMD          >=  SPA-SYSYMD )
                  AND  (YYK-YYKMAXCNT   NOT =   SPA-Y01-YYKMAXCNT)
@@ -3549,7 +3506,7 @@
                MOVE    ZERO                TO  YYK-YYKID
                MOVE    SPA-Y01-YYKMAXCNT   TO  YYK-YYKMAXCNT
                MOVE    1                   TO  YYK-YYKCNT
-               MOVE    1                   TO  WRK-YYKID
+               MOVE    1                   TO  WRK-YYKCNT
                MOVE    ZERO                TO  YYK-PTID
       *
                MOVE    SMCNDATE-YMD        TO  YYK-CREYMD
@@ -3574,38 +3531,41 @@
            END-IF
       *
       *    ÌÀºÙ¥ì¥³¡¼¥ÉÄÉ²Ã
-           MOVE    SPACE               TO  YYK-REC
-           INITIALIZE                      YYK-REC
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
-           MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
-           MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
-           MOVE    SPA-NAI-YYKYMD      TO  YYK-YYKYMD
-           MOVE    SPA-NAI-KYYKTIME    TO  YYK-KEYYYKTIME
+      *    MOVE    SPACE               TO  YYK-REC
+      *    INITIALIZE                      YYK-REC
+      *    MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+      *    MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
+      *    MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
+      *    MOVE    SPA-NAI-YYKYMD      TO  YYK-YYKYMD
+      *    MOVE    SPA-NAI-KYYKTIME    TO  YYK-KEYYYKTIME
       *
-           MOVE    YYK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
-               PERFORM 900-YOYAKU-READ-SEC
-           ELSE
-                MOVE    1              TO  FLG-YYK
+      *    MOVE    YYK-REC             TO  MCPDATA-REC
+      *    MOVE    "tbl_yyk"           TO  MCP-TABLE
+      *    MOVE    "key7"              TO  MCP-PATHNAME
+      *    PERFORM 910-DBSELECT-SEC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "tbl_yyk"           TO  MCP-TABLE
+      *        MOVE    "key7"              TO  MCP-PATHNAME
+      *        PERFORM 900-YOYAKU-READ-SEC
+      *    ELSE
+      *         MOVE    1              TO  FLG-YYK
+      *    END-IF
+      *    MOVE    "tbl_yyk"           TO  MCP-TABLE
+      *    MOVE    "key7"              TO  MCP-PATHNAME
+      *    PERFORM 990-DBCLOSE-SEC
+      *
+      *    IF      FLG-YYK             =   ZERO
+      *        MOVE    YYK-YYKID           TO  WRK-YYKID
+      *        IF      WRK-YYKID           =   99
+      *            MOVE    "1013"          TO  SPA-ERRCD
+      *            GO      TO      4901-YYKADD-EXT
+      *        END-IF
+      *        ADD     1                   TO  WRK-YYKID
+      **** END-IF
+      *
+           IF      WRK-YYKID           =   ZERO
+               MOVE    WRK-YYKCNT          TO  WRK-YYKID
            END-IF
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-YYK             =   ZERO
-               MOVE    YYK-YYKID           TO  WRK-YYKID
-               IF      WRK-YYKID           =   99
-                   MOVE    "1013"          TO  SPA-ERRCD
-                   GO      TO      4901-YYKADD-EXT
-               END-IF
-               ADD     1                   TO  WRK-YYKID
-           END-IF
-      *
       *    ÌÀºÙ¥ì¥³¡¼¥ÉÄÉ²Ã
            MOVE    SPACE               TO  YYK-REC
            INITIALIZE                      YYK-REC
@@ -3721,23 +3681,8 @@
                IF      YYK-PTID            =   ZERO
                    MOVE    SPA-GMN-YYKNAME     TO  YYK-NAME
                END-IF
-      *
-               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
-               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
-               MOVE    SPA-OPID            TO  YYK-OPID
-      *
-               MOVE    YYK-REC             TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-               IF      MCP-RC          NOT  =  ZERO
-                   MOVE    "1012"  TO  SPA-ERRCD
-                   DISPLAY "Y01 YYK MEI UPD ERR:" MCP-RC "."
-               END-IF
+      *        Í½Ìó¥Ç¡¼¥¿¹¹¿·
+               PERFORM 49030-YYK-UPDATE-SEC
                IF      SPA-ERRCD           =   SPACE
                    MOVE    SPA-NAI-YYKID       TO  WRK-YYKID
       *            Í½Ìó¥á¥âÅÐÏ¿
@@ -3757,35 +3702,6 @@
       *****************************************************************
        4903-YYKDEL-SEC            SECTION.
       *
-      *    Á°Í½Ìó£É£Ä¡á£°£°½¤Àµ
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
-           MOVE    SPA-Y01-SRYNAIYO    TO  YYK-SRYNAIYO
-           MOVE    SPA-Y01-DRCD        TO  YYK-DRCD
-           MOVE    SPA-OLD-YYKYMD      TO  YYK-YYKYMD
-           MOVE    SPA-Y01-YYKTIME     TO  YYK-KEYYYKTIME
-           MOVE    ZERO                TO  YYK-YYKID
-           PERFORM 910-YOYAKU-INV-SEC
-           IF      FLG-YYK          =   ZERO
-               COMPUTE YYK-YYKCNT          =   YYK-YYKCNT  -   1
-      *
-               MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
-               MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
-               MOVE    SPA-OPID            TO  YYK-OPID
-      *
-               MOVE    YYK-REC             TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-               IF      MCP-RC          NOT  =  ZERO
-                   MOVE    "1010"      TO  SPA-ERRCD
-                   GO                  TO  4903-YYKDEL-EXT
-               END-IF
-           END-IF
-      *
       *    Á°Í½Ìó£É£Ä¡â£°£°ºï½ü
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-Y01-SRYNAIYO    TO  YYK-SRYNAIYO
@@ -3795,27 +3711,108 @@
            MOVE    SPA-Y01-YYKID       TO  YYK-YYKID
            PERFORM 910-YOYAKU-INV-SEC
            IF      FLG-YYK             =   ZERO
-               MOVE    YYK-REC             TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                               MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-               IF      MCP-RC          NOT  =  ZERO
-                   MOVE    "1012"      TO  SPA-ERRCD
-                   DISPLAY "Y01 YYK MEI DEL ERR:" MCP-RC "."
-                           ",KEY:" YYK-KEY
-               END-IF
+               PERFORM 49030-YYK-DELETE-SEC
            ELSE
                DISPLAY "Y01 YYK MEI DEL ??:" MCP-RC "."
                        ",KEY:" YYK-KEY
            END-IF
       *    Í½Ìó¥á¥âºï½ü
            PERFORM 49031-YYKCOM-DEL-SEC
+      *
+      *    ÌÀºÙ¥ì¥³¡¼¥ÉºÇÂç·ï¿ô
+           MOVE    SPACE               TO  YYK-REC
+           INITIALIZE                      YYK-REC
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    SPA-Y01-SRYNAIYO    TO  YYK-SRYNAIYO
+           MOVE    SPA-Y01-DRCD        TO  YYK-DRCD
+           MOVE    SPA-OLD-YYKYMD      TO  YYK-YYKYMD
+           MOVE    SPA-Y01-YYKTIME     TO  YYK-KEYYYKTIME
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           ELSE
+                MOVE    1              TO  FLG-YYK
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL    FLG-YYK    =   1
+               IF      YYK-YYKID       NOT =   ZERO
+                   ADD     1               TO  IDX
+               END-IF
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    Á°Í½Ìó£É£Ä¡á£°£°½¤Àµ
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    SPA-Y01-SRYNAIYO    TO  YYK-SRYNAIYO
+           MOVE    SPA-Y01-DRCD        TO  YYK-DRCD
+           MOVE    SPA-OLD-YYKYMD      TO  YYK-YYKYMD
+           MOVE    SPA-Y01-YYKTIME     TO  YYK-KEYYYKTIME
+           MOVE    ZERO                TO  YYK-YYKID
+           PERFORM 910-YOYAKU-INV-SEC
+           IF      FLG-YYK             =   ZERO
+               MOVE    IDX                 TO  YYK-YYKCNT
+      ***      COMPUTE YYK-YYKCNT          =   YYK-YYKCNT  -   1
+               PERFORM 49030-YYK-UPDATE-SEC
+           END-IF
            .
        4903-YYKDEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    Í½Ìóºï½ü½èÍý
+      *****************************************************************
+       49030-YYK-DELETE-SEC             SECTION.
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           IF      MCP-RC          NOT  =  ZERO
+               MOVE    "1012"      TO  SPA-ERRCD
+               DISPLAY "Y01 YYK MEI DEL ERR:" MCP-RC "."
+                       ",KEY:" YYK-KEY
+           END-IF
+           .
+       49030-YYK-DELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    Í½Ìó¹¹¿·½èÍý
+      *****************************************************************
+       49030-YYK-UPDATE-SEC             SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
+           MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+           MOVE    SPA-OPID            TO  YYK-OPID
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           IF      MCP-RC          NOT  =  ZERO
+               MOVE    "1010"           TO  SPA-ERRCD
+               DISPLAY "Y01 YYK UPD ERR:" MCP-RC 
+                       ",KEY:" YYK-KEY
+           END-IF
+           .
+       49030-YYK-UPDATE-EXT.
            EXIT.
       *****************************************************************
       *    Í½Ìó¥á¥âºï½ü½èÍý
@@ -4673,7 +4670,8 @@
                    MOVE    "Í½ÌóÌÀºÙ¥Ç¡¼¥¿ºï½ü¥¨¥é¡¼"
                                                TO  SPA-ERRMSG
                WHEN    "1013"
-                   STRING  "Í½Ìó»þ´Ö¤ÎÍ½Ìó¤¬¹ç·×¤Ç£¹£¹°Ê¾å¤Ë¤Ê¤ê¤Þ¤¹¡£"
+                   STRING  "Í½Ìó»þ´ÖÂÓ¤ÎÍ½ÌóÅÐÏ¿²ó¿ô¤¬£¹£¹°Ê¾å¤Ë"
+                           "¤Ê¤ê¤Þ¤¹¡£"
                            "¤³¤ì°Ê¾åÅÐÏ¿¤Ç¤­¤Þ¤»¤ó¡£"
       ******************   "Í½Ìó»þ´Ö¤ÎÍ½Ìó¤¹¤Ù¤Æºï½ü¤·¤Æ²¼¤µ¤¤¡£"
                                        DELIMITED   BY  SIZE
@@ -4724,13 +4722,6 @@
                                            DELIMITED  BY  SIZE
                                            INTO    WRK-YID1MSG
                    END-STRING
-               WHEN    "1001"
-                   STRING  "Í½Ìó·ï¿ô¤ÈÍ½ÌóÅÐÏ¿°ìÍ÷¤¬ÉÔÀ°¹ç¤Ç¤¹¡£"
-                           "·ï¿ô¤òºÆÅÐÏ¿¤·¤Þ¤¹¡£"
-                                           DELIMITED  BY  SIZE
-                                           INTO    WRK-YID1MSG
-                   END-STRING
-      *
                WHEN    OTHER
                    MOVE    SPA-YID1CD           TO  WRK-YID1MSG
            END-EVALUATE
