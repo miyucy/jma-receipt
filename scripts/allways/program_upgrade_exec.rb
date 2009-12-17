@@ -32,7 +32,7 @@ if File.exist?(save_dir+package_file.gsub(/\.gz$/, ""))
 	      end
 	   end
 	end
-        `sh #{prg_dir}/PROCEDURE`
+        `bash #{prg_dir}/PROCEDURE`
         if $?.to_i > 0
           exit 1
         end

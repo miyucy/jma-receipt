@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 PATH=/usr/bin:/usr/sbin:/bin:/sbin
 BACKUP_DIR=/var/lib/jma-receipt/dbbackup
 FILENAME=orca_db_dump.gz

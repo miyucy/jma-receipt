@@ -31,7 +31,7 @@ if File.exist?(save_dir+package_file.gsub(/\.gz$/, ""))
 	      end
 	   end
 	end
-        `sh #{prg_dir}/INITIATOR`
+        `bash #{prg_dir}/INITIATOR`
         if $?.to_i > 0
           exit 1
         end

@@ -111,9 +111,9 @@ localmd5_ary.sort!
 #  p local
 #end
 
-`sh #{check_log_sh} clear`
+`bash #{check_log_sh} clear`
 if localmd5_ary == releasemd5_ary
-  `sh #{check_log_sh} complete`
+  `bash #{check_log_sh} complete`
 else
   localmd5_only_ary = localmd5_ary - releasemd5_ary
   releasemd5_only_ary = releasemd5_ary - localmd5_ary
@@ -125,17 +125,17 @@ else
         only = 1
         if local[1] == release[1]
           if local[2] == release[2]
-            `sh #{check_log_sh} error9 #{local[0]} #{local[1]}`
+            `bash #{check_log_sh} error9 #{local[0]} #{local[1]}`
           else
-            `sh #{check_log_sh} error3 #{local[0]} #{local[1]}`
+            `bash #{check_log_sh} error3 #{local[0]} #{local[1]}`
           end
         else
-          `sh #{check_log_sh} error4 #{local[0]} #{local[1]}`
+          `bash #{check_log_sh} error4 #{local[0]} #{local[1]}`
         end
       end
     end
     if only == 0
-      `sh #{check_log_sh} error2 #{local[0]} #{local[1]}`
+      `bash #{check_log_sh} error2 #{local[0]} #{local[1]}`
     end
   end
 
@@ -147,7 +147,7 @@ else
       end
     end
     if only == 0
-      `sh #{check_log_sh} error1 #{release[0]} #{release[1]}`
+      `bash #{check_log_sh} error1 #{release[0]} #{release[1]}`
     end
   end
 end
