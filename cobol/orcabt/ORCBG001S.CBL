@@ -183,6 +183,16 @@
                05  WRK-TEN-Z2          PIC X(01).
                05  WRK-TEN-Z3          PIC ZZ.
       *
+           03  WRK-HENKIN              PIC X(14).
+           03  WRK-KIN                 PIC 9(10)V9(03).
+           03  WRK-KIN-R               REDEFINES   WRK-KIN.
+               05  WRK-KIN-S1          PIC 9(10).
+               05  WRK-KIN-S2          PIC 9(03).
+           03  WRK-KIN-X.
+               05  WRK-KIN-Z1          PIC ZZZZZZZZZ9.
+               05  WRK-KIN-Z2          PIC X(01).
+               05  WRK-KIN-Z3          PIC 9(03).
+      *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
       *
@@ -208,7 +218,9 @@
                  07  WRK-NAI-NAME      PIC X(40).
                  07  WRK-NAI-TEN       PIC X(10).
                  07  WRK-NAI-TANI      PIC X(10).
-                 07  WRK-NAI-NAIYO     PIC X(10)
+                 07  WRK-NAI-SURYO     PIC X(10)
+                                       OCCURS  49  TIMES.
+                 07  WRK-NAI-GAKU      PIC X(14)
                                        OCCURS  49  TIMES.
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿ÊÔ½¸ÍÑ
@@ -239,7 +251,8 @@
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
-               05  FILLER              PIC X(09)   VALUE   "ORCBG001_".
+               05  FILLER              PIC X(16)   VALUE
+                                                   "iyakuhin_toukei_".
                05  WRK-TO-DATA-KIKAN   PIC X(21).
            03  WRK-TO-DATA1.
                05  WRK-TO-DATA-STRYM   PIC X(06).
@@ -252,15 +265,19 @@
       *
       *    ¥Ø¥Ã¥À¡¼¾ðÊó
        01  CSV-HEAD-01.
-           03  FILLER              PIC X(10)   VALUE   "ºîÀ®Ç¯·îÆü".
+           03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅÇ¯·î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÌôºÞ¶èÊ¬".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "±¡³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-KAMEI           PIC X(06)   VALUE   "¡¡¡¡¡¡".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "ÌôºÞ¶èÊ¬".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(14)   VALUE   "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -269,8 +286,13 @@
            03  FILLER              PIC X(04)   VALUE   "Ã±°Ì".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "ÅÀ¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "¿ôÎÌ".
+           03  CSV-TBL             OCCURS  52.
+               05  FILLER          PIC X(01)   VALUE   ",".
+               05  CSV-KAMEI       PIC X(12)   VALUE   "¡¡¡¡¡¡¡¡¡¡¡¡".
+               05  FILLER          PIC X(01)   VALUE   ",".
+               05  FILLER          PIC X(04)   VALUE   "¿ôÎÌ".
+               05  FILLER          PIC X(01)   VALUE   ",".
+               05  FILLER          PIC X(04)   VALUE   "¶â³Û".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -1178,7 +1200,13 @@
       *    ²Ê¹ç·×ÊÔ½¸
            MOVE    WRK-GSURYO      TO  WRK-SURYO
            PERFORM 400-ZHEN-SURYO-SET-SEC
-           MOVE    WRK-HENSURYO    TO  WRK-NAI-NAIYO(IDY CNT-MAX)
+           MOVE    WRK-HENSURYO    TO  WRK-NAI-SURYO(IDY CNT-MAX)
+      *    ¹ç·×ÊÔ½¸
+           MOVE    ZERO            TO  WRK-KIN
+           COMPUTE WRK-KIN         =   WRK-TEN
+                                   *   WRK-GSURYO
+           PERFORM 400-ZHEN-KIN-SET-SEC
+           MOVE    WRK-HENKIN      TO  WRK-NAI-GAKU(IDY CNT-MAX)
       *
              .
        2601-TOUKEI-HEN-EXT.
@@ -1196,7 +1224,12 @@
       *            ¿ôÎÌÊÔ½¸
                    MOVE    TOKEI-SRYSURYO  TO  WRK-SURYO
                    PERFORM 400-ZHEN-SURYO-SET-SEC
-                   MOVE    WRK-HENSURYO    TO  WRK-NAI-NAIYO(IDY IDX)
+                   MOVE    WRK-HENSURYO    TO  WRK-NAI-SURYO(IDY IDX)
+      *            ¹ç·×ÊÔ½¸
+                   COMPUTE WRK-KIN         =   TOKEI-TEN
+                                           *   TOKEI-SRYSURYO
+                   PERFORM 400-ZHEN-KIN-SET-SEC
+                   MOVE    WRK-HENKIN      TO  WRK-NAI-GAKU(IDY IDX)
                    MOVE    CNT-SRYKA       TO  IDX
                END-IF
            END-PERFORM
@@ -1231,13 +1264,7 @@
            PERFORM VARYING CNT-LINE    FROM    1   BY   1
                    UNTIL ( CNT-LINE    >   35 )
                    OR    ( WRK-NAI-SRYCD(CNT-LINE) =   SPACE )
-               PERFORM VARYING IDZ         FROM    1   BY  1
-                       UNTIL   IDZ         >   CNT-MAX
-                   IF      IDZ         =   CNT-MAX
-                       MOVE    "¹ç·×"          TO  WRK-TAI-NAIYO(IDZ)
-                   END-IF
-                   PERFORM 270-CSV-BODY-SET-SEC
-               END-PERFORM
+               PERFORM 270-CSV-BODY-SET-SEC
            END-PERFORM
       *
              .
@@ -1336,7 +1363,7 @@
       *        ¿ôÎÌÊÔ½¸
                PERFORM VARYING CNT-LINE    FROM    1   BY   1
                        UNTIL   CNT-LINE    >   35
-                   MOVE    WRK-NAI-NAIYO(CNT-LINE IDZ)
+                   MOVE    WRK-NAI-SURYO(CNT-LINE IDZ)
                                        TO  HCMG001-NAIYO(CNT-LINE IDX)
                END-PERFORM
           END-PERFORM
@@ -1353,11 +1380,14 @@
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-           IF      WRK-PARA-SYORIKBN   =   "1"
-               MOVE    "ÉÂÅïÌ¾"        TO  CSV-KAMEI
-           ELSE
-               MOVE    "¿ÇÎÅ²Ê"        TO  CSV-KAMEI
-           END-IF
+           PERFORM VARYING IDZ FROM 1 BY 1
+                   UNTIL   IDZ >   52
+               IF      WRK-PARA-SYORIKBN   =   "1"
+                   MOVE    "ÉÂÅï¥³¡¼¥É"          TO  CSV-KAMEI(IDZ)
+               ELSE
+                   MOVE    "¿ÇÎÅ²Ê¥³¡¼¥É"        TO  CSV-KAMEI(IDZ)
+               END-IF
+           END-PERFORM
       *
       *    ²þ¹Ô¥³¡¼¥ÉÊÔ½¸
            STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
@@ -1375,24 +1405,23 @@
       *****************************************************************
        270-CSV-BODY-SET-SEC        SECTION.
       *
-           IF      WRK-NAI-NAIYO(CNT-LINE IDZ) =   SPACE
-               GO  TO  270-CSV-BODY-SET-EXT
-           END-IF
-      *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    ºîÀ®Ç¯·îÆü
-           MOVE    LNK-PRTKANRI-SKYYMD
-                                   TO  WRK-SYMD
+      *    ¿ÇÎÅ²Ê
+           MOVE    WRK-PARA-STRYMD TO  WRK-SYMD
            MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
            MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
            MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
-           MOVE    WRK-HEN-YMD-OT  TO  WRK-DATA
-           MOVE    10              TO  WRK-NAGASA
+           MOVE    WRK-HEN-YMD-OT(1:7)
+                                   TO  WRK-DATA
+           MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    Æþ±¡¶èÊ¬
+           MOVE    WRK-PARA-NYUGAIKBN  TO  WRK-DATA
+           MOVE    1               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
            EVALUATE    WRK-PARA-NYUGAIKBN
                WHEN    SPACE
                WHEN    "0"
@@ -1405,7 +1434,23 @@
            MOVE    4               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
+      *    ±¡³°¶èÊ¬
+           MOVE    WRK-INGAIKBN    TO  WRK-DATA
+           MOVE    1               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+           EVALUATE    WRK-INGAIKBN
+               WHEN    "1"
+                   MOVE    "±¡Æâ"          TO  WRK-DATA
+               WHEN    "2"
+                   MOVE    "±¡³°"          TO  WRK-DATA
+           END-EVALUATE
+           MOVE    4               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
       *    ÌôºÞ¶èÊ¬
+           MOVE    WRK-YKZKBN      TO  WRK-DATA
+           MOVE    1               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
            EVALUATE    WRK-YKZKBN
                WHEN    "1"
                    MOVE    "ÆâÉþÌô"        TO  WRK-DATA
@@ -1421,22 +1466,6 @@
                    MOVE    "¡ö¡ö¡ö¡ö"      TO  WRK-DATA
            END-EVALUATE
            MOVE    8               TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *
-      *    ±¡³°¶èÊ¬
-           EVALUATE    WRK-INGAIKBN
-               WHEN    "1"
-                   MOVE    "±¡Æâ"          TO  WRK-DATA
-               WHEN    "2"
-                   MOVE    "±¡³°"          TO  WRK-DATA
-           END-EVALUATE
-           MOVE    4               TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
-      *
-      *    ²ÊÌ¾¡¢ÉÂÅïÌ¾
-           MOVE    WRK-TAI-NAIYO(IDZ)
-                                   TO  WRK-DATA
-           MOVE    14              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
@@ -1463,12 +1492,53 @@
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ¿ôÎÌ
-           MOVE    WRK-NAI-NAIYO(CNT-LINE IDZ)
-                                   TO  WRK-DATA
-           MOVE    10              TO  WRK-NAGASA
-           MOVE    1               TO  WRK-RECEND
-           PERFORM 5004-MOJI-HENSYU-SEC
+           PERFORM VARYING IDZ         FROM    1   BY  1
+                   UNTIL   IDZ         >   52
+               IF      IDZ         <=  CNT-SRYKA
+      *            ²Ê¡¢ÉÂÅï¥³¡¼¥É
+                   MOVE    WRK-TAI-NAIYO(IDZ)
+                                           TO  WRK-DATA
+                   MOVE    14              TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+      *            ¿ôÎÌ
+                   MOVE    WRK-NAI-SURYO(CNT-LINE IDZ)
+                                           TO  WRK-DATA
+                   MOVE    10              TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+      *            ¶â³Û
+                   MOVE    WRK-NAI-GAKU(CNT-LINE IDZ)
+                                           TO  WRK-DATA
+                   MOVE    14              TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+               ELSE
+                   IF      IDZ         =   52
+      *                ²Ê¡¢ÉÂÅï¥³¡¼¥É
+                       MOVE    "¹ç·×"          TO  WRK-DATA
+                       MOVE    4               TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC
+      *                ¿ôÎÌ
+                       MOVE    WRK-NAI-SURYO(CNT-LINE CNT-MAX)
+                                               TO  WRK-DATA
+                       MOVE    10              TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC
+      *                ¶â³Û
+                       MOVE    WRK-NAI-GAKU(CNT-LINE CNT-MAX)
+                                               TO  WRK-DATA
+                       MOVE    14              TO  WRK-NAGASA
+                       MOVE    1               TO  WRK-RECEND
+                       PERFORM 5004-MOJI-HENSYU-SEC
+                   ELSE
+      *                ²Ê¡¢ÉÂÅï¥³¡¼¥É
+                       MOVE    SPACE           TO  WRK-DATA
+                       PERFORM 5004-MOJI-HENSYU-SEC
+      *                ¿ôÎÌ
+                       MOVE    SPACE           TO  WRK-DATA
+                       PERFORM 5004-MOJI-HENSYU-SEC
+      *                ¶â³Û
+                       MOVE    SPACE           TO  WRK-DATA
+                       PERFORM 5004-MOJI-HENSYU-SEC
+                   END-IF
+           END-PERFORM
       *
       *    ²þ¹Ô¥³¡¼¥ÉÊÔ½¸
            STRING  WRK-REC(1:WRK-REC-LENGTH)
@@ -1500,7 +1570,7 @@
                                    TO  STOUKEICSV-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  STOUKEICSV-SHELLID
-           MOVE    LNK-PRTKANRI-SRYYM
+           MOVE    WRK-PARA-STRYMD(1:6)
                                    TO  STOUKEICSV-SRYYM
            MOVE    WRK-PARA-STRYMD TO  STOUKEICSV-SRYYMD
            MOVE    WRK-PARA-NYUGAIKBN
@@ -1673,6 +1743,38 @@
        400-ZHEN-TEN-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *   Ä¢É¼£ÚÊÔ½¸½èÍý
+      *****************************************************************
+       400-ZHEN-KIN-SET-SEC        SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HENKIN
+           MOVE    SPACE           TO  WRK-KIN-X
+      *
+      *    ÅÀ¿ô£ÚÊÔ½¸
+           IF    ( WRK-KIN-S1      =   ZERO )  AND
+                 ( WRK-KIN-S2      =   ZERO )
+               GO  TO  400-ZHEN-KIN-SET-EXT
+           END-IF
+      *
+           MOVE    WRK-KIN-S1      TO  WRK-KIN-Z1
+           MOVE    "."             TO  WRK-KIN-Z2
+           MOVE    WRK-KIN-S2      TO  WRK-KIN-Z3
+      *
+           MOVE    SPACE           TO  WRK-HENKIN
+           MOVE    ZERO            TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   14
+               IF      WRK-KIN-X(CNT-KETA2:1)    NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE    WRK-KIN-X(CNT-KETA2:1)
+                                           TO  WRK-HENKIN(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-KIN-SET-EXT.
+           EXIT.
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
