@@ -329,10 +329,10 @@
     <widget>
       <class>GtkNotebook</class>
       <name>n1</name>
-      <x>0</x>
-      <y>0</y>
-      <width>0</width>
-      <height>0</height>
+      <x>16</x>
+      <y>56</y>
+      <width>976</width>
+      <height>660</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>switch_page</name>
