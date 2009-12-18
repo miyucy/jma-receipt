@@ -286,13 +286,6 @@
            03  FILLER              PIC X(04)   VALUE   "単位".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "点数".
-           03  CSV-TBL             OCCURS  52.
-               05  FILLER          PIC X(01)   VALUE   ",".
-               05  CSV-KAMEI       PIC X(14)   VALUE   "".
-               05  FILLER          PIC X(01)   VALUE   ",".
-               05  CSV-SURYO       PIC X(04)   VALUE   "".
-               05  FILLER          PIC X(01)   VALUE   ",".
-               05  CSV-GAKU        PIC X(04)   VALUE   "".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -1382,18 +1375,36 @@
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-           PERFORM VARYING IDZ FROM 1 BY 1
-                   UNTIL   IDZ >   CNT-SRYKA
-               MOVE    WRK-TAI-NAIYO(IDZ)  TO  CSV-KAMEI(IDZ)
-               MOVE    "数量"              TO  CSV-SURYO(IDZ)
-               MOVE    "金額"              TO  CSV-GAKU(IDZ)
+           MOVE    CSV-HEAD-01     TO  WRK-DATA
+           MOVE    84              TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *
+           PERFORM VARYING IDZ         FROM    1   BY  1
+                   UNTIL   IDZ         >   52
+               IF      IDZ         <=  CNT-SRYKA
+                   MOVE    WRK-TAI-NAIYO(IDZ)  TO  WRK-DATA
+                   MOVE    14              TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+                   MOVE    "数量,金額"     TO  WRK-DATA
+                   MOVE    9               TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC
+               ELSE
+                   IF      IDZ         =   52
+                       MOVE    "合計,数量,金額"    TO  WRK-DATA
+                       MOVE    14              TO  WRK-NAGASA
+                       MOVE    1               TO  WRK-RECEND
+                       PERFORM 5004-MOJI-HENSYU-SEC
+                   ELSE
+                       MOVE    ",,"            TO  WRK-DATA
+                       MOVE    2               TO  WRK-NAGASA
+                       PERFORM 5004-MOJI-HENSYU-SEC
+                   END-IF
+               END-IF
            END-PERFORM
-           MOVE    "合計"              TO  CSV-KAMEI(52)
-           MOVE    "数量"              TO  CSV-SURYO(52)
-           MOVE    "金額"              TO  CSV-GAKU(52)
       *
       *    改行コード編集
-           STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
+           STRING  WRK-REC(1:WRK-REC-LENGTH)
+                                       DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
                    INTO                WRK-REC
            END-STRING
@@ -1427,13 +1438,13 @@
            PERFORM 5004-MOJI-HENSYU-SEC
            EVALUATE    WRK-PARA-NYUGAIKBN
                WHEN    "0"
-                   MOVE    "0"             TO  WRK-DATA
+                   MOVE    "入・外"        TO  WRK-DATA
                WHEN    "1"
-                   MOVE    "入"            TO  WRK-DATA
+                   MOVE    "入院"          TO  WRK-DATA
                WHEN    "2"
-                   MOVE    "外"            TO  WRK-DATA
+                   MOVE    "外来"          TO  WRK-DATA
            END-EVALUATE
-           MOVE    2               TO  WRK-NAGASA
+           MOVE    6               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    院外区分
@@ -1530,14 +1541,8 @@
                        MOVE    1               TO  WRK-RECEND
                        PERFORM 5004-MOJI-HENSYU-SEC
                    ELSE
-      *                科、病棟コード
-                       MOVE    SPACE           TO  WRK-DATA
-                       PERFORM 5004-MOJI-HENSYU-SEC
-      *                数量
-                       MOVE    SPACE           TO  WRK-DATA
-                       PERFORM 5004-MOJI-HENSYU-SEC
-      *                金額
-                       MOVE    SPACE           TO  WRK-DATA
+                       MOVE    ",,"            TO  WRK-DATA
+                       MOVE    2               TO  WRK-NAGASA
                        PERFORM 5004-MOJI-HENSYU-SEC
                    END-IF
                END-IF
