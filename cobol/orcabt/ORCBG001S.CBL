@@ -72,7 +72,7 @@
            03  TOKEI-NAME              PIC X(40).
            03  TOKEI-TANI              PIC X(10).
            03  TOKEI-TEN               PIC 9(07)V9(02).
-           03  TOKEI-SRYSURYO          PIC 9(05)V9(03).
+           03  TOKEI-SRYSURYO          PIC 9(05)V9(05).
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -155,21 +155,21 @@
            03  WRK-NYUGAIKBN           PIC X(01).
       *
            03  WRK-CYUSRYCD            PIC X(9).
-           03  WRK-CYUSURYO            PIC 9(05)V9(03).
+           03  WRK-CYUSURYO            PIC 9(05)V9(05).
       *
-           03  WRK-GSURYO              PIC 9(05)V9(03).
+           03  WRK-GSURYO              PIC 9(05)V9(05).
       *
-           03  WRK-HENSURYO            PIC X(12).
-           03  WRK-SURYO               PIC 9(05)V9(03).
+           03  WRK-HENSURYO            PIC X(11).
+           03  WRK-SURYO               PIC 9(05)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1        PIC 9(05).
-               05  WRK-SURYO-S2        PIC 9(03).
+               05  WRK-SURYO-S2        PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1        PIC ZZZZZ.
                05  WRK-SURYO-Z1-9      REDEFINES   WRK-SURYO-Z1
                                        PIC ZZZZ9.
                05  WRK-SURYO-Z2        PIC X(01).
-               05  WRK-SURYO-Z3        PIC ZZZ.
+               05  WRK-SURYO-Z3        PIC ZZZZZ.
       *
            03  WRK-HENTEN              PIC X(10).
            03  WRK-TEN                 PIC 9(07)V9(02).
@@ -183,15 +183,15 @@
                05  WRK-TEN-Z2          PIC X(01).
                05  WRK-TEN-Z3          PIC ZZ.
       *
-           03  WRK-HENKIN              PIC X(14).
-           03  WRK-KIN                 PIC 9(10)V9(03).
+           03  WRK-HENKIN              PIC X(16).
+           03  WRK-KIN                 PIC 9(10)V9(05).
            03  WRK-KIN-R               REDEFINES   WRK-KIN.
                05  WRK-KIN-S1          PIC 9(10).
-               05  WRK-KIN-S2          PIC 9(03).
+               05  WRK-KIN-S2          PIC 9(05).
            03  WRK-KIN-X.
                05  WRK-KIN-Z1          PIC ZZZZZZZZZ9.
                05  WRK-KIN-Z2          PIC X(01).
-               05  WRK-KIN-Z3          PIC 9(03).
+               05  WRK-KIN-Z3          PIC 9(05).
       *
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-Z9                  PIC Z9.
@@ -218,9 +218,9 @@
                  07  WRK-NAI-NAME      PIC X(40).
                  07  WRK-NAI-TEN       PIC X(10).
                  07  WRK-NAI-TANI      PIC X(10).
-                 07  WRK-NAI-SURYO     PIC X(10)
+                 07  WRK-NAI-SURYO     PIC X(11)
                                        OCCURS  49  TIMES.
-                 07  WRK-NAI-GAKU      PIC X(14)
+                 07  WRK-NAI-GAKU      PIC X(16)
                                        OCCURS  49  TIMES.
       *
       *    ＣＳＶデータ編集用
@@ -288,11 +288,11 @@
            03  FILLER              PIC X(04)   VALUE   "点数".
            03  CSV-TBL             OCCURS  52.
                05  FILLER          PIC X(01)   VALUE   ",".
-               05  CSV-KAMEI       PIC X(12)   VALUE   "　　　　　　".
+               05  CSV-KAMEI       PIC X(14)   VALUE   "".
                05  FILLER          PIC X(01)   VALUE   ",".
-               05  FILLER          PIC X(04)   VALUE   "数量".
+               05  CSV-SURYO       PIC X(04)   VALUE   "".
                05  FILLER          PIC X(01)   VALUE   ",".
-               05  FILLER          PIC X(04)   VALUE   "金額".
+               05  CSV-GAKU        PIC X(04)   VALUE   "".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -457,6 +457,9 @@
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
+           IF      WRK-PARA-NYUGAIKBN  =   SPACE
+               MOVE    "0"             TO  WRK-PARA-NYUGAIKBN
+           END-IF
            IF    ( WRK-PARA-SYORIKBN   =   "1" )
            AND   ( WRK-PARA-NYUGAIKBN  NOT =   "1" )
                MOVE    "外来分は病棟別に集計できません"
@@ -474,7 +477,6 @@
       *
       *    表題編集
            EVALUATE    WRK-PARA-NYUGAIKBN
-               WHEN    SPACE
                WHEN    "0"
                    MOVE    "　　診療科別医薬品使用量統計（月報）"
                                            TO  WRK-DAI-MSG1
@@ -1381,13 +1383,14 @@
                                        WRK-REC-LENGTH
       *
            PERFORM VARYING IDZ FROM 1 BY 1
-                   UNTIL   IDZ >   52
-               IF      WRK-PARA-SYORIKBN   =   "1"
-                   MOVE    "病棟コード"          TO  CSV-KAMEI(IDZ)
-               ELSE
-                   MOVE    "診療科コード"        TO  CSV-KAMEI(IDZ)
-               END-IF
+                   UNTIL   IDZ >   CNT-SRYKA
+               MOVE    WRK-TAI-NAIYO(IDZ)  TO  CSV-KAMEI(IDZ)
+               MOVE    "数量"              TO  CSV-SURYO(IDZ)
+               MOVE    "金額"              TO  CSV-GAKU(IDZ)
            END-PERFORM
+           MOVE    "合計"              TO  CSV-KAMEI(52)
+           MOVE    "数量"              TO  CSV-SURYO(52)
+           MOVE    "金額"              TO  CSV-GAKU(52)
       *
       *    改行コード編集
            STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
@@ -1423,15 +1426,14 @@
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
            EVALUATE    WRK-PARA-NYUGAIKBN
-               WHEN    SPACE
                WHEN    "0"
-                   MOVE    ""              TO  WRK-DATA
+                   MOVE    "0"             TO  WRK-DATA
                WHEN    "1"
-                   MOVE    "入院"          TO  WRK-DATA
+                   MOVE    "入"            TO  WRK-DATA
                WHEN    "2"
-                   MOVE    "外来"          TO  WRK-DATA
+                   MOVE    "外"            TO  WRK-DATA
            END-EVALUATE
-           MOVE    4               TO  WRK-NAGASA
+           MOVE    2               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    院外区分
@@ -1496,9 +1498,9 @@
                    UNTIL   IDZ         >   52
                IF      IDZ         <=  CNT-SRYKA
       *            科、病棟コード
-                   MOVE    WRK-TAI-NAIYO(IDZ)
+                   MOVE    WRK-TAI-SRYKA(IDZ)
                                            TO  WRK-DATA
-                   MOVE    14              TO  WRK-NAGASA
+                   MOVE    2               TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC
       *            数量
                    MOVE    WRK-NAI-SURYO(CNT-LINE IDZ)
@@ -1513,8 +1515,8 @@
                ELSE
                    IF      IDZ         =   52
       *                科、病棟コード
-                       MOVE    "合計"          TO  WRK-DATA
-                       MOVE    4               TO  WRK-NAGASA
+                       MOVE    "99"            TO  WRK-DATA
+                       MOVE    2               TO  WRK-NAGASA
                        PERFORM 5004-MOJI-HENSYU-SEC
       *                数量
                        MOVE    WRK-NAI-SURYO(CNT-LINE CNT-MAX)
@@ -1667,7 +1669,7 @@
       *
       *    数量小数点以下編集
            MOVE    ZERO            TO  FLG-SP
-           PERFORM VARYING CNT-KETA    FROM    3   BY  -1
+           PERFORM VARYING CNT-KETA    FROM    5   BY  -1
                    UNTIL   CNT-KETA    <   1
                IF      WRK-SURYO-S2(CNT-KETA:1)    NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -1688,7 +1690,7 @@
            MOVE    SPACE           TO  WRK-HENSURYO
            MOVE    ZERO            TO  CNT-KETA
            PERFORM VARYING CNT-KETA2   FROM    1   BY  1
-                   UNTIL   CNT-KETA2   >   8
+                   UNTIL   CNT-KETA2   >   11
                IF      WRK-SURYO-X(CNT-KETA2:1)    NOT =   SPACE
                    COMPUTE CNT-KETA    =   CNT-KETA    +   1
                    MOVE    WRK-SURYO-X(CNT-KETA2:1)
@@ -1765,7 +1767,7 @@
            MOVE    SPACE           TO  WRK-HENKIN
            MOVE    ZERO            TO  CNT-KETA
            PERFORM VARYING CNT-KETA2   FROM    1   BY  1
-                   UNTIL   CNT-KETA2   >   14
+                   UNTIL   CNT-KETA2   >   16
                IF      WRK-KIN-X(CNT-KETA2:1)    NOT =   SPACE
                    COMPUTE CNT-KETA    =   CNT-KETA    +   1
                    MOVE    WRK-KIN-X(CNT-KETA2:1)
@@ -1918,8 +1920,7 @@ grpsys                                     SPA-AREA
                    MOVE    ZERO            TO  FLG-SRYACT
                    MOVE    MCPDATA-REC     TO  SRYACT-REC
                    MOVE    SPACE           TO  WRK-NYUGAIKBN
-                   IF    ( WRK-PARA-NYUGAIKBN  =   "0" )   OR
-                         ( WRK-PARA-NYUGAIKBN  =   SPACE )
+                   IF      WRK-PARA-NYUGAIKBN  =   "0"
                        MOVE    1               TO  FLG-OK
                    ELSE
                        MOVE    SRY-NYUGAIKBN   TO  WRK-NYUGAIKBN
