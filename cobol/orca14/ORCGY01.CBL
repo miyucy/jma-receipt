@@ -200,8 +200,6 @@
            03  WRK-H-NAME              PIC X(50).
            03  WRK-H-NAME1             PIC X(02).
       *
-           03  WRK-YYKCNT              PIC 9(03).
-      *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
        01  WRK-SORT-AREA.
