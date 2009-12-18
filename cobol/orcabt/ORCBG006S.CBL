@@ -1685,7 +1685,6 @@
                                    TO  STOUKEICSV-SHELLID
            MOVE    WRK-PARA-STRYMD(1:6)
                                    TO  STOUKEICSV-SRYYM
-           MOVE    WRK-PARA-STRYMD TO  STOUKEICSV-SRYYMD
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  STOUKEICSV-NYUGAIKBN
            MOVE    ZERO            TO  STOUKEICSV-PTID

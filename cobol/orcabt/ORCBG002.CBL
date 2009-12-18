@@ -246,7 +246,7 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
       *
       *    ヘッダー情報
        01  CSV-HEAD-01.
-           03  FILLER              PIC X(10)   VALUE   "作成年月日".
+           03  FILLER              PIC X(08)   VALUE   "診療年月".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "病棟区分".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -263,6 +263,8 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
            03  FILLER              PIC X(08)   VALUE   "患者氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "性別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "名称".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "生年月日".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -1217,17 +1219,21 @@ grpsys                                 SPA-AREA
       *****************************************************************
        270-CSV-BODY-SET-SEC        SECTION.
       *
+           PERFORM 2101-BODY-BTUNAME-EDIT-SEC
+           PERFORM 2101-BODY-BRMNUM-EDIT-SEC
+           PERFORM 2101-BODY-SRYKA-EDIT-SEC
+           PERFORM 2101-BODY-PTINF-EDIT-SEC
+      *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
-      *    作成年月日
-           MOVE    LNK-PRTKANRI-SKYYMD
-                                   TO  WRK-HEN-YMD-IN
+      *    診療年月
+           MOVE    WRK-PARA-SRYYM  TO  WRK-HEN-YMD-IN
            MOVE    WRK-HEN-YY-IN   TO  WRK-HEN-YY-OT
            MOVE    WRK-HEN-MM-IN   TO  WRK-HEN-MM-OT
-           MOVE    WRK-HEN-DD-IN   TO  WRK-HEN-DD-OT
            MOVE    SPACE           TO  WRK-HEN-YMD-IN
-           MOVE    WRK-HEN-YMD-OT  TO  WRK-DATA
-           MOVE    10              TO  WRK-NAGASA
+           MOVE    WRK-HEN-YMD-OT(1:7)
+                                   TO  WRK-DATA
+           MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    病棟
@@ -1267,6 +1273,9 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    性別
+           MOVE    PTINF-SEX       TO  WRK-DATA
+           MOVE    1               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
            MOVE    WRK-HCMG002-SEX
                                    TO  WRK-DATA
            MOVE    2               TO  WRK-NAGASA
@@ -1343,7 +1352,6 @@ grpsys                                 SPA-AREA
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  STOUKEICSV-SHELLID
            MOVE    WRK-PARA-SRYYM  TO  STOUKEICSV-SRYYM
-           MOVE    WRK-PARA-SRYYM  TO  STOUKEICSV-SRYYMD
            MOVE    "1"             TO  STOUKEICSV-NYUGAIKBN
            MOVE    ZERO            TO  STOUKEICSV-PTID
            MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER

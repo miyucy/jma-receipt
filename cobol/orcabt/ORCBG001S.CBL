@@ -1422,7 +1422,7 @@
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    ©гне╡й
+      *    ©гнег╞╥Н
            MOVE    WRK-PARA-STRYMD TO  WRK-SYMD
            MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
            MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
@@ -1580,7 +1580,6 @@
                                    TO  STOUKEICSV-SHELLID
            MOVE    WRK-PARA-STRYMD(1:6)
                                    TO  STOUKEICSV-SRYYM
-           MOVE    WRK-PARA-STRYMD TO  STOUKEICSV-SRYYMD
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  STOUKEICSV-NYUGAIKBN
            MOVE    ZERO            TO  STOUKEICSV-PTID
