@@ -1538,6 +1538,7 @@
                        MOVE    SPACE           TO  WRK-DATA
                        PERFORM 5004-MOJI-HENSYU-SEC
                    END-IF
+               END-IF
            END-PERFORM
       *
       *    改行コード編集
