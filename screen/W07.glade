@@ -330,7 +330,7 @@
       <class>GtkNotebook</class>
       <name>n1</name>
       <x>16</x>
-      <y>56</y>
+      <y>48</y>
       <width>976</width>
       <height>660</height>
       <can_focus>True</can_focus>
