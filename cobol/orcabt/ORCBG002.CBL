@@ -239,7 +239,8 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
-               05  FILLER              PIC X(09)   VALUE   "ORCBG002_".
+               05  FILLER              PIC X(19)   VALUE
+                                               "teikiseikyu_kanjya_".
                05  WRK-TO-DATA-STRYM   PIC X(06).
                05  FILLER              PIC X(04)   VALUE   ".csv".
       *
@@ -247,11 +248,15 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
        01  CSV-HEAD-01.
            03  FILLER              PIC X(10)   VALUE   "ºîÀ®Ç¯·îÆü".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "ÉÂÅï".
+           03  FILLER              PIC X(08)   VALUE   "ÉÂÅï¶èÊ¬".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "ÉÂ¼¼".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -266,6 +271,8 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
            03  FILLER              PIC X(08)   VALUE   "ÀÁµá¶â³Û".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "½èÍý¶èÊ¬".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -1224,6 +1231,9 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ÉÂÅï
+           MOVE    ISAM-KEY-BTUNUM TO  WRK-DATA
+           MOVE    2               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
            MOVE    WRK-HCMG002-BTUNAME
                                    TO  WRK-DATA
            MOVE    10              TO  WRK-NAGASA
@@ -1236,6 +1246,9 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ¿ÇÎÅ²Ê
+           MOVE    ISAM-KEY-SRYKA  TO  WRK-DATA
+           MOVE    2               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
            MOVE    WRK-HCMG002-SRYKA
                                    TO  WRK-DATA
            MOVE    8               TO  WRK-NAGASA
@@ -1260,9 +1273,13 @@ grpsys                                 SPA-AREA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    À¸Ç¯·îÆü
-           MOVE    WRK-HCMG002-BIRTHDAY
-                                   TO  WRK-DATA
-           MOVE    22              TO  WRK-NAGASA
+           MOVE    PTINF-BIRTHDAY  TO  WRK-HEN-YMD-IN
+           MOVE    WRK-HEN-YY-IN   TO  WRK-HEN-YY-OT
+           MOVE    WRK-HEN-MM-IN   TO  WRK-HEN-MM-OT
+           MOVE    WRK-HEN-DD-IN   TO  WRK-HEN-DD-OT
+           MOVE    SPACE           TO  WRK-HEN-YMD-IN
+           MOVE    WRK-HEN-YMD-OT  TO  WRK-DATA
+           MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ÅÁÉ¼ÈÖ¹æ
@@ -1272,10 +1289,13 @@ grpsys                                 SPA-AREA
       *
       *    ÀÁµá¶â³Û
            MOVE    SYU-SKYMONEY    TO  WRK-NUM
-           MOVE    10              TO  WRK-NAGASA
+           MOVE    13              TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
       *    ½èÍý¶èÊ¬
+           MOVE    PTTEIKIRRK-SAKKBN   TO  WRK-DATA
+           MOVE    1               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
            MOVE    SPACE                   TO  WRK-JYOTAI
            EVALUATE    PTTEIKIRRK-SAKKBN
            WHEN    "1"
@@ -1322,8 +1342,7 @@ grpsys                                 SPA-AREA
                                    TO  STOUKEICSV-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-SHELLID
                                    TO  STOUKEICSV-SHELLID
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  STOUKEICSV-SRYYM
+           MOVE    WRK-PARA-SRYYM  TO  STOUKEICSV-SRYYM
            MOVE    WRK-PARA-SRYYM  TO  STOUKEICSV-SRYYMD
            MOVE    "1"             TO  STOUKEICSV-NYUGAIKBN
            MOVE    ZERO            TO  STOUKEICSV-PTID
