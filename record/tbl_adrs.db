@@ -50,8 +50,7 @@ path	all		{
 		DECLARE tbl_adrs_all_csr CURSOR FOR
 		SELECT *
 		FROM tbl_adrs
-			WHERE   HOSPNUM      =   :HOSPNUM
-;
+			WHERE   HOSPNUM      =   :HOSPNUM;
 	};
 };
 
@@ -133,5 +132,17 @@ path	key8		{
 			ORDER  BY  POST,
                                    RENNUM
 ;
+	};
+};
+
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND   	POST	     =   :POST
+			AND   	RENNUM	     =   :RENNUM
+			ORDER  BY  LPUBCD;
 	};
 };
