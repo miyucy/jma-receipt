@@ -2849,15 +2849,30 @@
       *
            IF    ( SPA-NAI-O04-PROC-FLG    =   1 OR 2 )
                COMPUTE WRK-SAGAKU
-                   =   SPA-GMN-O04-SKYSGK * -1 
-                   -   SPA-GMN-O04-CHOSEI2IN
-               IF    ( SPA-NAI-O04-SKYMONEY-MOTO
-                                       >=   WRK-SAGAKU )
+                   =   SPA-NAI-O04-CHOSEI1-MOTO
+                   +   SPA-GMN-O04-SKYSGK
+                   - ( SPA-GMN-O04-CHOSEI2IN
+                   -   SPA-NAI-O04-CHOSEI2-MOTO )
+      *
+               COMPUTE WRK-SKYMONEY
+                   =   SPA-GMN-O04-SKYMONEY
+                   -   SPA-NAI-O04-SKYMONEY-MOTO
+                   +   SPA-NAI-O04-SKYMONEY
+                   +   WRK-SAGAKU
+                   +   SPA-GMN-O04-CHOSEI2IN
+      *
+               IF    ( WRK-SKYMONEY   >=   ZERO )
                    COMPUTE    SPA-GMN-O04-CHOSEI1IN
                        =      WRK-SAGAKU
                ELSE
                    MOVE    ZERO        TO  SPA-GMN-O04-CHOSEI1IN
                END-IF
+      *
+               COMPUTE SPA-GMN-O04-SKYMONEYIN
+                   =   SPA-NAI-O04-SKYMONEY
+                   +   SPA-GMN-O04-CHOSEI1IN
+                   +   SPA-GMN-O04-CHOSEI2IN
+      *
            END-IF
       *
            .
@@ -2869,16 +2884,31 @@
        4101-BTNCHOSEI2-CHK-SEC         SECTION.
       *
            IF    ( SPA-NAI-O04-PROC-FLG    =   1 OR 2 )
+      *
                COMPUTE WRK-SAGAKU
-                   =   SPA-GMN-O04-SKYSGK * -1 
-                   -   SPA-GMN-O04-CHOSEI1IN
-               IF    ( SPA-NAI-O04-SKYMONEY-MOTO
-                                       >=   WRK-SAGAKU )
+                   =   SPA-NAI-O04-CHOSEI2-MOTO
+                   +   SPA-GMN-O04-SKYSGK
+                   - ( SPA-GMN-O04-CHOSEI1IN
+                   -   SPA-NAI-O04-CHOSEI1-MOTO )
+      *
+               COMPUTE WRK-SKYMONEY
+                   =   SPA-GMN-O04-SKYMONEY
+                   -   SPA-NAI-O04-SKYMONEY-MOTO
+                   +   SPA-NAI-O04-SKYMONEY
+                   +   SPA-GMN-O04-CHOSEI1IN
+                   +   WRK-SAGAKU
+      *
+               IF    ( WRK-SKYMONEY   >=   ZERO )
                    COMPUTE    SPA-GMN-O04-CHOSEI2IN
                        =      WRK-SAGAKU
                ELSE
                    MOVE    ZERO        TO  SPA-GMN-O04-CHOSEI2IN
                END-IF
+      *
+               COMPUTE SPA-GMN-O04-SKYMONEYIN
+                   =   SPA-NAI-O04-SKYMONEY
+                   +   SPA-GMN-O04-CHOSEI1IN
+                   +   SPA-GMN-O04-CHOSEI2IN
            END-IF
       *
            .
