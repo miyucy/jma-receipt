@@ -62,13 +62,14 @@
            03  WRK-KOHNUM                  PIC  X(03).
            03  WRK-HKNSEIKYU               PIC S9(10).
            03  WRK-JIHSEIKYU               PIC S9(10).
-           03  WRK-HKNCHOSEI               PIC S9(10).
-           03  WRK-JIHCHOSEI               PIC S9(10).
            03  WRK-HKNGENMEN               PIC S9(10).
            03  WRK-JIHGENMEN               PIC S9(10).
+           03  WRK-HKNCHOSEI               PIC S9(10).
+           03  WRK-JIHCHOSEI               PIC S9(10).
            03  WRK-SYUEDANUM               PIC  9(02).
            03  WRK-SAGAKU                  PIC S9(10).
            03  WRK-HOHO                    PIC  X(02).
+           03  WRK-CHOSEI                  PIC S9(10).
       *
        01  TSKY-AREA.
            03  TSKY-OCC                    OCCURS   2.
@@ -80,8 +81,14 @@
                05  TSKY-HKNGENMEN          PIC S9(10).
                05  TSKY-JIHGENMEN          PIC S9(10).
                05  TSKY-CHOSEI             PIC S9(10).
+               05  TSKY-CHOSEI1            PIC S9(10).
+               05  TSKY-CHOSEI2            PIC S9(10).
                05  TSKY-HKNCHOSEI          PIC S9(10).
+               05  TSKY-HKNCHOSEI1         PIC S9(10).
+               05  TSKY-HKNCHOSEI2         PIC S9(10).
                05  TSKY-JIHCHOSEI          PIC S9(10).
+               05  TSKY-JIHCHOSEI1         PIC S9(10).
+               05  TSKY-JIHCHOSEI2         PIC S9(10).
       *
        01  TNYUKIN-AREA.
            03  TNYUKIN-OCC                 OCCURS   2.
@@ -93,13 +100,19 @@
            03  TSRRK-HKNTEN                PIC S9(10).
            03  TSRRK-SEIKYU                PIC S9(10).
            03  TSRRK-CHOSEI                PIC S9(10).
+           03  TSRRK-CHOSEI1               PIC S9(10).
+           03  TSRRK-CHOSEI2               PIC S9(10).
            03  TSRRK-GENMEN                PIC S9(10).
            03  TSRRK-HKNSEIKYU             PIC S9(10).
            03  TSRRK-JIHSEIKYU             PIC S9(10).
            03  TSRRK-HKNGENMEN             PIC S9(10).
            03  TSRRK-JIHGENMEN             PIC S9(10).
            03  TSRRK-HKNCHOSEI             PIC S9(10).
+           03  TSRRK-HKNCHOSEI1            PIC S9(10).
+           03  TSRRK-HKNCHOSEI2            PIC S9(10).
            03  TSRRK-JIHCHOSEI             PIC S9(10).
+           03  TSRRK-JIHCHOSEI1            PIC S9(10).
+           03  TSRRK-JIHCHOSEI2            PIC S9(10).
            03  TSRRK-ETCJIHI               PIC S9(10)
                                            OCCURS  10.
            03  TSRRK-SYURRKNUM             PIC  9(02).
@@ -382,7 +395,11 @@
            MOVE    ZERO            TO  TSKY-HKNGENMEN (1)
                                        TSKY-JIHGENMEN (1)
                                        TSKY-HKNCHOSEI (1)
+                                       TSKY-HKNCHOSEI1(1)
+                                       TSKY-HKNCHOSEI2(1)
                                        TSKY-JIHCHOSEI (1)
+                                       TSKY-JIHCHOSEI1(1)
+                                       TSKY-JIHCHOSEI2(1)
       *
            MOVE    SYURRK-SRYKA    TO  WRK-SRYKA
            MOVE    SYURRK-HKNCOMBINUM
@@ -458,6 +475,12 @@
            COMPUTE TSRRK-CHOSEI
                =   SYURRK-CHOSEI
       *
+           COMPUTE TSRRK-CHOSEI1
+               =   SYURRK-CHOSEI1
+      *
+           COMPUTE TSRRK-CHOSEI2
+               =   SYURRK-CHOSEI2
+      *
            COMPUTE TSRRK-GENMEN
                =   SYURRK-DISCOUNT-MONEY
       *
@@ -474,7 +497,17 @@
                    COMPUTE TSRRK-GENMEN
                        =   TSRRK-GENMEN
                        +   WRK-SAGAKU
-               WHEN    ( TSRRK-CHOSEI      NOT =   ZERO )
+               WHEN    ( TSRRK-CHOSEI1     NOT =   ZERO )
+                   COMPUTE TSRRK-CHOSEI1
+                       =   TSRRK-CHOSEI1
+                       +   WRK-SAGAKU
+                   COMPUTE TSRRK-CHOSEI
+                       =   TSRRK-CHOSEI
+                       +   WRK-SAGAKU
+               WHEN    ( TSRRK-CHOSEI2     NOT =   ZERO )
+                   COMPUTE TSRRK-CHOSEI2
+                       =   TSRRK-CHOSEI2
+                       +   WRK-SAGAKU
                    COMPUTE TSRRK-CHOSEI
                        =   TSRRK-CHOSEI
                        +   WRK-SAGAKU
@@ -492,6 +525,14 @@
            COMPUTE TSKY-CHOSEI (1)
                =   TSKY-CHOSEI (1)
                +   TSRRK-CHOSEI
+      *
+           COMPUTE TSKY-CHOSEI1 (1)
+               =   TSKY-CHOSEI1 (1)
+               +   TSRRK-CHOSEI1
+      *
+           COMPUTE TSKY-CHOSEI2 (1)
+               =   TSKY-CHOSEI2 (1)
+               +   TSRRK-CHOSEI2
       *
            COMPUTE TSKY-GENMEN (1)
                =   TSKY-GENMEN (1)
@@ -512,7 +553,14 @@
                COMPUTE TSKY-JIHCHOSEI (1)
                    =   TSKY-JIHCHOSEI (1)
                    +   TSKY-CHOSEI    (1)
+               COMPUTE TSKY-JIHCHOSEI1(1)
+                   =   TSKY-JIHCHOSEI1(1)
+                   +   TSKY-CHOSEI1   (1)
+               COMPUTE TSKY-HKNCHOSEI2(1)
+                   =   TSKY-HKNCHOSEI2(1)
+                   +   TSKY-CHOSEI2   (1)
            ELSE
+      *
                COMPUTE WRK-SAGAKU
                    =   TSKY-HKNSEIKYU (1)
                    +   TSKY-GENMEN (1)
@@ -527,49 +575,41 @@
                        =   WRK-SAGAKU
                END-IF
       *
-               IF    ( TSKY-CHOSEI (1) >=  ZERO )
-                   IF    ( TSKY-JIHGENMEN (1)  =   ZERO )
-                       COMPUTE TSKY-HKNCHOSEI (1)
-                           =   TSKY-CHOSEI (1)
-                   ELSE
-                       COMPUTE WRK-SAGAKU
-                           =   TSKY-CHOSEI (1)
-                           +   TSKY-JIHGENMEN (1)
-                       IF    ( WRK-SAGAKU      >=  ZERO )
-                           COMPUTE TSKY-JIHCHOSEI (1)
-                               =   TSKY-JIHGENMEN (1)
-                               *   -1
-                           COMPUTE TSKY-HKNCHOSEI (1)
-                               =   WRK-SAGAKU
-                       ELSE
-                           COMPUTE TSKY-JIHCHOSEI (1)
-                               =   TSKY-CHOSEI (1)
-                       END-IF
-                   END-IF
-               ELSE
-                   COMPUTE WRK-SAGAKU
-                       =   TSKY-HKNSEIKYU (1)
-                       +   TSKY-HKNGENMEN (1)
-                   IF    ( WRK-SAGAKU  >=  ZERO )
-                       IF    ( WRK-SAGAKU  +   TSKY-CHOSEI (1)
-                                           >=  ZERO )
-                           COMPUTE TSKY-HKNCHOSEI (1)
-                               =   TSKY-CHOSEI (1)
-                       ELSE
-                           COMPUTE TSKY-HKNCHOSEI (1)
-                               =   WRK-SAGAKU
-                               *   -1
-                           COMPUTE TSKY-JIHCHOSEI (1)
-                               =   WRK-SAGAKU
-                               +   TSKY-CHOSEI (1)
-                       END-IF
-                   ELSE
-                           COMPUTE TSKY-JIHCHOSEI (1)
-                               =   TSKY-CHOSEI (1)
-                   END-IF
-               END-IF
+               COMPUTE WRK-HKNSEIKYU
+                   =   TSKY-HKNSEIKYU (1)
+                   +   TSKY-HKNGENMEN (1)
       *
+               COMPUTE WRK-JIHSEIKYU
+                   =   TSKY-JIHSEIKYU (1)
+                   +   TSKY-JIHGENMEN (1)
+      *
+               COMPUTE WRK-JIHGENMEN
+                   =   TSKY-JIHGENMEN (1)
+      *
+               COMPUTE WRK-CHOSEI
+                   =   TSKY-CHOSEI1 (1)
+               PERFORM 2001-EDIT-CHOSEI-SEC
+               COMPUTE TSKY-HKNCHOSEI1 (1)
+                   =   WRK-HKNCHOSEI
+               COMPUTE TSKY-JIHCHOSEI1 (1)
+                   =   WRK-JIHCHOSEI
+      *
+               COMPUTE WRK-CHOSEI
+                   =   TSKY-CHOSEI2 (1)
+               PERFORM 2001-EDIT-CHOSEI-SEC
+               COMPUTE TSKY-HKNCHOSEI2 (1)
+                   =   WRK-HKNCHOSEI
+               COMPUTE TSKY-JIHCHOSEI2 (1)
+                   =   WRK-JIHCHOSEI
            END-IF
+      *
+           COMPUTE TSKY-HKNCHOSEI (1)
+               =   TSKY-HKNCHOSEI1 (1)
+               +   TSKY-HKNCHOSEI2 (1)
+      *
+           COMPUTE TSKY-JIHCHOSEI (1)
+               =   TSKY-JIHCHOSEI1 (1)
+               +   TSKY-JIHCHOSEI2 (1)
       *
            COMPUTE TSKY-HKNSKYAF  (1)
                =   TSKY-HKNSEIKYU (1)
@@ -593,12 +633,107 @@
                =   TSKY-HKNCHOSEI (1)
                -   TSKY-HKNCHOSEI (2)
       *
+           COMPUTE TSRRK-HKNCHOSEI1
+               =   TSKY-HKNCHOSEI1 (1)
+               -   TSKY-HKNCHOSEI1 (2)
+      *
+           COMPUTE TSRRK-HKNCHOSEI2
+               =   TSKY-HKNCHOSEI2 (1)
+               -   TSKY-HKNCHOSEI2 (2)
+      *
            COMPUTE TSRRK-JIHCHOSEI
                =   TSKY-JIHCHOSEI (1)
                -   TSKY-JIHCHOSEI (2)
       *
+           COMPUTE TSRRK-JIHCHOSEI1
+               =   TSKY-JIHCHOSEI1 (1)
+               -   TSKY-JIHCHOSEI1 (2)
+      *
+           COMPUTE TSRRK-JIHCHOSEI2
+               =   TSKY-JIHCHOSEI2 (1)
+               -   TSKY-JIHCHOSEI2 (2)
+      *
            .
        2001-EDIT-SYURRK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ä´À°¶âÊÔ½¸½èÍý
+      *****************************************************************
+       2001-EDIT-CHOSEI-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  WRK-HKNCHOSEI
+                                       WRK-JIHCHOSEI
+      *
+           IF    ( WRK-CHOSEI     >=   ZERO )
+               IF    ( WRK-JIHGENMEN   =   ZERO )
+                   COMPUTE WRK-HKNCHOSEI
+                       =   WRK-CHOSEI
+               ELSE
+                   COMPUTE WRK-SAGAKU
+                       =   WRK-CHOSEI
+                       +   WRK-JIHGENMEN
+                   IF    ( WRK-SAGAKU >=   ZERO )
+      *
+                       COMPUTE WRK-JIHCHOSEI
+                           =   WRK-JIHGENMEN
+                           *   -1
+      *
+                       COMPUTE WRK-HKNCHOSEI
+                           =   WRK-SAGAKU
+      *
+                       COMPUTE WRK-JIHGENMEN
+                           =   0
+      *
+                   ELSE
+                       COMPUTE WRK-JIHCHOSEI
+                           =   WRK-CHOSEI
+                       COMPUTE WRK-JIHGENMEN
+                           =   WRK-SAGAKU
+                   END-IF
+               END-IF
+           ELSE
+               IF    ( WRK-HKNSEIKYU       >=  ZERO )
+                   IF    ( WRK-HKNSEIKYU   >=  WRK-CHOSEI * -1 )
+                       COMPUTE WRK-HKNCHOSEI
+                           =   WRK-CHOSEI
+                   ELSE
+                       COMPUTE WRK-HKNCHOSEI
+                           =   WRK-HKNSEIKYU
+                           *   -1
+                       COMPUTE WRK-JIHCHOSEI
+                           =   WRK-HKNSEIKYU
+                           +   WRK-CHOSEI
+                       COMPUTE WRK-SAGAKU
+                           =   WRK-JIHSEIKYU
+                           +   WRK-JIHCHOSEI
+                       IF    ( WRK-SAGAKU  <   ZERO )
+                           COMPUTE WRK-JIHCHOSEI
+                               =   WRK-JIHSEIKYU
+                               *   -1
+                           COMPUTE WRK-HKNCHOSEI
+                               =   WRK-HKNCHOSEI
+                               +   WRK-SAGAKU
+                       END-IF
+                       COMPUTE WRK-JIHGENMEN
+                           =   WRK-JIHGENMEN
+                           +   WRK-JIHCHOSEI
+                   END-IF
+               ELSE
+                   COMPUTE WRK-HKNCHOSEI
+                       =   WRK-CHOSEI
+               END-IF
+           END-IF
+      *
+           COMPUTE WRK-HKNSEIKYU
+               =   WRK-HKNSEIKYU
+               +   WRK-HKNCHOSEI
+      *
+           COMPUTE WRK-JIHSEIKYU
+               =   WRK-JIHSEIKYU
+               +   WRK-JIHCHOSEI
+      *
+           .
+       2001-EDIT-CHOSEI-EXT.
            EXIT.
       *****************************************************************
       *    ¼ýÇ¼ÍúÎòÊÔ½¸½èÍý
@@ -619,8 +754,24 @@
                =   TSKY-HKNCHOSEI (2)
                *   -1
       *
+           COMPUTE TSRRK-HKNCHOSEI1
+               =   TSKY-HKNCHOSEI1 (2)
+               *   -1
+      *
+           COMPUTE TSRRK-HKNCHOSEI2
+               =   TSKY-HKNCHOSEI2 (2)
+               *   -1
+      *
            COMPUTE TSRRK-JIHCHOSEI
                =   TSKY-JIHCHOSEI (2)
+               *   -1
+      *
+           COMPUTE TSRRK-JIHCHOSEI1
+               =   TSKY-JIHCHOSEI1 (2)
+               *   -1
+      *
+           COMPUTE TSRRK-JIHCHOSEI2
+               =   TSKY-JIHCHOSEI2 (2)
                *   -1
       *
            INITIALIZE  TSKY-OCC (1)
@@ -646,6 +797,8 @@
            MOVE    TSRRK-HKNTEN        TO  SBD010S03-HKNTEN    (IDX-MAX)
            MOVE    TSRRK-SEIKYU        TO  SBD010S03-SEIKYU    (IDX-MAX)
            MOVE    TSRRK-CHOSEI        TO  SBD010S03-CHOSEI    (IDX-MAX)
+           MOVE    TSRRK-CHOSEI1       TO  SBD010S03-CHOSEI1   (IDX-MAX)
+           MOVE    TSRRK-CHOSEI2       TO  SBD010S03-CHOSEI2   (IDX-MAX)
            MOVE    TSRRK-GENMEN        TO  SBD010S03-GENMEN    (IDX-MAX)
            MOVE    TSRRK-HKNSEIKYU     TO  SBD010S03-HKNSEIKYU (IDX-MAX)
            MOVE    TSRRK-JIHSEIKYU     TO  SBD010S03-JIHSEIKYU (IDX-MAX)
@@ -653,6 +806,10 @@
            MOVE    TSRRK-JIHGENMEN     TO  SBD010S03-JIHGENMEN (IDX-MAX)
            MOVE    TSRRK-HKNCHOSEI     TO  SBD010S03-HKNCHOSEI (IDX-MAX)
            MOVE    TSRRK-JIHCHOSEI     TO  SBD010S03-JIHCHOSEI (IDX-MAX)
+           MOVE    TSRRK-HKNCHOSEI1    TO  SBD010S03-HKNCHOSEI1(IDX-MAX)
+           MOVE    TSRRK-JIHCHOSEI1    TO  SBD010S03-JIHCHOSEI1(IDX-MAX)
+           MOVE    TSRRK-HKNCHOSEI2    TO  SBD010S03-HKNCHOSEI2(IDX-MAX)
+           MOVE    TSRRK-JIHCHOSEI2    TO  SBD010S03-JIHCHOSEI2(IDX-MAX)
       *
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
@@ -769,6 +926,8 @@
               ","  "HKNGENMEN"
               ","  "JIHGENMEN"
               ","  "CHOSEI"
+              ","  "CHOSEI1"
+              ","  "CHOSEI2"
               ","  "HKNCHOSEI"
               ","  "JIHCHOSEI"
               ","  "NYUKIN"
@@ -820,6 +979,8 @@
               ","  SBD010S03-HKNGENMEN(IDX0)
               ","  SBD010S03-JIHGENMEN(IDX0)
               ","  SBD010S03-CHOSEI(IDX0)
+              ","  SBD010S03-CHOSEI1(IDX0)
+              ","  SBD010S03-CHOSEI2(IDX0)
               ","  SBD010S03-HKNCHOSEI(IDX0)
               ","  SBD010S03-JIHCHOSEI(IDX0)
               ","  SBD010S03-NYUKIN(IDX0)

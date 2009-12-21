@@ -422,12 +422,30 @@
            COMPUTE SBD010S02-CHOSEI (IDX-S02)
                =   SBD010S02-CHOSEI (IDX-S02)
                +   SBD010S03-CHOSEI (IDX-S03)
+           COMPUTE SBD010S02-CHOSEI1 (IDX-S02)
+               =   SBD010S02-CHOSEI1 (IDX-S02)
+               +   SBD010S03-CHOSEI1 (IDX-S03)
+           COMPUTE SBD010S02-CHOSEI2 (IDX-S02)
+               =   SBD010S02-CHOSEI2 (IDX-S02)
+               +   SBD010S03-CHOSEI2 (IDX-S03)
            COMPUTE SBD010S02-HKNCHOSEI (IDX-S02)
                =   SBD010S02-HKNCHOSEI (IDX-S02)
                +   SBD010S03-HKNCHOSEI (IDX-S03)
+           COMPUTE SBD010S02-HKNCHOSEI1 (IDX-S02)
+               =   SBD010S02-HKNCHOSEI1 (IDX-S02)
+               +   SBD010S03-HKNCHOSEI1 (IDX-S03)
+           COMPUTE SBD010S02-HKNCHOSEI2 (IDX-S02)
+               =   SBD010S02-HKNCHOSEI2 (IDX-S02)
+               +   SBD010S03-HKNCHOSEI2 (IDX-S03)
            COMPUTE SBD010S02-JIHCHOSEI (IDX-S02)
                =   SBD010S02-JIHCHOSEI (IDX-S02)
                +   SBD010S03-JIHCHOSEI (IDX-S03)
+           COMPUTE SBD010S02-JIHCHOSEI1 (IDX-S02)
+               =   SBD010S02-JIHCHOSEI1 (IDX-S02)
+               +   SBD010S03-JIHCHOSEI1 (IDX-S03)
+           COMPUTE SBD010S02-JIHCHOSEI2 (IDX-S02)
+               =   SBD010S02-JIHCHOSEI2 (IDX-S02)
+               +   SBD010S03-JIHCHOSEI2 (IDX-S03)
            COMPUTE SBD010S02-GENMEN (IDX-S02)
                =   SBD010S02-GENMEN (IDX-S02)
                +   SBD010S03-GENMEN (IDX-S03)
@@ -649,6 +667,33 @@
       *****************************************************************
        20021-EDIT-MISYU-SEC            SECTION.
       *
+      *    MOVE    ZERO            TO  WRK-KAISYU
+      *    IF    ( WRK-MISYU-ZEN   >=  ZERO )
+      *        IF    ( WRK-NYUKIN  >=  ZERO )
+      *            IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN )
+      *                COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+      *            ELSE
+      *                COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+      *            END-IF
+      *        ELSE
+      *                COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+      *        END-IF
+      *    ELSE
+      *        IF    ( WRK-NYUKIN  >=  ZERO )
+      *            IF    ( WRK-MISYU-ZEN * -1  >=  WRK-NYUKIN )
+      *                COMPUTE WRK-KAISYU  =   WRK-NYUKIN  * -1
+      *            ELSE
+      *                COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+      *            END-IF
+      *        ELSE
+      *                COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+      *        END-IF
+      *    END-IF
+      *
+      *    COMPUTE WRK-MISYU-KON
+      *        =   WRK-SEIKYU  - ( WRK-NYUKIN  -   WRK-KAISYU )
+      *---------
+      *
            MOVE    ZERO            TO  WRK-KAISYU
            IF    ( WRK-MISYU-ZEN   >=  ZERO )
                IF    ( WRK-NYUKIN  >=  ZERO )
@@ -658,20 +703,32 @@
                        COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
                    END-IF
                ELSE
-                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN * -1)
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN * -1
+                   ELSE
+                       COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+                   END-IF
                END-IF
            ELSE
                IF    ( WRK-NYUKIN  >=  ZERO )
                    IF    ( WRK-MISYU-ZEN * -1  >=  WRK-NYUKIN )
-                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN  * -1
+                       COMPUTE WRK-KAISYU  =   0
                    ELSE
-                       COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+                       COMPUTE WRK-KAISYU  =   0
                    END-IF
                ELSE
+                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN )
+                       COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
+                   ELSE
                        COMPUTE WRK-KAISYU  =   WRK-NYUKIN
+                   END-IF
                END-IF
            END-IF
       *
+           DISPLAY "WRK-MISYU-KON =" WRK-MISYU-KON
+           DISPLAY "WRK-SEIKYU =" WRK-SEIKYU
+           DISPLAY "WRK-NYUKIN =" WRK-NYUKIN
+           DISPLAY "WRK-KAISYU =" WRK-KAISYU
            COMPUTE WRK-MISYU-KON
                =   WRK-SEIKYU  - ( WRK-NYUKIN  -   WRK-KAISYU )
       *
@@ -697,6 +754,8 @@
               ","  "SEIKYU"
               ","  "NYUKIN"
               ","  "CHOSEI"
+              ","  "CHOSEI1"
+              ","  "CHOSEI2"
               ","  "GENMEN"
               ","  "HKNSEIKYU"
               ","  "JIHSEIKYU"
@@ -759,6 +818,8 @@
               ","  SBD010S02-SEIKYU(IDX0)
               ","  SBD010S02-NYUKIN(IDX0)
               ","  SBD010S02-CHOSEI(IDX0)
+              ","  SBD010S02-CHOSEI1(IDX0)
+              ","  SBD010S02-CHOSEI2(IDX0)
               ","  SBD010S02-GENMEN(IDX0)
               ","  SBD010S02-HKNSEIKYU(IDX0)
               ","  SBD010S02-JIHSEIKYU(IDX0)

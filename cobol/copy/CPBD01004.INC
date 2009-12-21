@@ -38,7 +38,10 @@
            03  BD01004-FTNMONEY            PIC S9(10).
            03  BD01004-JIHIMONEY           PIC S9(10).
            03  BD01004-CHOSEI              PIC S9(10).
+           03  BD01004-CHOSEI1             PIC S9(10).
+           03  BD01004-CHOSEI2             PIC S9(10).
            03  BD01004-GENMEN              PIC S9(10).
+           03  BD01004-ZENMISYU            PIC S9(10).
            03  BD01004-ETCJIHI             PIC S9(10)
                                            OCCURS 10.
            03  BD01004-DSPMISYUKBN         PIC X(01).
@@ -52,3 +55,4 @@
            03  BD01004-SYOSAIKBN           PIC X(01).
            03  BD01004-HOHO                PIC X(02).
            03  BD01004-NYUKIN              PIC S9(9).
+           03  BD01004-KONNYUKIN           PIC S9(9).

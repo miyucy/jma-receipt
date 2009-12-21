@@ -33,13 +33,19 @@
                05  SBD010S03-SEIKYU       PIC  S9(10).
                05  SBD010S03-NYUKIN       PIC  S9(10).
                05  SBD010S03-CHOSEI       PIC  S9(10).
+               05  SBD010S03-CHOSEI1      PIC  S9(10).
+               05  SBD010S03-CHOSEI2      PIC  S9(10).
                05  SBD010S03-GENMEN       PIC  S9(10).
                05  SBD010S03-HKNSEIKYU    PIC  S9(10).
                05  SBD010S03-JIHSEIKYU    PIC  S9(10).
                05  SBD010S03-HKNNYUKIN    PIC  S9(10).
                05  SBD010S03-JIHNYUKIN    PIC  S9(10).
                05  SBD010S03-HKNCHOSEI    PIC  S9(10).
+               05  SBD010S03-HKNCHOSEI1   PIC  S9(10).
+               05  SBD010S03-HKNCHOSEI2   PIC  S9(10).
                05  SBD010S03-JIHCHOSEI    PIC  S9(10).
+               05  SBD010S03-JIHCHOSEI1   PIC  S9(10).
+               05  SBD010S03-JIHCHOSEI2   PIC  S9(10).
                05  SBD010S03-HKNGENMEN    PIC  S9(10).
                05  SBD010S03-JIHGENMEN    PIC  S9(10).
                05  SBD010S03-ETCJIHI-OCC  OCCURS   10.

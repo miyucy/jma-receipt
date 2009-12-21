@@ -82,9 +82,9 @@
                                    REPLACING   //RECE01//
                                    BY          //BD01004//.
       *
-           COPY    "HCM51V02.INC"  REPLACING   //HCM51V02//
+           COPY    "HCM51V03.INC"  REPLACING   //HCM51V03//
                                    BY          //HCM51//.
-           COPY    "HCM52V04.INC"  REPLACING   //HCM52V04//
+           COPY    "HCM52V05.INC"  REPLACING   //HCM52V05//
                                    BY          //HCM52//.
       *
        01  FLG-AREA.
@@ -123,8 +123,6 @@
            03  IDX-ROUSAI                  PIC 9(02).
            03  IDX-JIBAI                   PIC 9(02).
            03  IDX-KOUGAI                  PIC 9(02).
-           03  IDX-CHOSEI                  PIC 9(02).
-           03  IDX-GENMEN                  PIC 9(02).
            03  IDX-KOUKI                   PIC 9(02).
            03  IDX-S02                     PIC 9(05).
            03  IDX-HS02                    PIC 9(05).
@@ -159,9 +157,11 @@
            03  WRK-OUT-MAX                 PIC 9(05).
            03  WRK-ZZ9                     PIC ZZ9.
            03  WRK-ZZZZ9                   PIC ZZZZ9.
-           03  WRK-ZZZZZZZ9                PIC ---------9.
-           03  WRK-ZZZZZZZZ                PIC ----------.
-           03  WRK-ZZZZZZ9                 PIC -------9.
+           03  WRK-ZZZZZZZ9                PIC ----,---,--9.
+           03  WRK-ZZZZZZZZ                PIC ----,---,---.
+           03  WRK-KONNYUKIN-G.
+               05  WRK-KONNYUKIN           PIC ---,---,--9.
+               05  WRK-KONNYUKINFL2        PIC X(01).
            03  WRK-CHOSEI                  PIC S9(9).
            03  WRK-9-X.
                05  WRK-9                   PIC 9(01).
@@ -170,6 +170,7 @@
                05  WRK-SKYTTL-MAX          PIC 9(03).
                05  WRK-SKYTTL-OCC          OCCURS  15.
                    07  WRK-SKYTTLMSG       PIC X(12).
+           03  WRK-NYUKIN                  PIC S9(10).
       *
        01  TTL-AREA.
            03  TTL-SYOSIN              PIC     S9(10).
@@ -178,8 +179,11 @@
            03  TTL-SKYMONEY            PIC     S9(10).
            03  TTL-SKYHOKEN            PIC     S9(10).
            03  TTL-SKYJIHI             PIC     S9(10).
+           03  TTL-KONNYUKIN           PIC     S9(10).
            03  TTL-NYUKIN              PIC     S9(10).
            03  TTL-CHOSEI              PIC     S9(10).
+           03  TTL-CHOSEI1             PIC     S9(10).
+           03  TTL-CHOSEI2             PIC     S9(10).
            03  TTL-GENMEN              PIC     S9(10).
            03  TTL-MISYU               PIC     S9(10).
       *
@@ -217,7 +221,7 @@
                                                VALUE "20080401".
            03  CONST-H190401                   PIC X(08)
                                                VALUE "20070401".
-           03  CONST-LINE-MAX                  PIC 9(05) VALUE 50.
+           03  CONST-LINE-MAX                  PIC 9(05) VALUE 28.
            03  CONST-ETCJIHI-MAX               PIC 9(05) VALUE 10.
            03  CONST-1005-MAX                  PIC 9(05) VALUE 100.
            03  CONST-1041-MAX                  PIC 9(05) VALUE 100.
@@ -233,12 +237,15 @@
       *
            03  CONST-TTLSEIKYUREL              PIC 9(02) VALUE 1.
            03  CONST-TTLGENMEN                 PIC 9(02) VALUE 2.
-           03  CONST-TTLCHOSEI                 PIC 9(02) VALUE 3.
-           03  CONST-TTLSEIKYU                 PIC 9(02) VALUE 4.
-           03  CONST-TTLNYUKIN                 PIC 9(02) VALUE 5.
-           03  CONST-TTLSYOSIN                 PIC 9(02) VALUE 6.
-           03  CONST-TTLSAISIN                 PIC 9(02) VALUE 7.
-           03  CONST-TTLSYOSAI                 PIC 9(02) VALUE 8.
+           03  CONST-TTLCHOSEI1                PIC 9(02) VALUE 3.
+           03  CONST-TTLCHOSEI2                PIC 9(02) VALUE 4.
+           03  CONST-TTLSEIKYU                 PIC 9(02) VALUE 5.
+           03  CONST-TTLNYUKIN                 PIC 9(02) VALUE 6.
+           03  CONST-TTLKONNYUKIN              PIC 9(02) VALUE 7.
+           03  CONST-TTLMISYU                  PIC 9(02) VALUE 8.
+           03  CONST-TTLSYOSIN                 PIC 9(02) VALUE 9.
+           03  CONST-TTLSAISIN                 PIC 9(02) VALUE 10.
+           03  CONST-TTLSYOSAI                 PIC 9(02) VALUE 11.
       *
        01  RECEERR                         PIC X(100).
       *
@@ -695,10 +702,8 @@
                MOVE    7                   TO  IDX-ROUSAI
                MOVE    8                   TO  IDX-JIBAI 
                MOVE    9                   TO  IDX-KOUGAI
-               MOVE    10                  TO  IDX-GENMEN
-               MOVE    11                  TO  IDX-CHOSEI
       *
-               MOVE    11                  TO  WRK-SKYTTL-MAX
+               MOVE    9                   TO  WRK-SKYTTL-MAX
       *
                MOVE    "¼ÒÊÝËÜ¿Í"          TO  WRK-SKYTTLMSG(IDX-SYAHON)
                MOVE    "¼ÒÊÝ²ÈÂ²"          TO  WRK-SKYTTLMSG(IDX-SYAKZK)
@@ -709,8 +714,6 @@
                MOVE    "Ï«¡¡ºÒ"            TO  WRK-SKYTTLMSG(IDX-ROUSAI)
                MOVE    "¼«ÇåÀÕ"            TO  WRK-SKYTTLMSG(IDX-JIBAI)
                MOVE    "¸ø¡¡³²"            TO  WRK-SKYTTLMSG(IDX-KOUGAI)
-               MOVE    "¸ºÌÈ³Û"            TO  WRK-SKYTTLMSG(IDX-GENMEN)
-               MOVE    "Ä´À°¶â"            TO  WRK-SKYTTLMSG(IDX-CHOSEI)
            WHEN  OTHER
       *
                MOVE    1                   TO  IDX-SYAHON
@@ -723,10 +726,8 @@
                MOVE    8                   TO  IDX-ROUSAI
                MOVE    9                   TO  IDX-JIBAI 
                MOVE    10                  TO  IDX-KOUGAI
-               MOVE    11                  TO  IDX-GENMEN
-               MOVE    12                  TO  IDX-CHOSEI
       *
-               MOVE    12                  TO  WRK-SKYTTL-MAX
+               MOVE    10                  TO  WRK-SKYTTL-MAX
       *
                MOVE    "¼ÒÊÝËÜ¿Í"          TO  WRK-SKYTTLMSG(IDX-SYAHON)
                MOVE    "¼ÒÊÝ²ÈÂ²"          TO  WRK-SKYTTLMSG(IDX-SYAKZK)
@@ -738,8 +739,6 @@
                MOVE    "Ï«¡¡ºÒ"            TO  WRK-SKYTTLMSG(IDX-ROUSAI)
                MOVE    "¼«ÇåÀÕ"            TO  WRK-SKYTTLMSG(IDX-JIBAI)
                MOVE    "¸ø¡¡³²"            TO  WRK-SKYTTLMSG(IDX-KOUGAI)
-               MOVE    "¸ºÌÈ³Û"            TO  WRK-SKYTTLMSG(IDX-GENMEN)
-               MOVE    "Ä´À°¶â"            TO  WRK-SKYTTLMSG(IDX-CHOSEI)
            END-EVALUATE
       *
            .
@@ -935,17 +934,29 @@
                +   SBD010S02-JIHGENMEN (IDX-S02)
                +   SBD010S02-JIHCHOSEI (IDX-S02)
       *
-           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI)
-               =   BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI)
-               +   SBD010S02-CHOSEI (IDX-S02)
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI1)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI1)
+               +   SBD010S02-CHOSEI1 (IDX-S02)
       *
-           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI IDX-HOKEN)
-               =   BD01003-SEIKYU (CONST-TTLCHOSEI IDX-HOKEN)
-               +   SBD010S02-HKNCHOSEI (IDX-S02)
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI2)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI2)
+               +   SBD010S02-CHOSEI2 (IDX-S02)
       *
-           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI IDX-JIHHKN)
-               =   BD01003-SEIKYU (CONST-TTLCHOSEI IDX-JIHHKN)
-               +   SBD010S02-JIHCHOSEI (IDX-S02)
+           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI1 IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLCHOSEI1 IDX-HOKEN)
+               +   SBD010S02-HKNCHOSEI1 (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI2 IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLCHOSEI2 IDX-HOKEN)
+               +   SBD010S02-HKNCHOSEI2 (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI1 IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLCHOSEI1 IDX-JIHHKN)
+               +   SBD010S02-JIHCHOSEI1 (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI2 IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLCHOSEI2 IDX-JIHHKN)
+               +   SBD010S02-JIHCHOSEI2 (IDX-S02)
       *
            COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLNYUKIN)
                =   BD01003-SEIKYU-TOTAL (CONST-TTLNYUKIN)
@@ -958,6 +969,30 @@
            COMPUTE BD01003-SEIKYU (CONST-TTLNYUKIN IDX-JIHHKN)
                =   BD01003-SEIKYU (CONST-TTLNYUKIN IDX-JIHHKN)
                +   SBD010S02-JIHNYUKIN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLKONNYUKIN)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLKONNYUKIN)
+               +   SBD010S02-KONNYUKIN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLKONNYUKIN IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLKONNYUKIN IDX-HOKEN)
+               +   SBD010S02-KONHKNNYUKIN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLKONNYUKIN IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLKONNYUKIN IDX-JIHHKN)
+               +   SBD010S02-KONJIHNYUKIN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLMISYU)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLMISYU)
+               +   SBD010S02-KONMISYU (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLMISYU IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLMISYU IDX-HOKEN)
+               +   SBD010S02-KONHKNMISYU (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLMISYU IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLMISYU IDX-JIHHKN)
+               +   SBD010S02-KONJIHMISYU (IDX-S02)
       *
            EVALUATE    WRK-SYOSAIKBN
            WHEN    "1"
@@ -1056,8 +1091,16 @@
                                        TO  BD01004-JIHIMONEY
            MOVE    SBD010S02-CHOSEI (IDX-S02)
                                        TO  BD01004-CHOSEI
+           MOVE    SBD010S02-CHOSEI1 (IDX-S02)
+                                       TO  BD01004-CHOSEI1
+           MOVE    SBD010S02-CHOSEI2 (IDX-S02)
+                                       TO  BD01004-CHOSEI2
+           MOVE    SBD010S02-KONNYUKIN (IDX-S02)
+                                       TO  BD01004-KONNYUKIN
            MOVE    SBD010S02-GENMEN (IDX-S02)
                                        TO  BD01004-GENMEN
+           MOVE    SBD010S02-ZENMISYU(IDX-S02)
+                                       TO  BD01004-ZENMISYU
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
                MOVE    SBD010S02-ETCJIHI (IDX-S02 IDX-JIHI)
@@ -1085,7 +1128,7 @@
                                        TO  BD01004-NYUKIN
                    IF    ( IDX-HS02    =   WRK-HS02-MAX )
                        MOVE    "1"     TO  BD01004-DSPMISYUKBN
-                       MOVE    SBD010S02-MISYU (IDX-S02)
+                       MOVE    SBD010S02-KONMISYU (IDX-S02)
                                        TO  BD01004-MISYU
                    END-IF
       *
@@ -1096,7 +1139,7 @@
            ELSE
                MOVE    1               TO  BD01004-RENNUM2
                MOVE    "1"             TO  BD01004-DSPMISYUKBN
-               MOVE    SBD010S02-MISYU (IDX-S02)
+               MOVE    SBD010S02-KONMISYU (IDX-S02)
                                        TO  BD01004-MISYU
                WRITE   BD01004-REC
            END-IF
@@ -1315,16 +1358,14 @@
                MOVE    WRK-ZZZZZZZ9        TO  HCM51-SKYHOKEN(CNT-LINE)
                MOVE    BD01004-JIHIMONEY   TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCM51-SKYJIHI(CNT-LINE)
-               COMPUTE WRK-CHOSEI
-                   =   BD01004-CHOSEI
-                   +   BD01004-GENMEN
-               MOVE    WRK-CHOSEI          TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9        TO  HCM51-CHOSEI(CNT-LINE)
-      *
-               IF    ( BD01004-GENMEN      NOT =   ZERO )
-                   MOVE    "*"             TO  HCM51-CHOSEI-MARK
-                                                           (CNT-LINE)
-               END-IF
+               MOVE    BD01004-CHOSEI1     TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM51-CHOSEI1(CNT-LINE)
+               MOVE    BD01004-CHOSEI2     TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM51-CHOSEI2(CNT-LINE)
+               MOVE    BD01004-GENMEN      TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM51-GENMEN(CNT-LINE)
+               MOVE    BD01004-ZENMISYU    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM51-ZENMISYU(CNT-LINE)
            END-IF
       *
            MOVE    BD01004-NYUKIN          TO  WRK-ZZZZZZZ9
@@ -1370,8 +1411,14 @@
                =   TTL-SKYJIHI +   BD01004-JIHIMONEY
            COMPUTE TTL-NYUKIN
                =   TTL-NYUKIN  +   BD01004-NYUKIN
+           COMPUTE TTL-KONNYUKIN
+               =   TTL-KONNYUKIN + BD01004-KONNYUKIN
            COMPUTE TTL-CHOSEI
                =   TTL-CHOSEI  +   BD01004-CHOSEI
+           COMPUTE TTL-CHOSEI1
+               =   TTL-CHOSEI1 +   BD01004-CHOSEI1
+           COMPUTE TTL-CHOSEI2
+               =   TTL-CHOSEI2 +   BD01004-CHOSEI2
            COMPUTE TTL-GENMEN
                =   TTL-GENMEN  +   BD01004-GENMEN
            COMPUTE TTL-MISYU
@@ -1394,13 +1441,18 @@
                MOVE    WRK-ZZZZZZZ9 TO HCM51-TTL-SAISIN
            END-IF
       *
-           MOVE    "ÊÝ¸±ÅÀ¿ô·×"    TO  HCM51-TTL-HKNTENMSG
-           MOVE    "ÀÁµá³Û·×"      TO  HCM51-TTL-SKYMONEYMSG
-           MOVE    "ÊÝ¸±ÀÁµá·×"    TO  HCM51-TTL-SKYHOKENMSG
-           MOVE    "¼«ÈñÀÁµá·×"    TO  HCM51-TTL-SKYJIHIMSG
-           MOVE    "Ä´À°¶â·×"      TO  HCM51-TTL-CHOSEIMSG
-           MOVE    "Æþ¶â³Û·×"      TO  HCM51-TTL-NYUKINMSG
-           MOVE    "Ì¤¼ý¶â³Û·×"    TO  HCM51-TTL-MISYUMSG
+           MOVE    "¹ç·×"          TO  HCM51-TTL-TTLMSG
+           MOVE    "ÊÝ¸±ÅÀ¿ô"      TO  HCM51-TTL-HKNTENMSG
+           MOVE    "º£²óÀÁµá³Û"    TO  HCM51-TTL-SKYMONEYMSG
+           MOVE    "ÊÝ¸±ÀÁµá³Û"    TO  HCM51-TTL-SKYHOKENMSG
+           MOVE    "¼«ÈñÀÁµá³Û"    TO  HCM51-TTL-SKYJIHIMSG
+           MOVE    "Ä´À°¶â£±"      TO  HCM51-TTL-CHOSEI1MSG
+           MOVE    "Ä´À°¶â£²"      TO  HCM51-TTL-CHOSEI2MSG
+           MOVE    "¸ºÌÈ³Û"        TO  HCM51-TTL-GENMENMSG
+           MOVE    "Æþ¶â³Û"        TO  HCM51-TTL-NYUKINMSG
+           MOVE    "¡ÊÆâº£²óÆþ¶â³Û¡Ë"
+                                   TO  HCM51-TTL-KONNYUKINMSG
+           MOVE    "º£²óÌ¤¼ý³Û"    TO  HCM51-TTL-MISYUMSG
       *
            MOVE    TTL-HKNTEN      TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-HKNTEN
@@ -1412,18 +1464,24 @@
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-SKYJIHI
            MOVE    TTL-NYUKIN      TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-NYUKIN
-      *
-           COMPUTE WRK-CHOSEI
-               =   TTL-CHOSEI
-               +   TTL-GENMEN
-      *
-           MOVE    WRK-CHOSEI      TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-CHOSEI
-      *
-           IF    ( TTL-GENMEN      NOT =   ZERO )
-               MOVE    "*"         TO  HCM51-TTL-CHOSEI-MARK
-           END-IF
-      *
+           INITIALIZE                  WRK-KONNYUKIN-G
+           MOVE    TTL-KONNYUKIN   TO  WRK-KONNYUKIN
+           MOVE    ")"             TO  WRK-KONNYUKINFL2
+           PERFORM VARYING IDX0    FROM    7   BY  -1
+                   UNTIL ( IDX0    <   1 )
+               IF    ( IDX0        =   1 )
+                  OR ( WRK-KONNYUKIN-G (1:IDX0)    =   SPACE )
+                   MOVE    "("     TO  WRK-KONNYUKIN-G (IDX0:1)
+                   MOVE    1       TO  IDX0
+               END-IF
+           END-PERFORM
+           MOVE    WRK-KONNYUKIN-G TO  HCM51-TTL-KONNYUKIN
+           MOVE    TTL-CHOSEI1     TO  WRK-ZZZZZZZ9
+           MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-CHOSEI1
+           MOVE    TTL-CHOSEI2     TO  WRK-ZZZZZZZ9
+           MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-CHOSEI2
+           MOVE    TTL-GENMEN      TO  WRK-ZZZZZZZ9
+           MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-GENMEN
            MOVE    TTL-MISYU       TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9    TO  HCM51-TTL-MISYU
       *
@@ -1437,7 +1495,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-           MOVE   "HCM51V02.red"   TO  SPRT-PRTID
+           MOVE   "HCM51V03.red"   TO  SPRT-PRTID
            MOVE    "¼ýÇ¼ÆüÊó"      TO  SPRT-TITLE
            MOVE    HCM51           TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING
@@ -1545,15 +1603,18 @@
        221-BODY-SEC                SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   8 )
+                   UNTIL ( IDX1    >   11 )
       *
                MOVE    ZERO        TO  FLG-TARGET
                IF    ( BD01003-SRT-NYUGAIKBN   =   "1" )
                    IF    ( IDX1        =   CONST-TTLSEIKYUREL
                                         OR CONST-TTLGENMEN
-                                        OR CONST-TTLCHOSEI
+                                        OR CONST-TTLCHOSEI1
+                                        OR CONST-TTLCHOSEI2
                                         OR CONST-TTLSEIKYU
-                                        OR CONST-TTLNYUKIN )
+                                        OR CONST-TTLNYUKIN
+                                        OR CONST-TTLKONNYUKIN
+                                        OR CONST-TTLMISYU )
                        MOVE    1           TO  FLG-TARGET
                    END-IF
                ELSE
@@ -1561,29 +1622,56 @@
                END-IF
       *
                IF    ( FLG-TARGET  =   1 )
-                   MOVE    BD01003-SEIKYU-TOTAL (IDX1)
+                   IF    ( IDX1        =   CONST-TTLKONNYUKIN )
+                       INITIALIZE              WRK-KONNYUKIN-G
+                       MOVE    BD01003-SEIKYU-TOTAL (IDX1)
+                                           TO  WRK-KONNYUKIN
+                       MOVE    ")"         TO  WRK-KONNYUKINFL2
+                       PERFORM VARYING IDX0    FROM    7   BY  -1
+                               UNTIL ( IDX0    <   1 )
+                           IF    ( IDX0        =   1 )
+                            OR   ( WRK-KONNYUKIN-G (1:IDX0)  = SPACE )
+                               MOVE    "(" TO  WRK-KONNYUKIN-G (IDX0:1)
+                               MOVE    1   TO  IDX0
+                           END-IF
+                       END-PERFORM
+                       MOVE    WRK-KONNYUKIN-G
+                                           TO  HCM52-GOKEI (IDX1)
+                   ELSE
+                       MOVE    BD01003-SEIKYU-TOTAL (IDX1)
                                            TO  WRK-ZZZZZZZ9
-                   MOVE    WRK-ZZZZZZZ9    TO  HCM52-GOKEI (IDX1)
+                       MOVE    WRK-ZZZZZZZ9 TO HCM52-GOKEI (IDX1)
+                   END-IF
       *
                    PERFORM VARYING IDX2    FROM    1   BY  1
                            UNTIL ( IDX2    >   WRK-SKYTTL-MAX )
       *
                        IF    ( IDX1        =   1 )
-                           IF    ( IDX2        =   IDX-GENMEN
-                                                OR IDX-CHOSEI )
-                               CONTINUE
-                           ELSE
-                               MOVE   WRK-SKYTTLMSG (IDX2)
+                           MOVE   WRK-SKYTTLMSG (IDX2)
                                            TO  HCM52-SKYTTLMSG(IDX2)
-                           END-IF
                        END-IF
       *
-                       IF    ( IDX2        =   IDX-GENMEN
-                                            OR IDX-CHOSEI )
-                           CONTINUE
+                       IF    ( IDX1        =   CONST-TTLKONNYUKIN )
+                           INITIALIZE              WRK-KONNYUKIN-G
+                           MOVE    BD01003-SEIKYU(IDX1 IDX2)
+                                               TO  WRK-KONNYUKIN
+                           MOVE    ")"         TO  WRK-KONNYUKINFL2
+                           PERFORM VARYING IDX0    FROM    7   BY  -1
+                                   UNTIL ( IDX0    <   1 )
+                               IF    ( IDX0        =   1 )
+                                OR   ( WRK-KONNYUKIN-G (1:IDX0)
+                                                   = SPACE )
+                                   MOVE    "(" 
+                                           TO  WRK-KONNYUKIN-G (IDX0:1)
+                                   MOVE    1
+                                           TO  IDX0
+                               END-IF
+                           END-PERFORM
+                           MOVE    WRK-KONNYUKIN-G
+                                           TO  HCM52-SKYMONEY(IDX1 IDX2)
                        ELSE
                            MOVE    BD01003-SEIKYU(IDX1 IDX2)
-                                           TO  WRK-ZZZZZZZ9
+                                               TO  WRK-ZZZZZZZ9
                            MOVE    WRK-ZZZZZZZ9
                                            TO  HCM52-SKYMONEY(IDX1 IDX2)
                        END-IF
@@ -1625,7 +1713,7 @@
       *
            MOVE    ZERO                    TO  IDX-HOHO
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >       10 )
+                   UNTIL ( IDX1    >       8 )
                       OR ( IDX1    >       SRH-1041-MAX )
       *
                COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
@@ -1637,10 +1725,16 @@
       *
            END-PERFORM
       *
-           IF    ( BD01003-NYUKIN (11) NOT =   ZERO )
+           IF    ( BD01003-NYUKIN (09) NOT =   ZERO )
+            OR   ( BD01003-NYUKIN (10) NOT =   ZERO )
+            OR   ( BD01003-NYUKIN (11) NOT =   ZERO )
                COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
+               COMPUTE WRK-NYUKIN
+                   =   BD01003-NYUKIN (09)
+                   +   BD01003-NYUKIN (10)
+                   +   BD01003-NYUKIN (11)
                MOVE    "¤½¤ÎÂ¾"            TO  HCM52-HOHOMSG (IDX-HOHO)
-               MOVE    BD01003-NYUKIN (11) TO  WRK-ZZZZZZZ9
+               MOVE    WRK-NYUKIN          TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
            END-IF
       *
@@ -1666,7 +1760,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-           MOVE   "HCM52V04.red"       TO  SPRT-PRTID
+           MOVE   "HCM52V05.red"       TO  SPRT-PRTID
            MOVE    "¼ýÇ¼ÆüÊó¡Ê¹ç·×¡Ë"  TO  SPRT-TITLE
            MOVE    HCM52               TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING
