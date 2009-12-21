@@ -205,6 +205,9 @@
       *  04.04.03    NACL-藤原    09/12/10  同月に医保と生保の併用と生保
       *                                     単独が混在する場合の複数診療
       *                                     科による入力時の記載対応
+      *  04.04.04    NACL-藤原    09/12/17  月途中に医保と自立支援の併用
+      *                                     から自立支援単独になったとき
+      *                                     のまとめ対応
       *
       *  04.05.01    NACL-藤原    09/07/23  主科未設定患者の主科再取得対応
       *****************************************************************
@@ -515,6 +518,10 @@
                                        BY         //WRK-SEIHO-RECE01-//.
            02  WRK-SEIHO-RECE01-PRTFLG PIC 9(01)  OCCURS  5.
            02  WRK-SEIHO-RECE01-MAX    PIC 9(02).
+      *
+           02  WRK-KOH-RECE01-REC. 
+           COPY    "CPRCF001.INC"      REPLACING  //RECE01-//
+                                       BY         //WRK-KOH-RECE01-//.
       *
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -1111,6 +1118,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                    IF    ( RECE01-KOHHKNNUM-O (1)  =   "012" OR  "025"
                                                    OR  "015" OR  "016"
                                                    OR  "021" OR  SPACE )
+      *                同じ公費の公費単独の場合
                        IF    ( RECE01-KOHHKNNUM-O  (2)
                                            =   RECE01-KOHHKNNUM-O (1) 
                                            OR  SPACE                  )
@@ -1122,7 +1130,26 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                            OR  SPACE                  )
                            GO  TO  210-HENSYU-EXT
                        ELSE
-                           MOVE    1               TO  FLG-SEIHO
+                           IF    ( RECE01-KOHHKNNUM-O  (2)
+                                               =   "012"   OR  "025"
+                                               OR  "015"   OR  "016"
+                                               OR  "021"   OR  SPACE )
+                           AND   ( RECE01-KOHHKNNUM-O  (3)
+                                               =   "012"   OR  "025"
+                                               OR  "015"   OR  "016"
+                                               OR  "021"   OR  SPACE )
+                           AND   ( RECE01-KOHHKNNUM-O  (4)
+                                               =   "012"   OR  "025"
+                                               OR  "015"   OR  "016"
+                                               OR  "021"   OR  SPACE )
+      *                        生保、中国残留邦人等、自立支援のみの
+      *                        公費単独の場合退避
+                               MOVE    RECE01-REC      TO
+                                                   WRK-KOH-RECE01-REC
+                               GO  TO  210-HENSYU-EXT
+                           ELSE
+                               MOVE    1               TO  FLG-SEIHO
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    1               TO  FLG-SEIHO
@@ -1131,7 +1158,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                    IF      FLG-SEIHO            =   1
                        GO  TO  210-HENSYU-EXT
                    ELSE
-      *                生保単独の場合退避
+      *                公費単独の場合退避
                        ADD     1                TO  WRK-SEIHO-RECE01-MAX
                        MOVE    RECE01-REC       TO  WRK-SEIHO-RECE01-REC
                                                   (WRK-SEIHO-RECE01-MAX)
@@ -1144,12 +1171,20 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            IF    ( RECE01-HKNNUM   NOT =   SPACE )
            AND   ( RECE01-KOHHKNNUM-O (1)
                                        =   "012"   OR  "025"   OR 
+                                           "015"   OR  "016"   OR
+                                           "021"               OR
                    RECE01-KOHHKNNUM-O (2)
                                        =   "012"   OR  "025"   OR 
+                                           "015"   OR  "016"   OR
+                                           "021"               OR
                    RECE01-KOHHKNNUM-O (3)
                                        =   "012"   OR  "025"   OR 
+                                           "015"   OR  "016"   OR
+                                           "021"               OR
                    RECE01-KOHHKNNUM-O (4)
-                                       =   "012"   OR  "025" )
+                                       =   "012"   OR  "025"   OR
+                                           "015"   OR  "016"   OR
+                                           "021"                  )
                IF      RECE01-HKNNUM       =   "060"   OR  "067"   OR
                                                "068"   OR  "069"   OR
                                                "039"   OR  "040"
@@ -1774,7 +1809,9 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
       *    生保まとめフラグ（公費単独）
            IF      WRK-SEIHO-FLG           =   1
-               IF    ( RECE02-KOHNUM (1)       =   "012"   OR  "025" )
+               IF    ( RECE02-KOHNUM (1)       =   "012"   OR  "025"
+                                               OR  "015"   OR  "016"
+                                               OR  "021"             )
                AND   ( RECE02-KOHNUM (2)       =   SPACE             )
                    MOVE    "1"                 TO  RECE02-SEIHOFLG
                END-IF
@@ -3856,22 +3893,31 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE12-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    生保単独レセの出力処理
+      *    公費単独レセの出力処理
       *****************************************************************
        250-SEIHO-RECE01-WRITE-SEC      SECTION.
       *
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       WRK-SEIHO-RECE01-MAX
-               IF      WRK-SEIHO-RECE01-PRTFLG (IDXX)
-                                       =   1
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-SEIHO-RECE01-REC (IDXX)
-                                           TO  RECE01-REC
-      *            ファイル編集処理
-                   PERFORM 2101-RECE02-HENSYU-SEC
-               END-IF
-           END-PERFORM
+      *    主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
+      *    公費単独の場合
+           IF    ( WRK-SEIHO-FLG           =   ZERO )
+           AND   (  WRK-KOH-RECE01-HOSPNUM >   ZERO )
+               MOVE    WRK-KOH-RECE01-REC  TO  RECE01-REC
+      *        ファイル編集処理
+               PERFORM 2101-RECE02-HENSYU-SEC
+           ELSE
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       WRK-SEIHO-RECE01-MAX
+                   IF      WRK-SEIHO-RECE01-PRTFLG (IDXX)
+                                           =   1
+                       CONTINUE
+                   ELSE
+                       MOVE    WRK-SEIHO-RECE01-REC (IDXX)
+                                               TO  RECE01-REC
+      *                ファイル編集処理
+                       PERFORM 2101-RECE02-HENSYU-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
            .
        250-SEIHO-RECE01-WRITE-EXT.
            EXIT.
