@@ -2959,7 +2959,9 @@
                IF    ( SPA-S01-SYORINO
                                    =   CONST-PROC-RRKSYU )
                    COMPUTE WRK-SKYMONEY
-                       =   SPA-GMN-SKYMONEYIN
+                      =   SPA-GMN-SKYMONEY
+                      -   SPA-NAI-SKYMONEY-MOTO
+                      +   SPA-GMN-SKYMONEYIN
       *
                    COMPUTE WRK-NYUKIN
                        =   SPA-GMN-NYUKIN-TTL
@@ -2974,6 +2976,7 @@
                        =   SPA-GMN-NYUKIN-TTL
                        +   SPA-GMN-NYUKIN
                END-IF
+               
       *
                IF    ( SPA-NAI-PROC-FLG    =   4 )
                        PERFORM 4101-TOROKU-SEC
