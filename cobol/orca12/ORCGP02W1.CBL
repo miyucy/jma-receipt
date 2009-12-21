@@ -880,8 +880,14 @@
                WHEN    "P98" 
                    IF      JPAR-POST   NOT =   SPACE
                        MOVE    JPAR-POST   TO  SPA-GMN-POST
-                       MOVE    JPAR-EDITADRS-NAME
+                       IF      SPA-NAI-KENMEIKBN-FLG   =   "0"
+      *                    ÅÔÆ»ÉÜ¸©Ì¾¤Ê¤·
+                           MOVE    JPAR-CITYNAME-NAME
                                            TO  SPA-GMN-EDITADRS-NAME
+                       ELSE
+                           MOVE    JPAR-EDITADRS-NAME
+                                           TO  SPA-GMN-EDITADRS-NAME
+                       END-IF
                        MOVE    SPA-GMN-EDITADRS-NAME
                                            TO  SPA-MAE-ADRS
                        MOVE    SPA-GMN-POST
@@ -3699,22 +3705,22 @@
            MOVE    ZERO                TO  FLG-OK
       *    ½»½ê¥Ç¡¼¥¿ÆÉ¤ß½Ð¤·
            INITIALIZE                      ADRS-REC
-           MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
+      **** MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
            MOVE    SYS-1015-POST       TO  ADRS-POST
            MOVE    SYS-1015-RENNUM     TO  ADRS-EDANUM
            MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"          TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  ADRS-REC
                    MOVE    ADRS-POST           TO  SPA-GMN-POST
-                   MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-EDITADRS-NAME
+                   PERFORM 41011-ADRS-HENSYU-SEC
                    MOVE    SPA-GMN-EDITADRS-NAME
                                                TO  SPA-MAE-ADRS
                    MOVE    SPA-GMN-POST        TO  SPA-MAE-POST
@@ -3722,7 +3728,7 @@
                END-IF
            END-IF
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
@@ -3731,6 +3737,29 @@
            END-IF
            .
        41011-SYUHEN-JYUSYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½»½êÊÔ½¸½èÍý
+      *****************************************************************
+       41011-ADRS-HENSYU-SEC         SECTION.
+      *
+           IF      SPA-NAI-KENMEIKBN-FLG   =   "0"
+      *    ÅÔÆ»ÉÜ¸©Ì¾¤Ê¤·
+               MOVE    SPACE               TO  SPA-GMN-EDITADRS-NAME
+      *        »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+               STRING  ADRS-CITYNAME
+                       ADRS-TOWNNAME       DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN-EDITADRS-NAME
+               END-STRING
+               IF      ADRS-TOWNNAME       =   "°Ê²¼¤Ë·ÇºÜ¤¬¤Ê¤¤¾ì¹ç"
+                   MOVE    ADRS-CITYNAME       TO  SPA-GMN-EDITADRS-NAME
+               END-IF
+           ELSE
+               MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-EDITADRS-NAME
+           END-IF
+           .
+       41011-ADRS-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

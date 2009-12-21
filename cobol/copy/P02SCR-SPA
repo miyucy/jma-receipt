@@ -1052,6 +1052,7 @@
                05  SPA-GMN98-SELNUM                       PIC 9(03).
                05  SPA-GMN98-ADRS                         PIC X(100).
                05  SPA-GMN98-POST                         PIC X(7).
+               05  SPA-GMN98-EDANUM                       PIC 9(02).
                05  SPA-GMN98-TABLE.
                    07  SPA-GMN98-TBLX                     OCCURS  100.
                        09  SPA-GMN98-KBNCD                PIC X(03). 

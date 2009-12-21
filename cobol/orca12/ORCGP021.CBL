@@ -297,8 +297,6 @@
                        MOVE    20          TO  SPA-GMN21-CUR
                    END-IF
            END-EVALUATE
-      *****MOVE    SPACE               TO  JPARA-REC
-      *
            .
        330-ADRS-SET-EXT.
            EXIT.
@@ -522,8 +520,6 @@
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
-      *
-      *****INITIALIZE                  JPARA-REC
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    登録
@@ -1198,17 +1194,17 @@
            MOVE    ZERO                TO  FLG-OK
       *    住所データ読み出し
            INITIALIZE                      ADRS-REC
-           MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
+      **** MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
            MOVE    SYS-1015-POST       TO  ADRS-POST
            MOVE    SYS-1015-RENNUM     TO  ADRS-EDANUM
            MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"          TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key9"              TO  MCP-PATHNAME
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  ADRS-REC
@@ -1218,7 +1214,7 @@
                END-IF
            END-IF
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
@@ -1228,6 +1224,7 @@
            .
        41011-SYUHEN-JYUSYO-EXT.
            EXIT.
+      *
       *****************************************************************
       *    住所から郵便番号編集処理
       *****************************************************************
@@ -1365,32 +1362,6 @@
       *    住所検索へ
       *****************************************************************
        440-JYUSYO-SEC             SECTION.
-      *
-      **** INITIALIZE                  P98
-      *    INITIALIZE                  P99
-      *    INITIALIZE                  JPARA-REC
-      *    CALL  "ORCSADR"             USING
-      *                                SPA-P02KYOUTU
-      *                                SPA-P02SCRAREA
-      *                                P98
-      *                                P99
-      *                                SPA-SYSYMD
-      *
-      *    MOVE    "P02"               TO  SPA-GMN98-MOTOPG
-      *    MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-      *    MOVE    SPA-P02SCRAREA      TO  SPA-FREE
-      *    MOVE    SPA-AREA            TO  SPA-COMMON
-      *
-      *    MOVE    "SELNUM"            TO  MCP-WIDGET
-      *    MOVE    "P98"               TO  SPA-SAKIPG
-      *    MOVE    "P02"               TO  SPA-MOTOPG
-      *
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE
-      *    MOVE    "P98"               TO  MCP-WINDOW
-      *
-      *    PERFORM 900-PUT-WINDOW
-      *
-      **** MOVE    1                   TO  SPA-FLG-END
       *
            MOVE    SPACE               TO  SPA-MOTOPG
       *

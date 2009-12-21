@@ -3038,7 +3038,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    Í½Ìó
            INITIALIZE                      YYK-REC
-           MOVE    SPA-HOSPNUM          TO  YYK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  YYK-PTID
            MOVE    YYK-REC             TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -3068,6 +3068,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
+                   MOVE    SPA-OPID            TO  YYK-OPID
       *            ¹¹¿·
                    MOVE    YYK-REC             TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC

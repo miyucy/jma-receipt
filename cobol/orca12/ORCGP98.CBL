@@ -60,6 +60,7 @@
            03  FLG-SYSKANRI                      PIC 9(01).
            03  FLG-ADRS                          PIC 9(01).
            03  FLG-OK                            PIC 9(01).
+           03  FLG-ADRS-OK                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -393,10 +394,10 @@
                WHEN    "0002"
                    MOVE    "数字のみ入力可能です" TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "住所マスタに登録されていません。"
-                                                  TO  SPA-ERRMSG
-                   MOVE    "再登録して下さい。"
-                                                  TO  SPA-ERRMSG(33:)
+                   STRING  "住所マスタに登録されていません。"
+                           "再登録して下さい。"
+                                                  INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE.
       *
            MOVE    SPACE               TO  PERR
@@ -465,9 +466,10 @@
            MOVE  "P98"                       TO  SPA-MOTOPG.
       *
            MOVE  SPACE                       TO  JPAR-POST.
-           MOVE  SPACE                       TO  JPAR-EDITADRS-NAME.
-           MOVE  ZERO                        TO  JPAR-CNT.
-           MOVE  ZERO                        TO  JPAR-ERRCD.
+           MOVE  SPACE                       TO  JPAR-EDITADRS-NAME 
+           MOVE  SPACE                       TO  JPAR-CITYNAME-NAME 
+      **   MOVE  ZERO                        TO  JPAR-CNT.
+      *    MOVE  ZERO                        TO  JPAR-ERRCD.
       *
       *****MOVE   "BACK"                     TO  MCP-PUTTYPE.
            MOVE   "JOIN"                     TO  MCP-PUTTYPE.
@@ -570,18 +572,16 @@
       *****************************************************************
        45012-KAKUTEI-SYORI-SEC         SECTION.
       *
-      *    共通ＳＰＡ編集
+      *    住所編集
+           PERFORM 45012-ADRS-HEN-SEC
+      ***  MOVE    1                   TO  JPAR-CNT
+      **   MOVE    ZERO                TO  JPAR-ERRCD
       *
+      *    共通ＳＰＡ編集
            MOVE    SPA-GMN98-MOTOPG    TO  SPA-SAKIPG
       *
-           MOVE  "P98"                 TO  SPA-MOTOPG.
+           MOVE    "P98"               TO  SPA-MOTOPG
       *
-           MOVE  P98-POST              TO  JPAR-POST.
-           MOVE  P98-ADRS              TO  JPAR-EDITADRS-NAME.
-           MOVE  1                     TO  JPAR-CNT.
-           MOVE  ZERO                  TO  JPAR-ERRCD.
-      *
-      *****MOVE  "BACK"                TO  MCP-PUTTYPE.
            MOVE  "JOIN"                TO  MCP-PUTTYPE.
            MOVE  SPA-SAKIPG            TO  MCP-WINDOW.
       *
@@ -590,6 +590,52 @@
            MOVE  1                               TO  FLG-END.
       *
        45012-KAKUTEI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    住所編集処理
+      *****************************************************************
+       45012-ADRS-HEN-SEC                SECTION.
+      *
+           INITIALIZE                      ADRS-REC
+           MOVE    SPA-GMN98-POST      TO  ADRS-POST
+           MOVE    SPA-GMN98-EDANUM    TO  ADRS-EDANUM
+           MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
+      *
+           MOVE    ADRS-REC            TO  MCPDATA-REC
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_adrs"          TO  MCP-TABLE
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 900-ADRS-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-ADRS
+           END-IF
+           MOVE    "tbl_adrs"          TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-ADRS            =   ZERO
+               MOVE    ADRS-POST           TO  JPAR-POST
+               MOVE    ADRS-EDITADRS-NAME  TO  JPAR-EDITADRS-NAME
+      *        市町村名＋町域名
+               MOVE    SPACE               TO  JPAR-CITYNAME-NAME
+               STRING  ADRS-CITYNAME
+                       ADRS-TOWNNAME       DELIMITED  BY  SPACE
+                                           INTO    JPAR-CITYNAME-NAME
+               END-STRING
+               IF      ADRS-TOWNNAME       =   "以下に掲載がない場合"
+                   MOVE    ADRS-CITYNAME   TO  JPAR-CITYNAME-NAME
+               END-IF
+           ELSE
+               MOVE    SPACE               TO  JPAR-POST
+               MOVE    SPACE               TO  JPAR-EDITADRS-NAME
+               MOVE    SPACE               TO  JPAR-CITYNAME-NAME
+           END-IF
+           .
+       45012-ADRS-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -673,36 +719,35 @@
            MOVE    ZERO                TO  FLG-ADRS
            MOVE    SPACE               TO  SPA-GMN98-POST
            MOVE    SPACE               TO  SPA-GMN98-ADRS
+           MOVE    SPACE               TO  SPA-GMN98-EDANUM
       *    住所データ読み出し
-           INITIALIZE                            ADRS-REC
-           MOVE  SPA-GMN98-TLPUBCD(IDXZ)     TO  ADRS-LPUBCD
-           MOVE  SPA-GMN98-TPOST  (IDXZ)     TO  ADRS-POST
-           MOVE  SPA-GMN98-TRENNUM(IDXZ)     TO  ADRS-EDANUM
+           INITIALIZE                          ADRS-REC
+           MOVE    SPA-GMN98-TPOST  (IDXZ) TO  ADRS-POST
+           MOVE    SPA-GMN98-TRENNUM(IDXZ) TO  ADRS-EDANUM
            MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
-           MOVE  ADRS-REC                    TO  MCPDATA-REC
+           MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
-           IF  MCP-RC                        =  ZERO
+           IF      MCP-RC              =   ZERO
                MOVE    "tbl_adrs"          TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF  MCP-RC                    =   ZERO
-                   MOVE    MCPDATA-REC         TO  ADRS-REC
-                   MOVE    ADRS-POST           TO  SPA-GMN98-POST
-                   MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
-                   MOVE    1                   TO  FLG-ADRS
-               END-IF
+               MOVE    "key9"              TO  MCP-PATHNAME
+               PERFORM 900-ADRS-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-ADRS
            END-IF
-      *
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
            IF      FLG-ADRS            =   ZERO
+               MOVE    ADRS-POST           TO  SPA-GMN98-POST
+               MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
+               MOVE    ADRS-EDANUM         TO  SPA-GMN98-EDANUM
+               MOVE    2                   TO  SPA-GMN98-CUR
+           ELSE
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN98-CUR
-           ELSE
-               MOVE    2                   TO  SPA-GMN98-CUR
            END-IF
            .
       *
@@ -725,6 +770,21 @@
       *
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所マスタ読み込み処理
+      *****************************************************************
+       900-ADRS-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  ADRS-REC
+               MOVE    ZERO                TO  FLG-ADRS
+           ELSE
+               MOVE    1                   TO  FLG-ADRS
+           END-IF
+           .
+       900-ADRS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

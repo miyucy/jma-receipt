@@ -32,6 +32,7 @@
       *                                     £Ñ£±£°£°¤ËÌ¾¾ÎÊÑ¹¹
       *                                     ¿·¤¿¤Ë£Ñ£É£Ä£±¤òÄÉ²Ã
       * 03.05.00     NACL-ÂÀÅÄ    07.05.23  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 04.05.00     NACL-Â¿¡¹Ç¼  09.12.21  ½»½ê¸¡º÷¤òÍ¹ÊØÈÖ¹æ¡ÜÏ¢ÈÖ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -480,7 +481,7 @@
       *    ½»½ê¥Þ¥¹¥¿¸¡º÷
            INITIALIZE                            ADRS-REC
            MOVE  SPA-HOSPNUM                 TO  ADRS-HOSPNUM
-           MOVE  SPA-GMN-Q98-TLPUBCD(IDX1)   TO  ADRS-LPUBCD
+      **** MOVE  SPA-GMN-Q98-TLPUBCD(IDX1)   TO  ADRS-LPUBCD
            MOVE  SPA-GMN-Q98-TPOST  (IDX1)   TO  ADRS-POST
            MOVE  SPA-GMN-Q98-TRENNUM(IDX1)   TO  ADRS-EDANUM
       *
@@ -775,7 +776,7 @@
            MOVE    ZERO                TO  FLG-ADRS
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF  ( MCP-RC                =   ZERO )
                MOVE    MCPDATA-REC     TO  ADRS-REC
@@ -784,7 +785,7 @@
            END-IF
       *
            MOVE    "tbl_adrs"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
