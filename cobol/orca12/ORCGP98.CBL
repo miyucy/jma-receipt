@@ -719,7 +719,7 @@
            MOVE    ZERO                TO  FLG-ADRS
            MOVE    SPACE               TO  SPA-GMN98-POST
            MOVE    SPACE               TO  SPA-GMN98-ADRS
-           MOVE    SPACE               TO  SPA-GMN98-EDANUM
+           MOVE    ZERO                TO  SPA-GMN98-EDANUM
       *    住所データ読み出し
            INITIALIZE                          ADRS-REC
            MOVE    SPA-GMN98-TPOST  (IDXZ) TO  ADRS-POST
