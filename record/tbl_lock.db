@@ -515,3 +515,14 @@ path	all	{
 		;
 	};
 };
+path  key4  {
+  DBSELECT  {
+    DECLARE tbl_lock_key4_csr CURSOR FOR
+    SELECT *
+    FROM tbl_lock
+    WHERE   LOCK_TERMID   =   :LOCK_TERMID
+      ORDER   BY        LOCK_TERMID
+    ;
+  };
+};
+
