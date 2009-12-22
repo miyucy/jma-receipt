@@ -30,6 +30,7 @@
       * 01.00.01     MCC-多々納   02/04/04  住所一覧表追加に伴う修正
       * 01.00.02     NACL-多々納  05/11/14  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.05.00    NACL-多々納  09/12/22  一括入力対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -56,6 +57,7 @@
            03  FLG-END                            PIC 9(01).
            03  FLG-SYSKANRI                       PIC 9(01).
            03  FLG-ADRS                           PIC 9(01).
+           03  FLG-IN-RENNUM                      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -79,6 +81,7 @@
                05  WRK-WDD         PIC 9(02).
       *
            03  WRK-PIDMSG          PIC X(80).
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -89,8 +92,6 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
-      *
-                    
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -171,12 +172,12 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-           MOVE    SPA-COMMON                    TO  SPA-AREA.
-           MOVE    SPA-FREE                      TO  SPA-P02SCRAREA.
-           MOVE    SPA-WORK                      TO  SPA-P02KYOUTU.
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
       *
-           MOVE    SPACE           TO  SPA-ERRCD
-           MOVE    ZERO            TO  FLG-END
+           MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    ZERO                TO  FLG-END
       *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -187,7 +188,7 @@
       *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
-           END-EVALUATE.
+           END-EVALUATE
       *
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
@@ -243,12 +244,15 @@
            EVALUATE    SPA-MOTOPG(1:4)
       *            住所一覧から
                WHEN    "P982"
-                   IF      SPA-GMN982-LPUBCD   NOT =   SPACE
-                       MOVE    SPA-GMN982-LPUBCD   TO  SPA-GMN981-LPUBCD
-                       MOVE    SPA-GMN982-POST     TO  SPA-GMN981-POST
-                       MOVE    SPA-GMN982-RENNUM   TO  SPA-GMN981-RENNUM
-                       MOVE    SPA-GMN981-RENNUM   TO  P981-RENNUM
-                       PERFORM 4103-RENNUM-CHK-SEC
+                   IF      SPA-GMN982-LPUBCD   =   SPACE
+                       IF      SPA-GMN981-LPUBCD   =   SPACE
+                           MOVE     3              TO  SPA-GMN981-CUR
+                       ELSE
+                           MOVE     2              TO  SPA-GMN981-CUR
+                       END-IF
+                   ELSE
+      *                対象あり
+                       PERFORM 4201-ADRS-HENSYU-SEC
                    END-IF
       *            確認画面より
                WHEN    "PID1"
@@ -328,21 +332,75 @@
       *****************************************************************
        200-ENTRY                             SECTION.
       *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN981-CUR
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"       ALSO    "LPUBCD"
-                   PERFORM  4101-LPUBCD-CHK-SEC
-               WHEN    "ACTIVATE"       ALSO    "TOWNNAMEDSP"
-                   PERFORM  4104-TOWNNAMEDSP-CHK-SEC
-               WHEN    "ACTIVATE"       ALSO    "POST"
-                   PERFORM  4102-POST-CHK-SEC
-               WHEN    "ACTIVATE"       ALSO    "RENNUM"
-                   PERFORM  4103-RENNUM-CHK-SEC
-               WHEN    "ACTIVATE"       ALSO    "KBNCD"
+               WHEN    "ACTIVATE"      ALSO    "KBNCD"
                    PERFORM  4105-KBNCD-CHK-SEC
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
            .
       *
        200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC          SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           MOVE    P981-LPUBCD         TO  SPA-GMN981-LPUBCD
+           MOVE    P981-POST           TO  SPA-GMN981-POST
+           IF      P981-RENNUM     NOT =   SPA-GMN981-RENNUM
+               MOVE    1               TO  FLG-IN-RENNUM
+           END-IF
+           MOVE    P981-RENNUM         TO  SPA-GMN981-RENNUM
+           MOVE    P981-TOWNNAMEDSP    TO  SPA-GMN981-TOWNNAMEDSP
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェックと別画面処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC          SECTION.
+      *
+           IF     (SPA-GMN981-LPUBCD       =   SPACE   )   AND
+                  (SPA-GMN981-POST         =   SPACE   )
+               CONTINUE
+           ELSE
+               IF    ((SPA-GMN981-LPUBCD   NOT =   SPA-MAE981-LPUBCD)
+                  OR  (SPA-GMN981-POST     NOT =   SPA-MAE981-POST  ))
+               AND   ( SPA-GMN981-RENNUM       =   SPA-MAE981-RENNUM )
+      *            一覧表示へ
+                   PERFORM 420-P982-CHECK-SEC
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE   )  AND
+                  (FLG-END             =   ZERO    )
+               IF     (SPA-GMN981-RENNUM   NOT =   SPA-MAE981-RENNUM )
+                  OR  (FLG-IN-RENNUM           =   1                 )
+                   PERFORM 4103-RENNUM-CHK-SEC
+               END-IF
+           END-IF
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -386,27 +444,28 @@
                MOVE    ZERO               TO   SPA-GMN981-KBNCD
            END-IF
       *
-           IF      SPA-GMN981-KBNCD       =   ZERO
-               MOVE    "0001"                 TO  SPA-ERRCD
-               MOVE    1                      TO  SPA-GMN981-CUR
+           IF      SPA-GMN981-KBNCD    =   ZERO
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN981-CUR
            ELSE     
                INITIALIZE                      SYS-1015-REC
-               MOVE    "1015"                  TO  SYS-1015-KANRICD
-               MOVE    SPA-GMN981-KBNCD (1:3)  TO  SYS-1015-KBNCD (1:3)
+               MOVE    "1015"              TO  SYS-1015-KANRICD
+               MOVE    SPA-GMN981-KBNCD (1:3)
+                                           TO  SYS-1015-KBNCD (1:3)
                MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
                MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
       *
                MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
-               MOVE    SYS-1015-REC            TO  MCPDATA-REC
+               MOVE    SYS-1015-REC        TO  MCPDATA-REC
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI            =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1015-REC
+                   MOVE    SYSKANRI-REC        TO  SYS-1015-REC
                    MOVE    SYS-1015-TOWNNAMEDSP
                                            TO  SPA-GMN981-TOWNNAMEDSP
                    MOVE    SYS-1015-LPUBCD     TO  SPA-GMN981-LPUBCD
                    MOVE    SYS-1015-POST       TO  SPA-GMN981-POST
                    MOVE    SYS-1015-RENNUM     TO  SPA-GMN981-RENNUM
-      * 
+      *
                    INITIALIZE                  ADRS-REC
                    MOVE    SPA-GMN981-LPUBCD   TO  ADRS-LPUBCD
                    MOVE    SPA-GMN981-POST     TO  ADRS-POST
@@ -415,58 +474,19 @@
                    MOVE    ADRS-REC            TO  MCPDATA-REC
                    PERFORM 900-ADRS-INV-SEC
                    IF      FLG-ADRS                =   ZERO
-                       MOVE    MCPDATA-REC         TO  ADRS-REC
                        MOVE    ADRS-EDITADRS-NAME
-                                           TO  SPA-GMN981-TOWNNAME
+                                               TO  SPA-GMN981-TOWNNAME
                    END-IF
                END-IF
       *
-               MOVE    2                  TO  SPA-GMN981-CUR
+               MOVE    SPA-GMN981-LPUBCD   TO  SPA-MAE981-LPUBCD
+               MOVE    SPA-GMN981-POST     TO  SPA-MAE981-POST
+               MOVE    SPA-GMN981-RENNUM   TO  SPA-MAE981-RENNUM
+      *
+               MOVE    2                   TO  SPA-GMN981-CUR
            END-IF
            .
        4105-KBNCD-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *  　地方公共団体コードチェック
-      *****************************************************************
-       4101-LPUBCD-CHK-SEC                         SECTION.
-      *
-           MOVE    2                   TO  SPA-GMN981-CUR
-      *
-           MOVE    P981-LPUBCD         TO  SPA-GMN981-LPUBCD
-      *
-      *    一覧表へ
-           IF     (SPA-GMN981-LPUBCD   NOT =   SPACE )  AND
-                  (SPA-GMN981-POST         =   SPACE )
-               PERFORM 420-P982-SYORI-SEC
-           ELSE
-      *
-               MOVE    3                  TO  SPA-GMN981-CUR
-           END-IF
-           .
-       4101-LPUBCD-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *  　郵便番号チェック
-      *****************************************************************
-       4102-POST-CHK-SEC                         SECTION.
-      *
-           MOVE    3                  TO  SPA-GMN981-CUR
-      *
-           MOVE    P981-POST          TO  SPA-GMN981-POST
-      *
-      *    一覧表へ
-           IF     (SPA-GMN981-LPUBCD       =   SPACE )  AND
-                  (SPA-GMN981-POST     NOT =   SPACE )
-               PERFORM 420-P982-SYORI-SEC
-           ELSE
-               MOVE    4                  TO  SPA-GMN981-CUR
-           END-IF
-      *
-           .
-       4102-POST-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -474,32 +494,31 @@
       *****************************************************************
        4103-RENNUM-CHK-SEC                         SECTION.
       *
-           MOVE    4                  TO  SPA-GMN981-CUR
-      *
-           MOVE    P981-RENNUM        TO  SPA-GMN981-RENNUM
-      *
            INITIALIZE                      ADRS-REC
-           MOVE    SPA-GMN981-LPUBCD       TO  ADRS-LPUBCD
-           MOVE    SPA-GMN981-POST         TO  ADRS-POST
-           MOVE    SPA-GMN981-RENNUM       TO  ADRS-EDANUM
+           MOVE    SPA-GMN981-LPUBCD   TO  ADRS-LPUBCD
+           MOVE    SPA-GMN981-POST     TO  ADRS-POST
+           MOVE    SPA-GMN981-RENNUM   TO  ADRS-EDANUM
            MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
-           MOVE    ADRS-REC                TO  MCPDATA-REC
+           MOVE    ADRS-REC            TO  MCPDATA-REC
            PERFORM 900-ADRS-INV-SEC
-           IF      FLG-ADRS                =   ZERO
-               MOVE    MCPDATA-REC         TO  ADRS-REC
-      *********MOVE    ADRS-TOWNNAME       TO  SPA-GMN981-TOWNNAME
+           IF      FLG-ADRS            =   ZERO
                MOVE    ADRS-EDITADRS-NAME
                                            TO  SPA-GMN981-TOWNNAME
                IF      SPA-GMN981-TOWNNAMEDSP  =   SPACE
                    MOVE    ADRS-TOWNNAME   TO  SPA-GMN981-TOWNNAMEDSP
                END-IF
+      *
+               MOVE    SPA-GMN981-LPUBCD   TO  SPA-MAE981-LPUBCD
+               MOVE    SPA-GMN981-POST     TO  SPA-MAE981-POST
+               MOVE    SPA-GMN981-RENNUM   TO  SPA-MAE981-RENNUM
+               MOVE    5                   TO  SPA-GMN981-CUR
            ELSE
                MOVE    SPACE               TO  SPA-GMN981-TOWNNAME
                MOVE    "0002"              TO  SPA-ERRCD
-               GO  TO  4103-RENNUM-CHK-EXT
+               MOVE    4                   TO  SPA-GMN981-CUR
            END-IF
+           MOVE    ZERO                TO  FLG-IN-RENNUM
       *
-           MOVE    5                  TO  SPA-GMN981-CUR
            .
        4103-RENNUM-CHK-EXT.
            EXIT.
@@ -518,19 +537,26 @@
        4104-TOWNNAMEDSP-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    一覧表遷移処理
       *****************************************************************
        420-P982-SYORI-SEC           SECTION.
       *
-      *    一覧表へ
            IF     (SPA-GMN981-LPUBCD       =   SPACE )  AND
                   (SPA-GMN981-POST         =   SPACE )
                MOVE    "0004"              TO  SPA-ERRCD
                MOVE     2                  TO  SPA-GMN981-CUR
-               GO  TO  420-P982-SYORI-EXT
+           ELSE
+      *        一覧表示へ
+               PERFORM 420-P982-CHECK-SEC
            END-IF
+           .
+       420-P982-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    一覧表遷移チェック処理
+      *****************************************************************
+       420-P982-CHECK-SEC           SECTION.
       *
            INITIALIZE                  SPA-P982-AREA
            MOVE    SPA-GMN981-LPUBCD   TO  SPA-GMN982-LPUBCD
@@ -555,19 +581,40 @@
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
       *
-           IF      SPA-GMN982-MAX      =   ZERO
+           EVALUATE    SPA-GMN982-MAX
+           WHEN    ZERO
+      *        対象なし
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE     2                  TO  SPA-GMN981-CUR
-               GO  TO  420-P982-SYORI-EXT
-           END-IF
-           IF      SPA-GMN982-MAX      =   1
-               MOVE    SPA-GMN982-LPUBCD   TO  SPA-GMN981-LPUBCD
-               MOVE    SPA-GMN982-POST     TO  SPA-GMN981-POST
-               MOVE    SPA-GMN982-RENNUM   TO  SPA-GMN981-RENNUM
-               MOVE    SPA-GMN981-RENNUM   TO  P981-RENNUM
-               PERFORM 4103-RENNUM-CHK-SEC
-               GO  TO  420-P982-SYORI-EXT
-           END-IF
+           WHEN    1
+      *        対象あり
+               PERFORM 4201-ADRS-HENSYU-SEC
+           WHEN    OTHER
+               PERFORM 4201-P982-PUTSYORI-SEC
+           END-EVALUATE
+      *
+           .
+       420-P982-CHECK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一覧表選択処理
+      *****************************************************************
+       4201-ADRS-HENSYU-SEC           SECTION.
+      *
+           MOVE    SPA-GMN982-LPUBCD   TO  SPA-GMN981-LPUBCD
+           MOVE    SPA-GMN982-POST     TO  SPA-GMN981-POST
+           MOVE    SPA-GMN982-RENNUM   TO  SPA-GMN981-RENNUM
+      *
+           PERFORM 4103-RENNUM-CHK-SEC
+           MOVE    5                   TO  SPA-GMN981-CUR
+      *
+           .
+       4201-ADRS-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    一覧表遷移処理
+      *****************************************************************
+       4201-P982-PUTSYORI-SEC           SECTION.
       *
       *    画面カーソルセット処理
            MOVE    "SELNUM"            TO  MCP-WIDGET
@@ -587,9 +634,8 @@
       *
            MOVE    1                   TO  FLG-END
       *
-      *
            .
-       420-P982-SYORI-EXT.
+       4201-P982-PUTSYORI-EXT.
            EXIT.
       *****************************************************************
       *    クリア処理
@@ -626,11 +672,11 @@
            MOVE    SPA-GMN981-KBNCD (1:3)  TO  SYS-1015-KBNCD (1:3)
            MOVE    SPA-SYSYMD              TO  SYS-1015-STYUKYMD
            MOVE    SPA-SYSYMD              TO  SYS-1015-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
+           MOVE    SPA-HOSPNUM             TO  SYS-1015-HOSPNUM
            MOVE    SYS-1015-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC             TO  SYS-1015-REC
+               MOVE    SYSKANRI-REC            TO  SYS-1015-REC
       *
                MOVE    SYS-1015-REC            TO  MCPDATA-REC
                MOVE    "DBDELETE"              TO  MCP-FUNC
@@ -656,9 +702,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
       *
-           PERFORM 4901-KANRENCHK-SEC
-           IF      SPA-ERRCD     =   SPACE
-               PERFORM 490-KOUSHIN-SEC
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+      *
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (FLG-END             =   ZERO  )
+               PERFORM 4901-KANRENCHK-SEC
+               IF      SPA-ERRCD     =   SPACE
+                   PERFORM 490-KOUSHIN-SEC
+               END-IF
            END-IF
            .
        410-KAKUTEI-EXT.
@@ -684,7 +736,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYS-1015-REC            TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    MCPDATA-REC             TO  SYS-1015-REC
+               MOVE    SYSKANRI-REC            TO  SYS-1015-REC
            ELSE
                MOVE    SPACE                   TO  SYS-1015-REC
                INITIALIZE                      SYS-1015-REC
@@ -743,6 +795,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN981-CUR
            END-IF
+      *
+           IF     (SPA-GMN981-LPUBCD       =   SPACE   )   OR
+                  (SPA-GMN981-POST         =   SPACE   )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0005"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN981-CUR
+               END-IF
+           END-IF
+      *
+           IF     (SPA-GMN981-TOWNNAMEDSP  =   SPACE   )
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0006"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN981-CUR
+               END-IF
+           END-IF
            .
        4901-KANRENCHK-EXT.
            EXIT.
@@ -780,6 +847,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  P981
+           INITIALIZE                      P981
       *
            MOVE    SPA-GMN981-KBNCD    TO  P981-KBNCD
            MOVE    SPA-GMN981-LPUBCD   TO  P981-LPUBCD
@@ -800,6 +868,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF      SPA-GMN981-CUR      =   ZERO 
+               EVALUATE    WRK-MCP-WIDGET
+                   WHEN    "KBNCD"
+                       MOVE    2               TO  SPA-GMN981-CUR
+                   WHEN    "LPUBCD"
+                       MOVE    3               TO  SPA-GMN981-CUR
+                   WHEN    "POST"
+                       MOVE    4               TO  SPA-GMN981-CUR
+                   WHEN    "RENNUM"
+                       MOVE    5               TO  SPA-GMN981-CUR
+                   WHEN    "TOWNNAMEDSP"
+                       MOVE    12              TO  SPA-GMN981-CUR
+               END-EVALUATE
+           END-IF
            EVALUATE    SPA-GMN981-CUR
                 WHEN   1
                     MOVE  "KBNCD"          TO  MCP-WIDGET
@@ -834,12 +916,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "住所マスタに登録がありません"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "対象データがありません。"
+                   MOVE    "対象の住所データがありません。"
                                            TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE
                    "郵便番号か地方公共団体コードを入力して下さい"
                                            TO  SPA-ERRMSG
+               WHEN    "0005"
+                   STRING  "郵便番号と地方公共団体コードを"
+                           "入力して下さい"
+                                           DELIMITED  BY  SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0006"
+                   STRING  "町域名短縮を入力して下さい"
+                                           DELIMITED  BY  SIZE
+                                           INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                            TO  SPA-ERRMSG
@@ -922,6 +1015,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
                ELSE
                    MOVE    1                   TO  FLG-SYSKANRI
                END-IF
@@ -951,11 +1045,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-ADRS
+                   MOVE    MCPDATA-REC         TO  ADRS-REC
                ELSE
                    MOVE    1                   TO  FLG-ADRS
+                   INITIALIZE                      ADRS-REC
                END-IF
            ELSE
                MOVE    1                   TO  FLG-ADRS
+               INITIALIZE                      ADRS-REC
            END-IF
       *
            MOVE    "tbl_adrs"          TO  MCP-TABLE

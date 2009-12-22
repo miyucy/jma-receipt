@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  02/09/03  住所一覧を５０件へ変更
       *  01.00.02    NACL-多々納  05/11/14  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.05.00    NACL-多々納  09/12/22  検索方法修正、上限なしへ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -76,6 +77,7 @@
       *
            03  IDX1                              PIC 9(01).
            03  IDX2                              PIC 9(02).
+           03  IDX-STR                           PIC 9(04).
       *
         01 WRK-AREA.
            03  WRK-IDX3                          PIC 9(03).
@@ -220,6 +222,7 @@
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
+           MOVE  ZERO                  TO  SPA-GMN98-PAGE
       *    住所登録画面より
            PERFORM 310-P981SPASET-SEC
            MOVE    1                   TO  SPA-GMN98-CUR
@@ -232,12 +235,19 @@
       *****************************************************************
        310-P981SPASET-SEC                         SECTION.
       *
-           INITIALIZE                            SPA-GMN98-TABLE.
-           MOVE  ZERO                        TO  SPA-GMN98-MAX
-           MOVE  ZERO                        TO  SPA-GMN98-PAGE
+           IF      SPA-GMN98-PAGE      =   ZERO
+               MOVE    1                   TO  SPA-GMN98-PAGE
+           END-IF
+           COMPUTE IDX-STR             =  (SPA-GMN98-PAGE   -   1  )
+                                       *   50
+                                       +   1
+      *
+           INITIALIZE                      SPA-GMN98-TABLE
+           MOVE  ZERO                  TO  SPA-GMN98-MAX
+           MOVE  ZERO                  TO  SPA-GMN98-NEXT
       *    システム管理より周辺住所を取る
            INITIALIZE                      SYS-1015-REC.
-           MOVE  "1015"                TO  SYS-1015-KANRICD.
+           MOVE    "1015"              TO  SYS-1015-KANRICD.
            MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
@@ -256,40 +266,52 @@
            END-IF
       *
            MOVE    ZERO                TO  IDXX
+           MOVE    ZERO                TO  IDXZ
            PERFORM             UNTIL   FLG-SYSKANRI   =   1
-                               OR      IDXX           >=  100
-               ADD     1                  TO  IDXX
-               MOVE    MCPDATA-REC        TO  SYS-1015-REC
-               MOVE    SYS-1015-KBNCD     TO  SPA-GMN98-KBNCD  (IDXX)
-               MOVE    SYS-1015-LPUBCD    TO  SPA-GMN98-TLPUBCD(IDXX)
-               MOVE    SYS-1015-POST      TO  SPA-GMN98-TPOST (IDXX)
-               MOVE    SYS-1015-RENNUM    TO  SPA-GMN98-TRENNUM(IDXX)
-               MOVE    SYS-1015-TOWNNAMEDSP
-                                          TO  SPA-GMN98-TADRS (IDXX)
       *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
+               MOVE    MCPDATA-REC         TO  SYS-1015-REC
+               ADD     1                   TO  IDXZ
+               IF      IDXZ                >=  IDX-STR
+                   ADD     1               TO  IDXX
+                   IF      IDXX            >   50
+                       MOVE    1               TO  SPA-GMN98-NEXT
+                       MOVE    1               TO  FLG-SYSKANRI
+                   ELSE
+                       PERFORM 31011-TBLHENSYU-SEC
+                       MOVE    IDXX            TO  SPA-GMN98-MAX
+                   END-IF
+               END-IF
+      *
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-IF
            END-PERFORM
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           COMPUTE SPA-GMN98-MAX =   (IDXX   -   1)  /   50  +   1    
-      *
-           IF      IDXX                      >   ZERO
-               MOVE    1                         TO  SPA-GMN98-PAGE
-           END-IF
-      *
-           INITIALIZE                  SPA-GMN98-SELNUM
-           INITIALIZE                  SPA-GMN98-ADRS
-           INITIALIZE                  SPA-GMN98-POST
-      *
+           INITIALIZE                  SPA-GMN98-INPUT
            MOVE    1                   TO  SPA-GMN98-CUR
       *
            .
        310-P981SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面編集処理
+      *****************************************************************
+       31011-TBLHENSYU-SEC               SECTION.
+      *
+           MOVE    SYS-1015-KBNCD     TO  SPA-GMN98-KBNCD  (IDXX)
+           MOVE    SYS-1015-LPUBCD    TO  SPA-GMN98-TLPUBCD(IDXX)
+           MOVE    SYS-1015-POST      TO  SPA-GMN98-TPOST (IDXX)
+           MOVE    SYS-1015-RENNUM    TO  SPA-GMN98-TRENNUM(IDXX)
+           MOVE    SYS-1015-TOWNNAMEDSP
+                                      TO  SPA-GMN98-TADRS (IDXX)
+           .
+       31011-TBLHENSYU-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -342,15 +364,16 @@
        500-GMNHEN-SEC                            SECTION.
       *
            MOVE    SPACE               TO  P98
+           INITIALIZE                      P98
       *
-           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
+      *    COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
       *
            PERFORM VARYING     IDXX    FROM    1   BY  1
                    UNTIL       IDXX    >       50
-               COMPUTE IDXZ    =       IDXY    +   IDXX
+      *        COMPUTE IDXZ    =       IDXY    +   IDXX
                MOVE  "whitebutton"         TO  P98-TADRS-STYLE (IDXX)
-               MOVE  SPA-GMN98-KBNCD(IDXZ) TO  P98-TADRS(IDXX)(1:3)
-               MOVE  SPA-GMN98-TADRS(IDXZ)
+               MOVE  SPA-GMN98-KBNCD(IDXX) TO  P98-TADRS(IDXX)(1:3)
+               MOVE  SPA-GMN98-TADRS(IDXX)
                                            TO  P98-TADRS(IDXX)(5:16)
                INSPECT P98-TADRS(IDXX)(5:16)
                        REPLACING  ALL "  "  BY  "　"
@@ -511,9 +534,11 @@
       *****************************************************************
        430-ADRFW-SEC                             SECTION.
       *
-           IF SPA-GMN98-PAGE                     >  1
-               COMPUTE  SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    -  1
-           END-IF.
+           IF      SPA-GMN98-PAGE      >  1
+               COMPUTE SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    -  1
+      *
+               PERFORM 310-P981SPASET-SEC
+           END-IF
            MOVE    1                   TO  SPA-GMN98-CUR
       *
            .
@@ -526,8 +551,9 @@
       *****************************************************************
        440-ADRBK-SEC                             SECTION.
       *
-           IF  SPA-GMN98-PAGE                    <  SPA-GMN98-MAX
-               COMPUTE  SPA-GMN98-PAGE  =  SPA-GMN98-PAGE    +  1
+           IF      SPA-GMN98-NEXT      =   1
+               COMPUTE  SPA-GMN98-PAGE =   SPA-GMN98-PAGE    +  1
+               PERFORM 310-P981SPASET-SEC
            END-IF
            MOVE    1                   TO  SPA-GMN98-CUR
       *
@@ -657,9 +683,9 @@
            MOVE    WRK-IDX3(3:1)       TO  IDX1
            COMPUTE IDXZ                =   ((IDX2   -   1  )  *  5 )
                                        +   IDX1
-           COMPUTE IDXY        =  ((SPA-GMN98-PAGE  -   1)  *   50)
-                               +  IDXZ
-           MOVE    IDXY                TO  IDXZ
+      *    COMPUTE IDXY        =  ((SPA-GMN98-PAGE  -   1)  *   50)
+      *                        +  IDXZ
+      *    MOVE    IDXY                TO  IDXZ
       *
            MOVE    1                   TO  SPA-GMN98-CUR
            IF     (IDXZ                >   ZERO  AND  <=   100  )  AND
@@ -682,19 +708,17 @@
       *
            MOVE    1                   TO  SPA-GMN98-CUR
       *
-           MOVE  SPACE                   TO  SPA-GMN98-POST
-           MOVE  SPACE                   TO  SPA-GMN98-ADRS
+           MOVE    SPACE               TO  SPA-GMN98-POST
+           MOVE    SPACE               TO  SPA-GMN98-ADRS
       *
-           MOVE  P98-SELNUM              TO  SPA-GMN98-SELNUM
+           MOVE    P98-SELNUM          TO  SPA-GMN98-SELNUM
       *
-           COMPUTE IDXY    =  (SPA-GMN98-PAGE  -   1)  *   50
            MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING     IDXX    FROM    1   BY  1
-                   UNTIL      (IDXX    >       50  )  OR
-                              (FLG-OK      =   1   )
-               COMPUTE IDXZ    =       IDXY    +   IDXX
+           PERFORM VARYING     IDXZ    FROM    1   BY  1
+                   UNTIL      (IDXZ        >       50  )  OR
+                              (FLG-OK      =   1       )
                IF      SPA-GMN98-KBNCD(IDXZ)       =   SPACE
-                   MOVE    50                          TO  IDXX
+                   MOVE    50                      TO  IDXZ
                ELSE
                    IF      SPA-GMN98-KBNCD(IDXZ)   =   SPA-GMN98-SELNUM
                        MOVE    1                   TO  FLG-OK

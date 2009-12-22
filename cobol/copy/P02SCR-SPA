@@ -1043,18 +1043,19 @@
       *    º˛ ’ΩªΩÍ° £–£π£∏°À
            03  SPA-P98-AREA.
                05  SPA-GMN98-CUR                          PIC 9(01).
-               05  SPA-GMN98-PAGE                         PIC 9(01).
-               05  SPA-GMN98-MAX                          PIC 9(01).
-               05  SPA-GMN98-MAX-PAGE                     PIC 9(01).
+               05  SPA-GMN98-PAGE                         PIC 9(03).
+               05  SPA-GMN98-MAX                          PIC 9(02).
+               05  SPA-GMN98-NEXT                         PIC 9(01).
       *        ∏µ£–£«
                05  SPA-GMN98-MOTOPG                       PIC X(08).
       *
-               05  SPA-GMN98-SELNUM                       PIC 9(03).
-               05  SPA-GMN98-ADRS                         PIC X(100).
-               05  SPA-GMN98-POST                         PIC X(7).
-               05  SPA-GMN98-EDANUM                       PIC 9(02).
+               05  SPA-GMN98-INPUT.
+                   07  SPA-GMN98-SELNUM                   PIC 9(03).
+                   07  SPA-GMN98-ADRS                     PIC X(100).
+                   07  SPA-GMN98-POST                     PIC X(7).
+                   07  SPA-GMN98-EDANUM                   PIC 9(02).
                05  SPA-GMN98-TABLE.
-                   07  SPA-GMN98-TBLX                     OCCURS  100.
+                   07  SPA-GMN98-TBLX                     OCCURS  50.
                        09  SPA-GMN98-KBNCD                PIC X(03). 
                        09  SPA-GMN98-TLPUBCD              PIC X(05).
                        09  SPA-GMN98-TPOST                PIC X(07).
@@ -1076,6 +1077,10 @@
                    07  SPA-GMN981-TOWNNAMEDSP       PIC X(20).
                    07  SPA-GMN981-POST              PIC X(07).
                    07  SPA-GMN981-RENNUM            PIC 9(02). 
+      *
+                   07  SPA-MAE981-LPUBCD            PIC X(05).
+                   07  SPA-MAE981-POST              PIC X(07).
+                   07  SPA-MAE981-RENNUM            PIC 9(02). 
       *
       *    ¥µº‘»÷πÊ»Øπ‘° £–£∞£±£¥°À
            03  SPA-P014-AREA.
