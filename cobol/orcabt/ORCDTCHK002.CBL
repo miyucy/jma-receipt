@@ -1755,6 +1755,8 @@
       *
            INITIALIZE                  ERRKBN-AREA
       *
+           MOVE    "1"                 TO  ERRKBN-990009
+      *
       *    システム管理マスタ検索処理
            MOVE    ZERO                TO  FLG-CHK004
            INITIALIZE                      CK4-1103-REC
