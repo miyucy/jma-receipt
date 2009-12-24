@@ -585,7 +585,11 @@
            WHEN    ZERO
       *        対象なし
                MOVE    "0003"              TO  SPA-ERRCD
-               MOVE     2                  TO  SPA-GMN981-CUR
+               IF      SPA-GMN981-LPUBCD   =   SPACE
+                   MOVE     3                  TO  SPA-GMN981-CUR
+               ELSE
+                   MOVE     2                  TO  SPA-GMN981-CUR
+               END-IF
            WHEN    1
       *        対象あり
                PERFORM 4201-ADRS-HENSYU-SEC
