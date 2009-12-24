@@ -154,6 +154,8 @@ view_bd002 {
 	RESE_YKZ_FTN        number(7,0);
 	KOHTAIYKZKBN		char(1);
 	CHOSEI  			number(7,0);
+	CHOSEI1  			number(7,0);
+	CHOSEI2  			number(7,0);
 	GRP_DENPNUM			number(7,0);
 	GRP_RENNUM			number(2,0);
 	GRP_SGKMONEY			number(7,0);

@@ -4,6 +4,7 @@
 -- view_q003   ¾È²ñ£³                           --
 -- view_q002   ¾È²ñ£²                           --
 -- view_i001   Æþ±¡´µ¼Ô¾È²ñ                     --
+-- view_bd002  ¼ýÇ¼£²                           --
 --                                              --
 -- Create Date : 2009/04/14                     --
 --                                              --
@@ -13,3 +14,5 @@ drop view view_q001;
 drop view view_q003;
 drop view view_q002;
 drop view view_i001;
+drop view view_bd002;
+

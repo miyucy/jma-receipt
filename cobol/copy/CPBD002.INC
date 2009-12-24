@@ -311,6 +311,14 @@
            03  BD002-KOHTAIYKZKBN        PIC  X(01).
       *調整金
            03  BD002-CHOSEI              PIC S9(07).
+           03  BD002-CHOSEI-NAIYOU.
+      *調整金内訳１
+               05  BD002-CHOSEI1         PIC S9(07).
+      *調整金内訳２
+               05  BD002-CHOSEI2         PIC S9(07).
+           03  BD002-CHOSEI-NAIYOU-R REDEFINES  BD002-CHOSEI-NAIYOU.
+               05  BD002-RCHOSEI         PIC S9(07)
+                                         OCCURS  2.
       *まとめ入力伝票番号
            03  BD002-GRP-DENPNUM         PIC 9(07).
       *まとめ入力連番
