@@ -465,6 +465,10 @@
       *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
+      *    エンコーディング取得処理
+           CALL    "ORCSENCODING"      USING    MCPAREA
+                                                SPA-AREA
+      *
       *    システム管理情報　検索処理
            PERFORM 120-CP1001-KENSAKU-SEC
            IF  FLG-CSV             =   1
@@ -999,6 +1003,22 @@
       *****************************************************************
        2402-ZENKAKU-HEN02-SEC        SECTION.
       *
+           IF      SPA-ENCODING        =   2
+      *        拡張漢字対応
+               PERFORM 24021-ZENKAKU-HEN02C-SEC
+           ELSE
+      *        拡張漢字不可
+               PERFORM 2402-ZENKAKU-HEN-SEC
+           END-IF
+           .
+       2402-ZENKAKU-HEN02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角桁数・空白処理（拡張漢字対応）
+      *****************************************************************
+       24021-ZENKAKU-HEN02C-SEC        SECTION.
+      *
            INITIALIZE                  ORCSKANACHK2AREA
            MOVE    "1"             TO  KANACHK2-SYORI
       *    後ろの全角空白を削除
@@ -1035,7 +1055,7 @@
                MOVE    1               TO  WRK-LEN
            END-IF
            .
-       2402-ZENKAKU-HEN02-EXT.
+       24021-ZENKAKU-HEN02C-EXT.
            EXIT.
       *
       *****************************************************************

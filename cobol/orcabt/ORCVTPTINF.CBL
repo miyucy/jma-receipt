@@ -314,7 +314,7 @@
       *
       *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-                                       INTO    ASS-PARA
+                                      INTO    ASS-PARA
            END-UNSTRING
       *
       *    パラメータ情報取得
@@ -345,10 +345,6 @@
       *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    エンコーディング取得処理
-           CALL    "ORCSENCODING"      USING    MCPAREA
-                                                SPA-AREA
-      *
       *    帳票ＯＰＥＮ処理
            OPEN    INPUT               CSV-FILE
            IF      STS-CSV         NOT =   ZERO
@@ -365,6 +361,10 @@
       *
       *    データベースオープン
            PERFORM 100-DBOPEN-SEC
+      *
+      *    エンコーディング取得処理
+           CALL    "ORCSENCODING"      USING    MCPAREA
+                                                SPA-AREA
       *
       *    システム管理情報　検索処理
            PERFORM 110-CP1001-KENSAKU-SEC
@@ -1055,7 +1055,7 @@
                    MOVE    WRK-CNT         TO  KANACHK2-MAX-CNT
                    CALL    "ORCSKANACHK2"      USING
                                                ORCSKANACHK2AREA
-                   IF      KANACHK2-RC      =   ZERO
+                   IF      KANACHK2-RC         =   ZERO
                        MOVE    KANACHK2-MAX         TO  WRK-LEN
                        MOVE    KANACHK2-OUT-INPUT   TO  WRK-DATA
                    END-IF
