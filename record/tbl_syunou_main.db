@@ -1461,5 +1461,23 @@ path	del2 	{
 	};
 };
 
-
+path	key72 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key72_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syunou_main a,tbl_ptinf b
+			WHERE a.HOSPNUM     =   :HOSPNUM
+			AND   a.NYUGAIKBN   =   :NYUGAIKBN
+			AND   a.SRYYMD      >=  :SKYSTYMD
+			AND   a.SRYYMD      <=  :SKYEDYMD
+			AND   a.DENPJTIKBN  <>  '3'
+			AND   a.CREATEKBN   <>  '3'
+			AND ( a.CHOSEI1     <>  0
+			   OR a.CHOSEI2     <>  0 )
+			AND   a.HOSPNUM    =   b.HOSPNUM
+			AND   a.PTID      =   b.PTID
+			AND   b.TSTPTNUMKBN   <> '1'
+		;
+	};
+};
 
