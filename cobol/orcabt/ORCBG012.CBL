@@ -1161,6 +1161,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
                        MOVE    6                   TO  IDX-TTL
                        PERFORM 2301-TOTAL-SEC
                    END-IF
+               END-IF
            END-IF
       *
            .
