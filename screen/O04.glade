@@ -1071,50 +1071,6 @@
 
     <widget>
       <class>GtkNumberEntry</class>
-      <name>RSISHOSHIN</name>
-      <x>880</x>
-      <y>304</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>ZZ,ZZZ,ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>RSISAISHIN</name>
-      <x>880</x>
-      <y>332</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>ZZ,ZZZ,ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>RSISDO</name>
-      <x>880</x>
-      <y>360</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>ZZ,ZZZ,ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>RSIETC</name>
-      <x>880</x>
-      <y>388</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>ZZ,ZZZ,ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
       <name>RMSAGAKU</name>
       <x>704</x>
       <y>322</y>
@@ -1287,50 +1243,6 @@
       </signal>
       <label>ÀÁµá½ñ°õºþ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SKY1ST</name>
-      <x>880</x>
-      <y>436</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>--,---,---</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SKY2ND</name>
-      <x>880</x>
-      <y>464</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>--,---,---</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SKY3RD</name>
-      <x>880</x>
-      <y>492</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>--,---,---</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SKYSGK</name>
-      <x>880</x>
-      <y>528</y>
-      <width>88</width>
-      <height>24</height>
-      <editable>False</editable>
-      <format>--,---,---</format>
     </widget>
 
     <widget>
@@ -2428,7 +2340,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label563</name>
-      <x>8</x>
+      <x>4</x>
       <y>528</y>
       <width>100</width>
       <height>24</height>
@@ -3368,6 +3280,222 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>RSISHOSHIN</name>
+      <x>880</x>
+      <y>304</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>RSISAISHIN</name>
+      <x>880</x>
+      <y>332</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SKYSGK</name>
+      <x>880</x>
+      <y>528</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SKY3RD</name>
+      <x>880</x>
+      <y>492</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SKY2ND</name>
+      <x>880</x>
+      <y>464</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SKY1ST</name>
+      <x>880</x>
+      <y>436</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>RSIETC</name>
+      <x>880</x>
+      <y>388</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>RSISDO</name>
+      <x>880</x>
+      <y>360</y>
+      <width>88</width>
+      <height>24</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:17:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:18:26 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
     </widget>
   </widget>
 </widget>
