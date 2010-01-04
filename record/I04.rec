@@ -23,6 +23,7 @@ I04	{
 			value	varchar(10);
 		};
 		LBLRSIETC	{
+			style   varchar(20);
 			value	varchar(10);
 		};
 		LBLGENMEN	{
@@ -297,6 +298,7 @@ I04	{
 			value	varchar(10);
 		};
 		ROUETC	{
+			style   varchar(20);
 			value	varchar(10);
 		};
 		SKYMONEY	{

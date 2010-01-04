@@ -2504,6 +2504,9 @@
                END-IF
            END-IF
       *
+           MOVE    "black"             TO  I04-LBLRSIETC-STYLE
+                                           I04-ROUETC-STYLE
+      *
            IF    ( SPA-NAI-I04-RSITEIKIFLG =   CONST-EDIT-RSIJBI )
       *
                MOVE    "Äê´üº¹³Û"          TO  I04-B07-LABEL
@@ -2535,6 +2538,9 @@
                MOVE    SPA-GMN-I04-ROUETC  TO  WRK-Z9
                MOVE    WRK-Z9              TO  I04-ROUETC
            ELSE
+      *
+               MOVE    "blue"              TO  I04-LBLRSIETC-STYLE
+                                               I04-ROUETC-STYLE
       *
                MOVE    "Ï«ºÒ¼«ÇåÀÕ"        TO  I04-B07-LABEL
       *
@@ -2575,8 +2581,8 @@
                END-IF
       *
       *        º¹³Û
-               MOVE    SPA-GMN-I04-SKYSGK  TO  WRK-Z9
-               MOVE    WRK-Z9              TO  I04-ROUETC
+               MOVE    SPA-GMN-I04-SKYSGK  TO  WRK-Z99
+               MOVE    WRK-Z99             TO  I04-ROUETC
       *
            END-IF
       *

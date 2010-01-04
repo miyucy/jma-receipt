@@ -117,11 +117,11 @@
               03  O04-KOHFTN    PIC S9(8).
               03  O04-FTNTOTAL  PIC S9(8).
               03  O04-RSISHOSHIN
-                                PIC S9(8).
+                                PIC X(10).
               03  O04-RSISAISHIN
-                                PIC S9(8).
-              03  O04-RSISDO    PIC S9(8).
-              03  O04-RSIETC    PIC S9(8).
+                                PIC X(10).
+              03  O04-RSISDO    PIC X(10).
+              03  O04-RSIETC    PIC X(10).
               03  O04-RMSAGAKU  PIC S9(8).
               03  O04-CHOSEI1   PIC S9(8).
               03  O04-CHOSEI2   PIC S9(8).
@@ -178,13 +178,17 @@
                       06  O04-TNYKN-NAME    PIC X(10).
                   05  O04-SELECT  PIC X       OCCURS  50 TIMES.
               03  O04-LBLSKY1ST   PIC X(4).
-              03  O04-SKY1ST      PIC S9(8).
+              03  O04-SKY1ST      PIC X(10).
               03  O04-LBLSKY2ND   PIC X(4).
-              03  O04-SKY2ND      PIC S9(8).
+              03  O04-SKY2ND      PIC X(10).
               03  O04-LBLSKY3RD   PIC X(4).
-              03  O04-SKY3RD      PIC S9(8).
+              03  O04-SKY3RD      PIC X(10).
+              03  O04-LBLSKYSGK-STYLE
+                                  PIC X(20).
               03  O04-LBLSKYSGK   PIC X(4).
-              03  O04-SKYSGK      PIC S9(8).
+              03  O04-SKYSGK-STYLE
+                                  PIC X(20).
+              03  O04-SKYSGK      PIC X(10).
               03  O04-SKYSELNUM      PIC S9(2).
               03  O04-SCROLLEDWINDOW2.
                 04  O04-SKYLIST.

@@ -138,6 +138,8 @@
            03  WRK-SAGAKU                          PIC S9(10).
            03  WRK-MEIDSPKBN                       PIC X(01).
            03  WRK-OLD-NYUHEN-YMD                  PIC X(08).
+           03  WRK-MONEY9                          PIC --,---,--9.
+           03  WRK-MONEYZ                          PIC --,---,---.
       *
        01  WRK-ROW.
            03  WRK-SMEILIST1-ROW                   PIC S9(9)   BINARY.
@@ -1399,15 +1401,23 @@
            END-PERFORM
       *
       *    Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬
-           MOVE    SPA-GMN-O04-RSISHOSHIN  TO  O04-RSISHOSHIN
-           MOVE    SPA-GMN-O04-RSISAISHIN  TO  O04-RSISAISHIN
-           MOVE    SPA-GMN-O04-RSISDO      TO  O04-RSISDO
-           MOVE    SPA-GMN-O04-RSIETC      TO  O04-RSIETC
+           MOVE    SPA-GMN-O04-RSISHOSHIN  TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-RSISHOSHIN
+           MOVE    SPA-GMN-O04-RSISAISHIN  TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-RSISAISHIN
+           MOVE    SPA-GMN-O04-RSISDO      TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-RSISDO
+           MOVE    SPA-GMN-O04-RSIETC      TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-RSIETC
       *
-           MOVE    SPA-GMN-O04-SKY1ST      TO  O04-SKY1ST
-           MOVE    SPA-GMN-O04-SKY2ND      TO  O04-SKY2ND
-           MOVE    SPA-GMN-O04-SKY3RD      TO  O04-SKY3RD
-           MOVE    SPA-GMN-O04-SKYSGK      TO  O04-SKYSGK
+           MOVE    SPA-GMN-O04-SKY1ST      TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-SKY1ST
+           MOVE    SPA-GMN-O04-SKY2ND      TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-SKY2ND
+           MOVE    SPA-GMN-O04-SKY3RD      TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-SKY3RD
+           MOVE    SPA-GMN-O04-SKYSGK      TO  WRK-MONEYZ
+           MOVE    WRK-MONEYZ              TO  O04-SKYSGK
            MOVE    SPA-GMN-O04-SKYSELNUM   TO  O04-SKYSELNUM
       *
            MOVE    SPA-GMN-O04-SKYLIST-MAX TO  O04-SKYLIST-COUNT
@@ -1455,7 +1465,15 @@
                END-EVALUATE
            END-IF
       *
+           MOVE    "black"             TO  O04-LBLSKYSGK-STYLE
+                                           O04-SKYSGK-STYLE
            IF    ( SPA-NAI-O04-SAKKBN-MAX  >=  1 )
+      *
+               MOVE    SPA-GMN-O04-SKYSGK      TO  WRK-MONEY9
+               MOVE    WRK-MONEY9              TO  O04-SKYSGK
+      *
+               MOVE    "blue"          TO  O04-LBLSKYSGK-STYLE
+                                           O04-SKYSGK-STYLE
                MOVE    "£±´ü"          TO  O04-LBLSKY1ST
                MOVE    "º¹³Û"          TO  O04-LBLSKYSGK
            END-IF

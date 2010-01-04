@@ -278,16 +278,16 @@ O04	{
 			value	number(8);
 		};
 		RSISHOSHIN	{
-			value	number(8);
+			value	varchar(10);
 		};
 		RSISAISHIN	{
-			value	number(8);
+			value	varchar(10);
 		};
 		RSISDO	{
-			value	number(8);
+			value	varchar(10);
 		};
 		RSIETC	{
-			value	number(8);
+			value	varchar(10);
 		};
 		RMSAGAKU	{
 			value	number(8);
@@ -387,25 +387,27 @@ O04	{
 			value	varchar(04);
 		};
 		SKY1ST	{
-			value	number(8);
+			value	varchar(10);
 		};
 		LBLSKY2ND	{
 			value	varchar(04);
 		};
 		SKY2ND	{
-			value	number(8);
+			value	varchar(10);
 		};
 		LBLSKY3RD	{
 			value	varchar(04);
 		};
 		SKY3RD	{
-			value	number(8);
+			value	varchar(10);
 		};
 		LBLSKYSGK	{
+			style   varchar(20);
 			value	varchar(04);
 		};
 		SKYSGK	{
-			value	number(8);
+			style   varchar(20);
+			value	varchar(10);
 		};
 		SKYSELNUM	{
 			value	number(2);
