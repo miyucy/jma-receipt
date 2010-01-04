@@ -1901,7 +1901,6 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
-      *
       *    メモ登録有無
            PERFORM 41021-PTMEMOINF-SEC
       *    排他制御処理
@@ -1920,6 +1919,13 @@
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
            MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
+      *!!
+      *    受診履歴が９まで登録済みの時、エラー
+           IF     (SPA-ERRCD           =   SPACE )
+              AND (SPA-KIDCD           =   SPACE )
+               PERFORM 41022-JYURRK-NUM-CHK-SEC
+           END-IF
+      *!!
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      30011-INIT-HEN-EXT
            END-IF
@@ -2030,6 +2036,7 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+           MOVE    LNK-SC95-LAST-RENNUM    TO  WRK-SC95-LAST-RENNUM
       *
       *    メモ登録有無
            PERFORM 41021-PTMEMOINF-SEC
@@ -2057,6 +2064,20 @@
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
+      *!!
+      *    受診履歴が９まで登録済みの時、エラー
+           IF     (SPA-ERRCD           =   SPACE )
+              AND (SPA-KIDCD           =   SPACE )
+               PERFORM 41022-JYURRK-NUM-CHK-SEC
+           END-IF
+      *    受診履歴が３で、通常の時、警告
+           IF     (SPA-ERRCD           =   SPACE )
+              AND (SPA-KIDCD           =   SPACE )
+               IF     (SPA-RRK-LSTYMD       =   SPA-SRYYMD )  AND
+                      (WRK-SC95-LAST-RENNUM    >=  3      )
+                   MOVE    "0106"          TO  SPA-KIDCD
+               END-IF
+           END-IF
       *
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
