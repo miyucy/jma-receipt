@@ -1888,25 +1888,25 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                                            OR  SPACE )
                                    CONTINUE
                                ELSE
-                                   IF    ( WRK-RECE61-KOHHKNNUM-O  (2)
-                                               =   "012"   OR  "025"
-                                               OR  "015"   OR  "016"
-                                               OR  "021"   OR  SPACE )
-                                   AND   ( WRK-RECE61-KOHHKNNUM-O  (3)
-                                               =   "012"   OR  "025"
-                                               OR  "015"   OR  "016"
-                                               OR  "021"   OR  SPACE )
-                                   AND   ( WRK-RECE61-KOHHKNNUM-O  (4)
-                                               =   "012"   OR  "025"
-                                               OR  "015"   OR  "016"
-                                               OR  "021"   OR  SPACE )
-      *                                生保、中国残留邦人等、自立支援のみ
-      *                                の公費単独の場合退避
-                                       MOVE    WRK-RECE61-REC      TO
-                                                   WRK-KOH-RECE61-REC
-                                   ELSE
+      *****************************IF    ( WRK-RECE61-KOHHKNNUM-O  (2)
+      *****************************            =   "012"   OR  "025"
+      *****************************            OR  "015"   OR  "016"
+      *****************************            OR  "021"   OR  SPACE )
+      *****************************AND   ( WRK-RECE61-KOHHKNNUM-O  (3)
+      *****************************            =   "012"   OR  "025"
+      *****************************            OR  "015"   OR  "016"
+      *****************************            OR  "021"   OR  SPACE )
+      *****************************AND   ( WRK-RECE61-KOHHKNNUM-O  (4)
+      *****************************            =   "012"   OR  "025"
+      *****************************            OR  "015"   OR  "016"
+      *****************************            OR  "021"   OR  SPACE )
+      *****************************    生保、中国残留邦人等、自立支援のみ
+      *****************************    の公費単独の場合退避
+      *****************************    MOVE    WRK-RECE61-REC      TO
+      *****************************                WRK-KOH-RECE61-REC
+      *****************************ELSE
                                        MOVE    1           TO  FLG-SEIHO
-                                   END-IF
+      *****************************END-IF
                                END-IF
                            ELSE
                                MOVE    1           TO  FLG-SEIHO
@@ -1979,25 +1979,15 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                   END-IF
                END-IF
       *
-      *        社保で生保併用の場合
+      *        社保で公費併用の場合（生保、中国残留邦人等、自立支援）
                IF    ( WRK-RECE61-HKNNUM
                                        NOT =   SPACE                 )
                AND   ( WRK-RECE61-KOHHKNNUM-O (1)
                                            =   "012"   OR  "025"   OR 
                                                "015"   OR  "016"   OR
-                                               "021"               OR
-                       WRK-RECE61-KOHHKNNUM-O (2)
-                                           =   "012"   OR  "025"   OR 
-                                               "015"   OR  "016"   OR
-                                               "021"               OR
-                       WRK-RECE61-KOHHKNNUM-O (3)
-                                           =   "012"   OR  "025"   OR 
-                                               "015"   OR  "016"   OR
-                                               "021"               OR
-                       WRK-RECE61-KOHHKNNUM-O (4)
-                                           =   "012"   OR  "025"   OR
-                                               "015"   OR  "016"   OR
-                                               "021"                 )
+                                               "021"                )
+               AND   ( WRK-RECE61-KOHHKNNUM-O (2)
+                                           =   SPACE                )
                    IF      WRK-RECE61-HKNNUM   =
                                                "060"   OR  "067"   OR
                                                "068"   OR  "069"   OR
