@@ -45,7 +45,6 @@
       * 03.03.01     NACL-多々納  06/12/27  労災加算対象追加
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
-      * 04.05.00     NACL-多々納  09/09/XX  労災読み替え対象外対応
       *****************************************************************
       *
       *
@@ -139,6 +138,13 @@
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-K      PIC 9(08).
       *
+           03  WRK-SANSO           PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V99.
+           03  WRK-SANKEI          PIC 9(08).
+           03  WRK-SANTEN          PIC 9(08).
+      *
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
+      *
       *    手技料合計
            03  WRK-GOK-TENSUKEI    PIC 9(09).
            03  WRK-GOK-TENGAKEI    PIC 9(09).
@@ -146,6 +152,17 @@
                05  WRK-SUM-TENSUKEI    PIC 9(09).
                05  WRK-RSI-TENSUKEI    PIC 9(09).
                05  WRK-SUM-TENGAKEI    PIC 9(09).
+      *
+           03  WRK-SYOKEIS         PIC 9(08)V9999.
+           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEI          PIC 9(08).
+      *    フィルム点数計
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-FIRTEN-KEI      PIC 9(08).
+           03  WRK-FIRTEN-ADD      PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZKEI-ADD      PIC 9(08).
+           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *
            03  WRK-ERRCD           PIC X(04).
            03  WRK-ERRCD2          PIC X(04).
@@ -1153,8 +1170,8 @@
                END-IF
            END-IF
       *    時間加算
-           IF     ((LNK-ORCSC-TIMEFLG          NOT =   ZERO ) OR
-                   (WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )) AND
+           IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
+                    WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS) NOT =   ZERO )
       *    外来の時のみ
                AND (SPA-NYUGAIKBN      =   "2"  )
@@ -1743,9 +1760,6 @@
            IF     (SPA-HKNKBN          =   1   )
       ****   AND  (SPA-RSI-HKNKBN  NOT =   "5" )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *      診療種別
-             AND  (WRK-COM-SRYSYUKBN (IDX-SYU)
-                                   NOT =   "409" )
                IF     (WRK-COM-RSIGIRI (IDX-SYU)
                                            =   1  )  AND
                       (WRK-COM-SYUTEN2 (IDX-SYU)
@@ -1870,16 +1884,15 @@
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *        労災の加算
                PERFORM 10061-RSI-KSAN-SEC
-           END-IF
       *
-      *    時間外加算自動発生（労災の加算後の点数での判定）
-           IF      (WRK-COM-TIMEKSNKBN(IDX-SYU) =   ZERO )
-              AND  (WRK-SUM-TENSUKEI       >=   150      )
-              AND  (WRK-SUM-TENSUKEI   NOT =   WRK-COM-KISOTEN
+      *        時間外加算自動発生（労災の加算後の点数での判定）
+               IF      (WRK-COM-TIMEKSNKBN(IDX-SYU)     =   ZERO )  AND
+                       (WRK-SUM-TENSUKEI       >=   150  )
+                  AND  (WRK-SUM-TENSUKEI   NOT =   WRK-COM-KISOTEN
                                                           (IDX-SYU))
-               PERFORM 10063-JIKANGAI-AUTO-SEC
+                   PERFORM 10063-JIKANGAI-AUTO-SEC
+               END-IF
            END-IF
-      *
            IF     (SPA-HKNKBN          =   ZERO)  OR
                   (SPA-RSI-JUNKYO      =   "1" )
              OR   (SPA-HKNKBN          =   2   )
