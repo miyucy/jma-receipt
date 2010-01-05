@@ -5943,7 +5943,7 @@
                IF      (SPA-SRYYMD         =   SPA-NAI-RRKYMD (IDX2) )
                  AND   (WRK-SRYKA          =   SPA-NAI-RRK-SRYKA(IDX2))
                    IF      SPA-NAI-RENNUM (IDX2)   =   9
-                       MOVE    "1058"              TO  SPA-ERRCD
+                       MOVE    "0220"              TO  SPA-ERRCD
                    END-IF
                END-IF
                IF      (SPA-SRYYMD         >   SPA-NAI-RRKYMD (IDX2))
