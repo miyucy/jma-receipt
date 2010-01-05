@@ -1153,8 +1153,8 @@
                END-IF
            END-IF
       *    時間加算
-           IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
-                    WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
+           IF     ((LNK-ORCSC-TIMEFLG          NOT =   ZERO ) OR
+                   (WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )) AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS) NOT =   ZERO )
       *    外来の時のみ
                AND (SPA-NYUGAIKBN      =   "2"  )
@@ -1870,13 +1870,16 @@
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *        労災の加算
                PERFORM 10061-RSI-KSAN-SEC
+      *
+      *        時間外加算自動発生（労災の加算後の点数での判定）
+               IF      (WRK-COM-TIMEKSNKBN(IDX-SYU)     =   ZERO )
+                  AND  (WRK-SUM-TENSUKEI       >=   150  )
+                  AND  (WRK-SUM-TENSUKEI   NOT =   WRK-COM-KISOTEN
+                                                          (IDX-SYU))
+                   PERFORM 10063-JIKANGAI-AUTO-SEC
+               END-IF
            END-IF
       *
-      *    時間外加算自動発生（労災の加算後の点数での判定）
-           IF      (WRK-COM-TIMEKSNKBN(IDX-SYU)     =   ZERO )  AND
-                   (WRK-SUM-TENSUKEI       >=   150  )
-               PERFORM 10063-JIKANGAI-AUTO-SEC
-           END-IF
            IF     (SPA-HKNKBN          =   ZERO)  OR
                   (SPA-RSI-JUNKYO      =   "1" )
              OR   (SPA-HKNKBN          =   2   )
