@@ -4820,7 +4820,7 @@
                                        =   SPA-GMN-INITAUTO-LIST(IDY)
                                                                (1:1)
                    MOVE    SPA-GMN-INITAUTO-LIST (IDY)
-                                           TO  SPA-GMN-NYUSYOSIN-G
+                                           TO  SPA-GMN-INITAUTO-G
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
