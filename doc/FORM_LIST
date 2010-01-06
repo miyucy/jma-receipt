@@ -71,13 +71,17 @@ HCM43V03.red            外来月別請求書兼領収書（２）
 HCM31.red               支払証明書（日別）
 HCM31V01.red            支払証明書（日別）
 HCM31V02.red            支払証明書（日別）
-HCM31G.red          ＊  支払証明書（日別）（入　院）
-HCM31N.red          ＊  支払証明書（日別）（入院外）
+HCM31G.red              支払証明書（日別）（入　院）
+HCM31GV02.red       ＊  支払証明書（日別）（入　院）                                VER4.5.0
+HCM31N.red              支払証明書（日別）（入院外）
+HCM31NV02.red       ＊  支払証明書（日別）（入院外）                                VER4.5.0
 HCM32.red               支払証明書（月別）
 HCM32V01.red            支払証明書（月別）
 HCM32V02.red            支払証明書（月別）
-HCM32G.red          ＊  支払証明書（月別）（入　院）
-HCM32N.red          ＊  支払証明書（月別）（入院外）
+HCM32G.red              支払証明書（月別）（入　院）
+HCM32GV02.red       ＊  支払証明書（月別）（入　院）                                VER4.5.0
+HCM32N.red              支払証明書（月別）（入院外）
+HCM32NV02.red       ＊  支払証明書（月別）（入院外）                                VER4.5.0
 
 HCM50.red           ＊  自費内訳明細書
 
@@ -384,7 +388,8 @@ HCM15.red           ＊  予約患者一覧
 HCM67.red           ＊  予約票                                                      VER4.4.0
 HCM16.red           ＊  受付一覧表
 HCM40.red           ＊  入院患者検索結果一覧表
-HCPOM.red           ＊  セット一覧表　等
+HCPOM.red           ＊  月遅れ分レセ電データ未作成患者一覧
+HCPOM2.red          ＊  セット一覧表                                                VER4.5.0
 HCML09.dia          ＊  自院病名一覧
 
 HCML01.dia          ＊  点数マスターリスト（医薬品）
@@ -396,6 +401,7 @@ HCML04V01.red       ＊  点数マスターリスト（コメント）                          
 HCML07.red          ＊  点数マスターリスト（自費）
 HCML12.dia          ＊  点数マスターリスト（薬剤分類区分あり）
 HCML06.dia          ＊  入力コード点数マスタ一覧
+HCM68.red           ＊  経過措置医薬品置換マスタ一覧                                VER4.5.0
 HCM44.red           ＊  チェクマスタ一覧表
 HCM47.red           ＊  薬剤情報マスタ登録漏れ一覧
 HCM61.red           ＊  薬剤情報マスタ一覧                                          VER4.1.0
@@ -427,7 +433,8 @@ HCMG004.red         ＊  入院患者通算日数一覧表
 HCMG005.red         ＊  長期入院対象患者一覧表
 HCM35.red           ＊  高額日計表（高額請求添付資料）
 HCM36.red           ＊  高額日計表（診療内容参考資料）
-HCM42.red           ＊  調整金一覧表
+HCM42.red               調整金一覧表
+HCM42V01.red        ＊  調整金一覧表                                                VER4.5.0
 HCM46.red           ＊  一部負担金給与控除一覧
 HCG016.red          ＊  指定診療行為件数調
 HCG017.red          ＊  診療行為別集計表
@@ -441,12 +448,14 @@ HCN65.red           ＊  出産育児一時金等集計票                                  
 
 HCM51.red               収納日報（明細）
 HCM51V01.red            収納日報（明細）                                            VER4.3.0
-HCM51V02.red        ＊  収納日報（明細）                                            VER4.3.0
+HCM51V02.red            収納日報（明細）                                            VER4.3.0
+HCM51V03.red        ＊  収納日報（明細）                                            VER4.5.0
 HCM52.red               収納日報（合計）
 HCM52V01.red            収納日報（合計）                                            VER4.1.0
 HCM52V02.red            収納日報（合計）                                            VER4.2.0
 HCM52V03.red            収納日報（合計）                                            VER4.3.0
-HCM52V04.red        ＊  収納日報（合計）                                            VER4.4.0
+HCM52V04.red            収納日報（合計）                                            VER4.4.0
+HCM52V05.red        ＊  収納日報（合計）                                            VER4.5.0
 
 HCMSL55.red         ＊  フリー帳票（横）
 HCMSL80.red         ＊  フリー帳票（縦）

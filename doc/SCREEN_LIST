@@ -12,6 +12,9 @@ MID1.glade	orca00	(MID1)確認画面
 MID2.glade	orca00	(MID2)確認画面
 MVER.glade	orca00	(MVER)情報
 MUID.glade	orca00	(MUID)収集データアップロードユーザ設定
+MDAS.glade	orca00	(MDAS)参加同意
+MLOG.glade	orca00	(MLOG)ログインユーザ一覧
+MINF.glade	orca00	(MINF)感染症サーベイランス閲覧画面
 
 XA01.glade	orca01	(XA01)再印刷選択画面
 XA02.glade	orca01	(XA02)再印刷選択画面（オンライン）
@@ -23,19 +26,30 @@ XAID2.glade	orca01	(XAID2)確認画面
 XB01.glade	orca02	(XB01)ジョブ管理一覧
 XBER.glade	orca02	(XBER)エラー情報
 XBID.glade	orca02	(XBID)確認画面
+
 XC01.glade	orca03	(XC01)プレビュー選択画面
 XC02.glade	orca03	(XC02)プレビュー選択画面
 XC99.glade	orca03	(XC99)処理結果
 XCERR.glade	orca03	(XCERR)エラー情報
+
 XD01.glade	orca04	(XD01)ユーザプログラム起動
 XDERR.glade	orca04	(XDERR)エラー情報
 XDID1.glade	orca04	(XDID1)確認画面
+
 XE01.glade	orca05	(XE01)QRコードテスト画面
+
 XF01.glade	orca06	(XF01)メモ登録
 XF011.glade	orca06	(XF011)メモ登録−文例検索
 XFERR.glade	orca06	(XFERR)エラー情報
 XFID1.glade	orca06	(XFID1)確認画面
 XF01X.glade	orca06	(XF01X)メモＣＬＡＩＭ送信選択サブ
+
+XG01.glade	orca07	(XG01)ＣＳＶ出力選択画面
+XG02.glade	orca07	(XG02)ＣＳＶ出力指示画面
+XG99.glade	orca07	(XG99)処理結果
+XGFIL.glade	orca07	(XGFIL)クライアント保存画面
+XGERR.glade	orca07	(XGERR)エラー情報
+XGID1.glade	orca07	(XGID1)確認画面
 
 U02.glade	orca11	(U02)受付
 U02Q.glade	orca11	(U02Q)受付登録−ＱＲ一覧
@@ -106,6 +120,8 @@ K05.glade	orca21	(K05)診療行為入力−行為セット入力
 K051.glade	orca21	(K051)診療行為−入力コード
 K052.glade	orca21	(K052)診療行為−印刷指定
 K06.glade	orca21	(K06)算定履歴照会
+K061.glade	orca21	(K061)算定履歴−移行履歴登録
+K062.glade	orca21	(K062)算定履歴照会−リハビリコメント登録
 K07.glade	orca21	(K07)診療行為入力 -受診履歴
 K08.glade	orca21	(K08)診療行為入力−診療行為確認
 K081.glade	orca21	(K081)診療行為−入院印刷指示
