@@ -34,6 +34,10 @@
       *  04.04.01    NACL-Æ£¸¶    09/02/26  Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Ë£·£µºÐÅþ
       *                                     Ã£»þ¤Ë³¤³°¤Ë½»½ê¤òÍ­¤¹¤ë¾ì¹ç
       *                                     ¤ÎÂÐ±þ
+      *
+      *  04.05.01    NACL-Æ£¸¶    10/01/05  ¼£¸³ÂÐ±þ
+      *                                     Ê¿À®£²£°Ç¯£´·îÊ¬¤è¤ê¼«Èñ¥ì¥»
+      *                                     ¤È¤¹¤ë 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1686,6 +1690,18 @@
                                    NOT =   SPACE )
            AND   ( LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
                                        =   "8"   )
+               MOVE    8888            TO  LNK-SYUBETUGET-RECESYUBETU
+                                           LNK-SYUBETUGET-RECESYUBETU-Y
+               GO  TO  2001-JYOKEN-HENSYU-EXT
+           END-IF
+      *     
+      *    ¼£¸³¤Î¤È¤­
+           IF    ( LNK-SYUBETUGET-HKNNUM
+                                   NOT =   SPACE )
+           AND   ( LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
+                                       =   "9"   )
+           AND   ( LNK-SYUBETUGET-SRYYM
+                                       >=  WRK-CONS-SRYYM-200804 )
                MOVE    8888            TO  LNK-SYUBETUGET-RECESYUBETU
                                            LNK-SYUBETUGET-RECESYUBETU-Y
                GO  TO  2001-JYOKEN-HENSYU-EXT

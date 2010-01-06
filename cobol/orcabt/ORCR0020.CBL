@@ -210,6 +210,9 @@
       *                                     のまとめ対応
       *
       *  04.05.01    NACL-藤原    09/07/23  主科未設定患者の主科再取得対応
+      *  04.05.02    NACL-藤原    10/01/05  治験対応
+      *                                     平成２０年４月分より自費レセ
+      *                                     とする 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1375,6 +1378,9 @@ grpsys         MOVE   RECE02-HOSPNUM   TO  HKN-HOSPNUM
                    IF      HKN-HKNKOHSBTKBN    =   "8"
                        MOVE   "1"              TO  WRK-JIHI-FLG
                    END-IF
+                   IF      HKN-HKNKOHSBTKBN    =   "9"
+                       MOVE   "2"              TO  WRK-JIHI-FLG
+                   END-IF
                END-IF
                MOVE    RECE01-HKN-HKNJANUM  TO  RECE02-HKNJANUM
                MOVE    RECE01-HKN-HONKZKKBN TO  RECE02-HONKZKKBN
@@ -2201,6 +2207,10 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                    MOVE    "8"             TO
                                        LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
                END-IF
+               IF      WRK-JIHI-FLG    =   "2"
+                   MOVE    "9"             TO
+                                       LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
+               END-IF
                MOVE    WRK-NENREI      TO  LNK-SYUBETUGET-AGE
                MOVE    RECE01-SYUGAKUKBN
                                        TO  LNK-SYUBETUGET-SYUGAKUKBN
@@ -2247,7 +2257,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
            END-IF
       *         
            IF     (RECE02-HKNNUM    NOT =   SPACE)   AND
-                  (WRK-JIHI-FLG         =   SPACE)
+                  (WRK-JIHI-FLG         =   SPACE  OR  "2" )
                EVALUATE    RECE02-HKNNUM
                    WHEN    "060"
                    WHEN    "067"
