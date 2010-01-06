@@ -890,6 +890,10 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    診察料自動発生なしは、時間外加算なし
+           IF      SPA-INITAUTO-FLG    =   "0"
+               MOVE    0                    TO  SPA-GAI-JIKANKBN
+           END-IF
       *
       *    診療科
            MOVE    SPACE               TO  SYS-KEY

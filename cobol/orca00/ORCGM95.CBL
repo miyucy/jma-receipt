@@ -122,6 +122,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-HEN             PIC 9(01).
+           03  FLG-INITAUTO        PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -441,6 +442,9 @@
                MOVE    "8 夜間・早朝"      TO  SPA-GMN-JIKANKBN-LST
                                                     (SPA-JIKANKBN-MAX)
            END-IF
+           IF      FLG-INITAUTO        =   1
+               MOVE    1               TO  SPA-JIKANKBN-MAX
+           END-IF
       *
            MOVE    SPACE               TO  SPA-GMN-JIKANKBN-MEI
       *
@@ -535,6 +539,11 @@
                    MOVE    SYS-1008-JIKANTOKU-NYU-FLG
                                            TO  WRK-JIKANTOKU-NYU
                END-IF
+      *        診察料自動発生なし
+               IF      SYS-1008-INITAUTO-FLG   =   "0"
+                   MOVE    1               TO  FLG-INITAUTO
+               END-IF
+      *
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
