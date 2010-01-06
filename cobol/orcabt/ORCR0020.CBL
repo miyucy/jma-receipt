@@ -3214,7 +3214,9 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
            IF      RECE01-TEISEIKBN             =   SPACE
              IF  (     ( RECE01-HKNID           NOT =   ZERO  )
-                   AND ( RECE01-HKNNUM(1:2)     NOT =   "98"  ) )
+                   AND ( RECE01-HKNNUM(1:2)     NOT =   "98" AND
+                                                        "90" AND
+                                                        "91"  ) )
              OR  (     ( RECE01-HKNID               =   ZERO  )
                    AND ( RECE01-KOHHKNNUM-O (1)     =   "012" 
                                                     OR  "025"

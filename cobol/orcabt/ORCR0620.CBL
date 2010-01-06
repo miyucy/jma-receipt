@@ -2875,7 +2875,9 @@
       *
            IF      RECE61-TEISEIKBN             =   SPACE
              IF  (     ( RECE61-HKNID           NOT =   ZERO  )
-                   AND ( RECE61-HKNNUM(1:2)     NOT =   "98"  ) )
+                   AND ( RECE61-HKNNUM(1:2)     NOT =   "98" AND
+                                                        "90" AND
+                                                        "91"  ) )
              OR  (     ( RECE61-HKNID               =   ZERO  )
                    AND ( RECE61-KOHHKNNUM-O (1)     =   "012" 
                                                     OR  "025"
