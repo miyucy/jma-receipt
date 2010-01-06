@@ -691,10 +691,14 @@
                        END-IF
                        IF     (SPA-HKNKBN          =   1   )
                          AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+                         AND  (SPA-NYUGAIKBN       =   "2" )
                            CONTINUE
                        ELSE
-                           MOVE    "0502"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0502"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                                 (IDX)
+                           END-IF
                        END-IF
                    END-IF
                WHEN    OTHER

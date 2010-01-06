@@ -1591,6 +1591,19 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+               WHEN    "0501"
+                   STRING   "この診療種別は平成２０年４月から有効です。"
+                            "入力できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0502"
+                   STRING   "この診療種別は外来の労災・自賠責での対象"
+                            "です。入力できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
