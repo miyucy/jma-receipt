@@ -3201,8 +3201,19 @@
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
                   COMPUTE   RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
                                                -  WRK-SRYCD
-                  COMPUTE   RECE64-SURYOUTOTAL =  RECE64-SURYOUTOTAL
-                                               -  1
+                  IF ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
+                     COMPUTE   RECE64-SURYOUTOTAL =  RECE64-SURYOUTOTAL
+                                                  -  SRY-SRYSURYO(IDX2)
+                  ELSE
+                     COMPUTE   RECE64-SURYOUTOTAL =  RECE64-SURYOUTOTAL
+                                                  -  1
+                  END-IF
             END-IF
       *
             IF       SRY-SRYCD(IDX2)(1:7) = "0999901"

@@ -1691,8 +1691,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
                   COMPUTE   RECE44-SRYCDTOTAL  =  RECE44-SRYCDTOTAL
                                                -  WRK-SRYCD
-                  COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
-                                               -  1
+                  IF ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-JIHOKBN          =  SPACE       ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
+                     COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
+                                                  -  SRY-SRYSURYO(IDX2)
+                  ELSE
+                     COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
+                                                  -  1
+                  END-IF
              END-IF
       *
              IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
