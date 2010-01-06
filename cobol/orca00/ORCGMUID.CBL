@@ -1262,7 +1262,7 @@
                GO  TO  4103-HISSU-CHK-EXT
            END-IF
       *
-           IF    ( SPA-MUID-HOSPSBT    =   1 ) AND
+           IF    ( SPA-MUID-HOSPSBT    =   2 ) AND
                  ( SPA-MUID-HOSPSBT1   =  SPACE )
                MOVE    "0009"          TO  SPA-ERRCD
                MOVE    5               TO  SPA-MUID-CUR
@@ -1296,6 +1296,12 @@
            IF     SPA-MUID-ZAITAKU     =   SPACE
                MOVE    "0009"          TO  SPA-ERRCD
                MOVE    15              TO  SPA-MUID-CUR
+               GO  TO  4103-HISSU-CHK-EXT
+           END-IF
+      *
+           IF     SPA-MUID-POST     =   SPACE
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    17              TO  SPA-MUID-CUR
                GO  TO  4103-HISSU-CHK-EXT
            END-IF
       *
@@ -2069,6 +2075,9 @@
                                            TO  SPA-ERRMSG
                 WHEN    "0011"
                     MOVE    "数字７桁で入力して下さい。"
+                                           TO  SPA-ERRMSG
+                WHEN    "0012"
+                    MOVE    "郵便番号を入力して下さい。"
                                            TO  SPA-ERRMSG
                 WHEN    "9000"
                     MOVE    "設定ファイルのＯＰＥＮに失敗しました。"
