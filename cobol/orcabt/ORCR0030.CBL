@@ -435,6 +435,8 @@
       *  04.04.31    NACL-門脇    09/12/07  時間外加算区分編集
       *  04.04.32    NACL-門脇    09/12/09  出来高算定（剤）の対応
       *  04.04.33    NACL-門脇    09/12/14  東京都マル子実日数記載修正
+      *  04.04.34    NACL-門脇    10/01/04  月途中に医保と更生等の併用から
+      *                                     更生等単独になったときの対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
@@ -8310,12 +8312,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                              SYU-SYUCOMPYKZFTN
            IF      RECE02-SRYYM      >=  "200210"
              IF    RECE02-ZAITAKU  =   "1" OR "2"
+               IF  SYU-SYUHKNNUM  NOT = SPACE
                 EVALUATE  RECE02-ZAITAKU
                   WHEN      "1"
                     PERFORM     210521-HOKEN-FUTAN-HENSYU-SEC
                   WHEN      "2"
                     PERFORM     210525-HOKEN-FUTAN-HENSYU2-SEC
                 END-EVALUATE
+               END-IF
              ELSE                                                       
       *         船員保険（被保険者）＋通勤災害
                 IF    RECE02-SENIN-TUUSAI     =    "1"

@@ -168,6 +168,8 @@
       *  04.04.05    NACL-藤原    09/12/17  月途中に医保と自立支援の併用
       *                                     から自立支援単独になったとき
       *                                     のまとめ対応
+      *  04.04.06    NACL-門脇    10/01/04  公費単独の保険組み合わせ
+      *                                     フラグ編集
       *
       *  04.05.01    NACL-藤原    09/07/23  主科未設定患者の主科再取得対応
       *  04.05.02    NACL-藤原    10/01/05  治験対応
@@ -1452,10 +1454,8 @@
                  PERFORM VARYING IDY2    FROM    1   BY  1
                          UNTIL   IDY2    >       4
                    IF   RECE61-KOHNUMHC (IDX IDY2) NOT = SPACE
-                     IF RECE61-KOHNUMHC (IDX IDY2) = "024" OR "079"
-                        IF   FLG-TAISYO  =  ZERO
-                           MOVE   1     TO   FLG-TAISYO
-                        END-IF
+                     IF   FLG-TAISYO  =  ZERO
+                        MOVE      1     TO   FLG-TAISYO
                      ELSE
                         MOVE      9     TO   FLG-TAISYO
                      END-IF
