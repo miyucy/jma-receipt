@@ -36,6 +36,7 @@
       *  04.04.01    NACL-Æ£¸¶    09/02/26  Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Ë£·£µºÐÅþ
       *                                     Ã£»þ¤Ë³¤³°¤Ë½»½ê¤òÍ­¤¹¤ë¾ì¹ç
       *                                     ¤ÎÂÐ±þ
+      *  04.05.00    NACL-¾®Æ¦Âô  10/01/07  ¼£¸³¤Î¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
       *****************************************************************
       *
       *
@@ -902,6 +903,15 @@
            IF     LNK-ORCBT120SUB-HKNNUM(SYU-IDX)(1:2) =   "98"
                MOVE    8888                TO  WRK-RECESYUBETU
                GO  TO  240-RECESYUBETU-SET-EXT
+           END-IF
+      *
+      *    ¼£¸³¤Î¤È¤­
+           IF     LNK-ORCBT120SUB-SANTEIYMD    >=  "20080401"
+               IF    (LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  >=  "900")  AND
+                     (LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  <=  "919")
+                   MOVE    8888                TO  WRK-RECESYUBETU
+                   GO  TO  240-RECESYUBETU-SET-EXT
+               END-IF
            END-IF
       *
       *    ¸ø³²ÊÝ¸±¡ÊÆþ±¡¡Ë¤Î¤È¤­

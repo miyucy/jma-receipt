@@ -37,6 +37,7 @@
       *  04.04.01    NACL-Æ£¸¶    09/02/26  Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Ë£·£µºÐÅþ
       *                                     Ã£»þ¤Ë³¤³°¤Ë½»½ê¤òÍ­¤¹¤ë¾ì¹ç
       *                                     ¤ÎÂÐ±þ
+      *  04.05.00    NACL-¾®Æ¦Âô  10/01/07  ¼£¸³¤Î¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1293,6 +1294,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF     TOUKEI04-HKNNUM(1:2) =   "98"
                MOVE    8888                TO  TOUKEI04-RECESYUBETU
                GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *
+      *    ¼£¸³¤Î¤È¤­
+           IF     WRK-PARA-SRYYMD      >=  "20080401"
+               IF    (TOUKEI04-HKNNUM  >=   "900")   AND
+                     (TOUKEI04-HKNNUM  <=   "919")
+                   MOVE    8888                TO  TOUKEI04-RECESYUBETU
+                   GO  TO  20021-RECESYUBETU-SET-EXT
+               END-IF
            END-IF
       *
       *    ¸ø³²ÊÝ¸±¡ÊÆþ±¡¡Ë¤Î¤È¤­
