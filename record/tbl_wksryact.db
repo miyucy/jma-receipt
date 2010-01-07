@@ -95,6 +95,7 @@ tbl_wksryact {
 	DOUJI_DENPNUM			number(7,0);
 	DOUJI_RENNUM			number(1,0);
 	CONTKBN  			char(1);
+	ZAIKBN  			number(3,0);
 	MOD_FLG				number(1,0);
 	KARTE_FLG			number(1,0);
 	KARTE_KEY			varchar(36);

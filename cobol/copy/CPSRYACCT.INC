@@ -40,7 +40,7 @@
                05  ACCT-ZAINUM          PIC  9(08).
       *保険組合せ
            03  ACCT-HKNCOMBI            PIC  9(04).
-      *自保区分
+      *自保区分（包括剤区分）
            03  ACCT-JIHOKBN             PIC  X(01).
       *剤点数
            03  ACCT-ZAITEN              PIC  9(08).
@@ -62,10 +62,13 @@
            03  ACCT-KIZAITEN            PIC  9(07).
       *ドクターコード
            03  ACCT-DRCD                PIC  X(05).
-      *剤請求フラグ
+      *剤請求フラグ（付加レコードフラグ）
            03  ACCT-ZAIREQFLG           PIC  X(01).
       *逓減率
            03  ACCT-TEIGENRATE          PIC  9(03).
+      *剤識別区分（１：薬評、２：減点分）
+           03  ACCT-ZAIKBN              REDEFINES
+               ACCT-TEIGENRATE          PIC  9(03).
       *診療回数テーブル
            03  ACCT-DAY-AREA.
       *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
