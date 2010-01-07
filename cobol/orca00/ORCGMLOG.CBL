@@ -429,6 +429,7 @@
       *****************************************************************
        3101-USER-KANRI-SEC         SECTION.
       *
+           MOVE    SPACE           TO  SPA-NAI-USER
            MOVE    SPACE           TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"          TO  SYS-1010-KANRICD
