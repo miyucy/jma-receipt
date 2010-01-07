@@ -114,6 +114,7 @@
       *  04.04.05    NACL-門脇    09/12/15  埼玉県地方公費対応（八潮市）
       *
       *  04.05.01    NACL-門脇    09/12/04  食事（特別食）の他保険対応
+      *  04.05.02    NACL-門脇    10/01/07  治験対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1878,7 +1879,7 @@
                                  FLG-KOREI-TANYUIN2
            IF  (LNK-SYU-SYUHKNNUM(IDX) =
                 "971" OR "973" OR "975" OR "068" OR "069" OR "040")
-           OR  (LNK-SYU-SYUHKNNUM(IDX)(1:2) = "98"                )
+           OR  (LNK-SYU-SYUHKNNUM(IDX)(1:2) = "98" OR "90" OR "91")
              CONTINUE
            ELSE
              PERFORM  VARYING  IDY  FROM   1   BY   1

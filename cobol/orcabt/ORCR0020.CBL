@@ -3181,7 +3181,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
            IF      FLG-HKNCOMBI  =   ZERO
               IF (COMB-HKNNUM = "971" OR "973" OR "975"
                              OR "068" OR "069" OR "040")
-              OR (COMB-SYU-HKNKOHSBTKBN  =  "8"        )
+              OR (COMB-SYU-HKNKOHSBTKBN  =  "8" OR "9" )
                  CONTINUE
               ELSE
                  MOVE    "1"     TO  WRK-ZAITAKU

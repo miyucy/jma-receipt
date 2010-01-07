@@ -3223,7 +3223,8 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                IF   (FLG-BUNBEN-SET  =   ZERO   )
                AND  (RECE62-SRYYM   >=  "200910")
                AND  (RECE62-SRYYM   <=  "201103")
-                 IF ( RECE62-HKNNUM(1:2)   =  "98"           )
+                 IF ( RECE62-HKNNUM(1:2)   =  "98"  OR "90"
+                                                    OR "91"  )
                  OR ( RECE62-HKNNUM        =  "039" OR "040" )
                  OR ((RECE62-HKNNUM        =  "002") AND
                      (RECE62-HOJOKBN   NOT =  SPACE)         )

@@ -66,6 +66,7 @@
       *  04.05.04    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
       *                                     まとめ記載対応
       *  04.05.05    NACL-門脇    09/12/04  食事（特別食）の他保険対応
+      *  04.05.06    NACL-門脇    10/01/07  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5338,6 +5339,9 @@
                     MOVE   "8"   TO   RECE200-NYUINRYOFLG
                   WHEN      OTHER
                     MOVE   "5"   TO   RECE200-NYUINRYOFLG
+                    IF   COMB-HKNNUM(1:2)  =  "90" OR "91"
+                     MOVE SPACE  TO   RECE200-NYUINRYOFLG
+                    END-IF
                 END-EVALUATE
               END-IF
            END-IF

@@ -420,6 +420,7 @@
       *  04.05.08    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
       *                                     対応（ファイル編集）
       *  04.05.09    NACL-門脇    09/12/04  食事（特別食）の他保険対応
+      *  04.05.10    NACL-門脇    10/01/07  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2554,7 +2555,7 @@
            IF   (RECE62-SRYYM       >=  "200610")
            AND  (RECE62-HKNNUM   NOT =   SPACE  )
       *
-            IF  (RECE62-HKNNUM(1:2)  =   "98"                   )
+            IF  (RECE62-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
             OR  (RECE62-HKNNUM       =   "068" OR "069" OR "040")
               CONTINUE
             ELSE
@@ -11234,6 +11235,9 @@
                           PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
                    END-IF
                 END-IF
+                IF  RECE62-HKNNUM(1:2)  =  "98"  OR  "90"  OR "91"
+                   MOVE   SPACE   TO     RECE62-NYUINRYOFLG
+                END-IF
       *
                 MOVE      1       TO     FLG-NYUINRYO
                 MOVE     31       TO     IDY
@@ -16562,7 +16566,7 @@
            IF    (RECE62-SRYYM   >=  "200804")
            AND   (RECE62-SRYYM   <=  "201003")
              IF  (RECE62-HKNNUM       =   SPACE                      )
-             OR  (RECE62-HKNNUM(1:2)  =   "98"                       )
+             OR  (RECE62-HKNNUM(1:2)  =   "98"  OR "90"  OR "91"     )
              OR  (RECE62-HKNNUM  =   "068" OR "069" OR "040" OR "039")
              OR  (RECE62-AGE          <    70                        )
       ***    OR  (RECE62-AGE          >    74                        )
@@ -16881,7 +16885,7 @@
       *
            IF   (RECE62-SRYYM       >=  "200901")
            AND  (RECE62-HKNNUM   NOT =   SPACE  )
-             IF  (RECE62-HKNNUM(1:2)  =   "98"                   )
+             IF  (RECE62-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
              OR  (RECE62-HKNNUM       =   "068" OR "069" OR "040")
                CONTINUE
              ELSE
@@ -17169,7 +17173,7 @@
            MOVE     ZERO      TO    FLG-KISAIOK
            IF   (RECE62-SRYYM       >=  "200905")
            AND  (RECE62-HKNNUM   NOT =   SPACE  )
-             IF  (RECE62-HKNNUM(1:2)  =   "98"                   )
+             IF  (RECE62-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
              OR  (RECE62-HKNNUM       =   "068" OR "069" OR "040")
                CONTINUE
              ELSE

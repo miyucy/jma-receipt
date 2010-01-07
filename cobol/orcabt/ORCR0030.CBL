@@ -448,6 +448,7 @@
       *                                     対応（残量廃棄）
       *  04.05.07    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
       *                                     対応（ファイル編集）
+      *  04.05.08    NACL-門脇    10/01/07  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2039,7 +2040,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            IF    (RECE02-SRYYM   >=  "200804")
            AND   (RECE02-SRYYM   <=  "201003")
              IF  (RECE02-HKNNUM       =   SPACE                      )
-             OR  (RECE02-HKNNUM(1:2)  =   "98"                       )
+             OR  (RECE02-HKNNUM(1:2)  =   "98" OR "90" OR "91"       )
              OR  (RECE02-HKNNUM  =   "068" OR "069" OR "040" OR "039")
              OR  (RECE02-AGE          <    70                        )
       ***    OR  (RECE02-AGE          >    74                        )
@@ -2775,7 +2776,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            IF   (RECE02-SRYYM       >=  "200610")
            AND  (RECE02-HKNNUM   NOT =   SPACE  )
       *
-            IF  (RECE02-HKNNUM(1:2)  =   "98"                   )
+            IF  (RECE02-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
             OR  (RECE02-HKNNUM       =   "068" OR "069" OR "040")
               CONTINUE
             ELSE
@@ -3630,7 +3631,7 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
       *
            IF   (RECE02-SRYYM       >=  "200901")
            AND  (RECE02-HKNNUM   NOT =   SPACE  )
-             IF  (RECE02-HKNNUM(1:2)  =   "98"                   )
+             IF  (RECE02-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
              OR  (RECE02-HKNNUM       =   "068" OR "069" OR "040")
                CONTINUE
              ELSE
@@ -3917,7 +3918,7 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
            MOVE     ZERO      TO    FLG-KISAIOK
            IF   (RECE02-SRYYM       >=  "200905")
            AND  (RECE02-HKNNUM   NOT =   SPACE  )
-             IF  (RECE02-HKNNUM(1:2)  =   "98"                   )
+             IF  (RECE02-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
              OR  (RECE02-HKNNUM       =   "068" OR "069" OR "040")
                CONTINUE
              ELSE

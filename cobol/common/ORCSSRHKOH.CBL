@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
+      *  04.05.01    NACL-門脇    10/01/07  治験対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -361,7 +362,7 @@
            PERFORM 900-HKNCOMBI-KEY-SEL-SEC
            IF    ( COMB-HKNNUM     =   SPACE OR "971" OR "973" OR "975"
                                     OR "068" OR "069" OR "040")
-            OR   ( COMB-HKNNUM(1:2)=   "98" )
+            OR   ( COMB-HKNNUM(1:2)  = "98"  OR "90"  OR "91" )
                CONTINUE
            ELSE
                MOVE    1           TO  FLG-HKNHIT
