@@ -108,17 +108,28 @@
                05  WRK-KEY-YMD     PIC X(08).
                05  WRK-HEN-MAX     PIC 9(04).
                05  WRK-NYUIN       PIC 9(01).
-      *        ∫«¬Á£∏£∞£±∑Ô°¶°¶°¶£∏£∞£±∑ÔÃ‹§œ ¬§”¬ÿ§®Õ—
-               05  WRK-HENSYU-OCC  OCCURS  801.
+      *        ∫«¬Á£≤£∞£∞£∞∑Ô°¶°¶°¶£≤£∞£∞£±∑ÔÃ‹§œ ¬§”¬ÿ§®Õ—
+               05  WRK-HENSYU-OCC  OCCURS  2001.
                    07  WRK-HENSYU-KEY.
                        09  WRK-NYUGAIKBN  PIC X(01).
-                       09  WRK-HIDUKE PIC X(06).
+                       09  WRK-HIDUKE     PIC X(08).
+                       09  WRK-EDHIDUKE   PIC X(08).
                    07  WRK-TENSU      PIC S9(07).
                    07  WRK-HOKEN      PIC S9(11).
                    07  WRK-SYOKUJI    PIC S9(11).
                    07  WRK-JIHI       PIC S9(11).
                    07  WRK-GAKU       PIC S9(11).
                    07  WRK-BFGAKU     PIC S9(11).
+      *
+           03  WRK-MONTH-G.
+               05  WRK-MON-TAISYO     PIC 9(01).
+               05  WRK-MON-HIDUKE     PIC X(06).
+               05  WRK-MON-TENSU      PIC S9(07).
+               05  WRK-MON-HOKEN      PIC S9(11).
+               05  WRK-MON-SYOKUJI    PIC S9(11).
+               05  WRK-MON-JIHI       PIC S9(11).
+               05  WRK-MON-GAKU       PIC S9(11).
+               05  WRK-MON-BFGAKU     PIC S9(11).
       *
            03  WRK-GHENSYU-TBL.
                05  WRK-GHKNTEN     PIC S9(07).
@@ -168,6 +179,7 @@
       *
        01  KEY-AREA.
            03  KEY-NYUGAIKBN       PIC X(01).
+           03  KEY-HIDUKE          PIC X(06).
       *
        01  CONST-AREA.
            03  CONST-HEN-MAX       PIC 9(05)   VALUE   24.
@@ -391,15 +403,44 @@
                     OR   ( WRK-NYUGAIKBN(IDX4) NOT =   KEY-NYUGAIKBN )
                     OR   ( CNT-LINE               >=  CONST-LINE-MAX )
       *
-      *        ¬–æ›•«°º•ø•¡•ß•√•ØΩËÕ˝
-               PERFORM 230-TAISYO-CHK-SEC
-               IF    ( FLG-TAISYO  =   1 )
+               MOVE    WRK-HIDUKE (IDX4)(1:6)
+                                           TO  KEY-HIDUKE
+      *
+               INITIALIZE                      WRK-MONTH-G
+               MOVE    KEY-HIDUKE          TO  WRK-MON-HIDUKE
+               PERFORM UNTIL ( IDX4        >   WRK-HEN-MAX )
+                    OR       ( WRK-NYUGAIKBN(IDX4)
+                                       NOT =   KEY-NYUGAIKBN )
+                    OR       ( WRK-HIDUKE (IDX4)(1:6)
+                                       NOT =   KEY-HIDUKE )
+      *
+      *            ¬–æ›•«°º•ø•¡•ß•√•ØΩËÕ˝
+                   PERFORM 230-TAISYO-CHK-SEC
+                   IF    ( FLG-TAISYO  =   1 )
+                       MOVE    1               TO  WRK-MON-TAISYO
+                       COMPUTE WRK-MON-TENSU
+                           =   WRK-MON-TENSU   +   WRK-TENSU (IDX4)
+                       COMPUTE WRK-MON-HOKEN
+                           =   WRK-MON-HOKEN   +   WRK-HOKEN (IDX4)
+                       COMPUTE WRK-MON-SYOKUJI
+                           =   WRK-MON-SYOKUJI +   WRK-SYOKUJI (IDX4)
+                       COMPUTE WRK-MON-JIHI
+                           =   WRK-MON-JIHI    +   WRK-JIHI (IDX4)
+                       COMPUTE WRK-MON-GAKU
+                           =   WRK-MON-GAKU    +   WRK-GAKU (IDX4)
+                       COMPUTE WRK-MON-BFGAKU
+                           =   WRK-MON-BFGAKU  +   WRK-BFGAKU (IDX4)
+                   END-IF
+      *
+                   COMPUTE IDX4    =   IDX4    +   1
+      *
+               END-PERFORM
+      *
+               IF    ( WRK-MON-TAISYO  =   1 )
       *
                    PERFORM 240-MEISAI-HEN-SEC
       *
                END-IF
-      *
-               COMPUTE IDX4    =   IDX4    +   1
       *
            END-PERFORM
       *
@@ -463,8 +504,12 @@
                    IF    ( FLG-TAISYO  =   1 )
                        PERFORM VARYING IDX-TJNISSU FROM    1   BY  1
                                UNTIL ( IDX-TJNISSU >   TJNISSU-MAX )
-                           IF    ( TJNISSU-YMD (IDX-TJNISSU)(1:6)
-                                        =  WRK-HIDUKE (IDX4))
+                           IF    ( TJNISSU-NYUGAIKBN (IDX-TJNISSU)
+                                        =  WRK-NYUGAIKBN (IDX4))
+                            AND  ( TJNISSU-YMD (IDX-TJNISSU)
+                                       >=  WRK-HIDUKE (IDX4))
+                            AND  ( TJNISSU-YMD (IDX-TJNISSU)
+                                       <=  WRK-EDHIDUKE (IDX4))
                                MOVE    1   TO  TJNISSU-HIT (IDX-TJNISSU)
                            END-IF
                        END-PERFORM
@@ -504,7 +549,6 @@
            IF    ( SYU-DENPJTIKBN      =   "3" )
                    MOVE    ZERO    TO  FLG-TAISYO
            END-IF
-      *
       *
            IF    ( ORCHCM31-DSPKBN     =   "3" )
                IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
@@ -593,6 +637,7 @@
                    COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
                                            +   SYU-JIHI-TAX
                END-IF
+      *----(03.04.01)--UPD-END-----
            END-IF
       *
       *    ∆˛∂‚ ‘Ω∏ΩËÕ˝
@@ -603,9 +648,17 @@
                     OR   ( IDX2    NOT =   ZERO )
       *
                IF    ( SYU-NYUGAIKBN
-                                           =   WRK-NYUGAIKBN(IDX1) )
-                AND  ( SYU-SRYYMD (1:6)    =   WRK-HIDUKE (IDX1) )
-                   MOVE    IDX1    TO  IDX2
+                                   =   "1" )
+                   IF    ( SYU-NYUGAIKBN   =   WRK-NYUGAIKBN(IDX1) )
+                    AND  ( SYU-SKYSTYMD    =   WRK-HIDUKE (IDX1) )
+                    AND  ( SYU-SKYEDYMD    =   WRK-EDHIDUKE (IDX1) )
+                       MOVE    IDX1    TO  IDX2
+                   END-IF
+               ELSE
+                   IF    ( SYU-NYUGAIKBN   =   WRK-NYUGAIKBN(IDX1) )
+                    AND  ( SYU-SRYYMD      =   WRK-HIDUKE (IDX1) )
+                       MOVE    IDX1    TO  IDX2
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -620,8 +673,13 @@
                MOVE    WRK-HEN-MAX TO  IDX2
       *
                MOVE    SYU-NYUGAIKBN   TO  WRK-NYUGAIKBN (IDX2)
-               MOVE    SYU-SRYYMD (1:6)
-                                   TO  WRK-HIDUKE (IDX2)
+               IF    ( SYU-NYUGAIKBN   =   "1" )
+                   MOVE    SYU-SKYSTYMD    TO  WRK-HIDUKE (IDX2)
+                   MOVE    SYU-SKYEDYMD    TO  WRK-EDHIDUKE (IDX2)
+               ELSE
+                   MOVE    SYU-SRYYMD      TO  WRK-HIDUKE (IDX2)
+                                               WRK-EDHIDUKE (IDX2)
+               END-IF
       *
            END-IF
       *
@@ -783,7 +841,7 @@
       *
                        IF    ( SYU-NYUGAIKBN
                                            =   WRK-NYUGAIKBN(IDX1) )
-                        AND  ( HCM31S01-NYKNYMD(IDX3) (1:6)
+                        AND  ( HCM31S01-NYKNYMD(IDX3)
                                            =   WRK-HIDUKE (IDX1) )
                            MOVE    IDX1    TO  IDX2
                        END-IF
@@ -801,8 +859,9 @@
       *
                        MOVE    SYU-NYUGAIKBN
                                            TO  WRK-NYUGAIKBN (IDX2)
-                       MOVE    HCM31S01-NYKNYMD(IDX3) (1:6)
+                       MOVE    HCM31S01-NYKNYMD(IDX3)
                                            TO  WRK-HIDUKE (IDX2)
+      *
       *
                        COMPUTE WRK-GAKU (IDX2)
                            =   WRK-GAKU (IDX2)
@@ -869,10 +928,10 @@
                    IF      WRK-HENSYU-KEY (IDX)
                                    >   WRK-HENSYU-KEY (IDY)
                        MOVE    WRK-HENSYU-OCC(IDX)
-                                       TO  WRK-HENSYU-OCC(801)
+                                       TO  WRK-HENSYU-OCC(2001)
                        MOVE    WRK-HENSYU-OCC(IDY)
                                        TO  WRK-HENSYU-OCC(IDX)
-                       MOVE    WRK-HENSYU-OCC(801)
+                       MOVE    WRK-HENSYU-OCC(2001)
                                        TO  WRK-HENSYU-OCC(IDY)
                    END-IF
                END-PERFORM
@@ -995,7 +1054,7 @@
            END-IF
       *
       *    ∆¸…’
-           MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD(1:6)
+           MOVE    WRK-MON-HIDUKE      TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
            IF    ( ORCHCM31-SUMKBN     =   "1" )
@@ -1008,46 +1067,46 @@
             AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" )
       *
       *         ›∏±≈¿øÙ
-               IF      WRK-TENSU(IDX4)     NOT =   ZERO
-                   MOVE    WRK-TENSU(IDX4) TO WRK-Z7
+               IF      WRK-MON-TENSU   NOT =   ZERO
+                   MOVE    WRK-MON-TENSU   TO WRK-Z7
                    MOVE    WRK-Z7          TO HCM32N-HKNTEN  (CNT-LINE)
                    MOVE    "≈¿"            TO HCM32N-TEN     (CNT-LINE)
                END-IF
       *
       *         ›∏± ¨…È√¥≥€
-               IF      WRK-HOKEN(IDX4)     NOT =   ZERO
-                   MOVE    WRK-HOKEN(IDX4) TO WRK-Z9
+               IF      WRK-MON-HOKEN   NOT =   ZERO
+                   MOVE    WRK-MON-HOKEN   TO WRK-Z9
                    MOVE    WRK-Z9          TO HCM32N-FTNMONEY(CNT-LINE)
                    MOVE    "±ﬂ"            TO HCM32N-HYEN    (CNT-LINE)
                END-IF
       *
       *        ø©ªˆ°¶¿∏≥Ë…È√¥≥€
-               IF      WRK-SYOKUJI(IDX4)   NOT =   ZERO
-                   MOVE    WRK-SYOKUJI(IDX4) TO  WRK-Z9
+               IF      WRK-MON-SYOKUJI NOT =   ZERO
+                   MOVE    WRK-MON-SYOKUJI TO  WRK-Z9
                    MOVE    WRK-Z9          TO HCM32N-SKJMONEY(CNT-LINE)
                    MOVE    "±ﬂ"            TO HCM32N-SYEN    (CNT-LINE)
                END-IF
       *
       *        º´»Ò ¨…È√¥≥€
-               IF      WRK-JIHI(IDX4)      NOT =   ZERO
-                   MOVE    WRK-JIHI(IDX4)  TO WRK-Z9
+               IF      WRK-MON-JIHI    NOT =   ZERO
+                   MOVE    WRK-MON-JIHI    TO WRK-Z9
                    MOVE    WRK-Z9          TO HCM32N-JIHIMONEY(CNT-LINE)
                    MOVE    "±ﬂ"            TO HCM32N-JYEN     (CNT-LINE)
                END-IF
            END-IF
       *
       *    ∆˛ ÷∂‚≥€
-           IF    ( WRK-GAKU(IDX4)      NOT =   ZERO )
-               MOVE    WRK-GAKU(IDX4)  TO  WRK-Z9
+           IF    ( WRK-MON-GAKU        NOT =   ZERO )
+               MOVE    WRK-MON-GAKU    TO  WRK-Z9
                MOVE    WRK-Z9          TO  HCM32N-SKYMONEY(CNT-LINE)
                MOVE    "±ﬂ"            TO  HCM32N-YEN     (CNT-LINE)
            END-IF
       *
            IF    ( ORCHCM31-SUMKBN     =   "1" )
-               IF    ( WRK-BFGAKU(IDX4)    NOT =   ZERO )
+               IF    ( WRK-MON-BFGAKU  NOT =   ZERO )
                    MOVE    "¥¸¥÷¡∞ªŸ ß∂‚≥€"
                                        TO  HCM32N-BFNYUKINMSG(CNT-LINE)
-                   MOVE    WRK-BFGAKU(IDX4)
+                   MOVE    WRK-MON-BFGAKU
                                        TO  WRK-Z9
                    MOVE    WRK-Z9      TO  HCM32N-BFNYUKIN(CNT-LINE)
                    MOVE    "±ﬂ"        TO  HCM32N-BFYEN   (CNT-LINE)
@@ -1055,19 +1114,19 @@
            END-IF
       *
            COMPUTE WRK-GHKNTEN
-               =   WRK-GHKNTEN     +   WRK-TENSU(IDX4)
+               =   WRK-GHKNTEN     +   WRK-MON-TENSU
       *
            COMPUTE WRK-GFTNMONEY
-               =   WRK-GFTNMONEY   +   WRK-HOKEN(IDX4)
+               =   WRK-GFTNMONEY   +   WRK-MON-HOKEN
       *
            COMPUTE WRK-GSKJMONEY
-               =   WRK-GSKJMONEY   +   WRK-SYOKUJI(IDX4)
+               =   WRK-GSKJMONEY   +   WRK-MON-SYOKUJI
       *
            COMPUTE WRK-GJIHIMONEY
-               =   WRK-GJIHIMONEY  +   WRK-JIHI(IDX4)
+               =   WRK-GJIHIMONEY  +   WRK-MON-JIHI
       *
            COMPUTE WRK-GSKYMONEY
-               =   WRK-GSKYMONEY   +   WRK-GAKU(IDX4)
+               =   WRK-GSKYMONEY   +   WRK-MON-GAKU
       *
            .
        240-MEISAI-HEN-EXT.

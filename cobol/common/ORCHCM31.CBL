@@ -468,7 +468,9 @@
                    IF    ( FLG-TAISYO  =   1 )
                        PERFORM VARYING IDX-TJNISSU FROM    1   BY  1
                                UNTIL ( IDX-TJNISSU >   TJNISSU-MAX )
-                           IF    ( TJNISSU-YMD (IDX-TJNISSU)
+                           IF    ( TJNISSU-NYUGAIKBN (IDX-TJNISSU)
+                                        =  WRK-NYUGAIKBN (IDX4))
+                            AND  ( TJNISSU-YMD (IDX-TJNISSU)
                                        >=  WRK-HIDUKE (IDX4))
                             AND  ( TJNISSU-YMD (IDX-TJNISSU)
                                        <=  WRK-EDHIDUKE (IDX4))
