@@ -3018,6 +3018,9 @@
                                                DELIMITED   BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0030"
+                   MOVE    "診療コードを入力して下さい。"
+                                                       TO  SPA-ERRMSG
                WHEN    "0031"
                    MOVE    "未入力項目があります。"
                                                        TO  SPA-ERRMSG
