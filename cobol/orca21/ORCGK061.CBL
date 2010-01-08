@@ -2186,7 +2186,7 @@
        450-TOUROKU-SEC                SECTION.
       *
            IF      SPA-K061-SRYCD      =   SPACE
-               MOVE    "0030"              TO  SPA-ERRCD
+               MOVE    "0002"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-K061-CUR
            END-IF
            IF      SPA-K061-SYORIKBN   =   "P"
@@ -3018,9 +3018,6 @@
                                                DELIMITED   BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
-               WHEN    "0030"
-                   MOVE    "診療コードを入力して下さい。"
-                                                       TO  SPA-ERRMSG
                WHEN    "0031"
                    MOVE    "未入力項目があります。"
                                                        TO  SPA-ERRMSG
