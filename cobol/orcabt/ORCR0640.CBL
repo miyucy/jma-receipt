@@ -406,6 +406,7 @@
       *                                     公費単独の一部負担金編集修正
       *                                     月途中に医保と更生等の併用から
       *                                     更生等単独になったときの対応
+      *  04.04.37    NACL-門脇    10/01/08  高齢者他保険入院対応修正
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
@@ -10229,6 +10230,21 @@
               END-IF
            END-IF
       *
+           IF    (RECE62-SRYYM   >=  "200804")
+           AND   (RECE62-SRYYM   <=  "201003")
+             IF  (RECE62-HKNNUM       =   SPACE                      )
+             OR  (RECE62-HKNNUM(1:2)  =   "98"  OR "90"  OR "91"     )
+             OR  (RECE62-HKNNUM  =   "068" OR "069" OR "040" OR "039")
+             OR  (RECE62-AGE          <    70                        )
+      ***    OR  (RECE62-AGE          >    74                        )
+               CONTINUE
+             ELSE
+               IF  RECE62-HOJOKBN     =   "1"  OR  "9"
+                  MOVE      1     TO    FLG-ZENKI-TOKUREI
+               END-IF
+             END-IF
+           END-IF
+      *
            PERFORM         2104D-TOKU75-HANTEI-SEC
       *
            IF    RECE62-KOUREI    =    "1"  OR  "2"
@@ -16561,21 +16577,6 @@
       ***       MOVE      1      TO     FLG-HANTEI
                 PERFORM   2104A-KOHYONKAIME-HANTEI-SEC
       *
-           END-IF
-      *
-           IF    (RECE62-SRYYM   >=  "200804")
-           AND   (RECE62-SRYYM   <=  "201003")
-             IF  (RECE62-HKNNUM       =   SPACE                      )
-             OR  (RECE62-HKNNUM(1:2)  =   "98"  OR "90"  OR "91"     )
-             OR  (RECE62-HKNNUM  =   "068" OR "069" OR "040" OR "039")
-             OR  (RECE62-AGE          <    70                        )
-      ***    OR  (RECE62-AGE          >    74                        )
-               CONTINUE
-             ELSE
-               IF  RECE62-HOJOKBN     =   "1"  OR  "9"
-                  MOVE      1     TO    FLG-ZENKI-TOKUREI
-               END-IF
-             END-IF
            END-IF
       *
            .
