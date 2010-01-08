@@ -1468,6 +1468,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K844"
+                   STRING  "警告！！"
+                           "継続入院です。"
+                           "家族入院精神療法は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *!!
                WHEN    "0210"
                    STRING  "夜間・早朝加算の施設基準ではありません。"
@@ -1587,6 +1594,12 @@
                WHEN    "0220"
                    STRING   "診療科の受診履歴は最大件数登録済みです。"
                             "この診療科での入力はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0221"
+                   STRING   "薬評・器評は診療種別の直下に入力して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

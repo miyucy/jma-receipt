@@ -110,6 +110,7 @@
            03  FLG-NENREI              PIC 9(01).
            03  FLG-TOUJITU             PIC 9(01).
            03  FLG-SEISIN              PIC 9(01).
+           03  FLG-SHOKAIKBN           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -1862,16 +1863,22 @@
                    MOVE    6                   TO  WRK-TUKI-9
       *        ²ÈÂ²Æþ±¡Àº¿ÀÎÅË¡¡Ê£±¡Ë
                WHEN    "180028850"
+                   PERFORM 10011310-NYUINYMD-HEN-SEC
                    MOVE    3                   TO  WRK-TUKI-9
                    MOVE    1                   TO  FLG-SEISIN
-                   PERFORM 10011310-NYUINYMD-HEN-SEC
       *        ²ÈÂ²Æþ±¡Àº¿ÀÎÅË¡¡Ê£²¡Ë¡Ê£¶·î°ÊÆâ¡Ë
                WHEN    "180028950"
+                   PERFORM 10011310-NYUINYMD-HEN-SEC
                    MOVE    6                   TO  WRK-TUKI-9
                    MOVE    1                   TO  FLG-SEISIN
+      *        ²ÈÂ²Æþ±¡Àº¿ÀÎÅË¡¡Ê£²¡Ë¡Ê£¶·îÄ¶¡Ë
+               WHEN    "180020950"
                    PERFORM 10011310-NYUINYMD-HEN-SEC
            END-EVALUATE
            IF      WRK-TUKI-9          =   ZERO
+               GO      TO      1001131-NYUIN-SEISIN-EXT
+           END-IF
+           IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      1001131-NYUIN-SEISIN-EXT
            END-IF
       *    Æþ±¡Æü¡Ü£Î·î¸å
@@ -1933,7 +1940,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½é²óÆþ±¡ÆüÊÔ½¸½èÍý
+      *    ½é²óÆþ±¡ÆüÈ½Äê½èÍý
       *****************************************************************
        10011310-NYUINYMD-HEN-SEC        SECTION.
       *
@@ -1954,13 +1961,15 @@
                INITIALIZE                  PTNYUINRRK-REC
            END-IF
            MOVE    ZERO                TO  WRK-SHONUM
+           MOVE    ZERO                TO  FLG-SHOKAIKBN
            PERFORM
                    UNTIL      (FLG-PTNYUINRRK      =   1 )
                IF     (PTNYUINRRK-NYUINYMD     =   SPA-K02N-NYUINYMD)
                   AND (PTNYUINRRK-TAIINYMD     =   SPA-K02N-TAIINYMD)
                   IF      PTNYUINRRK-SHOKAIKBN     =   "2"
-      *                ·ÑÂ³¤Î»þ¡¢½é²óÆþ±¡Æü¸¡º÷
+      *                ·ÑÂ³
                        MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
+                       MOVE    1                   TO  FLG-SHOKAIKBN
                    END-IF
                    MOVE    1                   TO  FLG-PTNYUINRRK
                END-IF
@@ -1974,31 +1983,43 @@
            MOVE    "key12"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      WRK-SHONUM          >   ZERO
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-               MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-               MOVE    SPA-K02N-NYUINYMD   TO  PTNYUINRRK-NYUINYMD
-               MOVE    WRK-SHONUM          TO  PTNYUINRRK-SHONUM
-      *
-               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "key13"             TO  MCP-PATHNAME
-                   PERFORM 910-PTNYUINRRK-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-PTNYUINRRK
-                   INITIALIZE                  PTNYUINRRK-REC
+           IF      FLG-SHOKAIKBN       =   1
+      *        ·ÑÂ³¤Î»þ¡¢²ÈÂ²¤Ï»»ÄêÉÔ²Ä
+               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+               AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
+                   MOVE    "K844"              TO  WRK-ERRCD
+                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                   MOVE    "1"                 TO  WRK-COM-CUR
+                                                           (IDX-Z)
                END-IF
-               IF      FLG-PTNYUINRRK      =   ZERO
-                   MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
-               END-IF
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
            END-IF
+      *    IF      WRK-SHONUM          >   ZERO
+      *        INITIALIZE                  PTNYUINRRK-REC
+      *        MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+      *        MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+      *        MOVE    SPA-K02N-NYUINYMD   TO  PTNYUINRRK-NYUINYMD
+      *        MOVE    WRK-SHONUM          TO  PTNYUINRRK-SHONUM
+      *
+      *        MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+      *        MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+      *        MOVE    "key13"             TO  MCP-PATHNAME
+      *        PERFORM 910-DBSELECT-SEC
+      *        IF      MCP-RC              =   ZERO
+      *            MOVE    "key13"             TO  MCP-PATHNAME
+      *            PERFORM 910-PTNYUINRRK-READ-SEC
+      *        ELSE
+      *            MOVE    1               TO  FLG-PTNYUINRRK
+      *            INITIALIZE                  PTNYUINRRK-REC
+      *        END-IF
+      *        IF      FLG-PTNYUINRRK      =   ZERO
+      *            MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
+      *        END-IF
+      *        MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+      *        MOVE    "key13"             TO  MCP-PATHNAME
+      *        PERFORM 990-DBCLOSE-SEC
+      **** END-IF
       *
            .
        10011310-NYUINYMD-HEN-EXT.
