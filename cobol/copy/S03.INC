@@ -132,19 +132,19 @@
               03  S03-MISYUZAN  PIC S9(10).
               03  S03-ZENMISYU  PIC S9(10).
               03  S03-GOKMISYU  PIC S9(10).
-              03  S03-CHOSEI1IN PIC S9(10).
+              03  S03-CHOSEI1IN PIC X(10).
               03  S03-CHOSEI1IN-STATE
                                 PIC S9(9)   BINARY.
-              03  S03-CHOSEI2IN PIC S9(10).
+              03  S03-CHOSEI2IN PIC X(10).
               03  S03-CHOSEI2IN-STATE
                                 PIC S9(9)   BINARY.
               03  S03-SKYMONEYIN-STYLE
                                 PIC X(20).
               03  S03-SKYMONEYIN
-                                PIC S9(10).
+                                PIC X(10).
               03  S03-SKYMONEYIN-STATE
                                 PIC S9(9)   BINARY.
-              03  S03-NYUKINGK2 PIC S9(10).
+              03  S03-NYUKINGK2 PIC X(10).
               03  S03-NYUKINGK2-STATE
                                 PIC S9(9)   BINARY.
               03  S03-NYUKINYMD.

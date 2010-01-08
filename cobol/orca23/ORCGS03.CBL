@@ -121,16 +121,19 @@
                        09  SPA-GMN-YAKFTN          PIC 9(07).
                        09  SPA-GMN-CHOSEI1         PIC S9(07).
                        09  SPA-GMN-CHOSEI2         PIC S9(07).
-                       09  SPA-GMN-SKYMONEY          PIC 9(07).
+                       09  SPA-GMN-SKYMONEY        PIC 9(07).
                        09  SPA-GMN-ZENMISYU        PIC 9(07).
                        09  SPA-GMN-SEIGOK          PIC S9(07).
                        09  SPA-GMN-MISYU-ZAN       PIC S9(07).
                        09  SPA-GMN-NYUKIN-TTL      PIC 9(08).
                    07  SPA-GMN-INPUT-AREA.
                        09  SPA-GMN-CHOSEI1IN       PIC S9(10).
+                       09  SPA-GMN-CHOSEI1INX      PIC X(10).
                        09  SPA-GMN-CHOSEI2IN       PIC S9(10).
+                       09  SPA-GMN-CHOSEI2INX      PIC X(10).
                        09  SPA-GMN-SKYMONEYIN      PIC S9(10).
                        09  SPA-GMN-NYUKIN          PIC S9(10).
+                       09  SPA-GMN-NYUKINX         PIC X(10).
                        09  SPA-GMN-NYUKINYMD       PIC X(10).
                        09  SPA-GMN-NYKN-HOHO-G.
                            11  SPA-GMN-NYKN-HOHO       PIC X(02).
@@ -246,6 +249,7 @@
            03  FLG-HIZUKE-ERR                      PIC 9(01).
            03  FLG-PTINF                           PIC 9(01).
            03  FLG-MEIVISIBLE                      PIC 9(01).
+           03  FLG-ORCSNUMERR                      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -302,6 +306,9 @@
            03  WRK-SRYPRTKBN                       PIC X(01).
            03  WRK-MEIDSPKBN                       PIC X(01).
            03  WRK-OLD-NYUHEN-YMD                  PIC X(08).
+           03  WRK-KINGAKUX                        PIC X(10).
+           03  WRK-KINGAKU9                        PIC S9(10).
+           03  WRK-KINGAKUZ                        PIC ----------.
       *
        01  WRK-ROW.
            03  WRK-SMEILIST1-ROW                   PIC S9(9)   BINARY.
@@ -357,6 +364,9 @@
       *************************************************************
       *    サブプロ用　領域
       *************************************************************
+      *
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
       *
       *    請求書印刷パラメタ
            COPY    "CPORCHC03.INC".
@@ -1600,16 +1610,17 @@
            MOVE    SPA-GMN-MISYU-ZAN   TO  S03-MISYUZAN
            MOVE    SPA-GMN-NYUKIN-TTL  TO  S03-NYUKINGK1
       *
-           MOVE    SPA-GMN-CHOSEI1IN   TO  S03-CHOSEI1IN
-           MOVE    SPA-GMN-CHOSEI2IN   TO  S03-CHOSEI2IN
-           MOVE    SPA-GMN-SKYMONEYIN  TO  S03-SKYMONEYIN
+           MOVE    SPA-GMN-CHOSEI1INX  TO  S03-CHOSEI1IN
+           MOVE    SPA-GMN-CHOSEI2INX  TO  S03-CHOSEI2IN
+           MOVE    SPA-GMN-SKYMONEYIN  TO  WRK-KINGAKUZ
+           MOVE    WRK-KINGAKUZ        TO  S03-SKYMONEYIN
       *
       *    入金欄
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-NYUKIN
            WHEN    CONST-PROC-TORIKESHI
            WHEN    CONST-PROC-RRKSYU
-               MOVE    SPA-GMN-NYUKIN      TO  S03-NYUKINGK2
+               MOVE    SPA-GMN-NYUKINX     TO  S03-NYUKINGK2
                MOVE    SPA-GMN-NYUKINYMD   TO  S03-NYUKINYMD
       *
                IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
@@ -2080,9 +2091,9 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    S03-CHOSEI1IN       TO  SPA-GMN-CHOSEI1IN
-           MOVE    S03-CHOSEI2IN       TO  SPA-GMN-CHOSEI2IN
-           MOVE    S03-NYUKINGK2       TO  SPA-GMN-NYUKIN
+           MOVE    S03-CHOSEI1IN       TO  SPA-GMN-CHOSEI1INX
+           MOVE    S03-CHOSEI2IN       TO  SPA-GMN-CHOSEI2INX
+           MOVE    S03-NYUKINGK2       TO  SPA-GMN-NYUKINX
            MOVE    S03-NYUKINYMD       TO  SPA-GMN-NYUKINYMD
            MOVE    S03-NYUKINHOUHOU    TO  SPA-GMN-NYKN-HOHO-G
            MOVE    S03-SKYPRT          TO  SPA-GMN-SKYPRT-G
@@ -2127,6 +2138,10 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-KINGAKU-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-NYUKIN-CHK-SEC
            END-IF
       *
@@ -2154,6 +2169,10 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-NYUKINYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-KINGAKU-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2194,6 +2213,10 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 4101-NYUKINYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-KINGAKU-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -2368,9 +2391,14 @@
                                        TO  SPA-GMN-CHOSEI1IN
                                            SPA-NAI-CHOSEI1IN-MOTO
       *
+           MOVE    SPA-GMN-CHOSEI1IN   TO  WRK-KINGAKUZ
+           MOVE    WRK-KINGAKUZ        TO  SPA-GMN-CHOSEI1INX
+      *
            MOVE    SPA-NAI-TCHOSEI2 (SPA-GMN-SELNUM)
                                        TO  SPA-GMN-CHOSEI2IN
                                            SPA-NAI-CHOSEI2IN-MOTO
+           MOVE    SPA-GMN-CHOSEI2IN   TO  WRK-KINGAKUZ
+           MOVE    WRK-KINGAKUZ        TO  SPA-GMN-CHOSEI2INX
       *
            COMPUTE SPA-NAI-SKYMONEY
                =   SPA-GMN-SKYMONEYIN
@@ -2380,6 +2408,8 @@
            MOVE    SPA-GMN-TNYUKIN   (SPA-GMN-SELNUM)
                                        TO  SPA-GMN-NYUKIN
                                            SPA-NAI-NYUKIN-MOTO
+           MOVE    SPA-GMN-NYUKIN      TO  WRK-KINGAKUZ
+           MOVE    WRK-KINGAKUZ        TO  SPA-GMN-NYUKINX
            MOVE    SPA-GMN-TSYORIYMD (SPA-GMN-SELNUM)
                                        TO  SPA-GMN-NYUKINYMD
       *
@@ -2447,9 +2477,59 @@
        41011-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    金額欄妥当性チェック処理
+      *****************************************************************
+       4101-KINGAKU-CHK-SEC            SECTION.
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               MOVE    ZERO            TO  SPA-GMN-CHOSEI1IN
+               MOVE    SPA-GMN-CHOSEI1INX
+                                       TO  WRK-KINGAKUX
+               PERFORM 800-KINGAKU-HEN-SEC
+               IF    ( FLG-ORCSNUMERR  =   1 )
+                   MOVE    8           TO  SPA-GMN-CUR
+                   MOVE    "0017"      TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-KINGAKU9    TO  SPA-GMN-CHOSEI1IN
+                   MOVE    WRK-KINGAKUZ    TO  SPA-GMN-CHOSEI1INX
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               MOVE    ZERO            TO  SPA-GMN-CHOSEI2IN
+               MOVE    SPA-GMN-CHOSEI2INX
+                                       TO  WRK-KINGAKUX
+               PERFORM 800-KINGAKU-HEN-SEC
+               IF    ( FLG-ORCSNUMERR  =   1 )
+                   MOVE    9           TO  SPA-GMN-CUR
+                   MOVE    "0018"      TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-KINGAKU9    TO  SPA-GMN-CHOSEI2IN
+                   MOVE    WRK-KINGAKUZ    TO  SPA-GMN-CHOSEI2INX
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               MOVE    ZERO            TO  SPA-GMN-NYUKIN
+               MOVE    SPA-GMN-NYUKINX TO  WRK-KINGAKUX
+               PERFORM 800-KINGAKU-HEN-SEC
+               IF    ( FLG-ORCSNUMERR  =   1 )
+                   MOVE    2           TO  SPA-GMN-CUR
+                   MOVE    "0019"      TO  SPA-ERRCD
+               ELSE
+                   MOVE    WRK-KINGAKU9    TO  SPA-GMN-NYUKIN
+                   MOVE    WRK-KINGAKUZ    TO  SPA-GMN-NYUKINX
+               END-IF
+           END-IF
+      *
+           .
+       4101-KINGAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    調整金１チェック処理
       *****************************************************************
        4101-CHOSEI1IN-CHK-SEC          SECTION.
+      *
       *
            .
        4101-CHOSEI1IN-CHK-EXT.
@@ -2508,6 +2588,8 @@
                     AND  ( SPA-GMN-MISYU-ZAN   >   ZERO )
                        MOVE    SPA-GMN-MISYU-ZAN
                                    TO  SPA-GMN-NYUKIN
+                       MOVE    SPA-GMN-NYUKIN  TO  WRK-KINGAKUZ
+                       MOVE    WRK-KINGAKUZ    TO  SPA-GMN-NYUKINX
                    END-IF
                END-IF
            END-IF
@@ -2519,6 +2601,8 @@
       *    入金額チェック処理（入金取消、返金の履歴修正）
       *****************************************************************
        4102-NYUKIN-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  WRK-NYUKIN
       *
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-TORIKESHI
@@ -2534,8 +2618,8 @@
            END-EVALUATE
       *
            IF    ( SPA-GMN-NYUKIN  >   ZERO )
-               MOVE    2           TO  SPA-GMN-CUR
-               MOVE    "0013"      TO  SPA-ERRCD
+                 MOVE    2           TO  SPA-GMN-CUR
+                 MOVE    "0013"      TO  SPA-ERRCD
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -2565,9 +2649,13 @@
                    IF    ( SPA-S01-SYORINO
                                        =   CONST-PROC-TORIKESHI )
                     AND  ( SPA-GMN-NYUKIN      =   ZERO )
-                    AND  ( WRK-NYUKIN          >   ZERO )
+                    AND  ( SPA-GMN-NYUKIN-TTL  >   ZERO )
                        COMPUTE SPA-GMN-NYUKIN
-                           =   WRK-NYUKIN      *   -1
+                           =   SPA-GMN-NYUKIN-TTL  *   -1
+                       MOVE    SPA-GMN-NYUKIN
+                                       TO  WRK-KINGAKUZ
+                       MOVE    WRK-KINGAKUZ
+                                       TO  SPA-GMN-NYUKINX
                    END-IF
                END-IF
            END-IF
@@ -3773,6 +3861,15 @@
            WHEN    "0016"
                MOVE    "請求金額が０円を下回ります"
                                        TO  SPA-ERRMSG
+           WHEN    "0017"
+               MOVE    "調整金１入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0018"
+               MOVE    "調整金２入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0019"
+               MOVE    "入金額入力エラー"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
                MOVE    "収納の更新処理でエラーになりました"
@@ -3880,6 +3977,32 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    金額数値変換処理
+      *****************************************************************
+       800-KINGAKU-HEN-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-ORCSNUMERR
+      *
+           INITIALIZE                  WRK-KINGAKU9
+                                       WRK-KINGAKUZ
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    WRK-KINGAKUX    TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF    ( SNUM-RC         NOT =   ZERO  )
+            OR   ( SNUM-SEISUU         >   7     )
+            OR   ( SNUM-SYOKBN         =   "1"   )
+               MOVE    1               TO  FLG-ORCSNUMERR
+           ELSE
+               MOVE    SNUM-OUTNUM     TO  WRK-KINGAKU9
+               MOVE    SNUM-OUTNUM     TO  WRK-KINGAKUZ
+           END-IF
+      *
+           .
+       800-KINGAKU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者情報取得処理

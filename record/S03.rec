@@ -314,20 +314,20 @@ S03	{
 			value	number(10);
 		};
 		CHOSEI1IN	{
-			value	number(10);
+			value	varchar(10);
 			state	int;
 		};
 		CHOSEI2IN	{
-			value	number(10);
+			value	varchar(10);
 			state	int;
 		};
 		SKYMONEYIN	{
 			style   varchar(20);
-			value	number(10);
+			value	varchar(10);
 			state	int;
 		};
 		NYUKINGK2	{
-			value	number(10);
+			value	varchar(10);
 			state	int;
 		};
 		NYUKINYMD	{

@@ -1147,35 +1147,11 @@
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
-      <name>KINGAKU</name>
-      <x>72</x>
-      <y>636</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:09:58 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:12:58 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>--------</format>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>NYUKINYMD</name>
       <x>72</x>
       <y>660</y>
-      <width>96</width>
+      <width>88</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1314,30 +1290,6 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>CHOSEI1IN</name>
-      <x>72</x>
-      <y>564</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:09:58 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:12:58 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>--------</format>
     </widget>
 
     <widget>
@@ -3051,30 +3003,6 @@
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
-      <name>CHOSEI2IN</name>
-      <x>72</x>
-      <y>588</y>
-      <width>96</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:09:58 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:12:58 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>--------</format>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_SKYPRT</name>
       <x>72</x>
@@ -3181,46 +3109,6 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SKYMONEYIN</name>
-      <x>72</x>
-      <y>612</y>
-      <width>96</width>
-      <height>24</height>
-      <sensitive>False</sensitive>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:09:58 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 11 Jan 2001 10:12:58 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>--------</format>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label566</name>
-      <x>180</x>
-      <y>636</y>
-      <width>60</width>
-      <height>24</height>
-      <label>入金方法</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3496,6 +3384,133 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>SKYMONEYIN</name>
+      <x>72</x>
+      <y>612</y>
+      <width>88</width>
+      <height>25</height>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:40 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>CHOSEI1IN</name>
+      <x>72</x>
+      <y>564</y>
+      <width>88</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:40 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>CHOSEI2IN</name>
+      <x>72</x>
+      <y>588</y>
+      <width>88</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:40 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>KINGAKU</name>
+      <x>72</x>
+      <y>636</y>
+      <width>88</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:08 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 04:14:40 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label566</name>
+      <x>176</x>
+      <y>636</y>
+      <width>64</width>
+      <height>24</height>
+      <label>入金方法</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

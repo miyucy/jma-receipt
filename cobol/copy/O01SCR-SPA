@@ -143,9 +143,12 @@
                        09  SPA-GMN-O04-SKYSGK          PIC S9(10).
                    07  SPA-GMN-O04-INPUT-AREA.
                        09  SPA-GMN-O04-CHOSEI1IN       PIC S9(10).
+                       09  SPA-GMN-O04-CHOSEI1INX      PIC X(10).
                        09  SPA-GMN-O04-CHOSEI2IN       PIC S9(10).
+                       09  SPA-GMN-O04-CHOSEI2INX      PIC X(10).
                        09  SPA-GMN-O04-SKYMONEYIN      PIC S9(10).
                        09  SPA-GMN-O04-NYUKIN          PIC S9(10).
+                       09  SPA-GMN-O04-NYUKINX         PIC X(10).
                        09  SPA-GMN-O04-NYUKINYMD       PIC X(10).
                        09  SPA-GMN-O04-NYKN-HOHO-G.
                            11  SPA-GMN-O04-NYKN-HOHO   PIC X(02).
