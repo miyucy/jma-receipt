@@ -875,7 +875,7 @@
                    MOVE    "002999999"     TO  WRK-SRYCDEND
                WHEN    3
                    MOVE    "008200000"     TO  WRK-SRYCDSTR
-                   MOVE    "008599999"     TO  WRK-SRYCDEND
+                   MOVE    "008699999"     TO  WRK-SRYCDEND
                WHEN    4
                    MOVE    "800000000"     TO  WRK-SRYCDSTR
                    MOVE    "899999999"     TO  WRK-SRYCDEND
