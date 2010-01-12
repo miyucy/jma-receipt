@@ -97,6 +97,13 @@
       *
            COPY    "CPLOCKCONST.INC".
       *
+      *    コンスタント領域
+       01  WRK-CONST-AREA.
+           03  WRK-CONST-STOP1    PIC X(07)
+               VALUE "ユーザ(".
+           03  WRK-CONST-STOP2    PIC X(49)
+           VALUE ")の指示により、このクライアントを強制終了します。".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
@@ -788,8 +795,11 @@
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
                                    TO  ORCA-SYSTEM-ID
            MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
-           MOVE    "端末を強制終了します"
-                                   TO  ORCA-SYSTEM-VALUE(1)
+           STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
+                   MCP-USER            DELIMITED  BY  SPACE
+                   WRK-CONST-STOP2     DELIMITED  BY  SIZE
+                               INTO    ORCA-SYSTEM-VALUE(1)
+           END-STRING
            MOVE    "abort"         TO  ORCA-SYSTEM-KEY(2)
            MOVE    "T"             TO  ORCA-SYSTEM-VALUE(2)
            PERFORM 900-SYSDB-INV-SEC
@@ -818,8 +828,11 @@
                    MOVE    SPA-NAI-TERMID(IDX)
                                            TO  ORCA-SYSTEM-ID
                    MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
-                   MOVE    "端末を強制終了します"
-                                           TO  ORCA-SYSTEM-VALUE(1)
+                   STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
+                     MCP-USER            DELIMITED  BY  SPACE
+                     WRK-CONST-STOP2     DELIMITED  BY  SIZE
+                                 INTO    ORCA-SYSTEM-VALUE(1)
+                   END-STRING
                    MOVE    "abort"         TO  ORCA-SYSTEM-KEY(2)
                    MOVE    "T"             TO  ORCA-SYSTEM-VALUE(2)
                    PERFORM 900-SYSDB-INV-SEC
