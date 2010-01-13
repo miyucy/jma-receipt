@@ -97,6 +97,7 @@
       *                                     ・褥瘡評価実施加算（療養病棟）
       *                                     ・褥瘡評価実施加算（有床診療所）
       *  04.05.00    NACL-小豆沢  09/12/03  診療入力された特別食加算の対応
+      *  04.05.00    NACL-小豆沢  10/01/13  治験減点入力の読み飛ばし
       *****************************************************************
       *
       *
@@ -1501,7 +1502,8 @@
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
                  MOVE      ZERO     TO      FLG-RYAKU
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                      (ACCT-ZAIKAISU  NOT =    ZERO)
+                      (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                      (ACCT-ZAIKBN    =        ZERO)
                    IF   ACCT-SRYKBN  =  "90" OR "92"
                      INITIALIZE      SRYACT-REC
                      MOVE    ACCT-HOSPNUM   TO   SRY-HOSPNUM
