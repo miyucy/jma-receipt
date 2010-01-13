@@ -1109,7 +1109,8 @@
       *
                MOVE    SPACE                   TO  WRK-ITEM-G
                MOVE    SPA-Q01-RECECOM (IDX1)  TO  WRK-RECECOMMENT
-               INSPECT WRK-RECECOMMENT REPLACING   ALL "¡¡"  BY  "  "
+               INSPECT WRK-RECECOMMENT REPLACING ALL "±¡¡¡" BY  "±¡  "
+               INSPECT WRK-RECECOMMENT REPLACING ALL "¡¡"   BY  "  "
                UNSTRING    WRK-RECECOMMENT    DELIMITED  BY  ALL " "
                                    INTO       WRK-ITEM(1)
                                               WRK-ITEM(2)
