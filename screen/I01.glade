@@ -721,38 +721,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label2324</name>
-      <x>225</x>
-      <y>40</y>
-      <width>42</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label2327</name>
-      <x>370</x>
-      <y>40</y>
-      <width>70</width>
-      <height>24</height>
-      <label>前回異動日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label22</name>
       <x>10</x>
       <y>675</y>
@@ -2437,6 +2405,38 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2324</name>
+      <x>228</x>
+      <y>40</y>
+      <width>48</width>
+      <height>24</height>
+      <label>異動日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2327</name>
+      <x>376</x>
+      <y>40</y>
+      <width>76</width>
+      <height>24</height>
+      <label>前回異動日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
