@@ -172,6 +172,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    文字列操作サブ
+           COPY    "CPORCSSTRING.INC".
+      *
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
@@ -1107,10 +1110,22 @@
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   3 )
       *
-               MOVE    SPACE                   TO  WRK-ITEM-G
-               MOVE    SPA-Q01-RECECOM (IDX1)  TO  WRK-RECECOMMENT
-               INSPECT WRK-RECECOMMENT REPLACING ALL "院　" BY  "院  "
-               INSPECT WRK-RECECOMMENT REPLACING ALL "　"   BY  "  "
+                MOVE    SPACE     TO  WRK-ITEM-G
+      *
+                MOVE   SPA-Q01-RECECOM (IDX1)
+                                  TO   WRK-RECECOMMENT
+      *
+               IF    ( WRK-RECECOMMENT
+                                   NOT =   SPACE )
+                   MOVE    "gsub"          TO  ORCSSTR-COMMAND
+                   MOVE    WRK-RECECOMMENT
+                                           TO  ORCSSTR-STRING1
+                   MOVE    "　"            TO  ORCSSTR-STRING2
+                   MOVE    "**"            TO  ORCSSTR-STRING3
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   MOVE    ORCSSTR-STRING1 TO  WRK-RECECOMMENT
+               END-IF
+               INSPECT WRK-RECECOMMENT REPLACING ALL "**"  BY  "  "
                UNSTRING    WRK-RECECOMMENT    DELIMITED  BY  ALL " "
                                    INTO       WRK-ITEM(1)
                                               WRK-ITEM(2)
