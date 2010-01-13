@@ -649,6 +649,7 @@ jis213_gsub (
 	char q[4];
 	static char out[STR_SIZE + 1];
 
+	out[0] = 0;
 	in = data->str1;
 	data->num1 = 0;
 	data->num2 = 0;
@@ -680,6 +681,7 @@ jis213_sub (
 	char q[4];
 	static char out[STR_SIZE + 1];
 
+	out[0] = 0;
 	in = data->str1;
 	data->num1 = 0;
 	data->num2 = 0;
