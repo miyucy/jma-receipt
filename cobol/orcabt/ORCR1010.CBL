@@ -56,6 +56,7 @@
       *  04.04.03    NACL-門脇    09/04/13  平成２１年５月改正対応
       *  04.04.04    NACL-門脇    09/12/04  剤まとめ項目値の計算修正
       *  04.04.05    NACL-門脇    09/12/09  出来高算定（剤）の対応
+      *  04.04.06    NACL-門脇    10/01/13  剤まとめ項目値の計算修正
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
@@ -1402,14 +1403,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      ELSE
                        COMPUTE  RECE120-RUIKEITOTAL  =
                                 RECE120-RUIKEITOTAL  +
-                              ( WRK-FUKA-VALUE    *
-                                          SRY-SRYSURYO(IDX2))
-                       COMPUTE  RECE120-RUIKEITOTAL  =
-                                RECE120-RUIKEITOTAL  +
                               ( WRK-FUKA-VALUE    * WRK-SRYCD)
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
-                              ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                              ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                                  * SRY-SRYSURYO(IDX2))
                      END-IF
                    END-PERFORM
                    COMPUTE  RECE120-RUIKEITOTAL  =

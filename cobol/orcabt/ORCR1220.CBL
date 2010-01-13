@@ -59,6 +59,7 @@
       *  04.04.05    NACL-門脇    09/11/05  高齢者他保険入院対応
       *  04.04.06    NACL-門脇    09/12/04  剤まとめ項目値の計算修正
       *  04.04.07    NACL-門脇    09/12/09  出来高算定（剤）の対応
+      *  04.04.08    NACL-門脇    10/01/13  剤まとめ項目値の計算修正
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
@@ -1737,14 +1738,11 @@
                      ELSE
                        COMPUTE  RECE220-RUIKEITOTAL  =
                                 RECE220-RUIKEITOTAL  +
-                              ( WRK-FUKA-VALUE    *
-                                          SRY-SRYSURYO(IDX2))
-                       COMPUTE  RECE220-RUIKEITOTAL  =
-                                RECE220-RUIKEITOTAL  +
                               ( WRK-FUKA-VALUE    * WRK-SRYCD)
                        COMPUTE  WRK-FUKA-KINGAKU    =
                                 WRK-FUKA-KINGAKU    +
-                              ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                              ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                                  * SRY-SRYSURYO(IDX2))
                      END-IF
                    END-PERFORM
                    COMPUTE  RECE220-RUIKEITOTAL  =
@@ -3801,14 +3799,11 @@
                  ELSE
                    COMPUTE  RECE220-RUIKEITOTAL  =
                             RECE220-RUIKEITOTAL  +
-                          ( WRK-FUKA-VALUE    *
-                                     NSRY-SRYSURYO(IDX2))
-                   COMPUTE  RECE220-RUIKEITOTAL  =
-                            RECE220-RUIKEITOTAL  +
                           ( WRK-FUKA-VALUE    * WRK-SRYCD)
                    COMPUTE  WRK-FUKA-KINGAKU    =
                             WRK-FUKA-KINGAKU    +
-                          ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                          ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                              * NSRY-SRYSURYO(IDX2))
                  END-IF
                END-PERFORM
                COMPUTE  RECE220-RUIKEITOTAL  =
@@ -4983,14 +4978,11 @@
                     ELSE
                       COMPUTE  RECE220-RUIKEITOTAL  =
                                RECE220-RUIKEITOTAL  +
-                             ( WRK-FUKA-VALUE    *
-                                    WRK-ORCSTEN-SURYO(IDX2))
-                      COMPUTE  RECE220-RUIKEITOTAL  =
-                               RECE220-RUIKEITOTAL  +
                              ( WRK-FUKA-VALUE    * WRK-SRYCD)
                       COMPUTE  WRK-FUKA-KINGAKU    =
                                WRK-FUKA-KINGAKU    +
-                             ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                             ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                   * WRK-ORCSTEN-SURYO(IDX2))
                     END-IF
                   END-PERFORM
                   COMPUTE  RECE220-RUIKEITOTAL  =
@@ -5131,13 +5123,11 @@
                     ELSE
                       COMPUTE  RECE220-RUIKEITOTAL =
                                RECE220-RUIKEITOTAL +
-                             ( WRK-FUKA-VALUE    * 1)
-                      COMPUTE  RECE220-RUIKEITOTAL =
-                               RECE220-RUIKEITOTAL +
                              ( WRK-FUKA-VALUE    * WRK-SRYCD)
                       COMPUTE  WRK-FUKA-KINGAKU    =
                                WRK-FUKA-KINGAKU    +
-                             ((WRK-FUKA-VALUE^5) * FUKA-IDX)
+                             ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                                 * 1)
                     END-IF
                   END-PERFORM
                   COMPUTE  RECE220-RUIKEITOTAL  =
