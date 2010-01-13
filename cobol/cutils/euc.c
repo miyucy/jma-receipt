@@ -512,10 +512,10 @@ jis213_substr(
 	data->str2[0] = 0;
 	if (data->num1 <= 0) {
 		data->num1 = STR_SIZE;
-	}
-	if (data->num2 <= 0) {
+    }
+    if (data->num2 <= 0) {
 		data->num2 = STR_SIZE;
-	}
+    }
 	if (data->num1 > data->num2) {
 		swp = data->num1;
 		data->num1 = data->num2;
@@ -534,36 +534,41 @@ jis213_substr(
 }
 
 void
-jis213_search(
+jis213_search (
 	ORCSSTRING *data)
 {
-	int num;
 	int advanced_bytes;
 	int is213;
+	int count;
+	int	keylen;
 	char *in;
-	char out[4];
 	char *p;
+	char q[4];
+	static char out[STR_SIZE + 1];
 
-	data->num1 = data->num2 = 0;
-	num = 0;
+	data->num1 = 0;
+	data->num2 = 0;
+
+	in = data->str2;
+	keylen = 0;
+	while(*in) {
+		advanced_bytes = jis213_count(in, q, &is213);
+		in += advanced_bytes;
+		keylen++;
+	}
+	
 	in = data->str1;
-	p = strstr(data->str1, data->str2);
-	if (p != NULL) {
-		while(*in) {
-			num ++;
-			advanced_bytes = jis213_count(in, out, &is213);
-			if (p == in) {
-				data->num1 = num;
-			}
-			in += advanced_bytes;
+	count = 1;
+	while(*in) {
+		p = strstr(in, data->str2);
+		if (p == in) {
+			data->num1 = count;
+			data->num2 = count + keylen - 1;
+			break;
 		}
-		in = data->str2;
-		data->num2 = data->num1 - 1;
-		while(*in) {
-			data->num2 ++;
-			advanced_bytes = jis213_count(in, out, &is213);
-			in += advanced_bytes;
-		}
+		advanced_bytes = jis213_count(in, q, &is213);
+		in += advanced_bytes;
+		count ++;
 	}
 }
 
@@ -635,47 +640,63 @@ jis213_nstrncat(
 }
 
 void
-jis213_gsub(
+jis213_gsub (
 	ORCSSTRING *data)
 {
+	int advanced_bytes;
+	int is213;
 	char *in;
-	static char out[STR_SIZE + 1];
 	char *p;
+	char q[4];
+	static char out[STR_SIZE + 1];
 
 	in = data->str1;
-	out[0] = 0;
+	data->num1 = 0;
+	data->num2 = 0;
 
-	while((p = strstr(in, data->str2)) != NULL) {
-		jis213_nstrncat(out,in, (p - in), STR_SIZE);
-		jis213_nstrcat(out, data->str3, STR_SIZE);
-		in = p + strlen(data->str2);
-	}
-	if (*in) {
-		jis213_nstrcat(out, in, STR_SIZE);
+	while(*in) {
+		p = strstr(in, data->str2);
+		if (p == in) {
+			jis213_nstrcat(out, data->str3, STR_SIZE);
+			in = p + strlen(data->str2);
+		} else {
+			advanced_bytes = jis213_count(in, q, &is213);
+			jis213_nstrcat(out, q, STR_SIZE);
+			in += advanced_bytes;
+		}
 	}
 	memcpy(data->str1, out, STR_SIZE);
 	data->str1[STR_SIZE] = 0;
 }
 
 void
-jis213_sub(
+jis213_sub (
 	ORCSSTRING *data)
 {
+	int advanced_bytes;
+	int is213;
+	int done;
 	char *in;
-	static char out[STR_SIZE + 1];
 	char *p;
+	char q[4];
+	static char out[STR_SIZE + 1];
 
 	in = data->str1;
-	out[0] = 0;
+	data->num1 = 0;
+	data->num2 = 0;
+	done = 0;
 
-	while((p = strstr(in, data->str2)) != NULL) {
-		jis213_nstrncat(out,in, (p - in), STR_SIZE);
-		jis213_nstrcat(out, data->str3, STR_SIZE);
-		in = p + strlen(data->str2);
-		break;
-	}
-	if (*in) {
-		jis213_nstrcat(out, in, STR_SIZE);
+	while(*in) {
+		p = strstr(in, data->str2);
+		if (p == in && done == 0) {
+			jis213_nstrcat(out, data->str3, STR_SIZE);
+			in = p + strlen(data->str2);
+			done = 1;
+		} else {
+			advanced_bytes = jis213_count(in, q, &is213);
+			jis213_nstrcat(out, q, STR_SIZE);
+			in += advanced_bytes;
+		}
 	}
 	memcpy(data->str1, out, STR_SIZE);
 	data->str1[STR_SIZE] = 0;
