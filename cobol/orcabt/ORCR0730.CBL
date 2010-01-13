@@ -2312,8 +2312,7 @@
            INITIALIZE                      RECE10-REC
            MOVE    KOHSKY-KEY          TO  RECE10-KEY
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
-      ***  MOVE    "key43"             TO  WRK-MCP-PATHNAME
-           MOVE    "key15"             TO  WRK-MCP-PATHNAME
+           MOVE    "key43"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
