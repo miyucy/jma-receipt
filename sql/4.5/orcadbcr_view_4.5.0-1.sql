@@ -4,6 +4,7 @@
 -- view_q003   ¾È²ñ£³                           --
 -- view_q002   ¾È²ñ£²                           --
 -- view_i001   Æþ±¡´µ¼Ô¾È²ñ                     --
+-- view_bd001  ¼ýÇ¼£±                           --
 -- view_bd002  ¼ýÇ¼£²                           --
 --                                              --
 -- Create Date : 2009/01/15                     --
@@ -228,6 +229,11 @@ CREATE VIEW view_i001 AS
 
 COMMENT 
         ON VIEW view_i001 IS 'Æþ±¡´µ¼Ô¾È²ñ¥Ó¥å¡¼';
+
+CREATE VIEW view_bd001 AS
+    SELECT a.hospnum, a.ptid, b.ptnum, c.name, c.sex, c.birthday, a.sryka, a.denpprtymd, a.skymoney, a.nyukin_total FROM tbl_syunou_main a, tbl_ptnum b, tbl_ptinf c WHERE ((((((((a.hospnum = b.hospnum) AND (a.ptid = b.ptid)) AND (a.hospnum = c.hospnum)) AND (a.ptid = c.ptid)) AND (a.denpjtikbn <> '3')) AND (a.denpjtikbn <> '7')) AND (a.createkbn <> '3')) AND (c.tstptnumkbn <> '1'));
+
+COMMENT ON VIEW view_bd001 IS '¼ýÇ¼¥Ó¥å¡¼';
 
 CREATE VIEW view_bd002 AS
     SELECT c.ptnum,
