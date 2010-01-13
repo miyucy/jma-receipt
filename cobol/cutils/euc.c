@@ -544,7 +544,6 @@ jis213_search (
 	char *in;
 	char *p;
 	char q[4];
-	static char out[STR_SIZE + 1];
 
 	data->num1 = 0;
 	data->num2 = 0;
