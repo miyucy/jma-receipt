@@ -1,6 +1,7 @@
 -- tbl_ptnum --
 
 \set ON_ERROR_STOP
+DROP INDEX idx_ptnum_ptnum;
 ALTER TABLE tbl_ptnum DROP CONSTRAINT tbl_ptnum_primary_key;
 ALTER TABLE tbl_ptnum RENAME TO wrk_ptnum;
 CREATE TABLE tbl_ptnum (
