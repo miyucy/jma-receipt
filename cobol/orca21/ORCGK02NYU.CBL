@@ -357,6 +357,7 @@
                05  WRK-BIRTH-DD    PIC 9(02).
            03  WRK-NYUYOJI         PIC 9(04).
       *
+      *
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-KAISU-X.
@@ -572,6 +573,8 @@
       *
            03  WRK-KEI-X.
                05  WRK-KEI-Z       PIC Z(08).
+           03  WRK-KEI-X2.
+               05  WRK-KEI-Z2      PIC -(08).
            03  WRK-KEI-H           PIC X(08).
            03  WRK-ZAIKEI-H        PIC X(40).
            03  WRK-KAKERU          PIC X(03).
@@ -2529,6 +2532,7 @@
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-KIDCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")  AND
+                  (SPA-CHIKENKBN   NOT =   "1"   )  AND
                   (SPA-SRYYMD          >=  "20080401" )
                PERFORM 3101-HKTCHK-INIT-SEC
            END-IF
@@ -5362,7 +5366,14 @@
                  OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
                                                    =   "0992000" )
       *            ÌôºÞ¡¦´ïºà¡¦ÍÑË¡
-                   MOVE    1                   TO  FLG-IN1
+      *            ÅÀ¿ô¥¼¥í¤Ç¶â³Û¤Ï¤Ê¤·
+                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO ) AND
+                          (SPA-COM-TENSIKIBETU (SPA-GMN-IDX)
+                                                       =   1    )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
                END-IF
                IF      WRK-MOJI                =   "1"
                    IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
@@ -5712,7 +5723,8 @@
       *    Æþ±¡ÎÁÊñ³ç¤ÎÈ½Äê
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-KIDCD           =   SPACE )  AND
-                  (SPA-HKNCOMBINUM NOT =   "9999")
+                  (SPA-HKNCOMBINUM NOT =   "9999")  AND
+                  (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
                       (SPA-NYUHKTCHK       =   1     )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
@@ -8574,6 +8586,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¿ÇÎÅÆâÍÆÈ½Äê
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
+      *            ÌôÉ¾°Ê³°
+             IF     (SPA-COM-YAKUHYO (IDX)   =   "1" )
+             OR     (SPA-GMN-INPUTCD (IDX)(1:1)
+                                             =   "."
+                                             OR  "*"  )
+               CONTINUE
+             ELSE
                IF     (SPA-COM-SRYKBN (IDX)    =   "21"
                                                OR  "22"
                                                OR  "23" )
@@ -8613,6 +8632,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "7")
                    MOVE    1               TO  SPA-NAI-SIJISEN
                END-IF
+             END-IF
            END-PERFORM
            MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
       *
@@ -9806,9 +9826,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SURYO   (WRK-IDX)   TO  WRK-H-SURYO
            MOVE    SPA-GMN-TANINAME(WRK-IDX)   TO  WRK-H-TANINAME
            MOVE    WRK-ZAIKEI-H                TO  WRK-H-ZAIKEI
-           MOVE    SPA-GMN-KEI (WRK-IDX)
-                                       TO  WRK-KEI-Z
-           MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+           IF      SPA-GMN-KEI (WRK-IDX)   >   ZERO
+               MOVE    SPA-GMN-KEI (WRK-IDX)
+                                           TO  WRK-KEI-Z
+               MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+           ELSE
+               MOVE    SPA-GMN-KEI (WRK-IDX)
+                                           TO  WRK-KEI-Z2
+               MOVE    WRK-KEI-Z2          TO  WRK-H-KEI
+           END-IF
       *
            MOVE    WRK-SURYO-HENSYU    TO  K02N-SURYO (IDX)
            MOVE    "user-font"         TO  K02N-SURYO-STYLE(IDX)

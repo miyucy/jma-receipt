@@ -7712,7 +7712,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    附加情報削除
            INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM         TO  ACCTP-HOSPNUM
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
            MOVE    ACCT-PTID           TO  ACCTP-PTID
            MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA

@@ -46,6 +46,7 @@
            03  ORCSCWKSRY-KASAN-AREA.
                05  ORCSCWKSRY-KASAN-TBL    OCCURS   60.
                    07  ORCSCWKSRY-KSN-HKNCOMBI    PIC X(04).
+                   07  ORCSCWKSRY-KSN-CHIKENKBN   PIC X(01).
                    07  ORCSCWKSRY-KSN-SRYKA       PIC X(02).
                    07  ORCSCWKSRY-KSN-SRYSYUKBN   PIC X(03).
                    07  ORCSCWKSRY-KSN-SRYKBN      PIC X(02).

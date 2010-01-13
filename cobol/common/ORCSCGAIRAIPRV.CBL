@@ -3263,6 +3263,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "2"                 TO  ACCT-ZAIREQFLG
            END-IF
       *!!
+      *    ÃÙ…æ°¶¥Ô…æ°¢∏∫≈¿ ¨
+           MOVE    LNK-WKSRY-ZAIKBN (1)    TO  ACCT-ZAIKBN
            .
       *
        45015-SRYACCT-SRY-EXT.

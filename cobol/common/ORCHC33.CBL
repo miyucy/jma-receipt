@@ -76,6 +76,7 @@
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -155,11 +156,11 @@
                05  WRK-Z59-X.
                    07  WRK-Z59                 PIC ZZZZZ.
                    07  WRK-Z59-R               REDEFINES   WRK-Z59
-                                               PIC ----Z.
+                                               PIC -----.
            03  WRK-Z89-X.
                05  WRK-Z89                 PIC ZZZZZZZZ.
                05  WRK-Z79S                REDEFINES   WRK-Z89
-                                           PIC -------Z.
+                                           PIC --------.
       *
            03  WRK-SRYYM-N             PIC X(40).
            03  WRK-SRYYM-N1            PIC X(40).
@@ -306,6 +307,9 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -807,10 +811,17 @@
            ELSE
       *        逓減点数を判定する
                MOVE    ZERO                TO  FLG-GENTEN
-               IF     (ACCT-SRYKBN         =   "21" )  AND
-                      (ACCT-ZAITEN         >   ZERO )  AND
-                      (ACCT-YKZTEN         =   ZERO )
-                   PERFORM 200112-GEN-TENSU-SEC
+               IF      ACCT-ZAIREQFLG      =   "1"
+                   PERFORM 950-SRYACCTPLUS-READ-SEC
+                   IF      ACCTP-PLUSKBN       =   1
+                       MOVE    1               TO  FLG-GENTEN
+                   END-IF
+               ELSE
+                   IF     (ACCT-SRYKBN         =   "21" )  AND
+                          (ACCT-ZAITEN         >   ZERO )  AND
+                          (ACCT-YKZTEN         =   ZERO )
+                       PERFORM 200112-GEN-TENSU-SEC
+                   END-IF
                END-IF
                MOVE    ACCT-ZAITEN         TO  WRK-ZAITEN
                IF      FLG-GENTEN          =   1
@@ -2241,6 +2252,48 @@
       *
            .
        910-TENSU-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計マスター読込（主キー）
+      *****************************************************************
+       950-SRYACCTPLUS-READ-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+           MOVE    1                   TO  ACCTP-RENNUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCTPLUS
+                   INITIALIZE                  SRYACCTPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+               INITIALIZE                  SRYACCTPLUS-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-SRYACCTPLUS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

@@ -126,6 +126,7 @@
            03  FLG-PARA            PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-OK2             PIC 9(01).
@@ -240,6 +241,9 @@
       *
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(08).
+           03  WRK-TENSU-X2.
+               05  WRK-TENSU2      PIC -(08).
+           03  WRK-TENSU-H         PIC X(08).
            03  WRK-KAISU-X.
                05  WRK-KAISU       PIC Z(08).
            03  WRK-KEI-X.
@@ -288,7 +292,7 @@
       *
            03  WRK-KIN             PIC 9(07).
       *
-           03  WRK-ZAITEN              PIC 9(08).
+           03  WRK-ZAITEN              PIC S9(08).
            03  WRK-SRYKAISUKEI         PIC 9(03).
            03  WRK-MEISAISU            PIC 9(07).
            03  WRK-JIHIMONEY           PIC 9(07).
@@ -312,6 +316,8 @@
       *    換算値数量表示用
            03  WRK-TSURYO              PIC X(30).
            03  IDM2                    PIC 9(04).
+      *    マイナス
+           03  WRK-PLUSKBN             PIC 9(01).
       *
       *    コラムリスト位置
            03  WRK-K09-RRKLIST-ROW     PIC S9(09).
@@ -382,6 +388,10 @@
       *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
+      *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
@@ -2019,6 +2029,12 @@
                    WHEN    OTHER
                        MOVE    ACCT-DAY (4 IDX-STR)    TO  WRK-ZAIKAISU
                END-EVALUATE
+      *
+               IF      ACCT-ZAIREQFLG      =   "1"
+                   PERFORM 950-SRYACCTPLUS-READ-SEC
+               ELSE
+                   INITIALIZE                  SRYACCTPLUS-REC
+               END-IF
            END-IF
       *
            INITIALIZE                  WKSRYACT-REC
@@ -2054,6 +2070,14 @@
            MOVE    ACCT-ZAITEN         TO  WKSRY-ZAITENKEI
       *保険組合
            MOVE    ACCT-HKNCOMBI       TO  WKSRY-HKNCOMBI
+      *剤内容
+           MOVE    ACCT-ZAIKBN         TO  WKSRY-ZAIKBN
+      *マイナス点数
+           IF      ACCTP-PLUSKBN       =   1
+               MOVE    1                   TO  WRK-PLUSKBN
+           ELSE
+               MOVE    ZERO                TO  WRK-PLUSKBN
+           END-IF
       *
            MOVE    ZERO                TO  IDX-W
            MOVE    ZERO                TO  IDY
@@ -2171,7 +2195,12 @@
                                                         (SPA-NAI-MAX2)
       *
       *        剤点数計
-               MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
+               IF      WRK-PLUSKBN             =   ZERO
+                   MOVE    LNK-WKSRY-ZAITENKEI(IDX)    TO  WRK-ZAITEN
+               ELSE
+                   COMPUTE WRK-ZAITEN      =   LNK-WKSRY-ZAITENKEI(IDX)
+                                           *   -1
+               END-IF
       *        回数計
                MOVE    LNK-WKSRY-ZAIKAIKEI(IDX)    TO  WRK-SRYKAISUKEI
       **       自費
@@ -2448,7 +2477,14 @@
            END-IF
       *
       *    数量（薬剤、器材のとき）
-           IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7"
+           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
+      *        金額で点数ゼロの時、表示なし
+               IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6" )  AND
+                      (TNS-TEN                 =   ZERO   )  AND
+                      (TNS-TENSIKIBETU         =   1      )
+                   CONTINUE
+               ELSE
+      *
                MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
                IF      FLG-KETA5           =   1
@@ -2457,6 +2493,8 @@
                ELSE
                    MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
                    MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+               END-IF
+      *
                END-IF
            END-IF
       *    単位
@@ -2848,7 +2886,13 @@
       *
       *    点数＊回数　計
       *    点数
-           MOVE    WRK-ZAITEN          TO  WRK-TENSU
+           IF      WRK-ZAITEN          >=  ZERO
+               MOVE    WRK-ZAITEN          TO  WRK-TENSU
+               MOVE    WRK-TENSU-X         TO  WRK-TENSU-H
+           ELSE
+               MOVE    WRK-ZAITEN          TO  WRK-TENSU2
+               MOVE    WRK-TENSU-X2        TO  WRK-TENSU-H
+           END-IF
       *
            IF      WRK-SRYKAISUKEI     =   ZERO
                MOVE   1                    TO  WRK-SRYKAISUKEI
@@ -2881,7 +2925,7 @@
                END-IF
            END-PERFORM
       *
-           STRING  WRK-TENSU               DELIMITED   BY  SIZE
+           STRING  WRK-TENSU-H             DELIMITED   BY  SIZE
                    "X"                     DELIMITED   BY  SIZE
                    WRK-KAISU-H             DELIMITED   BY  SPACE
       *DDDDDD      "  "                    DELIMITED   BY  SIZE
@@ -3678,6 +3722,48 @@
       *
            .
        940-SRYACCT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計マスター読込（主キー）
+      *****************************************************************
+       950-SRYACCTPLUS-READ-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+           MOVE    1                   TO  ACCTP-RENNUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCTPLUS
+                   INITIALIZE                  SRYACCTPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+               INITIALIZE                  SRYACCTPLUS-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-SRYACCTPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -3127,7 +3127,14 @@
                  OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
                                                    =   "0992000" )
       *            薬剤・器材・用法
-                   MOVE    1                   TO  FLG-IN1
+      *            点数ゼロで金額はなし
+                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO ) AND
+                          (SPA-COM-TENSIKIBETU (SPA-GMN-IDX)
+                                                       =   1    )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
                END-IF
                IF      WRK-MOJI                =   "1"
                    IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
@@ -4424,6 +4431,14 @@
                GO      TO      510-TBLHEN-EXT
            END-IF
       *
+      *    約束セットは薬評・減点を入力不可とする
+           IF      (SPA-GMN-SETCODE(1:1)   =   "S"    ) 
+               PERFORM 5009-SETCHEK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      510-TBLHEN-EXT
+               END-IF
+           END-IF
+      *
       *    剤別初回編集
            INITIALIZE                  ORCSC00AREA
       *    診療種別件数クリア
@@ -4583,7 +4598,29 @@
       *
       *
            .
-        510-TBLHEN-EXT.
+       510-TBLHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    約束セットの薬評・減点チェック処理
+      *****************************************************************
+       5009-SETCHEK-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )   OR
+                              (SPA-GMN-INPUTCD (IDX)
+                                                   =   SPACE ) OR
+                              (SPA-ERRCD       NOT =   SPACE )
+               IF      SPA-COM-GENTEN (IDX)    =   "1"
+                   MOVE    "5029"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
+               END-IF
+               IF      SPA-COM-YAKUHYO(IDX)    =   "1"
+                   MOVE    "5030"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
+               END-IF
+           END-PERFORM
+           .
+       5009-SETCHEK-EXT.
            EXIT.
       *****************************************************************
       *    最終行に回数の入力があるかのチェック処理

@@ -1443,7 +1443,7 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *!!
+      *ver.4.5
                WHEN    "K840"
                    STRING  "警告！！"
                            "入院日から６月以上です。"
@@ -1600,6 +1600,37 @@
       *
                WHEN    "0221"
                    STRING   "薬評・器評は診療種別の直下に入力して下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0222"
+                   STRING   "減点分は再診・指導・在宅・入院の診療種別の"
+                            "直下に入力して下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0223"
+                   STRING   "合計点数がマイナスとなります。"
+                            "減点点数を変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0224"
+                   STRING   "減点分の診療区分の合計点数がマイナスと"
+                            "なります。"
+                            "減点点数を変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0225"
+                   STRING   "薬評での入力はできません。"
+                            "剤分離して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0226"
+                   STRING   "減点分の入力はできません。"
+                            "剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -2315,6 +2346,18 @@
                                        TO  SPA-ERRMSG
                WHEN    "5028"
                    STRING  "約束セットに器材商品コードの算定は"
+                           "できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "5029"
+                   STRING  "約束セットに減点分コードの入力は"
+                           "できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "5030"
+                   STRING  "約束セットに薬評・器評コードの入力は"
                            "できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG

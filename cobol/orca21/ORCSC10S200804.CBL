@@ -1183,6 +1183,8 @@
       *
       *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+      *       ¼£¸³
+              OR  (SPA-CHIKENKBN       =   "1"  )
                GO      TO      1001-TOUGETU-KAISU-EXT
            END-IF
       *    ÄûÀµ¤Ç¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ò»»ÄêºÑ¤ß¤Î¾ì¹ç
@@ -2042,6 +2044,10 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      1001-SYONIKA-CHK-EXT
            END-IF
+      *    ¼£¸³ÂÐ¾Ý³°
+           IF      SPA-CHIKENKBN       =   "1"
+               GO      TO      1001-SYONIKA-CHK-EXT
+           END-IF
       *
       *    £³ºÐ¤Ë¤Ê¤ëÇ¯·îÆü¤ò·×»»
            MOVE    SPA-BIRTHDAY        TO  WRK-BIRTHDAY
@@ -2276,6 +2282,8 @@
       *       ¼õÉÕ¤¢¤ê
               OR  (SPA-UKETUKE-ARI     =   1    )
               OR  (SPA-TEISEIFLG       =   "0"  )
+      *       ¼£¸³
+              OR  (SPA-CHIKENKBN       =   "1"  )
                CONTINUE
            ELSE
                IF     ( SPA-NYUGAIKBN      =   "2"        ) AND
@@ -2324,6 +2332,10 @@
            MOVE    ZERO                TO  FLG-ERR
       *    Êñ³ç¤Þ¤È¤áÆþÎÏÂÐ¾Ý³°
            IF      SPA-HKNCOMBINUM     =   "9999"
+               MOVE    1                   TO  FLG-ERR
+           END-IF
+      *    ¼£¸³ÂÐ¾Ý³°
+           IF      SPA-CHIKENKBN       =   "1"
                MOVE    1                   TO  FLG-ERR
            END-IF
       *
@@ -4194,6 +4206,8 @@
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
                                SPA-GMN-INPUTCD(IDX) =   SPACE )
              IF      SPA-COM-HKNCOMBI (IDX)    NOT =   "9999"
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *
       *        ÆÃÄê¤Î¿ÇÎÅ¹Ô°ÙÈ½Äê
                EVALUATE    SPA-COM-INPUTCD (IDX)
@@ -4443,6 +4457,10 @@
                  OR (SPA-COM-INPUTCD(IDX)(1:3)   =   "008" )
       *          Êñ³çÊÝ¸±
                  OR (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                  CONTINUE
              ELSE
       *        ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î»þ¡¢¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤Î¤ß¤Ç¤¢¤ë¤³¤È
@@ -4725,6 +4743,10 @@
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
                                                  OR  "$"   )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                CONTINUE
              ELSE
       *        À¸³è»ØÆ³¡¢¸¡ºº¡¢Ãí¼Í¡¢ºßÂðÎÁ°Ê³°¤Ç¤¢¤ë¤³¤È
@@ -4797,6 +4819,10 @@
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
                                                  OR  "$"   )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ¸¡ºº¡¢ÅêÌô¡¢Ãí¼Í¤Ï»»Äê¤Ç¤­¤Ê¤¤
@@ -4869,6 +4895,10 @@
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
                                                  OR  "$"   )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ÅêÌô¤Ï»»Äê¤Ç¤­¤Ê¤¤
@@ -4935,6 +4965,10 @@
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
                                                  OR  "$"   )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                CONTINUE
              ELSE
       *        º£²óÆþÎÏ
@@ -5009,6 +5043,10 @@
                IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                    OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
                                                    OR  "$"   )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                    CONTINUE
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(IDX)
@@ -5088,6 +5126,10 @@
              IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
                  OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
                                                  OR  "$"   )
+      *          ¼£¸³
+                 OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
+      *          ¼£¸³¸ºÅÀÊ¬
+                 OR (SPA-COM-GENTEN (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ÅêÌô¤Ï»»Äê¤Ç¤­¤Ê¤¤
@@ -6442,6 +6484,9 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-HKNCOMBI        TO  SPA-COM-HKNCOMBI(IDX-A)
+      *        ¼£¸³
+               MOVE    SPA-NAI-CHIKENKBN (IDY)
+                                           TO  SPA-COM-CHIKENKBN(IDX-A)
            END-IF
       *
            IF     (FLG-OK              =   ZERO )  AND
@@ -6451,6 +6496,8 @@
               AND (WRK-HKNCOMBI    NOT =   "9999" )
       *    ¿Ç»¡ÎÁ¼«Æ°È¯À¸¤¢¤ê¤Î¤ß
            AND    (SPA-INITAUTO-FLG    =   "1"   )
+      *    ¼£¸³ÂÐ¾Ý³°
+           AND    (SPA-NAI-CHIKENKBN (IDY) NOT =   "1" )
                PERFORM 101521-HKNCOMBI-HEN-SEC
            END-IF
       *

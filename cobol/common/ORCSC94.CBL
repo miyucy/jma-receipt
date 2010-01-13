@@ -73,6 +73,8 @@
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(05).
       *
+           03  WRK-TENSU           PIC S9(08).
+      *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
@@ -81,6 +83,8 @@
                05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-TENSU-X-R       REDEFINES   WRK-TENSU-X.
+               05  WRK-TENSU-Z2    PIC --------.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS-Z    PIC ZZZZ9.99.
            03  WRK-KAISU-X.
@@ -246,6 +250,11 @@
                        MOVE    SPA-COM-KANSURYO (IDX)    TO  WRK-SURYO
                    END-IF
                    PERFORM 2001-SURYO-HEN-SEC
+      *            点数ゼロで金額はなし
+                   IF     (SPA-COM-TEN         (IDX)   =   ZERO ) AND
+                          (SPA-COM-TENSIKIBETU (IDX)   =   1    )
+                       MOVE    SPACE               TO  WRK-SURYO-X
+                   END-IF
       *            特定器材   数量・回数
                WHEN    "7"
                    MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
@@ -351,7 +360,7 @@
                                        TO  WRK-SURYO-H (IDK2:1)
                END-IF
            END-PERFORM
-      *TEST
+      *
       *    自動発生なし
            IF     (SPA-COM-AUTOFLG2(IDX)   =   "1"  )  AND
                   (IDK2                    >   ZERO )
@@ -480,6 +489,12 @@
                                            TO  WRK-SURYO
                PERFORM 2001-SURYO-HEN-SEC
                MOVE    WRK-SURYO-X         TO  SPA-GMN-SURYO (IDX)
+      *        薬剤点数ゼロで金額はなし
+               IF     (WRK-MOJI                    =   "6" ) AND
+                      (SPA-COM-TEN         (IDX)   =   ZERO ) AND
+                      (SPA-COM-TENSIKIBETU (IDX)   =   1    )
+                   MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
+               END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
            END-IF
@@ -490,13 +505,25 @@
                   (WRK-MOJI                =   "S" )  OR
                   (SPA-COM-SRYSYUKBN(IDX)  =   "950"  OR "960" )
       *        点数
-               MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+               IF      SPA-COM-PLUSKBN (IDX)   =   1
+                   COMPUTE WRK-TENSU           =   SPA-COM-TENSU(IDX)
+                                               *   -1
+                   MOVE    WRK-TENSU               TO  WRK-TENSU-Z2
+               ELSE
+                   MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+               END-IF
                MOVE    WRK-TENSU-X             TO  SPA-GMN-TENSU(IDX)
       *        回数
                MOVE    SPA-COM-KAISU (IDX)     TO  WRK-KAISU-Z
                MOVE    WRK-KAISU-Z             TO  SPA-GMN-KAISU(IDX)
       *        計
-               MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI  (IDX)
+               IF      SPA-COM-PLUSKBN (IDX)   =   1
+                   COMPUTE WRK-TENSU           =   SPA-COM-KEI (IDX)
+                                               *   -1
+                   MOVE    WRK-TENSU               TO  SPA-GMN-KEI(IDX)
+               ELSE
+                   MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI(IDX)
+               END-IF
            ELSE
                MOVE    SPACE                   TO  SPA-GMN-TENSU(IDX)
                MOVE    SPACE                   TO  SPA-GMN-KAISU(IDX)
@@ -747,6 +774,6 @@
       *    名称へ日のセット
            PERFORM 3003-NYUIN-MEISYO-SEC
            .
-       3001-COM-GMNINPUT-EXT.
+       3001-GMNINPUT-GMN-EXT.
            EXIT.
       *

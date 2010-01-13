@@ -1418,7 +1418,9 @@
            INITIALIZE                  WKSRYACT-REC
       *
       *    回数ゼロは対象外とする
-           IF      WRK-ZAIKAISU        =   ZERO
+           IF     (WRK-ZAIKAISU        =   ZERO )
+      *       薬評は対象外
+              OR  (ACCT-ZAIKBN         =   1    )
                CONTINUE
            ELSE
                PERFORM 410121-WKSRYACT-HEN-SEC

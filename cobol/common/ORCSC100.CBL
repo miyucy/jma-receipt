@@ -73,6 +73,7 @@
            03  IDN1                    PIC 9(04).
       *
            03  IDX-HKN                 PIC 9(04).
+           03  IDX-PLUS                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -91,12 +92,14 @@
            03  WRK-KAISU               PIC 9(04).
            03  WRK-KAISU-GOK           PIC 9(04).
            03  WRK-GOKEI-9             PIC 9(10).
+           03  WRK-GOKEI-9S            PIC S9(10).
       *    消炎鎮痛回数
            03  WRK-SYOEN-CNT           PIC 9(03).
       *    診療選択より
            03  WRK-DRCD                PIC X(05).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBI            PIC X(04).
+           03  WRK-CHIKENKBN           PIC X(01).
            03  WRK-ZAINUM              PIC 9(08).
       *    急性発生日
            03  WRK-KYUSEI-YMD          PIC X(08).
@@ -134,6 +137,7 @@
        01  WRK-KASAN-AREA.
            03  WRK-KASAN-TBL                       OCCURS   60.
                05  WRK-KSN-HKNCOMBI        PIC X(04).
+               05  WRK-KSN-CHIKENKBN       PIC X(01).
                05  WRK-KSN-SRYKA           PIC X(02).
                05  WRK-KSN-SRYSYUKBN       PIC X(03).
                05  WRK-KSN-SRYKBN          PIC X(02).
@@ -529,7 +533,9 @@
            MOVE    SPACE               TO  WRK-ERR-ERRCD
            MOVE    ZERO                TO  WRK-KEI-IDX
            MOVE    ZERO                TO  WRK-GOKEI-9
+           MOVE    ZERO                TO  WRK-GOKEI-9S
            MOVE    SPACE               TO  WRK-HKNCOMBI
+           MOVE    SPACE               TO  WRK-CHIKENKBN
            MOVE    SPACE               TO  WRK-SRYKA
       *    特定薬剤治療管理加算の初回算定日クリア
            MOVE    SPACE               TO  SPA-TOKTEI-YMD
@@ -629,6 +635,8 @@
                    IF      WRK-HKNCOMBI        =   SPACE
                        MOVE    SPA-COM-HKNCOMBI(IDX)
                                                TO  WRK-HKNCOMBI
+                       MOVE    SPA-COM-CHIKENKBN(IDX)
+                                               TO  WRK-CHIKENKBN
                    END-IF
                    IF      WRK-SRYKA           =   SPACE
                        MOVE    SPA-COM-SRYKA   (IDX)
@@ -645,6 +653,7 @@
                    MOVE    ZERO                TO  IDX-Z
                    MOVE    ZERO                TO  WRK-KAISU
                    MOVE    SPACE               TO  WRK-HKNCOMBI
+                   MOVE    SPACE               TO  WRK-CHIKENKBN
                    MOVE    SPACE               TO  WRK-SRYKA
                END-IF
            END-PERFORM
@@ -677,6 +686,7 @@
       *    スパ領域へ戻す
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                  SPA-GMN-REC
+           MOVE    ZERO                TO  IDX-PLUS
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-MAX-LINE
                IF     (WRK-HZN-GMN-INPUTCD (IDX)   =   SPACE)  AND
@@ -690,6 +700,10 @@
                    MOVE    WRK-HZN-COM-TBLREC (IDX)
                                                TO  SPA-COM-TBLREC
                                                          (SPA-GMN-MAX)
+      *            減額の剤
+                   IF      SPA-COM-PLUSKBN (SPA-GMN-MAX) =   1
+                       MOVE    SPA-GMN-MAX         TO  IDX-PLUS
+                   END-IF
       *@
       *            検査一覧表示へ
                    IF      SPA-AKUSEI-FLG      =   1
@@ -702,7 +716,20 @@
                END-IF
            END-PERFORM
       *
-           MOVE    WRK-GOKEI-9         TO  SPA-GMN-GOKEI
+           IF      WRK-GOKEI-9         >=  WRK-GOKEI-9S
+               COMPUTE SPA-GMN-GOKEI       =   WRK-GOKEI-9
+                                           -   WRK-GOKEI-9S
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN-GOKEI
+      *        外来はエラーとする
+               IF      SPA-NYUGAIKBN       =   2
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0223"              TO  SPA-ERRCD
+                       MOVE    "1"                 TO  SPA-COM-CUR
+                                                        (IDX-PLUS)
+                   END-IF
+               END-IF
+           END-IF
       *
            .
        5101-TBLSAIHEN-EXT.
@@ -848,6 +875,8 @@
                           OR ( SPA-ERRCD           NOT =   SPACE )
                IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "1" )
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
+      *          治験判定なし
+                 AND   (SPA-COM-CHIKENKBN(IDX)     =   SPACE  )
                  AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
       *            回数チェック
                    IF      (SPA-COM-SANTEIRRKKBN(IDX)
@@ -1524,8 +1553,13 @@
                IF     (WRK-COM-ZAIEND (IDX-Z)      =   "1"   )  AND
                       (WRK-COM-SRYKBN (IDX-Z)  NOT =   "95"  AND "96")
                AND    (WRK-COM-HKNCOMBI (IDX-Z)    NOT =   "9999" )
+               AND    (WRK-COM-CHIKENKBN(IDX-Z)    =   SPACE  )
                AND    (WRK-COM-HOUKATU-ZAI (IDX-Z) =   ZERO  )
-                   ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9
+                   IF      WRK-COM-PLUSKBN (IDX-Z)     =   1
+                       ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9S
+                   ELSE
+                       ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -1576,8 +1610,12 @@
                IF      WRK-HKNCOMBI        =   SPACE
                    MOVE    SPA-HKNCOMBINUM     TO  WRK-COM-HKNCOMBI
                                                                (IDX-Z)
+                   MOVE    SPA-CHIKENKBN       TO  WRK-COM-CHIKENKBN
+                                                               (IDX-Z)
                ELSE
                    MOVE    WRK-HKNCOMBI        TO  WRK-COM-HKNCOMBI
+                                                               (IDX-Z)
+                   MOVE    WRK-CHIKENKBN       TO  WRK-COM-CHIKENKBN
                                                                (IDX-Z)
                END-IF
                IF      WRK-SRYKA           =   SPACE
@@ -2315,6 +2353,7 @@
       *    自動作成分包括診療チェック初期設定
            IF     (SPA-HKTSANTEI-CHK   =   1      )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999" )
+            AND   (SPA-CHIKENKBN       =   SPACE  )
                MOVE    SPA-K01KYOUTU       TO   SPA-WORK
                INITIALIZE                  ORCSCHKTCHKAREA
                MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
@@ -2362,6 +2401,9 @@
                                                                 (IDX)
                MOVE    WRK-KSN-HKNCOMBI (IDX)
                                            TO  ORCSCWKSRY-KSN-HKNCOMBI
+                                                                (IDX)
+               MOVE    WRK-KSN-CHIKENKBN (IDX)
+                                           TO  ORCSCWKSRY-KSN-CHIKENKBN
                                                                 (IDX)
                MOVE    WRK-KSN-SRYKA (IDX) TO  ORCSCWKSRY-KSN-SRYKA
                                                                 (IDX)
@@ -2463,6 +2505,8 @@
            IF      LNK-ORCSC-HKNCOMBI  (IDX IDY)   =   SPACE
                MOVE    SPA-HKNCOMBINUM     TO  LNK-ORCSC-HKNCOMBI
                                                           (IDX IDY)
+               MOVE    SPA-CHIKENKBN       TO  LNK-ORCSC-CHIKENKBN
+                                                          (IDX IDY)
            END-IF
            IF      LNK-ORCSC-SRYKA  (IDX IDY)  =   SPACE
                MOVE    SPA-SRYKA           TO  LNK-ORCSC-SRYKA
@@ -2470,6 +2514,8 @@
            END-IF
            MOVE    LNK-ORCSC-HKNCOMBI  (IDX IDY)
                                        TO  WRK-KSN-HKNCOMBI (IDX-S)
+           MOVE    LNK-ORCSC-CHIKENKBN  (IDX IDY)
+                                       TO  WRK-KSN-CHIKENKBN (IDX-S)
            MOVE    LNK-ORCSC-SRYKA     (IDX IDY)
                                        TO  WRK-KSN-SRYKA    (IDX-S)
            MOVE    LNK-ORCSC-SRYSYUKBN (IDX IDY)
@@ -2510,6 +2556,9 @@
       *
                    MOVE    LNK-ORCSC-HKNCOMBI  (IDX IDY)
                                            TO  WRK-KSN-HKNCOMBI
+                                                              (IDX-S)
+                   MOVE    LNK-ORCSC-CHIKENKBN (IDX IDY)
+                                           TO  WRK-KSN-CHIKENKBN
                                                               (IDX-S)
                    MOVE    LNK-ORCSC-SRYKA  (IDX IDY)
                                            TO  WRK-KSN-SRYKA (IDX-S)

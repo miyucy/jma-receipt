@@ -260,6 +260,7 @@
       *
            03  WRK-SRYKA           PIC X(02).
            03  WRK-HKNCOMBI        PIC X(04).
+           03  WRK-CHIKENKBN       PIC X(01).
       *!
       *    酸素計算用
            03  WRK-SANSO               PIC 9(08).
@@ -2923,9 +2924,11 @@
                MOVE    WRK-XSEN-DAY        TO  WRK-NYU-DAY
                MOVE    SPACE               TO  WRK-SRYKA
                MOVE    SPACE               TO  WRK-HKNCOMBI
+               MOVE    SPACE               TO  WRK-CHIKENKBN
                IF      IDX-XSEN            >   ZERO
                    MOVE    WRK-COM-SRYKA (IDX-XSEN)    TO  WRK-SRYKA
                    MOVE    WRK-COM-HKNCOMBI(IDX-XSEN)  TO  WRK-HKNCOMBI
+                   MOVE    WRK-COM-CHIKENKBN(IDX-XSEN) TO  WRK-CHIKENKBN
                END-IF
                PERFORM 3002-KASAN-SYORI-SEC
            END-IF
@@ -2938,9 +2941,12 @@
                MOVE    WRK-KAKUI-DAY       TO  WRK-NYU-DAY
                MOVE    SPACE               TO  WRK-SRYKA
                MOVE    SPACE               TO  WRK-HKNCOMBI
+               MOVE    SPACE               TO  WRK-CHIKENKBN
                IF      IDX-KAKUI           >   ZERO
                    MOVE    WRK-COM-SRYKA (IDX-KAKUI)   TO  WRK-SRYKA
                    MOVE    WRK-COM-HKNCOMBI(IDX-KAKUI) TO  WRK-HKNCOMBI
+                   MOVE    WRK-COM-CHIKENKBN(IDX-KAKUI)
+                                                       TO  WRK-CHIKENKBN
                END-IF
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
@@ -2975,9 +2981,12 @@
                MOVE    WRK-CTMRI-DAY       TO  WRK-NYU-DAY
                MOVE    SPACE               TO  WRK-SRYKA
                MOVE    SPACE               TO  WRK-HKNCOMBI
+               MOVE    SPACE               TO  WRK-CHIKENKBN
                IF      IDX-CTMRI           >   ZERO
                    MOVE    WRK-COM-SRYKA (IDX-CTMRI)   TO  WRK-SRYKA
                    MOVE    WRK-COM-HKNCOMBI(IDX-CTMRI) TO  WRK-HKNCOMBI
+                   MOVE    WRK-COM-CHIKENKBN(IDX-CTMRI)
+                                                       TO  WRK-CHIKENKBN
                END-IF
                PERFORM 3002-KASAN-SYORI-SEC
                IF     (FLG-ERR             =   ZERO )  AND
@@ -3079,6 +3088,7 @@
            END-IF
            IF      WRK-HKNCOMBI        =   SPACE
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
+               MOVE    SPA-CHIKENKBN       TO  WRK-CHIKENKBN
            END-IF
       *    追加のチェック
            PERFORM 3001-SANTEI-CHK-SEC
@@ -3094,6 +3104,8 @@
                    MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                        (08 IDXS)
                    MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                       (08 IDXS)
+                   MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
                                                        (08 IDXS)
                    MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                        (08 IDXS)

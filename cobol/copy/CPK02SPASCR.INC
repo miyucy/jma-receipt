@@ -58,7 +58,7 @@
                        09  SPA-GMN-TANINAME      PIC X(12).
                        09  SPA-GMN-TENSU         PIC X(08).
                        09  SPA-GMN-KAISU         PIC X(04).
-                       09  SPA-GMN-KEI           PIC 9(08).
+                       09  SPA-GMN-KEI           PIC S9(08).
       *---(01.00.01)
       *                入力コードの桁数
                        09  SPA-GMN-INCNT         PIC 9(02).
@@ -84,6 +84,8 @@
                        09  SPA-COM-SURYO         PIC 9(05)V9(05).
       *                剤合計点数
                        09  SPA-COM-TENSU         PIC 9(08).
+      *                マイナス区分
+                       09  SPA-COM-PLUSKBN       PIC 9(01).
       *                自費明細金額
                        09  SPA-COM-JIHIMONEY     PIC 9(07).
       *                点数
@@ -192,6 +194,8 @@
                                                      OCCURS   31.
       *                保険組合せ（空白は選択保険）
                        09  SPA-COM-HKNCOMBI      PIC  X(04).
+      *                治験保険（１：治験）
+                       09  SPA-COM-CHIKENKBN     PIC  X(01).
       *                診療科（空白は選択）
                        09  SPA-COM-SRYKA         PIC  X(02).
       *                ドクター（空白は選択）
@@ -230,6 +234,10 @@
                        09  SPA-COM-INPUTNAIF      PIC X(01).
       *                継続コメント入力
                        09  SPA-COM-INPUTCONT      PIC X(01).
+      *                薬評入力
+                       09  SPA-COM-YAKUHYO        PIC X(01).
+      *                減点入力
+                       09  SPA-COM-GENTEN         PIC X(01).
       *ver.4.5.0
       *
       *        診療会計附加項目

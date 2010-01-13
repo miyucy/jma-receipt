@@ -421,6 +421,8 @@
              IF     (ACCT-YKZTEN       >   ZERO  )
       *        包括まとめ入力は対象外とする
                AND  (ACCT-HKNCOMBI NOT =   "9999" )
+      *        薬評は対象外とする
+               AND  (ACCT-ZAIKBN   NOT =   1      )
       *
       *        最初の日を保存（点数マスタ検索のため）
                MOVE    01                  TO  WRK-DD
@@ -637,6 +639,8 @@
                IF      ACCT-YKZTEN       >   ZERO
       *        包括まとめ入力は対象外とする
                  AND  (ACCT-HKNCOMBI NOT =   "9999" )
+      *        薬評は対象外とする
+                 AND  (ACCT-ZAIKBN   NOT =   1      )
       *
       *            最初の日を保存（点数マスタ検索のため）
                    MOVE    01                  TO  WRK-DD
@@ -992,6 +996,8 @@
                IF      ACCT-SYUTEN1        >   ZERO
       *            包括まとめ入力は対象外とする
                   AND  (ACCT-HKNCOMBI NOT =   "9999" )
+      *           薬評は対象外とする
+                  AND  (ACCT-ZAIKBN   NOT =   1      )
       *
                    ADD     1                   TO  IDX1
                    MOVE    ACCT-ZAINUM         TO  TBL-CHO-ZAINUM(IDX1)
@@ -1042,6 +1048,8 @@
                            (IDX1                >=  10 )
       *        包括まとめ入力は対象外とする
                IF   (ACCT-HKNCOMBI NOT =   "9999" )
+      *        薬評は対象外とする
+               AND  (ACCT-ZAIKBN   NOT =   1      )
       *
                ADD     1                   TO  IDX1
                MOVE    ACCT-ZAINUM         TO  TBL-MAD-ZAINUM  (IDX1)

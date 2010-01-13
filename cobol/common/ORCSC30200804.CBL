@@ -461,17 +461,22 @@
       *
                    WHEN    OTHER
       *                編集チェックへ
-                       PERFORM 10011-CHK-SEC
+      *                薬評以外
+                       IF      WRK-COM-YAKUHYO (IDX-Z) =   SPACE
+                           PERFORM 10011-CHK-SEC
+                       END-IF
                END-EVALUATE
            END-PERFORM
       *
       *    点滴の時、手技料の自動修正
-           IF      WRK-COM-SRYSYUKBN(01)   =   "330"
+           IF     (WRK-COM-SRYSYUKBN(01)   =   "330" )
+           AND    (WRK-COM-YAKUHYO  (IDX-MAX)  =   SPACE)
                PERFORM 1002-TENTEKI-CHK-SEC
            END-IF
       *
       *    皮下注射の時、手技料の自動修正
            IF      WRK-COM-SRYSYUKBN(01)   =   "310"
+           AND    (WRK-COM-YAKUHYO  (IDX-MAX)  =   SPACE)
       *        皮下筋肉注射料変換選択
                IF     LNK-ORCSC-CHG310FLG     =   "1"
                    CONTINUE
@@ -483,6 +488,7 @@
       *    種別のみの時、手技料の自動発生
            IF     (FLG-SYUGI           =   ZERO  )  AND
                   (WRK-ERRCD           =   SPACE )
+           AND    (WRK-COM-YAKUHYO  (IDX-MAX)  =   SPACE)
       *        薬剤のみの時対象外
                IF      WRK-COM-SRYSYUKBN(01)(3:1)  =   "1"
                    CONTINUE
@@ -1428,6 +1434,10 @@
                    UNTIL     ( IDX     >   SPA-MAX-LINE )  OR
                              ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
+      *    薬評以外
+             IF      WRK-COM-YAKUHYO (IDX) =   "1"
+               CONTINUE
+             ELSE
       *        点滴の時のみ
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
                                                    OR  "332"
@@ -1590,6 +1600,8 @@
                        END-IF
                    END-PERFORM
                END-IF
+      *
+            END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                CONTINUE
@@ -1745,6 +1757,7 @@
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
+             AND  (WRK-COM-YAKUHYO  (IDX) NOT =   "1"   )
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
@@ -1878,6 +1891,10 @@
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO               TO  FLG-ZAIARI
+               END-IF
+      *        薬評は対象外
+               IF      ACCT-ZAIKBN             =   1
+                   MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *
       *        回数があるもの
@@ -2137,6 +2154,10 @@
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
+      *        薬評は対象外
+               IF      ACCT-ZAIKBN             =   1
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
       *        輸血の判定
                IF      FLG-ZAIARI          =   1
       *            診療行為より
@@ -2245,6 +2266,10 @@
                END-IF
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
+      *        薬評は対象外
+               IF      ACCT-ZAIKBN             =   1
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
                IF      FLG-ZAIARI         =   1

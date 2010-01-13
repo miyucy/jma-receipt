@@ -36,6 +36,7 @@
       * 04.01.00     NACL-多々納  07/10/19  公務災害追加
       * 04.01.01     NACL-多々納  07/11/12  非表示区分対応追加
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０．４改正対応
+      * 04.05.00     NACL-多々納  10/01/XX  治験対応
       *****************************************************************
       *
       *
@@ -451,6 +452,15 @@
                MOVE    COMB-GAI-KFTNRATE   TO  ORCSHKN-NAI-FTNRATE
                                                                (IDX)
            END-IF
+      *    保険番号マスタ検索
+           PERFORM 3001-HKNNUM-CHK-SEC
+      *    治験判定
+           IF     (COMB-HKNNUM         >=  "900"   AND
+                                       <=  "919"   )   AND
+                  (HKN-HKNKOHSBTKBN    =   "9"     )
+               MOVE    "1"             TO  ORCSHKN-NAI-CHIKENKBN
+                                                             (IDX)
+           END-IF
       *    ３歳未満の時、２割を上限とする
            IF    ((COMB-TEKEDYMD       >=  "20021001") AND
                   (SPA-SRYYMD          >=  "20021001") AND
@@ -459,8 +469,6 @@
              OR  ((COMB-TEKEDYMD       >=  "20080401") AND
                   (SPA-SRYYMD          >=  "20080401") AND
                   (AGECHK-SYUGAKUKBN   =   1         ))
-      *        主保険が自費以外の時
-               PERFORM 3001-HKNNUM-CHK-SEC
       *        自費・治験
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9"    )
       *                特別療養費

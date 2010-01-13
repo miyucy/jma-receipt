@@ -235,6 +235,7 @@
                    07  LNK-ORCSC-KASN-TBL2     OCCURS   30.
                        09  LNK-ORCSC-SRYKA         PIC X(02).
                        09  LNK-ORCSC-HKNCOMBI      PIC X(04).
+                       09  LNK-ORCSC-CHIKENKBN     PIC X(01).
                        09  LNK-ORCSC-SRYSYUKBN     PIC X(03).
                        09  LNK-ORCSC-SRYKBN        PIC X(02).
                        09  LNK-ORCSC-SRYCD         PIC X(09).

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *  03.03.00    NACL-¬ø°π«º  07/03/06  ª¿¡«≈¿øÙ∑◊ªªΩ§¿µ
       *  04.05.00    NACL-¬ø°π«º  09/06/XX  øÙŒÃæÆøÙ£µ∑Â¬–±˛
+      *  04.05.00    NACL-¬ø°π«º  10/01/XX  ÃÙ…æ¬–±˛
       *****************************************************************
       *
       *
@@ -47,6 +48,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SP              PIC 9(01).
+           03  FLG-GENTEN          PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -188,6 +190,10 @@
                ELSE
                    MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
                END-IF
+      *        ÃÙ…æ§œ¬–æ›≥∞
+               IF      LNK-COM-YAKUHYO (IDX)   =   "1"
+                   CONTINUE
+               ELSE
       *
                MOVE    IDX                 TO  IDX-MAX
                EVALUATE    WRK-MOJI
@@ -214,6 +220,8 @@
                        END-IF
                    END-IF
                END-EVALUATE
+      *
+               END-IF
            END-PERFORM
       *
       *    ÃÙ∫ﬁ≈¿øÙ∑◊ªª° ∫ﬁ∆‚§«§ﬁ§»§·§∆∑◊ªª°À
@@ -494,6 +502,7 @@
            MOVE    ZERO                TO  WRK-CHISOKEI
            MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  IDX-MAX
+           MOVE    ZERO                TO  FLG-GENTEN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   MAX-LINE  )  OR
@@ -507,6 +516,13 @@
       *                ª¿¡«°¶√‚¡«§ŒΩ∏∑◊
                        PERFORM 2004-KIZAI-SET-SEC
                    END-IF
+               END-IF
+      *        ∏∫≈¿
+               IF     (LNK-COM-PLUSKBN (IDX)   =   1   )
+                   MOVE    1               TO  FLG-GENTEN
+               END-IF
+               IF      FLG-GENTEN          =   1
+                   MOVE    1               TO  LNK-COM-PLUSKBN (IDX)
                END-IF
            END-PERFORM
       *    √‚¡«≈¿øÙ∑◊ªªΩËÕ˝
@@ -552,6 +568,10 @@
                                            +   LNK-SC90-FIRTEN
                                            +   LNK-SC90-SANTEN
                                            +   LNK-SC90-CHITEN
+      *    ∏∫≈¿ ¨
+           IF      FLG-GENTEN          =   1
+               MOVE    1               TO  LNK-COM-PLUSKBN (IDX-MAX)
+           END-IF
       *
            .
        200-TENSUKEI-EXT.

@@ -330,6 +330,7 @@
                05  WRK-YKZTEN              PIC  9(07).
                05  WRK-KIZAITEN            PIC  9(07).
                05  WRK-JIHIMONEY           PIC  9(08).
+               05  WRK-ZAIKBN              PIC  9(03).
       *     ∞Ï…Ù…È√¥∂‚∑◊ªªÕ—
            03  WRK-S01-TENSU       PIC 9(08).
       *
@@ -5297,6 +5298,13 @@
                    MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                    MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
                    MOVE    SPA-COM-KIZAITEN(IDX)   TO  WRK-KIZAITEN
+      *
+                   IF      SPA-COM-YAKUHYO (IDX)   =   "1"
+                       MOVE    1                   TO  WRK-ZAIKBN
+                   END-IF
+                   IF      SPA-COM-GENTEN  (IDX)   =   "1"
+                       MOVE    2                   TO  WRK-ZAIKBN
+                   END-IF
                END-IF
       *
       *        ≥∆…Ì≤√æ Û
@@ -5796,6 +5804,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COM-SYUTEN2 (IDX)   TO  WRK-SYUTEN2
                MOVE    SPA-COM-YKZTEN  (IDX)   TO  WRK-YKZTEN
                MOVE    SPA-COM-KIZAITEN(IDX)   TO  WRK-KIZAITEN
+      *
+               IF      SPA-COM-YAKUHYO (IDX)   =   "1"
+                   MOVE    1                   TO  WRK-ZAIKBN
+               END-IF
+               IF      SPA-COM-GENTEN  (IDX)   =   "1"
+                   MOVE    2                   TO  WRK-ZAIKBN
+               END-IF
            END-IF
       *****IF      SPA-COM-KEIFLG (IDX)    =   "1" OR  "2"
       *        MOVE    SPA-COM-KEI  (IDX)      TO  SRY-JIHIMONEY
@@ -6013,6 +6028,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *    ¥Ô∫‡≈¿øÙ
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *    ∫ﬁº± Ã∂Ë ¨
+           MOVE    WRK-ZAIKBN          TO  ACCT-ZAIKBN
       *!!
       *    …Ì≤√æ Û§¢§Í
            IF      WKSRYP-ADDKBN       =   "1"
@@ -7025,6 +7042,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *    ¥Ô∫‡≈¿øÙ
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *    ∫ﬁº± Ã∂Ë ¨
+           MOVE    WRK-ZAIKBN          TO  ACCT-ZAIKBN
       *
            IF      SPA-J04-SYORI       =   ZERO
                IF      FLG-SRYKBN-HEN      =   1
@@ -7250,6 +7269,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-YKZTEN          TO  ACCT-YKZTEN
       *            ¥Ô∫‡≈¿øÙ
                    MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
+      *            ∫ﬁº± Ã∂Ë ¨
+                   MOVE    WRK-ZAIKBN          TO  ACCT-ZAIKBN
       *
                    MOVE    SRYACCT-REC         TO  PARA-DATA-REC
       *

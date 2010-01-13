@@ -440,7 +440,7 @@
            03  WRK-NYUYOJI         PIC 9(04).
       *
            03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+               05  WRK-TENSU-Z     PIC --------.
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
            03  WRK-BUNGSU-X.
@@ -683,6 +683,8 @@
       *
            03  WRK-KEI-X.
                05  WRK-KEI-Z       PIC Z(08).
+           03  WRK-KEI-X2.
+               05  WRK-KEI-Z2      PIC -(08).
            03  WRK-KEI-H           PIC X(08).
            03  WRK-ZAIKEI-H        PIC X(40).
            03  WRK-KAKERU          PIC X(03).
@@ -6078,6 +6080,10 @@
                                        NOT =   "9999" )
       *       ¿Ç»¡ÎÁ¼«Æ°È¯À¸¤Ê¤·¤ÏÂÐ¾Ý³°
               AND (SPA-INITAUTO-FLG    =   "1"        )
+      *       ¼£¸³¤ÏÂÐ¾Ý³°
+              AND (SPA-CHIKENKBN   NOT =   "1"        )
+              AND (SPA-COM-CHIKENKBN(SPA-GMN-IDX)
+                                   NOT =   "1"        )
       *
                MOVE    SPA-MAE-INPUTCD(SPA-GMN-IDX)
                                        TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
@@ -6098,6 +6104,10 @@
                                        NOT =   "9999" )
       *       ¿Ç»¡ÎÁ¼«Æ°È¯À¸¤Ê¤·¤ÏÂÐ¾Ý³°
               AND (SPA-INITAUTO-FLG    =   "1"        )
+      *       ¼£¸³¤ÏÂÐ¾Ý³°
+              AND (SPA-CHIKENKBN   NOT =   "1"        )
+              AND (SPA-COM-CHIKENKBN(SPA-GMN-IDX)
+                                   NOT =   "1"        )
       *
                PERFORM 4101122-SYOSIN-SAISIN-SEC
                IF      FLG-OK          NOT =   ZERO
@@ -7114,7 +7124,14 @@
                  OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
                                                    =   "0992000" )
       *            ÌôºÞ¡¦´ïºà¡¦ÍÑË¡
-                   MOVE    1                   TO  FLG-IN1
+      *            ÅÀ¿ô¥¼¥í¤Ç¶â³Û¤Ï¤Ê¤·
+                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO ) AND
+                          (SPA-COM-TENSIKIBETU (SPA-GMN-IDX)
+                                                       =   1    )
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
                END-IF
                IF      WRK-MOJI                =   "1"
                    IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
@@ -7603,6 +7620,8 @@
                   (FLG-HKTCHK          =   1 ) AND
                   (SPA-HKTSANTEI-FLG   =   1 ) AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
+      *       ¼£¸³¤ÏÂÐ¾Ý³°
+              AND (SPA-CHIKENKBN   NOT =   "1"        )
                PERFORM 5109-HKTSANTEI-CHK-SEC
            END-IF
       *    £·£°ºÐÅþÃ£¤Î·Ù¹ð
@@ -10898,6 +10917,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-GMN-MAX  )  OR
                               (FLG-SYOHOU-ARI  =   1     )
+      *    ÌôÉ¾°Ê³°
+             IF     (SPA-COM-YAKUHYO (IDX)     =   SPACE )
       *        ÌôºÞ¥Á¥§¥Ã¥¯
                IF     (SPA-COM-SRYKBN(IDX)     =   "21"  OR  "22"  OR
                                                    "23"   )  AND
@@ -10912,8 +10933,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       (SPA-COM-ZAIEND(IDX)     =   "1"    )  AND
                       (SPA-COM-TENSU (IDX)     =   ZERO   )  AND
                       (FLG-YAKUZAI-ARI         =   1      ))
-      ************** ((SPA-COM-SRYKBN(IDX)     =   "14"   )  AND
-      *************   (SPA-COM-YKZTEN(IDX)     >   ZERO   ))
       *            ÌôºÞ¤Î¤ß¤Î»þ¡¢±¡ÆâÊ¬¤È¤¹¤ë
                    IF      SPA-COM-SRYSYUKBN(IDX)  =  "213"  OR
                                                       "223"  OR
@@ -10932,14 +10951,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *        ºßÂðÃí¼Í±¡³°½èÊý
                IF     (SPA-COM-SRYKBN(IDX)     =   "14"  )
-      ******** AND   ((SPA-COM-YKZTEN(IDX)     >   ZERO  ) OR
-      *********       (SPA-COM-KIZAITEN(IDX)   >   ZERO  ))
                    IF      SPA-COM-SRYSYUKBN(IDX)  =   "148"  OR
                                                        "149"
       *                ±¡³°Ê¬
                        MOVE    1                   TO  FLG-SYOHOU-ARI
                    END-IF
                END-IF
+               END-IF
+      *
                IF      SPA-COM-ZAIEND(IDX)     =   "1" 
                    MOVE    ZERO            TO  FLG-YAKUZAI-ARI
                END-IF
@@ -12083,9 +12102,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SURYO   (WRK-IDX)   TO  WRK-H-SURYO
            MOVE    SPA-GMN-TANINAME(WRK-IDX)   TO  WRK-H-TANINAME
            MOVE    WRK-ZAIKEI-H                TO  WRK-H-ZAIKEI
-           MOVE    SPA-GMN-KEI (WRK-IDX)
-                                       TO  WRK-KEI-Z
-           MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+           IF      SPA-GMN-KEI (WRK-IDX)   >=  ZERO
+               MOVE    SPA-GMN-KEI (WRK-IDX)
+                                           TO  WRK-KEI-Z
+               MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+           ELSE
+               MOVE    SPA-GMN-KEI (WRK-IDX)
+                                           TO  WRK-KEI-Z2
+               MOVE    WRK-KEI-Z2          TO  WRK-H-KEI
+           END-IF
       *
            MOVE    WRK-SURYO-HENSYU    TO  K02-SURYO (IDX)
            MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)

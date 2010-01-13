@@ -3504,6 +3504,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    SPACE               TO  ACCT-JIHOKBN
            END-IF
+      *
+      *    ÃÙ…æ°¶¥Ô…æ°¢∏∫≈¿ ¨
+           MOVE    LNK-WKSRY-ZAIKBN (1)    TO  ACCT-ZAIKBN
            .
       *
        45015-SRYACCT-SRY-EXT.

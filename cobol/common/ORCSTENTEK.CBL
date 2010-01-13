@@ -477,6 +477,10 @@
                  AND  (ACCT-JIHOKBN        =   "1"   )
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
+      *        薬評は対象外
+               IF     (ACCT-ZAIKBN         =   1     )
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
       *
       *        回数があるもの
                IF      FLG-ZAIARI          =   1
@@ -1743,6 +1747,7 @@
                IF      ACCT-SYUTEN1        >   ZERO
       *        包括まとめ入力は対象外とする
                  AND  (ACCT-HKNCOMBI   NOT =   "9999" )
+                 AND  (ACCT-ZAIKBN     NOT =   1      )
                  AND  (FLG-YUKETU          =   ZERO   )
                    PERFORM 30031-SRYACT-YUKETU-SEC
                ELSE

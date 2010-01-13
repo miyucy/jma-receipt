@@ -675,6 +675,8 @@
                MOVE    HZN-SRYACT-REC      TO  SRYACT-REC
       *        ø«Œ≈≤Ò∑◊•∆°º•÷•Î ‘Ω∏
                PERFORM 20021-SRYACCT-SYORI-SEC
+           END-IF
+           IF      FLG-OK              =   1
                MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
                MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
                MOVE    SRY-ZAINUM          TO  TBL-ACCT-ZAINUM
@@ -728,11 +730,15 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPA-SRYYMD(7:2)     TO  IDX-ACT
-           MOVE    ACCT-DAY (IDX-REN IDX-ACT)
-                                       TO  TBL-ACCT-KAISU
-           MOVE    ACCT-ZAITEN         TO  TBL-ACCT-ZAITEN
-      *
+           IF      ACCT-ZAIKBN         =   1
+      *        ÃÙ…æ§œ¬–æ›≥∞
+               MOVE    ZERO                TO  FLG-OK
+           ELSE
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-ACT
+               MOVE    ACCT-DAY (IDX-REN IDX-ACT)
+                                           TO  TBL-ACCT-KAISU
+               MOVE    ACCT-ZAITEN         TO  TBL-ACCT-ZAITEN
+           END-IF
            .
        20021-SRYACCT-SYORI-EXT.
            EXIT.
@@ -1054,8 +1060,10 @@
                                                "23"  OR
                                                "14"    )
       *             Ò≥Á ›∏±§œ¬–æ›≥∞
-                   IF     (WRK-HKNCOMBINUM     =   "9999")
-                   AND    (FLG-YKJOKUKBN       =   ZERO  )
+                   IF    ((WRK-HKNCOMBINUM     =   "9999")
+                   AND    (FLG-YKJOKUKBN       =   ZERO  ) )
+      *                ÃÙ…æ§œ¬–æ›≥∞
+                   OR    ( WKSRY-ZAIKBN        =   1     )
                        CONTINUE
                    ELSE
                        PERFORM 2001-WKSRYACT-HEN-SEC

@@ -3375,8 +3375,15 @@
                    EVALUATE    SPA-NAI-SRYKBN (IDX-NAI)
       *                ªÿ∆≥
                        WHEN    "13"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                           IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
+                               ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (02)
+                           ELSE
+                               COMPUTE SPA-GMN-HKNTEN (02)
+                                               =   SPA-GMN-HKNTEN (02)
+                                               -   SPA-NAI-HKNTEN
+                                                              (IDX-NAI)
+                           END-IF
       *                ≈ÍÃÙ
                        WHEN    "21"   THRU  "27"
                            IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
@@ -3421,7 +3428,7 @@
                                ADD     SPA-NAI-HKNTEN (IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (15)
                            ELSE
-                               COMPUTE SPA-GMN-HKNTEN (14)
+                               COMPUTE SPA-GMN-HKNTEN (15)
                                                =   SPA-GMN-HKNTEN (15)
                                                -   SPA-NAI-HKNTEN
                                                               (IDX-NAI)
@@ -4320,7 +4327,14 @@
            EVALUATE    SPA-NAI-SRYKBN (IDY)
       *        ªÿ∆≥
                WHEN    "13"
-                   ADD     SPA-NAI-HKNTEN(IDY)    TO  SYU-HKNTEN (02)
+                   IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
+                       ADD     SPA-NAI-HKNTEN (IDY)
+                                                   TO  SYU-HKNTEN (02)
+                   ELSE
+                       COMPUTE SYU-HKNTEN (02)     =   SYU-HKNTEN (02)
+                                                   -   SPA-NAI-HKNTEN
+                                                                 (IDY)
+                   END-IF
       *        ≈ÍÃÙ
                WHEN    "21"   THRU  "27"
                    IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
@@ -5138,9 +5152,6 @@
                END-IF
                PERFORM 45021-END-SYORI-SEC
            END-IF
-      *test
-            DISPLAY "K08 SPA-ERRCD:" SPA-ERRCD
-                 ",FLG-END:" FLG-END
            .
        4502-NYUKOUSIN-SYORI-EXT.
            EXIT.

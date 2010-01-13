@@ -164,6 +164,7 @@
            03  WRK-SRYCD           PIC X(09). 
            03  WRK-SRYKA           PIC X(02). 
            03  WRK-HKNCOMBI        PIC X(04). 
+           03  WRK-CHIKENKBN       PIC X(01). 
       *
            03  WRK-IDX             PIC 9(04).
       *    ÆýÍÄ»ù¤Î¼«Æ°²Ã»»¥³¡¼¥É
@@ -223,6 +224,7 @@
            03  FLG-KENTAI2             PIC 9(01).
            03  WRK-KENTAI-SRYKA        PIC X(02). 
            03  WRK-KENTAI-HKNCOMBI     PIC X(04). 
+           03  WRK-KENTAI-CHIKENKBN    PIC X(01). 
            03  WRK-KENTAI2-CNT         PIC 9(03). 
            03  FLG-KENTAI-NO            PIC 9(01).
            03  FLG-KENTAI-CHK2          PIC 9(01).
@@ -247,6 +249,7 @@
            03  WRK-KENSA-TBL                       OCCURS   20.
                05  WRK-KEN-SRYKA       PIC X(02).
                05  WRK-KEN-HKNCOMBI    PIC X(04).
+               05  WRK-KEN-CHIKENKBN   PIC X(01).
                05  WRK-KENSAGRP        PIC 9(02).
                05  WRK-KEN-KBN         PIC 9(01).
                05  WRK-KEN-SRYCD       PIC X(09).
@@ -3582,9 +3585,15 @@
                                MOVE    SPA-HKNCOMBINUM
                                                    TO  WRK-KEN-HKNCOMBI
                                                            (WRK-KENIDX)
+                               MOVE    SPA-CHIKENKBN
+                                                   TO  WRK-KEN-CHIKENKBN
+                                                           (WRK-KENIDX)
                            ELSE
                                MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-KEN-HKNCOMBI
+                                                           (WRK-KENIDX)
+                               MOVE    WRK-COM-CHIKENKBN (IDX)
+                                                   TO  WRK-KEN-CHIKENKBN
                                                            (WRK-KENIDX)
                            END-IF
                        END-IF
@@ -3773,6 +3782,9 @@
                        MOVE    WRK-KEN-HKNCOMBI (IDX)
                                                TO  LNK-ORCSC-HKNCOMBI
                                                    (07 IDXS)
+                       MOVE    WRK-KEN-CHIKENKBN(IDX)
+                                               TO  LNK-ORCSC-CHIKENKBN
+                                                   (07 IDXS)
                        MOVE    WRK-KEN-SRYCD (IDX)
                                                TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
@@ -3836,6 +3848,8 @@
                                            TO  WRK-SRYKA
                MOVE    LNK-ORCSC-HKNCOMBI(07 IDXS-KENTAI)
                                            TO  WRK-HKNCOMBI
+               MOVE    LNK-ORCSC-CHIKENKBN (07 IDXS-KENTAI)
+                                           TO  WRK-CHIKENKBN
       *        ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
                IF      SPA-NYUGAIKBN       =   1
       *            ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£³
@@ -3896,6 +3910,8 @@
                                            TO  WRK-SRYKA
                MOVE    WRK-COM-HKNCOMBI(IDX-BA)
                                            TO  WRK-HKNCOMBI
+               MOVE    WRK-COM-CHIKENKBN (IDX-BA)
+                                           TO  WRK-CHIKENKBN
       *        Æ°Ì®·ìºÎ·ì
                MOVE    "160101210"         TO  WRK-SRYCD
                IF      SPA-NYUGAIKBN       =   "1"
@@ -3913,6 +3929,8 @@
                                            TO  WRK-SRYKA
                MOVE    WRK-COM-HKNCOMBI(IDX-BV)
                                            TO  WRK-HKNCOMBI
+               MOVE    WRK-COM-CHIKENKBN(IDX-BV)
+                                           TO  WRK-CHIKENKBN
       *        ÀÅÌ®·ìºÎ·ì
                MOVE    "160095710"         TO  WRK-SRYCD
                MOVE    WRK-BV-DAY          TO  WRK-SAI-DAY
@@ -3926,6 +3944,8 @@
                                            TO  WRK-SRYKA
                MOVE    WRK-COM-HKNCOMBI(IDX-BC)
                                            TO  WRK-HKNCOMBI
+               MOVE    WRK-COM-CHIKENKBN(IDX-BC)
+                                           TO  WRK-CHIKENKBN
       *        Ëõ¾ÃºÎ·ì
                MOVE    "160095810"         TO  WRK-SRYCD
                MOVE    WRK-BC-DAY          TO  WRK-SAI-DAY
@@ -4007,9 +4027,12 @@
                    END-IF
                    IF      WRK-COM-HKNCOMBI (IDX)     =   SPACE
                        MOVE    SPA-HKNCOMBINUM TO  WRK-KENTAI-HKNCOMBI
+                       MOVE    SPA-CHIKENKBN   TO  WRK-KENTAI-CHIKENKBN
                    ELSE
                         MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-KENTAI-HKNCOMBI
+                        MOVE    WRK-COM-CHIKENKBN (IDX)
+                                               TO  WRK-KENTAI-CHIKENKBN
                    END-IF
                END-IF
       *
@@ -4236,6 +4259,8 @@
                MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                    (07 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                   (07 IDXS)
+               MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
                                                    (07 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
@@ -4490,6 +4515,9 @@
                                                    (07 IDXS)
                    MOVE    WRK-KENTAI-HKNCOMBI TO  LNK-ORCSC-HKNCOMBI
                                                    (07 IDXS)
+                   MOVE    WRK-KENTAI-CHIKENKBN
+                                           TO  LNK-ORCSC-CHIKENKBN
+                                                   (07 IDXS)
                    MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
                    MOVE    WRK-COM-KISOTEN (WRK-GMN-MAX)
@@ -4538,6 +4566,8 @@
                MOVE    WRK-SRYKA       TO  LNK-ORCSC-SRYKA
                                                    (07 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
+                                                   (07 IDXS)
+               MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
                                                    (07 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)

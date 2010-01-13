@@ -832,6 +832,8 @@
            IF      FLG-TAIGAI          =   ZERO
       *        診療会計より、点数チェック
                PERFORM 20021-SRYACCT-SYORI-SEC
+           END-IF
+           IF      FLG-TAIGAI          =   ZERO
       *        点数がゼロのものを院外処方分とする
                IF     (WRK-SRYSYUKBN       =   "210"
                                            OR  "220"
@@ -1083,9 +1085,14 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPA-SRYYMD(7:2)     TO  IDX-ACT
-           MOVE    ACCT-DAY (IDX-REN IDX-ACT)
-                                       TO  WRK-KAISU
+           IF      ACCT-ZAIKBN         =   1
+      *        薬評分外
+               MOVE    1                   TO  FLG-TAIGAI
+           ELSE
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-ACT
+               MOVE    ACCT-DAY (IDX-REN IDX-ACT)
+                                           TO  WRK-KAISU
+           END-IF
       *
            .
        20021-SRYACCT-SYORI-EXT.
@@ -1144,8 +1151,10 @@
                                            OR  "14"
                                            OR  "98"  )
       *           包括保険分は対象外
-                   IF      (WRK-HKNCOMBINUM    =   "9999" )
-                   AND     (FLG-YKJOKUKBN      =   ZERO   )
+                   IF     ((WRK-HKNCOMBINUM    =   "9999" )
+                   AND     (FLG-YKJOKUKBN      =   ZERO   ) )
+      *                薬評分対象外
+                   OR      (WKSRY-ZAIKBN       =   1      )
                        CONTINUE
                    ELSE
                        ADD     1                   TO  LNK-WKSRYACT-MAX

@@ -77,6 +77,8 @@
                        09  ORCSHKN-NAI-RSI-HKNKBN      PIC  X(01).
       *                ÆÃÄê¼À´µ¤Î¼õµë¼ÔÈÖ¹æ
                        09  ORCSHKN-NAI-JKYSNUM         PIC  X(20).
+      *                ¼£¸³¶èÊ¬
+                       09  ORCSHKN-NAI-CHIKENKBN       PIC  X(01).
       *                ¸øÈñ¼ïÎà¡¦¸øÈñ£É£Ä
                        09  ORCSHKN-NAI-KOH-G.
                            11  ORCSHKN-NAI-KOH1HKNNUM      PIC  X(03).

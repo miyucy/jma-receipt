@@ -355,6 +355,11 @@
                MOVE    ZERO                TO  FLG-SYORI
            END-IF
       *
+      *    ÌôÉ¾Ê¬¤ÏÂÐ¾Ý³°
+           IF      LNK-WKSRY-ZAIKBN  (1)   =   1
+               MOVE    ZERO                TO  FLG-SYORI
+           END-IF
+      *
            IF      FLG-SYORI           =   ZERO
                CONTINUE
            ELSE

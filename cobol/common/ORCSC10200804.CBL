@@ -4016,6 +4016,8 @@
                    OR        (LNK-ORCSC-PG        =   "KT01" )
       *!!!
              IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+      *          º£∏≥∏∫≈¿ ¨
+             OR   (WRK-COM-GENTEN (IDX-Z)   =   "1")
                CONTINUE
              ELSE
       *        ø«ª°Œ¡§Œ»ΩƒÍ

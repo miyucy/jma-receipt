@@ -623,8 +623,15 @@
                PERFORM VARYING     IDX-Z   FROM    1   BY  1
                        UNTIL      (IDX-Z       >   SPA-GMN-MAX )
                                OR (FLG-CHK     =   1    )
-                   IF     (SPA-COM-HKNCOMBI (IDX-Z)    NOT =   "9999")
-                      AND (SPA-COM-SRYKBN (IDX-Z)(1:1) NOT =   "9"   )
+                   IF     (SPA-COM-HKNCOMBI (IDX-Z)        =   "9999")
+                      OR  (SPA-COM-SRYKBN (IDX-Z)(1:1)     =   "9"   )
+      *               ¼£¸³ÂÐ¾Ý³°
+                      OR  (SPA-COM-CHIKENKBN(IDX-Z)        =   "1"   )
+      *               ÌôÉ¾ÂÐ¾Ý³°
+                      OR  (SPA-COM-YAKUHYO  (IDX-Z)        =   "1"   )
+                      OR  (SPA-COM-GENTEN   (IDX-Z)        =   "1"   )
+                       CONTINUE
+                    ELSE
       *                ¼êµ»
                        IF     (SPA-COM-INPUTCD(IDX-Z)(1:1) =   "1" )
                            MOVE    SPA-COM-INPUTCD(IDX-Z)  TO  WRK-SRYCD
@@ -937,6 +944,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    OR (SPA-GMN-INPUTCD (IDX-Z)(1:1)
                                                    =   "#"
                                                    OR  "$"   )
+      *            ¼£¸³ÂÐ¾Ý³°
+                   OR (SPA-COM-CHIKENKBN(IDX-Z)    =   "1"   )
+      *            ÌôÉ¾ÂÐ¾Ý³°
+                   OR  (SPA-COM-YAKUHYO (IDX-Z)    =   "1"   )
+                   OR  (SPA-COM-GENTEN  (IDX-Z)    =   "1"   )
                    CONTINUE
                ELSE
                    IF      SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1"
@@ -972,6 +984,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    OR (SPA-GMN-INPUTCD (IDX-Z)(1:1)
                                                    =   "#"
                                                    OR  "$"   )
+      *            ¼£¸³ÂÐ¾Ý³°
+                   OR (SPA-COM-CHIKENKBN(IDX-Z)    =   "1"   )
+      *            ÌôÉ¾ÂÐ¾Ý³°
+                   OR  (SPA-COM-YAKUHYO (IDX-Z)    =   "1"   )
+                   OR  (SPA-COM-GENTEN  (IDX-Z)    =   "1"   )
                    CONTINUE
                ELSE
                    IF     (SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1" )
@@ -1242,8 +1259,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    UNTIL      (IDX-L1      >   10  )
                PERFORM VARYING     IDX-L2      FROM    1   BY  1
                        UNTIL      (IDX-L2      >   30      )
-                   IF      LNK-ORCSC-SRYCD (IDX-L1 IDX-L2)
-                                           NOT = SPACE
+                   IF     (LNK-ORCSC-SRYCD (IDX-L1 IDX-L2)
+                                           NOT = SPACE     )
+      *                ¼£¸³ÂÐ¾Ý³°
+                   AND    (LNK-ORCSC-CHIKENKBN (IDX-L1 IDX-L2)
+                                               =   SPACE   )
       *                ¿ÇÎÅ¶èÊ¬¤Ë¤è¤ëÊñ³ç
                        PERFORM 30022-SRYKBN-CHECK-SEC
       *
@@ -1756,6 +1776,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                    OR  "96"
                                                    OR  "99"
                                                    OR  "98"  )
+      *            ¼£¸³ÂÐ¾Ý³°
+                   OR (SPA-COM-CHIKENKBN(IDX-Z)    =   "1"   )
+      *            ÌôÉ¾ÂÐ¾Ý³°
+                   OR  (SPA-COM-YAKUHYO (IDX-Z)    =   "1"   )
+                   OR  (SPA-COM-GENTEN  (IDX-Z)    =   "1"   )
                    CONTINUE
                ELSE
                    IF      SPA-GMN-INPUTCD (IDX-Z)(1:1)  =   "*"

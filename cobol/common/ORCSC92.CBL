@@ -4106,6 +4106,15 @@
                MOVE    WRK-KEI-TEN2    TO  SPA-COM-KISOTEN  (IDX-T)
            END-IF
       *
+      *    減点分は数量に減点を入力
+           IF     (SPA-COM-TENSIKIBETU (IDX-T) =   7 )
+             AND  (SPA-COM-TEN (IDX-T)     =   ZERO  )
+               MOVE    SPA-COM-SURYO (IDX-T)   TO  SPA-COM-KISOTEN
+                                                              (IDX-T)
+               MOVE    1                   TO  SPA-COM-PLUSKBN(IDX-T)
+           ELSE
+               MOVE    ZERO                TO  SPA-COM-PLUSKBN(IDX-T)
+           END-IF
            .
        3005-SYOCHI-SYUGI-EXT.
            EXIT.
