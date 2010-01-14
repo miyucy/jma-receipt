@@ -54,6 +54,8 @@
       *                                     診療種別区分の追加
       *  04.05.02    NACL-藤原    09/11/27  レセ電コメント拡張対応
       *                                     関係コメント存在フラグ追加
+      *  04.05.03    NACL-藤原    10/01/13  治験対応
+      *                                     剤区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -405,6 +407,7 @@
            MOVE    RECE64-TOYAKUFLG    TO  RECE641-TOYAKUFLG
            MOVE    RECE64-SRYSYUKBN    TO  RECE641-SRYSYUKBN
            MOVE    RECE64-SETCOMFLG    TO  RECE641-SETCOMFLG
+           MOVE    RECE64-ZAIKBN       TO  RECE641-ZAIKBN
       *
            WRITE   RECE641-REC
            ADD     1                   TO  CNT-OUT

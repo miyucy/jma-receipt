@@ -267,6 +267,7 @@
       *                                     £≤£∞£∞£π«Ø£∏∑Ó°¡£≤£∞£±£∞«Ø£±∑Ó¬–æ› 
       *  04.05.05    NACL-∆£∏∂    09/10/30  ≥»ƒ•¥¡ª˙¬–±˛
       *  04.05.06    NACL-∆£∏∂    09/11/27  •Ï•ª≈≈•≥•·•Û•»≥»ƒ•¬–±˛
+      *  04.05.07    NACL-∆£∏∂    10/01/13  º£∏≥¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -470,6 +471,7 @@
            03  FLG-PRT                 PIC 9(01).
            03  FLG-KOUI                PIC 9(01).
            03  FLG-TOYAKUFLG           PIC 9(01).
+           03  FLG-TAISYO              PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -3745,20 +3747,34 @@
                OR     ( RECE641-TEKSTYMD   NOT =   RECE65-TEKSTYMD     )
                OR     ( RECE641-ZAINUM     NOT =   RECE65-ZAINUM       )
       *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE65-SRYCD(IDX) =   SPACE )
-                         OR      ( FLG-END           =   1     )
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE65-SRYCD(IDX) =   SPACE )
+                       OR      ( FLG-END           =   1     )
       *
-      *         ∆˛±°Œ¡§œ•≥•·•Û•»§´¬‡±°≤√ªª§Œ§ﬂ¬–æ›§»§π§Î
-                IF    ( RECE641-SRYKBN               >=  "90"      )
-                AND   ( RECE65-SRYCD (IDX) (1:1) NOT =   "8"   AND
-                        RECE65-SRYCD (IDX) (1:3) NOT =   "008" AND
-                        RECE65-SRYCD (IDX)       NOT =   "190128310" AND
-                        RECE65-SRYCD (IDX)       NOT =   "190128410" AND
-                        RECE65-SRYCD (IDX)       NOT =   "190128570"  )
-                 CONTINUE
-                ELSE
+               MOVE    ZERO                      TO  FLG-TAISYO
+      *
+      *        ∆˛±°Œ¡§Œ∏∫≈¿ ¨§œ¬–æ›§»§π§Î
+               IF    ( RECE641-SRYKBN             =   "90" OR  "92" )
+               AND   ( RECE641-ZAIKBN             =   2             )
+                   MOVE    1                      TO  FLG-TAISYO
+               ELSE
+      *           ∆˛±°Œ¡§œ•≥•·•Û•»§´¬‡±°≤√ªª§Œ§ﬂ¬–æ›§»§π§Î
+                  IF    ( RECE641-SRYKBN               >=  "90"      )
+                  AND   ( RECE65-SRYCD (IDX) (1:1) NOT =   "8"   AND
+                          RECE65-SRYCD (IDX) (1:3) NOT =   "008" AND
+                          RECE65-SRYCD (IDX)       NOT =   "190128310"
+                                                           AND
+                          RECE65-SRYCD (IDX)       NOT =   "190128410"
+                                                           AND
+                          RECE65-SRYCD (IDX)       NOT =   "190128570" )
+                     CONTINUE
+                  ELSE
+                     MOVE    1                      TO  FLG-TAISYO
+                  END-IF
+               END-IF
+      *
+               IF      FLG-TAISYO          =   1  
                  IF    ( RECE65-RECEDENFLG (IDX)   =   SPACE )
                  AND   ( RECE65-MEISKYFLG (IDX)
                                                 NOT =   "2"  )
@@ -3826,10 +3842,10 @@
       *********************END-IF
                    END-EVALUATE
                  END-IF
-                END-IF
-               END-PERFORM
+               END-IF
+             END-PERFORM
       *
-               PERFORM 990-RECE65-NEXT-SEC
+             PERFORM 990-RECE65-NEXT-SEC
            END-PERFORM
       *
       *    ≤Ë¡¸ø«√«§Œ§»§≠ΩÁ»÷§Ú —§®§Î
