@@ -85,6 +85,8 @@
       *  04.04.01    NACL-ÌçÏÆ    09/01/23  Æþ±¡ÎÁ»»ÄêÊÝ¸±°Ê³°¤Î¿ÇÎÅÊ¬¼ÂÆü¿ô»»ÄêÂÐ±þ
       *  04.04.02    NACL-ÌçÏÆ    09/05/11  °¦É²¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.04.03    NACL-ÌçÏÆ    09/09/04  ¾®Æþ´ÉÎ¬¾Î½¤Àµ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    10/01/12  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
       *
@@ -1394,14 +1396,15 @@
       *****************************************************************
        2001115-NYUINRYO-TAIHI-SEC                 SECTION.
       *
-           IF        ACCT-SRYCDTOTAL    =    190080470
+           IF       (ACCT-SRYCDTOTAL    =    190080470
                                         OR   190799670
                                         OR   190080570
                                         OR   190799770
                                         OR   190111690
                                         OR   190809090
                                         OR   190111790
-                                        OR   190809190
+                                        OR   190809190)
+           OR       (ACCT-ZAIKBN        =    2        )
                 CONTINUE
            ELSE
                 PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
@@ -2535,14 +2538,15 @@
       *
            EVALUATE   WRK-DAY1-NYUTENTTLKBN(ACCT-IDX)
               WHEN   903
-                 IF        ACCT-SRYCDTOTAL    =    190080470
+                 IF       (ACCT-SRYCDTOTAL    =    190080470
                                               OR   190799670
                                               OR   190080570
                                               OR   190799770
                                               OR   190111690
                                               OR   190809090
                                               OR   190111790
-                                              OR   190809190
+                                              OR   190809190)
+                 OR       (ACCT-ZAIKBN        =    2        )
                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
                     AND    KH-IDX                >   1
                        CONTINUE
@@ -2568,14 +2572,15 @@
                              (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  END-IF
               WHEN   920
-                 IF        ACCT-SRYCDTOTAL    =    190080470
+                 IF       (ACCT-SRYCDTOTAL    =    190080470
                                               OR   190799670
                                               OR   190080570
                                               OR   190799770
                                               OR   190111690
                                               OR   190809090
                                               OR   190111790
-                                              OR   190809190
+                                              OR   190809190)
+                 OR       (ACCT-ZAIKBN        =    2        )
                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
                     AND    KH-IDX                >   1
                        CONTINUE
@@ -3143,7 +3148,7 @@
                                                  OR "96" OR "97"
                    CONTINUE
                ELSE
-                 IF        ACCT-SRYCDTOTAL    =    630010002
+                 IF       (ACCT-SRYCDTOTAL    =    630010002)
       *                                       OR   190080470
       *                                       OR   190799670
       *                                       OR   190080570
@@ -3152,6 +3157,7 @@
       *                                       OR   190809090
       *                                       OR   190111790
       *                                       OR   190809190
+                 OR       (ACCT-ZAIKBN        =    2        )
                    COMPUTE   TBL-TOTALTEN-ACCT(1) =  
                              TBL-TOTALTEN-ACCT(1) -
                              (ACCT-ZAITEN  *  
@@ -3223,7 +3229,7 @@
                                                      OR "96" OR "97"
                        CONTINUE
                    ELSE
-                     IF        ACCT-SRYCDTOTAL    =    630010002
+                     IF       (ACCT-SRYCDTOTAL    =    630010002)
       *                                           OR   190080470
       *                                           OR   190799670
       *                                           OR   190080570
@@ -3232,6 +3238,7 @@
       *                                           OR   190809090
       *                                           OR   190111790
       *                                           OR   190809190
+                     OR       (ACCT-ZAIKBN        =    2        )
                        IF     TBL-FUKUSHIFLG(IDX2)  =   1
                           CONTINUE
                        ELSE

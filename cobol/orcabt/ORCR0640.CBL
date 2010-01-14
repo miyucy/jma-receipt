@@ -575,7 +575,7 @@
            03  FLG-RECE69                              PIC 9(01).
            03  FLG-ZENKOH-ARI                          PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
-           03  FLG-TOKKI                               PIC 9(01).
+           03  FLG-TOKKI                               PIC 9(02).
            03  FLG-PTKOHINF                            PIC 9(01).
            03  FLG-TOKUSYU-SKJ                         PIC 9(01).
            03  FLG-SKJ200610FTN                        PIC 9(01).
@@ -2860,6 +2860,7 @@
                                OR ((RECE62-SRYYM >= "200804"     ) AND
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23" OR "14" ))
+                               OR ( ACCT-ZAIKBN  =   1            )
                                  IF  (ACCT-SRYCDTOTAL(1:12)  =
                                                     "000000999901")
                                  AND (ACCT-MEISAISU      =   1    )
@@ -3247,6 +3248,18 @@
                   PERFORM   21013-TOKKI-HENSYU-SEC
             END-IF
       *
+            IF   ACCT-ZAIKBN       =     1
+               IF   SRY-SRYCD(IDX2)  =  "820000094" OR "630010011" OR
+                                        "630010012" OR "630010013"
+                  MOVE    9    TO      FLG-TOKKI
+                  PERFORM   21013-TOKKI-HENSYU-SEC
+               END-IF
+               IF   SRY-SRYCD(IDX2)  =  "820000095"
+                  MOVE   10    TO      FLG-TOKKI
+                  PERFORM   21013-TOKKI-HENSYU-SEC
+               END-IF
+            END-IF
+      *
             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
                                                  "6" OR  "7" OR
                                                  "8"
@@ -3258,6 +3271,9 @@
                   ( SRY-SRYCD(IDX2)(1:1)     = "7"               ) OR  
                   ( SRY-SRYCD(IDX2)          = CONS-ZANHAIKI     ) OR  
                   ( SRY-SRYCD(IDX2)(1:1)     = "6"               ))    
+             AND (  ACCT-ZAITEN          NOT = ZERO  )
+             AND (  ACCT-SYUTEN1             = ZERO  )
+             AND (  ACCT-ZAIKAISU        NOT = ZERO  )
       *
               MOVE    1                  TO    FLG-TENTEKI             
       *
@@ -3331,6 +3347,7 @@
                IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
                AND   ( RECE64-ZAITEN     =     ZERO                 )
                AND   ( RECE64-SAFLG      =     SPACE                )
+               AND   ( ACCT-ZAIKBN   NOT =     1                    )
                   IF   SRY-SRYCD(IDX2)   =     "820000046"
                      MOVE     "1"         TO    RECE64-SAFLG
                   END-IF
@@ -3338,6 +3355,7 @@
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE64-ZAITEN     =     ZERO         )
+               AND   ( ACCT-ZAIKBN   NOT =     1            )
                   IF     RECE64-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE64-TOYAKUFLG
                   ELSE
@@ -3354,6 +3372,7 @@
       *
                IF    ( SRY-SRYKBN        =     "14" )
                AND   ( RECE64-ZAITEN     =     ZERO )
+               AND   ( ACCT-ZAIKBN   NOT =     1    )
                   IF     RECE64-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE64-TOYAKUFLG
                   ELSE
@@ -3451,6 +3470,11 @@
                PERFORM  2101211-RECE65-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
+                IF   ACCT-ZAIKBN  =  1
+                  MOVE    "1"             TO  RECE65-RECEDENFLG(IDX4)
+                  MOVE    "1"             TO  RECE65-RECEPTFLG(IDX4)
+                  MOVE    ZERO            TO  RECE65-SRYSURYO(IDX4)
+                ELSE
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
                                           +     0.99999                   
                   COMPUTE RECE65-SRYSURYO(IDX4)                         
@@ -3472,6 +3496,7 @@
                     MOVE  "1"             TO  RECE65-RECEDENFLG(IDX4)
                     MOVE  "1"             TO  RECE65-RECEPTFLG(IDX4)
                   END-IF                                                
+                END-IF
                ELSE                                                     
                   MOVE    SRY-SRYSURYO(IDX2)                            
                                           TO    WRK-SRYSURYO            
@@ -3775,6 +3800,27 @@
                                                   (WRK-CHAR-N-CNT  /  2)
                      END-IF
                    END-IF
+               END-IF
+      *
+               MOVE    ACCT-ZAIKBN  TO  RECE64-ZAIKBN
+      *
+               IF      ACCT-ZAIKBN       =     1
+                 MOVE   ZERO        TO  RECE65-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE65-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE65-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE65-TANINAME(IDX4)
+                 IF  (SRY-SRYCD(IDX2)(1:1) = "6" OR "7")
+                 OR  (SRY-SRYCD(IDX2)(1:3) = "059"     )
+                 OR  (SRY-SRYCD(IDX2)(1:2) = "63"      )
+                     MOVE  "1"          TO  RECE64-COMCDFLG
+                     MOVE  "810000001"  TO  RECE65-SRYCD(IDX4)
+                 END-IF
+               END-IF
+               IF      ACCT-ZAIKBN       =     2
+                 MOVE   ZERO        TO  RECE65-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE65-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE65-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE65-TANINAME(IDX4)
                END-IF
       *
                PERFORM  2101214-SETCOM-HENSYU-SEC
@@ -4329,7 +4375,11 @@
            ELSE
               IF   (RECE65-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
               OR   (RECE65-SRYCD(IDX4)(1:3) = "059"            )
+                IF  RECE65-SRYCD(IDX4)(1:2) = "63"
+                 CONTINUE
+                ELSE
                  MOVE   1             TO  FLG-SETCOM
+                END-IF
               END-IF
            END-IF
       *
@@ -4664,6 +4714,28 @@
                    END-IF
       *    指導のレセ点数欄の編集
                WHEN    "13"
+                 IF  ACCT-ZAIKBN   =    2
+                   IF    BUN-IDX        =   1
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX)  =
+                                  RECE62-TENSU(2 BUN-IDX)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX2)  =
+                                  RECE62-TENSU(2 BUN-IDX2)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX3)  =
+                                  RECE62-TENSU(2 BUN-IDX3)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    RECE62-TENSU(2 BUN-IDX4)  =
+                                  RECE62-TENSU(2 BUN-IDX4)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                 ELSE
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE62-TENSU(2 BUN-IDX)  =
                                   RECE62-TENSU(2 BUN-IDX)  +
@@ -4684,8 +4756,31 @@
                                   RECE62-TENSU(2 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
+                 END-IF
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   IF    BUN-IDX        =   1
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX)  =
+                                  RECE62-TENSU(3 BUN-IDX)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX2)  =
+                                  RECE62-TENSU(3 BUN-IDX2)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX3)  =
+                                  RECE62-TENSU(3 BUN-IDX3)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    RECE62-TENSU(3 BUN-IDX4)  =
+                                  RECE62-TENSU(3 BUN-IDX4)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                 ELSE
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE62-TENSU(3 BUN-IDX)  =
                                   RECE62-TENSU(3 BUN-IDX)  +
@@ -4706,6 +4801,7 @@
                                   RECE62-TENSU(3 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -5385,6 +5481,10 @@
                    WHEN     3
                        MOVE    "24"      TO      WRK-TOKKI
                END-EVALUATE
+             WHEN        9
+                       MOVE    "11"      TO      WRK-TOKKI
+             WHEN       10
+                       MOVE    "12"      TO      WRK-TOKKI
            END-EVALUATE
       *
       *    既に同じ特記事項コードが編集済みのときはセットしない

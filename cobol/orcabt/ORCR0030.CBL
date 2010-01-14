@@ -591,7 +591,7 @@
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-RECE09                              PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
-           03  FLG-TOKKI                               PIC 9(01).
+           03  FLG-TOKKI                               PIC 9(02).
            03  FLG-MIYAGI                              PIC 9(01).
            03  FLG-PTKOHINF                            PIC 9(01).
            03  FLG-KEISAN                              PIC 9(01).
@@ -631,6 +631,7 @@
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
+           03  FLG-GENTENKBN                           PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -2037,6 +2038,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                         FLG-KEISAN-TOK2
                                         WRK-KINGAKU-TOK1
            MOVE      ZERO       TO      FLG-KOUGAKU
+      *
+           MOVE      ZERO       TO      FLG-GENTENKBN
       *
            IF    (RECE02-SRYYM   >=  "200804")
            AND   (RECE02-SRYYM   <=  "201003")
@@ -4315,6 +4318,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR ((RECE02-SRYYM >= "200804"     ) AND
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23" OR "14" ))
+                               OR ( ACCT-ZAIKBN  =   1            )
                                  IF  (ACCT-SRYCDTOTAL(1:12)  =
                                                     "000000999901")
                                  AND (ACCT-MEISAISU      =   1    )
@@ -4465,7 +4469,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF        ACCT-SRYKBN        =    "95"   OR  "96"
                    CONTINUE
                ELSE
-                 IF        ACCT-SRYCDTOTAL    =    630010002
+                 IF       (ACCT-SRYCDTOTAL    =    630010002)
+                 OR       (ACCT-ZAIKBN        =    2        )
                    COMPUTE  RECE02-TOTALTEN(1) =  RECE02-TOTALTEN(1) -
                                                  (ACCT-ZAITEN  *  
                                                   ACCT-ZAIKAISU)
@@ -4513,7 +4518,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF        ACCT-SRYKBN        =    "95"   OR  "96"
                      CONTINUE
                   ELSE
-                     IF        ACCT-SRYCDTOTAL    =    630010002
+                     IF       (ACCT-SRYCDTOTAL    =    630010002)
+                     OR       (ACCT-ZAIKBN        =    2        )
                          COMPUTE  RECE02-HENTOTALTEN(KH-IDX) =
                                         RECE02-HENTOTALTEN(KH-IDX) -
                                              (ACCT-ZAITEN * 
@@ -4527,7 +4533,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
                          CONTINUE
                      ELSE
-                       IF        ACCT-SRYCDTOTAL    =    630010002
+                       IF       (ACCT-SRYCDTOTAL    =    630010002)
+                       OR       (ACCT-ZAIKBN        =    2        )
                          COMPUTE  RECE02-TOTALTEN(KH-IDX) =
                                               RECE02-TOTALTEN(KH-IDX) -
                                              (ACCT-ZAITEN * 
@@ -4783,6 +4790,18 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                   PERFORM   21045-TOKKI-HENSYU-SEC
              END-IF
       *
+             IF   ACCT-ZAIKBN       =     1
+               IF      SRY-SRYCD(IDX2)  =  "820000094" OR "630010011" OR
+                                           "630010012" OR "630010013"
+                  MOVE    9    TO      FLG-TOKKI
+                  PERFORM   21045-TOKKI-HENSYU-SEC
+               END-IF
+               IF      SRY-SRYCD(IDX2)  =  "820000095"
+                  MOVE   10    TO      FLG-TOKKI
+                  PERFORM   21045-TOKKI-HENSYU-SEC
+               END-IF
+             END-IF
+      *
              IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
                                                   "6" OR  "7" OR
                                                   "8"
@@ -4872,6 +4891,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
                AND   ( RECE04-ZAITEN     =     ZERO                 )
                AND   ( RECE04-SAFLG      =     SPACE                )
+               AND   ( ACCT-ZAIKBN   NOT =     1                    )
                   IF   SRY-SRYCD(IDX2)   =     "820000046"
                      MOVE     "1"         TO    RECE04-SAFLG
                   END-IF
@@ -4879,6 +4899,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE04-ZAITEN     =     ZERO         )
+               AND   ( ACCT-ZAIKBN   NOT =     1            )
                   IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE04-TOYAKUFLG
                   ELSE
@@ -4895,6 +4916,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
       *
                IF    ( SRY-SRYKBN        =     "14" )
                AND   ( RECE04-ZAITEN     =     ZERO )
+               AND   ( ACCT-ZAIKBN   NOT =     1    )
                   IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE04-TOYAKUFLG
                   ELSE
@@ -5069,6 +5091,11 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                PERFORM  2104411-RECE05-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
+                IF   ACCT-ZAIKBN  =  1
+                  MOVE    "1"             TO  RECE05-RECEDENFLG(IDX4)
+                  MOVE    "1"             TO  RECE05-RECEPTFLG(IDX4)
+                  MOVE    ZERO            TO  RECE05-SRYSURYO(IDX4)
+                ELSE
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
                                           +     0.99999                   
                   COMPUTE RECE05-SRYSURYO(IDX4)                         
@@ -5090,6 +5117,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                     MOVE  "1"             TO  RECE05-RECEDENFLG(IDX4)
                     MOVE  "1"             TO  RECE05-RECEPTFLG(IDX4)
                   END-IF                                                
+                END-IF
                ELSE                                                     
                   MOVE    SRY-SRYSURYO(IDX2)                            
                                           TO    WRK-SRYSURYO            
@@ -5479,6 +5507,27 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE     3         TO    FLG-OSINKBN
                    END-IF
                  END-EVALUATE
+               END-IF
+      *
+               MOVE    ACCT-ZAIKBN  TO  RECE04-ZAIKBN
+      *
+               IF      ACCT-ZAIKBN       =     1
+                 MOVE   ZERO        TO  RECE05-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE05-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE05-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE05-TANINAME(IDX4)
+                 IF  (SRY-SRYCD(IDX2)(1:1) = "6" OR "7")
+                 OR  (SRY-SRYCD(IDX2)(1:3) = "059"     )
+                 OR  (SRY-SRYCD(IDX2)(1:2) = "63"      )
+                     MOVE  "1"          TO  RECE04-COMCDFLG
+                     MOVE  "810000001"  TO  RECE05-SRYCD(IDX4)
+                 END-IF
+               END-IF
+               IF      ACCT-ZAIKBN       =     2
+                 MOVE   ZERO        TO  RECE05-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE05-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE05-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE05-TANINAME(IDX4)
                END-IF
       *
                PERFORM 2104414-SETCOM-HENSYU-SEC
@@ -6193,7 +6242,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            ELSE
               IF   (RECE05-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
               OR   (RECE05-SRYCD(IDX4)(1:3) = "059"            )
+                IF  RECE05-SRYCD(IDX4)(1:2) = "63"
+                 CONTINUE
+                ELSE
                  MOVE   1             TO  FLG-SETCOM
+                END-IF
               END-IF
            END-IF
       *
@@ -6553,11 +6606,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                            MOVE    ACCT-YKZTEN    TO   WK-YKZTEN
                        END-IF
                    ELSE
-                       IF   SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
+                       IF ( SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"  OR  "64"
+                                            "13"  OR  "14"  OR  "64" )
+                       OR ((ACCT-ZAIKBN  =   2  ) AND
+                           (SRY-SRYKBN   =  "12"))
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -6578,11 +6633,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                     (ACCT-ZAIKAISU  NOT =    ZERO)
                      PERFORM   2104421-RECE-LEFT-SET-SEC
                END-IF
-               IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
+               IF  ( SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "54"   OR
                                       "60"   OR   "70"   OR   "13"   OR
-                                      "14"   OR   "64"
+                                      "14"   OR   "64" )
+               OR  ((ACCT-ZAIKBN  =    2  ) AND
+                    (SRY-SRYKBN   =   "12"))
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -7130,9 +7187,57 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                     (WRK-TNS-TEN(IDX3)   
                                                     *   ACCT-ZAIKAISU)
                                   END-IF
+      *      （その他）
+                   WHEN  OTHER
+                     IF    ACCT-ZAIKBN   =    2
+                       MOVE   ZERO       TO    RECE02-KHNTEN(2)
+                       MOVE   1          TO    FLG-KHNTEN2
+                       IF    BUN-IDX        =   1
+                            COMPUTE    RECE02-TENSU(2 BUN-IDX)  =
+                                       RECE02-TENSU(2 BUN-IDX)  -
+                                      (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX2       =   2
+                            COMPUTE    RECE02-TENSU(2 BUN-IDX2)  =
+                                       RECE02-TENSU(2 BUN-IDX2)  -
+                                      (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX3       =   3
+                            COMPUTE    RECE02-TENSU(2 BUN-IDX3)  =
+                                       RECE02-TENSU(2 BUN-IDX3)  -
+                                      (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX4       =   4
+                            COMPUTE    RECE02-TENSU(2 BUN-IDX4)  =
+                                       RECE02-TENSU(2 BUN-IDX4)  -
+                                      (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                     END-IF
                  END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
+                 IF  ACCT-ZAIKBN   =    2
+                   IF    BUN-IDX        =   1
+                       COMPUTE    RECE02-TENSU(7 BUN-IDX)  =
+                                  RECE02-TENSU(7 BUN-IDX)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    RECE02-TENSU(7 BUN-IDX2)  =
+                                  RECE02-TENSU(7 BUN-IDX2)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    RECE02-TENSU(7 BUN-IDX3)  =
+                                  RECE02-TENSU(7 BUN-IDX3)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    RECE02-TENSU(7 BUN-IDX4)  =
+                                  RECE02-TENSU(7 BUN-IDX4)  -
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                 ELSE
                    IF    BUN-IDX        =   1
                        COMPUTE    RECE02-TENSU(7 BUN-IDX)  =
                                   RECE02-TENSU(7 BUN-IDX)  +
@@ -7153,8 +7258,56 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                   RECE02-TENSU(7 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
+                 END-IF
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   EVALUATE  FLG-GENTENKBN
+                     WHEN      1
+                       IF    BUN-IDX        =   1
+                           COMPUTE   RECE02-TENSU(11 BUN-IDX)  =
+                                     RECE02-TENSU(11 BUN-IDX)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX2       =   2
+                           COMPUTE   RECE02-TENSU(11 BUN-IDX2)  =
+                                     RECE02-TENSU(11 BUN-IDX2)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX3       =   3
+                           COMPUTE   RECE02-TENSU(11 BUN-IDX3)  =
+                                     RECE02-TENSU(11 BUN-IDX3)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX4       =   4
+                           COMPUTE   RECE02-TENSU(11 BUN-IDX4)  =
+                                     RECE02-TENSU(11 BUN-IDX4)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                     WHEN      2
+                       IF    BUN-IDX        =   1
+                           COMPUTE   RECE02-TENSU(12 BUN-IDX)  =
+                                     RECE02-TENSU(12 BUN-IDX)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX2       =   2
+                           COMPUTE   RECE02-TENSU(12 BUN-IDX2)  =
+                                     RECE02-TENSU(12 BUN-IDX2)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX3       =   3
+                           COMPUTE   RECE02-TENSU(12 BUN-IDX3)  =
+                                     RECE02-TENSU(12 BUN-IDX3)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                       IF    BUN-IDX4       =   4
+                           COMPUTE   RECE02-TENSU(12 BUN-IDX4)  =
+                                     RECE02-TENSU(12 BUN-IDX4)  -
+                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                       END-IF
+                   END-EVALUATE
+                   MOVE    ZERO     TO   FLG-GENTENKBN
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -7275,6 +7428,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                      RECE02-TENSU(11 BUN-IDX4)  +
                            (WK-SYUTEN            *  ACCT-ZAIKAISU)
                        END-IF
+                       IF    FLG-GENTENKBN  =  ZERO
+                         MOVE   1       TO   FLG-GENTENKBN
+                       END-IF
                    END-IF
       *            その他
                    IF    FLG-ZAITAKU    =   ZERO
@@ -7297,6 +7453,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                            COMPUTE   RECE02-TENSU(12 BUN-IDX4)  =
                                      RECE02-TENSU(12 BUN-IDX4)  +
                                     (WK-SYUTEN     *   WK-ZAIKAISU)
+                       END-IF
+                       IF    FLG-GENTENKBN  =  ZERO
+                         MOVE   2       TO   FLG-GENTENKBN
                        END-IF
                    END-IF
       *            薬剤
@@ -7324,6 +7483,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                 (WK-KIZAITEN *   WK-ZAIKAISU)  +
                                 (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -8149,6 +8309,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    WHEN     3
                        MOVE    "19"      TO      WRK-TOKKI
                END-EVALUATE
+             WHEN        9
+                       MOVE    "11"      TO      WRK-TOKKI
+             WHEN       10
+                       MOVE    "12"      TO      WRK-TOKKI
            END-EVALUATE
       *
       *    既に同じ特記事項コードが編集済みのときはセットしない

@@ -74,6 +74,7 @@
       *  04.03.03    NACL-ÌçÏÆ    08/07/14  ÅêÌôºÞÅÀ£°¡Ê±¡³°Åù¡Ëµ­ºÜÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    10/01/12  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -331,7 +332,8 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
                           MOVE   4      TO      RECE061-KNSJISKBN
                   END-IF
               END-IF
-              IF    RECE06-SAFLG   NOT =   SPACE
+              IF   (RECE06-SAFLG   NOT =   SPACE )
+              OR   (RECE06-ZAIKBN      =   1 OR 2)
                    MOVE    9            TO      RECE061-KNSJISKBN
               END-IF
            END-IF     
@@ -383,6 +385,8 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
       *
            MOVE   RECE06-SYOHOUFLG   TO   RECE061-SYOHOUFLG
       *
+           MOVE   RECE06-ZAIKBN      TO   RECE061-ZAIKBN
+      *
            IF     RECE06-RECESYUBETU  =  8888
               IF     RECE06-ZAITEN  NOT =  ZERO
                   PERFORM     2101-RECE061-WRITE-SEC
@@ -391,6 +395,7 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
                                              OR "40" OR "80" OR "14"
                                              OR "21" OR "22" OR "23"  )
                 OR  ( RECE06-SAFLG   NOT =  SPACE                     )
+                OR  ( RECE06-ZAIKBN      =   1                        )
                      PERFORM  2101-RECE061-WRITE-SEC
                 END-IF
               END-IF
