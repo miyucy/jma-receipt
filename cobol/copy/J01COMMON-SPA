@@ -89,6 +89,8 @@
                    07  SPA-ZAITEN          PIC  9(08).
       *  Êñ³ç¿ÇÎÅºÞ
                    07  SPA-JIHOKBN          PIC  X(01).
+      *¡¡ºÞ¶èÊ¬
+                   07  SPA-ZAIKBN          PIC  9(03).
       *  ²ó¿ô¥Æ¡¼¥Ö¥ë
                    07  SPA-SEL-DAY-G.
                        11  SPA-SEL-DAY     PIC 9(03)

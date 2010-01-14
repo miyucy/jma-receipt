@@ -2532,6 +2532,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ACCT-SYUTEN2         TO  SPA-NAI-SYUTEN2 (IDX)
       *     Ò≥Áø«Œ≈ ¨
            MOVE    ACCT-JIHOKBN         TO  SPA-NAI-JIHOKBN (IDX)
+      *    ∫ﬁ∂Ë ¨
+           MOVE    ACCT-ZAIKBN          TO  SPA-NAI-ZAIKBN  (IDX)
       *
       *    œ∑øÕ»ΩƒÍ
            IF      ACCT-HKNCOMBI       =   "9999"
@@ -2946,7 +2948,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    øÙŒÃ° ÃÙ∫ﬁ°¢¥Ô∫‡§Œ§»§≠°À
-           IF      SRY-SRYCD  (IDZ)(1:1)   =   "6"  OR  "7"
+           IF     (SRY-SRYCD  (IDZ)(1:1)   =   "6"  OR  "7" )
+             AND  (ACCT-ZAIKBN         NOT =   1            )
                MOVE    SRY-SRYSURYO (IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
                MOVE    WRK-SURYO-X         TO  SPA-GMN-TSURYOU (IDG)
@@ -2969,11 +2972,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *********MOVE    " ¨≤Ë"              TO  SPA-GMN-TTANI2  (IDG)
            END-IF
       *
-      *    ª£±∆≤ÛøÙ° •’•£•Î•‡§ §∑§ŒæÏπÁ°À
+      *    §≠§∂§ﬂ√Õ° ª£±∆≤ÛøÙ°À
            IF     (SRY-SRYCD  (IDZ)(1:1)   =   "1" )  AND
                   (SRY-AUTOKBN(IDZ)        =   "S"
                                            OR  "4"  )  AND
                   (SRY-SRYSURYO (IDZ)      >   1   )
+      *        ∏∫≈¿∞ ≥∞
+             AND  (TNS-TEN                 >   ZERO )
+             AND  (TNS-TENSIKIBETU     NOT =   7  AND 8  )
                MOVE    SRY-SRYSURYO (IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
                MOVE    WRK-SURYO-X         TO  SPA-GMN-TSURYOU (IDG)
@@ -8099,6 +8105,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-RENNUM(IDX) TO  SPA-RENNUM
       *     Ò≥Áø«Œ≈∂Ë ¨
            MOVE    SPA-NAI-JIHOKBN (IDX)   TO  SPA-JIHOKBN
+      *    ∫ﬁ∂Ë ¨
+           MOVE    SPA-NAI-ZAIKBN (IDX)    TO  SPA-ZAIKBN
       *
       *    œ∑øÕ∂Ë ¨
       **** MOVE    SPA-NAI-ROUJIN(IDX)

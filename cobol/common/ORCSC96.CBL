@@ -1623,7 +1623,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0225"
-                   STRING   "薬評での入力はできません。"
+                   STRING   "薬評・器評での入力はできません。"
                             "剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG

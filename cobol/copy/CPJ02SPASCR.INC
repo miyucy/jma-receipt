@@ -66,6 +66,7 @@
                        09  SPA-NAI-SURYOU          PIC  9(05)V9(05).
                        09  SPA-NAI-SYUTEN1         PIC  9(07).
                        09  SPA-NAI-SYUTEN2         PIC  9(07).
+                       09  SPA-NAI-ZAIKBN          PIC  9(03).
                        09  SPA-NAI-INPUTCHI-G.
                            11  SPA-NAI-INPUTCHI1       PIC  X(08).
                            11  SPA-NAI-INPUTCHI2       PIC  X(08).

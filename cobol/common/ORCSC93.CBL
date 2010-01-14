@@ -880,6 +880,8 @@
                                                 =   "."  )
                            MOVE    "1"             TO  SPA-COM-YAKUHYO
                                                               (IDX)
+                           MOVE    "1"             TO  SPA-COM-YAKUHYO
+                                                              (IDX - 1)
                            MOVE    1               TO  FLG-YAKUHYO
                        ELSE
                            MOVE    "0221"          TO  SPA-ERRCD
@@ -1057,6 +1059,8 @@
                                                 =   "."  )
                            MOVE    "1"             TO  SPA-COM-YAKUHYO
                                                               (IDX)
+                           MOVE    "1"             TO  SPA-COM-YAKUHYO
+                                                              (IDX - 1)
                            MOVE    1               TO  FLG-YAKUHYO
                        ELSE
                            MOVE    "0221"          TO  SPA-ERRCD
@@ -1072,7 +1076,6 @@
                                                "33"  OR  "40"  OR
                                                "50"  OR  "54"  OR
                                                "60"  OR  "70"  OR
-      *****************************************"13"  OR  "14"   )
                                                "80"  OR  "14"
                                            OR  "64"
                                            OR  "21" OR  "22" OR
@@ -1553,7 +1556,6 @@
                    MOVE    1               TO  FLG-ZAI
       *            ¼«ÇåÀÕ¤Î»þ¡¢£¸£°¤È¤¹¤ë
                    IF     (SPA-RSI-HKNKBN            =  "4" )  AND
-      *************                                  OR "5") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
                                                     OR  "09592"
                                                     OR  "09593")
@@ -1828,8 +1830,6 @@
                    WHEN    "008"
                    WHEN    "059"
                        MOVE    "1"             TO  SPA-COM-YAKUHYO (IDX)
-                   WHEN    "058"
-                       MOVE    "0047"          TO  SPA-ERRCD
                    WHEN    OTHER
                        MOVE    ZERO            TO  FLG-YAKUHYO
                        IF      SPA-COM-SRYKBN (IDX)
@@ -1882,6 +1882,8 @@
                                                                   (IDX)
                    MOVE    "1"                 TO  SPA-COM-GENTEN
                                                                   (IDX)
+                   MOVE    "1"                 TO  SPA-COM-GENTEN
+                                                              (IDX - 1)
                ELSE
                    MOVE    "0222"              TO  SPA-ERRCD
                END-IF

@@ -2417,10 +2417,16 @@
       *    ¿ôÎÌ¡ÊÌôºÞ¡¢´ïºà¤Î¤È¤­¡Ë
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
              OR   (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"    )
-               MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
-               PERFORM 310121-SURYO-HEN-SEC
-               MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
-               MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+               IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  )
+                 AND  (TNS-TEN                          =   ZERO )
+                 AND  (TNS-TENSIKIBETU                  =   1    )
+                   CONTINUE
+               ELSE
+                   MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
+                   PERFORM 310121-SURYO-HEN-SEC
+                   MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
+                   MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+               END-IF
            END-IF
       *    Ã±°Ì
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1) =   "1" )  AND

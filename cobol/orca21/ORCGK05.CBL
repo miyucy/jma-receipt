@@ -2812,6 +2812,15 @@
                IF      SPA-COM-IN  (IDX)   =   "3"
                    MOVE    IDX                 TO  WRK-IN-IDX2
                END-IF
+      *        ÌôÉ¾¡¦´ïÉ¾¤Î¿ôÎÌ¤Ê¤·¤È¤¹¤ë
+               IF     (SPA-COM-IN2     (IDX)   =   "2" )
+                  AND (SPA-COM-YAKUHYO (IDX)   =   "1" )
+                   IF    (SPA-COM-INPUTCD (IDX)(1:1)  =   "6"
+                                                      OR  "7" )
+                     OR  (SPA-COM-INPUTCD (IDX)(1:3)  =   "059" )
+                       MOVE    SPACE           TO  SPA-COM-IN2 (IDX)
+                   END-IF
+               END-IF
            END-PERFORM
       *
            IF      WRK-IN-IDX          =   ZERO

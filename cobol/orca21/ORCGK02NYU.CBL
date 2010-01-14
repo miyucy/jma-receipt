@@ -3365,86 +3365,6 @@
            MOVE    SPA-K02N-NYUINYMD   TO  WRK-NYUINYMD
            MOVE    SPA-K02N-TAIINYMD   TO  WRK-TAIINYMD
       *
-      *!!!
-           GO     TO     410101-NYUINRRK-CHK-EXT
-      *!!!
-      *    入退院日
-           MOVE    SPACE               TO  WRK-NYUINYMD
-           MOVE    SPACE               TO  WRK-TAIINYMD
-      *    入院履歴判定
-           MOVE    SPACE               TO  PTNYUINRRK-REC
-           INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key34"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key34"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-      *    入院が１件もないとき、外来とする
-           IF      FLG-PTNYUINRRK      =   1
-               MOVE    "2"                 TO  SPA-NYUGAIKBN
-           ELSE
-               MOVE    "1"                 TO  SPA-NYUGAIKBN
-           END-IF
-      *
-           INITIALIZE                  HZN-PTNYUINRRK-REC
-           INITIALIZE                  SPA-K02N-AREA
-           MOVE    SPACE               TO  SPA-SRYKA
-           MOVE    SPACE               TO  SPA-HKNCOMBINUM
-           MOVE    SPACE               TO  SPA-DRCD
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM
-                   UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
-                              (FLG-OK              =   1 )
-      *        転入日
-               IF      PTNYUINRRK-TENNYUYMD    <=  SPA-SRYYMD
-      *            転出日
-                   IF     (PTNYUINRRK-TENSTUYMD    =   SPACE )  OR
-                          (PTNYUINRRK-TENSTUYMD    NOT =   SPACE AND
-                           PTNYUINRRK-TENSTUYMD    >=  SPA-SRYYMD)
-      *                入院対象処理
-                       IF     (PTNYUINRRK-TAIINYMD     =   SPA-SRYYMD)
-                         OR   (PTNYUINRRK-TENSTUYMD    >   SPA-SRYYMD)
-                           MOVE    1               TO  FLG-OK
-                           PERFORM 4101011-PTNYUINRRK-HEN-SEC
-                       END-IF
-                   ELSE
-                       MOVE    PTNYUINRRK-REC  TO  HZN-PTNYUINRRK-REC
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key34"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key34"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-OK              =   ZERO
-               IF     (HZN-PTNYUINRRK-NYUINYMD     =   SPACE )  OR
-                      (HZN-PTNYUINRRK-TAIINYMD NOT =   SPACE   AND
-                       HZN-PTNYUINRRK-TAIINYMD     >   SPA-SRYYMD)
-                   MOVE    "2"                 TO  SPA-NYUGAIKBN
-               ELSE
-                   MOVE    HZN-PTNYUINRRK-TAIINYMD
-                                           TO  SPA-K02N-TAIINYMD
-                   MOVE    "0120"          TO  SPA-KIDCD
-                   MOVE    07              TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *    入退院日
-           MOVE    SPA-K02N-NYUINYMD   TO  WRK-NYUINYMD
-           MOVE    SPA-K02N-TAIINYMD   TO  WRK-TAIINYMD
-      *
            .
        410101-NYUINRRK-CHK-EXT.
            EXIT.
@@ -4978,6 +4898,16 @@
       *        ＊をなくす
                PERFORM 51011-KAISU-CHK-SEC
       *
+      *        薬評・器評の数量なしとする
+               IF     (SPA-COM-IN2     (IDX)   =   "2" )
+                  AND (SPA-COM-YAKUHYO (IDX)   =   "1" )
+                   IF    (SPA-COM-INPUTCD (IDX)(1:1)  =   "6"
+                                                      OR  "7" )
+                     OR  (SPA-COM-INPUTCD (IDX)(1:3)  =   "059" )
+                       MOVE    SPACE           TO  SPA-COM-IN2 (IDX)
+                   END-IF
+               END-IF
+      *
            END-PERFORM
       *
            IF     (FLG-INPUT-NASI      =   1  )  AND
@@ -4986,7 +4916,6 @@
            END-IF
       *
            IF      WRK-IN-IDX          =   ZERO
-      *******  MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
                MOVE    WRK-MAX-IDX         TO  SPA-GMN-IDX
            ELSE
                MOVE    WRK-IN-IDX          TO  SPA-GMN-IDX
@@ -5007,19 +4936,8 @@
                MOVE    "3"                  TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
                IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001"
-      ************ 投薬の時のみ、回数入力へ
-      *            IF      SPA-COM-SRYKBN(SPA-GMN-IDX)     =   "21" OR
-      *                                                        "22" OR
-      *                                                        "23"
-      *                STRING  WRK-INPUTCD      DELIMITED  BY  SPACE
-      *                        "*"              DELIMITED  BY  SIZE
-      *                                         INTO  SPA-GMN-INPUTCD
-      *                                                  (SPA-GMN-IDX)
-      *                END-STRING
-      ************ ELSE
-                       MOVE    SPACE            TO  SPA-COM-CUR
+                   MOVE    SPACE            TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
-      ************ END-IF
                ELSE
                    STRING  WRK-INPUTCD          DELIMITED  BY  SPACE
                            "_"                  DELIMITED  BY  SIZE
@@ -5093,10 +5011,6 @@
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
-      *********        ELSE
-      *                    MOVE    "*"             TO  SPA-GMN-INPUTCD
-      *                                              (SPA-GMN-IDX)
-      **********                                     (WRK-IN-IDX2:)
                        END-IF
                    END-IF
                END-IF
@@ -5123,11 +5037,6 @@
                PERFORM 4101129-KAISUU-CHK-SEC
                GO      TO      410112-INPUTCD-HENKAN-EXT
            END-IF
-      *    回数入力があった時エラーとする
-      *    IF      LNK-SC97-KAISUCNT   >   ZERO
-      *        MOVE    "9003"          TO  SPA-ERRCD
-      *        GO      TO      410112-INPUTCD-HENKAN-EXT
-      *    END-IF
       *
       *    セット入力処理へ
            IF      SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
@@ -5366,14 +5275,7 @@
                  OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
                                                    =   "0992000" )
       *            薬剤・器材・用法
-      *            点数ゼロで金額はなし
-                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO ) AND
-                          (SPA-COM-TENSIKIBETU (SPA-GMN-IDX)
-                                                       =   1    )
-                       CONTINUE
-                   ELSE
-                       MOVE    1                   TO  FLG-IN1
-                   END-IF
+                   MOVE    1                   TO  FLG-IN1
                END-IF
                IF      WRK-MOJI                =   "1"
                    IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
@@ -5730,6 +5632,11 @@
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
            END-IF
+      *    包括のクリア
+           IF     (SPA-HKNCOMBINUM     =   "9999")  OR
+                  (SPA-CHIKENKBN       =   "1"   )
+               PERFORM 51091-HOUKATU-INIT-SEC
+           END-IF
       *!!!
       *    ７０歳到達の警告
       *    IF      SPA-ERRCD       =   SPACE
@@ -5773,6 +5680,21 @@
            END-IF
            .
        5109-HKTSANTEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    包括区分クリア処理
+      *****************************************************************
+       51091-HOUKATU-INIT-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-GMN-MAX  ) 
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG (IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG2(IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-ZAI (IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-ERR (IDX-Z)
+           END-PERFORM
+           .
+       51091-HOUKATU-INIT-EXT.
            EXIT.
       *
       *****************************************************************

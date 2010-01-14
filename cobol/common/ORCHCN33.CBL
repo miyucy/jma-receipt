@@ -767,9 +767,6 @@
                    WHEN    "95"
                    WHEN    "96"
                        MOVE    11              TO  IDX1
-                   WHEN    "90"
-                   WHEN    "92"
-                       MOVE    8               TO  IDX1
                    WHEN    OTHER
                        MOVE    ZERO            TO  IDX1
                    END-EVALUATE

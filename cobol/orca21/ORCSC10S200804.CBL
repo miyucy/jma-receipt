@@ -4461,6 +4461,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                  CONTINUE
              ELSE
       *        æÆª˘≤ ≥∞ÕËø«Œ≈≤ §Œª˛°¢æÆª˘≤ ≥∞ÕËø«Œ≈≤ §Œ§ﬂ§«§¢§Î§≥§»
@@ -4747,6 +4749,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ¿∏≥Ëªÿ∆≥°¢∏°∫∫°¢√ÌºÕ°¢∫ﬂ¬Œ¡∞ ≥∞§«§¢§Î§≥§»
@@ -4823,6 +4827,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ∏°∫∫°¢≈ÍÃÙ°¢√ÌºÕ§œªªƒÍ§«§≠§ §§
@@ -4899,6 +4905,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ≈ÍÃÙ§œªªƒÍ§«§≠§ §§
@@ -4969,6 +4977,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ∫£≤Û∆˛Œœ
@@ -5047,6 +5057,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                    CONTINUE
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(IDX)
@@ -5130,6 +5142,8 @@
                  OR (SPA-COM-CHIKENKBN (IDX)      =   "1")
       *          º£∏≥∏∫≈¿ ¨
                  OR (SPA-COM-GENTEN (IDX)         =   "1")
+      *          º£∏≥ÃÙ…æ ¨
+                 OR (SPA-COM-YAKUHYO (IDX)         =   "1")
                CONTINUE
              ELSE
       *        ≈ÍÃÙ§œªªƒÍ§«§≠§ §§

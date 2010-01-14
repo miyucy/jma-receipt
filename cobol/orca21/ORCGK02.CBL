@@ -200,6 +200,7 @@
            03  FLG-PARA            PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
@@ -881,6 +882,9 @@
       *    患者メモ
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -4252,9 +4256,20 @@
                       (ACCT-SRYKBN         =   "95" OR "96")
                    CONTINUE
                ELSE
-                   COMPUTE SPA-ZAITENTOTAL  =   SPA-ZAITENTOTAL
-                                            +  (ACCT-ZAITEN
-                                            *   ACCT-ZAIKAISU )
+                   INITIALIZE                  SRYACCTPLUS-REC
+                   IF      ACCT-ZAIREQFLG      =   "1"
+      *                附加情報あり
+                       PERFORM 32012-SRYACCTPLUS-READ-SEC
+                   END-IF
+                   IF      ACCTP-PLUSKBN        =   1
+                       COMPUTE SPA-ZAITENTOTAL  =   SPA-ZAITENTOTAL
+                                                -  (ACCT-ZAITEN
+                                                *   ACCT-ZAIKAISU )
+                   ELSE
+                       COMPUTE SPA-ZAITENTOTAL  =   SPA-ZAITENTOTAL
+                                                +  (ACCT-ZAITEN
+                                                *   ACCT-ZAIKAISU )
+                   END-IF
                END-IF
       *病理診断料のみで使用する為、入力時へ
       *TET     検査で回数があるもの
@@ -6726,7 +6741,16 @@
       *        ＊をなくす
                PERFORM 51011-KAISU-CHK-SEC
       *
-           END-PERFORM
+      *        薬評・器評の数量なしとする
+               IF     (SPA-COM-IN2     (IDX)   =   "2" )
+                  AND (SPA-COM-YAKUHYO (IDX)   =   "1" )
+                   IF    (SPA-COM-INPUTCD (IDX)(1:1)  =   "6"
+                                                      OR  "7" )
+                     OR  (SPA-COM-INPUTCD (IDX)(1:3)  =   "059" )
+                       MOVE    SPACE           TO  SPA-COM-IN2 (IDX)
+                   END-IF
+               END-IF
+            END-PERFORM
       *
            IF     (FLG-INPUT-NASI      =   1  )  AND
                   (FLG-KUHAKU          =   1  )
@@ -7124,14 +7148,7 @@
                  OR  ( SPA-COM-INPUTCD(SPA-GMN-IDX)(1:7)
                                                    =   "0992000" )
       *            薬剤・器材・用法
-      *            点数ゼロで金額はなし
-                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO ) AND
-                          (SPA-COM-TENSIKIBETU (SPA-GMN-IDX)
-                                                       =   1    )
-                       CONTINUE
-                   ELSE
-                       MOVE    1                   TO  FLG-IN1
-                   END-IF
+                   MOVE    1                   TO  FLG-IN1
                END-IF
                IF      WRK-MOJI                =   "1"
                    IF  (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)(1:1)
@@ -7621,7 +7638,7 @@
                   (SPA-HKTSANTEI-FLG   =   1 ) AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
       *       治験は対象外
-              AND (SPA-CHIKENKBN   NOT =   "1"        )
+      ******  AND (SPA-CHIKENKBN   NOT =   "1"        )
                PERFORM 5109-HKTSANTEI-CHK-SEC
            END-IF
       *    ７０歳到達の警告
@@ -12912,6 +12929,45 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計附加情報検索処理
+      *****************************************************************
+       32012-SRYACCTPLUS-READ-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               ELSE
+                   INITIALIZE                      SRYACCTPLUS-REC
+                   MOVE    1                   TO  FLG-SRYACCTPLUS
+               END-IF
+           ELSE
+               INITIALIZE                  SRYACCTPLUS-REC
+               MOVE    1               TO  FLG-SRYACCTPLUS
+           END-IF
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       32012-SRYACCTPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************

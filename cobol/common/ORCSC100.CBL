@@ -1553,7 +1553,6 @@
                IF     (WRK-COM-ZAIEND (IDX-Z)      =   "1"   )  AND
                       (WRK-COM-SRYKBN (IDX-Z)  NOT =   "95"  AND "96")
                AND    (WRK-COM-HKNCOMBI (IDX-Z)    NOT =   "9999" )
-               AND    (WRK-COM-CHIKENKBN(IDX-Z)    =   SPACE  )
                AND    (WRK-COM-HOUKATU-ZAI (IDX-Z) =   ZERO  )
                    IF      WRK-COM-PLUSKBN (IDX-Z)     =   1
                        ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9S

@@ -1575,7 +1575,7 @@
            MOVE    ZERO                TO  SPA-CHOKITOFLG
       *
            INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPNUM          TO  SRY-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  SRY-PTID
            MOVE    SPA-J01-SRYKA       TO  SRY-SRYKA
@@ -1655,6 +1655,7 @@
       *        »ÄÎÌÇÑ´þ¤ÎÈ½Äê
                IF     (SPA-COM-SRYKBN (IDX-1)(1:1)  =   "3" )  AND
                       (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" )
+                AND   (SPA-ZAIKBN               NOT =   1   )
                    PERFORM 31034-HAIKI-CHKI-SEC
                END-IF
       *        Å¸³«»þ¤ÎÆâÍÆÊÔ½¸¡ÊÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ¡Ë
@@ -2892,6 +2893,15 @@
                IF     (SPA-COM-SET (IDX)   =   SPACE )  AND
                       (SPA-GMN-INPUTCD(IDX)    NOT =   SPACE )
                    MOVE    IDX             TO  WRK-MAX-IDX
+               END-IF
+      *        ÌôÉ¾¡¦´ïÉ¾¤Î¿ôÎÌ¤Ê¤·¤È¤¹¤ë
+               IF     (SPA-COM-IN2     (IDX)   =   "2" )
+                  AND (SPA-COM-YAKUHYO (IDX)   =   "1" )
+                   IF    (SPA-COM-INPUTCD (IDX)(1:1)  =   "6"
+                                                      OR  "7" )
+                     OR  (SPA-COM-INPUTCD (IDX)(1:3)  =   "059" )
+                       MOVE    SPACE           TO  SPA-COM-IN2 (IDX)
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -5264,6 +5274,7 @@
            MOVE    ZERO                TO  WRK-KINGAK
            MOVE    ZERO                TO  WRK-MEINUM
            MOVE    ZERO                TO  WRK-ZAITEN
+           MOVE    ZERO                TO  WRK-ZAIKBN
            MOVE    ZERO                TO  WRK-SRYCDKEI
            MOVE    ZERO                TO  WRK-SURYOKEI
            MOVE    ZERO                TO  WRK-MEISAISU

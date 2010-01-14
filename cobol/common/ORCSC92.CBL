@@ -1140,6 +1140,14 @@
                    MOVE    SPACE           TO  SPA-COM-KZMFLG5 (IDX-T)
                END-IF
            END-IF
+      *!!
+      *    ÌôÉ¾¡¦´ïÉ¾¤Ï¿ôÎÌ¥¼¥í¤È¤¹¤ë
+           IF      SPA-COM-INPUTCD(IDX-T)  =   "630010011"
+                                           OR  "630010012"
+                                           OR  "630010013"
+               MOVE    ZERO            TO  LNK-SC97-SURYOCNT
+               MOVE    ZERO            TO  LNK-SC97-SURYO
+           END-IF
       *
            IF      LNK-SC97-SURYOCNT   =   ZERO
                MOVE    1               TO  SPA-COM-SURYO(IDX-T)

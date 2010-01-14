@@ -897,6 +897,10 @@
                        END-IF
                    END-IF
                END-IF
+      *        ÌôÉ¾ºÞÂÐ¾Ý³°
+               IF      ACCT-ZAIKBN         =   1
+                   MOVE    ZERO            TO  IDX
+               END-IF
       *
                IF      IDX             NOT =   ZERO
                    PERFORM 3101-SRYACCT-SPA-SEC
@@ -1780,6 +1784,10 @@
                            MOVE    1               TO  FLG-OK
                        END-IF
                    END-IF
+               END-IF
+      *        ÌôÉ¾ºÞÂÐ¾Ý³°
+               IF      ACCT-ZAIKBN         =   1
+                   MOVE    ZERO                TO  FLG-OK
                END-IF
                IF     (FLG-OK              =   1   )  AND
                       (ACCT-ZAIKAISU       >   ZERO)
