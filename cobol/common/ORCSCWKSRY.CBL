@@ -1546,9 +1546,9 @@
                                                        "3"  OR
                                                        "2"   )  OR
                   (LNK-WKSRY-SRYSYUKBN (IDX)(3:1)  NOT =   "0") OR
-                  (LNK-WKSRY-SRYSYUKBN (IDX)       =   "610"  ))
+                  (LNK-WKSRY-SRYSYUKBN (IDX)       =   "610"  )
       *           減点分の時
-             OR   (LNK-WKSRY-ZAIKBN(IDX)   NOT =   ZERO    )
+             OR   (LNK-WKSRY-ZAIKBN  (IDX)     NOT =   ZERO   ))
                ADD     1                       TO  IDX2
                MOVE    "."                     TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)
