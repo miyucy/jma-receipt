@@ -43,6 +43,8 @@
       *  04.02.02    NACL-Æ£¸¶    08/03/25  ¹­°èÏ¢¹çÄÉ²Ã
       *
       *  04.03.01    NACL-Æ£¸¶    08/08/22  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
+      *
+      *  04.05.01    NACL-Æ£¸¶    10/01/13  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,7 +142,7 @@
                            11  SPA-GMN-PTNUM-TSRYKAMEI
                                                    PIC X(12).
                            11  SPA-GMN-PTNUM-TTENSU
-                                                   PIC 9(10).
+                                                   PIC S9(10).
                        09  SPA-GMN-PTNUM-TBL-MAX   PIC 9(03).
       *                                             
                    07  SPA-GMN-KOUMOKU.
@@ -259,7 +261,7 @@
       *
            03  WRK-BANGO           PIC S9(05).
            03  WRK-NUM             PIC ZZZZ9.
-           03  WRK-TENSUZ          PIC ZZZZZZZZ9.
+           03  WRK-TENSUZ          PIC ---------9.
            03  WRK-SELNUM          PIC 9(03).
            03  WRK-LINE            PIC 9(04).
            03  WRK-PAGE            PIC 9(05).
