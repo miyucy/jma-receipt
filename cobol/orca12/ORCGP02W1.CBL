@@ -3847,13 +3847,17 @@
       *            ½»½ê¸¡º÷ÊÔ½¸
                    PERFORM 30011-P982SET-SEC
                ELSE
-                   IF     (SPA-GMN982-TOWNNAME
-                                           =   SPA-GMN-EDITADRS-NAME)
-                   OR     (SPA-GMN982-CITYNAMET
-                                           =   SPA-GMN-EDITADRS-NAME)
-                       CONTINUE
+                   IF      SPA-NAI-KENMEIKBN-FLG   =   "0"
+      *                ÅÔÆ»ÉÜ¸©Ì¾¤Ê¤·
+                       IF      SPA-GMN982-CITYNAMET
+                                           NOT =   SPA-GMN-EDITADRS-NAME
+                           MOVE    "1098"          TO  SPA-PIDCD
+                       END-IF
                    ELSE
-                       MOVE    "1098"          TO  SPA-PIDCD
+                       IF      SPA-GMN982-TOWNNAME
+                                           NOT =   SPA-GMN-EDITADRS-NAME
+                           MOVE    "1098"          TO  SPA-PIDCD
+                       END-IF
                    END-IF
                END-IF
                MOVE    SPA-GMN-POST            TO  SPA-MAE-POST
