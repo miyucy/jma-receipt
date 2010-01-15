@@ -57,6 +57,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/25  ÌôºÞ¾ðÊóÄó¶¡ÎÁ¡¦Ä´´ðÈ½ÄêÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/11/30  Æþ±¡²ó¿ô°ì³çÆþÎÏÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/15  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1109,17 +1110,28 @@
       *            ¸øÈñÃ±ÆÈ
                    MOVE    SPACE               TO  WRK-HKNNUM
                WHEN    OTHER
+                   EVALUATE    LF04-HKN-HKNSBTCODE (1)
       *            ¼«Èñ
-                   IF      LF04-HKN-HKNSBTCODE (1)(1:1)    =   "Z"
+                   WHEN    "Z"
                        MOVE    "98"                TO  WRK-HKNNUM(1:2)
                        MOVE    LF04-HKN-HKNSBTCODE (1)(2:1)
                                                    TO  WRK-HKNNUM(3:1)
-                   ELSE
+      *            ¼£¸³
+                   WHEN    "A"
+                       MOVE    "90"                TO  WRK-HKNNUM(1:2)
+                       MOVE    LF04-HKN-HKNSBTCODE (1)(2:1)
+                                                   TO  WRK-HKNNUM(3:1)
+      *            ¼£¸³
+                   WHEN    "B"
+                       MOVE    "91"                TO  WRK-HKNNUM(1:2)
+                       MOVE    LF04-HKN-HKNSBTCODE (1)(2:1)
+                                                   TO  WRK-HKNNUM(3:1)
+                   WHEN    OTHER
       *                ÊÝ¸±
                        MOVE    ZERO                    TO  WRK-HKNNUM
                        MOVE    LF04-HKN-HKNSBTCODE(1)
                                                    TO  WRK-HKNNUM(2:2)
-                   END-IF
+                   END-EVALUATE
            END-EVALUATE
       *
       *    ÊÝ¸±ÁÈ¹ç¤»¸¡º÷

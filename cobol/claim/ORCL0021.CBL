@@ -43,6 +43,7 @@
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/08/16  ´µ¼Ô¥á¥âÄÉ²Ã
       *  04.02.01    NACL-Â¿¡¹Ç¼  08/03/14  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³¡¦³ÈÄ¥´Á»úÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -204,6 +205,8 @@
                05  WRK-MEMO-04         PIC X(1000).
                05  WRK-MEMO-05         PIC X(1000).
                05  WRK-MEMO-OK         PIC X(1000).
+      *
+           03  WRK-KOUMOKU             PIC X(200).
       *
       *    ¼«ÈñÌ¾¾Î¥Æ¡¼¥Ö¥ë
        01  TBL-JIHIMSG-AREA.
@@ -389,6 +392,9 @@
        01  ST          PIC 9(2).
       * 
            COPY    "CPMML0031.INC".
+      *
+      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+           COPY    "CPORCSKANACHK.INC".
       * 
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -661,10 +667,20 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      *        ³ÈÄ¥´Á»úÊÑ´¹
+               MOVE    SYS-1001-HOSPNAME   TO  WRK-KOUMOKU
+               PERFORM 800-ORCSKANACHK-SEC
+               MOVE    WRK-KOUMOKU         TO  SYS-1001-HOSPNAME
+      *
                MOVE  SYS-1001-HOSPNAME      TO  
                        WRK-LF02-CRE001-FACILITYNAME
                        WRK-LF02-CRE401-FACILITYNAME
       *´ÉÍý¼ÔÌ¾
+      *        ³ÈÄ¥´Á»úÊÑ´¹
+               MOVE    SYS-1001-KANRINAME   TO  WRK-KOUMOKU
+               PERFORM 800-ORCSKANACHK-SEC
+               MOVE    WRK-KOUMOKU          TO  SYS-1001-KANRINAME
+      *
                MOVE  SYS-1001-KANRINAME     TO  
                        WRK-LF02-CRE001-FULLNAME
                        WRK-LF02-CRE401-FULLNAME  
@@ -757,6 +773,10 @@
            ELSE
                INITIALIZE                      SYS-1010-REC
            END-IF
+      *    ³ÈÄ¥´Á»úÊÑ´¹
+           MOVE    SYS-1010-NAME       TO  WRK-KOUMOKU
+           PERFORM 800-ORCSKANACHK-SEC
+           MOVE    WRK-KOUMOKU         TO  SYS-1010-NAME
       *
            .
        2001-DRCD-NAME-EXT.
@@ -815,19 +835,34 @@
                    MOVE    "K5"        TO  WRK-LF02-HKNSBTCODE
                    MOVE    "¸ø³²"      TO  WRK-LF02-HKNSBT
                WHEN    OTHER
-                   IF      COMB-HKNNUM(1:2)   =   "98"
+                   EVALUATE    COMB-HKNNUM(1:2)
+                   WHEN    "98"
       *                ¼«Èñ
                        MOVE    "Z"         TO  WRK-LF02-HKNSBTCODE(1:1)
                        MOVE    COMB-HKNNUM(3:1)
                                            TO  WRK-LF02-HKNSBTCODE(2:1)
                        MOVE    "¼«Èñ"
                                            TO  WRK-LF02-HKNSBT
-                   ELSE
+                   WHEN    "90"
+      *                ¼£¸³
+                       MOVE    "A"         TO  WRK-LF02-HKNSBTCODE(1:1)
+                       MOVE    COMB-HKNNUM(3:1)
+                                           TO  WRK-LF02-HKNSBTCODE(2:1)
+                       MOVE    "¼£¸³"
+                                           TO  WRK-LF02-HKNSBT
+                   WHEN    "91"
+      *                ¼£¸³
+                       MOVE    "B"         TO  WRK-LF02-HKNSBTCODE(1:1)
+                       MOVE    COMB-HKNNUM(3:1)
+                                           TO  WRK-LF02-HKNSBTCODE(2:1)
+                       MOVE    "¼£¸³"
+                                           TO  WRK-LF02-HKNSBT
+                   WHEN    OTHER
       *                ¤½¤ÎÂ¾¡Ê²¼£²·å¡Ë
                        MOVE    COMB-HKNNUM     TO  WRK-999
                        MOVE    WRK-999         TO  WRK-ZZZ
                        MOVE    WRK-ZZZ(2:2)    TO  WRK-LF02-HKNSBTCODE
-                   END-IF
+                   END-EVALUATE
            END-EVALUATE
       *
            .
@@ -2859,6 +2894,20 @@
       *                                    UIDIO-AREA, ST
            .
        500-UUID-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Á´³Ñ³ÈÄ¥´Á»úÊÑ´¹½èÍý
+      *****************************************************************
+       800-ORCSKANACHK-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-KOUMOKU         TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-KOUMOKU
+           .
+       800-ORCSKANACHK-EXT.
            EXIT.
       *
       *****************************************************************

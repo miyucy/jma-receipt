@@ -49,6 +49,7 @@
       * 03.05.01     NACL-多々納  07/08/10  受付メモ追加対応
       * 04.03.00     NACL-多々納  08/06/11  メモ登録の送信対応
       * 04.04.00     NACL-竹田　  09/02/25  公害対応
+      * 04.05.00     NACL-多々納  10/01/15  治験・拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -214,6 +215,8 @@
                05  WRK-MEMO-04         PIC X(1000).
                05  WRK-MEMO-05         PIC X(1000).
                05  WRK-MEMO-OK         PIC X(1000).
+      *
+           03  WRK-KOUMOKU             PIC X(200).
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
@@ -567,6 +570,9 @@
       *    全角チェック
            COPY    "CPORCXKANACONV.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    ＵＩＤ取得用エリア
        01 UIDIO-AREA.
            03  C-RET   PIC X(2).
@@ -834,7 +840,11 @@
            END-IF
       *
            MOVE    "I"             TO  WRK-LF01-NAME-REPCODE
-           MOVE    PTINF-NAME      TO  WRK-LF01-NAME
+      ***  MOVE    PTINF-NAME      TO  WRK-LF01-NAME
+      *    拡張漢字変換
+           MOVE    PTINF-NAME      TO  WRK-KOUMOKU
+           PERFORM 800-ORCSKANACHK-SEC
+           MOVE    WRK-KOUMOKU     TO  WRK-LF01-NAME
       *
            MOVE    PTINF-BIRTHDAY  TO  WRK-WYMD
            PERFORM 500-HIZUKE-HENSYU-SEC
@@ -1325,11 +1335,21 @@
       *                        SYS-1001-HOSPSBT " SYOSIN=" WRK-SYOSIN 
       *********END-EVALUATE
       * 作成者 施設情報名
+      *        拡張漢字変換
+               MOVE    SYS-1001-HOSPNAME    TO  WRK-KOUMOKU
+               PERFORM 800-ORCSKANACHK-SEC
+               MOVE    WRK-KOUMOKU          TO  SYS-1001-HOSPNAME
+      *
                MOVE  SYS-1001-HOSPNAME      TO  
                      WRK-LF01-CRE001-FACILITYNAME
                      WRK-LF01-CRE101-FACILITYNAME
                      WRK-LF01-CRE301-FACILITYNAME
       *管理者名
+      *        拡張漢字変換
+               MOVE    SYS-1001-KANRINAME   TO  WRK-KOUMOKU
+               PERFORM 800-ORCSKANACHK-SEC
+               MOVE    WRK-KOUMOKU          TO  SYS-1001-KANRINAME
+      *
                MOVE  SYS-1001-KANRINAME     TO  WRK-LF01-CRE001-FULLNAME
                                                 WRK-LF01-CRE101-FULLNAME
       *                                         WRK-LF01-CRE201-FULLNAME
@@ -1474,6 +1494,10 @@
                INITIALIZE                      SYS-1010-REC
            END-IF
       *
+      *    拡張漢字変換
+           MOVE    SYS-1010-NAME       TO  WRK-KOUMOKU
+           PERFORM 800-ORCSKANACHK-SEC
+           MOVE    WRK-KOUMOKU         TO  SYS-1010-NAME
            .
        2001-DRCD-NAME-EXT.
            EXIT.
@@ -1543,7 +1567,8 @@
                    MOVE    "9999"  TO  WRK-LF01-HKNJANUM (IDX)
                    MOVE    "公害"  TO  WRK-LF01-HKNSBT  (IDX)
                WHEN    OTHER
-                   IF      PTHKN-HKNNUM(1:2)   =   "98"
+                   EVALUATE    PTHKN-HKNNUM(1:2)
+                   WHEN    "98"
       *                自費
                        MOVE    "Z"         TO  WRK-LF01-HKNSBTCODE
                                                             (IDX)(1:1)
@@ -1554,13 +1579,35 @@
                                            TO  WRK-LF01-HKNJANUM (IDX)
                        MOVE    "自費" 
                                            TO  WRK-LF01-HKNSBT  (IDX)
-                   ELSE
+                   WHEN    "90"
+      *                治験
+                       MOVE    "A"         TO  WRK-LF01-HKNSBTCODE
+                                                            (IDX)(1:1)
+                       MOVE    PTHKN-HKNNUM(3:1)
+                                           TO  WRK-LF01-HKNSBTCODE
+                                                            (IDX)(2:1)
+                       MOVE    "9999" 
+                                           TO  WRK-LF01-HKNJANUM (IDX)
+                       MOVE    "治験" 
+                                           TO  WRK-LF01-HKNSBT  (IDX)
+                   WHEN    "91"
+      *                治験
+                       MOVE    "B"         TO  WRK-LF01-HKNSBTCODE
+                                                            (IDX)(1:1)
+                       MOVE    PTHKN-HKNNUM(3:1)
+                                           TO  WRK-LF01-HKNSBTCODE
+                                                            (IDX)(2:1)
+                       MOVE    "9999" 
+                                           TO  WRK-LF01-HKNJANUM (IDX)
+                       MOVE    "治験" 
+                                           TO  WRK-LF01-HKNSBT  (IDX)
+                   WHEN    OTHER
       *                その他（下２桁）
                        MOVE    PTHKN-HKNNUM    TO  WRK-999
                        MOVE    WRK-999         TO  WRK-ZZZ
                        MOVE    WRK-ZZZ(2:2)    TO  WRK-LF01-HKNSBTCODE
                                                                 (IDX)
-                   END-IF
+                   END-EVALUATE
            END-EVALUATE
       *
            .
@@ -2282,6 +2329,21 @@
            END-IF
            .
        500-POST-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角拡張漢字変換処理
+      *****************************************************************
+       800-ORCSKANACHK-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-KOUMOKU         TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-KOUMOKU
+           .
+       800-ORCSKANACHK-EXT.
            EXIT.
       *
       *****************************************************************
