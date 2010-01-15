@@ -1110,7 +1110,7 @@
       *            ¸øÈñÃ±ÆÈ
                    MOVE    SPACE               TO  WRK-HKNNUM
                WHEN    OTHER
-                   EVALUATE    LF04-HKN-HKNSBTCODE (1)
+                   EVALUATE    LF04-HKN-HKNSBTCODE (1)(1:1)
       *            ¼«Èñ
                    WHEN    "Z"
                        MOVE    "98"                TO  WRK-HKNNUM(1:2)
