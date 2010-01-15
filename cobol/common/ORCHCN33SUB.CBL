@@ -44,6 +44,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.01.00    NACL-小豆沢  07/12/18  短期滞在手術基本料２の入院翌日の
       *                                     食事と入院料加算対応
+      *  04.05.00    NACL-小豆沢  10/01/14  治験対応
       *****************************************************************
       *
       *
@@ -174,7 +175,7 @@
                    07  WRK-SO-SRYKBN       PIC X(02).
                    07  WRK-SO-SRYCD        PIC X(09)  OCCURS 20.
                    07  WRK-SO-SRYCDTOTAL   PIC 9(14).
-                   07  WRK-SO-TEN          PIC 9(07).
+                   07  WRK-SO-TEN          PIC S9(07).
                    07  WRK-SO-KAISU        PIC 9(02).
                    07  WRK-SO-GAIHAKU-TBL.
                      09  WRK-SO-GAIHAKU-KBN  PIC 9(01)  OCCURS 31.
@@ -190,12 +191,17 @@
                05  WRK-NEW-SRYKA-DAY       PIC X(01).
                05  WRK-NEW-SRYCDTOTAL      PIC 9(14).
                05  WRK-NEW-TEN             PIC 9(07).
+      *
       *    入院料加算退避領域
            03  WRK-NYUKSN-TABLE.
                05  WRK-NYUKSN-TBL          OCCURS  20.
                    07  WRK-NYUKSN          PIC X(09).
                    07  WRK-NYUKSN-ZAITEN   PIC 9(08).
                    07  WRK-NYUKSN-DAY      PIC 9(03)  OCCURS 31.
+      *
+      *    治験減点退避領域
+           03  WRK-CHIKEN-TABLE.
+               05  WRK-CHIKEN-ZAITEN       PIC 9(08)  OCCURS 31.
       *
       *    未実施減算退避用フラグテーブル
            03  WRK-GENSAN-TABLE.
@@ -1053,10 +1059,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM   910-DB-CLOSE-SEC
       *
       *    診療会計テーブルより入院料加算の取得
-           IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
+           IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE  OR  "1"
                PERFORM    210-NYUKSN-SRYACCT-GET-SEC
            END-IF
-      *
       *
       *    取得した入院情報から日単位の入院会計情報を再構築
            PERFORM      VARYING    IDX1   FROM   1  BY  1
@@ -1272,6 +1277,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
+      *        治験分の減点
+               COMPUTE  WRK-SO-TEN(IDX1)  =    WRK-SO-TEN(IDX1)  -
+                                               WRK-CHIKEN-ZAITEN(IDX1)
            END-PERFORM
       *
       **     PERFORM    VARYING   IDX1   FROM  1  BY  1
@@ -1491,17 +1499,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    診療会計テーブルより入院料加算の取得処理
+      *    診療会計テーブルより入院料加算（治験の減点）の取得処理
       *****************************************************************
        210-NYUKSN-SRYACCT-GET-SEC            SECTION.
       *
       *入院時の入院料加算取得（診療会計より）
-           INITIALIZE                           SRYACCT-REC
-           MOVE    LNK-ORCHCN33SUB-HOSPNUM    TO   ACCT-HOSPNUM
-           MOVE    "1"                     TO   ACCT-NYUGAIKBN
+           INITIALIZE                             SRYACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO   ACCT-HOSPNUM
+           MOVE    "1"                       TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCHCN33SUB-PTID      TO   ACCT-PTID
            MOVE    LNK-ORCHCN33SUB-SANTEIYM  TO   ACCT-SRYYM
-           MOVE    "key30"                 TO  MCP-PATHNAME
+           MOVE    "key30"                   TO   MCP-PATHNAME
            PERFORM 910-SRYACCT-SELECT-SEC
            IF      FLG-SRYACCT           =   ZERO
                MOVE     "key30"            TO  MCP-PATHNAME
@@ -1511,6 +1519,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU  NOT =    ZERO)
                    IF   ACCT-SRYKBN  =  "90" OR "92"
+                    IF   ACCT-ZAIKBN    NOT =    2
                      IF   ACCT-SRYCDTOTAL(6:9)  =   
                                             CONS-KEIKAKU-GENSAN1
                                         OR  CONS-KEIKAKU-GENSAN2
@@ -1595,8 +1604,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      ELSE
       *                その他入院料加算の退避
       *                診療会計から診療行為を検索し、入院料加算の診療
-      *                コードを特定する
-                       IF         ACCT-MEISAISU    =      1
+      *                コードを特定する（治験減点分は除く）
+                       IF        ACCT-MEISAISU    =      1
                              CONTINUE
                        ELSE
                           INITIALIZE      SRYACT-REC
@@ -1671,6 +1680,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            END-IF
                        END-PERFORM
                      END-IF
+                    END-IF
+      *
+      *             治験減点数の退避
+                    IF      (ACCT-ZAIKBN      =      2)   AND
+                            (ACCT-ZAITEN      NOT =  ZERO)
+                        PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                   UNTIL     IDX1   >   31
+                           IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                                 (LNK-NYUINDAY-KBN(IDX1)  =  "1")) AND
+                                (ACCT-DAY(1 IDX1)   NOT =  ZERO)
+                             ADD  ACCT-ZAITEN    TO 
+                                              WRK-CHIKEN-ZAITEN(IDX1)
+                          END-IF
+                        END-PERFORM
+                    END-IF
+      *
                    END-IF
                  END-IF
                  MOVE     "key30"            TO  MCP-PATHNAME
@@ -2123,7 +2148,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    食事情報取得処理
+      *    食事情報取得処理（平成１８年３月以前）
       *****************************************************************
        210-SKJ-SET-SEC            SECTION.
       *
@@ -2479,7 +2504,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    入院点数返却エリアへのセット処理
+      *    入院点数返却エリアへのセット処理（主科処理用）
       *****************************************************************
        210-NYUINTEN-SET-SEC            SECTION.
       *
@@ -2561,7 +2586,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    入院日数返却エリアへのセット処理
+      *    入院日数返却エリアへのセット処理（主科処理用）
       *****************************************************************
        210-NYUINDAY-SET-SEC            SECTION.
       *
