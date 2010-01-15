@@ -631,7 +631,6 @@
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
-           03  FLG-GENTENKBN                           PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -1122,6 +1121,8 @@
            03  WRK-SETCOM-JIDO                 PIC 9(03).
            03  WRK-SETCOM-JIDO2                PIC 9(03).
       *
+           03  WRK-GENTEN-TENSU                PIC 9(09).
+      *
       *---------------------------------------------------------------
       *  回数減算用退避領域
       *
@@ -1555,6 +1556,10 @@
        01  WRK-RECE02-REC. 
            COPY    "CPRCF002.INC"  REPLACING  //RECE02//
                                    BY         //WRK-RECE02//.
+      *
+       01  WRK-RECE02G-REC. 
+           COPY    "CPRCF002.INC"  REPLACING  //RECE02//
+                                   BY         //WRK-RECE02G//.
       *
        01  LNK-ORCS02-REC.
            COPY  "CPORCS02.INC".
@@ -2012,6 +2017,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            INITIALIZE                   TBL-TOKUSYU-KEISAN
       *
+           INITIALIZE                   WRK-RECE02G-REC
+      *
            PERFORM     2117-GENGAKU-HANTEI-SEC
       *
            MOVE      ZERO       TO      WRK-CHIHOU-KIN
@@ -2038,8 +2045,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                         FLG-KEISAN-TOK2
                                         WRK-KINGAKU-TOK1
            MOVE      ZERO       TO      FLG-KOUGAKU
-      *
-           MOVE      ZERO       TO      FLG-GENTENKBN
       *
            IF    (RECE02-SRYYM   >=  "200804")
            AND   (RECE02-SRYYM   <=  "201003")
@@ -2209,6 +2214,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                PERFORM    2104-RECE04-HENSYU-SEC
                PERFORM    2105-YKZFTN-SET-SEC
            END-PERFORM
+           PERFORM     211H-GENTEN-HENSYU-SEC
            PERFORM     2106-JNISSU-SET-SEC                                   
            PERFORM     2107-KHNTEN-CLEAR-SEC
            IF    RECE02-SRYYM   >=  "200804"
@@ -4469,8 +4475,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF        ACCT-SRYKBN        =    "95"   OR  "96"
                    CONTINUE
                ELSE
+                IF         ACCT-ZAIKBN        =    2
+                   COMPUTE  WRK-RECE02G-TOTALTEN(1) =
+                            WRK-RECE02G-TOTALTEN(1) +
+                           (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
+                   COMPUTE  WRK-RECE02G-HENTOTALTEN(1) =
+                            WRK-RECE02G-HENTOTALTEN(1) +
+                           (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
+                ELSE
                  IF       (ACCT-SRYCDTOTAL    =    630010002)
-                 OR       (ACCT-ZAIKBN        =    2        )
                    COMPUTE  RECE02-TOTALTEN(1) =  RECE02-TOTALTEN(1) -
                                                  (ACCT-ZAITEN  *  
                                                   ACCT-ZAIKAISU)
@@ -4487,6 +4500,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                  (ACCT-ZAITEN  *  
                                                   ACCT-ZAIKAISU)
                  END-IF
+                END-IF
                END-IF
            END-IF
       *
@@ -4518,8 +4532,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF        ACCT-SRYKBN        =    "95"   OR  "96"
                      CONTINUE
                   ELSE
+                   IF          ACCT-ZAIKBN        =    2
+                     COMPUTE  WRK-RECE02G-HENTOTALTEN(KH-IDX) =
+                              WRK-RECE02G-HENTOTALTEN(KH-IDX) +
+                             (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
+                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                         CONTINUE
+                     ELSE
+                         COMPUTE  WRK-RECE02G-TOTALTEN(KH-IDX) =
+                                  WRK-RECE02G-TOTALTEN(KH-IDX) +
+                                 (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
+                     END-IF
+                   ELSE
                      IF       (ACCT-SRYCDTOTAL    =    630010002)
-                     OR       (ACCT-ZAIKBN        =    2        )
                          COMPUTE  RECE02-HENTOTALTEN(KH-IDX) =
                                         RECE02-HENTOTALTEN(KH-IDX) -
                                              (ACCT-ZAITEN * 
@@ -4534,7 +4559,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          CONTINUE
                      ELSE
                        IF       (ACCT-SRYCDTOTAL    =    630010002)
-                       OR       (ACCT-ZAIKBN        =    2        )
                          COMPUTE  RECE02-TOTALTEN(KH-IDX) =
                                               RECE02-TOTALTEN(KH-IDX) -
                                              (ACCT-ZAITEN * 
@@ -4546,6 +4570,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               ACCT-ZAIKAISU)
                        END-IF
                      END-IF
+                   END-IF
                   END-IF
                  END-IF
                END-IF  
@@ -7193,23 +7218,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE   ZERO       TO    RECE02-KHNTEN(2)
                        MOVE   1          TO    FLG-KHNTEN2
                        IF    BUN-IDX        =   1
-                            COMPUTE    RECE02-TENSU(2 BUN-IDX)  =
-                                       RECE02-TENSU(2 BUN-IDX)  -
+                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX)  =
+                                       WRK-RECE02G-TENSU(2 BUN-IDX)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX2       =   2
-                            COMPUTE    RECE02-TENSU(2 BUN-IDX2)  =
-                                       RECE02-TENSU(2 BUN-IDX2)  -
+                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX2)  =
+                                       WRK-RECE02G-TENSU(2 BUN-IDX2)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX3       =   3
-                            COMPUTE    RECE02-TENSU(2 BUN-IDX3)  =
-                                       RECE02-TENSU(2 BUN-IDX3)  -
+                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX3)  =
+                                       WRK-RECE02G-TENSU(2 BUN-IDX3)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                        IF    BUN-IDX4       =   4
-                            COMPUTE    RECE02-TENSU(2 BUN-IDX4)  =
-                                       RECE02-TENSU(2 BUN-IDX4)  -
+                            COMPUTE    WRK-RECE02G-TENSU(2 BUN-IDX4)  =
+                                       WRK-RECE02G-TENSU(2 BUN-IDX4)  +
                                       (WK-ZAITEN   *   WK-ZAIKAISU)
                        END-IF
                      END-IF
@@ -7218,23 +7243,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                WHEN    "13"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE    RECE02-TENSU(7 BUN-IDX)  =
-                                  RECE02-TENSU(7 BUN-IDX)  -
+                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX)  =
+                                  WRK-RECE02G-TENSU(7 BUN-IDX)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE    RECE02-TENSU(7 BUN-IDX2)  =
-                                  RECE02-TENSU(7 BUN-IDX2)  -
+                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX2)  =
+                                  WRK-RECE02G-TENSU(7 BUN-IDX2)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE    RECE02-TENSU(7 BUN-IDX3)  =
-                                  RECE02-TENSU(7 BUN-IDX3)  -
+                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX3)  =
+                                  WRK-RECE02G-TENSU(7 BUN-IDX3)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE    RECE02-TENSU(7 BUN-IDX4)  =
-                                  RECE02-TENSU(7 BUN-IDX4)  -
+                       COMPUTE    WRK-RECE02G-TENSU(7 BUN-IDX4)  =
+                                  WRK-RECE02G-TENSU(7 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -7262,51 +7287,26 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *    在宅のレセ点数欄の編集
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
-                   EVALUATE  FLG-GENTENKBN
-                     WHEN      1
-                       IF    BUN-IDX        =   1
-                           COMPUTE   RECE02-TENSU(11 BUN-IDX)  =
-                                     RECE02-TENSU(11 BUN-IDX)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX2       =   2
-                           COMPUTE   RECE02-TENSU(11 BUN-IDX2)  =
-                                     RECE02-TENSU(11 BUN-IDX2)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX3       =   3
-                           COMPUTE   RECE02-TENSU(11 BUN-IDX3)  =
-                                     RECE02-TENSU(11 BUN-IDX3)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX4       =   4
-                           COMPUTE   RECE02-TENSU(11 BUN-IDX4)  =
-                                     RECE02-TENSU(11 BUN-IDX4)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                     WHEN      2
-                       IF    BUN-IDX        =   1
-                           COMPUTE   RECE02-TENSU(12 BUN-IDX)  =
-                                     RECE02-TENSU(12 BUN-IDX)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX2       =   2
-                           COMPUTE   RECE02-TENSU(12 BUN-IDX2)  =
-                                     RECE02-TENSU(12 BUN-IDX2)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX3       =   3
-                           COMPUTE   RECE02-TENSU(12 BUN-IDX3)  =
-                                     RECE02-TENSU(12 BUN-IDX3)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                       IF    BUN-IDX4       =   4
-                           COMPUTE   RECE02-TENSU(12 BUN-IDX4)  =
-                                     RECE02-TENSU(12 BUN-IDX4)  -
-                                    (WK-ZAITEN   *   WK-ZAIKAISU)
-                       END-IF
-                   END-EVALUATE
-                   MOVE    ZERO     TO   FLG-GENTENKBN
+                   IF    BUN-IDX        =   1
+                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX)  =
+                                  WRK-RECE02G-TENSU(11 BUN-IDX)  +
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX2)  =
+                                  WRK-RECE02G-TENSU(11 BUN-IDX2)  +
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX3)  =
+                                  WRK-RECE02G-TENSU(11 BUN-IDX3)  +
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX4)  =
+                                  WRK-RECE02G-TENSU(11 BUN-IDX4)  +
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
                  ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
@@ -7428,9 +7428,6 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                      RECE02-TENSU(11 BUN-IDX4)  +
                            (WK-SYUTEN            *  ACCT-ZAIKAISU)
                        END-IF
-                       IF    FLG-GENTENKBN  =  ZERO
-                         MOVE   1       TO   FLG-GENTENKBN
-                       END-IF
                    END-IF
       *            その他
                    IF    FLG-ZAITAKU    =   ZERO
@@ -7453,9 +7450,6 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                            COMPUTE   RECE02-TENSU(12 BUN-IDX4)  =
                                      RECE02-TENSU(12 BUN-IDX4)  +
                                     (WK-SYUTEN     *   WK-ZAIKAISU)
-                       END-IF
-                       IF    FLG-GENTENKBN  =  ZERO
-                         MOVE   2       TO   FLG-GENTENKBN
                        END-IF
                    END-IF
       *            薬剤
@@ -12851,6 +12845,151 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
       *
            .
        21113-ETCKISAIFLGINF-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括点数の治験減点分編集
+      *****************************************************************
+       211H-GENTEN-HENSYU-SEC      SECTION.
+      *
+      *    再診のレセ点数の編集（減点）
+           IF   RECE02-TENSU(2 1)  >=  WRK-RECE02G-TENSU(2 1)
+             COMPUTE  RECE02-TENSU(2 1)  =
+                      RECE02-TENSU(2 1)  -  WRK-RECE02G-TENSU(2 1)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(2 1)
+           END-IF
+           IF   RECE02-TENSU(2 2)  >=  WRK-RECE02G-TENSU(2 2)
+             COMPUTE  RECE02-TENSU(2 2)  =
+                      RECE02-TENSU(2 2)  -  WRK-RECE02G-TENSU(2 2)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(2 2)
+           END-IF
+           IF   RECE02-TENSU(2 3)  >=  WRK-RECE02G-TENSU(2 3)
+             COMPUTE  RECE02-TENSU(2 3)  =
+                      RECE02-TENSU(2 3)  -  WRK-RECE02G-TENSU(2 3)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(2 3)
+           END-IF
+           IF   RECE02-TENSU(2 4)  >=  WRK-RECE02G-TENSU(2 4)
+             COMPUTE  RECE02-TENSU(2 4)  =
+                      RECE02-TENSU(2 4)  -  WRK-RECE02G-TENSU(2 4)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(2 4)
+           END-IF
+      *
+      *    指導のレセ点数の編集（減点）
+           IF   RECE02-TENSU(7 1)  >=  WRK-RECE02G-TENSU(7 1)
+             COMPUTE  RECE02-TENSU(7 1)  =
+                      RECE02-TENSU(7 1)  -  WRK-RECE02G-TENSU(7 1)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(7 1)
+           END-IF
+           IF   RECE02-TENSU(7 2)  >=  WRK-RECE02G-TENSU(7 2)
+             COMPUTE  RECE02-TENSU(7 2)  =
+                      RECE02-TENSU(7 2)  -  WRK-RECE02G-TENSU(7 2)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(7 2)
+           END-IF
+           IF   RECE02-TENSU(7 3)  >=  WRK-RECE02G-TENSU(7 3)
+             COMPUTE  RECE02-TENSU(7 3)  =
+                      RECE02-TENSU(7 3)  -  WRK-RECE02G-TENSU(7 3)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(7 3)
+           END-IF
+           IF   RECE02-TENSU(7 4)  >=  WRK-RECE02G-TENSU(7 4)
+             COMPUTE  RECE02-TENSU(7 4)  =
+                      RECE02-TENSU(7 4)  -  WRK-RECE02G-TENSU(7 4)
+           ELSE
+             MOVE     ZERO    TO   RECE02-TENSU(7 4)
+           END-IF
+      *
+      *    在宅のレセ点数の編集（減点）
+           IF   RECE02-TENSU(11 1)  >=  WRK-RECE02G-TENSU(11 1)
+              COMPUTE RECE02-TENSU(11 1) =
+                      RECE02-TENSU(11 1) -  WRK-RECE02G-TENSU(11 1)
+           ELSE
+              COMPUTE WRK-GENTEN-TENSU   =
+                      WRK-RECE02G-TENSU(11 1)
+                                         -  RECE02-TENSU(11 1)
+              MOVE    ZERO   TO   RECE02-TENSU(11 1)
+              IF   RECE02-TENSU(12 1)  >=  WRK-GENTEN-TENSU
+                COMPUTE  RECE02-TENSU(12 1)  =
+                         RECE02-TENSU(12 1)  -  WRK-GENTEN-TENSU
+              ELSE
+                MOVE     ZERO    TO   RECE02-TENSU(12 1)
+              END-IF
+           END-IF
+           IF   RECE02-TENSU(11 2)  >=  WRK-RECE02G-TENSU(11 2)
+              COMPUTE RECE02-TENSU(11 2) =
+                      RECE02-TENSU(11 2) -  WRK-RECE02G-TENSU(11 2)
+           ELSE
+              COMPUTE WRK-GENTEN-TENSU   =
+                      WRK-RECE02G-TENSU(11 2)
+                                         -  RECE02-TENSU(11 2)
+              MOVE    ZERO   TO   RECE02-TENSU(11 2)
+              IF   RECE02-TENSU(12 2)  >=  WRK-GENTEN-TENSU
+                COMPUTE  RECE02-TENSU(12 2)  =
+                         RECE02-TENSU(12 2)  -  WRK-GENTEN-TENSU
+              ELSE
+                MOVE     ZERO    TO   RECE02-TENSU(12 2)
+              END-IF
+           END-IF
+           IF   RECE02-TENSU(11 3)  >=  WRK-RECE02G-TENSU(11 3)
+              COMPUTE RECE02-TENSU(11 3) =
+                      RECE02-TENSU(11 3) -  WRK-RECE02G-TENSU(11 3)
+           ELSE
+              COMPUTE WRK-GENTEN-TENSU   =
+                      WRK-RECE02G-TENSU(11 3)
+                                         -  RECE02-TENSU(11 3)
+              MOVE    ZERO   TO   RECE02-TENSU(11 3)
+              IF   RECE02-TENSU(12 3)  >=  WRK-GENTEN-TENSU
+                COMPUTE  RECE02-TENSU(12 3)  =
+                         RECE02-TENSU(12 3)  -  WRK-GENTEN-TENSU
+              ELSE
+                MOVE     ZERO    TO   RECE02-TENSU(12 3)
+              END-IF
+           END-IF
+           IF   RECE02-TENSU(11 4)  >=  WRK-RECE02G-TENSU(11 4)
+              COMPUTE RECE02-TENSU(11 4) =
+                      RECE02-TENSU(11 4) -  WRK-RECE02G-TENSU(11 4)
+           ELSE
+              COMPUTE WRK-GENTEN-TENSU   =
+                      WRK-RECE02G-TENSU(11 4)
+                                         -  RECE02-TENSU(11 4)
+              MOVE    ZERO   TO   RECE02-TENSU(11 4)
+              IF   RECE02-TENSU(12 4)  >=  WRK-GENTEN-TENSU
+                COMPUTE  RECE02-TENSU(12 4)  =
+                         RECE02-TENSU(12 4)  -  WRK-GENTEN-TENSU
+              ELSE
+                MOVE     ZERO    TO   RECE02-TENSU(12 4)
+              END-IF
+           END-IF
+      *
+      *    合計点数の編集（減点）
+           COMPUTE  RECE02-TOTALTEN(1)    =
+                    RECE02-TOTALTEN(1)    -  WRK-RECE02G-TOTALTEN(1)
+           COMPUTE  RECE02-HENTOTALTEN(1) =
+                    RECE02-HENTOTALTEN(1) -  WRK-RECE02G-HENTOTALTEN(1)
+           COMPUTE  RECE02-TOTALTEN(2)    =
+                    RECE02-TOTALTEN(2)    -  WRK-RECE02G-TOTALTEN(2)
+           COMPUTE  RECE02-HENTOTALTEN(2) =
+                    RECE02-HENTOTALTEN(2) -  WRK-RECE02G-HENTOTALTEN(2)
+           COMPUTE  RECE02-TOTALTEN(3)    =
+                    RECE02-TOTALTEN(3)    -  WRK-RECE02G-TOTALTEN(3)
+           COMPUTE  RECE02-HENTOTALTEN(3) =
+                    RECE02-HENTOTALTEN(3) -  WRK-RECE02G-HENTOTALTEN(3)
+           COMPUTE  RECE02-TOTALTEN(4)    =
+                    RECE02-TOTALTEN(4)    -  WRK-RECE02G-TOTALTEN(4)
+           COMPUTE  RECE02-HENTOTALTEN(4) =
+                    RECE02-HENTOTALTEN(4) -  WRK-RECE02G-HENTOTALTEN(4)
+           COMPUTE  RECE02-TOTALTEN(5)    =
+                    RECE02-TOTALTEN(5)    -  WRK-RECE02G-TOTALTEN(5)
+           COMPUTE  RECE02-HENTOTALTEN(5) =
+                    RECE02-HENTOTALTEN(5) -  WRK-RECE02G-HENTOTALTEN(5)
+      *
+           .
+       211H-GENTEN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
