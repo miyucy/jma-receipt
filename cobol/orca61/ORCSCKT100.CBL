@@ -2395,6 +2395,7 @@
       *    自動作成分包括診療チェック初期設定
            IF     (SPA-HKTSANTEI-CHK   =   1      )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999" )
+            AND   (SPA-CHIKENKBN       =   SPACE  )
                MOVE    SPA-K01KYOUTU       TO   SPA-WORK
                INITIALIZE                  ORCSCHKTCHKAREA
                MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK

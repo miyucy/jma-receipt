@@ -343,6 +343,8 @@
       *    福岡県対応用
            03  IDX-SYU             PIC 9(04).
            03  IDX-SYU2            PIC 9(04).
+      *
+           03  IDX-TS              PIC 9(04).
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
@@ -372,6 +374,8 @@
            03  WRK-SELNUM          PIC 9(03).
       *    画面番号
            03  WRK-BANGO           PIC 9(04).
+      *    診療種別
+           03  WRK-SRYSYUKBN       PIC X(03).
       *
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(08).
@@ -507,6 +511,13 @@
            03  WRK-PRV-KBN             PIC X(01).
       *
            03  CNT-ZAI                 PIC 9(04).
+      *
+      *    集計収納請求内容
+       01  WRK-SUM-AREA.
+           03  SUM-SYU-SKY-NAIYOU.
+               05  SUM-SYU-SKY-TBL             OCCURS   17.
+      *    保険点数
+                   09  SUM-SYU-HKNTEN          PIC  S9(07).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -3378,68 +3389,27 @@
                IF      SPA-GMN-TDELFLG (IDX)   =   2
                    CONTINUE
                ELSE
-                   EVALUATE    SPA-NAI-SRYKBN (IDX-NAI)
-      *                指導
-                       WHEN    "13"
-                           IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
-                               ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (02)
-                           ELSE
-                               COMPUTE SPA-GMN-HKNTEN (02)
-                                               =   SPA-GMN-HKNTEN (02)
-                                               -   SPA-NAI-HKNTEN
+                   MOVE    SPA-NAI-SRYKBN (IDX-NAI)    TO  WRK-SRYKBN
+                   MOVE    SPA-NAI-SRYSYUKBN (IDX-NAI) TO  WRK-SRYSYUKBN
+                   PERFORM 410321-SYUNOU-TENSU-SEC
+                   IF      IDX-TS                  =   ZERO
+                                                   OR  1
+                                                   OR  3
+      *                診察料は再計算なし
+                       CONTINUE
+                   ELSE
+                       IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
+                           ADD     SPA-NAI-HKNTEN (IDX-NAI)
+                                                   TO  SPA-GMN-HKNTEN
+                                                              (IDX-TS)
+                       ELSE
+                           COMPUTE SPA-GMN-HKNTEN (IDX-TS)
+                                                   =   SPA-GMN-HKNTEN
+                                                              (IDX-TS)
+                                                   -   SPA-NAI-HKNTEN
                                                               (IDX-NAI)
-                           END-IF
-      *                投薬
-                       WHEN    "21"   THRU  "27"
-                           IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
-                               ADD     SPA-NAI-HKNTEN (IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (04)
-                           ELSE
-                               COMPUTE SPA-GMN-HKNTEN (04)
-                                               =   SPA-GMN-HKNTEN (04)
-                                               -   SPA-NAI-HKNTEN
-                                                              (IDX-NAI)
-                           END-IF
-                       WHEN    "31"
-                       WHEN    "32"
-                       WHEN    "33"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (05)
-                       WHEN    "40"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (06)
-                       WHEN    "50"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (07)
-                       WHEN    "54"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (08)
-                       WHEN    "60"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (09)
-                       WHEN    "70"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (10)
-                       WHEN    "64"
-                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (14)
-                       WHEN    "80"
-                           PERFORM  410321-SONOTA-TENSU-SEC
-      *                食事
-                       WHEN    "90"
-                       WHEN    "92"
-                       WHEN    "97"
-                           IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
-                               ADD     SPA-NAI-HKNTEN (IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (15)
-                           ELSE
-                               COMPUTE SPA-GMN-HKNTEN (15)
-                                               =   SPA-GMN-HKNTEN (15)
-                                               -   SPA-NAI-HKNTEN
-                                                              (IDX-NAI)
-                           END-IF
-                   END-EVALUATE
+                       END-IF
+                   END-IF
                END-IF
              END-IF
            END-PERFORM
@@ -3454,42 +3424,79 @@
            EXIT.
       *
       *****************************************************************
-      *    その他点数集計処理
+      *    収納点数集計位置処理
       *****************************************************************
-       410321-SONOTA-TENSU-SEC              SECTION.
+       410321-SYUNOU-TENSU-SEC              SECTION.
       *
-           EVALUATE    SPA-NAI-SRYSYUKBN (IDX-NAI)
-      *        リハビリ
-               WHEN    "800"
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (11)
-      *        処方せん料
-               WHEN    "820"
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (04)
-      *        精神科
-               WHEN    "830"
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (12)
-      *        放射線治療
-               WHEN    "840"
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (13)
-      *        療養担当手当て
-               WHEN    "850"
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (16)
-      *        入院料
-               WHEN    "890"
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (15)
-      *        その他
-               WHEN    OTHER
-                   ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                              TO  SPA-GMN-HKNTEN (11)
+           MOVE    ZERO                TO  IDX-TS
+           EVALUATE    WRK-SRYKBN
+      *        診察
+               WHEN    "11"
+               WHEN    "12"
+                   MOVE    1                TO  IDX-TS
+      *        指導
+               WHEN    "13"
+                   MOVE    2                TO  IDX-TS
+      *        在宅
+               WHEN    "14"
+                   MOVE    3                TO  IDX-TS
+      *        投薬
+               WHEN    "21"   THRU  "27"
+                   MOVE    4                TO  IDX-TS
+      *        注射
+               WHEN    "31"
+               WHEN    "32"
+               WHEN    "33"
+                   MOVE    5                TO  IDX-TS
+      *        処置
+               WHEN    "40"
+                   MOVE    6                TO  IDX-TS
+      *        手術
+               WHEN    "50"
+                   MOVE    7                TO  IDX-TS
+      *        麻酔
+               WHEN    "54"
+                   MOVE    8                TO  IDX-TS
+      *        検査
+               WHEN    "60"
+                   MOVE    9                TO  IDX-TS
+      *        病理診断
+               WHEN    "64"
+                   MOVE    14               TO  IDX-TS
+      *        画像診断
+               WHEN    "70"
+                   MOVE    10               TO  IDX-TS
+               WHEN    "80"
+                   EVALUATE    WRK-SRYSYUKBN
+      *            リハビリ
+                   WHEN    "800"
+                       MOVE    11               TO  IDX-TS
+      *            処方せん料
+                   WHEN    "820"
+                       MOVE    4                TO  IDX-TS
+      *            精神科
+                   WHEN    "830"
+                       MOVE    12               TO  IDX-TS
+      *            放射線治療
+                   WHEN    "840"
+                       MOVE    13               TO  IDX-TS
+      *            療養担当手当て
+                   WHEN    "850"
+                       MOVE    16               TO  IDX-TS
+      *            入院料（外来）
+                   WHEN    "890"
+                       MOVE    15               TO  IDX-TS
+      *            その他
+                   WHEN    OTHER
+                       MOVE    11               TO  IDX-TS
+                   END-EVALUATE
+      *            食事
+               WHEN    "90"
+               WHEN    "92"
+                   MOVE    15               TO  IDX-TS
            END-EVALUATE
            .
-       410321-SONOTA-TENSU-EXT.
+       410321-SYUNOU-TENSU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4085,6 +4092,8 @@
        45013-SYUNOU-HENSYU-SEC             SECTION.
       *
            MOVE    LNK-SYUNOU-REC (IDH)    TO  SYUNOU-REC
+           INITIALIZE                  WRK-SUM-AREA
+      *
            MOVE    ZERO                TO  SYU-HKNTEN(02)
            MOVE    ZERO                TO  SYU-HKNTEN(04)
            MOVE    ZERO                TO  SYU-HKNTEN(05)
@@ -4115,6 +4124,18 @@
            MOVE    ZERO                TO  SYU-HKNTEN(17)
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   16
+      *        保険点数
+               IF      SUM-SYU-HKNTEN(IDX)     <   ZERO
+                   MOVE    ZERO                TO  SUM-SYU-HKNTEN (IDX)
+                   MOVE    "0010"              TO  SPA-ERRCD
+               END-IF
+               IF      IDX                     =   1
+                                               OR  3
+      *            診察料と在宅は再計算なし（剤削除なし）
+                   CONTINUE
+               ELSE
+                   MOVE    SUM-SYU-HKNTEN(IDX) TO  SYU-HKNTEN(IDX)
+               END-IF
       *        保険合計点数
                ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(17)
            END-PERFORM
@@ -4330,90 +4351,26 @@
       *****************************************************************
        450120-HKNTEN-KEI-SEC             SECTION.
       *
-           EVALUATE    SPA-NAI-SRYKBN (IDY)
-      *        指導
-               WHEN    "13"
-                   IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
-                       ADD     SPA-NAI-HKNTEN (IDY)
-                                                   TO  SYU-HKNTEN (02)
-                   ELSE
-                       COMPUTE SYU-HKNTEN (02)     =   SYU-HKNTEN (02)
-                                                   -   SPA-NAI-HKNTEN
-                                                                 (IDY)
-                   END-IF
-      *        投薬
-               WHEN    "21"   THRU  "27"
-                   IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
-                       ADD     SPA-NAI-HKNTEN (IDY)
-                                                   TO  SYU-HKNTEN (04)
-                   ELSE
-                       COMPUTE SYU-HKNTEN (04)
-                                                   =   SYU-HKNTEN (04)
-                                                   -   SPA-NAI-HKNTEN
-                                                                 (IDY)
-                   END-IF
-               WHEN    "31"
-               WHEN    "32"
-               WHEN    "33"
+           MOVE    SPA-NAI-SRYKBN (IDY)    TO  WRK-SRYKBN
+           MOVE    SPA-NAI-SRYSYUKBN (IDY) TO  WRK-SRYSYUKBN
+      *    集計位置決定
+           PERFORM 410321-SYUNOU-TENSU-SEC
+           IF      IDX-TS                  >   ZERO
+               IF      SPA-NAI-HKNSFLG (IDY)   =   ZERO
+                   ADD     SPA-NAI-HKNTEN (IDY)
+                                           TO  SUM-SYU-HKNTEN (IDX-TS)
+               ELSE
+                   COMPUTE SUM-SYU-HKNTEN (IDX-TS)
+                                           =   SUM-SYU-HKNTEN (IDX-TS)
+                                           -   SPA-NAI-HKNTEN (IDY)
+               END-IF
+      *        処方せん料
+               IF      SPA-NAI-SRYSYUKBN (IDY) =   "820"
+      *            処方せん料再掲
                    ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (05)
-               WHEN    "40"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (06)
-               WHEN    "50"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (07)
-               WHEN    "54"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (08)
-               WHEN    "60"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (09)
-               WHEN    "64"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (14)
-               WHEN    "70"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (10)
-               WHEN    "80"
-                   EVALUATE    SPA-NAI-SRYSYUKBN (IDY)
-      *            リハビリ
-                   WHEN    "800"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (11)
-      *            処方せん料
-                   WHEN    "820"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (04)
-      *                処方せん料再掲
-                       ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-SHOHOU-SAI
-      *            精神科
-                   WHEN    "830"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (12)
-      *            放射線治療
-                   WHEN    "840"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (13)
-      *            療養担当手当て
-                   WHEN    "850"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (16)
-      *            入院料（外来）
-                   WHEN    "890"
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (15)
-      *            その他
-                   WHEN    OTHER
-                       ADD     SPA-NAI-HKNTEN(IDY)
-                                              TO  SYU-HKNTEN (11)
-                   END-EVALUATE
-      *            食事
-               WHEN    "90"
-                   ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (15)
-           END-EVALUATE
+               END-IF
+           END-IF
       *
            .
        450120-HKNTEN-KEI-EXT.
@@ -6466,6 +6423,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0010"
+                   STRING   "保険適用点数がマイナスになります。"
+                            "収納の登録ができません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *VER.4.5
                WHEN    "0006"
                    STRING  "１日の受診履歴が１３５剤以上になります。"
@@ -6476,6 +6439,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0007"
                    MOVE    "Ｕ・Ｐがありません。"
                                        TO  SPA-ERRMSG
+      *!
                WHEN    "1000"
                    MOVE    "６００行以上になります。"
                                        TO  SPA-ERRMSG

@@ -279,6 +279,9 @@
            03  WRK-TNSSRYSYUKBN        PIC X(03).
       *
            03  WRK-HOUKATU-ZAI         PIC 9(01).
+      *
+           03  WRK-YAKUHYO             PIC X(01).
+           03  WRK-GENTEN              PIC X(01).
       *    ²ó¿ô¡¦Æü¿ô
            03  WRK-NYUIN-AREA.
                05  WRK-NYU-KAI        PIC 9(03).
@@ -288,6 +291,13 @@
            03  IDX-N2                  PIC 9(02).
       *
            03  WRK-KANSURYO            PIC 9(05)V9(5).
+      *
+      *    ½¸·×¼ýÇ¼ÀÁµáÆâÍÆ
+       01  WRK-SUM-AREA.
+           03  SUM-SYU-SKY-NAIYOU.
+               05  SUM-SYU-SKY-TBL             OCCURS   17.
+      *    ÊÝ¸±ÅÀ¿ô
+                   09  SUM-SYU-HKNTEN          PIC  S9(07).
       *
        01  TBL-KAISUU-AREA.
            03  TBL-KAISUU-OCCU         OCCURS   10.
@@ -968,6 +978,7 @@
                                             OR  "022"
                                             OR  "046" )  AND
                    (SPA-COM-SURYO(IDX-1)(6:3)  >   ZERO)
+           AND     (SPA-COM-YAKUHYO(IDX-1)  =   SPACE )
                IF     (IDX-1               <   SPA-MAX-LINE  )  AND
                       (SPA-COM-INPUTCD(IDX-1 + 1)  =   "099309901")
                    CONTINUE
@@ -1179,6 +1190,14 @@
                END-IF
            END-IF
       *!!
+      *    ÌôÉ¾¡¦¸ºÅÀ
+           IF      LNK-WKSRY-ZAIKBN  (IDX) =   1
+               MOVE    "1"                 TO  SPA-COM-YAKUHYO (IDX2)
+           END-IF
+           IF      LNK-WKSRY-ZAIKBN  (IDX) =   2
+               MOVE    "1"                 TO  SPA-COM-GENTEN  (IDX2)
+           END-IF
+      *!!
            IF      LNK-WKSRY-INPUTCD (IDX IDY) =   SPACE
                MOVE    SPA-COM-INPUTCD (IDX2)
                                            TO  SPA-GMN-INPUTCD (IDX2)
@@ -1361,6 +1380,11 @@
                MOVE    1                   TO  FLG-SYUBETU
            END-IF
       *
+      *    ÌôÉ¾¡¦¸ºÅÀÊ¬¤Î»þ
+           IF     (LNK-WKSRY-ZAIKBN(IDX)   NOT =   ZERO  )
+               MOVE    1                   TO  FLG-SYUBETU
+           END-IF
+      *
       *    ¼«Æ°È¯À¸¤ÎÅ¸³«Ê¬
            IF      FLG-SYUBETU         =   1
                IF     (FLG-AUTO-OK         =   1 ) AND
@@ -1431,6 +1455,8 @@
                                                    "290" )  AND
                   (LNK-WKSRY-SRYKBN    (IDX)   =   "21" OR "22"
                                                OR  "23" )
+      *        ÌôÉ¾°Ê³°
+             AND  (LNK-WKSRY-ZAIKBN (IDX)  NOT =   1     )
                IF     (FLG-SYORIFLG            =   1    )  OR
                       (LNK-WKSRY-TERMID (IDX)  =   "WKSRYACT")
                    MOVE    1                   TO  FLG-INGAIKBN-ARI
@@ -1462,7 +1488,9 @@
                                                        "3"  OR
                                                        "2"   )  OR
                   (LNK-WKSRY-SRYSYUKBN (IDX)(3:1)  NOT =   "0") OR
-                  (LNK-WKSRY-SRYSYUKBN (IDX)       =   "610"  ))
+                  (LNK-WKSRY-SRYSYUKBN (IDX)       =   "610"  )
+      *           ¸ºÅÀÊ¬¤Î»þ
+             OR   (LNK-WKSRY-ZAIKBN  (IDX)     NOT =   ZERO   ))
                ADD     1                       TO  IDX2
                MOVE    "."                     TO  SPA-GMN-INPUTCD
                                                             (IDX2)(1:1)
@@ -2140,8 +2168,16 @@
            MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
       *@
       *    Êñ³çºÞ¤Ï·ÑÂ³¶èÊ¬¤Ë'H'¤òÊÔ½¸
-           IF      WRK-HOUKATU-ZAI     =   1
-               MOVE    "H"             TO  WKSRY-CONTKBN
+           IF      SPA-COM-HOUKATU-ZAI(IDX)    =   1
+               MOVE    "H"                 TO  WKSRY-CONTKBN
+           END-IF
+      *    ÌôÉ¾¡¦´ïÉ¾
+           IF      SPA-COM-YAKUHYO (IDX)   =   "1"
+               MOVE    1                   TO  WKSRY-ZAIKBN
+           END-IF
+      *    ¸ºÅÀ
+           IF      SPA-COM-GENTEN (IDX)    =   "1"
+               MOVE    2                   TO  WKSRY-ZAIKBN
            END-IF
       *    ¥É¥¯¥¿¡¼
            MOVE    SPA-DRCD            TO  WKSRY-DRCD
@@ -2635,6 +2671,8 @@
            END-IF
       *
            MOVE    SPA-COM-HOUKATU-ZAI (IDX)   TO  WRK-HOUKATU-ZAI
+           MOVE    SPA-COM-YAKUHYO     (IDX)   TO  WRK-YAKUHYO
+           MOVE    SPA-COM-GENTEN      (IDX)   TO  WRK-GENTEN
            PERFORM 300211-WKSRYPARA-WRITE-SEC
       *
            IF      SPA-COM-ZAIEND(IDX) =   "1"
@@ -2682,6 +2720,14 @@
       *    Êñ³çºÞ¤Ï·ÑÂ³¶èÊ¬¤Ë'H'¤òÊÔ½¸
            IF      WRK-HOUKATU-ZAI      =   1
                MOVE    "H"              TO  WKSRY-CONTKBN
+           END-IF
+      *    ÌôÉ¾¡¦´ïÉ¾
+           IF      WRK-YAKUHYO         =   "1"
+               MOVE    1               TO  WKSRY-ZAIKBN
+           END-IF
+      *    ¸ºÅÀ
+           IF      WRK-GENTEN          =   "1"
+               MOVE    2               TO  WKSRY-ZAIKBN
            END-IF
       *@
       *    ¥É¥¯¥¿¡¼
@@ -2933,6 +2979,8 @@
            MOVE    SPA-INGAIKBN        TO  SYU-INGAISHOHOKBN
       *    ¥É¥¯¥¿¡¼
            MOVE    WRK-DRCD            TO  SYU-DRCD-G
+      *    ¼ýÇ¼ÅÀ¿ô½¸·×
+           INITIALIZE                  WRK-SUM-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
@@ -3003,39 +3051,39 @@
       *        ¿ÇÎÅ
                WHEN    "11"
                WHEN    "12"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (01)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (01)
       *        »ØÆ³
                WHEN    "13"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (02)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (02)
       *        ºßÂð
                WHEN    "14"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (03)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (03)
       *        ÅêÌô
                WHEN    "21"   THRU  "27"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (04)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (04)
       *        Ãí¼Í
                WHEN    "31"
                WHEN    "32"
                WHEN    "33"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (05)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (05)
       *        ½èÃÖ
                WHEN    "40"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (06)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (06)
       *        ¼ê½Ñ
                WHEN    "50"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (07)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (07)
       *        Ëã¿ì
                WHEN    "54"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (08)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (08)
       *        ¸¡ºº
                WHEN    "60"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (09)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (09)
       *        £ØÀþ
                WHEN    "70"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (10)
       *        ÉÂÍý¿ÇÃÇ
                WHEN    "64"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (14)
       *        ¤½¤ÎÂ¾
                WHEN    "80"
                    PERFORM 45011-HKNTEN-SONOTA-SEC
@@ -3053,27 +3101,27 @@
            EVALUATE    SPA-COM-SRYSYUKBN  (IDX)
       *        ¥ê¥Ï¥Ó¥ê
                WHEN    "800"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (11)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (11)
       *        ½èÊý¤»¤óÎÁ
                WHEN    "820"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (04)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (04)
       *        ½èÊý¤»¤óÎÁºÆ·Ç
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-SHOHOU-SAI
       *        Àº¿À²Ê
                WHEN    "830"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (12)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (12)
       *        Êü¼ÍÀþ¼£ÎÅ
                WHEN    "840"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (13)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (13)
       *        ÎÅÍÜÃ´Åö¼êÅö¤Æ
                WHEN    "850"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (16)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (16)
       *        Æþ±¡ÎÁ
                WHEN    "890"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (15)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (15)
       *        ¤½¤ÎÂ¾
                WHEN    OTHER
-                  ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (11)
+                  ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (11)
            END-EVALUATE
            .
        45011-HKNTEN-SONOTA-EXT.
@@ -3427,46 +3475,46 @@
       *
       *        Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
                    ADD     WRK-EN              TO  SYU-RSISHOSHIN-MONEY
-                   ADD     WRK-TENSU           TO  SYU-HKNTEN (01)
+                   ADD     WRK-TENSU           TO  SUM-SYU-HKNTEN (01)
       *        ºÆ¿Ç
                WHEN    "12"
       *            *Ï«ºÒÊÝ¸±¡ÝºÆ¿ÇÎÁ
                    ADD     WRK-EN              TO  SYU-RSISAISHIN-MONEY
-                   ADD     WRK-TENSU           TO  SYU-HKNTEN (01)
+                   ADD     WRK-TENSU           TO  SUM-SYU-HKNTEN (01)
       *        »ØÆ³
                WHEN    "13"
       *            Ï«ºÒÊÝ¸±¡Ý»ØÆ³ÎÁ
                    ADD     WRK-EN              TO  SYU-RSISDO-MONEY
-                   ADD     WRK-TENSU           TO  SYU-HKNTEN (02)
+                   ADD     WRK-TENSU           TO  SUM-SYU-HKNTEN (02)
       *        ºßÂð
                WHEN    "14"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (03)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (03)
       *        ÅêÌô
                WHEN    "21"   THRU  "27"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (04)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (04)
       *        Ãí¼Í
                WHEN    "31"
                WHEN    "32"
                WHEN    "33"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (05)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (05)
       *        ½èÃÖ
                WHEN    "40"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (06)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (06)
       *        ¼ê½Ñ
                WHEN    "50"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (07)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (07)
       *        Ëã¿ì
                WHEN    "54"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (08)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (08)
       *        ¸¡ºº
                WHEN    "60"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (09)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (09)
       *        £ØÀþ
                WHEN    "70"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (10)
       *        ÉÂÍý¿ÇÃÇ
                WHEN    "64"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SUM-SYU-HKNTEN (14)
       *        ¤½¤ÎÂ¾
                WHEN    "80"
       *            Ï«ºÒÊÝ¸±¡Ý¤½¤ÎÂ¾
@@ -3502,26 +3550,27 @@
                    WHEN    "11"
                    WHEN    "12"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN (01)
+                                               TO  SUM-SYU-HKNTEN (01)
       *            »ØÆ³
                    WHEN    "13"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN (02)
+                                               TO  SUM-SYU-HKNTEN (02)
       *            ºßÂð
                    WHEN    "14"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN (03)
+                                               TO  SUM-SYU-HKNTEN (03)
       *            ÅêÌô
                    WHEN    "21"   THRU  "27"
       *                ÌôºÞÎÁÄþ¸º¡¡¤ò¸º»»
                        IF      ORCSCWKSRY-KSN-SRYCD (IDX)
-                                                     =   "630010002"
-                           COMPUTE SYU-HKNTEN (04)   =   SYU-HKNTEN(04)
+                                               =   "630010002"
+                           COMPUTE SUM-SYU-HKNTEN (04)
+                                               =   SUM-SYU-HKNTEN(04)
                                                -   ORCSCWKSRY-KSN-TENSU
                                                                  (IDX)
                        ELSE
                            ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                    TO  SYU-HKNTEN
+                                                    TO  SUM-SYU-HKNTEN
                                                                   (04)
                        END-IF
       *            Ãí¼Í
@@ -3529,31 +3578,31 @@
                    WHEN    "32"
                    WHEN    "33"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(05)
+                                               TO  SUM-SYU-HKNTEN(05)
       *            ½èÃÖ
                    WHEN    "40"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(06)
+                                               TO  SUM-SYU-HKNTEN(06)
       *            ¼ê½Ñ
                    WHEN    "50"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(07)
+                                               TO  SUM-SYU-HKNTEN(07)
       *            Ëã¿ì
                    WHEN    "54"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(08)
+                                               TO  SUM-SYU-HKNTEN(08)
       *            ¸¡ºº
                    WHEN    "60"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(09)
+                                               TO  SUM-SYU-HKNTEN(09)
       *            £ØÀþ
                    WHEN    "70"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(10)
+                                               TO  SUM-SYU-HKNTEN(10)
       *            ÉÂÍý¿ÇÃÇ
                    WHEN    "64"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                                   TO  SYU-HKNTEN(14)
+                                               TO  SUM-SYU-HKNTEN(14)
       *            ¤½¤ÎÂ¾
                    WHEN    "80"
                        PERFORM 4504-JIDOUKEI-SONOTA-SEC
@@ -3576,34 +3625,34 @@
       *        ¥ê¥Ï¥Ó¥ê
                WHEN    "800"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (11)
+                                               TO  SUM-SYU-HKNTEN (11)
       *        ½èÊý¤»¤óÎÁ
                WHEN    "820"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (04)
+                                               TO  SUM-SYU-HKNTEN (04)
       *        ½èÊý¤»¤óÎÁºÆ·Ç
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
                                                TO  SYU-SHOHOU-SAI
       *        Àº¿À²Ê
                WHEN    "830"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (12)
+                                               TO  SUM-SYU-HKNTEN (12)
       *        Êü¼ÍÀþ¼£ÎÅ
                WHEN    "840"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (13)
+                                               TO  SUM-SYU-HKNTEN (13)
       *        ÎÅÍÜÃ´Åö¼êÅö¤Æ
                WHEN    "850"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (16)
+                                               TO  SUM-SYU-HKNTEN (16)
       *        Æþ±¡ÎÁ
                WHEN    "890"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (15)
+                                               TO  SUM-SYU-HKNTEN (15)
       *        ¤½¤ÎÂ¾
                WHEN    OTHER
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                              TO  SYU-HKNTEN (11)
+                                              TO  SUM-SYU-HKNTEN (11)
            END-EVALUATE
            .
        4504-JIDOUKEI-SONOTA-EXT.
@@ -3616,6 +3665,12 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX         >   16
+      *        ÊÝ¸±ÅÀ¿ô
+               IF      SUM-SYU-HKNTEN(IDX)  <   ZERO
+                   MOVE    "0224"               TO  SPA-ERRCD
+               ELSE
+                   MOVE    SUM-SYU-HKNTEN (IDX) TO  SYU-HKNTEN(IDX)
+              END-IF
       *       ÊÝ¸±ÅÀ¿ô
               ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
       *       ¶â³Û
@@ -3696,6 +3751,8 @@
       *            ¿ÇÎÅ¹Ô°Ù¥Ñ¥é¥á¥¿½ÐÎÏ
       ***          MOVE    ORCSCWKSRY-KSN-HKTKBN(IDX)
       ******                                   TO  WRK-HOUKATU-ZAI
+                   MOVE    SPACE               TO  WRK-YAKUHYO
+                   MOVE    SPACE               TO  WRK-GENTEN
                    PERFORM 300211-WKSRYPARA-WRITE-SEC
                    ADD     1                   TO  WRK-ZAINUM
                    MOVE    ZERO                TO  IDY

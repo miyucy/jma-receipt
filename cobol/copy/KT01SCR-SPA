@@ -279,6 +279,7 @@
       *
                            11  SPA-NAI-HKNID       PIC  9(10).
                            11  SPA-NAI-HKNNUM      PIC  X(03).
+                           11  SPA-NAI-CHIKENKBN   PIC  X(01).
                            11  SPA-NAI-RSI-SISIKBN PIC  X(01).
                            11  SPA-NAI-RSI-SHOBYOYMD    PIC  X(08).
                            11  SPA-NAI-RSI-HKNKBN  PIC  X(01).

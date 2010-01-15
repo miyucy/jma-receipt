@@ -2162,6 +2162,10 @@
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
                                            TO  SPA-NAI-RSI-HKNKBN
                                                                (IDY)
+      *        ¼£¸³¶èÊ¬
+               MOVE    ORCSHKN-NAI-CHIKENKBN  (IDX)
+                                           TO  SPA-NAI-CHIKENKBN
+                                                               (IDX)
                MOVE    IDY                 TO  SPA-HKN-MAX
       *
                IF      ORCSHKN-IDX         =   IDX
@@ -2390,6 +2394,9 @@
                                        TO  SPA-COB-TEKSTYMD
            MOVE    SPA-NAI-TEKEDYMD  (IDX)
                                        TO  SPA-COB-TEKEDYMD
+      *    ¼£¸³
+           MOVE    SPA-NAI-CHIKENKBN (IDX)
+                                       TO  SPA-CHIKENKBN
       *
       *    Ï«ºÒ »Í»è¶èÊ¬
            MOVE    SPA-NAI-RSI-SISIKBN (IDX)
@@ -4682,6 +4689,8 @@
            IF      ACCT-JIHOKBN        =   1
                MOVE    "H"                 TO  WKSRY-CONTKBN
            END-IF
+      *ºÞ¶èÊ¬
+           MOVE    ACCT-ZAIKBN         TO  WKSRY-ZAIKBN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   5   )   OR

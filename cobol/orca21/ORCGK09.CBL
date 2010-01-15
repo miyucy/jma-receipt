@@ -1888,7 +1888,8 @@
       *
                MOVE    ZERO                TO  FLG-OK
       *        初再診を対象外とする
-               IF      SRY-SRYKBN          =   "11"  OR  "12"
+               IF      SRY-SRYKBN          =   "11"
+      ***                                  OR  "12"
       *            労災の再診時療養指導管理料は対象
                    IF     (SRY-SRYCD (01)      =   "101120030" )  OR
                           (SRY-SRYCD (02)      =   "101120030" )  OR
@@ -2038,6 +2039,12 @@
            END-IF
       *
            INITIALIZE                  WKSRYACT-REC
+      *
+      *    再診で減点分以外は対象外
+           IF     (SRY-SRYKBN          =   "12"  )  AND
+                  (ACCT-ZAIKBN     NOT =   2     )
+               MOVE    ZERO                TO  WRK-ZAIKAISU
+           END-IF
       *
       *    回数ゼロは対象外とする
            IF      WRK-ZAIKAISU        =   ZERO

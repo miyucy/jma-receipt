@@ -30,6 +30,7 @@
       *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
       *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック応
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
+      *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4733,6 +4734,15 @@
                        REPLACING   ALL "_"  BY  " "
       *        ＊をなくす
                PERFORM 51011-KAISU-CHK-SEC
+      *        薬評・器評の数量なしとする
+               IF     (SPA-COM-IN2     (IDX)   =   "2" )
+                  AND (SPA-COM-YAKUHYO (IDX)   =   "1" )
+                   IF    (SPA-COM-INPUTCD (IDX)(1:1)  =   "6"
+                                                      OR  "7" )
+                     OR  (SPA-COM-INPUTCD (IDX)(1:3)  =   "059" )
+                       MOVE    SPACE           TO  SPA-COM-IN2 (IDX)
+                   END-IF
+               END-IF
       *
            END-PERFORM
       *
@@ -4920,6 +4930,8 @@
                   (SPA-SYOYMD          =   SPACE )
       *            包括保険は対象外
               AND (SPA-HKNCOMBINUM     NOT =   "9999"  )
+      *            治験は対象外
+              AND (SPA-CHIKENKBN           =   SPACE   )
                PERFORM 4101125-SYOSIN-CHK-SEC
                IF     (SPA-KIDCD       NOT =   SPACE )
                    OR (SPA-ERRCD       NOT =   SPACE )
@@ -6374,6 +6386,8 @@
                GO      TO      430-SANTEIRRK-EXT
            END-IF
       *
+           MOVE    SPACE               TO  SPA-KIDCD
+           MOVE    SPACE               TO  SPA-KIDCD2
       *    保存パラメタを作成
            PERFORM 4410-WSINPARA-SEC
       *
@@ -7445,6 +7459,7 @@
                       (SPA-KIDCD           =   SPACE )  AND
                       (SPA-HKTSANTEI-FLG   =   1     ) AND
                       (SPA-HKNCOMBINUM NOT =   "9999")
+                AND   (SPA-CHIKENKBN       =   SPACE )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
       *
@@ -7577,6 +7592,7 @@
                       (SPA-KIDCD           =   SPACE )  AND
                       (SPA-HKTSANTEI-FLG   =   1     ) AND
                       (SPA-HKNCOMBINUM NOT =   "9999")
+                 AND  (SPA-CHIKENKBN       =   SPACE )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
       *
