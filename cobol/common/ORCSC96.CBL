@@ -1568,7 +1568,6 @@
                WHEN    "0206"
                    STRING   "換算値入力、種類数指示、関係コメント指示は"
                             "Ｈ２０年４月からの機能です。"
-                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
