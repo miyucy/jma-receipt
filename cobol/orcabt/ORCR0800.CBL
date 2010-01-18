@@ -51,6 +51,7 @@
       *  04.03.01    NACL-門脇    08/12/04  仮収納作成時のディスプレイ追加
       *
       *  04.04.01    NACL-門脇    09/08/25  出産一時金対応
+      *  04.05.01    NACL-門脇    10/01/18  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1056,6 +1057,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                           TO  ERR-ERRMSG
                     WHEN       18
                       MOVE "保険組合せの有効期間確認"
+                                          TO  ERR-ERRMSG
+                    WHEN       19
+                      MOVE "包括点数減点分の点数確認"
                                           TO  ERR-ERRMSG
                     WHEN      OTHER
                       MOVE "仮収納データの取得に失敗"

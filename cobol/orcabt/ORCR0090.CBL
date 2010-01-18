@@ -4444,7 +4444,8 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
        440-TNSKAI-SET-SEC          SECTION.
       *
       *---- (01.00.05) LINE ADD START --------------------------------
-           IF   RECE04-ZAIKBN      =    1 OR 2
+      ***  IF   RECE04-ZAIKBN      =    1 OR 2
+           IF   RECE04-ZAIKBN      =    2
              CONTINUE
            ELSE
              IF ((FLG-COMMENT        =    1                  ) AND
@@ -4459,6 +4460,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
                  (RECE04-ZAITEN      =   ZERO                ))
              OR ( RECE04-SAFLG   NOT =   SPACE                )
              OR ( RECE04-TOYAKUFLG   =   "2"                  )
+             OR ( RECE04-ZAIKBN      =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
              END-IF
            END-IF

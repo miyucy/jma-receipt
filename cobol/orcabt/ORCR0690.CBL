@@ -3792,7 +3792,8 @@
        440-TNSKAI-SET-SEC          SECTION.
       *
       *---- (01.00.05) LINE ADD START --------------------------------
-           IF   RECE64-ZAIKBN    =    1 OR 2
+      ***  IF   RECE64-ZAIKBN    =    1 OR 2
+           IF   RECE64-ZAIKBN    =    2
               CONTINUE
            ELSE
               IF ((FLG-COMMENT        =    1                  ) AND
@@ -3808,6 +3809,7 @@
                   (RECE64-ZAITEN      =   ZERO                ))
               OR ( RECE64-SAFLG   NOT =   SPACE                )
               OR ( RECE64-TOYAKUFLG   =   "2"                  )
+              OR ( RECE64-ZAIKBN      =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
               END-IF
            END-IF

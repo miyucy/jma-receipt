@@ -27,6 +27,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.05.01     NACL-門脇    10/01/18  包括点数の治験減点分追加
       ************************************************************
        01  ORCSROUNYUIN-AREA.
       *
@@ -71,6 +72,8 @@
                    07  LNK-SROUNYUIN-ZAITEN-ACCT     PIC  9(08).
       *診療会計９０・９２の剤点数（その他）
                    07  LNK-SROUNYUIN-ZAITEN-ACCTETC  PIC  9(08).
+      *包括点数の治験減点分
+                   07  LNK-SROUNYUIN-GENTEN          PIC  9(08).
       *
       *略称（一般入院料・加算）
                05  LNK-SROUNYUIN-RYAKUSYO2           PIC  X(14)

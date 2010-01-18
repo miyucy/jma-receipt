@@ -142,6 +142,7 @@
            03  WRK-CHECK-EDDAY             PIC 9(02).
            03  WRK-MSGCD                   PIC 9(02).
            03  WRK-NYUINRYO-ERR            PIC 9(01).
+           03  WRK-GENTEN-ERR              PIC 9(01).
            03  WRK-HANTEI-YMD              PIC X(08).
            03  WRK-HKNCOMBINUM             PIC 9(04).
       *
@@ -454,7 +455,11 @@
       *    ¥ï¡¼¥¯¼ýÇ¼¥Þ¥¹¥¿¡¼
        01  WRK-SYUNOU-REC-T.
          02 WRK-SYUNOU-REC     OCCURS 10.
-           COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
+           COPY  "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
+      *    ¥ï¡¼¥¯¼ýÇ¼¥Þ¥¹¥¿¡¼¡Ê¸ºÅÀÍÑ¡Ë
+       01  WRK-SYUNOUG-REC-T.
+         02 WRK-SYUNOUG-REC    OCCURS 10.
+           COPY  "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYUG-//.
       *
       *    ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿                                              
        01  SYUDAY-REC.
@@ -463,7 +468,11 @@
       *    ¥ï¡¼¥¯ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿                                        
        01  WRK-SYUDAY-REC-T.
          02 WRK-SYUDAY-REC     OCCURS 10.
-           COPY    "CPSYUDAY.INC" REPLACING  //SDAY-// BY //WRK-SDAY-//.
+           COPY  "CPSYUDAY.INC" REPLACING  //SDAY-// BY //WRK-SDAY-//.
+      *    ¥ï¡¼¥¯ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿¡Ê¸ºÅÀÍÑ¡Ë
+       01  WRK-SYUDAYG-REC-T.
+         02 WRK-SYUDAYG-REC    OCCURS 10.
+           COPY  "CPSYUDAY.INC" REPLACING  //SDAY-// BY //WRK-SDAYG-//.
       *
       *    Æþ±¡²ñ·×
        01  NYUINACCT-REC.
@@ -574,6 +583,9 @@
       *
            INITIALIZE    WRK-SYUNOU-REC-T.
            INITIALIZE    WRK-SYUDAY-REC-T.                             
+      *
+           INITIALIZE    WRK-SYUNOUG-REC-T.
+           INITIALIZE    WRK-SYUDAYG-REC-T.
       *
            INITIALIZE    WRK-AREA
                          WRK-SKYYM-TABLE
@@ -751,6 +763,12 @@
            IF    LNK-S02-RC   =   ZERO
              IF   WRK-NYUINRYO-ERR  =  1
                 MOVE     17     TO    LNK-S02-RC
+             END-IF
+           END-IF.
+      *
+           IF    LNK-S02-RC   =   ZERO
+             IF   WRK-GENTEN-ERR  =  1
+                MOVE     19     TO    LNK-S02-RC
              END-IF
            END-IF.
       *
@@ -2980,6 +2998,8 @@ grpsys                              SPA-AREA
                                                  TO  SYU-HKNTEN(15)
                      ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC(SYU-IDX)
                                                  TO  SYU-HKNTEN(15)
+                     ADD   LNK-SROUNYUIN-GENTEN(SYU-IDX)
+                                       TO  WRK-SYUG-NYN-HKNTEN(IDX)
       *
                 END-IF
       *
@@ -3919,14 +3939,18 @@ grpsys                            SPA-AREA
       **   DISPLAY  "SYU-KYUFUGAI-GOKEI-TEN = " 
       **             SYU-KYUFUGAI-GOKEI-TEN
       *
-      *    Ï«ºÒ¡¦¼«ÇåÀÕÅ¾Á÷½èÍý
-           IF   SYU-SYUHKNNUM    =    "971"  OR  "973"
+           EVALUATE   SYU-SYUHKNNUM
+             WHEN      "971"
+             WHEN      "973"
+      *        Ï«ºÒ¡¦¼«ÇåÀÕÅ¾Á÷½èÍý
                PERFORM   ROSAI-JIBAI-TENSO-SEC
-           END-IF
-      *    ¸ø³²Å¾Á÷½èÍý
-           IF   SYU-SYUHKNNUM    =    "975"
+             WHEN      "975"
+      *        ¸ø³²Å¾Á÷½èÍý
                PERFORM   KOGAI-TENSO-SEC
-           END-IF
+             WHEN       OTHER
+      *        ¤½¤ÎÂ¾ÊÝ¸±Å¾Á÷½èÍý
+               PERFORM   ETCHKN-TENSO-SEC
+           END-EVALUATE
       *
       *    ÅÀÅ©ÌôºÞ¡Ê´ïºà¡ËÅÀ¿ô¤Þ¤È¤á½èÍý
            PERFORM   TENTEK-MATOME-SEC
@@ -4217,24 +4241,48 @@ grpsys                                        SPA-AREA
                     END-IF                                              
       *            »ØÆ³
                    WHEN    "13"
-                    COMPUTE SYU-HKNTEN (02) =  SYU-HKNTEN (02)  +
-                           (ACCT-ZAITEN  *   SINRYO-COUNT)
-                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
-                               UNTIL    SYU-IDX   >    31              
-                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                  
-                               SDAY-HKNTEN(SYU-IDX) +                  
-                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))  
-                    END-PERFORM                                        
+                    IF   ACCT-ZAIKBN  =  2
+                      COMPUTE WRK-SYUG-SDO-HKNTEN(IDX) =
+                              WRK-SYUG-SDO-HKNTEN(IDX) +
+                             (ACCT-ZAITEN  *   SINRYO-COUNT)
+                      PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
+                                 UNTIL    SYU-IDX   >    31
+                         COMPUTE WRK-SDAYG-HKNTEN(IDX SYU-IDX) =
+                                 WRK-SDAYG-HKNTEN(IDX SYU-IDX) +
+                                (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))
+                      END-PERFORM
+                    ELSE
+                      COMPUTE SYU-HKNTEN (02) =  SYU-HKNTEN (02)  +
+                             (ACCT-ZAITEN  *   SINRYO-COUNT)
+                      PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
+                                 UNTIL    SYU-IDX   >    31              
+                         COMPUTE SDAY-HKNTEN(SYU-IDX) =                  
+                                 SDAY-HKNTEN(SYU-IDX) +                  
+                                (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))  
+                      END-PERFORM                                        
+                    END-IF
       *            ºßÂð
                    WHEN    "14"
-                    COMPUTE SYU-HKNTEN (03) =  SYU-HKNTEN (03)  +
-                           (ACCT-ZAITEN  *   SINRYO-COUNT)
-                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
-                               UNTIL    SYU-IDX   >    31              
-                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                  
-                               SDAY-HKNTEN(SYU-IDX) +                  
-                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))  
-                    END-PERFORM                                        
+                    IF   ACCT-ZAIKBN  =  2
+                      COMPUTE WRK-SYUG-ZTK-HKNTEN(IDX) =
+                              WRK-SYUG-ZTK-HKNTEN(IDX) +
+                             (ACCT-ZAITEN  *   SINRYO-COUNT)
+                      PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
+                                 UNTIL    SYU-IDX   >    31
+                         COMPUTE WRK-SDAYG-HKNTEN(IDX SYU-IDX) =
+                                 WRK-SDAYG-HKNTEN(IDX SYU-IDX) +
+                                (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))
+                      END-PERFORM
+                    ELSE
+                      COMPUTE SYU-HKNTEN (03) =  SYU-HKNTEN (03)  +
+                             (ACCT-ZAITEN  *   SINRYO-COUNT)
+                      PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
+                                 UNTIL    SYU-IDX   >    31              
+                         COMPUTE SDAY-HKNTEN(SYU-IDX) =                  
+                                 SDAY-HKNTEN(SYU-IDX) +                  
+                                (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))  
+                      END-PERFORM                                        
+                    END-IF
       *            ÅêÌô
                    WHEN    "21"   THRU  "27"
                    COMPUTE SYU-HKNTEN (04) =  SYU-HKNTEN (04)  +
@@ -4438,6 +4486,17 @@ grpsys                                     SPA-AREA
                     IF   SYU-SYUHKNNUM  =  "971"  OR  "973"
                       CONTINUE
                     ELSE
+                     IF   ACCT-ZAIKBN  =  2
+                      COMPUTE WRK-SYUG-NYN-HKNTEN(IDX) =
+                              WRK-SYUG-NYN-HKNTEN(IDX) +
+                             (ACCT-ZAITEN  *   SINRYO-COUNT)
+                      PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
+                                 UNTIL    SYU-IDX   >    31
+                         COMPUTE WRK-SDAYG-HKNTEN(IDX SYU-IDX) =
+                                 WRK-SDAYG-HKNTEN(IDX SYU-IDX) +
+                                (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))
+                      END-PERFORM
+                     ELSE
                       IF     ACCT-SRYCDTOTAL    =   190080470  OR
                                                     190799670  OR
                                                     190080570  OR
@@ -4466,6 +4525,7 @@ grpsys                                     SPA-AREA
                                    TBL-ZAIKAISU(SYU-IDX))              
                         END-PERFORM                                    
                       END-IF
+                     END-IF
                     END-IF
       *            ÊÝ¸±Å¬ÍÑ³°µÚ¤Ó¼«Èñ
                    WHEN    "95"
@@ -4588,12 +4648,14 @@ grpsys                            SPA-AREA
            ELSE
       *
              IF     SYU-SYUHKNNUM   =   "973"
+              IF  ACCT-ZAIKBN   NOT =    2
                 COMPUTE     WRK-SYUTEN  =  WRK-SYUTEN
                                  +  ( ACCT-SYUTEN1 * SINRYO-COUNT )
                 IF     ACCT-SRYKBN   =   "70"
                    COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN
                                  -  ( ACCT-SYUTEN2 * SINRYO-COUNT )
                 END-IF
+              END-IF
              END-IF
       *
              INITIALIZE                      SRYACT-REC
@@ -4784,12 +4846,14 @@ grpsys                              SPA-AREA
            IF   ACCT-SRYKBN  =  "90" OR "92" OR "95" OR "96" OR "97"
              CONTINUE
            ELSE
+            IF  ACCT-ZAIKBN    NOT =    2
              COMPUTE     WRK-SYUTEN  =  WRK-SYUTEN
                               +  ( ACCT-SYUTEN1 * SINRYO-COUNT )
              IF     ACCT-SRYKBN   =   "70"
                 COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN
                               -  ( ACCT-SYUTEN2 * SINRYO-COUNT )
              END-IF
+            END-IF
            END-IF
       *
            IF   ACCT-SRYKBN  =  "90" OR "92"
@@ -4927,6 +4991,31 @@ grpsys                                    SPA-AREA
            END-IF
            MOVE    WRK-RSIETC2    TO   SYU-RSIETC-MONEY
       *
+           IF   SYU-HKNTEN(2)   >= WRK-SYUG-SDO-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(2)  =  SYU-HKNTEN(2)
+                                       -  WRK-SYUG-SDO-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(2)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(3)   >= WRK-SYUG-ZTK-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(3)  =  SYU-HKNTEN(3)
+                                       -  WRK-SYUG-ZTK-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(3)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(15)  >= WRK-SYUG-NYN-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(15) =  SYU-HKNTEN(15)
+                                       -  WRK-SYUG-NYN-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(15)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           COMPUTE   WRK-SYUTEN     =  WRK-SYUTEN
+                                    -  WRK-SYUG-SDO-HKNTEN(IDX)
+                                    -  WRK-SYUG-ZTK-HKNTEN(IDX)
+      *
            IF  SYU-SYUHKNNUM       =   "973"
       *
              COMPUTE   WRK-JIBAI-SYUTEN(IDX)
@@ -4960,6 +5049,31 @@ grpsys                                    SPA-AREA
       **************************************************************
        KOGAI-TENSO-SEC          SECTION.
       *
+           IF   SYU-HKNTEN(2)   >= WRK-SYUG-SDO-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(2)  =  SYU-HKNTEN(2)
+                                       -  WRK-SYUG-SDO-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(2)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(3)   >= WRK-SYUG-ZTK-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(3)  =  SYU-HKNTEN(3)
+                                       -  WRK-SYUG-ZTK-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(3)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(15)  >= WRK-SYUG-NYN-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(15) =  SYU-HKNTEN(15)
+                                       -  WRK-SYUG-NYN-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(15)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           COMPUTE   WRK-SYUTEN     =  WRK-SYUTEN
+                                    -  WRK-SYUG-SDO-HKNTEN(IDX)
+                                    -  WRK-SYUG-ZTK-HKNTEN(IDX)
+      *
            COMPUTE   WRK-JIBAI-SYUTEN(IDX) =  WRK-SYUTEN
                                            +  SYU-HKNTEN(15)
                                            +  WRK-JIBAI-RYOYO-NACCT(IDX)
@@ -4967,6 +5081,44 @@ grpsys                                    SPA-AREA
       *
            .
        KOGAI-TENSO-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¤½¤ÎÂ¾ÊÝ¸±ÍÑ¤ÎÅ¾Á÷½èÍý
+      **************************************************************
+       ETCHKN-TENSO-SEC          SECTION.
+      *
+           IF   SYU-HKNTEN(2)   >= WRK-SYUG-SDO-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(2)  =  SYU-HKNTEN(2)
+                                       -  WRK-SYUG-SDO-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(2)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(3)   >= WRK-SYUG-ZTK-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(3)  =  SYU-HKNTEN(3)
+                                       -  WRK-SYUG-ZTK-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(3)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(15)  >= WRK-SYUG-NYN-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(15) =  SYU-HKNTEN(15)
+                                       -  WRK-SYUG-NYN-HKNTEN(IDX)
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(15)
+              MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+      *
+      ***  PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
+      ***            UNTIL   SYU-IDX   >    31
+      ***    COMPUTE   SDAY-HKNTEN(SYU-IDX) =
+      ***              SDAY-HKNTEN(SYU-IDX) -
+      ***              WRK-SDAYG-HKNTEN(IDX SYU-IDX)
+      ***  END-PERFORM
+      *
+           .
+       ETCHKN-TENSO-EXT.
            EXIT.
       *
       **************************************************************

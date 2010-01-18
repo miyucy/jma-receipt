@@ -76,6 +76,7 @@
       *  04.02.03    NACL-ÃÁœ∆    08/09/24  ∆˛±°Œ¨æŒ ‘Ω∏ƒ…≤√
       *  04.02.04    NACL-ÃÁœ∆    08/10/07  ∆˛±°¥À‹Œ¡Õ≠∏˙¥¸¥÷•¡•ß•√•Ø
       *  04.04.01    NACL-ÃÁœ∆    09/09/04  æÆ∆˛¥…Œ¨æŒΩ§¿µ
+      *  04.05.01    NACL-ÃÁœ∆    10/01/18  º£∏≥¬–±˛
       *****************************************************************
       *
       *
@@ -1128,10 +1129,23 @@
                            END-IF
                        END-PERFORM
                      ELSE
-                       IF   ACCT-SRYCDTOTAL(6:9)  =  CONS-ROSAICHIRYO
+                       IF  (ACCT-SRYCDTOTAL(6:9)  =  CONS-ROSAICHIRYO
                                                  OR  CONS-BYOUI
-                                                 OR  CONS-TOKUKANSI
+                                                 OR  CONS-TOKUKANSI)
+                       OR  (ACCT-ZAIKBN           =    2           )
       *                  ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
+                        IF  ACCT-ZAIKBN  =  2
+                         PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                    UNTIL     IDX1   >   31
+                             IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
+                                    (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
+                             AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
+                               COMPUTE LNK-SROUNYUIN-GENTEN(IDX1)
+                                    =  LNK-SROUNYUIN-GENTEN(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                             END-IF
+                         END-PERFORM
+                        ELSE
                          PERFORM    VARYING   IDX1   FROM   1   BY   1
                                     UNTIL     IDX1   >   31
                              IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
@@ -1154,6 +1168,7 @@
       *
                              END-IF
                          END-PERFORM
+                        END-IF
                        ELSE
       *                  ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                          PERFORM    VARYING   IDX1   FROM   1   BY   1
@@ -1910,10 +1925,23 @@
                            END-IF
                        END-PERFORM
                      ELSE
-                       IF   ACCT-SRYCDTOTAL(6:9)  =  CONS-ROSAICHIRYO
+                       IF  (ACCT-SRYCDTOTAL(6:9)  =  CONS-ROSAICHIRYO
                                                  OR  CONS-BYOUI
-                                                 OR  CONS-TOKUKANSI
+                                                 OR  CONS-TOKUKANSI)
+                       OR  (ACCT-ZAIKBN           =    2           )
       *                  ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
+                        IF  ACCT-ZAIKBN  =  2
+                         PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                    UNTIL     IDX1   >   31
+                             IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
+                                    (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
+                             AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
+                               COMPUTE LNK-SROUNYUIN-GENTEN(IDX1)
+                                    =  LNK-SROUNYUIN-GENTEN(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                             END-IF
+                         END-PERFORM
+                        ELSE
                          PERFORM    VARYING   IDX1   FROM   1   BY   1
                                     UNTIL     IDX1   >   31
                              IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
@@ -1936,6 +1964,7 @@
       *
                              END-IF
                          END-PERFORM
+                        END-IF
                        ELSE
       *                  ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                          PERFORM    VARYING   IDX1   FROM   1   BY   1
