@@ -223,6 +223,7 @@
       *
       *    表示用保険
            03  WRK-IDXH                PIC 9(04).
+           03  WRK-IDXH2               PIC 9(04).
            03  WRK-CNT-HKN             PIC 9(04).
            03  WRK-CNT-HKN2            PIC 9(04).
       *    複数科まとめ
@@ -3067,6 +3068,7 @@
            MOVE    ZERO                TO  WRK-CNT-HKN
            MOVE    ZERO                TO  WRK-CNT-HKN2
            MOVE    ZERO                TO  WRK-IDXH
+           MOVE    ZERO                TO  WRK-IDXH2
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKN-MAX
@@ -3090,9 +3092,18 @@
                IF      SPA-NAI-KOH4HKNNUM (IDX)    NOT =   SPACE
                    ADD     1                   TO  WRK-CNT-HKN2
                END-IF
-               IF      WRK-CNT-HKN         <   WRK-CNT-HKN2
-                   MOVE    IDX                 TO  WRK-IDXH
-                   MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+      *        治験・自費は他の保険がない時に有効とする
+               IF     (ORCSHKN-NAI-HKNNUM (IDX)(1:2) =   "98"
+                                                     OR  "90"
+                                                     OR  "91" )
+                   IF      WRK-IDXH2           =   ZERO
+                       MOVE    IDX             TO  WRK-IDXH2
+                   END-IF
+               ELSE
+                   IF      WRK-CNT-HKN         <   WRK-CNT-HKN2
+                       MOVE    IDX                 TO  WRK-IDXH
+                       MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+                   END-IF
                END-IF
       *        労災・自賠責があれば対象とする
                IF      SPA-NAI-HKNNUM (IDX)    =   "971"
@@ -3103,6 +3114,9 @@
              END-IF
            END-PERFORM
       *
+           IF      WRK-IDXH            =   ZERO
+               MOVE    WRK-IDXH2       TO  WRK-IDXH
+           END-IF
            IF      WRK-IDXH            =   ZERO
                MOVE    1               TO  WRK-IDXH
            END-IF
