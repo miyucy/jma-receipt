@@ -470,13 +470,13 @@
       *
       *    点滴の時、手技料の自動修正
            IF     (WRK-COM-SRYSYUKBN(01)   =   "330" )
-           AND    (WRK-COM-YAKUHYO  (IDX-MAX)  =   SPACE)
+           AND    (WRK-COM-YAKUHYO  (01)   =   SPACE)
                PERFORM 1002-TENTEKI-CHK-SEC
            END-IF
       *
       *    皮下注射の時、手技料の自動修正
-           IF      WRK-COM-SRYSYUKBN(01)   =   "310"
-           AND    (WRK-COM-YAKUHYO  (IDX-MAX)  =   SPACE)
+           IF     (WRK-COM-SRYSYUKBN(01)   =   "310")
+           AND    (WRK-COM-YAKUHYO  (01)   =   SPACE)
       *        皮下筋肉注射料変換選択
                IF     LNK-ORCSC-CHG310FLG     =   "1"
                    CONTINUE
@@ -488,7 +488,7 @@
       *    種別のみの時、手技料の自動発生
            IF     (FLG-SYUGI           =   ZERO  )  AND
                   (WRK-ERRCD           =   SPACE )
-           AND    (WRK-COM-YAKUHYO  (IDX-MAX)  =   SPACE)
+           AND    (WRK-COM-YAKUHYO  (01)   =   SPACE)
       *        薬剤のみの時対象外
                IF      WRK-COM-SRYSYUKBN(01)(3:1)  =   "1"
                    CONTINUE

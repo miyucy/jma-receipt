@@ -2306,14 +2306,22 @@
       *
       *    数量（薬剤、器材のとき）
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7"
-               MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
-               PERFORM 310121-SURYO-HEN-SEC
-               IF      FLG-KETA5           =   ZERO
-                   MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
-                   MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+      *        金額で点数ゼロの時、表示なし
+               IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6" )  AND
+                     ((TNS-TEN                 =   ZERO   )  AND
+                      (TNS-TENSIKIBETU         =   1      ))  OR
+                      (TNS-TENSIKIBETU         =   7      )
+                   CONTINUE
                ELSE
-                   MOVE    WRK-SURYO-J-G       TO  SPA-GMN-TSURYOU3(IDG)
-                   MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI3  (IDG)
+                   MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
+                   PERFORM 310121-SURYO-HEN-SEC
+                   IF      FLG-KETA5           =   ZERO
+                       MOVE    WRK-SURYO-J     TO  SPA-GMN-TSURYOU (IDG)
+                       MOVE    TNS-TANINAME    TO  SPA-GMN-TTANI1  (IDG)
+                   ELSE
+                       MOVE    WRK-SURYO-J-G   TO  SPA-GMN-TSURYOU3(IDG)
+                       MOVE    TNS-TANINAME    TO  SPA-GMN-TTANI3  (IDG)
+                   END-IF
                END-IF
            END-IF
       *    単位
