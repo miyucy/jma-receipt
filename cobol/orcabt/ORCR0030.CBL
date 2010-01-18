@@ -1121,8 +1121,6 @@
            03  WRK-SETCOM-JIDO                 PIC 9(03).
            03  WRK-SETCOM-JIDO2                PIC 9(03).
       *
-           03  WRK-GENTEN-TENSU                PIC 9(09).
-      *
       *---------------------------------------------------------------
       *  回数減算用退避領域
       *
@@ -7288,23 +7286,23 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                WHEN    "14"
                  IF  ACCT-ZAIKBN   =    2
                    IF    BUN-IDX        =   1
-                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX)  =
-                                  WRK-RECE02G-TENSU(11 BUN-IDX)  +
+                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX)  =
+                                  WRK-RECE02G-TENSU(12 BUN-IDX)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
-                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX2)  =
-                                  WRK-RECE02G-TENSU(11 BUN-IDX2)  +
+                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX2)  =
+                                  WRK-RECE02G-TENSU(12 BUN-IDX2)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
-                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX3)  =
-                                  WRK-RECE02G-TENSU(11 BUN-IDX3)  +
+                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX3)  =
+                                  WRK-RECE02G-TENSU(12 BUN-IDX3)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
-                       COMPUTE    WRK-RECE02G-TENSU(11 BUN-IDX4)  =
-                                  WRK-RECE02G-TENSU(11 BUN-IDX4)  +
+                       COMPUTE    WRK-RECE02G-TENSU(12 BUN-IDX4)  =
+                                  WRK-RECE02G-TENSU(12 BUN-IDX4)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
                    END-IF
                  ELSE
@@ -12905,65 +12903,29 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
            END-IF
       *
       *    在宅のレセ点数の編集（減点）
-           IF   RECE02-TENSU(11 1)  >=  WRK-RECE02G-TENSU(11 1)
-              COMPUTE RECE02-TENSU(11 1) =
-                      RECE02-TENSU(11 1) -  WRK-RECE02G-TENSU(11 1)
+           IF   RECE02-TENSU(12 1)  >=  WRK-RECE02G-TENSU(12 1)
+             COMPUTE  RECE02-TENSU(12 1)  =
+                      RECE02-TENSU(12 1)  -  WRK-RECE02G-TENSU(12 1)
            ELSE
-              COMPUTE WRK-GENTEN-TENSU   =
-                      WRK-RECE02G-TENSU(11 1)
-                                         -  RECE02-TENSU(11 1)
-              MOVE    ZERO   TO   RECE02-TENSU(11 1)
-              IF   RECE02-TENSU(12 1)  >=  WRK-GENTEN-TENSU
-                COMPUTE  RECE02-TENSU(12 1)  =
-                         RECE02-TENSU(12 1)  -  WRK-GENTEN-TENSU
-              ELSE
-                MOVE     ZERO    TO   RECE02-TENSU(12 1)
-              END-IF
+             MOVE     ZERO    TO   RECE02-TENSU(12 1)
            END-IF
-           IF   RECE02-TENSU(11 2)  >=  WRK-RECE02G-TENSU(11 2)
-              COMPUTE RECE02-TENSU(11 2) =
-                      RECE02-TENSU(11 2) -  WRK-RECE02G-TENSU(11 2)
+           IF   RECE02-TENSU(12 2)  >=  WRK-RECE02G-TENSU(12 2)
+             COMPUTE  RECE02-TENSU(12 2)  =
+                      RECE02-TENSU(12 2)  -  WRK-RECE02G-TENSU(12 2)
            ELSE
-              COMPUTE WRK-GENTEN-TENSU   =
-                      WRK-RECE02G-TENSU(11 2)
-                                         -  RECE02-TENSU(11 2)
-              MOVE    ZERO   TO   RECE02-TENSU(11 2)
-              IF   RECE02-TENSU(12 2)  >=  WRK-GENTEN-TENSU
-                COMPUTE  RECE02-TENSU(12 2)  =
-                         RECE02-TENSU(12 2)  -  WRK-GENTEN-TENSU
-              ELSE
-                MOVE     ZERO    TO   RECE02-TENSU(12 2)
-              END-IF
+             MOVE     ZERO    TO   RECE02-TENSU(12 2)
            END-IF
-           IF   RECE02-TENSU(11 3)  >=  WRK-RECE02G-TENSU(11 3)
-              COMPUTE RECE02-TENSU(11 3) =
-                      RECE02-TENSU(11 3) -  WRK-RECE02G-TENSU(11 3)
+           IF   RECE02-TENSU(12 3)  >=  WRK-RECE02G-TENSU(12 3)
+             COMPUTE  RECE02-TENSU(12 3)  =
+                      RECE02-TENSU(12 3)  -  WRK-RECE02G-TENSU(12 3)
            ELSE
-              COMPUTE WRK-GENTEN-TENSU   =
-                      WRK-RECE02G-TENSU(11 3)
-                                         -  RECE02-TENSU(11 3)
-              MOVE    ZERO   TO   RECE02-TENSU(11 3)
-              IF   RECE02-TENSU(12 3)  >=  WRK-GENTEN-TENSU
-                COMPUTE  RECE02-TENSU(12 3)  =
-                         RECE02-TENSU(12 3)  -  WRK-GENTEN-TENSU
-              ELSE
-                MOVE     ZERO    TO   RECE02-TENSU(12 3)
-              END-IF
+             MOVE     ZERO    TO   RECE02-TENSU(12 3)
            END-IF
-           IF   RECE02-TENSU(11 4)  >=  WRK-RECE02G-TENSU(11 4)
-              COMPUTE RECE02-TENSU(11 4) =
-                      RECE02-TENSU(11 4) -  WRK-RECE02G-TENSU(11 4)
+           IF   RECE02-TENSU(12 4)  >=  WRK-RECE02G-TENSU(12 4)
+             COMPUTE  RECE02-TENSU(12 4)  =
+                      RECE02-TENSU(12 4)  -  WRK-RECE02G-TENSU(12 4)
            ELSE
-              COMPUTE WRK-GENTEN-TENSU   =
-                      WRK-RECE02G-TENSU(11 4)
-                                         -  RECE02-TENSU(11 4)
-              MOVE    ZERO   TO   RECE02-TENSU(11 4)
-              IF   RECE02-TENSU(12 4)  >=  WRK-GENTEN-TENSU
-                COMPUTE  RECE02-TENSU(12 4)  =
-                         RECE02-TENSU(12 4)  -  WRK-GENTEN-TENSU
-              ELSE
-                MOVE     ZERO    TO   RECE02-TENSU(12 4)
-              END-IF
+             MOVE     ZERO    TO   RECE02-TENSU(12 4)
            END-IF
       *
       *    合計点数の編集（減点）
