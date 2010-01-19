@@ -742,6 +742,8 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-DBCLOSECURSOR-SEC
       *
+           IF    ( ACCT-ZAIKBN     NOT = 1 )   AND
+                 ( ACCT-ZAIKBN     NOT = 2 )
            IF    ( ACCT-ZAITEN         =   ZERO )  AND
                 (( ACCT-SRYKBN         =   "21" )  OR
                  ( ACCT-SRYKBN         =   "22" )  OR
@@ -768,6 +770,7 @@
                  ( WRK-PARA-INGAIKBN   NOT =   0   )   AND
                  ( WRK-PARA-INGAIKBN   NOT =   SPACE )
                PERFORM 240-MAIN-HEN-SEC
+           END-IF
            END-IF
       *
            .
