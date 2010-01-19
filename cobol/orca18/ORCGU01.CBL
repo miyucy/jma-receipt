@@ -37,9 +37,6 @@
       *                                     MONFUNC対応
       *  03.04.00    NACL−多々納 07/01/12  受付一覧年齢追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
-      *  04.05.00    NACL-多々納  09/06/03  400行対応
-      *  04.08.00    NACL-多々納  14/08/12  クライアント印刷対応
-      *  04.08.00    NACL-多々納  16/12/XX  受付順変更表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -51,9 +48,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    画面色等
-           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -69,7 +63,7 @@
                05  SPA-GMN-ICHIRAN.
                07  SPA-GMN-TBL.
                    09  SPA-GMN-TBL2      OCCURS  2.
-                       11  SPA-GMN-TBLREC    OCCURS  400.
+                       11  SPA-GMN-TBLREC    OCCURS  200.
                            13  SPA-GMN-NO          PIC 9(04).
                            13  SPA-GMN-PTNUM       PIC X(20).
                            13  SPA-GMN-PTID        PIC 9(10).
@@ -92,10 +86,6 @@
                            13  SPA-GMN-UKEID       PIC 9(05).
       *                    送受信フラグ
                            13  SPA-GMN-SRFLG       PIC X(04).
-      *H28.12
-      *                    変更フラグ
-                           13  SPA-GMN-HENFLG      PIC X(01).
-      *
                    09  SPA-GMN-SELNUM          PIC 9(04) OCCURS  2.
                    09  SPA-GMN-MAX             PIC 9(03) OCCURS  2.
       *
@@ -175,12 +165,6 @@
            03  WRK-UKETIME         PIC X(10).
       *    確認メッセージ
            03  WRK-U1IDMSG         PIC X(80).
-      *
-      *    コラムリスト位置
-           03  WRK-U01-SI-ROW          PIC S9(09).
-           03  WRK-U01-SZ-ROW          PIC S9(09).
-           03  FLG-GMN-INIT            PIC  9(01).
-      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -205,13 +189,10 @@
                05  WRK-HENNYOBI    PIC X(02).
                05  FILLER          PIC X(02)   VALUE  "）".
       *
-      *    一覧表最大行数
-       01  LINE-MAX                    PIC 9(03)   VALUE   400.
-      *
       *    ＳＰＡソート用ワーク
        01  WRK-SORT-GMN.
            03  SPA-WRK-TBL.
-               05  SPA-WRK-TBLREC    OCCURS  400.
+               05  SPA-WRK-TBLREC    OCCURS  200.
                    07  SPA-WRK-NO          PIC 9(04).
                    07  SPA-WRK-PTNUM       PIC X(20).
                    07  SPA-WRK-PTID        PIC 9(10).
@@ -234,14 +215,11 @@
                    07  SPA-WRK-UKEID       PIC 9(05).
       *            送受信フラグ
                    07  SPA-WRK-SRFLG       PIC X(04).
-      *H28.12
-      *            変更フラグ
-                   07  SPA-WRK-HENFLG      PIC X(01).
       *
       *   受付内容編集領域
         01  WORK-SORT-TBL.
             03  WORK-SORT-TBLO                OCCURS   2.
-                05  WORK-SORT-TBLREC          OCCURS   400.
+                05  WORK-SORT-TBLREC          OCCURS   200.
                    07  WORK-SORT-PTID         PIC X(10).
                    07  WORK-SORT-NAME         PIC X(50).
                    07  WORK-SORT-NICKNAME     PIC X(50).
@@ -256,9 +234,6 @@
                    07  WORK-SORT-UKEID        PIC 9(05).
       *            送受信フラグ
                    07  WORK-SORT-SRFLG        PIC X(02).
-      *H28.12
-      *            変更フラグ
-                   07  WORK-SORT-HENFLG       PIC X(01).
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -319,9 +294,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
@@ -339,7 +311,6 @@
        01  SCRAREA.
            COPY    "U01.INC".
            COPY    "U012.INC".
-           COPY    "UDR.INC".
            COPY    "U1ERR.INC". 
            COPY    "U1ID1.INC". 
       *
@@ -431,9 +402,9 @@
                WHEN    "U1ID1"
                    PERFORM 330-U1ID1-SET-SEC
       *
-      *        WHEN    "U012"
+               WHEN    "U012"
       *            受付情報表示
-      *            PERFORM 340-U012-HEN-SEC
+                   PERFORM 340-U012-HEN-SEC
       *
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
@@ -448,19 +419,15 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  SPA-U01
+           INITIALIZE                  SPA-U01KYOUTU
       *
       *    画面遷移後、ＬＮＫをセット
            IF      LNK-KYOUTU      NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
-               IF      SPA-MOTOPG     NOT  =   "U012"
-                    INITIALIZE                  SPA-U01KYOUTU
-                    INITIALIZE                  SPA-U01
-                    MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
-               END-IF
            END-IF
       *
-      *    INITIALIZE                  SPA-U01
-      *    MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
+           INITIALIZE                  SPA-U01
+           MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
       *
       *    曜日変換
            INITIALIZE                  LNK-DAY2-AREA
@@ -638,9 +605,6 @@
            COMPUTE     WRK-IDY        =   WRK-IDX  -   1
       *
            MOVE    SPA-GMN-TBL2(1)    TO  SPA-WRK-TBL
-      *H28.12
-           MOVE    "1"                TO  SPA-GMN-HENFLG(1 WRK-IDX)
-      *
            MOVE    SPA-GMN-TBLREC (1 WRK-IDX)
                                       TO  SPA-WRK-TBLREC (WRK-IDY)
            MOVE    SPA-GMN-TBLREC (1 WRK-IDY)
@@ -690,9 +654,6 @@
            COMPUTE     WRK-IDY        =   WRK-IDX  +   1
       *
            MOVE    SPA-GMN-TBL2  (1)  TO  SPA-WRK-TBL
-      *H28.12
-           MOVE    "1"                TO  SPA-GMN-HENFLG(1 WRK-IDX)
-      *
            MOVE    SPA-GMN-TBLREC(1 WRK-IDX)
                                       TO  SPA-WRK-TBLREC (WRK-IDY)
            MOVE    SPA-GMN-TBLREC(1 WRK-IDY)
@@ -803,13 +764,13 @@
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       LINE-MAX
-               IF      U01-SI-SELECT (IDX)     =   "T"
-                   IF      IDX                 =   SPA-NAI-SELNO (1)
+                   UNTIL       IDX     >       200
+               IF      U01-SI-SELECT (IDX)    =   "T"
+                   IF      IDX             =   SPA-NAI-SELNO (1)
                        CONTINUE
-                   ELSE
+                   ELSE        
                        MOVE    IDX             TO  WRK-SELNO
-                       MOVE    LINE-MAX        TO  IDX
+                       MOVE    200             TO  IDX
                    END-IF
                END-IF    
            END-PERFORM
@@ -836,10 +797,10 @@
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       LINE-MAX
-               IF      U01-SZ-SELECT (IDX)     =   "T"
-                   MOVE    IDX                 TO  WRK-SELNO
-                   MOVE    LINE-MAX            TO  IDX
+                   UNTIL       IDX     >       200
+               IF      U01-SZ-SELECT (IDX)    =   "T"
+                   MOVE    IDX             TO  WRK-SELNO
+                   MOVE    200             TO  IDX
                END-IF    
            END-PERFORM
       *
@@ -955,8 +916,8 @@
                MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
-               IF     (STS-DAY-RC1         =   0 )    AND
-                      (STS-DAY-RC2         =   0 ) 
+               IF      STS-DAY-RC1         =   ZERO   AND
+                       STS-DAY-RC2         =   ZERO
                    MOVE    LNK-DAY2-EDTYMD1    TO  SPA-BIRTHDAYW
                ELSE
                    MOVE    SPACE               TO  SPA-BIRTHDAYW
@@ -965,6 +926,7 @@
       *
            .
        49011-KNJMST-HEN-EXT.
+           EXIT.
            EXIT.
       *
       *****************************************************************
@@ -987,43 +949,11 @@
       *****************************************************************
        800-PRINT-SYORI-SEC              SECTION.
       *
-      *
-           IF     (SPA-CLIENT-PRT-FLG  =   2 )
-             OR   (SPA-PRTCONF         =   "1" )
-      *        クライアント印刷制御情報取得処理
-               PERFORM 8001-CLIENT-PRT-SEC
-           END-IF
-           MOVE    "01"                TO  SPA-PRT-FLG
-      *
            CALL    "ORCHCM16"          USING
                                        SPA-AREA
       *
-      *    クライアント印刷
-           IF     (SPA-CLIENT-PRT-FLG   =   1  )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-           END-IF
-      *
            .
        800-PRINT-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷前　処理
-      *****************************************************************
-       8001-CLIENT-PRT-SEC         SECTION.
-      *
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *
-      *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCTRLAREA
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCTRLAREA
-                                               MCPAREA
-      *
-           .
-       8001-CLIENT-PRT-EXT.
            EXIT.
       *****************************************************************
       *    受付一覧更新処理
@@ -1098,13 +1028,12 @@
       *
            MOVE    "U01"               TO  SPA-U012-MOTOPG
            MOVE    SPA-U01KYOUTU       TO  SPA-WORK
-           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "U01"               TO  SPA-MOTOPG
            MOVE    "U012"              TO  SPA-SAKIPG
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    "U012"              TO  MCP-WINDOW
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "U012"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1164,25 +1093,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           IF     (FLG-GMN-INIT        =   1    )
-               MOVE    ZERO                TO  WRK-U01-SI-ROW
-               MOVE    ZERO                TO  WRK-U01-SZ-ROW
-           ELSE
-               MOVE    ZERO                TO  WRK-U01-SI-ROW
-               MOVE    ZERO                TO  WRK-U01-SZ-ROW
-               IF      SPA-GMN-MAX (1)     >   ZERO
-                   MOVE    U01-SI-ROW          TO  WRK-U01-SI-ROW
-               END-IF
-               IF      SPA-GMN-MAX (2)     >   ZERO
-                   MOVE    U01-SZ-ROW          TO  WRK-U01-SZ-ROW
-               END-IF
-           END-IF
-      *
            MOVE    SPACE               TO  U01
            INITIALIZE                      U01
-      *    コラムリストの位置指定
-           MOVE    WRK-U01-SI-ROW      TO  U01-SI-ROW 
-           MOVE    WRK-U01-SZ-ROW      TO  U01-SZ-ROW
       *
            MOVE    SPA-GMN-DATE        TO  U01-SRYYMD.
            IF      SPA-GMN-SELNUM(1)   NOT =   ZERO
@@ -1199,7 +1111,7 @@
       *    受付一覧
            MOVE    1                   TO  IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   LINE-MAX  )   OR
+                   UNTIL      (IDY             >   200  )   OR
                               (SPA-GMN-NO (IDX IDY) =   ZERO)
                MOVE    SPA-GMN-NO    (IDX IDY)  TO  WRK-ZZZ9
                MOVE    WRK-ZZZ9                 TO  U01-SI-NO  (IDY)
@@ -1227,20 +1139,11 @@
       *        送受信フラグ
                MOVE    SPA-GMN-SRFLG(IDX IDY)
                                            TO  U01-SI-SRFLG (IDY)
-      *H28.12
-               IF      SPA-GMN-HENFLG (IDX IDY) =   "1"
-      *        変更済み
-                   MOVE    "*"           TO  U01-SI-UKETIME(IDY)
-                                                    (8:1)
-               END-IF
-      *
                MOVE    IDY                 TO  U01-SI-COUNT
       *
                IF      SPA-GMN-NO(IDX IDY) =   SPA-GMN-SELNUM(1)
       *****    IF      IDY             =   SPA-NAI-SELNO (1)
                    MOVE    "T"             TO  U01-SI-SELECT (IDY)
-      *             MOVE    IDY             TO  U01-SI-ROW
-      *             MOVE    2               TO  U01-SI-ROWATTR
                ELSE
                    MOVE    "F"             TO  U01-SI-SELECT (IDY)
                END-IF
@@ -1249,7 +1152,7 @@
       *    会計済一覧
            MOVE    2                   TO  IDX
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY             >   LINE-MAX  )   OR
+                   UNTIL      (IDY             >   200  )   OR
                               (SPA-GMN-NO (IDX IDY) =   ZERO) 
                MOVE    SPA-GMN-NO    (IDX IDY)  TO  WRK-ZZZ9
                MOVE    WRK-ZZZ9                 TO  U01-SZ-NO  (IDY)
@@ -1287,6 +1190,7 @@
                    MOVE    "F"             TO  U01-SZ-SELECT (IDY)
                END-IF
            END-PERFORM
+      *
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1369,7 +1273,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  U1ID1
-           INITIALIZE                       U1ID1
            MOVE    SPA-U1IDCD           TO  U1ID1-ID1CODE
            MOVE    WRK-U1IDMSG          TO  U1ID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -1392,18 +1295,16 @@
       *****************************************************************
        5001-U010-HEN-SEC        SECTION.
       *
-           MOVE    1                   TO  FLG-GMN-INIT
-      *
            MOVE    ZERO                TO  SPA-GMN-MAX(1)
                                            SPA-GMN-MAX(2)
            MOVE    ZERO                TO  SPA-GMN-PAGE
            MOVE    ZERO                TO  SPA-NAI-UPDOWN
       *
-           MOVE   ZERO                 TO  IDX
-           MOVE   ZERO                 TO  IDX2
-           MOVE   ZERO                 TO  IDX3
-           INITIALIZE                 WORK-SORT-TBL
-           INITIALIZE                 SPA-GMN-TBL
+           MOVE  ZERO                 TO  IDX.
+           MOVE  ZERO                 TO  IDX2.
+           MOVE  ZERO                 TO  IDX3.
+           INITIALIZE                 WORK-SORT-TBL.
+           INITIALIZE                 SPA-GMN-TBL.
       *
       *    受付マスタよりドクターコード設定
            INITIALIZE                  UKETUKE-REC
@@ -1438,13 +1339,13 @@
                        ADD     1                   TO  IDX3
                        MOVE    IDX3                TO  IDX4
                    END-IF
-                   IF      IDX4            <=  LINE-MAX
+                   IF      IDX4            <=  200
                        PERFORM 50012-UKETUKE-SET-SEC
                    END-IF
                END-IF
       *
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+              MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-UKETUKE-READ-SEC
            END-PERFORM
       *
@@ -1511,13 +1412,8 @@
            END-IF
       *    送受信フラグ
            MOVE    UKE-SRFLG           TO  WORK-SORT-SRFLG (IDX1 IDX4)
-      *H28.12
-      *    変更フラグ
-           IF      UKE-KAKREN (1:1)    =   "1"
-               MOVE    "1"             TO  WORK-SORT-HENFLG(IDX1 IDX4)
-           END-IF
       *
-           .
+           .  
       *
        50012-UKETUKE-SET-EXT.
            EXIT.
@@ -1812,7 +1708,7 @@
            MOVE    ZERO                   TO  IDX2  
       *    受付時間順にＳＯＲＴ
            PERFORM VARYING   IDX2      FROM    1   BY  1
-                   UNTIL     IDX2          >   LINE-MAX
+                   UNTIL     IDX2          >   200
                IF  IDX  =  1
                    MOVE    HIGH-VALUE      TO  WRK-UKETIME
                ELSE
@@ -1820,7 +1716,7 @@
                END-IF
                MOVE    ZERO            TO  WRK-IDX
                PERFORM VARYING   IDX3      FROM    1   BY  1
-                       UNTIL     IDX3      >  LINE-MAX
+                       UNTIL     IDX3      >  200
                    IF      IDX             =  1
                        IF     (WORK-SORT-UKETIME (IDX IDX3)
                                                    NOT =   SPACE)  AND
@@ -1909,12 +1805,7 @@
                WHEN    "03"
                    MOVE    "会待"          TO  SPA-GMN-SRFLG (IDX IDX2)
            END-EVALUATE
-      *H28.12
-      *    変更フラグ
-           IF      WORK-SORT-HENFLG(IDX IDX3)  =   "1"
-               MOVE    "1"             TO  SPA-GMN-HENFLG(IDX IDX2)
-           END-IF
-           .
+           .         
       *
        50021-SPA-HEN-EXT.
            EXIT.
@@ -1930,8 +1821,8 @@
                                        ORCSMCNDATEAREA
       *
            MOVE    ZERO                TO  IDY
-           PERFORM VARYING   IDX       FROM    1   BY  1
-                   UNTIL     IDX       >   SPA-GMN-MAX(1)
+           PERFORM VARYING   IDX      FROM    1   BY  1
+                   UNTIL     IDX          >   SPA-GMN-MAX(1)
                INITIALIZE                  UKETUKE-REC
                MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
@@ -1953,15 +1844,10 @@
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-               IF      FLG-UKETUKE         =   ZERO
+               IF        FLG-UKETUKE       =   ZERO
                    IF      UKE-KAIKEITIME      =   ZERO
                        ADD     1                   TO  IDY
                        MOVE    IDY                 TO  UKE-HYOJIJUN
-      *H28.12
-      *                変更フラグ
-                       IF  SPA-GMN-HENFLG(1 IDX)   =   "1"
-                          MOVE    "1"            TO  UKE-KAKREN
-                       END-IF
       *
                        MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
                        MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
@@ -1977,6 +1863,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
            .
+      *
        503-JYUSIN-RWT-EXT.
            EXIT.
       *
