@@ -697,6 +697,10 @@
            IF    ( FLG-SRYACCT     NOT =   ZERO )
                DISPLAY "SRYACCT SEL ERR !! " SRY-PTID ":" SRY-ZAINUM
            END-IF
+           IF    ( ACCT-ZAIKBN     =   1 ) OR
+                 ( ACCT-ZAIKBN     =   2 )
+               GO  TO  20011-IN01-HEN-EXT
+           END-IF
       *
            MOVE    SRY-PTID            TO  WRK-PTID
            PERFORM 900-PTINF-PTNUM-KEY-SEL-SEC
