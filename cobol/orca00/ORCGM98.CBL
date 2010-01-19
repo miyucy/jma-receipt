@@ -199,6 +199,11 @@
                                   PIC X(08)    VALUE   "COLLECT".
            03  WRK-CONS-JOB-JOBID-COLLECT
                                    PIC 9(07)   VALUE   1.
+      *    ジョブ管理ＤＢのキー値（感染症）  
+           03  WRK-CONS-JOB-SHELLID-INFECTION
+                                  PIC X(08)    VALUE   "INFECTIO".
+           03  WRK-CONS-JOB-JOBID-INFECTION
+                                   PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -362,11 +367,17 @@
                WHEN    "MDAS"
                    PERFORM 330-MDAS-SET-SEC
       *             GO      TO      300-SCREEN-EXT
+      *?         WHEN    "MUID"
+      *?             IF      SPA-MID1-FLG     =   "OK"
+      *?                 PERFORM 490-SETTEI-SYORI-SEC
+      *?             END-IF
+      * *?            GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+      *?         MOVE    SPA-WORK            TO  SPA-M00KYOUTU
            END-IF
       *
       *
@@ -633,7 +644,8 @@
            MOVE    "M98"               TO  SPA-MOTOPG
            MOVE    "XB01"              TO  SPA-SAKIPG
       *
-           MOVE    WRK-CONS-JOB-SHELLID
+      ****     MOVE    WRK-CONS-JOB-SHELLID
+           MOVE    WRK-CONS-JOB-SHELLID-INFECTION
                                        TO  SPA-JOB-SHELLID
       *
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK

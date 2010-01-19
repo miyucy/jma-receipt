@@ -151,13 +151,20 @@
            03  WRK-MNTMSG-STYLE    PIC X(20).
            03  WRK-MNTMSG          PIC X(70).
            03  WRK-MSG             PIC X(70).
+           03  WRK-MOTOPG          PIC X(08).
       *
+       01  SHELL-AREA.
+           05  SHELL-NAME          PIC X(31) VALUE
+                                   "scripts/daily/infectiondata1.sh".
       *
        01  CONST-AREA.
            03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
            03  CONST-MNTSHELLID    PIC X(08)  VALUE    "MSTMNT".
            03  CONST-MLIJOBID      PIC 9(07)  VALUE    1.
            03  CONST-MLISHELLID    PIC X(08)  VALUE    "MSTMLI".
+      *    感染症報告  
+           03  CONST-INFJOBID      PIC 9(07)  VALUE    1.
+           03  CONST-INFSHELLID    PIC X(08)  VALUE    "INFECTIO".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -211,12 +218,17 @@
       *
       *    システムバージョン取得
            COPY    "CPORCSVERSION.INC".
+      *    ファイルデイレクトリ位置指定サブ
+           COPY    "CPMKPASS.INC".
+      *
+           COPY    "CPSHELLTBL.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
            COPY    "CPORCSCOLCHK.INC".
+           COPY    "CPORCSINFCHK.INC".
       *    COMMON-SPA 初期編集
            COPY    "CPORCSCOMMON.INC".
       *
@@ -317,6 +329,12 @@
                    MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
                END-IF
       *
+      *        感染症報告処理起動
+               IF      WRK-MOTOPG          =   SPACE
+                                           OR  "M95"
+                   PERFORM 800-INFECTION-SEC
+               END-IF
+      *
       *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
@@ -373,6 +391,13 @@
        310-SPASET-SEC              SECTION.
       *
            DISPLAY "310-SPASET SPA-MOTOPG:" SPA-MOTOPG "."
+           MOVE    SPACE               TO  WRK-MOTOPG
+           IF      SPA-MOTOPG          =   "M01"  OR  "M01N"
+                                       OR  "M95"  OR  "MVER"
+                                       OR  "KT01" OR  "M97"
+                                       OR  "M98"
+               MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
+           END-IF
       *
       *---- (01.00.04) LINE ADD START --------------------------------
       *    Ｍ０１より戻ってきた時、システム日付のセットをしない
@@ -382,6 +407,7 @@
                                        OR  "MVER"
                                        OR  "KT01"
                                        OR  "MLOG"
+                                       OR  "M98"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
                MOVE    SPA-SYSYMDW         TO  WRK-WYMD
@@ -1312,6 +1338,11 @@
       *       MOVE    SPACE            TO  MVER
               MOVE    "B12"            TO  MCP-WIDGET
       *
+      *?        MOVE    SPACE               TO  LINKAREA
+      *?        MOVE    SPA-KYOUTU          TO  LNK-COMMON
+      *?        INITIALIZE                  SPA-KYOTUKEY
+      *?        MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
               MOVE    "M00"            TO  SPA-MOTOPG
               MOVE    "M98"            TO  SPA-SAKIPG
       *
@@ -1327,29 +1358,6 @@
        480-M98-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    感染症表示画面へ
-      *****************************************************************
-       480-MINF-SEC                     SECTION.
-      *
-      *     IF      SPA-DATACREATEFLG   =    1
-      *       MOVE    SPACE            TO  MVER
-              MOVE    "B12"            TO  MCP-WIDGET
-      *
-              MOVE    "M00"            TO  SPA-MOTOPG
-              MOVE    "MINF"            TO  SPA-SAKIPG
-      *
-              MOVE    "CHANGE"         TO  MCP-PUTTYPE
-              MOVE    "MINF"            TO  MCP-WINDOW
-      *
-              PERFORM 900-PUT-WINDOW
-      *
-              MOVE    1                    TO  FLG-END 
-      *     END-IF
-      *
-           .
-       480-MINF-EXT.
-           EXIT.
       *!!!!!!!
       *****************************************************************
       *    外来まとめテスト　処理
@@ -1705,6 +1713,68 @@
 	   .
       *
        5101-ERRSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    感染症報告処理
+      *****************************************************************
+       800-INFECTION-SEC               SECTION.
+      *
+           INITIALIZE                  ORCSINFCHKAREA
+           CALL    "ORCSINFCHK"        USING
+                                           ORCSINFCHKAREA
+                                           SPA-AREA
+      *
+           IF    ( INFCHK-RC       NOT =   ZERO )  AND
+                 ( INFCHK-RC       NOT =   90   )
+               GO  TO    800-INFECTION-EXT
+	   END-IF
+      *    
+      *    ジョブ開始セット処理
+           MOVE    "DEL"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           MOVE    CONST-INFJOBID      TO  JOB-JOBID
+           MOVE    CONST-INFSHELLID    TO  JOB-SHELLID
+           CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA 
+                                           JOBKANRI-REC
+                                           SPA-AREA
+      *
+           MOVE    "JBS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           MOVE    CONST-INFJOBID      TO  JOB-JOBID
+           MOVE    CONST-INFSHELLID    TO  JOB-SHELLID
+           MOVE    SPA-TERMID          TO  JOB-TERMID
+           CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA 
+                                           JOBKANRI-REC
+                                           SPA-AREA
+      *
+           INITIALIZE                      ORCSMKPASSAREA
+           MOVE    SHELL-NAME          TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    SPA-TERMID          TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
+           MOVE    CONST-INFJOBID      TO  SHELLTBL-ARG4
+           MOVE    CONST-INFSHELLID    TO  SHELLTBL-ARG5
+           MOVE    SPA-BEDFLG          TO  SHELLTBL-ARG6
+      *
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"     USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           .
+       800-INFECTION-EXT.
            EXIT.
       *
       *****************************************************************

@@ -9,9 +9,7 @@ module OrcaDAS
     def load_config
       path = CLIENT_CONFIG_FILE
       if File.file?(path)
-        config = Module.new
-        config.module_eval File.open(path).read
-        config
+        Module.new.module_eval File.open(path).read
       end
     end
   end

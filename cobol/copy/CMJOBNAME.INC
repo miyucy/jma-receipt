@@ -115,10 +115,14 @@
            03  FILLER               PIC X(40)   VALUE
                                     "Åý·×£Ã£Ó£Ö½ÐÎÏ".
       *
+           03  FILLER               PIC X(08)   VALUE   "INFECTIO".
+           03  FILLER               PIC X(40)   VALUE
+                                    "´¶À÷¾É¥µ¡¼¥Ù¥¤".
+      *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      25  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      26  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   25.
+       01  MNAME-MAX                PIC 9(04)   VALUE   26.
       *

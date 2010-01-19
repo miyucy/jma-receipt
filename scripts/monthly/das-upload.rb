@@ -57,20 +57,23 @@ module OrcaDAS
       http_request(url, :POST, header, body, config, &block)
     end
 
-    def upload(filename, config=@config)
-      url = config["Host"] + config["Path"]
+    def upload(pathname, filename, config=@config)
+      url = config["Host"] + config[pathname]
       formdata = OrcaDAS::FormData.new
       data = File.open(filename).read
       formdata.add_data(data, filename)
       form = OrcaDAS::FormData::Content.new("id",Digest::SHA1.hexdigest(DAS_CHECK_HOSPID),"id")
       form.encoding = "quoted-printable"
       formdata.add(form)
+      #agreement = 0
       http_post(url, formdata.header, formdata.body, config){ |res|
         if res.code.to_i != 200
           raise res.code + " " + res.msg
         end
+	#agreement = res["X-Das-Agreement"].to_i
       }
       STDERR.puts "UP #{filename}"
+      formdata.close
       return true
     end
 
@@ -80,12 +83,22 @@ module OrcaDAS
       form = OrcaDAS::FormData::Content.new("id",Digest::SHA1.hexdigest(DAS_CHECK_HOSPID),"id")
       form.encoding = "quoted-printable"
       formdata.add(form)
+      agreement = 0
       http_post(url, formdata.header, formdata.body, config){ |res|
         if res.code.to_i != 200
           raise res.code + " " + res.msg
         end
+	agreement = res["X-Das-Agreement"].to_i
       }
-      STDERR.puts "LOGIN OK"
+      if agreement == 0
+        STDERR.puts "LOGIN NO AGREEMENT"
+      elsif agreement == 1
+        STDERR.puts "LOGIN OK"
+      elsif agreement == 2
+        STDERR.puts "LOGIN OK"
+      else
+        STDERR.puts "LOGIN UNKNOWN AGREEMENT"
+      end
       return true
     end
 
@@ -100,8 +113,8 @@ module OrcaDAS
       return true
     end
 
-    def run(filename, config=@config)
-      return upload(filename, config)
+    def run(pathname, filename, config=@config)
+      return upload(pathname, filename, config)
     end
 
     def self.main(argv)
@@ -113,6 +126,7 @@ module OrcaDAS
         exit 1
       end
       opt = argv.shift
+      filename = argv.shift
       num = 3
       num.times{
         begin
@@ -120,8 +134,12 @@ module OrcaDAS
             exit!(das.login_check ? 0 : 1)
           elsif opt == "-c"
             exit!(das.server_check ? 0 : 1)
+          elsif opt == "-p"
+            exit!(das.run("PathProf",filename) ? 0 : 1)
+          elsif opt == "-i"
+            exit!(das.run("PathInf",filename) ? 0 : 1)
           else
-            exit!(das.run(opt) ? 0 : 1)
+            exit!(das.run("Path",filename) ? 0 : 1)
           end
         rescue Exception => ex
           if /^[0-9][0-9][0-9]/ =~ ex.message

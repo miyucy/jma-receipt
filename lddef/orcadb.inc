@@ -150,4 +150,5 @@ db	{
 	tbl_toukeicsv_b;
 	tbl_santeiplus;
 	tbl_dbcatalog;
+	tbl_infection;
 };

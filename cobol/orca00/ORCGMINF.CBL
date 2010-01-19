@@ -473,10 +473,12 @@
            MOVE    "M98"           TO  SPA-SAKIPG
            MOVE    "MINF"          TO  SPA-MOTOPG
       *
-           MOVE    SPACE           TO  SPA-WORK
-           INITIALIZE                  SPA-KYOTUKEY
-                                       SPA-KYOTU-SET
-           MOVE    SPA-KYOUTU      TO  LNK-KYOUTU
+      *    MOVE    SPACE           TO  SPA-WORK
+      *    INITIALIZE                  SPA-KYOTUKEY
+      *                                SPA-KYOTU-SET
+      *    MOVE    SPA-KYOUTU      TO  LNK-KYOUTU
+      *
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPA-SAKIPG      TO  MCP-WINDOW
       *

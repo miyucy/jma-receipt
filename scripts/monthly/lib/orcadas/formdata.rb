@@ -53,6 +53,10 @@ module OrcaDAS
       @trailer = "--#{@boundary}--" + CRLF
     end
 
+    def close
+    	@body.close(true)
+    end
+
     def add(content)
       @body << "--#{@boundary}" << CRLF
       content.output(@body)

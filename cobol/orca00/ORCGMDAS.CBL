@@ -77,6 +77,8 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
+       01  WRK-AREA.
+           03  WRK-STR-EDIT        PIC X(50).
       *
        01  WRK-DATA-REC1.
            03  FILLER              PIC X(11)   VALUE
@@ -754,6 +756,10 @@
                        END-IF
                        IF      USER-REC(1:15)  =   WRK-DATA-REC25
                            UNSTRING  USER-REC(16:) DELIMITED  BY  '",'
+                                             INTO  WRK-STR-EDIT
+                           END-UNSTRING
+                           UNSTRING  WRK-STR-EDIT
+                                             DELIMITED  BY  '"'
                                              INTO  SPA-MUID-PASSWORD
                            END-UNSTRING
                        END-IF

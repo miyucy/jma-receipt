@@ -60,6 +60,19 @@ path	key3		{
 	};
 };
 
+path	key4		{
+	DBSELECT	{
+		DECLARE tbl_infection_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_infection
+		WHERE        HOSPNUM  =  :HOSPNUM
+			AND  PTID     =  :PTID
+			AND  DISEASE  =  :DISEASE
+			AND  SRYYMD   =  :SRYYMD
+		;
+	};
+};
+
 path	del1		{
 	DBDELETE	{
 		DELETE

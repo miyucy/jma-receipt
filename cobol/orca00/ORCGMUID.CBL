@@ -82,6 +82,7 @@
        01  WRK-AREA.
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-BEDSU           PIC 9(04).
+           03  WRK-STR-EDIT        PIC X(50).
       *
        01  WRK-DATA-REC1.
            03  FILLER              PIC X(11)   VALUE
@@ -607,6 +608,10 @@
                        END-IF
                        IF      USER-REC(1:15)  =   WRK-DATA-REC25
                            UNSTRING  USER-REC(16:) DELIMITED  BY  '",'
+                                             INTO  WRK-STR-EDIT
+                           END-UNSTRING
+                           UNSTRING  WRK-STR-EDIT
+                                             DELIMITED  BY  '"'
                                              INTO  SPA-MUID-PASSWORD
                            END-UNSTRING
                        END-IF
@@ -676,6 +681,7 @@
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *        ½ªÎ»
                WHEN    "CLICKED"   ALSO    "B01"
+                   MOVE    "OK"            TO  SPA-MID1-FLG
                    PERFORM 210-BACK
       *        ÅÐÏ¿¹¹¿·
                WHEN    "CLICKED"   ALSO    "B12"
@@ -819,7 +825,7 @@
       *
            IF    ( SPA-MUID-KANANAME   =   SPACE ) OR
                  ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-NAME-CHK-EXT
+               GO  TO  4102-KANANAME-CHK-EXT
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
@@ -858,13 +864,13 @@
            MOVE    50              TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
-           IF     (KANACHK-RC          =   ZERO  )  AND
-                  (KANACHK-SYUBETU     =   2     )  AND
-                  (KANACHK-RC2         =   ZERO  )
-               CONTINUE
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-MUID-NAME
+               MOVE    "0005"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-MUID-CUR
            ELSE
-               MOVE    "0005"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-MUID-CUR
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-MUID-NAME
            END-IF
       *
            .
@@ -1124,6 +1130,8 @@
       *
            IF    ( SPA-MUID-KAIINYM    =   SPACE ) OR
                  ( SPA-ERRCD       NOT =   SPACE )
+               MOVE    SPACE               TO  SPA-MUID-KAIINYM
+               MOVE    SPACE               TO  SPA-MUID-NAI-KAIINYM
                GO  TO  4102-KAIINYM-CHK-EXT
            END-IF
       *
@@ -1262,8 +1270,8 @@
                GO  TO  4103-HISSU-CHK-EXT
            END-IF
       *
-           IF    ( SPA-MUID-HOSPSBT    =   2 ) AND
-                 ( SPA-MUID-HOSPSBT1   =  SPACE )
+           IF    ( SPA-MUID-HOSPSBT    =   2     ) AND
+                 ( SPA-MUID-HOSPSBT1   =   SPACE )
                MOVE    "0009"          TO  SPA-ERRCD
                MOVE    5               TO  SPA-MUID-CUR
                GO  TO  4103-HISSU-CHK-EXT
@@ -1299,7 +1307,7 @@
                GO  TO  4103-HISSU-CHK-EXT
            END-IF
       *
-           IF     SPA-MUID-POST     =   SPACE
+           IF     SPA-MUID-POST        =   SPACE
                MOVE    "0012"          TO  SPA-ERRCD
                MOVE    17              TO  SPA-MUID-CUR
                GO  TO  4103-HISSU-CHK-EXT
@@ -1766,10 +1774,10 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "MDAS"          TO  SPA-SAKIPG
+           MOVE    "M98"           TO  SPA-SAKIPG
            MOVE    "MUID"          TO  SPA-MOTOPG
       *
-           MOVE    "MDAS"          TO  MCP-WINDOW
+           MOVE    "M98"           TO  MCP-WINDOW
            MOVE    "JOIN"          TO  MCP-PUTTYPE
       *
            PERFORM 900-PUT-WINDOW
