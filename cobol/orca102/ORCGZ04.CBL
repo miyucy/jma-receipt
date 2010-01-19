@@ -44,6 +44,7 @@
       *  03.04.00    NACL-多々納  06/12/08  長期投与・投与量設定
       *                                     一般名等追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.05.00    NACL-太田    10/01/15  月上限回数、月総投与量設定追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -259,6 +260,10 @@
       *        一般名
                05  SPA-GMN-GENERICNAME         PIC X(100).
                05  SPA-GMN-GENERICHEN          PIC X(80).
+      *        月上限
+               05  SPA-GMN-TUKIJGN-G.
+                   07  SPA-GMN-TUKIJGNKAISU    PIC 9(02).
+                   07  SPA-GMN-TUKIJGNTOUYORYO PIC 9(05)V9(03).
       *
                05  SPA-GMN-CUR                 PIC 9(03).
       *
@@ -1196,6 +1201,10 @@
                                            TO  IDX-T
                    END-IF
                END-PERFORM
+      *        月上限
+               MOVE    TNSP2-TUKIJGNKAISU  TO  SPA-GMN-TUKIJGNKAISU
+               MOVE    TNSP2-TUKIJGNTOUYORYO
+                                           TO  SPA-GMN-TUKIJGNTOUYORYO
            ELSE
       *        下限・上限年齢はゼロを初期設定
                PERFORM VARYING     IDX-T   FROM    1   BY  1
@@ -1435,6 +1444,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    Z04-TOUYORYO2(IDX-T)
                                            TO  SPA-GMN-TOUYORYO2(IDX-T)
            END-PERFORM
+      *
+           MOVE    Z04-TUKIJGNKAISU        TO  SPA-GMN-TUKIJGNKAISU
+           MOVE    Z04-TUKIJGNTOUYORYO     TO  SPA-GMN-TUKIJGNTOUYORYO
       *
            MOVE    ZERO                TO  FLG-CHNGE
            IF      Z04-CHNGCD      NOT =   SPA-NAI-CHNGCD
@@ -2357,6 +2369,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  FLG-TENSUPLUS2-CHK
            END-IF
       *
+           IF    ( SPA-GMN-TUKIJGNKAISU    =   ZERO )
+            AND  ( SPA-GMN-TUKIJGNTOUYORYO =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    1               TO  FLG-TENSUPLUS2-CHK
+           END-IF
+      *
            IF      FLG-TENSUPLUS2-CHK  =   ZERO
       *        削除
                IF      FLG-TENSUPLUS2      =   ZERO
@@ -2478,6 +2497,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TNSP2-TOUYORYO2  (IDX-T2)
                END-IF
            END-PERFORM
+      *
+           MOVE    SPA-GMN-TUKIJGNKAISU    TO  TNSP2-TUKIJGNKAISU
+           MOVE    SPA-GMN-TUKIJGNTOUYORYO TO  TNSP2-TUKIJGNTOUYORYO
       *
            .
        41291-TENSUPLUS2-HEN-EXT.
@@ -3817,6 +3839,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                  (IDX)
            END-PERFORM
       *
+           MOVE    SPA-GMN-TUKIJGNKAISU    TO  Z04-TUKIJGNKAISU
+           MOVE    SPA-GMN-TUKIJGNTOUYORYO TO  Z04-TUKIJGNTOUYORYO
+      *
            MOVE    SPA-GMN-GENERICNAME TO  Z04-GENERICNAME
            MOVE    SPA-GMN-GENERICHEN  TO  Z04-GENERICHEN
       *
@@ -3947,6 +3972,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "TOUYORYO2"         TO  MCP-WIDGET
                        MOVE    ID1                 TO  MCP-WIDGET(10:2)
       *
+                  WHEN 150
+                       MOVE    "TUKIJGNKAISU"      TO  MCP-WIDGET
+                  WHEN 151
+                       MOVE    "TUKIJGNTOUYORYO"   TO  MCP-WIDGET
+      *
                   WHEN   99
                       MOVE  "B12"              TO  MCP-WIDGET
              END-EVALUATE
@@ -4052,6 +4082,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "CHNGCD"
                    MOVE    99          TO  SPA-GMN-CUR
+               WHEN    "TUKIJGNKAISU"
+                   MOVE    151             TO  SPA-GMN-CUR
+               WHEN    "TUKIJGNTOUYORYO"
+                   MOVE    31              TO  SPA-GMN-CUR
                WHEN    OTHER
                    IF      WRK-MCP-WIDGET(1:6) =   "KGNAGE"
                        MOVE    WRK-MCP-WIDGET(7:2)  TO  ID1
@@ -4080,7 +4114,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      WRK-MCP-WIDGET(1:9) =   "TOUYORYO2"
                        MOVE    WRK-MCP-WIDGET(10:2) TO  ID1
                        IF      ID1             =   10
-                           MOVE    31              TO  SPA-GMN-CUR
+                           MOVE    150             TO  SPA-GMN-CUR
                        ELSE
                            IF      ID1             =   9
                                MOVE    110             TO   SPA-GMN-CUR

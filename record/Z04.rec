@@ -329,5 +329,11 @@ Z04	{
 		GENERICNAME	{
 			value	varchar(100);
 		};
+		TUKIJGNKAISU	{
+			value	number(3);
+		};
+		TUKIJGNTOUYORYO	{
+			value	number(8,3);
+		};
 	};
 };

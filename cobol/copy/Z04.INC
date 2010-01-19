@@ -175,5 +175,6 @@
                 04  Z04-VALUE   PIC X(80).
               03  Z04-GENERICNAME.
                 04  Z04-VALUE   PIC X(100).
-
+              03  Z04-TUKIJGNKAISU  PIC S9(3).
+              03  Z04-TUKIJGNTOUYORYO  PIC S9(5)V9(3).
 

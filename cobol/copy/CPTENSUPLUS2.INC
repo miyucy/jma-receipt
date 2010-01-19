@@ -47,7 +47,10 @@
            03  TNSP2-TOUYOERR              PIC  9(01).
       *    ÆâÉþ»»Äê¶èÊ¬
            03  TNSP2-NAIFUKUKBN            PIC  9(01).
-      *
+      *    ·î¾å¸Â²ó¿ô
+           03  TNSP2-TUKIJGNKAISU          PIC  9(3).
+      *    ·îÁíÅêÍ¿ÎÌ
+           03  TNSP2-TUKIJGNTOUYORYO       PIC  9(5)V9(5).
            03  TNSP2-TERMID                PIC  X(16).
            03  TNSP2-OPID                  PIC  X(16).
            03  TNSP2-CREYMD                PIC  X(08).

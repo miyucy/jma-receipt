@@ -46,6 +46,8 @@ tbl_tensuplus2 {
 	TOUYORYO210			number(10,5);
 	TOUYOERR 			number(1,0);
 	NAIFUKUKBN 			number(1,0);
+	TUKIJGNKAISU			number(3,0);
+	TUKIJGNTOUYORYO			number(10,5);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
