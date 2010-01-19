@@ -464,6 +464,9 @@
       *     °ìÉôÉéÃ´¶â·×»»ÍÑ
            03  WRK-SYUTEN1             PIC 9(08).
            03  WRK-TEN                 PIC 9(08).
+      *     °ìÉôÉéÃ´¶â·×»»ÍÑ
+           03  WRK-SYUTEN1-KEI         PIC S9(08).
+           03  WRK-LNK-S01-SYUTEN      PIC S9(08).
       *
       *    ¿ÇÎÅ¹Ô°Ù£Ó£Ï£Ò£Ô
            03  WRK-SORT-KEY.
@@ -4002,6 +4005,8 @@
                       (LNK-WKSRY-HKNCOMBI(IDX) NOT =   SYU-HKNCOMBINUM)
                   OR  ((SYU-SRYKA              NOT =   ZERO  )  AND
                       (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
+      *           ÌôÉ¾°Ê³°
+                  OR  (LNK-WKSRY-ZAIKBN  (IDX)     =   1    )
                    CONTINUE
                ELSE
       *            ¿ÇÎÅÆâÍÆÊÔ½¸¡ÊÌôºÞ¤ÈÉþÍÑÊýË¡)
@@ -4381,6 +4386,7 @@
       *****************************************************************
        4505-YAKFTN-KEI-SEC             SECTION.
       *
+           MOVE    ZERO                TO  WRK-LNK-S01-SYUTEN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
       *
@@ -4399,11 +4405,13 @@
                    END-IF
       *            ¸ø³²ÊÝ¸±¤Î»þ¡¢µ»½ÑÅÀ¤ò½¸·×¤¹¤ë
                    IF      (SPA-HKNKBN         =   2   )  AND
-                           (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
+                           (LNK-WKSRY-SYUTEN1 (IDX)    NOT =  ZERO )
                        PERFORM 45052-KOGAI-SYORI-SEC
                    END-IF
                END-IF
            END-PERFORM
+           MOVE    WRK-LNK-S01-SYUTEN  TO  LNK-S01-SYUTEN
+                                                   (LNK-SYUNOU2-MAX)
       *
       *    Á¥°÷ÊÝ¸±¤Ç½é¿ÇÎÁ»»Äê»þ
            IF     (SYU-SYUHKNNUM       =   "002" )  AND
@@ -4616,13 +4624,17 @@
            IF      LNK-WKSRY-SYUTEN1 (IDX) <   WRK-SYUTEN1
                CONTINUE
            ELSE
-               COMPUTE LNK-S01-SYUTEN (LNK-SYUNOU2-MAX)
-                                           =   LNK-S01-SYUTEN
-                                                      (LNK-SYUNOU2-MAX)
-                                           + ((LNK-WKSRY-SYUTEN1 (IDX)
-                                           -   WRK-SYUTEN1    )
+               COMPUTE WRK-SYUTEN1-KEI     =  (LNK-WKSRY-SYUTEN1 (IDX)
+                                           -   WRK-SYUTEN1  )
                                            *   LNK-WKSRY-ZAIKAIKEI
-                                                             (IDX) )
+                                                             (IDX)
+               IF      LNK-WKSRY-ZAIKBN (IDX) =   2
+      *            ¸ºÅÀÊ¬
+                   COMPUTE WRK-SYUTEN1-KEI     =   WRK-SYUTEN1-KEI
+                                               *   -1
+               END-IF
+               COMPUTE WRK-LNK-S01-SYUTEN  =   WRK-LNK-S01-SYUTEN
+                                           +   WRK-SYUTEN1-KEI
            END-IF
       *
            .
@@ -4660,18 +4672,21 @@
                    END-IF
                END-PERFORM
            END-IF
-      *
       *    ¼«ÇåÀÕ¼êµ»ÅÀ¹ç·×
            IF      LNK-WKSRY-SYUTEN1 (IDX) <   WRK-SYUTEN1
                CONTINUE
            ELSE
-               COMPUTE LNK-S01-SYUTEN (LNK-SYUNOU2-MAX)
-                                           =   LNK-S01-SYUTEN
-                                                      (LNK-SYUNOU2-MAX)
-                                           + ((LNK-WKSRY-SYUTEN1 (IDX)
-                                           -   WRK-SYUTEN1    )
+               COMPUTE WRK-SYUTEN1-KEI     =  (LNK-WKSRY-SYUTEN1 (IDX)
+                                           -   WRK-SYUTEN1  )
                                            *   LNK-WKSRY-ZAIKAIKEI
-                                                             (IDX) )
+                                                             (IDX)
+               IF      LNK-WKSRY-ZAIKBN (IDX) =   2
+      *            ¸ºÅÀÊ¬
+                   COMPUTE WRK-SYUTEN1-KEI     =   WRK-SYUTEN1-KEI
+                                               *   -1
+               END-IF
+               COMPUTE WRK-LNK-S01-SYUTEN  =   WRK-LNK-S01-SYUTEN
+                                           +   WRK-SYUTEN1-KEI
            END-IF
       *
            .
