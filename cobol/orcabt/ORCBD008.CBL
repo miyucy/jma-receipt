@@ -752,7 +752,9 @@
       *        その他
                WHEN    OTHER
       *            自費
-                   IF      SYU-SYUHKNNUM(1:2) = "98"
+                   IF    ( SYU-SYUHKNNUM(1:2) = "98" ) OR
+                         ( SYU-SYUHKNNUM(1:2) = "90" ) OR
+                         ( SYU-SYUHKNNUM(1:2) = "91" )
                        MOVE    6                   TO  IDX
                    ELSE
       *                社保老人
