@@ -48,6 +48,7 @@
       *  04.01.02    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.05.01    NACL-ÌçÏÆ    09/06/16  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    10/01/19  ¼£¸³ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -134,6 +135,8 @@
                  05  TBL-ZAIKAISU          PIC  9(07).
                  05  TBL-ZAITEN            PIC  S9(08).
                  05  TBL-SYUTEN            PIC  9(08).
+                 05  TBL-GENTEN            PIC  9(08).
+                 05  TBL-ZAIKBN            PIC  9(03).
       *
       *    ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  HKNTEKGAI-TABLE.
@@ -208,6 +211,10 @@
       *    ¥ï¡¼¥¯¼ýÇ¼¥Þ¥¹¥¿¡¼¡Ê¹ç·×ÍÑ¡Ë
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
+      *
+      *    ¥ï¡¼¥¯¼ýÇ¼¥Þ¥¹¥¿¡¼¡Ê¸ºÅÀÍÑ¡Ë
+       01  WRK-SYUNOUG-REC.
+           COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYUG-//.
       *
       *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿¡¼
        01  SYUMEI-REC.
@@ -457,12 +464,15 @@
       *    ¼ýÇ¼¥Ç¡¼¥¿¤ÎºÆÊÔ½¸
       *
            INITIALIZE                  WRK-SYUNOU-REC
+           INITIALIZE                  WRK-SYUNOUG-REC
       ***  INITIALIZE                  WRK-ORCS01-REC
            MOVE       SPACE     TO     WRK-TAIHI-HKNCOMBINUM
       *
            PERFORM    VARYING   IDY    FROM   1   BY   1
                               UNTIL  (IDY                 >    15 )
                                 OR   (LNK-SYU-SRYYMD(IDY) =  SPACE)
+      *
+               INITIALIZE             WRK-SYUNOUG-REC
       *
       *        ¼ýÇ¼¹àÌÜ½é´ü²½
       *
@@ -1204,16 +1214,22 @@
               MOVE    ACCT-ZAINUM    TO  TBL-ZAIBAN(IDX1)
               MOVE    ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD)
                                      TO  TBL-ZAIKAISU(IDX1)
-              IF     (ACCT-SRYCDTOTAL   =    630010002)   AND
-                     (ACCT-MEISAISU     =    1)
-                 COMPUTE   TBL-ZAITEN(IDX1)  =  TBL-ZAITEN(IDX1) +
-                                              (ACCT-ZAITEN * -1)
+              IF     ACCT-ZAIKBN       =    2
+                   MOVE  ACCT-ZAITEN TO  TBL-GENTEN(IDX1)
+                   MOVE  ACCT-ZAIKBN TO  TBL-ZAIKBN(IDX1)
               ELSE
-                 MOVE  ACCT-ZAITEN   TO  TBL-ZAITEN(IDX1)
+                IF  (ACCT-SRYCDTOTAL =    630010002)   AND
+                    (ACCT-MEISAISU   =    1)
+                   COMPUTE   TBL-ZAITEN(IDX1)  =  TBL-ZAITEN(IDX1) +
+                                                (ACCT-ZAITEN * -1)
+                ELSE
+                   MOVE  ACCT-ZAITEN TO  TBL-ZAITEN(IDX1)
+                END-IF
               END-IF
               IF   (   ACCT-SRYKBN       =   "95"  OR  "96"   )         
               OR   ((  ACCT-SRYCDTOTAL   =    630010002      )  AND     
                     (  ACCT-MEISAISU     =    1              ))         
+              OR   (   ACCT-ZAIKBN       =    2               )
                  CONTINUE                                               
               ELSE                                                      
                  COMPUTE  TBL-SYUTEN(IDX1)  =  ACCT-SYUTEN1
@@ -1345,7 +1361,6 @@
                EVALUATE    TBL-SRYKBN  (IDX1)
       *            ¿ÇÎÅ
                    WHEN    "11"
-                   WHEN    "12"
                     COMPUTE LNK-SYU-HKNTEN(IDY 01) =
                             LNK-SYU-HKNTEN(IDY 01) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
@@ -1353,16 +1368,38 @@
                     AND  (FLG-SENIN         =    1 )
                          MOVE    1     TO     FLG-SENIN-SYOSIN
                     END-IF
+                   WHEN    "12"
+                    IF   TBL-ZAIKBN(IDX1) =  2
+                      COMPUTE WRK-SYUG-HKNTEN(01) =
+                              WRK-SYUG-HKNTEN(01) +
+                             (TBL-GENTEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    ELSE
+                      COMPUTE LNK-SYU-HKNTEN(IDY 01) =
+                              LNK-SYU-HKNTEN(IDY 01) +
+                             (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    END-IF
       *            »ØÆ³
                    WHEN    "13"
-                    COMPUTE LNK-SYU-HKNTEN(IDY 02) =
-                            LNK-SYU-HKNTEN(IDY 02) +
-                           (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    IF   TBL-ZAIKBN(IDX1) =  2
+                      COMPUTE WRK-SYUG-HKNTEN(02) =
+                              WRK-SYUG-HKNTEN(02) +
+                             (TBL-GENTEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    ELSE
+                      COMPUTE LNK-SYU-HKNTEN(IDY 02) =
+                              LNK-SYU-HKNTEN(IDY 02) +
+                             (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    END-IF
       *            ºßÂð
                    WHEN    "14"
-                    COMPUTE LNK-SYU-HKNTEN(IDY 03) =
-                            LNK-SYU-HKNTEN(IDY 03) +
-                           (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    IF   TBL-ZAIKBN(IDX1) =  2
+                      COMPUTE WRK-SYUG-HKNTEN(03) =
+                              WRK-SYUG-HKNTEN(03) +
+                             (TBL-GENTEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    ELSE
+                      COMPUTE LNK-SYU-HKNTEN(IDY 03) =
+                              LNK-SYU-HKNTEN(IDY 03) +
+                             (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
+                    END-IF
       *            ÅêÌô
                    WHEN    "21"   THRU  "27"
                     COMPUTE WRK-TYK-HKNTEN  =
@@ -1581,7 +1618,8 @@
       *
                IF  LNK-SYU-SYUHKNNUM(IDY)   =   "971"  OR  "973"
                                                        OR  "975"
-                 IF  TBL-SRYKBN(IDX1)       =   "95"   OR  "96"        
+                 IF  (TBL-SRYKBN(IDX1)  = "95" OR "96")
+                 OR  (TBL-ZAIKBN(IDX1)  =  2          )
                    CONTINUE                                            
                  ELSE                                                  
                    INITIALIZE                        SRYACT-REC
@@ -1666,8 +1704,32 @@
              MOVE     WK-RSIETC2    TO   LNK-SYU-RSIETC-MONEY(IDY)
            END-IF
       *
+           IF   LNK-SYU-HKNTEN(IDY 01) >= WRK-SYUG-HKNTEN(01)
+              COMPUTE  LNK-SYU-HKNTEN(IDY 01) =  LNK-SYU-HKNTEN(IDY 01)
+                                              -  WRK-SYUG-HKNTEN(01)
+           ELSE
+              MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 01)
+           END-IF
+           IF   LNK-SYU-HKNTEN(IDY 02) >= WRK-SYUG-HKNTEN(02)
+              COMPUTE  LNK-SYU-HKNTEN(IDY 02) =  LNK-SYU-HKNTEN(IDY 02)
+                                              -  WRK-SYUG-HKNTEN(02)
+           ELSE
+              MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 02)
+           END-IF
+           IF   LNK-SYU-HKNTEN(IDY 03) >= WRK-SYUG-HKNTEN(03)
+              COMPUTE  LNK-SYU-HKNTEN(IDY 03) =  LNK-SYU-HKNTEN(IDY 03)
+                                              -  WRK-SYUG-HKNTEN(03)
+           ELSE
+              MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 03)
+           END-IF
+      *
       *    ¼«ÇåÀÕÊÝ¸±½èÍý
            IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
+      *
+             COMPUTE   WK-SYUTEN-KEI  =  WK-SYUTEN-KEI
+                                      -  WRK-SYUG-HKNTEN(01)
+                                      -  WRK-SYUG-HKNTEN(02)
+                                      -  WRK-SYUG-HKNTEN(03)
       *
              COMPUTE   LNK-S01-SYUTEN(IDY)  =   WK-SYUTEN-KEI
                                             -   WK-RSISHOSHIN
@@ -1688,8 +1750,15 @@
       *
       *    ¸ø³²½èÍý
            IF  LNK-SYU-SYUHKNNUM(IDY)  =   "975"
+      *
+             COMPUTE   WK-SYUTEN-KEI  =  WK-SYUTEN-KEI
+                                      -  WRK-SYUG-HKNTEN(01)
+                                      -  WRK-SYUG-HKNTEN(02)
+                                      -  WRK-SYUG-HKNTEN(03)
+      *
              COMPUTE   LNK-S01-SYUTEN(IDY)  =   WK-SYUTEN-KEI
                                             -   WK-KOGAI-TEN
+      *
            END-IF
       *
            IF      FLG-SENIN-SYOSIN   =   1

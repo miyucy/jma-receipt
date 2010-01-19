@@ -4643,19 +4643,18 @@ grpsys                            SPA-AREA
       **************************************************************
        ROSAI-JIBAI-HENSYU-SEC          SECTION.
       *
-           IF   ACCT-SRYKBN  =  "90" OR "92" OR "95" OR "96" OR "97"
+           IF  (ACCT-SRYKBN  =  "90" OR "92" OR "95" OR "96" OR "97")
+           OR  (ACCT-ZAIKBN  =   2                                  )
              CONTINUE
            ELSE
       *
              IF     SYU-SYUHKNNUM   =   "973"
-              IF  ACCT-ZAIKBN   NOT =    2
                 COMPUTE     WRK-SYUTEN  =  WRK-SYUTEN
                                  +  ( ACCT-SYUTEN1 * SINRYO-COUNT )
                 IF     ACCT-SRYKBN   =   "70"
                    COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN
                                  -  ( ACCT-SYUTEN2 * SINRYO-COUNT )
                 END-IF
-              END-IF
              END-IF
       *
              INITIALIZE                      SRYACT-REC
@@ -4843,20 +4842,20 @@ grpsys                              SPA-AREA
       **************************************************************
        KOGAI-HENSYU-SEC          SECTION.
       *
-           IF   ACCT-SRYKBN  =  "90" OR "92" OR "95" OR "96" OR "97"
+           IF  (ACCT-SRYKBN  =  "90" OR "92" OR "95" OR "96" OR "97")
+           OR  (ACCT-ZAIKBN  =   2                                  )
              CONTINUE
            ELSE
-            IF  ACCT-ZAIKBN    NOT =    2
              COMPUTE     WRK-SYUTEN  =  WRK-SYUTEN
                               +  ( ACCT-SYUTEN1 * SINRYO-COUNT )
              IF     ACCT-SRYKBN   =   "70"
                 COMPUTE  WRK-SYUTEN  =  WRK-SYUTEN
                               -  ( ACCT-SYUTEN2 * SINRYO-COUNT )
              END-IF
-            END-IF
            END-IF
       *
-           IF   ACCT-SRYKBN  =  "90" OR "92"
+           IF  (ACCT-SRYKBN  =  "90" OR "92")
+           AND (ACCT-ZAIKBN   NOT =   2     )
              INITIALIZE                      SRYACT-REC
              MOVE    ACCT-HOSPNUM       TO   SRY-HOSPNUM
              MOVE    ACCT-NYUGAIKBN     TO   SRY-NYUGAIKBN
@@ -5012,11 +5011,12 @@ grpsys                                    SPA-AREA
               MOVE      ZERO    TO    SYU-HKNTEN(15)
               MOVE      1       TO    WRK-GENTEN-ERR
            END-IF
-           COMPUTE   WRK-SYUTEN     =  WRK-SYUTEN
-                                    -  WRK-SYUG-SDO-HKNTEN(IDX)
-                                    -  WRK-SYUG-ZTK-HKNTEN(IDX)
       *
            IF  SYU-SYUHKNNUM       =   "973"
+      *
+             COMPUTE   WRK-SYUTEN   =  WRK-SYUTEN
+                                    -  WRK-SYUG-SDO-HKNTEN(IDX)
+                                    -  WRK-SYUG-ZTK-HKNTEN(IDX)
       *
              COMPUTE   WRK-JIBAI-SYUTEN(IDX)
                                         =    WRK-SYUTEN
@@ -5070,6 +5070,7 @@ grpsys                                    SPA-AREA
               MOVE      ZERO    TO    SYU-HKNTEN(15)
               MOVE      1       TO    WRK-GENTEN-ERR
            END-IF
+      *
            COMPUTE   WRK-SYUTEN     =  WRK-SYUTEN
                                     -  WRK-SYUG-SDO-HKNTEN(IDX)
                                     -  WRK-SYUG-ZTK-HKNTEN(IDX)
