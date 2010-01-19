@@ -1441,6 +1441,16 @@
            IF     (LNK-WKSRY-ZAIKBN(IDX)   NOT =   ZERO  )
                MOVE    1                   TO  FLG-SYUBETU
            END-IF
+      *    CLAIMデータは包括減点コードを判定する
+           IF     (FLG-SYUBETU         =   ZERO )  AND
+                  (LNK-WKSRY-SRYKBN(IDX)   =   "12"
+                                           OR  "13"
+                                           OR  "14"  ) AND
+                  (LNK-WKSRY-SRYCD (IDX IDY)
+                                           =   "199000210"
+                                           OR  "199000410" )
+               MOVE    1                   TO  FLG-SYUBETU
+           END-IF
       *
       *    自動発生の展開分
            IF      FLG-SYUBETU         =   1
