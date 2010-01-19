@@ -89,7 +89,7 @@ shell_sources = \
 	tools/run_master_upgrade.sh.in \
 	monthly/receipt_export.sh.in \
 	allways/das-check.sh.in \
-	allways/orc_cups_del.sh.in
+	allways/orc_cups_del.sh.in \
 	allways/das-profile.sh.in \
 	daily/das-infection.sh.in \
 	daily/infectiondata1.sh.in \
