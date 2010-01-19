@@ -45,6 +45,7 @@
       *  04.01.00    NACL-小豆沢  07/12/18  短期滞在手術基本料２の入院翌日の
       *                                     食事と入院料加算対応
       *  04.05.00    NACL-小豆沢  10/01/14  治験対応
+      *  04.05.00    NACL-小豆沢  10/01/19  診療入力された特別食加算の対応
       *****************************************************************
       *
       *
@@ -2499,8 +2500,97 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            END-PERFORM
       *
+      *    診療行為入力された特別食加算の金額算定
+           PERFORM     210-TOKU-SHOKU-HENSHU-SEC
+      *
            .
        210-SKJ-SET200604-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療行為入力された特別食加算の金額算定
+      *****************************************************************
+       210-TOKU-SHOKU-HENSHU-SEC        SECTION.
+      *
+      *特別食加算（食事療養）の取得
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCHCN33SUB-PTID    TO  ACCT-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                           TO  ACCT-SRYYM
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key54"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key54"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT   =  1)
+      *
+                   PERFORM    VARYING   IDX1   FROM   1   BY  1
+                     UNTIL   (IDX1         >   31)
+                       IF     ACCT-DAY(1 IDX1)   NOT =   ZERO
+                           MOVE    ZERO        TO  WRK-KEISAN
+                           COMPUTE WRK-KEISAN  =   ACCT-ZAITEN *
+                                                   ACCT-DAY(1 IDX1)
+                           ADD     WRK-KEISAN  TO  
+                                            LNK-ORCHCN33SUB-SKJ(IDX1)
+                       END-IF
+                   END-PERFORM
+      *
+                   MOVE    "tbl_sryacct"   TO  MCP-TABLE
+                   MOVE    "key54"         TO  MCP-PATHNAME
+                   PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+      *    診療会計クローズ
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key54"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+      *
+      *特別食加算（生活療養）の取得
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCHCN33SUB-PTID    TO  ACCT-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                           TO  ACCT-SRYYM
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key55"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key55"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT   =  1)
+      *
+                   PERFORM    VARYING   IDX1   FROM   1   BY  1
+                     UNTIL   (IDX1         >   31)
+                       IF     ACCT-DAY(1 IDX1)   NOT =   ZERO
+                           MOVE    ZERO        TO  WRK-KEISAN
+                           COMPUTE WRK-KEISAN  =   ACCT-ZAITEN *
+                                                   ACCT-DAY(1 IDX1)
+                           ADD     WRK-KEISAN  TO  
+                                            LNK-ORCHCN33SUB-SKJ(IDX1)
+                       END-IF
+                   END-PERFORM
+      *
+                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
+                   MOVE    "key55"             TO  MCP-PATHNAME
+                   PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+      *    診療会計クローズ
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key55"                 TO  MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       210-TOKU-SHOKU-HENSHU-EXT.
            EXIT.
       *
       *****************************************************************
