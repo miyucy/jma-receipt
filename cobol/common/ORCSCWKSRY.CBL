@@ -201,7 +201,7 @@
            03  WRK-KOH3HKNNUM      PIC X(03).
            03  WRK-KOH4HKNNUM      PIC X(03).
       *    Ï«ºÒÊÝ¸±ÍÑ
-           03  WRK-TENSU           PIC 9(08).
+           03  WRK-TENSU           PIC S9(08).
            03  WRK-EN              PIC 9(08).
       *
            03  WRK-SYU-DENPNUM     PIC 9(07).
@@ -3594,6 +3594,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                COMPUTE WRK-TENSU       =   SPA-COM-KISOTEN (IDX)
                                        *   SPA-COM-KAISU (IDX)
+               IF      SPA-COM-PLUSKBN(IDX)    =   1
+                   COMPUTE WRK-TENSU       =  (SPA-COM-KISOTEN (IDX)
+                                           *   SPA-COM-KAISU (IDX) )
+                                           *   -1
+               END-IF
                MOVE    ZERO            TO  WRK-EN
       *        Ï«ºÒ¤Î±ß
                MOVE    ZERO            TO  SPA-COM-RSIKIN(IDX)
