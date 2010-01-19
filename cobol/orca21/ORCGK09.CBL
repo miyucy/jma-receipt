@@ -2487,9 +2487,8 @@
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
       *        金額で点数ゼロの時、表示なし
                IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6" )  AND
-                     ((TNS-TEN                 =   ZERO   )  AND
-                      (TNS-TENSIKIBETU         =   1      ))  OR
-                      (TNS-TENSIKIBETU         =   7      )
+                     ((TNS-TEN                 =   ZERO   )  OR
+                      (TNS-TENSIKIBETU         =   7      ))
                    CONTINUE
                ELSE
                    MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
@@ -2499,7 +2498,7 @@
                        MOVE    TNS-TANINAME    TO  SPA-GMN-TTANI3  (IDG)
                    ELSE
                         MOVE    WRK-SURYO-J    TO  SPA-GMN-TSURYOU (IDG)
-                        MOVE    TNS-TANINAME    TO  SPA-GMN-TTANI1 (IDG)
+                        MOVE    TNS-TANINAME   TO  SPA-GMN-TTANI1 (IDG)
                    END-IF
                END-IF
            END-IF
