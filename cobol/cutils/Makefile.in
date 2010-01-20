@@ -1,0 +1,75 @@
+top_builddir = ../../
+include $(top_builddir)/Makefile.directories
+CSRCS = \
+	orcfiledel.c \
+	orcfileio.c \
+	cobabort.c \
+	coblog.c \
+	cobsleep.c
+
+CJSRCS = orcsjistoeuc.c
+
+CJQSRCS = orcqrencode.c
+
+CJKANJIOBJS = kanaconv.so orcsstring.so fixreddata.so
+
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+CC = @CC@
+have_jconv = @have_jconv@
+JCONV_LIB = @JCONV_LIB@
+have_qrencode = @have_qrencode@
+QRENCODE_LIB = @QRENCODE_LIB@
+PNG_CFLAGS = @png_CFLAGS@
+PNG_LIBS = @png_LIBS@
+XML2_CFLAGS = @xml2_CFLAGS@
+XML2_LIBS = @xml2_LIBS@
+
+COBJS = ${CSRCS:.c=.so}
+CJOBJS = ${CJSRCS:.c=.so}  
+CJQOBJS = ${CJQSRCS:.c=.so}  
+
+ifeq ($(have_jconv), yes)
+  COBJS += $(CJOBJS)
+  ifeq ($(have_qrencode), yes)
+    COBJS += $(CJQOBJS)
+  endif
+endif
+COBJS += $(CJKANJIOBJS)
+
+all: $(COBJS)
+	
+clean: 
+	-rm -f $(COBJS)
+
+distclean: 
+	-rm -f $(COBJS)
+
+install: all installdirs
+	for f in $(COBJS) ; do \
+	  $(INSTALL) -m 555 $${f} $(orcalibdir) ; done
+
+installdirs:
+	$(INSTALL) -d $(orcalibdir)
+
+orcsjistoeuc.so: orcsjistoeuc.c
+	$(CC) $(JCONV_LIB) -fPIC -shared $< -o $@
+
+orcqrencode.so: orcqrencode.c
+	$(CC) $(JCONV_LIB) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
+
+fixreddata.so: fixreddata.c euc.c
+	$(CC) $(XML2_CFLAGS) $(XML2_LIBS) -fPIC -shared -Wl,-soname,$@ $? -o $@
+
+kanaconv.so: kanaconv.o euc.o
+	$(CC) -shared -Wl,-soname,$@ -o $@ $?
+
+orcsstring.so: orcsstring.o euc.o
+	$(CC) -shared -Wl,-soname,$@ -o $@ $?
+
+%.so: %.c
+	$(CC) -fPIC -shared $< -o $@
+
+.SUFFIXIES: .c .o
+.c.o:
+	$(CC) -fPIC -c  $<

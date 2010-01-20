@@ -434,41 +434,55 @@ kana_euc_convert (int conv_flg,
  * for orcsstring
  *****************************************************************************/
 
-static int
+int
 jis213_count (
 	char	*in,
 	char	*out,
-	int		*is213)
+	int		*result)
 {
 	int advanced_bytes;
 	unsigned char c0, c1, c2;
 
-	*is213 = 0;
+	*result = 0;
 	c0 = *in;     
 	c1 = *(in+1);
 	c2 = *(in+2);
 	if ( ISHANKAKUKANA(c0) ) {
-		advanced_bytes = 2;
+		if (c1 == 0) {
+			// invalid charactor
+			*result = -1;
+		} else {
+			advanced_bytes = 2;
+		}
 	} else if ( ISZENKAKU(c0) ) {
-		advanced_bytes = 2;
-		if (!ISJIS208(c0, c1)) {
-			*is213 = 1;
+		if (c1 == 0 || !ISZENKAKU(c1)) {
+			// invalid charactor
+			*result = -1;
+		} else {
+			advanced_bytes = 2;
+			if (!ISJIS208(c0, c1)) {
+				*result = 1;
+			}
 		}
 	} else if ( ISG3(c0)) {
 		if (ISZENKAKU(c1) && ISZENKAKU(c2)) {
 			advanced_bytes = 3;
-			*is213 = 1;
+			*result = 1;
 		} else {
 			// invalid charactor
-			advanced_bytes = 1;
-			sprintf(out,"X");
-			return advanced_bytes;
+			*result = -1;
 		}
 	} else {   /* ASCII */
 		advanced_bytes = 1;
 	}
-	memcpy(out, in, advanced_bytes);
-	out[advanced_bytes] = 0;
+	if (*result == -1) {
+		advanced_bytes = 1;
+		sprintf(out," ");
+		*result = -1;
+	} else {
+		memcpy(out, in, advanced_bytes);
+		out[advanced_bytes] = 0;
+	}
 	return advanced_bytes;
 }
 
@@ -571,7 +585,7 @@ jis213_search (
 	}
 }
 
-static void
+void
 jis213_nstrcat(
 	char *out,
 	char *in,
@@ -604,7 +618,7 @@ jis213_nstrcat(
 	}
 }
 
-static void
+void
 jis213_nstrncat(
 	char *out,
 	char *in,

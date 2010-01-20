@@ -60,8 +60,13 @@ void tokatakana(ConvertChar *cchar);
 void tohiragana(ConvertChar *cchar);
 int kana_euc_convert (int conv_flg, int char_type, size_t max_len, size_t *ret_len, char *inchar, char *ouchar);
 
+int  jis213_count(char *in,char *out,int *result);
 void jis213_check(ORCSSTRING *str);
 void jis213_substr(ORCSSTRING *str);
 void jis213_search(ORCSSTRING *str);
 void jis213_gsub(ORCSSTRING *str);
 void jis213_sub(ORCSSTRING *str);
+void jis213_nstrcat(char *out,char *in,int size);
+void jis213_nstrncat(char *out,char *in,int n,int size);
+
+

@@ -61,6 +61,10 @@ AC_SUBST(JCONV_LIB)
 
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES(png, "libpng12")
+PKG_CHECK_MODULES(xml2,
+[
+	libxml-2.0 >= 2.6.27
+])
 
 AC_PATH_PROG(PKG_CONFIG,pkg-config,no)
 if test x$PKG_CONFIG = xno; then
@@ -215,6 +219,7 @@ dnl Checks for library functions.
 AC_CONFIG_FILES([
 cobol/Makefile
 cobol/Makefile.global
+cobol/cutils/Makefile
 cobol/common/ORCSCOMMON.CBL
 cobol/copy/Makefile
 bin/Makefile
