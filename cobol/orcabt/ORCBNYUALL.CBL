@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.05.00     NACL-多々納  10/01/XX  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1132,6 +1133,8 @@
                   (SPA-ERRCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")  AND
                   (SPA-SRYYMD          >=  "20080401" )
+      *            治験保険以外
+             AND  (SPA-CHIKENKBN   NOT =   "1"   )
                PERFORM 20015-HKTCHK-INIT-SEC
            END-IF
       *
@@ -1209,6 +1212,10 @@
                MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
                                            TO  SPA-NAI-RSI-HKNKBN
                                                                (IDX)
+      *        治験区分
+               MOVE    ORCSHKN-NAI-CHIKENKBN  (IDX)
+                                           TO  SPA-NAI-CHIKENKBN
+                                                               (IDX)
                MOVE    IDX                 TO  SPA-HKN-MAX
            END-PERFORM
            MOVE    SPA-GMN-HKNCOMBINUM     TO  SPA-HKNCOMBINUM
@@ -1245,6 +1252,9 @@
       *            後期高齢者の保険がない時
                    WHEN    3
                        PERFORM 200111-RJNERR-SEC
+      *            退職国保で６５歳以上
+                   WHEN    9
+                       MOVE    "1077"              TO  SPA-ERRCD
                END-EVALUATE
            END-IF
       *    保険エラーがある時、エラーとする
@@ -1401,6 +1411,8 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-KIDCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
+      *            治験以外
+             AND  (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
                       (SPA-NYUHKTCHK       =   1     )
                    PERFORM 5109-HKTSANTEI-CHK-SEC
