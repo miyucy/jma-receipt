@@ -99,6 +99,7 @@
       ***  03  FLG-LF03            PIC 9(01).
            03  FLG-CLMUID          PIC 9(01).
            03  FLG-PTMEMOINF       PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-KAISU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -106,6 +107,7 @@
       *
            03  FLG-SYOHOU          PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+           03  FLG-GENTEN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -207,6 +209,11 @@
                05  WRK-MEMO-OK         PIC X(1000).
       *
            03  WRK-KOUMOKU             PIC X(200).
+      *
+           03  WRK-ACCT-ZAITEN         PIC S9(07).
+           03  WRK-ACCT-SYUTEN1        PIC S9(07).
+           03  WRK-ACCT-KIZAITEN       PIC S9(07).
+           03  WRK-ACCT-YKZTEN         PIC S9(07).
       *
       *    自費名称テーブル
        01  TBL-JIHIMSG-AREA.
@@ -355,6 +362,10 @@
       *    患者メモ
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
+      *
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *    システム領域
        01  SYS-AREA.
@@ -1087,15 +1098,34 @@
                    MOVE    CLAIM007-MAX    TO  IDX
                END-IF
            END-PERFORM
+      *    付加情報検索
+           MOVE    ZERO                TO  FLG-GENTEN
+           IF      ACCT-ZAIREQFLG      =   "1"
+               PERFORM 950-SRYACCTPLUS-READ-SEC
+               IF      ACCTP-PLUSKBN       =   1
+                   MOVE    1               TO  FLG-GENTEN
+               END-IF
+           END-IF
       *
       *    請求点数
-           MOVE    ACCT-ZAITEN         TO  TBL-TENNSUALL (IDX-LF)
-           MOVE    ACCT-SYUTEN1        TO  TBL-SYUGI (IDX-LF)
-           MOVE    ACCT-KIZAITEN       TO  TBL-ZAIRYOU (IDX-LF)
-           MOVE    ACCT-YKZTEN         TO  TBL-YAKUZAI (IDX-LF)
+           IF      FLG-GENTEN          =   ZERO
+               MOVE    ACCT-ZAITEN         TO  WRK-ACCT-ZAITEN
+               MOVE    ACCT-SYUTEN1        TO  WRK-ACCT-SYUTEN1
+               MOVE    ACCT-KIZAITEN       TO  WRK-ACCT-KIZAITEN
+               MOVE    ACCT-YKZTEN         TO  WRK-ACCT-YKZTEN
+           ELSE
+               COMPUTE WRK-ACCT-ZAITEN     =   ACCT-ZAITEN   *   -1
+               COMPUTE WRK-ACCT-SYUTEN1    =   ACCT-SYUTEN1  *   -1
+               COMPUTE WRK-ACCT-KIZAITEN   =   ACCT-KIZAITEN *   -1
+               COMPUTE WRK-ACCT-YKZTEN     =   ACCT-YKZTEN   *   -1
+           END-IF
+           MOVE    WRK-ACCT-ZAITEN         TO  TBL-TENNSUALL (IDX-LF)
+           MOVE    WRK-ACCT-SYUTEN1        TO  TBL-SYUGI (IDX-LF)
+           MOVE    WRK-ACCT-KIZAITEN       TO  TBL-ZAIRYOU (IDX-LF)
+           MOVE    WRK-ACCT-YKZTEN         TO  TBL-YAKUZAI (IDX-LF)
       *    請求金額
-           COMPUTE ACCT-ZAITEN         =   ACCT-ZAITEN * 10
-           MOVE    ACCT-ZAITEN         TO  TBL-GINGAKUALL(IDX-LF)
+           COMPUTE WRK-ACCT-ZAITEN         =   WRK-ACCT-ZAITEN * 10
+           MOVE    WRK-ACCT-ZAITEN         TO  TBL-GINGAKUALL(IDX-LF)
       *
       *
       *    診察の時、添え字保存
@@ -1456,22 +1486,22 @@
                        MOVE    "2"                 TO  TBL-SRYSYUBETSU
                                                        (IDX-LF IDX-IJ)
       *
-                       COMPUTE TBL-TENNSUALL (IDX-LF)
-                                              =   TBL-TENNSUALL (IDX-LF)
-                                               *   -1
-                       COMPUTE TBL-GINGAKUALL (IDX-LF)
-                                               =   TBL-GINGAKUALL
-                                                               (IDX-LF)
-                                               *   -1
-                        COMPUTE TBL-YAKUZAI (IDX-LF)
-                                               =   TBL-YAKUZAI (IDX-LF)
-                                               *   -1
-                        COMPUTE TBL-SYUGI (IDX-LF)
-                                               =   TBL-SYUGI (IDX-LF)
-                                               *   -1
-                        COMPUTE TBL-ZAIRYOU (IDX-LF)
-                                               =   TBL-ZAIRYOU (IDX-LF)
-                                               *   -1
+      *                COMPUTE TBL-TENNSUALL (IDX-LF)
+      *                                       =   TBL-TENNSUALL (IDX-LF)
+      *                                        *   -1
+      *                COMPUTE TBL-GINGAKUALL (IDX-LF)
+      *                                        =   TBL-GINGAKUALL
+      *                                                        (IDX-LF)
+      *                                        *   -1
+      *                 COMPUTE TBL-YAKUZAI (IDX-LF)
+      *                                        =   TBL-YAKUZAI (IDX-LF)
+      *                                        *   -1
+      *                 COMPUTE TBL-SYUGI (IDX-LF)
+      *                                        =   TBL-SYUGI (IDX-LF)
+      *                                        *   -1
+      *                 COMPUTE TBL-ZAIRYOU (IDX-LF)
+      *                                        =   TBL-ZAIRYOU (IDX-LF)
+      ****                                     *   -1
                         MOVE    ZERO        TO  TBL-SURYO
                                                        (IDX-LF IDX-IJ)
                         MOVE    SPACE       TO  TBL-SURYOCD
@@ -1561,6 +1591,8 @@
       *
       *            %加算の時点数なし
                    IF      TNS-TENSIKIBETU     =   5  OR  6
+      *                減点
+                                               OR  7
                        CONTINUE
                    ELSE
       *                請求点数
@@ -3171,6 +3203,48 @@
       *
            .
        910-PTMEMOINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計マスター読込（主キー）
+      *****************************************************************
+       950-SRYACCTPLUS-READ-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+           MOVE    1                   TO  ACCTP-RENNUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCTPLUS
+                   INITIALIZE                  SRYACCTPLUS-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCTPLUS
+               INITIALIZE                  SRYACCTPLUS-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       950-SRYACCTPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
