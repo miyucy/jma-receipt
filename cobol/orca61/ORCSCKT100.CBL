@@ -102,6 +102,7 @@
            03  WRK-KAISU               PIC 9(04).
            03  WRK-KAISU-GOK           PIC 9(04).
            03  WRK-GOKEI-9             PIC 9(10).
+           03  WRK-GOKEI-9S            PIC S9(10).
       *    ¾Ã±êÄÃÄË²ó¿ô
            03  WRK-SYOEN-CNT           PIC 9(03).
       *    ¿ÇÎÅÁªÂò¤è¤ê
@@ -514,6 +515,7 @@
            MOVE    SPACE               TO  WRK-ERR-ERRCD
            MOVE    ZERO                TO  WRK-KEI-IDX
            MOVE    ZERO                TO  WRK-GOKEI-9
+           MOVE    ZERO                TO  WRK-GOKEI-9S
            MOVE    SPACE               TO  WRK-HKNCOMBI
            MOVE    SPACE               TO  WRK-SRYKA
       *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý²Ã»»¤Î½é²ó»»ÄêÆü¥¯¥ê¥¢
@@ -685,7 +687,8 @@
                END-IF
            END-PERFORM
       *
-           MOVE    WRK-GOKEI-9         TO  SPA-GMN-GOKEI
+           COMPUTE SPA-GMN-GOKEI       =   WRK-GOKEI-9
+                                       -   WRK-GOKEI-9S
       *
            .
        5101-TBLSAIHEN-EXT.
@@ -1596,7 +1599,11 @@
                       (WRK-COM-SRYKBN (IDX-Z)  NOT =   "95"  AND "96")
                AND    (WRK-COM-HKNCOMBI (IDX-Z)    NOT =   "9999" )
                AND    (WRK-COM-HOUKATU-ZAI (IDX-Z) =   ZERO  )
-                   ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9
+                   IF      WRK-COM-PLUSKBN (IDX-Z)     =   1
+                       ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9S
+                   ELSE
+                       ADD     WRK-COM-KEI    (IDX-Z)  TO  WRK-GOKEI-9
+                   END-IF
                END-IF
            END-PERFORM
       *

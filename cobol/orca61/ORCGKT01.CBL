@@ -8265,8 +8265,13 @@
       *    Ç¯Îð
            MOVE    SPA-NENREI-HEN      TO  KT01-NENREI
       *
-           MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z2
-           MOVE    WRK-GOKEI-X2        TO  KT01-GOKEITEN
+           IF      SPA-GMN-GOKEI       >=  ZERO
+               MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z2
+               MOVE    WRK-GOKEI-X2        TO  KT01-GOKEITEN
+           ELSE
+               MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z3
+               MOVE    WRK-GOKEI-X3        TO  KT01-GOKEITEN
+           END-IF
            MOVE    SPA-GMN-LASTYMD-G   TO  KT01-LASTYMD
            MOVE    SPA-GMN-SYOSINYMD   TO  KT01-SYOSINYMD
            IF      SPA-GMN-LASTMID     =   SPACE

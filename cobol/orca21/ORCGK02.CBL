@@ -11764,8 +11764,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    Ç¯Îð
            MOVE    SPA-NENREI-HEN      TO  K02-NENREI
       *
-           MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z2
-           MOVE    WRK-GOKEI-X2        TO  K02-GOKEITEN
+           IF      SPA-GMN-GOKEI       >=   ZERO
+               MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z2
+               MOVE    WRK-GOKEI-X2        TO  K02-GOKEITEN
+           ELSE
+               MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z3
+               MOVE    WRK-GOKEI-X3        TO  K02-GOKEITEN
+           END-IF
            MOVE    SPA-GMN-LASTYMD-G   TO  K02-LASTYMD
            MOVE    SPA-GMN-SYOSINYMD   TO  K02-SYOSINYMD
            IF      SPA-GMN-LASTMID     =   SPACE

@@ -75,7 +75,7 @@
       *            ¸øÈñ´ü¸ÂÀÚ¤ìÌ¾¾Î
                    07  SPA-GMN-KOHMSG            PIC X(50).
       *
-                   07  SPA-GMN-GOKEI             PIC 9(11).
+                   07  SPA-GMN-GOKEI             PIC S9(11).
                    07  SPA-GMN-LASTYMD-G.
                        09  SPA-GMN-LASTYMD           PIC X(09).
                        09  SPA-GMN-F1                PIC X(15).

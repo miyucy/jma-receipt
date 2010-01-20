@@ -63,6 +63,7 @@
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.05.00     NACL-多々納  09/08/11  退職国保年齢チェック
       * 04.05.00     NACL-多々納  09/09/16  "0086XXXXX"コメント対応
+      * 04.05.00     NACL-多々納  10/01/XX  治験対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5626,6 +5627,7 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-KIDCD           =   SPACE )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999")  AND
+      *            治験以外
                   (SPA-CHIKENKBN   NOT =   "1"   )
                IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
                       (SPA-NYUHKTCHK       =   1     )

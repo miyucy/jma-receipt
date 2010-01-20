@@ -716,11 +716,9 @@
                END-IF
            END-PERFORM
       *
-           IF      WRK-GOKEI-9         >=  WRK-GOKEI-9S
-               COMPUTE SPA-GMN-GOKEI       =   WRK-GOKEI-9
-                                           -   WRK-GOKEI-9S
-           ELSE
-               MOVE    ZERO                TO  SPA-GMN-GOKEI
+           COMPUTE SPA-GMN-GOKEI       =   WRK-GOKEI-9
+                                       -   WRK-GOKEI-9S
+           IF      WRK-GOKEI-9         <   WRK-GOKEI-9S
       *        外来はエラーとする
                IF      SPA-NYUGAIKBN       =   2
                    IF      SPA-ERRCD           =   SPACE
