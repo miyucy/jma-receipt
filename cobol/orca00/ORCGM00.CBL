@@ -1338,11 +1338,6 @@
       *       MOVE    SPACE            TO  MVER
               MOVE    "B12"            TO  MCP-WIDGET
       *
-      *?        MOVE    SPACE               TO  LINKAREA
-      *?        MOVE    SPA-KYOUTU          TO  LNK-COMMON
-      *?        INITIALIZE                  SPA-KYOTUKEY
-      *?        MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
               MOVE    "M00"            TO  SPA-MOTOPG
               MOVE    "M98"            TO  SPA-SAKIPG
       *

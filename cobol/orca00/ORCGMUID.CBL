@@ -681,7 +681,6 @@
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *        ½ªÎ»
                WHEN    "CLICKED"   ALSO    "B01"
-                   MOVE    "OK"            TO  SPA-MID1-FLG
                    PERFORM 210-BACK
       *        ÅÐÏ¿¹¹¿·
                WHEN    "CLICKED"   ALSO    "B12"
