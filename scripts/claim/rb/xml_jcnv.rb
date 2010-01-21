@@ -7,7 +7,7 @@
 # version 1.3.0
 #                  '01-10-30 by Yamamoto
 
-require 'kconv'
+require 'nkf'
 require 'uconv'
 in_file, out_code, mode = ARGV
 
@@ -83,12 +83,9 @@ class XmlJCnv
       @head.sub!(/#{@in_code}/i, @out_code) if @in_code
       puts @head 
       while @buf = @f.gets
-        # puts @tp = Kconv::guess(@buf)
-        # exit
-        @lct += 1 ; @tp = Kconv::guess(@buf)
+        @lct += 1
         case @from
         when "u8"
-          # ersub if !(@tp == 0 or @tp == 3 or @tp == 5)
           case @to
           when "tou8"
             print @buf
@@ -96,47 +93,42 @@ class XmlJCnv
             print Uconv::u8toeuc(@buf)
           when "tosjis"
             @buf = Uconv::u8toeuc(@buf)
-            print Kconv::tosjis(@buf)
+            print NKF.nkf('-W -s', @buf)
           when "tojis"
             print Uconv::u8tojis(@buf)
-            # @buf = Uconv::u8toeuc(@buf)
-            # print Kconv::tojis(@buf)
           end
         when "euc"
-          # ersub if !(@tp == 0 or @tp == 2)
           case @to
           when "tou8"
             print Uconv::euctou8(@buf)
           when "toeuc"
             print @buf
           when "tosjis"
-            print Kconv::tosjis(@buf)
+            print NKF.nkf('-E -s', @buf)
           when "tojis"
-            print Kconv::tojis(@buf)
+            print NKF.nkf('-E -j', @buf)
           end
         when "sjis"
-          # ersub if !(@tp == 0 or @tp == 3)
           case @to
           when "tou8"
-            @buf =  NKF.nkf('-e -S',@buf)
+            @buf =  NKF.nkf('-e -S', @buf)
             print Uconv::euctou8(@buf)
           when "toeuc"
-            print Kconv::toeuc(@buf)
+            print NKF.nkf('-S -e', @buf)
           when "tosjis"
             print @buf
           when "tojis"
-            print Kconv::tojis(@buf)
+            print NKF.nkf('-S -j', @buf)
           end
         when "jis"
-          # ersub if !(@tp == 0 or @tp == 1)
           case @to
           when "tou8"
             @buf = Kconv::toeuc(@buf)
             print Uconv::euctou8(@buf)
           when "toeuc"
-            print Kconv::toeuc(@buf)
+            print NKF.nkf('-J -e', @buf)
           when "tosjis"
-            print Kconv::tosjis(@buf)
+            print NKF.nkf('-J -s', @buf)
           when "tojis"
             print @buf
           end
