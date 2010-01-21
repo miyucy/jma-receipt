@@ -322,11 +322,15 @@
                WHEN      "039"
                    MOVE    1       TO  SDTCHK02-O-KOUKI  (IDX-HKNNUM)
                WHEN      OTHER
-                   IF    ( WRK-SYUHKNNUM (1:2) =   "98" )
+                   EVALUATE    WRK-SYUHKNNUM (1:2)
+                   WHEN  "98"
                        MOVE    1   TO  SDTCHK02-O-JIHI  (IDX-HKNNUM)
-                   ELSE
+                   WHEN  "90"
+                   WHEN  "91"
+                       MOVE    1   TO  SDTCHK02-O-CHIKEN(IDX-HKNNUM)
+                   WHEN  OTHER
                        MOVE    1   TO  SDTCHK02-O-SYAHO (IDX-HKNNUM)
-                   END-IF
+                   END-EVALUATE
                END-EVALUATE
            END-IF
       *

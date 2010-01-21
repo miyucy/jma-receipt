@@ -116,6 +116,10 @@
                                        VALUE   "6".
            03  CONST-KOUKI             PIC X(01)
                                        VALUE   "7".
+           03  CONST-CHIKEN            PIC X(01)
+                                       VALUE   "8".
+           03  CONST-HOUKATU           PIC X(01)
+                                       VALUE   "H".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -583,6 +587,13 @@
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
+           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "90" OR "91" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-CHIKEN )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+      *
+           WHEN      ( SDTCHK01-HKNKBN =   CONST-HOUKATU )
+                   MOVE    1           TO  FLG-TAISYO-HKN
            WHEN      OTHER
                IF    ( SDTCHK01-HKNKBN =   CONST-SYAHO )
                    MOVE    1           TO  FLG-TAISYO-HKN

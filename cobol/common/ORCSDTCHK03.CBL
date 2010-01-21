@@ -117,6 +117,10 @@
                                            VALUE   "6".
            03  CONST-KOUKI                 PIC X(01)
                                            VALUE   "7".
+           03  CONST-CHIKEN                PIC X(01)
+                                           VALUE   "8".
+           03  CONST-HOUKATU               PIC X(01)
+                                           VALUE   "H".
       *
       *****************************************************************
       *    ファイルレイアウト

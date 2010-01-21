@@ -861,7 +861,7 @@
       <class>GtkLabel</class>
       <name>INGAIPROCMSG</name>
       <x>315</x>
-      <y>645</y>
+      <y>650</y>
       <width>280</width>
       <height>25</height>
       <label>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</label>
@@ -1637,7 +1637,7 @@
       <class>GtkPandaCombo</class>
       <name>CMB_INGAIPROCKBN</name>
       <x>605</x>
-      <y>645</y>
+      <y>650</y>
       <width>165</width>
       <height>25</height>
       <value_in_list>False</value_in_list>

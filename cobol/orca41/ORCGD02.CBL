@@ -95,6 +95,7 @@
                05  SPA-NAI-JBIPROCKBN      PIC  X(01).
                05  SPA-NAI-KGIPROCKBN      PIC  X(01).
                05  SPA-NAI-JIHIPROCKBN     PIC  X(01).
+               05  SPA-NAI-CHIKENPROCKBN   PIC  X(01).
                05  SPA-NAI-INGAIPROCKBN    PIC  X(01).
                05  SPA-NAI-PRTSRTKBN       PIC  X(01).
                05  SPA-NAI-SRYYMDKBN       PIC  X(01).
@@ -159,7 +160,7 @@
       *
        01  CONST-AREA.
            03  CONST-CHKLST-MAX            PIC 9(05)   VALUE   200.
-           03  CONST-CHKKBN-MAX            PIC 9(05)   VALUE   18.
+           03  CONST-CHKKBN-MAX            PIC 9(05)   VALUE   19.
       *
       *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
@@ -389,6 +390,7 @@
            MOVE    SPA-D01-JBIPROCKBN      TO  SPA-NAI-JBIPROCKBN
            MOVE    SPA-D01-KGIPROCKBN      TO  SPA-NAI-KGIPROCKBN
            MOVE    SPA-D01-JIHIPROCKBN     TO  SPA-NAI-JIHIPROCKBN
+           MOVE    SPA-D01-CHIKENPROCKBN   TO  SPA-NAI-CHIKENPROCKBN
            MOVE    SPA-D01-INGAIPROCKBN    TO  SPA-NAI-INGAIPROCKBN
            MOVE    SPA-D01-PRTSRTKBN       TO  SPA-NAI-PRTSRTKBN
            MOVE    SPA-D01-SRYYMDKBN       TO  SPA-NAI-SRYYMDKBN
@@ -1189,6 +1191,8 @@
                                    TO  SPA-NAI-KGIPROCKBN
            MOVE    ORCBSD01-JIHIPROCKBN
                                    TO  SPA-NAI-JIHIPROCKBN
+           MOVE    ORCBSD01-CHIKENPROCKBN
+                                   TO  SPA-NAI-CHIKENPROCKBN
            MOVE    ORCBSD01-INGAIPROCKBN
                                    TO  SPA-NAI-INGAIPROCKBN
            MOVE    ORCBSD01-PRTSRTKBN
@@ -1459,6 +1463,7 @@
            MOVE    SPA-NAI-JBIPROCKBN      TO  SPA-D01-JBIPROCKBN
            MOVE    SPA-NAI-KGIPROCKBN      TO  SPA-D01-KGIPROCKBN
            MOVE    SPA-NAI-JIHIPROCKBN     TO  SPA-D01-JIHIPROCKBN
+           MOVE    SPA-NAI-CHIKENPROCKBN   TO  SPA-D01-CHIKENPROCKBN
            MOVE    SPA-NAI-INGAIPROCKBN    TO  SPA-D01-INGAIPROCKBN
            MOVE    SPA-NAI-PRTSRTKBN       TO  SPA-D01-PRTSRTKBN
            MOVE    SPA-NAI-SRYYMDKBN       TO  SPA-D01-SRYYMDKBN

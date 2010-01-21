@@ -840,6 +840,10 @@
                MOVE    "¸ø³²"          TO  WRK-HKNMES
            WHEN    "7"
                MOVE    "¸å´ü¹âÎð¼Ô"    TO  WRK-HKNMES
+           WHEN    "8"
+               MOVE    "¼£¸³"          TO  WRK-HKNMES
+           WHEN    "H"
+               MOVE    "Êñ³ç"          TO  WRK-HKNMES
            END-EVALUATE
       *
            .

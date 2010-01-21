@@ -341,6 +341,7 @@
            03  FLG-REIGAI                              PIC 9(01).
            03  FLG-TARGET                              PIC 9(01).
            03  FLG-COMBERR                             PIC 9(01).
+           03  FLG-TENSUPLUS2                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -428,8 +429,9 @@
            03  IDX-MAX                                 PIC 9(05).
            03  IDX-KANA                                PIC 9(05).
            03  IDX-CHK                                 PIC 9(05).
-           03  IDX-KANRIRYO                           PIC 9(05).
-           03  IDX-KGNM                               PIC 9(05).
+           03  IDX-KANRIRYO                            PIC 9(05).
+           03  IDX-KGNM                                PIC 9(05).
+           03  IDX-TTNSP2                              PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -581,6 +583,12 @@
            03  WRK-CHKNUM                              PIC 9(02).
            03  WRK-ERRKBN                              PIC X(04).
            03  WRK-REIGAICD                            PIC X(09).
+           03  WRK-SURYOZ-G.
+               05  WRK-SURYOZ                          PIC ZZZZ9.9(5).
+               05  WRK-SURYOZ-R    REDEFINES           WRK-SURYOZ.
+                   07  WRK-SURYOZ1                     PIC X(05).
+                   07  WRK-SURYOZDOT                   PIC X(01).
+                   07  WRK-SURYOZ2                     PIC X(05).
       *
        01  TERRINF-AREA.
            03  TERRINF-SRYCD                           PIC X(09).
@@ -632,6 +640,8 @@
       *
       *    固定値領域
        01  CONST-AREA.
+           03  CONST-TTNSP2-MAX                    PIC 9(05)
+                                                   VALUE  1000.
            03  CONST-INPUT-MAX                     PIC 9(05)
                                                    VALUE   400.
            03  CONST-THKNID-MAX                    PIC 9(05)
@@ -690,6 +700,10 @@
                                                    VALUE   "6".
            03  CONST-KOUKI                         PIC X(01)
                                                    VALUE   "7".
+           03  CONST-CHIKEN                        PIC X(01)
+                                                   VALUE   "8".
+           03  CONST-HOUKATU                       PIC X(01)
+                                                   VALUE   "H".
       *
            03  CONST-TSANTEICD-G.
                05  CONST-TSANTEICD-MAX         PIC 9(05)
@@ -815,6 +829,14 @@
            COPY    "CPCHKSND.INC"  REPLACING  //CHKSND//
                                    BY         //TCHKSND-//.
       *
+       01  TTNSP2-AREA.
+         02    TTNSP2-MAX                  PIC     9(05).
+         02    TTNSP2-IDX                  PIC     9(05).
+         02    TTNSP2-FLG                  PIC     9(01).
+         02    TTNSP2-OCC                  OCCURS  1000.
+           COPY    "CPTENSUPLUS2.INC"      REPLACING  //TNSP2-//
+                                   BY                 //TTNSP2-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -825,6 +847,10 @@
       *
       *    点数マスタ−
            COPY    "CPTENSU.INC".
+      *
+      *    点数付加２
+       01  TNSP2-REC.
+           COPY    "CPTENSUPLUS2.INC".
       *
       *    病名
        01  BYOMEI-REC.
@@ -1143,6 +1169,7 @@
       *
            INITIALIZE                      TCHK-AREA
                                            TTNS-AREA
+                                           TTNSP2-AREA
       *
            MOVE    CONST-NBHOUKTCD     TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
@@ -1888,6 +1915,7 @@
            IF    ( ORCBSD01-CHKKBN (10)    NOT =   ZERO )
             OR   ( ORCBSD01-CHKKBN (11)    NOT =   ZERO )
             OR   ( ORCBSD01-CHKKBN (16)    NOT =   ZERO )
+            OR   ( ORCBSD01-CHKKBN (19)    NOT =   ZERO )
                PERFORM 200112-SRYINF-TAIHI-SEC
            END-IF
       *
@@ -2059,6 +2087,13 @@
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *
+           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "90" OR "91" )
+               IF    ( DTCHK003-HKNKBN =   CONST-CHIKEN )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+      *
+           WHEN      ( DTCHK003-HKNKBN =   CONST-HOUKATU )
+                   MOVE    1           TO  FLG-TAISYO-HKN
            WHEN      OTHER
                IF    ( DTCHK003-HKNKBN =   CONST-SYAHO )
                    MOVE    1           TO  FLG-TAISYO-HKN
@@ -2251,7 +2286,7 @@
                                            FLG-KOUGAI
       *
       *    自費・労災・自賠責・公害の判断
-           IF    ( COMB-HKNNUM (1:2)   =   "98" )
+           IF    ( COMB-HKNNUM (1:2)   =   "98" OR "90" OR "91")
                MOVE        1           TO  FLG-JIHI
            END-IF
       *
@@ -2775,6 +2810,8 @@
                                    TO  TSRYCD-SRYCD (TSRYCD-MAX)
                    MOVE    DCACCT-ZAIKAISU
                                    TO  TSRYCD-KAISU (TSRYCD-MAX)
+                   COMPUTE TSRYCD-SURYOTOTAL (IDX0)
+                       =   DCSRY-SURYO *   DCACCT-ZAIKAISU
       *
                    PERFORM VARYING IDX-KANRIRYO FROM   1   BY  1
                            UNTIL ( IDX-KANRIRYO > CONST-TSANTEICD-MAX )
@@ -2804,6 +2841,10 @@
                    =   TSRYCD-KAISU (IDX0)
                    +   DCACCT-ZAIKAISU
       *
+               COMPUTE TSRYCD-SURYOTOTAL (IDX0)
+                   =   TSRYCD-SURYOTOTAL (IDX0)
+                   + ( DCSRY-SURYO *   DCACCT-ZAIKAISU )
+      *
                MOVE    IDX0  TO  IDX26
       *
            END-IF
@@ -2829,6 +2870,11 @@
       *
                IF    ( WRK-HKNFLG          =   1 )
                    MOVE    1               TO  TSRYCD-HKNFLG (IDX26)
+               END-IF
+      *
+               IF    ( DCACCT-NYUGAIKBN    =   ORCBSD01-NYUGAIKBN )
+                AND  ( WRK-HKNFLG          =   1 )
+                    MOVE   1               TO  TSRYCD-TAISYO (IDX26)
                END-IF
       *
                PERFORM VARYING IDX27   FROM     1   BY  1
@@ -4322,7 +4368,7 @@
                 OR   ( COMB-HKNNUM         =   "971" )
                 OR   ( COMB-HKNNUM         =   "973" )
                 OR   ( COMB-HKNNUM         =   "975" )
-                OR   ( COMB-HKNNUM (1:2)   =   "98" )
+                OR   ( COMB-HKNNUM (1:2)   =   "98" OR "90" OR "91" )
                 OR  (( COMB-HKNNUM         =   "002") 
                  AND ( COMB-HOJOKBN        >=  "A" )
                  AND ( COMB-HOJOKBN        <=  "I" ))
@@ -8458,6 +8504,120 @@
        2001111-HKNKOHNUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    薬剤の月上限回数、総投与量チェック処理
+      *****************************************************************
+       200111-YKZTUKIJGN-CHK-SEC       SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TSRYCD-MAX )
+      *
+               IF    ( TSRYCD-TAISYO (IDX6)    =   1 )
+      *
+                   MOVE    SPACE       TO  WRK-ERRCD
+      *
+                   IF    ( TSRYCD-SRYCD (IDX6)(1:1)    =   "6" )
+                       MOVE    TSRYCD-SRYCD (IDX6)
+                                               TO  WRK-SRYCD
+                       PERFORM 900-TENSUPLUS2-KEY-SEL-SEC
+                       IF    ( TNSP2-TUKIJGNKAISU  >   ZERO )
+                           IF    ( TSRYCD-KAISU (IDX6)
+                                       >   TNSP2-TUKIJGNKAISU )
+                               MOVE    "190001"
+                                           TO  WRK-ERRCD
+                           END-IF
+                       END-IF
+                       IF    ( TNSP2-TUKIJGNTOUYORYO   >   ZERO )
+                           IF    ( TSRYCD-SURYOTOTAL (IDX6)
+                                       >   TNSP2-TUKIJGNTOUYORYO )
+                               MOVE    "190001"
+                                           TO  WRK-ERRCD
+                           END-IF
+                       END-IF
+                       IF    ( WRK-ERRCD   NOT =   SPACE )
+                           PERFORM 200111-YKZTUKIJGN-ERR-SEC
+                       END-IF
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-YKZTUKIJGN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤の月上限回数、総投与量エラー処理
+      *****************************************************************
+       200111-YKZTUKIJGN-ERR-SEC       SECTION.
+      *
+           MOVE    SPACE           TO  WRK-ERRMES-PLUS
+      *
+           MOVE    1               TO  WRK-PNT
+      *
+           MOVE    TSRYCD-SRYCD (IDX6)
+                                   TO  WRK-SRYCD
+           MOVE    WRK-KJNYMD      TO  WRK-TNS-YMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           STRING  TNS-NAME        DELIMITED   BY  SPACE
+           INTO    WRK-ERRMES-PLUS
+           WITH    POINTER WRK-PNT
+           END-STRING
+      *
+           MOVE    TSRYCD-KAISU (IDX6)
+                                   TO  WRK-STR-LEFT-ZX99
+           PERFORM 800-STR-HIDARIZUME-HEN-SEC
+           MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           STRING  "　月投与回数："    DELIMITED   BY  SIZE
+                   WRK-OUT-INPUT       DELIMITED   BY  SPACE
+           INTO    WRK-ERRMES-PLUS
+           WITH    POINTER WRK-PNT
+           END-STRING
+      *
+           MOVE    TSRYCD-SURYOTOTAL (IDX6)
+                                   TO  WRK-SURYOZ
+           PERFORM VARYING IDX0    FROM    5   BY  -1
+                   UNTIL ( IDX0     <   1 )
+                    OR   ( WRK-SURYOZ2 (IDX0 : 1)
+                               NOT ="0" )
+               MOVE    SPACE       TO  WRK-SURYOZ2 (IDX0 : 1)
+           END-PERFORM
+      *
+           MOVE    TSRYCD-SURYOTOTAL (IDX6)
+                                   TO  WRK-STR-LEFT-ZX99
+           PERFORM 800-STR-HIDARIZUME-HEN-SEC
+           MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           STRING  "　月投与量："      DELIMITED   BY  SIZE
+                   WRK-OUT-INPUT       DELIMITED   BY  SPACE
+           INTO    WRK-ERRMES-PLUS
+           WITH    POINTER WRK-PNT
+           END-STRING
+           IF    ( WRK-SURYOZ2     NOT =    SPACE )
+               MOVE    WRK-SURYOZ2 TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               STRING  "・"            DELIMITED   BY  SIZE
+                       WRK-OUT-INPUT   DELIMITED   BY  SPACE
+               INTO    WRK-ERRMES-PLUS
+               WITH    POINTER WRK-PNT
+               END-STRING
+           END-IF
+      *
+           MOVE    TSRYCD-DAY-G (IDX6) TO  WRK-NISSU-DAY-G
+           PERFORM 200111-NISSU-HEN-SEC
+           STRING  "（"           DELIMITED   BY  SPACE
+                   WRK-NISSU-MES   DELIMITED   BY  SPACE
+                   "）"            DELIMITED   BY  SPACE
+           INTO    WRK-ERRMES-PLUS
+           WITH    POINTER WRK-PNT
+           END-STRING
+      *
+           INITIALIZE              TERRINF-AREA
+           PERFORM 215-ERRMES-HEN-SEC
+      *
+           .
+       200111-YKZTUKIJGN-ERR-EXT.
+           EXIT.
+      *****************************************************************
       *    その他必須チェック処理
       *****************************************************************
        200111-SONOTA-HISSU-CHK-SEC     SECTION.
@@ -8684,6 +8844,8 @@
                                UNTIL ( IDX-DAY >   31 )
                            IF    ( TSRYCD-DAY-NYUGAIKBN (IDX6 IDX-DAY)
                                            =   ORCBSD01-NYUGAIKBN )
+                            AND  ( TSRYCD-DAY-HKNFLG (IDX6 IDX-DAY)
+                                           =   1 )
                                MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
                            END-IF
                        END-PERFORM
@@ -8731,7 +8893,9 @@
                            UNTIL ( IDX-DAY >   31 )
                        IF    ( TSRYCD-DAY (IDX6 IDX-DAY)   >   ZERO )
                         AND  ( TSRYCD-DAY-HKNFLG (IDX6 IDX-DAY)
-                                                           =   1 )
+                                           =   1 )
+                        AND  ( TSRYCD-DAY-NYUGAIKBN  (IDX6 IDX-DAY)
+                                           =   ORCBSD01-NYUGAIKBN )
                            MOVE    1       TO  FLG-INGAI-DAY (IDX-DAY)
                        END-IF
                    END-PERFORM
@@ -8742,6 +8906,8 @@
                        IF    ( TSRYCD-DAY (IDX6 IDX-DAY)   >   ZERO )
                         AND  ( TSRYCD-DAY-HKNFLG (IDX6 IDX-DAY)
                                                            =   1 )
+                        AND  ( TSRYCD-DAY-NYUGAIKBN  (IDX6 IDX-DAY)
+                                           =   ORCBSD01-NYUGAIKBN )
                            MOVE    1       TO  FLG-INNAI-DAY (IDX-DAY)
                        END-IF
                    END-PERFORM
@@ -9135,6 +9301,11 @@
       *    データチェック初期処理
            PERFORM 20011-DATA-CHK-INIT-SEC
       *
+      *    薬剤の月上限回数・総投与量
+           IF    ( ORCBSD01-CHKKBN(19) NOT =   ZERO  )
+               PERFORM 200111-YKZTUKIJGN-CHK-SEC
+           END-IF
+      *
       *    併用禁忌の薬剤チェック処理
            IF    ( ORCBSD01-CHKKBN(10) NOT =   ZERO  )
                PERFORM 200121-HEI-YKZ-CHK-SEC
@@ -9471,6 +9642,10 @@
                MOVE    "6"             TO  WRK-SRTKBN
            WHEN  CONST-JIHI
                MOVE    "7"             TO  WRK-SRTKBN
+           WHEN  CONST-CHIKEN
+               MOVE    "8"             TO  WRK-SRTKBN
+           WHEN  CONST-HOUKATU
+               MOVE    "H"             TO  WRK-SRTKBN
            END-EVALUATE
       *
            EVALUATE    ORCBSD01-PRTSRTKBN
@@ -10942,6 +11117,10 @@
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
+                           IF    ( DCACCT-ZAIKBN   =   1    OR 2 )
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                           END-IF
+      *
                            IF    ( DCACCT-HKNCOMBI =   9999 )
                             OR   ( DCACCT-JIHOKBN  =   "1" )
                                MOVE   ZERO    TO   FLG-LOOP-END
@@ -11013,6 +11192,10 @@
                            END-IF
       *
                        ELSE
+                               MOVE   ZERO    TO   FLG-LOOP-END
+                       END-IF
+      *
+                       IF    ( DCACCT-ZAIKBN   =   1    OR 2 )
                                MOVE   ZERO    TO   FLG-LOOP-END
                        END-IF
                    END-IF
@@ -11337,6 +11520,79 @@
       *
            .
        9001-TTNS-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数付加２検索
+      *****************************************************************
+       900-TENSUPLUS2-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSUPLUS2
+      *
+      *    点数付加２退避ワークチェック
+           PERFORM 9001-TTNSP2-CHK-SEC
+      *
+      *    退避ワークに存在しない場合はＤＢを検索
+           IF    ( TTNSP2-FLG          =   ZERO )
+               INITIALIZE                      TNSP2-REC
+               MOVE    WRK-SRYCD           TO  TNSP2-SRYCD
+               MOVE    WRK-PARA-HOSPNUM    TO  TNSP2-HOSPNUM
+               MOVE    TNSP2-REC           TO  MCPDATA-REC
+               MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  TNSP2-REC
+                   PERFORM 9001-TTNSP2-HEN-SEC
+                ELSE
+                   INITIALIZE              TNSP2-REC
+                   MOVE    WRK-SRYCD       TO  TNSP2-SRYCD
+                   MOVE    WRK-PARA-HOSPNUM TO TNSP2-HOSPNUM
+                   PERFORM 9001-TTNSP2-HEN-SEC
+               END-IF
+      *
+               MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           END-IF
+      *
+           .
+       900-TENSUPLUS2-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数付加２退避ワークチェック処理
+      *****************************************************************
+       9001-TTNSP2-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  TTNSP2-FLG
+           INITIALIZE                      TNSP2-REC
+      *
+           PERFORM VARYING TTNSP2-IDX  FROM    1   BY  1
+                   UNTIL ( TTNSP2-IDX  >   TTNSP2-MAX )
+                    OR   ( TTNSP2-FLG  =   1 )
+               IF    ( TTNSP2-SRYCD (TTNSP2-IDX)
+                                       =   WRK-SRYCD )
+                   MOVE    1           TO  TTNSP2-FLG
+                   MOVE    TTNSP2-OCC (TTNSP2-IDX)
+                                       TO  TNSP2-REC
+               END-IF
+           END-PERFORM
+      *
+           .
+       9001-TTNSP2-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数付加２退避ワーク編集処理
+      *****************************************************************
+       9001-TTNSP2-HEN-SEC             SECTION.
+      *
+           IF    ( CONST-TTNSP2-MAX    >   TTNSP2-MAX )
+               COMPUTE TTNSP2-MAX      =   TTNSP2-MAX    +   1
+               MOVE    TNSP2-REC       TO  TTNSP2-OCC (TTNSP2-MAX)
+           END-IF
+      *
+           .
+       9001-TTNSP2-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者番号取得処理

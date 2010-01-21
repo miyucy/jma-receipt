@@ -105,6 +105,8 @@
                                                    VALUE   "6".
            03  CONST-KOUKI                         PIC X(01)
                                                    VALUE   "7".
+           03  CONST-CHIKEN                        PIC X(01)
+                                                   VALUE   "8".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -438,6 +440,10 @@
                        IF   ( SDTCHK02-O-JIHI  (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                        END-IF
+                   WHEN    CONST-CHIKEN
+                       IF   ( SDTCHK02-O-CHIKEN  (IDX-HKNNUM)  =   1 )
+                           MOVE    1       TO  FLG-TARGET
+                       END-IF
                    END-EVALUATE
                ELSE
                    IF    ( ORCBSD01-SYAHOPROCKBN   =   "1" )
@@ -466,6 +472,10 @@
                    END-IF
                    IF    ( ORCBSD01-JIHIPROCKBN    =   "1" )
                     AND  ( SDTCHK02-O-JIHI     (IDX-HKNNUM)    =   1 )
+                           MOVE    1       TO  FLG-TARGET
+                   END-IF
+                   IF    ( ORCBSD01-CHIKENPROCKBN  =   "1" )
+                    AND  ( SDTCHK02-O-CHIKEN   (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                    END-IF
                END-IF

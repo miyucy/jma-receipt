@@ -98,7 +98,7 @@
                            11  SPA-GMN-D01-USRCHKKBN       PIC X(02).
                            11                              PIC X(01).
                            11  SPA-GMN-D01-USRCHKKBNMEI    PIC X(30).
-                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  18.
+                       09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  19.
                            11  SPA-GMN-D01-CHKKBN-G.
                                13  SPA-GMN-D01-CHKKBN      PIC X(01).
                                13                          PIC X(01).
@@ -107,7 +107,7 @@
                            11  SPA-GMN-D01-INGAIPROCKBN    PIC X(01).
                            11                              PIC X(01).
                            11  SPA-GMN-D01-INGAIPROCKBNMEI PIC X(18).
-                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  18.
+                   07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  19.
                        09  SPA-GMN-D01-CHKMSG              PIC X(40).
                    07  SPA-GMN-D01-INGAIPROCMSG            PIC X(40).
                    07  SPA-GMN-D01-NYUGAIKBNLST-G.
@@ -705,6 +705,7 @@
                MOVE    "T"         TO  SPA-GMN-D01-CHK-KOUGAI
            END-IF
            IF    ( SPA-D01-JIHIPROCKBN     =   "1" )
+            OR   ( SPA-D01-CHIKENPROCKBN   =   "1" )
                MOVE    "T"         TO  SPA-GMN-D01-CHK-JIHI
            END-IF
            IF    ( SPA-D01-SRYYMDKBN       =   "1" )
@@ -1105,6 +1106,8 @@
       *
            MOVE    ORCBSD01-KOUKIPROCKBN   TO  SHELLTBL-ARG33
       *
+           MOVE    ORCBSD01-CHIKENPROCKBN  TO  SHELLTBL-ARG34
+      *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
            MOVE    "shell"                 TO  MCP-TABLE
@@ -1264,6 +1267,7 @@
       *
            IF    ( SPA-GMN-D01-CHK-JIHI        =   "T" )
                MOVE    "1"         TO  ORCBSD01-JIHIPROCKBN
+               MOVE    "1"         TO  ORCBSD01-CHIKENPROCKBN
            END-IF
       *
            IF    ( SPA-GMN-D01-INGAIPROCKBN    =   SPACE )
@@ -1330,6 +1334,7 @@
            MOVE    ORCBSD01-KGIPROCKBN     TO  SPA-D01-KGIPROCKBN
            MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
            MOVE    ORCBSD01-JIHIPROCKBN    TO  SPA-D01-JIHIPROCKBN
+           MOVE    ORCBSD01-CHIKENPROCKBN  TO  SPA-D01-CHIKENPROCKBN
            MOVE    ORCBSD01-INGAIPROCKBN   TO  SPA-D01-INGAIPROCKBN
            MOVE    ORCBSD01-PRTSRTKBN      TO  SPA-D01-PRTSRTKBN
            MOVE    ORCBSD01-SRYYMDKBN      TO  SPA-D01-SRYYMDKBN
@@ -3153,6 +3158,7 @@
            WHEN    "CHKKBN17"
                MOVE    20              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN18"
+               MOVE    21              TO  SPA-GMN-D01-CUR
            WHEN    "CHKKBN19"
                MOVE    51              TO  SPA-GMN-D01-CUR
            WHEN    "CHK_SYAHO"

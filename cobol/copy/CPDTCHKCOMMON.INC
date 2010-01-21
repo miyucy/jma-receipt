@@ -110,12 +110,14 @@
          02  TSRYCD-AREA.
            03  TSRYCD-MAX                              PIC 9(05).
            03  TSRYCD-OCC                              OCCURS 2000.
+               05  TSRYCD-TAISYO                       PIC 9(01).
       *        入外ともに同一の診療行為コードの設定があった場合は
       *        処理パラメタの入外区分を優先的に設定
                05  TSRYCD-NYUGAIKBN                    PIC X(01).
                05  TSRYCD-HKNFLG                       PIC 9(01).
                05  TSRYCD-SRYCD                        PIC X(09).
                05  TSRYCD-KAISU                        PIC 9(09).
+               05  TSRYCD-SURYOTOTAL                   PIC 9(05)V9(05).
                05  TSRYCD-TYPE                         PIC X(02).
                05  TSRYCD-FSANTEIYMD                   PIC X(08).
                05  TSRYCD-DAY-G.

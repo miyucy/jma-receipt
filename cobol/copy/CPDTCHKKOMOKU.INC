@@ -23,7 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  DTCHKKOMOKU-AREA.
-           03  DTCHKKOMOKU-MAX             PIC 9(03)   VALUE   18.
+           03  DTCHKKOMOKU-MAX             PIC 9(03)   VALUE   19.
            03  DTCHKKOMOKU-VAL.
                05                          PIC X(40)   VALUE
                "保険者番号".
@@ -61,5 +61,7 @@
                "病名と薬剤".
                05                          PIC X(40)   VALUE
                "病名と診療行為".
+               05                          PIC X(40)   VALUE
+               "薬剤の月上限回数・総投与量".
            03  DTCHKKOMOKU-R   REDEFINES   DTCHKKOMOKU-VAL.
-               05  DTCHKKOMOKU-CHKKOMOKU   PIC X(40)   OCCURS  18.
+               05  DTCHKKOMOKU-CHKKOMOKU   PIC X(40)   OCCURS  19.

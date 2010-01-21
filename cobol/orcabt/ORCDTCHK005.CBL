@@ -390,6 +390,8 @@
       *
                 MOVE    SRY-SRYCD (IDX0)
                                     TO  DTCHK006-SRYCD
+                MOVE    SRY-SRYSURYO (IDX0)
+                                    TO  DTCHK006-SURYO
       *
                 IF    ( SRY-NYUGAIKBN   =   "1" )
       *
@@ -584,6 +586,7 @@
            MOVE    DTCHK006-SRYSYUKBN
                                        TO  DCSRY-SRYSYUKBN
            MOVE    DTCHK006-SRYCD  TO  DCSRY-SRYCD
+           MOVE    DTCHK006-SURYO  TO  DCSRY-SURYO
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD    TO  DCSRY-CREYMD

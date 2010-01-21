@@ -387,6 +387,10 @@
                        MOVE    "1"         TO  CK4-2001-KOUGAI
                    WHEN    "7"
                        MOVE    "1"         TO  CK4-2001-KOUKI
+                   WHEN    "8"
+                       MOVE    "1"         TO  CK4-2001-CHIKEN
+                   WHEN    "H"
+                       MOVE    "1"         TO  CK4-2001-HOUKATU
                    END-EVALUATE
       *
                    PERFORM 900-DTCHK004-READ-SEC

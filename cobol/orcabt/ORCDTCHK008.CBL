@@ -123,7 +123,7 @@
       *
       *    ∏«ƒÍ√ÕŒŒ∞Ë
        01  CONST-AREA.
-               05  CONST-HKNKBN-MAX            PIC 9(03)   VALUE   7.
+               05  CONST-HKNKBN-MAX            PIC 9(03)   VALUE   8.
                05  CONST-HKNKBN-VAL.
                    07  CONST-SYAHO             PIC X(01)   VALUE   "1".
                    07  CONST-KOKUHO            PIC X(01)   VALUE   "2".
@@ -132,8 +132,10 @@
                    07  CONST-JIHI              PIC X(01)   VALUE   "5".
                    07  CONST-KOUGAI            PIC X(01)   VALUE   "6".
                    07  CONST-KOUKI             PIC X(01)   VALUE   "7".
+                   07  CONST-CHIKEN            PIC X(01)   VALUE   "8".
+                   07  CONST-HOUKATU           PIC X(01)   VALUE   "H".
                05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
-                   07  CONST-HKNKBN            PIC X(01)   OCCURS  7.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS  9.
       *
            COPY    "COMMON-SPA".
       *

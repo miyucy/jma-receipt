@@ -127,9 +127,11 @@
                    07  CNT-JIHI                        PIC 9(03).
                    07  CNT-KOUGAI                      PIC 9(03).
                    07  CNT-KOUKI                       PIC 9(03).
+                   07  CNT-CHIKEN                      PIC 9(03).
+                   07  CNT-HOUKATU                     PIC 9(03).
                05  CNT-HKNKBN-R    REDEFINES   CNT-HKNKBN-VAL.
                    07  CNT-HKNKBN                      PIC 9(03)
-                                                       OCCURS   7.
+                                                       OCCURS   9.
            03  CNT-HKNKBN-TTL                          PIC 9(03).
       *
        01  IDX-AREA.
@@ -139,7 +141,9 @@
            03  WRK-DTCHKERR                            PIC X(200).
            03  WRK-PTID                                PIC 9(10).
            03  WRK-ZAIHKNNUM                           PIC X(03).
+           03  WRK-ZAIHKNCOMBI                         PIC 9(04).
            03  WRK-STATUS                              PIC 9(05).
+           03  WRK-HKNKBN-CNT                          PIC 9(05).
            03  WRK-HKNKBN-G.
                05  WRK-HKNKBN-VAL.
                    07  WRK-SYAHOPROCKBN                PIC X(01).
@@ -149,12 +153,14 @@
                    07  WRK-JIHIPROCKBN                 PIC X(01).
                    07  WRK-KGIPROCKBN                  PIC X(01).
                    07  WRK-KOUKIPROCKBN                PIC X(01).
+                   07  WRK-CHIKENPROCKBN               PIC X(01).
+                   07  WRK-HOUKATUPROCKBN              PIC X(01).
                05  WRK-HKNKBN-R    REDEFINES           WRK-HKNKBN-VAL.
                    07  WRK-HKNKBN                      PIC X(01)
-                                                       OCCURS  7.
+                                                       OCCURS  9.
       *
        01  CONST-AREA.
-           03  CONST-HKNKBN-MAX                PIC 9(03)   VALUE   7.
+           03  CONST-HKNKBN-MAX                PIC 9(03)   VALUE   9.
            03  CONST-HKNKBN-G.
                05  CONST-HKNKBN-VAL.
                    07  CONST-SYAHO             PIC X(01)   VALUE   "1".
@@ -164,8 +170,10 @@
                    07  CONST-JIHI              PIC X(01)   VALUE   "5".
                    07  CONST-KOUGAI            PIC X(01)   VALUE   "6".
                    07  CONST-KOUKI             PIC X(01)   VALUE   "7".
+                   07  CONST-CHIKEN            PIC X(01)   VALUE   "8".
+                   07  CONST-HOUKATU           PIC X(01)   VALUE   "H".
                05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
-                   07  CONST-HKNKBN            PIC X(01)   OCCURS  7.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS  9.
       *
            COPY    "COMMON-SPA".
       *
@@ -368,6 +376,7 @@
       *
                    IF    ( FLG-STS-HKNCOMBI    =   ZERO )
                        MOVE    DCACCT-HKNNUM   TO  WRK-ZAIHKNNUM
+                       MOVE    DCACCT-HKNCOMBI TO  WRK-ZAIHKNCOMBI
                        PERFORM 220-TAISYO-HKN-CHK-SEC
                    END-IF
       *
@@ -376,6 +385,7 @@
                END-PERFORM
       *
                MOVE    ZERO                TO  CNT-HKNKBN-TTL
+                                               WRK-HKNKBN-CNT
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-HKNKBN-MAX )
@@ -386,19 +396,30 @@
                            +   1
                    END-IF
       *
-               END-PERFORM
-      *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   CONST-HKNKBN-MAX )
-      *
                    IF    ( WRK-HKNKBN (IDX0)   =   "1" )
-                       INITIALIZE          DTCHK003-REC
-                       MOVE    CONST-HKNKBN (IDX0)
-                                       TO  DTCHK003-HKNKBN
-                       PERFORM 210-DTCHK003-WRITE-SEC
+                       COMPUTE WRK-HKNKBN-CNT
+                           =   WRK-HKNKBN-CNT
+                           +   1
                    END-IF
       *
                END-PERFORM
+      *
+               IF    ( WRK-HKNKBN-CNT      =   1 )
+                AND  ( WRK-HOUKATUPROCKBN  =   "1" )
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   CONST-HKNKBN-MAX )
+      *
+                       IF    ( WRK-HKNKBN (IDX0)   =   "1" )
+                           INITIALIZE          DTCHK003-REC
+                           MOVE    CONST-HKNKBN (IDX0)
+                                           TO  DTCHK003-HKNKBN
+                           PERFORM 210-DTCHK003-WRITE-SEC
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
       *
            END-PERFORM
       *
@@ -479,6 +500,17 @@
                IF    ( ORCBSD01-JIHIPROCKBN    =   "1" )
                    MOVE    "1"         TO  WRK-JIHIPROCKBN
                END-IF
+           WHEN      ( WRK-ZAIHKNNUM (1:2) =   "90" OR "91" )
+      *
+               MOVE    1               TO  CNT-CHIKEN
+      *
+               IF    ( ORCBSD01-CHIKENPROCKBN  =   "1" )
+                   MOVE    "1"         TO  WRK-CHIKENPROCKBN
+               END-IF
+           WHEN      ( WRK-ZAIHKNCOMBI         =   9999 )
+      *
+               MOVE    1               TO  CNT-HOUKATU
+               MOVE    "1"             TO  WRK-HOUKATUPROCKBN
            WHEN      OTHER
       *
                MOVE    1               TO  CNT-SYAHO

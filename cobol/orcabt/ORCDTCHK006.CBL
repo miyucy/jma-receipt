@@ -719,6 +719,8 @@
                MOVE    IDX8        TO  DCSRY-SRYRENNUM
                MOVE    HCM34S01-SRYCD (IDX4 IDX8)
                                    TO  DCSRY-SRYCD
+               MOVE    HCM34S01-SURYO (IDX4 IDX8)
+                                   TO  DCSRY-SURYO
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-GENZAN-MAX )

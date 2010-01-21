@@ -161,6 +161,8 @@
            03  WRK-CHKKOMOKU-LEN-MAX                   PIC 9(05).
            03  WRK-CNT-LINE                            PIC 9(05).
            03  WRK-IDX-MESG                            PIC 9(05).
+           03  WRK-SHO                                 PIC 9(05).
+           03  WRK-AMARI                               PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-NEW.
@@ -828,6 +830,12 @@
                MOVE    "¼«Èñ"          TO  WRK-HKNMES
            WHEN    "6"
                MOVE    "¸ø³²"          TO  WRK-HKNMES
+           WHEN    "7"
+               MOVE    "¸å´ü¹âÎð¼Ô"    TO  WRK-HKNMES
+           WHEN    "8"
+               MOVE    "¼£¸³"          TO  WRK-HKNMES
+           WHEN    "H"
+               MOVE    "Êñ³ç"          TO  WRK-HKNMES
            END-EVALUATE
       *
            .
@@ -882,7 +890,7 @@
       *
                COMPUTE CNT-PRINT   =   CNT-PRINT   +   1
       *
-               IF    ( CNT-PRINT  >=   50 )
+               IF    ( CNT-PRINT  >=   200 )
                    PERFORM 900-DBCOMMIT-SEC
                    PERFORM 900-DBSTART-SEC
                    MOVE    ZERO    TO  CNT-PRINT
@@ -892,6 +900,10 @@
                                        TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
+           DIVIDE  100         INTO    CNT-PRINT   GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
       *
            .
        290-PRINT-OUT-EXT.

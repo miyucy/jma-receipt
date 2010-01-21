@@ -43,6 +43,7 @@
            03  DCACCT-DAYCNT           PIC 9(03).
            03  DCACCT-STATUS           PIC 9(05).
            03  DCACCT-NYUGAIKBN        PIC X(01).
+           03  DCACCT-ZAIKBN           PIC 9(03).
            03  DCACCT-TERMID           PIC X(16).
            03  DCACCT-OPID             PIC X(16).
            03  DCACCT-CREYMD           PIC X(08).
