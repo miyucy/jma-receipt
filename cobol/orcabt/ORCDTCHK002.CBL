@@ -8595,7 +8595,7 @@
            IF    ( WRK-SURYOZ2     NOT =    SPACE )
                MOVE    WRK-SURYOZ2 TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
-               STRING  "¡¦"            DELIMITED   BY  SIZE
+               STRING  "¡¥"            DELIMITED   BY  SIZE
                        WRK-OUT-INPUT   DELIMITED   BY  SPACE
                INTO    WRK-ERRMES-PLUS
                WITH    POINTER WRK-PNT
