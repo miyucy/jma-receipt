@@ -177,6 +177,7 @@
            03  TNSWK-UPHMS               PIC  X(06).
       *　　主キー更新用項目
            03  TNSWK-UP-KEY.
+               05  TNSWK-UP-HOSPNUM       PIC  9(02).
                05  TNSWK-UP-SRYCD         PIC  X(09).
                05  TNSWK-UP-YUKOSTYMD     PIC  X(08).
                05  TNSWK-UP-YUKOEDYMD     PIC  X(08).
