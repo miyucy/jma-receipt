@@ -2810,6 +2810,10 @@
                                    TO  TSRYCD-SRYCD (TSRYCD-MAX)
                    MOVE    DCACCT-ZAIKAISU
                                    TO  TSRYCD-KAISU (TSRYCD-MAX)
+                   IF    ( DCACCT-SRYKBN(1:1)  =   "2" OR "3" )
+                       MOVE    DCACCT-ZAIKAISU
+                                   TO  TSRYCD-YKZKAISU (TSRYCD-MAX)
+                   END-IF
                    COMPUTE TSRYCD-SURYOTOTAL (IDX0)
                        =   DCSRY-SURYO *   DCACCT-ZAIKAISU
       *
@@ -2840,6 +2844,12 @@
                COMPUTE TSRYCD-KAISU (IDX0)
                    =   TSRYCD-KAISU (IDX0)
                    +   DCACCT-ZAIKAISU
+      *
+               IF    ( DCACCT-SRYKBN(1:1)  =   "2" OR "3" )
+                   COMPUTE TSRYCD-YKZKAISU (TSRYCD-MAX)
+                       =   TSRYCD-YKZKAISU (TSRYCD-MAX)
+                       +   DCACCT-ZAIKAISU
+               END-IF
       *
                COMPUTE TSRYCD-SURYOTOTAL (IDX0)
                    =   TSRYCD-SURYOTOTAL (IDX0)
@@ -8519,7 +8529,7 @@
                                                TO  WRK-SRYCD
                        PERFORM 900-TENSUPLUS2-KEY-SEL-SEC
                        IF    ( TNSP2-TUKIJGNKAISU  >   ZERO )
-                           IF    ( TSRYCD-KAISU (IDX6)
+                           IF    ( TSRYCD-YKZKAISU (IDX6)
                                        >   TNSP2-TUKIJGNKAISU )
                                MOVE    "190001"
                                            TO  WRK-ERRCD
@@ -8561,12 +8571,13 @@
            WITH    POINTER WRK-PNT
            END-STRING
       *
-           MOVE    TSRYCD-KAISU (IDX6)
+           MOVE    TSRYCD-YKZKAISU (IDX6)
                                    TO  WRK-STR-LEFT-ZX99
            PERFORM 800-STR-HIDARIZUME-HEN-SEC
            MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
            PERFORM 800-ZENKAKU-HEN-SEC
-           STRING  "¡¡·îÅêÍ¿²ó¿ô¡§"    DELIMITED   BY  SIZE
+           STRING  "¡¡²ó¿ô¡ÊÅêÌô¡¢Ãí¼Í¡Ë¡§"
+                                       DELIMITED   BY  SIZE
                    WRK-OUT-INPUT       DELIMITED   BY  SPACE
            INTO    WRK-ERRMES-PLUS
            WITH    POINTER WRK-PNT
@@ -8586,7 +8597,7 @@
            PERFORM 800-STR-HIDARIZUME-HEN-SEC
            MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
            PERFORM 800-ZENKAKU-HEN-SEC
-           STRING  "¡¡·îÅêÍ¿ÎÌ¡§"      DELIMITED   BY  SIZE
+           STRING  "¡¡ÅêÍ¿ÎÌ¡§"        DELIMITED   BY  SIZE
                    WRK-OUT-INPUT       DELIMITED   BY  SPACE
            INTO    WRK-ERRMES-PLUS
            WITH    POINTER WRK-PNT
@@ -8603,9 +8614,8 @@
       *
            MOVE    TSRYCD-DAY-G (IDX6) TO  WRK-NISSU-DAY-G
            PERFORM 200111-NISSU-HEN-SEC
-           STRING  "¡Ê"           DELIMITED   BY  SPACE
+           STRING  "¡¡ÅêÍ¿Æü¡§"    DELIMITED   BY  SPACE
                    WRK-NISSU-MES   DELIMITED   BY  SPACE
-                   "¡Ë"            DELIMITED   BY  SPACE
            INTO    WRK-ERRMES-PLUS
            WITH    POINTER WRK-PNT
            END-STRING
