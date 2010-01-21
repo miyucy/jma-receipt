@@ -2853,8 +2853,7 @@
       *
                MOVE    ZERO            TO  WRK-HKNFLG
       *
-               IF    ( DCACCT-HKNCOMBI         =   9999 )
-                OR   ( DCACCT-JIHOKBN          =   "1"  )
+               IF    ( DCACCT-JIHOKBN          =   "1"  )
                    IF    ( DCSRY-SRYCD (1:1)   =   "6" )
                        MOVE    1           TO  WRK-HKNFLG
                    END-IF
