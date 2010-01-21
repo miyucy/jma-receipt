@@ -618,7 +618,9 @@
                    END-IF
                WHEN    OTHER
       *            ¼«Èñ
-                   IF      SYU-SYUHKNNUM(1:2) = "98"
+                   IF    ( SYU-SYUHKNNUM(1:2) = "98" ) OR
+                         ( SYU-SYUHKNNUM(1:2) = "90" ) OR
+                         ( SYU-SYUHKNNUM(1:2) = "91" )
                        MOVE    7                   TO  IDX
                    ELSE
       *                ¼ÒÊÝÏ·¿Í
