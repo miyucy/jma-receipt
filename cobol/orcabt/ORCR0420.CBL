@@ -182,6 +182,7 @@
       *  04.05.04    NACL-門脇    09/09/24  レセプト記載しないコメント対応
       *  04.05.05    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
       *                                     まとめ記載対応
+      *  04.05.06    NACL-門脇    10/01/21  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -920,6 +921,10 @@
       *
            COPY    "COMMON-SPA".
       *
+       01  WRK-RECE41G-REC. 
+           COPY    "CPRCF041.INC"  REPLACING  //RECE41//
+                                   BY         //WRK-RECE41G//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1240,6 +1245,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
+           INITIALIZE                   WRK-RECE41G-REC
+      *
            MOVE       ZERO       TO     WRK-ZAITENNASHI
       *
            IF      RECE41-HKNKBN   NOT  =   "3"
@@ -1279,6 +1286,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
               END-PERFORM
       *
            END-IF
+      *
+           PERFORM     2107-GENTEN-HENSYU-SEC
       *
            PERFORM     2105-RECE41-REWRITE-SEC
            .
@@ -1373,6 +1382,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23"         ) AND
                                    (WRK-PARA-PRTKBN  =  "2"      ))
+                               OR ( ACCT-ZAIKBN  =   1            )
                                  IF  (ACCT-SRYCDTOTAL(1:12)  =
                                                     "000000999901")
                                  AND (ACCT-MEISAISU      =   1    )
@@ -1786,6 +1796,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
                AND   ( RECE44-ZAITEN     =     ZERO                 )
                AND   ( RECE44-SAFLG      =     SPACE                )
+               AND   ( ACCT-ZAIKBN   NOT =     1                    )
                   IF   SRY-SRYCD(IDX2)   =     "820000046"
                      MOVE     "1"         TO    RECE44-SAFLG
                   END-IF
@@ -1793,6 +1804,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE44-ZAITEN     =     ZERO         )
+               AND   ( ACCT-ZAIKBN   NOT =     1            )
                   IF     RECE44-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE44-TOYAKUFLG
                   ELSE
@@ -1809,6 +1821,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF    ( SRY-SRYKBN        =     "14" )
                AND   ( RECE44-ZAITEN     =     ZERO )
+               AND   ( ACCT-ZAIKBN   NOT =     1    )
                   IF     RECE44-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE44-TOYAKUFLG
                   ELSE
@@ -2048,6 +2061,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  2101211-RECE45-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
+                IF   ACCT-ZAIKBN  =  1
+                  MOVE    "1"             TO  RECE45-RECEPTFLG(IDX4)
+                  MOVE    ZERO            TO  RECE45-SRYSURYO(IDX4)
+                ELSE
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
                                           +     0.99999                   
                   COMPUTE RECE45-SRYSURYO(IDX4)                         
@@ -2065,7 +2082,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     ELSE                                                
                       MOVE WRK-SRYSURYO2  TO  RECE45-SRYSURYO(IDX4 - 1) 
                     END-IF
+                  ELSE
+                    MOVE  "1"             TO  RECE45-RECEPTFLG(IDX4)
                   END-IF                                                
+                END-IF
                ELSE                                                     
                   IF      TNS-TANIMOJISU    =   ZERO
                   AND     TNS-TANINAME  NOT =   SPACE
@@ -2418,14 +2438,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               CONS-ROUSAI3      )
                       OR (( ACCT-SRYKBN     = "11"              ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
-                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ))
+                          ( SRY-SRYCD(IDX2) NOT = "830000020"   ) AND
+                          ( ACCT-ZAIKBN     NOT =  1 AND 2      ))
                       OR (( ACCT-SRYKBN     = "11"              ) AND
-                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ) AND
+                          ( ACCT-ZAIKBN     NOT =  1 AND 2      ))
                       OR (( ACCT-SRYKBN     = "12"              ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ) AND
-                          ( SRY-SRYCD(IDX2) NOT = "830000021"   ))
+                          ( SRY-SRYCD(IDX2) NOT = "830000021"   ) AND
+                          ( ACCT-ZAIKBN     NOT =  1 AND 2      ))
                       OR (( ACCT-SRYKBN     = "12"              ) AND
-                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
+                          ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ) AND
+                          ( ACCT-ZAIKBN     NOT =  1 AND 2      ))
                       OR (( ACCT-SRYKBN     = "13"              ) AND
                           ( SRY-SRYCD(1)    =  CONS-ROUSAI9  OR
                                                CONS-ROUSAI10 OR
@@ -2567,6 +2591,28 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                  END-EVALUATE
                END-IF
+      *
+               MOVE    ACCT-ZAIKBN  TO  RECE44-ZAIKBN
+      *
+               IF      ACCT-ZAIKBN       =     1
+                 MOVE   ZERO        TO  RECE45-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE45-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE45-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE45-TANINAME(IDX4)
+                 IF  (SRY-SRYCD(IDX2)(1:1) = "6" OR "7")
+                 OR  (SRY-SRYCD(IDX2)(1:3) = "059"     )
+                 OR  (SRY-SRYCD(IDX2)(1:2) = "63"      )
+                     MOVE  "1"          TO  RECE44-COMCDFLG
+                     MOVE  "810000001"  TO  RECE45-SRYCD(IDX4)
+                 END-IF
+               END-IF
+               IF      ACCT-ZAIKBN       =     2
+                 MOVE   ZERO        TO  RECE45-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE45-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE45-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE45-TANINAME(IDX4)
+               END-IF
+      *
               END-IF
              END-IF  
            END-PERFORM
@@ -3324,11 +3370,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                            END-IF
                        END-IF
                    ELSE
-                       IF   SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
+                       IF ( SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"  OR  "64"
+                                            "13"  OR  "14"  OR  "64" )
+                       OR ((ACCT-ZAIKBN  =   2  ) AND
+                           (SRY-SRYKBN   =  "12"))
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -3367,11 +3415,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         PERFORM   2101225-RECE-LEFT-SET5-SEC
                   END-EVALUATE
                END-IF
-               IF    SRY-SRYKBN   =  "21"   OR   "22"   OR   "23"   OR
+               IF  ( SRY-SRYKBN   =  "21"   OR   "22"   OR   "23"   OR
                                      "31"   OR   "32"   OR   "33"   OR
                                      "40"   OR   "50"   OR   "54"   OR
                                      "60"   OR   "70"   OR   "14"   OR
-                                     "64"
+                                     "64"          )
+               OR  ((ACCT-ZAIKBN  =    2          ) AND
+                    (SRY-SRYKBN   =   "12" OR "13"))
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -3658,6 +3708,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                       RECE41-KINGAKU2(3)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                         END-IF
+                        IF   ACCT-ZAIKBN     =  2
+                           MOVE   ZERO         TO   RECE41-KHNTEN(2)
+                           MOVE   1            TO   FLG-KHNTEN2
+                           COMPUTE    WRK-RECE41G-TENSU(2)  =
+                                      WRK-RECE41G-TENSU(2)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
                  END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
@@ -3676,13 +3733,24 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                     RECE41-KINGAKU2(4)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
+                     IF   ACCT-ZAIKBN     =  2
+                         COMPUTE    WRK-RECE41G-TENSU(7)  =
+                                    WRK-RECE41G-TENSU(7)  +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
                          COMPUTE    RECE41-TENSU(7)  =
                                     RECE41-TENSU(7)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
                    END-IF                   
       *
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE    WRK-RECE41G-TENSU(12)  =
+                              WRK-RECE41G-TENSU(12)  +
+                             (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -3747,6 +3815,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              RECE41-TENSU(13)  +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -4129,15 +4198,33 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                 RECE41-TENSU(2) +
                                 (WRK-TNS-TEN(IDX3) * WRK-ZAIKAISU-XXX)
                      END-IF
+      *      （その他）
+                   WHEN  OTHER 
+                     IF   ACCT-ZAIKBN     =  2
+                        COMPUTE WRK-RECE41G-TENSU(3)  =
+                                WRK-RECE41G-TENSU(3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
                  END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
+                   IF   ACCT-ZAIKBN     =  2
+                         COMPUTE    WRK-RECE41G-TENSU(5)  =
+                                    WRK-RECE41G-TENSU(5)  +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                   ELSE
                          COMPUTE    RECE41-TENSU(5)  =
                                     RECE41-TENSU(5)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
       *
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE    WRK-RECE41G-TENSU(6)  =
+                              WRK-RECE41G-TENSU(6)  +
+                             (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -4198,6 +4285,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              RECE41-TENSU(6)  +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -4510,6 +4598,11 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                       RECE41-KINGAKU2(3)  +
                                      (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                         END-IF
+                        IF   ACCT-ZAIKBN     =  2
+                           COMPUTE    WRK-RECE41G-TENSU(7)  =
+                                      WRK-RECE41G-TENSU(7)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
                  END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
@@ -4528,13 +4621,24 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                     RECE41-KINGAKU2(6)  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
+                     IF   ACCT-ZAIKBN     =  2
+                         COMPUTE    WRK-RECE41G-TENSU(6)  =
+                                    WRK-RECE41G-TENSU(6)  +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
                          COMPUTE    RECE41-TENSU(6)  =
                                     RECE41-TENSU(6)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
                    END-IF                   
       *
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE    WRK-RECE41G-TENSU(7)  =
+                              WRK-RECE41G-TENSU(7)  +
+                             (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -4595,6 +4699,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              RECE41-TENSU-YAK(7)  +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -5139,6 +5244,15 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                       WRK-KINGAKU-JI  +
                                  (WRK-TNS-TEN(IDX3)   *  ACCT-ZAIKAISU)
                         END-IF
+                        IF   ACCT-ZAIKBN     =  2
+                           IF  WRK-PARA-JIBAIPRTKBN = "1"
+                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
+                              MOVE   1       TO    FLG-KHNTEN2-JI2
+                           END-IF
+                           COMPUTE    WRK-RECE41G-TENSU(2)  =
+                                      WRK-RECE41G-TENSU(2)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
                    END-EVALUATE
                   WHEN       "2"
                    EVALUATE  WRK-TNS-GAITENTTLKBN(IDX3)
@@ -5253,6 +5367,17 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         COMPUTE  TBL-SYUTEN-JI(6)  =
                                  TBL-SYUTEN-JI(6)  +
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *      （その他）
+                    WHEN  OTHER
+                        IF   ACCT-ZAIKBN     =  2
+                           IF  WRK-PARA-JIBAIPRTKBN = "1"
+                              MOVE   ZERO    TO    RECE41-KHNTEN(2)
+                              MOVE   1       TO    FLG-KHNTEN2-JI2
+                           END-IF
+                           COMPUTE    WRK-RECE41G-TENSU(2)  =
+                                      WRK-RECE41G-TENSU(2)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
                    END-EVALUATE
                  END-EVALUATE
       *    指導のレセ点数欄の編集
@@ -5274,23 +5399,40 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                                     RECE41-SONOTAKIN-JYU  +
                                    (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
                    ELSE
+                     IF   ACCT-ZAIKBN     =  2
+                         COMPUTE    WRK-RECE41G-TENSU(7)  =
+                                    WRK-RECE41G-TENSU(7)  +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
                          COMPUTE    RECE41-TENSU(7)   =
                                     RECE41-TENSU(7)   +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                          COMPUTE    TBL-SYUTEN-JI(7)  =
                                     TBL-SYUTEN-JI(7)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
                    END-IF                   
                   WHEN       "2"
+                     IF   ACCT-ZAIKBN     =  2
+                         COMPUTE    WRK-RECE41G-TENSU(7)  =
+                                    WRK-RECE41G-TENSU(7)  +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
                          COMPUTE    RECE41-TENSU(7)   =
                                     RECE41-TENSU(7)   +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
                          COMPUTE    TBL-SYUTEN-JI(7)  =
                                     TBL-SYUTEN-JI(7)  +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
                  END-EVALUATE
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE    WRK-RECE41G-TENSU(8)  =
+                              WRK-RECE41G-TENSU(8)  +
+                             (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -5370,6 +5512,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              TBL-YKZTEN-JI(8)  +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -5947,6 +6090,15 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         COMPUTE  RECE41-TENSU(8)   =
                                  RECE41-TENSU(8)   +
                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+      *      （その他）
+                    WHEN  OTHER 
+                        IF   ACCT-ZAIKBN     =  2
+                           MOVE   ZERO    TO    RECE41-KHNTEN(3)
+                           MOVE   1       TO    FLG-KHNTEN3-KO
+                           COMPUTE    WRK-RECE41G-TENSU(3)  =
+                                      WRK-RECE41G-TENSU(3)  +
+                                     (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
                    END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
@@ -5963,12 +6115,23 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                        (RECE41-SRYYM     <  "200804"        ))
                          CONTINUE
                    ELSE
+                     IF   ACCT-ZAIKBN     =  2
+                         COMPUTE    WRK-RECE41G-TENSU(9)  =
+                                    WRK-RECE41G-TENSU(9)  +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                     ELSE
                          COMPUTE    RECE41-TENSU(9)   =
                                     RECE41-TENSU(9)   +
                                    (WK-ZAITEN   *   WK-ZAIKAISU)
+                     END-IF
                    END-IF                   
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE    WRK-RECE41G-TENSU(14)  =
+                              WRK-RECE41G-TENSU(14)  +
+                             (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -6033,6 +6196,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                              RECE41-TENSU(15)   +
                              (WK-KIZAITEN *   WK-ZAIKAISU)  +
                              (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -6773,6 +6937,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23"         ) AND
                                    (WRK-PARA-PRTKBN  =  "2"      ))
+                               OR ( ACCT-ZAIKBN  =   1            )
                                  IF  (ACCT-SRYCDTOTAL(1:12)  =
                                                     "000000999901")
                                  AND (ACCT-MEISAISU      =   1    )
@@ -6881,6 +7046,84 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    包括点数の治験減点分編集
+      *****************************************************************
+       2107-GENTEN-HENSYU-SEC      SECTION.
+      *
+           IF   RECE41-TENSU(2)  >=  WRK-RECE41G-TENSU(2)
+             COMPUTE  RECE41-TENSU(2)  =
+                      RECE41-TENSU(2)  -  WRK-RECE41G-TENSU(2)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(2)
+           END-IF
+           IF   RECE41-TENSU(3)  >=  WRK-RECE41G-TENSU(3)
+             COMPUTE  RECE41-TENSU(3)  =
+                      RECE41-TENSU(3)  -  WRK-RECE41G-TENSU(3)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(3)
+           END-IF
+           IF   RECE41-TENSU(5)  >=  WRK-RECE41G-TENSU(5)
+             COMPUTE  RECE41-TENSU(5)  =
+                      RECE41-TENSU(5)  -  WRK-RECE41G-TENSU(5)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(5)
+           END-IF
+           IF   RECE41-TENSU(6)  >=  WRK-RECE41G-TENSU(6)
+             COMPUTE  RECE41-TENSU(6)  =
+                      RECE41-TENSU(6)  -  WRK-RECE41G-TENSU(6)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(6)
+           END-IF
+           IF   RECE41-TENSU(7)  >=  WRK-RECE41G-TENSU(7)
+             COMPUTE  RECE41-TENSU(7)  =
+                      RECE41-TENSU(7)  -  WRK-RECE41G-TENSU(7)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(7)
+           END-IF
+           IF   RECE41-TENSU(8)  >=  WRK-RECE41G-TENSU(8)
+             COMPUTE  RECE41-TENSU(8)  =
+                      RECE41-TENSU(8)  -  WRK-RECE41G-TENSU(8)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(8)
+           END-IF
+           IF   RECE41-TENSU(9)  >=  WRK-RECE41G-TENSU(9)
+             COMPUTE  RECE41-TENSU(9)  =
+                      RECE41-TENSU(9)  -  WRK-RECE41G-TENSU(9)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(9)
+           END-IF
+           IF   RECE41-TENSU(12) >=  WRK-RECE41G-TENSU(12)
+             COMPUTE  RECE41-TENSU(12) =
+                      RECE41-TENSU(12) -  WRK-RECE41G-TENSU(12)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(12)
+           END-IF
+           IF   RECE41-TENSU(14) >=  WRK-RECE41G-TENSU(14)
+             COMPUTE  RECE41-TENSU(14) =
+                      RECE41-TENSU(14) -  WRK-RECE41G-TENSU(14)
+           ELSE
+             MOVE     ZERO    TO   RECE41-TENSU(14)
+           END-IF
+      *
+      *    合計点数の編集
+           IF   RECE41-HKNKBN     NOT  =   "4"
+              COMPUTE  RECE41-TOTALTEN  =  RECE41-TOTALTEN
+                                        -  WRK-RECE41G-TENSU(2)
+                                        -  WRK-RECE41G-TENSU(3)
+                                        -  WRK-RECE41G-TENSU(5)
+                                        -  WRK-RECE41G-TENSU(6)
+                                        -  WRK-RECE41G-TENSU(7)
+                                        -  WRK-RECE41G-TENSU(8)
+                                        -  WRK-RECE41G-TENSU(9)
+                                        -  WRK-RECE41G-TENSU(12)
+                                        -  WRK-RECE41G-TENSU(14)
+           END-IF
+      *
+           .
+       2107-GENTEN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    データ更新処理
       *****************************************************************
        2105-RECE41-REWRITE-SEC                SECTION.
@@ -6888,6 +7131,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF   RECE41-HKNKBN     NOT  =   "4"
              COMPUTE  RECE41-TOTALKIN2  =  RECE41-TOTALKIN2
                                         +  WRK-ZAITENNASHI
+             IF    RECE41-HKNKBN   =   "5"
+             AND   RECE41-KOMUKBN  =   "2"
+               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
+                                              RECE41-KOMUTENTANKA
+             ELSE
+               COMPUTE  RECE41-TOTALKIN   =   RECE41-TOTALTEN   *
+                                              RECE41-TANKA
+             END-IF
            END-IF
       *
            IF   RECE41-HKNKBN     =   "4"                               
@@ -6924,24 +7175,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                COMPUTE   WRK-KSNRATE          =  RECE41-KSNRATE / 100   
       *
-      ***      PERFORM    VARYING    ID1    FROM    1   BY   1          
-      ***                 UNTIL      ID1    >     31                    
-      *              
-      ***         ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
-      ***         ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
-      *
-      ***         COMPUTE   WRK-KEISAN        =  RECE41-SYUTEN-JI(ID1)  
-      ***                                     *  RECE41-TANKA           
-      ***         COMPUTE   RECE41-TOTALKIN   =  RECE41-TOTALKIN  +
-      ***                              ( WRK-KEISAN  *  WRK-KSNRATE )   
-      *
-      ***         COMPUTE   WRK-KEISAN        =  RECE41-YKZTEN-JI(ID1)  
-      ***                                     *  RECE41-TANKA           
-      ***         COMPUTE   RECE41-TOTALKIN-YAK =  RECE41-TOTALKIN-YAK
-      ***                                       +  WRK-KEISAN           
-      *
-      ***      END-PERFORM                                              
-      *
                PERFORM    VARYING    ID1    FROM    1   BY   1          
                        UNTIL      ID1    >     31                    
       *              
@@ -6949,6 +7182,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN-YAK
       *
                END-PERFORM
+      *
+      *        減点編集
+               COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
+                                          -  WRK-RECE41G-TENSU(2)
+                                          -  WRK-RECE41G-TENSU(3)
+                                          -  WRK-RECE41G-TENSU(5)
+                                          -  WRK-RECE41G-TENSU(6)
+                                          -  WRK-RECE41G-TENSU(7)
+                                          -  WRK-RECE41G-TENSU(8)
+                                          -  WRK-RECE41G-TENSU(9)
+                                          -  WRK-RECE41G-TENSU(12)
+                                          -  WRK-RECE41G-TENSU(14)
       *
                COMPUTE   RECE41-TOTALKIN   =  
                   (RECE41-TOTALTEN  *  RECE41-TANKA  *  WRK-KSNRATE) 
@@ -7014,28 +7259,70 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               +  RECE41-TENSU(36)
                                               +  RECE41-TENSU(37)
       *
-               COMPUTE   RECE41-TOTALTEN      =  RECE41-TENSU(9)
-                                              +  RECE41-TENSU(18)
-                                              +  RECE41-TENSU(22)
-                                              +  RECE41-TENSU(25)
-                                              +  RECE41-TENSU(28)
-                                              +  RECE41-TENSU(31)
-                                              +  RECE41-TENSU(34)
-                                              +  RECE41-TENSU(38)
+      ***      COMPUTE   RECE41-TOTALTEN      =  RECE41-TENSU(9)
+      ***                                     +  RECE41-TENSU(18)
+      ***                                     +  RECE41-TENSU(22)
+      ***                                     +  RECE41-TENSU(25)
+      ***                                     +  RECE41-TENSU(28)
+      ***                                     +  RECE41-TENSU(31)
+      ***                                     +  RECE41-TENSU(34)
+      ***                                     +  RECE41-TENSU(38)
+      *
+               MOVE       ZERO         TO        WRK-SYUTEN-JI
+                                                 WRK-YKZTEN-JI
+               PERFORM    VARYING    ID1    FROM    1   BY   1
+                           UNTIL     ID1     >     31
+                  ADD   RECE41-SYUTEN-JI(ID1)  TO  RECE41-TOTALTEN
+                                                   WRK-SYUTEN-JI
+                  ADD   RECE41-YKZTEN-JI(ID1)  TO  RECE41-TOTALTEN
+                                                   WRK-YKZTEN-JI
+               END-PERFORM
+      *        減点編集
+               COMPUTE   RECE41-TOTALTEN  =  RECE41-TOTALTEN
+                                          -  WRK-RECE41G-TENSU(2)
+                                          -  WRK-RECE41G-TENSU(3)
+                                          -  WRK-RECE41G-TENSU(5)
+                                          -  WRK-RECE41G-TENSU(6)
+                                          -  WRK-RECE41G-TENSU(7)
+                                          -  WRK-RECE41G-TENSU(8)
+                                          -  WRK-RECE41G-TENSU(9)
+                                          -  WRK-RECE41G-TENSU(12)
+                                          -  WRK-RECE41G-TENSU(14)
+               COMPUTE   WRK-SYUTEN-JI    =  WRK-SYUTEN-JI
+                                          -  WRK-RECE41G-TENSU(2)
+                                          -  WRK-RECE41G-TENSU(3)
+                                          -  WRK-RECE41G-TENSU(5)
+                                          -  WRK-RECE41G-TENSU(6)
+                                          -  WRK-RECE41G-TENSU(7)
+                                          -  WRK-RECE41G-TENSU(8)
+                                          -  WRK-RECE41G-TENSU(9)
+                                          -  WRK-RECE41G-TENSU(12)
+                                          -  WRK-RECE41G-TENSU(14)
+      *
+               IF   TBL-SYUTEN-JI(2)  >=  WRK-RECE41G-TENSU(2)
+                 COMPUTE  TBL-SYUTEN-JI(2) =
+                          TBL-SYUTEN-JI(2) -  WRK-RECE41G-TENSU(2)
+               ELSE
+                 MOVE     ZERO    TO   TBL-SYUTEN-JI(2)
+               END-IF
+               IF   TBL-SYUTEN-JI(7)  >=  WRK-RECE41G-TENSU(7)
+                 COMPUTE  TBL-SYUTEN-JI(7) =
+                          TBL-SYUTEN-JI(7) -  WRK-RECE41G-TENSU(7)
+               ELSE
+                 MOVE     ZERO    TO   TBL-SYUTEN-JI(7)
+               END-IF
+               IF   TBL-SYUTEN-JI(8)  >=  WRK-RECE41G-TENSU(8)
+                 COMPUTE  TBL-SYUTEN-JI(8) =
+                          TBL-SYUTEN-JI(8) -  WRK-RECE41G-TENSU(8)
+               ELSE
+                 MOVE     ZERO    TO   TBL-SYUTEN-JI(8)
+               END-IF
       *
                EVALUATE   RECE41-JIBAIKBN
       *
                  WHEN       "1"
       *
                    COMPUTE   WRK-KSNRATE   =  RECE41-KSNRATE / 100
-      *
-                   MOVE       ZERO         TO        WRK-SYUTEN-JI
-                                                     WRK-YKZTEN-JI
-                   PERFORM    VARYING    ID1    FROM    1   BY   1
-                               UNTIL     ID1     >     31
-                      ADD   RECE41-SYUTEN-JI(ID1)  TO  WRK-SYUTEN-JI
-                      ADD   RECE41-YKZTEN-JI(ID1)  TO  WRK-YKZTEN-JI
-                   END-PERFORM
       *
                    COMPUTE  RECE41-TOTALKIN-JYU   =
                             RECE41-TOTALKIN-JYU   +
@@ -7068,14 +7355,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-PERFORM
       *
                  WHEN       "2"
-      *
-                   MOVE       ZERO         TO        WRK-SYUTEN-JI
-                                                     WRK-YKZTEN-JI
-                   PERFORM    VARYING    ID1    FROM    1   BY   1
-                               UNTIL     ID1     >     31
-                      ADD   RECE41-SYUTEN-JI(ID1)  TO  WRK-SYUTEN-JI
-                      ADD   RECE41-YKZTEN-JI(ID1)  TO  WRK-YKZTEN-JI
-                   END-PERFORM
       *
                    COMPUTE  RECE41-TOTALKIN-JYU   =
                             RECE41-TOTALKIN-JYU   +

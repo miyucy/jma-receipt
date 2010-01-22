@@ -122,6 +122,7 @@
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    09/06/17  処置の記載順変更（日付順）
       *  04.05.03    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.05.04    NACL-門脇    10/01/21  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -720,6 +721,8 @@
                                PIC X(04)   VALUE   "分画".
       *    薬剤料逓減
            03  CONS-TEIGEN     PIC X(09)   VALUE   "630010002".
+      *    包括点数の治験減点分
+           03  CONS-GENTEN     PIC X(09)   VALUE   "199000210".
       *---- (01.00.05) LINE ADD START --------------------------------
       *フリーコメント
       *    電話再診（　回）
@@ -1191,6 +1194,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                    IF      RECE44-SRYKBN     <   "31"
                        MOVE    1             TO  IDY
                    ELSE                          
+                     IF    RECE44-ZAIKBN     =    1
+                       MOVE    2             TO  IDY
+                     ELSE
                        EVALUATE    RECE45-SRYCD (IDX) (1:1)
                            WHEN    "0"
                              IF   RECE41-HKNKBN    NOT  =  "4" 
@@ -1307,6 +1313,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                MOVE    2             TO  SPA-STS
                                GO  TO  2002-TBLZAIW-TAIHI-EXT
                        END-EVALUATE
+                     END-IF
                    END-IF            
       *
                    IF      RECE45-KENTAICOMMENT (IDX)   =   1
@@ -1335,6 +1342,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                          IF  ( RECE45-SRYCD(IDX)(1:1)  =  "8"       )
                          OR  ((RECE45-SRYCD(IDX)(1:3)  NOT =  "059") AND
                               (RECE45-SRYCD(IDX)(1:1)  =  "0"      ))
+                         OR  ( RECE44-SAFLG       NOT  =  SPACE     )
+                         OR  ( RECE44-ZAIKBN           =   1        )
                            CONTINUE
                          ELSE
                            MOVE    RECE45-SRYCD (IDX)
@@ -1462,6 +1471,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *---- (01.00.05) LINE ADD END --------------------------------
       *
                        IF      RECE45-SRYCD(IDX) =   CONS-TEIGEN
+                                                 OR  CONS-GENTEN
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF 
                        IF     (RECE44-SRYKBN     =   "31" OR "32" )
@@ -1771,6 +1781,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *
            IF  WRK-TBLMAX           >   ZERO
                IF      RECE44-SRYKBN      >=  "33"
+               AND     RECE44-ZAIKBN   NOT =   1
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -2784,6 +2795,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                MOVE    999999999         TO  RECE46-KOUHYOJUNNUM
       *
                MOVE    SPACE             TO  RECE46-SAFLG
+               MOVE    ZERO              TO  RECE46-ZAIKBN
                MOVE    SPACE             TO  RECE46-SRYSYUKBN
                MOVE    ZERO              TO  RECE46-DAY
       *
@@ -3239,28 +3251,26 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
        440-TNSKAI-SET-SEC          SECTION.
       *
       *---- (01.00.05) LINE ADD START --------------------------------
-           IF     (FLG-COMMENT        =   1)     AND
-                  (RECE44-SRYKBN      =   "99")
-               GO  TO  440-TNSKAI-SET-EXT
+      ***  IF   RECE44-ZAIKBN      =    1 OR 2
+           IF   RECE44-ZAIKBN      =    2
+             CONTINUE
+           ELSE
+             IF ((FLG-COMMENT        =    1                  ) AND
+                 (RECE44-SRYKBN      =   "99"                ))
+             OR ((FLG-COMMENT2       =    1                  ) AND
+                 (RECE44-SRYKBN      =   "11" OR "12" OR "99"))
+             OR ((FLG-COMMENT3       =    1                  ) AND
+                 (RECE44-SRYKBN      =   "11" OR "12"        ) AND
+                 (WRK-TENSUGOKEI     =   ZERO                ))
+             OR ((FLG-COMMENT3       =    1                  ) AND
+                 (RECE44-SRYKBN      =   "14"                ) AND
+                 (RECE44-ZAITEN      =   ZERO                ))
+             OR ( RECE44-SAFLG   NOT =   SPACE                )
+             OR ( RECE44-TOYAKUFLG   =   "2"                  )
+             OR ( RECE44-ZAIKBN      =    1                   )
+                  GO  TO  440-TNSKAI-SET-EXT
+             END-IF
            END-IF
-           IF     (FLG-COMMENT2       =   1)     AND                    
-                  (RECE44-SRYKBN      =   "11" OR "12" OR "99")         
-               GO  TO  440-TNSKAI-SET-EXT                               
-           END-IF                                                       
-           IF     (FLG-COMMENT3       =    1  )           AND           
-                  (RECE44-SRYKBN      =   "11" OR "12")   AND           
-                  (WRK-TENSUGOKEI     =   ZERO)                         
-               GO  TO  440-TNSKAI-SET-EXT                               
-           END-IF
-           IF     (FLG-COMMENT3       =    1  )  AND
-                  (RECE44-SRYKBN      =   "14")  AND
-                  (RECE44-ZAITEN      =   ZERO)
-               GO  TO  440-TNSKAI-SET-EXT
-           END-IF
-           IF     (RECE44-SAFLG   NOT =   SPACE)
-           OR     (RECE44-TOYAKUFLG   =   "2"  )
-               GO  TO  440-TNSKAI-SET-EXT                              
-           END-IF  
       *---- (01.00.05) LINE ADD END   --------------------------------
       *         
            MOVE    WRK-TNSKAI-ST     TO  IDA
@@ -3323,9 +3333,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                  IF       (TBL-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7")
                  OR       (TBL-ZAIW-SRYCD1(1:3)  =   "059"       )
                  OR       (RECE44-SAFLG     NOT  =   SPACE       )
+                 OR       (RECE44-ZAIKBN         =    1          )
                      MOVE    ALL "9"            TO
                                             TBL-ZAIW-CDKBN-AREA
-                     IF    RECE44-SAFLG     NOT  =   SPACE
+                     IF   (RECE44-SAFLG     NOT  =   SPACE)
+                     OR   (RECE44-ZAIKBN         =    1   )
                          MOVE    999999999   TO  TBL-ZAIW-KOUHYOJYUNNUM
                      ELSE
                        IF    TBL-ZAIW-SRYCD1(1:1)  =   "6"
@@ -3405,6 +3417,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                END-EVALUATE
       *
                MOVE    RECE44-SAFLG      TO  RECE46-SAFLG
+               MOVE    RECE44-ZAIKBN     TO  RECE46-ZAIKBN
       *
                MOVE    RECE44-OKIKAEFLG  TO  RECE46-OKIKAEFLG
       *

@@ -63,6 +63,7 @@
       *  04.05.03    NACL-門脇    09/09/24  レセプト記載しないコメント対応
       *  04.05.04    NACL-門脇    09/11/19  薬剤算定なし時の摘要欄同一剤
       *                                     まとめ記載対応
+      *  04.05.05    NACL-門脇    10/01/22  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -335,6 +336,9 @@
       *
            03  WRK-FUKA-KINGAKU                PIC 9(09).
            03  WRK-FUKA-VALUE                  PIC 9(01).
+      *
+           03  WRK-TOTALTEN1                   PIC 9(08).
+           03  WRK-TOTALTEN2                   PIC 9(08).
       *
       *---------------------------------------------------------------
       *  回数減算用退避領域
@@ -664,6 +668,10 @@
            COPY    "CPRCF100.INC"  REPLACING  //RECE100//
                                    BY         //WRK-RECE100//.
       *
+       01  WRK-RECE100G-REC. 
+           COPY    "CPRCF100.INC"  REPLACING  //RECE100//
+                                   BY         //WRK-RECE100G//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -907,6 +915,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
+           INITIALIZE                   WRK-RECE100G-REC
+      *
            INITIALIZE                   TBL-JNISSU                      
            INITIALIZE                   TBL-JNISSU-GEN
       *
@@ -922,6 +932,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
                                   =       SPACE )
                PERFORM 2104-RECE120-HENSYU-SEC
            END-PERFORM
+           PERFORM     2105-GENTEN-HENSYU-SEC
            PERFORM     2106-JNISSU-SET-SEC                                   
            PERFORM     2107-KHNTEN-CLEAR-SEC
            PERFORM     2110-NYUYOJI-COMENTFLG-SET-SEC
@@ -999,6 +1010,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23"         ) AND
                                    (WRK-PARA-PRTKBN  =  "2"      ))
+                               OR ( ACCT-ZAIKBN  =   1            )
                                  IF  (ACCT-SRYCDTOTAL(1:12)  =
                                                     "000000999901")
                                  AND (ACCT-MEISAISU      =   1    )
@@ -1340,6 +1352,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
                AND   ( RECE120-ZAITEN    =     ZERO                 )
                AND   ( RECE120-SAFLG     =     SPACE                )
+               AND   ( ACCT-ZAIKBN   NOT =     1                    )
                   IF   SRY-SRYCD(IDX2)   =     "820000046"
                      MOVE     "1"         TO    RECE120-SAFLG
                   END-IF
@@ -1347,6 +1360,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE120-ZAITEN     =     ZERO        )
+               AND   ( ACCT-ZAIKBN   NOT =     1            )
                   IF     RECE120-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE120-TOYAKUFLG
                   ELSE
@@ -1363,6 +1377,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF    ( SRY-SRYKBN        =     "14" )
                AND   ( RECE120-ZAITEN    =     ZERO )
+               AND   ( ACCT-ZAIKBN   NOT =     1    )
                   IF     RECE120-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE120-TOYAKUFLG
                   ELSE
@@ -1527,6 +1542,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  2104411-RECE130-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
+                IF   ACCT-ZAIKBN  =  1
+                  MOVE    "1"             TO  RECE130-RECEPTFLG(IDX4)
+                  MOVE    ZERO            TO  RECE130-SRYSURYO(IDX4)
+                ELSE
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
                                           +     0.99999                   
                   COMPUTE RECE130-SRYSURYO(IDX4)                         
@@ -1544,7 +1563,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     ELSE                                                
                       MOVE WRK-SRYSURYO2  TO  RECE130-SRYSURYO(IDX4 - 1) 
                     END-IF
+                  ELSE
+                    MOVE  "1"             TO  RECE130-RECEPTFLG(IDX4)
                   END-IF                                                
+                END-IF
                ELSE                                                     
                   MOVE    SRY-SRYSURYO(IDX2)                            
                                           TO    WRK-SRYSURYO            
@@ -1876,6 +1898,28 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    END-IF
                  END-EVALUATE
                END-IF
+      *
+               MOVE    ACCT-ZAIKBN  TO  RECE120-ZAIKBN
+      *
+               IF      ACCT-ZAIKBN       =     1
+                 MOVE   ZERO        TO  RECE130-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE130-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE130-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE130-TANINAME(IDX4)
+                 IF  (SRY-SRYCD(IDX2)(1:1) = "6" OR "7")
+                 OR  (SRY-SRYCD(IDX2)(1:3) = "059"     )
+                 OR  (SRY-SRYCD(IDX2)(1:2) = "63"      )
+                     MOVE  "1"          TO  RECE120-COMCDFLG
+                     MOVE  "810000001"  TO  RECE130-SRYCD(IDX4)
+                 END-IF
+               END-IF
+               IF      ACCT-ZAIKBN       =     2
+                 MOVE   ZERO        TO  RECE130-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE130-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE130-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE130-TANINAME(IDX4)
+               END-IF
+      *
               END-IF
              END-IF  
            END-PERFORM
@@ -2490,11 +2534,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                            MOVE    ACCT-YKZTEN    TO   WK-YKZTEN
                        END-IF
                    ELSE
-                       IF   SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
+                       IF ( SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"  OR  "64"
+                                            "13"  OR  "14"  OR  "64" )
+                       OR ((ACCT-ZAIKBN  =   2  ) AND
+                           (SRY-SRYKBN   =  "12"))
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -2515,10 +2561,12 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                     (ACCT-ZAIKAISU  NOT =    ZERO)
                      PERFORM   2104421-RECE-LEFT-SET-SEC
                END-IF
-               IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
+               IF  ( SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "50"   OR   "54"   OR   "60"   OR
-                                      "70"   OR   "64"
+                                      "70"   OR   "64"     )
+               OR  ((ACCT-ZAIKBN  =    2                  ) AND
+                    (SRY-SRYKBN   =   "12" OR "13" OR "14"))
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -2869,10 +2917,24 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         COMPUTE RECE100-TENSU(6 1) =
                                 RECE100-TENSU(6 1) +
                                (WRK-TNS-TEN(IDX3)  *   ACCT-ZAIKAISU)
+      *      （その他）
+                   WHEN  OTHER 
+                        IF   ACCT-ZAIKBN     =  2
+                           MOVE   ZERO       TO    RECE100-KHNTEN(2)
+                           MOVE   1          TO    FLG-KHNTEN2
+                           COMPUTE  WRK-RECE100G-TENSU(2 1) =
+                                    WRK-RECE100G-TENSU(2 1) +
+                                   (WK-ZAITEN   *   WK-ZAIKAISU)
+                        END-IF
                  END-EVALUATE
       *    指導のレセ点数欄の編集
                WHEN    "13"
-                 EVALUATE   SRY-SRYCD(IDX3)
+                 IF  ACCT-ZAIKBN   =    2
+                  COMPUTE  WRK-RECE100G-TENSU(9 1)  =
+                           WRK-RECE100G-TENSU(9 1)  +
+                          (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
+                  EVALUATE   SRY-SRYCD(IDX3)
       *            公害疾患相談料
                    WHEN     "102130010"
                       ADD   WK-ZAIKAISU TO  RECE100-KAISU(7)
@@ -2919,9 +2981,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                       IF   FLG-NEBU  =  ZERO
                          MOVE     3    TO    FLG-NEBU
                       END-IF
-                 END-EVALUATE
+                  END-EVALUATE
+                 END-IF
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE  WRK-RECE100G-TENSU(14 1)  =
+                            WRK-RECE100G-TENSU(14 1)  +
+                           (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                    MOVE      ZERO            TO   FLG-ZAITAKU
       *            往診・特別往診（時間加算）
                    IF    FLG-OSINKBN         =   1
@@ -3031,6 +3099,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                              RECE100-TENSU(15 2)  +
                             (WK-KIZAITEN *   WK-ZAIKAISU)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -3377,6 +3446,51 @@ grpsys           PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    包括点数の治験減点分編集
+      *****************************************************************
+       2105-GENTEN-HENSYU-SEC      SECTION.
+      *
+           MOVE     ZERO    TO    WRK-TOTALTEN1
+           MOVE     ZERO    TO    WRK-TOTALTEN2
+           PERFORM VARYING ACCT-IDX    FROM    1   BY  1
+                   UNTIL   ACCT-IDX    >       38
+               ADD    RECE100-TENSU(ACCT-IDX 1)  TO  WRK-TOTALTEN1
+               ADD    RECE100-TENSU(ACCT-IDX 2)  TO  WRK-TOTALTEN2
+           END-PERFORM
+           COMPUTE   WRK-TOTALTEN1  =  WRK-TOTALTEN1
+                                    -  WRK-RECE100G-TENSU(2 1)
+                                    -  WRK-RECE100G-TENSU(9 1)
+                                    -  WRK-RECE100G-TENSU(14 1)
+      *
+      *    再診のレセ点数の編集（減点）
+           IF   RECE100-TENSU(2 1)   >=  WRK-RECE100G-TENSU(2 1)
+             COMPUTE  RECE100-TENSU(2 1)  =
+                      RECE100-TENSU(2 1)  - WRK-RECE100G-TENSU(2 1)
+           ELSE
+             MOVE     ZERO    TO   RECE100-TENSU(2 1)
+           END-IF
+      *
+      *    指導のレセ点数の編集（減点）
+           IF   RECE100-TENSU(9 1)   >=  WRK-RECE100G-TENSU(9 1)
+             COMPUTE  RECE100-TENSU(9 1)  =
+                      RECE100-TENSU(9 1)  - WRK-RECE100G-TENSU(9 1)
+           ELSE
+             MOVE     ZERO    TO   RECE100-TENSU(9 1)
+           END-IF
+      *
+      *    在宅のレセ点数の編集（減点）
+           IF   RECE100-TENSU(14 1)  >=  WRK-RECE100G-TENSU(14 1)
+             COMPUTE  RECE100-TENSU(14 1) =
+                      RECE100-TENSU(14 1) - WRK-RECE100G-TENSU(14 1)
+           ELSE
+             MOVE     ZERO    TO   RECE100-TENSU(14 1)
+           END-IF
+      *
+           .
+       2105-GENTEN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    実日数編集処理
       *****************************************************************
        2106-JNISSU-SET-SEC                    SECTION.                       
@@ -3399,13 +3513,16 @@ grpsys           PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
       *    合計点数集計
-           PERFORM VARYING ACCT-IDX    FROM    1   BY  1
-                   UNTIL   ACCT-IDX    >       38
-               ADD    RECE100-TENSU(ACCT-IDX 1)  TO
-                                             RECE100-TENSU(41 1)
-               ADD    RECE100-TENSU(ACCT-IDX 2)  TO
-                                             RECE100-TENSU(41 2)
-           END-PERFORM
+      ***  PERFORM VARYING ACCT-IDX    FROM    1   BY  1
+      ***          UNTIL   ACCT-IDX    >       38
+      ***      ADD    RECE100-TENSU(ACCT-IDX 1)  TO
+      ***                                    RECE100-TENSU(41 1)
+      ***      ADD    RECE100-TENSU(ACCT-IDX 2)  TO
+      ***                                    RECE100-TENSU(41 2)
+      ***  END-PERFORM
+      *
+           MOVE       WRK-TOTALTEN1     TO    RECE100-TENSU(41 1)
+           MOVE       WRK-TOTALTEN2     TO    RECE100-TENSU(41 2)
       *
       *    合計（１５円×手技点）
            COMPUTE    RECE100-TOTALTEN(1)  =  RECE100-TENSU(41 1)

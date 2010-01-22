@@ -78,6 +78,7 @@
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/29  ÎÅÍÜ´ü´Öµ­ºÜÊýË¡ÁªÂòµ¡Ç½
       *                                     ¡ÊµÙ¶È¾ÚÌÀÀÁµá»þ¡Ë
+      *  04.05.02    NACL-ÌçÏÆ    10/01/21  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -891,7 +892,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
               END-PERFORM
       *
               PERFORM     2104-HENSYU-SET-SEC
-              PERFORM     2105-HENSYU-SET2-SEC
+      ****    PERFORM     2105-HENSYU-SET2-SEC
       *
            ELSE
       *
@@ -904,7 +905,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                   PERFORM    2107-NISUU-HENSYU3-SEC
               END-PERFORM
       *
-              PERFORM     2105-HENSYU-SET2-SEC
+      ****    PERFORM     2105-HENSYU-SET2-SEC
               PERFORM     2108-HENSYU-SET3-SEC
       *
            END-IF 
@@ -1110,7 +1111,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                                MOVE    ZERO    TO      FLG-SHOSAISIN
                                                        FLG-SHOSAISIN2   
                                                        FLG-SHOSAISIN-GEN
@@ -1160,7 +1162,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF   (ACCT-ZAITEN        =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                                MOVE    ZERO    TO      FLG-SHOSAISIN 
                                                        FLG-SHOSAISIN2   
                                                        FLG-SHOSAISIN-GEN
@@ -2032,7 +2035,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      FLG-DAY         =   1
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                                (ACCT-JIHOKBN       =   SPACE)
+                                (ACCT-JIHOKBN       =   SPACE)    AND
+                                (ACCT-ZAIKBN    NOT = 1 AND 2)
                                MOVE  ACCT-DAY(1 WRK-DAY)  
                                                TO      WRK-ZAIKAISU
                                MOVE    ZERO    TO      FLG-KENSA
@@ -2121,7 +2125,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                                MOVE    ZERO    TO      FLG-KENSA
                                IF   ACCT-SRYKBN  = "60" OR "64" OR "70"
                                    MOVE     1      TO     FLG-KENSA
