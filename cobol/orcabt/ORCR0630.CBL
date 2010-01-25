@@ -1052,8 +1052,9 @@
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL   IDX1    >       10
                            OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                               RECE62-HKNCOMBI (IDX1)
+                       IF     (ACCT-HKNCOMBI   =
+                                               RECE62-HKNCOMBI (IDX1))
+                       AND    (ACCT-ZAIKBN    NOT = 1 AND 2          )
       *
                            PERFORM    500-KUMIAWASE-HANBETU-SEC
       *
@@ -2597,6 +2598,19 @@
       *
            IF    RECE62-NYUINDAY-KBN(ACCT-IDX) = "1"
       ***    IF  WRK-NYUINDAY-TANKI2-KBN(ACCT-IDX) NOT = SPACE
+              IF ACCT-ZAIKBN = 2
+               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+               AND    KH-IDX                >   1
+                  CONTINUE
+               ELSE
+                  COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
+                           WRK-NYUTOKKEI2(KH-IDX)  -
+                           (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+               END-IF
+               COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
+                        RECE62-NYUTOKKEI2(KH-IDX)  -
+                           (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+              ELSE
                IF     TBL-FUKUSHIFLG(IDX2)  =   1
                AND    KH-IDX                >   1
                   CONTINUE
@@ -2608,6 +2622,7 @@
                COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                         RECE62-NYUTOKKEI2(KH-IDX)  +
                            (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+              END-IF
       ***    ELSE
       ***      IF     TBL-FUKUSHIFLG(IDX2)  =   1
       ***      AND    KH-IDX                >   1
@@ -2766,8 +2781,9 @@
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL   IDX1    >       10
                            OR      RECE62-HKNCOMBI (IDX1)  =   ZERO 
-                       IF      ACCT-HKNCOMBI   =
-                                               RECE62-HKNCOMBI (IDX1)
+                       IF     (ACCT-HKNCOMBI   =
+                                               RECE62-HKNCOMBI (IDX1))
+                       AND    (ACCT-ZAIKBN    NOT = 1 AND 2          )
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                              IF   ACCT-SRYKBN  =  "90" OR "92"  
