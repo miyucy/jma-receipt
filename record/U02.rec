@@ -104,9 +104,9 @@ U02	{
 					value4	varchar(50);
 					value5	varchar(02);
 					value6	varchar(06);
-					value7	varchar(10);
+					value7	varchar(21);
 					value8	varchar(29);
-					value9	varchar(20);
+					value9	varchar(21);
 					value10	varchar(55);
 					value11	varchar(10);
 					value12	varchar(04);

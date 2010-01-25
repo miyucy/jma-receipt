@@ -97,9 +97,9 @@
                     07  U02-ULNAME        PIC X(50).
                     07  U02-ULSEX         PIC X(02).
                     07  U02-ULNENREI      PIC X(06).
-                    07  U02-ULSRYKA       PIC X(10).
+                    07  U02-ULSRYKA       PIC X(21).
                     07  U02-ULDRNAME      PIC X(29).
-                    07  U02-ULSRYNAIYO    PIC X(20).
+                    07  U02-ULSRYNAIYO    PIC X(21).
                     07  U02-ULHKNCOMBI    PIC X(55).
                     07  U02-ULRRKYMD      PIC X(10).
                     07  U02-ULSRFLG       PIC X(04).
