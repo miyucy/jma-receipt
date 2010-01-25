@@ -470,10 +470,10 @@ Y01	{
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
-				value	varchar(21);
+				value	varchar(27);
 			};
 			count	int;
-			item	varchar(21)[99];
+			item	varchar(27)[99];
 		};
 		scrolledwindow3	{
 			PTLIST	{

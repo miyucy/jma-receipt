@@ -367,9 +367,9 @@
                 04  Y01-DRNAME-LST     PIC X(29)   OCCURS  99 TIMES.
               03  Y01-SRYNAIYO-COMBO.
                 04  Y01-SRYNAIYO.
-                  05  Y01-VALUE   PIC X(21).
+                  05  Y01-VALUE   PIC X(27).
                 04  Y01-SRYNAIYO-COUNT   PIC S9(9)   BINARY.
-                04  Y01-SRYNAIYO-LST    PIC X(21)   OCCURS  99 TIMES.
+                04  Y01-SRYNAIYO-LST    PIC X(27)   OCCURS  99 TIMES.
               03  Y01-S-SROLLEDWINDOW3.
                 04  Y01-PTLIST.
                   05  Y01-PTLIST-COUNT   PIC S9(9)   BINARY.

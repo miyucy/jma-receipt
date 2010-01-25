@@ -29,9 +29,9 @@
                   05  Y03-ITEM        OCCURS  200 TIMES.
                         08  Y03-TNUM        PIC X(4).
                         08  Y03-TYYKTIME    PIC X(5).
-                        08  Y03-TSRYKA      PIC X(10).
-                        08  Y03-TSRYNAIYO   PIC X(8).
-                        08  Y03-TDRNAME     PIC X(12).
+                        08  Y03-TSRYKA      PIC X(20).
+                        08  Y03-TSRYNAIYO   PIC X(24).
+                        08  Y03-TDRNAME     PIC X(24).
                         08  Y03-TNAME       PIC X(20).
                         08  Y03-TPTNUM      PIC X(20).
                         08  Y03-TYYKKBN     PIC X(20).
@@ -40,9 +40,9 @@
                   05  Y03-SELECT  PIC X       OCCURS  200 TIMES.
               03  Y03-SRYNAIYO-COB.
                 04  Y03-SRYNAIYO.
-                  05  Y03-VALUE   PIC X(21).
+                  05  Y03-VALUE   PIC X(27).
                 04  Y03-SRYNAIY-COUNT   PIC S9(9)   BINARY.
-                04  Y03-SRYNAIY-ITEM    PIC X(21)   OCCURS 100 TIMES.
+                04  Y03-SRYNAIY-ITEM    PIC X(27)   OCCURS 100 TIMES.
               03  Y03-DRNAME-COB.
                 04  Y03-DRNAME.
                   05  Y03-VALUE   PIC X(29).

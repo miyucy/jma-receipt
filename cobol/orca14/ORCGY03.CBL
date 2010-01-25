@@ -75,9 +75,9 @@
                    07  SPA-GMN-SINRYO.
                        09  SPA-GMN-SINRYOCD    PIC X(02).
                        09  SPA-GMN-SK1         PIC X(01).
-                       09  SPA-GMN-SINRYOMEI   PIC X(18).
+                       09  SPA-GMN-SINRYOMEI   PIC X(24).
                    07  SPA-GMN-SINRYOLST-G.
-                       09  SPA-GMN-SINRYOLST   PIC X(21)   OCCURS  100.
+                       09  SPA-GMN-SINRYOLST   PIC X(27)   OCCURS  100.
                    07  SPA-SINRYO-MAX          PIC 9(04).
       *
                    07  SPA-GMN-DRNAME.
@@ -100,8 +100,8 @@
                            11  SPA-GMN-TBANGO      PIC 9(03).
                            11  SPA-GMN-TYYKTIME    PIC X(04).
                            11  SPA-GMN-TSRYKA      PIC X(20).
-                           11  SPA-GMN-TSINRYO     PIC X(08).
-                           11  SPA-GMN-TDRNAME     PIC X(20).
+                           11  SPA-GMN-TSINRYO     PIC X(24).
+                           11  SPA-GMN-TDRNAME     PIC X(24).
                            11  SPA-GMN-TKNJNAME    PIC X(30).
                            11  SPA-GMN-TPTNUM      PIC X(20).
                            11  SPA-GMN-TYYKKBN     PIC X(10).
@@ -196,8 +196,8 @@
                    07  WRK-GMN-TBANGO      PIC 9(03).
                    07  WRK-GMN-TYYKTIME    PIC X(04).
                    07  WRK-GMN-TSRYKA      PIC X(20).
-                   07  WRK-GMN-TSINRYO     PIC X(08).
-                   07  WRK-GMN-TDRNAME     PIC X(20).
+                   07  WRK-GMN-TSINRYO     PIC X(24).
+                   07  WRK-GMN-TDRNAME     PIC X(24).
                    07  WRK-GMN-TKNJNAME    PIC X(30).
                    07  WRK-GMN-TKNJNO      PIC X(20).
                    07  WRK-GMN-TYYKKBN     PIC X(10).

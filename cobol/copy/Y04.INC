@@ -36,9 +36,9 @@
                 04  Y04-DRNAMELST    PIC X(29)   OCCURS  100 TIMES.
               03  Y04-SRYNAIYO-COMBO.
                 04  Y04-SRYNAIYO.
-                  05  Y04-VALUE   PIC X(21).
+                  05  Y04-VALUE   PIC X(27).
                 04  Y04-S2-COUNT   PIC S9(9)   BINARY.
-                04  Y04-SRYNAIYOLST    PIC X(21)   OCCURS  100 TIMES.
+                04  Y04-SRYNAIYOLST    PIC X(27)   OCCURS  100 TIMES.
               03  Y04-KANJA-LIST1.
                 04  Y04-PT-LIST1.
                   05  Y04-LIST1-COUNT   PIC S9(9)   BINARY.

@@ -22,7 +22,7 @@ Y05	{
 					value1	varchar(14);
 					value2	varchar(5);
 					value3	varchar(20);
-					value4	varchar(18);
+					value4	varchar(24);
 					value5	varchar(50);
 					value6	varchar(30);
 					value7	varchar(20);

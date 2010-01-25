@@ -27,10 +27,10 @@ Y04	{
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{
-				value	varchar(21);
+				value	varchar(27);
 			};
 			count	int;
-			item	varchar(21)[100];
+			item	varchar(27)[100];
 		};
 		KANJA_LIST1	{
 			PT_LIST1	{

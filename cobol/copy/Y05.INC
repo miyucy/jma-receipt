@@ -18,7 +18,7 @@
                     06  Y05-YYKYMD  PIC X(14).
                     06  Y05-YYKTIME PIC X(5).
                     06  Y05-SRYKA   PIC X(20).
-                    06  Y05-SINRYO  PIC X(18).
+                    06  Y05-SINRYO  PIC X(24).
                     06  Y05-DRNAME  PIC X(50).
                     06  Y05-YYKKBN  PIC X(30).
                     06  Y05-RENRAKU PIC X(20).

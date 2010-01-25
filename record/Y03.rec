@@ -14,9 +14,9 @@ Y03	{
 				item	{
 					value1	varchar(4);
 					value2	varchar(5);
-					value3	varchar(10);
-					value4	varchar(8);
-					value5	varchar(12);
+					value3	varchar(20);
+					value4	varchar(24);
+					value5	varchar(24);
 					value6	varchar(20);
 					value7	varchar(20);
 					value8	varchar(20);
@@ -28,10 +28,10 @@ Y03	{
 		};
 		SRYNAIYO_COB	{
 			SRYNAIYO	{
-				value	varchar(21);
+				value	varchar(27);
 			};
 			count	int;
-			item	varchar(21)[100];
+			item	varchar(27)[100];
 		};
 		DRNAME_COB	{
 			DRNAME	{

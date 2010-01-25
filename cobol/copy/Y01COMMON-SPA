@@ -32,7 +32,7 @@
                05  SPA-Y01-SRYNAIYOG.
                    07  SPA-Y01-SRYNAIYO          PIC X(02).
                    07  SPA-Y01-SK1               PIC X(01).
-                   07  SPA-Y01-SRYNAIYOMEI       PIC X(10).
+                   07  SPA-Y01-SRYNAIYOMEI       PIC X(24).
                05  SPA-Y01-DRNAME.
                    07  SPA-Y01-DRCDH             PIC X(04).
                    07  SPA-Y01-D1                PIC X(01).
