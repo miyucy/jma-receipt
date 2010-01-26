@@ -663,8 +663,6 @@
                AND    (SPA-COM-INPUTCD (IDX-Z) (1:1)
                                                =   "6" )
                AND    (SPA-COM-YAKUHYO (IDX-Z) =   SPACE )
-               AND    (SPA-COM-SRYKBN  (IDX-Z)(1:1)
-                                          NOT  =   "9"   )
                    IF     (SPA-COM-TUKIJGNKAISU (IDX-Z)
                                                    >   ZERO )  OR
                           (SPA-COM-TUKIJGNTOUYORYO (IDX-Z)
@@ -812,12 +810,12 @@
       *
            PERFORM VARYING     IDX-Y   FROM    1   BY  1
                    UNTIL      (IDX-Y       >   SPA-MAX-LINE     )   OR
+                              (IDX-Y       >   IDX-Z            )   OR
                              ((SPA-GMN-INPUTCD (IDX-Y) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-Y) =   SPACE ))
                            OR (SPA-ERRCD   NOT =   SPACE   )
                IF      (SPA-COM-YAKUHYO (IDX-Y)    =   SPACE  )
                AND     (SPA-COM-INPUTCD (IDX-Y)    =   WRK-SRYCD  )
-               AND     (SPA-COM-SRYKBN  (IDX-Y)(1:1)   NOT =   "9"   )
                    IF     (SPA-NYUGAIKBN       =   "1" )
                    OR     (LNK-SC98-PG         =   "KT01" )
                         COMPUTE WRK-KAISU      =   SPA-COM-NYU-KAI
