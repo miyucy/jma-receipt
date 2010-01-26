@@ -140,6 +140,8 @@
       *    算定回数
            03  WRK-SRYCD               PIC X(09).
            03  WRK-SANTEICNT           PIC 9(04).
+      *
+           03  WRK-KAIFLG2             PIC X(01).
       *@
       *    今回リハビリ発生日
            03  WRK-KYUSEI-INP-G.
@@ -533,6 +535,8 @@
       *    リハビリ算定回数
            MOVE    WRK-KYUSEI-INP-G    TO  SPA-RIGAKU-REC (1:15)
       *
+           MOVE    SPACE               TO  WRK-KAIFLG2
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE      )   OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE )
@@ -658,7 +662,16 @@
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-KIDCD           TO  SPA-KIDCD
            END-IF
-      *
+      *@
+      *    投薬附加情報チェック
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )  AND
+                  (WRK-ERR-ERRCD       =   SPACE )  AND
+                  (WRK-KEI-ERRCD       =   SPACE )  AND
+                  (WRK-KIDCD           =   SPACE )
+               PERFORM 51022-TENSUPLUS2-CHK02-SEC
+           END-IF
+      *@
       *    スパ領域へ戻す
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                  SPA-GMN-REC
@@ -709,6 +722,12 @@
                                            =   "*"    )
                    CONTINUE
                ELSE
+      *            回数変更あり
+                   IF      SPA-COM-KAIFLG2(IDX)    =   "1"
+                       MOVE    "1"                 TO  WRK-KAIFLG2
+                   ELSE
+                       MOVE    SPACE               TO  WRK-KAIFLG2
+                   END-IF
                    MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
                    INITIALIZE                      WRK-NYUIN-AREA
       *            外用薬の時、入力回数を
@@ -724,6 +743,12 @@
            END-IF
       *    回数・日数
            IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
+      *        回数変更あり
+               IF      SPA-COM-KAIFLG2(IDX)    =   "1"
+                   MOVE    "1"                 TO  WRK-KAIFLG2
+               ELSE
+                   MOVE    SPACE               TO  WRK-KAIFLG2
+               END-IF
                MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
                PERFORM VARYING     IDX-N2  FROM    1   BY  1
                        UNTIL       IDX-N2  >   31
@@ -751,9 +776,19 @@
                 AND    (ORCSC100-INIT       =   ZERO   )
                    MOVE    SPACE       TO  SPA-COM-KZMFLG(IDX)
                    MOVE    SPACE       TO  SPA-COM-HCHKFLG(IDX)
+                   IF      WRK-NYU-KAI NOT =   SPA-COM-NYU-KAI (IDX)
+                       MOVE    SPACE       TO  SPA-COM-TUKIJGNFLG (IDX)
+                       MOVE    SPACE       TO  SPA-COM-TUKIJGNFLG1(IDX)
+                   END-IF
                END-IF
                MOVE    WRK-KAISU       TO  SPA-COM-KAISU (IDX)
                MOVE    WRK-NYUIN-AREA  TO  SPA-COM-NYUIN-AREA (IDX)
+           END-IF
+      *    投薬月上限回数用
+           MOVE    SPACE               TO  SPA-COM-KAIFLG2 (IDX)
+           IF      WRK-KAIFLG2         =   "1"
+               MOVE    SPACE               TO  SPA-COM-TUKIJGNFLG (IDX)
+               MOVE    SPACE               TO  SPA-COM-TUKIJGNFLG1(IDX)
            END-IF
            .
        51011-KAISU-SET1-EXT.
@@ -1787,6 +1822,30 @@
            END-IF
            .
        51022-TENSUPLUS2-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    月上限投薬期間、投与量チェック処理
+      *****************************************************************
+       51022-TENSUPLUS2-CHK02-SEC                SECTION.
+      *
+           INITIALIZE                  ORCSC98AREA
+      **   MOVE    "K02"               TO  LNK-SC98-PG
+           MOVE    "KT01"              TO  LNK-SC98-PG
+           MOVE    "1"                 TO  LNK-SC98-KBN
+           MOVE    SPA-NENREI-YY       TO  LNK-SC98-NENREI-YY
+           MOVE    SPA-NENREI-MM       TO  LNK-SC98-NENREI-MM
+           MOVE    SPA-NENREI-DD       TO  LNK-SC98-NENREI-DD
+           MOVE    SPA-YAKUZAI-AREA    TO  LNK-SC98-YAKUZAI-AREA
+           CALL    "ORCSC98"           USING
+                                       SPA-AREA
+                                       ORCSC98AREA
+                                       WRK-HZN-SCR-AREA
+           MOVE    LNK-SC98-YAKUZAI-AREA   TO  SPA-YAKUZAI-AREA
+           IF      LNK-SC98-ERRMSG     NOT =   SPACE
+               MOVE    LNK-SC98-ERRMSG     TO  SPA-ERRMSG2
+           END-IF
+           .
+       51022-TENSUPLUS2-CHK02-EXT.
            EXIT.
       *****************************************************************
       *     コメント等　編集処理

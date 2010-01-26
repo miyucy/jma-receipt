@@ -544,6 +544,8 @@
            03  WRK-GRPHOSPUSERID       PIC X(64).
            03  WRK-MACHIPG             PIC X(08).
       *!
+           03  WRK-TUKIJGNFLG          PIC X(01).
+           03  WRK-TUKIJGNFLG1         PIC X(01).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -2715,6 +2717,8 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
+               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG(IDX)
+               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG2(IDX)
       *        併用算定が警告の時、クリア
                IF      SPA-COM-HKEIFLG (IDX)   =   "1"
                    MOVE    SPACE               TO  SPA-COM-HKEIFLG (IDX)
@@ -4505,7 +4509,7 @@
       *    診療行為検索処理
       *****************************************************************
        41011-KOUI-HEN2-SEC               SECTION.
-      *
+     *
            INITIALIZE                      WRK-MOJI-AREA
       *
            INITIALIZE                  ORCSC97AREA
@@ -4591,9 +4595,15 @@
                                                TO  WRK-KINKIFLG
                    MOVE    SPA-COM-PTKINKI-ARI (SPA-GMN-IDX)
                                                TO  WRK-PTKINKI-ARI
+                   MOVE    SPA-COM-TUKIJGNFLG (SPA-GMN-IDX)
+                                               TO  WRK-TUKIJGNFLG
+                   MOVE    SPA-COM-TUKIJGNFLG1(SPA-GMN-IDX)
+                                               TO  WRK-TUKIJGNFLG1
                ELSE
                    MOVE    SPACE               TO  WRK-KINKIFLG
                    MOVE    ZERO                TO  WRK-PTKINKI-ARI
+                   MOVE    SPACE               TO  WRK-TUKIJGNFLG
+                   MOVE    SPACE               TO  WRK-TUKIJGNFLG1
                END-IF
       *
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
@@ -4607,6 +4617,10 @@
                MOVE    WRK-KINKIFLG    TO  SPA-COM-KINKIFLG
                                                         (SPA-GMN-IDX)
                MOVE    WRK-PTKINKI-ARI TO  SPA-COM-PTKINKI-ARI
+                                                        (SPA-GMN-IDX)
+               MOVE    WRK-TUKIJGNFLG  TO  SPA-COM-TUKIJGNFLG
+                                                        (SPA-GMN-IDX)
+               MOVE    WRK-TUKIJGNFLG1 TO  SPA-COM-TUKIJGNFLG1
                                                         (SPA-GMN-IDX)
       *
                END-IF
@@ -5399,6 +5413,12 @@
                MOVE    "1"             TO  SPA-COM-KAIFLG(SPA-GMN-IDX)
            ELSE
                MOVE    "1"             TO  SPA-COM-KAIFLG(SPA-GMN-IDX)
+      *        回数変更あり
+               IF      WRK-KAISU       NOT =   SPA-COM-KAISU
+                                                        (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-KAIFLG2
+                                                         (SPA-GMN-IDX)
+               END-IF
                MOVE    WRK-KAISU       TO  SPA-COM-KAISU (SPA-GMN-IDX)
                IF      SPA-COM-KAISU(SPA-GMN-IDX)
                                        =   ZERO
@@ -7974,7 +7994,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4199-HELP-SYORI-EXT.
            EXIT.
-      *TEST
       *
       *****************************************************************
       *    訂正処理
@@ -9185,12 +9204,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  SPA-LOCK
                END-IF
            END-IF
-      *TEST
+      *
       *    コメント入力位置エラーはカーソル移動のみ
            IF      SPA-ERRCD           =   "0100"
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF
-      *TEST
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
@@ -9294,7 +9312,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                           AND (SPA-ERRCD(1:1)      =   "K"   )
                           AND ((SPA-COM-KZMFLG4 (WRK-IDX)  =  "1" )
                            OR  (SPA-COM-KZMFLG5 (WRK-IDX)  =  "1" )
-                           OR  (SPA-COM-KINKIFLG(WRK-IDX)  =  "1" ))
+                           OR  (SPA-COM-KINKIFLG(WRK-IDX)  =  "1" )
+                           OR  (SPA-COM-TUKIJGNFLG(WRK-IDX)  =  "1" )
+                           OR  (SPA-COM-TUKIJGNFLG1(WRK-IDX) =  "1" ))
                           CONTINUE
                        ELSE
                            MOVE    SPACE       TO  SPA-MAE-INPUTCD

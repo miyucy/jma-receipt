@@ -501,6 +501,8 @@
       *
            03  WRK-KINKIFLG            PIC X(01).
            03  WRK-PTKINKI-ARI         PIC 9(01).
+           03  WRK-TUKIJGNFLG          PIC X(01).
+           03  WRK-TUKIJGNFLG1         PIC X(01).
       *    算定回数
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    入力位置
@@ -2196,6 +2198,8 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
+               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)
+               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
       *        併用算定が警告の時、クリア
                IF      SPA-COM-HKEIFLG (IDX)   =   "1"
                    MOVE    SPACE               TO  SPA-COM-HKEIFLG (IDX)
@@ -4460,9 +4464,15 @@
                                                TO  WRK-KINKIFLG
                    MOVE    SPA-COM-PTKINKI-ARI (SPA-GMN-IDX)
                                                TO  WRK-PTKINKI-ARI
+                   MOVE    SPA-COM-TUKIJGNFLG  (SPA-GMN-IDX)
+                                               TO  WRK-TUKIJGNFLG
+                   MOVE    SPA-COM-TUKIJGNFLG1 (SPA-GMN-IDX)
+                                               TO  WRK-TUKIJGNFLG1
                ELSE
                    MOVE    SPACE               TO  WRK-KINKIFLG
                    MOVE    ZERO                TO  WRK-PTKINKI-ARI
+                   MOVE    SPACE               TO  WRK-TUKIJGNFLG
+                   MOVE    SPACE               TO  WRK-TUKIJGNFLG1
                END-IF
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
                MOVE    SPA-COM-IN     (SPA-GMN-IDX)    TO  WRK-FLG-IN
@@ -4475,6 +4485,10 @@
                MOVE    WRK-KINKIFLG    TO  SPA-COM-KINKIFLG
                                                         (SPA-GMN-IDX)
                MOVE    WRK-PTKINKI-ARI TO  SPA-COM-PTKINKI-ARI
+                                                        (SPA-GMN-IDX)
+               MOVE    WRK-TUKIJGNFLG  TO  SPA-COM-TUKIJGNFLG
+                                                        (SPA-GMN-IDX)
+               MOVE    WRK-TUKIJGNFLG1 TO  SPA-COM-TUKIJGNFLG1
                                                         (SPA-GMN-IDX)
       *
                END-IF
@@ -7617,6 +7631,8 @@
                MOVE    "1"                 TO  SPA-COM-KZMFLG4 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG5 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KINKIFLG(IDX2)
+               MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG(IDX2)
+               MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG1(IDX2)
            END-PERFORM
            .
        60011-KEIKOKU-SET-EXT.
@@ -8070,7 +8086,9 @@
                           AND (SPA-ERRCD(1:1)      =   "K"   )
                           AND ((SPA-COM-KZMFLG4 (WRK-IDX)  =  "1" )
                            OR  (SPA-COM-KZMFLG5 (WRK-IDX)  =  "1" )
-                           OR  (SPA-COM-KINKIFLG(WRK-IDX)  =  "1" ))
+                           OR  (SPA-COM-KINKIFLG(WRK-IDX)  =  "1" )
+                           OR  (SPA-COM-TUKIJGNFLG(WRK-IDX)  =  "1" )
+                           OR  (SPA-COM-TUKIJGNFLG1(WRK-IDX) =  "1" ))
                           CONTINUE
                        ELSE
                            MOVE    SPACE       TO  SPA-MAE-INPUTCD

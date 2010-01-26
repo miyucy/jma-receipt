@@ -291,9 +291,9 @@
                            11  SPA-GMN-THKNCOMBIMEI    PIC X(60).
       *
                        09  SPA-NAI-HKNCOMBI    OCCURS  15.
-                           11  SPA-GMN-TFTNRATEMEI  PIC  X(05).
-                           11  SPA-NAI-TFTNRATE     PIC  9(03).
-                           11  SPA-NAI-THKNCOMBIMEI PIC  X(50).
+                           11  SPA-GMN-TFTNRATEMEI     PIC  X(05).
+                           11  SPA-NAI-TFTNRATE        PIC  9(03).
+                           11  SPA-NAI-THKNCOMBIMEI    PIC  X(50).
       *
                            11  SPA-NAI-HKNID           PIC  9(10).
                            11  SPA-NAI-HKNNUM          PIC  X(03).
@@ -319,6 +319,16 @@
                05  SPA-SYOKAI-YMD             PIC  X(08).
                05  SPA-SYOKAI-SRYCD           PIC  X(09).
                05  SPA-SYOKAI-IDX             PIC  9(04).
+      *
+      *    ·îÅêÍ¿¿ôÎÌ¡¦²ó¿ô¥Æ¡¼¥Ö¥ë
+           03  SPA-YAKUZAI-AREA.
+               05  SPA-YAKUZAI-TBL             OCCURS   100.
+                   07  SPA-YAKUZAI-CHKFLG      PIC 9(01).
+                   07  SPA-YAKUZAI-SRYCD       PIC X(09).
+                   07  SPA-YAKUZAI-SURYO       PIC 9(05)V9(05).
+                   07  SPA-YAKUZAI-KAISU       PIC 9(03).
+                   07  SPA-YAKUTEI-SURYO       PIC S9(05)V9(05).
+                   07  SPA-YAKUTEI-KAISU       PIC S9(03).
       *
       *°­À­¼ðáç¸¡ºº¸¡º÷ÍÑ
            03  SPA-AKUSEI-IDX              PIC 9(04).

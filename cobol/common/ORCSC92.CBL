@@ -1138,6 +1138,7 @@
                    CONTINUE
                ELSE
                    MOVE    SPACE           TO  SPA-COM-KZMFLG5 (IDX-T)
+                   MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG(IDX-T)
                END-IF
            END-IF
       *!!
@@ -1200,6 +1201,9 @@
                MOVE    SPACE           TO  SPA-COM-KAIFLG(IDX-T)
            ELSE
                MOVE    "1"             TO  SPA-COM-KAIFLG(IDX-T)
+               IF      LNK-SC97-KAISU  NOT =   SPA-COM-KAISU (IDX-T)
+                   MOVE    "1"             TO  SPA-COM-KAIFLG2(IDX-T)
+               END-IF
                MOVE    LNK-SC97-KAISU  TO  SPA-COM-KAISU (IDX-T)
                IF      SPA-COM-KAISU(IDX-T)
                                        =   ZERO
@@ -4251,6 +4255,13 @@
                                                          (IDX-T IDX-T2)
                    END-IF
                END-PERFORM
+      *        ·î¾å¸Â²ó¿ô
+               MOVE    TNSP2-TUKIJGNKAISU  TO  SPA-COM-TUKIJGNKAISU
+                                                              (IDX-T)
+      *        ·îÁíÅêÍ¿ÎÌ
+               MOVE    TNSP2-TUKIJGNTOUYORYO
+                                           TO  SPA-COM-TUKIJGNTOUYORYO
+                                                              (IDX-T)
            END-IF
            .
        3007-TENSUPLUS2-HEN-EXT.

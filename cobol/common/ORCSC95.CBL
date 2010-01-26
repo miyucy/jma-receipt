@@ -110,6 +110,7 @@
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
+           03  FLG-TENSUPLUS2      PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
@@ -165,6 +166,8 @@
            03  IDX-F3              PIC 9(04).
       *
            03  IDX-P               PIC 9(04).
+      *
+           03  IDY-TBL             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -286,6 +289,9 @@
                05  WRK-SRYDD           PIC 9(02).
       *
            03  WRK-MAE-HKNCOMBI        PIC X(04).
+      *    薬剤総量集計用
+           03  WRK-SOURYO              PIC 9(05)V9(5).
+      *
       *    禁忌１
        01  WRK-TABOO-G.
            03  WRK-TABOO               PIC X(62)
@@ -425,6 +431,10 @@
       *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
+      *    点数マスタ薬剤付加コード
+        01 TENSUPLUS2-REC.
+           COPY    "CPTENSUPLUS2.INC".
+      *
       *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
@@ -5293,6 +5303,7 @@
       *
            MOVE    ZERO                TO  IDX-TEI
            INITIALIZE                  SPA-K02-TEISEI-AREA
+           INITIALIZE                  SPA-YAKUZAI-AREA
       *
            MOVE    ZERO                TO  WRK-EDABAN
       *
@@ -5842,80 +5853,150 @@
                END-IF
       *    点滴判定
       ****     IF      SRY-SRYKBN          =   "33" 
-               IF      SRY-SRYSYUKBN       =   "330"  OR
-                                               "331"
-                   MOVE    SPACE               TO  TNS-TENSU-REC
-                   MOVE    SRY-SRYCD (IDX)     TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
-                   IF     (SRY-SRYCD (IDX)(1:1)    =   "1"  ) AND
-                          (TNS-DATAKBN             =   "1"  )
-                       MOVE    1               TO  LNK-SC95-TENTEKI
-                   END-IF
-                   IF      SRY-SRYCD (IDX)(1:1)    =   "6"
-                       COMPUTE LNK-SC95-CHUSYA =   LNK-SC95-CHUSYA
-                                               +  (TNS-CSYYOURYO
-                                               *   SRY-SRYSURYO(IDX))
-                   END-IF
-               END-IF
+      *        IF      SRY-SRYSYUKBN       =   "330"  OR
+      *                                        "331"
+      *            MOVE    SPACE               TO  TNS-TENSU-REC
+      *            MOVE    SRY-SRYCD (IDX)     TO  TNS-SRYCD
+      *            PERFORM 910-TENSU-READ-SEC
+      *            IF     (SRY-SRYCD (IDX)(1:1)    =   "1"  ) AND
+      *                   (TNS-DATAKBN             =   "1"  )
+      *                MOVE    1               TO  LNK-SC95-TENTEKI
+      *            END-IF
+      *            IF      SRY-SRYCD (IDX)(1:1)    =   "6"
+      *                COMPUTE LNK-SC95-CHUSYA =   LNK-SC95-CHUSYA
+      *                                        +  (TNS-CSYYOURYO
+      *                                        *   SRY-SRYSURYO(IDX))
+      *            END-IF
+      *****    END-IF
       *
       *        訂正の時、診療コードと回数をセット
-               IF     (LNK-SC95-KBN        =   "4" )  AND
+               IF     (LNK-SC95-KBN            =   "4" )  AND
                       (SRY-SRYCD (IDX)(1:1)    =   "1"
-                                               OR  "0" )
-                   MOVE    SPACE               TO  TNS-TENSU-REC
-                   MOVE    SRY-SRYCD (IDX)     TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
-                   IF     (TNS-SANTEIRRKKBN    NOT=   ZERO ) OR
-      *                   処方せん料
-                          (SRY-SRYSYUKBN       =   "820"   ) OR
-      *                   検査
-                          (SRY-SRYKBN          =   "60"    ) OR
-      *                   自動発生分
-                          (SRY-AUTOKBN(IDX)    =   "3"     )
-      *                   静脈注射・中心静脈注射
-                      OR  ((TNS-DATAKBN        =   "1"  ) AND
-                           (TNS-CDKBN-KBN      =   "G"  ) AND
-                           (TNS-CDKBN-KBNNUM   =   001
-                                               OR  005 ) AND
-                          (TNS-CDKBN-KBNNUM-EDA    =  00 ))
-      *
-                       ADD     1               TO  IDX-TEI
-                       IF      IDX-TEI         <=  SPA-MAX-LINE
-                           MOVE    SRY-SRYCD (IDX) TO  SPA-K02-TEI-SRYCD
-                                                             (IDX-TEI)
-                           MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
-                                                             (IDX-TEI)
-                           IF     (TNS-SANTEIRRKKBN NOT =   ZERO )
-                           AND    (TNS-SRYCD (1:1)      =   "1"  )
-                           AND    (TNS-JGNCNT1D         >   ZERO)
-                           AND    (TNS-TANICD       NOT =   "001")
-      *                    １日上限の場合、数量＊回数
-                               IF     SRY-SRYSURYO(IDX)   >   1
-                                   COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
-                                                   =   SRY-SRYSURYO(IDX)
-                                                   *   WRK-ZAIKAISU
-                               END-IF
-                           END-IF
-                       END-IF
-                   END-IF
-      *            ＣＴ・ＭＲＩの時、コード変更
-                   IF     (TNS-SRYSYUKBN   =   "723"  OR  "724"
-                                           OR  "713"  OR  "714")
-                     OR   (TNS-SRYKBN      =   "80"         )
-                       PERFORM 490111-CTMRT-HEN-SEC
-                   END-IF
+                                               OR  "0"
+                                               OR  "6" )  AND
+                      (ACCT-ZAIKBN             =   ZERO )
+      *            訂正内容再編集処理
+                   PERFORM 490112-TEISEI-HEN-SEC
                END-IF
-      *
            END-PERFORM
       *
            IF      ACCT-MEISAISU        =   IDX-KAI
                MOVE    WRK-ZAIKAISU        TO  WKSRY-ZAIKAISU (IDX-W)
            END-IF
       *
-      *
            .
        49011-SRYACT-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    訂正内容再編集処理
+      *****************************************************************
+       490112-TEISEI-HEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  TNS-TENSU-REC
+           MOVE    SRY-SRYCD (IDX)     TO  TNS-SRYCD
+           PERFORM 910-TENSU-READ-SEC
+      *    診療コードと回数セット
+           IF     (TNS-SANTEIRRKKBN    NOT=   ZERO ) OR
+      *           処方せん料
+                  (SRY-SRYSYUKBN       =   "820"   ) OR
+      *           検査
+                  (SRY-SRYKBN          =   "60"    ) OR
+      *           自動発生分
+                  (SRY-AUTOKBN(IDX)    =   "3"     )
+      *            静脈注射・中心静脈注射
+             OR  ((TNS-DATAKBN         =   "1"  ) AND
+                  (TNS-CDKBN-KBN       =   "G"  ) AND
+                  (TNS-CDKBN-KBNNUM    =   001
+                                       OR  005  ) AND
+                  (TNS-CDKBN-KBNNUM-EDA    =  00 ))
+      *
+               ADD     1               TO  IDX-TEI
+               IF      IDX-TEI         <=  SPA-MAX-LINE
+                   MOVE    SRY-SRYCD (IDX) TO  SPA-K02-TEI-SRYCD
+                                                             (IDX-TEI)
+                   MOVE    WRK-ZAIKAISU    TO  SPA-K02-TEI-KAISU
+                                                             (IDX-TEI)
+                   IF     (TNS-SANTEIRRKKBN NOT =   ZERO )
+                   AND    (TNS-SRYCD (1:1)      =   "1"  )
+                   AND    (TNS-JGNCNT1D         >   ZERO)
+                   AND    (TNS-TANICD       NOT =   "001")
+      *            １日上限の場合、数量＊回数
+                       IF     SRY-SRYSURYO(IDX)    >   1
+                           COMPUTE SPA-K02-TEI-KAISU (IDX-TEI)
+                                                   =   SRY-SRYSURYO(IDX)
+                                                   *   WRK-ZAIKAISU
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *    ＣＴ・ＭＲＩの時、コード変更
+           IF     (TNS-SRYSYUKBN       =   "723"  OR  "724"
+                                       OR  "713"  OR  "714")
+             OR   (TNS-SRYKBN          =   "80"         )
+               PERFORM 490111-CTMRT-HEN-SEC
+           END-IF
+      *    点滴注射
+           IF      SRY-SRYSYUKBN       =   "330"
+                                       OR  "331"
+               IF     (SRY-SRYCD (IDX)(1:1)    =   "1"  ) AND
+                      (TNS-DATAKBN             =   "1"  )
+                   MOVE    1                   TO  LNK-SC95-TENTEKI
+               END-IF
+               IF      SRY-SRYCD (IDX)(1:1)    =   "6"
+                   COMPUTE LNK-SC95-CHUSYA     =   LNK-SC95-CHUSYA
+                                               +  (TNS-CSYYOURYO
+                                               *   SRY-SRYSURYO(IDX))
+               END-IF
+           END-IF
+      *
+      *    薬剤月上限回数
+           IF     (SRY-SRYCD (IDX)(1:1)    =   "6"   )
+           AND   ((TNSP2-TUKIJGNKAISU      >   ZERO  )  OR
+                  (TNSP2-TUKIJGNTOUYORYO   >   ZERO  ))
+           AND    (SRY-SRYSYUKBN       NOT =   "95"
+                                           AND "96"  )
+               PERFORM 490112-TEISEI-YAKUZAI-SEC
+           END-IF
+           .
+       490112-TEISEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    薬剤月上限回数処理
+      *****************************************************************
+       490112-TEISEI-YAKUZAI-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  IDY-TBL
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   100 )
+               IF      SPA-YAKUZAI-SRYCD (IDY) =   SPACE
+                   MOVE    SRY-SRYCD (IDX)     TO  SPA-YAKUZAI-SRYCD
+                                                            (IDY)
+               END-IF
+               IF      SPA-YAKUZAI-SRYCD (IDY) =   SRY-SRYCD (IDX)
+                   MOVE    IDY                 TO  IDY-TBL
+                   MOVE    100                 TO  IDY
+               END-IF
+           END-PERFORM
+      *
+      *    今回分削除
+           IF      IDY-TBL             >   ZERO
+               COMPUTE WRK-SOURYO          =  SRY-SRYSURYO (IDX)
+                                           *  WRK-ZAIKAISU
+               COMPUTE SPA-YAKUTEI-SURYO (IDY-TBL)
+                                           =   SPA-YAKUTEI-SURYO
+                                                             (IDY-TBL)
+                                           -   WRK-SOURYO
+      *        月回数
+               COMPUTE SPA-YAKUTEI-KAISU (IDY-TBL)
+                                           =   SPA-YAKUTEI-KAISU
+                                                             (IDY-TBL)
+                                           -   WRK-ZAIKAISU
+           END-IF
+           .
+       490112-TEISEI-YAKUZAI-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ＣＴ・ＭＲＩの時、コード算定履歴用編集処理
       *****************************************************************
@@ -6778,6 +6859,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (TNS-SRYCD(1:1)      =   "1"  )
                PERFORM 9101-TENSUPLUS-SYORI-SEC
            END-IF
+      *    点数マスタ薬剤付加情報より編集
+           IF     (TNS-SRYCD(1:1)      =   "6" )
+               PERFORM 9102-TENSUPLUS2-READ-SEC
+           END-IF
       *
            .
        910-TENSU-READ-EXT.
@@ -6828,6 +6913,41 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        9101-TENSUPLUS-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ薬剤付加情報より編集処理
+      *****************************************************************
+       9102-TENSUPLUS2-READ-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  TENSUPLUS2-REC
+           INITIALIZE                      TENSUPLUS2-REC
+           MOVE    TNS-SRYCD           TO  TNSP2-SRYCD
+      *
+           MOVE    SPA-HOSPNUM         TO  TNSP2-HOSPNUM
+           MOVE    TENSUPLUS2-REC      TO  MCPDATA-REC
+           MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TENSUPLUS2-REC
+                   MOVE    ZERO                TO  FLG-TENSUPLUS2
+               ELSE
+                   MOVE    1                   TO  FLG-TENSUPLUS2
+                   INITIALIZE                      TENSUPLUS2-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-TENSUPLUS2
+               INITIALIZE                      TENSUPLUS2-REC
+           END-IF
+           MOVE    "tbl_tensuplus2"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       9102-TENSUPLUS2-READ-EXT.
            EXIT.
       *
       *****************************************************************

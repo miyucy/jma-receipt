@@ -27,6 +27,8 @@
        01  ORCSC98AREA.
       *    ＰＧ名
            03  LNK-SC98-PG             PIC X(06).
+      *    処理区分（１：月投与量・回数チェック）
+           03  LNK-SC98-KBN            PIC X(01).
       *
            03  LNK-SC98-INAREA.
       *        年齢 
@@ -34,6 +36,17 @@
                    07  LNK-SC98-NENREI-YY     PIC 9(03).
                    07  LNK-SC98-NENREI-MM     PIC 9(02).
                    07  LNK-SC98-NENREI-DD     PIC 9(02).
+      *
+      *    月投与数量・回数テーブル
+           03  LNK-SC98-YAKUZAI-AREA.
+               05  LNK-SC98-YAKUZAI-TBL             OCCURS   100.
+                   07  LNK-SC98-YAKUZAI-CHKFLG      PIC 9(01).
+                   07  LNK-SC98-YAKUZAI-SRYCD       PIC X(09).
+                   07  LNK-SC98-YAKUZAI-SURYO       PIC 9(05)V9(05).
+                   07  LNK-SC98-YAKUZAI-KAISU       PIC 9(03).
+                   07  LNK-SC98-YAKUTEI-SURYO       PIC S9(05)V9(05).
+                   07  LNK-SC98-YAKUTEI-KAISU       PIC S9(03).
+      *
            03  LNK-SC98-OUTAREA.
       *        エラー内容
                05  LNK-SC98-ERRMSG         PIC X(100).

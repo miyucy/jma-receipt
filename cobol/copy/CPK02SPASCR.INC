@@ -238,6 +238,12 @@
                        09  SPA-COM-YAKUHYO        PIC X(01).
       *                ¸ºÅÀÆþÎÏ
                        09  SPA-COM-GENTEN         PIC X(01).
+      *
+      *                ·î¾å¸Â¿ôÎÌ¥Á¥§¥Ã¥¯
+                       09  SPA-COM-TUKIJGNFLG     PIC X(01).
+                       09  SPA-COM-TUKIJGNFLG1    PIC X(01).
+                       09  SPA-COM-TUKIJGNFLG2    PIC 9(01).
+                       09  SPA-COM-KAIFLG2        PIC X(01).
       *ver.4.5.0
       *
       *        ¿ÇÎÅ²ñ·×Éí²Ã¹àÌÜ
@@ -407,6 +413,10 @@
                            11  SPA-COM-TOUYOJGNAGE     PIC X(02).
                            11  SPA-COM-TOUYORYO1       PIC 9(05)V9(05).
                            11  SPA-COM-TOUYORYO2       PIC 9(05)V9(05).
+      *                ·î¾å¸Â²ó¿ô
+                       09  SPA-COM-TUKIJGNKAISU        PIC  9(3).
+      *                ·îÁíÅêÍ¿ÎÌ
+                       09  SPA-COM-TUKIJGNTOUYORYO     PIC  9(5)V9(5).
       *    ´µ¼Ô¶Ø´÷ÌôºÞ
       *                ¶Ø´÷ÀßÄê
                        09  SPA-COM-PTKINKI             PIC 9(01).

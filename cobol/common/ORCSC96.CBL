@@ -1634,6 +1634,21 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+               WHEN    "K227"
+                   STRING   "警告！！"
+                            "月上限回数以上です。"
+                            "確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K228"
+                   STRING   "警告！！"
+                            "月総投与量以上です。"
+                            "確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "0501"
                    STRING   "この診療種別は平成２０年４月から有効です。"
                             "入力できません。"

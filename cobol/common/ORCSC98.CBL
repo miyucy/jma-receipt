@@ -54,6 +54,10 @@
            03  FLG-NENREI-CD           PIC 9(01).
            03  FLG-KINKI-ARI           PIC 9(01).
       *
+           03  FLG-SRYACCT             PIC 9(01).
+           03  FLG-SRYACT              PIC 9(01).
+           03  FLG-YAKU-TBL            PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -64,6 +68,12 @@
            03  IDX-Z               PIC 9(04).
            03  IDX-SET             PIC 9(04).
            03  IDX-N2              PIC 9(02).
+      *
+           03  IDY                 PIC 9(04).
+           03  IDY2                PIC 9(04).
+           03  IDX-Y               PIC 9(04).
+           03  IDY-TBL             PIC 9(04).
+           03  IDX-C               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -93,9 +103,29 @@
                05  WRK-SRYYM           PIC X(06).
                05  WRK-SRYDD           PIC 9(02).
            03  WRK-ERRMSG              PIC X(100).
+      *    月総量・上限回数チェック
+           03  WRK-SRYCD               PIC X(09).
+           03  WRK-KAISU               PIC S9(03).
+           03  WRK-TUKIKAISU           PIC S9(03).
+           03  WRK-TUKISURYO           PIC S9(05)V9(05).
+           03  WRK-KAISU-H             PIC ZZ9.
+           03  WRK-KAISU-H2            PIC ZZ9.
+           03  WRK-SOURYO-H1           PIC X(11).
+           03  WRK-SOURYO-H2           PIC X(11).
       *
       *    年令単位テーブル
            COPY    "CMNENREICD.INC".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *    診療行為マスタ−
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
+      *    診療会計マスタ−
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -137,7 +167,12 @@
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
       *
-           PERFORM 100-MAIN-SYORI-SEC
+           EVALUATE    LNK-SC98-KBN
+               WHEN    SPACE
+                   PERFORM 100-MAIN-SYORI-SEC
+               WHEN    "1"
+                   PERFORM 200-TUKI-SYORI-SEC
+           END-EVALUATE
       *
            . 
        000-PROC-EXT.
@@ -606,5 +641,386 @@
            END-IF
            .
        3001-KINKIERR-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    月上限回数・月総投与量チェック処理
+      *****************************************************************
+       200-TUKI-SYORI-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  LNK-SC98-ERRMSG
+           MOVE    ZERO                TO  IDX-SET
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                             ((SPA-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX-Z) =   SPACE ))
+                           OR (SPA-ERRCD   NOT =   SPACE   )
+      *        セットの行位置
+               IF      SPA-GMN-INPUTCD(IDX-Z)(1:1) =   "S"
+                   MOVE    IDX-Z               TO  IDX-SET
+               END-IF
+      *        月投与量・回数チェック
+               IF     (SPA-ERRCD               =   SPACE )
+               AND    (SPA-COM-INPUTCD (IDX-Z) (1:1)
+                                               =   "6" )
+               AND    (SPA-COM-YAKUHYO (IDX-Z) =   SPACE )
+               AND    (SPA-COM-SRYKBN  (IDX-Z)(1:1)
+                                          NOT  =   "9"   )
+                   IF     (SPA-COM-TUKIJGNKAISU (IDX-Z)
+                                                   >   ZERO )  OR
+                          (SPA-COM-TUKIJGNTOUYORYO (IDX-Z)
+                                                   >   ZERO )
+                       PERFORM 400-TUJIJGEN-CHK-SEC
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       200-TUKI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    月上限回数・月総投与量チェック処理
+      *****************************************************************
+       400-TUJIJGEN-CHK-SEC             SECTION.
+      *
+           MOVE    SPA-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
+      *    月合計テーブル検索
+           PERFORM 4001-YAKU-TBL-CHK-SEC
+      *    今回入力分集計
+           PERFORM 4003-TUJI-SUM-SEC
+      *    セットの時、セット行にカーソル移動
+           IF      SPA-COM-SET (IDX-Z) =   "1"
+               MOVE    IDX-SET             TO  IDX-C
+           ELSE
+               MOVE    IDX-Z               TO  IDX-C
+           END-IF
+      *    月総投与量チェック
+           IF     (SPA-ERRCD                     =   SPACE)  AND
+                  (SPA-COM-TUKIJGNTOUYORYO (IDX-Z)  >   ZERO )  AND
+                  (SPA-COM-TUKIJGNTOUYORYO (IDX-Z)  <   WRK-TUKISURYO)
+               IF      (SPA-COM-TUKIJGNFLG (IDX-C)  =   SPACE )
+                   PERFORM 4003-TUKISYORO-ERR-SEC
+               END-IF
+           END-IF
+      *    月上限回数チェック
+           IF     (SPA-ERRCD                     =   SPACE)
+           AND    (SPA-COM-TUKIJGNKAISU (IDX-Z)  >   ZERO )
+           AND    (SPA-COM-TUKIJGNKAISU (IDX-Z)  <   WRK-TUKIKAISU )
+      *        回数(投薬・注射のみ）
+           AND    (SPA-COM-SRYKBN      (IDX-Z) =   "21"
+                                               OR  "22"
+                                               OR  "23"
+                                               OR  "31"
+                                               OR  "32"
+                                               OR  "33"          )
+               IF     (SPA-COM-TUKIJGNFLG1(IDX-C)  =   SPACE )
+                   PERFORM 4003-TUKIKAISU-ERR-SEC
+               END-IF
+           END-IF
+           .
+       400-TUJIJGEN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    月総投与量エラー編集処理
+      *****************************************************************
+       4003-TUKISYORO-ERR-SEC             SECTION.
+      *
+           MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG(IDX-C)
+           MOVE    "1"                 TO  SPA-COM-CUR      (IDX-C)
+           MOVE    "K228"              TO  SPA-ERRCD
+      *
+           MOVE    SPA-COM-TUKIJGNTOUYORYO (IDX-Z)
+                                       TO  WRK-SURYO
+           PERFORM 10021-SURYO-HEN-SEC
+           MOVE    WRK-SURYO-H         TO  WRK-SOURYO-H1
+           MOVE    WRK-TUKISURYO       TO  WRK-SURYO
+           PERFORM 10021-SURYO-HEN-SEC
+           MOVE    WRK-SURYO-H         TO  WRK-SOURYO-H2
+           MOVE    SPACE               TO  LNK-SC98-ERRMSG
+           STRING  "月総投与量："          DELIMITED  BY  SIZE
+                   WRK-SOURYO-H1           DELIMITED  BY  SPACE
+                   "　累計総投与量："      DELIMITED  BY  SIZE
+                   WRK-SOURYO-H2           DELIMITED  BY  SPACE
+                                       INTO    LNK-SC98-ERRMSG
+           END-STRING
+           .
+       4003-TUKISYORO-ERR-EXT.
+           EXIT.
+      *****************************************************************
+      *    月上限回数エラー編集処理
+      *****************************************************************
+       4003-TUKIKAISU-ERR-SEC             SECTION.
+      *
+           MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG1 (IDX-C)
+           MOVE    "1"                 TO  SPA-COM-CUR         (IDX-C)
+           MOVE    "K227"              TO  SPA-ERRCD
+           MOVE    SPA-COM-TUKIJGNKAISU (IDX-Z)
+                                       TO  WRK-KAISU-H
+           MOVE    WRK-TUKIKAISU       TO  WRK-KAISU-H2
+           MOVE    SPACE               TO  LNK-SC98-ERRMSG
+           STRING  "月上限回数："          DELIMITED  BY  SIZE
+                   WRK-KAISU-H             DELIMITED  BY  SIZE
+                   "　累計回数："          DELIMITED  BY  SIZE
+                   WRK-KAISU-H2            DELIMITED  BY  SIZE
+                                       INTO    LNK-SC98-ERRMSG
+           END-STRING
+           .
+       4003-TUKIKAISU-ERR-EXT.
+           EXIT.
+      *****************************************************************
+      *    月上限回数・月総投与量テーブルチェック処理
+      *****************************************************************
+       4001-YAKU-TBL-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-YAKU-TBL
+           MOVE    ZERO                TO  IDY-TBL
+           MOVE    ZERO                TO  WRK-TUKIKAISU
+           MOVE    ZERO                TO  WRK-TUKISURYO
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   100 )
+                         OR   (IDY-TBL     >   ZERO )
+               IF     (LNK-SC98-YAKUZAI-SRYCD (IDY)
+                                           =   WRK-SRYCD  )
+               OR     (LNK-SC98-YAKUZAI-SRYCD (IDY)
+                                           =   SPACE     )
+                   MOVE    IDY             TO  IDY-TBL
+               END-IF
+           END-PERFORM
+           IF      IDY-TBL             >   ZERO
+               IF      LNK-SC98-YAKUZAI-CHKFLG (IDY-TBL)   =   ZERO
+      *            診療行為テーブルからの集計
+                   PERFORM 4002-SRYACT-HEN-SEC
+                   MOVE    1               TO  LNK-SC98-YAKUZAI-CHKFLG
+                                                             (IDY-TBL)
+               END-IF
+               COMPUTE WRK-TUKISURYO       =   LNK-SC98-YAKUZAI-SURYO
+                                                             (IDY-TBL)
+                                           +   LNK-SC98-YAKUTEI-SURYO
+                                                              (IDY-TBL)
+               COMPUTE WRK-TUKIKAISU       =   LNK-SC98-YAKUZAI-KAISU
+                                                               (IDY-TBL)
+                                           +   LNK-SC98-YAKUTEI-KAISU
+                                                               (IDY-TBL)
+           END-IF
+           .
+       4001-YAKU-TBL-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    今回入力分集計処理
+      *****************************************************************
+       4003-TUJI-SUM-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX-Y   FROM    1   BY  1
+                   UNTIL      (IDX-Y       >   SPA-MAX-LINE     )   OR
+                             ((SPA-GMN-INPUTCD (IDX-Y) =   SPACE ) AND
+                              (SPA-COM-INPUTCD (IDX-Y) =   SPACE ))
+                           OR (SPA-ERRCD   NOT =   SPACE   )
+               IF      (SPA-COM-YAKUHYO (IDX-Y)    =   SPACE  )
+               AND     (SPA-COM-INPUTCD (IDX-Y)    =   WRK-SRYCD  )
+               AND     (SPA-COM-SRYKBN  (IDX-Y)(1:1)   NOT =   "9"   )
+                   IF     (SPA-NYUGAIKBN       =   "1" )
+                   OR     (LNK-SC98-PG         =   "KT01" )
+                        COMPUTE WRK-KAISU      =   SPA-COM-NYU-KAI
+                                                               (IDX-Y)
+                                               *   SPA-COM-KAISU(IDX-Y)
+                   ELSE
+                       MOVE    SPA-COM-KAISU (IDX-Y)   TO  WRK-KAISU
+                   END-IF
+      *            総数量
+                   COMPUTE WRK-TUKISURYO   =   WRK-TUKISURYO
+                                           +  (SPA-COM-SURYO (IDX-Y)
+                                           *   WRK-KAISU        )
+      *            回数(投薬・注射のみ）
+                   IF      SPA-COM-SRYKBN  (IDX-Y) =   "21"
+                                                   OR  "22"
+                                                   OR  "23"
+                                                   OR  "31"
+                                                   OR  "32"
+                                                   OR  "33"
+                       COMPUTE WRK-TUKIKAISU   =   WRK-TUKIKAISU
+                                               +   WRK-KAISU
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       4003-TUJI-SUM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月上限回数・月総投与量データ集計処理
+      *****************************************************************
+       4002-SRYACT-HEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                  SRYACT-REC
+           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    SPA-SRYYMD(1:6)     TO  SRY-SRYYM
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD (1)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD (2)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD (3)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD (4)
+           MOVE    WRK-SRYCD           TO  SRY-SRYCD (5)
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key12"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key12"             TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+           MOVE    ZERO                TO  WRK-TUKIKAISU
+           MOVE    ZERO                TO  WRK-TUKISURYO
+           PERFORM
+                   UNTIL   FLG-SRYACT      =   1
+               IF      SRY-RENNUM          =   1
+      *            診療会計検索
+                   PERFORM 40021-SRYACCT-SEL-SEC
+                   IF      ACCT-ZAIKBN         =   1
+                       MOVE    ZERO                TO  ACCT-ZAIKAISU
+                   END-IF
+      *            投薬・注射のみ回数集計
+                   IF      SRY-SRYKBN          =   "21"
+                                               OR  "22"
+                                               OR  "23"
+                                               OR  "31"
+                                               OR  "32"
+                                               OR  "33"
+                       ADD     ACCT-ZAIKAISU       TO  WRK-TUKIKAISU
+                   END-IF
+               END-IF
+               PERFORM VARYING     IDY2    FROM    1   BY  1
+                       UNTIL      (IDY2        >   5   )   OR
+                                  (SRY-SRYCD (IDY2)    =   SPACE )
+                               OR (ACCT-ZAIKAISU   =   ZERO  )
+                   IF      SRY-SRYCD (IDY2)    =   WRK-SRYCD
+                       COMPUTE WRK-TUKISURYO   =   WRK-TUKISURYO
+                                               +  (SRY-SRYSURYO (IDY2)
+                                               *   ACCT-ZAIKAISU  )
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key12"             TO  MCP-PATHNAME
+               PERFORM 930-SRYACT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key12"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-SRYCD       TO  LNK-SC98-YAKUZAI-SRYCD
+                                                             (IDY-TBL)
+           MOVE    WRK-TUKISURYO   TO  LNK-SC98-YAKUZAI-SURYO
+                                                              (IDY-TBL)
+           MOVE    WRK-TUKIKAISU   TO  LNK-SC98-YAKUZAI-KAISU
+                                                              (IDY-TBL)
+           .
+       4002-SRYACT-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為マスタ検索処理 
+      *****************************************************************
+       40021-SRYACCT-SEL-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SRY-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SRY-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SRY-PTID            TO  ACCT-PTID
+           MOVE    SRY-SRYKA           TO  ACCT-SRYKA
+           MOVE    SRY-SRYYM           TO  ACCT-SRYYM
+           MOVE    SRY-SRYKBN          TO  ACCT-SRYKBN
+           MOVE    SRY-ZAINUM          TO  ACCT-ZAINUM
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCT-REC
+                   MOVE    ZERO                TO  FLG-SRYACCT
+               ELSE
+                   MOVE    1                   TO  FLG-SRYACCT
+                   INITIALIZE                  SRYACCT-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+               INITIALIZE                  SRYACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       40021-SRYACCT-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為マスター読込
+      *****************************************************************
+       930-SRYACT-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    ZERO            TO  FLG-SRYACT
+           ELSE
+               INITIALIZE                  SRYACT-REC
+               MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+           .
+       930-SRYACT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクロース処理
+      *****************************************************************
+       990-DBCLOSE-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       990-DBCLOSE-EXT.
            EXIT.
       *
