@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *****************************************************************
       *
       *
@@ -313,6 +314,10 @@
                    IF      ORCSNYUINSHO-SRYKA (1)  NOT =   ACCT-SRYKA
                        MOVE    ZERO            TO  WRK-ZAIKAISU
                    END-IF
+               END-IF
+      *        薬評・器評対象外
+               IF      ACCT-ZAIKBN         =   1
+                   MOVE    ZERO            TO  WRK-ZAIKAISU
                END-IF
                IF      WRK-ZAIKAISU        >   ZERO
       *            入院期間中に算定があれば、対象

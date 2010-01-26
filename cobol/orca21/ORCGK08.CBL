@@ -3004,6 +3004,10 @@
       *    ¿ÇÎÅÆâÍÆÈ½Äê
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-MAX
+      *      ÌôÉ¾¡¦´ïÉ¾°Ê³°
+             IF     (LNK-WKSRY-ZAIKBN  (IDX)   =   1 )
+               CONTINUE
+             ELSE
                IF     (LNK-WKSRY-SRYKBN (IDX)  =   "21"
                                                OR  "22"
                                                OR  "23" )
@@ -3044,17 +3048,18 @@
                    END-PERFORM
                END-IF
       *
-               IF     (LNK-WKSRY-SRYKBN (IDX)    =   "40"
+               IF     (LNK-WKSRY-SRYKBN (IDX)  =   "40"
                                                OR  "80" )
-                    PERFORM VARYING     IDX2    FROM    1   BY  1
-                            UNTIL      (IDX2    >   5   )  OR
-                                       (SPA-NAI-SIJISEN  =   1  )
+                   PERFORM VARYING     IDX2    FROM    1   BY  1
+                           UNTIL      (IDX2    >   5   )  OR
+                                      (SPA-NAI-SIJISEN  =   1  )
                        IF      LNK-WKSRY-SRYCD (IDX IDX2)(1:1)
                                                         =   "1"
                            MOVE    1               TO  SPA-NAI-SIJISEN
                        END-IF
                    END-PERFORM
                END-IF
+             END-IF
            END-PERFORM
            MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
       *
