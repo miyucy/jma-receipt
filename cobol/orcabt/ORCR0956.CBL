@@ -57,6 +57,7 @@
       *  04.03.03    NACL-ÌçÏÆ    09/02/04  ÀÁµáÅÀ¤¬£°¤Î¾ì¹ç¤ÎÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    10/01/25  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -227,6 +228,8 @@
            03  SUM-NYUKHNNISSU         PIC 9(03).
            03  SUM-NYUKHNKEI           PIC 9(07).
            03  SUM-NYUKHNKIN-JYU       PIC 9(07).
+           03  SUM-NYUKHNKEI2          PIC S9(07).
+           03  SUM-NYUKHNKIN2-JYU      PIC S9(07).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1354,21 +1357,39 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    UNTIL     IDX       >   10
                    OR        RECE82-NYUTOKNISSU (IDX)  =   ZERO
       *        <ÅÀ¿ô>
-               ADD     RECE82-NYUTOKKEI(IDX)   TO  SUM-NYUKHNKEI
+               ADD     RECE82-NYUTOKKEI(IDX)   TO  SUM-NYUKHNKEI2
       *        <¶â³Û>
                ADD     RECE82-NYUTOKKIN-JYU(IDX)
-                                               TO  SUM-NYUKHNKIN-JYU
+                                               TO  SUM-NYUKHNKIN2-JYU
            END-PERFORM
       *    <ÅÀ¿ô>
-           ADD         RECE82-NYUTOKKEI2       TO  SUM-NYUKHNKEI
+           ADD         RECE82-NYUTOKKEI2       TO  SUM-NYUKHNKEI2
       *    <¶â³Û>
-           ADD         RECE82-NYUTOKKIN2-JYU   TO  SUM-NYUKHNKIN-JYU
+           ADD         RECE82-NYUTOKKIN2-JYU   TO  SUM-NYUKHNKIN2-JYU
       *    <ÅÀ¿ô>
-           MOVE    SUM-NYUKHNKEI         TO  WRK-TENSUZ
+           MOVE    SUM-NYUKHNKEI2        TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ            TO  HC23-NYUTENSU  (10)
+           IF      SUM-NYUKHNKEI2   <   ZERO
+               PERFORM VARYING IDZ FROM    6   BY  -1
+                       UNTIL   IDZ <       1
+                   IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       MOVE    "¢¥"        TO  HC23-NYUKOUTENN  (10 IDZ)
+                       MOVE    1           TO  IDZ
+                   END-IF
+               END-PERFORM
+           END-IF
       *    <¶â³Û>
-           MOVE    SUM-NYUKHNKIN-JYU     TO  WRK-TENSUZ
+           MOVE    SUM-NYUKHNKIN2-JYU    TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ            TO  HC23-NYUKINGAKU(10)
+           IF      SUM-NYUKHNKIN2-JYU   <   ZERO
+               PERFORM VARYING IDZ FROM    6   BY  -1
+                       UNTIL   IDZ <       1
+                   IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       MOVE    "¢¥"        TO  HC23-NYUYKZTENSUN(10 IDZ)
+                       MOVE    1           TO  IDZ
+                   END-IF
+               END-PERFORM
+           END-IF
       *
       *    <Æþ±¡Ç¯·îÆü>
            MOVE    RECE82-NYUINYMD     TO  WRK-SYMD

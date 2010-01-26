@@ -49,6 +49,7 @@
       *  04.03.03    NACL-ÌçÏÆ    09/02/04  ÀÁµáÅÀ¤¬£°¤Î¾ì¹ç¤ÎÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    10/01/25  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -264,6 +265,7 @@
        01  SUM-AREA                          VALUE   ZERO.          
            03  SUM-NYUKHNNISSU         PIC 9(03).
            03  SUM-NYUKHNKEI           PIC 9(07).
+           03  SUM-NYUKHNKEI2          PIC S9(07).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -1632,13 +1634,22 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    UNTIL     IDX       >   10
                    OR        RECE82-NYUTOKNISSU (IDX)  =   ZERO
       *        <¶â³Û>
-               ADD     RECE82-NYUTOKKEI(IDX)   TO  SUM-NYUKHNKEI
+               ADD     RECE82-NYUTOKKEI(IDX)   TO  SUM-NYUKHNKEI2
            END-PERFORM    
       *        <¶â³Û>
-           ADD         RECE82-NYUTOKKEI2       TO  SUM-NYUKHNKEI
+           ADD         RECE82-NYUTOKKEI2       TO  SUM-NYUKHNKEI2
       *    <¶â³Û>
-           MOVE    SUM-NYUKHNKEI         TO  WRK-TENSUZ
+           MOVE    SUM-NYUKHNKEI2        TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ            TO  HC23-NYUKOUTEN (10)
+           IF      SUM-NYUKHNKEI2   <   ZERO
+               PERFORM VARYING IDZ FROM    6   BY  -1
+                       UNTIL   IDZ <       1
+                   IF      WRK-TENSUZ (IDZ:1)  =   SPACE
+                       MOVE    "¢¥"        TO  HC23-NYUKOUTENN (10 IDZ)
+                       MOVE    1           TO  IDZ
+                   END-IF
+               END-PERFORM
+           END-IF
       *
       *        <Æþ±¡Ç¯·îÆü>
            MOVE    RECE82-NYUINYMD     TO  WRK-SYMD

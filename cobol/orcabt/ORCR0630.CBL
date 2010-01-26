@@ -2624,6 +2624,19 @@
                            (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
               END-IF
       ***    ELSE
+      ***     IF ACCT-ZAIKBN = 2
+      ***      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+      ***      AND    KH-IDX                >   1
+      ***         CONTINUE
+      ***      ELSE
+      ***         COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
+      ***                  WRK-NYUTOKKEI2(KH-IDX)  -
+      ***                  (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+      ***      END-IF
+      ***      COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
+      ***               RECE62-NYUTOKKEI2(KH-IDX)  -
+      ***                  (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+      ***     ELSE
       ***      IF     TBL-FUKUSHIFLG(IDX2)  =   1
       ***      AND    KH-IDX                >   1
       ***         CONTINUE
@@ -2635,6 +2648,7 @@
       ***      COMPUTE  RECE62-NYUKHNKEI2(KH-IDX)  =
       ***               RECE62-NYUKHNKEI2(KH-IDX)  +
       ***                  (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+      ***     END-IF
       ***    END-IF
            END-IF
       *

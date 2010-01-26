@@ -60,6 +60,8 @@
       *  04.04.01    NACL-ÌçÏÆ    09/01/23  Æþ±¡ÎÁ»»ÄêÊÝ¸±°Ê³°¤Î¿ÇÎÅÊ¬¼ÂÆü¿ô»»ÄêÂÐ±þ
       *  04.04.02    NACL-ÌçÏÆ    09/06/12  ÎÅÍÜ´ü´Ö¤ÎÊÔ½¸½¤Àµ
       *  04.04.03    NACL-ÌçÏÆ    09/11/19  ¼«ÇåÀÕ·òÊÝ½àµòÎÅÍÜÃ´Åö¼êÅöÂÐ±þ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    10/01/25  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -154,7 +156,7 @@
       *    ¼êµ»ÅÀ¡¦ÌôºÞÅùÅÀ¿ôÍÑÎÎ°è
        01  TBL-TENSUG-JI.
            03  TBL-TENSU-JI                            OCCURS   31.
-              05  TBL-SYUTEN-JI                        PIC  9(09).
+              05  TBL-SYUTEN-JI                        PIC S9(09).
               05  TBL-YKZTEN-JI                        PIC  9(09).
       *
        01  WRK-DAY-TABLE.
@@ -226,6 +228,9 @@
            03  WRK-STDAY2                              PIC  9(02).
            03  WRK-EDDAY                               PIC  9(02).
            03  WRK-EDDAY2                              PIC  9(02).
+      *
+           03  WRK-SYUTEN-TOTALTEN                     PIC S9(09).
+           03  WRK-YKZTEN-TOTALTEN                     PIC  9(09).
       *
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC  9(07).
@@ -830,7 +835,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                                                FLG-KYUKYU
@@ -854,7 +860,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                    IF   (ACCT-ZAITEN    =        ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                                                FLG-KYUKYU
@@ -1189,6 +1196,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            RECE82-NYUTOKKEI2  +  
                            LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
       *
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  -
+                           LNK-SROUNYUIN-GENTEN(IDY)
+      *
              WHEN   "92"
                   COMPUTE  WRK-NYUTOKRYO  =  
                            LNK-SROUNYUIN-ZAITEN(IDY)  +
@@ -1248,6 +1259,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            RECE82-NYUTOKKEI2  +
                            LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
       *
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  -
+                           LNK-SROUNYUIN-GENTEN(IDY)
+      *
            END-EVALUATE
       *
            IF   RECE82-NYUINDAY-KBN(IDY)  =  "1"
@@ -1270,6 +1285,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
              COMPUTE       RECE82-NYUTOKKEI2  =
                            RECE82-NYUTOKKEI2  +
                            LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
+      *
+             COMPUTE       RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  -
+                           LNK-SROUNYUIN-GENTEN(IDY)
       *
            END-IF
       *
@@ -1426,6 +1445,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                         (ACCT-JIHOKBN       =   SPACE)
+                     IF  ACCT-ZAIKBN    NOT = 1 AND 2
                        MOVE    ZERO     TO    WRK-TEN
                                               WRK-KIN
                                               WRK-KIN2
@@ -1456,6 +1476,35 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          END-PERFORM
                        END-IF
                        PERFORM   2605-RECE82-TENSOU9-SEC
+                     ELSE
+                       MOVE    ZERO     TO    WRK-TEN
+                                              WRK-KIN
+                                              WRK-KIN2
+                       IF    RECE82-HKNKBN   =   "4"
+                         IF  WRK-TENTEK-FLG2  =   ZERO
+                           PERFORM VARYING IDY FROM 1  BY 1
+                                       UNTIL    IDY     >    31
+                             COMPUTE  TBL-YKZTEN-JI(IDY)  =
+                                      TBL-YKZTEN-JI(IDY)  +
+                                      WRK-TENTEK-YKZTEN2(IDY) +
+                                      WRK-TENTEK-KIZAITEN2(IDY)
+                           END-PERFORM
+                           MOVE  1        TO   WRK-TENTEK-FLG2
+                         END-IF
+      *
+                         IF  ACCT-ZAIKBN   =  2
+                          PERFORM VARYING IDY FROM 1  BY 1
+                                    UNTIL    IDY     >    31
+                           IF  ACCT-DAY(1 IDY)   NOT =  ZERO
+                                MOVE  ACCT-DAY(1 IDY)  
+                                       TO  WRK-ZAIKAISU-JI
+                                PERFORM  2604-SYUGITEN-HANTEI-SEC
+                           END-IF
+                          END-PERFORM
+                         END-IF
+                       END-IF
+                       PERFORM   2605-RECE82-TENSOU9-SEC
+                     END-IF
                    END-IF
                    MOVE    "tbl_sryacct"    TO      MCP-TABLE
                    MOVE    "key22"          TO      MCP-PATHNAME
@@ -1795,10 +1844,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               "95"  OR  "96"  OR  "97"
                          CONTINUE
                    ELSE
-                     IF        ACCT-SRYCDTOTAL    =    630010002
+                     IF       (ACCT-SRYCDTOTAL    =    630010002)
+                     OR       (ACCT-ZAIKBN        =    2        )
+                      IF  ACCT-ZAIKBN  =    2
+                         COMPUTE  TBL-SYUTEN-JI(IDY)  =
+                                  TBL-SYUTEN-JI(IDY)  -
+                                 ( WRK-ZAIKAISU-JI * ACCT-ZAITEN   )
+                      ELSE
                          COMPUTE  TBL-YKZTEN-JI(IDY)  =
                                   TBL-YKZTEN-JI(IDY)  -
                                  ( WRK-ZAIKAISU-JI * ACCT-ZAITEN   )
+                      END-IF
                      ELSE 
                       IF    ACCT-SRYKBN  =  "33"
                          EVALUATE  SRY-SRYSYUKBN
@@ -1847,7 +1903,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                  END-IF
       *
-                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
+                 IF   ( ACCT-SRYKBN       =  "95"  OR  "96" )
+                 OR   ( ACCT-ZAIKBN       =   2             )
                    CONTINUE
                  ELSE
                    PERFORM   VARYING   SRYACT-IDX   FROM   1   BY   1
@@ -1951,7 +2008,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                              OR "96" OR "97"
                CONTINUE
            ELSE
-               IF        ACCT-SRYCDTOTAL    =    630010002
+               IF       (ACCT-SRYCDTOTAL    =    630010002)
+               OR       (ACCT-ZAIKBN        =    2        )
                  COMPUTE   TOTALTEN-ACCT =
                            TOTALTEN-ACCT -
                            (ACCT-ZAITEN  *
@@ -2274,15 +2332,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
               MOVE     RECE82-TOTALTEN   TO   RECE82-NYUTOTALTEN
       *
+              MOVE     ZERO              TO   WRK-SYUTEN-TOTALTEN
+              MOVE     ZERO              TO   WRK-YKZTEN-TOTALTEN
               PERFORM    VARYING    IDY    FROM    1   BY   1              
                           UNTIL      IDY    >     31                    
       *
                   MOVE  TBL-SYUTEN-JI(IDY)  TO  RECE82-SYUTEN-JI(IDY)     
-                  ADD   TBL-SYUTEN-JI(IDY)  TO  RECE82-TOTALTEN
+                  COMPUTE  WRK-SYUTEN-TOTALTEN = WRK-SYUTEN-TOTALTEN
+                                               + TBL-SYUTEN-JI(IDY)
                   MOVE  TBL-YKZTEN-JI(IDY)  TO  RECE82-YKZTEN-JI(IDY)     
-                  ADD   TBL-YKZTEN-JI(IDY)  TO  RECE82-TOTALTEN-YAK
+                  COMPUTE  WRK-YKZTEN-TOTALTEN = WRK-YKZTEN-TOTALTEN
+                                               + TBL-YKZTEN-JI(IDY)
       *
               END-PERFORM                                                  
+              ADD    WRK-SYUTEN-TOTALTEN  TO  RECE82-TOTALTEN
+              ADD    WRK-YKZTEN-TOTALTEN  TO  RECE82-TOTALTEN-YAK
       *
               COMPUTE   WRK-KSNRATE     =  RECE82-KSNRATE  /  100
       *
@@ -2294,12 +2358,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   (RECE82-TOTALTEN-YAK  *  RECE82-TANKA)  
                                                   +  0.5
       *
-              MOVE     TOTALKIN-ACCT   TO   RECE82-KINGAKU2-SYO
+      ***     MOVE     TOTALKIN-ACCT   TO   RECE82-KINGAKU2-SYO
       *
-              MOVE     TOTALKIN2-ACCT  TO   RECE82-KINGAKU3-SYO
+      ***     MOVE     TOTALKIN2-ACCT  TO   RECE82-KINGAKU3-SYO
       *
-              COMPUTE  RECE82-TOTALKIN2     =  
-                  (RECE82-KINGAKU2-SYO  *  WRK-KSNRATE)  +  0.5  
+      ***     COMPUTE  RECE82-TOTALKIN2     =  
+      ***         (RECE82-KINGAKU2-SYO  *  WRK-KSNRATE)  +  0.5  
       *
            ELSE
       *

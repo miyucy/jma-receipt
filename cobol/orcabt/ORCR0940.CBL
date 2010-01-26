@@ -44,6 +44,7 @@
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-門脇    10/01/25  治験対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -292,7 +293,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                           MOVE   4      TO      RECE87-KNSJISKBN
                   END-IF
               END-IF
-              IF    RECE86-SAFLG   NOT =   SPACE
+              IF   (RECE86-SAFLG   NOT =   SPACE )
+              OR   (RECE86-ZAIKBN      =   1 OR 2)
                    MOVE    9            TO      RECE87-KNSJISKBN
               END-IF
            END-IF     
@@ -332,6 +334,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE   RECE86-DAY         TO   RECE87-DAY
       *
            MOVE   RECE86-OKIKAEFLG   TO   RECE87-OKIKAEFLG
+      *
+           MOVE   RECE86-ZAIKBN      TO   RECE87-ZAIKBN
       *
            IF     RECE86-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE87-WRITE-SEC
