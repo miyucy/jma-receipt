@@ -279,7 +279,7 @@
                    PERFORM 410-JOBDEL-SEC
       *        一斉通知
                WHEN    "CLICKED"   ALSO    "B05"
-                   PERFORM 420-SENDALL-SEC
+                   PERFORM 410-SENDKAKUNIN-SEC
       *        チェック
                WHEN    "CLICKED"   ALSO    "B09"
                    PERFORM 400-CHECK-KAKUNIN-SEC
@@ -406,6 +406,11 @@
        320-MID1-SET-SEC            SECTION.
       *
            EVALUATE    SPA-MIDCD
+               WHEN    "0200"
+                   IF      SPA-MID1-FLG    =   "OK"
+      *            確認処理
+                       PERFORM 420-SENDALL-SEC
+                   END-IF
                WHEN    "0201"
                    IF      SPA-MID1-FLG    =   "OK"
       *            確認処理
@@ -674,6 +679,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        410-JOBDEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認処理
+      *****************************************************************
+       410-SENDKAKUNIN-SEC         SECTION.
+      *
+           MOVE    "0200"          TO  SPA-MIDCD
+           PERFORM 520-MIDSET-SEC
+           .
+      *
+       410-SENDKAKUNIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -977,6 +994,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        520-MIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
+               WHEN    "0200"
+               MOVE
+              "プログラム更新処理の一斉通知を行います。よろしいですか？"
+                                           TO  WRK-MIDMSG
                WHEN    "0201"
                MOVE    SPACE       TO  WRK-MIDMSG
                STRING  "接続中の端末があります。端末数は" DELIMITED SIZE
