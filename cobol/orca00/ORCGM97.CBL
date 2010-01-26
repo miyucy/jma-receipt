@@ -103,6 +103,7 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PGKANRI         PIC 9(02).
+           03  CNT-TERMID          PIC 9(03).
       *
       *    処理区分領域
        01  SKBN-AREA.
@@ -125,6 +126,16 @@
                "scripts/allways/program_upgrade_offline.sh".
            03  SHELL-NAME3         PIC X(40)  VALUE
                "scripts/allways/program_upgrade_check.sh".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システムユーザ
+       01  SYSUSER-REC.
+           COPY    "CPSYSUSER.INC".
+      *
+           COPY    "ORCA-SYSTEM".
       *
       *****************************************************************
       *    連絡　領域
@@ -266,6 +277,9 @@
       *        情報削除
                WHEN    "CLICKED"   ALSO    "B02"
                    PERFORM 410-JOBDEL-SEC
+      *        一斉通知
+               WHEN    "CLICKED"   ALSO    "B05"
+                   PERFORM 420-SENDALL-SEC
       *        チェック
                WHEN    "CLICKED"   ALSO    "B09"
                    PERFORM 400-CHECK-KAKUNIN-SEC
@@ -277,7 +291,7 @@
                    PERFORM 400-JYOKYO-SET-SEC
       *        更新
                WHEN    "CLICKED"   ALSO    "B12"
-                   PERFORM 410-KAKUNIN-SEC
+                   PERFORM 410-TERMIDCNT-SEC
       *        オンライン・オフライン
                WHEN    "CLICKED"   ALSO    "ONKBN"
                    MOVE    M97-ONKBN       TO  SPA-GMN-ONKBN
@@ -392,6 +406,11 @@
        320-MID1-SET-SEC            SECTION.
       *
            EVALUATE    SPA-MIDCD
+               WHEN    "0201"
+                   IF      SPA-MID1-FLG    =   "OK"
+      *            確認処理
+                       PERFORM 410-KAKUNIN-SEC
+                   END-IF
                WHEN    "0202"
                    IF      SPA-MID1-FLG    =   "OK"
       *            更新処理
@@ -658,6 +677,40 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    TermID一覧取得処理
+      *****************************************************************
+       410-TERMIDCNT-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  CNT-TERMID
+      *    LISTENTRY により全ての端末IDを取得する
+           INITIALIZE                  ORCA-SYSTEM
+           MOVE    "LISTENTRY"     TO  MCP-FUNC
+           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
+           PERFORM 900-SYSDB-INV-SEC
+           IF    ( MCP-RC              =   ZERO    OR  1 )
+               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
+           ELSE
+               GO  TO  410-TERMIDCNT-EXT
+           END-IF
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       200
+               IF      ORCA-SYSTEM-KEY(IDX)    NOT =    SPACE
+                   COMPUTE CNT-TERMID  =   CNT-TERMID  +   1
+               END-IF
+           END-PERFORM
+      *
+           IF      CNT-TERMID      >   1
+               MOVE    "0201"          TO  SPA-MIDCD
+               PERFORM 520-MIDSET-SEC
+           ELSE
+               PERFORM 410-KAKUNIN-SEC
+           END-IF
+      *
+           .
+       410-TERMIDCNT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *       登録処理
       *****************************************************************
        410-KAKUNIN-SEC             SECTION.
@@ -737,6 +790,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        420-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一斉メッセージ配信処理
+      *****************************************************************
+       420-SENDALL-SEC             SECTION.
+      *
+           INITIALIZE                  ORCA-SYSTEM
+           MOVE    "SETVALUEALL"   TO  MCP-FUNC
+           MOVE    1               TO  ORCA-SYSTEM-NUM
+           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
+           MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
+           MOVE    SPACE           TO  ORCA-SYSTEM-VALUE(1)
+           STRING  "プログラム更新処理を行います。"    DELIMITED BY SIZE
+                   "入力作業を完了し速やかにログアウトしてください。"
+                                                       DELIMITED BY SIZE
+                                 INTO  ORCA-SYSTEM-VALUE(1)
+           END-STRING
+           PERFORM 900-SYSDB-INV-SEC
+           IF    ( MCP-RC              =   ZERO    OR  1 )
+               MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
+           ELSE
+               GO  TO  420-SENDALL-EXT
+           END-IF
+      *
+           .
+       420-SENDALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -897,6 +977,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        520-MIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
+               WHEN    "0201"
+               MOVE    SPACE       TO  WRK-MIDMSG
+               STRING  "接続中の端末があります。端末数は" DELIMITED SIZE
+                       CNT-TERMID                         DELIMITED SIZE
+                       "です。"                           DELIMITED SIZE
+                                         INTO  WRK-MIDMSG
+               END-STRING
                WHEN    "0202"
                MOVE    "プログラム更新を実行します。よろしいですか？"
                                            TO  WRK-MIDMSG
@@ -1087,6 +1174,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        830-GAMENN-SET6-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システムＤＢ読込
+      *****************************************************************
+       900-SYSDB-INV-SEC         SECTION.
+      *
+           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
+           MOVE    "system"      TO  MCP-TABLE
+           MOVE    "key"         TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"        USING
+                                     MCPAREA
+                                     MCPDATA-REC
+                                     SPA-AREA
+      *
+           .
+       900-SYSDB-INV-EXT.
            EXIT.
       *
       *****************************************************************
