@@ -33,3 +33,6 @@
               03  HCM301-CYUJKO-G.
                 04  HCM301-CYUJKO
                         PIC X(40)   OCCURS  11 TIMES.
+              03  HCM301-TANI-G.
+                04  HCM301-TANI
+                        PIC X(2)    OCCURS  5 TIMES.

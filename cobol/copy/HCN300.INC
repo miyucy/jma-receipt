@@ -34,3 +34,6 @@
               03  HCN300-CYUJKO-G.
                 04  HCN300-CYUJKO
                         PIC X(44)   OCCURS  8 TIMES.
+              03  HCN300-TANI-G.
+                04  HCN300-TANI
+                        PIC X(2)    OCCURS  5 TIMES.

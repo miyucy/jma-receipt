@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  04.05.01    NACL-森脇     09/11/20  在宅・コメント対応
+      *  04.05.02    NACL-森脇     10/01/26  コメント２、単位対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -199,6 +200,8 @@
                    07  WRK-YKJ-NAIYO       PIC X(20)   OCCURS  64.
                05  WRK-YKJ-CYUJKO-G.
                    07  WRK-YKJ-CYUJKO      PIC X(44)   OCCURS  64.
+               05  WRK-YKJ-TANI-G.
+                   07  WRK-YKJ-TANI        PIC X(02)   OCCURS  5.
       *
       *    プログラムオプションパラメタ
        01  PARA-AREA.
@@ -206,6 +209,8 @@
            03  PARA-TIMESURYO          PIC X(01).
            03  PARA-ZAITAKU            PIC X(01).
            03  PARA-COMMENT            PIC X(01).
+           03  PARA-COMMENT2           PIC X(01).
+           03  PARA-TANI               PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -358,6 +363,14 @@
            MOVE    "COMMENT"       TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)   TO  PARA-COMMENT
+      *    コメント２
+           MOVE    "COMMENT2"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)   TO  PARA-COMMENT2
+      *    単位
+           MOVE    "TANI"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)   TO  PARA-TANI
       *
            .
        100-INIT-EXT.
@@ -843,9 +856,56 @@
                PERFORM 241-NAIYO-NISSU-SET-SEC
            END-IF
       *
-      *    回数編集
-           IF      CNT-KAISU       >   ZERO
-               PERFORM 241-NAIYO-KAISU-SET-SEC
+           IF    ( PARA-TIMESURYO  =   "1" )   AND
+                (( PARA-COMMENT2   =   "2" )   OR
+                (( PARA-COMMENT2   =   "1" )   AND
+                 ( WRK-YKJ-KBN-G   =   SPACE )))
+      *        １日分が割切れていなかったらエラー
+               COMPUTE WRK-SURYO   =   WRK-HENKBN(1)
+                                   +   WRK-HENKBN(2)
+                                   +   WRK-HENKBN(3)
+                                   +   WRK-HENKBN(4)
+                                   +   WRK-HENKBN(5)
+               IF      ORCHCN30-SURYO(CNT-PARA)    =   WRK-SURYO
+                   PERFORM VARYING  IDX-KBN    FROM    1   BY  1
+                           UNTIL  ( IDX-KBN    >   5 )
+                       IF      WRK-HENKBN(IDX-KBN)     NOT =   0
+                           MOVE    WRK-HENKBN(IDX-KBN) TO  WRK-SURYO
+      *                    数量Ｚ編集
+                           PERFORM 250-ZHEN-SURYO-SET-SEC
+                           MOVE    SPACE       TO WRK-HENSYUDATA
+                           EVALUATE    IDX-KBN
+                           WHEN    1
+                               MOVE    "朝："  TO  WRK-HENSYUDATA(1:4)
+                           WHEN    2
+                               MOVE    "昼："  TO  WRK-HENSYUDATA(1:4)
+                           WHEN    3
+                               MOVE    "夕："  TO  WRK-HENSYUDATA(1:4)
+                           WHEN    4
+                               MOVE    "寝："  TO  WRK-HENSYUDATA(1:4)
+                           WHEN    5
+                               MOVE    "起："  TO  WRK-HENSYUDATA(1:4)
+                           END-EVALUATE
+      *                    全角変換
+                           MOVE    SPACE           TO  ORCSKANACHKAREA
+                           INITIALIZE                  ORCSKANACHKAREA
+                           MOVE    "2"             TO  KANACHK-SYORI
+                           MOVE    WRK-HENSURYO    TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"   USING
+                                                   ORCSKANACHKAREA
+                           STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   DELIMITED BY SIZE
+                                   WRK-TANINAME    DELIMITED BY SPACE
+                                             INTO  WRK-HENSYUDATA(5:)
+                           PERFORM 250-HENSYU-SYORI-SEC
+                       END-IF
+                   END-PERFORM
+               END-IF
+           ELSE
+      *        回数編集
+               IF      CNT-KAISU       >   ZERO
+                   PERFORM 241-NAIYO-KAISU-SET-SEC
+               END-IF
            END-IF
       *
       *    換算前があればセット
@@ -1162,6 +1222,7 @@
            END-IF
       *
            MOVE    SPACE           TO  WRK-YKJ-KBN-G
+           MOVE    SPACE           TO  WRK-YKJ-TANI-G
            MOVE    ZERO            TO  FLG-KBN
            PERFORM VARYING  IDX-KBN    FROM    1   BY  1
                    UNTIL  ( IDX-KBN    >   5 )
@@ -1174,7 +1235,7 @@
                          ( WRK-HENSURYO(2:1)   =   "." )
                        COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
                                                +   1
-                       MOVE    "1"         TO  WRK-YKJ-KBN(IDX-KBN)
+                       MOVE    "１"        TO  WRK-YKJ-KBN(IDX-KBN)
                        MOVE    "包"        TO  WRK-TANINAME
                    ELSE
                        IF      WRK-HENSURYO(4:)    NOT =   SPACE
@@ -1199,11 +1260,18 @@
                            END-IF
                        END-IF
                    END-IF
+                   IF   (( WRK-TANINAME    =   "包" )  AND
+                         ( PARA-TANI   =   "2" OR  "3" )) OR
+                        (( WRK-TANINAME    =   "ｇ" )  AND
+                         ( PARA-TANI   =   "1" OR  "3" ))
+                       MOVE    WRK-TANINAME  TO  WRK-YKJ-TANI(IDX-KBN)
+                   END-IF
                END-IF
            END-PERFORM
       *    エラーならクリアする
            IF      FLG-KBN         =   1
                MOVE    SPACE           TO  WRK-YKJ-KBN-G
+               MOVE    SPACE           TO  WRK-YKJ-TANI-G
            END-IF
       *
            .
@@ -1473,7 +1541,8 @@
                                    TO  HCN300-KONOKOKA-G(CNT-LINE)
            MOVE    WRK-YKJ-CYUJKO-G(1:352)
                                    TO  HCN300-CYUJKO-G(CNT-LINE)
-      *
+           MOVE    WRK-YKJ-TANI-G  TO  HCN300-TANI-G(CNT-LINE)
+     *
            MOVE    ZERO            TO  FLG-NAIYO
            MOVE    ZERO            TO  FLG-KEIJYO
            MOVE    ZERO            TO  FLG-KONO
