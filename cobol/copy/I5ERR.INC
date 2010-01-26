@@ -20,4 +20,4 @@
               04  I5ERR-ERRCODE.
                 05  I5ERR-VALUE  PIC X(10).
               04  I5ERR-ERRMSG.
-                05  I5ERR-VALUE  PIC X(60).
+                05  I5ERR-VALUE  PIC X(80).

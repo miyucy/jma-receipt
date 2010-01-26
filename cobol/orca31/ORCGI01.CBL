@@ -18263,6 +18263,8 @@
                    MOVE    "2016"  TO  SPA-ERRCD
                WHEN    18
                    MOVE    "2017"  TO  SPA-ERRCD
+               WHEN    19
+                   MOVE    "2018"  TO  SPA-ERRCD
                WHEN    OTHER
                    MOVE    "2008"  TO  SPA-ERRCD
                END-EVALUATE
@@ -19877,8 +19879,18 @@
                                            DELIMITED   BY  SPACE
                INTO    SPA-ERRMSG
                END-STRING
+           WHEN    "2018"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "負担金計算に失敗しました。"
+                                           DELIMITED   BY  SPACE
+                       "包括点数の治験減点分の点数を"
+                                           DELIMITED   BY  SPACE
+                       "確認してください"
+                                           DELIMITED   BY  SPACE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "2008"
-               MOVE    "負担金計算処理に失敗しました"
+               MOVE    "負担金計算に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"

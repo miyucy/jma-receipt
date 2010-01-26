@@ -1844,6 +1844,9 @@
                WHEN    18
                    MOVE    "2007"      TO  SPA-ERRCD
                    GO  TO  490-FTNKIN-CALC-EXT
+               WHEN    19
+                   MOVE    "2008"      TO  SPA-ERRCD
+                   GO  TO  490-FTNKIN-CALC-EXT
                WHEN    OTHER
                    MOVE    "2001"      TO  SPA-ERRCD
                    GO  TO  490-FTNKIN-CALC-EXT
@@ -2734,7 +2737,7 @@
                MOVE    "患者番号を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "2001"
-               MOVE    "負担金計算処理に失敗しました"
+               MOVE    "負担金計算に失敗しました"
                                        TO  SPA-ERRMSG
            WHEN    "2002"
                MOVE    "退院計算に必要な会計情報が作成されていません"
@@ -2769,6 +2772,16 @@
            WHEN    "2007"
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  "保険組合せの有効期間が切れています。"
+                                           DELIMITED   BY  SPACE
+                       "確認してください"
+                                           DELIMITED   BY  SPACE
+               INTO    SPA-ERRMSG
+               END-STRING
+           WHEN    "2008"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "負担金計算に失敗しました。"
+                                           DELIMITED   BY  SPACE
+                       "包括点数の治験減点分の点数を"
                                            DELIMITED   BY  SPACE
                        "確認してください"
                                            DELIMITED   BY  SPACE
