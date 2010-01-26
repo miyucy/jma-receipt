@@ -124,6 +124,7 @@
            03  IDX-JIBAI                   PIC 9(02).
            03  IDX-KOUGAI                  PIC 9(02).
            03  IDX-KOUKI                   PIC 9(02).
+           03  IDX-CHIKEN                  PIC 9(02).
            03  IDX-S02                     PIC 9(05).
            03  IDX-HS02                    PIC 9(05).
       *
@@ -702,6 +703,7 @@
                MOVE    7                   TO  IDX-ROUSAI
                MOVE    8                   TO  IDX-JIBAI 
                MOVE    9                   TO  IDX-KOUGAI
+               MOVE    10                  TO  IDX-CHIKEN
       *
                MOVE    9                   TO  WRK-SKYTTL-MAX
       *
@@ -714,6 +716,7 @@
                MOVE    "Ï«¡¡ºÒ"            TO  WRK-SKYTTLMSG(IDX-ROUSAI)
                MOVE    "¼«ÇåÀÕ"            TO  WRK-SKYTTLMSG(IDX-JIBAI)
                MOVE    "¸ø¡¡³²"            TO  WRK-SKYTTLMSG(IDX-KOUGAI)
+               MOVE    "¼£¡¡¸³"            TO  WRK-SKYTTLMSG(IDX-CHIKEN)
            WHEN  OTHER
       *
                MOVE    1                   TO  IDX-SYAHON
@@ -726,6 +729,7 @@
                MOVE    8                   TO  IDX-ROUSAI
                MOVE    9                   TO  IDX-JIBAI 
                MOVE    10                  TO  IDX-KOUGAI
+               MOVE    11                  TO  IDX-CHIKEN
       *
                MOVE    10                  TO  WRK-SKYTTL-MAX
       *
@@ -739,6 +743,7 @@
                MOVE    "Ï«¡¡ºÒ"            TO  WRK-SKYTTLMSG(IDX-ROUSAI)
                MOVE    "¼«ÇåÀÕ"            TO  WRK-SKYTTLMSG(IDX-JIBAI)
                MOVE    "¸ø¡¡³²"            TO  WRK-SKYTTLMSG(IDX-KOUGAI)
+               MOVE    "¼£¡¡¸³"            TO  WRK-SKYTTLMSG(IDX-CHIKEN)
            END-EVALUATE
       *
            .
@@ -891,6 +896,10 @@
       *
            MOVE    SBD010S02-HOKEN (IDX-S02)
                                        TO  IDX-HOKEN
+      *
+           IF    ( IDX-HOKEN           =   IDX-CHIKEN )
+               MOVE    IDX-JIHHKN      TO  IDX-HOKEN
+           END-IF
       *
            COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYUREL)
                =   BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYUREL)

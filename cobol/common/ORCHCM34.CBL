@@ -3379,6 +3379,8 @@
       *
                EVALUATE    TRUE
                WHEN  ( SRY-SRYCD (IDX32) (1:1) =   "6" )
+                AND  ( ACCT-ZAIKBN NOT =   1 )
+                AND  ( ACCT-ZAIKBN NOT =   2 )
                    MOVE    1       TO  FLG-SRYSTATUS
       *
                WHEN  ( SRY-SRYKBN        =   "60" )
@@ -3594,6 +3596,10 @@
                END-IF
            END-IF
       *
+           IF    ( ACCT-ZAIKBN     =   2 )
+                   MOVE    1       TO  FLG-MINUS
+           END-IF
+      *
            PERFORM UNTIL ( FLG-HCM34SRY    NOT =   ZERO )
                     OR   ( WRK-SRYACT-MAX  >   500 )
       *
@@ -3735,27 +3741,6 @@
        20011-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   診療行為チェック処理
-      *****************************************************************
-       200111-SRYACT-CHK-SEC           SECTION.
-      *
-           PERFORM 900-HCM34SRY-START-SEC
-      *
-           PERFORM UNTIL  ( FLG-HCM34SRY   NOT =   ZERO )
-                    OR    ( FLG-SRYSTATUS  NOT =   ZERO )
-      *
-               MOVE    HCM34SRY-DAT    TO  SRYACT-REC
-      *
-               PERFORM 2001111-SET-SRYSTATUS-SEC
-      *
-               PERFORM 900-HCM34SRY-READ-SEC
-      *
-           END-PERFORM
-      *
-           .
-       200111-SRYACT-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *   保険組合せキーブレイクチェック処理
       *****************************************************************
        200111-HKNCOMBI-KEY-CHK-SEC     SECTION.
@@ -3819,13 +3804,13 @@
       *
       *    診療区分
            MOVE    SPACE               TO  WRK-SRYACT-MARK
-           IF    ( ACCT-JIHOKBN    =   "1" )
+           EVALUATE    TRUE
+           WHEN  ( ACCT-JIHOKBN    =   "1" )
                MOVE    "◎"   TO  WRK-SRYACT-MARK
                COMPUTE CNT-ZAIHKT
                    =   CNT-ZAIHKT  +   1
-           ELSE
-               IF    ( ACCT-ZAITEN         =   ZERO )
-                AND  ( FLG-SRYSTATUS       =   1 )
+           WHEN  ( ACCT-ZAITEN         =   ZERO )
+            AND  ( FLG-SRYSTATUS       =   1 )
                    EVALUATE    TRUE
                    WHEN  ( SRY-SRYSYUKBN   =   "213" OR "223" OR "233" )
                             MOVE    "○"   TO  WRK-SRYACT-MARK
@@ -3837,8 +3822,7 @@
                             COMPUTE CNT-YKZINGAI
                                 =   CNT-YKZINGAI    +   1
                    END-EVALUATE
-               END-IF
-           END-IF
+           END-EVALUATE
       *
       *    保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  WRK-SRYACT-HKNCOMBI
@@ -6752,7 +6736,7 @@
            WHEN    "039"
                MOVE    "3"         TO  WRK-HOKEN
            WHEN    OTHER
-               IF    ( WRK-HKNNUM (1:2)   =   "98" )
+               IF    ( WRK-HKNNUM (1:2)   =   "98" OR "90" OR "91" )
                    MOVE    "9"     TO  WRK-HOKEN
                ELSE
                    MOVE    "1"     TO  WRK-HOKEN

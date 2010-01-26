@@ -62,6 +62,7 @@
            03  IDX-JIBAI                   PIC 9(02).
            03  IDX-KOUGAI                  PIC 9(02).
            03  IDX-KOUKI                   PIC 9(02).
+           03  IDX-CHIKEN                  PIC 9(02).
            03  IDX-MISYU                   PIC 9(02).
       *
        01  CNT-AREA.
@@ -177,6 +178,7 @@
                MOVE    7                   TO  IDX-ROUSAI
                MOVE    8                   TO  IDX-JIBAI 
                MOVE    9                   TO  IDX-KOUGAI
+               MOVE    10                  TO  IDX-CHIKEN
       *
            WHEN  OTHER
       *
@@ -190,6 +192,7 @@
                MOVE    8                   TO  IDX-ROUSAI
                MOVE    9                   TO  IDX-JIBAI 
                MOVE    10                  TO  IDX-KOUGAI
+               MOVE    11                  TO  IDX-CHIKEN
       *
            END-EVALUATE
       *
@@ -900,24 +903,22 @@
                    MOVE    IDX-KOKIPN TO WRK-HOKEN
                END-IF
            WHEN    OTHER
-               IF    ( SBD010S03-HKNNUM (IDX-S03) (1:2)
+               EVALUATE    TRUE
+               WHEN  ( SBD010S03-HKNNUM (IDX-S03) (1:2)
                                            =   "98" )
-                   MOVE    IDX-JIHHKN TO WRK-HOKEN
-               ELSE
-                   IF    ( SBD010S03-KOHNUM (IDX-S03)
+                   MOVE    IDX-JIHHKN  TO WRK-HOKEN
+               WHEN  ( SBD010S03-HKNNUM (IDX-S03) (1:2)
+                                           =   "90" OR "91" )
+                   MOVE    IDX-CHIKEN  TO WRK-HOKEN
+               WHEN  ( SBD010S03-KOHNUM (IDX-S03)
                                            =   "027" )
-                       MOVE    IDX-SYARJN  TO WRK-HOKEN
-                   ELSE
-                       EVALUATE    SBD010S03-HONKZKKBN (IDX-S03)
-                       WHEN    "1"
-                           MOVE    IDX-SYAHON
-                                           TO  WRK-HOKEN
-                       WHEN    "2"
-                           MOVE    IDX-SYAKZK
-                                           TO  WRK-HOKEN
-                       END-EVALUATE
-                   END-IF
-               END-IF
+                   MOVE    IDX-SYARJN  TO WRK-HOKEN
+               WHEN  ( SBD010S03-HONKZKKBN (IDX-S03)
+                                           =   "1" )
+                   MOVE    IDX-SYAHON  TO  WRK-HOKEN
+               WHEN  ( SBD010S03-HONKZKKBN (IDX-S03)
+                                           =   "2" )
+                   MOVE    IDX-SYAKZK  TO  WRK-HOKEN
            END-EVALUATE
       *
            .

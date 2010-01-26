@@ -336,7 +336,7 @@
                PERFORM 2001-EDIT-S03HOHO-SEC
            END-IF
       *
-           IF    ( WRK-HKNNUM (1:2)    =   "98" )
+           IF    ( WRK-HKNNUM (1:2)    =   "98" OR "90" OR "91" )
       *
                COMPUTE TNYUKIN-JIHNYUKIN (1)
                    =   TNYUKIN-NYUKIN (1)
@@ -415,7 +415,7 @@
            MOVE    SYURRK-SYUEDANUM
                                    TO  TSRRK-SYUEDANUM
       *
-           IF    ( WRK-HKNNUM (1:2)    =   "98" )
+           IF    ( WRK-HKNNUM (1:2)    =   "98" OR "90" OR "91" )
       *
                COMPUTE TSRRK-JIHSEIKYU
                    =   SYURRK-HKNTEKMONEY
@@ -546,7 +546,7 @@
                =   TSKY-JIHSEIKYU (1)
                +   TSRRK-JIHSEIKYU
       *
-           IF    ( WRK-HKNNUM (1:2)    =   "98" )
+           IF    ( WRK-HKNNUM (1:2)    =   "98" OR "90" OR "91" )
                COMPUTE TSKY-JIHGENMEN (1)
                    =   TSKY-JIHGENMEN (1)
                    +   TSKY-GENMEN    (1)
