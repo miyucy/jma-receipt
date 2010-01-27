@@ -4020,6 +4020,11 @@
                                       (LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   SPACE )
                        PERFORM 45051-ORCS01-SET-SEC
+      *                泼年给锐∈壳弧瘟踏换年胺い∷冉年
+                       IF      LNK-WKSRY-SRYCD(IDX IDS)
+                                                   =   "099409905"
+                           MOVE    "1"         TO  LNK-S01-SINSATUFLG2
+                       END-IF
                    END-PERFORM
                END-IF
       *        壳弧瘟换年フラグ∈孟数给锐脱∷
