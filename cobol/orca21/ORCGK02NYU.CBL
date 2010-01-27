@@ -2717,8 +2717,8 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
-               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG(IDX)
-               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG2(IDX)
+               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)
+               MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
       *        併用算定が警告の時、クリア
                IF      SPA-COM-HKEIFLG (IDX)   =   "1"
                    MOVE    SPACE               TO  SPA-COM-HKEIFLG (IDX)
