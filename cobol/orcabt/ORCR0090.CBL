@@ -206,6 +206,7 @@
       *  04.05.02    NACL-門脇    09/06/17  処置の記載順変更（日付順）
       *  04.05.03    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.04    NACL-門脇    10/01/12  治験対応
+      *  04.05.05    NACL-門脇    10/01/26  東京都マル子追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -941,11 +942,13 @@
            03  FILLER          PIC X(09)   VALUE   "112014370".
       *    再診（乳幼児時間外特例医療機関）加算
            03  FILLER          PIC X(09)   VALUE   "112015070".
+      *    診察料未算定扱い
+           03  FILLER          PIC X(09)   VALUE   "099409905".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   69.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   70.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   69.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   70.         
       *
       *    固定値
        01  CONST-AREA.

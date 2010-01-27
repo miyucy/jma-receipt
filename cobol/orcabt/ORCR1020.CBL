@@ -523,9 +523,9 @@ grpsys     COPY    "COMMON-SPA".
                    END-PERFORM
                    PERFORM  900-RECE130-READ-SEC
                ELSE
-                   IF      WRK-SRYSYUKBN   NOT =   SPACE
+      ***          IF      WRK-SRYSYUKBN   NOT =   SPACE
                        MOVE    1               TO  FLG-RECE130
-                   END-IF
+      ***          END-IF
                END-IF
            END-PERFORM
       *

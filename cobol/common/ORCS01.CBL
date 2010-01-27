@@ -314,6 +314,7 @@
       *                                     設定機能
       *  04.05.04    NACL-多々納  09/12/15  調整金２対応
       *  04.05.05    NACL-門脇    10/01/07  治験対応
+      *  04.05.06    NACL-門脇    10/01/26  東京都マル子追加対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -18355,7 +18356,8 @@
            IF     (WK-1001-PREFNUM         =  13           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "588"         ) AND
                   (LNK-SYU-SRYYMD(1:6)    >= "200910"      )
-               IF    LNK-S01-SINSATUFLG =  SPACE
+               IF    LNK-S01-SINSATUFLG   =  SPACE
+               OR    LNK-S01-SINSATUFLG2  =  "1"
                     MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-GAIKFTNRATE
                     MOVE    "0"     TO   WK-GAIYKZFTNKBN

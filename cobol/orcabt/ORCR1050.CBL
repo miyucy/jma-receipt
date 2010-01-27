@@ -47,6 +47,7 @@
       *  04.05.02    NACL-門脇    09/06/17  処置の記載順変更（日付順）
       *  04.05.03    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.04    NACL-門脇    10/01/22  治験対応
+      *  04.05.05    NACL-門脇    10/01/26  東京都マル子追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -684,11 +685,13 @@
            03  FILLER          PIC X(09)   VALUE   "120002170".
       ***  処方せん（乳幼児）加算
       ***  03  FILLER          PIC X(09)   VALUE   "120002470".
+      *    診察料未算定扱い
+           03  FILLER          PIC X(09)   VALUE   "099409905".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   63.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   64.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   63.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   64.         
       *
       *    固定値
        01  CONST-AREA.

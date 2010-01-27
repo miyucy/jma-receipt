@@ -500,9 +500,9 @@
                    END-PERFORM
                    PERFORM  900-RECE230-READ-SEC
                ELSE
-                   IF      WRK-SRYSYUKBN   NOT =   SPACE
+      ***          IF      WRK-SRYSYUKBN   NOT =   SPACE
                        MOVE    1               TO  FLG-RECE230
-                   END-IF
+      ***          END-IF
                END-IF
            END-PERFORM
       *
