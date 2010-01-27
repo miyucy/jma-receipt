@@ -919,6 +919,7 @@
                WHEN  ( SBD010S03-HONKZKKBN (IDX-S03)
                                            =   "2" )
                    MOVE    IDX-SYAKZK  TO  WRK-HOKEN
+               END-EVALUATE
            END-EVALUATE
       *
            .
