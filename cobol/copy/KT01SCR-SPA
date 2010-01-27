@@ -233,6 +233,8 @@
                05  SPA-NAI-ZENKIFLG-ERR        PIC 9(01).
       *        最終受診日
                05  SPA-NAI-LSTDD               PIC 9(02).
+      *        会計照会受診履歴更新チェック
+               05  SPA-NAI-JYURRKFLG           PIC 9(01).
       *!!
       *        入院中
                05  SPA-NAI-NYUIN-ERR           PIC 9(01).

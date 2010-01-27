@@ -541,6 +541,9 @@
                WHEN    "9"
       *            特定疾患の有無検索
                    PERFORM 11011-TOKUTEI-SYORI-SEC
+               WHEN    "N"
+      *            受診履歴一覧編集
+                   PERFORM 2002-JYURRK-SET-SEC
            END-EVALUATE
       *
            .

@@ -626,6 +626,8 @@
            03  WRK-GRPHOSPUSERID       PIC X(64).
            03  WRK-MACHIPG             PIC X(08).
       *
+           03  WRK-LSTDD               PIC 9(02).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -1220,7 +1222,6 @@
       *            ＤＯ選択画面より
                    PERFORM 3013-KT012-SET-SEC
                    MOVE    2                   TO  FLG-GMN
-                   MOVE    2                   TO  FLG-GMN
                WHEN    "M00"
       *            業務選択画面より
                    PERFORM 30010-INIT-GMN-SEC
@@ -1303,6 +1304,10 @@
                        IF      SPA-MOTOPG      =   "C02"
       *                    病名再編集
                            PERFORM 3004-BYOMEI-HEN-SEC
+                       END-IF
+                       IF      SPA-MOTOPG      =   "J02"
+      *                    会計照会戻り（受診履歴）
+                           PERFORM 3004-JYURRK-J02CHK-SEC
                        END-IF
                    END-IF
            END-EVALUATE
@@ -1421,6 +1426,32 @@
       *
            .
        3004-BYOMEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    会計照会変更チェック処理
+      *****************************************************************
+       3004-JYURRK-J02CHK-SEC            SECTION.
+      *
+           INITIALIZE                  ORCSC95AREA
+           MOVE    "N"                 TO  LNK-SC95-KBN
+           CALL    "ORCSCKT95"         USING
+                                       MCPAREA
+                                       ORCSC95AREA
+                                       SPA-AREA
+                                       SPA-K01KYOUTU
+                                       SPA-KT01
+      *    受診履歴変更確認
+           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    SPA-NAI-LSTDD       TO  WRK-LSTDD
+           PERFORM 41013-JYURRK-CHK-SEC
+           IF      SPA-NAI-LSTDD   NOT =   WRK-LSTDD
+               MOVE    "0178"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-NAI-JYURRKFLG
+           END-IF
+      *
+           .
+       3004-JYURRK-J02CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1719,6 +1750,10 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *        会計照会変更後
+               WHEN    "0152"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   PERFORM 230-MAEKPTNUM-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
       *****MOVE    SPACE               TO  SPA-KIDCD
@@ -2376,14 +2411,11 @@
            IF      FLG-NYUIN           =   ZERO
                PERFORM 1009-SANTEI-HEN-SEC
            END-IF
-      *TEST
-           DISPLAY "SPA-TAI-TAIINYMD:"
-                    SPA-TAI-TAIINYMD
-      *TEST
            .
        3109-NYUIN-CHK-EXT.
            EXIT.
       *
+      **DEL --START---
       *****************************************************************
       *    チェック用月内診療行為セット処理
       *****************************************************************
@@ -2635,6 +2667,7 @@
            .
        32012-SRYACT-HEN2-EXT.
            EXIT.
+      **DEL --END---
       *****************************************************************
       *    算定履歴から他院退院日編集処理
       *****************************************************************
@@ -7051,6 +7084,13 @@
                    MOVE    8                   TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *        会計照会で受診履歴変更
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-JYURRKFLG   =   1
+                   MOVE    "0178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41001-KIHON-CHK-EXT
@@ -7895,6 +7935,13 @@
                MOVE    "1034"              TO  SPA-ERRCD
                MOVE    5                   TO  SPA-GMN-CUR
            END-IF
+      *    会計照会で受診履歴変更
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-JYURRKFLG   =   1
+                   MOVE    "0178"              TO  SPA-ERRCD
+                   MOVE    90                  TO  SPA-GMN-CUR
+               END-IF
+           END-IF
       *
       *    数量ゼロの場合、エラー表示しない
            IF      SPA-ERRCD           =   "A001"
@@ -8606,6 +8653,9 @@
                    MOVE    "SRYDD"         TO  MCP-WIDGET
                WHEN    09
                    MOVE    "DRNAME"        TO  MCP-WIDGET
+               WHEN    90
+      *            前回患者
+                   MOVE    "B03"           TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -8880,6 +8930,12 @@
                    STRING  "包括算定エラーの項目があります。"
                                            DELIMITED  BY  SIZE
                            "エラー項目を削除します。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0152"
+                   STRING  "会計照会で最終受診日の変更がありました。"
+                           "初期表示状態に変更します。"
                                            DELIMITED  BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
