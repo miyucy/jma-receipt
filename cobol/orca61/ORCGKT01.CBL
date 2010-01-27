@@ -3453,6 +3453,8 @@
                      AND  (SPA-NAI-RRKDAY-G    =   ZERO )
                        MOVE    "6008"              TO  SPA-ERRCD
                        PERFORM 410141-CHANGE-INIT-SEC
+      *                 ›∏±¡»πÁ
+                       PERFORM 3101-HKNCOMBI-HEN-SEC
                    ELSE
                        MOVE    "0105"              TO  SPA-KIDCD
                    END-IF
