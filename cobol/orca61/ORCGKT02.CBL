@@ -3718,15 +3718,13 @@
                    MOVE    ZERO            TO  WRK-FUNSAI-CNT
                END-IF
       *
-               IF     (LNK-WKSRY-SRYYMD (IDX)      =   SPACE ) OR
-                      (LNK-WKSRY-HKNCOMBI(IDX) NOT =   SYU-HKNCOMBINUM)
-                  OR  ((SYU-SRYKA              NOT =   ZERO  )  AND
-                      (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
+               IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
+                   OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
       *           ÌôÉ¾°Ê³°
-                  OR  (LNK-WKSRY-ZAIKBN  (IDX)     =   1    )
+                   OR (LNK-WKSRY-ZAIKBN   (IDX)    =   1    )
                    CONTINUE
                ELSE
-      *            ¿ÇÎÅÆâÍÆÊÔ½¸¡ÊÌôºÞ¤ÈÉþÍÑÊýË¡)
+      *            ¿ÇÎÅÆâÍÆÊÔ½¸¡ÊÌôºÞ¤ÈÉþÍÑÊýË¡)¡ÊÌ¤»ÈÍÑ¡Ë
                    PERFORM VARYING     IDS     FROM    1   BY  1
                            UNTIL      (IDS         >   5   )  OR
                                       (LNK-WKSRY-SRYCD(IDX IDS)
