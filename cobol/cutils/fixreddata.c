@@ -41,6 +41,14 @@ CheckEuc213(
 
 	rc = 1;
 	in = buf = Strndup(p,size);
+#if 0
+printf("size:%d data:",size);
+for(i=0;i<size;i++) {
+printf("%02X",buf[i] & 0xFF);
+}
+printf("\n");
+printf("data:%s\n",buf);
+#endif
 	count = 0;
 	while(*in) {
 		advanced_bytes = jis213_count(in, out, &is213);
@@ -71,7 +79,7 @@ GetAttributeValue(
 }
 
 int
-GetObjectSize(xmlTextReaderPtr reader)
+EmbedString(xmlTextReaderPtr reader)
 {
 	char *name;
 	char *value;
@@ -100,6 +108,36 @@ GetObjectSize(xmlTextReaderPtr reader)
 	return size;
 }
 
+int
+Element(xmlTextReaderPtr reader)
+{
+	char *name;
+	char *value;
+	int occurs;
+	
+	occurs = 0;
+	if ((name = xmlTextReaderName(reader)) != NULL) {
+		if (!xmlStrcmp(name, "element")) {
+			occurs = 1;
+			if ((value = GetAttributeValue(reader, "name")) != NULL) {
+#if 0
+printf("element name[%s]\n",value);
+#endif
+				xmlFree(value);
+			}
+			if ((value = GetAttributeValue(reader, "occurs")) != NULL) {
+#if 0
+printf("element occurs[%s]\n",value);
+#endif
+				occurs = atoi(value);
+				xmlFree(value);
+			}
+		}
+		xmlFree(name);
+	}
+	return occurs;
+}
+
 /*
 	for OpenCOBOL 
 	arg {
@@ -115,9 +153,11 @@ fixreddata (char *args)
 {
 	int psize;
 	int dsize;
+	int occurs;
 	int block_size;
 	int done_size;
 	int *rc;
+	int i,j;
 	char *path;
 	char *data;
 	int status;
@@ -141,8 +181,9 @@ fixreddata (char *args)
 	StringCobol2C(path, psize);
 	p += psize;
 
-	data = Strndup(p,dsize);
-	StringCobol2C(data, dsize);
+	data = malloc(dsize+1);
+	memcpy(data,p,dsize);
+	data[dsize] = 0;
 	p += dsize;
 
 #if 0
@@ -159,20 +200,22 @@ printf("data[%s]\n",data);
 		status = xmlTextReaderRead(reader);
 		while(status == 1) {
 			status = xmlTextReaderRead(reader);
-			if ((block_size = GetObjectSize(reader)) > 0) {
-#if 0
-printf("block size[%d]\n",block_size);
-#endif
-				if (block_size + done_size > dsize) {
-					printf("the size of data is insufficient.need [%d],but [%d]\n",block_size + done_size, dsize);
-					*rc = 3;
-					break;
+			if ((j = Element(reader)) > 0) {
+				occurs = j;
+			}
+			if ((block_size = EmbedString(reader)) > 0) {
+				for ( i = 0; i < occurs; i++) {
+					if (block_size + done_size > dsize) {
+						printf("the size of data is insufficient.need [%d],but [%d]\n",block_size + done_size, dsize);
+						*rc = 3;
+						break;
+					}
+					if(!CheckEuc213(p,block_size)) {
+						*rc = 1;
+					}
+					p += block_size;
+					done_size += block_size;
 				}
-				if(!CheckEuc213(p,block_size)) {
-					*rc = 1;
-				}
-				p += block_size;
-				done_size += block_size;
 			}
 		}
 		xmlFreeTextReader(reader);
