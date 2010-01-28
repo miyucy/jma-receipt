@@ -114,9 +114,12 @@ Element(xmlTextReaderPtr reader)
 	char *name;
 	char *value;
 	int occurs;
+	xmlElementType node_type;
 	
 	occurs = 0;
-	if ((name = xmlTextReaderName(reader)) != NULL) {
+	
+	node_type = xmlTextReaderNodeType(reader);
+	if ((name = xmlTextReaderName(reader)) != NULL && node_type == XML_READER_TYPE_ELEMENT ) {
 		if (!xmlStrcmp(name, "element")) {
 			occurs = 1;
 			if ((value = GetAttributeValue(reader, "name")) != NULL) {
@@ -138,6 +141,27 @@ printf("element occurs[%s]\n",value);
 	return occurs;
 }
 
+int
+Element_close(xmlTextReaderPtr reader)
+{
+#if 0
+  printf("Enter Element_close\n");
+#endif
+	char *name;
+	int closing;
+	xmlElementType node_type;
+	
+	closing = 0;
+	node_type = xmlTextReaderNodeType(reader);
+	if ((name = xmlTextReaderName(reader)) != NULL && node_type == XML_READER_TYPE_END_ELEMENT ) {
+		if (!xmlStrcmp(name, "element")) {
+			closing = 1;
+		}
+		xmlFree(name);
+	}
+	return closing;
+}
+
 /*
 	for OpenCOBOL 
 	arg {
@@ -153,7 +177,8 @@ fixreddata (char *args)
 {
 	int psize;
 	int dsize;
-	int occurs;
+	int occurs[30];
+	int stack_size;
 	int block_size;
 	int done_size;
 	int *rc;
@@ -194,6 +219,7 @@ printf("data[%s]\n",data);
 #endif
 
 	done_size = 0;
+	stack_size = 0;
 	reader = xmlNewTextReaderFilename(path);
 	if (reader != NULL) {
 		p = data;
@@ -201,10 +227,14 @@ printf("data[%s]\n",data);
 		while(status == 1) {
 			status = xmlTextReaderRead(reader);
 			if ((j = Element(reader)) > 0) {
-				occurs = j;
+				occurs[stack_size] = j;
+				stack_size++;
 			}
 			if ((block_size = EmbedString(reader)) > 0) {
-				for ( i = 0; i < occurs; i++) {
+				for ( i = 0,j = 1; i < stack_size; i++) {
+					j *= occurs[i];
+				}
+				for ( i = 0; i < j; i++) {
 					if (block_size + done_size > dsize) {
 						printf("the size of data is insufficient.need [%d],but [%d]\n",block_size + done_size, dsize);
 						*rc = 3;
@@ -216,6 +246,9 @@ printf("data[%s]\n",data);
 					p += block_size;
 					done_size += block_size;
 				}
+			}
+			if ((j = Element_close(reader)) > 0) {
+				stack_size--;
 			}
 		}
 		xmlFreeTextReader(reader);
