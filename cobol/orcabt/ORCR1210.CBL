@@ -32,6 +32,8 @@
       *
       *  04.04.01    NACL-ÌçÏÆ    09/01/23  Æþ±¡ÎÁ»»ÄêÊÝ¸±°Ê³°¤Î¿ÇÎÅÊ¬¼ÂÆü¿ô»»ÄêÂÐ±þ
       *  04.04.02    NACL-ÌçÏÆ    09/09/04  ¾®Æþ´ÉÎ¬¾Î½¤Àµ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    10/01/27  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -450,7 +452,8 @@
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
       ***               IF   ACCT-SRYKBN  =  "11"  OR
@@ -466,7 +469,8 @@
                    END-IF
                    IF   (ACCT-ZAITEN    =        ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                         IF   ACCT-SRYKBN  =  "11"  OR  "99" 
@@ -476,7 +480,8 @@
                    END-IF
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         IF   ACCT-SRYKBN  =  "90" OR "92"
                             PERFORM   2001115-NYUINRYO-TAIHI-SEC
                         END-IF
@@ -1381,22 +1386,40 @@
               AND ( WRK-DAY5(ACCT-IDX) = RECE200-HKNCOMBI)
               AND ( ACCT-DAY(1 ACCT-IDX) NOT =  ZERO     )
       *
-                 EVALUATE   WRK-DAY1-NYUTENTTLKBN(ACCT-IDX)
-                    WHEN   903
+                 IF   ACCT-ZAIKBN  =    2
+                   COMPUTE  RECE200-NYUTOKKEI2  =
+                            RECE200-NYUTOKKEI2  -
+                           (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+                 ELSE
+                   EVALUATE   WRK-DAY1-NYUTENTTLKBN(ACCT-IDX)
+                      WHEN   903
                        COMPUTE  RECE200-NYUKHNKEI2  =
                                 RECE200-NYUKHNKEI2  +
                                (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
-                 END-EVALUATE
+                   END-EVALUATE
+                 END-IF
       *
                  IF  RECE200-NYUINDAY-KBN(ACCT-IDX) = "1"
       ***           IF  WRK-NYUINDAY-TANKI2-KBN(ACCT-IDX) NOT = SPACE
+                      IF ACCT-ZAIKBN = 2
+                       COMPUTE  RECE200-NYUTOKKEI2  =
+                                RECE200-NYUTOKKEI2  -
+                               (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+                      ELSE
                        COMPUTE  RECE200-NYUTOKKEI2  =
                                 RECE200-NYUTOKKEI2  +
                                (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+                      END-IF
       ***           ELSE
+      ***             IF ACCT-ZAIKBN = 2
+      ***              COMPUTE  RECE200-NYUTOKKEI2  =
+      ***                       RECE200-NYUTOKKEI2  -
+      ***                      (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+      ***             ELSE
       ***              COMPUTE  RECE200-NYUKHNKEI2  =
       ***                       RECE200-NYUKHNKEI2  +
       ***                      (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
+      ***             END-IF
       ***           END-IF
                  END-IF
       *
@@ -1526,7 +1549,8 @@
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)  AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)  AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                        (ACCT-JIHOKBN       =   SPACE)  AND
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                      IF   ACCT-SRYKBN  =  "90" OR "92"
                         PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                  UNTIL  ACCT-IDX  >  31

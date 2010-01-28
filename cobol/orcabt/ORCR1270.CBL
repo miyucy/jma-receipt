@@ -43,6 +43,7 @@
       *  04.03.05    NACL-ÌçÏÆ    09/02/04  ÀÁµáÅÀ¤¬£°¤Î¾ì¹ç¤ÎÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    10/01/27  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -205,6 +206,7 @@
        01  SUM-AREA                    VALUE   ZERO.          
            03  SUM-NYUKHNNISSU     PIC 9(03).
            03  SUM-NYUKHNKEI       PIC 9(07).
+           03  SUM-NYUKHNKEI2      PIC S9(07).
       *
       *    
        01  KEY-AREA                    VALUE   LOW-VALUE.          
@@ -477,6 +479,8 @@
            03  WRK-JINISSU2.
                05  WRK-JINISSU2Z   PIC  Z9.
            03  WRK-TOTALTENZ       PIC  ZZ,ZZZ,ZZ9.
+           03  WRK-TENSU2.
+               05  WRK-TENSU2Z     PIC  ------Z.
       *
        01  WRK-CNT                 PIC  9(5).
       *
@@ -1783,16 +1787,23 @@
                ADD     RECE200-NYUTOKNISSU(IDX)
                                                TO  SUM-NYUKHNNISSU
       *        <¶â³Û>
-               ADD     RECE200-NYUTOKKEI(IDX)  TO  SUM-NYUKHNKEI
+               ADD     RECE200-NYUTOKKEI(IDX)  TO  SUM-NYUKHNKEI2
            END-PERFORM
       *    <¶â³Û>
-           ADD         RECE200-NYUTOKKEI2      TO  SUM-NYUKHNKEI
+           ADD         RECE200-NYUTOKKEI2      TO  SUM-NYUKHNKEI2
       *    <Æü¿ô>
            MOVE    SUM-NYUKHNNISSU     TO  WRK-KAISUZ
            MOVE    WRK-KAISU           TO  HCN58-NYUKAISU (10)
       *    <¶â³Û>
-           MOVE    SUM-NYUKHNKEI       TO  WRK-TENSUZ
-           MOVE    WRK-TENSU           TO  HCN58-NYUTENSU (1 10)
+      ***  MOVE    SUM-NYUKHNKEI       TO  WRK-TENSUZ
+      ***  MOVE    WRK-TENSU           TO  HCN58-NYUTENSU (1 10)
+           IF      SUM-NYUKHNKEI2   <   ZERO
+               MOVE    SUM-NYUKHNKEI2  TO  WRK-TENSU2Z
+               MOVE    WRK-TENSU2      TO  HCN58-NYUTENSU (1 10)
+           ELSE
+               MOVE    SUM-NYUKHNKEI2  TO  WRK-TENSUZ
+               MOVE    WRK-TENSU       TO  HCN58-NYUTENSU (1 10)
+           END-IF
       *
       *    £¹£·¿©»ö
            MOVE    RECE200-SHOKUJISYUBETU-KHN
@@ -2904,6 +2915,8 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    RECE200-SEIKANKEI     TO  RECE10-TENSU  (30 1)
       *
       *    £¹£²ÆÃÄêÆþ±¡ÎÁ¡¦²Ã»»
+           MOVE    ZERO    TO    RECE10-KAISU(31)
+           MOVE    ZERO    TO    RECE10-TENSU(31 1)
            PERFORM   VARYING   IDY   FROM    1   BY  1
                      UNTIL     IDY       >   10
                      OR        RECE200-NYUTOKNISSU(IDY)  =   ZERO

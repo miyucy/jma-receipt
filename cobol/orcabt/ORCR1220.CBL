@@ -447,6 +447,9 @@
            03  WRK-SHO                         PIC  9(05).
            03  WRK-AMARI                       PIC  9(05).
       *
+           03  WRK-TOTALTEN1                   PIC  9(08).
+           03  WRK-TOTALTEN2                   PIC  9(08).
+      *
       *    固定値
        01  CONST-AREA.
       *    フリーコメント
@@ -682,6 +685,10 @@
        01  WRK-RECE200-REC. 
            COPY    "CPRCF200.INC"  REPLACING  //RECE200//
                                    BY         //WRK-RECE200//.
+      *
+       01  WRK-RECE200G-REC. 
+           COPY    "CPRCF200.INC"  REPLACING  //RECE200//
+                                   BY         //WRK-RECE200G//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1193,11 +1200,14 @@
                                WRK-NYULIFE-TABLE
                                WRK-TENTEKI2-TABLE
       *
+           INITIALIZE          WRK-RECE200G-REC
+      *
            PERFORM    2111-TENTEKIMATOME-HENSYU-SEC
       *
            PERFORM    2101-RECE220-HENSYU-SEC
            PERFORM    2102-RECE220-HENSYU2-SEC
            PERFORM    2103-RECE220-HENSYU3-SEC
+           PERFORM    2106-GENTEN-HENSYU-SEC
            PERFORM    2104-FTN-SET-SEC
            PERFORM    2105-GOKEI-KEISAN-SEC
       *
@@ -1316,6 +1326,7 @@
                              (ACCT-SRYKBN  =  "21" OR "22" OR
                                               "23"         ) AND
                              (WRK-PARA-PRTKBN  =  "2"      ))
+                         OR ( ACCT-ZAIKBN  =   1            )
                             IF  (ACCT-SRYCDTOTAL(1:12)  =
                                                "000000999901")
                             AND (ACCT-MEISAISU      =   1    )
@@ -1606,6 +1617,9 @@
                   ( SRY-SRYCD(IDX2)(1:1)     = "7"               ) OR
                   ( SRY-SRYCD(IDX2)          = CONS-ZANHAIKI     ) OR
                   ( SRY-SRYCD(IDX2)(1:1)     = "6"               ))
+             AND (  ACCT-ZAITEN          NOT = ZERO  )
+             AND (  ACCT-SYUTEN1             = ZERO  )
+             AND (  ACCT-ZAIKAISU        NOT = ZERO  )
       *
               MOVE    1                  TO    FLG-TENTEKI
       *
@@ -1675,6 +1689,7 @@
                IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
                AND   ( RECE220-ZAITEN    =     ZERO                 )
                AND   ( RECE220-SAFLG     =     SPACE                )
+               AND   ( ACCT-ZAIKBN   NOT =     1                    )
                   IF   SRY-SRYCD(IDX2)   =     "820000046"
                      MOVE     "1"         TO    RECE220-SAFLG
                   END-IF
@@ -1682,6 +1697,7 @@
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE220-ZAITEN     =     ZERO        )
+               AND   ( ACCT-ZAIKBN   NOT =     1            )
                   IF     RECE220-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE220-TOYAKUFLG
                   ELSE
@@ -1698,6 +1714,7 @@
       *
                IF    ( SRY-SRYKBN        =     "14" )
                AND   ( RECE220-ZAITEN    =     ZERO )
+               AND   ( ACCT-ZAIKBN   NOT =     1    )
                   IF     RECE220-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE220-TOYAKUFLG
                   ELSE
@@ -1785,6 +1802,10 @@
                PERFORM  2101211-RECE230-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
+                IF   ACCT-ZAIKBN  =  1
+                  MOVE    "1"             TO  RECE230-RECEPTFLG(IDX4)
+                  MOVE    ZERO            TO  RECE230-SRYSURYO(IDX4)
+                ELSE
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO
                                           +     0.99999
                   COMPUTE RECE230-SRYSURYO(IDX4)
@@ -1802,7 +1823,10 @@
                     ELSE
                       MOVE WRK-SRYSURYO2  TO  RECE230-SRYSURYO(IDX4 - 1)
                     END-IF
+                  ELSE
+                    MOVE  "1"             TO  RECE230-RECEPTFLG(IDX4)
                   END-IF
+                END-IF
                ELSE
                   MOVE    SRY-SRYSURYO(IDX2)
                                           TO  WRK-SRYSURYO
@@ -2050,6 +2074,28 @@
                      END-IF
                    END-IF
                END-IF
+      *
+               MOVE    ACCT-ZAIKBN  TO  RECE220-ZAIKBN
+      *
+               IF      ACCT-ZAIKBN       =     1
+                 MOVE   ZERO        TO  RECE230-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE230-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE230-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE230-TANINAME(IDX4)
+                 IF  (SRY-SRYCD(IDX2)(1:1) = "6" OR "7")
+                 OR  (SRY-SRYCD(IDX2)(1:3) = "059"     )
+                 OR  (SRY-SRYCD(IDX2)(1:2) = "63"      )
+                     MOVE  "1"          TO  RECE220-COMCDFLG
+                     MOVE  "810000001"  TO  RECE230-SRYCD(IDX4)
+                 END-IF
+               END-IF
+               IF      ACCT-ZAIKBN       =     2
+                 MOVE   ZERO        TO  RECE230-SRYSURYO(IDX4)
+                 MOVE   ZERO        TO  RECE230-TANICD(IDX4)
+                 MOVE   ZERO        TO  RECE230-TANIMOJISU(IDX4)
+                 MOVE   SPACE       TO  RECE230-TANINAME(IDX4)
+               END-IF
+      *
               END-IF
              END-IF
             END-IF  
@@ -2615,17 +2661,29 @@
                                  (TNS-TEN     *   ACCT-ZAIKAISU)
       *    医学管理のレセ点数欄の編集
                WHEN    "13"
+                 IF  ACCT-ZAIKBN   =    2
+                       COMPUTE    WRK-RECE200G-TENSU(2 1)  =
+                                  WRK-RECE200G-TENSU(2 1)  +
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                        COMPUTE    RECE200-TENSU(2 1)  =
                                   RECE200-TENSU(2 1)  +
                                  (WK-ZAITEN   *   WK-ZAIKAISU)
+                 END-IF
       *    在宅のレセ点数欄の編集
                WHEN    "14"
+                 IF  ACCT-ZAIKBN   =    2
+                       COMPUTE    WRK-RECE200G-TENSU(3 1)  =
+                                  WRK-RECE200G-TENSU(3 1)  +
+                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
                        COMPUTE    RECE200-TENSU(3 1)  =
                                   RECE200-TENSU(3 1)  +
                                  (WK-SYUTEN   *   WK-ZAIKAISU)
                        COMPUTE    RECE200-TENSU(3 2)  =
                                   RECE200-TENSU(3 2)  +
                                  (WK-YKZTEN   *   WK-ZAIKAISU)
+                 END-IF
       *    投薬のレセ点数欄の編集
                WHEN    "21"
                    IF    (SRY-SRYCD(IDX3) (1:1)  = "6" OR "S" OR "8"
@@ -4873,9 +4931,13 @@
                   MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
                   PERFORM    900-TENSU-TBL-SEC
                   IF  WRK-ORCSTEN-SRYCD(IDX2)  =  CONS-ZANHAIKI
+                    IF  RECE230-SRYSURYO(IDX4)  NOT = ZERO
                       MOVE   WRK-TANICD     TO  RECE230-TANICD(IDX4)
                       MOVE   WRK-TANIMOJISU TO  RECE230-TANIMOJISU(IDX4)
                       MOVE   WRK-TANINAME   TO  RECE230-TANINAME(IDX4)
+                    ELSE
+                      MOVE   "1"            TO  RECE230-RECEPTFLG(IDX4)
+                    END-IF
                   ELSE
                       MOVE  TNS-TANICD      TO  RECE230-TANICD(IDX4)
                                                 WRK-TANICD
@@ -5470,11 +5532,14 @@
        2105-GOKEI-KEISAN-SEC                SECTION.
       *
       *    小計
-           PERFORM VARYING IDX    FROM    1   BY  1
-                   UNTIL   IDX    >      21
-               ADD    RECE200-TENSU(IDX 1)   TO   RECE200-SYOUKEI(1)
-               ADD    RECE200-TENSU(IDX 2)   TO   RECE200-SYOUKEI(2)
-           END-PERFORM
+      ***  PERFORM VARYING IDX    FROM    1   BY  1
+      ***          UNTIL   IDX    >      21
+      ***      ADD    RECE200-TENSU(IDX 1)   TO   RECE200-SYOUKEI(1)
+      ***      ADD    RECE200-TENSU(IDX 2)   TO   RECE200-SYOUKEI(2)
+      ***  END-PERFORM
+      *
+           MOVE      WRK-TOTALTEN1     TO    RECE200-SYOUKEI(1)
+           MOVE      WRK-TOTALTEN2     TO    RECE200-SYOUKEI(2)
       *
            PERFORM VARYING IDX    FROM    1   BY  1
                    UNTIL   IDX    >      10
@@ -5516,6 +5581,42 @@
       *
            .
        2105-GOKEI-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括点数の治験減点分編集
+      *****************************************************************
+       2106-GENTEN-HENSYU-SEC      SECTION.
+      *
+           MOVE     ZERO    TO    WRK-TOTALTEN1
+           MOVE     ZERO    TO    WRK-TOTALTEN2
+           PERFORM VARYING IDX    FROM    1   BY  1
+                   UNTIL   IDX    >      21
+               ADD    RECE200-TENSU(IDX 1)   TO   WRK-TOTALTEN1
+               ADD    RECE200-TENSU(IDX 2)   TO   WRK-TOTALTEN2
+           END-PERFORM
+           COMPUTE   WRK-TOTALTEN1  =  WRK-TOTALTEN1
+                                    -  WRK-RECE200G-TENSU(2 1)
+                                    -  WRK-RECE200G-TENSU(3 1)
+      *
+      *    指導のレセ点数の編集（減点）
+           IF   RECE200-TENSU(2 1)   >=  WRK-RECE200G-TENSU(2 1)
+             COMPUTE  RECE200-TENSU(2 1)  =
+                      RECE200-TENSU(2 1)  - WRK-RECE200G-TENSU(2 1)
+           ELSE
+             MOVE     ZERO    TO   RECE200-TENSU(2 1)
+           END-IF
+      *
+      *    在宅のレセ点数の編集（減点）
+           IF   RECE200-TENSU(3 1)   >=  WRK-RECE200G-TENSU(3 1)
+             COMPUTE  RECE200-TENSU(3 1)  =
+                      RECE200-TENSU(3 1)  - WRK-RECE200G-TENSU(3 1)
+           ELSE
+             MOVE     ZERO    TO   RECE200-TENSU(3 1)
+           END-IF
+      *
+           .
+       2106-GENTEN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
