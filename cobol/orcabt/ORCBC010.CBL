@@ -45,6 +45,7 @@
       *                                     達時に海外に住所を有する場合
       *                                     の対応
       *  04.04.02    NACL-門脇    09/04/13  平成２１年５月改正対応
+      *  04.05.01    NACL-伊藤    10/01/28  小数点５桁対応COPY句のみ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -159,7 +160,8 @@
       *01  PRGSKBNO                PIC X(08)  VALUE "20071029".
       *01  PRGSKBNO                PIC X(08)  VALUE "20080428".
       *01  PRGSKBNO                PIC X(08)  VALUE "20080826".
-       01  PRGSKBNO                PIC X(08)  VALUE "20081031".
+      *01  PRGSKBNO                PIC X(08)  VALUE "20081031".
+       01  PRGSKBNO                PIC X(08)  VALUE "20100128".
       *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
