@@ -34,11 +34,23 @@
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
+       FILE-CONTROL.
+      *
+      *    印刷用データ
+           SELECT  PRT-IN-FILE     ASSIGN  HC01PARA
+                                   FILE    STATUS  IS  STS-IN.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
+      *    印刷用データ
+       FD  PRT-IN-FILE.
+       01  PRT-IN-REC.
+           03  PRT-IN-PRTDATA      PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
+      *
+       01  STS-AREA.
+           03  STS-IN              PIC X(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -59,6 +71,9 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-DIA             PIC X(10).
+           03  WRK-ENCODING        PIC X(01).
+           03  WRK-ENCODING9       REDEFINES WRK-ENCODING
+                                   PIC 9(01).
       *
       *    デイレクトリ位置
        01  SHELL-NAME.
@@ -85,6 +100,8 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    monpe印刷データ泣き別れ修正サブ
+           COPY  "CPORCSFIXREDDATA.INC".
       *    オフセット用
            COPY   "CPSK1044.INC".
       *    ディレクトリ位置編集サブ
@@ -117,6 +134,11 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  IDX-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
+      *
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
+           MOVE    SPA-ENCODING    TO  WRK-ENCODING9
       *
       *    帳票名からＤＩＡかＭＯＮＰＥを設定する
            MOVE    SPACE               TO  WRK-DIA
@@ -211,6 +233,29 @@ grpsys                            SPA-AREA
       *****************************************************************
        200-MON-PRINT-SEC            SECTION.
       *
+           IF    ( SPA-ENCODING     =  2 )
+               MOVE    MKPRT-DAT            TO  HC01PARA
+               OPEN    INPUT                    PRT-IN-FILE
+               IF        ( STS-IN   NOT  =   ZERO )
+                   DISPLAY "INPUT OPEN ERR [" HC01PARA "]"
+               ELSE
+                   INITIALIZE                   PRT-IN-REC
+                   READ PRT-IN-FILE
+                   INITIALIZE                   SFIXREDDATA-AREA
+                   MOVE    "1"              TO  SFIXREDDATA-SITEKBN
+                   MOVE    MKPRT-DIA        TO  SFIXREDDATA-FORMID
+                   MOVE    PRT-IN-REC       TO  SFIXREDDATA-DATA
+                   CALL    "ORCSFIXREDDATA"     USING
+                                                SFIXREDDATA-AREA
+                                                SPA-AREA
+                   CLOSE   PRT-IN-FILE
+                   OPEN    OUTPUT               PRT-IN-FILE
+                   MOVE    SFIXREDDATA-DATA TO  PRT-IN-REC
+                   WRITE   PRT-IN-REC
+                   CLOSE   PRT-IN-FILE
+               END-IF
+           END-IF
+      *
       *    ファイルディレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
       *    ＳＨＥＬＬ名
@@ -250,6 +295,8 @@ grpsys                            SPA-AREA
       *    オフセット
            MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
            MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
+      *    エンコーディング
+           MOVE    WRK-ENCODING        TO  SHELLTBL-ARG8
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC

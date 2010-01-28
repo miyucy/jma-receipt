@@ -69,6 +69,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    monpe印刷データ泣き別れ修正サブ
+           COPY    "CPORCSFIXREDDATA.INC".
+      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -76,6 +79,9 @@
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY    "CPMKPASS.INC".
       *
       *
       *    ＤＢ検索
@@ -319,7 +325,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                MOVE    SPRT-SITEKBN        TO  PRTDATA-SITEKBN
            END-IF    
            MOVE    SPRT-PRTNM          TO  PRTDATA-PRTNM
-           MOVE    SPRT-PRTDATA        TO  PRTDATA-PRTDATA
+      *
+           INITIALIZE                      SFIXREDDATA-AREA
+           MOVE    PRTDATA-SITEKBN     TO  SFIXREDDATA-SITEKBN
+           MOVE    PRTDATA-PRTID       TO  SFIXREDDATA-FORMID
+           MOVE    SPRT-PRTDATA        TO  SFIXREDDATA-DATA
+           CALL    "ORCSFIXREDDATA"        USING
+                                           SFIXREDDATA-AREA
+                                           SPA-AREA
+           MOVE    SFIXREDDATA-DATA    TO  PRTDATA-PRTDATA
       *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
            MOVE    "tbl_prtdata"       TO  MCP-TABLE
