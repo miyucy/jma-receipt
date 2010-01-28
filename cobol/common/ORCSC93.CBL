@@ -390,10 +390,12 @@
                END-IF
       *!!
            END-PERFORM
-      *
+      *    剤内をすべて同じ区分
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  IDX-S
            MOVE    ZERO                TO  FLG-HOUKATU
+           MOVE    ZERO                TO  FLG-YAKUHYO
+           MOVE    ZERO                TO  FLG-GENTEN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
@@ -401,14 +403,32 @@
                IF     (SPA-COM-HOUKATU-FLG (IDX)   =   1  )
                    MOVE    1                   TO  FLG-HOUKATU
                END-IF
+               IF     (SPA-COM-GENTEN (IDX)    =   "1"  )
+                   MOVE    1                   TO  FLG-GENTEN
+               END-IF
+               IF     (SPA-COM-YAKUHYO(IDX)    =   "1"  )
+                   MOVE    1                   TO  FLG-YAKUHYO
+               END-IF
                IF     (SPA-COM-ZAIEND (IDX)    =   "1"   )
                    PERFORM VARYING     IDX-Z   FROM    IDX-S  BY  1
                            UNTIL      (IDX-Z       >   IDX    )
                        MOVE    FLG-HOUKATU     TO  SPA-COM-HOUKATU-ZAI
                                                               (IDX-Z)
+                       IF      FLG-GENTEN      =   1
+                           MOVE    "1"         TO  SPA-COM-GENTEN (IDX)
+                       ELSE
+                           MOVE    SPACE       TO  SPA-COM-GENTEN (IDX)
+                       END-IF
+                       IF      FLG-YAKUHYO     =   1
+                           MOVE    "1"         TO  SPA-COM-YAKUHYO (IDX)
+                       ELSE
+                           MOVE    SPACE       TO  SPA-COM-YAKUHYO (IDX)
+                       END-IF
                    END-PERFORM
                    MOVE    IDX-Z               TO  IDX-S
                    MOVE    ZERO                TO  FLG-HOUKATU
+                   MOVE    ZERO                TO  FLG-YAKUHYO
+                   MOVE    ZERO                TO  FLG-GENTEN
                END-IF
            END-PERFORM
            .
