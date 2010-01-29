@@ -117,6 +117,7 @@
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.02    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -202,6 +203,10 @@ grpsys     COPY    "COMMON-SPA".
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
+      *
+           03  WRK-ENCODING            PIC X(01).
+           03  WRK-ENCODING9           REDEFINES WRK-ENCODING
+                                       PIC 9(01).
       *
       *    通し番号
            03  WRK-RENNUM              PIC 9(05).
@@ -377,6 +382,9 @@ grpsys     COPY    "COMMON-SPA".
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    monpe印刷データ泣き別れ修正サブ
+           COPY  "CPORCSFIXREDDATA.INC".
+      *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -463,6 +471,11 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           CALL    "ORCSENCODING"          USING
+                                           MCPAREA
+                                           SPA-AREA
+           MOVE    SPA-ENCODING        TO  WRK-ENCODING9
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理開始処理
@@ -620,6 +633,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
       *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
                MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
@@ -1161,7 +1175,16 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    HCN58V01            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
-           MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
+      *    MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
+           INITIALIZE                  SFIXREDDATA-AREA
+           MOVE    PRT-SITEKBN     TO  SFIXREDDATA-SITEKBN
+           MOVE    PRT-PRTID       TO  SFIXREDDATA-FORMID
+           MOVE    RECE08-PRTDATA  TO  SFIXREDDATA-DATA
+           CALL    "ORCSFIXREDDATA"    USING
+                                       SFIXREDDATA-AREA
+                                       SPA-AREA
+           MOVE    SFIXREDDATA-DATA
+                                   TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
            IF      STS-PRT             =   "00"

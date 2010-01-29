@@ -34,8 +34,7 @@
        FILE-CONTROL.
       *
        DATA                    DIVISION.
-      *FILE                    SECTION.
-      *
+       FILE                    SECTION.
       *
        WORKING-STORAGE         SECTION.
       *
@@ -68,7 +67,7 @@
            COPY  "CPMKPASS.INC".
       *
       *    ファイル存在チェック
-           COPY  "CPORCSFILESTATUS.INC".
+           COPY    "CPORCSFILECHK.INC".
       *
            COPY   MCPAREA.
       *
@@ -145,11 +144,11 @@
            MOVE    MKPASS-OT-01    TO  WRK-SITEPATH
       *
            IF    ( SFIXREDDATA-SITEKBN =   "1" )
-               INITIALIZE              SFILESTATUS-AREA
-               MOVE    WRK-PATCHPATH       TO  SFILESTATUS-FILENAME
-               CALL    "ORCSFILESTATUS"    USING
-                                           SFILESTATUS-AREA
-               IF    ( SFILESTATUS-RC  =   ZERO )
+               INITIALIZE              ORCSFILECHKAREA
+               MOVE    WRK-PATCHPATH   TO  FILECHK-NAME
+               CALL    "ORCSFILECHK"       USING
+                                           ORCSFILECHKAREA
+               IF    ( FILECHK-RC      =   ZERO )
                    MOVE    WRK-PATCHPATH   TO  WRK-PATH
                ELSE
                    MOVE    WRK-STDPATH     TO  WRK-PATH

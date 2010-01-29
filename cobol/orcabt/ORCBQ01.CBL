@@ -172,6 +172,9 @@
                05  WRK-AGE-Z                       PIC ---9.
                05  WRK-AGE-MEI                     PIC X(04).
            03  WRK-RENNUM              PIC 9(03).
+           03  WRK-ENCODING            PIC X(01).
+           03  WRK-ENCODING9           REDEFINES WRK-ENCODING
+                                       PIC 9(01).
       * 
        01  CSV-EDIT-AREA.
            03  CSV-NO                  PIC Z(9)9.
@@ -212,6 +215,9 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    monpe印刷データ泣き別れ修正サブ
+           COPY  "CPORCSFIXREDDATA.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -314,6 +320,11 @@
       *
       *    ＤＢオープン
            PERFORM 120-DBOPEN-SEC
+      *
+           CALL    "ORCSENCODING"          USING
+                                           MCPAREA
+                                           SPA-AREA
+           MOVE    SPA-ENCODING        TO  WRK-ENCODING9
       *
            PERFORM 900-JOB-STEP-START-SEC
       *
@@ -456,6 +467,7 @@
                MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
@@ -767,7 +779,15 @@
            MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
            MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
            MOVE    "1"             TO  PRT-SITEKBN
-           MOVE    HC28            TO  PRT-PRTDATA
+           INITIALIZE                  SFIXREDDATA-AREA
+           MOVE    "1"             TO  SFIXREDDATA-SITEKBN
+           MOVE    PRT-PRTID       TO  SFIXREDDATA-FORMID
+           MOVE    HC28            TO  SFIXREDDATA-DATA
+           CALL    "ORCSFIXREDDATA"    USING
+                                       SFIXREDDATA-AREA
+                                       SPA-AREA
+           MOVE    SFIXREDDATA-DATA
+                                   TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
            .

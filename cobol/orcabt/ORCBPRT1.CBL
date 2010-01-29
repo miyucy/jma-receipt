@@ -37,6 +37,7 @@
       *  01.01.04    NACL-伊藤    06/03/07  オフセット対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -134,6 +135,9 @@ grpsys COPY    "COMMON-SPA".
       *  01.01.02  ADD START 
            03  WRK-FILENAME        PIC X(8). 
       *  01.01.02  ADD END   
+           03  WRK-ENCODING        PIC X(01).
+           03  WRK-ENCODING9       REDEFINES WRK-ENCODING
+                                   PIC 9(01).
       *
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
@@ -178,6 +182,9 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    monpe印刷データ泣き別れ修正サブ
+           COPY  "CPORCSFIXREDDATA.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -267,6 +274,11 @@ grpsys COPY    "COMMON-SPA".
       *
            PERFORM 100-DBOPEN-SEC
       *
+           CALL    "ORCSENCODING"          USING
+                                           MCPAREA
+                                           SPA-AREA
+           MOVE    SPA-ENCODING        TO  WRK-ENCODING9
+      *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -343,6 +355,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *         
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
 grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
@@ -410,7 +423,15 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    PRTDATA-PAGE                TO  PRT-PSFILE-PAGE  
            MOVE    LNK-PRTKANRI-TBL-UUID       TO  PRT-PSFILE-UUID
       *  01.01.02  END
-           MOVE    PRTDATA-PRTDATA             TO  PRT-PRTDATA
+           INITIALIZE                  SFIXREDDATA-AREA
+           MOVE    PRT-SITEKBN     TO  SFIXREDDATA-SITEKBN
+           MOVE    PRT-PRTID       TO  SFIXREDDATA-FORMID
+           MOVE    PRTDATA-PRTDATA TO  SFIXREDDATA-DATA
+           CALL    "ORCSFIXREDDATA"    USING
+                                       SFIXREDDATA-AREA
+                                       SPA-AREA
+           MOVE    SFIXREDDATA-DATA
+                                   TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
       *  01.01.02  SATRT
