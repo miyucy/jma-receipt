@@ -482,7 +482,8 @@
                ELSE
                    MOVE    WRK-SYOSINYMD-RRK   TO  KARRK-SYOSINYMD2
                END-IF
-               IF      WRK-SYOSINYMD-RRK       <   KARRK-SYOSINYMD1
+               IF     (KARRK-SYOSINYMD1        =   SPACE           ) OR
+                      (WRK-SYOSINYMD-RRK       <   KARRK-SYOSINYMD1)
                    MOVE    WRK-SYOSINYMD-RRK   TO  KARRK-SYOSINYMD1
                END-IF
            ELSE
