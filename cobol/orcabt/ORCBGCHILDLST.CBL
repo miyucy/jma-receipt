@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -211,6 +212,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
+      *
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
@@ -309,6 +313,10 @@
            END-IF
            MOVE    WRK-PARA-HOSPNUM
                                    TO  SPA-HOSPNUM
+      *
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
       *
            MOVE    ZERO            TO  LNK-PRTKANRI-SHORI-RENNUM
       *
@@ -491,7 +499,16 @@
       *****    PERFORM 900-PTINF-READ-SEC
                MOVE    BUNBEN-NAME         TO  B01-NAME
                INSPECT B01-NAME            REPLACING  ALL "  "  BY  "　"
-      *    
+               IF    ( SPA-ENCODING    =   2 )
+                   INITIALIZE              ORCSKANACHK2AREA
+                   MOVE    "1"         TO  KANACHK2-SYORI
+                   MOVE    B01-NAME    TO  KANACHK2-MAE-INPUT
+                   CALL    "ORCSKANACHK2"  USING
+                                           ORCSKANACHK2AREA
+                   MOVE    KANACHK2-MAE-INPUT
+                                       TO  B01-NAME
+               END-IF
+      *
                MOVE    BUNBEN-BIRTHDAY     TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    LNK-DAY2-EDTYMD1    TO  B01-BIRTHDAY

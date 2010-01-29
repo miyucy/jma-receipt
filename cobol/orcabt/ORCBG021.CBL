@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/04/01  診療科を名称で表示する
+      *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -241,6 +242,9 @@
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -329,6 +333,9 @@
       *
            MOVE    WRK-PARA-HOSPNUM
                                    TO SPA-HOSPNUM
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
       *
            DISPLAY "PRTKBN="  WRK-PARA-PRTKBN
                    " SYOKBN=" WRK-PARA-SYOKBN 
@@ -644,6 +651,15 @@
                MOVE    PTINF-NAME          TO  B01-NAME
            END-IF
            INSPECT B01-NAME            REPLACING  ALL "  "  BY  "　"
+           IF    ( SPA-ENCODING    =   2 )
+               INITIALIZE              ORCSKANACHK2AREA
+               MOVE    "1"         TO  KANACHK2-SYORI
+               MOVE    B01-NAME    TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"  USING
+                                       ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT
+                                   TO  B01-NAME
+           END-IF
       *    
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.00.01    NACL-藤原    07/10/05  印刷ＤＢ更新時のエラー対応
+      *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,6 +269,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -338,6 +342,11 @@
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
+      *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -449,6 +458,15 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    INSPECT PTINF-NAME      REPLACING   ALL "  "
                                                        BY  "　"
                    MOVE    PTINF-NAME      TO  MEISAI-NAME
+                   IF    ( SPA-ENCODING    =   2 )
+                       INITIALIZE              ORCSKANACHK2AREA
+                       MOVE    "1"         TO  KANACHK2-SYORI
+                       MOVE    MEISAI-NAME TO  KANACHK2-MAE-INPUT
+                       CALL    "ORCSKANACHK2"  USING
+                                               ORCSKANACHK2AREA
+                       MOVE    KANACHK2-MAE-INPUT
+                                           TO  MEISAI-NAME
+                   END-IF
                END-IF 
       *
                MOVE    PRVKANRI-SRYYM      TO  MEISAI-SRYYM

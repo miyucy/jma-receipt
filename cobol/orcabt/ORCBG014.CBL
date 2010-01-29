@@ -41,6 +41,7 @@
       *  04.03.00    NACL-森脇     08/10/02  協会けんぽ対応
       *  04.04.00    NACL-森脇     09/03/10  オンライン返戻対応
       *  04.05.00    NACL-森脇     09/06/09  食事療養費、食事負担金追加
+      *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -480,6 +481,9 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    半角チェックサブ
+           COPY    "CPORCSKANACHK2.INC".
+      *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
@@ -562,6 +566,10 @@
                                                WRK-PARA-JYUNBAN
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -3221,23 +3229,26 @@
            END-IF
       *
       *    患者名セット
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    TOKEI-NAME          TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF          KANACHK-RC      =   0
-               COMPUTE KANACHK-MAX     =   KANACHK-MAX +   1
-               PERFORM UNTIL ( KANACHK-MAX >=  18 )
-                   MOVE    "　"    TO  KANACHK-OUT-INPUT(KANACHK-MAX:2)
-                   COMPUTE KANACHK-MAX     =   KANACHK-MAX +   2
-               END-PERFORM
-               MOVE    KANACHK-OUT-INPUT(1:18) TO  WRK-PRT4-NAME(IDX)
-                                                   CSV-NAME
+           MOVE    TOKEI-NAME          TO  WRK-PRT4-NAME(IDX)
+           IF    ( SPA-ENCODING    =   2 )
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"             TO  KANACHK2-SYORI
+               MOVE    WRK-PRT4-NAME(IDX)
+                                       TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"      USING
+                                           ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT
+                                       TO  WRK-PRT4-NAME(IDX)
            ELSE
-               MOVE    "　　　　　　　　　"    TO  WRK-PRT4-NAME(IDX)
-               MOVE    SPACE                   TO  CSV-NAME
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    WRK-PRT4-NAME(IDX)  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-PRT4-NAME(IDX)
            END-IF
+           INSPECT WRK-PRT4-NAME(IDX)  REPLACING  ALL "  " BY  "　"
+           MOVE    WRK-PRT4-NAME(IDX)      TO  CSV-NAME
       *
       *    ＣＳＶファイル出力
            INITIALIZE                RECECSV-REC

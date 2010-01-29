@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.05.00     NACL-多々納  10/01/XX  治験対応
+      * 04. 05.00    NACL-太田    10/01/29  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -476,6 +477,7 @@
            COPY    "CPORCSFDEL.INC".
       *    全角変換
            COPY    "CPORCSKANACHK.INC".
+           COPY    "CPORCSKANACHK2.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -574,6 +576,10 @@
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
+      *
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -2038,6 +2044,16 @@
            MOVE    SPA-NAME            TO  ERR-NAME  (CNT-LINE1)
            INSPECT ERR-NAME  (CNT-LINE1)
                                        REPLACING  ALL "  "  BY  "　"
+           IF    ( SPA-ENCODING    =   2 )
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"             TO  KANACHK2-SYORI
+               MOVE    ERR-NAME  (CNT-LINE1)
+                                       TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"  USING
+                                       ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT
+                                       TO  ERR-NAME  (CNT-LINE1)
+           END-IF
            MOVE    SPA-SRYKA           TO  ERR-SRYKA (CNT-LINE1)
            MOVE    SPA-HKNCOMBINUM     TO  ERR-HKNCOMBI (CNT-LINE1)
            IF      WRK-ERRMSG2     NOT =   SPACE
@@ -2140,6 +2156,16 @@
            MOVE    SPA-NAME            TO  PRT-NAME  (CNT-LINE2)
            INSPECT PRT-NAME  (CNT-LINE2)
                                        REPLACING  ALL "  "  BY  "　"
+           IF    ( SPA-ENCODING    =   2 )
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"             TO  KANACHK2-SYORI
+               MOVE    PRT-NAME  (CNT-LINE2)
+                                       TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"  USING
+                                       ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT
+                                       TO  PRT-NAME  (CNT-LINE2)
+           END-IF
            MOVE    SPA-SRYKA           TO  PRT-SRYKA (CNT-LINE2)
            MOVE    SPA-HKNCOMBINUM     TO  PRT-HKNCOMBI (CNT-LINE2)
            PERFORM VARYING IDX-KEI     FROM    1   BY  1

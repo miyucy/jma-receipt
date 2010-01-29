@@ -36,6 +36,7 @@
       *                                     カウント変更
       *  04.03.00    NACL-小豆沢  08/07/08  褥瘡患者管理加算対応
       *  04.03.00    NACL-小豆沢  08/08/11  特定入院料コード取得をサブプロに変更
+      *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -365,6 +366,9 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
+      *
       *    初期加算算定サブ
            COPY    "CPORCSSYOKIKSN.INC".
       *
@@ -457,6 +461,10 @@
                                        WRK-PARA-BTUNUM
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO   SPA-HOSPNUM
+      *
+           CALL    "ORCSENCODING"      USING
+                                       MCPAREA
+                                       SPA-AREA
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -841,6 +849,17 @@
                END-STRING
            ELSE
                MOVE    PTINF-NAME      TO  LST-NAME  (CNT-LINE)
+           END-IF
+      *
+           IF    ( SPA-ENCODING    =   2 )
+               INITIALIZE                  ORCSKANACHK2AREA
+               MOVE    "1"             TO  KANACHK2-SYORI
+               MOVE    LST-NAME  (CNT-LINE)
+                                       TO  KANACHK2-MAE-INPUT
+               CALL    "ORCSKANACHK2"  USING
+                                       ORCSKANACHK2AREA
+               MOVE    KANACHK2-MAE-INPUT
+                                       TO  LST-NAME  (CNT-LINE)
            END-IF
       *
       *    病棟名編集
