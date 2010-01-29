@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+umask 022
+
+PLUGIN_SHELL=${ORCA_DIR}/bin/jma-plugin
+JPPINFO=${SYSCONFDIR}/jppinfo.list
+PKGLIST=/var/tmp/pluginlist
+
+list4cobol () {
+  ${PLUGIN_SHELL} -c ${JPPINFO} list4cobol > ${PKGLIST}
+}
+
+echo $JPPINFO
+
+if [ "$1" != "list4cobol" ]; then
+  ${PLUGIN_SHELL} -c ${JPPINFO} $1 > ${PKGLIST}
+  if [ $? > 0 ]; then
+    exit $?
+  fi
+fi
+list4cobol
+
+exit $?

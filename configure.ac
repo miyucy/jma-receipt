@@ -223,6 +223,7 @@ cobol/cutils/Makefile
 cobol/common/ORCSCOMMON.CBL
 cobol/copy/Makefile
 bin/Makefile
+lib/Makefile
 lddef/Makefile
 record/Makefile
 screen/Makefile

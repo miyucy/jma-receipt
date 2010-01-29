@@ -1,7 +1,7 @@
 top_srcdir = @top_srcdir@
 include $(top_srcdir)/Makefile.directories
 
-SUBDIRS = bin etc screen form record lddef cobol scripts init data doc tools
+SUBDIRS = bin lib etc screen form record lddef cobol scripts init data doc tools
 
 all filecheck clean:
 	@failcom='exit 1'; \

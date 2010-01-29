@@ -10,7 +10,8 @@ ETC_files = \
 	jma-receipt.env \
 	jma-receipt.conf \
 	jma-receipt-crontab \
-	ORCADC.PARA
+	ORCADC.PARA \
+	jppinfo.list
 
 DBGROUP_files = dbgroup.inc 
 

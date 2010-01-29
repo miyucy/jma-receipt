@@ -93,6 +93,7 @@ shell_sources = \
 	allways/das-profile.sh.in \
 	daily/das-infection.sh.in \
 	daily/infectiondata1.sh.in \
+	allways/plugin.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \

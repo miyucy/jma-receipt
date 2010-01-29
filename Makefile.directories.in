@@ -20,6 +20,7 @@ screendir = ${ORCA_DIR}/screen
 scriptsdir = ${ORCA_DIR}/scripts
 copydir = ${ORCA_DIR}/cobol/copy
 bindir = ${ORCA_DIR}/bin
+libdir = ${ORCA_DIR}/lib
 
 COPYGEN = @COPYGEN@
 
