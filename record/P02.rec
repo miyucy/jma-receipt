@@ -979,7 +979,7 @@ P02	{
 						item	{
 							value1	varchar(10);
 							value2	varchar(10);
-							value3	varchar(30);
+							value3	varchar(66);
 						}	[50];
 						select	bool[50];
 					};

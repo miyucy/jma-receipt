@@ -951,7 +951,7 @@
                        09  SPA-GMN25-JYU-REC               OCCURS 50.
                            11  SPA-GMN25-JYU-SRYYMD        PIC X(10).
                            11  SPA-GMN25-JYU-SRYKA         PIC X(14).
-                           11  SPA-GMN25-JYU-SRYKBN        PIC X(30).
+                           11  SPA-GMN25-JYU-SRYKBN        PIC X(66).
       *                                          /ÁªÂòÈÖ¹æ
                    07  SPA-GMN25-SELNUM                    PIC X(04).
                    07  SPA-GMN25-SELNUM2                   PIC X(04).

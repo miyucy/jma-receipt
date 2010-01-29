@@ -695,7 +695,7 @@
                       07  P02-P025-JYUSINLIST2-ITEM OCCURS  50 TIMES.
                         08  P02-P025-SRYYMD   PIC X(10).
                         08  P02-P025-SRYKA2   PIC X(10).
-                        08  P02-P025-SRYNAIYO PIC X(30).
+                        08  P02-P025-SRYNAIYO PIC X(66).
                       07  P02-P025-JYUSINLIST2-SELECT PIC X
                                                OCCURS  50 TIMES.
                 04  P02-FP9.

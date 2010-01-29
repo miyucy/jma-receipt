@@ -93,6 +93,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDZ2                PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -133,6 +134,14 @@
       *----(01.00.01) LINE ADD START --------------------------------
            03  WRK-WWYMD           PIC X(10).
       *----(01.00.01) LINE ADD END   --------------------------------
+           03  WRK-TBL-SRYNAME-G.
+               05  WRK-TBL-SRYNAME         PIC X(06)
+                                           OCCURS   11.
+      *
+           03  WRK-HEN-SRYNAME-G.
+               05  WRK-HEN-SRYNAME-OO      OCCURS   11.
+                   07  WRK-HEN-SRYNAIMEI       PIC X(06).
+      *
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -374,9 +383,9 @@
              ELSE
                ADD     1               TO  IDX
                MOVE    KARRK-SRYKA     TO  SPA-NAI25-SRY-SRYKA    (IDX)
-               MOVE    KARRK-SYOSINYMD1
+               MOVE    KARRK-SYOSINYMD2
                                        TO  SPA-NAI25-SRY-SYOSINYMD(IDX)
-               MOVE    KARRK-SYOSINYMD1    TO  WRK-SYMD
+               MOVE    KARRK-SYOSINYMD2    TO  WRK-SYMD
                PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
                MOVE    WRK-HENYMD      TO  SPA-GMN25-SRY-SYOSINYMD(IDX)
                MOVE    KARRK-LASTYMD   TO  SPA-NAI25-SRY-LASTYMD  (IDX)
@@ -406,7 +415,6 @@
                PERFORM 4222-JYURRK-SPASET-SEC
                MOVE    ZERO            TO  SPA-NAI25-SELNUM2
            END-IF
-      *
            .
        312-SRYKARRK-SPASET-EXT.
            EXIT.
@@ -853,6 +861,13 @@
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN25-TKYU-NICKNAME
            IF      SPA-ERRCD           =   SPACE
                MOVE    6                   TO  SPA-GMN25-CUR
+      *        ÆþÎÏ¤¬¤Ê¤¤»þ¡¢¼õ¿Ç²ÊÍúÎò¤Ø
+               IF     (SPA-GMN25-TKYU-CHGYMDW  =   SPACE )
+               AND    (SPA-GMN25-TKYU-KANANAME =   SPACE )
+               AND    (SPA-GMN25-TKYU-NAME     =   SPACE )
+               AND    (SPA-GMN25-TKYU-NICKNAME =   SPACE )
+                   MOVE    8                   TO  SPA-GMN25-CUR
+               END-IF
            ELSE
                MOVE    5                   TO  SPA-GMN25-CUR
            END-IF
@@ -1138,44 +1153,67 @@
            MOVE    ZERO                  TO  IDX
            PERFORM   UNTIL   ( FLG-JYURRK    =   1  )
                      OR      ( IDX           =   50 )
-      *       ¼õ¿ÇÍúÎò
-      *       IF  WRK-ZENYMD              <=  JYURRK-SRYYMD
-                 ADD     1               TO  IDX
-                 MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
-                 PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
-                 MOVE    WRK-HENYMD      TO  SPA-GMN25-JYU-SRYYMD (IDX)
-                 MOVE    SPA-GMN25-SRY-SRYKA (SPA-NAI25-SELNUM2)
-                                         TO  SPA-GMN25-JYU-SRYKA  (IDX)
-                 PERFORM     VARYING     IDZ   FROM    1   BY  1
-                             UNTIL       IDZ       >   11
-                     IF  JYURRK-SRYKBN (IDZ)   NOT =   SPACE
-                         IF  SPA-GMN25-JYU-SRYKBN(IDX) =   SPACE
-                             MOVE    WRK-HEN-SRYNAME (IDZ)
-                                         TO  SPA-GMN25-JYU-SRYKBN (IDX)
-                         ELSE
-                             STRING  SPA-GMN25-JYU-SRYKBN(IDX)
-                                           DELIMITED   BY  " "
-                                     "  "  DELIMITED   BY  SIZE
-                                     WRK-HEN-SRYNAME (IDZ)
-                                           DELIMITED   BY  " "
-                                     INTO  SPA-GMN25-JYU-SRYKBN   (IDX)
-                             END-STRING
-                         END-IF
-                     END-IF
-                 END-PERFORM
-      *       END-IF
-             MOVE    "key7"                TO  MCP-PATHNAME
-             PERFORM 970-JYURRK-NEXT-SEC
+      *        ¼õ¿ÇÍúÎò
+               IF      JYURRK-EDANUM       =   1
+                   IF      IDX             >   ZERO
+      *                ¿ÇÎÅÆâÍÆÊÔ½¸
+                       PERFORM 42221-SRYNAIYO-HEN-SEC
+                   END-IF
+                   ADD     1               TO  IDX
+                   MOVE    JYURRK-SRYYMD   TO  WRK-SYMD
+                   PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
+                   MOVE    WRK-HENYMD      TO  SPA-GMN25-JYU-SRYYMD
+                                                               (IDX)
+                   MOVE    SPA-GMN25-SRY-SRYKA (SPA-NAI25-SELNUM2)
+                                           TO  SPA-GMN25-JYU-SRYKA
+                                                               (IDX)
+                   INITIALIZE              WRK-TBL-SRYNAME-G
+               END-IF
+               PERFORM VARYING     IDZ   FROM    1   BY  1
+                       UNTIL       IDZ       >   11
+                   IF      JYURRK-SRYKBN (IDZ)   NOT =   SPACE
+                       MOVE    WRK-HEN-SRYNAME (IDZ)
+                                            TO  WRK-TBL-SRYNAME (IDZ)
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "key7"                TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-NEXT-SEC
            END-PERFORM
       *
            MOVE    "tbl_jyurrk"          TO  MCP-TABLE
            MOVE    "key7"                TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           IF      IDX             >   ZERO
+      *    ¿ÇÎÅÆâÍÆÊÔ½¸
+               PERFORM 42221-SRYNAIYO-HEN-SEC
+           END-IF
+      *
            MOVE    IDX                   TO  SPA-NAI25-JYU-MAX
       *
            .
        4222-JYURRK-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅÆâÍÆÊÔ½¸½èÍý
+      *****************************************************************
+       42221-SRYNAIYO-HEN-SEC             SECTION.
+      *
+           INITIALIZE                  WRK-HEN-SRYNAME-G
+           MOVE    ZERO                TO  IDZ2
+           PERFORM VARYING     IDZ   FROM    1   BY  1
+                   UNTIL       IDZ       >   11
+               IF      WRK-TBL-SRYNAME (IDZ)   NOT =   SPACE
+                   ADD     1               TO  IDZ2
+                   MOVE    WRK-TBL-SRYNAME (IDZ)
+                                           TO  WRK-HEN-SRYNAIMEI (IDZ2)
+               END-IF
+           END-PERFORM
+           MOVE    WRK-HEN-SRYNAME-G   TO  SPA-GMN25-JYU-SRYKBN (IDX)
+           .
+       42221-SRYNAIYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
