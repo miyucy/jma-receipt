@@ -47,7 +47,6 @@ for(i=0;i<size;i++) {
 printf("%02X",buf[i] & 0xFF);
 }
 printf("\n");
-printf("data:%s\n",buf);
 #endif
 	count = 0;
 	while(*in) {
@@ -162,93 +161,167 @@ Element_close(xmlTextReaderPtr reader)
 	return closing;
 }
 
+typedef struct _EmbedStruct {
+	struct _EmbedStruct *parent;
+	struct _EmbedStruct **child;
+	int child_num;
+	int occurs;
+	int block_size;
+} EmbedStruct;
+
+#define MAX_CHILD_NUM 128
+
+EmbedStruct *
+NewEmbedStruct(void)
+{
+	EmbedStruct *ret;
+	ret = malloc(sizeof(EmbedStruct));
+	ret->parent = NULL;
+	ret->child = (EmbedStruct **)malloc(sizeof(EmbedStruct *)*MAX_CHILD_NUM);
+	ret->child_num = 0;
+	ret->occurs = 0;
+	ret->block_size = 0;
+	return ret;
+}
+
+void
+FreeEmbedStruct(EmbedStruct *embed)
+{
+	int i;
+	for (i = 0; i < embed->child_num; i++) {
+		FreeEmbedStruct(embed->child[i]);
+	}
+	free(embed);
+}
+
+int
+EmbedStructSize(EmbedStruct *embed)
+{
+	int i,j;
+	int size;
+
+	size = 0;
+	for (i = 0; i < embed->occurs; i++) {
+		for (j = 0; j < embed->child_num; j++) {
+			size += EmbedStructSize(embed->child[j]);
+		}
+		if (embed->block_size > 0) {
+			size += embed->block_size;
+		}
+	}
+	return size;
+}
+
+int
+EvalEmbedStruct(EmbedStruct *embed, char *p, int *rc)
+{
+	int i,j;
+	int size;
+	
+	size = 0;
+	for (i = 0; i < embed->occurs; i++) {
+		for (j = 0; j < embed->child_num; j++) {
+			size += EvalEmbedStruct(embed->child[j],p + size,rc);
+		}
+		if (embed->block_size > 0) {
+			if(!CheckEuc213(p + size,embed->block_size)) {
+				*rc = 1;
+			}
+			size += embed->block_size;
+		}
+	}
+	return size;
+}
+
 /*
 	for OpenCOBOL 
 	arg {
-		int psize;
-		int dsize;
+		int path_size;
+		int data_size;
 		int result
-		char path[psize],
-		char data[dsize],
+		char path[path_size],
+		char data[data_size],
 	}
 */
 extern void
 fixreddata (char *args)
 {
-	int psize;
-	int dsize;
-	int occurs[30];
-	int stack_size;
-	int block_size;
-	int done_size;
+	int path_size,data_size;
+	int block_size,occurs;
+	int done_size,process_size;
 	int *rc;
 	int i,j;
-	char *path;
-	char *data;
+	char *path,*data;
 	int status;
 	char *p;
-	char *q;
 	xmlTextReaderPtr reader;
+	EmbedStruct *embed,*newembed;
 
 	p = args;
 
-	psize = *(size_t *)(p);
+	path_size = *(size_t *)(p);
     p += sizeof(int);
 
-	dsize = *(size_t *)(p);
+	data_size = *(size_t *)(p);
     p += sizeof(int);
 
 	rc = (int *)(p);
 	*rc = 0;
     p += sizeof(int);
 
-	path = Strndup(p,psize);
-	StringCobol2C(path, psize);
-	p += psize;
+	path = Strndup(p,path_size);
+	StringCobol2C(path, path_size);
+	p += path_size;
 
-	data = malloc(dsize+1);
-	memcpy(data,p,dsize);
-	data[dsize] = 0;
-	p += dsize;
+	data = malloc(data_size+1);
+	memcpy(data,p,data_size);
+	data[data_size] = 0;
+	p += data_size;
 
 #if 0
 printf("in fixreddata\n");
-printf("psize[%d] dsize[%d] rc[%d]\n",psize,dsize,*rc);
+printf("path_size[%d] data_size[%d] rc[%d]\n",path_size,data_size,*rc);
 printf("path[%s]\n",path);
 printf("data[%s]\n",data);
 #endif
 
-	done_size = 0;
-	stack_size = 0;
 	reader = xmlNewTextReaderFilename(path);
+	embed = NULL;
+	done_size = 0;
 	if (reader != NULL) {
 		p = data;
 		status = xmlTextReaderRead(reader);
 		while(status == 1) {
 			status = xmlTextReaderRead(reader);
-			if ((j = Element(reader)) > 0) {
-				occurs[stack_size] = j;
-				stack_size++;
+			if ((occurs = Element(reader)) > 0) {
+				newembed = NewEmbedStruct();
+				newembed->occurs = occurs;
+				if (embed != NULL) {
+					embed->child[embed->child_num] = newembed;
+					newembed->parent = embed;
+					embed->child_num++;
+				}
+				embed = newembed;
 			}
 			if ((block_size = EmbedString(reader)) > 0) {
-				for ( i = 0,j = 1; i < stack_size; i++) {
-					j *= occurs[i];
-				}
-				for ( i = 0; i < j; i++) {
-					if (block_size + done_size > dsize) {
-						printf("the size of data is insufficient.need [%d],but [%d]\n",block_size + done_size, dsize);
+				embed->block_size = block_size;
+			}
+			if ((j = Element_close(reader)) > 0) {
+				if (embed->parent == NULL) {
+					process_size = EmbedStructSize(embed);
+					if (process_size + done_size > data_size) {
+						printf("size of data does not suffice. need size[%d],but data size[%d]",process_size + done_size, data_size);
 						*rc = 3;
 						break;
 					}
-					if(!CheckEuc213(p,block_size)) {
-						*rc = 1;
-					}
-					p += block_size;
-					done_size += block_size;
+					process_size = EvalEmbedStruct(embed,p,rc);
+					p += process_size;
+					done_size += process_size;
+					FreeEmbedStruct(embed);
+					embed = NULL;
+				} else {
+					embed = embed->parent;
 				}
-			}
-			if ((j = Element_close(reader)) > 0) {
-				stack_size--;
 			}
 		}
 		xmlFreeTextReader(reader);
@@ -260,7 +333,7 @@ printf("data[%s]\n",data);
 printf("%s\n",data);
 printf("%d\n",*rc);
 #endif
-	memcpy(args + sizeof(int) * 3 + psize ,data, dsize);
+	memcpy(args + sizeof(int) * 3 + path_size ,data, data_size);
 	free(path);
 	free(data);
 }
@@ -271,8 +344,8 @@ main(
 	char *argv[])
 {
 	struct _prefix{
-		int psize;
-		int dsize;
+		int path_size;
+		int data_size;
 		int rc;
 	};
 
@@ -287,19 +360,19 @@ main(
 		exit(1);
 	}
 
-	pre.psize = strlen(argv[1]);
-	pre.dsize = strlen(argv[2]);
+	pre.path_size = strlen(argv[1]);
+	pre.data_size = strlen(argv[2]);
 	pre.rc = 0;
 	
-	arg = malloc(sizeof(struct _prefix) + pre.psize + pre.dsize);
+	arg = malloc(sizeof(struct _prefix) + pre.path_size + pre.data_size);
 	memcpy(arg, &pre, sizeof(struct _prefix));
-	memcpy(arg + sizeof(struct _prefix), argv[1], pre.psize);
-	memcpy(arg + sizeof(struct _prefix) + pre.psize, argv[2], pre.dsize);
+	memcpy(arg + sizeof(struct _prefix), argv[1], pre.path_size);
+	memcpy(arg + sizeof(struct _prefix) + pre.path_size, argv[2], pre.data_size);
 
 	fixreddata(arg);
 	p = (struct _prefix *)arg;
-	path = Strndup(arg + sizeof(struct _prefix),p->psize);
-	data = Strndup(arg + sizeof(struct _prefix) + p->psize,p->dsize);
+	path = Strndup(arg + sizeof(struct _prefix),p->path_size);
+	data = Strndup(arg + sizeof(struct _prefix) + p->path_size,p->data_size);
 printf("%s\n",data);
 printf("%d\n",p->rc);
 
