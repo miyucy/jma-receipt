@@ -1137,8 +1137,15 @@
                       (SPA-COM-SURYO(IDX-T)    =   1      )
                    CONTINUE
                ELSE
-                   MOVE    SPACE           TO  SPA-COM-KZMFLG5 (IDX-T)
-                   MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG(IDX-T)
+                   IF     (SPA-COM-SRYKBN (IDX-T)  =   "23" )
+                   AND    (SPA-COM-SURYO2 (IDX-T)  =   LNK-SC97-SURYO)
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  SPA-COM-KZMFLG5
+                                                              (IDX-T)
+                       MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG
+                                                              (IDX-T)
+                   END-IF
                END-IF
            END-IF
       *!!
@@ -1202,7 +1209,12 @@
            ELSE
                MOVE    "1"             TO  SPA-COM-KAIFLG(IDX-T)
                IF      LNK-SC97-KAISU  NOT =   SPA-COM-KAISU (IDX-T)
-                   MOVE    "1"             TO  SPA-COM-KAIFLG2(IDX-T)
+                   IF     (SPA-COM-SRYKBN (IDX-T)  =   "23" )
+                   AND    (SPA-COM-KAISU2 (IDX-T)  =   LNK-SC97-KAISU)
+                       CONTINUE
+                   ELSE
+                       MOVE    "1"         TO  SPA-COM-KAIFLG2(IDX-T)
+                   END-IF
                END-IF
                MOVE    LNK-SC97-KAISU  TO  SPA-COM-KAISU (IDX-T)
                IF      SPA-COM-KAISU(IDX-T)

@@ -1636,14 +1636,14 @@
       *
                WHEN    "K227"
                    STRING   "警告！！"
-                            "月上限回数以上です。"
+                            "月上限回数を超えています。"
                             "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K228"
                    STRING   "警告！！"
-                            "月総投与量以上です。"
+                            "月総投与量を超えています。"
                             "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG

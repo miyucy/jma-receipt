@@ -784,7 +784,7 @@
       *    入院回数・日数
            IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
       *        回数変更あり
-               IF      SPA-COM-KAIFLG2(IDX)    =   "1"
+               IF     (SPA-COM-KAIFLG2(IDX)    =   "1"   )
                    MOVE    "1"                 TO  WRK-KAIFLG2
                ELSE
                    MOVE    SPACE               TO  WRK-KAIFLG2
@@ -831,7 +831,10 @@
            MOVE    SPACE               TO  SPA-COM-KAIFLG2 (IDX)
            IF      WRK-KAIFLG2         =   "1"
                MOVE    SPACE               TO  SPA-COM-TUKIJGNFLG (IDX)
-               MOVE    SPACE               TO  SPA-COM-TUKIJGNFLG1(IDX)
+      *        上限回数
+               IF      SPA-COM-SRYKBN(IDX) NOT =   "23"
+                   MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
+               END-IF
            END-IF
            .
        51011-KAISU-SET1-EXT.
@@ -845,7 +848,7 @@
                   (SPA-COM-ZAIEND (IDX)    =   "1"    )
                MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
       *        回数変更あり
-               IF      SPA-COM-KAIFLG2(IDX)    =   "1"
+               IF     (SPA-COM-KAIFLG2(IDX)    =   "1"   )
                    MOVE    "1"                 TO  WRK-KAIFLG2
                ELSE
                    MOVE    SPACE               TO  WRK-KAIFLG2
@@ -868,7 +871,10 @@
            MOVE    SPACE               TO  SPA-COM-KAIFLG2 (IDX)
            IF      WRK-KAIFLG2         =   "1"
                MOVE    SPACE               TO  SPA-COM-TUKIJGNFLG (IDX)
-               MOVE    SPACE               TO  SPA-COM-TUKIJGNFLG1(IDX)
+      *        上限回数
+               IF      SPA-COM-SRYKBN(IDX) NOT =   "23"
+                   MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
+               END-IF
            END-IF
            .
        51012-KAISU-SET2-EXT.
