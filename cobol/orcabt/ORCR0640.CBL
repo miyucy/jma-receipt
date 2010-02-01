@@ -408,6 +408,7 @@
       *                                     更生等単独になったときの対応
       *  04.04.37    NACL-門脇    10/01/08  高齢者他保険入院対応修正
       *  04.04.38    NACL-門脇    10/01/13  剤まとめ項目値の計算修正
+      *  04.04.39    NACL-門脇    10/02/01  大阪府地方公費対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
@@ -11841,7 +11842,7 @@
       *
            IF  ((WRK-PREFNUM        = "42"                     ) AND
                 (SYU-KOH-HKNNUM(1)  = "186"                    ))
-           OR  ((WRK-PREFNUM        = "13" OR "08"             ) AND
+           OR  ((WRK-PREFNUM        = "13" OR "08" OR "27"     ) AND
                 (SYU-SYUHKNNUM  NOT = "060" AND "067" AND "039") AND
                 (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"   ) AND
                 (IDZ                =  1                       ))
@@ -11974,7 +11975,7 @@
       *
            IF  ((WRK-PREFNUM        = "42"                     ) AND
                 (SYU-KOH-HKNNUM(1)  = "186"                    ))
-           OR  ((WRK-PREFNUM        = "13" OR "08"             ) AND
+           OR  ((WRK-PREFNUM        = "13" OR "08" OR "27"     ) AND
                 (SYU-SYUHKNNUM  NOT = "060" AND "067"          ) AND
                 (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"   ) AND
                 (IDZ                =  1                       ))
@@ -11987,10 +11988,19 @@
                 (RECE62-SRYYM      <= "200803"                 ))
       *
             MOVE     ZERO    TO   FLG-KOHYONKAIME-NO
-            IF ((WRK-PREFNUM        = "42"                  ) AND
-                (SYU-KOH-HKNNUM(1)  = "186"                 ))
-            OR ((WRK-PREFNUM        = "08"                  ) AND
-                (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"))
+      ***   IF ((WRK-PREFNUM        = "42"                  ) AND
+      ***       (SYU-KOH-HKNNUM(1)  = "186"                 ))
+      ***   OR ((WRK-PREFNUM        = "08"                  ) AND
+      ***       (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"))
+      ***      MOVE   1      TO   FLG-KOHYONKAIME-NO
+      ***   END-IF
+            IF  (WRK-PREFNUM        = "01"           )
+            AND (SYU-SYUHKNNUM  NOT = "060" AND "067")
+            AND (SYU-KOH-HKNNUM(1)  = "141" OR "241" )
+            AND (IDZ                =  1             )
+            AND (RECE62-SRYYM      <= "200803"       )
+               CONTINUE
+            ELSE
                MOVE   1      TO   FLG-KOHYONKAIME-NO
             END-IF
             IF  (FLG-KOHYONKAIME-NO  =  ZERO)
