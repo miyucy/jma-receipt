@@ -57,6 +57,7 @@
       *  04.04.04    NACL-ÌçÏÆ    09/12/04  ºÞ¤Þ¤È¤á¹àÌÜÃÍ¤Î·×»»½¤Àµ
       *  04.04.05    NACL-ÌçÏÆ    09/12/09  ½ÐÍè¹â»»Äê¡ÊºÞ¡Ë¤ÎÂÐ±þ
       *  04.04.06    NACL-ÌçÏÆ    10/01/13  ºÞ¤Þ¤È¤á¹àÌÜÃÍ¤Î·×»»½¤Àµ
+      *  04.04.07    NACL-ÌçÏÆ    10/01/29  ÆâÉþÌôºÞÄþ¸ºÊÔ½¸ÂÐ±þ
       *
       *  04.05.01    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
       *  04.05.02    NACL-ÌçÏÆ    09/08/17  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
@@ -339,6 +340,8 @@
       *
            03  WRK-TOTALTEN1                   PIC 9(08).
            03  WRK-TOTALTEN2                   PIC 9(08).
+      *
+           03  WRK-SURYOU-COUNT                PIC 9(09).
       *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
@@ -925,6 +928,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
            INITIALIZE                   CNT-SAISIN-AREA
       *
            MOVE    88888880     TO      WRK-ZAINUM
+      *
+           MOVE    ZERO         TO      WRK-SURYOU-COUNT
       *
            PERFORM VARYING IDX    FROM    1   BY   1
                    UNTIL ( IDX    >       20    )
@@ -1715,6 +1720,14 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                     IF    RECE120-COMCDFLG   NOT =   "2"
                         MOVE     "1"       TO    RECE120-COMCDFLG
+                    END-IF
+                    IF    RECE120-COMCDFLG       =   "2"
+                      IF  SRY-SRYCD(IDX2)  =  "820000047"
+                        CONTINUE
+                      ELSE
+                        ADD   999               TO  WRK-SURYOU-COUNT
+                        ADD   WRK-SURYOU-COUNT  TO  RECE120-SURYOUTOTAL
+                      END-IF
                     END-IF
                END-IF
       *

@@ -174,6 +174,7 @@
       *  04.04.05    NACL-門脇    09/12/04  剤まとめ項目値の計算修正
       *  04.04.06    NACL-門脇    09/12/09  出来高算定（剤）の対応
       *  04.04.07    NACL-門脇    10/01/13  剤まとめ項目値の計算修正
+      *  04.04.08    NACL-門脇    10/01/29  内服薬剤逓減編集対応
       *
       *  04.05.01    NACL-門脇    09/06/29  療養期間記載方法選択機能
       *                                     （休業証明請求時）
@@ -553,6 +554,8 @@
            03  WRK-FUKA-VALUE                  PIC 9(01).
       *
            03  WRK-ZAITENNASHI                 PIC 9(09).
+      *
+           03  WRK-SURYOU-COUNT                PIC 9(09).
       *
       *---------------------------------------------------------------
       *  回数減算用退避領域
@@ -1248,6 +1251,8 @@ grpsys           PERFORM 900-DBSELECT-SEC
            INITIALIZE                   WRK-RECE41G-REC
       *
            MOVE       ZERO       TO     WRK-ZAITENNASHI
+      *
+           MOVE       ZERO       TO     WRK-SURYOU-COUNT
       *
            IF      RECE41-HKNKBN   NOT  =   "3"
       *
@@ -2232,6 +2237,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (SRY-SRYCD    (IDX2)(1:3)     =   "008")
                     IF    RECE44-COMCDFLG   NOT =   "3"
                         MOVE     "1"       TO    RECE44-COMCDFLG
+                    END-IF
+                    IF    RECE44-COMCDFLG       =   "3"
+                      IF  SRY-SRYCD(IDX2)  =  "820000047"
+                        CONTINUE
+                      ELSE
+                        ADD   999               TO  WRK-SURYOU-COUNT
+                        ADD   WRK-SURYOU-COUNT  TO  RECE44-SURYOUTOTAL
+                      END-IF
                     END-IF
                END-IF
       *
