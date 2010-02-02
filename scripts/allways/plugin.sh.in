@@ -28,7 +28,7 @@ list4cobol () {
 
 echo $JPPINFO
 
-case "$1" in
+case "${COMMAND}" in
   update|upgrade)
     ${PLUGIN_SHELL} -c ${JPPINFO} ${COMMAND}
     ;;
@@ -45,11 +45,11 @@ case "$1" in
     list4cobol
     ;;
   *)
-    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,"command error"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID},${HOSPNUM},,,command error"
     exit 1
     ;;
 esac
 
-${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID},${HOSPNUM},,,"
 
 exit 0
