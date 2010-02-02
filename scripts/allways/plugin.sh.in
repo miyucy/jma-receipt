@@ -11,6 +11,13 @@ fi
 
 umask 022
 
+HOSPNUM=$1
+JOBID=$2
+SHELLID=$3
+COMMAND=$4
+PACKAGE=$5
+VERSION=$6
+
 PLUGIN_SHELL=${ORCA_DIR}/bin/jma-plugin
 JPPINFO=${SYSCONFDIR}/jppinfo.list
 PKGLIST=/var/tmp/pluginlist
@@ -21,12 +28,28 @@ list4cobol () {
 
 echo $JPPINFO
 
-if [ "$1" != "list4cobol" ]; then
-  ${PLUGIN_SHELL} -c ${JPPINFO} $1 > ${PKGLIST}
-  if [ $? > 0 ]; then
-    exit $?
-  fi
-fi
-list4cobol
+case "$1" in
+  update|upgrade)
+    ${PLUGIN_SHELL} -c ${JPPINFO} ${COMMAND}
+    ;;
+  list)
+    ${PLUGIN_SHELL} -c ${JPPINFO} update
+    if [ $? -ne 0 ]; then
+      exit $?
+    fi
+    ${PLUGIN_SHELL} -c ${JPPINFO} list
+    list4cobol
+    ;;
+  install|uninstall|enable|disable)
+    ${PLUGIN_SHELL} -c ${JPPINFO} ${COMMAND} ${PACKAGE}-${VERSION}
+    list4cobol
+    ;;
+  *)
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,"command error"
+    exit 1
+    ;;
+esac
 
-exit $?
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,
+
+exit 0
