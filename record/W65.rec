@@ -55,6 +55,22 @@ W65	{
 			item	varchar(30)[10];
 			state	int;
 		};
+		CMB_SYUKEIKBN	{
+			SYUKEIKBN	{
+				value	varchar(60);
+			};
+			count	int;
+			item	varchar(60)[10];
+		};
+		CMB_SYUKEITAIKBN	{
+			SYUKEITAIKBN	{
+				value	varchar(30);
+				state	int;
+			};
+			count	int;
+			item	varchar(30)[10];
+			state	int;
+		};
 		CMB_FTNMONEYKBNG	{
 			FTNMONEYKBNG	{
 				value	varchar(60);

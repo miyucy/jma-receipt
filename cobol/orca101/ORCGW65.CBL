@@ -75,6 +75,14 @@
                        09  SPA-GMN-TOTALTENTAIKBNF PIC X(01).
                        09  SPA-GMN-TOTALTENTAIKBNMEI
                                                    PIC X(28).
+                   07  SPA-GMN-SYUKEIKBN-G.
+                       09  SPA-GMN-SYUKEIKBN          PIC X(01).
+                       09  SPA-GMN-SYUKEIKBNF         PIC X(01).
+                       09  SPA-GMN-SYUKEIKBNMEI       PIC X(58).
+                   07  SPA-GMN-SYUKEITAIKBN-G.
+                       09  SPA-GMN-SYUKEITAIKBN          PIC X(01).
+                       09  SPA-GMN-SYUKEITAIKBNF         PIC X(01).
+                       09  SPA-GMN-SYUKEITAIKBNMEI       PIC X(28).
                    07  SPA-GMN-FTNMONEYKBNG-G.
                        09  SPA-GMN-FTNMONEYKBNG    PIC X(01).
                        09  SPA-GMN-FTNMONEYKBNGF   PIC X(01).
@@ -162,6 +170,12 @@
                            11  SPA-GMN-TOTALTENKBNL        PIC X(01).
                            11  SPA-GMN-TOTALTENKBNFL       PIC X(01).
                            11  SPA-GMN-TOTALTENKBNMEIL     PIC X(58).
+                   07  SPA-GMN-SYUKEIKBNLST-G.
+                       09  SPA-GMN-SYUKEIKBN-MAX         PIC 9(03).
+                       09  SPA-GMN-SYUKEIKBNLST          OCCURS 10.
+                           11  SPA-GMN-SYUKEIKBNL        PIC X(01).
+                           11  SPA-GMN-SYUKEIKBNFL       PIC X(01).
+                           11  SPA-GMN-SYUKEIKBNMEIL     PIC X(58).
                    07  SPA-GMN-FTNMONEYKBNLST-G.
                        09  SPA-GMN-FTNMONEYKBN-MAX         PIC 9(03).
                        09  SPA-GMN-FTNMONEYKBNLST          OCCURS 10.
@@ -295,6 +309,7 @@
            03  WRK-CMB-CD                                  PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM                             PIC X(200).
+               05  WRK-CMB-ITM2                            PIC X(200).
            03  WRK-ERRSTYMD                                PIC X(09).
            03  WRK-ERREDYMD                                PIC X(09).
            03  WRK-SELNUM-G.
@@ -322,6 +337,15 @@
        01  CONST-AREA.
            03  CONST-KOHLST-MAX           PIC 9(03) VALUE 100.
            03  CONST-RIREKILST-MAX        PIC 9(03) VALUE 20.
+      *
+           03  CONST-IBARAKI              PIC 9(02) VALUE 08.
+           03  CONST-GUNMA                PIC 9(02) VALUE 10.
+           03  CONST-TOKYO                PIC 9(02) VALUE 13.
+           03  CONST-KYOTO                PIC 9(02) VALUE 26.
+           03  CONST-WAKAYAMA             PIC 9(02) VALUE 30.
+           03  CONST-SHIMANE              PIC 9(02) VALUE 32.
+           03  CONST-TOKUSHIMA            PIC 9(02) VALUE 36.
+           03  CONST-EHIME                PIC 9(02) VALUE 38.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -572,6 +596,9 @@
       *    請求点省略記載コンボ編集処理
            PERFORM 3110-TOTALTENKBNLST-SEC
       *
+      *    全国公費併用分請求点集計コンボ編集処理
+           PERFORM 3110-SYUKEIKBNLST-SEC
+      *
       *    一部負担金省略記載コンボ編集処理
            PERFORM 3110-FTNMONEYKBNLST-SEC
       *
@@ -641,6 +668,28 @@
       *
            .
        3110-TOTALTENKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    全国公費併用分請求点集計コンボ編集処理
+      *****************************************************************
+       3110-SYUKEIKBNLST-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SYUKEIKBNLST-G
+      *
+           MOVE    "0"             TO  SPA-GMN-SYUKEIKBNL    (1)
+           MOVE    "集計する"      TO  SPA-GMN-SYUKEIKBNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-SYUKEIKBNL    (2)
+           MOVE    "集計しない"    TO  SPA-GMN-SYUKEIKBNMEIL (2)
+      *
+           MOVE    "2"             TO  SPA-GMN-SYUKEIKBNL    (3)
+           MOVE    "集計しない（請求点が０点となる場合は除く）"
+                                   TO  SPA-GMN-SYUKEIKBNMEIL (3)
+      *
+           MOVE    3               TO  SPA-GMN-SYUKEIKBN-MAX
+      *
+           .
+       3110-SYUKEIKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    一部負担金省略記載コンボ編集処理
@@ -1016,6 +1065,8 @@
            MOVE    W65-JNISSUTAIKBN    TO  SPA-GMN-JNISSUTAIKBN-G
            MOVE    W65-TOTALTENKBN     TO  SPA-GMN-TOTALTENKBN-G
            MOVE    W65-TOTALTENTAIKBN  TO  SPA-GMN-TOTALTENTAIKBN-G
+           MOVE    W65-SYUKEIKBN          TO  SPA-GMN-SYUKEIKBN-G
+           MOVE    W65-SYUKEITAIKBN          TO  SPA-GMN-SYUKEITAIKBN-G
            MOVE    W65-FTNMONEYKBNG    TO  SPA-GMN-FTNMONEYKBNG-G
            MOVE    W65-FTNMONEYTAIKBNG TO  SPA-GMN-FTNMONEYTAIKBNG-G
            MOVE    W65-FTNMONEYKBNN    TO  SPA-GMN-FTNMONEYKBNN-G
@@ -1075,6 +1126,14 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-TOTALTENTAIKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-SYUKEIKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-SYUKEITAIKBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1369,6 +1428,8 @@
            MOVE    SPA-GMN-JNISSUTAIKBN    TO SYS-2010-JNISSU-TAIKBN
            MOVE    SPA-GMN-TOTALTENKBN     TO SYS-2010-TOTALTENKBN
            MOVE    SPA-GMN-TOTALTENTAIKBN  TO SYS-2010-TOTALTEN-TAIKBN
+           MOVE    SPA-GMN-SYUKEIKBN       TO SYS-2010-SYUKEIKBN
+           MOVE    SPA-GMN-SYUKEITAIKBN    TO SYS-2010-SYUKEI-TAIKBN
            MOVE    SPA-GMN-FTNMONEYKBNG    TO SYS-2010-FTNMONEYKBN-G
            MOVE    SPA-GMN-FTNMONEYTAIKBNG TO SYS-2010-FTNMONEY-TAIKBN-G
            MOVE    SPA-GMN-FTNMONEYKBNN    TO SYS-2010-FTNMONEYKBN-N
@@ -1911,6 +1972,21 @@
            PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-TOTALTENTAIKBN-G
       *
+           MOVE    SYS-2010-SYUKEIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYUKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYUKEIKBN-G
+           IF    ( WRK-CMB-ITM2       =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    WRK-CMB-ITM2   TO  SYS-2010-SYUKEI-TAIKBN
+           END-IF
+      *
+           MOVE    SYS-2010-SYUKEI-TAIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYUKEITAIKBN-G
+      *
            MOVE    SYS-2010-FTNMONEYKBN-G
                                        TO  WRK-CMB-CD
            PERFORM 4200-FTNMONEYKBNLST-CHK-SEC
@@ -2149,6 +2225,40 @@
            .
       *
        4101-TOTALTENTAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全国公費併用分請求点集計チェック処理
+      *****************************************************************
+       4101-SYUKEIKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-SYUKEIKBN     TO  WRK-CMB-CD
+           PERFORM 4200-SYUKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM        TO  SPA-GMN-SYUKEIKBN-G
+           IF    ( WRK-CMB-ITM2       =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    WRK-CMB-ITM2   TO  SPA-GMN-SYUKEITAIKBN
+           END-IF
+           IF    ( SPA-GMN-SYUKEIKBN  =   "0" )
+               MOVE    "0"            TO  SPA-GMN-SYUKEITAIKBN
+           END-IF
+      *
+           .
+      *
+       4101-SYUKEIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全国公費併用分請求点集計対象区分チェック処理
+      *****************************************************************
+       4101-SYUKEITAIKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-SYUKEITAIKBN     TO  WRK-CMB-CD
+           PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-SYUKEITAIKBN-G
+      *
+           .
+      *
+       4101-SYUKEITAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    一部負担金省略記載（外来）チェック処理
@@ -2629,6 +2739,14 @@
            PERFORM 4200-TOTALTENKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-TOTALTENKBN-G
       *
+      *    全国公費併用分請求点集計
+           MOVE    SPACE           TO  WRK-CMB-CD
+           PERFORM 4200-SYUKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-SYUKEIKBN-G
+           MOVE    WRK-CMB-ITM2    TO  WRK-CMB-CD
+           PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-SYUKEITAIKBN-G
+      *
       *    一部負担金省略記載
            MOVE    "0"             TO  WRK-CMB-CD
            PERFORM 4200-FTNMONEYKBNLST-CHK-SEC
@@ -2784,6 +2902,8 @@
            MOVE    SPA-GMN-JNISSUTAIKBN-G      TO  W65-JNISSUTAIKBN
            MOVE    SPA-GMN-TOTALTENKBN-G       TO  W65-TOTALTENKBN
            MOVE    SPA-GMN-TOTALTENTAIKBN-G    TO  W65-TOTALTENTAIKBN
+           MOVE    SPA-GMN-SYUKEIKBN-G         TO  W65-SYUKEIKBN
+           MOVE    SPA-GMN-SYUKEITAIKBN-G      TO  W65-SYUKEITAIKBN
            MOVE    SPA-GMN-FTNMONEYKBNG-G      TO  W65-FTNMONEYKBNG
            MOVE    SPA-GMN-FTNMONEYTAIKBNG-G   TO  W65-FTNMONEYTAIKBNG
            MOVE    SPA-GMN-FTNMONEYKBNN-G      TO  W65-FTNMONEYKBNN
@@ -2813,6 +2933,13 @@
                    UNTIL ( IDX-CMB >   SPA-GMN-TOTALTENKBN-MAX )
                    MOVE    SPA-GMN-TOTALTENKBNLST (IDX-CMB)
                                    TO  W65-TOTALTENKBN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-SYUKEIKBN-MAX     TO  W65-SYUKEIKBN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYUKEIKBN-MAX )
+                   MOVE    SPA-GMN-SYUKEIKBNLST (IDX-CMB)
+                                   TO  W65-SYUKEIKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
            MOVE    SPA-GMN-FTNMONEYKBN-MAX TO  W65-FTNMONEYKBNG-COUNT
@@ -2864,6 +2991,7 @@
            MOVE    SPA-GMN-COMMONTAIKBN-MAX
                                    TO  W65-JNISSUTAIKBN-COUNT
                                        W65-TOTALTENTAIKBN-COUNT
+                                       W65-SYUKEITAIKBN-COUNT
                                        W65-FTNMONEYTAIKBNG-COUNT
                                        W65-FTNMONEYTAIKBNN-COUNT
                                        W65-FTNZEROTAIKBNG-COUNT
@@ -2876,6 +3004,7 @@
                    MOVE    SPA-GMN-COMMONTAIKBNLST (IDX-CMB)
                                    TO  W65-JNISSUTAIKBN-ITEM (IDX-CMB)
                                        W65-TOTALTENTAIKBN-ITEM(IDX-CMB)
+                                       W65-SYUKEITAIKBN-ITEM(IDX-CMB)
                                        W65-FTNMONEYTAIKBNG-ITEM(IDX-CMB)
                                        W65-FTNMONEYTAIKBNN-ITEM(IDX-CMB)
                                        W65-FTNZEROTAIKBNG-ITEM(IDX-CMB)
@@ -3007,6 +3136,8 @@
                                        W65-JNISSUTAIKBN-ITEM-STATE
                                        W65-TOTALTENTAIKBN-STATE
                                        W65-TOTALTENTAIKBN-ITEM-STATE
+                                       W65-SYUKEITAIKBN-STATE
+                                       W65-SYUKEITAIKBN-ITEM-STATE
                                        W65-FTNMONEYTAIKBNG-STATE
                                        W65-FTNMONEYTAIKBNG-ITEM-STATE
                                        W65-FTNMONEYTAIKBNN-STATE
@@ -3033,6 +3164,11 @@
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-TOTALTENTAIKBN-STATE
                                        W65-TOTALTENTAIKBN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-SYUKEIKBN  =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-SYUKEITAIKBN-STATE
+                                       W65-SYUKEITAIKBN-ITEM-STATE
            END-IF
            IF    ( SPA-GMN-FTNMONEYKBNG    =   "0" )
                MOVE    WIDGET-INSENSITIVE
@@ -3151,6 +3287,10 @@
                MOVE    "JYUHENKBN"         TO  MCP-WIDGET
            WHEN    022
                MOVE    "JYUHENTAIKBN"      TO  MCP-WIDGET
+           WHEN    023
+               MOVE    "SYUKEIKBN"            TO  MCP-WIDGET
+           WHEN    024
+               MOVE    "SYUKEITAIKBN"            TO  MCP-WIDGET
            WHEN    051
                MOVE    "YUKOSTYMD"         TO  MCP-WIDGET
            WHEN    052
@@ -3186,6 +3326,10 @@
            WHEN    "TOTALTENKBN"
                MOVE    006                 TO  SPA-GMN-CUR
            WHEN    "TOTALTENTAIKBN"
+               MOVE    023                 TO  SPA-GMN-CUR
+           WHEN    "SYUKEIKBN"
+               MOVE    024                 TO  SPA-GMN-CUR
+           WHEN    "SYUKEITAIKBN"
                MOVE    007                 TO  SPA-GMN-CUR
            WHEN    "FTNMONEYKBNG"
                MOVE    008                 TO  SPA-GMN-CUR
@@ -3259,6 +3403,13 @@
       *
            IF    ( SPA-GMN-CUR         =   6 )
                IF    ( W65-TOTALTENTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    23          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   24 )
+               IF    ( W65-SYUKEITAIKBN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    7           TO  SPA-GMN-CUR
                END-IF
@@ -3521,6 +3672,59 @@
       *
            .
        4200-TOTALTENKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全国公費併用分請求点集計コンボボックスチェック処理
+      *****************************************************************
+       4200-SYUKEIKBNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SYUKEIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SYUKEIKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SYUKEIKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               EVALUATE    SPA-PREFNUM
+               WHEN    CONST-TOKYO
+               WHEN    CONST-KYOTO
+               WHEN    CONST-IBARAKI
+               WHEN    CONST-SHIMANE
+                   MOVE    SPA-GMN-SYUKEIKBNLST (3)
+                                   TO  WRK-CMB-ITM
+                   MOVE    "1"     TO  WRK-CMB-ITM2
+               WHEN    CONST-EHIME
+               WHEN    CONST-WAKAYAMA
+                   MOVE    SPA-GMN-SYUKEIKBNLST (2)
+                                   TO  WRK-CMB-ITM
+                   MOVE    "1"     TO  WRK-CMB-ITM2
+               WHEN    CONST-GUNMA
+                   MOVE    SPA-GMN-SYUKEIKBNLST (3)
+                                   TO  WRK-CMB-ITM
+                   MOVE    "4"     TO  WRK-CMB-ITM2
+               WHEN    CONST-TOKUSHIMA
+                   MOVE    SPA-GMN-SYUKEIKBNLST (3)
+                                   TO  WRK-CMB-ITM
+                   MOVE    "0"     TO  WRK-CMB-ITM2
+               WHEN    OTHER
+                   MOVE    SPA-GMN-SYUKEIKBNLST (1)
+                                   TO  WRK-CMB-ITM
+                   MOVE    "0"     TO  WRK-CMB-ITM2
+               END-EVALUATE
+           END-IF
+      *
+           .
+       4200-SYUKEIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    一部負担金省略記載コンボボックスチェック処理

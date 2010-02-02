@@ -34,6 +34,16 @@
                 04  W65-TOTALTENTAIKBN-ITEM
                                            PIC X(30)   OCCURS  10 TIMES.
                 04  W65-TOTALTENTAIKBN-ITEM-STATE PIC S9(9)   BINARY.
+              03  W65-CMB-SYUKEIKBN.
+                04  W65-SYUKEIKBN             PIC X(60).
+                04  W65-SYUKEIKBN-COUNT  PIC S9(9)   BINARY.
+                04  W65-SYUKEIKBN-ITEM   PIC X(60)   OCCURS  10 TIMES.
+              03  W65-CMB-SYUKEITAIKBN.
+                04  W65-SYUKEITAIKBN             PIC X(30).
+                04  W65-SYUKEITAIKBN-STATE  PIC S9(9)  BINARY.
+                04  W65-SYUKEITAIKBN-COUNT  PIC S9(9)  BINARY.
+                04  W65-SYUKEITAIKBN-ITEM   PIC X(30)  OCCURS  10 TIMES.
+                04  W65-SYUKEITAIKBN-ITEM-STATE PIC S9(9)   BINARY.
               03  W65-CMB-FTNMONEYKBNG.
                 04  W65-FTNMONEYKBNG       PIC X(60).
                 04  W65-FTNMONEYKBNG-COUNT PIC S9(9)   BINARY.
