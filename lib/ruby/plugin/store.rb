@@ -51,7 +51,9 @@ module JMA::Plugin
         end
 
         storedir = File.join(@root,"#{name}-#{version}") 
-        FileUtils.move(tmpstoredir,storedir)
+        # for ruby-1.8.5 FileUtils#mv bug
+        #FileUtils.move(tmpstoredir,storedir)
+        FileUtils.cp_r(tmpstoredir,@root)
 
         postinst = File.join(storedir,"meta","postinst")
         if File.exist?(postinst)
