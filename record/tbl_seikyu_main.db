@@ -2141,3 +2141,20 @@ path	key71	{
 	};
 };
 
+path st_key4 {
+	DBSELECT {
+		DECLARE tbl_seikyu_main_st_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu_main
+                WHERE (      HOSPNUM     =   :HOSPNUM             )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND ((SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      ))          )
+                  AND (      NYUGAIKBN   =   :NYUGAIKBN           )
+                ORDER   BY 
+			TEISYUTUSAKI,NYUGAIKBN,RJNHKNNUM,KYURATE,RECESYUBETU,KOHNUM1,KOHNUM2
+		  ;
+	 };
+};
