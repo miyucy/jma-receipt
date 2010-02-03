@@ -78,7 +78,7 @@ GetAttributeValue(
 }
 
 int
-EmbedString(xmlTextReaderPtr reader)
+EmbedData(xmlTextReaderPtr reader)
 {
 	char *name;
 	char *value;
@@ -92,6 +92,9 @@ EmbedString(xmlTextReaderPtr reader)
 			if ((value = GetAttributeValue(reader, "object")) != NULL) {
 				if (!xmlStrcmp(value, "string")) {
 					isString = 1;
+				}
+				if (!xmlStrcmp(value, "image")) {
+					size = 1024;
 				}
 				xmlFree(value);
 			}
@@ -221,6 +224,7 @@ EvalEmbedStruct(EmbedStruct *embed, char *p, int *rc)
 	size = 0;
 	for (i = 0; i < embed->occurs; i++) {
 		for (j = 0; j < embed->child_num; j++) {
+printf("size:%d p:%p\n",size,p + size);
 			size += EvalEmbedStruct(embed->child[j],p + size,rc);
 		}
 		if (embed->block_size > 0) {
@@ -303,7 +307,7 @@ printf("data[%s]\n",data);
 				}
 				embed = newembed;
 			}
-			if ((block_size = EmbedString(reader)) > 0) {
+			if ((block_size = EmbedData(reader)) > 0) {
 				embed->block_size = block_size;
 			}
 			if ((j = Element_close(reader)) > 0) {
