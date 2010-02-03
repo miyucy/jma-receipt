@@ -11,25 +11,28 @@ fi
 
 umask 022
 
-#------------------------------------
-# $1 : 処理区分
-# $2 : 医療機関識別番号(HOSPNUM)
-# $3 : スーパーバイザー
-#------------------------------------
+#--------------------------
+# $1 : method (update / check)
+# $2 : HOSPNUM
+# $3 : supervisor (not use)
+#--------------------------
 
+METHOD=$1
 HOSPNUM=$2
 
-HOME=/home/orca
-PRGDIR=orca-prg@VERSION@
+PRGDIR=/var/tmp/orca-prg@VERSION@
 PATCHDIR=/var/lib/jma-receipt/patch
-LOGDIR=/var/log/jma-receipt
 PACKAGEFILE=patch@VERSION@.gz
-
 PRGPATH=$PGUPGRADEPATH/@VERSION@
-
-LOG="$LOGDIR"/program_upgrade_online.log
-
+PATCHLIST=$PATCHDIR/patch-file-list
+PATCHMD5=$PATCHDIR/patchmd5.yml
 CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
+LOGDIR=/var/log/jma-receipt
+if [ "$METHOD" = "update" ]; then
+  LOG="$LOGDIR"/program_upgrade_online.log
+else
+  LOG="$LOGDIR"/program_upgrade_check.log
+fi
 
 # echo message (default character-code EUC)
 echomsg() {
@@ -40,9 +43,14 @@ echomsg() {
   fi
 }
 
+jobend97() {
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter JBE0000001PRGMNT97,$HOSPNUM,,,"$1"
+  rm -rf $PRGDIR
+  exit 97
+}
+
 rm -f ${LOG}
 
-#オフラインメンテナンスであるかチェック
 OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
 if [ -z $OFFLINEPATH ]; then
   OFFLINE="online"
@@ -52,50 +60,99 @@ else
 fi
 echomsg ${OFFLINE} ${LOG}
 
-#旧方式か？
-if [ -n	"$OBSOLETEDL" ]; then
-  OBSDL=yes
-else
-  OBSDL=no
-fi
-
-if ! [ -d $HOME/$PRGDIR ]; then 
-  cd $HOME
+if ! [ -d $PRGDIR ]; then 
   mkdir $PRGDIR
 fi
-cd $HOME/$PRGDIR
-rm -f $HOME/$PRGDIR/*
+rm -rf $PRGDIR/*
 
-#更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $CACERTFILE $OBSDL $WGETOPTION
-if [ $? -ne 0 ] ; then
-  echomsg "更新プログラムのダウンロードに失敗しました" ${LOG}
-  rm -rf $HOME/$PRGDIR
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
-  exit 99
+echomsg ${PACKAGEFILE} ${LOG}
+echomsg ${PRGPATH} ${LOG}
+
+export PACKAGEFILE
+export PATCHDIR
+export PRGPATH
+export CACERTFILE
+export PATCHLIST
+
+LOGMSG=`cachedl.rb 2>&1`
+RESULT=`echo $LOGMSG | head -1`
+if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
+  echomsg "faild in the download of the patch program." ${LOG}
+  echomsg ${LOGMSG} ${LOG}
+  jobend97 ${RESULT}
 fi
 
-#プログラム更新処理
-ruby $SCRIPTSDIR/allways/program_upgrade_exec.rb $PACKAGEFILE $PATCHDIR $HOME/$PRGDIR
-if [ $? -ne 0 ] ; then
-  echomsg "更新プログラムの処理に失敗しました" ${LOG}
-  rm -rf $HOME/$PRGDIR
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT99,$HOSPNUM
-  exit 99
+rm -f $PATCHMD5
+touch $PATCHMD5
+
+export PRGDIR
+export PATCHMD5
+
+if [ ! -e $PATCHLIST ]; then
+  RESULT="[ERROR] $PATCHLIST not found" 
+  jobend97 ${RESULT}
 fi
 
-rm -rf $HOME/$PRGDIR
+for file in `cat $PATCHLIST`
+do
+  echomsg "$file Execute." ${LOG}
+  rm -rf $PRGDIR/*
+  if [ -e $PATCHDIR/$file ]; then
+    tar zxf $PATCHDIR/$file -C $PRGDIR 2>&1 >> ${LOG}
+    if [ $? -ne 0 ]; then
+      RESULT="[ERROR] tar zxf $file" 
+      jobend97 ${RESULT}
+    fi
+    mv $PRGDIR/patch/* $PRGDIR 2>&1 >> ${LOG}
+    rmdir $PRGDIR/patch 2>&1 >> ${LOG}
+    if [ "$METHOD" = "update" ]; then
+      bash $PRGDIR/PROCEDURE $PRGDIR 2>&1 >> ${LOG}
+    else
+      bash $PRGDIR/INITIATOR $PRGDIR 2>&1 >> ${LOG}
+    fi
+    if [ $? -ne 0 ]; then
+      RESULT="[ERROR] $file/Execute Error" 
+      jobend97 ${RESULT}
+    fi
+    LOGMSG=`program_upgrade_patchmd5.rb 2>&1`
+    RESULT=`echo $LOGMSG | head -1`
+    if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
+      echomsg "faild in the md5 list." ${LOG}
+      echomsg ${LOGMSG} ${LOG}
+      jobend97 ${RESULT}
+    fi
+  fi
+done
 
-bash $SCRIPTSDIR/allways/program_upgrade_check.sh $HOSPNUM $3
+rm -rf $PRGDIR
 
-#monitor再起動（ＳＩＧＨＵＰ）
-if [ -e /var/run/jma-receipt/monitor.pid ]; then
-  echomsg "monitorの再起動を行います" ${LOG}
-  kill -HUP `cat /var/run/jma-receipt/monitor.pid`
-else
-  echomsg "monitor.pidファイルがありませんので再起動はしません" ${LOG}
+LOGMSG=`program_upgrade_verify.rb 2>&1`
+RESULT=`echo $LOGMSG | head -1`
+if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
+  echomsg "faild in the verify." ${LOG}
+  echomsg ${LOGMSG} ${LOG}
+  jobend97 ${RESULT}
 fi
 
-echomsg "全ての処理が完了しました" ${LOG}
+if [ "$METHOD" = "update" ]; then
+  echomsg "site-upgrade start." ${LOG}
+  site-upgrade.sh >> ${LOG}
+  echomsg "site-upgrade end." ${LOG}
+fi
 
-#$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00,$HOSPNUM
+if [ "$METHOD" = "update" ]; then
+  #monitor restart (SIGHUP)
+  if [ -e /var/run/jma-receipt/monitor.pid ]; then
+    echomsg "monitor restart." ${LOG}
+    kill -HUP `cat /var/run/jma-receipt/monitor.pid`
+  else
+    RESULT="[ERROR] monitor.pid is not found. don't start again."
+    echomsg ${RESULT} ${LOG}
+    jobend97 ${RESULT}
+  fi
+fi
+
+echomsg "patch program processing succeeded." ${LOG}
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00,$HOSPNUM
+
+exit 0

@@ -121,11 +121,12 @@
       *
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(41)  VALUE
-               "scripts/allways/program_upgrade_online.sh".
-           03  SHELL-NAME2         PIC X(42)  VALUE
-               "scripts/allways/program_upgrade_offline.sh".
-           03  SHELL-NAME3         PIC X(40)  VALUE
-               "scripts/allways/program_upgrade_check.sh".
+               "program_upgrade_online.sh".
+      *         "scripts/allways/program_upgrade_online.sh".
+      *     03  SHELL-NAME2         PIC X(42)  VALUE
+      *         "scripts/allways/program_upgrade_offline.sh".
+      *     03  SHELL-NAME3         PIC X(40)  VALUE
+      *         "scripts/allways/program_upgrade_check.sh".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -491,20 +492,22 @@
            INITIALIZE                  ORCSMKPASSAREA
       *
       *    オンライン
-           IF      SPA-GMN-ONKBN   =   "T"
-               MOVE    SHELL-NAME3     TO  MKPASS-IN-01
-           END-IF
+      *     IF      SPA-GMN-ONKBN   =   "T"
+      *         MOVE    SHELL-NAME3     TO  MKPASS-IN-01
+      *     END-IF
       *
-           CALL    "ORCSMKPASS"        USING
-                                       ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
-           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG2
+      *     CALL    "ORCSMKPASS"        USING
+      *                                 ORCSMKPASSAREA
+      *     MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    SHELL-NAME1     TO  SHELLTBL-NAME
+           MOVE    "check"         TO  SHELLTBL-ARG1
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG3
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -590,22 +593,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                          TO  SPA-GMN-MSG
                  MOVE    "red"           TO  SPA-GMN-MSG-STYLE
                ELSE
-                 IF      JOB-ERRCD(1:2)    =   "01"
-                   MOVE    SPACE         TO  SKBN-RUN
-                   MOVE    "更新データはありませんでした。"
-                                         TO  SPA-GMN-MSG
-                   MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
+                 IF    JOB-ERRCD(1:2)      =   "97"
+                   MOVE    SPACE           TO  SKBN-RUN
+                   STRING  "異常終了 / "   DELIMITED BY SIZE
+                           JOB-YOBI(9:)    DELIMITED BY SIZE
+                                         INTO  SPA-GMN-MSG
+                   END-STRING
+                   MOVE    "red"           TO  SPA-GMN-MSG-STYLE
                  ELSE
-                   IF  (JOB-ENDTIME       NOT =   SPACE)  AND
-                       (JOB-ENDYMD        NOT =   SPACE)
-                       MOVE    SPACE        TO  SKBN-RUN
-                       MOVE    "処理は正常に終了しました。"
-                                            TO  SPA-GMN-MSG
-                       MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
+                   IF      JOB-ERRCD(1:2)    =   "01"
+                     MOVE    SPACE         TO  SKBN-RUN
+                     MOVE    "更新データはありませんでした。"
+                                           TO  SPA-GMN-MSG
+                     MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
                    ELSE
-                       MOVE    "処理中です。"
-                                            TO  SPA-GMN-MSG
-                       MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
+                     IF  (JOB-ENDTIME       NOT =   SPACE)  AND
+                         (JOB-ENDYMD        NOT =   SPACE)
+                         MOVE    SPACE        TO  SKBN-RUN
+                         MOVE    "処理は正常に終了しました。"
+                                              TO  SPA-GMN-MSG
+                         MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
+                     ELSE
+                         MOVE    "処理中です。"
+                                              TO  SPA-GMN-MSG
+                         MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
+                     END-IF
                    END-IF
                  END-IF
                END-IF
@@ -770,10 +782,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    オンライン
            DISPLAY "SPA-GMN-ONKBN=" SPA-GMN-ONKBN
-           IF      SPA-GMN-ONKBN       =   "T"
-               MOVE    SHELL-NAME1     TO  MKPASS-IN-01
-               MOVE    "2"             TO  SHELLTBL-ARG1
-           END-IF
+      *     IF      SPA-GMN-ONKBN       =   "T"
+      *         MOVE    SHELL-NAME1     TO  MKPASS-IN-01
+      *         MOVE    "2"             TO  SHELLTBL-ARG1
+      *     END-IF
       *
       *    オフライン
       *     IF      SPA-GMN-OFFKBN      =   "T"
@@ -790,16 +802,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *         END-EVALUATE
       *     END-IF
       *
-           CALL    "ORCSMKPASS"        USING
-                                       ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *     CALL    "ORCSMKPASS"        USING
+      *                                 ORCSMKPASSAREA
+      *     MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    SHELL-NAME1     TO  SHELLTBL-NAME
+           MOVE    "update"        TO  SHELLTBL-ARG1
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG3
            MOVE    SHELLTBL        TO  MCPDATA-REC
       *
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "allways"       TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

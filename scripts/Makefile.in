@@ -29,7 +29,6 @@ shell_sources = \
 	allways/program_upgrade_online.sh.in \
 	allways/program_upgrade_copy.sh.in \
 	allways/program_upgrade_restart.sh.in \
-	allways/program_upgrade_check.sh.in \
 	allways/program_upgrade_check_log.sh.in \
 	daily/HCALL.sh.in \
 	daily/execoprg.sh.in \
@@ -108,8 +107,6 @@ ruby_scripts = \
 	daily/monlib.rb \
 	allways/cachedl.rb \
 	allways/cachetoprgdir.rb \
-	allways/program_upgrade_exec.rb \
-	allways/program_upgrade_check.rb \
 	allways/run.rb \
 	allways/orcadt_verify.rb \
 	allways/Sysbase.rb \
@@ -117,7 +114,9 @@ ruby_scripts = \
 	monthly/das-upload.rb \
 	monthly/lib/orcadas/command.rb \
 	monthly/lib/orcadas/formdata.rb \
-	monthly/lib/orcadas/utils.rb 
+	monthly/lib/orcadas/utils.rb \
+	allways/program_upgrade_patchmd5.rb \
+	allways/program_upgrade_verify.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \
