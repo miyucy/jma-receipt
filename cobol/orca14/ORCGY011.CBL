@@ -455,7 +455,7 @@
            IF      SPA-Y011-SELNUM     >   ZERO
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX             >=  6  )
+                       UNTIL      (IDX             >   6  )
                              OR   (FLG-OK          =   1  )
                    IF      IDX              =   SPA-Y011-SELNUM
                        IF      SPA-Y011-COMMENT (IDX)  NOT =   SPACE
@@ -483,7 +483,7 @@
            IF      SPA-ERRCD           =   SPACE
       *        Ê¸ÎãÊ£¼Ì
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX             >=  6  )
+                       UNTIL      (IDX             >   6  )
                    IF      SPA-Y011-COMMENT (IDX)  =   SPACE
                        MOVE    WRK-COMMENT  TO  SPA-Y011-COMMENT (IDX)
                        MOVE    6            TO  IDX
