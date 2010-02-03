@@ -132,8 +132,6 @@
            COPY    "Y05.INC".
            COPY    "YERR.INC".
            COPY    "YID1.INC".
-           COPY    "APPOINTMOD.INC".
-           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -940,11 +938,8 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  YID1
-           INITIALIZE                       YID1
            MOVE    SPA-YID1CD           TO  YID1-ID1CODE
            MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
-           MOVE    "╠сды"               TO  YID1-B01
-      *
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "Y011"               TO  SPA-MOTOPG
