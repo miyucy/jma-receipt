@@ -18,7 +18,8 @@ BIN_sources = \
 
 BIN_bin = \
 	orcvt_euc.rb \
-	orcvt_euc_kananame.rb
+	orcvt_euc_kananame.rb \
+	jma-plugin
 
 BIN_objs = $(BIN_sources:.sh.in=.sh)
 
