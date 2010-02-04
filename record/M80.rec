@@ -1,0 +1,44 @@
+M80	{
+	fixed1	{
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			LIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(100);
+					value2	varchar(50);
+					value3	varchar(20);
+					value4	varchar(20);
+					value5	varchar(10);
+					value6	varchar(10);
+				}	[100];
+				select	bool[100];
+			};
+		};
+		SELNUM	{
+			value	number(4);
+		};
+		MSGPAGE	{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		SYORIMSG	{
+			style   varchar(20);
+			value	varchar(60);
+		};
+		B09	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B11	{
+	           	state	int;
+			label	varchar(10);
+		};
+		pandatimer1     {
+			duration        int;
+		};
+	};
+};

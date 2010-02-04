@@ -66,6 +66,7 @@
       *  04.03.00    NACL-太田    08/08/25  マスタ更新処理状況表示
       *  04.03.00    NACL-太田    08/09/04  従での医療事務遷移をプロテクト
       *  04.04.00    NACL-多々納  09/01/26  ＳＰＡ設定共通対応
+      *  04.05.00    NACL-多々納  10/02/01  プラグイン画面追加
       *****************************************************************
       *
       *
@@ -1122,7 +1123,6 @@
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 470-MLOG-SEC
       *!!!!!!!
-      *!!!!!!!
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -1200,6 +1200,15 @@
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
+      *        プラグイン処理
+               WHEN    "04"
+                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+                   AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+      *?           AND   ( SPA-SUPERVISOR          =   "T" )
+                       MOVE    "M80"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF 
       *----(01.02.16)--UPD-END-----
       *        点数改正処理
       *        WHEN    "04"
@@ -1219,7 +1228,6 @@
                        WHEN    "M01"
       *----(01.02.16)--ADD-START---
                        WHEN    "M97"
-      *----(01.02.16)--ADD-END-----
                            CONTINUE
                        WHEN    OTHER
                            INITIALIZE                  LINKAREA
@@ -1390,7 +1398,6 @@
            EXIT.
       *!!!!!!!
       *
-      *
       *****************************************************************
       *    終了　処理
       *****************************************************************
@@ -1526,7 +1533,10 @@
                MOVE    WIDGET-NORMAL       TO  M00-G03-STATE
            END-IF
       *----(01.02.16)--UPD-END-----
-           IF      SYS-1010-GSRAUTH(4:1)    =  "1"
+      *    プラグイン
+           IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+           AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+      *?   AND   ( SPA-SUPERVISOR          =   "T" )
                MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
            END-IF
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"

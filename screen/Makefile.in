@@ -414,6 +414,9 @@ SCREEN_screen = \
 	MDAS.glade \
 	MLOG.glade \
 	MINF.glade \
+	M80.glade \
+	M80ERR.glade \
+	M80ID1.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

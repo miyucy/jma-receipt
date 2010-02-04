@@ -419,6 +419,9 @@ RECORD_files = \
 	MLOG.rec \
 	MINF.rec \
 	sessionend.rec \
+	M80.rec \
+	M80ERR.rec \
+	M80ID1.rec \
 
 DEF_files = \
 	HC01.def \
