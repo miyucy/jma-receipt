@@ -1,4 +1,4 @@
-require "ruby/plugin"
+require "plugin"
 
 module JMA::Plugin
   module Util

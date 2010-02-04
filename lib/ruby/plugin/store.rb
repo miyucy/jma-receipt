@@ -2,8 +2,8 @@ require "yaml"
 require "fileutils"
 require "tempfile"
 require "logger"
-require "ruby/plugin"
-require "ruby/plugin/util"
+require "plugin"
+require "plugin/util"
 
 module JMA::Plugin
   class Store

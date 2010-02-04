@@ -3,10 +3,10 @@ require "fileutils"
 require "tempfile"
 require "logger"
 require "open-uri"
-require "ruby/plugin"
-require "ruby/plugin/db"
-require "ruby/plugin/store"
-require "ruby/plugin/util"
+require "plugin"
+require "plugin/db"
+require "plugin/store"
+require "plugin/util"
 
 module JMA::Plugin
   class Manager

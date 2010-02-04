@@ -5,37 +5,38 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
-BIN_sources = \
-
-BIN_bin = \
+ruby_scripts = \
 	ruby/plugin.rb \
 	ruby/plugin/db.rb \
 	ruby/plugin/manager.rb \
 	ruby/plugin/store.rb \
 	ruby/plugin/util.rb
 
-BIN_objs = $(BIN_sources:.sh.in=.sh)
-
-BIN_files = $(BIN_objs) $(BIN_bin)
-
-.SUFFIXES: .sh.in .sh
-
-.sh.in.sh:
-	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
-	    -e 's,\@VERSION\@,$(VERSION),g' \
-	$< > $@
-	chmod +x $@
-
-all:	$(BIN_objs)   
+all:
 
 filecheck:
+	@(for i in $(ruby_scripts) ;do echo "make	`basename $${i}`"; done ; \
+	find . \
+	-name "." -o \
+	-name "CVS" -prune -o \
+	-name "Makefile*" -o \
+	-name ".cvsignore" -o \
+	-name "*.bak" -o \
+	-name "ruby" -o \
+	-name "plugin" -o \
+	-printf "file\t%f\n") \
+	|sort -k2 |uniq -u -f1
 
 clean: 
-	-rm -f $(BIN_objs)
 
 distclean: clean
 	-rm -f Makefile
 
 install: all
 	$(INSTALL) -d $(libdir)
-	$(INSTALL_SCRIPT) $(BIN_files) $(libdir)
+	$(INSTALL) -d $(libdir)/ruby
+	$(INSTALL) -d $(libdir)/ruby/plugin
+	for file in $(ruby_scripts); do \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  $(INSTALL) $$file $(libdir)/$$dir; \
+	done

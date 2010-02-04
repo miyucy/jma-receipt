@@ -1,6 +1,6 @@
 require "sqlite3"
 require "yaml"
-require "ruby/plugin"
+require "plugin"
 
 module JMA::Plugin
   class DB
