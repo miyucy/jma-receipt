@@ -6991,22 +6991,47 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SYUNOU-REC          TO  WRK-SYUNOU-REC
+      *
            IF     (SYU-GRP-DENPNUM     >   ZERO        ) AND
                   (SYU-FUKU-DENPNUM    =   SYU-DENPNUM ) AND
                   (SYU-FUKU-KBN        =   "1"         )
                MOVE    WRK-DENPNUM         TO  WRK-KA-DENPNUM
            END-IF
            IF      FLG-SYUNOU          =   ZERO
+               MOVE    SPACE               TO  SYUNOU-REC
+               INITIALIZE                  SYUNOU-REC
+               MOVE    WRK-SYU-HOSPNUM     TO  SYU-HOSPNUM
+               MOVE    WRK-SYU-PTID        TO  SYU-PTID
+               MOVE    WRK-SYU-NYUGAIKBN   TO  SYU-NYUGAIKBN
+               MOVE    WRK-SYU-SRYKA       TO  SYU-SRYKA
+               MOVE    WRK-SYU-HKNCOMBINUM
+                                           TO  SYU-HKNCOMBINUM
+               MOVE    WRK-SYU-PTFTNRATE   TO  SYU-PTFTNRATE
+               MOVE    WRK-SYU-SYUHKNNUM   TO  SYU-SYUHKNNUM
+               MOVE    WRK-SYU-KOH1HKNNUM  TO  SYU-KOH1HKNNUM
+               MOVE    WRK-SYU-KOH2HKNNUM  TO  SYU-KOH2HKNNUM
+               MOVE    WRK-SYU-KOH3HKNNUM  TO  SYU-KOH3HKNNUM
+               MOVE    WRK-SYU-KOH4HKNNUM  TO  SYU-KOH4HKNNUM
+               MOVE    WRK-SYU-DRCD        TO  SYU-DRCD
+      *        院外処方区分
+               MOVE    WRK-SYU-INGAISHOHOKBN
+                                           TO  SYU-INGAISHOHOKBN
+      *        請求書作成区分
+               MOVE    WRK-SYU-SKYKUKBN    TO  SYU-SKYKUKBN
+      *
                MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *        まとめ入力分
-               IF      SYU-GRP-RENNUM      >   ZERO
+               MOVE    WRK-SYU-GRP-RENNUM  TO  SYU-GRP-RENNUM
+               MOVE    WRK-SYU-FUKU-KBN    TO  SYU-FUKU-KBN
+      *
+               IF      WRK-SYU-GRP-RENNUM      >   ZERO
                    MOVE    WRK-GRP-DENPNUM     TO  SYU-GRP-DENPNUM
                ELSE
                    MOVE    ZERO                TO  SYU-GRP-DENPNUM
                END-IF
       *        複数科まとめ識別伝票番号
-               IF     (SYU-GRP-DENPNUM     >   ZERO    ) AND
-                      (SYU-FUKU-KBN    NOT =   SPACE   )
+               IF     (WRK-SYU-GRP-DENPNUM     >   ZERO    ) AND
+                      (WRK-SYU-FUKU-KBN    NOT =   SPACE   )
                    MOVE    WRK-KA-DENPNUM      TO  SYU-FUKU-DENPNUM
                END-IF
       *
@@ -7024,7 +7049,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  SYU-DOUJI-DENPNUM
                MOVE    SPACE               TO  SYU-CONTKBN
       *        伝票状態区分
-               IF      SYU-DENPJTIKBN      =   "7"
+               IF      WRK-SYU-DENPJTIKBN      =   "7"
                    MOVE    SPACE               TO  SYU-DENPJTIKBN
                END-IF
       *
@@ -10334,7 +10359,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
-           MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-RRK-SRYKA (IDX) TO  SYU-SRYKA
