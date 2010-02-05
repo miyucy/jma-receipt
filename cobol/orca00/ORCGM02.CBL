@@ -575,7 +575,7 @@
                WHEN    "201"
                    IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
                    AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-      *?           AND   ( SPA-SUPERVISOR          =   "T" )
+                   AND   ( SPA-SUPERVISOR          =   "T" )
                        MOVE    "M80"           TO  SPA-SAKIPG
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -729,7 +729,7 @@
       *        プラグイン処理
                IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
                AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-      *?       AND   ( SPA-SUPERVISOR          =   "T" )
+               AND   ( SPA-SUPERVISOR          =   "T" )
                    MOVE    WIDGET-NORMAL      TO  M02-G201-STATE
                END-IF
            END-IF
