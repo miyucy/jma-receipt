@@ -1204,7 +1204,7 @@
                WHEN    "04"
                    IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
                    AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-      *?           AND   ( SPA-SUPERVISOR          =   "T" )
+                   AND   ( SPA-SUPERVISOR          =   "T" )
                        MOVE    "M80"           TO  SPA-SAKIPG
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -1536,7 +1536,7 @@
       *    プラグイン
            IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
            AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-      *?   AND   ( SPA-SUPERVISOR          =   "T" )
+           AND   ( SPA-SUPERVISOR          =   "T" )
                MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
            END-IF
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"
