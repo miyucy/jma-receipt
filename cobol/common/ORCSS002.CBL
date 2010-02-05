@@ -183,7 +183,7 @@ grpsys     COPY    "COMMON-SPA".
                END-IF
       *
                PERFORM 2001-EDIT-SYURRK-SEC
-           END-IF
+           END-EVALUATE
       *
            .
        200-MAIN-EXT.
