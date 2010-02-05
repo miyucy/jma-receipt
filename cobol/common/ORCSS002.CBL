@@ -156,9 +156,16 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF    ( SS002-UPDKBN    =   "2" )
+           EVALUATE    SS002-UPDKBN
+           WHEN    "2"
                PERFORM 2001-EDIT-SYURRK-CHOSEI-SEC
-           ELSE
+           WHEN    "3"
+               PERFORM 900-SYURRK-KEY2-SEL-SEC
+               MOVE    SYURRK-SYURRKNUM
+                                       TO  WKSYURRK-SYURRKNUM
+               MOVE    SYURRK-SYUEDANUM
+                                       TO  WKSYURRK-SYUEDANUM
+           WHEN    OTHER
       *
                MOVE    1               TO  IDX-BF
                MOVE    2               TO  IDX-AF
