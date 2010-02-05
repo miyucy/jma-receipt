@@ -26,8 +26,12 @@ module OrcaMNT
     def file_read_md5list(md5hash=@md5hash)
       begin
         fmd5 = File.open(PATCHMD5,"r")
-        md5hash = YAML.load(fmd5)
+        tmphash = Hash.new
+        YAML.load_documents(fmd5) {|y|
+          tmphash = y
+        }
         fmd5.close
+        md5hash = md5hash.merge!(tmphash)
       rescue Exception => ex
         puts "[ERROR] #{ex.message}"
         return false

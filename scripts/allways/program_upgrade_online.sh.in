@@ -58,15 +58,15 @@ else
   OFFLINE="offline"
   PRGPATH=$OFFLINEPATH
 fi
-echomsg ${OFFLINE} ${LOG}
+echomsg "${OFFLINE}" ${LOG}
 
 if ! [ -d $PRGDIR ]; then 
   mkdir $PRGDIR
 fi
 rm -rf $PRGDIR/*
 
-echomsg ${PACKAGEFILE} ${LOG}
-echomsg ${PRGPATH} ${LOG}
+echomsg "${PACKAGEFILE}" ${LOG}
+echomsg "${PRGPATH}" ${LOG}
 
 export PACKAGEFILE
 export PATCHDIR
@@ -75,11 +75,17 @@ export CACERTFILE
 export PATCHLIST
 
 LOGMSG=`cachedl.rb 2>&1`
-RESULT=`echo $LOGMSG | head -1`
+RC=$?
+RESULT=`echo "$LOGMSG" | head -1`
 if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
   echomsg "faild in the download of the patch program." ${LOG}
-  echomsg ${LOGMSG} ${LOG}
-  jobend97 ${RESULT}
+  echomsg "${LOGMSG}" ${LOG}
+  jobend97 "${RESULT}"
+else
+  if [ $RC -ne 0 ]; then
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
+    exit 0
+  fi
 fi
 
 rm -f $PATCHMD5
@@ -90,7 +96,7 @@ export PATCHMD5
 
 if [ ! -e $PATCHLIST ]; then
   RESULT="[ERROR] $PATCHLIST not found" 
-  jobend97 ${RESULT}
+  jobend97 "${RESULT}"
 fi
 
 for file in `cat $PATCHLIST`
@@ -101,7 +107,7 @@ do
     tar zxf $PATCHDIR/$file -C $PRGDIR 2>&1 >> ${LOG}
     if [ $? -ne 0 ]; then
       RESULT="[ERROR] tar zxf $file" 
-      jobend97 ${RESULT}
+      jobend97 "${RESULT}"
     fi
     mv $PRGDIR/patch/* $PRGDIR 2>&1 >> ${LOG}
     rmdir $PRGDIR/patch 2>&1 >> ${LOG}
@@ -112,14 +118,14 @@ do
     fi
     if [ $? -ne 0 ]; then
       RESULT="[ERROR] $file/Execute Error" 
-      jobend97 ${RESULT}
+      jobend97 "${RESULT}"
     fi
     LOGMSG=`program_upgrade_patchmd5.rb 2>&1`
-    RESULT=`echo $LOGMSG | head -1`
+    RESULT=`echo "$LOGMSG" | head -1`
     if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
       echomsg "faild in the md5 list." ${LOG}
-      echomsg ${LOGMSG} ${LOG}
-      jobend97 ${RESULT}
+      echomsg "${LOGMSG}" ${LOG}
+      jobend97 "${RESULT}"
     fi
   fi
 done
@@ -127,11 +133,11 @@ done
 rm -rf $PRGDIR
 
 LOGMSG=`program_upgrade_verify.rb 2>&1`
-RESULT=`echo $LOGMSG | head -1`
+RESULT=`echo "$LOGMSG" | head -1`
 if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
   echomsg "faild in the verify." ${LOG}
-  echomsg ${LOGMSG} ${LOG}
-  jobend97 ${RESULT}
+  echomsg "${LOGMSG}" ${LOG}
+  jobend97 "${RESULT}"
 fi
 
 if [ "$METHOD" = "update" ]; then
@@ -147,8 +153,8 @@ if [ "$METHOD" = "update" ]; then
     kill -HUP `cat /var/run/jma-receipt/monitor.pid`
   else
     RESULT="[ERROR] monitor.pid is not found. don't start again."
-    echomsg ${RESULT} ${LOG}
-    jobend97 ${RESULT}
+    echomsg "${RESULT}" ${LOG}
+    jobend97 "${RESULT}"
   fi
 fi
 
