@@ -5013,7 +5013,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0025"              TO  SPA-ERRCD
                    END-IF
                END-IF
-      *
            END-IF
       *
            .
@@ -10886,7 +10885,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    º˝«ºÃ¿∫Ÿ
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
-           MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
+           MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
       *    ≈¡…º»÷πÊ
@@ -11069,6 +11068,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        49012111-SRYURRK-HEN-SEC           SECTION.
       *
            INITIALIZE                  SS002-AREA
+           MOVE    "3"                 TO  SS002-UPDKBN
            CALL    "ORCSS002"          USING    SS002-AREA
                                                 SYUNOU-REC
                                                 SPA-AREA
