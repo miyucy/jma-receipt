@@ -802,7 +802,7 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
-           MOVE    "M00"               TO  SPA-SAKIPG
+           MOVE    "M02"               TO  SPA-SAKIPG
            MOVE    "M80"               TO  SPA-MOTOPG
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU

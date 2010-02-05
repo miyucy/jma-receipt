@@ -66,7 +66,6 @@
       *  04.03.00    NACL-太田    08/08/25  マスタ更新処理状況表示
       *  04.03.00    NACL-太田    08/09/04  従での医療事務遷移をプロテクト
       *  04.04.00    NACL-多々納  09/01/26  ＳＰＡ設定共通対応
-      *  04.05.00    NACL-多々納  10/02/01  プラグイン画面追加
       *****************************************************************
       *
       *
@@ -1200,15 +1199,6 @@
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
-      *        プラグイン処理
-               WHEN    "04"
-                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-                   AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-                   AND   ( SPA-SUPERVISOR          =   "T" )
-                       MOVE    "M80"           TO  SPA-SAKIPG
-                   ELSE
-                       MOVE    "0002"          TO  SPA-ERRCD
-                   END-IF 
       *----(01.02.16)--UPD-END-----
       *        点数改正処理
       *        WHEN    "04"
@@ -1518,10 +1508,12 @@
       *
       *****MOVE    SPA-WORK            TO  SYS-1010-REC
       *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       3
-               MOVE    WIDGET-INSENSITIVE      TO  M00-STATE-O (IDX)
-           END-PERFORM           
+      *    PERFORM VARYING IDX FROM    1   BY  1
+      *            UNTIL   IDX >       3
+      *        MOVE    WIDGET-INSENSITIVE      TO  M00-STATE-O (IDX)
+      *    END-PERFORM           
+           MOVE    WIDGET-INSENSITIVE      TO  M00-G01-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
@@ -1533,12 +1525,6 @@
                MOVE    WIDGET-NORMAL       TO  M00-G03-STATE
            END-IF
       *----(01.02.16)--UPD-END-----
-      *    プラグイン
-           IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-           AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
-           AND   ( SPA-SUPERVISOR          =   "T" )
-               MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
-           END-IF
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"
                MOVE    "（まとめ）"       TO  M00-B09-LABEL
            ELSE

@@ -7,9 +7,6 @@ M00	{
 		G03	{
 			state	int;
 		};
-		G04	{
-	  		state	int;
-		};
 		SELNUM	{
 			value	number(2);
 		};

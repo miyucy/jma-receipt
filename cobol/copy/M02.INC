@@ -22,31 +22,26 @@
       *  01.02.05    NACL-森脇    04/05/27  108 住所マスタの追加
       ************************************************************
         02  M02.
-            03  M02-FIXED1.
-              04  M02-STATE-G.
-                05  M02-G101.
-                  06  M02-G101-STATE   PIC S9(9)   BINARY.
-                05  M02-G102.
-                  06  M02-G102-STATE   PIC S9(9)   BINARY.
-                05  M02-G103.
-                  06  M02-G103-STATE   PIC S9(9)   BINARY.
-                05  M02-G104.
-                  06  M02-G104-STATE   PIC S9(9)   BINARY.
-                05  M02-G105.
-                  06  M02-G105-STATE   PIC S9(9)   BINARY.
-                05  M02-G106.
-                  06  M02-G106-STATE   PIC S9(9)   BINARY.
-      *----(01.02.04)----START----
-                05  M02-G107.
-                  06  M02-G107-STATE   PIC S9(9)   BINARY.
-      *----(01.02.05)----START----
-                05  M02-G108.
-                  06  M02-G108-STATE   PIC S9(9)   BINARY.
-                05  M02-G09.
-                  06  M02-G109-STATE   PIC S9(9)   BINARY.
-              04  M02-STATE-R       REDEFINES  M02-STATE-G.
-                05  M02-STATE-O     PIC S9(09) BINARY  OCCURS  9.
-      *----(01.02.05)----END------
-      *----(01.02.04)----END------
-              04  M02-SELNUM.
-                05  M02-VALUE   PIC 9(3).
+     ****** 03  M02-FIXED1.
+              03  M02-G101.
+                04  M02-G101-STATE   PIC S9(9)   BINARY.
+              03  M02-G102.
+                04  M02-G102-STATE   PIC S9(9)   BINARY.
+              03  M02-G103.
+                04  M02-G103-STATE   PIC S9(9)   BINARY.
+              03  M02-G104.
+                04  M02-G104-STATE   PIC S9(9)   BINARY.
+              03  M02-G105.
+                04  M02-G105-STATE   PIC S9(9)   BINARY.
+              03  M02-G106.
+                04  M02-G106-STATE   PIC S9(9)   BINARY.
+              03  M02-G107.
+                04  M02-G107-STATE   PIC S9(9)   BINARY.
+              03  M02-G108.
+                04  M02-G108-STATE   PIC S9(9)   BINARY.
+              03  M02-G109.
+                04  M02-G109-STATE   PIC S9(9)   BINARY.
+              03  M02-G201.
+                04  M02-G201-STATE   PIC S9(9)   BINARY.
+              03  M02-SELNUM.
+                04  M02-VALUE   PIC S9(3).

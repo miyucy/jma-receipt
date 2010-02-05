@@ -37,6 +37,7 @@
       *  01.02.06    NACL-森脇    04/08/04  108 住所マスタの追加
       *  01.02.07    NACL-多々納  05/01/21  109 ヘルプマスタ追加
       *  01.02.08    NACL-伊藤    06/02/22  MONFUNC 対応
+      *  04.05.00    NACL-多々納  10/02/05  プラグイン画面追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -369,8 +370,8 @@
            END-IF
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
-           MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
-                                           SYS-1010-GSRAUTH(4:1)
+      **** MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
+           MOVE    "0"                 TO  SYS-1010-GSRAUTH(4:1)
                                            SYS-1010-GSRAUTH(18:1)
                                            SYS-1010-GSRAUTH(26:1)
                                            SYS-1010-GSRAUTH(32:1)
@@ -570,6 +571,15 @@
                    ELSE
                        MOVE    "N41"           TO  SPA-SAKIPG
                    END-IF
+      *        プラグイン処理
+               WHEN    "201"
+                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+                   AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+      *?           AND   ( SPA-SUPERVISOR          =   "T" )
+                       MOVE    "M80"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF 
               WHEN    OTHER
                    MOVE    "0001"          TO  SPA-ERRCD
            END-EVALUATE.
@@ -666,11 +676,21 @@
       *****MOVE    SPA-WORK            TO  SYS-1010-REC
       *
       *----(01.02.06)----START-----------------
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       9
-               MOVE    WIDGET-INSENSITIVE      TO  M02-STATE-O (IDX)
-           END-PERFORM           
+      *    PERFORM VARYING IDX FROM    1   BY  1
+      *            UNTIL   IDX >       10
+      *        MOVE    WIDGET-INSENSITIVE      TO  M02-STATE-O (IDX)
+      *    END-PERFORM           
       *----(01.02.06)----END-------------------
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G101-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G102-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G103-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G104-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G105-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G106-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G107-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G108-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G109-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G201-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -705,6 +725,12 @@
       *----(01.02.06)----END-------------------
                IF      SYS-1010-GSRAUTH(69:1)   =  "1"
                    MOVE    WIDGET-NORMAL      TO  M02-G109-STATE
+               END-IF
+      *        プラグイン処理
+               IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+               AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+      *?       AND   ( SPA-SUPERVISOR          =   "T" )
+                   MOVE    WIDGET-NORMAL      TO  M02-G201-STATE
                END-IF
            END-IF
            .
