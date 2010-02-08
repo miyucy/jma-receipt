@@ -54,6 +54,7 @@ db	{
         tbl_ptkohftn;
 	tbl_sryacct_main;
 	tbl_sryacct_sub;
+	tbl_dbcatalog;
 };
 
 /* #include "orcadb.inc" */
