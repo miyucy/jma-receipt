@@ -172,6 +172,8 @@
            03  IDX                             PIC 9(03).
            03  IDY                             PIC 9(03).
            03  IDZ                             PIC 9(03).
+           03  IDU                             PIC 9(03).
+           03  IDV                             PIC 9(03).
            03  IDW                             PIC 9(03).
            03  IDX1                            PIC 9(03).
            03  IDX2                            PIC 9(03).
@@ -1093,7 +1095,7 @@
            IF      WRK-REC(1:1)    NOT =   "C"
       *      数量
              MOVE    COLDAT02-SRYSURYO   TO  WRK-NUM
-             MOVE    10                  TO  WRK-NAGASA
+             MOVE    5                   TO  WRK-NAGASA
              MOVE    5                   TO  WRK-SYOSUU
              PERFORM 5005-NUM-HENSYU-SEC
              IF      FLG-KOIHEAD       =   ZERO
@@ -1194,7 +1196,7 @@
            IF     (COLDAT02-TENSIKIBETU =  2)  OR
                   (FLG-SANSO            =  1)
                MOVE    COLDAT02-TEN    TO  WRK-NUM
-               MOVE    11              TO  WRK-NAGASA
+               MOVE    9               TO  WRK-NAGASA
                MOVE    2               TO  WRK-SYOSUU
                PERFORM 5005-NUM-HENSYU-SEC
            ELSE
@@ -1373,33 +1375,25 @@
            ELSE
       *        開始位置
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
-               IF      WRK-SYOSUU          >   ZERO
-                   COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
-                                               +   1
-               END-IF
       *
                PERFORM VARYING IDW FROM    WRK-ST    BY  1
                        UNTIL   IDW >       10
                    IF      WRK-NUM (IDW:1)   NOT =   SPACE
-                        COMPUTE IDZ     =    11  +   WRK-SYOSUU
-                                                 -   IDW
+                        COMPUTE IDZ     =    11  -   IDW
                         IF      WRK-SYOSUU       >   ZERO
-                            ADD     1                TO  IDZ
-                            IF  WRK-NUM(16:1)    =   "0"
-                                COMPUTE IDZ      =   IDZ - 1
-                             IF  WRK-NUM(15:1)    =   "0"
-                                 COMPUTE IDZ      =   IDZ - 1
-                              IF  WRK-NUM(14:1)    =   "0"
-                                  COMPUTE IDZ      =   IDZ - 1
-                               IF  WRK-NUM(13:1)    =   "0"
-                                   COMPUTE IDZ      =   IDZ - 1
-                                IF  WRK-NUM(12:1)    =   "0"
-                                    COMPUTE IDZ      =   IDZ - 2
+                          COMPUTE IDU     =    11  + WRK-SYOSUU
+                          COMPUTE IDZ     =    IDU - IDW  +  1
+                          PERFORM VARYING IDV FROM   IDU  BY  -1
+                                  UNTIL   IDV <      12
+                            IF  WRK-NUM(IDV:1)   =   "0"
+                                COMPUTE IDZ      =   IDZ  -  1
+                                IF  IDV              =    12
+                                    COMPUTE IDZ      =    IDZ  -  1
                                 END-IF
-                               END-IF
-                              END-IF
-                             END-IF
+                            ELSE
+                                MOVE    11       TO  IDV
                             END-IF
+                          END-PERFORM
                         END-IF
                         STRING  WRK-REC(1:WRK-REC-LENGTH)
                                                  DELIMITED  BY  SIZE
