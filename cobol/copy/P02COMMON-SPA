@@ -95,6 +95,9 @@
            03  SPA-KEI-FLG                PIC 9(01).
            03  SPA-KEI-ERRCD              PIC X(04).
       *
+      *    £√£Ã£¡£…£ÕΩËÕ˝∂Ë ¨
+           03  SPA-FLG-CLAIM              PIC 9(01).
+      *
       *     ¥µº‘ Ã•Ø•Í•¢
            03  SPA-P02GMNAREA.
       *        ¥µº‘»÷πÊ —¥π

@@ -87,6 +87,7 @@
            COPY    "COMMON-SPA".
       *    ´µ¼ÔÅÐÏ¿¥¹¥ÑÎÎ°è
            COPY    "P02COMMON-SPA".
+      *
       *    ´µ¼ÔÅÐÏ¿Á´²èÌÌ¥¹¥ÑÎÎ°è
            COPY    "P02SCR-SPA".
       *
@@ -3535,6 +3536,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  SPA-KEI-FLG
                END-IF
            END-IF
+      *    £Ã£Ì£Á£É£ÍÁ÷¿®
+           MOVE    FLG-CLAIM           TO  SPA-FLG-CLAIM
       *
       *    ÅÐÏ¿¸å¡¢½èÍý
            IF     (SPA-ERRCD           =   SPACE )   AND
@@ -3561,7 +3564,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTID        TO  SPA-LAST-PTID
       *
       *    £Ã£Ì£Á£É£ÍÁ÷¿®
-           IF      FLG-CLAIM           =   1
+           IF      SPA-FLG-CLAIM       =   1
                PERFORM 4906-CLAIM-SOUSIN-SEC
            END-IF
       *
