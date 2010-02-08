@@ -1463,7 +1463,6 @@
            CLOSE   COLDAT91-FILE
                    COLDAT01-FILE
                    COLDAT02-FILE
-                   COLDAT03-FILE
            IF      CNT-COLDAT91        >   ZERO
                CLOSE   COLDAT04-FILE
            END-IF
