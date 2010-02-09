@@ -454,6 +454,8 @@
       *  04.05.08    NACL-ÌçÏÆ    10/01/07  ¼£¸³ÂÐ±þ
       *  04.05.09    NACL-ÌçÏÆ    10/02/08  ÃÏÊý¸øÈñ¤ÎÁ´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ
       *                                     ½¸·×ÂÐ±þ
+      *  04.05.10    NACL-ÌçÏÆ    10/02/09  ÃÏÊý¸øÈñ¤Î°ìÉôÉéÃ´¶â£°±ßµ­ºÜ
+      *                                     ¡Êµ­Ï¿¡Ë¤ÎÀßÄê¹àÌÜÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1128,6 +1130,8 @@
            03  WRK-SETCOM-JIDO2                PIC 9(03).
       *
            03  WRK-SURYOU-COUNT                PIC 9(09).
+      *
+           03  WRK-ZEROKISAIFLG                PIC X(01).
       *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
@@ -12337,6 +12341,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
               IF   RECE02-KOHNUM(KOHFTN-IDX)(1:1) >=  "1" AND <=  "8"
       *
+                MOVE    SPACE   TO   WRK-ZEROKISAIFLG
+      *
       *         ¤½¤ÎÂ¾µ­ºÜ¥Õ¥é¥°ÊÔ½¸
                 IF    RECE02-SRYYM        >=  "200804"
                   INITIALIZE                   SYSKANRI-REC
@@ -12373,7 +12379,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF  (SYS-1001-PREFNUM           =   28           )
                   AND (RECE02-KOHNUM(KOHFTN-IDX)  =  "186"         )
                     MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
-                    MOVE SPACE  TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
+      ***           MOVE SPACE  TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                   IF ((SYS-1001-PREFNUM          =   05           ) AND
                       (RECE02-KOHNUM(KOHFTN-IDX) =  "174"         ))
@@ -12386,8 +12392,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   IF  (SYS-1001-PREFNUM          =   08            )
                   AND (RECE02-KOHNUM(KOHFTN-IDX)(1:1)
                                                 >=  "1" AND <=  "8")
-                  AND (RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)   =  "1")
-                    MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
+                   IF (RECE02-HON-GAIDJGNGAK(KOHFTN-IDX)    NOT = ZERO)
+                   OR (RECE02-HON-GAIDJGNCNT(KOHFTN-IDX)    NOT = ZERO)
+                   OR (RECE02-HON-GAIMNAIJGNGAK(KOHFTN-IDX) NOT = ZERO)
+                   OR (RECE02-HON-GAIMGAIJGNGAK(KOHFTN-IDX) NOT = ZERO)
+                   OR (RECE02-HON-GAIMJGNCNT(KOHFTN-IDX)    NOT = ZERO)
+                   OR (RECE02-HON-GAIKJGNGAK(KOHFTN-IDX)    NOT = ZERO)
+                      MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
+                   END-IF
                   END-IF
                 END-IF
       *
@@ -12442,6 +12454,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      MOVE SPACE TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                     END-IF
                   END-IF
+                END-IF
+      *
+                IF   (WRK-ZEROKISAIFLG                    =  "2")
+                AND  (RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1) =  "1")
+                    MOVE  SPACE TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                 END-IF
       *
               ELSE
@@ -12553,17 +12570,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
              IF   (RECE02-KOHNUM(1)      =  "245")
              AND  (RECE02-KOHHBTNUM(2)   =  "48" )
                   MOVE  ZERO  TO  RECE02-FTNMONEY(2)
-                  MOVE  ZERO  TO  RECE02-ZEROKISAIFLG(2)
+                  MOVE  SPACE TO  RECE02-ZEROKISAIFLG(2)
              END-IF
              IF   (RECE02-KOHNUM(2)      =  "245")
              AND  (RECE02-KOHHBTNUM(3)   =  "48" )
                   MOVE  ZERO  TO  RECE02-FTNMONEY(3)
-                  MOVE  ZERO  TO  RECE02-ZEROKISAIFLG(3)
+                  MOVE  SPACE TO  RECE02-ZEROKISAIFLG(3)
              END-IF
              IF   (RECE02-KOHNUM(3)      =  "245")
              AND  (RECE02-KOHHBTNUM(4)   =  "48" )
                   MOVE  ZERO  TO  RECE02-FTNMONEY(4)
-                  MOVE  ZERO  TO  RECE02-ZEROKISAIFLG(4)
+                  MOVE  SPACE TO  RECE02-ZEROKISAIFLG(4)
              END-IF
            END-IF
       *
@@ -12831,6 +12848,27 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                  WHEN        "4"
                   IF   RECE02-TEISYUTUSAKI  =  6
                     MOVE  "1"  TO RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+             WHEN      "2"
+               EVALUATE  SYS-2010-FTNZERO-TAIKBN-G
+                 WHEN        "0"
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                 WHEN        "1"
+                  IF   RECE02-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE02-TEISYUTUSAKI  =  1
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE02-TEISYUTUSAKI  =  2
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE02-TEISYUTUSAKI  =  6
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
                   END-IF
                END-EVALUATE
            END-EVALUATE

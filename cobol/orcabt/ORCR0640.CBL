@@ -426,6 +426,8 @@
       *  04.05.10    NACL-ÌçÏÆ    10/01/07  ¼£¸³ÂÐ±þ
       *  04.05.11    NACL-ÌçÏÆ    10/02/08  ÃÏÊý¸øÈñ¤ÎÁ´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ
       *                                     ½¸·×ÂÐ±þ
+      *  04.05.12    NACL-ÌçÏÆ    10/02/09  ÃÏÊý¸øÈñ¤Î°ìÉôÉéÃ´¶â£°±ßµ­ºÜ
+      *                                     ¡Êµ­Ï¿¡Ë¤ÎÀßÄê¹àÌÜÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1276,6 +1278,8 @@
       *
            03  WRK-SETCOM-JIDO                 PIC 9(03).
            03  WRK-SETCOM-JIDO2                PIC 9(03).
+      *
+           03  WRK-ZEROKISAIFLG                PIC X(01).
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -13966,6 +13970,8 @@
       *
               IF   RECE62-KOHNUM(KOHFTN-IDX)(1:1) >=  "1" AND <=  "8"
       *
+                MOVE    SPACE   TO   WRK-ZEROKISAIFLG
+      *
       *         ¤½¤ÎÂ¾µ­ºÜ¥Õ¥é¥°ÊÔ½¸
                 IF    RECE62-SRYYM        >=  "200804"
                   INITIALIZE                   SYSKANRI-REC
@@ -14009,7 +14015,7 @@
                   IF  (WRK-PREFNUM                =   28           )
                   AND (RECE62-KOHNUM(KOHFTN-IDX)  =  "186"         )
                     MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                    MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+      ***           MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                   IF ((WRK-PREFNUM               =   05           ) AND
                       (RECE62-KOHNUM(KOHFTN-IDX) =  "174"         ))
@@ -14022,8 +14028,11 @@
                   IF  (WRK-PREFNUM               =   08            )
                   AND (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
                                                 >=  "1" AND <=  "8")
-                  AND (RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)   =  "1")
-                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                   IF (RECE62-HON-NYUDJGNGAK(KOHFTN-IDX)    NOT = ZERO)
+                   OR (RECE62-HON-NYUMJGNGAK(KOHFTN-IDX)    NOT = ZERO)
+                   OR (RECE62-HON-NYUMJGNCNT(KOHFTN-IDX)    NOT = ZERO)
+                      MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                   END-IF
                   END-IF
                 END-IF
       *
@@ -14089,6 +14098,11 @@
                      MOVE SPACE TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                     END-IF
                   END-IF
+                END-IF
+      *
+                IF   (WRK-ZEROKISAIFLG                    =  "2")
+                AND  (RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1) =  "1")
+                    MOVE  SPACE TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                 END-IF
       *
               ELSE
@@ -14204,17 +14218,17 @@
              IF   (RECE62-KOHNUM(1)      =  "245")
              AND  (RECE62-KOHHBTNUM(2)   =  "48" )
                   MOVE  ZERO  TO  RECE62-FTNMONEY(2)
-                  MOVE  ZERO  TO  RECE62-ZEROKISAIFLG(2)
+                  MOVE  SPACE TO  RECE62-ZEROKISAIFLG(2)
              END-IF
              IF   (RECE62-KOHNUM(2)      =  "245")
              AND  (RECE62-KOHHBTNUM(3)   =  "48" )
                   MOVE  ZERO  TO  RECE62-FTNMONEY(3)
-                  MOVE  ZERO  TO  RECE62-ZEROKISAIFLG(3)
+                  MOVE  SPACE TO  RECE62-ZEROKISAIFLG(3)
              END-IF
              IF   (RECE62-KOHNUM(3)      =  "245")
              AND  (RECE62-KOHHBTNUM(4)   =  "48" )
                   MOVE  ZERO  TO  RECE62-FTNMONEY(4)
-                  MOVE  ZERO  TO  RECE62-ZEROKISAIFLG(4)
+                  MOVE  SPACE TO  RECE62-ZEROKISAIFLG(4)
              END-IF
            END-IF
       *
@@ -14562,6 +14576,27 @@
                  WHEN        "4"
                   IF   RECE62-TEISYUTUSAKI  =  6
                     MOVE  "1"  TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+             WHEN      "2"
+               EVALUATE  SYS-2010-FTNZERO-TAIKBN-N
+                 WHEN        "0"
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "2"  TO WRK-ZEROKISAIFLG
                   END-IF
                END-EVALUATE
            END-EVALUATE
