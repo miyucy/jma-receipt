@@ -726,7 +726,11 @@
            MOVE    "£°±ß¤Î¾ì¹ç¡¢¾ÊÎ¬¤·¤Ê¤¤"
                                    TO  SPA-GMN-FTNZEROKBNMEIL (2)
       *
-           MOVE    2               TO  SPA-GMN-FTNZEROKBN-MAX
+           MOVE    "2"             TO  SPA-GMN-FTNZEROKBNL    (3)
+           MOVE    "£°±ß¤Î¾ì¹ç¡¢Ìµ¾ò·ï¤Ë¾ÊÎ¬¤¹¤ë"
+                                   TO  SPA-GMN-FTNZEROKBNMEIL (3)
+      *
+           MOVE    3               TO  SPA-GMN-FTNZEROKBN-MAX
       *
            .
        3110-FTNZEROKBNLST-EXT.
