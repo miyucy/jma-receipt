@@ -271,6 +271,8 @@
       *  04.05.07    NACL-藤原    10/01/13  治験対応
       *  04.05.08    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     傷病名レコードの補足コメント
+      *  04.05.09    NACL-門脇    10/02/08  地方公費の全国公費併用分請求点
+      *                                     集計対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2872,11 +2874,11 @@
                          ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
                          ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
-                   OR   (( RECE62-FUKUSHIFLG          =   "1"  ) AND
+                   OR   (( RECE62-FUKUSHIFLG(IDX)     =   "1"  ) AND
                          ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
                          ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
-                   OR   (( RECE62-FUKUSHIFLG          =   "1"  ) AND
+                   OR   (( RECE62-FUKUSHIFLG(IDX)     =   "1"  ) AND
                          ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE62-FTNMONEY (IDX)      >   ZERO ))
                        MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM

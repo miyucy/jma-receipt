@@ -77,6 +77,8 @@
       *
       *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
       *                                     リアルタイムプレビュー時の表示
+      *  04.05.01    NACL-門脇    10/02/08  地方公費の全国公費併用分請求点
+      *                                     集計対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3680,7 +3682,7 @@
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
                   END-IF
                END-IF
-               IF  RECE62-FUKUSHIFLG  =  "1"
+               IF  RECE62-FUKUSHIFLG(IDX3)  =  "1"
                    IF  RECE62-JNISSU (IDX2)
                                        NOT =   RECE62-JNISSU (IDX3)
                        MOVE    RECE62-JNISSU (IDX3)
@@ -5517,8 +5519,8 @@
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)
            ELSE
-               IF      RECE62-FUKUSHIFLG      =   "1"
-               AND     RECE62-TOTALTEN (IDX3) =   ZERO
+               IF      RECE62-FUKUSHIFLG(IDX3) =   "1"
+               AND     RECE62-TOTALTEN(IDX3)   =   ZERO
                    MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                    MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)
                END-IF

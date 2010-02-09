@@ -87,6 +87,8 @@
       *  04.04.03    NACL-ÌçÏÆ    09/09/04  ¾®Æþ´ÉÎ¬¾Î½¤Àµ
       *
       *  04.05.01    NACL-ÌçÏÆ    10/01/12  ¼£¸³ÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    10/02/08  ÃÏÊý¸øÈñ¤ÎÁ´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ
+      *                                     ½¸·×ÂÐ±þ
       *****************************************************************
       *
       *
@@ -182,11 +184,19 @@
            03  IDV                                     PIC 9(02).
            03  TENTEK-IDX                              PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  IDX11                                   PIC 9(03).
       *
       *    ¼ÂÆü¿ô¥«¥¦¥ó¥ÈÍÑÎÎ°è
        01  TBL-JNISSU.
            03  TBL-JNISSU-HKN       OCCURS   5.
                05  TBL-JNISSU-DAY                      PIC X(01)
+                                                       OCCURS   31.
+      *
+      *    ¼ÂÆü¿ô¥«¥¦¥ó¥ÈÍÑÎÎ°è£²
+       01  TBL-JNISSU2.
+           03  TBL-JNISSU2-HKN                         OCCURS   5.
+               05  TBL-JNISSU2-MON                     PIC 9(02).
+               05  TBL-JNISSU2-DAY                     PIC X(01)
                                                        OCCURS   31.
       *
       *    ¼ÂÆü¿ô¸º¥«¥¦¥ó¥ÈÍÑÎÎ°è
@@ -223,6 +233,7 @@
        01  TBL-FUKUSHI.
            03  TBL-FUKUSHI-OCC                         OCCURS  4.
                05  TBL-FUKUSHIFLG                      PIC 9(01).
+               05  TBL-FUKUSHI-DAYFLG                  PIC 9(01).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -350,6 +361,8 @@
            COPY    "CPSK1001.INC".
       *
            COPY    "CPSK5000.INC".
+      *
+           COPY    "CPSK2010.INC".
       *
       *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
        01  JOBKANRI-REC.
@@ -912,6 +925,8 @@
       *
            MOVE       SPACE             TO     TBL-JNISSU
            INITIALIZE                          TBL-JNISSU
+           MOVE       SPACE             TO     TBL-JNISSU2
+           INITIALIZE                          TBL-JNISSU2
            MOVE       SPACE             TO     TBL-JNISSU-GEN
            INITIALIZE                          TBL-JNISSU-GEN
       *
@@ -932,10 +947,11 @@
       *
            INITIALIZE                          TBL-FUKUSHI
       *
-           MOVE       SPACE             TO     WRK-NYUINDAY-TANKI2-TBL
-           INITIALIZE                          WRK-NYUINDAY-TANKI2-TBL
+           PERFORM     200118-SYUKEIKBN-HANBETU-SEC
       *
       *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ
+           MOVE       SPACE             TO     WRK-NYUINDAY-TANKI2-TBL
+           INITIALIZE                          WRK-NYUINDAY-TANKI2-TBL
            INITIALIZE                   ORCSNYUINDAY-AREA
            MOVE    RECE62-HOSPNUM   TO  LNK-NYUINDAY-HOSPNUM
            MOVE    RECE62-PTID      TO  LNK-NYUINDAY-PTID
@@ -1218,11 +1234,12 @@
       *
                  IF   KH-IDX             NOT =    ZERO
                    IF   FLG-SHOSAISIN      =    1
-                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      IF   TBL-FUKUSHI-DAYFLG(IDX2) NOT = ZERO
                          CONTINUE
                       ELSE
                          MOVE    "1"   TO   TBL-JNISSU-DAY(KH-IDX IDY)
                       END-IF
+                      MOVE    "1"      TO   TBL-JNISSU2-DAY(KH-IDX IDY)
                    END-IF
                  END-IF
                END-IF  
@@ -1363,12 +1380,14 @@
                       PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
                                  UNTIL    ACCT-IDX   >      31
                              IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                               IF   TBL-FUKUSHI-DAYFLG(IDX2) NOT = ZERO
                                  CONTINUE
                                ELSE
                                  MOVE    "1"       TO
                                       TBL-JNISSU-DAY(KH-IDX ACCT-IDX)
                                END-IF
+                               MOVE    "1"       TO
+                                      TBL-JNISSU2-DAY(KH-IDX ACCT-IDX)
                              END-IF
                       END-PERFORM
                    END-IF
@@ -1376,12 +1395,8 @@
                       PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
                                  UNTIL    ACCT-IDX   >      31
                              IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                               IF     TBL-FUKUSHIFLG(IDX2)  =   1
-                                 CONTINUE
-                               ELSE
                                  MOVE    "1"       TO
                                   TBL-JNISSU-DAY-GEN(KH-IDX ACCT-IDX)
-                               END-IF
                              END-IF
                       END-PERFORM
                    END-IF
@@ -1776,7 +1791,7 @@
                   END-IF
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
-                         IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                         IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                          AND    KH-IDX                >   1
                             CONTINUE
                          ELSE
@@ -1803,7 +1818,7 @@
                               ADD   1   TO   RECE62-NYUKHNNISSU(ID1)
                               MOVE  1   TO   FLG-NISSUSET
                             END-IF
-                            IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                            IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                             AND    KH-IDX                >   1
                                CONTINUE
                             ELSE
@@ -1819,7 +1834,7 @@
                       ADD        1           TO  RECE62-NYUKHNNISSU(ID1)
                       MOVE       1           TO  FLG-NISSUSET
                       MOVE   WRK-NYUKHNRYO   TO  RECE62-NYUKHNRYO(ID1)
-                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                       AND    KH-IDX                >   1
                          CONTINUE
                       ELSE
@@ -1885,7 +1900,7 @@
                   END-IF
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
-                         IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                         IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                          AND    KH-IDX                >   1
                             CONTINUE
                          ELSE
@@ -1922,7 +1937,7 @@
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                               MOVE  1   TO   FLG-NISSUSET
                             END-IF
-                            IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                            IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                             AND    KH-IDX                >   1
                                CONTINUE
                             ELSE
@@ -1942,7 +1957,7 @@
       ***             Î¬¾Î¤¬¶õÇò¤Î¾ì¹ç¤Î°Ù¤Î½èÃÖ
                       MOVE   999999999       TO  RECE62-NYUTOKRYO(ID1)
       *
-                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                       AND    KH-IDX                >   1
                          CONTINUE
                       ELSE
@@ -1965,7 +1980,7 @@
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                               MOVE  1   TO   FLG-NISSUSET
                             END-IF
-                            IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                            IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                             AND    KH-IDX                >   1
                                CONTINUE
                             ELSE
@@ -1986,7 +2001,7 @@
                                                                    (ID1)
       *
                       MOVE   WRK-NYUTOKRYO   TO  RECE62-NYUTOKRYO(ID1)
-                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                       AND    KH-IDX                >   1
                          CONTINUE
                       ELSE
@@ -2069,7 +2084,7 @@
       *
               EVALUATE   WRK-DAY1-NYUTENTTLKBN(IDY)
                  WHEN   903
-                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                     AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
@@ -2084,7 +2099,7 @@
       *
            IF RECE62-NYUINDAY-KBN(IDY) = "1"
       ***      IF  WRK-NYUINDAY-TANKI2-KBN(IDY) NOT = SPACE
-                 IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                 IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                  AND    KH-IDX                >   1
                     CONTINUE
                  ELSE
@@ -2094,7 +2109,7 @@
                  COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                           RECE62-NYUTOKKEI2(KH-IDX)  +  NACCT-ZAITEN
       ***      ELSE
-      ***        IF     TBL-FUKUSHIFLG(IDX2)  =   1
+      ***        IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
       ***        AND    KH-IDX                >   1
       ***           CONTINUE
       ***        ELSE
@@ -2548,7 +2563,7 @@
                                               OR   190111790
                                               OR   190809190)
                  OR       (ACCT-ZAIKBN        =    2        )
-                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                     AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
@@ -2560,7 +2575,7 @@
                              RECE62-NYUTOKKEI2(KH-IDX)  -
                              (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  ELSE
-                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                     AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
@@ -2582,7 +2597,7 @@
                                               OR   190111790
                                               OR   190809190)
                  OR       (ACCT-ZAIKBN        =    2        )
-                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                     AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
@@ -2599,7 +2614,7 @@
            IF    RECE62-NYUINDAY-KBN(ACCT-IDX) = "1"
       ***    IF  WRK-NYUINDAY-TANKI2-KBN(ACCT-IDX) NOT = SPACE
               IF ACCT-ZAIKBN = 2
-               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+               IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                AND    KH-IDX                >   1
                   CONTINUE
                ELSE
@@ -2611,7 +2626,7 @@
                         RECE62-NYUTOKKEI2(KH-IDX)  -
                            (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
               ELSE
-               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+               IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                AND    KH-IDX                >   1
                   CONTINUE
                ELSE
@@ -2625,7 +2640,7 @@
               END-IF
       ***    ELSE
       ***     IF ACCT-ZAIKBN = 2
-      ***      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+      ***      IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
       ***      AND    KH-IDX                >   1
       ***         CONTINUE
       ***      ELSE
@@ -2637,7 +2652,7 @@
       ***               RECE62-NYUTOKKEI2(KH-IDX)  -
       ***                  (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
       ***     ELSE
-      ***      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+      ***      IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
       ***      AND    KH-IDX                >   1
       ***         CONTINUE
       ***      ELSE
@@ -3269,7 +3284,7 @@
       *                                           OR   190111790
       *                                           OR   190809190
                      OR       (ACCT-ZAIKBN        =    2        )
-                       IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                       IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                           CONTINUE
                        ELSE
                           COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3284,7 +3299,7 @@
                      ELSE
                        IF        WRK-TENTEK-FLG(TENTEK-IDX KH-IDX)
                                                              =   ZERO
-                           IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                           IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                               CONTINUE
                            ELSE
                               COMPUTE   TBL-TOTALTEN-ACCT(KH-IDX) =  
@@ -3301,7 +3316,7 @@
                        END-IF
                        IF        ACCT-SRYKBN     =    "33"
                            PERFORM   20011521-TENTEK-SYUTEN-SEC
-                           IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                           IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                               CONTINUE
                            ELSE
                               COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3312,7 +3327,7 @@
                                     TBL-TOTALTEN2-ACCT(KH-IDX) +
                                     WRK-TENTEK-SYUTEN
                        ELSE
-                           IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                           IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                               CONTINUE
                            ELSE
                               COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3481,7 +3496,7 @@
                  END-IF
       *
                  IF   KH-IDX             NOT =    ZERO
-                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                     IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                         CONTINUE
                      ELSE
                         COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3516,12 +3531,33 @@
              END-PERFORM
            END-PERFORM
       *
+           PERFORM    VARYING    IDX    FROM   3   BY   1
+                       UNTIL     IDX    >      5
+             PERFORM    VARYING    IDY    FROM    1   BY   1
+                         UNTIL     IDY    >      31
+                IF  (TBL-JNISSU2-DAY(IDX IDY)     NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(IDX IDY)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU2-DAY(IDX IDY)
+                END-IF
+             END-PERFORM
+           END-PERFORM
+      *
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL      IDX    >      5
                PERFORM    VARYING    IDY    FROM    1   BY   1
                           UNTIL      IDY    >     31
                     IF    TBL-JNISSU-DAY(IDX IDY)  NOT =  SPACE
                           ADD    1      TO    RECE62-JNISSU(IDX)
+                    END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDX    FROM   3   BY   1
+                      UNTIL      IDX    >      5
+               PERFORM    VARYING    IDY    FROM    1   BY   1
+                          UNTIL      IDY    >     31
+                    IF    TBL-JNISSU2-DAY(IDX IDY) NOT =  SPACE
+                          ADD    1      TO    TBL-JNISSU2-MON(IDX)
                     END-IF
                END-PERFORM
            END-PERFORM
@@ -3625,6 +3661,68 @@
                  END-IF
            END-PERFORM
       *
+      ***
+      *
+           IF    RECE62-FUKUSHIFLG(3)  =  "2"
+              IF  (RECE62-KOHNUM(2)(1:1) >= "1" AND <= "8")
+              AND (RECE62-TOTALTEN(3)     =  ZERO         )
+                 MOVE  RECE62-HENTOTALTEN(3)  TO  RECE62-TOTALTEN(3)
+              END-IF
+              IF  (RECE62-KOHNUM(2)(1:1) >= "1" AND <= "8")
+              AND (RECE62-JNISSU(3)       =  ZERO         )
+                 MOVE  TBL-JNISSU2-MON(3)     TO  RECE62-JNISSU(3)
+              END-IF
+           END-IF
+           IF    RECE62-FUKUSHIFLG(4)  =  "2"
+              IF  (RECE62-KOHNUM(3)(1:1) >= "1" AND <= "8")
+              AND (RECE62-TOTALTEN(4)     =  ZERO         )
+                 MOVE  RECE62-HENTOTALTEN(4)  TO  RECE62-TOTALTEN(4)
+              END-IF
+              IF  (RECE62-KOHNUM(3)(1:1) >= "1" AND <= "8")
+              AND (RECE62-JNISSU(4)       =  ZERO         )
+                 MOVE  TBL-JNISSU2-MON(4)     TO  RECE62-JNISSU(4)
+              END-IF
+           END-IF
+           IF    RECE62-FUKUSHIFLG(5)  =  "2"
+              IF  (RECE62-KOHNUM(4)(1:1) >= "1" AND <= "8")
+              AND (RECE62-TOTALTEN(5)     =  ZERO         )
+                 MOVE  RECE62-HENTOTALTEN(5)  TO  RECE62-TOTALTEN(5)
+              END-IF
+              IF  (RECE62-KOHNUM(4)(1:1) >= "1" AND <= "8")
+              AND (RECE62-JNISSU(5)       =  ZERO         )
+                 MOVE  TBL-JNISSU2-MON(5)     TO  RECE62-JNISSU(5)
+              END-IF
+           END-IF
+      *
+           IF   WRK-PREFNUM  =  "36"
+      *
+              IF    RECE62-FUKUSHIFLG(3)  NOT =  SPACE
+                IF  (RECE62-KOHNUM(2)      =  "245")
+                AND (RECE62-KOHHBTNUM(3)   =  "48" )
+                   MOVE  RECE62-TOTALTEN(3)   TO  RECE62-TOTALTEN(4)
+                   MOVE  RECE62-FUKUSHIFLG(3) TO  RECE62-FUKUSHIFLG(4)
+                END-IF
+              END-IF
+              IF    RECE62-FUKUSHIFLG(4)  NOT =  SPACE
+                IF  (RECE62-KOHNUM(3)      =  "245")
+                AND (RECE62-KOHHBTNUM(4)   =  "48" )
+                   MOVE  RECE62-TOTALTEN(4)   TO  RECE62-TOTALTEN(5)
+                   MOVE  RECE62-FUKUSHIFLG(4) TO  RECE62-FUKUSHIFLG(5)
+                END-IF
+              END-IF
+      *
+           END-IF
+      *
+           IF    RECE62-FUKUSHIFLG(3)  =  "2"
+               MOVE   SPACE   TO   RECE62-FUKUSHIFLG(3)
+           END-IF
+           IF    RECE62-FUKUSHIFLG(4)  =  "2"
+               MOVE   SPACE   TO   RECE62-FUKUSHIFLG(4)
+           END-IF
+           IF    RECE62-FUKUSHIFLG(5)  =  "2"
+               MOVE   SPACE   TO   RECE62-FUKUSHIFLG(5)
+           END-IF
+      *
            .
        200116-JNISSU-SET-EXT.
            EXIT.
@@ -3640,6 +3738,149 @@
       *
            .
        200117-RECE62-REWRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ½¸·×È½ÊÌ
+      *****************************************************************
+       200118-SYUKEIKBN-HANBETU-SEC      SECTION.
+      *
+           IF    IDZ    =    1
+      *
+             PERFORM  VARYING  IDX11   FROM    1   BY  1
+                       UNTIL  (IDX11                   >   10 )
+                         OR   (RECE62-HKNCOMBI(IDX11)  =  ZERO)
+      *
+              IF ((RECE62-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE62-KOHNUMHC(IDX11 1)(1:1)  = "0"            ) AND
+                  (RECE62-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+              OR ((WRK-PREFNUM                    = "13"           ) AND
+                  (RECE62-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE62-KOHNUMHC(IDX11 1)(1:1) >= "1" AND <= "8" ) AND
+                  (RECE62-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+              OR ((WRK-PREFNUM                    = "23"           ) AND
+                  (RECE62-SRYYM                  >= "200910"       ) AND
+                  (RECE62-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE62-KOHNUMHC(IDX11 1)       = "191"          ) AND
+                  (RECE62-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+      *
+                IF ((RECE62-KOHNUMHC(IDX11 2) =  RECE62-KOHNUM(2)) AND
+                    (RECE62-KOHIDHC(IDX11 2)  =  RECE62-KOHID(2) ))
+                OR ((RECE62-KOHNUMHC(IDX11 2) =  RECE62-KOHNUM(3)) AND
+                    (RECE62-KOHIDHC(IDX11 2)  =  RECE62-KOHID(3) ))
+                OR ((RECE62-KOHNUMHC(IDX11 2) =  RECE62-KOHNUM(4)) AND
+                    (RECE62-KOHIDHC(IDX11 2)  =  RECE62-KOHID(4) ))
+      *
+                  IF    RECE62-SRYYM  >=  "200804"
+                    INITIALIZE                   SYSKANRI-REC
+                    MOVE    "2010"           TO  SYS-KANRICD
+                    MOVE    RECE62-KOHNUMHC(IDX11 2)
+                                             TO  SYS-KBNCD
+                    MOVE    RECE62-SRYYM     TO  SYS-STYUKYMD (1:6)
+                    MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                    MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                    MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
+                    MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+                    MOVE    "tbl_syskanri"   TO  MCP-TABLE
+                    MOVE    "key10"          TO  MCP-PATHNAME
+                    PERFORM   900-DBSELECT-SEC
+                    IF      MCP-RC           =   ZERO
+                      MOVE  "tbl_syskanri"   TO  MCP-TABLE
+                      MOVE  "key10"          TO  MCP-PATHNAME
+                      PERFORM 900-SYSKANRI-READ-SEC
+                    ELSE
+                      INITIALIZE                 SYS-2010-REC
+                    END-IF
+                    PERFORM   2001181-SYUKEIKBN-HENSYU-SEC
+                    MOVE    "tbl_syskanri"   TO  MCP-TABLE
+                    MOVE    "key10"          TO  MCP-PATHNAME
+                    PERFORM   900-CLOSE-SEC
+                  ELSE
+                    EVALUATE   WRK-PREFNUM
+                      WHEN     "32"
+                        IF  RECE62-SRYYM  >=  "200510"
+                          MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                        END-IF
+                      WHEN     "13"
+                      WHEN     "26"
+                          MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                      WHEN     "08"
+                        IF  RECE62-SRYYM  >=  "200607"
+                          MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                        END-IF
+                      WHEN     "38"
+                          MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                    END-EVALUATE
+                  END-IF
+      *
+                  IF ((WRK-PREFNUM               =  "13"    ) AND
+                      (RECE62-KOHNUMHC(IDX11 2)  =  "151"   ) AND
+                      (RECE62-SRYYM             >=  "200905"))
+                  OR ((WRK-PREFNUM               =  "23"    ) AND
+                      (RECE62-KOHNUMHC(IDX11 2)  =  "191"   ) AND
+                      (RECE62-SRYYM             >=  "200910"))
+                          MOVE "0" TO RECE62-SYUKEIKBN(IDX11 2)
+                          MOVE "0" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                  END-IF
+      *
+                END-IF
+      *
+              END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
+           .
+       200118-SYUKEIKBN-HANBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ½¸·×È½ÊÌÊÔ½¸
+      *****************************************************************
+       2001181-SYUKEIKBN-HENSYU-SEC      SECTION.
+      *
+           EVALUATE  SYS-2010-SYUKEIKBN
+             WHEN      SPACE
+                 EVALUATE   WRK-PREFNUM
+                   WHEN     "32"
+                   WHEN     "13"
+                   WHEN     "26"
+                   WHEN     "08"
+                       MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                   WHEN     "36"
+                     IF  RECE62-SRYYM  >=  "200805"
+                       MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "0" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                     END-IF
+                   WHEN     "10"
+                       MOVE "2" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "4" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                   WHEN     "30"
+                     IF  RECE62-SRYYM  >=  "200904"
+                       MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                     END-IF
+                   WHEN     "38"
+                       MOVE "1" TO RECE62-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
+                 END-EVALUATE
+             WHEN      "0"
+             WHEN      "1"
+             WHEN      "2"
+                 MOVE   SYS-2010-SYUKEIKBN
+                                    TO   RECE62-SYUKEIKBN(IDX11 2)
+                 MOVE   SYS-2010-SYUKEI-TAIKBN
+                                    TO   RECE62-SYUKEI-TAIKBN(IDX11 2)
+           END-EVALUATE
+      *
+           .
+       2001181-SYUKEIKBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3738,35 +3979,6 @@
            DISPLAY "*** ORCR0630 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÁÈ¤ß¹ç¤ï¤»È½ÊÌ¡ÊÊ¡»ãÍÑ¡Ë¼çÊÝ¸±¡ÜÁ´¹ñ¸øÈñ¡ÜÃÏÊý¸øÈñ
-      *****************************************************************
-       500-KUMIAWASE-HANBETU-SEC               SECTION.
-      *
-           INITIALIZE                 TBL-FUKUSHI
-      *
-           IF      IDZ             =   1 
-             EVALUATE   WRK-PREFNUM
-      *
-               WHEN    "38"
-      *
-                 IF ( RECE62-KOHNUMHC(IDX1 1)(1:1)  =   "0"     )  AND
-                    ( RECE62-KOHNUMHC(IDX1 2)(1:1)
-                                             >=  "1" AND <=  "8")
-      *
-                      MOVE     1       TO      TBL-FUKUSHIFLG(2)
-      *
-                      MOVE    "1"      TO      RECE62-FUKUSHIFLG
-      *
-                 END-IF
-      *
-             END-EVALUATE
-           END-IF
-      *
-           .
-       500-KUMIAWASE-HANBETU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3941,6 +4153,95 @@
       *
            .
        500-RYAKUSYO-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁÈ¤ß¹ç¤ï¤»È½ÊÌ¡ÊÊ¡»ãÍÑ¡Ë¼çÊÝ¸±¡ÜÁ´¹ñ¸øÈñ¡ÜÃÏÊý¸øÈñ
+      *****************************************************************
+       500-KUMIAWASE-HANBETU-SEC               SECTION.
+      *
+           INITIALIZE                 TBL-FUKUSHI
+      *
+           IF  RECE62-SYUKEIKBN(IDX1 2) = "0" OR SPACE
+             CONTINUE
+           ELSE
+             EVALUATE  RECE62-SYUKEI-TAIKBN(IDX1 2)
+               WHEN     "0"
+                   PERFORM  5001-KUMIAWASE-HENSYU-SEC
+               WHEN     "1"
+                 IF   RECE62-TEISYUTUSAKI  =   2 OR 6
+                   PERFORM  5001-KUMIAWASE-HENSYU-SEC
+                 END-IF
+               WHEN     "2"
+                 IF   RECE62-TEISYUTUSAKI  =   1
+                   PERFORM  5001-KUMIAWASE-HENSYU-SEC
+                 END-IF
+               WHEN     "3"
+                 IF   RECE62-TEISYUTUSAKI  =   2
+                   PERFORM  5001-KUMIAWASE-HENSYU-SEC
+                 END-IF
+               WHEN     "4"
+                 IF   RECE62-TEISYUTUSAKI  =   6
+                   PERFORM  5001-KUMIAWASE-HENSYU-SEC
+                 END-IF
+             END-EVALUATE
+           END-IF
+      *
+           .
+       500-KUMIAWASE-HANBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁÈ¤ß¹ç¤ï¤»È½ÊÌÊÔ½¸
+      *****************************************************************
+       5001-KUMIAWASE-HENSYU-SEC               SECTION.
+      *
+           EVALUATE  RECE62-SYUKEIKBN(IDX1 2)
+              WHEN      "1"
+                  IF   RECE62-KOHNUMHC(IDX1 2) =  RECE62-KOHNUM(2)
+                  AND  RECE62-KOHIDHC(IDX1 2)  =  RECE62-KOHID(2)
+                     MOVE  "1"  TO      RECE62-FUKUSHIFLG(3)
+                     MOVE   1   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE62-KOHNUMHC(IDX1 2) =  RECE62-KOHNUM(3)
+                  AND  RECE62-KOHIDHC(IDX1 2)  =  RECE62-KOHID(3)
+                     MOVE  "1"  TO      RECE62-FUKUSHIFLG(4)
+                     MOVE   1   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE62-KOHNUMHC(IDX1 2) =  RECE62-KOHNUM(4)
+                  AND  RECE62-KOHIDHC(IDX1 2)  =  RECE62-KOHID(4)
+                     MOVE  "1"  TO      RECE62-FUKUSHIFLG(5)
+                     MOVE   1   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+              WHEN      "2"
+                  IF   RECE62-KOHNUMHC(IDX1 2) =  RECE62-KOHNUM(2)
+                  AND  RECE62-KOHIDHC(IDX1 2)  =  RECE62-KOHID(2)
+                     MOVE  "2"  TO      RECE62-FUKUSHIFLG(3)
+                     MOVE   2   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE62-KOHNUMHC(IDX1 2) =  RECE62-KOHNUM(3)
+                  AND  RECE62-KOHIDHC(IDX1 2)  =  RECE62-KOHID(3)
+                     MOVE  "2"  TO      RECE62-FUKUSHIFLG(4)
+                     MOVE   2   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE62-KOHNUMHC(IDX1 2) =  RECE62-KOHNUM(4)
+                  AND  RECE62-KOHIDHC(IDX1 2)  =  RECE62-KOHID(4)
+                     MOVE  "2"  TO      RECE62-FUKUSHIFLG(5)
+                     MOVE   2   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+           END-EVALUATE
+      *
+           IF   TBL-FUKUSHIFLG(2)   NOT = ZERO
+             EVALUATE   WRK-PREFNUM
+               WHEN    "38"
+                  IF   RECE62-TEISYUTUSAKI  =   2 OR 6
+                     MOVE   1    TO     TBL-FUKUSHI-DAYFLG(2)
+                  END-IF
+             END-EVALUATE
+           END-IF
+      *
+           .
+       5001-KUMIAWASE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4181,11 +4482,13 @@
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                                            SYS-1001-REC
                                            SYS-5000-REC
+                                           SYS-2010-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
                INITIALIZE                  SYSKANRI-REC
                                            SYS-1001-REC
                                            SYS-5000-REC
+                                           SYS-2010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *

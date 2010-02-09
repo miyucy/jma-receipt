@@ -320,6 +320,8 @@
       *                                     コメント  
       *  04.05.06    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     傷病名レコードの補足コメント
+      *  04.05.07    NACL-門脇    10/02/08  地方公費の全国公費併用分請求点
+      *                                     集計対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2673,11 +2675,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    IF   (( RECE02-TOTALTEN (IDX)      >   ZERO ) AND
                          ( RECE02-FTNMONEY (IDX)      =   ZERO ) AND
                          ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  ))
-                   OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+                   OR   (( RECE02-FUKUSHIFLG(IDX)     =   "1"  ) AND
                          ( RECE02-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE02-FTNMONEY (IDX)      =   ZERO ) AND
                          ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  ))
-                   OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+                   OR   (( RECE02-FUKUSHIFLG(IDX)     =   "1"  ) AND
                          ( RECE02-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE02-FTNMONEY (IDX)      >   ZERO ))
                        MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM

@@ -106,6 +106,9 @@
       *
       *  04.04.01    NACL-門脇    09/02/16  地方公費のレセ記載対応
       *  04.04.02    NACL-藤原    09/03/25  生保まとめフラグ追加
+      *
+      *  04.05.01    NACL-門脇    10/02/08  全国公費併用分請求点集計追加
+      *                                     福祉編集フラグにインデックス追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -303,6 +306,12 @@
                                           PIC  X(03).
       *組合せ公費保険ＩＤ
                        09  RECE02-KOHIDHC PIC  9(10).
+      *全国公費併用分請求点集計区分
+                       09  RECE02-SYUKEIKBN
+                                          PIC  X(01).
+      *全国公費併用分請求点集計対象区分
+                       09  RECE02-SYUKEI-TAIKBN
+                                          PIC  X(01).
       *レセ電用負担区分編集フラグ
                        09  RECE02-FTNKBNFLG
                                           PIC  9(01).
@@ -495,7 +504,8 @@
       *外来迅速検体検査加算フラグ
            03  RECE02-KENTAIKASANFLG      PIC  X(01).
       *福祉編集フラグ
-           03  RECE02-FUKUSHIFLG          PIC  X(01).
+           03  RECE02-FUKUSHIFLGINF-AREA.
+               05  RECE02-FUKUSHIFLG      PIC  X(01)   OCCURS 5.
       *入退院履歴記載フラグ
            03  RECE02-NYUINRRK-FLG        PIC  X(01).
       *生保まとめフラグ

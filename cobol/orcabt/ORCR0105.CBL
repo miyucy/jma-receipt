@@ -79,6 +79,8 @@
       *  04.05.02    NACL-Æ£¸¶    09/06/18  ¼ÒÊÝ¥ì¥»¥×¥ÈÊ×ÄÖ½çÂÐ±þ
       *  04.05.03    NACL-Æ£¸¶    09/11/13  ÆÃµ­»ö¹à¾È²ñÂÐ±þ
       *                                     ÆÃµ­»ö¹àÎ¬¾ÎÄÉ²Ã
+      *  04.05.04    NACL-ÌçÏÆ    10/02/08  ÃÏÊý¸øÈñ¤ÎÁ´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ
+      *                                     ½¸·×ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3676,7 +3678,7 @@
                    ((RECE02-JNISSU(IDX2) NOT = RECE02-JNISSU(IDX3)) OR
                     (RECE02-JSKISAIFLG          =   "1"           ) OR
                     (RECE02-EKF-JNISSUFLG(IDX3) =   "1"           )))
-               OR (( RECE02-FUKUSHIFLG          =   "1"            ) AND
+               OR (( RECE02-FUKUSHIFLG(IDX3)    =   "1"            ) AND
                    ((RECE02-JNISSU(IDX2) NOT = RECE02-JNISSU(IDX3)) OR
                     (RECE02-JSKISAIFLG          =   "1"           ) OR
                     (RECE02-EKF-JNISSUFLG(IDX3) =   "1"           )))
@@ -4700,11 +4702,11 @@
            IF   (( RECE02-TOTALTEN (IDX3)     >   ZERO ) AND
                  ( RECE02-FTNMONEY (IDX3)     =   ZERO ) AND
                  ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  ))
-           OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+           OR   (( RECE02-FUKUSHIFLG(IDX3)    =   "1"  ) AND
                  ( RECE02-TOTALTEN (IDX3)     =   ZERO ) AND
                  ( RECE02-FTNMONEY (IDX3)     =   ZERO ) AND
                  ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  ))
-           OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+           OR   (( RECE02-FUKUSHIFLG(IDX3)    =   "1"  ) AND
                  ( RECE02-TOTALTEN (IDX3)     =   ZERO ) AND
                  ( RECE02-FTNMONEY (IDX3)     >   ZERO ))
                    MOVE    RECE02-FTNMONEY (IDX3)
@@ -4719,8 +4721,8 @@
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  WRK-KOH-TOTALTEN(2)
            ELSE
-               IF      RECE02-FUKUSHIFLG      =   "1"
-               AND     RECE02-TOTALTEN (IDX3) =   ZERO
+               IF      RECE02-FUKUSHIFLG(IDX3) =   "1"
+               AND     RECE02-TOTALTEN(IDX3)   =   ZERO
                    MOVE    RECE02-TOTALTEN (IDX3)
                                               TO  WRK-KGK6
                    MOVE    WRK-KGK6           TO  WRK-KOH-TOTALTEN(2)
@@ -4765,11 +4767,11 @@
                IF   (( RECE02-TOTALTEN (IDX4)      >   ZERO ) AND
                      ( RECE02-FTNMONEY (IDX4)      =   ZERO ) AND
                      ( RECE02-ZEROKISAIFLG (IDX4)  =   "1"  ))
-               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+               OR   (( RECE02-FUKUSHIFLG(IDX4)     =   "1"  ) AND
                      ( RECE02-TOTALTEN (IDX4)      =   ZERO ) AND
                      ( RECE02-FTNMONEY (IDX4)      =   ZERO ) AND
                      ( RECE02-ZEROKISAIFLG (IDX4)  =   "1"  ))
-               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+               OR   (( RECE02-FUKUSHIFLG(IDX4)     =   "1"  ) AND
                      ( RECE02-TOTALTEN (IDX4)      =   ZERO ) AND
                      ( RECE02-FTNMONEY (IDX4)      >   ZERO ))
                    MOVE    RECE02-FTNMONEY (IDX4)
@@ -4786,8 +4788,8 @@
                                               TO  WRK-KGK6
                    MOVE    WRK-KGK6           TO  WRK-KOH-TOTALTEN(3)
                ELSE
-                   IF      RECE02-FUKUSHIFLG      =   "1"
-                   AND     RECE02-TOTALTEN (IDX4) =   ZERO
+                   IF      RECE02-FUKUSHIFLG(IDX4) =   "1"
+                   AND     RECE02-TOTALTEN(IDX4)   =   ZERO
                        MOVE    RECE02-TOTALTEN (IDX4)
                                                TO  WRK-KGK6
                        MOVE    WRK-KGK6        TO  WRK-KOH-TOTALTEN(3)
@@ -4836,11 +4838,11 @@
                IF   (( RECE02-TOTALTEN (IDX5)      >   ZERO ) AND
                      ( RECE02-FTNMONEY (IDX5)      =   ZERO ) AND
                      ( RECE02-ZEROKISAIFLG (IDX5)  =   "1"  ))
-               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+               OR   (( RECE02-FUKUSHIFLG(IDX5)     =   "1"  ) AND
                      ( RECE02-TOTALTEN (IDX5)      =   ZERO ) AND
                      ( RECE02-FTNMONEY (IDX5)      =   ZERO ) AND
                      ( RECE02-ZEROKISAIFLG (IDX5)  =   "1"  ))
-               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+               OR   (( RECE02-FUKUSHIFLG(IDX5)     =   "1"  ) AND
                      ( RECE02-TOTALTEN (IDX5)      =   ZERO ) AND
                      ( RECE02-FTNMONEY (IDX5)      >   ZERO ))
                    MOVE    RECE02-FTNMONEY (IDX5)
@@ -4856,8 +4858,8 @@
                                           TO  WRK-KGK6
                    MOVE    WRK-KGK6       TO  WRK-KOH-TOTALTEN(4)
                ELSE
-                   IF      RECE02-FUKUSHIFLG      =   "1"
-                   AND     RECE02-TOTALTEN (IDX5) =   ZERO
+                   IF      RECE02-FUKUSHIFLG(IDX5) =   "1"
+                   AND     RECE02-TOTALTEN(IDX5)   =   ZERO
                        MOVE    RECE02-TOTALTEN (IDX5) TO
                                                   WRK-KOH-TOTALTEN(4)
                    END-IF

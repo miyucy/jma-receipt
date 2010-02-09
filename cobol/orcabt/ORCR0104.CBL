@@ -184,6 +184,8 @@
       *
       *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
       *                                     リアルタイムプレビュー時の表示
+      *  04.05.01    NACL-門脇    10/02/08  地方公費の全国公費併用分請求点
+      *                                     集計対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3694,7 +3696,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
                   END-IF
                END-IF
-               IF  RECE02-FUKUSHIFLG  =  "1"
+               IF  RECE02-FUKUSHIFLG(IDX3)  =  "1"
                    IF  RECE02-JNISSU (IDX2)
                                        NOT =   RECE02-JNISSU (IDX3)
                        MOVE    RECE02-JNISSU (IDX3)
@@ -4693,8 +4695,8 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            ELSE
-               IF      RECE02-FUKUSHIFLG      =   "1"
-               AND     RECE02-TOTALTEN (IDX3) =   ZERO
+               IF      RECE02-FUKUSHIFLG(IDX3) =   "1"
+               AND     RECE02-TOTALTEN(IDX3)   =   ZERO
                    MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                    MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
                END-IF

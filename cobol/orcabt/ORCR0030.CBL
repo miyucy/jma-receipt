@@ -452,6 +452,8 @@
       *  04.05.07    NACL-ÌçÏÆ    09/11/30  ¥ì¥»ÅÅ¥Õ¥©¡¼¥Þ¥Ã¥È¥³¥á¥ó¥È³ÈÄ¥
       *                                     ÂÐ±þ¡Ê¥Õ¥¡¥¤¥ëÊÔ½¸¡Ë
       *  04.05.08    NACL-ÌçÏÆ    10/01/07  ¼£¸³ÂÐ±þ
+      *  04.05.09    NACL-ÌçÏÆ    10/02/08  ÃÏÊý¸øÈñ¤ÎÁ´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ
+      *                                     ½¸·×ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -711,6 +713,7 @@
            03  SYU-IDX                                 PIC 9(03).
            03  SYU-IDX2                                PIC 9(03).
            03  IDX10                                   PIC 9(03).
+           03  IDX11                                   PIC 9(03).
       *
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -892,6 +895,7 @@
        01  TBL-FUKUSHI.
            03  TBL-FUKUSHI-OCC                         OCCURS  4.
                05  TBL-FUKUSHIFLG                      PIC 9(01).
+               05  TBL-FUKUSHI-DAYFLG                  PIC 9(01).
       *
        01  TBL-TOKUSITU.
            03  TBL-TOKUSITU-OCC                        OCCURS  4.
@@ -2023,8 +2027,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            MOVE    ZERO         TO      WRK-SURYOU-COUNT
       *
-           PERFORM     2117-GENGAKU-HANTEI-SEC
-      *
            MOVE      ZERO       TO      WRK-CHIHOU-KIN
            MOVE      ZERO       TO      WRK-CHIHOU-KIN2
            MOVE      ZERO       TO      WRK-CHIHOU-KIN3
@@ -2049,6 +2051,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                         FLG-KEISAN-TOK2
                                         WRK-KINGAKU-TOK1
            MOVE      ZERO       TO      FLG-KOUGAKU
+      *
+           PERFORM     211J-SYUKEIKBN-HANBETU-SEC
+      *
+           PERFORM     2117-GENGAKU-HANTEI-SEC
       *
            IF    (RECE02-SRYYM   >=  "200804")
            AND   (RECE02-SRYYM   <=  "201003")
@@ -2374,6 +2380,142 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            PERFORM     RECE02-REWRITE-SEC
            .
        210-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ½¸·×È½ÊÌ
+      *****************************************************************
+       211J-SYUKEIKBN-HANBETU-SEC      SECTION.
+      *
+           IF    IDZ    =    1
+      *
+             PERFORM  VARYING  IDX11   FROM    1   BY  1
+                       UNTIL  (IDX11                   >   10 )
+                         OR   (RECE02-HKNCOMBI(IDX11)  =  ZERO)
+      *
+              IF ((RECE02-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE02-KOHNUMHC(IDX11 1)(1:1)  = "0"            ) AND
+                  (RECE02-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+              OR ((SYS-1001-PREFNUM               = "13"           ) AND
+                  (RECE02-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE02-KOHNUMHC(IDX11 1)(1:1) >= "1" AND <= "8" ) AND
+                  (RECE02-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+              OR ((SYS-1001-PREFNUM               = "23"           ) AND
+                  (RECE02-SRYYM                  >= "200910"       ) AND
+                  (RECE02-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE02-KOHNUMHC(IDX11 1)       = "191"          ) AND
+                  (RECE02-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+      *
+                IF ((RECE02-KOHNUMHC(IDX11 2) =  RECE02-KOHNUM(2)) AND
+                    (RECE02-KOHIDHC(IDX11 2)  =  RECE02-KOHID(2) ))
+                OR ((RECE02-KOHNUMHC(IDX11 2) =  RECE02-KOHNUM(3)) AND
+                    (RECE02-KOHIDHC(IDX11 2)  =  RECE02-KOHID(3) ))
+                OR ((RECE02-KOHNUMHC(IDX11 2) =  RECE02-KOHNUM(4)) AND
+                    (RECE02-KOHIDHC(IDX11 2)  =  RECE02-KOHID(4) ))
+      *
+                  IF    RECE02-SRYYM  >=  "200804"
+                    INITIALIZE                   SYSKANRI-REC
+                    MOVE    "2010"           TO  SYS-KANRICD
+                    MOVE    RECE02-KOHNUMHC(IDX11 2)
+                                             TO  SYS-KBNCD
+                    MOVE    RECE02-SRYYM     TO  SYS-STYUKYMD (1:6)
+                    MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                    MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                    MOVE    "tbl_syskanri"   TO  WRK-MCP-TABLE
+                    MOVE    "key10"          TO  WRK-MCP-PATHNAME
+                    PERFORM 960-KANRIMST-READ-SEC
+                    IF      FLG-SYSKANRI     =   ZERO
+                       MOVE    MCPDATA-REC   TO  SYS-2010-REC
+                    ELSE
+                       INITIALIZE                SYS-2010-REC
+                    END-IF
+                    PERFORM    211J1-SYUKEIKBN-HENSYU-SEC
+                  ELSE
+                    EVALUATE   SYS-1001-PREFNUM
+                      WHEN     "32"
+                        IF  RECE02-SRYYM  >=  "200510"
+                          MOVE "2" TO RECE02-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                        END-IF
+                      WHEN     "13"
+                      WHEN     "26"
+                          MOVE "2" TO RECE02-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                      WHEN     "08"
+                        IF  RECE02-SRYYM  >=  "200607"
+                          MOVE "2" TO RECE02-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                        END-IF
+                      WHEN     "38"
+                          MOVE "1" TO RECE02-SYUKEIKBN(IDX11 2)
+                          MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                    END-EVALUATE
+                  END-IF
+      *
+                  IF ((SYS-1001-PREFNUM          =  "13"    ) AND
+                      (RECE02-KOHNUMHC(IDX11 2)  =  "151"   ) AND
+                      (RECE02-SRYYM             >=  "200905"))
+                  OR ((SYS-1001-PREFNUM          =  "23"    ) AND
+                      (RECE02-KOHNUMHC(IDX11 2)  =  "191"   ) AND
+                      (RECE02-SRYYM             >=  "200910"))
+                          MOVE "0" TO RECE02-SYUKEIKBN(IDX11 2)
+                          MOVE "0" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                  END-IF
+      *
+                END-IF
+      *
+              END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
+           .
+       211J-SYUKEIKBN-HANBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ½¸·×È½ÊÌÊÔ½¸
+      *****************************************************************
+       211J1-SYUKEIKBN-HENSYU-SEC      SECTION.
+      *
+           EVALUATE  SYS-2010-SYUKEIKBN
+             WHEN      SPACE
+                 EVALUATE   SYS-1001-PREFNUM
+                   WHEN     "32"
+                   WHEN     "13"
+                   WHEN     "26"
+                   WHEN     "08"
+                       MOVE "2" TO RECE02-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                   WHEN     "36"
+                     IF  RECE02-SRYYM  >=  "200805"
+                       MOVE "2" TO RECE02-SYUKEIKBN(IDX11 2)
+                       MOVE "0" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                     END-IF
+                   WHEN     "10"
+                       MOVE "2" TO RECE02-SYUKEIKBN(IDX11 2)
+                       MOVE "4" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                   WHEN     "30"
+                     IF  RECE02-SRYYM  >=  "200904"
+                       MOVE "1" TO RECE02-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                     END-IF
+                   WHEN     "38"
+                       MOVE "1" TO RECE02-SYUKEIKBN(IDX11 2)
+                       MOVE "1" TO RECE02-SYUKEI-TAIKBN(IDX11 2)
+                 END-EVALUATE
+             WHEN      "0"
+             WHEN      "1"
+             WHEN      "2"
+                 MOVE   SYS-2010-SYUKEIKBN
+                                    TO   RECE02-SYUKEIKBN(IDX11 2)
+                 MOVE   SYS-2010-SYUKEI-TAIKBN
+                                    TO   RECE02-SYUKEI-TAIKBN(IDX11 2)
+           END-EVALUATE
+      *
+           .
+       211J1-SYUKEIKBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4435,37 +4577,92 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            INITIALIZE                 TBL-FUKUSHI
       *
-           IF      IDZ             =   1 
-             EVALUATE   SYS-1001-PREFNUM
-      *
-               WHEN    "38"
-      *
-                 IF ( RECE02-KOHNUMHC(IDX1 1)(1:1)  =   "0"     )  AND
-                    ( RECE02-KOHNUMHC(IDX1 2)(1:1)
-                                             >=  "1" AND <=  "8")
-      *
-                      MOVE     1       TO      TBL-FUKUSHIFLG(2)
-      *
-                      MOVE    "1"      TO      RECE02-FUKUSHIFLG
-      *
+           IF  RECE02-SYUKEIKBN(IDX1 2) = "0" OR SPACE
+             CONTINUE
+           ELSE
+             EVALUATE  RECE02-SYUKEI-TAIKBN(IDX1 2)
+               WHEN     "0"
+                   PERFORM  210411-KUMIAWASE-HENSYU-SEC
+               WHEN     "1"
+                 IF   RECE02-TEISYUTUSAKI  =   2 OR 6
+                   PERFORM  210411-KUMIAWASE-HENSYU-SEC
                  END-IF
-      *
-               WHEN    "13"
-      *
-                 IF ( RECE02-KOHNUMHC(IDX1 1)  NOT = SPACE    )  AND
-                    ( RECE02-KOHNUMHC(IDX1 2)      = "588"    )  AND
-                    ( RECE02-TEISYUTUSAKI          =   2      )  AND
-                    ( RECE02-SRYYM                >= "200910" )
-      *
-                      MOVE     2       TO      TBL-FUKUSHIFLG(2)
-      *
+               WHEN     "2"
+                 IF   RECE02-TEISYUTUSAKI  =   1
+                   PERFORM  210411-KUMIAWASE-HENSYU-SEC
                  END-IF
-      *
+               WHEN     "3"
+                 IF   RECE02-TEISYUTUSAKI  =   2
+                   PERFORM  210411-KUMIAWASE-HENSYU-SEC
+                 END-IF
+               WHEN     "4"
+                 IF   RECE02-TEISYUTUSAKI  =   6
+                   PERFORM  210411-KUMIAWASE-HENSYU-SEC
+                 END-IF
              END-EVALUATE
            END-IF
       *
            .
        21041-KUMIAWASE-HANBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÁÈ¤ß¹ç¤ï¤»È½ÊÌÊÔ½¸
+      *****************************************************************
+       210411-KUMIAWASE-HENSYU-SEC               SECTION.
+      *
+           EVALUATE  RECE02-SYUKEIKBN(IDX1 2)
+              WHEN      "1"
+                  IF   RECE02-KOHNUMHC(IDX1 2) =  RECE02-KOHNUM(2)
+                  AND  RECE02-KOHIDHC(IDX1 2)  =  RECE02-KOHID(2)
+                     MOVE  "1"  TO      RECE02-FUKUSHIFLG(3)
+                     MOVE   1   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE02-KOHNUMHC(IDX1 2) =  RECE02-KOHNUM(3)
+                  AND  RECE02-KOHIDHC(IDX1 2)  =  RECE02-KOHID(3)
+                     MOVE  "1"  TO      RECE02-FUKUSHIFLG(4)
+                     MOVE   1   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE02-KOHNUMHC(IDX1 2) =  RECE02-KOHNUM(4)
+                  AND  RECE02-KOHIDHC(IDX1 2)  =  RECE02-KOHID(4)
+                     MOVE  "1"  TO      RECE02-FUKUSHIFLG(5)
+                     MOVE   1   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+              WHEN      "2"
+                  IF   RECE02-KOHNUMHC(IDX1 2) =  RECE02-KOHNUM(2)
+                  AND  RECE02-KOHIDHC(IDX1 2)  =  RECE02-KOHID(2)
+                     MOVE  "2"  TO      RECE02-FUKUSHIFLG(3)
+                     MOVE   2   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE02-KOHNUMHC(IDX1 2) =  RECE02-KOHNUM(3)
+                  AND  RECE02-KOHIDHC(IDX1 2)  =  RECE02-KOHID(3)
+                     MOVE  "2"  TO      RECE02-FUKUSHIFLG(4)
+                     MOVE   2   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+                  IF   RECE02-KOHNUMHC(IDX1 2) =  RECE02-KOHNUM(4)
+                  AND  RECE02-KOHIDHC(IDX1 2)  =  RECE02-KOHID(4)
+                     MOVE  "2"  TO      RECE02-FUKUSHIFLG(5)
+                     MOVE   2   TO      TBL-FUKUSHIFLG(2)
+                  END-IF
+           END-EVALUATE
+      *
+           IF   TBL-FUKUSHIFLG(2)   NOT = ZERO
+             EVALUATE   SYS-1001-PREFNUM
+               WHEN    "38"
+                  IF   RECE02-TEISYUTUSAKI  =   2 OR 6
+                     MOVE   1    TO     TBL-FUKUSHI-DAYFLG(2)
+                  END-IF
+               WHEN    "13"
+                  IF  (RECE02-TEISYUTUSAKI     =   2     )
+                  AND (RECE02-KOHNUMHC(IDX1 2) = "588"   )
+                  AND (RECE02-SRYYM           >= "200910")
+                     MOVE   1    TO     TBL-FUKUSHI-DAYFLG(2)
+                  END-IF
+             END-EVALUATE
+           END-IF
+      *
+           .
+       210411-KUMIAWASE-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4540,7 +4737,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      COMPUTE  WRK-RECE02G-HENTOTALTEN(KH-IDX) =
                               WRK-RECE02G-HENTOTALTEN(KH-IDX) +
                              (ACCT-ZAITEN  *  ACCT-ZAIKAISU)
-                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                     IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                          CONTINUE
                      ELSE
                          COMPUTE  WRK-RECE02G-TOTALTEN(KH-IDX) =
@@ -4559,7 +4756,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                              (ACCT-ZAITEN * 
                                               ACCT-ZAIKAISU)
                      END-IF
-                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                     IF     TBL-FUKUSHIFLG(IDX2)  NOT =  ZERO
                          CONTINUE
                      ELSE
                        IF       (ACCT-SRYCDTOTAL    =    630010002)
@@ -6452,18 +6649,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
                                     UNTIL    ACCT-IDX   >   31          
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1 
-                                       CONTINUE
-                                    ELSE
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(2 ACCT-IDX)
-                                    END-IF
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   2
-                                       CONTINUE
-                                    ELSE
-                                       MOVE  "1"  TO
-                                            TBL-JNISSU2-DAY(2 ACCT-IDX)
-                                    END-IF
                                  END-IF                                 
                                END-PERFORM                 
                            END-IF                                       
@@ -6471,12 +6658,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                     UNTIL    ACCT-IDX   >   31
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
-                                       CONTINUE
-                                    ELSE
                                        MOVE  "1"  TO
                                         TBL-JNISSU-DAY-GEN(2 ACCT-IDX)
-                                    END-IF
                                  END-IF
                                END-PERFORM
                            END-IF
@@ -6498,18 +6681,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
                                     UNTIL    ACCT-IDX   >   31          
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                                    IF   TBL-FUKUSHI-DAYFLG(IDX2)
+                                                            NOT = ZERO
                                        CONTINUE
                                     ELSE
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(3 ACCT-IDX)
                                     END-IF
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   2
-                                       CONTINUE
-                                    ELSE
-                                       MOVE  "1"  TO
+                                    MOVE  "1"  TO
                                             TBL-JNISSU2-DAY(3 ACCT-IDX)
-                                    END-IF
                                  END-IF                                 
                                END-PERFORM                              
                            END-IF                                       
@@ -6517,12 +6697,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                     UNTIL    ACCT-IDX   >   31
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
-                                       CONTINUE
-                                    ELSE
                                        MOVE  "1"  TO
                                         TBL-JNISSU-DAY-GEN(3 ACCT-IDX)
-                                    END-IF
                                  END-IF
                                END-PERFORM
                            END-IF
@@ -6544,18 +6720,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
                                     UNTIL    ACCT-IDX   >   31          
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                                    IF   TBL-FUKUSHI-DAYFLG(IDX2)
+                                                            NOT = ZERO
                                        CONTINUE
                                     ELSE
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(4 ACCT-IDX)
                                     END-IF
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   2
-                                       CONTINUE
-                                    ELSE
-                                       MOVE  "1"  TO
+                                    MOVE  "1"  TO
                                             TBL-JNISSU2-DAY(4 ACCT-IDX)
-                                    END-IF
                                  END-IF                                 
                                END-PERFORM                              
                            END-IF                                       
@@ -6563,12 +6736,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                     UNTIL    ACCT-IDX   >   31
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
-                                       CONTINUE
-                                    ELSE
                                        MOVE  "1"  TO
                                         TBL-JNISSU-DAY-GEN(4 ACCT-IDX)
-                                    END-IF
                                  END-IF
                                END-PERFORM
                            END-IF
@@ -6590,18 +6759,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1     
                                     UNTIL    ACCT-IDX   >   31          
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO   
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                                    IF   TBL-FUKUSHI-DAYFLG(IDX2)
+                                                            NOT = ZERO
                                        CONTINUE
                                     ELSE
                                        MOVE  "1"  TO
                                             TBL-JNISSU-DAY(5 ACCT-IDX)
                                     END-IF
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   2
-                                       CONTINUE
-                                    ELSE
-                                       MOVE  "1"  TO
+                                    MOVE  "1"  TO
                                             TBL-JNISSU2-DAY(5 ACCT-IDX)
-                                    END-IF
                                  END-IF                                 
                                END-PERFORM                              
                            END-IF                                       
@@ -6609,12 +6775,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                     UNTIL    ACCT-IDX   >   31
                                  IF  ACCT-DAY(1 ACCT-IDX) NOT =  ZERO
-                                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
-                                       CONTINUE
-                                    ELSE
                                        MOVE  "1"  TO
                                         TBL-JNISSU-DAY-GEN(5 ACCT-IDX)
-                                    END-IF
                                  END-IF
                                END-PERFORM
                            END-IF
@@ -10073,7 +10235,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-PERFORM
            END-PERFORM
       *
-           PERFORM    VARYING    HKN-IDX    FROM   2   BY   1
+           PERFORM    VARYING    HKN-IDX    FROM   3   BY   1
                        UNTIL     HKN-IDX    >      5
              PERFORM    VARYING    ACCT-IDX    FROM    1   BY   1
                          UNTIL     ACCT-IDX    >      31
@@ -10096,7 +10258,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            END-PERFORM
       *
-           PERFORM    VARYING    HKN-IDX    FROM   2   BY   1
+           PERFORM    VARYING    HKN-IDX    FROM   3   BY   1
                       UNTIL      HKN-IDX    >      5
                PERFORM    VARYING    ACCT-IDX    FROM    1   BY   1
                           UNTIL      ACCT-IDX    >     31
@@ -10127,6 +10289,68 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  END-IF
               END-IF
            END-PERFORM
+      *
+      ***
+      *
+           IF    RECE02-FUKUSHIFLG(3)  =  "2"
+              IF  (RECE02-KOHNUM(2)(1:1) >= "1" AND <= "8")
+              AND (RECE02-TOTALTEN(3)     =  ZERO         )
+                 MOVE  RECE02-HENTOTALTEN(3)  TO  RECE02-TOTALTEN(3)
+              END-IF
+              IF  (RECE02-KOHNUM(2)(1:1) >= "1" AND <= "8")
+              AND (RECE02-JNISSU(3)       =  ZERO         )
+                 MOVE  TBL-JNISSU2-MON(3)     TO  RECE02-JNISSU(3)
+              END-IF
+           END-IF
+           IF    RECE02-FUKUSHIFLG(4)  =  "2"
+              IF  (RECE02-KOHNUM(3)(1:1) >= "1" AND <= "8")
+              AND (RECE02-TOTALTEN(4)     =  ZERO         )
+                 MOVE  RECE02-HENTOTALTEN(4)  TO  RECE02-TOTALTEN(4)
+              END-IF
+              IF  (RECE02-KOHNUM(3)(1:1) >= "1" AND <= "8")
+              AND (RECE02-JNISSU(4)       =  ZERO         )
+                 MOVE  TBL-JNISSU2-MON(4)     TO  RECE02-JNISSU(4)
+              END-IF
+           END-IF
+           IF    RECE02-FUKUSHIFLG(5)  =  "2"
+              IF  (RECE02-KOHNUM(4)(1:1) >= "1" AND <= "8")
+              AND (RECE02-TOTALTEN(5)     =  ZERO         )
+                 MOVE  RECE02-HENTOTALTEN(5)  TO  RECE02-TOTALTEN(5)
+              END-IF
+              IF  (RECE02-KOHNUM(4)(1:1) >= "1" AND <= "8")
+              AND (RECE02-JNISSU(5)       =  ZERO         )
+                 MOVE  TBL-JNISSU2-MON(5)     TO  RECE02-JNISSU(5)
+              END-IF
+           END-IF
+      *
+           IF   SYS-1001-PREFNUM  =  "36"
+      *
+              IF    RECE02-FUKUSHIFLG(3)  NOT =  SPACE
+                IF  (RECE02-KOHNUM(2)      =  "245")
+                AND (RECE02-KOHHBTNUM(3)   =  "48" )
+                   MOVE  RECE02-TOTALTEN(3)   TO  RECE02-TOTALTEN(4)
+                   MOVE  RECE02-FUKUSHIFLG(3) TO  RECE02-FUKUSHIFLG(4)
+                END-IF
+              END-IF
+              IF    RECE02-FUKUSHIFLG(4)  NOT =  SPACE
+                IF  (RECE02-KOHNUM(3)      =  "245")
+                AND (RECE02-KOHHBTNUM(4)   =  "48" )
+                   MOVE  RECE02-TOTALTEN(4)   TO  RECE02-TOTALTEN(5)
+                   MOVE  RECE02-FUKUSHIFLG(4) TO  RECE02-FUKUSHIFLG(5)
+                END-IF
+              END-IF
+      *
+           END-IF
+      *
+           IF    RECE02-FUKUSHIFLG(3)  =  "2"
+               MOVE   SPACE   TO   RECE02-FUKUSHIFLG(3)
+           END-IF
+           IF    RECE02-FUKUSHIFLG(4)  =  "2"
+               MOVE   SPACE   TO   RECE02-FUKUSHIFLG(4)
+           END-IF
+           IF    RECE02-FUKUSHIFLG(5)  =  "2"
+               MOVE   SPACE   TO   RECE02-FUKUSHIFLG(5)
+           END-IF
       *
            .
        2106-JNISSU-SET-EXT.
@@ -12388,46 +12612,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            END-IF
       *
-           EVALUATE   SYS-1001-PREFNUM
-      *      Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
-             WHEN    "32"
-               IF  (RECE02-SRYYM        >=  "200510"    )
-               AND (RECE02-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  21112-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ÅìµþÅÔÃÏÊý¸øÈñ
-      *      µþÅÔÉÜÃÏÊý¸øÈñ
-             WHEN    "13"
-             WHEN    "26"
-               IF  (RECE02-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  21112-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ÆÁÅç¸©ÃÏÊý¸øÈñ
-             WHEN    "36"
-               IF  (RECE02-SRYYM        >=  "200805"    )
-               AND (RECE02-TEISYUTUSAKI  =   1 OR 2 OR 6)
-                   PERFORM  21112-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ·²ÇÏ¸©ÃÏÊý¸øÈñ
-             WHEN    "10"
-               IF  (RECE02-SRYYM        >=  "200804"    )
-               AND (RECE02-TEISYUTUSAKI  =   6          )
-                   PERFORM  21112-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      °ñ¾ë¸©
-             WHEN    "08"
-               IF  (RECE02-SRYYM        >=  "200607"    )
-               AND (RECE02-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  21112-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ÏÂ²Î»³¸©
-             WHEN    "30"
-               IF  (RECE02-SRYYM        >=  "200904"    )
-               AND (RECE02-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  21112-SEIKYUTEN-HENSYU-SEC
-               END-IF
-           END-EVALUATE
-      *
       *    µÜ¾ë¸©ÆýÍÄ»ù
       *    ËÌ³¤Æ»Àº¿ÀÊä½õ
       *
@@ -12540,193 +12724,6 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
       *
            .
        21111-KOHFTN-KINGAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÀÁµáÅÀ¤ÎÃÖ¤­´¹¤¨
-      *****************************************************************
-       21112-SEIKYUTEN-HENSYU-SEC               SECTION.
-      *
-           IF  ( RECE02-HKNNUM       NOT = SPACE    )
-           AND ((RECE02-KOHNUM(1)(1:1)   =  "0"    ) OR
-                (TBL-TOKATUKAIFLG(1)     =   1     ))
-           AND ( RECE02-KOHNUM(2)(1:1)
-                                   >= "1" AND <= "8")
-           AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-           AND ( RECE02-TOTALTEN(1)  NOT =
-                                  RECE02-TOTALTEN(2))
-           AND ( RECE02-TOTALTEN(1)      =
-                                  RECE02-TOTALTEN(3))
-              COMPUTE  RECE02-TOTALTEN(3) =
-                       RECE02-TOTALTEN(1) -
-                       RECE02-TOTALTEN(2)
-              IF   (SYS-1001-PREFNUM      =  "36" )
-              AND  (RECE02-KOHNUM(2)      =  "245")
-              AND  (RECE02-KOHHBTNUM(3)   =  "48" )
-                 COMPUTE  RECE02-TOTALTEN(4) =
-                          RECE02-TOTALTEN(1) -
-                          RECE02-TOTALTEN(2)
-              END-IF
-              IF   (SYS-1001-PREFNUM   =  "13"    )
-              AND  (RECE02-KOHNUM(2)   =  "588"   )
-              AND  (RECE02-SRYYM      >=  "200910")
-                 MOVE   TBL-JNISSU2-MON(3)   TO   RECE02-JNISSU(3)
-              END-IF
-           END-IF
-      *
-           IF  ( RECE02-HKNNUM       NOT = SPACE    )
-           AND ( RECE02-KOHNUM(1)(1:1)   =  "0"     )
-           AND ( RECE02-KOHNUM(2)   = "972" OR "974")
-           AND ( RECE02-KOHNUM(3)(1:1)
-                                   >= "1" AND <= "8")
-           AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-           AND ( RECE02-TOTALTEN(1)  NOT =
-                                  RECE02-TOTALTEN(2))
-           AND ( RECE02-TOTALTEN(1)      =
-                                  RECE02-TOTALTEN(4))
-              COMPUTE  RECE02-TOTALTEN(4) =
-                       RECE02-TOTALTEN(1) -
-                       RECE02-TOTALTEN(2)
-              IF   (SYS-1001-PREFNUM      =  "36" )
-              AND  (RECE02-KOHNUM(3)      =  "245")
-              AND  (RECE02-KOHHBTNUM(4)   =  "48" )
-                 COMPUTE  RECE02-TOTALTEN(5) =
-                          RECE02-TOTALTEN(1) -
-                          RECE02-TOTALTEN(2)
-              END-IF
-              IF   (SYS-1001-PREFNUM   =  "13"    )
-              AND  (RECE02-KOHNUM(3)   =  "588"   )
-              AND  (RECE02-SRYYM      >=  "200910")
-                 MOVE   TBL-JNISSU2-MON(4)   TO   RECE02-JNISSU(4)
-              END-IF
-           END-IF
-      *
-           IF  ( RECE02-HKNNUM       NOT = SPACE    )
-           AND ( RECE02-KOHNUM(1)   = "972" OR "974")
-           AND ( TBL-TOKATUKAIFLG(2)  =   1         )
-           AND ( RECE02-KOHNUM(3)(1:1)
-                                   >= "1" AND <= "8")
-           AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-           AND ( RECE02-TOTALTEN(1)  NOT =
-                                  RECE02-TOTALTEN(3))
-           AND ( RECE02-TOTALTEN(1)      =
-                                  RECE02-TOTALTEN(4))
-              COMPUTE  RECE02-TOTALTEN(4) =
-                       RECE02-TOTALTEN(1) -
-                       RECE02-TOTALTEN(3)
-              IF   (SYS-1001-PREFNUM      =  "36" )
-              AND  (RECE02-KOHNUM(3)      =  "245")
-              AND  (RECE02-KOHHBTNUM(4)   =  "48" )
-                 COMPUTE  RECE02-TOTALTEN(5) =
-                          RECE02-TOTALTEN(1) -
-                          RECE02-TOTALTEN(3)
-              END-IF
-              IF   (SYS-1001-PREFNUM   =  "13"    )
-              AND  (RECE02-KOHNUM(3)   =  "588"   )
-              AND  (RECE02-SRYYM      >=  "200910")
-                 MOVE   TBL-JNISSU2-MON(4)   TO   RECE02-JNISSU(4)
-              END-IF
-           END-IF
-      *
-           IF   SYS-1001-PREFNUM  =  "13"
-      *
-             IF  ( RECE02-HKNNUM       NOT = SPACE    )
-             AND ( RECE02-KOHNUM(1)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(1)     = ZERO     )
-             AND ( RECE02-KOHNUM(2)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-             AND ( RECE02-TOTALTEN(1)  NOT =
-                                    RECE02-TOTALTEN(2))
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(3))
-                COMPUTE  RECE02-TOTALTEN(3) =
-                         RECE02-TOTALTEN(1) -
-                         RECE02-TOTALTEN(2)
-                IF   (RECE02-KOHNUM(2)   =  "588"   )
-                AND  (RECE02-SRYYM      >=  "200910")
-                   MOVE   TBL-JNISSU2-MON(3)   TO   RECE02-JNISSU(3)
-                END-IF
-             END-IF
-      *
-             IF  ( RECE02-HKNNUM       NOT = SPACE    )
-             AND ( RECE02-KOHNUM(1)   = "972" OR "974")
-             AND ( RECE02-KOHNUM(2)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-             AND ( RECE02-KOHNUM(3)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-             AND ( RECE02-TOTALTEN(1)  NOT =
-                                    RECE02-TOTALTEN(3))
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(4))
-                COMPUTE  RECE02-TOTALTEN(4) =
-                         RECE02-TOTALTEN(1) -
-                         RECE02-TOTALTEN(3)
-                IF   (RECE02-KOHNUM(3)   =  "588"   )
-                AND  (RECE02-SRYYM      >=  "200910")
-                   MOVE   TBL-JNISSU2-MON(4)   TO   RECE02-JNISSU(4)
-                END-IF
-             END-IF
-      *
-           END-IF
-      *
-           IF   SYS-1001-PREFNUM  =  "30"
-      *
-             IF  ( RECE02-HKNNUM       NOT = SPACE    )
-             AND ((RECE02-KOHNUM(1)(1:1)   =  "0"    ) OR
-                  (TBL-TOKATUKAIFLG(1)     =   1     ))
-             AND ( RECE02-KOHNUM(2)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(2))
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(3))
-                COMPUTE  RECE02-TOTALTEN(3) =
-                         RECE02-TOTALTEN(1) -
-                         RECE02-TOTALTEN(2)
-                MOVE    "1"    TO   RECE02-FUKUSHIFLG
-             END-IF
-      *
-             IF  ( RECE02-HKNNUM       NOT = SPACE    )
-             AND ( RECE02-KOHNUM(1)(1:1)   =  "0"     )
-             AND ( RECE02-KOHNUM(2)   = "972" OR "974")
-             AND ( RECE02-KOHNUM(3)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(2))
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(4))
-                COMPUTE  RECE02-TOTALTEN(4) =
-                         RECE02-TOTALTEN(1) -
-                         RECE02-TOTALTEN(2)
-                MOVE    "1"    TO   RECE02-FUKUSHIFLG
-             END-IF
-      *
-             IF  ( RECE02-HKNNUM       NOT = SPACE    )
-             AND ( RECE02-KOHNUM(1)   = "972" OR "974")
-             AND ( TBL-TOKATUKAIFLG(2)  =   1         )
-             AND ( RECE02-KOHNUM(3)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(3))
-             AND ( RECE02-TOTALTEN(1)      =
-                                    RECE02-TOTALTEN(4))
-                COMPUTE  RECE02-TOTALTEN(4) =
-                         RECE02-TOTALTEN(1) -
-                         RECE02-TOTALTEN(3)
-                MOVE    "1"    TO   RECE02-FUKUSHIFLG
-             END-IF
-      *
-           END-IF
-      *
-           .
-       21112-SEIKYUTEN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12995,6 +12992,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                                             RECE02-KISAIFLGINF-AREA
                                             RECE02-ZEROKISAIFLGINF-AREA
                                             RECE02-ETCKISAIFLGINF-AREA
+                                            RECE02-FUKUSHIFLGINF-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       50
                INITIALIZE              RECE02-TENSUINF-AREA (IDX)
@@ -13025,6 +13023,8 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                                        TO  RECE02-EKF-TOTALTENFLG(1)
            MOVE    WRK-RECE02-EKF-OCRFLG(1)
                                        TO  RECE02-EKF-OCRFLG(1)
+           MOVE    WRK-RECE02-FUKUSHIFLG(1)
+                                       TO  RECE02-FUKUSHIFLG(1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       50
                MOVE    WRK-RECE02-TENSU (IDX 1)
@@ -13078,6 +13078,8 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                                         TO  RECE02-EKF-TOTALTENFLG(IDX2)
                            MOVE    WRK-RECE02-EKF-OCRFLG(IDXX)
                                         TO  RECE02-EKF-OCRFLG(IDX2)
+                           MOVE    WRK-RECE02-FUKUSHIFLG(IDXX)
+                                           TO  RECE02-FUKUSHIFLG(IDX2)
                        WHEN    "4"
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE02-KOHNUM (IDX)

@@ -424,6 +424,8 @@
       *                                     ÂÐ±þ¡Ê¥Õ¥¡¥¤¥ëÊÔ½¸¡Ë
       *  04.05.09    NACL-ÌçÏÆ    09/12/04  ¿©»ö¡ÊÆÃÊÌ¿©¡Ë¤ÎÂ¾ÊÝ¸±ÂÐ±þ
       *  04.05.10    NACL-ÌçÏÆ    10/01/07  ¼£¸³ÂÐ±þ
+      *  04.05.11    NACL-ÌçÏÆ    10/02/08  ÃÏÊý¸øÈñ¤ÎÁ´¹ñ¸øÈñÊ»ÍÑÊ¬ÀÁµáÅÀ
+      *                                     ½¸·×ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -14260,43 +14262,11 @@
            END-PERFORM
       *
            EVALUATE   WRK-PREFNUM
-      *      Åçº¬¸©ÆýÍÄ»ù¡¦Ê¡»ã
-             WHEN    "32"
-               IF  (RECE62-SRYYM        >=  "200510"    )
-               AND (RECE62-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  210452-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ÅìµþÅÔÃÏÊý¸øÈñ
-      *      µþÅÔÉÜÃÏÊý¸øÈñ
-             WHEN    "13"
-             WHEN    "26"
-               IF  (RECE62-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  210452-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ÆÁÅç¸©ÃÏÊý¸øÈñ
-             WHEN    "36"
-               IF  (RECE62-SRYYM        >=  "200805"    )
-               AND (RECE62-TEISYUTUSAKI  =   1 OR 2 OR 6)
-                   PERFORM  210452-SEIKYUTEN-HENSYU-SEC
-               END-IF
       *      ·²ÇÏ¸©ÃÏÊý¸øÈñ
              WHEN    "10"
                IF  (RECE62-SRYYM        >=  "200804"    )
                AND (RECE62-TEISYUTUSAKI  =   6          )
-                   PERFORM  210452-SEIKYUTEN-HENSYU-SEC
                    PERFORM  210453-SEIKYUGAK-SKJ-HENSYU-SEC
-               END-IF
-      *      °ñ¾ë¸©
-             WHEN    "08"
-               IF  (RECE62-SRYYM        >=  "200607"    )
-               AND (RECE62-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  210452-SEIKYUTEN-HENSYU-SEC
-               END-IF
-      *      ÏÂ²Î»³¸©
-             WHEN    "30"
-               IF  (RECE62-SRYYM        >=  "200904"    )
-               AND (RECE62-TEISYUTUSAKI  =   2 OR 6     )
-                   PERFORM  210452-SEIKYUTEN-HENSYU-SEC
                END-IF
            END-EVALUATE
       *
@@ -14366,170 +14336,6 @@
       *
            .
        210451-KOHFTN-KINGAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÀÁµáÅÀ¤ÎÃÖ¤­´¹¤¨
-      *****************************************************************
-       210452-SEIKYUTEN-HENSYU-SEC               SECTION.
-      *
-           IF  ( RECE62-HKNNUM       NOT = SPACE    )
-           AND ((RECE62-KOHNUM(1)(1:1)   =  "0"    ) OR
-                (TBL-TOKATUKAIFLG(1)     =   1     ))
-           AND ( RECE62-KOHNUM(2)(1:1)
-                                   >= "1" AND <= "8")
-           AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-           AND ( RECE62-TOTALTEN(1)  NOT =
-                                  RECE62-TOTALTEN(2))
-           AND ( RECE62-TOTALTEN(1)      =
-                                  RECE62-TOTALTEN(3))
-              COMPUTE  RECE62-TOTALTEN(3) =
-                       RECE62-TOTALTEN(1) -
-                       RECE62-TOTALTEN(2)
-              IF   (WRK-PREFNUM           =  "36" )
-              AND  (RECE62-KOHNUM(2)      =  "245")
-              AND  (RECE62-KOHHBTNUM(3)   =  "48" )
-                 COMPUTE  RECE62-TOTALTEN(4) =
-                          RECE62-TOTALTEN(1) -
-                          RECE62-TOTALTEN(2)
-              END-IF
-           END-IF
-      *
-           IF  ( RECE62-HKNNUM       NOT = SPACE    )
-           AND ( RECE62-KOHNUM(1)(1:1)   =  "0"     )
-           AND ( RECE62-KOHNUM(2)   = "972" OR "974")
-           AND ( RECE62-KOHNUM(3)(1:1)
-                                   >= "1" AND <= "8")
-           AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-           AND ( RECE62-TOTALTEN(1)  NOT =
-                                  RECE62-TOTALTEN(2))
-           AND ( RECE62-TOTALTEN(1)      =
-                                  RECE62-TOTALTEN(4))
-              COMPUTE  RECE62-TOTALTEN(4) =
-                       RECE62-TOTALTEN(1) -
-                       RECE62-TOTALTEN(2)
-              IF   (WRK-PREFNUM           =  "36" )
-              AND  (RECE62-KOHNUM(3)      =  "245")
-              AND  (RECE62-KOHHBTNUM(4)   =  "48" )
-                 COMPUTE  RECE62-TOTALTEN(5) =
-                          RECE62-TOTALTEN(1) -
-                          RECE62-TOTALTEN(2)
-              END-IF
-           END-IF
-      *
-           IF  ( RECE62-HKNNUM       NOT = SPACE    )
-           AND ( RECE62-KOHNUM(1)   = "972" OR "974")
-           AND ( TBL-TOKATUKAIFLG(2)  =   1         )
-           AND ( RECE62-KOHNUM(3)(1:1)
-                                   >= "1" AND <= "8")
-           AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-           AND ( RECE62-TOTALTEN(1)  NOT =
-                                  RECE62-TOTALTEN(3))
-           AND ( RECE62-TOTALTEN(1)      =
-                                  RECE62-TOTALTEN(4))
-              COMPUTE  RECE62-TOTALTEN(4) =
-                       RECE62-TOTALTEN(1) -
-                       RECE62-TOTALTEN(3)
-              IF   (WRK-PREFNUM           =  "36" )
-              AND  (RECE62-KOHNUM(3)      =  "245")
-              AND  (RECE62-KOHHBTNUM(4)   =  "48" )
-                 COMPUTE  RECE62-TOTALTEN(5) =
-                          RECE62-TOTALTEN(1) -
-                          RECE62-TOTALTEN(3)
-              END-IF
-           END-IF
-      *
-           IF   WRK-PREFNUM  =  "13"
-      *
-             IF  ( RECE62-HKNNUM       NOT = SPACE    )
-             AND ( RECE62-KOHNUM(1)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(1)     = ZERO     )
-             AND ( RECE62-KOHNUM(2)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-             AND ( RECE62-TOTALTEN(1)  NOT =
-                                    RECE62-TOTALTEN(2))
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(3))
-                COMPUTE  RECE62-TOTALTEN(3) =
-                         RECE62-TOTALTEN(1) -
-                         RECE62-TOTALTEN(2)
-             END-IF
-      *
-             IF  ( RECE62-HKNNUM       NOT = SPACE    )
-             AND ( RECE62-KOHNUM(1)   = "972" OR "974")
-             AND ( RECE62-KOHNUM(2)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-             AND ( RECE62-KOHNUM(3)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-             AND ( RECE62-TOTALTEN(1)  NOT =
-                                    RECE62-TOTALTEN(3))
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(4))
-                COMPUTE  RECE62-TOTALTEN(4) =
-                         RECE62-TOTALTEN(1) -
-                         RECE62-TOTALTEN(3)
-             END-IF
-      *
-           END-IF
-      *
-           IF   WRK-PREFNUM  =  "30"
-      *
-             IF  ( RECE62-HKNNUM       NOT = SPACE    )
-             AND ((RECE62-KOHNUM(1)(1:1)   =  "0"    ) OR
-                  (TBL-TOKATUKAIFLG(1)     =   1     ))
-             AND ( RECE62-KOHNUM(2)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(2)     = ZERO     )
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(2))
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(3))
-                COMPUTE  RECE62-TOTALTEN(3) =
-                         RECE62-TOTALTEN(1) -
-                         RECE62-TOTALTEN(2)
-                MOVE    "1"    TO   RECE62-FUKUSHIFLG
-             END-IF
-      *
-             IF  ( RECE62-HKNNUM       NOT = SPACE    )
-             AND ( RECE62-KOHNUM(1)(1:1)   =  "0"     )
-             AND ( RECE62-KOHNUM(2)   = "972" OR "974")
-             AND ( RECE62-KOHNUM(3)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(2))
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(4))
-                COMPUTE  RECE62-TOTALTEN(4) =
-                         RECE62-TOTALTEN(1) -
-                         RECE62-TOTALTEN(2)
-                MOVE    "1"    TO   RECE62-FUKUSHIFLG
-             END-IF
-      *
-             IF  ( RECE62-HKNNUM       NOT = SPACE    )
-             AND ( RECE62-KOHNUM(1)   = "972" OR "974")
-             AND ( TBL-TOKATUKAIFLG(2)  =   1         )
-             AND ( RECE62-KOHNUM(3)(1:1)
-                                     >= "1" AND <= "8")
-             AND ( TBL-TOKATUKAIFLG(3)     = ZERO     )
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(3))
-             AND ( RECE62-TOTALTEN(1)      =
-                                    RECE62-TOTALTEN(4))
-                COMPUTE  RECE62-TOTALTEN(4) =
-                         RECE62-TOTALTEN(1) -
-                         RECE62-TOTALTEN(3)
-                MOVE    "1"    TO   RECE62-FUKUSHIFLG
-             END-IF
-      *
-           END-IF
-      *
-           .
-       210452-SEIKYUTEN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -17758,6 +17564,7 @@
                                       RECE62-KISAIFLGINF-AREA
                                       RECE62-ZEROKISAIFLGINF-AREA
                                       RECE62-ETCKISAIFLGINF-AREA
+                                      RECE62-FUKUSHIFLGINF-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                INITIALIZE              RECE62-TENSUINF-AREA (IDX)
@@ -17801,6 +17608,8 @@
                                        TO  RECE62-EKF-SKJFLG(1)
            MOVE    WRK-RECE62-EKF-OCRFLG(1)
                                        TO  RECE62-EKF-OCRFLG(1)
+           MOVE    WRK-RECE62-FUKUSHIFLG(1)
+                                       TO  RECE62-FUKUSHIFLG(1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                MOVE    WRK-RECE62-TENSU (IDX 1)
@@ -17887,6 +17696,8 @@
                                         TO  RECE62-EKF-SKJFLG(IDYX)
                            MOVE    WRK-RECE62-EKF-OCRFLG(IDXX)
                                         TO  RECE62-EKF-OCRFLG(IDYX)
+                           MOVE    WRK-RECE62-FUKUSHIFLG(IDXX)
+                                        TO  RECE62-FUKUSHIFLG(IDYX)
                        WHEN    "4"
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE62-KOHNUM (IDX)
