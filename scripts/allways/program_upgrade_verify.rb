@@ -42,7 +42,7 @@ begin
   md5hash = YAML.load(fmd5)
   fmd5.close
 rescue Exception => ex
-  puts "[ERROR] #{ex.message}"
+  STDERR.puts "[ERROR] #{ex.message}"
   exit 1
 end
 

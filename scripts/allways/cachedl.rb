@@ -27,8 +27,8 @@ module OrcaMNT
       begin
         OrcaDT::Verifier.verify(url, opts)
       rescue Exception => ex
-        puts "[ERROR] #{ex.message}"
-        puts ex.backtrace
+        STDERR.puts "[ERROR] #{ex.message}"
+        STDERR.puts ex.backtrace
         return false
       else
         return true
@@ -42,6 +42,10 @@ module OrcaMNT
     def dl_patchfile()
       plist = File.open(PATCHLIST,"w")
       Zlib::GzipReader.open(PATCHDIR+PACKAGEFILE) {|tmp|
+        if tmp.eof
+          plist.close
+          return false
+        end
         tmp.each do |data|
           tmp1 = data.split(/,/)
           file = tmp1[0].to_s

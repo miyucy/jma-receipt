@@ -33,7 +33,7 @@ module OrcaMNT
         fmd5.close
         md5hash = md5hash.merge!(tmphash)
       rescue Exception => ex
-        puts "[ERROR] #{ex.message}"
+        STDERR.puts "[ERROR] #{ex.message}"
         return false
       else
         return true
