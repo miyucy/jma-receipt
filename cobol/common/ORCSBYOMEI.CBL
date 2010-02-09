@@ -40,7 +40,10 @@
       *                                     法の変更
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *****************************************************************
+      *
+      *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
+      *                                     補足コメントのチェック
+      ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -72,13 +75,42 @@
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
       *
+           03  IDXX                PIC 9(04).
+           03  IDYY                PIC 9(04).
+           03  IDWW                PIC 9(04).
+      *
        01  WRK-AREA.
       *
            03  WRK-BYOMEICD-KENSAKU-AREA.
-      *        病名コード数（修飾語以外）
+      *        補足コメントまでの病名コード数（修飾語以外）
                05  WRK-BYOMEICDSU      PIC 9(02).
+      *        病名コード数（修飾語以外）
+               05  WRK-BYOMEICDSU1     PIC 9(02).
       *        検索病名コード数
                05  WRK-BYOMEI-MAX      PIC 9(01).
+      *        最後の（の位置
+               05  WRK-BYOMEI-YYK-INDEX1
+                                       PIC 9(02).
+      *        最後の）の位置
+               05  WRK-BYOMEI-YYK-INDEX2
+                                       PIC 9(02).
+      *        最後の（の開始位置
+               05  WRK-BYOMEI-YYK-ST   PIC 9(03).
+      *        最後の）の開始位置
+               05  WRK-BYOMEI-YYK-ED   PIC 9(03).
+      *        最初の未コード化病名の位置
+               05  WRK-BYOMEI-HENKAN-INDEX
+                                       PIC 9(02).
+      *        （）を除いた補足コメントの長さ
+               05  WRK-BYOMEI-HOSOKU-LEN
+                                       PIC 9(03).
+      *        補足コメントを除いた病名コード数
+               05  WRK-BYO-BYOMEI-MAX  PIC 9(02).
+      *
+      *        返却する検索病名コード情報の（）フラグ
+               05  WRK-LNK-BYOMEI-FLG-AREA.
+                   07  WRK-LNK-BYOMEI-FLG  PIC X(01)
+                                               OCCURS  21.
       *        検索病名情報
                05  WRK-BYOMEI-FLG-TBL.         
       *            （）フラグ
@@ -122,7 +154,10 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
            03  WRK-TANDOKUKBN      PIC X(01).
+           03  WRK-TANDOKUKBN-BYOMEI
+                                   PIC X(200).                             
            03  WRK-KENBYOMEI       PIC X(02).
+           03  WRK-KENBYOMEI-ST    PIC 9(03).
            03  WRK-LENGTH          PIC 9(03).
            03  WRK-ST              PIC 9(03).
            03  WRK-RECECD-TBL.
@@ -194,20 +229,101 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
+           DISPLAY "LNK-BYO-SYORI=" LNK-BYO-SYORI
+      *
            MOVE    SPACE           TO  LNK-BYO-RC    
       *    処理区分により検索処理
            EVALUATE    LNK-BYO-SYORI
                WHEN    "1"
+               WHEN    "3"
                    PERFORM 200-BYOMEI-SYORI-SEC
                WHEN    "2"
+               WHEN    "4"
                    PERFORM 200-BYOMEICD-SYORI-SEC
+               WHEN    "5"
+                   PERFORM 200-HAISI-BYOMEI-SYORI-SEC
+                   GO  TO  000-PROC-EXT
                WHEN    OTHER
                    MOVE    "1"         TO  LNK-BYO-RC
+                   DISPLAY "LNK-BYO-RC=" LNK-BYO-RC
                    GO  TO  000-PROC-EXT
            END-EVALUATE
       *
       *    検索コードより組み立て
            PERFORM 200-TBL-HENSYU-SEC
+           IF      LNK-BYO-RC      NOT =   SPACE
+               DISPLAY "LNK-BYO-RC=" LNK-BYO-RC
+               GO  TO  000-PROC-EXT
+           END-IF
+      *
+      **     DISPLAY "YYK OT=" WRK-BYOMEI-YYK-INDEX1 "#"
+      **                      WRK-BYOMEI-YYK-INDEX2 "#" 
+      **                      WRK-BYOMEI-YYK-ST "#" 
+      **                      WRK-BYOMEI-YYK-ED "#" 
+      **                      WRK-BYOMEI-HOSOKU-LEN "#"
+      **     DISPLAY "HENKAN=" WRK-BYOMEI-HENKAN-INDEX "#"
+      **     DISPLAY "BYOMEICD (1)=" LNK-BYO-TBYOMEICD (1) "#"
+      **     DISPLAY "BYOMEIHENFLG=" LNK-BYO-BYOMEIHENFLG "#" 
+      **     DISPLAY "***"
+      **     DISPLAY "  FLG-TBLERR=" FLG-TBLERR "#"
+      **     DISPLAY "  BYOMEI-MAX=" LNK-BYO-BYOMEI-MAX "#"
+      **     DISPLAY "BYOMEICD-ERR=" LNK-BYO-BYOMEICD-ERR "#"
+      **     DISPLAY "  HENKAN-ERR=" FLG-HENKAN-ERR "#"
+      *
+      *    （）が最後にあるときの補足コメントの設定
+           IF    ( WRK-BYOMEI-YYK-INDEX1   >   ZERO )
+           AND   ( WRK-BYOMEI-YYK-INDEX2   >   ZERO )
+           AND   ( WRK-BYOMEI-HOSOKU-LEN   <=  40   )
+      *★       編集病名は補足コメントはなし
+      **         IF    (     FLG-TBLERR          =   1           )
+      **         OR    (   ( LNK-BYO-BYOMEI-MAX  =   ZERO )  AND
+      **                   ( LNK-BYO-BYOMEICD-ERR   
+      **                                     NOT =   "3")        ) 
+      **         OR    (     FLG-HENKAN-ERR      =   1           )
+      **         OR    (     LNK-BYO-BYOMEICD-ERR
+      **                                 =   "1" OR  "2" OR  "9" )
+      **             CONTINUE
+      **         ELSE
+                   COMPUTE LNK-BYO-HOSOKU-BYOMEICD-MAX =
+                               WRK-BYOMEI-YYK-INDEX1   -   1
+                   COMPUTE LNK-BYO-BYOMEI-LEN          =
+                                WRK-BYOMEI-YYK-ST      -   1
+                   MOVE    LNK-BYO-BYOMEI (1:LNK-BYO-BYOMEI-LEN)
+                                           TO  LNK-BYO-HOSOKU-BYOMEI-ETC
+                   COMPUTE IDXX    =   WRK-BYOMEI-YYK-ST   +   2
+                   MOVE    LNK-BYO-BYOMEI (IDXX:WRK-BYOMEI-HOSOKU-LEN)
+                                           TO  LNK-BYO-HOSOKU-BYOMEI
+                   MOVE    SPACE           TO  LNK-BYO-BYOMEIHENFLG
+      *★      END-IF
+           END-IF     
+      *
+      *    病名コードは検索できないが補足コメントが存在するとき
+           IF    ( LNK-BYO-SYORI       =   "3" OR  "4"       )
+           AND   ( WRK-BYOMEI-YYK-INDEX1
+                                       =   ZERO              )
+           AND   ( WRK-BYOMEI-YYK-INDEX2
+                                       =   ZERO              )
+           AND   ( WRK-BYOMEI-YYK-ST   >   2                 )
+           AND   ( WRK-BYOMEI-YYK-ED   >   4                 )
+           AND   ( WRK-BYOMEI-YYK-ST   <   WRK-BYOMEI-YYK-ED )
+           AND   ( LNK-BYO-HOSOKU-BYOMEI
+                                       =   SPACE             )
+               COMPUTE WRK-BYOMEI-HOSOKU-LEN   =
+                                       WRK-BYOMEI-YYK-ED   -
+                                       WRK-BYOMEI-YYK-ST   -
+                                       2
+               IF      WRK-BYOMEI-HOSOKU-LEN   <=  40
+                   MOVE    1                   TO
+                                           LNK-BYO-HOSOKU-BYOMEICD-MAX
+                   COMPUTE LNK-BYO-BYOMEI-LEN          =
+                                WRK-BYOMEI-YYK-ST      -   1
+                   MOVE    LNK-BYO-BYOMEI (1:LNK-BYO-BYOMEI-LEN)
+                                           TO  LNK-BYO-HOSOKU-BYOMEI-ETC
+                   COMPUTE IDXX    =   WRK-BYOMEI-YYK-ST   +   2
+                   MOVE    LNK-BYO-BYOMEI (IDXX:WRK-BYOMEI-HOSOKU-LEN)
+                                           TO  LNK-BYO-HOSOKU-BYOMEI
+               END-IF
+           END-IF    
       *
       *    最大病名コード数以上検索したとき
       *****IF      WRK-BYOMEI-MAX  >   WRK-CONS-BYOMEI-MAX
@@ -236,13 +352,23 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    全てコードに変換できなかったとき
            IF      FLG-HENKAN-ERR      =   1
-               INITIALIZE                  LNK-BYOMEICD-KENSAKU-AREA
       *
-               MOVE    "0000999"           TO  LNK-BYO-TBYOMEICD (1)
-               MOVE    LNK-BYO-BYOMEI      TO  LNK-BYO-TBYOMEI   (1)
-               MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
-               MOVE    1                   TO  LNK-BYO-BYOMEICDSU
-                                               LNK-BYO-BYOMEI-MAX
+      *        病名から変換時に補足コメント以外に未コード化病名があるか
+               IF    ( LNK-BYO-SYORI       =   "3"                     )
+               AND   ( LNK-BYO-HOSOKU-BYOMEI
+                                       NOT =   SPACE                   )
+               AND   ( WRK-BYOMEI-YYK-INDEX1
+                                           <   WRK-BYOMEI-HENKAN-INDEX )
+                   CONTINUE
+               ELSE
+                   INITIALIZE                  LNK-BYOMEICD-KENSAKU-AREA
+      *
+                   MOVE    "0000999"           TO  LNK-BYO-TBYOMEICD (1)
+                   MOVE    LNK-BYO-BYOMEI      TO  LNK-BYO-TBYOMEI   (1)
+                   MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
+                   MOVE    1                   TO  LNK-BYO-BYOMEICDSU
+                                                   LNK-BYO-BYOMEI-MAX
+               END-IF
            END-IF
       *
            IF      LNK-BYO-TBYOMEICD (1)   =   "0000999"
@@ -257,11 +383,25 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
            END-IF
       *
+      *    病名から検索時コード変換できた場合
+           IF    ( LNK-BYO-SYORI       =   "3"   )
+           AND   ( LNK-BYO-HOSOKU-BYOMEI
+                                       =   SPACE )
+           AND   ( LNK-BYO-BYOMEIHENFLG
+                                       =   SPACE )
+      *        補足コメントがないときの廃止病名チェック
+               IF    ( LNK-BYO-HAISIYMD-ERR    >   ZERO              )
+               AND   ( LNK-BYO-HAISIYMD-ERR    <   LNK-BYO-SRYYMD-IN )
+                   PERFORM 200-HAISI-BYOMEI-SYORI-SEC
+               END-IF
+           END-IF 
+      *
       *    病名コードから検索のとき病名編集
-           IF    ( LNK-BYO-SYORI       =   "2" )
+           IF    ( LNK-BYO-SYORI       =   "2" OR  "4" )
            AND   ( LNK-BYO-BYOMEICD-ERR
-                                   NOT =   "3" )    
+                                   NOT =   "3"         )    
                MOVE    ZERO                TO  LNK-BYO-BYOMEIMOJI
+               MOVE    SPACE               TO  LNK-BYO-BYOMEI
                MOVE    LNK-BYO-TBYOMEI (1) TO  WRK-BYOMEI
                PERFORM VARYING IDX FROM    2   BY  1
                        UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
@@ -292,15 +432,13 @@ grpsys     COPY    "COMMON-SPA".
       *
       *    レセ電エラーフラグ
            PERFORM 200-RECEDENFLG-HENSYU-SEC
-      *???
-      *    DISPLAY "LNK=" LNK-BYOMEI-KENSAKU-AREA "#"
-      *    DISPLAY "ERR=" LNK-BYOMEI-KENSAKU-ERR-AREA "#"
-      *    DISPLAY "MAX=" LNK-BYO-BYOMEI-MAX "#"     
-      *    PERFORM VARYING IDZ FROM    1   BY  1
-      *            UNTIL   IDZ >       LNK-BYO-BYOMEI-MAX
-      *      DISPLAY IDZ "=" LNK-BYO-BYOMEICD-G (IDZ) "#"     
-      *    END-PERFORM
-      *???
+      *
+           DISPLAY "LNK-BYO-HOSOKU-BYOMEI-ETC="
+                                            LNK-BYO-HOSOKU-BYOMEI-ETC
+           DISPLAY "LNK-BYO-HOSOKU-BYOMEI=" LNK-BYO-HOSOKU-BYOMEI
+           DISPLAY "LNK-BYO-BYOMEIHENFLG="  LNK-BYO-BYOMEIHENFLG
+           DISPLAY "LNK-BYO-HAISIYMD-ERR="  LNK-BYO-HAISIYMD-ERR
+      *??
            .
        000-PROC-EXT.
       *
@@ -312,8 +450,14 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        200-RECEDENFLG-HENSYU-SEC       SECTION.
       *
-           COMPUTE WRK-MOJISU      =   LNK-BYO-BYOMEIMOJI
-                                       *   2
+      *   補足コメントがあるときは除いた長さでチェック
+           IF      LNK-BYO-BYOMEI-LEN  >   ZERO
+               MOVE    LNK-BYO-BYOMEI-LEN
+                                       TO  WRK-MOJISU
+           ELSE
+               COMPUTE WRK-MOJISU      =   LNK-BYO-BYOMEIMOJI
+                                           *   2
+           END-IF
            MOVE    LNK-BYO-BYOMEIHENFLG
                                    TO  WRK-BYOMEIHENFLG
       *   
@@ -323,19 +467,28 @@ grpsys     COPY    "COMMON-SPA".
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    LNK-BYO-UTAGAIFLG-IN
                                            TO  SMKBYO-UTAGAIFLG
-               MOVE    LNK-BYO-BYOMEI      TO  SMKBYO-BYOMEI
+      *★      補足コメントがあるときは除いた病名でチェック
+               IF      LNK-BYO-BYOMEI-LEN  >   ZERO
+                   MOVE    LNK-BYO-BYOMEI (1:LNK-BYO-BYOMEI-LEN)
+                                               TO  SMKBYO-BYOMEI
+                   PERFORM VARYING IDZ FROM    1   BY  1
+                           UNTIL   IDZ >   LNK-BYO-HOSOKU-BYOMEICD-MAX
+                       MOVE    LNK-BYO-TBYOMEICD (IDX)
+                                               TO  SMKBYO-BYOMEICD (IDX)
+                   END-PERFORM
+               ELSE
+                   MOVE    LNK-BYO-BYOMEI      TO  SMKBYO-BYOMEI
+                   PERFORM VARYING IDZ FROM    1   BY  1
+                           UNTIL   IDZ >       21
+                       MOVE    LNK-BYO-TBYOMEICD (IDX)
+                                               TO  SMKBYO-BYOMEICD (IDX)
+                   END-PERFORM
+               END-IF
                MOVE    WRK-BYOMEIHENFLG    TO  SMKBYO-BYOMEIHENFLG
-               PERFORM VARYING     IDZ     FROM    1   BY  1
-                       UNTIL       IDZ     >       21
-                   MOVE    LNK-BYO-TBYOMEICD (IDX)
-                                           TO  SMKBYO-BYOMEICD (IDX)
-               END-PERFORM
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
       *
                MOVE    SMKBYO-LENGTH       TO  WRK-MOJISU
                MOVE    SMKBYO-BYOMEIHENFLG TO  WRK-BYOMEIHENFLG
-      *??
-      *        DISPLAY "LEN=" WRK-MOJISU "#" WRK-BYOMEIHENFLG
            END-IF    
       *
            COMPUTE WRK-MOJISU      =   WRK-MOJISU  /   2
@@ -461,6 +614,7 @@ grpsys     COPY    "COMMON-SPA".
                    COMPUTE IDW =   WRK-KEN-LENGTH  -   1
                    MOVE    WRK-KEN-BYOMEI(IDW:IDX1)  
                                                TO  WRK-KENBYOMEI
+                   MOVE    IDW                 TO  WRK-KENBYOMEI-ST
                    PERFORM 2006-KAKKO-KENSAKU-SEC
                    IF      FLG-TBLERR          =   1
                        GO  TO  200-BYOMEI-SYORI-EXT
@@ -536,6 +690,7 @@ grpsys     COPY    "COMMON-SPA".
                        MOVE    2                   TO  IDX1
                        MOVE    WRK-KEN-BYOMEI(IDZ:IDX1)  
                                                    TO  WRK-KENBYOMEI
+                       MOVE    IDZ                 TO  WRK-KENBYOMEI-ST
                        PERFORM 2006-KAKKO-KENSAKU-SEC
                        IF      FLG-TBLERR          =   1
                            GO  TO  200-BYOMEI-SYORI-EXT
@@ -644,6 +799,50 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *     
       *****************************************************************
+      *    廃止病名検索処理
+      *****************************************************************
+       200-HAISI-BYOMEI-SYORI-SEC  SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  2
+                   UNTIL   IDX >       200
+                   OR      LNK-BYO-BYOMEI (IDX:2)  =   SPACE
+               IF      LNK-BYO-BYOMEI (IDX:2)  =   "（"
+                   MOVE    IDX             TO  WRK-BYOMEI-YYK-ST
+               END-IF
+               IF      LNK-BYO-BYOMEI (IDX:2)  =   "）"
+                   MOVE    IDX             TO  WRK-BYOMEI-YYK-ED
+               END-IF
+           END-PERFORM
+      *
+           IF    ( WRK-BYOMEI-YYK-ST   >   2                 )
+           AND   ( WRK-BYOMEI-YYK-ED   >   4                 )
+           AND   ( WRK-BYOMEI-YYK-ST   <   WRK-BYOMEI-YYK-ED )
+               COMPUTE WRK-BYOMEI-HOSOKU-LEN   =
+                                       WRK-BYOMEI-YYK-ED   -
+                                       WRK-BYOMEI-YYK-ST   -
+                                       2
+               IF      WRK-BYOMEI-HOSOKU-LEN   <=  40
+                   MOVE    1                   TO
+                                           LNK-BYO-HOSOKU-BYOMEICD-MAX
+                   COMPUTE LNK-BYO-BYOMEI-LEN          =
+                                WRK-BYOMEI-YYK-ST      -   1
+                   MOVE    LNK-BYO-BYOMEI (1:LNK-BYO-BYOMEI-LEN)
+                                           TO  LNK-BYO-HOSOKU-BYOMEI-ETC
+                   COMPUTE IDXX    =   WRK-BYOMEI-YYK-ST   +   2
+                   MOVE    LNK-BYO-BYOMEI (IDXX:WRK-BYOMEI-HOSOKU-LEN)
+                                           TO  LNK-BYO-HOSOKU-BYOMEI
+                   MOVE    "1"             TO  LNK-BYO-BYOMEIHENFLG
+                   MOVE    "0000999"       TO  LNK-BYO-TBYOMEICD (1)
+                   MOVE    1               TO
+                                           LNK-BYO-HOSOKU-BYOMEICD-MAX
+               END-IF
+           END-IF
+      *
+           .
+       200-HAISI-BYOMEI-SYORI-EXT.
+           EXIT.
+      *     
+      *****************************************************************
       *    病名検索処理
       *****************************************************************
        200-TBL-HENSYU-SEC          SECTION.
@@ -665,11 +864,11 @@ grpsys     COPY    "COMMON-SPA".
                                            WRK-BUI-MAX
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       40
-               IF      ( WRK-BYOMEI-BYOMEICD (IDX 1)
+               IF    ( WRK-BYOMEI-BYOMEICD (IDX 1)
                                                =   SPACE AND
-                        WRK-BYOMEI-BYOMEICD (IDX 2)
+                       WRK-BYOMEI-BYOMEICD (IDX 2)
                                                =   SPACE AND
-                        WRK-BYOMEI-FLG  (IDX)  =   SPACE     )
+                       WRK-BYOMEI-FLG  (IDX)  =   SPACE     )
                    CONTINUE
                ELSE
       *****        IF      WRK-BYOMEI-FLG  (IDX)   =   "1"
@@ -681,13 +880,6 @@ grpsys     COPY    "COMMON-SPA".
                        MOVE    40              TO  IDX
                    ELSE
                        ADD     1               TO  LNK-BYO-BYOMEI-MAX
-      *???
-      *     DISPLAY " LNK-BYO-BYOMEI-MAX="  LNK-BYO-BYOMEI-MAX "#"
-      *     DISPLAY "WRK=" IDX "#" WRK-BYOMEI-BYOMEI (IDX) "#"
-      *                    WRK-BYOMEI-FLG  (IDX) "#"
-      *                    WRK-BYOMEI-BYOMEICD (IDX 1) "#"
-      *                    WRK-BYOMEI-BYOMEICD (IDX 2) "#"
-      *???
                        EVALUATE    TRUE
                            WHEN  ( WRK-BYOMEI-BYOMEICD (IDX 1)
                                                        =   SPACE ) AND
@@ -835,10 +1027,6 @@ grpsys                            SPA-AREA
        2003-LNK-HENSYU-SEC             SECTION.
       *
            MOVE    LNK-BYO-BYOMEI-MAX  TO  IDY
-      *???
-      *     DISPLAY "2003=" WRK-BYOMEI-BYOMEICD   (IDX  IDX2) "#" 
-      *                     WRK-BYOMEI-BYOMEI     (IDX) "#" IDY "#"
-      *??
       *
            MOVE    WRK-BYOMEI-BYOMEI     (IDX)
                                        TO  LNK-BYO-TBYOMEI     (IDY)
@@ -855,6 +1043,27 @@ grpsys                            SPA-AREA
            MOVE    WRK-BYOMEI-UTAGAIFLG  (IDX  IDX2)
                                        TO  LNK-BYO-TUTAGAIFLG  (IDY)
       *
+           MOVE    WRK-BYOMEI-FLG        (IDX)
+                                       TO  WRK-LNK-BYOMEI-FLG  (IDY)
+      *
+      *    最後の（）の格納位置を取得
+           IF      LNK-BYO-SYORI       =   "3" OR  "4"
+               IF      LNK-BYO-TBYOMEICD (IDY)
+                                           =   "ZZZ(101"
+                   IF      WRK-BYOMEI-YYK-INDEX1   =   ZERO
+      *************IF      WRK-BYOMEI-YYK-INDEX1   <   IDY
+                       MOVE    IDY          TO  WRK-BYOMEI-YYK-INDEX1
+                   END-IF
+               END-IF 
+               IF      LNK-BYO-TBYOMEICD (IDY)
+                                           =   "ZZZ(201"
+               IF      WRK-BYOMEI-YYK-INDEX2   =   ZERO
+      *************IF      WRK-BYOMEI-YYK-INDEX2   <   IDY
+                       MOVE    IDY          TO  WRK-BYOMEI-YYK-INDEX2
+                   END-IF
+               END-IF
+           END-IF 
+      *
       *    基本病名数
            EVALUATE    LNK-BYO-TBYOMEICD (IDY) (1:3)
                WHEN    "ZZZ"
@@ -867,13 +1076,27 @@ grpsys                            SPA-AREA
                    END-IF
                WHEN    "000"
                    MOVE    1           TO  FLG-HENKAN-ERR
+      *           最初の未コード化病名の位置を取得
+                   IF      WRK-BYOMEI-HENKAN-INDEX =   ZERO
+                       MOVE    IDY          TO  WRK-BYOMEI-HENKAN-INDEX
+                   END-IF
                WHEN   OTHER
       *            基本病名コード
                    IF      LNK-BYO-KHNBYOMEICD    =   SPACE
                        MOVE    LNK-BYO-TBYOMEICD (IDY)
                                                TO  LNK-BYO-KHNBYOMEICD
                    END-IF
-                   ADD     1           TO  WRK-BYOMEICDSU
+      *
+                   ADD     1           TO  WRK-BYOMEICDSU1
+      *            補足コメントまでの基本病名数
+                   IF    ( WRK-BYOMEI-YYK-INDEX1
+                                           >   ZERO )  
+                   AND   ( WRK-BYOMEI-YYK-INDEX1
+                                           <   IDY  )
+                       CONTINUE
+                   ELSE   
+                       ADD     1           TO  WRK-BYOMEICDSU
+                   END-IF
            END-EVALUATE
            .
        2003-LNK-HENSYU-EXT.
@@ -920,6 +1143,96 @@ grpsys                            SPA-AREA
                END-IF   
            END-PERFORM
       *
+      *    病名コードからの処理時
+           IF    ( LNK-BYO-SYORI           =   "4" )
+               MOVE    LNK-BYO-TBYOMEI (1) TO  WRK-BYOMEI
+               PERFORM VARYING IDX FROM    2   BY  1
+                       UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
+                   STRING  WRK-BYOMEI          DELIMITED   BY  SPACE
+                           LNK-BYO-TBYOMEI(IDX)
+                                               DELIMITED   BY  SPACE
+                                               INTO    WRK-BYOMEI
+                   END-STRING
+               END-PERFORM
+      *
+      *        コードから組み立てた病名が実際の病名と違うとき
+               IF    ( WRK-BYOMEI      NOT =   LNK-BYO-BYOMEI )
+               AND   ( LNK-BYO-BYOMEI  NOT =   SPACE          )
+                   MOVE    "9"                 TO  LNK-BYO-RC
+                   MOVE    SPACE               TO  LNK-BYO-BYOMEI
+                   GO  TO  2004-LNK-BYOMEI-HENSYU-EXT
+               END-IF
+      *
+      *        病名コードからの処理時の補足コメントの位置
+               MOVE    SPACE               TO  LNK-BYO-BYOMEI
+               IF    ( WRK-BYOMEI-YYK-INDEX1   >   1   )
+               AND   ( WRK-BYOMEI-YYK-INDEX2   >   3   )
+                   PERFORM VARYING IDX FROM    1   BY  2
+                           UNTIL   IDX >       200
+                           OR      WRK-BYOMEI (IDX:2)  =   SPACE
+                       IF      WRK-BYOMEI (IDX:2)  =   "（"
+                           MOVE    IDX             TO  WRK-BYOMEI-YYK-ST
+                       END-IF
+                       IF      WRK-BYOMEI (IDX:2)  =   "）"
+                           MOVE    IDX             TO  WRK-BYOMEI-YYK-ED
+                       END-IF
+                   END-PERFORM
+                   MOVE    WRK-BYOMEI      TO  LNK-BYO-BYOMEI
+               END-IF 
+           END-IF     
+      *    （）が片方のとき、（の前に文字があるか、）の後に文字があるか
+      *    チェック
+           MOVE    LNK-BYO-BYOMEI-MAX  TO  WRK-BYO-BYOMEI-MAX
+      *
+           IF    ( WRK-BYOMEI-YYK-INDEX1   >   1    )
+           AND   ( WRK-BYOMEI-YYK-INDEX2   >   3    )
+               IF      WRK-BYOMEI-YYK-INDEX1   >   WRK-BYOMEI-YYK-INDEX2
+               OR      WRK-BYOMEI-YYK-INDEX2   <   LNK-BYO-BYOMEI-MAX
+                   MOVE    ZERO            TO  WRK-BYOMEI-YYK-INDEX1
+                                               WRK-BYOMEI-YYK-INDEX2
+                   MOVE    WRK-BYOMEICDSU1 TO  WRK-BYOMEICDSU
+               ELSE
+                   COMPUTE WRK-BYOMEI-HOSOKU-LEN   =
+                                       WRK-BYOMEI-YYK-ED   -
+                                       WRK-BYOMEI-YYK-ST   -
+                                       2
+      *            補足コメントが存在するとき、それ以前の病名でチェックを行う
+      *            補足コメントの（）があっても編集病名扱いとしない
+                   IF      WRK-BYOMEI-HOSOKU-LEN   <=  40
+                       PERFORM VARYING IDXX    FROM    1   BY  1
+                               UNTIL   IDXX    >
+                                               WRK-BYOMEI-YYK-INDEX1
+                           IF      IDXX    <   WRK-BYOMEI-YYK-INDEX1
+                               IF      WRK-LNK-BYOMEI-FLG (IDXX)
+                                               =   "1"
+                                   MOVE    "1"         TO
+                                                   LNK-BYO-BYOMEIHENFLG
+                                   MOVE    ZERO        TO
+                                                   WRK-BYOMEI-YYK-INDEX1
+                                                   WRK-BYOMEI-YYK-INDEX2
+                                   MOVE    WRK-BYOMEICDSU1
+                                                       TO
+                                                   WRK-BYOMEICDSU
+                                   GO  TO  2004-LNK-BYOMEI-HENSYU-EXT
+                               END-IF
+                           END-IF
+                       END-PERFORM    
+                       MOVE    SPACE           TO  WRK-BYOMEI-FLG-TBL
+                       COMPUTE WRK-BYO-BYOMEI-MAX
+                                           =   WRK-BYOMEI-YYK-INDEX1
+                                               -   1
+                   ELSE
+                       MOVE    ZERO            TO  WRK-BYOMEI-YYK-INDEX1
+                                                   WRK-BYOMEI-YYK-INDEX2
+                   MOVE    WRK-BYOMEICDSU1     TO  WRK-BYOMEICDSU
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    ZERO            TO  WRK-BYOMEI-YYK-INDEX1
+                                           WRK-BYOMEI-YYK-INDEX2
+               MOVE    WRK-BYOMEICDSU1 TO  WRK-BYOMEICDSU
+           END-IF
+      *
       *    病名編集フラグ
            IF      WRK-BYOMEI-FLG-TBL  NOT =   SPACE
                MOVE    "1"             TO  LNK-BYO-BYOMEIHENFLG
@@ -927,14 +1240,18 @@ grpsys                            SPA-AREA
            END-IF
       *
            MOVE    SPACE               TO  WRK-TANDOKUKBN
+                                           WRK-TANDOKUKBN-BYOMEI
                                            WRK-RECECD-TBL
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
+                   UNTIL   IDX >       WRK-BYO-BYOMEI-MAX
       *
       *        単独使用禁止チェック
                IF      LNK-BYO-TTANDOKUKBN (IDX)
                                        =   ZERO
                    MOVE    "1"             TO  WRK-TANDOKUKBN
+               ELSE
+                   MOVE    LNK-BYO-TBYOMEI (IDX)
+                                           TO  WRK-TANDOKUKBN-BYOMEI
                END-IF
       *        廃止病名のとき（最初に見つけたコード）
                IF      LNK-BYO-THAISIYMD (IDX)
@@ -1013,6 +1330,8 @@ grpsys                            SPA-AREA
       *    単独禁止のみのとき
            IF      WRK-TANDOKUKBN          =   SPACE
                MOVE    1                   TO  LNK-BYO-TANDOKUKBN-ERR
+               MOVE    WRK-TANDOKUKBN-BYOMEI
+                                           TO  LNK-BYO-TANDOKUKBN-BYOMEI
            END-IF
       *
       *    移行先病名
@@ -1079,7 +1398,21 @@ grpsys                            SPA-AREA
                    MOVE    TBL-YYK-BYOMEI   (TBL-BYOMEICD-IDX)
                                        TO  WRK-BYOMEI-BYOMEI   (IDY)
                    MOVE    1           TO  WRK-KEN-ADDKBN
-           END-SEARCH            
+      *
+      *            （）の位置を取得
+                   IF      LNK-BYO-SYORI   =   "3" OR  "4"
+                       IF      TBL-YYK-BYOMEICD (TBL-BYOMEICD-IDX)
+                                           =   "ZZZ(101"
+                           MOVE    WRK-KENBYOMEI-ST
+                                                TO  WRK-BYOMEI-YYK-ST
+                       END-IF 
+                       IF      TBL-YYK-BYOMEICD (TBL-BYOMEICD-IDX)
+                                           =   "ZZZ(201"
+                           MOVE    WRK-KENBYOMEI-ST
+                                                TO  WRK-BYOMEI-YYK-ED
+                       END-IF
+                   END-IF
+           END-SEARCH
            .
        2006-KAKKO-KENSAKU-EXT.
            EXIT.
@@ -1107,7 +1440,7 @@ grpsys                            SPA-AREA
       *
            COMPUTE WRK-LENGTH  =   IDZ     -   FLG-BUBUN
            MOVE    FLG-BUBUN       TO  WRK-ST
-      *     
+      *
            MOVE    WRK-KEN-BYOMEI (WRK-ST:WRK-LENGTH)
                                    TO  WRK-BYOMEI-BYOMEI    (IDY)
            MOVE    "0000999"       TO  WRK-BYOMEI-BYOMEICD  (IDY 1)

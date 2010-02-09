@@ -317,6 +317,9 @@
       *                                     ２００９年８月〜２０１０年１月対象 
       *  04.05.04    NACL-藤原    09/10/30  拡張漢字対応
       *  04.05.05    NACL-藤原    09/11/27  レセ電コメント拡張対応
+      *                                     コメント  
+      *  04.05.06    NACL-藤原    09/11/25  レセ電コメント拡張対応
+      *                                     傷病名レコードの補足コメント
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -515,6 +518,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-COMMENT             PIC 9(01).
            03  FLG-KOUI                PIC 9(01).
            03  FLG-TOYAKUFLG           PIC 9(01).
+           03  FLG-HAISIYMD-CHK        PIC 9(01).
       *    再診の加算
            03  FLG-GAITENTTLKBN-AREA.
                05  FLG-GAITENTTLKBN    PIC 9(03).
@@ -635,7 +639,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-BYOMEI-AREA.
                05  WRK-BYOMEICD        PIC X(07).
                05  WRK-RECECD-G.
-                   07  WRK-RECECD      PIC X(04)   OCCURS  20.                            
+                   07  WRK-RECECD      PIC X(04)   OCCURS  20.
       *    マルチボリューム識別情報     
            03  WRK-VOLNUM              PIC 9(06).
       *    給付割合 
@@ -1466,6 +1470,9 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    病名コード検索サブ
+           COPY    "CPORCSBYOMEI.INC".
       *
       *    レセ器材再編集サブ
            COPY    "CPORCSRECESORT.INC".
@@ -2791,50 +2798,179 @@ grpsys             OR     ( RECE02-HOSPNUM
       *    帳票編集<傷病名>処理
       *****************************************************************
        20061-BYOMEI-HENSYU-SEC         SECTION.
-      *
-      *    傷病名コード／修飾語コードの取得
-           MOVE    SPACE               TO  WRK-BYOMEI-AREA
       *     
+      *    廃止年月日が設定されているとき廃止年月日＜診療開始日なら
+      *    未傷病名コードにする
+      *
+           MOVE    ZERO                 TO  FLG-HAISIYMD-CHK
+      *
            IF      RECE031-BYOMEIHENFLG =   "1"
-      *        編集病名のとき未傷病名コードにする
-               MOVE    "0000999"           TO  WRK-BYOMEICD
+                CONTINUE
            ELSE    
-               MOVE    ZERO                TO  IDY
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       21
                        OR      RECE031-BYOMEICD(IDX)   =   SPACE
-                 IF      RECE031-BYOMEICD(IDX) =   ALL "9"
-                     CONTINUE
-                 ELSE  
-                   IF      RECE031-BYOMEICD(IDX)(1:3)  NOT =   "ZZZ"
-                       IF      WRK-BYOMEICD                =   SPACE
-      *                    廃止年月日が設定されているとき診療開始日以前
-      *                    なら未傷病名コードにする
+                   IF      RECE031-BYOMEICD(IDX)   =   ALL "9"
+                       CONTINUE
+                   ELSE  
+                       IF      RECE031-BYOMEICD(IDX)(1:3)
+                                                   NOT =   "ZZZ"
                            MOVE    RECE031-BYOMEICD(IDX)
                                                    TO  BYO-BYOMEICD
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      BYO-HAISIYMD    NOT =   SPACE
                                IF      BYO-HAISIYMD    <
                                                        RECE031-SRYYMD
-                                   MOVE    "0000999"   TO  WRK-BYOMEICD
-                               ELSE
-                                   MOVE    RECE031-BYOMEICD(IDX)
-                                                       TO  WRK-BYOMEICD
+                                   MOVE    "1"     TO
+                                                   RECE031-BYOMEIHENFLG
+                                   MOVE    1       TO  FLG-HAISIYMD-CHK
+                                   MOVE    21      TO  IDX
                                END-IF
-                           ELSE
-                               MOVE    RECE031-BYOMEICD(IDX)
-                                                       TO  WRK-BYOMEICD
-                           END-IF
+                           END-IF    
                        END-IF    
-                   ELSE            
-                       ADD     1           TO  IDY
-                       MOVE    RECE031-BYOMEICD(IDX)(4:)
-                                           TO  WRK-RECECD(IDY)
-                   END-IF    
-                 END-IF       
+                   END-IF       
                END-PERFORM
            END-IF    
       *
+      *    編集病名で）が最後にあるとき補足コメントの設定を行う
+           IF      RECE031-BYOMEIHENFLG
+                                       =   "1"
+               COMPUTE IDX =   RECE031-BYOMEIMOJI    *   2   -   1
+               IF      RECE031-BYOMEI (IDX:2)
+                                           =   "）"
+                   DISPLAY "HOSOKU CHK=" RECE031-BYOMEI
+      * 
+                   INITIALIZE                  ORCSBYOMEIAREA
+                   IF      FLG-HAISIYMD-CHK    =   1
+                     MOVE    "5"                 TO  LNK-BYO-SYORI
+                     MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                   ELSE
+                     IF  ( RECE031-BYOMEICD (1)
+                                               =   "0000999"       )
+                     OR  ( RECE031-BYOMEICD (1)
+                                           NOT =   "0000999"   AND
+                           RECE031-BYOMEICD (2) =   SPACE          )
+                       MOVE    "3"                 TO  LNK-BYO-SYORI
+                       MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                     ELSE 
+                       MOVE    "4"                 TO  LNK-BYO-SYORI
+                       PERFORM VARYING IDY     FROM    1   BY  1
+                               UNTIL   IDY     >       21
+                               OR      RECE031-BYOMEICD (IDY)
+                                               =       SPACE
+                           MOVE    RECE031-BYOMEICD (IDY)
+                                                       TO
+                                               LNK-BYO-TBYOMEICD (IDY)
+                       END-PERFORM
+                       MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                     END-IF
+                   END-IF
+                   MOVE    RECE031-SRYYMD  TO  LNK-BYO-SRYYMD-IN
+                   CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                                   SPA-AREA
+      *
+      *            病名コードから検索時病名が一致しないとき
+      *            再度病名から検索を行う
+                   IF    ( LNK-BYO-SYORI   =   "4" )
+                   AND   ( LNK-BYO-RC      =   "9" )
+                       INITIALIZE                  ORCSBYOMEIAREA
+                       MOVE    "3"                 TO  LNK-BYO-SYORI
+                       MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                       MOVE    RECE031-SRYYMD  TO  LNK-BYO-SRYYMD-IN
+                       CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                                       SPA-AREA
+                   END-IF
+      *
+                   IF      LNK-BYO-RC  NOT =   SPACE    
+                       CONTINUE
+                   ELSE
+                       IF    ( LNK-BYO-HOSOKU-BYOMEI
+                                               =   SPACE )
+                           DISPLAY "HOSOKU NO" 
+                           IF    ( LNK-BYO-BYOMEIHENFLG
+                                                   =   SPACE )    
+                           AND   ( LNK-BYO-SYORI   =   "3"   )
+      *                        病名から検索したらコード変換できた場合 
+                               MOVE    LNK-BYO-BYOMEIHENFLG
+                                               TO  RECE031-BYOMEIHENFLG
+                               INITIALIZE          RECE031-BYOMEICD-G
+                               PERFORM VARYING IDY     FROM    1   BY  1
+                                       UNTIL   IDY     >
+                                           LNK-BYO-BYOMEI-MAX
+                                   MOVE    LNK-BYO-TBYOMEICD (IDY)
+                                                       TO
+                                               RECE031-BYOMEICD (IDY)
+                               END-PERFORM
+                           ELSE
+                               CONTINUE
+                           END-IF
+                       ELSE
+                           MOVE    LNK-BYO-HOSOKU-BYOMEI
+                                               TO  RECE031-HOSOKU-BYOMEI
+                           MOVE    LNK-BYO-HOSOKU-BYOMEI-ETC
+                                               TO  RECE031-BYOMEI
+                           MOVE    LNK-BYO-BYOMEIHENFLG
+                                               TO  RECE031-BYOMEIHENFLG
+                           EVALUATE    LNK-BYO-SYORI
+                             WHEN    "3"
+                             WHEN    "5"
+                               INITIALIZE          RECE031-BYOMEICD-G
+                               PERFORM VARYING IDY     FROM    1   BY  1
+                                       UNTIL   IDY     >
+                                           LNK-BYO-HOSOKU-BYOMEICD-MAX
+                                   MOVE    LNK-BYO-TBYOMEICD (IDY)
+                                                           TO
+                                               RECE031-BYOMEICD (IDY)
+                               END-PERFORM
+                             WHEN    "4"
+                               PERFORM VARYING IDY     FROM
+                                   LNK-BYO-HOSOKU-BYOMEICD-MAX   BY  1
+                                       UNTIL   IDY     >   21
+                                   IF      IDY         >
+                                           LNK-BYO-HOSOKU-BYOMEICD-MAX
+                                       MOVE    SPACE       TO
+                                               RECE031-BYOMEICD (IDY)
+                                   END-IF
+                               END-PERFORM
+                           END-EVALUATE
+                       END-IF
+      *
+                       IF    ( LNK-BYO-HAISIYMD-ERR    >   ZERO   )
+                       AND   ( LNK-BYO-HAISIYMD-ERR    <
+                                                   RECE031-SRYYMD )
+                           MOVE    "1"         TO  RECE031-BYOMEIHENFLG
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    傷病名コード／修飾語コードの取得
+           MOVE    SPACE           TO  WRK-BYOMEI-AREA
+      *
+           IF      RECE031-BYOMEIHENFLG =   "1"
+      *        編集病名のとき未傷病名コードにする
+               MOVE    "0000999"           TO  WRK-BYOMEICD
+           ELSE
+               MOVE    ZERO                TO  IDY
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                       OR      RECE031-BYOMEICD(IDX)   =   SPACE
+                 IF      RECE031-BYOMEICD(IDX) =   ALL "9"
+                     CONTINUE
+                 ELSE
+                   IF      RECE031-BYOMEICD(IDX)(1:3)  NOT =   "ZZZ"
+                       IF      WRK-BYOMEICD                =   SPACE
+                           MOVE    RECE031-BYOMEICD(IDX)
+                                                   TO  WRK-BYOMEICD
+                       END-IF
+                   ELSE
+                       ADD     1           TO  IDY
+                       MOVE    RECE031-BYOMEICD(IDX)(4:)
+                                           TO  WRK-RECECD(IDY)
+                   END-IF
+                 END-IF
+               END-PERFORM
+           END-IF
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
@@ -2889,6 +3025,9 @@ grpsys             OR     ( RECE02-HOSPNUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    補足コメント
+           MOVE    RECE031-HOSOKU-BYOMEI
+                                       TO  WRK-DATA
+           MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
