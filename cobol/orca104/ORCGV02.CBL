@@ -1654,7 +1654,7 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
                IF    ( SPA-GMN-NYUSKJRYYKBN (IDX)  =   "5" )
-                   IF    ( SPA-GMN-HKNKOHSBTKBN    =   "8" )
+                   IF    ( SPA-GMN-HKNKOHSBTKBN    =   "8" OR "9" )
                        CONTINUE
                    ELSE
                        MOVE    "0023"          TO  SPA-ERRCD
