@@ -9918,7 +9918,8 @@
                        MOVE    SPACE      TO  RECE65-NAME(IDX4)
                        MOVE    SPACE      TO  RECE65-INPUTCOMENT(IDX4)
                        STRING  TNS-NAME          DELIMITED  BY  " "
-                               "  "              DELIMITED  BY  SIZE
+      ***                      "  "              DELIMITED  BY  SIZE
+                               "¡¡"              DELIMITED  BY  SIZE
                                WRK-SRYSURYOW     DELIMITED  BY  " "
                                RECE65-TANINAME(IDX4)
                                                  DELIMITED  BY  " "
