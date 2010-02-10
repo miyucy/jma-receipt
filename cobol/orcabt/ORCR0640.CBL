@@ -14579,6 +14579,7 @@
                   END-IF
                END-EVALUATE
              WHEN      "2"
+               MOVE    SPACE   TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                EVALUATE  SYS-2010-FTNZERO-TAIKBN-N
                  WHEN        "0"
                     MOVE  "2"  TO WRK-ZEROKISAIFLG

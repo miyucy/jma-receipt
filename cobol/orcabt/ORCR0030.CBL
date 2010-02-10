@@ -12851,6 +12851,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                   END-IF
                END-EVALUATE
              WHEN      "2"
+               MOVE    SPACE   TO RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                EVALUATE  SYS-2010-FTNZERO-TAIKBN-G
                  WHEN        "0"
                     MOVE  "2"  TO WRK-ZEROKISAIFLG
