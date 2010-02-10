@@ -5513,7 +5513,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                     MOVE    SPACE      TO  RECE05-NAME(IDX4)
                     MOVE    SPACE      TO  RECE05-INPUTCOMENT(IDX4)
                     STRING  TNS-NAME          DELIMITED  BY  " "
-                            "  "              DELIMITED  BY  SIZE
+      ***                   "  "              DELIMITED  BY  SIZE
+                            "¡¡"              DELIMITED  BY  SIZE
                             WRK-SRYSURYOW     DELIMITED  BY  " "
                             RECE05-TANINAME(IDX4)
                                               DELIMITED  BY  " "
