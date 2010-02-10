@@ -1052,8 +1052,9 @@
                    END-IF
       *        ¤½¤ÎÂ¾
                WHEN    OTHER
+                   EVALUATE    SPA-GMN-HKNNUM (1:2)
       *            ¼«Èñ
-                   IF      SPA-GMN-HKNNUM (1:2)    =   "98"
+                   WHEN    "98"
                        PERFORM VARYING     IDT     FROM    1  BY  1
                                UNTIL       IDT     >   2
                            MOVE    WRK-HJO-REC3 (IDT)
@@ -1070,7 +1071,20 @@
                                MOVE    "1"         TO SPA-GMN-HOJOKBN
                            END-IF
                        END-IF
-                   ELSE
+      *            ¼£¸³
+                   WHEN    "90"
+                   WHEN    "91"
+                       PERFORM VARYING     IDT     FROM    1  BY  1
+                               UNTIL       IDT     >   2
+                           MOVE    WRK-HJO-REC3 (IDT)
+                                           TO  SPA-GMN-HOJOKBNL (IDT)
+                           MOVE    IDT         TO  SPA-GMN-HOJO-MAX
+                       END-PERFORM
+                       IF      SPA-GMN-HOJOKBN     =   SPACE
+      *                    ²ÝÀÇ
+                           MOVE    "1"         TO SPA-GMN-HOJOKBN
+                       END-IF
+                   WHEN    OTHER
                        MOVE    ZERO        TO  SPA-GMN-HOJO-MAX
       *                £È£±£´¡¥£±£° ²þÀµ¤è¤ê
                        IF     (SPA-NAI-HTEKSTYMD     >=  "20021001") OR
@@ -1078,7 +1092,7 @@
                                SPA-SYSYMD            >=  "20021001" )
                            PERFORM 310111-HKNTBL-RJNHEN-SEC
                        END-IF
-                   END-IF
+                   END-EVALUATE
            END-EVALUATE
       *
            MOVE    ZERO                TO  FLG-CHK
@@ -1912,10 +1926,6 @@
            IF      ORCSSTR-NUM1        =   ZERO
                MOVE    SPA-GMN-NAME        TO  WRK-SEINAME
            ELSE
-      *TEST
-           DISPLAY "ORCSSTR-NUM1:" ORCSSTR-NUM1
-            ",ORCSSTR-NUM2:"  ORCSSTR-NUM2 
-      *TEST
                MOVE    ORCSSTR-NUM1        TO  IDX-S1
                MOVE    ORCSSTR-NUM2        TO  IDX-S2
                INITIALIZE                  ORCSSTRINGAREA
@@ -2275,6 +2285,15 @@
            IF      (SPA-GMN-HKNNUM         =   "060"
                                            OR  "068" )   OR
                    (SPA-NAI-PTHKN-SBTKBN   =   "8"  )
+               IF      SPA-GMN-HOJOKBN     =   SPACE
+                   MOVE    "0060"          TO  SPA-ERRCD
+                   MOVE    11              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *    ¼£¸³
+           IF      (SPA-GMN-HKNNUM         >=  "900"
+                                           OR  "919" )   AND
+                   (SPA-NAI-PTHKN-SBTKBN   =   "9"  )
                IF      SPA-GMN-HOJOKBN     =   SPACE
                    MOVE    "0060"          TO  SPA-ERRCD
                    MOVE    11              TO  SPA-GMN-CUR

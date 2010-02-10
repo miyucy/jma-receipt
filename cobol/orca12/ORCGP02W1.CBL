@@ -1248,8 +1248,9 @@
                    END-PERFORM
       *        その他
                WHEN    OTHER
+                   EVALUATE    SPA-PTHKN-HKNNUM (IDX)(1:2)
       *            自費
-                   IF      SPA-PTHKN-HKNNUM (IDX)(1:2) =   "98"
+                   WHEN    "98"
                        PERFORM VARYING     IDT     FROM    1  BY  1
                                UNTIL       IDT     >   2
                            IF      WRK-HJO-REC3 (IDT)(1:1)
@@ -1260,12 +1261,25 @@
                                MOVE    2           TO  IDT
                            END-IF
                        END-PERFORM
-                   ELSE
+      *            治験
+                   WHEN    "90"
+                   WHEN    "91"
+                       PERFORM VARYING     IDT     FROM    1  BY  1
+                               UNTIL       IDT     >   2
+                           IF      WRK-HJO-REC3 (IDT)(1:1)
+                                           =   SPA-PTHKN-HOJOKBN(IDX)
+                               MOVE    WRK-HJO-REC3 (IDT)(3:)
+                                               TO  SPA-PTHKN-HOJOKBN-MEI
+                                                                 (IDX)
+                               MOVE    2           TO  IDT
+                           END-IF
+                       END-PERFORM
+                   WHEN    OTHER
       *                Ｈ１４．１０ 改正より
                        IF      SPA-PTHKN-TEKSTYMD(IDX) >=  "20021001"
                            PERFORM 31001-HKNTBL-RJNHEN-SEC
                        END-IF
-                   END-IF
+                   END-EVALUATE
                END-EVALUATE
            END-PERFORM
       *
@@ -1724,8 +1738,10 @@
                    END-PERFORM
       *        その他
                WHEN    OTHER
-      *            自費
-                   IF      SPA-GMN-HKNNUM (1:2)    =   "98"
+      *            自費・治験
+                   IF     (SPA-GMN-HKNNUM (1:2)    =   "98" )
+                    OR    (SPA-GMN-HKNNUM (1:2)    =   "90"
+                                                   OR  "91" )
                        PERFORM VARYING     IDT     FROM    1  BY  1
                                UNTIL       IDT     >   2
                            MOVE    WRK-HJO-REC3 (IDT)
@@ -6589,7 +6605,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-NAI-HKNSTR      TO  WRK-HKNSTR
       *        保険情報ＴＢＬから編集
                COMPUTE SPA-NAI-HKNSTR      =   SPA-NAI-HKNSTR  -  1
-               PERFORM 3101-HKN-TBL-SPA-SEC
+               PERFORM 4401-ZENHKN-TBL-SPA-SEC
       *        対象がない時元へ
                IF      SPA-NAI-HKNSTR      =   ZERO
                    MOVE    WRK-HKNSTR          TO  SPA-NAI-HKNSTR
@@ -6631,6 +6647,41 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        440-ZEN-GMNHYOUJI-EXT.
            EXIT.
+      *****************************************************************
+      *    保険情報パラメタファイル検索処理
+      *****************************************************************
+       4401-ZENHKN-TBL-SPA-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-GMN-HKN-AREA
+           MOVE    ZERO                TO  FLG-CHK
+           IF      SPA-NAI-HKNSTR      =   ZERO
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX     FROM    SPA-NAI-HKNSTR   BY  -1
+                   UNTIL      (IDX         <   1             )  OR
+                              (FLG-CHK NOT =   ZERO )
+                   IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
+      *                ＱＲデータの表示
+                       IF     (SPA-QR-FLG          =   1   )  AND
+                              (SPA-QR-HKNID    NOT =   ZERO )  AND
+                              (SPA-QR-HKNID    NOT =   SPA-PTHKN-HKNID
+                                                               (IDX))
+                           CONTINUE
+                       ELSE
+                           MOVE    IDX             TO  SPA-NAI-HKNSTR
+                           PERFORM 3101-HOKEN-HEN-SEC
+                           MOVE    1               TO  FLG-CHK
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    対象の保険がない時、新規とする
+           IF      FLG-CHK             =   ZERO
+               MOVE    ZERO                TO  SPA-NAI-HKNSTR
+           END-IF
+           .
+       4401-ZENHKN-TBL-SPA-EXT.
+           EXIT.
       *
       *****************************************************************
       *    次表示（基本：保険公費情報）処理
@@ -6648,7 +6699,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      450-TUGI-GMNHYOUJI-EXT
            END-IF
-      *
            MOVE    ZERO                TO  SPA-GMN-CUR
       *    保険情報
            IF      SPA-NAI-HKNSTR      <   SPA-PTHKN-MAX

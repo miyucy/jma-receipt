@@ -4583,8 +4583,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "保険の種別を入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0060"
-                   MOVE     "国保・自費の場合、補助区分は必須入力です"
-                                               TO  SPA-ERRMSG
+                   STRING   "国保・自費・治験の場合、"
+                            "補助区分は必須入力です"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0061"
                    MOVE     "補助区分は入力できません"
                                                TO  SPA-ERRMSG
