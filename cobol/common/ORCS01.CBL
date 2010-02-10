@@ -1730,8 +1730,8 @@
                              LNK-SYU-JIHI-TOTAL         +
                              LNK-SYU-JIHI-TOTAL-TAX
              END-IF
-             IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
-                 ( COMB-HOJOKBN           =  "1" )
+             IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" OR "9" ) AND
+                 ( COMB-HOJOKBN           =  "1"        )
                  COMPUTE  LNK-SYU-TAX-TAISHOU     =
                           LNK-SYU-HKNTEKMONEY     +
                           LNK-SYU-TGMONEY-TAX(17) +
@@ -1754,8 +1754,8 @@
       ***             LNK-SYU-TGMONEY-TAX-SAI   +
       ***             WK-SKYMONEY-ZEI
            ELSE
-             IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
-                 ( COMB-HOJOKBN           =  "1" )
+             IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" OR "9" ) AND
+                 ( COMB-HOJOKBN           =  "1"        )
               CONTINUE
              ELSE
               IF    WK-TAX1001-KBN  =  "1"
@@ -1791,8 +1791,8 @@
                              LNK-SYU-JIHI-TAX
              END-IF
       *      ¼«ÈñÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬²ÝÀÇ¤Î¾ì¹ç¡¢¾ÃÈñÀÇ·×»»¤ò¹Ô¤¦
-             IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" ) AND
-                 ( COMB-HOJOKBN           =  "1" )
+             IF  ( COMB-SYU-HKNKOHSBTKBN  =  "8" OR "9" ) AND
+                 ( COMB-HOJOKBN           =  "1"        )
                IF    WK-TAX1001-KBN  =  "1"
                  COMPUTE  LNK-SYU-SKYMONEY-TAX-SAI  =
                         ( LNK-SYU-SKYMONEY  *  0.05 ) + 0.5
@@ -2934,6 +2934,10 @@
                 (WK-1001-JIHIPOSITION   NOT =   "2"     ) AND
                 (COMB-HOJOKBN               =   "1"     ) AND
                 (LNK-SYU-SRYYMD(1:6)       >=   "200704"))
+           OR  ((COMB-HKNNUM            NOT =   SPACE   ) AND
+                (COMB-SYU-HKNKOHSBTKBN      =   "9"     ) AND
+                (COMB-HOJOKBN               =   "1"     ) AND
+                (LNK-SYU-SRYYMD(1:6)       >=   "200704"))
       *
       *      ³ºÅöÊÝ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤Î¸¡º÷
              INITIALIZE                      HKNNUM-REC
@@ -3014,7 +3018,8 @@
                        MOVE   ZERO  TO  WK-JIHIGAKU2
                        MOVE   ZERO  TO  WK-JIHIGAKU3
                     END-IF
-                    IF    WK-1001-JIHIPOSITION  =   "2"
+                    IF   (COMB-SYU-HKNKOHSBTKBN =   "8")
+                    AND  (WK-1001-JIHIPOSITION  =   "2")
                        COMPUTE LNK-SYU-TGMONEY-TAX(IDX9) =
                                LNK-SYU-TGMONEY-TAX(IDX9) + WK-JIHIGAKU2
                                                          + WK-JIHIGAKU3
@@ -17653,10 +17658,13 @@
                                            LNK-SYU-SYUCOMPFTN-ENTANI
                                 END-IF                                  
                               END-IF                                    
-                              IF  (COMB-SYU-HKNKOHSBTKBN     = "8" )
-                              AND (WK-1001-JIHIPOSITION  NOT = "2" )
-                              AND (COMB-HOJOKBN              = "1" )
-                              AND (LNK-SYU-SRYYMD(1:6)  >= "200704")
+                              IF ((COMB-SYU-HKNKOHSBTKBN     = "8" ) AND
+                                  (WK-1001-JIHIPOSITION  NOT = "2" ) AND
+                                  (COMB-HOJOKBN              = "1" ) AND
+                                  (LNK-SYU-SRYYMD(1:6)  >= "200704"))
+                              OR ((COMB-SYU-HKNKOHSBTKBN     = "9" ) AND
+                                  (COMB-HOJOKBN              = "1" ) AND
+                                  (LNK-SYU-SRYYMD(1:6)  >= "200704"))
                                  COMPUTE  LNK-SYU-SYUCOMPFTN =
                                           LNK-SYU-SYUCOMPFTN +
                                           WK-SKYMONEY-ZEI
@@ -17786,10 +17794,13 @@
                                             WK-FUTANWARI
                                 END-IF
                               END-IF
-                              IF  (COMB-SYU-HKNKOHSBTKBN     = "8" )
-                              AND (WK-1001-JIHIPOSITION  NOT = "2" )
-                              AND (COMB-HOJOKBN              = "1" )
-                              AND (LNK-SYU-SRYYMD(1:6)  >= "200704")
+                              IF ((COMB-SYU-HKNKOHSBTKBN     = "8" ) AND
+                                  (WK-1001-JIHIPOSITION  NOT = "2" ) AND
+                                  (COMB-HOJOKBN              = "1" ) AND
+                                  (LNK-SYU-SRYYMD(1:6)  >= "200704"))
+                              OR ((COMB-SYU-HKNKOHSBTKBN     = "9" ) AND
+                                  (COMB-HOJOKBN              = "1" ) AND
+                                  (LNK-SYU-SRYYMD(1:6)  >= "200704"))
                                  COMPUTE  LNK-SYU-SYUCOMPFTN =
                                           LNK-SYU-SYUCOMPFTN +
                                           WK-SKYMONEY-ZEI
