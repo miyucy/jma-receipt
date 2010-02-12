@@ -927,8 +927,6 @@
                           OR ( SPA-ERRCD           NOT =   SPACE )
                IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "1" )
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
-      *          治験判定なし
-                 AND   (SPA-COM-CHIKENKBN(IDX)     =   SPACE  )
                  AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
       *            回数チェック
                    IF      (SPA-COM-SANTEIRRKKBN(IDX)
@@ -936,7 +934,12 @@
                        PERFORM 510171-KAISU-CHK-SEC
                    END-IF
       *            併用算定チェック
-                   IF     (SPA-ERRCD              =   SPACE )
+                   IF     (SPA-RSI-HKNKBN          =   "3"   )
+                   OR     (SPA-COM-CHIKENKBN(IDX)  =   "1"   )
+                   OR     (SPA-ERRCD           NOT =   SPACE )
+      *            治験・アフターケアはチェックなし
+                       CONTINUE
+                   ELSE
                        PERFORM 510172-HEISANTEI-CHK-SEC
                    END-IF
                    IF      SPA-ERRCD           =   SPACE

@@ -65,6 +65,7 @@
       * 04.05.00     NACL=多々納  09/07/28  リハビリ発症日表示対応
       * 04.05.00     NACL-多々納  09/09/XX  小児科外来診察料等包括診療対応
       * 04.05.00     NACL-多々納  09/10/20  初診再診自動発生なし対応
+      * 04.05.00     NACL-多々納  10/02/XX  アフターケア対象外対応
       *****************************************************************
       *
       *
@@ -1277,6 +1278,12 @@
                    GO      TO      10011-TOUGETU-CHK-EXT
                END-IF
            END-IF
+      *!!!!
+      *    アフターケアは対象外
+           IF      SPA-RSI-HKNKBN      =   "3"
+               GO      TO      10011-TOUGETU-CHK-EXT
+           END-IF
+      *!!!!
       *
       *    上限１日
            MOVE    ZERO                TO  WRK-DAYCNT
@@ -4201,6 +4208,11 @@
                GO      TO      600-SANTEI-CNT-EXT
            END-IF
       *
+      *    アフターケア対象外
+           IF      SPA-RSI-HKNKBN      =   "3"
+               GO      TO      600-SANTEI-CNT-EXT
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE          )  OR
                               (SPA-COM-INPUTCD(IDX) =   SPACE  AND
@@ -4376,6 +4388,11 @@
       *     剤分離後の特定算定チェック処理
       *****************************************************************
        700-SANTEI-CHK-SEC              SECTION.
+      *
+      *    アフターケア対象外
+           IF      SPA-RSI-HKNKBN      =   "3"
+               GO      TO      700-SANTEI-CHK-EXT
+           END-IF
       *
       *    小児科外来診療チェック
            PERFORM 5019-SYONIKA-CHK-SEC

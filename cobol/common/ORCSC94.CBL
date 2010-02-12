@@ -764,13 +764,27 @@
            MOVE    SPACE               TO  SPA-GMN-SURYO (IDX)
       *
       *    点数・回数編集
-           MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+      *        点数
+           IF      SPA-COM-PLUSKBN (IDX)   =   1
+               COMPUTE WRK-TENSU           =   SPA-COM-TENSU(IDX)
+                                               *   -1
+               MOVE    WRK-TENSU               TO  WRK-TENSU-Z2
+           ELSE
+               MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
+           END-IF
+      **** MOVE    SPA-COM-TENSU(IDX)      TO  WRK-TENSU-Z
            MOVE    WRK-TENSU-X             TO  SPA-GMN-TENSU(IDX)
       *    回数
            MOVE    SPA-COM-KAISU (IDX)     TO  WRK-KAISU-Z
            MOVE    WRK-KAISU-Z             TO  SPA-GMN-KAISU(IDX)
       *    計
-           MOVE    SPA-COM-KEI   (IDX)     TO  SPA-GMN-KEI  (IDX)
+           IF      SPA-COM-PLUSKBN (IDX)   =   1
+               COMPUTE WRK-TENSU           =   SPA-COM-KEI (IDX)
+                                           *   -1
+               MOVE    WRK-TENSU               TO  SPA-GMN-KEI(IDX)
+           ELSE
+               MOVE    SPA-COM-KEI (IDX)       TO  SPA-GMN-KEI(IDX)
+           END-IF
       *    名称へ日のセット
            PERFORM 3003-NYUIN-MEISYO-SEC
            .

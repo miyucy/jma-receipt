@@ -657,6 +657,8 @@
       *
            03  WRK-KEI-X.
                05  WRK-KEI-Z       PIC Z(08).
+           03  WRK-KEI-X2.
+               05  WRK-KEI-Z2      PIC -(08).
            03  WRK-KEI-H           PIC X(08).
            03  WRK-ZAIKEI-H        PIC X(40).
            03  WRK-KAKERU          PIC X(03).
@@ -8585,9 +8587,15 @@
            MOVE    SPA-GMN-SURYO   (WRK-IDX)   TO  WRK-H-SURYO
            MOVE    SPA-GMN-TANINAME(WRK-IDX)   TO  WRK-H-TANINAME
            MOVE    WRK-ZAIKEI-H                TO  WRK-H-ZAIKEI
-           MOVE    SPA-GMN-KEI (WRK-IDX)
-                                       TO  WRK-KEI-Z
-           MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+           IF      SPA-GMN-KEI (WRK-IDX)   >=  ZERO
+               MOVE    SPA-GMN-KEI (WRK-IDX)
+                                           TO  WRK-KEI-Z
+               MOVE    WRK-KEI-Z           TO  WRK-H-KEI
+           ELSE
+               MOVE    SPA-GMN-KEI (WRK-IDX)
+                                           TO  WRK-KEI-Z2
+               MOVE    WRK-KEI-Z2          TO  WRK-H-KEI
+           END-IF
       *
            MOVE    WRK-SURYO-HENSYU    TO  KT01-SURYO (IDX)
            MOVE    "user-font"         TO  KT01-SURYO-STYLE(IDX)

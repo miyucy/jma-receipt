@@ -31,6 +31,7 @@
       *  04.04.00    NACL-多々納  08/12/XX  入院料包括対応
       *  04.05.00    NACL-多々納  09/09/XX  外来まとめ対応
       *                                     慢性維持透析医学管理料等対応
+      *  04.05.00    NACL-多々納  10/02/XX  アフターケア対象外対応
       *****************************************************************
       *
       *
@@ -630,6 +631,8 @@
       *               薬評対象外
                       OR  (SPA-COM-YAKUHYO  (IDX-Z)        =   "1"   )
                       OR  (SPA-COM-GENTEN   (IDX-Z)        =   "1"   )
+      *               アフターケア
+                      OR  (SPA-RSI-HKNKBN                  =   "3" )
                        CONTINUE
                     ELSE
       *                手技
@@ -949,6 +952,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            薬評対象外
                    OR  (SPA-COM-YAKUHYO (IDX-Z)    =   "1"   )
                    OR  (SPA-COM-GENTEN  (IDX-Z)    =   "1"   )
+      *            アフターケア
+                   OR  (SPA-RSI-HKNKBN             =   "3" )
                    CONTINUE
                ELSE
                    IF      SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1"
@@ -989,6 +994,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            薬評対象外
                    OR  (SPA-COM-YAKUHYO (IDX-Z)    =   "1"   )
                    OR  (SPA-COM-GENTEN  (IDX-Z)    =   "1"   )
+      *            アフターケア
+                   OR  (SPA-RSI-HKNKBN             =   "3" )
                    CONTINUE
                ELSE
                    IF     (SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1" )
@@ -1264,6 +1271,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *                治験対象外
                    AND    (LNK-ORCSC-CHIKENKBN (IDX-L1 IDX-L2)
                                                =   SPACE   )
+      *            アフターケア
+                   AND    (SPA-RSI-HKNKBN      NOT =   "3" )
       *                診療区分による包括
                        PERFORM 30022-SRYKBN-CHECK-SEC
       *
@@ -1781,6 +1790,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            薬評対象外
                    OR  (SPA-COM-YAKUHYO (IDX-Z)    =   "1"   )
                    OR  (SPA-COM-GENTEN  (IDX-Z)    =   "1"   )
+      *            アフターケア
+                   OR  (SPA-RSI-HKNKBN             =   "3" )
                    CONTINUE
                ELSE
                    IF      SPA-GMN-INPUTCD (IDX-Z)(1:1)  =   "*"
