@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/09/19  クライアント保存対応
+      *
+      *  04.05.01    NACL-藤原    10/02/12  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -321,7 +323,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
       *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI04-NAME       TO  WRK-DATA
-               MOVE    50                  TO  WRK-NAGASA
+               MOVE    100                 TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    性別

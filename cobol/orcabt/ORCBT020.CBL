@@ -38,6 +38,8 @@
       *
       *  04.04.02    NACL-藤原    09/01/14  月途中に医保と生保の併用から
       *                                     生保単独になったときのまとめ
+      *
+      *  04.05.01    NACL-藤原    10/02/12  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -551,7 +553,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-NAME       TO  WRK-DATA
-               MOVE    50                  TO  WRK-NAGASA
+               MOVE    100                 TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    性別
@@ -772,7 +774,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    WHEN    OTHER
                        MOVE    WRK-HKN-HIHKNJANAME TO  WRK-DATA
                END-EVALUATE
-               MOVE    50                  TO  WRK-NAGASA
+               MOVE    100                 TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    
@@ -1039,7 +1041,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-NAME       TO  WRK-DATA
-               MOVE    50                  TO  WRK-NAGASA
+               MOVE    100                 TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    性別

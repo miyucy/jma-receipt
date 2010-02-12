@@ -1191,7 +1191,7 @@
            PERFORM 5004-MOJI-HENSYU-SEC
       *    氏名
            MOVE    PTINF-NAME      TO  WRK-DATA
-           MOVE    50              TO  WRK-NAGASA
+           MOVE    100             TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    カナ氏名
            MOVE    PTINF-KANANAME  TO  WRK-DATA
