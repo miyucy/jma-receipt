@@ -1798,9 +1798,11 @@
            PERFORM 500-SPA-PARA-TSYRRK-SEC
            PERFORM 500-SPA-PARA-TNKRRK-SEC
       *    ∏¯»Ò…È√¥
-           PERFORM 410131-KOHFTN-PARA-SEC
+           IF      SPA-GMN24-FTNSELNUM NOT =   ZERO
+               PERFORM 410131-KOHFTN-PARA-SEC
       *    ¥µº‘∏¯»Ò…È√¥≥€
-           PERFORM 410132-KOHFTNETC-PARA-SEC
+               PERFORM 410132-KOHFTNETC-PARA-SEC
+           END-IF
       *
       *    ∏¯»Ò…È√¥§Œ≈–œø•¡•ß•√•Ø
            IF      SPA-TAGU-FLG        =   ZERO
@@ -2339,9 +2341,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN24-FTNSELNUM NOT =   SPA-MAE24-FTNSELNUM
              OR  ((SPA-MAE24-FTNSELNUM NOT =   SPACE   )  AND
                   (SPA-GMN24-FTNSELNUM     =   SPA-MAE24-FTNSELNUM))
+      *        ¡∞≤Û§¨Ã§¡™¬Ú§Œª˛°¢ππø∑§ §∑
+               IF     (SPA-MAE24-FTNSELNUM     =   ZERO
+                                               OR  SPACE )
+                   CONTINUE
+               ELSE
+      *
                PERFORM 410131-KOHFTN-PARA-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      41013-FTNSELNUM-EXT
+               END-IF
                END-IF
            END-IF
       *
@@ -2672,6 +2681,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    HZN-PTKOHFTN-REC(IDX IDY)
                                                TO  PARA-DATA-REC
                    PERFORM 400-PARA-INSERT-SEC
+      *
                END-PERFORM
            END-PERFORM
       *
