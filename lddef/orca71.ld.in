@@ -27,6 +27,10 @@ data	{
 
 db	{
 	tbl_jobkanri;
+	tbl_jyurrk;
+	tbl_jyurrk_prv;
+	tbl_ptnum;
+	tbl_syskanri;
 };
 
 /* #include "orcadb.inc" */

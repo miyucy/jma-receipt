@@ -36,6 +36,7 @@ db	{
 	tbl_receupd;
 	tbl_ptnyuinrrk;
 	tbl_nyuinacct;
+	tbl_ptinf;
 };
 
 /* #include "orcadb.inc" */

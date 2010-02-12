@@ -55,6 +55,9 @@ db	{
 	tbl_chktrd;
 	tbl_tekioubyomei;
 	tbl_chk005;
+	tbl_dbcatalog;
+	tbl_prtdata;
+	tbl_prtkanri;
 };
 
 #include "orcadbh.inc"

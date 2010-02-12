@@ -78,6 +78,9 @@ db	{
 	query_receprt;
 	tbl_sryacct_main;
 	tbl_sryacct_sub;
+	tbl_dbcatalog;
+	tbl_ptkohftnetc;
+	tbl_ryocom;
 };
 
 /* #include "orcadb.inc" */

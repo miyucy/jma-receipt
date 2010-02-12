@@ -29,6 +29,7 @@ db {
 	tbl_prtdata;
 	tbl_prtkanri;
 	tbl_prvkanri;
+	tbl_jobkanri;
 };
 
 #include "orcadbh.inc"
