@@ -5130,6 +5130,7 @@
       *
                MOVE    SPA-GMN-HKNCOMBI-G  TO  SPA-MAE-HKNCOMBI-G
                MOVE    SPA-HKNKBN          TO  SPA-MAE-HKNKBN
+               MOVE    SPA-CHIKENKBN       TO  SPA-MAE-CHIKENKBN
                MOVE    SPA-NAI-ROUJIN      TO  SPA-MAE-ROUJIN
                MOVE    K02-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
       *        包括まとめの変更不可
@@ -5138,6 +5139,7 @@
                    MOVE    "1033"              TO  SPA-ERRCD
                    MOVE    SPA-MAE-HKNCOMBI-G  TO  SPA-GMN-HKNCOMBI-G
                    MOVE    SPA-MAE-HKNKBN      TO  SPA-HKNKBN
+                   MOVE    SPA-MAE-CHIKENKBN   TO  SPA-CHIKENKBN
                    GO      TO      41012-HKNCOMBI-SYORI-EXT
                END-IF
       *
@@ -5151,6 +5153,7 @@
                MOVE    SPA-GMN-HKNCOMBI-G  TO  SPA-MAE-HKNCOMBI-G
                MOVE    K02-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
                MOVE    SPA-HKNKBN          TO  SPA-MAE-HKNKBN
+               MOVE    SPA-CHIKENKBN       TO  SPA-MAE-CHIKENKBN
                MOVE    SPA-NAI-ROUJIN      TO  SPA-MAE-ROUJIN
                MOVE    ZERO                TO  FLG-CHK2
                PERFORM 41012-HKNCOMBI-CHANGE-SEC
