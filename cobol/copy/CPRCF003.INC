@@ -35,6 +35,7 @@
       *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     補足コメントの追加
       *                                     連番号を３桁に変更
+      *                                     入力病名、入力病名文字数の追加
       ************************************************************
       *01  RECE03-REC.
            03  RECE03-KEY.
@@ -116,7 +117,11 @@
       *病名文字数
            03  RECE03-BYOMEIMOJI        PIC 9(03).
       *補足コメント
-           03  RECE031-HOSOKU-BYOMEI     PIC X(40).
+           03  RECE031-HOSOKU-BYOMEI    PIC X(40).
+      *入力病名
+           03  RECE03-IN-BYOMEI         PIC X(160).
+      *入力病名文字数
+           03  RECE03-IN-BYOMEIMOJI     PIC 9(03).
       *病名編集フラグ
            03  RECE03-BYOMEIHENFLG      PIC X(01).
       *IＣＤ１０

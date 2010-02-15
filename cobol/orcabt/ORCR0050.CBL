@@ -59,7 +59,9 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.05.01    NACL-藤原    09/11/25  連番号を３桁に変更
+      *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
+      *                                     連番号を３桁に変更
+      *                                     入力病名、入力病名文字数の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -162,6 +164,10 @@ grpsys     COPY    "COMMON-SPA".
       *
            03  WRK-YM              PIC 9(06).
            03  WRK-RENNUM          PIC 9(03).
+      *
+           03  WRK-PTBYO-BYOMEI    PIC X(160).
+           03  WRK-PTBYO-BYOMEIMOJI
+                                   PIC 9(03).
       *
            03  WRK-RECEERR         PIC X(200). 
       *
@@ -513,9 +519,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
                MOVE    KANACHK-OUT-INPUT   TO  PTBYO-BYOMEI
                COMPUTE PTBYO-BYOMEIMOJI    =   KANACHK-MAX  /   2
-           END-IF        
+           END-IF
+      *
+           MOVE    PTBYO-BYOMEI        TO  WRK-PTBYO-BYOMEI
+           MOVE    PTBYO-BYOMEIMOJI    TO  WRK-PTBYO-BYOMEIMOJI
       *
       *    疑いフラグより病名を編集
+      *   （病名のみ編集を行う）
            IF      PTBYO-UTAGAIFLG NOT =   SPACE
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
@@ -526,8 +536,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                COMPUTE PTBYO-BYOMEIMOJI    =   SMKBYO-LENGTH   /   2
                MOVE    SMKBYO-BYOMEI       TO  PTBYO-BYOMEI
-               MOVE    SMKBYO-BYOMEIHENFLG TO  PTBYO-BYOMEIHENFLG
-               MOVE    SMKBYO-BYOMEICD-G   TO  PTBYO-BYOMEICD-G
+      *********MOVE    SMKBYO-BYOMEIHENFLG TO  PTBYO-BYOMEIHENFLG
+      *********MOVE    SMKBYO-BYOMEICD-G   TO  PTBYO-BYOMEICD-G
+               EVALUATE    SMKBYO-STS-UTAGAI   ALSO    SMKBYO-STS-KYUSEI
+                   WHEN    1                   ALSO    1
+                       MOVE    "3"             TO  PTBYO-UTAGAIFLG
+                   WHEN    1                   ALSO    0
+                       MOVE    "1"             TO  PTBYO-UTAGAIFLG
+                   WHEN    0                   ALSO    1
+                       MOVE    "2"             TO  PTBYO-UTAGAIFLG
+                   WHEN    OTHER
+                       MOVE    SPACE           TO  PTBYO-UTAGAIFLG
+               END-EVALUATE     
            END-IF
       *
            ADD     1                   TO  WRK-RENNUM
@@ -570,6 +590,10 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE03-HOSPNUM
            MOVE    PTBYO-BYOMEI        TO  RECE03-BYOMEI
            MOVE    PTBYO-BYOMEIMOJI    TO  RECE03-BYOMEIMOJI
            MOVE    PTBYO-BYOMEIHENFLG  TO  RECE03-BYOMEIHENFLG
+      *
+           MOVE    WRK-PTBYO-BYOMEI    TO  RECE03-IN-BYOMEI
+           MOVE    WRK-PTBYO-BYOMEIMOJI
+                                       TO  RECE03-IN-BYOMEIMOJI
       *
            IF      PTBYO-BYOMEIHENFLG  =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1

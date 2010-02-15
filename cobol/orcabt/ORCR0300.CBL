@@ -1473,6 +1473,9 @@ grpsys     COPY    "COMMON-SPA".
       *    サブプロ用領域
       *****************************************************************
       *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
+      *
       *    病名コード検索サブ
            COPY    "CPORCSBYOMEI.INC".
       *
@@ -1488,8 +1491,10 @@ grpsys     COPY    "COMMON-SPA".
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
@@ -2837,15 +2842,15 @@ grpsys             OR     ( RECE02-HOSPNUM
       *    編集病名で）が最後にあるとき補足コメントの設定を行う
            IF      RECE031-BYOMEIHENFLG
                                        =   "1"
-               COMPUTE IDX =   RECE031-BYOMEIMOJI    *   2   -   1
-               IF      RECE031-BYOMEI (IDX:2)
+               COMPUTE IDX =   RECE031-IN-BYOMEIMOJI   *   2   -   1
+               IF      RECE031-IN-BYOMEI (IDX:2)
                                            =   "）"
-                   DISPLAY "HOSOKU CHK=" RECE031-BYOMEI
+                   DISPLAY "HOSOKU CHK=" RECE031-IN-BYOMEI
       * 
                    INITIALIZE                  ORCSBYOMEIAREA
                    IF      FLG-HAISIYMD-CHK    =   1
                      MOVE    "5"                 TO  LNK-BYO-SYORI
-                     MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                     MOVE    RECE031-IN-BYOMEI   TO  LNK-BYO-BYOMEI
                    ELSE
                      IF  ( RECE031-BYOMEICD (1)
                                                =   "0000999"       )
@@ -2853,7 +2858,7 @@ grpsys             OR     ( RECE02-HOSPNUM
                                            NOT =   "0000999"   AND
                            RECE031-BYOMEICD (2) =   SPACE          )
                        MOVE    "3"                 TO  LNK-BYO-SYORI
-                       MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                       MOVE    RECE031-IN-BYOMEI   TO  LNK-BYO-BYOMEI
                      ELSE 
                        MOVE    "4"                 TO  LNK-BYO-SYORI
                        PERFORM VARYING IDY     FROM    1   BY  1
@@ -2864,7 +2869,7 @@ grpsys             OR     ( RECE02-HOSPNUM
                                                        TO
                                                LNK-BYO-TBYOMEICD (IDY)
                        END-PERFORM
-                       MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
+                       MOVE    RECE031-IN-BYOMEI   TO  LNK-BYO-BYOMEI
                      END-IF
                    END-IF
                    MOVE    RECE031-SRYYMD  TO  LNK-BYO-SRYYMD-IN
@@ -2877,8 +2882,8 @@ grpsys             OR     ( RECE02-HOSPNUM
                    AND   ( LNK-BYO-RC      =   "9" )
                        INITIALIZE                  ORCSBYOMEIAREA
                        MOVE    "3"                 TO  LNK-BYO-SYORI
-                       MOVE    RECE031-BYOMEI      TO  LNK-BYO-BYOMEI
-                       MOVE    RECE031-SRYYMD  TO  LNK-BYO-SRYYMD-IN
+                       MOVE    RECE031-IN-BYOMEI   TO  LNK-BYO-BYOMEI
+                       MOVE    RECE031-SRYYMD      TO  LNK-BYO-SRYYMD-IN
                        CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
                                                        SPA-AREA
                    END-IF
@@ -2910,7 +2915,7 @@ grpsys             OR     ( RECE02-HOSPNUM
                            MOVE    LNK-BYO-HOSOKU-BYOMEI
                                                TO  RECE031-HOSOKU-BYOMEI
                            MOVE    LNK-BYO-HOSOKU-BYOMEI-ETC
-                                               TO  RECE031-BYOMEI
+                                               TO  RECE031-IN-BYOMEI
                            MOVE    LNK-BYO-BYOMEIHENFLG
                                                TO  RECE031-BYOMEIHENFLG
                            EVALUATE    LNK-BYO-SYORI
@@ -2944,6 +2949,22 @@ grpsys             OR     ( RECE02-HOSPNUM
                        END-IF
                    END-IF
                END-IF
+           END-IF
+      *
+      *    疑いフラグより病名を編集
+           IF      RECE031-UTAGAIFLG   NOT =   SPACE
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    RECE031-UTAGAIFLG   TO  SMKBYO-UTAGAIFLG
+               MOVE    RECE031-IN-BYOMEI   TO  SMKBYO-BYOMEI
+               MOVE    RECE031-BYOMEIHENFLG
+                                           TO  SMKBYO-BYOMEIHENFLG
+               MOVE    RECE031-BYOMEICD-G  TO  SMKBYO-BYOMEICD-G
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
+               MOVE    SMKBYO-BYOMEI       TO  RECE031-BYOMEI
+               MOVE    SMKBYO-BYOMEIHENFLG TO  RECE031-BYOMEIHENFLG
+               MOVE    SMKBYO-BYOMEICD-G   TO  RECE031-BYOMEICD-G
+           ELSE
+               MOVE    RECE031-IN-BYOMEI   TO  RECE031-BYOMEI 
            END-IF
       *
       *    傷病名コード／修飾語コードの取得
