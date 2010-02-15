@@ -46,7 +46,7 @@ orcawget () {
 	then
 		wget -q ${WGETOPTION} ${MSTUPDATEPATH}/$1
 	else
-		`dirname $0`/orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${MSTUPDATEPATH}/$1.p7m
+		orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${MSTUPDATEPATH}/$1.p7m
 	fi
 #接続確認
 	if [ $? -eq 0 ]	;	then 
@@ -72,7 +72,7 @@ orcacp () {
 	then
 		cp $1 ./
 	else
-		`dirname $0`/orcadt_verify.rb --dir . --cacert ${CACERTFILE} $1.p7m
+		orcadt_verify.rb --dir . --cacert ${CACERTFILE} $1.p7m
 	fi
 	if [ $? -eq 0 ]	;	then 
 #ファイルサイズチェック
@@ -129,6 +129,21 @@ cleanup () {
 }
 
 
+# disk space check
+VOLSIZE=`df -m /var | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
+echo "${VOLSIZE}"
+echo "${MINSIZE}"
+if [ -z "$MINSIZE" ]; then
+#set default 500MB
+  MINSIZE=500
+fi
+if [ $VOLSIZE -lt $MINSIZE ]; then
+  ERRMSG="The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
+  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERRFILE},,${ERRMSG}"
+  echo "${ERRMSG}"
+  exit 99
+fi
+
 #オフラインメンテナンスであるかチェック
 OFFLINEPATH=$(echo ${MSTUPDATEPATH} | sed -ne 's#file://##p')
 if [ -z ${OFFLINEPATH} ]; then
@@ -182,11 +197,14 @@ if  [ ${OFFLINE} = "offline" ]; then
     fi
 else
 #センタからのDB構造体ダウンロード
-    if	orcawget ${UPDKANRIFILE} ;	then
+    LOGMSG=`orcawget ${UPDKANRIFILE} 2>&1`
+    RESULT=`echo "${LOGMSG}" | head -1`
+    if	[ "[SUCCESS]" = "${RESULT:0:9}" ]; then
 	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
     else
+        echo "${LOGMSG}"
 	echo "センタからのＤＢレコード管理情報のダウンロードに失敗しました"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERRFILE},,センタからのＤＢレコード管理情報のダウンロードに失敗しました"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERRFILE},,${RESULT}"
 	cleanup
         exit 99
     fi
@@ -235,11 +253,14 @@ do
 	        exit 99
 	    fi
 	else
-	    if	orcawget ${UPD:35:${LEN}} ;	then
+            LOGMSG=`orcawget ${UPD:35:${LEN}} 2>&1`
+            RESULT=`echo "${LOGMSG}" | head -1`
+            if [ "[SUCCESS]" = "${RESULT:0:9}" ]; then
 		echo ${UPD:35:${LEN}} "ダウンロードが終了しました"
 	    else
+                echo "${LOGMSG}"
 		echo ${UPD:35:${LEN}} "ダウンロードに失敗しました"
-		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0006,${HOSPNUM},${ERRFILE},,ダウンロードに失敗しました"
+		${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0006,${HOSPNUM},${ERRFILE},,${RESULT}"
 		cleanup
 	        exit 99
 	    fi

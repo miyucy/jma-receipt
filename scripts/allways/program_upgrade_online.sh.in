@@ -51,6 +51,19 @@ jobend97() {
 
 rm -f ${LOG}
 
+# disk space check
+VOLSIZE=`df -m /var | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
+if [ -z "$MINSIZE" ]; then
+#set default 500MB
+  MINSIZE=500
+fi
+if [ $VOLSIZE -lt $MINSIZE ]; then
+  ERRMSG="[ERROR] The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter JBE0000001PRGMNT97,$HOSPNUM,,,"${ERRMSG}"
+  echomsg "${ERRMSG}" ${LOG}
+  exit 1
+fi
+
 OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
 if [ -z $OFFLINEPATH ]; then
   OFFLINE="online"

@@ -47,12 +47,12 @@ if [ -f ${LOGDIR}/${STARTNAME} ];  then
 fi
 
 #標準マスタ更新
-bash ${SCRIPTSDIR}/allways/master_standard_upgrade.sh $1 $2 $4 $5 $6  > ${TMPLOG}  2>&1
+master_standard_upgrade.sh $1 $2 $4 $5 $6 2>&1 | tee ${TMPLOG}
 MNTRET=$?
 if [ ${MNTRET} -ne 1 ]; then
     #ライセンスマスタ更新
     sleep 1
-    bash ${SCRIPTSDIR}/allways/master_license_upgrade.sh $1 $2 $3 $7 $8 $9 >> ${TMPLOG} 2>&1
+    master_license_upgrade.sh $1 $2 $3 $7 $8 $9 2>&1 | tee -a ${TMPLOG}
     MLIRET=$?
 fi
 

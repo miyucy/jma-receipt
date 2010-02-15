@@ -103,11 +103,9 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "CPMKPASS.INC".
-      *
        01  SHELL-AREA.
-           03  SHELL-NAME          PIC X(33)  VALUE
-               "scripts/allways/master_upgrade.sh".
+           03  SHELL-NAME          PIC X(17)  VALUE
+               "master_upgrade.sh".
       *
        01  CONST-AREA.
            03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
@@ -451,11 +449,19 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                        MOVE    "更新データはありませんでした。"
                                            TO  SPA-GMN-MSG1(ID1:30)
                        MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
+                       IF      JOB-YOBI(1:7)   =  "[ERROR]"
+                           MOVE    JOB-YOBI(9:)  TO  SPA-GMN-MSG1PLUS
+                           MOVE    "red"         TO  SPA-GMN-MSG1-STYLE
+                       END-IF
                    WHEN    "98"
                    WHEN    "8002"
                        MOVE    "サーバへ接続できませんでした。"
                                            TO  SPA-GMN-MSG1(ID1:34)
                        MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
+                       IF      JOB-YOBI(1:7)   =  "[ERROR]"
+                           MOVE    JOB-YOBI(9:)  TO  SPA-GMN-MSG1PLUS
+                           MOVE    "red"         TO  SPA-GMN-MSG1-STYLE
+                       END-IF
                    WHEN    "8888"
                        MOVE    "マスタ更新は中止されました"
                                            TO  SPA-GMN-MSG1(ID1:34)
@@ -514,11 +520,19 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                        MOVE    "更新データはありませんでした。"
                                              TO  SPA-GMN-MSG2(ID1:30)
                        MOVE    "blue"        TO  SPA-GMN-MSG2-STYLE
+                       IF      JOB1-YOBI(1:7)  =  "[ERROR]"
+                           MOVE    JOB1-YOBI(9:) TO  SPA-GMN-MSG2PLUS
+                           MOVE    "red"         TO  SPA-GMN-MSG2-STYLE
+                       END-IF
                    WHEN    "98"
                    WHEN    "8002"
                        MOVE    "提供サーバへ接続できませんでした。"
                                              TO  SPA-GMN-MSG2(ID1:34)
                        MOVE    "blue"        TO  SPA-GMN-MSG2-STYLE
+                       IF      JOB1-YOBI(1:7)  =  "[ERROR]"
+                           MOVE    JOB1-YOBI(9:) TO  SPA-GMN-MSG2PLUS
+                           MOVE    "red"         TO  SPA-GMN-MSG2-STYLE
+                       END-IF
                    WHEN    "8888"
                        MOVE    "マスタ更新は中止されました"
                                            TO  SPA-GMN-MSG2(ID1:34)
@@ -997,10 +1011,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    1                   TO  SPA-M96-CUR
       *    マスタ更新処理
            MOVE    SPACE                TO  SHELLTBL
-           INITIALIZE                   ORCSMKPASSAREA
-           MOVE    SHELL-NAME           TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"         USING  ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01         TO  SHELLTBL-NAME
+           MOVE    SHELL-NAME           TO  SHELLTBL-NAME
            MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG1
            MOVE    SPA-SUPERVISOR       TO  SHELLTBL-ARG2
            MOVE    SPA-HOSPID           TO  SHELLTBL-ARG3
@@ -1017,7 +1028,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *
            MOVE    "SHELL"              TO  MCP-FUNC
            MOVE    "shell"              TO  MCP-TABLE
-           MOVE    "shell"              TO  MCP-PATHNAME
+           MOVE    "allways"            TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
