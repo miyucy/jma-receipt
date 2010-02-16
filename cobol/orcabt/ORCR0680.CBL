@@ -32,6 +32,9 @@
       *
       *  02.06.01    NACL-竹田    05/05/30  realtime preview 処理追加
       *  03.05.01    NACL-小豆沢  07/06/04  グループ診療対応
+      *
+      *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
+      *                                     入力病名、入力病名文字数の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -317,6 +320,9 @@
            MOVE    RECE63-BYOMEI       TO  RECE631-BYOMEI
            MOVE    RECE63-BYOMEIMOJI   TO  RECE631-BYOMEIMOJI
            MOVE    RECE63-BYOMEIHENFLG TO  RECE631-BYOMEIHENFLG   
+           MOVE    RECE63-IN-BYOMEI    TO  RECE631-IN-BYOMEI
+           MOVE    RECE63-IN-BYOMEIMOJI
+                                       TO  RECE631-IN-BYOMEIMOJI
       *
            WRITE   RECE631-REC
            ADD     1                   TO  CNT-OUT

@@ -1381,6 +1381,9 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
+      *
       *    病名コード検索サブ
            COPY    "CPORCSBYOMEI.INC".
       *
@@ -3043,15 +3046,15 @@
       *    編集病名で）が最後にあるとき補足コメントの設定を行う
            IF      RECE631-BYOMEIHENFLG
                                        =   "1"
-               COMPUTE IDX =   RECE631-BYOMEIMOJI    *   2   -   1
-               IF      RECE631-BYOMEI (IDX:2)
+               COMPUTE IDX =   RECE631-IN-BYOMEIMOJI   *   2   -   1
+               IF      RECE631-IN-BYOMEI (IDX:2)
                                            =   "）"
-                   DISPLAY "HOSOKU CHK=" RECE631-BYOMEI
+                   DISPLAY "HOSOKU CHK=" RECE631-IN-BYOMEI
       * 
                    INITIALIZE                  ORCSBYOMEIAREA
                    IF      FLG-HAISIYMD-CHK    =   1
                      MOVE    "5"                 TO  LNK-BYO-SYORI
-                     MOVE    RECE631-BYOMEI      TO  LNK-BYO-BYOMEI
+                     MOVE    RECE631-IN-BYOMEI   TO  LNK-BYO-BYOMEI
                    ELSE
                      IF  ( RECE631-BYOMEICD (1)
                                                =   "0000999"       )
@@ -3059,7 +3062,7 @@
                                            NOT =   "0000999"   AND
                            RECE631-BYOMEICD (2) =   SPACE          )
                        MOVE    "3"                 TO  LNK-BYO-SYORI
-                       MOVE    RECE631-BYOMEI      TO  LNK-BYO-BYOMEI
+                       MOVE    RECE631-IN-BYOMEI   TO  LNK-BYO-BYOMEI
                      ELSE 
                        MOVE    "4"                 TO  LNK-BYO-SYORI
                        PERFORM VARYING IDY     FROM    1   BY  1
@@ -3070,7 +3073,7 @@
                                                        TO
                                                LNK-BYO-TBYOMEICD (IDY)
                        END-PERFORM
-                       MOVE    RECE631-BYOMEI      TO  LNK-BYO-BYOMEI
+                       MOVE    RECE631-IN-BYOMEI   TO  LNK-BYO-BYOMEI
                      END-IF
                    END-IF
                    MOVE    RECE631-SRYYMD  TO  LNK-BYO-SRYYMD-IN
@@ -3083,8 +3086,8 @@
                    AND   ( LNK-BYO-RC      =   "9" )
                        INITIALIZE                  ORCSBYOMEIAREA
                        MOVE    "3"                 TO  LNK-BYO-SYORI
-                       MOVE    RECE631-BYOMEI      TO  LNK-BYO-BYOMEI
-                       MOVE    RECE631-SRYYMD  TO  LNK-BYO-SRYYMD-IN
+                       MOVE    RECE631-IN-BYOMEI   TO  LNK-BYO-BYOMEI
+                       MOVE    RECE631-SRYYMD      TO  LNK-BYO-SRYYMD-IN
                        CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
                                                        SPA-AREA
                    END-IF
@@ -3116,7 +3119,7 @@
                            MOVE    LNK-BYO-HOSOKU-BYOMEI
                                                TO  RECE631-HOSOKU-BYOMEI
                            MOVE    LNK-BYO-HOSOKU-BYOMEI-ETC
-                                               TO  RECE631-BYOMEI
+                                               TO  RECE631-IN-BYOMEI
                            MOVE    LNK-BYO-BYOMEIHENFLG
                                                TO  RECE631-BYOMEIHENFLG
                            EVALUATE    LNK-BYO-SYORI
@@ -3150,6 +3153,22 @@
                        END-IF
                    END-IF
                END-IF
+           END-IF
+      *
+      *    疑いフラグより病名を編集
+           IF      RECE631-UTAGAIFLG   NOT =   SPACE
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    RECE631-UTAGAIFLG   TO  SMKBYO-UTAGAIFLG
+               MOVE    RECE631-IN-BYOMEI   TO  SMKBYO-BYOMEI
+               MOVE    RECE631-BYOMEIHENFLG
+                                           TO  SMKBYO-BYOMEIHENFLG
+               MOVE    RECE631-BYOMEICD-G  TO  SMKBYO-BYOMEICD-G
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
+               MOVE    SMKBYO-BYOMEI       TO  RECE631-BYOMEI
+               MOVE    SMKBYO-BYOMEIHENFLG TO  RECE631-BYOMEIHENFLG
+               MOVE    SMKBYO-BYOMEICD-G   TO  RECE631-BYOMEICD-G
+           ELSE
+               MOVE    RECE631-IN-BYOMEI   TO  RECE631-BYOMEI 
            END-IF
       *
       *    傷病名コード／修飾語コードの取得

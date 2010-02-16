@@ -116,12 +116,12 @@
            03  RECE031-BYOMEI            PIC X(160).
       *病名文字数
            03  RECE031-BYOMEIMOJI        PIC 9(03).
+      *補足コメント
+           03  RECE031-HOSOKU-BYOMEI     PIC X(40).
       *入力病名
            03  RECE031-IN-BYOMEI         PIC X(160).
       *入力病名文字数
            03  RECE031-IN-BYOMEIMOJI     PIC 9(03).
-      *補足コメント
-           03  RECE031-HOSOKU-BYOMEI     PIC X(40).
       *病名編集フラグ
            03  RECE031-BYOMEIHENFLG      PIC X(01).
       *IＣＤ１０
