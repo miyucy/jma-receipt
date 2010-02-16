@@ -46,6 +46,7 @@
       *                                     ¤ÎÂÐ±þ
       *  04.04.02    NACL-ÌçÏÆ    09/04/13  Ê¿À®£²£±Ç¯£µ·î²þÀµÂÐ±þ
       *  04.05.01    NACL-°ËÆ£    10/01/28  ¾®¿ôÅÀ£µ·åÂÐ±þCOPY¶ç¤Î¤ß
+      *              NACL-¾®Æ¦Âô  10/02/16  ¼£¸³ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -398,6 +399,10 @@
       *    ¹ç·×ÅÀ¿ôÎÎ°è
        01  TBL-TOTALTENSU-INF.
            03  TBL-TOTALTENSU                          PIC 9(08)
+                                                       OCCURS   5.
+      *    ¼£¸³¸ºÅÀÍÑÅÀ¿ôÎÎ°è
+       01  WRK-TOTALTENSU-INF.
+           03  WRK-TOTALTENSU                          PIC 9(08)
                                                        OCCURS   5.
       *    ¿©»öÎÅÍÜ²ó¿ô¥«¥¦¥ó¥ÈÍÑÎÎ°è
        01  TBL-SKJNISSU-INF.
@@ -1096,6 +1101,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  TBL-JNISSU-S
            INITIALIZE                  TBL-JNISSU-GEN
            INITIALIZE                  TBL-TOTALTENSU-INF
+           INITIALIZE                  WRK-TOTALTENSU-INF
            INITIALIZE                  TBL-SKJNISSU-INF
            INITIALIZE                  TBL-SKJRYOYOHI-INF
            INITIALIZE                  TBL-SKJFTN-INF
@@ -1195,6 +1201,7 @@ grpsys     MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
                    INITIALIZE                  TBL-JNISSU
                    INITIALIZE                  TBL-JNISSU-GEN
                    INITIALIZE                  TBL-TOTALTENSU-INF
+                   INITIALIZE                  WRK-TOTALTENSU-INF
                    INITIALIZE                  TBL-SKJNISSU-INF
                    INITIALIZE                  TBL-SKJRYOYOHI-INF
                    INITIALIZE                  TBL-SKJFTN-INF
@@ -1864,6 +1871,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            INITIALIZE                  TBL-JNISSU-S
            INITIALIZE                  TBL-JNISSU-GEN
            INITIALIZE                  TBL-TOTALTENSU-INF
+           INITIALIZE                  WRK-TOTALTENSU-INF
            INITIALIZE                  TBL-SKJNISSU-INF
            INITIALIZE                  TBL-SKJRYOYOHI-INF
            INITIALIZE                  TBL-SKJFTN-INF
@@ -1949,6 +1957,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                    INITIALIZE                  TBL-JNISSU
                    INITIALIZE                  TBL-JNISSU-GEN
                    INITIALIZE                  TBL-TOTALTENSU-INF
+                   INITIALIZE                  WRK-TOTALTENSU-INF
                    INITIALIZE                  TBL-SKJNISSU-INF
                    INITIALIZE                  TBL-SKJRYOYOHI-INF
                    INITIALIZE                  TBL-SKJFTN-INF
@@ -2874,6 +2883,10 @@ grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
       *    ¼çÊÝ¸±
            COMPUTE COLDAT01-HKNTOTALTENSU  =   COLDAT01-HKNTOTALTENSU
                                            +   TBL-TOTALTENSU (1)
+           IF    WRK-TOTALTENSU (1)        NOT =   ZERO
+               COMPUTE COLDAT01-HKNTOTALTENSU = COLDAT01-HKNTOTALTENSU
+                                           -   WRK-TOTALTENSU (1)
+           END-IF
            COMPUTE COLDAT01-HKNSKJRYOYOHI  =   COLDAT01-HKNSKJRYOYOHI
                                            +   TBL-SKJRYOYOHI (1)
            COMPUTE COLDAT01-HKNSKJFTN      =   COLDAT01-HKNSKJFTN
@@ -2884,6 +2897,11 @@ grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
                COMPUTE COLDAT01-TKOHTOTALTENSU(JN-IDX - 1) =
                        COLDAT01-TKOHTOTALTENSU(JN-IDX - 1)
                                            +   TBL-TOTALTENSU (JN-IDX)
+               IF    WRK-TOTALTENSU (JN-IDX)    NOT =   ZERO
+                 COMPUTE COLDAT01-TKOHTOTALTENSU(JN-IDX - 1) =
+                         COLDAT01-TKOHTOTALTENSU(JN-IDX - 1)
+                                           -  WRK-TOTALTENSU (JN-IDX)
+               END-IF
                COMPUTE COLDAT01-TKOHSKJRYOYOHI(JN-IDX - 1) =
                        COLDAT01-TKOHSKJRYOYOHI(JN-IDX - 1)
                                            +   TBL-SKJRYOYOHI (JN-IDX)
@@ -3002,6 +3020,13 @@ grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
       *    ¼«Èñ¤Î¤È¤­
            IF     COLDAT01-HKNKOHSBTKBN
                                        =   "8"
+               MOVE    8888                TO  COLDAT01-RECESYUBETU
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *
+      *    ¼£¸³¤Î¤È¤­
+           IF     (COLDAT01-HKNNUM    >=  "900")    AND
+                  (COLDAT01-HKNNUM    <=  "919")
                MOVE    8888                TO  COLDAT01-RECESYUBETU
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
@@ -3940,7 +3965,16 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                 OR     ( COLDAT02-SRYCD      =   "099999912" )
                    CONTINUE
                ELSE
-                 IF        ACCT-SRYCDTOTAL    =    630010002
+                 IF       (ACCT-SRYCDTOTAL    =    630010002)  OR
+                          (ACCT-ZAIKBN        =    2)
+                   IF    ACCT-ZAIKBN        =    2
+                         COMPUTE    WRK-TOTALTENSU(1)   =
+                                                  WRK-TOTALTENSU(1) +
+                                                 (ACCT-ZAITEN  *
+                                                  ACCT-ZAIKAISU)
+                         MOVE     ZERO    TO   ACCT-ZAITEN
+                         MOVE     ZERO    TO   ACCT-ZAIKAISU
+                   END-IF                                              
                    COMPUTE  TBL-TOTALTENSU(1) =  TBL-TOTALTENSU(1) -
                                                  (ACCT-ZAITEN  *
                                                   ACCT-ZAIKAISU)
@@ -4002,7 +4036,16 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                    OR     ( COLDAT02-SRYCD      =   "099999912" )
                      CONTINUE
                   ELSE
-                     IF        ACCT-SRYCDTOTAL    =    630010002
+                     IF       (ACCT-SRYCDTOTAL    =    630010002)  OR
+                              (ACCT-ZAIKBN        =    2)
+                         IF    ACCT-ZAIKBN        =    2
+                             COMPUTE    WRK-TOTALTENSU(KH-IDX)   =
+                                              WRK-TOTALTENSU(KH-IDX) +
+                                              (ACCT-ZAITEN  *
+                                               ACCT-ZAIKAISU)
+                             MOVE     ZERO    TO   ACCT-ZAITEN
+                             MOVE     ZERO    TO   ACCT-ZAIKAISU
+                         END-IF
                          COMPUTE  TBL-TOTALTENSU(KH-IDX) =
                                         TBL-TOTALTENSU(KH-IDX) -
                                              (ACCT-ZAITEN *
