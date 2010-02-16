@@ -46,6 +46,7 @@
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
       *  04.05.01   NACL-門脇     10/01/25  日別手技点にサイン追加
+      *  04.05.02   NACL-門脇     10/02/16  予備項目追加
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -355,3 +356,9 @@
            03  RECE82-NYUINDAY-TBL.
                05  RECE82-NYUINDAY-KBN    PIC  X(01)
                                                OCCURS  31.
+      *
+      *予備
+           03  RECE82-YOBIETC-AREA.
+               05  RECE82-YOBIETCINF           OCCURS  10.
+                   07  RECE82-YOBIETC     PIC  9(09).
+      *

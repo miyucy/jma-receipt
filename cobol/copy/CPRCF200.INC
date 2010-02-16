@@ -22,6 +22,7 @@
       *  04.04.01    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
+      *  04.05.01    NACL-門脇    10/02/16  予備項目追加
       ********************************************************************
       *01  RECE200-REC.
            03  RECE200-KEY.
@@ -244,3 +245,9 @@
                05  RECE200-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE200-ERR-TEKSTYMD    PIC 9(08).
                05  RECE200-ERR-TEKEDYMD    PIC 9(08).
+      *
+      *予備
+           03  RECE200-YOBIETC-AREA.
+               05  RECE200-YOBIETCINF      OCCURS 10.
+                   07  RECE200-YOBIETC     PIC 9(09).
+      *

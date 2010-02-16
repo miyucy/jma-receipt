@@ -392,7 +392,7 @@
            03  RECE02-RJNKOHFTNINF        OCCURS  3.
       *老人外来公費負担額（（１）（２）（３）使用）
                05  RECE02-RJNGAIKOHFTN    PIC  9(09).
-      *老人入院公費負担額（（１）（２）      使用）
+      *老人入院公費負担額（（１）（２）（３）使用）
                05  RECE02-RJNNYUKOHFTN    PIC  9(09).
       *
       *薬剤一部負担金情報

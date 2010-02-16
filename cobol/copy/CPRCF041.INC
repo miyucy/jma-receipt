@@ -44,6 +44,7 @@
       *
       *  04.05.01    NACL-門脇    09/06/29  休業期間開始月日、
       *                                     休業証明療養期間記載の追加
+      *  04.05.02    NACL-門脇    10/02/16  予備項目追加
       ************************************************************
       *01  RECE41-REC.
            03  RECE41-KEY.
@@ -295,4 +296,9 @@
                05  RECE41-KOMUTENTANKA    PIC  9(02).
       *休業証明療養期間記載
                05  RECE41-KYUGYO-PRTKBN   PIC  X(01).
+      *
+      *予備
+           03  RECE41-YOBIETC-AREA.
+               05  RECE41-YOBIETCINF           OCCURS  10.
+                   07  RECE41-YOBIETC     PIC  9(09).
       *
