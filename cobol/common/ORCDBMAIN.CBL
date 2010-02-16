@@ -209,6 +209,7 @@
            MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            MOVE    WRK-FUNC            TO  MCP-FUNC
+           MOVE    ZERO                TO  MCP-LOGFLAG
       *
            .
       *
@@ -224,9 +225,34 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           IF      MCP-FUNC        =  "DBINSERT" OR "DBUPDATE" 
+                                   OR "DBDELETE"
+               PERFORM 1001-AUDITLOG-PUT-SEC
+           END-IF
+      *
            .
       *
        100-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    監視ログ出力指示処理
+      *****************************************************************
+       1001-AUDITLOG-PUT-SEC             SECTION.
+      *
+           IF      SPA-TERMID      =   SPACE
+               MOVE   "batch"      TO  MCP-LOGCOMMENT
+           END-IF
+      *
+           EVALUATE    MCP-TABLE
+      *    WHEN    "tbl_lock"
+           WHEN    "tbl_ptinf"
+           WHEN    "tbl_jobkanri"
+           DISPLAY "logflg set " MCP-FUNC
+               MOVE    1           TO  MCP-LOGFLAG
+           END-EVALUATE
+           .
+      *
+       1001-AUDITLOG-PUT-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ編集処理
