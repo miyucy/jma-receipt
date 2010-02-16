@@ -440,6 +440,8 @@
       *  04.04.35    NACL-ÌçÏÆ    10/01/13  ºÞ¤Þ¤È¤á¹àÌÜÃÍ¤Î·×»»½¤Àµ
       *  04.04.36    NACL-ÌçÏÆ    10/01/29  ÆâÉþÌôºÞÄþ¸ºÊÔ½¸ÂÐ±þ
       *  04.04.37    NACL-ÌçÏÆ    10/02/01  ÂçºåÉÜÃÏÊý¸øÈñÂÐ±þ
+      *  04.04.38    NACL-ÌçÏÆ    10/02/16  ¥ì¥»µ­ºÜ¤·¤Ê¤¤ÃÏÊý¸øÈñ¤¬¤¢¤ë¾ì¹ç
+      *                                     ¤ÎÊÝ¸±Íó°ìÉôÉéÃ´¶âÊÔ½¸ÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *  04.05.02    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
@@ -621,6 +623,8 @@
            03  FLG-ZENKI-TOKUREI                       PIC 9(01).
            03  FLG-HOKENICHIBU                         PIC 9(01).
            03  FLG-HOKENICHIBU-SYU                     PIC 9(01).
+           03  FLG-HOKENICHIBU2                        PIC 9(01).
+           03  FLG-HOKENICHIBU3                        PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU                   PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU2                  PIC 9(01).
            03  FLG-CHI-TAISYO                          PIC 9(01).
@@ -2047,6 +2051,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE      ZERO       TO      FLG-ZENKI-TOKUREI
            MOVE      ZERO       TO      FLG-HOKENICHIBU
            MOVE      ZERO       TO      FLG-HOKENICHIBU-SYU
+           MOVE      ZERO       TO      FLG-HOKENICHIBU2
+           MOVE      ZERO       TO      FLG-HOKENICHIBU3
            MOVE      ZERO       TO      WRK-HOKENICHIBUGAK
            MOVE      ZERO       TO      FLG-ZENKOKUKOHI-NISYU
            MOVE      ZERO       TO      FLG-ZENKOKUKOHI-NISYU2
@@ -3549,7 +3555,10 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                OR  ((RECE02-ZAITAKU      =   "1"  OR  "2") AND
                     (FLG-TAISYO          =    1          ) AND
                     (FLG-TOKU75          =   ZERO        ))
-                  CONTINUE
+                  IF   (RECE02-SRYYM    >=  "201004")
+                  AND  (WRK-CHK-CYO      =   1      )
+                     MOVE  ZERO  TO  WRK-CHK-TAISYO
+                  END-IF
                ELSE
                   MOVE   ZERO    TO  WRK-CHK-TAISYO
                END-IF
@@ -8881,6 +8890,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    OR  ((SYS-1001-PREFNUM  =  23          ) AND
                         (SYU-KOH-HKNNUM(1) = "191"        ) AND
                         (RECE02-SRYYM     >= "200910"     ))
+      *
+                     IF  (SYU-KOH-HKNNUM(1)(1:1) >= "1" AND <= "8")
+                       IF  ((SYS-1001-PREFNUM  =  13     ) AND
+                            (SYU-KOH-HKNNUM(1) = "151"   ) AND
+                            (RECE02-SRYYM     >= "200905"))
+                       OR  ((SYS-1001-PREFNUM  =  23     ) AND
+                            (SYU-KOH-HKNNUM(1) = "191"   ) AND
+                            (RECE02-SRYYM     >= "200910"))
+                          CONTINUE
+                       ELSE
+                          MOVE    1    TO   FLG-HOKENICHIBU2
+                       END-IF
+                     END-IF
+                     IF  (SYU-KOH-HKNNUM(2)(1:1) >= "1" AND <= "8")
+                     OR  (SYU-KOH-HKNNUM(3)(1:1) >= "1" AND <= "8")
+                     OR  (SYU-KOH-HKNNUM(4)(1:1) >= "1" AND <= "8")
+                          MOVE    1    TO   FLG-HOKENICHIBU2
+                     END-IF
+      *
                      IF  (FLG-ZENKOKUKOHI-NISYU  =   1  )
                      AND (SYU-KOH-HKNNUM(1)  NOT = "974")
                      AND (SYU-KOH-HKNNUM(2)  NOT = "974")
@@ -8916,6 +8944,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          PERFORM   2105211-ICHIBUFTN-KOH-SET-SEC
                        END-IF
                      ELSE
+                       MOVE      1      TO   FLG-HOKENICHIBU3
                        MOVE      1      TO   FLG-CHI-TAISYO
                        IF   RECE02-RJNGENMENKBN  =   "1"
                           MOVE   1      TO   FLG-RJNGENMEN-CHIARI
@@ -9071,6 +9100,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      OR  ((SYS-1001-PREFNUM  =  23      ) AND
                           (SYU-KOH-HKNNUM(1) = "191"    ) AND
                           (RECE02-SRYYM     >= "200910" ))
+      *
+                       IF  (SYU-KOH-HKNNUM(1)(1:1) >= "1" AND <= "8")
+                         IF  ((SYS-1001-PREFNUM  =  13     ) AND
+                              (SYU-KOH-HKNNUM(1) = "151"   ) AND
+                              (RECE02-SRYYM     >= "200905"))
+                         OR  ((SYS-1001-PREFNUM  =  23     ) AND
+                              (SYU-KOH-HKNNUM(1) = "191"   ) AND
+                              (RECE02-SRYYM     >= "200910"))
+                            CONTINUE
+                         ELSE
+                            MOVE    1    TO   FLG-HOKENICHIBU2
+                         END-IF
+                       END-IF
+                       IF  (SYU-KOH-HKNNUM(2)(1:1) >= "1" AND <= "8")
+                       OR  (SYU-KOH-HKNNUM(3)(1:1) >= "1" AND <= "8")
+                       OR  (SYU-KOH-HKNNUM(4)(1:1) >= "1" AND <= "8")
+                            MOVE    1    TO   FLG-HOKENICHIBU2
+                       END-IF
+      *
                        IF  FLG-ZENKOKUKOHI-NISYU  =  1
                          IF  RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)
                          AND RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)
@@ -9085,6 +9133,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF
                        PERFORM   2105217-TOKUSITU-HENSYU2-SEC
                      ELSE
+                       MOVE      1      TO   FLG-HOKENICHIBU3
                        IF  FLG-ZENKOKUKOHI-NISYU  =   2
                           MOVE   2      TO   FLG-KEISAN
                        ELSE
@@ -11047,8 +11096,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND (RECE02-KOHNUM(4)       = SPACE             )
              AND (RECE02-HKNCOMBI(2) NOT = ZERO              )
              AND (RECE02-TOTALTEN(1) NOT = RECE02-TOTALTEN(2))
-             AND (FLG-HOKENICHIBU-SYU
-                                     NOT = ZERO              )
+      ***    AND (FLG-HOKENICHIBU-SYU
+      ***                            NOT = ZERO              )
                  COMPUTE  WRK-HANTEI-TOTALTEN = RECE02-TOTALTEN(1)
                                               - RECE02-TOTALTEN(2)
                  PERFORM  21094-JYOGENGAKU-HENSYU-SEC
@@ -11073,6 +11122,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   FLG-KOH  =   2
                      COMPUTE  RECE02-FTNMONEY(2) = WRK-CHK-KOKIGAK2
                                                  + WRK-CHK-KOKIGAK3
+                   END-IF
+                   IF   FLG-HOKENICHIBU-SYU    = ZERO
+                   AND  FLG-HOKENICHIBU2   NOT = ZERO
+                   AND  FLG-HOKENICHIBU3   NOT = ZERO
+                     MOVE   1    TO   RECE02-RJNNYUKOHFTN(3)
                    END-IF
                  END-IF
              END-IF

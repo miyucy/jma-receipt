@@ -75,6 +75,8 @@
       *  04.04.07    NACL-藤原    09/10/21  月途中の負担者番号変更対応
       *                                     （自立支援の公費単独） 
       *  04.04.08    NACL-藤原    09/12/14  摘要欄記載の改頁処理の修正
+      *  04.04.09    NACL-門脇    10/02/16  レセ記載しない地方公費がある場合
+      *                                     の保険欄一部負担金編集対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/06/11  病棟別出力対応
@@ -423,6 +425,8 @@
            03  WRK-HC06-HEAD4-G    PIC X(128).
       *
            03  WRK-SUM-TENSU       PIC S9(08).
+      *
+           03  WRK-TAIHI-FTNMONEY  PIC 9(09).
       *
            03  WRK-TOKKI           PIC X(02).
            03  WRK-TOKKI-X         PIC X(12).
@@ -2310,6 +2314,7 @@
                MOVE    RECE62X-TEKSTYMD    TO  KOHSKY-TEKSTYMD
            END-IF
       *
+           MOVE     999999999          TO  WRK-TAIHI-FTNMONEY
       *    レセプト種別を請求管理より編集
            INITIALIZE                      RECE10-REC
            MOVE    KOHSKY-KEY          TO  RECE10-KEY
@@ -2320,6 +2325,9 @@
                MOVE    MCPDATA-REC         TO  RECE10-REC
                MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
                MOVE    RECE10-RECEKA       TO  KOHSKY-RECEKA
+               IF   RECE10-FLG (5)  NOT =  ZERO
+                 MOVE  RECE10-FTNMONEY(1)  TO  WRK-TAIHI-FTNMONEY
+               END-IF
            ELSE
                GO  TO  2002-KOHSKY-WRITE-EXT
            END-IF
@@ -2392,6 +2400,10 @@
                MOVE    RECE62X-SHOKUJIINF (IDX)
                                        TO  KOHSKY-SHOKUJIINF (IDX)
            END-PERFORM
+           IF  WRK-TAIHI-FTNMONEY  NOT = 999999999
+               MOVE    WRK-TAIHI-FTNMONEY
+                                       TO  KOHSKY-FTNMONEY(1)
+           END-IF
            MOVE    RECE62X-SHOSHINTIME TO  KOHSKY-SHOSHINTIME
            IF      RECE62X-KOUREI   =  "2" OR "3"
              EVALUATE  RECE62X-DISCOUNTTENTNK
@@ -8998,6 +9010,10 @@
       *    特定疾患等対象者
            IF      RECE62-RJNNYUKOHFTN (2)  NOT =  ZERO
                MOVE   RECE62-RJNNYUKOHFTN (2)  TO  RECE10-FLG (4)
+           END-IF
+      *    公費請求一部負担金置き換え
+           IF      RECE62-RJNNYUKOHFTN (3)  NOT =  ZERO
+               MOVE   RECE62-RJNNYUKOHFTN (3)  TO  RECE10-FLG (5)
            END-IF
       *
            PERFORM VARYING IDX FROM    1   BY  1
