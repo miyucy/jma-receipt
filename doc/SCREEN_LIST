@@ -51,6 +51,10 @@ XGFIL.glade	orca07	(XGFIL)クライアント保存画面
 XGERR.glade	orca07	(XGERR)エラー情報
 XGID1.glade	orca07	(XGID1)確認画面
 
+M80.glade	orca08	(M80)プラグイン
+M80ERR.glade	orca08	(M80ERR)エラー情報
+M80ID1.glade	orca08	(M80ID1)確認画面
+
 U02.glade	orca11	(U02)受付
 U02Q.glade	orca11	(U02Q)受付登録−ＱＲ一覧
 U02X.glade	orca11	(U02X)受付ＣＬＡＩＭ送信選択サブ
