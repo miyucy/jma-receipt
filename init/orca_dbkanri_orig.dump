@@ -29,13 +29,7 @@ CREATE TABLE tbl_dbkanri (
 );
 
 
---
--- Data for Name: tbl_dbkanri; Type: TABLE DATA; Schema: public; Owner: orca
---
-
-COPY tbl_dbkanri (kanricd, version, dbsversion1, dbsversion2, termid, opid, creymd, upymd, uphms) FROM stdin;
-ORCADB00	000000-0	S-000000-0-00000000-0	S-000000-0-00000000-0			20090213	00000000	000000
-\.
+insert into tbl_dbkanri values('ORCADB00','000000-0','S-000000-0-00000000-0','S-000000-0-00000000-0','','',to_char(now(),'yyyymmdd'),'00000000','000000');
 
 
 --

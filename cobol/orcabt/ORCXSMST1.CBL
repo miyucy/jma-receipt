@@ -328,7 +328,7 @@
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+           STRING  "/var/tmp/"         DELIMITED  BY  SIZE
                    WRK-DBFILE          DELIMITED  BY  SPACE
                    "/ORCADBS.DAT"      DELIMITED  BY  SIZE
                                        INTO    ASS-IN
@@ -336,7 +336,7 @@
       *
       *    出力ーファイル
            MOVE    SPACE               TO  ASS-OUT
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+           STRING  "/var/tmp/"         DELIMITED  BY  SIZE
                    WRK-DBFILE          DELIMITED  BY  SPACE
                    "/ORCADBS.OUT"      DELIMITED  BY  SIZE
                                        INTO    ASS-OUT
@@ -344,7 +344,7 @@
       *
       *    出力ーファイル
            MOVE    SPACE               TO  ASS-TBL
-           STRING  "/home/orca/"       DELIMITED  BY  SIZE
+           STRING  "/var/tmp/"         DELIMITED  BY  SIZE
                    WRK-DBFILE          DELIMITED  BY  SPACE
                    "/ORCADBS.TBL"      DELIMITED  BY  SIZE
                                        INTO    ASS-TBL
