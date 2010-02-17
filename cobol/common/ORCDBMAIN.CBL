@@ -225,6 +225,7 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+           MOVE    ZERO                TO  MCP-LOGFLAG
            IF      MCP-FUNC        =  "DBINSERT" OR "DBUPDATE" 
                                    OR "DBDELETE"
                PERFORM 1001-AUDITLOG-PUT-SEC
@@ -247,7 +248,6 @@
       *    WHEN    "tbl_lock"
            WHEN    "tbl_ptinf"
            WHEN    "tbl_jobkanri"
-           DISPLAY "logflg set " MCP-FUNC
                MOVE    1           TO  MCP-LOGFLAG
            END-EVALUATE
            .
