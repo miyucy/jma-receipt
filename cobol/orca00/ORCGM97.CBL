@@ -416,6 +416,7 @@
                    IF      SPA-MID1-FLG    =   "OK"
       *            確認処理
                        PERFORM 410-KAKUNIN-SEC
+                       GO  TO  320-MID1-SET-EXT
                    END-IF
                WHEN    "0202"
                    IF      SPA-MID1-FLG    =   "OK"
