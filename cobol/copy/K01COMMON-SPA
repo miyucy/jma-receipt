@@ -72,6 +72,10 @@
                05  SPA-DENSIKA             PIC  9(01).
       *夜間・早朝加算
                05  SPA-YAKANKBN            PIC  9(01).
+      *地域医療貢献加算
+               05  SPA-CHIIKKBN            PIC  9(01).
+      *明細書発行体制等加算
+               05  SPA-MEISAKBN            PIC  9(01).
       *
       *病院種別
                05  SPA-NAI-HOSPSBT         PIC 9(01).
