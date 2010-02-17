@@ -5319,9 +5319,15 @@
                   (SPA-NAI-ROUJIN      =   SPA-MAE-ROUJIN)
              AND  (SPA-MAE-HKNCOMBINUM NOT =   "9999"  )
              AND  (FLG-HKNCHK          =   ZERO )
+             AND  (SPA-CHIKENKBN       =   SPA-MAE-CHIKENKBN )
                CONTINUE
            ELSE
-               PERFORM 410131-SINSATUHEN-SEC
+               IF     (SPA-CHIKENKBN   NOT =   SPA-MAE-CHIKENKBN )
+               AND    (SPA-CHIKENKBN       =   "1"     )
+                   CONTINUE
+               ELSE
+                   PERFORM 410131-SINSATUHEN-SEC
+               END-IF
            END-IF
       *
            .
