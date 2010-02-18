@@ -212,6 +212,8 @@
       *    システムカタログ
            COPY    "CPDBCTG.INC".
       *
+           COPY    "ORCA-SYSTEM".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -330,6 +332,10 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 5101-ERRSET-SEC
                    MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
+      *            １回のみの警告表示
+                   IF      SPA-ERRCD       =   "K001"
+                       MOVE    1           TO  SPA-ERR-FLG
+                   END-IF
                END-IF
       *
       *        感染症報告処理起動
@@ -394,12 +400,20 @@
        310-SPASET-SEC              SECTION.
       *
            DISPLAY "310-SPASET SPA-MOTOPG:" SPA-MOTOPG "."
+      *
            MOVE    SPACE               TO  WRK-MOTOPG
            IF      SPA-MOTOPG          =   "M01"  OR  "M01N"
                                        OR  "M95"  OR  "MVER"
                                        OR  "KT01" OR  "M97"
                                        OR  "M98"
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
+           END-IF
+      *    初期クリア
+           IF      SPA-MOTOPG(1:1)     =   "M"
+                                       OR  "K"
+               CONTINUE
+           ELSE
+               MOVE    ZERO                TO  SPA-ERR-FLG
            END-IF
       *
       *---- (01.00.04) LINE ADD START --------------------------------
@@ -965,8 +979,41 @@
                    MOVE    "1011"      TO  SPA-ERRCD
            END-IF
       *
+      *####
+      *    IF    ( SPA-ERRCD           =   SPACE )
+      *     AND  ( SPA-ERR-FLG         =   ZERO  )
+      *        GETVALUE により端末の詳細を取得する
+      *        PERFORM 3101-GETVALUE-SEC
+      *
+      *    エンコーディング情報が　"UTF8"　かつ、端末が　glclient
+      *        IF     (SPA-ENCODING                =   2    )
+      *        AND    (ORCA-SYSTEM-VALUE(1)(1:9)   =   "glclient/" )
+      *            MOVE    "K001"               TO  SPA-ERRCD
+      *        END-IF
+      *    END-IF
+      *####
            .
        310-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    TermIDの内容取得処理
+      *****************************************************************
+       3101-GETVALUE-SEC           SECTION.
+      *
+           INITIALIZE                      ORCA-SYSTEM
+           MOVE    "GETVALUE"          TO  MCP-FUNC
+           MOVE    MCP-TERM            TO  ORCA-SYSTEM-ID
+           MOVE    10                  TO  ORCA-SYSTEM-NUM
+           MOVE    "agent"             TO  ORCA-SYSTEM-KEY(1)
+           PERFORM 900-SYSDB-INV-SEC
+           IF    ( MCP-RC              =   ZERO    OR  1 )
+               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
+           ELSE
+               INITIALIZE                      ORCA-SYSTEM
+           END-IF
+      *
+           .
+       3101-GETVALUE-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ更新判定処理
@@ -1733,6 +1780,12 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K001"
+                   STRING  "警告！！"
+                           "この端末は使用できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
 	   .
       *
@@ -1860,6 +1913,22 @@
            END-IF
            .
        900-MSTKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    システムＤＢ読込
+      *****************************************************************
+       900-SYSDB-INV-SEC         SECTION.
+      *
+           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
+           MOVE    "system"      TO  MCP-TABLE
+           MOVE    "key"         TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"        USING
+                                     MCPAREA
+                                     MCPDATA-REC
+                                     SPA-AREA
+      *
+           .
+       900-SYSDB-INV-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

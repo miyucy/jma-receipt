@@ -44,6 +44,7 @@
                    07  SPA-GMN-ERRCD   PIC X(04).
                    07  SPA-NAI-REDL    PIC 9(01).
       *
+        03  SPA-ERR-FLG                 PIC 9(01).
       ***      05  SPA-M95GMN-AREA.
       *            07  SPA-M95-CUR         PIC 9(02).
       *            07  SPA-GMN-SYSYMD      PIC X(10).
