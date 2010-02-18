@@ -87,6 +87,7 @@ PGNO=`printf "%03d" ${WKNUM}`
 
 SQL="\set ON_ERROR_STOP
 begin;
+SET client_encoding = 'EUC_JP';
 insert into tbl_pgkanri values ('','check','${PGNO}','${ymd}','${PGNAME}','${UPDATEFLG}','','${INSTALLDIR}','${COMMENT}','','','${ymd}','','${time}');
 commit;"
 
