@@ -160,11 +160,8 @@ grpsys     COPY    "COMMON-SPA".
            WHEN    "2"
                PERFORM 2001-EDIT-SYURRK-CHOSEI-SEC
            WHEN    "3"
-               PERFORM 900-SYURRK-KEY2-SEL-SEC
-               MOVE    SYURRK-SYURRKNUM
-                                       TO  WKSYURRK-SYURRKNUM
-               MOVE    SYURRK-SYUEDANUM
-                                       TO  WKSYURRK-SYUEDANUM
+               PERFORM 2001-EDIT-SYURRK-RENEW-SEC
+      *
            WHEN    OTHER
       *
                MOVE    1               TO  IDX-BF
@@ -750,6 +747,29 @@ grpsys*            MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
        2001-EDIT-SYURRK-CHOSEI-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納履歴編集処理(会計照会から収納を作成される場合の考慮)
+      *****************************************************************
+       2001-EDIT-SYURRK-RENEW-SEC      SECTION.
+      *
+           MOVE    1               TO  IDX-BF
+           MOVE    2               TO  IDX-AF
+      *
+           PERFORM 900-SYURRK-KEY2-SEL-SEC
+           MOVE    SYURRK-SYURRKNUM
+                                   TO  WKSYURRK-SYURRKNUM
+           MOVE    SYURRK-SYUEDANUM
+                                   TO  WKSYURRK-SYUEDANUM
+           INITIALIZE              SUMSYU-AREA
+           MOVE    IDX-AF      TO  IDX-SYU
+           MOVE    LNKSYU-REC  TO  WKSYUNOU-REC
+           PERFORM 2001-SUMSYU-SEC
+           MOVE    SPACE       TO  WKSYURRK-JOUTAIKBN
+           PERFORM 2001-UPDATE-SYURRK-SEC
+      *
+           .
+       2001-EDIT-SYURRK-RENEW-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
