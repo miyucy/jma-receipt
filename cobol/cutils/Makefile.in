@@ -1,6 +1,7 @@
 top_builddir = ../../
 include $(top_builddir)/Makefile.directories
 CSRCS = \
+	orcuidset.c \
 	orcfiledel.c \
 	orcfileio.c \
 	cobabort.c \
