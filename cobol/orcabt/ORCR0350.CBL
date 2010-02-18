@@ -3044,8 +3044,11 @@
            END-IF    
       *
       *    編集病名で）が最後にあるとき補足コメントの設定を行う
-           IF      RECE631-BYOMEIHENFLG
-                                       =   "1"
+           IF    ( RECE631-BYOMEIHENFLG
+                                       =   "1"  )
+           AND   ( RECE631-IN-BYOMEIMOJI
+                                       >   3    )   
+           AND   ( FLG-HAISIYMD-CHK    =   ZERO )   
                COMPUTE IDX =   RECE631-IN-BYOMEIMOJI   *   2   -   1
                IF      RECE631-IN-BYOMEI (IDX:2)
                                            =   "）"

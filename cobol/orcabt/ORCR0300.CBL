@@ -2840,8 +2840,11 @@ grpsys             OR     ( RECE02-HOSPNUM
            END-IF    
       *
       *    編集病名で）が最後にあるとき補足コメントの設定を行う
-           IF      RECE031-BYOMEIHENFLG
-                                       =   "1"
+           IF    ( RECE031-BYOMEIHENFLG
+                                       =   "1"  )
+           AND   ( RECE031-IN-BYOMEIMOJI
+                                       >   3    )   
+           AND   ( FLG-HAISIYMD-CHK    =   ZERO )   
                COMPUTE IDX =   RECE031-IN-BYOMEIMOJI   *   2   -   1
                IF      RECE031-IN-BYOMEI (IDX:2)
                                            =   "）"
