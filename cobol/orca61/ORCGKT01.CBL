@@ -3726,6 +3726,8 @@
            IF     (SPA-GMN-MAX         >   ZERO )
              OR   (SPA-NAI-RRKDAY-G    >   ZERO )
       *        診療入力済みは、保険組合せ変更なし
+               MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
                PERFORM 41013-SRYKA-CHANGE-SEC
            ELSE
       *        保険組合せ変更
