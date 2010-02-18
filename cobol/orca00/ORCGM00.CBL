@@ -1607,7 +1607,6 @@
            END-IF
       *
            IF    ( SPA-NAI-REDL           =   1 )
-            OR   ( MCP-DBSTATUS           =   "SYNC" )
                MOVE    WIDGET-INSENSITIVE TO  M00-G01-STATE
            END-IF
       *
