@@ -843,7 +843,8 @@
            END-IF
       *
       *    日数編集
-           IF      ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3
+           IF    ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3 ) AND
+                 ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   4 )
                PERFORM 241-NAIYO-NISSU-SET-SEC
            END-IF
       *
@@ -892,7 +893,9 @@
                        END-IF
                    END-PERFORM
                END-IF
-           ELSE
+           END-IF
+      *
+           IF     WRK-YKJ-KBN-G    NOT =   SPACE
       *        回数編集
                IF      CNT-KAISU       >   ZERO
                    PERFORM 241-NAIYO-KAISU-SET-SEC
@@ -957,7 +960,6 @@
                            INTO                WRK-HENSYUDATA
                    END-STRING
                WHEN    2
-               WHEN    4
                    STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                                DELIMITED  BY  SIZE
                            "回分"              DELIMITED  BY  SIZE
@@ -1136,6 +1138,11 @@
       *   帳票区分データ編集処理
       *****************************************************************
        240-KBN-SET-SEC             SECTION.
+      *
+      *    在宅なら抜ける
+           IF      ORCHC30-ZAIKBN(CNT-PARA)     =   4
+               GO  TO  240-KBN-SET-EXT
+           END-IF
       *
       *    数量を１日分にする
            IF      ORCHC30-SRYKAISU(CNT-PARA)  >   ZERO
