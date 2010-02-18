@@ -30,3 +30,16 @@ path	lcl 	{
 		;
 	};
 };
+
+path	redl 	{
+	DBSELECT	{
+		DECLARE tbl_dbcatalog_redl_csr CURSOR FOR
+		SELECT c.relname AS INFO_1
+		FROM pg_class AS c,pg_namespace AS n
+		WHERE c.relkind = 'r'
+		AND c.relnamespace = n.oid
+		AND n.nspname LIKE 'pg_temp%'
+		AND c.relname = 'montsuqi_redirector_lock_table'
+		;
+	};
+};

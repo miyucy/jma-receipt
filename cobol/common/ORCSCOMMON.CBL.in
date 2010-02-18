@@ -421,9 +421,6 @@
                    MOVE    1                   TO  FLG-OK
                    MOVE    SYS-1010-REC        TO  LNK-SYS-1010-REC
                    MOVE    1                   TO  FLG-SYSKANRI
-                   IF    ( MCP-DBSTATUS        =   "REDL" )
-                       MOVE    MCP-DBSTATUS        TO  WRK-MCP-DBSTATUS
-                   END-IF
                ELSE
                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
                    MOVE    "key3"          TO  MCP-PATHNAME
@@ -450,9 +447,6 @@
            MOVE    "0"                 TO  LNK-SYS-1010-GSRAUTH(4:1)
                                            LNK-SYS-1010-GSRAUTH(4:1)
                                            LNK-SYS-1010-GSRAUTH(46:1)
-           IF    ( WRK-MCP-DBSTATUS    =   "REDL" )
-               MOVE    "0"             TO  LNK-SYS-1010-GSRAUTH(1:1)
-           END-IF
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
            .

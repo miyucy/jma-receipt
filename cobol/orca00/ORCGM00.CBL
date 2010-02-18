@@ -209,6 +209,9 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    システムカタログ
+           COPY    "CPDBCTG.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -488,6 +491,25 @@
                                        SYS-1010-REC
       *    年度切替メッセージ
            MOVE    ORCSCOMMON-LABLMSG  TO  SPA-GMN-LBLMSG2
+      *
+           MOVE    1                   TO  SPA-NOCHK-HOSPNUM
+           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
+           MOVE    "redl"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
+               MOVE    "redl"              TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    1           TO  SPA-NAI-REDL
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
+           MOVE    "redl"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    ZERO                TO  SPA-NOCHK-HOSPNUM
       *
       *!!
       *以下 ＳＰＡセットは削除
@@ -1486,9 +1508,15 @@
                MOVE    "red"           TO  M00-LBLMSG2-STYLE
            END-IF
       *
-           IF    ( MCP-DBSTATUS        =   "REDL" )
+           IF    ( SPA-NAI-REDL        =   1 )
                MOVE    "blue"          TO  M00-LBLMSG3-STYLE
                MOVE    "従サーバに接続しています。"
+                                       TO  M00-LBLMSG3
+           END-IF
+      *
+           IF    ( MCP-DBSTATUS        =   "SYNC" )
+               MOVE    "blue"          TO  M00-LBLMSG3-STYLE
+               MOVE    "同期処理中です。"
                                        TO  M00-LBLMSG3
            END-IF
       *
@@ -1529,6 +1557,11 @@
                MOVE    "（まとめ）"       TO  M00-B09-LABEL
            ELSE
                MOVE    SPACE              TO  M00-B09-LABEL
+           END-IF
+      *
+           IF    ( SPA-NAI-REDL           =   1 )
+            OR   ( MCP-DBSTATUS           =   "SYNC" )
+               MOVE    WIDGET-INSENSITIVE TO  M00-G01-STATE
            END-IF
       *
       *
