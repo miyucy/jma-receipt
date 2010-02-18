@@ -1154,6 +1154,8 @@
                        MOVE    ZERO                TO  SPA-GMN-CUR
                        PERFORM 3005-SRYKA-HEN-SEC
                    ELSE
+      *                患者マスター初期編集・チェック
+                       PERFORM 410100-PTINF-HEN-SEC
                        MOVE    SPA-SRYKA           TO  SPA-J01-SRYKA
                        MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
                        MOVE    SPA-SRYKAMEI        TO  SPA-J01-SRYKAMEI
@@ -3865,37 +3867,43 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
-      *    患者マスター存在チェック
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-           MOVE    SPA-GMN-PTID       TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF      NOT =   ZERO
-               MOVE    SPACE               TO  SPA-GMN-NAME
-               MOVE    "0017"              TO  SPA-ERRCD
+      *
+      *    患者マスター初期編集・チェック
+           PERFORM 410100-PTINF-HEN-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41010-PTNUM-SYORI-EXT
            END-IF
+      *    患者マスター存在チェック
+      *    MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+      *    MOVE    SPA-GMN-PTID       TO  PTINF-PTID
+      *    PERFORM 900-PTINF-READ-SEC
+      *    IF      FLG-PTINF      NOT =   ZERO
+      *        MOVE    SPACE               TO  SPA-GMN-NAME
+      *        MOVE    "0017"              TO  SPA-ERRCD
+      *        GO      TO      41010-PTNUM-SYORI-EXT
+      *    END-IF
       *
-           MOVE    PTINF-NAME          TO  SPA-GMN-NAME
-           MOVE    PTINF-KANANAME      TO  SPA-GMN-KANANAME
-           EVALUATE    PTINF-SEX
-               WHEN    "1"
-                   MOVE    "男"                TO  SPA-GMN-SEX
-               WHEN    "2"
-                   MOVE    "女"                TO  SPA-GMN-SEX
-           END-EVALUATE
+      *    MOVE    PTINF-NAME          TO  SPA-GMN-NAME
+      *    MOVE    PTINF-KANANAME      TO  SPA-GMN-KANANAME
+      *    EVALUATE    PTINF-SEX
+      *        WHEN    "1"
+      *            MOVE    "男"                TO  SPA-GMN-SEX
+      *        WHEN    "2"
+      *            MOVE    "女"                TO  SPA-GMN-SEX
+      *    END-EVALUATE
       *
-           MOVE    PTINF-BIRTHDAY      TO  SPA-GMN-BIRTHDAY
-           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
-           PERFORM 41012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYW
+      *    MOVE    PTINF-BIRTHDAY      TO  SPA-GMN-BIRTHDAY
+      *    MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+      *    PERFORM 41012-SEIWA-HEN-SEC
+      *    MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYW
       *    患者の入金方法
-           IF      PTINF-NYUKIN-HOHO   =   SPACE
-               MOVE    "01"                TO  SPA-NYUKIN-HOHO
-           ELSE
-               MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
-           END-IF
+      *    IF      PTINF-NYUKIN-HOHO   =   SPACE
+      *        MOVE    "01"                TO  SPA-NYUKIN-HOHO
+      *    ELSE
+      *        MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
+      *    END-IF
       *    入金状態編集
-           PERFORM 410109-JYOTAI-SET-SEC
+      *****PERFORM 410109-JYOTAI-SET-SEC
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -4005,6 +4013,46 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        41010-PTNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者マスター初期編集・チェック処理
+      *****************************************************************
+       410100-PTINF-HEN-SEC         SECTION.
+      *
+      *    患者マスター存在チェック
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-GMN-PTID       TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTINF      NOT =   ZERO
+               MOVE    SPACE               TO  SPA-GMN-NAME
+               MOVE    "0017"              TO  SPA-ERRCD
+               GO      TO      410100-PTINF-HEN-EXT
+           END-IF
+      *
+           MOVE    PTINF-NAME          TO  SPA-GMN-NAME
+           MOVE    PTINF-KANANAME      TO  SPA-GMN-KANANAME
+           EVALUATE    PTINF-SEX
+               WHEN    "1"
+                   MOVE    "男"                TO  SPA-GMN-SEX
+               WHEN    "2"
+                   MOVE    "女"                TO  SPA-GMN-SEX
+           END-EVALUATE
+      *
+           MOVE    PTINF-BIRTHDAY      TO  SPA-GMN-BIRTHDAY
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           PERFORM 41012-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYW
+      *    患者の入金方法
+           IF      PTINF-NYUKIN-HOHO   =   SPACE
+               MOVE    "01"                TO  SPA-NYUKIN-HOHO
+           ELSE
+               MOVE    PTINF-NYUKIN-HOHO   TO  SPA-NYUKIN-HOHO
+           END-IF
+      *    入金状態編集
+           PERFORM 410109-JYOTAI-SET-SEC
+           .
+       410100-PTINF-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12879,35 +12927,41 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0022"
-                   MOVE    "保険の一括変更は科毎に行って下さい。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "全科では変更できません。"
-                                       TO  WRK-ERRMSG(37:)
+                   STRING  "保険の一括変更は科毎に行って下さい。"
+                           "全科では変更できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0023"
-                   MOVE    "当月の受診履歴が１００以上になります。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "全体の受診履歴表示はできません。"
-                                       TO  WRK-ERRMSG(39:)
+                   STRING  "当月の受診履歴が１００以上になります。"
+                           "全体の受診履歴表示はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0024"
-                   MOVE    "当月の受診履歴が１００以上になります。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "追加はできません。"
-                                       TO  WRK-ERRMSG(39:)
+                   STRING  "当月の受診履歴が１００以上になります。"
+                           "追加はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0025"
-                   MOVE    "保険組合せが有効期間外となります。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "追加はできません。"
-                                       TO  WRK-ERRMSG(35:)
+                   STRING  "保険組合せが有効期間外となります。"
+                           "追加はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0026"
-                   MOVE    "入院日ではありません。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "追加はできません。"
-                                       TO  WRK-ERRMSG(23:)
+                   STRING  "入院日ではありません。"
+                           "追加はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0027"
-                   MOVE    "対象の剤は内服薬剤料逓減に関する剤です。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "剤変更はできません。"
-                                       TO  WRK-ERRMSG(41:)
+                   STRING  "対象の剤は内服薬剤料逓減に関する剤です。"
+                           "剤変更はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0028"
                    MOVE    "入院日です。外来での算定はできません。"
                                        TO  WRK-ERRMSG
@@ -12971,10 +13025,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0060"
-                   MOVE    "複数科のまとめ入力分です。"
-                                       TO  WRK-ERRMSG
-                   MOVE    "全科表示にしてから変更して下さい。"
-                                       TO  WRK-ERRMSG(27:)
+                   STRING  "複数科のまとめ入力分です。"
+                           "全科表示にしてから変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "0061"
                    MOVE    "一括回数変更内容にエラーがあります。"
                                        TO  WRK-ERRMSG
