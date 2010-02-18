@@ -42,7 +42,8 @@ CREATE TABLE tbl_receprt (
     syubetu_srt2 integer DEFAULT 0,
     hospnum numeric(2,0) NOT NULL,
     drcd character(5),
-    drcd_sryka character(2)
+    drcd_sryka character(2),
+    sort_1 character varying(10)
 );
 
 COMMENT ON TABLE tbl_receprt IS 'レセプト明細書';

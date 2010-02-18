@@ -5,7 +5,7 @@ CREATE TABLE tbl_ryocom (
     zainum numeric(8,0) NOT NULL,
     zaiskbkbn character(1),
     srycd character(9),
-    "month" numeric(2,0),
+    month numeric(2,0),
     day_1 numeric(2,0),
     day_2 numeric(2,0),
     day_3 numeric(2,0),

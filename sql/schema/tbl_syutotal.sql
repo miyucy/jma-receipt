@@ -186,7 +186,9 @@ CREATE TABLE tbl_syutotal (
     byr_hknten numeric(7,0) DEFAULT 0,
     byr_money numeric(7,0) DEFAULT 0,
     byr_tgmoney numeric(7,0) DEFAULT 0,
-    byr_tgmoney_tax numeric(7,0) DEFAULT 0
+    byr_tgmoney_tax numeric(7,0) DEFAULT 0,
+    chosei1 integer DEFAULT 0,
+    chosei2 integer DEFAULT 0
 );
 
 COMMENT ON TABLE tbl_syutotal IS '¼ýÇ¼¹ç·×';

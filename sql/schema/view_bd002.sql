@@ -131,6 +131,8 @@ CREATE VIEW view_bd002 AS
            a.rese_ykz_ftn,
            a.kohtaiykzkbn,
            a.chosei,
+           a.chosei1,
+           a.chosei2,
            a.grp_denpnum,
            a.grp_rennum,
            a.grp_sgkmoney,
@@ -411,14 +413,14 @@ CREATE VIEW view_bd002 AS
            denpnum)),
            tbl_ptnum c,
            tbl_ptinf d 
-     WHERE ((((((((a.hospnum)::numeric = c.hospnum) 
-       AND ((a.ptid)::numeric = c.ptid)) 
+     WHERE ((((((((a.hospnum)::numeric = (c.hospnum)::numeric) 
+       AND ((a.ptid)::numeric = (c.ptid)::numeric)) 
        AND ((a.hospnum)::numeric = d.hospnum)) 
        AND ((a.ptid)::numeric = d.ptid)) 
        AND (a.denpjtikbn <> '3'::bpchar)) 
        AND (a.createkbn <> '3'::bpchar)) 
        AND (d.tstptnumkbn <> '1'::bpchar));
 
-COMMENT 
-        ON VIEW view_bd002 IS '¼ýÇ¼¥Ó¥å¡¼2';
+
+COMMENT ON VIEW view_bd002 IS '¼ýÇ¼¥Ó¥å¡¼2';
 

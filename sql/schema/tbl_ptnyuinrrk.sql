@@ -41,7 +41,8 @@ CREATE TABLE tbl_ptnyuinrrk (
     hospnum numeric(2,0) NOT NULL,
     timekbn_in character(1),
     tainrelkbn character(1),
-    kaigokbn character(1)
+    kaigokbn character(1),
+    nyucalkbn character(1)
 );
 
 COMMENT ON TABLE tbl_ptnyuinrrk IS '´µ¼ÔÆş±¡ÍúÎò';

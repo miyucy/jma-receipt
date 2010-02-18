@@ -14,7 +14,9 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf.kohid,
            tbl_ptkohinf.kohnum,
            tbl_ptkohinf.paykbn,
-           tbl_ptkohinf.ftnjanum 
+           tbl_ptkohinf.ftnjanum,
+           tbl_ptkohinf.jkysnum,
+           tbl_ptkohinf.tekstymd 
       FROM (((tbl_hkncombi JOIN view_q004 
         ON ((((tbl_hkncombi.hospnum = view_q004.hospnum) 
        AND (tbl_hkncombi.ptid = view_q004.ptid)) 
@@ -35,8 +37,8 @@ CREATE VIEW view_q001 AS
         OR ((tbl_hkncombi.koh3id = tbl_ptkohinf.kohid) 
        AND (tbl_hkncombi.koh3hknnum = tbl_ptkohinf.kohnum))) 
         OR ((tbl_hkncombi.koh4id = tbl_ptkohinf.kohid) 
-       AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum)))))) UNI
-        ON SELECT tbl_hkncombi.hospnum,
+       AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum)))))) 
+     UNION SELECT tbl_hkncombi.hospnum,
            tbl_hkncombi.ptid,
            tbl_hkncombi.hkncombinum,
            view_q004.nyugaikbn,
@@ -51,7 +53,9 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf.kohid,
            tbl_ptkohinf.kohnum,
            tbl_ptkohinf.paykbn,
-           tbl_ptkohinf.ftnjanum 
+           tbl_ptkohinf.ftnjanum,
+           tbl_ptkohinf.jkysnum,
+           tbl_ptkohinf.tekstymd 
       FROM ((view_q004 JOIN tbl_hkncombi 
         ON ((((view_q004.hospnum = tbl_hkncombi.hospnum) 
        AND (view_q004.ptid = tbl_hkncombi.ptid)) 
@@ -65,7 +69,10 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf 
      WHERE (((((view_q004.hospnum = tbl_ptkohinf.hospnum) 
        AND (view_q004.ptid = tbl_ptkohinf.ptid)) 
-       AND (((((((((((((tbl_ptkohinf.kohnum = '960'::bpchar) 
+       AND ((((((((((((((((tbl_ptkohinf.kohnum = '956'::bpchar) 
+        OR (tbl_ptkohinf.kohnum = '957'::bpchar)) 
+        OR (tbl_ptkohinf.kohnum = '958'::bpchar)) 
+        OR (tbl_ptkohinf.kohnum = '960'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '961'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '962'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '963'::bpchar)) 
@@ -81,6 +88,6 @@ CREATE VIEW view_q001 AS
        AND (view_q004.sryymd >= tbl_ptkohinf.tekstymd)) 
        AND (view_q004.sryymd <= tbl_ptkohinf.tekedymd));
 
-COMMENT 
-        ON VIEW view_q001 IS '患者照会ビュー1';
+
+COMMENT ON VIEW view_q001 IS '患者照会ビュー1';
 

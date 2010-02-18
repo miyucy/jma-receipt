@@ -12,6 +12,7 @@ CREATE VIEW view_i001 AS
            a.home_post,
            a.home_adrs,
            a.home_banti,
+           a.deathkbn,
            b.btunum,
            b.brmnum,
            b.nyuinka,
@@ -36,8 +37,8 @@ CREATE VIEW view_i001 AS
            tbl_ptnum c 
      WHERE ((((((((((((((((b.hospnum = a.hospnum) 
        AND (b.ptid = a.ptid)) 
-       AND (b.hospnum = c.hospnum)) 
-       AND (b.ptid = c.ptid)) 
+       AND (b.hospnum = (c.hospnum)::numeric)) 
+       AND (b.ptid = (c.ptid)::numeric)) 
        AND (b.hospnum = d.hospnum)) 
        AND (b.ptid = d.ptid)) 
        AND (a.rrknum <> (0)::numeric)) 
@@ -51,6 +52,6 @@ CREATE VIEW view_i001 AS
        AND (b.ptid = e.ptid)) 
        AND (b.rrknum = e.rrknum));
 
-COMMENT 
-        ON VIEW view_i001 IS '入院患者照会ビュー';
+
+COMMENT ON VIEW view_i001 IS '入院患者照会ビュー';
 

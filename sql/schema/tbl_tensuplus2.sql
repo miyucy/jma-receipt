@@ -50,7 +50,9 @@ CREATE TABLE tbl_tensuplus2 (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    tukijgnkaisu numeric(3,0) DEFAULT 0,
+    tukijgntouyoryo numeric(10,5) DEFAULT 0
 );
 
 COMMENT ON TABLE tbl_tensuplus2 IS '点数付加2';

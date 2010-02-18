@@ -2,7 +2,7 @@ CREATE TABLE tbl_yykexample (
     hospnum smallint NOT NULL,
     rennum smallint NOT NULL,
     hyokbn smallint NOT NULL,
-    "comment" character varying(100),
+    comment character varying(100),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),

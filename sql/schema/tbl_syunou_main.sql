@@ -208,7 +208,9 @@ CREATE TABLE tbl_syunou_main (
     byr_money integer DEFAULT 0,
     byr_tgmoney integer DEFAULT 0,
     byr_tgmoney_tax integer DEFAULT 0,
-    skynyukinkbn character(1)
+    skynyukinkbn character(1),
+    chosei1 integer DEFAULT 0,
+    chosei2 integer DEFAULT 0
 );
 
 ALTER TABLE ONLY tbl_syunou_main

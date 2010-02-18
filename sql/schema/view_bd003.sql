@@ -14,6 +14,6 @@ CREATE VIEW view_bd003 AS
            ptid,
            denpnum));
 
-COMMENT 
-        ON VIEW view_bd003 IS '¼ýÇ¼¥Ó¥å¡¼3';
+
+COMMENT ON VIEW view_bd003 IS '¼ýÇ¼¥Ó¥å¡¼3';
 

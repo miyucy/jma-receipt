@@ -6,7 +6,9 @@ CREATE TABLE tbl_ptkinki (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
+    kinkstymd character(8),
+    touyoymd character(8)
 );
 
 COMMENT ON TABLE tbl_ptkinki IS '´µ¼Ô¶Ø´÷ÌôºÞ';

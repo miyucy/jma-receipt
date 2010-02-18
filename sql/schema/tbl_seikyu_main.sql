@@ -194,7 +194,12 @@ CREATE TABLE tbl_seikyu_main (
     flg5 smallint DEFAULT 0,
     reserve_area character varying(50),
     henrei_siji_flg smallint DEFAULT 0,
-    etccreateflg smallint DEFAULT 0
+    etccreateflg smallint DEFAULT 0,
+    tokkinm1 character varying(12),
+    tokkinm2 character varying(12),
+    tokkinm3 character varying(12),
+    tokkinm4 character varying(12),
+    tokkinm5 character varying(12)
 );
 
 ALTER TABLE ONLY tbl_seikyu_main
