@@ -132,6 +132,7 @@
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
       *  04.05.03    NACL-藤原    09/08/31  未請求設定チェックを医保分のみ
       *                                     行う
+      *  04.05.04    NACL-小豆沢  10/02/18  スクリプト起動パスサーチ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -332,8 +333,8 @@
                                    BY         //WRK-SPA-//.
       *                             
        01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/monthly/".
+      **     05  FILLER             PIC X(16) VALUE
+      **                                       "scripts/monthly/".
            05  WRK-SHELL-SHELL    PIC X(20).         
       *
        01  WRK-CONS-AREA.
@@ -4072,10 +4073,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    END-IF
            END-EVALUATE        
       *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      **     INITIALIZE              ORCSMKPASSAREA
+      **     MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+      **     CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+      **     MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *
+           MOVE    WRK-SHELL-NAME  TO  SHELLTBL-NAME
       *     
            MOVE    ZERO            TO  WRK-SHELL-SRYYM
            MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
@@ -4167,7 +4170,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    自動的に情報確認画面を表示
