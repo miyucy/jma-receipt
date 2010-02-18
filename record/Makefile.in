@@ -670,4 +670,4 @@ distclean:
 
 install: all
 	$(INSTALL) -d $(recorddir)
-	$(INSTALL_DATA) $(DEF_files) $(RECORD_files) $(DB_files) $(recorddir)
+	$(INSTALL_DATA) $(DEF_files) $(RECORD_files) $(DB_files) shell.db $(recorddir)
