@@ -106,7 +106,7 @@
                PERFORM 910-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-                   DISPLAY "エンコーディング情報  = " CPDBCTG-INFO-1
+      *            DISPLAY "エンコーディング情報  = " CPDBCTG-INFO-1
       *
                    EVALUATE    CPDBCTG-INFO-1
                        WHEN    "EUC_JP"
@@ -116,9 +116,9 @@
                        WHEN    OTHER
                            MOVE    3               TO  SPA-ENCODING
                    END-EVALUATE
-                   DISPLAY "SPA-ENCODING  = " SPA-ENCODING
-               ELSE
-                   DISPLAY "ENCODING GET ERR = " MCP-RC
+      *            DISPLAY "SPA-ENCODING  = " SPA-ENCODING
+      *        ELSE
+      *            DISPLAY "ENCODING GET ERR = " MCP-RC
                END-IF
            END-IF
       *    CPDBCTG-INFO-1 = EUC_JP  or UTF8 or OTHER
@@ -151,9 +151,9 @@
                PERFORM 910-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                   MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-                  DISPLAY "ロケール情報  = " CPDBCTG-INFO-1
-               ELSE
-                  DISPLAY "ENCODING GET ERR = " MCP-RC
+      *           DISPLAY "ロケール情報  = " CPDBCTG-INFO-1
+      *        ELSE
+      *           DISPLAY "ENCODING GET ERR = " MCP-RC
                END-IF
            END-IF
       *    CPDBCTG-INFO-1 = EUC_JP  or UTF8 or OTHER
