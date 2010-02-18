@@ -116,6 +116,7 @@
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-PTTOKKI         PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
+           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-SYSKANRIOK      PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -220,7 +221,7 @@
            03  WRK-MISYU           PIC S9(08).
            03  WRK-CHIYUYMD        PIC X(08).
       *    合計点数
-           03  WRK-GOK-TENSU       PIC 9(11).
+           03  WRK-GOK-TENSU       PIC S9(11).
       *
            03  WRK-HEN-SRYCD       PIC X(09).
       *
@@ -455,6 +456,9 @@
       *    同一患者識別テーブル
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
+      *    診療会計附加情報マスタ−
+       01  SRYACCTPLUS-REC.
+           COPY    "CPSRYACCTPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2043,7 +2047,7 @@
            MOVE    JYURRK-DRCD         TO  SPA-NAI-RRK-DRCD  (IDX)
       *    診療科
            MOVE    JYURRK-SRYKA        TO  SPA-NAI-RRK-SRYKA  (IDX)
-      *    診察料を算定しているか判定
+      *    診察を算定しているか判定
            IF      JYURRK-SRYKBN-G NOT =   SPACE
                MOVE    "1"                 TO  SPA-NAI-RRK-SINSATU (IDX)
            END-IF
@@ -5766,10 +5770,21 @@
                   OR  (ACCT-JIHOKBN        =   "1"    )
                    CONTINUE
                ELSE
+                   INITIALIZE                  SRYACCTPLUS-REC
+                   IF      ACCT-ZAIREQFLG      =   "1"
+      *                附加情報あり
+                       PERFORM 32012-SRYACCTPLUS-READ-SEC
+                   END-IF
       *            対象分の合計点数計算
-                   COMPUTE WRK-GOK-TENSU       =   WRK-GOK-TENSU
-                                               +  (ACCT-ZAITEN
-                                               *   WRK-ZAIKAISU )
+                   IF      ACCTP-PLUSKBN        =   1
+                       COMPUTE WRK-GOK-TENSU    =   WRK-GOK-TENSU
+                                                -  (ACCT-ZAITEN
+                                                *   WRK-ZAIKAISU )
+                   ELSE
+                       COMPUTE WRK-GOK-TENSU    =   WRK-GOK-TENSU
+                                                +  (ACCT-ZAITEN
+                                                *   WRK-ZAIKAISU )
+                   END-IF
                END-IF
            END-IF
       *
@@ -7003,6 +7018,46 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        921-HKNNUM-READ-EXT.
            EXIT.
+      *****************************************************************
+      *    診療会計附加情報検索処理
+      *****************************************************************
+       32012-SRYACCTPLUS-READ-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCTPLUS-REC
+           INITIALIZE                  SRYACCTPLUS-REC
+           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  ACCTP-PTID
+           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+      *
+           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
+                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
+               ELSE
+                   INITIALIZE                      SRYACCTPLUS-REC
+                   MOVE    1                   TO  FLG-SRYACCTPLUS
+               END-IF
+           ELSE
+               INITIALIZE                  SRYACCTPLUS-REC
+               MOVE    1               TO  FLG-SRYACCTPLUS
+           END-IF
+           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       32012-SRYACCTPLUS-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    患者特記事項読み込み
       *****************************************************************
