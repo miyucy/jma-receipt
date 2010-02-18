@@ -4408,15 +4408,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-TERMID      TO  JOB-TERMID
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    ファイルデイレクトリ位置指定
-           MOVE    "scripts/monthly/collectdata1.sh"
-                                   TO  WRK-SHELL-NAME
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-      *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "collectdata1.sh"   TO  SHELLTBL-NAME
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE    SPA-PREFNUM     TO  SHELLTBL-ARG3
@@ -4432,7 +4425,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .

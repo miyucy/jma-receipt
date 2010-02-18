@@ -154,8 +154,8 @@
            03  WRK-MOTOPG          PIC X(08).
       *
        01  SHELL-AREA.
-           05  SHELL-NAME          PIC X(31) VALUE
-                                   "scripts/daily/infectiondata1.sh".
+           05  SHELL-NAME          PIC X(17) VALUE
+                                   "infectiondata1.sh".
       *
        01  CONST-AREA.
            03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
@@ -1828,12 +1828,8 @@
                                            JOBKANRI-REC
                                            SPA-AREA
       *
-           INITIALIZE                      ORCSMKPASSAREA
-           MOVE    SHELL-NAME          TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-      *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
            MOVE    SPA-TERMID          TO  SHELLTBL-ARG1
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
            MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
@@ -1844,7 +1840,7 @@
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "daily"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"     USING
                                            MCPAREA
                                            MCPDATA-REC
