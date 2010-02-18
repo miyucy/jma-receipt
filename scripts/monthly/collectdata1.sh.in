@@ -30,7 +30,7 @@ ERRFILE=/tmp/$2datacollecterror
 
 DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
-function gairai () {
+gairai () {
 #外来分処理
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,2,$5,$6,$ERRFILE 2>&1 | tee -a $LOGFILE
   if  [ -e $ERRFILE ]; then
@@ -44,7 +44,7 @@ function gairai () {
   fi
 }
 
-function nyuin () {
+nyuin () {
 #入院分処理
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$5,$6,$ERRFILE 2>&1 | tee -a $LOGFILE
   if  [ -e $ERRFILE ]; then
@@ -58,7 +58,7 @@ function nyuin () {
   fi
 }
 
-function make_upload_file () {
+make_upload_file () {
 #アップロードファイル作成
   if  [ $3 -eq '1' ]; then
     if  [ -e $DASDIR/$1/tmp/$COLLECTG ] && [ -e $DASDIR/$1/tmp/$COLLECTN ]; then
@@ -101,6 +101,9 @@ function make_upload_file () {
       nyuin $1 $2 $3 $PREVYM $6 $7
     fi
     make_upload_file $2 $PREVYM $5
+
+    rm -f $DASDIR/$2/tmp/$COLLECTG
+    rm -f $DASDIR/$2/tmp/$COLLECTN
     rm -f /tmp/$2COLDT*
 
     #当年月
