@@ -24,11 +24,9 @@ def table_list_sql(type)
 #  sql += "   AND pg_catalog.pg_table_is_visible(c.oid) "
 #  sql += " ORDER BY 1; "
 
-  sql  = "SELECT relname "
-  sql += "  FROM pg_class c "
-  sql += "  LEFT JOIN pg_user u ON c.relname = u.usesysid "
-  sql += " WHERE c.relkind ='#{relkind}' "
-  sql += "   AND c.relname !~ '^pg_';"
+  sql  = " select relname from pg_class as c , pg_user as u"
+  sql += " where  c.relname not like 'pg_%' and c.relkind = '#{relkind}'"
+  sql += " and c.relowner = u.usesysid and usename = 'orca'; "
 end
 
 def tschema_parse(schema)
@@ -52,7 +50,7 @@ def vschema_parse(schema)
     next if line =~ /^--/
     next if line =~ /^SET/
     line.gsub!(/, /,",\n           ")
-    line.gsub!(/(OR |AND |FROM |WHERE |LEFT |USING |GROUP |UNION |ON )/){|s|
+    line.gsub!(/(OR |AND |FROM |WHERE |LEFT |USING |GROUP |COMMENT ON |UNION |ON )/){|s|
       sprintf("\n%11s", s)
     }
     line.gsub!(/[^\s+](SELECT )/){|s|
