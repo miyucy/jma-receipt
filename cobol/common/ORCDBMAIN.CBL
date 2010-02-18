@@ -240,16 +240,16 @@
       *****************************************************************
        1001-AUDITLOG-PUT-SEC             SECTION.
       *
-           IF      SPA-TERMID      =   SPACE
-               MOVE   "batch"      TO  MCP-LOGCOMMENT
-           END-IF
+      *    IF      SPA-TERMID      =   SPACE
+      *        MOVE   "batch"      TO  MCP-LOGCOMMENT
+      *    END-IF
       *
-           EVALUATE    MCP-TABLE
+      *    EVALUATE    MCP-TABLE
       *    WHEN    "tbl_lock"
-           WHEN    "tbl_ptinf"
-           WHEN    "tbl_jobkanri"
-               MOVE    1           TO  MCP-LOGFLAG
-           END-EVALUATE
+      *    WHEN    "tbl_ptinf"
+      *    WHEN    "tbl_jobkanri"
+      *        MOVE    1           TO  MCP-LOGFLAG
+      *    END-EVALUATE
            .
       *
        1001-AUDITLOG-PUT-EXT.
