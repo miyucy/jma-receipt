@@ -482,7 +482,6 @@ DEF_files = \
 
 DB_files = \
 	query_ptinf.db \
-	shell.db \
 	tbl_adrs.db \
 	tbl_byomei.db \
 	tbl_chk.db \
@@ -646,7 +645,10 @@ DB_files = \
 	tbl_infection.db \
 	tbl_dbcatalog.db \
 
-all:   
+shell.db: shell.db.in
+	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
+
+all: shell.db  
 
 filecheck:
 	@(for i in $(DEF_files) $(RECORD_files) $(DB_files) ;do echo "make	$${i}"; done ;\
@@ -660,8 +662,10 @@ filecheck:
 	|sort -k2 |uniq -u -f1 
 
 clean: 
+	-rm -f shell.db
 
 distclean: 
+	-rm -f shell.db
 	-rm -f Makefile
 
 install: all
