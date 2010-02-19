@@ -106,12 +106,22 @@
            MOVE    COMMAND-PARAM       TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
-           IF    ( MCP-DBSTATUS        =   "REDL" )
+      *
+           MOVE    1                   TO  SPA-NOCHK-HOSPNUM
+           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
+           MOVE    "redl"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
                MOVE    1               TO  FLG-REDL
                MOVE    "リダイレクト先の日レセです。"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
+           MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
+           MOVE    "redl"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+           MOVE    ZERO                TO  SPA-NOCHK-HOSPNUM
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
@@ -159,6 +169,14 @@
                                        MCPDATA-REC
                                        SPA-AREA
       *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
+           MOVE    "DBSTART"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -170,6 +188,14 @@
       *
            MOVE    LOW-VALUE       TO  MCP-TABLE
                                        MCP-PATHNAME
+           MOVE    "DBCOMMIT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           MOVE    LOW-VALUE       TO  MCP-TABLE
+                                       MCP-PATHNAME
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -178,4 +204,52 @@
       *
            .
        900-DBDISCONNECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC           SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
            EXIT.
