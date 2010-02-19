@@ -6,11 +6,11 @@ X100	{
 				row 	int;
 				rowattr	int;
 				item	{
-					value0	varchar(2);
-					value1	varchar(7);
-					value2	varchar(40);
-				}	[100];
-				select	bool[100];
+					value0	varchar(3);
+					value1	varchar(11);
+					value2	varchar(100);
+				}	[200];
+				select	bool[200];
 			};
 		};
 	};
