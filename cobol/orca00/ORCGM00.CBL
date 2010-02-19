@@ -1590,6 +1590,10 @@
            MOVE    WIDGET-INSENSITIVE      TO  M00-G01-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       *
+           MOVE    WIDGET-NORMAL           TO  M00-B09-STATE
+           MOVE    WIDGET-NORMAL           TO  M00-B10-STATE
+           MOVE    WIDGET-NORMAL           TO  M00-B11-STATE
+      *
            IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
            END-IF
@@ -1608,6 +1612,16 @@
       *
            IF    ( SPA-NAI-REDL           =   1 )
                MOVE    WIDGET-INSENSITIVE TO  M00-G01-STATE
+      *
+               IF    ( M00-B09-LABEL  NOT =   SPACE )
+                   MOVE    WIDGET-INSENSITIVE TO  M00-B09-STATE
+               END-IF
+      *
+                   MOVE    WIDGET-INSENSITIVE TO  M00-B10-STATE
+      *
+               IF    ( M00-B11-LABEL  NOT =   SPACE )
+                   MOVE    WIDGET-INSENSITIVE TO  M00-B11-STATE
+               END-IF
            END-IF
       *
       *

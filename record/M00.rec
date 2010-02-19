@@ -47,9 +47,14 @@ M00	{
 		};
 		B09	{
 			label	varchar(10);
+			state	int;
+		};
+		B10	{
+			state	int;
 		};
 		B11	{
 			label	varchar(10);
+			state	int;
 		};
 	};
 };

@@ -52,5 +52,12 @@
                 05  M00-MLIMSG          PIC X(70).
               04  M00-HTML1-G.
                 05  M00-HTML1          PIC X(200).
-              04  M00-B09-LABEL        PIC X(10).
-              04  M00-B11-LABEL        PIC X(10).
+              04  M00-B09-G.
+                05  M00-B09-LABEL      PIC X(10).
+                05  M00-B09-STATE      PIC S9(9)   BINARY.
+              04  M00-B10-G.
+                05  M00-B10-STATE      PIC S9(9)   BINARY.
+              04  M00-B11-G.
+                05  M00-B11-LABEL      PIC X(10).
+                05  M00-B11-STATE      PIC S9(9)   BINARY.
+
