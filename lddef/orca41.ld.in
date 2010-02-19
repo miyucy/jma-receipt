@@ -55,6 +55,7 @@ db	{
 	tbl_ptrsiinf;
 	tbl_hknnum;
 	tbl_chkreigai;
+	tbl_inputcd;
 };
 
 /* #include "orcadb.inc" */
