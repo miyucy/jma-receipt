@@ -11,12 +11,13 @@ fi
 
 umask 022
 
-PACKAGEFILE=patch@VERSION@.gz
+PRGDIR=/var/tmp/orca-prg@VERSION@
 PATCHDIR=/var/lib/jma-receipt/patch
-
+PACKAGEFILE=patch@VERSION@.gz
 PRGPATH=$PGUPGRADEPATH/@VERSION@
-
+PATCHLIST=$PATCHDIR/patch-file-list
 CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
+
 
 #オフラインメンテナンスであるかチェック
 OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
@@ -27,19 +28,18 @@ else
   PRGPATH=$OFFLINEPATH
 fi
 
-#旧方式か？
-if [ -n	"$OBSOLETEDL" ]; then
-  OBSDL=yes
-else
-  OBSDL=no
-fi
-
 if ! [ -d $PATCHDIR ];	then
 	echo "パッチディレクトリが存在しません"
 	exit
 fi
 
+export PACKAGEFILE
+export PATCHDIR
+export PRGPATH
+export CACERTFILE
+export PATCHLIST
+
 #更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $CACERTFILE $OBSDL $WGETOPTION
+cachedl.rb 2>&1
 
 exit
