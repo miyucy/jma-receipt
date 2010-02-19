@@ -100,10 +100,16 @@
                        09  TSRYKA-SYOSAIYMD-SAISIN-YM  PIC X(06).
                        09  TSRYKA-SYOSAIYMD-SAISIN-DD  PIC 9(02).
                05  TSRYKA-SRYCD-MAX                    PIC 9(05).
-               05  TSRYKA-SRYCD-OCC                    OCCURS 2000.
+               05  TSRYKA-SRYCD-OCC                    OCCURS 1000.
                    07  TSRYKA-SRYCD                    PIC X(09).
                    07  TSRYKA-SRYCD-DAY-G.
                        09  TSRYKA-SRYCD-DAY            PIC 9(01)
+                                                       OCCURS  31.
+               05  TSRYKA-PSRYCD-MAX                   PIC 9(05).
+               05  TSRYKA-PSRYCD-OCC                   OCCURS 1000.
+                   07  TSRYKA-PSRYCD                   PIC X(09).
+                   07  TSRYKA-PSRYCD-DAY-G.
+                       09  TSRYKA-PSRYCD-DAY           PIC 9(01)
                                                        OCCURS  31.
       *
       *    ø«Œ≈π‘∞Ÿ¬‡»Ú•Ô°º•Ø
