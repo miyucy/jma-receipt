@@ -655,7 +655,7 @@
            03  CONST-TSRYKA-MAX                    PIC 9(05)
                                                    VALUE   30.
            03  CONST-TSRYKA-SRYCD-MAX              PIC 9(05)
-                                                   VALUE   2000.
+                                                   VALUE   1000.
            03  CONST-TSRYCD-MAX                    PIC 9(05)
                                                    VALUE   2000.
            03  CONST-TJNISSU-MAX                   PIC 9(05)
