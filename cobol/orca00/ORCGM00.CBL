@@ -506,7 +506,7 @@
       *    年度切替メッセージ
            MOVE    ORCSCOMMON-LABLMSG  TO  SPA-GMN-LBLMSG2
       *
-           MOVE    1                   TO  SPA-NOCHK-HOSPNUM
+           MOVE    '1'                 TO  SPA-NOCHK-HOSPNUM
            MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
            MOVE    "redl"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
