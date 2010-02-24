@@ -296,28 +296,10 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *     MOVE    SPACE           TO  WRK-MOTOPG
-           MOVE    ZERO            TO  SPA-GMN-SELNUM
-           MOVE    SPACE           TO  SPA-GMN-MEMO
-      *
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
       *         MOVE    SPA-MOTOPG      TO  WRK-MOTOPG
-           END-IF
-      *
-           MOVE    MCP-USER        TO  WRK-SYSUSER
-           PERFORM 900-SYSUSER-READ-SEC
-           MOVE    WRK-HOSPNUM     TO  WRK-MCP-HOSPNUM
-      *
-      *    ユーザー権限検索
-           PERFORM 3101-USER-KANRI-SEC
-      *
-           IF    ( SPA-NAI-USER    =   "1" OR "2" OR "3" OR "4" )
-      *        シスベースコンボセット
-               PERFORM 3101-SYSBASE-SEC
-           ELSE
-               MOVE   ZERO         TO  SPA-NAI-SYS-CNT
            END-IF
       *
       *    スパ初期編集処理
@@ -467,14 +449,24 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           INITIALIZE              SPA-GMN-AREA
            MOVE    1               TO  SPA-GMN-CUR
-           PERFORM 3101-LISTENTRY-SEC
       *
-           IF      SPA-NAI-SYS-CNT >   1
-               CONTINUE
+           MOVE    MCP-USER        TO  WRK-SYSUSER
+           PERFORM 900-SYSUSER-READ-SEC
+           MOVE    WRK-HOSPNUM     TO  WRK-MCP-HOSPNUM
+      *
+      *    ユーザー権限検索
+           PERFORM 3101-USER-KANRI-SEC
+      *
+           IF    ( SPA-NAI-USER    =   "1" OR "2" OR "3" OR "4" )
+      *        シスベースコンボセット
+               PERFORM 3101-SYSBASE-SEC
            ELSE
-               MOVE    2               TO  SPA-GMN-CUR
+               MOVE   ZERO         TO  SPA-NAI-SYS-CNT
            END-IF
+      *
+           PERFORM 3101-LISTENTRY-SEC
       *
            .
        310-SPASET-EXT.
@@ -485,6 +477,9 @@
       *****************************************************************
        3101-LISTENTRY-SEC          SECTION.
       *
+           MOVE    ZERO            TO  SPA-GMN-SELNUM
+           MOVE    SPACE           TO  SPA-GMN-MEMO
+      *
       *    LISTENTRY により全ての端末IDを取得する
            INITIALIZE                  ORCA-SYSTEM
            MOVE    "LISTENTRY"     TO  MCP-FUNC
@@ -492,16 +487,20 @@
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
                MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-           ELSE
-               GO  TO  3101-LISTENTRY-EXT
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       200
+                   MOVE    ORCA-SYSTEM-KEY(IDX)
+                                       TO  SPA-NAI-TERMID(IDX)
+               END-PERFORM
+      *        GETVALUE によりそれぞれの端末の詳細を取得する
+               PERFORM 3101-LISTKEY-SEC
            END-IF
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       200
-               MOVE    ORCA-SYSTEM-KEY(IDX)    TO  SPA-NAI-TERMID(IDX)
-           END-PERFORM
       *
-      *    GETVALUE によりそれぞれの端末の詳細を取得する
-           PERFORM 3101-LISTKEY-SEC
+           IF      SPA-NAI-SYS-CNT >   1
+               CONTINUE
+           ELSE
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        3101-LISTENTRY-EXT.
@@ -628,14 +627,14 @@
       *        強制終了
                WHEN    "CLICKED"   ALSO    "B09"
                    PERFORM 420-TERMSTOP-SEC
-                   PERFORM 310-SPASET-SEC
+                   PERFORM 3101-LISTENTRY-SEC
       *        全端末終了
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 420-ALLSTOP-SEC
-                   PERFORM 310-SPASET-SEC
+                   PERFORM 3101-LISTENTRY-SEC
       *        一覧更新
                WHEN    "CLICKED"   ALSO    "B12"
-                   PERFORM 310-SPASET-SEC
+                   PERFORM 3101-LISTENTRY-SEC
            END-EVALUATE
       *
            .
