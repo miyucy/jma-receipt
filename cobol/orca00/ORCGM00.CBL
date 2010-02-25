@@ -66,12 +66,6 @@
       *  04.03.00    NACL-太田    08/08/25  マスタ更新処理状況表示
       *  04.03.00    NACL-太田    08/09/04  従での医療事務遷移をプロテクト
       *  04.04.00    NACL-多々納  09/01/26  ＳＰＡ設定共通対応
-      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
-      *  04.06.02    NACL-伊藤    11/05/19  感染症参加送信
-      *  04.06.00    NACL-多々納  12/03/26  平成２４年４月改正対応
-      *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
-      *  04.08.00    NACL-伊藤    14/09/24  プログラム更新を別LDへ移動
-      *  05.00.00    NACL-伊藤    16/09/30  DB構造バージョンチェック追加
       *****************************************************************
       *
       *
@@ -103,8 +97,6 @@
            03  FLG-DBKANRI         PIC 9(01).
            03  FLG-MSTKANRI        PIC 9(01).
            03  FLG-SYSBASE         PIC 9(01).
-      *
-           03  FLG-INIT            PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -143,8 +135,6 @@
       *
            03  WRK-GAI-JIKANKBN    PIC X(01).
            03  WRK-SYSYMD-YOBI     PIC X(01).
-      *ver.4.7
-           03  WRK-BGCOLORS        PIC X(20).
       *
            03  WRK-GNO             PIC X(02).
       *
@@ -162,18 +152,10 @@
            03  WRK-MNTMSG          PIC X(70).
            03  WRK-MSG             PIC X(70).
            03  WRK-MOTOPG          PIC X(08).
-           03  WRK-MIDMSG          PIC X(80).
-      *
-      *H24.4
-       01  WRK-HZN-AREA.
-           03  WRK-SPA-ERRCD           PIC X(04).
-           03  FLG-CHIIKKBN-ARI        PIC 9(01).
       *
        01  SHELL-AREA.
            05  SHELL-NAME          PIC X(17) VALUE
                                    "infectiondata1.sh".
-           05  SHELL-NAME1         PIC X(17) VALUE
-                                   "infectionagree.sh".
       *
        01  CONST-AREA.
            03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
@@ -183,9 +165,6 @@
       *    感染症報告  
            03  CONST-INFJOBID      PIC 9(07)  VALUE    1.
            03  CONST-INFSHELLID    PIC X(08)  VALUE    "INFECTIO".
-      *    感染症参加送信  
-           03  CONST-INFAJOBID     PIC 9(07)  VALUE    1.
-           03  CONST-INFASHELLID   PIC X(08)  VALUE    "INFAGREE".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -216,9 +195,6 @@
       *    広告情報
            COPY  "CPSK1003.INC".
       *----(03.04.01)--ADD-END-----------------------------------------
-      *
-           COPY    "CPSK1006.INC".
-      *
       *    システム基本
        01  SYSBASE-REC.
            COPY    "CPSYSBASE.INC".
@@ -235,6 +211,8 @@
       *
       *    システムカタログ
            COPY    "CPDBCTG.INC".
+      *
+           COPY    "ORCA-SYSTEM".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -262,8 +240,6 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
-      *    マシン日付取得サブ
-           COPY    "CPORCSMCNDATE.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -280,6 +256,8 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -290,7 +268,6 @@
            COPY    "MDAS.INC".
            COPY    "MLOG.INC".
            COPY    "MINF.INC".
-           COPY    "MPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -307,8 +284,6 @@
            MOVE    SPA-WORK        TO  SPA-M00KYOUTU
            MOVE    SPA-SYS-1010-REC    TO  SYS-1010-REC
            MOVE    SPA-FREE        TO  SPA-M00
-      *H24.4
-           MOVE    SPA-ERRCD       TO  WRK-SPA-ERRCD
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -348,21 +323,6 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
-      *H24.4
-      *        確認メッセージ表示後、業務へ
-               IF      WRK-SPA-ERRCD           =   "9999"
-                   MOVE    "M01"               TO  SPA-SAKIPG
-                   MOVE    SPACE               TO  SPA-MOTOPG2
-                   MOVE    "M00"               TO  SPA-MOTOPG
-                   MOVE     "CHANGE"           TO  MCP-PUTTYPE
-                   MOVE     SPA-SAKIPG         TO  MCP-WINDOW
-      *
-                   PERFORM 900-PUT-WINDOW
-      *
-                   MOVE    1                   TO  FLG-END
-                   GO      TO    100-INIT-EXT
-               END-IF
-      *!!!
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -372,16 +332,6 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 5101-ERRSET-SEC
                    MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
-                   IF      SPA-ERRCD       =   "1019"
-                       MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
-                       MOVE    "jma-setup 処理を実施してください。"
-                                               TO  SPA-GMN-LBLMSG
-                   END-IF
-                   IF      SPA-ERRCD       =   "1020"
-                       MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
-                       MOVE    "プログラム更新処理を実施してください。"
-                                               TO  SPA-GMN-LBLMSG
-                   END-IF
       *            １回のみの警告表示
                    IF      SPA-ERRCD       =   "K001"
                        MOVE    1           TO  SPA-ERR-FLG
@@ -389,12 +339,9 @@
                END-IF
       *
       *        感染症報告処理起動
-               IF      SPA-NAI-REDL   NOT  =   1
-                   IF      WRK-MOTOPG          =   SPACE
-                                               OR  "M95"
-                       PERFORM 800-INFECTION-SEC
-                       PERFORM 800-INFECTION-AGREE-SEC
-                   END-IF
+               IF      WRK-MOTOPG          =   SPACE
+                                           OR  "M95"
+                   PERFORM 800-INFECTION-SEC
                END-IF
       *
       *        画面編集
@@ -430,7 +377,7 @@
       *****IF      SPA-MOTOPG          =   "M95"  OR
       *    IF      SPA-MOTOPG          =   "MVER"
       *        MOVE    1               TO  SPA-GMN-CUR
-      *        GO      TO      300-SCREEN-EXT
+      *        GO      TO      3OO-SCREEN-EXT
       *    END-IF
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
@@ -438,44 +385,13 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
       *
-      *    内部画面より
-           EVALUATE    SPA-MOTOPG
-               WHEN    "MID1"
-      *2012.10 サーベイ簡易設定改修
-      *        MDASからの復帰はMID1からの復帰になりすます
-               WHEN    "MDAS"
-                   PERFORM 3001-MID1-SYORI-SEC
-      ****             GO  TO  300-SCREEN-EXT
-           END-EVALUATE
-      *
            PERFORM 310-SPASET-SEC
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
       *
            .
-       300-SCREEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    スパ初期編集処理
-      *****************************************************************
-       3001-MID1-SYORI-SEC              SECTION.
-      *
-           EVALUATE    SPA-MIDCD
-               WHEN    "9102"
-                   IF      SPA-MID1-FLG        =   "OK"
-      *                システム管理登録処理へ
-                       PERFORM 810-INFECTION-003-SEC
-                       PERFORM 800-INFECTION-AGREE-EX-SEC
-                   END-IF
-                   MOVE    1               TO  SPA-GMN-CUR
-                   MOVE    SPACE           TO  SPA-MID1-FLG
-                   MOVE    SPACE           TO  SPA-MIDCD
-           END-EVALUATE
-           .
-      *
-       3001-MID1-SYORI-EXT.
+       3OO-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -509,20 +425,12 @@
                                        OR  "KT01"
                                        OR  "MLOG"
                                        OR  "M98"
-      *H25.9
-                                       OR  "M97"
-                                       OR  "MDAS"
-      *H29.10
-                                       OR  "MJOB"
-                                       OR  "M80"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
                MOVE    SPA-SYSYMDW         TO  WRK-WYMD
                MOVE    SPA-GAI-JIKANKBN    TO  WRK-GAI-JIKANKBN
                MOVE    SPA-SYSYMD-YOBI     TO  WRK-SYSYMD-YOBI
                MOVE    SPA-OPID            TO  WRK-OPID
-      *ver.4.7
-               MOVE    SPA-M00-BGCOLORS    TO  WRK-BGCOLORS
                INITIALIZE                  SPA-AREA
                MOVE    WRK-WSYSYMDH        TO  SPA-SYSYMDWH
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
@@ -530,11 +438,7 @@
                MOVE    WRK-GAI-JIKANKBN    TO  SPA-GAI-JIKANKBN
                MOVE    WRK-SYSYMD-YOBI     TO  SPA-SYSYMD-YOBI
                MOVE    WRK-OPID            TO  SPA-OPID
-      *ver.4.7
-               MOVE    WRK-BGCOLORS        TO  SPA-M00-BGCOLORS 
-               MOVE    ZERO                TO  FLG-INIT
            ELSE
-               MOVE    1                   TO  FLG-INIT
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
            INITIALIZE              SPA-AREA
@@ -601,14 +505,8 @@
                                        SYS-1010-REC
       *    年度切替メッセージ
            MOVE    ORCSCOMMON-LABLMSG  TO  SPA-GMN-LBLMSG2
-      *ver.4.7
-      *****IF      FLG-INIT            =   1
-      *        環境設定の初期表示で背景色を設定する
-               PERFORM 3109-M95INIT-SEC
-      *****END-IF
-      *ver.4.7
       *
-           MOVE    '1'                 TO  SPA-NOCHK-HOSPNUM
+           MOVE    1                   TO  SPA-NOCHK-HOSPNUM
            MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
            MOVE    "redl"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -618,8 +516,6 @@
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    1           TO  SPA-NAI-REDL
-                   MOVE    "0"         TO  SYS-1010-GSRAUTH(1:2)
-                                           SYS-1010-GSRAUTH(4:)
                END-IF
            END-IF
       *
@@ -1056,8 +952,16 @@
       *
            IF    ( FLG-DBKANRI         =   ZERO )
                MOVE    SPACE           TO  WRK-DBVERSION
-               MOVE    FUNCTION TRIM (DBKANRI-VERSION)
-                                       TO  WRK-DBVERSION
+               MOVE    ZERO            TO  IDX-PNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   64 )
+                   IF    ( DBKANRI-VERSION (IDX1 : 1)
+                                       NOT =   SPACE )
+                       COMPUTE IDX-PNT =   IDX-PNT +   1
+                       MOVE    DBKANRI-VERSION (IDX1 : 1)
+                                       TO  WRK-DBVERSION (IDX-PNT : 1)
+                   END-IF
+               END-PERFORM
                IF    ( DBKANRI-DBSVERSION1 NOT =   DBKANRI-DBSVERSION2 )
                    MOVE    "1010"      TO  SPA-ERRCD
                ELSE
@@ -1066,62 +970,50 @@
                    IF    ( SVERSION-VERSION    NOT =   SPACE )
                        IF    ( WRK-DBVERSION
                                        NOT =   SVERSION-VERSION)
-                           MOVE    "1012"      TO  SPA-ERRCD
+                           MOVE    "1012"
+                                       TO  SPA-ERRCD
                        END-IF
-                   END-IF
-                   IF    ( SPA-ERRCD                   =   SPACE ) AND
-                         ( SVERSION-DBVERSION-1    NOT =   SPACE )
-                       PERFORM 3101-DBVERSION-CHK-SEC
                    END-IF
                END-IF
            ELSE
                    MOVE    "1011"      TO  SPA-ERRCD
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-      *        プラグイン起動時設定チェックの結果取得
-      *        正常:SPA-ERRCD=SPACE 異常:SPA-ERRCD="1021"
-               CALL    "ORCSPLUGINCHECK"   USING   SPA-AREA
-           END-IF
+      *####
+      *    IF    ( SPA-ERRCD           =   SPACE )
+      *     AND  ( SPA-ERR-FLG         =   ZERO  )
+      *        GETVALUE により端末の詳細を取得する
+      *        PERFORM 3101-GETVALUE-SEC
       *
-      *    感染症
-           PERFORM 810-INFECTION-001-SEC
-      *
-           MOVE    SPACE           TO  SPA-MID1-FLG
-           MOVE    SPACE           TO  SPA-MIDCD
+      *    エンコーディング情報が　"UTF8"　かつ、端末が　glclient
+      *        IF     (SPA-ENCODING                =   2    )
+      *        AND    (ORCA-SYSTEM-VALUE(1)(1:9)   =   "glclient/" )
+      *            MOVE    "K001"               TO  SPA-ERRCD
+      *        END-IF
+      *    END-IF
+      *####
            .
        310-SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    データベース整合性判定処理
+      *    TermIDの内容取得処理
       *****************************************************************
-       3101-DBVERSION-CHK-SEC      SECTION.
+       3101-GETVALUE-SEC           SECTION.
       *
-           IF    ( DBKANRI-DBSVERSION1 =   SVERSION-DBVERSION-2 )
-               DISPLAY "DBVERSION-CHK P1"
-               GO  TO  3101-DBVERSION-CHK-EXT
+           INITIALIZE                      ORCA-SYSTEM
+           MOVE    "GETVALUE"          TO  MCP-FUNC
+           MOVE    MCP-TERM            TO  ORCA-SYSTEM-ID
+           MOVE    10                  TO  ORCA-SYSTEM-NUM
+           MOVE    "agent"             TO  ORCA-SYSTEM-KEY(1)
+           PERFORM 900-SYSDB-INV-SEC
+           IF    ( MCP-RC              =   ZERO    OR  1 )
+               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
+           ELSE
+               INITIALIZE                      ORCA-SYSTEM
            END-IF
       *
-           IF   (( DBKANRI-DBSVERSION1 =   SVERSION-DBVERSION-1 )  OR
-                 ( DBKANRI-DBSVERSION1 =   SVERSION-DBVERSION-3 )) AND
-                 ( SVERSION-DBVERSION-2    =   SPACE )
-               DISPLAY "DBVERSION-CHK P2"
-               GO  TO  3101-DBVERSION-CHK-EXT
-           END-IF
-      *
-           IF    ( DBKANRI-DBSVERSION1 <   SVERSION-DBVERSION-1 )
-               MOVE    "1019"              TO  SPA-ERRCD
-               MOVE    "0"                 TO  SYS-1010-GSRAUTH
-               DISPLAY "DBVERSION-CHK P3"
-               GO  TO  3101-DBVERSION-CHK-EXT
-           END-IF
-      *
-           MOVE    "1020"              TO  SPA-ERRCD
-           MOVE    "0"                 TO  SYS-1010-GSRAUTH(1:2)
-                                           SYS-1010-GSRAUTH(4:)
-               DISPLAY "DBVERSION-CHK P4"
            .
-       3101-DBVERSION-CHK-EXT.
+       3101-GETVALUE-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ更新判定処理
@@ -1281,18 +1173,9 @@
       *        終了
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *        感染症設定メッセージ
-               WHEN    "CLICKED"       ALSO    "B04"
-                   PERFORM 810-INFECTION-002-SEC
-      *        バッチログ
-               WHEN    "CLICKED"       ALSO    "B05"
-                   PERFORM 450-MJOB-SEC
       *        システム日付設定
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-M95-SEC
-      *        情報連携
-               WHEN    "CLICKED"       ALSO    "B08"
-                   PERFORM 440-MIS-SEC
       *        情報画面
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 470-MVER-SEC
@@ -1306,13 +1189,7 @@
                    PERFORM 490-KT01-SEC
       *        LOGIN情報画面
                WHEN    "CLICKED"       ALSO    "B10"
-                   IF    ( SPA-MW    = SPA-PANDA )
-                       PERFORM 470-MLOG-SEC
-                   ELSE
-                       IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
-                           PERFORM 470-GINBEE-PLUGIN-SEC
-                       END-IF
-                   END-IF
+                   PERFORM 470-MLOG-SEC
       *!!!!!!!
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
@@ -1384,9 +1261,6 @@
       *----(01.02.16)--UPD-START---
       *        プログラム更新処理
                WHEN    "03"
-                 IF  ( SPA-MW              NOT =   SPA-PANDA )
-                       MOVE    "0001"          TO  SPA-ERRCD
-                 ELSE
                    IF    ( SPA-SUPERVISOR          =   "T" )
                    AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                        AND     SYS-1010-GSRAUTH(3:1)    =  "1"
@@ -1394,7 +1268,6 @@
                    ELSE
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
-                 END-IF 
       *----(01.02.16)--UPD-END-----
       *        点数改正処理
       *        WHEN    "04"
@@ -1408,26 +1281,12 @@
            END-EVALUATE.
       *
       *
-      *H24.4
-      *    H24.4.2まで施設基準の更新確認メッセージ表示
-           IF      SPA-SAKIPG          =   "M01"
-                ACCEPT  SYS-YMD         FROM    DATE
-                COMPUTE WRK-SYSYY   =   SYS-YY      +   2000
-                MOVE    SYS-MM          TO  WRK-SYSMM
-                MOVE    SYS-DD          TO  WRK-SYSDD
-                IF      WRK-SYSYMD      <=  "20120402"
-                    PERFORM 420-SYS1006-CHK-SEC
-                END-IF
-            END-IF
-      *H24.4
-      *
-      *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-SAKIPG      NOT =  SPACE
-                   MOVE    SPACE               TO  SPA-MOTOPG2
-                   MOVE    "M00"               TO  SPA-MOTOPG
                    EVALUATE    SPA-SAKIPG
                        WHEN    "M01"
+      *----(01.02.16)--ADD-START---
+                       WHEN    "M97"
                            CONTINUE
                        WHEN    OTHER
                            INITIALIZE                  LINKAREA
@@ -1447,141 +1306,6 @@
       *
        420-GYOMU-START-EXT.
            EXIT.
-      *
-      *H24.4
-      *****************************************************************
-      *    施設基準の更新確認
-      *****************************************************************
-       420-SYS1006-CHK-SEC                  SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHIIKKBN-ARI
-      *
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "2"                 TO  SYS-1006-KBNCD
-           MOVE    "20120331"          TO  SYS-1006-STYUKYMD
-           MOVE    "20120331"          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索（施設基準）
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                  SYS-1006-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
-      *        地域医療貢献加算(754 - 500)
-               IF      SYS-1006-SSTKIJUN (254) =   1
-                   MOVE    1               TO  FLG-CHIIKKBN-ARI
-               END-IF
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           MOVE    SPACE               TO  SYS-1006-REC
-           INITIALIZE                      SYS-1006-REC
-           MOVE    "1006"              TO  SYS-1006-KANRICD
-           MOVE    "20120401"          TO  SYS-1006-STYUKYMD
-           MOVE    "20120401"          TO  SYS-1006-EDYUKYMD
-      *    システム管理検索（施設基準）
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
-           MOVE    SYS-1006-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1006-REC
-               INITIALIZE                  SYS-1006-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           PERFORM UNTIL   FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               IF      SYS-1006-KBNCD      =   "2"
-      *            地域医療貢献加算(754 - 500)
-                   IF      SYS-1006-SSTKIJUN (254) =   1
-                       MOVE    1               TO  FLG-CHIIKKBN-ARI
-                   END-IF
-               END-IF
-               IF      SYS-1006-KBNCD      =   "7"
-      *            時間外対応加算(3001)(3155)(3002)
-                   IF     (SYS-1006-SSTKIJUN (001) =   1  )
-                      OR  (SYS-1006-SSTKIJUN (155) =   1  )
-                      OR  (SYS-1006-SSTKIJUN (002) =   1  )
-                       MOVE    ZERO            TO  FLG-CHIIKKBN-ARI
-                   END-IF
-               END-IF
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-CHIIKKBN-ARI    =   1
-               MOVE    "9999"          TO  SPA-ERRCD
-           END-IF
-           .
-       420-SYS1006-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    データファイル出力指示業務
-      *****************************************************************
-       440-MIS-SEC                 SECTION.
-      *
-           MOVE    "M00"               TO  SPA-MOTOPG
-           MOVE    "XG04"              TO  SPA-SAKIPG
-           MOVE    SPACE               TO  SPA-MOTOPG2
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *    戻り時、画面を元へ戻す
-           MOVE    SPA-M00             TO  LNK-FREE
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE   "XG04"               TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       440-MIS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    バッチログ画面
-      *****************************************************************
-       450-MJOB-SEC                SECTION.
-      *
-           MOVE    "M00"               TO  SPA-MOTOPG
-           MOVE    "MJOB"              TO  SPA-SAKIPG
-           MOVE    SPACE               TO  SPA-MOTOPG2
-      *
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *    戻り時、画面を元へ戻す
-           MOVE    SPA-M00             TO  LNK-FREE
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE   "MJOB   "            TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       450-MJOB-EXT.
-           EXIT.
-      *
-      *H24.4
       *
       *****************************************************************
       *    システム日付変更画面へ1
@@ -1619,34 +1343,6 @@
            .
        460-M95-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *   環境設定の初期表示
-      *****************************************************************
-       3109-M95INIT-SEC                    SECTION.
-      *
-           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-      *
-           MOVE    "LINK"              TO  MCP-STATUS
-           MOVE    SPACE               TO  MCP-EVENT
-      *
-           CALL    "ORCGM95"           USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
-      *
-      *ver.4.7
-           MOVE    SPA-M95-BGCOLORS    TO  SPA-M00-BGCOLORS
-      *
-           .
-       3109-M95INIT-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    ヴァージョン情報表示画面へ
@@ -1707,38 +1403,11 @@
            EXIT.
       *
       *****************************************************************
-      *    GINBEE環境でプラグイン設定画面へ
-      *****************************************************************
-       470-GINBEE-PLUGIN-SEC       SECTION.
-      *
-           MOVE    "M00"               TO  SPA-MOTOPG
-           MOVE    "M80"               TO  SPA-SAKIPG
-           MOVE    SPACE               TO  SPA-MOTOPG2
-      *
-      *del ok? INITIALIZE  SPA-KYOTUKEY
-           INITIALIZE  LINKAREA
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-      *del ok? MOVE    SPA-M00             TO  LNK-FREE
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       470-GINBEE-PLUGIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    JOBLOG表示画面へ
       *****************************************************************
        480-M98-SEC                     SECTION.
       *
-           IF     (SPA-DATACREATEFLG   =    1)  OR
-                  (SPA-DATAINFECTIONKBN    =    1)  OR
-                  (SPA-DATAINFECTIONKBN    =    2)
+           IF      SPA-DATACREATEFLG   =    1
       *       MOVE    SPACE            TO  MVER
               MOVE    "B12"            TO  MCP-WIDGET
       *
@@ -1834,11 +1503,6 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-MIDCD       NOT =   SPACE
-               PERFORM 520-KIDSET-SEC
-               GO      TO      500-SET-SCREEN-EXT
-           END-IF
-      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
@@ -1857,17 +1521,8 @@
       *
            INITIALIZE                  M00
       *
-      *----(04.07.00) LINE UPD START ----------------------------------
       **** MOVE    SYS-1001-HOSPNAME   TO  M00-TITLE
-      *     MOVE    ORCSCOMMON-HOSPNAME TO  M00-TITLE
-           MOVE    SPACE               TO  M00-TITLE
-           STRING  ORCSCOMMON-HOSPNAME     DELIMITED BY SPACE
-                   "  ["                   DELIMITED BY SIZE
-                   SPA-OPID                DELIMITED BY SPACE
-                   "]"                     DELIMITED BY SIZE
-                                     INTO  M00-TITLE
-           END-STRING
-      *----(04.07.00) LINE UPD END   ----------------------------------
+           MOVE    ORCSCOMMON-HOSPNAME TO  M00-TITLE
            MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
            MOVE    SPA-GMN-LBLMSG      TO  M00-LBLMSG
            MOVE    SPA-GMN-LBLMSG2     TO  M00-LBLMSG2
@@ -1918,15 +1573,9 @@
                                        TO  M00-LBLMSG3
            END-IF
       *
-           IF    ( SPA-DATACREATEFLG   =    1 )  OR
-                 ( SPA-DATAINFECTIONKBN    =    1 )  OR
-                 ( SPA-DATAINFECTIONKBN    =    2 )
+           IF      SPA-DATACREATEFLG   =    1
                MOVE    "定点調査"      TO  M00-B11-LABEL
            END-IF
-      *
-      *ver.4.7
-           MOVE    SPA-M00-BGCOLORS    TO  M00-BGCOLORS
-      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -1947,24 +1596,13 @@
            MOVE    WIDGET-INSENSITIVE      TO  M00-G01-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       *
-           MOVE    WIDGET-INSENSITIVE      TO  M00-B04-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M00-B05-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M00-B06-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M00-B09-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M00-B10-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  M00-B11-STATE
+           MOVE    WIDGET-NORMAL           TO  M00-B09-STATE
+           MOVE    WIDGET-NORMAL           TO  M00-B10-STATE
+           MOVE    WIDGET-NORMAL           TO  M00-B11-STATE
       *
-           MOVE    "T"                     TO  M00-G03-VISIBLE
-      *
-           IF      SYS-1010-GSRAUTH(1:1)   =   "1"
-               MOVE    WIDGET-NORMAL       TO  M00-G01-STATE
-               MOVE    WIDGET-NORMAL       TO  M00-B04-STATE
-               MOVE    WIDGET-NORMAL       TO  M00-B06-STATE
-               MOVE    WIDGET-NORMAL       TO  M00-B09-STATE
-               MOVE    WIDGET-NORMAL       TO  M00-B10-STATE
-               MOVE    WIDGET-NORMAL       TO  M00-B11-STATE
+           IF      SYS-1010-GSRAUTH(1:1)    =  "1"
+               MOVE    WIDGET-NORMAL      TO  M00-G01-STATE
            END-IF
-      *
       *----(01.02.16)--UPD-START---
            IF    ( SPA-SUPERVISOR          =   "T" )
            AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
@@ -1972,21 +1610,10 @@
                MOVE    WIDGET-NORMAL       TO  M00-G03-STATE
            END-IF
       *----(01.02.16)--UPD-END-----
-      *
-           IF    ( SPA-MW             NOT =   SPA-PANDA )
-               MOVE    "F"                TO  M00-G03-VISIBLE
-           END-IF
-      *
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"
                MOVE    "（まとめ）"       TO  M00-B09-LABEL
            ELSE
                MOVE    SPACE              TO  M00-B09-LABEL
-           END-IF
-      *
-           IF    ( SPA-MW                 =   SPA-PANDA )
-               MOVE    "ユーザ管理"       TO  M00-B10-LABEL
-           ELSE
-               MOVE    "プラグイン"       TO  M00-B10-LABEL
            END-IF
       *
            IF    ( SPA-NAI-REDL           =   1 )
@@ -2003,11 +1630,6 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-SUPERVISOR          =   "T" )   OR
-                 ( SYS-1010-KANRIAUTHFLG   =   "T" )
-               MOVE    WIDGET-NORMAL       TO  M00-B05-STATE
-               MOVE    "バッチログ"        TO  M00-B05-LABEL
-           END-IF
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
@@ -2046,7 +1668,7 @@
                MOVE    SPACE               TO  M00-HTML1     
            END-IF
       *----(03.04.01)--ADD-END-----------------------------------------
-           .
+          .
        51O-GSRAUTH-EXT.
            EXIT.
       *
@@ -2177,46 +1799,9 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
-               WHEN    "1016"
-                   MOVE    "更新処理ができませんでした。"
-                                               TO  SPA-ERRMSG
-               WHEN    "1017"
-                   STRING  "ＯＲＣＡサーベイランス調査"
-                           "へは参加中です。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "1018"
-                   STRING  "あなたは管理者ではありませんので参加"
-                           "する場合は管理者まで連絡してください。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "1019"
-               WHEN    "1020"
-                   STRING  "プログラムのＤＢ構造バージョンと"
-                           "ＤＢ管理テーブルの構造バージョンが"
-                           "不整合です！！"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "1021"
-                   STRING  "プラグイン設定に矛盾があります。"
-                           "管理者まで連絡してください。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "K001"
                    STRING  "警告！！"
                            "この端末は使用できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-      *H24.4
-               WHEN    "9999"
-                   STRING  "施設基準コードの"
-                           "地域医療貢献加算が時間外対応加算２へ"
-                           "変更されていません。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
@@ -2224,44 +1809,6 @@
 	   .
       *
        5101-ERRSET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    確認メッセージ表示理
-      *****************************************************************
-       520-KIDSET-SEC              SECTION.
-      *
-           EVALUATE    SPA-MIDCD
-               WHEN    "9102"
-                   STRING  "ＯＲＣＡサーベイランス調査"
-                           "へのデータ提供（参加）を"
-                           "開始しますか？"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-MIDMSG
-                   END-STRING
-               WHEN    OTHER
-                   MOVE    SPA-MIDCD       TO  WRK-MIDMSG
-           END-EVALUATE
-      *
-           MOVE    SPACE               TO  MID1
-           INITIALIZE                      MID1
-           MOVE    SPA-MIDCD           TO  MID1-ID1CODE
-           MOVE    WRK-MIDMSG          TO  MID1-ID1MSG
-      *
-           MOVE    "B01"               TO  MCP-WIDGET
-      *
-           MOVE    "M00"               TO  SPA-MOTOPG
-           MOVE    "MID1"              TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "MID1"              TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       520-KIDSET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2323,187 +1870,6 @@
            EXIT.
       *
       *****************************************************************
-      *    感染症参加送信処理
-      *****************************************************************
-       800-INFECTION-AGREE-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSINFCHKAREA
-           CALL    "ORCSINFSTATE"      USING
-                                       MCPAREA
-                                       SPA-AREA
-                                       ORCSINFCHKAREA
-      *
-           DISPLAY "INFCHK-RC = " INFCHK-RC
-           IF    ( INFCHK-RC       NOT =   ZERO )  AND
-                 ( INFCHK-RC       NOT =   90   )
-               GO  TO    800-INFECTION-AGREE-EXT
-	   END-IF
-      *
-           PERFORM 800-INFECTION-AGREE-EX-SEC
-           .
-       800-INFECTION-AGREE-EXT.
-           EXIT.
-      *    
-      *****************************************************************
-      *    感染症参加送信処理
-      *****************************************************************
-       800-INFECTION-AGREE-EX-SEC      SECTION.
-      *
-      *    ジョブ開始セット処理
-           MOVE    "DEL"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-           MOVE    CONST-INFAJOBID     TO  JOB-JOBID
-           MOVE    CONST-INFASHELLID   TO  JOB-SHELLID
-           CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA 
-                                           JOBKANRI-REC
-                                           SPA-AREA
-      *
-           MOVE    "JBS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-           MOVE    CONST-INFAJOBID     TO  JOB-JOBID
-           MOVE    CONST-INFASHELLID   TO  JOB-SHELLID
-           MOVE    SPA-TERMID          TO  JOB-TERMID
-           CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA 
-                                           JOBKANRI-REC
-                                           SPA-AREA
-      *
-           MOVE    SPACE               TO  SHELLTBL
-           MOVE    SHELL-NAME1         TO  SHELLTBL-NAME
-           MOVE    SPA-TERMID          TO  SHELLTBL-ARG1
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
-           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
-           MOVE    CONST-INFAJOBID     TO  SHELLTBL-ARG4
-           MOVE    CONST-INFASHELLID   TO  SHELLTBL-ARG5
-      *
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "daily"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-           .
-       800-INFECTION-AGREE-EX-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症参加促進処理
-      *****************************************************************
-       810-INFECTION-001-SEC       SECTION.
-      *
-           IF     (SPA-ERRCD           =   SPACE)  AND
-                  (SPA-DATAINFECTIONKBN    =   ZERO)  AND
-                  (ORCSCOMMON-LABLMSG      =   SPACE)
-               STRING  "日レセから自動送信による地域マップを"
-                       "日本医師会ホームページにて公開中です。"
-                       "ご協力ください。"
-                                           DELIMITED  BY  SIZE
-                                           INTO    SPA-GMN-LBLMSG2
-               END-STRING
-               STRING  "Ｆ４キー（調査協力ボタン）で参加"
-                       "登録をお願いします。"
-                                           DELIMITED  BY  SIZE
-                                           INTO    SPA-GMN-LBLMSG
-               END-STRING
-           END-IF
-           .
-       810-INFECTION-001-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症参加促進処理
-      *****************************************************************
-       810-INFECTION-002-SEC       SECTION.
-      *
-      *****IF     (SPA-SUPERVISOR          =   "T" )  AND
-           IF    ((SPA-DATAINFECTIONKBN    =   ZERO)  OR
-                  (SPA-DATAINFECTIONKBN    =   9   ))
-               IF     (SYS-1010-KANRIAUTHFLG   =   "T" )
-      *2012.10     MOVE    "9102"              TO  SPA-MIDCD
-                   MOVE    "M00"               TO  SPA-MOTOPG
-                   MOVE    "MDAS"              TO  SPA-SAKIPG
-                   MOVE    "NEW"               TO  MCP-PUTTYPE
-                   MOVE    "MDAS"              TO  MCP-WINDOW
-                   PERFORM 900-PUT-WINDOW
-                   MOVE    1                   TO  FLG-END
-               ELSE
-                   MOVE    "1018"              TO  SPA-ERRCD
-               END-IF 
-           ELSE
-               MOVE    "1017"              TO  SPA-ERRCD
-           END-IF 
-           .
-       810-INFECTION-002-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症参加促進処理
-      *****************************************************************
-       810-INFECTION-003-SEC       SECTION.
-      *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      * 
-           MOVE    SPACE               TO  SYS-1001-REC
-           INITIALIZE                      SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-1001-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-1001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1001-REC
-                   MOVE    "1"         TO  SYS-1001-DATAINFECTIONKBN
-                   MOVE    SYS-1001-REC        TO  SYSKANRI-REC
-      * 
-                   MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
-                   MOVE    SYS-KANRICD         TO  SYSUP-KANRICD
-                   MOVE    SYS-KBNCD           TO  SYSUP-KBNCD
-                   MOVE    SYS-STYUKYMD        TO  SYSUP-STYUKYMD
-                   MOVE    SYS-EDYUKYMD        TO  SYSUP-EDYUKYMD
-      *
-                   MOVE    SPA-OPID            TO  SYS-OPID
-                   MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
-      *
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "upd1"              TO  MCP-PATHNAME
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   MOVE    1                   TO  SPA-DATAINFECTIONKBN
-               ELSE
-                   MOVE    "1016"                  TO  SPA-ERRCD
-               END-IF 
-           ELSE
-               MOVE    "1016"                  TO  SPA-ERRCD
-           END-IF      
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       810-INFECTION-003-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    管理マスタ読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
@@ -2562,6 +1928,22 @@
            END-IF
            .
        900-MSTKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    システムＤＢ読込
+      *****************************************************************
+       900-SYSDB-INV-SEC         SECTION.
+      *
+           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
+           MOVE    "system"      TO  MCP-TABLE
+           MOVE    "key"         TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"        USING
+                                     MCPAREA
+                                     MCPDATA-REC
+                                     SPA-AREA
+      *
+           .
+       900-SYSDB-INV-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
