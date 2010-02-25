@@ -90,6 +90,7 @@
                        09  SPA-NAI-BHOSPNUM    PIC 9(02).
                        09  SPA-NAI-BGRP        PIC 9(02).
                        09  SPA-NAI-BKBN        PIC 9(02).
+                       09  SPA-NAI-HOSPNUM     PIC X(02).
                        09  SPA-NAI-HOSPNM      PIC X(40).
                    07  SPA-NAI-SYS-CNT         PIC 9(03).
       *
@@ -304,7 +305,8 @@
       *    スパ初期編集処理
            PERFORM 310-SPASET-SEC
       *
-           MOVE    SPA-NAI-BHOSPNUM(1) TO  MLOG-IRYONO
+           INITIALIZE                      MLOG
+           MOVE    SPA-NAI-HOSPNUM(1)  TO  MLOG-IRYONO
            MOVE    SPA-NAI-SYS-CNT     TO  MLOG-IRYONO-COUNT
       *
            .
@@ -343,6 +345,7 @@
                                                TO  SPA-NAI-BGRPNUM(IDX)
                            MOVE    SYSBASE-HOSPNUM
                                                TO  SPA-NAI-BHOSPNUM(IDX)
+                                                   SPA-NAI-HOSPNUM(IDX)
                            MOVE    SYSBASE-HONBUNGRP
                                                TO  SPA-NAI-BGRP(IDX)
                            MOVE    SYSBASE-HONBUNKBN
@@ -368,15 +371,17 @@
                                                TO  SPA-NAI-BGRPNUM(IDY)
                    MOVE    SPA-NAI-BHOSPNUM(IDX)
                                                TO  SPA-NAI-BHOSPNUM(IDY)
+                                                   SPA-NAI-HOSPNUM(IDY)
                    MOVE    SPA-NAI-BGRP(IDX)   TO  SPA-NAI-BGRP(IDY)
                    MOVE    SPA-NAI-BKBN(IDX)   TO  SPA-NAI-BKBN(IDY)
                    MOVE    SPA-NAI-HOSPNM(IDX) TO  SPA-NAI-HOSPNM(IDY)
                    COMPUTE IDX = IDX - 1
                END-PERFORM
                MOVE    00                  TO  SPA-NAI-BHOSPNUM(1)
+                                               SPA-NAI-HOSPNUM(1)
                MOVE    "全医療機関"        TO  SPA-NAI-HOSPNM(1)
            END-IF
-           MOVE  SPA-NAI-BHOSPNUM(1)   TO  SPA-GMN-IRYONO
+           MOVE  SPA-NAI-HOSPNUM(1)   TO  SPA-GMN-IRYONO
       *
            .
        3101-SYSBASE-EXT.
@@ -452,6 +457,7 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE              SPA-GMN-AREA
+           INITIALIZE              SPA-NAI-AREA
            MOVE    1               TO  SPA-GMN-CUR
       *
            MOVE    MCP-USER        TO  WRK-SYSUSER
@@ -962,8 +968,10 @@
            MOVE    SPA-GMN-IRYONO  TO  MLOG-IRYONO
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   SPA-NAI-SYS-CNT
-               MOVE  SPA-NAI-BHOSPNUM(IDX) TO  MLOG-IRYONO-ITEM(IDX)
-               MOVE  SPA-NAI-HOSPNM(IDX)   TO  MLOG-IRYONO-ITEM(IDX)(3:)
+               MOVE    SPA-NAI-HOSPNUM(IDX)    TO
+                                           MLOG-IRYONO-ITEM(IDX)(1:2)
+               MOVE    SPA-NAI-HOSPNM(IDX)     TO
+                                           MLOG-IRYONO-ITEM(IDX)(3:)
            END-PERFORM
            MOVE    SPA-NAI-SYS-CNT     TO  MLOG-IRYONO-COUNT
       *
