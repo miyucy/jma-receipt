@@ -256,7 +256,6 @@
       *
            MOVE    SPA-M00KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-      *    MOVE    SPA-M01         TO  SPA-FREE
       *
            .
            EXIT    PROGRAM.
@@ -304,6 +303,9 @@
       *
       *    スパ初期編集処理
            PERFORM 310-SPASET-SEC
+      *
+           MOVE    SPA-NAI-BHOSPNUM(1) TO  MLOG-IRYONO
+           MOVE    SPA-NAI-SYS-CNT     TO  MLOG-IRYONO-COUNT
       *
            .
        300-SCREEN-EXT.
@@ -627,14 +629,14 @@
       *        強制終了
                WHEN    "CLICKED"   ALSO    "B09"
                    PERFORM 420-TERMSTOP-SEC
-                   PERFORM 3101-LISTENTRY-SEC
+                   PERFORM 310-SPASET-SEC
       *        全端末終了
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 420-ALLSTOP-SEC
-                   PERFORM 3101-LISTENTRY-SEC
+                   PERFORM 310-SPASET-SEC
       *        一覧更新
                WHEN    "CLICKED"   ALSO    "B12"
-                   PERFORM 3101-LISTENTRY-SEC
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
            .
@@ -952,6 +954,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    MLOG-IRYONO     TO  SPA-GMN-IRYONO
+           MOVE    MLOG-IRYONO-COUNT   TO  SPA-NAI-SYS-CNT
            INITIALIZE                  MLOG
       *
       *    医療機関コンボ
@@ -1055,11 +1059,11 @@
            SET     TBLLOCK-IDX         TO  1
            SEARCH  ORC-LOCKCONST-TX    VARYING  TBLLOCK-IDX
                AT  END
-                   MOVE    "その他"        TO  MLOG-ITEM-GYOMU(IDX)
+                   MOVE    "その他"        TO  MLOG-ITEM-GYOMU(IDY)
                WHEN    SGYOUMU-CODE    =
                                        ORC-LOCKCONST-GNUM(TBLLOCK-IDX)
                    MOVE   ORC-LOCKCONST-NAME(TBLLOCK-IDX)
-                                           TO  MLOG-ITEM-GYOMU(IDX)
+                                           TO  MLOG-ITEM-GYOMU(IDY)
            END-SEARCH
       *
            .

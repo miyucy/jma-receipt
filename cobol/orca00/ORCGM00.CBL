@@ -1371,16 +1371,20 @@
       *****************************************************************
        470-MLOG-SEC                    SECTION.
       *
-      *     MOVE    SPACE                TO  MVER
-           MOVE    "M00"                TO  SPA-MOTOPG
-           MOVE    "MLOG"               TO  SPA-SAKIPG
+           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
            MOVE    "LINK"              TO  MCP-STATUS
            MOVE    SPACE               TO  MCP-EVENT
+      *
            CALL    "ORCGMLOG"          USING
                                        MCPAREA
                                        SPAAREA
                                        LINKAREA
                                        SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-M00KYOUTU
       *
            MOVE    "M00"                TO  SPA-MOTOPG
            MOVE    "MLOG"               TO  SPA-SAKIPG
