@@ -1371,6 +1371,8 @@
       *****************************************************************
        470-MLOG-SEC                    SECTION.
       *
+           INITIALIZE                      MLOG
+      *
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
       *
