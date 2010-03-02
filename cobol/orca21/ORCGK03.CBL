@@ -864,6 +864,7 @@
            END-IF
       *
            MOVE    3                   TO  SPA-HAKFLG-MAX
+      *H22.4 改正対応
       *    MOVE    SPA-SKYPRTFLG       TO  SPA-GMN-HAKFLG
       *@
       *    IF      SPA-SKYPRTFLG       =   "3"
@@ -887,7 +888,7 @@
                WHEN    "6"
       *            発行する（請求あり）
                    MOVE    "2"                 TO  SPA-GMN-HAKFLG
-               WHEN    "4"
+               WHEN    "3"
                WHEN    "7"
       *            発行する（訂正時なし）
                    IF      SPA-SYORIFLG        =   ZERO
@@ -906,6 +907,14 @@
                MOVE    "1"                 TO  SPA-MEIPRTFLG
            END-IF
       *H22.4
+      *    訂正時発行なし
+           IF      SPA-MEIPRTFLG       =   "2"
+               IF      SPA-SYORIFLG        =   ZERO
+                   MOVE    "1"                 TO  SPA-MEIPRTFLG
+               ELSE
+                   MOVE    "0"                 TO  SPA-MEIPRTFLG
+               END-IF
+           END-IF
       *    患者毎の発行区分
            IF      SPA-SKYPRTFLG-SYS   =   "P"
       *        患者情報で設定があった時
@@ -913,9 +922,15 @@
                WHEN    "0"
                WHEN    "1"
                WHEN    "2"
-               WHEN    "3"
       *            発行あり
                    MOVE    "1"                 TO  SPA-MEIPRTFLG
+               WHEN    "3"
+      *            発行する（訂正時なし）
+                   IF      SPA-SYORIFLG        =   ZERO
+                       MOVE    "1"                 TO  SPA-MEIPRTFLG
+                   ELSE
+                       MOVE    "0"                 TO  SPA-MEIPRTFLG
+                   END-IF
                WHEN    "4"
                WHEN    "5"
                WHEN    "6"
