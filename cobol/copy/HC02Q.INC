@@ -53,5 +53,3 @@
             02  HC02Q-HOSPCD.
               03  HC02Q-HOSPCD-S
                       PIC X(2)    OCCURS  7 TIMES.
-            02  HC02Q-JKYSNUM15 PIC X(30).
-            02  HC02Q-JKYSNUM215    PIC X(30).
