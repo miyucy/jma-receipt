@@ -134,7 +134,8 @@
       *
            MOVE    ZERO        TO  W20SUB01-O-RC
            MOVE    TNS-NAME    TO  W20SUB01-O-NAME
-           MOVE    TNS-SRYCD   TO  W20SUB01-O-KHNSRYCD
+           MOVE    W20SUB01-I-KHNSRYCD
+                               TO  W20SUB01-O-KHNSRYCD
            MOVE    TNS-TEN     TO  W20SUB01-O-KHNTEN
       *
            .

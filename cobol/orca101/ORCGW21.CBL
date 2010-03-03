@@ -907,6 +907,15 @@
            INITIALIZE                SPA-GMN-W21-KHNRYOLST-G
                                      SPA-NAI-W21-KHNRYOLST-G
       *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "5001"          TO  SYS-KANRICD
+           MOVE    SPA-GMN-W21-BTUNUM
+                                   TO  SYS-KBNCD
+           MOVE    WRK-KJN-YUKSTYMD
+                                   TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5001-REC
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5111"          TO  SYS-KANRICD
@@ -929,6 +938,48 @@
                 AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
                 AND  ( SYS-5111-SEIKATU-RYOKBN     =   SPACE )
                    MOVE    1       TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( WRK-KJNYMD  >=  CONST-H220401 )
+                   IF    ( SYS-5111-SRYCD
+                                       =   "099999953"
+                                        OR "099999954" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                   END-IF
+                   IF    ( SYS-5001-KHNSRYCD
+                                       =   SPACE
+                                  OR       "099999953"
+                                  OR       "190121310"
+                                  OR       "190121410"
+                                  OR       "190121510"
+                                  OR       "190121610"
+                                  OR       "190121710"
+                                  OR       "190131610"
+                                  OR       "190132010"
+                                  OR       "190132210" )
+                       IF    ( SYS-5111-BRM-TOKUTEINYUIN-NM
+                                                      (1:20)
+                           =   "Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£≤" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
+                   IF    ( SYS-5001-KHNSRYCD
+                                       =   "099999954"
+                                  OR       "190132410"
+                                  OR       "190132610"
+                                  OR       "190132810"
+                                  OR       "190133010"
+                                  OR       "190133210"
+                                  OR       "190133410"
+                                  OR       "190133610"
+                                  OR       "190133810"
+                                  OR       "190134010" )
+                       IF    ( SYS-5111-BRM-TOKUTEINYUIN-NM
+                                                      (1:20)
+                           =   "Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡£±" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
                END-IF
       *
                IF    ( FLG-TARGET          =   1 )

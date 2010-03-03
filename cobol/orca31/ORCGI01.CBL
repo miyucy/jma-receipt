@@ -225,6 +225,7 @@
            03  FLG-PASS                    PIC 9(01).
            03  FLG-BUNBENCHK               PIC 9(01).
            03  FLG-BUNBEN                  PIC 9(01).
+           03  FLG-RYOTARGET               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -544,6 +545,7 @@
            03  WRK-NYUREKILST-ROW          PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
+           03  CONST-H220401               PIC X(08)   VALUE "20100401".
            03  CONST-H211001               PIC X(08)   VALUE "20091001".
            03  CONST-H181001               PIC X(08)   VALUE "20061001".
            03  CONST-H180401               PIC X(08)   VALUE "20060401".
@@ -5044,7 +5046,7 @@
                    MOVE    "5111"          TO  SYS-KANRICD
                    MOVE    WRK-KJNYMD      TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
-                   PERFORM 900-SYSKANRI-KEY7-SEL-SEC
+                   PERFORM 900-SYSKANRI-KEY23-SEL-SEC
                    MOVE    SYSKANRI-REC    TO  SYS-5111-REC
                    PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
       *
@@ -5052,16 +5054,16 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                           IF    ( FLG-LIFE-RJN        =   ZERO OR 2)
+                           IF    ( FLG-LIFE-RJN    =   ZERO OR 2)
                                IF    ( SYS-5111-SEIKATU-RYOKBN
-                                                           =   SPACE )
+                                                       =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
                                END-IF
                            END-IF
-                           IF    ( FLG-LIFE-RJN        =   1    OR 2)
+                           IF    ( FLG-LIFE-RJN    =   1    OR 2)
                                IF    ( SYS-5111-SEIKATU-RYOKBN
-                                                       NOT =   SPACE )
-                                   MOVE    1   TO  FLG-TARGET
+                                                   NOT =   SPACE )
+                                       MOVE    1   TO  FLG-TARGET
                                END-IF
                            END-IF
                        END-IF
@@ -5082,6 +5084,48 @@
                            END-IF
                        END-IF
       *
+                       IF    ( WRK-KJNYMD  >=  CONST-H220401 )
+                           IF    ( SYS-5111-SRYCD
+                                               =   "099999953"
+                                                OR "099999954" )
+                                   MOVE  ZERO  TO  FLG-TARGET
+                           END-IF
+                           IF    ( SYS-5001-KHNSRYCD
+                                               =   SPACE
+                                          OR       "099999953"
+                                          OR       "190121310"
+                                          OR       "190121410"
+                                          OR       "190121510"
+                                          OR       "190121610"
+                                          OR       "190121710"
+                                          OR       "190131610"
+                                          OR       "190132010"
+                                          OR       "190132210" )
+                               IF    ( SYS-5111-BRM-TOKUTEINYUIN-NM
+                                                              (1:20)
+                                   =   "療養病棟入院基本料２" )
+                                   MOVE  ZERO  TO  FLG-TARGET
+                               END-IF
+                           END-IF
+                           IF    ( SYS-5001-KHNSRYCD
+                                               =   "099999954"
+                                          OR       "190132410"
+                                          OR       "190132610"
+                                          OR       "190132810"
+                                          OR       "190133010"
+                                          OR       "190133210"
+                                          OR       "190133410"
+                                          OR       "190133610"
+                                          OR       "190133810"
+                                          OR       "190134010" )
+                               IF    ( SYS-5111-BRM-TOKUTEINYUIN-NM
+                                                              (1:20)
+                                   =   "療養病棟入院基本料１" )
+                                   MOVE  ZERO  TO  FLG-TARGET
+                               END-IF
+                           END-IF
+                       END-IF
+      *
                        IF    ( FLG-TARGET  =   1 )
       *
                            MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
@@ -5096,12 +5140,12 @@
                            PERFORM 4101-CMB-TOKNYUIN-DAT-SET-SEC
                        END-IF
       *
-                       PERFORM 900-SYSKANRI-KEY7-FET-SEC
+                       PERFORM 900-SYSKANRI-KEY23-FET-SEC
                        MOVE    SYSKANRI-REC    TO  SYS-5111-REC
       *
                    END-PERFORM
                    MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key7"              TO  MCP-PATHNAME
+                   MOVE    "key23"             TO  MCP-PATHNAME
                    PERFORM 910-DBCLOSECURSOR-SEC
                END-IF
       *
@@ -5186,9 +5230,11 @@
            END-IF
       *
       *    老人の場合、老人一般病棟特定入院基本料をコンボに設定
+      *    平成２２年４月から年齢要件廃止
            MOVE    WRK-KJNYMD  TO  WRK-AGECHK-SRYYMD
            PERFORM 4801-RJN-TAISYO-CHK-SEC
            IF    ( FLG-RJN         =   1 )
+            OR   ( WRK-KJNYMD     >=  CONST-H220401 )
                MOVE    "5111"      TO  WRK-KANRICD
                MOVE    "22"        TO  WRK-KBNCD
                MOVE    "3"         TO  WRK-TOKNYUIN-KBN
@@ -5702,6 +5748,7 @@
                    IF    ( WRK-KJNYMD      >=  CONST-H181001 )
                        PERFORM 41011-TOKNYUIN-SYOKI-SEC
                    END-IF
+                   DISPLAY "WRK-CMB-CD ===" WRK-CMB-CD
                    PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
                    MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
                    MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
@@ -11937,8 +11984,7 @@
                IF    SYOKIKSN-IN-KHNSRYCD      =   "190129310"  OR
                                                    "190111110"  OR
                                                    "190111210"  OR
-                                                   "190075810"  OR
-                                                   "190140710"
+                                                   "190075810"
                    IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
                        MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
                    END-IF
@@ -20836,15 +20882,15 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理マスタ検索処理(KEY7)
+      *    システム管理マスタ検索処理
       *****************************************************************
-       900-SYSKANRI-KEY7-SEL-SEC       SECTION.
+       900-SYSKANRI-KEY23-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
+           MOVE    "key23"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -20854,18 +20900,18 @@
            END-IF
       *
            .
-       900-SYSKANRI-KEY7-SEL-EXT.
+       900-SYSKANRI-KEY23-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理マスタ検索処理(KEY7)
+      *    システム管理マスタ検索処理
       *****************************************************************
-       900-SYSKANRI-KEY7-FET-SEC       SECTION.
+       900-SYSKANRI-KEY23-FET-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
+           MOVE    "key23"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -20875,7 +20921,7 @@
            END-IF
       *
            .
-       900-SYSKANRI-KEY7-FET-EXT.
+       900-SYSKANRI-KEY23-FET-EXT.
            EXIT.
       *
       *****************************************************************
