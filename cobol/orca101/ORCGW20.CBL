@@ -3133,6 +3133,25 @@
                PERFORM 410011-KHNRYO-CMB-SET-SEC
            END-IF
       *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H220401 )
+      *
+               MOVE    "190135110"     TO  WRK-TNS-SRYCD
+               MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  WRK-TNS-KJNYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-TEN         TO  WRK-TEN
+      *
+               MOVE    "099999952"     TO  WRK-TNS-SRYCD
+               MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  WRK-TNS-KJNYMD
+      *
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+                   MOVE    WRK-TEN     TO  TNS-TEN
+                   PERFORM 410011-KHNRYO-CMB-SET-SEC
+               END-IF
+           END-IF
+      *
            .
       *
        41001-KHNRYO-CMB-EDT-EXT.
@@ -3163,6 +3182,22 @@
       *    入院基本料コンボ編集処理
       *****************************************************************
        41002-KHNRYO-CMB-EDT-SEC     SECTION.
+      *
+           IF    ( SPA-NAI-W20-YUKOSTYMD  >=   CONST-H220401 )
+             AND ( SPA-GMN-W20-SBT         =   "04" )
+               MOVE    "099999953"             TO  WRK-TNS-SRYCD
+               MOVE    SPA-NAI-W20-YUKOSTYMD   TO  WRK-TNS-KJNYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU           =   ZERO )
+                   PERFORM 410011-KHNRYO-CMB-SET-SEC
+               END-IF
+               MOVE    "099999954"             TO  WRK-TNS-SRYCD
+               MOVE    SPA-NAI-W20-YUKOSTYMD   TO  WRK-TNS-KJNYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU           =   ZERO )
+                   PERFORM 410011-KHNRYO-CMB-SET-SEC
+               END-IF
+           END-IF
       *
       *    点数マスタ検索処理
            PERFORM 900-TENSU-SEL-SEC
@@ -5208,6 +5243,8 @@
                    MOVE    "190097010"         TO  WRK-TNS-SRYCD
                WHEN    "099999951"
                    MOVE    "190097210"         TO  WRK-TNS-SRYCD
+               WHEN    "099999952"
+                   MOVE    "190135110"         TO  WRK-TNS-SRYCD
                WHEN    OTHER
                    MOVE    SPA-NAI-W20-KHNSRYCD
                                                TO  WRK-TNS-SRYCD
