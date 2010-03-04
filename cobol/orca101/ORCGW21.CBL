@@ -4106,6 +4106,7 @@
                                                            (IDX-KSN)
                        END-IF
                    END-IF
+               END-IF
       *
            END-PERFORM
       *
