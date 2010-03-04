@@ -925,6 +925,7 @@
            MOVE    SYSKANRI-REC    TO  SYS-5111-REC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+                    OR   ( SPA-GMN-W21-KHNRYO-MAX  >= 20 )
       *
                MOVE    ZERO        TO  FLG-TARGET
       *
@@ -940,7 +941,8 @@
                    MOVE    1       TO  FLG-TARGET
                END-IF
       *
-               IF    ( WRK-KJNYMD  >=  CONST-H220401 )
+               IF    ( WRK-KJN-YUKSTYMD
+                                 >=  CONST-H220401 )
                    IF    ( SYS-5111-SRYCD
                                        =   "099999953"
                                         OR "099999954" )
@@ -2958,6 +2960,8 @@
            IF   (  SPA-ERRCD   NOT =   SPACE )
                GO  TO  4100-BTUNUM-CHK-EXT
            END-IF
+      *
+           PERFORM 4201-INPUT-AREA-CLEAR-SEC
       *
       *    入院基本料編集処理
            PERFORM 3101-BTU-KHNRYO-EDIT-SEC
