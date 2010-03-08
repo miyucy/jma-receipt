@@ -69,6 +69,7 @@
            03  FLG-BYOLST-ROW              PIC 9(01).
            03  FLG-CHKLST-ROW              PIC 9(01).
            03  FLG-CHKREIGAI               PIC 9(01).
+           03  FLG-INPUTCD                 PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -162,6 +163,9 @@
       *
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
+      *
+       01  INPUTCD-REC.
+           COPY    "CPINPUTCD.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1323,15 +1327,21 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD1 TO  SPA-GMN-BIRTHDAY
       *
-           MOVE    CK4-1201-SRYCD      TO  WRK-SRYCD
-           MOVE    CK4-1201-LASTYMD    TO  WRK-KJNYMD
-           PERFORM 900-TENSU-KEY-SEL-SEC
-      *
            MOVE    SPA-NAI-TKBNCD(IDXL)(7:2)
                                        TO  SPA-NAI-CHKKBN
            MOVE    CK4-1201-SRYCD      TO  SPA-GMN-SRYCD
            MOVE    CK4-1201-SRYKA      TO  SPA-NAI-SRYKA
-           MOVE    TNS-NAME            TO  SPA-GMN-SRYNAME
+      *
+           IF    ( CK4-1201-SRYCD(1:1) =   "S" OR "P" )
+               MOVE    CK4-1201-SRYCD      TO  WRK-SRYCD
+               PERFORM 900-INPUTCD-KEY2-SEL-SEC
+               MOVE    ICD-DSPNAME         TO  SPA-GMN-SRYNAME
+           ELSE
+               MOVE    CK4-1201-SRYCD      TO  WRK-SRYCD
+               MOVE    CK4-1201-LASTYMD    TO  WRK-KJNYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NAME            TO  SPA-GMN-SRYNAME
+           END-IF
       *
            MOVE    SPA-NAI-TERRKBN(IDXL)
                                        TO  SPA-NAI-ERRKBN
@@ -2691,6 +2701,37 @@
       *
            .
        900-CHKREIGAI-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力コード検索処理
+      *****************************************************************
+       900-INPUTCD-KEY2-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  FLG-INPUTCD
+      *
+           INITIALIZE                  INPUTCD-REC
+           MOVE    SPACE           TO  INPUTCD-REC
+           MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
+           MOVE    "6"             TO  ICD-CDSYU
+           MOVE    WRK-SRYCD       TO  ICD-INPUTCD
+      *
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  INPUTCD-REC
+           ELSE
+               INITIALIZE                  INPUTCD-REC
+               MOVE    1               TO  FLG-INPUTCD
+           END-IF
+      *
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-INPUTCD-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
