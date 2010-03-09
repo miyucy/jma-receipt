@@ -417,7 +417,11 @@
       *
            MOVE    ZERO                TO  IDX
            PERFORM             UNTIL   FLG-JOBLOG    =   1
-                               OR      IDX             =   100
+                               OR      IDX             =   99
+      *    とりあえず100から99に変更した
+      *    正しい対応はSPA-GMN-MAXの桁数を3桁以上にしなければならない
+      *    他の影響が分からないので改正対応後に見直し
+      *                         OR      IDX             =   100
                ADD     1                   TO  IDX
                MOVE    IDX                 TO  SPA-GMN-TNO   (IDX)
                MOVE    JOBLOG-LOGYMD       TO  WRK-SYMD
