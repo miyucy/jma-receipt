@@ -27,21 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
-      *  04.04.01    NACL-藤原    10/03/09   医療機関情報（住所）の取得
+      *  04.04.01    NACL-藤原    10/03/03   医療機関情報（住所）の取得
       *                                      方法の修正
-      *  04.04.02    NACL-藤原    10/08/10   支払基金支部の名称の変更に伴
-      *                                      う修正
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *  04.07.02    NACL-藤原    15/06/18  光ディスク等送付書の媒体種類
-      *                                     設定対応
-      *  04.07.03    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -62,7 +49,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
            COPY    "HCM64.INC".
       *
@@ -91,8 +79,6 @@
            05  WRK-PARA-JOBID      PIC 9(07).
            05  WRK-PARA-SHELLID    PIC X(08).
            05  WRK-PARA-HOSPNUM    PIC 9(02).
-           05  WRK-PARA-STSRYYM    PIC 9(06).
-           05  WRK-PARA-EDSRYYM    PIC 9(06).
       *
       *    一時領域
        01  WRK-AREA.
@@ -119,7 +105,6 @@
                05  WRK-ADRS1       PIC X(40).
                05  WRK-ADRS2       PIC X(40).
                05  WRK-ADRS3       PIC X(20).
-           03  WRK-KAISETUNAME     PIC X(80).
       *
       *    日付編集用ワーク
        01  WRK-HEN-AREA.
@@ -127,9 +112,9 @@
            03  WRK-HENYMDG.
                05  WRK-HENYMD-G    PIC X(04).
                05  WRK-HENYMD-Y    PIC X(04).
-               05  WRK-HENYMD-FIL1 PIC X(02).
+               05  FILLER          PIC X(02).
                05  WRK-HENYMD-M    PIC X(04).
-               05  WRK-HENYMD-FIL2 PIC X(02).
+               05  FILLER          PIC X(02).
                05  WRK-HENYMD-D    PIC X(04).
       *
       *****************************************************************
@@ -146,9 +131,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
-      *
-           COPY  "CPSK200501.INC".
       *
       *    パラメタ
        01  BTPARA-REC.
@@ -188,8 +170,6 @@
       *
       *    県名取得パラメタ
            COPY    "CPORCSPREF.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -258,18 +238,9 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-STSRYYM
-                                               WRK-PARA-EDSRYYM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -307,11 +278,7 @@
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1001-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
            MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
@@ -329,11 +296,7 @@
            INITIALIZE                      SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1002-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
            MOVE    SYS-1002-STYUKYMD   TO  SYS-1002-EDYUKYMD
            MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
@@ -349,37 +312,10 @@
            END-IF
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-ADRS
       *
       *    医療機関編集情報取得
            PERFORM 900-1900-READ-SEC
-      *
-      *    レセプト・総括編集情報
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
-           ELSE
-               INITIALIZE                      SYS-200501-REC
-           END-IF
-      *    光ディスク等送付書（媒体種類）
-           IF      SYS-200501-RECEDEN-LST2-MEDIA
-                                       =   SPACE
-               MOVE    "0"             TO  SYS-200501-RECEDEN-LST2-MEDIA
-           END-IF
-           DISPLAY "SYS-200501-RECEDEN-LST2-MEDIA="
-                                       SYS-200501-RECEDEN-LST2-MEDIA
-           DISPLAY "WRK-PARA-DATAKBN             ="
-                                       WRK-PARA-DATAKBN
       *
       *    パラメタＤＢ取得
            INITIALIZE                      BTPARA-REC
@@ -417,15 +353,9 @@
            MOVE    SYS-1001-PREFNUM    TO  IDX
            EVALUATE   WRK-PARA-TEISYUTUSAKI
                WHEN    "1"
-      *            東京、大阪、京都は「府、都」を消去
-                   IF      IDX         =   13  OR  26  OR  27
-                       MOVE    SPACE       TO  SPREF-PREFNAME2 (IDX)(5:)
-                   END-IF
-                   STRING  "社会保険診療報酬支払基金"
-                                       DELIMITED    BY  SIZE
-                           SPREF-PREFNAME2 (IDX)
+                   STRING  SPREF-PREFNAME1 (IDX)
                                        DELIMITED    BY  SPACE
-                           "支部　御中"
+                           "社会保険診療報酬支払基金　御中"
                                        DELIMITED    BY  SIZE
                                        INTO    HCM64-TEISYUTUSAKI
                    END-STRING
@@ -441,17 +371,16 @@
       *
       *    住所
            MOVE    WRK-ADRS            TO  HCM64-ADRS
-           INSPECT HCM64-ADRS          REPLACING   ALL "  "    BY  "　"
       *
       *    開設者
-           MOVE    WRK-KAISETUNAME     TO  HCM64-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM64-KAISETUNAME
       *
       *    医療機関コード
            MOVE    SYS-1001-HOSPCD     TO  HCM64-HOSPCD
       *
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM64-HOSPNAME
-           INSPECT HCM64-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
       *    点数表区分
            MOVE    "○"                TO  HCM64-TENHYOKBN
@@ -473,18 +402,14 @@
            MOVE    WRK-HENYMD-D        TO  HCM64-SKYYMD
       *
       *    媒体種類
-           EVALUATE    SYS-200501-RECEDEN-LST2-MEDIA
-                                       ALSO    WRK-PARA-DATAKBN
-               WHEN    "0"             ALSO    "1"
-               WHEN    "0"             ALSO    "3"
-               WHEN    "1"             ALSO    ANY
+           EVALUATE    WRK-PARA-DATAKBN
+               WHEN    "1"
+               WHEN    "3"
                    MOVE    "○"                TO  HCM64-BAITAI (1)
-               WHEN    "0"             ALSO    "2"
-               WHEN    "0"             ALSO    "4"
-               WHEN    "2"             ALSO    ANY
+               WHEN    "2"
+               WHEN    "4"
                    MOVE    "○"                TO  HCM64-BAITAI (2)
-               WHEN    "0"             ALSO    "6"
-               WHEN    "3"             ALSO    ANY
+               WHEN    "6"
                    MOVE    "○"                TO  HCM64-BAITAI (3)
            END-EVALUATE
       *
@@ -717,11 +642,8 @@
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
            MOVE    "*"             TO  SYS-1900-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1900-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1900-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1900-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
            MOVE    SYS-1900-STYUKYMD
                                    TO  SYS-1900-EDYUKYMD
@@ -735,8 +657,6 @@
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                 END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -756,11 +676,8 @@
            MOVE    "1901"          TO  SYS-1901-KANRICD
            MOVE    SYS-1900-PRTKBN (21)
                                    TO  SYS-1901-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1901-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1901-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1901-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
            MOVE    SYS-1901-STYUKYMD
                                    TO  SYS-1901-EDYUKYMD
@@ -789,11 +706,8 @@
            MOVE    "1902"          TO  SYS-1902-KANRICD
            MOVE    SYS-1900-PRTKBN(21)
                                    TO  SYS-1902-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1902-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1902-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1902-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
            MOVE    SYS-1902-STYUKYMD
                                    TO  SYS-1902-EDYUKYMD
@@ -811,39 +725,6 @@
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(21)
-                                   TO  SYS-1903-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1903-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1903-STYUKYMD (1:6)
-           END-IF
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************
