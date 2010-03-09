@@ -51,68 +51,61 @@
            03  FLG-TENSU               PIC 9(01).
            03  FLG-RYOYO               PIC 9(01).
            03  FLG-TARGET              PIC 9(01).
-           03  FLG-PTNYUINRRK          PIC 9(01).
-           03  FLG-SS017               PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX-SRY                 PIC 9(05).
            03  IDX-RYO                 PIC 9(05).
-           03  IDX-PTRYO               PIC 9(05).
-           03  IDX-KHN                 PIC 9(05).
            03  IDX-RYOYOCD             PIC 9(05).
            03  IDX-DAY                 PIC 9(05).
            03  IDX-MED                 PIC 9(05).
            03  IDXA                    PIC 9(05).
-           03  IDXG                    PIC 9(05).
-           03  IDXK                    PIC 9(05).
            03  IDXM                    PIC 9(05).
-           03  IDXR                    PIC 9(05).
-           03  IDXZ                    PIC 9(05).
-      *
-       01  CNT-AREA.
-           03  CNT-INSERT              PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-KJNYMD              PIC X(08).
            03  WRK-SRYCD.
                05  WRK-SRYCD9          PIC 9(09).
            03  WRK-MEDKBN              PIC 9(01).
-           03  WRK-KHNCD               PIC X(09).
-           03  WRK-GENCD-G.
-               05  WRK-GENCD           PIC X(09)
-                                       OCCURS  2.
-           03  WRK-GENZAN              PIC S9(09)V999.
-           03  WRK-ZAITEN              PIC S9(09).
-           03  WRK-MEISAISU            PIC 9(05).
-           03  WRK-SRYCDTOTAL          PIC 9(14).
-           03  WRK-ZAITENV99           PIC S9(09)V99.
-           03  WRK-SRYYMD.
-               05  WRK-SRYYM           PIC X(06).
-               05  WRK-SRYDD           PIC 9(02).
-           03  WRK-RRKNUM              PIC 9(03).
-           03  WRK-SANTEIKBN           PIC X(01).
-           03  WRK-LOW-DAY-G.
-               05  WRK-LOW-DAY         PIC  9(01)
-                                       OCCURS   31.
-           03  WRK-MAXZAINUM           PIC 9(10).
-           03  WRK-RYOYOCD             PIC X(9).
+           03  WRK-RYOYOCD-G.
+               05  WRK-RYOYOCD         PIC X(09)
+                                       OCCURS  6.
+           03  WRK-LIFECD-G.
+               05  WRK-LIFECD          PIC X(09)
+                                       OCCURS  6.
       *
        01  TNACCT-AREA.
-           03  TNACCT-KHN-OCC              OCCURS  50.
-               05  TNACCT-KHN-CNT          PIC  9(07).
-               05  TNACCT-RYOYO-OCC        OCCURS  9.
-                   07  TNACCT-SRYCDTOTAL   PIC  9(14).
-                   07  TNACCT-ZAIKAISU     PIC  9(07).
-                   07  TNACCT-DAY          PIC  9(03)
-                                           OCCURS   31.
-           03  TNACCT-LOWEST-DAY-OCC       OCCURS   31.
-               05  TNACCT-LOW-DAY          PIC  9(01).
+         02    TNACCT-RYOYOCD          PIC X(09)
+                                       OCCURS  10.
+         02    TNACCT-OCC              OCCURS  10.
+           COPY    "CPNYUINACCT.INC"   REPLACING
+                                       //NACCT-//  BY  //TNACCT-//.
+      *
+       01  TNACCT2-AREA.
+         02    TNACCT2-RYOYOCD         PIC X(09)
+                                       OCCURS  10.
+         02    TNACCT2-OCC             OCCURS  10.
+           COPY    "CPNYUINACCT.INC"   REPLACING
+                                       //NACCT-//  BY  //TNACCT2-//.
+      *
+       01  TLIFE-AREA.
+         02    TLIFE-RYOYOCD           PIC X(09)
+                                       OCCURS  10.
+         02    TLIFE-OCC               OCCURS  10.
+           COPY    "CPNYUINACCT.INC"   REPLACING
+                                       //NACCT-//  BY  //TLIFE-//.
+      *
+       01  TLIFE2-AREA.
+         02    TLIFE2-RYOYOCD          PIC X(09)
+                                       OCCURS  10.
+         02    TLIFE2-OCC              OCCURS  10.
+           COPY    "CPNYUINACCT.INC"   REPLACING
+                                       //NACCT-//  BY  //TLIFE2-//.
       *
        01  WNACCT-AREA.
          02    WNACCT-RYOYOCD          PIC X(09)
-                                       OCCURS  9.
-         02    WNACCT-OCC              OCCURS  9.
+                                       OCCURS  10.
+         02    WNACCT-OCC              OCCURS  10.
            COPY    "CPNYUINACCT.INC"   REPLACING
                                        //NACCT-//  BY  //WNACCT-//.
       *
@@ -141,10 +134,6 @@
       *
            COPY    "CPMEDKBN.INC".
       *
-       01  EIYOGEN-REC.
-           COPY    "CPNYUINACCT.INC"   REPLACING
-                                       //NACCT-//  BY  //EIYOGEN-//.
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -169,21 +158,9 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
-      *
-      *    標欠情報取得パラメタ
-           COPY    "CPORCSHYOUKETU.INC".
-      *
-      *    定数超過情報取得パラメタ
-           COPY    "CPORCSTEISU.INC".
-      *
-      *    平成３０年４月療養病棟入院料２（経過措置２）対応
-           COPY    "CPORCSS017.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -227,9 +204,11 @@
       *
            INITIALIZE                  IDX-AREA
                                        FLG-AREA
-                                       CNT-AREA
                                        WRK-AREA
                                        TNACCT-AREA
+                                       TNACCT2-AREA
+                                       TLIFE-AREA
+                                       TLIFE2-AREA
       *
            PERFORM 800-MCNDATE-SEC
       *
@@ -261,18 +240,15 @@
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5015-REC
-           IF    (  SS011-SRYYM    >=  CONST-H2204 )
-               MOVE    "1"         TO  SYS-5015-ADLINPUTKBN
-           END-IF
       *
            PERFORM 1001-INIT-TNACCT-SEC
       *
            IF    ( SS011-DAYFLG        =   ZERO )
-      *
                PERFORM 1001-EDIT-RYOYO-DAY-SEC
+           END-IF
       *
+           IF    ( SS011-DAYFLG        =   ZERO )
                PERFORM 1001-EDIT-MEDADL-SEC
-      *
            END-IF
       *
            .
@@ -298,63 +274,106 @@
                                            NACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  NACCT-UPHMS
       *
-           PERFORM VARYING IDXK    FROM    1   BY  1
-                   UNTIL ( IDXK    >   CONST-RYOYOCD-KHN-MAX )
-               PERFORM VARYING IDXR    FROM    1   BY  1
-                   UNTIL ( IDXR    >   CONST-RYOYOCD-CD-MAX  )
-                   MOVE    CONST-RYOYOCD (IDXK IDXR)
+           PERFORM VARYING IDX-RYO FROM    1   BY  1
+                   UNTIL ( IDX-RYO >   10 )
+      *
+               MOVE    NYUINACCT-REC   TO  TNACCT-OCC (IDX-RYO)
+                                           TNACCT2-OCC(IDX-RYO)
+                                           TLIFE-OCC  (IDX-RYO)
+                                           TLIFE2-OCC (IDX-RYO)
+      *
+           END-PERFORM
+      *
+           IF    ( SYS-1001-HOSPSBT    =   1 )
+               MOVE  CONST-RYOYOCD(01) TO  TNACCT-RYOYOCD (01)
+               MOVE  CONST-RYOYOCD(02) TO  TNACCT-RYOYOCD (02)
+               MOVE  CONST-RYOYOCD(03) TO  TNACCT-RYOYOCD (03)
+               MOVE  CONST-RYOYOCD(04) TO  TNACCT-RYOYOCD (04)
+               MOVE  CONST-RYOYOCD(05) TO  TNACCT-RYOYOCD (05)
+               MOVE  CONST-RYOYOCD(10) TO  TNACCT-RYOYOCD (10)
+      *
+               MOVE  CONST-RYOYOCD(11) TO  TLIFE-RYOYOCD (01)
+               MOVE  CONST-RYOYOCD(12) TO  TLIFE-RYOYOCD (02)
+               MOVE  CONST-RYOYOCD(13) TO  TLIFE-RYOYOCD (03)
+               MOVE  CONST-RYOYOCD(14) TO  TLIFE-RYOYOCD (04)
+               MOVE  CONST-RYOYOCD(15) TO  TLIFE-RYOYOCD (05)
+               MOVE  CONST-RYOYOCD(20) TO  TLIFE-RYOYOCD (10)
+      *
+               IF    (  SS011-SRYYM        >=  CONST-H2204 )
+                   MOVE  CONST-RYOYOCD(06) TO  TNACCT-RYOYOCD (06)
+                   MOVE  CONST-RYOYOCD(07) TO  TNACCT-RYOYOCD (07)
+                   MOVE  CONST-RYOYOCD(08) TO  TNACCT-RYOYOCD (08)
+                   MOVE  CONST-RYOYOCD(09) TO  TNACCT-RYOYOCD (09)
+      *
+                   MOVE  CONST-RYOYOCD(16) TO  TLIFE-RYOYOCD (06)
+                   MOVE  CONST-RYOYOCD(17) TO  TLIFE-RYOYOCD (07)
+                   MOVE  CONST-RYOYOCD(18) TO  TLIFE-RYOYOCD (08)
+                   MOVE  CONST-RYOYOCD(19) TO  TLIFE-RYOYOCD (09)
+      *
+                   MOVE  CONST-RYOYOCD(21) TO  TNACCT2-RYOYOCD(01)
+                   MOVE  CONST-RYOYOCD(22) TO  TNACCT2-RYOYOCD(02)
+                   MOVE  CONST-RYOYOCD(23) TO  TNACCT2-RYOYOCD(03)
+                   MOVE  CONST-RYOYOCD(24) TO  TNACCT2-RYOYOCD(04)
+                   MOVE  CONST-RYOYOCD(25) TO  TNACCT2-RYOYOCD(05)
+                   MOVE  CONST-RYOYOCD(26) TO  TNACCT2-RYOYOCD(06)
+                   MOVE  CONST-RYOYOCD(27) TO  TNACCT2-RYOYOCD(07)
+                   MOVE  CONST-RYOYOCD(28) TO  TNACCT2-RYOYOCD(08)
+                   MOVE  CONST-RYOYOCD(29) TO  TNACCT2-RYOYOCD(09)
+      *
+                   MOVE  CONST-RYOYOCD(30) TO  TLIFE2-RYOYOCD(01)
+                   MOVE  CONST-RYOYOCD(31) TO  TLIFE2-RYOYOCD(02)
+                   MOVE  CONST-RYOYOCD(32) TO  TLIFE2-RYOYOCD(03)
+                   MOVE  CONST-RYOYOCD(33) TO  TLIFE2-RYOYOCD(04)
+                   MOVE  CONST-RYOYOCD(34) TO  TLIFE2-RYOYOCD(05)
+                   MOVE  CONST-RYOYOCD(35) TO  TLIFE2-RYOYOCD(06)
+                   MOVE  CONST-RYOYOCD(36) TO  TLIFE2-RYOYOCD(07)
+                   MOVE  CONST-RYOYOCD(37) TO  TLIFE2-RYOYOCD(08)
+                   MOVE  CONST-RYOYOCD(38) TO  TLIFE2-RYOYOCD(09)
+               END-IF
+           ELSE
+                   MOVE  CONST-RYOYOCD(39) TO  TNACCT-RYOYOCD(01)
+                   MOVE  CONST-RYOYOCD(40) TO  TNACCT-RYOYOCD(02)
+                   MOVE  CONST-RYOYOCD(41) TO  TNACCT-RYOYOCD(03)
+                   MOVE  CONST-RYOYOCD(42) TO  TNACCT-RYOYOCD(04)
+                   MOVE  CONST-RYOYOCD(43) TO  TNACCT-RYOYOCD(05)
+                   MOVE  CONST-RYOYOCD(44) TO  TNACCT-RYOYOCD(10)
+      *
+                   MOVE  CONST-RYOYOCD(45) TO  TLIFE-RYOYOCD(01)
+                   MOVE  CONST-RYOYOCD(46) TO  TLIFE-RYOYOCD(02)
+                   MOVE  CONST-RYOYOCD(47) TO  TLIFE-RYOYOCD(03)
+                   MOVE  CONST-RYOYOCD(48) TO  TLIFE-RYOYOCD(04)
+                   MOVE  CONST-RYOYOCD(49) TO  TLIFE-RYOYOCD(05)
+                   MOVE  CONST-RYOYOCD(50) TO  TLIFE-RYOYOCD(10)
+           END-IF
+      *
+           PERFORM VARYING IDX-RYO FROM    1   BY  1
+                   UNTIL ( IDX-RYO >   10 )
+      *
+               IF    ( TNACCT-RYOYOCD (IDX-RYO)    NOT =   SPACE )
+                   MOVE    TNACCT-RYOYOCD (IDX-RYO)
                                        TO  WRK-SRYCD9
-                   MOVE    WRK-SRYCD9  TO  TNACCT-SRYCDTOTAL (IDXK IDXR)
-               END-PERFORM
-           END-PERFORM
+                   MOVE    WRK-SRYCD9  TO  TNACCT-SRYCDTOTAL (IDX-RYO)
+               END-IF
       *
-           PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
+               IF    ( TNACCT2-RYOYOCD (IDX-RYO)   NOT =   SPACE )
+                   MOVE    TNACCT2-RYOYOCD (IDX-RYO)
+                                       TO  WRK-SRYCD9
+                   MOVE    WRK-SRYCD9  TO  TNACCT2-SRYCDTOTAL (IDX-RYO)
+               END-IF
       *
-           MOVE    SS011-SRYYM         TO  WRK-SRYYM
-           PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+               IF    ( TLIFE-RYOYOCD (IDX-RYO)    NOT =   SPACE )
+                   MOVE    TLIFE-RYOYOCD   (IDX-RYO)
+                                       TO  WRK-SRYCD9
+                   MOVE    WRK-SRYCD9  TO  TLIFE-SRYCDTOTAL (IDX-RYO)
+               END-IF
       *
-               MOVE    PTNYUINRRK-RRKNUM   TO  WRK-RRKNUM
-               INITIALIZE                      WRK-LOW-DAY-G
-      *
-               PERFORM UNTIL ( FLG-PTNYUINRRK    NOT =   ZERO )
-                        OR   ( PTNYUINRRK-RRKNUM NOT = WRK-RRKNUM )
-      *
-                   PERFORM VARYING IDX-DAY FROM    1   BY  1
-                           UNTIL ( IDX-DAY >   31 )
-      *
-                       MOVE    IDX-DAY     TO  WRK-SRYDD
-                       IF    ( WRK-SRYYMD  >=  PTNYUINRRK-TENNYUYMD )
-                        AND  ( WRK-SRYYMD  <=  PTNYUINRRK-TENSTUYMD )
-                           IF    ( PTNYUINRRK-TOKU-SANTEIYOUKENKBN
-                                           =   "1" )
-                               MOVE    1   TO  WRK-LOW-DAY (IDX-DAY)
-                           ELSE
-                               MOVE    9   TO  WRK-LOW-DAY (IDX-DAY)
-                           END-IF
-                       END-IF
-      *
-                   END-PERFORM
-      *
-                   PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
-      *
-               END-PERFORM
-      *
-               PERFORM VARYING IDX-DAY FROM    1   BY  1
-                       UNTIL ( IDX-DAY >   31 )
-                   IF    ( WRK-LOW-DAY (IDX-DAY)   NOT =   ZERO )
-                       IF    ( TNACCT-LOW-DAY (IDX-DAY)
-                                               =   ZERO )
-                           MOVE    WRK-LOW-DAY (IDX-DAY)
-                                           TO  TNACCT-LOW-DAY (IDX-DAY)
-                       END-IF
-                   END-IF
-               END-PERFORM
+               IF    ( TLIFE2-RYOYOCD (IDX-RYO)    NOT =   SPACE )
+                   MOVE    TLIFE2-RYOYOCD   (IDX-RYO)
+                                       TO  WRK-SRYCD9
+                   MOVE    WRK-SRYCD9  TO  TLIFE2-SRYCDTOTAL (IDX-RYO)
+               END-IF
       *
            END-PERFORM
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        1001-INIT-TNACCT-EXT.
@@ -397,12 +416,8 @@
       *
                PERFORM VARYING IDX-SRY FROM    1   BY  1
                        UNTIL ( IDX-SRY >   CONST-NSRYACT-MAX )
-                        OR   ( NSRY-SRYCD (IDX-SRY)
-                                               =   SPACE )
                         OR   ( FLG-RYOYO   NOT =   ZERO )
       *
-                   MOVE    NSRY-SRYCD (IDX-SRY)
-                                           TO   WRK-RYOYOCD
                    PERFORM 100111-RYOYOCD-CHK-SEC
                    IF    ( IDX-RYOYOCD NOT =   ZERO )
       *
@@ -412,10 +427,12 @@
                            UNTIL ( IDX-DAY >   31 )
       *
                            IF    ( NACCT-DAY (IDX-DAY) >   ZERO )
-                               MOVE    IDX-RYOYOCD
+                               MOVE    CONST-RYOYOCDMSGID  (IDX-RYOYOCD)
                                            TO  SS011-DAY (IDX-DAY)
-                               MOVE    IDX-KHN
-                                           TO  SS011-KHN (IDX-DAY)
+                               MOVE    CONST-RYOYOLIFE     (IDX-RYOYOCD)
+                                           TO  SS011-LIFE (IDX-DAY)
+                               MOVE    CONST-RYOYOKHN      (IDX-RYOYOCD)
+                                           TO  SS011-KHN  (IDX-DAY)
                            END-IF
       *
                        END-PERFORM
@@ -431,39 +448,6 @@
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-      D    DISPLAY "SS011-DAY->"
-      D             SS011-DAY (1) ","
-      D             SS011-DAY (2) ","
-      D             SS011-DAY (3) ","
-      D             SS011-DAY (4) ","
-      D             SS011-DAY (5) ","
-      D             SS011-DAY (6) ","
-      D             SS011-DAY (7) ","
-      D             SS011-DAY (8) ","
-      D             SS011-DAY (9) ","
-      D             SS011-DAY (10) ","
-      D             SS011-DAY (11) ","
-      D             SS011-DAY (12) ","
-      D             SS011-DAY (13) ","
-      D             SS011-DAY (14) ","
-      D             SS011-DAY (15) ","
-      D             SS011-DAY (16) ","
-      D             SS011-DAY (17) ","
-      D             SS011-DAY (18) ","
-      D             SS011-DAY (19) ","
-      D             SS011-DAY (20) ","
-      D             SS011-DAY (21) ","
-      D             SS011-DAY (22) ","
-      D             SS011-DAY (23) ","
-      D             SS011-DAY (24) ","
-      D             SS011-DAY (25) ","
-      D             SS011-DAY (26) ","
-      D             SS011-DAY (27) ","
-      D             SS011-DAY (28) ","
-      D             SS011-DAY (29) ","
-      D             SS011-DAY (30) ","
-      D             SS011-DAY (31)
-      *
            .
        10011-EDIT-RYOYO-DAY-EXT.
            EXIT.
@@ -472,34 +456,18 @@
       *****************************************************************
        100111-RYOYOCD-CHK-SEC          SECTION.
       *
-           MOVE    ZERO            TO  IDX-KHN
-                                       IDX-RYOYOCD
-           PERFORM VARYING IDXZ    FROM    1   BY  1
-                   UNTIL ( IDXZ    >   CONST-EXRYOYO-MAX )
-               IF    ( NSRY-SRYCD (IDX-SRY)
-                           =   CONST-EXRYOYO-UNDEFINED (IDXZ))
-                   MOVE    CONST-EXRYOYO-DEFINED (IDXZ)
-                                   TO   WRK-RYOYOCD
-                   MOVE    CONST-EXRYOYO-MAX
-                                   TO   IDXZ
+           MOVE    ZERO            TO  IDX-RYOYOCD
+           PERFORM VARYING IDX-RYO FROM    1   BY  1
+                   UNTIL ( IDX-RYO >   CONST-RYOYOCD-MAX )
+                    OR   ( IDX-RYOYOCD NOT =   ZERO )
+      *
+               IF    ( NSRY-SRYCD (IDX-SRY)    =   CONST-RYOYOCD
+                                                              (IDX-RYO))
+      *
+                   MOVE    IDX-RYO TO   IDX-RYOYOCD
+      *
                END-IF
-           END-PERFORM
       *
-           PERFORM VARYING IDXK    FROM    1   BY  1
-                   UNTIL ( IDXK    >   CONST-RYOYOCD-KHN-MAX )
-                    OR   ( IDX-RYOYOCD NOT =   ZERO )
-      *
-               PERFORM VARYING IDXR    FROM    1   BY  1
-                   UNTIL ( IDXR    >   CONST-RYOYOCD-CD-MAX  )
-                    OR   ( IDX-RYOYOCD NOT =   ZERO )
-      *
-                   IF    ( WRK-RYOYOCD
-                                   =   CONST-RYOYOCD (IDXK IDXR))
-                       MOVE    IDXK    TO  IDX-KHN
-                       MOVE    IDXR    TO  IDX-RYOYOCD
-                   END-IF
-      *
-               END-PERFORM
            END-PERFORM
       *
            .
@@ -531,7 +499,7 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
+                   UNTIL ( IDX-DAY >   ZERO )
       *
                IF    ( SS011-DAY (IDX-DAY) >   ZERO )
                    IF    ( SS011-MEDKBN (IDX-DAY)  =   ZERO )
@@ -554,10 +522,9 @@
            PERFORM VARYING IDX-MED FROM    1   BY  1
                    UNTIL ( IDX-MED >   MEDH20-MAX )
       *
-               IF   ( RYOCOM-SRYYM >=  MEDH20-STYM   (IDX-MED))
-                AND ( RYOCOM-SRYYM <=  MEDH20-EDYM   (IDX-MED))
-                AND ( RYOCOM-ZAINUM
-                                   =   MEDH20-ZAINUM (IDX-MED))
+               IF    ( RYOCOM-SRYCD
+                                   =   MEDH20-CDL    (IDX-MED)
+                                    OR MEDH20-SRYCDL (IDX-MED))
                    MOVE    MEDH20-MEDKBN (IDX-MED)
                                    TO  WRK-MEDKBN
                    MOVE    MEDH20-MAX  TO  IDX-MED
@@ -654,16 +621,18 @@
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
-      *        DISPLAY IDX-DAY ":SS011-DAY [" SS011-DAY (IDX-DAY)   "]"
+               DISPLAY IDX-DAY ":SS011-DAY [" SS011-DAY (IDX-DAY)   "]"
       *
                IF    ( SS011-DAY (IDX-DAY) >   ZERO )
       *
+                   MOVE    SPACE       TO  WRK-RYOYOCD-G
                    MOVE    ZERO        TO  IDX-RYO
-                   MOVE    ZERO        TO  IDX-PTRYO
-                   MOVE    SS011-KHN (IDX-DAY)
-                                       TO  IDX-KHN
+      *
+                   IF    ( SS011-DAY (IDX-DAY) =   10 )
+                               MOVE    10      TO  IDX-RYO
+                   ELSE
                        IF    ( SS011-SRYYM    >=   CONST-H2204 )
-                        AND  ( SYS-1001-HOSPSBT    =   1 )
+                        AND  ( SPA-HOSPSBT     =   1 )
                            MOVE    SS011-MEDKBN (IDX-DAY)
                                                TO  IDXM
                            EVALUATE    TRUE
@@ -696,29 +665,47 @@
                                END-IF
                            END-EVALUATE
                        END-IF
+                   END-IF
       *
-                   MOVE    IDX-RYO     TO  IDX-PTRYO
-                   EVALUATE    TRUE
-                   WHEN   ( IDX-KHN     =   5 OR 6 OR 9 OR 10 )
-                           MOVE    1   TO  IDX-RYO
-                   WHEN  ( TNACCT-LOW-DAY (IDX-DAY)    =   1 )
-                    AND  ( SYS-1001-HOSPSBT            =   1 )
-                           MOVE    9   TO  IDX-RYO
-                   END-EVALUATE
-      *
-                   COMPUTE TNACCT-KHN-CNT (IDX-KHN)
-                       =   TNACCT-KHN-CNT (IDX-KHN)
-                       +   1
-      *
-                   MOVE    IDX-RYO TO  SS011-DAY2 (IDX-DAY)
-                   MOVE    IDX-PTRYO
-                                   TO  SS011-DAY3 (IDX-DAY)
-                   MOVE    CONST-RYOYOCD (IDX-KHN IDX-RYO)
+                   IF    ( SS011-KHN  (IDX-DAY)    =   1 )
+                       IF    ( SS011-LIFE (IDX-DAY)    =   ZERO )
+                           MOVE    IDX-RYO TO  SS011-DAY2 (IDX-DAY)
+                           MOVE    TNACCT-RYOYOCD (IDX-RYO)
                                        TO  SS011-SRYCD(IDX-DAY)
-                   MOVE    1   TO  TNACCT-DAY (IDX-KHN IDX-RYO IDX-DAY)
-                   COMPUTE TNACCT-ZAIKAISU (IDX-KHN IDX-RYO)
-                       =   TNACCT-ZAIKAISU (IDX-KHN IDX-RYO)
-                       +   1
+                           MOVE    1   TO  TNACCT-DAY (IDX-RYO IDX-DAY)
+                           COMPUTE TNACCT-ZAIKAISU (IDX-RYO)
+                               =   TNACCT-ZAIKAISU (IDX-RYO)
+                               +   1
+                       ELSE
+                           MOVE    IDX-RYO TO  SS011-DAY2 (IDX-DAY)
+                           MOVE    TLIFE-RYOYOCD  (IDX-RYO)
+                                       TO  SS011-SRYCD(IDX-DAY)
+                           MOVE    1   TO  TLIFE-DAY (IDX-RYO IDX-DAY)
+                           COMPUTE TLIFE-ZAIKAISU (IDX-RYO)
+                               =   TLIFE-ZAIKAISU (IDX-RYO)
+                               +   1
+                       END-IF
+      *
+                   ELSE
+                       IF    ( SS011-LIFE (IDX-DAY)    =   ZERO )
+                           MOVE    IDX-RYO TO  SS011-DAY2 (IDX-DAY)
+                           MOVE    TNACCT2-RYOYOCD (IDX-RYO)
+                                       TO  SS011-SRYCD(IDX-DAY)
+                           MOVE    1   TO  TNACCT2-DAY (IDX-RYO IDX-DAY)
+                           COMPUTE TNACCT2-ZAIKAISU (IDX-RYO)
+                               =   TNACCT2-ZAIKAISU (IDX-RYO)
+                               +   1
+                       ELSE
+                           MOVE    IDX-RYO TO  SS011-DAY2 (IDX-DAY)
+                           MOVE    TLIFE2-RYOYOCD  (IDX-RYO)
+                                       TO  SS011-SRYCD(IDX-DAY)
+                           MOVE    1   TO  TLIFE2-DAY (IDX-RYO IDX-DAY)
+                           COMPUTE TLIFE2-ZAIKAISU (IDX-RYO)
+                               =   TLIFE2-ZAIKAISU (IDX-RYO)
+                               +   1
+                       END-IF
+      *
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -731,28 +718,9 @@
       *****************************************************************
        2001-UPD-RYOYO-SEC         SECTION.
       *
-           MOVE    ZERO            TO  CNT-INSERT
-      *
-           MOVE    PTINF-MAXZAINUM TO  WRK-MAXZAINUM
+           PERFORM 20011-DEL-RYOYO-SEC
       *
            PERFORM 20011-INS-RYOYO-SEC
-      *
-           IF    ( CNT-INSERT      >   ZERO )
-               PERFORM 20011-DEL-RYOYO-SEC
-           END-IF
-      *
-           DISPLAY "FLG-SS017=" FLG-SS017
-           IF    ( FLG-SS017       =     1 )
-               INITIALIZE                SS017-AREA
-               MOVE    SS011-PTID  TO    SS017-PTID
-               MOVE    WRK-KJNYMD  TO    SS017-SRYYMD
-               CALL    "ORCSS017"  USING SS017-AREA
-                                         SPA-AREA
-               IF    ( SS017-RC    NOT   =   ZERO )
-                   MOVE    6       TO    SS011-RC
-                   PERFORM 990-EXIT-PROGRAM-SEC
-               END-IF
-           END-IF
       *
            .
        2001-UPD-RYOYO-EXT.
@@ -768,16 +736,14 @@
       *
                MOVE    ZERO           TO   FLG-RYOYO
       *
-               IF    ( NACCT-ZAINUM   <=   WRK-MAXZAINUM )
-                   PERFORM 200111-DEL-NYUINACT-SEC
-                   IF    ( FLG-RYOYO      NOT  =    ZERO )
-                       MOVE    NYUINACCT-REC   TO  MCPDATA-REC
-                       MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 910-DBDELETE-SEC
-                       IF    ( MCP-RC      NOT =   ZERO )
-                           MOVE    2           TO  SS011-RC
-                       END-IF
+               PERFORM 200111-DEL-NYUINACT-SEC
+               IF    ( FLG-RYOYO      NOT  =    ZERO )
+                   MOVE    NYUINACCT-REC   TO  MCPDATA-REC
+                   MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBDELETE-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    2           TO  SS011-RC
                    END-IF
                END-IF
       *
@@ -804,12 +770,7 @@
       *
                PERFORM VARYING IDX-SRY FROM    1   BY  1
                        UNTIL ( IDX-SRY >   CONST-NSRYACT-MAX )
-                        OR   ( NSRY-SRYCD (IDX-SRY)
-                                               =   SPACE )
                         OR   ( FLG-RYOYO   NOT =   ZERO )
-      *
-                   MOVE    NSRY-SRYCD (IDX-SRY)
-                                           TO   WRK-RYOYOCD
       *
                    PERFORM 100111-RYOYOCD-CHK-SEC
                    IF    ( IDX-RYOYOCD NOT =   ZERO )
@@ -844,53 +805,17 @@
       *****************************************************************
        20011-INS-RYOYO-SEC                 SECTION.
       *
-           PERFORM VARYING IDXK    FROM    1   BY  1
-                   UNTIL ( IDXK    >   CONST-RYOYOCD-KHN-MAX )
+           MOVE    TNACCT-AREA         TO  WNACCT-AREA
+           PERFORM 20012-INS-RYOYO-SEC
       *
-               IF    ( TNACCT-KHN-CNT (IDXK)   >   ZERO )
+           MOVE    TNACCT2-AREA        TO  WNACCT-AREA
+           PERFORM 20012-INS-RYOYO-SEC
       *
-                   IF    ( IDXK    =   35  OR 36 )
-                       MOVE    1       TO  FLG-SS017
-                   END-IF
+           MOVE    TLIFE-AREA          TO  WNACCT-AREA
+           PERFORM 20012-INS-RYOYO-SEC
       *
-                   INITIALIZE              WNACCT-AREA
-                   PERFORM VARYING IDXR    FROM    1   BY  1
-                       UNTIL ( IDXR    >   CONST-RYOYOCD-CD-MAX )
-      *
-                       INITIALIZE              NYUINACCT-REC
-                       MOVE    SPA-HOSPNUM TO  NACCT-HOSPNUM
-                       MOVE    "1"         TO  NACCT-NYUGAIKBN
-                       MOVE    SS011-PTID  TO  NACCT-PTID
-                       MOVE    "00"        TO  NACCT-SRYKA
-                       MOVE    "90"        TO  NACCT-SRYKBN
-                       MOVE    SS011-SRYYM TO  NACCT-SRYYM
-                       MOVE    "1"         TO  NACCT-ZAISKBKBN
-                       MOVE    1           TO  NACCT-SURYOUTOTAL
-                       MOVE    1           TO  NACCT-MEISAISU
-                       MOVE    SMCNDATE-YMD TO NACCT-CREYMD
-                                               NACCT-UPYMD
-                       MOVE    SMCNDATE-HMS TO NACCT-UPHMS
-      *
-                       MOVE    TNACCT-SRYCDTOTAL (IDXK IDXR)
-                                           TO  NACCT-SRYCDTOTAL
-                       MOVE    TNACCT-ZAIKAISU   (IDXK IDXR)
-                                           TO  NACCT-ZAIKAISU
-                       PERFORM VARYING IDX-DAY FROM    1   BY  1
-                               UNTIL ( IDX-DAY >   31 )
-                           MOVE    TNACCT-DAY (IDXK IDXR IDX-DAY)
-                                           TO  NACCT-DAY (IDX-DAY)
-                       END-PERFORM
-      *
-                       MOVE    CONST-RYOYOCD (IDXK IDXR)
-                                           TO  WNACCT-RYOYOCD (IDXR)
-                       MOVE    NYUINACCT-REC
-                                           TO  WNACCT-OCC (IDXR)
-      *
-                   END-PERFORM
-                   PERFORM 20012-INS-RYOYO-SEC
-      *
-               END-IF
-           END-PERFORM
+           MOVE    TLIFE2-AREA         TO  WNACCT-AREA
+           PERFORM 20012-INS-RYOYO-SEC
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
@@ -910,21 +835,40 @@
        20012-INS-RYOYO-SEC                 SECTION.
       *
            PERFORM VARYING  IDX-RYO    FROM    1   BY  1
-                   UNTIL  ( IDX-RYO    >   CONST-RYOYOCD-CD-MAX )
+                   UNTIL  ( IDX-RYO    >   10 )
       *
                MOVE    ZERO            TO  FLG-TARGET
       *
-               IF    ( SYS-5000-RYOYODSPKBN    =    "1" )
-                   MOVE    1       TO  FLG-TARGET
-               ELSE
+               IF    ( IDX-RYO         =   10 )
                    IF    ( WNACCT-ZAIKAISU (IDX-RYO)   >   ZERO )
                        MOVE    1       TO  FLG-TARGET
                    END-IF
+               ELSE
+                   IF    ( SYS-5000-RYOYODSPKBN    =    "1" )
+                       IF    ( WNACCT-ZAIKAISU (1) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (2) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (3) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (4) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (5) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (6) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (7) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (8) >    ZERO )
+                        OR   ( WNACCT-ZAIKAISU (9) >    ZERO )
+                           MOVE    1       TO  FLG-TARGET
+                       END-IF
+                   ELSE
+                       IF    ( WNACCT-ZAIKAISU (IDX-RYO)   >   ZERO )
+                           MOVE    1       TO  FLG-TARGET
+                       END-IF
+                   END-IF
                END-IF
       *
-               IF    ( WNACCT-RYOYOCD (IDX-RYO)    =   SPACE OR ZERO )
-                       MOVE    ZERO    TO  FLG-TARGET
+               IF    ( WNACCT-RYOYOCD (IDX-RYO)    =   SPACE )
+                           MOVE    ZERO    TO  FLG-TARGET
                END-IF
+      *
+               DISPLAY IDX-RYO ":" WNACCT-RYOYOCD (IDX-RYO)
+                        "[" FLG-TARGET "]"
       *
                IF    ( FLG-TARGET  =   1 )
                    MOVE    WNACCT-OCC (IDX-RYO)
@@ -943,39 +887,13 @@
       *****************************************************************
        200111-INS-NACCT-SEC            SECTION.
       *
-           IF    ( SYS-5000-EIYOUKSNKBN    =   "1" )
-      *
-               PERFORM VARYING IDXZ    FROM    1   BY  1
-                       UNTIL ( IDXZ    >   CONST-EXRYOYO-MAX )
-                   IF    ( WRK-SRYCD
-                               =   CONST-EXRYOYO-DEFINED (IDXZ))
-                       MOVE    CONST-EXRYOYO-UNDEFINED (IDXZ)
-                                       TO   WRK-SRYCD
-                       MOVE    CONST-EXRYOYO-MAX
-                                       TO   IDXZ
-                   END-IF
-               END-PERFORM
-      *
-           END-IF
-      *
-           MOVE    WRK-SRYCD       TO  WRK-KHNCD
-           MOVE    1               TO  WRK-MEISAISU
-           COMPUTE WRK-SRYCDTOTAL
-               =   WRK-SRYCD9
-      *
            PERFORM 900-TENSU-KEY-SEL-SEC
-           MOVE    TNS-TEN         TO  WRK-ZAITEN
       *
            COMPUTE PTINF-MAXZAINUM
                =   PTINF-MAXZAINUM +   1
       *
-           PERFORM 2002-GENZAN-CHK-SEC
-      *
-           MOVE    WRK-ZAITEN      TO  NACCT-ZAITEN
+           MOVE    TNS-TEN         TO  NACCT-ZAITEN
                                        NACCT-SYUTEN1
-           MOVE    WRK-MEISAISU    TO  NACCT-MEISAISU
-                                       NACCT-SURYOUTOTAL
-           MOVE    WRK-SRYCDTOTAL  TO  NACCT-SRYCDTOTAL
            MOVE    PTINF-MAXZAINUM TO  NACCT-ZAINUM
            MOVE    NYUINACCT-REC   TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct" TO  MCP-TABLE
@@ -996,16 +914,7 @@
            MOVE    1               TO  NSRY-RENNUM
            MOVE    "900"           TO  NSRY-SRYSYUKBN
            MOVE    NACCT-SRYKBN    TO  NSRY-SRYKBN
-           MOVE    WRK-KHNCD       TO  NSRY-SRYCD    (1)
-           MOVE    1               TO  NSRY-SRYSURYO (1)
-           MOVE    WRK-GENCD(1)    TO  NSRY-SRYCD    (2)
-           IF    ( NSRY-SRYCD (2)  NOT =   SPACE )
-               MOVE    1           TO  NSRY-SRYSURYO (2)
-           END-IF
-           MOVE    WRK-GENCD(2)    TO  NSRY-SRYCD    (3)
-           IF    ( NSRY-SRYCD (3)  NOT =   SPACE )
-               MOVE    1           TO  NSRY-SRYSURYO (3)
-           END-IF
+           MOVE    WRK-SRYCD       TO  NSRY-SRYCD (1)
            MOVE    NACCT-CREYMD    TO  NSRY-CREYMD
            MOVE    NACCT-UPYMD     TO  NSRY-UPYMD
            MOVE    NACCT-UPHMS     TO  NSRY-UPHMS
@@ -1018,101 +927,8 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-           COMPUTE CNT-INSERT = CNT-INSERT + 1
-      *
            .
        200111-INS-NACCT-EXT.
-           EXIT.
-      *****************************************************************
-      *    減算チェック処理
-      *****************************************************************
-       2002-GENZAN-CHK-SEC             SECTION.
-      *
-           INITIALIZE                  WRK-GENCD-G
-           MOVE    ZERO            TO  WRK-GENZAN
-      *
-      *    標欠情報取得
-           INITIALIZE                  ORCSHYOUKETU-AREA
-           MOVE    SS011-SRYYM         TO  LNK-HYOUKETU-SANTEIYM
-           CALL    "ORCSHYOUKETU"      USING
-                                       ORCSHYOUKETU-AREA
-                                       SPA-AREA
-           IF    ( LNK-HYOUKETU-RC     =   ZERO )
-               CONTINUE
-           ELSE
-               INITIALIZE              LNK-HYOUKETU-HENKYAKU-AREA
-           END-IF
-           PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL      (IDX0    >   2   )
-               IF    ( LNK-HYOUKETU-SRYCD (IDX0)
-                                    NOT =  SPACE )
-                AND  ( SS011-SRYYM     >=  LNK-HYOUKETU-STARTYM(IDX0))
-                AND  ( SS011-SRYYM     <=  LNK-HYOUKETU-ENDYM  (IDX0))
-                   MOVE    LNK-HYOUKETU-SRYCD (IDX0)
-                                       TO  WRK-GENCD (1)
-               END-IF
-           END-PERFORM
-      *
-      *    定数超過
-           INITIALIZE                      ORCSTEISU-AREA
-           MOVE    SS011-SRYYM         TO  LNK-TEISU-SANTEIYM
-           MOVE    WRK-SRYCD           TO  LNK-TEISU-SANTEISRYCD
-           MOVE    "0"                 TO  LNK-TEISU-TOKUTEINYUIN-KBN
-           CALL    "ORCSTEISU"         USING   ORCSTEISU-AREA
-                                               SPA-AREA
-           IF    ( LNK-TEISU-RC        =   ZERO )
-               CONTINUE
-           ELSE
-               INITIALIZE              LNK-TEISU-HENKYAKU-AREA
-           END-IF
-           PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL      (IDX0    >   2   )
-               IF    ( LNK-TEISU-SRYCD (IDX0)  NOT =   SPACE )
-                AND  ( SS011-SRYYM     >=  LNK-TEISU-STARTYM(IDX0))
-                AND  ( SS011-SRYYM     <=  LNK-TEISU-ENDYM  (IDX0))
-                   MOVE    LNK-TEISU-SRYCD (IDX0)
-                                       TO  WRK-GENCD (2)
-               END-IF
-           END-PERFORM
-      *
-           IF    ( WRK-GENCD (1)       =   SPACE )
-               MOVE    WRK-GENCD (2)   TO  WRK-GENCD (1)
-               MOVE    SPACE           TO  WRK-GENCD (2)
-           END-IF
-      *
-           PERFORM VARYING IDXG    FROM    1   BY  1
-                   UNTIL ( IDXG    >   2 )
-                    OR   ( WRK-GENCD (IDXG)    =   SPACE )
-      *
-               MOVE    WRK-GENCD (IDXG)    TO  WRK-SRYCD
-               PERFORM 900-TENSU-KEY-SEL-SEC
-      *
-               COMPUTE WRK-GENZAN
-                   =   WRK-GENZAN
-                   + ( WRK-ZAITEN *  TNS-TEN   /   100 )
-      *
-               COMPUTE WRK-MEISAISU
-                   =   WRK-MEISAISU
-                   +   1
-      *
-               COMPUTE WRK-SRYCDTOTAL
-                   =   WRK-SRYCDTOTAL
-                   +   WRK-SRYCD9
-      *
-           END-PERFORM
-      *
-           COMPUTE WRK-ZAITENV99
-               =   WRK-ZAITEN
-               -   WRK-GENZAN
-      *
-           COMPUTE WRK-ZAITEN
-               =   WRK-ZAITENV99
-               +   0.5
-      *
-           .
-      *
-           .
-       2002-GENZAN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -1139,6 +955,7 @@
                PERFORM 900-TENSU-KEY-SEL-SEC
       *
                DISPLAY IDX-DAY
+                       ":LIFE["    SS011-LIFE  (IDX-DAY)
                        "]DAY["     SS011-DAY   (IDX-DAY)
                        "]DAY2["    SS011-DAY2  (IDX-DAY)
                        "]ADLTEN["  SS011-ADLTEN(IDX-DAY)
@@ -1387,56 +1204,6 @@
            .
       *
        900-PTINF-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院履歴検索処理
-      *****************************************************************
-       900-PTNYUINRRK-KEY41-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-      *
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SS011-PTID          TO  PTNYUINRRK-PTID
-           MOVE    SS011-SRYYM         TO  PTNYUINRRK-TENNYUYMD
-           MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD(7:2)
-           MOVE    SS011-SRYYM         TO  PTNYUINRRK-TENSTUYMD
-           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:2)
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-      *
-           .
-      *
-       900-PTNYUINRRK-KEY41-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院履歴FETCH処理
-      *****************************************************************
-       900-PTNYUINRRK-KEY41-FET-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-      *
-           .
-      *
-       900-PTNYUINRRK-KEY41-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
