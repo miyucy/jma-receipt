@@ -49,11 +49,30 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    ¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PARA-KEY.
+      *        05  PARA-FILEMEI         PIC X(08).
+      *        05  PARA-EDANUM          PIC 9(03).
+      *    03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    ¥Ñ¥é¥á¥¿¥Õ¥¡¥¤¥ëÌ¾
+      *01  FILE-NAME2.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
+      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -213,11 +232,21 @@
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-SRYACT          PIC 9(01).
            03  FLG-WKSRYACT        PIC 9(01).
+           03  FLG-HKNMST          PIC 9(01).
+           03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-PTCOM           PIC 9(01).
+           03  FLG-SRYACCT         PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
+           03  FLG-SRYKARRK        PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
+           03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-PTNYUINRRK        PIC 9(01).
+      *
+           03  FLG-PTRSIINF        PIC 9(01).
       *
            03  FLG-WKSYORI         PIC 9(01).
            03  FLG-HEN             PIC 9(01).
@@ -306,7 +335,6 @@
            03  WRK-DRCD                PIC X(05).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-HKNCOMBINUM         PIC X(04).
-           03  WRK-MAE-HKNCOMBINUM     PIC X(04).
       *
            03  WRK-MOTOPG              PIC X(08).
       *
@@ -353,51 +381,51 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *    ´µ¼ÔÈÖ¹æÊÑ´¹
-      *01  PTNUM-REC.
-      *    COPY    "CPPTNUM.INC".
+       01  PTNUM-REC.
+           COPY    "CPPTNUM.INC".
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
-      *01  SRYACT-REC.
-      *    COPY    "CPSRYACT.INC".
+       01  SRYACT-REC.
+           COPY    "CPSRYACT.INC".
       *
       *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
       *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
-      *01  HKNCOMBI-REC.
-      *    COPY    "CPHKNCOMBI.INC".
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *    ´µ¼Ô¥³¥á¥ó¥È
-      *01  PTCOM-REC.
-      *    COPY    "CPPTCOM.INC".
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
       *
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
-      *01  SRYACCT-REC.
-      *    COPY    "CPSRYACCT.INC".
+       01  SRYACCT-REC.
+           COPY    "CPSRYACCT.INC".
       *
       *    ¼õÉÕ
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
       *    ¿ÇÎÅ²ÊÍúÎò
-      *01  SRYKARRK-REC.
-      *    COPY    "CPSRYKARRK.INC".
+       01  SRYKARRK-REC.
+           COPY    "CPSRYKARRK.INC".
       *
       *    ¼ýÇ¼
-      *01  SYUNOU-REC.
-      *    COPY    "CPSYUNOU.INC".
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *    ´µ¼ÔÉÂÌ¾
-      *01  PTBYOMEI-REC.
-      *    COPY    "CPPTBYOMEI.INC".
+       01  PTBYOMEI-REC.
+           COPY    "CPPTBYOMEI.INC".
       *
       *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
-      *01  PTRSIINF-REC.
-      *    COPY    "CPPTRSIINF.INC".
+       01  PTRSIINF-REC.
+           COPY    "CPPTRSIINF.INC".
       *
       *    ´µ¼ÔÆþ±¡ÍúÎò
        01  PTNYUINRRK-REC.
@@ -419,7 +447,7 @@
            COPY    "CPORCSGDAY.INC".
       *
       *    ½é´ü£Ó£Ð£ÁÊÔ½¸½èÍý¥Ñ¥é¥á¥¿
-      *    COPY    "CPORCSC95.INC".
+           COPY    "CPORCSC95.INC".
       *
       *    ¥É¥¯¥¿¡¼ÊÔ½¸½èÍý¥Ñ¥é¥á¥¿
            COPY    "CPORCSDRSET.INC".
@@ -434,7 +462,9 @@
            COPY    "CPORCSLOCK.INC".
       *
       *    £Ä£Â¸¡º÷
+      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
+      *****COPY    "CPORCMCP.INC".
       *
       *
       *****************************************************************
@@ -448,34 +478,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K02N.INC".
+           COPY    "K021.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K061.INC".
+           COPY    "K062.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K081.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K97.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "K03X.INC".
+           COPY    "KERR.INC".
+           COPY    "KERR2.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+           COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -721,10 +750,6 @@
                        MOVE    SPA-DRCD-MAX    TO  IDX
                    END-IF
                END-PERFORM
-      *H29.8
-           ELSE
-               MOVE    SPACE               TO  SPA-GMN-DRCD-G
-               MOVE    SPACE               TO  SPA-NAI-DRCD
            END-IF
            .
        3101-PTINF-SPA-EXT.
@@ -1019,7 +1044,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC           TO  SYS-1005-REC
       *********MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-GMN-TKACD  (IDX)
@@ -1346,38 +1371,16 @@
                                                             (IDX)
                END-IF
       *    ÈóÉ½¼¨¶èÊ¬
-               EVALUATE    ORCSHKN-NAI-HYOJIKBN (IDX)
-               WHEN    "1"
+               IF      ORCSHKN-NAI-HYOJIKBN (IDX)  =   "1"
                    MOVE    SPACE       TO  WRK-HKNCOMBI
                    STRING  SPA-GMN-THKNCOMBIMEI (IDX)
-                                                 DELIMITED  BY  "  "
-                           "¡ÚÈóÉ½¼¨¡Û" 
-                                                 DELIMITED  BY  SIZE
+                                               DELIMITED  BY  SPACE
+                           "¡ÚÈóÉ½¼¨¡Û"        DELIMITED  BY  SIZE
                          INTO             WRK-HKNCOMBI
                    END-STRING
                    MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
                                                             (IDX)
-               WHEN    "2"
-                   MOVE    SPACE       TO  WRK-HKNCOMBI
-                   STRING  SPA-GMN-THKNCOMBIMEI (IDX)
-                                                 DELIMITED  BY  "  "
-                           "¡ÚÆþÈóÉ½¼¨¡Û" 
-                                                 DELIMITED  BY  SIZE
-                         INTO             WRK-HKNCOMBI
-                   END-STRING
-                   MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
-                                                            (IDX)
-               WHEN    "3"
-                   MOVE    SPACE       TO  WRK-HKNCOMBI
-                   STRING  SPA-GMN-THKNCOMBIMEI (IDX)
-                                                 DELIMITED  BY  "  "
-                           "¡Ú³°ÈóÉ½¼¨¡Û" 
-                                                 DELIMITED  BY  SIZE
-                         INTO             WRK-HKNCOMBI
-                   END-STRING
-                   MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
-                                                            (IDX)
-               END-EVALUATE
+               END-IF
       *TEST
       *
                MOVE    ORCSHKN-NAI-HKNNUM (IDX)
@@ -1438,12 +1441,8 @@
            MOVE    SPA-HKNCOMBINUM     TO  SPA-NAI-HKNCOMBIOK
       *
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
-      *    Á°²ó´µ¼ÔÊÝÂ¸
-           MOVE    SPA-PTID            TO  SPA-LAST-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-LAST-PTNUM
       *
            MOVE    2                   TO  SPA-GMN-CUR
-      *
            .
        4101-PTNUM-CHK-EXT.
            EXIT.
@@ -2008,9 +2007,6 @@
            END-IF
       *
       *    ¿ÇÎÅ²Ê
-           IF      SPA-GMN-SRYKA       =   SPACE
-               MOVE    SPA-GMN-SRYKAL(01)  TO  SPA-GMN-SRYKA
-           END-IF
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-SRYKA-MAX
                IF      SPA-GMN-SRYKA       =   SPA-GMN-SRYKAL(IDX)
@@ -2054,12 +2050,7 @@
       *
                MOVE    WRK-HENYMDG         TO  K01-SRYYMD
                MOVE    WRK-HENYMDG         TO  SPA-GMN-SRYYMD
-               MOVE    SPA-GMN-HKNCOMBINUM TO  WRK-MAE-HKNCOMBINUM
                PERFORM 4103-SRYYMD-CHK-SEC
-      *
-               IF      SPA-GMN-HKNCOMBINUM =   SPACE
-                   MOVE    WRK-MAE-HKNCOMBINUM TO  SPA-GMN-HKNCOMBINUM
-               END-IF
            ELSE
                MOVE    "0013"              TO  SPA-ERRCD
            END-IF
@@ -2984,8 +2975,6 @@
                IF      SPA-GMN-THKNCOMBINUM(IDX)
                                                =   SPA-GMN-HKNCOMBINUM
                    MOVE    "T"             TO  K01-HKNKUM-SELECT(IDX)
-                   MOVE    IDX             TO  K01-HKNKUM-ROW
-                   MOVE    2               TO  K01-HKNKUM-ROWATTR
                ELSE
                    MOVE    "F"             TO  K01-HKNKUM-SELECT(IDX)
                END-IF
