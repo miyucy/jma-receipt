@@ -44,7 +44,6 @@
   <widget>
     <class>GtkFixed</class>
     <name>fi1</name>
-    <width>905</width>
 
     <widget>
       <class>GtkButton</class>

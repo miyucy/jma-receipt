@@ -41,8 +41,6 @@
   <widget>
     <class>GtkFixed</class>
     <name>fixed2</name>
-    <width>800</width>
-    <height>600</height>
 
     <widget>
       <class>GtkPandaEntry</class>

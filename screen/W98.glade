@@ -278,8 +278,6 @@
       <widget>
 	<class>GtkFixed</class>
 	<name>fixed2</name>
-	<width>430</width>
-	<height>342</height>
 
 	<widget>
 	  <class>GtkButton</class>

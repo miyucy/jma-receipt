@@ -41,8 +41,6 @@
   <widget>
     <class>GtkFixed</class>
     <name>fixed1</name>
-    <width>700</width>
-    <height>400</height>
 
     <widget>
       <class>GtkNumberEntry</class>

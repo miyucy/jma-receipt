@@ -42,8 +42,6 @@
   <widget>
     <class>GtkFixed</class>
     <name>fixed10</name>
-    <width>620</width>
-    <height>453</height>
 
     <widget>
       <class>GtkButton</class>
