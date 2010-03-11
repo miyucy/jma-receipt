@@ -44,18 +44,6 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-¾®Æ¦Âô  07/12/18  Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÍâÆü¤Î
       *                                     ¿©»ö¤ÈÆþ±¡ÎÁ²Ã»»ÂÐ±þ
-      *  04.04.01    NACL-ÌçÏÆ    10/06/01  Â¾°åÎÅµ¡´Ø¼õ¿ÇÂÐ±þ
-      *  04.04.02    NACL-ÌçÏÆ    10/08/09  Â¾°å¼õ¿Ç¡Ê³°Çñ£´¡Ë¤ÎÁªÄê»þÂÐ±þ
-      *  04.05.01    NACL-¾®Æ¦Âô  10/01/14  ¼£¸³ÂÐ±þ
-      *  04.05.02    NACL-¾®Æ¦Âô  10/01/19  ¿ÇÎÅÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤ÎÂÐ±þ
-      *  04.05.03    NACL-ÌçÏÆ    12/03/13  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£¶¡¤£·¤ÎÂÐ±þ¡Ë
-      *  04.05.04    NACL-ÌçÏÆ    12/09/18  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£¸¡¤£¹¤ÎÂÐ±þ¡Ë
-      *  04.07.01    NACL-ÌçÏÆ    14/03/14  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.02    NACL-ÌçÏÆ    14/03/26  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *                                     ¡ÊÌë¶Ð»þ´Ö·Ð²á¸º»»¤ÎÁªÄêÂÐ±þ¡Ë
-      *  04.08.01    NACL-ÌçÏÆ    16/03/01  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.02    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -101,7 +89,6 @@
            03  IDX5                        PIC 9(04).
            03  IDX6                        PIC 9(04).
            03  IDX7                        PIC 9(04).
-           03  IDX8                        PIC 9(04).
            03  KSN-IDX                     PIC 9(04).
            03  GENSAN-IDX                  PIC 9(04).
            03  GENSAN-IDX2                 PIC 9(04).
@@ -160,20 +147,12 @@
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
            03  WRK-MEISAISU                PIC 9(03).
            03  WRK-KSNKBN                  PIC 9(03).
-           03  WRK-CDKBN-KBNNUM            PIC 9(03).
-           03  WRK-CHUKSNCD-XXX            PIC X(04).
-           03  WRK-NYUKHNKBN-XXX           PIC 9(03).
       *
            03  WRK-SYS5000-COUNT           PIC 9(02).
       *
            03  WRK-GENSAN2-MIJISI          PIC 9(01).
            03  WRK-GENSAN3-MIJISI          PIC 9(01).
            03  WRK-GENSAN4-MIJISI          PIC 9(01).
-      *
-           03  WRK-GETSUMATSU-YMD.
-               05  WRK-GETSUMATSU-YY       PIC 9(04).
-               05  WRK-GETSUMATSU-MM       PIC 9(02).
-               05  WRK-GETSUMATSU-DD       PIC 9(02).
       *
       *    Æþ±¡²ñ·×¥ï¡¼¥¯
            03  WRK-NYUIN-TABLE.
@@ -184,12 +163,8 @@
                    07  WRK-SHOKIKSN        PIC X(09).
                    07  WRK-HYOUKETSU       PIC X(09).
                    07  WRK-GAIHAKU         PIC X(09).
-                   07  WRK-GAIHAKU2        PIC X(09).
                    07  WRK-NYUKHNKSNKBN    PIC 9(03).
-                   07  WRK-GAIHAKU-KBN     PIC 9(03).
-                   07  WRK-CHUKSNCD        PIC X(04).
-                   07  WRK-NYUKHNKBN       PIC 9(03).
-                   07  WRK-KANGOGEN        PIC X(09).
+                   07  WRK-GAIHAKU-KBN     PIC 9(01).
       *
       *    Æþ±¡²ñ·×ÊÂ¤ÓÂØ¤¨¥ï¡¼¥¯
            03  WRK-NYUIN-SORT-TABLE.
@@ -199,8 +174,10 @@
                    07  WRK-SO-SRYKBN       PIC X(02).
                    07  WRK-SO-SRYCD        PIC X(09)  OCCURS 20.
                    07  WRK-SO-SRYCDTOTAL   PIC 9(14).
-                   07  WRK-SO-TEN          PIC S9(07).
+                   07  WRK-SO-TEN          PIC 9(07).
                    07  WRK-SO-KAISU        PIC 9(02).
+                   07  WRK-SO-GAIHAKU-TBL.
+                     09  WRK-SO-GAIHAKU-KBN  PIC 9(01)  OCCURS 31.
       *
       *    Æ±°ìºÞ¤Þ¤È¤áÍÑÈæ³Ó¥­¡¼
            03  WRK-OLD-KEY.
@@ -213,21 +190,12 @@
                05  WRK-NEW-SRYKA-DAY       PIC X(01).
                05  WRK-NEW-SRYCDTOTAL      PIC 9(14).
                05  WRK-NEW-TEN             PIC 9(07).
-      *
       *    Æþ±¡ÎÁ²Ã»»ÂàÈòÎÎ°è
            03  WRK-NYUKSN-TABLE.
                05  WRK-NYUKSN-TBL          OCCURS  20.
                    07  WRK-NYUKSN          PIC X(09).
                    07  WRK-NYUKSN-ZAITEN   PIC 9(08).
                    07  WRK-NYUKSN-DAY      PIC 9(03)  OCCURS 31.
-      *
-      *    ¼£¸³¸ºÅÀÂàÈòÎÎ°è
-           03  WRK-CHIKEN-TABLE.
-               05  WRK-CHIKEN-ZAITEN       PIC 9(08)  OCCURS 31.
-      *
-      *    °åÎÅ´Ñ»¡ÅÀ¿ôÂàÈòÎÎ°è
-           03  WRK-IRYOKNS-TABLE.
-               05  WRK-IRYOKNS-ZAITEN      PIC 9(08)  OCCURS 31.
       *
       *    Ì¤¼Â»Ü¸º»»ÂàÈòÍÑ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
            03  WRK-GENSAN-TABLE.
@@ -314,19 +282,13 @@
       *    ¿©»ö¥ï¡¼¥¯£²£°£°£¶£°£´
            03  WRK-SKJ200604-TABLE.
                05  WRK-SKJ200604-TBL     OCCURS  31.
-                   07  WRK-SKJ200604-NYUINJI   PIC 9(04).
-                   07  WRK-SKJ200604-TOKUSYO   PIC 9(04).
-               05  WRK-SKJ200604-TBL2    OCCURS   6.
-                   07  WRK-SKJ200604-KINGAKU   PIC 9(07).
-      *
-           03  WRK-SKJ200604X-TABLE.
-               05  WRK-SKJ200604X-TBL    OCCURS  31.
                    07  WRK-SKJ200604-ASA       PIC 9(04).
                    07  WRK-SKJ200604-HIRU      PIC 9(04).
                    07  WRK-SKJ200604-YORU      PIC 9(04).
-           03  WRK-SKJ200604X-TABLE-R  REDEFINES  WRK-SKJ200604X-TABLE
-                                         OCCURS  31.
-                   07  WRK-SKJ200604-AHY       PIC 9(04)   OCCURS   3.
+                   07  WRK-SKJ200604-NYUINJI   PIC 9(04).
+                   07  WRK-SKJ200604-TOKUSYO   PIC 9(04).
+               05  WRK-SKJ200604-TBL2    OCCURS   4.
+                   07  WRK-SKJ200604-KINGAKU   PIC 9(07).
       *
            03  WRK-KEISAN                      PIC 9(07).
       *
@@ -421,12 +383,6 @@
       *
       *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
            COPY    "CPORCSNYUINDAY.INC".
-      *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö£²
-           COPY    "CPORCSNYULIFE2.INC".
-      *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ¥µ¥Ö
-           COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -551,10 +507,10 @@
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  PTNYUINRRK-PTID
-           MOVE    "key8"                   TO  MCP-PATHNAME
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM 910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK            =   ZERO
-               MOVE    "key8"               TO  MCP-PATHNAME
+               MOVE    "key3"               TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)
                    IF   PTNYUINRRK-JTIKBN    =    "5"
@@ -587,13 +543,10 @@
                                    PERFORM  VARYING  IDX1  
                                             FROM IDX-ST   BY  1
                                             UNTIL (IDX1  >  IDX-ED)
-      **                                  IF   TBL-NYUINKA(IDX1) = SPACE
-      **                                     MOVE PTNYUINRRK-NYUINKA  TO
-      **                                               TBL-NYUINKA(IDX1)
-      **                                  END-IF
-      *
+                                        IF   TBL-NYUINKA(IDX1) = SPACE
                                            MOVE PTNYUINRRK-NYUINKA  TO
                                                      TBL-NYUINKA(IDX1)
+                                        END-IF
                                    END-PERFORM
                                END-IF
                            ELSE
@@ -627,7 +580,7 @@
                            END-IF
                        END-IF
                    END-IF
-                   MOVE    "key8"                 TO  MCP-PATHNAME
+                   MOVE    "key3"                 TO  MCP-PATHNAME
                    PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -636,7 +589,7 @@
            END-IF
       *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-           MOVE    "key8"                  TO  MCP-PATHNAME
+           MOVE    "key3"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            IF    ( LNK-ORCHCN33SUB-RC       NOT =   ZERO )
@@ -679,21 +632,6 @@
       *****************************************************************
        210-NYUINTEN-GET-SEC            SECTION.
       *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ
-           IF      LNK-ORCHCN33SUB-SANTEIYM   >=   "201804"
-             INITIALIZE                         ORCSKANGOGEN-AREA
-             MOVE  LNK-ORCHCN33SUB-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
-             MOVE  LNK-ORCHCN33SUB-PTID     TO  LNK-KANGOGEN-PTID
-             MOVE  LNK-ORCHCN33SUB-SANTEIYM TO  LNK-KANGOGEN-SANTEIYM
-             CALL  "ORCSKANGOGEN"           USING  ORCSKANGOGEN-AREA
-                                                   SPA-AREA
-             IF      LNK-KANGOGEN-RC  =   ZERO
-               PERFORM    VARYING   IDX1  FROM   1   BY   1
-                           UNTIL    IDX1   >    31
-                 MOVE  LNK-KANGOGEN-SRYCD(IDX1) TO  WRK-KANGOGEN(IDX1)
-               END-PERFORM
-             END-IF
-           END-IF
       *
       *Æþ±¡ÎÁ¤Î¼èÆÀ
            MOVE    ZERO                    TO  FLG-OK
@@ -710,9 +648,6 @@
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
                    MOVE      ZERO     TO      FLG-RYAKU
                                               WRK-KSNKBN
-                                              WRK-CDKBN-KBNNUM
-                   MOVE      SPACE    TO      WRK-CHUKSNCD-XXX
-                   MOVE      ZERO     TO      WRK-NYUKHNKBN-XXX
                    IF    NACCT-SRYCDTOTAL     =    99999916
                        CONTINUE
                    ELSE
@@ -725,12 +660,6 @@
                            AND   (NACCT-DAY(IDX1)    NOT =  ZERO) 
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX1)
-      *
-      *                        °åÎÅ´Ñ»¡Ë¡¤ÎÆþ±¡ÎÁ»»Äê»þ¤Ï¥ï¡¼¥¯ÎÎ°èÂàÈò
-                               IF   NSRY-SRYCD(1)(1:3)  =  "188"
-                                   MOVE  NACCT-ZAITEN  TO
-                                               WRK-IRYOKNS-ZAITEN(IDX1)
-                               END-IF
       *
                                IF   NSRY-SRYCD(2)  NOT =   SPACE
                                    IF (NSRY-SRYCD(2) NOT =
@@ -816,25 +745,6 @@
       *
                                MOVE  WRK-KSNKBN
                                          TO  WRK-NYUKHNKSNKBN(IDX1)
-      *                        Æþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬ÃÖ¤­´¹¤¨
-                               IF  LNK-ORCHCN33SUB-SANTEIYM >= "201804"
-      *                          ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ
-      *                                        ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                                 IF   (WRK-KSNKBN       = 27 )
-                                 AND  (WRK-CDKBN-KBNNUM = 101)
-                                   MOVE  901 TO WRK-NYUKHNKSNKBN(IDX1)
-                                 END-IF
-      *                          Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ
-      *                                        ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-                                 IF   (WRK-KSNKBN       = 27 )
-                                 AND  (WRK-CDKBN-KBNNUM = 109)
-                                   MOVE  909 TO WRK-NYUKHNKSNKBN(IDX1)
-                                 END-IF
-                               END-IF
-                               MOVE  WRK-CHUKSNCD-XXX
-                                         TO  WRK-CHUKSNCD(IDX1)
-                               MOVE  WRK-NYUKHNKBN-XXX
-                                         TO  WRK-NYUKHNKBN(IDX1)
       *
                                MOVE    1    TO   FLG-OK
                            END-IF
@@ -1046,11 +956,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF    (WRK-SRYKA-DAY(IDX1) NOT = SPACE)
-                       AND   ((WRK-GAIHAKU-KBN(IDX1)  = ZERO) OR
-                              (WRK-GAIHAKU-KBN(IDX1) >=  4  ))
-                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO )
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4
+                                                              OR  5)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                            MOVE  "197000570"
                                        TO WRK-SYS5000-SHOKUCD(3 IDX1)
+      
                        END-IF
                    END-PERFORM
                  END-IF
@@ -1083,9 +994,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                               UNTIL     IDX1   >   31
                        IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)    OR
                              (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
-                       AND  ((WRK-GAIHAKU-KBN(IDX1)  = ZERO )    OR
-                             (WRK-GAIHAKU-KBN(IDX1) >=  4   ))
-                       AND  ( NACCT-DAY(IDX1)    NOT =  ZERO )
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4
+                                                              OR  5)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                            IF   FLG-KSN   =  ZERO
                                ADD     1    TO    KSN-IDX
                                MOVE    1    TO    FLG-KSN
@@ -1126,9 +1037,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                               UNTIL     IDX1   >   31
                        IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
                              (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
-                       AND  ((WRK-GAIHAKU-KBN(IDX1)  = ZERO )  OR
-                             (WRK-GAIHAKU-KBN(IDX1) >=  4   ))
-                       AND  ( NACCT-DAY(IDX1)    NOT =  ZERO )
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4
+                                                              OR  5)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
                            MOVE   NACCT-ZAITEN  
                                         TO  LNK-ORCHCN33SUB-ETCTEN
                                                              (IDX1)
@@ -1145,9 +1056,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM   910-DB-CLOSE-SEC
       *
       *    ¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤è¤êÆþ±¡ÎÁ²Ã»»¤Î¼èÆÀ
-           IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE  OR  "1"
+           IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
                PERFORM    210-NYUKSN-SRYACCT-GET-SEC
            END-IF
+      *
       *
       *    ¼èÆÀ¤·¤¿Æþ±¡¾ðÊó¤«¤éÆüÃ±°Ì¤ÎÆþ±¡²ñ·×¾ðÊó¤òºÆ¹½ÃÛ
            PERFORM      VARYING    IDX1   FROM   1  BY  1
@@ -1175,101 +1087,39 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                MOVE    "key2"   TO  MCP-PATHNAME
                                PERFORM  910-SENTEICDCHG-READ-SEC
                                IF    FLG-SENTEICDCHG  =   ZERO
-                                 IF  SENCHG-IPNSRYCD  =
-                                                  SENCHG-SENTEISRYCD
-      *                            Ìë¶Ð»þ´Ö·Ð²á¸º»»¤ÎÁªÄêÂÐ±þ
-      *                            "190131410","190165810","190165910",
-      *                            "190131310"
-                                   IF  LNK-ORCHCN33SUB-SANTEIYM
-                                                  >= "201404"
-                                    ADD    1    TO  WRK-MEISAISU
-                                    MOVE  "190122890"
-                                                TO  WRK-SO-SRYCD
-                                                   (IDX1 WRK-MEISAISU)
-                                   END-IF
-                                 ELSE
                                    MOVE  SENCHG-SENTEISRYCD
                                                 TO  WRK-SO-SRYCD
                                                    (IDX1 WRK-MEISAISU)
-                                 END-IF
                                END-IF
-                           END-IF
-                           MOVE   "tbl_senteicdchg"    TO  MCP-TABLE
-                           MOVE   "key2"               TO  MCP-PATHNAME
+                          END-IF
+                          MOVE    "tbl_senteicdchg"    TO  MCP-TABLE
+                          MOVE    "key2"               TO  MCP-PATHNAME
                          PERFORM   910-DB-CLOSE-SEC
                        END-IF
                    END-IF
                END-IF
-      *        Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»
-               IF        (WRK-NYUINKHN(IDX1)  NOT =        SPACE)
-               AND       (WRK-KANGOGEN(IDX1)  NOT =        SPACE)
-                   ADD      1                TO  WRK-MEISAISU
-                   MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
-                                           (IDX1 WRK-MEISAISU)
-               END-IF
-      *        ³°Çñ
-               IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
-                   ADD      1                TO  WRK-MEISAISU
-                   MOVE   WRK-GAIHAKU(IDX1)  TO  WRK-SO-SRYCD
-                                           (IDX1 WRK-MEISAISU)
-               END-IF
-      *        ³°Çñ£²
-               IF         WRK-GAIHAKU2(IDX1)  NOT =        SPACE
-                   ADD      1                TO  WRK-MEISAISU
-                   MOVE   WRK-GAIHAKU2(IDX1) TO  WRK-SO-SRYCD
-                                           (IDX1 WRK-MEISAISU)
-               END-IF
+      *
       *        ½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë
-               IF      (WRK-GAIHAKU(IDX1)        =
-                                     SPACE      OR
-                                    "190142190" OR  "190142090" OR
-                                    "190142290" OR  "190141590" OR
-                                    "190108790" OR  "190108890" OR
-                                    "190109090" OR
-                                    "190153190" OR  "190153090" OR
-                                    "190153390" OR  "190153290" OR
-                                    "190161470" OR  "190161570" OR
-                                    "190161870" OR  "190162070" OR
-                                    "190161670" OR  "190161770" OR
-                                    "190161970" OR  "190162170" OR
-                                    "190182990" OR
-                                    "190198570" OR  "190198670" OR
-                                    "190213790" OR  "190214290" OR
-                                    "190213890" OR  "190214090" OR
-                                    "190214390" OR  "190213990" OR
-                                    "190214190"                 )
-               AND     (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
+               IF      (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
+                       (WRK-SHOKIKSN(IDX1)   NOT =         SPACE)
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-SHOKIKSN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *        É¸·ç
                IF      WRK-HYOUKETSU(IDX1)   NOT =         SPACE
-                 IF   (WRK-GAIHAKU(IDX1)        =
-                                     SPACE      OR
-                                    "190142190" OR  "190142090" OR
-                                    "190142290" OR  "190141590" OR
-                                    "190108790" OR  "190108890" OR
-                                    "190109090" OR
-                                    "190153190" OR  "190153090" OR
-                                    "190153390" OR  "190153290" OR
-                                    "190161470" OR  "190161570" OR
-                                    "190161870" OR  "190162070" OR
-                                    "190161670" OR  "190161770" OR
-                                    "190161970" OR  "190162170" OR
-                                    "190182990" OR
-                                    "190198570" OR  "190198670" OR
-                                    "190213790" OR  "190214290" OR
-                                    "190213890" OR  "190214090" OR
-                                    "190214390" OR  "190213990" OR
-                                    "190214190"                 )
-                 AND  (WRK-NYUINKHN(IDX1)   NOT =        SPACE  )
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-HYOUKETSU(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
-                 ELSE
-                   MOVE   SPACE             TO  WRK-HYOUKETSU(IDX1)
-                 END-IF
+               END-IF
+      *        ³°Çñ
+               IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
+                   ADD      1               TO  WRK-MEISAISU
+                   MOVE   WRK-GAIHAKU(IDX1) TO  WRK-SO-SRYCD
+                                           (IDX1 WRK-MEISAISU)
+                   MOVE   WRK-GAIHAKU-KBN(IDX1)
+                                            TO  WRK-SO-GAIHAKU-KBN
+                                                           (IDX1 IDX1)
                END-IF
       *        Æþ±¡²ñ·×²Ã»»¾ðÊó
                PERFORM   VARYING   KSN-IDX   FROM   1  BY   1
@@ -1407,16 +1257,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     (WRK-GAIHAKU-KBN(IDX1)     NOT =  ZERO)
                    EVALUATE   WRK-GAIHAKU-KBN(IDX1)
       *                ³°Çñ
-                       WHEN   1
                        WHEN   3
                            INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
       *                Â¾°åÎÅµ¡´Ø¼õ¿Ç
                        WHEN   4
-                         IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "201004"
-                           CONTINUE
-                         ELSE
                            INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
-                         END-IF
+      *                Â¾°åÎÅµ¡´Ø¼õ¿Ç
+                       WHEN   5
+                           INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
                    END-EVALUATE
                END-IF
            END-PERFORM
@@ -1430,9 +1278,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
-      *        ¼£¸³Ê¬¤Î¸ºÅÀ
-               COMPUTE  WRK-SO-TEN(IDX1)  =    WRK-SO-TEN(IDX1)  -
-                                               WRK-CHIKEN-ZAITEN(IDX1)
            END-PERFORM
       *
       **     PERFORM    VARYING   IDX1   FROM  1  BY  1
@@ -1457,14 +1302,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
                PERFORM    VARYING   IDX1   FROM  1  BY  1
                           UNTIL     (IDX1   >     31)
-                   IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
+                    IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
                         MOVE   WRK-SO-TEN(IDX1)   TO
-                                       LNK-ORCHCN33SUB-TEN(IDX1)
-                   END-IF
-      *            °åÎÅ´Ñ»¡Ë¡¤ÎÆþ±¡»þÅÀ¿ôÃÖ¤­´¹¤¨
-                   IF    (WRK-SO-TEN(IDX1)       NOT =   ZERO)  AND
-                         (WRK-IRYOKNS-ZAITEN(IDX1)  NOT =  ZERO)
-                        MOVE   WRK-IRYOKNS-ZAITEN(IDX1)   TO
                                        LNK-ORCHCN33SUB-TEN(IDX1)
                    END-IF
                END-PERFORM
@@ -1526,9 +1365,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSNKBN
-           MOVE    TNS-CDKBN-KBNNUM    TO  WRK-CDKBN-KBNNUM
-           MOVE    TNS-CHUKSNCD        TO  WRK-CHUKSNCD-XXX
-           MOVE    TNS-NYUKHNKBN       TO  WRK-NYUKHNKBN-XXX
       *
            .
        210-GAIHAKU-MAE-EXT.
@@ -1548,22 +1384,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE   "190107290"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     2
                       MOVE   "190107390"   TO  WRK-GAIHAKU(IDX1)
-                    WHEN     3
-                      MOVE   "190111590"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     4
-                    WHEN     5
-                    WHEN     6
-                    WHEN     7
-                    WHEN    14
-                    WHEN    15
-                    WHEN    16
                       PERFORM   2101-GAIHAKU-TAKIKAN-SEC
-                    WHEN     8
-                    WHEN     9
-      ***           WHEN    11
-                    WHEN    13
-                    WHEN    17
-                      PERFORM   2101-GAIHAKU-GENSAN-SEC
+                    WHEN     5
+                      MOVE   "190141590"   TO  WRK-GAIHAKU(IDX1)
                  END-EVALUATE
               WHEN     "92"
                  EVALUATE   NACCT-DAY(IDX1)
@@ -1571,28 +1395,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE   "190107490"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     2
                       MOVE   "190107590"   TO  WRK-GAIHAKU(IDX1)
-                    WHEN     3
-                      MOVE   "190111590"   TO  WRK-GAIHAKU(IDX1)
                     WHEN     4
-                    WHEN     5
-                    WHEN     6
-                    WHEN     7
-                    WHEN    14
-                    WHEN    15
-                    WHEN    16
                       PERFORM   2101-GAIHAKU-TAKIKAN-SEC
-                    WHEN     8
-                    WHEN     9
-      ***           WHEN    11
-                    WHEN    13
-                    WHEN    17
-                      PERFORM   2101-GAIHAKU-GENSAN-SEC
+                    WHEN     5
+                      MOVE   "190141590"   TO  WRK-GAIHAKU(IDX1)
                  END-EVALUATE
            END-EVALUATE
-      *
-           IF   WRK-GAIHAKU(IDX1)  =  SPACE
-                 MOVE   ZERO    TO    WRK-GAIHAKU-KBN(IDX1)
-           END-IF
       *
            .
        210-GAIHAKU-SET-EXT.
@@ -1603,556 +1411,32 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2101-GAIHAKU-TAKIKAN-SEC           SECTION.
       *
-           IF       LNK-ORCHCN33SUB-SANTEIYM  >=  "201804"
-                   PERFORM   2101-GAIHAKU-TAKIKAN3-SEC
-           ELSE
-             IF     LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-                   PERFORM   2101-GAIHAKU-TAKIKAN2-SEC
-             ELSE
-                   PERFORM   2101-GAIHAKU-TAKIKAN1-SEC
-             END-IF
-           END-IF
-      *
-           .
-       2101-GAIHAKU-TAKIKAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ£±
-      *****************************************************************
-       2101-GAIHAKU-TAKIKAN1-SEC           SECTION.
-      *
            EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
       *
-               WHEN   099  THRU  100
-                 IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "201004"
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 END-IF
+      ***      WHEN   099  THRU  100 
                WHEN   201  THRU  219
                WHEN   221  THRU  222
                WHEN   224
                WHEN   227  THRU  229
                WHEN   230  THRU  239
                WHEN   241  THRU  249
-               WHEN   250  THRU  255
-      *        (H26-ADD-ST)
-               WHEN   256
-               WHEN   257  THRU  259
-               WHEN   260  THRU  261
-               WHEN   262  THRU  265
-               WHEN   266  THRU  267
-      *        (H26-ADD-ED)
-                 IF    WRK-NYUKHNKSNKBN(IDX1) = 221 OR 232
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     6
-                      MOVE   "190153190"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     7
-                      MOVE   "190153390"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 ELSE
-                   IF  WRK-NYUKHNKSNKBN(IDX1) =
-                           229 OR 238 OR 215 OR 216 OR 217 OR 239
-                                                           OR 252
-                     EVALUATE   NACCT-DAY(IDX1)
-                       WHEN     4
-                         MOVE   "190108790" TO   WRK-GAIHAKU(IDX1)
-                       WHEN     5
-                         MOVE   "190142090" TO   WRK-GAIHAKU(IDX1)
-                       WHEN     6
-                         MOVE   "190153190" TO   WRK-GAIHAKU(IDX1)
-                     END-EVALUATE
-                   ELSE
-                     EVALUATE   NACCT-DAY(IDX1)
-                       WHEN     4
-                         MOVE   "190108790" TO   WRK-GAIHAKU(IDX1)
-                       WHEN     5
-                         MOVE   "190142090" TO   WRK-GAIHAKU(IDX1)
-                     END-EVALUATE
-                   END-IF
-                 END-IF
+                  MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
                WHEN   013  THRU  021
                WHEN   101  THRU  109
                WHEN   147  THRU  152
                WHEN   173  THRU  190
-               WHEN   196
-      *        (H26-ADD-ST)
-               WHEN   199
-               WHEN   004  THRU  008
-               WHEN   010  THRU  012
-      *        (H26-ADD-ED)
-                 EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
+                  MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
                WHEN   075  THRU  080
-                 EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108990"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
+                  MOVE   "190108990"    TO   WRK-GAIHAKU(IDX1)
                WHEN   085  THRU  086
                WHEN   132  THRU  133
                WHEN   153  THRU  158
-                 IF    WRK-NYUKHNKSNKBN(IDX1) =
-                           153 OR 154 OR 155 OR 156 OR 157 OR 158
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142290"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     7
-                      MOVE   "190153290"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 ELSE
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142290"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 END-IF
-               WHEN   226
-               WHEN   240
-                 CONTINUE
-               WHEN   031
-               WHEN   033
-               WHEN   034
-               WHEN   035
-               WHEN   038
-               WHEN   170
-               WHEN   191
-      *        (H26-ADD-ST)
-               WHEN   017  THRU  020
-      *        (H26-ADD-ED)
-                 EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     5
-                      MOVE   "190141590"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     7
-                      MOVE   "190153090"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-               WHEN   022
-               WHEN   023
-               WHEN   024
-               WHEN   025
-               WHEN   026
-               WHEN   029
-               WHEN   136
-               WHEN   168
-               WHEN   169
-      *        (H26-ADD-ST)
-               WHEN   013  THRU  016
-      *        (H26-ADD-ED)
-                 EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     5
-                      MOVE   "190141590"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     7
-                      MOVE   "190153090"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-               WHEN   081
-               WHEN   083
-               WHEN   172
-      *        (H26-ADD-ST)
-               WHEN   032  THRU  037
-      *        (H26-ADD-ED)
-                 EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     5
-                      MOVE   "190141590"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     7
-                      MOVE   "190153090"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-               WHEN   OTHER
-                 EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     5
-                      MOVE   "190141590"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
+                  MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
       *
            END-EVALUATE
       *
            .
-       2101-GAIHAKU-TAKIKAN1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ£²  201604
-      *****************************************************************
-       2101-GAIHAKU-TAKIKAN2-SEC           SECTION.
-      *
-           EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-      *        ÆÃÄêÆþ±¡ÎÁ
-               WHEN   201  THRU  206
-               WHEN   208  THRU  210
-               WHEN   212  THRU  217
-               WHEN   221
-               WHEN   227  THRU  229
-               WHEN   232  THRU  236
-               WHEN   238  THRU  239
-               WHEN   241  THRU  249
-               WHEN   250  THRU  254
-               WHEN   257  THRU  267
-      *        --- H28.4 TUIKA ---
-               WHEN   268  THRU  270
-      *          Ç§ÃÎ¾É¼£ÎÅÉÂÅïÆþ±¡ÎÁ¡¢Àº¿ÀÎÅÍÜÉÂÅïÆþ±¡ÎÁ
-      *          ÃÏ°è°Ü¹Ôµ¡Ç½¶¯²½ÉÂÅïÆþ±¡ÎÁ
-                 IF  WRK-NYUKHNKSNKBN(IDX1) = 221 OR 232 OR 217 OR 268
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     6
-                      MOVE   "190182990"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 ELSE
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 END-IF
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ
-               WHEN   004  THRU  008
-               WHEN   010  THRU  012
-               WHEN   152
-               WHEN   173  THRU  190
-               WHEN   196
-               WHEN   199
-      *        --- H28.4 TUIKA ---
-               WHEN   048  THRU  049
-               WHEN   051  THRU  054
-               WHEN   057  THRU  068
-                 EVALUATE   NACCT-DAY(IDX1)
-                  WHEN     4
-                    MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN     5
-                    MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-      *        Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ
-               WHEN   153  THRU  158
-                 EVALUATE   NACCT-DAY(IDX1)
-                  WHEN     4
-                    MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN     5
-                    MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN     6
-                    MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-      *        Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡¦Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
-               WHEN   226
-               WHEN   240
-                 CONTINUE
-               WHEN   OTHER
-                 EVALUATE   NACCT-DAY(IDX1)
-                  WHEN     5
-                    MOVE   "190141590"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-           END-EVALUATE
-      *
-           .
-       2101-GAIHAKU-TAKIKAN2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ£³  201804
-      *****************************************************************
-       2101-GAIHAKU-TAKIKAN3-SEC           SECTION.
-      *
-           EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-      *        ÆÃÄêÆþ±¡ÎÁ
-               WHEN   200  THRU  257
-               WHEN   260  THRU  263
-      *          Ç§ÃÎ¾É¼£ÎÅÉÂÅïÆþ±¡ÎÁ¡¢Àº¿ÀÎÅÍÜÉÂÅïÆþ±¡ÎÁ
-      *          ÃÏ°è°Ü¹Ôµ¡Ç½¶¯²½ÉÂÅïÆþ±¡ÎÁ
-                 IF  WRK-NYUKHNKSNKBN(IDX1) = 255 OR 254 OR 257
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     6
-                      MOVE   "190182990"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN    14
-                      MOVE   "190214390"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN    15
-                      MOVE   "190213990"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN    16
-                      MOVE   "190214190"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 ELSE
-                   EVALUATE   NACCT-DAY(IDX1)
-                    WHEN     4
-                      MOVE   "190108790"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN     5
-                      MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN    14
-                      MOVE   "190214390"    TO   WRK-GAIHAKU(IDX1)
-                    WHEN    15
-                      MOVE   "190213990"    TO   WRK-GAIHAKU(IDX1)
-                   END-EVALUATE
-                 END-IF
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ
-               WHEN    11  THRU   14
-               WHEN    51
-               WHEN   901
-                 EVALUATE   NACCT-DAY(IDX1)
-                  WHEN     4
-                    MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN     5
-                    MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN    14
-                    MOVE   "190214290"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN    15
-                    MOVE   "190213890"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-      *        Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ
-               WHEN    26
-               WHEN    53
-               WHEN   909
-                 EVALUATE   NACCT-DAY(IDX1)
-                  WHEN     4
-                    MOVE   "190108890"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN     5
-                    MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN     6
-                    MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN    14
-                    MOVE   "190214290"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN    15
-                    MOVE   "190213890"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN    16
-                    MOVE   "190214090"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-      *        Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡¦Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
-               WHEN   258  THRU  259
-                 CONTINUE
-               WHEN   OTHER
-                 EVALUATE   NACCT-DAY(IDX1)
-                  WHEN     5
-                    MOVE   "190141590"    TO   WRK-GAIHAKU(IDX1)
-                  WHEN    14
-                    MOVE   "190213790"    TO   WRK-GAIHAKU(IDX1)
-                 END-EVALUATE
-           END-EVALUATE
-      *
-           .
-       2101-GAIHAKU-TAKIKAN3-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ
-      *****************************************************************
-       2101-GAIHAKU-GENSAN-SEC           SECTION.
-      *
-           IF       LNK-ORCHCN33SUB-SANTEIYM  >=  "201804"
-                   PERFORM   2101-GAIHAKU-GENSAN3-SEC
-           ELSE
-             IF     LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-                   PERFORM   2101-GAIHAKU-GENSAN2-SEC
-             ELSE
-                   PERFORM   2101-GAIHAKU-GENSAN1-SEC
-             END-IF
-           END-IF
-      *
-           .
-       2101-GAIHAKU-GENSAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ£±
-      *****************************************************************
-       2101-GAIHAKU-GENSAN1-SEC           SECTION.
-      *
-           EVALUATE   NACCT-DAY(IDX1)
-             WHEN     8
-      ***    WHEN    11
-                EVALUATE   WRK-CHUKSNCD(IDX1)
-                   WHEN   "9017"
-                      IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "201404"
-                        IF  (WRK-NYUKHNKBN(IDX1) =   79 OR 88  )
-                        OR  (WRK-NYUINKHN(IDX1)  =  "190799510")
-                          MOVE  "190161570" TO   WRK-GAIHAKU(IDX1)
-                        ELSE
-                          MOVE  "190161470" TO   WRK-GAIHAKU(IDX1)
-                        END-IF
-                      ELSE
-                          MOVE  "190161470" TO   WRK-GAIHAKU(IDX1)
-                      END-IF
-                   WHEN   "9018"
-                      MOVE   "190161570"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9026"
-                      MOVE   "190161870"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9030"
-                      MOVE   "190162070"    TO   WRK-GAIHAKU(IDX1)
-                END-EVALUATE
-                IF   NACCT-DAY(IDX1) = 11
-                    EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-                     WHEN   099  THRU  100
-                      MOVE   "190142190"    TO   WRK-GAIHAKU2(IDX1)
-                     WHEN   OTHER
-                      MOVE   "190141590"    TO   WRK-GAIHAKU2(IDX1)
-                    END-EVALUATE
-                END-IF
-             WHEN     9
-             WHEN    13
-                EVALUATE   WRK-CHUKSNCD(IDX1)
-                   WHEN   "9017"
-                      IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "201404"
-                        IF  (WRK-NYUKHNKBN(IDX1) =   79 OR 88  )
-                        OR  (WRK-NYUINKHN(IDX1)  =  "190799510")
-                          MOVE  "190161770" TO   WRK-GAIHAKU(IDX1)
-                        ELSE
-                          MOVE  "190161670" TO   WRK-GAIHAKU(IDX1)
-                        END-IF
-                      ELSE
-                          MOVE  "190161670" TO   WRK-GAIHAKU(IDX1)
-                      END-IF
-                   WHEN   "9018"
-                      MOVE   "190161770"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9026"
-                      MOVE   "190161970"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9030"
-                      MOVE   "190162170"    TO   WRK-GAIHAKU(IDX1)
-                END-EVALUATE
-                IF   NACCT-DAY(IDX1) = 13
-                    EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-                     WHEN   099  THRU  100
-                      MOVE   "190142190"    TO   WRK-GAIHAKU2(IDX1)
-                     WHEN   OTHER
-                      MOVE   "190141590"    TO   WRK-GAIHAKU2(IDX1)
-                    END-EVALUATE
-                END-IF
-           END-EVALUATE
-      *
-           .
-       2101-GAIHAKU-GENSAN1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ£²  201604
-      *****************************************************************
-       2101-GAIHAKU-GENSAN2-SEC           SECTION.
-      *
-           EVALUATE   NACCT-DAY(IDX1)
-             WHEN     8
-      ***    WHEN    11
-                EVALUATE   WRK-CHUKSNCD(IDX1)
-                   WHEN   "9017"
-                      EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-                        WHEN     9
-                        WHEN    42   THRU   44
-                        WHEN    47
-                        WHEN   166   THRU  167
-                        WHEN   197   THRU  198
-                          MOVE  "190161570" TO   WRK-GAIHAKU(IDX1)
-                        WHEN   OTHER
-                          MOVE  "190161470" TO   WRK-GAIHAKU(IDX1)
-                      END-EVALUATE
-                   WHEN   "9026"
-                      MOVE   "190161870"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9030"
-                      MOVE   "190162070"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9090"
-                      MOVE   "190198570"    TO   WRK-GAIHAKU(IDX1)
-                END-EVALUATE
-                IF   NACCT-DAY(IDX1) = 11
-                      MOVE   "190141590"    TO   WRK-GAIHAKU2(IDX1)
-                END-IF
-             WHEN     9
-             WHEN    13
-                EVALUATE   WRK-CHUKSNCD(IDX1)
-                   WHEN   "9017"
-                      EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-                        WHEN     9
-                        WHEN    42   THRU   44
-                        WHEN    47
-                        WHEN   166   THRU  167
-                        WHEN   197   THRU  198
-                          MOVE  "190161770" TO   WRK-GAIHAKU(IDX1)
-                        WHEN   OTHER
-                          MOVE  "190161670" TO   WRK-GAIHAKU(IDX1)
-                      END-EVALUATE
-                   WHEN   "9026"
-                      MOVE   "190161970"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9030"
-                      MOVE   "190162170"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9090"
-                      MOVE   "190198670"    TO   WRK-GAIHAKU(IDX1)
-                END-EVALUATE
-                IF   NACCT-DAY(IDX1) = 13
-                      MOVE   "190141590"    TO   WRK-GAIHAKU2(IDX1)
-                END-IF
-           END-EVALUATE
-      *
-           .
-       2101-GAIHAKU-GENSAN2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ£³  201804
-      *****************************************************************
-       2101-GAIHAKU-GENSAN3-SEC           SECTION.
-      *
-           EVALUATE   NACCT-DAY(IDX1)
-             WHEN     8
-      ***    WHEN    11
-                EVALUATE   WRK-CHUKSNCD(IDX1)
-                   WHEN   "9017"
-                      EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-                        WHEN    27
-                        WHEN    40
-                          MOVE  "190161570" TO   WRK-GAIHAKU(IDX1)
-                        WHEN   OTHER
-                          MOVE  "190161470" TO   WRK-GAIHAKU(IDX1)
-                      END-EVALUATE
-                   WHEN   "9026"
-                      MOVE   "190161870"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9030"
-                      MOVE   "190162070"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9090"
-                      MOVE   "190198570"    TO   WRK-GAIHAKU(IDX1)
-                END-EVALUATE
-                IF   NACCT-DAY(IDX1) = 11
-                      MOVE   "190141590"    TO   WRK-GAIHAKU2(IDX1)
-                END-IF
-             WHEN     9
-             WHEN    13
-             WHEN    17
-                EVALUATE   WRK-CHUKSNCD(IDX1)
-                   WHEN   "9017"
-                      EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-                        WHEN    27
-                        WHEN    40
-                          MOVE  "190161770" TO   WRK-GAIHAKU(IDX1)
-                        WHEN   OTHER
-                          MOVE  "190161670" TO   WRK-GAIHAKU(IDX1)
-                      END-EVALUATE
-                   WHEN   "9026"
-                      MOVE   "190161970"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9030"
-                      MOVE   "190162170"    TO   WRK-GAIHAKU(IDX1)
-                   WHEN   "9090"
-                      MOVE   "190198670"    TO   WRK-GAIHAKU(IDX1)
-                END-EVALUATE
-                IF   NACCT-DAY(IDX1) = 13
-                      MOVE   "190141590"    TO   WRK-GAIHAKU2(IDX1)
-                END-IF
-                IF   NACCT-DAY(IDX1) = 17
-                      MOVE   "190213790"    TO   WRK-GAIHAKU2(IDX1)
-                END-IF
-           END-EVALUATE
-      *
-           .
-       2101-GAIHAKU-GENSAN3-EXT.
+       2101-GAIHAKU-TAKIKAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2219,17 +1503,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤è¤êÆþ±¡ÎÁ²Ã»»¡Ê¼£¸³¤Î¸ºÅÀ¡Ë¤Î¼èÆÀ½èÍý
+      *    ¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤è¤êÆþ±¡ÎÁ²Ã»»¤Î¼èÆÀ½èÍý
       *****************************************************************
        210-NYUKSN-SRYACCT-GET-SEC            SECTION.
       *
       *Æþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡Ê¿ÇÎÅ²ñ·×¤è¤ê¡Ë
-           INITIALIZE                             SRYACCT-REC
-           MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO   ACCT-HOSPNUM
-           MOVE    "1"                       TO   ACCT-NYUGAIKBN
+           INITIALIZE                           SRYACCT-REC
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM    TO   ACCT-HOSPNUM
+           MOVE    "1"                     TO   ACCT-NYUGAIKBN
            MOVE    LNK-ORCHCN33SUB-PTID      TO   ACCT-PTID
            MOVE    LNK-ORCHCN33SUB-SANTEIYM  TO   ACCT-SRYYM
-           MOVE    "key30"                   TO   MCP-PATHNAME
+           MOVE    "key30"                 TO  MCP-PATHNAME
            PERFORM 910-SRYACCT-SELECT-SEC
            IF      FLG-SRYACCT           =   ZERO
                MOVE     "key30"            TO  MCP-PATHNAME
@@ -2239,7 +1523,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU  NOT =    ZERO)
                    IF   ACCT-SRYKBN  =  "90" OR "92"
-                    IF   ACCT-ZAIKBN    NOT =    2
                      IF   ACCT-SRYCDTOTAL(6:9)  =   
                                             CONS-KEIKAKU-GENSAN1
                                         OR  CONS-KEIKAKU-GENSAN2
@@ -2261,9 +1544,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                   UNTIL     IDX1   >   31
                            IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
                                  (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
-                           AND  ((WRK-GAIHAKU-KBN(IDX1)  = ZERO )  OR
-                                 (WRK-GAIHAKU-KBN(IDX1) >=  4   ))
-                           AND  ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
+                           AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4
+                                                                 OR 5)
+                           AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
       *                         Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
                                 WHEN  CONS-KEIKAKU-GENSAN1
@@ -2325,8 +1608,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      ELSE
       *                ¤½¤ÎÂ¾Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
       *                ¿ÇÎÅ²ñ·×¤«¤é¿ÇÎÅ¹Ô°Ù¤ò¸¡º÷¤·¡¢Æþ±¡ÎÁ²Ã»»¤Î¿ÇÎÅ
-      *                ¥³¡¼¥É¤òÆÃÄê¤¹¤ë¡Ê¼£¸³¸ºÅÀÊ¬¤Ï½ü¤¯¡Ë
-                       IF        ACCT-MEISAISU    =      1
+      *                ¥³¡¼¥É¤òÆÃÄê¤¹¤ë
+                       IF         ACCT-MEISAISU    =      1
                              CONTINUE
                        ELSE
                           INITIALIZE      SRYACT-REC
@@ -2356,9 +1639,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                   UNTIL     IDX1   >   31
                            IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
                                  (LNK-NYUINDAY-KBN(IDX1)  =  "1"))
-                           AND  ((WRK-GAIHAKU-KBN(IDX1)  = ZERO )  OR
-                                 (WRK-GAIHAKU-KBN(IDX1) >=  4   ))
-                           AND  ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
+                           AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4
+                                                                 OR 5)
+                           AND   (ACCT-DAY(1 IDX1)   NOT =  ZERO)
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
                                 WHEN  CONS-ETCNYUIN-KSN(1)
                                   MOVE   ACCT-DAY(1 IDX1)
@@ -2402,22 +1685,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            END-IF
                        END-PERFORM
                      END-IF
-                    END-IF
-      *
-      *             ¼£¸³¸ºÅÀ¿ô¤ÎÂàÈò
-                    IF      (ACCT-ZAIKBN      =      2)   AND
-                            (ACCT-ZAITEN      NOT =  ZERO)
-                        PERFORM    VARYING   IDX1   FROM   1   BY   1
-                                   UNTIL     IDX1   >   31
-                           IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
-                                 (LNK-NYUINDAY-KBN(IDX1)  =  "1")) AND
-                                (ACCT-DAY(1 IDX1)   NOT =  ZERO)
-                             ADD  ACCT-ZAITEN    TO 
-                                              WRK-CHIKEN-ZAITEN(IDX1)
-                          END-IF
-                        END-PERFORM
-                    END-IF
-      *
                    END-IF
                  END-IF
                  MOVE     "key30"            TO  MCP-PATHNAME
@@ -2441,10 +1708,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      TNS-TENSU-REC
            IF     (IDX2                   =     1  )
            AND    (WRK-GAIHAKU(IDX1)   NOT =   SPACE)
-               MOVE    SPACE    TO   WRK-GAIHAKU-SRYCD
-               IF    LNK-ORCHCN33SUB-SANTEIYM  <=  "201203"
-                  PERFORM    2101-GAIHAKU-NYUINKHN-SET-SEC
-               END-IF
+               PERFORM    2101-GAIHAKU-NYUINKHN-SET-SEC
                IF    WRK-GAIHAKU-SRYCD    NOT =   SPACE
                   MOVE    WRK-GAIHAKU-SRYCD   TO  TNS-SRYCD
                ELSE
@@ -2504,6 +1768,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ
       **************************************************************
        2101-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
+      *
+           MOVE    SPACE    TO   WRK-GAIHAKU-SRYCD
       *
            EVALUATE  WRK-SO-SRYCD(IDX1 IDX2)
                WHEN  "190078210"
@@ -2871,7 +2137,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö¾ðÊó¼èÆÀ½èÍý¡ÊÊ¿À®£±£¸Ç¯£³·î°ÊÁ°¡Ë
+      *    ¿©»ö¾ðÊó¼èÆÀ½èÍý
       *****************************************************************
        210-SKJ-SET-SEC            SECTION.
       *
@@ -2890,8 +2156,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF    (WRK-SRYKA-DAY(IDX1) NOT = SPACE)    AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)     AND
                          (WRK-NYUINKHN(IDX1) NOT =  SPACE)    AND
-                         ((WRK-GAIHAKU-KBN(IDX1)  = ZERO) OR
-                          (WRK-GAIHAKU-KBN(IDX1) >=  4  ))
+                         (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4
+                                                          OR  5)
                        MOVE   WRK-SRYKA-DAY(IDX1)
                                        TO  WRK-SKJ-SRYKA-DAY(IDX1)
                                            WRK-SKJ2-SRYKA-DAY(IDX1)
@@ -3084,10 +2350,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN        2
                     ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
                                      WRK-SKJ200604-TOKUSYO(IDX1)
-                WHEN        3
-                  IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
-                  END-IF
               END-EVALUATE
               EVALUATE   WRK-SKJ200604-HIRU(IDX1)
                 WHEN        1
@@ -3095,10 +2357,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN        2
                     ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
                                      WRK-SKJ200604-TOKUSYO(IDX1)
-                WHEN        3
-                  IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
-                  END-IF
               END-EVALUATE
               EVALUATE   WRK-SKJ200604-YORU(IDX1)
                 WHEN        1
@@ -3106,10 +2364,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN        2
                     ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
                                      WRK-SKJ200604-TOKUSYO(IDX1)
-                WHEN        3
-                  IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-                    ADD   1     TO   WRK-SKJ200604-NYUINJI(IDX1)
-                  END-IF
               END-EVALUATE
            END-PERFORM
       *
@@ -3153,45 +2407,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(4)
       *
-           IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-      *      Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë¡Ê£±¿©¤Ë¤Ä¤­¡Ë¡ÊÎ®Æ°¿©¤Î¤ß¤òÄó¶¡¡Ë
-             INITIALIZE                    TNS-TENSU-REC
-             MOVE    "197003110"       TO  TNS-SRYCD
-             MOVE    LNK-ORCHCN33SUB-SANTEIYM
-                                       TO  TNS-YUKOSTYMD(1:6)
-             MOVE    "01"              TO  TNS-YUKOSTYMD(7:2)
-             MOVE    TNS-YUKOSTYMD     TO  TNS-YUKOEDYMD
-             PERFORM 910-TENSU-READ-SEC
-             MOVE    TNS-TEN           TO  WRK-SKJ200604-KINGAKU(5)
-      *      Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë¡Ê£±¿©¤Ë¤Ä¤­¡Ë¡ÊÎ®Æ°¿©¤Î¤ß¤òÄó¶¡¡Ë
-             INITIALIZE                    TNS-TENSU-REC
-             MOVE    "197003210"       TO  TNS-SRYCD
-             MOVE    LNK-ORCHCN33SUB-SANTEIYM
-                                       TO  TNS-YUKOSTYMD(1:6)
-             MOVE    "01"              TO  TNS-YUKOSTYMD(7:2)
-             MOVE    TNS-YUKOSTYMD     TO  TNS-YUKOEDYMD
-             PERFORM 910-TENSU-READ-SEC
-             MOVE    TNS-TEN           TO  WRK-SKJ200604-KINGAKU(6)
-           END-IF
-      *
       *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê¿©»öÎÅÍÜ¡¦´Ä¶­ÎÅÍÜ¡Ë¤Î¼èÆÀ
-           IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-             INITIALIZE                           ORCSNYULIFE2-AREA
-             MOVE    LNK-ORCHCN33SUB-HOSPNUM  TO  LNK-NYULIFE2-HOSPNUM
-             MOVE    LNK-ORCHCN33SUB-PTID     TO  LNK-NYULIFE2-PTID
-             MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  LNK-NYULIFE2-SANTEIYM
-             CALL    "ORCSNYULIFE2"   USING  ORCSNYULIFE2-AREA
-                                             SPA-AREA
-           ELSE
-             IF  LNK-ORCHCN33SUB-SANTEIYM  >=  "200610"
-               INITIALIZE                         ORCSNYULIFE-AREA
-               MOVE  LNK-ORCHCN33SUB-HOSPNUM  TO  LNK-NYULIFE-HOSPNUM
-               MOVE  LNK-ORCHCN33SUB-PTID     TO  LNK-NYULIFE-PTID
-               MOVE  LNK-ORCHCN33SUB-SANTEIYM TO  LNK-NYULIFE-SANTEIYM
-               CALL  "ORCSNYULIFE"    USING  ORCSNYULIFE-AREA
-                                             SPA-AREA
-             END-IF
-           END-IF
+           INITIALIZE                           ORCSNYULIFE-AREA
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  LNK-NYULIFE-HOSPNUM
+           MOVE    LNK-ORCHCN33SUB-PTID     TO  LNK-NYULIFE-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM TO  LNK-NYULIFE-SANTEIYM
+           CALL    "ORCSNYULIFE"    USING  ORCSNYULIFE-AREA
+                                           SPA-AREA
       *    
       *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
            INITIALIZE                          ORCSNYUINDAY-AREA
@@ -3202,224 +2424,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
       *    ¿©»öÎÅÍÜÈñ·×»»
-           IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-              PERFORM  2101-SKJ-HEN201604-SEC
-           ELSE
-              PERFORM  2102-SKJ-HEN200604-SEC
-           END-IF
-      *
-      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤Î¶â³Û»»Äê
-           PERFORM     210-TOKU-SHOKU-HENSHU-SEC
-      *
-           .
-       210-SKJ-SET200604-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤Î¶â³Û»»Äê
-      *****************************************************************
-       210-TOKU-SHOKU-HENSHU-SEC        SECTION.
-      *
-      *ÆÃÊÌ¿©²Ã»»¡Ê¿©»öÎÅÍÜ¡Ë¤Î¼èÆÀ
-           INITIALIZE                          SRYACCT-REC
-           MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  ACCT-HOSPNUM
-           MOVE    "1"                     TO  ACCT-NYUGAIKBN
-           MOVE    LNK-ORCHCN33SUB-PTID    TO  ACCT-PTID
-           MOVE    LNK-ORCHCN33SUB-SANTEIYM
-                                           TO  ACCT-SRYYM
-           MOVE    "tbl_sryacct"           TO  MCP-TABLE
-           MOVE    "key54"                 TO  MCP-PATHNAME
-           PERFORM 910-SRYACCT-SELECT-SEC
-           IF      FLG-SRYACCT             =   ZERO
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key54"             TO  MCP-PATHNAME
-               PERFORM   910-SRYACCT-READ-SEC
-               PERFORM   UNTIL   (FLG-SRYACCT   =  1)
-      *
-                   PERFORM    VARYING   IDX1   FROM   1   BY  1
-                     UNTIL   (IDX1         >   31)
-                       IF     ACCT-DAY(1 IDX1)   NOT =   ZERO
-                       AND    ACCT-SRYKBN            =   "97"
-                           MOVE    ZERO        TO  WRK-KEISAN
-                           COMPUTE WRK-KEISAN  =   ACCT-ZAITEN *
-                                                   ACCT-DAY(1 IDX1)
-                           ADD     WRK-KEISAN  TO  
-                                            LNK-ORCHCN33SUB-SKJ(IDX1)
-                       END-IF
-                   END-PERFORM
-      *
-                   MOVE    "tbl_sryacct"   TO  MCP-TABLE
-                   MOVE    "key54"         TO  MCP-PATHNAME
-                   PERFORM   910-SRYACCT-READ-SEC
-               END-PERFORM
-           END-IF
-      *
-      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
-           MOVE    "tbl_sryacct"           TO  MCP-TABLE
-           MOVE    "key54"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
-      *
-      *
-      *ÆÃÊÌ¿©²Ã»»¡ÊÀ¸³èÎÅÍÜ¡Ë¤Î¼èÆÀ
-           INITIALIZE                          SRYACCT-REC
-           MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  ACCT-HOSPNUM
-           MOVE    "1"                     TO  ACCT-NYUGAIKBN
-           MOVE    LNK-ORCHCN33SUB-PTID    TO  ACCT-PTID
-           MOVE    LNK-ORCHCN33SUB-SANTEIYM
-                                           TO  ACCT-SRYYM
-           MOVE    "tbl_sryacct"           TO  MCP-TABLE
-           MOVE    "key55"                 TO  MCP-PATHNAME
-           PERFORM 910-SRYACCT-SELECT-SEC
-           IF      FLG-SRYACCT             =   ZERO
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key55"             TO  MCP-PATHNAME
-               PERFORM   910-SRYACCT-READ-SEC
-               PERFORM   UNTIL   (FLG-SRYACCT   =  1)
-      *
-                   PERFORM    VARYING   IDX1   FROM   1   BY  1
-                     UNTIL   (IDX1         >   31)
-                       IF     ACCT-DAY(1 IDX1)   NOT =   ZERO
-                       AND    ACCT-SRYKBN            =   "97"
-                           MOVE    ZERO        TO  WRK-KEISAN
-                           COMPUTE WRK-KEISAN  =   ACCT-ZAITEN *
-                                                   ACCT-DAY(1 IDX1)
-                           ADD     WRK-KEISAN  TO  
-                                            LNK-ORCHCN33SUB-SKJ(IDX1)
-                       END-IF
-                   END-PERFORM
-      *
-                   MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key55"             TO  MCP-PATHNAME
-                   PERFORM   910-SRYACCT-READ-SEC
-               END-PERFORM
-           END-IF
-      *
-      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
-           MOVE    "tbl_sryacct"           TO  MCP-TABLE
-           MOVE    "key55"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
-      *
-           .
-       210-TOKU-SHOKU-HENSHU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¿©»ö¾ðÊóÊÔ½¸½èÍý¡ÊÊ¿À®£²£¸Ç¯£´·î¡Á¡Ë 
-      *****************************************************************
-       2101-SKJ-HEN201604-SEC            SECTION.
-      *
            PERFORM    VARYING   IDX1   FROM   1   BY   1
                        UNTIL    IDX1     >   31
       *
-             IF   ( WRK-SRYKA-DAY(IDX1)          NOT = SPACE )
-             AND  ( WRK-SKJ200604-NYUINJI(IDX1)  NOT =  ZERO )
+             IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
+             AND   (WRK-SKJ200604-NYUINJI(IDX1)  NOT =  ZERO)
              AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
-                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"  ))
-             AND  ((WRK-GAIHAKU-KBN(IDX1)        =     ZERO )  OR
-                   (WRK-GAIHAKU-KBN(IDX1)       >=      4   ))
-      *
-               EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
-      *
-                 WHEN     "197000110"
-      *
-                   PERFORM  VARYING  IDX8  FROM  1  BY  1
-                             UNTIL   IDX8   >    3
-                     EVALUATE  WRK-SKJ200604-AHY(IDX1 IDX8)
-                       WHEN       1
-                       WHEN       2
-                         MOVE  WRK-SKJ200604-KINGAKU(1)
-                                                   TO  WRK-KEISAN
-                         IF LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8) NOT = ZERO
-                           MOVE  LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8)
-                                                   TO  WRK-KEISAN
-                         END-IF
-                         ADD   WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-                         IF    WRK-SKJ200604-AHY(IDX1 IDX8) =  2
-                           MOVE  WRK-SKJ200604-KINGAKU(3)
-                                                   TO  WRK-KEISAN
-                           ADD WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-                         END-IF
-                       WHEN       3
-                         MOVE  WRK-SKJ200604-KINGAKU(5)
-                                                   TO  WRK-KEISAN
-                         IF LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8) NOT = ZERO
-                           MOVE  LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8)
-                                                   TO  WRK-KEISAN
-                         END-IF
-                         ADD   WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-                     END-EVALUATE
-                   END-PERFORM
-                   IF   WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
-                         MOVE  WRK-SKJ200604-KINGAKU(4)
-                                                   TO  WRK-KEISAN
-                         ADD   WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-                   END-IF
-      *
-                 WHEN     "197000710"
-      *
-                   PERFORM  VARYING  IDX8  FROM  1  BY  1
-                             UNTIL   IDX8   >    3
-                     EVALUATE  WRK-SKJ200604-AHY(IDX1 IDX8)
-                       WHEN       1
-                       WHEN       2
-                         MOVE  WRK-SKJ200604-KINGAKU(2)
-                                                   TO  WRK-KEISAN
-                         IF LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8) NOT = ZERO
-                           MOVE  LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8)
-                                                   TO  WRK-KEISAN
-                         END-IF
-                         ADD   WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-                       WHEN       3
-                         MOVE  WRK-SKJ200604-KINGAKU(6)
-                                                   TO  WRK-KEISAN
-                         IF LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8) NOT = ZERO
-                           MOVE  LNK-NYULIFE2-SKJ-MONEY(IDX1 IDX8)
-                                                   TO  WRK-KEISAN
-                         END-IF
-                         ADD   WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-                     END-EVALUATE
-                   END-PERFORM
-      *
-               END-EVALUATE
-      *
-             END-IF
-      *
-      *      ´Ä¶­ÎÅÍÜ·×»»
-             IF   ( WRK-SRYKA-DAY(IDX1)          NOT = SPACE )
-             AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
-                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"  ))
-             AND  ((WRK-GAIHAKU-KBN(IDX1)        =     ZERO )  OR
-                   (WRK-GAIHAKU-KBN(IDX1)       >=      4   ))
-      *
-                 MOVE    ZERO              TO  WRK-KEISAN
-                 IF LNK-NYULIFE2-KAN-MONEY(IDX1) NOT = ZERO
-                   MOVE  LNK-NYULIFE2-KAN-MONEY(IDX1)
-                                           TO  WRK-KEISAN
-                 END-IF
-                 ADD   WRK-KEISAN  TO  LNK-ORCHCN33SUB-SKJ(IDX1)
-      *
-             END-IF
-      *
-           END-PERFORM
-      *
-           .
-       2101-SKJ-HEN201604-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¿©»ö¾ðÊóÊÔ½¸½èÍý
-      *****************************************************************
-       2102-SKJ-HEN200604-SEC            SECTION.
-      *
-           PERFORM    VARYING   IDX1   FROM   1   BY   1
-                       UNTIL    IDX1     >   31
-      *
-             IF   ( WRK-SRYKA-DAY(IDX1)          NOT = SPACE )
-             AND  ( WRK-SKJ200604-NYUINJI(IDX1)  NOT =  ZERO )
-             AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
-                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"  ))
-             AND  ((WRK-GAIHAKU-KBN(IDX1)        =     ZERO )  OR
-                   (WRK-GAIHAKU-KBN(IDX1)       >=      4   ))
+                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"))
+             AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4
+                                                       OR  5)
       *
                EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
       *
@@ -3427,8 +2440,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    COMPUTE WRK-KEISAN   =  WRK-SKJ200604-KINGAKU(1)
                                         *  WRK-SKJ200604-NYUINJI(IDX1)
-                   IF   LNK-NYULIFE-SKJ-MONEY(IDX1) NOT = ZERO
-                   AND  LNK-ORCHCN33SUB-SANTEIYM  >=  "200610"
+                   IF   LNK-NYULIFE-SKJ-MONEY(IDX1)   NOT = ZERO
                         COMPUTE  WRK-KEISAN  =
                                          LNK-NYULIFE-SKJ-MONEY(IDX1) *
                                          WRK-SKJ200604-NYUINJI(IDX1)
@@ -3450,8 +2462,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    COMPUTE WRK-KEISAN   =  WRK-SKJ200604-KINGAKU(2)
                                         *  WRK-SKJ200604-NYUINJI(IDX1)
-                   IF   LNK-NYULIFE-SKJ-MONEY(IDX1) NOT = ZERO
-                   AND  LNK-ORCHCN33SUB-SANTEIYM  >=  "200610"
+                   IF   LNK-NYULIFE-SKJ-MONEY(IDX1)   NOT = ZERO
                         COMPUTE  WRK-KEISAN  =
                                          LNK-NYULIFE-SKJ-MONEY(IDX1) *
                                          WRK-SKJ200604-NYUINJI(IDX1)
@@ -3462,16 +2473,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
              END-IF
       *
-      *      ´Ä¶­ÎÅÍÜ·×»»
-             IF   ( WRK-SRYKA-DAY(IDX1)          NOT = SPACE )
+      *     ´Ä¶­ÎÅÍÜ·×»»
+             IF    (WRK-SRYKA-DAY(IDX1)          NOT = SPACE)
              AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
-                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"  ))
-             AND  ((WRK-GAIHAKU-KBN(IDX1)        =     ZERO )  OR
-                   (WRK-GAIHAKU-KBN(IDX1)       >=      4   ))
+                   (LNK-NYUINDAY-KBN(IDX1)       =     "1"))
+             AND   (WRK-GAIHAKU-KBN(IDX1)     =  ZERO  OR  4
+                                                       OR  5)
       *
                  MOVE    ZERO    TO   WRK-KEISAN
-                 IF   LNK-NYULIFE-KAN-MONEY(IDX1) NOT = ZERO
-                 AND  LNK-ORCHCN33SUB-SANTEIYM  >=  "200610"
+                 IF   LNK-NYULIFE-KAN-SRYCD(IDX1)   NOT = SPACE
                       MOVE  LNK-NYULIFE-KAN-MONEY(IDX1)
                                         TO   WRK-KEISAN
                  END-IF
@@ -3482,11 +2492,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            .
-       2102-SKJ-HEN200604-EXT.
+       210-SKJ-SET200604-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÅÀ¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È½èÍý¡Ê¼ç²Ê½èÍýÍÑ¡Ë
+      *    Æþ±¡ÅÀ¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È½èÍý
       *****************************************************************
        210-NYUINTEN-SET-SEC            SECTION.
       *
@@ -3499,9 +2509,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
                       UNTIL  (IDX-HKNCOMBI         >  10)    OR
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                               (IDX-HKNCOMBI)    =   TBL-HKNCOMBI(IDX1)
                              MOVE   1    TO   FLG-HKNCOMBI-MATCH
                              PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
@@ -3530,7 +2540,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     END-PERFORM
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
                         MOVE  TBL-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                       (IDX-HKNCOMBI)
                         MOVE  TBL-NYUINKA(IDX1)    TO
                               LNK-ORCHCN33SUB-NYUINKA
@@ -3541,94 +2551,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     END-IF
                END-IF
            END-PERFORM
-      *    
-      *    ·îËöÆü¤ÎÆ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
-      *    ·îËöÆü¤ò¼èÆÀ
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    LNK-ORCHCN33SUB-SANTEIYM
-                                       TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY7-AREA
-           IF      STS-DAY-RC1         =   ZERO
-               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
-           END-IF
-      *
-           INITIALIZE                          ORCSNYUINDAY-AREA
-           MOVE    LNK-ORCHCN33SUB-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    LNK-ORCHCN33SUB-PTID        TO  LNK-NYUINDAY-PTID
-           MOVE    LNK-ORCHCN33SUB-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
-                                               SPA-AREA
-      *
-           IF   LNK-NYUINDAY-DOUJITSU-KBN(WRK-GETSUMATSU-DD)  =   "1"
-             PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
-      *         IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
-                    MOVE   ZERO    TO   FLG-HKNCOMBI-MATCH
-                    MOVE   ZERO    TO   FLG-NYUINKA-MATCH
-                    PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
-                      UNTIL  (IDX-HKNCOMBI         >  10)    OR
-                             (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
-                                 (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
-                              (IDX-HKNCOMBI)    =   
-                                   LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
-                             MOVE   1    TO   FLG-HKNCOMBI-MATCH
-                             PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
-                               UNTIL (IDX-NYUINKA   >   50)     OR
-                                     (FLG-NYUINKA-MATCH  =  1)  OR
-                                     (LNK-ORCHCN33SUB-NYUINKA
-                                     (IDX-HKNCOMBI IDX-NYUINKA) = SPACE)
-                                 IF  LNK-ORCHCN33SUB-NYUINKA
-                                     (IDX-HKNCOMBI IDX-NYUINKA)
-                                                   = TBL-NYUINKA(IDX1)
-                                     MOVE   1    TO  FLG-NYUINKA-MATCH
-                                     MOVE  IDX1  TO
-                                             LNK-ORCHCN33SUB-EDDAY
-                                             (IDX-HKNCOMBI IDX-NYUINKA)
-                                     ADD  1  TO  LNK-ORCHCN33SUB-DAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                                 END-IF
-                             END-PERFORM
-                             IF      FLG-NYUINKA-MATCH   =   ZERO
-                                 MOVE  TBL-NYUINKA(IDX1)    TO
-                                    LNK-ORCHCN33SUB-NYUINKA
-                                      (IDX-HKNCOMBI  IDX-NYUINKA)
-                                 MOVE  IDX1  TO  LNK-ORCHCN33SUB-STDAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                                 MOVE  IDX1  TO  LNK-ORCHCN33SUB-EDDAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                                 ADD   1     TO  LNK-ORCHCN33SUB-DAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                             END-IF
-                        END-IF
-                    END-PERFORM
-                    IF      FLG-HKNCOMBI-MATCH   =   ZERO
-                      IF LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1) NOT = ZERO
-                        MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
-                                                      (IDX-HKNCOMBI)
-                        MOVE  TBL-NYUINKA(IDX1)    TO
-                              LNK-ORCHCN33SUB-NYUINKA
-                                 (IDX-HKNCOMBI  1)
-                        MOVE  IDX1     TO   LNK-ORCHCN33SUB-STDAY
-                                                 (IDX-HKNCOMBI 1)
-                        MOVE  IDX1     TO   LNK-ORCHCN33SUB-EDDAY
-                                                 (IDX-HKNCOMBI 1)
-                        ADD   1        TO   LNK-ORCHCN33SUB-DAY
-                                                 (IDX-HKNCOMBI 1)
-                      END-IF
-                    END-IF
-      *         END-IF
-             END-PERFORM
-           END-IF
       *
       *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (1)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
       *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 1)
       *     DISPLAY   "ÅÀ¿ô£±¡¡£± = "
@@ -3638,7 +2564,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     DISPLAY   "ÅÀ¿ô£±¡¡£² = "
       *                LNK-ORCHCN33SUB-TENSU (1 2)
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (2)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
       *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 1)
       *     DISPLAY   "ÅÀ¿ô£²¡¡£± = "
@@ -3652,7 +2578,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡Æü¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È½èÍý¡Ê¼ç²Ê½èÍýÍÑ¡Ë
+      *    Æþ±¡Æü¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È½èÍý
       *****************************************************************
        210-NYUINDAY-SET-SEC            SECTION.
       *
@@ -3664,9 +2590,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
                       UNTIL  (IDX-HKNCOMBI         >  10)    OR
                              (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                  (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                               (IDX-HKNCOMBI)    =   TBL-HKNCOMBI(IDX1)
                              MOVE   1    TO   FLG-HKNCOMBI-MATCH
                              PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
@@ -3701,7 +2627,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     IF      FLG-HKNCOMBI-MATCH   =   ZERO
                       IF  TBL-HKNCOMBI(IDX1)   NOT =   ZERO
                         MOVE  TBL-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                       (IDX-HKNCOMBI)
                         MOVE  TBL-NYUINKA(IDX1)    TO
                               LNK-ORCHCN33SUB-NYUINKA
@@ -3716,94 +2642,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     END-IF
       *         END-IF
            END-PERFORM
-      *    
-      *    ·îËöÆü¤ÎÆ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
-      *    ·îËöÆü¤ò¼èÆÀ
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    LNK-ORCHCN33SUB-SANTEIYM
-                                       TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY7-AREA
-           IF      STS-DAY-RC1         =   ZERO
-               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
-           END-IF
-      *
-           INITIALIZE                          ORCSNYUINDAY-AREA
-           MOVE    LNK-ORCHCN33SUB-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    LNK-ORCHCN33SUB-PTID        TO  LNK-NYUINDAY-PTID
-           MOVE    LNK-ORCHCN33SUB-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
-                                               SPA-AREA
-      *
-           IF   LNK-NYUINDAY-DOUJITSU-KBN(WRK-GETSUMATSU-DD)  =   "1"
-             PERFORM    VARYING   IDX1   FROM  1  BY  1
-                      UNTIL     (IDX1   >     31)
-      *         IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
-                    MOVE   ZERO    TO   FLG-HKNCOMBI-MATCH
-                    MOVE   ZERO    TO   FLG-NYUINKA-MATCH
-                    PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
-                      UNTIL  (IDX-HKNCOMBI         >  10)    OR
-                             (FLG-HKNCOMBI-MATCH   =   1)    OR
-                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
-                                 (IDX-HKNCOMBI)   =   ZERO)
-                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
-                              (IDX-HKNCOMBI)    =   
-                                   LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
-                             MOVE   1    TO   FLG-HKNCOMBI-MATCH
-                             PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
-                               UNTIL (IDX-NYUINKA   >   50)     OR
-                                     (FLG-NYUINKA-MATCH  =  1)  OR
-                                     (LNK-ORCHCN33SUB-NYUINKA
-                                     (IDX-HKNCOMBI IDX-NYUINKA) = SPACE)
-                                 IF  LNK-ORCHCN33SUB-NYUINKA
-                                     (IDX-HKNCOMBI IDX-NYUINKA)
-                                                   = TBL-NYUINKA(IDX1)
-                                     MOVE   1    TO  FLG-NYUINKA-MATCH
-                                     MOVE  IDX1  TO
-                                             LNK-ORCHCN33SUB-EDDAY
-                                             (IDX-HKNCOMBI IDX-NYUINKA)
-                                     ADD  1  TO  LNK-ORCHCN33SUB-DAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                                 END-IF
-                             END-PERFORM
-                             IF      FLG-NYUINKA-MATCH   =   ZERO
-                                 MOVE  TBL-NYUINKA(IDX1)    TO
-                                    LNK-ORCHCN33SUB-NYUINKA
-                                      (IDX-HKNCOMBI  IDX-NYUINKA)
-                                 MOVE  IDX1  TO  LNK-ORCHCN33SUB-STDAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                                 MOVE  IDX1  TO  LNK-ORCHCN33SUB-EDDAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                                 ADD   1     TO  LNK-ORCHCN33SUB-DAY
-                                           (IDX-HKNCOMBI IDX-NYUINKA)
-                             END-IF
-                        END-IF
-                    END-PERFORM
-                    IF      FLG-HKNCOMBI-MATCH   =   ZERO
-                      IF LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1) NOT = ZERO
-                        MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)   TO
-                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
-                                                      (IDX-HKNCOMBI)
-                        MOVE  TBL-NYUINKA(IDX1)    TO
-                              LNK-ORCHCN33SUB-NYUINKA
-                                 (IDX-HKNCOMBI  1)
-                        MOVE  IDX1     TO   LNK-ORCHCN33SUB-STDAY
-                                                 (IDX-HKNCOMBI 1)
-                        MOVE  IDX1     TO   LNK-ORCHCN33SUB-EDDAY
-                                                 (IDX-HKNCOMBI 1)
-                        ADD   1        TO   LNK-ORCHCN33SUB-DAY
-                                                 (IDX-HKNCOMBI 1)
-                      END-IF
-                    END-IF
-      *         END-IF
-             END-PERFORM
-           END-IF
       *
       *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (1)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
       *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 1)
       *     DISPLAY   "³«»ÏÆü£±¡¡£± = "
@@ -3821,7 +2663,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     DISPLAY   "Æü¿ô£±¡¡£² = "
       *                LNK-ORCHCN33SUB-DAY (1 2)
       *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (2)
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
       *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 1)
       *     DISPLAY   "³«»ÏÆü£²¡¡£± = "
