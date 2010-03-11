@@ -28,7 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-森脇    07/06/06  グループ診療対応
-      *  04.08.01    NACL-森脇    14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,17 +69,12 @@ grpsyS     SELECT  BG01301-FILE    ASSIGN   BG01301PARA
                                            REPLACING   //RECE01//
 grpsys*DD                                  BY          //ORCBG01301//.
                                            BY          //BG01301//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER                      PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"      REPLACING  //RECE01PARA//
 grpsys*DD                                  BY         //RECEERR//.
 grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *    ステータス領域
        01  STS-AREA.
@@ -99,8 +93,6 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  FLG-LOOPEND                         PIC 9(01).
            03  FLG-TARGET                          PIC 9(01).
            03  FLG-PARA                            PIC 9(01).
-           03  FLG-SKYPRT                          PIC 9(01).
-           03  FLG-SRYPRT                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -112,8 +104,6 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
-           03  IDX2                                PIC 9(05).
-           03  IDX3                                PIC 9(05).
            03  IDXD                                PIC 9(05).
            03  IDXE                                PIC 9(05).
       *
@@ -124,9 +114,7 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  WRK-PARA-SHELLID                    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-grpsys*     03  RECEERR                             PIC X(100).
-      *----(04.08.01)--UPD-END-----
+grpsys     03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-HAKUHOUFLG                 PIC X(01).
            03  WRK-PARA-PTNUM                      PIC X(20).
@@ -136,7 +124,6 @@ grpsys*     03  RECEERR                             PIC X(100).
            03  WRK-PARA-ZENMISYUPRTKBN             PIC X(01).
            03  WRK-PARA-SUMKBN                     PIC X(01).
            03  WRK-PARA-PRTFORMKBN                 PIC X(01).
-           03  WRK-PARA-PTREFKBN                   PIC X(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -154,7 +141,7 @@ grpsys*     03  RECEERR                             PIC X(100).
            03  WRK-STR-LEFT                        PIC X(500).
            03  WRK-STR-LEFT-Z      REDEFINES       WRK-STR-LEFT.
                05  WRK-STR-LEFT-ZX99               PIC Z(9)9.
-               05  WRK-STR-LEFT-FL                 PIC X(490).
+               05                                  PIC X(490).
            03  WRK-STR-LEFT-TMP                    PIC X(500).
       *        全角編集用項目
            03  WRK-N.
@@ -187,25 +174,6 @@ grpsys*     03  RECEERR                             PIC X(100).
                                            VALUE   2.
            03  CONST-BTPARA-DSP-RENNUM     PIC 9(03)
                                            VALUE   2.
-           03  CONST-PRTDEF-G.
-               05  CONST-PRTDEF0       PIC X(03)   VALUE   "000".
-               05  CONST-PRTDEF1       PIC X(03)   VALUE   "111".
-               05  CONST-PRTDEF2       PIC X(03)   VALUE   "211".
-               05  CONST-PRTDEF3       PIC X(03)   VALUE   "311".
-               05  CONST-PRTDEF4       PIC X(03)   VALUE   "410".
-               05  CONST-PRTDEF5       PIC X(03)   VALUE   "510".
-               05  CONST-PRTDEF6       PIC X(03)   VALUE   "610".
-               05  CONST-PRTDEF7       PIC X(03)   VALUE   "711".
-               05  CONST-PRTDEF8       PIC X(03)   VALUE   "801".
-               05  CONST-PRTDEF9       PIC X(03)   VALUE   "901".
-               05  CONST-PRTDEFA       PIC X(03)   VALUE   "A01".
-           03  CONST-PRTDEF-R  REDEFINES   CONST-PRTDEF-G.
-      *        0〜7 患者登録業務の請求書発行区分
-               05  CONST-PRTDEF-OCC            OCCURS  11.
-                   07  CONST-PRTFLG            PIC X(01).
-                   07  CONST-SKYPRTOUT         PIC X(01).
-                   07  CONST-SRYPRTOUT         PIC X(01).
-           03  CONST-PRTDEF-MAX        PIC 9(05)   VALUE   11.
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                            PIC 9(10).
@@ -300,11 +268,6 @@ grpsys*     03  RECEERR                             PIC X(100).
       *    診療費明細書パラメタ
            COPY    "CPORCHC04.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -352,9 +315,6 @@ grpsys*     03  RECEERR                             PIC X(100).
            INITIALIZE                  CNT-AREA
            INITIALIZE                  ERR-EDIT-AREA
 grpsys     INITIALIZE                      SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -384,7 +344,6 @@ grpsys                                 RECEERR
                                        WRK-PARA-ZENMISYUPRTKBN
                                        WRK-PARA-SUMKBN
                                        WRK-PARA-PRTFORMKBN
-                                       WRK-PARA-PTREFKBN
 grpsys     END-UNSTRING
       *    ＳＰＡエリアセット処理
 grpsys     PERFORM 1001-SPA-SET-SEC
@@ -405,16 +364,10 @@ grpsys     PERFORM 1001-SPA-SET-SEC
                MOVE    "0"             TO  WRK-PARA-SUMKBN
            END-IF
       *
-           IF    ( WRK-PARA-PRTFORMKBN =   "0" OR "1" OR "2" )
+           IF    ( WRK-PARA-PRTFORMKBN =   "0" OR "1" )
                CONTINUE
            ELSE
                MOVE    "0"             TO  WRK-PARA-PRTFORMKBN
-           END-IF
-      *
-           IF    ( WRK-PARA-PTREFKBN   =   "0" OR "1" )
-               CONTINUE
-           ELSE
-               MOVE    "0"             TO  WRK-PARA-PTREFKBN
            END-IF
       *
            MOVE    "外来月別請求書"    TO  WRK-TITLE
@@ -441,18 +394,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG01301PARA-HOSPNUM
       *
 grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG01301PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG01301PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -892,7 +833,6 @@ grpsys                                     SPA-AREA
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "2"             TO  SPA-NYUGAIKBN
            MOVE    WRK-PTNUM       TO  SPA-PTNUM
-           MOVE    PTINF-KANANAME  TO  SPA-KANANAME
            MOVE    PTINF-NAME      TO  SPA-NAME
       *
            MOVE    "001%"          TO  WRK-FILEMEI-CD
@@ -968,7 +908,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                GO  TO  2101-SEIKYU-PG-CALL-EXT
            END-IF
       *
-           PERFORM 900-SYUNOU-KEY73-SEL-SEC
+           PERFORM 900-SYUNOU-KEY37-SEL-SEC
       *
            MOVE    SPACE               TO  WRK-SRYYMD
            PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
@@ -986,12 +926,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                    GO  TO  2101-SEIKYU-PG-CALL-EXT
                END-IF
       *
-               PERFORM 900-SYUNOU-KEY73-FET-SEC
+               PERFORM 900-SYUNOU-KEY37-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key73"             TO  MCP-PATHNAME
+           MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            INITIALIZE                      ORCHC03S02AREA
@@ -1012,51 +952,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                GO  TO  2101-SEIKYU-PG-CALL-EXT
            END-IF
       *
-           MOVE    "00102"         TO      WRK-FILEMEI-CD
-      *
-           MOVE    1               TO      FLG-SKYPRT
-                                           FLG-SRYPRT
-      *
-           MOVE    ZERO            TO      IDX1
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-PRTDEF-MAX )
-                    OR   ( IDX1    >   ZERO )
-      *
-               IF    ( CONST-PRTFLG (IDX0)
-                                   =   PTINF-SKYPRTFLG )
-                   MOVE    IDX0    TO  IDX1
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( WRK-PARA-PTREFKBN       =   "1" )
-            AND  ( IDX1                NOT =   ZERO )
-               IF    ( CONST-SKYPRTOUT (IDX1)  =   "1" )
-                   MOVE    1       TO      FLG-SKYPRT
-               ELSE
-                   MOVE    ZERO    TO      FLG-SKYPRT
-               END-IF
-               IF    ( CONST-SRYPRTOUT (IDX1)  =   "1" )
-                   MOVE    1       TO      FLG-SRYPRT
-               ELSE
-                   MOVE    ZERO    TO      FLG-SRYPRT
-               END-IF
-           END-IF
-      *
-           EVALUATE    WRK-PARA-PRTFORMKBN
-           WHEN    "1"
-               MOVE    ZERO    TO      FLG-SRYPRT
-           WHEN    "2"
-               MOVE    ZERO    TO      FLG-SKYPRT
-           END-EVALUATE
-      *
            MOVE    WRK-SRYYMD      TO      SPA-SRYYMD
+           PERFORM 21011-SEIKYU-PG-CALL-SEC
       *
-           IF    ( FLG-SKYPRT      =       1 )
-               PERFORM 21011-SEIKYU-PG-CALL-SEC
-           END-IF
-      *
-           IF    ( FLG-SRYPRT      =       1 )
+           IF    ( WRK-PARA-PRTFORMKBN     =   "0" )
                PERFORM 21011-MEISAI-PG-CALL-SEC
            END-IF
       *
@@ -1115,36 +1014,33 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
       *
                MOVE    PARA-DATA-REC       TO  SYUPARA03-AREA
       *
-               INITIALIZE                      ORCHC04AREA
-               MOVE    SYUPARA03-DENPNUM   TO  ORCHC04-DENPNUM
-               MOVE    4                   TO  ORCHC04-HAKKOFLG
-               MOVE    WRK-PARA-HAKUHOUFLG TO  ORCHC04-HAKHOUFLG
-               MOVE    WRK-PARA-HAKYMD     TO  ORCHC04-DENPPRTYMD
-               MOVE    SYUPARA03-STSRYYMD  TO  ORCHC04-KIKAN-STYMD
-               MOVE    SYUPARA03-EDSRYYMD  TO  ORCHC04-KIKAN-EDYMD
-      *
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD    >   SYUPARA03-GRP-DENPNUM-MAX )
       *
+                   INITIALIZE                      ORCHC04AREA
                    MOVE    SYUPARA03-GRP-DENPNUM (IDXD)
-                                           TO  ORCHC04-KIKAN-DENPNUM
-                                                               (IDXD)
+                                           TO  ORCHC04-DENPNUM
+                   MOVE    "1"             TO  ORCHC04-PRTKBN
+      *
+                   MOVE    SYUPARA03-GRP-DENPNUM (IDXD)
+                                           TO  WRK-DENPNUM
+                   PERFORM 900-SYUNOU-KEY-SEL-SEC
+                   MOVE    SYU-SRYYMD      TO  SPA-SRYYMD
+      *
+                   MOVE    WRK-MEISAI-PRTNM
+                                       TO      SPRT-PRTNM
+                   MOVE    SPA-PTID    TO      SPRT-PTID
+                   MOVE    WRK-PARA-SRYYM
+                                       TO      SPRT-SRYYM
+                   MOVE    ORCSPRTAREA TO      ORCHC04-PRTAREA
+      *
+                   CALL    WRK-MEISAI-PG       USING
+                                               SPA-AREA
+                                               ORCHC04AREA
+      *
+                   COMPUTE CNT-JOB-UPDCNT
+                       =   CNT-JOB-UPDCNT  +   ORCHC04-PAGE
                END-PERFORM
-      *
-               MOVE    "1"             TO  ORCHC04-PRTKBN
-      *
-               MOVE    WRK-MEISAI-PRTNM
-                                       TO  SPRT-PRTNM
-               MOVE    SPA-PTID        TO  SPRT-PTID
-               MOVE    WRK-PARA-SRYYM  TO  SPRT-SRYYM
-               MOVE    ORCSPRTAREA     TO  ORCHC04-PRTAREA
-      *
-               CALL    WRK-MEISAI-PG       USING
-                                           SPA-AREA
-                                           ORCHC04AREA
-      *
-               COMPUTE CNT-JOB-UPDCNT
-                   =   CNT-JOB-UPDCNT  +   ORCHC04-PAGE
       *
                PERFORM 900-PARA-KEY5-FET-SEC
       *
@@ -1802,7 +1698,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       **************************************************************
       *    収納マスター検索処理
       **************************************************************
-       900-SYUNOU-KEY73-SEL-SEC        SECTION.
+       900-SYUNOU-KEY37-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SYUNOU
       *
@@ -1815,22 +1711,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key73"             TO  MCP-PATHNAME
+           MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               PERFORM 900-SYUNOU-KEY73-FET-SEC
+               PERFORM 900-SYUNOU-KEY37-FET-SEC
            ELSE
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
       *
            .
-       900-SYUNOU-KEY73-SEL-EXT.
+       900-SYUNOU-KEY37-SEL-EXT.
            EXIT.
       **************************************************************
       *    収納マスターFETCH処理
       **************************************************************
-       900-SYUNOU-KEY73-FET-SEC        SECTION.
+       900-SYUNOU-KEY37-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SYUNOU
            MOVE    ZERO                TO  FLG-LOOPEND
@@ -1839,7 +1735,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
                MOVE    "tbl_syunou"        TO  MCP-TABLE
-               MOVE    "key73"             TO  MCP-PATHNAME
+               MOVE    "key37"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  SYUNOU-REC
@@ -1859,7 +1755,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            END-PERFORM
       *
            .
-       900-SYUNOU-KEY73-FET-EXT.
+       900-SYUNOU-KEY37-FET-EXT.
            EXIT.
       **************************************************************
       *    収納マスター検索処理
