@@ -51,10 +51,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPASGNPARA.INC"        REPLACING  //ASGNPARA//
-                                           BY         //TEIKIERR//.
-      *
-           COPY    "ENUM-VALUE".
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //TEIKIERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -80,13 +79,11 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT1                    PIC 9(06).
-           03  CNT-OUT2                    PIC 9(06).
            03  CNT-SELKBT                  PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                        PIC 9(05). 
            03  IDX1                        PIC 9(05). 
-           03  IDX2                        PIC 9(05). 
            03  IDX-SELKBT                  PIC 9(05).
            03  IDX-M                       PIC 9(05).
            03  IDX-MAX                     PIC 9(05).
@@ -106,13 +103,13 @@
            03  WRK-NYUKINPRT-KBN           PIC X(01).
            03  WRK-STPAGE                  PIC 9(05).
            03  WRK-EDPAGE                  PIC 9(05).
+           03  WRK-MAX                     PIC 9(05).
            03  WRK-MEISAI-PG               PIC X(20).
            03  WRK-MEISAI-PRTNM            PIC X(20).
            03  WRK-PTID                    PIC 9(10).
            03  WRK-PRTPARA-G.
-               05  WRK-PTINFREF            PIC X(01).
                05  WRK-SKYPRT              PIC X(01).
-               05  WRK-SRYPRT              PIC X(01).
+               05  WRK-PRTFORM             PIC X(01).
       *
        01  SRH-AREA.
            03  SRH-IDX                     PIC 9(05).
@@ -137,14 +134,8 @@
                05  TSYUGRP-KBT             PIC X(01).
                05  TSYUGRP-GRP-MAX         PIC 9(05).
                05  TSYUGRP-GRP-OCC         OCCURS   10.
-                   07  TSYUGRP-DENPPRTYMD  PIC X(08).
-                   07  TSYUGRP-SKYPRT      PIC X(01).
-                   07  TSYUGRP-SRYPRT      PIC X(01).
-                   07  TSYUGRP-SRYYMD      PIC X(08).
-                   07  TSYUGRP-GRP-MAX2    PIC 9(05).
-                   07  TSYUGRP-GRP-OCC2    OCCURS   10.
-                       09  TSYUGRP-GRP-DENPNUM
-                                           PIC 9(07).
+                   07  TSYUGRP-GRP-DENPNUM PIC 9(07).
+                   07  TSYUGRP-GRP-SRYYMD  PIC X(08).
       *
        01  ERR-EDIT-AREA.
            03  ERR-WARNING                 PIC 9(01).
@@ -224,7 +215,6 @@
       *
       *    定期請求情報
            COPY    "CPSK5010.INC".
-           COPY    "CPSK3103.INC".
       *
       *    収納マスター
        01  SYUNOU-REC.
@@ -282,17 +272,8 @@
       *    帳票サブ < 診療費明細書 >
            COPY    "CPORCHCN04.INC".
       *
-      *     請求書兼領収書まとめサブ
-           COPY    "CPORCHCN03S02.INC".
-      *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
-      *
-      *    一時ディレクトリ編集サブ
-           COPY    "CPORCSGETTEMP.INC".
-      *
-      *    課金チェック
-           COPY    "CPORCSBILLINGCHECK.INC".
       *
       ****************************************************************
        LINKAGE                         SECTION.
@@ -333,7 +314,6 @@
                                        IDX-AREA
                                        SPA-AREA
                                        TSYUGRP-AREA
-                                       SBC-AREA
       *
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    LNK-PRTKANRI-RENNUM
@@ -363,13 +343,11 @@
                                                TEIKI2P-SUMKBN
            END-UNSTRING
       *
-           MOVE    WRK-PTINFREF        TO  TEIKI2P-PTINFREF
            MOVE    WRK-SKYPRT          TO  TEIKI2P-SKYPRT
-           MOVE    WRK-SRYPRT          TO  TEIKI2P-SRYPRT
+           MOVE    WRK-PRTFORM         TO  TEIKI2P-PRTFORM
       *
            MOVE    TEIKI2P-HOSPNUM     TO  SPA-HOSPNUM
            MOVE    TEIKI2P-STAFFCD     TO  SPA-STAFFCD
-           MOVE    TEIKI2P-SYSYMD      TO  SPA-SYSYMD
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -380,7 +358,7 @@
            MOVE    TEIKI2P-JOBID       TO  JOB-JOBID
            MOVE    TEIKI2P-SHELLID     TO  JOB-SHELLID
            MOVE    "ORCT0020"          TO  JOB-PGID
-           MOVE    "帳票印刷処理"
+           MOVE    "請求書出力"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -389,13 +367,7 @@
       *
            MOVE    ZERO                TO  FLG-END
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TEIKI2P-ERRFILE     TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  TEIKIERR
-           MOVE    SGETTEMP-ST         TO  TEIKIERR-ST
-           MOVE    SGETTEMP-MW         TO  SPA-MW
+           MOVE    TEIKI2P-ERRFILE     TO  TEIKIERR
       *
       *    定期請求情報
            INITIALIZE                      SYS-5010-REC
@@ -406,15 +378,6 @@
            MOVE    SYS-5010-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-5010-REC
-      *
-           INITIALIZE                      SYS-3103-REC
-           MOVE    "3103"              TO  SYS-3103-KANRICD
-           MOVE    "5010001"           TO  SYS-3103-KBNCD
-           MOVE    TEIKI2P-SYSYMD      TO  SYS-3103-STYUKYMD
-                                           SYS-3103-EDYUKYMD
-           MOVE    SYS-3103-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC        TO  SYS-3103-REC
       *
            PERFORM 1001-SRH-1041-HEN-SEC
       *
@@ -427,11 +390,6 @@
                MOVE    1               TO  FLG-SUMKANANAME
                                            FLG-SUMPTNUM
                                            FLG-SUMTAIIN
-           END-IF
-      *
-           IF    ( SPA-MW              =   SPA-GINBEE )
-               CALL    "ORCSBILLINGCHECK"  USING   SBC-AREA
-                                                   SPA-AREA
            END-IF
       *
            .
@@ -548,7 +506,6 @@
                                            TO  SPRT-TITLE
            MOVE    "1"                     TO  ORCHCN03-PRTKBN
            MOVE    ORCSPRTAREA             TO  ORCHCN03-PRTAREA
-           MOVE    6                       TO  ORCHCN03-MOTOID
       *
            MOVE    ZERO            TO  FLG-SELTAIIN
            PERFORM  2001-HENSYU-SEC
@@ -572,43 +529,53 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TSYUGRP-MAX )
       *
-               MOVE    TSYUGRP-PTID (IDX0)
-                                       TO  WRK-PTID
-               PERFORM 900-PTINF-KEY-SEL-SEC
-               PERFORM 900-PTNUM-KEY-SEL-SEC
+               PERFORM VARYING IDX-M   FROM    1   BY  1
+                       UNTIL ( IDX-M   >   ORCHCN03-CNT )
       *
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   TSYUGRP-GRP-MAX (IDX0))
-      *
-                   PERFORM VARYING IDX-M   FROM    1   BY  1
-                           UNTIL ( IDX-M   >   ORCHCN03-CNT )
-      *
-                       INITIALIZE      ORCHCN03-OCC (IDX-M)
-      *
-                   END-PERFORM
-      *
-                   MOVE    "1"     TO  SPA-NYUGAIKBN
-      *
-                   MOVE    PTINF-PTID      TO  SPA-PTID
-                   MOVE    PTNUM-PTNUM     TO  SPA-PTNUM
-                   MOVE    PTINF-KANANAME  TO  SPA-KANANAME
-                   MOVE    PTINF-NAME      TO  SPA-NAME
-                   MOVE    PTINF-SEX       TO  SPA-SEX
-                   MOVE    PTINF-BIRTHDAY  TO  SPA-BIRTHDAY
-                   MOVE    TSYUGRP-SRYYMD  (IDX0 IDX1)
-                                           TO  SPA-SRYYMD
-      *
-                   IF    ( TSYUGRP-SKYPRT (IDX0 IDX1)  =   "1" )
-                       PERFORM 2001-SEIKYU-PRT-SEC
-                   END-IF
-      *
-                   IF    ( TSYUGRP-SRYPRT (IDX0 IDX1)  =   "1" )
-                       PERFORM 2001-MEISAI-PRT-SEC
-                   END-IF
+                   INITIALIZE          ORCHCN03-OCC (IDX-M)
       *
                END-PERFORM
       *
+               MOVE    ZERO        TO  ORCHCN03-CNT
+      *
+               MOVE    TSYUGRP-GRP-MAX (IDX0)
+                                   TO  WRK-MAX
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   WRK-MAX )
+      *
+                   PERFORM VARYING IDX-M   FROM    1   BY  1
+                           UNTIL ( IDX-M   >   WORCHCN03-CNT )
+      *
+                       IF    ( TSYUGRP-GRP-DENPNUM (IDX0 IDX1)
+                                   =   WORCHCN03-DENPNUM (IDX-M))
+                           COMPUTE ORCHCN03-CNT
+                               =   ORCHCN03-CNT
+                               +   1
+                           MOVE    WORCHCN03-OCC (IDX-M)
+                                   TO  ORCHCN03-OCC (ORCHCN03-CNT)
+                       END-IF
+      *
+                   END-PERFORM
+      *
+               END-PERFORM
+      *
+      *        入院請求書印刷
+               IF    ( ORCHCN03-CNT    >    ZERO )
+      *
+                   CALL    WRK-SEIKYU-PG    USING   ORCHCN03AREA
+                                                   SPA-AREA
+      *
+                   IF    ( TEIKI2P-PRTFORM  =  "0" )
+                       PERFORM 2001-MEISAI-PRT-SEC
+                   END-IF
+      *
+               END-IF
+      *
            END-PERFORM
+      *
+           IF     ( TEIKI2P-OID1-FLG   =   "OK"  OR "PV")
+               PERFORM 2001-PRINT-SEC
+           END-IF
       *
            MOVE    1                   TO  FLG-END
       *
@@ -617,82 +584,45 @@
            EXIT.
       *
       *****************************************************************
-      *    請求書兼領収書出力処理
-      *****************************************************************
-       2001-SEIKYU-PRT-SEC                    SECTION.
-      *
-           MOVE    ZERO        TO  ORCHCN03-CNT
-      *
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >   TSYUGRP-GRP-MAX2 (IDX0 IDX1))
-      *
-               PERFORM VARYING IDX-M   FROM    1   BY  1
-                       UNTIL ( IDX-M   >   WORCHCN03-CNT )
-      *
-                   IF    ( TSYUGRP-GRP-DENPNUM (IDX0 IDX1 IDX2)
-                               =   WORCHCN03-DENPNUM (IDX-M))
-                       COMPUTE ORCHCN03-CNT
-                           =   ORCHCN03-CNT
-                           +   1
-                       MOVE    WORCHCN03-OCC (IDX-M)
-                               TO  ORCHCN03-OCC (ORCHCN03-CNT)
-                   END-IF
-      *
-               END-PERFORM
-      *
-           END-PERFORM
-      *
-      *    入院請求書印刷
-           IF    ( ORCHCN03-CNT    >    ZERO )
-      *
-               CALL    WRK-SEIKYU-PG    USING   ORCHCN03AREA
-                                                SPA-AREA
-               ON  EXCEPTION
-                   DISPLAY WRK-SEIKYU-PG " was aborted"
-               END-CALL
-               COMPUTE CNT-OUT2 = CNT-OUT2 + ORCHCN03-OUTCNT
-           END-IF
-      *
-           .
-       2001-SEIKYU-PRT-EXT.
-           EXIT.
-      *****************************************************************
       *    診療費明細書出力処理
       *****************************************************************
        2001-MEISAI-PRT-SEC                    SECTION.
       *
            INITIALIZE              ORCHCN04AREA
+           MOVE    TSYUGRP-GRP-MAX (IDX0)
+                                       TO  WRK-MAX
            MOVE    TSYUGRP-PTID (IDX0)
                                        TO  ORCHCN04-PTID
+           MOVE    TSYUGRP-PTID (IDX0)
+                                       TO  WRK-PTID
+           PERFORM 900-PTINF-KEY-SEL-SEC
+           PERFORM 900-PTNUM-KEY-SEL-SEC
       *
            MOVE    PTNUM-PTNUM         TO  ORCHCN04-PTNUM
            MOVE    PTINF-NAME          TO  ORCHCN04-NAME
-           MOVE    TSYUGRP-DENPPRTYMD (IDX0 IDX1)
-                                       TO  ORCHCN04-DENPPRTYMD
       *
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >   TSYUGRP-GRP-MAX2 (IDX0 IDX1) )
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   WRK-MAX )
       *
-               MOVE    TSYUGRP-GRP-DENPNUM (IDX0 IDX1 IDX2)
-                                       TO  ORCHCN04-DENPNUM (IDX2)
+               MOVE    TSYUGRP-GRP-DENPNUM (IDX0 IDX1)
+                                       TO  ORCHCN04-DENPNUM (IDX1)
       *
            END-PERFORM
       *
            MOVE    "1"                 TO  ORCHCN04-PRTKBN
       *
+           MOVE    TSYUGRP-GRP-SRYYMD  (IDX0 IDX1)
+                                       TO  SPA-SRYYMD
+      *
            MOVE    WRK-MEISAI-PRTNM    TO  SPRT-PRTNM
            MOVE    TSYUGRP-PTID (IDX0) TO  SPRT-PTID
-           MOVE    TSYUGRP-SRYYMD  (IDX0 IDX1)(1:6)
+           MOVE    TSYUGRP-GRP-SRYYMD  (IDX0 IDX1)(1:6)
                                        TO  SPRT-SRYYM
            MOVE    ORCSPRTAREA         TO  ORCHCN04-PRTAREA
       *
            CALL    WRK-MEISAI-PG    USING
                                     SPA-AREA
                                     ORCHCN04AREA
-           ON  EXCEPTION
-               DISPLAY WRK-MEISAI-PG " was aborted"
-           END-CALL
-           COMPUTE CNT-OUT2 = CNT-OUT2 + ORCHCN04-PAGE
       *
            .
        2001-MEISAI-PRT-EXT.
@@ -781,51 +711,36 @@
       *
            INITIALIZE                      WRK-SEIKYU-PG
       *
-           IF    ( SPA-MW                      =   SPA-GINBEE )
-            AND  ( SBC-BILLINGUSER             =   "1" )
-            AND  ( SYS-3103-PROGRAM-NAME (1)   NOT =   SPACE )
-               MOVE    SYS-3103-PROGRAM-NAME (1)
-                                           TO  WRK-SEIKYU-PG
-           ELSE
-               INITIALIZE                      ORCSPRTNMAREA
-               MOVE    "1"                 TO  ORCSPRTNM-KBN
-               MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
-               MOVE    TEIKI2P-SYSYMD      TO  ORCSPRTNM-SRYYMD
-               MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
-               CALL    "ORCSPRTNM"         USING
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    TEIKI2P-SYSYMD      TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYSKANRI-REC
-               IF    ( ORCSPRTNM-RC        =   ZERO )
-                  MOVE    ORCSPRTNM-PRTPG  TO  WRK-SEIKYU-PG
-               ELSE
-                  MOVE    "ORCHCN03"       TO  WRK-SEIKYU-PG
-               END-IF
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG  TO  WRK-SEIKYU-PG
+           ELSE
+              MOVE    "ORCHCN03"       TO  WRK-SEIKYU-PG
            END-IF
       *
            INITIALIZE                      WRK-MEISAI-PG
       *
-           IF    ( SPA-MW                      =   SPA-GINBEE )
-            AND  ( SBC-BILLINGUSER             =   "1" )
-            AND  ( SYS-3103-PROGRAM-NAME (2)   NOT =   SPACE )
-               MOVE    SYS-3103-PROGRAM-NAME (2)
-                                           TO  WRK-MEISAI-PG
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000008"          TO  ORCSPRTNM-KBNCD
+           MOVE    TEIKI2P-SYSYMD      TO  ORCSPRTNM-SRYYMD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYSKANRI-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG  TO  WRK-MEISAI-PG
            ELSE
-      *
-               INITIALIZE                      ORCSPRTNMAREA
-               MOVE    "1"                 TO  ORCSPRTNM-KBN
-               MOVE    "00000008"          TO  ORCSPRTNM-KBNCD
-               MOVE    TEIKI2P-SYSYMD      TO  ORCSPRTNM-SRYYMD
-               MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
-               CALL    "ORCSPRTNM"         USING
-                                               ORCSPRTNMAREA
-                                               SPA-AREA
-                                               SYSKANRI-REC
-               IF    ( ORCSPRTNM-RC        =   ZERO )
-                  MOVE    ORCSPRTNM-PRTPG  TO  WRK-MEISAI-PG
-               ELSE
-                  MOVE    "ORCHCN04"       TO  WRK-MEISAI-PG
-               END-IF
+              MOVE    "ORCHCN04"       TO  WRK-MEISAI-PG
            END-IF
       *
       *    出力先プリンタ名割り当て情報編集
@@ -872,6 +787,12 @@
            IF    ( FLG-PTTEIKIRRK  NOT =   ZERO )
                MOVE  "0003"            TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           IF    ( TEIKI2P-SKYPRT      =   "2" )
+               IF    ( PTTEIKIRRK-SKYMONEY <=   ZERO )
+                   GO  TO  20011-HENSYU-EXT
+               END-IF
            END-IF
       *
            INITIALIZE              SYUMEI-REC
@@ -979,6 +900,63 @@
        200111-NYUKIN-HOHO-HEN-EXT.
            EXIT. 
       *****************************************************************
+      *   印刷処理
+      *****************************************************************
+       2001-PRINT-SEC                  SECTION.
+      *
+           MOVE    ZERO                    TO  WRK-STPAGE
+           MOVE    99999                   TO  WRK-EDPAGE
+      *
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "/scripts/allways/print_prv.sh"
+                                           TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01            TO  SHELLTBL-NAME
+      *
+           MOVE    "print_prv.sh"          TO  LNK-PRTKANRI-SHELLID
+      *
+           MOVE    LNK-PRTKANRI-RENNUM     TO  SHELLTBL-ARG1
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                           TO  SHELLTBL-ARG2
+           MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                           TO  SHELLTBL-ARG4
+           MOVE    LNK-PRTKANRI-SRYYM      TO  SHELLTBL-ARG5
+           MOVE    LNK-PRTKANRI-SKYYMD     TO  SHELLTBL-ARG6
+           MOVE    LNK-PRTKANRI-SHELLID    TO  SHELLTBL-ARG7
+           MOVE    LNK-PRTKANRI-PRIORITY   TO  SHELLTBL-ARG8
+           MOVE    LNK-PRTKANRI-TERMID     TO  SHELLTBL-ARG9
+           MOVE    LNK-PRTKANRI-OPID       TO  SHELLTBL-ARG10
+           MOVE    LNK-PRTKANRI-PRTNM      TO  SHELLTBL-ARG11
+      *
+           MOVE    TEIKIERR                TO  SHELLTBL-ARG12
+           MOVE    TEIKI2P-JOBID           TO  SHELLTBL-ARG13
+           MOVE    TEIKI2P-SHELLID         TO  SHELLTBL-ARG14
+           MOVE    WRK-STPAGE              TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE              TO  SHELLTBL-ARG16
+           EVALUATE    TEIKI2P-OID1-FLG
+           WHEN    "PV"
+                MOVE    "3"                TO  SHELLTBL-ARG17
+      *    WHEN    "NO"
+      *         MOVE    "3"                TO  SHELLTBL-ARG17
+           WHEN    "OK"
+                MOVE    "2"                TO  SHELLTBL-ARG17
+           END-EVALUATE
+           MOVE    TEIKI2P-HOSPNUM         TO  SHELLTBL-ARG18
+      *
+           MOVE    SHELLTBL                TO  MCPDATA-REC
+           MOVE    "SHELL"                 TO  MCP-FUNC
+           MOVE    "shell"                 TO  MCP-TABLE
+           MOVE    "shell"                 TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       2001-PRINT-EXT.
+           EXIT. 
+      *****************************************************************
       *   収納データ集計処理
       *****************************************************************
        2002-SYUGRP-SEC                  SECTION.
@@ -1026,50 +1004,10 @@
       *        収納マスタ検索処理
                PERFORM 901-SYUNOU-KEY-SEL-SEC
       *
-               INITIALIZE              ORCHCN03S02AREA
-               MOVE    IDX-M       TO  ORCHCN03S02-IDX
-               MOVE    1           TO  ORCHCN03S02-CHKPRT
-               MOVE    TEIKI2P-PTINFREF
-                                   TO  ORCHCN03S02-PTINFREF
-               MOVE    TEIKI2P-SKYPRT
-                                   TO  ORCHCN03S02-SKYPRT
-               MOVE    TEIKI2P-SRYPRT
-                                   TO  ORCHCN03S02-SRYPRT
-               CALL    "ORCHCN03S02"   USING
-                                       ORCHCN03AREA
-                                       ORCHCN03S02AREA
-                                       SYUNOU-REC
-                                       SPA-AREA
-               IF    ( ORCHCN03S02-PRTFLG  =   1 )
-      *
-                   COMPUTE IDX-MAX =   IDX-MAX +   1
-      *
-                   DISPLAY "PTID[" PTTEIKIRRK-PTID "]"
-                           "DENPNUM["  PTTEIKIRRK-DENPNUM "]"
-                           "ORCHCN03S02-SKYPRT[" ORCHCN03S02-SKYPRT "]"
-                           "ORCHCN03S02-SRYPRT[" ORCHCN03S02-SRYPRT "]"
-                   MOVE    SYU-DENPPRTYMD
-                                   TO  TSYUGRP-DENPPRTYMD
-                                                  (TSYUGRP-MAX IDX-MAX)
-                   MOVE    ORCHCN03S02-SKYPRT
-                                   TO  TSYUGRP-SKYPRT
-                                                  (TSYUGRP-MAX IDX-MAX)
-                   MOVE    ORCHCN03S02-SRYPRT
-                                   TO  TSYUGRP-SRYPRT
-                                                  (TSYUGRP-MAX IDX-MAX)
-                   MOVE    ORCHCN03S02-GRP-CNT
-                                   TO  TSYUGRP-GRP-MAX2
-                                           (TSYUGRP-MAX IDX-MAX)
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   ORCHCN03S02-GRP-CNT )
-                       MOVE    ORCHCN03S02-GRP-DENPNUM (IDX0)
+               COMPUTE IDX-MAX =   IDX-MAX +   1
+               MOVE    ORCHCN03-DENPNUM (IDX-M)
                                    TO  TSYUGRP-GRP-DENPNUM
-                                           (TSYUGRP-MAX IDX-MAX IDX0)
-                       MOVE    ORCHCN03-KJNYMD (IDX0)
-                                   TO  TSYUGRP-SRYYMD
                                            (TSYUGRP-MAX IDX-MAX)
-                   END-PERFORM
-               END-IF
       *
                COMPUTE IDX-M   =   IDX-M   +   1
       *
@@ -1146,7 +1084,7 @@
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           IF    ( CNT-OUT2            =   ZERO  )
+           IF    ( CNT-OUT1            =   ZERO  )
                 MOVE  "0004"           TO  ERR-ERRCD
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1157,7 +1095,7 @@
            MOVE    TEIKI2P-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    TEIKI2P-JOBID   TO  JOB-JOBID
            MOVE    TEIKI2P-SHELLID TO  JOB-SHELLID
-           MOVE    CNT-OUT2        TO  JOB-UPDCNT
+           MOVE    ORCHCN03-OUTCNT TO  JOB-UPDCNT
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
