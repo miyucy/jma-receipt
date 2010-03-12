@@ -58,7 +58,6 @@
        01  WRK-AREA.
            03  WRK-JOUTAIKBN       PIC X(01).
            03  WRK-SYURRKUPDKBN    PIC X(01).
-           03  WRK-SYURRKNUM       PIC 9(05).
       *
        01  CONST-AREA.
            03  CONST-SRYKBN-MAX    PIC 9(05)   VALUE 17.
@@ -175,10 +174,8 @@ grpsys     COPY    "COMMON-SPA".
                    MOVE    SYURRK-SYUEDANUM
                                        TO  WKSYURRK-SYUEDANUM
                ELSE
-                   COMPUTE WRK-SYURRKNUM
+                   COMPUTE WKSYURRK-SYURRKNUM
                        =   SYURRK-SYURRKNUM    +   1
-                   MOVE    WRK-SYURRKNUM
-                                       TO  WKSYURRK-SYURRKNUM
                    MOVE    ZERO        TO  WKSYURRK-SYUEDANUM
                END-IF
       *
