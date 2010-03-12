@@ -4394,7 +4394,6 @@
                                            TO  SRT-SRYCD    (SRT-MAX 1)
                MOVE    WGAIHAKU-SRYCD (IDXA IDXB 2)
                                            TO  SRT-SRYCD    (SRT-MAX 2)
-               DISPLAY "GAIHAKU[" SRT-SRYCD    (SRT-MAX 1) "]"
       *
                PERFORM VARYING IDXD    FROM    1   BY  1
                        UNTIL ( IDXD    >   31 )
