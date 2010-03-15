@@ -30,21 +30,17 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '001' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '001' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '001' and ksnkbn = '355' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '001' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '001' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '002' and ksnkbn = '335' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '002' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '002' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '002' and ksnkbn = '355' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '002' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '002' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '003' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '003' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '003' and ksnkbn = '355' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '003' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '003' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '009' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '009' and ksnkbn = '321' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '009' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '009' and ksnkbn = '416' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '009' and ksnkbn = '417' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '009' and ksnkbn = '418' and yukoedymd = '99999999';
@@ -121,50 +117,39 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '022' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '022' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '022' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '022' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '022' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '023' and ksnkbn = '335' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '023' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '023' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '023' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '023' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '024' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '024' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '024' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '024' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '024' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '025' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '025' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '025' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '025' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '025' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '026' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '026' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '026' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '026' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '026' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '029' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '029' and ksnkbn = '321' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '029' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '031' and ksnkbn = '335' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '031' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '031' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '031' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '031' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '033' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '033' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '033' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '033' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '034' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '034' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '034' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '034' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '035' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '035' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '035' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '035' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '038' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '038' and ksnkbn = '321' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '038' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -172,7 +157,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '355' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '396' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '400' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '040' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -184,7 +168,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '396' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '400' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '045' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '353' and yukoedymd = '99999999';
@@ -196,7 +179,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '396' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '400' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '046' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -207,33 +189,25 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '389' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '050' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '055' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '055' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '055' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '055' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '055' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '056' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '056' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '056' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '056' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '056' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '070' and ksnkbn = '335' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '070' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '070' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '070' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '070' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '071' and ksnkbn = '335' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '071' and ksnkbn = '353' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '071' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '071' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '071' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '072' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '072' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '072' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '072' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '081' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '083' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '085' and ksnkbn = '316' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '085' and ksnkbn = '319' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '085' and ksnkbn = '322' and yukoedymd = '99999999';
@@ -384,12 +358,10 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '135' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '135' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '135' and ksnkbn = '355' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '135' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '135' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '136' and ksnkbn = '335' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '136' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '136' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '136' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '136' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -397,7 +369,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '355' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '396' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '400' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '137' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -409,7 +380,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '396' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '400' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '138' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -421,7 +391,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '396' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '400' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '139' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -432,7 +401,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '389' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '140' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '352' and yukoedymd = '99999999';
@@ -443,12 +411,10 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '389' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '390' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '396' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '141' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '142' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '142' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '142' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '142' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '142' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '143' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '143' and ksnkbn = '311' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '143' and ksnkbn = '316' and yukoedymd = '99999999';
@@ -648,13 +614,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '151' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '151' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '152' and ksnkbn = '318' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '152' and ksnkbn = '321' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '152' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '153' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '154' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '155' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '156' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '157' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '158' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '159' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '159' and ksnkbn = '311' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '159' and ksnkbn = '316' and yukoedymd = '99999999';
@@ -741,7 +700,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '162' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '162' and ksnkbn = '352' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '162' and ksnkbn = '354' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '162' and ksnkbn = '355' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '162' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '163' and ksnkbn = '301' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '163' and ksnkbn = '311' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '163' and ksnkbn = '316' and yukoedymd = '99999999';
@@ -825,12 +783,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '165' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '165' and ksnkbn = '417' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '165' and ksnkbn = '418' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '165' and ksnkbn = '419' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '201' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '202' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '203' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '204' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '205' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '206' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn = '375' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn = '376' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn = '377' and yukoedymd = '99999999';
@@ -847,9 +799,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn = '417' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn = '418' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '207' and ksnkbn = '419' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '208' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '209' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '210' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn = '375' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn = '376' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn = '377' and yukoedymd = '99999999';
@@ -866,12 +815,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn = '417' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn = '418' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '211' and ksnkbn = '419' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '212' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '213' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '214' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '215' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '216' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '217' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn = '375' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn = '376' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn = '377' and yukoedymd = '99999999';
@@ -884,7 +827,6 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn = '408' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn = '409' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '219' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '221' and ksnkbn = '410' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn = '375' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn = '376' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn = '377' and yukoedymd = '99999999';
@@ -895,19 +837,7 @@ update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn = '408' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn = '409' and yukoedymd = '99999999';
 update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '224' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '227' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '228' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '229' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '230' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '231' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '232' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '233' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '234' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '235' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '236' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '237' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '238' and ksnkbn = '410' and yukoedymd = '99999999';
-update tbl_nyuksnchk set yukoedymd ='20100331' where nyuinkbn = '239' and ksnkbn = '410' and yukoedymd = '99999999';
+
 copy tbl_nyuksnchk (nyuinkbn,ksnkbn,yukostymd,yukoedymd,chkkbn,termid,opid,creymd,upymd,uphms) from stdin;
 001	317	20100401	99999999	1					
 001	320	20100401	99999999	1					
@@ -2162,4 +2092,38 @@ copy tbl_nyuksnchk (nyuinkbn,ksnkbn,yukostymd,yukoedymd,chkkbn,termid,opid,creym
 249	433	20100401	99999999	1					
 249	434	20100401	99999999	1					
 249	442	20100401	99999999	1					
+166	410	20100401	99999999	1					
+167	410	20100401	99999999	1					
+168	410	20100401	99999999	1					
+169	410	20100401	99999999	1					
+170	410	20100401	99999999	1					
+171	410	20100401	99999999	1					
+172	410	20100401	99999999	1					
+173	410	20100401	99999999	1					
+174	410	20100401	99999999	1					
+175	410	20100401	99999999	1					
+176	410	20100401	99999999	1					
+177	410	20100401	99999999	1					
+178	410	20100401	99999999	1					
+179	410	20100401	99999999	1					
+180	410	20100401	99999999	1					
+181	410	20100401	99999999	1					
+182	410	20100401	99999999	1					
+183	410	20100401	99999999	1					
+184	410	20100401	99999999	1					
+185	410	20100401	99999999	1					
+186	410	20100401	99999999	1					
+187	410	20100401	99999999	1					
+188	410	20100401	99999999	1					
+189	410	20100401	99999999	1					
+190	410	20100401	99999999	1					
+191	410	20100401	99999999	1					
+241	410	20100401	99999999	1					
+242	410	20100401	99999999	1					
+243	410	20100401	99999999	1					
+244	410	20100401	99999999	1					
+245	410	20100401	99999999	1					
+247	410	20100401	99999999	1					
+248	410	20100401	99999999	1					
+249	410	20100401	99999999	1					
 \.
