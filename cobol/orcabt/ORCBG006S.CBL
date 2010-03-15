@@ -1197,7 +1197,8 @@
            MOVE    "¹ç·×"          TO  TOKEI-NAME
            MOVE    ZERO            TO  TOKEI-SRYSURYO
            PERFORM 900-TOKEI-READ-SEC
-           COMPUTE WRK-GSURYO      =   TNS-TEN *   WRK-SURYO
+           COMPUTE WRK-GSURYO      =   TNS-TEN
+                                   * ( WRK-SURYO *   ACCT-DAY (1 IDX-D))
            COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
                                    +   WRK-GSURYO
       *
