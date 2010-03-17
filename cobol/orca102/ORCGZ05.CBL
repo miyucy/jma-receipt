@@ -161,6 +161,9 @@
       *
                05  SPA-GMN-KOUHYOJYUNNUM       PIC 9(9).
                05  SPA-GMN-INPCHKKBN           PIC 9(1).
+               05  SPA-GMN-KEIKASOCHIYMD       PIC X(10).
+               05  SPA-GMN-CDKBN-BU            PIC 9(2).
+               05  SPA-GMN-CDKBN-KBNNUM        PIC 9(3).
       *********05  SPA-GMN-CUR                 PIC X(30).
                05  SPA-GMN-CUR                 PIC 9(02).
       *
@@ -171,6 +174,7 @@
       *
                05  SPA-NAI-KEIFLG1             PIC 9(01).
                05  SPA-NAI-KEIFLG2             PIC 9(01).
+               05  SPA-NAI-KEIKASOCHIYMD       PIC X(08).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -547,6 +551,12 @@
            MOVE    TNS-TOKUKIZAISBT2   TO  SPA-GMN-TOKUKIZAISBT2
            MOVE    TNS-KOUHYOJYUNNUM   TO  SPA-GMN-KOUHYOJYUNNUM
            MOVE    TNS-DATAKBN         TO  SPA-GMN-DATAKBN  
+           MOVE    TNS-KEIKASOCHIYMD   TO  SPA-NAI-KEIKASOCHIYMD
+                                           WRK-LNKYMD
+           PERFORM 832-YMDCONV21-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-KEIKASOCHIYMD
+           MOVE    TNS-CDKBN-BU        TO  SPA-GMN-CDKBN-BU
+           MOVE    TNS-CDKBN-KBNNUM    TO  SPA-GMN-CDKBN-KBNNUM
       *
            .
        3001-TENSU-SET-EXT.
@@ -843,6 +853,9 @@
            MOVE    Z05-TOKUKIZAISBT2   TO  SPA-GMN-TOKUKIZAISBT2-G
            MOVE    Z05-KOUHYOJYUNNUM   TO  SPA-GMN-KOUHYOJYUNNUM
            MOVE    Z05-INPCHKKBN       TO  SPA-GMN-INPCHKKBN
+           MOVE    Z05-KEIKASOCHIYMD   TO  SPA-GMN-KEIKASOCHIYMD
+           MOVE    Z05-CDKBN-BU        TO  SPA-GMN-CDKBN-BU
+           MOVE    Z05-CDKBN-KBNNUM    TO  SPA-GMN-CDKBN-KBNNUM
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -930,6 +943,24 @@
            END-IF
       *    特定器材種別２
            PERFORM 5003-TOKUKIZAISBT2-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    経過措置年月日チェック
+           PERFORM 5003-KEIKASOCHIYMD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    別表番号チェック
+           PERFORM 5003-CDKBN-BU-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *    区分番号チェック
+           PERFORM 5003-CDKBN-KBNNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
@@ -1352,6 +1383,82 @@
            .
       *
        5003-TOKUKIZAISBT2-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *  　経過措置年月日チェック
+      *****************************************************************
+       5003-KEIKASOCHIYMD-CHK-SEC  SECTION.
+      *
+           IF      SPA-GMN-KEIKASOCHIYMD   =   SPACE
+               MOVE    "0000000"           TO  SPA-GMN-KEIKASOCHIYMD
+           END-IF
+      *
+           MOVE    SPA-GMN-KEIKASOCHIYMD   TO  WRK-LNKYMD
+           PERFORM 831-YMDCONV12-SEC
+           IF      FLG-ERR             =   ZERO
+               MOVE    WRK-SYMD            TO  SPA-NAI-KEIKASOCHIYMD
+               MOVE    WRK-LNKYMD          TO  SPA-GMN-KEIKASOCHIYMD
+           ELSE
+               MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    21                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+      *
+       5003-KEIKASOCHIYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *  別表番号チェック
+      *****************************************************************
+       5003-CDKBN-BU-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-CDKBN-BU      =   SPACE
+               MOVE    ZERO            TO  SPA-GMN-CDKBN-BU
+           END-IF
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    SPA-GMN-CDKBN-BU    TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN     NOT =   SPACE )   OR
+                  (SNUM-SYOKBN     NOT =   SPACE )
+               MOVE    "0018"              TO  SPA-ERRCD
+               MOVE    22                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SNUM-OUTEDT(14:2)   TO  SPA-GMN-CDKBN-BU
+           END-IF
+           .
+      *
+       5003-CDKBN-BU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *  区分番号チェック
+      *****************************************************************
+       5003-CDKBN-KBNNUM-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-CDKBN-KBNNUM    =   SPACE
+               MOVE    ZERO            TO  SPA-GMN-CDKBN-KBNNUM
+           END-IF
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    SPA-GMN-CDKBN-KBNNUM    TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN     NOT =   SPACE )   OR
+                  (SNUM-SYOKBN     NOT =   SPACE )
+               MOVE    "0019"              TO  SPA-ERRCD
+               MOVE    23                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SNUM-OUTEDT(13:3)   TO  SPA-GMN-CDKBN-KBNNUM
+           END-IF
+           .
+      *
+       5003-CDKBN-KBNNUM-CHK-EXT.
            EXIT.
       *
       ****************************************************************
@@ -1931,6 +2038,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-TOKUKIZAISBT2     TO  TNS-TOKUKIZAISBT2
            MOVE  SPA-GMN-KOUHYOJYUNNUM     TO  TNS-KOUHYOJYUNNUM
            MOVE  SPA-GMN-DATAKBN           TO  TNS-DATAKBN  
+           MOVE  SPA-NAI-KEIKASOCHIYMD     TO  TNS-KEIKASOCHIYMD
+           MOVE  SPA-GMN-CDKBN-BU          TO  TNS-CDKBN-BU
+           MOVE  SPA-GMN-CDKBN-KBNNUM      TO  TNS-CDKBN-KBNNUM
            .
        4121-KOUMOKUISO-EXT.
            EXIT.
@@ -2047,6 +2157,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-DATAKBN-G             TO  Z05-DATAKBN
       *
            MOVE  SPA-GMN-INPCHKKBN             TO  Z05-INPCHKKBN
+      *
+           MOVE  SPA-GMN-KEIKASOCHIYMD         TO  Z05-KEIKASOCHIYMD
+           MOVE  SPA-GMN-CDKBN-BU              TO  Z05-CDKBN-BU
+           MOVE  SPA-GMN-CDKBN-KBNNUM          TO  Z05-CDKBN-KBNNUM
       *
       *    データ区分
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2180,6 +2294,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    20
                    MOVE    "KOUHYOJYUNNUM"         TO  MCP-WIDGET
                WHEN    21
+                   MOVE    "KEIKASOCHIYMD"         TO  MCP-WIDGET
+               WHEN    22
+                   MOVE    "CDKBN_BU"              TO  MCP-WIDGET
+               WHEN    23
+                   MOVE    "CDKBN_KBNNUM"          TO  MCP-WIDGET
+               WHEN    24
                    MOVE    "INPCHKKBN"             TO  MCP-WIDGET
                WHEN    40
                    MOVE    "B12"                   TO  MCP-WIDGET
@@ -2235,6 +2355,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    20                  TO  SPA-GMN-CUR
                WHEN    "KOUHYOJYUNNUM"
                    MOVE    21                  TO  SPA-GMN-CUR
+               WHEN    "KEIKASOCHIYMD"
+                   MOVE    22                  TO  SPA-GMN-CUR
+               WHEN    "CDKBN_BU"
+                   MOVE    23                  TO  SPA-GMN-CUR
+               WHEN    "CDKBN_KBNNUM"
+                   MOVE    24                  TO  SPA-GMN-CUR
                WHEN    "INPCHKKBN"
                    MOVE    40                  TO  SPA-GMN-CUR
            END-EVALUATE
@@ -2297,6 +2423,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                WHEN    "0016"
                    MOVE    "特定器材種別２がありません"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "経過措置年月日が違います"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "別表番号が違います"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "区分番号が違います"
                                                  TO  SPA-ERRMSG
       *        以下共通
                WHEN    "1010"

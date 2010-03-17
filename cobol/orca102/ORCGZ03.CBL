@@ -529,6 +529,9 @@
            03  FILLER              PIC X(02)   VALUE   "66".
            03  FILLER              PIC X(50)   VALUE
                "ºßÂðÆñ¼£À­ÈéÉæ¼À´µ½èÃÖ»ØÆ³´ÉÍýÎÁ".
+           03  FILLER              PIC X(02)   VALUE   "67".
+           03  FILLER              PIC X(50)   VALUE
+               "ºßÂð¾®»ùÄã·ìÅü¾É´µ¼Ô»ØÆ³´ÉÍýÎÁ".
            03  FILLER              PIC X(02)   VALUE   "80".
            03  FILLER              PIC X(50)   VALUE
                "¾®»ù²Ê³°Íè¿ÇÎÅÎÁÅù".
@@ -551,12 +554,14 @@
        01  TBL-SDOKNRYO-AREA-R     REDEFINES   TBL-SDOKNRYO-AREA.
       *    03  TBL-SDOKNRYO-OCC        OCCURS  45      INDEXED  SDO-IDX.
       **** 03  TBL-SDOKNRYO-OCC        OCCURS  58      INDEXED  SDO-IDX.
-           03  TBL-SDOKNRYO-OCC        OCCURS  73      INDEXED  SDO-IDX.
+      **** 03  TBL-SDOKNRYO-OCC        OCCURS  73      INDEXED  SDO-IDX.
+           03  TBL-SDOKNRYO-OCC        OCCURS  74      INDEXED  SDO-IDX.
                05  TBL-SDOKNRYO        PIC X(02).
                05  TBL-SDOKNRYOMEI     PIC X(50).
       *01  SDO-MAX                     PIC 9(04)   VALUE   45.
       *01  SDO-MAX                     PIC 9(04)   VALUE   58.
-       01  SDO-MAX                     PIC 9(04)   VALUE   73.
+      *01  SDO-MAX                     PIC 9(04)   VALUE   73.
+       01  SDO-MAX                     PIC 9(04)   VALUE   74.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
