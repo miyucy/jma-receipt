@@ -9,9 +9,6 @@ tbl_nrrksrh {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#--
-	SELSHONUM		    number(3,0) ,virtual;
-	SELSRYCD		    char(9) ,virtual;
 };
 
 primary	{
@@ -74,37 +71,6 @@ path	key2 	{
 			AND   SRYYMD      =   :SRYYMD
 			AND   RRKNUM      =   :RRKNUM
 		;
-	};
-};
-
-path	key3 	{
-	DBSELECT	{
-		DECLARE tbl_nrrksrh_key3_csr CURSOR FOR
-		SELECT *
-		FROM tbl_nrrksrh
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   SRYYMD      LIKE   :SRYYMD
-			AND   ZAINUM      =   :ZAINUM
-		;
-	};
-};
-
-path	key4 	{
-	DBSELECT	{
-		DECLARE tbl_nrrksrh_key4_csr CURSOR FOR
-		SELECT *
-		FROM tbl_nrrksrh
-		WHERE   HOSPNUM   =   :HOSPNUM
-		  AND   PTID      =   :PTID
-          AND   SRYYMD   >=   :UPYMD
-          AND   ZAINUM      in
-         (  SELECT ZAINUM      FROM tbl_nsrysrh
-		    WHERE  HOSPNUM     =  :HOSPNUM
-		    AND    PTID        =  :PTID
-		    AND    SRYCD       =  :SELSRYCD )
-         ORDER BY  (SRYYMD = :SRYYMD),SRYYMD
-        ;
 	};
 };
 
