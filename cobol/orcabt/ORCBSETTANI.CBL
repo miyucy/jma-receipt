@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.08.00     NACL-多々納   14/07/18  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,10 +53,6 @@
            COPY    "HCMSL55.INC".
       *    帳票
            COPY    "HCPOM2.INC".
-      *
-      *    一時ファイル対応
-           COPY    "CPRECEERR.INC".
-      *
       *
       *    スパ領域
        01  STS-AREA.
@@ -128,7 +123,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC X(02).
-      *****03  RECEERR                 PIC X(100).
+           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SYORIKBN       PIC X(01).
            03  WRK-PARA-SRYYMD         PIC X(08).
       *
@@ -174,12 +169,12 @@
                05  FILLER              PIC X(22)   VALUE   
                    "＃　特定器材単位設定　".
                05  PRT-TAITOL          PIC X(20).
-               05  FILLER              PIC X(02)   VALUE   SPACE.
+               05  FILLER              PIC X(04)   VALUE   SPACE.
                05  FILLER              PIC X(08)   VALUE
                    "開始日：".
                05  PRT-SRYYMD          PIC X(22).
            03  LST-PRT-HEAD1.
-               05  FILLER              PIC X(82)   VALUE   SPACE.
+               05  FILLER              PIC X(74)   VALUE   SPACE.
                05  PRT-SYSYMD          PIC X(10)   VALUE   SPACE.
                05  FILLER              PIC X(02)   VALUE   "P.".
                05  PRT-PAGE            PIC ZZ9.
@@ -274,50 +269,35 @@
       *    診療種別名テーブル
       *    COPY    "CPORCSSRYSYU.INC".
       *
-      *点数マスタワーク
-       01  HZN-TNS-TENSU-REC.
-           03  HZN-TNS-KEY.
-               05  HZN-TNS-HOSPNUM         PIC 9(2).
-               05  HZN-TNS-SRYCD           PIC  X(09).
-               05  HZN-TNS-YUKOSTYMD       PIC  X(08).
-               05  HZN-TNS-YUKOEDYMD       PIC  X(08).
-           03  HZN-TNS-SRYKBN              PIC  X(02).
-           03  HZN-TNS-SRYSYUKBN           PIC  X(03).
-           03  HZN-TNS-YUKOKETA            PIC  9(02).
-           03  HZN-TNS-NAME                PIC  X(200).
-           03  HZN-TNS-KANAYUKOKETA        PIC  9(02).
-           03  HZN-TNS-KANANAME            PIC  X(200).
-           03  HZN-TNS-FORMALYUKOKETA      PIC  9(03).
-           03  HZN-TNS-FORMALNAME          PIC  X(400).
-           03  HZN-TNS-TENSIKIBETU         PIC  9(01).
-           03  HZN-TNS-TEN                 PIC  9(09)V99.
-           03  HZN-TNS-TANICD              PIC  X(03).
-           03  HZN-TNS-TANIMOJISU          PIC  9(01).
-           03  HZN-TNS-TANINAME            PIC  X(24).
-           03  HZN-TNS-DATAKBN             PIC  9(01).
-           03  HZN-TNS-HKNTEKKBN           PIC  9(01).
-           03  HZN-TNS-NYUGAITEKKBN        PIC  9(01).
-      *(20)
-           03  HZN-TNS-FILLER              PIC  X(1000).
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK1001.INC".
+           COPY    "CPSK1009.INC".
+      *    チェック機能制御情報 
+           COPY    "CPSK1008.INC".
+      *
       *    点数マスタ
            COPY    "CPTENSU.INC".
+      *
+           COPY    "CPTENSU.INC"  REPLACING
+                                     //TNS-// BY //HZN-TNS-//.
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *    印刷管理
-      *01  PRTKANRI-REC.
-      *    COPY    "CPPRTKANRI.INC".
+       01  PRTKANRI-REC.
+           COPY    "CPPRTKANRI.INC".
       *
       *    印刷用データ
-      *01  PRTDATA-REC.
-      *    COPY    "CPPRTDATA.INC".
+       01  PRTDATA-REC.
+           COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -327,7 +307,7 @@
            COPY    "CPORCSNUM.INC".
       *
       *    ファイル削除パラメタ
-      *    COPY    "CPORCSFDEL.INC".
+           COPY    "CPORCSFDEL.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -343,10 +323,7 @@
            COPY    "CPORCSMCNDATE.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
-      *    COPY    "CPORCSPRTNM.INC".
-      *
-      *    一時ファイル名取得
-           COPY    "CPORCSGETTEMP.INC".
+           COPY    "CPORCSPRTNM.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -354,6 +331,8 @@
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
+      *
+           COPY    "ORCA-SPA".
       *
       *****************************************************************
       *    連絡　領域
@@ -418,18 +397,9 @@
                                        RECEERR
                                        WRK-PARA-SYORIKBN
                                        WRK-PARA-SRYYMD
-           END-UNSTRING
       *
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -450,18 +420,6 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
                                            SPA-AREA
-      *
-           MOVE    "STP"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           MOVE    3               TO  JOB-STOPFLG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
       *
       *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
@@ -504,10 +462,10 @@
       *ＳＰＡ設定
       *    改正日
            IF      WRK-PARA-SRYYMD     =   SPACE
-              MOVE    "20140401"           TO  WRK-PARA-SRYYMD
+              MOVE    "20100401"           TO  WRK-PARA-SRYYMD
            END-IF
-           IF      WRK-PARA-SRYYMD     <   "20140401"
-              MOVE    "20140401"           TO  WRK-PARA-SRYYMD
+           IF      WRK-PARA-SRYYMD     <   "20100401"
+              MOVE    "20100401"           TO  WRK-PARA-SRYYMD
            END-IF
            MOVE    WRK-PARA-SRYYMD     TO  SPA-SRYYMD
            MOVE    WRK-PARA-SRYYMD     TO  WRK-STR-SRYYMD
@@ -640,7 +598,7 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-OK-END
            MOVE    SPACE               TO  WRK-TNS-TANICD
-           MOVE    ZERO                TO  WRK-TNS-TANIMOJISU
+           MOVE    SPACE               TO  WRK-TNS-TANIMOJISU
            MOVE    SPACE               TO  WRK-TNS-TANINAME
            MOVE    SPACE               TO  WRK-TNS-NAME
            PERFORM UNTIL    (FLG-TENSU     =   1  )
@@ -895,7 +853,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                     TO  SPRT-SKYYMD
            MOVE    LNK-PRTKANRI-SHELLID 
                                     TO  SPRT-SHELLID
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+      *****MOVE    LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    2
                                     TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                     TO  SPRT-PRIORITY
