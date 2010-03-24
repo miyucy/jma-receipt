@@ -26,24 +26,6 @@
       *
       *  04.04.01    NACL-門脇    09/02/04  検査（ＢＮＰ等）の追加
       *  04.04.02    NACL-門脇    10/03/23  同日電話再診フラグの追加
-      *  04.04.03    NACL-門脇    10/03/29  画像診断（２回目以降減算あり）
-      *                                     の追加
-      *  04.04.04    NACL-門脇    10/04/06  改正対応項目追加
-      *
-      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
-      *  04.05.02    NACL-門脇    10/01/19  剤区分追加
-      *  04.05.03    NACL-門脇    12/04/10  改正対応項目追加
-      *
-      *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
-      *  04.07.02    NACL-門脇    14/04/07  改正対応項目追加
-      *  04.07.03    NACL-門脇    15/03/09  訪問診療にかかる記録書コメント
-      *                                     フラグ追加
-      *
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.03    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.04    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
       ************************************************************
       *01  RECE120-REC.
            03  RECE120-KEY.
@@ -79,9 +61,9 @@
       *診療コード計
            03  RECE120-SRYCDTOTAL          PIC 9(14).
       *数量計
-           03  RECE120-SURYOUTOTAL         PIC 9(07)V9(05).
+           03  RECE120-SURYOUTOTAL         PIC 9(07)V9(03).
       *診療コード＊数量の累計
-           03  RECE120-RUIKEITOTAL         PIC 9(13)V9(05).
+           03  RECE120-RUIKEITOTAL         PIC 9(15)V9(03).
       *明細数
            03  RECE120-MEISAISU            PIC 9(04).
       *剤回数
@@ -106,18 +88,6 @@
            03  RECE120-SAFLG               PIC X(01).
       *投薬剤点０（１又は２（コメントのみ））
            03  RECE120-TOYAKUFLG           PIC X(01).
-      *剤区分
-           03  RECE120-ZAIKBN              PIC 9(03).
-      *画像診断（２回目以降減算あり）
-           03  RECE120-GAZOGEN             PIC X(01).
-      *訪問診療にかかる記録書コメントフラグ
-           03  RECE120-HOMONCOMFLG         PIC X(01).
-      *院外湿布薬７０枚超理由コメントフラグ
-           03  RECE120-SIPPUCOMFLG         PIC X(01).
-      *湿布薬フラグ（１：院外分　２：院内分）
-           03  RECE120-SIPPUFLG            PIC X(01).
-      *１５円以下薬剤レセプト記載フラグ
-           03  RECE120-YKZKISAIFLG         PIC X(01).
       *
       *初診料算定科：
            03  RECE120-SYOSANTEIKA-COMMENT PIC X(01).
@@ -145,17 +115,8 @@
            03  RECE120-SYOGAI-COMMENT      PIC X(01).
       *リハビリ（摂食）
            03  RECE120-SESSYOKU-COMMENT    PIC X(01).
-      *リハビリ（廃用症候群）
-           03  RECE120-HAIYO-COMMENT       PIC X(01).
       *介達牽引
            03  RECE120-KAITATU-COMMENT     PIC X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-           03  RECE120-SINDAI9-COMMENT     PIC X(01).
-      *リハビリ加算（呼吸器）
-           03  RECE120-KOKYUKI9-COMMENT    PIC X(01).
-      *リハビリ加算（廃用症候群）
-           03  RECE120-HAIYO9-COMMENT      PIC X(01).
       *
       *慢性疼痛疾患管理料
            03  RECE120-FLG-SHIDOU-COMMENT  PIC X(01).
@@ -179,10 +140,6 @@
            03  RECE120-FLG-SYODOU-COMMENT  PIC X(01).
            03  RECE120-SYODOU-SRYKA-AREA.
                05  RECE120-SYODOU-SRYKA    PIC X(02)     OCCURS  10.
-      *再診（同一日２科目）
-           03  RECE120-FLG-SAIDOU-COMMENT  PIC X(01).
-           03  RECE120-SAIDOU-SRYKA-AREA.
-               05  RECE120-SAIDOU-SRYKA    PIC X(02)     OCCURS  10.
       *ニコチン依存症管理料
            03  RECE120-FLG-NIKOCHIN-COMMENT PIC X(01).
       *重度喘息患者治療管理加算
@@ -201,71 +158,9 @@
            03  RECE120-FLG-SYOUNI-COMMENT  PIC X(01).
       *検査（ＢＮＰ、ＮＴ−ｐｒｏＢＮＰ、ＨＡＮＰ）
            03  RECE120-FLG-KENSA-COMMENT   PIC X(01).
-      *
-      *心臓ペースメーカー指導管理料（遠隔モニタリング）
-           03  RECE120-FLG-SINPESU-COMMENT PIC X(01).
-      *集団栄養食事指導料
-           03  RECE120-FLG-SYUEIYO-COMMENT PIC X(01).
-      *人工腎臓等
-           03  RECE120-FLG-JINZOU-COMMENT  PIC X(01).
-      *局所陰圧閉鎖処置
-           03  RECE120-FLG-KYOKUIN-COMMENT PIC X(01).
-      *麻酔
-           03  RECE120-FLG-MASUI-COMMENT   PIC X(01).
-      *認知療法・認知行動療法
-           03  RECE120-FLG-NINRYO-COMMENT  PIC X(01).
-      *
-      *認知症専門診断管理料２
-           03  RECE120-FLG-NINSEN-COMMENT  PIC  X(01).
-      *退院時共同指導料１（１以外）
-           03  RECE120-FLG-TAKYO-COMMENT   PIC  X(01).
-      *退院時共同指導料特別管理指導加算
-           03  RECE120-FLG-TAKYOKSN-COMMENT
-                                           PIC  X(01).
-      *外来リハビリテーション診療料・外来放射線照射診療料
-           03  RECE120-FLG-GAIRIHA-COMMENT PIC  X(01).
-      *介護職員等喀痰吸引等指示料
-           03  RECE120-FLG-KAISYOKU-COMMENT
-                                           PIC  X(01).
-      *
-      *在宅持続陽圧呼吸療法指導管理料
-           03  RECE120-FLG-YOUATU-COMMENT  PIC  X(01).
-      *
-      *心臓ペースメーカー指導管理料（着用型自動除細動器）
-      *心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
-           03  RECE120-FLG-SINPESUR-COMMENT
-                                           PIC  X(01).
-      *がん患者指導管理料２・３
-           03  RECE120-FLG-GANSIDO-COMMENT PIC  X(01).
-      *在宅患者共同診療料
-           03  RECE120-FLG-ZAIKYO-COMMENT  PIC  X(01).
-      *在宅患者訪問リハビリテーション指導管理料
-           03  RECE120-FLG-ZAIRIHA-COMMENT PIC  X(01).
-      *磁気による膀胱等刺激法
-           03  RECE120-FLG-BOKOHO-COMMENT  PIC  X(01).
-      *通院・在宅精神療法（２０歳未満）加算
-           03  RECE120-FLG-TUINZAI-COMMENT PIC  X(01).
-      *依存症集団療法
-           03  RECE120-FLG-IZONSYO-COMMENT PIC  X(01).
-      *精神科重症患者早期集中支援管理料
-           03  RECE120-FLG-SEIJYU-COMMENT  PIC  X(01).
-      *
       *日数回数テーブル
            03  RECE120-DAY-AREA.
-      *        診療回数テーブル（1:合計、2-9:１回〜９回）
-             04  RECE120-DAY-TBL           OCCURS  10.
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+             04  RECE120-DAY-TBL           OCCURS  4.
                  05  RECE120-KAISUINF      OCCURS  31.
                      07  RECE120-KAISU     PIC 9(03).
-      *
-      *包括診療分退避点数
-           03  RECE120-HOKATU-TENSU-AREA.
-      *剤点数
-               05  RECE120-HOKATU-ZAITEN   PIC  9(08).
-      *手技点数１
-               05  RECE120-HOKATU-SYUTEN1  PIC  9(07).
-      *手技点数２
-               05  RECE120-HOKATU-SYUTEN2  PIC  9(07).
-      *薬剤点数
-               05  RECE120-HOKATU-YKZTEN   PIC  9(07).
-      *器材点数
-               05  RECE120-HOKATU-KIZAITEN PIC  9(07).
