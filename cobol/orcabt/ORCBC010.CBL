@@ -45,6 +45,7 @@
       *                                     Ã£»þ¤Ë³¤³°¤Ë½»½ê¤òÍ­¤¹¤ë¾ì¹ç
       *                                     ¤ÎÂÐ±þ
       *  04.04.02    NACL-ÌçÏÆ    09/04/13  Ê¿À®£²£±Ç¯£µ·î²þÀµÂÐ±þ
+      *  04.04.03    NACL-ÌçÏÆ    10/03/23  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£µ¤ÎÂÐ±þ¡Ë
       *  04.05.01    NACL-°ËÆ£    10/01/28  ¾®¿ôÅÀ£µ·åÂÐ±þCOPY¶ç¤Î¤ß
       *              NACL-¾®Æ¦Âô  10/02/16  ¼£¸³ÂÐ±þ
       *****************************************************************
@@ -1499,7 +1500,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
                    UNTIL      IDX6     >   31
                IF (WRK-DAY (3 IDX6)    >   ZERO)        AND
                   (WRK-DAY (2 IDX6)    NOT =   ZERO)    AND
-                  (WRK-DAY (4 IDX6)    =   ZERO  OR  4)
+                  (WRK-DAY (4 IDX6)    =   ZERO  OR  4
+                                                 OR  5)
                  IF  (WRK-DAY(2 IDX6)  =   WRK-COMB-HKNCOMBINUM (IDX2))
       *ito 20080425 IF  (COLDAT01-HKNNUM      NOT =   SPACE)   OR
       *ito              (COLDAT01-RJNHKNNUM   NOT =   SPACE)
