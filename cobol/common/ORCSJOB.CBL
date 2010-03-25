@@ -40,8 +40,6 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
       *  04.05.01    NACL-竹田    10/02/27  監視ログ出力対応
-      *
-      *  04.07.01    NACL-藤原    12.09.07  更新件数（個別）の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,8 +54,6 @@
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-JOBKANRI                            PIC S9(03).
-           03  FLG-MONBATCH                            PIC 9(01).
-           03  FLG-LOOPEND                             PIC 9(01).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
@@ -70,7 +66,6 @@
            03  WRK-SYSYMD-8.
                05  WRK-SYSYY           PIC 9(02).
                05  WRK-SYSYMD          PIC 9(06).  
-           03  WRK-SYSTIME             PIC X(08).
       *シェルＩＤ
            03  WRK-SHELLID             PIC X(08).
       *
@@ -82,7 +77,6 @@
        01  WRK-JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC"    REPLACING   //JOB-//
                                        BY          //WRK-JOB-//.
-           COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -128,22 +122,8 @@ grpsys         SPA-AREA
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      *
-           MOVE     SPACE              TO  WRK-SYSTIME
-           ACCEPT   WRK-SYSTIME        FROM      TIME
-      *
       *???
-           DISPLAY "ORCSJOB ST =" SJOBKANRI-MODE "## "
-                   SMCNDATE-YMD (1:4) "/"
-                   SMCNDATE-YMD (5:2) "/"
-                   SMCNDATE-YMD (7:2) " "
-                   WRK-SYSTIME  (1:2) ":"
-                   WRK-SYSTIME  (3:2) ":"
-                   WRK-SYSTIME  (5:2) "."
-                   WRK-SYSTIME  (7:2) " "
+           DISPLAY "ORCSJOB ST =" SJOBKANRI-MODE "##"
       *???     
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
@@ -158,45 +138,30 @@ grpsys         SPA-AREA
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STS"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                        PERFORM 130-STS-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STM"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                        PERFORM 180-STM-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STE"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                        PERFORM 160-STE-SEC
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                WHEN    "DEL"
                        PERFORM 140-DEL-SEC
                WHEN    "ALL"
                        PERFORM 170-DELALL-SEC
                WHEN    "CHK"
-               WHEN    "CH2"
                        PERFORM 150-CHK-SEC
                WHEN    "STP"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                        PERFORM 190-STP-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "CAN"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                        PERFORM 200-CANCEL-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "CA2"
-                       PERFORM 900-DBCOMMIT-SEC
-                       PERFORM 900-DBSTART-SEC
                        PERFORM 210-CANCEL2-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
@@ -253,8 +218,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        120-JBE-SEC                 SECTION.
       *
       *    レコード存在チェック
+           IF      JOB-SHELLID(1:6)    =   "PRGMNT"
+               MOVE    JOB-SHELLID         TO  WRK-SHELLID
+               MOVE    SPACE               TO  JOB-SHELLID(7:)
+           END-IF
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
-           PERFORM 910-JOBKANRI-INV2-SEC
+           IF      JOB-SHELLID(1:6)    =   "PRGMNT"
+               PERFORM 910-JOBKANRI-INV-SEC
+           ELSE
+               PERFORM 910-JOBKANRI-INV2-SEC
+           END-IF        
            IF      FLG-JOBKANRI   NOT  =  ZERO
                MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO  TO  120-JBE-EXT
@@ -353,16 +326,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      JOB-UPDCNT          NOT NUMERIC
                MOVE    ZERO                TO   JOB-UPDCNT
            END-IF
-           IF      JOB-UPDCNT1         NOT NUMERIC
-               MOVE    ZERO                TO   JOB-UPDCNT1
-           END-IF
-           IF      JOB-UPDCNT2         NOT NUMERIC
-               MOVE    ZERO                TO   JOB-UPDCNT2
-           END-IF
-           COMPUTE WRK-JOB-UPDCNT1     =   WRK-JOB-UPDCNT1  +
-                                           JOB-UPDCNT1
-           COMPUTE WRK-JOB-UPDCNT2     =   WRK-JOB-UPDCNT2  +
-                                           JOB-UPDCNT2
            COMPUTE WRK-JOB-UPDCNT      =   WRK-JOB-UPDCNT  +
                                            JOB-UPDCNT                            
            COMPUTE WRK-JOB-STEPCNT     =   WRK-JOB-STEPCNT +
@@ -462,15 +425,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    ZERO            TO  SJOBKANRI-RETURN
                MOVE    WRK-JOBKANRI-REC
                                        TO  JOBKANRI-REC
-           END-IF
-      *
-           IF    ( SJOBKANRI-MODE  =   "CH2" )
-               PERFORM 910-MONBATCH-SEL-SEC
-               IF    ( FLG-MONBATCH    =   ZERO )
-                   MOVE    ZERO        TO  SJOBKANRI-RETURN
-                   MOVE    SPACE       TO  JOB-ENDYMD
-                                           JOB-ENDTIME
-               END-IF
            END-IF
       *
            .
@@ -704,69 +658,6 @@ grpsys     PERFORM 900-CLOSE-SEC
        910-JOBKANRI-INV2-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    MONBATCH検索処理
-      *****************************************************************
-       910-MONBATCH-SEL-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MONBATCH
-      *
-           INITIALIZE                      SHELLTBL
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    LOW-VALUE           TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               PERFORM 910-MONBATCH-FET-SEC
-           ELSE
-               MOVE    1               TO  FLG-MONBATCH
-           END-IF
-      *
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    LOW-VALUE           TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       910-MONBATCH-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    MONBATCH FETCH処理
-      *****************************************************************
-       910-MONBATCH-FET-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MONBATCH
-           MOVE    ZERO                TO  FLG-LOOPEND
-      *
-           PERFORM UNTIL ( FLG-MONBATCH    NOT =   ZERO )
-                    OR   ( FLG-LOOPEND     NOT =   ZERO )
-      *
-               MOVE    "shell"         TO  MCP-TABLE
-               MOVE    LOW-VALUE       TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-      *
-                   MOVE    MCPDATA-REC TO  SHELLTBL
-      *
-                   MOVE    1           TO  FLG-LOOPEND
-      *
-                   IF    ( SHELLTBL-HOSPNUM    =  SPA-HOSPNUM )
-                    AND  ( SHELLTBL-SHELLID    =  JOB-SHELLID )
-                    AND  ( SHELLTBL-JOBID      =  JOB-JOBID )
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-      *
-               ELSE
-                   MOVE    1           TO  FLG-MONBATCH
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       910-MONBATCH-FET-EXT.
-           EXIT.
       *****************************************************************
       *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************

@@ -32,7 +32,6 @@
       *  03.05.00    NACL-太田    07/05/09  グループ診療対応
       *
       *  04.05.01    NACL-竹田    10/02/27  監視ログ出力対応
-      *  04.08.00    NACL-多々納  17/04/XX  受付の排他追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -74,9 +73,6 @@
            03  WRK-OPID                PIC X(16).
            03  WRK-IPV4-TABLE.
              05 WRK-IPV4-TBL           PIC 9(03)  OCCURS 4.
-      *H27.2  API用
-      *    MCP-TERMID
-           03  WRK-MCP-TERM            PIC X(64).
       *
            COPY    "CPLOCKCONST.INC".
       *
@@ -229,8 +225,6 @@
            MOVE        ZERO            TO  SLOCK-RETURN  
       *
            MOVE    ZERO            TO  SPA-LOCK
-      *H27.2  API対応
-           MOVE    MCP-TERM        TO  WRK-MCP-TERM
       *
       *    処理モードのチェック
            EVALUATE    SLOCK-MODE
@@ -283,8 +277,7 @@
            END-IF
       *    他端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-      ***  MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
+           MOVE    MCP-TERM                TO  LOCK-TERMID
 grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
@@ -425,8 +418,6 @@ grpsys                            SPA-AREA
                                        OR  "ORCA31"
                                        OR  "ORCA32"
                                        OR  "ORCA41"
-      *H29.4     受付も対象とする
-                                       OR  "ORCA11"
                MOVE    1               TO  FLG-ALLCHK
            ELSE
                MOVE    ZERO            TO  FLG-ALLCHK
@@ -469,8 +460,7 @@ grpsys             MOVE     SPA-HOSPNUM   TO  LDMAP-HOSPNUM
        1101-LOCK-MAKE-SEC            SECTION.
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-      **   MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
+           MOVE    MCP-TERM                TO  LOCK-TERMID
       *    DISPLAY "MAKE --> MCP-TERM = [" LOCK-TERMID "]"
 grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
@@ -479,8 +469,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
       *    レコード追加処理
               INITIALIZE   TBL-LOCK
       *        MOVE  MCP-TERM(5:)          TO  LOCK-TERMID
-      *        MOVE  MCP-TERM              TO  LOCK-TERMID
-               MOVE  WRK-MCP-TERM          TO  LOCK-TERMID
+               MOVE  MCP-TERM              TO  LOCK-TERMID
              IF  SPA-OPID              NOT =   SPACE
                MOVE  SPA-OPID          TO  LOCK-OPID
              ELSE
@@ -492,7 +481,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                ACCEPT LOCK-STARTDATE(01)   FROM  DATE
                ACCEPT LOCK-STARTTIME(01)   FROM  TIME
 grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
-               MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-INS-SEC
       *
@@ -527,7 +515,6 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
                MOVE  "1"                    TO    LOCK-FLG(IDZ)
 grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
-               MOVE  SLOCK-KARTE-UID        TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK               TO    MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
            END-IF
@@ -645,8 +632,7 @@ grpsys                            SPA-AREA
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       *    DISPLAY  "RESET MCP-TERM   = " MCP-TERM                 
-      **** MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
+           MOVE    MCP-TERM                TO  LOCK-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
@@ -683,7 +669,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
       *    項目（日付、時間）
       *        DISPLAY  "RESET IDZ =  [" IDZ "]"
 grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
-               MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
                MOVE  TBL-LOCK          TO  MCPDATA-REC
                PERFORM 910-LOCK-UPD-SEC
                IF      MCP-RC     =   ZERO
@@ -715,8 +700,7 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
       *
       *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
-      **   MOVE    MCP-TERM                TO  LOCK-TERMID
-           MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
+           MOVE    MCP-TERM                TO  LOCK-TERMID
 grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
