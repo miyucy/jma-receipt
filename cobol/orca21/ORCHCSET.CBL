@@ -37,8 +37,6 @@
       *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
       *  04.05.00    NACL-多々納  09/06/XX  撮影料等の数量ゼロ対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力他対応・レイアウト変更
-      *  04.06.00    NACL-多々納  11/02/22  用法コメント対応
-      *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
       *
@@ -48,8 +46,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
-           SELECT  PRT-FILE        ASSIGN  ASGNPARA
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -57,16 +54,18 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-       01  PRT-REC                 PIC X(30000).
+       01  PRT-REC                 PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
+      *    シェル用領域
+      **** COPY    "CPCOMMONSHELL.INC".
       *
-      *v4.8
-      *    一時デイレクトリ領域 
-           COPY    "CPASGNPARA.INC".
+      *    シェル用領域
+      *    COPY    "CPSHELLTBL.INC".
+      *****COPY    "ORCA-DBPATH".
       *
       *    帳票
            COPY    "HCPOM2.INC".
@@ -100,7 +99,6 @@
            03  FLG-OK-KEIKA         PIC 9(01).
       *
            03  FLG-KIZAI            PIC 9(01).
-           03  FLG-OVER             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -184,9 +182,6 @@
            03  IDM                     PIC 9(04).
            03  IDM2                    PIC 9(04).
       *
-      *    商品名単位名称
-           03  WRK-SYO-TANINAME        PIC X(12).
-      *
       *    印刷内容
        01  HEAD-01.
            03  FILLER                  PIC X(10)   VALUE   SPACE.
@@ -212,7 +207,7 @@
            03  FILLER                  PIC X(01).
            03  H03-MIDASI              PIC X(12).
            03  FILLER                  PIC X(01).
-           03  H03-INPUTCD-G           PIC X(94).
+           03  H03-INPUTCD-G           PIC X(76).
       ***  03  H03-INPUTCD-G           OCCURS  5.
       *        05  H03-INPUTCD         PIC X(14).
       ***      05  H03-YOBI1           PIC X(01).
@@ -224,42 +219,37 @@
            03  H04-KARA                PIC X(02).
            03  H04-YUKOEDYMD           PIC X(12).
        01  BODY-01N.
-           03  B01N-YOBI1              PIC X(03).
+           03  B01N-YOBI1              PIC X(04).
            03  B01N-ZUMIFLG            PIC X(02).
-           03  B01N-YOBI2              PIC X(11).
+           03  B01N-YOBI2              PIC X(14).
            03  B01N-NAME-G.
                05  B01N-NAME               PIC X(80).
-               05  B01N-YOBI11             PIC X(12).
            03  B01N-NAME-G2            REDEFINES   B01N-NAME-G.
-               05  B01N-NAME2              PIC X(66).
-               05  B01N-YOBI3              PIC X(12).
+               05  B01N-NAME2              PIC X(58).
+               05  B01N-YOBI3              PIC X(14).
                05  B01N-TANINAME           PIC X(04).
-               05  B01N-YOBI4              PIC X(10).
+               05  B01N-YOBI4              PIC X(04).
            03  B01N-NAME-G3            REDEFINES   B01N-NAME-G.
-               05  B01N-NAME3              PIC X(66).
-               05  B01N-YOBI33             PIC X(12).
+               05  B01N-NAME3              PIC X(58).
+               05  B01N-YOBI33             PIC X(08).
                05  B01N-TANINAME3          PIC X(04).
                05  B01N-YOBI34             PIC X(10).
       *
        01  BODY-01.
            03  B01-YOBI1               PIC X(06).
            03  B01-SRYCD               PIC X(09).
-           03  B01-YOBI2               PIC X(01).
            03  B01-HENSYU.
-               05  B01-NAME-FIL1           PIC X(66).
+               05  B01-NAME-FIL1           PIC X(50).
                05  B01-HENSYU-I.
                    07  B01-SURYO-HEN           PIC X(11).
                    07  B01-KAISU-HEN           PIC X(05).
                    07  B01-INPUT-HEN           PIC X(10).
            03  B01-HENSYU-2            REDEFINES   B01-HENSYU.
-               05  B01-NAME-FIL2           PIC X(77).
+               05  B01-NAME-FIL2           PIC X(61).
                05  B01-KANSURYO-HEN        PIC X(15).
            03  B01-HENSYU-3            REDEFINES   B01-HENSYU.
-               05  B01-YOBI131             PIC X(36).
+               05  B01-YOBI131             PIC X(20).
                05  B01-HENSYU-4            PIC X(56).
-           03  B01-HENSYU-5G           REDEFINES   B01-HENSYU.
-               05  B01-YOBI141             PIC X(47).
-               05  B01-HENSYU-5            PIC X(45).
       *
        01  WRK-B01-HENSYU.
            03  WRK-B01-SURYO-HEN           PIC X(15).
@@ -291,8 +281,6 @@
            03  B01-ATAI3               PIC X(08).
            03  B01-ATAI3F              PIC X(01).
            03  B01-ATAI4               PIC X(08).
-           03  B01-ATAI4F              PIC X(01).
-           03  B01-ATAI5               PIC X(08).
       *
        01  WRK-HEN-INPUTHEN.
            03  B01-INPUTKBN            PIC X(03).
@@ -301,9 +289,9 @@
       *    内容
        01  WRK-HEN-AREA.
       *    半角
-           03  WRK-TBL-REC             PIC X(108)  OCCURS   500.
+           03  WRK-TBL-REC             PIC X(90)   OCCURS   300.
       *    全角
-           03  WRK-TBL-REC2            PIC X(108)  OCCURS   500.
+           03  WRK-TBL-REC2            PIC X(108)  OCCURS   300.
       *
            03  WRK-PAGE-MAX            PIC 9(03).
       *
@@ -362,11 +350,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *v4.8
-      *    一時ファイル名取得
-           COPY    "CPORCSGETTEMP.INC".
-      *
+      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
+      **** COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -394,7 +380,6 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
-           INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
@@ -451,14 +436,6 @@
       *
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
-      *v4.8
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *
            OPEN    OUTPUT              PRT-FILE
       *
            .
@@ -480,12 +457,9 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
             MOVE   "HCPOM2.red"        TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
-      ***** MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   ASGNPARA            TO  MKPRT-DAT
+            MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
-            MOVE   "セット登録一覧"    TO  MKPRT-INFO
             CALL   "ORCSMKPRT"         USING
-      ****  CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *
@@ -737,35 +711,30 @@
                                            ORCSKANACHKAREA
                IF      IDX2                >   1
                   AND (H03-INPUTCD-G   NOT =   SPACE)
-      *VER.4.7
-                   MOVE    ","             TO  H03-INPUTCD-G
-                                                          (IDX3:)
-                   ADD     1               TO  IDX3
       *            全角
-      *            IF      KANACHK-SYUBETU     =   2
-      *                IF      FLG-HANKAKU     =   1
+                   IF      KANACHK-SYUBETU     =   2
+                       IF      FLG-HANKAKU     =   1
       *                    前に半角がある時、行を変える
-      *                    MOVE    ","            TO  H03-INPUTCD-G
-      *                                                   (IDX3:)
-      *                    MOVE    HEAD-03     TO  WRK-TBL-REC
-      *                                                (WRK-HEN-MAX)
-      *                    ADD     1               TO  WRK-HEN-MAX
-      *                    MOVE    SPACE           TO  HEAD-03
-      *                    MOVE    1               TO  IDX3
-      *                    MOVE    ZERO            TO  FLG-HANKAKU
-      *                ELSE
-      *                    MOVE    "　　，"        TO  H03-INPUTCD-G
-      *                                                   (IDX3:)
-      *                    ADD     6               TO  IDX3
-      *                END-IF
-      *            ELSE
-      *                MOVE    ","            TO  H03-INPUTCD-G
-      *                                                   (IDX3:)
-      *                ADD     1               TO  IDX3
-      *            END-IF
+                           MOVE    ","            TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                           MOVE    HEAD-03     TO  WRK-TBL-REC
+                                                       (WRK-HEN-MAX)
+                           ADD     1               TO  WRK-HEN-MAX
+                           MOVE    SPACE           TO  HEAD-03
+                           MOVE    1               TO  IDX3
+                           MOVE    ZERO            TO  FLG-HANKAKU
+                       ELSE
+                           MOVE    "　　，"        TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                           ADD     6               TO  IDX3
+                       END-IF
+                   ELSE
+                       MOVE    ","            TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                       ADD     1               TO  IDX3
+                   END-IF
                END-IF
-      ****     IF     (IDX3  +   KANACHK-MAX)  >   76
-               IF     (IDX3  +   KANACHK-MAX)  >   94
+               IF     (IDX3  +   KANACHK-MAX)  >   76
                    MOVE    HEAD-03         TO  WRK-TBL-REC (WRK-HEN-MAX)
                    ADD     1                   TO  WRK-HEN-MAX
                    MOVE    SPACE               TO  HEAD-03
@@ -813,11 +782,6 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  H04-YUKOEDYMD
            MOVE    "〜"                TO  H04-KARA
-      *
-      *    印刷編集処理
-           IF      WRK-HEN-MAX         >=  500
-               PERFORM 2100-PRINT-HENSYU-SEC
-           END-IF
       *
            ADD     1                   TO  WRK-HEN-MAX
            MOVE    HEAD-04             TO  WRK-TBL-REC (WRK-HEN-MAX)
@@ -892,8 +856,6 @@
       *    器材商品コード
            IF      ISET-INPUTCD(1:3)   =   "058"
                MOVE    1                   TO  FLG-KIZAI
-      *ver.4.7 単位は器材コードで表示
-               MOVE    WRK-TNS-TANINAME    TO  WRK-SYO-TANINAME
            ELSE
                MOVE    ZERO                TO  FLG-KIZAI
            END-IF
@@ -989,11 +951,6 @@
            INSPECT B01N-ZUMIFLG        REPLACING  ALL "  "  BY  "　"
            INSPECT B01N-NAME           REPLACING  ALL "  "  BY  "　"
       *
-           IF      WRK-HEN-MAX         >=  500
-      *        印刷編集処理
-               PERFORM 2100-PRINT-HENSYU-SEC
-           END-IF
-      *
            ADD     1                   TO  WRK-HEN-MAX
            MOVE    BODY-01             TO  WRK-TBL-REC  (WRK-HEN-MAX)
            MOVE    BODY-01N            TO  WRK-TBL-REC2 (WRK-HEN-MAX)
@@ -1027,28 +984,8 @@
       *
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-OK-KEIKA
-           PERFORM UNTIL    (FLG-TENSU     =   1  )
-      ****              OR  (FLG-OK        =   1  )
-      *H26.4
-            IF     FLG-OK          =   1
-      *        経過措置日は最後の履歴内容
-               MOVE    TNS-KEIKASOCHIYMD   TO  WRK-TNS-KEIKASOCHIYMD
-               IF     (HCSET-KEIKAYMD      NOT =   SPACE )   AND
-                      (TNS-SRYCD (1:1)         =   "6"   )
-                   IF     (HCSET-KEIKAYMD      <   TNS-KEIKASOCHIYMD)
-                      OR  (TNS-KEIKASOCHIYMD   =   ZERO
-                                               OR  SPACE    )
-                       MOVE    ZERO                TO  FLG-OK-KEIKA
-                   END-IF
-      *            経過措置日に有効
-                   IF    ((TNS-YUKOSTYMD       <=  HCSET-KEIKAYMD )
-                     AND  (TNS-YUKOEDYMD       >=  HCSET-KEIKAYMD ))
-                     AND  (HCSET-KEIKAYMD      =   TNS-KEIKASOCHIYMD)
-                       MOVE    1               TO  FLG-OK-KEIKA
-                   END-IF
-               END-IF
-            ELSE
-      *
+           PERFORM UNTIL    (FLG-TENSU     =   1  )  OR
+                            (FLG-OK        =   1  )
                MOVE    TNS-NAME            TO  WRK-NAME
       *!
       *        検査正式名称
@@ -1074,12 +1011,6 @@
                            "〕"            DELIMITED  BY  SIZE
                                            INTO  WRK-NAME
                    END-STRING
-      *ver.4.7
-      *            商品名コードの単位へ
-                   IF      WRK-SYO-TANINAME    NOT =   SPACE
-                       MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
-                       MOVE    SPACE               TO  WRK-SYO-TANINAME
-                   END-IF
                END-IF
       *
                IF     (TNS-YUKOSTYMD       <=  SPA-SRYYMD )  AND
@@ -1099,24 +1030,21 @@
                    END-IF
       *            経過措置日判定
                    IF      HCSET-KEIKAYMD      =   TNS-KEIKASOCHIYMD
-      *************    MOVE    1               TO  FLG-KEIKA
+                       MOVE    1               TO  FLG-KEIKA
                        MOVE    1               TO  FLG-OK-KEIKA
                    END-IF
                END-IF
       *        経過措置日
-      *        IF      TNS-KEIKASOCHIYMD   =   SPACE  OR  ZERO
-      *            CONTINUE
-      *        ELSE
+               IF      TNS-KEIKASOCHIYMD   =   SPACE  OR  ZERO
+                   CONTINUE
+               ELSE
                    MOVE    TNS-KEIKASOCHIYMD   TO  WRK-TNS-KEIKASOCHIYMD
-      *        END-IF
+               END-IF
       *
                MOVE    TNS-KZMCOMPSIKIBETU TO  WRK-TNS-KZMCOMPSIKIBETU
                MOVE    TNS-TANICD          TO  WRK-TNS-TANICD
                MOVE    TNS-TANINAME        TO  WRK-TNS-TANINAME
                MOVE    TNS-DATAKBN         TO  WRK-TNS-DATAKBN
-      *
-            END-IF
-      *
       *
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-TENSU-READ-SEC
@@ -1124,11 +1052,6 @@
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *H26.4
-      *    経過措置日が設定日と一致
-           IF      FLG-OK-KEIKA        =   1
-               MOVE    1               TO  FLG-KEIKA
-           END-IF
       *
            IF      FLG-OK              =   ZERO
                MOVE    "削"            TO  B01N-ZUMIFLG
@@ -1155,16 +1078,15 @@
            END-IF
       *
       *    経過措置日
-           IF      WRK-TNS-KEIKASOCHIYMD   =   SPACE
-                                           OR  ZERO
-               MOVE    SPACE               TO  WRK-KEIKAYMD-G
-           ELSE
+           IF      WRK-TNS-KEIKASOCHIYMD   NOT =   SPACE
                MOVE    SPACE               TO  WRK-KEIKAYMD-G
                MOVE    WRK-TNS-KEIKASOCHIYMD   TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  WRK-KEIKAYMD
                MOVE    "【経過措置日】"    TO  WRK-KEIKA-H
                PERFORM 200231-SRYCDCHG-CHK-SEC
+           ELSE
+               MOVE    SPACE               TO  WRK-KEIKAYMD-G
            END-IF
       *
            MOVE    SPACE               TO  WRK-HEN-SURYO
@@ -1174,7 +1096,6 @@
            IF     (ISET-INPUTCD(1:1)   =   "6"  OR  "7" )  OR
                  ((ISET-INPUTCD(1:1)   NOT =   "1"   )  AND
                   (ISET-SURYO1         NOT =   1     )  )
-              OR  (ISET-INPUTCD(1:3)   =   "059"     )
                MOVE    ISET-SURYO1         TO  B01-SURYO1
                MOVE    WRK-HEN-SURYO       TO  B01-SURYO-HEN
                MOVE    WRK-TNS-TANINAME    TO  B01N-TANINAME
@@ -1207,51 +1128,16 @@
            END-IF
       *    その他
            IF      ISET-ATAI-AREA      NOT =   SPACE
-      *        用法コメント
-               IF      ISET-INPUTCD(1:3)   =   "001" 
-                   MOVE    ZERO            TO  FLG-OVER
-                   MOVE    SPACE           TO  B01-HENSYU-I
-                   STRING  ISET-ATAI1      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI2      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI3      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI4      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI5      DELIMITED  BY  SPACE
-                           INTO                    B01-HENSYU-I
-                           ON  OVERFLOW
-                               MOVE   1            TO  FLG-OVER
-                   END-STRING
-                   IF      FLG-OVER        =   1
-                       MOVE    SPACE           TO  B01-HENSYU-I
-                       MOVE    SPACE           TO  B01-HENSYU-5
-                       STRING
-                           ISET-ATAI1      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI2      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI3      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI4      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI5      DELIMITED  BY  SPACE
-                           INTO                    B01-HENSYU-5
-                       END-STRING
-                   END-IF
-               ELSE
-                   MOVE    SPACE           TO  B01-HENSYU-I
-                   STRING  ISET-ATAI1      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI2      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI3      DELIMITED  BY  SPACE
-                           ","             DELIMITED  BY  SIZE
-                           ISET-ATAI4      DELIMITED  BY  SPACE
-                           INTO                    B01-HENSYU-I
-                   END-STRING
-               END-IF
+               MOVE    SPACE           TO  B01-HENSYU-I
+               STRING  ISET-ATAI1      DELIMITED  BY  SPACE
+                       ","             DELIMITED  BY  SIZE
+                       ISET-ATAI2      DELIMITED  BY  SPACE
+                       ","             DELIMITED  BY  SIZE
+                       ISET-ATAI3      DELIMITED  BY  SPACE
+                       ","             DELIMITED  BY  SIZE
+                       ISET-ATAI4      DELIMITED  BY  SPACE
+                       INTO                    B01-HENSYU-I
+               END-STRING
            END-IF
       *
       *    換算値
@@ -1272,9 +1158,7 @@
                MOVE    "(I)"                TO  B01-INPUTKBN
            END-IF
            IF      WRK-HEN-INPUTHEN (10:)   =   SPACE
-               IF      ISET-ATAI-AREA           =   SPACE
-                   MOVE    WRK-HEN-INPUTHEN     TO  B01-INPUT-HEN
-               END-IF
+               MOVE    WRK-HEN-INPUTHEN     TO  B01-INPUT-HEN
            ELSE
       *        １行編集
                PERFORM 20024-TBL-HEN01-SEC
