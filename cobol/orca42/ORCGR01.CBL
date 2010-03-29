@@ -133,6 +133,12 @@
       *  04.05.03    NACL-藤原    09/08/31  未請求設定チェックを医保分のみ
       *                                     行う
       *  04.05.04    NACL-小豆沢  10/02/18  スクリプト起動パスサーチ対応
+      *  04.05.05    NACL-藤原    10/03/03  平成２２年４月改正対応
+      *                                     平成２２年４月分以降の訂正日
+      *                                     の処理は行わない
+      *  04.05.06    NACL-藤原    10/03/29  平成２２年４月改正対応
+      *                                     平成２２年４月分以降の訂正日
+      *                                     の処理を元に戻す
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2629,7 +2635,7 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
                    MOVE    "0024"          TO  SPA-ERRCD
                END-IF
            END-IF
-      *             
+      *
            IF      SPA-ERRCD           =   SPACE
                INITIALIZE                  RECE07-REC
                IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
