@@ -131,7 +131,11 @@
       *  04.04.02    NACL-藤原    09/05/19  東京都地方公費対応
       *                                     マル都（８２）は再優先とする
       *  04.04.03    NACL-藤原    09/10/21  月途中の負担者番号変更対応
-      *                                     （自立支援の公費単独） 
+      *                                     （自立支援の公費単独）
+      * 
+      *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
+      *                                     平成２２年４月分以降の政府管
+      *                                     掌をエラーとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -500,6 +504,8 @@
            03  WRK-CONS-SRYYM          PIC 9(06)   VALUE   200604.      
       *
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.      
+      *
+           03  WRK-CONS-SRYYM-201004   PIC 9(06)   VALUE   201004.      
       *     
       * 
        01  WRK-RECE61-REC. 
@@ -1138,6 +1144,14 @@
                MOVE    9                   TO  WRK-ERR-ERRKBN
            END-IF
       *
+      *    平成２２年４月以降に政府管掌を使用のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201004 )
+           AND   ( COMB-HKNNUM         =   "001"                 )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE     9                  TO  WRK-ERR-ERRKBN
+           END-IF
+      *
       *    最終診療日
            MOVE    ACCT-SRYYM          TO  WRK-SRYYM
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1582,6 +1596,14 @@
                MOVE    9                   TO  WRK-ERR-ERRKBN
            END-IF
       *
+      *    平成２２年４月以降に政府管掌を使用のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201004 )
+           AND   ( COMB-HKNNUM         =   "001"                 )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE     9                  TO  WRK-ERR-ERRKBN
+           END-IF
+      *
       *    最終診療日
            MOVE    NACCT-SRYYM         TO  WRK-SRYYM
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1909,6 +1931,7 @@
       *    公費で不明分は出力しない
            IF    ( WRK-SYOKBN         =   "2" )
            AND   ( WRK-TEISEIKBN      =   1   )
+               INITIALIZE                      WRK-RECE61-REC
                GO  TO  20011-FILE-HENSYU-EXT
            END-IF
       *     
