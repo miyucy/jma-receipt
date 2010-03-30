@@ -278,6 +278,14 @@
       *                                     ¤òÃæ»ß
       *  04.05.11    NACL-Æ£¸¶    10/02/23  Æ±·î¤Ë·ÑÂ³¤Ç¤Ê¤¤ÆþÂà±¡¤ò·«¤ê
       *                                     ÊÖ¤·¤¿¾ì¹ç¤Îµ­Ï¿ÂÐ±þ
+      *  04.05.12    NACL-Æ£¸¶    10/03/03  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
+      *                                     Ê¿À®£²£²Ç¯£´·îÊ¬°Ê¹ß¤Î½èÍý¤ò
+      *                                     ¹Ô¤ï¤Ê¤¤
+      *  04.05.13    NACL-Æ£¸¶    10/03/23  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ÀÁµá¤Ë·¸¤ï¤ëµ­Ï¿¾ò·ï»ÅÍÍ¤Î
+      *                                     ÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
+      *                                     Ê¿À®£²£²Ç¯£´·îÊ¬°Ê¹ß¤Î½èÍý¤ò
+      *                                     ¹Ô¤¦¤è¤¦¤Ë¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -493,6 +501,7 @@
            03  CNT-COMMIT              PIC 9(03). 
       *
        01  INDEX-AREA.
+           03  IDV                     PIC 9(03).
            03  IDW                     PIC 9(03).
            03  IDX                     PIC 9(03). 
            03  IDY                     PIC 9(03). 
@@ -2354,13 +2363,7 @@
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    Í½È÷
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ¿ÇÎÅ²Ê¥³¡¼¥É
-           IF      RECE62-SYUKA    NOT =   SPACE
-               MOVE    RECE62-RECESYUKA    TO  WRK-DATA
-           ELSE
-               MOVE    RECE62-RECEKA       TO  WRK-DATA
-           END-IF
-           MOVE    2                   TO  WRK-NAGASA
+      *    µì¿ÇÎÅ²Ê¥³¡¼¥É
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ¸¡º÷ÈÖ¹æ
            PERFORM 5004-MOJI-HENSYU-SEC         
@@ -2368,15 +2371,39 @@
            PERFORM 5004-MOJI-HENSYU-SEC         
       *    ÀÁµá¾ðÊó
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    Í½È÷
+      *    ¿ÇÎÅ²ÊÌ¾£±
+           IF      RECE62-SYUKA    NOT =   SPACE
+               MOVE    RECE62-RECESYUKA    TO  WRK-DATA
+           END-IF
+           MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    Í½È÷
+      *    ¿ÍÂÎ¤ÎÉô°ÌÅù£±
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    Í½È÷
+      *    À­ÊÌÅù£±
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    Í½È÷
+      *    °å³ØÅª½èÃÖ£±
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    Í½È÷
+      *    ÆÃÄê¼ÀÉÂ£±
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ¿ÇÎÅ²ÊÌ¾£²
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ¿ÍÂÎ¤ÎÉô°ÌÅù£²
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    À­ÊÌÅù£²
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    °å³ØÅª½èÃÖ£²
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ÆÃÄê¼ÀÉÂ£²
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ¿ÇÎÅ²ÊÌ¾£³
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ¿ÍÂÎ¤ÎÉô°ÌÅù£³
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    À­ÊÌÅù£³
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    °å³ØÅª½èÃÖ£³
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    ÆÃÄê¼ÀÉÂ£³
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC         
       *
@@ -4618,8 +4645,20 @@
                                                    TO  WRK-DATA
                        MOVE    100                 TO  WRK-NAGASA
                    END-IF
-                   MOVE    1                   TO  WRK-END 
                    PERFORM 5004-MOJI-HENSYU-SEC  
+      *                ÆüÉÕ¾ðÊó
+                       PERFORM VARYING IDV     FROM    1   BY  1
+                               UNTIL   IDV     >       31
+      *****************    IF      RECE641-KAISU (1 IDV)   >   ZERO
+      *****************        MOVE    RECE641-KAISU (1 IDV)
+      *****************                                TO  WRK-NUM
+      *****************        MOVE    3               TO  WRK-NAGASA
+      *****************    END-IF
+                           IF      IDV                 =   31
+                               MOVE    1                   TO  WRK-END 
+                           END-IF     
+                           PERFORM 5005-NUM-HENSYU-SEC
+                       END-PERFORM  
            END-EVALUATE  
       *
            PERFORM 5001-FILE-WRITE-SEC
@@ -5276,8 +5315,20 @@
                                                        TO  WRK-DATA
                            MOVE    100                 TO  WRK-NAGASA
                        END-IF
-                       MOVE    1                   TO  WRK-END 
                        PERFORM 5004-MOJI-HENSYU-SEC  
+      *                ÆüÉÕ¾ðÊó
+                       PERFORM VARYING IDV     FROM    1   BY  1
+                               UNTIL   IDV     >       31
+      *****************    IF      RECE641-KAISU (1 IDV)   >   ZERO
+      *****************        MOVE    RECE641-KAISU (1 IDV)
+      *****************                                TO  WRK-NUM
+      *****************        MOVE    3               TO  WRK-NAGASA
+      *****************    END-IF
+                           IF      IDV                 =   31
+                               MOVE    1                   TO  WRK-END 
+                           END-IF     
+                           PERFORM 5005-NUM-HENSYU-SEC
+                       END-PERFORM  
                END-EVALUATE  
       *
                PERFORM 5001-FILE-WRITE-SEC
@@ -5573,8 +5624,20 @@
                                            TO  WRK-DATA
                MOVE    100                 TO  WRK-NAGASA
            END-IF
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
+      *    ÆüÉÕ¾ðÊó
+           PERFORM VARYING IDV     FROM    1   BY  1
+                   UNTIL   IDV     >       31
+      *********IF      RECE641-KAISU (1 IDV)   >   ZERO
+      *********    MOVE    RECE641-KAISU (1 IDV)
+      *********                            TO  WRK-NUM
+      *********    MOVE    3               TO  WRK-NAGASA
+      *********END-IF
+               IF      IDV                 =   31
+                   MOVE    1                   TO  WRK-END 
+               END-IF     
+               PERFORM 5005-NUM-HENSYU-SEC
+           END-PERFORM  
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
@@ -5775,8 +5838,20 @@
                                            TO  WRK-DATA
                MOVE    100                 TO  WRK-NAGASA
            END-IF
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
+      *    ÆüÉÕ¾ðÊó
+           PERFORM VARYING IDV     FROM    1   BY  1
+                   UNTIL   IDV     >       31
+      *********IF      RECE641-KAISU (1 IDV)  >   ZERO
+      *********    MOVE    RECE641-KAISU (1 IDV)
+      *********                            TO  WRK-NUM
+      *********    MOVE    3               TO  WRK-NAGASA
+      *********END-IF
+               IF      IDV                 =   31
+                   MOVE    1                   TO  WRK-END 
+               END-IF     
+               PERFORM 5005-NUM-HENSYU-SEC
+           END-PERFORM  
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
@@ -5942,8 +6017,20 @@
                                            TO  WRK-DATA
                MOVE    100                 TO  WRK-NAGASA
            END-IF
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
+      *    ÆüÉÕ¾ðÊó
+           PERFORM VARYING IDV     FROM    1   BY  1
+                   UNTIL   IDV     >       31
+      *********IF      RECE641-KAISU (1 IDV)   >   ZERO
+      *********    MOVE    RECE641-KAISU (1 IDV)
+      *********                            TO  WRK-NUM
+      *********    MOVE    3               TO  WRK-NAGASA
+      *********END-IF
+               IF      IDV                 =   31
+                   MOVE    1                   TO  WRK-END 
+               END-IF     
+               PERFORM 5005-NUM-HENSYU-SEC
+           END-PERFORM  
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
@@ -6204,8 +6291,22 @@
       *                            ¥³¥á¥ó¥È¥³¡¼¥É£³
                                    PERFORM 5005-NUM-HENSYU-SEC
       *                            Ê¸»ú¥Ç¡¼¥¿£³
-                                   MOVE    1           TO  WRK-END 
                                    PERFORM 5004-MOJI-HENSYU-SEC  
+      *                            ÆüÉÕ¾ðÊó
+                                   PERFORM VARYING IDV FROM    1   BY  1
+                                           UNTIL   IDV >       31
+      *********                        IF      LNK-NYURECEDEN-?? (1 IDV)
+      *********                                        >   ZERO
+      *********                            MOVE    LNK-NYURECEDEN-??
+      *********                                                  (1 IDV)
+      *********                                        TO  WRK-NUM
+      *********                            MOVE    3   TO  WRK-NAGASA
+      *********                        END-IF
+                                       IF      IDV     =   31
+                                           MOVE    1       TO  WRK-END 
+                                       END-IF     
+                                       PERFORM 5005-NUM-HENSYU-SEC
+                                   END-PERFORM  
                                END-IF
                        END-EVALUATE
                        IF      WRK-REC-LENGTH      >   ZERO 
