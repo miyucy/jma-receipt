@@ -426,14 +426,14 @@
            03  FILLER              PIC X(20)   VALUE   
                "セット更新リスト＃".
       *
-       01  LINE-MAX                    PIC 9(03)   VALUE   69.
-      *
       *    内容
        01  WRK-PRTHEN-AREA.
       *    半角
            03  WRK-TBL-REC             PIC X(90)   OCCURS   800.
       *    全角
            03  WRK-TBL-REC2            PIC X(108)  OCCURS   800.
+      *
+       01  LINE-MAX                    PIC 9(03)   VALUE   69.
       *
        01  WRK-B01-HENSYU.
            03  WRK-B01-SURYO-HEN           PIC X(15).
@@ -832,6 +832,8 @@
            PERFORM 990-DBCLOSE-SEC
       *
            PERFORM 2903-END-HENSYU-SEC
+      *
+           MOVE    1                   TO  FLG-END
       *
            .
        200-MAIN-EXT.
@@ -1540,6 +1542,8 @@
            IF      IDX-P               >   LINE-MAX
       *        印刷処理
                PERFORM 400-HCPOM2-PRINT-SEC
+      *        見出し編集
+               PERFORM 7001-PRT-INIT-SEC
                MOVE    1               TO  IDX-P
            END-IF
       *
