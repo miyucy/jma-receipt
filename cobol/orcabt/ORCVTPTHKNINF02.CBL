@@ -29,7 +29,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  04.02.00    NACL-多々納   08/04/28  後期高齢者対応
-      *  04.07.00    NACL-多々納   14/04/14  Ｈ２６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -92,8 +91,8 @@
       *
       *    ファイル指定領域
        01  ASS-AREA.
-           03  ASS-PARA                PIC X(256)  VALUE   SPACE.
-           03  ASS-ERR                 PIC X(256)  VALUE   SPACE.
+           03  ASS-PARA                PIC X(256).
+           03  ASS-ERR                 PIC X(256).
            03  ASS-ISAM                PIC X(256)  VALUE
                "/tmp/ORCVTPTHKNINF_ISAM".
       *
@@ -486,10 +485,6 @@
       *
            EVALUATE    PARA-DATKBN
                WHEN    "02-2"
-                   IF      ASS-ERR     =   SPACE
-                       MOVE    PARA-DATA   TO  ASS-ERR
-                   END-IF
-               WHEN    "02-A"
                    MOVE    PARA-DATA   TO  ASS-ERR
                WHEN    "05-1"
                    MOVE    PARA-DATA   TO  PARA-05-1
@@ -831,15 +826,9 @@
                MOVE    PTHKNINF-REC        TO  TBL-PTHKNINF-REC (IDX)
            ELSE
       *        保険の開始日を変更する
-               IF      HZN-HKN-TEKSTYMD(1) <   TBL-PTHKN-TEKEDYMD(IDX)
-                   MOVE    HZN-HKN-TEKSTYMD(1) TO  TBL-PTHKN-TEKSTYMD
+               MOVE    HZN-HKN-TEKSTYMD(1) TO  TBL-PTHKN-TEKSTYMD
                                                                 (IDX)
-                   MOVE    "B"                 TO  TBL-ISAM-ERR (IDX)
-               ELSE
-      *            対象なし
-                   MOVE    3               TO  FLG-ERR
-                   MOVE    "3"             TO  TBL-ISAM-ERR (IDX)
-               END-IF
+               MOVE    "B"                 TO  TBL-ISAM-ERR (IDX)
            END-IF
            .
        50013-HKNNUM-HENKAN-EXT.
@@ -1076,17 +1065,9 @@
       *                前期高齢者到達日で切り替え
                        PERFORM 50022-HKNINF-BYMD-SEC
                    ELSE
-      *H26.5
-      *                H26.5.1以降のS19.4.2生以降の高齢者負担割合
-                       IF      (PTINF-BIRTHDAY     >=  "19440402")
-                           PERFORM 50024-FTNKBN-201405-SEC
-                       ELSE
-      *
       *                ２割は３割へ
                        IF      WRK-HEN-FTNKBN      =   "2"
                            MOVE    "3"             TO  WRK-HEN-FTNKBN
-                       END-IF
-      *
                        END-IF
       *                開始日が７５歳以上の日はエラー
                        IF      (PTHKN-TEKSTYMD     <    "20080401" )
@@ -1124,26 +1105,6 @@
            MOVE    PTHKNINF-REC        TO  TBL-PTHKNINF-REC (IDX)
            .
        5002-ROUJIN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    S19.4.2生以降の高齢者負担割合処理
-      *****************************************************************
-       50024-FTNKBN-201405-SEC        SECTION.
-      *
-           IF      (PTHKN-TEKSTYMD     >=   WRK-BYMD-70 )
-      *        １割は２割へ
-               IF      WRK-HEN-FTNKBN      =   "1"
-                   MOVE    "2"             TO  WRK-HEN-FTNKBN
-               END-IF
-           ELSE
-      *
-      *        ２割は３割へ
-               IF      WRK-HEN-FTNKBN      =   "2"
-                   MOVE    "3"             TO  WRK-HEN-FTNKBN
-               END-IF
-           END-IF
-           .
-       50024-FTNKBN-201405-EXT.
            EXIT.
       *****************************************************************
       *    Ｈ１８．１０からの切替え処理
@@ -1451,20 +1412,12 @@
            END-IF
            PERFORM UNTIL      (FLG-HKNNUM  =   1 )
                            OR (IDX-HKN-MAX >=  300 )
-      *       国保の支払区分＝空白は対象外
-              IF      (HKN-HKNNUM              =   "060" )
-                 AND  (HKN-PAYKBN          NOT =   "00"  )
-                   CONTINUE
-              ELSE
-      *
       *       保険のもの
               IF       HKN-HKNKOHSBTKBN        =   "1"  OR  "4"
                                                OR  "8"  OR  "9"
                    ADD     1                   TO  IDX-HKN-MAX
                    MOVE    HKNNUM-REC          TO  TBL-HKNNUM-REC
                                              (IDX-HKN-MAX)
-               END-IF
-      *
                END-IF
       *
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
