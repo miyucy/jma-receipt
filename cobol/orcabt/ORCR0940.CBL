@@ -44,16 +44,6 @@
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
       *  04.04.01    NACL-門脇    10/03/29  改正対応
       *                                     （画像診断２回目以降減算編集）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *  04.05.02    NACL-門脇    10/01/25  治験対応
-      *
-      *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -158,8 +148,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -201,7 +189,6 @@
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            MOVE    ZERO                TO  FLG-END
       *
@@ -213,29 +200,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE86PARA
-           INITIALIZE                      RECE86PARA
            MOVE    "RECE860"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE87PARA
-           INITIALIZE                      RECE87PARA
            MOVE    "RECE870"           TO  RECE87PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE87PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE86PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE86PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE87PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -321,8 +292,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                           MOVE   4      TO      RECE87-KNSJISKBN
                   END-IF
               END-IF
-              IF   (RECE86-SAFLG   NOT =  SPACE)
-              OR   (RECE86-ZAIKBN  NOT =  ZERO )
+              IF    RECE86-SAFLG   NOT =   SPACE
                    MOVE    9            TO      RECE87-KNSJISKBN
               END-IF
            END-IF     
@@ -331,14 +301,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE86-ZAIMEISAISU   TO      RECE87-ZAIMEISAISU
            MOVE    RECE86-PTNUM         TO      RECE87-PTNUM
            MOVE    RECE86-SRYKA         TO      RECE87-SRYKA
-           IF     (RECE86-SRYKBN          =  "99" )
-           AND    (RECE86-SRYSYUKBN   NOT =  "991")
-             IF     (WRK-PARA-RECEKBN       =  "4")
-             AND    (WRK-PARA-JIBAIPRTKBN   =  "2")
-               MOVE  "01"               TO      RECE87-SRYKBN
-             ELSE
+           IF      RECE86-SRYKBN        =       "99"          
                MOVE  SPACE              TO      RECE87-SRYKBN
-             END-IF
            ELSE
                MOVE  RECE86-SRYKBN      TO      RECE87-SRYKBN
            END-IF
@@ -368,13 +332,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE   RECE86-OKIKAEFLG   TO   RECE87-OKIKAEFLG
       *
-           MOVE   RECE86-ZAIKBN      TO   RECE87-ZAIKBN
-      *
            MOVE   RECE86-DAY2        TO   RECE87-DAY2
-      *
-           MOVE   RECE86-JIHOKBN     TO   RECE87-JIHOKBN
-      *
-           MOVE   RECE86-TEKIYO2-INF TO   RECE87-TEKIYO2-INF
       *
            IF     RECE86-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE87-WRITE-SEC
