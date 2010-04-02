@@ -43,18 +43,6 @@
       *  04.04.01    NACL-門脇    10/04/02  特別労災付添看護の対応
       *
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
-      *
-      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
-      *                                     （新診療行為コード対応）
-      *
-      *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.07.02    NACL-門脇    13/10/02  自賠責（第三者行為）対応
-      *  04.07.03    NACL-門脇    14/02/13  労災・自賠責の施術加算対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    16/09/06  入院室料加算差額請求マスタと
-      *                                     特別労災付添看護料差額請求
-      *                                     マスタの対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -235,7 +223,6 @@
                05  TBL-ZAIW-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAIW-SRYCD           PIC  X(09).
-                   07  TBL-ZAIW-SRYSYUKBN-X     PIC  X(03).
                    07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *            単位コード/単位名称有効桁数/単位名称
@@ -250,29 +237,8 @@
                    07  TBL-ZAIW-AUTOKBN         PIC  X(01).
                    07  TBL-ZAIW-INPUTNUM        PIC  9(03).
                    07  TBL-ZAIW-TENTTLKBN       PIC  9(03).
-      *
-                   07  TBL-ZAIW-DATAKBN         PIC  9(01).
-                   07  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
-                   07  TBL-ZAIW-KNSJISKBN       PIC  9(01).
-                   07  TBL-ZAIW-KNSJISGRPKBN    PIC  9(02).
-                   07  TBL-ZAIW-CDKBNINF.
-                     09 TBL-ZAIW-CDKBN-KBN        PIC  X(01).
-                     09 TBL-ZAIW-CDKBN-SYO        PIC  9(01).
-                     09 TBL-ZAIW-CDKBN-BU         PIC  9(02).
-                     09 TBL-ZAIW-CDKBN-KBNNUM     PIC  9(03).
-                     09 TBL-ZAIW-CDKBN-KBNNUM-EDA PIC  9(02).
-                     09 TBL-ZAIW-CDKBN-KOUBAN     PIC  9(02).
-                     09 TBL-ZAIW-KOUHYOJYUNNUM    PIC  9(09).
-                   07  TBL-ZAIW-KOKUJISKBKBN1   PIC  9(01).
-                   07  TBL-ZAIW-KOKUJISKBKBN2   PIC  9(01).
-                   07  TBL-ZAIW-TUSOKUGAIKBN    PIC  9(01).
-                   07  TBL-ZAIW-TIMEKSNKBN      PIC  9(01).
-                   07  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
-                   07  TBL-ZAIW-CHUKSNINF.
-                     09 TBL-ZAIW-CHUKSNCD       PIC  X(04).
-                     09 TBL-ZAIW-CHUKSNTUBAN    PIC  X(01).
-                   07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
-                   07  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
+      *            検体検査コメント
+      *****        07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAIW-NAMEINF.
       *            漢字有効桁数/漢字名称
                    07  TBL-ZAIW-YUKOKETA        PIC  9(03).
@@ -284,7 +250,6 @@
                05  TBL-ZAI-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAI-SRYCD           PIC  X(09).
-                   07  TBL-ZAI-SRYSYUKBN-X     PIC  X(03).
                    07  TBL-ZAI-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAI-SRYKAISU        PIC  9(03).
       *            単位コード/単位名称有効桁数/単位名称
@@ -299,29 +264,8 @@
                    07  TBL-ZAI-AUTOKBN         PIC  X(01).
                    07  TBL-ZAI-INPUTNUM        PIC  9(03).
                    07  TBL-ZAI-TENTTLKBN       PIC  9(03).
-      *
-                   07  TBL-ZAI-DATAKBN         PIC  9(01).
-                   07  TBL-ZAI-HOUKNSKBN       PIC  9(02).
-                   07  TBL-ZAI-KNSJISKBN       PIC  9(01).
-                   07  TBL-ZAI-KNSJISGRPKBN    PIC  9(02).
-                   07  TBL-ZAI-CDKBNINF.
-                     09 TBL-ZAI-CDKBN-KBN        PIC  X(01).
-                     09 TBL-ZAI-CDKBN-SYO        PIC  9(01).
-                     09 TBL-ZAI-CDKBN-BU         PIC  9(02).
-                     09 TBL-ZAI-CDKBN-KBNNUM     PIC  9(03).
-                     09 TBL-ZAI-CDKBN-KBNNUM-EDA PIC  9(02).
-                     09 TBL-ZAI-CDKBN-KOUBAN     PIC  9(02).
-                     09 TBL-ZAI-KOUHYOJYUNNUM    PIC  9(09).
-                   07  TBL-ZAI-KOKUJISKBKBN1   PIC  9(01).
-                   07  TBL-ZAI-KOKUJISKBKBN2   PIC  9(01).
-                   07  TBL-ZAI-TUSOKUGAIKBN    PIC  9(01).
-                   07  TBL-ZAI-TIMEKSNKBN      PIC  9(01).
-                   07  TBL-ZAI-KZMCOMPSIKIBETU PIC  9(01).
-                   07  TBL-ZAI-CHUKSNINF.
-                     09 TBL-ZAI-CHUKSNCD       PIC  X(04).
-                     09 TBL-ZAI-CHUKSNTUBAN    PIC  X(01).
-                   07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
-                   07  TBL-ZAI-INPUTCOMENT     PIC  X(80).
+      *            検体検査コメント
+      *****        07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAI-NAMEINF.
       *            漢字有効桁数/漢字名称
                    07  TBL-ZAI-YUKOKETA        PIC  9(03).
@@ -356,8 +300,6 @@
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -401,7 +343,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  TBL-ZAIW-AREA
-           INITIALIZE                  RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -442,48 +383,21 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           MOVE    SPACE               TO  RECE01PARA
-           INITIALIZE                      RECE01PARA
            MOVE    "RECE820"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE84PARA
-           INITIALIZE                      RECE84PARA
            MOVE    "RECE84B"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE85PARA
-           INITIALIZE                      RECE85PARA
            MOVE    "RECE85B"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE86PARA
-           INITIALIZE                      RECE86PARA
            MOVE    "RECE861"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE84PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE85PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           MOVE    RECE86PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE84PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE85PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE86PARA
       *
            OPEN    INPUT               RECE82-FILE
       *
@@ -679,7 +593,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
            IF     (WRK-PARA-RECEKBN       =  "5")
            OR     (RECE82-HKNKBN          =  "5")
-           OR     (RECE82-HKNKBN          =  "6")
              CONTINUE
            ELSE
              EVALUATE    RECE84-SRYKBN
@@ -737,23 +650,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                ADD     1                 TO  WRK-LINENUM
                MOVE    SPACE             TO  RECE86-REC
                INITIALIZE                    RECE86-REC
-      *
-               MOVE  TBL-ZAI-SRYCD(IDY)       TO  RECE86-SRYCD
-               MOVE  TBL-ZAI-SRYSURYO(IDY)    TO  RECE86-SRYSURYO
-               MOVE  TBL-ZAI-SRYKAISU(IDY)    TO  RECE86-SRYKAISU
-               MOVE  TBL-ZAI-TANICD(IDY)      TO  RECE86-TANICD
-               MOVE  TBL-ZAI-TANIMOJISU(IDY)  TO  RECE86-TANIMOJISU
-               MOVE  TBL-ZAI-TANINAME(IDY)    TO  RECE86-TANINAME
-               MOVE  TBL-ZAI-TENSIKIBETU(IDY) TO  RECE86-TENSIKIBETU
-               MOVE  TBL-ZAI-TEN(IDY)         TO  RECE86-TEN
-               MOVE  TBL-ZAI-MEISKYFLG(IDY)   TO  RECE86-MEISKYFLG
-               MOVE  TBL-ZAI-AUTOKBN(IDY)     TO  RECE86-AUTOKBN
-               MOVE  TBL-ZAI-INPUTNUM(IDY)    TO  RECE86-INPUTNUM
-               MOVE  TBL-ZAI-TENTTLKBN(IDY)   TO  RECE86-TENTTLKBN
-      *
-               MOVE  TBL-ZAI-YUKOKETA(IDY)    TO  RECE86-YUKOKETA
-               MOVE  TBL-ZAI-NAME(IDY)        TO  RECE86-NAME
-      *
+               MOVE    TBL-ZAI-SRYACTINF (IDY)
+                                         TO  RECE86-SRYACTINF
+               MOVE    TBL-ZAI-NAMEINF  (IDY)
+                                         TO  RECE86-NAMEINF 
                PERFORM 4501-RECE86-HENSYU-SEC
            END-PERFORM
       *     
@@ -778,37 +678,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            MOVE    WRK-SRYCD1        TO  RECE86-SRYCD1
            MOVE    RECE84-ZAINUM     TO  RECE86-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE86-LINENUM
-           IF    ((RECE86-SRYCD1   =  "101110020") AND
-                  (RECE82-SRYYM   <=  "201306"   ))
-           OR    ((RECE86-SRYCD1   =  "101800880") AND
-                  (RECE82-SRYYM   >=  "201307"   ))
+           IF   RECE86-SRYCD1   =  "101110020"
                 MOVE    777             TO  RECE86-NYUTENTTLKBN
            ELSE
-              IF ((RECE86-SRYKBN        =  "80"                   ) AND
-                  (RECE86-SRYCD1(1:5)   =  "09594"                ))
-              OR ((RECE86-SRYCD1  =  "101910010" OR "101910020" OR
+              IF  (RECE86-SRYCD1(1:5)   =  "09594")
+              OR  (RECE86-SRYCD1  =  "101910010" OR "101910020" OR
                                      "101910030" OR "101910040" OR
                                      "101910070" OR "101910080" OR
-                                     "101910090" OR "101910100"   ) AND
-                  (RECE82-SRYYM  <=  "201306"                     ))
-              OR ((RECE86-SRYCD1 >=  "101800390" AND
-                                 <=  "101800460"                  ) AND
-                  (RECE82-SRYYM  >=  "201307"                     ))
-              OR ((RECE86-SRYCD1 >=  "101801150" AND
-                                 <=  "101801180"                  ) AND
-                  (RECE82-SRYYM  >=  "201307"                     ))
-                IF ((RECE86-SRYCD1 >=  "101801150" AND
-                                   <=  "101801180"     ) AND
-                    (RECE82-SRYYM  >=  "201307"        ))
-                OR ((RECE86-SRYKBN        =  "80"      ) AND
-                    (RECE86-SRYCD1(1:7)   =
-                           "0959421" OR "0959422" OR
-                           "0959423" OR "0959424"      ) AND
-                    (RECE82-SRYYM  >=  "201604"        ))
-                   MOVE    780             TO  RECE86-NYUTENTTLKBN
-                ELSE
-                   MOVE    779             TO  RECE86-NYUTENTTLKBN
-                END-IF
+                                     "101910090" OR "101910100"   )
+                MOVE    779             TO  RECE86-NYUTENTTLKBN
               ELSE
                 IF  RECE86-SRYCD1(1:5)  =  "09591" OR "09592" OR "09593"
                   EVALUATE  RECE86-SRYCD1(1:5)
@@ -827,19 +705,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                       END-EVALUATE
                   END-EVALUATE
                 ELSE
-                  IF ((RECE86-SRYCD1 >= "101910110" AND
-                                     <= "101910400")  AND
-                      (RECE82-SRYYM  <= "201306"   ))
-                  OR ((RECE86-SRYCD1 >= "101800570" AND
-                                     <= "101800860")  AND
-                      (RECE82-SRYYM  >= "201307"   ))
-                  OR ((RECE86-SRYCD1 >= "101801010" AND
-                                     <= "101801020")  AND
-                      (RECE82-SRYYM  >= "201307"   ))
-                  OR ((RECE86-SRYCD1 >= "101801190" AND
-                                     <= "101801420")  AND
-                      (RECE82-SRYYM  >= "201307"   ))
-                    MOVE  997              TO  RECE86-NYUTENTTLKBN
+                  IF   RECE86-SRYCD1 >= "101910110" AND
+                                     <= "101910400"
+                    MOVE  998              TO  RECE86-NYUTENTTLKBN
                   ELSE
                     MOVE  WRK-NYUTENTTLKBN TO  RECE86-NYUTENTTLKBN
                   END-IF
