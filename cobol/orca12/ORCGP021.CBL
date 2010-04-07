@@ -1329,6 +1329,8 @@
            MOVE    "P982"              TO  MCP-WINDOW
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  SPA-FLG-END
+      *TEST
+           DISPLAY "41012-P982-SYORI-EXT"
       *
            .
        41012-P982-SYORI-EXT.
@@ -1396,7 +1398,8 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  SPA-FLG-END
-      *
+      *TEST
+           DISPLAY "440-JYUSYO-EXT"
       *
            .
        440-JYUSYO-EXT.

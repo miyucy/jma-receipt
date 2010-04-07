@@ -2506,6 +2506,7 @@
               ",SPA-ERRCD:" SPA-ERRCD
               ",SPAPIDCD:" SPA-PIDCD
               ",SPA-FLG-END:" SPA-FLG-END
+           DISPLAY  "MCP-WINDOW:" MCP-WINDOW "@"
       *TEST
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-PIDCD       NOT =   SPACE )  OR
