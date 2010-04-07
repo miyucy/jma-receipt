@@ -2493,11 +2493,20 @@
       *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
+      *TEST
+           DISPLAY " 410-INPUT-CHK-SEC FLG-TOUROKU:"  FLG-TOUROKU
+      *TEST
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
+      *TEST
+           DISPLAY "4102-KIHON-CHK-SEC FLG-TOUROKU:"  FLG-TOUROKU
+              ",SPA-ERRCD:" SPA-ERRCD
+              ",SPAPIDCD:" SPA-PIDCD
+              ",SPA-FLG-END:" SPA-FLG-END
+      *TEST
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
@@ -2523,6 +2532,9 @@
       *    画面ＳＰＡ編集処理
       *****************************************************************
        410-INPUT-CHK2-SEC          SECTION.
+      *TEST
+           DISPLAY "410-INPUT-CHK2-SEC FLG-TOUROKU:"  FLG-TOUROKU
+      *TEST
       *
       *    登録時、必須入力チェック
            IF      FLG-TOUROKU         =   1
@@ -6033,6 +6045,8 @@
       *    保険組合せ処理
       *****************************************************************
        450-HKNCOMBI-SEC          SECTION.
+      *test
+           DISPLAY " 450-HKNCOMBI-SEC FLG-TOUROKU2:" FLG-TOUROKU2
       *
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  SPA-GMN-CUR
