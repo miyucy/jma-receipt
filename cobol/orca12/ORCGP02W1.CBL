@@ -2493,21 +2493,11 @@
       *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
-      *TEST
-           DISPLAY " 410-INPUT-CHK-SEC FLG-TOUROKU:"  FLG-TOUROKU
-      *TEST
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
-      *TEST
-           DISPLAY "4102-KIHON-CHK-SEC FLG-TOUROKU:"  FLG-TOUROKU
-              ",SPA-ERRCD:" SPA-ERRCD
-              ",SPAPIDCD:" SPA-PIDCD
-              ",SPA-FLG-END:" SPA-FLG-END
-           DISPLAY  "MCP-WINDOW:" MCP-WINDOW "@"
-      *TEST
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-PIDCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
@@ -2533,9 +2523,6 @@
       *    画面ＳＰＡ編集処理
       *****************************************************************
        410-INPUT-CHK2-SEC          SECTION.
-      *TEST
-           DISPLAY "410-INPUT-CHK2-SEC FLG-TOUROKU:"  FLG-TOUROKU
-      *TEST
       *
       *    登録時、必須入力チェック
            IF      FLG-TOUROKU         =   1
@@ -4320,10 +4307,6 @@
       ****************************************************************
        4109-TOUROKU-CHK-SEC      SECTION.
       *
-      *TEST
-           DISPLAY "SPA-GMN-KANANAME:" SPA-GMN-KANANAME "@"
-           DISPLAY "SPA-GMN-NAME:" SPA-GMN-NAME "@"
-      *TEST
       *    登録時、必須入力チェック
            IF      SPA-GMN-KANANAME    =   SPACE
                MOVE    "0100"              TO  SPA-ERRCD
@@ -4335,9 +4318,6 @@
                MOVE    2                   TO  SPA-GMN-CUR
                GO      TO      4109-TOUROKU-CHK-EXT
            END-IF
-      *TEST
-           DISPLAY "SPA-GMN-NAME NOT SPACE"
-      *TEST
            IF      SPA-GMN-SEX         =   SPACE
                MOVE    "0103"              TO  SPA-ERRCD
                MOVE    3                   TO  SPA-GMN-CUR
@@ -4361,6 +4341,7 @@
       *    旧姓履歴の更新処理
       ****************************************************************
        41091-KYUSEI-KOU-SEC      SECTION.
+      *
       *    新規の時、旧姓履歴は出力しない
            IF      SPA-P02-SYORI       =   1
                GO      TO      41091-KYUSEI-KOU-EXT
@@ -6046,8 +6027,6 @@
       *    保険組合せ処理
       *****************************************************************
        450-HKNCOMBI-SEC          SECTION.
-      *test
-           DISPLAY " 450-HKNCOMBI-SEC FLG-TOUROKU2:" FLG-TOUROKU2
       *
            MOVE    1                   TO  SPA-HKNKOH-FLG
            MOVE    ZERO                TO  SPA-GMN-CUR
