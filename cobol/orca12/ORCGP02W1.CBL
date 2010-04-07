@@ -4307,6 +4307,10 @@
       ****************************************************************
        4109-TOUROKU-CHK-SEC      SECTION.
       *
+      *TEST
+           DISPLAY "SPA-GMN-KANANAME:" SPA-GMN-KANANAME "@"
+           DISPLAY "SPA-GMN-NAME:" SPA-GMN-NAME "@"
+      *TEST
       *    登録時、必須入力チェック
            IF      SPA-GMN-KANANAME    =   SPACE
                MOVE    "0100"              TO  SPA-ERRCD
@@ -4318,6 +4322,9 @@
                MOVE    2                   TO  SPA-GMN-CUR
                GO      TO      4109-TOUROKU-CHK-EXT
            END-IF
+      *TEST
+           DISPLAY "SPA-GMN-NAME NOT SPACE"
+      *TEST
            IF      SPA-GMN-SEX         =   SPACE
                MOVE    "0103"              TO  SPA-ERRCD
                MOVE    3                   TO  SPA-GMN-CUR
