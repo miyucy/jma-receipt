@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>N21FIL</name>
-  <program_name>N21FIL</program_name>
+  <name>I2FIL</name>
+  <program_name>I2FIL</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -12,7 +12,7 @@
 
 <widget>
   <class>GtkWindow</class>
-  <name>N21FIL</name>
+  <name>I2FIL</name>
   <x>220</x>
   <y>270</y>
   <width>520</width>
@@ -20,7 +20,7 @@
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
-    <last_modification_time>Fri, 22 Dec 2000 05:08:07 GMT</last_modification_time>
+    <last_modification_time>Thu, 06 May 2004 02:58:38 GMT</last_modification_time>
   </signal>
   <signal>
     <name>set_focus</name>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(N21FIL)画像選択画面</title>
+  <title>(I2FIL)クライアント保存画面</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 06 Aug 2007 05:46:01 GMT</last_modification_time>
       </signal>
-      <label>確定</label>
+      <label>保存</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -94,14 +94,46 @@
     <widget>
       <class>GtkLabel</class>
       <name>label3</name>
+      <x>480</x>
+      <y>5</y>
+      <width>20</width>
+      <height>24</height>
+      <label>件</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>TITLE</name>
       <x>24</x>
       <y>5</y>
       <width>400</width>
       <height>24</height>
-      <label>画像ファイル</label>
+      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KENSU</name>
+      <x>425</x>
+      <y>5</y>
+      <width>58</width>
+      <height>24</height>
+      <label>1234567</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -121,12 +153,19 @@
       <widget>
 	<class>GtkEntry</class>
 	<child_name>GnomeEntry:entry</child_name>
-	<name>PHOTO</name>
+	<name>entry1</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>
-	  <handler>fileentry_changed</handler>
-	  <last_modification_time>Tue, 08 Jul 2008 01:16:49 GMT</last_modification_time>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 21 Feb 2005 03:23:49 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 21 Feb 2005 03:24:04 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
