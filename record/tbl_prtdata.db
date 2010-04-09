@@ -16,11 +16,9 @@ tbl_prtdata	{
 	PRTFLG			char(1);
 	SITEKBN			char(1);
 	PRTNM			char(16);
-	DATA_TYPE	    varchar(16);
-	API_ID		    varchar(20);
 	PRTDATA			varchar(20000);
 	CREYMD 			varchar(8);
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
 	STPAGE			number(5),virtual;
 	EDPAGE			number(5),virtual;
 };
@@ -147,105 +145,6 @@ path	del16	{
                             TBL_KEY      =   'ONLINE'     ) 
                     AND     substring(TBL_GROUP,1,6) < :SRYYM
 		;
-	};
-};
-
-path	key3		{ 	
-	DBSELECT	{
-		DECLARE tbl_prtdata_key3_csr CURSOR FOR
-		SELECT *
-		FROM tbl_prtdata
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   TBL_KEY      =   :TBL_KEY
-                    AND     RENNUM       =   :RENNUM
-                    AND     TBL_GROUP    =   :TBL_GROUP
-                    AND     TBL_UUID     =   :TBL_UUID
-                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
-                    ORDER BY PAGE    
-					OFFSET	:PAGE
-		;
-	};
-};
-
-path	upd1		{ 	
-	DBUPDATE	{
-		UPDATE	tbl_prtdata
-			SET PRTFLG     =   :PRTFLG
-			WHERE 	HOSPNUM	= :HOSPNUM
-            AND   TBL_KEY      =   :TBL_KEY
-            AND     RENNUM       =   :RENNUM
-            AND     TBL_GROUP    =   :TBL_GROUP
-            AND     TBL_UUID     =   :TBL_UUID
-            AND     SHORI_RENNUM =   :SHORI_RENNUM 
-		;
-	};
-};
-
-path	del17	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_prtdata
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   TBL_KEY      =   :TBL_KEY
-                    AND     SRYYM        =   '000000'
-                    AND     TBL_GROUP    <>  :TBL_GROUP
-                    AND     PRIORITY     =   :PRIORITY
-		;
-	};
-};
-
-path	delmb1	{
-	DBDELETE	{
-		DELETE
-		FROM monblob  where ID  in (
-		SELECT  PRTDATA   FROM tbl_prtdata
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   TBL_KEY      =   :TBL_KEY
-                    AND     TBL_GROUP    =   :TBL_GROUP
-                    AND     TBL_UUID     =   :TBL_UUID
-		);
-	};
-};
-
-path	delmb2	{
-	DBDELETE	{
-		DELETE
-		FROM monblob  where ID  in (
-		SELECT  PRTDATA   FROM tbl_prtdata
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   TBL_KEY      =   :TBL_KEY
-                    AND     TBL_GROUP    =   :TBL_GROUP
-                    AND     TBL_UUID     =   :TBL_UUID
-                    AND     RENNUM       =   :RENNUM
-                    AND     SHORI_RENNUM =   :SHORI_RENNUM 
-		);
-	};
-};
-
-path	delmb3	{
-	DBDELETE	{
-		DELETE
-		FROM monblob  where ID  in (
-		SELECT  PRTDATA   FROM tbl_prtdata
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   ( TBL_KEY      =   'DAILY'   OR
-                            TBL_KEY      =   'ONLINE'     ) 
-                    AND     substring(TBL_GROUP,1,6) < :SRYYM
-		);
-	};
-};
-
-path	delmb4	{
-	DBDELETE	{
-		DELETE
-		FROM monblob  where ID  in (
-		SELECT  PRTDATA   FROM tbl_prtdata
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND     TBL_KEY      <>   'DAILY'
-                    AND     TBL_KEY      <>   'ONLINE'
-                    AND     TBL_KEY      <>   'RECEPTX'
-                    AND     substring(TBL_GROUP,1,6) < :SRYYM
-		);
 	};
 };
 

@@ -31,7 +31,7 @@ tbl_prvkanri	{
 	CREYMD			varchar(08);
 	UPYMD			varchar(08);
 	UPHMS			varchar(06);
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
 	STPAGE			number(5),virtual;
 	EDPAGE			number(5),virtual;
 };
@@ -220,25 +220,6 @@ path	del15	{
                     AND     TBL_KEY      <>   'ONLINE'
                     AND     TBL_KEY      <>   'RECEPTX'
                     AND     substring(TBL_GROUP,1,6) < :SRYYM
-		;
-	};
-};
-
-path	key9		{ 	
-	DBSELECT	{
-		DECLARE tbl_prvkanri_key9_csr CURSOR FOR
-		SELECT HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,TBL_UUID,SHORI_RENNUM,
-        COUNT(*) as PAGE,MIN(PAGE) as STPAGE,MAX(PAGE) as EDPAGE
-		FROM   tbl_prvkanri
-		WHERE  HOSPNUM	= :HOSPNUM
-                    AND   TBL_KEY	=	:TBL_KEY
-                    AND     RENNUM       =   :RENNUM
-                    AND     TBL_GROUP    =   :TBL_GROUP
-                    AND     TBL_UUID     =   :TBL_UUID
-                    AND     SHORI_RENNUM =   :SHORI_RENNUM
-                    AND     PAGE         >=  :STPAGE
-                    AND     PAGE         <=  :EDPAGE
-        GROUP   BY  HOSPNUM,TBL_KEY,RENNUM,TBL_GROUP,TBL_UUID,SHORI_RENNUM
 		;
 	};
 };
