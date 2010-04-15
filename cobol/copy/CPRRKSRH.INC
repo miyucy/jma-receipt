@@ -33,8 +33,6 @@
             03  RRKSRH-NYUGAIKBN       PIC X(1).
       *¿ÇÎÅ²Ê
             03  RRKSRH-SRYKA           PIC X(2).
-      *¥É¥¯¥¿¡¼
-            03  RRKSRH-DRCD            PIC X(5).
       *ÊÝ¸±ÁÈ¹ç¤»
             03  RRKSRH-HKNCOMBINUM     PIC 9(4).
       *¿ÇÎÅÆü
@@ -50,9 +48,4 @@
             03  RRKSRH-STSRYYMD        PIC X(8).
       *½ªÎ»¿ÇÎÅÆü
             03  RRKSRH-EDSRYYMD        PIC X(8).
-      *¸øÈñ¤Î¼ïÎà
-            03  RRKSRH-KOHNUM-G.
-                05 RRKSRH-KOHNUM       PIC X(3) OCCURS 5.
-      *ÆüÉÕ¡Ü»þ¹ï
-            03  RRKSRH-YMDHMS          PIC X(14).
 

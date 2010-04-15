@@ -20,7 +20,6 @@
               04  Q02-B05-STATE                PIC S9(9)   BINARY.
               04  Q02-B05S-STATE               PIC S9(9)   BINARY.
               04  Q02-B06-STATE                PIC S9(9)   BINARY.
-              04  Q02-B06S-STATE               PIC S9(9)   BINARY.
               04  Q02-B07-STATE                PIC S9(9)   BINARY.
               04  Q02-B09-STATE                PIC S9(9)   BINARY.
               04  Q02-B09S-STATE               PIC S9(9)   BINARY.
@@ -49,7 +48,6 @@
                     07  Q02-KEKKALST-POST      PIC X(08).
                     07  Q02-KEKKALST-SRYACTNAIYO
                                                PIC X(200).
-                    07  Q02-KEKKALST-PATIENT-ID1 PIC X(20).
                   06  Q02-KEKKALST-SELECT      PIC X
                                            OCCURS  200 TIMES.
               04  Q02-TOTAL                    PIC X(22).

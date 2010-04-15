@@ -24,4 +24,4 @@
                05  QSUB02-OFFSET       PIC 9(08).
            03  QSUB02-OT-AREA.
                05  QSUB02-SQL          PIC X(20000).
-               05  QSUB02-SQL-ORDER    PIC X(500).
+               05  QSUB02-SQL-ORDER    PIC X(20000).

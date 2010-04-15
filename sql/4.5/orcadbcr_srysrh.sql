@@ -4,9 +4,9 @@
 -- Create Date : 2010/04/09        --
 --
 create  table  tbl_srysrh (
-        hospnum      numeric(2,0),
+        hospnum      smallint,
         termid       char(64),
-        ptid         numeric(10,0),
+        ptid         bigint,
         nyugaikbn    char(1),
         sryka        char(2),
         srykbn       char(2),

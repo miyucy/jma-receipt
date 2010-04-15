@@ -1,0 +1,61 @@
+name	orca13;
+
+arraysize	20;
+textsize	400;
+
+bind	""		"OpenCOBOL"	"ORCGQ01";
+bind	"Q01"		"OpenCOBOL"	"ORCGQ01";
+bind	"Q02"		"OpenCOBOL"	"ORCGQ02";
+bind	"Q03"		"OpenCOBOL"	"ORCGQ03";
+bind	"Q04"		"OpenCOBOL"	"ORCGQ04";
+bind	"Q96"		"OpenCOBOL"	"ORCGQ96";
+bind	"Q97"		"OpenCOBOL"	"ORCGQ97";
+bind	"Q98"		"OpenCOBOL"	"ORCGQ98";
+bind	"Q99"		"OpenCOBOL"	"ORCGQ99";
+bind	"Q100"		"OpenCOBOL"	"ORCGQ100";
+bind	"QERR"		"OpenCOBOL"	"ORCGQERR";
+bind	"QID1"		"OpenCOBOL"	"ORCGQID1";
+bind	"QFIL"		"OpenCOBOL"	"ORCGQFIL";
+
+multiplex_group	orca13;
+
+data	{
+	spa	orcaspa;
+	window	{
+		Q01;
+		Q02;
+		Q03;
+		Q04;
+		Q96;
+		Q97;
+		Q98;
+		Q99;
+		Q100;
+                QERR;
+                QID1;
+		QFIL;
+	};
+};
+
+db	{
+	tbl_syskanri;
+	tbl_byomei;
+	tbl_inputcd;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_adrs;
+	tbl_jyurrk;
+	tbl_srykarrk;
+	tbl_tensu;
+	tbl_userbyomei;
+	tbl_jobkanri;
+	tbl_ptnyuinrrk;
+	tbl_shoukaikanri;
+	tbl_shoukaidata;
+        tbl_file_info; 
+        tbl_ptsrh; 
+        tbl_ptinf; 
+};
+
+/* #include "orcadb.inc" */
+#include "orcadbh.inc"

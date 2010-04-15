@@ -40,15 +40,6 @@
                                    ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-BQ01.
       *
-      *    一時ファイル（患者重複チェック）
-           SELECT  BQ03T01-FILE    ASSIGN  BQ03T01PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  BQ03T01-KEY
-                                   FILE    STATUS  IS  STS-BQ03T01.
-           
-      
-      *
       *    エラーファイル
            SELECT  BQERR-FILE      ASSIGN  ERRFNAME
                                    FILE    STATUS  IS  STS-BQERR.
@@ -59,13 +50,6 @@
       *    パラメータファイル
        FD  BQ01-FILE.
            COPY    "CPBQ01.INC".
-      *
-      *    一時ファイル（患者重複チェック）
-       FD  BQ03T01-FILE.
-       01  BQ03T01-REC.
-           03  BQ03T01-KEY.
-               05  BQ03T01-HOSPNUM     PIC 9(02).
-               05  BQ03T01-PTID        PIC 9(10).
       *
       *    パラメータファイル
        FD  BQERR-FILE.
@@ -84,25 +68,14 @@
            COPY    "CPBQ01.INC"    REPLACING  //BQ01//
                                    BY         //WKBQ01//.
       *
-      *
-           COPY    "CPASGNPARA.INC"
-                                   REPLACING  //ASGNPARA//
-                                   BY         //PRFNAME//.
-      *
-           COPY    "CPASGNPARA.INC"
-                                   REPLACING  //ASGNPARA//
-                                   BY         //ERRFNAME//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                           REPLACING   //RECE01//
-                                           BY          //BQ03T01//.
-           03  FILLER                      PIC X(04)   VALUE   ".dat".
+       01  ASSIGN-NAME-AREA.
+           03  PRFNAME                 PIC X(100).
+           03  ERRFNAME                PIC X(200).
       *
       *    ステータス領域
        01  STS-AREA.
            03  STS-BQ01                PIC X(02).
            03  STS-BQERR               PIC X(02).
-           03  STS-BQ03T01             PIC X(02).
       *
       *    インデックス領域
        01  IDX-AREA.
@@ -115,7 +88,6 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-PTSRH               PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
-           03  FLG-BQ03T01             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -123,17 +95,11 @@
            03  CNT-GIHO                PIC 9(05).
            03  CNT-GRSI                PIC 9(05).
            03  CNT-GJBI                PIC 9(05).
-           03  CNT-GJBIR               PIC 9(05).
-           03  CNT-GJBIK               PIC 9(05).
            03  CNT-GKGI                PIC 9(05).
-           03  CNT-GDI3                PIC 9(05).
            03  CNT-NIHO                PIC 9(05).
            03  CNT-NRSI                PIC 9(05).
            03  CNT-NJBI                PIC 9(05).
-           03  CNT-NJBIR               PIC 9(05).
-           03  CNT-NJBIK               PIC 9(05).
            03  CNT-NKGI                PIC 9(05).
-           03  CNT-NDI3                PIC 9(05).
       *    一時領域
        01  WRK-AREA. 
            03  WRK-BQERRCD             PIC X(04).
@@ -152,7 +118,7 @@
       *
        01  CONST-AREA.
            03  CONST-SCRIPTID          PIC X(20)   VALUE   "ORCBQ02.sh".
-           03  CONST-PTINF-MAX         PIC 9(05)   VALUE   2000.
+           03  CONST-PTINF-MAX         PIC 9(05)   VALUE   500.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -210,12 +176,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -268,7 +228,6 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-BTPARA-SHELLID
-           END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  SPA-TERMID
@@ -278,45 +237,13 @@
       *
            PERFORM 900-JOB-STEP-START-SEC
       *
-           MOVE    SPA-HOSPNUM         TO  BQ03T01PARA-HOSPNUM
-           MOVE    "BQ03T01"           TO  BQ03T01PARA-FILE-ID
-           MOVE    SPA-TERMID          TO  BQ03T01PARA-TERMID
-      *
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BQ03T01PARA-BASENAME TO SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"   USING
-                                   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BQ03T01PARA-FULLNAME
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    WRK-PARA-PAFNAME    TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"   USING
-                                   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  PRFNAME
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    WRK-PARA-ERRFNAME   TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"   USING
-                                   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  ERRFNAME
+           MOVE    WRK-PARA-PAFNAME    TO  PRFNAME
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE
       *
-           OPEN    OUTPUT              BQ03T01-FILE
-           DISPLAY "OUTPUT[" STS-BQ03T01 "]"
-           CLOSE   BQ03T01-FILE
-           DISPLAY "CLOSE[" STS-BQ03T01 "]"
-           OPEN    I-O                 BQ03T01-FILE
-           DISPLAY "I-O[" STS-BQ03T01 "]"
-      *
       *    パラメータファイル読み込み
            READ    BQ01-FILE
-           END-READ
       *
            MOVE    BQ01                TO  WKBQ01
       *
@@ -365,33 +292,19 @@
       *    患者対象データ検索処理
            PERFORM 900-PTSRH-ODR-SEL-SEC
       *
-           DISPLAY "FLG-PTSRH   =" FLG-PTSRH   
-      *
            PERFORM UNTIL ( FLG-PTSRH   NOT =   ZERO )
                     OR   ( FLG-END     NOT =   ZERO )
       *
-               PERFORM 900-BQ03T01-READ-SEC
-               DISPLAY "[" FLG-BQ03T01 "][" PTSRH-PTID "]"
-               IF    ( FLG-BQ03T01     =   ZERO )
-                   CONTINUE
-               ELSE
-                   INITIALIZE  BQ03T01-REC
-                   MOVE    PTSRH-HOSPNUM   TO  BQ03T01-HOSPNUM
-                   MOVE    PTSRH-PTID      TO  BQ03T01-PTID
-                   WRITE   BQ03T01-REC
+               PERFORM 900-PTINF-KEY-SEL-SEC
       *
-                   PERFORM 900-PTINF-KEY-SEL-SEC
-      *
-                   IF        ( WKBQ01-LNKKBN   =   "1" )
-                       IF    ( CNT-PTINF      >=   CONST-PTINF-MAX )
-                           MOVE    1           TO  FLG-PTSRH
-                       ELSE
-                           PERFORM 20011-QTORSUB-EDIT-SEC
-                       END-IF
+               IF        ( WKBQ01-LNKKBN   =   "1" )
+                   IF    ( CNT-PTINF      >=   CONST-PTINF-MAX )
+                       MOVE    1           TO  FLG-PTSRH
                    ELSE
-                       PERFORM 20011-QTOANY-EDIT-SEC
+                       PERFORM 20011-QTORSUB-EDIT-SEC
                    END-IF
-      *
+               ELSE
+                   PERFORM 20011-QTOANY-EDIT-SEC
                END-IF
       *
                IF    ( FLG-PTSRH       =   ZERO )
@@ -429,17 +342,11 @@
            MOVE    SS001-GIHO-FLG  TO  QTORS-GIHO-FLG
            MOVE    SS001-GRSI-FLG  TO  QTORS-GRSI-FLG
            MOVE    SS001-GJBI-FLG  TO  QTORS-GJBI-FLG
-           MOVE    SS001-GJBIR-FLG TO  QTORS-GJBIR-FLG
-           MOVE    SS001-GJBIK-FLG TO  QTORS-GJBIK-FLG
            MOVE    SS001-GKGI-FLG  TO  QTORS-GKGI-FLG
-           MOVE    SS001-GDI3-FLG  TO  QTORS-GDI3-FLG
            MOVE    SS001-NIHO-FLG  TO  QTORS-NIHO-FLG
            MOVE    SS001-NRSI-FLG  TO  QTORS-NRSI-FLG
            MOVE    SS001-NJBI-FLG  TO  QTORS-NJBI-FLG
-           MOVE    SS001-NJBIR-FLG TO  QTORS-NJBIR-FLG
-           MOVE    SS001-NJBIK-FLG TO  QTORS-NJBIK-FLG
            MOVE    SS001-NKGI-FLG  TO  QTORS-NKGI-FLG
-           MOVE    SS001-NDI3-FLG  TO  QTORS-NDI3-FLG
       *
            IF    ( QTORS-GIHO-FLG      =   1 )
                COMPUTE CNT-GIHO    =   CNT-GIHO    +   1
@@ -453,20 +360,8 @@
                COMPUTE CNT-GJBI    =   CNT-GJBI    +   1
            END-IF
       *
-           IF    ( QTORS-GJBIR-FLG     =   1 )
-               COMPUTE CNT-GJBIR   =   CNT-GJBIR    +   1
-           END-IF
-      *
-           IF    ( QTORS-GJBIK-FLG     =   1 )
-               COMPUTE CNT-GJBIK   =   CNT-GJBIK    +   1
-           END-IF
-      *
            IF    ( QTORS-GKGI-FLG      =   1 )
                COMPUTE CNT-GKGI    =   CNT-GKGI    +   1
-           END-IF
-      *
-           IF    ( QTORS-GDI3-FLG      =   1 )
-               COMPUTE CNT-GDI3    =   CNT-GDI3    +   1
            END-IF
       *
            IF    ( QTORS-NIHO-FLG      =   1 )
@@ -481,20 +376,8 @@
                COMPUTE CNT-NJBI    =   CNT-NJBI    +   1
            END-IF
       *
-           IF    ( QTORS-NJBIR-FLG     =   1 )
-               COMPUTE CNT-NJBIR   =   CNT-NJBIR    +   1
-           END-IF
-      *
-           IF    ( QTORS-NJBIK-FLG     =   1 )
-               COMPUTE CNT-NJBIK   =   CNT-NJBIK    +   1
-           END-IF
-      *
            IF    ( QTORS-NKGI-FLG      =   1 )
                COMPUTE CNT-NKGI    =   CNT-NKGI    +   1
-           END-IF
-      *
-           IF    ( QTORS-NDI3-FLG      =   1 )
-               COMPUTE CNT-NDI3    =   CNT-NDI3    +   1
            END-IF
       *
            PERFORM 200111-BTPARA-COMMON-SEC
@@ -577,17 +460,11 @@
                MOVE    CNT-GIHO            TO  QTORM-GIHO-CNT
                MOVE    CNT-GRSI            TO  QTORM-GRSI-CNT
                MOVE    CNT-GJBI            TO  QTORM-GJBI-CNT
-               MOVE    CNT-GJBIR           TO  QTORM-GJBIR-CNT
-               MOVE    CNT-GJBIK           TO  QTORM-GJBIK-CNT
                MOVE    CNT-GKGI            TO  QTORM-GKGI-CNT
-               MOVE    CNT-GDI3            TO  QTORM-GDI3-CNT
                MOVE    CNT-NIHO            TO  QTORM-NIHO-CNT
                MOVE    CNT-NRSI            TO  QTORM-NRSI-CNT
                MOVE    CNT-NJBI            TO  QTORM-NJBI-CNT
-               MOVE    CNT-NJBIR           TO  QTORM-NJBIR-CNT
-               MOVE    CNT-NJBIK           TO  QTORM-NJBIK-CNT
                MOVE    CNT-NKGI            TO  QTORM-NKGI-CNT
-               MOVE    CNT-NDI3            TO  QTORM-NDI3-CNT
       *
                PERFORM 200111-BTPARA-COMMON-SEC
       *
@@ -700,13 +577,6 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           CLOSE   BQ03T01-FILE
-      *
-           MOVE    ZERO        TO  IF-RESULT
-           MOVE    BQ03T01PARA TO  IF-FILENAME
-           CALL    "orcfiledel"    USING
-                                       ORCSFDELAREA
-      *
            PERFORM 900-PTSRH-DEL1-SEC
       *
            PERFORM 900-JOB-STEP-END-SEC
@@ -740,8 +610,6 @@
            MOVE    SPA-TERMID          TO  PTSRH-TERMID
            MOVE    "2"                 TO  PTSRH-DATAKBN
            MOVE    WKBQ01-SQL          TO  PTSRH-SQL
-           MOVE    "%"                 TO  PTSRH-UPYMD
-                                           PTSRH-UPHMS
            MOVE    PTSRH-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptsrh"         TO  MCP-TABLE
            MOVE    "odr"               TO  MCP-PATHNAME
@@ -822,25 +690,6 @@
       *
            .
        900-PTSRH-DEL1-EXT.
-           EXIT.
-      *****************************************************************
-      *    一時ファイル（患者重複チェック）読込処理
-      *****************************************************************
-       900-BQ03T01-READ-SEC            SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BQ03T01
-      *
-           INITIALIZE                  BQ03T01-REC
-           MOVE    PTSRH-HOSPNUM   TO  BQ03T01-HOSPNUM
-           MOVE    PTSRH-PTID      TO  BQ03T01-PTID
-           READ    BQ03T01-FILE
-           INVALID
-               MOVE    1           TO  FLG-BQ03T01
-           END-READ
-           DISPLAY "STS-BQ03T01[" STS-BQ03T01 "]"
-      *
-           .
-       900-BQ03T01-READ-EXT.
            EXIT.
       *****************************************************************
       *    ステップ管理開始処理
