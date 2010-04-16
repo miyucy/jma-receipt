@@ -114,51 +114,6 @@
       *                                     請求に係わる記録条件仕様の
       *                                     変更に伴う修正
       *                                     診療科２、３を追加
-      *  04.05.03    NACL-藤原    11/02/22  レセ電データの記号番号区切り
-      *                                     文字設定対応
-      *  04.05.04    NACL-藤原    11/03/25  災害対応
-      *                                     連絡先情報追加
-      *  04.05.05    NACL-門脇    12/04/10  改正対応
-      *                                     在医総算定フラグ
-      *                                     （平成２４年４月診療〜）追加
-      *
-      *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料
-      *                                     （１回目）算定フラグ追加
-      *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
-      *                                     種別不明レセ対応
-      *                                     レセプト種別不明エラー情報変更
-      *  04.06.03    NACL-門脇    10/12/13  請求額情報の追加
-      *  04.06.04    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.05    NACL-藤原    11/12/12  点検レセ０点公費印字対応
-      *  04.06.05    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *
-      *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
-      *                                     一部負担金金額集計フラグ追加
-      *                                     保険欄−一部負担金記載
-      *                                     （高齢者）（70歳未満）フラグ追加
-      *  04.07.02    NACL-藤原    12/01/06  予備を２０に変更
-      *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
-      *  04.07.04    NACL-門脇    12/10/02  高齢者判定フラグ追加
-      *  04.07.05    NACL-門脇    13/07/10  自賠責（第三者行為）対応
-      *  04.07.06    NACL-門脇    14/01/08  請求点数がない保険組み合わせ有り
-      *                                     フラグ追加
-      *  04.07.07    NACL-門脇    14/07/31  第三者行為に関するフラグ追加
-      *  04.07.08    NACL-門脇    15/04/27  特記事項０９施がある場合の
-      *                                     【配】回数記載対応
-      *  04.08.01    NACL-門脇    15/10/08  システム管理２０１０機能追加対応
-      *  04.08.02    NACL-門脇    15/12/02  ３歳児視覚聴覚精密健康診査
-      *                                     （地域公費）対応
-      *  04.08.03    NACL-門脇    16/02/08  予備項目使用分について、
-      *                                     個々に項目を設ける。
-      *                                     第３第４公費の括弧再掲記載対応
-      *  04.08.04    NACL-門脇    16/03/15  生保まとめ用項目追加
-      *  04.08.05    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.06    NACL-門脇    16/05/30  １９原爆一般の特殊計算対応
-      *  04.08.07    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
-      *                                     （公費請求書に関わる対応）
-      *  04.08.08    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -180,12 +135,8 @@
                05  RECE02-HKNJANUM-KEY    PIC  X(08).
       *補助区分
                05  RECE02-HOJOKBN-KEY     PIC  X(01).
-      *公費ＩＤ
-               05  RECE02-KOHID-KEY       PIC  9(10).
       *適用開始年月日
                05  RECE02-TEKSTYMD        PIC  X(08). 
-      *分割区分
-               05  RECE02-RECEIPT-KBN     PIC  X(10).
       *患者番号
            03  RECE02-PTNUM               PIC  X(20).
       *診療科情報
@@ -206,40 +157,6 @@
            03  RECE02-SYUGAKUKBN          PIC 9(01).
       *死亡区分
            03  RECE02-DEATHKBN            PIC  X(01).
-      *自宅−郵便番号
-           03  RECE02-HOME-POST           PIC X(07).
-      *自宅−住所
-           03  RECE02-HOME-ADRS           PIC X(200).
-      *自宅−番地方書
-           03  RECE02-HOME-BANTI          PIC X(200).
-      *連絡先−名称
-           03  RECE02-RENRAKU-NAME.
-               05  RECE02-RENRAKU-NAME-R  PIC X(50)
-                                              OCCURS  2.
-      *連絡先−郵便番号
-           03  RECE02-RENRAKU-POST        PIC X(07).
-      *連絡先−住所
-           03  RECE02-RENRAKU-ADRS        PIC X(200).
-      *連絡先−番地方書
-           03  RECE02-RENRAKU-BANTI       PIC X(200).
-      *連絡先−昼電話番号
-           03  RECE02-RENRAKU-TEL1        PIC X(15).
-      *連絡先−夜電話番号
-           03  RECE02-RENRAKU-TEL2        PIC X(15).
-      *自宅−編集郵便番号
-           03  RECE02-HOME-POST1          PIC X(14).
-      *自宅−編集住所（住所＋番地）
-           03  RECE02-HOME-ADRS1.
-               05  RECE02-HOME-ADRS-R     PIC X(50)
-                                              OCCURS  4.
-      *連絡先−編集郵便番号
-           03  RECE02-RENRAKU-POST1       PIC X(14).
-      *連絡先−編集住所（住所＋番地）
-           03  RECE02-RENRAKU-ADRS1.
-               05  RECE02-RENRAKU-ADRS-R  PIC X(50)
-                                              OCCURS  4.
-      *連絡先−編集電話番号（昼電話番号全角）
-           03  RECE02-TEL                 PIC X(30).
       *レセプト対象年月日情報
            03  RECE02-TEKYMD.
       *適用開始年月日
@@ -559,10 +476,6 @@
            03  RECE02-ZAITAKU-SAIKEI      PIC  9(09).
       *在宅総合・在宅末期一部負担金再掲２
            03  RECE02-ZAITAKU-SAIKEI2     PIC  9(09).
-      *再掲３
-           03  RECE02-ZAITAKU-SAIKEI3     PIC  9(09).
-      *再掲４
-           03  RECE02-ZAITAKU-SAIKEI4     PIC  9(09).
       *公費の一部負担金再掲
            03  RECE02-KOH-SAIKEI          PIC  9(09).
       *公費の一部負担金再掲フラグ
@@ -575,7 +488,7 @@
            03  RECE02-TSTPTNUMKBN         PIC  X(01).
       *レセプト種別不明エラー情報
            03  RECE02-ERR-AREA.
-               05  RECE02-ERR-ERRKBN      PIC 9(02).
+               05  RECE02-ERR-ERRKBN      PIC 9(01).
                05  RECE02-ERR-DAY         PIC 9(02).
                05  RECE02-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE02-ERR-TEKSTYMD    PIC 9(08).
@@ -587,8 +500,6 @@
                05  RECE02-JNISSUTBL       PIC  X(01).
       *乳幼児・幼児のコメントフラグ
            03  RECE02-NYUYOJIFLG          PIC  X(01).
-      *小児特定疾患カウンセリング料（１回目）算定フラグ
-           03  RECE02-SYOUNIFLG           PIC  X(01).
       *
       *公費実日数テーブル情報
            03  RECE02-KOHJNISSUTBLINF.
@@ -597,14 +508,8 @@
                                           OCCURS 31.
       *県番号
            03  RECE02-PREFNUM             PIC  9(02).
-      *県内・県外区分（１：県内　２：県外　）
-           03  RECE02-PREFKBN             PIC  X(01).
-      *県番号（保険者）
-           03  RECE02-HKNJANUM-PREFNUM    PIC  X(02).
       *公費分離区分最小値
            03  RECE02-KOHBUNRI-MIN        PIC  9(01).
-      *公費分離区分最大値
-           03  RECE02-KOHBUNRI-MAX        PIC  9(01).
       *病床数編集フラグ（特定疾患療養指導料等）
            03  RECE02-BEDSUFLG            PIC  X(01).
       *自費レセ摘要欄編集レコードフラグ
@@ -641,34 +546,6 @@
                    09  RECE02-EKF-JNISSUFLG    PIC  X(01).
                    09  RECE02-EKF-TOTALTENFLG  PIC  X(01).
                    09  RECE02-EKF-OCRFLG       PIC  X(01).
-                   09  RECE02-EKF-FTNKEIFLG    PIC  X(01).
-                   09  RECE02-EKF-HKNFTNFLG-K  PIC  X(01).
-                   09  RECE02-EKF-HKNFTNFLG-Y  PIC  X(01).
-      *
-                   09  RECE02-EKF-KAKKBN-K     PIC  X(01).
-                   09  RECE02-EKF-KAK21KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK22KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK23KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK31KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK32KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK41KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK42KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAK43KBN-K   PIC  X(01).
-                   09  RECE02-EKF-KAKKBN-Y     PIC  X(01).
-                   09  RECE02-EKF-KAK21KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK22KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK23KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK31KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK32KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK41KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK42KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KAK43KBN-Y   PIC  X(01).
-                   09  RECE02-EKF-KSINGKBN-K   PIC  X(01).
-                   09  RECE02-EKF-KSINGKBN-Y   PIC  X(01).
-                   09  RECE02-EKF-ENCHGKBN-K   PIC  X(01).
-                   09  RECE02-EKF-ENCHGKBN-Y   PIC  X(01).
-      *
-                   09  RECE02-GNBKEIKBN-K-G    PIC  X(01).
       *
       *実日数・請求点記載フラグ
            03  RECE02-JSKISAIFLG          PIC  X(01).
@@ -743,163 +620,8 @@
                                           PIC  X(12).
                    07  RECE02-PTTOKKI-CD  PIC  X(02).
       *
-      *請求額情報（計算用）
-           03  RECE02-FTNMONEY-SKY             PIC 9(09).
-      *
-      *請求額情報（医療費）
-           03  RECE02-SKYIRYO-INF.
-      *実日数
-               05  RECE02-SKYIRYO-NISSU        PIC 9(02).
-      *請求点
-               05  RECE02-SKYIRYO-TOTALTEN     PIC 9(08).
-      *患者負担
-               05  RECE02-SKYIRYO-ICHIBUFTN    PIC 9(09).
-      *保険者負担
-               05  RECE02-SKYIRYO-HOKENJA      PIC 9(09).
-      *公費負担
-               05  RECE02-SKYIRYO-KOHFTN       PIC 9(09).
-      *
-      *請求額情報（公費負担のうちレセプト請求しない地方公費分）
-           03  RECE02-SKYIRYO-KOHFTN-KOHSKY    PIC 9(09).
-      *
-      *点検レセ０点公費フラグ
-           03  RECE02-TENKEN-FLG               PIC X(01).
-      *
-      *在医総算定フラグ（平成２４年４月診療〜）
-           03  RECE02-ZAITAKU-SANTEI-FLG       PIC X(01).
-      *
-      *高齢者判定フラグ
-           03  RECE02-KOUREI-HANTEIFLG         PIC X(01).
-      *
-      *第三者行為情報（インデックスの情報は保険組合せ番号情報とリンク）
-           03  RECE02-DAISANINF-AREA.
-             04  RECE02-DAISANINF               OCCURS 10.
-      *第三者行為保険組合せフラグ
-               05  RECE02-DAISANFLG             PIC 9(01).
-      *第三者行為公費ＩＤ
-               05  RECE02-DAISAN-KOHID          PIC 9(10).
-      *第三者行為保険組合せ現物給付フラグ
-               05  RECE02-DAISAN-GENBUTUFLG     PIC 9(01).
-      *第三者行為請求点数あり
-               05  RECE02-DAISAN-SKYFLG         PIC 9(01).
-      *リハビリ開始日編集用公費分離区分
-               05  RECE02-RIHA-KOHBUNRI         PIC 9(01).
-      *リハビリ算定テーブル
-               05  RECE02-RIHA-DAY-AREA.
-                 06  RECE02-RIHA-DAY-OCC        OCCURS 31.
-                   07  RECE02-RIHA-SINDAI       PIC 9(01).
-                   07  RECE02-RIHA-KOKYUKI      PIC 9(01).
-                   07  RECE02-RIHA-NOUKE        PIC 9(01).
-                   07  RECE02-RIHA-UNDOKI       PIC 9(01).
-                   07  RECE02-RIHA-NANBYO       PIC 9(01).
-                   07  RECE02-RIHA-SYOGAI       PIC 9(01).
-                   07  RECE02-RIHA-SESSYOKU     PIC 9(01).
-                   07  RECE02-RIHA-HAIYO        PIC 9(01).
-      *リハビリ加算算定テーブル
-               05  RECE02-RIHA-DAY9-AREA.
-                 06  RECE02-RIHA-DAY9-OCC       OCCURS 31.
-                   07  RECE02-RIHA-SINDAI9      PIC 9(01).
-                   07  RECE02-RIHA-KOKYUKI9     PIC 9(01).
-                   07  RECE02-RIHA-HAIYO9       PIC 9(01).
-      *
-      *第三者行為レセプト該当フラグ
-      *（０：第三者行為の請求点なし）
-      *（１：第三者行為のみ請求点あり）
-      *（２：第三者行為以外と第三者行為の両方に請求点あり）
-      *（３：第三者行為の請求点なし　（第三者行為に院外処方あり））
-      *（４：第三者行為のみ請求点あり（第三者行為以外に院外処方あり））
-      *（９：第三者行為の請求点なし　（患者登録で第三者行為の登録なし））
-           03  RECE02-DAISAN-GAITO              PIC 9(01).
-      *第三者行為請求点数合計
-           03  RECE02-DAISAN-TOTALTEN           PIC 9(08).
-      *第三者行為一部負担金相当額合計
-           03  RECE02-DAISAN-FTNMONEY           PIC 9(09).
-      *第三者行為レセプト現物給付該当フラグ
-           03  RECE02-DAISAN-GENBUTU-GAITO      PIC 9(01).
-      *第三者行為一部負担金金額置換フラグ
-           03  RECE02-DAISAN-CHIKAN             PIC 9(01).
-      *第三者行為特記事項有無フラグ
-           03  RECE02-DAISAN-TOKKI              PIC 9(01).
-      *
-      *請求点数がない保険組み合わせ有りフラグ
-           03  RECE02-SKYTENFLG                 PIC 9(01).
-      *
-      *特記事項０９施有りフラグ
-           03  RECE02-TOKKI09FLG                PIC 9(01).
-      *【配】コメント有りフラグ
-           03  RECE02-HAICOMFLG                 PIC 9(01).
-      *初診ダミー・再診ダミーの剤回数
-           03  RECE02-DUMMYKAISU                PIC 9(03).
-      *
-      *３歳児視覚聴覚精密健康診査（地域公費）
-           03  RECE02-SEIKENFLG                 PIC 9(01).
-           03  RECE02-SEIKENTEN                 PIC 9(07).
-      *
-      *高齢非該当フラグ
-           03  RECE02-KOREIHIGAITO              PIC 9(01).
-      *公費分離区分置換フラグ
-           03  RECE02-KOHBUNRICHIKAN            PIC 9(01).
-      *非減免対象分扱い一部負担金
-           03  RECE02-GENMEN-NASI-KIN           PIC 9(09).
-      *括弧再掲上の０円記載フラグ
-           03  RECE02-SAIKEIZEROKSI1            PIC 9(01).
-      *括弧再掲下の０円記載フラグ
-           03  RECE02-SAIKEIZEROKSI2            PIC 9(01).
-      *括弧再掲３の０円記載フラグ
-           03  RECE02-SAIKEIZEROKSI3            PIC 9(01).
-      *括弧再掲４の０円記載フラグ
-           03  RECE02-SAIKEIZEROKSI4            PIC 9(01).
-      *東大阪市減免コメントフラグ
-           03  RECE02-GENMEN-COM                PIC 9(01).
-      *【レセプト】保険欄−一部負担金記載なしフラグ
-           03  RECE02-ICBKINKSI-NASI            PIC 9(01).
-      *【レセプト】保険欄−一部負担金記載ありフラグ
-           03  RECE02-ICBKINKSI-ARI             PIC 9(01).
-      *【レセプト】公費欄−一部負担金金額置換フラグ
-           03  RECE02-KOHCHIKAN                 PIC 9(01).
-      *「（再掲上）：」置換金額
-           03  RECE02-SAIKEI-CHIKAN-KIN1        PIC 9(09).
-      *「（再掲下）：」置換金額
-           03  RECE02-SAIKEI-CHIKAN-KIN2        PIC 9(09).
-      *「（再掲３）：」置換金額
-           03  RECE02-SAIKEI-CHIKAN-KIN3        PIC 9(09).
-      *「（再掲４）：」置換金額
-           03  RECE02-SAIKEI-CHIKAN-KIN4        PIC 9(09).
-      *「保険負担金：」置換金額
-           03  RECE02-HKN-CHIKAN-KIN            PIC 9(09).
-      *「公１負担金：」置換金額
-           03  RECE02-KOH-CHIKAN-KIN1           PIC 9(09).
-      *「公２負担金：」置換金額
-           03  RECE02-KOH-CHIKAN-KIN2           PIC 9(09).
-      *「公３負担金：」置換金額
-           03  RECE02-KOH-CHIKAN-KIN3           PIC 9(09).
-      *「公４負担金：」置換金額
-           03  RECE02-KOH-CHIKAN-KIN4           PIC 9(09).
-      *
-      *生保まとめ用（主保険単独分診区別点数）
-           03  RECE02-SYUTANTEN-AREA.
-               05  RECE02-SYUTANTEN             PIC 9(08)  OCCURS 50.
-           03  RECE02-SYUTANARIFLG              PIC 9(01).
-      *
-      *湿布薬制限枚数解除及び院外湿布薬７０枚超理由コメント情報
-           03  RECE02-SIPPUCHKFLG               PIC 9(01).
-           03  RECE02-SIPPUCHKINF.
-             04  RECE02-SIPPUCHK-OCC            OCCURS  10.
-               05  RECE02-SIPPUCHK-OCC2         OCCURS  31.
-                   07  RECE02-SIPPUCHK          PIC 9(03).
-      *
-      *１９原爆一般特殊計算フラグ（患者７割負担）
-           03  RECE02-GENBAKUINF.
-               05  RECE02-GENBAKU-TOKFLG        PIC 9(01).
-               05  RECE02-GENBAKU-OCC           OCCURS 10.
-                   07  RECE02-GENBAKU-FTNKIN    PIC 9(07)V9(01).
-                   07  RECE02-GENBAKU-IDX       PIC 9(01).
-      *
-      *請求点数０円レセプト作成フラグ
-           03  RECE02-SKYZEROFLG                PIC 9(01).
-      *
       *予備
            03  RECE02-YOBIETC-AREA.
-               05  RECE02-YOBIETCINF          OCCURS 20.
+               05  RECE02-YOBIETCINF          OCCURS 10.
                    07  RECE02-YOBIETC     PIC  9(09).
       *
