@@ -844,7 +844,8 @@
       *
       *    日数編集
            IF    ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3 ) AND
-                 ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   4 )
+                 ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   4 ) AND
+                 ( TNSP-SOURYOHENKBN           NOT =   "1" )
                PERFORM 241-NAIYO-NISSU-SET-SEC
            END-IF
       *
@@ -1006,7 +1007,8 @@
       *
       *    全数量
            IF      WRK-ZENSURYO    >   0
-               IF     ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3
+               IF   ( ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3 ) AND
+                    ( TNSP-SOURYOHENKBN            NOT =   "1" )
                    COMPUTE WRK-SURYO   =   WRK-ZENSURYO
                                        *   ORCHC30-KAISU(CNT-PARA)
                ELSE
@@ -1014,7 +1016,8 @@
                                        *   ORCHC30-SRYKAISU(CNT-PARA)
                END-IF
            ELSE
-               IF     ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3
+               IF   ( ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3 ) AND
+                    ( TNSP-SOURYOHENKBN            NOT =   "1" )
                    COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
                                        *   ORCHC30-KAISU(CNT-PARA)
                ELSE
@@ -1140,7 +1143,8 @@
        240-KBN-SET-SEC             SECTION.
       *
       *    在宅なら抜ける
-           IF      ORCHC30-ZAIKBN(CNT-PARA)     =   4
+           IF    ( ORCHC30-ZAIKBN(CNT-PARA)     =   4 ) OR
+                 ( TNSP-SOURYOHENKBN            =   "1" )
                GO  TO  240-KBN-SET-EXT
            END-IF
       *
