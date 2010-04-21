@@ -482,7 +482,7 @@ OPENLOG;
 	if (code != NULL) {
 		if (code->version <= version) {
 			snprintf(qrfile_suffix, sizeof(qrfile_suffix), 
-				"%s_%02d.png", qrfile);
+				"%s_%02d.png", qrfile, 1);
 			if(writePNG(code, qrfile_suffix, size, margin) != 0){
 				memset(CTX(ctx, OFFSET_RET_CODE), WRITE_PNG_ERROR, SIZE_RET_CODE);
 				return;
