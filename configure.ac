@@ -157,7 +157,7 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 	  COBOLFLAGS="-m -dynamic -fixed "
   	  EXEC_COBOLFLAGS="-main -dynamic -fixed " 
       else
-	  COBOLFLAGS="-m -dynamic -fixed -std=cobol85 -Wall "
+	  COBOLFLAGS="-m -dynamic -fixed -fimplicit-init -std=cobol85 -Wall "
   	  EXEC_COBOLFLAGS="-x -dynamic -fixed -std=cobol85 -Wall "
       fi	
   else
