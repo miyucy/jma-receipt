@@ -17,20 +17,4 @@
 #define GAIJI      256
 #define UNKNOWN    256
 
-typedef struct {
-	size_t  out_len;
-	int in_type;
-	int out_type;
-	unsigned char out_char[2];
-
-} ConvertChar;
-
-
-void StringCobol2C(char	*str, size_t size);
-void StringC2Cobol(char	*str,  size_t size);
-
 int kanaconv (char *args);
-int kana_euc_convert (int conv_flg, int char_type, size_t max_len, size_t *ret_len, char *inchar, char *ouchar);
-
-
-

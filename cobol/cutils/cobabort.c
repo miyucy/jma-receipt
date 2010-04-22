@@ -6,6 +6,6 @@ void
 cobabort (char *message)
 {
 	fprintf(stderr, "cobabort: %s\n", message);
-	syslog(LOG_ERR, message);
+	syslog(LOG_ERR, "%s", message);
 	exit(2);
 }

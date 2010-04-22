@@ -50,8 +50,8 @@ kanaconv (char *args)
 {
 	int conv_flg, char_type;
 	int *ret_val;
-	size_t len, str_len;
-	size_t *ret_len;
+	int len, str_len;
+	int *ret_len;
 	char *org_str, *new_str;
 	char *p;
 
@@ -63,7 +63,7 @@ kanaconv (char *args)
 	ret_val = (int *)(p);
 
 	p += sizeof(int);
-	ret_len = (size_t *)(p);
+	ret_len = (int *)(p);
 
 	p += sizeof(int);
 	conv_flg = *(int *)(p);
@@ -72,7 +72,7 @@ kanaconv (char *args)
 	char_type = *(int *)(p);
 
 	p += sizeof(int);
-	str_len = *(size_t *)(p);
+	str_len = *(int *)(p);
 
 	p += sizeof(int);
 	org_str = p;
@@ -105,7 +105,7 @@ main(
 	char *in;
 	char *out;
 	struct stat st;
-	size_t retlen;
+	int retlen;
 	FILE *fp;
 	
 	if (argc < 4) {

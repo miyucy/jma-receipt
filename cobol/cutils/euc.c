@@ -105,7 +105,7 @@ ISJIS208(
 void
 StringCobol2C(
 	char	*str,
-	size_t	size)
+	int		size)
 {
 	char	*p;
 
@@ -123,7 +123,7 @@ StringCobol2C(
 void
 StringC2Cobol(
 	char	*str,
-	size_t	size)
+	int		size)
 {
 	int i;
 	int fEnd;
@@ -368,8 +368,8 @@ tohiragana(ConvertChar *cchar)
 int
 kana_euc_convert (int conv_flg,
 				  int char_type,
-				  size_t max_len,
-				  size_t *ret_len,
+				  int max_len,
+				  int *ret_len,
 				  char *inchar,
 				  char *ouchar)
 {
@@ -379,7 +379,7 @@ kana_euc_convert (int conv_flg,
 	char *p;
 	int i, ret;
 	int intype = 0;
-	size_t current_len = 0;
+	int current_len = 0;
 	
 	cchar = &ochar;
 	p = ouchar;

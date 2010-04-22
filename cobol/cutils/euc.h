@@ -31,7 +31,7 @@
 #define ISSPACEONLY(c)     	(((c)&0xff) == 0x20)
 
 typedef struct {
-	size_t  out_len;
+	int  out_len;
 	int in_type;
 	int out_type;
 	unsigned char out_char[3];
@@ -48,8 +48,8 @@ typedef struct {
 } ORCSSTRING;
 
 int ISJIS208(unsigned char c0, unsigned char c1);
-void StringCobol2C(char	*str, size_t size);
-void StringC2Cobol(char	*str,  size_t size);
+void StringCobol2C(char	*str, int size);
+void StringC2Cobol(char	*str,  int size);
 int search_ascii_zenkaku(unsigned char d0, unsigned char d1);
 int asciiconv(int conv_flg, int char_type, unsigned char inputChar, ConvertChar *cchar);
 int hankakukanaconv(int conv_flg, int char_type, unsigned char c0, unsigned char c1, unsigned char c2, unsigned char c3, ConvertChar *cchar);
@@ -58,7 +58,7 @@ int zenkakuconv(int conv_flg, int char_type, unsigned char c0, unsigned char c1,
 int g3conv(int conv_flg, int char_type, unsigned char c0, unsigned char c1, unsigned char c2, ConvertChar *cchar);
 void tokatakana(ConvertChar *cchar);
 void tohiragana(ConvertChar *cchar);
-int kana_euc_convert (int conv_flg, int char_type, size_t max_len, size_t *ret_len, char *inchar, char *ouchar);
+int kana_euc_convert (int conv_flg, int char_type, int max_len, int *ret_len, char *inchar, char *ouchar);
 
 int  jis213_count(char *in,char *out,int *result);
 void jis213_check(ORCSSTRING *str);
