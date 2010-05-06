@@ -95,7 +95,7 @@
                                                OCCURS  31.
       *
        01  CONST-AREA.
-           03  CONST-H220401           PIC 9(05)   VALUE "20100401".
+           03  CONST-H220401           PIC X(08)   VALUE "20100401".
            03  CONST-NSRYACT-MAX       PIC 9(05)   VALUE 5.
            03  CONST-ADL-TTLZAINUM     PIC 9(04)   VALUE 3000.
       *
