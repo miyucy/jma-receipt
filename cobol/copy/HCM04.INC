@@ -1,6 +1,6 @@
         01  HCM04.
             02  HCM04-NO    PIC X(7).
-            02  HCM04-SRYYMD    PIC X(22).
+            02  HCM04-SRYYMD    PIC X(30).
             02  HCM04-NAME  PIC X(30).
             02  HCM04-PTNUM PIC X(20).
             02  HCM04-SRYKANAME PIC X(20).
@@ -14,6 +14,7 @@
               03  HCM04-TANI  PIC X(10).
               03  HCM04-SURYO PIC X(11).
               03  HCM04-KAISU PIC X(3).
+              03  HCM04-KAISU2    PIC X(18).
               03  HCM04-KINGAKU   PIC X(11).
               03  HCM04-KINGAKU2  PIC X(16).
             02  HCM04-IRYOADRS  PIC X(100).
@@ -22,3 +23,4 @@
             02  HCM04-LABEL1    PIC X(16).
             02  HCM04-LABEL2    PIC X(126).
             02  HCM04-LOPTION   PIC X(50).
+            02  HCM04-FUTANLABEL    PIC X(2).

@@ -45,6 +45,9 @@ Z05	{
 		FORMALNAME	{
 			value	varchar(200);
 		};
+		SHONAME	{
+			value	varchar(200);
+		};
 		INPCHKKBN	{
 			value	number(1);
 		};

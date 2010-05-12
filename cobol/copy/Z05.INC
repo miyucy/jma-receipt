@@ -47,6 +47,8 @@
                 04  Z05-VALUE   PIC S9(9).
               03  Z05-FORMALNAME.
                 04  Z05-VALUE   PIC X(200).
+              03  Z05-SHONAME.
+                04  Z05-VALUE   PIC X(200).
               03  Z05-INPCHKKBN.
                 04  Z05-VALUE   PIC S9(1).
               03  Z05-TENSIKIBETUCOB.
