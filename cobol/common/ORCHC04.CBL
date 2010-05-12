@@ -151,7 +151,10 @@
            03  WRK-SYU-SRYYMD              PIC X(08).
       *    見出し編集
            03  WRK-STYMD               PIC X(22).
-           03  WRK-EDYMD               PIC X(22).
+           03  WRK-EDYMD.
+               05  WRK-EDYY            PIC X(10).
+               05  WRK-EDMM            PIC X(06).
+               05  WRK-EDDD            PIC X(06).
            03  WRK-H-SRYYMD            PIC X(50).
            03  WRK-H-HAKYMD            PIC X(22).
            03  WRK-FUTAN               PIC X(03).
@@ -1628,7 +1631,7 @@
            MOVE    WRK-HENYMDG         TO  WRK-EDYMD
            STRING  WRK-STYMD
                    "〜"
-                   WRK-EDYMD           DELIMITED  BY  SIZE
+                   WRK-EDDD            DELIMITED  BY  SIZE
                                        INTO    WRK-H-SRYYMD
            END-STRING
       *    発行日
