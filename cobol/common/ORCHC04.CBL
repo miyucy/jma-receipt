@@ -956,14 +956,15 @@
       *
                IF      TBL-H-KAISU  (IDX IDX2) =   "---"
                    MOVE    ALL "―"            TO  HCM04-KAISU2 (IDX2)
+                   MOVE    ALL "―"            TO  HCM04-KINGAKU2(IDX2)
                ELSE
                    MOVE    TBL-H-SURYO  (IDX IDX2)
                                                TO  HCM04-SURYO (IDX2)
                    MOVE    TBL-H-KAISU  (IDX IDX2)
                                                TO  HCM04-KAISU (IDX2)
+                   MOVE    TBL-H-KINGAKU(IDX IDX2)
+                                               TO  HCM04-KINGAKU(IDX2)
                END-IF
-      *
-               MOVE    TBL-H-KINGAKU(IDX IDX2) TO  HCM04-KINGAKU(IDX2)
       *        点数記載で円のもの
                IF      PARA-GOKEITANI      =   "1"
                    IF      TBL-H-EN   (IDX IDX2)    =   "1"
@@ -1444,8 +1445,6 @@
                PERFORM 200520-PAGE-CNT-SEC
            END-IF
            MOVE    ALL "―"            TO  TBL-H-SRYKBN (WRK-PAGE IDX-H)
-           MOVE    ALL "-"             TO  TBL-H-SURYO  (WRK-PAGE IDX-H)
-                                                             (4:)
            MOVE    ALL "-"             TO  TBL-H-KAISU  (WRK-PAGE IDX-H)
            MOVE    ALL "-"             TO  TBL-H-KINGAKU(WRK-PAGE IDX-H)
            EVALUATE    TRUE
@@ -1680,20 +1679,20 @@
            EVALUATE    ORCHC04-HAKHOUFLG
       *        科・保険別
                WHEN    1
-                   MOVE    SPACE           TO  WRK-KEY-SRYKA
-                   MOVE    SPACE           TO  WRK-KEY-HKNCOMBINUM
+                   MOVE    SYU-SRYKA       TO  WRK-KEY-SRYKA
+                   MOVE    SYU-HKNCOMBINUM TO  WRK-KEY-HKNCOMBINUM
       *        保険別
                WHEN    2
-                   MOVE    SYU-SRYKA       TO  WRK-KEY-SRYKA
-                   MOVE    SPACE           TO  WRK-KEY-HKNCOMBINUM
-      *        科別
-               WHEN    3
                    MOVE    SPACE           TO  WRK-KEY-SRYKA
                    MOVE    SYU-HKNCOMBINUM TO  WRK-KEY-HKNCOMBINUM
+      *        科別
+               WHEN    3
+                   MOVE    SYU-SRYKA       TO  WRK-KEY-SRYKA
+                   MOVE    SPACE           TO  WRK-KEY-HKNCOMBINUM
       *        合計
                WHEN    4
-                   MOVE    SYU-SRYKA       TO  WRK-KEY-SRYKA
-                   MOVE    SYU-HKNCOMBINUM TO  WRK-KEY-HKNCOMBINUM
+                   MOVE    SPACE           TO  WRK-KEY-SRYKA
+                   MOVE    SPACE           TO  WRK-KEY-HKNCOMBINUM
            END-EVALUATE
       *
       *    伝票番号毎明細編集処理
