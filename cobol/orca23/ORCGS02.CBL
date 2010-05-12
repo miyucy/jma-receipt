@@ -3950,6 +3950,8 @@
                IF    ( SPA-S01-TUKI-KIKANKBN   =   "1" )
                    IF    ( SYU-SRYYMD  >=  SPA-S01-TUKI-STYMD )
                     AND  ( SYU-SRYYMD  <=  SPA-S01-TUKI-EDYMD )
+                       CONTINUE
+                   ELSE
                        MOVE    ZERO    TO  FLG-HIT
                    END-IF
                END-IF
