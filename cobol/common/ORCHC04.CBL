@@ -162,6 +162,8 @@
            03  WRK-SRYKA-MEI           PIC X(30).
            03  WRK-HKNCOMBIMEI         PIC X(40).
       *
+           03  WRK-H-DENPNUM           PIC 9(07).
+      *
       *
            03  WRK-SRYKA               PIC X(02).
            03  WRK-PAGE                PIC 9(03).
@@ -914,7 +916,7 @@
            MOVE    WRK-PAGE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  HCM04-PAGE
       *    伝票番号
-           MOVE    HZN-SYU-DENPNUM     TO  WRK-NO
+           MOVE    WRK-H-DENPNUM       TO  WRK-NO
            MOVE    WRK-NO              TO  HCM04-NO
       *    診療科
            MOVE    WRK-SRYKA-MEI(1:20) TO  HCM04-SRYKANAME
@@ -1043,6 +1045,8 @@
       *****************************************************************
        201-ONLY-SYUNOU-SEC                SECTION.
       *
+      *    伝票番号
+           MOVE    ORCHC04-DENPNUM     TO  WRK-H-DENPNUM
       *    収納検索
            MOVE    ORCHC04-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-HEN-SEC
@@ -1230,6 +1234,8 @@
                MOVE    SYU-HKNCOMBINUM     TO  WRK-KEY-HKNCOMBINUM
                MOVE    SYU-DENPNUM         TO  WRK-KEY-DENPNUM
                MOVE    ZERO                TO  WRK-KEY-PCNT
+      *        表示伝票番号
+               MOVE    SYU-DENPNUM         TO  WRK-H-DENPNUM
                MOVE    TBL-SYUNOU-REC (IDX-SYU)
                                            TO  HZN-SYUNOU-REC
                PERFORM 300-MEISAI-SYORI-SEC
@@ -1255,10 +1261,13 @@
                    CONTINUE
                ELSE
                    MOVE    TBL-SYU-HKNCOMBINUM (IDX-SYU)
-                                           TO  WRK-KEY-HKNCOMBINUM
-                   MOVE    ZERO            TO  WRK-KEY-PCNT
+                                               TO  WRK-KEY-HKNCOMBINUM
+                   MOVE    ZERO                TO  WRK-KEY-PCNT
+      *            表示伝票番号
+                   MOVE    TBL-SYU-DENPNUM (IDX-SYU)
+                                               TO  WRK-H-DENPNUM
                    MOVE    TBL-SYUNOU-REC (IDX-SYU)
-                                           TO  HZN-SYUNOU-REC
+                                               TO  HZN-SYUNOU-REC
                    PERFORM VARYING     IDX-SYU2    FROM    1   BY  1
                            UNTIL       IDX-SYU2    >   IDX-SYUMAX
                        IF      WRK-KEY-HKNCOMBINUM =
@@ -1295,10 +1304,13 @@
                    CONTINUE
                ELSE
                    MOVE    TBL-SYU-SRYKA (IDX-SYU)
-                                           TO  WRK-KEY-SRYKA
-                   MOVE    ZERO            TO  WRK-KEY-PCNT
+                                               TO  WRK-KEY-SRYKA
+                   MOVE    ZERO                TO  WRK-KEY-PCNT
+      *            表示伝票番号
+                   MOVE    TBL-SYU-DENPNUM (IDX-SYU)
+                                               TO  WRK-H-DENPNUM
                    MOVE    TBL-SYUNOU-REC (IDX-SYU)
-                                           TO  HZN-SYUNOU-REC
+                                               TO  HZN-SYUNOU-REC
                    PERFORM VARYING     IDX-SYU2    FROM    1   BY  1
                            UNTIL       IDX-SYU2    >   IDX-SYUMAX
                        IF      WRK-KEY-SRYKA   =
@@ -1337,7 +1349,10 @@
                                            TO   SYUNOU-REC
                IF      IDX-SYU             =   1
                    MOVE    TBL-SYUNOU-REC (IDX-SYU)
-                                           TO  HZN-SYUNOU-REC
+                                               TO  HZN-SYUNOU-REC
+      *            表示伝票番号
+                   MOVE    TBL-SYU-DENPNUM (IDX-SYU)
+                                               TO  WRK-H-DENPNUM
                END-IF
                PERFORM 300-MEISAI-SYORI-SEC
            END-PERFORM
@@ -1533,14 +1548,6 @@
                END-IF
                MOVE    ORCHC04SUB-H-SRYKBN(IDX)    TO  TBL-H-SRYKBN
                                                      (WRK-PAGE IDX-H)
-      ***      点数記載は＊
-      *        IF      ORCHC04SUB-H-KINGAKU (IDX)  =   SPACE
-      *            MOVE    "　"                TO  TBL-H-ZKBN
-      *                                              (WRK-PAGE IDX-H)
-      *        ELSE
-      *            MOVE    "＊"                TO  TBL-H-ZKBN
-      *                                              (WRK-PAGE IDX-H)
-      **       END-IF
       *        剤開始（＊）
                MOVE    ORCHC04SUB-H-ZAIHEN (IDX)
                                                TO  TBL-H-ZKBN
@@ -1620,6 +1627,8 @@
       *****************************************************************
        200-KIKAN-MAIN-SEC                SECTION.
       *
+      *    伝票番号
+           MOVE    ORCHC04-DENPNUM     TO  WRK-H-DENPNUM
       *    診療日
            MOVE    ORCHC04-KIKAN-STYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -1706,19 +1715,19 @@
       *
            IF      IDX-TBL             >   ZERO
       *        診療科・保険組合せ
-               IF      WRK-KEY-PCNT        >   ZERO
-                   IF      WRK-SYU-SRYYMD      =   SYU-SRYYMD
-                       MOVE    ALL "―"            TO  WRK-DAY-HEN
-                   ELSE
+      *        IF      WRK-KEY-PCNT        >   ZERO
+      *            IF      WRK-SYU-SRYYMD      =   SYU-SRYYMD
+      *                MOVE    ALL "―"            TO  WRK-DAY-HEN
+      *            ELSE
                        MOVE    SYU-SRYYMD          TO  WRK-SYMD
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG(17:6)   TO  WRK-DAY-H2
                        MOVE    "〔"                TO  WRK-DAY-H1
                        MOVE    "〕"                TO  WRK-DAY-H3
-                   END-IF
+      *            END-IF
       *            伝票毎の切り替え
                    PERFORM 3006-KEY-HENSYU-SEC
-               END-IF
+      *        END-IF
                PERFORM 3005-PRTTBL-HENSYU-SEC
                ADD     1                   TO  WRK-KEY-PCNT
       *        診療科・保険組合せ
@@ -1768,14 +1777,7 @@
                END-IF
                MOVE    ORCHC04SUB-H-SRYKBN(IDX)    TO  TBL2-H-SRYKBN
                                                      (WRK-PAGE IDX-H)
-      *        点数記載は＊
-      ***      IF      ORCHC04SUB-H-KINGAKU (IDX)  =   SPACE
-      *            MOVE    "　"                TO  TBL2-H-ZKBN
-      *                                              (WRK-PAGE IDX-H)
-      *        ELSE
-      *            MOVE    "＊"                TO  TBL2-H-ZKBN
-      *                                              (WRK-PAGE IDX-H)
-      ****     END-IF
+      *        ＊
                MOVE    ORCHC04SUB-H-ZAIHEN (IDX)
                                                TO  TBL2-H-ZKBN
                                                      (WRK-PAGE IDX-H)
@@ -1910,7 +1912,7 @@
            MOVE    WRK-PAGE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  HCM04A5-PAGE
       *    伝票番号
-           MOVE    HZN-SYU-DENPNUM     TO  WRK-NO
+           MOVE    WRK-H-DENPNUM       TO  WRK-NO
            MOVE    WRK-NO              TO  HCM04A5-NO
       *    診療科
            MOVE    WRK-SRYKA-MEI(1:20) TO  HCM04A5-SRYKANAME
@@ -2163,74 +2165,6 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    受診履歴マスター読込
-      *****************************************************************
-       910-JYURRK-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  JYURRK-REC
-               MOVE    ZERO            TO  FLG-JYURRK
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-      *
-           .
-       910-JYURRK-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計マスター読込
-      *****************************************************************
-       920-SRYACT-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
-               MOVE    ZERO            TO  FLG-SRYACT
-           ELSE
-               INITIALIZE                  SRYACT-REC
-               MOVE    1               TO  FLG-SRYACT
-           END-IF
-      *
-           .
-       920-SRYACT-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計マスター読込
-      *****************************************************************
-       930-SRYACCT-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SRYACCT-REC
-               MOVE    ZERO            TO  FLG-SRYACCT
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1               TO  FLG-SRYACCT
-           END-IF
-      *
-           .
-       930-SRYACCT-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計マスター読込
-      *****************************************************************
-       930-SRYACCTPLUS-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SRYACCTPLUS-REC
-               MOVE    ZERO            TO  FLG-SRYACCTPLUS
-           ELSE
-               INITIALIZE                  SRYACCTPLUS-REC
-               MOVE    1               TO  FLG-SRYACCTPLUS
-           END-IF
-      *
-           .
-       930-SRYACCTPLUS-READ-EXT.
-           EXIT.
-      *****************************************************************
       *    収納マスター読込
       *****************************************************************
        980-SYUNOU-READ-SEC         SECTION.
@@ -2247,165 +2181,6 @@
            .
        980-SYUNOU-READ-EXT.
            EXIT.
-      *****************************************************************
-      *    労災保険マスター読込
-      *****************************************************************
-       940-PTRSIINF-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
-               MOVE    ZERO            TO  FLG-PTRSIINF
-           ELSE
-               INITIALIZE                  PTRSIINF-REC
-               MOVE    1               TO  FLG-PTRSIINF
-           END-IF
-      *
-           .
-       940-PTRSIINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険マスター読み込み
-      *****************************************************************
-       950-PTHKNINF-READ-SEC         SECTION.
-      *
-           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
-                   MOVE    ZERO            TO  FLG-PTHKNINF
-               ELSE
-                   MOVE    1               TO  FLG-PTHKNINF
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTHKNINF
-           END-IF
-     *
-           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       950-PTHKNINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せマスター読み込み
-      *****************************************************************
-       910-HKNCOMBI-READ-SEC         SECTION.
-      *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-                   MOVE    ZERO            TO  FLG-HKNCOMBI
-               ELSE
-                   MOVE    1               TO  FLG-HKNCOMBI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-     *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       910-HKNCOMBI-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスター読込
-      *****************************************************************
-       910-TENSU-READ-SEC         SECTION.
-      *
-           MOVE    SPA-SRYYMD          TO  TNS-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
-      *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   MOVE    ZERO                TO  FLG-TENSU
-               ELSE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    1                   TO  FLG-TENSU
-               END-IF
-           ELSE
-               INITIALIZE                  TNS-TENSU-REC
-               MOVE    1                   TO  FLG-TENSU
-           END-IF
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    点数附加情報検索
-           IF     (FLG-TENSU           =   ZERO)
-               PERFORM 9101-TENSUPLUS-READ-SEC
-           ELSE
-               INITIALIZE                      TENSUPLUS-REC
-           END-IF
-           .
-       910-TENSU-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ付加情報検索処理
-      *****************************************************************
-       9101-TENSUPLUS-READ-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSUPLUS-REC
-           INITIALIZE                      TENSUPLUS-REC
-           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-      *
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
-                   MOVE    ZERO                TO  FLG-TENSUPLUS
-               ELSE
-                   INITIALIZE                  TENSUPLUS-REC
-                   MOVE    1                   TO  FLG-TENSUPLUS
-               END-IF
-           ELSE
-               INITIALIZE                      TENSUPLUS-REC
-               MOVE    1                   TO  FLG-TENSUPLUS
-           END-IF
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9101-TENSUPLUS-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
