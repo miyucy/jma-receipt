@@ -1904,11 +1904,16 @@
                                                WRK-LBLSRYYMD
       *
            IF    ( ORCHC03-HAKKOFLG    =   4 )
+               IF    ( SYUPARA03-KIKANKBN  =   "1" )
+                   MOVE    "¿ÇÎÅÆü"        TO  WRK-LBLSRYYMD
+                   PERFORM 31012-SRYYMD-HEN-SEC
+               ELSE
                    MOVE    "¿ÇÎÅÇ¯·î"      TO  WRK-LBLSRYYMD
                    MOVE    SYU-SRYYMD      TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG  (1:16)
                                            TO  WRK-SRYYMDG
+               END-IF
            ELSE
                IF    ( ORCHC03-PARAFLG         =   1 )
                 AND  ( SYUPARA03-STSRYYMD  NOT =   SYUPARA03-EDSRYYMD )
@@ -1938,10 +1943,10 @@
       *
            MOVE    SYUPARA03-EDSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-EDSRYYMDG
+           MOVE    WRK-HENYMDG (17:)   TO  WRK-EDSRYYMDG
       *
            STRING  WRK-STSRYYMDG       DELIMITED   BY  SIZE
-                   " ¡Á "              DELIMITED   BY  SIZE
+                   "¡Á"                DELIMITED   BY  SIZE
                    WRK-EDSRYYMDG       DELIMITED   BY  SIZE
            INTO    WRK-SRYYMDG
            END-STRING

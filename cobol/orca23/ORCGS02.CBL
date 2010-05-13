@@ -3398,6 +3398,8 @@
                MOVE    WRK-SPA-PTID    TO  ORCHCN04-PTID
                MOVE    WRK-SPA-PTNUM   TO  ORCHCN04-PTNUM
                MOVE    WRK-SPA-NAME    TO  ORCHCN04-NAME
+               MOVE    SYU-SKYSTYMD    TO  ORCHCN04-SKYSTYMD
+               MOVE    SYU-SKYEDYMD    TO  ORCHCN04-SKYEDYMD
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   ORCHCN03S02-GRP-CNT )
