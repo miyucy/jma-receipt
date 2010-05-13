@@ -536,9 +536,8 @@
                CONTINUE
            ELSE
                IF     (TNS-TENSIKIBETU     =   3
-                                           OR  1        )
-               AND   ((SRY-SRYCD (IDXA)(1:1)    =   "1"  )
-                  OR  (SRY-SRYCD (IDXA)(1:4)    =   "0959" ))
+                                           OR  1         )
+                  AND (SRY-SRYCD (IDXA)(1:1)    =   "1"  )
                    MOVE    TNS-TEN             TO  WRK-TBL-TEN (IDX-S)
                    MOVE    TNS-TENSIKIBETU     TO  WRK-TBL-TENSIKIBETU
                                                             (IDX-S)
@@ -547,6 +546,13 @@
                    ELSE
                        ADD     TNS-TEN         TO  WRK-SUM-KINGAKU
                    END-IF
+               END-IF
+      *        自賠責のその他
+               IF     (SRY-SRYCD (IDXA)(1:4)   =   "0959" )
+                   MOVE    TNS-TEN             TO  WRK-TBL-TEN (IDX-S)
+                   MOVE    TNS-TENSIKIBETU     TO  WRK-TBL-TENSIKIBETU
+                                                            (IDX-S)
+                   ADD     TNS-TEN             TO  WRK-SUM-KINGAKU
                END-IF
            END-IF
       *

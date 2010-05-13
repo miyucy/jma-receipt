@@ -16,6 +16,7 @@
               03  HCN04-TANI  PIC X(10).
               03  HCN04-SURYO PIC X(11).
               03  HCN04-KAISU PIC X(3).
+              03  HCN04-KAISU2    PIC X(18).
               03  HCN04-KINGAKU   PIC X(11).
               03  HCN04-KINGAKU2  PIC X(16).
             02  HCN04-IRYOADRS  PIC X(100).
@@ -23,4 +24,5 @@
             02  HCN04-IRYOTEL   PIC X(15).
             02  HCN04-LABEL1    PIC X(16).
             02  HCN04-LABEL2    PIC X(126).
+            02  HCN04-FUTANLABEL    PIC X(2).
             02  HCN04-LOPTION   PIC X(50).
