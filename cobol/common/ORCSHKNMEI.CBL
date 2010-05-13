@@ -64,7 +64,6 @@
                05  WRK-WYY             PIC X(03).
                05  WRK-WMM             PIC 9(02).
                05  WRK-WDD             PIC 9(02).
-           03  WRK-HENYMDG             PIC X(22).
       *
            03  WRK-HKNCOMBIMEI         PIC X(100).
       *

@@ -98,8 +98,8 @@
                05  WRK-WDD             PIC 9(02).
            03  WRK-HENYMDG             PIC X(22).
       *
-           03  WRK-TENSU                   PIC 9(09)V99.
-           03  WRK-KINGAKU                 PIC 9(09).
+           03  WRK-SUM-TENSU           PIC 9(09)V99.
+           03  WRK-SUM-KINGAKU         PIC 9(09).
       *
            03  WRK-KAISU               PIC 9(03).
            03  WRK-SRYKBN              PIC X(02).
@@ -451,8 +451,8 @@
       *
            INITIALIZE                  WRK-MEISAI-AREA
            MOVE    ZERO                TO  IDX-S
-           MOVE    ZERO                TO  WRK-TENSU
-           MOVE    ZERO                TO  WRK-KINGAKU
+           MOVE    ZERO                TO  WRK-SUM-TENSU
+           MOVE    ZERO                TO  WRK-SUM-KINGAKU
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
                PERFORM VARYING     IDXA    FROM    1   BY  1
@@ -543,9 +543,9 @@
                    MOVE    TNS-TENSIKIBETU     TO  WRK-TBL-TENSIKIBETU
                                                             (IDX-S)
                    IF      TNS-TENSIKIBETU     =   3
-                       ADD     TNS-TEN         TO  WRK-TENSU
+                       ADD     TNS-TEN         TO  WRK-SUM-TENSU
                    ELSE
-                       ADD     TNS-TEN         TO  WRK-KINGAKU
+                       ADD     TNS-TEN         TO  WRK-SUM-KINGAKU
                    END-IF
                END-IF
            END-IF
@@ -604,14 +604,14 @@
            MOVE    WRK-KAISU           TO  TBL-KAISU (IDX-TBL)
       *
            MOVE    ZERO                TO  FLG-MEISAI
-           IF     (WRK-TENSU       NOT =   ZERO )  AND
-                  (WRK-KINGAKU     NOT =   ZERO )
+           IF     (WRK-SUM-TENSU       NOT =   ZERO )  AND
+                  (WRK-SUM-KINGAKU     NOT =   ZERO )
       *        金額・点数混在時は、明細
                MOVE    1               TO  FLG-MEISAI
                MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
            END-IF
-           IF     (WRK-KINGAKU         =   ZERO )  AND
-                  (WRK-TENSU           =   TBL-ZAITENSU (IDX-TBL))
+           IF     (WRK-SUM-KINGAKU     =   ZERO )  AND
+                  (WRK-SUM-TENSU       =   TBL-ZAITENSU (IDX-TBL))
       *        点数合計の時、初診・再診のみ明細
                IF      ACCT-SRYKBN         =   "11"
                                            OR  "12"
@@ -619,8 +619,8 @@
                    MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
                END-IF
            END-IF
-           IF     (WRK-KINGAKU     NOT =   ZERO )  AND
-                  (WRK-TENSU           =   ZERO )
+           IF     (WRK-SUM-KINGAKU NOT =   ZERO )  AND
+                  (WRK-SUM-TENSU       =   ZERO )
       *        自賠責の金額分
                MOVE    1               TO  FLG-MEISAI
                MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
