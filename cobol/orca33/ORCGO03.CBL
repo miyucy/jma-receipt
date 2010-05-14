@@ -572,7 +572,7 @@
            MOVE    "発行する"        TO  SPA-GMN-O03-SKYPRTKBNMEIL(2)
       *
            MOVE    "2"               TO  SPA-GMN-O03-SKYPRTKBNL   (3)
-           MOVE    "発行あり（請求あり）"
+           MOVE    "発行する（請求あり）"
                                      TO  SPA-GMN-O03-SKYPRTKBNMEIL(3)
       *
            MOVE    3                 TO  SPA-GMN-O03-SKYPRTKBN-MAX
@@ -592,7 +592,7 @@
            MOVE    "発行する"        TO  SPA-GMN-O03-SRYPRTKBNMEIL(2)
       *
            MOVE    "2"               TO  SPA-GMN-O03-SRYPRTKBNL   (3)
-           MOVE    "発行あり（請求あり）"
+           MOVE    "発行する（請求あり）"
                                      TO  SPA-GMN-O03-SRYPRTKBNMEIL(3)
       *
            MOVE    3                 TO  SPA-GMN-O03-SRYPRTKBN-MAX
