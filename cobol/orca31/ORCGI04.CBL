@@ -2700,7 +2700,8 @@
                        END-IF
                    END-PERFORM
                END-IF
-           ELSE
+           END-IF
+      *
                EVALUATE SPA-NAI-I04-PTSKYPRT
                WHEN    "0"
                    MOVE    "¡ÚÀÁµá½ñ¡¦ÌÀºÙ½ñÉÔÍ×¡Û"
@@ -2727,7 +2728,6 @@
                    MOVE    "¡ÚÀÁµá½ñÉ¬Í×¡ÊÀÁµá¤¢¤ê¡Ë¡ÊÌÀºÙ½ñÉ¬Í×¡Ë¡Û"
                                    TO  I04-LBLINFO2
                END-EVALUATE
-           END-IF
       *
            MOVE    "black"         TO  I04-LBLGENMEN-STYLE
            IF    ( SPA-GMN-I04-HKNCOMBILST-SEL >   ZERO )
