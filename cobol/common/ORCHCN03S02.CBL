@@ -59,6 +59,7 @@
            03  IDX-DENPNUM         PIC 9(05).
            03  IDX-SRYKBN          PIC 9(05).
            03  IDX-JIHI            PIC 9(05).
+           03  IDX-TMP             PIC 9(05).
       *
        01  KEY-AREA.
            03  KEY-PTID            PIC 9(10).
@@ -76,6 +77,7 @@
                05  WRK-COMP-DENPNUM    PIC 9(07).
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-SKYPRTFLG           PIC  9(01).
+           03  WRK-STIDX               PIC  9(03).
       *
        01  CONST-AREA.
            03  CONST-SRYKBN-MAX        PIC 9(03)   VALUE 17.
@@ -102,6 +104,16 @@
        01  MYSYU-REC.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //MYSYU-//.
+      *
+      *    ¼ýÇ¼¾ðÊóÂàÈòÎÎ°è
+       01  TSYU-AREA.
+           03  TSYU-MAX                    PIC 9(03).
+           03  TSYU-OCC                    OCCURS  11.
+               05  TSYU-KEY.
+                   07  TSYU-SRYYM          PIC X(06).
+                   07  TSYU-DAY-KEY        PIC X(31).
+                   07  TSYU-HKNCOMBINUM    PIC X(04).
+               05  TSYU-DENPNUM            PIC 9(07).
       *
       *    Äê´üÀÁµáÍúÎò
        01  MYTEIKIRRK-REC.
@@ -163,6 +175,7 @@
                                        WRK-AREA
                                        IDX-AREA
                                        CNT-AREA
+                                       TSYU-AREA
       *
       *    ½é´ü½èÍý
            PERFORM 100-INIT-SEC
@@ -651,7 +664,17 @@
            ELSE
                COMPUTE ORCHCN03S02-GRP-CNT
                    =   ORCHCN03S02-GRP-CNT +   1
-               MOVE    SYU-DENPNUM TO  ORCHCN03S02-GRP-DENPNUM
+               MOVE    SYU-SRYYMD(1:6)
+                                   TO  TSYU-SRYYM
+                                              (ORCHCN03S02-GRP-CNT)
+               MOVE    SYU-DAY-TBL TO  TSYU-DAY-KEY
+                                              (ORCHCN03S02-GRP-CNT)
+               INSPECT TSYU-DAY-KEY (ORCHCN03S02-GRP-CNT)
+                       REPLACING   ALL " "    BY  "9"
+               MOVE    SYU-HKNCOMBINUM
+                                   TO  TSYU-HKNCOMBINUM 
+                                              (ORCHCN03S02-GRP-CNT)
+               MOVE    SYU-DENPNUM TO  TSYU-DENPNUM
                                               (ORCHCN03S02-GRP-CNT)
            END-IF
       *
@@ -703,9 +726,34 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-      *
            IF    ( CNT-SYU         >   ZERO )
+      *
                MOVE    1           TO  ORCHCN03S02-PRTFLG
+      *
+               COMPUTE IDX-TMP =   ORCHCN03S02-GRP-CNT +   1
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1   >=   ORCHCN03S02-GRP-CNT )
+      *
+                   COMPUTE WRK-STIDX   =   IDX1    +   1
+                   PERFORM VARYING IDX2    FROM    WRK-STIDX   BY  1
+                           UNTIL ( IDX2    >   ORCHCN03S02-GRP-CNT)
+                       IF    ( TSYU-KEY (IDX1) >   TSYU-KEY (IDX2))
+                           MOVE    TSYU-OCC (IDX1)
+                                       TO  TSYU-OCC (IDX-TMP)
+                           MOVE    TSYU-OCC (IDX2)
+                                       TO  TSYU-OCC (IDX1)
+                           MOVE    TSYU-OCC (IDX-TMP)
+                                       TO  TSYU-OCC (IDX2)
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   ORCHCN03S02-GRP-CNT )
+                   MOVE    TSYU-DENPNUM (IDX1)
+                                       TO  ORCHCN03S02-GRP-DENPNUM
+                                                             (IDX1)
+               END-PERFORM
+      *
       *        MOVE    WRK-DENPNUM TO  LNKSYU-DENPNUM
                MOVE    ORCHCN03S02-GRP-DENPNUM (1)
                                    TO  LNKSYU-DENPNUM
