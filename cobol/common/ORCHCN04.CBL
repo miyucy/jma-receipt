@@ -436,6 +436,8 @@
       *    発行処理
            PERFORM 200-MAIN-SEC
       *
+           MOVE    WRK-PAGE-CNT   TO   ORCHCN04-PAGE-CNT
+      *
       *    PERFORM VARYING IDX-SYU     FROM    1   BY  1
       *            UNTIL   (IDX-SYU    >   10  )   OR
       *                    (ORCHCN04-DENPNUM (IDX-SYU) =   ZERO)
