@@ -6406,9 +6406,9 @@
                    MOVE    WRK-SPA-PTNUM   TO  ORCHCN04-PTNUM
                    MOVE    WRK-SPA-NAME    TO  ORCHCN04-NAME
                    MOVE    CNT-SRYPRT-PAGE TO  ORCHCN04-PAGE-CNT
-                   MOVE    TSYUGRP-SKYSTYMD
+                   MOVE    TSYUGRP-SKYSTYMD(IDX1)
                                            TO  ORCHCN04-SKYSTYMD
-                   MOVE    TSYUGRP-SKYEDYMD
+                   MOVE    TSYUGRP-SKYEDYMD(IDX1)
                                            TO  ORCHCN04-SKYEDYMD
       *
                    PERFORM VARYING IDX2    FROM    1   BY  1
