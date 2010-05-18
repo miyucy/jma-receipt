@@ -3691,6 +3691,16 @@
                                        TO  ORCHC04-DENPNUM
                MOVE    SYUPARA01-SKYSUMFLG
                                        TO  ORCHC04-HAKHOUFLG
+               MOVE    SYUPARA03-STSRYYMD  TO  ORCHC04-KIKAN-STYMD
+               MOVE    SYUPARA03-EDSRYYMD  TO  ORCHC04-KIKAN-EDYMD
+      *
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   SYUPARA03-GRP-DENPNUM-MAX )
+      *
+                   MOVE    SYUPARA03-GRP-DENPNUM (IDXD)
+                                           TO  ORCHC04-KIKAN-DENPNUM
+                                                               (IDXD)
+               END-PERFORM
                MOVE    WRK-PAGE-CNT
                                        TO  ORCHC04-PAGE-CNT
       *
