@@ -3631,7 +3631,7 @@
            MOVE    WRK-GAI-SEIKYU      TO  ORCHC03-SEIKYU
            MOVE    WRK-GAI-NYUKIN      TO  ORCHC03-NYUKIN
            MOVE    1                   TO  ORCHC03-HAKKOFLG
-           MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+           MOVE    SYUPARA01-SKYSUMFLG TO  ORCHC03-HAKHOUFLG
            MOVE    1                   TO  ORCHC03-PARAFLG
            IF    ( SYS-1039-S02SKYMISYUPRTKBN  =   "0" )
                CONTINUE
@@ -4016,7 +4016,7 @@
            MOVE    WRK-GAI-SEIKYU      TO  ORCHC03-SEIKYU
            MOVE    WRK-GAI-NYUKIN      TO  ORCHC03-NYUKIN
            MOVE    4                   TO  ORCHC03-HAKKOFLG
-           MOVE    ZERO                TO  ORCHC03-HAKHOUFLG
+           MOVE    SYUPARA01-SKYSUMFLG TO  ORCHC03-HAKHOUFLG
            MOVE    1                   TO  ORCHC03-PARAFLG
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
