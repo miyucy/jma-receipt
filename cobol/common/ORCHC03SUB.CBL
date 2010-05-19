@@ -760,6 +760,7 @@
                                                        (IDX-SYU)
                        MOVE    1                   TO  FLG-OK
                        MOVE    ZERO                TO  IDX-DN
+                   ELSE
                        IF      LNK-SYU-SRYKA (IDX-SYU)
                                            =   WRK-SYU-SRYKA
                            MOVE    LNK-SYU-HKNCOMBINUM(IDX-SYU)
