@@ -1905,8 +1905,16 @@
       *
            IF    ( ORCHC03-HAKKOFLG    =   4 )
                IF    ( SYUPARA03-KIKANKBN  =   "1" )
-                   MOVE    "¿ÇÎÅÆü"        TO  WRK-LBLSRYYMD
-                   PERFORM 31012-SRYYMD-HEN-SEC
+                   IF    ( SYUPARA03-STSRYYMD
+                                       NOT =   SYUPARA03-EDSRYYMD )
+                       MOVE    "¿ÇÎÅÆü"    TO  WRK-LBLSRYYMD
+                       PERFORM 31012-SRYYMD-HEN-SEC
+                   ELSE
+                       MOVE    "¿ÇÎÅÆü"    TO  WRK-LBLSRYYMD
+                       MOVE    SYU-SRYYMD  TO  WRK-SYMD
+                       PERFORM 31012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG TO  WRK-SRYYMDG
+                   END-IF
                ELSE
                    MOVE    "¿ÇÎÅÇ¯·î"      TO  WRK-LBLSRYYMD
                    MOVE    SYU-SRYYMD      TO  WRK-SYMD
