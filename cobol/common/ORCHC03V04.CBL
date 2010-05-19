@@ -470,7 +470,7 @@
            MOVE   SPACE                TO  MKPRT-DEF
            MOVE   HC01PARA             TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(3)    TO  MKPRT-PRTNM
-           MOVE   "¿¡µ·ΩÒ∑ÛÃ¿∫ŸΩÒ"     TO  MKPRT-INFO
+           MOVE   "ŒŒº˝ΩÒ∑ÛÃ¿∫ŸΩÒ"     TO  MKPRT-INFO
            CALL   "ORCSMKPRT1"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -1851,6 +1851,8 @@
                    WRK-EDSRYYMDG       DELIMITED   BY  SIZE
            INTO    WRK-SRYYMDG
            END-STRING
+      *
+           MOVE    2                   TO  FLG-SYORI
       *
            .
        31012-SRYYMD-HEN-EXT.
