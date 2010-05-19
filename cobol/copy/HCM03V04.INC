@@ -35,3 +35,4 @@
               03  HCM03V04-KINGAKU22  PIC X(16).
               03  HCM03V04-KAISU2 PIC X(3).
               03  HCM03V04-KAISU22    PIC X(6).
+            02  HCM03V04-LOPTION    PIC X(100).

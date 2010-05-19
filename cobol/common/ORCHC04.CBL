@@ -1633,21 +1633,26 @@
            MOVE    ORCHC04-KIKAN-STYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-STYMD
-      *
-           MOVE    ORCHC04-KIKAN-EDYMD TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-EDYMD
-           STRING  WRK-STYMD
+      *    ≥´ªœ∆¸°·Ω™Œª∆¸§œ¥¸¥÷ªÿƒÍ§ §∑§»§π§Î
+           IF      ORCHC04-KIKAN-STYMD =   ORCHC04-KIKAN-EDYMD
+               MOVE    WRK-STYMD           TO  WRK-H-SRYYMD
+               MOVE    1                   TO  FLG-SYORI
+           ELSE
+               MOVE    ORCHC04-KIKAN-EDYMD TO  WRK-SYMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  WRK-EDYMD
+               STRING  WRK-STYMD
                    "°¡"
                    WRK-EDDD            DELIMITED  BY  SIZE
                                        INTO    WRK-H-SRYYMD
-           END-STRING
+               END-STRING
+               MOVE    2                   TO  FLG-SYORI
+           END-IF
       *    »Øπ‘∆¸
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
       *
-           MOVE    2                   TO  FLG-SYORI
            INITIALIZE                  TBL-MEISAI-AREA
            INITIALIZE                  TBL2-MEISAI-A5-AREA
            MOVE    1                   TO  WRK-PAGE
@@ -1715,19 +1720,20 @@
       *
            IF      IDX-TBL             >   ZERO
       *        ø«Œ≈≤ °¶ ›∏±¡»πÁ§ª
-      *        IF      WRK-KEY-PCNT        >   ZERO
-      *            IF      WRK-SYU-SRYYMD      =   SYU-SRYYMD
-      *                MOVE    ALL "°Ω"            TO  WRK-DAY-HEN
-      *            ELSE
+               IF     (WRK-KEY-PCNT        =   ZERO )
+                AND   (FLG-SYORI           =   1    )
+                   CONTINUE
+               ELSE
+                   IF      FLG-SYORI           =   2
                        MOVE    SYU-SRYYMD          TO  WRK-SYMD
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG(17:6)   TO  WRK-DAY-H2
                        MOVE    "°Ã"                TO  WRK-DAY-H1
                        MOVE    "°Õ"                TO  WRK-DAY-H3
-      *            END-IF
+                   END-IF
       *            ≈¡…ºÀË§Œ¿⁄§Í¬ÿ§®
                    PERFORM 3006-KEY-HENSYU-SEC
-      *        END-IF
+               END-IF
                PERFORM 3005-PRTTBL-HENSYU-SEC
                ADD     1                   TO  WRK-KEY-PCNT
       *        ø«Œ≈≤ °¶ ›∏±¡»πÁ§ª
@@ -1886,7 +1892,7 @@
            END-EVALUATE
       *
            IF      FLG-SYORI           =   2
-               MOVE    TBL-H-SRYMEI(WRK-PAGE IDX-H)  TO  WRK-SRYMEI-H
+               MOVE    TBL2-H-SRYMEI(WRK-PAGE IDX-H)  TO  WRK-SRYMEI-H
                MOVE    SPACE           TO  TBL2-H-SRYMEI(WRK-PAGE IDX-H)
                STRING  WRK-DAY-HEN
                        WRK-SRYMEI-H         DELIMITED  BY  SIZE
