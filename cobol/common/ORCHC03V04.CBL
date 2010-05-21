@@ -121,7 +121,7 @@
            03  WRK-HENYMDG         PIC X(22).
       *
            03  WRK-HKNCOMBIMEI     PIC X(40).
-           03  WRK-SRYKA-MEI       PIC X(30).
+           03  WRK-SRYKA-MEI       PIC X(40).
       *
            03  WRK-SKYMONEY        PIC S9(11).
            03  WRK-MISYUMONEY      PIC S9(11).
@@ -132,10 +132,11 @@
            03  WRK-TOTAL-HKNTEN            PIC S9(11).
            03  WRK-HKNTEKMONEY             PIC S9(11).
            03  WRK-GOK-JIHI                PIC S9(11).
+           03  WRK-CHOSEI                  PIC S9(11).
       *
            03  WRK-HEAD-DENPNUM        PIC 9(07).
            03  WRK-HEAD-HKNCOMBIMEI    PIC X(40).
-           03  WRK-HEAD-SRYKAMEI       PIC X(30).
+           03  WRK-HEAD-SRYKAMEI       PIC X(40).
            03  WRK-FUTAN               PIC X(03).
            03  WRK-FUTAN-MEI           PIC X(02).
       *
@@ -207,10 +208,10 @@
                05  WRK-KEY-PCNT            PIC 9(07).
       *    診療費明細書
       *    名称＋数量編集
-           03  WRK-NAME                 PIC X(160).
+           03  WRK-NAME                 PIC X(148).
            03  WRK-NAME-R               REDEFINES   WRK-NAME.
-               05  WRK-NAME-1           PIC X(90).
-               05  WRK-NAME-2           PIC X(70).
+               05  WRK-NAME-1           PIC X(74).
+               05  WRK-NAME-2           PIC X(74).
       *    診療日編集
            03  WRK-SRYMEI-H            PIC X(80).
            03  WRK-DAY-HEN.
@@ -225,26 +226,26 @@
                    07  TBL-H-SRYKBN          PIC X(10).
                    07  TBL-H-SRYMEI.
                        09  TBL-H-ZKBN            PIC X(02).
-                       09  TBL-H-NAME            PIC X(90).
+                       09  TBL-H-NAME            PIC X(74).
                    07  TBL-H-TANINAME        PIC X(10).
                    07  TBL-H-SURYO           PIC X(11).
                    07  TBL-H-KAISU           PIC X(03).
+                   07  TBL-H-TENSU.
+                       09  TBL-H-TENSU1          PIC X(02).
+                       09  TBL-H-TENSU2          PIC X(07).
                    07  TBL-H-KINGAKU.
-                       09  TBL-H-KINGAKU1        PIC X(09).
-                       09  TBL-H-KINGAKU2        PIC X(02).
+                       09  TBL-H-KINGAKU1        PIC X(02).
+                       09  TBL-H-KINGAKU2        PIC X(09).
                    07  TBL-H-EN              PIC X(01).
       *帳票明細数
        01  LINE-MAX                    PIC 9(03)   VALUE   0.
-       01  LINE-MAX1                   PIC 9(03)   VALUE   25.
+       01  LINE-MAX1                   PIC 9(03)   VALUE   24.
        01  LINE-MAX2                   PIC 9(03)   VALUE   36.
        01  PAGE-MAX                    PIC 9(03)   VALUE   50.
       *
       *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-HAKKOUBIKBN        PIC X(01).
-           03  PARA-YUKOSTYMD          PIC X(08).
-           03  PARA-YUKOEDYMD          PIC X(08).
-           03  PARA-MEMO               PIC X(80) OCCURS 10.
       *
            03  PARA-GOKEITANI          PIC X(01).
            03  PARA-SHADE              PIC X(01).
@@ -257,11 +258,6 @@
            03  WRK-PARA                    PIC X(50).
            03  WRK-PARA-N                  PIC X(100).
       *
-      *
-       01  CONST-AREA.
-           03  CONST-H200401           PIC X(08)   VALUE "20080401".
-           03  CONST-H201001           PIC X(08)   VALUE "20081001".
-           03  CONST-MEMO-MAX          PIC 9(05)   VALUE   10.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -286,14 +282,12 @@
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
-      *----(03.04.01)--ADD-START---
       *    医療機関編集情報
            COPY    "CPSK1900.INC".
       *    医療機関名称編集情報
            COPY    "CPSK1901.INC".
       *    医療機関住所編集情報
            COPY    "CPSK1902.INC".
-      *----(03.04.01)--ADD-END-----
       *
       *    患者マスタ
        01  PTINF-REC.
@@ -319,26 +313,10 @@
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    診療行為マスタ−
-       01  SRYACT-REC.
-           COPY    "CPSRYACT.INC".
-      *
-      *    診療会計マスタ−
-       01  SRYACCT-REC.
-           COPY    "CPSRYACCT.INC".
-      *
-      *    受診履歴
-       01  JYURRK-REC.
-           COPY    "CPJYURRK.INC".
-      *
       *    保存用収納ワーク
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //WRK-SYU-//.
-      *
-      *    患者労災保険情報
-       01  PTRSIINF-REC.
-           COPY    "CPPTRSIINF.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -457,10 +435,10 @@
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
-           MOVE     HCM03V04           TO  PRT-REC
+           MOVE    HCM03V04            TO  PRT-REC
       *
       *    印刷用データ出力
-           WRITE  PRT-REC
+           WRITE   PRT-REC
       *
            CLOSE                       PRT-FILE
       *
@@ -561,24 +539,6 @@
                                            SPA-AREA
                                            SYS-1031-REC
       *
-      *    労災医療機関情報編集
-           MOVE    SPACE               TO  SYS-4001-REC
-           INITIALIZE                  SYS-4001-REC
-           MOVE    "4001"              TO  SYS-4001-KANRICD
-           MOVE    "*"                 TO  SYS-4001-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-4001-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-4001-EDYUKYMD
-      *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
-           MOVE    SYS-4001-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-4001-REC
-           ELSE
-               INITIALIZE                  SYS-4001-REC
-           END-IF
-      *    システム日付編集
-           PERFORM 800-MCNDATE-SEC
       *    プログラムオプション
            PERFORM 100-OPTION-SELECT-SEC
       *
@@ -597,43 +557,6 @@
            MOVE    "HAKKOUBIKBN"       TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-HAKKOUBIKBN
-      *
-      *    メモ有効開始日
-           MOVE    "YUKOSTYMD"         TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA            TO  WRK-YMD
-           PERFORM 800-HIZUKE-CHK-SEC
-           IF    ( FLG-HIZUKECHK       =   ZERO )
-               MOVE    "00000000"      TO  PARA-YUKOSTYMD
-           ELSE
-               MOVE    WRK-SYMD        TO  PARA-YUKOSTYMD
-           END-IF
-      *
-      *    メモ有効終了日
-           MOVE    "YUKOEDYMD"         TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA            TO  WRK-YMD
-           PERFORM 800-HIZUKE-CHK-SEC
-           IF    ( FLG-HIZUKECHK       =   ZERO )
-               MOVE    WRK-SYMD        TO  PARA-YUKOEDYMD
-           ELSE
-               MOVE    "99999999"      TO  PARA-YUKOEDYMD
-           END-IF
-      *
-           IF    ( SMCNDATE-YMD        >=  PARA-YUKOSTYMD )
-            AND  ( SMCNDATE-YMD        <=  PARA-YUKOEDYMD )
-      *        メモ期間のみ
-               PERFORM VARYING IDX-MEMO    FROM    1   BY  1
-                       UNTIL ( IDX-MEMO    >   CONST-MEMO-MAX )
-      *            メモ欄
-                   MOVE    "MEMO"              TO  WRK-MEMOID
-                   MOVE    IDX-MEMO            TO  WRK-MEMOIDNO
-                   MOVE    WRK-MEMOID-G        TO  WRK-PARA-NAME
-                   PERFORM 1001-OPTION-CALL-SEC
-                   MOVE    WRK-PARA-N          TO  PARA-MEMO (IDX-MEMO)
-                END-PERFORM
-           END-IF
-      *
       *    合計単位
            MOVE    "GOKEITANI"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -735,15 +658,15 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1005-REC
                IF      WRK-SRYKA-MEI       =   SPACE
-                   MOVE    SYS-1005-SRYKANAME2
+                   MOVE    SYS-1005-SRYKANAME1
                                                TO  WRK-SRYKA-MEI
                ELSE
-                   IF      WRK-SRYKA-MEI(19:2) NOT =   SPACE
+                   IF      WRK-SRYKA-MEI(39:2) NOT =   SPACE
                        CONTINUE
                    ELSE
                        STRING  WRK-SRYKA-MEI   DELIMITED  BY  SPACE
                                "、"            DELIMITED  BY  SIZE
-                               SYS-1005-SRYKANAME2
+                               SYS-1005-SRYKANAME1
                                                DELIMITED  BY  SPACE
                                INTO                WRK-SRYKA-MEI
                        END-STRING
@@ -795,7 +718,7 @@
       *    今回入金額
            MOVE    WRK-NYUKIN          TO  WRK-Z72
            PERFORM 810-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HCM03V04-KINGAKU
+           MOVE    WRK-Z72-G           TO  HCM03V04-KONNYUKIN
       *    医療機関ＴＥＬ
            MOVE    WRK-HOSPTEL         TO  HCM03V04-IRYOTEL
       *    合計点数
@@ -810,12 +733,24 @@
            MOVE    WRK-GOK-JIHI        TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HCM03V04-JIHI
+      *    調整金
+           MOVE    WRK-CHOSEI          TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HCM03V04-CHOSEI
+      *    前回未収額計算
+           MOVE    WRK-MISYUMONEY      TO  WRK-Z72
+           PERFORM 810-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HCM03V04-ZENMISYU
+      *    今回請求額
+           MOVE    WRK-SKYMONEY        TO  WRK-Z72
+           PERFORM 810-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HCM03V04-KONSEIKYU
       *    合計請求額
            COMPUTE WRK-GOKTEN          =   WRK-SKYMONEY
                                        +   WRK-MISYUMONEY
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 810-HENKAN-SEC
-           MOVE    WRK-Z72-G           TO  HCM03V04-SEIKYU
+           MOVE    WRK-Z72-G           TO  HCM03V04-GOUKEIGAK
       *
       *    発行区分
            EVALUATE    ORCHC03-HAKKOFLG
@@ -825,12 +760,14 @@
       *
       *    列名（点数記載）
            IF      PARA-GOKEITANI      =   "1"
-               MOVE    "　　合計（点数）"    TO  HCM03V04-LABEL1
-               MOVE    "　　合計（点数）"    TO  HCM03V04-LABEL2
+               MOVE    "　点　数　"        TO  HCM03V04-LABEL12
+               MOVE    "　点　数　"        TO  HCM03V04-LABEL22
            ELSE
-               MOVE    "　　金　額（円）"    TO  HCM03V04-LABEL1
-               MOVE    "　　金　額（円）"    TO  HCM03V04-LABEL2
+               MOVE    "　単　価　"        TO  HCM03V04-LABEL12
+               MOVE    "　単　価　"        TO  HCM03V04-LABEL22
            END-IF
+           MOVE    "　　合　　計　　"      TO  HCM03V04-LABEL1
+           MOVE    "　　合　　計　　"      TO  HCM03V04-LABEL2
       *
       *    明細内容
       *    １枚目
@@ -843,8 +780,7 @@
                    MOVE    TBL-H-SRYMEI (IDX IDX2)
                                           TO  HCM03V04-SRYMEI1 (IDX2)
                    IF      TBL-H-KAISU  (IDX IDX2)    =   "---"
-                       MOVE    ALL "―"       TO  HCM03V04-KAISU12(IDX2)
-                       MOVE    ALL "―"       TO  HCM03V04-KINGAKU12
+                       MOVE    ALL "―"       TO  HCM03V04-KAIUSU12
                                                                 (IDX2)
                    ELSE
                        MOVE    TBL-H-KAISU  (IDX IDX2)
@@ -852,13 +788,25 @@
                        MOVE    TBL-H-KINGAKU(IDX IDX2)
                                               TO  HCM03V04-KINGAKU1
                                                                  (IDX2)
+                       MOVE    TBL-H-TENSU  (IDX IDX2)
+                                              TO  HCM03V04-TENSU1
+                                                                 (IDX2)
                    END-IF
       *            点数記載で円のもの
                    IF      PARA-GOKEITANI      =   "1"
                        IF      TBL-H-EN (IDX IDX2)     =   "1"
+                           MOVE    SPACE           TO  HCM03V04-TENSU1
+                                                                (IDX2)
+                           STRING  TBL-H-TENSU2  (IDX IDX2)
+                                   "　"
+                                              DELIMITED  BY  SIZE
+                                       INTO   HCM03V04-TENSU1   (IDX2)
+                           END-STRING
+                           MOVE    "円"           TO  HCM03V04-TENSU12
+                                                                (IDX2)
                            MOVE    SPACE           TO  HCM03V04-KINGAKU1
                                                                 (IDX2)
-                           STRING  TBL-H-KINGAKU1(IDX IDX2)
+                           STRING  TBL-H-KINGAKU2(IDX IDX2)
                                    "　"
                                               DELIMITED  BY  SIZE
                                        INTO   HCM03V04-KINGAKU1 (IDX2)
@@ -878,21 +826,31 @@
                                           TO  HCM03V04-SRYMEI2 (IDX2)
                    IF      TBL-H-KAISU  (IDX IDX2)    =   "---"
                        MOVE    ALL "―"       TO  HCM03V04-KAISU22(IDX2)
-                       MOVE    ALL "―"       TO  HCM03V04-KINGAKU22
-                                                                (IDX2)
                    ELSE
                        MOVE    TBL-H-KAISU  (IDX IDX2)
                                               TO  HCM03V04-KAISU2 (IDX2)
                        MOVE    TBL-H-KINGAKU(IDX IDX2)
                                               TO  HCM03V04-KINGAKU2
                                                                  (IDX2)
+                       MOVE    TBL-H-TENSU  (IDX IDX2)
+                                              TO  HCM03V04-TENSU2
+                                                                 (IDX2)
                    END-IF
       *            点数記載で円のもの
                    IF      PARA-GOKEITANI      =   "1"
                        IF      TBL-H-EN (IDX IDX2)     =   "1"
+                           MOVE    SPACE           TO  HCM03V04-TENSU2
+                                                                (IDX2)
+                           STRING  TBL-H-TENSU2  (IDX IDX2)
+                                   "　"
+                                              DELIMITED  BY  SIZE
+                                       INTO   HCM03V04-TENSU2   (IDX2)
+                           END-STRING
+                           MOVE    "円"           TO  HCM03V04-TENSU22
+                                                                (IDX2)
                            MOVE    SPACE           TO  HCM03V04-KINGAKU2
                                                                 (IDX2)
-                           STRING  TBL-H-KINGAKU1(IDX IDX2)
+                           STRING  TBL-H-KINGAKU2(IDX IDX2)
                                    "　"
                                               DELIMITED  BY  SIZE
                                        INTO   HCM03V04-KINGAKU2 (IDX2)
@@ -1177,8 +1135,11 @@
       *****************************************************************
        21001-HAED-KEISAN-SEC                SECTION.
       *
+      *    調整金
+           MOVE    SYU-CHOSEI          TO  WRK-CHOSEI
       *    合計点数
            MOVE    SYU-TOTAL-HKNTEN    TO  WRK-TOTAL-HKNTEN
+      *    保険適用金額
            MOVE    SYU-HKNTEKMONEY     TO  WRK-HKNTEKMONEY
       *    自費合計
            COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
@@ -1429,6 +1390,7 @@
            END-IF
            MOVE    ALL "―"            TO  TBL-H-SRYKBN (WRK-PAGE IDX-H)
            MOVE    ALL "-"             TO  TBL-H-KAISU  (WRK-PAGE IDX-H)
+           MOVE    ALL "-"             TO  TBL-H-TENSU  (WRK-PAGE IDX-H)
            MOVE    ALL "-"             TO  TBL-H-KINGAKU(WRK-PAGE IDX-H)
            EVALUATE    TRUE
                WHEN   (WRK-SRYKA-MEI   NOT =   SPACE )  AND
@@ -1490,7 +1452,7 @@
                    PERFORM 200520-PAGE-CNT-SEC
                END-IF
       *        名称＋数量編集
-               IF     (ORCHC04SUB-TANINAME (IDX)   =   SPACE)
+               IF     (ORCHC04SUB-SURYO  (IDX) =   ZERO )
                  OR   (ORCHC04SUB-SRYKBN (IDX) =   "95"
                                                OR  "96"     )
       *            自費の数量記載なし
@@ -1528,7 +1490,10 @@
                    MOVE    "　"                TO  TBL-H-ZKBN
                                                      (WRK-PAGE IDX-H)
                END-IF
-      *        金額（点数）
+      *        点数（単価）
+               MOVE    ORCHC04SUB-H-TENSU   (IDX)  TO  TBL-H-TENSU
+                                                   (WRK-PAGE IDX-H)
+      *        合計
                MOVE    ORCHC04SUB-H-KINGAKU (IDX)  TO  TBL-H-KINGAKU
                                                    (WRK-PAGE IDX-H)
       *        円
@@ -1844,7 +1809,7 @@
       *
            MOVE    SYUPARA03-EDSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG (17:)   TO  WRK-EDSRYYMDG
+           MOVE    WRK-HENYMDG         TO  WRK-EDSRYYMDG
       *
            STRING  WRK-STSRYYMDG       DELIMITED   BY  SIZE
                    "〜"                DELIMITED   BY  SIZE
@@ -1853,7 +1818,6 @@
            END-STRING
       *
            MOVE    2                   TO  FLG-SYORI
-      *
            .
        31012-SRYYMD-HEN-EXT.
            EXIT.
@@ -1896,23 +1860,9 @@
                    MOVE    1           TO  FLG-HIZUKECHK
                END-IF
            END-IF
-      *
            .
        800-HIZUKE-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    マシン日付取得サブ
-      *****************************************************************
-       800-MCNDATE-SEC         SECTION.
-      *
-           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
-      *
-           .
-      *
-       800-MCNDATE-EXT.
-           EXIT.
-      *
-      *----(03.04.01)--ADD-START---
       *****************************************************************
       *    医療機関編集情報読み込み
       *****************************************************************
@@ -1940,7 +1890,6 @@
                INITIALIZE                  SYS-1900-REC
            END-IF
            .
-      *
        900-1900-READ-EXT.
            EXIT.
       *
@@ -1968,7 +1917,6 @@
                INITIALIZE                  SYS-1901-REC
            END-IF
            .
-      *
        900-1901-READ-EXT.
            EXIT.
       *
@@ -1997,7 +1945,6 @@
                INITIALIZE                  SYS-1902-REC
            END-IF
            .
-      *
        900-1902-READ-EXT.
            EXIT.
       *
@@ -2005,6 +1952,9 @@
       *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -2026,7 +1976,6 @@
            .
        900-SYSKANRI-KEY10-EXT.
            EXIT.
-      *----(03.04.01)--ADD-END-----
       *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
@@ -2139,100 +2088,6 @@
        980-SYUNOU-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    保険組合せマスター読み込み
-      *****************************************************************
-       910-HKNCOMBI-READ-SEC         SECTION.
-      *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-                   MOVE    ZERO            TO  FLG-HKNCOMBI
-               ELSE
-                   MOVE    1               TO  FLG-HKNCOMBI
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-     *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       910-HKNCOMBI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者労災保険情報読み込み
-      *****************************************************************
-       910-PTRSIINF-READ-SEC         SECTION.
-      *
-           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTRSIINF-REC
-                   MOVE    ZERO            TO  FLG-PTRSIINF
-               ELSE
-                   MOVE    1               TO  FLG-PTRSIINF
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTRSIINF
-           END-IF
-     *
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       910-PTRSIINF-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者保険情報読み込み
-      *****************************************************************
-       910-PTHKNINF-READ-SEC       SECTION.
-      *
-           MOVE    SPA-HOSPNUM     TO  PTHKN-HOSPNUM
-           MOVE    SPA-PTID        TO  PTHKN-PTID
-           MOVE    COMB-HKNID      TO  PTHKN-HKNID
-           MOVE    PTHKNINF-REC    TO  MCPDATA-REC
-           MOVE    "tbl_pthkninf"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_pthkninf"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTHKNINF-REC
-                   MOVE    ZERO            TO  FLG-PTHKNINF
-               ELSE
-                   MOVE    1               TO  FLG-PTHKNINF
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTHKNINF
-           END-IF
-     *
-           MOVE    "tbl_pthkninf"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       910-PTHKNINF-READ-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

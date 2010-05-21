@@ -14,11 +14,14 @@
             02  HCM04A5-IRYOMEI PIC X(100).
             02  HCM04A5-IRYOTEL PIC X(15).
             02  HCM04A5-LABEL   PIC X(16).
+            02  HCM04A5-LABEL2  PIC X(10).
             02  HCM04A5-NAIYO-TBL       OCCURS  31 TIMES.
               03  HCM04A5-SRYKBN  PIC X(10).
-              03  HCM04A5-SRYMEI  PIC X(92).
+              03  HCM04A5-SRYMEI  PIC X(76).
               03  HCM04A5-KINGAKU PIC X(11).
               03  HCM04A5-KINGAKU2    PIC X(16).
               03  HCM04A5-KAISU   PIC X(3).
-              03  HCM04A5-KAISU2  PIC X(6).
+              03  HCM04A5-KAISU2  PIC X(36).
+              03  HCM04A5-TENSU   PIC X(9).
+              03  HCM04A5-TENSU2  PIC X(14).
             02  HCM04A5-LOPTION PIC X(50).

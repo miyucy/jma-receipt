@@ -161,6 +161,7 @@
            03  WRK-FUTAN-MEI           PIC X(02).
            03  WRK-SRYKA-MEI           PIC X(30).
            03  WRK-HKNCOMBIMEI         PIC X(40).
+           03  WRK-LBLSRYYMD           PIC X(10).
       *
            03  WRK-H-DENPNUM           PIC 9(07).
       *
@@ -181,7 +182,7 @@
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-NO                  PIC Z(7).
            03  WRK-WARI                PIC 9(02)V9.
-           03  WRK-Z6                  PIC ZZZ.
+           03  WRK-Z6                  PIC ZZ9.
            03  WRK-Z62                 PIC 9.9.
       *
            03  WRK-DENPNUM             PIC 9(07).
@@ -217,17 +218,17 @@
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL         PIC X(15).
       *    名称＋数量編集
-           03  WRK-A5-NAME             PIC X(160).
+           03  WRK-A5-NAME             PIC X(148).
            03  WRK-A5-NAME-R           REDEFINES   WRK-A5-NAME.
-               05  WRK-A5-NAME-1       PIC X(88).
-               05  WRK-A5-NAME-2       PIC X(72).
+               05  WRK-A5-NAME-1       PIC X(74).
+               05  WRK-A5-NAME-2       PIC X(74).
       *
            03  WRK-H-NAME.
-               05  WRK-H-NAME1             PIC X(78).
-               05  WRK-H-NAME2             PIC X(22).
-           03  WRK-H-NAME-R             REDEFINES  WRK-H-NAME.
-               05  WRK-H-NAME2-1           PIC X(68).
-               05  WRK-H-NAME2-2           PIC X(32).
+               05  WRK-H-NAME1             PIC X(74).
+               05  WRK-H-NAME2             PIC X(74).
+      *    03  WRK-H-NAME-R             REDEFINES  WRK-H-NAME.
+      *        05  WRK-H-NAME2-1           PIC X(68).
+      *        05  WRK-H-NAME2-2           PIC X(32).
       *
       *    帳票テーブル（Ａ４サイズ）
        01  TBL-MEISAI-AREA.
@@ -236,13 +237,16 @@
                    07  TBL-H-SRYKBN          PIC X(10).
                    07  TBL-H-SRYMEI.
                        09  TBL-H-ZKBN            PIC X(02).
-                       09  TBL-H-NAME            PIC X(78).
+                       09  TBL-H-NAME            PIC X(74).
                    07  TBL-H-TANINAME        PIC X(10).
                    07  TBL-H-SURYO           PIC X(11).
                    07  TBL-H-KAISU           PIC X(03).
+                   07  TBL-H-TENSU.
+                       09  TBL-H-TENSU1          PIC X(02).
+                       09  TBL-H-TENSU2          PIC X(07).
                    07  TBL-H-KINGAKU.
-                       09  TBL-H-KINGAKU1        PIC X(09).
-                       09  TBL-H-KINGAKU2        PIC X(02).
+                       09  TBL-H-KINGAKU1        PIC X(02).
+                       09  TBL-H-KINGAKU2        PIC X(09).
                    07  TBL-H-EN              PIC X(01).
       *帳票明細数
        01  LINE-MAX                    PIC 9(03)   VALUE   70.
@@ -255,13 +259,16 @@
                    07  TBL2-H-SRYKBN          PIC X(10).
                    07  TBL2-H-SRYMEI.
                        09  TBL2-H-ZKBN            PIC X(02).
-                       09  TBL2-H-NAME            PIC X(90).
+                       09  TBL2-H-NAME            PIC X(74).
                    07  TBL2-H-TANINAME        PIC X(10).
                    07  TBL2-H-SURYO           PIC X(11).
                    07  TBL2-H-KAISU           PIC X(03).
+                   07  TBL2-H-TENSU.
+                       09  TBL2-H-TENSU1          PIC X(02).
+                       09  TBL2-H-TENSU2          PIC X(07).
                    07  TBL2-H-KINGAKU.
-                       09  TBL2-H-KINGAKU1        PIC X(09).
-                       09  TBL2-H-KINGAKU2        PIC X(02).
+                       09  TBL2-H-KINGAKU1        PIC X(02).
+                       09  TBL2-H-KINGAKU2        PIC X(09).
                    07  TBL2-H-EN              PIC X(01).
       *
       *帳票明細数
@@ -294,6 +301,7 @@
            03  PARA-SRYKA              PIC X(01).
            03  PARA-LINE               PIC X(01).
            03  PARA-FORM               PIC X(01).
+           03  PARA-HAKKOUBIKBN        PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -504,6 +512,14 @@
            MOVE    "FORM"              TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-FORM
+      *
+      *    伝票発行日区分
+           MOVE    "HAKKOUBIKBN"       TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-HAKKOUBIKBN
+           IF      PARA-HAKKOUBIKBN    =   SPACE
+               MOVE    "0"                 TO  PARA-HAKKOUBIKBN
+           END-IF
       *
            .
        100-OPTION-SELECT-EXT.
@@ -919,7 +935,7 @@
            MOVE    WRK-H-DENPNUM       TO  WRK-NO
            MOVE    WRK-NO              TO  HCM04-NO
       *    診療科
-           MOVE    WRK-SRYKA-MEI(1:20) TO  HCM04-SRYKANAME
+           MOVE    WRK-SRYKA-MEI       TO  HCM04-SRYKANAME
       *    患者番号
            MOVE    SPA-PTNUM           TO  HCM04-PTNUM
       *    患者名称
@@ -943,35 +959,42 @@
       *
       *    列名（点数記載）
            IF      PARA-GOKEITANI      =   "1"
-               MOVE    "　　合計（点数）"    TO  HCM04-LABEL1
+               MOVE    "　点　数　"      TO  HCM04-LABEL3
            ELSE
-               MOVE    "　　金　額（円）"    TO  HCM04-LABEL1
+               MOVE    "　単　価　"      TO  HCM04-LABEL3
            END-IF
+           MOVE    "　　合　　計　　"    TO  HCM04-LABEL1
       *
       *    明細内容
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   LINE-MAX
                MOVE    TBL-H-SRYKBN (IDX IDX2) TO  HCM04-SRYKBN (IDX2)
                MOVE    TBL-H-SRYMEI (IDX IDX2) TO  HCM04-SRYMEI (IDX2)
-               MOVE    TBL-H-TANINAME(IDX IDX2)
-                                               TO  HCM04-TANI  (IDX2)
       *
                IF      TBL-H-KAISU  (IDX IDX2) =   "---"
                    MOVE    ALL "―"            TO  HCM04-KAISU2 (IDX2)
                    MOVE    ALL "―"            TO  HCM04-KINGAKU2(IDX2)
                ELSE
-                   MOVE    TBL-H-SURYO  (IDX IDX2)
-                                               TO  HCM04-SURYO (IDX2)
                    MOVE    TBL-H-KAISU  (IDX IDX2)
                                                TO  HCM04-KAISU (IDX2)
                    MOVE    TBL-H-KINGAKU(IDX IDX2)
                                                TO  HCM04-KINGAKU(IDX2)
+                   MOVE    TBL-H-TENSU  (IDX IDX2)
+                                               TO  HCM04-TENSU  (IDX2)
                END-IF
       *        点数記載で円のもの
                IF      PARA-GOKEITANI      =   "1"
                    IF      TBL-H-EN   (IDX IDX2)    =   "1"
+                       MOVE    SPACE           TO  HCM04-TENSU  (IDX2)
+                       STRING  TBL-H-TENSU2 (IDX IDX2)
+                               "　"
+                                           DELIMITED  BY  SIZE
+                                       INTO   HCM04-TENSU (IDX2)
+                       END-STRING
+                       MOVE    "円"           TO  HCM04-TENSU2  (IDX2)
+      *
                        MOVE    SPACE           TO  HCM04-KINGAKU(IDX2)
-                       STRING  TBL-H-KINGAKU1(IDX IDX2)
+                       STRING  TBL-H-KINGAKU2(IDX IDX2)
                                "　"
                                            DELIMITED  BY  SIZE
                                        INTO   HCM04-KINGAKU(IDX2)
@@ -1051,11 +1074,16 @@
            MOVE    ORCHC04-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-HEN-SEC
       *    診療日
+           MOVE    "診療日"            TO  WRK-LBLSRYYMD
            MOVE    SYU-SRYYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
       *    発行日
-           MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           IF      PARA-HAKKOUBIKBN    =   "1"
+               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           ELSE
+               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
       *    伝票番号分印刷
@@ -1109,11 +1137,16 @@
            MOVE    ORCHC04-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-HEN-SEC
       *    診療日
+           MOVE    "診療日"            TO  WRK-LBLSRYYMD
            MOVE    SYU-SRYYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
       *    発行日
-           MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           IF      PARA-HAKKOUBIKBN    =   "1"
+               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           ELSE
+               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
       *
@@ -1450,7 +1483,8 @@
        30061-KEY-HENSYU-A4-SEC        SECTION.
       *
       *    剤毎に１行開ける
-           IF      PARA-LINE           =   "1"
+           IF     (PARA-LINE           =   "1"  )
+             AND  (IDX-H               >   ZERO )
                ADD     2                   TO  IDX-H
            ELSE
                ADD     1                   TO  IDX-H
@@ -1533,12 +1567,37 @@
                    PERFORM 200520-PAGE-CNT-SEC
                END-IF
       *        名称と単位名称チェックの改行対応
-               MOVE    ORCHC04SUB-NAME (IDX)   TO  WRK-H-NAME
-               MOVE    ZERO                    TO  FLG-LINE
-               IF    ((ORCHC04SUB-TANINAME(IDX)
-                                           NOT =   SPACE)
-                 AND  (WRK-H-NAME2-2       NOT =   SPACE) )
-               OR    ( WRK-H-NAME2         NOT =   SPACE  )
+      *        MOVE    ORCHC04SUB-NAME (IDX)   TO  WRK-H-NAME
+      *        MOVE    ZERO                    TO  FLG-LINE
+      *        IF    ((ORCHC04SUB-TANINAME(IDX)
+      *                                    NOT =   SPACE)
+      *          AND  (WRK-H-NAME2-2       NOT =   SPACE) )
+      *        OR    ( WRK-H-NAME2         NOT =   SPACE  )
+      *            MOVE    1                   TO  FLG-LINE
+      *            最終行の時、改ページ
+      *            IF      IDX-H               >=  (LINE-MAX - 1 )
+      *                MOVE    1               TO  FLG-NEXT
+      *                PERFORM 200520-PAGE-CNT-SEC
+      *            END-IF
+      ****     END-IF
+      *        名称＋数量編集
+               IF     (ORCHC04SUB-SURYO  (IDX) =   ZERO )
+                 OR   (ORCHC04SUB-SRYKBN (IDX) =   "95"
+                                               OR  "96"     )
+      *            自費の数量記載なし
+                   MOVE    ORCHC04SUB-NAME (IDX)   TO  WRK-H-NAME
+               ELSE
+                   MOVE    SPACE                   TO  WRK-H-NAME
+                   STRING  ORCHC04SUB-NAME (IDX)
+                           "　　"
+                           ORCHC04SUB-H-ZEN-SURYO (IDX)
+                           DELIMITED  BY  SPACE
+                                           INTO   WRK-H-NAME
+                   END-STRING
+               END-IF
+      *
+      *        名称と単位名称チェック
+               IF     (WRK-H-NAME2         NOT =   SPACE)
                    MOVE    1                   TO  FLG-LINE
       *            最終行の時、改ページ
                    IF      IDX-H               >=  (LINE-MAX - 1 )
@@ -1553,7 +1612,7 @@
                                                TO  TBL-H-ZKBN
                                                      (WRK-PAGE IDX-H)
       *        名称
-               MOVE    ORCHC04SUB-NAME (IDX)   TO  WRK-H-NAME
+      ******** MOVE    ORCHC04SUB-NAME (IDX)   TO  WRK-H-NAME
                MOVE    WRK-H-NAME1             TO  TBL-H-NAME
                                                      (WRK-PAGE IDX-H)
                IF      FLG-LINE            =   1
@@ -1562,21 +1621,26 @@
                IF      WRK-H-NAME2         NOT =   SPACE
                    MOVE    WRK-H-NAME2         TO  TBL-H-NAME
                                                      (WRK-PAGE IDX-H)
+                   MOVE    "　"                TO  TBL-H-ZKBN
+                                                     (WRK-PAGE IDX-H)
                END-IF
       *        単位名称
-               MOVE    ORCHC04SUB-TANINAME (IDX)   TO  TBL-H-TANINAME
-                                                   (WRK-PAGE IDX-H)
+      *        MOVE    ORCHC04SUB-TANINAME (IDX)   TO  TBL-H-TANINAME
+      *                                            (WRK-PAGE IDX-H)
       *        数量
-               MOVE    ORCHC04SUB-H-SURYO (IDX)    TO  TBL-H-SURYO
-                                                   (WRK-PAGE IDX-H)
-               IF      ORCHC04SUB-SRYKBN (IDX) =   "95"
-                                               OR  "96"
+      *        MOVE    ORCHC04SUB-H-SURYO (IDX)    TO  TBL-H-SURYO
+      *                                            (WRK-PAGE IDX-H)
+      *        IF      ORCHC04SUB-SRYKBN (IDX) =   "95"
+      *                                        OR  "96"
       *            自費の数量記載なし
-                   MOVE    SPACE               TO  TBL-H-SURYO
+      *            MOVE    SPACE               TO  TBL-H-SURYO
+      *                                            (WRK-PAGE IDX-H)
+      *****    END-IF
+      *        点数（単価）
+               MOVE    ORCHC04SUB-H-TENSU (IDX)    TO  TBL-H-TENSU
                                                    (WRK-PAGE IDX-H)
-               END-IF
-      *        金額（点数）
-               MOVE    ORCHC04SUB-H-KINGAKU (IDX)  TO  TBL-H-KINGAKU
+      *        合計
+               MOVE    ORCHC04SUB-H-KINGAKU(IDX)   TO  TBL-H-KINGAKU
                                                    (WRK-PAGE IDX-H)
       *        円
                MOVE    ORCHC04SUB-H-ENKBN (IDX)    TO  TBL-H-EN
@@ -1630,6 +1694,7 @@
       *    伝票番号
            MOVE    ORCHC04-DENPNUM     TO  WRK-H-DENPNUM
       *    診療日
+           MOVE    "診療日"            TO  WRK-LBLSRYYMD
            MOVE    ORCHC04-KIKAN-STYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-STYMD
@@ -1758,7 +1823,7 @@
                    PERFORM 200521-A5PAGE-CNT-SEC
                END-IF
       *        名称＋数量編集
-               IF     (ORCHC04SUB-TANINAME (IDX)   =   SPACE)
+               IF     (ORCHC04SUB-SURYO  (IDX) =   ZERO )
                  OR   (ORCHC04SUB-SRYKBN (IDX) =   "95"
                                                OR  "96"     )
       *            自費の数量記載なし
@@ -1797,7 +1862,10 @@
                    MOVE    "　"                TO  TBL2-H-ZKBN
                                                      (WRK-PAGE IDX-H)
                END-IF
-      *        金額（点数）
+      *        点数（単価）
+               MOVE    ORCHC04SUB-H-TENSU (IDX)    TO  TBL2-H-TENSU
+                                                   (WRK-PAGE IDX-H)
+      *        合計
                MOVE    ORCHC04SUB-H-KINGAKU (IDX)  TO  TBL2-H-KINGAKU
                                                    (WRK-PAGE IDX-H)
       *        円
@@ -1851,7 +1919,8 @@
        30062-KEY-HENSYU-A5-SEC        SECTION.
       *
       *    剤毎に１行開ける
-           IF      PARA-LINE           =   "1"
+           IF     (PARA-LINE           =   "1"  )
+             AND  (IDX-H               >   ZERO )
                ADD     2                   TO  IDX-H
            ELSE
                ADD     1                   TO  IDX-H
@@ -1921,7 +1990,7 @@
            MOVE    WRK-H-DENPNUM       TO  WRK-NO
            MOVE    WRK-NO              TO  HCM04A5-NO
       *    診療科
-           MOVE    WRK-SRYKA-MEI(1:20) TO  HCM04A5-SRYKANAME
+           MOVE    WRK-SRYKA-MEI       TO  HCM04A5-SRYKANAME
       *    患者番号
            MOVE    SPA-PTNUM           TO  HCM04A5-PTNUM
       *    患者名称
@@ -1932,6 +2001,7 @@
            MOVE    WRK-FUTAN           TO  HCM04A5-FUTAN
            MOVE    WRK-FUTAN-MEI       TO  HCM04A5-FUTANLABEL
       *    診療日
+           MOVE    WRK-LBLSRYYMD       TO  HCM04A5-LBLSRYYMD
            MOVE    WRK-H-SRYYMD        TO  HCM04A5-SRYYMD
       *    発行日
            MOVE    WRK-H-HAKYMD        TO  HCM04A5-HAKYMD
@@ -1945,10 +2015,11 @@
       *
       *    列名（点数記載）
            IF      PARA-GOKEITANI      =   "1"
-               MOVE    "　　合計（点数）"    TO  HCM04A5-LABEL
+               MOVE    "　点　数　"        TO  HCM04A5-LABEL2
            ELSE
-               MOVE    "　　金　額（円）"    TO  HCM04A5-LABEL
+               MOVE    "　単　価　"        TO  HCM04A5-LABEL2
            END-IF
+           MOVE    "　　合　　計　　"  TO  HCM04A5-LABEL
       *
       *    明細内容
            PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -1959,18 +2030,27 @@
                                           TO  HCM04A5-SRYMEI (IDX2)
                IF      TBL2-H-KAISU  (IDX IDX2)    =   "---"
                    MOVE    ALL "―"           TO  HCM04A5-KAISU2(IDX2)
-                   MOVE    ALL "―"           TO  HCM04A5-KINGAKU2(IDX2)
                ELSE
                    MOVE    TBL2-H-KAISU  (IDX IDX2)
                                               TO  HCM04A5-KAISU (IDX2)
                    MOVE    TBL2-H-KINGAKU(IDX IDX2)
                                               TO  HCM04A5-KINGAKU(IDX2)
+                   MOVE    TBL2-H-TENSU  (IDX IDX2)
+                                              TO  HCM04A5-TENSU  (IDX2)
                END-IF
       *        点数記載で円のもの
                IF      PARA-GOKEITANI      =   "1"
                    IF      TBL2-H-EN (IDX IDX2)    =   "1"
+                       MOVE    SPACE           TO  HCM04A5-TENSU (IDX2)
+                       STRING  TBL2-H-TENSU2(IDX IDX2)
+                               "　"
+                                           DELIMITED  BY  SIZE
+                                       INTO   HCM04A5-TENSU (IDX2)
+                       END-STRING
+                       MOVE    "円"            TO  HCM04A5-TENSU2(IDX2)
+      *
                        MOVE    SPACE           TO  HCM04A5-KINGAKU(IDX2)
-                       STRING  TBL2-H-KINGAKU1(IDX IDX2)
+                       STRING  TBL2-H-KINGAKU2(IDX IDX2)
                                "　"
                                            DELIMITED  BY  SIZE
                                        INTO   HCM04A5-KINGAKU(IDX2)
@@ -2015,11 +2095,6 @@
                    END-STRING
            END-EVALUATE
       *
-      *    IF      PARA-GOKEITANI      =   "1"
-      *        MOVE    CONS-LABEL2         TO  HCM04-LABEL2
-      *    ELSE
-      *        MOVE    CONS-LABEL1         TO  HCM04-LABEL2
-      ***  END-IF
            .
        300-HCM04A5-HEN-EXT.
            EXIT.
@@ -2053,7 +2128,7 @@
            MOVE    "*"             TO  SYS-1900-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1900-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1900-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -2085,7 +2160,7 @@
                                    TO  SYS-1901-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1901-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1901-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1901-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -2113,7 +2188,7 @@
                                    TO  SYS-1902-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1902-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1902-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1902-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -2134,6 +2209,9 @@
       *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME

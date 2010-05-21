@@ -39,9 +39,12 @@
                    07  ORCHC04SUB-NAME            PIC X(100).
                    07  ORCHC04SUB-TANINAME        PIC X(10).
                    07  ORCHC04SUB-H-SURYO         PIC X(11).
+                   07  ORCHC04SUB-H-TENSU.
+                       09  ORCHC04SUB-H-TENSU1    PIC X(02).
+                       09  ORCHC04SUB-H-TENSU2    PIC X(07).
                    07  ORCHC04SUB-H-KINGAKU.
-                       09  ORCHC04SUB-H-KINGAKU1  PIC X(09).
-                       09  ORCHC04SUB-H-KINGAKU2  PIC X(02).
+                       09  ORCHC04SUB-H-KINGAKU1  PIC X(02).
+                       09  ORCHC04SUB-H-KINGAKU2  PIC X(09).
                    07  ORCHC04SUB-H-KAISU         PIC X(03).
       *            ºÞ³«»Ï
                    07  ORCHC04SUB-H-ZAIHEN        PIC X(02).

@@ -111,6 +111,7 @@
            03  IDX1                PIC 9(04).
            03  IDXM                PIC 9(04).
            03  IDXJ                PIC 9(04).
+           03  IDXM2               PIC 9(04).
       *
            03  IDX-STR             PIC 9(02).
            03  IDX-END             PIC 9(02).
@@ -158,16 +159,23 @@
            03  WRK-KAISU               PIC 9(03).
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBN           PIC X(03).
+           03  WRK-TENSU               PIC S9(11).
            03  WRK-KINGAKU             PIC S9(11).
            03  WRK-SRYMEI              PIC X(10).
            03  WRK-SRYMEI-OLD          PIC X(10).
+           03  WRK-SRYCD               PIC X(09).
       *
-           03  WRK-Z119                PIC Z,ZZZ,ZZ9.
-           03  WRK-Z119-2              PIC -,---,--9.
+           03  WRK-Z119Z               PIC ZZZZZZZZ9.
+           03  WRK-Z119Z-2             PIC --------9.
+      *
+           03  WRK-Z119                PIC ZZZ,ZZZ,ZZ9.
+           03  WRK-Z119-2              PIC ---,---,--9.
+           03  WRK-Z7                  PIC ZZZZZZZZ9.
+           03  WRK-Z7-2                PIC --------9.
            03  WRK-ZZ9                 PIC ZZZ.
            03  WRK-NO                  PIC Z(7).
            03  WRK-WARI                PIC 9(02)V9.
-           03  WRK-Z6                  PIC ZZZ.
+           03  WRK-Z6                  PIC ZZ9.
            03  WRK-Z62                 PIC 9.9.
       *
            03  WRK-HKNCOMBIMEI         PIC X(40).
@@ -180,8 +188,8 @@
            03  WRK-SUM-KINGAKU                 PIC 9(09).
       *
            03  WRK-H-NAME.
-               05  WRK-H-NAME1             PIC X(78).
-               05  WRK-H-NAME2             PIC X(22).
+               05  WRK-H-NAME1             PIC X(74).
+               05  WRK-H-NAME2             PIC X(74).
            03  WRK-H-NAME-R             REDEFINES  WRK-H-NAME.
                05  WRK-H-NAME2-1           PIC X(68).
                05  WRK-H-NAME2-2           PIC X(32).
@@ -198,8 +206,15 @@
            03  WRK-SURYO-X-R       REDEFINES   WRK-SURYO-X.
                05  WRK-SURYO-ZF    PIC X(06).
                05  WRK-SURYO-Z4    PIC ZZZZ9.
+      *    数量文字変換
+           03  WRK-ZENKAKU-G           PIC X(100).
+           03  WRK-MOJI                PIC X(100).
+           03  WRK-MOJISU              PIC 9(02).
+           03  WRK-Z-SURYO             PIC X(11).
+           03  WRK-K-SURYO             PIC X(22).
+           03  WRK-ZENHEN-SURYO        PIC X(80).
+           03  WRK-H-SURYO             PIC X(80).
       *
-      *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME            PIC X(100).
            03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
                05  WRK-HOSPNAME1       PIC X(50).
@@ -209,8 +224,6 @@
                05  WRK-HOSPADRS1       PIC X(50).
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
-      *----(03.04.01)--ADD-END-----
-           03  WRK-SRYCD               PIC X(09).
       *
        01  TBL-DATA-AREA.
            03  TBL-SRYKBN              PIC X(02).
@@ -244,13 +257,16 @@
                07  TBL-H-SRYKBN          PIC X(10).
                07  TBL-H-SRYMEI.
                    09  TBL-H-ZKBN            PIC X(02).
-                   09  TBL-H-NAME            PIC X(78).
+                   09  TBL-H-NAME            PIC X(74).
                07  TBL-H-TANINAME        PIC X(10).
                07  TBL-H-SURYO           PIC X(11).
                07  TBL-H-KAISU           PIC X(03).
+               07  TBL-H-TENSU.
+                   09  TBL-H-TENSU1          PIC X(02).
+                   09  TBL-H-TENSU2          PIC X(07).
                07  TBL-H-KINGAKU.
-                   09  TBL-H-KINGAKU1        PIC X(09).
-                   09  TBL-H-KINGAKU2        PIC X(02).
+                   09  TBL-H-KINGAKU1        PIC X(02).
+                   09  TBL-H-KINGAKU2        PIC X(09).
                07  TBL-H-EN              PIC X(01).
       *
       *帳票明細数
@@ -281,6 +297,7 @@
            03  PARA-FTNKBN             PIC X(01).
            03  PARA-SRYKA              PIC X(01).
            03  PARA-LINE               PIC X(01).
+           03  PARA-HAKKOUBIKBN        PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -289,6 +306,7 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+           COPY    "CPSYSKANRI.INC".
       *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
       *    医療機関情報−所在地、連絡先 
@@ -436,15 +454,7 @@
       *    発行処理
            PERFORM 200-MAIN-SEC
       *
-           MOVE    WRK-PAGE-CNT   TO   ORCHCN04-PAGE-CNT
-      *
-      *    PERFORM VARYING IDX-SYU     FROM    1   BY  1
-      *            UNTIL   (IDX-SYU    >   10  )   OR
-      *                    (ORCHCN04-DENPNUM (IDX-SYU) =   ZERO)
-      *        MOVE    ORCHCN04-DENPNUM (IDX-SYU)  TO  WRK-DENPNUM
-      *        伝票番号毎の印刷
-      *        PERFORM 200-MAIN-SYORI-SEC
-      *    END-PERFORM
+           MOVE    WRK-PAGE-CNT        TO   ORCHCN04-PAGE-CNT
       *
            .
        000-PROC-EXT.
@@ -490,6 +500,13 @@
            MOVE    "LINE"              TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-LINE
+      *    伝票発行日区分
+           MOVE    "HAKKOUBIKBN"       TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-HAKKOUBIKBN
+           IF      PARA-HAKKOUBIKBN    =   SPACE
+               MOVE    "0"                 TO  PARA-HAKKOUBIKBN
+           END-IF
       *
            .
        100-OPTION-SELECT-EXT.
@@ -528,7 +545,7 @@
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1001-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1001-REC
            ELSE
                INITIALIZE                  SYS-1001-REC
            END-IF
@@ -544,7 +561,7 @@
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1002-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1002-REC
            ELSE
                INITIALIZE                  SYS-1002-REC
            END-IF
@@ -732,7 +749,11 @@
       *
            MOVE    SYU-DENPNUM         TO  WRK-HEAD-DENPNUM
       *    発行日
-           MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           IF      PARA-HAKKOUBIKBN    =   "1"
+               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           ELSE
+               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+           END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-HEAD-HAKYMD
       *    請求開始日
@@ -855,7 +876,7 @@
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
                MOVE    SYS-1005-SRYKANAME1
                                            TO  WRK-SRYKA-MEI
            ELSE
@@ -882,7 +903,7 @@
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-5001-REC
+               MOVE    SYSKANRI-REC        TO  SYS-5001-REC
            ELSE
                INITIALIZE                  SYS-5001-REC
            END-IF
@@ -942,7 +963,8 @@
                MOVE    WRK-HENYMDG (1:16)  TO  WRK-HEN-SRYYM
            END-IF
       *    剤毎に１行開ける
-           IF      PARA-LINE           =   "1"
+           IF     (PARA-LINE           =   "1" )
+             AND  (IDX-H               >   ZERO )
                ADD     2                   TO  IDX-H
            ELSE
                ADD     1                   TO  IDX-H
@@ -1156,12 +1178,19 @@
                END-STRING
            END-IF
       *
-           IF      TNS-TANICD          =   ZERO
-                                       OR  SPACE
-               CONTINUE
-           ELSE
-               MOVE    TNS-TANINAME        TO  TBL-TANINAME(IDX-S)
-               MOVE    SRY-SRYSURYO(IDXA)  TO  TBL-SURYO (IDX-S)
+      *    単位
+           MOVE    TNS-TANINAME        TO  TBL-TANINAME(IDX-S)
+      *    数量
+           MOVE    SRY-SRYSURYO(IDXA)  TO  TBL-SURYO (IDX-S)
+           IF     (TNS-TANICD          =   ZERO
+                                       OR  SPACE )
+      *        器材は単位なしでも表示
+               IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" )
+                 AND  (SRY-SRYSURYO(IDXA)      >   1    )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  TBL-SURYO (IDX-S)
+               END-IF
            END-IF
       *    初診・再診料は明細毎の点数
            IF      SRY-SRYKBN          =   "95"
@@ -1194,7 +1223,7 @@
       *        自費は１行１明細とする
                COMPUTE TBL-JIHIMONEY(IDX-S)
                                        =   SRY-JIHIMONEY(IDXA)
-                                       *   WRK-KAISU
+      *****                            *   WRK-KAISU
                MOVE    ZERO                TO  TBL-SURYO (IDX-S)
            END-IF
            MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
@@ -1395,12 +1424,23 @@
                IF      IDX-H           >=  LINE-MAX
                    PERFORM 200520-PAGE-CNT-SEC
                END-IF
+      *        数量
+               IF      TBL-SURYO (IDX2)        >   ZERO
+      *            数量＋単位名称（全角）
+                   PERFORM 20052-SURYO-ZENHEN-SEC
+                   MOVE    SPACE                   TO  WRK-H-NAME
+                   STRING  TBL-NAME (IDX2)
+                           "　　"
+                           WRK-H-SURYO
+                           DELIMITED  BY  SPACE
+                                           INTO   WRK-H-NAME
+                   END-STRING
+               ELSE
+                   MOVE    TBL-NAME     (IDX2)     TO  WRK-H-NAME
+               END-IF
       *        名称と単位名称チェックの改行対応
-               MOVE    TBL-NAME     (IDX2)     TO  WRK-H-NAME
                MOVE    ZERO                    TO  FLG-LINE
-               IF    ((TBL-TANINAME(IDX2)  NOT =   SPACE)
-                 AND  (WRK-H-NAME2-2       NOT =   SPACE) )
-               OR    ( WRK-H-NAME2         NOT =   SPACE  )
+               IF    ( WRK-H-NAME2         NOT =   SPACE  )
                    MOVE    1                   TO  FLG-LINE
       *            最終行の時、改ページ
                    IF      IDX-H          >=  (LINE-MAX - 1 )
@@ -1422,7 +1462,6 @@
                    MOVE    "　"                TO  TBL-H-ZKBN (IDX-H)
                END-IF
       *        名称
-               MOVE    TBL-NAME     (IDX2)     TO  WRK-H-NAME
                MOVE    WRK-H-NAME1             TO  TBL-H-NAME
                                                      (IDX-H)
                IF      FLG-LINE            =   1
@@ -1433,23 +1472,30 @@
                                                      (IDX-H)
                END-IF
       *        単位名称
-               MOVE    TBL-TANINAME (IDX2)     TO  TBL-H-TANINAME
-                                                       (IDX-H)
+      *        MOVE    TBL-TANINAME (IDX2)     TO  TBL-H-TANINAME
+      *                                                (IDX-H)
       *        数量
-               IF      TBL-SURYO (IDX2)        >   ZERO
-                   MOVE    TBL-SURYO (IDX2)    TO  WRK-SURYO
-                   PERFORM 200521-SURYO-HEN-SEC
-                   MOVE    WRK-SURYO-X         TO  TBL-H-SURYO
-                                                       (IDX-H)
-               END-IF
+      *        IF      TBL-SURYO (IDX2)        >   ZERO
+      *            MOVE    TBL-SURYO (IDX2)    TO  WRK-SURYO
+      *            PERFORM 200521-SURYO-HEN-SEC
+      *            MOVE    WRK-SURYO-X         TO  TBL-H-SURYO
+      *                                                (IDX-H)
+      *****    END-IF
       *        自費金額
                IF      TBL-JIHIMONEY (IDX2)     >   ZERO
-                   MOVE    TBL-JIHIMONEY(IDX2) TO  WRK-Z119
+                   MOVE    TBL-JIHIMONEY(IDX2) TO  WRK-Z7
+                   MOVE    WRK-Z7              TO  TBL-H-TENSU
+                                                      (IDX-H)
+      *            合計
+                   COMPUTE WRK-KINGAKU         =   TBL-JIHIMONEY(IDX2)
+                                               *   TBL-KAISU
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119
                    MOVE    WRK-Z119            TO  TBL-H-KINGAKU
                                                       (IDX-H)
       *            円
                    MOVE    "1"                 TO  TBL-H-EN
                                                       (IDX-H)
+                   MOVE    "◇"                TO  TBL-H-ZKBN (IDX-H)
                END-IF
       *        明細点数記載
                IF     (FLG-MEISAI          =   1  )  AND
@@ -1459,18 +1505,39 @@
            END-PERFORM
            IF     (TBL-SRYKBN          =   "95"
                                        OR  "96"  )  OR
-                  (TBL-KINGAKU         =   ZERO  )
+                  (TBL-ZAITENSU        =   ZERO  )
                CONTINUE
            ELSE
-      *        金額
-               IF      TBL-KINGAKU        >   ZERO
-                   MOVE    TBL-KINGAKU    TO  WRK-Z119
-                   MOVE    WRK-Z119       TO  TBL-H-KINGAKU
-                                                      (IDX-H)
+               IF     (PARA-GOKEITANI      =   "1"  )
+               OR     (TBL-ENKBN           =   "1"  )
+      *            点数表示
+                   MOVE    TBL-ZAITENSU        TO  WRK-TENSU
                ELSE
-                   MOVE    TBL-KINGAKU    TO  WRK-Z119-2
-                   MOVE    WRK-Z119-2     TO  TBL-H-KINGAKU
-                                                      (IDX-H)
+      *            金額
+                   COMPUTE WRK-TENSU           =   TBL-ZAITENSU
+                                               *   10
+               END-IF
+      *        点数
+               IF      WRK-TENSU           >   ZERO
+                   MOVE    WRK-TENSU           TO  WRK-Z7
+                   MOVE    WRK-Z7              TO  TBL-H-TENSU
+                                                          (IDX-H)
+               ELSE
+                   MOVE    WRK-TENSU           TO  WRK-Z7-2
+                   MOVE    WRK-Z7-2            TO  TBL-H-TENSU
+                                                          (IDX-H)
+               END-IF
+      *        合計
+               COMPUTE WRK-KINGAKU         =   WRK-TENSU
+                                           *   TBL-KAISU
+               IF      WRK-KINGAKU         >   ZERO
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119
+                   MOVE    WRK-Z119            TO  TBL-H-KINGAKU
+                                                       (IDX-H)
+               ELSE
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119-2
+                   MOVE    WRK-Z119-2          TO  TBL-H-KINGAKU
+                                                       (IDX-H)
                END-IF
       *        円（食事）
                IF      TBL-ENKBN           =   "1"
@@ -1501,36 +1568,57 @@
       *        点数
                IF      PARA-GOKEITANI      =   "1"
       *            点数表示
-                   COMPUTE WRK-KINGAKU     =  (TBL-TEN   (IDX2)
-                                           *   TBL-KAISU  )
+                   MOVE    TBL-TEN  (IDX2)     TO  WRK-TENSU
                ELSE
       *            金額表示
-                   COMPUTE WRK-KINGAKU    =  (TBL-TEN   (IDX2)
-                                          *   TBL-KAISU   )
-                                          *   10
-               END-IF
-               IF      WRK-KINGAKU        >   ZERO
-                   MOVE    WRK-KINGAKU    TO  WRK-Z119
-                   MOVE    WRK-Z119       TO  TBL-H-KINGAKU
-                                                            (IDX-H)
-               ELSE
-                   MOVE    WRK-KINGAKU    TO  WRK-Z119-2
-                   MOVE    WRK-Z119-2     TO  TBL-H-KINGAKU
-                                                            (IDX-H)
+                   COMPUTE WRK-TENSU           =   TBL-TEN (IDX2)
+                                               *   10
                END-IF
            ELSE
       *        金額
-               MOVE    TBL-TEN (IDX2)      TO  WRK-Z119
-               MOVE    WRK-Z119            TO  TBL-H-KINGAKU
-                                                            (IDX-H)
+               MOVE    TBL-TEN (IDX2)      TO  WRK-TENSU
       *        円
                MOVE    "1"                 TO  TBL-H-EN   (IDX-H)
            END-IF
+           IF      WRK-TENSU           >   ZERO
+               MOVE    WRK-TENSU           TO  WRK-Z7
+               MOVE    WRK-Z7              TO  TBL-H-TENSU (IDX-H)
+           ELSE
+               MOVE    WRK-TENSU           TO  WRK-Z7-2
+               MOVE    WRK-Z7-2            TO  TBL-H-TENSU (IDX-H)
+           END-IF
+      *    合計
+           COMPUTE WRK-KINGAKU         =   WRK-TENSU
+                                       *   TBL-KAISU
+           IF      WRK-KINGAKU         >   ZERO
+               MOVE    WRK-KINGAKU         TO  WRK-Z119
+               MOVE    WRK-Z119            TO  TBL-H-KINGAKU
+                                                            (IDX-H)
+           ELSE
+               MOVE    WRK-KINGAKU         TO  WRK-Z119-2
+               MOVE    WRK-Z119-2          TO  TBL-H-KINGAKU
+                                                            (IDX-H)
+           END-IF
+      *    円表示で桁あふれ
+           IF     (PARA-GOKEITANI      =   "1" )
+              AND (TBL-H-EN (IDX-H)    =   "1" )
+              AND (TBL-H-KINGAKU1 (IDX-H)  NOT =   SPACE )
+               MOVE    SPACE               TO  TBL-H-KINGAKU (IDX-H)
+               IF      WRK-KINGAKU         >   ZERO
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119Z
+                   MOVE    WRK-Z119Z           TO  TBL-H-KINGAKU2
+                                                            (IDX-H)
+               ELSE
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119-2
+                   MOVE    WRK-Z119Z-2         TO  TBL-H-KINGAKU2
+                                                            (IDX-H)
+               END-IF
+           END-IF
       *    回数
            MOVE    TBL-KAISU           TO  WRK-ZZ9
-           MOVE    WRK-ZZ9             TO  TBL-H-KAISU   (IDX-H)
+           MOVE    WRK-ZZ9             TO  TBL-H-KAISU  (IDX-H)
       *    点数表示行
-           MOVE    "＊"                TO  TBL-H-ZKBN (IDX-H)
+           MOVE    "＊"                TO  TBL-H-ZKBN   (IDX-H)
            .
        30051-TENSU-HEN-EXT.
            EXIT.
@@ -1580,6 +1668,60 @@
       *
            .
        200521-SURYO-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    数量＋単位名称（全角）編集処理
+      *****************************************************************
+       20052-SURYO-ZENHEN-SEC                  SECTION.
+      *
+      *    数量表示用編集
+           MOVE    TBL-SURYO (IDX2)    TO  WRK-SURYO
+           PERFORM 200521-SURYO-HEN-SEC
+      *    全角変換
+           MOVE    SPACE               TO  WRK-Z-SURYO
+           MOVE    ZERO                TO  IDXM2
+           PERFORM VARYING     IDXM    FROM    1   BY  1
+                   UNTIL       IDXM    >   11
+               IF      WRK-SURYO-X (IDXM:1) NOT =   SPACE
+                   MOVE    WRK-SURYO-X(IDXM:)   TO  WRK-Z-SURYO
+                   MOVE    11                   TO  IDXM
+               END-IF
+           END-PERFORM
+           MOVE    WRK-Z-SURYO         TO  WRK-MOJI
+           PERFORM 2009-KANACHK-SEC
+           MOVE    WRK-ZENKAKU-G       TO  WRK-K-SURYO
+      *
+           MOVE    1                   TO  IDXM2
+           MOVE    SPACE               TO  WRK-ZENHEN-SURYO
+           PERFORM VARYING     IDXM    FROM    1   BY  2
+                   UNTIL       IDXM    >   22
+               IF      WRK-K-SURYO (IDXM:2)     =   SPACE
+                                                OR  "　"
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-K-SURYO(IDXM:2)  TO  WRK-ZENHEN-SURYO
+                                                         (IDXM2:2)
+                   ADD     2                    TO  IDXM2
+               END-IF
+           END-PERFORM 
+      *    単位名称
+           PERFORM VARYING     IDXM    FROM    1   BY  2
+                   UNTIL       IDXM    >   10
+               IF      TBL-TANINAME (IDX2) (IDXM:2)
+                                                =   SPACE
+                                                OR  "　"
+                   CONTINUE
+               ELSE
+                   MOVE    TBL-TANINAME (IDX2)(IDXM:2)
+                                                TO  WRK-ZENHEN-SURYO
+                                                         (IDXM2:2)
+                   ADD     2                    TO  IDXM2
+               END-IF
+           END-PERFORM
+           MOVE    WRK-ZENHEN-SURYO    TO  WRK-H-SURYO
+      *
+           .
+       20052-SURYO-ZENHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1705,7 +1847,7 @@
            INITIALIZE                  HCN04
       *
            ADD     1                   TO  WRK-PAGE
-      *    伝票番号
+      *    頁
            MOVE    WRK-PAGE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  HCN04-PAGE
       *    伝票番号
@@ -1740,31 +1882,42 @@
       *
       *    列名（点数記載）
            IF      PARA-GOKEITANI      =   "1"
-               MOVE    "　　合計（点数）"    TO  HCN04-LABEL1
+               MOVE    "　点　数　"        TO  HCN04-LABEL3
            ELSE
-               MOVE    "　　金　額（円）"    TO  HCN04-LABEL1
+               MOVE    "　単　価　"        TO  HCN04-LABEL3
            END-IF
+           MOVE    "　　合　　計　　"  TO  HCN04-LABEL1
       *
       *    明細内容
            PERFORM VARYING     IDX3    FROM    1   BY  1
                    UNTIL       IDX3    >   LINE-MAX
                MOVE    TBL-H-SRYKBN (IDX3) TO  HCN04-SRYKBN (IDX3)
                MOVE    TBL-H-SRYMEI (IDX3) TO  HCN04-SRYMEI (IDX3)
-               MOVE    TBL-H-TANINAME(IDX3)
-                                           TO  HCN04-TANI  (IDX3)
+      *        MOVE    TBL-H-TANINAME(IDX3)
+      *                                    TO  HCN04-TANI  (IDX3)
                IF      TBL-H-KAISU  (IDX3) =   "---"
                    MOVE    ALL "―"            TO  HCN04-KAISU2 (IDX3)
                    MOVE    ALL "―"            TO  HCN04-KINGAKU2(IDX3)
                ELSE
-                   MOVE    TBL-H-SURYO  (IDX3) TO  HCN04-SURYO (IDX3)
+      ***          MOVE    TBL-H-SURYO  (IDX3) TO  HCN04-SURYO (IDX3)
                    MOVE    TBL-H-KAISU  (IDX3) TO  HCN04-KAISU (IDX3)
+                   MOVE    TBL-H-TENSU  (IDX3) TO  HCN04-TENSU  (IDX3)
                    MOVE    TBL-H-KINGAKU(IDX3) TO  HCN04-KINGAKU(IDX3)
                END-IF
       *        点数記載で円のもの
                IF      PARA-GOKEITANI      =   "1"
                    IF      TBL-H-EN  (IDX3)    =   "1"
+      *
+                       MOVE    SPACE           TO  HCN04-TENSU  (IDX3)
+                       STRING  TBL-H-TENSU2  (IDX3)
+                               "　"
+                                           DELIMITED  BY  SIZE
+                                           INTO    HCN04-TENSU(IDX3)
+                       END-STRING
+                       MOVE    "円"           TO  HCN04-TENSU2(IDX3)
+      *
                        MOVE    SPACE           TO  HCN04-KINGAKU(IDX3)
-                       STRING  TBL-H-KINGAKU1(IDX3)
+                       STRING  TBL-H-KINGAKU2(IDX3)
                                "　"
                                            DELIMITED  BY  SIZE
                                            INTO    HCN04-KINGAKU(IDX3)
@@ -1940,22 +2093,22 @@
       *    食事・室料差額は金額
            IF      HCM34S01-ZAISKBKBN(IDX) =   "4"
                                            OR  "3"
-               COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
-                                           *   TBL-KAISU )
+      *        COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
+      *                                    *   TBL-KAISU )
                MOVE    "1"                 TO  TBL-ENKBN
            ELSE
-               IF      PARA-GOKEITANI      =   "1"
+      *        IF      PARA-GOKEITANI      =   "1"
       *            点数表示
-                   COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
-                                               *   TBL-KAISU )
-                   MOVE    SPACE               TO  TBL-ENKBN
-               ELSE
+      *            COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
+      *                                        *   TBL-KAISU )
+      *            MOVE    SPACE               TO  TBL-ENKBN
+      *        ELSE
       *            金額表示
-                   COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
-                                               *   TBL-KAISU )
-                                               *   10
+      *            COMPUTE TBL-KINGAKU         =  (TBL-ZAITENSU
+      *                                        *   TBL-KAISU )
+      *                                        *   10
                    MOVE    SPACE               TO  TBL-ENKBN
-               END-IF
+      *        END-IF
            END-IF
       *
       *    帳票印刷
@@ -2031,6 +2184,27 @@
        2005-RSIKSN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       2009-KANACHK-SEC                 SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MOJI            TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO )  AND
+                  (KANACHK-MAX         >   ZERO )
+               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-ZENKAKU-G
+           ELSE
+               MOVE    WRK-MOJI            TO  WRK-ZENKAKU-G
+           END-IF
+      *
+           .
+       2009-KANACHK-EXT.
+           EXIT.
+      *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC        SECTION.
@@ -2063,7 +2237,7 @@
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(12) NOT =   SPACE
       *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
@@ -2095,7 +2269,7 @@
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1901-REC
                MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSPNAME1
                MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSPNAME2
            ELSE
@@ -2111,10 +2285,6 @@
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-           IF      SYS-1900-PRTKBN(12) =   SPACE
-               GO  TO  900-1902-READ-EXT
-           END-IF
-      *
       *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
@@ -2127,10 +2297,10 @@
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1902-REC
-               MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
-               MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
-               MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
+               MOVE    SYSKANRI-REC        TO  SYS-1902-REC
+               MOVE    SYS-1902-ADRS1      TO  WRK-HOSPADRS1
+               MOVE    SYS-1902-ADRS2      TO  WRK-HOSPADRS2
+               MOVE    SYS-1902-TEL        TO  WRK-HOSPTEL
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
@@ -2144,6 +2314,9 @@
       *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -2170,6 +2343,7 @@
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SYSKANRI
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
            END-IF

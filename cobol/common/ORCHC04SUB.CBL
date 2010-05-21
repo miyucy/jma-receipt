@@ -105,11 +105,16 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-KINGAKU             PIC S9(11).
+           03  WRK-ZAITENSU            PIC S9(11).
            03  WRK-SRYMEI              PIC X(10).
            03  WRK-SRYMEI-OLD          PIC X(10).
       *
-           03  WRK-Z119                PIC Z,ZZZ,ZZ9.
-           03  WRK-Z119-2              PIC -,---,--9.
+           03  WRK-Z119                PIC ZZZ,ZZZ,ZZ9.
+           03  WRK-Z119-2              PIC ---,---,--9.
+           03  WRK-Z1192               PIC ZZZZZZZZ9.
+           03  WRK-Z1192-2             PIC --------9.
+           03  WRK-Z7                  PIC ZZZZZZ9.
+           03  WRK-Z7-2                PIC ------9.
            03  WRK-ZZ9                 PIC ZZ9.
            03  WRK-NO                  PIC Z(7).
            03  WRK-WARI                PIC 9(02)V9.
@@ -522,13 +527,19 @@
                           INTO             WRK-TBL-NAME  (IDX-S)
                END-STRING
            END-IF
-      *
-           IF      TNS-TANICD          =   ZERO
-                                       OR  SPACE
-               CONTINUE
-           ELSE
-               MOVE    TNS-TANINAME        TO  WRK-TBL-TANINAME(IDX-S)
-               MOVE    SRY-SRYSURYO(IDXA)  TO  WRK-TBL-SURYO (IDX-S)
+      *    単位
+           MOVE    TNS-TANINAME        TO  WRK-TBL-TANINAME(IDX-S)
+      *    数量
+           MOVE    SRY-SRYSURYO(IDXA)  TO  WRK-TBL-SURYO (IDX-S)
+           IF     (TNS-TANICD          =   ZERO
+                                       OR  SPACE )
+      *        器材は単位なしでも表示
+               IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" )
+                 AND  (SRY-SRYSURYO(IDXA)      >   1    )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  WRK-TBL-SURYO (IDX-S)
+               END-IF
            END-IF
       *    初診・再診料は明細毎の点数
            IF      SRY-SRYKBN          =   "95"
@@ -561,7 +572,6 @@
       *        自費は１行１明細とする
                COMPUTE WRK-TBL-JIHIMONEY(IDX-S)
                                        =   SRY-JIHIMONEY(IDXA)
-                                       *   WRK-KAISU
       *****    MOVE    ZERO                TO  WRK-TBL-SURYO (IDX-S)
            END-IF
            MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
@@ -863,7 +873,7 @@
                                                TO  ORCHC04SUB-TANINAME
                                                               (IDX-H)
       *            数量
-                   IF      TBL-SURYO (IDX IDX2)   >   ZERO
+                   IF      TBL-SURYO (IDX IDX2)    >   ZERO
                        MOVE    TBL-SURYO (IDX IDX2)   TO  WRK-SURYO
                        PERFORM 200521-SURYO-HEN-SEC
                        MOVE    WRK-SURYO-X     TO  ORCHC04SUB-H-SURYO
@@ -876,11 +886,28 @@
                        PERFORM 30051-TENSU-HEN-SEC
                    END-IF
                    IF      TBL-JIHIMONEY (IDX IDX2)   >   ZERO
-                       MOVE    TBL-JIHIMONEY(IDX IDX2) TO  WRK-Z119
+      *                金額
+                       MOVE    TBL-JIHIMONEY(IDX IDX2) TO  WRK-Z1192
+                       MOVE    WRK-Z1192       TO  ORCHC04SUB-H-TENSU
+                                                              (IDX-H)
+      *                合計
+                       COMPUTE WRK-KINGAKU     =  (TBL-JIHIMONEY
+                                                           (IDX IDX2)
+                                               *   TBL-KAISU    (IDX) )
+                       MOVE    WRK-KINGAKU     TO  WRK-Z119
                        MOVE    WRK-Z119        TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
+                       IF     (ORCHC04SUB-H-KINGAKU1 (IDX-H)
+                                                   NOT =   SPACE  )
+                        AND   (ORCHC04SUB-GOKEITANI    =   "1"    )
+                           MOVE    WRK-KINGAKU     TO  WRK-Z1192
+                           MOVE    WRK-Z1192   TO  ORCHC04SUB-H-KINGAKU
+                                                              (IDX-H)
+                       END-IF
       *                円
                        MOVE    "1"             TO  ORCHC04SUB-H-ENKBN
+                                                              (IDX-H)
+                       MOVE    "◇"            TO  ORCHC04SUB-H-ZAIHEN
                                                               (IDX-H)
                    END-IF
                END-PERFORM
@@ -891,21 +918,32 @@
                ELSE
                    IF      ORCHC04SUB-GOKEITANI    =   "1"
       *                点数表示
-                       COMPUTE WRK-KINGAKU    =  (TBL-ZAITENSU (IDX)
-                                              *   TBL-KAISU    (IDX) )
+                       MOVE    TBL-ZAITENSU (IDX)  TO  WRK-ZAITENSU
                    ELSE
       *                金額表示
-                       COMPUTE WRK-KINGAKU    =  (TBL-ZAITENSU (IDX)
-                                              *   TBL-KAISU    (IDX) )
-                                              *   10
+                       COMPUTE WRK-ZAITENSU    =   TBL-ZAITENSU (IDX)
+                                               *   10
                    END-IF
-                   IF      WRK-KINGAKU        >   ZERO
-                       MOVE    WRK-KINGAKU    TO  WRK-Z119
-                       MOVE    WRK-Z119       TO  ORCHC04SUB-H-KINGAKU
+      *            点数
+                   IF      WRK-ZAITENSU        >   ZERO
+                       MOVE    WRK-ZAITENSU    TO  WRK-Z1192
+                       MOVE    WRK-Z1192       TO  ORCHC04SUB-H-TENSU
                                                               (IDX-H)
                    ELSE
-                       MOVE    WRK-KINGAKU    TO  WRK-Z119-2
-                       MOVE    WRK-Z119-2     TO  ORCHC04SUB-H-KINGAKU
+                       MOVE    WRK-ZAITENSU    TO  WRK-Z1192-2
+                       MOVE    WRK-Z1192-2     TO  ORCHC04SUB-H-TENSU
+                                                              (IDX-H)
+                   END-IF
+      *            合計
+                   COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
+                                               *   TBL-KAISU    (IDX) )
+                   IF      WRK-KINGAKU         >   ZERO
+                       MOVE    WRK-KINGAKU     TO  WRK-Z119
+                       MOVE    WRK-Z119        TO  ORCHC04SUB-H-KINGAKU
+                                                              (IDX-H)
+                   ELSE
+                       MOVE    WRK-KINGAKU     TO  WRK-Z119-2
+                       MOVE    WRK-Z119-2      TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
                    END-IF
       *            剤点数
@@ -938,31 +976,55 @@
       *        点数
                IF      ORCHC04SUB-GOKEITANI    =   "1"
       *            点数表示
-                   COMPUTE WRK-KINGAKU     =  (TBL-TEN   (IDX IDX2)
-                                           *   TBL-KAISU    (IDX) )
+                   COMPUTE WRK-ZAITENSU    =   TBL-TEN   (IDX IDX2)
                ELSE
       *            金額表示
-                   COMPUTE WRK-KINGAKU    =  (TBL-TEN   (IDX IDX2)
-                                          *   TBL-KAISU    (IDX) )
-                                          *   10
+                   COMPUTE WRK-ZAITENSU    =   TBL-TEN   (IDX IDX2)
+                                           *   10
                END-IF
-               IF      WRK-KINGAKU        >   ZERO
-                   MOVE    WRK-KINGAKU    TO  WRK-Z119
-                   MOVE    WRK-Z119       TO  ORCHC04SUB-H-KINGAKU
-                                                            (IDX-H)
+      *        点数
+               IF      WRK-ZAITENSU        >   ZERO
+                   MOVE    WRK-ZAITENSU    TO  WRK-Z1192
+                   MOVE    WRK-Z1192       TO  ORCHC04SUB-H-TENSU
+                                                              (IDX-H)
                ELSE
-                   MOVE    WRK-KINGAKU    TO  WRK-Z119-2
-                   MOVE    WRK-Z119-2     TO  ORCHC04SUB-H-KINGAKU
-                                                            (IDX-H)
+                   MOVE    WRK-ZAITENSU    TO  WRK-Z1192-2
+                   MOVE    WRK-Z1192-2     TO  ORCHC04SUB-H-TENSU
+                                                              (IDX-H)
+               END-IF
+      *        合計
+               COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
+                                           *   TBL-KAISU    (IDX) )
+               IF      WRK-KINGAKU         >   ZERO
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119
+                   MOVE    WRK-Z119            TO  ORCHC04SUB-H-KINGAKU
+                                                             (IDX-H)
+               ELSE
+                   MOVE    WRK-KINGAKU         TO  WRK-Z119-2
+                   MOVE    WRK-Z119-2          TO  ORCHC04SUB-H-KINGAKU
+                                                              (IDX-H)
                END-IF
            ELSE
       *        金額
-               MOVE    TBL-TEN (IDX IDX2)  TO  WRK-Z119
-               MOVE    WRK-Z119            TO  ORCHC04SUB-H-KINGAKU
+               MOVE    TBL-TEN (IDX IDX2)  TO  WRK-ZAITENSU
+               MOVE    WRK-ZAITENSU        TO  WRK-Z1192
+               MOVE    WRK-Z1192           TO  ORCHC04SUB-H-TENSU
                                                             (IDX-H)
       *        円
                MOVE    "1"                 TO  ORCHC04SUB-H-ENKBN
                                                             (IDX-H)
+           END-IF
+      *    合計
+           COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
+                                       *   TBL-KAISU    (IDX) )
+           IF      WRK-KINGAKU         >   ZERO
+               MOVE    WRK-KINGAKU         TO  WRK-Z119
+               MOVE    WRK-Z119            TO  ORCHC04SUB-H-KINGAKU
+                                                             (IDX-H)
+           ELSE
+               MOVE    WRK-KINGAKU         TO  WRK-Z119-2
+               MOVE    WRK-Z119-2          TO  ORCHC04SUB-H-KINGAKU
+                                                              (IDX-H)
            END-IF
       *    コード点数
            MOVE    TBL-TEN (IDX IDX2)  TO  ORCHC04SUB-TENSU
