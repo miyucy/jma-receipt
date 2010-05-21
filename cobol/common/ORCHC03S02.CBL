@@ -862,6 +862,7 @@
                                    >       1 )
                MOVE    "複数保険使用"  TO  SYUPARA03-HKNCOMBIMEI
                MOVE    ZERO            TO  LNKSYU-PTFTNRATE  (IDX4)
+               MOVE    SPACE           TO  LNKSYU-HKNCOMBINUM(IDX4)
            ELSE
                MOVE    SRT-KBT-HKNCOMBI (IDX4 1)
                                        TO  LNKSYU-HKNCOMBINUM(IDX4)
