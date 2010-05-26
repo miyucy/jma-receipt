@@ -936,7 +936,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                GO  TO  2101-SEIKYU-PG-CALL-EXT
            END-IF
       *
-           PERFORM 900-SYUNOU-KEY37-SEL-SEC
+           PERFORM 900-SYUNOU-KEY73-SEL-SEC
       *
            MOVE    SPACE               TO  WRK-SRYYMD
            PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
@@ -954,12 +954,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                    GO  TO  2101-SEIKYU-PG-CALL-EXT
                END-IF
       *
-               PERFORM 900-SYUNOU-KEY37-FET-SEC
+               PERFORM 900-SYUNOU-KEY73-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+           MOVE    "key73"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            INITIALIZE                      ORCHC03S02AREA
@@ -1758,7 +1758,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       **************************************************************
       *    収納マスター検索処理
       **************************************************************
-       900-SYUNOU-KEY37-SEL-SEC        SECTION.
+       900-SYUNOU-KEY73-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SYUNOU
       *
@@ -1771,22 +1771,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+           MOVE    "key73"             TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               PERFORM 900-SYUNOU-KEY37-FET-SEC
+               PERFORM 900-SYUNOU-KEY73-FET-SEC
            ELSE
                INITIALIZE                  SYUNOU-REC
                MOVE    1               TO  FLG-SYUNOU
            END-IF
       *
            .
-       900-SYUNOU-KEY37-SEL-EXT.
+       900-SYUNOU-KEY73-SEL-EXT.
            EXIT.
       **************************************************************
       *    収納マスターFETCH処理
       **************************************************************
-       900-SYUNOU-KEY37-FET-SEC        SECTION.
+       900-SYUNOU-KEY73-FET-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SYUNOU
            MOVE    ZERO                TO  FLG-LOOPEND
@@ -1795,7 +1795,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                     OR   ( FLG-LOOPEND NOT =   ZERO )
       *
                MOVE    "tbl_syunou"        TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
+               MOVE    "key73"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  SYUNOU-REC
@@ -1815,7 +1815,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            END-PERFORM
       *
            .
-       900-SYUNOU-KEY37-FET-EXT.
+       900-SYUNOU-KEY73-FET-EXT.
            EXIT.
       **************************************************************
       *    収納マスター検索処理
