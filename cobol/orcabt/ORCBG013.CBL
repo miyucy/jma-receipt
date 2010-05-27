@@ -1075,7 +1075,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
       *
                INITIALIZE                      ORCHC04AREA
                MOVE    SYUPARA03-DENPNUM   TO  ORCHC04-DENPNUM
+               MOVE    4                   TO  ORCHC04-HAKKOFLG
                MOVE    WRK-PARA-HAKUHOUFLG TO  ORCHC04-HAKHOUFLG
+               MOVE    WRK-PARA-HAKYMD     TO  ORCHC04-DENPPRTYMD
                MOVE    SYUPARA03-STSRYYMD  TO  ORCHC04-KIKAN-STYMD
                MOVE    SYUPARA03-EDSRYYMD  TO  ORCHC04-KIKAN-EDYMD
       *

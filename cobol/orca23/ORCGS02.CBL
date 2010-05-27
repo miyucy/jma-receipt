@@ -3406,6 +3406,7 @@
                MOVE    WRK-SPA-NAME    TO  ORCHCN04-NAME
                MOVE    SYU-SKYSTYMD    TO  ORCHCN04-SKYSTYMD
                MOVE    SYU-SKYEDYMD    TO  ORCHCN04-SKYEDYMD
+               MOVE    1               TO  ORCHCN04-HAKKOFLG
       *
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   ORCHCN03S02-GRP-CNT )
@@ -3695,6 +3696,7 @@
                INITIALIZE                  ORCHC04AREA
                MOVE    SYUPARA03-DENPNUM
                                        TO  ORCHC04-DENPNUM
+               MOVE    1               TO  ORCHC04-HAKKOFLG
                MOVE    SYUPARA01-SKYSUMFLG
                                        TO  ORCHC04-HAKHOUFLG
                MOVE    SYUPARA03-STSRYYMD  TO  ORCHC04-KIKAN-STYMD
@@ -4084,7 +4086,9 @@
       *
                INITIALIZE                  ORCHC04AREA
                MOVE    SYUPARA03-DENPNUM   TO  ORCHC04-DENPNUM
+               MOVE    4                   TO  ORCHC04-HAKKOFLG
                MOVE    SYUPARA01-SKYSUMFLG TO  ORCHC04-HAKHOUFLG
+               MOVE    SPA-SYSYMD          TO  ORCHC04-DENPPRTYMD
                MOVE    SYUPARA03-STSRYYMD  TO  ORCHC04-KIKAN-STYMD
                MOVE    SYUPARA03-EDSRYYMD  TO  ORCHC04-KIKAN-EDYMD
       *

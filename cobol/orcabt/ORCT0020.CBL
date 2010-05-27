@@ -135,6 +135,7 @@
                05  TSYUGRP-KBT             PIC X(01).
                05  TSYUGRP-GRP-MAX         PIC 9(05).
                05  TSYUGRP-GRP-OCC         OCCURS   10.
+                   07  TSYUGRP-DENPPRTYMD  PIC X(08).
                    07  TSYUGRP-SKYPRT      PIC X(01).
                    07  TSYUGRP-SRYPRT      PIC X(01).
                    07  TSYUGRP-GRP-MAX2    PIC 9(05).
@@ -625,6 +626,8 @@
       *
            MOVE    PTNUM-PTNUM         TO  ORCHCN04-PTNUM
            MOVE    PTINF-NAME          TO  ORCHCN04-NAME
+           MOVE    TSYUGRP-DENPPRTYMD (IDX0 IDX1)
+                                       TO  ORCHCN04-DENPPRTYMD
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   TSYUGRP-GRP-MAX2 (IDX0 IDX1) )
@@ -1045,6 +1048,9 @@
                            "DENPNUM["  PTTEIKIRRK-DENPNUM "]"
                            "ORCHCN03S02-SKYPRT[" ORCHCN03S02-SKYPRT "]"
                            "ORCHCN03S02-SRYPRT[" ORCHCN03S02-SRYPRT "]"
+                   MOVE    SYU-DENPPRTYMD
+                                   TO  TSYUGRP-DENPPRTYMD
+                                                  (TSYUGRP-MAX IDX-MAX)
                    MOVE    ORCHCN03S02-SKYPRT
                                    TO  TSYUGRP-SKYPRT
                                                   (TSYUGRP-MAX IDX-MAX)

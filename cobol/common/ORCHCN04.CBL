@@ -749,10 +749,16 @@
       *
            MOVE    SYU-DENPNUM         TO  WRK-HEAD-DENPNUM
       *    È¯¹ÔÆü
-           IF      PARA-HAKKOUBIKBN    =   "1"
-               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           IF     (ORCHCN04-DENPPRTYMD NOT =   SPACE )
+               MOVE    ORCHCN04-DENPPRTYMD
+                                           TO  WRK-SYMD
            ELSE
-               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+               IF     (PARA-HAKKOUBIKBN    =   "1" )
+                 AND  (ORCHCN04-HAKKOFLG   =    1   OR   3 )
+                   MOVE    SPA-SYSYMD      TO  WRK-SYMD
+               ELSE
+                   MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
+               END-IF
            END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-HEAD-HAKYMD

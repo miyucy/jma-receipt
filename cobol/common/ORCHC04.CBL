@@ -1079,11 +1079,15 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
       *    発行日
-           IF     (PARA-HAKKOUBIKBN    =   "1" )
-             AND  (ORCHC04-HAKKOFLG    =   "1"  OR  "3" )
-               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           IF     (ORCHC04-DENPPRTYMD  NOT =   SPACE )
+               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
            ELSE
-               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+               IF     (PARA-HAKKOUBIKBN    =   "1" )
+                 AND  (ORCHC04-HAKKOFLG    =    1   OR   3 )
+                   MOVE    SPA-SYSYMD      TO  WRK-SYMD
+               ELSE
+                   MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
+               END-IF
            END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
@@ -1143,10 +1147,15 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
       *    発行日
-           IF      PARA-HAKKOUBIKBN    =   "1"
-               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           IF     (ORCHC04-DENPPRTYMD  NOT =   SPACE )
+               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
            ELSE
-               MOVE    SYU-DENPPRTYMD      TO  WRK-SYMD
+               IF     (PARA-HAKKOUBIKBN    =   "1" )
+                 AND  (ORCHC04-HAKKOFLG    =    1   OR   3 )
+                   MOVE    SPA-SYSYMD      TO  WRK-SYMD
+               ELSE
+                   MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
+               END-IF
            END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
@@ -1715,7 +1724,11 @@
                MOVE    2                   TO  FLG-SYORI
            END-IF
       *    発行日
-           MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           IF    ( ORCHC04-DENPPRTYMD  NOT =   SPACE )
+               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
+           ELSE
+               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+           END-IF
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
       *

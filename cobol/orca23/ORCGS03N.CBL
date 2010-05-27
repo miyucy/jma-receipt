@@ -3032,6 +3032,7 @@
            MOVE    SPA-S01-DENPNUM TO  ORCHCN04-DENPNUM (1)
            MOVE    WRK-SRYPRT-DENPEDANUM
                                    TO  ORCHCN04-DENPEDANUM (1)
+           MOVE   3                TO  ORCHCN04-HAKKOFLG
       *
            MOVE    "02"                TO  WRK-SPA-PRT-FLG
            CALL    WRK-MEISAI-PG   USING   WRK-SPA-AREA
