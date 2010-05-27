@@ -3271,7 +3271,13 @@
        419-SAIHAKKOU-SEC           SECTION.
       *
            IF    ( SPA-GMN-SELBAN      NOT =   ZERO )
-               MOVE    "2102"      TO  SPA-SIDCD
+               IF    ( SPA-NAI-TJYOTAIKBN (SPA-GMN-SELBAN)
+                                       =   "3" )
+                   MOVE    "0010"          TO  SPA-ERRCD
+               END-IF
+               IF    ( SPA-ERRCD       =   SPACE )
+                   MOVE    "2102"      TO  SPA-SIDCD
+               END-IF
            END-IF
       *
            .
