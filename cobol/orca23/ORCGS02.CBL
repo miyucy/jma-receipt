@@ -1270,6 +1270,8 @@
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    MOVE    1               TO  SPA-NAI-LOCK
                    MOVE    SLOCK-MSG       TO  SPA-NAI-SLOCK-MSG
+                   MOVE    SPA-GMN-PTID    TO  SPA-LAST-PTID
+                   MOVE    SPA-GMN-PTNUM   TO  SPA-LAST-PTNUM
                END-IF
       *
                PERFORM 320-HKNCOMBI-EDIT-SEC
