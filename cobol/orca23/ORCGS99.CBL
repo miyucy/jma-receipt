@@ -60,7 +60,7 @@
            03  IDX                 PIC 9(04).
       *
        01  WRK-AREA.
-           03  WRK-PAGE            PIC ZZZZZZZZZZ.
+           03  WRK-PAGE            PIC ZZZZZZZZZ9.
       *----(03.04.01)--ADD-START---
            03  WRK-PRT-PAGE        PIC 9(10).
       *----(03.04.01)--ADD-END-----
@@ -119,7 +119,17 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -170,20 +180,16 @@
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"   ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-S99-FLG
-                   PERFORM 210-BACK
-      *    情報削除
-               WHEN    "CLICKED"   ALSO    "B01S"
-                   MOVE    "DEL"           TO  SPA-S99-FLG
                    PERFORM 210-BACK
       *    処理状態
                WHEN    "CLICKED"   ALSO    "pandatimer1"
                WHEN    "CLICKED"   ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
+      *----(03.04.01)--ADD-START---
       *    プレビュー画面へ
                WHEN    "CLICKED"   ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-S99-FLG
-                   PERFORM 210-BACK
+                   PERFORM 4501-NEXT-GMN-SEC
+      *----(03.04.01)--ADD-END-----
            END-EVALUATE
       *
            .
@@ -193,6 +199,10 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
+      *
+      *----(03.04.01)--ADD-START---
+           MOVE    SPACE           TO  SPA-S99-FLG
+      *----(03.04.01)--ADD-END-----
       *
            MOVE    SPA-MOTOPG      TO  SPA-SAKIPG
            MOVE    "S99"           TO  SPA-MOTOPG
@@ -208,13 +218,34 @@
        210-BACK-EXT.
            EXIT.
       *
+      *----(03.04.01)--ADD-START---
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4501-NEXT-GMN-SEC           SECTION.
+      *
+           MOVE    "OK"            TO  SPA-S99-FLG
+      *     
+           MOVE    SPA-MOTOPG      TO  SPA-SAKIPG
+           MOVE    "S99"           TO  SPA-MOTOPG
+      *
+           MOVE    "JOIN"          TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG      TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *----(03.04.01)--ADD-END-----
       *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC             SECTION.
       *     
            MOVE    SPACE               TO  S99
-           INITIALIZE                      S99
            MOVE    ZERO                TO  S99-COUNT
       *----(03.04.01)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  S99-B12-STATE
