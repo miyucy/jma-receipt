@@ -69,10 +69,6 @@
       * 04.04.00     NACL-多々納  09/01/21  予約票追加
       * 04.05.00     NACL-多々納  09/06/09  予約一覧・予約患者一覧変更
       * 04.05.00     NACL-太田    09/09/04  分娩費用明細書追加
-      * 04.07.00     NACL-太田    13/03/13  プログラム存在チェック追加
-      * 04.08.00     NACL-太田    13/09/17  ＡＤＬ区分・医療区分評価票追加
-      * 04.08.01     NACL-森脇    16/12/16  請求書兼領収書５追加
-      * 05.00.00     NACL-森脇    17/09/06  PUSH通知によるサーバ印刷追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -119,7 +115,7 @@
       *----(02.00.03)--ADD-START---
            03  IDX3                              PIC 9(03).
       *----(02.00.03)--ADD-END-----
-           03  IDX2                              PIC 9(04).
+           03  IDX2                              PIC 9(02).
            03  IDX4                              PIC 9(02).
       *
       *    一時領域
@@ -167,8 +163,6 @@
       *----(01.00.03) LINE ADD END   --------------------------
       *
            03  WRK-MCP-WIDGET      PIC X(64).
-           03  WRK-WIDGET-NUM.
-               05  WRK-WIDGET-NUM9 PIC 9(02).
            03  WRK-KANACHK-MAE-INPUT
                                    PIC X(400).
       *
@@ -220,16 +214,9 @@
       *    帳票プログラム選択情報 （入院）
            COPY  "CPSK1035.INC".
       *----(01.00.03) LINE UPD END   --------------------------
-      *----(05.00.00)--ADD-START---
-      *    PUSH通知情報
-           COPY  "CPSK9901.INC".
-      *----(05.00.00)--ADD-END-----
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *
-      *    ファイル存在チェック
-           COPY    "CPORCSACCESS.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -253,7 +240,57 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -370,9 +407,6 @@
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
-      *----(05.00.00)--ADD-START---
-           MOVE    "F"                 TO  SPA-GMN-USE-PRINT-SERVER
-      *----(05.00.00)--ADD-END-----
       *
            EVALUATE    SPA-W01-KANRICD
       *
@@ -382,12 +416,6 @@
       *
       *    出力先プリンタ割り当て情報
            WHEN    "1031"
-      *----(05.00.00)--ADD-START---
-               IF    ( SPA-MW      =   SPA-GINBEE )
-      *            PUSH通知情報
-                   PERFORM 3101-SYS9901-SYOKI-SEC
-               END-IF
-      *----(05.00.00)--ADD-END-----
       *----(02.00.03)--UPD-START---
       *        端末区分初期処理
                PERFORM 3101-USERKBN-SYOKI-SEC
@@ -403,30 +431,7 @@
            .
        310-SPASET-EXT.
            EXIT.
-      *----(05.00.00)--ADD-START---
-      *****************************************************************
-      *    PUSH通知情報初期処理
-      *****************************************************************
-       3101-SYS9901-SYOKI-SEC          SECTION.
       *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "9901"              TO  SYS-KANRICD
-           MOVE    "*"                 TO  SYS-KBNCD
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF  (   FLG-SYSKANRI        =   ZERO )
-               MOVE    SYSKANRI-REC    TO  SYS-9901-REC
-               IF      SYS-9901-USE-PRINT-SERVER   =   1
-                   MOVE    "T"         TO  SPA-GMN-USE-PRINT-SERVER
-               ELSE
-                   MOVE    "F"         TO  SPA-GMN-USE-PRINT-SERVER
-               END-IF
-           END-IF
-      *
-           .
-       3101-SYS9901-SYOKI-EXT.
-           EXIT.
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    帳票編集区分情報初期処理
       *****************************************************************
@@ -456,13 +461,9 @@
            MOVE    "0"                 TO  SPA-GMN-KOUHATUKALST(1)
            MOVE    "変更不可"          TO  SPA-GMN-KOUHATUKALST(1)(3:)
            MOVE    "1"                 TO  SPA-GMN-KOUHATUKALST(2)
-      *H24.4
-           MOVE    "変更可（一般）"    TO  SPA-GMN-KOUHATUKALST(2)(3:)
+           MOVE    "変更可"            TO  SPA-GMN-KOUHATUKALST(2)(3:)
            MOVE    "2"                 TO  SPA-GMN-KOUHATUKALST(3)
-     ***** MOVE    "変更可（後発）"    TO  SPA-GMN-KOUHATUKALST(3)(3:)
-      *H24.4
-           MOVE    "変更可（点数マスタ）"
-                                       TO  SPA-GMN-KOUHATUKALST(3)(3:)
+           MOVE    "変更可（後発）"    TO  SPA-GMN-KOUHATUKALST(3)(3:)
            MOVE    3                   TO  SPA-GMN-KOUHATUKA-MAX
       *
            MOVE    SPACE               TO  SYSKANRI-REC
@@ -589,9 +590,7 @@
            MOVE    "ORCHC03V03A5"      TO  SPA-GMN-ORGPGNM03MEIL(4)
       ***  MOVE    4                   TO  SPA-GMN-ORGPGNM03-MAX
            MOVE    "ORCHC03V04"        TO  SPA-GMN-ORGPGNM03MEIL(5)
-      *     MOVE    5                   TO  SPA-GMN-ORGPGNM03-MAX
-           MOVE    "ORCHC03V05"        TO  SPA-GMN-ORGPGNM03MEIL(6)
-           MOVE    6                   TO  SPA-GMN-ORGPGNM03-MAX
+           MOVE    5                   TO  SPA-GMN-ORGPGNM03-MAX
       *
       *    請求書兼領収書コンボ（入院）
            MOVE    "ORCHCN03"          TO  SPA-GMN-ORGPGNM03NMEIL(1)
@@ -617,26 +616,6 @@
            MOVE    "ORCHC31"           TO  SPA-GMN-ORGPGNM04-MEI(2)
            MOVE    2                   TO  SPA-GMN-ORGPGNM04-MAX
       *----(04.02.02)--ADD-END-----
-      *
-           MOVE    2                   TO  SPA-GMN-CSTPGNMLST-MAX (1)
-           MOVE    "A21000H01A4"       TO  SPA-GMN-CSTPGNMMEIL (1 1)
-           MOVE    "A21000H01B5"       TO  SPA-GMN-CSTPGNMMEIL (1 2)
-      *
-           MOVE    2                   TO  SPA-GMN-CSTPGNMLST-MAX (2)
-           MOVE    "A00000H02"         TO  SPA-GMN-CSTPGNMMEIL (2 1)
-           MOVE    "A21000H02"         TO  SPA-GMN-CSTPGNMMEIL (2 2)
-      *
-           MOVE    6                   TO  SPA-GMN-CSTPGNMLST-MAX (3)
-           MOVE    "A00000H03"         TO  SPA-GMN-CSTPGNMMEIL (3 1)
-           MOVE    "A00000H03A4"       TO  SPA-GMN-CSTPGNMMEIL (3 2)
-           MOVE    "A00000H03A5"       TO  SPA-GMN-CSTPGNMMEIL (3 3)
-           MOVE    "A21000H03"         TO  SPA-GMN-CSTPGNMMEIL (3 4)
-           MOVE    "A00000H03A5P"      TO  SPA-GMN-CSTPGNMMEIL (3 5)
-           MOVE    "A00000H03A5L"      TO  SPA-GMN-CSTPGNMMEIL (3 6)
-      *
-           MOVE    2                   TO  SPA-GMN-CSTPGNM-NLST-MAX (3)
-           MOVE    "A00000H03NA4"      TO  SPA-GMN-CSTPGNM-NMEIL (3 1)
-           MOVE    "A00000H03NA5"      TO  SPA-GMN-CSTPGNM-NMEIL (3 2)
       *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
@@ -866,8 +845,6 @@
            MOVE    "処方せん（退院時院外）"
                                        TO  SPA-GMN-TNAME-N (12)
            MOVE    "分娩費用明細書"    TO  SPA-GMN-TNAME-N (13)
-           MOVE    "医療区分・ＡＤＬ区分評価票"
-                                       TO  SPA-GMN-TNAME-N (14)
       *
       *    カルテ１号紙
            MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
@@ -1319,17 +1296,6 @@
                        PERFORM 490-KOUSHIN-SEC
                    WHEN    "1002"
                        PERFORM 490-SAKUJYO-SEC
-                   WHEN    "1003"
-                       EVALUATE    SPA-GMN-PAGENO
-                           WHEN    1
-                               PERFORM 4101-PRTNM-SET-SEC
-                           WHEN    2
-                               PERFORM 4101-PRTNM-N-SET-SEC
-                       END-EVALUATE
-                   WHEN    "1004"
-                       PERFORM 4101-COPY-SET-SEC
-                   WHEN    "1005"
-                       PERFORM 4101-COPY-GMN-SET-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-W01-KANRICD
@@ -1430,23 +1396,10 @@
                PERFORM  410-SAKUJYO-SEC
       *----(02.00.03)--ADD-END-----
       *
-      *    出力設定コピー
-           WHEN    "CLICKED"       ALSO    "B04"
-               IF      SPA-W01-KANRICD     =   "1031"
-                   PERFORM 410-PRINTCOPY-SYORI-SEC
-               END-IF
-      *    プリンタセット
-           WHEN    "CLICKED"       ALSO    "B05"
-               IF      SPA-W01-KANRICD     =   "1031"
-                   PERFORM 410-PRINT-SET-SEC
-               END-IF
-      *    出力設定貼付
-           WHEN    "CLICKED"       ALSO    "B06"
-               IF      SPA-W01-KANRICD     =   "1031"
-                   PERFORM 410-SELNUMSET-SYORI-SEC
-               END-IF
       *    タグ切替え
            WHEN    "CLICKED"       ALSO    "B08"
+           WHEN    "CLICKED"       ALSO    "N0101"
+           WHEN    "CLICKED"       ALSO    "N0102"
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM 460-TAGUCHG-SEC
                END-IF
@@ -1460,10 +1413,6 @@
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM 460-W62-SYORI-SEC
                END-IF
-      *----(05.00.00)--ADD-START---
-           WHEN    "CLICKED"       ALSO    "USE-PRINT-SERVER"
-               PERFORM 4101-GMN-SPA-SET-SEC
-      *----(05.00.00)--ADD-END-----
       *
            END-EVALUATE
            .
@@ -1488,11 +1437,6 @@
       *        選択番号
                WHEN    "ACTIVATE"       ALSO    "SELNUM"
                    PERFORM  4101-SELNUM-CHK-SEC
-      *        タブ変更
-               WHEN    "SWITCH"        ALSO   "n4"
-                   IF      SPA-W01-KANRICD     =   "1031"
-                       PERFORM 460-TAGUCHG-SEC
-                   END-IF
       *        行選択
                WHEN    ANY              ALSO    "USERLST"
                    PERFORM  4105-USERLST-SEC
@@ -1524,135 +1468,6 @@
            EXIT.
       *
       *****************************************************************
-      *    外来プリンタ名セット処理
-      *****************************************************************
-       4101-PRTNM-SET-SEC          SECTION.
-      *
-      *    出力先プリンタ割り当て
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   20 )
-                       OR    ( SPA-GMN-TNAME (IDX)     =   SPACE )
-               MOVE    W11-PRTNM (01)      TO  SPA-GMN-TPRTNM (IDX)
-           END-PERFORM
-           .
-       4101-PRTNM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院プリンタ名セット処理
-      *****************************************************************
-       4101-PRTNM-N-SET-SEC        SECTION.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL     ( IDX     >   20 )
-                       OR    ( SPA-GMN-TNAME-N (IDX)   =   SPACE )
-               MOVE    W11-PRTNM-N (01)    TO  SPA-GMN-TPRTNM-N (IDX)
-           END-PERFORM
-           .
-       4101-PRTNM-N-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   コピーセット処理
-      *****************************************************************
-       4101-COPY-SET-SEC           SECTION.
-      *
-            INITIALIZE                 SPA-COPY-AREA
-      *     外来
-            PERFORM VARYING IDX        FROM    1   BY  1
-                    UNTIL   IDX        >   20
-                MOVE    SPA-GMN-TNAME(IDX)
-                                           TO  SPA-COPY-TNAME(IDX)
-                MOVE    SPA-GMN-TPRTNM(IDX)
-                                           TO  SPA-COPY-TPRTNM(IDX)
-            END-PERFORM
-      *
-            PERFORM VARYING IDX        FROM    1   BY  1
-                    UNTIL   IDX        >   SPA-GPGNM-MAX
-                MOVE    SPA-GMN-TORGPGNM(IDX)
-                                           TO  SPA-COPY-TORGPGNM(IDX)
-                MOVE    SPA-GMN-TORGPGCHK(IDX)
-                                           TO  SPA-COPY-TORGPGCHK(IDX)
-                MOVE    SPA-GMN-TCSTPGNM(IDX)
-                                           TO  SPA-COPY-TCSTPGNM(IDX)
-                MOVE    SPA-GMN-TCSTPGCHK(IDX)
-                                           TO  SPA-COPY-TCSTPGCHK(IDX)
-            END-PERFORM
-      *     入院
-            PERFORM VARYING IDX        FROM    1   BY  1
-                    UNTIL   IDX        >   20
-                MOVE    SPA-GMN-TNAME-N(IDX)
-                                           TO  SPA-COPY-TNAME-N(IDX)
-                MOVE    SPA-GMN-TPRTNM-N(IDX)
-                                           TO  SPA-COPY-TPRTNM-N(IDX)
-            END-PERFORM
-      *
-            PERFORM VARYING IDX        FROM    1   BY  1
-                    UNTIL   IDX        >   SPA-NPGNM-MAX
-                MOVE    SPA-GMN-TORGPGNM-N(IDX)
-                                           TO  SPA-COPY-TORGPGNM-N(IDX)
-                MOVE    SPA-GMN-TORGPGCHK-N(IDX)
-                                           TO  SPA-COPY-TORGPGCHK-N(IDX)
-                MOVE    SPA-GMN-TCSTPGNM-N(IDX)
-                                           TO  SPA-COPY-TCSTPGNM-N(IDX)
-                MOVE    SPA-GMN-TCSTPGCHK-N(IDX)
-                                           TO  SPA-COPY-TCSTPGCHK-N(IDX)
-            END-PERFORM
-      *
-            .
-       4101-COPY-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   標準項目画面セット処理
-      *****************************************************************
-       4101-COPY-GMN-SET-SEC       SECTION.
-      *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       20
-                MOVE    SPA-COPY-TNAME(IDX)
-                                    TO  SPA-GMN-TNAME(IDX)
-                MOVE    SPA-COPY-TPRTNM(IDX)
-                                    TO  SPA-GMN-TPRTNM(IDX)
-            END-PERFORM
-      *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       SPA-GPGNM-MAX
-                MOVE    SPA-COPY-TORGPGNM(IDX)
-                                    TO  SPA-GMN-TORGPGNM(IDX)
-                MOVE    SPA-COPY-TORGPGCHK(IDX)
-                                    TO  SPA-GMN-TORGPGCHK(IDX)
-                MOVE    SPA-COPY-TCSTPGNM(IDX)
-                                    TO  SPA-GMN-TCSTPGNM(IDX)
-                MOVE    SPA-COPY-TCSTPGCHK(IDX)
-                                    TO  SPA-GMN-TCSTPGCHK(IDX)
-            END-PERFORM
-      *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       20
-                MOVE    SPA-COPY-TNAME-N(IDX)
-                                    TO  SPA-GMN-TNAME-N(IDX)
-                MOVE    SPA-COPY-TPRTNM-N(IDX)
-                                    TO  SPA-GMN-TPRTNM-N(IDX)
-            END-PERFORM
-      *
-            PERFORM VARYING IDX FROM    1   BY  1
-                    UNTIL   IDX >       SPA-NPGNM-MAX
-                MOVE    SPA-COPY-TORGPGNM-N(IDX)
-                                    TO  SPA-GMN-TORGPGNM-N(IDX)
-                MOVE    SPA-COPY-TORGPGCHK-N(IDX)
-                                    TO  SPA-GMN-TORGPGCHK-N(IDX)
-                MOVE    SPA-COPY-TCSTPGNM-N(IDX)
-                                    TO  SPA-GMN-TCSTPGNM-N(IDX)
-                MOVE    SPA-COPY-TCSTPGCHK-N(IDX)
-                                    TO  SPA-GMN-TCSTPGCHK-N(IDX)
-            END-PERFORM
-      *
-           .
-       4101-COPY-GMN-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
@@ -1674,11 +1489,16 @@
            END-PERFORM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-NPGNM-MAX
+                   UNTIL       IDX     >   SPA-NPGNM-MAX2
                MOVE    W11-ORCACSTNM-N (IDX)
                                            TO  SPA-GMN-TCSTPGNM-N (IDX)
            END-PERFORM
-      *
+           MOVE    W11-ORCACSTNM05N    TO  SPA-GMN-TCSTPGNM-N (5)
+           MOVE    W11-ORCACSTNM06N    TO  SPA-GMN-TCSTPGNM-N (6)
+           MOVE    W11-ORCACSTNM07N    TO  SPA-GMN-TCSTPGNM-N (7)
+           MOVE    W11-ORCACSTNM08N    TO  SPA-GMN-TCSTPGNM-N (8)
+           MOVE    W11-ORCACSTNM09N    TO  SPA-GMN-TCSTPGNM-N (9)
+           MOVE    W11-ORCACSTNM10N    TO  SPA-GMN-TCSTPGNM-N (10)
       *    処方せん
            MOVE    W11-ORCAORGNM02     TO  SPA-GMN-TORGPGNM (02)
       *
@@ -1698,11 +1518,6 @@
       *----(02.00.12)--ADD-START---
            MOVE    W11-GAZOFOLDER      TO  SPA-GMN-GAZOFOLDER
       *----(02.00.12)--ADD-END-----
-      *
-      *----(05.00.00)--ADD-START---
-           MOVE    W11-USE-PRINT-SERVER
-                                       TO  SPA-GMN-USE-PRINT-SERVER
-      *----(05.00.00)--ADD-END-----
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2153,7 +1968,6 @@
       *****************************************************************
        4101-CSTPGNM-SET-SEC            SECTION.
       *
-      *
            .
       *
        4101-CSTPGNM-SET-EXT.
@@ -2282,8 +2096,29 @@
            IF    ( SPA-GMN-TCSTPGNM-N (IDX1)    =   SPACE )
                MOVE    "T"         TO  SPA-GMN-TORGPGCHK-N (IDX1)
            ELSE
-               MOVE    W11-ORCAORGCHK-N (IDX1)
+               EVALUATE    IDX1
+                   WHEN    1   THRU   4
+                       MOVE    W11-ORCAORGCHK-N (IDX1)
                                    TO  SPA-GMN-TORGPGCHK-N (IDX1)
+                   WHEN    5
+                       MOVE    W11-ORCAORGCHK05N
+                                   TO  SPA-GMN-TORGPGCHK-N (5)
+                   WHEN    6
+                       MOVE    W11-ORCAORGCHK06N
+                                   TO  SPA-GMN-TORGPGCHK-N (6)
+                   WHEN    7
+                       MOVE    W11-ORCAORGCHK07N
+                                   TO  SPA-GMN-TORGPGCHK-N (7)
+                   WHEN    8
+                       MOVE    W11-ORCAORGCHK08N
+                                   TO  SPA-GMN-TORGPGCHK-N (8)
+                   WHEN    9
+                       MOVE    W11-ORCAORGCHK09N
+                                   TO  SPA-GMN-TORGPGCHK-N (9)
+                   WHEN    10
+                       MOVE    W11-ORCAORGCHK10N
+                                   TO  SPA-GMN-TORGPGCHK-N (10)
+               END-EVALUATE
            END-IF
       *
            .
@@ -2302,8 +2137,29 @@
            IF    ( SPA-GMN-TCSTPGNM-N (IDX1)    =   SPACE )
                MOVE    "F"         TO  SPA-GMN-TCSTPGCHK-N (IDX1)
            ELSE
-               MOVE    W11-ORCACSTCHK-N (IDX1)
+               EVALUATE    IDX1
+                   WHEN    1   THRU   4
+                       MOVE    W11-ORCACSTCHK-N (IDX1)
                                    TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    5
+                       MOVE    W11-ORCACSTCHK05N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    6
+                       MOVE    W11-ORCACSTCHK06N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    7
+                       MOVE    W11-ORCACSTCHK07N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    8
+                       MOVE    W11-ORCACSTCHK08N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    9
+                       MOVE    W11-ORCACSTCHK09N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    10
+                       MOVE    W11-ORCACSTCHK10N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+               END-EVALUATE
            END-IF
       *
            .
@@ -2322,9 +2178,11 @@
                GO      TO      460-TAGUCHG-EXT
            END-IF
       *
-           IF     SPA-GMN-PAGENO      =   2
+           IF      WRK-MCP-WIDGET      =   "N0101"
+            OR   ( WRK-MCP-WIDGET      =   "B08"
+             AND   SPA-GMN-PAGENO      =   2 )
       *        外来画面へ
-               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    01                  TO  SPA-GMN-CUR
                MOVE    1                   TO  SPA-GMN-PAGENO
            ELSE
       *        入院画面へ
@@ -2347,17 +2205,6 @@
                PERFORM 4901-KANRENCHK-SEC
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF    ( SPA-GMN-USERKBN     NOT =   "*" )   AND
-                    (( SPA-GMN-TPRTNM (4)  NOT =
-                                           SPA-NAI-TPRTNM(4) ) OR
-                     ( SPA-GMN-TPRTNM (5)  NOT =
-                                           SPA-NAI-TPRTNM(5) ))
-                   MOVE    "0016"          TO  SPA-ERRCD
-                   MOVE    SPA-NAI-TPRTNM(4)   TO  SPA-GMN-TPRTNM (4)
-                   MOVE    SPA-NAI-TPRTNM(5)   TO  SPA-GMN-TPRTNM (5)
-               END-IF
-           END-IF
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-WIDCD
            END-IF
@@ -2401,51 +2248,6 @@
            END-IF
            .
        410-SAKUJYO-EXT.
-           EXIT.
-      *****************************************************************
-      *    プリンタセット
-      *****************************************************************
-       410-PRINT-SET-SEC           SECTION.
-      *
-           IF      SPA-ERRCD        =   SPACE
-               MOVE    "1003"           TO  SPA-WIDCD
-           END-IF
-           .
-       410-PRINT-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    出力プリンタ設定コピー
-      *****************************************************************
-       410-PRINTCOPY-SYORI-SEC     SECTION.
-      *
-           IF      SPA-GMN-SELNUM  =   ZERO
-               MOVE    "0007"          TO  SPA-ERRCD
-           END-IF
-           IF      SPA-ERRCD       =   SPACE
-               MOVE    "1004"          TO  SPA-WIDCD
-           END-IF
-      *
-           .
-       410-PRINTCOPY-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    出力プリンタ設定個別複写
-      *****************************************************************
-       410-SELNUMSET-SYORI-SEC     SECTION.
-      *
-           IF      SPA-GMN-SELNUM  =   ZERO
-               MOVE    "0007"          TO  SPA-ERRCD
-           ELSE
-               IF      SPA-COPY-AREA   =   SPACE
-                   MOVE    "0015"          TO  SPA-ERRCD
-               END-IF
-           END-IF
-           IF      SPA-ERRCD       =   SPACE
-               MOVE    "1005"          TO  SPA-WIDCD
-           END-IF
-      *
-           .
-       410-SELNUMSET-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    帳票オフセット画面処理
@@ -2549,12 +2351,6 @@
       *            職員毎登録
                    PERFORM 4902-SYS1031-SYOUIN-SEC
                END-IF
-      *----(05.00.00)--ADD-START---
-               IF    ( SPA-MW      =   SPA-GINBEE )
-      *            PUSH通知情報
-                   PERFORM 490-SYS-9901-KOUSHIN-SEC
-               END-IF
-      *----(05.00.00)--ADD-END-----
       *        初期画面へ
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 310-SPASET-SEC
@@ -2627,6 +2423,7 @@
        490-SAKUJYO-EXT.
            EXIT.
       *----(02.00.03)--ADD-END-----
+      *
       *****************************************************************
       *       出力先プリンタ割り当て情報・標準登録
       *****************************************************************
@@ -2987,6 +2784,7 @@
       *
        490-SYS-1030-KOUSHIN-EXT.
            EXIT.
+      *
       *****************************************************************
       *       帳票区分削除処理
       *****************************************************************
@@ -3011,39 +2809,6 @@
        490-SYS-1030-DELETE-EXT.
            EXIT.
       *----(02.00.03)--ADD-START---
-      *----(05.00.00)--ADD-START---
-      *****************************************************************
-      *    PUSH通知更新処理
-      *****************************************************************
-       490-SYS-9901-KOUSHIN-SEC    SECTION.
-      *
-           MOVE    SPACE               TO  SYS-9901-REC
-           INITIALIZE                      SYS-9901-REC
-           MOVE    "9901"              TO  SYS-9901-KANRICD
-           MOVE    "*"                 TO  SYS-9901-KBNCD
-      *
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-9901-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-9901-EDYUKYMD
-           IF      SPA-GMN-USE-PRINT-SERVER    =   "T"
-               MOVE    1               TO  SYS-9901-USE-PRINT-SERVER
-           ELSE
-               MOVE    0               TO  SYS-9901-USE-PRINT-SERVER
-           END-IF
-      *
-           MOVE    SYS-9901-REC        TO  SYSKANRI-REC
-      *
-           PERFORM 900-SYSKANRI-INV2-SEC
-           MOVE    SYS-9901-REC        TO  SYSKANRI-REC
-      *
-           PERFORM 490-SYSKANRI-KOUSHIN-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "4006"          TO  SPA-ERRCD
-           END-IF
-           .
-      *
-       490-SYS-9901-KOUSHIN-EXT.
-           EXIT.
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *       出力先プリンタ割り当て情報
       *****************************************************************
@@ -3293,7 +3058,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            PERFORM VARYING IDZ2    FROM    1   BY  1
-                   UNTIL   ( IDZ2  >   SPA-NPGNM-MAX )
+                   UNTIL   ( IDZ2  >   SPA-NPGNM-MAX2 )
       *
                IF  ( SPA-GMN-TCSTPGNM-N  (IDZ2)    =   SPACE )
                    IF  ( W11-ORCACSTCHK-N (IDZ2)   =   "F" )
@@ -3306,6 +3071,61 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *
            END-PERFORM
+      *
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (5)  =   SPACE )
+               IF  ( W11-ORCACSTCHK05N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   5       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (6)  =   SPACE )
+               IF  ( W11-ORCACSTCHK06N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   6       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (7)  =   SPACE )
+               IF  ( W11-ORCACSTCHK07N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   7       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (8)  =   SPACE )
+               IF  ( W11-ORCACSTCHK08N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   8       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (9)  =   SPACE )
+               IF  ( W11-ORCACSTCHK09N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   8       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (10)  =   SPACE )
+               IF  ( W11-ORCACSTCHK10N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   8       +   60
+               END-IF
+           END-IF
            .
        4901-CSTPGNM-CHK-EXT.
            EXIT.
@@ -3412,8 +3232,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  W11
            INITIALIZE                      W11
-      *
-           MOVE    "black"             TO  W11-MSG01-STYLE
       *
            MOVE    SPA-GMN-USERKBN-G   TO  W11-USERKBN
       *
@@ -3523,32 +3341,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-GMN-TCSTPGCHK (IDZ2)
                                         TO  W11-ORCACSTCHK (IDZ2)
-               MOVE    "black"          TO  W11-ORCACSTNM-STYLE (IDZ2)
-               IF    ( W11-ORCACSTCHK (IDZ2)       =   "T" )
-                AND  ( W11-ORCACSTNM  (IDZ2)   NOT =   SPACE )
-                   INITIALIZE               SACCESS-AREA
-                   MOVE    "X"             TO  SACCESS-MODE
-                   STRING  W11-ORCACSTNM  (IDZ2)   DELIMITED   BY  SPACE
-                           ".so"                   DELIMITED   BY  SIZE
-                   INTO    SACCESS-IN-FILENAME
-                   END-STRING
-                   CALL    "ORCSACCESS"    USING
-                                           SACCESS-AREA
-                   IF    ( SACCESS-RC      NOT =   ZERO )
-                       MOVE    "red"   TO  W11-ORCACSTNM-STYLE(IDZ2)
-                       MOVE    "red"   TO  W11-MSG01-STYLE
-                   END-IF
-               END-IF
-      *
-               MOVE    SPA-GMN-CSTPGNMLST-MAX (IDZ2)
-                                       TO  W11-ORCACSTNM-COUNT (IDZ2)
-      *
-               PERFORM VARYING IDX2 FROM    1   BY  1
-                       UNTIL ( IDX2 >   W11-ORCACSTNM-COUNT (IDZ2) )
-                   MOVE    SPA-GMN-CSTPGNMMEIL (IDZ2 IDX2)
-                                   TO  W11-ORCACSTNM-ITEM  (IDZ2 IDX2)
-               END-PERFORM
-      *
            END-PERFORM
       *
       *    入院
@@ -3595,11 +3387,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ORGPGNM09N-MAX
                                        TO  W11-ORCAORGNM-N09-COUNT
       *
-           MOVE    "ORCHCM50"          TO  W11-JIHI-UCHIWAKE
-           MOVE    "ORCHCN63"          TO  W11-BUNBEN
-      *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
-                   UNTIL       IDZ2     >       SPA-NPGNM-MAX
+                   UNTIL       IDZ2     >       SPA-NPGNM-MAX2
                MOVE    SPA-GMN-TCSTPGNM-N  (IDZ2)
                                         TO  W11-ORCACSTNM-N  (IDZ2)
       *
@@ -3608,32 +3397,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-GMN-TCSTPGCHK-N (IDZ2)
                                         TO  W11-ORCACSTCHK-N (IDZ2)
-               MOVE    "black"          TO  W11-ORCACSTNM-N-STYLE (IDZ2)
-               IF    ( W11-ORCACSTCHK-N (IDZ2)     =   "T" )
-                AND  ( W11-ORCACSTNM-N  (IDZ2) NOT =   SPACE )
-                   INITIALIZE               SACCESS-AREA
-                   MOVE    "X"             TO  SACCESS-MODE
-                   STRING  W11-ORCACSTNM-N(IDZ2)   DELIMITED   BY  SPACE
-                           ".so"                   DELIMITED   BY  SIZE
-                   INTO    SACCESS-IN-FILENAME
-                   END-STRING
-                   CALL    "ORCSACCESS"    USING
-                                           SACCESS-AREA
-                   IF    ( SACCESS-RC      NOT =   ZERO )
-                       MOVE    "red"   TO  W11-ORCACSTNM-N-STYLE(IDZ2)
-                       MOVE    "red"   TO  W11-MSG01-STYLE
-                   END-IF
-               END-IF
-      *
-               MOVE    SPA-GMN-CSTPGNM-NLST-MAX (IDZ2)
-                                       TO  W11-ORCACSTNM-N-COUNT (IDZ2)
-      *
-               PERFORM VARYING IDX2 FROM    1   BY  1
-                       UNTIL ( IDX2 >   W11-ORCACSTNM-N-COUNT (IDZ2) )
-                   MOVE    SPA-GMN-CSTPGNM-NMEIL (IDZ2 IDX2)
-                                   TO  W11-ORCACSTNM-N-ITEM  (IDZ2 IDX2)
-               END-PERFORM
            END-PERFORM
+           MOVE    SPA-GMN-TCSTPGNM-N (5)  TO  W11-ORCACSTNM05N
+           MOVE    SPA-GMN-TCSTPGNM-N (6)  TO  W11-ORCACSTNM06N
+           MOVE    SPA-GMN-TCSTPGNM-N (7)  TO  W11-ORCACSTNM07N
+           MOVE    SPA-GMN-TCSTPGNM-N (8)  TO  W11-ORCACSTNM08N
+           MOVE    SPA-GMN-TCSTPGNM-N (9)  TO  W11-ORCACSTNM09N
+           MOVE    SPA-GMN-TCSTPGNM-N (10) TO  W11-ORCACSTNM10N
+      *
+           MOVE    SPA-GMN-TORGPGCHK-N (5) TO  W11-ORCAORGCHK05N
+           MOVE    SPA-GMN-TORGPGCHK-N (6) TO  W11-ORCAORGCHK06N
+           MOVE    SPA-GMN-TORGPGCHK-N (7) TO  W11-ORCAORGCHK07N
+           MOVE    SPA-GMN-TORGPGCHK-N (8) TO  W11-ORCAORGCHK08N
+           MOVE    SPA-GMN-TORGPGCHK-N (9) TO  W11-ORCAORGCHK09N
+           MOVE    SPA-GMN-TORGPGCHK-N(10) TO  W11-ORCAORGCHK10N
+      *
+           MOVE    SPA-GMN-TCSTPGCHK-N (5) TO  W11-ORCACSTCHK05N
+           MOVE    SPA-GMN-TCSTPGCHK-N (6) TO  W11-ORCACSTCHK06N
+           MOVE    SPA-GMN-TCSTPGCHK-N (7) TO  W11-ORCACSTCHK07N
+           MOVE    SPA-GMN-TCSTPGCHK-N (8) TO  W11-ORCACSTCHK08N
+           MOVE    SPA-GMN-TCSTPGCHK-N (9) TO  W11-ORCACSTCHK09N
+           MOVE    SPA-GMN-TCSTPGCHK-N(10) TO  W11-ORCACSTCHK10N
       *
            MOVE    SPA-GMN-SYOHOGEPRTFLG-G   TO  W11-SYOHOGEPRTFLG
       *
@@ -3674,22 +3458,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-STYUKYMD     TO  W11-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W11-EDYUKYMD
       *
-      *----(05.00.00)--ADD-START---
-           MOVE    SPA-GMN-USE-PRINT-SERVER
-                                        TO  W11-USE-PRINT-SERVER
-           IF    ( SPA-W01-KANRICD      =   "1031" )   AND
-                 ( SPA-MW               =   SPA-GINBEE )
-               MOVE    WIDGET-NORMAL    TO  W11-USE-PRINT-SERVER-STATE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE
-                                        TO  W11-USE-PRINT-SERVER-STATE
-           END-IF
-      *----(05.00.00)--ADD-END-----
-      *
            MOVE    WIDGET-NORMAL        TO  W11-B03-STATE
-                                            W11-B04-STATE
-                                            W11-B05-STATE
-                                            W11-B06-STATE
                                             W11-B08-STATE
                                             W11-B09-STATE
                                             W11-B10-STATE
@@ -3704,9 +3473,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  W11-B03-STATE
                END-IF
            WHEN    "1031"
-               MOVE    "設定コピー"            TO  W11-B04-LABEL
-               MOVE    "設定一括"              TO  W11-B05-LABEL
-               MOVE    "設定貼付"              TO  W11-B06-LABEL
                MOVE    "タブ切替"              TO  W11-B08-LABEL
                MOVE    "オフセット"            TO  W11-B09-LABEL
                MOVE    "印字テスト"            TO  W11-B10-LABEL
@@ -3721,11 +3487,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-EVALUATE
            END-EVALUATE
       *----(02.00.03)--ADD-END-----
-      *
-           IF    ( W11-MSG01-STYLE =   "red" )
-               MOVE "ユーザプログラムがインストールされていません"
-                                               TO  W11-MSG01
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -3745,29 +3506,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  MCP-WIDGET
            EVALUATE    SPA-GMN-CUR
                WHEN    1       THRU   20
-                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
+                   MOVE    SPA-GMN-CUR     TO  IDX2
                    MOVE    "PRTNM"         TO  MCP-WIDGET
-                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(6:2)
+                   MOVE    IDX2            TO  MCP-WIDGET(6:2)
                    MOVE    1               TO  SPA-GMN-PAGENO
                WHEN    21      THRU   40
-                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
-                   COMPUTE WRK-WIDGET-NUM9 =   WRK-WIDGET-NUM9    -   20
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   COMPUTE IDX2            =   IDX2    -   20
                    MOVE    "ORCACSTNM"     TO  MCP-WIDGET
-                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(10:2)
+                   MOVE    IDX2            TO  MCP-WIDGET(10:2)
                    MOVE    1               TO  SPA-GMN-PAGENO
       *        入院
                WHEN    51      THRU   70
-                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
-                   COMPUTE WRK-WIDGET-NUM9 =   WRK-WIDGET-NUM9    -   50
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   COMPUTE IDX2            =   IDX2    -   50
                    MOVE    "PRTNM"         TO  MCP-WIDGET
-                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(6:2)
+                   MOVE    IDX2            TO  MCP-WIDGET(6:2)
                    MOVE    "N"             TO  MCP-WIDGET(8:1)
                    MOVE    2               TO  SPA-GMN-PAGENO
                WHEN    71      THRU   80
-                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
-                   COMPUTE WRK-WIDGET-NUM9 =   WRK-WIDGET-NUM9    -   70
+                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   COMPUTE IDX2            =   IDX2    -   70
                    MOVE    "ORCACSTNM"     TO  MCP-WIDGET
-                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(10:2)
+                   MOVE    IDX2            TO  MCP-WIDGET(10:2)
                    MOVE    "N"             TO  MCP-WIDGET(12:1)
                    MOVE    2               TO  SPA-GMN-PAGENO
       *----(02.00.03)--ADD-START---
@@ -4078,15 +3839,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0012"
                    MOVE    "選択番号が正しくありません"
                                                       TO  SPA-ERRMSG
-               WHEN    "0015"
-                   MOVE    "複写する情報がありません"
-                                                      TO  SPA-ERRMSG
-               WHEN    "0016"
-                   STRING  "診療報酬明細書と総括表は" DELIMITED BY SIZE
-                   "ユーザー設定ができません。"       DELIMITED BY SIZE
-                   "標準のプリンタ名に戻します。"     DELIMITED BY SIZE
-                                                      INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "3001"  THRU    "3999"
                    MOVE    "削除処理に失敗しました"
                                                       TO  SPA-ERRMSG
@@ -4124,38 +3876,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "登録処理をします"  TO  WRK-WIDMSG
+                   MOVE    "登録処理をします"    TO  WRK-WIDMSG
       *----(02.00.03)--ADD-START---
                WHEN    "1002"
-                   MOVE    "削除処理をします"  TO  WRK-WIDMSG
+                   MOVE    "削除処理をします"    TO  WRK-WIDMSG
       *----(02.00.03)--ADD-END-----
-               WHEN    "1003"
-                   EVALUATE    SPA-GMN-PAGENO
-                   WHEN    1
-                       STRING  "プリンタ名をすべて"
-                                                   DELIMITED BY SIZE
-                               W11-PRTNM (01)      DELIMITED BY SPACE
-                               "にします"          DELIMITED BY SIZE
-                                           INTO    WRK-WIDMSG
-                       END-STRING
-                   WHEN    2
-                       STRING  "プリンタ名をすべて"
-                                                   DELIMITED BY SIZE
-                               W11-PRTNM-N (01)    DELIMITED BY SPACE
-                               "にします"          DELIMITED BY SIZE
-                                           INTO    WRK-WIDMSG
-                       END-STRING
-                   END-EVALUATE
-               WHEN    "1004"
-                   MOVE    "プリンタ出力設定をコピーします"
-                                                 TO  WRK-WIDMSG
-               WHEN    "1005"
-                   MOVE    "プリンタ出力設定を選択ユーザーに複写します"
-                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
