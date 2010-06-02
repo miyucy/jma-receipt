@@ -98,6 +98,15 @@
          02  TBL-SYUNOU-REC        OCCURS   15.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //TBL-SYU-//.
+       01  TBL-DOUJI-AREA.
+      *    Æ±»þÆþÎÏ¿ÇÎÅ²Ê
+           03  TBL-DOUJI-TBL       OCCURS   15.
+               05  TBL-DOUJI-SRYKA        PIC  X(02)
+                                          OCCURS  10.
+               05  TBL-DOUJI-HKNCOMBI     PIC  X(04)
+                                          OCCURS  10.
+               05  TBL-DOUJI-DENPNUM      PIC  9(07)
+                                          OCCURS  15.
       *    ÀÁµá³ÛÅù
        01  TBL-SEIKYU-AREA.
            03  TBL-SEIKYU-TBL       OCCURS   15.
@@ -125,12 +134,6 @@
                05  LNK-DOUJI-DENPNUM-G.
                    07  LNK-DOUJI-DENPNUM      PIC  9(07)
                                               OCCURS  15.
-      *H27.8
-      *¤Þ¤È¤áÍÑÊ£¿ô²ÊÊÝÂ¸
-       01  WRK-DOUJI-SRYKA-G.
-           05  WRK-DOUJI-SRYKA    PIC  X(02)
-                                          OCCURS  10.
-      *
       *    ÀÁµá³ÛÅù
        01  LNK-SEIKYU-AREA.
            03  LNK-SEIKYU-TBL       OCCURS   15.
@@ -327,13 +330,6 @@
                PERFORM 2001-TEISEI-SYORI-SEC
       *        ¼ýÇ¼ÊÔ½¸
                ADD     1                   TO  IDX-TBL
-      *!!!
-      *        ¥Þ¥ëÄ¹¤Î¸øÈñÉéÃ´¤òÊÝ¸±Å¬ÍÑ¶â³Û¤Ø
-               IF      SYU-HKNTEKKBN   =   "1"
-                   MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
-                   MOVE    ZERO                TO  SYU-KOH-FTN
-               END-IF
-      *!!!
                MOVE    SYUNOU-REC          TO  TBL-SYUNOU-REC(IDX-TBL)
                MOVE    WRK-SKYMONEY        TO  TBL-SKYMONEY  (IDX-TBL)
                MOVE    WRK-SKYMONEY-TAX
@@ -539,13 +535,6 @@
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *!!!
-      *    ¥Þ¥ëÄ¹¤Î¸øÈñÉéÃ´¤òÊÝ¸±Å¬ÍÑ¶â³Û¤Ø
-           IF      SYUTTL-HKNTEKKBN    =   "1"
-               MOVE    SYUTTL-KOH-FTN      TO  SYUTTL-HKNTEKMONEY
-               MOVE    ZERO                TO  SYUTTL-KOH-FTN
-           END-IF
-      *!!!
       *
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
@@ -572,8 +561,6 @@
            MOVE    SYUTTL-KOH-FTN-ENTANI  TO  SYU-KOH-FTN-ENTANI
       *Ä´À°¶â
            MOVE    SYUTTL-CHOSEI          TO  SYU-CHOSEI
-           MOVE    SYUTTL-CHOSEI1         TO  SYU-CHOSEI1
-           MOVE    SYUTTL-CHOSEI2         TO  SYU-CHOSEI2
       *¤Þ¤È¤áÆþÎÏº¹³Û
            MOVE    SYUTTL-GRP-SGKMONEY    TO  SYU-GRP-SGKMONEY
       *ÊÝ¸±Å¬ÍÑ¶â³Û
@@ -612,8 +599,6 @@
            MOVE    SYUTTL-ZAITAKU      TO  SYU-ZAITAKU
       *¿ÇÎÅ¶èÊ¬ÊÌµëÉÕ³°ÅÀ¿ô
            MOVE    SYUTTL-KYUFUGAI     TO  SYU-KYUFUGAI
-      *ÊÝ¸±Å¬ÍÑ¶èÊ¬
-           MOVE    SYUTTL-HKNTEKKBN    TO  SYU-HKNTEKKBN
       *
       *    Æ±»þÆþÎÏ¿ÇÎÅ²Ê
            PERFORM VARYING     IDH2    FROM    1   BY  1
@@ -706,8 +691,6 @@
            ADD     WRK-SYU-TGMONEY-TAX-SAI  TO  SYU-TGMONEY-TAX-SAI
       *Ä´À°¶â
            ADD     WRK-SYU-CHOSEI           TO  SYU-CHOSEI
-           ADD     WRK-SYU-CHOSEI1          TO  SYU-CHOSEI1
-           ADD     WRK-SYU-CHOSEI2          TO  SYU-CHOSEI2
       *ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            ADD     WRK-SYU-SKYMONEY-TAX-SAI TO  SYU-SKYMONEY-TAX-SAI
       *ÀÁµá¶â³Û
@@ -842,19 +825,6 @@
                                                  (1 IDX-DN)
            END-PERFORM
       *
-      *H27.8
-      *    ¿ÇÎÅ²ÊÊÝÂ¸
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   IDX-TBL
-               MOVE    TBL-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
-      *        Ê£¿ô²Ê
-               MOVE    1                   TO  IDX-SYU
-               MOVE    WRK-SYU-SRYKA       TO  WRK-SRYKA
-               PERFORM 30041-DOUJI-SRYKA-SEC
-           END-PERFORM
-      *    ¿ÇÎÅ²ÊÊÝÂ¸
-           MOVE    LNK-DOUJI-SRYKA-G (1)   TO  WRK-DOUJI-SRYKA-G
-      *
       *    ÊÝ¸±ÊÌ¤Ë½¸·×¤¹¤ë
            PERFORM 3002-SYORI-02-SEC
       *    ¹ç·×¤¹¤ë
@@ -894,9 +864,6 @@
                        MOVE    WRK-SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
                        PERFORM 30031-DOUJI-HKNCOMBI-SEC
                    END-IF
-      ****         Ê£¿ô²Ê
-      *            MOVE    WRK-SYU-SRYKA   TO  WRK-SRYKA
-      ****         PERFORM 30041-DOUJI-SRYKA-SEC
                ELSE
                    PERFORM 30021-SYUNOU-ADD-SEC
       *            Ê£¿ôÊÝ¸±
@@ -904,14 +871,32 @@
                    PERFORM 30031-DOUJI-HKNCOMBI-SEC
                    MOVE    ZERO            TO  LNK-SYU-HKNCOMBINUM
                                                            (IDX-SYU)
-      ****         Ê£¿ô²Ê
-      *            MOVE    WRK-SYU-SRYKA   TO  WRK-SRYKA
-      ****         PERFORM 30041-DOUJI-SRYKA-SEC
+      *            Ê£¿ô²Ê
+                   MOVE    WRK-SYU-SRYKA   TO  WRK-SRYKA
+                   PERFORM 30041-DOUJI-SRYKA-SEC
                END-IF
+      *        Æ±»þÆþÎÏ¿ÇÎÅ²Ê
+               PERFORM VARYING     IDH2    FROM    1   BY  1
+                       UNTIL      (IDH2    >   10  )  OR
+                                  (TBL-DOUJI-SRYKA(IDX IDH2)
+                                           =   SPACE )
+                   MOVE    TBL-DOUJI-SRYKA(IDX IDH2)
+                                           TO  WRK-SRYKA
+                   IF      WRK-SRYKA       NOT =   SPACE
+                       PERFORM 30041-DOUJI-SRYKA-SEC
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING     IDH2    FROM    1   BY  1
+                       UNTIL      (IDH2    >   10  )  OR
+                                  (TBL-DOUJI-HKNCOMBI(IDX IDH2)
+                                           =   SPACE )
+                   MOVE    TBL-DOUJI-HKNCOMBI(IDX IDH2)
+                                           TO  WRK-HKNCOMBI
+                   IF      WRK-HKNCOMBI    NOT =   SPACE
+                       PERFORM 30031-DOUJI-HKNCOMBI-SEC
+                   END-IF
+               END-PERFORM
            END-PERFORM
-      *H27.8
-      *    ¿ÇÎÅ²Ê
-           MOVE    WRK-DOUJI-SRYKA-G   TO  LNK-DOUJI-SRYKA-G (IDX-SYU)
       *    ¥Ñ¥é¥á¥¿¤ØÊÔ½¸
            PERFORM 30023-LNK-TBL-HENSYU-SEC
       *
@@ -923,11 +908,6 @@
       *    Æ±»þÆþÎÏ¿ÇÎÅ²ÊÊÔ½¸½èÍý
       *****************************************************************
        30041-DOUJI-SRYKA-SEC             SECTION.
-      *
-           IF      WRK-SRYKA           =   SPACE
-                                       OR  ZERO
-               CONTINUE
-           ELSE
       *
            PERFORM VARYING     IDH3    FROM    1   BY  1
                    UNTIL       IDH3    >   10
@@ -942,7 +922,6 @@
                END-IF
            END-PERFORM
       *
-           END-IF
            .
        30041-DOUJI-SRYKA-EXT.
            EXIT.

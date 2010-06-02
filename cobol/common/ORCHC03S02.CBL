@@ -70,12 +70,10 @@
            03  WRK-SRYYM               PIC X(06).
            03  WRK-MAX                 PIC 9(05).
            03  WRK-NYUKIN-BF           PIC S9(10).
-           03  WRK-SRYKAMEI1            PIC X(62).
-           03  WRK-SRYKAMEI2           PIC X(30).
+           03  WRK-SRYKAMEI            PIC X(62).
            03  WRK-HKNCOMBIMEI         PIC X(40).
            03  WRK-SRYKA-MAX           PIC 9(05).
-           03  WRK-SRYKA-PNT1          PIC 9(05).
-           03  WRK-SRYKA-PNT2          PIC 9(05).
+           03  WRK-SRYKA-PNT           PIC 9(05).
            03  WRK-SRYYMD              PIC X(08).
            03  WRK-STR                 PIC X(100).
            03  WRK-STR-PNT             PIC 9(05).
@@ -137,10 +135,6 @@
          02  LNKSYU-OCC                OCCURS    1000.
            COPY    "CPSYUNOU.INC"      REPLACING
                                        //SYU-//    BY  //LNKSYU-//.
-      *
-       01  TPARA-REC.
-           COPY    "CPPARA.INC"        REPLACING
-                                       //PARA-//   BY  //TPARA-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -235,7 +229,6 @@
                                            SPA-AREA
       *
            PERFORM 900-PARA-KEY4-SEL-SEC
-           MOVE    PARA-REC            TO  TPARA-REC
            MOVE    PARA-DATA-REC       TO  SYUPARA01-AREA
       *
            .
@@ -297,7 +290,7 @@
        20011-SYUSUM-SEC                 SECTION.
       *
       *
-               IF    ( SYUPARA01-SKYSUMFLG =   ZERO OR 9 )
+               IF    ( SYUPARA01-SKYSUMFLG =   ZERO )
                        MOVE    SYU-SRYYMD (1:6) TO WRK-SRYYM
                        MOVE    SYU-DENPNUM     TO  WRK-DENPNUM
                        MOVE    SYU-SRYKA       TO  WRK-SRYKA
@@ -312,22 +305,10 @@
                    IF    ( SYU-SYUHKNNUM   =   "971"
                                             OR "973"
                                             OR "975" )
-      *
-                       EVALUATE    SYUPARA01-SKYSUMFLG
-      *
-                       WHEN    2
-                       WHEN    4
-                           MOVE    ZERO            TO  WRK-SRYKA
-                           MOVE    SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
-                           PERFORM 20011-SYUNOU-SYUKEI-SEC
-      *
-                       WHEN    OTHER
-                           MOVE    SYU-SRYKA       TO  WRK-SRYKA
-                           MOVE    SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
-                           PERFORM 20011-SYUNOU-SYUKEI-SEC
-      *
-                       END-EVALUATE
-      *
+                       MOVE    1               TO  WRK-KBTPRTFLG
+                       MOVE    SYU-SRYKA       TO  WRK-SRYKA
+                       MOVE    SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
+                       PERFORM 20011-SYUNOU-SYUKEI-SEC
                    ELSE
       *
                        EVALUATE    SYUPARA01-SKYSUMFLG
@@ -500,8 +481,6 @@
       *
       *Ä´À°¶â
            ADD SYU-CHOSEI          TO  LNKSYU-CHOSEI         (IDX-SYU)
-           ADD SYU-CHOSEI1         TO  LNKSYU-CHOSEI1        (IDX-SYU)
-           ADD SYU-CHOSEI2         TO  LNKSYU-CHOSEI2        (IDX-SYU)
       *ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
            ADD SYU-SKYMONEY-TAX-SAI TO LNKSYU-SKYMONEY-TAX-SAI(IDX-SYU)
       *ÀÁµá¶â³Û
@@ -771,17 +750,6 @@
            END-PERFORM
       *
            MOVE    PARA-EDANUM         TO  ORCHC03S02-CNT
-                                           SYUPARA01-CNT
-      *
-           MOVE    TPARA-REC           TO  PARA-REC
-           MOVE    SYUPARA01-AREA      TO  PARA-DATA-REC
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBUPDATE-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    1               TO  ORCHC03S02-RC
-           END-IF
       *
            .
        2001-EDIT-PARA-EXT.
@@ -805,8 +773,6 @@
                                TO  SYUPARA03-SEIKYU-TAX-SAI
            END-IF
       *
-           MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
-      *
            IF    ( PARA-EDANUM     =   1 )
                IF    ( SYUPARA01-GAI-MISYU >=  ZERO )
                    MOVE    SYUPARA01-GAI-MISYU
@@ -823,16 +789,8 @@
                MOVE    SYUPARA01-NYU-MISYU
                                TO  SYUPARA03-NYU-MISYU
       *
-               IF    ( SYUPARA01-SKYSUMFLG =   9 )
-                   MOVE    SYUPARA01-SEIKYU
-                               TO  SYUPARA03-SEIKYU
-                   MOVE    SYUPARA01-SEIKYU-TAX-SAI
-                               TO  SYUPARA03-SEIKYU-TAX-SAI
-                   MOVE    SYUPARA01-NYUKIN
-                               TO  SYUPARA03-NYUKIN
-               END-IF
-      *
            END-IF
+           MOVE    SRT-KBT-NYUKIN  (IDX4)  TO  SYUPARA03-NYUKIN
            IF    ( SYUPARA03-STSRYYMD  NOT =   SYUPARA03-EDSRYYMD )
                MOVE    "1"     TO  SYUPARA03-KIKANKBN
            END-IF
@@ -857,16 +815,15 @@
            MOVE    SRT-KBT-SRYKA-MAX (IDX4)
                            TO  SYUPARA03-SRYKA-MAX
       *
-           MOVE    1       TO  WRK-SRYKA-PNT1
-           MOVE    1       TO  WRK-SRYKA-PNT2
-           MOVE    SPACE   TO  WRK-SRYKAMEI1
-           MOVE    SPACE   TO  WRK-SRYKAMEI2
+           MOVE    1       TO  WRK-SRYKA-PNT
+           MOVE    SPACE   TO  WRK-SRYKAMEI
            MOVE    ZERO    TO  FLG-SRYKA-OVER
       *
            MOVE    SRT-KBT-SRYKA-MAX (IDX4)
                            TO  WRK-MAX
            PERFORM VARYING IDX5    FROM    1   BY  1
                    UNTIL ( IDX5    >   WRK-MAX )
+                    OR   ( FLG-SRYKA-OVER  NOT =   ZERO )
       *
                MOVE    SRT-KBT-SRYKA (IDX4 IDX5)
                            TO  SYUPARA03-SRYKA (IDX5)
@@ -879,8 +836,7 @@
       *
            END-PERFORM
       *
-           MOVE    WRK-SRYKAMEI1    TO  SYUPARA03-SRYKAMEI
-           MOVE    WRK-SRYKAMEI2    TO  SYUPARA03-SRYKAMEI2
+           MOVE    WRK-SRYKAMEI    TO  SYUPARA03-SRYKAMEI
       *
            IF    ( SRT-KBT-SRYKA-MAX (IDX4)
                                    >       1 )
@@ -932,7 +888,7 @@
       *
            MOVE    SYUPARA03-STSRYYMD  TO  LNKSYU-SRYYMD (IDX4)
       *
-           IF    ( SYUPARA01-SKYSUMFLG =   0 OR 9 )
+           IF    ( SYUPARA01-SKYSUMFLG =   0 )
             OR   ( SYUPARA01-HAKKOFLG  =   1 )
                MOVE    SRT-KBT-DENPPRTYMD (IDX4)
                                        TO  LNKSYU-DENPPRTYMD (IDX4)
@@ -941,20 +897,7 @@
                                        TO  LNKSYU-DENPPRTYMD (IDX4)
            END-IF
       *
-           MOVE    LNKSYU-OCC (IDX4)
-                                   TO  SYUPARA03-SYU-DATA
-      *
-           MOVE    SYUPARA01-HAKKOFLG
-                                   TO  SYUPARA03-HAKKOFLG
-      *
-           MOVE    SYUPARA03-SEIKYU
-                                   TO  SYUPARA03-ORG-SEIKYU
-           MOVE    SYUPARA03-SEIKYU-TAX-SAI
-                                   TO  SYUPARA03-ORG-SEIKYU-TAX-SAI
-           MOVE    SYUPARA03-MISYU
-                                   TO  SYUPARA03-ORG-MISYU
-           MOVE    SYUPARA03-NYUKIN
-                                   TO  SYUPARA03-ORG-NYUKIN
+           MOVE    LNKSYU-OCC (IDX4)   TO  SYUPARA03-SYU-DATA
       *
            MOVE    SYUPARA03-AREA  TO  PARA-DATA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
@@ -1047,93 +990,62 @@
            IF    ( FLG-SYSKANRI        =   ZERO )
       *
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
-      *
-               IF    ( FLG-SRYKA-OVER  =   ZERO )
-                   PERFORM 200111-SRYKAMEI-HEN-SEC
-               END-IF
-      *
-               IF    ( WRK-SRYKAMEI2   =   SPACE )
+               IF    ( WRK-SRYKAMEI    =   SPACE )
                    STRING  SYS-1005-SRYKANAME2
-                                           DELIMITED  BY  SPACE
-                   INTO            WRK-SRYKAMEI2
-                   WITH    POINTER WRK-SRYKA-PNT2
+                                               DELIMITED  BY  SPACE
+                   INTO            WRK-SRYKAMEI
+                   WITH    POINTER WRK-SRYKA-PNT
                    END-STRING
                ELSE
-                   IF    ( WRK-SRYKAMEI2 (29:)  =   SPACE )
-                       STRING  "¡¢"            DELIMITED  BY  SIZE
-                               SYS-1005-SRYKANAME2
+                   IF    ( SYUPARA01-HAKKOFLG  =   4 )
+                       MOVE    1       TO  WRK-STR-PNT
+                       MOVE    SPACE   TO  WRK-STR
+                       STRING  SYS-1005-SRYKANAME2
                                                DELIMITED  BY  SPACE
-                       INTO            WRK-SRYKAMEI2
-                       WITH    POINTER WRK-SRYKA-PNT2
+                       INTO            WRK-STR
+                       WITH    POINTER WRK-STR-PNT
                        END-STRING
-                   END-IF
       *
-               END-IF
+                       COMPUTE WRK-STR-PNT
+                           =   WRK-STR-PNT
+                           +   WRK-SRYKA-PNT
       *
-           END-IF
+                       IF    ( WRK-STR-PNT     >   60 )
       *
-           .
-       20011-SRYKAMEI-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿ÇÎÅ²ÊÌ¾ÊÔ½¸½èÍý
-      *****************************************************************
-       200111-SRYKAMEI-HEN-SEC         SECTION.
+                           MOVE    1           TO  FLG-SRYKA-OVER
       *
-           IF    ( WRK-SRYKAMEI1    =   SPACE )
-               STRING  SYS-1005-SRYKANAME2
-                                           DELIMITED  BY  SPACE
-               INTO            WRK-SRYKAMEI1
-               WITH    POINTER WRK-SRYKA-PNT1
-               END-STRING
-           ELSE
-               IF    ( SYUPARA01-HAKKOFLG  =   4 )
-                   MOVE    1       TO  WRK-STR-PNT
-                   MOVE    SPACE   TO  WRK-STR
-                   STRING  SYS-1005-SRYKANAME2
-                                           DELIMITED  BY  SPACE
-                   INTO            WRK-STR
-                   WITH    POINTER WRK-STR-PNT
-                   END-STRING
+                           STRING  "Â¾"            DELIMITED  BY  SIZE
+                           INTO            WRK-SRYKAMEI
+                           WITH    POINTER WRK-SRYKA-PNT
+                           END-STRING
+                       ELSE
+                           STRING  "¡¢"            DELIMITED  BY  SIZE
+                                   SYS-1005-SRYKANAME2
+                                                   DELIMITED  BY  SPACE
+                           INTO            WRK-SRYKAMEI
+                           WITH    POINTER WRK-SRYKA-PNT
+                           END-STRING
+                       END-IF
       *
-                   COMPUTE WRK-STR-PNT
-                       =   WRK-STR-PNT
-                       +   WRK-SRYKA-PNT1
-      *
-                   IF    ( WRK-STR-PNT     >   60 )
-      *
-                       MOVE    1           TO  FLG-SRYKA-OVER
-      *
-                       STRING  "Â¾"            DELIMITED  BY  SIZE
-                       INTO            WRK-SRYKAMEI1
-                       WITH    POINTER WRK-SRYKA-PNT1
-                       END-STRING
                    ELSE
                        STRING  "¡¢"            DELIMITED  BY  SIZE
                                SYS-1005-SRYKANAME2
                                                DELIMITED  BY  SPACE
-                       INTO            WRK-SRYKAMEI1
-                       WITH    POINTER WRK-SRYKA-PNT1
+                       INTO            WRK-SRYKAMEI
+                       WITH    POINTER WRK-SRYKA-PNT
                        END-STRING
-                   END-IF
       *
-               ELSE
-                   STRING  "¡¢"            DELIMITED  BY  SIZE
-                           SYS-1005-SRYKANAME2
-                                           DELIMITED  BY  SPACE
-                   INTO            WRK-SRYKAMEI1
-                   WITH    POINTER WRK-SRYKA-PNT1
-                   END-STRING
+                       IF    ( WRK-SRYKAMEI  (19:2)    NOT =   SPACE )
+                           MOVE    SPACE       TO  WRK-SRYKAMEI  (21:)
+                           MOVE    1           TO  FLG-SRYKA-OVER
+                       END-IF
       *
-                   IF    ( WRK-SRYKAMEI1  (19:2)    NOT =   SPACE )
-                       MOVE    SPACE       TO  WRK-SRYKAMEI1  (21:)
-                       MOVE    1           TO  FLG-SRYKA-OVER
                    END-IF
                END-IF
            END-IF
       *
            .
-       200111-SRYKAMEI-HEN-EXT.
+       20011-SRYKAMEI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ½ªÎ»½èÍý
@@ -1255,11 +1167,6 @@
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( SYU-HKNTEKKBN       =   "1" )
-               MOVE    SYU-KOH-FTN     TO  SYU-HKNTEKMONEY
-               MOVE    ZERO            TO  SYU-KOH-FTN
-           END-IF
       *
            .
       *
@@ -1437,18 +1344,4 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        910-DBINSERT-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ä£Â¥¢¥Ã¥×¥Ç¡¼¥È½èÍý
-      *****************************************************************
-       910-DBUPDATE-SEC                SECTION.
-      *
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           .
-      *
-       910-DBUPDATE-EXT.
            EXIT.

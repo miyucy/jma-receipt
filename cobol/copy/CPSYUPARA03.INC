@@ -35,7 +35,6 @@
            03  SYUPARA03-JNISSU            PIC 9(02).
            03  SYUPARA03-HKNCOMBIMEI       PIC X(40).
            03  SYUPARA03-SRYKAMEI          PIC X(62).
-           03  SYUPARA03-SRYKAMEI2         PIC X(30).
            03  SYUPARA03-SRYKA-G.
                05  SYUPARA03-SRYKA-MAX     PIC 9(03).
                05  SYUPARA03-SRYKA         PIC X(02)
@@ -50,8 +49,3 @@
                05  SYUPARA03-GRP-DENPNUM   PIC 9(07)
                                            OCCURS  100.
            03  SYUPARA03-SYU-DATA          PIC X(3000).
-           03  SYUPARA03-HAKKOFLG              PIC 9(01).
-           03  SYUPARA03-ORG-SEIKYU            PIC S9(10).
-           03  SYUPARA03-ORG-SEIKYU-TAX-SAI    PIC S9(10).
-           03  SYUPARA03-ORG-MISYU             PIC S9(10).
-           03  SYUPARA03-ORG-NYUKIN            PIC S9(10).
