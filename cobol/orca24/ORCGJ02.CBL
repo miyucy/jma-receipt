@@ -246,7 +246,6 @@
            03  IDX-D               PIC 9(02).
       *    ´Á»úÊÑ´¹ÍÑ
            03  IDJ                 PIC 9(04).
-           03  IDJ1                PIC 9(01).
            03  IDJ2                PIC 9(04).
            03  IDJ3                PIC 9(04).
       *
@@ -4636,7 +4635,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ¿ÇÎÅ²Ê
                MOVE    SPA-NAI-SRYKA   (SPA-NAI-BANGO)
                                            TO  SPA-NAIGMN-SRYKA
-               MOVE    SPA-NAI-SRYKAMEI(SPA-NAI-BANGO)
+               MOVE    SPA-NAI-SRYKAMEI(IDX + 1)
                                            TO  SPA-GMN-BSRYKAMEI
       *        ¿ÇÎÅ¶èÊ¬
                MOVE    SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
@@ -9492,7 +9491,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4101220-ZAINUM-HEN-EXT.
            EXIT.
-      *            
+      *
       *****************************************************************
       *    ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ëÈ½Äê½èÍý
       *****************************************************************
@@ -9515,7 +9514,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        41012202-JYURRK-ZAINUM-EXT.
            EXIT.
-      *            
+      *
       *****************************************************************
       *    ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ëÄÉ²Ã½èÍý
       *****************************************************************
