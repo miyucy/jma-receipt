@@ -1073,24 +1073,8 @@
       *    ¼ýÇ¼¸¡º÷
            MOVE    ORCHC04-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-HEN-SEC
-      *    ¿ÇÎÅÆü
-           MOVE    "¿ÇÎÅÆü"            TO  WRK-LBLSRYYMD
-           MOVE    SYU-SRYYMD          TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
-      *    È¯¹ÔÆü
-           IF     (ORCHC04-DENPPRTYMD  NOT =   SPACE )
-               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
-           ELSE
-               IF     (PARA-HAKKOUBIKBN    =   "1" )
-                 AND  (ORCHC04-HAKKOFLG    =    1   OR   3 )
-                   MOVE    SPA-SYSYMD      TO  WRK-SYMD
-               ELSE
-                   MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
-               END-IF
-           END-IF
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
+      *    ¿ÇÎÅÆü¡¦È¯¹ÔÆüÊÔ½¸½èÍý
+           PERFORM 20021-INIT-HENSYU-SEC
       *    ÅÁÉ¼ÈÖ¹æÊ¬°õºþ
            PERFORM 2001-ONLY-SYUNOU-HEN-SEC
            IF      IDX-H               >   ZERO
@@ -1100,6 +1084,43 @@
       *
            .
        201-ONLY-SYUNOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅÆü¡¦È¯¹ÔÆüÊÔ½¸½èÍý
+      *****************************************************************
+       20021-INIT-HENSYU-SEC             SECTION.
+      *
+      *    ¿ÇÎÅÆü
+           MOVE    "¿ÇÎÅÆü"            TO  WRK-LBLSRYYMD
+           MOVE    SYU-SRYYMD          TO  WRK-SYMD
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
+      *    È¯¹ÔÆü
+           PERFORM 20021-PRTYMD-HEN-SEC
+           .
+       20021-INIT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    È¯¹ÔÆüÊÔ½¸½èÍý
+      *****************************************************************
+       20021-PRTYMD-HEN-SEC             SECTION.
+      *
+           IF     (ORCHC04-DENPPRTYMD  =   SPACE )
+               IF     (PARA-HAKKOUBIKBN    =   "1" )
+                 AND  (ORCHC04-HAKKOFLG    =    1   OR   3 )
+                   MOVE    SPA-SYSYMD      TO  WRK-SYMD
+               ELSE
+                   MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
+               END-IF
+           ELSE
+               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
+           END-IF
+           PERFORM 800-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
+           .
+       20021-PRTYMD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1141,24 +1162,8 @@
       *    ¼ýÇ¼¸¡º÷
            MOVE    ORCHC04-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-HEN-SEC
-      *    ¿ÇÎÅÆü
-           MOVE    "¿ÇÎÅÆü"            TO  WRK-LBLSRYYMD
-           MOVE    SYU-SRYYMD          TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-H-SRYYMD
-      *    È¯¹ÔÆü
-           IF     (ORCHC04-DENPPRTYMD  NOT =   SPACE )
-               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
-           ELSE
-               IF     (PARA-HAKKOUBIKBN    =   "1" )
-                 AND  (ORCHC04-HAKKOFLG    =    1   OR   3 )
-                   MOVE    SPA-SYSYMD      TO  WRK-SYMD
-               ELSE
-                   MOVE    SYU-DENPPRTYMD  TO  WRK-SYMD
-               END-IF
-           END-IF
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
+      *    ¿ÇÎÅÆü¡¦È¯¹ÔÆüÊÔ½¸½èÍý
+           PERFORM 20021-INIT-HENSYU-SEC
       *
            MOVE    ZERO                TO  IDX-H
            IF      SYU-GRP-DENPNUM     =   ZERO
@@ -1723,14 +1728,14 @@
                END-STRING
                MOVE    2                   TO  FLG-SYORI
            END-IF
-      *    È¯¹ÔÆü
-           IF    ( ORCHC04-DENPPRTYMD  NOT =   SPACE )
-               MOVE    ORCHC04-DENPPRTYMD  TO  WRK-SYMD
+      *    È¯¹ÔÆüÊÔ½¸
+           IF    ( ORCHC04-DENPPRTYMD  =   SPACE )
+               MOVE    ORCHC04-DENPNUM     TO  WRK-DENPNUM
+               PERFORM 2011-SYUNOU-HEN-SEC
            ELSE
-               MOVE    SPA-SYSYMD          TO  WRK-SYMD
+               INITIALIZE                  SYUNOU-REC
            END-IF
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  WRK-H-HAKYMD
+           PERFORM 20021-PRTYMD-HEN-SEC
       *
            INITIALIZE                  TBL-MEISAI-AREA
            INITIALIZE                  TBL2-MEISAI-A5-AREA
