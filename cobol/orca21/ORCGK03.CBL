@@ -913,7 +913,7 @@
            MOVE    "0 発行なし"        TO  SPA-GMN-MEIPRTFLGLST(01)
            MOVE    "1 発行あり"        TO  SPA-GMN-MEIPRTFLGLST(02)
            MOVE    2                   TO  SPA-MEIPRTFLG-MAX
-           IF      SPA-MEIPRTFLG       =   SPACE  
+           IF      SPA-MEIPRTFLG       =   SPACE
                MOVE    "0"                 TO  SPA-MEIPRTFLG
       *        設定なしは　発行ありとする（H22.4)
                IF      SPA-SRYYMD          >=  "20100401"
