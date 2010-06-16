@@ -90,6 +90,10 @@
       *                                     排他制御フラグの追加
       *  04.05.02    NACL-藤原    09/06/02  病名の入力順対応
       *                                     追加指定行の追加
+      *
+      *  04.06.01    NACL-藤原    10/06/14  自院病名コード変更対応
+      *                                     変更前の自院病名コード、
+      *                                     コード種別の追加 
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -519,7 +523,10 @@
                    07  SPA-NAIB-C03-AREA.
                        09  SPA-NAI-C03-KOUMOKU.
                            11  SPA-NAI-C03-BYOMEIINPUTCD   PIC X(10).
+                           11  SPA-NAI-C03-BYOMEIINPUTCD-OLD
+                                                           PIC X(10).
                            11  SPA-NAI-C03-CDSYU           PIC X(01).
+                           11  SPA-NAI-C03-CDSYU-OLD       PIC X(01).
                            11  SPA-NAI-C03-BYOMEIMOJI      PIC 9(02).
                            11  SPA-NAI-C03-BYOMEIHENFLG    PIC X(01).
                            11  SPA-NAI-C03-CHARTBYOMEIMOJI PIC 9(02).

@@ -101,6 +101,8 @@
       *  04.02.01    NACL-藤原    08/03/03  特定疾患区分07,08の追加
       *
       *  04.03.01    NACL-藤原    08/06/11  慢性と急性のチェック
+      *
+      *  04.06.01    NACL-藤原    10/06/14  自院病名コード変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -204,6 +206,8 @@
            03  WRK-SHORIERR        PIC X(200).
       *
            03  WRK-ERR-BYOMEI      PIC X(80).
+      *
+           03  WRK-BYOMEIINPUTCD   PIC X(10).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -1221,10 +1225,12 @@
        410111-BYOMEI-SELECT-SEC         SECTION.
       *      
            MOVE    SPA-NAI-C03-TCDSYU         (SPA-NAI-C03-SELNO)
-                                       TO SPA-NAI-C03-CDSYU
+                                       TO  SPA-NAI-C03-CDSYU
+                                           SPA-NAI-C03-CDSYU-OLD
            MOVE    SPA-GMN-C03-TBYOMEIINPUTCD (SPA-NAI-C03-SELNO)
                                        TO  SPA-GMN-C03-BYOMEIINPUTCD
                                            SPA-NAI-C03-BYOMEIINPUTCD
+                                           SPA-NAI-C03-BYOMEIINPUTCD-OLD
            PERFORM 410111-USERBYOMEI-HENSYU-SEC
       *
            .
@@ -1925,6 +1931,8 @@
       *
            MOVE    2                   TO  SPA-GMN-C03-CUR
       *
+           MOVE    SPA-NAI-C03-BYOMEIINPUTCD
+                                       TO  WRK-BYOMEIINPUTCD
            MOVE    SPACE               TO  SPA-NAI-C03-BYOMEIINPUTCD
       *
            IF      C03-BYOMEIINPUTCD   =   SPACE
@@ -1933,29 +1941,41 @@
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
            END-IF
       *
-           IF      SPA-GMN-C03-BANGO       >   ZERO
-               IF      C03-BYOMEIINPUTCD   NOT =
-                                           SPA-GMN-C03-BYOMEIINPUTCD
-                   MOVE   "0050"           TO  SPA-ERRCD
-               ELSE
-                   MOVE    SPA-GMN-C03-BYOMEIINPUTCD
-                                           TO  SPA-NAI-C03-BYOMEIINPUTCD
-                   MOVE    3               TO  SPA-GMN-C03-CUR
-               END-IF
-               GO  TO  41002-BYOMEIINPUT-CHK-EXT
-           END-IF    
-      *
       *    半角チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    C03-BYOMEIINPUTCD   TO  KANACHK-MAE-INPUT
+           MOVE    10                  TO  KANACHK-MAX-CNT 
            CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
            AND     KANACHK-RC2         =   ZERO
                MOVE    KANACHK-OUT-INPUT   TO  C03-BYOMEIINPUTCD
            ELSE
+               MOVE    WRK-BYOMEIINPUTCD   TO  SPA-NAI-C03-BYOMEIINPUTCD
                MOVE    "0072"              TO  SPA-ERRCD
                GO  TO  41002-BYOMEIINPUT-CHK-EXT
+           END-IF
+      *
+      *    自院病名コード変更時の存在チェック
+           IF      SPA-GMN-C03-BANGO       >   ZERO
+               IF    ( C03-BYOMEIINPUTCD   NOT =
+                                       SPA-GMN-C03-BYOMEIINPUTCD     )
+               AND   ( C03-BYOMEIINPUTCD   NOT =
+                                       SPA-NAI-C03-BYOMEIINPUTCD-OLD )
+                   INITIALIZE              USERBYOMEI-REC
+                   IF      KANACHK-SYUBETU =   "2"    
+                       MOVE    "J"             TO  USBYO-CDSYU
+                   ELSE
+                       MOVE    "A"             TO  USBYO-CDSYU
+                   END-IF           
+                   MOVE    C03-BYOMEIINPUTCD
+                                           TO  USBYO-BYOMEIINPUTCD
+                   PERFORM 900-USBYO-INV-SEC
+                   IF      FLG-USERBYOMEI  =   ZERO    
+                       MOVE    "0054"          TO  SPA-ERRCD
+                       GO  TO  41002-BYOMEIINPUT-CHK-EXT
+                   END-IF
+               END-IF
            END-IF
       *
       *
@@ -1975,9 +1995,6 @@
                    MOVE    1               TO  IDX
                END-IF
            END-PERFORM                                    
-      *****IF      WRK-LENGTH          =   7   OR  ZERO
-      *****     MOVE    "0009"              TO  SPA-ERRCD
-      *****END-IF    
       *
       *    「.」「／」で始まる又は「+」「-」で終わるコードは入力不可
            IF      KANACHK-SYUBETU  =   "2"
@@ -2824,33 +2841,14 @@ grpsys                                         SPA-AREA
       *    入力コードのチェック
            IF      SPA-GMN-C03-BYOMEIINPUTCD  NOT =   SPACE
            AND     SPA-NAI-C03-BYOMEIINPUTCD      =   SPACE
-               IF      SPA-NAI-C03-SELNO       >   ZERO
-                   MOVE    "0050"              TO  SPA-ERRCD
-               ELSE
-                   MOVE    "0032"              TO  SPA-ERRCD
-               END-IF
-               MOVE    2                    TO  SPA-GMN-C03-CUR
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-C03-CUR
                GO  TO  450-TOUROKU-EXT
            END-IF
       *
            IF      SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
                CONTINUE
            ELSE
-      *****    MOVE    ZERO               TO  WRK-LENGTH
-      *      
-      *****    PERFORM VARYING IDX FROM    10  BY  -1
-      *****            UNTIL   IDX <       1
-      *****        IF      SPA-GMN-C03-BYOMEIINPUTCD(IDX:1)
-      *****                            NOT =   SPACE
-      *****            MOVE    IDX             TO  WRK-LENGTH
-      *****            MOVE    1               TO  IDX
-      *****        END-IF
-      *****    END-PERFORM                                    
-      *****    IF      WRK-LENGTH          =   7   OR  ZERO
-      *****        MOVE    "0009"              TO  SPA-ERRCD
-      *****        GO  TO  450-TOUROKU-EXT
-      *****    END-IF    
-      *
                IF      SPA-NAI-C03-BYOMEIMOJI   =   ZERO
                    IF      SPA-GMN-C03-BYOMEI       =   SPACE
                        MOVE    "0010"               TO  SPA-ERRCD
@@ -3065,6 +3063,30 @@ grpsys                                         SPA-AREA
                    DISPLAY MCP-FUNC "USERBYOMEI-KEY =>" USBYO-KEY 
                    GO  TO  4502-TOUROKU-SYORI-EXT
                END-IF
+      *
+      *        自院病名コード変更時、変更前のコードを削除する
+               IF      SPA-NAI-C03-BYOMEIINPUTCD-OLD
+                                       NOT =   SPA-NAI-C03-BYOMEIINPUTCD
+                   INITIALIZE                  USBYO-KEY
+                   MOVE    SPA-NAI-C03-CDSYU-OLD
+                                               TO  USBYO-CDSYU
+                   MOVE    SPA-NAI-C03-BYOMEIINPUTCD-OLD
+                                               TO  USBYO-BYOMEIINPUTCD 
+                   MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
+                   MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_userbyomei"    TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "ORCDBMAIN"         USING
+                                                   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+                   IF      MCP-RC      NOT =   ZERO 
+                       MOVE    "1002"          TO  SPA-ERRCD
+                       DISPLAY MCP-FUNC "USERBYOMEI-KEY =>" USBYO-KEY 
+                       GO  TO  4502-TOUROKU-SYORI-EXT
+                   END-IF
+               END-IF    
            END-IF
       *
       *    分類一覧
@@ -3879,16 +3901,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                WHEN    "0049"
                    MOVE    "病名入力コードが未入力です"
                                                        TO  SPA-ERRMSG
-               WHEN    "0050"
-                   MOVE
-                       "既に登録済みの病名入力コードは変更できません"
-                                                       TO  SPA-ERRMSG
                WHEN    "0051"
                    MOVE    "入力の途中です"            TO  SPA-ERRMSG
                WHEN    "0052"
                    MOVE    "病名種別入力エラー"        TO  SPA-ERRMSG
                WHEN    "0053"
                    MOVE    "病名コードと病名種別が違います"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0054"
+                   MOVE
+                       "登録済みの病名入力コードへの変更はできません"
                                                        TO  SPA-ERRMSG
                WHEN    "0056"
                    MOVE    "複数病名の入力はできません"
