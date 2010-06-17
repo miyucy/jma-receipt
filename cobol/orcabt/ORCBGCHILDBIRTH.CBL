@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.01    NACL-藤原    09/10/13  集計票、送付書の作成対応
+      *
+      *  04.06.01    NACL-藤原    10/06/17  被保険者番号の桁数拡張対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -67,7 +69,8 @@
            03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    請求書
-           COPY    "HCN61.INC".
+           COPY    "HCN61V01.INC"  REPLACING  //HCN61V01//
+                                   BY         //HCN61//.
       *    集計票
            COPY    "HCN65.INC".
       *    送付書
@@ -790,9 +793,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                        MOVE    "○"            TO  HCN61-HONKZKKBN
                                                            (CNT-LINE 2)
                END-EVALUATE
-               MOVE    BUNBEN-KIGO         TO  HCN61-KIGO  (CNT-LINE)
-               MOVE    BUNBEN-NUM          TO  HCN61-NUM   (CNT-LINE)
-               MOVE    BUNBEN-NAME         TO  HCN61-NAME  (CNT-LINE)
+               IF      BUNBEN-KIGO (23:)   =   SPACE
+                   MOVE    BUNBEN-KIGO         TO  HCN61-KIGO (CNT-LINE)
+               ELSE
+                   MOVE    BUNBEN-KIGO (1:20)  TO  HCN61-KIGO2
+                                                           (CNT-LINE 1)
+                   MOVE    BUNBEN-KIGO (21:)   TO  HCN61-KIGO2
+                                                           (CNT-LINE 2)
+               END-IF
+               IF      BUNBEN-NUM  (23:)   =   SPACE
+                   MOVE    BUNBEN-NUM          TO  HCN61-NUM  (CNT-LINE)
+               ELSE
+                   MOVE    BUNBEN-NUM (1:20)   TO  HCN61-NUM2
+                                                           (CNT-LINE 1)
+                   MOVE    BUNBEN-NUM (21:)    TO  HCN61-NUM2
+                                                           (CNT-LINE 2)
+               END-IF
+               IF      BUNBEN-NAME (35:)   =   SPACE
+                   MOVE    BUNBEN-NAME         TO  HCN61-NAME (CNT-LINE)
+               ELSE
+                   MOVE    BUNBEN-NAME         TO  HCN61-NAME2(CNT-LINE)
+               END-IF
                MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-BIRTHDAYH
@@ -1190,7 +1211,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  SPRT-PRIORITY
            EVALUATE    WRK-PRTID
                WHEN    "HCN61"
-                   MOVE   "HCN61.red"      TO  SPRT-PRTID
+                   MOVE   "HCN61V01.red"   TO  SPRT-PRTID
                    MOVE    HCN61           TO  SPRT-PRTDATA
                    EVALUATE    WRK-TEISYUTUSAKI
                        WHEN    "1"
@@ -1255,7 +1276,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            ADD     1               TO  TBL-LIST-MAX
       * 
-           MOVE    "HCN61.red"     TO  TBL-LIST-FORMID  (TBL-LIST-MAX)
+           MOVE    "HCN61V01.red"  TO  TBL-LIST-FORMID  (TBL-LIST-MAX)
            MOVE    HCN61           TO  TBL-LIST-PRTDATA (TBL-LIST-MAX)
       *
            .
