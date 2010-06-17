@@ -482,6 +482,7 @@ FORM_files = \
 	      HCM42V01.red \
 	      HCM04A5.red \
 	      HCM03V04.red \
+	      HCN61V01.red \
 
 all:   
 

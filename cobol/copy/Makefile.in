@@ -1646,6 +1646,7 @@ COPYS = \
 	S07.INC \
 	SID3.INC \
         HCM03V04.INC \
+        HCN61V01.INC \
  
 DBPATH = \
 	ORCA-DBPATH
