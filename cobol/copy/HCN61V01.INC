@@ -25,7 +25,7 @@
               03  HCN61V01-NUM2
                       PIC X(20)   OCCURS  2 TIMES.
               03  HCN61V01-NAME   PIC X(34).
-              03  HCN61V01-NAME2  PIC X(20).
+              03  HCN61V01-NAME2  PIC X(40).
               03  HCN61V01-KANANAME
                       PIC X(34)   OCCURS  2 TIMES.
               03  HCN61V01-BIRTHDAY.
