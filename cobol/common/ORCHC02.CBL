@@ -69,6 +69,7 @@
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
       * 04.05.01     NACL-多々納  10/03/02  Ｈ２２年４月改正対応
+      * 04.06.00     NACL-多々納  10/06/XX  受給者番号１５文字対応
       *****************************************************************
       *
       *
@@ -242,10 +243,12 @@
       *    公費情報
            03  WRK-FTNSNO          PIC X(16).
            03  WRK-JKYSNO          PIC X(40).
+           03  WRK-JKYSNO-MAX      PIC 9(04).
            03  WRK-KOH-FTNJA-G.
                05  WRK-KOH-FTNJA-OCC       OCCURS   2.
                    07  WRK-HEN-FTNJANUM    PIC X(16).
                    07  WRK-HEN-JKYSNUM     PIC X(40).
+                   07  WRK-JKYSNUM-MAX     PIC 9(04).
       *
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -978,6 +981,8 @@
                                                            (IDX-K2)
                         MOVE    WRK-JKYSNO      TO  WRK-HEN-JKYSNUM
                                                            (IDX-K2)
+                        MOVE    WRK-JKYSNO-MAX  TO  WRK-JKYSNUM-MAX
+                                                           (IDX-K2)
                    END-IF
                ELSE
                    ADD     1               TO  IDX-K2
@@ -1185,6 +1190,7 @@
            MOVE    ZERO                TO  FLG-KOH-NO
            MOVE    SPACE               TO  WRK-FTNSNO
            MOVE    SPACE               TO  WRK-JKYSNO
+           MOVE    ZERO                TO  WRK-JKYSNO-MAX
       *    保険者番号
            IF      PTKOH-FTNJANUM      =   SPACE
                MOVE    SPACE           TO  WRK-FTNSNO
@@ -1203,6 +1209,7 @@
                MOVE    SPACE               TO  WRK-JKYSNO
                MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
                                             TO  WRK-JKYSNO
+               MOVE    KANACHK-MAX          TO  WRK-JKYSNO-MAX
            END-IF
       *@@@ 埼玉県対応
       *    負担者番号編集なし
@@ -1253,6 +1260,7 @@
                                        INTO    WRK-HEN-KOH(IDX-K3)
                END-STRING
                MOVE    SPACE               TO  WRK-JKYSNO
+               MOVE    ZERO                TO  WRK-JKYSNO-MAX
                MOVE    SPACE               TO  WRK-FTNSNO
                MOVE    1                   TO  FLG-KOH-NO
            END-IF
@@ -1411,33 +1419,37 @@
       *    公費負担者番号
            MOVE    WRK-HEN-FTNJANUM (1)    TO  HC02-FTNJA
       *    受給者番号
-           IF      WRK-HEN-JKYSNUM(1)(15:) =   SPACE
+           EVALUATE    WRK-JKYSNUM-MAX (1)
+           WHEN    0   THRU   14
       *        ７文字まで
                MOVE    WRK-HEN-JKYSNUM(1)  TO  HC02-JKYSNUM
-           ELSE
-               IF      WRK-HEN-JKYSNUM(1)(21:) =   SPACE
-      *           １０文字まで
-                   MOVE    WRK-HEN-JKYSNUM(1)  TO  HC02-JKYSNUMN
-               ELSE
-      *           １０文字以上（１２文字）
-                   MOVE    WRK-HEN-JKYSNUM(1)  TO  HC02-JKYSNUM12
-               END-IF
-           END-IF
+           WHEN    15  THRU   20
+      *       １０文字まで
+               MOVE    WRK-HEN-JKYSNUM(1)  TO  HC02-JKYSNUMN
+           WHEN    21   THRU   24
+      *       １２文字まで
+               MOVE    WRK-HEN-JKYSNUM(1)  TO  HC02-JKYSNUM12
+           WHEN    OTHER
+      *       １２文字以上（１５文字まで）
+               MOVE    WRK-HEN-JKYSNUM(1)  TO  HC02-JKYSNUM15
+           END-EVALUATE
       *    公費負担者番号２
            MOVE    WRK-HEN-FTNJANUM(2)     TO  HC02-FTNJA2
       *    受給者番号２
-           IF      WRK-HEN-JKYSNUM(2)(15:) =   SPACE
+           EVALUATE    WRK-JKYSNUM-MAX (2)
+           WHEN    0   THRU   14
       *        ７文字まで
                MOVE    WRK-HEN-JKYSNUM(2)  TO  HC02-JKYSNUM2
-           ELSE
-               IF      WRK-HEN-JKYSNUM(2)(21:) =   SPACE
-      *           １０文字まで
-                   MOVE    WRK-HEN-JKYSNUM(2)  TO  HC02-JKYSNUM2N
-               ELSE
-      *           １０文字以上（１２文字）
-                   MOVE    WRK-HEN-JKYSNUM(2)  TO  HC02-JKYSNUM212
-               END-IF
-           END-IF
+           WHEN    15  THRU   20
+      *       １０文字まで
+               MOVE    WRK-HEN-JKYSNUM(2)  TO  HC02-JKYSNUM2N
+           WHEN    21   THRU   24
+      *       １２文字まで
+               MOVE    WRK-HEN-JKYSNUM(2)  TO  HC02-JKYSNUM212
+           WHEN    OTHER
+      *       １２文字以上（１５文字まで）
+               MOVE    WRK-HEN-JKYSNUM(2)  TO  HC02-JKYSNUM215
+           END-EVALUATE
       *
       *    処方内容
            PERFORM VARYING     IDX2    FROM    1   BY  1

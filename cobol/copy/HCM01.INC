@@ -61,3 +61,5 @@
             02  HCM01-NUM   PIC X(32).
             02  HCM01-COMMENT
                     PIC X(96)   OCCURS  5 TIMES.
+            02  HCM01-JKOH15-TBL        OCCURS  3 TIMES.
+              03  HCM01-JKYSNO15  PIC X(30).

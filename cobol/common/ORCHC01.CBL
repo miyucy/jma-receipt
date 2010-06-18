@@ -56,6 +56,7 @@
       *  04.04.00    NACL-多々納  08/12/03  プログラムオプション追加
       *  04.05.00    NACL-多々納  09/07/XX  備考コメント追加
       *  04.05.00    NACL-多々納  09/12/XX  備考禁忌・アレルギー・感染症追加
+      *  04.06.00    NACL-多々納  10/06/XX  受給者番号１５文字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -181,6 +182,7 @@
            03  WRK-MOJISU              PIC 9(02).
            03  WRK-MAE-INPUT           PIC X(200).
            03  WRK-OUT-INPUT           PIC X(200).
+           03  WRK-OUT-MAX             PIC 9(04).
       *
       *---- (01.00.11) LINE ADD START ----------------------------
            03  WRK-HEN-KIGONUM         PIC X(80).
@@ -199,6 +201,7 @@
            03  WRK-FTNSNO          PIC X(16).
       *****03  WRK-JKYSNO          PIC X(16).
            03  WRK-JKYSNO          PIC X(40).
+           03  WRK-JKYSNO-MAX      PIC 9(04).
            03  WRK-TEKSTYMD        PIC X(22).
            03  WRK-TEKEDYMD        PIC X(22).
       *
@@ -975,16 +978,16 @@
                    PERFORM 3102-PTKOHINF-HEN-SEC
                    MOVE    WRK-FTNSNO      TO  HC01-FTNSNO (IDY)
       *************MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
-                   IF      WRK-JKYSNO(15:)     =   SPACE
+                   EVALUATE    WRK-JKYSNO-MAX
+                   WHEN    0   THRU   14
                        MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
-                   ELSE
-                       IF      WRK-JKYSNO(21:)     =   SPACE
-                           MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
-                       ELSE
-                           MOVE    WRK-JKYSNO      TO  HC01-JKYSNO12
-                                                                  (IDY)
-                       END-IF
-                   END-IF
+                   WHEN    15  THRU   20
+                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
+                   WHEN    21  THRU   24
+                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNO12(IDY)
+                   WHEN    OTHER
+                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNO15(IDY)
+                   END-EVALUATE
                END-IF
            END-PERFORM
       *---- (01.00.03) LINE MOD END ------------------------------ 
@@ -1416,6 +1419,7 @@
            MOVE    SPACE               TO  WRK-TEKEDYMD
            MOVE    SPACE               TO  WRK-FTNSNO
            MOVE    SPACE               TO  WRK-JKYSNO
+           MOVE    ZERO                TO  WRK-JKYSNO-MAX
       *    保険者情報
       *    全角変換
            MOVE    PTKOH-FTNJANUM      TO  WRK-MAE-INPUT
@@ -1431,8 +1435,8 @@
       *---- (04.01.00) LINE MOD END   ---------------------------------
            PERFORM 2009-HENKAN-SEC
            MOVE    SPACE               TO  WRK-JKYSNO
-           MOVE    WRK-OUT-INPUT
-                                       TO  WRK-JKYSNO
+           MOVE    WRK-OUT-INPUT       TO  WRK-JKYSNO
+           MOVE    WRK-OUT-MAX         TO  WRK-JKYSNO-MAX
       *
       *    適用開始年月日
            MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
@@ -1589,8 +1593,10 @@
            IF      KANACHK-RC          =   ZERO
                MOVE    KANACHK-OUT-INPUT
                                            TO  WRK-OUT-INPUT
+               MOVE    KANACHK-MAX         TO  WRK-OUT-MAX
            ELSE
                MOVE    WRK-MAE-INPUT       TO  WRK-OUT-INPUT
+               MOVE    KANACHK-MAX         TO  WRK-OUT-MAX
            END-IF
       *
            .

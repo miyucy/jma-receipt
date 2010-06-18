@@ -51,3 +51,5 @@
             02  HCM19-HOSPCD.
               03  HCM19-HOSPCD-S
                       PIC X(2)    OCCURS  7 TIMES.
+            02  HCM19-JKYSNUM15 PIC X(30).
+            02  HCM19-JKYSNUM215    PIC X(30).
