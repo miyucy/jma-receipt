@@ -414,7 +414,7 @@
       *          Ã´Åö°å¥³¥ó¥Ü
                  11  SPA-GMN-I01-CMB-DR.
                    13  SPA-GMN-I01-DR-CNT           PIC 9(5).
-                   13  SPA-GMN-I01-DR-ITM           OCCURS  50.
+                   13  SPA-GMN-I01-DR-ITM           OCCURS  99.
                        15  SPA-GMN-I01-DRL          PIC X(04).
                        15  SPA-GMN-I01-DRFLL        PIC X(01).
                        15  SPA-GMN-I01-DRMEIL       PIC X(24).
@@ -1040,7 +1040,7 @@
       *                    ¼ç¼£°å»áÌ¾
                        11  SPA-GMN-I04-CMB-DR.
                            13  SPA-GMN-I04-DR-CNT    PIC 9(5).
-                           13  SPA-GMN-I04-DR-ITM    OCCURS  50.
+                           13  SPA-GMN-I04-DR-ITM    OCCURS  99.
                                15  SPA-GMN-I04-DRL   PIC X(04).
                                15  SPA-GMN-I04-DRFLL PIC X(01).
                                15  SPA-GMN-I04-DRMEIL PIC X(24).

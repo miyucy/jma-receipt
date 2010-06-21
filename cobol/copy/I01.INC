@@ -120,7 +120,7 @@
                   06  I01-DR-STT                   PIC S9(9)   BINARY.
                   06  I01-DR-CNT                   PIC S9(9)   BINARY.
                   06  I01-DR-ITM                   PIC X(29)
-                                                   OCCURS  50.
+                                                   OCCURS  99.
                   06  I01-DR-ITM-STT               PIC S9(9)   BINARY.
               04  I01-CMB-HKNCOMBI.
                 05  I01-HKNCOMBI                   PIC X(51).

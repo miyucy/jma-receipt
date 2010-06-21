@@ -404,7 +404,7 @@ I04	{
 				value	varchar(29);
 			};
 			count	int;
-			item	varchar(29)[50];
+			item	varchar(29)[99];
 		};
 		CMB_USERPG	{
 			USERPG	{

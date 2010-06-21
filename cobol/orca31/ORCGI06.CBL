@@ -178,7 +178,7 @@
                            11  SPA-GMN-TAIINCDMEIL PIC X(20).
                    07  SPA-GMN-DRLST-G.
                        09  SPA-GMN-DR-MAX          PIC 9(05).
-                       09  SPA-GMN-DRLST           OCCURS  50.
+                       09  SPA-GMN-DRLST           OCCURS  99.
                            11  SPA-GMN-DRL         PIC X(04).
                            11                      PIC X(01).
                            11  SPA-GMN-DRMEIL      PIC X(22).
@@ -428,7 +428,7 @@
            03  CONST-SAGAKU-MAX            PIC 9(05)   VALUE 20.
            03  CONST-NYUINKA-MAX           PIC 9(05)   VALUE 99.
            03  CONST-TAIINCD-MAX           PIC 9(05)   VALUE 50.
-           03  CONST-DR-MAX                PIC 9(05)   VALUE 50.
+           03  CONST-DR-MAX                PIC 9(05)   VALUE 99.
            03  CONST-HKNCOMBI-MAX          PIC 9(05)   VALUE 30.
            03  CONST-TOKNYUIN-MAX          PIC 9(05)   VALUE 30.
            03  CONST-ALLIDOLST-MAX         PIC 9(05)   VALUE 50.

@@ -165,7 +165,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(29)[50];
+			item	varchar(29)[99];
 			state	int;
 		};
 		CMB_DR2	{
@@ -174,7 +174,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(29)[50];
+			item	varchar(29)[99];
 			state	int;
 		};
 		CMB_DR3	{
@@ -183,7 +183,7 @@ I01	{
 				state	int;
 			};
 			count	int;
-			item	varchar(29)[50];
+			item	varchar(29)[99];
 			state	int;
 		};
 		CMB_HKNCOMBI	{

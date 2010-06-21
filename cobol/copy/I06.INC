@@ -81,7 +81,7 @@
                   05  I06-DR                   PIC X(29).
                   05  I06-DR-STATE             PIC S9(9)   BINARY.
                   05  I06-DR-COUNT             PIC S9(9)   BINARY.
-                  05  I06-DR-ITEM              PIC X(29)   OCCURS  50.
+                  05  I06-DR-ITEM              PIC X(29)   OCCURS  99.
                   05  I06-DR-ITEM-STATE        PIC S9(9)   BINARY.
               03  I06-CMB-HKNCOMBI.
                 04  I06-HKNCOMBI               PIC X(51).

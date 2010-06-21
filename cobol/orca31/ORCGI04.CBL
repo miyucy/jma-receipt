@@ -1388,7 +1388,7 @@
            MOVE    SYSKANRI-REC    TO  SYS-1010-REC
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1            >   50 )
+               UNTIL     ( IDX1            >   99 )
                    OR    ( FLG-SYSKANRI    NOT =   ZERO )
       *
                MOVE    IDX1    TO  SPA-GMN-I04-DR-CNT
