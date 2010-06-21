@@ -296,7 +296,7 @@
            03  FILLER              PIC X(35)   VALUE
                "1043 会計照会機能情報".
            03  FILLER              PIC X(35)   VALUE
-               "1045 予約機能情報".
+               "1045 予約・受付機能情報".
            03  FILLER              PIC X(35)   VALUE
                "1046 出産費用内訳明細情報".
            03  FILLER              PIC X(35)   VALUE

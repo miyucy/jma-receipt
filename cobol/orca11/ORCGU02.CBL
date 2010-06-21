@@ -75,6 +75,8 @@
       *  03.05.02    NACL-多々納  07/08/28  公費期限切れ追加他
       *  04.05.00    NACL-多々納  09/05/29  性別表示追加、400明細
       *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
+      *  04.06.00    NACL-多々納  10/06/21  受付選択一覧遷移追加
+      *                                     患者番号と一覧内容の連動他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -137,6 +139,7 @@
            03  FLG-CLAIM-MULTIHOST     PIC 9(01).
            03  FLG-SOUSIN              PIC 9(01).
       *
+           03  FLG-UKE-OK              PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -236,6 +239,15 @@
            03  WRK-E-NAME              PIC X(50).
            03  WRK-H-NAME              PIC X(50).
            03  WRK-H-NAME1             PIC X(02).
+      *
+           03  WRK-SELNUM1             PIC 9(04).
+           03  WRK-SELNUM2             PIC 9(04).
+           03  FLG-YYK-OK              PIC 9(01).
+      *
+           03  WRK-U2ID1MSG            PIC X(80).
+      *
+           03  WRK-U02-UKETUKE-ROW     PIC S9(09).
+           03  FLG-GMN-INIT            PIC 9(01).
       *
       *    公費期限切れ表示用
        01  WRK-KOH-AREA.
@@ -353,6 +365,8 @@
       *　　（ＣＬＡＩＭ接続）
            COPY    "CPSK9000.INC".
            COPY    "CPSK9001.INC".
+      *
+           COPY    "CPSK1045.INC".
       *
       *    受付
        01  UKETUKE-REC.
@@ -480,6 +494,7 @@
            COPY    "U02Q.INC".
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
+           COPY    "U2ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -577,6 +592,7 @@
                IF      WRK-MOTOPG          =   "Y01"  OR  "U01"  OR
                                                "P97"
                                            OR  "XF01"
+                                           OR  "U012"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-U02
                END-IF
@@ -587,6 +603,7 @@
       *        予約、メモ登録
       *            受付編集
                    IF      SPA-GMN-SELNUM      =   ZERO
+                       MOVE    ZERO                TO  SPA-NAI-SYORI1
                        PERFORM 3101-UKETU-HEN-SEC
                    END-IF
       *            患者メモ表示処理
@@ -612,6 +629,10 @@
                    ELSE
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
+      *        確認画面より
+               WHEN    "U2ID1"
+                   PERFORM 3010-U2ID1-SET-SEC
+      *
       *DD      WHEN    "U02Q"
       *        ＱＲ一覧画面より
       *            IF      SPA-U02Q-REGISTID   NOT =   ZERO
@@ -708,6 +729,91 @@
            END-IF
            .
        3101-U01SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認画面より
+      *****************************************************************
+       3010-U2ID1-SET-SEC               SECTION.
+      *
+           EVALUATE    SPA-U2ID1CD
+      *        予約紐付け
+               WHEN    "0101"
+                   IF      SPA-U2ID1-FLG    =   "OK"
+                       IF      SPA-NAI-SYORI1      =   1
+                           MOVE    ZERO            TO  SPA-NAI-SYORI1
+                           PERFORM 3101-UKETU-HEN-SEC
+                       END-IF
+      *                患者選択処理
+                       PERFORM 30101-UKELIST-HEN-SEC
+                   ELSE
+      *                患者情報編集
+                       PERFORM 41011-PTNUM-HENSYU-SEC
+                       MOVE    4               TO  SPA-GMN-CUR
+                   END-IF
+      *        受付済み
+               WHEN    "0102"
+                   IF      SPA-U2ID1-FLG    =   "OK"
+                       IF      SPA-NAI-SYORI1      =   2
+                           MOVE    ZERO            TO  SPA-NAI-SYORI1
+                           PERFORM 3101-UKETU-HEN-SEC
+                       END-IF
+      *                患者選択処理
+                       PERFORM 30101-UKELIST-HEN-SEC
+                   ELSE
+      *                患者情報編集
+                       PERFORM 41011-PTNUM-HENSYU-SEC
+                       MOVE    4               TO  SPA-GMN-CUR
+                   END-IF
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-U2ID1CD
+           MOVE    SPACE               TO  SPA-U2ID1-FLG
+      *
+           .
+       3010-U2ID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者選択処理
+      *****************************************************************
+       30101-UKELIST-HEN-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL      (IDX     >   SPA-UKE-MAX )
+                          OR  (SPA-GMN-SELNUM  >   ZERO )
+               IF     (SPA-GMN-PTNUM       =   SPA-GMN-TPTNUM(IDX))
+                  AND (SPA-GMN-PTID        =   SPA-GMN-TPTID (IDX))
+                  IF      SPA-U2ID1CD          =   "0101"
+                       IF      (SPA-GMN-TUKEID   (IDX) =   ZERO      )
+                        AND    (SPA-GMN-TYYKTIME (IDX) NOT =   SPACE )
+                           MOVE    SPA-GMN-TNUM (IDX)
+                                                   TO  SPA-GMN-SELNUM
+                       END-IF
+                   ELSE
+      *                受付
+                       IF     (SPA-GMN-TUKEID   (IDX)  NOT =   ZERO   )
+                           MOVE    SPA-GMN-TNUM (IDX)
+                                                   TO  SPA-GMN-SELNUM
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-GMN-SELNUM      =   ZERO
+               MOVE    "0031"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF
+      *
+           IF      (SPA-ERRCD          =   SPACE )  AND
+                   (SPA-GMN-SELNUM     >   ZERO  )
+               PERFORM 41041-SELNUM-SYORI-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+           END-IF
+           .
+       30101-UKELIST-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -934,6 +1040,38 @@
                MOVE    SYS-1008-ZENHKNCHK-FLG  TO  SPA-ZENHKNCHK-FLG
            END-IF
       *
+      *    予約連携
+           MOVE    SPACE               TO  SYS-1045-REC
+           INITIALIZE                  SYS-1045-REC
+           MOVE    "1045"              TO  SYS-1045-KANRICD
+           MOVE    "*"                 TO  SYS-1045-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1045-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1045-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1045-HOSPNUM
+      *
+           MOVE    SYS-1045-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1045-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1045-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      SYS-1045-YYKUKE-KBN =   SPACE
+               MOVE    "0"                 TO  SPA-NAI-YYKUKE-KBN
+           ELSE
+               MOVE    SYS-1045-YYKUKE-KBN TO  SPA-NAI-YYKUKE-KBN
+           END-IF
+      *
       *    予約，受付編集
            PERFORM 3101-UKETU-HEN-SEC
       *
@@ -1015,8 +1153,9 @@
       *****************************************************************
        3101-UKETU-HEN-SEC                        SECTION.
       *
-           MOVE    ZERO                          TO  IDX
-           MOVE    ZERO                          TO  SPA-UKE-MAX
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  SPA-UKE-MAX
+           MOVE    1                   TO   FLG-GMN-INIT
       *
            INITIALIZE                            WRK-SORT-TBL
                                                  SPA-GMN-TBL
@@ -1037,8 +1176,14 @@
                MOVE    1               TO  FLG-YYK
            END-IF
       *
+           IF      SPA-NAI-SYORI1      =   1
+      *        予約なし
+               MOVE    1               TO  FLG-YYK
+           END-IF
+      *
            PERFORM UNTIL     (FLG-YYK            =  1     )  OR
                              (IDX               >=  MAX-LINE   )
+      *
                IF     (YYK-YYKID       NOT       =   ZERO       ) AND
                       (YYK-RAIINZUMI             =   SPACE      )
                    ADD     1             TO  IDX
@@ -1077,10 +1222,21 @@
                MOVE    1               TO  FLG-UKETUKE
            END-IF
       *
+           IF      SPA-NAI-SYORI1      =   2
+      *        受付なし
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+      *
            PERFORM     UNTIL  (FLG-UKETUKE        =  1     )  OR
                               (IDX               >=  MAX-LINE   )
                IF     (UKE-UKEID         >   ZERO    )   AND
                       (UKE-KAIKEITIME    =   ZERO    ) 
+                   MOVE    1                 TO  FLG-UKE-OK
+               ELSE
+                   MOVE    ZERO              TO  FLG-UKE-OK
+               END-IF
+      *
+               IF      FLG-UKE-OK          =   1
                        ADD     1             TO  IDX
                        IF  UKE-YYKTIME       >   ZERO
                            MOVE    UKE-YYKTIME
@@ -1552,7 +1708,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 230-MAEKPTNUM-SEC
       *    患者登録
                WHEN    "CLICKED"       ALSO    "B05"
-               WHEN    "CLICKED"       ALSO    "B05S"
+      *******  WHEN    "CLICKED"       ALSO    "B05S"
                    PERFORM 492-ORCGP01-SEC
       *    診療行為
                WHEN    "CLICKED"       ALSO    "B06"
@@ -1564,7 +1720,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 494-ORCGC02-SEC
       *    収納登録
                WHEN    "CLICKED"       ALSO    "B08"
-               WHEN    "CLICKED"       ALSO    "B08S"
+      ******   WHEN    "CLICKED"       ALSO    "B08S"
                    PERFORM 495-ORCGS02-SEC
       *    会計照会
                WHEN    "CLICKED"       ALSO    "B09S"
@@ -1602,6 +1758,13 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "CLICKED"       ALSO    "BHK4"
                WHEN    "CLICKED"       ALSO    "BHK5"
                    PERFORM 400-HKNCHK-SYORI-SEC
+      *!!
+      *        予約・受付のみ切り替え
+               WHEN    "CLICKED"       ALSO    "B05S"
+                   PERFORM 4905-B05S-SYORI-SEC
+      *        選択一覧へ
+               WHEN    "CLICKED"       ALSO    "B08S"
+                   PERFORM 4908-B08S-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -1818,12 +1981,146 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE )
+           AND    (SPA-NAI-YYKUKE-KBN  NOT =   "0"  )
+      *        予約有無チェック処理
+               PERFORM 41012-PTNUM-YYKCHEK-SEC
+           END-IF
+      *
+           IF     (SPA-ERRCD           =   SPACE )
+             AND  (SPA-U2ID1CD         =   SPACE )
       *        患者情報編集
                PERFORM 41011-PTNUM-HENSYU-SEC
            END-IF
            .
        4101-PTNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    予約有無チェック処理
+      *****************************************************************
+       41012-PTNUM-YYKCHEK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-YYK-OK
+           IF      SPA-NAI-SYORI1      =   1
+      *        予約が一覧にない時、予約を検索
+               PERFORM 410121-YYK-CHK-SEC
+           ELSE
+               PERFORM VARYING     IDX     FROM   1   BY  1
+                       UNTIL      (IDX     >   SPA-UKE-MAX )
+                              OR  (FLG-YYK-OK  =   1       )
+                   IF     (SPA-GMN-PTNUM       =   SPA-GMN-TPTNUM(IDX))
+                      AND (SPA-GMN-PTID        =   SPA-GMN-TPTID (IDX))
+                      AND (SPA-GMN-TUKEID   (IDX)  =   ZERO   )
+                      AND (SPA-GMN-TYYKTIME (IDX)  NOT =   SPACE  )
+                       MOVE    1                   TO  FLG-YYK-OK
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      FLG-YYK-OK          =   1
+               MOVE    "0101"              TO  SPA-U2ID1CD
+               GO      TO      41012-PTNUM-YYKCHEK-EXT 
+           END-IF
+           IF     (SPA-NAI-YYKUKE-KBN  =   "2"  )
+               GO      TO      41012-PTNUM-YYKCHEK-EXT 
+           END-IF
+      *    受付の検索
+           IF      SPA-NAI-SYORI1      =   2
+      *        受付の検索
+               PERFORM 410121-UKETUKE-CHK-SEC
+           ELSE
+               PERFORM VARYING     IDX     FROM   1   BY  1
+                       UNTIL      (IDX     >   SPA-UKE-MAX )
+                              OR  (FLG-YYK-OK  =   1       )
+                   IF     (SPA-GMN-PTNUM       =   SPA-GMN-TPTNUM(IDX))
+                      AND (SPA-GMN-PTID        =   SPA-GMN-TPTID (IDX))
+                      AND (SPA-GMN-TUKEID   (IDX)  NOT =   ZERO   )
+                       MOVE    2                   TO  FLG-YYK-OK
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF      FLG-YYK-OK          =   2
+               MOVE    "0102"              TO  SPA-U2ID1CD
+           END-IF
+           .
+       41012-PTNUM-YYKCHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者情報編集処理
+      *****************************************************************
+       410121-YYK-CHK-SEC            SECTION.
+      *
+           INITIALIZE                      YYK-REC
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  YYK-YYKYMD
+           MOVE    SPA-GMN-PTID        TO  YYK-PTID
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 910-YOYAKU-READ-SEC
+           ELSE
+                MOVE    1              TO  FLG-YYK
+           END-IF
+           MOVE    ZERO                TO  FLG-YYK-OK
+           PERFORM UNTIL      (FLG-YYK     =   1    )
+                          OR  (FLG-YYK-OK  NOT =   ZERO )
+               IF     (YYK-YYKID       NOT =   ZERO )
+                  AND (YYK-RAIINZUMI       =   SPACE )
+                   MOVE    1                   TO  FLG-YYK-OK
+               END-IF
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 910-YOYAKU-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       410121-YYK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受付情報編集処理
+      *****************************************************************
+       410121-UKETUKE-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  UKETUKE-REC
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-GMN-PTID        TO  UKE-PTID
+           MOVE    UKETUKE-REC         TO  MCPDATA-REC
+           MOVE    "tbl_uketuke"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-UKETUKE-READ-SEC
+           ELSE
+               INITIALIZE                  UKETUKE-REC
+               MOVE    1               TO  FLG-UKETUKE
+           END-IF
+           MOVE    ZERO                TO  FLG-YYK-OK
+           PERFORM UNTIL      (FLG-UKETUKE     =   1    )
+                          OR  (FLG-YYK-OK  NOT =   ZERO )
+               IF     (UKE-UKEID         >   ZERO    )   AND
+                      (UKE-KAIKEITIME    =   ZERO    ) 
+                   MOVE    2                   TO  FLG-YYK-OK
+               END-IF
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-UKETUKE-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_uketuke"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       410121-UKETUKE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1930,7 +2227,14 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                        MOVE    HZN-PTINF-REC       TO  PTINF-REC
       *                排他制御処理
                        PERFORM 990-LOCK-IN-SEC
-                       IF      SPA-ERRCD           =   SPACE
+      *
+                       IF     (SPA-ERRCD           =   SPACE )
+                       AND    (SPA-NAI-YYKUKE-KBN  NOT =   "0"  )
+      *                    予約有無チェック処理
+                           PERFORM 41012-PTNUM-YYKCHEK-SEC
+                       END-IF
+                       IF     (SPA-ERRCD           =   SPACE )
+                         AND  (SPA-U2ID1CD         =   SPACE )
                            PERFORM 41011-PTNUM-HENSYU-SEC
                        END-IF
                    END-IF
@@ -2203,12 +2507,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                            ORCSDRSETAREA
                MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
                MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
-      *TEST
+      *
                IF      ORCSDR-DRCD-IDX     >   ZERO
                    MOVE    SPA-GMN-DRCDLST  (ORCSDR-DRCD-IDX)
                                            TO  SPA-GMN-DRCD-G
                END-IF
-      *TEST
+      *
       *        受診履歴よりドクター、保険組合せを決定する
                PERFORM 41031-JYURRK-SRYKA-SEC
       *
@@ -2580,6 +2884,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 410119-PTMEMOINF-SEC
                END-IF
            END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
       *        前回編集
                MOVE    SPA-GMN-PTNUM       TO  SPA-MAE-PTNUM
@@ -3201,12 +3506,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                                ORCSDRSETAREA
                    MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
                    MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
-      *TEST
                    IF      ORCSDR-DRCD-IDX     >   ZERO
                        MOVE    SPA-GMN-DRCDLST  (ORCSDR-DRCD-IDX)
                                                TO  SPA-GMN-DRCD-G
                    END-IF
-      *TEST
                END-IF
            END-IF
            MOVE    SPA-GMN-SRYKA       TO  SPA-MAE-SRYKA
@@ -3523,6 +3826,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *    受付一覧
+           MOVE    ZERO                TO  SPA-NAI-SYORI1
            PERFORM 3101-UKETU-HEN-SEC
       **** MOVE    2                   TO  SPA-GMN-CUR
            .
@@ -4391,6 +4695,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    受付更新処理
       *****************************************************************
        4902-UKEUPD-SEC              SECTION.
+      *
+           IF     (SPA-GMN-TUKEID(IDX) NOT =   SPA-NAI-UKEID )
+              OR  (SPA-NAI-UKEID           =   ZERO          )
+               MOVE    "1010"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      4902-UKEUPD-EXT
+           END-IF
       *
            INITIALIZE                      UKETUKE-REC
            MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
@@ -5440,6 +5751,75 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        496-ORCGJ02-EXT.
            EXIT.
       *
+      *TEST
+      *****************************************************************
+      *    予約・受付のみ切り替え処理
+      *****************************************************************
+       4905-B05S-SYORI-SEC         SECTION.
+      *
+           EVALUATE    SPA-NAI-SYORI1
+               WHEN    0
+                   MOVE    1               TO  SPA-NAI-SYORI1
+               WHEN    1
+                   MOVE    2               TO  SPA-NAI-SYORI1
+               WHEN    2
+                   MOVE    0               TO  SPA-NAI-SYORI1
+           END-EVALUATE
+      *    受付一覧編集
+           IF      SPA-GMN-SELNUM  NOT =   ZERO
+               PERFORM 1009-HEAD-CLEAR-SEC
+           END-IF
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-NAI-SELNUM
+           PERFORM 3101-UKETU-HEN-SEC
+           IF      SPA-UKE-MAX         =   ZERO
+               IF      SPA-NAI-SYORI1      =   1
+                   MOVE    2               TO  SPA-NAI-SYORI1
+                   PERFORM 3101-UKETU-HEN-SEC
+               END-IF
+           END-IF
+           IF      SPA-UKE-MAX         =   ZERO
+               IF      SPA-NAI-SYORI1      =   2
+                   MOVE    0               TO  SPA-NAI-SYORI1
+                   PERFORM 3101-UKETU-HEN-SEC
+               END-IF
+           END-IF
+           IF      SPA-UKE-MAX         >   ZERO
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+           .
+       4905-B05S-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択一覧処理
+      *****************************************************************
+       4908-B08S-SYORI-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-U02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "U02"               TO  SPA-MOTOPG
+           MOVE    "U012"              TO  SPA-SAKIPG
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
+           MOVE   "U012"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+           .
+      *
+       4908-B08S-SYORI-EXT.
+           EXIT.
+      *TEST
+      *
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
@@ -5457,6 +5837,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "K009"              TO  SPA-ERRCD
                END-IF
                MOVE    1                   TO  SPA-HKNCHK-CHK
+           END-IF
+      *
+           IF      SPA-U2ID1CD      NOT =   SPACE
+               PERFORM 520-U2ID1CD-SEC
+               GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -5478,8 +5863,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
-      *
+      * 
+      *    コラムリスト位置保存
+           IF      FLG-GMN-INIT        =   1
+               MOVE    ZERO                TO  WRK-U02-UKETUKE-ROW
+           ELSE
+               MOVE    U02-UKETUKE-ROW     TO  WRK-U02-UKETUKE-ROW
+           END-IF
+     *
            MOVE    SPACE                        TO  U02
+           INITIALIZE                           U02
+           IF      WRK-U02-UKETUKE-ROW NOT =   ZERO
+               MOVE    WRK-U02-UKETUKE-ROW     TO  U02-UKETUKE-ROW
+           END-IF
       *
            MOVE    SPA-GMN-SRYYMDH              TO  U02-SRYYMD
       *
@@ -5677,12 +6073,26 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-GMN-TNUM  (IDX)  =   SPA-NAI-SELNUM
                    MOVE    "T"              TO  U02-UKETUKE-SELECT
                                                             (IDX)
+                   MOVE    IDX              TO  U02-UKETUKE-ROW
+                   MOVE    2                TO  U02-UKETUKE-ROWATTR
                ELSE
                    MOVE    "F"              TO  U02-UKETUKE-SELECT
                                                             (IDX)
                END-IF
             END-PERFORM
             MOVE    SPA-UKE-MAX        TO  U02-UKETUKE-COUNT
+      *
+           EVALUATE    SPA-NAI-SYORI1
+               WHEN    0
+                   MOVE    "現在の予約、受付状況"  TO  U02-LABEL-VALUE
+                   MOVE    "black"                 TO  U02-LABEL-STYLE
+               WHEN    1
+                   MOVE    "現在の受付状況"        TO  U02-LABEL-VALUE
+                   MOVE    "black"                 TO  U02-LABEL-STYLE
+               WHEN    2
+                   MOVE    "現在の予約状況"        TO  U02-LABEL-VALUE
+                   MOVE    "black"                 TO  U02-LABEL-STYLE
+           END-EVALUATE
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
@@ -5849,7 +6259,58 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    確認メッセージ表示処理
+      *****************************************************************
+       520-U2ID1CD-SEC              SECTION.
+      *
+           MOVE    SPACE           TO  WRK-U2ID1MSG
+      *
+           EVALUATE    SPA-U2ID1CD
+               WHEN    "0101"
+                   STRING  "患者番号で予約があります。"
+                           "予約を選択しますか？"
+                                               DELIMITED  BY  SIZE
+                                               INTO  WRK-U2ID1MSG
+                   END-STRING
+               WHEN    "0102"
+                   STRING  "患者番号で受付があります。"
+                           "受付を選択しますか？"
+                                               DELIMITED  BY  SIZE
+                                               INTO  WRK-U2ID1MSG
+                   END-STRING
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  U2ID1
+           MOVE    SPA-U2ID1CD          TO  U2ID1-ID1CODE
+           MOVE    WRK-U2ID1MSG         TO  U2ID1-ID1MSG
+      *
+           MOVE    "戻る"               TO  U2ID1-B01
+           MOVE    "ＯＫ"               TO  U2ID1-B12
+           EVALUATE    SPA-U2ID1CD
+               WHEN    "0101"
+               WHEN    "0102"
+                   MOVE    "ＮＯ"           TO  U2ID1-B01
+                   MOVE    "ＯＫ"           TO  U2ID1-B12
+           END-EVALUATE
+      *
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "U02"                TO  SPA-MOTOPG
+           MOVE    "U2ID1"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "U2ID1"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+      *
+       520-U2ID1CD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -5957,6 +6418,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0031"
+                   STRING  "患者番号で受付がありませんでした。"
+                           "再度、患者番号を入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "2001"
                    MOVE    "前の未確認保険はありません。"
                                                 TO  SPA-ERRMSG
@@ -6001,6 +6468,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "受付は受診済みとなっています。"
                            "更新はできません。"
                            "再度、受付登録をして下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1010"
+                   STRING  "選択番号の受付情報が選択されていません。"
+                           "再度、受付を選択して下さい。"
                                                 DELIMITED  BY  SIZE
                                                 INTO  SPA-ERRMSG
                    END-STRING

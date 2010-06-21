@@ -132,6 +132,8 @@
                    07  SPA-NAI-GYOUMU-ARI             PIC 9(01).
       *            前回保険組合せ相違チェック
                    07  SPA-ZENHKNCHK-FLG              PIC X(01).
+      *            予約連携区分
+                   07  SPA-NAI-YYKUKE-KBN             PIC X(01).
       *
               05  SPA-GMN-LISTTBL.
                    07  SPA-GMN-TBL.
@@ -177,6 +179,8 @@
       **       05  SPA-NAI-PTID      PIC X(10).
       *
                05  SPA-NAI-SELNUM                 PIC 9(04).
+      *       受付・予約
+               05  SPA-NAI-SYORI1              PIC 9(01).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-PTID                    PIC X(10).
@@ -238,6 +242,12 @@
       *
       *戻り先
            03  SPA-HZN-MOTOPG          PIC X(08).
+      *
+      *確認画面（Ｕ２ＩＤ１）
+           03  SPA-U2ID1-AREA.
+               05  SPA-U2ID1CD             PIC X(04).
+               05  SPA-U2ID1-FLG           PIC X(02).
+      *
       *    ＱＲデータ有無
            03  SPA-QRFLG               PIC 9(01).
       *

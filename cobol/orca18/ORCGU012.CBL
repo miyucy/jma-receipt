@@ -55,7 +55,6 @@
                05  SPA-NAI-SYORI               PIC 9(01).
                05  SPA-NAI-SYORI-2             PIC 9(01).
       *
-               05  SPA-NAI-MOTOPG              PIC X(08).
       *        処理日
                05  SPA-U012-SYSYMD              PIC X(08).
                05  SPA-U012-DATE                PIC X(30).
@@ -412,6 +411,17 @@
       *    スパ初期編集処理
       *****************************************************************
        310-INIT-SYORI-SEC              SECTION.
+      *
+      *    画面遷移後、ＬＮＫをセット
+           IF      LNK-KYOUTU      NOT =   SPACE
+               MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               IF      SPA-MOTOPG          =   "U02"
+                   INITIALIZE                  SPA-U01KYOUTU
+                   MOVE    SPA-MOTOPG          TO  SPA-U012-MOTOPG
+               ELSE
+                   MOVE    "U01"               TO  SPA-U012-MOTOPG
+               END-IF
+           END-IF
       *
            INITIALIZE                  SPA-U012
       *
@@ -1448,6 +1458,10 @@
       **** MOVE    "U01"               TO  SPA-SAKIPG
            MOVE    "U012"              TO  SPA-MOTOPG
            MOVE    SPA-U012-MOTOPG     TO  SPA-SAKIPG
+      *
+           IF      SPA-SAKIPG      NOT =   "U01"
+               MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+           END-IF
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
            MOVE    "CHANGE"            TO  MCP-PUTTYPE

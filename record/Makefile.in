@@ -424,6 +424,7 @@ RECORD_files = \
 	M80ID1.rec \
 	S07.rec \
 	SID3.rec \
+	U2ID1.rec \
 
 DEF_files = \
 	HC01.def \

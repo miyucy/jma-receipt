@@ -906,6 +906,13 @@ W07	{
 					count	int;
 					item	varchar(20)[5];
 				};
+				YYKUKE_KBN_COMB	{
+					YYKUKE_KBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
 			};
 			TAGNAME7    {
 			  	state   int;

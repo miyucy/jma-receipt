@@ -415,9 +415,9 @@
                WHEN    "U1ID1"
                    PERFORM 330-U1ID1-SET-SEC
       *
-               WHEN    "U012"
+      *        WHEN    "U012"
       *            受付情報表示
-                   PERFORM 340-U012-HEN-SEC
+      *            PERFORM 340-U012-HEN-SEC
       *
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
@@ -432,15 +432,19 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  SPA-U01
-           INITIALIZE                  SPA-U01KYOUTU
       *
       *    画面遷移後、ＬＮＫをセット
            IF      LNK-KYOUTU      NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               IF      SPA-MOTOPG     NOT  =   "U012"
+                    INITIALIZE                  SPA-U01KYOUTU
+                    INITIALIZE                  SPA-U01
+                    MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
+               END-IF
            END-IF
       *
-           INITIALIZE                  SPA-U01
-           MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
+      *    INITIALIZE                  SPA-U01
+      *    MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
       *
       *    曜日変換
            INITIALIZE                  LNK-DAY2-AREA
@@ -1040,6 +1044,7 @@
       *
            MOVE    "U01"               TO  SPA-U012-MOTOPG
            MOVE    SPA-U01KYOUTU       TO  SPA-WORK
+           MOVE    SPACE               TO  LNK-KYOUTU
       *
            MOVE    "U01"               TO  SPA-MOTOPG
            MOVE    "U012"              TO  SPA-SAKIPG
@@ -1377,7 +1382,7 @@
                END-IF
       *
                MOVE    "tbl_uketuke"       TO  MCP-TABLE
-              MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-UKETUKE-READ-SEC
            END-PERFORM
       *

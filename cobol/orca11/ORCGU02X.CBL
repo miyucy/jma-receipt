@@ -110,6 +110,7 @@
            COPY    "U02Q.INC".
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
+           COPY    "U2ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

@@ -1,0 +1,16 @@
+U2ID1	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(10);
+		};
+		ID1MSG	{
+			value	varchar(80);
+		};
+		B01	{
+			label	varchar(4);
+		};
+		B12	{
+			label	varchar(4);
+		};
+	};
+};

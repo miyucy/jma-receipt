@@ -111,6 +111,7 @@
       *
       *  04.06.01    NACL-藤原    10/06/16  疑いフラグ設定対応
       *                                     疑いフラグ設定区分の追加
+      *  04.06.00    NACL-多々納  10/06/21  予約・受付連動追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1071,6 +1072,15 @@
                            11  SPA-GMN-YYKHYO-LIST         PIC X(20)
                                                            OCCURS  5.
                        09  SPA-GMN-YYKHYO-MAX              PIC 9(04).
+      *                予約受付連携区分
+                       09  SPA-GMN-YYKUKE-KBN-G.
+                           11  SPA-GMN-YYKUKE-KBN          PIC X(01).
+                           11  SPA-GMN-YYKUKE-F1           PIC X(01).
+                           11  SPA-GMN-YYKUKE-MEI          PIC X(38).
+                       09  SPA-GMN-YYKUKE-COMB.
+                           11  SPA-GMN-YYKUKE-LIST         PIC X(40)
+                                                           OCCURS  5.
+                       09  SPA-GMN-YYKUKE-MAX              PIC 9(04).
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -1951,6 +1961,12 @@
            MOVE    "0 発行しない"      TO  SPA-GMN-YYKHYO-LIST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-YYKHYO-LIST(2)
            MOVE    2                   TO  SPA-GMN-YYKHYO-MAX
+      *    予約受付連動
+           MOVE    "0 連動しない"      TO  SPA-GMN-YYKUKE-LIST(1)
+           MOVE    "1 連動する"        TO  SPA-GMN-YYKUKE-LIST(2)
+           MOVE    "2 連動する（予約のみ）"
+                                       TO  SPA-GMN-YYKUKE-LIST(3)
+           MOVE    3                   TO  SPA-GMN-YYKUKE-MAX
       *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
@@ -4132,6 +4148,9 @@
       *    予約票発行区分
            MOVE    SYS-1045-YYKHYO-KBN
                                        TO  SPA-GMN-YYKHYO-KBN
+      *    予約受付連携区分
+           MOVE    SYS-1045-YYKUKE-KBN
+                                       TO  SPA-GMN-YYKUKE-KBN
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -4189,6 +4208,24 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-YYKHYO-LIST (1)
                                        TO  SPA-GMN-YYKHYO-KBN-G
+           END-IF
+      *    受付連携
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-YYKUKE-MAX
+               IF      SPA-GMN-YYKUKE-KBN
+                                       =   SPA-GMN-YYKUKE-LIST(IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YYKUKE-LIST(IDY)
+                                           TO  SPA-GMN-YYKUKE-KBN-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-YYKUKE-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-YYKUKE-LIST (1)
+                                       TO  SPA-GMN-YYKUKE-KBN-G
            END-IF
       *
            MOVE    700                 TO  SPA-GMN-CUR
@@ -4432,6 +4469,7 @@
            MOVE    W07-YYKINIT-FLG     TO  SPA-GMN-YYKINIT-FLG-G
            MOVE    W07-YYKMAXCNT       TO  SPA-GMN-YYKMAXCNT
            MOVE    W07-YYKHYO-KBN      TO  SPA-GMN-YYKHYO-KBN-G
+           MOVE    W07-YYKUKE-KBN      TO  SPA-GMN-YYKUKE-KBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -4853,6 +4891,10 @@
       *            予約票発行区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4511-YYKHYO-KBN-CHK-SEC
+                   END-IF
+      *            予約受付連携区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4511-YYKUKE-KBN-CHK-SEC
                    END-IF
            END-EVALUATE
       *
@@ -7699,6 +7741,31 @@
            .
        4511-YYKHYO-KBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    予約受付連携区分チェック処理（予約機能情報）
+      *****************************************************************
+       4511-YYKUKE-KBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-YYKUKE-MAX )
+                          OR  (FLG-OK  =   1    )
+               IF      SPA-GMN-YYKUKE-KBN
+                                       =   SPA-GMN-YYKUKE-LIST(IDX)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YYKUKE-LIST(IDX)
+                                           TO  SPA-GMN-YYKUKE-KBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    704             TO  SPA-GMN-CUR
+               MOVE    "6005"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4511-YYKUKE-KBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -8575,6 +8642,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-YYKINIT-FLG     TO  SYS-1045-YYKINIT-FLG
            MOVE    SPA-GMN-YYKHYO-KBN      TO  SYS-1045-YYKHYO-KBN
            MOVE    SPA-GMN-YYKMAXCNT       TO  SYS-1045-YYKMAXCNT
+           MOVE    SPA-GMN-YYKUKE-KBN      TO  SYS-1045-YYKUKE-KBN
       *
            MOVE    SYS-1045-REC            TO  SYSKANRI-REC
       *
@@ -9673,6 +9741,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-YYKHYO-KBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-YYKHYO-MAX  TO  W07-YYKHYO-KBN-COUNT
+      *    予約受付連携区分
+           MOVE    SPA-GMN-YYKUKE-KBN-G   TO  W07-YYKUKE-KBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YYKUKE-MAX
+               MOVE    SPA-GMN-YYKUKE-LIST (IDX)
+                                       TO  W07-YYKUKE-KBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-YYKUKE-MAX  TO  W07-YYKUKE-KBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -10071,6 +10147,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6004"
                    MOVE    "予約票発行区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "6005"
+                   MOVE    "予約・受付連動区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
@@ -10467,6 +10546,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "YYKMAXCNT"       TO   MCP-WIDGET
                WHEN    703
                    MOVE  "YYKHYO_KBN"      TO   MCP-WIDGET
+               WHEN    704
+                   MOVE  "YYKUKE_KBN"      TO   MCP-WIDGET
       *
                WHEN    999
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -10817,6 +10898,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "YYKMAXCNT"
                    MOVE    703             TO  SPA-GMN-CUR
                WHEN    "YYKHYO_KBN"
+                   MOVE    704             TO  SPA-GMN-CUR
+               WHEN    "YYKUKE_KBN"
                    MOVE    999             TO  SPA-GMN-CUR
            END-EVALUATE
       *

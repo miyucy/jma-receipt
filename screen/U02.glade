@@ -147,11 +147,6 @@
 	<key>GDK_F5</key>
 	<signal>clicked</signal>
       </accelerator>
-      <accelerator>
-	<modifiers>GDK_SHIFT_MASK</modifiers>
-	<key>GDK_F5</key>
-	<signal>clicked</signal>
-      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
@@ -218,11 +213,6 @@
       <can_focus>True</can_focus>
       <accelerator>
 	<modifiers>0</modifiers>
-	<key>GDK_F8</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <accelerator>
-	<modifiers>GDK_SHIFT_MASK</modifiers>
 	<key>GDK_F8</key>
 	<signal>clicked</signal>
       </accelerator>
@@ -481,7 +471,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
-      <x>152</x>
+      <x>104</x>
       <y>680</y>
       <width>40</width>
       <height>24</height>
@@ -781,47 +771,6 @@
 	<last_modification_time>Wed, 25 Jun 2003 06:24:49 GMT</last_modification_time>
       </signal>
       <duration>60</duration>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label16</name>
-      <x>72</x>
-      <y>680</y>
-      <width>56</width>
-      <height>24</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label19</name>
-      <x>72</x>
-      <y>284</y>
-      <width>152</width>
-      <height>16</height>
-      <label>現在の予約、受付状況</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>12</x>
-      <y>272</y>
-      <width>1000</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -1754,6 +1703,93 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B05S</name>
+      <x>352</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F5</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:16 GMT</last_modification_time>
+      </signal>
+      <label>予約／受付</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B08S</name>
+      <x>592</x>
+      <y>696</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F8</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Feb 2001 08:31:04 GMT</last_modification_time>
+      </signal>
+      <label>選択一覧</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label16</name>
+      <x>32</x>
+      <y>680</y>
+      <width>56</width>
+      <height>24</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>12</x>
+      <y>272</y>
+      <width>1000</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL</name>
+      <x>72</x>
+      <y>284</y>
+      <width>152</width>
+      <height>16</height>
+      <label>現在の予約、受付状況</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

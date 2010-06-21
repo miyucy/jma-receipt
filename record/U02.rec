@@ -146,6 +146,10 @@ U02	{
 			style	varchar(20);
 			value	varchar(50);
 		};
+		LABEL	{
+			style	varchar(20);
+			value	varchar(50);
+		};
 		SEX	{
 			value	varchar(2);
 		};

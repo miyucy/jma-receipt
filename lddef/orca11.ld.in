@@ -8,6 +8,7 @@ bind	"U02"		"OpenCOBOL"	"ORCGU02";
 bind	"U02Q"		"OpenCOBOL"	"ORCGU02Q";
 bind	"U02X"		"OpenCOBOL"	"ORCGU02X";
 bind	"U2ERR"		"OpenCOBOL"	"ORCGU2ERR";
+bind	"U2ID1"		"OpenCOBOL"	"ORCGU2ID1";
 
 multiplex_group	orca11;
 
@@ -19,6 +20,7 @@ data	{
 		U02Q;
 		U02X;
 		U2ERR;
+		U2ID1;
 	};
 };
 

@@ -129,6 +129,9 @@
               03  U02-KOHMSG.
                 04  U02-KOHMSG-STYLE  PIC X(20).
                 04  U02-KOHMSG-VALUE   PIC X(50).
+              03  U02-LABEL.
+                04  U02-LABEL-STYLE  PIC X(20).
+                04  U02-LABEL-VALUE   PIC X(50).
               03  U02-SEX.
                 04  U02-VALUE   PIC X(2).
               03  U02-B05.
