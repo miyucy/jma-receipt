@@ -837,6 +837,13 @@ W07	{
 					count	int;
 					item	varchar(12)[3];
 				};
+				UTAGAIFLG_KBN_COMBO	{
+					UTAGAIFLG_KBN	{
+						value	varchar(36);
+					};
+					count	int;
+					item	varchar(36)[5];
+				};
 				SJKBN_COMBO	{
 					SJKBN	{
 						value	varchar(53);

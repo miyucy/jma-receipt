@@ -561,6 +561,11 @@
                       07  W07-VALUE   PIC X(12).
                     06  W07-SYOKBN-DSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SYOKBN-DSPKBN-ITEM    PIC X(12)   OCCURS  3.
+                  05  W07-UTAGAIFLG-KBN-COMBO.
+                    06  W07-UTAGAIFLG-KBN.
+                      07  W07-VALUE   PIC X(36).
+                    06  W07-UTAGAIFLG-KBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-UTAGAIFLG-KBN-ITEM    PIC X(36)   OCCURS  5.
                   05  W07-SJKBN-COMBO.
                     06  W07-SJKBN.
                       07  W07-VALUE   PIC X(53).

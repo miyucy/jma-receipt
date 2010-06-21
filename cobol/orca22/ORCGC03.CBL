@@ -103,6 +103,9 @@
       *  04.03.01    NACL-藤原    08/06/11  慢性と急性のチェック
       *
       *  04.06.01    NACL-藤原    10/06/14  自院病名コード変更対応
+      *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
+      *  04.06.03    NACL-藤原    10/06/21  自院病名に不明な病名コードが
+      *                                     登録された場合のチェックを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1309,6 +1312,8 @@
                              END-IF        
                            END-IF
                        END-IF
+                   ELSE
+                       MOVE    "0076"              TO  SPA-ERRCD
                    END-IF
                  END-IF                 
                END-PERFORM
@@ -1325,7 +1330,7 @@
                END-IF
            END-IF       
            .
-       410111-BYOMEI-SELECT-EXT.
+       410111-USERBYOMEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1751,7 +1756,11 @@
       *
       *    疑いフラグ編集
       *****IF      WRK-BYOMEI          NOT =   SPA-GMN-C03-BYOMEI
-             MOVE    SPACE               TO  SPA-GMN-C03-UTAGAIFLG-G 
+      *      疑いフラグ設定区分による初期化
+             IF      SPA-C02-1042-UTAGAIFLG-KBN
+                                           =   "9"
+                 MOVE    SPACE               TO  SPA-GMN-C03-UTAGAIFLG-G
+             END-IF 
              PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >         WRK-CONS-BYOMEICD-MAX
                    OR      SPA-GMN-C03-UTAGAIFLG   =   "3"
@@ -2858,6 +2867,17 @@ grpsys                                         SPA-AREA
                    GO  TO  450-TOUROKU-EXT
                END-IF
       *
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                       OR      SPA-NAI-C03-BYOMEI   (IDX)
+                                   =       SPACE
+                   IF      SPA-NAI-C03-BYOMEI   (IDX)
+                                           =   "■■■"
+                       MOVE    "0076"               TO  SPA-ERRCD
+                       GO  TO  450-TOUROKU-EXT
+                   END-IF    
+               END-PERFORM
+      *
                MOVE    SPA-GMN-C03-UTAGAIFLG-G     TO  C03-UTAGAIFLG
                PERFORM 41007-UTAGAI-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -3935,6 +3955,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                                        TO  SPA-ERRMSG (29:22)
                    MOVE    "で廃止の扱いとなっています。"
                                        TO  SPA-ERRMSG (51:)
+               WHEN    "0076"
+                   STRING
+                       "存在しない病名コードが登録されています、"
+                                                DELIMITED   BY  SIZE 
+                       "ＣＤ表示で確認して下さい"
+                                                DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0077"
                    MOVE
               "病名コードが２２個以上になりますので、編集病名とします。"

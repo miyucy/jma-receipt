@@ -108,6 +108,9 @@
       *  04.05.00    NACL-太田    09/09/04  月別請求書発行方法、集計区分追加
       *  04.05.00    NACL-多々納  09/10/16  初診再診料自動算定区分追加他
       *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加他
+      *
+      *  04.06.01    NACL-藤原    10/06/16  疑いフラグ設定対応
+      *                                     疑いフラグ設定区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -985,6 +988,19 @@
                                13                          PIC X(01).
                                13  SPA-GMN-SYOKBN-DSPKBNMEIL
                                                            PIC X(10).
+      *
+                       09  SPA-GMN-UTAGAIFLG-KBN-G.
+                           11  SPA-GMN-UTAGAIFLG-KBN       PIC X(01).
+                           11  SPA-GMN-UTAGAIFLG-KBN-F1    PIC X(01).
+                           11  SPA-GMN-UTAGAIFLG-KBNMEI    PIC X(34).
+      *
+                       09  SPA-GMN-UTAGAIFLG-KBNLST-G.
+                           11  SPA-GMN-UTAGAIFLG-KBN-MAX   PIC 9(02).
+                           11  SPA-GMN-UTAGAIFLG-KBNLST    OCCURS  5.
+                               13  SPA-GMN-UTAGAIFLG-KBNL  PIC X(01).
+                               13                          PIC X(01).
+                               13  SPA-GMN-UTAGAIFLG-KBNMEIL
+                                                           PIC X(34).
       *                詳記区分初期設定
                        09  SPA-GMN-SJKBN-G.
                            11  SPA-GMN-SJKBN               PIC X(02).
@@ -1875,6 +1891,12 @@
            MOVE    "1 前月"            TO  SPA-GMN-SYOKBN-DSPKBNLST(2)
            MOVE    "2 全体"            TO  SPA-GMN-SYOKBN-DSPKBNLST(3)
            MOVE    3                   TO  SPA-GMN-SYOKBN-DSPKBN-MAX
+      *
+           MOVE    "0 病名欄と連動して設定"
+                                       TO  SPA-GMN-UTAGAIFLG-KBNLST(1)
+           MOVE    "9 病名欄、病名コード欄と連動して設定"
+                                       TO  SPA-GMN-UTAGAIFLG-KBNLST(2)
+           MOVE    2                   TO  SPA-GMN-UTAGAIFLG-KBN-MAX
       *    コメント症状詳記区分初期
            MOVE    "01 主たる疾患の臨床症状"
                                        TO  SPA-GMN-SJKBNLST (01)
@@ -3925,6 +3947,31 @@
                                        TO  SPA-GMN-SYOKBN-DSPKBN-G
            END-IF
       *
+      *    疑いフラグ設定区分
+           IF      SYS-1042-UTAGAIFLG-KBN
+                                       =   SPACE
+               MOVE    "0"                 TO  SYS-1042-UTAGAIFLG-KBN
+           END-IF
+           MOVE    SYS-1042-UTAGAIFLG-KBN
+                                       TO  SPA-GMN-UTAGAIFLG-KBN
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-UTAGAIFLG-KBN-MAX
+               IF      SPA-GMN-UTAGAIFLG-KBN
+                                       =   SPA-GMN-UTAGAIFLG-KBNL (IDY)
+                   MOVE    SPA-GMN-UTAGAIFLG-KBNLST(IDY)
+                                       TO  SPA-GMN-UTAGAIFLG-KBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-UTAGAIFLG-KBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-UTAGAIFLG-KBNLST (1)
+                                       TO  SPA-GMN-UTAGAIFLG-KBN-G
+           END-IF
+      *
       *    コメント症状詳記区分
            MOVE    SYS-1042-SJKBN-SET  TO  SPA-GMN-SJKBN
            MOVE    ZERO                TO  FLG-OK
@@ -4372,6 +4419,7 @@
            MOVE    W07-MSG4-DSPKBN     TO  SPA-GMN-MSG4-DSPKBN-G
            MOVE    W07-SRYKA-DSPKBN    TO  SPA-GMN-SRYKA-DSPKBN-G
            MOVE    W07-SYOKBN-DSPKBN   TO  SPA-GMN-SYOKBN-DSPKBN-G
+           MOVE    W07-UTAGAIFLG-KBN   TO  SPA-GMN-UTAGAIFLG-KBN-G
            MOVE    W07-SJKBN           TO  SPA-GMN-SJKBN-G
       *
       *    会計照会機能情報 
@@ -4767,6 +4815,10 @@
       *            表示対象期間初期表示区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4111-SYOKBN-DSPKBN-CHK-SEC
+                   END-IF
+      *            疑いフラグ設定区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4111-UTAGAIFLG-KBN-CHK-SEC
                    END-IF
       *            症状詳記区分初期表示チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -7440,6 +7492,30 @@
            EXIT.
       *
       *****************************************************************
+      *    疑いフラグ設定区分チェック処理（病名機能情報）
+      *****************************************************************
+       4111-UTAGAIFLG-KBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-UTAGAIFLG-KBN-MAX
+               IF      SPA-GMN-UTAGAIFLG-KBN
+                                       =   SPA-GMN-UTAGAIFLG-KBNL (IDX)
+                   MOVE    SPA-GMN-UTAGAIFLG-KBNLST(IDX)
+                                          TO  SPA-GMN-UTAGAIFLG-KBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    507             TO  SPA-GMN-CUR
+               MOVE    "4008"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4111-UTAGAIFLG-KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    症状詳記区分初期表示チェック処理（病名機能情報）
       *****************************************************************
        4111-SJKBN-CHK-SEC       SECTION.
@@ -8413,6 +8489,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MSG4-DSPKBN     TO  SYS-1042-MSG4-DSPKBN
            MOVE    SPA-GMN-SRYKA-DSPKBN    TO  SYS-1042-SRYKA-DSPKBN
            MOVE    SPA-GMN-SYOKBN-DSPKBN   TO  SYS-1042-SYOKBN-DSPKBN
+           MOVE    SPA-GMN-UTAGAIFLG-KBN   TO  SYS-1042-UTAGAIFLG-KBN
            MOVE    SPA-GMN-SJKBN           TO  SYS-1042-SJKBN-SET
       *
            MOVE    SYS-1042-REC            TO  SYSKANRI-REC
@@ -9523,7 +9600,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SYOKBN-DSPKBN-MAX
                                        TO  W07-SYOKBN-DSPKBN-COUNT
       *
-      *    表示対象期間初期表示区分（病名機能情報）
+      *    疑いフラグ設定区分（病名機能情報）
+           MOVE    SPA-GMN-UTAGAIFLG-KBN-G   TO  W07-UTAGAIFLG-KBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-UTAGAIFLG-KBN-MAX
+               MOVE    SPA-GMN-UTAGAIFLG-KBNLST (IDX)
+                                       TO  W07-UTAGAIFLG-KBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-UTAGAIFLG-KBN-MAX
+                                       TO  W07-UTAGAIFLG-KBN-COUNT
+      *
+      *    コメント症状詳記区分初期設定（病名機能情報）
            MOVE    SPA-GMN-SJKBN-G    TO  W07-SJKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-SJKBN-MAX
@@ -9958,6 +10045,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "4007"
                    MOVE    "詳記区分初期表示がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "4008"
+                   MOVE    "疑いフラグ設定区分がありません。"
+                                                       TO  SPA-ERRMSG
       *        会計照会機能情報
                WHEN    "5001"
                    MOVE    "全科の表示順区分がありません。"
@@ -10359,6 +10449,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SYOKBN_DSPKBN"   TO   MCP-WIDGET
                WHEN    506
                    MOVE  "SJKBN"           TO   MCP-WIDGET
+               WHEN    507
+                   MOVE  "UTAGAIFLG_KBN"   TO   MCP-WIDGET
       *会計照会情報
                WHEN    600
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
@@ -10704,6 +10796,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SRYKA_DSPKBN"
                    MOVE    505             TO  SPA-GMN-CUR
                WHEN    "SYOKBN_DSPKBN"
+                   MOVE    507             TO  SPA-GMN-CUR
+               WHEN    "UTAGAIFLG_KBN"
                    MOVE    506             TO  SPA-GMN-CUR
                WHEN    "SJKBN"
                    MOVE    999             TO  SPA-GMN-CUR

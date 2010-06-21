@@ -250,6 +250,8 @@
       *  04.05.06    NACL-藤原    09/07/22  照会画面からの遷移対応
       *                                     渡された病名を表示
       *  04.05.07    NACL-藤原    09/11/11  病名の入力順対応を中止
+      *
+      *  04.06.01    NACL-藤原    10/06/16  疑いフラグ設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1168,7 +1170,6 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            END-IF
            MOVE    SYS-2005-SYUBYOHENFLG
                                        TO  SPA-C02-2005-SYUBYOHENFLG
-      *
       *    
            MOVE    SPACE           TO  SYSKANRI-REC
            INITIALIZE                  SYSKANRI-REC
@@ -1221,6 +1222,12 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            END-IF
            MOVE    SYS-1042-MSG4-DSPKBN
                                        TO  SPA-C02-1042-MSG4-DSPKBN
+           IF      SYS-1042-UTAGAIFLG-KBN
+                                    =   SPACE
+               MOVE    "0"              TO  SYS-1042-UTAGAIFLG-KBN
+           END-IF
+           MOVE    SYS-1042-UTAGAIFLG-KBN
+                                        TO  SPA-C02-1042-UTAGAIFLG-KBN
       *
       *    旧総合病院の場合は全科表示はなしとする
            IF      SYS-1042-SRYKA-DSPKBN =   SPACE
@@ -4905,6 +4912,11 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
       **** MOVE    WRK-BYOMEI          TO  SPA-GMN-C02-BYOMEI
       *
            IF      WRK-BYOMEI          NOT =   SPA-GMN-C02-BYOMEI
+      *      疑いフラグ設定区分による初期化
+             IF      SPA-C02-1042-UTAGAIFLG-KBN
+                                           =   "9"
+                 MOVE    SPACE                 TO  SPA-GMN-C02-UTAGAIFLG
+             END-IF 
       *      疑いフラグ編集
              PERFORM VARYING IDX FROM    1   BY  1
                      UNTIL   IDX >       21
@@ -6541,7 +6553,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-GMN-C02-BSRYKA-G   TO  C02-BSRYKA
            PERFORM 41019-BSRYKA-CHK-SEC
            IF      SPA-ERRCD           NOT =   SPACE         
-               GO  TO  450-TOUROKU-EXT
+               GO  TO  440-SAKUJYO-GID-EXT
            END-IF
       *
            MOVE    "0101"             TO  SPA-CIDCD4
