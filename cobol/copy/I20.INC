@@ -90,6 +90,7 @@
                     06  I20-TNAME      PIC X(30).
                     06  I20-TSEX       PIC X(2).
                     06  I20-TAGE       PIC X(8).
+                    06  I20-THKN       PIC X(50).
                     06  I20-TBTUNAME   PIC X(20).
                     06  I20-TBRMNUM    PIC X(8).
                     06  I20-TNYUINYMD  PIC X(9).

@@ -112,6 +112,7 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-I001                PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-PTNYUINRRK          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -165,6 +166,7 @@
            03  WRK-ENCODING            PIC X(01).
            03  WRK-ENCODING9           REDEFINES WRK-ENCODING
                                        PIC 9(01).
+           03  WRK-HKNMEI              PIC X(50).
       *
        01  CSV-EDIT-AREA.
            03  CSV-NO                  PIC Z(9)9.
@@ -194,6 +196,10 @@
            03  CSV-POST                PIC X(07).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-JYUSYO              PIC X(400).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-KANANAME            PIC X(100).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-HKNMEI              PIC X(50).
       * 
        01  CONST-AREA.
            03  CONST-FORMID            PIC X(20)   VALUE  "HCM40.red".
@@ -230,6 +236,9 @@
       *    入院患者検索結果一覧
            COPY    "HCM40.INC".
       *
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -259,6 +268,12 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
+      *
+      *    カナチェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
+      *    保険組合せ取得処理
+           COPY    "CPORCSHKNSET.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -412,6 +427,8 @@
            PERFORM VARYING CNT-KNS     FROM    1   BY  1
                    UNTIL ( CNT-KNS     >   WRK-PROC-KNS )
                    OR    ( FLG-I001    =   1 )
+      *
+               PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
       *
                IF          WKBI201-PROC-FLG    =  ZERO
       *            ＣＳＶ編集処理
@@ -674,6 +691,18 @@
       *
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
       *
+           MOVE    I001-KANANAME   TO  CSV-KANANAME
+      *
+      *    保険組合せ
+           PERFORM 800-ORCSHKNSET-SEC
+           MOVE    WRK-HKNMEI      TO  CSV-HKNMEI
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    CSV-HKNMEI      TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT
+                                   TO  CSV-HKNMEI
+      *
            MOVE    CSV-EDIT-AREA   TO  CSV-REC
       *
            WRITE   CSV-REC
@@ -723,6 +752,17 @@
            PERFORM 900-AGE-EDIT-SEC
            MOVE    WRK-AGE-Z       TO  HCM40-AGEZ(CNT-LINE)
            MOVE    WRK-AGE-MEI     TO  HCM40-AGEMEI(CNT-LINE)
+      *
+      *    保険組合せ
+           PERFORM 800-ORCSHKNSET-SEC
+           MOVE    WRK-HKNMEI      TO  HCM40-HKNMEI(CNT-LINE)
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    HCM40-HKNMEI(CNT-LINE)
+                                   TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT
+                                   TO  HCM40-HKNMEI(CNT-LINE)
       *
       *    病棟名称
            MOVE    SPACE           TO  SYS-5001-REC
@@ -876,6 +916,39 @@
            END-IF
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ編集サブ呼出処理
+      *****************************************************************
+       800-ORCSHKNSET-SEC              SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HKNMEI
+      *
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  SPA-SRYYMD
+           MOVE    PTNYUINRRK-NYUINKA
+                                   TO  SPA-SRYKA
+           MOVE    "1"             TO  SPA-NYUGAIKBN
+           MOVE    I001-PTID       TO  SPA-PTID
+           MOVE    I001-BIRTHDAY   TO  SPA-BIRTHDAY
+           MOVE    PTNYUINRRK-HKNCOMBINUM
+                                   TO  SPA-HKNCOMBINUM
+           MOVE    "1"             TO  ORCSHKN-KBN
+           CALL    "ORCSHKNSET"        USING   SPA-AREA
+                                               ORCSHKNSETAREA
+           IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
+               INITIALIZE              ORCSHKNSETAREA
+           END-IF
+      *
+           IF    ( ORCSHKN-IDX    >=   1 )
+            AND  ( ORCSHKN-IDX    <=   ORCSHKN-HKN-MAX )
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (ORCSHKN-IDX)
+                                   TO  WRK-HKNMEI
+           END-IF
+      *
+           .
+       800-ORCSHKNSET-EXT.
            EXIT.
       *****************************************************************
       *    年齢編集処理
@@ -1149,6 +1222,36 @@
       *
            .
        900-JOB-STEP-END-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者入院履歴情報検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO   FLG-PTNYUINRRK
+      *
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM        TO   PTNYUINRRK-HOSPNUM
+           MOVE    I001-PTID          TO   PTNYUINRRK-PTID
+           MOVE    I001-RRKNUM        TO   PTNYUINRRK-RRKNUM
+           MOVE    I001-RRKEDANUM-MAX TO   PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC     TO   MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"   TO   MCP-TABLE
+           MOVE    "key"              TO   MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNYUINRRK-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　接続処理

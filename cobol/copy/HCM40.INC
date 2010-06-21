@@ -13,6 +13,7 @@
               03  HCM40-SEX   PIC X(2).
               03  HCM40-AGEZ  PIC X(4).
               03  HCM40-AGEMEI    PIC X(4).
+              03  HCM40-HKNMEI    PIC X(40).
               03  HCM40-TANNAME   PIC X(10).
               03  HCM40-BRMNUM    PIC X(6).
               03  HCM40-NYUINYMD  PIC X(9).

@@ -78,6 +78,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-I001            PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-PTNYUINRRK      PIC 9(01).
       *     
            03  FLG-CHK             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
@@ -257,6 +258,9 @@
                VALUE   "ORCBI201".
            03  CONST-UTF8              PIC 9(01)   VALUE 2.
       *
+           COPY    "COMMON-SPA"    REPLACING  //SPA-//
+                                   BY         //WRK-SPA-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -286,6 +290,10 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
+      *
+      *    入院履歴
+       01  PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -330,6 +338,9 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
+      *
+      *    保険組合せ取得処理
+           COPY    "CPORCSHKNSET.INC".
       *     
            COPY    "ORCA-DBMETA".
       *
@@ -792,7 +803,7 @@
                MOVE    MCPDATA-REC           TO  SYS-5001-REC
                MOVE    SYS-5001-BTU-NUM      TO
                                              SPA-GMN-BTUNUML   (IDX)
-               MOVE    SYS-5001-BTU-NAME     TO
+               MOVE    SYS-5001-BTU-TANNAME  TO
                                              SPA-GMN-BTUNUMMEIL(IDX)
       *
                MOVE    IDX                   TO  SPA-GMN-BTUNUM-MAX  
@@ -2887,6 +2898,8 @@
       *****************************************************************
        4502-LIST-HENSYU-SEC        SECTION.
       *
+           PERFORM 900-PTNYUINRRK-KEY-SEL-SEC
+      *
            MOVE    1               TO  FLG-GMN-INIT
       *
            MOVE    IDX             TO  SPA-GMN-MAX
@@ -2937,6 +2950,13 @@
            END-IF
       *
            MOVE    WRK-AGE-G           TO  SPA-GMN-TAGE (IDX)
+      *
+           PERFORM 800-ORCSHKNSET-SEC
+           IF    ( ORCSHKN-IDX    >=   1 )
+            AND  ( ORCSHKN-IDX    <=   ORCSHKN-HKN-MAX )
+               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (ORCSHKN-IDX)
+                                       TO  SPA-GMN-THKN (IDX)
+           END-IF
       *
            PERFORM VARYING IDY FROM   1   BY  1
                    UNTIL   IDY >      SPA-GMN-BTUNUM-MAX
@@ -3467,6 +3487,7 @@
                  MOVE    SPA-GMN-TNAME     (IDX) TO  I20-TNAME     (IDX)
                  MOVE    SPA-GMN-TSEX      (IDX) TO  I20-TSEX      (IDX)
                  MOVE    SPA-GMN-TAGE      (IDX) TO  I20-TAGE      (IDX)
+                 MOVE    SPA-GMN-THKN      (IDX) TO  I20-THKN      (IDX)
                  MOVE    SPA-GMN-TBTUNAME  (IDX) TO  I20-TBTUNAME  (IDX) 
                  MOVE    SPA-GMN-TBRMNUM   (IDX) TO  I20-TBRMNUM   (IDX) 
                  MOVE    SPA-GMN-TNYUINYMD (IDX) TO  I20-TNYUINYMD (IDX)
@@ -3763,6 +3784,33 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
+      *    保険組合せ編集サブ呼出処理
+      *****************************************************************
+       800-ORCSHKNSET-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSHKNSETAREA
+           MOVE    SPA-AREA        TO  WRK-SPA-AREA
+      *
+           MOVE    PTNYUINRRK-TENNYUYMD
+                                   TO  WRK-SPA-SRYYMD
+           MOVE    PTNYUINRRK-NYUINKA
+                                   TO  WRK-SPA-SRYKA
+           MOVE    "1"             TO  WRK-SPA-NYUGAIKBN
+           MOVE    I001-PTID       TO  WRK-SPA-PTID
+           MOVE    I001-BIRTHDAY   TO  WRK-SPA-BIRTHDAY
+           MOVE    PTNYUINRRK-HKNCOMBINUM
+                                   TO  WRK-SPA-HKNCOMBINUM
+           MOVE    "1"             TO  ORCSHKN-KBN
+           CALL    "ORCSHKNSET"        USING   WRK-SPA-AREA
+                                               ORCSHKNSETAREA
+           IF    ( ORCSHKN-ERRCD   NOT =   ZERO )
+               INITIALIZE              ORCSHKNSETAREA
+           END-IF
+      *
+           .
+       800-ORCSHKNSET-EXT.
+           EXIT.
+      *****************************************************************
       *    システム管理読込（主キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
@@ -3941,6 +3989,95 @@
       *
            .
        900-JOBKANRI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者入院履歴情報検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO   FLG-PTNYUINRRK
+      *
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM        TO   PTNYUINRRK-HOSPNUM
+           MOVE    I001-PTID          TO   PTNYUINRRK-PTID
+           MOVE    I001-RRKNUM        TO   PTNYUINRRK-RRKNUM
+           MOVE    I001-RRKEDANUM-MAX TO   PTNYUINRRK-RRKEDANUM
+           MOVE    PTNYUINRRK-REC     TO   MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"   TO   MCP-TABLE
+           MOVE    "key"              TO   MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTNYUINRRK-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHも行う)
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       911-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理

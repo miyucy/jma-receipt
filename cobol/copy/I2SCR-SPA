@@ -137,6 +137,7 @@
                            11  SPA-GMN-TNAME       PIC X(50).
                            11  SPA-GMN-TSEX        PIC X(02).
                            11  SPA-GMN-TAGE        PIC X(08).
+                           11  SPA-GMN-THKN        PIC X(50).
                            11  SPA-GMN-TBTUNAME    PIC X(20).
                            11  SPA-GMN-TBRMNUM     PIC X(08).
                            11  SPA-GMN-TNYUINYMD   PIC X(09).
