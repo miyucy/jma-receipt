@@ -215,6 +215,8 @@
            03  WRK-TOKKICD.
                05  WRK-TOKKICD9         PIC 9(02).
       *
+       01  SEL-AREA.
+           03  SEL-SRYCD                PIC X(09).
       *
        01  WRK-WIDGET-AREA.
            03  WRK-WIDGET                          PIC X(20).
@@ -4883,6 +4885,10 @@
        41201-SRYACT-HENSYU-SEC            SECTION.
       * 
            MOVE    TNS-SRYCD           TO  SPA-GMN-Q01-TSRYCD(IDX1)
+           MOVE    TNS-YUKOSTYMD       TO  SPA-GMN-Q01-TSRYCD-YUKOSTYMD
+                                                                  (IDX1)
+           MOVE    TNS-YUKOEDYMD       TO  SPA-GMN-Q01-TSRYCD-YUKOEDYMD
+                                                                  (IDX1)
       * 
            IF     (TNS-ROUTEKKBN       =   2   )
                STRING  "［老］"
@@ -5015,6 +5021,10 @@
                                        +   IDX1
       *
            MOVE    SPACE               TO  SPA-NAI-Q01-SRYCD (IDX1)
+           MOVE    SPACE               TO  SPA-NAI-Q01-SRYCD-YUKOSTYMD
+                                                                 (IDX1)
+           MOVE    SPACE               TO  SPA-NAI-Q01-SRYCD-YUKOEDYMD
+                                                                 (IDX1)
            MOVE    SPACE               TO  SPA-GMN-Q01-SRYACT (IDX1)
       *
       *    診療行為検索画面へ遷移
@@ -5066,9 +5076,15 @@
                IF  ( FLG-TENSU     =   ZERO )
                    CONTINUE
                ELSE
-                   MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
-                   MOVE    "0005"      TO  SPA-ERRCD
-                   GO  TO  4121-SRYCD-CHK-EXT
+                   MOVE    ICD-SRYCD   TO  SEL-SRYCD
+                   PERFORM 900-TENSU-KEY24-SEL-SEC
+                   IF  ( FLG-TENSU     =   ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+                       MOVE    "0005"      TO  SPA-ERRCD
+                       GO  TO  4121-SRYCD-CHK-EXT
+                   END-IF
                END-IF
            ELSE
                IF    ( WRK-MOJI              =   9 )
@@ -5084,9 +5100,16 @@
                    IF  ( FLG-TENSU     =   ZERO )
                        CONTINUE
                    ELSE
-                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
-                       MOVE    "0005"      TO  SPA-ERRCD
-                       GO  TO  4121-SRYCD-CHK-EXT
+                       MOVE    WRK-SRYCD   TO  SEL-SRYCD
+                       DISPLAY "SEL-SRYCD[" SEL-SRYCD "]"
+                       PERFORM 900-TENSU-KEY24-SEL-SEC
+                       IF  ( FLG-TENSU     =   ZERO )
+                           CONTINUE
+                       ELSE
+                           MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+                           MOVE    "0005"      TO  SPA-ERRCD
+                           GO  TO  4121-SRYCD-CHK-EXT
+                       END-IF
                    END-IF
                ELSE
                    MOVE    IDX1            TO  IDXZ
@@ -5095,6 +5118,11 @@
                    GO  TO  4121-SRYCD-CHK-EXT
                END-IF
            END-IF
+      *
+           MOVE    TNS-YUKOSTYMD       TO  SPA-NAI-Q01-SRYCD-YUKOSTYMD
+                                                              (IDX1)
+           MOVE    TNS-YUKOEDYMD       TO  SPA-NAI-Q01-SRYCD-YUKOEDYMD
+                                                              (IDX1)
       *
            MOVE    TNS-SRYCD           TO  SPA-NAI-Q01-SRYCD  (IDX1)
       *
@@ -5574,6 +5602,10 @@
                    MOVE    SPA-GMN-Q01-TSRYCD (IDX2)
                                            TO  SPA-GMN-Q01-SRYCD (IDX1)
                                                SPA-NAI-Q01-SRYCD (IDX1)
+                   MOVE    SPA-GMN-Q01-TSRYCD-YUKOSTYMD (IDX2)
+                               TO  SPA-NAI-Q01-SRYCD-YUKOSTYMD (IDX1)
+                   MOVE    SPA-GMN-Q01-TSRYCD-YUKOEDYMD (IDX2)
+                               TO  SPA-NAI-Q01-SRYCD-YUKOEDYMD (IDX1)
                    INITIALIZE          TNS-TENSU-REC
                    MOVE   SPA-NAI-Q01-SRYCD (IDX1)
                                    TO  TNS-SRYCD
@@ -7918,8 +7950,19 @@
                MOVE    SPA-GMN-Q01-SRYCD   (IDX1)
                                            TO  Q01-SRYCD(IDX1)
       *        診療行為
-               MOVE    SPA-GMN-Q01-SRYACT  (IDX1)
+               IF    ( SPA-NAI-Q01-SRYCD (IDX1)    NOT =   SPACE )
+                   IF    ( SPA-SYSYMD   <= SPA-NAI-Q01-SRYCD-YUKOEDYMD
+                                                                 (IDX1))
+                       MOVE    SPA-GMN-Q01-SRYACT  (IDX1)
                                            TO  Q01-SRYACT(IDX1)
+                   ELSE
+                       STRING  "廃止："            DELIMITED BY  SIZE
+                               SPA-GMN-Q01-SRYACT  (IDX1)
+                                                   DELIMITED BY  SPACE
+                       INTO    Q01-SRYACT(IDX1)
+                       END-STRING
+                   END-IF
+               END-IF
            END-PERFORM
       *
       *    病名リスト内件数
@@ -11142,6 +11185,45 @@
            .
       *
        900-TENSU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスター読込処理
+      *****************************************************************
+       900-TENSU-KEY24-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSU
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    SEL-SRYCD           TO  TNS-SRYCD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             =   ZERO )
+               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+           ELSE
+               MOVE    1               TO  FLG-TENSU
+               INITIALIZE                  TNS-TENSU-REC
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *!
+      *    検査正式名称
+           IF    ( SPA-FORMALFLG           =   "1" )
+               IF    ( TNS-SRYCD(1:1)      =   "1")
+                AND  ( TNS-SRYKBN          =   "60")
+                AND  ( TNS-FORMALNAME  NOT =   SPACE )
+                AND  ( TNS-FORMALNAME  NOT =   TNS-NAME )
+                   MOVE    TNS-FORMALNAME  TO  TNS-NAME
+               END-IF
+           END-IF
+      *
+           .
+      *
+       900-TENSU-KEY24-SEL-EXT.
            EXIT.
       *
       *****************************************************************

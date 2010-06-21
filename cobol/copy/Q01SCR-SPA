@@ -376,6 +376,11 @@
                                13  SPA-GMN-Q01-SRYACT-SEL  PIC 9(01).
                                13  SPA-GMN-Q01-SRYACT-G
                                                        OCCURS  200.
+      *                            铜跟袋粗∈谰务∷
+                                   15  SPA-GMN-Q01-TSRYCD-YUKOSTYMD
+                                                       PIC X(08).
+                                   15  SPA-GMN-Q01-TSRYCD-YUKOEDYMD
+                                                       PIC X(08).
       *                            乖百コ〖ド
                                    15  SPA-GMN-Q01-TSRYCD
                                                        PIC X(09).
@@ -438,8 +443,12 @@
                            11  SPA-NAI-Q01-EDTENKIYMD  PIC X(08).
                            11  SPA-NAI-Q01-BYOMEI-OLD  PIC X(80)
                                                        OCCURS  5.
-                           11  SPA-NAI-Q01-SRYCD       PIC X(09)
-                                                       OCCURS  5.
+                           11  SPA-NAI-Q01-SRYCD-OCC   OCCURS  5.
+                               13  SPA-NAI-Q01-SRYCD-YUKOSTYMD
+                                                       PIC X(08).
+                               13  SPA-NAI-Q01-SRYCD-YUKOEDYMD
+                                                       PIC X(08).
+                               13  SPA-NAI-Q01-SRYCD   PIC X(09).
       *                事び界
                        09  SPA-NAI-Q01-NARABI-AREA.
                            11  SPA-NAI-Q01-NARABI-DMY  PIC X(01).

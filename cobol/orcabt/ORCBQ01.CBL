@@ -205,6 +205,8 @@
            03  CSV-POST                PIC X(07).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-JYUSYO              PIC X(400).
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CSV-KANANAME            PIC X(100).
       * 
        01  CONST-AREA.
            03  CONST-FORMID            PIC X(20)   VALUE  "HCM28.red".
@@ -649,6 +651,8 @@
            PERFORM 900-ADRS-EDIT-SEC
       *
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
+      *
+           MOVE    PTINF-KANANAME  TO  CSV-KANANAME
       *
            MOVE    CSV-EDIT-AREA   TO  CSV-REC
       *
