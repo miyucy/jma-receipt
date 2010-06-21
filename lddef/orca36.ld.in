@@ -35,6 +35,13 @@ db	{
 	tbl_jobkanri;
 	view_I001;
 	tbl_file_info;
+	tbl_hkncombi;
+	tbl_pthkninf;
+	tbl_ptrsiinf;
+	tbl_ptkohinf;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_ptnyuinrrk;
 };
 
 /* #include "orcadb.inc" */
