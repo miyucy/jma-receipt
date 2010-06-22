@@ -123,6 +123,7 @@
            03  WRK-OKUSURI-PG       PIC X(12).
       *
            03  WRK-DENPNUM         PIC 9(07).
+           03  WRK-JYU-DENPNUM     PIC 9(07).
       *
            03  WRK-DRCD            PIC X(05).
       *
@@ -133,6 +134,8 @@
       *    ドクター毎
            03  TBL-DATA-OCC            OCCURS   10.
                05  TBL-DRCD            PIC X(05).
+               05  TBL-DENPNUM         PIC 9(07)
+                                       OCCURS   10.
                05  TBL-MAX             PIC 9(03).
       *        処方
                05  TBL-DRTBL-OCC       OCCURS   100.
@@ -387,6 +390,18 @@
            MOVE    WRK-CNT             TO  ORCHC62-CNT
       *    ドクター
            MOVE    TBL-DRCD (IDX-T1)   TO  ORCHC62-DRCD
+      *    伝票番号
+           IF     (ORCSCH62-KBN        =   "1"
+                                       OR  "2" )
+              AND (ORCSCH62-DENPNUM    NOT =   ZERO )
+               MOVE    ORCSCH62-DENPNUM    TO  ORCHC62-DENPNUM
+               PERFORM VARYING     IDX-T2  FROM    1   BY  1
+                       UNTIL      (IDX-T2      >   10 )
+                   MOVE    TBL-DENPNUM (IDX-T1 IDX-T2)
+                                       TO  ORCHC62-GRP-DENPNUM(IDX-T2)
+               END-PERFORM
+           END-IF
+      *
       *    投薬内容
            PERFORM VARYING     IDX-T2  FROM    1   BY  1
                    UNTIL      (IDX-T2      >   100 )
@@ -446,16 +461,17 @@
                                                    (IDX-B IDX-T3)
                END-PERFORM
            END-PERFORM
+      *
       *TEST
-      *    DISPLAY "ORCHC62-DRCD:" ORCHC62-DRCD
-      *    DISPLAY "ORCHC62-ZAI-MAX:" ORCHC62-ZAI-MAX
-      *    PERFORM VARYING    IDX   FROM    1  BY  1
-      *            UNTIL      IDX   >  ORCHC62-ZAI-MAX
-      *      DISPLAY "ORCHC62-ZAIKAIKEI:" ORCHC62-ZAIKAIKEI (IDX)
-      *        ",SRYKBN:" ORCHC62-SRYKBN (IDX)
-      *        ",SRYSYUKBN:" ORCHC62-SRYSYUKBN (IDX)
-      *        ",ZAINUM:" ORCHC62-ZAINUM (IDX)
-      *       PERFORM VARYING    IDY   FROM    1  BY  1
+           DISPLAY "ORCHC62-DRCD:" ORCHC62-DRCD
+             ",ORCHC62-CNT:" ORCHC62-CNT
+           DISPLAY "ORCHC62-DENPNUM:" ORCHC62-DENPNUM
+           PERFORM VARYING    IDY   FROM    1  BY  1
+                   UNTIL      IDY   >  10 
+            DISPLAY "ORCHC62-GRP-DENPNUM "  IDY 
+                       ":" ORCHC62-GRP-DENPNUM(IDY)
+           END-PERFORM
+      *   PERFORM VARYING    IDY   FROM    1  BY  1
       *            UNTIL      IDY   >  50 
       *       IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
       *      DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
@@ -463,7 +479,6 @@
       *              ",KANSURYO:" ORCHC62-KANSURYO (IDX IDY)
       *            ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
       *       END-IF
-      *        END-PERFORM 
       *    END-PERFORM 
       *TEST
       *    印刷処理
@@ -676,6 +691,8 @@
       *    処方内容編集処理
       *****************************************************************
        100211-JYURRK-CHK-SEC          SECTION.
+      *
+           MOVE    JYURRK-DENPNUM      TO  WRK-JYU-DENPNUM
       *
            PERFORM VARYING     IDX-JYU     FROM    1   BY  1
                    UNTIL      (IDX-JYU         >   15  )   OR
@@ -929,6 +946,19 @@
                    END-IF
                END-IF
            END-PERFORM
+      *    伝票番号
+           IF      WRK-JYU-DENPNUM NOT =   ZERO
+               PERFORM VARYING     IDXB    FROM    1   BY  1
+                       UNTIL      (IDXB    >   10     )
+                   IF     (TBL-DENPNUM (IDX-T1 IDXB)   =   ZERO )
+                   OR     (WRK-JYU-DENPNUM     =   TBL-DENPNUM
+                                                      (IDX-T1 IDXB))
+                       MOVE    WRK-JYU-DENPNUM TO  TBL-DENPNUM
+                                                       (IDX-T1 IDXB)
+                       MOVE    10              TO  IDXB
+                    END-IF
+               END-PERFORM
+           END-IF
            .
        2005-TBL-DRCD-EXT.
            EXIT.
