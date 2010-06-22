@@ -429,6 +429,15 @@
                05  WRK-MMS2        PIC 9(02).
                05  WRK-DDS2        PIC 9(02).
       *
+      *    Ç¯ÎðÉ½¼¨
+           03  WRK-NENREI-G.
+               05  WRK-NENREI-Z    PIC ZZ9.
+               05  WRK-NENREI-MEI  PIC X(04).
+           03  WRK-NENREI-GR       REDEFINES   WRK-NENREI-G.
+               05  WRK-NENREI-ZN   PIC Z9.
+               05  WRK-NENREI-MEIN PIC X(04).
+               05  FILLER          PIC X(01).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -3023,6 +3032,7 @@
            MOVE    SPA-GMN-SEX         TO  I41-SEX.
            MOVE    SPA-GMN-SRYYM       TO  I41-SRYYM.
            MOVE    SPA-GMN-BIRTHDAYW   TO  I41-BIRTHDAY.
+           MOVE    SPA-GMN-AGE         TO  I41-AGE.
            MOVE    SPA-GMN-SRYKA-IG-41 TO  I41-NYUINKA.
            MOVE    SPA-GMN-IJYOU91     TO  I41-IJYOU91.
            MOVE    SPA-GMN-IJYOU180    TO  I41-IJYOU180.
@@ -3370,6 +3380,26 @@
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD.
            PERFORM 41012-SEIWA-HEN-SEC.
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYW.
+      *
+      *    Ç¯Îð·×»»
+           INITIALIZE                ORCSAGECHKAREA
+           MOVE    SPA-HOSPNUM       TO  AGECHK-HOSPNUM
+           MOVE    SPA-GMN-PTID      TO  AGECHK-PTID
+           MOVE    SPA-SYSYMD        TO  AGECHK-SRYYMD
+           MOVE    PTINF-BIRTHDAY    TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"      USING
+                                     ORCSAGECHKAREA
+                                     SPA-AREA
+           MOVE    SPACE             TO  WRK-NENREI-G
+           IF      AGECHK-NENREI2-YY   =   ZERO
+                MOVE    AGECHK-NENREI2-MM   TO  WRK-NENREI-ZN
+                MOVE    "¥ö·î"              TO  WRK-NENREI-MEIN
+           ELSE
+                MOVE    AGECHK-NENREI2-YY   TO  WRK-NENREI-Z
+                MOVE    "ºÍ"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G      TO  SPA-GMN-AGE
+      *
       *
       *    ÇÓÂ¾À©¸æ½èÍý
            PERFORM 990-LOCK-IN-SEC.

@@ -126,3 +126,5 @@
               05  I41-VALUE       PIC X(20).
             04  I41-LASTNYUIN.
               05  I41-VALUE       PIC X(40).
+          03  I41-AGE.
+            04  I41-VALUE         PIC X(9).

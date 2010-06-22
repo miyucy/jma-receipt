@@ -49,6 +49,8 @@
                05  SPA-GMN-SEX                 PIC X(02).
       *患者生年月日
                05  SPA-GMN-BIRTHDAY            PIC X(08).
+      *患者年齢
+               05  SPA-GMN-AGE                 PIC X(09).
       *患者生年月日（和暦編集）
                05  SPA-GMN-BIRTHDAYW           PIC X(09).
       *入院情報

@@ -255,5 +255,8 @@ I41	{
 			style   varchar(20);
 			value	varchar(40);
 		};
+		AGE	{
+			value	varchar(9);
+		};
 	};
 };
