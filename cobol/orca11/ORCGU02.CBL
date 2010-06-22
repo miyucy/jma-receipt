@@ -598,9 +598,11 @@
                END-IF
       *
                EVALUATE    WRK-MOTOPG
+      *        予約、メモ登録
                WHEN    "Y01"
                WHEN    "XF01"
-      *        予約、メモ登録
+      *        選択一覧
+               WHEN   "U012"
       *            受付編集
                    IF      SPA-GMN-SELNUM      =   ZERO
                        MOVE    ZERO                TO  SPA-NAI-SYORI1
