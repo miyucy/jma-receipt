@@ -3258,7 +3258,7 @@
       *    カタカナのみの判定
            MOVE    ZERO                TO  FLG-KANA
            PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL      (IDX     >    100 )  OR
+                   UNTIL      (IDX     >=   50  )  OR
                               (SPA-GMN-KANANAME(IDX:1) =  SPACE)
                IF     (SPA-GMN-KANANAME (IDX:2)
                                        =   "　" 
