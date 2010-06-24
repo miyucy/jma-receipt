@@ -150,7 +150,7 @@
                05  WRK-THH         PIC 9(02).
                05  WRK-TSS         PIC 9(02).
            03  FLG-TIME            PIC 9(01).
-     *
+      *
            03  WRK-DRCD           PIC X(04).
       *
            03  WRK-HKENSUU.
@@ -511,6 +511,17 @@
                        MOVE    SPA-BIRTHDAYW      TO  SPA-GMN-BIRTHDAYH
                        MOVE    SPA-NAME           TO  SPA-GMN-YYKNAME
                    END-IF
+      *TEST
+               WHEN    "K02"
+               WHEN    "U02"
+      *            受付・診療行為より選択後
+                   IF     (SPA-PTID        NOT =   ZERO   )
+                   AND    (SYS-1045-YYKPTNUM-KBN   =   "1"  )
+      *                 患者番号連動編集処理
+                       PERFORM 3101-PTNUM-AUTO-SEC
+                   END-IF
+                   INITIALIZE                  SPA-KYOTUKEY
+      *
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-GMN-SELBAN
@@ -526,6 +537,56 @@
       *
            .
        300-INIT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号連動編集処理
+      *****************************************************************
+       3101-PTNUM-AUTO-SEC              SECTION.
+      *
+           MOVE    SPA-PTID            TO  SPA-GMN-PTID
+           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
+           MOVE    SPA-NAME            TO  SPA-GMN-NAME
+           MOVE    SPA-SEX             TO  SPA-GMN-SEX
+           MOVE    SPA-BIRTHDAYW       TO  SPA-GMN-BIRTHDAYH
+           MOVE    SPA-NAME            TO  SPA-GMN-YYKNAME
+      *    診療科
+           IF     (SPA-SRYKA           =   SPACE
+                                       OR  ZERO      )
+             OR   (SPA-SRYKA           =   SPA-GMN-SRYKA )
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY     FROM   1   BY  1
+                       UNTIL  (IDY     >   SPA-SRYKA-MAX  )
+                   IF      SPA-SRYKA           =   SPA-GMN-SRYKACDL(IDY)
+                       MOVE    SPA-GMN-SRYKALST (IDY)
+                                               TO  SPA-GMN-SRYKA-G
+                       MOVE    SPA-SRYKA-MAX   TO  IDY
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    ドクター
+           IF     (SPA-DRCD(2:4)       =   SPACE
+                                       OR  ZERO   )
+             OR   (SPA-DRCD(2:4)       =   SPA-GMN-DRCD)
+               CONTINUE
+           ELSE
+               MOVE    ZERO               TO  FLG-HENFLG
+               PERFORM VARYING IDY     FROM   1   BY  1
+                       UNTIL  (IDY     >      SPA-DRCD-MAX  )  OR
+                              (FLG-HENFLG     =   1  )
+                   IF      SPA-DRCD(2:4)   =   SPA-GMN-DRCDLST(IDY)(1:4)
+                       MOVE    1               TO  FLG-HENFLG
+                   END-IF
+               END-PERFORM
+               IF      FLG-HENFLG          =   1
+                   MOVE    SPA-DRCD(2:4)       TO  Y01-DRNAME
+                   PERFORM 41012-DRNAME-SEC
+               END-IF
+           END-IF
+      *
+           .
+       3101-PTNUM-AUTO-EXT.
            EXIT.
       *
       *****************************************************************

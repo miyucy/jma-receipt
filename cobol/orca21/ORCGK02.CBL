@@ -7212,8 +7212,8 @@
                    MOVE    1                   TO  FLG-IN1
                END-IF
                IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
-                                                   =   "09500" OR
-                                                       "09600" )
+                                               =   "09500" OR
+                                                   "09600" )
       *            ¼«Èñ
                    IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
                        MOVE    1                   TO  FLG-IN1
@@ -10349,7 +10349,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "K02"               TO  SPA-MOTOPG3
            MOVE    "Y01"               TO  SPA-SAKIPG
       *
-           MOVE    SPACE               TO  SPA-KYOTUKEY
+      *    MOVE    SPACE               TO  SPA-KYOTUKEY
+      *    INITIALIZE                      SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE

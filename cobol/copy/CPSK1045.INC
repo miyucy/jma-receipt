@@ -46,10 +46,12 @@
                05  SYS-1045-YYKMAXCNT   PIC  9(02).
       *予約票発行区分
                05  SYS-1045-YYKHYO-KBN  PIC  X(01).
-      *予約受付連動区分
+      *予約患者番号連動区分
+               05  SYS-1045-YYKPTNUM-KBN   PIC  X(01).
+      *予約受付番号連動区分
                05  SYS-1045-YYKUKE-KBN  PIC  X(01).
       *予備
-               05                       PIC  X(490).
+               05                       PIC  X(489).
       *端末ＩＤ
            03  SYS-1045-TERMID          PIC  X(16).
       *オペーレータＩＤ

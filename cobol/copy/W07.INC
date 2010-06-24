@@ -616,6 +616,12 @@
                     06  W07-YYKHYO-KBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-YYKHYO-KBN-ITEM
                             PIC X(20)   OCCURS  5 TIMES.
+                  05  W07-YYKPTNUM-KBN-COMB.
+                    06  W07-YYKPTNUM-KBN.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-YYKPTNUM-KBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YYKPTNUM-KBN-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                   05  W07-YYKUKE-KBN-COMB.
                     06  W07-YYKUKE-KBN.
                       07  W07-VALUE   PIC X(40).

@@ -4061,7 +4061,19 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    "U02"               TO  SPA-MOTOPG
            MOVE    "Y01"               TO  SPA-SAKIPG
            MOVE    "U02"               TO  SPA-MOTOPG3
+      *
            INITIALIZE                  SPA-KYOTUKEY
+           IF      SPA-GMN-PTID    NOT =   ZERO
+               MOVE    SPA-GMN-PTID        TO  SPA-PTID
+               MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+               MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+               MOVE    SPA-GMN-NAME        TO  SPA-NAME
+               MOVE    SPA-GMN-SEX         TO  SPA-SEX
+               MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
+               MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
+               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+           END-IF
+      *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
