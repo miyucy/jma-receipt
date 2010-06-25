@@ -2472,7 +2472,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            （転出以外の時）
                    IF     (NACCT-SRYYM(1:6)    =   WRK-RRK-YMD(1:6))
                      AND  (WRK-RRK-YMD(7:2)        NOT =   "01" )
-                     AND  (LNK-SCNYUACCT-SYORI-KBN NOT =   "8"  )
+      ****               異動処理時に回数ゼロの入院料カレンダーを
+      ****               削除しないように変更
+      ****               AND  (LNK-SCNYUACCT-SYORI-KBN NOT =   "8"  )
       *                異動取消で入院料の場合、削除
                        IF     (LNK-SCNYUACCT-SYORI-KBN =   "4"  )  AND
                               (NACCT-ZAISKBKBN         =   "1"
