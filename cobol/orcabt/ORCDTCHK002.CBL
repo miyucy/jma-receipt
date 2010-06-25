@@ -2743,7 +2743,10 @@
            MOVE    1               TO  FLG-TAISYO-SRY
       *
       *    薬剤の場合、院外処方の処理対象チェックを行う
-           IF    ( DCSRY-SRYCD (1:1)  =   "6" OR "S" )
+           EVALUATE    TRUE
+           WHEN  ( DCSRY-SRYSYUKBN     =   "213" OR "223" OR "233" )
+               CONTINUE
+           WHEN  ( DCSRY-SRYCD (1:1)  =   "6" OR "S" )
                EVALUATE    ORCBSD01-INGAIPROCKBN
       *        院外処方を含まない
                WHEN    ZERO
@@ -2772,19 +2775,12 @@
                        MOVE    ZERO    TO  FLG-TAISYO-SRY
                    END-IF
                END-EVALUATE
-           ELSE
-                       CONTINUE
-           END-IF
+           END-EVALUATE
       *
            IF    ( DCACCT-SRYKBN           =   "21" OR "22" OR "23" )
             AND  ( DCSRY-SRYSYUKBN(3:1)    NOT =   "3" )
             AND  ( DCACCT-ZAITEN           =   ZERO )
                MOVE                1       TO  FLG-INGAISYOHOU
-           END-IF
-      *
-      *    院内処方包括入力分はチェックの対象外とする
-           IF    ( DCSRY-SRYSYUKBN     =   "213" OR "223" OR "233" )
-                       MOVE    ZERO    TO  FLG-TAISYO-SRY
            END-IF
       *
            .
