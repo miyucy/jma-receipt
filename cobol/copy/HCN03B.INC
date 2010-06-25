@@ -3,7 +3,7 @@
             02  HCN03B-NYUINSTRYMD  PIC X(22).
             02  HCN03B-NYUINENDYMD  PIC X(22).
             02  HCN03B-HAKYMD   PIC X(22).
-            02  HCN03B-KNJNAMW  PIC X(20).
+            02  HCN03B-DKNJNAMW PIC X(20).
             02  HCN03B-KNJNO    PIC X(20).
             02  HCN03B-ROOM PIC X(50).
             02  HCN03B-HOKEN    PIC X(20).
@@ -45,3 +45,5 @@
             02  HCN03B-MEMO
                     PIC X(80)   OCCURS  10 TIMES.
             02  HCN03B-LBLFTNRATE   PIC X(2).
+            02  HCN03B-KANANAME PIC X(50).
+            02  HCN03B-KNJNAMW  PIC X(30).

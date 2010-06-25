@@ -3220,6 +3220,7 @@
                                        TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-NAI-O04-PTID    TO  WRK-SPA-PTID
            MOVE    SPA-GMN-O04-PTNUM   TO  WRK-SPA-PTNUM
+           MOVE    SPA-GMN-O04-KANANAME TO WRK-SPA-KANANAME
            MOVE    SPA-GMN-O04-NAME    TO  WRK-SPA-NAME
       *
            PERFORM 41111-PRINT-PG-SEC

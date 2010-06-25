@@ -59,3 +59,4 @@
             02  HCM03V02B-MEMO
                     PIC X(80)   OCCURS  10 TIMES.
             02  HCM03V02B-LBLFTNRATE    PIC X(2).
+            02  HCM03V02B-KANANAME  PIC X(50).

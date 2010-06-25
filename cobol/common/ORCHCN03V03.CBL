@@ -214,6 +214,8 @@
            03  TPARA-FTNKBN             PIC X(01).
            03  TPARA-ROOMKBN            PIC X(01).
            03  TPARA-HAKKOUBIKBN        PIC X(01).
+           03  TPARA-TEISEIKBN          PIC X(01).
+           03  TPARA-KANANAME           PIC X(01).
            03  TPARA-YUKOSTYMD          PIC X(08).
            03  TPARA-YUKOEDYMD          PIC X(08).
            03  TPARA-MEMO               PIC X(80) OCCURS 10.
@@ -479,6 +481,8 @@
            MOVE    "2"             TO  TPARA-FTNKBN
            MOVE    "1"             TO  TPARA-ROOMKBN
            MOVE    "0"             TO  TPARA-HAKKOUBIKBN
+           MOVE    "1"             TO  TPARA-TEISEIKBN
+           MOVE    "0"             TO  TPARA-KANANAME
            MOVE    "00000000"      TO  TPARA-YUKOSTYMD
            MOVE    "99999999"      TO  TPARA-YUKOEDYMD
       *
@@ -515,6 +519,20 @@
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA        =   "0" OR "1" )
                MOVE    WRK-PARA    TO  TPARA-HAKKOUBIKBN
+           END-IF
+      *
+      *    （訂正）表示
+           MOVE    "TEISEIKBN"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA        =   "0" OR "1" )
+               MOVE    WRK-PARA    TO  TPARA-TEISEIKBN
+           END-IF
+      *
+      *    カナ氏名
+           MOVE    "KANANAME"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA        =   "0" OR "1" )
+               MOVE    WRK-PARA    TO  TPARA-KANANAME
            END-IF
       *
       *    有効開始日
@@ -699,6 +717,13 @@
       *    患者番号
            MOVE    ORCHCN03-PTNUM (IDX-M)
                                        TO  HCN03-KNJNO
+      *
+      *    カナ氏名
+           IF    ( TPARA-KANANAME      =   "1" )
+               MOVE    PTINF-KANANAME
+                                       TO  HCN03-KANANAME
+           END-IF
+      *
       *    患者名称
            MOVE    PTINF-NAME
                                        TO  HCN03-KNJNAMW
@@ -1081,7 +1106,9 @@
       *        WHEN    1
       *            MOVE    "（再）"        TO  HCN03-MIDASHI
                WHEN    2
-                   MOVE    "（訂正）"      TO  HCN03-MIDASHI
+                   IF    ( TPARA-TEISEIKBN =   "1" )
+                       MOVE    "（訂正）"  TO  HCN03-MIDASHI
+                   END-IF
            END-EVALUATE
       *
       *    見出し
@@ -1207,6 +1234,7 @@
            MOVE    HCN03-NYUINSTRYMD       TO  HCN03V01-NYUINSTRYMD
            MOVE    HCN03-NYUINENDYMD       TO  HCN03V01-NYUINENDYMD
            MOVE    HCN03-HAKYMD            TO  HCN03V01-HAKYMD
+           MOVE    HCN03-KANANAME          TO  HCN03V01-KANANAME
            MOVE    HCN03-KNJNAMW           TO  HCN03V01-KNJNAMW
            MOVE    HCN03-KNJNO             TO  HCN03V01-KNJNO
            MOVE    HCN03-ROOM              TO  HCN03V01-ROOM
@@ -1281,6 +1309,7 @@
            MOVE    HCN03-NYUINSTRYMD       TO  HCN03V02-NYUINSTRYMD
            MOVE    HCN03-NYUINENDYMD       TO  HCN03V02-NYUINENDYMD
            MOVE    HCN03-HAKYMD            TO  HCN03V02-HAKYMD
+           MOVE    HCN03-KANANAME          TO  HCN03V02-KANANAME
            MOVE    HCN03-KNJNAMW           TO  HCN03V02-KNJNAMW
            MOVE    HCN03-KNJNO             TO  HCN03V02-KNJNO
            MOVE    HCN03-ROOM              TO  HCN03V02-ROOM

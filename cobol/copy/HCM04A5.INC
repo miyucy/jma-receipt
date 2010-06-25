@@ -25,3 +25,4 @@
               03  HCM04A5-TENSU   PIC X(9).
               03  HCM04A5-TENSU2  PIC X(14).
             02  HCM04A5-LOPTION PIC X(50).
+            02  HCM04A5-KANANAME    PIC X(50).

@@ -3,7 +3,7 @@
             02  HCN04-NYUINSTRYMD   PIC X(22).
             02  HCN04-NYUINENDYMD   PIC X(22).
             02  HCN04-HAKYMD    PIC X(22).
-            02  HCN04-NAME  PIC X(20).
+            02  HCN04-DNAME PIC X(20).
             02  HCN04-PTNUM PIC X(20).
             02  HCN04-ROOM  PIC X(50).
             02  HCN04-HOKEN PIC X(20).
@@ -27,3 +27,5 @@
             02  HCN04-LABEL3    PIC X(10).
             02  HCN04-FUTANLABEL    PIC X(2).
             02  HCN04-LOPTION   PIC X(50).
+            02  HCN04-KANANAME  PIC X(50).
+            02  HCN04-NAME  PIC X(30).

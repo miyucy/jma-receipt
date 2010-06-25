@@ -2886,6 +2886,7 @@
            MOVE    SPA-S01-NYUGAIKBN   TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  WRK-SPA-PTID
            MOVE    SPA-S01-PTNUM       TO  WRK-SPA-PTNUM
+           MOVE    SPA-S01-KANANAME    TO  WRK-SPA-KANANAME
            MOVE    SPA-S01-NAME        TO  WRK-SPA-NAME
       *
       *    Ï«ºÒÈ½Äê
@@ -3011,6 +3012,7 @@
            MOVE    SPA-S01-NYUGAIKBN   TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-S01-PTID        TO  WRK-SPA-PTID
            MOVE    SPA-S01-PTNUM       TO  WRK-SPA-PTNUM
+           MOVE    SPA-S01-KANANAME    TO  WRK-SPA-KANANAME
            MOVE    SPA-S01-NAME        TO  WRK-SPA-NAME
       *
            PERFORM 41111-PRINT-PG-SEC

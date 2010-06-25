@@ -138,12 +138,11 @@
                    07  TSYUGRP-DENPPRTYMD  PIC X(08).
                    07  TSYUGRP-SKYPRT      PIC X(01).
                    07  TSYUGRP-SRYPRT      PIC X(01).
+                   07  TSYUGRP-SRYYMD      PIC X(08).
                    07  TSYUGRP-GRP-MAX2    PIC 9(05).
                    07  TSYUGRP-GRP-OCC2    OCCURS   10.
                        09  TSYUGRP-GRP-DENPNUM
                                            PIC 9(07).
-                       09  TSYUGRP-GRP-SRYYMD
-                                           PIC X(08).
       *
        01  ERR-EDIT-AREA.
            03  ERR-WARNING                 PIC 9(01).
@@ -543,6 +542,11 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TSYUGRP-MAX )
       *
+               MOVE    TSYUGRP-PTID (IDX0)
+                                       TO  WRK-PTID
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               PERFORM 900-PTNUM-KEY-SEL-SEC
+      *
                PERFORM VARYING IDX1    FROM    1   BY  1
                        UNTIL ( IDX1    >   TSYUGRP-GRP-MAX (IDX0))
       *
@@ -552,6 +556,17 @@
                        INITIALIZE      ORCHCN03-OCC (IDX-M)
       *
                    END-PERFORM
+      *
+                   MOVE    "1"     TO  SPA-NYUGAIKBN
+      *
+                   MOVE    PTINF-PTID      TO  SPA-PTID
+                   MOVE    PTNUM-PTNUM     TO  SPA-PTNUM
+                   MOVE    PTINF-KANANAME  TO  SPA-KANANAME
+                   MOVE    PTINF-NAME      TO  SPA-NAME
+                   MOVE    PTINF-SEX       TO  SPA-SEX
+                   MOVE    PTINF-BIRTHDAY  TO  SPA-BIRTHDAY
+                   MOVE    TSYUGRP-SRYYMD  (IDX0 IDX1)
+                                           TO  SPA-SRYYMD
       *
                    IF    ( TSYUGRP-SKYPRT (IDX0 IDX1)  =   "1" )
                        PERFORM 2001-SEIKYU-PRT-SEC
@@ -619,10 +634,6 @@
            INITIALIZE              ORCHCN04AREA
            MOVE    TSYUGRP-PTID (IDX0)
                                        TO  ORCHCN04-PTID
-           MOVE    TSYUGRP-PTID (IDX0)
-                                       TO  WRK-PTID
-           PERFORM 900-PTINF-KEY-SEL-SEC
-           PERFORM 900-PTNUM-KEY-SEL-SEC
       *
            MOVE    PTNUM-PTNUM         TO  ORCHCN04-PTNUM
            MOVE    PTINF-NAME          TO  ORCHCN04-NAME
@@ -639,12 +650,9 @@
       *
            MOVE    "1"                 TO  ORCHCN04-PRTKBN
       *
-           MOVE    TSYUGRP-GRP-SRYYMD  (IDX0 IDX1 IDX2)
-                                       TO  SPA-SRYYMD
-      *
            MOVE    WRK-MEISAI-PRTNM    TO  SPRT-PRTNM
            MOVE    TSYUGRP-PTID (IDX0) TO  SPRT-PTID
-           MOVE    TSYUGRP-GRP-SRYYMD  (IDX0 IDX1 IDX2)(1:6)
+           MOVE    TSYUGRP-SRYYMD  (IDX0 IDX1)(1:6)
                                        TO  SPRT-SRYYM
            MOVE    ORCSPRTAREA         TO  ORCHCN04-PRTAREA
       *
@@ -1066,8 +1074,8 @@
                                    TO  TSYUGRP-GRP-DENPNUM
                                            (TSYUGRP-MAX IDX-MAX IDX0)
                        MOVE    ORCHCN03-KJNYMD (IDX0)
-                                   TO  TSYUGRP-GRP-SRYYMD
-                                           (TSYUGRP-MAX IDX-MAX IDX0)
+                                   TO  TSYUGRP-SRYYMD
+                                           (TSYUGRP-MAX IDX-MAX)
                    END-PERFORM
                END-IF
       *

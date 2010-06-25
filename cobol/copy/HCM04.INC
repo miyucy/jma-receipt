@@ -25,3 +25,4 @@
             02  HCM04-LABEL3    PIC X(10).
             02  HCM04-FUTANLABEL    PIC X(2).
             02  HCM04-LOPTION   PIC X(50).
+            02  HCM04-KANANAME  PIC X(50).

@@ -229,6 +229,8 @@
            03  TPARA-HKNMEI             PIC X(01).
            03  TPARA-FTNKBN             PIC X(01).
            03  TPARA-HAKKOUBIKBN        PIC X(01).
+           03  TPARA-TEISEIKBN          PIC X(01).
+           03  TPARA-KANANAME           PIC X(01).
            03  TPARA-YUKOSTYMD          PIC X(08).
            03  TPARA-YUKOEDYMD          PIC X(08).
            03  TPARA-MEMO               PIC X(80) OCCURS 10.
@@ -670,6 +672,8 @@
            PERFORM 900-1900-READ-SEC
       *----(03.04.01)--ADD-END-----
       *
+           PERFORM 900-PTINF-READ-SEC
+      *
            PERFORM 100-OPTION-SELECT-SEC
       *
            PERFORM 800-MCNDATE-SEC
@@ -874,6 +878,8 @@
            MOVE    "1"             TO  TPARA-HKNMEI
            MOVE    "2"             TO  TPARA-FTNKBN
            MOVE    "0"             TO  TPARA-HAKKOUBIKBN
+           MOVE    "1"             TO  TPARA-TEISEIKBN
+           MOVE    "0"             TO  TPARA-KANANAME
            MOVE    "00000000"      TO  TPARA-YUKOSTYMD
            MOVE    "99999999"      TO  TPARA-YUKOEDYMD
       *
@@ -903,6 +909,20 @@
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA        =   "0" OR "1" )
                MOVE    WRK-PARA    TO  TPARA-HAKKOUBIKBN
+           END-IF
+      *
+      *    （訂正）表示
+           MOVE    "TEISEIKBN"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA        =   "0" OR "1" )
+               MOVE    WRK-PARA    TO  TPARA-TEISEIKBN
+           END-IF
+      *
+      *    カナ氏名
+           MOVE    "KANANAME"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA        =   "0" OR "1" )
+               MOVE    WRK-PARA    TO  TPARA-KANANAME
            END-IF
       *
       *    有効開始日
@@ -1011,6 +1031,10 @@
            END-IF
       *    患者番号
            MOVE    SPA-PTNUM           TO  HC03-KNJNO
+      *    患者カナ名称
+           IF    ( TPARA-KANANAME      =   "1" )
+               MOVE    PTINF-KANANAME  TO  HC03-KANANAME
+           END-IF
       *    患者名称
            MOVE    SPA-NAME            TO  HC03-KNJNAMW
       *    保険種別
@@ -1340,7 +1364,9 @@
       *        WHEN    1
       *            MOVE    "（再）"        TO  HC03-MIDASHI
                WHEN    2
-                   MOVE    "（訂正）"      TO  HC03-MIDASHI
+                   IF    ( TPARA-TEISEIKBN =   "1" )
+                       MOVE    "（訂正）"  TO  HC03-MIDASHI
+                   END-IF
            END-EVALUATE
       *
            IF    ( SMCNDATE-YMD        >=  TPARA-YUKOSTYMD )
@@ -1458,6 +1484,7 @@
            MOVE  HC03-NO           TO  HC03V01-NO
            MOVE  HC03-LBLSRYYMD    TO  HC03V01-LBLSRYYMD
            MOVE  HC03-SRYYMD       TO  HC03V01-SRYYMD
+           MOVE  HC03-KANANAME     TO  HC03V01-KANANAME
            MOVE  HC03-KNJNAMW      TO  HC03V01-KNJNAMW
            MOVE  HC03-KNJNO        TO  HC03V01-KNJNO
            MOVE  HC03-MIDASI       TO  HC03V01-MIDASI
@@ -1539,6 +1566,7 @@
            MOVE  HC03-NO           TO  HC03V02-NO
            MOVE  HC03-LBLSRYYMD    TO  HC03V02-LBLSRYYMD
            MOVE  HC03-SRYYMD       TO  HC03V02-SRYYMD
+           MOVE  HC03-KANANAME     TO  HC03V02-KANANAME
            MOVE  HC03-KNJNAMW      TO  HC03V02-KNJNAMW
            MOVE  HC03-KNJNO        TO  HC03V02-KNJNO
            MOVE  HC03-MIDASI       TO  HC03V02-MIDASI
@@ -2223,6 +2251,9 @@
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
+           INITIALIZE                      PTINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-PTID            TO  PTINF-PTID
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2235,9 +2266,11 @@
                    MOVE    MCPDATA-REC     TO  PTINF-REC
                    MOVE    ZERO            TO  FLG-PTINF
                ELSE
+                   INITIALIZE                  PTINF-REC
                    MOVE    1               TO  FLG-PTINF
                END-IF
            ELSE
+               INITIALIZE                  PTINF-REC
                MOVE    1               TO  FLG-PTINF
            END-IF
            MOVE    "tbl_ptinf"         TO  MCP-TABLE

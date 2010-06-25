@@ -861,6 +861,7 @@ grpsys                                     SPA-AREA
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "2"             TO  SPA-NYUGAIKBN
            MOVE    WRK-PTNUM       TO  SPA-PTNUM
+           MOVE    PTINF-KANANAME  TO  SPA-KANANAME
            MOVE    PTINF-NAME      TO  SPA-NAME
       *
            MOVE    "001%"          TO  WRK-FILEMEI-CD

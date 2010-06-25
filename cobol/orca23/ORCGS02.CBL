@@ -1355,10 +1355,10 @@
       *
            MOVE    SPA-S01-PTNUM       TO  SPA-GMN-PTNUM
            MOVE    SPA-S01-PTID        TO  SPA-GMN-PTID
-           MOVE    SPA-S01-KANANAME    TO  SPA-GMN-KANANAME
            MOVE    SPA-S01-SEX         TO  SPA-GMN-SEX
            MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-SRYYM
            MOVE    SPA-S01-SRYYM       TO  SPA-NAI-SRYYM
+           MOVE    SPA-S01-KANANAME    TO  SPA-GMN-KANANAME
            MOVE    SPA-S01-NAME        TO  SPA-GMN-NAME
            MOVE    SPA-S01-LOCK        TO  SPA-NAI-LOCK
            MOVE    SPA-S01-SLOCK-MSG   TO  SPA-NAI-SLOCK-MSG
@@ -3332,6 +3332,7 @@
                MOVE   SYU-NYUGAIKBN    TO  WRK-SPA-NYUGAIKBN
                MOVE   SPA-GMN-PTID     TO  WRK-SPA-PTID
                MOVE   SPA-GMN-PTNUM    TO  WRK-SPA-PTNUM
+               MOVE   SPA-GMN-KANANAME TO  WRK-SPA-KANANAME
                MOVE   SPA-GMN-NAME     TO  WRK-SPA-NAME
       *
       *        労災判定
@@ -3451,6 +3452,7 @@
            MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-GMN-PTNUM       TO  WRK-SPA-PTNUM
            MOVE    SPA-GMN-NAME        TO  WRK-SPA-NAME
+           MOVE    SPA-GMN-KANANAME    TO  WRK-SPA-KANANAME
       *
       *    帳票プログラム取得（外来）
            PERFORM 4201-PRINT-PG-SEC
@@ -3866,6 +3868,7 @@
            MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
            MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-GMN-PTNUM       TO  WRK-SPA-PTNUM
+           MOVE    SPA-GMN-KANANAME    TO  WRK-SPA-KANANAME
            MOVE    SPA-GMN-NAME        TO  WRK-SPA-NAME
       *
       *    帳票プログラム取得（外来）

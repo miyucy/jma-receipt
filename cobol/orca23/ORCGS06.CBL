@@ -2617,6 +2617,7 @@
            MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
            MOVE    "2"                 TO  WRK-SPA-NYUGAIKBN
            MOVE    SPA-GMN-PTNUM       TO  WRK-SPA-PTNUM
+           MOVE    SPA-S01-KANANAME    TO  WRK-SPA-KANANAME
            MOVE    SPA-GMN-NAME        TO  WRK-SPA-NAME
       *
       *    帳票プログラム取得（外来）
@@ -2792,6 +2793,7 @@
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
            MOVE    SPA-GMN-PTID        TO  WRK-SPA-PTID
            MOVE    SPA-GMN-PTNUM       TO  WRK-SPA-PTNUM
+           MOVE    SPA-S01-KANANAME    TO  WRK-SPA-KANANAME
            MOVE    SPA-GMN-NAME        TO  WRK-SPA-NAME
       *
            MOVE    "1"                 TO  WRK-SPA-NYUGAIKBN

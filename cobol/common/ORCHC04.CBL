@@ -302,6 +302,7 @@
            03  PARA-LINE               PIC X(01).
            03  PARA-FORM               PIC X(01).
            03  PARA-HAKKOUBIKBN        PIC X(01).
+           03  PARA-KANANAME           PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -519,6 +520,14 @@
            MOVE    WRK-PARA(1:1)       TO  PARA-HAKKOUBIKBN
            IF      PARA-HAKKOUBIKBN    =   SPACE
                MOVE    "0"                 TO  PARA-HAKKOUBIKBN
+           END-IF
+      *
+      *    カナ氏名
+           MOVE    "KANANAME"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-KANANAME
+           IF      PARA-KANANAME       =   SPACE
+               MOVE    "0"                 TO  PARA-KANANAME
            END-IF
       *
            .
@@ -936,6 +945,10 @@
            MOVE    WRK-SRYKA-MEI       TO  HCM04-SRYKANAME
       *    患者番号
            MOVE    SPA-PTNUM           TO  HCM04-PTNUM
+      *    カナ氏名
+           IF    ( PARA-KANANAME       =   "1" )
+               MOVE    SPA-KANANAME    TO  HCM04-KANANAME
+           END-IF
       *    患者名称
            MOVE    SPA-NAME            TO  HCM04-NAME
       *    保険種別
@@ -2010,6 +2023,10 @@
            MOVE    WRK-SRYKA-MEI       TO  HCM04A5-SRYKANAME
       *    患者番号
            MOVE    SPA-PTNUM           TO  HCM04A5-PTNUM
+      *    カナ氏名
+           IF    ( PARA-KANANAME       =   "1" )
+               MOVE    SPA-KANANAME    TO  HCM04A5-KANANAME
+           END-IF
       *    患者名称
            MOVE    SPA-NAME            TO  HCM04A5-NAME
       *    保険種別

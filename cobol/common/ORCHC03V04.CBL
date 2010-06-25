@@ -261,6 +261,8 @@
            03  PARA-HKNMEI             PIC X(01).
            03  PARA-FTNKBN             PIC X(01).
            03  PARA-SRYKA              PIC X(01).
+           03  PARA-TEISEIKBN          PIC X(01).
+           03  PARA-KANANAME           PIC X(01).
            03  PARA-LINE               PIC X(01).
            03  PARA-SYOKEI             PIC X(01).
       *
@@ -597,6 +599,20 @@
            IF      PARA-SRYKA          =   SPACE
                MOVE    "1"                 TO  PARA-SRYKA
            END-IF
+      *    （訂正）表示
+           MOVE    "TEISEIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-TEISEIKBN
+           IF      PARA-TEISEIKBN      =   SPACE
+               MOVE    "1"             TO  PARA-TEISEIKBN
+           END-IF
+      *    カナ氏名表示
+           MOVE    "KANANAME"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-KANANAME
+           IF      PARA-KANANAME       =   SPACE
+               MOVE    "0"             TO  PARA-KANANAME
+           END-IF
       *    行間
            MOVE    "LINE"              TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
@@ -718,6 +734,10 @@
            MOVE    WRK-HEAD-SRYKAMEI   TO  HCM03V04-SRYKANAME
       *    患者番号
            MOVE    SPA-PTNUM           TO  HCM03V04-PTNUM
+      *    カナ名称
+           IF    ( PARA-KANANAME   =   "1" )
+               MOVE    SPA-KANANAME    TO  HCM03V04-KANANAME
+           END-IF
       *    患者名称
            MOVE    SPA-NAME            TO  HCM03V04-NAME
       *    保険種別
@@ -780,7 +800,9 @@
       *    発行区分
            EVALUATE    ORCHC03-HAKKOFLG
                WHEN    2
-                   MOVE    "（訂正）"      TO  HCM03V04-MIDASHI
+                   IF    ( PARA-TEISEIKBN  =   "1" )
+                       MOVE    "（訂正）"  TO  HCM03V04-MIDASHI
+                   END-IF
            END-EVALUATE
       *
       *    列名（点数記載）
