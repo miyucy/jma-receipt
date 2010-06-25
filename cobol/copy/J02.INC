@@ -97,6 +97,9 @@
               03  J02-HKTMSG.
                 04  J02-HKTMSG-STYLE   PIC X(20).
                 04  J02-HKTMSG-VALUE   PIC X(100).
+              03  J02-SYUMSG.
+                04  J02-SYUMSG-STYLE   PIC X(20).
+                04  J02-SYUMSG-VALUE   PIC X(20).
               03  J02-B04.
                 04  J02-B04-STATE   PIC S9(9)   BINARY.
               03  J02-B05.

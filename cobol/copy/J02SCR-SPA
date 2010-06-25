@@ -161,6 +161,8 @@
       ******************** 11  SPA-RRK-SRYKBN        PIC  X(02).
                            11  SPA-RRK-ADD           PIC  X(01).
                            11  SPA-RRK-UPD           PIC  X(01).
+      *        収納更新メッセージ
+               05  SPA-GMN-SYUMSG              PIC X(20).
       *        更新フラグ
                05  SPA-UPDFLG                  PIC X(01).
                05  SPA-SYUNOU-KOUSIN           PIC 9(01).

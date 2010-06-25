@@ -2310,22 +2310,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>NYUINKIKAN</name>
-      <x>732</x>
-      <y>4</y>
-      <width>240</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label9</name>
       <x>412</x>
       <y>556</y>
@@ -2926,6 +2910,38 @@
       <y>640</y>
       <width>566</width>
       <height>16</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NYUINKIKAN</name>
+      <x>744</x>
+      <y>4</y>
+      <width>240</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUMSG</name>
+      <x>644</x>
+      <y>4</y>
+      <width>90</width>
+      <height>20</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>

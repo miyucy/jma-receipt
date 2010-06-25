@@ -1867,6 +1867,8 @@
       *        診療会計マスターより編集をする
                PERFORM 410181-SRYACCT-HEN-SEC
            END-IF
+      *    収納更新チェック
+           PERFORM 3104-SYUNOU-CHECK-SEC
       *
            .
        3000-PTID-INIT-EXT.
@@ -3553,6 +3555,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HKTMSG     TO  J02-HKTMSG-VALUE
            MOVE    "red"              TO  J02-HKTMSG-STYLE
       *
+      *    収納更新メッセージ
+           MOVE    SPA-GMN-SYUMSG     TO  J02-SYUMSG-VALUE
+           MOVE    "blue"             TO  J02-SYUMSG-STYLE
+      *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *    カーソル
@@ -3993,9 +3999,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
       *
-      *    保険組合一覧編集
-      **** PERFORM 3105-HKNCOMBI-HEN-SEC
-      *
            IF     (SPA-GMN-SRYKA-G     =   SPACE )  OR
                   (SPA-GMN-MAX         =   ZERO  )
                MOVE    6                   TO  SPA-GMN-CUR
@@ -4361,8 +4364,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
-      *    保険組合一覧編集
-      **** PERFORM 3105-HKNCOMBI-HEN-SEC
+      *    収納更新チェック
+           PERFORM 3104-SYUNOU-CHECK-SEC
       *
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    6                   TO  SPA-GMN-CUR
@@ -4524,6 +4527,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
+      *    収納更新チェック
+           PERFORM 3104-SYUNOU-CHECK-SEC
       *
       *    入院料包括診療チェック処理
            PERFORM 30091-HKTCD-CHK-SEC
@@ -7392,6 +7397,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    受診履歴編集
            PERFORM 3103-JYURRK-HEN-SEC
+      *    収納更新チェック
+           PERFORM 3104-SYUNOU-CHECK-SEC
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
@@ -7402,8 +7409,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
-      *    保険組合一覧編集
-      **** PERFORM 3105-HKNCOMBI-HEN-SEC
       *
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    8                   TO  SPA-GMN-CUR
@@ -8911,83 +8916,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
       *
-      *!!!
-      *!!!
-      *!!!
-           GO      TO  410191-JIGETU-SYORI1-EXT
-      *
-           MOVE    ZERO                TO  SPA-RRK-MAX
-           INITIALIZE                  SPA-GMN-RRKTBL
-           INITIALIZE                  SPA-NAI-RRKTBL
-           MOVE    ZERO                TO  SPA-GMN-MAX
-           INITIALIZE                  SPA-GMN-TBL
-           INITIALIZE                  SPA-NAI-TBL
-           INITIALIZE                  SPA-GMN-INPUT
-           INITIALIZE                  SPA-GMN-NYUIN-AREA
-      *
-      *    入外区分・病床数
-           PERFORM 3009-NYUGAIKBN-HEN-SEC
-      *    診療科一覧編集
-           PERFORM 3005-SRYKA-HEN-SEC
-      *
-      *    保険一覧編集
-           PERFORM 3008-HKNCOMBI-HEN-SEC
-      *
-      *    受診履歴より
-           IF      SPA-NAI-SRYKA-FLG   =   0
-               MOVE    SPACE               TO  SPA-J01-SRYKA
-               MOVE    SPACE               TO  SPA-J01-SRYKAMEI
-           END-IF
-      *    全科
-           IF      SPA-NAI-SRYKA-FLG   =   2
-               MOVE    SPA-GMN-SRYKA-LIST(01)
-                                           TO  SPA-GMN-SRYKA-G
-               MOVE    SPA-GMN-SRYKA       TO  SPA-J01-SRYKA
-               MOVE    SPA-GMN-SRYKAMEI    TO  SPA-J01-SRYKAMEI
-           END-IF
-      *    入院が存在するかのチェック
-           IF      SPA-BEDSU           >   ZERO
-               PERFORM 410101-NYUINRRK-CHK-SEC
-               PERFORM 410102-NYUINRRK-LST-SEC
-           END-IF
-      *    受診履歴より診療科決定
-           IF      SPA-J01-SRYKA       =   SPACE
-               PERFORM 310310-JYURRK-CHK-SEC
-               IF      SPA-J01-SRYKA       =   SPACE
-                   MOVE    "0020"          TO  SPA-ERRCD
-                   MOVE    07              TO  SPA-GMN-CUR
-                   GO      TO       410191-JIGETU-SYORI1-EXT
-               END-IF
-           END-IF
-      *
-           PERFORM 3101-SRYKA-HEN-SEC
-      *DD  入院が存在するかのチェック
-      *    IF      SPA-BEDSU           >   ZERO
-      *        PERFORM 410101-NYUINRRK-CHK-SEC
-      *        PERFORM 410102-NYUINRRK-LST-SEC
-      *DD  END-IF
-      *
-      *    受診履歴編集
-           PERFORM 3103-JYURRK-HEN-SEC
-      *
-      *    保存用パラメタ作成
-           PERFORM 4201-SRYACCT-PARA-SEC
-           MOVE    1                   TO  SPA-GMN-PAGE
-           MOVE    1                   TO  SPA-STRNUM
-      *
-      *    診療会計マスターより編集をする
-           PERFORM 410181-SRYACCT-HEN-SEC
-      *
-           IF      SPA-RRK-MAX         =   ZERO
-              AND  SPA-GMN-MAX         =   ZERO
-               IF      SPA-SRYKA-MAX       =   1
-                   MOVE    07              TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    06              TO  SPA-GMN-CUR
-               END-IF
-           ELSE
-               MOVE    1               TO  SPA-GMN-CUR
-           END-IF
            .
        410191-JIGETU-SYORI1-EXT.
            EXIT.
@@ -10681,6 +10609,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-ERRCD           =   SPACE) AND
                   (SPA-J025-MAX        >   ZERO )
                PERFORM 490129-J025-SYRI-SEC
+               IF      SPA-J025-ERRMSG     =   SPACE
+                   MOVE    SPACE               TO  SPA-GMN-SYUMSG
+               END-IF
            ELSE
                IF      SPA-ERRCD           =   SPACE
                    MOVE    "0064"          TO  SPA-ERRCD
@@ -11560,6 +11491,55 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  SPA-J025-SYORI
            .
        3002-J025-BACK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納更新チェック編集処理
+      *****************************************************************
+       3104-SYUNOU-CHECK-SEC          SECTION.
+      *
+           MOVE    SPACE             TO  SPA-GMN-SYUMSG
+      *
+           IF     (SPA-NYUGAIKBN       =  "2"   )
+      *        外来のみチェック
+               INITIALIZE                  SYUNOU-REC
+               MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  SYU-PTID
+               MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
+               MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD(1:6)
+               MOVE    "%"                 TO  SYU-SRYYMD(7:1)
+      *
+               MOVE    SYUNOU-REC          TO  MCPDATA-REC
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key28"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_syunou"        TO  MCP-TABLE
+                   MOVE    "key28"             TO  MCP-PATHNAME
+                   PERFORM 980-SYUNOU-READ-SEC
+               ELSE
+                   INITIALIZE                  SYUNOU-REC
+                   MOVE    1               TO  FLG-SYUNOU
+               END-IF
+               PERFORM
+                       UNTIL   FLG-SYUNOU      =   1
+                   IF      SYU-ACCT-UPDKBN     NOT =   SPACE
+                       MOVE    "【収納更新】"   TO  SPA-GMN-SYUMSG
+                       MOVE    1               TO  FLG-SYUNOU
+                   END-IF
+      *
+                   IF      FLG-SYUNOU          =   ZERO
+                       MOVE    "tbl_syunou"        TO  MCP-TABLE
+                       MOVE    "key28"             TO  MCP-PATHNAME
+                       PERFORM 980-SYUNOU-READ-SEC
+                   END-IF
+               END-PERFORM
+               MOVE    "tbl_syunou"        TO  MCP-TABLE
+               MOVE    "key28"             TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
+           .
+       3104-SYUNOU-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
