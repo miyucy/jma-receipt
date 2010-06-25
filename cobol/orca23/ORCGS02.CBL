@@ -106,6 +106,8 @@
       *  04.04.00    NACL-¬¿≈ƒ    08/12/08  º˝«º∏°∫˜≤ËÃÃ§Úµ€º˝
       *
       *  04.05.01    NACL-ÃÁœ∆    09/06/16  ∞Ï≥Á∫∆∑◊ªª ˝À°¡™¬Úµ°«Ω¬–±˛
+      *  04.06.01    NACL-ÃÁœ∆    10/06/25  ≤Ò∑◊æ»≤Ò°⁄º˝«ºππø∑°€Ã§ΩËÕ˝ ¨
+      *                                     •·•√•ª°º•∏¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -180,8 +182,8 @@
                            11  SPA-GMN-TNYUKIN     PIC S9(10).
                            11  SPA-GMN-TMISYU      PIC S9(10).
                            11  SPA-GMN-TJYOTAI     PIC X(16).
-                           11  SPA-GMN-FTNHENFLG   PIC 9(02).
-                           11  SPA-GMN-SIKIBETUFLG PIC X(01).
+      ***                  11  SPA-GMN-FTNHENFLG   PIC 9(02).
+      ***                  11  SPA-GMN-SIKIBETUFLG PIC X(01).
                        09  SPA-GMN-TBL-SEL         PIC 9(05).
       *
                    07  SPA-GMN-INPUT.
@@ -284,6 +286,7 @@
            03  FLG-SEIKYU-PRT      PIC 9(01).
            03  FLG-MEISAI-PRT      PIC 9(01).
            03  FLG-PARA            PIC 9(01).
+           03  FLG-MISYORI         PIC 9(01).
       *
       *    ≈∫ª˙ŒŒ∞Ë
        01  IDX-AREA.
@@ -366,8 +369,6 @@
            03  WRK-DENPNUM-END-TABLE.
                05  WRK-DENPNUM-END PIC 9(07)   OCCURS  100.
       *
-           03  WRK-FTNHENFLG1      PIC 9(01).
-           03  WRK-FTNHENFLG2      PIC 9(01).
            03  WRK-FILEMEI  .
                05  WRK-FILEMEI-YMD PIC X(08).
                05  WRK-FILEMEI-HMS PIC X(06).
@@ -2083,18 +2084,10 @@
                MOVE    "≥∞"            TO  SPA-GMN-TNYUGAIKBN  (IDX-LST)
            END-EVALUATE
       *
-           IF    ( SYU-DENPJTIKBN  NOT =   "3" )
-               EVALUATE    SYU-NYNSHOKAISU
-               WHEN         1
-                   MOVE  SYU-NYNSHOKAISU
-                                       TO  SPA-GMN-FTNHENFLG  (IDX-LST)
-                   MOVE  SYU-NYUGAIKBN TO  SPA-GMN-SIKIBETUFLG(IDX-LST)
-               WHEN         2
-                   MOVE  SYU-NYNSHOKAISU
-                                       TO  SPA-GMN-FTNHENFLG  (IDX-LST)
-                   MOVE  SYU-NYUGAIKBN TO  SPA-GMN-SIKIBETUFLG(IDX-LST)
-                   MOVE    "°˚"    TO  SPA-GMN-TNYUGAIKBN (IDX-LST)(3:2)
-               END-EVALUATE
+           IF      SYU-DENPJTIKBN  NOT =   "3"
+                IF  SYU-ACCT-UPDKBN NOT = SPACE
+                   MOVE   "°˘"    TO   SPA-GMN-TNYUGAIKBN(IDX-LST)(3:2)
+                END-IF
            END-IF
       *
            INITIALIZE                      SYSKANRI-REC
@@ -2471,8 +2464,7 @@
            MOVE    WIDGET-INSENSITIVE  TO  S02-B03S-STATE
       *    ª√ƒÍ ED
       *
-           MOVE    ZERO                TO  WRK-FTNHENFLG1
-                                           WRK-FTNHENFLG2
+           MOVE    ZERO                TO  FLG-MISYORI
       *
            PERFORM VARYING     IDX-LST     FROM    1   BY  1
                    UNTIL     ( IDX-LST     >       SPA-GMN-MAX )
@@ -2521,42 +2513,9 @@
                    MOVE    "F"         TO  S02-SYULIST-SELECT (IDX-LST)
                END-IF
       *
-               EVALUATE   SPA-GMN-SIKIBETUFLG(IDX-LST)
-                 WHEN         "1"
-                   EVALUATE   SPA-GMN-FTNHENFLG(IDX-LST)
-                     WHEN         1
-                       EVALUATE   WRK-FTNHENFLG1
-                         WHEN        ZERO
-                           MOVE   1   TO   WRK-FTNHENFLG1
-                         WHEN         2
-                           MOVE   3   TO   WRK-FTNHENFLG1
-                       END-EVALUATE
-                     WHEN         2
-                       EVALUATE   WRK-FTNHENFLG1
-                         WHEN        ZERO
-                           MOVE   2   TO   WRK-FTNHENFLG1
-                         WHEN         1
-                           MOVE   3   TO   WRK-FTNHENFLG1
-                       END-EVALUATE
-                   END-EVALUATE
-                 WHEN         "2"
-                   EVALUATE   SPA-GMN-FTNHENFLG(IDX-LST)
-                     WHEN         1
-                       EVALUATE   WRK-FTNHENFLG2
-                         WHEN        ZERO
-                           MOVE   1   TO   WRK-FTNHENFLG2
-                         WHEN         2
-                           MOVE   3   TO   WRK-FTNHENFLG2
-                       END-EVALUATE
-                     WHEN         2
-                       EVALUATE   WRK-FTNHENFLG2
-                         WHEN        ZERO
-                           MOVE   2   TO   WRK-FTNHENFLG2
-                         WHEN         1
-                           MOVE   3   TO   WRK-FTNHENFLG2
-                       END-EVALUATE
-                   END-EVALUATE
-               END-EVALUATE
+               IF    SPA-GMN-TNYUGAIKBN(IDX-LST)(3:2) = "°˘"
+                   MOVE     1          TO  FLG-MISYORI
+               END-IF
       *
            END-PERFORM
       *
@@ -2565,19 +2524,9 @@
            MOVE    SPA-GMN-SELBAN              TO  WRK-SELBAN-W
            MOVE    WRK-SELBAN-W                TO  S02-SELNUM
       *
-           IF     (WRK-FTNHENFLG1  =  3) AND (WRK-FTNHENFLG2  NOT =  3)
-           MOVE    "red"       TO    S02-LBLMSG-STYLE
-       MOVE "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ  ∆±∑Ó¿¡µ· ¨≥Œ«ßµ⁄§”∫∆¿¡µ·° ∆˛°À"
-                               TO    S02-LBLMSG
-           END-IF
-           IF     (WRK-FTNHENFLG1  NOT =  3) AND (WRK-FTNHENFLG2  =  3)
-           MOVE    "red"       TO    S02-LBLMSG-STYLE
-       MOVE "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ  ∆±∑Ó¿¡µ· ¨≥Œ«ßµ⁄§”∫∆¿¡µ·° ≥∞°À"
-                               TO    S02-LBLMSG
-           END-IF
-           IF     (WRK-FTNHENFLG1      =  3) AND (WRK-FTNHENFLG2  =  3)
-           MOVE    "red"       TO    S02-LBLMSG-STYLE
-       MOVE "º´Œ©ªŸ±Á∞ÂŒ≈…È√¥≥‰πÁ —ππ  ∆±∑Ó¿¡µ· ¨≥Œ«ßµ⁄§”∫∆¿¡µ·° ∆˛≥∞°À"
+           IF      FLG-MISYORI   =    1
+              MOVE    "blue"   TO    S02-LBLMSG-STYLE
+              MOVE    "°˘°°≤Ò∑◊æ»≤Ò°⁄º˝«ºππø∑°€Ã§ΩËÕ˝ ¨"
                                TO    S02-LBLMSG
            END-IF
       *
