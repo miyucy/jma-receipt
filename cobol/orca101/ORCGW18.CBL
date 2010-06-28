@@ -35,6 +35,7 @@
       *  04.02.00    NACL-森脇    08/03/17  広域連合追加、お薬手帳追加
       *  04.03.01    NACL-森脇    08/06/24  レセプト電算、症状詳記追加
       *  04.04.00    NACL-森脇    08/11/21  光ディスク等送付書追加
+      *  04.06.00    NACL-多々納  10/06/28  予約票追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,7 +88,7 @@
       *
       *----(04.04.00)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  21.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  22.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
@@ -436,7 +437,7 @@
            INITIALIZE   SPA-W18-AREA
       *
       *----(04.04.00)--UPD-START---
-           MOVE    21                  TO  SPA-GMN-PRTKBN-MAX
+           MOVE    22                  TO  SPA-GMN-PRTKBN-MAX
       *----(04.04.00)--UPD-END-----
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
@@ -1987,6 +1988,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    121
                     MOVE  "PRTKBN21"          TO   MCP-WIDGET
       *----(04.04.00)--ADD-END-----
+                WHEN    122
+                    MOVE  "PRTKBN22"          TO   MCP-WIDGET
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2069,6 +2072,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTKBN13"
                    MOVE    118         TO  SPA-GMN-CUR
                WHEN    "PRTKBN18"
+      ********     MOVE    200         TO  SPA-GMN-CUR
+                   MOVE    122         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN22"
                    MOVE    200         TO  SPA-GMN-CUR
       *----(04.04.00)--UPD-END-----
            END-EVALUATE
