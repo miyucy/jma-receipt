@@ -10,6 +10,6 @@
               03  HCM67-DRNAME    PIC X(18).
               03  HCM67-BIKOH PIC X(48).
             02  HCM67-MSG   PIC X(100).
-            02  HCM67-HOSPADRS  PIC X(50).
-            02  HCM67-HOSPNAME  PIC X(50).
+            02  HCM67-HOSPADRS  PIC X(80).
+            02  HCM67-HOSPNAME  PIC X(80).
             02  HCM67-HOSPTEL   PIC X(15).
