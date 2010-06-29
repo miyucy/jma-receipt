@@ -46,6 +46,7 @@
       * 04.01.00     NACL-多々納  07/12/12  記号番号空白チェック
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
       * 04.03.00     NACL-多々納  08/06/XX  家族年齢・被保険者名設定対応
+      * 04.06.00     NACL-多々納  10/06/30  本人家族区分、補助区分変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2083,13 +2084,17 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2002-HNKKIKAN-CHK-SEC
            END-IF
+      *    本人家族区分整合性チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 2003-HONKAKBN-SEICHK-SEC
+           END-IF
       *    補助区分整合性チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2003-HOJOKBN-SEICHK-SEC
            END-IF
-      *    本人家族区分整合性チェック
+      *    補助区分変更チェック
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 2003-HONKAKBN-SEICHK-SEC
+               PERFORM 20039-HOJOKBN-HENCHK-SEC
            END-IF
       *    保険期間重複チェック
            IF      SPA-ERRCD           =   SPACE
@@ -2249,19 +2254,9 @@
       *****************************************************************
        2003-HOJOKBN-SEICHK-SEC         SECTION.
       *
-      **** IF     (SPA-GMN-HKNNUM      =   "060" )  OR
-      *           (SPA-GMN-HKNNUM      =   "002" )  OR
-      *           (SPA-GMN-HKNNUM(1:2) =   "98"  )
-      *        CONTINUE
-      *    ELSE
-      *        IF      SPA-GMN-HOJOKBN NOT =   SPACE
-      *            MOVE    "0061"          TO  SPA-ERRCD
-      *            MOVE    11              TO  SPA-GMN-CUR
-      *        END-IF
-      **** END-IF
       *
       *    国保・自費の時必須
-      *    前の補助区分が空白の時、そのままとする
+      *    前の補助区分が空白、老人公費ありはそのままとする
       *T   IF      (SPA-GMN-HKNNUM     =   "060"   )   AND
            IF      (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)
                IF     (SPA-MAE-HOJOKBN     =   SPACE )
@@ -2322,7 +2317,7 @@
            EXIT.
       *
       *****************************************************************
-      *    本人家族区分整合性チェック処理
+      *    補助区分と開始日の整合性チェック処理
       *****************************************************************
        20031-HOJOKBN-YMD-SEC         SECTION.
       *
@@ -2399,14 +2394,31 @@
            EXIT.
       *
       *****************************************************************
+      *    補助区分の変更処理
+      *****************************************************************
+       20039-HOJOKBN-HENCHK-SEC         SECTION.
+      *
+           IF     (SPA-NAI-HKNSTR      >   ZERO )  AND
+                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                       =   SPACE )
+               IF      (SPA-GMN-HOJOKBN    NOT =   SPA-OLD-HOJOKBN)
+                  AND  (SPA-HOJOKBN-KEIFLG     =   ZERO      )
+                   MOVE    "K130"              TO  SPA-ERRCD
+                   MOVE    11                  TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-HOJOKBN-KEIFLG
+               END-IF
+           END-IF
+           .
+       20039-HOJOKBN-HENCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    本人家族区分整合性チェック処理
       *****************************************************************
        2003-HONKAKBN-SEICHK-SEC         SECTION.
       *
       *    本人のみ入力可能チェック
            IF     ( SPA-NAI-PTHKN-SBTKBN   =   "4" OR "8" OR "9")  OR
-      *********** ((SPA-GMN-HKNNUM         =   "002"  )  AND
-      ************ (SPA-GMN-HOJOKBN    NOT =   SPACE  )    )  OR
                   ( SPA-GMN-HKNNUM         =   "007"       )
                IF      SPA-GMN-HONKZKKBN   NOT =   "1"
                    MOVE    "0066"          TO  SPA-ERRCD
@@ -2443,6 +2455,19 @@
                       (SPA-GMN-HOJO-MAX        =    1  )
                    MOVE    "0066"          TO  SPA-ERRCD
                    MOVE    10              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+      *    変更チェック
+           IF     (SPA-NAI-HKNSTR      >   ZERO )  AND
+                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                       =   SPACE ) AND
+                  (SPA-ERRCD           =   SPACE )
+               IF      (SPA-GMN-HONKZKKBN  NOT =   SPA-OLD-HONKZKKBN)
+                  AND  (SPA-HONKZK-KEIFLG  =   ZERO      )
+                   MOVE    "K129"              TO  SPA-ERRCD
+                   MOVE    10                  TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-HONKZK-KEIFLG
                END-IF
            END-IF
       *

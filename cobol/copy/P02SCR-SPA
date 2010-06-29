@@ -248,6 +248,8 @@
       *                    Å¸³«»þ
                            11  SPA-OLD-KIGO             PIC X(40).
                            11  SPA-OLD-NUM              PIC X(40).
+                           11  SPA-OLD-HONKZKKBN        PIC X(01).
+                           11  SPA-OLD-HOJOKBN          PIC X(01).
       *                ÊÝ¸±¼Ô¾ðÊó
                        09  SPA-HKNJA-AREA.
                            11  SPA-HKNJA-HKNJANAME     PIC X(100).
@@ -268,6 +270,9 @@
                       09  SPA-ROU-KEIFLG          PIC 9(01).
       *               ³ÎÇ§Ç¯·îÆü·Ù¹ð
                       09  SPA-HKN-KAKUINFLG        PIC 9(01).
+      *               ËÜ¿Í²ÈÂ²·Ù¹ð
+                      09  SPA-HONKZK-KEIFLG        PIC 9(01).
+                      09  SPA-HOJOKBN-KEIFLG       PIC 9(01).
       *
       *            ÂÐ¾Ý³«»ÏÈÖ¹æ
                    07  SPA-NAI-HKNSTR              PIC 9(04).
@@ -506,6 +511,10 @@
                        09  SPA-PTHKN-ROU-KEIFLG        PIC 9(01).
       *                ³ÎÇ§Ç¯·îÆü·Ù¹ð
                        09  SPA-PTHKN-KAKUINFLG         PIC 9(01).
+      *                ËÜ¿Í²ÈÂ²·Ù¹ð
+                       09  SPA-PTHKN-HONKZKFLG         PIC 9(01).
+      *                Êä½õ¶èÊ¬·Ù¹ð
+                       09  SPA-PTHKN-HOJOKEIFLG        PIC 9(01).
       *
                    07  SPA-PTHKN-MAX               PIC 9(04).
       *

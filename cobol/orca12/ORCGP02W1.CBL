@@ -90,6 +90,7 @@
       *  04.05.00    NACL-多々納  09/09/08  公費負担額に愛知県の'191'追加
       *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
       *                                     都道府県名記載なし対応
+      * 04.06.00     NACL-多々納  10/06/30  本人家族区分、補助区分変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1453,6 +1454,16 @@
                                            TO  SPA-KIGO-KEIFLG
            MOVE    SPA-PTHKN-NUM-KEIFLG (IDX)
                                            TO  SPA-NUM-KEIFLG
+      *    本人家族警告
+           MOVE    SPA-PTHKN-HONKZKKBN (IDX)
+                                           TO  SPA-OLD-HONKZKKBN
+           MOVE    SPA-PTHKN-HONKZKFLG (IDX)
+                                           TO  SPA-HONKZK-KEIFLG
+      *    補助区分警告
+           MOVE    SPA-PTHKN-HOJOKBN (IDX)
+                                           TO  SPA-OLD-HOJOKBN
+           MOVE    SPA-PTHKN-HOJOKEIFLG (IDX)
+                                           TO  SPA-HOJOKBN-KEIFLG
       *    更新前の記号空白チェックは当日有効のもの
            IF      FLG-TOUROKU     NOT =   ZERO
                IF      (SPA-PTHKN-TEKEDYMD(IDX)  <=  SPA-SYSYMD )
@@ -4563,6 +4574,10 @@
            MOVE    SPA-ROU-KEIFLG      TO  SPA-PTHKN-ROU-KEIFLG (IDX)
       *    確認年月日
            MOVE    SPA-HKN-KAKUINFLG   TO  SPA-PTHKN-KAKUINFLG (IDX)
+      *    本人家族警告
+           MOVE    SPA-HONKZK-KEIFLG   TO  SPA-PTHKN-HONKZKFLG (IDX)
+      *    補助区分警告
+           MOVE    SPA-HOJOKBN-KEIFLG  TO  SPA-PTHKN-HOJOKEIFLG (IDX)
       *
       *    新規の時保険ＩＤ取得（労災は労災画面で取得する）
            IF      SPA-NAI-HKNID       =   ZERO
