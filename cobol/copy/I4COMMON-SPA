@@ -55,6 +55,7 @@
                05  SPA-GMN-BIRTHDAYW           PIC X(09).
       *Æþ±¡¾ðÊó
                05  SPA-GMN-NYUIN-AREA.
+                   07  SPA-GMN-IJYOU91-STYLE   PIC X(20).
                    07  SPA-GMN-IJYOU91         PIC X(09).
                    07  SPA-GMN-IJYOU180        PIC X(09).
                    07  SPA-GMN-NYUINBI         PIC X(09).

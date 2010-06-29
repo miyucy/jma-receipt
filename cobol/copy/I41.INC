@@ -32,8 +32,9 @@
             04  I41-VALUE       PIC X(9).
           03  I41-SEX.
             04  I41-VALUE       PIC X(2).
-          03  I41-IJYOU91.
-            04  I41-VALUE       PIC X(9).
+          03  I41-IJYOU91-G.
+            04  I41-IJYOU91-STYLE     PIC X(20).
+            04  I41-IJYOU91     PIC X(9).
           03  I41-IJYOU180.
             04  I41-VALUE       PIC X(9).
           03  I41-NYUINBI.

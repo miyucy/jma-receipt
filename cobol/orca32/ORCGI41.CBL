@@ -1442,6 +1442,7 @@
       *****************************************************************
        3103-91DAYS-EDIT-SEC            SECTION.
       *
+           MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
            IF    ( STUSAN-RRK-FLG-OVER NOT =   ZERO )
                MOVE    "********"  TO  SPA-GMN-IJYOU91
                GO  TO  3103-91DAYS-EDIT-EXT
@@ -1478,6 +1479,11 @@
                                                    LNK-DAY6-AREA
                        MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
                        MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
+                       IF      SPA-SYSYMD   >=   SPA-GMN-IJYOU91
+                           MOVE  "red"      TO   SPA-GMN-IJYOU91-STYLE
+                       ELSE
+                           MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
+                       END-IF
                        PERFORM 41012-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
                        MOVE    STUSAN-RRK-CNT  TO  IDX10
@@ -3034,6 +3040,8 @@
            MOVE    SPA-GMN-BIRTHDAYW   TO  I41-BIRTHDAY.
            MOVE    SPA-GMN-AGE         TO  I41-AGE.
            MOVE    SPA-GMN-SRYKA-IG-41 TO  I41-NYUINKA.
+           MOVE    SPA-GMN-IJYOU91-STYLE
+                                       TO  I41-IJYOU91-STYLE.
            MOVE    SPA-GMN-IJYOU91     TO  I41-IJYOU91.
            MOVE    SPA-GMN-IJYOU180    TO  I41-IJYOU180.
            MOVE    SPA-GMN-NYUINBI     TO  I41-NYUINBI.
