@@ -40,6 +40,8 @@
       *                                     生保単独になったときのまとめ
       *
       *  04.05.01    NACL-藤原    10/02/12  拡張漢字対応
+      *
+      *  04.06.01    NACL-藤原    10/06/21  日本語化（見出し）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -272,6 +274,402 @@
                07  WRK-KOHTEKSTYMD    PIC  X(08).
       *        適用終了年月日
                07  WRK-KOHTEKEDYMD    PIC  X(08).
+      *
+      *    ヘッダー情報
+       01  CSV-HEAD-01.
+           03  FILLER              PIC X(12)   VALUE   "医療機関ＩＤ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "医療機関コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "診療年月".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "レコード識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "レセプト種別コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "入外区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者ＩＤ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "漢字氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "性別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "生年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "診療科コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "レセ電診療科コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "剤番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "剤内番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "診療行為区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "診療種別区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "剤点数識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "剤点数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "剤回数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "手技点数１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "手技点数２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "薬剤点数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "材料点数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "保険組合せ番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "明細数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "明細診療行為コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "明細数量".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "明細回数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "点数識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "点数金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "明細名称入力番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "明細自費金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "明細単位コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "明細単位名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "明細名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "明細正式名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "薬価基準コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "入外中外来識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "医師コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "２日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "３日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "４日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "５日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "６日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "７日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "８日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "９日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１０日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１２日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１３日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１４日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１５日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１６日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１７日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１８日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１９日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２０日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２２日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２３日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２４日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２５日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２６日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２７日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２８日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２９日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "３０日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "３１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "保険番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "保険ＩＤ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "保険者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "本人家族区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "補助区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "継続区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "記号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "資格取得年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "適用開始年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "適用終了年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "被保険者名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災保険区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "労災患者交付番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "労災事業所名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災新継再別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災転帰事由".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "労災傷病年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "労災四肢特例区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "労災療養開始年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "労災療養終了年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災損傷区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "労災損傷区分枝番".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(26)   VALUE
+               "労災アフター療養開始年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(26)   VALUE
+               "労災アフター療養終了年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災災害区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "労災自賠責請求区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "郵便番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "地方公共団体コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "住所".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "電話番号".
+      *
+       01  CSV-HEAD-02.
+           03  FILLER              PIC X(12)   VALUE   "医療機関ＩＤ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "医療機関コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "診療年月".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "レコード識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "レセプト種別コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "入外区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者ＩＤ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "漢字氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "性別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "生年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "診療科コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "レセ電診療科コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "診療開始日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "連番".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "病名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "病名文字数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "疑いフラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "主病名フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "慢性疾患区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "保険組合せ番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "レセプト表示フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "転帰区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "転帰日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名編集フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "保険病名フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード５".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード６".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード７".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード８".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード９".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１０".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１５".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１６".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１７".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１８".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１９".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード２０".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード２１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "郵便番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "地方公共団体コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "住所".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "電話番号".
       *  
        01  WRK-CONS-AREA.
       *    コンマ
@@ -417,9 +815,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                INITIALIZE                      TOUKEI02-REC
                MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY1
       *
-      *??
-               DISPLAY "TOUKEI01-KEY=" TOUKEI01-KEY "#"
-      *??
                START   TOUKEI02-FILE
                        KEY IS    >=   TOUKEI02-KEY
                    INVALID
@@ -443,10 +838,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    INITIALIZE                      TOUKEI02-REC
                    MOVE    TOUKEI01-SEIHO-KEY (IDXX)
                                                TO  TOUKEI02-KEY1
-      *??
-               DISPLAY "TOUKEI01-SEIHO-KEY=" IDXX "#" 
-                               TOUKEI01-SEIHO-KEY (IDXX) "#"
-      *??
       *
                    START   TOUKEI02-FILE
                            KEY IS    >=   TOUKEI02-KEY
@@ -502,6 +893,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *****************************************************************
        2001-FILE-HENSYU-SEC         SECTION.
       *
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
+           IF      CNT-TOUKEI04        =   ZERO
+               PERFORM 2003-CSV-HEAD-HENSYU-SEC
+           END-IF
+      * 
       *    基本情報取得
       *
            MOVE    SPACE               TO  WRK-REC
@@ -947,11 +1343,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                MOVE    20                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    摘要開始日
+      *    適用開始日
            MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    摘要終了日
+      *    適用終了日
            MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -989,7 +1385,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                        GO  TO  2002-FILE-HENSYU-EXT
                    END-IF
            END-EVALUATE 
-                   
+      *
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
+           IF      CNT-TOUKEI05        =   ZERO
+               PERFORM 2003-CSV-HEAD-HENSYU-SEC
+           END-IF
+      *            
       *基本情報
       *
            MOVE    SPACE               TO  WRK-REC
@@ -1157,7 +1558,34 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            .
        2002-FILE-HENSYU-EXT.
            EXIT. 
-      *            
+      *
+      *****************************************************************
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
+      *****************************************************************
+       2003-CSV-HEAD-HENSYU-SEC                SECTION.
+      *
+           INITIALIZE                  WRK-REC
+                                       WRK-REC-LENGTH
+      *
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
+                           WRK-KAIGYO          DELIMITED  BY  SIZE
+                           INTO                WRK-REC
+                   END-STRING
+                   MOVE    WRK-REC             TO  TOUKEI04-REC  
+                   WRITE   TOUKEI04-REC 
+               WHEN    "2"
+                   STRING  CSV-HEAD-02         DELIMITED  BY  SIZE
+                           WRK-KAIGYO          DELIMITED  BY  SIZE
+                           INTO                WRK-REC
+                   END-STRING
+                   MOVE    WRK-REC             TO  TOUKEI05-REC  
+                   WRITE   TOUKEI05-REC 
+           END-EVALUATE
+           .
+       2003-CSV-HEAD-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ファイル出力処理
