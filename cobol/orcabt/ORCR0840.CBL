@@ -190,6 +190,9 @@
       *                                     まとめ記載対応
       *  04.05.05    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *  04.05.06    NACL-門脇    10/01/07  治験対応
+      *
+      *  04.06.01    NACL-門脇    10/07/01  自賠責文書料レセプト摘要欄記載
+      *                                     （１通時）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2530,18 +2533,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   IF ( ACCT-SRYKBN          =  "80"               ) AND
                      ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592" )
-                     EVALUATE  SRY-SRYCD(IDX2)(1:5)
-                      WHEN      "09591"
-                        IF  RECE82-SINDAN-TUU < 2
-                          MOVE   "95"   TO    RECE84-SRYKBN
-                                              RECE85-SRYKBN
-                        END-IF
-                      WHEN      "09592"
-                        IF  RECE82-MEISAI-TUU < 2
-                          MOVE   "95"   TO    RECE84-SRYKBN
-                                              RECE85-SRYKBN
-                        END-IF
-                     END-EVALUATE
+      ***            EVALUATE  SRY-SRYCD(IDX2)(1:5)
+      ***             WHEN      "09591"
+      ***               IF  RECE82-SINDAN-TUU < 2
+      ***                 MOVE   "95"   TO    RECE84-SRYKBN
+      ***                                     RECE85-SRYKBN
+      ***               END-IF
+      ***             WHEN      "09592"
+      ***               IF  RECE82-MEISAI-TUU < 2
+      ***                 MOVE   "95"   TO    RECE84-SRYKBN
+      ***                                     RECE85-SRYKBN
+      ***               END-IF
+      ***            END-EVALUATE
                      MOVE    1          TO    FLG-SRYKBN-HEN
                   ELSE
                    IF ( SRY-SRYCD(IDX2)  =  CONS-ROUSAI2   OR
