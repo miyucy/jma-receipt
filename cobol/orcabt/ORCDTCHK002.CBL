@@ -276,6 +276,16 @@
                05  FLG-PTBYO-DAY-KA-OCC                OCCURS  30.
                    07  FLG-PTBYO-DAY-KA                PIC 9(01)
                                                        OCCURS  31.
+           03  FLG-PTBYO-DAY2-G.
+               05  FLG-PTBYO-DAY2                      PIC 9(01)
+                                                       OCCURS  31.
+           03  FLG-PTBYO-DAY2-KA-G.
+               05  FLG-PTBYO-DAY2-KA-OCC               OCCURS  30.
+                   07  FLG-PTBYO-DAY2-KA               PIC 9(01)
+                                                       OCCURS  31.
+           03  FLG-SYOSIN-ERR-DAY-G.
+               05  FLG-SYOSIN-ERR-DAY                  PIC 9(01)
+                                                       OCCURS  31.
            03  FLG-SAISIN-ERR-DAY-G.
                05  FLG-SAISIN-ERR-DAY                  PIC 9(01)
                                                        OCCURS  31.
@@ -358,7 +368,8 @@
        01  CNT-AREA.
            03  CNT-DTCHK003                            PIC 9(06).
            03  CNT-DTCHK004                            PIC 9(06).
-           03  CNT-JITUNISSU                           PIC 9(06).
+           03  CNT-JNISSU                              PIC 9(06).
+           03  CNT-SRYYMD                              PIC 9(06).
            03  CNT-NISSU                               PIC 9(06).
            03  CNT-CHKERR                              PIC 9(06).
       *    °åÎÅµ¡´Ø¥³¡¼¥É¡¢´µ¼Ô£É£Ä¡¢¿ÇÎÅ²Ê¤ÇÃê½Ð¤·¤¿·ï¿ô
@@ -2649,8 +2660,6 @@
       *****************************************************************
        200111-SRYACT-TAIHI-SEC         SECTION.
       *
-           MOVE    ZERO                TO  FLG-SHOSAISIN
-      *
            PERFORM VARYING IDX-SRY FROM    1   BY  1
                    UNTIL ( IDX-SRY     >   PTSRY-MAX )
       *
@@ -2706,6 +2715,8 @@
                                PERFORM 200111-TSRYKA-SYOSIN-HEN-SEC
       *                        ¿ÇÎÅ²ÊÂàÈò¥ï¡¼¥¯ºÆ¿ÇÆüÊÔ½¸½èÍý
                                PERFORM 200111-TSRYKA-SAISIN-HEN-SEC
+      *                        ¿ÇÎÅ²ÊÂàÈò¥ï¡¼¥¯¼ÂÆü¿ô»»ÄêÆüÊÔ½¸½èÍý
+                               PERFORM 200111-TSRYKA-JNISSU-HEN-SEC
                            END-IF
       *
       *                    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂàÈò¥ï¡¼¥¯ÊÔ½¸½èÍý
@@ -2931,6 +2942,8 @@
       *
                    IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
       *
+                       MOVE    1   TO  TSRYKA-ALL-SYOSIN-DAY
+                                                 (IDX2)
                        MOVE    1   TO  TSRYKA-SYOSIN-DAY
                                                  (IDX-TSRYKA IDX2)
       *
@@ -2987,6 +3000,32 @@
       *
            .
        200111-TSRYKA-SAISIN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÂàÈò¥ï¡¼¥¯¼ÂÆü¿ô»»ÄêÆüÊÔ½¸½èÍý
+      *****************************************************************
+       200111-TSRYKA-JNISSU-HEN-SEC    SECTION.
+      *
+           PERFORM 200111-JNISSU-HEN-SEC
+      *
+           IF    ( FLG-SHOSAISIN     =    1 )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   31 )
+      *
+                   IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
+      *
+                       MOVE    1       TO  TSRYKA-ALL-JNISSU-DAY
+                                           (IDX2)
+                       MOVE    1       TO  TSRYKA-JNISSU-DAY
+                                           (IDX-TSRYKA IDX2)
+      *
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       200111-TSRYKA-JNISSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂàÈò¥ï¡¼¥¯ÊÔ½¸½èÍý
@@ -3052,8 +3091,8 @@
                    +   DCACCT-ZAIKAISU
       *
                IF    ( DCACCT-SRYKBN(1:1)  =   "2" OR "3" )
-                   COMPUTE TSRYCD-YKZKAISU (TSRYCD-MAX)
-                       =   TSRYCD-YKZKAISU (TSRYCD-MAX)
+                   COMPUTE TSRYCD-YKZKAISU (IDX0)
+                       =   TSRYCD-YKZKAISU (IDX0)
                        +   DCACCT-ZAIKAISU
                END-IF
       *
@@ -3240,6 +3279,8 @@
       *    ¼ÂÆü¿ô»»Äê¥Á¥§¥Ã¥¯
       *****************************************************************
        200111-JNISSU-HEN-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SHOSAISIN
       *
            IF   (( DCACCT-ZAITEN   NOT =   ZERO )
              AND ( DCACCT-ZAIKAISU NOT =   ZERO )
@@ -4785,6 +4826,8 @@
       *
            INITIALIZE              FLG-PTBYO-DAY-G
                                    FLG-PTBYO-DAY-KA-G
+                                   FLG-PTBYO-DAY2-G
+                                   FLG-PTBYO-DAY2-KA-G
                                    WRK-SYOSINYMD-G
       *
            IF    ( FLG-CHKEND (6)  =   ZERO )
@@ -5588,17 +5631,39 @@
       *****************************************************************
        2001121-PTBYO-DAY-HEN-SEC       SECTION.
       *
+           MOVE    "99999999"          TO  WRK-TENKIYMD
+      *
+           IF    ( PTBYO-TENKIYMD      NOT =   SPACE )
+               MOVE    PTBYO-TENKIYMD  TO  WRK-TENKIYMD
+           END-IF
+      *
            IF    ( PTBYO-SRYYMD (1:6)  =   ORCBSD01-SRYYM )
                MOVE    PTBYO-SRYYMD    TO  WRK-YMD
                IF    ( WRK-DD          >=  1 )
                 AND  ( WRK-DD          <=  31 )
                    IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-                       MOVE    1      TO  FLG-PTBYO-DAY-KA (IDX4 WRK-DD)
+                       MOVE    1       TO  FLG-PTBYO-DAY-KA(IDX4 WRK-DD)
                    ELSE
-                       MOVE    1      TO  FLG-PTBYO-DAY    (WRK-DD)
+                       MOVE    1       TO  FLG-PTBYO-DAY   (WRK-DD)
                    END-IF
                END-IF
            END-IF
+      *
+           MOVE    ORCBSD01-SRYYM      TO  WRK-YMD
+           PERFORM VARYING IDXD    FROM    1   BY  1
+                   UNTIL ( IDXD    >   31 )
+      *
+               MOVE    IDXD            TO  WRK-DD
+               IF    ( WRK-YMD         >=  PTBYO-SRYYMD )
+                AND  ( WRK-YMD         <=  WRK-TENKIYMD )
+                   IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+                       MOVE    1   TO  FLG-PTBYO-DAY2-KA (IDX4 WRK-DD)
+                   ELSE
+                       MOVE    1   TO  FLG-PTBYO-DAY2    (WRK-DD)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
       *
            .
        2001121-PTBYO-DAY-HEN-EXT.
@@ -5773,43 +5838,89 @@
       *****************************************************************
        200112-PTBYO-SRYYMD-CHK-SEC     SECTION.
       *
+           INITIALIZE              FLG-SYOSIN-ERR-DAY-G
+                                   FLG-SAISIN-ERR-DAY-G
+                                   CNT-JNISSU
+                                   CNT-SRYYMD
+      *
+           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+               MOVE    FLG-PTBYO-DAY-KA-OCC (IDX4)
+                                      TO   FLG-PTBYO-DAY-G
+               MOVE    FLG-PTBYO-DAY2-KA-OCC (IDX4)
+                                      TO   FLG-PTBYO-DAY2-G
+           END-IF
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0           >   31 )
-                    OR   ( FLG-CHKEND (6) =   1 )
       *
-               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-                   MOVE    FLG-PTBYO-DAY-KA-OCC (IDX4)
-                                          TO   FLG-PTBYO-DAY-G
+               IF    ( TSRYKA-SYOSIN-DAY (IDX4 IDX0)   =   1 )
+                AND  ( FLG-PTBYO-DAY (IDX0)            =   0 )
+                   MOVE    1          TO   FLG-SYOSIN-ERR-DAY (IDX0)
                END-IF
       *
-               IF    ( TSRYKA-SYOSIN-DAY (IDX4 IDX0)
-                                           =   1 )
-                   IF    ( FLG-PTBYO-DAY (IDX0)
-                                           =   ZERO )
-                       MOVE    IDX0        TO  WRK-DAY-Z
-                       MOVE    WRK-DAY-Z   TO  WRK-MAE-INPUT
-                       PERFORM 800-ZENKAKU-HEN-SEC
-                       MOVE    SPACE       TO  WRK-PTBYOMES-PLUS
-                       STRING  WRK-OUT-INPUT   DELIMITED   BY  SPACE
-                               "Æü"            DELIMITED   BY  SPACE
-                       INTO    WRK-PTBYOMES-PLUS
-                       END-STRING
-      *
-                       MOVE    TSRYKA-SRYKA (IDX4)
-                                           TO  SRH-1005-SRYKA
-                       MOVE    WRK-PTBYOMES-PLUS
-                                           TO  WRK-ERRMES-PLUS
-                       MOVE    "060001"    TO  WRK-ERRCD
-                       INITIALIZE              TERRINF-AREA
-                       PERFORM 213-ERRMES-HEN-SEC
-      *
-                       IF    ( ORCBSD01-CHKKBN (6) =   "1" )
-                           MOVE    1       TO  FLG-CHKEND (6)
-                       END-IF
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+                   IF    ( TSRYKA-JNISSU-DAY   (IDX4 IDX0) =   1 )
+                    AND  ( TSRYKA-SYOSIN-DAY (IDX4 IDX0)   =   0 )
+                    AND  ( FLG-PTBYO-DAY2 (IDX0)           =   0 )
+                       MOVE    1      TO   FLG-SAISIN-ERR-DAY (IDX0)
+                   END-IF
+                   IF    ( TSRYKA-JNISSU-DAY   (IDX4 IDX0) =   1 )
+                       COMPUTE CNT-JNISSU  =   CNT-JNISSU  +   1
+                   END-IF
+               ELSE
+                   IF    ( TSRYKA-JNISSU-DAY   (IDX4 IDX0) =   1 )
+                    AND  ( TSRYKA-ALL-SYOSIN-DAY (IDX0)    =   0 )
+                    AND  ( FLG-PTBYO-DAY2 (IDX0)           =   0 )
+                       MOVE    1      TO   FLG-SAISIN-ERR-DAY (IDX0)
+                   END-IF
+                   IF    ( TSRYKA-ALL-JNISSU-DAY  (IDX0)   =   1 )
+                       COMPUTE CNT-JNISSU  =   CNT-JNISSU  +   1
                    END-IF
                END-IF
       *
+               IF    ( FLG-PTBYO-DAY (IDX0)    =   1 )
+                   COMPUTE CNT-SRYYMD      =   CNT-SRYYMD  +   1
+               END-IF
+      *
            END-PERFORM
+      *
+           IF    ( FLG-SYOSIN-ERR-DAY-G    NOT =   ZERO )
+               MOVE    FLG-SYOSIN-ERR-DAY-G
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+               MOVE    TSRYKA-SRYKA (IDX4)
+                                       TO  SRH-1005-SRYKA
+               MOVE    WRK-NISSU-MES   TO  WRK-ERRMES-PLUS
+               MOVE    "060001"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
+               PERFORM 213-ERRMES-HEN-SEC
+           END-IF
+      *
+           IF    ( FLG-SAISIN-ERR-DAY-G    NOT =   ZERO )
+               MOVE    FLG-SAISIN-ERR-DAY-G
+                                       TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+               MOVE    TSRYKA-SRYKA (IDX4)
+                                       TO  SRH-1005-SRYKA
+               MOVE    WRK-NISSU-MES   TO  WRK-ERRMES-PLUS
+               MOVE    "060007"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
+               PERFORM 213-ERRMES-HEN-SEC
+           END-IF
+      *
+           IF    ( CNT-SRYYMD          >   CNT-JNISSU )
+               IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+                   MOVE    TSRYKA-SRYKA (IDX4)
+                                       TO  SRH-1005-SRYKA
+                   MOVE    "060006"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 214-ERRMES-HEN-SEC
+               ELSE
+                   MOVE    "060006"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 210-ERRMES-HEN-SEC
+               END-IF
+           END-IF
       *
            .
        200112-PTBYO-SRYYMD-CHK-EXT.

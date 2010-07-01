@@ -228,7 +228,6 @@
            05 PIC  X(30)   VALUE   "病名に対応する病名コードが入力".
            05 PIC  X(30)   VALUE   "されていません                ".
            05 PIC  X(30)   VALUE   "                              ".
-      *
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "050008".
            05 PIC  X(30)   VALUE   "転帰区分（転帰日）が設定されて".
@@ -291,6 +290,16 @@
            05 PIC  X(30)   VALUE   "当月開始病名のみの入力です。初".
            05 PIC  X(30)   VALUE   "診料が算定可能か確認してくださ".
            05 PIC  X(30)   VALUE   "い                            ".
+      *
+           05 PIC  X(06)   VALUE   "060006".
+           05 PIC  X(30)   VALUE   "病名開始日が正しく入力されてい".
+           05 PIC  X(30)   VALUE   "るか確認してください。        ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "060007".
+           05 PIC  X(30)   VALUE   "診療日に継続中の病名が存在しま".
+           05 PIC  X(30)   VALUE   "せん                          ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 07xxxx 急性病名・疑い病名
       *                            +---------+---------+---------+.
@@ -529,7 +538,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  92.
+           05 ERRMES-OCC   OCCURS  94.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   92.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   94.

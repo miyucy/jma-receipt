@@ -78,6 +78,10 @@
       *
       *    ø«Œ≈≤ ¬‡»Ú•Ô°º•Ø
          02  TSRYKA-AREA.
+           03  TSRYKA-ALL-SYOSIN-DAY                   PIC 9(01)
+                                                       OCCURS 31.
+           03  TSRYKA-ALL-JNISSU-DAY                   PIC 9(01)
+                                                       OCCURS 31.
            03  TSRYKA-MAX                              PIC 9(05).
            03  TSRYKA-OCC                              OCCURS 30.
                05  TSRYKA-PTBYO-CNT1                   PIC 9(05).
@@ -89,6 +93,9 @@
                05  TSRYKA-SYOSIN-YMD                   PIC X(08).
                05  TSRYKA-SAISIN-DAY-G.
                    07  TSRYKA-SAISIN-DAY               PIC 9(01)
+                                                       OCCURS  31.
+               05  TSRYKA-JNISSU-DAY-G.
+                   07  TSRYKA-JNISSU-DAY               PIC 9(01)
                                                        OCCURS  31.
                05  TSRYKA-SYOSAIYMD-MAX                PIC 9(03).
                05  TSRYKA-SYOSAIYMD-OCC                OCCURS  50.
