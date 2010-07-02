@@ -202,6 +202,9 @@
       *
       *  04.06.01    NACL-門脇    10/07/01  自賠責文書料レセプト摘要欄記載
       *                                     （１通時）対応
+      *  04.06.02    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
+      *                                     レセプトコメント自動記載（重複時）
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3130,10 +3133,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
       *
               IF   RECE41-SRYYM    >=     "200804"
-                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI1-COMMENT
-                                        OR    CONS-SYOUNI2-COMMENT)
+                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI1-COMMENT)
                 AND  (FLG-SYOUNI-COM    =     ZERO                )
                    MOVE   "1"   TO    RECE44-FLG-SYOUNI-COMMENT
+                   MOVE   "1"   TO    RECE41-SYOUNIFLG
+                END-IF
+                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI2-COMMENT)
+                AND  (FLG-SYOUNI-COM    =     ZERO                )
+                   MOVE   "2"   TO    RECE44-FLG-SYOUNI-COMMENT
                 END-IF
                 IF    SRY-SRYCD(IDX2)   =     CONS-SYOUNI3-COMMENT
                    MOVE  SPACE  TO    RECE44-FLG-SYOUNI-COMMENT

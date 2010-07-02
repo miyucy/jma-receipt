@@ -108,6 +108,10 @@
       *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.02    NACL-門脇    09/08/17  小数点以下５桁対応
       *  04.05.03    NACL-門脇    09/11/25  リハビリコメント対応
+      *
+      *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
+      *                                     レセプトコメント自動記載（重複時）
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3603,7 +3607,9 @@ grpsys       PERFORM  900-DBSELECT-SEC
       *****************************************************************
        2001-SYOUNI-HANTEI-SEC          SECTION.
       *
-           IF   RECE44-FLG-SYOUNI-COMMENT   =    "1"
+           IF  ( RECE44-FLG-SYOUNI-COMMENT   =    "1"   )
+           OR  ((RECE44-FLG-SYOUNI-COMMENT   =    "2"  ) AND
+                (RECE41-SYOUNIFLG            =    SPACE))
       *
              MOVE        ZERO        TO      FLG-SYOUNI-COMMENT
       *
