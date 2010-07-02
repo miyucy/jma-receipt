@@ -54,6 +54,7 @@
       *  04.04.00    NACL=Â¿¡¹Ç¼  09/01/30  ËÜ±¡Ê¬±¡ÂÐ±þ
       *  04.05.00    NACL=Â¿¡¹Ç¼  09/10/30  Â¿ºÞÅêÍ¿¡¦´¹»»ÃÍÆþÎÏÂ¾ÂÐ±þ
       *  04.05.00    NACL=Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
+      *  04.06.00    NACL=Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¶èÊ¬ÂÐ±þ
       *****************************************************************
       *
       *
@@ -1047,6 +1048,8 @@
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
       *        ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
                MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
+      *        »ÄÎÌÇÑ´þ¶èÊ¬
+               MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -1067,8 +1070,16 @@
                MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
            END-IF
       *    ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
-           IF      SPA-CHGSRYSYU-FLG    =   SPACE
-               MOVE    "0"                  TO  SPA-CHGSRYSYU-FLG
+           IF      SPA-CHGSRYSYU-FLG   =   SPACE
+               MOVE    "0"                 TO  SPA-CHGSRYSYU-FLG
+           END-IF
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           IF      SPA-HAIKIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
+           END-IF
+      *    £È£²£²Ç¯£´·î¤«¤éÈ¿±Ç
+           IF      SPA-SRYYMD          <   "20100401"
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1729,6 +1740,8 @@
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
       *        ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
                MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
+      *        »ÄÎÌÇÑ´þ¶èÊ¬
+               MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
            END-IF
            IF      SPA-DOSRYKBNFLG     =   SPACE
                MOVE    "00"                TO  SPA-DOSRYKBNFLG
@@ -1748,6 +1761,14 @@
       *    ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
            IF      SPA-CHGSRYSYU-FLG    =   SPACE
                MOVE    "0"                 TO  SPA-CHGSRYSYU-FLG
+           END-IF
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           IF      SPA-HAIKIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
+           END-IF
+      *    £È£²£²Ç¯£´·î¤«¤éÈ¿±Ç
+           IF      SPA-SRYYMD          <   "20100401"
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -4863,6 +4884,61 @@
                        MOVE    1               TO  SPA-YAKJYO-3
                    END-IF
                END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê¿ÇÎÅ¹Ô°Ù¾ðÊó¡Ë
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *        Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+               MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
+      *        ¼ðáç¥Þ¡¼¥«°ìÍ÷É½¼¨
+               MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
+      *        ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
+               MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
+      *        »ÄÎÌÇÑ´þ¶èÊ¬
+               MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
+           END-IF
+           IF      SPA-CHG310FLG       =   SPACE
+               MOVE    "0"                 TO  SPA-CHG310FLG
+           END-IF
+           IF      SPA-AKUSEIHYOFLG    =   SPACE
+               MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
+           END-IF
+      *    ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
+           IF      SPA-CHGSRYSYU-FLG    =   SPACE
+               MOVE    "0"                 TO  SPA-CHGSRYSYU-FLG
+           END-IF
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           IF      SPA-HAIKIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
+           END-IF
+      *    £È£²£²Ç¯£´·î¤«¤éÈ¿±Ç
+           IF      SPA-SRYYMD          <   "20100401"
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

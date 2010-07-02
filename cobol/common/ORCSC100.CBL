@@ -388,6 +388,8 @@
            IF      ORCSC100-KENSADEL   =   1
                MOVE    1               TO  LNK-SC93-DELSYORIFLG
            END-IF
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-SC93-HAIKIKBN-FLG
       *
            CALL    "ORCSC93"           USING
                                        MCPAREA
@@ -1323,6 +1325,8 @@
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *    ¼ðáç¥Þ¡¼¥«¡¼°ìÍ÷Å¸³«ÁªÂò
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
            IF      SPA-NYUGAIKBN       =   "1"
@@ -2129,6 +2133,8 @@
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *    ¼ðáç¥Þ¡¼¥«¡¼°ìÍ÷Å¸³«ÁªÂò
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
       *
       *    ¾®»ù²ÊÆÃÎã»þ´Ö³°¥Á¥§¥Ã¥¯
            MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG

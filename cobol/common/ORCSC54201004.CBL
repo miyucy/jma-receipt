@@ -35,6 +35,7 @@
       * 01.00.05     NACL-Â¿¡¹Ç¼  06/01/13  ¿À·Ð¥Ö¥í¥Ã¥¯½ÅÊ£¥Á¥§¥Ã¥¯ÄÉ²Ã
       * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/26  Ê¿À®£²£°Ç¯£´·îÂÐ±þ
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·îÂÐ±þ
+      * 04.06.00     NACL-Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¼«Æ°»»ÄêÂÐ±þ
       *****************************************************************
       *
       *
@@ -141,6 +142,11 @@
            03  WRK-ERRCD           PIC X(04).
       *
            03  WRK-INPUTCD         PIC X(22).
+      *
+           03  WRK-SURYO-Z         PIC 9(07)V9(05).
+           03  WRK-SURYO-ZR         REDEFINES   WRK-SURYO-Z.
+               05  WRK-SURYO-S1    PIC 9(07).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
        01  WRK-AREA2.
       *    ÊÄº¿½Û´Ä¼°Ëã¿ì¤Î¿ôÎÌ
@@ -374,6 +380,8 @@
                    IF      WRK-COM-SEIBUTUKBN(IDX-Z)   =   1
                        MOVE   1                TO  FLG-SEIBETU
                    END-IF
+      *            »ÄÎÌÇÑ´þ
+                   PERFORM 1006-HAIKI-SYORI-SEC
       *        ´ïºà
                WHEN    "7"
       *            »ÀÁÇ¶èÊ¬È½Äê
@@ -478,6 +486,42 @@
       *
            .
        10011-SANSO-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    »ÄÎÌÇÑ´þ¥³¥á¥ó¥È¤ÎÍ­Ìµ
+      *****************************************************************
+       1006-HAIKI-SYORI-SEC           SECTION.
+      *
+      *    ¥¢¥ó¥×¥ë¤Î»þ¡¢¾®¿ô°Ê²¼È½Äê
+           IF     (WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046" )
+           AND    (LNK-ORCSC-HAIKIKBN-FLG  =   "2"            )
+      *
+               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO-Z
+               IF     (WRK-SURYO-S2                >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)    =   SPACE   )
+                   PERFORM 10011-HAIKI-ADD-SEC
+               END-IF
+           END-IF
+           .
+       1006-HAIKI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÇË´þ¥³¥á¥ó¥È¼«Æ°È¯À¸À®½èÍý
+      *****************************************************************
+       10011-HAIKI-ADD-SEC             SECTION.
+      *
+           MOVE    "099309901"         TO  WRK-SRYCD
+           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+               CONTINUE
+           ELSE
+               MOVE    IDX-Z               TO  IDX-S
+               MOVE    ZERO                TO  FLG-ARI
+               PERFORM 1002-KASAN-SET-SEC
+               MOVE    IDX-S               TO  IDX-Z
+           END-IF
+           .
+       10011-HAIKI-ADD-EXT.
            EXIT.
       *
       *****************************************************************

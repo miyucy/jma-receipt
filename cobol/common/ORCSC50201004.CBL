@@ -41,6 +41,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正追加
       * 04.02.00     NACL-多々納  08/06/24  通則加算を通則加算対象の所定点数としない
       * 04.05.00     NACL-多々納  10/03/XX  Ｈ２２年４月改正追加
+      * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       *****************************************************************
       *
       *
@@ -159,6 +160,11 @@
            03  WRK-SCNT            PIC 9(03).
       *
            03  WRK-INPUTCD         PIC X(22).
+      *
+           03  WRK-SURYO           PIC 9(07)V9(05).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(07).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -378,6 +384,8 @@
                    IF      WRK-COM-SEIBUTUKBN(IDX-Z)   =   1
                        MOVE   1                TO  FLG-SEIBETU
                    END-IF
+      *            残量廃棄
+                   PERFORM 1006-HAIKI-SYORI-SEC
       *        器材
                WHEN    "7"
       *DDDD        IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
@@ -426,6 +434,42 @@
       *
            .
        100115-SANSO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    残量廃棄コメントの有無
+      *****************************************************************
+       1006-HAIKI-SYORI-SEC           SECTION.
+      *
+      *    アンプルの時、小数以下判定
+           IF     (WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046" )
+           AND    (LNK-ORCSC-HAIKIKBN-FLG  =   "2"            )
+      *
+               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
+               IF     (WRK-SURYO-S2                >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)    =   SPACE   )
+                   PERFORM 10011-HAIKI-ADD-SEC
+               END-IF
+           END-IF
+           .
+       1006-HAIKI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    破棄コメント自動発生成処理
+      *****************************************************************
+       10011-HAIKI-ADD-SEC             SECTION.
+      *
+           MOVE    "099309901"         TO  WRK-SRYCD
+           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+               CONTINUE
+           ELSE
+               MOVE    IDX-Z               TO  IDX-S
+               MOVE    ZERO                TO  FLG-ARI
+               PERFORM 1002-KASAN-SET-SEC
+               MOVE    IDX-S               TO  IDX-Z
+           END-IF
+           .
+       10011-HAIKI-ADD-EXT.
            EXIT.
       *
       *****************************************************************

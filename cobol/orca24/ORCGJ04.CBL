@@ -53,6 +53,7 @@
       * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµ
       * 04.05.00     NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       * 04.05.00     NACL-Â¿¡¹Ç¼  09/09/16  "0086XXXXX"¥³¥á¥ó¥ÈÂÐ±þ
+      * 04.06.00     NACL-Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¼«Æ°»»ÄêÂÐ±þ
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1254,12 +1255,22 @@
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
       *        ¼ðáç¥Þ¡¼¥«°ìÍ÷É½¼¨
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
+      *        »ÄÎÌÇÑ´þ¶èÊ¬
+               MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
            END-IF
            IF      SPA-CHG310FLG       =   SPACE
                MOVE    "0"                 TO  SPA-CHG310FLG
            END-IF
            IF      SPA-AKUSEIHYOFLG    =   SPACE
                MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
+           END-IF
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           IF      SPA-HAIKIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
+           END-IF
+      *    £È£²£²Ç¯£´·î¤«¤éÈ¿±Ç
+           IF      SPA-SRYYMD          <   "20100401"
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1655,6 +1666,17 @@
       *        »ÄÎÌÇÑ´þ¤ÎÈ½Äê
                IF     (SPA-COM-SRYKBN (IDX-1)(1:1)  =   "3" )  AND
                       (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" )
+                AND   (SPA-ZAIKBN               NOT =   1   )
+                   PERFORM 31034-HAIKI-CHKI-SEC
+               END-IF
+      *        »ÄÎÌÇÑ´þ¡ÊÃí¼Í°Ê²¼¡Ë
+               IF     (SPA-HAIKIKBN-FLG    =   "2"   )   AND
+                      (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" ) AND
+                      (SPA-COM-SRYKBN (IDX-1)(1:1)  =   "4"
+                                                    OR  "5"
+                                                    OR  "6"
+                                                    OR  "7"
+                                                    OR  "8" )
                 AND   (SPA-ZAIKBN               NOT =   1   )
                    PERFORM 31034-HAIKI-CHKI-SEC
                END-IF
@@ -3838,6 +3860,8 @@
            END-IF
       *    ¿²¤¿¤­¤êºßÂð²Ê»»ÄêÍ­¤ê¤È¤¹¤ë
            MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-SC93-HAIKIKBN-FLG
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -4064,6 +4088,8 @@
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *    ¼ðáç¥Þ¡¼¥«¡¼°ìÍ÷Å¸³«ÁªÂò
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            ¿ÇÎÅ

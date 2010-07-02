@@ -169,6 +169,8 @@
                05  SPA-BYOMEIAUTO-FLG      PIC X(01).
       *投薬診療種別変換選択
                05  SPA-CHGSRYSYU-FLG       PIC  X(01).
+      *残量廃棄区分
+               05  SPA-HAIKIKBN-FLG        PIC  X(01).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).

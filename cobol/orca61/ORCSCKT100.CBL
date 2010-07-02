@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/07/30  リハビリ発症日編集対応
+      *  04.06.00    NACL-多々納  10/07/01  残量廃棄自動算定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -389,6 +390,8 @@
            IF      ORCSC100-KENSADEL   =   1
                MOVE    1               TO  LNK-SC93-DELSYORIFLG
            END-IF
+      *    残量廃棄
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-SC93-HAIKIKBN-FLG
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC
@@ -1073,8 +1076,7 @@
            IF      SPA-COM-NYU-KAI (IDX)  >   ZERO
                IF     (LNK-SC91-ERRCD  NOT =   SPACE )  AND
                       (LNK-SC91-ERRMSG     =   SPACE )
-                   MOVE    SPA-SRYYMD(7:2)
-                                           TO  LNK-SC91-ERRMSG(1:2)
+                   MOVE    IDX-N2          TO  LNK-SC91-ERRMSG(1:2)
                    MOVE    "日算定済み"    TO  LNK-SC91-ERRMSG(3:)
                END-IF
            END-IF
@@ -1330,6 +1332,8 @@
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *    腫瘍マーカー一覧展開選択
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
+      *    残量廃棄区分
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
            IF      ORCSC100-KBN        =   "1"
@@ -2152,6 +2156,8 @@
            MOVE    SPA-CHG310FLG       TO  LNK-ORCSC-CHG310FLG
       *    腫瘍マーカー一覧展開選択
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
+      *    残量廃棄区分
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
       *
       *    小児科特例時間外チェック
            MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG

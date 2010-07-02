@@ -100,6 +100,8 @@
            03  LNK-ORCSC-CHG310FLG         PIC  X(01).
       *腫瘍マーカー一覧展開選択
            03  LNK-ORCSC-AKUSEIHYOFLG      PIC  X(01).
+      *残量廃棄区分
+           03  LNK-ORCSC-HAIKIKBN-FLG      PIC  X(01).
       *
       *更新前自動算定のみに使用（Ｋ０２のみ）
       *調剤技術基本料有無

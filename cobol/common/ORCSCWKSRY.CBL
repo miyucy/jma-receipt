@@ -788,6 +788,16 @@
                           (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" )
                        PERFORM 10025-HAIKI-CHKI-SEC
                    END-IF
+      *            注射以下
+                   IF     (SPA-HAIKIKBN-FLG    =   "2"   )   AND
+                          (SPA-COM-INPUTCD(IDX-1)(1:1)  =   "6" ) AND
+                          (SPA-COM-SRYKBN (IDX-1)(1:1)  =   "4"
+                                                        OR  "5"
+                                                        OR  "6"
+                                                        OR  "7"
+                                                        OR  "8" )
+                       PERFORM 10025-HAIKI-CHKI-SEC
+                   END-IF
       *
       *            回数の入力（外来のみ）
                    IF     (SPA-NYUGAIKBN       =   "2" )  AND

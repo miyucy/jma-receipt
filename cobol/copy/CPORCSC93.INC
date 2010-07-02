@@ -40,6 +40,8 @@
            03  LNK-SC93-NETAKIRI-ARI   PIC  9(01).
       *    入院検査まとめ有り
            03  LNK-SC93-KENSAARIFLG    PIC  9(01).
+      *    残量廃棄区分
+           03  LNK-SC93-HAIKIKBN-FLG   PIC  9(01).
       *
       *    入院検査まとめエラー
            03  LNK-SC93-ERRCD          PIC  9(01).

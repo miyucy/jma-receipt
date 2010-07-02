@@ -1687,17 +1687,7 @@
                    EVALUATE    SPA-COM-INPUTCD (IDX)
       *            残量廃棄の時、注射であること
                        WHEN    "099309901"
-                           IF      SPA-COM-SRYKBN(IDX - 1) =   "31"
-                                                           OR  "32"
-                                                           OR  "33"
-      *                      処置追加
-                                                           OR  "40"
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0061"        TO  SPA-ERRCD
-                           END-IF
+                           PERFORM 51019-ZANHAIKI-CHK-SEC
       *            粉砕の時、内服とする
                        WHEN    "099209901"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
@@ -1910,6 +1900,41 @@
       *
            .
        5101-SRYKBN-0-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    残量廃棄チェック処理
+      *****************************************************************
+       51019-ZANHAIKI-CHK-SEC           SECTION.
+      *
+           IF      LNK-SC93-HAIKIKBN-FLG   =   "2"
+      *        注射・処置・検査・手術・麻酔・画像診断・リハビリ等
+               IF      SPA-COM-SRYKBN(IDX - 1)(1:1)    =   "3"
+                                                       OR  "4"
+                                                       OR  "5"
+                                                       OR  "6"
+                                                       OR  "7"
+                                                       OR  "8"
+                   MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                               TO  SPA-COM-SRYKBN (IDX)
+               ELSE
+                   MOVE    "0061"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        注射・処置のみ
+               IF      SPA-COM-SRYKBN(IDX - 1) =   "31"
+                                               OR  "32"
+                                               OR  "33"
+      *             処置追加
+                                               OR  "40"
+                   MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                               TO  SPA-COM-SRYKBN (IDX)
+               ELSE
+                   MOVE    "0061"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       51019-ZANHAIKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************

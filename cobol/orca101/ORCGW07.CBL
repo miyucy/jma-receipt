@@ -112,6 +112,7 @@
       *  04.06.01    NACL-藤原    10/06/16  疑いフラグ設定対応
       *                                     疑いフラグ設定区分の追加
       *  04.06.00    NACL-多々納  10/06/21  予約・受付連動など追加
+      *  04.06.00    NACL-多々納  10/07/01  残量廃棄自動区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -623,6 +624,15 @@
                            11  SPA-GMN-YKJOKUKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-YKJOKUKBN-MAX   PIC 9(02).
+      *                残量廃棄区分
+                       09  SPA-GMN-HAIKIKBN-G.
+                           11  SPA-GMN-HAIKIKBN       PIC X(01).
+                           11  SPA-GMN-HAIKIKBN-F1    PIC X(01).
+                           11  SPA-GMN-HAIKIKBN-MEI   PIC X(58).
+                       09  SPA-GMN-HAIKIKBN-COMB.
+                           11  SPA-GMN-HAIKIKBN-LST   PIC X(60)
+                                                        OCCURS  5.
+                           11  SPA-GMN-HAIKIKBN-MAX   PIC 9(02).
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -1794,6 +1804,11 @@
            MOVE    "1 院外処方含まない"    TO  SPA-GMN-RESPRV038-LST(1)
            MOVE    "2 院外処方含む"        TO  SPA-GMN-RESPRV038-LST(2)
            MOVE    2                   TO  SPA-GMN-RESPRV038-MAX
+      *    残量廃棄
+           MOVE    "1 注射のみ"        TO  SPA-GMN-HAIKIKBN-LST(1)
+           MOVE    "2 すべての診療区分"
+                                       TO  SPA-GMN-HAIKIKBN-LST(2)
+           MOVE    2                   TO  SPA-GMN-HAIKIKBN-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -2938,6 +2953,8 @@
            MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-GMN-CHGSRYSYU
       *    レセプトブレビュー
            MOVE    SYS-1038-RESPRVFLG      TO  SPA-GMN-RESPRV038
+      *    残量廃棄区分
+           MOVE    SYS-1038-HAIKIKBN       TO  SPA-GMN-HAIKIKBN
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -3200,6 +3217,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-RESPRV038-LST (1)
                                        TO  SPA-GMN-RESPRV038-G
+           END-IF
+      *    残量廃棄区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-HAIKIKBN-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-HAIKIKBN
+                                       =   SPA-GMN-HAIKIKBN-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-HAIKIKBN-LST (IDY)
+                                       TO  SPA-GMN-HAIKIKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-HAIKIKBN-LST (1)
+                                       TO  SPA-GMN-HAIKIKBN-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -4439,6 +4473,7 @@
            MOVE    W07-CHG310FLG       TO  SPA-GMN-CHG310FLG-G
            MOVE    W07-CHGSRYSYU       TO  SPA-GMN-CHGSRYSYU-G
            MOVE    W07-RESPRV038       TO  SPA-GMN-RESPRV038-G
+           MOVE    W07-HAIKIKBN        TO  SPA-GMN-HAIKIKBN-G
            MOVE    W07-YKJOKUKBN       TO  SPA-GMN-YKJOKUKBN-G
       *
       *    収納機能情報
@@ -4730,6 +4765,10 @@
       *            レセプトブレビュー
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-RESPRV038-CHK-SEC
+                   END-IF
+      *            残量廃棄区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-HAIKIKBN-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -6700,6 +6739,31 @@
        4108-RESPRV038-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    残量廃棄区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-HAIKIKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-HAIKIKBN-MAX)
+                       OR     (FLG-OK  =   1    ) 
+               IF      SPA-GMN-HAIKIKBN
+                                       =   SPA-GMN-HAIKIKBN-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-HAIKIKBN-LST(IDX)
+                                          TO  SPA-GMN-HAIKIKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    309             TO  SPA-GMN-CUR
+               MOVE    "2017"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-HAIKIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    薬情・お薬手帳対象チェック処理（診療行為機能情報）
       *****************************************************************
        4108-OKUSURIKBN-CHK-SEC      SECTION.
@@ -8483,6 +8547,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-CHGSRYSYU       TO  SYS-1038-CHGSRYSYU-FLG
            MOVE    SPA-GMN-RESPRV038       TO  SYS-1038-RESPRVFLG
+           MOVE    SPA-GMN-HAIKIKBN        TO  SYS-1038-HAIKIKBN
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -9385,6 +9450,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-RESPRV038-MAX
                                        TO  W07-RESPRV038-COUNT
+      *    残量廃棄区分（診療行為機能情報）
+           MOVE    SPA-GMN-HAIKIKBN-G  TO  W07-HAIKIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HAIKIKBN-MAX
+               MOVE    SPA-GMN-HAIKIKBN-LST (IDX)
+                                       TO  W07-HAIKIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HAIKIKBN-MAX
+                                       TO  W07-HAIKIKBN-COUNT
       *    薬情・お薬手帳対象（診療行為機能情報）
            MOVE    SPA-GMN-YKJOKUKBN-G TO  W07-YKJOKUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -10155,6 +10229,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2016"
                    MOVE    "薬情・お薬手帳対象区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2017"
+                   MOVE    "残量廃棄区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -10488,6 +10565,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "CHGSRYSYU"       TO   MCP-WIDGET
                WHEN    308
                    MOVE  "RESPRV038"       TO   MCP-WIDGET
+               WHEN    309
+                   MOVE  "HAIKIKBN"        TO   MCP-WIDGET
       *        請求選択
                WHEN    320
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -10830,6 +10909,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       **********   MOVE    320             TO  SPA-GMN-CUR
                    MOVE    308             TO  SPA-GMN-CUR
                WHEN    "RESPRV038"
+                   MOVE    309             TO  SPA-GMN-CUR
+               WHEN    "HAIKIKBN"
                    MOVE    320             TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    321             TO  SPA-GMN-CUR

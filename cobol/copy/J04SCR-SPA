@@ -68,6 +68,8 @@
                05  SPA-CHG310FLG           PIC  X(01).
       *腫瘍マーカー一覧展開選択
                05  SPA-AKUSEIHYOFLG        PIC  X(01).
+      *残量廃棄区分
+               05  SPA-HAIKIKBN-FLG        PIC  X(01).
       *夜間・早朝加算
                05  SPA-YAKANKBN            PIC  9(01).
       *

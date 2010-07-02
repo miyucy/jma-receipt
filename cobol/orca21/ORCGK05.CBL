@@ -4430,6 +4430,8 @@
            INITIALIZE                  ORCSC93AREA
            MOVE    SPA-GMN-SETCODE     TO  LNK-SC93-SETCODE
            MOVE    "K05"               TO  LNK-SC93-PG
+      *    »ÄÎÌÇÑ´þ¶èÊ¬
+           MOVE    SPA-HAIKIKBN-FLG    TO  LNK-SC93-HAIKIKBN-FLG
            CALL    "ORCSC93"           USING
                                        MCPAREA
                                        SPA-SCR-REC

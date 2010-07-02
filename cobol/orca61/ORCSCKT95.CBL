@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL=多々納  10/03/XX  平成２２年４月改正対応
+      *  04.06.00    NACL=多々納  10/07/01  残量廃棄区分対応
       *****************************************************************
       *
       *
@@ -984,6 +985,8 @@
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
       *        投薬診療区分変換選択
                MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
+      *        残量廃棄区分
+               MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -1006,6 +1009,14 @@
       *    投薬診療区分変換選択
            IF      SPA-CHGSRYSYU-FLG    =   SPACE
                MOVE    "0"                  TO  SPA-CHGSRYSYU-FLG
+           END-IF
+      *    残量廃棄区分
+           IF      SPA-HAIKIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
+           END-IF
+      *    Ｈ２２年４月から反映
+           IF      SPA-SRYYMD          <   "20100401"
+               MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

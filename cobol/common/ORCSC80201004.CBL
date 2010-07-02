@@ -45,6 +45,7 @@
       * 04.05.00     NACL-多々納  09/07/XX  早期リハビリテーション加算チェック
       * 04.05.00     NACL-多々納  09/11/XX  入院精神療法６か月対応
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
+      * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -290,6 +291,11 @@
            03  WRK-TAIINYMD                PIC X(08).
            03  WRK-TAIINYMD-1              PIC X(08).
            03  WRK-TAIINYMD-3              PIC X(08).
+      *
+           03  WRK-SURYO               PIC 9(07)V9(05).
+           03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1        PIC 9(07).
+               05  WRK-SURYO-S2        PIC 9(05).
       *
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
@@ -1048,6 +1054,10 @@
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
                        PERFORM 1005-KASAN-CHK-SEC
                    END-IF
+      *        薬剤
+               WHEN    "6"
+      *            残量廃棄
+                   PERFORM 1006-HAIKI-SYORI-SEC
       *        器材
                WHEN    "7"
       ***********  IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
@@ -1118,6 +1128,41 @@
       *
            .
        10011-SANSO-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    残量廃棄コメントの有無
+      *****************************************************************
+       1006-HAIKI-SYORI-SEC           SECTION.
+      *
+      *    アンプルの時、小数以下判定
+           IF     (WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046" )
+           AND    (LNK-ORCSC-HAIKIKBN-FLG  =   "2"            )
+      *
+               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
+               IF     (WRK-SURYO-S2                >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)    =   SPACE   )
+                   PERFORM 10011-HAIKI-ADD-SEC
+               END-IF
+           END-IF
+           .
+       1006-HAIKI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    破棄コメント自動発生成処理
+      *****************************************************************
+       10011-HAIKI-ADD-SEC             SECTION.
+      *
+           MOVE    "099309901"         TO  WRK-SRYCD
+           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+               CONTINUE
+           ELSE
+               MOVE    IDX-Z               TO  IDX-S
+               MOVE    ZERO                TO  FLG-ARI
+               PERFORM 1002-KASAN-SET-SEC
+           END-IF
+           .
+       10011-HAIKI-ADD-EXT.
            EXIT.
       *
       *****************************************************************

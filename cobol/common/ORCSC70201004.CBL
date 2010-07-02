@@ -51,6 +51,7 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.04.00     NACL-多々納  09/03/02  外来まとめ対応
       * 04.05.00     NACL-多々納  10/03/XX  Ｈ２２年４月改正追加
+      * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       *****************************************************************
       *
       *
@@ -301,6 +302,10 @@
            03  WRK-SANSOKIN-SUM        PIC 9(08)V99.
            03  IDX-SANSO               PIC 9(04).
       *
+           03  WRK-SURYO-H             PIC 9(07)V9(05).
+           03  WRK-SURYO-HR            REDEFINES   WRK-SURYO-H.
+               05  WRK-SURYOH-S1       PIC 9(07).
+               05  WRK-SURYOH-S2       PIC 9(05).
       *    入院日
        01  WRK-NYUINDAY-AREA.
            03  WRK-XSEN-DAY            PIC 9(02).
@@ -877,6 +882,8 @@
                            MOVE   1                TO  FLG-ZOEIZAI
                        END-IF
                    END-IF
+      *            残量廃棄
+                   PERFORM 1006-HAIKI-SYORI-SEC
       *        器材
                WHEN    "7"
       *            フィルム判定
@@ -1071,6 +1078,45 @@
        10011-SANSO-ADD-EXT.
            EXIT.
       *!
+      *****************************************************************
+      *    残量廃棄コメントの有無
+      *****************************************************************
+       1006-HAIKI-SYORI-SEC           SECTION.
+      *
+      *    アンプルの時、小数以下判定
+           IF     (WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046" )
+           AND    (LNK-ORCSC-HAIKIKBN-FLG  =   "2"            )
+      *
+               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO-H
+               IF     (WRK-SURYOH-S2               >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)    =   SPACE   )
+                   PERFORM 10011-HAIKI-ADD-SEC
+               END-IF
+           END-IF
+           .
+       1006-HAIKI-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    破棄コメント自動発生成処理
+      *****************************************************************
+       10011-HAIKI-ADD-SEC             SECTION.
+      *
+           MOVE    "099309901"         TO  WRK-SRYCD
+           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+               CONTINUE
+           ELSE
+               MOVE    IDX-Z               TO  IDX-S
+               MOVE    ZERO                TO  FLG-ARI
+               MOVE    ZERO                TO  FLG-NENREI
+               PERFORM 1002-JIDOUSET-SEC
+               IF      FLG-ARI             =   1
+                   MOVE    IDX-T               TO  IDX-Z
+               END-IF
+           END-IF
+           .
+       10011-HAIKI-ADD-EXT.
+           EXIT.
       *
       *****************************************************************
       *    施設基準不適合チェック加算処理
@@ -1410,7 +1456,7 @@
            MOVE    WRK-HEN-SRYCD       TO  SANTEI-SRYCD
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
-           IF      SPA-HKNKBN          =   1
+           IF      SPA-HKNKBN      NOT =   ZERO
       *        保険毎の登録
                MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
            ELSE
