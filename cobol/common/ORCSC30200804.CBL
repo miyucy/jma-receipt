@@ -42,7 +42,6 @@
       * 01.00.12     NACL-多々納  05/12/14  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  03.05.01    NACL-多々納  07/07/18  皮下筋肉注射変換なし対応
-      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
       *
@@ -121,13 +120,21 @@
            03  WRK-SRYCD-2         PIC X(09).
       *
            03  WRK-MOJI            PIC X(01). 
-           03  WRK-CHUSYA          PIC 9(09)V9(5).
+           03  WRK-CHUSYA          PIC 9(09).
       *
-           03  WRK-SURYO           PIC 9(07)V9(05).
-           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
-               05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(05).
+           03  WRK-SYOKEIS         PIC 9(08)V99.
+           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEI          PIC 9(08).
       *
+           03  WRK-ZAIKEI          PIC 9(08)V99.
+           03  WRK-GAIKEI          PIC 9(08)V99.
+           03  WRK-ZAITEN          PIC 9(08).
+           03  WRK-GAITEN          PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZTEN          PIC 9(08).
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-MAISU           PIC 9(08).
+           03  WRK-KEIMAI          PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-SRYSYUKBNMEI    PIC X(40).
@@ -141,6 +148,10 @@
                05  WRK-TENSU-GAI       PIC 9(08)V99.
                05  WRK-TENSU-KEI       PIC 9(08)V99.
       *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
       *    入院日＋１年
            03  WRK-NYMD.
                05  WRK-NYY             PIC 9(04).
@@ -179,8 +190,8 @@
       *
       *    最大液量
            03  WRK-MAX-RYOU            PIC 9(04).
-           03  WRK-EKIRYOU             PIC 9(09)V9(5).
-           03  WRK-GOK-RYOU            PIC 9(09)V9(5).
+           03  WRK-EKIRYOU             PIC 9(09)V99.
+           03  WRK-GOK-RYOU            PIC 9(09)V99.
       *    診療種別
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-SRYKBN              PIC X(02).
@@ -193,7 +204,7 @@
        01  TBL-NISUU-AREA.
            03  TBL-NISUU-OCC           OCCURS   31.
                05  TBL-DAY             PIC 9(01).
-               05  TBL-CHUSYA          PIC 9(09)V9(5).
+               05  TBL-CHUSYA          PIC 9(09)V99.
       *
                05  TBL-TEN-SRYCD       PIC X(09).
                05  TBL-TEN-SRYCD2      PIC X(09).
@@ -214,7 +225,7 @@
                05  TBL-MADOKU-IDX      PIC 9(04).
                05  TBL-MADOKU-ARI      PIC X(09).
       *        手術以外液量
-               05  TBL-CHUSYA-2        PIC 9(09)V9(5).
+               05  TBL-CHUSYA-2        PIC 9(09)V99.
                05  TBL-SEIBUTU-2       PIC 9(01).
                05  TBL-MADOKU-2        PIC 9(01).
       *
@@ -222,7 +233,7 @@
        01  TBL-IVH-NISUU-AREA.
            03  TBL-IVH-NISUU-OCC           OCCURS   31.
                05  TBL-IVH-DAY             PIC 9(01).
-               05  TBL-IVH-CHUSYA          PIC 9(09)V9(5).
+               05  TBL-IVH-CHUSYA          PIC 9(09)V99.
                05  TBL-IVH-SRYCD           PIC X(09).
                05  TBL-IVH-IDX             PIC 9(04).
                05  TBL-IVH-CHUIDX          PIC 9(04).
@@ -236,13 +247,13 @@
       *        麻毒加算
                05  TBL-IVH-MADOKU          PIC 9(01).
       *    前回算定分
-               05  TBL-IVH2-CHUSYA         PIC 9(09)V9(5).
+               05  TBL-IVH2-CHUSYA         PIC 9(09)V99.
       *        生物学的製剤
                05  TBL-IVH2-SEIBUTU        PIC 9(01).
       *        麻毒加算
                05  TBL-IVH2-MADOKU         PIC 9(01).
       *    手術以外液量
-               05  TBL-IVH-CHUSYA-2        PIC 9(09)V9(5).
+               05  TBL-IVH-CHUSYA-2        PIC 9(09)V99.
                05  TBL-IVH-SEIBUTU-2       PIC 9(01).
                05  TBL-IVH-MADOKU-2        PIC 9(01).
       *
@@ -463,22 +474,17 @@
       *
                    WHEN    OTHER
       *                編集チェックへ
-      *                薬評以外
-                       IF      WRK-COM-YAKUHYO (IDX-Z) =   SPACE
-                           PERFORM 10011-CHK-SEC
-                       END-IF
+                       PERFORM 10011-CHK-SEC
                END-EVALUATE
            END-PERFORM
       *
       *    点滴の時、手技料の自動修正
-           IF     (WRK-COM-SRYSYUKBN(01)   =   "330" )
-           AND    (WRK-COM-YAKUHYO  (01)   =   SPACE)
+           IF      WRK-COM-SRYSYUKBN(01)   =   "330"
                PERFORM 1002-TENTEKI-CHK-SEC
            END-IF
       *
       *    皮下注射の時、手技料の自動修正
-           IF     (WRK-COM-SRYSYUKBN(01)   =   "310")
-           AND    (WRK-COM-YAKUHYO  (01)   =   SPACE)
+           IF      WRK-COM-SRYSYUKBN(01)   =   "310"
       *        皮下筋肉注射料変換選択
                IF     LNK-ORCSC-CHG310FLG     =   "1"
                    CONTINUE
@@ -490,7 +496,6 @@
       *    種別のみの時、手技料の自動発生
            IF     (FLG-SYUGI           =   ZERO  )  AND
                   (WRK-ERRCD           =   SPACE )
-           AND    (WRK-COM-YAKUHYO  (01)   =   SPACE)
       *        薬剤のみの時対象外
                IF      WRK-COM-SRYSYUKBN(01)(3:1)  =   "1"
                    CONTINUE
@@ -608,10 +613,9 @@
       *
       *    アンプルの時、小数以下判定
            IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
-               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
-               IF     (WRK-SURYO-S2                >   ZERO    )  AND
-                      (WRK-COM-AUTOFLG2 (IDX-Z)    =   SPACE   )
-                   MOVE    IDX-Z                   TO  IDX-HAI
+               IF     (WRK-COM-SURYO(IDX-Z)(6:3) >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)  =   SPACE   )
+                   MOVE    IDX-Z                 TO  IDX-HAI
                    PERFORM 10011-HAIKI-ADD-SEC
                END-IF
            END-IF
@@ -1436,10 +1440,6 @@
                    UNTIL     ( IDX     >   SPA-MAX-LINE )  OR
                              ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
-      *    薬評以外
-             IF      WRK-COM-YAKUHYO (IDX) =   "1"
-               CONTINUE
-             ELSE
       *        点滴の時のみ
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
                                                    OR  "332"
@@ -1602,8 +1602,6 @@
                        END-IF
                    END-PERFORM
                END-IF
-      *
-            END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
                CONTINUE
@@ -1759,7 +1757,6 @@
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
-             AND  (WRK-COM-YAKUHYO  (IDX) NOT =   "1"   )
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
@@ -1893,10 +1890,6 @@
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO               TO  FLG-ZAIARI
-               END-IF
-      *        薬評は対象外
-               IF      ACCT-ZAIKBN             =   1
-                   MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
       *        科・保険判定
                IF     (ACCT-SRYKA         =   SPA-SRYKA       ) AND
@@ -2177,10 +2170,6 @@
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
-      *        薬評は対象外
-               IF      ACCT-ZAIKBN             =   1
-                   MOVE    ZERO                TO  FLG-ZAIARI
-               END-IF
       *        輸血の判定
                IF      FLG-ZAIARI          =   1
       *            診療行為より
@@ -2289,10 +2278,6 @@
                END-IF
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
-                   MOVE    ZERO                TO  FLG-ZAIARI
-               END-IF
-      *        薬評は対象外
-               IF      ACCT-ZAIKBN             =   1
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
                IF      FLG-ZAIARI         =   1
