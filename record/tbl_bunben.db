@@ -1,9 +1,8 @@
 tbl_bunben {
 	HOSPNUM			number(2,0);
 	PTID			number(10,0);
-	NYUGAIKBN		char(1);
 	SKYYM			char(6);
-	RRKNUM			number(7,0);
+	RRKNUM			number(3,0);
 	PTNUM			char(20);
 	SKYKBN			char(1);
 	RIYOUKBN		char(1);
@@ -45,7 +44,7 @@ tbl_bunben {
 };
 
 primary	{
-	HOSPNUM,PTID,NYUGAIKBN,SKYYM,RRKNUM;
+	HOSPNUM,PTID,SKYYM,RRKNUM;
 };
 
 path	key 	{
@@ -55,7 +54,6 @@ path	key 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
-			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SKYYM       =   :SKYYM
 			AND   RRKNUM      =   :RRKNUM
 		;
@@ -88,7 +86,6 @@ path	del2 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND     PTID      =   :PTID
-			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SKYYM     =   :SKYYM
 		;
 	};
@@ -104,7 +101,7 @@ path	key2 	{
 			AND   TEISYUTUSAKI =   :TEISYUTUSAKI
 			AND   RIYOUKBN     =   '1'
 			AND   SKYKBN       <>  '0'
-		ORDER BY KANYUKBN DESC,BUNBENKBN,HKNJANUM_S,HKNJANUM,NAME
+		ORDER BY KANYUKBN DESC,BUNBENKBN,HKNJANUM_S,NAME
 		;
 	};
 };
@@ -117,7 +114,6 @@ path	key3 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
-			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   RRKNUM      =   :RRKNUM
 		;
 	};
@@ -129,8 +125,7 @@ path	del3 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND     PTID      =   :PTID
-			AND     NYUGAIKBN =   :NYUGAIKBN
-			AND     RRKNUM    =   :RRKNUM
+			AND   RRKNUM      =   :RRKNUM
 		;
 	};
 };
@@ -144,7 +139,7 @@ path	key4 	{
 			AND   SKYYM        =   :SKYYM
 			AND   TEISYUTUSAKI like   :TEISYUTUSAKI
 			AND   RIYOUKBN     =   '1'
-		ORDER BY TEISYUTUSAKI,SKYKBN,HKNJANUM_S,HKNJANUM,BUNBENKBN,NAME
+		ORDER BY TEISYUTUSAKI,SKYKBN,HKNJANUM_S,BUNBENKBN,NAME
 		;
 	};
 };
@@ -155,26 +150,3 @@ path	abort	{
  		;
 	};
 };
-
-path	key5 	{
-	DBSELECT	{
-		DECLARE tbl_bunben_key5_csr CURSOR FOR
-		SELECT *
-		FROM tbl_bunben
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   BIRTHDAY    =   :BIRTHDAY
-		;
-	};
-};
-
-path	upd1	{ 	
-	DBUPDATE	{
-		UPDATE	tbl_bunben
-		SET	PTNUM       =   :PTNUM
-                WHERE   HOSPNUM     =   :HOSPNUM
-                  AND   PTID        =   :PTID
-		;
-	};
-};
-

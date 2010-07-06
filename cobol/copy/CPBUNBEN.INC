@@ -29,12 +29,10 @@
                05  BUNBEN-HOSPNUM             PIC  9(02).
       *¥µº‘£…£ƒ
                05  BUNBEN-PTID                PIC  9(10).
-      *∆˛≥∞∂Ë ¨
-               05  BUNBEN-NYUGAIKBN           PIC  X(01).
       *¿¡µ·«Ø∑Ó
                05  BUNBEN-SKYYM               PIC  X(06).
       *∆˛±°Õ˙ŒÚ»÷πÊ
-               05  BUNBEN-RRKNUM              PIC  9(07).
+               05  BUNBEN-RRKNUM              PIC  9(03).
       *¥µº‘»÷πÊ
            03  BUNBEN-PTNUM                   PIC  X(20).
       *¿¡µ·∂Ë ¨
@@ -72,32 +70,32 @@
       *Ã¿∫Ÿæ Û
            03  BUNBEN-MEISAI-INF.
       *∆˛±°Œ¡
-               05  BUNBEN-NYU-MONEY           PIC S9(08).
+               05  BUNBEN-NYU-MONEY           PIC  9(08).
       *ººŒ¡∫π≥€
-               05  BUNBEN-RMSGK-MONEY         PIC S9(08).
+               05  BUNBEN-RMSGK-MONEY         PIC  9(08).
       * ¨ ⁄≤ΩıŒ¡
-               05  BUNBEN-KAIJO-MONEY         PIC S9(08).
+               05  BUNBEN-KAIJO-MONEY         PIC  9(08).
       * ¨ ⁄Œ¡
-               05  BUNBEN-BUNBEN-MONEY        PIC S9(08).
+               05  BUNBEN-BUNBEN-MONEY        PIC  9(08).
       *ø∑¿∏ª˘¥…Õ˝ ›∞ÈŒ¡
-               05  BUNBEN-SHIN-MONEY          PIC S9(08).
+               05  BUNBEN-SHIN-MONEY          PIC  9(08).
       *∏°∫∫°¶ÃÙ∫ﬁŒ¡
-               05  BUNBEN-KNS-MONEY           PIC S9(08).
+               05  BUNBEN-KNS-MONEY           PIC  9(08).
       *ΩË√÷°¶ºÍ≈ˆŒ¡
-               05  BUNBEN-SYC-MONEY           PIC S9(08).
+               05  BUNBEN-SYC-MONEY           PIC  9(08).
       *ª∫≤ ∞ÂŒ≈ ‰Ω˛¿©≈Ÿ
-               05  BUNBEN-SNK-MONEY           PIC S9(08).
+               05  BUNBEN-SNK-MONEY           PIC  9(08).
       *§Ω§Œ¬æ
-               05  BUNBEN-ETC-MONEY           PIC S9(08).
+               05  BUNBEN-ETC-MONEY           PIC  9(08).
       *∞Ï…Ù…È√¥∂‚≈˘
-               05  BUNBEN-ICBFTN-MONEY        PIC S9(08).
+               05  BUNBEN-ICBFTN-MONEY        PIC  9(08).
       *«•…ÿπÁ∑◊…È√¥≥€
-               05  BUNBEN-NINPUFTN-MONEY      PIC S9(08).
+               05  BUNBEN-NINPUFTN-MONEY      PIC  9(08).
       *¬ÂÕ˝ºıºË≥€
-               05  BUNBEN-DAIRI-MONEY         PIC S9(08).
+               05  BUNBEN-DAIRI-MONEY         PIC  9(08).
       *Ã¿∫Ÿæ Û° ∫∆ƒÍµ¡°À
            03  BUNBEN-MEISAI-R   REDEFINES  BUNBEN-MEISAI-INF.
-               05  BUNBEN-MONEY               PIC S9(08)  OCCURS 12.
+               05  BUNBEN-MONEY               PIC  9(08)  OCCURS 12.
       *»˜πÕ
            03  BUNBEN-BIKOU                   PIC  X(60).
       *ππø∑∂Ë ¨
