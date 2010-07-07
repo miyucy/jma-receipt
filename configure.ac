@@ -43,6 +43,28 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+
+AC_PATH_PROG(LSB_RELEASE,lsb_release,no)
+if test x$LSB_RELEASE = xno; then
+  DISTCODENAME="unknown"
+else
+  DISTCODENAME="`lsb_release -sc`"
+fi
+AC_SUBST(DISTCODENAME)
+
+AC_PATH_PROG(PG_LSCLUSTERS,pg_lsclusters,no)
+PGCLUSTER="main"
+if test x$PG_LSCLUSTERS = xno; then
+  PGVERSION="8.1"
+  PGPATH="/var/lib/postgresql/8.1"
+else
+  PGVERSION=`pg_lsclusters | awk '{if ($2 == "main") {print $1}}'`
+  PGPATH=`pg_lsclusters | awk '{if ($2 == "main") {print $6}}'|sed 's/\/main$//'`
+fi
+AC_SUBST(PGCLUSTER)
+AC_SUBST(PGVERSION)
+AC_SUBST(PGPATH)
+
 AC_ARG_ENABLE(jconv,
 	    [  --enable-jconv  Enable jconv extention [default=yes]],
     	    [if test "$enableval" = "yes"
