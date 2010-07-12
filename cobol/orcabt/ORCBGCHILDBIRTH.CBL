@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.01    NACL-藤原    09/10/13  集計票、送付書の作成対応
       *  04.05.02    NACL-藤原    10/07/07  ２５日請求対応
+      *                                     ２５日請求時はＣＳＶの診療年
+      *                                     月は請求年月と同じにする
       *
       *  04.06.01    NACL-藤原    10/06/17  被保険者番号の桁数拡張対応
       *****************************************************************
@@ -422,17 +424,22 @@
            MOVE    WRK-LNK-DAY1-WYMD   (1:5)
                                    TO  WRK-SKYYMH
       *
-      *    診療年月（請求年月の前月）取得
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY6-AREA
-           MOVE  "61"              TO  LNK-DAY6-IRAI
-           MOVE  WRK-SYMD          TO  LNK-DAY6-KIJUN
-           MOVE  "2"               TO  LNK-DAY6-ZOGENPTN
-           MOVE  -1                TO  LNK-DAY6-ZOGEN
-           CALL  "ORCSDAY"         USING   STS-AREA-DAY
-                                           LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN (1:6)
-                                   TO  WRK-SRYYM
+      *    診療年月（１０日請求時は請求年月の前月）取得
+           IF      WRK-PARA-TEISYUTUBIKBN
+                                   =   "2"
+               MOVE    WRK-PARA-SKYYM  TO  WRK-SRYYM
+           ELSE
+               INITIALIZE                  STS-AREA-DAY
+               INITIALIZE                  LNK-DAY6-AREA
+               MOVE  "61"              TO  LNK-DAY6-IRAI
+               MOVE  WRK-SYMD          TO  LNK-DAY6-KIJUN
+               MOVE  "2"               TO  LNK-DAY6-ZOGENPTN
+               MOVE  -1                TO  LNK-DAY6-ZOGEN
+               CALL  "ORCSDAY"         USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN (1:6)
+                                       TO  WRK-SRYYM
+           END-IF    
       *
       *    更新用ファイル名設定
            MOVE    "BUNBUPD"       TO  BUNBENUPD-FILE-ID
