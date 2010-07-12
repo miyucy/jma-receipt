@@ -201,6 +201,7 @@
            03  CNT-RSIJBI-TEN                      PIC 9(05).
            03  CNT-RENNUM                          PIC 9(05).
            03  CNT-SRYACCT                         PIC 9(05).
+           03  CNT-COMB-ACCT                       PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -365,12 +366,13 @@
            03  WRK-KEY-HKNCOMBI                    PIC X(04).
            03  WRK-TNS-HOUKNSKBN                   PIC 9(02).
            03  WRK-KUGIRI                          PIC X(02).
+           03  WRK-TTL-TEN                         PIC S9(11).
            03  WRK-TTL-JIHI                        PIC 9(09).
            03  WRK-TTL-JIHI-TAX                    PIC 9(09).
            03  WRK-TTL-BRMSAGAKU                   PIC 9(09).
            03  WRK-TTL-BRMSAGAKU-TAX               PIC 9(09).
-           03  WRK-KINGAKKU-LBL                    PIC X(100).
-           03  WRK-KINGAKKU                        PIC 9(09).
+           03  WRK-TENSU-LBL                    PIC X(100).
+           03  WRK-TENSU                        PIC 9(09).
            03  WRK-GAIHAKU-ST                      PIC 9(02).
            03  WRK-GAIHAKU-ST-Z9                   PIC Z9.
            03  WRK-GAIHAKU-ED                      PIC 9(02).
@@ -385,7 +387,7 @@
                                                    OCCURS  20.
            03  WRK-RRK-NYUINYMD                    PIC X(18).
            03  WRK-RRK-TAIINYMD                    PIC X(18).
-           03  WRK-ZAITEN                          PIC 9(08).
+           03  WRK-ZAITEN                          PIC S9(09).
            03  WRK-ZAIKAISU                        PIC 9(07).
            03  WRK-SRYCD                           PIC X(09).
            03  WRK-SRYCD-9                         PIC 9(09).
@@ -427,6 +429,12 @@
                05  WRK-SJKBN                       PIC 9(2).
            03  WRK-DD-G.
                05  WRK-DD                          PIC 9(2).
+           03  WRK-TOTAL-MAX                   PIC 9(06).
+           03  WRK-TOTAL-G.
+               05  WRK-TOTALZ                      PIC --------9.
+               05  WRK-TOTALX  REDEFINES WRK-TOTALZ
+                                                   PIC X(09).
+               05  WRK-TOTAL-TANI                  PIC X(02).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -456,6 +464,9 @@
            03  WRK-SRYACT-SRYKBN                   PIC X(02).
            03  WRK-SRYACT-MARK                     PIC X(04).
            03  WRK-SRYACT-HKNCOMBI                 PIC X(04).
+      *    TANI 1:TEN 2:EN
+           03  WRK-SRYACT-TANI                     PIC 9(01).
+           03  WRK-SRYACT-TOTAL                    PIC S9(11).
            03  WRK-SRYACT-DAY-OCC                  OCCURS  31.
                05  WRK-SRYACT-DAY-X                PIC X(03).
                05  WRK-SRYACT-DAY-Z    REDEFINES   WRK-SRYACT-DAY-X
@@ -1005,6 +1016,7 @@
            MOVE    ZERO                TO  CNT-YKZHKT
            MOVE    ZERO                TO  CNT-ZAIHKT
            MOVE    LOW-VALUE           TO  WRK-KEY-HKNCOMBI
+           MOVE    ZERO                TO  WRK-TTL-TEN
            MOVE    ZERO                TO  WRK-TTL-JIHI
            MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
            MOVE    ZERO                TO  WRK-TTL-BRMSAGAKU
@@ -1723,7 +1735,8 @@
       *    診療行為編集処理
            PERFORM 2001-SRYACT-HEN-SEC
       *
-           IF    ( ORCHCM34-PRTCTRLKBN =   "1" )
+           IF   (( ORCHCM34-PRTCTRLKBN =   "1" )
+            AND  ( FLG-HEAD            =   0 ))
             OR  (( CNT-SRYACT-LINE     >   ZERO )
              AND ( CNT-SRYACCT         >   ZERO ))
                PERFORM 290-PRINT-SEC
@@ -2759,6 +2772,7 @@
                                            FLG-BRMSAGAKU-TTL-HEN
                                            FLG-COMMENT-HEN
                                            FLG-JIHI-HEN
+           MOVE    ZERO                TO  CNT-COMB-ACCT
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   WKSRYACCT-MAX )
@@ -2769,7 +2783,9 @@
       *
            CLOSE   HCM34SRY-FILE
       *
+      *
            IF   ( FLG-COMMENT-HEN   =   ZERO )
+               PERFORM 200111-TEN-TOTAL-HEN-SEC
                PERFORM 200211-SENTEI-PTFTN-HEN-SEC
                PERFORM 200211-RECECOM-HEN-SEC
            END-IF
@@ -3327,8 +3343,6 @@
       *
            END-PERFORM
       *
-           DISPLAY "WRK-RUIKEITOTAL2 =" WRK-RUIKEITOTAL2
-      *
            CLOSE   HCM34SRY-FILE
       *
            IF    ( FLG-SRYSTATUS   =   ZERO )
@@ -3481,6 +3495,7 @@
            END-IF
       *
            COMPUTE CNT-SRYACCT =   CNT-SRYACCT     +   1
+           COMPUTE CNT-COMB-ACCT   =   CNT-COMB-ACCT   +   1
       *
            MOVE    ZERO                TO  CNT-HOUSRYACT
            MOVE    ZERO                TO  FLG-SRYACT-HEN5
@@ -3542,7 +3557,10 @@
            PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
            IF    ( ACCT-SRYKBN          =   "95" OR "96" )
+      *
+      *
                IF   ( FLG-COMMENT-HEN   =   ZERO )
+                   PERFORM 200111-TEN-TOTAL-HEN-SEC
                    PERFORM 200211-SENTEI-PTFTN-HEN-SEC
                    PERFORM 200211-RECECOM-HEN-SEC
                    MOVE    1       TO  FLG-COMMENT-HEN
@@ -3643,11 +3661,14 @@
       *
                EVALUATE    WRK-ZAISKBKBN
                WHEN    "1"
-               WHEN    "4"
                WHEN    "6"
                    MOVE    ACCT-ZAITEN     TO  WRK-ZAITEN
                    MOVE    ACCT-ZAIKAISU   TO  WRK-ZAIKAISU
                    PERFORM 205-TENSUKAISU-HEN-SEC
+               WHEN    "4"
+                   MOVE    ACCT-ZAITEN     TO  WRK-ZAITEN
+                   MOVE    ACCT-ZAIKAISU   TO  WRK-ZAIKAISU
+                   PERFORM 205-KINGAKUKAISU-HEN-SEC
                WHEN    "7"
                    IF    ( FLG-JIBAI           =   1 )
                        PERFORM 200111-JBI-RYOYO-TEATE-HEN-SEC
@@ -3736,6 +3757,7 @@
                IF    ( ACCT-HKNCOMBI   NOT =   WRK-HKNCOMBI-KEY )
       *
                    IF   ( FLG-COMMENT-HEN   =   ZERO )
+                       PERFORM 200111-TEN-TOTAL-HEN-SEC
                        PERFORM 200211-SENTEI-PTFTN-HEN-SEC
                        PERFORM 200211-RECECOM-HEN-SEC
                    END-IF
@@ -3750,6 +3772,7 @@
                                            FLG-BRMSAGAKU-HEN
                                            FLG-COMMENT-HEN
                                            FLG-JIHI-HEN
+                   MOVE    ZERO    TO      CNT-COMB-ACCT
       *
                    MOVE    WRK-HKNCOMBI-KEY
                                            TO  WRK-HKNCOMBI-KEY-MAE
@@ -4298,30 +4321,11 @@
              CONTINUE
            ELSE
       *
-      *        計
-               MOVE    1               TO  WRK-PNT
-               MOVE    SPACE           TO  WRK-TENSUKAISU
                MOVE    SRY-JIHIMONEY (IDX9)
-                                       TO  WRK-STR-LEFT-ZX99
+                                       TO  WRK-ZAITEN
+               MOVE    ACCT-ZAIKAISU   TO  WRK-ZAIKAISU
+               PERFORM 205-KINGAKUKAISU-HEN-SEC
       *
-               PERFORM 800-STR-HIDARIZUME-HEN-SEC
-               STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
-                       "円"                DELIMITED   BY  SIZE
-               INTO    WRK-TENSUKAISU
-               WITH    POINTER WRK-PNT
-               END-STRING
-      *
-               MOVE    ACCT-ZAIKAISU   TO  WRK-ZZ9
-               STRING  "×"                DELIMITED   BY  SIZE
-                       WRK-ZZ9             DELIMITED   BY  SIZE
-               INTO    WRK-TENSUKAISU
-               WITH    POINTER WRK-PNT
-               END-STRING
-      *
-               MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
-               PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
-               PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
            END-IF
       *
            COMPUTE WRK-TTL-JIHI    =   WRK-TTL-JIHI
@@ -4338,47 +4342,68 @@
        200111-JIHIMEI-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    点数計編集処理
+      *****************************************************************
+       200111-TEN-TOTAL-HEN-SEC       SECTION.
+      *
+           IF    ( WRK-TTL-TEN    >   ZERO )
+      *
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+      *
+               MOVE    "　　　　　点数合計"
+                                           TO  WRK-TENSU-LBL
+               MOVE    WRK-TTL-TEN         TO  WRK-TENSU
+               PERFORM 2001111-TENSU-HEN-SEC
+      *
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+               MOVE    ZERO                TO  WRK-TTL-TEN
+           END-IF
+      *
+           .
+      *
+       200111-TEN-TOTAL-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    自費計編集処理
       *****************************************************************
        200111-JIHI-TOTAL-HEN-SEC       SECTION.
       *
            IF    ( WRK-TTL-JIHI    >   ZERO )
       *
-      *        空行を１行編集
-               PERFORM 2010-KARAGYO-HEN-SEC
-      *
                PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
                MOVE    "　　　　　自費合計額"
-                                           TO  WRK-KINGAKKU-LBL
-               MOVE    WRK-TTL-JIHI        TO  WRK-KINGAKKU
+                                           TO  WRK-TENSU-LBL
+               MOVE    WRK-TTL-JIHI        TO  WRK-TENSU
                PERFORM 2001111-KINGAKU-HEN-SEC
       *
       *        消費税分がある場合は消費税額を編集
                IF    ( WRK-TTL-JIHI-TAX    >   ZERO )
+      *
+                   PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
                    IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                        MOVE    "　　　　　自費消費税額（再掲）"
-                                           TO  WRK-KINGAKKU-LBL
+                                           TO  WRK-TENSU-LBL
                    ELSE
                        MOVE    "　　　　　自費消費税額"
-                                           TO  WRK-KINGAKKU-LBL
+                                           TO  WRK-TENSU-LBL
                    END-IF
                    IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
                        IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
-                           COMPUTE  WRK-KINGAKKU
+                           COMPUTE  WRK-TENSU
                                 = ( WRK-TTL-JIHI-TAX   *  5 / 105)
                                 +  0.5
                        ELSE
-                           COMPUTE  WRK-KINGAKKU
+                           COMPUTE  WRK-TENSU
                                 = ( WRK-TTL-JIHI-TAX   *  0.05 )
                                 +  0.5
                        END-IF
                    ELSE
                        IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
-                           COMPUTE  WRK-KINGAKKU
+                           COMPUTE  WRK-TENSU
                                 = ( WRK-TTL-JIHI-TAX   *  5 / 105)
                        ELSE
-                           COMPUTE  WRK-KINGAKKU
+                           COMPUTE  WRK-TENSU
                                 = ( WRK-TTL-JIHI-TAX   *  0.05 )
                        END-IF
                    END-IF
@@ -4399,14 +4424,12 @@
       *****************************************************************
        2001111-KINGAKU-HEN-SEC         SECTION.
       *
-           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-      *
-           MOVE    WRK-KINGAKKU-LBL    TO   WRK-SRYACT-STR
+           MOVE    WRK-TENSU-LBL    TO   WRK-SRYACT-STR
            PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
       *
            MOVE    1               TO  WRK-PNT
            MOVE    SPACE           TO  WRK-TENSUKAISU
-           MOVE    WRK-KINGAKKU    TO  WRK-STR-LEFT-ZX99
+           MOVE    WRK-TENSU    TO  WRK-STR-LEFT-ZX99
       *
            PERFORM 800-STR-HIDARIZUME-HEN-SEC
            STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
@@ -4426,6 +4449,37 @@
            .
       *
        2001111-KINGAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数編集処理
+      *****************************************************************
+       2001111-TENSU-HEN-SEC        SECTION.
+      *
+           MOVE    WRK-TENSU-LBL    TO   WRK-SRYACT-STR
+           PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+      *
+           MOVE    1                TO  WRK-PNT
+           MOVE    SPACE            TO  WRK-TENSUKAISU
+           MOVE    WRK-TENSU        TO  WRK-STR-LEFT-ZX99
+      *
+           PERFORM 800-STR-HIDARIZUME-HEN-SEC
+           STRING  WRK-STR-LEFT        DELIMITED   BY  SPACE
+                   "点"                DELIMITED   BY  SIZE
+           INTO    WRK-TENSUKAISU
+           WITH    POINTER WRK-PNT
+           END-STRING
+      *
+           MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
+           PERFORM 800-ZENKAKU-HEN-SEC
+           MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
+           PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
+      *
+           MOVE    "5"                     TO  WRK-ITEM-KBN
+           MOVE    ZERO                    TO  FLG-LINE
+           PERFORM 210-SRYACT-HEN-SEC
+           .
+      *
+       2001111-TENSU-HEN-EXT.
            EXIT.
       *****************************************************************
       *   検査数  編集処理
@@ -5730,14 +5784,11 @@
       *
            IF    ( WRK-TTL-BRMSAGAKU   >   ZERO )
       *
-      *        空行を１行編集
-               PERFORM 2010-KARAGYO-HEN-SEC
-      *
                PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
                MOVE    "　　　　　室料差額合計額"
-                                           TO  WRK-KINGAKKU-LBL
-               MOVE    WRK-TTL-BRMSAGAKU   TO  WRK-KINGAKKU
+                                           TO  WRK-TENSU-LBL
+               MOVE    WRK-TTL-BRMSAGAKU   TO  WRK-TENSU
                PERFORM 2001111-KINGAKU-HEN-SEC
       *
                MOVE    ZERO                TO  WRK-TTL-BRMSAGAKU-TAX
@@ -5754,15 +5805,17 @@
                    END-IF
       *
                    IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )
+      *
+                       PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
                        IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                            MOVE    "　　　　　室料差額消費税額（再掲）"
-                                           TO  WRK-KINGAKKU-LBL
+                                           TO  WRK-TENSU-LBL
                        ELSE
                            MOVE    "　　　　　室料差額消費税額"
-                                           TO  WRK-KINGAKKU-LBL
+                                           TO  WRK-TENSU-LBL
                        END-IF
                        MOVE    WRK-TTL-BRMSAGAKU-TAX
-                                           TO  WRK-KINGAKKU
+                                           TO  WRK-TENSU
                        PERFORM 2001111-KINGAKU-HEN-SEC
                    END-IF
                END-IF
@@ -5789,15 +5842,12 @@
                    IF    ( TCOMBI-SENTEI-PTFTN (IDX0)
                                    >   ZERO )
       *
-      *                空行を１行編集
-                       PERFORM 2010-KARAGYO-HEN-SEC
-      *
                        PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
                        MOVE    "　　　　　選定入院料自己負担額"
-                                           TO  WRK-KINGAKKU-LBL
+                                           TO  WRK-TENSU-LBL
                        MOVE    TCOMBI-SENTEI-PTFTN (IDX0)
-                                           TO  WRK-KINGAKKU
+                                           TO  WRK-TENSU
                        PERFORM 2001111-KINGAKU-HEN-SEC
       *
                    END-IF
@@ -5819,14 +5869,16 @@
       *****************************************************************
        2010-KARAGYO-HEN-SEC            SECTION.
       *
-           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+           IF    ( CNT-COMB-ACCT       >    1 )
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
-           MOVE    "　"                TO   WRK-SRYACT-STR
-           PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+               MOVE    "　"                TO   WRK-SRYACT-STR
+               PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
       *
-           MOVE    "5"                 TO  WRK-ITEM-KBN
-           MOVE    ZERO                TO  FLG-LINE
-           PERFORM 210-SRYACT-HEN-SEC
+               MOVE    "5"                 TO  WRK-ITEM-KBN
+               MOVE    ZERO                TO  FLG-LINE
+               PERFORM 210-SRYACT-HEN-SEC
+           END-IF
       *
            .
        2010-KARAGYO-HEN-EXT.
@@ -5861,35 +5913,6 @@
       *
            .
        205-KAISU-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *   回数  編集処理
-      *****************************************************************
-       206-KAISU-HEN-SEC              SECTION.
-      *
-           IF    ( WRK-ZAIKAISU   NOT =   ZERO )
-               CONTINUE
-           ELSE
-               GO  TO  206-KAISU-HEN-EXT
-           END-IF
-      *
-           MOVE    1               TO  WRK-PNT
-           MOVE    SPACE           TO  WRK-TENSUKAISU
-      *
-           MOVE    WRK-ZAIKAISU    TO  WRK-ZZ9
-           STRING  "×"                DELIMITED   BY  SIZE
-                   WRK-ZZ9             DELIMITED   BY  SIZE
-           INTO    WRK-TENSUKAISU
-           WITH    POINTER WRK-PNT
-           END-STRING
-      *
-           MOVE    WRK-TENSUKAISU  TO  WRK-MAE-INPUT
-           PERFORM 800-ZENKAKU-HEN-SEC
-           MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
-           PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
-      *
-           .
-       206-KAISU-HEN-EXT.
            EXIT.
       *****************************************************************
       *   点数回数  編集処理
@@ -5930,6 +5953,8 @@
            PERFORM 800-ZENKAKU-HEN-SEC
            MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
            PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
+           MOVE    1               TO  WRK-SRYACT-TANI
+           PERFORM 220-ZAI-TOTAL-HEN-SEC
       *
            .
        205-TENSUKAISU-HEN-EXT.
@@ -5970,6 +5995,8 @@
            PERFORM 800-ZENKAKU-HEN-SEC
            MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
            PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
+           MOVE    2               TO  WRK-SRYACT-TANI
+           PERFORM 221-ZAI-TOTAL-HEN-SEC
       *
            .
        205-KINGAKUKAISU-HEN-EXT.
@@ -6285,6 +6312,11 @@
                            END-PERFORM
                        END-IF
                    END-IF
+                   IF    ( IDX4            =   WRK-SRYACT-MAX )
+                    AND  ( WRK-SRYACT-TANI NOT =   ZERO )
+                       PERFORM 210-SRYACT-TOTAL-HEN-SEC
+                       MOVE    WRK-TOTAL-G TO  HCM341-TOTAL (IDXC)
+                   END-IF
                    MOVE    WRK-SRYACT (IDX4)
                                            TO  HCM341-TEKIYO (IDXC)
                ELSE
@@ -6313,6 +6345,11 @@
                                            TO  HCM342-DAY (IDXC IDXF)
                            END-PERFORM
                        END-IF
+                   END-IF
+                   IF    ( IDX4            =   WRK-SRYACT-MAX )
+                    AND  ( WRK-SRYACT-TANI NOT =   ZERO )
+                       PERFORM 210-SRYACT-TOTAL-HEN-SEC
+                       MOVE    WRK-TOTAL-G TO  HCM342-TOTAL (IDXC)
                    END-IF
                    MOVE    WRK-SRYACT (IDX4)
                                            TO  HCM342-TEKIYO (IDXC)
@@ -6363,6 +6400,25 @@
            EXIT.
       *
       *****************************************************************
+      *    診療行為合計編集処理
+      *****************************************************************
+       210-SRYACT-TOTAL-HEN-SEC        SECTION.
+      *
+           EVALUATE    WRK-SRYACT-TANI
+           WHEN    1
+               MOVE    WRK-SRYACT-TOTAL
+                                   TO  WRK-TOTALZ
+               MOVE    "点"        TO  WRK-TOTAL-TANI
+           WHEN    2
+               MOVE    WRK-SRYACT-TOTAL
+                                   TO  WRK-TOTALZ
+               MOVE    "円"        TO  WRK-TOTAL-TANI
+           END-EVALUATE
+      *
+           .
+       210-SRYACT-TOTAL-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    改ページチェック処理
       *****************************************************************
        210-KAIPEGE-CHK-SEC             SECTION.
@@ -6383,6 +6439,52 @@
       *
            .
        210-KAIPEGE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    剤合計点数（剤点×金額）編集処理
+      *****************************************************************
+       220-ZAI-TOTAL-HEN-SEC           SECTION.
+      *
+           IF    ( FLG-MINUS       =   ZERO )
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
+                   + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+      *
+               COMPUTE WRK-TTL-TEN
+                   =   WRK-TTL-TEN
+                   + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+           ELSE
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
+                   - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+      *
+               COMPUTE WRK-TTL-TEN
+                   =   WRK-TTL-TEN
+                   - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+           END-IF
+      *
+           .
+       220-ZAI-TOTAL-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    剤合計点数（剤点×金額）編集処理
+      *****************************************************************
+       221-ZAI-TOTAL-HEN-SEC           SECTION.
+      *
+           IF    ( FLG-MINUS       =   ZERO )
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
+                   + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+      *
+           ELSE
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
+                   - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+      *
+           END-IF
+      *
+           .
+       221-ZAI-TOTAL-HEN-EXT.
            EXIT.
       *****************************************************************
       *    印刷処理
