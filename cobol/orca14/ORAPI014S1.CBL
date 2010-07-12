@@ -1849,6 +1849,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-YYK-YYKTIME     TO  WRK-YYK-YYKTIME
                    MOVE    WRK-YYK-KEYYYKTIME  TO  WRK-YYK-KEYYYKTIME
                    MOVE    WRK-YYK-YYKID       TO  WRK-YYK-YYKID
+                                                   APNTRES-APPOINT-ID
+                  DISPLAY "yyk id hit  = "  YYK-YYKID
            END-IF
            MOVE    WRK-YYK-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
