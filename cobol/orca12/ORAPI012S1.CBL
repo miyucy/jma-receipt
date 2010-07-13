@@ -373,10 +373,6 @@
       *
            IF      API-BODY        NOT =   LOW-VALUE
                DISPLAY "API-BODY not low_value"
-               MOVE   "99"           TO  PTRES-API-RESULT
-               MOVE   "request 情報がありません" 
-                                     TO  PTRES-API-RESULT-MSG
-               GO     TO   1000-PTIXMLREAD-EXT
            END-IF
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
@@ -391,7 +387,6 @@
            IF (MCP-RC = ZERO OR 1)
                CONTINUE
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
                MOVE   "99"           TO  PTRES-API-RESULT
                MOVE   "構文誤りです" TO  PTRES-API-RESULT-MSG
                GO     TO   1000-PTIXMLREAD-EXT
@@ -474,7 +469,6 @@
            UNSTRING    REQCSV-RECORD   DELIMITED  BY  ","
                                        INTO    WRK-PTNUM
            END-UNSTRING
-               DISPLAY "WRK-PTNUM= " WRK-PTNUM "]"
            MOVE    1                   TO  IDX
            PERFORM UNTIL      (IDX           >    20    ) 
                IF  WRK-PTNUM(IDX:1)    = LOW-VALUE
@@ -593,8 +587,6 @@
                    ".csv"              DELIMITED  BY  SPACE
                                        INTO   REQCSV
            END-STRING
-           DISPLAY "PTRES-MAIN-INSURANCE-NAME = "
-                     PTRES-MAIN-INSURANCE-NAME(01)
       *
            MOVE    REQCSV              TO     ORCA-BLOB-FILE 
            OPEN    OUTPUT    REQCSV-FILE
@@ -967,18 +959,15 @@
                    INTO    REQCSV-RECORD
            END-STRING
       *
-           DISPLAY "out = "   REQCSV-RECORD(1:100)
            WRITE   REQCSV-RECORD
            CLOSE   REQCSV-FILE
       *
-           DISPLAY "blob file = "     ORCA-BLOB-FILE 
            MOVE    "BLOBIMPORT"        TO  MCP-FUNC
            MOVE    "blob"              TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING MCPAREA
                                        ORCA-BLOB
                                        SPA-AREA
-           DISPLAY "blob file out = "     ORCA-BLOB-FILE 
       *
            IF  ORCA-BLOB-OBJECT = LOW-VALUE
                DISPLAY "object is low value"
@@ -986,7 +975,6 @@
                DISPLAY "object is not low value"
            END-IF
       *
-           DISPLAY "mcp-rc = " MCP-RC
            MOVE    ORCA-BLOB-OBJECT    TO  API-BODY
            MOVE    "data/csv"          TO  APIREQ-CONTENT-TYPE
       *
@@ -1029,7 +1017,6 @@
            INITIALIZE                  HKNCOMBI-REC
            MOVE    PTINF-HOSPNUM       TO  COMB-HOSPNUM
            MOVE    PTINF-PTID          TO  COMB-PTID
-           DISPLAY "PTINF-PTID = " PTINF-PTID
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -1044,9 +1031,7 @@
              MOVE  1         TO        FLG-HKNCOMBI
              INITIALIZE                HKNCOMBI-REC
            END-IF
-           DISPLAY "FLG-HKNCOMBI = " FLG-HKNCOMBI
       *
-           DISPLAY "WRK-SYSYMD-8 = " WRK-SYSYMD-8
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL      (IDX           >    4    )            OR
                               (FLG-HKNCOMBI   =   1    )
@@ -1315,14 +1300,12 @@
       *
       **************************************************************************
        010-INIT                SECTION.
-           DISPLAY 'init'
            MOVE   'NEW'        TO  MCP-PUTTYPE.
            MOVE   'windowtitle'     TO  MCP-WINDOW.
            PERFORM 900-PUT-WINDOW.
       **************************************************************************
        800-CLICKED             SECTION.
       *    CALL    "coblog"    USING   "api clicked"
-           DISPLAY 'CLICKED'
            PERFORM 900-PUT-WINDOW.
       **************************************************************************
        900-PUT-WINDOW          SECTION.
