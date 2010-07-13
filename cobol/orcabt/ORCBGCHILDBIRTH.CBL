@@ -31,6 +31,7 @@
       *  04.05.02    NACL-藤原    10/07/07  ２５日請求対応
       *                                     ２５日請求時はＣＳＶの診療年
       *                                     月は請求年月と同じにする
+      *                                     記録条件仕様の変更に伴う修正
       *
       *  04.06.01    NACL-藤原    10/06/17  被保険者番号の桁数拡張対応
       *****************************************************************
@@ -224,6 +225,9 @@
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-ERRMSG          PIC X(300).
+      *
+      *    ワーク点数表区分
+           03  WRK-TENHYOKBN       PIC  9(01).
       *
       *   ワーク日付変換サブ返却値
            COPY    "CPORCSDAY.INC" REPLACING   //LNK-DAY//
@@ -555,9 +559,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
            END-IF
       *
-      *    社保分作成
-           IF      WRK-PARA-TEISYUTUSAKI
-                                   =   "0" OR  "1"
+      *    社保分作成（２５日請求時は作成しない）
+           IF    ( WRK-PARA-TEISYUTUSAKI
+                                   =   "0" OR  "1" )
+           AND   ( WRK-PARA-TEISYUTUBIKBN
+                                   =   "1"         )
                MOVE    "1"             TO  WRK-TEISYUTUSAKI
                PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
            END-IF
@@ -1316,8 +1322,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    "1,"            TO  WRK-REC
            MOVE    2               TO  WRK-REC-LENGTH
       *    提出先
-           MOVE    WRK-TEISYUTUSAKI
-                                   TO  WRK-DATA
+           IF      WRK-PARA-TEISYUTUBIKBN
+                                   =   "1"
+               MOVE    WRK-TEISYUTUSAKI
+                                       TO  WRK-DATA
+           ELSE
+               MOVE    "3"             TO  WRK-DATA
+           END-IF 
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    レコード番号
@@ -1392,7 +1403,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    9               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    交換情報識別番号
-           MOVE    "7111"          TO  WRK-DATA
+           IF      WRK-PARA-TEISYUTUBIKBN
+                                   =   "1"
+               MOVE    "7111"          TO  WRK-DATA
+           ELSE
+               MOVE    "7112"          TO  WRK-DATA
+           END-IF
            MOVE    4               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    請求年月
@@ -1465,7 +1481,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    9               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    交換情報識別番号
-           MOVE    "7121"          TO  WRK-DATA
+           IF      WRK-PARA-TEISYUTUBIKBN
+                                   =   "1"
+               MOVE    "7121"          TO  WRK-DATA
+           ELSE
+               MOVE    "7122"          TO  WRK-DATA
+           END-IF
            MOVE    4               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    保険者番号
@@ -1828,7 +1849,18 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  SFILESV-SKYYMD   (1)
       *****MOVE    "/home/orca/"   TO  SFILESV-TO-FOLDER(1)
-           STRING  SYS-1001-TENHYOKBN  DELIMITED   BY  SIZE
+           MOVE    SYS-1001-TENHYOKBN
+                                   TO  WRK-TENHYOKBN
+           IF      WRK-PARA-TEISYUTUBIKBN
+                                   =   "2"
+               EVALUATE    SYS-1001-TENHYOKBN
+                   WHEN    "1"
+                       MOVE    3               TO  WRK-TENHYOKBN
+                   WHEN    "0"
+                       MOVE    4               TO  WRK-TENHYOKBN
+               END-EVALUATE
+           END-IF
+           STRING  WRK-TENHYOKBN       DELIMITED   BY  SIZE
                    SYS-1001-HOSPCD     DELIMITED   BY  SIZE
                    ".UKE"              DELIMITED   BY  SIZE
                                        INTO    SFILESV-TO-DATA  (1)
