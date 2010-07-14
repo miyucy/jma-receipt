@@ -62,6 +62,10 @@
       *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     連番号を３桁に変更
       *                                     入力病名、入力病名文字数の追加
+      *
+      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *                                     病名なし時のエラー設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -145,6 +149,7 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-IN              PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
            03  CNT-OUT             PIC 9(06).
+           03  CNT-RECE-OUT        PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX                 PIC 9(03). 
@@ -189,6 +194,7 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPSYSKANRI.INC".
       *     
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
       *    患者病名
        01  PTBYOMEI-REC.
@@ -287,7 +293,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF    
       *
-           OPEN    INPUT               RECE02-FILE    
+           OPEN    I-O                 RECE02-FILE    
            OPEN    I-O                 RECE03-FILE
       *     
       *    レセプト編集区分情報
@@ -308,6 +314,21 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      SYS-2005-SYUBYOHENFLG    =   SPACE
                MOVE    ZERO             TO  SYS-2005-SYUBYOHENFLG
            END-IF
+      *         
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "01"             TO  SYS-KBNCD
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           IF      SYS-200501-CHKKBN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-CHKKBN
+           END-IF
       *
       *        レセプト明細０２読み込み
            PERFORM 900-RECE02-READ-SEC
@@ -320,6 +341,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
+           MOVE    ZERO                TO  CNT-RECE-OUT
+      *
       *    患者病名読み込み（患者ＩＤ、診療年月日、診療科順）
            INITIALIZE                  PTBYOMEI-REC
 grpsys     MOVE    RECE02-HOSPNUM      TO  PTBYO-HOSPNUM
@@ -345,6 +368,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+      *    対象病名がなかったとき
+           IF      SYS-200501-CHKKBN   =   "1"
+               IF      CNT-RECE-OUT        =   ZERO
+                   IF      RECE02-ERR-ERRKBN   =   ZERO 
+                       MOVE    10                  TO  RECE02-ERR-ERRKBN
+                       REWRITE                         RECE02-REC
+                   END-IF
+               END-IF
+           END-IF
       *
            IF      FLG-END             =   ZERO
                PERFORM 900-RECE02-READ-SEC      
@@ -607,7 +640,8 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE03-HOSPNUM
            END-IF   
       *
            WRITE   RECE03-REC
-           ADD     1                   TO  CNT-OUT   
+           ADD     1                   TO  CNT-OUT
+                                           CNT-RECE-OUT   
            .
        20011-RECE03-WRITE-EXT.
            EXIT.

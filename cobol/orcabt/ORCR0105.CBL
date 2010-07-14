@@ -96,6 +96,12 @@
       *                                     行うようにする
       *  04.05.08    NACL-藤原    10/04/13  愛知県対応
       *                                     生保と特定疾患９１の記載順 
+      *
+      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *                                     病名なし
+      *                                     単位コードなし
+      *                                     生保の受給者番号なし
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -955,6 +961,22 @@
            03  WRK-ERR-MSG-10.
                05  FILLER          PIC X(28)   VALUE
                    "政府管掌が使用されています". 
+      *
+           03  WRK-ERR-MSG-11.
+               05  FILLER          PIC X(24)   VALUE
+                   "対象の傷病名がありません". 
+      *
+           03  WRK-ERR-MSG-12.
+               05  FILLER          PIC X(26)   VALUE
+                   "コメントの入力がありません". 
+      *
+           03  WRK-ERR-MSG-13.
+               05  FILLER          PIC X(28)   VALUE
+                   "単位コードの入力がありません". 
+      *
+           03  WRK-ERR-MSG-14.
+               05  FILLER          PIC X(46)   VALUE
+                   "生保の負担者番号、受給者番号の入力がありません". 
       *
        01  WRK-CONS-AREA.    
       *    固定端末ＩＤ
@@ -2484,7 +2506,8 @@
            MOVE    RECE02-PTNUM        TO  HC06-PTNUM
       *
       *    提出先
-           IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
+           IF    ( RECE02-RECESYUBETU  =    ZERO    OR  8888 )
+           OR    ( RECE02-ERR-ERRKBN   >    ZERO             )
                MOVE    SPACE           TO  HC06-TEISYUTUSAKI
            ELSE    
                EVALUATE    RECE02-TEISYUTUSAKI
@@ -2753,7 +2776,8 @@
       *    但し、レセプト種別不明のときは原因を編集する
       *    主科未設定の場合は記載する
            IF      CNT-PAGE            =   1
-               IF      RECE02-RECESYUBETU  =    ZERO
+               IF    ( RECE02-RECESYUBETU  =    ZERO )
+               OR    ( RECE02-ERR-ERRKBN   >    ZERO )
                    PERFORM 3101-FUMEI-HENSYU-SEC
                ELSE 
                    IF      RECE02-MISEIKYU-FLG     =   "01"
@@ -2922,6 +2946,14 @@
                    MOVE    WRK-ERR-MSG-8   TO   HC06-HEAD4-G (5:)
                WHEN    9
                    MOVE    WRK-ERR-MSG-10  TO   HC06-HEAD4-G (5:)
+               WHEN    10
+                   MOVE    WRK-ERR-MSG-11  TO   HC06-HEAD4-G (5:)
+               WHEN    11
+                   MOVE    WRK-ERR-MSG-12  TO   HC06-HEAD4-G (5:)
+               WHEN    12
+                   MOVE    WRK-ERR-MSG-13  TO   HC06-HEAD4-G (5:)
+               WHEN    13
+                   MOVE    WRK-ERR-MSG-14  TO   HC06-HEAD4-G (5:)
            END-EVALUATE        
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "　"
       *
@@ -3192,7 +3224,8 @@
        3110-HKNSBT1-SET-SEC              SECTION.
       *
       *    不明分・自費は編集しない
-           IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
+           IF    ( RECE02-RECESYUBETU  =    ZERO    OR  8888 )
+           OR    ( RECE02-ERR-ERRKBN   >    ZERO             )
                CONTINUE
            ELSE                                        
                IF      RECE02-RECESYUBETU  =   6666
@@ -3235,7 +3268,8 @@
        3110-HKNSBT2-SET-SEC              SECTION.
       *
       *    不明分・自費は編集しない
-           IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
+           IF    ( RECE02-RECESYUBETU  =    ZERO    OR  8888 )
+           OR    ( RECE02-ERR-ERRKBN   >    ZERO             )
                CONTINUE
            ELSE                                        
                IF      RECE02-RECESYUBETU  =   6666
@@ -3271,7 +3305,8 @@
        3110-HONKZK-SET-SEC             SECTION.
       *
       *    不明分・自費は編集しない
-           IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
+           IF    ( RECE02-RECESYUBETU  =    ZERO    OR  8888 )
+           OR    ( RECE02-ERR-ERRKBN   >    ZERO             )
                CONTINUE
            ELSE                                        
                IF      RECE02-RECESYUBETU  =   6666
@@ -6968,7 +7003,8 @@
            MOVE    RECE02-HKNJANUM-KEY TO  RECE08-HKNJANUM
            MOVE    RECE02-TEKSTYMD     TO  RECE08-TEKSTYMD
            MOVE    RECE02-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
-           IF      RECE02-PTNUM        =   SPACE
+           IF    ( RECE02-PTNUM        =   SPACE )
+           OR    ( RECE02-ERR-ERRKBN   >    ZERO )
                MOVE    ZERO                TO  RECE08-RECESYUBETU
            ELSE      
                MOVE    RECE02-RECESYUBETU  TO  RECE08-RECESYUBETU
@@ -7033,6 +7069,7 @@
            IF    ( RECE02-TEISYUTUSAKI =   "6"    )
            OR    ( RECE02-RECESYUBETU  =   "6666"  OR  "8888"  OR
                                            "0000" )
+           OR    ( RECE02-ERR-ERRKBN   >   ZERO   )
                CONTINUE
            ELSE
                IF    ( RECE02-TEISYUTUSAKI =   "1"    )
@@ -7819,6 +7856,7 @@
                IF    ( RECE02-TEISYUTUSAKI =   "1"    )
                OR    ( RECE02-RECESYUBETU  =   "6666"  OR  "8888"  OR
                                                "0000" )
+               OR    ( RECE02-ERR-ERRKBN   >   ZERO   )
                    CONTINUE
                ELSE
                    IF      FLG-RECE-PUT-UM     =   1
@@ -7904,7 +7942,8 @@
            END-IF
       * 
       *    レセプト種別不明または自費のとき更新しない
-           IF      RECE02-RECESYUBETU      =   ZERO    OR  8888
+           IF    ( RECE02-RECESYUBETU      =   ZERO    OR  8888 )
+           OR    ( RECE02-ERR-ERRKBN       >   ZERO             )
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       *

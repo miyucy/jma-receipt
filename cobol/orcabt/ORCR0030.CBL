@@ -487,6 +487,8 @@
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
       *                                     対応
+      *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -719,6 +721,7 @@
            03  IDXA                                    PIC 9(01).
            03  IDXB                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
+           03  IDYY                                    PIC 9(02).
            03  IDYX                                    PIC 9(02).
            03  IDZX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
@@ -5551,6 +5554,14 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                MOVE    TNS-TOKUKIZAISBT1
                                       TO RECE05-TOKUKIZAISBT1  (IDX4)
                MOVE    TNS-SANSOKBN   TO RECE05-SANSOKBN       (IDX4)
+               IF      TNS-SRYCD (1:2)   =   "84"
+                   PERFORM VARYING IDYY    FROM    1   BY  1
+                           UNTIL   IDYY    >       10
+                       MOVE    TNS-SSTKIJUNCD (IDYY)
+                                           TO  RECE05-SSTKIJUNCD
+                                                   (IDX4 IDYY)
+                   END-PERFORM
+               END-IF
       *
                IF    (TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR

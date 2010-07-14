@@ -1972,6 +1972,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    SPACE               TO  R99
            MOVE    ZERO                TO  R99-COUNT
                                            R99-PROGRESSBAR-VALUE
+           MOVE    "black"             TO  R99-MSG-STYLE
       *
            IF      SPA-RID1-FLG    =   "PV"
                MOVE    "F12:プレビュー"    TO  R99-B12-LABEL

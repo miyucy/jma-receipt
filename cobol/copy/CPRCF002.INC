@@ -117,6 +117,9 @@
       *
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料
       *                                     （１回目）算定フラグ追加
+      *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *                                     レセプト種別不明エラー情報変更
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -491,7 +494,7 @@
            03  RECE02-TSTPTNUMKBN         PIC  X(01).
       *レセプト種別不明エラー情報
            03  RECE02-ERR-AREA.
-               05  RECE02-ERR-ERRKBN      PIC 9(01).
+               05  RECE02-ERR-ERRKBN      PIC 9(02).
                05  RECE02-ERR-DAY         PIC 9(02).
                05  RECE02-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE02-ERR-TEKSTYMD    PIC 9(08).

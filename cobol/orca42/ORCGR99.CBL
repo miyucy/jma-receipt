@@ -65,6 +65,11 @@
       *
       *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
+      *
+      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *                                     不明分ありのとき赤字でエラー
+      *                                     表示を行う
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -97,7 +102,9 @@
                                    PIC X(02).
            03  SPA-RECE08-SORT-1   PIC X(10).
            03  SPA-RECE08-RECESYUBETU-SRT
-                                   PIC  X(03).
+                                   PIC X(03).
+           03  SPA-RECE07-FUMEI-PAGE
+                                   PIC 9(05).
       *
       *   
            COPY    "ENUM-VALUE".
@@ -385,6 +392,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE               TO  R99
                          
            MOVE    ZERO                TO  R99-COUNT
+                                           R99-PROGRESSBAR-VALUE
+           MOVE    "black"             TO  R99-MSG-STYLE
       *
            IF      SPA-R01-GMNKBN  =   "R02"  OR  "R04"
                IF      SPA-RID1-FLG    =   "PV"
@@ -533,7 +542,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    MOVE    SPA-RECE08-RECESYUBETU-SRT
                                            TO
                                        SPA-R01-RECE08-RECESYUBETU-SRT 
-                               END-IF
+                                   MOVE    SPA-RECE07-FUMEI-PAGE
+                                           TO  SPA-R01-RECE07-FUMEI-PAGE
+                               END-IF   
                            END-IF   
                        END-IF
                    ELSE
@@ -587,9 +598,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                            =   "XX" )
                            OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                            =   "XX" )
-                               MOVE
-                      "処理は正常に終了しましたが主科未設定分があります"
-                                                    TO  R99-MSG
+                           OR    ( SPA-R01-RECE07-FUMEI-PAGE
+                                                           >   ZERO )
+                               STRING
+                                   "主科未設定分又は種別不明分がありま"
+                                                   DELIMITED   BY  SIZE
+                                   "すので印刷画面で確認して下さい"
+                                                   DELIMITED   BY  SIZE
+                                                   INTO    R99-MSG
+                               END-STRING
+                               MOVE    "red"        TO  R99-MSG-STYLE 
                            ELSE
                                MOVE    "処理は正常に終了しました"
                                                     TO  R99-MSG
@@ -624,6 +642,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                            =   "XX" )
                            OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                            =   "XX" )
+                           OR    ( SPA-R01-RECE07-FUMEI-PAGE
+                                                           >   ZERO )
                                CONTINUE
                            ELSE
       *                        印刷画面への自動遷移（主科未設定分がないとき）
@@ -703,6 +723,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                MOVE    SPACE           TO  SPA-RECE08-DRCD-SRYKA
                                            SPA-RECE08-SORT-1
                                            SPA-RECE08-RECESYUBETU-SRT
+               MOVE    ZERO                TO  SPA-RECE07-FUMEI-PAGE
       *
       *        一括作成で社保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -831,6 +852,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                        MOVE    RECE08-SORT-1       TO
                                                SPA-RECE08-SORT-1
                    END-IF
+               END-IF
+      *
+      *        不明分の有無チェック
+               MOVE    SPA-RECE07-KEY      TO  RECE07-KEY
+               MOVE    "%"                 TO  RECE07-TEISYUTUSAKI
+               MOVE    "0000"              TO  RECE07-RECESYUBETU
+               MOVE    "%%"                TO  RECE07-SRYKA 
+               MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+               MOVE    "key13"             TO  WRK-MCP-PATHNAME
+               MOVE    RECE07-REC          TO  MCPDATA-REC
+               PERFORM 900-RECE07-INV-SEC
+               IF      FLG-RECE07          =   ZERO
+                   MOVE    RECE07-PAGE         TO  SPA-RECE07-FUMEI-PAGE
+               ELSE
+                   MOVE    ZERO                TO  SPA-RECE07-FUMEI-PAGE
                END-IF
            END-IF
       *

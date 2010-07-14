@@ -114,6 +114,20 @@ W12	{
 					count	int;
 					item	varchar(34)[5];
 				};
+				CHKKBN_COMBO	{
+					CHKKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
+				BYOMEI_PRTJYUN_COMBO	{
+					BYOMEI_PRTJYUN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
 				PREFPRGID	{
 					value	varchar(15);
 				};

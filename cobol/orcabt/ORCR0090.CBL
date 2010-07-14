@@ -213,6 +213,14 @@
       *  04.05.03    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.04    NACL-門脇    10/01/12  治験対応
       *  04.05.05    NACL-門脇    10/01/26  東京都マル子追加対応
+      *
+      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *                                     コメントの文字データ入力なし
+      *                                     （８２を除く）
+      *                                     特定器材の単位コードなし
+      *                                      （金額種別５を除く）
+      *                                     生保の負担者番号、受給者番号なし
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -343,6 +351,7 @@
            03  FLG-HKNNUM-OK       PIC 9(01).
            03  FLG-CHK-SYOKBN      PIC 9(01).
            03  FLG-GAIJINKEN       PIC 9(01).
+           03  FLG-COM-CHK         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -545,6 +554,8 @@
            03  WRK-SRYSYUKBN           PIC X(03).
       *
            03  WRK-SET-LINENUM         PIC 9(05).
+      *
+           03  WRK-MOJISU          PIC 9(03).    
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -1151,6 +1162,11 @@
       *    レセプト特記事項編集情報
            COPY    "CPSK2006.INC".
       *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK200501.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -1390,6 +1406,41 @@ grpsys         PERFORM 900-DBSELECT-SEC
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF 
+      *         
+      *   レセプト編集情報
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "2005"          TO  SYS-KANRICD
+           MOVE    "01"            TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+      *
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC          =   ZERO
+                   MOVE    MCPDATA-REC      TO  SYS-200501-REC
+               ELSE    
+                   INITIALIZE                   SYS-200501-REC
+               END-IF
+           ELSE    
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      * 
+           IF      SYS-200501-CHKKBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-200501-CHKKBN
+           END-IF
      *    
            .
        110-SYSKANRI-HENSYU-EXT.
@@ -1528,6 +1579,23 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM      )
                IF      FLG-SYS-2006            =   1
                    PERFORM 2008-SYS2006-HENSYU-SEC
                END-IF
+      *
+      *        生保の負担者番号、受給者番号の入力がない時のエラー設定
+               IF      SYS-200501-CHKKBN   =   "1"
+                   PERFORM VARYING IDX6    FROM    1   BY  1
+                           UNTIL   IDX6 >          4
+                           OR      RECE02-KOHNUM(IDX6) =   SPACE
+                           OR      RECE02-ERR-ERRKBN   >   ZERO 
+                       IF      RECE02-KOHNUM (IDX6)    =   "012"    
+                           IF    ( RECE02-KOHFTNJANUM (IDX6)
+                                                       =   SPACE )
+                           OR    ( RECE02-KOHJKYSNUM (IDX6)
+                                                       =   SPACE )
+                               MOVE    13      TO  RECE02-ERR-ERRKBN
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF                          
       *
       *        電子化加算等編集
                MOVE    ZERO      TO    FLG-TEIGEN
@@ -1866,12 +1934,14 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                                MOVE    1         TO  FLG-HIKAKIN
                            END-IF
                        END-IF
+      *
+      *                レセ電請求時の受付エラー分チェック
+                       IF      SYS-200501-CHKKBN   =   "1"
+                           PERFORM 20021-DATA-CHK-SEC
+                       END-IF
                      END-IF
-      *
                    END-IF
-      *
                  END-IF
-      *
                END-PERFORM
                ADD     1                 TO  CNT-RECE05
       *
@@ -1886,6 +1956,120 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
       *
            .
        2002-TBLZAIW-TAIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電請求時の受付エラー分チェック処理
+      *****************************************************************
+       20021-DATA-CHK-SEC    SECTION.
+      *
+      *    コメントの文字データの入力がなかったとき
+           IF    ( RECE02-ERR-ERRKBN   =   ZERO        )
+           AND   ( RECE05-SRYCD (IDX)(1:1)
+                                       =   "0" OR  "8" )
+               IF      RECE05-SRYCD (IDX)(1:2)
+                                           =   "82"
+                   CONTINUE
+               ELSE
+                   IF      RECE05-SRYCD (IDX)  =   "810000001"
+      *                空白または全角スペースのみのとき
+                       IF      RECE05-NAME (IDX)   =   SPACE
+                           MOVE    11  TO  RECE02-ERR-ERRKBN
+                       ELSE
+                           MOVE    ZERO    TO  FLG-COM-CHK
+                           PERFORM VARYING IDXX    FROM    1   BY  2
+                                   UNTIL   IDXX    >   200
+                                   OR  RECE05-NAME(IDX)(IDXX:2)
+                                                   =   SPACE
+                                   OR  FLG-COM-CHK =   1
+                               IF       RECE05-NAME(IDX) (IDXX:2)
+                                                       NOT =   "　"
+                                    MOVE    1          TO  FLG-COM-CHK
+                               END-IF
+                           END-PERFORM
+                           IF      FLG-COM-CHK =   ZERO
+                               MOVE    11          TO  RECE02-ERR-ERRKBN
+                           END-IF
+                       END-IF    
+                   ELSE
+                       IF    ( RECE05-SRYCD (IDX) (1:1)    =   "8"   )
+                       OR    ( RECE05-SRYCD (IDX) (1:3)    =   "008" )
+                           IF      RECE05-INPUTCOMENT (IDX)    =   SPACE
+                               MOVE    11          TO  RECE02-ERR-ERRKBN
+                           ELSE
+                               MOVE    ZERO        TO  FLG-COM-CHK
+                               PERFORM VARYING IDXX    FROM    1   BY  2
+                                       UNTIL   IDXX    >       200
+                                       OR      RECE05-INPUTCOMENT (IDX)
+                                                              (IDXX:2)
+                                                       =   SPACE
+                                       OR  FLG-COM-CHK =   1
+                                   IF      RECE05-INPUTCOMENT (IDX)
+                                                               (IDXX:2)
+                                                       NOT =   "　"
+                                       MOVE    1       TO  FLG-COM-CHK
+                                   END-IF
+                               END-PERFORM
+                               IF      FLG-COM-CHK =   ZERO
+                                   MOVE    11      TO  RECE02-ERR-ERRKBN
+                               END-IF
+                           END-IF
+      *
+      *                    コメントパターン４０の文字チェック
+                           IF    ( RECE02-ERR-ERRKBN   =   ZERO )
+                           AND   ( RECE05-SRYCD (IDX)(1:2)
+                                                       =   "84" )
+                               COMPUTE WRK-MOJISU  =
+                                         ( RECE05-SSTKIJUNCD (IDX 2) +
+                                           RECE05-SSTKIJUNCD (IDX 4) +
+                                           RECE05-SSTKIJUNCD (IDX 6) +
+                                           RECE05-SSTKIJUNCD (IDX 8)   )
+                                                   *   2   -   1
+                               IF      RECE05-INPUTCOMENT (IDX)
+                                                       (WRK-MOJISU:2)
+                                                       =   "　"    OR
+                                                           SPACE
+                                   MOVE    11      TO  RECE02-ERR-ERRKBN
+                               END-IF
+                           END-IF 
+                       ELSE
+                           IF      RECE05-NAME (IDX)   =   SPACE
+                               MOVE    11          TO  RECE02-ERR-ERRKBN
+                           ELSE
+                               MOVE    ZERO        TO  FLG-COM-CHK
+                               PERFORM VARYING IDXX    FROM    1   BY  2
+                                       UNTIL   IDXX    >       200
+                                       OR  RECE05-NAME (IDX)  (IDXX:2)
+                                                       =   SPACE
+                                       OR  FLG-COM-CHK =   1
+                                   IF      RECE05-NAME (IDX)   (IDXX:2)
+                                                       NOT =   "　"
+                                       MOVE    1       TO  FLG-COM-CHK
+                                   END-IF
+                               END-PERFORM
+                               IF      FLG-COM-CHK  =   ZERO
+                                   MOVE    11      TO  RECE02-ERR-ERRKBN
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF    
+               END-IF
+           END-IF
+      *
+      *    特定器材の単位コードが未設定のとき（金額種別５以外）
+           IF      RECE02-ERR-ERRKBN   =   ZERO 
+               IF    ( RECE05-SRYCD (IDX)(1:1)
+                                           =   "7" )
+               AND   ( RECE05-TENSIKIBETU (IDX)
+                                       NOT =   "5" )
+                   IF      RECE05-TANICD (IDX) =   0
+                       MOVE    12          TO  RECE02-ERR-ERRKBN
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       20021-DATA-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5010,7 +5194,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
-     *
       *
       *****************************************************************
       *    ジョブ管理ＤＢ制御処理

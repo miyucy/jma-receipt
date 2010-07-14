@@ -2356,6 +2356,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            MOVE    SPACE               TO  R99
            MOVE    ZERO                TO  R99-COUNT
+                                           R99-PROGRESSBAR-VALUE
+           MOVE    "black"             TO  R99-MSG-STYLE
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE

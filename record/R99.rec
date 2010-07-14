@@ -1,6 +1,7 @@
 R99	{
 	fixed6	{
 		MSG	{
+			style   varchar(20);
 			value	varchar(200);
 		};
 		scrolledwindow28	{

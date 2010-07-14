@@ -1,6 +1,6 @@
             02  R99.
-              03  R99-MSG.
-                04  R99-VALUE   PIC X(200).
+              03  R99-MSG-STYLE   PIC X(20).
+              03  R99-MSG         PIC X(200).
               03  R99-SCROLLEDWINDOW28.
                 04  R99-JOBKANRILST.
                   05  R99-COUNT       PIC S9(9)   BINARY.
