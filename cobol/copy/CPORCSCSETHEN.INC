@@ -53,4 +53,6 @@
                    07  ORCSCSETHEN-TEISEI-OCC      OCCURS   100.
                        09  ORCSCSETHEN-TEI-SRYCD   PIC X(09).
                        09  ORCSCSETHEN-TEI-KAISU   PIC 9(03).
+      *    エラーメッセージ
+           03  ORCSCSETHEN-ERRMSG2        PIC  X(100).
       *

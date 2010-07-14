@@ -91,6 +91,8 @@
                        09  SPA-NAI-JGNCNT          PIC  9(03).
       *                日上限
                        09  SPA-NAI-JGNCNT1D        PIC  9(03).
+      *                週上限
+                       09  SPA-NAI-JGNCNT1W        PIC  9(03).
       *                月上限
                        09  SPA-NAI-JGNCNTETC       PIC  9(03).
       *                エラー識別

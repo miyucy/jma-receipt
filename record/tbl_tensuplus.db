@@ -15,6 +15,7 @@ tbl_tensuplus {
 	SANTEIRRKKBN			number(1,0);
 	JGNCNT				number(3,0);
 	JGNCNT1D			number(3,0);
+	JGNCNT1W			number(3,0);
 	JGNCNTERR			number(1,0);
 	JGNCNTETCM			number(2,0);
 	JGNCNTETC			number(3,0);
@@ -72,6 +73,7 @@ path	upd1	{
 	SANTEIRRKKBN	=	:SANTEIRRKKBN,
 	JGNCNT		=	:JGNCNT,
 	JGNCNT1D	=	:JGNCNT1D,
+	JGNCNT1W	=	:JGNCNT1W,
 	JGNCNTERR	=	:JGNCNTERR,
 	JGNCNTETCM	=	:JGNCNTETCM,
 	JGNCNTETC	=	:JGNCNTETC,

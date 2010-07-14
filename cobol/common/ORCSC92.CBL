@@ -66,6 +66,7 @@
       *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
       *  04.05.00    NACL-多々納  09/12/09  患者禁忌薬剤期間対応
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
+      *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更
       *****************************************************************
       *
       *
@@ -624,6 +625,10 @@
                    MOVE    "0001"              TO  SPA-ERRCD
                END-IF
       *??
+      *        有効終了日チェック
+               IF     (SPA-ERRCD           =   "0001" )
+                   PERFORM 2002-TENSU-RRK-CHK-SEC
+               END-IF
       ******   MOVE    "0001"              TO  SPA-ERRCD
            END-IF
       *    基本チェック１
@@ -643,9 +648,10 @@
            END-IF
       *    算定回数チェック
       **** IF      LNK-SC92-KBN    NOT =   "6"
-           IF      LNK-SC92-KBN        =   "1"
+           IF     (LNK-SC92-KBN        =   "1"    )
                                        OR  "3"
                                        OR  "8"
+             AND  (SPA-ERRCD           =   SPACE  )
                IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
                       (SPA-HKNCOMBINUM     =   "9999" )
                    OR (LNK-SC92-PG     NOT =   "K02"  )
@@ -736,6 +742,72 @@
            END-IF
            .
        2001-TENSU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ期間チェック処理
+      *****************************************************************
+       2002-TENSU-RRK-CHK-SEC      SECTION.
+      *
+           INITIALIZE                  TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-TENSU           =   ZERO
+              IF       TNS-YUKOEDYMD       <   SPA-SRYYMD
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    TNS-YUKOEDYMD       TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY2-AREA
+                   STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                           "終了　【"          DELIMITED  BY  SIZE
+                           TNS-NAME            DELIMITED  BY  SPACE
+                           "】"                DELIMITED  BY  SIZE
+                          INTO                 LNK-SC92-ERRMSG
+                   END-STRING
+               ELSE
+                   IF       TNS-YUKOSTYMD     <   SPA-SRYYMD
+                       INITIALIZE                      STS-AREA-DAY
+                       INITIALIZE                      LNK-DAY2-AREA
+                       MOVE    "21"                TO  LNK-DAY2-IRAI
+                       MOVE    TNS-YUKOSTYMD       TO  LNK-DAY2-YMD
+                       CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                           LNK-DAY2-AREA
+                       STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                           "開始　【"
+                                               DELIMITED  BY  SPACE
+                           TNS-NAME            DELIMITED  BY  SPACE
+                           "】"                DELIMITED  BY  SIZE
+                          INTO                 LNK-SC92-ERRMSG
+                       END-STRING
+                   END-IF
+               END-IF
+           END-IF
+           .
+        2002-TENSU-RRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4645,6 +4717,7 @@
                MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNT1W       TO  TNS-JGNCNT1W
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
       *
                MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM

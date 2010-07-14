@@ -5094,6 +5094,10 @@
                MOVE    SPACE           TO  LNK-SC92-ERRCD(3)
            END-IF
       *
+           IF     (SPA-ERRCD       NOT =   SPACE )  AND
+                  (LNK-SC92-ERRMSG NOT =   SPACE )
+               MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
+           END-IF
       *
            PERFORM VARYING     IDX-ERR FROM    1  BY  1
                    UNTIL      (IDX-ERR     >   10     )  OR
@@ -5513,6 +5517,9 @@
                                        SPA-SCR-REC
       *    展開後の位置
            MOVE    ORCSCSETHEN-IDX     TO  SPA-GMN-IDX
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    ORCSCSETHEN-ERRMSG2     TO  SPA-ERRMSG2
+           END-IF
       *
            .
        4101191-INPUTSET-SYORI-EXT.

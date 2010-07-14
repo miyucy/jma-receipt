@@ -3077,22 +3077,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label197</name>
-	  <x>264</x>
-	  <y>104</y>
-	  <width>34</width>
-	  <height>24</height>
-	  <label>£±½µ</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label231</name>
 	  <x>112</x>
 	  <y>104</y>
@@ -3361,6 +3345,62 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label197</name>
+	  <x>264</x>
+	  <y>104</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>£±½µ</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label280</name>
+	  <x>260</x>
+	  <y>276</y>
+	  <width>34</width>
+	  <height>24</height>
+	  <label>£±½µ</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>PLUS_JGNCNT1W</name>
+	  <x>296</x>
+	  <y>276</y>
+	  <width>40</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Sat, 03 Feb 2001 07:22:00 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Sat, 03 Feb 2001 07:22:27 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZ9</format>
 	</widget>
       </widget>
 

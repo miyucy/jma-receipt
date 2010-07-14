@@ -47,6 +47,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  撮影料等の数量ゼロ対応
       *                                     数量小数５桁対応
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
+      *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -286,6 +287,7 @@
            03  WRK-ERR-ERRCD       PIC X(04).
       *
            03  WRK-ERRCD           PIC X(04).
+           03  WRK-ERRMSG          PIC X(80).
       *
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
@@ -588,6 +590,7 @@
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
            MOVE    SPACE               TO  SPA-ERRCD
+           MOVE    SPACE               TO  SPA-ERRMSG2
            MOVE    ZERO                TO  FLG-END
            MOVE    ZERO                TO  FLG-SYORINASI
       *
@@ -638,6 +641,7 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
+                                       OR  "KERR2"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -1306,6 +1310,7 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  WRK-ERRMSG
       *    約束セットの画面用再編集
            PERFORM VARYING     IDX-1   FROM    1   BY  1
                    UNTIL      (IDX-1   >   SPA-MAX-LINE )  OR
@@ -1356,6 +1361,7 @@
            END-PERFORM
       *    約束セットないのエラー
            MOVE    WRK-ERRCD           TO  SPA-ERRCD
+           MOVE    WRK-ERRMSG          TO  SPA-ERRMSG2
       *
            .
        3103-SAIHEN-HEN-EXT.
@@ -2391,18 +2397,30 @@
                                            OR  "99999999"
                MOVE    "99999999"          TO  SPA-K05-GMN-YUKOEDYMD
                MOVE    "99999999"          TO  SPA-K05-NAI-YUKOEDYMD
-               IF     (SPA-K05-MAE-SRYYMD
-                                       NOT =   SPA-SRYYMD )
-                 AND  (SPA-K05-NAI-YUKOSTYMD   <   SPA-SRYYMD)
-                   MOVE    SPA-K05-MAE-SRYYMD  TO  SPA-SRYYMD
-                   PERFORM 410121-SAIHEN-SEC
+      *        IF     (SPA-K05-MAE-SRYYMD
+      *                                NOT =   SPA-SRYYMD )
+      ***        AND  (SPA-K05-NAI-YUKOSTYMD   <   SPA-SRYYMD)
+      *            MOVE    SPA-K05-MAE-SRYYMD  TO  SPA-SRYYMD
+      *            PERFORM 410121-SAIHEN-SEC
+      *        ELSE
+      *            IF     (SPA-K05-NAI-YUKOSTYMD   >   "00000000") AND
+      *                   (SPA-K05-NAI-YUKOSTYMD
+      *                                    NOT =   SPA-SRYYMD )
+      *                MOVE    SPA-K05-NAI-YUKOSTYMD  TO  SPA-SRYYMD
+      *                PERFORM 410121-SAIHEN-SEC
+      *            END-IF
+      ***      END-IF
+      *        開始日＞システム日付は開始日を診療日
+               IF      (SPA-K05-NAI-YUKOSTYMD  >   SPA-K05-MAE-SRYYMD)
+                    IF      SPA-K05-NAI-YUKOSTYMD  NOT =   SPA-SRYYMD
+                        MOVE    SPA-K05-NAI-YUKOSTYMD  TO  SPA-SRYYMD
+                        PERFORM 410121-SAIHEN-SEC
+                    END-IF
                ELSE
-                   IF     (SPA-K05-NAI-YUKOSTYMD   >   "00000000") AND
-                          (SPA-K05-NAI-YUKOSTYMD
-                                           NOT =   SPA-SRYYMD )
-                       MOVE    SPA-K05-NAI-YUKOSTYMD  TO  SPA-SRYYMD
-                       PERFORM 410121-SAIHEN-SEC
-                   END-IF
+                    IF      SPA-K05-MAE-SRYYMD     NOT =   SPA-SRYYMD
+                        MOVE    SPA-K05-MAE-SRYYMD     TO  SPA-SRYYMD
+                        PERFORM 410121-SAIHEN-SEC
+                    END-IF
                END-IF
            ELSE
                INITIALIZE                      ORCSGDAYAREA
@@ -2417,7 +2435,7 @@
       *D               MOVE    12              TO  SPA-GMN5-CUR
       *D           ELSE
                        IF      SPA-K05-NAI-YUKOEDYMD
-                                           NOT =   SPA-SRYYMD
+                                           NOT =   SPA-K05-MAE-SRYYMD
                            MOVE    SPA-K05-NAI-YUKOEDYMD
                                                TO  SPA-SRYYMD
                            PERFORM 410121-SAIHEN-SEC
@@ -2447,6 +2465,7 @@
            PERFORM VARYING IDX         FROM    1  BY  1
                    UNTIL   IDX         >   SPA-MAX-LINE
                MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG5 (IDX)
            END-PERFORM
       *
            MOVE    1                      TO  FLG-SAIHEN
@@ -2508,6 +2527,7 @@
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  WRK-IDX2
            MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  WRK-ERRMSG
            MOVE    ZERO                TO  FLG-INS
            PERFORM VARYING SPA-GMN-IDX     FROM    WRK-STR  BY  1
                    UNTIL   SPA-GMN-IDX     >   SPA-MAX-LINE
@@ -2524,6 +2544,7 @@
       *
            IF      WRK-ERRCD       NOT =   SPACE
                MOVE    WRK-ERRCD           TO  SPA-ERRCD
+               MOVE    WRK-ERRMSG          TO  SPA-ERRMSG2
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
       *
@@ -3042,6 +3063,11 @@
            END-IF
       *    カーソル位置設定
            PERFORM 41011139-INFLG-HEN-SEC
+      *
+           IF     (SPA-ERRCD       NOT =   SPACE )  AND
+                  (LNK-SC92-ERRMSG NOT =   SPACE )
+               MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
+           END-IF
       *
            PERFORM VARYING     IDX-ERR FROM    1  BY  1
                    UNTIL      (IDX-ERR     >   10     )  OR
@@ -3610,6 +3636,7 @@
        4101191-INPSET-HEN-SEC      SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRCD
+           MOVE    SPACE               TO  WRK-ERRMSG
       *
            MOVE    ZERO                TO  FLG-YAKUSOKU
            MOVE    ZERO                TO  IDX-YAKUSOKU
@@ -4002,6 +4029,9 @@
       *    点数マスタなしのエラーは表示する
            IF      SPA-ERRCD           =   "0001"
                IF      SPA-COM-SET (SPA-GMN-IDX)   =  "1"
+                   IF      WRK-ERRCD       =   SPACE
+                       MOVE    LNK-SC92-ERRMSG     TO  WRK-ERRMSG
+                   END-IF
                    MOVE    "S001"          TO  WRK-ERRCD
                END-IF
                MOVE    1                   TO  FLG-ERR
@@ -4236,6 +4266,10 @@
       *            点数マスタなしのエラーは表示する
                    IF      SPA-ERRCD           =   "0001"
                        IF      SPA-COM-SET (SPA-GMN-IDX)   =  "1"
+                           IF      WRK-ERRCD       =   SPACE
+                               MOVE    LNK-SC92-ERRMSG
+                                                       TO  WRK-ERRMSG
+                           END-IF
                            MOVE    "S001"          TO  WRK-ERRCD
                        END-IF
                        MOVE    SPACE           TO  SPA-ERRCD
@@ -5875,8 +5909,78 @@
                END-IF
            END-PERFORM
       *
+      *    点数マスタ有効期間チェック
+           IF      SPA-K05-NAI-YUKOEDYMD   =   "99999999"
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX              >   SPA-MAX-LINE) OR
+                                  (SPA-ERRCD        NOT =   SPACE )   OR
+                                  (SPA-GMN-INPUTCD(IDX) =   SPACE )
+                   IF     (SPA-COM-KZMFLG5 (IDX)    =   SPACE )  AND
+                          (SPA-GMN-INPUTCD(IDX)(1:1)
+                                                 NOT =   "."  AND "S")
+                       PERFORM 410011-TENSU-RRK-CHK-SEC
+                       MOVE    "1"             TO  SPA-COM-KZMFLG5 (IDX)
+                   END-IF
+      *
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                   END-IF
+               END-PERFORM
+           END-IF
            .
        41001-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ期間チェック処理
+      *****************************************************************
+       410011-TENSU-RRK-CHK-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG2
+      *
+           INITIALIZE                  TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    SPA-COM-INPUTCD(IDX)    TO  TNS-SRYCD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
+                   MOVE    ZERO                TO  FLG-TENSU
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+           ELSE
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    1                   TO  FLG-TENSU
+           END-IF
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-TENSU           =   ZERO
+               IF     (TNS-YUKOEDYMD   NOT =   "99999999" )
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    TNS-YUKOEDYMD       TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY2-AREA
+                   STRING  LNK-DAY2-EDTYMD3        DELIMITED  BY  SIZE
+                           "終了です。【"          DELIMITED  BY  SIZE
+                           TNS-NAME                DELIMITED  BY  SPACE
+                           "】"                    DELIMITED  BY  SIZE
+                          INTO                     SPA-ERRMSG2
+                   END-STRING
+                   MOVE    "K050"                  TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+        410011-TENSU-RRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6712,6 +6816,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSC96"           USING    SPA-AREA
                                                 ORCSC96AREA
       *
+           IF      SPA-ERRMSG2     NOT =   SPACE
+      *        エラー画面２
+               PERFORM 5101-KERR2-SET-SEC
+               GO      TO      510-ERRSET-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  KERR
            MOVE    SPA-ERRCD           TO  KERR-ERRCODE
            MOVE    SPA-ERRMSG          TO  KERR-ERRMSG
@@ -6730,6 +6840,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        510-ERRSET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ表示２処理
+      *****************************************************************
+       5101-KERR2-SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  KERR2
+           MOVE    SPA-ERRCD           TO  KERR2-ERRCODE
+           MOVE    SPA-ERRMSG2         TO  KERR2-ERRMSG(1:80)
+           MOVE    SPA-ERRMSG          TO  KERR2-ERRMSG2
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "K05"               TO  SPA-MOTOPG
+           MOVE    "KERR2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "KERR2"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       5101-KERR2-SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    エラーメッセージ表示理

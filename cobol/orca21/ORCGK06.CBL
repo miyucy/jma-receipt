@@ -381,6 +381,7 @@
                    MOVE    1               TO  SPA-GMN-CUR
       *
                WHEN    OTHER
+                   MOVE    SPACE           TO  SPA-KIDCD
                    PERFORM 310-SPASET-SEC
                    MOVE    1               TO  SPA-GMN-PAGE
                    MOVE    1               TO  SPA-GMN-CUR

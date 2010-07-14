@@ -113,6 +113,7 @@
            03  WRK-ERR-ERRCD           PIC X(04).
            03  WRK-ERR-ERRMSG2         PIC X(80).
            03  WRK-KIDCD               PIC X(04).
+           03  WRK-ERRMSG              PIC X(80).
       *    時間外フラグ
            03  WRK-TIMEFLG             PIC X(01).
            03  WRK-KEI-IDX             PIC 9(04).
@@ -134,6 +135,7 @@
                    07  WRK-KYUSEI-ST       PIC X(01).
                    07  WRK-KYUSEI-ED       PIC X(01).
                05  WRK-TEIGEN-IN           PIC X(01).
+      *
       *    自動加算テーブル
        01  WRK-KASAN-AREA.
            03  WRK-KASAN-TBL                       OCCURS   60.
@@ -1091,13 +1093,15 @@
                                        SPA-SCR-REC
                                        SPA-AREA
                                        TNS-TENSU-REC
-           IF      LNK-SC91-DAYMAXCNT  >   ZERO
+      ***  IF      LNK-SC91-DAYMAXCNT  >   ZERO
       *        日上限は回数
-               MOVE    WRK-KAISU           TO  WRK-KAISU-GOK
-           ELSE
+      *        MOVE    WRK-KAISU           TO  WRK-KAISU-GOK
+      *    ELSE
       *        日上限以外は回数を集計
-               ADD     WRK-KAISU           TO  WRK-KAISU-GOK
-           END-IF
+      *        IF      LNK-SC91-MAXCNT     >   ZERO
+      *            ADD     WRK-KAISU           TO  WRK-KAISU-GOK
+      *        END-IF
+      ***  END-IF
       *
       *    警告判定
            IF      LNK-SC91-ERRCD(1:1)     =   "K"
@@ -1112,15 +1116,68 @@
            END-IF
            MOVE    LNK-SC91-ERRCD      TO  SPA-ERRCD
            IF      SPA-COM-NYU-KAI (IDX)  >   ZERO
-               IF     (LNK-SC91-ERRCD  NOT =   SPACE )  AND
-                      (LNK-SC91-ERRMSG     =   SPACE )
-                   MOVE    IDX-N2          TO  LNK-SC91-ERRMSG(1:2)
-                   MOVE    "日算定済み"    TO  LNK-SC91-ERRMSG(3:)
+               IF     (LNK-SC91-ERRCD  NOT =   SPACE )
+      *         AND   (LNK-SC91-ERRMSG     =   SPACE )
+      *            MOVE    IDX-N2          TO  LNK-SC91-ERRMSG(1:2)
+      *            MOVE    "日算定済み"    TO  LNK-SC91-ERRMSG(3:)
+                   PERFORM 5101721-ERRMSG-SEC
                END-IF
            END-IF
            MOVE    LNK-SC91-ERRMSG     TO  SPA-ERRMSG2
+      *
            .
        510172-SANTEIKAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    急性発生設定処理
+      *****************************************************************
+       5101721-ERRMSG-SEC             SECTION.
+      *
+           IF     (LNK-SC91-ERRMSG     =   SPACE )
+               IF      LNK-SC91-DAYMAXCNT  >   ZERO
+                   STRING  IDX-N2              DELIMITED  BY  SIZE
+                          "日算定エラー"
+                           "　【日上限："          DELIMITED  BY  SIZE
+                           LNK-SC91-DAYMAXCNT      DELIMITED  BY  SIZE
+                           "】"                    DELIMITED  BY  SIZE
+                       INTO                    LNK-SC91-ERRMSG
+                   END-STRING
+               ELSE
+      *            月上限エラー
+                   IF     (LNK-SC91-MAXCNT  >   ZERO  )  AND
+                          (LNK-SC91-MAXCNT  >=  LNK-SC91-CNT )
+                       STRING  IDX-N2              DELIMITED  BY  SIZE
+                           "日算定エラー"
+                           "　【月上限："          DELIMITED  BY  SIZE
+                           LNK-SC91-MAXCNT         DELIMITED  BY  SIZE
+                           "】"                    DELIMITED  BY  SIZE
+                       INTO                    LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+      *            週上限
+                   IF     (LNK-SC91-WEEKMAXCNT  >   ZERO  )  AND
+                          (LNK-SC91-WEEKMAXCNT  >=  LNK-SC91-WEEKCNT )
+                       STRING  IDX-N2              DELIMITED  BY  SIZE
+                               "日算定エラー" 
+                               "　【週上限：" 
+                               LNK-SC91-WEEKMAXCNT 
+                               "】"                 DELIMITED  BY  SIZE
+                       INTO                    LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+               END-IF
+           ELSE
+      *        算定履歴のエラー
+               STRING  IDX-N2 
+                       "日算定エラー　"
+                                               DELIMITED  BY  SIZE
+                      LNK-SC91-ERRMSG          DELIMITED  BY  SIZE
+                      INTO                     WRK-ERRMSG
+               END-STRING
+               MOVE    WRK-ERRMSG          TO  LNK-SC91-ERRMSG
+           END-IF
+           .
+       5101721-ERRMSG-EXT.
            EXIT.
       *****************************************************************
       *    急性発生設定処理

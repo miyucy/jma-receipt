@@ -336,6 +336,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
              AND ( LNK-TNSP-SANTEIRRKKBN    =   ZERO  )
              AND ( LNK-TNSP-JGNCNT          =   ZERO  )
              AND ( LNK-TNSP-JGNCNT1D        =   ZERO  )
+             AND ( LNK-TNSP-JGNCNT1W        =   ZERO  )
              AND ( LNK-TNSP-JGNCNTERR       =   ZERO  )
       *        一般名記載
              AND ( LNK-TNSP-SOURYOHENKBN    =   ZERO  )
@@ -472,6 +473,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-TNSP-JGNCNT         TO  TNSP-JGNCNT
       *    日上限回数
            MOVE    LNK-TNSP-JGNCNT1D       TO  TNSP-JGNCNT1D
+      *    週上限回数
+           MOVE    LNK-TNSP-JGNCNT1W       TO  TNSP-JGNCNT1W
       *    エラー処理
            MOVE    LNK-TNSP-JGNCNTERR      TO  TNSP-JGNCNTERR
       *    総量編集区分

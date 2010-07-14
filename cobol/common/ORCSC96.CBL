@@ -121,8 +121,12 @@
                    MOVE    "きざみ値の数量は整数で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "入力コードの文字エラー"
-                                       TO  SPA-ERRMSG
+      **           MOVE    "入力コードの文字エラー"
+                   STRING  "入力コードの全角半角混在エラーです。"
+                           "正しい入力コードを入力して下さい。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0006"
                    MOVE    "診療種別がありません"
                                        TO  SPA-ERRMSG
@@ -909,50 +913,59 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9015"
-                   MOVE    "点滴手技料の算定できない液量です。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "削除して下さい。"
-                                       TO  SPA-ERRMSG(35:)
+                   STRING  "点滴手技料の算定できない液量です。"
+                           "削除して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9016"
-                   MOVE    "手術が算定されています。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "点滴手技料は算定できません。"
-                                       TO  SPA-ERRMSG(25:)
+                   STRING  "手術が算定されています。"
+                           "点滴手技料は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9017"
-                   MOVE    "生物学的製剤注射は加算できません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "削除して下さい。"
-                                       TO  SPA-ERRMSG(35:)
+                   STRING  "生物学的製剤注射は加算できません。"
+                           "削除して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9018"
-                   MOVE    "麻毒注射は加算できません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "削除して下さい。"
-                                       TO  SPA-ERRMSG(27:)
+                   STRING  "麻毒注射は加算できません。"
+                           "削除して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9019"
-                   MOVE    "既に他の点滴手技が算定済みです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "削除して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "既に他の点滴手技が算定済みです。"
+                           "削除して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9020"
-                   MOVE    "入院の点滴手技と薬剤は剤を分けて"
-                                       TO  SPA-ERRMSG
-                   MOVE    "入力して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "入院の点滴手技と薬剤は剤を分けて"
+                           "入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9021"
-                   MOVE    "検査が逓減になります。剤を分けて"
-                                       TO  SPA-ERRMSG
-                   MOVE    "入力して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "検査が逓減になります。剤を分けて"
+                           "入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9022"
-                   MOVE    "既に点滴手技が算定済みです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "造影剤注入の点滴は算定できません。"
-                                       TO  SPA-ERRMSG(29:)
+                   STRING  "既に点滴手技が算定済みです。"
+                           "造影剤注入の点滴は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9023"
-                   MOVE    "点滴手技料が算定ができます。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "造影剤注入の点滴手技は算定できません。"
-                                       TO  SPA-ERRMSG(29:)
+                   STRING  "点滴手技料が算定ができます。"
+                           "造影剤注入の点滴手技は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9024"
                    MOVE    "この診療種別は入院のみの使用です。"
                                        TO  SPA-ERRMSG
@@ -1080,19 +1093,21 @@
                    END-STRING
       *
                WHEN    "9300"
-                   MOVE    "患者登録の業務権限はありません。"
-                                                TO  SPA-ERRMSG
-                   MOVE    "患者登録はできません。"
-                                                TO  SPA-ERRMSG(33:)
+                   STRING  "患者登録の業務権限はありません。"
+                           "患者登録はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9301"
                    MOVE    "明細がありません。登録できません。"
                                                 TO  SPA-ERRMSG
       *
                WHEN    "K140"
-                   MOVE    "警告！手術が算定されています。"
-                                                TO  SPA-ERRMSG
-                   MOVE    "注射料は算定できません。"
-                                                TO  SPA-ERRMSG(31:)
+                   STRING  "警告！手術が算定されています。"
+                           "注射料は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "K130"
                    STRING  "警告！特定薬剤治療管理料が３月目以内です。"
@@ -1151,25 +1166,29 @@
                    END-STRING
       *
                WHEN    "K401"
-                   MOVE    "警告！処置の手技が剤内に複数あります。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "手技毎に剤分離して下さい。"
-                                       TO  SPA-ERRMSG(39:)
+                   STRING  "警告！処置の手技が剤内に複数あります。"
+                           "手技毎に剤分離して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0401"
-                   MOVE    "処置の手技に通則加算があります。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "手技毎に剤分離して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "処置の手技に通則加算があります。"
+                           "手技毎に剤分離して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K501"
-                   MOVE    "警告！手術の手技が剤内に複数あります。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "手技毎に剤分離して下さい。"
-                                       TO  SPA-ERRMSG(39:)
+                   STRING  "警告！手術の手技が剤内に複数あります。"
+                           "手技毎に剤分離して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K502"
-                   MOVE    "警告！手術の手技が２つあります。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "従たる手術の逓減を入力して下さい。"
-                                       TO  SPA-ERRMSG(39:)
+                   STRING  "警告！手術の手技が２つあります。"
+                           "従たる手術の逓減を入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *H18.4改正追加
                WHEN    "2063"
                    STRING  "後発医薬品への変更不可は投薬の"
@@ -1984,20 +2003,23 @@
                    MOVE    "警告！！地方公費のみの保険組合せです。"
                                        TO  SPA-ERRMSG
                WHEN    "1036"
-                   MOVE    "受診履歴の伝票番号がゼロです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "訂正できません。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "受診履歴の伝票番号がゼロです。"
+                           "訂正できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1037"
-                   MOVE    "処方料が算定されません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "長期投薬加算（処方料）は算定できません"
-                                       TO  SPA-ERRMSG(25:)
+                   STRING  "処方料が算定されません。"
+                           "長期投薬加算（処方料）は算定できません"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1038"
-                   MOVE    "処方せん料が算定されません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "長期投薬加算（処方せん料）は算定できません"
-                                       TO  SPA-ERRMSG(29:)
+                   STRING  "処方せん料が算定されません。"
+                           "長期投薬加算（処方せん料）は算定できません"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *VER.4.3.0 から警告追加
                WHEN    "K038"
                    STRING  "警告！処方せん料を算定しません。"
@@ -2013,10 +2035,11 @@
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1039"
-                   MOVE    "既に処方せん料が算定済みです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "調剤技術基本料は算定できません。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "既に処方せん料が算定済みです。"
+                           "調剤技術基本料は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
       *        Ｈ２０．４改正から
                WHEN    "1076"
                    STRING  "後期高齢者の年齢です。"
@@ -2185,22 +2208,24 @@
                WHEN    "K004"
                    MOVE    "警告！既に今月算定済みです。"
                                        TO  SPA-ERRMSG
-               WHEN    "K018"
-                   MOVE    "警告！既に今月算定上限回数を超えています。"
-                                       TO  SPA-ERRMSG
+      *        WHEN    "K018"
+      *            MOVE    "警告！既に今月算定上限回数を超えています。"
+      *                                TO  SPA-ERRMSG
                WHEN    "K005"
-                   MOVE    "警告！既に診察料を算定してます。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "小児科外来診療料の自動発生はしません"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "警告！既に診察料を算定してます。"
+                           "小児科外来診療料の自動発生はしません"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K006"
                    MOVE    "警告！既に点滴手技料を算定しています。"
                                        TO  SPA-ERRMSG
                WHEN    "K009"
-                   MOVE    "警告！当日の点滴合計液量と点滴手技料が"
-                                       TO  SPA-ERRMSG
-                   MOVE    "違います。まとめて算定して下さい。"
-                                       TO  SPA-ERRMSG(39:)
+                   STRING  "警告！当日の点滴合計液量と点滴手技料が"
+                           "違います。まとめて算定して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K007"
                    STRING  "警告！特定薬剤治療管理料は４月日以降の"
                            "算定に変更して下さい。"
@@ -2209,48 +2234,56 @@
                    END-STRING
                WHEN    "K008"
       ***********  MOVE    "警告！７５歳に到達しました。"
-                   MOVE    "警告！！老人年齢に到達しました。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "老人公費を入力して下さい。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "警告！！老人年齢に到達しました。"
+                           "老人公費を入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K010"
-                   MOVE    "警告！手術と点滴手技料が同日に"
-                                       TO  SPA-ERRMSG
-                   MOVE    "算定されています。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "警告！手術と点滴手技料が同日に"
+                           "算定されています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K011"
-                   MOVE    "警告！既に違う手技料が同日に"
-                                       TO  SPA-ERRMSG
-                   MOVE    "算定されています。"
-                                       TO  SPA-ERRMSG(29:)
+                   STRING  "警告！既に違う手技料が同日に"
+                           "算定されています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K012"
-                   MOVE    "警告！点滴手技料の算定できる"
-                                       TO  SPA-ERRMSG
-                   MOVE    "液量ではありません。"
-                                       TO  SPA-ERRMSG(29:)
+                   STRING  "警告！点滴手技料の算定できる"
+                           "液量ではありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K013"
-                   MOVE    "警告！既に造影剤注入点滴手技料が"
-                                       TO  SPA-ERRMSG
-                   MOVE    "算定済です。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "警告！既に造影剤注入点滴手技料が"
+                           "算定済です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K014"
-                   MOVE    "警告！既に点滴手技料が算定済です。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "中心静脈注射は自動算定しません。"
-                                       TO  SPA-ERRMSG(35:)
+                   STRING  "警告！既に点滴手技料が算定済です。"
+                           "中心静脈注射は自動算定しません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K015"
-                   MOVE    "警告！手術と中心静脈注射料が同日に"
-                                       TO  SPA-ERRMSG
-                   MOVE    "算定されています。"
-                                       TO  SPA-ERRMSG(35:)
+                   STRING  "警告！手術と中心静脈注射料が同日に"
+                           "算定されています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K020"
                    MOVE    "警告！再診料の受診回数が違います。"
                                        TO  SPA-ERRMSG
                WHEN    "K016"
-                   MOVE    "警告！診療情報提供料が"
-                                       TO  SPA-ERRMSG
-                   MOVE    "２回以上の算定になります。"
-                                       TO  SPA-ERRMSG(23:)
+                   STRING  "警告！診療情報提供料が"
+                           "２回以上の算定になります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K017"
                    STRING  "警告！既に外来で調剤技術基本料が算定済み"
                            "です。自動算定しません。"
@@ -2381,6 +2414,28 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *ver.4.6
+               WHEN    "0901"
+                   STRING  "週の算定上限回数を超えています。"
+                           "算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K901"
+                   MOVE    "警告！既に週の算定上限回数を超えています。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0902"
+                   STRING  "１日の算定上限回数を超えています。"
+                           "算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K902"
+                   STRING  "警告！"
+                           "既に１日の算定上限回数を超えています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
@@ -2476,6 +2531,13 @@
                WHEN    "5030"
                    STRING  "約束セットに薬評・器評コードの入力は"
                            "できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K050"
+                   STRING  "警告！！"
+                           "有効終了日が設定されています。"
+                           "終了日で期間変更をして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

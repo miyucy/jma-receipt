@@ -278,6 +278,7 @@
                    07  SPA-PLUS-SANTEI-MAX          PIC 9(04).
                    07  SPA-GMN-PLUS-JGNCNT          PIC 9(3).
                    07  SPA-GMN-PLUS-JGNCNT1D        PIC 9(3).
+                   07  SPA-GMN-PLUS-JGNCNT1W        PIC 9(3).
                    07  SPA-GMN-PLUS-JGNCNTETCM      PIC 9(2).
                    07  SPA-GMN-PLUS-JGNCNTETC       PIC 9(3).
                    07  SPA-GMN-PLUS-JGNCNTERR       PIC 9(1).

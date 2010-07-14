@@ -53,6 +53,8 @@
            03  TNSP-JGNCNT              PIC  9(03).
       *    日上限回数
            03  TNSP-JGNCNT1D            PIC  9(03).
+      *    週上限回数
+           03  TNSP-JGNCNT1W            PIC  9(03).
       *    エラー処理
            03  TNSP-JGNCNTERR           PIC  9(01).
       *    他月数

@@ -74,6 +74,10 @@
       *
            03  FLG-SYOKAI-OK       PIC 9(01).
       *
+           03  FLG-TBL-CHK          PIC 9(01).
+           03  FLG-ERRKBN           PIC 9(01).
+           03  FLG-DOUCHK           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -103,11 +107,14 @@
            03  WRK-CNT                 PIC 9(04).
            03  WRK-DAYCNT              PIC 9(04).
            03  WRK-DOCNT               PIC 9(04).
+           03  WRK-DODAYCNT            PIC 9(03).
            03  WRK-CNT-OK              PIC 9(04).
            03  WRK-DAYCNT-SUM          PIC 9(04).
            03  WRK-DOCNT-SUM           PIC 9(04).
            03  WRK-DAYCNT-P            PIC 9(04).
            03  WRK-DOCNT-P             PIC 9(04).
+           03  WRK-DCNT                PIC 9(04).
+           03  WRK-JGNCNTETCM          PIC 9(02).
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-CODE                PIC X(03).
@@ -115,6 +122,11 @@
       *    現在件数
            03  WRK-SC91-CNT            PIC 9(04).
            03  WRK-SC91-DAYCNT         PIC 9(04).
+           03  WRK-SC91-WEEKCNT        PIC 9(04).
+      *    現在件数
+           03  WRK-SC91-CHKCNT            PIC 9(04).
+           03  WRK-SC91-DAYCHKCNT         PIC 9(04).
+           03  WRK-SC91-WEEKCHKCNT        PIC 9(04).
       *
            03  WRK-TEI-CNT             PIC 9(04).
            03  WRK-ATO-CNT             PIC 9(04).
@@ -129,8 +141,9 @@
            03  WRK-CHK-SRYCD           PIC X(09).
            03  WRK-CHK-SRYYMD.
                05  WRK-CHK-SRYYM           PIC X(06).
-               05  WRK-CHK-SRYDD           PIC X(02).
+               05  WRK-CHK-SRYDD           PIC 9(02).
            03  WRK-CHK-NAME            PIC X(100).
+           03  WRK-CHK-DD              PIC 9(02).
       *
            03  WRK-DAYMAXCNT           PIC 9(04).
       *    入院期間
@@ -139,6 +152,42 @@
            03  WRK-YMD.
                05  WRK-YM              PIC X(06).
                05  WRK-DD              PIC 9(02).
+      *
+      *    週
+           03  WRK-YOBI                PIC 9(01).
+           03  WRK-WEEK-CNT            PIC 9(04).
+           03  WRK-STR-YMD.
+               05  WRK-STR-YM          PIC 9(06).
+               05  WRK-STR-DD          PIC 9(02).
+           03  WRK-END-YMD.
+               05  WRK-END-YM          PIC 9(06).
+               05  WRK-END-DD          PIC 9(02).
+           03  WRK-SRYYM               PIC X(06).
+           03  IDX-Y3                  PIC 9(02).
+           03  IDX-ST                  PIC 9(02).
+           03  IDX-ED                  PIC 9(02).
+           03  IDX-ED2                 PIC 9(02).
+           03  WRK-WDOCNT              PIC 9(04).
+      *
+           03  WRK-CNT-DAY             PIC 9(02).
+           03  WRK-CNT-MAX             PIC 9(03).
+           03  WRK-CNT-ERR             PIC 9(03).
+           03  WRK-CNT-MSG             PIC X(08).
+      *
+           03  WRK-HEN-HIZUKE.
+               05  WRK-HEN-YY              PIC X(10).
+               05  WRK-HEN-MMDD.
+                   07  WRK-HEN-MM          PIC X(06).
+                   07  WRK-HEN-DD          PIC X(06).
+           03  WRK-HEN-DAY                 PIC X(22).
+      *    数量編集
+           03  WRK-HEN-ZZ              PIC ZZ9.
+           03  WRK-HEN-CNT             PIC X(03).
+           03  WRK-HEN-JCNT            PIC X(06).
+           03  WRK-MOJI                PIC X(06).
+           03  WRK-CNT-ERRJ            PIC X(06).
+           03  WRK-CNT-MAXJ            PIC X(06).
+           03  IDXM                    PIC 9(04).
       *
       *    同時に算定する診療行為コード一覧
        01  TBL-DOUJI-AREA.
@@ -263,6 +312,9 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -536,7 +588,8 @@
            MOVE    ZERO                TO  WRK-DOCNT
            MOVE    ZERO                TO  WRK-DAYCNT
            MOVE    ZERO                TO  WRK-ATO-CNT
-           MOVE    SPACE               TO  WRK-CHK-SRYYMD
+           INITIALIZE                      WRK-CHK-SRYYMD
+           MOVE    ZERO                TO  WRK-CHK-DD
       *
            IF      LNK-SC91-KBN        =   "4"
                MOVE    ZERO            TO  WRK-DOCNT
@@ -560,16 +613,23 @@
                    PERFORM 1001-SANTEI-YMD-SEC
                END-IF
                MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
+               MOVE    ZERO                TO  WRK-JGNCNTETCM
            END-IF
            MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
       *D   MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
+      *
+      *    週
+           MOVE    TNS-JGNCNT1W        TO  LNK-SC91-WEEKMAXCNT
+           IF      TNS-JGNCNT1W        >   ZERO
+               PERFORM 10099-JGNCNT1W-CHK-SEC
+           END-IF
       *
            MOVE    TNS-JGNCNTERR       TO  WRK-JGNCNTERR
       *
            COMPUTE LNK-SC91-CNT        =   LNK-SC91-CNT
                                        +   WRK-DOCNT
            COMPUTE LNK-SC91-DAYCNT     =   LNK-SC91-DAYCNT
-                                       +   WRK-DOCNT
+                                       +   WRK-DODAYCNT
       *
       *    入力回数が１回以上の時、回数に加算
            IF     (LNK-SC91-KBN        =   "1"  OR  "3" )  AND
@@ -580,15 +640,54 @@
                COMPUTE WRK-SC91-DAYCNT     =   LNK-SC91-DAYCNT
                                            +  (LNK-SC91-KAISU
                                            -   1   )
+               COMPUTE WRK-SC91-WEEKCNT    =   LNK-SC91-WEEKCNT
+                                           +  (LNK-SC91-KAISU
+                                           -   1   )
            ELSE
                MOVE    LNK-SC91-CNT        TO  WRK-SC91-CNT
                MOVE    LNK-SC91-DAYCNT     TO  WRK-SC91-DAYCNT
+               MOVE    LNK-SC91-WEEKCNT    TO  WRK-SC91-WEEKCNT
            END-IF
       *
+           MOVE    WRK-SC91-CNT        TO  WRK-SC91-CHKCNT
+           MOVE    WRK-SC91-DAYCNT     TO  WRK-SC91-DAYCHKCNT
+           MOVE    WRK-SC91-WEEKCNT    TO  WRK-SC91-WEEKCHKCNT
+      *
+      *    上限回数チェック・エラー編集
+           MOVE    ZERO                TO  FLG-DOUCHK
+           PERFORM 1009-CNTCHK-SYORI-SEC
+      *
+      *    訂正後の回数
+           MOVE    WRK-ATO-CNT         TO  LNK-SC91-ATO-CNT
+      *
+           MOVE    TNS-JGNCNTERR       TO  WRK-JGNCNTERR
+           .
+       100-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    上限回数チェック・エラー編集処理
+      *****************************************************************
+       1009-CNTCHK-SYORI-SEC      SECTION.
+      *
+           MOVE    ZERO               TO  FLG-ERRKBN
       *    当月上限
            IF     (LNK-SC91-MAXCNT     >   ZERO   )  AND
-                  (LNK-SC91-MAXCNT     <=  WRK-SC91-CNT)
-               MOVE    "0091"          TO  LNK-SC91-ERRCD
+                  (LNK-SC91-MAXCNT     <=  WRK-SC91-CHKCNT  )
+               IF      FLG-DOUCHK          =   ZERO
+                   MOVE    "0091"              TO  LNK-SC91-ERRCD
+               ELSE
+                   MOVE    "0033"              TO  LNK-SC91-ERRCD
+               END-IF
+               MOVE    1                   TO  FLG-ERRKBN
+               MOVE    LNK-SC91-MAXCNT     TO  WRK-CNT-MAX
+               MOVE    WRK-SC91-CHKCNT     TO  WRK-CNT-ERR
+               MOVE    "月上限："          TO  WRK-CNT-MSG
+               IF     (WRK-CHK-DD          >   ZERO  )   AND
+                      (WRK-CHK-DD          >   WRK-CHK-SRYDD)
+                   MOVE    SPA-SRYYMD(1:6)     TO  WRK-CHK-SRYYM
+                   MOVE    WRK-CHK-DD          TO  WRK-CHK-SRYDD
+               END-IF
       *        上限回数エラー処理＝９の時、回数エラーは警告とする
                IF       WRK-CNT        =   ZERO
                    IF       TNS-JGNCNTERR      =   9
@@ -596,7 +695,7 @@
                    END-IF
       *            人工腎臓の時メッセージ変更
                    IF      WRK-CODE            =   "008"
-                       MOVE    "K242"         TO  LNK-SC91-ERRCD
+                       MOVE    "K242"          TO  LNK-SC91-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -647,44 +746,212 @@
            END-IF
       *    当日上限
            IF     (LNK-SC91-DAYMAXCNT  >   ZERO   )   AND
-                  (LNK-SC91-DAYMAXCNT  <=  WRK-SC91-DAYCNT )
-               MOVE    "0091"          TO  LNK-SC91-ERRCD
+                  (LNK-SC91-DAYMAXCNT  <=  WRK-SC91-DAYCHKCNT )
+               IF      FLG-DOUCHK          =   ZERO
+      ****         MOVE    "0091"              TO  LNK-SC91-ERRCD
+                   MOVE    "0902"              TO  LNK-SC91-ERRCD
+               ELSE
+                   MOVE    "0033"              TO  LNK-SC91-ERRCD
+      *            消炎鎮痛処置の時、エラーメッセージを換える
+                   IF      WRK-CODE            =   "005"
+                       MOVE    "1022"          TO  LNK-SC91-ERRCD
+                   END-IF
+               END-IF
+               MOVE    2                   TO  FLG-ERRKBN
+               MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-CNT-MAX
+               MOVE    WRK-SC91-DAYCHKCNT  TO  WRK-CNT-ERR
+               MOVE    "日上限："          TO  WRK-CNT-MSG
       *        上限回数エラー処理＝９の時、回数エラーは警告とする
                IF       WRK-DAYCNT     =   ZERO
                    IF       TNS-JGNCNTERR      =   9
-                       MOVE    "K091"              TO  LNK-SC91-ERRCD
+      **               MOVE    "K091"              TO  LNK-SC91-ERRCD
+                       MOVE    "K902"              TO  LNK-SC91-ERRCD
                    END-IF
                END-IF
            END-IF
       *
+      *    週上限
+           IF     (LNK-SC91-WEEKMAXCNT     >   ZERO   )   AND
+                  (LNK-SC91-WEEKMAXCNT     <=  WRK-SC91-WEEKCHKCNT )
+               MOVE    "0901"              TO  LNK-SC91-ERRCD
+               MOVE    3                   TO  FLG-ERRKBN
+               MOVE    LNK-SC91-WEEKMAXCNT TO  WRK-CNT-MAX
+               MOVE    WRK-SC91-WEEKCHKCNT TO  WRK-CNT-ERR
+               MOVE    "週上限："          TO  WRK-CNT-MSG
+      *        上限回数エラー処理＝９の時、回数エラーは警告とする
+               IF       WRK-CNT            =   ZERO
+                   IF       TNS-JGNCNTERR      =   9
+                       MOVE    "K901"              TO  LNK-SC91-ERRCD
+                   END-IF
+               END-IF
+           END-IF
       *
       *    労災毎の算定時
-           IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
-                  (WRK-RSI-KBN     NOT =   SPACE  )
-               MOVE    "0094"          TO  LNK-SC91-ERRCD
+           IF      FLG-DOUCHK          =   ZERO
+               IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
+                      (WRK-RSI-KBN     NOT =   SPACE  )
+                   MOVE    "0094"          TO  LNK-SC91-ERRCD
+               END-IF
            END-IF
+      *
       *    月上限のエラーの時、算定日を編集
-           IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
-                  (LNK-SC91-MAXCNT     >   ZERO   )  AND
-                  (WRK-CHK-SRYYMD  NOT =   SPACE  )
+           IF     (LNK-SC91-ERRCD  NOT =   SPACE  )
+             AND  (WRK-CHK-SRYYM   NOT =   SPACE  )
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY2-AREA
                MOVE    "21"                TO  LNK-DAY2-IRAI
                MOVE    WRK-CHK-SRYYMD      TO  LNK-DAY2-YMD
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
-               STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
-                       "に算定済です"      DELIMITED  BY  SIZE
-                       INTO                LNK-SC91-ERRMSG
-               END-STRING
+      *
+               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HEN-HIZUKE
+               MOVE    SPACE               TO  WRK-HEN-DAY
+               IF      WRK-CHK-SRYYM(1:4)  =   SPA-SRYYMD(1:4)
+                   MOVE    WRK-HEN-MMDD        TO  WRK-HEN-DAY
+               ELSE
+                   MOVE    WRK-HEN-HIZUKE      TO  WRK-HEN-DAY
+               END-IF
+      *        回数全角変換
+               MOVE    WRK-CNT-ERR         TO  WRK-HEN-ZZ
+               PERFORM 800-SURYO-HEN-SEC
+               MOVE    WRK-HEN-JCNT        TO  WRK-CNT-ERRJ
+      *
+               MOVE    WRK-CNT-MAX         TO  WRK-HEN-ZZ
+               PERFORM 800-SURYO-HEN-SEC
+               MOVE    WRK-HEN-JCNT        TO  WRK-CNT-MAXJ
+      *
+               MOVE    SPACE               TO  LNK-SC91-ERRMSG
+               EVALUATE    FLG-ERRKBN
+               WHEN    2
+      *            日上限
+                   IF      WRK-CNT-ERR         >   1
+                        STRING WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "に"                DELIMITED  BY  SIZE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                       END-STRING
+                   ELSE
+                       STRING WRK-HEN-DAY          DELIMITED  BY  SPACE
+                              "算定済みです。"     DELIMITED  BY  SIZE
+                              INTO                LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+               WHEN    1
+      *            月上限
+                   IF      WRK-CNT-ERR         =   WRK-CNT-MAX
+                       IF      WRK-CNT-MAX         =   1
+                           STRING
+                               WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "に"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                           END-STRING
+                       ELSE
+                           STRING
+                               WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "で"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                           END-STRING
+                       END-IF
+                   ELSE
+                       STRING  WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "で"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               "【"
+                               WRK-CNT-MSG
+                               WRK-CNT-MAXJ        DELIMITED  BY  SPACE
+                               "回】"              DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+      *            他月
+                   IF      WRK-JGNCNTETCM      >   ZERO   AND
+                                               <   99
+                       MOVE    WRK-JGNCNTETCM         TO  WRK-HEN-ZZ
+                       PERFORM 800-SURYO-HEN-SEC
+                       MOVE    SPACE               TO  LNK-SC91-ERRMSG
+                       STRING  WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "で"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               "【"
+                               WRK-HEN-JCNT
+                               "カ月：" 
+                               WRK-CNT-MAXJ        DELIMITED  BY  SPACE
+                               "回】"              DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+                   IF      WRK-JGNCNTETCM      =   99
+                       MOVE    SPACE               TO  LNK-SC91-ERRMSG
+                       STRING  WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "で"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+               WHEN    3
+      *            週上限
+                   IF      WRK-CNT-ERR         =   WRK-CNT-MAX
+                       IF      WRK-CNT-MAX         =   1
+                           STRING
+                               WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "に"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                           END-STRING
+                       ELSE
+                           STRING
+                               WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "で"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                           END-STRING
+                       END-IF
+                   ELSE
+                       STRING  WRK-HEN-DAY         DELIMITED  BY  SPACE
+                               "で"                DELIMITED  BY  SIZE
+                               WRK-CHK-NAME        DELIMITED  BY  SPACE
+                               WRK-CNT-ERRJ        DELIMITED  BY  SPACE
+                               "回算定済です。"    DELIMITED  BY  SIZE
+                               "【"
+                               WRK-CNT-MSG
+                               WRK-CNT-MAXJ        DELIMITED  BY  SPACE
+                               "回】"              DELIMITED  BY  SIZE
+                               INTO                LNK-SC91-ERRMSG
+                       END-STRING
+                   END-IF
+               END-EVALUATE
            END-IF
-      *
-      *    訂正後の回数
-           MOVE    WRK-ATO-CNT         TO  LNK-SC91-ATO-CNT
-      *
-           MOVE    TNS-JGNCNTERR       TO  WRK-JGNCNTERR
+           IF     (LNK-SC91-ERRCD  NOT =   SPACE  )
+             AND  (LNK-SC91-ERRMSG     =   SPACE  )
+               IF      WRK-CHK-NAME        =   SPACE
+                    MOVE    "今回算定済み"      TO  LNK-SC91-ERRMSG
+               ELSE
+                   STRING  "今回　"            DELIMITED  BY  SIZE
+                           WRK-CHK-NAME        DELIMITED  BY  SPACE
+                           "算定済み"
+                           INTO                LNK-SC91-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
            .
-       100-SANTEI-CHK-EXT.
+       1009-CNTCHK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -779,6 +1046,9 @@
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
                MOVE    SANTEI-DAY (IDX-Y2) TO  LNK-SC91-DAYCNT
+               IF      SANTEI-DAY (IDX-Y2)     >   ZERO
+                   MOVE    SPA-SRYYMD          TO  WRK-CHK-SRYYMD
+               END-IF
            END-IF
       *
       *    訂正の時、訂正分はカウントしない
@@ -805,9 +1075,315 @@
                    END-PERFORM
       *****    END-IF
            END-IF
+      *    月上限最終算定日
+           IF     (LNK-SC91-CNT        >   ZERO )
+            AND   (LNK-SC91-MAXCNT     >   ZERO )
+               IF      LNK-SC91-SYORIFLG   =   1
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+               ELSE
+                   MOVE    32                  TO  IDX-Y2
+               END-IF
+               PERFORM VARYING     IDD     FROM    1  BY  1
+                       UNTIL       IDD     >=  IDX-Y2
+                   IF      SANTEI-DAY (IDD)    >   ZERO
+                       MOVE    IDD                 TO  WRK-CHK-SRYDD
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            .
        1001-SANTEI-YMD-EXT.
+           EXIT.
+      *****************************************************************
+      *    週数処理
+      *****************************************************************
+       10099-JGNCNT1W-CHK-SEC      SECTION.
+      *
+           INITIALIZE                      WRK-CHK-SRYYMD
+      *    曜日指定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY3-AREA
+           MOVE    "31"                TO  LNK-DAY3-IRAI
+           MOVE    SPA-SRYYMD          TO  LNK-DAY3-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY3-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY3-YOBI       TO  WRK-YOBI
+           ELSE
+               MOVE    1                   TO  WRK-YOBI
+           END-IF
+      *
+           IF      WRK-YOBI            =   7
+      *        日曜
+               MOVE    SPA-SRYYMD          TO  WRK-STR-YMD
+           ELSE
+      *        診療日の日曜日
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    SPA-SRYYMD          TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               COMPUTE LNK-DAY6-ZOGEN      =   WRK-YOBI   *   -1
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-STR-YMD
+           END-IF
+      *    土曜日
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-STR-YMD         TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    6                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-END-YMD
+      *
+      *    算定履歴検索処理
+           MOVE    WRK-STR-YM          TO  WRK-SRYYM
+           PERFORM 1091-SANTEIREC-KEN-SEC
+      *
+           MOVE    ZERO                TO  WRK-WEEK-CNT
+           MOVE    WRK-STR-DD          TO  IDX-ST
+           IF      WRK-STR-YMD(1:6)    =   SPA-SRYYMD(1:6)
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-ED
+           ELSE
+               MOVE    31                  TO  IDX-ED
+           END-IF
+           MOVE    ZERO                TO  WRK-CNT-DAY
+      *    外来まとめの当月分は対象外
+           IF     (LNK-SC91-KT01FLG    =   "1"             )
+              AND (WRK-SRYYM           =   SPA-SRYYMD(1:6) )
+               MOVE    32                  TO  IDX-ST
+           END-IF
+      *
+           PERFORM VARYING     IDD     FROM    IDX-ST  BY  1
+                   UNTIL       IDD     >   IDX-ED
+               IF     (SANTEI-DAY (IDD)    >   ZERO    )
+                   ADD     SANTEI-DAY (IDD)    TO  WRK-WEEK-CNT
+                   IF     (WRK-TEI-CNT         >   ZERO  )  AND
+                          (IDD                 =   SPA-SRYYMD(7:2))
+                       CONTINUE
+                   ELSE
+                       MOVE    IDD                 TO  WRK-CNT-DAY
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF     (FLG-SANTEI          =   ZERO  )  AND
+                  (WRK-CNT-DAY         >   ZERO  )
+               MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+               MOVE    WRK-CNT-DAY         TO  WRK-CHK-SRYDD
+           END-IF
+      *
+           IF      WRK-STR-YMD(1:6)    NOT =   SPA-SRYYMD(1:6)
+      *    外来まとめの当月分は対象外
+           AND    (LNK-SC91-KT01FLG    NOT =   "1"             )
+               MOVE    SPA-SRYYMD (1:6)    TO  WRK-SRYYM
+               PERFORM 1091-SANTEIREC-KEN-SEC
+               MOVE    1                   TO  IDX-ST
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-ED
+               MOVE    ZERO                TO  WRK-CNT-DAY
+               PERFORM VARYING     IDD     FROM    IDX-ST  BY  1
+                       UNTIL       IDD     >   IDX-ED
+                   IF     (SANTEI-DAY (IDD)    >   ZERO    )
+                       ADD     SANTEI-DAY (IDD)    TO  WRK-WEEK-CNT
+                       IF     (WRK-TEI-CNT         >   ZERO  )  AND
+                              (IDD                 =   SPA-SRYYMD(7:2))
+                           CONTINUE
+                       ELSE
+                           MOVE    IDD                 TO  WRK-CNT-DAY
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF     (FLG-SANTEI          =   ZERO  )  AND
+                      (WRK-CNT-DAY         >   ZERO  )
+                   MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+                   MOVE    WRK-CNT-DAY         TO  WRK-CHK-SRYDD
+               END-IF
+           END-IF
+      *
+      *    訂正の時、訂正分はカウントしない
+           IF      LNK-SC91-SYORIFLG   =   1
+               IF      WRK-WEEK-CNT        >=   WRK-TEI-CNT
+                   COMPUTE WRK-WEEK-CNT        =   WRK-WEEK-CNT
+                                               -   WRK-TEI-CNT
+               ELSE
+                   MOVE    ZERO                TO  WRK-WEEK-CNT
+               END-IF
+           END-IF
+      *
+      *今月分のみチェック
+      *    日曜＝診療月
+           IF      WRK-STR-YMD(1:6)    =   SPA-SRYYMD(1:6)
+               MOVE    WRK-STR-DD          TO  IDX-ST
+           ELSE
+               MOVE    1                   TO  IDX-ST
+           END-IF
+      *    土曜＝診療月
+           IF      WRK-END-YMD(1:6)    =   SPA-SRYYMD(1:6)
+               MOVE    WRK-END-DD          TO  IDX-ED
+           ELSE
+               MOVE    31                  TO  IDX-ED
+           END-IF
+      *
+      *    入院今回対象以外入力分カウント
+           IF      SPA-NYUGAIKBN       =   "1"
+               PERFORM 100992-INPUT-CNTCHK-SEC
+           END-IF
+      *
+           IF      LNK-SC91-KT01FLG    =   "1"
+      *        外来まとめ月数
+               PERFORM 10099-KT01SANTEI-WEEK-SEC
+           END-IF
+      *
+      *    算定歴の回数をチェックする
+           MOVE    WRK-WEEK-CNT        TO  LNK-SC91-WEEKCNT
+      *
+           .
+       10099-JGNCNT1W-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院今回対象以外入力分カウント処理
+      *****************************************************************
+       100992-INPUT-CNTCHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  WRK-WDOCNT
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           MOVE    ZERO                TO  WRK-CNT-DAY
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-MAX-LINE )  OR
+                              (SPA-GMN-INPUTCD (IDX)   =   SPACE)
+      *
+               IF      (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
+                  AND ((SPA-COM-INPUTCD (IDX)
+                                           =   LNK-SC91-SRYCD  )  OR
+                       (SPA-COM-CHK-SRYCD (IDX)
+                                           =   LNK-SC91-SRYCD  ))
+      *            入院で算定日以外の集計
+                   PERFORM VARYING     IDD     FROM    IDX-ST   BY  1
+                           UNTIL      (IDD     >   IDX-ED    )
+                       IF      SPA-COM-NYUINDAY(IDX IDD)     >   ZERO
+                           IF     (LNK-SC91-KBN    =   "1"  OR  "3")
+                           AND    (IDX             =   LNK-SC91-GMN-IDX)
+                           AND    (IDD             >=  IDX-Y2      )
+                               CONTINUE
+                           ELSE
+                               ADD     SPA-COM-KAISU(IDX)
+                                                       TO  WRK-WDOCNT
+                               MOVE    IDD             TO  WRK-CNT-DAY
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           COMPUTE WRK-WEEK-CNT        =   WRK-WEEK-CNT
+                                       +   WRK-WDOCNT
+           IF      WRK-WDOCNT          >   ZERO
+               IF      WRK-CNT-DAY         >   WRK-CHK-SRYDD
+                   MOVE    SPA-SRYYMD(1:6)     TO  WRK-CHK-SRYYM
+                   MOVE    WRK-CNT-DAY         TO  WRK-CHK-SRYDD
+               END-IF
+           END-IF
+           .
+       100992-INPUT-CNTCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来まとめ週処理
+      *****************************************************************
+       10099-KT01SANTEI-WEEK-SEC      SECTION.
+      *
+      *    保険毎のコードクリア
+           MOVE    SPACE           TO  WRK-RSI-KBN
+      *    外来まとめ算定履歴編集処理
+           PERFORM 10091-KT01SANTEI-HEN-SEC
+      *
+      **   MOVE    ZERO                TO  WRK-WEEK-CNT
+           MOVE    ZERO                TO  WRK-CNT-DAY
+           PERFORM VARYING     IDD     FROM    1  BY  1
+                   UNTIL       IDD     >   IDX-ED
+               IF     (IDD                 >=  IDX-ST  )
+                AND   (SANTEI-DAY (IDD)    >   ZERO    )
+                   ADD     SANTEI-DAY (IDD)    TO  WRK-WEEK-CNT
+                   MOVE    IDD                 TO  WRK-CNT-DAY
+               END-IF
+           END-PERFORM
+           IF     (WRK-CNT-DAY         >   ZERO  )
+               MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+               MOVE    WRK-CNT-DAY         TO  WRK-CHK-SRYDD
+           END-IF
+           .
+       10099-KT01SANTEI-WEEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定履歴検索処理
+      *****************************************************************
+       1091-SANTEIREC-KEN-SEC      SECTION.
+      *
+      *    保険毎のコードの判定
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           EVALUATE    TNS-SANTEIRRKKBN
+               WHEN    1
+                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO                TO  SANTEI-SRYKA
+               WHEN    2
+                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+                   MOVE    ZERO                TO  SANTEI-SRYKA
+               WHEN    3
+                   MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+               WHEN    4
+                   MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
+                   MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
+           END-EVALUATE
+           IF     (FLG-HKNSAN          =   1   )  AND
+                  (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           IF      WRK-RSI-KBN         =   SPACE
+      *        主キー
+               MOVE    "key"               TO  WRK-ORC-DBPATH
+           ELSE
+      *        労災毎の算定
+               MOVE    "key3"              TO  WRK-ORC-DBPATH
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SANTEI          =   1
+               INITIALIZE              SANTEI-REC
+           END-IF
+      *
+           .
+       1091-SANTEIREC-KEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -957,16 +1533,14 @@
                    CONTINUE
                ELSE
       *!!!
-                   IF      WRK-CHK-SRYYMD  =   SPACE
-                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYMD
-                                                               (1:6)
+                   IF      WRK-CHK-SRYYM   =   SPACE
+                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                        ADD     1                   TO  IDX-Y2
                        PERFORM VARYING     IDX-Y2  FROM    31  BY  -1
                                UNTIL       IDX-Y2  <   1
                            IF      SANTEI-DAY (IDX-Y2)    >   ZERO
-                               MOVE    IDX-Y2      TO  WRK-CHK-SRYYMD
-                                                                (7:2)
+                               MOVE    IDX-Y2      TO  WRK-CHK-SRYDD
                                MOVE    1           TO  IDX-Y2
                            END-IF
                        END-PERFORM
@@ -1027,6 +1601,7 @@
                END-IF
            END-IF
            MOVE    WRK-SANTEI-CNT      TO  LNK-SC91-CNT
+           MOVE    TNS-JGNCNTETCM      TO  WRK-JGNCNTETCM
       *
            .
        1002-SANTEI-ETC-EXT.
@@ -1055,63 +1630,101 @@
        1003-INPUT-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  WRK-DOCNT
+           MOVE    ZERO                TO  WRK-DODAYCNT
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
+           MOVE    1                   TO  IDX-ST
+           MOVE    IDX-Y2              TO  IDX-ED
+      *    画面内算定集計
+           PERFORM 10031-INPUT-CNT-SEC
+           .
+       1003-INPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    今回診療行為チェック処理
+      *****************************************************************
+       10031-INPUT-CNT-SEC         SECTION.
       *
+           MOVE    ZERO                TO  WRK-CHK-DD
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE )  OR
                               (SPA-GMN-INPUTCD (IDX)   =   SPACE)
       *
-      *@
-             IF      (SPA-COM-HKNCOMBI (IDX)   =   "9999")
-               CONTINUE
-             ELSE
-      *        入院で１日上限の時、入力日のみ
-               MOVE    ZERO            TO  FLG-NYU-CHK
-               IF     (SPA-NYUGAIKBN       =   "1"   )  AND
-                      (TNS-JGNCNT1D        >   ZERO  )  AND
-                      (SPA-COM-NYU-KAI(IDX)    >   ZERO )
-                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
-                   IF      SPA-COM-NYUINDAY(IDX IDX-Y2)    =   ZERO
-                       MOVE    1               TO  FLG-NYU-CHK
-                   END-IF
+               MOVE    ZERO                TO  FLG-TBL-CHK
+               IF     (SPA-COM-HKNCOMBI (IDX)  =   "9999")
+                   MOVE    1                   TO  FLG-TBL-CHK
+               END-IF
+               IF      (SPA-COM-INPUTCD(IDX)
+                                           =   WRK-SRYCD  )  OR
+                       (SPA-COM-CHK-SRYCD (IDX)
+                                           =   WRK-SRYCD  )
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-TBL-CHK
                END-IF
       *
-            IF     FLG-NYU-CHK          =   ZERO
-               IF      LNK-SC91-KBN        =   "1"  OR  "3"
-                   IF      IDX             =   LNK-SC91-GMN-IDX
-                       CONTINUE
-                   ELSE
-                       IF     (SPA-COM-INPUTCD(IDX)
-                                           =   LNK-SC91-SRYCD  )  OR
-                              (SPA-COM-CHK-SRYCD (IDX)
-                                           =   LNK-SC91-SRYCD  )
-                           IF      (TNS-JGNCNT1D       >   ZERO ) AND
-                                   (TNS-TANICD     NOT =   "001")
-                               COMPUTE WRK-DOCNT   =   WRK-DOCNT
-                                                +  (SPA-COM-KAISU(IDX)
-                                                *   SPA-COM-SURYO(IDX))
-                           ELSE
-                               ADD     SPA-COM-KAISU(IDX)
-                                               TO  WRK-DOCNT
-                           END-IF
+      *        入院で１日上限の時、入力日のみ
+      *        IF     (SPA-NYUGAIKBN       =   "1"   )  AND
+      *               (TNS-JGNCNT1D        >   ZERO  )  AND
+      *               (SPA-COM-NYU-KAI(IDX)    >   ZERO )
+      *         AND   (FLG-TBL-CHK         =   ZERO  )
+      *            IF      SPA-COM-NYUINDAY(IDX IDX-Y2)    =   ZERO
+      *                MOVE    1               TO  FLG-TBL-CHK
+      *            END-IF
+      *        END-IF
+      *
+               IF      FLG-TBL-CHK         =   ZERO
+                   IF    ( LNK-SC91-KBN        =   "1"  OR  "3"     )
+                   AND   ( IDX                 =   LNK-SC91-GMN-IDX )
+      *                チェック行、外来は対象外
+                       IF     (SPA-NYUGAIKBN       =   "2"   )
+                           MOVE    1               TO  FLG-TBL-CHK
                        END-IF
                    END-IF
-               ELSE
-                   IF     (SPA-COM-INPUTCD(IDX)
-                                           =   LNK-SC91-SRYCD  )  OR
-                          (SPA-COM-CHK-SRYCD (IDX)
-                                           =   LNK-SC91-SRYCD  )
-                       ADD     SPA-COM-KAISU(IDX)
-                                               TO  WRK-DOCNT
+               END-IF
+      *
+               IF      FLG-TBL-CHK         =   ZERO
+                   IF      (TNS-JGNCNT1D       >   ZERO ) AND
+                           (TNS-TANICD     NOT =   "001")
+      *                日上限の数量を回数とする
+                       COMPUTE WRK-DCNT        =  (SPA-COM-KAISU(IDX) 
+                                               *   SPA-COM-SURYO(IDX))
+                   ELSE
+                       MOVE    SPA-COM-KAISU(IDX)  TO  WRK-DCNT
+                   END-IF
+                   IF     (SPA-NYUGAIKBN       =   "2"   )
+      *            外来
+                       ADD     WRK-DCNT            TO  WRK-DOCNT
+                       MOVE    SPA-COM-CHK-SRYCD (IDX)
+                                                   TO  WRK-CHK-SRYCD
+                       ADD     WRK-DCNT            TO  WRK-DODAYCNT
+                   ELSE
+      *            入院
+                       IF     (LNK-SC91-KBN        =   "1"  OR  "3"  )
+                         AND  (IDX                 =   LNK-SC91-GMN-IDX)
+      *                    対象行は前日までの集計
+                           COMPUTE IDX-ED2             =   IDX-ED
+                                                       -   1
+                       ELSE
+                           MOVE    IDX-ED              TO  IDX-ED2
+                       END-IF
+                       PERFORM VARYING IDD     FROM    IDX-ST   BY  1
+                               UNTIL  (IDD             >  IDX-ED2   )
+                           IF      SPA-COM-NYUINDAY(IDX IDD) >   ZERO
+                               ADD     WRK-DCNT        TO  WRK-DOCNT
+                               MOVE    SPA-COM-CHK-SRYCD (IDX)
+                                                       TO  WRK-CHK-SRYCD
+                               MOVE    IDD             TO  WRK-CHK-DD
+                               IF      IDX-Y2          =   IDD
+                                   ADD     WRK-DCNT    TO  WRK-DODAYCNT
+                               END-IF
+                           END-IF
+                       END-PERFORM
                    END-IF
                END-IF
-             END-IF
-      *
-           END-IF
-      *
            END-PERFORM
-      *
            .
-       1003-INPUT-CHK-EXT.
+       10031-INPUT-CNT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1162,7 +1775,7 @@
       *
            MOVE    SPACE               TO  WRK-CHK-SRYCD
            MOVE    SPACE               TO  WRK-CHK-NAME
-           MOVE    SPACE               TO  WRK-CHK-SRYYMD
+           INITIALIZE                      WRK-CHK-SRYYMD
            MOVE    ZERO                TO  WRK-CNT
            MOVE    ZERO                TO  WRK-DOCNT-SUM
            MOVE    ZERO                TO  WRK-DAYCNT-SUM
@@ -1222,6 +1835,7 @@
                            END-IF
                       ELSE
                            ADD     WRK-DOCNT       TO  WRK-DOCNT-SUM
+                           ADD     WRK-DODAYCNT    TO  WRK-DAYCNT-SUM
                       END-IF
       *
       *               上限他月数
@@ -1247,6 +1861,33 @@
            COMPUTE WRK-DOCNT-SUM       =   WRK-DOCNT-SUM
                                        +   WRK-DOCNT-P
       *
+           COMPUTE WRK-SC91-CHKCNT     =   WRK-SC91-CNT
+                                       +   WRK-DOCNT-SUM
+                                       +   WRK-CNT
+           COMPUTE WRK-SC91-DAYCHKCNT  =   WRK-SC91-DAYCNT
+                                       +   WRK-DAYCNT-SUM
+      *                                +   WRK-DOCNT-SUM
+      *    週上限なし
+           MOVE    ZERO                TO  WRK-SC91-WEEKCHKCNT
+      *
+      *    保険毎のコードの判定
+           MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
+           IF      WRK-CHK-NAME        =   SPACE
+               MOVE    WRK-CHK-SRYCD       TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               MOVE    TNS-NAME            TO  WRK-CHK-NAME
+           END-IF
+      *
+      *    上限回数チェック・エラー編集
+           MOVE    1                   TO  FLG-DOUCHK
+           PERFORM 1009-CNTCHK-SYORI-SEC
+      *
+      *    点数マスタの内容を入力分へ戻す
+           MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
+      *     
+           GO     TO  200-DOUJI-CHK-EXT.
       *    当月のＭＡＸ
            IF     (LNK-SC91-MAXCNT     >   ZERO  )  AND
                   (LNK-SC91-MAXCNT     <= ( WRK-SC91-CNT  +  WRK-CNT
@@ -1294,7 +1935,6 @@
       *    労災で消炎鎮痛処置の時、当日上限回数を変更する
            MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-DAYMAXCNT
            IF     (SPA-HKNKBN          =   1 ) AND
-      ****        (SPA-RSI-HKNKBN  NOT =   "5" )
                   (SPA-RSI-JUNKYO  NOT =   "1" )
                EVALUATE    WRK-RIGAKU-KBN
       *            マッサージ
@@ -1333,7 +1973,8 @@
                    END-IF
       *            上限回数エラー処理＝９の時、回数エラーは警告とする
                    IF       WRK-JGNCNTERR      =   9
-                      MOVE    "K091"              TO  LNK-SC91-ERRCD
+      ****            MOVE    "K091"              TO  LNK-SC91-ERRCD
+                      MOVE    "K902"              TO  LNK-SC91-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -1434,6 +2075,15 @@
                    MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
                    MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
                    MOVE    TNS-NAME            TO  WRK-CHK-NAME
+                   IF      TNS-JGNCNT          >   ZERO
+                       PERFORM VARYING     IDX-Y2  FROM    31  BY  -1
+                               UNTIL       IDX-Y2  <   1
+                           IF      SANTEI-DAY (IDX-Y2)    >   ZERO
+                               MOVE    IDX-Y2      TO  WRK-CHK-SRYDD
+                               MOVE    1           TO  IDX-Y2
+                           END-IF
+                       END-PERFORM
+                   END-IF
                END-IF
            END-IF
            .
@@ -1493,16 +2143,14 @@
                IF      SANTEI-SRYYM    <   WRK-STRYM
                    MOVE    1               TO  FLG-SANTEI
                ELSE
-                   IF      WRK-CHK-SRYYMD  =   SPACE
-                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYMD
-                                                               (1:6)
+                   IF      WRK-CHK-SRYYM   =   SPACE
+                       MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
                        MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                        ADD     1                   TO  IDX-Y2
                        PERFORM VARYING     IDX-Y2  FROM    31  BY  -1
                                UNTIL       IDX-Y2  <   1
                            IF      SANTEI-DAY (IDX-Y2)    >   ZERO
-                               MOVE    IDX-Y2      TO  WRK-CHK-SRYYMD
-                                                                (7:2)
+                               MOVE    IDX-Y2      TO  WRK-CHK-SRYDD
                                MOVE    1           TO  IDX-Y2
                            END-IF
                        END-PERFORM
@@ -1574,6 +2222,17 @@
       *    今回診療行為チェック処理
       *****************************************************************
        2003-DOJINPUT-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  WRK-DOCNT
+           MOVE    ZERO                TO  WRK-DODAYCNT
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           MOVE    1                   TO  IDX-ST
+           MOVE    IDX-Y2              TO  IDX-ED
+      *    画面内算定集計
+           PERFORM 10031-INPUT-CNT-SEC
+      *
+      *TEST
+           GO    TO          2003-DOJINPUT-CHK-EXT
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE )  OR
@@ -1791,6 +2450,37 @@
            EXIT.
       *
       *****************************************************************
+      *    数量全角変換処理
+      *****************************************************************
+       800-SURYO-HEN-SEC      SECTION.
+      *
+           MOVE    WRK-HEN-ZZ          TO  WRK-HEN-CNT
+           MOVE    SPACE               TO  WRK-MOJI
+           PERFORM VARYING     IDXM    FROM    1   BY  1
+                   UNTIL       IDXM    >   3
+               IF      WRK-HEN-CNT (IDXM:1) NOT =   SPACE
+                   MOVE    WRK-HEN-CNT(IDXM:)   TO  WRK-MOJI
+                   MOVE    3                    TO  IDXM
+               END-IF
+           END-PERFORM
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MOJI            TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC          =   ZERO )  AND
+                  (KANACHK-MAX         >   ZERO )
+               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           TO  WRK-HEN-JCNT
+           ELSE
+               MOVE    WRK-MOJI            TO  WRK-HEN-JCNT
+           END-IF
+           .
+       800-SURYO-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
@@ -1870,6 +2560,7 @@
                MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNT1W       TO  TNS-JGNCNT1W
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
       *
                MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM

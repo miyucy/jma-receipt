@@ -542,6 +542,22 @@
                    07  WRK-ERRDAY          PIC 9(02)   OCCURS   31.
                05  IDD                     PIC 9(02).
       *
+      *    週上限
+           03  WRK-WEEK-CHEK-G.
+               05  WRK-WEEKCNT             PIC 9(03).
+               05  WRK-YOBI                PIC 9(01).
+               05  WRK-CHK-SRYYMD.
+                   07  WRK-CHK-SRYYM       PIC X(06).
+                   07  WRK-CHK-SRYDD       PIC 9(02).
+               05  WRK-STR-YMD.
+                   07  WRK-STR-YM          PIC X(06).
+                   07  WRK-STR-DD          PIC 9(02).
+               05  WRK-END-YMD.
+                   07  WRK-END-YM          PIC X(06).
+                   07  WRK-END-DD          PIC 9(02).
+               05  IDX-ST                  PIC 9(02).
+               05  IDX-ED                  PIC 9(02).
+      *
        01  TBL-GRP-AREA.
            03  TBL-GRP-OCC             OCCURS   10.
                05  TBL-SRYKA           PIC X(02).
@@ -1430,6 +1446,7 @@
                        MOVE    1                  TO  SPA-GMN-CUR
                    END-IF
                WHEN    "0119"
+               WHEN    "0131"
                    MOVE    SPACE           TO  SPA-JIDCD
       *            診療日追加
                    IF      SPA-JID1-FLG        =   "OK"
@@ -3033,6 +3050,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNS-SANTEIRRKKBN    TO  SPA-NAI-SANTEIRRKKBN(IDX)
                MOVE    TNS-JGNCNT          TO  SPA-NAI-JGNCNT    (IDX)
                MOVE    TNS-JGNCNT1D        TO  SPA-NAI-JGNCNT1D  (IDX)
+               MOVE    TNS-JGNCNT1W        TO  SPA-NAI-JGNCNT1W  (IDX)
                MOVE    TNS-JGNCNTETC       TO  SPA-NAI-JGNCNTETC (IDX)
                MOVE    TNS-JGNCNTERR       TO  SPA-NAI-JGNCNTERR (IDX)
       *        内分泌負荷試験判定
@@ -6157,6 +6175,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    MOVE    "0119"          TO  SPA-JIDCD
                                END-IF
                            END-IF
+      *                    週上限
+                           IF      (SPA-ERRCD          =   SPACE )
+                              AND  (SPA-JIDCD          =   SPACE )
+                              AND  (TNS-JGNCNT1W       >   ZERO  )
+                               PERFORM 410161011-WEEK-CHEK-SEC
+                           END-IF
                        END-IF
                    END-IF
                END-PERFORM
@@ -6172,6 +6196,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        410161011-SANTEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    受診日変更週上限チェック処理
+      *****************************************************************
+       410161011-WEEK-CHEK-SEC      SECTION.
+      *
+           MOVE    ACCT-SRYYM          TO  WRK-CHK-SRYYMD(1:6)
+           MOVE    ZERO                TO  WRK-CHK-SRYDD
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   31  )
+                        OR    (SPA-ERRCD   NOT =   SPACE )
+                        OR    (SPA-JIDCD   NOT =   SPACE )
+               IF     (ACCT-DAY (1 IDX-D)  NOT =   ZERO )
+                   MOVE    IDX-D               TO  WRK-CHK-SRYDD
+                   PERFORM 47021-WEEKCNT-CHEK-SEC
+                   MOVE    ZERO                TO  WRK-WEEKCNT
+                   PERFORM VARYING     IDD     FROM    IDX-ST  BY  1
+                           UNTIL       IDD     >   IDX-ED
+                       ADD     ACCT-DAY (1 IDD)    TO  WRK-WEEKCNT
+                   END-PERFORM
+                   IF     (WRK-WEEKCNT         >   TNS-JGNCNT1W )
+                       MOVE    "0131"          TO  SPA-JIDCD
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       410161011-WEEK-CHEK-EXT.
            EXIT.
       *****************************************************************
       *    受診日変更処理
@@ -9218,6 +9269,26 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
+      *
+      *    週上限
+           IF     (SPA-NAI-JGNCNT1W (IDX-C)    >   ZERO  )  AND
+                  (SPA-NAI-JGNCNTERR (IDX-C)   NOT =   9 )
+            AND   (SPA-ERRCD                   =   SPACE )
+            AND   (SPA-NAI-KEIFLG              =   ZERO  )
+               MOVE    SPA-NAI-SRYYM       TO  WRK-CHK-SRYYMD(1:6)
+               MOVE    IDX                 TO  WRK-CHK-SRYDD
+               PERFORM 47021-WEEKCNT-CHEK-SEC
+      *
+               MOVE    ZERO                TO  WRK-WEEKCNT
+               PERFORM VARYING     IDD     FROM    IDX-ST  BY  1
+                       UNTIL       IDD     >   IDX-ED
+                   ADD     SPA-GMN-DAY (IDD)   TO  WRK-WEEKCNT
+               END-PERFORM
+               IF      WRK-WEEKCNT         >   SPA-NAI-JGNCNT1W (IDX-C)
+                   MOVE    "K006"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-NAI-KEIFLG
+               END-IF
+           END-IF
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    IDX             TO  WRK-IDX
                MOVE    WRK-IDX         TO  SPA-DAY-IDX
@@ -9225,6 +9296,67 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        4702-SANTEIRRK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    週上限回数チェック処理
+      *****************************************************************
+       47021-WEEKCNT-CHEK-SEC           SECTION.
+      *
+      *    曜日指定
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY3-AREA
+           MOVE    "31"                TO  LNK-DAY3-IRAI
+           MOVE    WRK-CHK-SRYYMD      TO  LNK-DAY3-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY3-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY3-YOBI       TO  WRK-YOBI
+           ELSE
+               MOVE    1                   TO  WRK-YOBI
+           END-IF
+      *
+           IF      WRK-YOBI            =   7
+      *        日曜
+               MOVE    WRK-CHK-SRYYMD      TO  WRK-STR-YMD
+           ELSE
+      *        診療日の日曜日
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-CHK-SRYYMD      TO  LNK-DAY6-KIJUN
+               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+               COMPUTE LNK-DAY6-ZOGEN      =   WRK-YOBI   *   -1
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN     TO  WRK-STR-YMD
+           END-IF
+      *    土曜日
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-STR-YMD         TO  LNK-DAY6-KIJUN
+           MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    6                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-END-YMD
+      *今月分のみチェック
+      *    日曜＝診療月
+           IF      WRK-STR-YMD(1:6)    =   WRK-CHK-SRYYMD(1:6)
+               MOVE    WRK-STR-DD          TO  IDX-ST
+           ELSE
+               MOVE    1                   TO  IDX-ST
+           END-IF
+      *    土曜＝診療月
+           IF      WRK-END-YMD(1:6)    =   WRK-CHK-SRYYMD(1:6)
+               MOVE    WRK-END-DD          TO  IDX-ED
+           ELSE
+               MOVE    31                  TO  IDX-ED
+           END-IF
+      *
+      *
+           .
+       47021-WEEKCNT-CHEK-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴の剤変更処理
@@ -13150,6 +13282,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "K004"
                    MOVE    "警告！！日上限回数をオーバーしています。"
                                        TO  WRK-ERRMSG
+               WHEN    "K006"
+                   MOVE    "警告！！週上限回数をオーバーしています。"
+                                       TO  WRK-ERRMSG
                WHEN    "K005"
                    STRING  "警告！！"
                        "保険組合せ有効期間外の調剤料が算定されました。"
@@ -13316,6 +13451,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0119"
                    STRING  "月上限回数をオーバーするコードがあります。"
+                           "追加後、回数を確認して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
+               WHEN    "0131"
+                   STRING  "週上限回数をオーバーするコードがあります。"
                            "追加後、回数を確認して下さい。"
                                        DELIMITED   BY  SIZE
                                        INTO  WRK-JIDMSG
@@ -13550,6 +13691,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
                MOVE    TNSP-JGNCNT1D       TO  TNS-JGNCNT1D
+               MOVE    TNSP-JGNCNT1W       TO  TNS-JGNCNT1W
                MOVE    TNSP-JGNCNTERR      TO  TNS-JGNCNTERR
       *
                MOVE    TNSP-JGNCNTETCM     TO  TNS-JGNCNTETCM

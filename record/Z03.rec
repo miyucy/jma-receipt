@@ -274,6 +274,9 @@ Z03	{
 				PLUS_JGNCNT1D	{
 					value	number(3);
 				};
+				PLUS_JGNCNT1W	{
+					value	number(3);
+				};
 				PLUS_JGNCNTERR	{
 					value	number(1);
 				};

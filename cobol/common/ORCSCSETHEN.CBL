@@ -97,6 +97,7 @@
            03  WRK-ERRCD           PIC X(04).
            03  WRK-ERRCD1          PIC X(04).
            03  WRK-ERRCD2          PIC X(04).
+           03  WRK-ERRMSG1         PIC X(80).
       *    約束セット位置
            03  WRK-IDX-YAKUSOKU.
                05  WRK-IDX-YAK         PIC 9(04)    OCCURS  20.
@@ -262,6 +263,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  WRK-ERRCD1
            MOVE    SPACE               TO  WRK-ERRCD2
+           MOVE    SPACE               TO  WRK-ERRMSG1
            PERFORM
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
@@ -448,6 +450,7 @@
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD1      NOT =   SPACE
                    MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+                   MOVE    WRK-ERRMSG1         TO  ORCSCSETHEN-ERRMSG2
                END-IF
            END-IF
            .
@@ -612,6 +615,9 @@
            IF      SPA-ERRCD           =   "0001"
                 IF      SPA-COM-SET (SPA-GMN-IDX)   =  "1"
                     MOVE    "S001"          TO  WRK-ERRCD
+                END-IF
+                IF      WRK-ERRCD1         =   SPACE
+                    MOVE    LNK-SC92-ERRMSG    TO  WRK-ERRMSG1
                 END-IF
                 MOVE    1               TO  FLG-ERR
                 MOVE    SPA-ERRCD       TO  WRK-ERRCD1

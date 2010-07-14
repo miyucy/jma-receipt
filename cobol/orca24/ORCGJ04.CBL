@@ -3080,6 +3080,10 @@
                END-IF
            END-PERFORM
       *
+           IF     (SPA-ERRCD       NOT =   SPACE )  AND
+                  (LNK-SC92-ERRMSG NOT =   SPACE )
+               MOVE    LNK-SC92-ERRMSG     TO  SPA-ERRMSG2
+           END-IF
       *    ·Ù¹ðÈ½Äê
            IF      SPA-ERRCD(1:1)      =   "K"
              AND  (SPA-ERRCD       NOT =   "K033" )
@@ -3775,6 +3779,9 @@
                                        SPA-SCR-REC
       *    Å¸³«¸å¤Î°ÌÃÖ
            MOVE    ORCSCSETHEN-IDX     TO  SPA-GMN-IDX
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    ORCSCSETHEN-ERRMSG2     TO  SPA-ERRMSG2
+           END-IF
       *
            .
        4101191-INPUTSET-SYORI-EXT.

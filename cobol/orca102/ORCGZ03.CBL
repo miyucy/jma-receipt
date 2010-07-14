@@ -225,6 +225,7 @@
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_SANTEIRRK".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT1D".
+           03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNT1W".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTETCM".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTETC".
            03  FILLER          PIC X(32)  VALUE   "1 PLUS_JGNCNTERR".
@@ -317,13 +318,13 @@
       **** 03  TBL-GMN-OCC                 OCCURS  115
       **** 03  TBL-GMN-OCC                 OCCURS  118
       **** 03  TBL-GMN-OCC                 OCCURS  119
-           03  TBL-GMN-OCC                 OCCURS  120
+           03  TBL-GMN-OCC                 OCCURS  121
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   120.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   121.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -1043,6 +1044,8 @@
            MOVE    TNSP-JGNCNT         TO  SPA-GMN-PLUS-JGNCNT
       *    日上限回数
            MOVE    TNSP-JGNCNT1D       TO  SPA-GMN-PLUS-JGNCNT1D
+      *    週上限回数
+           MOVE    TNSP-JGNCNT1W       TO  SPA-GMN-PLUS-JGNCNT1W
       *    他月数
            MOVE    TNSP-JGNCNTETCM     TO  SPA-GMN-PLUS-JGNCNTETCM
       *    他回数
@@ -1722,6 +1725,7 @@
            MOVE    Z03-PLUS-SANTEIRRK  TO  SPA-GMN-PLUS-SANTEIRRK-G
            MOVE    Z03-PLUS-JGNCNT     TO  SPA-GMN-PLUS-JGNCNT
            MOVE    Z03-PLUS-JGNCNT1D   TO  SPA-GMN-PLUS-JGNCNT1D
+           MOVE    Z03-PLUS-JGNCNT1W   TO  SPA-GMN-PLUS-JGNCNT1W
            MOVE    Z03-PLUS-JGNCNTETCM TO  SPA-GMN-PLUS-JGNCNTETCM
            MOVE    Z03-PLUS-JGNCNTETC  TO  SPA-GMN-PLUS-JGNCNTETC
            MOVE    Z03-PLUS-JGNCNTERR  TO  SPA-GMN-PLUS-JGNCNTERR
@@ -1993,6 +1997,7 @@
       *        ユーザ設定 上限回数
                WHEN    "PLUS_JGNCNT"
                WHEN    "PLUS_JGNCNT1D"
+               WHEN    "PLUS_JGNCNT1W"
                WHEN    "PLUS_JGNCNTETCM"
                WHEN    "PLUS_JGNCNTETC"
                    CONTINUE
@@ -2894,6 +2899,7 @@
                    ELSE
                        IF   (SPA-GMN-PLUS-JGNCNT   =   ZERO )  AND
                             (SPA-GMN-PLUS-JGNCNT1D =   ZERO )  AND
+                            (SPA-GMN-PLUS-JGNCNT1W =   ZERO )  AND
                             (SPA-GMN-PLUS-JGNCNTETCM   =   ZERO ) AND
                             (SPA-GMN-PLUS-JGNCNTETC    =   ZERO )
                            MOVE    "0017"              TO  SPA-ERRCD
@@ -3592,6 +3598,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF    (SPA-GMN-JGNCNT   NOT =   ZERO )  AND
                          (SPA-GMN-PLUS-JGNCNT  =   ZERO )
                      AND (SPA-GMN-PLUS-JGNCNTETC    =   ZERO )
+                     AND (SPA-GMN-PLUS-JGNCNT1W     =   ZERO )
                        MOVE    "0018"              TO  SPA-ERRCD
                        MOVE    "PLUS_JGNCNT"       TO  WRK-MCP-WIDGET
                    END-IF
@@ -4098,6 +4105,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  TNSP-JGNCNT
            MOVE    SPA-GMN-PLUS-JGNCNT1D
                                        TO  TNSP-JGNCNT1D
+           MOVE    SPA-GMN-PLUS-JGNCNT1W
+                                       TO  TNSP-JGNCNT1W
            MOVE    SPA-GMN-PLUS-JGNCNTETCM
                                        TO  TNSP-JGNCNTETCM
            MOVE    SPA-GMN-PLUS-JGNCNTETC
@@ -4443,6 +4452,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-PLUS-SANTEI-MAX       TO  Z03-PLUS-SANTEI-COUNT
            MOVE  SPA-GMN-PLUS-JGNCNT           TO  Z03-PLUS-JGNCNT
            MOVE  SPA-GMN-PLUS-JGNCNT1D         TO  Z03-PLUS-JGNCNT1D
+           MOVE  SPA-GMN-PLUS-JGNCNT1W         TO  Z03-PLUS-JGNCNT1W
            MOVE  SPA-GMN-PLUS-JGNCNTETCM       TO  Z03-PLUS-JGNCNTETCM
            MOVE  SPA-GMN-PLUS-JGNCNTETC        TO  Z03-PLUS-JGNCNTETC
            MOVE  SPA-GMN-PLUS-JGNCNTERR        TO  Z03-PLUS-JGNCNTERR 

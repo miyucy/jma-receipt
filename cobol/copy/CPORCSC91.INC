@@ -69,10 +69,15 @@
       *    訂正後回数
            03  LNK-SC91-ATO-CNT        PIC 9(04).
       *
+      *    最大件数(週）
+           03  LNK-SC91-WEEKMAXCNT     PIC 9(04).
+      *    現在件数（週）
+           03  LNK-SC91-WEEKCNT        PIC 9(04).
+      *
       *    エラーコード
            03  LNK-SC91-ERRCD          PIC X(04).
       *    エラー診療メッセージ
-           03  LNK-SC91-ERRMSG         PIC X(100).
+           03  LNK-SC91-ERRMSG         PIC X(200).
       *    エラーコード２
            03  LNK-SC91-ERRCD2         PIC X(04).
       *

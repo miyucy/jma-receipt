@@ -1005,7 +1005,7 @@
       *        日指定の回数
                MOVE    SPA-COM-KAISU (IDX) TO  WRK-KAISU
                MOVE    WRK-KAISU           TO  WRK-KAISU-GOK
-      *        入院で日の指定がある時、指定分
+      *        日の指定がある時、指定分
                PERFORM VARYING IDX-N2      FROM    1   BY  1
                        UNTIL  (IDX-N2      >   31  )   OR
                               (SPA-ERRCD   NOT =   SPACE )

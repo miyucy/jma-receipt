@@ -209,6 +209,8 @@
                     06  Z03-VALUE   PIC S9(3).
                   05  Z03-PLUS-JGNCNT1D.
                     06  Z03-VALUE   PIC S9(3).
+                  05  Z03-PLUS-JGNCNT1W.
+                    06  Z03-VALUE   PIC S9(3).
                   05  Z03-PLUS-JGNCNTERR.
                     06  Z03-VALUE   PIC S9(1).
                   05  Z03-PLUS-SANTEIRRKCOMB.
