@@ -39,7 +39,7 @@ CREATE TABLE tbl_bunben (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
     teisyutubikbn character(1)
 );
 
