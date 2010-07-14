@@ -1926,9 +1926,9 @@
            MOVE    "2 全体"            TO  SPA-GMN-SYOKBN-DSPKBNLST(3)
            MOVE    3                   TO  SPA-GMN-SYOKBN-DSPKBN-MAX
       *
-           MOVE    "0 病名欄と連動して設定"
+           MOVE    "0 病名欄と連動して消去"
                                        TO  SPA-GMN-UTAGAIFLG-KBNLST(1)
-           MOVE    "9 病名欄、病名コード欄と連動して設定"
+           MOVE    "9 病名欄、病名コード欄と連動して消去"
                                        TO  SPA-GMN-UTAGAIFLG-KBNLST(2)
            MOVE    2                   TO  SPA-GMN-UTAGAIFLG-KBN-MAX
       *    コメント症状詳記区分初期
