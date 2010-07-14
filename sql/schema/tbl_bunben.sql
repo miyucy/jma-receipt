@@ -40,6 +40,7 @@ CREATE TABLE tbl_bunben (
     creymd character(8),
     upymd character(8),
     uphms character(6)
+    teisyutubikbn character(1)
 );
 
 ALTER TABLE ONLY tbl_bunben
