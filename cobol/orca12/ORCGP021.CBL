@@ -34,8 +34,6 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
       *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
-      *  04.07.00    NACL-多々納  11/09/06  半角全角変換へ
-      *  04.07.00    NACL-多々納  12/01/19  半角全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,34 +137,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -639,20 +636,10 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *    FAX
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-FAX-CHK-SEC
-           END-IF
-      *    携帯番号
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KEITAI-TEL-CHK-SEC
-           END-IF
       *    仕事
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-JOB-CHK-SEC
+           PERFORM 4101-JOB-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
       *    連絡先−名前
@@ -682,11 +669,6 @@
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENBANTI-CHK-SEC
            END-IF
-      *    連絡先−電話
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-RENTEL-CHK-SEC
-           END-IF
       *
       *    勤務先−名前
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -709,11 +691,6 @@
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-OFFBANTI-CHK-SEC
-           END-IF
-      *    勤務先−電話
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-OFFTEL-CHK-SEC
            END-IF
       *
       *    帰省先−名前
@@ -738,52 +715,9 @@
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KISBANTI-CHK-SEC
            END-IF
-      *    帰省先−電話
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-FLG-END         =   ZERO  )
-               PERFORM 4101-KISTEL-CHK-SEC
-           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＦＡＸチェック処理
-      *****************************************************************
-       4101-FAX-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-FAX   NOT =   SPACE
-               MOVE    SPA-GMN21-FAX       TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-FAX
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2117"              TO  SPA-ERRCD
-                   MOVE    1                   TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-           .
-       4101-FAX-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    携帯番号チェック処理
-      *****************************************************************
-       4101-KEITAI-TEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-KEITAI-TEL    NOT =   SPACE
-               MOVE    SPA-GMN21-KEITAI-TEL    TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KEITAI-TEL
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2118"              TO  SPA-ERRCD
-                   MOVE    2                   TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-           .
-      *
-       4101-KEITAI-TEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -815,7 +749,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-JOB       TO  WRK-MAE-INPUT
            MOVE    20                  TO  WRK-MAX
-           PERFORM 890-HALF-ZENS-SEC
+           PERFORM 890-HALF-ZEN-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-JOB
            .
       *
@@ -860,11 +794,6 @@
       *    エラー
            IF      FLG-ERR             =   1
                MOVE    "2103"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN21-CUR
-               GO      TO      4101-RENPOST-CHK-EXT
-           END-IF
-           IF      FLG-ERR             =   2
-               MOVE    "2111"          TO  SPA-ERRCD
                MOVE    7               TO  SPA-GMN21-CUR
                GO      TO      4101-RENPOST-CHK-EXT
            END-IF
@@ -935,36 +864,6 @@
       *
        4101-RENBANTI-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    連絡先−電話チェック処理
-      *****************************************************************
-       4101-RENTEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-RENRAKU-TEL1  NOT =   SPACE
-               MOVE    SPA-GMN21-RENRAKU-TEL1  TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-TEL1
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2114"              TO  SPA-ERRCD
-                   MOVE    10                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-      *
-           IF     (SPA-GMN21-RENRAKU-TEL2  NOT =   SPACE )
-           AND    (SPA-ERRCD                   =   SPACE )
-               MOVE    SPA-GMN21-RENRAKU-TEL2  TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-TEL2
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2114"              TO  SPA-ERRCD
-                   MOVE    11                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-           .
-       4101-RENTEL-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    勤務先−名前チェック処理
@@ -1004,11 +903,6 @@
       *    エラー
            IF      FLG-ERR             =   1
                MOVE    "2106"          TO  SPA-ERRCD
-               MOVE    13              TO  SPA-GMN21-CUR
-               GO      TO      4101-OFFPOST-CHK-EXT
-           END-IF
-           IF      FLG-ERR             =   2
-               MOVE    "2112"          TO  SPA-ERRCD
                MOVE    13              TO  SPA-GMN21-CUR
                GO      TO      4101-OFFPOST-CHK-EXT
            END-IF
@@ -1080,25 +974,6 @@
       *
        4101-OFFBANTI-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    勤務先−電話チェック処理
-      *****************************************************************
-       4101-OFFTEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-OFFICE-TEL    NOT =   SPACE
-               MOVE    SPA-GMN21-OFFICE-TEL    TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-TEL
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2115"              TO  SPA-ERRCD
-                   MOVE    16                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-      *
-           .
-       4101-OFFTEL-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    帰省先−名前チェック処理
@@ -1138,11 +1013,6 @@
       *    エラー
            IF      FLG-ERR             =   1
                MOVE    "2109"          TO  SPA-ERRCD
-               MOVE    18              TO  SPA-GMN21-CUR
-               GO      TO      4101-KISPOST-CHK-EXT
-           END-IF
-           IF      FLG-ERR             =   2
-               MOVE    "2113"          TO  SPA-ERRCD
                MOVE    18              TO  SPA-GMN21-CUR
                GO      TO      4101-KISPOST-CHK-EXT
            END-IF
@@ -1214,46 +1084,11 @@
       *
        4101-KISBANTI-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    帰省先−電話チェック処理
-      *****************************************************************
-       4101-KISTEL-CHK-SEC          SECTION.
-      *
-           IF      SPA-GMN21-KISEI-TEL NOT =   SPACE
-               MOVE    SPA-GMN21-KISEI-TEL TO  WRK-MAE-INPUT
-               MOVE    15                  TO  WRK-MAX
-               PERFORM 891-HALF-CHK-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-TEL
-               IF      FLG-ERR         NOT =   ZERO
-                   MOVE    "2116"              TO  SPA-ERRCD
-                   MOVE    21                  TO  SPA-GMN21-CUR
-               END-IF
-           END-IF
-      *
-           .
-       4101-KISTEL-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    郵便番号チェック処理
       *****************************************************************
        430-POST-SYORI-SEC          SECTION.
-      *
-      *    半角であること
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-POST        TO  KANACHK-MAE-INPUT
-           MOVE    7                   TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-POST
-           IF     (KANACHK-RC          =   ZERO  )  AND
-                  (KANACHK-SYUBETU     =   1     )
-               CONTINUE
-           ELSE
-               MOVE    2                   TO  FLG-ERR
-               GO      TO      430-POST-SYORI-EXT
-           END-IF
       *
            IF      WRK-MAE-POST(1:1)   =   "/"
                IF      WRK-MAE-POST(2:3)   NUMERIC
@@ -1500,12 +1335,12 @@
            EXIT.
       *
       *****************************************************************
-      *    半角を全角へ変換処理
+      *    半角空白を全角空白へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
            MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
@@ -1521,53 +1356,6 @@
       *
            .
        890-HALF-ZEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    半角空白を全角空白へ変換処理
-      *****************************************************************
-       890-HALF-ZENS-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    1                   TO  FLG-ERR
-               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
-           ELSE
-               MOVE    ZERO                TO  FLG-ERR
-               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
-           END-IF
-      *
-           .
-       890-HALF-ZENS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    全角チェック処理
-      *****************************************************************
-       891-HALF-CHK-SEC         SECTION.
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
-           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
-           IF     (KANACHK-RC          =   ZERO  )  AND
-                  (KANACHK-SYUBETU     =   1     )
-      *        半角
-               MOVE    ZERO                TO  FLG-ERR
-           ELSE
-               MOVE    1                   TO  FLG-ERR
-           END-IF
-      *
-           .
-       891-HALF-CHK-EXT.
            EXIT.
       *
       *****************************************************************

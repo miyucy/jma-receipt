@@ -35,11 +35,6 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/XX  保険組合せ非表示対応
       *  04.05.00    NACL-多々納  09/06/26  入院食事区分対応
-      *  04.06.00    NACL-多々納  10/09/29  入外非表示区分対応
-      *  04.06.00    NACL-多々納  12/09/25  生活保護重複対応
-      *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
-      *  04.07.00    NACL-多々納  14/12/XX  難病等対応
-      *  04.08.00    NACL-多々納  16/02/XX  京都府　京都子重複可対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -47,10 +42,31 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  PAR-KEY
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
       *FILE                        SECTION.
       *
+      *    パラメタデータ
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PAR-KEY.
+      *        05  PAR-FILEMEI         PIC X(08).
+      *        05  PAR-EDANUM          PIC 9(04).
+      *****03  PAR-DATA-REC            PIC X(3000).
+      *
        WORKING-STORAGE             SECTION.
+      *
+      *    パラメタファイル名
+       01  FILE-NAME1.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(07)   VALUE   "P01PARA".
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -60,6 +76,10 @@
            COPY    "P02SCR-SPA".
       *
       *    フラグ領域
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
+      *
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -67,10 +87,6 @@
            03  FLG-PTBYOMEI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
-           03  FLG-CHK             PIC 9(01).
-           03  FLG-OVER            PIC 9(01).
-      *
-           03  FLG-INIT            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -84,7 +100,6 @@
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDKH                PIC 9(04).
       *
            03  IDX-STR             PIC 9(04).
       *
@@ -120,10 +135,6 @@
            03  WRK-KOHNUM          PIC X(03).
            03  WRK-KOHID           PIC 9(10).
            03  WRK-JKYSNUM         PIC X(20).
-      *
-           03  WRK-H-JKYSNUM       PIC X(20).
-      *
-           03  WRK-MCP-PATHNAME    PIC X(60).
       *
       *    非表示区分テーブル（P02SCR-SPA のSPA-HYO-HKNCOMBI-AREA）
            03  WRK-HYO-HKNCOMBI-AREA.
@@ -227,34 +238,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -332,7 +342,6 @@
            MOVE    1                   TO  SPA-GMN27-HKN-PCNT
            MOVE    1                   TO  SPA-GMN27-KOH-PCNT
       *
-           MOVE    1                   TO  FLG-INIT
       *    パラメタファイル検索処理
            PERFORM 320-PARAFILE-KENSAKU-SEC
       *
@@ -445,7 +454,6 @@
                    IF     (IDX             >=  WRK-ST )   AND
                           (IDX             <=  WRK-ED )
                        ADD     1               TO  IDY
-      *
       *DDDD            MOVE    PARA-EDANUM     TO  SPA-NAI27-EDANUM
       *DDD                                                 (IDY)
                        MOVE    PARA-DATA-REC   TO  LNK-HKNCOMB-REC(IDY)
@@ -454,8 +462,7 @@
                    END-IF
                END-IF
       *        今回追加分を非表示テーブルへ追加
-               IF     (COMB-CHGKBN         =   "A" )
-                 AND  (FLG-INIT            =   1   )
+               IF      COMB-CHGKBN         =   "A"
                    ADD     1                   TO  SPA-HYO-MAX
                    MOVE    COMB-HKNCOMBINUM    TO  SPA-HYO-HKNCOMBINUM
                                                           (SPA-HYO-MAX)
@@ -585,52 +592,55 @@
                    PERFORM 3201-RSI-HENSYU-SEC
                END-IF
       *
-      *        第三者行為の時、部位を公費２の項目へ
-               IF      LNK-COMB-KOH1HKNNUM (IDX)   =  "970"
-                   PERFORM 3202-DAI3-HENSYU-SEC
-               END-IF
-      *
       *        特定負有の時、受給者番号設定
-               PERFORM VARYING     IDKH    FROM    1   BY  1
-                       UNTIL       IDKH    >   4
-                   IF      (LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   =   "051"
+               IF     (LNK-COMB-KOH1HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
                                                    OR  "091"
                                                    OR  "015"
-                                                   OR  "016"
-                                                   OR  "038" )
+                                                   OR  "016" )
       *            北海道の地方公費
-                   OR     ((LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   =   "183" ) AND
-                           (SPA-PREFNUM            =   01   ))
-      *            生活保護　追加
-                   OR      (LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   =  "012"  )
-      *H26.12
-      *            小児特定　Ｈ２６．１２まで
-                   OR     ((LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   =   "052" ) AND
-                           (LNK-COMB-TEKSTYMD(IDX) <=  "20141231"))
-      *H27.1        難病
-                   OR      (LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   =   "054"   )
-      *
-      *H28.2
-      *            京都府　京都子　H25.9.1から
-                   OR  ((LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                 =   "745" ) AND
-                        (SPA-PREFNUM             =   26    ) AND
-                        (LNK-COMB-TEKSTYMD(IDX)
-                                                 >=  "20130901"))
-      *
-                       MOVE    LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   TO  WRK-KOHNUM
-                       MOVE    LNK-COMB-KOHID (IDX IDKH)
-                                                   TO  WRK-KOHID
-                       PERFORM 3202-JKYSNUM-HENSYU-SEC
-                   END-IF
-               END-PERFORM
-      *
+                   OR ((LNK-COMB-KOH1HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
+                   MOVE    LNK-COMB-KOH1HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH1ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+               IF     (LNK-COMB-KOH2HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                                                   OR  "015"
+                                                   OR  "016" )
+      *            北海道の地方公費
+                   OR ((LNK-COMB-KOH2HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
+                   MOVE    LNK-COMB-KOH2HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH2ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+               IF     (LNK-COMB-KOH3HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                                                   OR  "015"
+                                                   OR  "016" )
+      *            北海道の地方公費
+                   OR ((LNK-COMB-KOH3HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
+                   MOVE    LNK-COMB-KOH3HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH3ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
+               IF     (LNK-COMB-KOH4HKNNUM (IDX)   =   "051"
+                                                   OR  "052"
+                                                   OR  "091"
+                                                   OR  "015"
+                                                   OR  "016" )
+      *            北海道の地方公費
+                   OR ((LNK-COMB-KOH4HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
+                   MOVE    LNK-COMB-KOH4HKNNUM (IDX)   TO  WRK-KOHNUM
+                   MOVE    LNK-COMB-KOH4ID (IDX)       TO  WRK-KOHID
+                   PERFORM 3202-JKYSNUM-HENSYU-SEC
+               END-IF
       *        パラメタ位置
                MOVE    LNK-COMB-EDANUM (IDX)   TO  SPA-NAI27-EDANUM(IDY)
       *        表示区分
@@ -645,7 +655,7 @@
       *    表示区分編集処理
       *****************************************************************
        3201-HYOJIKBN-HEN-SEC            SECTION.
-      *
+     *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX5    FROM    1   BY  1
                    UNTIL      (IDX5        >   SPA-HYO-MAX )
@@ -677,7 +687,7 @@
       *    特定疾患の受給者番号編集処理
       *****************************************************************
        3202-JKYSNUM-HENSYU-SEC            SECTION.
-      *
+     *
            MOVE    SPACE               TO  WRK-JKYSNUM
            PERFORM VARYING     IDX4    FROM    1   BY  1
                    UNTIL       IDX4    >   SPA-PTKOH-MAX
@@ -685,70 +695,16 @@
                       (SPA-PTKOH-KOHID (IDX4)  =   WRK-KOHID)
                    MOVE    SPA-PTKOH-JKYSNUM (IDX4)
                                                TO  WRK-JKYSNUM
-      *H28.2
-      *            京都府　京都子は負担者番号を表示
-                   IF      (LNK-COMB-KOHHKNNUM (IDX IDKH)
-                                                   =   "745" )
-                       MOVE    SPA-PTKOH-FTNJANUM(IDX4)
-                                               TO  WRK-JKYSNUM
-                   END-IF
-      *
                    MOVE    SPA-PTKOH-MAX       TO  IDX4
                END-IF
            END-PERFORM
       *
            IF      WRK-JKYSNUM     NOT =   SPACE
-               IF      SPA-GMN27-TJKYSNUM(IDX) =   SPACE
-                   MOVE    WRK-JKYSNUM         TO  SPA-GMN27-TJKYSNUM
-                                                               (IDX)
-               ELSE
-                   MOVE    SPACE                   TO  WRK-H-JKYSNUM
-                   IF      SPA-GMN27-TJKYSNUM(IDX)(19:2)
-                                                   =   SPACE
-                       MOVE    ZERO            TO  FLG-OVER
-                       STRING  SPA-GMN27-TJKYSNUM(IDX)
-                                           DELIMITED  BY  SPACE
-                           "/"             DELIMITED  BY  SIZE
-                           WRK-JKYSNUM     DELIMITED  BY  SPACE
-                                           INTO    WRK-H-JKYSNUM
-                       ON   OVERFLOW
-                            MOVE    1           TO  FLG-OVER
-                       END-STRING
-                       IF      FLG-OVER         =   ZERO
-                           MOVE    WRK-H-JKYSNUM
-                                                TO  SPA-GMN27-TJKYSNUM
-                                                                (IDX)
-                       END-IF
-                   END-IF
-               END-IF
+               MOVE    WRK-JKYSNUM         TO  SPA-GMN27-TJKYSNUM(IDX)
            END-IF
       *
            .
        3202-JKYSNUM-HENSYUT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    第三者行為部位編集処理
-      *****************************************************************
-       3202-DAI3-HENSYU-SEC            SECTION.
-      *
-           MOVE    SPACE               TO  WRK-JKYSNUM
-           PERFORM VARYING     IDX4    FROM    1   BY  1
-                   UNTIL       IDX4    >   SPA-PTKOH-MAX
-               IF     (SPA-PTKOH-KOHID (IDX4)  NOT =   ZERO )  AND
-                      (SPA-PTKOH-KOHID (IDX4)  =   LNK-COMB-KOH1ID(IDX))
-                   STRING  "（"
-                           SPA-PTKOH-JKYSNUM (IDX4)
-                           "）"            DELIMITED  BY  SPACE
-                                           INTO
-                                           SPA-GMN27-KOHSEIDO2(IDX)
-                   END-STRING
-                   MOVE    SPA-PTKOH-MAX       TO  IDX4
-               END-IF
-           END-PERFORM
-      *
-           .
-       3202-DAI3-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -897,8 +853,6 @@
            EVALUATE    SPA-GMN27-CUR
                WHEN    01
                    MOVE    "P027_SELNUM"   TO  MCP-WIDGET
-               WHEN    03
-                   MOVE    "P027_HYOJIKBN" TO  MCP-WIDGET
                WHEN    02
                    MOVE    "BCOB2"         TO  MCP-WIDGET
            END-EVALUATE
@@ -925,15 +879,6 @@
                WHEN    "CLICKED"       ALSO    "BHO4"
                WHEN    "CLICKED"       ALSO    "BHO5"
                    PERFORM 450-HKNKAKUNINYMD-ZUMI-SEC
-      *ver.4.7
-      *    保険確認履歴
-               WHEN    "CLICKED"       ALSO    "BHR1"
-               WHEN    "CLICKED"       ALSO    "BHR2"
-               WHEN    "CLICKED"       ALSO    "BHR3"
-               WHEN    "CLICKED"       ALSO    "BHR4"
-               WHEN    "CLICKED"       ALSO    "BHR5"
-                   PERFORM 470-HKNKAKUNINYMD-RRK-SEC
-      *
       *    公費チェック
                WHEN    "CLICKED"       ALSO    "BKH1"
                WHEN    "CLICKED"       ALSO    "BKH2"
@@ -948,8 +893,8 @@
                WHEN    "CLICKED"       ALSO    "P027_NYUGAIKBN"
                    PERFORM 400-NYUGAI-SYORI-SEC
       *    表示切り替え
-      *        WHEN    "CLICKED"       ALSO    "P027_HYOJIKBN"
-      *            PERFORM 400-HYOJIKBN-SYORI-SEC
+               WHEN    "CLICKED"       ALSO    "P027_HYOJIKBN"
+                   PERFORM 400-HYOJIKBN-SYORI-SEC
       *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
@@ -965,35 +910,24 @@
       *****************************************************************
        440-ZEN-GMNHYOUJI-SEC           SECTION.
       *
-      *ver.4.7.0
-           IF     SPA-NAI-NEXTFLG      =   0
       *    組合せ情報
-               IF  SPA-P027-PG             >   1
-                   COMPUTE   SPA-P027-PG   =   SPA-P027-PG   -   1
-               END-IF
+           IF  SPA-P027-PG             >   1
+               COMPUTE   SPA-P027-PG   =   SPA-P027-PG   -   1
            END-IF
       *
       *    パラメタより編集
            PERFORM 320-PARAFILE-KENSAKU-SEC
       *
-      *ver.4.7.0
-           IF     SPA-NAI-NEXTFLG      =   0
-                                       OR  1
       *    保険
-               IF      SPA-GMN27-HKN-PCNT  >   1
-                   COMPUTE SPA-GMN27-HKN-PCNT  =   SPA-GMN27-HKN-PCNT
-                                               -   1
-               END-IF
+           IF      SPA-GMN27-HKN-PCNT  >   1
+               COMPUTE SPA-GMN27-HKN-PCNT  =   SPA-GMN27-HKN-PCNT
+                                           -   1
            END-IF
       *
-      *ver.4.7.0
-           IF     SPA-NAI-NEXTFLG      =   0
-                                       OR  2
       *    公費
-               IF      SPA-GMN27-KOH-PCNT  >   1
-                   COMPUTE SPA-GMN27-KOH-PCNT  =   SPA-GMN27-KOH-PCNT
-                                               -   1
-               END-IF
+           IF      SPA-GMN27-KOH-PCNT  >   1
+               COMPUTE SPA-GMN27-KOH-PCNT  =   SPA-GMN27-KOH-PCNT
+                                           -   1
            END-IF
       *
            .
@@ -1007,20 +941,12 @@
       *
       *    組合せ情報
       *    IF  SPA-P027-PG             <   SPA-P027-PGMAX
-      *ver.4.7.0
-           IF     SPA-NAI-NEXTFLG      =   0
                ADD     1               TO  SPA-P027-PG
-           END-IF
+      *    END-IF
       *
       *    パラメタより編集
            PERFORM 320-PARAFILE-KENSAKU-SEC
-           IF      IDY                 =   ZERO
-               COMPUTE SPA-P027-PG     =   SPA-P027-PG   -   1
-           END-IF
       *
-      *ver.4.7.0
-           IF     SPA-NAI-NEXTFLG      =   0
-                                       OR  1
       *    保険
            IF      SPA-GMN27-HKN-PCNT  <   8
                COMPUTE IDX             =   SPA-GMN27-HKN-PCNT  +  1
@@ -1029,19 +955,12 @@
                END-IF
            END-IF
       *
-           END-IF
-      *
-      *ver.4.7.0
-           IF     SPA-NAI-NEXTFLG      =   0
-                                       OR  2
       *    公費
-           IF      SPA-GMN27-KOH-PCNT  <   12
+           IF      SPA-GMN27-KOH-PCNT  <   8
                COMPUTE IDX             =   SPA-GMN27-KOH-PCNT  +  1
                IF      SPA-GMN27-KOHRENNUM (IDX 1)  NOT =   ZERO
                    MOVE    IDX             TO  SPA-GMN27-KOH-PCNT
                END-IF
-           END-IF
-      *
            END-IF
       *
            .
@@ -1095,90 +1014,6 @@
        450-HKNKAKUNINYMD-ZUMI-EXT.
            EXIT.
       *
-      ***************************************************************
-      *    保険確認年月日履歴画面処理
-      ***************************************************************
-       470-HKNKAKUNINYMD-RRK-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  IDX
-           EVALUATE    MCP-WIDGET
-               WHEN    "BHR1"
-                   MOVE    1              TO  IDX
-               WHEN    "BHR2"
-                   MOVE    2              TO  IDX
-               WHEN    "BHR3"
-                   MOVE    3              TO  IDX
-               WHEN    "BHR4"
-                   MOVE    4              TO  IDX
-               WHEN    "BHR5"
-                   MOVE    5              TO  IDX
-           END-EVALUATE
-      *
-           MOVE    SPA-GMN27-HKNRENNUM(SPA-GMN27-HKN-PCNT IDX)
-                                       TO  IDY
-           IF      IDY                 >   ZERO
-      *        労災保険の時、セットしない
-               IF      SPA-PTHKN-HKNNUM (IDY) =   "971"
-                                              OR  "973"
-                   CONTINUE
-               ELSE
-                   PERFORM 4701-P02T-SYORI-SEC
-               END-IF
-           END-IF
-      *
-           .
-       470-HKNKAKUNINYMD-RRK-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険確認年月日履歴画面処理
-      *****************************************************************
-       4701-P02T-SYORI-SEC   SECTION.
-      *
-           INITIALIZE                  SPA-P02T-AREA
-           STRING  SPA-PTHKN-HKNNUM (IDY)
-                   " "
-                   SPA-PTHKN-HKNNUM-MEI (IDY)
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-P02T-HKNMSG
-           END-STRING
-           MOVE    SPA-PTHKN-HKNID (IDY)   TO  SPA-P02T-HKNID
-      *
-           MOVE    SPACE               TO  SPA-MOTOPG
-      *
-           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-           MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
-      *
-           MOVE    "LINK"              TO  MCP-STATUS
-           MOVE    SPACE               TO  MCP-EVENT
-      *
-           CALL    "ORCGP02T"          USING
-                                       MCPAREA
-                                       SPAAREA
-                                       LINKAREA
-                                       SCRAREA
-      *
-           MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
-           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
-      *
-           IF      SPA-P02T-MAX        >   ZERO
-               MOVE    "B01"               TO  MCP-WIDGET
-               MOVE    "P02T"              TO  SPA-SAKIPG
-               MOVE    "P02"               TO  SPA-MOTOPG
-      *
-               MOVE    "NEW"               TO  MCP-PUTTYPE
-               MOVE    "P02T"              TO  MCP-WINDOW
-               PERFORM 900-PUT-WINDOW
-               MOVE    1                   TO  SPA-FLG-END
-           ELSE
-               MOVE    "0116"              TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       4701-P02T-SYORI-EXT.
-           EXIT.
-      *
       ****************************************************************
       *    公費確認年月日入力済み処理
       *****************************************************************
@@ -1201,11 +1036,6 @@
            MOVE    SPA-GMN27-KOHRENNUM(SPA-GMN27-KOH-PCNT IDX)
                                            TO  IDY
            IF      IDY                 >   ZERO
-      *        第三者行為の時、セットしない
-               IF      SPA-PTKOH-KOHNUM (IDY) =   "970"
-                   CONTINUE
-               ELSE
-      *!
                IF     (SPA-SYSYMD      =  SPA-PTKOH-KAKUNINYMD(IDY))
                   AND (SPA-PTKOH-MAEKAKUNINYMD(IDY) NOT =  SPACE)
                    MOVE    SPA-PTKOH-MAEKAKUNINYMD(IDY)
@@ -1218,8 +1048,6 @@
                    MOVE    SPA-SYSYMD      TO  SPA-PTKOH-KAKUNINYMD(IDY)
                    MOVE    SPA-SYSYMDWH    TO  SPA-PTKOH-KAKUNINYMDW
                                                                (IDY)
-               END-IF
-      *!
                END-IF
            END-IF
            .
@@ -1298,24 +1126,14 @@
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NAI27-SELNUM    TO  JYURRK-HKNCOMBINUM
-           EVALUATE    SPA-GMN27-HYOJIKBN
-               WHEN    "2"
-                   MOVE    "1"                 TO  JYURRK-NYUGAIKBN
-                   MOVE    "key15"             TO  WRK-MCP-PATHNAME
-               WHEN    "3"
-                   MOVE    "2"                 TO  JYURRK-NYUGAIKBN
-                   MOVE    "key15"             TO  WRK-MCP-PATHNAME
-               WHEN    OTHER
-                   MOVE    "key41"             TO  WRK-MCP-PATHNAME
-           END-EVALUATE
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               MOVE    "key41"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                MOVE    SPACE               TO  JYURRK-REC
@@ -1323,7 +1141,7 @@
                MOVE    1                   TO  FLG-JYURRK
            END-IF
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
@@ -1377,9 +1195,6 @@
       *        選択番号
                WHEN    ANY             ALSO    "P027_HKNKUMI_LIST"
                    PERFORM 220-HKNKUMI-LIST-SEC
-      *
-               WHEN    OTHER
-                   PERFORM 230-GMN-INPUT-SEC
            END-EVALUATE
       *
            .
@@ -1437,26 +1252,6 @@
                MOVE    1               TO  SPA-GMN27-CUR
                GO  TO                  210-SELNUM-CHK-EXT
            END-IF
-      *
-      *    非表示区分
-           INITIALIZE                      SPA-GMN27-HYOJIKBNLST-G
-           MOVE    "1 非表示"          TO  SPA-GMN27-HYOJIKBNLST (1)
-           MOVE    "2 入院のみ非表示"  TO  SPA-GMN27-HYOJIKBNLST (2)
-           MOVE    "3 外来のみ非表示"  TO  SPA-GMN27-HYOJIKBNLST (3)
-           MOVE    3                   TO  SPA-GMN27-HYOJIKBN-MAX
-           PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL   ( IDX       >   SPA-GMN27-HYOJIKBN-MAX )
-               IF      SPA-GMN27-HYOJIKBN
-                                   =   SPA-GMN27-HYOJIKBNLST(IDX)(1:1)
-                   MOVE    SPA-GMN27-HYOJIKBNLST (IDX)
-                                           TO  SPA-GMN27-HYOJIKBN-G
-                   MOVE    SPA-GMN27-HYOJIKBN-MAX  TO  IDX
-               END-IF
-           END-PERFORM
-           IF      SPA-GMN27-HYOJIKBN  =   SPACE
-               MOVE    SPACE           TO  SPA-GMN27-HYOJIKBN-G
-           END-IF
-      *
       *    保険組合せ編集
            PERFORM 2109-HONCOMBI-HEN-SEC
            .
@@ -1847,7 +1642,7 @@
            MOVE    ZERO                TO  WRK-SELNUM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN27-MAX
+                   UNTIL       IDX     >   20
                IF      P02-P027-HKNKUMI-SELECT (IDX)  =   "T"
                    IF      SPA-NAI27-HKNNUM (IDX)
                                                 =   SPA-NAI27-SELNUM
@@ -1869,101 +1664,6 @@
       *
           .
        220-HKNKUMI-LIST-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入力処理
-      *****************************************************************
-       230-GMN-INPUT-SEC              SECTION.
-      *
-           MOVE    MCP-WIDGET          TO  SPA-MCP-WIDGET
-      *    画面をＳＰＡセット
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *    基本チェックと別画面処理
-           PERFORM 4102-KIHON-CHK-SEC
-           .
-       230-GMN-INPUT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画面ＳＰＡ編集処理
-      *****************************************************************
-       4101-GMN-SPA-SET-SEC          SECTION.
-      *
-           MOVE    P02-P027-HYOJIKBN   TO  SPA-GMN27-HYOJIKBN-G
-           .
-       4101-GMN-SPA-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    基本チェックと別画面処理
-      *****************************************************************
-       4102-KIHON-CHK-SEC          SECTION.
-      *
-      *    表示区分チェック
-           PERFORM 41021-HYOJIKBN-CHK-SEC
-           .
-       4102-KIHON-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    表示区分チェック処理
-      *****************************************************************
-       41021-HYOJIKBN-CHK-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL   ( IDX       >   SPA-GMN27-HYOJIKBN-MAX )
-                   OR      ( FLG-CHK   =   1           )
-               IF      SPA-GMN27-HYOJIKBN
-                                   =   SPA-GMN27-HYOJIKBNLST(IDX)(1:1)
-                   MOVE    SPA-GMN27-HYOJIKBNLST (IDX)
-                                           TO  SPA-GMN27-HYOJIKBN-G
-                   MOVE    1               TO  FLG-CHK
-               END-IF
-           END-PERFORM
-      *
-           IF     (SPA-NAI27-SELNUM    =   ZERO )
-           OR     (SPA-GMN27-HYOJIKBN  =   SPACE)
-               MOVE    SPACE               TO  SPA-GMN27-HYOJIKBN-G
-           ELSE
-      *        保険組合せ選択あり
-               IF      FLG-CHK             =   ZERO
-                   MOVE    "9107"              TO  SPA-ERRCD
-                   MOVE    3                   TO  SPA-GMN27-CUR
-               END-IF
-           END-IF
-      *
-           EVALUATE    SPA-GMN27-HYOJIKBN
-               WHEN    SPACE
-                   CONTINUE
-               WHEN    "1"
-               WHEN    "2"
-               WHEN    "3"
-      *            受診履歴・病名等の算定チェック
-                   IF      SPA-P02-SYORI       =   1
-                       CONTINUE
-                   ELSE
-                       PERFORM 4001-HKNCOMBI-CHK-SEC
-                       IF      SPA-ERRCD       NOT =   SPACE
-                           MOVE    3               TO  SPA-GMN27-CUR
-                       END-IF
-                   END-IF
-           END-EVALUATE
-           IF     (SPA-ERRCD           =   SPACE )
-             AND  (SPA-NAI27-IDX       >   ZERO  )
-      *        表示内容変更
-               MOVE    SPA-NAI27-IDX       TO  IDX
-               MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN
-                                                                 (IDX)
-               MOVE    SPA-GMN27-HYOIDX (IDX)
-                                           TO  IDX5
-               MOVE    SPA-GMN27-THYOJIKBN (IDX)
-                                           TO  SPA-HYO-HYOJIKBN (IDX5)
-      *        選択へ
-               MOVE    1                   TO  SPA-GMN27-CUR
-           END-IF
-           .
-       41021-HYOJIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2098,19 +1798,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-DBCLOSE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＵＴ　処理
-      *****************************************************************
-       900-PUT-WINDOW           SECTION.
-      *
-           MOVE    "PUTWINDOW"      TO  MCP-FUNC.
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-       900-PUT-WINDOW-EXT.
            EXIT.
       *
       *

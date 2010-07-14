@@ -40,10 +40,32 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  PAR-KEY
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
       *FILE                        SECTION.
       *
+      *    パラメタデータ
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PAR-KEY.
+      *        05  PAR-FILEMEI         PIC X(08).
+      *        05  PAR-EDANUM          PIC 9(04).
+      *    03  PAR-DATA-REC            PIC X(3000).
+      *
+      *
        WORKING-STORAGE             SECTION.
+      *
+      *    パラメタファイル名
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -210,7 +232,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -224,7 +272,7 @@
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  IDX-AREA
+           INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
@@ -262,7 +310,7 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  IDX-AREA
+           INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
       *    初期画面編集
@@ -447,12 +495,25 @@
                    PERFORM 470-KYUSEI-DELETE-SEC
       *
                WHEN    "CLICKED"       ALSO     ANY
-                   MOVE    "0110"          TO  SPA-ERRCD
-                   MOVE    1               TO  SPA-GMN25-CUR
+                   PERFORM 4101-BETUGAMEN-SEC
            END-EVALUATE
       *
            .
        200-GMNSENI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    タグ変更・別画面切替　表示処理
+      *****************************************************************
+       4101-BETUGAMEN-SEC          SECTION.
+      *
+           EVALUATE    MCP-WIDGET
+      *    他画面
+               WHEN    OTHER
+                   PERFORM 490-TOUROKU-SEC
+           END-EVALUATE
+           .
+       4101-BETUGAMEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -653,22 +714,6 @@
       *
            IF     SPA-ERRCD            =   SPACE
                MOVE    "1"                 TO  SPA-GMN25-KYU-DELKBN(IDY)
-      *        追加分は削除
-               IF      SPA-GMN25-KYU-INSKBN (IDY)  =   "1"
-                   MOVE    SPACE               TO  SPA-GMN-KYUSEIH
-                   INITIALIZE              SPA-GMN25-KYU-REC (IDY)
-                   COMPUTE SPA-NAI25-KYU-MAX   =   SPA-NAI25-KYU-MAX
-                                               -   1
-                   PERFORM VARYING IDX     FROM    SPA-NAI25-KYU-MAX
-                                                   BY  -1
-                           UNTIL  (IDX       <    1 )
-                       IF      SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
-                           MOVE    SPA-GMN25-KYU-NAME (IDX)
-                                                   TO  SPA-GMN-KYUSEIH
-                           MOVE    1               TO  IDX
-                       END-IF
-                   END-PERFORM
-               END-IF
       *
                MOVE    SPACE               TO  SPA-GMN25-TKYUSEI-REC
                MOVE    SPACE               TO  SPA-GMN25-SELNUM

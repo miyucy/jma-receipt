@@ -36,7 +36,6 @@
       *  02.00.03    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
-      *  04.08.00    NACL-多々納  17/04/20  受付取消の表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -157,8 +156,6 @@
                    07  WRK-NAI-SRYNAI      PIC X(02).
                    07  WRK-NAI-YYKID       PIC 9(02).
                    07  WRK-NAI-YYKTIME     PIC 9(04).
-      *H29.4
-                   07  WRK-NAI20-DELKBN      PIC 9(01).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -241,34 +238,31 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -492,11 +486,6 @@
                        MOVE    SPA-HKNCOMBI-MAX    TO  IDY
                    END-IF
                END-PERFORM
-           END-IF
-      *H29.4
-      *    削除分
-           IF      UKE-UPYMD       =   "99999999"
-               MOVE    1                TO  SPA-NAI20-DELKBN (IDX)
            END-IF
       *
            .
@@ -1233,7 +1222,6 @@
       *
            IF      SPA-GMN20-KARUTE      =   "0"    OR  "1"
                                          OR  "2"
-                                         OR  "3"
       *        保険組合せが１件の時、１へ
                IF     (SPA-GMN20-KARUTE      =   "1"  )  AND
                       (SPA-HKNCOMBI-MAX      =   1    )
@@ -1310,7 +1298,7 @@
                    (SPA-NAI20-HKNKUMI  NOT =   ZERO)
                 MOVE    ZERO               TO  FLG-OK
                 PERFORM VARYING     IDX    FROM    1   BY  1
-                    UNTIL      (IDX    >   30         )
+                    UNTIL      (IDX    >   15         )
                     OR         (IDX    >   SPA-HKNCOMBI-MAX)
                    IF      SPA-NAI20-HKNKUMI
                                        =   SPA-GMN-THKNCOMBINUM(IDX)
@@ -1327,6 +1315,7 @@
           END-IF
       *
            .
+      *
        4101-HKNKUMI-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -1368,8 +1357,7 @@
            MOVE    ZERO                TO  WRK-SELNUM
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-      ************ UNTIL       IDX     >   10
-                   UNTIL       IDX     >   30
+                   UNTIL       IDX     >   10
                IF      P02-P020-HKNCOMBI-SELECT(IDX)  =   "T"
                    IF      SPA-GMN-THKNCOMBINUM (IDX)
                                                 =   SPA-NAI20-HKNKUMI
@@ -1456,9 +1444,6 @@
            MOVE    SPA-GMN20-HKNKUMI   TO  SPA-GMN20-THKNCOMBI(IDX)
            MOVE    SPA-NAI20-HKNCOMBIMEI
                                        TO  SPA-GMN20-THKNCOMBIMEI(IDX)
-      *H29.4
-      *    削除解除
-           MOVE    ZERO                TO  SPA-NAI20-DELKBN (IDX)
       *
            MOVE    SPACE               TO  SPA-GMN20-YSELNUM
            MOVE    ZERO                TO  SPA-NAI20-YSELNUM
@@ -1504,17 +1489,6 @@
                                                    (SPA-NAI20-YSELNUM)
                MOVE    SPACE           TO  SPA-NAI20-UKETIME
                                                    (SPA-NAI20-YSELNUM)
-      *H29.4
-      *        受付済みは削除区分設定
-               IF      SPA-NAI20-UKEID(SPA-NAI20-YSELNUM)
-                                                   =    ZERO
-                                                   OR   99999
-                   CONTINUE
-               ELSE
-                   MOVE    1           TO  SPA-NAI20-DELKBN
-                                                   (SPA-NAI20-YSELNUM)
-               END-IF
-      *
                MOVE    SPACE           TO  SPA-GMN20-YSELNUM
                MOVE    ZERO            TO  SPA-NAI20-YSELNUM
                MOVE    SPA-GMN20-KARUTE-LST(1)
@@ -1525,11 +1499,6 @@
                MOVE    ZERO            TO  SPA-NAI20-HKNKUMI 
                GO      TO                  422-UKETUDEL-EXT
            END-IF
-      *
-      *H29.4
-           IF      SPA-NAI20-UKEID(SPA-NAI20-YSELNUM)  =    ZERO
-                                                       OR   99999
-      *新規登録分
       *
       *    １行取り消し
            INITIALIZE                SPA-GMN20-TBLO(SPA-NAI20-YSELNUM)
@@ -1551,15 +1520,6 @@
            END-PERFORM
       *
            COMPUTE SPA-NAI20-UKEMAX    =   SPA-NAI20-UKEMAX   -   1
-      *
-      *H29.4
-           ELSE
-      *        受付済みは削除区分設定
-               MOVE    1               TO  SPA-NAI20-DELKBN
-                                                   (SPA-NAI20-YSELNUM)
-           END-IF
-      *
-      *
            MOVE    SPACE               TO  SPA-GMN20-YSELNUM
            MOVE    ZERO                TO  SPA-NAI20-YSELNUM
            MOVE    SPACE               TO  SPA-GMN20-KARUTE-G
@@ -1738,16 +1698,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-PERFORM
-      *H29.4
-      *        存在なしデータ
+      *        削除データ
                IF      FLG-OK          =   ZERO
                    IF     (SPA-GMN-PTID        =   ZERO )  AND
                           (SPA-P02-UKEID   NOT =   UKE-UKEID)
                        CONTINUE
                    ELSE
-      *H29.4
-      ******           MOVE    "99999999"         TO  UKE-UPYMD
-      *                他で登録？
+                       MOVE    "99999999"         TO  UKE-UPYMD
                        PERFORM 5002-UKE-PARA-SEC
                    END-IF
                END-IF
@@ -1822,15 +1779,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *D   IF      SPA-P02-UKEID   NOT =   UKE-UKEID
                MOVE    SPA-GMN-NAME        TO  UKE-NAME
       *D   END-IF
-      *H29.4
-      *    削除分
-           IF      SPA-NAI20-DELKBN (IDX)  =   1
-               MOVE    "99999999"          TO  UKE-UPYMD
-           ELSE
-               MOVE    SPACE               TO  UKE-UPYMD
-           END-IF
       *
-      *    パラメタ編集済み
+      *    パラメタ編集済み 
            MOVE    SPACE               TO  SPA-NAI20-UKETIME(IDX)
            .
       *

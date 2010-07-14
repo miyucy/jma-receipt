@@ -112,34 +112,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -519,7 +518,6 @@
            MOVE    "P98"               TO  SPA-GMN981-MOTOPG
            MOVE    SPACE               TO  P981
       *
-           INITIALIZE                      P981
            MOVE   "NEW"                TO  MCP-PUTTYPE.
            MOVE   "P981   "            TO  MCP-WINDOW.
       *
@@ -657,30 +655,6 @@
                IF      ADRS-TOWNNAME       =   "°Ê²¼¤Ë·ÇºÜ¤¬¤Ê¤¤¾ì¹ç"
                    MOVE    ADRS-CITYNAME   TO  JPAR-CITYNAME-NAME
                END-IF
-      *        µþÅÔ¤ÇÄÌ¤êÌ¾¾Î¤òÊÔ½¸¤¹¤ë»þ
-               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
-                 AND  (ADRS-TOWNNAME2  NOT =   SPACE )
-                 AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
-                   IF     (ADRS-TOWNNAME2(1:2)     =   "¡Ê"  )
-                       CONTINUE
-                   ELSE
-      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
-                       MOVE    SPACE           TO  JPAR-CITYNAME-NAME
-                       STRING  ADRS-CITYNAME
-                               ADRS-TOWNNAME2
-                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    JPAR-CITYNAME-NAME
-                       END-STRING
-      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
-                       MOVE    SPACE           TO  JPAR-CITYNAME-NAME
-                       STRING  ADRS-PREFNAME
-                               ADRS-CITYNAME
-                               ADRS-TOWNNAME2
-                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    JPAR-EDITADRS-NAME
-                       END-STRING
-                   END-IF
-               END-IF
            ELSE
                MOVE    SPACE               TO  JPAR-POST
                MOVE    SPACE               TO  JPAR-EDITADRS-NAME
@@ -793,23 +767,6 @@
            IF      FLG-ADRS            =   ZERO
                MOVE    ADRS-POST           TO  SPA-GMN98-POST
                MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
-      *        µþÅÔ¤ÇÄÌ¤êÌ¾¾Î¤òÊÔ½¸¤¹¤ë»þ
-               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
-                 AND  (ADRS-TOWNNAME2  NOT =   SPACE )
-                 AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
-                   IF     (ADRS-TOWNNAME2(1:2)     =   "¡Ê"  )
-                       CONTINUE
-                   ELSE
-      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
-                       MOVE    SPACE           TO  SPA-GMN98-ADRS
-                       STRING  ADRS-PREFNAME
-                               ADRS-CITYNAME
-                               ADRS-TOWNNAME2
-                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
-                                           INTO    SPA-GMN98-ADRS
-                       END-STRING
-                   END-IF
-               END-IF
                MOVE    ADRS-EDANUM         TO  SPA-GMN98-EDANUM
                MOVE    2                   TO  SPA-GMN98-CUR
            ELSE

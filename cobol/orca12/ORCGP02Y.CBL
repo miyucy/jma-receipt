@@ -191,7 +191,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -425,6 +451,10 @@
                MOVE    TNS-YUKOEDYMD       TO  WRK-SYMD
                PERFORM 800-SE-WAFORMAT-YMDEDIT-SEC
                MOVE    WRK-HENYMD          TO  SPA-P02Y-TYUKOEDYMD(IDX)
+      *        ∑–≤·¡º√÷•≥°º•…
+               PERFORM 30011-SRYCDCHG-HEN-SEC
+               MOVE    WRK-CHNGCD          TO  SPA-P02Y-TCHNGECD (IDX)
+               MOVE    FLG-CHNGARI         TO  SPA-P02Y-TCHNGFLG (IDX)
       *        ∆˛Œœ£√£ƒ
                MOVE    PTKINKI-SRYCD       TO  WRK-SRYCD
                PERFORM 400211-INPUTCD-HEN-SEC
@@ -439,10 +469,6 @@
                MOVE    PTKINKI-TOUYOYMD    TO  WRK-SYMD
                PERFORM 800-SE-WAFORMAT-YMDEDIT-SEC
                MOVE    WRK-HENYMD          TO  SPA-P02Y-TTOUYOYMDG(IDX)
-      *        ∑–≤·¡º√÷•≥°º•…
-               PERFORM 30011-SRYCDCHG-HEN-SEC
-               MOVE    WRK-CHNGCD          TO  SPA-P02Y-TCHNGECD (IDX)
-               MOVE    FLG-CHNGARI         TO  SPA-P02Y-TCHNGFLG (IDX)
            END-IF
            .
        30011-PTKINKI-HEN-EXT.
@@ -636,9 +662,6 @@
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM 4101-GRPCOPY-SEC
                    END-IF
-               WHEN    "0103"
-      *            ∑–≤·¡º√÷ £ºÃ
-                   PERFORM 411-CHGCOPY-SYORI-SEC
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
@@ -772,9 +795,9 @@
       *
            EVALUATE    SPA-P02Y-CUR
                WHEN    01
-                   MOVE    "SELNUM"        TO  MCP-WIDGET
+                   MOVE    "SELNUM"    TO  MCP-WIDGET
                WHEN    02
-                   MOVE    "SRYCD"         TO  MCP-WIDGET
+                   MOVE    "SRYCD"     TO  MCP-WIDGET
                WHEN    03
                    MOVE    "GRPHOSPNUM"    TO  MCP-WIDGET
                WHEN    05
@@ -782,11 +805,11 @@
                WHEN    06
                    MOVE    "KINKSTYMD"     TO  MCP-WIDGET
                WHEN    93
-                   MOVE    "B03"           TO  MCP-WIDGET
+                   MOVE    "B03"       TO  MCP-WIDGET
                WHEN    98
-                   MOVE    "B10"           TO  MCP-WIDGET
+                   MOVE    "B10"       TO  MCP-WIDGET
                WHEN    99
-                   MOVE    "B12"           TO  MCP-WIDGET
+                   MOVE    "B12"       TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -820,7 +843,7 @@
       *    …≥…’¥µº‘
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 409-GRPHOSPNUM-SEC
-      *    …≥…’ £ºÃ
+      *     £ºÃ
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 410-GRPCOPY-SYORI-SEC
       *    ≈–œø
@@ -976,10 +999,6 @@
            IF     (SPA-P02Y-SRYCD      =   SPA-P02Y-MAE-SRYCD)
              OR   (SPA-P02Y-SRYCD      =   SPACE             )
                MOVE    SPA-P02Y-SRYCD      TO  SPA-P02Y-MAE-SRYCD
-               IF     (SPA-P02Y-SRYCD          =   SPACE    )
-                   INITIALIZE                  SPA-P02Y-INPUT-G
-                   MOVE    2                   TO  SPA-P02Y-CUR
-               END-IF
                IF     (SPA-P02Y-GRPHOSPNUM NOT =   SPACE    )
                    MOVE    98                  TO  SPA-P02Y-CUR
                END-IF
@@ -1212,7 +1231,6 @@
                PERFORM 30011-SRYCDCHG-HEN-SEC
                IF     (WRK-CHNGCD      NOT =   SPACE ) AND
                       (FLG-CHNGARI         =   ZERO  )
-                   MOVE    WRK-CHNGCD          TO  SPA-P02Y-CHNGCD
                    MOVE    WRK-CHNGCD          TO  WRK-SRYCD
                    PERFORM 910-TENSU-READ-SEC
                    MOVE    SPACE               TO  WRK-DATA
@@ -1443,7 +1461,6 @@
            INITIALIZE                  SPA-P02Y1-AREA
            INITIALIZE                  SPA-P02Y1GMN-AREA 
            MOVE    "2"                 TO  SPA-P02Y1-TYPE
-           MOVE    "P02Y"              TO  SPA-MOTOPG
       *
            IF      WRK-INPUTCD         NOT =   SPACE
       *        ∆‚…˛
@@ -1656,7 +1673,6 @@
            .
        4101-GRPCOPY-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ≈–œøΩËÕ˝
       *****************************************************************
@@ -1668,17 +1684,7 @@
                   (FLG-END             =   ZERO  )
                PERFORM 4120-KANREN-CHK-SEC
            END-IF
-      *
            IF     (SPA-ERRCD           =   SPACE )  AND
-                  (FLG-END             =   ZERO  )
-      *        ∑–≤·¡º√÷ÃÙ∫ﬁ§¨§¢§Ï§–°¢ £ºÃ
-               IF      SPA-P02Y-CHNGCD     NOT =   SPACE
-                   MOVE    "0103"          TO  SPA-PIDCD
-               END-IF
-           END-IF
-      *
-           IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-PIDCD           =   SPACE )  AND
                   (FLG-END             =   ZERO  )
       *        ¥µº‘∂ÿ¥˜ÃÙ∫ﬁ≈–œøΩËÕ˝
                MOVE    SPA-P02Y-SRYCD      TO  WRK-SRYCD
@@ -1690,7 +1696,6 @@
       *
            IF    ((SPA-ERRCD           =   SPACE ) OR
                   (SPA-ERRCD           =   "1002"))  AND
-                  (SPA-PIDCD           =   SPACE )  AND
                   (FLG-END             =   ZERO  )
                PERFORM 410-INIT-SYORI-SEC
            END-IF
@@ -1769,36 +1774,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4121-PTKINKI-INS-EXT.
            EXIT.
-      *****************************************************************
-      *    ∞‹π‘… Ã‹ £ºÃΩËÕ˝
-      *****************************************************************
-       411-CHGCOPY-SYORI-SEC            SECTION.
-      *
-      *    ¥µº‘∂ÿ¥˜ÃÙ∫ﬁ≈–œøΩËÕ˝
-           MOVE    SPA-P02Y-SRYCD      TO  WRK-SRYCD
-           MOVE    SPA-P02Y-KINKSTYMD  TO  WRK-KINKSTYMD
-           MOVE    SPA-P02Y-TOUYOYMD   TO  WRK-TOUYOYMD
-           MOVE    ZERO                TO  FLG-P02Y1
-           PERFORM 4121-PTKINKI-INS-SEC
-      *
-           IF     (SPA-PID1-FLG        =   "OK"  )
-            AND   (SPA-ERRCD           =   SPACE )
-      *        ∑–≤·¡º√÷… Ã‹≈–œø
-               MOVE    SPA-P02Y-CHNGCD     TO  WRK-SRYCD
-               MOVE    SPA-P02Y-KINKSTYMD  TO  WRK-KINKSTYMD
-               MOVE    SPA-P02Y-TOUYOYMD   TO  WRK-TOUYOYMD
-               MOVE    ZERO                TO  FLG-P02Y1
-               PERFORM 4121-PTKINKI-INS-SEC
-           END-IF
-      *
-           IF    ((SPA-ERRCD           =   SPACE ) OR
-                  (SPA-ERRCD           =   "1002"))  AND
-                  (FLG-END             =   ZERO  )
-               PERFORM 410-INIT-SYORI-SEC
-           END-IF
-           .
-       411-CHGCOPY-SYORI-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ¥µº‘∂ÿ¥˜ÃÙ∫ﬁππø∑ΩËÕ˝
@@ -1845,7 +1820,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    1                   TO  FLG-END
            MOVE    ZERO                TO  SPA-FLG-END
-      *****MOVE    "P02"               TO  SPA-P02-GAMEN
+           MOVE    "P02"               TO  SPA-P02-GAMEN
       *
            .
        210-BACK-EXT.
@@ -2000,12 +1975,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            "§Ë§Ì§∑§§§«§π§´°©"  DELIMITED  BY  SIZE
                                                INTO  WRK-PIDMSG
                    END-STRING
-               WHEN    "0103"
-                   STRING  "∑–≤·¡º√÷… Ã‹∞‹π‘•≥°º•…§¨§¢§Í§ﬁ§π°£"
-                           "£œ£À§«… Ã‹∞‹π‘•≥°º•…§‚≈–œø§∑§ﬁ§π°£"
-                                               DELIMITED  BY  SIZE
-                                               INTO  WRK-PIDMSG
-                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
@@ -2014,14 +1983,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
-           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
            MOVE    "Ã·§Î"              TO  PID1-B01
-           EVALUATE    SPA-PIDCD
-               WHEN    "0103"
-                   MOVE    "£Œ£œ"              TO  PID1-B01
-           END-EVALUATE
            MOVE    "£œ£À"              TO  PID1-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET

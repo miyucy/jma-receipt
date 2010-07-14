@@ -1,8 +1,8 @@
 patientget {
-		arguments {
-			id			varchar(20);
+		argument {
+			id			varchar(02);
 		};
-		http_method			varchar(100);
+		methodtype			varchar(100);
 		content_type		varchar(100);
 		body				object;
 };

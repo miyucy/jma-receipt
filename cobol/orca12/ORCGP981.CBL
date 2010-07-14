@@ -31,7 +31,6 @@
       * 01.00.02     NACL-多々納  05/11/14  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.05.00    NACL-多々納  09/12/22  一括入力対応
-      * 04.06.00     NACL-多々納  11/02/10  京都府通り名称編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -131,34 +130,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -478,16 +476,6 @@
                    IF      FLG-ADRS                =   ZERO
                        MOVE    ADRS-EDITADRS-NAME
                                                TO  SPA-GMN981-TOWNNAME
-                       IF     (ADRS-LPUBCD(1:2)    =   "26"  )
-                         AND  (ADRS-TOWNNAME2      NOT =   SPACE)
-                         AND  (ADRS-TOWNNAME2(1:2) NOT =   "（" )
-                           STRING  "通り名："
-                                   ADRS-TOWNNAME2
-                                   ADRS-TOWNNAME
-                                               DELIMITED  BY  SPACE
-                                           INTO    SPA-GMN981-TOWNNAME2
-                           END-STRING
-                       END-IF
                    END-IF
                END-IF
       *
@@ -516,15 +504,6 @@
            IF      FLG-ADRS            =   ZERO
                MOVE    ADRS-EDITADRS-NAME
                                            TO  SPA-GMN981-TOWNNAME
-               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
-                 AND  (ADRS-TOWNNAME2      NOT =   SPACE)
-                 AND  (ADRS-TOWNNAME2(1:2) NOT =   "（" )
-                   STRING  "通り名："
-                           ADRS-TOWNNAME2
-                                               DELIMITED  BY  SPACE
-                                           INTO    SPA-GMN981-TOWNNAME2
-                   END-STRING
-               END-IF
                IF      SPA-GMN981-TOWNNAMEDSP  =   SPACE
                    MOVE    ADRS-TOWNNAME   TO  SPA-GMN981-TOWNNAMEDSP
                END-IF
@@ -535,7 +514,6 @@
                MOVE    5                   TO  SPA-GMN981-CUR
            ELSE
                MOVE    SPACE               TO  SPA-GMN981-TOWNNAME
-               MOVE    SPACE               TO  SPA-GMN981-TOWNNAME2
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-GMN981-CUR
            END-IF
@@ -882,7 +860,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN981-TOWNNAMEDSP
                                        TO  P981-TOWNNAMEDSP
            MOVE    SPA-GMN981-TOWNNAME TO  P981-TOWNNAME
-           MOVE    SPA-GMN981-TOWNNAME2    TO  P981-TOWNNAME2
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1001,7 +978,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
-           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
            MOVE    "戻る"              TO  PID1-B01
