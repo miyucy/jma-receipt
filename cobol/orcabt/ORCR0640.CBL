@@ -3696,7 +3696,6 @@
                                                    (IDX4 IDYY)
                    END-PERFORM
                END-IF
-
       *
                IF    (TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR
