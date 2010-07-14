@@ -29,10 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
       *  04.05.01    NACL-藤原    10/07/07  ２５日請求対応
-      *
-      *  04.06.01    NACL-藤原    13/06/05  退職国保の保険者番号を記載する
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,9 +48,6 @@
        01  BUNBENERR-REC           PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
-                                   BY         //BUNBENERR//.
       *
            COPY    "HCMSL55.INC".
       *
@@ -109,6 +102,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  BUNBENERR           PIC X(100).
            03  WRK-PARA-SKYYM      PIC X(06).
            03  WRK-PARA-SKYKBN     PIC X(01).
       *
@@ -173,16 +167,16 @@
                "代理受取額".
       *
        01  BODY-01.
-           03  B01-FIL1                PIC X(2).
+           03  FILLER                  PIC X(2).
            03  B01-HKNJANUM            PIC X(10).
-           03  B01-BUNBENKBN           PIC X(12).
+           03  B01-BUNBENKBN           PIC X(10).
            03  B01-PTNUM               PIC X(20).
            03  B01-NAME                PIC X(40).
-           03  B01-FIL2                PIC X(01).
+           03  FILLER                  PIC X(01).
            03  B01-BIRTHDAY            PIC X(09).
-           03  B01-FIL3                PIC X(03).
+           03  FILLER                  PIC X(03).
            03  B01-TEISYUTUBIKBN       PIC X(08).
-           03  B01-FIL4                PIC X(09).
+           03  FILLER                  PIC X(08).
            03  B01-DAIRI-MONEY         PIC X(10).
       *
        01  BODY-02.
@@ -246,9 +240,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -294,8 +285,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
            MOVE    LOW-VALUE       TO  KEY-AREA
-      *
-           INITIALIZE                  BUNBENERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -347,12 +336,6 @@
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BUNBENERR       TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BUNBENERR
       *
       *    請求年月編集
            IF      WRK-PARA-SKYYM  =   "000000"
@@ -811,9 +794,6 @@
            PERFORM 900-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    MCPDATA-REC     TO  BUNBEN-REC
-               IF      BUNBEN-SKYKBN   =   SPACE
-                   GO TO  900-BUNBEN-READ-N-SEC
-               END-IF
       *
                MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                MOVE    BUNBEN-PTID     TO  PTINF-PTID
@@ -855,8 +835,8 @@
                                            TO  KEY-N-TEISYUTUSAKI
                    MOVE    BUNBEN-BUNBENKBN
                                            TO  KEY-N-BUNBENKBN
-      *********    MOVE    BUNBEN-HKNJANUM-S
-                   MOVE    BUNBEN-HKNJANUM TO  KEY-N-HKNJANUM    
+                   MOVE    BUNBEN-HKNJANUM-S
+                                           TO  KEY-N-HKNJANUM    
                END-IF
                ADD     1               TO  CNT-IN
       *  
