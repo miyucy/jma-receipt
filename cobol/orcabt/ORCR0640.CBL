@@ -457,6 +457,9 @@
       *  04.05.12    NACL-門脇    10/02/09  地方公費の一部負担金０円記載
       *                                     （記録）の設定項目追加対応
       *  04.05.13    NACL-門脇    10/06/21  食事療養編集修正
+      *
+      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -689,6 +692,7 @@
            03  IDXA                                    PIC 9(01).
            03  IDXB                                    PIC 9(03).
            03  IDXX                                    PIC 9(02).
+           03  IDYY                                    PIC 9(02).
            03  IDYX                                    PIC 9(02).
            03  IDZX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
@@ -3684,6 +3688,15 @@
                MOVE    TNS-TOKUKIZAISBT1
                                       TO RECE65-TOKUKIZAISBT1  (IDX4)
                MOVE    TNS-SANSOKBN   TO RECE65-SANSOKBN       (IDX4)
+               IF      TNS-SRYCD (1:2)   =   "84"
+                   PERFORM VARYING IDYY    FROM    1   BY  1
+                           UNTIL   IDYY    >       10
+                       MOVE    TNS-SSTKIJUNCD (IDYY)
+                                           TO  RECE65-SSTKIJUNCD
+                                                   (IDX4 IDYY)
+                   END-PERFORM
+               END-IF
+
       *
                IF    (TNS-SRYCD       =  "170022290"  OR
                                          "170022390"  OR
@@ -10427,6 +10440,14 @@
                   MOVE  TNS-TOKUKIZAISBT1
                                       TO RECE65-TOKUKIZAISBT1(IDX4)
                   MOVE  TNS-SANSOKBN  TO RECE65-SANSOKBN     (IDX4)
+                  IF      TNS-SRYCD (1:2)   =   "84"
+                      PERFORM VARYING IDYY    FROM    1   BY  1
+                              UNTIL   IDYY    >       10
+                          MOVE    TNS-SSTKIJUNCD (IDYY)
+                                              TO  RECE65-SSTKIJUNCD
+                                                   (IDX4 IDYY)
+                      END-PERFORM
+                  END-IF
       *
                   IF  (WRK-ORCSTEN-SRYCD(IDX2)(1:1)  =   "8"  )
                   OR  (WRK-ORCSTEN-SRYCD(IDX2)(1:3)  =   "008")
@@ -10677,6 +10698,14 @@
                   MOVE  TNS-TOKUKIZAISBT1
                                       TO RECE65-TOKUKIZAISBT1(IDX4)
                   MOVE  TNS-SANSOKBN  TO RECE65-SANSOKBN     (IDX4)
+                  IF      TNS-SRYCD (1:2)   =   "84"
+                      PERFORM VARYING IDYY    FROM    1   BY  1
+                              UNTIL   IDYY    >       10
+                         MOVE    TNS-SSTKIJUNCD (IDYY)
+                                              TO  RECE65-SSTKIJUNCD
+                                                   (IDX4 IDYY)
+                      END-PERFORM
+                  END-IF
       *
                   MOVE  TNS-NAME      TO RECE65-NAME(IDX4)
       *
