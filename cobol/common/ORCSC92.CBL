@@ -648,9 +648,9 @@
            END-IF
       *    算定回数チェック
       **** IF      LNK-SC92-KBN    NOT =   "6"
-           IF     (LNK-SC92-KBN        =   "1"    )
+           IF     (LNK-SC92-KBN        =   "1" 
                                        OR  "3"
-                                       OR  "8"
+                                       OR  "8"    )
              AND  (SPA-ERRCD           =   SPACE  )
                IF     (TNS-SANTEIRRKKBN    =   ZERO   )  OR
                       (SPA-HKNCOMBINUM     =   "9999" )
