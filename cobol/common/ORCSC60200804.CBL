@@ -3027,7 +3027,10 @@
                END-IF
            END-PERFORM
            IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
-               MOVE    "0060"              TO  SPA-ERRCD
+               MOVE    "0601"              TO  SPA-ERRCD
+               IF      WRK-JYU-KEN         =   2
+                   MOVE    "0602"              TO  SPA-ERRCD
+               END-IF 
                MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
                MOVE    WRK-ERRMSG-1        TO  LNK-ORCSC-ERRMSG
            END-IF

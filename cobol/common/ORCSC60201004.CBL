@@ -54,6 +54,7 @@
       *  04.05.00    NACL-多々納  09/08/20  蛋白分画、総蛋白、アルブミンの算定チェック追加
       *  04.05.00    NACL-多々納  10/03/XX  Ｈ２２．４改正対応
       *  04.06.00    NACL-多々納  10/07/01  残量廃棄自動算定対応
+      *  04.06.00    NACL-多々納  10/07/16  免疫学的検査重複チェック対応
       *****************************************************************
       *
       *
@@ -109,6 +110,8 @@
            03  FLG-INPUT           PIC 9(01).
       *
            03  FLG-NYUDAY           PIC 9(01).
+      *
+           03  FLG-JYUKBN07         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -526,35 +529,54 @@
       *    アルブミン（Ａｌｂ）
            03  FILLER          PIC X(14)  VALUE    "06 2 160018910".
       *
+      *どれか２つ
+      *    リマトイド因子
+           03  FILLER          PIC X(14)  VALUE    "07 21160053110".
+      *    抗ガラクトース欠損ＩｇＧ抗体
+           03  FILLER          PIC X(14)  VALUE    "07 2 160168750".
+      *    マトリックスメタプロテイナーゼ３（ＭＭＰー３）
+           03  FILLER          PIC X(14)  VALUE    "07 2 160173150".
+      *    Ｃ１ｑ結合免疫複合体
+           03  FILLER          PIC X(14)  VALUE    "07 2 160119210".
+      *    モノクローナルＲＦ結合免疫複合体
+           03  FILLER          PIC X(14)  VALUE    "07 2 160143750".
+      *    ＩｇＧ型リウマチ因子
+           03  FILLER          PIC X(14)  VALUE    "07 2 160151650".
+      *    Ｃ３ｄ結合免疫複合体
+           03  FILLER          PIC X(14)  VALUE    "07 2 160119310".
+      *１つ（０７）の検査は算定不可
+      *    抗シトルリン化ペクチド抗体
+           03  FILLER          PIC X(14)  VALUE    "08 1 160181150".
+      *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  11  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  19  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
       *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   19.
       *
       *    重複算定不可テーブル（２）
-       01  TBL-KENSA-JYU2-AREA.
+      *01  TBL-KENSA-JYU2-AREA.
       *どれか２つ（Ｈ１８．４から廃止）
       *    ＴＰ
-           03  FILLER          PIC X(14)  VALUE    "01 2 160017410".
+      *    03  FILLER          PIC X(14)  VALUE    "01 2 160017410".
       *    Ａ／Ｇ
-           03  FILLER          PIC X(14)  VALUE    "01 2 160022350".
+      *    03  FILLER          PIC X(14)  VALUE    "01 2 160022350".
       *    アルブミン
-           03  FILLER          PIC X(14)  VALUE    "01 2 160018910".
+      *    03  FILLER          PIC X(14)  VALUE    "01 2 160018910".
       *
       *
-       01  TBL-KENSA-JYU2-AREA-R    REDEFINES  TBL-KENSA-JYU2-AREA.
-           03  TBL-KENSA-JYU2-OCC      OCCURS  3   INDEXED  JYU2-IDX.
-               05  TBL2-JYU-KBN         PIC X(02).
-               05  TBL2-FILLER1         PIC X(01).
-               05  TBL2-JYU-KEN         PIC X(01).
-               05  TBL2-FILLER2         PIC X(01).
-               05  TBL2-JYU-SRYCD       PIC X(09).
-       01  KEN-JYU2-MAX                 PIC 9(04)   VALUE   3.
+      *01  TBL-KENSA-JYU2-AREA-R    REDEFINES  TBL-KENSA-JYU2-AREA.
+      *    03  TBL-KENSA-JYU2-OCC      OCCURS  3   INDEXED  JYU2-IDX.
+      *        05  TBL2-JYU-KBN         PIC X(02).
+      *        05  TBL2-FILLER1         PIC X(01).
+      *        05  TBL2-JYU-KEN         PIC X(01).
+      *        05  TBL2-FILLER2         PIC X(01).
+      *        05  TBL2-JYU-SRYCD       PIC X(09).
+      *01  KEN-JYU2-MAX                 PIC 9(04)   VALUE   3.
       *
        01  WRK-JYUFUKU-CHK.
            03  WRK-JYU-CNT             PIC 9(02).
@@ -562,63 +584,6 @@
            03  WRK-JYU-KBN             PIC X(02).
            03  WRK-JYU-KEN             PIC 9(01).
            03  WRK-JYU-FLG             PIC X(01).
-      *
-      *    検体検査迅速実施加算対象
-      *01  TBL-KENSA-TAI-AREA.
-      *    03  FILLER          PIC X(09)  VALUE    "160000310".
-      *    03  FILLER          PIC X(09)  VALUE    "160005010".
-      *    03  FILLER          PIC X(09)  VALUE    "160006810".
-      *    03  FILLER          PIC X(09)  VALUE    "160007610".
-      *    03  FILLER          PIC X(09)  VALUE    "160008010".
-      *    03  FILLER          PIC X(09)  VALUE    "160010010".
-      *    03  FILLER          PIC X(09)  VALUE    "160012010".
-      *    03  FILLER          PIC X(09)  VALUE    "160014510".
-      *    03  FILLER          PIC X(09)  VALUE    "160114010".
-      *    03  FILLER          PIC X(09)  VALUE    "160017010".
-      *    03  FILLER          PIC X(09)  VALUE    "160017410".
-      *    03  FILLER          PIC X(09)  VALUE    "160018910".
-      *    03  FILLER          PIC X(09)  VALUE    "160019010".
-      *    03  FILLER          PIC X(09)  VALUE    "160131950".
-      *    03  FILLER          PIC X(09)  VALUE    "160019210".
-      *    03  FILLER          PIC X(09)  VALUE    "160132150".
-      *    03  FILLER          PIC X(09)  VALUE    "160019310".
-      *    03  FILLER          PIC X(09)  VALUE    "160132250".
-      *    03  FILLER          PIC X(09)  VALUE    "160020010".
-      *    03  FILLER          PIC X(09)  VALUE    "160020210".
-      *    03  FILLER          PIC X(09)  VALUE    "160020410".
-      *    03  FILLER          PIC X(09)  VALUE    "160020910".
-      *    03  FILLER          PIC X(09)  VALUE    "160021110".
-      *    03  FILLER          PIC X(09)  VALUE    "160132450".
-      *    03  FILLER          PIC X(09)  VALUE    "160021410".
-      *    03  FILLER          PIC X(09)  VALUE    "160132650".
-      *    03  FILLER          PIC X(09)  VALUE    "160021510".
-      *    03  FILLER          PIC X(09)  VALUE    "160132750".
-      *    03  FILLER          PIC X(09)  VALUE    "160019410".
-      *    03  FILLER          PIC X(09)  VALUE    "160137950".
-      *    03  FILLER          PIC X(09)  VALUE    "160138150".
-      *    03  FILLER          PIC X(09)  VALUE    "160138750".
-      *    03  FILLER          PIC X(09)  VALUE    "160019510".
-      *    03  FILLER          PIC X(09)  VALUE    "160020610".
-      *    03  FILLER          PIC X(09)  VALUE    "160023410".
-      *    03  FILLER          PIC X(09)  VALUE    "160022410".
-      *    03  FILLER          PIC X(09)  VALUE    "160022510".
-      *    03  FILLER          PIC X(09)  VALUE    "160022610".
-      *    03  FILLER          PIC X(09)  VALUE    "160167250".
-      *    03  FILLER          PIC X(09)  VALUE    "160151050".
-      *    03  FILLER          PIC X(09)  VALUE    "160031710".
-      *    03  FILLER          PIC X(09)  VALUE    "160033210".
-      *    03  FILLER          PIC X(09)  VALUE    "160033310".
-      *    03  FILLER          PIC X(09)  VALUE    "160036510".
-      *    03  FILLER          PIC X(09)  VALUE    "160036710".
-      *    03  FILLER          PIC X(09)  VALUE    "160037510".
-      *    03  FILLER          PIC X(09)  VALUE    "160037210".
-      *    03  FILLER          PIC X(09)  VALUE    "160054710".
-      *    03  FILLER          PIC X(09)  VALUE    "160057710".
-      *
-      *01  TBL-KENSA-TAI-AREA-R    REDEFINES  TBL-KENSA-TAI-AREA.
-      *    03  TBL-KENSA-TAI-OCC        OCCURS  49  INDEXED  TAI-IDX.
-      *        05  TBL-TAI-SRYCD        PIC X(09).
-      *01  KEN-TAI-MAX                  PIC 9(04)   VALUE   49.
       *
       *    検体検査迅速実施加算対象
            COPY    "CMGAIKENSATBL.INC".
@@ -2611,9 +2576,10 @@
                IF     (WRK-COM-SRYKBN    (IDX-Z)   =   "60"  )  AND
                       (WRK-COM-DATAKBN   (IDX-Z)   =   "1"   )  AND
                       (WRK-COM-TEIGEN-FLG(IDX-Z)   =   ZERO )
+               AND   ( LNK-ORCSC-PG    NOT =   "KT01" )
                    PERFORM 20011-JYUFUKU-CHK-SEC
       *            ２つ以上のチェック
-                   PERFORM 20012-JYUFUKU-CHK2-SEC
+      *            PERFORM 20012-JYUFUKU-CHK2-SEC
                END-IF
       *!
       *        コンタクトレンズ検査料の算定不可
@@ -3115,6 +3081,7 @@
            IF      WRK-JYU-KBN         =   SPACE
                GO      TO      20011-JYUFUKU-CHK-EXT
            END-IF
+      *
       *    包括対象以外
            IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "610" )  OR
                  ((SPA-NYUGAIKBN           =   "1"  )  AND
@@ -3132,18 +3099,22 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   KEN-JYU-MAX)  OR
                               (SPA-ERRCD   NOT =   SPACE  )
-               SET     JYU-IDX             TO  IDX
-               IF     (TBL-JYU-KBN  (JYU-IDX)  =   WRK-JYU-KBN ) AND
-                      (TBL-JYU-SRYCD(JYU-IDX)
-                                           NOT =   WRK-COM-INPUTCD
-                                                         (IDX-Z))
-                   MOVE    TBL-JYU-SRYCD (JYU-IDX) TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD
+               IF      WRK-JYU-KBN         =   "08"
+      *            抗シトルリン化ペクチド抗体
+                   PERFORM 200113-JYUFUKU-KBN08-CHK-SEC
+               ELSE
+      *            その他の検査
+                   PERFORM 200112-JYUFUKU-KBN-CHK-SEC
+               END-IF
+      *
+               IF      WRK-SRYCD       NOT =   SPACE
                    PERFORM VARYING     IDX2    FROM    IDX-STR  BY  1
                            UNTIL      (IDX2    >   SPA-MAX-LINE )  OR
-                                      (WRK-COM-INPUTCD (IDX2)
-                                                   =   SPACE  AND
-                                       WRK-GMN-INPUTCD (IDX2)
-                                                   =   SPACE  )
+                                     ((WRK-COM-INPUTCD (IDX2)
+                                                   =   SPACE  )  AND
+                                      (WRK-GMN-INPUTCD (IDX2)
+                                                   =   SPACE  ))
       *
                      IF      WRK-COM-HKNCOMBI(IDX2) NOT =   "9999"
       *
@@ -3171,7 +3142,10 @@
                END-IF
            END-PERFORM
            IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
-               MOVE    "0060"              TO  SPA-ERRCD
+               MOVE    "0601"              TO  SPA-ERRCD
+               IF      WRK-JYU-KEN         =   2
+                   MOVE    "0602"              TO  SPA-ERRCD
+               END-IF 
                MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
                MOVE    WRK-ERRMSG-1        TO  LNK-ORCSC-ERRMSG
            END-IF
@@ -3183,6 +3157,40 @@
            .
       *
        20011-JYUFUKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    重複検査検索処理
+      *****************************************************************
+       200112-JYUFUKU-KBN-CHK-SEC           SECTION.
+      *
+           SET     JYU-IDX             TO  IDX
+           IF     (TBL-JYU-KBN  (JYU-IDX)  =   WRK-JYU-KBN ) AND
+                  (TBL-JYU-SRYCD(JYU-IDX)
+                                       NOT =   WRK-COM-INPUTCD
+                                                         (IDX-Z))
+               MOVE    TBL-JYU-SRYCD (JYU-IDX) TO  WRK-SRYCD
+           END-IF
+           .
+       200112-JYUFUKU-KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    重複検査検索処理（抗シトルリン化ペクチド抗体）
+      *****************************************************************
+       200113-JYUFUKU-KBN08-CHK-SEC           SECTION.
+      *
+      *    自己検体検査でリウマトイド因子以外
+           SET     JYU-IDX             TO  IDX
+           IF     (TBL-JYU-KBN  (JYU-IDX)  =   "07"    )   AND
+                  (TBL-FILLER2  (JYU-IDX)  =   SPACE   )   AND
+                  (TBL-JYU-SRYCD(JYU-IDX)
+                                       NOT =   WRK-COM-INPUTCD
+                                                         (IDX-Z))
+               MOVE    TBL-JYU-SRYCD (JYU-IDX) TO  WRK-SRYCD
+           END-IF
+           .
+       200113-JYUFUKU-KBN08-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3264,71 +3272,6 @@
            END-IF
            .
        200111-JYUFUKU-NYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     重複算定不可チェック２処理
-      *****************************************************************
-       20012-JYUFUKU-CHK2-SEC           SECTION.
-      *
-      *    同一検査算定有無の判定
-           SET     JYU2-IDX            TO  1
-           SEARCH      TBL-KENSA-JYU2-OCC   VARYING   JYU2-IDX
-                   AT  END
-                       MOVE    SPACE           TO  WRK-JYU-KBN
-                       MOVE    ZERO            TO  WRK-JYU-KEN
-                   WHEN    WRK-COM-INPUTCD (IDX-Z)
-                                               =   TBL2-JYU-SRYCD
-                                                           (JYU2-IDX)
-                       MOVE    TBL2-JYU-KBN  (JYU2-IDX)
-                                                TO  WRK-JYU-KBN
-                       MOVE    TBL2-JYU-KEN  (JYU2-IDX)
-                                                TO  WRK-JYU-KEN
-           END-SEARCH
-      *
-           IF      WRK-JYU-KBN         =   SPACE
-               GO      TO      20012-JYUFUKU-CHK2-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  WRK-JYU-CNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   KEN-JYU2-MAX)  OR
-                              (SPA-ERRCD   NOT =   SPACE  )
-               SET     JYU2-IDX            TO  IDX
-               IF     (TBL2-JYU-KBN  (JYU2-IDX)  =   WRK-JYU-KBN ) AND
-                      (TBL2-JYU-SRYCD(JYU2-IDX)
-                                           NOT =   WRK-COM-INPUTCD
-                                                         (IDX-Z))
-                   MOVE    TBL2-JYU-SRYCD (JYU2-IDX) TO  WRK-SRYCD
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL      (IDX2    >   SPA-MAX-LINE  )  OR
-                                      (WRK-COM-INPUTCD (IDX2)
-                                                   =   SPACE  AND
-                                       WRK-GMN-INPUTCD (IDX2)
-                                                   =   SPACE  )
-      *
-                     IF      WRK-COM-HKNCOMBI(IDX2) NOT =   "9999"
-      *
-                       IF     (WRK-COM-INPUTCD(IDX-Z)
-                                               NOT =   WRK-COM-INPUTCD
-                                                             (IDX2)) AND
-                              (WRK-COM-INPUTCD (IDX2)  =   WRK-SRYCD)
-      *                   包括対象以外
-                         AND  (WRK-COM-SRYSYUKBN(IDX2) NOT =   "610")
-                           ADD     1               TO  WRK-JYU-CNT
-                           MOVE    IDX2            TO  WRK-JYU-IDX
-                       END-IF
-                     END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
-           IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
-               MOVE    "0060"              TO  SPA-ERRCD
-               MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
-           END-IF
-           .
-      *
-       20012-JYUFUKU-CHK2-EXT.
            EXIT.
       *
       *****************************************************************
