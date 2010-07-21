@@ -31,6 +31,8 @@
       *  01.00.02    NACL-森脇     05/09/28  構造変更
       *  01.00.03    NACL-森脇     06/07/26  MONFUNC対応
       *  03.05.00    NACL-多々納   07/05/16  グループ診療対応
+      *
+      *  04.06.01    NACL-藤原     09/06/20  病名の入力順対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -283,7 +285,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-           COPY    "CPORCMCP.INC".
+      *    COPY    "CPORCMCP.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -1362,6 +1364,7 @@
            MOVE    WKPTBYOMEI-REC  TO  PTBYOMEI-REC
            MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
            MOVE    CNT-RENNUM      TO  PTBYO-RENNUM
+           MOVE    9999            TO  PTBYO-SEQNUM
            MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_ptbyomei"  TO  MCP-TABLE

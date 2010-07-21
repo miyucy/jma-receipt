@@ -58,6 +58,8 @@
       *  04.05.00    NACL-多々納  09/06/25  薬剤情報提供料・調基判定追加
       *  04.05.00    NACL-多々納  09/11/30  入院回数一括入力対応
       *  04.05.00    NACL-多々納  10/01/15  治験対応
+      *
+      *  04.06.01    NACL-藤原    09/06/20  病名の入力順対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3150,6 +3152,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
            END-IF
       *
+           MOVE    9999                TO  PTBYO-SEQNUM
            MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
