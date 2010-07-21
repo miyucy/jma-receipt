@@ -1584,6 +1584,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *
+      *    対象がないとき
+           IF      WRK-PTBYOMEI-SRYYMD-MAX
+                                   =   ZERO
+               GO  TO  3101-PTBYO-SPA-EXT
+           END-IF
+      *
            IF      SPA-GMN-C02-MAX =   ZERO
                ADD     1               TO  WRK-PAGE
            END-IF
