@@ -465,6 +465,7 @@
            03  WRK-NAI-C02-TBLO.
                05  WRK-NAI-C02-TSRYYMD     PIC X(08).
                05  WRK-NAI-C02-TRENNUM     PIC 9(02).
+               05  WRK-NAI-C02-TSEQNUM     PIC 9(05).
                05  WRK-NAI-C02-TSRYKA      PIC X(02).
                05  WRK-NAI-C02-TNYUGAIKBN  PIC X(01).
                05  WRK-NAI-C02-TTENKIYMD   PIC X(08).
