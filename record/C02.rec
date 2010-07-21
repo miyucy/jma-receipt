@@ -1,7 +1,13 @@
 C02	{
 	fixed6	{
+		BYOMEI_UP	{
+			state	int;
+		};
+		BYOMEI_DOWN	{
+			state	int;
+		};
 		PTNUM	{
-	           	state	int;
+			state	int;
 			value	varchar(20);
 		};
 		SYSYMD	{
@@ -57,7 +63,25 @@ C02	{
 		B03	{
 	           	state	int;
 		};
+		B04	{
+	           	state	int;
+		};
+		B05	{
+	           	state	int;
+		};
+		B06	{
+	           	state	int;
+		};
+		B07	{
+	           	state	int;
+		};
+		B08	{
+	           	state	int;
+		};
 		B09	{
+	           	state	int;
+		};
+		B12	{
 	           	state	int;
 		};
 		B21	{

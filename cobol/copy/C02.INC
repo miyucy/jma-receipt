@@ -16,6 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
            02  C02.
+              03  C02-BYOMEI-UP-STATE   PIC S9(09) BINARY.
+              03  C02-BYOMEI-DOWN-STATE PIC S9(09) BINARY.
               03  C02-PTNUM-G.
                 04  C02-PTNUM-STATE   PIC S9(9)   BINARY.
                 04  C02-PTNUM   PIC X(20).
@@ -60,7 +62,19 @@
                                 PIC X(14)   OCCURS  3 TIMES.
               03  C02-B03-STATE
                                 PIC S9(9)   BINARY.
+              03  C02-B04-STATE
+                                PIC S9(9)   BINARY.
+              03  C02-B05-STATE
+                                PIC S9(9)   BINARY.
+              03  C02-B06-STATE
+                                PIC S9(9)   BINARY.
+              03  C02-B07-STATE
+                                PIC S9(9)   BINARY.
+              03  C02-B08-STATE
+                                PIC S9(9)   BINARY.
               03  C02-B09-STATE
+                                PIC S9(9)   BINARY.
+              03  C02-B12-STATE
                                 PIC S9(9)   BINARY.
               03  C02-B21-LABEL PIC X(4).
               03  C02-B23-LABEL PIC X(6).

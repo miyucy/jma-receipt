@@ -96,6 +96,7 @@
       *                                     コード種別の追加 
       *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
       *                                     疑いフラグ設定区分の追加
+      *  04.06.03    NACL-藤原    09/06/20  病名の入力順対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -370,6 +371,7 @@
                                13  SPA-NAI-C02-TNYUGAIKBN  PIC X(01).
                                13  SPA-NAI-C02-TTENKIYMD   PIC X(08).
                                13  SPA-NAI-C02-THKNCOMBI   PIC X(04).
+                               13  SPA-NAI-C02-TUPDOWN     PIC 9(01).
       *
                        09  SPA-NAI-C02-HKN-TBL.
                            11  SPA-NAI-C02-HKN-TBLO    OCCURS   100.
@@ -382,6 +384,7 @@
                        09  SPA-NAI-C02-SELNO       PIC 9(05).
                        09  SPA-NAI-C02-SELNO-INSERT
                                                    PIC 9(05).
+                       09  SPA-NAI-C02-UPDOWN      PIC 9(01). 
       *            主病名編集フラグ             
                        09  SPA-C02-2005-SYUBYOHENFLG
                                                    PIC X(01).

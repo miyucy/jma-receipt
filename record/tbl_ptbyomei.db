@@ -53,6 +53,7 @@ tbl_ptbyomei {
 	KHNBUICD_1  		char(7);
 	KHNBUICD_2  		char(7);
 	KHNBUICD_3  		char(7);
+	SEQNUM 			number(4);
 	DLTFLG  			char(1);
 	DLT_OPID    		varchar(16);
 	TERMID  			varchar(16);
@@ -713,6 +714,37 @@ path	key36		{
 			AND   SRYYMD      =   :SRYYMD
 			AND   RENNUM      >=  :RENNUM
 			ORDER  BY  RENNUM
+		;
+	};
+};
+
+path	key37		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key37_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID         =   :PTID
+			AND   SRYKA        like   :SRYKA 
+			AND   SRYYMD       <=  :SRYYMD
+			AND   DLTFLG       =   ' '
+			ORDER  BY  SRYYMD,SEQNUM,SRYKA,RENNUM
+		;
+	};
+};
+
+path	key38		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key38_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID         =   :PTID
+			AND   SRYKA        like   :SRYKA 
+			AND   SRYYMD       <=  :SRYYMD
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND   DLTFLG       =   ' '
+			ORDER  BY  SRYYMD,SEQNUM,SRYKA,RENNUM
 		;
 	};
 };

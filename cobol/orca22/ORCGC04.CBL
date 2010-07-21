@@ -58,6 +58,9 @@
       *                                      前の病名に戻らないようにする
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.06.01    NACL-藤原    10/04/28  自院病名に不明な病名コードが
+      *                                     登録された場合のチェックを追加
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1040,6 +1043,10 @@
                            PERFORM 900-BYOMEI-READ-SEC
                            IF      FLG-BYOMEI        =   ZERO
                                MOVE    BYO-BYOMEI
+                                           TO
+                                   SPA-NAI-C04-BYOMEI-O    (IDZ IDY)
+                           ELSE
+                               MOVE    "■■■"
                                            TO
                                    SPA-NAI-C04-BYOMEI-O    (IDZ IDY)
                            END-IF 

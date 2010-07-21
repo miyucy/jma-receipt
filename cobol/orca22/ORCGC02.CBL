@@ -251,7 +251,10 @@
       *                                     渡された病名を表示
       *  04.05.07    NACL-藤原    09/11/11  病名の入力順対応を中止
       *
-      *  04.06.01    NACL-藤原    10/06/16  疑いフラグ設定対応
+      *  04.06.01    NACL-藤原    10/04/28  自院病名に不明な病名コードが
+      *                                     登録された場合のチェックを追加
+      *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
+      *  04.06.03    NACL-藤原    09/06/20  病名の入力順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -302,6 +305,7 @@
            03  FLG-MANSEI          PIC 9(01).
            03  FLG-KYUSEI          PIC 9(01).
            03  FLG-SYUBYO          PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -321,6 +325,7 @@
            03  IDY2                PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDYY                PIC 9(04).
            03  IDZZ                PIC 9(04).
       *
       *    一時領域
@@ -428,6 +433,9 @@
       *
            03  WRK-C02-BYO-ROW     PIC S9(09).
       *
+           03  WRK-SRYYMD          PIC X(08).
+           03  WRK-ST              PIC 9(03).
+      *
       *    年齢表示
            03  WRK-NENREI-G.
                05  WRK-NENREI-Z    PIC ZZ9.
@@ -436,6 +444,32 @@
                05  WRK-NENREI-ZN   PIC Z9.
                05  WRK-NENREI-MEIN PIC X(04).
                05  FILLER          PIC X(01).
+      *
+      *    行入替用ワーク
+           03  WRK-GMN-C02-TBLO.
+               05  WRK-GMN-C02-TBANGO      PIC 9(05).
+               05  WRK-GMN-C02-TSRYKA      PIC X(04).
+               05  WRK-GMN-C02-TSRYYMD     PIC X(09).
+               05  WRK-GMN-C02-TBYOMEI     PIC X(80).
+               05  WRK-GMN-C02-TUTAGAIFLG  PIC X(14).
+               05  WRK-GMN-C02-TSYUBYOFLG  PIC X(12).
+               05  WRK-GMN-C02-TMANSEIKBN  PIC X(42).
+               05  WRK-GMN-C02-TNYUGAIKBN  PIC X(06).
+               05  WRK-GMN-C02-THKNCOMBI   PIC X(40).
+               05  WRK-GMN-C02-TREZEFLG    PIC X(10).
+               05  WRK-GMN-C02-TREZEMM     PIC 9(02).
+               05  WRK-GMN-C02-TTENKIKBN   PIC X(08).
+               05  WRK-GMN-C02-TTENKIYMD   PIC X(09).
+               05  WRK-GMN-C02-THKNBYOMEIFLG
+                                           PIC X(08).
+           03  WRK-NAI-C02-TBLO.
+               05  WRK-NAI-C02-TSRYYMD     PIC X(08).
+               05  WRK-NAI-C02-TRENNUM     PIC 9(02).
+               05  WRK-NAI-C02-TSRYKA      PIC X(02).
+               05  WRK-NAI-C02-TNYUGAIKBN  PIC X(01).
+               05  WRK-NAI-C02-TTENKIYMD   PIC X(08).
+               05  WRK-NAI-C02-THKNCOMBI   PIC X(04).
+               05  WRK-NAI-C02-TUPDOWN     PIC 9(01).
       *
       *    保険組合せ重複チェック用エリア
        01  WRK-CHK-HKNCOMBI-AREA.
@@ -507,6 +541,19 @@
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
                                    BY          //WRK-PTBYO-INSERT-//.
+      *
+      *    患者病名マスタ−（開始日別表示用）
+       01  WRK-LINE                PIC 9(03).
+       01  WRK-PAGE                PIC 9(02).
+       01  WRK-PTBYOMEI-SRYYMD-AREA.
+           02  WRK-PTBYOMEI-SRYYMD-MAX         PIC 9(03).
+      *
+           02  WRK-PTBYO-SRYYMD-BANGO          PIC 9(05)
+                                               OCCURS  200.
+           02  WRK-PTBYOMEI-SRYYMD-REC         OCCURS  200.
+           COPY    "CPPTBYOMEI.INC"
+                                   REPLACING   //PTBYO-//
+                                   BY          //WRK-PTBYO-SRYYMD-//.
       *
       *    スパ領域（ワーク）
            COPY    "COMMON-SPA"    REPLACING   //SPA-//
@@ -1170,6 +1217,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            END-IF
            MOVE    SYS-2005-SYUBYOHENFLG
                                        TO  SPA-C02-2005-SYUBYOHENFLG
+      *
       *    
            MOVE    SPACE           TO  SYSKANRI-REC
            INITIALIZE                  SYSKANRI-REC
@@ -1373,6 +1421,10 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
             INITIALIZE                 SPA-GMN-C02-TBL
                                        SPA-NAI-C02-TBL
                                        SPA-GMN-C02-MAX
+                                       SPA-NAI-C02-UPDOWN
+      *
+           MOVE    SPACE           TO  WRK-SRYYMD
+           INITIALIZE                  WRK-PTBYOMEI-SRYYMD-AREA
       *
       *    指定頁に表示する開始件数
            COMPUTE WRK-STR         = ( SPA-GMN-C02-PAGE  -  1 )
@@ -1382,6 +1434,8 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
            MOVE    ZERO                TO  IDX
                                            IDX2
                                            SPA-GMN-C02-MAX
+                                           WRK-LINE
+                                           WRK-PAGE
       *
       *    月による表示切替えとき
            EVALUATE    SPA-GMN-C02-SYOKBN
@@ -1411,20 +1465,20 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
       *    全科目指定・入外区分指定のときのキー設定
            IF      SPA-GMN-C02-HNYUGAIKBN  =   ZERO
                IF      SPA-GMN-C02-SRYKA       =   ZERO
-                   MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                   MOVE    "key17"             TO  WRK-MCP-PATHNAME
+                   MOVE    "%%"                TO  PTBYO-SRYKA
                ELSE
-                   MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                   MOVE    "key16"             TO  WRK-MCP-PATHNAME
+                   MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
                END-IF
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key37"             TO  WRK-MCP-PATHNAME
            ELSE
                IF      SPA-GMN-C02-SRYKA       =   ZERO
-                   MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                   MOVE    "key23"             TO  WRK-MCP-PATHNAME
+                   MOVE    "%%"                TO  PTBYO-SRYKA
                ELSE
-                   MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                   MOVE    "key22"             TO  WRK-MCP-PATHNAME
+                   MOVE    SPA-GMN-C02-SRYKA   TO  PTBYO-SRYKA
                END-IF
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key38"             TO  WRK-MCP-PATHNAME
            END-IF
       *
            MOVE    PTBYO-SRYYMD        TO  WRK-SYSYMD
@@ -1443,21 +1497,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
       *
-           PERFORM UNTIL ( IDX             >=  WRK-CONS-C02-MAX ) OR
-                         ( FLG-PTBYOMEI    =   1                )
+           PERFORM UNTIL ( WRK-LINE        >=  WRK-CONS-C02-MAX )
+                   OR    ( FLG-PTBYOMEI    =   1                )
                PERFORM 3101-PTBYO-SPA-SEC
-      *
-               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 900-PTBYO-READ-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-           IF    ( IDX                 >=  WRK-CONS-C02-MAX )  AND
-                 ( FLG-PTBYOMEI        =   ZERO             )
+           IF    ( WRK-PTBYOMEI-SRYYMD-MAX
+                                       >   ZERO  )
+           OR    ( FLG-PTBYOMEI        =   ZERO  )
                MOVE    1                   TO  SPA-GMN-C02-NEXT
            ELSE
                MOVE    ZERO                TO  SPA-GMN-C02-NEXT
@@ -1473,112 +1524,175 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        3101-PTBYO-SPA-SEC         SECTION.
       *
-      *    レセプト対象の病名かチェック（全体以外のとき）
-           IF      SPA-GMN-C02-SYOKBN   NOT =   "2"
-               IF      PTBYO-SRYYMD(1:6)    =   WRK-SYSYMD (1:6)
-                   CONTINUE
-               ELSE
-                   IF      PTBYO-TENKIKBN       =   SPACE
+           MOVE    PTBYO-SRYYMD    TO  WRK-SRYYMD
+           INITIALIZE                  WRK-PTBYOMEI-SRYYMD-AREA
+      *
+      *
+      *    同一開始日かどうか
+           PERFORM UNTIL ( FLG-PTBYOMEI    =   1                )
+                   OR    ( WRK-SRYYMD  NOT =   PTBYO-SRYYMD     )
+                   OR    ( WRK-PTBYOMEI-SRYYMD-MAX
+                                           >=  WRK-CONS-C02-MAX )
+               MOVE    ZERO                TO  FLG-CHK
+      *        レセプト対象の病名かチェック（全体以外のとき）
+               IF      SPA-GMN-C02-SYOKBN   NOT =   "2"
+                   IF      PTBYO-SRYYMD(1:6)    =   WRK-SYSYMD (1:6)
                        CONTINUE
-                   ELSE 
-                       IF      PTBYO-TENKIYMD(1:6)  >=  WRK-SYSYMD (1:6)
+                   ELSE
+                       IF      PTBYO-TENKIKBN       =   SPACE
+                           CONTINUE
+                       ELSE 
+                           IF      PTBYO-TENKIYMD(1:6)
+                                                   >=  WRK-SYSYMD (1:6)
+                               CONTINUE
+                           ELSE
+                               MOVE    1               TO  FLG-CHK
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+                   IF      PTBYO-REZEMM        >   ZERO
+                       INITIALIZE                      STS-AREA-DAY
+                       INITIALIZE                      LNK-DAY6-AREA
+                       MOVE    "61"                TO  LNK-DAY6-IRAI
+                       MOVE    PTBYO-SRYYMD        TO  LNK-DAY6-KIJUN 
+                       MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+                       COMPUTE LNK-DAY6-ZOGEN  =   PTBYO-REZEMM    -   1    
+                       CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN(1:6)
+                                                   TO  WRK-YM
+                       IF      WRK-YM              >=  WRK-SYSYMD (1:6)
                            CONTINUE
                        ELSE
-                           GO  TO  3101-PTBYO-SPA-EXT
+                           MOVE    1                   TO  FLG-CHK
                        END-IF
                    END-IF
                END-IF
       *
-               IF      PTBYO-REZEMM        >   ZERO
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    PTBYO-SRYYMD        TO  LNK-DAY6-KIJUN 
-                   MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-                   COMPUTE LNK-DAY6-ZOGEN  =   PTBYO-REZEMM    -   1    
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KEISAN(1:6)
-                                               TO  WRK-YM
-                   IF      WRK-YM              >=  WRK-SYSYMD (1:6)
-                       CONTINUE
-                   ELSE
-                       GO  TO  3101-PTBYO-SPA-EXT
-                   END-IF
+               IF      FLG-CHK         =   ZERO
+                   ADD     1               TO  WRK-PTBYOMEI-SRYYMD-MAX
+                                               IDX2
+                   MOVE    IDX2            TO  WRK-PTBYO-SRYYMD-BANGO
+                                               (WRK-PTBYOMEI-SRYYMD-MAX)
+                   MOVE    PTBYOMEI-REC    TO  WRK-PTBYOMEI-SRYYMD-REC
+                                               (WRK-PTBYOMEI-SRYYMD-MAX)
                END-IF
-           END-IF                    
+      *
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-PTBYO-READ-SEC
+           END-PERFORM
+      *
+           IF      SPA-GMN-C02-MAX =   ZERO
+               ADD     1               TO  WRK-PAGE
+           END-IF
+      * 
+      *    表示可能か
+           COMPUTE WRK-LINE    =   SPA-GMN-C02-MAX
+                               +   WRK-PTBYOMEI-SRYYMD-MAX
+           IF      WRK-LINE        >   WRK-CONS-C02-MAX
+               IF      WRK-PAGE        <   SPA-GMN-C02-PAGE
+                   MOVE    ZERO            TO  WRK-LINE
+                                               SPA-GMN-C02-MAX
+                   ADD     1               TO  WRK-PAGE
+               ELSE
+                   GO  TO  3101-PTBYO-SPA-EXT
+               END-IF
+           END-IF
       *
       *    該当頁に表示するデータかどうか
-           ADD     1               TO  IDX2
-           IF      IDX2            <   WRK-STR
-               GO  TO  3101-PTBYO-SPA-EXT
-           END-IF
+           IF      WRK-PAGE            =   SPA-GMN-C02-PAGE
+      *        同一開始日分を表示
+               MOVE    SPA-GMN-C02-MAX TO  IDX
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >       WRK-PTBYOMEI-SRYYMD-MAX
+                   ADD     1           TO  IDX
       *
-           ADD     1                   TO  IDX
-           IF      IDX             >   WRK-CONS-C02-MAX
-               GO  TO  3101-PTBYO-SPA-EXT
-           END-IF
+                   MOVE    WRK-PTBYO-SRYYMD-BANGO   (IDZZ)
+                                       TO  SPA-GMN-C02-TBANGO     (IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-SRYKA   (IDZZ)
+                                       TO  SPA-NAI-C02-TSRYKA     (IDX)
+                                           WRK-KBN
+                   PERFORM 5001-SRYKA-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TSRYKA     (IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-RENNUM  (IDZZ)
+                                       TO  SPA-NAI-C02-TRENNUM    (IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-BYOMEI  (IDZZ)
+                                       TO  SPA-GMN-C02-TBYOMEI    (IDX)
       *
-           MOVE    IDX2            TO  SPA-GMN-C02-TBANGO  (IDX)
-           MOVE    PTBYO-SRYKA     TO  SPA-NAI-C02-TSRYKA  (IDX)
-                                       WRK-KBN
-           PERFORM 5001-SRYKA-HENSYU-SEC
-           MOVE    WRK-KBNMEI      TO  SPA-GMN-C02-TSRYKA  (IDX)
-           MOVE    PTBYO-RENNUM    TO  SPA-NAI-C02-TRENNUM (IDX)
-           MOVE    PTBYO-BYOMEI    TO  SPA-GMN-C02-TBYOMEI (IDX)
-      *
-           MOVE    PTBYO-SRYYMD    TO  SPA-NAI-C02-TSRYYMD (IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-SRYYMD  (IDZZ)
+                                       TO  SPA-NAI-C02-TSRYYMD    (IDX)
                                        WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-C02-TSRYYMD (IDX)
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-C02-TSRYYMD    (IDX)
       *
-           MOVE    PTBYO-REZEMM    TO  SPA-GMN-C02-TREZEMM (IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-REZEMM  (IDZZ)
+                                       TO  SPA-GMN-C02-TREZEMM    (IDX)
       *
-           MOVE    PTBYO-TENKIYMD  TO  SPA-NAI-C02-TTENKIYMD (IDX)
-           IF      PTBYO-TENKIYMD  NOT =   SPACE
-               MOVE    PTBYO-TENKIYMD  TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-C02-TTENKIYMD(IDX)
-           ELSE
-               MOVE    SPACE           TO  SPA-GMN-C02-TTENKIYMD(IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-TENKIYMD(IDZZ)
+                                       TO  SPA-NAI-C02-TTENKIYMD  (IDX)
+                   IF      WRK-PTBYO-SRYYMD-TENKIYMD(IDZZ)
+                                   NOT =   SPACE
+                       MOVE    WRK-PTBYO-SRYYMD-TENKIYMD(IDZZ)
+                                       TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    WRK-HENYMDG TO
+                                           SPA-GMN-C02-TTENKIYMD  (IDX)
+                   ELSE
+                       MOVE    SPACE       TO
+                                           SPA-GMN-C02-TTENKIYMD  (IDX)
+                   END-IF
+      * 
+                   MOVE    WRK-PTBYO-SRYYMD-TENKIKBN(IDZZ)
+                                       TO  WRK-KBN
+                   PERFORM 5001-TENKIKBN-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TTENKIKBN  (IDX)
+      * 
+                   MOVE    WRK-PTBYO-SRYYMD-UTAGAIFLG   (IDZZ)
+                                       TO  WRK-KBN
+                   PERFORM 5001-UTAGAIFLG-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TUTAGAIFLG (IDX)
+      * 
+                   MOVE    WRK-PTBYO-SRYYMD-SYUBYOFLG   (IDZZ)
+                                       TO  WRK-KBN
+                   PERFORM 5001-SYUBYOFLG-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TSYUBYOFLG (IDX)
+      *
+                   MOVE    WRK-PTBYO-SRYYMD-MANSEIKBN   (IDZZ)
+                                       TO  WRK-KBN 
+                   PERFORM 5001-MANSEIKBN-HENSYU-SEC
+                   MOVE    WRK-KBNMEITAN
+                                       TO  SPA-GMN-C02-TMANSEIKBN (IDX)
+      *
+                   MOVE    WRK-PTBYO-SRYYMD-NYUGAIKBN   (IDZZ)
+                                       TO  SPA-NAI-C02-TNYUGAIKBN (IDX)
+                                           WRK-KBN 
+                   PERFORM 5001-NYUGAIKBN-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TNYUGAIKBN (IDX)
+      * 
+                   MOVE    WRK-PTBYO-SRYYMD-HKNCOMBI    (IDZZ)
+                                       TO  SPA-NAI-C02-THKNCOMBI  (IDX)
+                                           WRK-KBN 
+                   PERFORM 5001-HKNCOMBI-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-THKNCOMBI  (IDX)
+      * 
+                   MOVE    WRK-PTBYO-SRYYMD-HKNBYOMEIFLG(IDZZ)
+                                       TO  WRK-KBN 
+                   PERFORM 5001-HKNBYOMEIFLG-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO
+                                       SPA-GMN-C02-THKNBYOMEIFLG  (IDX)
+      * 
+                   MOVE    WRK-PTBYO-SRYYMD-REZEFLG     (IDZZ)
+                                       TO  WRK-KBN 
+                   PERFORM 5001-REZEFLG-HENSYU-SEC
+                   MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TREZEFLG   (IDX)
+               END-PERFORM
            END-IF
-      * 
-           MOVE    PTBYO-TENKIKBN      TO  WRK-KBN
-           PERFORM 5001-TENKIKBN-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-TTENKIKBN (IDX)
-      * 
-           MOVE    PTBYO-UTAGAIFLG     TO  WRK-KBN
-           PERFORM 5001-UTAGAIFLG-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-TUTAGAIFLG(IDX)
-      * 
-           MOVE    PTBYO-SYUBYOFLG     TO  WRK-KBN
-           PERFORM 5001-SYUBYOFLG-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-TSYUBYOFLG(IDX)
       *
-           MOVE    PTBYO-MANSEIKBN     TO  WRK-KBN 
-           PERFORM 5001-MANSEIKBN-HENSYU-SEC
-           MOVE    WRK-KBNMEITAN       TO  SPA-GMN-C02-TMANSEIKBN (IDX)
-      *
-           MOVE    PTBYO-NYUGAIKBN     TO  SPA-NAI-C02-TNYUGAIKBN (IDX)
-                                           WRK-KBN 
-           PERFORM 5001-NYUGAIKBN-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-TNYUGAIKBN (IDX)
-      * 
-           MOVE    PTBYO-HKNCOMBI      TO  SPA-NAI-C02-THKNCOMBI  (IDX)
-                                           WRK-KBN 
-           PERFORM 5001-HKNCOMBI-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-THKNCOMBI (IDX)
-      * 
-           MOVE    PTBYO-HKNBYOMEIFLG  TO  WRK-KBN 
-           PERFORM 5001-HKNBYOMEIFLG-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO
-                                       SPA-GMN-C02-THKNBYOMEIFLG (IDX)
-      * 
-           MOVE    PTBYO-REZEFLG       TO  WRK-KBN 
-           PERFORM 5001-REZEFLG-HENSYU-SEC
-           MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-TREZEFLG (IDX)
-      *
-           MOVE    IDX             TO  SPA-GMN-C02-MAX
+           ADD     WRK-PTBYOMEI-SRYYMD-MAX
+                                   TO  SPA-GMN-C02-MAX
+           INITIALIZE                  WRK-PTBYOMEI-SRYYMD-AREA
       *
       *
       *    初期表示のとき警告エラー表示できないのでスキップ
@@ -1913,6 +2027,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    COMPUTE SPA-GMN-C02-CUR =   SPA-C01-INDEX   +   2
                END-IF
            END-IF
+      *
+      *    病名コードに存在しないコードがあるとき
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL   IDZ     >       21
+                   OR      SPA-NAI-C02-BYOMEICD (IDZ)
+                                   =   SPACE
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL   IDX3    >       21
+                       OR      SPA-NAI-C02-BYOMEICD-O (IDZ IDX3)
+                                       =   SPACE
+                   IF      SPA-NAI-C02-BYOMEI-O (IDZ IDX3)
+                                               =   "■■■"
+                       MOVE    "0091"        TO  SPA-ERRCD
+                       GO  TO  320-C04SPASET-EXT
+                   END-IF
+               END-PERFORM       
+           END-PERFORM       
            .
        320-C04SPASET-EXT.
            EXIT.
@@ -2157,6 +2288,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            ADD     1                   TO  WRK-RENNUM
            MOVE    WRK-RENNUM          TO  WRK-PTBYO-COPY-RENNUM
       *
+           MOVE    9999                TO  WRK-PTBYO-COPY-SEQNUM
            MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-CREYMD
            MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-UPYMD
            MOVE    SMCNDATE-HMS        TO  WRK-PTBYO-COPY-UPHMS
@@ -2291,6 +2423,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            ADD     1                   TO  WRK-RENNUM
            MOVE    WRK-RENNUM          TO  WRK-PTBYO-COPY-RENNUM
       *
+           MOVE    9999                TO  WRK-PTBYO-COPY-SEQNUM
            MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-CREYMD
            MOVE    SMCNDATE-YMD        TO  WRK-PTBYO-COPY-UPYMD
            MOVE    SMCNDATE-HMS        TO  WRK-PTBYO-COPY-UPHMS
@@ -2418,6 +2551,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
       *    コード表示
                WHEN    "CLICKED"       ALSO    "B22"
                    PERFORM 490-C09-SYORI-SEC
+      *    ↑
+               WHEN    "CLICKED"       ALSO    "BYOMEI_UP"
+                   PERFORM 490-BYOMEI-UP-SEC
+      *    ↓
+               WHEN    "CLICKED"       ALSO    "BYOMEI_DOWN"
+                   PERFORM 490-BYOMEI-DOWN-SEC
            END-EVALUATE
       *
            .
@@ -2504,6 +2643,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                        SPA-NAI-C02-SELNO-INSERT
                                        SPA-C02-UPDFLG
                                        SPA-C02-IKOFLG
+                                       SPA-NAI-C02-UPDOWN
+                                       SPA-GMN-C02-NEXT
       *                              
                                        SPA-GMN-C02-TBL
                                        SPA-NAI-C02-TBL
@@ -3858,7 +3999,24 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            END-PERFORM
            MOVE    "1"             TO  SPA-NAI-C02-BYOMEITOP (1)
       *
-           PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
+           PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC
+      *
+      *    病名コードに存在しないコードがあるとき
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL   IDZ     >       21
+                   OR      SPA-NAI-C02-BYOMEICD (IDZ)
+                                   =   SPACE
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       21
+                       OR      SPA-NAI-C02-BYOMEICD-O (IDZ IDXX)
+                                       =   SPACE
+                   IF      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                               =   "■■■"
+                       MOVE    "0091"        TO  SPA-ERRCD
+                       GO  TO  410111-BYOMEI-SELECT-EXT
+                   END-IF
+               END-PERFORM       
+           END-PERFORM       
            .
        410111-BYOMEI-SELECT-EXT.
            EXIT.
@@ -4010,6 +4168,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    END-SEARCH
                ELSE
       *            病名マスタ検索
+                   MOVE    BYO-BYOMEICD
+                                         TO
+                                         SPA-NAI-C02-BYOMEICD-O (IDZ 1)
                    PERFORM 900-BYOMEI-READ-SEC
                    IF      FLG-BYOMEI        =   ZERO
                        IF      BYO-BYOMEICD  =   WRK-CONS-BYOMEICD
@@ -4036,6 +4197,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    BYO-TANDOKUKBN
                                          TO
                                          SPA-NAI-C02-TANDOKUKBN-O(IDZ 1)
+                   ELSE
+                       MOVE    "■■■"  TO
+                                         SPA-NAI-C02-BYOMEI-O   (IDZ 1)
                    END-IF
                END-IF
       *
@@ -4238,6 +4402,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                                    MOVE    BYO-HAISIYMD    TO
                                            SPA-NAI-C02-HAISIYMD (IDZ)
                                END-IF
+                           ELSE
+                               MOVE    "■■■"        TO
+                                       SPA-NAI-C02-BYOMEI-O  (IDZ IDXX)
                            END-IF 
                        END-IF    
                    END-PERFORM
@@ -4258,15 +4425,19 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
       *
            MOVE    9                    TO  SPA-GMN-C02-CUR
       *
-           IF      SPA-NAI-C02-SELNO-INSERT
-                                       >   ZERO
+           IF    ( SPA-NAI-C02-SELNO-INSERT
+                                       >   ZERO )
+           OR    ( SPA-NAI-C02-UPDOWN  =   1    )
                IF      C02-SRYYMD      NOT =   SPA-GMN-C02-SRYYMD
                    MOVE    "0087"              TO  SPA-ERRCD
                END-IF
                MOVE    17                  TO  SPA-GMN-C02-CUR
                GO  TO  41012-SRYYMD-CHK-EXT
            END-IF 
-      * 
+      *
+           IF      C02-SRYYMD      NOT =   SPA-GMN-C02-SRYYMD
+               MOVE   9                     TO  SPA-NAI-C02-UPDOWN
+           END-IF  
            MOVE   C02-SRYYMD            TO  SPA-GMN-C02-SRYYMD
       *
            IF     SPA-GMN-C02-SRYYMD    =   SPACE
@@ -4647,6 +4818,17 @@ grpsys             MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                            END-IF
                        END-IF
                    ELSE
+      *              自院病名の病名コードに存在しないコードがあるとき
+                     PERFORM VARYING IDXX    FROM    1   BY  1
+                             UNTIL   IDXX    >       21
+                             OR      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                             =   SPACE
+                         IF      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                                 =   "■■■"
+                             MOVE    "0091"        TO  SPA-ERRCD
+                             GO  TO  4102-BYOMEICD-CHK-EXT
+                         END-IF
+                     END-PERFORM       
                      IF      USBYO-BYOMEIHENFLG    =   SPACE        
                        PERFORM VARYING IDX3    FROM    1   BY  1
                                UNTIL   IDX3    >       21
@@ -4743,6 +4925,17 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                        GO  TO  4102-BYOMEICD-CHK-EXT
                    END-IF
                ELSE
+      *          自院病名の病名コードに存在しないコードがあるとき
+                 PERFORM VARYING IDXX    FROM    1   BY  1
+                         UNTIL   IDXX    >       21
+                         OR      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                         =   SPACE
+                     IF      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                             =   "■■■"
+                         MOVE    "0091"        TO  SPA-ERRCD
+                         GO  TO  4102-BYOMEICD-CHK-EXT
+                     END-IF
+                 END-PERFORM       
                  IF      USBYO-BYOMEIHENFLG    =   SPACE        
                    PERFORM VARYING IDX3    FROM    1   BY  1
                            UNTIL   IDX3    >       21
@@ -6105,14 +6298,19 @@ grpsys                                       SPA-AREA
       *
            MOVE    31                  TO  SPA-GMN-C02-CUR
       *
-           IF      SPA-NAI-C02-SELNO-INSERT
-                                       >   ZERO
+           IF    ( SPA-NAI-C02-SELNO-INSERT
+                                       >   ZERO )
+           OR    ( SPA-NAI-C02-UPDOWN  =   1    )
                IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
                    MOVE    "0087"              TO  SPA-ERRCD
                END-IF
                MOVE    2                   TO  SPA-GMN-C02-CUR
                GO  TO  41019-BSRYKA-CHK-EXT
            END-IF 
+      *
+               IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
+               MOVE   9                     TO  SPA-NAI-C02-UPDOWN
+           END-IF  
       *
            MOVE    C02-BSRYKA          TO  SPA-GMN-C02-BSRYKA-G
       *
@@ -6272,8 +6470,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            IF      WRK-SELNO           >   ZERO
                MOVE    WRK-SELNO           TO  SPA-NAI-C02-SELNO
-      *****     ELSE
-      *****         GO  TO  41020-BYOMEISEL-EXT    
            END-IF
       *
            INITIALIZE                 SPA-GMN-C02-KOUMOKU
@@ -6283,7 +6479,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                        TO  SPA-GMN-C02-BANGO
            MOVE    SPA-NAI-C02-SELNO   TO  WRK-BANGO
       *                                 
-           PERFORM 410111-BYOMEI-SELECT-SEC     
+           PERFORM 410111-BYOMEI-SELECT-SEC
+      *
+           IF      SPA-NAI-C02-UPDOWN  =   9
+               MOVE    ZERO                TO  SPA-NAI-C02-UPDOWN
+           END-IF
+           MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
            .
        41020-BYOMEISEL-EXT.
            EXIT.
@@ -6393,11 +6594,18 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    ZERO                TO  SPA-C02-IKOFLG
       *      
            IF    ( SPA-GMN-C02-BYOMEI  NOT =   SPACE )
-           OR    ( SPA-GMN-C02-BANGO-X NOT =   SPACE )        
+           OR    ( SPA-GMN-C02-BANGO-X NOT =   SPACE )
+           OR    ( SPA-NAI-C02-UPDOWN      =   1     )
                INITIALIZE               SPA-GMN-C02-KOUMOKU
                                         SPA-NAI-C02-KOUMOKU
                                         SPA-NAI-C02-SELNO
                                         SPA-NAI-C02-SELNO-INSERT
+                                        SPA-NAI-C02-UPDOWN
+               PERFORM VARYING IDYY    FROM    1   BY  1
+                       UNTIL   IDYY    >       200
+                       OR      IDYY    >      SPA-GMN-C02-MAX
+                   INITIALIZE                 SPA-NAI-C02-TUPDOWN (IDYY)
+               END-PERFORM 
                MOVE    1                TO  SPA-GMN-C02-CUR
            ELSE                             
       *
@@ -6410,6 +6618,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                            SPA-NAI-C02-SELNO-INSERT
                                            SPA-C02-UPDFLG
                                            SPA-C02-IKOFLG
+                                           SPA-GMN-C02-NEXT
       *                              
                                            SPA-GMN-C02-TBL
                                            SPA-NAI-C02-TBL
@@ -6721,6 +6930,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO      450-TOUROKU-EXT
            END-IF
       *
+      *    病名コードが存在しないコードのとき
+           PERFORM VARYING IDZ FROM    1   BY  1
+                   UNTIL   IDZ >       21
+                   OR      SPA-NAI-C02-BYOMEICD  (IDZ)
+                                           =   SPACE
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       21
+                       OR      SPA-NAI-C02-BYOMEICD-O  (IDZ IDX1)
+                                       =   SPACE
+                   IF      SPA-NAI-C02-BYOMEI-O   (IDZ IDX1)
+                                           =   "■■■"
+                       MOVE    "0091"             TO  SPA-ERRCD
+                       GO  TO  450-TOUROKU-EXT
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *    
       *    新規以外のときは複数病名の入力不可
            IF    ( SPA-NAI-C02-BYOMEICD-MAX    >   1    )
                IF    ( SPA-GMN-C02-BANGO           >   ZERO )
@@ -6744,9 +6970,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    INITIALIZE                  WRK-TANDOKU-AREA
                END-IF
                PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       21
-                           OR      SPA-NAI-C02-BYOMEICD-O  (IDZ IDX1)
-                                           =   SPACE
+                       UNTIL   IDX1    >       21
+                       OR      SPA-NAI-C02-BYOMEICD-O  (IDZ IDX1)
+                                       =   SPACE
                    IF      SPA-NAI-C02-TANDOKUKBN-O  (IDZ IDX1) 
                                            =   ZERO
                        MOVE    1       TO  WRK-TANDOKUKBN
@@ -7648,6 +7874,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF     
       *
+           IF      SPA-NAI-C02-UPDOWN       =   1
+      *        移動処理分登録処理
+               PERFORM 4509-UPDOWN-KOUSIN-SEC
+           END-IF
+      *
            IF      SPA-NAI-C02-SELNO   >   ZERO
                MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
            ELSE
@@ -8126,6 +8357,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
            MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
            MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
+           MOVE    9999                TO  PTBYO-SEQNUM
            MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
@@ -8159,6 +8391,113 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    移動処理分登録処理
+      *****************************************************************
+       4509-UPDOWN-KOUSIN-SEC             SECTION.
+      *
+           MOVE    1               TO  WRK-ST
+      *
+           PERFORM         UNTIL   WRK-ST  >=  SPA-GMN-C02-MAX
+               MOVE    ZERO            TO  IDY1
+                                           IDY2
+               MOVE    SPACE           TO  WRK-SRYYMD
+               MOVE    ZERO            TO  WRK-RENNUM  
+      *
+      *        移動対象の開始日取得
+               PERFORM VARYING IDXX    FROM    WRK-ST  BY  1
+                       UNTIL   IDXX    >       SPA-GMN-C02-MAX
+                       OR      IDY1    >       ZERO
+                   IF      SPA-NAI-C02-TUPDOWN (IDXX)  =   1
+                       MOVE    SPA-NAI-C02-TSRYYMD (IDXX)
+                                               TO  WRK-SRYYMD
+                       MOVE    IDXX            TO  IDY1 
+                   END-IF
+               END-PERFORM
+      *
+               IF      IDY1                    =   ZERO
+                   MOVE    SPA-GMN-C02-MAX     TO  WRK-ST
+               ELSE
+      *            移動対象の開始日の開始位置の取得
+                   PERFORM VARYING IDXX    FROM    IDY1    BY  -1
+                           UNTIL   IDXX    <       1
+                           OR      SPA-NAI-C02-TSRYYMD (IDXX)
+                                           <   SPA-NAI-C02-TSRYYMD(IDY1)
+                       MOVE    IDXX             TO  IDY2
+                   END-PERFORM
+      *
+      *            移動対象の開始日の病名の入力順を設定する
+                   PERFORM VARYING IDXX    FROM    IDY2    BY  1
+                           UNTIL   IDXX    >       SPA-GMN-C02-MAX
+                           OR      SPA-ERRCD    NOT =   SPACE
+                       IF      SPA-NAI-C02-TSRYYMD (IDXX)
+                                               >   WRK-SRYYMD
+                           MOVE    IDXX            TO  WRK-ST
+                           MOVE    SPA-GMN-C02-MAX TO  IDXX
+                       ELSE 
+                           ADD     1                TO  WRK-RENNUM
+      *
+                           INITIALIZE                      PTBYO-KEY
+                           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+                           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                           MOVE    SPA-NAI-C02-TSRYKA (IDXX)
+                                                       TO  PTBYO-SRYKA
+                           MOVE    SPA-NAI-C02-TSRYYMD (IDXX)
+                                                       TO  PTBYO-SRYYMD
+                           MOVE    SPA-NAI-C02-TRENNUM (IDXX)
+                                                       TO  PTBYO-RENNUM 
+                           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+                           MOVE    "key"               TO
+                                                       WRK-MCP-PATHNAME
+                           PERFORM 900-PTBYO-INV-SEC
+                           IF      FLG-PTBYOMEI        =   1
+                               MOVE    "1003"          TO  SPA-ERRCD
+                               DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
+                           ELSE
+                               MOVE    WRK-RENNUM      TO  PTBYO-SEQNUM
+                               MOVE    SMCNDATE-YMD    TO  PTBYO-UPYMD
+                               MOVE    SMCNDATE-HMS    TO  PTBYO-UPHMS
+      *
+                               MOVE    "DBUPDATE"      TO  MCP-FUNC
+                               MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
+                               MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
+                               MOVE    "key"           TO  MCP-PATHNAME
+      *???
+                             DISPLAY "PTBYO=" PTBYO-KEY "#" PTBYO-SEQNUM
+                                    "#" MCP-FUNC "#"
+      *???                
+                               PERFORM 900-ORCDBMAIN-SEC
+                               IF      MCP-RC          NOT =   ZERO 
+                                   MOVE    "1001"          TO  SPA-ERRCD
+                                   DISPLAY MCP-FUNC "PTBYOMEI-KEY =>"
+                                                               PTBYO-KEY
+                               ELSE
+                                   MOVE    ZERO            TO
+                                               SPA-NAI-C02-TUPDOWN(IDXX) 
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-PERFORM
+      *
+                   IF      SPA-ERRCD       NOT =   SPACE
+                      GO  TO  4509-UPDOWN-KOUSIN-EXT
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           PERFORM 450221-RECEUPD-UPDATE-SEC
+      *
+           MOVE    ZERO                TO  SPA-NAI-C02-UPDOWN
+           PERFORM VARYING IDYY    FROM    1   BY  1
+                   UNTIL   IDYY    >       200
+                   OR      IDYY    >      SPA-GMN-C02-MAX
+               INITIALIZE                 SPA-NAI-C02-TUPDOWN (IDYY)
+           END-PERFORM 
+           .
+       4509-UPDOWN-KOUSIN-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    レセプト作成管理マスタ更新処理
       *****************************************************************
        450221-RECEUPD-UPDATE-SEC           SECTION.
@@ -8179,6 +8518,134 @@ grpsys                                          SPA-AREA
            .
        450221-RECEUPD-UPDATE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *       病名↑処理
+      *****************************************************************
+       490-BYOMEI-UP-SEC              SECTION.
+      *
+           IF      SPA-NAI-C02-SELNO   =   ZERO
+               MOVE    "0103"              TO  SPA-ERRCD
+           ELSE
+               IF    ( SPA-NAI-C02-SELNO   =   1 )
+               OR    ( SPA-GMN-C02-MAX     =   1 )
+                   GO  TO  490-BYOMEI-UP-EXT
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               COMPUTE IDX =   SPA-NAI-C02-SELNO   -   1
+      *        上の病名と開始日が違うとき
+               IF      SPA-NAI-C02-TSRYYMD
+                              (SPA-NAI-C02-SELNO)
+                                       NOT =   SPA-NAI-C02-TSRYYMD (IDX)
+                   GO  TO  490-BYOMEI-UP-EXT
+               ELSE
+      *            開始日が同じときの処理
+                   MOVE    1               TO  SPA-NAI-C02-TUPDOWN
+                                                   (IDX)
+                                               SPA-NAI-C02-TUPDOWN
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    SPA-GMN-C02-TBLO
+                               (SPA-NAI-C02-SELNO)
+                                           TO  WRK-GMN-C02-TBLO
+                   MOVE    SPA-GMN-C02-TBLO (IDX)
+                                           TO  SPA-GMN-C02-TBLO
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    WRK-GMN-C02-TBANGO
+                                           TO   SPA-GMN-C02-TBANGO
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    SPA-GMN-C02-TBANGO (IDX)
+                                           TO   WRK-GMN-C02-TBANGO
+                   MOVE    WRK-GMN-C02-TBLO
+                                           TO  SPA-GMN-C02-TBLO (IDX)
+                   MOVE    SPA-NAI-C02-TBLO
+                               (SPA-NAI-C02-SELNO)
+                                           TO  WRK-NAI-C02-TBLO
+                   MOVE    SPA-NAI-C02-TBLO (IDX)
+                                           TO  SPA-NAI-C02-TBLO
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    WRK-NAI-C02-TBLO
+                                           TO  SPA-NAI-C02-TBLO (IDX)
+                   MOVE    IDX             TO  SPA-NAI-C02-SELNO
+                   MOVE    IDX             TO  C02-BYO-ROW
+      *
+                   IF      SPA-NAI-C02-UPDOWN
+                                           =   0
+                       MOVE    1               TO  SPA-NAI-C02-UPDOWN
+                   END-IF
+      *###             INITIALIZE                  SPA-GMN-C02-KOUMOKU
+      *###                                         SPA-NAI-C02-KOUMOKU
+               END-IF
+           END-IF
+           .
+       490-BYOMEI-UP-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       病名↓処理
+      *****************************************************************
+       490-BYOMEI-DOWN-SEC              SECTION.
+      *
+           IF      SPA-NAI-C02-SELNO   =   ZERO
+               MOVE    "0103"              TO  SPA-ERRCD
+           ELSE
+               IF    ( SPA-NAI-C02-SELNO   =   SPA-GMN-C02-MAX )
+               OR    ( SPA-GMN-C02-MAX     =   1               )
+                   GO  TO  490-BYOMEI-DOWN-EXT
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               COMPUTE IDX =   SPA-NAI-C02-SELNO   +   1
+      *        下の病名と開始日が違うとき
+               IF      SPA-NAI-C02-TSRYYMD
+                              (SPA-NAI-C02-SELNO)
+                                       NOT =   SPA-NAI-C02-TSRYYMD (IDX)
+                   GO  TO  490-BYOMEI-DOWN-EXT
+               ELSE
+      *            開始日が同じときの処理
+                   MOVE    1               TO  SPA-NAI-C02-TUPDOWN
+                                                   (IDX)
+                                               SPA-NAI-C02-TUPDOWN
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    SPA-GMN-C02-TBLO
+                               (SPA-NAI-C02-SELNO)
+                                           TO  WRK-GMN-C02-TBLO
+                   MOVE    SPA-GMN-C02-TBLO (IDX)
+                                           TO  SPA-GMN-C02-TBLO
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    WRK-GMN-C02-TBANGO
+                                           TO   SPA-GMN-C02-TBANGO
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    SPA-GMN-C02-TBANGO (IDX)
+                                           TO   WRK-GMN-C02-TBANGO
+                   MOVE    WRK-GMN-C02-TBLO
+                                           TO  SPA-GMN-C02-TBLO (IDX)
+                   MOVE    SPA-NAI-C02-TBLO
+                               (SPA-NAI-C02-SELNO)
+                                           TO  WRK-NAI-C02-TBLO
+                   MOVE    SPA-NAI-C02-TBLO (IDX)
+                                           TO  SPA-NAI-C02-TBLO
+                                                   (SPA-NAI-C02-SELNO)
+                   MOVE    WRK-NAI-C02-TBLO
+                                           TO  SPA-NAI-C02-TBLO (IDX)
+                   MOVE    IDX             TO  SPA-NAI-C02-SELNO
+                   MOVE    IDX             TO  C02-BYO-ROW
+      *
+                   IF      SPA-NAI-C02-UPDOWN
+                                           =   0
+                       MOVE    1               TO  SPA-NAI-C02-UPDOWN
+                   END-IF
+      *###             INITIALIZE                  SPA-GMN-C02-KOUMOKU
+      *###                                         SPA-NAI-C02-KOUMOKU
+               END-IF
+           END-IF
+      *
+           .
+       490-BYOMEI-DOWN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    病名検索へ
@@ -9359,12 +9826,23 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-C02-MAX         TO  C02-BYO-COUNT
+      *
+           IF    ( SPA-GMN-C02-NEXT        =   1                )
+           AND   ( SPA-GMN-C02-MAX         <   WRK-CONS-C02-MAX )
+               ADD     1                       TO  C02-BYO-COUNT
+               MOVE    "＊＊　次頁があります　＊＊"
+                                               TO  C02-TBYOMEI
+                                                   (C02-BYO-COUNT)
+           END-IF
+      *
            MOVE    ZERO                    TO  C02-BYO-ROW
            IF      WRK-C02-BYO-ROW         >   ZERO
                MOVE    WRK-C02-BYO-ROW         TO  C02-BYO-ROW
            END-IF
-           IF      SPA-NAI-C02-SELNO-INSERT
-                                           >   ZERO
+           IF    ( SPA-NAI-C02-SELNO-INSERT
+                                           >   ZERO )
+           OR    ( SPA-NAI-C02-SELNO       >   ZERO )
+           OR    ( SPA-NAI-C02-UPDOWN      =   1    )
                MOVE    2                       TO  C02-BYO-ROWATTR
            END-IF
       *
@@ -9516,6 +9994,67 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                C02-B03-STATE
                                                C02-B09-STATE
       ***     END-IF
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  C02-BYOMEI-UP-STATE
+                                           C02-BYOMEI-DOWN-STATE
+           MOVE    WIDGET-NORMAL       TO  C02-B04-STATE
+                                           C02-B05-STATE
+                                           C02-B06-STATE
+                                           C02-B07-STATE
+                                           C02-B08-STATE
+                                           C02-B12-STATE
+           IF    ( SPA-NAI-C02-SELNO   >   ZERO       )
+           AND   ( SPA-GMN-C02-SRYKA   =   "00"    OR
+                   SPA-GMN-C02-SRYKA-MAX
+                                       =   1          )
+           AND   ( SPA-GMN-C02-HNYUGAIKBN
+                                       =   "0"        ) 
+               EVALUATE    SPA-GMN-C02-SYOKBN
+                   WHEN    "2"
+                       MOVE    WIDGET-NORMAL   TO  C02-BYOMEI-UP-STATE
+                                                   C02-BYOMEI-DOWN-STATE
+                       IF      SPA-NAI-C02-UPDOWN      =   1 
+                           MOVE    WIDGET-INSENSITIVE
+                                                   TO  C02-B04-STATE
+                                                       C02-B05-STATE
+                                                       C02-B08-STATE
+                       END-IF
+                   WHEN    "0"
+                       IF      SPA-NAI-C02-TSRYYMD
+                                           (SPA-NAI-C02-SELNO) (1:6)
+                                       =   SPA-NAI-C02-SYSYMD (1:6)
+                           MOVE    WIDGET-NORMAL
+                                               TO  C02-BYOMEI-UP-STATE
+                                                   C02-BYOMEI-DOWN-STATE
+                           IF      SPA-NAI-C02-UPDOWN      =   1 
+                               MOVE    WIDGET-INSENSITIVE
+                                                   TO  C02-B04-STATE
+                                                       C02-B05-STATE
+                                                       C02-B08-STATE
+                           END-IF
+                       END-IF
+                   WHEN    "1"
+                       IF      SPA-NAI-C02-TSRYYMD
+                                           (SPA-NAI-C02-SELNO) (1:6)
+                                       =   SPA-NAI-C02-SYSYMD-BACK (1:6)
+                           MOVE    WIDGET-NORMAL
+                                               TO  C02-BYOMEI-UP-STATE
+                                                   C02-BYOMEI-DOWN-STATE
+                           IF      SPA-NAI-C02-UPDOWN      =   1 
+                               MOVE    WIDGET-INSENSITIVE
+                                                   TO  C02-B04-STATE
+                                                       C02-B05-STATE
+                                                       C02-B08-STATE
+                           END-IF
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
+           IF      SPA-NAI-C02-UPDOWN      =   9
+               MOVE    WIDGET-INSENSITIVE      TO  C02-BYOMEI-UP-STATE
+                                                   C02-BYOMEI-DOWN-STATE
+           END-IF
+      *
       *
            EVALUATE    SPA-GMN-C02-SYOKBN
                WHEN    ZERO
@@ -9865,8 +10404,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    MOVE    "患者番号の入力がありません" 
                                                    TO  SPA-ERRMSG
                WHEN    "0087"
-                   MOVE
-               "行指定での追加処理時は診療科、開始日の変更はできません"
+                   MOVE   "移動処理中の診療科、開始日の変更はできません"
                                                TO  SPA-ERRMSG
                WHEN    "0088"
                    MOVE
@@ -9878,6 +10416,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                TO  SPA-ERRMSG
                WHEN    "0090"
                    MOVE    "簡単修正処理中です"    TO  SPA-ERRMSG   
+               WHEN    "0091"
+                   STRING
+                       "存在しない病名コードが登録されています、"
+                                                DELIMITED   BY  SIZE 
+                       "ＣＤ表示で確認して下さい"
+                                                DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0103"
                    MOVE    "病名コードでの組み立てができませんでした。"
                                        TO  SPA-ERRMSG
