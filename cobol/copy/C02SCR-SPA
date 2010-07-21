@@ -318,6 +318,7 @@
                        09  SPA-NAI-C02-KOUMOKU.
                            11  SPA-NAI-C02-SRYYMD          PIC X(08).
                            11  SPA-NAI-C02-RENNUM          PIC 9(02).
+                           11  SPA-NAI-C02-SEQNUM          PIC 9(05).
                            11  SPA-NAI-C02-TENKIYMD        PIC X(08).
                            11  SPA-NAI-C02-BYOMEIMOJI      PIC 9(02).
                            11  SPA-NAI-C02-BYOMEIHENFLG    PIC X(01).
@@ -367,6 +368,7 @@
                            11  SPA-NAI-C02-TBLO            OCCURS   200.
                                13  SPA-NAI-C02-TSRYYMD     PIC X(08).
                                13  SPA-NAI-C02-TRENNUM     PIC 9(02).
+                               13  SPA-NAI-C02-TSEQNUM     PIC 9(05).
                                13  SPA-NAI-C02-TSRYKA      PIC X(02).
                                13  SPA-NAI-C02-TNYUGAIKBN  PIC X(01).
                                13  SPA-NAI-C02-TTENKIYMD   PIC X(08).

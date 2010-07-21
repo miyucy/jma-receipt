@@ -1624,6 +1624,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TSRYKA     (IDX)
                    MOVE    WRK-PTBYO-SRYYMD-RENNUM  (IDZZ)
                                        TO  SPA-NAI-C02-TRENNUM    (IDX)
+                   MOVE    WRK-PTBYO-SRYYMD-SEQNUM  (IDZZ)
+                                       TO  SPA-NAI-C02-TSEQNUM    (IDX)
                    MOVE    WRK-PTBYO-SRYYMD-BYOMEI  (IDZZ)
                                        TO  SPA-GMN-C02-TBYOMEI    (IDX)
       *
@@ -2452,7 +2454,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 450221-RECEUPD-UPDATE-SEC
            END-IF
       *
-      *    ¿ÇÎÅ²Ê¤Ë°ÜÆ°¤Î¤È¤­¸µ¤Î¿ÇÎÅ²ÊÊ¬¤òºï½ü¤¹¤ë
+      *    ¿ÇÎÅ²Ê°ÜÆ°¤Î¤È¤­¸µ¤Î¿ÇÎÅ²ÊÊ¬¤òºï½ü¤¹¤ë
            IF      SPA-CID1-FLG        =   "MV"
                MOVE    WRK-PTBYOMEI-DELETE-REC
                                            TO  MCPDATA-REC
@@ -3912,6 +3914,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            SPA-NAI-C02-SRYYMD-OLD
            MOVE    SPA-NAI-C02-TRENNUM (SPA-NAI-C02-SELNO)
                                        TO  SPA-NAI-C02-RENNUM
+           MOVE    SPA-NAI-C02-TSEQNUM (SPA-NAI-C02-SELNO)
+                                       TO  SPA-NAI-C02-SEQNUM
            MOVE    SPA-NAI-C02-TSRYKA (SPA-NAI-C02-SELNO)
                                        TO  SPA-GMN-C02-BSRYKA
                                            SPA-NAI-C02-SRYKA-OLD
@@ -8034,6 +8038,9 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                    WRK-PTBYO-KEY (IDXX)
                            MOVE    PTBYO-CREYMD    TO
                                                    WRK-PTBYO-CREYMD
+                                                                 (IDXX)
+                           MOVE    PTBYO-SEQNUM    TO
+                                                   WRK-PTBYO-SEQNUM
                                                                  (IDXX)
                            MOVE    WRK-PTBYOMEI-REC (IDXX)
                                                    TO  PTBYOMEI-REC
