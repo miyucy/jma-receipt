@@ -226,8 +226,12 @@
                    MOVE    "検査の包括対象が混在しています。"
                                        TO  SPA-ERRMSG
                WHEN    "0029"
-                   MOVE    "コメントの入力値エラー"
-                                       TO  SPA-ERRMSG
+      ****         MOVE    "コメントの入力値エラー"
+      **                               TO  SPA-ERRMSG
+                   STRING  "コメントの入力値がエラーです。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0030"
                    MOVE    "時間加算はできません。"
                                        TO  SPA-ERRMSG
