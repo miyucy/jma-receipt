@@ -18,6 +18,12 @@
         02  W60.
       *     02  W60-FIXED1.
               03  W60-B03-STATE PIC S9(9)   BINARY.
+              03  W60-STYUKYMD              PIC X(10).
+              03  W60-EDYUKYMD              PIC X(10).
+              03  W60-CMB-SEIHOJNUMCHKKBN.
+                04  W60-SEIHOJNUMCHKKBN        PIC X(22).
+                04  W60-SEIHOJNUMCHKKBN-COUNT  PIC S9(9)   BINARY.
+                04  W60-SEIHOJNUMCHKKBN-ITEM   PIC X(22)   OCCURS  5.
               03  W60-CMB-BYOSRYKAKBN.
                 04  W60-BYOSRYKAKBN        PIC X(10).
                 04  W60-BYOSRYKAKBN-COUNT  PIC S9(9)   BINARY.

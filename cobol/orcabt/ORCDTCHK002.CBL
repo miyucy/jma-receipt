@@ -241,6 +241,7 @@
            03  FLG-TENSU                               PIC 9(01).
            03  FLG-PTBYOMEI                            PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
+           03  FLG-MONTHLYNUM                          PIC 9(01).
            03  FLG-DTCHK003                            PIC 9(01).
            03  FLG-DTCHK008                            PIC 9(01).
            03  FLG-DTCHK009                            PIC 9(01).
@@ -1006,6 +1007,9 @@
       *    診療コード置換
        01  SRYCDCHG-REC.
            COPY    "CPSRYCDCHG.INC".
+      *
+       01  MONTHLYNUM-REC.
+           COPY    "CPMONTHLYNUM.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -4370,6 +4374,14 @@
            MOVE    PTKOH-KOHNUM        TO  SRH-1040-KOHNUM
            PERFORM 2111-SYS1040-GET-SEC
       *
+           IF    ( PTKOH-KOHNUM        =   "012" OR "025" )
+               PERFORM 900-MONTHLYNUM-KEY-SEL-SEC
+               IF    ( MONTHLYNUM-JKYSNUM  NOT =   SPACE )
+                   MOVE    MONTHLYNUM-JKYSNUM
+                                       TO  PTKOH-JKYSNUM
+               END-IF
+           END-IF
+      *
            MOVE    PTKOH-FTNJANUM      TO  WRK-PTKOH-FTNJANUM
            MOVE    PTKOH-JKYSNUM       TO  WRK-PTKOH-JKYSNUM
       *
@@ -4396,22 +4408,26 @@
            END-IF
       *
            IF    ( SRH-1040-JKYSNUMCHK =   "1" )
-            OR   ( PTKOH-KOHNUM        =   "012" )
-            OR   ( PTKOH-KOHNUM        =   "025" )
                CONTINUE
            ELSE
                IF    ( WRK-PTKOH-JKYSNUM   =   SPACE )
       *
-                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
-                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                   MOVE    "030002"        TO  WRK-ERRCD
-                   MOVE    SPACE           TO  WRK-ERRMES-PLUS
-                   INITIALIZE              TERRINF-AREA
-                   PERFORM 212-ERRMES-HEN-SEC
+                   IF    ( PTKOH-KOHNUM    =   "012" OR "025" )
+                    AND  ( SYS-1101-SEIHOJNUMCHKKBN
+                                           =   SPACE OR "2" )
+                       CONTINUE
+                   ELSE
+                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                       MOVE    "030002"        TO  WRK-ERRCD
+                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 212-ERRMES-HEN-SEC
       *
-                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
-                       MOVE    1           TO  FLG-CHKEND (3)
-                       GO  TO  200111-FTNJKYNUM-CHK-EXT
+                       IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                           MOVE    1           TO  FLG-CHKEND (3)
+                           GO  TO  200111-FTNJKYNUM-CHK-EXT
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -4503,8 +4519,6 @@
            END-IF
       *
            IF    ( PTKOH-JKYSNUM       NOT =   SPACE )
-            AND  ( PTKOH-KOHNUM        NOT =   "012" )
-            AND  ( PTKOH-KOHNUM        NOT =   "025" )
                IF    ( SRH-1040-JKYSHANKAKUCHK =   "2" )
                    MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                    PERFORM 800-HANKAKU-CHK-SEC
@@ -11705,7 +11719,8 @@
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
-                           IF    ( DCACCT-SRYKBN   =   "95" OR "96" )
+                           IF    ( DCACCT-SRYKBN   =   "95" OR "96"
+                                                    OR "98" )
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
@@ -12701,6 +12716,38 @@
       *
            .
        9001-HKNNUM-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    月代わり受給者番号検索処理
+      *****************************************************************
+       900-MONTHLYNUM-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-MONTHLYNUM
+      *
+           INITIALIZE                  MONTHLYNUM-REC
+           MOVE    PTKOH-HOSPNUM   TO  MONTHLYNUM-HOSPNUM
+           MOVE    PTKOH-PTID      TO  MONTHLYNUM-PTID
+           MOVE    PTKOH-KOHID     TO  MONTHLYNUM-KOHID
+           MOVE    ORCBSD01-SRYYM  TO  MONTHLYNUM-SRYYM
+           MOVE    ORCBSD01-NYUGAIKBN
+                                   TO  MONTHLYNUM-NYUGAIKBN
+           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+           MOVE    "tbl_monthlynum" TO MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  MONTHLYNUM-REC
+           ELSE
+               INITIALIZE              MONTHLYNUM-REC
+               MOVE    1           TO  FLG-MONTHLYNUM
+           END-IF
+      *
+           MOVE    "tbl_monthlynum" TO MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-MONTHLYNUM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

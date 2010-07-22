@@ -52,6 +52,10 @@
        01  SPA-W60.
            03  SPA-GMN-CUR                     PIC 9(03).
            03  SPA-GMN-AREA.
+               05  SPA-GMN-SEIHOJNUMCHKKBN-G.
+                   07  SPA-GMN-SEIHOJNUMCHKKBN     PIC X(01).
+                   07  SPA-GMN-SEIHOJNUMCHKKBNFL   PIC X(01).
+                   07  SPA-GMN-SEIHOJNUMCHKKBNMEI  PIC X(20).
                05  SPA-GMN-BYOSRYKAKBN-G.
                    07  SPA-GMN-BYOSRYKAKBN     PIC X(01).
                    07  SPA-GMN-BYOSRYKAKBNFL   PIC X(01).
@@ -101,6 +105,12 @@
                    07  SPA-GMN-ERR990009KBNFL  PIC X(01).
                    07  SPA-GMN-ERR990009KBNMEI PIC X(20).
            03  SPA-GMN-CMB-AREA.
+               05  SPA-GMN-SEIHOJNUMCHKKBNLST-G.
+                   07  SPA-GMN-SEIHOJNUMCHKKBN-MAX     PIC 9(03).
+                   07  SPA-GMN-SEIHOJNUMCHKKBNLST      OCCURS   2.
+                       09  SPA-GMN-SEIHOJNUMCHKKBNL    PIC X(01).
+                       09  SPA-GMN-SEIHOJNUMCHKKBNFLL  PIC X(01).
+                       09  SPA-GMN-SEIHOJNUMCHKKBNMEIL PIC X(20).
                05  SPA-GMN-BYOSRYKAKBNLST-G.
                    07  SPA-GMN-BYOSRYKAKBN-MAX     PIC 9(03).
                    07  SPA-GMN-BYOSRYKAKBNLST      OCCURS   2.
@@ -411,6 +421,15 @@
       *
            PERFORM 3102-SPASET-SEC
       *
+           MOVE    SPA-GMN-SEIHOJNUMCHKKBN TO  WRK-CMB-CD
+           PERFORM 4200-SEIHOJNUMCHKKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (2)
+                                   TO  SPA-GMN-SEIHOJNUMCHKKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-SEIHOJNUMCHKKBN-G
+           END-IF
+      *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -514,7 +533,7 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-PRTPTLSTKBN-G
            END-IF
       *
-           MOVE    1               TO  SPA-GMN-CUR
+           MOVE    18              TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
@@ -549,6 +568,9 @@
                                        TO  SPA-GMN-CHKMTRX (IDX-MTRX)
       *
                END-PERFORM
+      *
+               MOVE    SYS-1101-SEIHOJNUMCHKKBN
+                                       TO  SPA-GMN-SEIHOJNUMCHKKBN
       *
                MOVE    SYS-1101-BYOSRYKAKBN
                                        TO  SPA-GMN-BYOSRYKAKBN
@@ -647,6 +669,9 @@
       *****************************************************************
        3101-COMBO-SYOKI-SEC            SECTION.
       *
+      *    生保受給者番号抜けチェック
+           PERFORM 3101-SEIHOJNUMCHKKBNLST-SEC
+      *
       *    診療科別チェックコンボ設定処理
            PERFORM 3101-BYOSRYKAKBNLST-SEC
       *
@@ -682,6 +707,28 @@
       *
            .
        3101-COMBO-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    生保受給者番号抜けチェックコンボ設定処理
+      *****************************************************************
+       3101-SEIHOJNUMCHKKBNLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SEIHOJNUMCHKKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-SEIHOJNUMCHKKBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-SEIHOJNUMCHKKBNL    (1)
+           MOVE    "チェックする"  TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-SEIHOJNUMCHKKBNL    (2)
+           MOVE    "チェックしない"
+                                   TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (2)
+      *
+           MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST  (2)
+                                   TO  SPA-GMN-SEIHOJNUMCHKKBN-G
+      *
+           . 
+       3101-SEIHOJNUMCHKKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェックコンボ設定処理
@@ -1083,6 +1130,7 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+           MOVE    W60-SEIHOJNUMCHKKBN TO  SPA-GMN-SEIHOJNUMCHKKBN-G
            MOVE    W60-BYOSRYKAKBN     TO  SPA-GMN-BYOSRYKAKBN-G
            MOVE    W60-SYUBYOCHK       TO  SPA-GMN-SYUBYOCHK-G
            MOVE    W60-UTAGAIKKN       TO  SPA-GMN-UTAGAIKKN
@@ -1106,69 +1154,79 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-           PERFORM 4101-BYOSRYKAKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SEIHOJNUMCHKKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SYUBYOCHK-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-BYOSRYKAKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-UTAGAIKKN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SYUBYOCHK-CHK-SEC
            END-IF
       *
-           PERFORM 4101-KYUSEIKKNKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-UTAGAIKKN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-TENKITEKBYOKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KYUSEIKKNKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-YBKENSAYAKUKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-TENKITEKBYOKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-YBUTAGAIKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-YBKENSAYAKUKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-SRYHEIWRNKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-YBUTAGAIKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-ERR990009KBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-SRYHEIWRNKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-REIGAICHKKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-ERR990009KBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-PRTSRTKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-REIGAICHKKBN-CHK-SEC
            END-IF
       *
-           PERFORM 4101-PRTPTLSTKBN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-PRTSRTKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-PRTPTLSTKBN-CHK-SEC
            END-IF
       *
            .
       *
        4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    生保受給者番号抜けチェック区分チェック処理
+      *****************************************************************
+       4101-SEIHOJNUMCHKKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-SEIHOJNUMCHKKBN TO  WRK-CMB-CD
+           PERFORM 4200-SEIHOJNUMCHKKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (2)
+                                   TO  SPA-GMN-SEIHOJNUMCHKKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-SEIHOJNUMCHKKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-SEIHOJNUMCHKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェック区分チェック処理
@@ -1178,7 +1236,7 @@
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-BYOSRYKAKBNLST (1)
+               MOVE    SPA-GMN-BYOSRYKAKBNLST (2)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G
@@ -1384,6 +1442,30 @@
            .
       *
        4101-PRTPTLSTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    生保受給者番号抜けチェック区分コンボチェック処理
+      *****************************************************************
+       4200-SEIHOJNUMCHKKBNLST-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-SEIHOJNUMCHKKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-SEIHOJNUMCHKKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-SEIHOJNUMCHKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェック区分コンボチェック処理
@@ -1686,7 +1768,7 @@
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
       *
-           MOVE    1               TO  SPA-GMN-CUR
+           MOVE    18              TO  SPA-GMN-CUR
       *
            .
        220-CLEAR-EXT.
@@ -1844,6 +1926,9 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-SEIHOJNUMCHKKBN
+                                       TO  SYS-1101-SEIHOJNUMCHKKBN
+      *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  SYS-1101-BYOSRYKAKBN
       *
            MOVE    SPA-GMN-SYUBYOCHK   TO  SYS-1101-SYUBYOCHKKBN
@@ -1989,7 +2074,11 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           MOVE    SPACE           TO  W60
            INITIALIZE                  W60
+      *
+           MOVE    SPA-W01-STYUKYMDH   TO  W60-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMDH   TO  W60-EDYUKYMD
       *
            PERFORM VARYING IDX-MTRX    FROM    1   BY  1
                    UNTIL ( IDX-MTRX    >   4 )
@@ -2012,6 +2101,19 @@
                ELSE
                    MOVE    "×"    TO  W60-MTRX    (IDX-MTRX)
                END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-SEIHOJNUMCHKKBN-G
+                                       TO  W60-SEIHOJNUMCHKKBN
+           MOVE    SPA-GMN-SEIHOJNUMCHKKBN-MAX
+                                       TO  W60-SEIHOJNUMCHKKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-SEIHOJNUMCHKKBN-MAX )
+      *
+               MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (IDX0)
+                                       TO  W60-SEIHOJNUMCHKKBN-ITEM
+                                                                  (IDX0)
       *
            END-PERFORM
       *
@@ -2225,6 +2327,8 @@
                MOVE    "REIGAICHKKBN"   TO  MCP-WIDGET
            WHEN    017
                MOVE    "ERR990009KBN"   TO  MCP-WIDGET
+           WHEN    018
+               MOVE    "SEIHOJNUMCHKKBN" TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2239,6 +2343,8 @@
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
+           WHEN    "SEIHOJNUMCHKKBN"
+               MOVE    01              TO  SPA-GMN-CUR
            WHEN    "BYOSRYKAKBN"
                MOVE    11              TO  SPA-GMN-CUR
            WHEN    "SYUBYOCHK"

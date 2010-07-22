@@ -1,6 +1,20 @@
-W60	{ fixed1	{
+W60	{ 
+	fixed1	{
 		B03	{
 			state	int;
+		};
+		STYUKYMD	{
+				value	varchar(10);
+		};
+		EDYUKYMD	{
+				value	varchar(10);
+		};
+		CMB_SEIHOJNUMCHKKBN	{
+			SEIHOJNUMCHKKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
 		};
 		CMB_BYOSRYKAKBN	{
 			BYOSRYKAKBN	{
