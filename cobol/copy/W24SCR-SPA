@@ -109,6 +109,11 @@
                    13  SPA-GMN-W24-RYOYODSP            PIC X(01).
                    13  SPA-GMN-W24-RYOYODSPFL          PIC X(01).
                    13  SPA-GMN-W24-RYOYODSPMEI         PIC X(18).
+      *          Õ≠æ≤ø«Œ≈ΩÍ∞Ï»Ã…¬æ≤ΩÈ¥¸≤√ªª∂Ë ¨
+                 11  SPA-GMN-W24-IPPANKSN-G.
+                   13  SPA-GMN-W24-IPPANKSN            PIC X(01).
+                   13  SPA-GMN-W24-IPPANKSNFL          PIC X(01).
+                   13  SPA-GMN-W24-IPPANKSNMEI         PIC X(18).
       *          ∆˛±°≤√ªªæ Û
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-NYUKSN-G.
@@ -399,6 +404,14 @@
                        15  SPA-GMN-W24-RYOYODSPL       PIC X(01).
                        15  SPA-GMN-W24-RYOYODSPLFL     PIC X(01).
                        15  SPA-GMN-W24-RYOYODSPMEIL    PIC X(18).
+      *
+      *          Õ≠æ≤ø«Œ≈ΩÍ∞Ï»Ã…¬æ≤ΩÈ¥¸≤√ªª∂Ë ¨
+                 11  SPA-GMN-W24-IPPANKSNLST-G.
+                   13  SPA-GMN-W24-IPPANKSN-MAX        PIC 9(03).
+                   13  SPA-GMN-W24-IPPANKSNLST         OCCURS  5.
+                       15  SPA-GMN-W24-IPPANKSNL       PIC X(01).
+                       15  SPA-GMN-W24-IPPANKSNLFL     PIC X(01).
+                       15  SPA-GMN-W24-IPPANKSNMEIL    PIC X(18).
       *
              07  SPA-NAI-W24-AREA.
                09  SPA-NAI-W24-SKJSRY-SRYCD-G.

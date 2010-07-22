@@ -219,4 +219,14 @@
                 04  W24-SHOHOUKBN-COUNT   PIC S9(9)   BINARY.
                 04  W24-SHOHOUKBN-ITEM
                         PIC X(20)   OCCURS  5 TIMES.
+              04  W24-CMB-IPPANKSN.
+                05  W24-IPPANKSN               PIC X(20).
+                05  W24-IPPANKSN-STATE         PIC S9(9)
+                                               BINARY.
+                05  W24-IPPANKSN-CNT           PIC S9(9)
+                                               BINARY.
+                05  W24-IPPANKSN-ITM           PIC X(20)
+                                               OCCURS  5.
+                05  W24-IPPANKSN-ITM-STATE     PIC S9(9)
+                                               BINARY.
 

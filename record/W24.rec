@@ -448,5 +448,14 @@ W24	{
 			count	int;
 			item	varchar(20)[05];
 		};
+		CMB_IPPANKSN	{
+			IPPANKSN	{
+				value	varchar(20);
+				state	int;
+			};
+			count	int;
+			item	varchar(20)[05];
+			state	int;
+		};
 	};
 };

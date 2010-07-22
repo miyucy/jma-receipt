@@ -693,6 +693,9 @@
       *
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-RYOYODSPLST-SET-SEC
+      *
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-IPPANKSNLST-SET-SEC
       *!!
       *    Âà±¡»þ±¡³°½èÊý¤»¤óÈ¯¹Ô¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-SHOHOUKBNLST-SET-SEC
@@ -1202,6 +1205,25 @@
        310-RYOYODSPLST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-IPPANKSNLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-IPPANKSN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-IPPANKSNL    (1)
+           MOVE    "½é´ü»»Äê¤·¤Ê¤¤"
+                                   TO  SPA-GMN-W24-IPPANKSNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-IPPANKSNL    (2)
+           MOVE    "½é´ü»»Äê¤¹¤ë"
+                                   TO  SPA-GMN-W24-IPPANKSNMEIL (2)
+      *
+      *
+           .
+       310-IPPANKSNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1356,6 +1378,16 @@
            ELSE
                MOVE    SPA-GMN-W24-RYOYODSPLST (1)
                                        TO  SPA-GMN-W24-RYOYODSP-G
+           END-IF
+      *
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    SYS-5000-IPPANKSNKBN  TO  WRK-CMB-CD
+           PERFORM 4200-IPPANKSNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-IPPANKSN-G
+           ELSE
+               MOVE    SPA-GMN-W24-IPPANKSNLST (1)
+                                       TO  SPA-GMN-W24-IPPANKSN-G
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1903,6 +1935,9 @@
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
            MOVE    W24-RYOYODSP        TO  SPA-GMN-W24-RYOYODSP-G
       *
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    W24-IPPANKSN        TO  SPA-GMN-W24-IPPANKSN-G
+      *
       *    Âà±¡»þ±¡³°½èÊý¤»¤ó¶èÊ¬
            MOVE    W24-SHOHOUKBN       TO  SPA-GMN-W24-SHOHOUKBN-G
       *
@@ -2113,6 +2148,12 @@
       *
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-RYOYODSP-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-IPPANKSN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2572,6 +2613,10 @@
       *    ÎÅÍÜÆþ±¡É½¼¨¶èÊ¬
            MOVE    SPA-GMN-W24-RYOYODSP
                                    TO  SYS-5000-RYOYODSPKBN
+      *
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    SPA-GMN-W24-IPPANKSN
+                                   TO  SYS-5000-IPPANKSNKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -3405,6 +3450,25 @@
        4100-RYOYODSP-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4100-IPPANKSN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-IPPANKSN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-IPPANKSNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-IPPANKSNLST (1)
+                                       TO  SPA-GMN-W24-IPPANKSN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-IPPANKSN-G
+           END-IF
+      *
+           .
+      *
+       4100-IPPANKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -3995,6 +4059,29 @@
        4200-RYOYODSPLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-IPPANKSNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-IPPANKSN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-IPPANKSNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-IPPANKSNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-IPPANKSNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -4106,6 +4193,8 @@
                                    TO  SPA-GMN-W24-TEIKISAGAKUACT-G
            MOVE    SPA-GMN-W24-RYOYODSPLST (1)
                                    TO  SPA-GMN-W24-RYOYODSP-G
+           MOVE    SPA-GMN-W24-IPPANKSNLST (1)
+                                   TO  SPA-GMN-W24-IPPANKSN-G
       *
            MOVE    SPA-GMN-W24-SHOHOUKBNLST    (1)
                                    TO  SPA-GMN-W24-SHOHOUKBN-G
@@ -4767,6 +4856,21 @@
       *
            END-PERFORM
       *
+      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    SPA-GMN-W24-IPPANKSN-G
+                                       TO  W24-IPPANKSN
+           MOVE    SPA-GMN-W24-RYOYODSP-MAX
+                                       TO  W24-IPPANKSN-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-IPPANKSN-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-IPPANKSNLST (IDX0)
+                                       TO  W24-IPPANKSN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "Æþ±¡²Ã»»¾ðÊó"          TO  W24-FRAME3-LABEL
       *
@@ -4977,6 +5081,8 @@
                MOVE    "TEIKISAGAKUACT" TO MCP-WIDGET
            WHEN    059
                MOVE    "RYOYODSP"      TO MCP-WIDGET
+           WHEN    063
+               MOVE    "IPPANKSN"      TO MCP-WIDGET
       *    Âà±¡»þ±¡³°½èÊý¤»¤ó
            WHEN    060
                MOVE    "SHOHOUKBN"     TO MCP-WIDGET
@@ -5120,6 +5226,8 @@
            WHEN    "SHOHOUKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    "RYOYODSP"
+               MOVE    063             TO  SPA-GMN-W24-CUR
+           WHEN    "IPPANKSN"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
