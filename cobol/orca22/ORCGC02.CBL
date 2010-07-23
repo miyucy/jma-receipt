@@ -2917,33 +2917,32 @@ grpsys                                         SPA-AREA
                        MOVE    C02-BANGO       TO  SPA-GMN-C02-BANGO-X
                    END-IF
                ELSE
-                     INITIALIZE                  ORCSNUMAREA
-                     MOVE    C02-BANGO       TO  SNUM-INX
-                     CALL    "ORCSNUM"           USING
-                                                 ORCSNUMAREA
-                     IF      SNUM-RC             =   ZERO
+                   INITIALIZE                  ORCSNUMAREA
+                   MOVE    C02-BANGO       TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF      SNUM-RC             =   ZERO
                        MOVE    SNUM-OUTNUM         TO  SPA-GMN-C02-BANGO
       *
-                       COMPUTE WRK-BANGO
-                                   =   SPA-GMN-C02-BANGO
-                                   - ( SPA-GMN-C02-PAGE    -   1 )
-                                   *   WRK-CONS-C02-MAX
+                       PERFORM VARYING     IDX     FROM    1   BY  1
+                               UNTIL       IDX     >   SPA-GMN-C02-MAX
+                           IF      SPA-GMN-C02-BANGO
+                                           =   SPA-GMN-C02-TBANGO (IDX)
+                               MOVE    IDX         TO  SPA-NAI-C02-SELNO
+                               MOVE    SPA-GMN-C02-MAX
+                                                   TO  IDX
+                           END-IF    
+                       END-PERFORM
       *
-                       IF    ( WRK-BANGO       >   SPA-GMN-C02-MAX )
-                       OR    ( WRK-BANGO       <   1               )
+                       IF      SPA-NAI-C02-SELNO   =   ZERO
                            MOVE    ZERO            TO  SPA-GMN-C02-BANGO
                            MOVE    "0012"          TO  SPA-ERRCD
                        ELSE
-                           MOVE    WRK-BANGO       TO  SPA-NAI-C02-SELNO     
                            PERFORM 410111-BYOMEI-SELECT-SEC     
-      *
-                           MOVE    SPA-NAI-C02-SELNO
-                                                   TO  C02-BYO-ROW
                        END-IF
-                     ELSE
+                   ELSE
                        MOVE    "0012"          TO  SPA-ERRCD
-                     END-IF
-      *****        END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -3871,17 +3870,49 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                    UNTIL   IDZ     >       21
                    OR      SPA-NAI-C02-BYOMEICD (IDZ)
                                    =   SPACE
+                   OR      SPA-ERRCD
+                               NOT =   SPACE
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       21
                        OR      SPA-NAI-C02-BYOMEICD-O (IDZ IDXX)
                                        =   SPACE
+                       OR      SPA-ERRCD
+                                   NOT =   SPACE
                    IF      SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
                                                =   "■■■"
                        MOVE    "0091"        TO  SPA-ERRCD
-                       GO  TO  410111-BYOMEI-SELECT-EXT
                    END-IF
                END-PERFORM       
            END-PERFORM       
+      *
+           IF      SPA-NAI-C02-UPDOWN  =   9
+               MOVE    ZERO                TO  SPA-NAI-C02-UPDOWN
+           END-IF
+           MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
+      *
+      *    選択病名と同じ開始日があるとき移動処理可能とする
+           IF      SPA-GMN-C02-MAX     =   1
+               MOVE    9                   TO  SPA-NAI-C02-UPDOWN
+               GO  TO  410111-BYOMEI-SELECT-EXT
+           END-IF
+      *
+           IF     SPA-NAI-C02-SELNO   >   1
+               COMPUTE IDXX    =   SPA-NAI-C02-SELNO   -   1
+      *        上の病名と開始日が同じとき
+               IF      SPA-NAI-C02-TSRYYMD  (SPA-NAI-C02-SELNO)
+                                       =   SPA-NAI-C02-TSRYYMD (IDXX)
+                   GO  TO  410111-BYOMEI-SELECT-EXT
+               END-IF
+           END-IF    
+           IF    ( SPA-NAI-C02-SELNO   <   SPA-GMN-C02-MAX )
+               COMPUTE IDXX    =   SPA-NAI-C02-SELNO   +   1
+      *        下の病名と開始日が同じとき
+               IF      SPA-NAI-C02-TSRYYMD  (SPA-NAI-C02-SELNO)
+                                       =   SPA-NAI-C02-TSRYYMD (IDXX)
+                   GO  TO  410111-BYOMEI-SELECT-EXT
+               END-IF
+           END-IF
+           MOVE    9                   TO  SPA-NAI-C02-UPDOWN
            .
        410111-BYOMEI-SELECT-EXT.
            EXIT.
@@ -6324,11 +6355,6 @@ grpsys                                       SPA-AREA
            MOVE    SPA-NAI-C02-SELNO   TO  WRK-BANGO
       *                                 
            PERFORM 410111-BYOMEI-SELECT-SEC
-      *
-           IF      SPA-NAI-C02-UPDOWN  =   9
-               MOVE    ZERO                TO  SPA-NAI-C02-UPDOWN
-           END-IF
-           MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
            .
        41020-BYOMEISEL-EXT.
            EXIT.
