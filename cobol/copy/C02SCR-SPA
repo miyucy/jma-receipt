@@ -373,6 +373,7 @@
                                13  SPA-NAI-C02-TNYUGAIKBN  PIC X(01).
                                13  SPA-NAI-C02-TTENKIYMD   PIC X(08).
                                13  SPA-NAI-C02-THKNCOMBI   PIC X(04).
+      *
                                13  SPA-NAI-C02-TUPDOWN     PIC 9(01).
       *
                        09  SPA-NAI-C02-HKN-TBL.
@@ -384,8 +385,6 @@
                            11  SPA-NAI-C02-HKN-MAX          PIC 9(04).
       *                         
                        09  SPA-NAI-C02-SELNO       PIC 9(05).
-                       09  SPA-NAI-C02-SELNO-INSERT
-                                                   PIC 9(05).
                        09  SPA-NAI-C02-UPDOWN      PIC 9(01). 
       *            主病名編集フラグ             
                        09  SPA-C02-2005-SYUBYOHENFLG
