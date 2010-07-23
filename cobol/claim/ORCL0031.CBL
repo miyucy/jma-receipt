@@ -2134,6 +2134,14 @@
                                                TO  TBL-WKSRY-INPUTCHI
                                                   (TBL-MAX IDX-S IDX-I)
                        END-IF
+      *                ユーザコメントで小数部がある時、そのまま
+                       IF    (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
+                                               =   "0084"   )  AND
+                             (SNUM-SYOSUU      >   0        )
+                           MOVE    WRK-INPUTCHI(IDX-I)
+                                               TO  TBL-WKSRY-INPUTCHI
+                                                   (TBL-MAX IDX-S IDX-I)
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
