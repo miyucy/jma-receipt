@@ -36,6 +36,8 @@
       *                                     補足コメントの追加
       *                                     連番号を３桁に変更
       *                                     入力病名、入力病名文字数の追加
+      *
+      *  04.06.01    NACL-藤原    10/07/20  レセプト病名記載順対応
       ************************************************************
       *01  RECE031-REC.
            03  RECE031-KEY.
@@ -64,15 +66,19 @@
       *診療開始日
                05  RECE031-SRYYMD          PIC X(08).
       *転帰区分
-               05  RECE031-TENKIKBN        PIC X(01).
+               05  RECE031-TENKIKBN-X      PIC X(01).
       *転帰日
-               05  RECE031-TENKIYMD        PIC X(08).
+               05  RECE031-TENKIYMD-X      PIC X(08).
       *連番号
                05  RECE031-RENNUM          PIC 9(03).
       *患者番号
            03  RECE031-PTNUM               PIC  X(20).
       *診療科
            03  RECE031-SRYKA               PIC  X(02).
+      *転帰区分
+           03  RECE031-TENKIKBN            PIC X(01).
+      *転帰日
+           03  RECE031-TENKIYMD            PIC X(08).
       *基本病名コード
            03  RECE031-KHNBYOMEICD         PIC  X(07).
       *病名コード

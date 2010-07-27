@@ -66,6 +66,7 @@
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
       *                                     病名なし時のエラー設定
+      *  04.06.02    NACL-藤原    10/07/20  レセプト病名記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,12 +86,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE03-KEY
                                    FILE    STATUS  IS  STS-RECE03.
-      *
-           SELECT  RECE03W-FILE    ASSIGN  RECE03PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE03W-KEY
-                                   FILE    STATUS  IS  STS-RECE03.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -106,11 +101,6 @@
        FD  RECE03-FILE.
        01  RECE03-REC. 
            COPY    "CPRCF003.INC".
-      *
-       FD  RECE03W-FILE.
-       01  RECE03W-REC. 
-           COPY    "CPRCF003.INC"  REPLACING  //RECE03//
-                                   BY         //RECE03W//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -175,8 +165,11 @@ grpsys     COPY    "COMMON-SPA".
                                    PIC 9(03).
       *
            03  WRK-RECEERR         PIC X(200). 
+      *                             
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
-       01  KEY-AREA                            VALUE   LOW-VALUE.
+       01  KEY-AREA.
            03  KEY-NEW.
                05  KEY-N-SRYYMD    PIC 9(08).
            03  KEY-OLD.
@@ -257,8 +250,9 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
                                        SPA-AREA
+                                       FLG-AREA
       *
-           MOVE    ZERO                TO  FLG-END
+           MOVE    LOW-VALUE           TO  KEY-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -275,8 +269,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE03PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE03PARA-HOSPNUM
       *
-           OPEN    OUTPUT              RECE03W-FILE
-           CLOSE                       RECE03W-FILE
+           OPEN    OUTPUT              RECE03-FILE
+           CLOSE                       RECE03-FILE
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -329,6 +323,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                     =   SPACE
                MOVE    ZERO             TO  SYS-200501-CHKKBN
            END-IF
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
+           END-IF
       *
       *        レセプト明細０２読み込み
            PERFORM 900-RECE02-READ-SEC
@@ -349,11 +347,17 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  PTBYO-HOSPNUM
            MOVE    RECE02-PTID         TO  PTBYO-PTID
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                       =   "2"
+               MOVE    "key39"             TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "key3"              TO  WRK-MCP-PATHNAME
+           END-IF
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
                ADD     1               TO  CNT-IN-CANCEL
            ELSE
@@ -366,7 +370,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            OR          FLG-END          =   1
       *    カーソルクロース
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
       *    対象病名がなかったとき
@@ -408,7 +412,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 2001-PTBYO-CHK-SEC
       * 
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
                ADD     1               TO  CNT-IN-CANCEL
       *
@@ -451,7 +455,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
-      **************** IF      PTBYO-TENKIYMD(1:6)  =   RECE02-SRYYM
                        IF      PTBYO-TENKIYMD(1:6)  >=  RECE02-SRYYM
                            CONTINUE
                        ELSE
@@ -463,18 +466,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *   
-      **** 主保険の適用期間とのチェック
-      **** IF      RECE02-TEKSTYMD-X    =   SPACE
-      ****     CONTINUE
-      **** ELSE
-      ****     IF    ( PTBYO-SRYYMD     >=  RECE02-TEKSTYMD-X )
-      ****     AND   ( PTBYO-SRYYMD     <=  RECE02-TEKEDYMD-X )
-      ****         CONTINUE
-      ****     ELSE
-      ****         GO  TO  2001-PTBYO-CHK-EXT
-      ****     END-IF
-      **** END-IF
-      *
       *    入外区分
            IF      PTBYO-NYUGAIKBN      =   SPACE
                CONTINUE
@@ -488,9 +479,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      PTBYO-HKNCOMBI     =   ZERO
                CONTINUE
            ELSE 
-      *****    IF    ( PTBYO-HKNCOMBI =   RECE02-HKNCOMBI (1) )  OR
-      *****          ( PTBYO-HKNCOMBI =   RECE02-HKNCOMBI (2) )  OR
-      *****          ( PTBYO-HKNCOMBI =   RECE02-HKNCOMBI (3) )
                MOVE    ZERO            TO  IDZ  
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       10
@@ -517,16 +505,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-      *********MOVE    RECE02-SRYYM        TO  LNK-DAY6-KIJUN (1:6)
                MOVE    PTBYO-SRYYMD        TO  LNK-DAY6-KIJUN 
                MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-      *********MOVE    PTBYO-REZEMM        TO  LNK-DAY6-ZOGEN 
                COMPUTE LNK-DAY6-ZOGEN  =   PTBYO-REZEMM    -   1    
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                MOVE    LNK-DAY6-KEISAN(1:6)
                                            TO  WRK-YM
-      *********IF      PTBYO-SRYYMD(1:6)       <=  WRK-YM
                IF      WRK-YM              >=  RECE02-SRYYM
                    CONTINUE
                ELSE
@@ -603,7 +588,6 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE03-HOSPNUM
            MOVE    PTBYO-KHNBYOMEICD   TO  RECE03-KHNBYOMEICD   
            MOVE    PTBYO-BYOMEICD-G    TO  RECE03-BYOMEICD-G
            MOVE    PTBYO-UTAGAIFLG     TO  RECE03-UTAGAIFLG
-      *****MOVE    PTBYO-SYUBYOFLG     TO  RECE03-SYUBYOFLG   
            IF      SYS-2005-SYUBYOHENFLG    =   ZERO
                MOVE    "9"                 TO  RECE03-SYUBYOFLG 
            ELSE
@@ -619,7 +603,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE03-HOSPNUM
            ELSE    
                MOVE    PTBYO-TENKIKBN      TO  RECE03-TENKIKBN
                MOVE    PTBYO-TENKIYMD      TO  RECE03-TENKIYMD
-           END-IF    
+           END-IF
            MOVE    PTBYO-BYOMEI        TO  RECE03-BYOMEI
            MOVE    PTBYO-BYOMEIMOJI    TO  RECE03-BYOMEIMOJI
            MOVE    PTBYO-BYOMEIHENFLG  TO  RECE03-BYOMEIHENFLG

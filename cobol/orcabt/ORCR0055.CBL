@@ -44,6 +44,8 @@
       *
       *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     入力病名、入力病名文字数の追加
+      *
+      *  04.06.01    NACL-藤原    10/07/20  レセプト病名記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -64,12 +66,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE031-KEY
                                    FILE    STATUS  IS  STS-RECE031.
-      *
-           SELECT  RECE03W-FILE     ASSIGN  RECE031PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE03W-KEY
-                                   FILE    STATUS  IS  STS-RECE031.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -85,11 +81,6 @@
        FD  RECE031-FILE.
        01  RECE031-REC. 
            COPY    "CPRCF0031.INC".
-      *
-       FD  RECE03W-FILE.
-       01  RECE03W-REC. 
-           COPY    "CPRCF0031.INC"  REPLACING  //RECE031//
-                                   BY          //RECE03W//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -184,6 +175,7 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -267,8 +259,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE03W-FILE
-           CLOSE                       RECE03W-FILE
+           OPEN    OUTPUT              RECE031-FILE
+           CLOSE                       RECE031-FILE
       *
            OPEN    INPUT               RECE03-FILE
       *
@@ -291,6 +283,25 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            END-IF
            IF      SYS-2005-TENKIHENKBN    =   SPACE
                MOVE    ZERO             TO  SYS-2005-TENKIHENKBN
+           END-IF
+      *         
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2005"          TO  SYS-KANRICD
+           MOVE    "01"            TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
            END-IF
       *
       *    レセプト明細０３読み込み
@@ -316,11 +327,6 @@ grpsys     MOVE    RECE03-HOSPNUM      TO  RECE031-HOSPNUM
            MOVE    RECE03-HOJOKBN      TO  RECE031-HOJOKBN
            MOVE    RECE03-TEKSTYMD     TO  RECE031-TEKSTYMD
            MOVE    RECE03-SRYYMD       TO  RECE031-SRYYMD
-      *****IF      RECE03-SYUBYOFLG    =   "1"
-      *        MOVE    RECE03-SYUBYOFLG    TO  RECE031-SYUBYOFLG   
-      *    ELSE
-      *        MOVE    "9"                 TO  RECE031-SYUBYOFLG
-      ***** END-IF   
            MOVE    RECE03-SYUBYOFLG    TO  RECE031-SYUBYOFLG   
            MOVE    RECE03-TENKIKBN     TO  RECE031-TENKIKBN
            MOVE    RECE03-RENNUM       TO  RECE031-RENNUM
@@ -341,6 +347,19 @@ grpsys     MOVE    RECE03-HOSPNUM      TO  RECE031-HOSPNUM
            MOVE    RECE03-IN-BYOMEI    TO  RECE031-IN-BYOMEI
            MOVE    RECE03-IN-BYOMEIMOJI
                                        TO  RECE031-IN-BYOMEIMOJI
+      *
+      *    病名記載順対応
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                       =   "0"  OR  "1"
+               IF    ( SYS-200501-BYOMEI-PRTJYUN
+                                           =   "1"   )
+               AND   ( RECE031-TENKIKBN    =   SPACE )
+                   MOVE    "9"                 TO  RECE031-TENKIKBN-X
+               ELSE
+                   MOVE    RECE031-TENKIKBN    TO  RECE031-TENKIKBN-X
+               END-IF 
+               MOVE    RECE031-TENKIYMD    TO  RECE031-TENKIYMD-X
+           END-IF
       *
            WRITE   RECE031-REC
            ADD     1                   TO  CNT-OUT

@@ -54,6 +54,7 @@
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
       *                                     病名なし時のエラー設定
+      *  04.06.02    NACL-藤原    10/07/20  レセプト病名記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,12 +74,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE63-KEY
                                    FILE    STATUS  IS  STS-RECE63.
-      *
-           SELECT  RECE63W-FILE    ASSIGN  RECE63PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE63W-KEY
-                                   FILE    STATUS  IS  STS-RECE63.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -95,10 +90,6 @@
        01  RECE63-REC. 
            COPY    "CPRCF063.INC".
       *
-       FD  RECE63W-FILE.
-       01  RECE63W-REC. 
-           COPY    "CPRCF063.INC"  REPLACING  //RECE63//
-                                   BY         //RECE63W//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -162,8 +153,11 @@
                                    PIC 9(03).
       *
            03  WRK-RECEERR         PIC X(200). 
+      *                             
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
-       01  KEY-AREA                            VALUE   LOW-VALUE.
+       01  KEY-AREA.
            03  KEY-NEW.
                05  KEY-N-SRYYMD    PIC 9(08).
            03  KEY-OLD.
@@ -245,8 +239,10 @@
       *
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-                                       FLG-AREA
                                        SPA-AREA
+                                       FLG-AREA
+      *
+           MOVE    LOW-VALUE           TO  KEY-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -277,8 +273,8 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE63W-FILE
-           CLOSE                       RECE63W-FILE
+           OPEN    OUTPUT              RECE63-FILE
+           CLOSE                       RECE63-FILE
       *
            OPEN    I-O                 RECE62-FILE    
            OPEN    I-O                 RECE63-FILE
@@ -316,6 +312,10 @@
                                     =   SPACE
                MOVE    ZERO             TO  SYS-200501-CHKKBN
            END-IF
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
+           END-IF
       *
       *        レセプト明細０２読み込み
            PERFORM 900-RECE62-READ-SEC
@@ -342,11 +342,17 @@
            MOVE    RECE62-PTID         TO  PTBYO-PTID
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                       =   "2"
+               MOVE    "key39"             TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "key3"              TO  WRK-MCP-PATHNAME
+           END-IF
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
            ELSE
                INITIALIZE                  PTBYOMEI-REC
@@ -357,7 +363,7 @@
                            UNTIL       FLG-PTBYOMEI     =   1
       *    カーソルクロース
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
       *    対象病名がなかったとき
@@ -390,7 +396,7 @@
                PERFORM 2001-PTBYO-CHK-SEC
       * 
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTBYO-READ-SEC
            END-PERFORM    
            .
@@ -436,18 +442,6 @@
                    GO  TO  2001-PTBYO-CHK-EXT
                END-IF
            END-IF
-      *   
-      **** 主保険の適用期間とのチェック
-      **** IF      RECE62-TEKSTYMD-X    =   SPACE
-      ****     CONTINUE
-      **** ELSE
-      ****     IF    ( PTBYO-SRYYMD     >=  RECE62-TEKSTYMD-X )
-      ****     AND   ( PTBYO-SRYYMD     <=  RECE62-TEKEDYMD-X )
-      ****         CONTINUE
-      ****     ELSE
-      ****         GO  TO  2001-PTBYO-CHK-EXT
-      ****     END-IF
-      **** END-IF
       *
       *    入外区分
            IF      PTBYO-NYUGAIKBN      =   SPACE

@@ -35,6 +35,8 @@
       *
       *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     入力病名、入力病名文字数の追加
+      *
+      *  04.06.01    NACL-藤原    10/07/20  レセプト病名記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -55,12 +57,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE631-KEY
                                    FILE    STATUS  IS  STS-RECE631.
-      *
-           SELECT  RECE63W-FILE    ASSIGN  RECE631PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE631W-KEY
-                                   FILE    STATUS  IS  STS-RECE631.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -76,11 +72,6 @@
        FD  RECE631-FILE.
        01  RECE631-REC. 
            COPY    "CPRCF0631.INC".
-      *
-       FD  RECE63W-FILE.
-       01  RECE63W-REC. 
-           COPY    "CPRCF0631.INC" REPLACING  //RECE631//
-                                   BY         //RECE631W//.
       *     
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -175,6 +166,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -258,8 +250,8 @@
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE63W-FILE
-           CLOSE                       RECE63W-FILE
+           OPEN    OUTPUT              RECE631-FILE
+           CLOSE                       RECE631-FILE
       *
            OPEN    INPUT               RECE63-FILE
       *
@@ -278,6 +270,21 @@
            END-IF
            IF      SYS-2005-TENKIHENKBN    =   SPACE
                MOVE    ZERO             TO  SYS-2005-TENKIHENKBN
+           END-IF
+      *         
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2005"          TO  SYS-KANRICD
+           MOVE    "01"            TO  SYS-KBNCD
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
            END-IF
       *
       *        レセプト明細０３読み込み
@@ -323,6 +330,19 @@
            MOVE    RECE63-IN-BYOMEI    TO  RECE631-IN-BYOMEI
            MOVE    RECE63-IN-BYOMEIMOJI
                                        TO  RECE631-IN-BYOMEIMOJI
+      *
+      *    病名記載順対応
+           IF      SYS-200501-BYOMEI-PRTJYUN
+                                       =   "0"  OR  "1"
+               IF    ( SYS-200501-BYOMEI-PRTJYUN
+                                           =   "1"   )
+               AND   ( RECE631-TENKIKBN    =   SPACE )
+                   MOVE    "9"                 TO  RECE631-TENKIKBN-X
+               ELSE
+                   MOVE    RECE631-TENKIKBN    TO  RECE631-TENKIKBN-X
+               END-IF 
+               MOVE    RECE631-TENKIYMD    TO  RECE631-TENKIYMD-X
+           END-IF
       *
            WRITE   RECE631-REC
            ADD     1                   TO  CNT-OUT
