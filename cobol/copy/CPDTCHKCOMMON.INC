@@ -298,6 +298,17 @@
                        09  TNYUKSN-ERR-DAY         PIC 9(01)
                                                    OCCURS  31.
       *
+         02  TCOMERR-AREA.
+           03  TCOMERR-FREE-DAY-G.
+               05  TCOMERR-FREE-DAY                PIC 9(01)
+                                                   OCCURS  31.
+           03  TCOMERR-ZAI-MAX                     PIC 9(05).
+           03  TCOMERR-ZAI-OCC                     OCCURS  30.
+               05  TCOMERR-COM                     PIC X(80).
+               05  TCOMERR-DAY-G.
+                   07  TCOMERR-DAY                 PIC 9(01)
+                                                   OCCURS  31.
+      *
          02  SRH-AREA.
            03  SRH-IDX                             PIC 9(05).
            03  SRH-HKNNUM-DAT.

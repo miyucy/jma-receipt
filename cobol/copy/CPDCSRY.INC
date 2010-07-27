@@ -31,6 +31,7 @@
            03  DCSRY-SRYSYUKBN         PIC X(03).
            03  DCSRY-SRYCD             PIC X(09).
            03  DCSRY-SURYO             PIC 9(5)V9(05).
+           03  DCSRY-INPUTNUM          PIC 9(03).
            03  DCSRY-TERMID            PIC X(16).
            03  DCSRY-OPID              PIC X(16).
            03  DCSRY-CREYMD            PIC X(08).

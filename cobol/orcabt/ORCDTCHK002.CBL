@@ -242,6 +242,7 @@
            03  FLG-PTBYOMEI                            PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-MONTHLYNUM                          PIC 9(01).
+           03  FLG-PTCOM                               PIC 9(01).
            03  FLG-DTCHK003                            PIC 9(01).
            03  FLG-DTCHK008                            PIC 9(01).
            03  FLG-DTCHK009                            PIC 9(01).
@@ -364,6 +365,7 @@
            03  FLG-INPUTCD                             PIC 9(01).
            03  FLG-INPUTSET                            PIC 9(01).
            03  FLG-SRYCDCHG                            PIC 9(01).
+           03  FLG-COMERR                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -616,6 +618,10 @@
                    07  WRK-SURYOZDOT                   PIC X(01).
                    07  WRK-SURYOZ2                     PIC X(05).
            03  WRK-SRY-NAME                            PIC X(50).
+           03  WRK-ERRCOM                              PIC X(80).
+           03  WRK-MAXLEN                              PIC 9(08).
+           03  WRK-COMLEN                              PIC 9(08).
+           03  WRK-TNSLEN                              PIC 9(08).
       *
        01  TERRINF-AREA.
            03  TERRINF-SRYCD                           PIC X(09).
@@ -711,6 +717,8 @@
                                                    VALUE   100.
            03  CONST-TNYUKSN-MAX                   PIC 9(05)
                                                    VALUE   20.
+           03  CONST-TCOMERR-ZAI-MAX               PIC 9(05)
+                                                   VALUE   30.
            03  CONST-TCHK-MAX                      PIC 9(05)
                                                    VALUE   2000.
            03  CONST-TCHK-STK-CD-MAX               PIC 9(05)
@@ -929,6 +937,10 @@
       *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
+      *
+      *    患者コメント
+       01  PTCOM-REC.
+           COPY    "CPPTCOM.INC".
       *
       *    チェク情報
        01  CHK-REC.
@@ -2097,6 +2109,7 @@
                                        TNYUIN-CHOZAI-AREA
                                        TNYUIN-ACCT-AREA
                                        TNYUKSN-AREA
+                                       TCOMERR-AREA
                                        TGENZAN-AREA
                                        PTACCT-AREA
                                        PTSRY-AREA
@@ -2740,6 +2753,27 @@
                                PERFORM 200111-TKAISU-HEN-SEC
                            END-IF
                        END-IF
+      *
+                       EVALUATE    TRUE
+                       WHEN  ( DCACCT-SRYKBN   =   "21" OR "22" OR "23")
+                        AND  ( DCSRY-SRYSYUKBN(3:1)    NOT =   "3" )
+                        AND  ( DCACCT-ZAITEN               =   ZERO )
+                       WHEN  ( DCSRY-SRYSYUKBN =   "148" OR "149"
+                                                OR "213" OR "223"
+                                                OR "233" )
+                           CONTINUE
+                       WHEN   OTHER
+                           IF    ( DCSRY-SRYCD =   "810000001" )
+                            OR   ( DCSRY-SRYCD(1:2)
+                                               =   "83" OR "84" )
+                            OR   ( DCSRY-SRYCD(1:4)
+                                               =   "0084" )
+                               IF  ( DCACCT-ACCTKBN    =   "1" )
+      *                            コメントエラー退避ワーク編集処理
+                                   PERFORM 200111-TCOMERR-HEN-SEC
+                               END-IF
+                           END-IF
+                       END-EVALUATE
       *
                    END-IF
       *
@@ -3470,6 +3504,99 @@
       *
            .
        200111-TKAISU-SRYCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    コメントエラー退避ワーク編集処理
+      *****************************************************************
+       200111-TCOMERR-HEN-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-COMERR
+           MOVE    SPACE           TO  WRK-ERRCOM
+      *
+           IF    ( DCSRY-INPUTNUM  =   ZERO )
+               MOVE    1       TO  FLG-COMERR
+               IF    ( DCSRY-SRYCD NOT =   "810000001" )
+                   MOVE    DCSRY-SRYCD     TO  WRK-SRYCD
+                   MOVE    DCACCT-SRYYMD   TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   MOVE    TNS-NAME        TO  WRK-ERRCOM
+               END-IF
+           ELSE
+               PERFORM 900-PTCOM-KEY-SEL-SEC
+               IF    ( DCSRY-SRYCD     =   "810000001" )
+                   INSPECT PTCOM-INPUTCOMENT REPLACING ALL "　" BY "  "
+                   IF    ( PTCOM-INPUTCOMENT  =   SPACE )
+                       MOVE    1           TO  FLG-COMERR
+                   END-IF
+               END-IF
+      *
+               IF    ( DCSRY-SRYCD(1:2)    =   "83" )
+                   MOVE    DCSRY-SRYCD     TO  WRK-SRYCD
+                   MOVE    DCACCT-SRYYMD   TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   MOVE    TNS-NAME        TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-CHK-SEC
+                   MOVE    WRK-MAXLEN      TO  WRK-TNSLEN
+                   MOVE    PTCOM-INPUTCOMENT
+                                           TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-CHK-SEC
+                   MOVE    WRK-MAXLEN      TO  WRK-COMLEN
+                   IF    ( WRK-TNSLEN      >=  WRK-COMLEN )
+                       MOVE    PTCOM-INPUTCOMENT
+                                           TO  WRK-ERRCOM
+                       MOVE    1           TO  FLG-COMERR
+                   END-IF
+               END-IF
+      *
+               IF    ( DCSRY-SRYCD(1:2)    =   "84" )
+                OR   ( DCSRY-SRYCD(1:4)    =   "0084" )
+                   MOVE    DCSRY-SRYCD     TO  WRK-SRYCD
+                   MOVE    DCACCT-SRYYMD   TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   EVALUATE    TRUE
+                   WHEN  ( TNS-SSTKIJUNCD (1)  >   ZERO  )
+                    AND  ( PTCOM-INPUTCHI (1)  =   SPACE )
+                   WHEN  ( TNS-SSTKIJUNCD (3)  >   ZERO  )
+                    AND  ( PTCOM-INPUTCHI (2)  =   SPACE )
+                   WHEN  ( TNS-SSTKIJUNCD (5)  >   ZERO  )
+                    AND  ( PTCOM-INPUTCHI (3)  =   SPACE )
+                   WHEN  ( TNS-SSTKIJUNCD (7)  >   ZERO  )
+                    AND  ( PTCOM-INPUTCHI (4)  =   SPACE )
+                       MOVE    PTCOM-INPUTCOMENT
+                                           TO  WRK-ERRCOM
+                       MOVE    1           TO  FLG-COMERR
+                   END-EVALUATE
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-COMERR          =   1 )
+               IF    ( DCSRY-SRYCD =   "810000001" )
+                   PERFORM VARYING IDXD    FROM    1   BY  1
+                           UNTIL ( IDXD    >   31 )
+                       IF    ( PTZAI-DAY(IDX-ZAI IDXD) >   ZERO )
+                           MOVE    1   TO  TCOMERR-FREE-DAY (IDXD)
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   IF    ( TCOMERR-ZAI-MAX >=  CONST-TCOMERR-ZAI-MAX )
+                       CONTINUE
+                   ELSE
+                       COMPUTE TCOMERR-ZAI-MAX =   TCOMERR-ZAI-MAX +   1
+                       MOVE    WRK-ERRCOM      TO  TCOMERR-COM
+                                                      (TCOMERR-ZAI-MAX)
+                       PERFORM VARYING IDXD    FROM    1   BY  1
+                               UNTIL ( IDXD    >   31 )
+                           IF    ( PTZAI-DAY(IDX-ZAI IDXD) >   ZERO )
+                               MOVE    1   TO  TCOMERR-DAY
+                                                 (TCOMERR-ZAI-MAX IDXD)
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       200111-TCOMERR-HEN-EXT.
            EXIT.
       *****************************************************************
       *    入院料加算退避ワーク編集処理
@@ -9199,11 +9326,14 @@
                PERFORM 200111-KIZAI-TANICD-CHK-SEC
            END-IF
       *
+           PERFORM 200111-PTCOM-CHK-SEC
+      *
       *    院内・院外混在チェック処理
            PERFORM 200111-INNAI-INGAI-CHK-SEC
       *
       *    内分泌負荷試験チェック処理
            PERFORM 200111-NBFUKA-CHK-SEC
+      *
       *
            .
        200111-SONOTA-HISSU-CHK-EXT.
@@ -9435,6 +9565,53 @@
       *
            .
        200111-KIZAI-TANICD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者コメントチェック処理
+      *****************************************************************
+       200111-PTCOM-CHK-SEC            SECTION.
+      *
+           IF    ( TCOMERR-FREE-DAY-G  NOT =   ZERO )
+      *
+               INITIALIZE  WRK-NISSU-DAY-G
+               MOVE    TCOMERR-FREE-DAY-G  TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+      *
+               MOVE    SPACE       TO  WRK-ERRMES-PLUS
+               STRING  "フリーコメント"    DELIMITED   BY  SIZE
+                       WRK-NISSU-MES       DELIMITED   BY  SPACE
+               INTO    WRK-ERRMES-PLUS
+               END-STRING
+      *
+               MOVE    "990010"    TO  WRK-ERRCD
+      *
+               INITIALIZE              TERRINF-AREA
+               PERFORM 215-ERRMES-HEN-SEC
+           END-IF
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TCOMERR-ZAI-MAX )
+      *
+               INITIALIZE  WRK-NISSU-DAY-G
+               MOVE    TCOMERR-DAY-G (IDX6)
+                                   TO  WRK-NISSU-DAY-G
+               PERFORM 200111-NISSU-HEN-SEC
+      *
+               MOVE    SPACE       TO  WRK-ERRMES-PLUS
+               STRING  TCOMERR-COM (IDX6)  DELIMITED   BY  SPACE
+                       WRK-NISSU-MES       DELIMITED   BY  SPACE
+               INTO    WRK-ERRMES-PLUS
+               END-STRING
+      *
+               MOVE    "990010"    TO  WRK-ERRCD
+      *
+               INITIALIZE              TERRINF-AREA
+               PERFORM 215-ERRMES-HEN-SEC
+      *
+           END-PERFORM
+      *
+           .
+       200111-PTCOM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    院内・院外混在チェック
@@ -11215,6 +11392,7 @@
        800-ZENKAKU-CHK-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-KANACHK
+           MOVE    ZERO                TO  WRK-MAXLEN
       *
            INITIALIZE                  ORCXKANACONVAREA
       *
@@ -11230,6 +11408,7 @@
                                        TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+           MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
       *
            .
        800-ZENKAKU-CHK-EXT.
@@ -12748,6 +12927,37 @@
       *
            .
        900-MONTHLYNUM-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者コメント検索処理
+      *****************************************************************
+       900-PTCOM-KEY-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTCOM
+      *
+           INITIALIZE                      PTCOM-REC
+           MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
+           MOVE    DCSRY-PTID          TO  PTCOM-PTID
+           MOVE    DCSRY-ZAINUM        TO  PTCOM-ZAINUM
+           MOVE    DCSRY-SRYCD         TO  PTCOM-SRYCD
+           MOVE    DCSRY-INPUTNUM      TO  PTCOM-RENNUM
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTCOM-REC
+           ELSE
+               MOVE    1               TO  FLG-PTCOM
+               INITIALIZE                  PTCOM-REC
+           END-IF
+      *
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-PTCOM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

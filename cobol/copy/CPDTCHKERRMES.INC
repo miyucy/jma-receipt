@@ -537,8 +537,13 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990010".
+           05 PIC  X(30)   VALUE   "コメント内容が未入力です      ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  94.
+           05 ERRMES-OCC   OCCURS  95.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   94.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   95.
