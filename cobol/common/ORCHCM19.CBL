@@ -70,6 +70,7 @@
       * 04.05.00     NACL-¬ø°π«º  09/09/XX  '0086'•≥•·•Û•»•≥°º•…¬–±˛¬æ
       * 04.05.01     NACL-¬ø°π«º  10/03/02  £»£≤£≤«Ø£¥∑Ó≤˛¿µ¬–±˛
       * 04.06.00     NACL-¬ø°π«º  10/06/XX  ºıµÎº‘»÷πÊ£±£µ ∏ª˙¬–±˛
+      * 04.06.00     NACL-¬ø°π«º  10/07/27  ¥µº‘•≥•·•Û•»≈˘»˜πÕ ‘Ω∏¬–±˛
       *****************************************************************
       *
       *
@@ -435,6 +436,15 @@
                05  WRK-BIKOU-NAME2     PIC X(86)
                                        OCCURS   18.
            03  IDX-BIKOU                   PIC 9(04).
+      *    ¥µº‘•≥•·•Û•»
+           03  WRK-COMMENT-HEN         PIC X(172).
+           03  WRK-PTCOMMENT-G.
+               05  WRK-PTCOMMENT       PIC X(172)
+                                       OCCURS   2.
+           03  WRK-PTCOMMENT-HEN           PIC X(86).
+           03  IDX-COM                     PIC 9(04).
+           03  IDX-COM2                    PIC 9(04).
+           03  COM-MAX                     PIC 9(04).
       *
       *    £—£“∞Ã√÷
        01  QR-FILE-NAME.
@@ -463,6 +473,10 @@
            03  PARA-SRYKAKBN           PIC X(01).
            03  PARA-DRKBN              PIC X(01).
            03  PARA-KOFYMDKBN          PIC X(01).
+           03  PARA-TABOO              PIC X(01).
+           03  PARA-ALLERGY            PIC X(01).
+           03  PARA-KANSENSYO          PIC X(01).
+           03  PARA-COMMENT            PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -685,6 +699,22 @@
            MOVE    "KOFYMDKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-KOFYMDKBN
+      *    »˜πÕ∂ÿ¥˜∂Ë ¨
+           MOVE    "TABOO"             TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-TABOO
+      *    »˜πÕ•¢•Ï•Î•Æ°º∂Ë ¨
+           MOVE    "ALLERGY"           TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-ALLERGY
+      *    »˜πÕ¥∂¿˜æ…∂Ë ¨
+           MOVE    "KANSENSYO"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-KANSENSYO
+      *    ¥µº‘•≥•·•Û•»
+           MOVE    "COMMENT"           TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-COMMENT
       *
            .
        100-OPTION-SELECT-EXT.
@@ -1339,8 +1369,65 @@
                    END-PERFORM
                END-IF
            END-PERFORM
+      *!!
+      *    »˜πÕ∂ÿ¥˜ ‘Ω∏
+           IF      PARA-TABOO          =   "1"
+      *        ∂ÿ¥˜£±
+               MOVE    PTINF-TABOO-1       TO  WRK-COMMENT-HEN
+               PERFORM 40021-COMMENT-HENSYU-SEC
+      *        ∂ÿ¥˜£≤
+               MOVE    PTINF-TABOO-2       TO  WRK-COMMENT-HEN
+               PERFORM 40021-COMMENT-HENSYU-SEC
+           END-IF
+      *    »˜πÕ•¢•Ï•Î•Æ°º ‘Ω∏
+           IF      PARA-ALLERGY        =   "1"
+      *        •¢•Ï•Î•Æ°º£±
+               MOVE    PTINF-ALLERGY-1     TO  WRK-COMMENT-HEN
+               PERFORM 40021-COMMENT-HENSYU-SEC
+      *        •¢•Ï•Î•Æ°º£≤
+               MOVE    PTINF-ALLERGY-2     TO  WRK-COMMENT-HEN
+               PERFORM 40021-COMMENT-HENSYU-SEC
+           END-IF
+      *    »˜πÕ¥∂¿˜æ… ‘Ω∏
+           IF      PARA-KANSENSYO      =   "1"
+      *        ¥∂¿˜æ…£±
+               MOVE    PTINF-KANSENSYO-1   TO  WRK-COMMENT-HEN
+               PERFORM 40021-COMMENT-HENSYU-SEC
+      *        ¥∂¿˜æ…£≤
+               MOVE    PTINF-KANSENSYO-2   TO  WRK-COMMENT-HEN
+               PERFORM 40021-COMMENT-HENSYU-SEC
+           END-IF
+      *    ¥µº‘•≥•·•Û•»§Ú»˜πÕ§ÿ
+           IF      PARA-COMMENT        =   "1"
+               IF      PTINF-COMMENT-1         =   SPACE
+                   MOVE    PTINF-COMMENT-2     TO  WRK-PTCOMMENT (1)
+               ELSE
+                   MOVE    PTINF-COMMENT-1     TO  WRK-PTCOMMENT (1)
+                   MOVE    PTINF-COMMENT-2     TO  WRK-PTCOMMENT (2)
+               END-IF
+           END-IF
+      *!!
            .
        4002-USER-SETHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    »˜πÕ•≥•·•Û•» ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       40021-COMMENT-HENSYU-SEC           SECTION.
+      *
+           IF      WRK-COMMENT-HEN NOT =   SPACE
+               PERFORM VARYING     IDX-B1  FROM    1   BY  1
+                       UNTIL      (IDX-B1      >   9   )
+                   IF      WRK-BIKOU-NAME (IDX-B1) =   SPACE
+                       MOVE    WRK-COMMENT-HEN     TO  WRK-BIKOU-NAME
+                                                          (IDX-B1)
+                       MOVE    IDX-B1              TO  IDX-BIKOU
+                       MOVE    9                   TO  IDX-B1
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       40021-TABOO-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    ƒ¢…º ‘Ω∏ΩËÕ˝
@@ -1477,6 +1564,11 @@
            IF      IDX-BIKOU           >   ZERO
                PERFORM 3009-COMMENT-HEN-SEC
            END-IF
+      *!!
+      *    »˜πÕÕÛ¥µº‘•≥•·•Û•» ‘Ω∏
+           IF      WRK-PTCOMMENT-G NOT =   SPACE
+               PERFORM 30011-PTCOMMENT-HEN-SEC
+           END-IF
       *
       *---(04.02.00) LINE UPD START ------------------------------------
       *    ∏Â»Ø∞ÂÃÙ…  —ππ≤ƒ
@@ -1543,6 +1635,55 @@
       *
            .
        3009-COMMENT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     ¥µº‘•≥•·•Û•»»˜πÕ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       30011-PTCOMMENT-HEN-SEC      SECTION.
+      *
+           PERFORM VARYING     IDX-COM     FROM    1   BY  1
+                   UNTIL      (IDX-COM     >   2   )  OR
+                              (IDX-B       >=  BIKOU-MAX   )
+               IF      WRK-PTCOMMENT  (IDX-COM)    NOT =   SPACE
+                   ADD     1                   TO  IDX-B
+                   MOVE    ZERO                TO  IDX-COM2
+      *            £∑π‘Ã‹§ﬁ§«§œ£∏£∂ ∏ª˙ ‘Ω∏
+                   IF      IDX-B               <   BIKOU-MAX2
+                       MOVE    86                  TO  COM-MAX
+                   ELSE
+      *            £∑π‘Ã‹§´§È£≤£µ ∏ª˙ ‘Ω∏
+                       MOVE    50                  TO  COM-MAX
+                   END-IF
+                   MOVE    WRK-PTCOMMENT (IDX-COM)(1:COM-MAX)
+                                               TO  WRK-PTCOMMENT-HEN
+      *
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    WRK-PTCOMMENT (IDX-COM)(1:COM-MAX)
+                                               TO  KANACHK-MAE-INPUT
+                   MOVE    COM-MAX             TO  KANACHK-MAX-CNT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   MOVE    KANACHK-MAE-INPUT   TO  WRK-PTCOMMENT-HEN
+                   COMPUTE IDX-COM2        =   KANACHK-MAX   +   1
+                   IF      WRK-PTCOMMENT (IDX-COM)(IDX-COM2:)
+                                               =   SPACE
+                       MOVE    ZERO                TO  IDX-COM2
+                   END-IF
+                   MOVE    WRK-PTCOMMENT-HEN   TO  HCM19-BIKOH (IDX-B)
+      *            ªƒ ∏ª˙§Úº°π‘§ÿ
+                   IF      IDX-COM2            >   ZERO
+                       ADD     1                   TO  IDX-B
+                       IF      IDX-B               <=  BIKOU-MAX
+                           MOVE    WRK-PTCOMMENT(IDX-COM)(IDX-COM2:)
+                                               TO  HCM19-BIKOH (IDX-B)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       30011-PTCOMMENT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
