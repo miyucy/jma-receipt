@@ -1524,6 +1524,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF
                    END-IF
       *
+      *            レセプト表示フラグ
+                   IF      PTBYO-REZEFLG       =   "1"
+                       MOVE    1                   TO  FLG-CHK
+                   END-IF
+      *
+      *            レセプト表示月数
                    IF      PTBYO-REZEMM        >   ZERO
                        INITIALIZE                      STS-AREA-DAY
                        INITIALIZE                      LNK-DAY6-AREA
