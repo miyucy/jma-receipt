@@ -1512,7 +1512,18 @@
        330-WID1-SET-SEC            SECTION.
       *
            IF      SPA-WID1-FLG    =   "OK"
-               PERFORM 490-KOUSHIN-SEC
+               EVALUATE    SPA-WIDCD
+                   WHEN    "1001"
+                   WHEN    "1002"
+                       PERFORM 490-KOUSHIN-SEC
+                   WHEN    "1003"
+                       MOVE    SPA-GMN-SYUBYOHENFLGLST (1)
+                                           TO  SPA-GMN-SYUBYOHENFLG-G
+               END-EVALUATE
+           ELSE
+               IF      SPA-WIDCD       =   "1003"
+                   MOVE    65              TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
@@ -4837,6 +4848,13 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF    
       *
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-BYOMEI-PRTJYUN  =   "2" )
+               AND   ( SPA-GMN-SYUBYOHENFLG
+                                           NOT =   "0" )
+                   MOVE    "1003"          TO  SPA-WIDCD
+               END-IF 
+           END-IF
            .
        4175-BYOMEI-PRTJYUN-CHK-EXT.
            EXIT.
@@ -6447,7 +6465,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
-               IF      SPA-ERRCD            =   SPACE
+               IF    ( SPA-ERRCD            =   SPACE )
       *            関連チェック
                    PERFORM 4900-KANRENCHK-SEC
                    IF      SPA-ERRCD        =   SPACE
@@ -8117,6 +8135,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "レセ電出力先がマウントできませんが、"
                                            DELIMITED  BY  SIZE
                            "レセプト印刷情報を登録しますか"
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-WIDMSG
+                   END-STRING
+               WHEN    "1003"
+                   STRING  "病名記載順が入力順の設定ですので、"
+                                           DELIMITED  BY  SIZE
+                           "主病名の編集を行わないに変更します"
                                            DELIMITED  BY  SIZE
                                            INTO  WRK-WIDMSG
                    END-STRING
