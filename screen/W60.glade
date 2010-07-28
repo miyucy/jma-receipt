@@ -1503,7 +1503,7 @@
       <y>68</y>
       <width>264</width>
       <height>24</height>
-      <label>生活保護・残留法人等の受給者番号抜け</label>
+      <label>生活保護・残留邦人等の受給者番号抜け</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
