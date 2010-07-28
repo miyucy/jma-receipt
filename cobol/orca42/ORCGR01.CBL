@@ -3697,8 +3697,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                MOVE    "0000"              TO  RECE07-RECESYUBETU
                MOVE    "%%"                TO  RECE07-SRYKA 
                MOVE    RECE07-REC          TO  MCPDATA-REC                             
-               MOVE    "tbl_recekanri"     TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
+               MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+               MOVE    "key13"             TO  WRK-MCP-PATHNAME
                MOVE    RECE07-REC          TO  MCPDATA-REC
                PERFORM 900-RECE07-INV-SEC
                IF      FLG-RECE07          =   ZERO
