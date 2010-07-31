@@ -121,34 +121,34 @@
       *
       *
        01  SCRAREA.
-           COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K02N.INC".
+           COPY    "K021.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K061.INC".
+           COPY    "K062.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K081.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K97.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "K03X.INC".
+           COPY    "KERR.INC".
+           COPY    "KERR2.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+           COPY    "KHELP.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -266,9 +266,6 @@
                       (SPA-SRYYMD                  <   "20060401"))
       *           公害は対象外
                   OR  (SPA-NAI-HKNNUM (IDX)        =   "975"  )
-      *           入院中は自費のみ
-                  OR ((SPA-NAI-NYUIN               =   1    )  AND
-                      (SPA-NAI-HKNNUM (IDX)(1:2)   NOT =   "98" ))
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY
@@ -328,8 +325,8 @@
            CALL    "ORCSDRSET"         USING
                                        SPA-AREA
                                        ORCSDRSETAREA
-           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-K97-DRCDLST-G
-           MOVE    ORCSDR-DRCD-MAX     TO  SPA-K97-DRCD-MAX
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
       *
            .
        3101-DRCD-SPASET-EXT.
@@ -357,7 +354,6 @@
       *
            MOVE    SPACE               TO  K97
       *    コラムリストの位置指定
-           INITIALIZE                      K97
            MOVE    ZERO                TO  K97-HKNCOMBI-ROW
            MOVE    ZERO                TO  K97-SRYKA-ROW
            MOVE    ZERO                TO  K97-DRCD-ROW
@@ -414,9 +410,9 @@
       *    ドクター
            MOVE    SPA-K97-SELNUM3     TO  K97-SELNUM3
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-K97-DRCD-MAX
-               MOVE    SPA-K97-DRCDL(IDX)      TO  K97-DRCD    (IDX)
-               MOVE    SPA-K97-DRCDMEIL(IDX)   TO  K97-DRCDMEI (IDX)
+                   UNTIL       IDX     >   SPA-DRCD-MAX
+               MOVE    SPA-GMN-DRCDL(IDX)      TO  K97-DRCD    (IDX)
+               MOVE    SPA-GMN-DRCDMEIL(IDX)   TO  K97-DRCDMEI (IDX)
                IF      SPA-K97-SELNUM3     =   K97-DRCD (IDX)
                    MOVE    "T"             TO  K97-DRCD-SELECT (IDX)
                    MOVE    IDX             TO  K97-DRCD-ROW
@@ -425,7 +421,7 @@
                   MOVE    "F"              TO  K97-DRCD-SELECT (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-K97-DRCD-MAX        TO  K97-DRCD-COUNT
+           MOVE    SPA-DRCD-MAX        TO  K97-DRCD-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -605,7 +601,7 @@
       *
            MOVE    SPACE                TO  WRK-DRCD
            PERFORM VARYING     IDX   FROM   1   BY  1
-                   UNTIL       IDX   >   SPA-K97-DRCD-MAX
+                   UNTIL       IDX   >   SPA-DRCD-MAX
               IF      K97-DRCD-SELECT (IDX)        =  "T"
                   IF       K97-DRCD(IDX)      =   SPA-K97-SELNUM3
                       CONTINUE
@@ -821,9 +817,9 @@
            IF      WRK-DRCD        NOT =   SPACE
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX         >   SPA-K97-DRCD-MAX) OR
+                       UNTIL      (IDX         >   SPA-DRCD-MAX)  OR
                                   (FLG-CHK     =   1           )
-                   IF      WRK-DRCD            =   SPA-K97-DRCDL(IDX)
+                   IF      WRK-DRCD            =   SPA-GMN-DRCDL(IDX)
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-PERFORM
@@ -873,12 +869,12 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-K97-DRCD-MAX) OR
+                   UNTIL      (IDX         >   SPA-DRCD-MAX )  OR
                               (FLG-CHK     =   1           )  OR
                               (SPA-K97-SELNUM3 =   ZERO  )    OR
                               (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-K97-SELNUM3     =   SPA-K97-DRCDL(IDX)
-                   MOVE    SPA-K97-DRCDMEIL(IDX)
+               IF      SPA-K97-SELNUM3     =   SPA-GMN-DRCDL(IDX)
+                   MOVE    SPA-GMN-DRCDMEIL(IDX)
                                            TO  WRK-DRCDMEI
                    MOVE    1               TO  FLG-CHK
                END-IF
@@ -918,15 +914,15 @@
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
            MOVE    SPA-K97-SRYKA       TO  ORCSDR-SRYKA
            MOVE    SPA-K97-SELNUM3     TO  ORCSDR-IN-DRCD
-           MOVE    SPA-K97-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
-           MOVE    SPA-K97-DRCD-MAX    TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
            CALL    "ORCSDRSET"         USING
                                        SPA-AREA
                                        ORCSDRSETAREA
            IF      ORCSDR-ERRCD        =   ZERO
-               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-K97-DRCDLST-G
-               MOVE    ORCSDR-DRCD-MAX     TO  SPA-K97-DRCD-MAX
-               MOVE    SPA-K97-DRCDMEIL(SPA-K97-DRCD-MAX)
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+               MOVE    SPA-GMN-DRCDMEIL(SPA-DRCD-MAX)
                                            TO  WRK-DRCDMEI
            ELSE
                MOVE    "0003"              TO  SPA-ERRCD

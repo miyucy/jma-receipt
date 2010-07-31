@@ -39,27 +39,27 @@
       *
       *
       *    ＳＰＡデータ
-      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-SPASCR.
+           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *    ＳＰＡパラメタデータ
-      *FD  SPASCR-FILE.
-      *01  SPA-DATA-REC            PIC X(1500).
+       FD  SPASCR-FILE.
+       01  SPA-DATA-REC            PIC X(1200).
       *
       *
        WORKING-STORAGE             SECTION.
       *
       * ＳＰＡデータ
-      *01  FILE-NAME1.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
-      *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME1.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "K02SPASCR".
+           03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    画面色等
            COPY    "ENUM-VALUE".
@@ -77,8 +77,8 @@
       *    画面スパ領域
            COPY    "K02SCR-SPA".
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-SPASCR          PIC X(02).
+       01  STS-AREA.
+           03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -86,7 +86,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
-           03  FLG-PARA            PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -100,8 +99,6 @@
       *
            03  FLG-SYURYOU         PIC 9(01).
            03  FLG-MAX             PIC 9(01).
-      *H28.11
-           03  FLG-CHKERR          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -171,11 +168,6 @@
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *     パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC".
-      *
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -208,34 +200,34 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K02N.INC".
+           COPY    "K021.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K061.INC".
+           COPY    "K062.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K081.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K97.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "K03X.INC".
+           COPY    "KERR.INC".
+           COPY    "KERR2.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+           COPY    "KHELP.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -507,64 +499,29 @@
       *****************************************************************
        1002-K02SPA-SET-SEC             SECTION.
       *
-      *
-      *****MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-      *    OPEN    INPUT               SPASCR-FILE
-      *    IF      STS-SPASCR     NOT =   ZERO
-      *        GO      TO      1002-K02SPA-SET-EXT
-      *    END-IF
-      *
-      *    MOVE    ZERO                TO  FLG-SPASCR
-      *    MOVE    ZERO                TO  IDX
-      *    PERFORM UNTIL       FLG-SPASCR  =   1
-      *        READ    SPASCR-FILE
-      *            AT  END
-      *                MOVE   1            TO  FLG-SPASCR
-      *            NOT AT  END
-      *                ADD    1                TO  IDX
-      *                MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
-      *        END-READ
-      *    END-PERFORM
-      *****CLOSE                       SPASCR-FILE
-      *
-      *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE                  SPA-SCR-REC
-           MOVE    ZERO                TO  IDX
       *
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "K02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "SPAGMN"            TO  PARA-FILEMEI
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
+           MOVE    SPA-TERMID          TO  FILE-TERMID1
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *
+           OPEN    INPUT               SPASCR-FILE
+           IF      STS-SPASCR     NOT =   ZERO
+               GO      TO      1002-K02SPA-SET-EXT
            END-IF
-           PERFORM
-               UNTIL  (FLG-PARA            =   1 )
-                 OR   (IDX                 >=  SPA-MAX-LINE)
-               ADD    1                    TO  IDX
-               MOVE   PARA-DATA-REC        TO  SPA-GMN-TBL (IDX)
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+           MOVE    ZERO                TO  FLG-SPASCR
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL       FLG-SPASCR  =   1
+               READ    SPASCR-FILE
+                   AT  END
+                       MOVE   1            TO  FLG-SPASCR
+                   NOT AT  END
+                       ADD    1                TO  IDX
+                       MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
+               END-READ
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
+           CLOSE                       SPASCR-FILE
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1336,55 +1293,15 @@
                                                    TO  WRK-INPUTCD
                        MOVE    WRK-K023-CDSYU  (IDY)
                                                     TO  WRK-CDSYU
-      *H28.11
-      *                登録済みチェック
-                       PERFORM 410020-INPUTCD-MAECHK-SEC
-                       IF      FLG-CHKERR          =   ZERO
-                           PERFORM 410021-INPUTCD-INS-SEC
-                       END-IF
+                       PERFORM 410021-INPUTCD-INS-SEC
                    END-IF
                END-PERFORM
            END-PERFORM
+      *
       *    戻る
            PERFORM 210-BACK
            .
        41002-KOUSIN-SYORI-EXT.
-           EXIT.
-      *
-      *H28.11
-      *****************************************************************
-      *    入力コード登録済みチェック処理
-      *****************************************************************
-       410020-INPUTCD-MAECHK-SEC          SECTION.
-      *
-           INITIALIZE                      INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
-           MOVE    WRK-CDSYU           TO  ICD-CDSYU
-           MOVE    WRK-INPUTCD         TO  ICD-INPUTCD
-      *
-           MOVE    INPUTCD-REC         TO  MCPDATA-REC
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM                     930-INPUTCD-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-INPUTCD
-           END-IF
-           MOVE    "tbl_inputcd"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-INPUTCD         =   ZERO
-      *        登録済み
-               MOVE    1                   TO  FLG-CHKERR
-           ELSE
-               MOVE    ZERO                TO  FLG-CHKERR
-           END-IF
-           .
-       410020-INPUTCD-MAECHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1475,8 +1392,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  ICD-CREYMD
            MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
            MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
-      *
-           MOVE    SPA-OPID            TO  ICD-OPID
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -1638,7 +1553,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KID1
-           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *
@@ -1680,24 +1594,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        920-INPUTCD-NEXT-EXT.
            EXIT.
-      *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

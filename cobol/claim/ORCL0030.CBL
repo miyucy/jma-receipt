@@ -34,8 +34,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 03.05.00     NACL-多々納  07/05/10  グループ診療対応
-      * 04.07.00     NACL-多々納  11/10/05  OPENエラー対応追加
-      * 04.07.00     NACL-多々納  14/09/XX  COPY対応追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -44,14 +42,13 @@
        FILE-CONTROL.
       *
            SELECT  LF04-FILE       ASSIGN  FILE-NAME
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-LF04.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
        FD  LF04-FILE.
-       01  IN-LF04-REC             PIC X(500000).
+       01  IN-LF04-REC             PIC X(30000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -64,15 +61,12 @@
       *    03                      PIC X(06)  VALUE  ".txt".
       *
        01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(500000)
-                                   OCCURS  5.
+           03  WRK-DATA            PIC X(30000)
+                                   OCCURS  12.
       *                            OCCURS  6.
       *
        01  LF04-REC.        
            COPY    "CPRLF004.INC".
-      *     
-       01  LF041-REC.        
-           COPY    "CPRLF0041.INC".
       *     
 018000*    フラグ領域
        01  STS-AREA.
@@ -81,13 +75,11 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-SYORIEND        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(08).
+           03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDZ                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -105,16 +97,11 @@
                05  WRK-SYSYY         PIC 9(04).
                05  WRK-SYSMM         PIC 9(02).
                05  WRK-SYSDD         PIC 9(02).
-           03  SYS-TIME                            PIC 9(08).
       *
        01  WRK-LF04-REC. 
            COPY    "CPRLF004.INC"    REPLACING  //LF04//
                                      BY         //WRK-LF04//.
       *
-      *
-       01  WRK-LF041-REC. 
-           COPY    "CPRLF0041.INC"    REPLACING  //LF041//
-                                     BY         //WRK-LF041//.
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -124,19 +111,10 @@
       
       *
       *    claim連携リターンエリア
-      *01  WRK-ERROR-AREA.
-      *    03  WRK-KBN-CODE            PIC X(01).
-      *    03  WRK-KBN-CODE2           PIC X(01).
-      *    03  WRK-KBN-V2              PIC X(01).
-      *    03  WRK-ERR-CODE            PIC 9(02).
-      *    03  WRK-ERR-MSG             PIC X(100).
-      *    03  WRK-OUT-HKNCOMBI        PIC X(04).
-      *    03  WRK-OUT-CNT1            PIC 9(04).
-      *    03  WRK-OUT-CNT2            PIC 9(04).
-      *H26.8
-      *    API連携パラメタ領域
-           COPY    "CPORCL0031.INC".
-      *
+       01  WRK-ERROR-AREA.
+           03  WRK-KBN-CODE            PIC X(01).
+           03  WRK-ERR-CODE            PIC 9(02).
+           03  WRK-ERR-MSG             PIC X(100).
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -164,9 +142,7 @@
       *
            PERFORM 100-INIT-SEC
       *
-           IF      FLG-SYORIEND        =   ZERO
-               PERFORM 200-MAIN-SEC
-           END-IF
+           PERFORM 200-MAIN-SEC
       *            UNTIL       FLG-END     =   1
       *
            PERFORM 300-END-SEC
@@ -181,8 +157,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
-      **** INITIALIZE                  WRK-ERROR-AREA
-           INITIALIZE                  LNK-ORCL0031AREA
+           INITIALIZE                  WRK-ERROR-AREA
            MOVE    SPACE               TO  WRK-DATA-REC 
                                            WRK-LF04-REC
       *
@@ -208,29 +183,19 @@
       *     
            MOVE    WRK-PARA-PTID       TO  FILE-PTID
            OPEN    INPUT    LF04-FILE
-      *    OPEN エラー
-           IF      STS-LF04        NOT =   ZERO
-               DISPLAY "**ORCL0030 LF04-FILE OPEN ERR:"
-                                           STS-LF04
-               MOVE    1                   TO  FLG-SYORIEND
-               GO      TO      100-INIT-EXT
-           END-IF
-      *
            MOVE    ZERO                TO  IDX
       *     
       ************
-           ACCEPT  SYS-TIME            FROM    TIME
-           DISPLAY "Read Start time = " SYS-TIME
            PERFORM UNTIL    FLG-END    =   1
                READ                    LF04-FILE
                    AT  END
                        MOVE    1           TO  FLG-END
                    NOT AT  END
                       ADD     1           TO  IDX
-                      IF      IDX         >   5
+                      IF      IDX         >   100
                            CONTINUE
                        ELSE
-      *     DISPLAY "L0030 IDX = " "[" IDX "]"
+           DISPLAY "L0030 IDX = " "[" IDX "]"
                            MOVE    IN-LF04-REC   TO  WRK-DATA
                                                        (IDX)
                        END-IF
@@ -244,21 +209,13 @@
       *            MOVE    10             TO  IDX
       *        END-IF
            END-PERFORM
-           ACCEPT  SYS-TIME            FROM    TIME
-           DISPLAY "Read End   time = " SYS-TIME
-           DISPLAY "L0030 LAST IDX = " "[" IDX "]"
-           MOVE    WRK-DATA-REC           TO  WRK-LF041-REC
+           MOVE    WRK-DATA-REC           TO  WRK-LF04-REC
            DISPLAY "L0030 WRK-LF04-CRE001-DPERTID = " 
-                  "[" WRK-LF041-CRE001-DPERTID "]" 
-           DISPLAY "L0030 WRK-LF041-IJICD(20 17) = " 
-                    WRK-LF041-IJICD(20 17)
-           DISPLAY "L0030 WRK-LF041-IJICD(20 18) = " 
-                    WRK-LF041-IJICD(20 18)
+                  "[" WRK-LF04-CRE001-DPERTID "]" 
            IF      WRK-LF04-IJICD(18 1)   =  LOW-VALUE
                 DISPLAY "L0030 LOW-VALUE(18 1) = " 
            END-IF
            CLOSE   LF04-FILE
-           PERFORM 1001-LF04MAKE-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -269,8 +226,7 @@
        200-MAIN-SEC                SECTION.
       *
            CALL    "ORCL0031"          USING   WRK-LF04-REC
-                                               LNK-ORCL0031AREA
-      *****                                    WRK-ERROR-AREA
+                                               WRK-ERROR-AREA
       *
       *    MOVE    WRK-LF04-REC        TO  LF04-REC
       *     
@@ -278,116 +234,6 @@
            MOVE    1                   TO  FLG-END
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    LF04 MAKE　　処理
-      *****************************************************************
-       1001-LF04MAKE-SEC           SECTION.
-      *
-           MOVE    WRK-LF041-REC       TO  WRK-LF04-REC
-           INITIALIZE  WRK-LF04-SRYTBL-G
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   20
-              MOVE     WRK-LF041-SRYCD(IDX) 
-                                       TO  WRK-LF04-SRYCD(IDX)
-              MOVE     WRK-LF041-SRYCDTBL(IDX) 
-                                       TO  WRK-LF04-SRYCDTBL(IDX)
-              MOVE     WRK-LF041-SRYNAME(IDX) 
-                                       TO  WRK-LF04-SRYNAME(IDX)
-              MOVE     WRK-LF041-ADMINISTRATION(IDX) 
-                                       TO  WRK-LF04-ADMINISTRATION
-                                           (IDX)
-              MOVE     WRK-LF041-ADMINCODE(IDX) 
-                                       TO  WRK-LF04-ADMINCODE(IDX)
-              MOVE     WRK-LF041-ADMINCODETBL(IDX) 
-                                       TO  WRK-LF04-ADMINCODETBL
-                                           (IDX)
-              MOVE     WRK-LF041-ADMMEMO(IDX) 
-                                       TO  WRK-LF04-ADMMEMO(IDX)
-              MOVE     WRK-LF041-KAISU(IDX) 
-                                       TO  WRK-LF04-KAISU(IDX)
-              PERFORM  VARYING    IDY  FROM    1   BY  1
-                       UNTIL      IDY  >   20
-                MOVE   WRK-LF041-SRYSYUBETSU(IDX IDY) 
-                                       TO  WRK-LF04-SRYSYUBETSU
-                                           (IDX IDY)
-                MOVE   WRK-LF041-SRYSYUBETSUTBL(IDX IDY) 
-                                       TO  WRK-LF04-SRYSYUBETSUTBL
-                                           (IDX IDY)
-                MOVE   WRK-LF041-IJICD(IDX IDY) 
-                                       TO  WRK-LF04-IJICD
-                                           (IDX IDY)
-                MOVE   WRK-LF041-TBLID(IDX IDY) 
-                                       TO  WRK-LF04-TBLID
-                                           (IDX IDY)
-                MOVE   WRK-LF041-ALSCODE(IDX IDY) 
-                                       TO  WRK-LF04-ALSCODE
-                                           (IDX IDY)
-                MOVE   WRK-LF041-ALSTBLID(IDX IDY) 
-                                       TO  WRK-LF04-ALSTBLID
-                                           (IDX IDY)
-                MOVE   WRK-LF041-ALSNAME(IDX IDY) 
-                                       TO  WRK-LF04-ALSNAME
-                                           (IDX IDY)
-                MOVE   WRK-LF041-SURYO(IDX IDY) 
-                                       TO  WRK-LF04-SURYO
-                                           (IDX IDY)
-                MOVE   WRK-LF041-SURYOCD(IDX IDY) 
-                                       TO  WRK-LF04-SURYOCD
-                                           (IDX IDY)
-                MOVE   WRK-LF041-SURYOCDTBL(IDX IDY) 
-                                       TO  WRK-LF04-SURYOCDTBL
-                                           (IDX IDY)
-                MOVE   WRK-LF041-TANI(IDX IDY) 
-                                       TO  WRK-LF04-TANI
-                                           (IDX IDY)
-                MOVE   WRK-LF041-DURATION(IDX IDY) 
-                                       TO  WRK-LF04-DURATION
-                                           (IDX IDY)
-                MOVE   WRK-LF041-LOCATION(IDX IDY) 
-                                       TO  WRK-LF04-LOCATION
-                                           (IDX IDY)
-
-
-
-                PERFORM  VARYING    IDZ  FROM    1   BY  1
-                         UNTIL      IDZ  >  6 
-                MOVE   WRK-LF041-FILMSIZE(IDX IDY IDZ) 
-                                       TO  WRK-LF04-FILMSIZE
-                                           (IDX IDY IDZ)
-                MOVE   WRK-LF041-FILMSIZECD(IDX IDY IDZ) 
-                                       TO  WRK-LF04-FILMSIZECD
-                                           (IDX IDY IDZ)
-                MOVE   WRK-LF041-FILMSIZECDTBL(IDX IDY IDZ) 
-                                       TO  WRK-LF04-FILMSIZECDTBL
-                                           (IDX IDY IDZ)
-                MOVE   WRK-LF041-FILMDEV(IDX IDY IDZ) 
-                                       TO  WRK-LF04-FILMDEV
-                                           (IDX IDY IDZ)
-                MOVE   WRK-LF041-FILMNUM(IDX IDY IDZ) 
-                                       TO  WRK-LF04-FILMNUM
-                                           (IDX IDY IDZ)
-                END-PERFORM 
-                MOVE   WRK-LF041-EVENT(IDX IDY) 
-                                       TO  WRK-LF04-EVENT
-                                           (IDX IDY)
-                MOVE   WRK-LF041-EVENTSTART(IDX IDY) 
-                                       TO  WRK-LF04-EVENTSTART
-                                           (IDX IDY)
-                MOVE   WRK-LF041-EVENTEND(IDX IDY) 
-                                       TO  WRK-LF04-EVENTEND
-                                           (IDX IDY)
-                MOVE   WRK-LF041-SRYMEMO(IDX IDY) 
-                                       TO  WRK-LF04-SRYMEMO
-                                           (IDX IDY)
-              END-PERFORM 
-            MOVE   WRK-LF041-MEMO(IDX)  TO  WRK-LF04-MEMO(IDX)
-           END-PERFORM 
-      *
-      *
-           .
-       1001-LF04MAKE-EXT.
            EXIT.
       *
       *****************************************************************
