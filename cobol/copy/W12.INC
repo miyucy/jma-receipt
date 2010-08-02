@@ -104,10 +104,10 @@
                             PIC X(20)   OCCURS  5 TIMES.
                   05  W12-BYOMEI-PRTJYUN-COMBO.
                     06  W12-BYOMEI-PRTJYUN.
-                      07  W12-VALUE   PIC X(24).
+                      07  W12-VALUE   PIC X(36).
                     06  W12-BYOMEI-PRTJYUN-COUNT   PIC S9(9)   BINARY.
                     06  W12-BYOMEI-PRTJYUNLST
-                            PIC X(24)   OCCURS  5 TIMES.
+                            PIC X(36)   OCCURS  5 TIMES.
                   05  W12-PREFPRGID.
                     06  W12-VALUE   PIC X(15).
                   05  W12-PREFPRGID1-STATE   PIC S9(9)   BINARY.

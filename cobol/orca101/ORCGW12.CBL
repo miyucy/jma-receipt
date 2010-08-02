@@ -303,7 +303,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-BYOMEI-PRTJYUNMEI
-                                              PIC X(24).
+                                              PIC X(34).
                        09  SPA-GMN-SEIHO-DSPKBN-G.
                            11  SPA-GMN-SEIHO-DSPKBN
                                               PIC X(01).
@@ -818,7 +818,7 @@
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-BYOMEI-PRTJYUNMEIL
-                                              PIC X(22).
+                                              PIC X(34).
                    07  SPA-GMN-BYOMEI-PRTJYUN-MAX
                                               PIC 9(02).    
       *                                        
@@ -1845,13 +1845,13 @@
            MOVE    2                   TO  SPA-GMN-CHKKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-BYOMEI-PRTJYUNL   (1)
-           MOVE    "転帰分を後に記載を行う"
+           MOVE    "転帰分を同一開始日の末尾に記載する"
                                        TO  SPA-GMN-BYOMEI-PRTJYUNMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-BYOMEI-PRTJYUNL   (2)
-           MOVE    "転帰分を前に記載を行う"
+           MOVE    "転帰分を同一開始日の先頭に記載する"
                                        TO  SPA-GMN-BYOMEI-PRTJYUNMEIL(2)
            MOVE    "2"                 TO  SPA-GMN-BYOMEI-PRTJYUNL   (3)
-           MOVE    "入力順に記載を行う"
+           MOVE    "入力順に記載する"
                                        TO  SPA-GMN-BYOMEI-PRTJYUNMEIL(3)
            MOVE    3                   TO  SPA-GMN-BYOMEI-PRTJYUN-MAX 
       *     
