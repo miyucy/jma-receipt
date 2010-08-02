@@ -100,6 +100,7 @@
            03  FLG-TENSU                           PIC 9(01).
            03  FLG-HCMSL80                         PIC 9(01).
            03  FLG-EXIST                           PIC 9(01).
+           03  FLG-HAISHI                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -113,6 +114,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
+           03  IDXI                                PIC 9(05).
            03  IDXE                                PIC 9(05).
       *
       *    パラメタ領域
@@ -155,6 +157,10 @@
                05  WRK-KEY-CD-OCC                  OCCURS  21.
                    07  WRK-KEY-CD                  PIC X(07).
                    07  WRK-KEY-CDSEP               PIC X(01).
+           03  WRK-IKOCD                           PIC X(07).
+           03  WRK-TBYOMEICD-G.
+               05  WRK-TBYOMEICD                   PIC X(07)
+                                                   OCCURS  21.
       *
        01  CONST-AREA.
            03  CONST-MKCD-MAX                  PIC 9(05)   VALUE 21.
@@ -203,6 +209,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    病名編集サブ
+           COPY    "CPORCSBYOMEI.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -471,42 +480,86 @@
        2003-KNS-TO-CHKSND-SEC          SECTION.
       *
            MOVE    ZERO                TO  CNT-RENNUM
-           COMPUTE CNT-SYORI           =   CNT-SYORI  +  1
       *
            PERFORM UNTIL ( FLG-TEKBYO  NOT =   ZERO )
       *
-               INITIALIZE              CHKSND-REC
+               MOVE    ZERO        TO  FLG-HAISHI
       *
-               MOVE    WRK-PARA-HOSPNUM TO CHKSND-HOSPNUM
-               MOVE    "2"             TO  CHKSND-CHKKBN
-               MOVE    WRK-SRYCD       TO  CHKSND-SRYCD
-               MOVE    "00000000"      TO  CHKSND-YUKOSTYMD
-               MOVE    "99999999"      TO  CHKSND-YUKOEDYMD
-               MOVE    "1"             TO  CHKSND-CDKBN
-               COMPUTE CNT-RENNUM      =   CNT-RENNUM  +   1
-               MOVE    CNT-RENNUM      TO  CHKSND-RENNUM
+               INITIALIZE                      ORCSBYOMEIAREA
+               MOVE    "1"                 TO  LNK-BYO-SYORI
+               MOVE    TEKBYO-BYOMEI       TO  LNK-BYO-BYOMEI
+               CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                               SPA-AREA
+               IF    ( LNK-BYO-BYOMEIHENFLG    =   SPACE ) 
+                   IF    ( LNK-BYO-IKOSAKICD   NOT =   SPACE )
+                       MOVE    SPACE       TO  WRK-TBYOMEICD-G
+                       PERFORM VARYING IDX0 FROM 1 BY 1
+                               UNTIL ( IDX0 >   CONST-MKCD-MAX )
+                                OR   ( LNK-BYO-TBYOMEICD (IDX0)
+                                            = SPACE )
+                           MOVE    LNK-BYO-TBYOMEICD (IDX0)
+                                           TO  WRK-TBYOMEICD (IDX0)
+                       END-PERFORM
+                       MOVE    LNK-BYO-IKOSAKICD   TO  WRK-IKOCD
+                       MOVE    LNK-BYO-IKOSAKICD-INDEX
+                                                   TO  IDXI
+                       INITIALIZE              ORCSBYOMEIAREA
+                       MOVE    "2"         TO  LNK-BYO-SYORI
+                       PERFORM VARYING IDX0 FROM 1 BY 1
+                               UNTIL ( IDX0 >   CONST-MKCD-MAX )
+                                OR   ( WRK-TBYOMEICD (IDX0)    = SPACE )
+                           MOVE WRK-TBYOMEICD (IDX0)
+                                           TO  LNK-BYO-TBYOMEICD (IDX0)
+                       END-PERFORM
+                       MOVE    WRK-IKOCD   TO  LNK-BYO-TBYOMEICD (IDXI)
+                       CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                                       SPA-AREA
+                   ELSE
+                       IF    ( LNK-BYO-HAISIYMD-ERR  NOT   =   ZERO )
+                           MOVE    1       TO  FLG-HAISHI
+                       END-IF
+                   END-IF
+               END-IF
       *
-               PERFORM 400-CD-KEY-SEC
-               MOVE    WRK-KEY-CD-G    TO  CHKSND-CD
+               IF    ( FLG-HAISHI      =   ZERO )
       *
-               MOVE    TEKBYO-BYOMEI   TO  CHKSND-BYOMEI
-               MOVE    "1"             TO  CHKSND-COMPKBN
-               MOVE    "1"             TO  CHKSND-UTAGAIKBN
-               MOVE    TEKBYO-BYOMEIHENFLG
-                                       TO  CHKSND-BYOMEIHENFLG
+                   INITIALIZE              CHKSND-REC
       *
-               MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
-                                           CHKSND-UPYMD
-               MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
+                   MOVE    WRK-PARA-HOSPNUM TO CHKSND-HOSPNUM
+                   MOVE    "2"             TO  CHKSND-CHKKBN
+                   MOVE    WRK-SRYCD       TO  CHKSND-SRYCD
+                   MOVE    "00000000"      TO  CHKSND-YUKOSTYMD
+                   MOVE    "99999999"      TO  CHKSND-YUKOEDYMD
+                   MOVE    "1"             TO  CHKSND-CDKBN
+                   COMPUTE CNT-RENNUM      =   CNT-RENNUM  +   1
+                   MOVE    CNT-RENNUM      TO  CHKSND-RENNUM
       *
-               MOVE    CHKSND-REC      TO  MCPDATA-REC
-               MOVE    "tbl_chksnd"    TO   MCP-TABLE
-               MOVE    "key"           TO   MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
+                   PERFORM 400-CD-KEY-SEC
+                   MOVE    WRK-KEY-CD-G    TO  CHKSND-CD
+      *
+                   MOVE    LNK-BYO-BYOMEI  TO  CHKSND-BYOMEI
+                   MOVE    "1"             TO  CHKSND-COMPKBN
+                   MOVE    "1"             TO  CHKSND-UTAGAIKBN
+                   MOVE    LNK-BYO-BYOMEIHENFLG
+                                           TO  CHKSND-BYOMEIHENFLG
+      *
+                   MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
+                                               CHKSND-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
+      *
+                   MOVE    CHKSND-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_chksnd"    TO   MCP-TABLE
+                   MOVE    "key"           TO   MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+               END-IF
       *
                PERFORM 900-TEKIOUBYOMEI-KEY2-FET-SEC
       *
            END-PERFORM
+      *
+           IF    ( CNT-RENNUM          >   ZERO )
+               COMPUTE CNT-SYORI       =   CNT-SYORI  +  1
+           END-IF
       *
            .
       *
@@ -759,9 +812,9 @@
       *
            PERFORM VARYING IDX0        FROM    1   BY  1
                    UNTIL ( IDX0        >  CONST-MKCD-MAX )
-                    OR   ( TEKBYO-BYOMEICD (IDX0)    =   SPACE )
+                    OR   ( LNK-BYO-TBYOMEICD (IDX0)    =   SPACE )
       *
-               MOVE    TEKBYO-BYOMEICD (IDX0)
+               MOVE    LNK-BYO-TBYOMEICD (IDX0)
                                       TO  WRK-KEY-CD    (IDX0)
                IF    ( IDX0           >   1 )
                    MOVE    "-"        TO  WRK-KEY-CDSEP (IDX0 - 1)

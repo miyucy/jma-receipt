@@ -204,6 +204,7 @@
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-CHKSND                  PIC 9(01).
            03  FLG-TEKIOUBYOMEI            PIC 9(01).
+           03  FLG-HAISHI                  PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -228,6 +229,7 @@
            03  IDXD                        PIC 9(05).
            03  IDXE                        PIC 9(05).
            03  IDXF                        PIC 9(05).
+           03  IDXI                        PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-MAX                     PIC 9(05).
            03  IDX-LST                     PIC 9(05).
@@ -289,6 +291,10 @@
                05  WRK-KEY-CD-OCC          OCCURS  21.
                    07  WRK-KEY-CD          PIC X(07).
                    07  WRK-KEY-CDSEP       PIC X(01).
+           03  WRK-IKOCD                   PIC X(07).
+           03  WRK-TBYOMEICD-G.
+               05  WRK-TBYOMEICD            PIC X(07)
+                                           OCCURS  21.
       *
        01  WRK-WIDGET-AREA.
            03  WRK-WIDGET-BYOMEICD-G.
@@ -1965,21 +1971,62 @@
            PERFORM UNTIL ( FLG-TEKIOUBYOMEI    NOT =   ZERO )
                     OR   ( IDX1    >=  CONST-SRCBYOLST-MAX )
       *
-               COMPUTE IDX1    =   IDX1    +   1
+               MOVE    ZERO        TO  FLG-HAISHI
       *
-               MOVE    TEKBYO-BYOMEI
+               INITIALIZE                      ORCSBYOMEIAREA
+               MOVE    "1"                 TO  LNK-BYO-SYORI
+               MOVE    TEKBYO-BYOMEI       TO  LNK-BYO-BYOMEI
+               CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                               SPA-AREA
+               IF    ( LNK-BYO-BYOMEIHENFLG    =   SPACE ) 
+                   IF    ( LNK-BYO-IKOSAKICD   NOT =   SPACE )
+                       MOVE    SPACE       TO  WRK-TBYOMEICD-G
+                       PERFORM VARYING IDX0 FROM 1 BY 1
+                               UNTIL ( IDX0 >   CONST-MKCD-MAX )
+                                OR   ( LNK-BYO-TBYOMEICD (IDX0)
+                                            = SPACE )
+                           MOVE    LNK-BYO-TBYOMEICD (IDX0)
+                                           TO  WRK-TBYOMEICD (IDX0)
+                       END-PERFORM
+                       MOVE    LNK-BYO-IKOSAKICD   TO  WRK-IKOCD
+                       MOVE    LNK-BYO-IKOSAKICD-INDEX
+                                                   TO  IDXI
+                       INITIALIZE              ORCSBYOMEIAREA
+                       MOVE    "2"         TO  LNK-BYO-SYORI
+                       PERFORM VARYING IDX0 FROM 1 BY 1
+                               UNTIL ( IDX0 >   CONST-MKCD-MAX )
+                                OR   ( WRK-TBYOMEICD (IDX0)    = SPACE )
+                           MOVE WRK-TBYOMEICD (IDX0)
+                                           TO  LNK-BYO-TBYOMEICD (IDX0)
+                       END-PERFORM
+                       MOVE    WRK-IKOCD   TO  LNK-BYO-TBYOMEICD (IDXI)
+                       CALL    "ORCSBYOMEI"    USING   ORCSBYOMEIAREA
+                                                       SPA-AREA
+                   ELSE
+                       IF    ( LNK-BYO-HAISIYMD-ERR  NOT   =   ZERO )
+                           MOVE    1       TO  FLG-HAISHI
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-HAISHI  =       ZERO )
+      *
+                   COMPUTE IDX1    =   IDX1    +   1
+      *
+                   MOVE    LNK-BYO-BYOMEI
                                        TO  SPA-GMN-TSRCBYOMEI (IDX1)
-               MOVE    TEKBYO-BYOMEIHENFLG
+                   MOVE    LNK-BYO-BYOMEIHENFLG
                                        TO  SPA-NAI-TSRCBYOSTATUS(IDX1)
       *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   CONST-MKCD-MAX )
-                        OR   ( TEKBYO-BYOMEICD (IDX0)  =   SPACE )
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   CONST-MKCD-MAX )
+                            OR   ( LNK-BYO-TBYOMEICD (IDX0)  =   SPACE )
       *
-                   MOVE    TEKBYO-BYOMEICD (IDX0)
+                       MOVE    LNK-BYO-TBYOMEICD (IDX0)
                                    TO  SPA-NAI-TSRCBYOCD(IDX1 IDX0)
       *
-               END-PERFORM
+                   END-PERFORM
+               END-IF
       *
                PERFORM 900-TEKIOUBYOMEI-KEY3-FET-SEC
       *
