@@ -153,6 +153,7 @@
            03  FLG-DBRC            PIC 9(01).
            03  FLG-NYUKSN          PIC 9(01).
            03  FLG-SST             PIC 9(01).
+           03  FLG-SST-CHK         PIC 9(01).
            03  FLG-NYUINKHNRYO     PIC 9(01).
            03  FLG-RJN             PIC 9(01).
       *
@@ -4822,7 +4823,8 @@
            MOVE    SPA-GMN-TSRYCD(IDG) TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
       *
-           MOVE    ZERO                TO  FLG-SST.
+           MOVE    ZERO                TO  FLG-SST
+           MOVE    ZERO                TO  FLG-SST-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   10  )   OR
                               (FLG-SST     =   1   )
@@ -4832,10 +4834,13 @@
                    MOVE    TNS-SSTKIJUNCD (IDX)    TO  IDY
                    IF      WRK-TBL-SSTKIJUN (IDY)  =   1
                        MOVE    1               TO  FLG-SST
+                   ELSE
+                       MOVE    1               TO  FLG-SST-CHK
                    END-IF
                END-IF
            END-PERFORM.
-           IF      FLG-SST             =   ZERO
+           IF     (FLG-SST-CHK         =   1    )  AND
+                  (FLG-SST             =   ZERO )
                MOVE    1                   TO  SPA-GMN-CUR-41
                MOVE    "0030"              TO  SPA-ERRCD
                GO      TO      420-ZAIHENKOU-EXT
