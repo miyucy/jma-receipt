@@ -822,9 +822,9 @@
       <name>label923</name>
       <x>155</x>
       <y>650</y>
-      <width>70</width>
+      <width>75</width>
       <height>16</height>
-      <label>砷么荚戎规 </label>
+      <label>砷么荚戎规</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1149,7 +1149,7 @@
       <y>265</y>
       <width>80</width>
       <height>16</height>
-      <label>砷么荚戎规 </label>
+      <label>砷么荚戎规</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1455,9 +1455,9 @@
       <name>label921</name>
       <x>155</x>
       <y>425</y>
-      <width>70</width>
+      <width>75</width>
       <height>16</height>
-      <label>砷么荚戎规 </label>
+      <label>砷么荚戎规</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
