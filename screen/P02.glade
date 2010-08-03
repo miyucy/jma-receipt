@@ -528,7 +528,7 @@
 	  <y>328</y>
 	  <width>704</width>
 	  <height>232</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -753,7 +753,7 @@
 	  <y>36</y>
 	  <width>868</width>
 	  <height>124</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -5677,7 +5677,7 @@
 	  <y>270</y>
 	  <width>904</width>
 	  <height>162</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -7557,7 +7557,7 @@
 	  <y>24</y>
 	  <width>516</width>
 	  <height>160</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -7839,7 +7839,7 @@
 	  <y>228</y>
 	  <width>516</width>
 	  <height>160</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -7960,7 +7960,7 @@
 	  <y>436</y>
 	  <width>322</width>
 	  <height>148</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -8279,7 +8279,7 @@
 	  <y>436</y>
 	  <width>434</width>
 	  <height>148</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -8626,7 +8626,7 @@
 	  <y>19</y>
 	  <width>828</width>
 	  <height>117</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -8743,7 +8743,7 @@
 	  <y>276</y>
 	  <width>296</width>
 	  <height>276</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -8902,7 +8902,7 @@
 	  <y>272</y>
 	  <width>630</width>
 	  <height>300</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -9393,7 +9393,7 @@
 	  <y>32</y>
 	  <width>532</width>
 	  <height>136</height>
-	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	  <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	  <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	  <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
