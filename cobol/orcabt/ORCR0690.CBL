@@ -1543,8 +1543,8 @@
                                    END-IF
                                END-IF
                            WHEN    OTHER
-                               DISPLAY "ORCR0690 SRYCD="
-                                                 RECE65-SRYCD (IDX) 
+                               DISPLAY "ORCR0690 SRYKBN=" RECE64-SRYKBN
+                                       " SRYCD=" RECE65-SRYCD (IDX) 
                                MOVE    "ø«Œ≈π‘∞Ÿ•≥°º•…§¨»œ∞œ≥∞§«§π"
                                                  TO  WRK-RECEERR
                                PERFORM 500-ERR-HENSYU-SEC

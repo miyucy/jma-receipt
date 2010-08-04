@@ -1759,8 +1759,8 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                                    END-IF
                                END-IF
                            WHEN    OTHER
-                               DISPLAY "ORCR0090 SRYCD="
-                                                 RECE05-SRYCD (IDX) 
+                               DISPLAY "ORCR0090 SRYKBN="  RECE04-SRYKBN
+                                       " SRYCD=" RECE05-SRYCD (IDX) 
                                MOVE    "ø«Œ≈π‘∞Ÿ•≥°º•…§¨»œ∞œ≥∞§«§π"
                                                  TO  WRK-RECEERR
                                PERFORM 500-ERR-HENSYU-SEC
