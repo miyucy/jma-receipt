@@ -3851,6 +3851,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *                    病名マスタ検索
                            PERFORM 900-BYOMEI-READ-SEC
                        END-IF
+                   ELSE
+                       INITIALIZE              USERBYOMEI-REC
+grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
+                       MOVE    SPA-GMN-C02-BYOMEICD (IDZ)
+                                           TO  USBYO-BYOMEIINPUTCD
+                       PERFORM 900-USERBYOMEI-INV-SEC
+                       IF      FLG-USERBYOMEI    =   ZERO
+                           MOVE    USBYO-BYOMEISBT
+                                         TO  SPA-NAI-C02-BYOMEISBT (IDZ)
+                       END-IF
                    END-IF
       *
                    IF      WRK-LENGTH          =   7
