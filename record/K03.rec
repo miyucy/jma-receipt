@@ -419,5 +419,9 @@ K03	{
 			count	int;
 			item	varchar(18)[5];
 		};
+		B10	{
+	           	state	int;
+			label	varchar(10);
+		};
 	};
 };

@@ -300,4 +300,7 @@
                 04  K03-YYKHYOFLG-COUNT   PIC S9(9)   BINARY.
                 04  K03-YYKHYOFLG-ITEM
                         PIC X(18)   OCCURS  5 TIMES.
+              03  K03-B10.
+                04  K03-B10-STATE   PIC S9(9)   BINARY.
+                04  K03-B10-LABEL   PIC X(10).
 

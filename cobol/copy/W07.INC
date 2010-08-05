@@ -401,6 +401,12 @@
                     06  W07-HAIKIKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-HAIKIKBN-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-NYKHNKKBN-COMB.
+                    06  W07-NYKHNKKBN.
+                      07  W07-VALUE   PIC X(60).
+                    06  W07-NYKHNKKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-NYKHNKKBN-ITEM
+                            PIC X(60)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

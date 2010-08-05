@@ -67,6 +67,8 @@
       *  04.04.00    NACL-多々納  09/01/23  予約票発行区分追加
       *  04.05.00    NACL-多々納  09/12/15  調整金２対応
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
+      *  04.06.00    NACL-多々納  10/08/02  入院未収額変更
+      *                                     未収額・過入金額反映対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1142,6 +1144,16 @@
            COMPUTE WRK-SKYMONEY        =   SPA-GOK-SKYMONEY
                                        +   SPA-GOK-CHOSEI
                                        -   SPA-OLD-SKYMONEY
+      *
+      *!!!
+      *    一括入金・返金処理
+           MOVE    SPACE               TO  SPA-IKKATUKBN
+           IF      SPA-NAI-NYKHNKKBN   =   "0"
+               CONTINUE
+           ELSE
+               PERFORM 3106-IKKATU-INIT-SEC
+           END-IF
+      *!!!
       *    請求書発行フラグ
            IF     (SPA-GMN-HAKFLG      =   SPACE )  OR
       ****       ((SPA-GMN-HAKFLG      =   "2"   )  AND
@@ -1252,6 +1264,81 @@
            END-PERFORM
            .
        3105-MEIPRTFLG-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括入金・返金処理
+      *****************************************************************
+       3106-IKKATU-INIT-SEC             SECTION.
+      *
+      *    一括返金処理
+           IF     (SPA-NAI-NYKHNKKBN   =   "2"
+                                       OR  "3"  )
+               PERFORM 3106-HENKIN-INIT-SEC
+           END-IF
+      *    一括入金処理
+           IF     (SPA-NAI-NYKHNKKBN       =   "1"
+                                           OR  "3"  )
+           AND    (SPA-NAI-NYUKIN-JYOTAI
+                                       NOT =   "2"  )
+           AND    (SPA-GMN-NYUKINKBN   NOT =   "1"  )
+           AND    (SPA-SYORIFLG            =   ZERO )
+               PERFORM 3107-NYUKIN-INIT-SEC
+           END-IF
+           .
+       3106-IKKATU-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括返金初期編集処理
+      *****************************************************************
+       3106-HENKIN-INIT-SEC             SECTION.
+      *
+           IF      (SPA-SYORIFLG       =   1 )
+      ***      PERFORM 4091-TEI-HENKIN-SYORI-SEC
+               CONTINUE
+           ELSE
+               IF     (SPA-GMN-NYUKINKBN   =   "1" )
+                  OR  (SPA-NAI-HENFLG      =   ZERO)
+                   CONTINUE
+               ELSE
+      *            超過額を返金へ
+                   MOVE    SPA-GMN-CHOKAKIN    TO  SPA-GMN-HENKIN-X
+      *            返金チェック
+                   PERFORM 450-HENKIN-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+      *                入金額計算計算処理
+                       PERFORM 31051-NYUKIN-KEISAN-SEC
+                   END-IF
+               END-IF
+           END-IF
+           .
+       3106-HENKIN-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括入金初期編集処理
+      *****************************************************************
+       3107-NYUKIN-INIT-SEC             SECTION.
+      *
+      *    入金上限額を入金へ
+           IF      SPA-NAI-JYOGENKIN   >=  ZERO
+               MOVE    SPA-NAI-JYOGENKIN   TO  SPA-GMN-NYUKIN-X
+      *        基本チェックと画面処理
+               PERFORM 450-NYUKIN-CHK-SEC
+      *        入金額計算計算処理
+               PERFORM 31051-NYUKIN-KEISAN-SEC
+           ELSE
+               IF     (SPA-GMN-NYUKIN      >   ZERO )
+                   MOVE    ZERO            TO  SPA-GMN-NYUKIN
+                   MOVE    ZERO            TO  SPA-GMN-NYUKIN-X
+      *            基本チェックと画面処理
+                   PERFORM 450-NYUKIN-CHK-SEC
+      *            入金額計算計算処理
+                   PERFORM 31051-NYUKIN-KEISAN-SEC
+               END-IF
+           END-IF
+           .
+       3107-NYUKIN-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2216,10 +2303,13 @@
                ELSE
                    MOVE    SYS-1038-TEIKINKBN  TO  SPA-NAI-TEIKINKBN
                END-IF
+      *        入金・返金額設定区分
+               MOVE    SYS-1038-NYKHNKKBN      TO  SPA-NAI-NYKHNKKBN
            ELSE
                MOVE    "1"                     TO  SPA-GMN-NYUKINKBN
                MOVE    "1"                     TO  SPA-GMN-HAKHOUFLG
                MOVE    "0"                     TO  SPA-NAI-TEIKINKBN
+               MOVE    "0"                     TO  SPA-NAI-NYKHNKKBN
            END-IF
       *    訂正の時、入金管理区分は１のみとする
            IF      SPA-SYORIFLG        =   1
@@ -2233,6 +2323,9 @@
            END-IF
            IF      SPA-GMN-HAKHOUFLG       =   SPACE
                MOVE    "1"                 TO  SPA-GMN-HAKHOUFLG
+           END-IF
+           IF      SPA-NAI-NYKHNKKBN       =   SPACE
+               MOVE    "0"                 TO  SPA-NAI-NYKHNKKBN
            END-IF
       *    訂正で請求書合計金額の時
            IF     (SPA-SYORIFLG        =   1   )  AND
@@ -2424,11 +2517,12 @@
            END-IF
            PERFORM UNTIL     FLG-SYUNOU    NOT =  ZERO
                IF      SYU-DENPPRTYMD    <=  SPA-SRYYMD
-                   IF      SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+      *            IF      SYU-SKYMONEY  >   SYU-NYUKIN-TOTAL
+      *                未収額
                        COMPUTE WRK-NYUIN-MISYU =   WRK-NYUIN-MISYU
                                                +  (SYU-SKYMONEY
                                                -   SYU-NYUKIN-TOTAL)
-                    END-IF
+      *             END-IF
                END-IF
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 980-SYUNOU-READ-SEC
@@ -2439,14 +2533,19 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    SPACE               TO  SPA-GMN-NYUMISYU
+           MOVE    ZERO                TO  SPA-NAI-NYUMIKBN
            IF      WRK-NYUIN-MISYU NOT =   ZERO
                MOVE    WRK-NYUIN-MISYU     TO  WRK-Z9
                PERFORM 31091-KINHENSYU-SEC
-               STRING  "前回未収額（入院）：" 
+               STRING  "【入院　未収額：" 
                                            DELIMITED  BY  SIZE
                        WRK-HEN             DELIMITED  BY  SPACE
+                       "】"                DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-NYUMISYU
                END-STRING
+               IF      WRK-NYUIN-MISYU     <   ZERO
+                   MOVE    1               TO  SPA-NAI-NYUMIKBN
+               END-IF
            END-IF
            .
        3109-NYUIN-MISYU-EXT.
@@ -3164,6 +3263,12 @@
            IF      SPA-NAI-FLG         =   1
                PERFORM 5002-GMNHEN-NASI-SEC
            END-IF
+      *!!
+           IF      SPA-IKKATUKBN       =   SPACE
+               MOVE    "一括入返金"        TO  K03-B10-LABEL
+           ELSE
+               MOVE    "今回請求"          TO  K03-B10-LABEL
+           END-IF
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
@@ -3341,6 +3446,8 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  K03-HENKIN-STATE
            END-IF
+      *
+           MOVE    WIDGET-NORMAL       TO  K03-B10-STATE
       *
            .
        51O-GSRAUTH-EXT.
@@ -3544,6 +3651,10 @@
       *        返金
                WHEN    "CLICKED"       ALSO    "B09"
                     PERFORM 409-HENKIN-SYORI-SEC
+      *!!
+      *        一括入金・返金
+               WHEN    "CLICKED"       ALSO    "B10"
+                    PERFORM 410-IKKATU-SYORI-SEC
            END-EVALUATE
           .
       *
@@ -4680,6 +4791,18 @@
                    MOVE    ZERO            TO  SPA-NAI-HENFLG
                END-IF
            END-IF
+      *!!
+      *
+           IF      (SPA-SYORIFLG       =   0  )
+              AND  (SPA-NAI-NYKHNKKBN  =   "1"  OR  "3" )
+              AND  (SPA-GMN-NYUKINKBN   NOT =   "1"  )
+               IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
+                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)
+      *            入金上限額を入金へ
+                   COMPUTE SPA-GMN-NYUKIN  =   SPA-GMN-NYUKIN
+                                           +   SPA-GMN-ZENMISYU
+               END-IF
+           END-IF
       *
       *    返金額対応
            IF      SPA-GMN-HENKIN      >   ZERO
@@ -5217,8 +5340,13 @@
        409-HENKIN-SYORI-SEC             SECTION.
       *
            IF      SPA-SYORIFLG        =   ZERO
+      *        過入金なし
+               IF      SPA-GMN-CHOKAKIN    =   ZERO
+                   CONTINUE
+               ELSE
+      *
                IF      SPA-GMN-NYUKINKBN   =   "1"
-                   MOVE    "0109"           TO  SPA-ERRCD
+                   MOVE    "0113"           TO  SPA-ERRCD
                ELSE
                    IF      SPA-NAI-HENFLG      =   1
       *                超過額を返金へ
@@ -5230,6 +5358,8 @@
                            MOVE    "0112"           TO  SPA-ERRCD
                        END-IF
                    END-IF
+               END-IF
+      *
                END-IF
            ELSE
                PERFORM 4091-TEI-HENKIN-SYORI-SEC
@@ -5319,6 +5449,52 @@
            .
        4081-TEI-NYUKIN-SYORI-EXT.
            EXIT.
+      *
+      *!!!!
+      *****************************************************************
+      *    返金　処理
+      *****************************************************************
+       410-IKKATU-SYORI-SEC             SECTION.
+      *
+           IF      SPA-IKKATUKBN       =   SPACE
+      *        一括返金
+               PERFORM 409-HENKIN-SYORI-SEC
+      *        一括入金
+               PERFORM 408-NYUKIN-SYORI-SEC
+      *
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "1"                 TO  SPA-IKKATUKBN
+               END-IF
+           ELSE
+      *        過入金・未収額
+               IF     (SPA-GMN-SRYKA       =   SPA-GOK-SRYKA ) AND
+                      (SPA-GMN-HKNCOMBI    =   SPA-GOK-HKNCOMBI)
+                   MOVE    SPACE           TO  SPA-GMN-HENKIN-X
+                   MOVE    ZERO            TO  SPA-GMN-HENKIN
+                   COMPUTE WRK-NYUKIN      =  (SPA-GOK-SKYMONEY
+                                           +   SPA-GOK-CHOSEI )
+                   IF      SPA-OLD-SKYMONEY    NOT =   ZERO
+                       COMPUTE WRK-NYUKIN      =  (SPA-GOK-SKYMONEY
+                                               +   SPA-GOK-CHOSEI )
+                                               -   SPA-OLD-SKYMONEY
+                   END-IF
+                   IF      WRK-NYUKIN          >   ZERO
+                       MOVE    WRK-NYUKIN          TO  SPA-GMN-NYUKIN
+                       MOVE    SPA-GMN-NYUKIN      TO  SPA-GMN-NYUKIN-X
+                   ELSE
+                       MOVE    SPACE               TO  SPA-GMN-NYUKIN-X
+                       MOVE    ZERO                TO  SPA-GMN-NYUKIN
+                   END-IF
+      *            基本チェックと画面処理
+                   PERFORM 4102-KIHON-CHK-SEC
+      *
+                   MOVE    SPACE               TO  SPA-IKKATUKBN
+               END-IF
+           END-IF
+           .
+       410-IKKATU-SYORI-EXT.
+           EXIT.
+      *!!!!
       *
       *****************************************************************
       *    確定　処理
@@ -6724,6 +6900,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0112"
                    STRING  "一括返金は合計表示で押下して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0113"
+                   STRING  "今回請求分のみの入力です。"
+                           "過入金の返金はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

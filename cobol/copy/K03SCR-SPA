@@ -227,6 +227,7 @@
       *
       *            入院未収金合計
                    07  SPA-GMN-NYUMISYU          PIC X(40).
+                   07  SPA-NAI-NYUMIKBN          PIC 9(01).
       *
                    07  SPA-GMN-ZENMISYU          PIC S9(07).
                    07  SPA-GMN-CHOKAKIN          PIC S9(07).
@@ -294,6 +295,10 @@
                    07  SPA-CLAIM-MULTIHOST            PIC 9(01).
       *            訂正時の請求書金額
                    07  SPA-NAI-TEIKINKBN              PIC X(01).
+      *            入金・返金額設定区分
+                   07  SPA-NAI-NYKHNKKBN              PIC X(01).
+      *            一括入金・返金
+                   07  SPA-IKKATUKBN                  PIC X(01).
       *
       *    ＣＬＡＩＭ画面
            03  SPA-K03X-AREA.

@@ -522,6 +522,13 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				NYKHNKKBN_COMB	{
+					NYKHNKKBN	{
+						value	varchar(60);
+					};
+					count	int;
+					item	varchar(60)[5];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

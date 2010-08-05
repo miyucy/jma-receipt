@@ -633,6 +633,15 @@
                            11  SPA-GMN-HAIKIKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-HAIKIKBN-MAX   PIC 9(02).
+      *                入金・返金額設定区分
+                       09  SPA-GMN-NYKHNKKBN-G.
+                           11  SPA-GMN-NYKHNKKBN       PIC X(01).
+                           11  SPA-GMN-NYKHNKKBN-F1    PIC X(01).
+                           11  SPA-GMN-NYKHNKKBN-MEI   PIC X(58).
+                       09  SPA-GMN-NYKHNKKBN-COMB.
+                           11  SPA-GMN-NYKHNKKBN-LST   PIC X(60)
+                                                        OCCURS  5.
+                           11  SPA-GMN-NYKHNKKBN-MAX   PIC 9(02).
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -1809,6 +1818,14 @@
            MOVE    "2 すべての診療区分"
                                        TO  SPA-GMN-HAIKIKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-HAIKIKBN-MAX
+      *    入金・返金額初期設定区分
+           MOVE    "0 今回請求額のみ"  TO  SPA-GMN-NYKHNKKBN-LST(1)
+           MOVE    "1 一括入金反映"    TO  SPA-GMN-NYKHNKKBN-LST(2)
+           MOVE    "2 一括返金反映"
+                                       TO  SPA-GMN-NYKHNKKBN-LST(3)
+           MOVE    "3 一括入金・返金反映"
+                                       TO  SPA-GMN-NYKHNKKBN-LST(4)
+           MOVE    4                   TO  SPA-GMN-NYKHNKKBN-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -2955,6 +2972,8 @@
            MOVE    SYS-1038-RESPRVFLG      TO  SPA-GMN-RESPRV038
       *    残量廃棄区分
            MOVE    SYS-1038-HAIKIKBN       TO  SPA-GMN-HAIKIKBN
+      *    入金・返金額設定区分
+           MOVE    SYS-1038-NYKHNKKBN      TO  SPA-GMN-NYKHNKKBN
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -3234,6 +3253,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-HAIKIKBN-LST (1)
                                        TO  SPA-GMN-HAIKIKBN-G
+           END-IF
+      *    入金・返金額設定区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-NYKHNKKBN-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-NYKHNKKBN
+                                       =   SPA-GMN-NYKHNKKBN-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-NYKHNKKBN-LST (IDY)
+                                       TO  SPA-GMN-NYKHNKKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-NYKHNKKBN-LST (1)
+                                       TO  SPA-GMN-NYKHNKKBN-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -4475,6 +4511,7 @@
            MOVE    W07-RESPRV038       TO  SPA-GMN-RESPRV038-G
            MOVE    W07-HAIKIKBN        TO  SPA-GMN-HAIKIKBN-G
            MOVE    W07-YKJOKUKBN       TO  SPA-GMN-YKJOKUKBN-G
+           MOVE    W07-NYKHNKKBN       TO  SPA-GMN-NYKHNKKBN-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -4797,6 +4834,10 @@
       *            薬情・お薬手帳対象チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-YKJOKUKBN-CHK-SEC
+                   END-IF
+      *            入金・返金額設定区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-NYKHNKKBN-CHK-SEC
                    END-IF
                WHEN    "1039"
       *            請求書兼領収書発行区分（外来）チェック
@@ -6812,6 +6853,39 @@
        4108-YKJOKUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入金・返金額設定区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-NYKHNKKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-NYKHNKKBN-MAX
+               IF      SPA-GMN-NYKHNKKBN
+                                       =   SPA-GMN-NYKHNKKBN-LST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-NYKHNKKBN-LST(IDX)
+                                           TO  SPA-GMN-NYKHNKKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    327             TO  SPA-GMN-CUR
+               MOVE    "2018"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF     SPA-ERRCD            =   SPACE
+      *        今回請求分のみ入金の時、設定なし
+               IF     (SPA-GMN-SRYNYKNKNRKBN   =   "1"  )
+                AND   (SPA-GMN-NYKHNKKBN   NOT =   "0"  )
+                   MOVE    327             TO  SPA-GMN-CUR
+                   MOVE    "2019"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4108-NYKHNKKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
       *****************************************************************
        4109-SYUNYKNKNRKBN-CHK-SEC      SECTION.
@@ -8548,6 +8622,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CHGSRYSYU       TO  SYS-1038-CHGSRYSYU-FLG
            MOVE    SPA-GMN-RESPRV038       TO  SYS-1038-RESPRVFLG
            MOVE    SPA-GMN-HAIKIKBN        TO  SYS-1038-HAIKIKBN
+           MOVE    SPA-GMN-NYKHNKKBN       TO  SYS-1038-NYKHNKKBN
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -9479,6 +9554,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KAGRPFLG-MAX
                                        TO  W07-KAGRPFLG-COUNT
       *
+      *    入金・返金額設定区分（診療行為機能情報）
+           MOVE    SPA-GMN-NYKHNKKBN-G TO  W07-NYKHNKKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-NYKHNKKBN-MAX
+               MOVE    SPA-GMN-NYKHNKKBN-LST (IDX)
+                                       TO  W07-NYKHNKKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-NYKHNKKBN-MAX
+                                       TO  W07-NYKHNKKBN-COUNT
+      *
       *    入金管理区分（収納機能情報）
            MOVE    SPA-GMN-SYUNYKNKNRKBN-G TO  W07-SYUNYKNKNRKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -10232,6 +10317,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2017"
                    MOVE    "残量廃棄区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2018"
+                   MOVE    "入金・返金額設定区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "2019"
+                   STRING  "入金の取り扱いが今回請求分のみ入金です。"
+                           "入金・返金額設定はできません。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -10582,6 +10676,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "OKUSURIKBN"       TO   MCP-WIDGET
                WHEN    326
                    MOVE  "YKJOKUKBN"       TO   MCP-WIDGET
+               WHEN    327
+                   MOVE  "NYKHNKKBN"       TO   MCP-WIDGET
       *収納情報
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -10925,6 +11021,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "OKUSURIKBN"
                    MOVE    326             TO  SPA-GMN-CUR
                WHEN    "YKJOKUKBN"
+                   MOVE    327             TO  SPA-GMN-CUR
+               WHEN    "NYKHNKKBN"
                    MOVE    999             TO  SPA-GMN-CUR
       *
       *収納情報
