@@ -65,6 +65,22 @@ W17	{
 			count	int;
 			item	varchar(20)[5];
 		};
+		FTSKETACOMBO	{
+			FTSKETA	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		FTSKETAMINCOMBO	{
+			FTSKETAMIN	{
+				value	varchar(19);
+				state	int;
+			};
+			count	int;
+			item	varchar(19)[10];
+			state	int;
+		};
 		JKSHANKAKUCOMBO	{
 			JKSHANKAKU	{
 				value	varchar(20);
@@ -85,6 +101,22 @@ W17	{
 			};
 			count	int;
 			item	varchar(20)[5];
+		};
+		JKSKETACOMBO	{
+			JKSKETA	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		JKSKETAMINCOMBO	{
+			JKSKETAMIN	{
+				value	varchar(19);
+				state	int;
+			};
+			count	int;
+			item	varchar(19)[20];
+			state	int;
 		};
 		YUKOSTYMD	{
 			value	varchar(10);

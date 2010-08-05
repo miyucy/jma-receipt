@@ -345,9 +345,19 @@
                05  SRH-1040-FTNJHANKAKUCHK         PIC X(01).
                05  SRH-1040-FTNJZENKAKUCHK         PIC X(01).
                05  SRH-1040-FTNJNUMERICCHK         PIC X(01).
+               05  SRH-1040-FTNJKETACHK            PIC X(01).
+               05  SRH-1040-FTNJKETAMIN-X.
+                   07  SRH-1040-FTNJKETAMIN        PIC 9(02).
+               05  SRH-1040-FTNJKETAMAX-X.
+                   07  SRH-1040-FTNJKETAMAX        PIC 9(02).
                05  SRH-1040-JKYSHANKAKUCHK         PIC X(01).
                05  SRH-1040-JKYSZENKAKUCHK         PIC X(01).
                05  SRH-1040-JKYSNUMERICCHK         PIC X(01).
+               05  SRH-1040-JKYSKETACHK            PIC X(01).
+               05  SRH-1040-JKYSKETAMIN-X.
+                   07  SRH-1040-JKYSKETAMIN        PIC 9(02).
+               05  SRH-1040-JKYSKETAMAX-X.
+                   07  SRH-1040-JKYSKETAMAX        PIC 9(02).
                05  SRH-1040-MAX                    PIC 9(05).
                05  SRH-1040-OCC                    OCCURS  100.
                    07  SRH-1040-KOHNUML            PIC X(03).
@@ -356,9 +366,15 @@
                    07  SRH-1040-FTNJHANKAKUCHKL    PIC X(01).
                    07  SRH-1040-FTNJZENKAKUCHKL    PIC X(01).
                    07  SRH-1040-FTNJNUMERICCHKL    PIC X(01).
+                   07  SRH-1040-FTNJKETACHKL       PIC X(01).
+                   07  SRH-1040-FTNJKETAMINL       PIC 9(02).
+                   07  SRH-1040-FTNJKETAMAXL       PIC 9(02).
                    07  SRH-1040-JKYSHANKAKUCHKL    PIC X(01).
                    07  SRH-1040-JKYSZENKAKUCHKL    PIC X(01).
                    07  SRH-1040-JKYSNUMERICCHKL    PIC X(01).
+                   07  SRH-1040-JKYSKETACHKL       PIC X(01).
+                   07  SRH-1040-JKYSKETAMINL       PIC 9(02).
+                   07  SRH-1040-JKYSKETAMAXL       PIC 9(02).
            03  SRH-1102-DAT.
                05  SRH-1102-HKNJANUM               PIC X(08).
                05  SRH-1102-HKNNUM                 PIC X(03).

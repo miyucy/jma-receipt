@@ -1707,12 +1707,24 @@
                                    TO  SRH-1040-FTNJZENKAKUCHKL (IDX5)
                MOVE    SYS-1040-FTNJNUMERICCHK
                                    TO  SRH-1040-FTNJNUMERICCHKL (IDX5)
+               MOVE    SYS-1040-FTNJKETACHK
+                                   TO  SRH-1040-FTNJKETACHKL (IDX5)
+               MOVE    SYS-1040-FTNJKETAMIN
+                                   TO  SRH-1040-FTNJKETAMINL (IDX5)
+               MOVE    SYS-1040-FTNJKETAMAX
+                                   TO  SRH-1040-FTNJKETAMAXL (IDX5)
                MOVE    SYS-1040-JKYSHANKAKUCHK
                                    TO  SRH-1040-JKYSHANKAKUCHKL (IDX5)
                MOVE    SYS-1040-JKYSZENKAKUCHK
                                    TO  SRH-1040-JKYSZENKAKUCHKL (IDX5)
                MOVE    SYS-1040-JKYSNUMERICCHK
                                    TO  SRH-1040-JKYSNUMERICCHKL (IDX5)
+               MOVE    SYS-1040-JKYSKETACHK
+                                   TO  SRH-1040-JKYSKETACHKL (IDX5)
+               MOVE    SYS-1040-JKYSKETAMIN
+                                   TO  SRH-1040-JKYSKETAMINL (IDX5)
+               MOVE    SYS-1040-JKYSKETAMAX
+                                   TO  SRH-1040-JKYSKETAMAXL (IDX5)
       *
       *        システム管理マスタ読込処理
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -4588,16 +4600,46 @@
       *
                MOVE    PTKOH-FTNJANUM  TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
-               IF  ( FLG-KANACHK       NOT =   ZERO )
-                   PERFORM 800-KANA-CHK-SEC
-                   IF  ( FLG-KANACHK   NOT =   ZERO )
+               IF  ( FLG-KANACHK       =   ZERO )
+                   IF    ( SRH-1040-FTNJKETACHK    =   "0" )
+                       IF    ( WRK-MAXLEN  >=    SRH-1040-FTNJKETAMIN )
+                        AND  ( WRK-MAXLEN  <=    SRH-1040-FTNJKETAMAX )
+                           CONTINUE
+                       ELSE
+                           MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                           MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                           MOVE    "030011"        TO  WRK-ERRCD
+                           MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                           INITIALIZE              TERRINF-AREA
+                           PERFORM 212-ERRMES-HEN-SEC
+                       END-IF
+                   END-IF
+               ELSE
+                   PERFORM 800-ZENKAKU-CHK-SEC
+                   IF  ( FLG-KANACHK   =   ZERO )
+                       IF    ( SRH-1040-FTNJKETACHK    =   "0" )
+                           IF    ( WRK-MAXLEN
+                                     >=    SRH-1040-FTNJKETAMIN * 2)
+                            AND  ( WRK-MAXLEN
+                                     <=    SRH-1040-FTNJKETAMAX * 2 )
+                               CONTINUE
+                           ELSE
+                               MOVE    PTKOH-KOHNUM  TO  SRH-KOHNUM
+                               MOVE    PTKOH-PAYKBN  TO  SRH-PAYKBN
+                               MOVE    "030011"      TO  WRK-ERRCD
+                               MOVE    SPACE         TO  WRK-ERRMES-PLUS
+                               INITIALIZE                TERRINF-AREA
+                               PERFORM 212-ERRMES-HEN-SEC
+                           END-IF
+                       END-IF
+                   ELSE
       *
                        MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                        MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                        IF  ( FLG-KANACHK   =   2 )
                            MOVE    "030005"    TO  WRK-ERRCD
                        ELSE
-                           MOVE    "030003"    TO  WRK-ERRCD
+                           MOVE    "030011"    TO  WRK-ERRCD
                        END-IF
                        MOVE    SPACE           TO  WRK-ERRMES-PLUS
                        INITIALIZE              TERRINF-AREA
@@ -4634,11 +4676,11 @@
                    IF    ( ORCSSTR-STRING1 =   SPACE )
                        CONTINUE
                    ELSE
-                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
-                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                       MOVE    "030011"        TO  WRK-ERRCD
-                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
-                       INITIALIZE              TERRINF-AREA
+                       MOVE    PTKOH-KOHNUM  TO  SRH-KOHNUM
+                       MOVE    PTKOH-PAYKBN  TO  SRH-PAYKBN
+                       MOVE    "030011"      TO  WRK-ERRCD
+                       MOVE    SPACE         TO  WRK-ERRMES-PLUS
+                       INITIALIZE                TERRINF-AREA
                        PERFORM 212-ERRMES-HEN-SEC
                    END-IF
                END-IF
@@ -4673,16 +4715,46 @@
       *
                MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
-               IF  ( FLG-KANACHK       NOT =   ZERO )
-                   PERFORM 800-KANA-CHK-SEC
-                   IF  ( FLG-KANACHK   NOT =   ZERO )
+               IF  ( FLG-KANACHK       =   ZERO )
+                   IF    ( SRH-1040-JKYSKETACHK    =   "0" )
+                       IF    ( WRK-MAXLEN  >=    SRH-1040-JKYSKETAMIN )
+                        AND  ( WRK-MAXLEN  <=    SRH-1040-JKYSKETAMAX )
+                           CONTINUE
+                       ELSE
+                           MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                           MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                           MOVE    "030012"        TO  WRK-ERRCD
+                           MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                           INITIALIZE              TERRINF-AREA
+                           PERFORM 212-ERRMES-HEN-SEC
+                       END-IF
+                   END-IF
+               ELSE
+                   PERFORM 800-ZENKAKU-CHK-SEC
+                   IF  ( FLG-KANACHK   =   ZERO )
+                       IF    ( SRH-1040-JKYSKETACHK    =   "0" )
+                           IF    ( WRK-MAXLEN
+                                     >=    SRH-1040-JKYSKETAMIN * 2)
+                            AND  ( WRK-MAXLEN
+                                     <=    SRH-1040-JKYSKETAMAX * 2 )
+                               CONTINUE
+                           ELSE
+                               MOVE    PTKOH-KOHNUM  TO  SRH-KOHNUM
+                               MOVE    PTKOH-PAYKBN  TO  SRH-PAYKBN
+                               MOVE    "030012"      TO  WRK-ERRCD
+                               MOVE    SPACE         TO  WRK-ERRMES-PLUS
+                               INITIALIZE                TERRINF-AREA
+                               PERFORM 212-ERRMES-HEN-SEC
+                           END-IF
+                       END-IF
+                   ELSE
       *
                        MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
                        MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                        IF  ( FLG-KANACHK   =   2 )
                            MOVE    "030006"    TO  WRK-ERRCD
                        ELSE
-                           MOVE    "030004"    TO  WRK-ERRCD
+                           MOVE    "030012"    TO  WRK-ERRCD
                        END-IF
                        MOVE    SPACE           TO  WRK-ERRMES-PLUS
                        INITIALIZE              TERRINF-AREA
@@ -10513,6 +10585,28 @@
                                            SRH-1040-JKYSHANKAKUCHK
                                            SRH-1040-JKYSZENKAKUCHK
                                            SRH-1040-JKYSNUMERICCHK
+           MOVE    "1"                 TO  SRH-1040-FTNJKETACHK
+           MOVE    ZERO                TO  SRH-1040-FTNJKETAMIN
+                                           SRH-1040-FTNJKETAMAX
+           MOVE    "1"                 TO  SRH-1040-JKYSKETACHK
+           MOVE    ZERO                TO  SRH-1040-JKYSKETAMIN
+                                           SRH-1040-JKYSKETAMAX
+           IF    ( SRH-1040-KOHNUM(1:1)    =  "0" )
+      *
+               MOVE    "1"             TO  SRH-1040-FTNJHANKAKUCHK
+               MOVE    "2"             TO  SRH-1040-FTNJZENKAKUCHK
+               MOVE    "1"             TO  SRH-1040-FTNJNUMERICCHK
+               MOVE    "1"             TO  SRH-1040-JKYSHANKAKUCHK
+               MOVE    "2"             TO  SRH-1040-JKYSZENKAKUCHK
+               MOVE    "1"             TO  SRH-1040-JKYSNUMERICCHK
+      *
+               MOVE    "0"             TO  SRH-1040-FTNJKETACHK
+               MOVE     08             TO  SRH-1040-FTNJKETAMIN
+               MOVE     08             TO  SRH-1040-FTNJKETAMAX
+               MOVE    "0"             TO  SRH-1040-JKYSKETACHK
+               MOVE     07             TO  SRH-1040-JKYSKETAMIN
+               MOVE     07             TO  SRH-1040-JKYSKETAMAX
+           END-IF
       *
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1040-MAX )
@@ -10527,12 +10621,34 @@
                                        TO  SRH-1040-FTNJZENKAKUCHK
                    MOVE    SRH-1040-FTNJNUMERICCHKL  (SRH-IDX)
                                        TO  SRH-1040-FTNJNUMERICCHK
+                   MOVE    SRH-1040-FTNJKETACHKL (SRH-IDX)
+                                       TO  SRH-1040-FTNJKETACHK
+                   IF    ( SRH-1040-FTNJKETACHK    =   "0" )
+                       MOVE    SRH-1040-FTNJKETAMINL (SRH-IDX)
+                                       TO  SRH-1040-FTNJKETAMIN-X
+                       MOVE    SRH-1040-FTNJKETAMAXL (SRH-IDX)
+                                       TO  SRH-1040-FTNJKETAMAX-X
+                   ELSE
+                       MOVE    ZERO    TO  SRH-1040-FTNJKETAMIN-X
+                                           SRH-1040-FTNJKETAMAX-X
+                   END-IF
                    MOVE    SRH-1040-JKYSHANKAKUCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSHANKAKUCHK
                    MOVE    SRH-1040-JKYSZENKAKUCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSZENKAKUCHK
                    MOVE    SRH-1040-JKYSNUMERICCHKL  (SRH-IDX)
                                        TO  SRH-1040-JKYSNUMERICCHK
+                   MOVE    SRH-1040-JKYSKETACHKL (SRH-IDX)
+                                       TO  SRH-1040-JKYSKETACHK
+                   IF    ( SRH-1040-JKYSKETACHK    =   "0" )
+                       MOVE    SRH-1040-JKYSKETAMINL (SRH-IDX)
+                                       TO  SRH-1040-JKYSKETAMIN-X
+                       MOVE    SRH-1040-JKYSKETAMAXL (SRH-IDX)
+                                       TO  SRH-1040-JKYSKETAMAX-X
+                   ELSE
+                       MOVE    ZERO    TO  SRH-1040-JKYSKETAMIN-X
+                                           SRH-1040-JKYSKETAMAX-X
+                   END-IF
                    MOVE    SRH-1040-MAX
                                        TO  SRH-IDX
                END-IF
@@ -11302,6 +11418,7 @@
        800-KANA-CHK-SEC                    SECTION.
       *
            MOVE    ZERO                TO  FLG-KANACHK
+           MOVE    ZERO                TO  WRK-MAXLEN
       *
            INITIALIZE                  ORCXKANACONVAREA
       *
@@ -11317,6 +11434,7 @@
                                        TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+           MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
       *
            .
        800-KANA-CHK-EXT.
@@ -11327,6 +11445,7 @@
        800-KATAKANA-CHK-SEC                    SECTION.
       *
            MOVE    ZERO                TO  FLG-KANACHK
+           MOVE    ZERO                TO  WRK-MAXLEN
       *
            INITIALIZE                  ORCXKANACONVAREA
       *
@@ -11357,6 +11476,7 @@
                                        TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+           MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
       *
            .
        800-KATAKANA-CHK-EXT.
@@ -11367,6 +11487,7 @@
        800-HANKAKU-CHK-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-KANACHK
+           MOVE    ZERO                TO  WRK-MAXLEN
       *
            INITIALIZE                  ORCXKANACONVAREA
       *
@@ -11382,6 +11503,7 @@
                                        TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+           MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
       *
            .
        800-HANKAKU-CHK-EXT.

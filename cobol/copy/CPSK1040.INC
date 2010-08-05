@@ -60,8 +60,26 @@
       *受給者番号数字以外の文字許可
                05  SYS-1040-JKYSNUMERICCHK
                                         PIC  X(01).
+      *負担者番号桁数チェック
+               05  SYS-1040-FTNJKETACHK
+                                        PIC  X(01).
+      *負担者番号桁数最小
+               05  SYS-1040-FTNJKETAMIN
+                                        PIC  X(02).
+      *負担者番号桁数最大
+               05  SYS-1040-FTNJKETAMAX
+                                        PIC  X(02).
+      *受給者番号桁数チェック
+               05  SYS-1040-JKYSKETACHK
+                                        PIC  X(01).
+      *受給者番号桁数最小
+               05  SYS-1040-JKYSKETAMIN
+                                        PIC  X(02).
+      *受給者番号桁数最大
+               05  SYS-1040-JKYSKETAMAX
+                                        PIC  X(02).
       *予備
-               05                       PIC  X(492).
+               05                       PIC  X(482).
       *端末ＩＤ
            03  SYS-1040-TERMID          PIC  X(16).
       *オペーレータＩＤ

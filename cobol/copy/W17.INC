@@ -57,6 +57,17 @@
                 04  W17-FTSNUMERIC       PIC X(20).
                 04  W17-FTSNUMERIC-COUNT PIC S9(9)   BINARY.
                 04  W17-FTSNUMERIC-ITEM  PIC X(20)   OCCURS  5 TIMES.
+            03  W17-FTSKETACOMBO.
+                04  W17-FTSKETA          PIC X(20).
+                04  W17-FTSKETA-COUNT    PIC S9(9)   BINARY.
+                04  W17-FTSKETA-ITEM     PIC X(20)   OCCURS  5 TIMES.
+            03  W17-FTSKETAMINCOMBO.
+                04  W17-FTSKETAMIN       PIC X(19).
+                04  W17-FTSKETAMIN-STATE PIC S9(9)   BINARY.
+                04  W17-FTSKETAMIN-COUNT PIC S9(9)   BINARY.
+                04  W17-FTSKETAMIN-ITEM  PIC X(19)   OCCURS  10 TIMES.
+                04  W17-FTSKETAMIN-ITEM-STATE
+                                         PIC S9(9)   BINARY.
             03  W17-JKSHANKAKUCOMBO.
                 04  W17-JKSHANKAKU       PIC X(20).
                 04  W17-JKSHANKAKU-COUNT PIC S9(9)   BINARY.
@@ -69,5 +80,16 @@
                 04  W17-JKSNUMERIC       PIC X(20).
                 04  W17-JKSNUMERIC-COUNT PIC S9(9)   BINARY.
                 04  W17-JKSNUMERIC-ITEM  PIC X(20)   OCCURS  5 TIMES.
+            03  W17-JKSKETACOMBO.
+                04  W17-JKSKETA          PIC X(20).
+                04  W17-JKSKETA-COUNT    PIC S9(9)   BINARY.
+                04  W17-JKSKETA-ITEM     PIC X(20)   OCCURS  5 TIMES.
+            03  W17-JKSKETAMINCOMBO.
+                04  W17-JKSKETAMIN       PIC X(19).
+                04  W17-JKSKETAMIN-STATE PIC S9(9)   BINARY.
+                04  W17-JKSKETAMIN-COUNT PIC S9(9)   BINARY.
+                04  W17-JKSKETAMIN-ITEM  PIC X(19)   OCCURS  20 TIMES.
+                04  W17-JKSKETAMIN-ITEM-STATE
+                                         PIC S9(9)   BINARY.
             03  W17-YUKOSTYMD       PIC X(10).
             03  W17-YUKOEDYMD       PIC X(10).
