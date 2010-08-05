@@ -496,6 +496,8 @@ SYSLOG("write single image");
 			doEncodeStructured = 1;
 		}
 		QRcode_free(code);
+	} else {
+		doEncodeStructured = 1;
 	}
 	if (doEncodeStructured) {
 		head = QRcode_encodeStringStructured(buf2, version, level, hint ,1);
@@ -526,7 +528,7 @@ SYSLOG("write multi images");
 		memcpy(CTX(ctx, OFFSET_RET_SYMBOLS), buf, SIZE_RET_SYMBOLS);
 		QRcode_List_free(head);
 	}
-#if 0
+#if 1
 	print_ctx(ctx);
 #endif
 SYSLOG("end");
