@@ -68,6 +68,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -81,6 +82,11 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-MEISAISU        PIC 9(01).
+           03  WRK-YKZ-MEISAISU    PIC 9(01).
+           03  WRK-YKZ-SRYCDTOTAL  PIC 9(14).
+           03  WRK-SRYCDX          PIC X(09).
+           03  WRK-SRYCD9          REDEFINES    WRK-SRYCDX
+                                   PIC 9(09).
       *
       *
       *****************************************************************
@@ -897,6 +903,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -947,6 +954,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        2   )    AND
@@ -1004,6 +1012,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1054,6 +1063,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        2   )    AND
@@ -1111,6 +1121,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1182,6 +1193,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1259,6 +1271,7 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1355,6 +1368,58 @@
       *
            .
        300-ZAINUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    手技または加算と同一剤内で入力された薬剤コードの振り落とし
+      *****************************************************************
+       400-YKZ-ERASE-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  WRK-YKZ-MEISAISU
+           MOVE    ZERO                TO  WRK-YKZ-SRYCDTOTAL
+      *
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-SRYACT-SELECT-SEC
+           IF      FLG-SRYACT     =    ZERO
+               MOVE     "tbl_sryact"   TO  MCP-TABLE
+               MOVE     "key2"         TO  MCP-PATHNAME
+               PERFORM   910-SRYACT-READ-SEC
+               PERFORM    UNTIL   (FLG-SRYACT    =    1)
+                   PERFORM    VARYING   IDX4    FROM   1   BY  1
+                              UNTIL     IDX4    >    5
+                       IF    SRY-SRYCD(IDX4)(1:1)   =  "6"
+                             ADD    1     TO    WRK-YKZ-MEISAISU
+                             MOVE   SRY-SRYCD(IDX4)
+                                          TO    WRK-SRYCDX
+                             ADD    WRK-SRYCD9
+                                          TO    WRK-YKZ-SRYCDTOTAL
+                       END-IF
+                   END-PERFORM
+                   MOVE     "tbl_sryact"   TO  MCP-TABLE
+                   MOVE     "key2"         TO  MCP-PATHNAME
+                   PERFORM   910-SRYACT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療行為クローズ
+           MOVE     "tbl_sryact"   TO  MCP-TABLE
+           MOVE     "key2"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           COMPUTE   ACCT-MEISAISU   =   ACCT-MEISAISU  -
+                                         WRK-YKZ-MEISAISU
+           COMPUTE   ACCT-SRYCDTOTAL =   ACCT-SRYCDTOTAL  -
+                                         WRK-YKZ-SRYCDTOTAL
+      *
+           .
+       400-YKZ-ERASE-EXT.
            EXIT.
       *
       *****************************************************************
