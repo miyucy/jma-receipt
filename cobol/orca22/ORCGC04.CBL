@@ -165,6 +165,9 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
+      *    病名システム予約コードテーブル
+           COPY    "CMBYOMEICD.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1038,18 +1041,40 @@
                                            TO
                                        SPA-NAI-C04-BYOMEI-O (IDZ IDY)
                        ELSE                           
-                           MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDY)
-                                           TO   BYO-BYOMEICD
-                           PERFORM 900-BYOMEI-READ-SEC
-                           IF      FLG-BYOMEI        =   ZERO
-                               MOVE    BYO-BYOMEI
-                                           TO
-                                   SPA-NAI-C04-BYOMEI-O    (IDZ IDY)
+                           IF  (   SPA-NAI-C04-BYOMEICD-O (IDZ IDY)(1:3)
+                                               =   "ZZZ"    )
+                           AND ( ( SPA-NAI-C04-BYOMEICD-O (IDZ IDY)(4:1)
+                                               <   "1" ) OR 
+                                 ( SPA-NAI-C04-BYOMEICD-O (IDZ IDY)(4:1)
+                                               =   "C" )    )
+      *                        予約病名コード検索
+                               SET     TBL-BYOMEICD-IDX  TO  1
+                               SEARCH  TBL-BYOMEICD-OCC
+                                               VARYING TBL-BYOMEICD-IDX
+                                   AT  END
+                                       MOVE    "■■■"    TO
+                                           SPA-NAI-C04-BYOMEI-O(IDZ IDY)
+                                   WHEN    SPA-NAI-C04-BYOMEICD-O
+                                                           (IDZ IDY)
+                                               =   TBL-YYK-BYOMEICD
+                                                      (TBL-BYOMEICD-IDX)
+                                       MOVE    TBL-YYK-BYOMEI 
+                                                      (TBL-BYOMEICD-IDX)
+                                                   TO
+                                           SPA-NAI-C04-BYOMEI-O(IDZ IDY)
+                               END-SEARCH
                            ELSE
-                               MOVE    "■■■"
-                                           TO
-                                   SPA-NAI-C04-BYOMEI-O    (IDZ IDY)
-                           END-IF 
+                               MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDY)
+                                               TO   BYO-BYOMEICD
+                               PERFORM 900-BYOMEI-READ-SEC
+                               IF      FLG-BYOMEI        =   ZERO
+                                   MOVE    BYO-BYOMEI  TO
+                                           SPA-NAI-C04-BYOMEI-O(IDZ IDY)
+                               ELSE
+                                   MOVE    "■■■"    TO
+                                           SPA-NAI-C04-BYOMEI-O(IDZ IDY)
+                               END-IF
+                           END-IF
                        END-IF    
                    END-PERFORM   
       *            廃止年月日・移行先がある病名のチェック

@@ -4297,26 +4297,50 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                                            TO
                                        SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
                        ELSE                           
-                           MOVE    SPA-NAI-C02-BYOMEICD-O (IDZ IDXX)
-                                           TO   BYO-BYOMEICD
-                           PERFORM 900-BYOMEI-READ-SEC
-                           IF      FLG-BYOMEI        =   ZERO
-                               MOVE    BYO-BYOMEI
-                                           TO
-                                   SPA-NAI-C02-BYOMEI-O    (IDZ IDXX)
-                               MOVE    BYO-TANDOKUKBN
-                                           TO
-                                   SPA-NAI-C02-TANDOKUKBN-O(IDZ IDXX)
-                               IF    ( SPA-NAI-C02-HAISIYMD (IDZ)
-                                               =   ZERO                )
-                               AND   ( BYO-HAISIYMD
-                                           NOT =   ZERO    AND ALL "9" )
-                                   MOVE    BYO-HAISIYMD    TO
-                                           SPA-NAI-C02-HAISIYMD (IDZ)
-                               END-IF
+                           IF  (   SPA-NAI-C02-BYOMEICD-O(IDZ IDXX)(1:3)
+                                               =   "ZZZ"    )
+                           AND ( ( SPA-NAI-C02-BYOMEICD-O(IDZ IDXX)(4:1)
+                                               <   "1" ) OR 
+                                 ( SPA-NAI-C02-BYOMEICD-O(IDZ IDXX)(4:1)
+                                               =   "C" )    )
+      *                        Í½ÌóÉÂÌ¾¥³¡¼¥É¸¡º÷
+                               SET     TBL-BYOMEICD-IDX  TO  1
+                               SEARCH  TBL-BYOMEICD-OCC
+                                               VARYING TBL-BYOMEICD-IDX
+                                   AT  END
+                                       MOVE    "¢£¢£¢£"    TO
+                                         SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                                   WHEN    SPA-NAI-C02-BYOMEICD-O
+                                                              (IDZ IDXX)
+                                               =   TBL-YYK-BYOMEICD
+                                                      (TBL-BYOMEICD-IDX)
+                                       MOVE    TBL-YYK-BYOMEI 
+                                                      (TBL-BYOMEICD-IDX)
+                                                   TO
+                                         SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
+                               END-SEARCH
                            ELSE
-                               MOVE    "¢£¢£¢£"        TO
+                               MOVE    SPA-NAI-C02-BYOMEICD-O (IDZ IDXX)
+                                               TO   BYO-BYOMEICD
+                               PERFORM 900-BYOMEI-READ-SEC
+                               IF      FLG-BYOMEI        =   ZERO
+                                   MOVE    BYO-BYOMEI
+                                               TO
+                                     SPA-NAI-C02-BYOMEI-O    (IDZ IDXX)
+                                   MOVE    BYO-TANDOKUKBN
+                                               TO
+                                     SPA-NAI-C02-TANDOKUKBN-O(IDZ IDXX)
+                                   IF    ( SPA-NAI-C02-HAISIYMD (IDZ)
+                                               =   ZERO                )
+                                   AND   ( BYO-HAISIYMD
+                                           NOT =   ZERO    AND ALL "9" )
+                                       MOVE    BYO-HAISIYMD    TO
+                                           SPA-NAI-C02-HAISIYMD (IDZ)
+                                   END-IF
+                               ELSE
+                                   MOVE    "¢£¢£¢£"        TO
                                        SPA-NAI-C02-BYOMEI-O  (IDZ IDXX)
+                               END-IF
                            END-IF 
                        END-IF    
                    END-PERFORM
