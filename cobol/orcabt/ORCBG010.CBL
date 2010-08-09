@@ -115,6 +115,8 @@
       *    作業領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
+           03  WRK-TOUKEIERR           PIC X(200).
+           03  WRK-REC                 PIC X(20000).
       *
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -141,12 +143,49 @@
            03  WRK-Z5                  PIC ZZZZ9.
            03  WRK-Z6                  PIC ZZZZZ9.
            03  WRK-Z11                 PIC ---,---,--9.
+           03  WRK-CSV                 PIC --------9.
       *
            03  WRK-SAKUSEIBI           PIC X(22).
            03  WRK-KIKAN               PIC X(40).
            03  WRK-MES                 PIC X(50).
            03  WRK-BIKOU               PIC X(30).
            03  WRK-SRYKA               PIC X(02).
+      *
+      *    出力先ファイル名
+       01  WRK-TO-DATA-G.
+           03  WRK-TO-DATA.
+               05  WRK-TO-DATA-HOSPNUM PIC 9(02).
+               05  FILLER              PIC X(15)   VALUE
+                                                   "misyuukin_list_".
+               05  WRK-TO-DATA-KIKAN   PIC X(21).
+           03  WRK-TO-DATA1.
+               05  WRK-TO-DATA-YMD     PIC X(06).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+           03  WRK-TO-DATA2.
+               05  WRK-TO-DATA-STRYMD  PIC X(06).
+               05  FILLER              PIC X(01)   VALUE   "-".
+               05  WRK-TO-DATA-ENDYMD  PIC X(06).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+      *
+      *    ヘッダー情報
+       01  CSV-HEAD-01.
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "患者名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "未収金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "最終入金日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "最終受信日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "最終受診科".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "電話番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "備考".
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                PIC 9(10).
@@ -220,6 +259,9 @@
       *
       *    最終受診日取得
            COPY    "CPORCSLASTYMD.INC".
+      *
+      *    統計ＣＳＶ制御サブ
+           COPY    "CPORCSTOUKEICSV.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -423,6 +465,19 @@
            IF      WRK-YUKOENDYMD  NOT =   "99999999"
                PERFORM 1201-PARA-SYORIKBN-CHECK-SEC
            END-IF
+      *
+           DISPLAY "WRK-YUKOSTRYMD=" WRK-YUKOSTRYMD
+           DISPLAY "WRK-YUKOENDYMD=" WRK-YUKOENDYMD
+           MOVE    SPACE           TO  WRK-TO-DATA-KIKAN
+           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
+           IF      WRK-YUKOSTRYMD  =   WRK-YUKOENDYMD
+               MOVE    WRK-YUKOSTRYMD  TO  WRK-TO-DATA-YMD
+               MOVE    WRK-TO-DATA1    TO  WRK-TO-DATA-KIKAN
+           ELSE
+               MOVE    WRK-YUKOSTRYMD  TO  WRK-TO-DATA-STRYMD
+               MOVE    WRK-YUKOENDYMD  TO  WRK-TO-DATA-ENDYMD
+               MOVE    WRK-TO-DATA2    TO  WRK-TO-DATA-KIKAN
+           END-IF
            .
       *
        120-PARA-CHECK-EXT.
@@ -605,6 +660,12 @@
       *    統計ファイル読み込み
            PERFORM 900-TOKEI-NEXT-SEC
       *
+           IF      FLG-TOKEI   =   ZERO
+      *        ＣＳＶ出力処理
+               INITIALIZE                  WRK-REC
+               MOVE    CSV-HEAD-01     TO  WRK-REC
+               PERFORM 500-TOUKEICSV-SEC
+           END-IF
       *    統計データがなくなるまで
            PERFORM UNTIL   FLG-TOKEI   =   1
       *        帳票編集<見出し>処理
@@ -755,9 +816,33 @@
       *        未収金額セット
                MOVE    TOKEI-MISYU     TO  WRK-Z11
                MOVE    WRK-Z11         TO  HCM38-MISYU(CNT-LINE)
+               MOVE    TOKEI-MISYU     TO  WRK-CSV
       *
                COMPUTE WRK-GSURYO      =   WRK-GSURYO
                                        +   TOKEI-MISYU
+      *
+               INITIALIZE                  WRK-REC
+               STRING  PTNUM-PTNUM         DELIMITED  BY  SIZE
+                       ","                 DELIMITED  BY  SIZE
+                       PTINF-NAME          DELIMITED  BY  SPACE
+                       ","                 DELIMITED  BY  SIZE
+                       PTINF-KANANAME      DELIMITED  BY  SPACE
+                       ","                 DELIMITED  BY  SIZE
+                       WRK-CSV             DELIMITED  BY  SIZE
+                       ","                 DELIMITED  BY  SIZE
+                       BD003-NYUHEN-YMD    DELIMITED  BY  SIZE
+                       ","                 DELIMITED  BY  SIZE
+                       ORCSLASTYMD-LASTYMD DELIMITED  BY  SIZE
+                       ","                 DELIMITED  BY  SIZE
+                       SYS-1005-SRYKANAME1(1:8)
+                                           DELIMITED  BY  SIZE
+                       ","                 DELIMITED  BY  SIZE
+                       PTINF-HOME-TEL1     DELIMITED  BY  SIZE
+                       ","                 DELIMITED  BY  SIZE
+                       WRK-BIKOU           DELIMITED  BY  SIZE
+                       INTO                WRK-REC
+               END-STRING
+               PERFORM 500-TOUKEICSV-SEC
       *
       *        統計ファイル読み込み
                PERFORM 900-TOKEI-NEXT-SEC
@@ -1204,6 +1289,66 @@
       *
            .
        800-ERRMSG-EDIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計ＣＳＶ出力処理
+      *****************************************************************
+       500-TOUKEICSV-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSTOUKEICSVAREA
+           MOVE    "INS"           TO  STOUKEICSV-MODE
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  STOUKEICSV-TBL-KEY
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  STOUKEICSV-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  STOUKEICSV-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  STOUKEICSV-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  STOUKEICSV-SHELLID
+           MOVE    PARA-YUKOSTRYM  TO  STOUKEICSV-SRYYM
+      *     MOVE    WRK-PARA-NYUGAIKBN
+      *                             TO  STOUKEICSV-NYUGAIKBN
+           MOVE    ZERO            TO  STOUKEICSV-PTID
+           MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
+           MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
+           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
+           MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
+           MOVE    "未収金一覧表ＣＳＶ作成"
+                                   TO  STOUKEICSV-TITLE
+      *
+           CALL    "ORCSTOUKEICSV"     USING
+                                       ORCSTOUKEICSVAREA
+                                       SPA-AREA
+           IF      STOUKEICSV-RETURN   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
+                                      TO  WRK-TOUKEIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+           .
+      *
+       500-TOUKEICSV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    異常終了処理
+      *****************************************************************
+       500-COBABORT-SEC          SECTION.
+      *
+           MOVE    SPACE           TO  WRK-RECEERR
+           STRING  "ORCBG010 "     DELIMITED  BY  SIZE
+                   WRK-TOUKEIERR   DELIMITED  BY  SIZE
+                   LOW-VALUE       DELIMITED  BY  SIZE
+                                   INTO    WRK-RECEERR
+           END-STRING
+           CALL    "cobabort"      USING   WRK-RECEERR
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************

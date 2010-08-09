@@ -135,6 +135,7 @@
            03  TOKEI-PTNUM             PIC X(20).
            03  TOKEI-RENNUM            PIC 9(01).
            03  TOKEI-NAME              PIC X(26).
+           03  TOKEI-KANANAME          PIC X(100).
            03  TOKEI-NISSU             PIC 9(06).
            03  TOKEI-TENSU             PIC 9(10).
            03  TOKEI-RYOYOHI           PIC 9(09).
@@ -155,7 +156,7 @@
        01  RECECSV.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  RECECSV-HOSPNUM     PIC 9(02).
-           03  RECECSV-FILE-ID     PIC X(08).
+           03  RECECSV-FILE-ID     PIC X(07).
            03  FILLER              PIC X(04)   VALUE   ".csv".
       *
            COPY    "HCMSL55.INC".
@@ -259,6 +260,55 @@
                05  SUM-GOK-SHOKUJIFTN  PIC 9(09).
            03  SUM-GOK-TEISYUTU        PIC X(01).
       *
+      *    出力先ファイル名
+       01  WRK-TO-DATA-G.
+           03  WRK-TO-DATA.
+               05  WRK-TO-DATA-HOSPNUM PIC 9(02).
+               05  FILLER              PIC X(15)   VALUE
+                                                   "seikyu_kakunin_".
+               05  WRK-TO-DATA-STRYM   PIC X(06).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+      *
+      *    ヘッダー情報
+       01  CSV-HEAD-01.
+           03  FILLER              PIC X(08)   VALUE   "請求年月".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "診療科".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "処理区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "提出先区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "保険者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "保険者名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "入外区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "在総診区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "診療年月".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "種別区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "詳細区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "連番".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "患者名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "日数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "点数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "療養費".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "食事負担".
+      *
       *    一時領域
        01  WRK-AREA.
       *    編集用キー
@@ -298,6 +348,7 @@
       *
       *    エラー情報
            03  WRK-RECEERR             PIC X(200).
+           03  WRK-TOUKEIERR           PIC X(200).
       *    検索パス
            03  WRK-PATH                PIC X(64).
            03  WRK-PATH-TABLE          PIC X(64).
@@ -307,6 +358,7 @@
            03  WRK-TEISYUTUSAKI-KBN    PIC 9(01).
            03  WRK-RYOYOHI             PIC X(09).
            03  WRK-SHOKUJIFTN          PIC X(09).
+           03  WRK-REC                 PIC X(20000).
       *
       *    日付編集用
            03  WRK-SYSYMD              PIC X(08).
@@ -491,6 +543,9 @@
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
+      *    統計ＣＳＶ制御サブ
+           COPY    "CPORCSTOUKEICSV.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *    LIKE使用KEY対応
@@ -613,6 +668,9 @@
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-DENPYMD
+      *
+           MOVE    WRK-PARA-DENPPRTYM  TO  WRK-TO-DATA-STRYM
+           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
       *
       *    印刷日セット
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -809,6 +867,7 @@
            MOVE    PTNUM-PTNUM             TO  TOKEI-PTNUM
            MOVE    WRK-RENNUM              TO  TOKEI-RENNUM
            MOVE    PTINF-NAME              TO  TOKEI-NAME
+           MOVE    PTINF-KANANAME          TO  TOKEI-KANANAME
            MOVE    0                       TO  TOKEI-NISSU
            MOVE    0                       TO  TOKEI-TENSU
            WRITE   TOKEI-REC
@@ -1779,6 +1838,7 @@
            MOVE    RECE10-PTNUM            TO  TOKEI-PTNUM
            MOVE    WRK-RENNUM              TO  TOKEI-RENNUM
            MOVE    PTINF-NAME              TO  TOKEI-NAME
+           MOVE    PTINF-KANANAME          TO  TOKEI-KANANAME
            MOVE    RECE10-JNISSU(IDX)      TO  TOKEI-NISSU
            MOVE    WRK-TENSU               TO  TOKEI-TENSU
            MOVE    WRK-RYOYOHI             TO  TOKEI-RYOYOHI
@@ -1801,6 +1861,12 @@
       *    統計ファイル読み込み
            INITIALIZE                  TOKEI-REC
            PERFORM 900-TOKEI-NEXT-SEC
+           IF      FLG-TOKEI   =   ZERO
+      *        ＣＳＶ出力処理
+               INITIALIZE                  RECECSV-REC
+               MOVE    CSV-HEAD-01     TO  RECECSV-REC
+               PERFORM 500-TOUKEICSV-SEC
+           END-IF
       *
            PERFORM UNTIL ( FLG-TOKEI   =   1 )
       *
@@ -3280,6 +3346,8 @@
                    ","               DELIMITED  BY  SIZE
                    CSV-NAME          DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
+                   TOKEI-KANANAME    DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
                    CSV-NISSU         DELIMITED  BY  SIZE
                    ","               DELIMITED  BY  SIZE
                    CSV-TENSU         DELIMITED  BY  SIZE
@@ -3289,6 +3357,9 @@
                    CSV-SHOKUJIFTN    DELIMITED  BY  SIZE
                              INTO    RECECSV-REC
            END-STRING
+      *
+           PERFORM 500-TOUKEICSV-SEC
+      *
            WRITE   RECECSV-REC
       *
       *    集計
@@ -3757,6 +3828,67 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計ＣＳＶ出力処理
+      *****************************************************************
+       500-TOUKEICSV-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSTOUKEICSVAREA
+           MOVE    "INS"           TO  STOUKEICSV-MODE
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  STOUKEICSV-TBL-KEY
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  STOUKEICSV-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  STOUKEICSV-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  STOUKEICSV-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  STOUKEICSV-SHELLID
+           MOVE    WRK-PARA-DENPPRTYM
+                                   TO  STOUKEICSV-SRYYM
+           MOVE    WRK-PARA-NYUGAIKBN
+                                   TO  STOUKEICSV-NYUGAIKBN
+           MOVE    ZERO            TO  STOUKEICSV-PTID
+           MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
+           MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
+           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
+           MOVE    RECECSV-REC     TO  STOUKEICSV-CSVDATA
+           MOVE    "保険別請求確認リストＣＳＶ作成"
+                                   TO  STOUKEICSV-TITLE
+      *
+           CALL    "ORCSTOUKEICSV"     USING
+                                       ORCSTOUKEICSVAREA
+                                       SPA-AREA
+           IF      STOUKEICSV-RETURN   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
+                                      TO  WRK-TOUKEIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+           .
+      *
+       500-TOUKEICSV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    異常終了処理
+      *****************************************************************
+       500-COBABORT-SEC          SECTION.
+      *
+           MOVE    SPACE           TO  WRK-RECEERR
+           STRING  "ORCBG014"      DELIMITED  BY  SIZE
+                   WRK-TOUKEIERR   DELIMITED  BY  SIZE
+                   LOW-VALUE       DELIMITED  BY  SIZE
+                                   INTO    WRK-RECEERR
+           END-STRING
+           CALL    "cobabort"      USING   WRK-RECEERR
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************

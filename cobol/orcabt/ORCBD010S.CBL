@@ -62,6 +62,7 @@
        FD  BD01004-FILE.
        01  BD01004-REC.
            COPY    "CPBD01004.INC".
+           03  BD01004-KANANAME    PIC X(100).
       *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
        FD  RECEERR-FILE.
@@ -130,6 +131,8 @@
       *
        01  WRK-AREA.
            03  WRK-RECEERR                 PIC X(200).
+           03  WRK-TOUKEIERR               PIC X(200).
+           03  WRK-REC                     PIC X(20000).
            03  WRK-SYSYMD                  PIC X(08).
            03  WRK-SYMD                    PIC X(10).
            03  WRK-EDTYMD1                 PIC X(10).
@@ -187,6 +190,26 @@
            03  TTL-CHOSEI2             PIC     S9(10).
            03  TTL-GENMEN              PIC     S9(10).
            03  TTL-MISYU               PIC     S9(10).
+      *
+       01  CSV-AREA.
+           03  CSV-SYOSIN              PIC     ---------9.
+           03  CSV-SAISIN              PIC     ---------9.
+           03  CSV-HKNTEN              PIC     ---------9.
+           03  CSV-SKYMONEY            PIC     ---------9.
+           03  CSV-SKYHOKEN            PIC     ---------9.
+           03  CSV-SKYJIHI             PIC     ---------9.
+           03  CSV-KONNYUKIN           PIC     ---------9.
+           03  CSV-NYUKIN              PIC     ---------9.
+           03  CSV-CHOSEI              PIC     ---------9.
+           03  CSV-CHOSEI1             PIC     ---------9.
+           03  CSV-CHOSEI2             PIC     ---------9.
+           03  CSV-GENMEN              PIC     ---------9.
+           03  CSV-ZENMISYU            PIC     ---------9.
+           03  CSV-MISYU               PIC     ---------9.
+       01  CSV-AREA2.
+           03  CSV-DAI                 PIC X(14).
+           03  CSV-GOKEI               PIC     ---------9.
+           03  CSV-SKYMONEY2           PIC     ---------9  OCCURS 15.
       *
        01  KEY-AREA.
            03  KEY-NYUGAIKBN                   PIC X(01).
@@ -247,6 +270,90 @@
            03  CONST-TTLSYOSIN                 PIC 9(02) VALUE 9.
            03  CONST-TTLSAISIN                 PIC 9(02) VALUE 10.
            03  CONST-TTLSYOSAI                 PIC 9(02) VALUE 11.
+      *
+      *    ½ÐÎÏÀè¥Õ¥¡¥¤¥ëÌ¾
+       01  WRK-TO-DATA-G.
+           03  WRK-TO-DATA.
+               05  WRK-TO-DATA-HOSPNUM PIC 9(02).
+               05  FILLER              PIC X(15)   VALUE
+                                                   "syuunou_nippou_".
+               05  WRK-TO-DATA-KIKAN   PIC X(21).
+           03  WRK-TO-DATA1.
+               05  WRK-TO-DATA-YMD     PIC X(08).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+           03  WRK-TO-DATA2.
+               05  WRK-TO-DATA-STRYMD  PIC X(08).
+               05  FILLER              PIC X(01)   VALUE   "-".
+               05  WRK-TO-DATA-ENDYMD  PIC X(08).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+      *
+      *    ¥Ø¥Ã¥À¡¼¾ðÊó
+       01  CSV-HEAD-01.
+           03  FILLER              PIC X(08)   VALUE   "¼ýÇ¼ÆüÊó".
+           03  CSV-NYUGAI          PIC X(08)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   X"0D".
+           03  FILLER              PIC X(08)   VALUE   "ÅÁÉ¼ÈÖ¹æ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "´µ¼ÔÌ¾".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  CSV-SRYYMDMEI       PIC X(10)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  CSV-SYOSAIMEI       PIC X(04)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÊÝ¸±".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(02)   VALUE   "²Ê".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±ÅÀ¿ô".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "ÊÝ¸±ÀÁµá³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "¼«ÈñÀÁµá³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "¸ºÌÈ³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "Ä´À°¶â£±".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "Ä´À°¶â£²".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "Á°²óÌ¤¼ý³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "º£²óÀÁµá³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "Æþ¶â³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "Æþ¶âÊýË¡".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "º£²óÌ¤¼ý³Û".
+      *    ¥Ø¥Ã¥À¡¼¾ðÊó
+       01  CSV-HEAD-02.
+           03  FILLER              PIC X(06)   VALUE   "¹ç·×É½".
+           03  CSV-NYUGAI2         PIC X(08)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   X"0D".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "¹ç·×".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "¼ÒÊÝËÜ¿Í".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "¼ÒÊÝ²ÈÂ²".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "¹ñÊÝ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "¸å´ü¹âÎð¼Ô".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "¸øÈñÃ±ÆÈ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "¼«Èñ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ï«ºÒ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "¼«ÇåÀÕ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "¸ø³²".
       *
        01  RECEERR                         PIC X(100).
       *
@@ -325,6 +432,9 @@
       *
       *    °õºþ£Ä£Â¹¹¿·¥µ¥Ö
            COPY    "CPORCSPRT.INC".
+      *
+      *    Åý·×£Ã£Ó£ÖÀ©¸æ¥µ¥Ö
+           COPY    "CPORCSTOUKEICSV.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
@@ -558,6 +668,15 @@
            MOVE    ZERO            TO      SS003-SYORIKBN
            CALL    "ORCSS003"      USING   SS003-AREA
                                            SPA-AREA
+           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
+           IF      WRK-STDAILYKEY-YMD  =   WRK-EDDAILYKEY-YMD
+               MOVE    WRK-STDAILYKEY-YMD  TO  WRK-TO-DATA-YMD
+               MOVE    WRK-TO-DATA1    TO  WRK-TO-DATA-KIKAN
+           ELSE
+               MOVE    WRK-STDAILYKEY-YMD  TO  WRK-TO-DATA-STRYMD
+               MOVE    WRK-EDDAILYKEY-YMD  TO  WRK-TO-DATA-ENDYMD
+               MOVE    WRK-TO-DATA2    TO  WRK-TO-DATA-KIKAN
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -1176,6 +1295,7 @@
                                        TO  BD01004-RENNUM
            MOVE    PTNUM-PTNUM         TO  BD01004-PTNUM
            MOVE    PTINF-NAME          TO  BD01004-NAME
+           MOVE    PTINF-KANANAME      TO  BD01004-KANANAME
            MOVE    SYU-SRYYMD          TO  BD01004-SRYYMD
            MOVE    SYU-DENPPRTYMD      TO  BD01004-DENPPRTYMD
            MOVE    SBD010S02-HOKEN (IDX-S02)
@@ -1197,6 +1317,9 @@
       *
            PERFORM 900-BD01004-READ-SEC
       *
+      *     IF      FLG-BD01004     =   ZERO
+
+      *     END-IF
            PERFORM UNTIL ( FLG-BD01004 NOT =   ZERO )
       *
                MOVE    BD01004-SRT-NYUGAIKBN    TO  KEY-NYUGAIKBN
@@ -1204,6 +1327,19 @@
                MOVE    ZERO                     TO  CNT-NO
                INITIALIZE                           TTL-AREA
       *
+      *        £Ã£Ó£Ö½ÐÎÏ½èÍý
+               INITIALIZE                  WRK-REC
+               IF    ( BD01004-SRT-NYUGAIKBN   =   "1" )
+                   MOVE    "¡ÊÆþ±¡¡Ë"      TO  CSV-NYUGAI
+                   MOVE    "ÅÁÉ¼È¯¹ÔÆü"    TO  CSV-SRYYMDMEI
+                   MOVE    "ÂàÄê"          TO  CSV-SYOSAIMEI
+               ELSE
+                   MOVE    "¡Ê³°Íè¡Ë"      TO  CSV-NYUGAI
+                   MOVE    "¿ÇÎÅÇ¯·îÆü"    TO  CSV-SRYYMDMEI
+                   MOVE    "½éºÆ"          TO  CSV-SYOSAIMEI
+               END-IF
+               MOVE    CSV-HEAD-01     TO  WRK-REC
+               PERFORM 500-TOUKEICSV-SEC
                PERFORM UNTIL ( FLG-BD01004 NOT =   ZERO )
                         OR   ( BD01004-SRT-NYUGAIKBN
                                            NOT =   KEY-NYUGAIKBN )
@@ -1433,6 +1569,67 @@
            COMPUTE TTL-MISYU
                =   TTL-MISYU   +   BD01004-MISYU
       *
+           INITIALIZE              CSV-AREA
+           MOVE    BD01004-HOKENTEN    TO  CSV-HKNTEN
+           MOVE    BD01004-SKYMONEY    TO  CSV-SKYMONEY
+           MOVE    BD01004-FTNMONEY    TO  CSV-SKYHOKEN
+           MOVE    BD01004-JIHIMONEY   TO  CSV-SKYJIHI
+           MOVE    BD01004-NYUKIN      TO  CSV-NYUKIN
+           MOVE    BD01004-KONNYUKIN   TO  CSV-KONNYUKIN
+           MOVE    BD01004-CHOSEI      TO  CSV-CHOSEI
+           MOVE    BD01004-CHOSEI1     TO  CSV-CHOSEI1
+           MOVE    BD01004-CHOSEI2     TO  CSV-CHOSEI2
+           MOVE    BD01004-GENMEN      TO  CSV-GENMEN
+           MOVE    BD01004-MISYU       TO  CSV-MISYU
+           MOVE    BD01004-ZENMISYU    TO  CSV-ZENMISYU
+      *
+           INITIALIZE                  WRK-REC
+           STRING  BD01004-DENPNUM     DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-PTNUM       DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-NAME        DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-KANANAME    DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51-SRYYMD(CNT-LINE)
+                                       DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51-SYOSAI(CNT-LINE)
+                                       DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51-HOKEN (CNT-LINE)
+                                       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51-SRYKA (CNT-LINE)
+                                       DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-HKNTEN          DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SKYHOKEN        DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SKYJIHI         DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-GENMEN          DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-CHOSEI1         DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-CHOSEI2         DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-ZENMISYU        DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SKYMONEY        DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-NYUKIN          DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51-HOHO (CNT-LINE)
+                                       DELIMITED  BY  SIZE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-MISYU           DELIMITED  BY  SIZE
+                   INTO                WRK-REC
+           END-STRING
+           PERFORM 500-TOUKEICSV-SEC
+      *
            .
        220-BODY-EXT.
            EXIT.
@@ -1578,14 +1775,21 @@
       *
            INITIALIZE                  HCM52
       *
+           INITIALIZE                  WRK-REC
            IF    ( BD01003-SRT-NYUGAIKBN   =   "1" )
                MOVE    "¡ÊÆþ±¡¡Ë"      TO  HCM52-NYUGAI
+               INITIALIZE                  WRK-REC
+               MOVE    "¡ÊÆþ±¡¡Ë"      TO  CSV-NYUGAI2
            ELSE
                MOVE    "¡Ê³°Íè¡Ë"      TO  HCM52-NYUGAI
                MOVE    "½é¿Ç·ï¿ô"      TO  HCM52-SYOSINMSG
                MOVE    "ºÆ¿Ç·ï¿ô"      TO  HCM52-SAISINMSG
                MOVE    "½éºÆ¿Ç·×"      TO  HCM52-SYOSAIMSG
+               MOVE    "¡Ê³°Íè¡Ë"      TO  CSV-NYUGAI2
            END-IF
+      *
+           MOVE    CSV-HEAD-02     TO  WRK-REC
+           PERFORM 500-TOUKEICSV-SEC
       *
            MOVE    WRK-PRT-SRYYMD      TO  HCM52-HSRYYMD
       *
@@ -1629,8 +1833,9 @@
                ELSE
                        MOVE    1           TO  FLG-TARGET
                END-IF
-      *
+      * 
                IF    ( FLG-TARGET  =   1 )
+                   INITIALIZE              CSV-AREA2
                    IF    ( IDX1        =   CONST-TTLKONNYUKIN )
                        INITIALIZE              WRK-KONNYUKIN-G
                        MOVE    BD01003-SEIKYU-TOTAL (IDX1)
@@ -1651,6 +1856,7 @@
                                            TO  WRK-ZZZZZZZ9
                        MOVE    WRK-ZZZZZZZ9 TO HCM52-GOKEI (IDX1)
                    END-IF
+                   MOVE    BD01003-SEIKYU-TOTAL (IDX1)  TO  CSV-GOKEI
       *
                    PERFORM VARYING IDX2    FROM    1   BY  1
                            UNTIL ( IDX2    >   WRK-SKYTTL-MAX )
@@ -1684,15 +1890,193 @@
                            MOVE    WRK-ZZZZZZZ9
                                            TO  HCM52-SKYMONEY(IDX1 IDX2)
                        END-IF
+                       MOVE    BD01003-SEIKYU(IDX1 IDX2)
+                                               TO  CSV-SKYMONEY2(IDX2)
                    END-PERFORM
       *
+                   EVALUATE    IDX1
+                       WHEN    CONST-TTLSEIKYUREL
+                           MOVE    "º£²óÀÁµá³Û"    TO  CSV-DAI
+                       WHEN    CONST-TTLGENMEN
+                           MOVE    "¸ºÌÈ³Û"    TO  CSV-DAI
+                       WHEN    CONST-TTLCHOSEI1
+                           MOVE    "Ä´À°¶â£±"    TO  CSV-DAI
+                       WHEN    CONST-TTLCHOSEI2
+                           MOVE    "Ä´À°¶â£²"    TO  CSV-DAI
+                       WHEN    CONST-TTLSEIKYU
+                           MOVE    "º£²óÀÁµá³Û·×"  TO  CSV-DAI
+                       WHEN    CONST-TTLNYUKIN
+                           MOVE    "Æþ¶â³Û·×"  TO  CSV-DAI
+                       WHEN    CONST-TTLKONNYUKIN
+                           MOVE    "Æâº£²óÆþ¶â³Û·×"    TO  CSV-DAI
+                       WHEN    CONST-TTLMISYU
+                           MOVE    "º£²óÌ¤¼ý³Û·×"    TO  CSV-DAI
+                       WHEN    CONST-TTLSYOSIN
+                           MOVE    "½é¿Ç·ï¿ô"    TO  CSV-DAI
+                       WHEN    CONST-TTLSAISIN
+                           MOVE    "ºÆ¿Ç·ï¿ô"    TO  CSV-DAI
+                       WHEN    CONST-TTLSYOSAI
+                           MOVE    "½éºÆ¿Ç·ï"    TO  CSV-DAI
+                   END-EVALUATE
+                   INITIALIZE              WRK-REC
+                   STRING  CSV-DAI             DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-GOKEI           DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(1)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(2)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(3)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(4)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(5)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(6)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(7)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(8)    DELIMITED BY SIZE
+                           ","                 DELIMITED BY SIZE
+                           CSV-SKYMONEY2(9)    DELIMITED BY SIZE
+                                         INTO  WRK-REC
+                   END-STRING
+                   PERFORM 500-TOUKEICSV-SEC
                END-IF
       *
            END-PERFORM
       *
+           INITIALIZE              CSV-AREA2
+           MOVE    "¹ç¡¡·×"                TO  HCM52-TTLHOHOMSG
+           MOVE    BD01003-NYUKIN-TOTAL    TO  WRK-ZZZZZZZ9
+           MOVE    WRK-ZZZZZZZ9            TO  HCM52-TTLNYUKIN
+           MOVE    BD01003-NYUKIN-TOTAL    TO  CSV-GOKEI
+      *
+           MOVE    ZERO                    TO  IDX-HOHO
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >       8 )
+                      OR ( IDX1    >       SRH-1041-MAX )
+      *
+               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
+               MOVE    SRH-1041-NYKN-TANNAME (IDX1)
+                                           TO  HCM52-HOHOMSG (IDX-HOHO)
+               MOVE    BD01003-NYUKIN (IDX1)
+                                           TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
+               MOVE     BD01003-NYUKIN (IDX1)
+                                           TO  CSV-SKYMONEY2(IDX-HOHO)
+      *
+           END-PERFORM
+      *
+           IF    ( BD01003-NYUKIN (09) NOT =   ZERO )
+            OR   ( BD01003-NYUKIN (10) NOT =   ZERO )
+            OR   ( BD01003-NYUKIN (11) NOT =   ZERO )
+               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
+               COMPUTE WRK-NYUKIN
+                   =   BD01003-NYUKIN (09)
+                   +   BD01003-NYUKIN (10)
+                   +   BD01003-NYUKIN (11)
+               MOVE    "¤½¤ÎÂ¾"            TO  HCM52-HOHOMSG (IDX-HOHO)
+               MOVE    WRK-NYUKIN          TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
+               MOVE    WRK-NYUKIN          TO  CSV-SKYMONEY2(IDX-HOHO)
+           END-IF
+      *
+           COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
+           MOVE    "ÊÖ¡¡¶â"            TO  HCM52-HOHOMSG (IDX-HOHO)
+           MOVE    BD01003-NYUKIN (12) TO  WRK-ZZZZZZZ9
+           MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
+           MOVE    BD01003-NYUKIN (12) TO  CSV-SKYMONEY2(IDX-HOHO)
+      *
+           IF    ( BD01003-NYUKIN (13) NOT =   ZERO )
+               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
+               MOVE    "Æþ¶â¼è¾Ã"          TO  HCM52-HOHOMSG (IDX-HOHO)
+               MOVE    BD01003-NYUKIN (13) TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
+               MOVE    BD01003-NYUKIN (13) TO  CSV-SKYMONEY2(IDX-HOHO)
+           END-IF
+      *
+           INITIALIZE              WRK-REC
+           STRING  ","                 DELIMITED BY SIZE
+                   "¹ç·×"              DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (1)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (2)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (3)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (4)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (5)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (6)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (7)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (8)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (9)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (10)  DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (11)  DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (12)  DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (13)  DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (14)  DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-HOHOMSG (15)  DELIMITED BY SIZE
+                                 INTO  WRK-REC
+           END-STRING
+           PERFORM 500-TOUKEICSV-SEC
+      *
+           INITIALIZE              WRK-REC
+           STRING  "Æþ¶â³Û·×"          DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-GOKEI           DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(1)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(2)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(3)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(4)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(5)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(6)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(7)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(8)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(9)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(10)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(11)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(12)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(13)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(14)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(15)   DELIMITED BY SIZE
+                                 INTO  WRK-REC
+           END-STRING
+           PERFORM 500-TOUKEICSV-SEC
+      *
+           INITIALIZE              CSV-AREA2
            MOVE    "¹ç¡¡·×"                TO  HCM52-TTLJIHIMSG
            MOVE    BD01003-JIHI-TOTAL      TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9            TO  HCM52-TTLJIHI
+           MOVE    BD01003-JIHI-TOTAL      TO  CSV-GOKEI
       *
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
@@ -1708,56 +2092,71 @@
                    MOVE    BD01003-JIHI (IDX-JIHI)
                                            TO  WRK-ZZZZZZZZ
                    MOVE    WRK-ZZZZZZZZ    TO  HCM52-JIHI    (IDX-JIHI)
+      *             MOVE    BD01003-JIHI (IDX-JIHI)
+      *                                     TO  CSV-SKYMONEY2(IDX-JIHI)
                ELSE
                    MOVE    BD01003-JIHI (IDX-JIHI)
                                            TO  WRK-ZZZZZZZ9
                    MOVE    WRK-ZZZZZZZ9    TO  HCM52-JIHI    (IDX-JIHI)
+                   MOVE    BD01003-JIHI (IDX-JIHI)
+                                           TO  CSV-SKYMONEY2(IDX-JIHI)
                END-IF
       *
            END-PERFORM
+           INITIALIZE              WRK-REC
+           STRING  ","                 DELIMITED BY SIZE
+                   "¹ç¡¡·×"            DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (1)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (2)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (3)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (4)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (5)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (6)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (7)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (8)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (9)   DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   HCM52-JIHIMSG (10)  DELIMITED BY SIZE
+                                 INTO  WRK-REC
+           END-STRING
+           PERFORM 500-TOUKEICSV-SEC
       *
-           MOVE    "¹ç¡¡·×"                TO  HCM52-TTLHOHOMSG
-           MOVE    BD01003-NYUKIN-TOTAL    TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9            TO  HCM52-TTLNYUKIN
-      *
-           MOVE    ZERO                    TO  IDX-HOHO
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >       8 )
-                      OR ( IDX1    >       SRH-1041-MAX )
-      *
-               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
-               MOVE    SRH-1041-NYKN-TANNAME (IDX1)
-                                           TO  HCM52-HOHOMSG (IDX-HOHO)
-               MOVE    BD01003-NYUKIN (IDX1)
-                                           TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-      *
-           END-PERFORM
-      *
-           IF    ( BD01003-NYUKIN (09) NOT =   ZERO )
-            OR   ( BD01003-NYUKIN (10) NOT =   ZERO )
-            OR   ( BD01003-NYUKIN (11) NOT =   ZERO )
-               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
-               COMPUTE WRK-NYUKIN
-                   =   BD01003-NYUKIN (09)
-                   +   BD01003-NYUKIN (10)
-                   +   BD01003-NYUKIN (11)
-               MOVE    "¤½¤ÎÂ¾"            TO  HCM52-HOHOMSG (IDX-HOHO)
-               MOVE    WRK-NYUKIN          TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-           END-IF
-      *
-           COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
-           MOVE    "ÊÖ¡¡¶â"            TO  HCM52-HOHOMSG (IDX-HOHO)
-           MOVE    BD01003-NYUKIN (12) TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-      *
-           IF    ( BD01003-NYUKIN (13) NOT =   ZERO )
-               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
-               MOVE    "Æþ¶â¼è¾Ã"          TO  HCM52-HOHOMSG (IDX-HOHO)
-               MOVE    BD01003-NYUKIN (13) TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-           END-IF
+           INITIALIZE              WRK-REC
+           STRING  "¤½¤ÎÂ¾¼«Èñ·×"      DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-GOKEI           DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(1)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(2)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(3)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(4)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(5)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(6)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(7)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(8)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(9)    DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   CSV-SKYMONEY2(10)   DELIMITED BY SIZE
+                                 INTO  WRK-REC
+           END-STRING
+           PERFORM 500-TOUKEICSV-SEC
       *
            .
        221-BODY-EXT.
@@ -1871,6 +2270,66 @@
            .
        500-ERR-HENSYU-EXT.
            EXIT.
+      *****************************************************************
+      *    Åý·×£Ã£Ó£Ö½ÐÎÏ½èÍý
+      *****************************************************************
+       500-TOUKEICSV-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSTOUKEICSVAREA
+           MOVE    "INS"           TO  STOUKEICSV-MODE
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  STOUKEICSV-TBL-KEY
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  STOUKEICSV-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  STOUKEICSV-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  STOUKEICSV-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  STOUKEICSV-SHELLID
+           MOVE    SBD010-SRYYMD   TO  STOUKEICSV-SRYYMD
+           MOVE    SBD010-NYUGAIKBN
+                                   TO  STOUKEICSV-NYUGAIKBN
+           MOVE    ZERO            TO  STOUKEICSV-PTID
+           MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
+           MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
+           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
+           MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
+           MOVE    "¼ýÇ¼ÆüÊó£Ã£Ó£ÖºîÀ®"
+                                   TO  STOUKEICSV-TITLE
+      *
+           CALL    "ORCSTOUKEICSV"     USING
+                                       ORCSTOUKEICSVAREA
+                                       SPA-AREA
+           IF      STOUKEICSV-RETURN   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "Åý·×£Ã£Ó£Ö£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+                                      TO  WRK-TOUKEIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+           .
+      *
+       500-TOUKEICSV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    °Û¾ï½ªÎ»½èÍý
+      *****************************************************************
+       500-COBABORT-SEC          SECTION.
+      *
+           MOVE    SPACE           TO  WRK-RECEERR
+           STRING  "ORCBD010 "     DELIMITED  BY  SIZE
+                   WRK-TOUKEIERR   DELIMITED  BY  SIZE
+                   LOW-VALUE       DELIMITED  BY  SIZE
+                                   INTO    WRK-RECEERR
+           END-STRING
+           CALL    "cobabort"      USING   WRK-RECEERR
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ½ªÎ»¡¡¡¡½èÍý
       *****************************************************************
