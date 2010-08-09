@@ -61,6 +61,7 @@
            03  FLG-TENTEK-SET      PIC 9(01).
            03  FLG-CHUJOU-SET      PIC 9(01).
            03  FLG-SEIMITSU-SET    PIC 9(01).
+           03  FLG-TAISYOUGAI      PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -908,7 +909,8 @@
                       (ACCT-MEISAISU   =        1   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   130003810)
+                      (ACCT-SRYCDTOTAL =   130003810)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -958,7 +960,8 @@
                       (ACCT-MEISAISU   =        2   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   260013180)
+                      (ACCT-SRYCDTOTAL =   260013180)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -1015,7 +1018,8 @@
                       (ACCT-MEISAISU   =        1   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   130004410)
+                      (ACCT-SRYCDTOTAL =   130004410)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -1065,7 +1069,8 @@
                       (ACCT-MEISAISU   =        2   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   260015580)
+                      (ACCT-SRYCDTOTAL =   260015580)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -1122,7 +1127,8 @@
                       (ACCT-MEISAISU   =        1   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   130000110)
+                      (ACCT-SRYCDTOTAL =   130000110)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -1193,7 +1199,8 @@
                       (ACCT-MEISAISU   =        1   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   130000210)
+                      (ACCT-SRYCDTOTAL =   130000210)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -1270,7 +1277,8 @@
                       (ACCT-MEISAISU   =        1   )    AND
                       (ACCT-JIHOKBN    =       SPACE)    AND
                       (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
-                      (ACCT-SRYCDTOTAL =   130000310)
+                      (ACCT-SRYCDTOTAL =   130000310)    AND
+                      (FLG-TAISYOUGAI  =   ZERO)
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
@@ -1387,7 +1395,8 @@
                PERFORM   910-SRYACT-READ-SEC
                PERFORM    UNTIL   (FLG-SRYACT    =    1)
                    PERFORM    VARYING   IDX4    FROM   1   BY  1
-                              UNTIL     IDX4    >    5
+                              UNTIL    (SRY-SRYCD(IDX4)  =   SPACE) OR
+                                       (IDX4    >    5)
                        IF    SRY-SRYCD(IDX4)(1:1)   =  "1"
                              ADD    1     TO    WRK-SYUGI-MEISAISU
                              MOVE   SRY-SRYCD(IDX4)
@@ -1504,11 +1513,21 @@
       *****************************************************************
        910-SRYACCT-READ-SEC        SECTION.
       *
+           MOVE      ZERO        TO    FLG-TAISYOUGAI
+      *
            PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  SRYACCT-REC
                MOVE    ZERO               TO  FLG-SRYACCT
-               PERFORM   400-YKZ-ERASE-SEC
+               PERFORM    VARYING   IDX   FROM   1   BY   1
+                 UNTIL    IDX   >   31
+                      IF   ACCT-DAY(1 IDX)    >=    2
+                          MOVE   1        TO     FLG-TAISYOUGAI
+                      END-IF
+               END-PERFORM
+               IF     FLG-TAISYOUGAI      =      ZERO
+                   PERFORM   400-YKZ-ERASE-SEC
+               END-IF
            ELSE
                INITIALIZE                     SRYACCT-REC
                MOVE    1                  TO  FLG-SRYACCT
