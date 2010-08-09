@@ -59,7 +59,8 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/11/30  Æþ±¡²ó¿ô°ì³çÆþÎÏÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/15  ¼£¸³ÂÐ±þ
       *
-      *  04.06.01    NACL-Æ£¸¶    09/06/20  ÉÂÌ¾¤ÎÆþÎÏ½çÂÐ±þ
+      *  04.06.01    NACL-Æ£¸¶    10/06/20  ÉÂÌ¾¤ÎÆþÎÏ½çÂÐ±þ
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/08/09  Ê£¿ô¸øÈñÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -179,6 +180,7 @@
            03  IDX-I2              PIC 9(04).
       *
            03  IDK1                PIC 9(04).
+           03  HZN-IDK             PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -192,6 +194,8 @@
            03  WRK-HKNNUM          PIC X(03).
            03  WRK-FTNJANUM        PIC X(08).
            03  WRK-JKSNUM          PIC X(20).
+           03  WRK-PROVIDER        PIC X(20).
+           03  WRK-KOHHKNNUM       PIC X(03).
       *
            03  WRK-KOH-AREA.
                05  WRK-KOHID           PIC 9(10)   OCCURS  4.
@@ -1087,6 +1091,7 @@
            MOVE    SPACE               TO  WRK-HKNNUM
            MOVE    SPACE               TO  WRK-FTNJANUM
            MOVE    SPACE               TO  WRK-JKSNUM
+           MOVE    SPACE               TO  WRK-PROVIDER
       *    ¼çÊÝ¸±
       *    ·ò¹¯ÊÝ¸±¼ïÊÌÈ½Äê
            EVALUATE    LF04-HKN-HKNSBTCODE (1)
@@ -1299,6 +1304,8 @@
                       (LF04-HKNKOH-JKYSNUM (1 IDX) NOT =   SPACE )
                    MOVE    LF04-HKNKOH-FTNJANUM(1 IDX) TO  WRK-FTNJANUM
                    MOVE    LF04-HKNKOH-JKYSNUM (1 IDX) TO  WRK-JKSNUM
+                   MOVE    LF04-HKNKOH-PROVIDER(1 IDX)
+                                                       TO  WRK-PROVIDER
                    PERFORM 2001112-KOH-SET-SEC
                ELSE
       *            Ã»½ÌÌ¾¾Î¤Î¤ß
@@ -1390,6 +1397,7 @@
       *           ",WRK-JKSNUM:" WRK-JKSNUM
       *TEST
            MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  HZN-IDK
            PERFORM VARYING      IDK    FROM    1   BY  1
                    UNTIL       (IDK    >   IDK-MAX )  OR
                                (FLG-CHK    =   1   )
@@ -1405,26 +1413,40 @@
                        (WRK-JKSNUM         =   TBL-PTKOH-JKYSNUM (IDK))
                    MOVE    1               TO  FLG-OK2
                END-IF
+      *
                IF     (WRK-FTNJANUM        =   SPACE )  AND
                       (FLG-OK2             =   1     )
                    MOVE    1               TO  FLG-CHK
+                   MOVE    IDK             TO  HZN-IDK
                END-IF
                IF     (WRK-JKSNUM          =   SPACE )  AND
                       (FLG-OK1             =   1     )
                    MOVE    1               TO  FLG-CHK
+                   MOVE    IDK             TO  HZN-IDK
                END-IF
                IF     (WRK-FTNJANUM    NOT =   SPACE )  AND
                       (WRK-JKSNUM      NOT =   SPACE )  AND
                       (FLG-OK1             =   1     )  AND
                       (FLG-OK2             =   1     )
-                   MOVE    1               TO  FLG-CHK
+      *            Ã»½ÌÌ¾¾ÎÈ½Äê
+                   IF     (WRK-PROVIDER    NOT =   SPACE )
+                       IF      HZN-IDK         =   ZERO
+                           MOVE    IDK             TO  HZN-IDK
+                       ELSE
+      *                    Â¾¤Î¸øÈñ¤¢¤ê¡ÊÃ»½ÌÌ¾¾Î¤«¤éÈ½Äê¡Ë
+                           PERFORM 20011121-KOH-SET02-SEC
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-CHK
+                       MOVE    IDK             TO  HZN-IDK
+                   END-IF
                END-IF
-      *
-               IF      FLG-CHK             =   1
-                   MOVE     TBL-PTKOH-KOHID (IDK)  TO  WRK-KOHID(IDX)
-               END-IF
-      *
            END-PERFORM
+      *
+           IF      HZN-IDK             >   ZERO
+               MOVE     TBL-PTKOH-KOHID (HZN-IDK)  TO  WRK-KOHID(IDX)
+           END-IF
+      *
       *TEST
       *    DISPLAY "IDX:" IDX
       *            ",WRK-KOHID:" WRK-KOHID(IDX)
@@ -1432,6 +1454,46 @@
       *
            .
        2001112-KOH-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñ¤Î¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       20011121-KOH-SET02-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-KOHHKNNUM
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL      (IDH     >   IDH-MAX )
+                           OR (WRK-KOHHKNNUM   NOT =   SPACE )
+      *        Ã»½ÌÌ¾¾Î¤«¤é¸øÈñ¼ïÊÌ
+               IF     (WRK-PROVIDER        =   TBL-COMB-KOH-TANSEIDONAME
+                                                         (IDH 1))
+                   MOVE    TBL-COMB-KOHHKNNUM (IDH 1)
+                                               TO  WRK-KOHHKNNUM
+               END-IF
+               IF     (WRK-PROVIDER        =   TBL-COMB-KOH-TANSEIDONAME
+                                                         (IDH 2))
+                   MOVE    TBL-COMB-KOHHKNNUM (IDH 2)
+                                               TO  WRK-KOHHKNNUM
+               END-IF
+               IF     (WRK-PROVIDER        =   TBL-COMB-KOH-TANSEIDONAME
+                                                         (IDH 3))
+                   MOVE    TBL-COMB-KOHHKNNUM (IDH 3)
+                                               TO  WRK-KOHHKNNUM
+               END-IF
+               IF     (WRK-PROVIDER        =   TBL-COMB-KOH-TANSEIDONAME
+                                                         (IDH 4))
+                   MOVE    TBL-COMB-KOHHKNNUM (IDH 4)
+                                               TO  WRK-KOHHKNNUM
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-KOHHKNNUM       NOT =   SPACE         )  AND
+                  (TBL-PTKOH-KOHNUM (IDK)  =   WRK-KOHHKNNUM )
+               MOVE    IDK                 TO  HZN-IDK
+           END-IF
+           .
+       20011121-KOH-SET02-EXT.
            EXIT.
       *
       *****************************************************************
