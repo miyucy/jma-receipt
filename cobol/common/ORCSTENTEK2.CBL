@@ -82,8 +82,8 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-MEISAISU        PIC 9(01).
-           03  WRK-YKZ-MEISAISU    PIC 9(01).
-           03  WRK-YKZ-SRYCDTOTAL  PIC 9(14).
+           03  WRK-SYUGI-MEISAISU  PIC 9(01).
+           03  WRK-SYUGI-SRYCDTOTAL PIC 9(14).
            03  WRK-SRYCDX          PIC X(09).
            03  WRK-SRYCD9          REDEFINES    WRK-SRYCDX
                                    PIC 9(09).
@@ -1371,12 +1371,12 @@
            EXIT.
       *
       *****************************************************************
-      *    手技または加算と同一剤内で入力された薬剤コードの振り落とし
+      *    手技または加算と同一剤内で入力された薬剤、器材の振り落とし
       *****************************************************************
        400-YKZ-ERASE-SEC         SECTION.
       *
-           MOVE    ZERO                TO  WRK-YKZ-MEISAISU
-           MOVE    ZERO                TO  WRK-YKZ-SRYCDTOTAL
+           MOVE    ZERO                TO  WRK-SYUGI-MEISAISU
+           MOVE    ZERO                TO  WRK-SYUGI-SRYCDTOTAL
       *
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
@@ -1395,12 +1395,12 @@
                PERFORM    UNTIL   (FLG-SRYACT    =    1)
                    PERFORM    VARYING   IDX4    FROM   1   BY  1
                               UNTIL     IDX4    >    5
-                       IF    SRY-SRYCD(IDX4)(1:1)   =  "6"
-                             ADD    1     TO    WRK-YKZ-MEISAISU
+                       IF    SRY-SRYCD(IDX4)(1:1)   =  "1"
+                             ADD    1     TO    WRK-SYUGI-MEISAISU
                              MOVE   SRY-SRYCD(IDX4)
                                           TO    WRK-SRYCDX
                              ADD    WRK-SRYCD9
-                                          TO    WRK-YKZ-SRYCDTOTAL
+                                          TO    WRK-SYUGI-SRYCDTOTAL
                        END-IF
                    END-PERFORM
                    MOVE     "tbl_sryact"   TO  MCP-TABLE
@@ -1413,10 +1413,9 @@
            MOVE     "key2"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-           COMPUTE   ACCT-MEISAISU   =   ACCT-MEISAISU  -
-                                         WRK-YKZ-MEISAISU
-           COMPUTE   ACCT-SRYCDTOTAL =   ACCT-SRYCDTOTAL  -
-                                         WRK-YKZ-SRYCDTOTAL
+           MOVE      WRK-SYUGI-MEISAISU    TO  ACCT-MEISAISU
+           MOVE      WRK-SYUGI-SRYCDTOTAL  TO  ACCT-SRYCDTOTAL
+           MOVE      ACCT-SYUTEN1          TO  ACCT-ZAITEN
       *
            .
        400-YKZ-ERASE-EXT.
