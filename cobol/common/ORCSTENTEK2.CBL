@@ -903,7 +903,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -954,7 +953,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        2   )    AND
@@ -1012,7 +1010,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1063,7 +1060,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        2   )    AND
@@ -1121,7 +1117,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1193,7 +1188,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1271,7 +1265,6 @@
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM   910-SRYACCT-READ-SEC
                PERFORM   UNTIL   (FLG-SRYACCT    =   1)
-                 PERFORM   400-YKZ-ERASE-SEC
                  IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU   NOT =    ZERO)    AND
                       (ACCT-MEISAISU   =        1   )    AND
@@ -1515,6 +1508,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  SRYACCT-REC
                MOVE    ZERO               TO  FLG-SRYACCT
+               PERFORM   400-YKZ-ERASE-SEC
            ELSE
                INITIALIZE                     SRYACCT-REC
                MOVE    1                  TO  FLG-SRYACCT
