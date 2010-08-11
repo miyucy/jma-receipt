@@ -4546,27 +4546,34 @@
                END-IF
            END-IF
       *
-           IF    ( SRH-1040-JKYSNUMCHK =   "1" )
-               CONTINUE
-           ELSE
+           IF    ( SRH-1040-JKYSNUMCHK =   "0" OR SPACE )
                IF    ( WRK-PTKOH-JKYSNUM   =   SPACE )
+                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                   MOVE    "030002"        TO  WRK-ERRCD
+                   MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 212-ERRMES-HEN-SEC
       *
-                   IF    ( PTKOH-KOHNUM    =   "012" OR "025" )
-                    AND  ( SYS-1101-SEIHOJNUMCHKKBN
-                                           =   SPACE OR "2" )
-                       CONTINUE
-                   ELSE
-                       MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
-                       MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
-                       MOVE    "030002"        TO  WRK-ERRCD
-                       MOVE    SPACE           TO  WRK-ERRMES-PLUS
-                       INITIALIZE              TERRINF-AREA
-                       PERFORM 212-ERRMES-HEN-SEC
+                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (3)
+                       GO  TO  200111-FTNJKYNUM-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
       *
-                       IF    ( ORCBSD01-CHKKBN (3) =   "1" )
-                           MOVE    1           TO  FLG-CHKEND (3)
-                           GO  TO  200111-FTNJKYNUM-CHK-EXT
-                       END-IF
+           IF    ( SRH-1040-JKYSNUMCHK =   "2"  )
+               IF    ( WRK-PTKOH-JKYSNUM   NOT =   SPACE )
+                   MOVE    PTKOH-KOHNUM    TO  SRH-KOHNUM
+                   MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
+                   MOVE    "030013"        TO  WRK-ERRCD
+                   MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 212-ERRMES-HEN-SEC
+      *
+                   IF    ( ORCBSD01-CHKKBN (3) =   "1" )
+                       MOVE    1           TO  FLG-CHKEND (3)
+                       GO  TO  200111-FTNJKYNUM-CHK-EXT
                    END-IF
                END-IF
            END-IF
@@ -10607,6 +10614,17 @@
                MOVE     07             TO  SRH-1040-JKYSKETAMIN
                MOVE     07             TO  SRH-1040-JKYSKETAMAX
            END-IF
+      *
+           EVALUATE    SRH-1040-KOHNUM
+           WHEN    "012"
+           WHEN    "025"
+               IF    ( SYS-1101-SEIHOJNUMCHKKBN
+                                       =   SPACE OR "2" )
+                   MOVE    "1"         TO  SRH-1040-JKYSNUMCHK
+               END-IF
+           WHEN    "030"
+                   MOVE    "2"         TO  SRH-1040-JKYSNUMCHK
+           END-EVALUATE
       *
            PERFORM VARYING SRH-IDX FROM    1   BY  1
                    UNTIL ( SRH-IDX >   SRH-1040-MAX )
