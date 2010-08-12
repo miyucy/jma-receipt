@@ -30,7 +30,6 @@
       *  03.05.01    NACL-¿¹ÏÆ     07/06/06  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.03.01    NACL-¿¹ÏÆ     08/08/29  ¥Ñ¥é¥á¥¿Áý²Ã
       *  04.05.01    NACL-¿¹ÏÆ     08/09/18  ÉÂÅïÊÌ½¸·×ÂÐ±þ
-      *  04.08.01    NACL-¿¹ÏÆ     14/07/22  °ì»þ¥Õ¥¡¥¤¥ë¥Ç¥£¥ì¥¯¥È¥êÀßÄê
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -90,20 +89,13 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0161//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    ¿ÇÎÅ²ñ·×¥Õ¥¡¥¤¥ë
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0162//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCG016.INC".
       *
@@ -134,8 +126,6 @@
            03  CNT-PAGE            PIC 9(06).
            03  CNT-SEQ             PIC 9(06).
            03  CNT-INPUT-ITEM      PIC 9(03).
-           03  CNT-KETA                PIC 9(02).
-           03  CNT-KETA2               PIC 9(02).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -156,70 +146,20 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-      *----(04.08.01)--UPD-END-----
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
-           03  WRK-PARA-NYUGAIKBN-G.
-               05  WRK-PARA-NYUGAIKBN
-                                   PIC X(01).
-               05  WRK-PARA-HOKATSUKBN
-                                   PIC X(01).
+           03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SRYKA      PIC X(02).
            03  WRK-PARA-SYORIKBN   PIC X(01).
            03  WRK-PARA-SRYCD      PIC X(20)
                                    OCCURS  7.
       *
-      *    ½ÐÎÏÀè¥Õ¥¡¥¤¥ëÌ¾
-       01  WRK-TO-DATA-G.
-           03  WRK-TO-DATA.
-               05  WRK-TO-DATA-HOSPNUM PIC 9(02).
-               05  FILLER              PIC X(12)   VALUE
-                                                   "srycd_kensu_".
-               05  WRK-TO-DATA-STRYM   PIC X(06).
-               05  FILLER              PIC X(04)   VALUE   ".csv".
-      *
-      *    ¥Ø¥Ã¥À¡¼¾ðÊó
-       01  CSV-HEAD-01.
-           03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅÇ¯·î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ¹Ô°ÙÌ¾¾Î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SRYKA           PIC X(12)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SRYKAMEI        PIC X(10)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ºÇ½ª¼õ¿ÇÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ÊÝ¸±ÁÈ¹ç¤»".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(50)   VALUE
-               "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20".
-           03  FILLER              PIC X(38)   VALUE
-               ",21,22,23,24,25,26,27,28,29,30,31,¹ç·×".
-      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-BG01DAT-FILE    PIC X(1024).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-TOUKEIERR       PIC X(200).
            03  WRK-SRYYMD          PIC X(08).
-           03  WRK-SYMD.
-               05  WRK-SYY             PIC 9(04).
-               05  WRK-SMM             PIC 9(02).
-               05  WRK-SDD             PIC 9(02).
+           03  WRK-SYMD            PIC X(08).
            03  WRK-EDTYMD1         PIC X(10).
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-SRYYM-N         PIC X(22).
@@ -236,22 +176,6 @@
            03  WRK-KANACHK-G.
                05  WRK-KANACHK-INPUT   PIC X(100).
                05  WRK-KANACHK-MAX     PIC 9(05).
-           03  WRK-REC             PIC X(20000).
-
-           03  WRK-HENSURYO            PIC X(08).
-           03  WRK-SURYO               PIC ZZZZZZZ9.
-      *
-       01  WRK-HEN-YMD-OT.
-           03  WRK-HEN-YY-OT       PIC X(04).
-           03  FILLER              PIC X(01)   VALUE   "/". 
-           03  WRK-HEN-MM-OT       PIC X(02).
-           03  FILLER              PIC X(01)   VALUE   "/". 
-           03  WRK-HEN-DD-OT       PIC X(02).
-
-       01  CSV-AREA.
-           03  CSV-DAY             PIC X(03)   OCCURS  32.
-           03  CSV-SRYYM           PIC X(07).
-           03  CSV-LASTYMD         PIC X(10).
       *
        01  TOTAL-AREA.
            03  TOTAL-PTNUM         PIC 9(08).
@@ -373,14 +297,6 @@
       *    »ØÄê¿ÇÎÅ¹Ô°Ù·ï¿ôÄ´¥µ¥Ö£²
            COPY    "CPORCSS009.INC".
       *
-      *    Åý·×£Ã£Ó£ÖÀ©¸æ¥µ¥Ö
-           COPY    "CPORCSTOUKEICSV.INC".
-      *
-      *----(04.08.01)--ADD-START---
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -427,9 +343,6 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TOTAL-AREA
 grpsys     INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -451,7 +364,7 @@ grpsys*DD                                      WRK-PARA-HOSPID
 grpsys                                         WRK-PARA-HOSPNUM
 grpsys                                         RECEERR
                                                WRK-PARA-SRYYM
-                                               WRK-PARA-NYUGAIKBN-G
+                                               WRK-PARA-NYUGAIKBN
                                                WRK-PARA-SRYKA
                                                WRK-PARA-SYORIKBN
                                                WRK-PARA-SRYCD (1)
@@ -492,20 +405,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0161-HOSPNUM
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0162-TERMID
 grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG0161-BASENAME     TO  SGETTEMP-BASENAMES (1)
-           MOVE    BG0162-BASENAME     TO  SGETTEMP-BASENAMES (2)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (3)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG0161-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  BG0162-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
            PERFORM 110-PARA-HENSYU-SEC
@@ -531,13 +430,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
       *
           MOVE    SPACE                TO  WRK-KANACHK-INPUT
           MOVE    1                    TO  WRK-KANACHK-MAX
-          STRING  WRK-PARA-NYUGAIKBN-G DELIMITED   BY  SIZE
+          STRING  WRK-PARA-NYUGAIKBN   DELIMITED   BY  SIZE
           INTO    WRK-KANACHK-INPUT
           WITH    POINTER WRK-KANACHK-MAX
           END-STRING
           COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
           PERFORM 800-HANKAKU-CHK-SEC
-          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN-G
+          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN
       *
           MOVE    SPACE                TO  WRK-KANACHK-INPUT
           MOVE    1                    TO  WRK-KANACHK-MAX
@@ -574,12 +473,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
            END-IF
       *
-           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-               CONTINUE
-           ELSE
-               MOVE    SPACE           TO  WRK-PARA-HOKATSUKBN
-           END-IF
-      *
       *    ÂÐ¾ÝÇ¯·îÆüÊÔ½¸
            MOVE    WRK-SRYYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -589,9 +482,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3         TO  WRK-SAKYMD-N
-      *
-           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
-           MOVE    WRK-PARA-SRYYM  TO  WRK-TO-DATA-STRYM
       *
            PERFORM 1101-TSRYCD-HEN-SEC
       *
@@ -604,8 +494,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            END-IF
       *
            IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
-               MOVE    "¿ÇÎÅ²Ê¥³¡¼¥É"  TO  CSV-SRYKA
-               MOVE    "¿ÇÎÅ²ÊÌ¾¾Î"    TO  CSV-SRYKAMEI
                IF   ( WRK-PARA-SRYKA  NOT =   SPACE )
                    INITIALIZE              SYSKANRI-REC
                    MOVE    "1005"          TO  SYS-KANRICD
@@ -623,9 +511,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                    END-IF
                END-IF
            ELSE
-               MOVE    "ÉÂÅïÈÖ¹æ"      TO  CSV-SRYKA
-               MOVE    "ÉÂÅïÌ¾¾Î"      TO  CSV-SRYKAMEI
-               IF    ( WRK-PARA-SRYKA  NOT =   SPACE )
+               IF   ( WRK-PARA-SRYKA  NOT =   SPACE )
                    MOVE    "ÉÂÅïÊÌ¤Î¾ì¹ç¤Ï¿ÇÎÅ²Ê¤òÆþÎÏ¤·¤Ê¤¤¤Ç¤¯¤À¤µ¤¤"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
@@ -751,13 +637,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            MOVE    ZERO            TO  FLG-IN01
            PERFORM 900-IN01SEQ-READ-SEC
       *
-           IF      FLG-IN01    =   ZERO
-      *        £Ã£Ó£Ö½ÐÎÏ½èÍý
-               INITIALIZE                  WRK-REC
-               MOVE    CSV-HEAD-01     TO  WRK-REC
-               PERFORM 500-TOUKEICSV-SEC
-           END-IF
-      *
            PERFORM UNTIL ( FLG-IN01 NOT =   ZERO )
                      OR  ( FLG-END  NOT =   ZERO )
       *
@@ -850,13 +729,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                GO  TO  20011-IN01-HEN-EXT
            END-IF
       *
-           IF    ( WRK-PARA-HOKATSUKBN   = "1" )
-               IF  ( ACCT-JIHOKBN        = "1"
-                OR   ACCT-HKNCOMBI       = 9999 )
-                   GO  TO  20011-IN01-HEN-EXT
-               END-IF
-           END-IF
-      *
            MOVE    SRY-PTID            TO  WRK-PTID
            PERFORM 900-PTINF-PTNUM-KEY-SEL-SEC
            IF    ( FLG-PTINF       NOT =   ZERO )
@@ -886,7 +758,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
                IF    ( NACCT-ZAISKBKBN =   "5" )
                    INITIALIZE          SS009-AREA
-                   MOVE    "1"         TO      SS009-EXGAIHAKU
                    CALL    "ORCSS009"  USING   SS009-AREA
                                                NYUINACCT-REC
                                                SPA-AREA
@@ -984,7 +855,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
                IF    ( NACCT-ZAIKAISU  >   ZERO )
                    INITIALIZE          SS009-AREA
-                   MOVE    "1"         TO      SS009-EXGAIHAKU
                    CALL    "ORCSS009"  USING   SS009-AREA
                                                NYUINACCT-REC
                                                SPA-AREA
@@ -1168,11 +1038,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    "¡Ê³°Íè¡Ë"      TO  HCG016-NYUGAIKBN
            END-IF
       *
-           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-               MOVE    "¡ÊÊñ³çÊ¬¤ò´Þ¤Þ¤Ê¤¤¡Ë"
-                                       TO  HCG016-HOKATSUKBN
-           END-IF
-      *
            COMPUTE CNT-PAGE        =   CNT-PAGE        +   1
       *
            MOVE    CNT-PAGE            TO  WRK-ZZ9
@@ -1263,7 +1128,6 @@ grpsys                                         SPA-AREA
                                        TO  HCG016-HKNCOMBI
                                                     (CNT-LINE)
       *
-           MOVE    SPACE               TO  CSV-AREA
            MOVE    ZERO                TO  TOTAL-PTNUM
            PERFORM VARYING IDX-DAY     FROM    1   BY  1
                    UNTIL ( IDX-DAY     >   31 )
@@ -1271,9 +1135,6 @@ grpsys                                         SPA-AREA
                MOVE    IN01-DAY (IDX-DAY)
                                        TO  WRK-ZZZZ
                MOVE    WRK-ZZZZ        TO  HCG016-DAY(CNT-LINE IDX-DAY)
-               MOVE    IN01-DAY (IDX-DAY)  TO WRK-SURYO
-               PERFORM 400-ZHEN-SURYO-SET-SEC
-               MOVE    WRK-HENSURYO    TO  CSV-DAY (IDX-DAY)
       *
                COMPUTE TOTAL-SRYKA-DAY (IDX-DAY)
                    =   TOTAL-SRYKA-DAY (IDX-DAY)
@@ -1286,128 +1147,9 @@ grpsys                                         SPA-AREA
       *
            MOVE    TOTAL-PTNUM         TO  WRK-ZZZZ
            MOVE    WRK-ZZZZ            TO  HCG016-DAY (CNT-LINE 32)
-           MOVE    TOTAL-PTNUM     TO  WRK-SURYO
-           PERFORM 400-ZHEN-SURYO-SET-SEC
-           MOVE    WRK-HENSURYO    TO  CSV-DAY (32)
       *
-           PERFORM 270-CSV-BODY-SET-SEC
            .
        20011-BODY-NAIYO-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    £Ã£Ó£Ö¡Ê¥Ç¡¼¥¿¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
-      *****************************************************************
-       270-CSV-BODY-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD(1:6)
-           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
-           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
-           MOVE    WRK-HEN-YMD-OT(1:7)
-                                   TO  CSV-SRYYM
-      *
-           MOVE    HCG016S01-LASTYMD
-                                   TO  WRK-SYMD
-           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
-           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
-           MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
-           MOVE    WRK-HEN-YMD-OT  TO  CSV-LASTYMD
-
-           INITIALIZE                  WRK-REC
-      *
-           STRING  CSV-SRYYM           DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   HCG016-NYUGAIKBN(3:2)
-                   ","                 DELIMITED BY SIZE
-                   IN01-KEY-SRYCD      DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   HCG016-SRYNAME      DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   KEY-SRYKA           DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   HCG016-SRYKA        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   IN01-KEY-PTNUM      DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   IN01-NAME           DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   IN01-KEY-KANANAME   DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-LASTYMD         DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   HCG016S01-HKNCOMBIMEI
-                                       DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (1)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (2)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (3)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (4)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (5)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (6)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (7)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (8)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (9)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (10)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (11)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (12)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (13)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (14)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (15)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (16)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (17)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (18)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (19)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (20)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (21)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (22)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (23)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (24)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (25)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (26)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (27)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (28)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (29)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (30)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (31)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (32)        DELIMITED BY SPACE
-                                 INTO  WRK-REC
-           END-STRING
-           PERFORM 500-TOUKEICSV-SEC
-      *
-           .
-       270-CSV-BODY-SET-EXT.
            EXIT.
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸<¿ÇÎÅ²Ê¹ç·×¹Ô>½èÍý
@@ -1416,13 +1158,8 @@ grpsys                                         SPA-AREA
       *
            MOVE    ZERO                TO  TOTAL-PTNUM
       *
-           IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
-               MOVE    "¡¡¿ÇÎÅ²Ê·ï¿ô·×"    TO  HCG016-HKNCOMBI
+           MOVE    "¡¡¿ÇÎÅ²Ê·ï¿ô·×"    TO  HCG016-HKNCOMBI
                                          (CONST-SRYKA-TOTAL-IDX)
-           ELSE
-               MOVE    "¡¡¡¡ÉÂÅï·ï¿ô·×"    TO  HCG016-HKNCOMBI
-                                         (CONST-SRYKA-TOTAL-IDX)
-           END-IF
       *
            COMPUTE TOTAL-NINZU
                =   TOTAL-NINZU     +   CNT-SEQ
@@ -1539,26 +1276,6 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *   Ä¢É¼£ÚÊÔ½¸½èÍý
-      *****************************************************************
-       400-ZHEN-SURYO-SET-SEC      SECTION.
-      *
-           MOVE    SPACE           TO  WRK-HENSURYO
-           MOVE    ZERO            TO  CNT-KETA
-           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
-                   UNTIL   CNT-KETA2   >   8
-               IF      WRK-SURYO(CNT-KETA2:1)    NOT =   SPACE
-                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
-                   MOVE    WRK-SURYO(CNT-KETA2:1)
-                                           TO  WRK-HENSURYO(CNT-KETA:1)
-               END-IF
-           END-PERFORM
-      *
-           .
-       400-ZHEN-SURYO-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ¥¨¥é¡¼½ÐÎÏ½èÍý
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
@@ -1592,66 +1309,6 @@ grpsys                                     SPA-AREA
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Åý·×£Ã£Ó£Ö½ÐÎÏ½èÍý
-      *****************************************************************
-       500-TOUKEICSV-SEC           SECTION.
-      *
-           INITIALIZE                  ORCSTOUKEICSVAREA
-           MOVE    "INS"           TO  STOUKEICSV-MODE
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                   TO  STOUKEICSV-TBL-KEY
-           MOVE    LNK-PRTKANRI-RENNUM
-                                   TO  STOUKEICSV-RENNUM
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                   TO  STOUKEICSV-TBL-GROUP
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                   TO  STOUKEICSV-SHORI-RENNUM
-           MOVE    LNK-PRTKANRI-SHELLID
-                                   TO  STOUKEICSV-SHELLID
-           MOVE    WRK-PARA-SRYYM  TO  STOUKEICSV-SRYYM
-           MOVE    WRK-PARA-NYUGAIKBN
-                                   TO  STOUKEICSV-NYUGAIKBN
-           MOVE    ZERO            TO  STOUKEICSV-PTID
-           MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
-           MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
-           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
-           MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "»ØÄê¿ÇÎÅ¹Ô°Ù·ï¿ôÄ´£Ã£Ó£ÖºîÀ®"
-                                   TO  STOUKEICSV-TITLE
-      *
-           CALL    "ORCSTOUKEICSV"     USING
-                                       ORCSTOUKEICSVAREA
-                                       SPA-AREA
-           IF      STOUKEICSV-RETURN   =   ZERO
-               CONTINUE
-           ELSE
-               MOVE    "Åý·×£Ã£Ó£Ö£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
-                                      TO  WRK-TOUKEIERR
-               PERFORM 500-ERR-HENSYU-SEC
-               PERFORM 500-COBABORT-SEC
-           END-IF
-           .
-      *
-       500-TOUKEICSV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    °Û¾ï½ªÎ»½èÍý
-      *****************************************************************
-       500-COBABORT-SEC          SECTION.
-      *
-           MOVE    SPACE           TO  WRK-RECEERR
-           STRING  "ORCBG016 "     DELIMITED  BY  SIZE
-                   WRK-TOUKEIERR   DELIMITED  BY  SIZE
-                   LOW-VALUE       DELIMITED  BY  SIZE
-                                   INTO    WRK-RECEERR
-           END-STRING
-           CALL    "cobabort"      USING   WRK-RECEERR
-           .
-       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
