@@ -31,6 +31,7 @@
       *  04.05.00    NACL-多々納  09/08/11  退職国保年齢チェック応
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *  04.05.00    NACL-多々納  10/01/XX  治験対応
+      *  04.06.00    NACL-多々納  10/08/12  診療科変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -730,6 +731,12 @@
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
       *
+      *    画面スパ領域ワーク
+           COPY    "KT01SCR-SPA"      REPLACING
+                                     //SPA-// BY //HZN-SPA-//.
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA"   REPLACING 
+                                     //SPA-// BY //HZN-SPA-//.
       *
        01  WRK-SYSTIME               PIC 9(08).
       *
@@ -1776,6 +1783,11 @@
                WHEN    "0152"
                    MOVE    SPACE               TO  SPA-KIDCD
                    PERFORM 230-MAEKPTNUM-SEC
+      *!!
+               WHEN    "0138"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   PERFORM 41013-SRYKA-CHANGE-HKN02-SEC
+      *!!
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
       *****MOVE    SPACE               TO  SPA-KIDCD
@@ -3766,7 +3778,49 @@
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
       *
-           MOVE    SPACE               TO  SPA-HKNCOMBINUM
+      *    保険組合せ変更判定
+           MOVE    SPA-KT01            TO  HZN-SPA-KT01
+           MOVE    SPA-K01KYOUTU       TO  HZN-SPA-K01KYOUTU
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+           MOVE    SPACE               TO  WRK-SPA-HKNCOMBINUM
+           MOVE    SPACE               TO  WRK-SPA-DRCD
+           MOVE    SPACE               TO  HZN-SPA-DRCD-NAME
+      *    保険組合せ・ドクター初期編集
+           INITIALIZE                  ORCSC95AREA
+           MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
+           MOVE    "K"                 TO  LNK-SC95-KBN
+           CALL    "ORCSCKT95"         USING
+                                       MCPAREA
+                                       ORCSC95AREA
+                                       WRK-SPA-AREA
+                                       HZN-SPA-K01KYOUTU
+                                       HZN-SPA-KT01
+           IF      SPA-HKNCOMBINUM     =   WRK-SPA-HKNCOMBINUM
+      *        保険変更がない時、処理を行う
+               MOVE    SPACE               TO  SPA-KID1-FLG
+               MOVE    WRK-SPA-DRCD        TO  SPA-DRCD
+               MOVE    HZN-SPA-DRCD-NAME   TO  SPA-DRCD-NAME
+      *        変更後の保険組合せでチェック
+               PERFORM 41013-SRYKA-CHANGE-SEC
+           ELSE
+               MOVE    "0138"              TO  SPA-KIDCD
+           END-IF
+      *
+      *    変更後の保険組合せでチェック
+      *    PERFORM 41013-SRYKA-CHANGE-SEC
+      *
+           .
+       41013-SRYKA-CHANGE-HKN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科変換処理
+      *****************************************************************
+       41013-SRYKA-CHANGE-HKN02-SEC         SECTION.
+      *
+           IF      SPA-KID1-FLG        =   "OK"
+               MOVE    SPACE               TO  SPA-HKNCOMBINUM
+           END-IF
            MOVE    SPACE               TO  SPA-DRCD
            MOVE    SPACE               TO  SPA-DRCD-NAME
       *    保険組合せ・ドクター初期編集
@@ -3782,9 +3836,8 @@
       *
       *    変更後の保険組合せでチェック
            PERFORM 41013-SRYKA-CHANGE-SEC
-      *
            .
-       41013-SRYKA-CHANGE-HKN-EXT.
+       41013-SRYKA-CHANGE-HKN02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8986,6 +9039,18 @@
                                            DELIMITED  BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *VER.4.6
+               WHEN    "0138"
+                   STRING   "診療科の保険組合せに変更しますか？"
+                            "【"
+                                       DELIMITED   BY  SIZE
+                             HZN-SPA-GMN-HKNCOMBI-G
+                                       DELIMITED   BY  "  "
+                             "】"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+      *!!
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -9007,6 +9072,7 @@
                WHEN    "0230"
                WHEN    "0213"
                WHEN    "2003"
+               WHEN    "0138"
                    MOVE    "ＮＯ"            TO  KTID1-B01
            END-EVALUATE
       *

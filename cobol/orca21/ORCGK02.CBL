@@ -95,6 +95,7 @@
       *  04.05.00    NACL-多々納  09/09/16  "0086XXXXX"コメント対応
       *  04.05.00    NACL-多々納  09/10/26  他医院退院反映対応
       *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更
+      *  04.06.00    NACL-多々納  10/08/12  診療科変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -794,6 +795,9 @@
       *
       *    画面スパ領域ワーク
            COPY    "K02SCR-SPA"      REPLACING
+                                     //SPA-// BY //HZN-SPA-//.
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA"   REPLACING 
                                      //SPA-// BY //HZN-SPA-//.
       *
        01  WRK-SYSTIME               PIC 9(08).
@@ -2538,6 +2542,11 @@
                    ELSE
                        PERFORM 41013-SRYKA-CHANGE-SEC
                    END-IF
+      *!!
+               WHEN    "0138"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   PERFORM 41013-SRYKA-CHANGE02-SEC
+      *!!
       *
       *        同日再診３回以上の確認
                WHEN    "0106"
@@ -5576,13 +5585,63 @@
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
+           MOVE    0                   TO  SPA-GMN-FLG
       *    対象の科の保険組合せにする
            IF      SPA-SYORIFLG        =   ZERO
-               MOVE    SPACE               TO  SPA-HKNCOMBINUM
+      *        診療内容を残さない時、展開中のクリア
+               IF      SPA-KID1-FLG        =   "OK"
+                   MOVE    1               TO  SPA-GMN-FLG
+               END-IF
+      *        保険組合せ変更判定
+               MOVE    SPA-K02             TO  HZN-SPA-K02
+               MOVE    SPA-K01KYOUTU       TO  HZN-SPA-K01KYOUTU
+               MOVE    SPA-AREA            TO  WRK-SPA-AREA
+               MOVE    SPACE               TO  WRK-SPA-HKNCOMBINUM
+               MOVE    SPACE               TO  WRK-SPA-DRCD
+               MOVE    SPACE               TO  HZN-SPA-DRCD-NAME
+      *
+               INITIALIZE                  ORCSC95AREA
+               MOVE    SPA-NAI-SRYYMD      TO  LNK-SC95-SRYYMD
+               MOVE    SPA-GMN-SRYYMD      TO  LNK-SC95-SRYYMDG
+               MOVE    "L"                 TO  LNK-SC95-KBN
+               MOVE    "K02"               TO  LNK-SC95-PG
+               CALL    "ORCSC95"           USING
+                                           MCPAREA
+                                           ORCSC95AREA
+                                           WRK-SPA-AREA
+                                           HZN-SPA-K01KYOUTU
+                                           HZN-SPA-K02
+               IF      SPA-HKNCOMBINUM     =   WRK-SPA-HKNCOMBINUM
+      *            保険変更がない時、処理を行う
+                   MOVE    SPACE               TO  SPA-KID1-FLG
+                   MOVE    WRK-SPA-DRCD        TO  SPA-DRCD
+                   MOVE    HZN-SPA-DRCD-NAME   TO  SPA-DRCD-NAME
+                   PERFORM 41013-SRYKA-CHANGE02-SEC
+               ELSE
+                   MOVE    "0138"              TO  SPA-KIDCD
+               END-IF
+           ELSE
+               PERFORM 41013-SRYKA-CHANGE02-SEC
+           END-IF
+           .
+       41013-SRYKA-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科変換処理
+      *****************************************************************
+       41013-SRYKA-CHANGE02-SEC         SECTION.
+      *
+      *    対象の科の保険組合せにする
+           IF      SPA-SYORIFLG        =   ZERO
+               IF      SPA-KID1-FLG        =   "OK"
+                   MOVE    SPACE               TO  SPA-HKNCOMBINUM
+               END-IF
                MOVE    SPACE               TO  SPA-DRCD
                MOVE    SPACE               TO  SPA-DRCD-NAME
       *        診療内容を残さない時、展開中のクリア
-               IF      SPA-KID1-FLG        =   "OK"
+      *        IF      SPA-KID1-FLG        =   "OK"
+               IF      SPA-GMN-FLG         =   1
                    CONTINUE
                ELSE
                    MOVE    ZERO            TO  FLG-MOD-FLG
@@ -5612,7 +5671,8 @@
            END-IF
       *
            MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
-           IF     (SPA-KID1-FLG    NOT =   "OK"  )  AND
+      **** IF     (SPA-KID1-FLG    NOT =   "OK"  )  AND
+           IF     (SPA-GMN-FLG         =   0     )  AND
                   (SPA-SYORIFLG        =   ZERO  )
                INITIALIZE                  SPA-SCR-REC
            END-IF
@@ -5628,17 +5688,17 @@
       *!!
       *    訂正の時、以下の処理なし
            IF      SPA-SYORIFLG        =   1
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *
       *    再表示編集処理
            IF      LNK-SC95-WKSRYACT   =   1
                MOVE    "0122"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
            IF      LNK-SC95-WKSRYACT   =   2
                MOVE    "0124"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
@@ -5646,26 +5706,26 @@
       *
            IF      LNK-SC95-DOUJI-RENNUM   NOT =   ZERO
                MOVE    "0103"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *    保険番号が未確定の時、エラー
            IF      SPA-HKNCOMBINUM     =   SPACE
                MOVE    "1006"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-HKN-ERR
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *    受診履歴が３で、通常の時、警告
            IF     (SPA-RRK-LSTYMD          =   SPA-SRYYMD )  AND
                   (LNK-SC95-LAST-RENNUM    >=  3      )
                MOVE    "0106"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *    保険組合編集
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
            PERFORM 3101-HKNCOMBI-HEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )
                OR (SPA-KIDCD       NOT =   SPACE )
-               GO      TO      41013-SRYKA-CHANGE-EXT
+               GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *
       *    診察料のみ変換する
@@ -5692,7 +5752,7 @@
            MOVE    1               TO  SPA-MAP-IDX
            MOVE    WRK-KIDCD2      TO  SPA-KIDCD
            .
-       41013-SRYKA-CHANGE-EXT.
+       41013-SRYKA-CHANGE02-EXT.
            EXIT.
       *****************************************************************
       *    診療行為検索処理
@@ -12281,6 +12341,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            DELIMITED  BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *!!!
+      *VER.4.6
+               WHEN    "0138"
+                   STRING   "診療科の保険組合せに変更しますか？"
+                            "【"
+                                       DELIMITED   BY  SIZE
+                             HZN-SPA-GMN-HKNCOMBI-G
+                                       DELIMITED   BY  "  "
+                             "】"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -12313,6 +12385,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0127"
                WHEN    "0131"
                WHEN    "2003"
+               WHEN    "0138"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *

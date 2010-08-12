@@ -179,6 +179,8 @@
                05  SPA-FUKU-SRYKA            PIC 9(01).
       *        電話再診あり
                05  SPA-TELSAI-ARI            PIC 9(01).
+      *        確認区分
+               05  SPA-GMN-FLG               PIC 9(01).
       *
       *        診療種別チェック用テーブル
                05  SPA-SRYKBN-AREA.

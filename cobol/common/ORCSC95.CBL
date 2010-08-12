@@ -569,6 +569,17 @@
                    PERFORM 11011-TOKUTEI-SYORI-SEC
       *            中途終了分編集
                    PERFORM 200-WKSRYACT-SYORI-SEC
+      *        診療科変更時の保険チェック
+               WHEN    "L"
+      *           受付マスタより、診療科、ドクターの決定
+                   IF     (SPA-SYSYMD          =   SPA-SRYYMD ) AND
+                          (SPA-SYORIFLG        =   ZERO       )
+                       PERFORM 10014-UKETUKE-CHK-SEC
+                   END-IF
+      *            受診履歴より、診療科等を確定する
+                   PERFORM 10011-JYURRK-SEC
+      *            保険組合せ名称編集
+                   PERFORM 10013-HKNCOMBI-SEC
       *        中途終了分追加
                WHEN    "A"
                    PERFORM 300-WKSRYACT-INSERT-SEC

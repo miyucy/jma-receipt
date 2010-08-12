@@ -1715,7 +1715,9 @@
                    MOVE    1               TO  FLG-JYURRK
                END-IF
                IF      FLG-JYURRK          =   ZERO
-                   MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
+                   IF      SPA-HKNCOMBINUM     =   SPACE
+                       MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
+                   END-IF
                    MOVE    JYURRK-DRCD         TO  SPA-DRCD
                END-IF
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -1724,8 +1726,10 @@
            ELSE
                MOVE    SPA-NAI-RRK-DRCD(IDX-J1)
                                            TO  SPA-DRCD
-               MOVE    SPA-NAI-RRK-HKNCOMBI(IDX-J1)
-                                           TO  SPA-HKNCOMBINUM
+               IF      SPA-HKNCOMBINUM     =   SPACE
+                   MOVE    SPA-NAI-RRK-HKNCOMBI(IDX-J1)
+                                               TO  SPA-HKNCOMBINUM
+               END-IF
            END-IF
       *
       *    ¿ÇÎÅ²Ê¡¢¥É¥¯¥¿¡¼Ì¾¾ÎÊÔ½¸
