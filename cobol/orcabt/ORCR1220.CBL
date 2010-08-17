@@ -82,6 +82,8 @@
       *                                     まとめ記載対応
       *  04.05.05    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *  04.05.06    NACL-門脇    10/01/07  治験対応
+      *
+      *  04.06.01    NACL-門脇    10/08/16  入院の点滴入力改善対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -340,8 +342,13 @@
                  06  WRK-TENTEKI2-T-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-T-SRYCDTOTAL         PIC 9(13).
                  06  WRK-TENTEKI2-T-SRYCD-X.
-                   07  WRK-TENTEKI2-T-SRYCD            PIC X(09)
-                                                       OCCURS    5.
+                   07  WRK-TENTEKI2-T-SRYCD-X-OCC      OCCURS    5.
+                     08  WRK-TENTEKI2-T-SRYCD            PIC X(09).
+                     08  WRK-TENTEKI2-T-COM-MEISAISU     PIC 9(03).
+                     08  WRK-TENTEKI2-T-COM-AREA       OCCURS    5.
+                         10  WRK-TENTEKI2-T-COM-FLG      PIC X(01).
+                         10  WRK-TENTEKI2-T-COM-SRYCD    PIC X(09).
+                         10  WRK-TENTEKI2-T-COM-MOJI     PIC X(100).
                05  WRK-TENTEKI2-T-ERRCD                PIC 9(01).
       *
                05  WRK-TENTEKI2-C-AREA                 OCCURS   31.
@@ -349,8 +356,13 @@
                  06  WRK-TENTEKI2-C-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-C-SRYCDTOTAL         PIC 9(13).
                  06  WRK-TENTEKI2-C-SRYCD-X.
-                   07  WRK-TENTEKI2-C-SRYCD            PIC X(09)
-                                                       OCCURS    5.
+                   07  WRK-TENTEKI2-C-SRYCD-X-OCC      OCCURS    5.
+                     08  WRK-TENTEKI2-C-SRYCD            PIC X(09).
+                     08  WRK-TENTEKI2-C-COM-MEISAISU     PIC 9(03).
+                     08  WRK-TENTEKI2-C-COM-AREA       OCCURS    5.
+                         10  WRK-TENTEKI2-C-COM-FLG      PIC X(01).
+                         10  WRK-TENTEKI2-C-COM-SRYCD    PIC X(09).
+                         10  WRK-TENTEKI2-C-COM-MOJI     PIC X(100).
                05  WRK-TENTEKI2-C-ERRCD                PIC 9(01).
       *
        01  WRK-ORCSTEN-TABLE.
@@ -459,8 +471,19 @@
            03  WRK-FUKA-VALUE                  PIC 9(01).
       *
            03  WRK-TENTEKI2-SRYCD-X.
-               05  WRK-TENTEKI2-SRYCD          PIC  X(09)
-                                               OCCURS    5.
+               05  WRK-TENTEKI2-SRYCD-X-OCC        OCCURS    5.
+                 06  WRK-TENTEKI2-SRYCD            PIC X(09).
+                 06  WRK-TENTEKI2-COM-MEISAISU     PIC 9(03).
+                 06  WRK-TENTEKI2-COM-AREA         OCCURS    5.
+                     08  WRK-TENTEKI2-COM-FLG      PIC X(01).
+                     08  WRK-TENTEKI2-COM-SRYCD    PIC X(09).
+                     08  WRK-TENTEKI2-COM-MOJI     PIC X(100).
+      *
+           03  WRK-TENTEKI2-SRYCD2-X.
+               05  WRK-TENTEKI2-SRYCD2-X-OCC       OCCURS  100.
+                 06  WRK-TENTEKI2-SRYCD2           PIC X(09).
+                 06  WRK-TENTEKI2-COM-FLG2         PIC X(01).
+                 06  WRK-TENTEKI2-COM-MOJI2        PIC X(100).
       *
            03  WRK-SYOKUJIKEI                  PIC  9(07).
       *
@@ -5112,7 +5135,7 @@
                        PERFORM   21032X-RECE220-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-T-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21033X-RECE230-TENSOU3-SEC
+                       PERFORM   21035-RECE230-TENTEKI2-HENSYU-SEC
                        PERFORM   21034-RECE200-HENSYU3-SEC
                        PERFORM   RECE220-WRITE-SEC
                     END-IF
@@ -5127,7 +5150,7 @@
                        PERFORM   21032X-RECE220-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-C-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21033X-RECE230-TENSOU3-SEC
+                       PERFORM   21035-RECE230-TENTEKI2-HENSYU-SEC
                        PERFORM   21034-RECE200-HENSYU3-SEC
                        PERFORM   RECE220-WRITE-SEC
                     END-IF
@@ -5234,22 +5257,10 @@
              MOVE  WRK-TENTEKI2-T-ZAITEN(IDY)
                                         TO      RECE220-ZAITEN
                                                 RECE220-SYUTEN1
-             MOVE  WRK-TENTEKI2-T-MEISAISU(IDY)
-                                        TO      RECE220-MEISAISU
-                                                RECE220-SURYOUTOTAL
-             MOVE  WRK-TENTEKI2-T-SRYCDTOTAL(IDY)
-                                        TO      RECE220-SRYCDTOTAL
-                                                RECE220-RUIKEITOTAL
            ELSE
              MOVE  WRK-TENTEKI2-C-ZAITEN(IDY)
                                         TO      RECE220-ZAITEN
                                                 RECE220-SYUTEN1
-             MOVE  WRK-TENTEKI2-C-MEISAISU(IDY)
-                                        TO      RECE220-MEISAISU
-                                                RECE220-SURYOUTOTAL
-             MOVE  WRK-TENTEKI2-C-SRYCDTOTAL(IDY)
-                                        TO      RECE220-SRYCDTOTAL
-                                                RECE220-RUIKEITOTAL
            END-IF
            MOVE    1                    TO      RECE220-ZAIKAISU
       *
@@ -5485,6 +5496,50 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
+       21035-RECE230-TENTEKI2-HENSYU-SEC                SECTION.
+      *
+           INITIALIZE             WRK-TENTEKI2-SRYCD2-X
+      *
+           MOVE      ZERO    TO   IDX4
+           PERFORM  VARYING  IDX2   FROM    1    BY   1
+                     UNTIL  (IDX2                     >      5  )
+                       OR   (WRK-TENTEKI2-SRYCD(IDX2)  =   SPACE)
+                       OR   (IDX4                     >=   100  )
+               ADD    1      TO   IDX4
+               MOVE   WRK-TENTEKI2-SRYCD(IDX2)
+                             TO   WRK-TENTEKI2-SRYCD2(IDX4)
+               PERFORM  VARYING  IDX5   FROM    1    BY   1
+                         UNTIL  (IDX5                       >     5  )
+                           OR   (WRK-TENTEKI2-COM-SRYCD(IDX2 IDX5)
+                                                             =  SPACE)
+                           OR   (IDX4                       >=  100  )
+                     ADD    1   TO   IDX4
+                     MOVE  "810000001"
+                                TO   WRK-TENTEKI2-SRYCD2(IDX4)
+                     MOVE  WRK-TENTEKI2-COM-FLG(IDX2 IDX5)
+                                TO   WRK-TENTEKI2-COM-FLG2(IDX4)
+                     MOVE  WRK-TENTEKI2-COM-MOJI(IDX2 IDX5)
+                                TO   WRK-TENTEKI2-COM-MOJI2(IDX4)
+               END-PERFORM
+           END-PERFORM
+      *
+           MOVE    1                       TO   IDX2
+           MOVE    ZERO                    TO   WRK-RENNUM
+      *
+           PERFORM   UNTIL  (WRK-TENTEKI2-SRYCD2(IDX2)  =   SPACE)
+                      OR    (IDX2                       >   100  )
+      *
+              PERFORM   21033X-RECE230-TENSOU3-SEC
+      *
+           END-PERFORM
+      *
+           .
+       21035-RECE230-TENTEKI2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００５）
+      *****************************************************************
        21033X-RECE230-TENSOU3-SEC                SECTION.
       *
            MOVE    SPACE                TO   RECE230-REC
@@ -5496,7 +5551,8 @@
              COMPUTE WRK-ZAINUM    =  99995400  +  IDY
            END-IF
            MOVE    WRK-ZAINUM           TO   RECE230-ZAINUM
-           MOVE    1                    TO   RECE230-RENNUM
+           ADD     1                    TO   WRK-RENNUM
+           MOVE    WRK-RENNUM           TO   RECE230-RENNUM
            MOVE    RECE200-PTNUM        TO   RECE230-PTNUM
       *
            MOVE    "00"                 TO   RECE230-SRYKA
@@ -5509,20 +5565,20 @@
            MOVE    ZERO                 TO   RECE230-JIHIMONEY
       *
            MOVE    ZERO                 TO   IDX4
-           PERFORM   VARYING   IDX2   FROM    1    BY   1
-                      UNTIL   (IDX2                      >     5  )
-                        OR    (WRK-TENTEKI2-SRYCD(IDX2)  =   SPACE)
+           PERFORM   UNTIL  (WRK-TENTEKI2-SRYCD2(IDX2)  =   SPACE)
+                      OR    (IDX4                      >=     5  )
+                      OR    (IDX2                      >    100  )
       *
                   ADD   1                   TO  IDX4
       *
-                  MOVE  WRK-TENTEKI2-SRYCD(IDX2)
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)
                                             TO  RECE230-SRYCD(IDX4)
                   MOVE  1                   TO  RECE230-SRYSURYO(IDX4)
                   MOVE  ZERO                TO  RECE230-SRYKAISU(IDX4)
                   MOVE  SPACE               TO  RECE230-MEISKYFLG(IDX4)
                   MOVE  SPACE               TO  RECE230-AUTOKBN(IDX4)
                   MOVE  ZERO                TO  RECE230-INPUTNUM(IDX4)
-                  MOVE  WRK-TENTEKI2-SRYCD(IDX2)
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)
                                             TO  WRK-SRYCD
                   MOVE  RECE230-SRYYM       TO  WK-TAIHI-SRYYM
                   MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
@@ -5534,7 +5590,12 @@
                                                                 (IDX4)
                   MOVE  TNS-TEN             TO  RECE230-TEN(IDX4)
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE230-TENTTLKBN(IDX4)
-                  MOVE  TNS-YUKOKETA        TO  RECE230-YUKOKETA(IDX4)
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                     MOVE   ZERO            TO  RECE230-YUKOKETA(IDX4)
+                  ELSE
+                     MOVE   TNS-YUKOKETA    TO  RECE230-YUKOKETA(IDX4)
+                  END-IF
                   MOVE  TNS-DATAKBN         TO  RECE230-DATAKBN (IDX4)
                   MOVE  TNS-HOUKNSKBN       TO  RECE230-HOUKNSKBN(IDX4)
                   MOVE  TNS-KNSJISKBN       TO  RECE230-KNSJISKBN(IDX4)
@@ -5566,12 +5627,44 @@
                                       TO RECE230-TOKUKIZAISBT1(IDX4)
                   MOVE  TNS-SANSOKBN  TO RECE230-SANSOKBN     (IDX4)
       *
-                  MOVE  TNS-NAME      TO RECE230-NAME(IDX4)
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                     MOVE   WRK-TENTEKI2-COM-MOJI2(IDX2)
+                                      TO RECE230-NAME(IDX4)
+                                         RECE230-INPUTCOMENT(IDX4)
+                  ELSE
+                     MOVE   TNS-NAME  TO RECE230-NAME(IDX4)
+                                         RECE230-INPUTCOMENT(IDX4)
+                  END-IF
+      *
+                  IF   RECE230-YUKOKETA(IDX4)  =  ZERO
+                     PERFORM   VARYING   IDW   FROM   200   BY  -1
+                                UNTIL    IDW   <   1
+                       IF   RECE230-NAME(IDX4)(IDW:1)  NOT =   SPACE
+                           COMPUTE RECE230-YUKOKETA(IDX4)  =
+                                   IDW     /   2
+                           MOVE    1          TO  IDW
+                       END-IF
+                     END-PERFORM
+                  END-IF
+      *
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                        MOVE     "1"             TO  RECE220-COMCDFLG
+                  END-IF
+      *
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE220-SRYCDTOTAL  =  RECE220-SRYCDTOTAL
+                                               +  WRK-SRYCD
+                  COMPUTE  RECE220-SURYOUTOTAL =  RECE220-SURYOUTOTAL
+                                               +  1
+                  COMPUTE  RECE220-MEISAISU    =  RECE220-MEISAISU
+                                               +  1
       *
                   MOVE  ZERO          TO WRK-FUKA-KINGAKU
                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
                             UNTIL   FUKA-IDX   >    9
-                    MOVE   WRK-TENTEKI2-SRYCD(IDX2)(FUKA-IDX:1)
+                    MOVE   WRK-TENTEKI2-SRYCD2(IDX2)(FUKA-IDX:1)
                                             TO  WRK-FUKA-VALUE
                     IF  WRK-FUKA-VALUE  =  ZERO
                       CONTINUE
@@ -5588,6 +5681,8 @@
                   COMPUTE  RECE220-RUIKEITOTAL  =
                            RECE220-RUIKEITOTAL  +
                            WRK-FUKA-KINGAKU
+      *
+                  ADD        1               TO  IDX2
       *
            END-PERFORM
       *

@@ -193,6 +193,7 @@
       *
       *  04.06.01    NACL-ÌçÏÆ    10/07/01  ¼«ÇåÀÕÊ¸½ñÎÁ¥ì¥»¥×¥ÈÅ¦Í×Íóµ­ºÜ
       *                                     ¡Ê£±ÄÌ»þ¡ËÂÐ±þ
+      *  04.06.02    NACL-ÌçÏÆ    10/08/16  Æþ±¡¤ÎÅÀÅ©ÆþÎÏ²þÁ±ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -531,8 +532,13 @@
                  06  WRK-TENTEKI2-T-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-T-SRYCDTOTAL         PIC 9(13).
                  06  WRK-TENTEKI2-T-SRYCD-X.
-                   07  WRK-TENTEKI2-T-SRYCD            PIC X(09)
-                                                       OCCURS    5.
+                   07  WRK-TENTEKI2-T-SRYCD-X-OCC      OCCURS    5.
+                     08  WRK-TENTEKI2-T-SRYCD            PIC X(09).
+                     08  WRK-TENTEKI2-T-COM-MEISAISU     PIC 9(03).
+                     08  WRK-TENTEKI2-T-COM-AREA       OCCURS    5.
+                         10  WRK-TENTEKI2-T-COM-FLG      PIC X(01).
+                         10  WRK-TENTEKI2-T-COM-SRYCD    PIC X(09).
+                         10  WRK-TENTEKI2-T-COM-MOJI     PIC X(100).
                05  WRK-TENTEKI2-T-ERRCD                PIC 9(01).
       *
                05  WRK-TENTEKI2-C-AREA                 OCCURS   31.
@@ -540,8 +546,13 @@
                  06  WRK-TENTEKI2-C-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-C-SRYCDTOTAL         PIC 9(13).
                  06  WRK-TENTEKI2-C-SRYCD-X.
-                   07  WRK-TENTEKI2-C-SRYCD            PIC X(09)
-                                                       OCCURS    5.
+                   07  WRK-TENTEKI2-C-SRYCD-X-OCC      OCCURS    5.
+                     08  WRK-TENTEKI2-C-SRYCD            PIC X(09).
+                     08  WRK-TENTEKI2-C-COM-MEISAISU     PIC 9(03).
+                     08  WRK-TENTEKI2-C-COM-AREA       OCCURS    5.
+                         10  WRK-TENTEKI2-C-COM-FLG      PIC X(01).
+                         10  WRK-TENTEKI2-C-COM-SRYCD    PIC X(09).
+                         10  WRK-TENTEKI2-C-COM-MOJI     PIC X(100).
                05  WRK-TENTEKI2-C-ERRCD                PIC 9(01).
       *
        01  WRK-ORCSTEN-TABLE.
@@ -682,8 +693,19 @@
            03  WRK-ZAITENNASHI                 PIC 9(09).
       *
            03  WRK-TENTEKI2-SRYCD-X.
-               05  WRK-TENTEKI2-SRYCD          PIC X(09)
-                                               OCCURS  5.
+               05  WRK-TENTEKI2-SRYCD-X-OCC        OCCURS    5.
+                 06  WRK-TENTEKI2-SRYCD            PIC X(09).
+                 06  WRK-TENTEKI2-COM-MEISAISU     PIC 9(03).
+                 06  WRK-TENTEKI2-COM-AREA         OCCURS    5.
+                     08  WRK-TENTEKI2-COM-FLG      PIC X(01).
+                     08  WRK-TENTEKI2-COM-SRYCD    PIC X(09).
+                     08  WRK-TENTEKI2-COM-MOJI     PIC X(100).
+      *
+           03  WRK-TENTEKI2-SRYCD2-X.
+               05  WRK-TENTEKI2-SRYCD2-X-OCC       OCCURS  100.
+                 06  WRK-TENTEKI2-SRYCD2           PIC X(09).
+                 06  WRK-TENTEKI2-COM-FLG2         PIC X(01).
+                 06  WRK-TENTEKI2-COM-MOJI2        PIC X(100).
       *
            03  WRK-STR                         PIC X(200).
            03  WRK-LEN                         PIC 9(05).
@@ -7852,7 +7874,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        PERFORM   2401X-RECE84-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-T-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   2402X-RECE85-TENSOU3-SEC
+                       PERFORM   2404-RECE85-TENTEKI2-HENSYU-SEC
                        PERFORM   2403-RECE82-HENSYU3-SEC
                        PERFORM   900-RECE84-WRITE-SEC
                     END-IF
@@ -7867,7 +7889,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        PERFORM   2401X-RECE84-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-C-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   2402X-RECE85-TENSOU3-SEC
+                       PERFORM   2404-RECE85-TENTEKI2-HENSYU-SEC
                        PERFORM   2403-RECE82-HENSYU3-SEC
                        PERFORM   900-RECE84-WRITE-SEC
                     END-IF
@@ -7987,22 +8009,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
              MOVE  WRK-TENTEKI2-T-ZAITEN(IDY)
                                         TO      RECE84-ZAITEN
                                                 RECE84-SYUTEN1
-             MOVE  WRK-TENTEKI2-T-MEISAISU(IDY)
-                                        TO      RECE84-MEISAISU
-                                                RECE84-SURYOUTOTAL
-             MOVE  WRK-TENTEKI2-T-SRYCDTOTAL(IDY)
-                                        TO      RECE84-SRYCDTOTAL
-                                                RECE84-RUIKEITOTAL
            ELSE
              MOVE  WRK-TENTEKI2-C-ZAITEN(IDY)
                                         TO      RECE84-ZAITEN
                                                 RECE84-SYUTEN1
-             MOVE  WRK-TENTEKI2-C-MEISAISU(IDY)
-                                        TO      RECE84-MEISAISU
-                                                RECE84-SURYOUTOTAL
-             MOVE  WRK-TENTEKI2-C-SRYCDTOTAL(IDY)
-                                        TO      RECE84-SRYCDTOTAL
-                                                RECE84-RUIKEITOTAL
            END-IF
            MOVE    1                    TO      RECE84-ZAIKAISU
            MOVE    ZERO                 TO      RECE84-SYUTEN2
@@ -8238,6 +8248,50 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷¡Ê£Æ£°£°£µ¡Ë
       *****************************************************************
+       2404-RECE85-TENTEKI2-HENSYU-SEC                SECTION.
+      *
+           INITIALIZE             WRK-TENTEKI2-SRYCD2-X
+      *
+           MOVE      ZERO    TO   IDX4
+           PERFORM  VARYING  IDX2   FROM    1    BY   1
+                     UNTIL  (IDX2                     >      5  )
+                       OR   (WRK-TENTEKI2-SRYCD(IDX2)  =   SPACE)
+                       OR   (IDX4                     >=   100  )
+               ADD    1      TO   IDX4
+               MOVE   WRK-TENTEKI2-SRYCD(IDX2)
+                             TO   WRK-TENTEKI2-SRYCD2(IDX4)
+               PERFORM  VARYING  IDX5   FROM    1    BY   1
+                         UNTIL  (IDX5                       >     5  )
+                           OR   (WRK-TENTEKI2-COM-SRYCD(IDX2 IDX5)
+                                                             =  SPACE)
+                           OR   (IDX4                       >=  100  )
+                     ADD    1   TO   IDX4
+                     MOVE  "810000001"
+                                TO   WRK-TENTEKI2-SRYCD2(IDX4)
+                     MOVE  WRK-TENTEKI2-COM-FLG(IDX2 IDX5)
+                                TO   WRK-TENTEKI2-COM-FLG2(IDX4)
+                     MOVE  WRK-TENTEKI2-COM-MOJI(IDX2 IDX5)
+                                TO   WRK-TENTEKI2-COM-MOJI2(IDX4)
+               END-PERFORM
+           END-PERFORM
+      *
+           MOVE    1                       TO   IDX2
+           MOVE    ZERO                    TO   WRK-RENNUM
+      *
+           PERFORM   UNTIL  (WRK-TENTEKI2-SRYCD2(IDX2)  =   SPACE)
+                      OR    (IDX2                       >   100  )
+      *
+              PERFORM   2402X-RECE85-TENSOU3-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2404-RECE85-TENTEKI2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥ÈÃæ´Ö¥Õ¥¡¥¤¥ë¤Î¹àÌÜÅ¾Á÷¡Ê£Æ£°£°£µ¡Ë
+      *****************************************************************
        2402X-RECE85-TENSOU3-SEC                SECTION.
       *
            MOVE    SPACE                TO   RECE85-REC
@@ -8255,7 +8309,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
              COMPUTE WRK-ZAINUM    =  99995400  +  IDY
            END-IF
            MOVE    WRK-ZAINUM           TO   RECE85-ZAINUM
-           MOVE    1                    TO   RECE85-RENNUM
+           ADD     1                    TO   WRK-RENNUM
+           MOVE    WRK-RENNUM           TO   RECE85-RENNUM
            MOVE    RECE82-PTNUM         TO   RECE85-PTNUM
       *
            MOVE    "00"                 TO   RECE85-SRYKA
@@ -8268,20 +8323,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ZERO                 TO   RECE85-JIHIMONEY
       *
            MOVE    ZERO                 TO   IDX4
-           PERFORM   VARYING   IDX2   FROM    1    BY   1
-                      UNTIL   (IDX2                      >     5  )
-                        OR    (WRK-TENTEKI2-SRYCD(IDX2)  =   SPACE)
+           PERFORM   UNTIL  (WRK-TENTEKI2-SRYCD2(IDX2)  =   SPACE)
+                      OR    (IDX4                      >=     5  )
+                      OR    (IDX2                      >    100  )
       *
                   ADD   1                   TO  IDX4
       *
-                  MOVE  WRK-TENTEKI2-SRYCD(IDX2)
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)
                                             TO  RECE85-SRYCD(IDX4)
                   MOVE  1                   TO  RECE85-SRYSURYO(IDX4)
                   MOVE  ZERO                TO  RECE85-SRYKAISU(IDX4)
                   MOVE  SPACE               TO  RECE85-MEISKYFLG(IDX4)
                   MOVE  SPACE               TO  RECE85-AUTOKBN(IDX4)
                   MOVE  ZERO                TO  RECE85-INPUTNUM(IDX4)
-                  MOVE  WRK-TENTEKI2-SRYCD(IDX2)
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)
                                             TO  WRK-SRYCD
                   MOVE  RECE85-SRYYM        TO  WK-TAIHI-SRYYM
                   MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
@@ -8302,7 +8357,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   MOVE  TNS-TENSIKIBETU     TO  RECE85-TENSIKIBETU(IDX4)
                   MOVE  TNS-TEN             TO  RECE85-TEN(IDX4)
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE85-TENTTLKBN(IDX4)
-                  MOVE  TNS-YUKOKETA        TO  RECE85-YUKOKETA(IDX4)
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                     MOVE   ZERO            TO  RECE85-YUKOKETA(IDX4)
+                  ELSE
+                     MOVE   TNS-YUKOKETA    TO  RECE85-YUKOKETA(IDX4)
+                  END-IF
                   MOVE  TNS-DATAKBN         TO  RECE85-DATAKBN (IDX4)
                   MOVE  TNS-HOUKNSKBN       TO  RECE85-HOUKNSKBN(IDX4)
                   MOVE  TNS-KNSJISKBN       TO  RECE85-KNSJISKBN(IDX4)
@@ -8317,13 +8377,44 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       TO  RECE85-CDKBN-KOUBAN(IDX4)
                   MOVE  TNS-KOUHYOJYUNNUM
                                       TO  RECE85-KOUHYOJYUNNUM(IDX4)
-                  MOVE  TNS-NAME      TO  RECE85-NAME(IDX4)
                   MOVE     "1"        TO  RECE85-SIKFLG(IDX4)
+      *
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                     MOVE   WRK-TENTEKI2-COM-MOJI2(IDX2)
+                                      TO  RECE85-NAME(IDX4)
+                  ELSE
+                     MOVE   TNS-NAME  TO  RECE85-NAME(IDX4)
+                  END-IF
+      *
+                  IF   RECE85-YUKOKETA(IDX4)  =  ZERO
+                     PERFORM   VARYING   IDW   FROM   200   BY  -1
+                                UNTIL    IDW   <   1
+                       IF   RECE85-NAME(IDX4)(IDW:1)  NOT =   SPACE
+                           COMPUTE RECE85-YUKOKETA(IDX4)  =
+                                   IDW     /   2
+                           MOVE    1          TO  IDW
+                       END-IF
+                     END-PERFORM
+                  END-IF
+      *
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                        MOVE     "1"             TO  RECE84-COMCDFLG
+                  END-IF
+      *
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE84-SRYCDTOTAL  =  RECE84-SRYCDTOTAL
+                                              +  WRK-SRYCD
+                  COMPUTE  RECE84-SURYOUTOTAL =  RECE84-SURYOUTOTAL
+                                              +  1
+                  COMPUTE  RECE84-MEISAISU    =  RECE84-MEISAISU
+                                              +  1
       *
                   MOVE     ZERO       TO  WRK-FUKA-KINGAKU
                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
                             UNTIL   FUKA-IDX   >    9
-                    MOVE   WRK-TENTEKI2-SRYCD(IDX2)(FUKA-IDX:1)
+                    MOVE   WRK-TENTEKI2-SRYCD2(IDX2)(FUKA-IDX:1)
                                             TO  WRK-FUKA-VALUE
                     IF  WRK-FUKA-VALUE  =  ZERO
                       CONTINUE
@@ -8340,6 +8431,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   COMPUTE  RECE84-RUIKEITOTAL  =
                            RECE84-RUIKEITOTAL  +
                            WRK-FUKA-KINGAKU
+      *
+                  ADD        1               TO  IDX2
       *
            END-PERFORM
       *

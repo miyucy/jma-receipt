@@ -468,6 +468,7 @@
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
+      *  04.06.02    NACL-門脇    10/08/16  入院の点滴入力改善対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -996,8 +997,13 @@
                  06  WRK-TENTEKI2-T-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-T-SRYCDTOTAL         PIC 9(13).
                  06  WRK-TENTEKI2-T-SRYCD-X.
-                   07  WRK-TENTEKI2-T-SRYCD            PIC X(09)
-                                                       OCCURS    5.
+                   07  WRK-TENTEKI2-T-SRYCD-X-OCC      OCCURS    5.
+                     08  WRK-TENTEKI2-T-SRYCD            PIC X(09).
+                     08  WRK-TENTEKI2-T-COM-MEISAISU     PIC 9(03).
+                     08  WRK-TENTEKI2-T-COM-AREA       OCCURS    5.
+                         10  WRK-TENTEKI2-T-COM-FLG      PIC X(01).
+                         10  WRK-TENTEKI2-T-COM-SRYCD    PIC X(09).
+                         10  WRK-TENTEKI2-T-COM-MOJI     PIC X(100).
                05  WRK-TENTEKI2-T-ERRCD                PIC 9(01).
       *
                05  WRK-TENTEKI2-C-AREA                 OCCURS   31.
@@ -1005,8 +1011,13 @@
                  06  WRK-TENTEKI2-C-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-C-SRYCDTOTAL         PIC 9(13).
                  06  WRK-TENTEKI2-C-SRYCD-X.
-                   07  WRK-TENTEKI2-C-SRYCD            PIC X(09)
-                                                       OCCURS    5.
+                   07  WRK-TENTEKI2-C-SRYCD-X-OCC      OCCURS    5.
+                     08  WRK-TENTEKI2-C-SRYCD            PIC X(09).
+                     08  WRK-TENTEKI2-C-COM-MEISAISU     PIC 9(03).
+                     08  WRK-TENTEKI2-C-COM-AREA       OCCURS    5.
+                         10  WRK-TENTEKI2-C-COM-FLG      PIC X(01).
+                         10  WRK-TENTEKI2-C-COM-SRYCD    PIC X(09).
+                         10  WRK-TENTEKI2-C-COM-MOJI     PIC X(100).
                05  WRK-TENTEKI2-C-ERRCD                PIC 9(01).
       *
        01  WRK-MIJ-TABLE.
@@ -1252,8 +1263,19 @@
                05  WK-GENGAKU-DD               PIC  9(02).
       *
            03  WRK-TENTEKI2-SRYCD-X.
-               05  WRK-TENTEKI2-SRYCD          PIC  X(09)
-                                               OCCURS    5.
+               05  WRK-TENTEKI2-SRYCD-X-OCC        OCCURS    5.
+                 06  WRK-TENTEKI2-SRYCD            PIC X(09).
+                 06  WRK-TENTEKI2-COM-MEISAISU     PIC 9(03).
+                 06  WRK-TENTEKI2-COM-AREA         OCCURS    5.
+                     08  WRK-TENTEKI2-COM-FLG      PIC X(01).
+                     08  WRK-TENTEKI2-COM-SRYCD    PIC X(09).
+                     08  WRK-TENTEKI2-COM-MOJI     PIC X(100).
+      *
+           03  WRK-TENTEKI2-SRYCD2-X.
+               05  WRK-TENTEKI2-SRYCD2-X-OCC       OCCURS  100.
+                 06  WRK-TENTEKI2-SRYCD2           PIC X(09).
+                 06  WRK-TENTEKI2-COM-FLG2         PIC X(01).
+                 06  WRK-TENTEKI2-COM-MOJI2        PIC X(100).
       *
            03  WRK-GEN70-YMD.
                05  WRK-GEN70-YM                PIC  9(06).
@@ -10069,12 +10091,13 @@
                IF   WRK-TENTEKI2-T-ERRCD(IDX1)     =  ZERO
                  PERFORM  VARYING  IDY    FROM    1   BY  1
                            UNTIL   IDY     >     31
+                    MOVE    ZERO     TO   FLG-SETCOM
                     IF  WRK-TENTEKI2-T-ZAITEN(IDX1 IDY)  NOT =  ZERO
                        MOVE      3   TO   FLG-SIKIBETU
                        PERFORM   21032X-RECE64-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-T-SRYCD-X(IDX1 IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21033X-RECE65-TENSOU3-SEC
+                       PERFORM   21035-RECE65-TENTEKI2-HENSYU-SEC
                        PERFORM   21034-RECE62-HENSYU3-SEC
                        PERFORM   RECE64-WRITE-SEC
                     END-IF
@@ -10084,12 +10107,13 @@
                IF   WRK-TENTEKI2-C-ERRCD(IDX1)     =  ZERO
                  PERFORM  VARYING  IDY    FROM    1   BY  1
                            UNTIL   IDY     >     31
+                    MOVE    ZERO     TO   FLG-SETCOM
                     IF  WRK-TENTEKI2-C-ZAITEN(IDX1 IDY)  NOT =  ZERO
                        MOVE      4   TO   FLG-SIKIBETU
                        PERFORM   21032X-RECE64-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-C-SRYCD-X(IDX1 IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21033X-RECE65-TENSOU3-SEC
+                       PERFORM   21035-RECE65-TENTEKI2-HENSYU-SEC
                        PERFORM   21034-RECE62-HENSYU3-SEC
                        PERFORM   RECE64-WRITE-SEC
                     END-IF
@@ -10319,22 +10343,10 @@
              MOVE  WRK-TENTEKI2-T-ZAITEN(IDX1 IDY)
                                         TO      RECE64-ZAITEN
                                                 RECE64-SYUTEN1
-             MOVE  WRK-TENTEKI2-T-MEISAISU(IDX1 IDY)
-                                        TO      RECE64-MEISAISU
-                                                RECE64-SURYOUTOTAL
-             MOVE  WRK-TENTEKI2-T-SRYCDTOTAL(IDX1 IDY)
-                                        TO      RECE64-SRYCDTOTAL
-                                                RECE64-RUIKEITOTAL
            ELSE
              MOVE  WRK-TENTEKI2-C-ZAITEN(IDX1 IDY)
                                         TO      RECE64-ZAITEN
                                                 RECE64-SYUTEN1
-             MOVE  WRK-TENTEKI2-C-MEISAISU(IDX1 IDY)
-                                        TO      RECE64-MEISAISU
-                                                RECE64-SURYOUTOTAL
-             MOVE  WRK-TENTEKI2-C-SRYCDTOTAL(IDX1 IDY)
-                                        TO      RECE64-SRYCDTOTAL
-                                                RECE64-RUIKEITOTAL
            END-IF
            MOVE    1                    TO      RECE64-ZAIKAISU
       *
@@ -10648,6 +10660,50 @@
       *****************************************************************
       *    レセプト中間ファイルの項目転送（Ｆ００５）
       *****************************************************************
+       21035-RECE65-TENTEKI2-HENSYU-SEC                SECTION.
+      *
+           INITIALIZE             WRK-TENTEKI2-SRYCD2-X
+      *
+           MOVE      ZERO    TO   IDX4
+           PERFORM  VARYING  IDX2   FROM    1    BY   1
+                     UNTIL  (IDX2                     >      5  )
+                       OR   (WRK-TENTEKI2-SRYCD(IDX2)  =   SPACE)
+                       OR   (IDX4                     >=   100  )
+               ADD    1      TO   IDX4
+               MOVE   WRK-TENTEKI2-SRYCD(IDX2)
+                             TO   WRK-TENTEKI2-SRYCD2(IDX4)
+               PERFORM  VARYING  IDX5   FROM    1    BY   1
+                         UNTIL  (IDX5                       >     5  )
+                           OR   (WRK-TENTEKI2-COM-SRYCD(IDX2 IDX5)
+                                                             =  SPACE)
+                           OR   (IDX4                       >=  100  )
+                     ADD    1   TO   IDX4
+                     MOVE  "810000001"
+                                TO   WRK-TENTEKI2-SRYCD2(IDX4)
+                     MOVE  WRK-TENTEKI2-COM-FLG(IDX2 IDX5)
+                                TO   WRK-TENTEKI2-COM-FLG2(IDX4)
+                     MOVE  WRK-TENTEKI2-COM-MOJI(IDX2 IDX5)
+                                TO   WRK-TENTEKI2-COM-MOJI2(IDX4)
+               END-PERFORM
+           END-PERFORM
+      *
+           MOVE    1                       TO   IDX2
+           MOVE    ZERO                    TO   WRK-RENNUM
+      *
+           PERFORM   UNTIL  (WRK-TENTEKI2-SRYCD2(IDX2)  =   SPACE)
+                      OR    (IDX2                       >   100  )
+      *
+              PERFORM   21033X-RECE65-TENSOU3-SEC
+      *
+           END-PERFORM
+      *
+           .
+       21035-RECE65-TENTEKI2-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送（Ｆ００５）
+      *****************************************************************
        21033X-RECE65-TENSOU3-SEC                SECTION.
       *
            MOVE    SPACE                TO   RECE65-REC
@@ -10674,7 +10730,8 @@
            END-IF
            MOVE    WRK-ZAINUM           TO   RECE65-ZAINUM
            MOVE    CNT-ZAIREN           TO   RECE65-ZAIREN
-           MOVE    1                    TO   RECE65-RENNUM
+           ADD     1                    TO   WRK-RENNUM
+           MOVE    WRK-RENNUM           TO   RECE65-RENNUM
            MOVE    RECE62-PTNUM         TO   RECE65-PTNUM
       *
            MOVE    "00"                 TO   RECE65-SRYKA
@@ -10687,20 +10744,23 @@
            MOVE    ZERO                 TO   RECE65-JIHIMONEY
       *
            MOVE    ZERO                 TO   IDX4
-           PERFORM   VARYING   IDX2   FROM    1    BY   1
-                      UNTIL   (IDX2                      >     5  )
-                        OR    (WRK-TENTEKI2-SRYCD(IDX2)  =   SPACE)
+           PERFORM   UNTIL  (WRK-TENTEKI2-SRYCD2(IDX2)  =   SPACE)
+                      OR    (IDX4                      >=     5  )
+                      OR    (IDX2                      >    100  )
       *
                   ADD   1                   TO  IDX4
       *
-                  MOVE  WRK-TENTEKI2-SRYCD(IDX2)
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)
                                             TO  RECE65-SRYCD(IDX4)
                   MOVE  1                   TO  RECE65-SRYSURYO(IDX4)
                   MOVE  ZERO                TO  RECE65-SRYKAISU(IDX4)
                   MOVE  SPACE               TO  RECE65-MEISKYFLG(IDX4)
+                  IF   WRK-TENTEKI2-COM-FLG2(IDX2) = "1"
+                    MOVE  "2"               TO  RECE65-MEISKYFLG(IDX4)
+                  END-IF
                   MOVE  SPACE               TO  RECE65-AUTOKBN(IDX4)
                   MOVE  ZERO                TO  RECE65-INPUTNUM(IDX4)
-                  MOVE  WRK-TENTEKI2-SRYCD(IDX2)
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)
                                             TO  WRK-SRYCD
                   MOVE  RECE65-SRYYM        TO  WK-TAIHI-SRYYM
                   MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
@@ -10711,7 +10771,12 @@
                   MOVE  TNS-TENSIKIBETU     TO  RECE65-TENSIKIBETU(IDX4)
                   MOVE  TNS-TEN             TO  RECE65-TEN(IDX4)
                   MOVE  TNS-NYUTENTTLKBN    TO  RECE65-TENTTLKBN(IDX4)
-                  MOVE  TNS-YUKOKETA        TO  RECE65-YUKOKETA(IDX4)
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                     MOVE   ZERO            TO  RECE65-YUKOKETA(IDX4)
+                  ELSE
+                     MOVE   TNS-YUKOKETA    TO  RECE65-YUKOKETA(IDX4)
+                  END-IF
                   MOVE  TNS-DATAKBN         TO  RECE65-DATAKBN (IDX4)
                   MOVE  TNS-HOUKNSKBN       TO  RECE65-HOUKNSKBN(IDX4)
                   MOVE  TNS-KNSJISKBN       TO  RECE65-KNSJISKBN(IDX4)
@@ -10757,12 +10822,44 @@
                       END-PERFORM
                   END-IF
       *
-                  MOVE  TNS-NAME      TO RECE65-NAME(IDX4)
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                     MOVE   WRK-TENTEKI2-COM-MOJI2(IDX2)
+                                      TO RECE65-NAME(IDX4)
+                                         RECE65-INPUTCOMENT(IDX4)
+                  ELSE
+                     MOVE   TNS-NAME  TO RECE65-NAME(IDX4)
+                                         RECE65-INPUTCOMENT(IDX4)
+                  END-IF
+      *
+                  IF   RECE65-YUKOKETA(IDX4)  =  ZERO
+                     PERFORM   VARYING   IDW   FROM   200   BY  -1
+                                UNTIL    IDW   <   1
+                       IF   RECE65-NAME(IDX4)(IDW:1)  NOT =   SPACE
+                           COMPUTE RECE65-YUKOKETA(IDX4)  =
+                                   IDW     /   2
+                           MOVE    1          TO  IDW
+                       END-IF
+                     END-PERFORM
+                  END-IF
+      *
+                  IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
+                  OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
+                        MOVE     "1"             TO  RECE64-COMCDFLG
+                  END-IF
+      *
+                  MOVE  WRK-TENTEKI2-SRYCD2(IDX2)  TO  WRK-SRYCD
+                  COMPUTE  RECE64-SRYCDTOTAL  =  RECE64-SRYCDTOTAL
+                                              +  WRK-SRYCD
+                  COMPUTE  RECE64-SURYOUTOTAL =  RECE64-SURYOUTOTAL
+                                              +  1
+                  COMPUTE  RECE64-MEISAISU    =  RECE64-MEISAISU
+                                              +  1
       *
                   MOVE  ZERO          TO WRK-FUKA-KINGAKU
                   PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
                             UNTIL   FUKA-IDX   >    9
-                    MOVE   WRK-TENTEKI2-SRYCD(IDX2)(FUKA-IDX:1)
+                    MOVE   WRK-TENTEKI2-SRYCD2(IDX2)(FUKA-IDX:1)
                                             TO  WRK-FUKA-VALUE
                     IF  WRK-FUKA-VALUE  =  ZERO
                       CONTINUE
@@ -10779,6 +10876,22 @@
                   COMPUTE  RECE64-RUIKEITOTAL  =
                            RECE64-RUIKEITOTAL  +
                            WRK-FUKA-KINGAKU
+      *
+                  IF   RECE65-MEISKYFLG(IDX4)  =  "2"
+                     IF   (FLG-SETCOM              =  1   )
+                     AND  (RECE65-RECEDENFLG(IDX4) = SPACE)
+                        MOVE  "1"            TO  RECE64-SETCOMFLG
+                     ELSE
+                        MOVE  SPACE          TO  RECE65-MEISKYFLG(IDX4)
+                     END-IF
+                  ELSE
+                     IF   (RECE65-SRYCD(IDX4)(1:1) = "1" OR "6" OR "7")
+                     OR   (RECE65-SRYCD(IDX4)(1:3) = "059"            )
+                        MOVE   1             TO  FLG-SETCOM
+                     END-IF
+                  END-IF
+      *
+                  ADD        1               TO  IDX2
       *
            END-PERFORM
       *
