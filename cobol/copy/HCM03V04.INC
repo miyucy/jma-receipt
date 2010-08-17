@@ -46,4 +46,5 @@
               03  HCM03V04-TENSU2 PIC X(9).
               03  HCM03V04-TENSU22    PIC X(14).
             02  HCM03V04-LOPTION    PIC X(100).
+            02  HCM03V04-LABEL3 PIC X(126).
             02  HCM03V04-KANANAME   PIC X(50).
