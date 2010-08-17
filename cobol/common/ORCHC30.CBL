@@ -820,6 +820,7 @@
       *    回数カウント
            MOVE    SPACE           TO  WRK-SSTKIJUNCD
            MOVE    ZERO            TO  CNT-KAISU
+           MOVE    ZERO            TO  WRK-HENKBN-G
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL   IDX-KBN     >   5
                IF      TNS-SSTKIJUNCD(IDX-KBN) =   1
@@ -883,6 +884,7 @@
                                    +   WRK-HENKBN(3)
                                    +   WRK-HENKBN(4)
                                    +   WRK-HENKBN(5)
+
                IF      ORCHC30-SURYO(CNT-PARA) =   WRK-SURYO
                    PERFORM VARYING  IDX-KBN    FROM    1   BY  1
                            UNTIL  ( IDX-KBN    >   5 )
