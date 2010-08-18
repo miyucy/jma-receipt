@@ -165,6 +165,11 @@
            05 PIC  X(30)   VALUE   "公費情報の受給者番号が入力誤り".
            05 PIC  X(30)   VALUE   "です                          ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "030013".
+           05 PIC  X(30)   VALUE   "公費情報の受給者番号に入力があ".
+           05 PIC  X(30)   VALUE   "ります                        ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 04xxxx 保険適応年齢
       *                            +---------+---------+---------+.
@@ -543,7 +548,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  95.
+           05 ERRMES-OCC   OCCURS  96.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   95.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   96.
