@@ -760,6 +760,10 @@
                        09  SPA-GMN-SYUSTIME.
                            11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
                            11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
+                       09  SPA-GMN-MISYUKIKANKBN-G.
+                           11  SPA-GMN-MISYUKIKANKBN      PIC X(01).
+                           11  SPA-GMN-MISYUKIKANKBN-F1   PIC X(01).
+                           11  SPA-GMN-MISYUKIKANKBNMEI   PIC X(48).
                        09  SPA-GMN-SYUKARITIME-G.
                            11  SPA-GMN-SYUKARITIME-OCC1    OCCURS  2.
                                13  SPA-GMN-SYUKARIDAY-G.
@@ -933,6 +937,12 @@
                                13  SPA-GMN-S04SYORIL       PIC X(01).
                                13  SPA-GMN-S04SYORI-F1L    PIC X(01).
                                13  SPA-GMN-S04SYORIMEIL    PIC X(16).
+                       09  SPA-GMN-MISYUKIKANKBNLST-G.
+                           11  SPA-GMN-MISYUKIKANKBN-MAX  PIC 9(03).
+                           11  SPA-GMN-MISYUKIKANKBNLST   OCCURS  5.
+                               13  SPA-GMN-MISYUKIKANKBNL PIC X(01).
+                               13  SPA-GMN-MISYUKIKANKBN-F1L PIC X(01).
+                               13  SPA-GMN-MISYUKIKANKBNMEIL PIC X(48).
                    07  SPA-GMN-PAGE5-AREA.
       *                病名機能情報
                        09  SPA-GMN-MSG1-DSPKBN-G.
@@ -1914,6 +1924,12 @@
            MOVE    "1 一部負担金をクリアし先頭より再計算を行う"
                                        TO  SPA-GMN-IKTKEISANKBNLST(2)
            MOVE    2                   TO  SPA-GMN-IKTKEISANKBN-MAX
+      *
+           MOVE    "0 診療日（請求期間）以降の未収金を含める"
+                                       TO  SPA-GMN-MISYUKIKANKBNLST(1)
+           MOVE    "1 診療日（請求期間）以降の未収金を含めない"
+                                       TO  SPA-GMN-MISYUKIKANKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-MISYUKIKANKBN-MAX
       *
            MOVE    "0 表示する"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 表示しない"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -3409,6 +3425,11 @@
                                        TO  SPA-GMN-IKTKEISANKBN
            PERFORM 3101-IKTKEISANKBN-SYOKI-SEC
       *
+      *    請求書未収金集計期間区分
+           MOVE    SYS-1039-MISYUKIKANKBN
+                                       TO  SPA-GMN-MISYUKIKANKBN
+           PERFORM 3101-MISYUKIKANKBN-SYOKI-SEC
+      *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
                MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
            ELSE
@@ -3898,6 +3919,31 @@
       *
            . 
        3101-IKTKEISANKBN-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書未収金集計期間区分
+      *****************************************************************
+       3101-MISYUKIKANKBN-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-MISYUKIKANKBN-MAX
+               IF      SPA-GMN-MISYUKIKANKBN
+                                       =   SPA-GMN-MISYUKIKANKBNL(IDY)
+                   MOVE    SPA-GMN-MISYUKIKANKBNLST(IDY)
+                                       TO  SPA-GMN-MISYUKIKANKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-MISYUKIKANKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-MISYUKIKANKBNLST (1)
+                                       TO  SPA-GMN-MISYUKIKANKBN-G
+           END-IF
+      *
+           . 
+       3101-MISYUKIKANKBN-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    スパ初期編集処理
@@ -4554,6 +4600,7 @@
       *
                END-PERFORM
            END-PERFORM
+           MOVE    W07-MISYUKIKANKBN  TO  SPA-GMN-MISYUKIKANKBN-G
       *
       *    病名機能情報
            MOVE    W07-MSG1-DSPKBN     TO  SPA-GMN-MSG1-DSPKBN-G
@@ -4943,6 +4990,10 @@
       *            仮締め時間帯チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-SYUKARITIME-CHK-SEC
+                   END-IF
+      *            請求書未収金集計期間区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-MISYUKIKANKBN-CHK-SEC
                    END-IF
                WHEN    "1042"
       *            主病名確認メッセージ表示有無チェック
@@ -7162,6 +7213,29 @@
        4110-IKTKEISANKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    請求書未収金集計期間区分チェック
+      *****************************************************************
+       4110-MISYUKIKANKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MISYUKIKANKBN-MAX
+               IF      SPA-GMN-MISYUKIKANKBN
+                                       =   SPA-GMN-MISYUKIKANKBNL(IDX)
+                   MOVE    SPA-GMN-MISYUKIKANKBNLST(IDX)
+                                          TO  SPA-GMN-MISYUKIKANKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-MISYUKIKANKBNLST(1)
+                                          TO  SPA-GMN-MISYUKIKANKBN-G
+           END-IF
+      *
+           .
+       4110-MISYUKIKANKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書兼領収書発行区分（外来）チェック処理（収納行為機能情報）
       *****************************************************************
        4110-SYUSKYPRTG-CHK-SEC      SECTION.
@@ -8685,6 +8759,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO SYS-1039-IKTSORTKBN
            MOVE    SPA-GMN-IKTKEISANKBN
                                        TO SYS-1039-IKTKEISANKBN
+           MOVE    SPA-GMN-MISYUKIKANKBN
+                                       TO SYS-1039-MISYUKIKANKBN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   2 )
@@ -9682,6 +9758,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-IKTKEISANKBN-MAX
                                        TO  W07-IKTKEISANKBN-COUNT
+      *
+      *    請求書未収金集計期間区分チェック
+           MOVE    SPA-GMN-MISYUKIKANKBN-G TO  W07-MISYUKIKANKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MISYUKIKANKBN-MAX
+               MOVE    SPA-GMN-MISYUKIKANKBNLST (IDX)
+                                       TO  W07-MISYUKIKANKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-MISYUKIKANKBN-MAX
+                                       TO  W07-MISYUKIKANKBN-COUNT
       *
       *    請求書兼領収書発行区分（外来）
            MOVE    SPA-GMN-SYUSKYPRTG-G TO  W07-SYUSKYPRTG
@@ -10764,6 +10850,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "TUKIGRP"         TO   MCP-WIDGET
                WHEN    431
                    MOVE  "TUKISUM"         TO   MCP-WIDGET
+               WHEN    432
+                   MOVE  "MISYUKIKANKBN"  TO   MCP-WIDGET
       *病名・コメント情報
                WHEN    500
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -11121,6 +11209,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SYUKARIED22_HH"
                    MOVE    415             TO  SPA-GMN-CUR
                WHEN    "SYUKARIED22_MM"
+                   MOVE    432             TO  SPA-GMN-CUR
+               WHEN    "MISYUKIKANKBN"
                    MOVE    999             TO  SPA-GMN-CUR
       *病名コメント情報
                WHEN    "MSG1_DSPKBN"

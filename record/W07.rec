@@ -804,6 +804,13 @@ W07	{
 				SYUKARIED22_MM	{
 					value	number(2);
 				};
+				MISYUKIKANKBN_COMBO	{
+					MISYUKIKANKBN	{
+						value	varchar(50);
+					};
+					count	int;
+					item	varchar(50)[5];
+				};
 			};
 			TAGNAME4    {
 			  	state   int;

@@ -540,6 +540,11 @@
                         08  W07-SYUKARIEDTIME.
                           09  W07-SYUKARIED-HH      PIC S9(02).
                           09  W07-SYUKARIED-MM      PIC S9(02).
+                  05  W07-MISYUKIKANKBN-COMBO.
+                    06  W07-MISYUKIKANKBN.
+                      07  W07-VALUE   PIC X(50).
+                    06  W07-MISYUKIKANKBN-COUNT PIC S9(9)   BINARY.
+                    06  W07-MISYUKIKANKBN-ITEM  PIC X(50)   OCCURS  5.
                 04  W07-TAGNAME4.
                   05  W07-TAGNAME4-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG5.
