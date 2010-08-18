@@ -1967,7 +1967,9 @@
                              ADD    WRK-SRYCD9
                                           TO    WRK-SYUGI-SRYCDTOTAL
                        END-IF
-                       IF    SRY-SRYCD(IDX4)(1:1)   =  "6"
+                       IF   (SRY-SRYCD(IDX4)(1:1)   =  "6")  OR
+                            (SRY-SRYCD(IDX4)(1:1)   =  "7")   OR
+                            (SRY-SRYCD(IDX4)(1:3)   =  "059")
                              MOVE    1    TO    FLG-YKZ
                        END-IF
                        IF  ((SRY-SRYCD(IDX4)(1:1)   =  "8")      OR
