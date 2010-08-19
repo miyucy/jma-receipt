@@ -27,14 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
-      *  04.05.00    NACL-森脇     09/06/22  小数点以下５桁に変更
-      *  04.05.01    NACL-森脇     09/11/20  在宅・コメント対応
-      *  04.05.02    NACL-森脇     10/01/25  コメント２、単位対応
-      *  04.06.00    NACL-多々納   11/02/28  用法コメント対応
-      *  04.08.00    NACL-多々納   14/07/30  一時ディレクトリ対応
-      *  04.08.01    NACL-森脇     14/08/11  画像イメージ作成機能追加
-      *  04.08.03    NACL-森脇     16/11/22  服用方法コード対応
-      *  05.00.00    NACL-森脇     17/02/22  自費薬剤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,8 +35,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-      **** SELECT  PRT-FILE        ASSIGN  HC01PARA
-           SELECT  PRT-FILE        ASSIGN  ASGNPARA
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
@@ -59,11 +50,6 @@
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
-      *
-      *v4.8
-      *    一時デイレクトリ領域 
-           COPY    "CPASGNPARA.INC".
-      *
       *
       *    帳票領域
            COPY    "HCM301.INC".
@@ -107,7 +93,6 @@
            03  CNT-LINE            PIC 9(01).
            03  CNT-PARA            PIC 9(04).
            03  CNT-KAISU           PIC 9(01).
-           03  CNT-KENSU           PIC 9(04).
       *
       *    インデックス領域
        01  IDX-AREA.
@@ -120,7 +105,6 @@
       *
            03  IDX-KBN             PIC 9(01).
            03  IDX-LAYER           PIC 9(03).
-           03  IDX-KBN2            PIC 9(04).
       *
            03  IDX-NAIYO           PIC 9(04).
            03  IDX-KEIJYO          PIC 9(04).
@@ -133,7 +117,7 @@
       *
            03  WRK-SSTKIJUNCD      PIC X(05).
            03  WRK-HENKBN-G.
-               05  WRK-HENKBN      PIC 9(08)V9(05)
+               05  WRK-HENKBN      PIC 9(08)V9(03)
                                                OCCURS  5.
       *
            03  WRK-HOSPNAME        PIC X(100).
@@ -151,9 +135,9 @@
            03  WRK-TANINAME        PIC X(24).
            03  WRK-WARI            PIC 9(08).
            03  WRK-KAISU           PIC 9(01).
-           03  WRK-ZENSUMAE        PIC X(40).
-           03  WRK-ZENSUATO        PIC X(40).
-           03  WRK-ZENSURYO        PIC 9(08)V9(05).
+           03  WRK-ZENSUMAE        PIC X(20).
+           03  WRK-ZENSUATO        PIC X(20).
+           03  WRK-ZENSURYO        PIC 9(08)V9(03).
       *
            03  WRK-HENYMDG         PIC X(22).
            03  WRK-SYMD.
@@ -161,17 +145,17 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
-           03  WRK-HENSURYO        PIC X(14).
-           03  WRK-SURYO           PIC 9(08)V9(05).
+           03  WRK-HENSURYO        PIC X(12).
+           03  WRK-SURYO           PIC 9(08)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(08).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZ.
       *
            03  WRK-ZZ9             PIC ZZ9.
            03  WRK-Z9              PIC Z9.
@@ -212,31 +196,14 @@
                    07  WRK-YKJ-NAIYO       PIC X(18)   OCCURS  66.
                05  WRK-YKJ-CYUJKO-G.
                    07  WRK-YKJ-CYUJKO      PIC X(40)   OCCURS  66.
-               05  WRK-YKJ-TANI-G.
-                   07  WRK-YKJ-TANI        PIC X(02)   OCCURS  5.
       *
       *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-STYLE              PIC X(01).
            03  PARA-TIMESURYO          PIC X(01).
-           03  PARA-ZAITAKU            PIC X(01).
-           03  PARA-COMMENT            PIC X(01).
-           03  PARA-COMMENT2           PIC X(01).
-           03  PARA-TANI               PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
-      *
-      *----(04.08.01)--ADD-START---
-       01  FILE-IMAGE              PIC X(512).
-      *
-       01  WRK-CONS-AREA.
-      *    画像ファイルフォルダ名
-           03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
-      *
-      *    画像イメージ作成パラメタ
-           COPY    "CPORCSMIAREA.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -297,10 +264,6 @@
       *
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
-      *
-      *v4.8
-      *    一時ファイル名取得
-           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -368,14 +331,6 @@
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  FILE-NAME
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *----(04.08.01)--ADD-END-----
-      *
       *    プログラムオプション設定
            INITIALIZE                  PARA-AREA
       *    薬剤形状
@@ -386,22 +341,6 @@
            MOVE    "TIMESURYO"     TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)   TO  PARA-TIMESURYO
-      *    在宅区分
-           MOVE    "ZAITAKU"       TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)   TO  PARA-ZAITAKU
-      *    コメント
-           MOVE    "COMMENT"       TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)   TO  PARA-COMMENT
-      *    コメント２
-           MOVE    "COMMENT2"      TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)   TO  PARA-COMMENT2
-      *    単位
-           MOVE    "TANI"          TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA(1:1)   TO  PARA-TANI
       *
            .
        100-INIT-EXT.
@@ -433,38 +372,13 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    在宅チェック
-           MOVE    ZERO            TO  CNT-KENSU
-           IF      PARA-ZAITAKU    =   1
-               MOVE    ORCHC30-MAX     TO  CNT-KENSU
-           ELSE
-               PERFORM VARYING CNT-PARA    FROM 1 BY 1
-                       UNTIL   CNT-PARA    >   ORCHC30-MAX
-                   IF      ORCHC30-ZAIKBN(CNT-PARA)  NOT =   4
-                       ADD     1       TO  CNT-KENSU
-                   END-IF
-               END-PERFORM
-           END-IF
-           IF      CNT-KENSU       =   ZERO
-               GO  TO  200-MAIN-EXT
-           END-IF
-      *
       *    帳票ＨＥＡＤ情報編集処理
            PERFORM 210-HEAD-HENSYU-SEC
       *
-           MOVE    ZERO            TO  CNT-KENSU
       *    データがなくなるまで
-           PERFORM VARYING CNT-PARA    FROM 1 BY 1
-                   UNTIL   CNT-PARA    >   ORCHC30-MAX
-               IF      PARA-ZAITAKU    =   1
-      *            帳票ＢＯＤＹ情報編集処理
-                   PERFORM 220-BODY-HENSYU-SEC
-               ELSE
-                   IF      ORCHC30-ZAIKBN(CNT-PARA)    NOT =   4
-      *                帳票ＢＯＤＹ情報編集処理
-                       PERFORM 220-BODY-HENSYU-SEC
-                   END-IF
-               END-IF
+           PERFORM UNTIL   CNT-PARA    =   ORCHC30-MAX
+      *        帳票ＢＯＤＹ情報編集処理
+               PERFORM 220-BODY-HENSYU-SEC
            END-PERFORM
       *
       *    帳票印刷処理
@@ -481,6 +395,7 @@
       *
            INITIALIZE                  WRK-YKJ-AREA
       *
+           MOVE    ZERO            TO  CNT-PARA
            MOVE    ZERO            TO  CNT-PAGE
            MOVE    ZERO            TO  CNT-LINE
       *
@@ -492,12 +407,12 @@
       *    種類セット
            MOVE    SPACE           TO  WRK-YKJ-SYURUI
            MOVE    "（"            TO  WRK-YKJ-SYURUI(1:2)
-           IF      CNT-KENSU(3:1)    =   ZERO
-               MOVE    CNT-KENSU(4:1)    TO  WRK-YKJ-SYURUI(3:1)
-               MOVE    "種類）"          TO  WRK-YKJ-SYURUI(4:6)
+           IF      ORCHC30-MAX(3:1)    =   ZERO
+               MOVE    ORCHC30-MAX(4:1)    TO  WRK-YKJ-SYURUI(3:1)
+               MOVE    "種類）"            TO  WRK-YKJ-SYURUI(4:6)
            ELSE
-               MOVE    CNT-KENSU(3:2)    TO  WRK-YKJ-SYURUI(3:2)
-               MOVE    "種類）"          TO  WRK-YKJ-SYURUI(5:6)
+               MOVE    ORCHC30-MAX(3:2)    TO  WRK-YKJ-SYURUI(3:2)
+               MOVE    "種類）"            TO  WRK-YKJ-SYURUI(5:6)
            END-IF
       *
       *    患者番号
@@ -531,10 +446,10 @@
       *
            INITIALIZE                  WRK-YKJ-BODY
       *
-           ADD     1               TO  CNT-KENSU
+           ADD     1               TO  CNT-PARA
       *
       *    番号セット
-           MOVE    CNT-KENSU       TO  WRK-Z9
+           MOVE    CNT-PARA        TO  WRK-Z9
            MOVE    WRK-Z9          TO  WRK-YKJ-NUM
       *
       *    空白の画像
@@ -634,7 +549,7 @@
       *
            INITIALIZE                  WRK-HENSYU-AREA
            MOVE    1               TO  IDX-GYO
-           MOVE    62              TO  GYO-MAX
+           MOVE    64              TO  GYO-MAX
            MOVE    30              TO  KOU-MAX
            MOVE    YAKUJYO-EFFECT  TO  WRK-HENSYUDATA
            PERFORM 250-HENSYU-SYORI-SEC
@@ -682,37 +597,14 @@
       *
       *    画像が存在すればセットする
            IF      YAKUJYO-PHOTO   NOT =   SPACE
-      *----(04.08.01)--ADD-START---
-      *        データからイメージファイル作成
-               INITIALIZE                  ORCSMIAREA
-               MOVE    YAKUJYO-SRYCD   TO  ORCSMI-SRYCD
-               MOVE    SGETTEMP-TEMPDIR
-                                       TO  ORCSMI-TEMPDIR
-               MOVE    YAKUJYO-PHOTO   TO  ORCSMI-FILENAME
-               CALL    "ORCSMILOAD"        USING
-                                           ORCSMIAREA
-                                           SPA-AREA
-      *
-               MOVE    SPACE           TO  FILE-IMAGE
-               STRING  SGETTEMP-TEMPDIR    DELIMITED BY SPACE
-                       WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
-                       "/"                 DELIMITED BY SIZE
-                       YAKUJYO-PHOTO       DELIMITED BY SPACE
-                                   INTO    FILE-IMAGE
-               END-STRING
-      *----(04.08.01)--ADD-END-----
-      *----(04.08.01)--UPD-START---
                INITIALIZE                  ORCSFILECHKAREA
-      *         MOVE    YAKUJYO-PHOTO   TO  FILECHK-NAME
-               MOVE    FILE-IMAGE      TO  FILECHK-NAME
+               MOVE    YAKUJYO-PHOTO   TO  FILECHK-NAME
                CALL    "ORCSFILECHK"       USING
                                            ORCSFILECHKAREA
                IF      FILECHK-RC      =   ZERO
-      *             MOVE    YAKUJYO-PHOTO   TO  WRK-YKJ-GAZO
-                   MOVE    FILE-IMAGE      TO  WRK-YKJ-GAZO
+                   MOVE    YAKUJYO-PHOTO   TO  WRK-YKJ-GAZO
                    MOVE    1               TO  FLG-OK
                END-IF
-      *----(04.08.01)--UPD-END-----
            END-IF
       *
            IF      FLG-OK          =   ZERO
@@ -763,7 +655,7 @@
                                            ORCSKANACHKAREA
                IF      KANACHK-SYUBETU =   1
       *            半角なら文字数を減らす
-                   MOVE    17              TO  KOU-MAX
+                   MOVE    14              TO  KOU-MAX
                END-IF
       *        記号編集
                MOVE    YAKUJYO-MARK    TO  WRK-HENSYUDATA
@@ -815,7 +707,7 @@
                                            ORCSKANACHKAREA
                IF      KANACHK-SYUBETU =   1
       *            半角なら文字数を減らす
-                   MOVE    17              TO  KOU-MAX
+                   MOVE    14              TO  KOU-MAX
                END-IF
       *        記号編集
                MOVE    YAKUJYO-MARK    TO  WRK-HENSYUDATA
@@ -846,25 +738,14 @@
            MOVE    0               TO  WRK-ZENSURYO
       *
       *    用法編集
-           IF      ORCHC30-YSRYCD-NAME(CNT-PARA)   =   SPACE
-               MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
-               PERFORM 900-TENSU-READ-SEC
-               MOVE    TNS-NAME        TO  WRK-HENSYUDATA
-               PERFORM 250-HENSYU-SYORI-SEC
-           ELSE
-      *----(04.08.03)--ADD-START---
-               MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
-               PERFORM 900-TENSU-READ-SEC
-      *----(04.08.03)--ADD-END-----
-               MOVE    ORCHC30-YSRYCD-NAME(CNT-PARA)
-                                       TO  WRK-HENSYUDATA
-               PERFORM 250-HENSYU-SYORI-SEC
-           END-IF
+           MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
+           PERFORM 900-TENSU-READ-SEC
+           MOVE    TNS-NAME        TO  WRK-HENSYUDATA
+           PERFORM 250-HENSYU-SYORI-SEC
       *
       *    回数カウント
            MOVE    SPACE           TO  WRK-SSTKIJUNCD
            MOVE    ZERO            TO  CNT-KAISU
-           MOVE    ZERO            TO  WRK-HENKBN-G
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL   IDX-KBN     >   5
                IF      TNS-SSTKIJUNCD(IDX-KBN) =   1
@@ -900,55 +781,25 @@
                PERFORM 241-NAIYO-SURYO-SET-SEC
            END-IF
       *
-      *    その他の用法
-           IF      ORCHC30-YOHOU-G(CNT-PARA)   NOT =   SPACE
-               PERFORM 241-NAIYO-YOUHOU-SET-SEC
-           END-IF
-      *    コメント
-      *D   IF      PARA-COMMENT        =   1
-               IF      ORCHC30-COMMENT-G(CNT-PARA) NOT =   SPACE
-                   PERFORM 241-NAIYO-COMMENT-SET-SEC
-               END-IF
-      *D   END-IF
-      *
       *    日数編集
-           IF    ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3 ) AND
-                 ( ORCHC30-ZAIKBN(CNT-PARA)    NOT =   4 ) AND
-                 ( TNSP-SOURYOHENKBN           NOT =   "1" )
+           IF      ORCHC30-ZAIKBN(CNT-PARA)    NOT =   3
                PERFORM 241-NAIYO-NISSU-SET-SEC
            END-IF
       *
-           IF    ( PARA-TIMESURYO  =   "1" )   AND
-                (( PARA-COMMENT2   =   "2" )   OR
-                (( PARA-COMMENT2   =   "1" )   AND
-                 ( WRK-YKJ-KBN-G   =   SPACE )))
-      *        １日分が割切れていなかったらエラー
-               COMPUTE WRK-SURYO   =   WRK-HENKBN(1)
-                                   +   WRK-HENKBN(2)
-                                   +   WRK-HENKBN(3)
-                                   +   WRK-HENKBN(4)
-                                   +   WRK-HENKBN(5)
-               IF      ORCHC30-SURYO(CNT-PARA) =   WRK-SURYO
-                   MOVE    5           TO  IDX-KBN
-                   PERFORM 241-NAIYO-FUKUYOU-SET-SEC
-                   PERFORM VARYING  IDX-KBN    FROM    1   BY  1
-                           UNTIL  ( IDX-KBN    >   4 )
-                       PERFORM 241-NAIYO-FUKUYOU-SET-SEC
-                   END-PERFORM
-               END-IF
-           END-IF
-      *
-           IF     WRK-YKJ-KBN-G    NOT =   SPACE
-      *        回数編集
-               IF      CNT-KAISU       >   ZERO
-                   PERFORM 241-NAIYO-KAISU-SET-SEC
-               END-IF
+      *    回数編集
+           IF      CNT-KAISU       >   ZERO
+               PERFORM 241-NAIYO-KAISU-SET-SEC
            END-IF
       *
       *    換算前があればセット
            IF      WRK-ZENSUMAE        NOT =   SPACE
                MOVE    WRK-ZENSUMAE    TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
+           END-IF
+      *
+      *    その他の用法
+           IF      ORCHC30-YOHOU-G(CNT-PARA)   NOT =   SPACE
+               PERFORM 241-NAIYO-YOUHOU-SET-SEC
            END-IF
       *
       *    全数があればセット
@@ -966,49 +817,6 @@
       *
            .
        240-NAIYO-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   帳票内容服用時点用法編集処理
-      *****************************************************************
-       241-NAIYO-FUKUYOU-SET-SEC   SECTION.
-      *
-           IF      WRK-HENKBN(IDX-KBN) =   0
-               GO  TO  241-NAIYO-FUKUYOU-SET-EXT
-           END-IF
-      *
-           MOVE    WRK-HENKBN(IDX-KBN) TO  WRK-SURYO
-      *    数量Ｚ編集
-           PERFORM 250-ZHEN-SURYO-SET-SEC
-           MOVE    SPACE       TO WRK-HENSYUDATA
-           EVALUATE    IDX-KBN
-               WHEN    1
-                   MOVE    "朝："  TO  WRK-HENSYUDATA(1:4)
-               WHEN    2
-                   MOVE    "昼："  TO  WRK-HENSYUDATA(1:4)
-               WHEN    3
-                   MOVE    "夕："  TO  WRK-HENSYUDATA(1:4)
-               WHEN    4
-                   MOVE    "寝："  TO  WRK-HENSYUDATA(1:4)
-               WHEN    5
-                   MOVE    "起："  TO  WRK-HENSYUDATA(1:4)
-           END-EVALUATE
-      *    全角変換
-           MOVE    SPACE           TO  ORCSKANACHKAREA
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"             TO  KANACHK-SYORI
-           MOVE    WRK-HENSURYO    TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                       DELIMITED BY SIZE
-                   WRK-TANINAME        DELIMITED BY SPACE
-                                 INTO  WRK-HENSYUDATA(5:)
-           END-STRING
-           PERFORM 250-HENSYU-SYORI-SEC
-      *
-           .
-       241-NAIYO-FUKUYOU-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1051,23 +859,6 @@
                            "回分"              DELIMITED  BY  SIZE
                            INTO                WRK-HENSYUDATA
                    END-STRING
-      *----(05.00.00)--ADD-START---
-               WHEN    9
-                   IF      TNS-YKZKBN  =   1
-                       STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               DELIMITED  BY  SIZE
-                               "日分"          DELIMITED  BY  SIZE
-                               INTO            WRK-HENSYUDATA
-                       END-STRING
-                   END-IF
-                   IF      TNS-YKZKBN  =   6
-                       STRING  KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               DELIMITED  BY  SIZE
-                               "回分"          DELIMITED  BY  SIZE
-                               INTO            WRK-HENSYUDATA
-                       END-STRING
-                   END-IF
-      *----(05.00.00)--ADD-END-----
            END-EVALUATE
            PERFORM 250-HENSYU-SYORI-SEC
       *
@@ -1109,8 +900,7 @@
       *
       *    全数量
            IF      WRK-ZENSURYO    >   0
-               IF   ( ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3 ) AND
-                    ( TNSP-SOURYOHENKBN            NOT =   "1" )
+               IF     ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3
                    COMPUTE WRK-SURYO   =   WRK-ZENSURYO
                                        *   ORCHC30-KAISU(CNT-PARA)
                ELSE
@@ -1118,8 +908,7 @@
                                        *   ORCHC30-SRYKAISU(CNT-PARA)
                END-IF
            ELSE
-               IF   ( ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3 ) AND
-                    ( TNSP-SOURYOHENKBN            NOT =   "1" )
+               IF     ORCHC30-ZAIKBN(CNT-PARA)     NOT =   3
                    COMPUTE WRK-SURYO   =   ORCHC30-SURYO(CNT-PARA)
                                        *   ORCHC30-KAISU(CNT-PARA)
                ELSE
@@ -1138,7 +927,7 @@
       *
       *    数量Ｚ編集
            PERFORM 250-ZHEN-SURYO-SET-SEC
-      *     IF      WRK-SURYO-X(14:)    =   SPACE
+           IF      WRK-SURYO-X(12:)    =   SPACE
       *        全角変換
                MOVE    SPACE           TO  ORCSKANACHKAREA
                INITIALIZE                  ORCSKANACHKAREA
@@ -1155,14 +944,14 @@
                        INTO                WRK-HENSYUDATA
                END-STRING
                MOVE    WRK-HENSYUDATA  TO  WRK-ZENSUATO
-      *     END-IF
+           END-IF
       *
       *    換算されていれば元の数量をセット
            IF      TNS-TANINAME    NOT =   WRK-TANINAME
                MOVE    ORCHC30-SURYO(CNT-PARA) TO  WRK-SURYO
       *        数量Ｚ編集
                PERFORM 250-ZHEN-SURYO-SET-SEC
-      *         IF      WRK-SURYO-X(14:)    =   SPACE
+               IF      WRK-SURYO-X(12:)    =   SPACE
       *            全角変換
                    MOVE    SPACE           TO  ORCSKANACHKAREA
                    INITIALIZE                  ORCSKANACHKAREA
@@ -1180,7 +969,7 @@
                                    INTO        WRK-HENSYUDATA
                    END-STRING
                    MOVE    WRK-HENSYUDATA  TO  WRK-ZENSUMAE
-      *         END-IF
+               END-IF
            END-IF
       *
            .
@@ -1195,19 +984,12 @@
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL  (IDX-KBN     >   5 )
                    OR     (ORCHC30-YOHOU(CNT-PARA IDX-KBN) =   SPACE )
-               IF      ORCHC30-YOHOU-NAME (CNT-PARA IDX-KBN)
-                                           =   SPACE
-      *            点数マスタ検索
-                   MOVE    ORCHC30-YOHOU (CNT-PARA IDX-KBN)
-                                           TO  WRK-SRYCD
-                   PERFORM 900-TENSU-READ-SEC
-                   IF      FLG-TENSU           =   ZERO
-                       MOVE    TNS-NAME        TO  WRK-HENSYUDATA
-                       PERFORM 250-HENSYU-SYORI-SEC
-                   END-IF
-               ELSE
-                   MOVE    ORCHC30-YOHOU-NAME (CNT-PARA IDX-KBN)
-                                           TO  WRK-HENSYUDATA
+      *        点数マスタ検索
+               MOVE    ORCHC30-YOHOU (CNT-PARA IDX-KBN)
+                                       TO  WRK-SRYCD
+               PERFORM 900-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   MOVE    TNS-NAME        TO  WRK-HENSYUDATA
                    PERFORM 250-HENSYU-SYORI-SEC
                END-IF
            END-PERFORM
@@ -1217,58 +999,9 @@
            EXIT.
       *
       *****************************************************************
-      *   コメントコード処理
-      *****************************************************************
-       241-NAIYO-COMMENT-SET-SEC   SECTION.
-      *
-           PERFORM VARYING IDX-KBN2    FROM    1   BY  1
-                   UNTIL  (IDX-KBN2    >   10 )
-                   OR     (ORCHC30-COMMENT-CD(CNT-PARA IDX-KBN2)
-                                       =   SPACE )
-      *----(04.08.03)--ADD-START---
-               IF    ( WRK-HENKBN-G    NOT =   ZERO ) AND
-                     ( FLG-KBN         NOT =   2 ) AND
-                     ( ORCHC30-COMHENKBN(CNT-PARA IDX-KBN2) =   "1" )
-                   COMPUTE IDX-KBN2    =   IDX-KBN2    +   1
-               END-IF
-      *----(04.08.03)--ADD-END-----
-      *      コメント表示あり、または、用法コメント
-             IF     (PARA-COMMENT        =   "1"     )
-               OR   (ORCHC30-COMMENT-CD(CNT-PARA IDX-KBN2)(1:3)
-                                         =   "001"   )
-               IF      ORCHC30-COMMENT-MEI(CNT-PARA IDX-KBN2)
-                                           =   SPACE
-      *            点数マスタ検索
-                   MOVE    ORCHC30-COMMENT-CD(CNT-PARA IDX-KBN2)
-                                           TO  WRK-SRYCD
-                   PERFORM 900-TENSU-READ-SEC
-                   IF      FLG-TENSU           =   ZERO
-                       MOVE    TNS-NAME        TO  WRK-HENSYUDATA
-                       PERFORM 250-HENSYU-SYORI-SEC
-                   END-IF
-               ELSE
-                   MOVE    ORCHC30-COMMENT-MEI(CNT-PARA IDX-KBN2)
-                                           TO  WRK-HENSYUDATA
-                   PERFORM 250-HENSYU-SYORI-SEC
-               END-IF
-             END-IF
-           END-PERFORM
-      *
-           .
-       241-NAIYO-COMMENT-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *   帳票区分データ編集処理
       *****************************************************************
        240-KBN-SET-SEC             SECTION.
-      *
-      *    在宅なら抜ける
-           IF    ( ORCHC30-ZAIKBN(CNT-PARA)     =   4 ) OR
-                 ( ORCHC30-ZAIKBN(CNT-PARA)     =   3 ) OR
-                 ( TNSP-SOURYOHENKBN            =   "1" )
-               GO  TO  240-KBN-SET-EXT
-           END-IF
       *
       *    数量を１日分にする
            IF      ORCHC30-SRYKAISU(CNT-PARA)  >   ZERO
@@ -1306,30 +1039,10 @@
                    END-IF
                END-IF
            END-PERFORM
-      *----(04.08.03)--ADD-START---
-      *    エラー、 数量なくなれば処理抜ける
-           IF    ( FLG-KBN  =   1 ) OR
-                (( WRK-KAISU   NOT =   ZERO )  AND
-                 ( WRK-SURYO       =   ZERO )) OR
-                (( WRK-KAISU       =   ZERO )  AND
-                 ( WRK-SURYO   NOT =   ZERO ))
-               MOVE    ZERO            TO  WRK-HENKBN-G
+      *    エラーなら処理抜ける
+           IF      FLG-KBN  =   1
                GO  TO  240-KBN-SET-EXT
            END-IF
-      *    帳票区分データ服用用法コード編集処理
-           PERFORM 241-KBN-INPUTSURYOU-SET-SEC
-      *----(04.08.03)--ADD-END-----
-      *----(04.08.03)--UPD-START---
-      *    エラー、 数量なくなれば処理抜ける
-           IF    ( FLG-KBN  =   1 ) OR
-                (( WRK-KAISU   NOT =   ZERO )  AND
-                 ( WRK-SURYO       =   ZERO )) OR
-                (( WRK-KAISU       =   ZERO )  AND
-                 ( WRK-SURYO   NOT =   ZERO ))
-               MOVE    ZERO            TO  WRK-HENKBN-G
-               GO  TO  240-KBN-SET-EXT
-           END-IF
-      *----(04.08.03)--UPD-END-----
       *
       *    入力分をセット
            COMPUTE WRK-SURYO   =   WRK-SURYO   /   WRK-KAISU
@@ -1359,12 +1072,10 @@
            END-PERFORM
       *    エラーなら処理抜ける
            IF      FLG-KBN  =   1
-               MOVE    ZERO            TO  WRK-HENKBN-G
                GO  TO  240-KBN-SET-EXT
            END-IF
       *
            MOVE    SPACE           TO  WRK-YKJ-KBN-G
-           MOVE    SPACE           TO  WRK-YKJ-TANI-G
            MOVE    ZERO            TO  FLG-KBN
            PERFORM VARYING  IDX-KBN    FROM    1   BY  1
                    UNTIL  ( IDX-KBN    >   5 )
@@ -1377,9 +1088,8 @@
                          ( WRK-HENSURYO(2:1)   =   "." )
                        COMPUTE WRK-ZENSURYO    =   WRK-ZENSURYO
                                                +   1
-                       MOVE    "１"        TO  WRK-YKJ-KBN(IDX-KBN)
+                       MOVE    "1"         TO  WRK-YKJ-KBN(IDX-KBN)
                        MOVE    "包"        TO  WRK-TANINAME
-                       MOVE    2           TO  FLG-KBN
                    ELSE
                        IF      WRK-HENSURYO(4:)    NOT =   SPACE
                            MOVE    1               TO  FLG-KBN
@@ -1403,63 +1113,18 @@
                            END-IF
                        END-IF
                    END-IF
-                   IF   (( WRK-TANINAME    =   "包" )  AND
-                         ( PARA-TANI   =   "2" OR  "3" )) OR
-                        (( WRK-TANINAME    =   "ｇ" )  AND
-                         ( PARA-TANI   =   "1" OR  "3" ))
-                       MOVE    WRK-TANINAME  TO  WRK-YKJ-TANI(IDX-KBN)
-                   END-IF
                END-IF
            END-PERFORM
       *    エラーならクリアする
            IF      FLG-KBN         =   1
                MOVE    SPACE           TO  WRK-YKJ-KBN-G
-               MOVE    SPACE           TO  WRK-YKJ-TANI-G
                MOVE    ZERO            TO  WRK-ZENSURYO
            END-IF
       *
            .
        240-KBN-SET-EXT.
            EXIT.
-      *----(04.08.03)--ADD-START---
-      *****************************************************************
-      *    帳票区分データ服用用法コード編集処理
-      *****************************************************************
-       241-KBN-INPUTSURYOU-SET-SEC SECTION.
       *
-           IF      WRK-HENKBN-G    NOT =   ZERO
-               GO  TO  241-KBN-INPUTSURYOU-SET-EXT
-           END-IF
-      *
-           MOVE    ZERO            TO  FLG-KBN
-           PERFORM VARYING IDX-KBN     FROM    1   BY  1
-                   UNTIL ( IDX-KBN     >   5 )
-                   OR    ( FLG-KBN     =   1 )
-      *        服用方法コードがあった場合
-               IF      ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)   >   ZERO
-      *            指定してない服用時点ならエラー
-                   IF    WRK-SSTKIJUNCD(IDX-KBN:1)     NOT  =   "1"
-                       MOVE    1               TO  FLG-KBN
-                   ELSE
-      *                服用方法コードの方が多い場合エラー
-                       IF      WRK-SURYO       <
-                                   ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
-                           MOVE    1               TO  FLG-KBN
-                       ELSE
-                           MOVE    ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
-                                               TO  WRK-HENKBN(IDX-KBN)
-      *                    服用方法コード使用分は計算にいれない
-                           COMPUTE WRK-SURYO   =   WRK-SURYO
-                               -   ORCHC30-INPUTSURYOU(CNT-PARA IDX-KBN)
-                           COMPUTE WRK-KAISU   =   WRK-KAISU   -   1
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-           .
-       241-KBN-INPUTSURYOU-SET-EXT.
-           EXIT.
-      *----(04.08.03)--ADD-END-----
       *****************************************************************
       *   帳票区分データ用量コード編集処理
       *****************************************************************
@@ -1500,7 +1165,7 @@
       *
       *    数量小数点以下編集
            MOVE    ZERO            TO  FLG-OK
-           PERFORM VARYING IDX-STR     FROM    5   BY  -1
+           PERFORM VARYING IDX-STR     FROM    3   BY  -1
                    UNTIL   IDX-STR     <   1
                IF      WRK-SURYO-S2(IDX-STR:1) NOT =   ZERO
                    MOVE    1           TO  FLG-OK
@@ -1521,7 +1186,7 @@
            MOVE    SPACE           TO  WRK-HENSURYO
            MOVE    ZERO            TO  IDX-STR1
            PERFORM VARYING IDX-STR     FROM    1   BY  1
-                   UNTIL   IDX-STR     >   14
+                   UNTIL   IDX-STR     >   12
                IF      WRK-SURYO-X(IDX-STR:1)  NOT =   SPACE
                    COMPUTE IDX-STR1    =   IDX-STR1    +   1
                    MOVE  WRK-SURYO-X(IDX-STR:1)
@@ -1593,14 +1258,6 @@
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE        TO  HC01PARA-CNT
-      *v4.8
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
@@ -1641,19 +1298,14 @@
            INITIALIZE                  ORCSMKPRTAREA
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCM301.red"    TO  MKPRT-DIA
-           MOVE    "pdf"           TO  MKPRT-TYPE
-      *****MOVE    HC01PARA        TO  MKPRT-DAT
-           MOVE    ASGNPARA        TO  MKPRT-DAT
+           MOVE    SPACE           TO  MKPRT-DEF
+           MOVE    HC01PARA        TO  MKPRT-DAT
            MOVE    SYS-1031-PRTNM(8)
                                    TO  MKPRT-PRTNM
            MOVE   "お薬情報"       TO  MKPRT-INFO
-      *----(04.08.01)--UPD-START---
-      *    再印刷しない
-      *     CALL   "ORCSMKPRT1"        USING
            CALL   "ORCSMKPRT1"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
-      *----(04.08.01)--UPD-END-----
       *
            .
        400-PRT-WRITE-EXT.
@@ -1683,15 +1335,10 @@
                                        TO  HCM301-NAME
            ELSE
                MOVE    WRK-YKJ-NAME    TO  HCM301-NAME2
-               INSPECT HCM301-NAME2    REPLACING ALL "  " BY "　"
            END-IF
       *
            MOVE    WRK-YKJ-JYUSYO  TO  HCM301-JYUSYO
-           INSPECT HCM301-JYUSYO       REPLACING ALL "  " BY "　"
-      *
            MOVE    WRK-YKJ-HSPNAME TO  HCM301-HSPNAME
-           INSPECT HCM301-HSPNAME      REPLACING ALL "  " BY "　"
-      *
            MOVE    WRK-YKJ-TEL     TO  HCM301-TEL
            MOVE    WRK-YKJ-DRNAME  TO  HCM301-DRNAME
       *
@@ -1740,7 +1387,6 @@
                                    TO  HCM301-KONOKOKA-G(CNT-LINE)
            MOVE    WRK-YKJ-CYUJKO-G(1:440)
                                    TO  HCM301-CYUJKO-G(CNT-LINE)
-           MOVE    WRK-YKJ-TANI-G  TO  HCM301-TANI-G(CNT-LINE)
       *
            MOVE    ZERO            TO  FLG-NAIYO
            MOVE    ZERO            TO  FLG-KEIJYO
