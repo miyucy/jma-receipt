@@ -1009,7 +1009,7 @@
 	  <name>CHK_NYUKSN11</name>
 	  <x>290</x>
 	  <y>30</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1033,7 +1033,7 @@
 	  <name>CHK_NYUKSN12</name>
 	  <x>290</x>
 	  <y>55</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1057,7 +1057,7 @@
 	  <name>CHK_NYUKSN13</name>
 	  <x>290</x>
 	  <y>80</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1081,7 +1081,7 @@
 	  <name>CHK_NYUKSN14</name>
 	  <x>290</x>
 	  <y>105</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1105,7 +1105,7 @@
 	  <name>CHK_NYUKSN15</name>
 	  <x>290</x>
 	  <y>130</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1129,7 +1129,7 @@
 	  <name>CHK_NYUKSN16</name>
 	  <x>290</x>
 	  <y>155</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1153,7 +1153,7 @@
 	  <name>CHK_NYUKSN17</name>
 	  <x>290</x>
 	  <y>180</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1177,7 +1177,7 @@
 	  <name>CHK_NYUKSN18</name>
 	  <x>290</x>
 	  <y>205</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1201,7 +1201,7 @@
 	  <name>CHK_NYUKSN19</name>
 	  <x>290</x>
 	  <y>230</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1225,7 +1225,7 @@
 	  <name>CHK_NYUKSN20</name>
 	  <x>290</x>
 	  <y>255</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1249,7 +1249,7 @@
 	  <name>CHK_NYUKSN01</name>
 	  <x>5</x>
 	  <y>30</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1273,7 +1273,7 @@
 	  <name>CHK_NYUKSN02</name>
 	  <x>5</x>
 	  <y>55</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1297,7 +1297,7 @@
 	  <name>CHK_NYUKSN03</name>
 	  <x>5</x>
 	  <y>80</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1321,7 +1321,7 @@
 	  <name>CHK_NYUKSN04</name>
 	  <x>5</x>
 	  <y>105</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1345,7 +1345,7 @@
 	  <name>CHK_NYUKSN05</name>
 	  <x>5</x>
 	  <y>130</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1369,7 +1369,7 @@
 	  <name>CHK_NYUKSN06</name>
 	  <x>5</x>
 	  <y>155</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1393,7 +1393,7 @@
 	  <name>CHK_NYUKSN07</name>
 	  <x>5</x>
 	  <y>180</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1417,7 +1417,7 @@
 	  <name>CHK_NYUKSN08</name>
 	  <x>5</x>
 	  <y>205</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1441,7 +1441,7 @@
 	  <name>CHK_NYUKSN09</name>
 	  <x>5</x>
 	  <y>230</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -1465,7 +1465,7 @@
 	  <name>CHK_NYUKSN10</name>
 	  <x>5</x>
 	  <y>255</y>
-	  <width>0</width>
+	  <width>24</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
