@@ -51,6 +51,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/XX  Â¿ºÞÅêÍ¿ÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³ÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  £È£²£²Ç¯£´·î²þÀµÂÐ±þ
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/08/18  ¼êÄ¢µ­ºÜ²Ã»»³ÎÇ§ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3852,6 +3853,16 @@
       *        Ê»ÍÑ»»Äê¥Á¥§¥Ã¥¯
                PERFORM 30012-KAYJYO-SENCHK-SEC
            END-IF
+      *
+      *    ¼êÄ¢²Ã»»³ÎÇ§¥á¥Ã¥»¡¼¥¸
+           IF     (SPA-TECHOKBN-FLG    =   "1"  )  AND
+                  (FLG-ERR             =   ZERO )
+               IF      SPA-SAISIN-CHK      =   ZERO 
+                   MOVE    "2003"          TO  LNK-ORCSC-KIDCD
+                   GO     TO  3003-YAKJYO-CHK-EXT
+               END-IF
+           END-IF
+      *
            IF      FLG-ERR             =   ZERO
       *!!!
                MOVE    SPACE               TO  WRK-SRYCD2
@@ -3870,6 +3881,14 @@
                    END-IF
                END-IF
       *!!!
+               IF     (SPA-TECHOKBN-FLG    =   "1"  )
+                   IF      SPA-SAISIN-CHK      =   1
+                       MOVE    SPACE               TO  WRK-SRYCD2
+                   ELSE
+                       MOVE    "113701310"         TO  WRK-SRYCD2
+                   END-IF
+               END-IF
+      *
                ADD     1               TO  IDXS
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (02 IDXS)

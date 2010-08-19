@@ -124,6 +124,8 @@
            03  SYS-1008-NYUKENSA-FLG    PIC X(01).
       *¿Ç»¡ÎÁ¤Î¼«Æ°È¯À¸
            03  SYS-1008-INITAUTO-FLG    PIC X(01).
+      *¼êÄ¢²Ã»»³ÎÇ§¥Á¥§¥Ã¥¯
+           03  SYS-1008-TECHOKBN-FLG        PIC X(01).
       *Í½È÷
       *****03  FILLER                   PIC X(489).
       *****03  FILLER                   PIC X(486).
@@ -132,7 +134,7 @@
       *****03  FILLER                   PIC X(450).
       *****03  FILLER                   PIC X(449).
       **** 03  FILLER                   PIC X(445).
-           03  FILLER                   PIC X(441).
+           03  FILLER                   PIC X(440).
       *Ã¼Ëö£É£Ä
            03  SYS-1008-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

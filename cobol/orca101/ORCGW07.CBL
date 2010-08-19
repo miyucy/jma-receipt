@@ -113,6 +113,7 @@
       *                                     疑いフラグ設定区分の追加
       *  04.06.00    NACL-多々納  10/06/21  予約・受付連動など追加
       *  04.06.00    NACL-多々納  10/07/01  残量廃棄自動区分追加
+      *  04.06.00    NACL-多々納  10/08/17  手帳記載加算確認追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -282,6 +283,15 @@
                            11  SPA-GMN-ZENHKNCHK-LIST      PIC X(30)
                                                            OCCURS  3.
                        09  SPA-ZENHKNCHK-MAX               PIC 9(02).
+      *                手帳加算チェック
+                       09  SPA-GMN-TECHOKBN-G.
+                           11  SPA-GMN-TECHOKBN           PIC X(01).
+                           11  SPA-GMN-TECHOKBN-F1        PIC X(01).
+                           11  SPA-GMN-TECHOKBN-MEI       PIC X(28).
+                       09  SPA-GMN-TECHOKBN-COMB.
+                           11  SPA-GMN-TECHOKBN-LIST       PIC X(30)
+                                                           OCCURS  5.
+                       09  SPA-TECHOKBN-MAX               PIC 9(02).
       *                病名表示区分
                        09  SPA-GMN-BYOHYOKBN-G.
                            11  SPA-GMN-BYOHYOKBN           PIC X(01).
@@ -1614,6 +1624,12 @@
            MOVE    "2 チェックする（すべて）"
                                        TO  SPA-GMN-ZENHKNCHK-LIST(3)
            MOVE    3                   TO  SPA-ZENHKNCHK-MAX
+      *    手帳加算確認チェック
+           MOVE    "0 チェックしない"
+                                       TO  SPA-GMN-TECHOKBN-LIST(1)
+           MOVE    "1 チェックする"
+                                       TO  SPA-GMN-TECHOKBN-LIST(2)
+           MOVE    2                   TO  SPA-TECHOKBN-MAX
       *    病名表示区分
            MOVE    "0 表示しない"      TO  SPA-GMN-BYOHYOKBN-LIST(1)
            MOVE    "1 表示する"        TO  SPA-GMN-BYOHYOKBN-LIST(2)
@@ -2167,6 +2183,9 @@
       *        前回保険組合せ相違チェック
                MOVE    SYS-1008-ZENHKNCHK-FLG
                                        TO  SPA-GMN-ZENHKNCHK
+      *        手帳加算確認チェック
+               MOVE    SYS-1008-TECHOKBN-FLG
+                                       TO  SPA-GMN-TECHOKBN
       *        最終受診日からの期間
                IF      SYS-1008-LAST-KIKAN-X =   SPACE
                    MOVE    ZERO            TO  SYS-1008-LAST-KIKAN
@@ -2535,6 +2554,21 @@
                 WHEN    OTHER
                     MOVE    SPA-GMN-ZENHKNCHK-LIST(1)
                                                TO  SPA-GMN-ZENHKNCHK-G
+           END-EVALUATE
+      *    手帳加算確認チェック
+           IF      SPA-GMN-TECHOKBN    =   SPACE
+               MOVE    "0"             TO  SPA-GMN-TECHOKBN
+           END-IF
+           EVALUATE    SPA-GMN-TECHOKBN
+                WHEN    "0"
+                    MOVE    SPA-GMN-TECHOKBN-LIST(1)
+                                               TO  SPA-GMN-TECHOKBN-G
+                WHEN    "1"
+                    MOVE    SPA-GMN-TECHOKBN-LIST(2)
+                                               TO  SPA-GMN-TECHOKBN-G
+                WHEN    OTHER
+                    MOVE    SPA-GMN-TECHOKBN-LIST(1)
+                                               TO  SPA-GMN-TECHOKBN-G
            END-EVALUATE
       *
       *    診療科コードセット
@@ -4516,6 +4550,7 @@
            MOVE    W07-CLEARCHK        TO  SPA-GMN-CLEARCHK-G
            MOVE    W07-YAKJYOCHK       TO  SPA-GMN-YAKJYOCHK-G
            MOVE    W07-ZENHKNCHK       TO  SPA-GMN-ZENHKNCHK-G
+           MOVE    W07-TECHOKBN        TO  SPA-GMN-TECHOKBN-G
       *
            MOVE    W07-HOUKATU         TO  SPA-GMN-HOUKATU-G
            MOVE    W07-BYOHYOKBN       TO  SPA-GMN-BYOHYOKBN-G
@@ -4739,6 +4774,10 @@
       *            前回保険組合せ相違チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-ZENHKNCHK-CHK-SEC
+                   END-IF
+      *            手帳加算確認チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-TECHOKBN-CHK-SEC
                    END-IF
       *            包括入力チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -5726,6 +5765,40 @@
       *
           .
        4103-ZENHKNCHK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    手帳加算確認チェック処理
+      *****************************************************************
+       4103-TECHOKBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-TECHOKBN-MAX
+               IF      SPA-GMN-TECHOKBN
+                                      =   SPA-GMN-TECHOKBN-LIST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-TECHOKBN-LIST(IDX)
+                                          TO  SPA-GMN-TECHOKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    87              TO  SPA-GMN-CUR
+               MOVE    "0041"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      (SPA-GMN-TECHOKBN   =   "1"  )
+                 AND   (SPA-GMN-DATA (2)   =   "0"  )
+                 AND   (SPA-GMN-DATA (3)   =   "0"  )
+                 AND   (SPA-GMN-DATA (4)   =   "0"  )
+                   MOVE    87              TO  SPA-GMN-CUR
+                   MOVE    "0042"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+          .
+       4103-TECHOKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8536,6 +8609,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-YAKJYOCHK       TO  SYS-1008-YAKJYOCHK-FLG
       *    前回保険組合せ相違チェック
            MOVE    SPA-GMN-ZENHKNCHK       TO  SYS-1008-ZENHKNCHK-FLG
+      *    手帳加算確認チェック
+           MOVE    SPA-GMN-TECHOKBN       TO  SYS-1008-TECHOKBN-FLG
       *
       *    時間外加算特例乳幼児
            MOVE    SPA-GMN-JIKANTOKU-NYU   TO
@@ -9253,6 +9328,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-ZENHKNCHK-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-ZENHKNCHK-MAX   TO  W07-ZENHKNCHK-COUNT
+      *    手帳加算確認チェック
+           MOVE    SPA-GMN-TECHOKBN-G  TO  W07-TECHOKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-TECHOKBN-MAX
+               MOVE    SPA-GMN-TECHOKBN-LIST (IDX)
+                                       TO  W07-TECHOKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-TECHOKBN-MAX    TO  W07-TECHOKBN-COUNT
       *
       *    包括入力
            MOVE    SPA-GMN-HOUKATU-G       TO  W07-HOUKATU
@@ -10284,6 +10367,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0040"
                    MOVE    "前回保険組合せ相違チェックエラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0041"
+                   MOVE    "手帳記載加算確認エラー"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0042"
+                   STRING  "薬剤情報提供料が算定しないとなっています。"
+                           "手帳記載加算確認のチェックはできません。"
+                           DELIMITED  BY  SIZE
+                                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0020"
                    MOVE    "外来初診・再診料区分エラー"
                                                        TO  SPA-ERRMSG
@@ -10654,6 +10746,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "YAKJYOCHK"       TO   MCP-WIDGET
                WHEN    83
                    MOVE  "ZENHKNCHK"       TO   MCP-WIDGET
+               WHEN    87
+                   MOVE  "TECHOKBN"        TO   MCP-WIDGET
                WHEN    84
                    MOVE  "HOUKATU"         TO   MCP-WIDGET
                WHEN    85
@@ -11034,6 +11128,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "YAKJYOCHK"
                    MOVE    83              TO  SPA-GMN-CUR
                WHEN    "ZENHKNCHK"
+      ********     MOVE    84              TO  SPA-GMN-CUR
+                   MOVE    87              TO  SPA-GMN-CUR
+               WHEN    "TECHOKBN"
                    MOVE    84              TO  SPA-GMN-CUR
       *
                WHEN    "HOUKATU"
