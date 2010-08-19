@@ -7486,22 +7486,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label375</name>
-	  <x>556</x>
-	  <y>464</y>
-	  <width>400</width>
-	  <height>24</height>
-	  <label>＜請求書兼領収書ー前回請求額（未収金）（入外共通）＞</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>MISYUKIKANKBN_COMBO</name>
 	  <x>556</x>
@@ -7541,6 +7525,22 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label375</name>
+	  <x>556</x>
+	  <y>464</y>
+	  <width>400</width>
+	  <height>24</height>
+	  <label>＜請求書兼領収書−前回請求額（未収金）（入外共通）＞</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
