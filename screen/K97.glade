@@ -214,7 +214,7 @@
       <y>176</y>
       <width>396</width>
       <height>148</height>
-      <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -285,7 +285,7 @@
       <y>176</y>
       <width>208</width>
       <height>148</height>
-      <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -372,7 +372,7 @@
       <y>12</y>
       <width>608</width>
       <height>120</height>
-      <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>

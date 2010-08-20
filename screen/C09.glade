@@ -75,7 +75,7 @@
       <y>16</y>
       <width>450</width>
       <height>400</height>
-      <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_DELAYED</vupdate_policy>
