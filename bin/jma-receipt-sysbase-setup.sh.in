@@ -11,8 +11,8 @@ fi
 
 FLAG=`id -u`
 
-if [ "${LANG}" != "ja_JP.UTF-8" ] ; then
-  echo "ERROR: change charactor-code ja_JP.UTF-8"
+if [ "${LANG}" != "ja_JP.UTF-8" ] && [ "${LANG}" != "ja_JP.utf8" ] ; then
+  echo "ERROR: change charactor-code ja_JP.UTF-8 (or ja_JP.utf8)"
   exit 1
 fi
 
@@ -57,10 +57,10 @@ RECORD=
 
 PARAM=
 
-while getopts 'mlh:g:H:n:k:b:N:r' OPTION
+while getopts 'mlhg:H:n:k:b:N:r' OPTION
 do
   case "${OPTION}" in
-   a | d | m | l )
+   m | l )
       if [ -z ${PARAM} ]; then
         case "${OPTION}" in
 	 m )
