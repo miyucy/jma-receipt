@@ -72,6 +72,8 @@
            03  FLG-KOH-CHK         PIC 9(01).
            03  FLG-HONKZKKBN       PIC 9(01).
       *
+           03  FLG-RJNCHK          PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -891,6 +893,9 @@
       *    Êä½õ¶èÊ¬ÊÔ½¸½èÍý
       *****************************************************************
        310110-HOJKBN-HENSYU-SEC            SECTION.
+      *!!!
+      *£È£²£²¡¥£¹¡¡¹âÎð¼ÔÈó³ºÅöÈ½Äê
+           PERFORM 310111-HIGAITOU-CHK-SEC
       *
            INITIALIZE                      SPA-GMN-HOJOKBN-LIST
            EVALUATE    SPA-GMN-HKNNUM
@@ -927,6 +932,9 @@
                    END-PERFORM
                    IF     (SPA-GMN-HOJOKBN     =   SPACE      )  AND
                           (SPA-NAI-BIRTHDAY    >=  "19321001" )
+      *!!
+      *            ¹âÎð¼ÔÈó³ºÅö°Ê³°
+                 AND      (FLG-RJNCHK          =   0    )
       *                £È£±£´¡¥£±£°°Ê¹ß¡¢Ï·¿Í¤Ï£±³ä¤ò½é´ü¤È¤¹¤ë
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
@@ -976,6 +984,9 @@
                              ((SPA-SYSYMD          >=  "20021001" ) AND
                               (SPA-SYSYMD          >=  SPA-BYMD-70))
                            IF     (SPA-BYMD-70       >   ZERO      )
+      *!!
+      *                    ¹âÎð¼ÔÈó³ºÅö°Ê³°
+                         AND      (FLG-RJNCHK          =   0    )
                                MOVE    "1"         TO  SPA-GMN-HOJOKBN
                            END-IF
                        END-IF
@@ -1020,12 +1031,18 @@
                    END-PERFORM
                    IF     (SPA-GMN-HOJOKBN     =   SPACE      )  AND
                           (SPA-NAI-BIRTHDAY    >=  "19321001" )
+      *!!
+                 AND      (FLG-RJNCHK          =   0    )
+      *!!
       *                £È£±£´¡¥£±£°°Ê¹ß¡¢Ï·¿Í¤Ï£±³ä¤ò½é´ü¤È¤¹¤ë
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
                              ((SPA-SYSYMD          >=  "20021001" ) AND
                               (SPA-SYSYMD          >=  SPA-BYMD-70))
                            IF     (SPA-BYMD-70       >   ZERO      )
+      *!!
+      *                    ¹âÎð¼ÔÈó³ºÅö°Ê³°
+                          AND      (FLG-RJNCHK          =   0    )
                                MOVE    "9"         TO  SPA-GMN-HOJOKBN
                            END-IF
                        END-IF
@@ -1162,7 +1179,6 @@
                    (SPA-GMN-HOJOKBN    =   SPACE       )
                GO      TO      310111-HKNTBL-RJNHEN-EXT
            END-IF
-      *
       *    Å¬ÍÑ³«»ÏÆü¤¬£·£°ºÐ°Ê¾å¤Ç¡¢Ï«ºÒ¡¦¼£¸³¡¦¼«Èñ°Ê³°
            IF     ((SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)  OR
                    (SPA-NAI-HTEKSTYMD  =   SPACE    AND
@@ -1193,12 +1209,52 @@
                                                 = SPACE   )
                        CONTINUE
                    ELSE
+      *!!!
+      *                ¹âÎð¼ÔÈó³ºÅö
+                       IF      (FLG-RJNCHK          =   1 )
+                           CONTINUE
+                       ELSE
+      *!!!
                        MOVE    "9"             TO  SPA-GMN-HOJOKBN
+                       END-IF
                    END-IF
                END-IF
            END-IF
            .
        310111-HKNTBL-RJNHEN-EXT.
+           EXIT.
+      *
+      *H22.9
+      ****************************************************************
+      *    ¹âÎðÈó³ºÅöÈ½Äê½èÍý
+      ****************************************************************
+       310111-HIGAITOU-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-RJNCHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   3
+              IF     (SPA-GMN-KOHNUM (IDX)     =   "976" ) 
+               AND   (SPA-NAI-KTEKSTYMD(IDX)   <=  SPA-NAI-HTEKSTYMD)
+               AND   (SPA-NAI-KTEKEDYMD(IDX)   >=  SPA-NAI-HTEKEDYMD)
+                   MOVE    1                   TO  FLG-RJNCHK
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-PTKOH-MAX   )
+                         OR   (FLG-RJNCHK      =   1           )
+      *        ²èÌÌÉ½¼¨°Ê³°¤Î¹âÎð¼ÔÈó³ºÅö
+               IF     (IDX                        >   SPA-NAI-KOHEND   )
+                 AND  (SPA-PTKOH-TEKSTYMD (IDX)   <=  SPA-NAI-HTEKSTYMD)
+                 AND  (SPA-PTKOH-TEKEDYMD (IDX)   >=  SPA-NAI-HTEKEDYMD)
+                 AND  (SPA-PTKOH-SAKJOKBN (IDX) NOT =  "1"        )
+                   IF     (SPA-PTKOH-KOHNUM  (IDX) =   "976" )
+                       MOVE    1                   TO  FLG-RJNCHK
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       310111-HIGAITOU-CHK-EXT.
            EXIT.
       *
       ****************************************************************
@@ -2254,7 +2310,10 @@
       *****************************************************************
        2003-HOJOKBN-SEICHK-SEC         SECTION.
       *
-      *
+      *!!!
+      *£È£²£²¡¥£¹¡¡¹âÎð¼ÔÈó³ºÅöÈ½Äê
+           PERFORM 310111-HIGAITOU-CHK-SEC
+      *!!!
       *    ¹ñÊÝ¡¦¼«Èñ¤Î»þÉ¬¿Ü
       *    Á°¤ÎÊä½õ¶èÊ¬¤¬¶õÇò¡¢Ï·¿Í¸øÈñ¤¢¤ê¤Ï¤½¤Î¤Þ¤Þ¤È¤¹¤ë
       *T   IF      (SPA-GMN-HKNNUM     =   "060"   )   AND
@@ -2272,6 +2331,8 @@
                        END-IF
                    END-PERFORM
                    IF      FLG-CHK         =   1
+      *            ¹âÎð¼ÔÈó³ºÅö°Ê³°
+                     OR   (FLG-RJNCHK      =   1    )
                        GO      TO      2003-HOJOKBN-SEICHK-EXT
                    END-IF
                END-IF
@@ -2302,8 +2363,10 @@
                   (SPA-NAI-BIRTHDAY    >=  "19321001" )  AND
                   (SPA-BYMD-70         >   ZERO      )   AND
                   (SPA-GMN-HKNNUM(1:1) NOT =   "9"    )
+      *!!
+             AND  (FLG-RJNCHK         =   0  )
                IF      SPA-GMN-HOJOKBN     =   SPACE
-                   MOVE    "0060"          TO  SPA-ERRCD
+                   MOVE    "0128"          TO  SPA-ERRCD
                    MOVE    11              TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -2388,7 +2451,12 @@
                    END-IF
                END-IF
            END-IF
-      *
+      *!!
+      *    ¹âÎð¼ÔÈó³ºÅö¤Ï¥¨¥é¡¼¤Ê¤·
+           IF      (FLG-RJNCHK         =   1   )  AND
+                   (SPA-GMN-HOJOKBN    =   SPACE)
+                MOVE    SPACE              TO  SPA-ERRCD
+           END-IF
            .
        20031-HOJOKBN-YMD-EXT.
            EXIT.
