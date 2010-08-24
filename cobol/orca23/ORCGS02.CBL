@@ -584,6 +584,12 @@
       *    Æþ±¡ÀÁµá½ñ·óÎÎ¼ý½ñ¤Þ¤È¤á¥µ¥Ö
            COPY    "CPORCHCN03S02.INC".
       *
+      *    Ì¤¼ý¶âÊÔ½¸¥µ¥Ö
+       01  LNKSYU-AREA.
+           COPY    "CPSYUNOU.INC"      REPLACING //SYU-//
+                                       BY        //LNKSYU-//.
+           COPY    "CPORCSMISYU.INC".
+      *
        01  UIDIO-AREA.
            03  C-RET                   PIC X(2).
            03  C-UID                   PIC X(36).
@@ -3415,15 +3421,6 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1039-REC
       *
-           MOVE    "1"                 TO  WRK-NYUGAIKBN
-           PERFORM 3101-MISYU-SUM-SEC
-           MOVE    WRK-MISYU           TO  WRK-NYU-MISYU
-           MOVE    "2"                 TO  WRK-NYUGAIKBN
-           PERFORM 3101-MISYU-SUM-SEC
-           MOVE    WRK-MISYU           TO  WRK-GAI-MISYU
-           MOVE    WRK-MISYU-P         TO  WRK-GAI-MISYU-P
-           MOVE    WRK-MISYU-M         TO  WRK-GAI-MISYU-M
-      *
            INITIALIZE                      SYUNOU-REC
            MOVE    WRK-SPA-HOSPNUM      TO  SYU-HOSPNUM
            MOVE    WRK-SPA-NYUGAIKBN   TO  SYU-NYUGAIKBN
@@ -3431,6 +3428,18 @@
            MOVE    SPA-GMN-TDENPNUM   (SPA-GMN-SELBAN)
                                        TO  SYU-DENPNUM
            PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+           INITIALIZE                  SMISYU-AREA
+           MOVE    SYUNOU-REC          TO  LNKSYU-AREA
+           MOVE    SYU-SRYYMD          TO  LNKSYU-SKYEDYMD
+           CALL    "ORCSMISYU"         USING
+                                       LNKSYU-AREA
+                                       SMISYU-AREA
+                                       WRK-SPA-AREA
+           MOVE    SMISYU-NYUIN        TO  WRK-NYU-MISYU
+           MOVE    SMISYU-GAIRAI       TO  WRK-GAI-MISYU
+           MOVE    SMISYU-GAIRAI-P     TO  WRK-GAI-MISYU-P
+           MOVE    SMISYU-GAIRAI-M     TO  WRK-GAI-MISYU-M
       *
            MOVE    SYU-SRYYMD          TO  WRK-GAI-SRYYMD
            MOVE    SYU-DENPNUM         TO  WRK-GAI-DENPNUM
@@ -3477,18 +3486,23 @@
       *
                PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
       *
-                   COMPUTE SYUPARA01-GAI-MISYU
-                       =   SYUPARA01-GAI-MISYU
-                       - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
-      *
-                   IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
-                       COMPUTE SYUPARA01-GAI-MISYU-M
-                           =   SYUPARA01-GAI-MISYU-M
-                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+                       CONTINUE
                    ELSE
-                       COMPUTE SYUPARA01-GAI-MISYU-P
-                           =   SYUPARA01-GAI-MISYU-P
+      *
+                       COMPUTE SYUPARA01-GAI-MISYU
+                           =   SYUPARA01-GAI-MISYU
                            - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+      *
+                       IF    ( SYU-SKYMONEY    <   SYU-NYUKIN-TOTAL )
+                           COMPUTE SYUPARA01-GAI-MISYU-M
+                               =   SYUPARA01-GAI-MISYU-M
+                               - ( SYU-SKYMONEY -  SYU-NYUKIN-TOTAL )
+                       ELSE
+                           COMPUTE SYUPARA01-GAI-MISYU-P
+                               =   SYUPARA01-GAI-MISYU-P
+                               - ( SYU-SKYMONEY -  SYU-NYUKIN-TOTAL )
+                       END-IF
                    END-IF
       *
                    PERFORM 42011-SYUPARA02-HEN-SEC
@@ -3506,18 +3520,23 @@
       *
            ELSE
       *
-               COMPUTE SYUPARA01-GAI-MISYU
-                   =   SYUPARA01-GAI-MISYU
-                   - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
-      *
-               IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
-                   COMPUTE SYUPARA01-GAI-MISYU-M
-                       =   SYUPARA01-GAI-MISYU-M
-                       - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+               IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+                   CONTINUE
                ELSE
-                   COMPUTE SYUPARA01-GAI-MISYU-P
-                       =   SYUPARA01-GAI-MISYU-P
+      *
+                   COMPUTE SYUPARA01-GAI-MISYU
+                       =   SYUPARA01-GAI-MISYU
                        - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+      *
+                   IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+                       COMPUTE SYUPARA01-GAI-MISYU-M
+                           =   SYUPARA01-GAI-MISYU-M
+                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   ELSE
+                       COMPUTE SYUPARA01-GAI-MISYU-P
+                           =   SYUPARA01-GAI-MISYU-P
+                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   END-IF
                END-IF
       *
                PERFORM 42011-SYUPARA02-HEN-SEC

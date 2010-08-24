@@ -397,9 +397,10 @@
       *    º˝«ºÕ˙ŒÚ ‘Ω∏•µ•÷
            COPY    "CPORCSS002.INC".
       *
-      *
-       01  LNK-SYUNOU-REC.
-           COPY "CPSYUNOU.INC" REPLACING //SYU-// BY //LNK-SYU-//.
+      *    Ã§º˝∂‚ ‘Ω∏
+           COPY "CPORCSMISYU.INC".
+       01  LNKSYU-AREA.
+           COPY "CPSYUNOU.INC" REPLACING //SYU-// BY //LNKSYU-//.
       *
       *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
            COPY    "CPORCSMCNDATE.INC".
@@ -2906,37 +2907,52 @@
       *    MOVE   ????                 TO  ORCHC03-SEIKYU-TAX-SAI
            MOVE   WRK-SKYPRT-NYUKIN    TO  ORCHC03-NYUKIN
       *
-           MOVE    "2"                 TO  WRK-NYUGAIKBN
-           PERFORM 3101-MISYU-SUM-SEC
-      *
            PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+           INITIALIZE                  SMISYU-AREA
+           MOVE    SYUNOU-REC          TO  LNKSYU-AREA
+           MOVE    ZERO                TO  LNKSYU-GRP-DENPNUM
+           MOVE    SYU-SRYYMD          TO  LNKSYU-SKYEDYMD
+           CALL    "ORCSMISYU"         USING
+                                       LNKSYU-AREA
+                                       SMISYU-AREA
+                                       WRK-SPA-AREA
       *
            IF    ( SYS-1039-S03SKYMISYUPRTKBN  =   "0" )
                CONTINUE
            ELSE
+      *
+               COMPUTE ORCHC03-ZENMISYU-2
+                   =   SMISYU-GAIRAI-P
+      *
+               COMPUTE ORCHC03-KANYUKIN
+                   =   SMISYU-GAIRAI-M     *   -1
+      *
                COMPUTE ORCHC03-ZENMISYU
-                   =   WRK-MISYU
-                   - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+                   =   SMISYU-GAIRAI
+      *
+               IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+                   CONTINUE
+               ELSE
+                   COMPUTE ORCHC03-ZENMISYU
+                       =   ORCHC03-ZENMISYU
+                       - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
+      *
+                   IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
+                       COMPUTE ORCHC03-KANYUKIN
+                           =   ORCHC03-KANYUKIN
+                           - ( SYU-NYUKIN-TOTAL    -   SYU-SKYMONEY )
+                   ELSE
+                       COMPUTE ORCHC03-ZENMISYU-2
+                           =   ORCHC03-ZENMISYU-2
+                           - ( SYU-SKYMONEY    -   SYU-NYUKIN-TOTAL )
+                   END-IF
+               END-IF
       *
                IF    ( ORCHC03-ZENMISYU    <   ZERO )
                    MOVE    ORCHC03-ZENMISYU
                                        TO  ORCHC03-HENKIN
                    MOVE    ZERO        TO  ORCHC03-ZENMISYU
-               END-IF
-      *
-               MOVE    WRK-MISYU-P     TO  ORCHC03-ZENMISYU-2
-      *
-               COMPUTE ORCHC03-KANYUKIN
-                   =   WRK-MISYU-M         *   -1
-      *
-               IF    ( SYU-SKYMONEY        <   SYU-NYUKIN-TOTAL )
-                   COMPUTE ORCHC03-KANYUKIN
-                       =   ORCHC03-KANYUKIN
-                       - ( SYU-NYUKIN-TOTAL    -   SYU-SKYMONEY )
-               ELSE
-                   COMPUTE ORCHC03-ZENMISYU-2
-                       =   ORCHC03-ZENMISYU-2
-                       - ( SYU-SKYMONEY        -   SYU-NYUKIN-TOTAL )
                END-IF
            END-IF
       *

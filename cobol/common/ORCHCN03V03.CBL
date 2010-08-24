@@ -234,6 +234,8 @@
            COPY    "CPSK1005.INC".
       *    ÀÁµá½ñ¼«ÈñÌ¾¾Î¾ðÊó
            COPY    "CPSK1013.INC".
+      *    ¼ýÇ¼¾ðÊó
+           COPY    "CPSK1039.INC".
       *    °åÎÅµ¡´Ø´ðËÜ¾ðÊó
            COPY    "CPSK5000.INC".
       *    ÉÂÅï¾ðÊó
@@ -335,6 +337,9 @@
       *    ÀÁµá½ñ·óÎÎ¼ý½ñ¤Þ¤È¤á¥µ¥Ö
            COPY    "CPORCHCN03S02.INC".
       *
+      *    Ì¤¼ý³ÛÊÔ½¸
+           COPY    "CPORCSMISYU.INC".
+      *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
@@ -423,6 +428,16 @@
       *
            MOVE    SYS-1034-PRTNM(3)
                                        TO  WRK-PRTNM
+      *
+      *    ¼ýÇ¼µ¡Ç½¾ðÊó
+           MOVE    SPACE               TO  SYS-1039-REC
+           MOVE    "1039"              TO  SYS-1039-KANRICD
+           MOVE    "*"                 TO  SYS-1039-KBNCD
+           MOVE    ORCHCN03-SYSYMD     TO  SYS-1039-STYUKYMD
+                                           SYS-1039-EDYUKYMD
+           MOVE    SYS-1039-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1039-REC
       *
       *    Ï«ºÒ°åÎÅµ¡´Ø¾ðÊóÊÔ½¸
            MOVE    SPACE               TO  SYS-4001-REC
@@ -1660,36 +1675,22 @@
            MOVE    ZERO            TO  WRK-NYU-MISYU
                                        WRK-GAI-MISYU
       *
-           MOVE    ZERO            TO  FLG-SYUNOU2
+           INITIALIZE              SMISYU-AREA
+           CALL    "ORCSMISYU"     USING
+                                   SYUNOU-REC
+                                   SMISYU-AREA
+                                   SPA-AREA
       *
-      *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷
-           PERFORM 31021-SYUNOU-SEL-SEC
+           MOVE    SMISYU-NYUIN    TO  WRK-NYU-MISYU
+           MOVE    SMISYU-GAIRAI   TO  WRK-GAI-MISYU
       *
-           PERFORM UNTIL ( FLG-SYUNOU2 NOT =   ZERO )
+           IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+               CONTINUE
+           ELSE
+               COMPUTE WRK-NYU-MISYU
+                   =   WRK-NYU-MISYU   -   ORCHCN03S02-MYMISYU
+           END-IF
       *
-                   IF    ( MISYU-NYUGAIKBN     =   "1" )
-                       COMPUTE WRK-NYU-MISYU
-                           =   WRK-NYU-MISYU
-                           + ( MISYU-SKYMONEY  -   MISYU-NYUKIN-TOTAL )
-                   END-IF
-      *
-                   IF    ( MISYU-NYUGAIKBN     =   "2" )
-                       COMPUTE WRK-GAI-MISYU
-                           =   WRK-GAI-MISYU
-                           + ( MISYU-SKYMONEY  -   MISYU-NYUKIN-TOTAL )
-                   END-IF
-      *
-      *        ¼ýÇ¼¥Þ¥¹¥¿ÆÉ¹þ
-               PERFORM 31021-SYUNOU-READ-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syunou"    TO  MCP-TABLE
-           MOVE    "key6"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           COMPUTE WRK-NYU-MISYU
-               =   WRK-NYU-MISYU   -   ORCHCN03S02-MYMISYU
       *
            .
        3102-MISYU-EDIT-EXT.

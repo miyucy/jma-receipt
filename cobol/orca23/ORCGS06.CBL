@@ -188,6 +188,7 @@
                            11  SPA-NAI-TSRYYMD     PIC  X(08).
                            11  SPA-NAI-THAKYMD     PIC  X(08).
                            11  SPA-NAI-TNYUGAIKBN  PIC  X(01).
+                           11  SPA-NAI-TCREATEKBN  PIC  X(01).
                            11  SPA-NAI-TDENPJTIKBN PIC  X(01).
                            11  SPA-NAI-THKNNUM     PIC  X(03).
                            11  SPA-NAI-TRSI-HKNKBN PIC  X(01).
@@ -283,6 +284,7 @@
                05  WRK-GAI-SRYYMD          PIC X(08).
                05  WRK-NYU-SRYYMD          PIC X(08).
                05  WRK-GAI-KONSEIKYU       PIC S9(10).
+               05  WRK-NYU-KONSEIKYU       PIC S9(10).
                05  WRK-GAI-MISYU-P         PIC S9(10).
                05  WRK-GAI-MISYU-M         PIC S9(10).
            03  WRK-FILEMEI  .
@@ -306,6 +308,12 @@
                05  S1005-SRYKAL-STYUKYMD   PIC X(08).
                05  S1005-SRYKAL-EDYUKYMD   PIC X(08).
                05  S1005-SRYKAMEIL         PIC X(12).
+      *
+       01  KEY-AREA.
+           03  KEY-GAI-MISYU           OCCURS 2.
+               05  KEY-SRYYMD          PIC X(08).
+               05  KEY-DENPNUM         PIC 9(07).
+           03  KEY-GAI-SKYEDYMD        PIC X(08).
       *
        01  TSYU-AREA.
            03  TSYU-MAX                    PIC 9(05).
@@ -371,6 +379,10 @@
       *
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
+      *
+      *    未収金取得サブ
+           COPY    "CPORCSMISYU.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -854,6 +866,9 @@
            WHEN    "2"
                MOVE    "外"            TO  SPA-GMN-TNYUGAIKBN  (IDX-LST)
            END-EVALUATE
+      *
+      *    作成区分
+           MOVE    SYU-CREATEKBN       TO  SPA-NAI-TCREATEKBN  (IDX-LST)
       *
       *    状態区分
            MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-TDENPJTIKBN (IDX-LST)
@@ -2424,6 +2439,7 @@
            MOVE    ZERO                TO  FLG-GAI-SKYPRT
                                            FLG-NYU-SKYPRT
            INITIALIZE                      WRK-DENPITEM-G
+                                           KEY-AREA
       *
       *    まとめ入金サブ呼出処理
            PERFORM 4801-ORCSNYUKINS-CALL-SEC
@@ -2445,11 +2461,13 @@
        4801-ORCSNYUKINS-CALL-SEC   SECTION.
       *
            INITIALIZE                      ORCSNYUKINAREAS
-           MOVE    SPA-HOSPNUM          TO  LNK-SCNYUKINS-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  LNK-SCNYUKINS-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  LNK-SCNYUKINS-PTID
            MOVE    SPA-NAI-NYUKINYMD   TO  LNK-SCNYUKINS-NYUKIN-YMD
            MOVE    SPA-GMN-NYKNHOHO    TO  LNK-SCNYUKINS-NYUKIN-HOHO
       *
+           MOVE    HIGH-VALUE          TO  KEY-GAI-MISYU (1)
+           MOVE    LOW-VALUE           TO  KEY-GAI-SKYEDYMD
            MOVE    ZERO                TO  LNK-SCNYUKINS-MAX
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-SYULIST-MAX )
@@ -2476,6 +2494,9 @@
                        COMPUTE WRK-NYU-NYUKIN
                            =   WRK-NYU-NYUKIN
                            +   SPA-GMN-TNYUKIN  (IDX0)
+                       COMPUTE WRK-NYU-KONSEIKYU
+                           =   WRK-NYU-KONSEIKYU
+                           +   SPA-GMN-TMISYU   (IDX0)
                        IF    ( SPA-GMN-TDENPNUM  (IDX0)
                                        >   WRK-NYU-DENPNUM )
                            MOVE    SPA-GMN-TDENPNUM  (IDX0)
@@ -2498,20 +2519,25 @@
                            MOVE    SPA-NAI-TSRYYMD   (IDX0)
                                        TO  WRK-GAI-SRYYMD
                        END-IF
+      *
+                       MOVE    SPA-GMN-TSRYYMD  (IDX0)
+                                       TO  KEY-SRYYMD (2)
+                       MOVE    SPA-GMN-TDENPNUM  (IDX0)
+                                       TO  KEY-DENPNUM (2)
+      *
+                       IF    ( KEY-GAI-MISYU (1)
+                                       >   KEY-GAI-MISYU (2))
+                           MOVE    KEY-GAI-MISYU (2)
+                                       TO  KEY-GAI-MISYU (1)
+                       END-IF
+                       IF    ( KEY-GAI-SKYEDYMD
+                                       <   SPA-GMN-TSRYYMD  (IDX0))
+                           MOVE    SPA-GMN-TSRYYMD  (IDX0)
+                                       TO  KEY-GAI-SKYEDYMD
+                       END-IF
+      *
                    END-IF
       *
-               ELSE
-                   IF    ( SPA-NAI-TNYUGAIKBN (IDX0)   =   "2" )
-                       IF    ( SPA-GMN-TMISYU (IDX0)  >=   ZERO )
-                           COMPUTE WRK-GAI-MISYU-P
-                               =   WRK-GAI-MISYU-P
-                               +   SPA-GMN-TMISYU (IDX0)
-                       ELSE
-                           COMPUTE WRK-GAI-MISYU-M
-                               =   WRK-GAI-MISYU-M
-                               +   SPA-GMN-TMISYU (IDX0)
-                       END-IF
-                   END-IF
                END-IF
       *
            END-PERFORM
@@ -2607,7 +2633,6 @@
       *************************************************************
        4801-GAI-SKYPRT-SEC             SECTION.
       *
-      *
            PERFORM 800-MCNDATE-SEC
       *
            MOVE    SMCNDATE-YMD        TO  WRK-FILEMEI-YMD
@@ -2623,15 +2648,43 @@
       *    帳票プログラム取得（外来）
            PERFORM 4801-PRINT-PG-SEC
       *
+           MOVE    KEY-DENPNUM         TO  WRK-SYU-DENPNUM
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+           MOVE    ZERO                TO  SYU-GRP-DENPNUM
+           MOVE    KEY-GAI-SKYEDYMD    TO  SYU-SKYEDYMD
+           INITIALIZE                  SMISYU-AREA
+           CALL    "ORCSMISYU"         USING
+                                       SYUNOU-REC
+                                       SMISYU-AREA
+                                       WRK-SPA-AREA
+           MOVE    SMISYU-GAIRAI-P     TO  WRK-GAI-MISYU-P
+           MOVE    SMISYU-GAIRAI-M     TO  WRK-GAI-MISYU-M
+      *
            INITIALIZE                  SYUPARA01-AREA
                                        SYUPARA02-AREA
                                        TSYU-AREA
       *
       *
            MOVE    "2"                 TO  SYUPARA01-NYUGAIKBN
-           MOVE    SPA-GMN-NYU-MISYU   TO  SYUPARA01-NYU-MISYU
-           COMPUTE SYUPARA01-GAI-MISYU
-               =   SPA-GMN-GAI-MISYU   -   WRK-GAI-KONSEIKYU
+           MOVE    SMISYU-NYUIN        TO  SYUPARA01-NYU-MISYU
+           MOVE    SMISYU-GAIRAI       TO  SYUPARA01-GAI-MISYU
+           IF    ( SYS-1039-MISYUKIKANKBN  =   "1" )
+               CONTINUE
+           ELSE
+               COMPUTE SYUPARA01-GAI-MISYU
+                   =   SYUPARA01-GAI-MISYU   -   WRK-GAI-KONSEIKYU
+               COMPUTE SYUPARA01-NYU-MISYU
+                   =   SYUPARA01-NYU-MISYU   -   WRK-NYU-KONSEIKYU
+               IF    ( WRK-GAI-KONSEIKYU     <   WRK-GAI-NYUKIN )
+                   COMPUTE SYUPARA01-GAI-MISYU-M
+                       =   SYUPARA01-GAI-MISYU-M
+                       - ( WRK-GAI-KONSEIKYU -   WRK-GAI-NYUKIN )
+               ELSE
+                   COMPUTE SYUPARA01-GAI-MISYU-P
+                       =   SYUPARA01-GAI-MISYU-P
+                       - ( WRK-GAI-KONSEIKYU -   WRK-GAI-NYUKIN )
+               END-IF
+           END-IF
            MOVE    WRK-GAI-MISYU-P     TO  SYUPARA01-GAI-MISYU-P
            MOVE    WRK-GAI-MISYU-M     TO  SYUPARA01-GAI-MISYU-M
            MOVE    WRK-NYU-NYUKIN      TO  SYUPARA01-NYU-NYUKIN
@@ -2639,6 +2692,11 @@
            MOVE    SPA-GMN-SKYSUMKBN   TO  SYUPARA01-SKYSUMFLG
            MOVE    3                   TO  SYUPARA01-HAKKOFLG
            MOVE    SPA-SYSYMD          TO  SYUPARA01-DENPPRTYMD
+      *
+           DISPLAY "SYUPARA01-NYU-MISYU  [" SYUPARA01-NYU-MISYU "]"
+           DISPLAY "SYUPARA01-GAI-MISYU  [" SYUPARA01-GAI-MISYU "]"
+           DISPLAY "SYUPARA01-GAI-MISYU-P[" SYUPARA01-GAI-MISYU-P "]"
+           DISPLAY "SYUPARA01-GAI-MISYU-M[" SYUPARA01-GAI-MISYU-P "]"
       *
            IF    ( SPA-ERRCD           =   SPACE )
                MOVE    "001%"          TO  WRK-FILEMEI-CD
@@ -3037,7 +3095,22 @@
       *
                MOVE    IDX2                    TO  WRK-ZZZ
                MOVE    WRK-ZZZ                 TO  S06-TNUM       (IDX2)
-               MOVE    SPA-GMN-TDENPNUM(IDX1)  TO  S06-TDENPNUM   (IDX2)
+               IF    ( SPA-NAI-TNYUGAIKBN(IDX1)        =   "1" )
+                   IF    ( SPA-NAI-TCREATEKBN(IDX1)    =   "1" )
+                       STRING  SPA-GMN-TDENPNUM(IDX1)  DELIMITED BY SIZE
+                               " 退"                   DELIMITED BY SIZE
+                       INTO    S06-TDENPNUM   (IDX2) 
+                       END-STRING
+                   ELSE
+                       STRING  SPA-GMN-TDENPNUM(IDX1)  DELIMITED BY SIZE
+                               " 定"                   DELIMITED BY SIZE
+                       INTO    S06-TDENPNUM   (IDX2) 
+                       END-STRING
+                   END-IF
+               ELSE
+                   MOVE    SPA-GMN-TDENPNUM(IDX1)
+                                               TO  S06-TDENPNUM   (IDX2)
+               END-IF
                MOVE    SPA-GMN-TNYUGAIKBN(IDX1)
                                                TO  S06-TNYUGAI    (IDX2)
                MOVE    SPA-GMN-TSRYKA(IDX1)    TO  S06-TSRYKA     (IDX2)
@@ -3051,6 +3124,8 @@
                MOVE    WRK-KINGAKU             TO  S06-TMISYUMONEY(IDX2)
                MOVE    SPA-GMN-TNYUKIN (IDX1)  TO  WRK-KINGAKU
                MOVE    WRK-KINGAKU             TO  S06-TNYKNMONEY(IDX2)
+      *
+               MOVE    1                       TO  IDX0
       *
                IF    ( SPA-GMN-SYULIST-SEL     =   IDX2 )
                    MOVE    "T"                 TO  S06-SYULIST-SELECT

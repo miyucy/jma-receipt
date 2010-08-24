@@ -84,7 +84,7 @@
                   05  S06-SYULIST-ROWATTR  PIC S9(9)   BINARY.
                   05  S06-SYULIST-ITEM     OCCURS  400 TIMES.
                     06  S06-TNUM        PIC X(5).
-                    06  S06-TDENPNUM    PIC X(9).
+                    06  S06-TDENPNUM    PIC X(10).
                     06  S06-TSRYKA      PIC X(6).
                     06  S06-TNYUGAI     PIC X(4).
                     06  S06-THKN        PIC X(50).
