@@ -417,8 +417,9 @@
       *            ７５歳以上で、後期高齢者以外保険
                    PERFORM 20011-ROUJIN-CHK3-SEC
                    IF     (AGECHK-ROUJIN2      =   ZERO )
-                      AND (FLG-HI-ROUJIN       =   1    )
-                      AND (FLG-TAHKN           =   1    )
+                    AND  ((FLG-HI-ROUJIN       =   1    ) OR
+                          (FLG-HI-ROUJIN2      =   1    ))
+                    AND   (FLG-TAHKN           =   1    )
                        MOVE    ZERO                TO  AGECHK-ROUJIN2
                    ELSE
                        MOVE    AGECHK-ROUJIN       TO  AGECHK-ROUJIN2
@@ -1310,8 +1311,9 @@
                    ELSE
                        PERFORM 20011-ROUJIN-CHK3-SEC
                        IF     (AGECHK-ROUJIN2      =   ZERO )
-                          AND (FLG-HI-ROUJIN       =   1    )
-                          AND (FLG-TAHKN           =   1    )
+                        AND  ((FLG-HI-ROUJIN       =   1    )  OR
+                              (FLG-HI-ROUJIN2      =   1    ))
+                        AND   (FLG-TAHKN           =   1    )
                            MOVE    ZERO            TO  AGECHK-ROUJIN2
                            MOVE    ZERO            TO  AGECHK-ROUJIN
                        END-IF
@@ -1439,8 +1441,6 @@
            PERFORM 9001-PTKOHINF-KEY06-SEC
            IF      FLG-PTKOHINF        =   ZERO
                MOVE    1                   TO  FLG-HI-ROUJIN2
-               MOVE    ZERO                TO  AGECHK-ROUJIN
-               MOVE    ZERO                TO  AGECHK-ROUJIN2
            END-IF
            .
        20011-ROUJIN-CHK3-EXT.
