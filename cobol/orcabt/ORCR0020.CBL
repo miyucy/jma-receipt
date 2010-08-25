@@ -2224,7 +2224,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
        2101-KOREI-HIGAITO-HENSYU-SEC                   SECTION.
       *
            IF    RECE02-AGE         >=    70
-             IF  (RECE02-HKNNUM       =  SPACE OR "040" OR "039")
+             IF  (RECE02-HKNNUM       =  SPACE OR "040" OR "039"
+                                               OR "067" OR "069")
              OR  (RECE02-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
                 CONTINUE
              ELSE

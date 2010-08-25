@@ -1916,7 +1916,8 @@
        2101-KOREI-HIGAITO-HENSYU-SEC                   SECTION.
       *
            IF    RECE62-AGE         >=    70
-             IF  (RECE62-HKNNUM       =  SPACE OR "040" OR "039")
+             IF  (RECE62-HKNNUM       =  SPACE OR "040" OR "039"
+                                               OR "067" OR "069")
              OR  (RECE62-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
                 CONTINUE
              ELSE

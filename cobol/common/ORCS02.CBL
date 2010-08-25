@@ -3568,7 +3568,8 @@
              IF  (COMB-HKNNUM                =   SPACE   )
              OR  (COMB-SYU-HKNKOHSBTKBN    = "8" OR "9"  )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                                        OR "040" OR "039")
+                                        OR "040" OR "039"
+                                        OR "067" OR "069")
                 CONTINUE
              ELSE
               IF ( COMB-HKNNUM      = "060" OR  "068" )
