@@ -1918,9 +1918,11 @@
            IF    RECE62-AGE         >=    70
              IF  (RECE62-HKNNUM       =  SPACE OR "040" OR "039")
              OR  (RECE62-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
-             OR  (RECE62-HOJOKBN      =   "7"  OR  "8"  OR  "9" )
                 CONTINUE
              ELSE
+              IF ( RECE62-HKNNUM      = "060" OR  "068" )
+              OR ((RECE62-HKNNUM  NOT = "060" AND "068") AND
+                  (RECE62-HOJOKBN     = SPACE          ))
                 MOVE      RECE61-SRYYM       TO   WRK-SRYYYMM
                 IF   RECE62-TEKSTYMD(1:6)  >=  RECE61-SRYYM
                   MOVE  RECE62-TEKSTYMD(7:2) TO   WRK-SRYDD
@@ -1956,6 +1958,7 @@
                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                 MOVE    "key4"               TO  MCP-PATHNAME
                 PERFORM  900-CLOSE-SEC
+              END-IF
              END-IF
            END-IF
       *

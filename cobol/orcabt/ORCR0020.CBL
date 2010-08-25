@@ -2226,9 +2226,11 @@ grpsys             PERFORM 900-DBSELECT-SEC
            IF    RECE02-AGE         >=    70
              IF  (RECE02-HKNNUM       =  SPACE OR "040" OR "039")
              OR  (RECE02-HKNNUM(1:2)  =   "98" OR  "90" OR  "91")
-             OR  (RECE02-HOJOKBN      =   "7"  OR  "8"  OR  "9" )
                 CONTINUE
              ELSE
+              IF ( RECE02-HKNNUM      = "060" OR  "068" )
+              OR ((RECE02-HKNNUM  NOT = "060" AND "068") AND
+                  (RECE02-HOJOKBN     = SPACE          ))
                 MOVE      RECE01-SRYYM       TO   WRK-SRYYYMM
                 IF   RECE02-TEKSTYMD(1:6)  >=  RECE01-SRYYM
                   MOVE  RECE02-TEKSTYMD(7:2) TO   WRK-SRYDD
@@ -2264,6 +2266,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                 MOVE    "key4"               TO  MCP-PATHNAME
                 PERFORM  900-CLOSE-SEC
+              END-IF
              END-IF
            END-IF
       *

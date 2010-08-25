@@ -3574,9 +3574,11 @@
              OR  (COMB-SYU-HKNKOHSBTKBN  = "8" OR "9"    )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
                                         OR "040" OR "039")
-             OR  (COMB-HOJOKBN =  "7" OR "8" OR "9"      )
                 CONTINUE
              ELSE
+              IF ( COMB-HKNNUM      = "060" OR  "068" )
+              OR ((COMB-HKNNUM  NOT = "060" AND "068") AND
+                  (COMB-HOJOKBN     = SPACE          ))
                 INITIALIZE                     PTKOHINF-REC
                 MOVE    LNK-SYU-HOSPNUM    TO  PTKOH-HOSPNUM
                 MOVE    LNK-SYU-PTID       TO  PTKOH-PTID
@@ -3609,6 +3611,7 @@
                 MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
                 MOVE    "key4"             TO  MCP-PATHNAME
                 PERFORM  DB-CLOSE-SEC
+              END-IF
              END-IF
            END-IF
       *
