@@ -2648,7 +2648,7 @@
       *    帳票プログラム取得（外来）
            PERFORM 4801-PRINT-PG-SEC
       *
-           MOVE    KEY-DENPNUM         TO  WRK-SYU-DENPNUM
+           MOVE    KEY-DENPNUM(1)      TO  WRK-SYU-DENPNUM
            PERFORM 900-SYUNOU-KEY-SEL-SEC
            MOVE    ZERO                TO  SYU-GRP-DENPNUM
            MOVE    KEY-GAI-SKYEDYMD    TO  SYU-SKYEDYMD
