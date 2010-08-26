@@ -932,7 +932,12 @@
                    END-IF                                    
                END-IF
            ELSE
-               MOVE    "0002"              TO  SPA-ERRCD
+               IF      SPA-GMN-TBL-GROUP   NOT =   SPACE
+               AND     SPA-GMN-RENNUM          >   ZERO
+               AND     SPA-GMN-SHORI-RENNUM    >   ZERO
+               AND     SPA-GMN-SELNUM          >   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            END-IF                                                  
       *
            IF      SPA-ERRCD       NOT  =   SPACE
@@ -965,7 +970,12 @@
                    END-IF                                        
                END-IF
            ELSE
-               MOVE    "0002"              TO  SPA-ERRCD
+               IF      SPA-GMN-TBL-GROUP   NOT =   SPACE
+               AND     SPA-GMN-RENNUM          >   ZERO
+               AND     SPA-GMN-SHORI-RENNUM    >   ZERO
+               AND     SPA-GMN-SELNUM          >   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            END-IF                                                  
       *
            IF      SPA-ERRCD       NOT  =   SPACE

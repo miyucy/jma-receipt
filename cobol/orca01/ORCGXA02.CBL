@@ -1185,7 +1185,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                    END-IF                                    
                END-IF
            ELSE
-               MOVE    "0002"              TO  SPA-ERRCD
+               IF      SPA-NAI-TBL-GROUP   NOT =   SPACE
+               AND     SPA-GMN-RENNUM          >   ZERO
+               AND     SPA-GMN-SHORI-RENNUM    >   ZERO
+               AND     SPA-GMN-SELNUM          >   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            END-IF                                                  
       *
            IF      SPA-ERRCD       NOT  =   SPACE
@@ -1218,7 +1223,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                    END-IF                                        
                END-IF
            ELSE
-               MOVE    "0002"              TO  SPA-ERRCD
+               IF      SPA-NAI-TBL-GROUP   NOT =   SPACE
+               AND     SPA-GMN-RENNUM          >   ZERO
+               AND     SPA-GMN-SHORI-RENNUM    >   ZERO
+               AND     SPA-GMN-SELNUM          >   ZERO
+                   MOVE    "0002"              TO  SPA-ERRCD
+               END-IF
            END-IF                                                  
       *
            IF      SPA-ERRCD       NOT  =   SPACE
