@@ -502,8 +502,12 @@
       *****************************************************************
        200-NYUKHN-SYORI-SEC            SECTION.
       *
-      *    標欠・超過情報取得
-           PERFORM 2009-HYOU-TEISU-SEC
+      *    標欠・超過情報取得（医療観察入院時はこの処理をスキップ）
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1)(1:3) = "188"
+              CONTINUE
+           ELSE
+              PERFORM 2009-HYOU-TEISU-SEC
+           END-IF
       *
            MOVE    WRK-STYMD           TO  WRK-KHN-STYMD
            MOVE    WRK-EDYMD           TO  WRK-KHN-EDYMD
