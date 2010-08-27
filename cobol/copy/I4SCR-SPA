@@ -122,6 +122,8 @@
                    07  SPA-CHK-SENTEI          PIC X(01).
       *            外泊日
                    07  SPA-CHK-GAIHAKU         PIC X(01).
+      *            医療観察法の入院料算定日
+                   07  SPA-CHK-IRYOKNS         PIC X(01).
       *
       *    剤行為変更画面用
            03  SPA-SCR-REC-AREA.

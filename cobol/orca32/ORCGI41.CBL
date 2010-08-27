@@ -2611,6 +2611,10 @@
                          AND   (SPA-CHK-DAY (IDK)      =   "1"  )
       *                    入院基本料算定日
                            MOVE    "1"         TO  SPA-CHK-NYUIN (IDK)
+      *                    医療観察法の入院算定日
+                           IF   SPA-GMN-TSRYCD (IDX)(1:3)  =  "188"
+                                MOVE   "1"     TO  SPA-CHK-IRYOKNS(IDK)
+                           END-IF
                        END-IF
                    END-PERFORM
                END-IF
@@ -3816,6 +3820,7 @@
                                            OR  "0039"
                                            OR  "0042"
                                            OR  "0046"
+                                           OR  "0053"
                    MOVE    SPA-NAI-DAY-41(SPA-NAI-BANGO IDX-D)
                                            TO  SPA-GMN-DAY-41 (IDX-D)
                    MOVE    SPA-ERRCD       TO  WRK-ERRCD
@@ -3875,6 +3880,11 @@
       *            入院基本料算定なし
                    IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
                         MOVE    "0033"             TO  SPA-ERRCD
+                        GO      TO      410121-DAY-NAI-CHK-EXT
+                   END-IF
+      *            医療観察法の入院時は外泊セット不可
+                   IF      SPA-CHK-IRYOKNS (IDX-D)   NOT =   SPACE
+                        MOVE    "0053"             TO  SPA-ERRCD
                         GO      TO      410121-DAY-NAI-CHK-EXT
                    END-IF
                    IF      SPA-CHK-SENTEI(IDX-D)   =   SPACE
@@ -9051,6 +9061,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
                WHEN    "0052"
                    MOVE    "入院行為照会用テーブルの更新に失敗しました"
+                                       TO  WRK-ERRMSG
+               WHEN    "0053"
+                   MOVE    "医療観察での入院算定時は外泊入力不可です。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
