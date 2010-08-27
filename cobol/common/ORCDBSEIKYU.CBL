@@ -29,25 +29,6 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       *  04.05.01    NACL-Æ£¸¶    09/11/13  ÆÃµ­»ö¹à¾È²ñÂÐ±þ
       *                                     ÆÃµ­»ö¹àÎ¬¾ÎÄÉ²Ã
-      *
-      *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
-      *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
-      *                                     Ä´ººÍÑ¤Ëcrehms,updhms ÄÉ²Ã
-      *  04.06.02    NACL-Æ£¸¶    10/11/30  Åý·×Ä¢É¼ÍÑ¤Î¹àÌÜÄÉ²Ã
-      *                                     ÀÁµá³Û¾ðÊó¡Ê°åÎÅÈñ¡¢¿©»ö¡Ë
-      *                                     ÊÝ¸±ÁÈ¹ç¤»¾ðÊó
-      *  04.06.03    NACL-Æ£¸¶    12/10/26  ÆÃµ­»ö¹à£°£·¡ÊÏ·Ê»¡ËµÚ¤Ó
-      *                                     £°£¸¡ÊÏ··ò¡Ë¤Î¥ì¥»¥×¥ÈÂÐ±þ
-      *
-      *  04.07.01    NACL-Æ£¸¶    11/09/02  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
-      *  04.07.02    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
-      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
-      *                                     Ä¾ÀÜÀÁµá¥Õ¥é¥°¤ÎÄÉ²Ã
-      *  04.07.03    NACL-Æ£¸¶    13/09/20  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    17/04/10  ´µ¼ÔÃ±°Ì¤Ç¤ÎÅÀ¿ô»»ÄêÀßÄê
-      *                                     ¡ÊÏ«ºÒ½àµòËô¤Ï·òÊÝ½àµò¡ËÂÐ±þ
-      *                                     ÊÝ¸±¶èÊ¬¡Ê¼«ÇåÀÕÍÑ¡Ë¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -66,7 +47,6 @@
        01  FLG-AREA.
            03  FLG-SKYETC          PIC 9(01).
            03  FLG-SKYKOH          PIC 9(01).
-           03  FLG-SKYRSI          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -99,9 +79,6 @@
       *
       *    ÀÁµá´ÉÍý¡Ê¥ì¥»¥×¥Èµ­ºÜ³°¸øÈñ¾ðÊó¡Ë
            COPY    "CPSKYETC.INC".
-      *
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ë
-           COPY    "CPSKYRSI.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -196,7 +173,16 @@
        2001-EDIT-SKYMAIN-SEC          SECTION.
       *
            INITIALIZE                          SKYMAIN-REC
-           MOVE    RECE10-KEY              TO  SKYMAIN-KEY
+           MOVE    RECE10-HOSPNUM          TO  SKYMAIN-HOSPNUM
+           MOVE    RECE10-SRYYM            TO  SKYMAIN-SRYYM
+           MOVE    RECE10-NYUGAIKBN        TO  SKYMAIN-NYUGAIKBN
+           MOVE    RECE10-PTID             TO  SKYMAIN-PTID
+           MOVE    RECE10-RECEKA           TO  SKYMAIN-RECEKA
+           MOVE    RECE10-TEISYUTUSAKI     TO  SKYMAIN-TEISYUTUSAKI
+           MOVE    RECE10-RECESYUBETU      TO  SKYMAIN-RECESYUBETU
+           MOVE    RECE10-HKNJANUM         TO  SKYMAIN-HKNJANUM
+           MOVE    RECE10-HOJOKBN-KEY      TO  SKYMAIN-HOJOKBN-KEY
+           MOVE    RECE10-TEKSTYMD         TO  SKYMAIN-TEKSTYMD
            MOVE    RECE10-PTNUM            TO  SKYMAIN-PTNUM
            MOVE    RECE10-PREFKBN          TO  SKYMAIN-PREFKBN
            MOVE    RECE10-PREFNUM          TO  SKYMAIN-PREFNUM
@@ -233,32 +219,10 @@
            MOVE    RECE10-FTNMONEY-FTN(1)  TO  SKYMAIN-FTNMONEY-FTN
            MOVE    RECE10-FTNMONEY-KOJ(1)  TO  SKYMAIN-FTNMONEY-KOJ
            MOVE    RECE10-SHOKUJINISSU(1)  TO  SKYMAIN-SHOKUJINISSU
-           MOVE    RECE10-SHOKUJIRYOYOHI(1)
-                                           TO SKYMAIN-SHOKUJIRYOYOHI
+           MOVE    RECE10-SHOKUJIRYOYOHI(1) TO SKYMAIN-SHOKUJIRYOYOHI
            MOVE    RECE10-SHOKUJIFTN(1)    TO  SKYMAIN-SHOKUJIFTN
            MOVE    RECE10-SHOKUJIFTNKBN    TO  SKYMAIN-SHOKUJIFTNKBN
            MOVE    RECE10-YKZFTN(1)        TO  SKYMAIN-YKZFTN
-           MOVE    RECE10-SKYIRYO-NISSU    TO  SKYMAIN-SKYIRYO-NISSU
-           MOVE    RECE10-SKYIRYO-TOTALTEN TO  SKYMAIN-SKYIRYO-TOTALTEN
-           MOVE    RECE10-SKYIRYO-ICHIBUFTN
-                                           TO  SKYMAIN-SKYIRYO-ICHIBUFTN
-           MOVE    RECE10-SKYIRYO-HOKENJA  TO  SKYMAIN-SKYIRYO-HOKENJA
-           MOVE    RECE10-SKYIRYO-KOHFTN   TO  SKYMAIN-SKYIRYO-KOHFTN
-           MOVE    RECE10-SKYSKJ-KAISU     TO  SKYMAIN-SKYSKJ-KAISU
-           MOVE    RECE10-SKYSKJ-RYOYOHI   TO  SKYMAIN-SKYSKJ-RYOYOHI
-           MOVE    RECE10-SKYSKJ-ICHIBUFTN TO  SKYMAIN-SKYSKJ-ICHIBUFTN
-           MOVE    RECE10-SKYSKJ-HOKENJA   TO  SKYMAIN-SKYSKJ-HOKENJA
-           MOVE    RECE10-SKYSKJ-KOHFTN    TO  SKYMAIN-SKYSKJ-KOHFTN
-           MOVE    RECE10-HKNCOMBI (1)     TO  SKYMAIN-HKNCOMBI (1)
-           MOVE    RECE10-HKNCOMBI (2)     TO  SKYMAIN-HKNCOMBI (2)
-           MOVE    RECE10-HKNCOMBI (3)     TO  SKYMAIN-HKNCOMBI (3)
-           MOVE    RECE10-HKNCOMBI (4)     TO  SKYMAIN-HKNCOMBI (4)
-           MOVE    RECE10-HKNCOMBI (5)     TO  SKYMAIN-HKNCOMBI (5)
-           MOVE    RECE10-HKNCOMBI (6)     TO  SKYMAIN-HKNCOMBI (6)
-           MOVE    RECE10-HKNCOMBI (7)     TO  SKYMAIN-HKNCOMBI (7)
-           MOVE    RECE10-HKNCOMBI (8)     TO  SKYMAIN-HKNCOMBI (8)
-           MOVE    RECE10-HKNCOMBI (9)     TO  SKYMAIN-HKNCOMBI (9)
-           MOVE    RECE10-HKNCOMBI (10)    TO  SKYMAIN-HKNCOMBI (10)
            MOVE    RECE10-TOKKI (1)        TO  SKYMAIN-TOKKI (1)
            MOVE    RECE10-TOKKI (2)        TO  SKYMAIN-TOKKI (2)
            MOVE    RECE10-TOKKI (3)        TO  SKYMAIN-TOKKI (3)
@@ -276,14 +240,10 @@
            MOVE    RECE10-FLG   (5)        TO  SKYMAIN-FLG   (5)
            MOVE    RECE10-RESERVE-AREA     TO  SKYMAIN-RESERVE-AREA
            MOVE    RECE10-HENREI-SIJI-FLG  TO  SKYMAIN-HENREI-SIJI-FLG
-           MOVE    RECE10-DIRECT-FLG       TO  SKYMAIN-DIRECT-FLG
-           MOVE    RECE10-HKNKBN-RSI       TO  SKYMAIN-HKNKBN-RSI
            MOVE    RECE10-HKNNUM-S         TO  SKYMAIN-HKNNUM-S
            MOVE    RECE10-HKNJANUM-S       TO  SKYMAIN-HKNJANUM-S
            MOVE    RECE10-CREYMD           TO  SKYMAIN-CREYMD
-           MOVE    RECE10-CREHMS           TO  SKYMAIN-CREHMS
            MOVE    RECE10-UPDYMD           TO  SKYMAIN-UPDYMD
-           MOVE    RECE10-UPDHMS           TO  SKYMAIN-UPDHMS
            MOVE    RECE10-UPHKNJANUM       TO  SKYMAIN-UPHKNJANUM
            MOVE    RECE10-XXPREFNUM        TO  SKYMAIN-XXPREFNUM
            MOVE    RECE10-XXSRYYM          TO  SKYMAIN-XXSRYYM
@@ -310,7 +270,16 @@
            MOVE    MCPDATA-REC             TO  SKYMAIN-REC
       *
            INITIALIZE                          RECE10-REC
-           MOVE    SKYMAIN-KEY             TO  RECE10-KEY
+           MOVE    SKYMAIN-HOSPNUM         TO  RECE10-HOSPNUM
+           MOVE    SKYMAIN-SRYYM           TO  RECE10-SRYYM
+           MOVE    SKYMAIN-NYUGAIKBN       TO  RECE10-NYUGAIKBN
+           MOVE    SKYMAIN-PTID            TO  RECE10-PTID
+           MOVE    SKYMAIN-RECEKA          TO  RECE10-RECEKA
+           MOVE    SKYMAIN-TEISYUTUSAKI    TO  RECE10-TEISYUTUSAKI
+           MOVE    SKYMAIN-RECESYUBETU     TO  RECE10-RECESYUBETU
+           MOVE    SKYMAIN-HKNJANUM        TO  RECE10-HKNJANUM
+           MOVE    SKYMAIN-HOJOKBN-KEY     TO  RECE10-HOJOKBN-KEY
+           MOVE    SKYMAIN-TEKSTYMD        TO  RECE10-TEKSTYMD
            MOVE    SKYMAIN-PTNUM           TO  RECE10-PTNUM
            MOVE    SKYMAIN-PREFKBN         TO  RECE10-PREFKBN
            MOVE    SKYMAIN-PREFNUM         TO  RECE10-PREFNUM
@@ -351,29 +320,6 @@
            MOVE    SKYMAIN-SHOKUJIFTN      TO  RECE10-SHOKUJIFTN(1)
            MOVE    SKYMAIN-SHOKUJIFTNKBN   TO  RECE10-SHOKUJIFTNKBN
            MOVE    SKYMAIN-YKZFTN          TO  RECE10-YKZFTN(1)
-           MOVE    SKYMAIN-SKYIRYO-NISSU   TO  RECE10-SKYIRYO-NISSU
-           MOVE    SKYMAIN-SKYIRYO-TOTALTEN
-                                           TO  RECE10-SKYIRYO-TOTALTEN
-           MOVE    SKYMAIN-SKYIRYO-ICHIBUFTN
-                                           TO  RECE10-SKYIRYO-ICHIBUFTN
-           MOVE    SKYMAIN-SKYIRYO-HOKENJA TO  RECE10-SKYIRYO-HOKENJA
-           MOVE    SKYMAIN-SKYIRYO-KOHFTN  TO  RECE10-SKYIRYO-KOHFTN
-           MOVE    SKYMAIN-SKYSKJ-KAISU    TO  RECE10-SKYSKJ-KAISU
-           MOVE    SKYMAIN-SKYSKJ-RYOYOHI  TO  RECE10-SKYSKJ-RYOYOHI
-           MOVE    SKYMAIN-SKYSKJ-ICHIBUFTN
-                                           TO  RECE10-SKYSKJ-ICHIBUFTN
-           MOVE    SKYMAIN-SKYSKJ-HOKENJA  TO  RECE10-SKYSKJ-HOKENJA
-           MOVE    SKYMAIN-SKYSKJ-KOHFTN   TO  RECE10-SKYSKJ-KOHFTN
-           MOVE    SKYMAIN-HKNCOMBI (1)    TO  RECE10-HKNCOMBI (1)
-           MOVE    SKYMAIN-HKNCOMBI (2)    TO  RECE10-HKNCOMBI (2)
-           MOVE    SKYMAIN-HKNCOMBI (3)    TO  RECE10-HKNCOMBI (3)
-           MOVE    SKYMAIN-HKNCOMBI (4)    TO  RECE10-HKNCOMBI (4)
-           MOVE    SKYMAIN-HKNCOMBI (5)    TO  RECE10-HKNCOMBI (5)
-           MOVE    SKYMAIN-HKNCOMBI (6)    TO  RECE10-HKNCOMBI (6)
-           MOVE    SKYMAIN-HKNCOMBI (7)    TO  RECE10-HKNCOMBI (7)
-           MOVE    SKYMAIN-HKNCOMBI (8)    TO  RECE10-HKNCOMBI (8)
-           MOVE    SKYMAIN-HKNCOMBI (9)    TO  RECE10-HKNCOMBI (9)
-           MOVE    SKYMAIN-HKNCOMBI (10)   TO  RECE10-HKNCOMBI (10)
            MOVE    SKYMAIN-TOKKI (1)       TO  RECE10-TOKKI (1)
            MOVE    SKYMAIN-TOKKI (2)       TO  RECE10-TOKKI (2)
            MOVE    SKYMAIN-TOKKI (3)       TO  RECE10-TOKKI (3)
@@ -391,14 +337,10 @@
            MOVE    SKYMAIN-FLG   (5)       TO  RECE10-FLG   (5)
            MOVE    SKYMAIN-RESERVE-AREA    TO  RECE10-RESERVE-AREA
            MOVE    SKYMAIN-HENREI-SIJI-FLG TO  RECE10-HENREI-SIJI-FLG
-           MOVE    SKYMAIN-DIRECT-FLG      TO  RECE10-DIRECT-FLG
-           MOVE    SKYMAIN-HKNKBN-RSI      TO  RECE10-HKNKBN-RSI
            MOVE    SKYMAIN-HKNNUM-S        TO  RECE10-HKNNUM-S
            MOVE    SKYMAIN-HKNJANUM-S      TO  RECE10-HKNJANUM-S
            MOVE    SKYMAIN-CREYMD          TO  RECE10-CREYMD
-           MOVE    SKYMAIN-CREHMS          TO  RECE10-CREHMS
            MOVE    SKYMAIN-UPDYMD          TO  RECE10-UPDYMD
-           MOVE    SKYMAIN-UPDHMS          TO  RECE10-UPDHMS
            MOVE    SKYMAIN-UPHKNJANUM      TO  RECE10-UPHKNJANUM
            MOVE    SKYMAIN-XXPREFNUM       TO  RECE10-XXPREFNUM
            MOVE    SKYMAIN-XXSRYYM         TO  RECE10-XXSRYYM
@@ -411,18 +353,6 @@
             OR   ( SKYMAIN-KOHNUM (3)      NOT =   SPACE )
             OR   ( SKYMAIN-KOHNUM (4)      NOT =   SPACE )
                    PERFORM 20011-SKYKOH-GET-SEC
-           END-IF
-      *
-           IF      SKYMAIN-HKNNUM              =   "971"   OR  "973"
-                                                           OR  "970"
-               PERFORM 900-SKYRSI-KEY-SEL-SEC
-               MOVE    SKYRSI-SYOCD            TO  RECE10-SYOCD
-               MOVE    SKYRSI-SYOKAIFLG        TO  RECE10-SYOKAIFLG
-               MOVE    SKYRSI-KOFUNUM          TO  RECE10-KOFUNUM
-               MOVE    SKYRSI-SAIGAIKBN        TO  RECE10-SAIGAIKBN
-               MOVE    SKYRSI-COMMENT          TO  RECE10-COMMENT
-               MOVE    SKYRSI-RECEKBN          TO  RECE10-RECEKBN
-               MOVE    SKYRSI-HKNKBN           TO  RECE10-HKNKBN
            END-IF
       *
            IF    ( SKYMAIN-ETCCREATEFLG    =   1 )
@@ -512,10 +442,6 @@
            END-IF
       *
            IF    ( MCP-RC          =    ZERO )
-               PERFORM 2001-SKYRSI-INS-SEC
-           END-IF
-      *
-           IF    ( MCP-RC          =    ZERO )
                MOVE    SKYMAIN-REC         TO  MCPDATA-REC
                MOVE    "tbl_seikyu_main"   TO  MCP-TABLE
                MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
@@ -536,10 +462,6 @@
       *
            IF    ( MCP-RC          =    ZERO )
                PERFORM 2001-SKYETC-INS-SEC
-           END-IF
-      *
-           IF    ( MCP-RC          =    ZERO )
-               PERFORM 2001-SKYRSI-INS-SEC
            END-IF
       *
            IF    ( MCP-RC          =    ZERO )
@@ -566,10 +488,6 @@
            END-IF
       *
            IF    ( MCP-RC          =    ZERO )
-               PERFORM 2001-SKYRSI-DEL-SEC
-           END-IF
-      *
-           IF    ( MCP-RC          =    ZERO )
                MOVE    SKYMAIN-REC        TO  MCPDATA-REC
                MOVE    "tbl_seikyu_main"   TO  MCP-TABLE
                MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
@@ -587,10 +505,7 @@
            INITIALIZE                      SKYKOH-REC
            PERFORM 9001-SKYKOH-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -673,10 +588,7 @@
            INITIALIZE                  SKYETC-REC
            PERFORM 9001-SKYETC-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -736,59 +648,6 @@
        2001-SKYETC-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ëºï½ü½èÍý
-      *****************************************************************
-       2001-SKYRSI-DEL-SEC             SECTION.
-      *
-           INITIALIZE                  SKYRSI-REC
-           PERFORM 9001-SKYRSI-KEY-EDIT-SEC
-           IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
-               CONTINUE
-           ELSE
-               MOVE    "del"           TO   MCP-PATHNAME
-           END-IF
-      *
-           MOVE    SKYRSI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-           PERFORM 910-DBDELETE-SEC
-      *
-           .
-       2001-SKYRSI-DEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿·ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡ËÄÉ²Ã½èÍý
-      *****************************************************************
-       2001-SKYRSI-INS-SEC             SECTION.
-      *
-           MOVE    "del"           TO   MCP-PATHNAME
-           PERFORM 2001-SKYRSI-DEL-SEC
-      *
-           IF    ( SKYMAIN-HKNNUM    =   "971"   OR  "973"   OR  "970" )
-      *
-               INITIALIZE                  SKYRSI-REC
-               PERFORM 9001-SKYRSI-KEY-EDIT-SEC
-               MOVE    RECE10-SYOCD        TO  SKYRSI-SYOCD
-               MOVE    RECE10-SYOKAIFLG    TO  SKYRSI-SYOKAIFLG
-               MOVE    RECE10-KOFUNUM      TO  SKYRSI-KOFUNUM
-               MOVE    RECE10-SAIGAIKBN    TO  SKYRSI-SAIGAIKBN
-               MOVE    RECE10-COMMENT      TO  SKYRSI-COMMENT
-               MOVE    RECE10-RECEKBN      TO  SKYRSI-RECEKBN
-               MOVE    RECE10-HKNKBN       TO  SKYRSI-HKNKBN
-               MOVE    SKYRSI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-      *
-           END-IF
-      *
-           .
-       2001-SKYRSI-INS-EXT.
-           EXIT.
-      *****************************************************************
       *    ÀÁµá´ÉÍý¡Ê¸øÈñ¾ðÊó¡Ë¸¡º÷½èÍý
       *****************************************************************
        900-SKYKOH-KEY2-SEL-SEC         SECTION.
@@ -816,11 +675,18 @@
       *****************************************************************
        9001-SKYKOH-KEY-EDIT-SEC        SECTION.
       *
-           MOVE    SKYMAIN-KEY         TO  SKYKOH-KEY1
+           MOVE    SKYMAIN-HOSPNUM     TO  SKYKOH-HOSPNUM
+           MOVE    SKYMAIN-SRYYM       TO  SKYKOH-SRYYM
+           MOVE    SKYMAIN-NYUGAIKBN   TO  SKYKOH-NYUGAIKBN
+           MOVE    SKYMAIN-PTID        TO  SKYKOH-PTID
+           MOVE    SKYMAIN-RECEKA      TO  SKYKOH-RECEKA
+           MOVE    SKYMAIN-TEISYUTUSAKI TO SKYKOH-TEISYUTUSAKI
+           MOVE    SKYMAIN-RECESYUBETU TO  SKYKOH-RECESYUBETU
+           MOVE    SKYMAIN-HKNJANUM    TO  SKYKOH-HKNJANUM
+           MOVE    SKYMAIN-HOJOKBN-KEY TO  SKYKOH-HOJOKBN-KEY
+           MOVE    SKYMAIN-TEKSTYMD    TO  SKYKOH-TEKSTYMD
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYKOH-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYKOH-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYKOH-XXHKNKBN-RSI
       *
            .
        9001-SKYKOH-KEY-EDIT-EXT.
@@ -877,53 +743,20 @@
       *****************************************************************
        9001-SKYETC-KEY-EDIT-SEC        SECTION.
       *
-           MOVE    SKYMAIN-KEY         TO  SKYETC-KEY
+           MOVE    SKYMAIN-HOSPNUM     TO  SKYETC-HOSPNUM
+           MOVE    SKYMAIN-SRYYM       TO  SKYETC-SRYYM
+           MOVE    SKYMAIN-NYUGAIKBN   TO  SKYETC-NYUGAIKBN
+           MOVE    SKYMAIN-PTID        TO  SKYETC-PTID
+           MOVE    SKYMAIN-RECEKA      TO  SKYETC-RECEKA
+           MOVE    SKYMAIN-TEISYUTUSAKI TO SKYETC-TEISYUTUSAKI
+           MOVE    SKYMAIN-RECESYUBETU TO  SKYETC-RECESYUBETU
+           MOVE    SKYMAIN-HKNJANUM    TO  SKYETC-HKNJANUM
+           MOVE    SKYMAIN-HOJOKBN-KEY TO  SKYETC-HOJOKBN-KEY
+           MOVE    SKYMAIN-TEKSTYMD    TO  SKYETC-TEKSTYMD
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYETC-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYETC-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYETC-XXHKNKBN-RSI
            .
        9001-SKYETC-KEY-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ë¸¡º÷½èÍý
-      *****************************************************************
-       900-SKYRSI-KEY-SEL-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SKYRSI
-      *
-           INITIALIZE                      SKYRSI-REC
-           PERFORM 9001-SKYRSI-KEY-EDIT-SEC
-           MOVE    SKYRSI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SKYRSI-REC
-           ELSE
-               MOVE    1               TO  FLG-SKYRSI
-               INITIALIZE                  SKYRSI-REC
-           END-IF
-      *
-           MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SKYRSI-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ë¥­¡¼¾ðÊóÊÔ½¸½èÍý
-      *****************************************************************
-       9001-SKYRSI-KEY-EDIT-SEC        SECTION.
-      *
-           MOVE    SKYMAIN-KEY         TO  SKYRSI-KEY
-           MOVE    SKYMAIN-XXTEISYUTUSAKI
-                                       TO  SKYRSI-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYRSI-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYRSI-XXHKNKBN-RSI
-           .
-       9001-SKYRSI-KEY-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
