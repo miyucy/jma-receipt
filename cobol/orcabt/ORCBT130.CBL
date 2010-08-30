@@ -711,6 +711,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
       *****************************************************************
        2002-CSV-HEAD-HENSYU-SEC                SECTION.
       *
+           IF      CNT-TOUKEI05        >   ZERO
+               GO  TO  2002-CSV-HEAD-HENSYU-EXT
+           END-IF
+      *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
