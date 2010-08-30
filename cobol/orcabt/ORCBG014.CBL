@@ -249,6 +249,8 @@
            03  CNT-RECE10              PIC 9(06).
            03  CNT-PAGE                PIC 9(04).
            03  CNT-LINE                PIC 9(03).
+           03  CNT-KETA                PIC 9(02).
+           03  CNT-KETA2               PIC 9(02).
       *
       *    ½¸·×ÎÎ°è  ¡Ê£±¡Ë¾®·×¡¢¡Ê£²¡Ë¹ç·×¡¢¡Ê£³¡Ë¥ì¥»¥×¥È¹ç·×
        01  SUM-AREA.
@@ -393,6 +395,8 @@
            03  WRK-Z5                  PIC ZZZZ9.
            03  WRK-Z8                  PIC ZZZZZZZ9.
            03  WRK-Z9                  PIC ZZZZZZZZ9.
+           03  WRK-HENSURYO            PIC X(10).
+           03  WRK-SURYO               PIC ZZZZZZZZZ9.
       *
       *    °õºþÊÔ½¸ÎÎ°è
        01  WRK-PRT-AREA.
@@ -3288,10 +3292,18 @@
                MOVE    WRK-Z8              TO  WRK-PRT4-TENSU(IDX)
                MOVE    TOKEI-PTNUM         TO  CSV-PTNUM
                MOVE    TOKEI-RENNUM        TO  CSV-RENNUM
-               MOVE    TOKEI-NISSU         TO  CSV-NISSU
-               MOVE    TOKEI-TENSU         TO  CSV-TENSU
-               MOVE    TOKEI-RYOYOHI       TO  CSV-RYOYOHI
-               MOVE    TOKEI-SHOKUJIFTN    TO  CSV-SHOKUJIFTN
+               MOVE    TOKEI-NISSU         TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-NISSU
+               MOVE    TOKEI-TENSU         TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-TENSU
+               MOVE    TOKEI-RYOYOHI       TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-RYOYOHI
+               MOVE    TOKEI-SHOKUJIFTN    TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-SHOKUJIFTN
            END-IF
       *
       *    ´µ¼ÔÌ¾¥»¥Ã¥È
@@ -3348,13 +3360,13 @@
                    ","               DELIMITED  BY  SIZE
                    TOKEI-KANANAME    DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
-                   CSV-NISSU         DELIMITED  BY  SIZE
+                   CSV-NISSU         DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
-                   CSV-TENSU         DELIMITED  BY  SIZE
+                   CSV-TENSU         DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
-                   CSV-RYOYOHI       DELIMITED  BY  SIZE
+                   CSV-RYOYOHI       DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
-                   CSV-SHOKUJIFTN    DELIMITED  BY  SIZE
+                   CSV-SHOKUJIFTN    DELIMITED  BY  SPACE
                              INTO    RECECSV-REC
            END-STRING
       *
@@ -3767,6 +3779,26 @@
            INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "¡¡"
            .
        31012-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   Ä¢É¼£ÚÊÔ½¸½èÍý
+      *****************************************************************
+       400-ZHEN-SURYO-SET-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HENSURYO
+           MOVE    ZERO            TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   10
+               IF      WRK-SURYO(CNT-KETA2:1)    NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE    WRK-SURYO(CNT-KETA2:1)
+                                           TO  WRK-HENSURYO(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-SURYO-SET-EXT.
            EXIT.
       *
       *****************************************************************
