@@ -3313,8 +3313,8 @@
                                            ORCSKANACHKAREA
                MOVE    KANACHK-MAE-INPUT   TO  WRK-PRT4-NAME(IDX)
            END-IF
-           INSPECT WRK-PRT4-NAME(IDX)  REPLACING  ALL "  " BY  "　"
            MOVE    WRK-PRT4-NAME(IDX)      TO  CSV-NAME
+           INSPECT WRK-PRT4-NAME(IDX)  REPLACING  ALL "  " BY  "　"
       *
       *    ＣＳＶファイル出力
            INITIALIZE                RECECSV-REC
