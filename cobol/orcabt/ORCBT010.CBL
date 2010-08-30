@@ -984,6 +984,9 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
       *
+           MOVE    SPACE               TO  WRK-ERR-AREA
+           INITIALIZE                      WRK-ERR-AREA
+      *
            INITIALIZE                      SRYACCT-REC
            MOVE    WRK-PARA-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    WRK-PARA-SRYYM      TO  ACCT-SRYYM
@@ -1004,9 +1007,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
       *        未訂正分があるか
-               MOVE    SPACE               TO  WRK-ERR-AREA
-               INITIALIZE                      WRK-ERR-AREA
-      *
                IF      KEY-N-HKNCOMBI      =   9999
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
@@ -1203,7 +1203,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
        2001-NYUINGAI-HENSYU-SEC              SECTION.
       *
            INITIALIZE                  WRK-TOUKEI01-TABLE
-
+           INITIALIZE                      WRK-ERR-AREA
       *    テスト患者のときは読み飛ばす
            MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID              TO  PTINF-PTID
@@ -2708,9 +2708,9 @@ grpsys                                         SPA-AREA
                          ( LNK-SYUBETUGET-HKN-HOJOKBN
                                                =   SPACE             ))
                        MOVE      LNK-SYUBETUGET-SRYYM TO  WRK-TEKSTYYMM
-                       IF   TOUKEI01-TTEKSTYMD (IDX)(1:6)  >=
+                       IF   TOUKEI01-TTEKSTYMD (IDY)(1:6)  >=
                                                    LNK-SYUBETUGET-SRYYM
-                            MOVE  TOUKEI01-TTEKSTYMD (IDX)(7:2)
+                            MOVE  TOUKEI01-TTEKSTYMD (IDY)(7:2)
                                                        TO  WRK-TEKSTDD
                        ELSE
                             MOVE  01                   TO  WRK-TEKSTDD
@@ -2752,6 +2752,7 @@ grpsys                                         SPA-AREA
                    MOVE    SPACE       TO  LNK-SYUBETUGET-HKN-HOJOKBN
                END-IF
            END-IF
+      *
            CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU
