@@ -1995,6 +1995,8 @@
            MOVE      ACCT-SYUTEN1          TO  ACCT-ZAITEN
            IF        WRK-COMMENT-MEISAISU   >  5
                 MOVE     5      TO    WRK-COMMENT-MEISAISU
+      *         コメント入力行が５明細を超えた場合は処理対象外とする
+                MOVE     ZERO   TO    ACCT-ZAITEN
            END-IF
       *
            .
