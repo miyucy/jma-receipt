@@ -31,6 +31,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/11/21  西暦年’３０００’以上エラー
       * 01.00.02     NACL-多々納  02/12/12  入力タイプなし追加
+      * 04.06.00     NACL-多々納  10/08/30  年月省略対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +76,12 @@
                05  WRK-MM              PIC X(02).
                05  WRK-DD              PIC X(02).
       *
+           03  WRK-SYSYMD.
+               05  WRK-SYSYM.
+                   07  WRK-SYSYY              PIC X(04).
+                   07  WRK-SYSMM              PIC X(02).
+               05  WRK-SYSDD              PIC X(02).
+      *
            03  WRK-HMM                 PIC 9(02).
            03  WRK-HDD                 PIC 9(02).
       *
@@ -107,10 +114,10 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSGDAY.INC".
-     *
+      *
        PROCEDURE                    DIVISION    USING
            ORCSGDAYAREA.
-     *
+      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -147,6 +154,15 @@
       *    入力日付検索処理
       *****************************************************************
        100-INDAY-CHK-SEC               SECTION.
+      *
+           IF      SGDAY-SYSYY         NUMERIC
+      *        年
+               MOVE    SGDAY-SYSYY         TO  WRK-SYSYY
+               IF      SGDAY-SYSMM         NUMERIC
+      *            月
+                   MOVE    SGDAY-SYSMM         TO  WRK-SYSMM
+               END-IF
+           END-IF
       *
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  WRK-INDAY
@@ -258,6 +274,45 @@
                        END-IF
                    END-IF
            END-EVALUATE
+      *
+      *    年月日入力でシステム日付の設定がある時
+           IF     (WRK-ERRCD           =   SPACE )
+             OR   (WRK-SYSYM           =   SPACE )
+             OR   (SGDAY-INTYPE    NOT =   SPACE )
+               CONTINUE
+           ELSE
+               IF      FLG-TEN             =   ZERO
+      *            日のみ入力　システム年月とする
+                   EVALUATE    WRK-KETA
+                   WHEN    1
+                       MOVE    ZERO                TO  WRK-SYSDD
+                       MOVE    SGDAY-INDAY(1:1)    TO  WRK-SYSDD(2:1)
+                       MOVE    SPACE               TO  WRK-ERRCD
+                       MOVE    1                   TO  FLG-TYPE
+                       MOVE    8                   TO  WRK-KETA
+                       MOVE    WRK-SYSYMD          TO  SGDAY-INDAY
+                   WHEN    2
+                       MOVE    SGDAY-INDAY(1:2)    TO  WRK-SYSDD
+                       MOVE    SPACE               TO  WRK-ERRCD
+                       MOVE    1                   TO  FLG-TYPE
+                       MOVE    8                   TO  WRK-KETA
+                       MOVE    WRK-SYSYMD          TO  SGDAY-INDAY
+                   END-EVALUATE
+               END-IF
+               IF      FLG-TEN             =   1
+      *            年の桁が２、１桁は月日と判断する
+                   IF      WRK-KETA        <=  2
+                       MOVE    WRK-MM          TO  WRK-DD
+                       MOVE    SPACE           TO  WRK-MM
+                       MOVE    WRK-YY(1:WRK-KETA)
+                                               TO  WRK-MM
+                       MOVE    WRK-SYSYY       TO  WRK-YY
+                       MOVE    2               TO  FLG-TEN
+                       MOVE    SPACE           TO  WRK-ERRCD
+                       MOVE    4               TO  WRK-KETA
+                   END-IF
+               END-IF
+           END-IF
       *
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      100-INDAY-CHK-EXT

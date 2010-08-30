@@ -28,6 +28,11 @@
            03  SGDAY-INDAY              PIC X(10).
       *入力タイプ（１：年月、空白：年月日、２：タイプなし）
            03  SGDAY-INTYPE             PIC X(01).
+      *システム日付
+           03  SGDAY-SYSYMD.
+               05  SGDAY-SYSYY          PIC X(04).
+               05  SGDAY-SYSMM          PIC X(02).
+               05  SGDAY-SYSDD          PIC X(02).
       *出力
            03  SGDAY-OT-AREA.
       *        画面用日付（HZ9.Z9.Z9)

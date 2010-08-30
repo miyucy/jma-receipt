@@ -3410,6 +3410,8 @@
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN-BIRTHDAYW   TO  SGDAY-INDAY
+      *!!
+           MOVE    SPA-SYSYMD          TO  SGDAY-SYSYMD
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO

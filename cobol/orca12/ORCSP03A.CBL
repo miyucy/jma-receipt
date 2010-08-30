@@ -934,7 +934,7 @@
                           (SPA-NAI-BIRTHDAY    >=  "19321001" )
       *!!
       *            高齢者非該当以外
-                 AND      (FLG-RJNCHK          =   0    )
+                   AND    (FLG-RJNCHK          =   0    )
       *                Ｈ１４．１０以降、老人は１割を初期とする
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
                               (SPA-NAI-HTEKSTYMD   >=  SPA-BYMD-70)) OR
@@ -986,7 +986,7 @@
                            IF     (SPA-BYMD-70       >   ZERO      )
       *!!
       *                    高齢者非該当以外
-                         AND      (FLG-RJNCHK          =   0    )
+                           AND    (FLG-RJNCHK          =   0    )
                                MOVE    "1"         TO  SPA-GMN-HOJOKBN
                            END-IF
                        END-IF
@@ -1032,7 +1032,8 @@
                    IF     (SPA-GMN-HOJOKBN     =   SPACE      )  AND
                           (SPA-NAI-BIRTHDAY    >=  "19321001" )
       *!!
-                 AND      (FLG-RJNCHK          =   0    )
+      *            高齢者非該当以外
+                   AND    (FLG-RJNCHK          =   0    )
       *!!
       *                Ｈ１４．１０以降、老人は１割を初期とする
                        IF    ((SPA-NAI-HTEKSTYMD   >=  "20021001" ) AND
@@ -1040,9 +1041,6 @@
                              ((SPA-SYSYMD          >=  "20021001" ) AND
                               (SPA-SYSYMD          >=  SPA-BYMD-70))
                            IF     (SPA-BYMD-70       >   ZERO      )
-      *!!
-      *                    高齢者非該当以外
-                          AND      (FLG-RJNCHK          =   0    )
                                MOVE    "9"         TO  SPA-GMN-HOJOKBN
                            END-IF
                        END-IF
@@ -1215,7 +1213,7 @@
                            CONTINUE
                        ELSE
       *!!!
-                       MOVE    "9"             TO  SPA-GMN-HOJOKBN
+                           MOVE    "9"             TO  SPA-GMN-HOJOKBN
                        END-IF
                    END-IF
                END-IF
