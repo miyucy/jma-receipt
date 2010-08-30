@@ -126,6 +126,8 @@
            03  CNT-PAGE            PIC 9(06).
            03  CNT-SEQ             PIC 9(06).
            03  CNT-INPUT-ITEM      PIC 9(03).
+           03  CNT-KETA                PIC 9(02).
+           03  CNT-KETA2               PIC 9(02).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -214,6 +216,11 @@
                05  WRK-KANACHK-INPUT   PIC X(100).
                05  WRK-KANACHK-MAX     PIC 9(05).
            03  WRK-REC             PIC X(20000).
+
+           03  WRK-HENSURYO            PIC X(08).
+           03  WRK-SURYO               PIC ZZZZZZZ9.
+       01  CSV-AREA.
+           03  CSV-DAY             PIC X(03)   OCCURS  32.
       *
        01  TOTAL-AREA.
            03  TOTAL-PTNUM         PIC 9(08).
@@ -1181,6 +1188,7 @@ grpsys                                         SPA-AREA
                                        TO  HCG016-HKNCOMBI
                                                     (CNT-LINE)
       *
+           MOVE    SPACE               TO  CSV-AREA
            MOVE    ZERO                TO  TOTAL-PTNUM
            PERFORM VARYING IDX-DAY     FROM    1   BY  1
                    UNTIL ( IDX-DAY     >   31 )
@@ -1188,6 +1196,9 @@ grpsys                                         SPA-AREA
                MOVE    IN01-DAY (IDX-DAY)
                                        TO  WRK-ZZZZ
                MOVE    WRK-ZZZZ        TO  HCG016-DAY(CNT-LINE IDX-DAY)
+               MOVE    IN01-DAY (IDX-DAY)  TO WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO    TO  CSV-DAY (IDX-DAY)
       *
                COMPUTE TOTAL-SRYKA-DAY (IDX-DAY)
                    =   TOTAL-SRYKA-DAY (IDX-DAY)
@@ -1200,6 +1211,9 @@ grpsys                                         SPA-AREA
       *
            MOVE    TOTAL-PTNUM         TO  WRK-ZZZZ
            MOVE    WRK-ZZZZ            TO  HCG016-DAY (CNT-LINE 32)
+           MOVE    TOTAL-PTNUM     TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO    TO  CSV-DAY (32)
       *
            PERFORM 270-CSV-BODY-SET-SEC
            .
@@ -1222,7 +1236,7 @@ grpsys                                         SPA-AREA
                    ","                 DELIMITED BY SIZE
                    HCG016-SRYKA        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-KEY-PTNUM      DELIMITED BY SIZE
+                   IN01-KEY-PTNUM      DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
                    IN01-NAME           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
@@ -1233,69 +1247,69 @@ grpsys                                         SPA-AREA
                    HCG016S01-HKNCOMBIMEI
                                        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (1)        DELIMITED BY SIZE
+                   CSV-DAY (1)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (2)        DELIMITED BY SIZE
+                   CSV-DAY (2)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (3)        DELIMITED BY SIZE
+                   CSV-DAY (3)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (4)        DELIMITED BY SIZE
+                   CSV-DAY (4)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (5)        DELIMITED BY SIZE
+                   CSV-DAY (5)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (6)        DELIMITED BY SIZE
+                   CSV-DAY (6)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (7)        DELIMITED BY SIZE
+                   CSV-DAY (7)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (8)        DELIMITED BY SIZE
+                   CSV-DAY (8)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (9)        DELIMITED BY SIZE
+                   CSV-DAY (9)         DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (10)       DELIMITED BY SIZE
+                   CSV-DAY (10)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (11)       DELIMITED BY SIZE
+                   CSV-DAY (11)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (12)       DELIMITED BY SIZE
+                   CSV-DAY (12)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (13)       DELIMITED BY SIZE
+                   CSV-DAY (13)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (14)       DELIMITED BY SIZE
+                   CSV-DAY (14)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (15)       DELIMITED BY SIZE
+                   CSV-DAY (15)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (16)       DELIMITED BY SIZE
+                   CSV-DAY (16)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (17)       DELIMITED BY SIZE
+                   CSV-DAY (17)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (18)       DELIMITED BY SIZE
+                   CSV-DAY (18)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (19)       DELIMITED BY SIZE
+                   CSV-DAY (19)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (20)       DELIMITED BY SIZE
+                   CSV-DAY (20)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (21)       DELIMITED BY SIZE
+                   CSV-DAY (21)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (22)       DELIMITED BY SIZE
+                   CSV-DAY (22)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (23)       DELIMITED BY SIZE
+                   CSV-DAY (23)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (24)       DELIMITED BY SIZE
+                   CSV-DAY (24)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (25)       DELIMITED BY SIZE
+                   CSV-DAY (25)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (26)       DELIMITED BY SIZE
+                   CSV-DAY (26)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (27)       DELIMITED BY SIZE
+                   CSV-DAY (27)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (28)       DELIMITED BY SIZE
+                   CSV-DAY (28)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (29)       DELIMITED BY SIZE
+                   CSV-DAY (29)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (30)       DELIMITED BY SIZE
+                   CSV-DAY (30)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   IN01-DAY (31)       DELIMITED BY SIZE
+                   CSV-DAY (31)        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   TOTAL-PTNUM         DELIMITED BY SIZE
+                   CSV-DAY (32)        DELIMITED BY SPACE
                                  INTO  WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -1430,6 +1444,26 @@ grpsys                                 SPA-AREA
            .
       *
        2001-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   Ä¢É¼£ÚÊÔ½¸½èÍý
+      *****************************************************************
+       400-ZHEN-SURYO-SET-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HENSURYO
+           MOVE    ZERO            TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   8
+               IF      WRK-SURYO(CNT-KETA2:1)    NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE    WRK-SURYO(CNT-KETA2:1)
+                                           TO  WRK-HENSURYO(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-SURYO-SET-EXT.
            EXIT.
       *
       *****************************************************************
