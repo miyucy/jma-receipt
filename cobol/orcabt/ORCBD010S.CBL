@@ -104,6 +104,8 @@
            03  CNT-LINE                    PIC 9(05).
            03  CNT-NO                      PIC 9(05).
            03  CNT-SMEI                    PIC 9(05).
+           03  CNT-KETA                    PIC 9(02).
+           03  CNT-KETA2                   PIC 9(02).
       *
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
@@ -133,6 +135,8 @@
            03  WRK-RECEERR                 PIC X(200).
            03  WRK-TOUKEIERR               PIC X(200).
            03  WRK-REC                     PIC X(20000).
+           03  WRK-HENSURYO                PIC X(10).
+           03  WRK-SURYO                   PIC ---------9.
            03  WRK-SYSYMD                  PIC X(08).
            03  WRK-SYMD                    PIC X(10).
            03  WRK-EDTYMD1                 PIC X(10).
@@ -192,24 +196,24 @@
            03  TTL-MISYU               PIC     S9(10).
       *
        01  CSV-AREA.
-           03  CSV-SYOSIN              PIC     ---------9.
-           03  CSV-SAISIN              PIC     ---------9.
-           03  CSV-HKNTEN              PIC     ---------9.
-           03  CSV-SKYMONEY            PIC     ---------9.
-           03  CSV-SKYHOKEN            PIC     ---------9.
-           03  CSV-SKYJIHI             PIC     ---------9.
-           03  CSV-KONNYUKIN           PIC     ---------9.
-           03  CSV-NYUKIN              PIC     ---------9.
-           03  CSV-CHOSEI              PIC     ---------9.
-           03  CSV-CHOSEI1             PIC     ---------9.
-           03  CSV-CHOSEI2             PIC     ---------9.
-           03  CSV-GENMEN              PIC     ---------9.
-           03  CSV-ZENMISYU            PIC     ---------9.
-           03  CSV-MISYU               PIC     ---------9.
+           03  CSV-SYOSIN              PIC X(10).
+           03  CSV-SAISIN              PIC X(10).
+           03  CSV-HKNTEN              PIC X(10).
+           03  CSV-SKYMONEY            PIC X(10).
+           03  CSV-SKYHOKEN            PIC X(10).
+           03  CSV-SKYJIHI             PIC X(10).
+           03  CSV-KONNYUKIN           PIC X(10).
+           03  CSV-NYUKIN              PIC X(10).
+           03  CSV-CHOSEI              PIC X(10).
+           03  CSV-CHOSEI1             PIC X(10).
+           03  CSV-CHOSEI2             PIC X(10).
+           03  CSV-GENMEN              PIC X(10).
+           03  CSV-ZENMISYU            PIC X(10).
+           03  CSV-MISYU               PIC X(10).
        01  CSV-AREA2.
            03  CSV-DAI                 PIC X(14).
-           03  CSV-GOKEI               PIC     ---------9.
-           03  CSV-SKYMONEY2           PIC     ---------9  OCCURS 15.
+           03  CSV-GOKEI               PIC X(10).
+           03  CSV-SKYMONEY2           PIC X(10)  OCCURS 15.
       *
        01  KEY-AREA.
            03  KEY-NYUGAIKBN                   PIC X(01).
@@ -1570,23 +1574,47 @@
                =   TTL-MISYU   +   BD01004-MISYU
       *
            INITIALIZE              CSV-AREA
-           MOVE    BD01004-HOKENTEN    TO  CSV-HKNTEN
-           MOVE    BD01004-SKYMONEY    TO  CSV-SKYMONEY
-           MOVE    BD01004-FTNMONEY    TO  CSV-SKYHOKEN
-           MOVE    BD01004-JIHIMONEY   TO  CSV-SKYJIHI
-           MOVE    BD01004-NYUKIN      TO  CSV-NYUKIN
-           MOVE    BD01004-KONNYUKIN   TO  CSV-KONNYUKIN
-           MOVE    BD01004-CHOSEI      TO  CSV-CHOSEI
-           MOVE    BD01004-CHOSEI1     TO  CSV-CHOSEI1
-           MOVE    BD01004-CHOSEI2     TO  CSV-CHOSEI2
-           MOVE    BD01004-GENMEN      TO  CSV-GENMEN
-           MOVE    BD01004-MISYU       TO  CSV-MISYU
-           MOVE    BD01004-ZENMISYU    TO  CSV-ZENMISYU
+           MOVE    BD01004-HOKENTEN    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-HKNTEN
+           MOVE    BD01004-SKYMONEY    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYMONEY
+           MOVE    BD01004-FTNMONEY    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYHOKEN
+           MOVE    BD01004-JIHIMONEY   TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYJIHI
+           MOVE    BD01004-NYUKIN      TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-NYUKIN
+           MOVE    BD01004-KONNYUKIN   TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-KONNYUKIN
+           MOVE    BD01004-CHOSEI      TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-CHOSEI
+           MOVE    BD01004-CHOSEI1     TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-CHOSEI1
+           MOVE    BD01004-CHOSEI2     TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-CHOSEI2
+           MOVE    BD01004-GENMEN      TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-GENMEN
+           MOVE    BD01004-MISYU       TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-MISYU
+           MOVE    BD01004-ZENMISYU    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-ZENMISYU
       *
            INITIALIZE                  WRK-REC
-           STRING  BD01004-DENPNUM     DELIMITED  BY  SIZE
+           STRING  BD01004-DENPNUM     DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   BD01004-PTNUM       DELIMITED  BY  SIZE
+                   BD01004-PTNUM       DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
                    BD01004-NAME        DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
@@ -1602,30 +1630,30 @@
                                        DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
                    HCM51-SRYKA (CNT-LINE)
-                                       DELIMITED  BY  SIZE
+                                       DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-HKNTEN          DELIMITED  BY  SIZE
+                   CSV-HKNTEN          DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-SKYHOKEN        DELIMITED  BY  SIZE
+                   CSV-SKYHOKEN        DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-SKYJIHI         DELIMITED  BY  SIZE
+                   CSV-SKYJIHI         DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-GENMEN          DELIMITED  BY  SIZE
+                   CSV-GENMEN          DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-CHOSEI1         DELIMITED  BY  SIZE
+                   CSV-CHOSEI1         DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-CHOSEI2         DELIMITED  BY  SIZE
+                   CSV-CHOSEI2         DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-ZENMISYU        DELIMITED  BY  SIZE
+                   CSV-ZENMISYU        DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-SKYMONEY        DELIMITED  BY  SIZE
+                   CSV-SKYMONEY        DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-NYUKIN          DELIMITED  BY  SIZE
+                   CSV-NYUKIN          DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
                    HCM51-HOHO (CNT-LINE)
-                                       DELIMITED  BY  SIZE
+                                       DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-MISYU           DELIMITED  BY  SIZE
+                   CSV-MISYU           DELIMITED  BY  SPACE
                    INTO                WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -1856,7 +1884,9 @@
                                            TO  WRK-ZZZZZZZ9
                        MOVE    WRK-ZZZZZZZ9 TO HCM52-GOKEI (IDX1)
                    END-IF
-                   MOVE    BD01003-SEIKYU-TOTAL (IDX1)  TO  CSV-GOKEI
+                   MOVE    BD01003-SEIKYU-TOTAL (IDX1)  TO  WRK-SURYO
+                   PERFORM 400-ZHEN-SURYO-SET-SEC
+                   MOVE    WRK-HENSURYO        TO  CSV-GOKEI
       *
                    PERFORM VARYING IDX2    FROM    1   BY  1
                            UNTIL ( IDX2    >   WRK-SKYTTL-MAX )
@@ -1891,7 +1921,9 @@
                                            TO  HCM52-SKYMONEY(IDX1 IDX2)
                        END-IF
                        MOVE    BD01003-SEIKYU(IDX1 IDX2)
-                                               TO  CSV-SKYMONEY2(IDX2)
+                                               TO  WRK-SURYO
+                       PERFORM 400-ZHEN-SURYO-SET-SEC
+                       MOVE    WRK-HENSURYO    TO  CSV-SKYMONEY2(IDX2)
                    END-PERFORM
       *
                    EVALUATE    IDX1
@@ -1919,27 +1951,27 @@
                            MOVE    "初再診件"    TO  CSV-DAI
                    END-EVALUATE
                    INITIALIZE              WRK-REC
-                   STRING  CSV-DAI             DELIMITED BY SIZE
+                   STRING  CSV-DAI             DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-GOKEI           DELIMITED BY SIZE
+                           CSV-GOKEI           DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(1)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(1)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(2)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(2)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(3)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(3)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(4)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(4)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(5)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(5)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(6)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(6)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(7)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(7)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(8)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(8)    DELIMITED BY SPACE
                            ","                 DELIMITED BY SIZE
-                           CSV-SKYMONEY2(9)    DELIMITED BY SIZE
+                           CSV-SKYMONEY2(9)    DELIMITED BY SPACE
                                          INTO  WRK-REC
                    END-STRING
                    PERFORM 500-TOUKEICSV-SEC
@@ -1951,7 +1983,9 @@
            MOVE    "合　計"                TO  HCM52-TTLHOHOMSG
            MOVE    BD01003-NYUKIN-TOTAL    TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9            TO  HCM52-TTLNYUKIN
-           MOVE    BD01003-NYUKIN-TOTAL    TO  CSV-GOKEI
+           MOVE    BD01003-NYUKIN-TOTAL    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-GOKEI
       *
            MOVE    ZERO                    TO  IDX-HOHO
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -1965,7 +1999,9 @@
                                            TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
                MOVE     BD01003-NYUKIN (IDX1)
-                                           TO  CSV-SKYMONEY2(IDX-HOHO)
+                                           TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-SKYMONEY2(IDX-HOHO)
       *
            END-PERFORM
       *
@@ -1980,56 +2016,62 @@
                MOVE    "その他"            TO  HCM52-HOHOMSG (IDX-HOHO)
                MOVE    WRK-NYUKIN          TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-               MOVE    WRK-NYUKIN          TO  CSV-SKYMONEY2(IDX-HOHO)
+               MOVE    WRK-NYUKIN          TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-SKYMONEY2(IDX-HOHO)
            END-IF
       *
            COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
            MOVE    "返　金"            TO  HCM52-HOHOMSG (IDX-HOHO)
            MOVE    BD01003-NYUKIN (12) TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-           MOVE    BD01003-NYUKIN (12) TO  CSV-SKYMONEY2(IDX-HOHO)
+           MOVE    BD01003-NYUKIN (12) TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYMONEY2(IDX-HOHO)
       *
            IF    ( BD01003-NYUKIN (13) NOT =   ZERO )
                COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
                MOVE    "入金取消"          TO  HCM52-HOHOMSG (IDX-HOHO)
                MOVE    BD01003-NYUKIN (13) TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
-               MOVE    BD01003-NYUKIN (13) TO  CSV-SKYMONEY2(IDX-HOHO)
+               MOVE    BD01003-NYUKIN (13) TO  WRK-SURYO
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO        TO  CSV-SKYMONEY2(IDX-HOHO)
            END-IF
       *
            INITIALIZE              WRK-REC
            STRING  ","                 DELIMITED BY SIZE
                    "合計"              DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (1)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (1)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (2)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (2)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (3)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (3)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (4)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (4)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (5)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (5)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (6)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (6)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (7)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (7)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (8)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (8)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (9)   DELIMITED BY SIZE
+                   HCM52-HOHOMSG (9)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (10)  DELIMITED BY SIZE
+                   HCM52-HOHOMSG (10)  DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (11)  DELIMITED BY SIZE
+                   HCM52-HOHOMSG (11)  DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (12)  DELIMITED BY SIZE
+                   HCM52-HOHOMSG (12)  DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (13)  DELIMITED BY SIZE
+                   HCM52-HOHOMSG (13)  DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (14)  DELIMITED BY SIZE
+                   HCM52-HOHOMSG (14)  DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-HOHOMSG (15)  DELIMITED BY SIZE
+                   HCM52-HOHOMSG (15)  DELIMITED BY SPACE
                                  INTO  WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -2037,37 +2079,37 @@
            INITIALIZE              WRK-REC
            STRING  "入金額計"          DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
-                   CSV-GOKEI           DELIMITED BY SIZE
+                   CSV-GOKEI           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(1)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(1)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(2)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(2)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(3)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(3)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(4)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(4)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(5)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(5)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(6)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(6)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(7)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(7)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(8)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(8)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(9)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(9)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(10)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(10)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(11)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(11)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(12)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(12)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(13)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(13)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(14)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(14)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(15)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(15)   DELIMITED BY SPACE
                                  INTO  WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -2076,7 +2118,9 @@
            MOVE    "合　計"                TO  HCM52-TTLJIHIMSG
            MOVE    BD01003-JIHI-TOTAL      TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9            TO  HCM52-TTLJIHI
-           MOVE    BD01003-JIHI-TOTAL      TO  CSV-GOKEI
+           MOVE    BD01003-JIHI-TOTAL      TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-GOKEI
       *
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
@@ -2099,7 +2143,9 @@
                                            TO  WRK-ZZZZZZZ9
                    MOVE    WRK-ZZZZZZZ9    TO  HCM52-JIHI    (IDX-JIHI)
                    MOVE    BD01003-JIHI (IDX-JIHI)
-                                           TO  CSV-SKYMONEY2(IDX-JIHI)
+                                           TO  WRK-SURYO
+                   PERFORM 400-ZHEN-SURYO-SET-SEC
+                   MOVE    WRK-HENSURYO    TO  CSV-SKYMONEY2(IDX-JIHI)
                END-IF
       *
            END-PERFORM
@@ -2107,25 +2153,25 @@
            STRING  ","                 DELIMITED BY SIZE
                    "合　計"            DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (1)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (1)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (2)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (2)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (3)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (3)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (4)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (4)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (5)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (5)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (6)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (6)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (7)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (7)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (8)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (8)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (9)   DELIMITED BY SIZE
+                   HCM52-JIHIMSG (9)   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCM52-JIHIMSG (10)  DELIMITED BY SIZE
+                   HCM52-JIHIMSG (10)  DELIMITED BY SPACE
                                  INTO  WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -2133,27 +2179,27 @@
            INITIALIZE              WRK-REC
            STRING  "その他自費計"      DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
-                   CSV-GOKEI           DELIMITED BY SIZE
+                   CSV-GOKEI           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(1)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(1)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(2)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(2)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(3)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(3)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(4)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(4)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(5)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(5)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(6)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(6)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(7)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(7)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(8)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(8)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(9)    DELIMITED BY SIZE
+                   CSV-SKYMONEY2(9)    DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   CSV-SKYMONEY2(10)   DELIMITED BY SIZE
+                   CSV-SKYMONEY2(10)   DELIMITED BY SPACE
                                  INTO  WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -2239,6 +2285,26 @@
            .
        250-GET-1041-EXT.
            EXIT.
+      *****************************************************************
+      *   帳票Ｚ編集処理
+      *****************************************************************
+       400-ZHEN-SURYO-SET-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HENSURYO
+           MOVE    ZERO            TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   10
+               IF      WRK-SURYO(CNT-KETA2:1)    NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE    WRK-SURYO(CNT-KETA2:1)
+                                           TO  WRK-HENSURYO(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-SURYO-SET-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    エラー出力処理
       *****************************************************************
