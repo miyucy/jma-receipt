@@ -2197,7 +2197,7 @@
       *
            INITIALIZE                      CSV-REC
            MOVE    0                   TO  CSV-RENNUM
-                                           CSV-NISSU
+           MOVE    "0"                 TO  CSV-NISSU
                                            CSV-TENSU
            MOVE    WRK-PARA-DENPPRTYM(1:6)
                                        TO  CSV-SKYYM
@@ -3281,10 +3281,10 @@
                MOVE    "       -"          TO  WRK-PRT4-TENSU(IDX)
                MOVE    TOKEI-PTNUM         TO  CSV-PTNUM
                MOVE    TOKEI-RENNUM        TO  CSV-RENNUM
-               MOVE    0                   TO  CSV-NISSU
-               MOVE    0                   TO  CSV-TENSU
-               MOVE    0                   TO  CSV-RYOYOHI
-               MOVE    0                   TO  CSV-SHOKUJIFTN
+               MOVE    "0"                 TO  CSV-NISSU
+                                               CSV-TENSU
+                                               CSV-RYOYOHI
+                                               CSV-SHOKUJIFTN
            ELSE
                MOVE    TOKEI-NISSU         TO  WRK-Z5
                MOVE    WRK-Z5              TO  WRK-PRT4-NISSU(IDX)
