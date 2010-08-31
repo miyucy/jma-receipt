@@ -429,6 +429,16 @@
       *    期間指定区分チェック
            EVALUATE    PARA-SITEIKBN
            WHEN    "0"
+               IF   (( PARA-YUKOSTRYM  NOT =   SPACE ) AND
+                     ( PARA-YUKOSTRYM  NOT =   "000000" ))
+               OR   (( PARA-YUKOENDYM  NOT =   SPACE ) AND
+                     ( PARA-YUKOENDYM  NOT =   "999999" ))
+                   MOVE
+                   "期間指定なしの場合は期間を入力しないでください"
+                                       TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  120-PARA-CHECK-EXT
+               END-IF
                MOVE    "00000000"      TO  WRK-YUKOSTRYMD
                MOVE    "99999999"      TO  WRK-YUKOENDYMD
                MOVE    "1"             TO  PARA-SYORIKBN
