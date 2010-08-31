@@ -98,6 +98,8 @@
            03  CNT-TOKEI               PIC 9(04).
            03  CNT-KENSU               PIC 9(05).
            03  CNT-TAIIN               PIC 9(05).
+           03  CNT-KETA                PIC 9(02).
+           03  CNT-KETA2               PIC 9(02).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  PARA-AREA.
@@ -143,7 +145,9 @@
            03  WRK-Z5                  PIC ZZZZ9.
            03  WRK-Z6                  PIC ZZZZZ9.
            03  WRK-Z11                 PIC ---,---,--9.
-           03  WRK-CSV                 PIC --------9.
+      *     03  WRK-CSV                 PIC X(09).
+           03  WRK-HENSURYO            PIC X(10).
+           03  WRK-CSV                 PIC ---------9.
       *
            03  WRK-SAKUSEIBI           PIC X(22).
            03  WRK-KIKAN               PIC X(40).
@@ -466,16 +470,14 @@
                PERFORM 1201-PARA-SYORIKBN-CHECK-SEC
            END-IF
       *
-           DISPLAY "WRK-YUKOSTRYMD=" WRK-YUKOSTRYMD
-           DISPLAY "WRK-YUKOENDYMD=" WRK-YUKOENDYMD
            MOVE    SPACE           TO  WRK-TO-DATA-KIKAN
            MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
-           IF      WRK-YUKOSTRYMD  =   WRK-YUKOENDYMD
-               MOVE    WRK-YUKOSTRYMD  TO  WRK-TO-DATA-YMD
+           IF      WRK-YUKOSTRYMD(1:6) =   WRK-YUKOENDYMD(1:6) 
+               MOVE    WRK-YUKOSTRYMD(1:6) TO  WRK-TO-DATA-YMD
                MOVE    WRK-TO-DATA1    TO  WRK-TO-DATA-KIKAN
            ELSE
-               MOVE    WRK-YUKOSTRYMD  TO  WRK-TO-DATA-STRYMD
-               MOVE    WRK-YUKOENDYMD  TO  WRK-TO-DATA-ENDYMD
+               MOVE    WRK-YUKOSTRYMD(1:6) TO  WRK-TO-DATA-STRYMD
+               MOVE    WRK-YUKOENDYMD(1:6) TO  WRK-TO-DATA-ENDYMD
                MOVE    WRK-TO-DATA2    TO  WRK-TO-DATA-KIKAN
            END-IF
            .
@@ -817,29 +819,31 @@
                MOVE    TOKEI-MISYU     TO  WRK-Z11
                MOVE    WRK-Z11         TO  HCM38-MISYU(CNT-LINE)
                MOVE    TOKEI-MISYU     TO  WRK-CSV
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+      *         MOVE    WRK-HENSURYO    TO  WRK-CSV
       *
                COMPUTE WRK-GSURYO      =   WRK-GSURYO
                                        +   TOKEI-MISYU
       *
                INITIALIZE                  WRK-REC
-               STRING  PTNUM-PTNUM         DELIMITED  BY  SIZE
+               STRING  PTNUM-PTNUM         DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
                        PTINF-NAME          DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
                        PTINF-KANANAME      DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       WRK-CSV             DELIMITED  BY  SIZE
+                       WRK-HENSURYO        DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       BD003-NYUHEN-YMD    DELIMITED  BY  SIZE
+                       BD003-NYUHEN-YMD    DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       ORCSLASTYMD-LASTYMD DELIMITED  BY  SIZE
+                       ORCSLASTYMD-LASTYMD DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
                        SYS-1005-SRYKANAME1(1:8)
-                                           DELIMITED  BY  SIZE
+                                           DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       PTINF-HOME-TEL1     DELIMITED  BY  SIZE
+                       PTINF-HOME-TEL1     DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       WRK-BIKOU           DELIMITED  BY  SIZE
+                       WRK-BIKOU           DELIMITED  BY  SPACE
                        INTO                WRK-REC
                END-STRING
                PERFORM 500-TOUKEICSV-SEC
@@ -902,6 +906,26 @@
            .
       *
        390-PRINT-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   Ä¢É¼£ÚÊÔ½¸½èÍý
+      *****************************************************************
+       400-ZHEN-SURYO-SET-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HENSURYO
+           MOVE    ZERO            TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   10
+               IF      WRK-CSV(CNT-KETA2:1)    NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE    WRK-CSV(CNT-KETA2:1)
+                                           TO  WRK-HENSURYO(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-SURYO-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1043,7 +1067,6 @@
            CALL    "ORCSLASTYMD"       USING
                                        ORCSLASTYMDAREA
                                        SPA-AREA
-           DISPLAY "ORCSLASTYMDAREA=[" ORCSLASTYMDAREA "]"
            MOVE    ORCSLASTYMD-LASTYMD
                                        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
