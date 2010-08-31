@@ -78,12 +78,22 @@
       *
            03  WRK-SYSYMD.
                05  WRK-SYSYM.
-                   07  WRK-SYSYY           PIC X(04).
-                   07  WRK-SYSMM           PIC X(02).
-               05  WRK-SYSDD               PIC X(02).
+                   07  WRK-SYSYY           PIC 9(04).
+                   07  WRK-SYSMM           PIC 9(02).
+               05  WRK-SYSDD               PIC 9(02).
+           03  WRK-SYSZYM.
+               05  WRK-SYSZYY              PIC 9(04).
+               05  WRK-SYSZMM              PIC 9(02).
            03  WRK-SYSWNEN.
                05  WRK-SYSWGO              PIC X(01).
                05  WRK-SYSWYY              PIC 9(02).
+           03  WRK-HENYMD.
+               05  WRK-HENYY               PIC 9(04).
+               05  WRK-HENMMDD             PIC 9(04).
+               05  WRK-HENMMDD-R           REDEFINES   WRK-HENMMDD.
+                   07  WRK-HENMM               PIC 9(02).
+                   07  WRK-HENDD               PIC 9(02).
+      *
            03  WRK-HYY                 PIC X(03).
       *
            03  WRK-HMM                 PIC 9(02).
@@ -171,10 +181,17 @@
                IF      STS-DAY-RC1         =   ZERO
       *            和暦年
                    MOVE    LNK-DAY1-WYMD(1:3)  TO  WRK-SYSWNEN
-      *            年
+      *            年・月
                    MOVE    SGDAY-SYSYY         TO  WRK-SYSYY
-      *            月
                    MOVE    SGDAY-SYSMM         TO  WRK-SYSMM
+      *            前月
+                   IF      WRK-SYSMM           =   01
+                       MOVE    12                  TO  WRK-SYSZMM
+                       COMPUTE WRK-SYSZYY          =   WRK-SYSYY   -   1
+                   ELSE
+                       COMPUTE WRK-SYSZMM          =   WRK-SYSMM   -   1
+                       MOVE    WRK-SYSYY           TO  WRK-SYSZYY
+                   END-IF
                END-IF
            END-IF
       *
@@ -300,27 +317,44 @@
       *            日のみ入力　システム年月とする
                    EVALUATE    WRK-KETA
                    WHEN    1
-                       MOVE    ZERO                TO  WRK-SYSDD
-                       MOVE    SGDAY-INDAY(1:1)    TO  WRK-SYSDD(2:1)
-                       MOVE    SPACE               TO  WRK-ERRCD
-                       MOVE    1                   TO  FLG-TYPE
-                       MOVE    8                   TO  WRK-KETA
-                       MOVE    WRK-SYSYMD          TO  SGDAY-INDAY
                    WHEN    2
-                       MOVE    SGDAY-INDAY(1:2)    TO  WRK-SYSDD
+                       MOVE    WRK-SYSYMD          TO  WRK-HENYMD
+                       MOVE    SGDAY-INDAY(1:WRK-KETA) TO  WRK-INSUJI
+                       PERFORM 1001-SUUJI-CHK-SEC
+                       MOVE    WRK-OTSUJI          TO  WRK-HENDD
                        MOVE    SPACE               TO  WRK-ERRCD
                        MOVE    1                   TO  FLG-TYPE
                        MOVE    8                   TO  WRK-KETA
-                       MOVE    WRK-SYSYMD          TO  SGDAY-INDAY
+                       MOVE    WRK-HENYMD          TO  SGDAY-INDAY
+                   WHEN    3
+                   WHEN    4
+      *                月日のみ入力　システム年月とする
+                       MOVE    SGDAY-INDAY(1:WRK-KETA) TO  WRK-INSUJI
+                       PERFORM 1001-SUUJI-CHK-SEC
+                       MOVE    WRK-OTSUJI          TO  WRK-HENMMDD
+      *                １２月の時は前年とする
+                       IF      WRK-HMM             =   12
+                           MOVE    WRK-SYSZYY          TO  WRK-HENYY
+                       ELSE
+                           MOVE    WRK-SYSYY           TO  WRK-HENYY
+                       END-IF
+                       MOVE    SPACE               TO  WRK-ERRCD
+                       MOVE    1                   TO  FLG-TYPE
+                       MOVE    8                   TO  WRK-KETA
+                       MOVE    WRK-HENYMD          TO  SGDAY-INDAY
                    END-EVALUATE
                WHEN    1
       *            年の桁が２、１桁は月日と判断する
-                   IF      WRK-KETA        <=  2
-                       MOVE    WRK-MM          TO  WRK-DD
-                       MOVE    SPACE           TO  WRK-MM
+                   IF      WRK-KETA            <=  2
+                       MOVE    WRK-MM              TO  WRK-DD
+                       MOVE    SPACE               TO  WRK-MM
                        MOVE    WRK-YY(1:WRK-KETA)
-                                               TO  WRK-MM
-                       MOVE    WRK-SYSYY       TO  WRK-YY
+                                                   TO  WRK-MM
+                       IF      WRK-MM          =   "12"
+                           MOVE    WRK-SYSZYY          TO  WRK-YY
+                       ELSE
+                           MOVE    WRK-SYSYY           TO  WRK-YY
+                       END-IF
                        MOVE    2               TO  FLG-TEN
                        MOVE    SPACE           TO  WRK-ERRCD
                        MOVE    4               TO  WRK-KETA
