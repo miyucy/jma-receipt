@@ -333,7 +333,7 @@
                        PERFORM 1001-SUUJI-CHK-SEC
                        MOVE    WRK-OTSUJI          TO  WRK-HENMMDD
       *                １２月の時は前年とする
-                       IF      WRK-HMM             =   12
+                       IF      WRK-HENMM           =   12
                            MOVE    WRK-SYSZYY          TO  WRK-HENYY
                        ELSE
                            MOVE    WRK-SYSYY           TO  WRK-HENYY
