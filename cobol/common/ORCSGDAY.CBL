@@ -78,9 +78,13 @@
       *
            03  WRK-SYSYMD.
                05  WRK-SYSYM.
-                   07  WRK-SYSYY              PIC X(04).
-                   07  WRK-SYSMM              PIC X(02).
-               05  WRK-SYSDD              PIC X(02).
+                   07  WRK-SYSYY           PIC X(04).
+                   07  WRK-SYSMM           PIC X(02).
+               05  WRK-SYSDD               PIC X(02).
+           03  WRK-SYSWNEN.
+               05  WRK-SYSWGO              PIC X(01).
+               05  WRK-SYSWYY              PIC 9(02).
+           03  WRK-HYY                 PIC X(03).
       *
            03  WRK-HMM                 PIC 9(02).
            03  WRK-HDD                 PIC 9(02).
@@ -155,10 +159,20 @@
       *****************************************************************
        100-INDAY-CHK-SEC               SECTION.
       *
-           IF      SGDAY-SYSYY         NUMERIC
-      *        年
-               MOVE    SGDAY-SYSYY         TO  WRK-SYSYY
-               IF      SGDAY-SYSMM         NUMERIC
+      *    システム日付編集
+           IF     (SGDAY-SYSYMD        =   SPACE
+                                       OR  ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "11"                TO  LNK-DAY1-IRAI
+               MOVE    SGDAY-SYSYMD        TO  LNK-DAY1-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY1-AREA
+               IF      STS-DAY-RC1         =   ZERO
+      *            和暦年
+                   MOVE    LNK-DAY1-WYMD(1:3)  TO  WRK-SYSWNEN
+      *            年
+                   MOVE    SGDAY-SYSYY         TO  WRK-SYSYY
       *            月
                    MOVE    SGDAY-SYSMM         TO  WRK-SYSMM
                END-IF
@@ -281,7 +295,8 @@
              OR   (SGDAY-INTYPE    NOT =   SPACE )
                CONTINUE
            ELSE
-               IF      FLG-TEN             =   ZERO
+               EVALUATE    FLG-TEN
+               WHEN        ZERO
       *            日のみ入力　システム年月とする
                    EVALUATE    WRK-KETA
                    WHEN    1
@@ -298,8 +313,7 @@
                        MOVE    8                   TO  WRK-KETA
                        MOVE    WRK-SYSYMD          TO  SGDAY-INDAY
                    END-EVALUATE
-               END-IF
-               IF      FLG-TEN             =   1
+               WHEN    1
       *            年の桁が２、１桁は月日と判断する
                    IF      WRK-KETA        <=  2
                        MOVE    WRK-MM          TO  WRK-DD
@@ -311,7 +325,7 @@
                        MOVE    SPACE           TO  WRK-ERRCD
                        MOVE    4               TO  WRK-KETA
                    END-IF
-               END-IF
+               END-EVALUATE
            END-IF
       *
            IF      WRK-ERRCD       NOT =   SPACE
