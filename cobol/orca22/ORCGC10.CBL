@@ -61,6 +61,8 @@
       *  04.03.01    NACL-藤原    08/06/11  慢性と急性のチェック
       *
       *  04.04.01    NACL-藤原    09/05/08  病名複写時のチェックの修正
+      *
+      *  04.06.01    NACL-藤原    10/08/31  年月省略入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -780,38 +782,9 @@
            ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    SPA-GMN-C10-TENKIYMD    TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF      SNUM-RC             >   ZERO
-                   MOVE    SPA-GMN-C10-TENKIYMD    TO  SGDAY-INDAY
-               ELSE
-                   EVALUATE    SNUM-SEISUU
-                       WHEN    1
-                       WHEN    2
-                           MOVE    SPA-NAI-C02-SYSYMD  TO  WRK-YMD-9
-                           MOVE    SNUM-OUTNUM         TO  WRK-DD
-                       WHEN    3
-                           MOVE    SPA-NAI-C02-SYSYMD  TO  WRK-YMD-9
-                           MOVE    SNUM-OUTNUM         TO  WRK-MD
-                       WHEN    4
-                           MOVE    SNUM-OUTNUM         TO  WRK-MD
-                           IF    ( WRK-MM              =   12   )
-                           AND   ( SPA-NAI-C02-SYSYMD (5:2)
-                                                       =   "01" )
-                               MOVE    SPA-NAI-C02-SYSYMD-BACK (1:4)
-                                                       TO  WRK-YY
-                           ELSE
-                               MOVE    SPA-NAI-C02-SYSYMD (1:4)
-                                                       TO  WRK-YY
-                           END-IF
-                       WHEN    OTHER
-                           MOVE    SPA-GMN-C10-TENKIYMD
-                                                       TO  WRK-YMD-9
-                   END-EVALUATE
-                   MOVE    WRK-YMD-9       TO  SGDAY-INDAY
-               END-IF
+               MOVE    SPA-GMN-C10-TENKIYMD
+                                           TO  SGDAY-INDAY
+               MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
@@ -844,37 +817,8 @@
            ELSE
       *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    SPA-GMN-C10-SRYYMD    TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF      SNUM-RC             >   ZERO
-                   MOVE    SPA-GMN-C10-SRYYMD    TO  SGDAY-INDAY
-               ELSE
-                   EVALUATE    SNUM-SEISUU
-                       WHEN    1
-                       WHEN    2
-                           MOVE    SPA-NAI-C02-SYSYMD  TO  WRK-YMD-9
-                           MOVE    SNUM-OUTNUM         TO  WRK-DD
-                       WHEN    3
-                           MOVE    SPA-NAI-C02-SYSYMD  TO  WRK-YMD-9
-                           MOVE    SNUM-OUTNUM         TO  WRK-MD
-                       WHEN    4
-                           MOVE    SNUM-OUTNUM         TO  WRK-MD
-                           IF    ( WRK-MM              =   12   )
-                           AND   ( SPA-NAI-C02-SYSYMD (5:2)
-                                                       =   "01" )
-                               MOVE    SPA-NAI-C02-SYSYMD-BACK (1:4)
-                                                       TO  WRK-YY
-                           ELSE
-                               MOVE    SPA-NAI-C02-SYSYMD (1:4)
-                                                       TO  WRK-YY
-                           END-IF
-                       WHEN    OTHER
-                           MOVE    SPA-GMN-C10-SRYYMD  TO  WRK-YMD-9
-                   END-EVALUATE
-                   MOVE    WRK-YMD-9       TO  SGDAY-INDAY
-               END-IF
+               MOVE    SPA-GMN-C10-SRYYMD  TO  SGDAY-INDAY
+               MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
