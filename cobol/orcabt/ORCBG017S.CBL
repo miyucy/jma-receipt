@@ -217,6 +217,8 @@
       *
       *    •ÿ•√•¿°ºæ Û
        01  CSV-HEAD-01.
+           03  FILLER              PIC X(08)   VALUE   "ø«Œ≈«Ø∑Ó".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "∆˛≥∞∂Ë ¨".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ø«Œ≈∂Ë ¨".
@@ -1371,7 +1373,10 @@
       *
            INITIALIZE                  WRK-REC
       *
-           STRING  WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
+           STRING  WRK-PARA-STRYMD(1:6)
+                                       DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
                    HCG017-SRYKBN       DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
