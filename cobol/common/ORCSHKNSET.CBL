@@ -37,6 +37,7 @@
       * 04.01.01     NACL-多々納  07/11/12  非表示区分対応追加
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０．４改正対応
       * 04.05.00     NACL-多々納  10/01/XX  治験対応
+      * 04.06.00     NACL-太田    10/08/30  補助区分、本人家族区分追加
       *****************************************************************
       *
       *
@@ -391,6 +392,9 @@
                                                                (IDX)
       *
            MOVE    COMB-HKNID          TO  ORCSHKN-NAI-HKNID   (IDX)
+           MOVE    COMB-HKNNUM         TO  ORCSHKN-NAI-HKNNUM  (IDX)
+           MOVE    COMB-HOJOKBN        TO  ORCSHKN-NAI-HOJOKBN (IDX)
+           MOVE    COMB-HONKZKKBN      TO  ORCSHKN-NAI-HONKZKKBN (IDX)
            MOVE    COMB-HKNNUM         TO  ORCSHKN-NAI-HKNNUM  (IDX)
            MOVE    COMB-KOH1HKNNUM     TO  ORCSHKN-NAI-KOH1HKNNUM
                                                                (IDX)
