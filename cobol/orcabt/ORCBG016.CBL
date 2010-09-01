@@ -198,7 +198,10 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-TOUKEIERR       PIC X(200).
            03  WRK-SRYYMD          PIC X(08).
-           03  WRK-SYMD            PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
            03  WRK-EDTYMD1         PIC X(10).
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-SRYYM-N         PIC X(22).
@@ -219,8 +222,18 @@
 
            03  WRK-HENSURYO            PIC X(08).
            03  WRK-SURYO               PIC ZZZZZZZ9.
+      *
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
+
        01  CSV-AREA.
            03  CSV-DAY             PIC X(03)   OCCURS  32.
+           03  CSV-SRYYM           PIC X(07).
+           03  CSV-LASTYMD         PIC X(10).
       *
        01  TOTAL-AREA.
            03  TOTAL-PTNUM         PIC 9(08).
@@ -1224,9 +1237,22 @@ grpsys                                         SPA-AREA
       *****************************************************************
        270-CSV-BODY-SET-SEC        SECTION.
       *
+           MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD(1:6)
+           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+           MOVE    WRK-HEN-YMD-OT(1:7)
+                                   TO  CSV-SRYYM
+      *
+           MOVE    HCG016S01-LASTYMD
+                                   TO  WRK-SYMD
+           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+           MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+           MOVE    WRK-HEN-YMD-OT  TO  CSV-LASTYMD
+
            INITIALIZE                  WRK-REC
       *
-           STRING  WRK-PARA-SRYYM      DELIMITED BY SIZE
+           STRING  CSV-SRYYM           DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
                    WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
@@ -1242,7 +1268,7 @@ grpsys                                         SPA-AREA
                    ","                 DELIMITED BY SIZE
                    IN01-KEY-KANANAME   DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
-                   HCG016S01-LASTYMD   DELIMITED BY SIZE
+                   CSV-LASTYMD         DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
                    HCG016S01-HKNCOMBIMEI
                                        DELIMITED BY SPACE

@@ -154,6 +154,15 @@
            03  WRK-MES                 PIC X(50).
            03  WRK-BIKOU               PIC X(30).
            03  WRK-SRYKA               PIC X(02).
+           03  WRK-LASTYMD             PIC X(10).
+           03  WRK-NYUHENYMD           PIC X(10).
+      *
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
       *
       *    出力先ファイル名
        01  WRK-TO-DATA-G.
@@ -835,6 +844,18 @@
                COMPUTE WRK-GSURYO      =   WRK-GSURYO
                                        +   TOKEI-MISYU
       *
+               MOVE    BD003-NYUHEN-YMD
+                                       TO  WRK-SYMD
+               MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+               MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+               MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+               MOVE    WRK-HEN-YMD-OT  TO  WRK-NYUHENYMD
+               MOVE    ORCSLASTYMD-LASTYMD
+                                       TO  WRK-SYMD
+               MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+               MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+               MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+               MOVE    WRK-HEN-YMD-OT  TO  WRK-LASTYMD
                INITIALIZE                  WRK-REC
                STRING  PTNUM-PTNUM         DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
@@ -844,9 +865,9 @@
                        ","                 DELIMITED  BY  SIZE
                        WRK-HENSURYO        DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       BD003-NYUHEN-YMD    DELIMITED  BY  SPACE
+                       WRK-NYUHENYMD       DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
-                       ORCSLASTYMD-LASTYMD DELIMITED  BY  SPACE
+                       WRK-LASTYMD         DELIMITED  BY  SPACE
                        ","                 DELIMITED  BY  SIZE
                        SYS-1005-SRYKANAME1(1:8)
                                            DELIMITED  BY  SPACE

@@ -156,7 +156,11 @@
                05  WRK-RECEERR-END PIC X(1).
            03  WRK-TOUKEIERR       PIC X(200).
            03  WRK-SRYYMD          PIC X(08).
-           03  WRK-SYMD            PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
+           03  WRK-HENYMDG             PIC X(22).
            03  WRK-EDTYMD1         PIC X(10).
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-SRYYM-N         PIC X(46).
@@ -193,11 +197,19 @@
            03  CSV-KEI             PIC X(23).
            03  CSV-KAISU           PIC X(06).
            03  CSV-SURYO           PIC X(23).
+           03  CSV-SRYYM           PIC X(07).
       *
            03  WRK-KIKAN.
                05  WRK-STR         PIC 9(02).
                05  WRK-END         PIC 9(02).
                05  WRK-KAISU       PIC 9(07).
+      *
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
       *
       *    出力先ファイル名
        01  WRK-TO-DATA-G.
@@ -231,11 +243,17 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "点数単価".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "単位".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "数量".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "単位".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "回数".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "合計".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "単位".
       *
        01  TSRYKBN-AREA.
            03  TSRYKBN-MAX         PIC 9(03).
@@ -1298,7 +1316,6 @@
                    INTO    HCG017-SURYO (CNT-LINE)
                    END-STRING
                    STRING  WRK-ZZZZ9           DELIMITED BY SIZE
-                           IN01-TANI           DELIMITED BY SPACE
                    INTO    WRK-SURYO
                    END-STRING
                ELSE
@@ -1310,7 +1327,6 @@
                    END-STRING
                    STRING  WRK-ZZZZ9           DELIMITED BY SIZE
                            WRK-SMLNUMOT        DELIMITED BY SPACE
-                           IN01-TANI           DELIMITED BY SPACE
                    INTO    WRK-SURYO
                    END-STRING
                END-IF
@@ -1371,10 +1387,15 @@
       *****************************************************************
        270-CSV-BODY-SET-SEC        SECTION.
       *
+           MOVE    WRK-PARA-STRYMD TO  WRK-SYMD
+           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+           MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+           MOVE    WRK-HEN-YMD-OT(1:7)
+                                   TO  CSV-SRYYM
            INITIALIZE                  WRK-REC
       *
-           STRING  WRK-PARA-STRYMD(1:6)
-                                       DELIMITED BY SIZE
+           STRING  CSV-SRYYM           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
                    WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
@@ -1388,11 +1409,17 @@
                    ","                 DELIMITED BY SIZE
                    CSV-TEN             DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
+                   WRK-SIKIBETU        DELIMITED BY SPACE
+                   ","                 DELIMITED BY SIZE
                    CSV-SURYO           DELIMITED BY SPACE
+                   ","                 DELIMITED BY SIZE
+                   IN01-TANI           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
                    CSV-KAISU           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
                    CSV-KEI             DELIMITED BY SPACE
+                   ","                 DELIMITED BY SIZE
+                   WRK-SIKIBETU        DELIMITED BY SPACE
                                  INTO  WRK-REC
            END-STRING
            PERFORM 500-TOUKEICSV-SEC
@@ -1448,7 +1475,6 @@
                INTO    WRK-OT-TEN
                END-STRING
                STRING  WRK-ZZZZZZZZZZ9M    DELIMITED BY SIZE
-                       WRK-SIKIBETU        DELIMITED BY SPACE
                        INTO    WRK-SURYO
                END-STRING
            ELSE
@@ -1460,7 +1486,6 @@
                END-STRING
                STRING  WRK-ZZZZZZZZZZ9M    DELIMITED BY SIZE
                        WRK-SMLNUMOT        DELIMITED BY SPACE
-                       WRK-SIKIBETU        DELIMITED BY SPACE
                INTO    WRK-SURYO
                END-STRING
            END-IF

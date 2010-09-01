@@ -138,7 +138,10 @@
            03  WRK-HENSURYO                PIC X(10).
            03  WRK-SURYO                   PIC ---------9.
            03  WRK-SYSYMD                  PIC X(08).
-           03  WRK-SYMD                    PIC X(10).
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
            03  WRK-EDTYMD1                 PIC X(10).
            03  WRK-EDTYMD3                 PIC X(22).
            03  WRK-STDAILYKEY.
@@ -180,6 +183,13 @@
                    07  WRK-SKYTTLMSG       PIC X(12).
            03  WRK-NYUKIN                  PIC S9(10).
       *
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
+      *
        01  TTL-AREA.
            03  TTL-SYOSIN              PIC     S9(10).
            03  TTL-SAISIN              PIC     S9(10).
@@ -210,6 +220,7 @@
            03  CSV-GENMEN              PIC X(10).
            03  CSV-ZENMISYU            PIC X(10).
            03  CSV-MISYU               PIC X(10).
+           03  CSV-SRYYMD              PIC X(10).
        01  CSV-AREA2.
            03  CSV-DAI                 PIC X(14).
            03  CSV-GOKEI               PIC X(10).
@@ -1444,6 +1455,7 @@
       *****************************************************************
        220-BODY-SEC                SECTION.
       *
+           INITIALIZE              CSV-AREA
            COMPUTE CNT-LINE    =   CNT-LINE   +   1
       *
            IF    ( BD01004-RENNUM  =   1 )
@@ -1469,12 +1481,22 @@
                        MOVE    BD01004-DENPPRTYMD  TO  WRK-SYMD
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-EDTYMD1 TO  HCM51-SRYYMD(CNT-LINE)
+                       MOVE    BD01004-DENPPRTYMD  TO  WRK-SYMD
+                       MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+                       MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+                       MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+                       MOVE    WRK-HEN-YMD-OT  TO  CSV-SRYYMD
                    END-IF
                ELSE
                    IF    ( BD01004-SRYYMD  NOT =   WRK-EDDAILYKEY-YMD )
                        MOVE    BD01004-SRYYMD  TO  WRK-SYMD
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-EDTYMD1 TO  HCM51-SRYYMD(CNT-LINE)
+                       MOVE    BD01004-SRYYMD  TO  WRK-SYMD
+                       MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+                       MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+                       MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+                       MOVE    WRK-HEN-YMD-OT  TO  CSV-SRYYMD
                    END-IF
                END-IF
            END-IF
@@ -1573,7 +1595,6 @@
            COMPUTE TTL-MISYU
                =   TTL-MISYU   +   BD01004-MISYU
       *
-           INITIALIZE              CSV-AREA
            MOVE    BD01004-HOKENTEN    TO  WRK-SURYO
            PERFORM 400-ZHEN-SURYO-SET-SEC
            MOVE    WRK-HENSURYO        TO  CSV-HKNTEN
@@ -1620,8 +1641,7 @@
                    ","                 DELIMITED  BY  SIZE
                    BD01004-KANANAME    DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   HCM51-SRYYMD(CNT-LINE)
-                                       DELIMITED  BY  SIZE
+                   CSV-SRYYMD          DELIMITED  BY  SIZE
                    ","                 DELIMITED  BY  SIZE
                    HCM51-SYOSAI(CNT-LINE)
                                        DELIMITED  BY  SIZE
