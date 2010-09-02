@@ -702,11 +702,12 @@
                                    TO  SPA-GMN-SYUKEIKBNMEIL (3)
       *
            MOVE    "3"             TO  SPA-GMN-SYUKEIKBNL    (4)
-           MOVE    "集計しない【負担金区分対応】"
+           MOVE    "集計しない【負担区分対応】"
                                    TO  SPA-GMN-SYUKEIKBNMEIL (4)
       *
            MOVE    "4"             TO  SPA-GMN-SYUKEIKBNL    (5)
-           MOVE   "集計しない（０点となる場合は除く）【負担金区分対応】"
+           MOVE
+           "集計しない（請求点が０点となる場合は除く）【負担区分対応】"
                                    TO  SPA-GMN-SYUKEIKBNMEIL (5)
       *
            MOVE    5               TO  SPA-GMN-SYUKEIKBN-MAX
@@ -824,11 +825,11 @@
            INITIALIZE                  SPA-GMN-JGNFTNKBNLST-G
       *
            MOVE    "0"             TO  SPA-GMN-JGNFTNKBNL    (1)
-           MOVE    "入外それぞれで上限までの計算をする"
+           MOVE    "入外それぞれで上限額までの計算をする"
                                    TO  SPA-GMN-JGNFTNKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-JGNFTNKBNL    (2)
-           MOVE    "入外あわせて上限までの計算をする"
+           MOVE    "入外あわせて上限額までの計算をする"
                                    TO  SPA-GMN-JGNFTNKBNMEIL (2)
       *
            MOVE    2               TO  SPA-GMN-JGNFTNKBN-MAX
@@ -3000,6 +3001,8 @@
            MOVE    SPA-GMN-JYUHENKBN-G         TO  W65-JYUHENKBN
            MOVE    SPA-GMN-JYUHENTAIKBN-G      TO  W65-JYUHENTAIKBN
            MOVE    SPA-GMN-JGNFTNKBN-G         TO  W65-JGNFTNKBN
+           MOVE    "0 ０日・月上限額設定のある公費"
+                                              TO   W65-JGNFTNTAIKBN
            MOVE    SPA-GMN-SAIKEIKBN-G        TO  W65-SAIKEIKBN
            MOVE    SPA-GMN-SAIKEITAIKBN-G     TO  W65-SAIKEITAIKBN
       *
@@ -3069,6 +3072,10 @@
                    MOVE    SPA-GMN-JGNFTNKBNLST (IDX-CMB)
                                    TO  W65-JGNFTNKBN-ITEM (IDX-CMB)
            END-PERFORM
+      *
+           MOVE    1                       TO  W65-JGNFTNTAIKBN-COUNT
+           MOVE    "0 ０日・月上限額設定のある公費"
+                                           TO  W65-JGNFTNTAIKBN-ITEM(1)
       *
            MOVE    SPA-GMN-SAIKEIKBN-MAX      TO  W65-SAIKEIKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
