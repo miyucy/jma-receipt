@@ -40,6 +40,8 @@
            03  LNK-ORCSSKS-IKTSORTKBN      PIC  X(01).
       *一括再計算方法
            03  LNK-ORCSSKS-IKTKEISANKBN    PIC  X(01).
+      *分娩自費区分
+           03  LNK-ORCSSKS-BUNBENJIHIKBN   PIC  X(01).
       *
       *返却値
       *
