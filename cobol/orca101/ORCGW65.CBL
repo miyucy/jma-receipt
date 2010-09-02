@@ -3001,7 +3001,7 @@
            MOVE    SPA-GMN-JYUHENKBN-G         TO  W65-JYUHENKBN
            MOVE    SPA-GMN-JYUHENTAIKBN-G      TO  W65-JYUHENTAIKBN
            MOVE    SPA-GMN-JGNFTNKBN-G         TO  W65-JGNFTNKBN
-           MOVE    "0 ０日・月上限額設定のある公費"
+           MOVE    "0 日・月上限額設定のある公費"
                                               TO   W65-JGNFTNTAIKBN
            MOVE    SPA-GMN-SAIKEIKBN-G        TO  W65-SAIKEIKBN
            MOVE    SPA-GMN-SAIKEITAIKBN-G     TO  W65-SAIKEITAIKBN
