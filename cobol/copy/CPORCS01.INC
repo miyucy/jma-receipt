@@ -57,6 +57,8 @@
            03  LNK-S01-IKTSORTKBN          PIC  X(01).
       *办崇浩纷换数恕
            03  LNK-S01-IKTKEISANKBN        PIC  X(01).
+      *尸授极锐惰尸
+           03  LNK-S01-BUNBENJIHIKBN       PIC  X(01).
       *
            03  LNK-S01-SINKOUI.
       *壳闻乖百柒推 
