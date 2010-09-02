@@ -51,6 +51,8 @@
       *  04.05.01    NACL-門脇    09/06/16  一括再計算方法選択機能対応
       *  04.05.02    NACL-門脇    10/01/19  治験対応
       *  04.05.03    NACL-門脇    10/01/26  東京都マル子追加対応
+      *
+      *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -757,6 +759,8 @@
                                  TO  LNK-S01-IKTSORTKBN
            MOVE    LNK-ORCSSKS-IKTKEISANKBN
                                  TO  LNK-S01-IKTKEISANKBN
+           MOVE    LNK-ORCSSKS-BUNBENJIHIKBN
+                                 TO  LNK-S01-BUNBENJIHIKBN
       *
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA

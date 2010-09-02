@@ -324,6 +324,8 @@
       *  04.05.05    NACL-門脇    10/01/07  治験対応
       *  04.05.06    NACL-門脇    10/01/26  東京都マル子追加対応
       *  04.05.07    NACL-門脇    10/03/26  一括再計算方法選択機能対応修正
+      *
+      *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2927,6 +2929,14 @@
       *    自費保険のデータ編集                                *
       ******************************************************************
        104-JIHIHOKEN-DATA-HENSYU-SEC          SECTION.
+      *
+           IF   (COMB-HKNNUM            NOT =   SPACE     )
+           AND  (COMB-SYU-HKNKOHSBTKBN      =   "8"       )
+           AND  (WK-1001-JIHIPOSITION   NOT =   "2"       )
+           AND  (LNK-S01-BUNBENJIHIKBN      =   "1"       )
+           AND  (LNK-SYU-SRYYMD(1:6)       >=   "200604"  )
+               MOVE   "2"    TO   WK-1001-JIHIPOSITION
+           END-IF
       *
            IF   (COMB-HKNNUM            NOT =   SPACE   )
            AND  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
