@@ -233,9 +233,15 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅ¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅ²ÊÌ¾".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(14)   VALUE   "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -1399,7 +1405,14 @@
                    ","                 DELIMITED BY SIZE
                    WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
+                   HCG017-NYUGAIKBN(3:2)
+                                       DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
+                   IN01-KEY-SRYKBN     DELIMITED BY SIZE
+                   ","                 DELIMITED BY SIZE
                    HCG017-SRYKBN       DELIMITED BY SPACE
+                   ","                 DELIMITED BY SIZE
+                   KEY-SRYKA           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
                    HCG017-SRYKA        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE

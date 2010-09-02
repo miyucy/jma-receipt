@@ -321,7 +321,9 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "ÊÝ¸±".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(02)   VALUE   "²Ê".
+           03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±ÅÀ¿ô".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -1648,6 +1650,8 @@
                    ","                 DELIMITED  BY  SIZE
                    HCM51-HOKEN (CNT-LINE)
                                        DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-SRYKA       DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
                    HCM51-SRYKA (CNT-LINE)
                                        DELIMITED  BY  SPACE

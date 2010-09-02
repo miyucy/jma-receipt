@@ -171,11 +171,15 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "入外区分".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(14)   VALUE   "診療行為コード".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "診療行為名".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-SRYKAMEI        PIC X(06)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "名称".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "患者番号".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -576,7 +580,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                    END-IF
                END-IF
            ELSE
-               MOVE    "病棟名"        TO  CSV-SRYKAMEI
+               MOVE    "病　棟"        TO  CSV-SRYKAMEI
                IF    ( WRK-PARA-SRYKA  NOT =   SPACE )
                    MOVE    "病棟別の場合は診療科を入力しないでください"
                                            TO  WRK-RECEERR
@@ -1256,9 +1260,13 @@ grpsys                                         SPA-AREA
                    ","                 DELIMITED BY SIZE
                    WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
+                   HCG016-NYUGAIKBN(3:2)
+                   ","                 DELIMITED BY SIZE
                    IN01-KEY-SRYCD      DELIMITED BY SIZE
                    ","                 DELIMITED BY SIZE
                    HCG016-SRYNAME      DELIMITED BY SPACE
+                   ","                 DELIMITED BY SIZE
+                   KEY-SRYKA           DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
                    HCG016-SRYKA        DELIMITED BY SPACE
                    ","                 DELIMITED BY SIZE
