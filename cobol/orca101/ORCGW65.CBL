@@ -3074,7 +3074,7 @@
            END-PERFORM
       *
            MOVE    1                       TO  W65-JGNFTNTAIKBN-COUNT
-           MOVE    "0 ０日・月上限額設定のある公費"
+           MOVE    "0 日・月上限額設定のある公費"
                                            TO  W65-JGNFTNTAIKBN-ITEM(1)
       *
            MOVE    SPA-GMN-SAIKEIKBN-MAX      TO  W65-SAIKEIKBN-COUNT
