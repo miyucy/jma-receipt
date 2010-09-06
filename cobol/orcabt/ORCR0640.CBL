@@ -469,6 +469,8 @@
       *  04.05.12    NACL-門脇    10/02/09  地方公費の一部負担金０円記載
       *                                     （記録）の設定項目追加対応
       *  04.05.13    NACL-門脇    10/06/21  食事療養編集修正
+      *  04.05.14    NACL-門脇    10/09/06  地方公費の全国公費併用分請求点
+      *                                     集計対応（レセ電負担区分対応）
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -750,6 +752,7 @@
            03  TOKU75-IDX                              PIC 9(03).
            03  TOKU75-IDX2                             PIC 9(03).
            03  IDX10                                   PIC 9(03).
+           03  IDX13                                   PIC 9(03).
       *
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -18595,18 +18598,24 @@
               IF  (RECE62-KOHNUM(2)(1:1)  >= "1" AND <= "8"  )
               AND (RECE62-HENTOTALTEN(3) = RECE62-TOTALTEN(3))
                   MOVE   SPACE   TO   RECE62-FUKUSHIFLG(3)
+                  MOVE   2       TO   KOHFTN-IDX
+                  PERFORM  21141-FTNKBNFLG-CLEAR-SEC
               END-IF
            END-IF
            IF    RECE62-FUKUSHIFLG(4)  =  "2"
               IF  (RECE62-KOHNUM(3)(1:1)  >= "1" AND <= "8"  )
               AND (RECE62-HENTOTALTEN(4) = RECE62-TOTALTEN(4))
                   MOVE   SPACE   TO   RECE62-FUKUSHIFLG(4)
+                  MOVE   3       TO   KOHFTN-IDX
+                  PERFORM  21141-FTNKBNFLG-CLEAR-SEC
               END-IF
            END-IF
            IF    RECE62-FUKUSHIFLG(5)  =  "2"
               IF  (RECE62-KOHNUM(4)(1:1)  >= "1" AND <= "8"  )
               AND (RECE62-HENTOTALTEN(5) = RECE62-TOTALTEN(5))
                   MOVE   SPACE   TO   RECE62-FUKUSHIFLG(5)
+                  MOVE   4       TO   KOHFTN-IDX
+                  PERFORM  21141-FTNKBNFLG-CLEAR-SEC
               END-IF
            END-IF
       *
@@ -18667,6 +18676,32 @@
       *
            .
        2114-BUNTENSU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電用負担区分編集フラグクリア
+      *****************************************************************
+       21141-FTNKBNFLG-CLEAR-SEC               SECTION.
+      *
+           PERFORM  VARYING  IDX13   FROM    1   BY  1
+                     UNTIL  (IDX13                   >   10 )
+                       OR   (RECE62-HKNCOMBI(IDX13)  =  ZERO)
+      *
+             IF  (RECE62-KOHNUMHC(IDX13 2) = RECE62-KOHNUM(KOHFTN-IDX))
+             AND (RECE62-KOHIDHC(IDX13 2)  = RECE62-KOHID(KOHFTN-IDX) )
+               MOVE      ZERO   TO   RECE62-FTNKBNFLG(IDX13 2)
+               IF   (WRK-PREFNUM              = "36"    )
+               AND  (RECE62-KOHNUMHC(IDX13 2) = "245"   )
+               AND  (RECE62-KOHNUMHC(IDX13 3) = "748"   )
+               AND  (RECE62-SRYYM            >= "200805")
+                  MOVE   ZERO   TO   RECE62-FTNKBNFLG(IDX13 3)
+               END-IF
+             END-IF
+      *
+           END-PERFORM
+      *
+           .
+       21141-FTNKBNFLG-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************
