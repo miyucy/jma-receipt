@@ -279,7 +279,11 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ΩËÕ˝∂Ë ¨".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÃææŒ".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "ƒÛΩ–¿Ë∂Ë ¨".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÃææŒ".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   " ›∏±º‘»÷πÊ".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -287,13 +291,21 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "∆˛≥∞∂Ë ¨".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÃææŒ".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "∫ﬂ¡Ìø«∂Ë ¨".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÃææŒ".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ø«Œ≈«Ø∑Ó".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ºÔ Ã∂Ë ¨".
            03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÃææŒ".
+           03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "æ‹∫Ÿ∂Ë ¨".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "ÃææŒ".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¥µº‘»÷πÊ".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -398,6 +410,13 @@
            03  WRK-HENSURYO            PIC X(10).
            03  WRK-SURYO               PIC ZZZZZZZZZ9.
       *
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
+      *
       *    ∞ı∫˛ ‘Ω∏ŒŒ∞Ë
        01  WRK-PRT-AREA.
       *     ‘Ω∏π‘
@@ -470,6 +489,14 @@
                05  WRK-PRT5-FILLER5    PIC X(02).
       *    CSV ‘Ω∏Õ—
            COPY    "CPCSV.INC".
+           03  CSV-SKYYMHEN            PIC X(07).
+           03  CSV-SYOKBNMEI           PIC X(10).
+           03  CSV-NYUGAIMEI           PIC X(02).
+           03  CSV-TEISYUTUMEI         PIC X(10).
+           03  CSV-ZAIKBNMEI           PIC X(14).
+           03  CSV-SYUBETUMEI          PIC X(30).
+           03  CSV-KBNMEI              PIC X(30).
+           03  CSV-SRYYMHEN            PIC X(07).
       *
            COPY    "CPSHELLTBL.INC".
       *    π≠∞Ëœ¢πÁ»÷πÊ•∆°º•÷•Î
@@ -1867,8 +1894,8 @@
            PERFORM 900-TOKEI-NEXT-SEC
            IF      FLG-TOKEI   =   ZERO
       *        £√£”£÷Ω–ŒœΩËÕ˝
-               INITIALIZE                  RECECSV-REC
-               MOVE    CSV-HEAD-01     TO  RECECSV-REC
+               INITIALIZE                  WRK-REC
+               MOVE    CSV-HEAD-01     TO  WRK-REC
                PERFORM 500-TOUKEICSV-SEC
            END-IF
       *
@@ -3120,6 +3147,53 @@
            EXIT.
       *
       *****************************************************************
+      *    ∏¯»Ò ›∏±∂Ë ¨ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       3201-HKNNUM-HENSYU2-SEC      SECTION.
+      *
+      *     ›∏±»÷πÊ∆…π˛§ﬂ
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
+           MOVE    TOKEI-KBN       TO  HKN-HKNNUM
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"    TO  WRK-PATH-TABLE
+           MOVE    "key2"          TO  WRK-PATH-PATHNAME
+           PERFORM 900-HKNNUM-SELECT-SEC
+      *
+           PERFORM UNTIL   FLG-HKNNUM      =   1
+               IF        ( HKN-TEKSTYMD    <=  WRK-SYSYMD )
+                   AND   ( HKN-TEKEDYMD    >=  WRK-SYSYMD )
+                   IF      HKN-HKNNUM  =   "027"
+      *                œ∑øÕ ›∏±§Œ§»§≠
+                       IF    ( SYS-1001-HOSPSBT    =   HKN-PAYKBN(1:1) )
+                       AND   ( SYS-1001-ROUPAYKBN  =   HKN-PAYKBN(2:1) )
+                           MOVE    HKN-TANSEIDONAME    TO  CSV-KBNMEI
+                           MOVE    1                   TO  FLG-HKNNUM
+                       END-IF
+                   ELSE
+      *                ∆√ƒÍº¿¥µ§Œ§»§≠
+                       IF      HKN-HKNNUM  =   "051"
+                           MOVE    "∆√ƒÍº¿¥µ"          TO  CSV-KBNMEI
+                       ELSE
+      *                §Ω§Œ¬æ§Œ ›∏±§Œ§»§≠
+                           MOVE    HKN-TANSEIDONAME    TO  CSV-KBNMEI
+                       END-IF
+                       MOVE    1                   TO  FLG-HKNNUM
+                   END-IF
+               END-IF
+      *
+               IF      FLG-HKNNUM           =   ZERO
+                   PERFORM 900-HKNNUM-FETCH-SEC
+               END-IF 
+           END-PERFORM
+      *
+           PERFORM 900-HKNNUM-CLOSE-SEC
+      *
+           .
+       3201-HKNNUM-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ƒ¢…º ‘Ω∏<Ã¿∫Ÿπ‘>ΩËÕ˝
       *****************************************************************
        3202-BODY-NYUIN-SEC SECTION.
@@ -3358,8 +3432,6 @@
                    ","               DELIMITED  BY  SIZE
                    CSV-NAME          DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
-                   TOKEI-KANANAME    DELIMITED  BY  SPACE
-                   ","               DELIMITED  BY  SIZE
                    CSV-NISSU         DELIMITED  BY  SPACE
                    ","               DELIMITED  BY  SIZE
                    CSV-TENSU         DELIMITED  BY  SPACE
@@ -3370,9 +3442,206 @@
                              INTO    RECECSV-REC
            END-STRING
       *
-           PERFORM 500-TOUKEICSV-SEC
-      *
            WRITE   RECECSV-REC
+      *
+           MOVE    WRK-PARA-DENPPRTYM
+                                   TO  WRK-SYMD
+           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+           MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+           MOVE    WRK-HEN-YMD-OT(1:7)
+                                   TO  CSV-SKYYMHEN
+      *
+           EVALUATE    CSV-SYOKBN
+               WHEN    "1"
+                   MOVE    "ƒÃæÔ"          TO  CSV-SYOKBNMEI
+               WHEN    "2"
+                   MOVE    " ÷Ã·"          TO  CSV-SYOKBNMEI
+               WHEN    "3"
+                   MOVE    "∑Ó√Ÿ§Ï"        TO  CSV-SYOKBNMEI
+               WHEN    "4"
+                   MOVE    "¿¡µ·§∑§ §§"    TO  CSV-SYOKBNMEI
+               WHEN    "5"
+                   MOVE    "Ã§¿¡µ·¥µº‘"    TO  CSV-SYOKBNMEI
+           END-EVALUATE
+      *
+           EVALUATE    CSV-TEISYUTU
+               WHEN    "1"
+                   MOVE    "º“ ›"          TO  CSV-TEISYUTUMEI
+               WHEN    "2"
+                   MOVE    "πÒ ›"          TO  CSV-TEISYUTUMEI
+               WHEN    "3"
+                   MOVE    "∆√ ÃŒ≈Õ‹»Ò"    TO  CSV-TEISYUTUMEI
+               WHEN    "4"
+                   MOVE    "Ã§¿¡µ·¿ﬂƒÍ"    TO  CSV-TEISYUTUMEI
+               WHEN    "5"
+                   MOVE    "Ã§¿¡µ·≤ÚΩ¸"    TO  CSV-TEISYUTUMEI
+               WHEN    "6"
+                   MOVE    "π≠∞Ëœ¢πÁ"      TO  CSV-TEISYUTUMEI
+               WHEN    "9"
+                   MOVE    "∏¯≥≤"          TO  CSV-TEISYUTUMEI
+           END-EVALUATE
+      *
+           EVALUATE    CSV-NYUGAIKBN
+               WHEN    "2"
+                   MOVE    "≥∞"        TO  CSV-NYUGAIMEI
+               WHEN    "1"
+                   MOVE    "∆˛"        TO  CSV-NYUGAIMEI
+           END-EVALUATE
+      *
+           EVALUATE    CSV-ZAIKBN
+               WHEN    "1"
+                   MOVE    "§Ω§Œ¬æ"        TO  CSV-ZAIKBNMEI
+               WHEN    "2"
+                   MOVE    "∫ﬂ¡Ìø«°¶∫ﬂ∞Â¡Ì"    TO  CSV-ZAIKBNMEI
+           END-EVALUATE
+      *
+           IF      CSV-SRYYM       NOT =   SPACE
+               MOVE    CSV-SRYYM       TO  WRK-SYMD
+               MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+               MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+               MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+               MOVE    WRK-HEN-YMD-OT(1:7)
+                                   TO  CSV-SRYYMHEN
+           END-IF
+      *
+           EVALUATE    CSV-TEISYUTU      ALSO    TOKEI-HKNKBN
+               ALSO    CSV-SYUBETUKBN
+               WHEN    "1" ALSO    "1" ALSO    "1"
+                   MOVE    "∞Â ›° £∑£∞∫–∞ æÂ∞Ï»Ã°¶ƒ„ΩÍ∆¿°À"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "1" ALSO    "1" ALSO    "2"
+                   MOVE    "∞Â ›° £∑£∞∫–∞ æÂ£∑≥‰°À"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "1" ALSO    "1" ALSO    "3"
+                   MOVE    "∞Â ›° À‹øÕ°À"  TO  CSV-SYUBETUMEI
+               WHEN    "1" ALSO    "1" ALSO    "4"
+                   MOVE    "∞Â ›° ≤»¬≤°À"  TO  CSV-SYUBETUMEI
+               WHEN    "1" ALSO    "1" ALSO    "5"
+                   MOVE    "∞Â ›° £∂∫–°À"  TO  CSV-SYUBETUMEI
+               WHEN    "1" ALSO    "3" ALSO    "1"
+                   MOVE    "∏¯»Ò§»∏¯»Ò§Œ ªÕ—"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "1" ALSO    "3" ALSO    "2"
+                   MOVE    "∏¯»Ò√±∆»"      TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "1"
+               WHEN    "3" ALSO    "1" ALSO    "1"
+                   MOVE    "∞Ï»Ã° £∑£∞∫–∞ æÂ∞Ï»Ã°¶ƒ„ΩÍ∆¿°À"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "2"
+               WHEN    "3" ALSO    "1" ALSO    "2"
+                   MOVE    "∞Ï»Ã° £∑£∞∫–∞ æÂ£∑≥‰°À"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "3"
+               WHEN    "3" ALSO    "1" ALSO    "3"
+                   MOVE    "∞Ï»Ã"          TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "4"
+               WHEN    "3" ALSO    "1" ALSO    "4"
+                   MOVE    "∞Ï»Ã° £∂∫–°À"  TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "5"
+               WHEN    "3" ALSO    "1" ALSO    "5"
+                   MOVE    "¬‡ø¶° À‹øÕ°À"  TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "8"
+               WHEN    "3" ALSO    "1" ALSO    "8"
+                   MOVE    "¬‡ø¶° »Ô…ﬁÕ‹º‘°À"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "2" ALSO    "1" ALSO    "9"
+               WHEN    "3" ALSO    "1" ALSO    "9"
+                   MOVE    "¬‡ø¶° £∂∫–°À"  TO  CSV-SYUBETUMEI
+               WHEN    "3" ALSO    "2" ALSO    "1"
+               WHEN    "6" ALSO    "2" ALSO    "1"
+                   MOVE    "∏Â¥¸π‚Œº‘£π≥‰"
+                                           TO  CSV-SYUBETUMEI
+               WHEN    "3" ALSO    "2" ALSO    "2"
+               WHEN    "6" ALSO    "2" ALSO    "2"
+                   MOVE    "∏Â¥¸π‚Œº‘£∑≥‰"
+                                           TO  CSV-SYUBETUMEI
+           END-EVALUATE
+      *
+           EVALUATE    TOKEI-HKNKBN    ALSO    CSV-KBN
+               WHEN    "1"     ALSO    "001"
+                   MOVE    "∏¯»Ò§»§Œ ªÕ—"  TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "002"
+                   MOVE    "∂®≤Ò"          TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "003"
+                   MOVE    "¡•"            TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "004"
+                   MOVE    "∆¸"            TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "005"
+                   MOVE    "∆¸∆√"          TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "006"
+                   MOVE    "∂¶"            TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "007"
+                   MOVE    "¡»"            TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "008"
+                   MOVE    "º´"            TO  CSV-KBNMEI
+               WHEN    "1"     ALSO    "009"
+                   MOVE    "¬‡"            TO  CSV-KBNMEI
+               WHEN    "2"     ALSO    "001"
+                   MOVE    "œ∑øÕ§»∏¯»Ò§Œ ªÕ—"
+                                           TO  CSV-KBNMEI
+               WHEN    "2"     ALSO    "002"
+                   MOVE    "œ∑øÕ"          TO  CSV-KBNMEI
+               WHEN    "3"     ALSO    ANY
+      *            ∏¯»Ò∂Ë ¨
+                   PERFORM 3201-HKNNUM-HENSYU2-SEC
+           END-EVALUATE
+      *
+      *    £√£”£÷•’•°•§•ÎΩ–Œœ
+           INITIALIZE                WRK-REC
+           STRING  CSV-SKYYMHEN      DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SRYKA         DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SYOKBN        DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SYOKBNMEI     DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-TEISYUTU      DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-TEISYUTUMEI   DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-HKNJANUM      DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-HKNJANAME     DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-NYUGAIKBN     DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-NYUGAIMEI     DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-ZAIKBN        DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-ZAIKBNMEI     DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SRYYMHEN      DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SYUBETUKBN    DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SYUBETUMEI    DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-KBN           DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-KBNMEI        DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-PTNUM         DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-RENNUM        DELIMITED  BY  SIZE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-NAME          DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   TOKEI-KANANAME    DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-NISSU         DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-TENSU         DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-RYOYOHI       DELIMITED  BY  SPACE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SHOKUJIFTN    DELIMITED  BY  SPACE
+                             INTO    WRK-REC
+           END-STRING
+      *
+           PERFORM 500-TOUKEICSV-SEC
       *
       *    Ω∏∑◊
            ADD     1                   TO  SUM-GOK-KENSU(1)
@@ -3887,7 +4156,7 @@
            MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
            MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
            MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
-           MOVE    RECECSV-REC     TO  STOUKEICSV-CSVDATA
+           MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
            MOVE    " ›∏± Ã¿¡µ·≥Œ«ß•Í•π•»£√£”£÷∫Ó¿Æ"
                                    TO  STOUKEICSV-TITLE
       *
