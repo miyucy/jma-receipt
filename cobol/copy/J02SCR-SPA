@@ -255,6 +255,7 @@
                        09  SPA-J021-TFTNRATE       PIC X(08).
       *
                        09  SPA-NAI-THKNKBN       PIC X(01).
+                       09  SPA-J021-THKNNUM      PIC X(03).
                        09  SPA-NAI-TEKSTYMD      PIC X(08).
                        09  SPA-NAI-TEKEDYMD      PIC X(08).
                        09  SPA-NAI-TROUJIN       PIC 9(01).
@@ -266,10 +267,12 @@
       *
                05  SPA-J021-INPUT-AREA.
                    07  SPA-J021-MAE-HKNCOMBI         PIC X(04).
+                   07  SPA-J021-MAE-HKNNUM           PIC X(03).
                    07  SPA-J021-MAE-HKNCOMBIMEI      PIC X(60).
                    07  SPA-J021-MAE-FTNRATE          PIC X(08).
                    07  SPA-J021-MAE-ERR              PIC X(01).
                    07  SPA-J021-ATO-HKNCOMBI         PIC X(04).
+                   07  SPA-J021-ATO-HKNNUM           PIC X(03).
                    07  SPA-J021-ATO-HKNCOMBIMEI      PIC X(60).
                    07  SPA-J021-ATO-FTNRATE          PIC X(08).
                    07  SPA-J021-ATO-ERR              PIC X(01).

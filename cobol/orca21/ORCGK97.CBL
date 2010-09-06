@@ -265,6 +265,9 @@
                       (SPA-SRYYMD                  <   "20060401"))
       *           跤陴反覆擂陸
                   OR  (SPA-NAI-HKNNUM (IDX)        =   "975"  )
+      *           ェ情醱反憤�韙峇�
+                  OR ((SPA-NAI-NYUIN               =   1    )  AND
+                      (SPA-NAI-HKNNUM (IDX)(1:2)   NOT =   "98" ))
                    CONTINUE
                ELSE
                    ADD     1               TO  IDY

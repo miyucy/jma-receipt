@@ -996,7 +996,7 @@
                                        TO  SPA-ERRMSG
                WHEN    "9036"
                    STRING  "入院中です。"
-                           "アフターケア以外は入力できません"
+                           "アフターケア・自費保険以外は入力できません"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -2449,6 +2449,12 @@
                WHEN    "K902"
                    STRING  "警告！"
                            "既に１日の算定上限回数を超えています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1059"
+                   STRING  "入院中です。自費保険以外の"
+                           "複数保険入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING

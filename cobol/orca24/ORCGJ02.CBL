@@ -63,6 +63,7 @@
       *  04.03.00    NACL-多々納  08/08/01  保険組合せ期間チェック処理追加
       *  04.04.00    NACL-多々納  08/12/24  入院料包括対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.06.00    NACL-多々納  10/09/06  自費保険入院中入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5048,8 +5049,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *************MOVE    "0004"              TO  SPA-ERRCD
       *            入院期間中判定
                    IF      SPA-NAI-NYUIN (IDX) =   1
-                       IF     (SPA-NAI-HKNNUM      =   "971" ) AND
-                              (SPA-NAI-RSI-HKNKBN  =   "3"   )
+                       IF    ((SPA-NAI-HKNNUM      =   "971" ) AND
+                              (SPA-NAI-RSI-HKNKBN  =   "3"   ))
+                         OR  ( SPA-NAI-HKNNUM(1:2) =   "98"  )
                            CONTINUE
                        ELSE
                            MOVE    "0028"              TO  SPA-ERRCD
@@ -5692,8 +5694,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
       *        外来の時、入院期間中ならエラー
                IF      SPA-NAI-NYUIN (IDX-D2)  =   1
-                   IF     (WRK-HKNNUM          =   "971" ) AND
-                          (WRK-RSI-HKNKBN      =   "3"   )
+                   IF    ((WRK-HKNNUM          =   "971" ) AND
+                          (WRK-RSI-HKNKBN      =   "3"   ))
+                     OR  ( WRK-HKNNUM(1:2)     =   "98"  )
                        CONTINUE
                    ELSE
                        MOVE    "0028"              TO  SPA-ERRCD

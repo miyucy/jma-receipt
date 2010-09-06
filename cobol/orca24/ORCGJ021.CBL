@@ -34,6 +34,7 @@
       * 01.00.04     NACL-多々納  05/11/29  MONFUNC 対応
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正
+      * 04.06.00     NACL-多々納  10/09/06  自費保険入院中入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -94,6 +95,8 @@
            03  IDX-R               PIC 9(04).
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
+      *
+           03  IDX-N               PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -519,6 +522,8 @@
                    MOVE    COMB-DELKBN         TO  SPA-NAI-TDELKBN
                                                     (SPA-J021-MAX)
                    MOVE    COMB-HYOJIKBN       TO  SPA-NAI-THYOJIKBN
+                                                    (SPA-J021-MAX)
+                   MOVE    COMB-HKNNUM         TO  SPA-J021-THKNNUM
                                                     (SPA-J021-MAX)
       *            老人判定
                    IF    ((COMB-KOH1HKNNUM     =   "027"  )  OR
@@ -990,6 +995,7 @@
            MOVE    SPACE               TO  SPA-J021-MAE-ERR
            IF      SPA-J021-MAE-HKNCOMBI   =   SPACE
                MOVE    SPACE               TO  SPA-J021-MAE-HKNCOMBIMEI
+               MOVE    SPACE               TO  SPA-J021-MAE-HKNNUM
                MOVE    SPACE               TO  SPA-J021-MAE-FTNRATE
            ELSE
       *
@@ -1029,6 +1035,8 @@
                                            SPA-J021-THKNCOMBI (IDX)
                    MOVE    SPA-J021-THKNCOMBIMEI  (IDX)
                                            TO  SPA-J021-MAE-HKNCOMBIMEI
+                   MOVE    SPA-J021-THKNNUM       (IDX)
+                                           TO  SPA-J021-MAE-HKNNUM
                    MOVE    SPA-J021-TFTNRATE (IDX)
                                            TO  SPA-J021-MAE-FTNRATE
                    MOVE    SPA-NAI-TROUJIN (IDX)
@@ -1339,6 +1347,7 @@
            IF      SPA-J021-ATO-HKNCOMBI   =   SPACE
                MOVE    SPACE               TO  SPA-J021-ATO-HKNCOMBIMEI
                MOVE    SPACE               TO  SPA-J021-ATO-FTNRATE
+               MOVE    SPACE               TO  SPA-J021-ATO-HKNNUM
            ELSE
                PERFORM 40021-ATO-HKNCOMBI-CHK-SEC
            END-IF
@@ -1377,6 +1386,8 @@
                                            SPA-J021-THKNCOMBI (IDX)
                    MOVE    SPA-J021-THKNCOMBIMEI  (IDX)
                                            TO  SPA-J021-ATO-HKNCOMBIMEI
+                   MOVE    SPA-J021-THKNNUM       (IDX)
+                                           TO  SPA-J021-ATO-HKNNUM
                    MOVE    SPA-J021-TFTNRATE (IDX)
                                            TO  SPA-J021-ATO-FTNRATE
                    MOVE    SPA-NAI-TROUJIN (IDX)
@@ -1499,7 +1510,6 @@
                MOVE    "0015"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-J021-CUR
            END-IF
-      *
            .
        4002-DAY2-CHK-EXT.
            EXIT.
@@ -1583,11 +1593,42 @@
                END-IF
            END-PERFORM
       *
+           IF     (SPA-NYUGAIKBN       =   "2"   )  AND
+                  (SPA-ERRCD           =   SPACE )
+      *        外来の入院期間チェック
+               IF      (SPA-NAI-NYUINYMD(1:6)  <=   SPA-NAI-SRYYM ) 
+                  AND  (SPA-NAI-TAIINYMD(1:6)  >=   SPA-NAI-SRYYM ) 
+                   PERFORM 400312-GAINYUIN-CHK-SEC
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 400311-JYURRK-CHK-SEC
            END-IF
            .
        40031-DAY-KIKAN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来の入院期間チェック処理
+      *****************************************************************
+       400312-GAINYUIN-CHK-SEC              SECTION.
+      *
+      *    外来の入院期間チェック
+           PERFORM VARYING     IDX-N   FROM    SPA-J021-DAY1   BY  1
+                   UNTIL      (IDX-N   >       SPA-J021-DAY2 )
+                          OR  (SPA-ERRCD   NOT =   SPACE  )
+               IF      SPA-NAI-NYUIN (IDX-N)   =   1
+                   IF      (SPA-J021-MAE-HKNNUM(1:2)   =   "98" )  AND
+                           (SPA-J021-ATO-HKNNUM(1:2)   =   "98" )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0023"              TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       400312-GAINYUIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3460,6 +3501,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                    MOVE    "変更できません。"
                                        TO  SPA-ERRMSG(43:)
+               WHEN    "0023"
+                   STRING  "入院期間中です。"
+                           "外来は自費保険以外の変更はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K999"
                    STRING  "警告！！"
                            "変更前と後の一般・老人判定が違います。"

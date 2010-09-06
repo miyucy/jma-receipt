@@ -2301,6 +2301,8 @@
       **********      ( SPA-RRK-LSTYMD     =   SPA-SRYYMD ) AND
                       ( SPA-NAI-RRKYMD(1)  =   SPA-SRYYMD ) AND
                       ( SPA-LSTYMD         =   SPA-SRYYMD )
+      *            入院中以外
+                AND   ( SPA-NAI-NYUIN      =   ZERO       )
                    IF      (SPA-TEISEIFLG       =   "1"  )
                        MOVE    "0100"              TO  SPA-KIDCD
                    ELSE

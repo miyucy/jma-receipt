@@ -331,16 +331,14 @@
       *
        01  TBL-KENSA-HOU-AREA.
       *      心カテ（右心）
-           03  FILLER          PIC X(12)  VALUE    "01 160064610".
-      *      肺臓カテーテル法
+      **   03  FILLER          PIC X(12)  VALUE    "01 160064610".
+      *      肺臓カテーテル法(D325)
            03  FILLER          PIC X(12)  VALUE    "01 160065850".
-      *      肺臓カテーテル法
-           03  FILLER          PIC X(12)  VALUE    "01 160065850".
-      *      肝臓カテーテル法
+      *      肝臓カテーテル法(D325)
            03  FILLER          PIC X(12)  VALUE    "01 160065950".
-      *      膵臓カテーテル法
+      *      膵臓カテーテル法(D325)
            03  FILLER          PIC X(12)  VALUE    "01 160166950".
-      * 02
+      * 02(D208)
       *    ＥＣＧ１２
            03  FILLER          PIC X(12)  VALUE    "02 160068410".
       *    ＥＣＧ（６誘導以上）
@@ -351,111 +349,117 @@
            03  FILLER          PIC X(12)  VALUE    "02 160068850".
       *    バリストカルジオグラフ（１方向）
            03  FILLER          PIC X(12)  VALUE    "02 160069050".
-      *    バリストカルジオグラフ（２方向以上）
-           03  FILLER          PIC X(12)  VALUE    "02 160069130".
-      *    ＥＣＧ１２
-           03  FILLER          PIC X(12)  VALUE    "02 160704210".
-      *    ＥＣＧ（６誘導以上）
-           03  FILLER          PIC X(12)  VALUE    "02 160704310".
-      *    ＶＤＧ
-           03  FILLER          PIC X(12)  VALUE    "02 160708710".
-      *    体表ヒス束心電図
-           03  FILLER          PIC X(12)  VALUE    "02 160708810".
+      *    バリストカルジオグラフ（２方向以上）（H22.4から加算）
+      *??  03  FILLER          PIC X(12)  VALUE    "02 160069130".
+      *    ＥＣＧ１２(H14.3で終了）
+      *    03  FILLER          PIC X(12)  VALUE    "02 160704210".
+      *    ＥＣＧ（６誘導以上）(H14.3で終了）
+      *    03  FILLER          PIC X(12)  VALUE    "02 160704310".
+      *    ＶＤＧ(H14.3で終了）
+      *    03  FILLER          PIC X(12)  VALUE    "02 160708710".
+      *    体表ヒス束心電図(H14.3で終了）
+      *    03  FILLER          PIC X(12)  VALUE    "02 160708810".
       *    携帯型発作時心電図記憶伝送装置使用心電図
            03  FILLER          PIC X(12)  VALUE    "02 160150650".
-      * 03
+      * 03(D209)
       *    ＥＣＧ負荷１２
            03  FILLER          PIC X(12)  VALUE    "03 160069210".
       *    ＥＣＧ負荷（６誘導以上）
            03  FILLER          PIC X(12)  VALUE    "03 160069310".
-      * 04
+      * 04(D210)
       *    ホルター型心電図
            03  FILLER          PIC X(12)  VALUE    "04 160069510".
       *    ホルター型心電図（８時間以上）
            03  FILLER          PIC X(12)  VALUE    "04 160069610".
+      **   体表面心電図(D210-2)
+      *    03  FILLER          PIC X(12)  VALUE    "04 160069750".
+      *    心外膜マッピング(D210-2)
+      **   03  FILLER          PIC X(12)  VALUE    "04 160069850".
+      *15(D210-2)
       *    体表面心電図
-           03  FILLER          PIC X(12)  VALUE    "04 160069750".
-      *    心外膜マッピング
-           03  FILLER          PIC X(12)  VALUE    "04 160069850".
+           03  FILLER          PIC X(12)  VALUE    "15 160069750".
+      *    心外膜興奮伝播図
+           03  FILLER          PIC X(12)  VALUE    "15 160069850".
+      *H20.3.31　で終了
       *    ホルター型心電図(３０分まで）
-           03  FILLER          PIC X(12)  VALUE    "04 160128430".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160128430".
       *    ホルター型心電図(３０分超１時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160128530".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160128530".
       *    ホルター型心電図(１時間超１時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160128630".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160128630".
       *    ホルター型心電図(１時間３０分超２時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160128730".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160128730".
       *    ホルター型心電図(２時間超１時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160128830".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160128830".
       *    ホルター型心電図(２時間３０分超３時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160128930".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160128930".
       *    ホルター型心電図(３時間超３時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160129030".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129030".
       *    ホルター型心電図(３時間３０分超４時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160129130".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129130".
       *    ホルター型心電図(４時間超４時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160129230".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129230".
       *    ホルター型心電図(４時間３０分超５時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160129330".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129330".
       *    ホルター型心電図(５時間超５時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160129430".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129430".
       *    ホルター型心電図(５時間３０分超６時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160129530".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129530".
       *    ホルター型心電図(６時間超６時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160129630".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129630".
       *    ホルター型心電図(６時間３０分超７時間）
-           03  FILLER          PIC X(12)  VALUE    "04 160129730".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129730".
       *    ホルター型心電図(７時間超７時間３０分）
-           03  FILLER          PIC X(12)  VALUE    "04 160129830".
+      *    03  FILLER          PIC X(12)  VALUE    "04 160129830".
       *    ホルター型心電図(７時間３０分超８時間未満）
-           03  FILLER          PIC X(12)  VALUE    "04 160129930".
-      * 05
+      **   03  FILLER          PIC X(12)  VALUE    "04 160129930".
+      * 05(D213)
       *    ＰＧＣ
            03  FILLER          PIC X(12)  VALUE    "05 160071910".
       *    亜硝酸アミル吸入心音図
            03  FILLER          PIC X(12)  VALUE    "05 160072030".
-      * 06
+      * 06(D301)
       *    気管支鏡
            03  FILLER          PIC X(12)  VALUE    "06 160092610".
       *    気管支カメラ
            03  FILLER          PIC X(12)  VALUE    "06 160092750".
-      * 07
+      * 07(D305)
       *    食道鏡
            03  FILLER          PIC X(12)  VALUE    "07 160093210".
       *    食道カメラ
            03  FILLER          PIC X(12)  VALUE    "07 160093350".
-      * 08
+      * 08(D307)
       *    胃鏡
            03  FILLER          PIC X(12)  VALUE    "08 160093510".
       *    ガストロカメラ
            03  FILLER          PIC X(12)  VALUE    "08 160093650".
-      * 09
+      * 09(D311)
       *    直腸鏡
-           03  FILLER          PIC X(12)  VALUE    "09 160093510".
+           03  FILLER          PIC X(12)  VALUE    "09 160094210".
       *    コロンブラッシュ法（沈)
            03  FILLER          PIC X(12)  VALUE    "09 160094330".
       *    コロンブラッシュ法（組織）
            03  FILLER          PIC X(12)  VALUE    "09 160094430".
-      * 10
+      * 10(D313)
       *    ＥＦ−Ｓ状結腸
            03  FILLER          PIC X(12)  VALUE    "10 160094710".
       *    ＥＦ−下行結腸及び横行結腸
            03  FILLER          PIC X(12)  VALUE    "10 160094810".
       *    ＥＦ−下行結腸及び盲腸
            03  FILLER          PIC X(12)  VALUE    "10 160094910".
-      * 11
+      * 11(D212)
       *    リアルタイム解析型心電図
-           03  FILLER          PIC X(12)  VALUE    "11 160125550".
-      *    携帯型発作時心電図記録計使用心電図
-           03  FILLER          PIC X(12)  VALUE    "11 160125950".
-      * 12
+      *    03  FILLER          PIC X(12)  VALUE    "11 160125550".
+      *    携帯型発作時心電図記録計使用心電図(D212-2)
+      *    03  FILLER          PIC X(12)  VALUE    "11 160125950".
+      * 12(D215-2)
       *    超音波検査（断層撮影法）（腹部）
            03  FILLER          PIC X(12)  VALUE    "12 160072210".
       *    超音波検査（断層撮影法）（その他）
            03  FILLER          PIC X(12)  VALUE    "12 160165010".
       *    超音波（ＵＣＧ以外）（断層撮影法とＭモード法）
            03  FILLER          PIC X(12)  VALUE    "12 160072450".
-      * 13
+      * 13(D215-3)
       *    超音波（ＵＣＧ以外）（断層撮影法とＭモード法）
       **** 03  FILLER          PIC X(12)  VALUE    "13 160072450".
       *    超音波（ＵＣＧ）（断層撮影法とＭモード法）
@@ -466,7 +470,9 @@
            03  FILLER          PIC X(12)  VALUE    "13 160072750".
       *    超音波（ＵＣＧ）（経食道的超音波法）
            03  FILLER          PIC X(12)  VALUE    "13 160160410".
-      * 14
+      *    超音波（ＵＣＧ）（胎児心エコー法）
+           03  FILLER          PIC X(12)  VALUE    "13 160186610".
+      * 14(D215-4)
       *    超音波（ドップラー法）（胎児心音観察）
            03  FILLER          PIC X(12)  VALUE    "14 160072910".
       *    超音波（ドップラー法）（脳動脈血流速度連続測定）
@@ -478,11 +484,12 @@
       *
        01  TBL-KENSA-HOU-AREA-R    REDEFINES   TBL-KENSA-HOU-AREA.
       **** 03  TBL-KENSA-HOU-OCC       OCCURS  56  INDEXED  KEN-IDX.
-           03  TBL-KENSA-HOU-OCC       OCCURS  65  INDEXED  KEN-IDX.
+      **** 03  TBL-KENSA-HOU-OCC       OCCURS  65  INDEXED  KEN-IDX.
+           03  TBL-KENSA-HOU-OCC       OCCURS  41  INDEXED  KEN-IDX.
                05  TBL-KEN-HOU         PIC X(02).
                05  TBL-FILLER          PIC X(01).
                05  TBL-KEN-SRYCD       PIC X(09).
-       01  KEN-IDX-MAX                 PIC 9(04)   VALUE   65.
+       01  KEN-IDX-MAX                 PIC 9(04)   VALUE   41.
       *
       *****************************************************************
       *    重複算定不可テーブル

@@ -96,6 +96,7 @@
       *  04.05.00    NACL-多々納  09/10/26  他医院退院反映対応
       *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更
       *  04.06.00    NACL-多々納  10/08/12  診療科変更対応
+      *  04.06.00    NACL-多々納  10/09/06  自費保険入院中入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -399,6 +400,8 @@
            03  IDX-NUM             PIC 9(06).
            03  IDX-H1              PIC 9(04).
            03  IDX-H2              PIC 9(04).
+      *
+           03  IDY2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2754,23 +2757,37 @@
       *
       *        入院画面へ
                WHEN    "0121"
-               WHEN    "0128"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
-                       MOVE    SPA-GMN-PTNUM   TO  SPA-PTNUM
-                       MOVE    SPA-GMN-PTID    TO  SPA-PTID
+                       MOVE    ZERO                TO  SPA-GMN-CUR
+                       MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+                       MOVE    SPA-GMN-PTID        TO  SPA-PTID
                        MOVE    "JOIN"              TO  WRK-PUTTYPE
                        PERFORM 450-K02N-SYORI-SEC
                    ELSE
+      *                入院中自費保険確認
+                       PERFORM 30018-NYUINJIHI-CHK-SEC
+                   END-IF
+               WHEN    "0128"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+                       MOVE    SPA-GMN-PTNUM        TO  SPA-PTNUM
+                       MOVE    SPA-GMN-PTID         TO  SPA-PTID
+                       MOVE    "JOIN"               TO  WRK-PUTTYPE
+                       PERFORM 450-K02N-SYORI-SEC
+                   ELSE
       *                入院日を診療日にして登録する
-                       MOVE    SPA-K02N-NYUINYMD   TO  SPA-SRYYMD
-                       MOVE    SPA-K02N-NYUINYMD   TO  WRK-SYMD
-                       PERFORM 520-SEIWA-HEN-SEC
-                       MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
-                       MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
-                       MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
-      *                診療日確定後、編集
-                       PERFORM 410171-SRYYMD-OK-SEC
+                       PERFORM 30017-NYUINHEN-SEC
+                   END-IF
+      *        入院中自費保険入力
+               WHEN    "0129"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   IF      SPA-KID1-FLG        =   "OK"
+      *                入院中自費保険へ
+                       PERFORM 30019-NYUINJIHI-SEC
+                   ELSE
+      *                入院日を診療日にして登録する
+                       PERFORM 30017-NYUINHEN-SEC
                    END-IF
       *
       *        同一検査削除へ
@@ -3239,6 +3256,82 @@
            EXIT.
       *
       *****************************************************************
+      *    入院日を診療日に編集処理
+      *****************************************************************
+       30017-NYUINHEN-SEC                  SECTION.
+      *
+           MOVE    SPA-K02N-NYUINYMD   TO  SPA-SRYYMD
+           MOVE    SPA-K02N-NYUINYMD   TO  WRK-SYMD
+           PERFORM 520-SEIWA-HEN-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
+           MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+           MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
+      *    診療日確定後、編集
+           PERFORM 410171-SRYYMD-OK-SEC
+           .
+       30017-NYUINHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院中自費保険確認処理
+      *****************************************************************
+       30018-NYUINJIHI-CHK-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-HKN-MAX )  OR
+                              (FLG-CHK     =    1   ) 
+               IF     (SPA-NAI-HKNNUM (IDX)(1:2)   =   "98")
+                   MOVE    1                 TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   1
+               MOVE    "0129"              TO  SPA-KIDCD
+           ELSE
+      *        入院日を診療日にして登録する
+               PERFORM 30017-NYUINHEN-SEC
+           END-IF
+           .
+       30018-NYUINJIHI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院中自費保険処理
+      *****************************************************************
+       30019-NYUINJIHI-SEC                  SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-HKN-MAX )  OR
+                              (FLG-CHK     =    1   ) 
+               IF     (SPA-NAI-HKNNUM (IDX)(1:2)   =   "98")
+                   MOVE    1                 TO  FLG-CHK
+                   MOVE    IDX               TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK             =   1
+      *        自費保険へ変更
+               MOVE    1                   TO  SPA-NAI-NYUIN
+               MOVE    SPA-GMN-THKNCOMBINUM(IDY)
+                                           TO  SPA-GMN-HKNCOMBINUM
+               PERFORM 3101-HKNCOMBI-HEN-SEC
+               MOVE    ZERO                TO  FLG-NYUIN
+      *        入院日編集
+               MOVE    "入院日"            TO  SPA-GMN-LASTMID
+               MOVE    SPA-K02N-NYUINYMD   TO  WRK-SYMD
+               PERFORM 520-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-LASTYMD-G
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+      *        入院日を診療日にして登録する
+               PERFORM 30017-NYUINHEN-SEC
+           END-IF
+           .
+       30019-NYUINJIHI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＯ選択（Ｋ０９）画面より処理
       *****************************************************************
        3013-K09-SET-SEC                  SECTION.
@@ -3607,7 +3700,11 @@
       *    入院判定
            MOVE    SPACE               TO  SPA-KIDCD
            PERFORM 3109-NYUIN-CHK-SEC
-           IF      SPA-KIDCD       NOT =   SPACE
+      *    IF      SPA-KIDCD       NOT =   SPACE
+           IF      SPA-KIDCD           =   SPACE
+                                       OR  "0121"
+               CONTINUE
+           ELSE
                GO      TO      310-SPA-SET-EXT
            END-IF
       *
@@ -3718,12 +3815,15 @@
       *    入院中アフターケア以外はエラーとする
            IF     (SPA-NAI-NYUIN       =   1  )
            AND    (SPA-HKN-ERR     NOT =   4  )
-               IF     (SPA-HKNNUM          =   "971" ) AND
-                      (SPA-RSI-HKNKBN      =   "3" )
+               IF    ((SPA-HKNNUM          =   "971" ) AND
+                      (SPA-RSI-HKNKBN      =   "3"   ))
+      *            自費保険は可能
+                  OR  (SPA-HKNNUM (1:2)    =   "98"  )
                    CONTINUE
                ELSE
                    IF     (SPA-SYORIFLG        =   1   )
                        MOVE    "9036"              TO  SPA-ERRCD
+                       MOVE    6                   TO  SPA-HKN-ERR
                    ELSE
       *                入院へ
                        MOVE    "0128"              TO  SPA-KIDCD
@@ -4058,7 +4158,7 @@
                END-IF
                IF      FLG-NYUIN           =   1
                    MOVE    "0121"              TO  SPA-KIDCD
-                   MOVE    ZERO                TO  SPA-GMN-CUR
+      ****         MOVE    ZERO                TO  SPA-GMN-CUR
                END-IF
            END-IF
       *!!
@@ -4090,35 +4190,47 @@
            IF      FLG-CHK             =   ZERO
                GO      TO      31091-NYUIN-HKNCHK-EXT
            END-IF
-     *
+      *
            IF      SPA-SYORIFLG        =   1
-               IF     (SPA-NAI-HKNNUM     (IDY)    =   "971" ) AND
-                      (SPA-NAI-RSI-HKNKBN (IDY)    =   "3" )
+               IF    ((SPA-NAI-HKNNUM     (IDY)    =   "971" ) AND
+                      (SPA-NAI-RSI-HKNKBN (IDY)    =   "3" ) )
+                OR   ( SPA-NAI-HKNNUM (IDY)(1:2)   =   "98"  )
                    MOVE    ZERO                TO  FLG-NYUIN
                    MOVE    1                   TO  SPA-NAI-NYUIN
                END-IF
                GO      TO      31091-NYUIN-HKNCHK-EXT
            END-IF
       *
-           IF     (SPA-NAI-HKNNUM     (IDY)    =   "971" ) AND
-                  (SPA-NAI-RSI-HKNKBN (IDY)    =   "3" )
+           MOVE    ZERO                TO  FLG-CHK
+           IF    ((SPA-NAI-HKNNUM     (IDY)    =   "971" ) AND
+                  (SPA-NAI-RSI-HKNKBN (IDY)    =   "3"  ))
                MOVE    ZERO                TO  FLG-NYUIN
                MOVE    1                   TO  SPA-NAI-NYUIN
            ELSE
                MOVE    ZERO                TO  FLG-CHK
+               MOVE    ZERO                TO  IDY2
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX     >   SPA-HKN-MAX )  OR
                                   (FLG-CHK     =    1   ) 
                    IF     (SPA-NAI-HKNNUM (IDX)     =   "971" )
                      AND  (SPA-NAI-RSI-HKNKBN(IDX)  =   "3"   )
-                       MOVE    IDX               TO  IDY
+                       MOVE    IDX               TO  IDY2
                        MOVE    1                 TO  FLG-CHK
+                   END-IF
+                   IF     (SPA-NAI-HKNNUM (IDX)(1:2) =  "98"  )
+                       MOVE    2                 TO  FLG-CHK
                    END-IF
                END-PERFORM
            END-IF
       *
            IF      FLG-CHK             =   1
                MOVE    1                   TO  SPA-NAI-NYUIN
+               IF      (IDY                >   ZERO    )   AND
+                       (SPA-NAI-HKNNUM(IDY)(1:2)   =   "98" )
+                   CONTINUE
+               ELSE
+                   MOVE    IDY2             TO  IDY
+               END-IF
                IF     (SPA-NAI-HKNNUM (IDY)     =   SPA-HKNNUM )
                  AND  (SPA-NAI-RSI-HKNKBN(IDY)  =   SPA-RSI-HKNKBN)
                    CONTINUE
@@ -4127,7 +4239,11 @@
                                                 TO  SPA-GMN-HKNCOMBINUM
                    PERFORM 3101-HKNCOMBI-HEN-SEC
                END-IF
-               MOVE    ZERO                TO  FLG-NYUIN
+               IF     (SPA-HKNNUM(1:2)         =   "98" )
+                   MOVE    1                   TO  FLG-NYUIN
+               ELSE
+                   MOVE    ZERO                TO  FLG-NYUIN
+               END-IF
            END-IF
            .
        31091-NYUIN-HKNCHK-EXT.
@@ -5400,8 +5516,10 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-OK              =   1
+           IF     (FLG-OK              =   1   )
            AND    (SPA-INITAUTO-FLG    =   "1" )
+      *    入院中以外
+           AND    (SPA-NAI-NYUIN       =   ZERO )
       *        他保険あり確認メッセージ表示
                MOVE    "0119"              TO  SPA-KIDCD
            END-IF
@@ -6460,6 +6578,17 @@
                MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
                GO      TO     410113-GMN-HKNCOMBI-EXT
+           END-IF
+      *ver.4.6
+      *    入院中は自費保険のみ
+           IF     (SPA-NAI-NYUIN       =   1    )
+               IF      (SPA-NAI-HKNNUM(IDY)(1:2)   NOT =  "98" )
+                   MOVE    "1059"          TO  SPA-ERRCD
+                   MOVE    SPACE           TO  SPA-MAE-INPUTCD
+                                                    (SPA-GMN-IDX)
+                   MOVE    "1"             TO  SPA-COM-CUR(SPA-GMN-IDX)
+                   GO      TO     410113-GMN-HKNCOMBI-EXT
+               END-IF
            END-IF
       *    保険名称を名称へ
            STRING  "《"                DELIMITED  BY  SIZE
@@ -10345,6 +10474,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    5
                        MOVE    "0220"              TO  SPA-ERRCD
                        MOVE    6                   TO  SPA-GMN-CUR
+      *            入院中保険エラー
+                   WHEN    6
+                       MOVE    "9036"              TO  SPA-ERRCD
+                       MOVE    5                   TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
            IF      SPA-ERRCD           =   SPACE
@@ -11705,6 +11838,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "red"           TO  K02-CONTKBN-STYLE
                    MOVE    "［確］"        TO  K02-CONTKBN-VALUE
            END-EVALUATE
+      *    入院期間中
+           IF      SPA-NAI-NYUIN       =   1
+               MOVE    "blue"              TO  K02-CONTKBN-STYLE
+               MOVE    "［入］"            TO  K02-CONTKBN-VALUE
+           END-IF
       *
       *    リハビリ発症日
            MOVE    ZERO               TO  IDY
@@ -12267,9 +12405,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0128"
+      *            STRING  "入院中です。"
+      *                    "アフターケア以外ですので入院画面へ"
+      *                    "遷移します。よろしいですか？"
+      *                                DELIMITED  BY  SIZE
+      *                                INTO   WRK-KIDMSG
+      *            END-STRING
                    STRING  "入院中です。"
-                           "アフターケア以外ですので入院画面へ"
-                           "遷移します。よろしいですか？"
+                           "アフターケア・自費保険以外ですので"
+                           "入院画面へ遷移します。"
                                        DELIMITED  BY  SIZE
                                        INTO   WRK-KIDMSG
                    END-STRING
@@ -12353,6 +12497,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+               WHEN    "0129"
+      *            STRING  "自費保険で外来診療行為を入力しますか？"
+      *                                DELIMITED  BY  SIZE
+      *                                INTO   WRK-KIDMSG
+      *            END-STRING
+                   STRING  "ＯＫで自費保険の当日の外来診療を、"
+                           "ＮＯで入院日の外来診療を入力します。"
+                                       DELIMITED  BY  SIZE
+                                       INTO   WRK-KIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -12386,6 +12540,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0131"
                WHEN    "2003"
                WHEN    "0138"
+               WHEN    "0121"
+               WHEN    "0128"
+               WHEN    "0129"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *
