@@ -3857,7 +3857,7 @@
       *    手帳加算確認メッセージ
            IF     (SPA-TECHOKBN-FLG    =   "1"  )  AND
                   (FLG-ERR             =   ZERO )
-               IF      SPA-SAISIN-CHK      =   ZERO 
+               IF      SPA-TECHOKBN-CHK    =   ZERO 
                    MOVE    "2003"          TO  LNK-ORCSC-KIDCD
                    GO     TO  3003-YAKJYO-CHK-EXT
                END-IF
@@ -3870,11 +3870,11 @@
                IF     (LNK-ORCSC-YAKJYO-2      =    1
                                                OR   2  ) AND
                       (LNK-ORCSC-ROUJIN    NOT =   0   )
-                   IF      SPA-SAISIN-CHK      =   ZERO 
+                   IF      SPA-TECHOKBN-CHK    =   ZERO 
                        MOVE    "2003"          TO  LNK-ORCSC-KIDCD
                        GO     TO  3003-YAKJYO-CHK-EXT
                    END-IF
-                   IF      SPA-SAISIN-CHK      =   1
+                   IF      SPA-TECHOKBN-CHK    =   1
                        MOVE    SPACE               TO  WRK-SRYCD2
                    ELSE
                        MOVE    "113701310"         TO  WRK-SRYCD2
@@ -3882,7 +3882,7 @@
                END-IF
       *!!!
                IF     (SPA-TECHOKBN-FLG    =   "1"  )
-                   IF      SPA-SAISIN-CHK      =   1
+                   IF      SPA-TECHOKBN-CHK    =   1
                        MOVE    SPACE               TO  WRK-SRYCD2
                    ELSE
                        MOVE    "113701310"         TO  WRK-SRYCD2

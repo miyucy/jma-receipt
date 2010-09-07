@@ -1293,10 +1293,8 @@
                    MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
                    MOVE    ZERO            TO  SPA-HKTKEI-FLG
                    MOVE    ZERO            TO  SPA-NAI-SEIKATUCHK
-      *!!          H22.4　から流用
-                   IF      SPA-SRYYMD          >=  "20100401"
-                        MOVE    ZERO                TO  SPA-SAISIN-CHK
-                   END-IF
+      *!!          手帳加算確認
+                   MOVE    ZERO                TO  SPA-TECHOKBN-CHK
       *!!
       *            最後の日を診療日とする
                    MOVE    SPA-NAI-SRYDD       TO  SPA-GMN-SRYDD
@@ -1702,13 +1700,13 @@
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
       *!!
-      *平成２２年４月から　SPA-SAISIN-CHK　を流用
+      *平成２２年４月から
       *        手帳加算の算定確認
                WHEN    "2003"
                    IF      SPA-KID1-FLG        =   "OK"
-                       MOVE    2                   TO  SPA-SAISIN-CHK
+                       MOVE    2                   TO  SPA-TECHOKBN-CHK
                    ELSE
-                       MOVE    1                   TO  SPA-SAISIN-CHK
+                       MOVE    1                   TO  SPA-TECHOKBN-CHK
                    END-IF
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    SPACE               TO  SPA-KID1-FLG

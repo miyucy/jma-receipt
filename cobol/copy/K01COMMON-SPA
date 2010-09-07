@@ -484,6 +484,8 @@
                05  SPA-CHOZAI-CHK          PIC  9(01).
       *外来処方せん算定確認
                05  SPA-SYOHOU-CHK          PIC  9(01).
+      *手帳加算確認
+               05  SPA-TECHOKBN-CHK        PIC  9(01).
       *外来複数保険組合せ
                05  SPA-TBL-HKNCOMBI-AREA.
                    07  SPA-TBL-HKNCOMBI-OCC     OCCURS   15.
