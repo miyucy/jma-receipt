@@ -83,8 +83,6 @@
            03  WRK-MISYU-ZEN               PIC  S9(10).
            03  WRK-NYUKIN                  PIC  S9(10).
            03  WRK-SEIKYU                  PIC  S9(10).
-           03  WRK-NYUKIN-KON              PIC  S9(10).
-           03  WRK-NYUKIN-ZAN              PIC  S9(10).
       *
        01  KEY-AREA.
            03  KEY-SRYKA                   PIC X(02).
@@ -699,41 +697,11 @@
       *        =   WRK-SEIKYU  - ( WRK-NYUKIN  -   WRK-KAISYU )
       *---------
       *
-      *
-      *
-      *
-      *
            MOVE    ZERO            TO  WRK-KAISYU
-           MOVE    ZERO            TO  WRK-NYUKIN-KON
-      *
-           IF    ( WRK-SEIKYU      >=  ZERO )
-               IF    ( WRK-NYUKIN  >=  ZERO )
-                   IF    ( WRK-SEIKYU      >=  WRK-NYUKIN )
-                       COMPUTE WRK-NYUKIN-KON  =   WRK-NYUKIN
-                   ELSE
-                       COMPUTE WRK-NYUKIN-KON  =   WRK-SEIKYU
-                   END-IF
-               ELSE
-                       COMPUTE WRK-NYUKIN-KON  =   0
-               END-IF
-           ELSE
-               IF    ( WRK-NYUKIN  >=  ZERO )
-                       COMPUTE WRK-NYUKIN-KON  =   0
-               ELSE
-                   IF    ( WRK-SEIKYU     >=  WRK-NYUKIN )
-                       COMPUTE WRK-NYUKIN-KON  =   WRK-SEIKYU
-                   ELSE
-                       COMPUTE WRK-NYUKIN-KON  =   WRK-NYUKIN
-                   END-IF
-               END-IF
-           END-IF
-      *
-           COMPUTE WRK-NYUKIN-ZAN   =  WRK-NYUKIN  -   WRK-NYUKIN-KON
-      *
            IF    ( WRK-MISYU-ZEN   >=  ZERO )
-               IF    ( WRK-NYUKIN-ZAN  >=  ZERO )
-                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN-ZAN )
-                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN-ZAN
+               IF    ( WRK-NYUKIN  >=  ZERO )
+                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN )
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN
                    ELSE
                        COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
                    END-IF
@@ -741,27 +709,25 @@
                        COMPUTE WRK-KAISYU  =   0
                END-IF
            ELSE
-               IF    ( WRK-NYUKIN-ZAN  >=  ZERO )
-                   IF    ( WRK-MISYU-ZEN * -1  >=  WRK-NYUKIN-ZAN )
+               IF    ( WRK-NYUKIN  >=  ZERO )
+                   IF    ( WRK-MISYU-ZEN * -1  >=  WRK-NYUKIN )
                        COMPUTE WRK-KAISYU  =   0
                    ELSE
                        COMPUTE WRK-KAISYU  =   0
                    END-IF
                ELSE
-                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN-ZAN )
+                   IF    ( WRK-MISYU-ZEN   >=  WRK-NYUKIN )
                        COMPUTE WRK-KAISYU  =   WRK-MISYU-ZEN
                    ELSE
-                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN-ZAN
+                       COMPUTE WRK-KAISYU  =   WRK-NYUKIN
                    END-IF
                END-IF
            END-IF
       *
-           DISPLAY "WRK-SEIKYU     = " WRK-SEIKYU
-           DISPLAY "WRK-NYUKIN     = " WRK-NYUKIN
-           DISPLAY "WRK-NYUKIN-KON = " WRK-NYUKIN-KON
-           DISPLAY "WRK-NYUKIN-ZAN = " WRK-NYUKIN-ZAN
-           DISPLAY "WRK-KAISYU     = " WRK-KAISYU
-      *
+           DISPLAY "WRK-MISYU-KON =" WRK-MISYU-KON
+           DISPLAY "WRK-SEIKYU =" WRK-SEIKYU
+           DISPLAY "WRK-NYUKIN =" WRK-NYUKIN
+           DISPLAY "WRK-KAISYU =" WRK-KAISYU
            COMPUTE WRK-MISYU-KON
                =   WRK-SEIKYU  - ( WRK-NYUKIN  -   WRK-KAISYU )
       *
