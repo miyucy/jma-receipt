@@ -1643,10 +1643,10 @@
                    ","                 DELIMITED  BY  SIZE
                    BD01004-KANANAME    DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
-                   CSV-SRYYMD          DELIMITED  BY  SIZE
+                   CSV-SRYYMD          DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
                    HCM51-SYOSAI(CNT-LINE)
-                                       DELIMITED  BY  SIZE
+                                       DELIMITED  BY  SPACE
                    ","                 DELIMITED  BY  SIZE
                    HCM51-HOKEN (CNT-LINE)
                                        DELIMITED  BY  SPACE
