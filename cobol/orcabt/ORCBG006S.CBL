@@ -1488,27 +1488,19 @@
            PERFORM 5004-MOJI-HENSYU-SEC
       *
            PERFORM VARYING IDZ         FROM    1   BY  1
-                   UNTIL   IDZ         >   52
-               IF      IDZ         <=  CNT-SRYKA
-                   MOVE    WRK-TAI-NAIYO(IDZ)  TO  WRK-DATA
-                   MOVE    14              TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC
-                   MOVE    "¿ôÎÌ,¶â³Û"     TO  WRK-DATA
-                   MOVE    9               TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC
-               ELSE
-                   IF      IDZ         =   52
-                       MOVE    "¹ç·×,¿ôÎÌ,¶â³Û"    TO  WRK-DATA
-                       MOVE    14              TO  WRK-NAGASA
-                       MOVE    1               TO  WRK-RECEND
-                       PERFORM 5004-MOJI-HENSYU-SEC
-                   ELSE
-                       MOVE    ",,"            TO  WRK-DATA
-                       MOVE    2               TO  WRK-NAGASA
-                       PERFORM 5004-MOJI-HENSYU-SEC
-                   END-IF
-               END-IF
+                   UNTIL   IDZ         >   CNT-SRYKA
+               MOVE    WRK-TAI-NAIYO(IDZ)  TO  WRK-DATA
+               MOVE    14              TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+               MOVE    "¿ôÎÌ,¶â³Û"     TO  WRK-DATA
+               MOVE    9               TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
            END-PERFORM
+      *
+           MOVE    "¹ç·×,¿ôÎÌ,¶â³Û"    TO  WRK-DATA
+           MOVE    14              TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ²þ¹Ô¥³¡¼¥ÉÊÔ½¸
            STRING  WRK-REC(1:WRK-REC-LENGTH)
@@ -1615,47 +1607,39 @@
       *
       *
            PERFORM VARYING IDZ         FROM    1   BY  1
-                   UNTIL   IDZ         >   52
-               IF      IDZ         <=  CNT-SRYKA
-      *            ²Ê¡¢ÉÂÅï¥³¡¼¥É
-                   MOVE    WRK-TAI-SRYKA(IDZ)
-                                           TO  WRK-DATA
-                   MOVE    2               TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC
-      *            ¿ôÎÌ
-                   MOVE    WRK-NAI-SURYO(CNT-LINE IDZ)
-                                           TO  WRK-DATA
-                   MOVE    16              TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC
-      *            ¶â³Û
-                   MOVE    WRK-NAI-GAKU(CNT-LINE IDZ)
-                                           TO  WRK-DATA
-                   MOVE    16              TO  WRK-NAGASA
-                   PERFORM 5004-MOJI-HENSYU-SEC
-               ELSE
-                   IF      IDZ         =   52
-      *                ²Ê¡¢ÉÂÅï¥³¡¼¥É
-                       MOVE    "99"            TO  WRK-DATA
-                       MOVE    2               TO  WRK-NAGASA
-                       PERFORM 5004-MOJI-HENSYU-SEC
-      *                ¿ôÎÌ
-                       MOVE    WRK-NAI-SURYO(CNT-LINE CNT-MAX)
-                                               TO  WRK-DATA
-                       MOVE    16              TO  WRK-NAGASA
-                       PERFORM 5004-MOJI-HENSYU-SEC
-      *                ¶â³Û
-                       MOVE    WRK-NAI-GAKU(CNT-LINE CNT-MAX)
-                                               TO  WRK-DATA
-                       MOVE    16              TO  WRK-NAGASA
-                       MOVE    1               TO  WRK-RECEND
-                       PERFORM 5004-MOJI-HENSYU-SEC
-                   ELSE
-                       MOVE    ",,"            TO  WRK-DATA
-                       MOVE    2               TO  WRK-NAGASA
-                       PERFORM 5004-MOJI-HENSYU-SEC
-                   END-IF
-               END-IF
+                   UNTIL   IDZ         >   CNT-SRYKA
+      *        ²Ê¡¢ÉÂÅï¥³¡¼¥É
+               MOVE    WRK-TAI-SRYKA(IDZ)
+                                       TO  WRK-DATA
+               MOVE    2               TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        ¿ôÎÌ
+               MOVE    WRK-NAI-SURYO(CNT-LINE IDZ)
+                                       TO  WRK-DATA
+               MOVE    16              TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
+      *        ¶â³Û
+               MOVE    WRK-NAI-GAKU(CNT-LINE IDZ)
+                                       TO  WRK-DATA
+               MOVE    16              TO  WRK-NAGASA
+               PERFORM 5004-MOJI-HENSYU-SEC
            END-PERFORM
+      *
+      *    ²Ê¡¢ÉÂÅï¥³¡¼¥É
+           MOVE    "99"            TO  WRK-DATA
+           MOVE    2               TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¿ôÎÌ
+           MOVE    WRK-NAI-SURYO(CNT-LINE CNT-MAX)
+                                   TO  WRK-DATA
+           MOVE    16              TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC
+      *    ¶â³Û
+           MOVE    WRK-NAI-GAKU(CNT-LINE CNT-MAX)
+                                   TO  WRK-DATA
+           MOVE    16              TO  WRK-NAGASA
+           MOVE    1               TO  WRK-RECEND
+           PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ²þ¹Ô¥³¡¼¥ÉÊÔ½¸
            STRING  WRK-REC(1:WRK-REC-LENGTH)
