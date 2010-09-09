@@ -2,7 +2,6 @@ SRCS = ORCHC01.CBL \
        ORCHC03.CBL \
        ORCSHOSPNUM.CBL \
        ORCDBMAIN.CBL \
-       ORCMCPSUB.CBL \
        ORCSC10.CBL \
        ORCSC20.CBL \
        ORCSC30.CBL \
