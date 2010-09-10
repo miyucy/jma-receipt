@@ -400,9 +400,7 @@ SCREEN_screen = \
 	D05.glade \
 	P02K.glade \
 	W67.glade \
-	I07.glade \
 	G05.glade \
-	I08.glade \
 	XG01.glade \
 	XG02.glade \
 	XG99.glade \
@@ -420,7 +418,8 @@ SCREEN_screen = \
 	S07.glade \
 	SID3.glade \
 	U2ID1.glade \
-
+	S08.glade \
+	S09.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

@@ -3637,6 +3637,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            INITIALIZE                    BUNBEN-REC
            MOVE    RECE62-HOSPNUM    TO  BUNBEN-HOSPNUM
            MOVE    RECE62-PTID       TO  BUNBEN-PTID
+           MOVE    "1"               TO  BUNBEN-NYUGAIKBN
            MOVE    PTNYUINRRK-RRKNUM TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC        TO  MCPDATA-REC
            MOVE    "tbl_bunben"      TO  MCP-TABLE

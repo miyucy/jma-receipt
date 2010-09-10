@@ -146,7 +146,7 @@
            MOVE    ZERO            TO  STEIKISGK-RC
                                        STEIKISGK-S02-RC
       *
-           PERFORM 900-SYUNOU-DEL2-SEC
+           PERFORM 900-SYUNOU-DEL6-SEC
            IF    ( FLG-SYUNOU     NOT  =   ZERO )
                MOVE    -3         TO   STEIKISGK-RC
                PERFORM 800-ABORT-SEC
@@ -228,7 +228,7 @@
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           MOVE    "0"                TO   WRK-UPDNYUGAIKBN
+           MOVE    "3"                TO   WRK-UPDNYUGAIKBN
            MOVE    "1"                TO   WRK-NYUGAIKBN
       *
            PERFORM 900-SYUNOU-UPD1-SEC
@@ -446,7 +446,7 @@
       *****************************************************************
        300-END-SEC                    SECTION.
       *
-           PERFORM 900-SYUNOU-DEL2-SEC
+           PERFORM 900-SYUNOU-DEL6-SEC
            IF    ( FLG-SYUNOU     NOT  =   ZERO )
                MOVE    -7         TO   STEIKISGK-RC
                PERFORM 800-ABORT-SEC
@@ -459,7 +459,7 @@
            END-IF
       *
            MOVE    "1"            TO   WRK-UPDNYUGAIKBN
-           MOVE    "0"            TO   WRK-NYUGAIKBN
+           MOVE    "3"            TO   WRK-NYUGAIKBN
       *
            PERFORM 900-SYUNOU-UPD1-SEC
            IF    ( FLG-SYUNOU     NOT  =   ZERO )
@@ -505,7 +505,7 @@
            MOVE    SPA-HOSPNUM    TO   SYU-HOSPNUM
            MOVE    WRK-UPDNYUGAIKBN
                                   TO   SYU-NYUGAIKBN
-           MOVE    WRK-NYUGAIKBN  TO   SYU-DENPJTIKBN
+           MOVE    WRK-NYUGAIKBN  TO   SYU-SELNYUGAIKBN
            MOVE    STEIKISGK-PTID TO   SYU-PTID
            MOVE    "2"            TO   SYU-CREATEKBN
            MOVE    STEIKISGK-SRYYMD(1:6)
@@ -555,7 +555,7 @@
       *****************************************************************
       *    ¼ýÇ¼ºï½ü½èÍý
       *****************************************************************
-       900-SYUNOU-DEL2-SEC             SECTION.
+       900-SYUNOU-DEL6-SEC             SECTION.
       *
            MOVE    ZERO            TO  FLG-SYUNOU
       *
@@ -566,7 +566,7 @@
            MOVE    CONST-DENPNUM  TO   SYU-DENPNUM
            MOVE    SYUNOU-REC     TO   MCPDATA-REC
            MOVE    "tbl_syunou"   TO   MCP-TABLE
-           MOVE    "del2"         TO   MCP-PATHNAME
+           MOVE    "del6"         TO   MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC         NOT  =   ZERO )
                MOVE    1          TO   FLG-SYUNOU
@@ -574,7 +574,7 @@
       *
            .
       *
-       900-SYUNOU-DEL2-EXT.
+       900-SYUNOU-DEL6-EXT.
            EXIT.
       *****************************************************************
       *    ÆüÊÌ¼ýÇ¼ºï½ü½èÍý

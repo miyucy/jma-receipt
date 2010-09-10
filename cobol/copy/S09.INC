@@ -15,17 +15,17 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  I08.
-      *     02  I08-FIXED4.
-              03  I08-HKNJANUM         PIC X(8).
-              03  I08-HKNJANAME        PIC X(40).
-              03  I08-CMB-SYAKOK.
-                04  I08-SYAKOK         PIC X(10).
-                04  I08-SYAKOK-COUNT   PIC S9(9)   BINARY.
-                04  I08-SYAKOK-ITEM    PIC X(10)   OCCURS  5 TIMES.
-              03  I08-CMB-HONKZK.
-                04  I08-HONKZK         PIC X(10).
-                04  I08-HONKZK-COUNT   PIC S9(9)   BINARY.
-                04  I08-HONKZK-ITEM    PIC X(10)   OCCURS  5 TIMES.
-              03  I08-KIGO             PIC X(80).
-              03  I08-NUM              PIC X(80).
+        02  S09.
+      *     02  S09-FIXED4.
+              03  S09-HKNJANUM         PIC X(8).
+              03  S09-HKNJANAME        PIC X(40).
+              03  S09-CMB-SYAKOK.
+                04  S09-SYAKOK         PIC X(10).
+                04  S09-SYAKOK-COUNT   PIC S9(9)   BINARY.
+                04  S09-SYAKOK-ITEM    PIC X(10)   OCCURS  5 TIMES.
+              03  S09-CMB-HONKZK.
+                04  S09-HONKZK         PIC X(10).
+                04  S09-HONKZK-COUNT   PIC S9(9)   BINARY.
+                04  S09-HONKZK-ITEM    PIC X(10)   OCCURS  5 TIMES.
+              03  S09-KIGO             PIC X(80).
+              03  S09-NUM              PIC X(80).

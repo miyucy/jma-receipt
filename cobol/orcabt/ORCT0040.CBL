@@ -2271,6 +2271,7 @@
            INITIALIZE                  LNKBUNBEN-REC
            MOVE    SYU-HOSPNUM     TO  LNKBUNBEN-HOSPNUM
            MOVE    SYU-PTID        TO  LNKBUNBEN-PTID
+           MOVE    SYU-NYUGAIKBN   TO  LNKBUNBEN-NYUGAIKBN
            MOVE    SYU-NYUIN-RRKNUM
                                    TO  LNKBUNBEN-RRKNUM
            CALL    "ORCSBUNBENFTN"     USING
@@ -2996,6 +2997,7 @@
       *
            MOVE    SYU-HOSPNUM     TO  BUNBEN-HOSPNUM
            MOVE    SYU-PTID        TO  BUNBEN-PTID
+           MOVE    SYU-NYUGAIKBN   TO  BUNBEN-NYUGAIKBN
            MOVE    SYU-NYUIN-RRKNUM
                                    TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC      TO  MCPDATA-REC

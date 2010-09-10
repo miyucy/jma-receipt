@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>I01</name>
-  <program_name>I07</program_name>
+  <name>S08</name>
+  <program_name>S08</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -12,7 +12,7 @@
 
 <widget>
   <class>GtkWindow</class>
-  <name>I07</name>
+  <name>S08</name>
   <width>1024</width>
   <height>768</height>
   <signal>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(I07)出産育児一時金画面</title>
+  <title>(S08)出産育児一時金画面</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -814,7 +814,7 @@
 	<last_modification_time>Wed, 07 Aug 2002 06:34:58 GMT</last_modification_time>
       </signal>
       <editable>True</editable>
-      <format>ZZZZZZZ</format>
+      <format>-------</format>
     </widget>
 
     <widget>
@@ -1256,22 +1256,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label2364</name>
-      <x>732</x>
-      <y>12</y>
-      <width>76</width>
-      <height>24</height>
-      <label>退院日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>TAIINYMD</name>
       <x>812</x>
@@ -1296,22 +1280,6 @@
       <text>H99.99.99</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label2363</name>
-      <x>556</x>
-      <y>12</y>
-      <width>76</width>
-      <height>24</height>
-      <label>入院日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -1612,22 +1580,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label2343</name>
-      <x>728</x>
-      <y>276</y>
-      <width>68</width>
-      <height>24</height>
-      <label>入院日数</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label2367</name>
       <x>688</x>
       <y>276</y>
@@ -1738,22 +1690,6 @@
       <width>88</width>
       <height>24</height>
       <label>保険者番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBLHEADER</name>
-      <x>696</x>
-      <y>40</y>
-      <width>160</width>
-      <height>24</height>
-      <label>メッセージ表示</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1970,6 +1906,70 @@
       <width>84</width>
       <height>24</height>
       <label>請求区分</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLHEADER</name>
+      <x>696</x>
+      <y>40</y>
+      <width>328</width>
+      <height>24</height>
+      <label>メッセージ表示</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNYUINDAY</name>
+      <x>728</x>
+      <y>276</y>
+      <width>68</width>
+      <height>24</height>
+      <label>入院日数</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLTAIINYMD</name>
+      <x>732</x>
+      <y>12</y>
+      <width>76</width>
+      <height>24</height>
+      <label>退院日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNYUINYMD</name>
+      <x>556</x>
+      <y>12</y>
+      <width>76</width>
+      <height>24</height>
+      <label>入院日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

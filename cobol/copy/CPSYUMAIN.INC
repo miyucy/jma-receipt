@@ -420,6 +420,8 @@
               05  SYUMAIN-KYUFUGAI-GOKEI-TEN      PIC  9(07).
       *日別収納フラグ
            03  SYUMAIN-DAYINFFLG           PIC  X(01).
+      *分娩管理フラグ
+           03  SYUMAIN-BUNBENINFFLG        PIC  X(01).
       *会計変更区分
            03  SYUMAIN-ACCT-UPDKBN         PIC  X(01).
       *変則助成−患者負担金額
@@ -448,3 +450,5 @@
            03  SYUMAIN-SELNYUIN-RRKNUM     PIC  9(03).
       *診療年月日（検索用）
            03  SYUMAIN-SELKOHID            PIC  9(10).
+      *入外区分（検索用）
+           03  SYUMAIN-SELNYUGAIKBN        PIC  X(01).

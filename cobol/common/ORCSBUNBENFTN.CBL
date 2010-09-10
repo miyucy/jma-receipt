@@ -62,9 +62,19 @@
            03  WRK-HKNNUM          PIC X(03).
            03  WRK-HOJOKBN         PIC X(01).
            03  WRK-KYUSEINAME      PIC X(100).
+           03  WRK-SRYYMD          PIC X(08).
+           03  WRK-UPDNYUGAIKBN    PIC X(01).
+           03  WRK-NYUGAIKBN       PIC X(01).
+           03  WRK-SAGAKU          PIC S9(10).
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    収納退避領域
+       01  TSYU-REC.
+           COPY    "CPSYUNOU.INC"  REPLACING //SYU-// BY //TSYU-//.
+       01  WSYU-REC.
+           COPY    "CPSYUNOU.INC"  REPLACING //SYU-// BY //WSYU-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -111,6 +121,9 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    収納再計算
+           COPY  "CPORCSSAIKEISAN.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -165,7 +178,13 @@
       *
            PERFORM 900-BUNBEN-KEY3-SEL-SEC
       *
-           PERFORM 900-PTNYUINRRK-KEY4-SEL-SEC
+           IF    ( LNKBUNBEN-NYUGAIKBN =   "1" )
+               PERFORM 900-PTNYUINRRK-KEY4-SEL-SEC
+               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
+           ELSE
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+               MOVE    SYU-SRYYMD          TO  WRK-SRYYMD
+           END-IF
       *
            PERFORM 900-PTINF-KEY-SEL-SEC
       *
@@ -191,11 +210,27 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-           PERFORM 2001-EDIT-NYUININF-SEC
+           MOVE    PTNUM-PTNUM         TO  LNKBUNBEN-PTNUM
+           MOVE    "000000"            TO  LNKBUNBEN-SKYYM
       *
-           PERFORM 2001-EDIT-SYUINF-SEC
+           IF    ( WRK-KYUSEINAME      =   SPACE )
+               MOVE    PTINF-KANANAME  TO  LNKBUNBEN-NAME
+           ELSE
+               MOVE    WRK-KYUSEINAME  TO  LNKBUNBEN-NAME
+           END-IF
       *
            PERFORM 2001-EDIT-HKNINF-SEC
+      *
+           IF    ( LNKBUNBEN-NYUGAIKBN =   "1" )
+               PERFORM 2001-EDIT-NYUININF-SEC
+      *
+               PERFORM 2001-EDIT-SYUINF-SEC
+           ELSE
+      *
+               PERFORM 2002-EDIT-GAIRAIINF-SEC
+      *
+               PERFORM 2002-EDIT-SYUINF-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -206,13 +241,6 @@
       *****************************************************************
        2001-EDIT-NYUININF-SEC          SECTION.
       *
-           IF    ( WRK-KYUSEINAME      =   SPACE )
-               MOVE    PTINF-KANANAME  TO  LNKBUNBEN-NAME
-           ELSE
-               MOVE    WRK-KYUSEINAME  TO  LNKBUNBEN-NAME
-           END-IF
-           MOVE    PTNUM-PTNUM         TO  LNKBUNBEN-PTNUM
-           MOVE    "000000"            TO  LNKBUNBEN-SKYYM
            MOVE    PTNYUINRRK-RRKNUM   TO  LNKBUNBEN-RRKNUM
       *
            INITIALIZE                      STS-AREA-DAY
@@ -230,7 +258,7 @@
        2001-EDIT-NYUININF-EXT.
            EXIT.
       *****************************************************************
-      *    収納情報編集処理
+      *    収納情報編集処理（入院）
       *****************************************************************
        2001-EDIT-SYUINF-SEC            SECTION.
       *
@@ -288,6 +316,7 @@
                ELSE
                    MOVE    09      TO  IDX-BUNBEN
                END-IF
+      *
                COMPUTE LNKBUNBEN-MONEY (IDX-BUNBEN)
                    =   LNKBUNBEN-MONEY (IDX-BUNBEN)
                    +   SYU-TGMONEY  (IDX1)
@@ -339,6 +368,201 @@
       *
            .
        20011-EDIT-SYUINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    外来情報編集処理（外来）
+      *****************************************************************
+       2002-EDIT-GAIRAIINF-SEC         SECTION.
+      *
+           MOVE    1               TO  LNKBUNBEN-NYUIN-DAY
+      *
+           .
+       2002-EDIT-GAIRAIINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納情報編集処理（外来）
+      *****************************************************************
+       2002-EDIT-SYUINF-SEC            SECTION.
+      *
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+           IF    ( SYU-GRP-DENPNUM =   ZERO )
+      *
+               COMPUTE WRK-SAGAKU
+                   =   WRK-SAGAKU  + ( SYU-SKYMONEY - SYU-CHOSEI )
+      *
+               MOVE    SYUNOU-REC  TO   TSYU-REC
+               PERFORM 20021-SAIKEISAN-SEC
+               PERFORM 901-SYUNOU-KEY-SEL-SEC
+      *
+               COMPUTE WRK-SAGAKU
+                   =   WRK-SAGAKU  - ( SYU-SKYMONEY - SYU-CHOSEI )
+      *
+               PERFORM 20021-EDIT-SYUINF-SEC
+      *
+               MOVE    TSYU-REC    TO   MCPDATA-REC
+               MOVE    "tbl_syunou" TO  MCP-TABLE
+               MOVE    "key"        TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC       NOT =  ZERO )
+                   MOVE    "tbl_syunou"    TO  MCP-TABLE
+                   MOVE    "abort"         TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+               END-IF
+           ELSE
+      *
+               MOVE    SYUNOU-REC  TO   TSYU-REC
+      *
+               PERFORM 900-SYUNOU-KEY74-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+      *
+                   COMPUTE WRK-SAGAKU
+                       =   WRK-SAGAKU  + ( SYU-SKYMONEY - SYU-CHOSEI )
+      *
+                   MOVE    SYUNOU-REC  TO   WSYU-REC
+                   MOVE    "4"         TO   WSYU-NYUGAIKBN
+                   MOVE    WSYU-REC    TO   MCPDATA-REC
+                   MOVE    "tbl_syunou" TO  MCP-TABLE
+                   MOVE    "key"        TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC       NOT =  ZERO )
+                       MOVE    "tbl_syunou"    TO  MCP-TABLE
+                       MOVE    "abort"         TO  MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC
+                   END-IF
+      *
+                   PERFORM 900-SYUNOU-KEY74-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_syunou"    TO  MCP-TABLE
+               MOVE    "key74"         TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               MOVE    TSYU-REC        TO  SYUNOU-REC
+               PERFORM 20021-SAIKEISAN-SEC
+               PERFORM 20022-EDIT-SYUINF-SEC
+      *
+      *
+               MOVE    TSYU-REC    TO   SYUNOU-REC
+               MOVE    "4"         TO   SYU-NYUGAIKBN
+               PERFORM 900-SYUNOU-KEY74-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+      *
+                   MOVE    "2"          TO  SYU-NYUGAIKBN
+                   MOVE    SYUNOU-REC  TO   MCPDATA-REC
+                   MOVE    "tbl_syunou" TO  MCP-TABLE
+                   MOVE    "key"       TO  MCP-PATHNAME
+                   PERFORM 910-DBDELETE-SEC
+                   IF    ( MCP-RC       NOT =  ZERO )
+                       MOVE    "tbl_syunou"    TO  MCP-TABLE
+                       MOVE    "abort"         TO  MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC
+                   END-IF
+      *
+                   MOVE    SYUNOU-REC  TO   WSYU-REC
+                   MOVE    "2"         TO   WSYU-NYUGAIKBN
+                   MOVE    "4"         TO   WSYU-SELNYUGAIKBN
+                   MOVE    WSYU-REC    TO   MCPDATA-REC
+                   MOVE    "tbl_syunou" TO  MCP-TABLE
+                   MOVE    "upd3"       TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC       NOT =  ZERO )
+                       MOVE    "tbl_syunou"    TO  MCP-TABLE
+                       MOVE    "abort"         TO  MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC
+                   END-IF
+      *
+                   PERFORM 900-SYUNOU-KEY74-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_syunou"    TO  MCP-TABLE
+               MOVE    "key74"         TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           END-IF
+      *
+           COMPUTE LNKBUNBEN-ETC-MONEY
+               =   LNKBUNBEN-ETC-MONEY
+               +   WRK-SAGAKU
+      *
+      *
+           PERFORM VARYING IDX-BUNBEN  FROM    1   BY  1
+                   UNTIL ( IDX-BUNBEN  >   10 )
+      *
+               COMPUTE LNKBUNBEN-NINPUFTN-MONEY
+                   =   LNKBUNBEN-NINPUFTN-MONEY
+                   +   LNKBUNBEN-MONEY (IDX-BUNBEN)
+      *
+           END-PERFORM
+      *
+           .
+       2002-EDIT-SYUINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納情報編集処理（外来）
+      *****************************************************************
+       20021-EDIT-SYUINF-SEC           SECTION.
+      *
+           MOVE    SYU-SYUHKNNUM   TO  WRK-HKNNUM
+           PERFORM 900-HKNCOMBI-KEY-SEL-SEC
+           MOVE    COMB-HOJOKBN    TO  WRK-HOJOKBN
+           PERFORM 2100-CHK-HOKEN-SEC
+           IF    ( FLG-BUNBENFTN       =   1 )
+               PERFORM 20011-EDIT-SYUINF-SEC
+           END-IF
+      *
+           .
+       20021-EDIT-SYUINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納情報編集処理（外来）
+      *****************************************************************
+       20022-EDIT-SYUINF-SEC           SECTION.
+      *
+           PERFORM 900-SYUNOU-KEY74-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SYUNOU  NOT =   ZERO )
+      *
+               COMPUTE WRK-SAGAKU
+                   =   WRK-SAGAKU  - ( SYU-SKYMONEY - SYU-CHOSEI )
+      *
+               PERFORM 20021-EDIT-SYUINF-SEC
+      *
+               PERFORM 900-SYUNOU-KEY74-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key74"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       20022-EDIT-SYUINF-EXT.
+           EXIT.
+      *****************************************************************
+      *    自費分再計算処理
+      *****************************************************************
+       20021-SAIKEISAN-SEC             SECTION.
+      *
+           INITIALIZE                   LNK-ORCSSAIKEISAN-REC
+      *
+           MOVE     SYU-HOSPNUM    TO   LNK-ORCSSKS-HOSPNUM
+           MOVE     SYU-NYUGAIKBN  TO   LNK-ORCSSKS-NYUGAIKBN
+           MOVE     SYU-PTID       TO   LNK-ORCSSKS-PTID
+           MOVE     SYU-DENPNUM    TO   LNK-ORCSSKS-DENPNUM
+           MOVE     SYU-SRYKA      TO   LNK-ORCSSKS-SRYKA
+           MOVE     "1"            TO   LNK-ORCSSKS-BUNBENJIHIKBN
+      *
+           CALL    "ORCSSAIKEISAN"     USING
+                                       SPA-AREA
+                                       LNK-ORCSSAIKEISAN-REC
+      *
+           .
+       20021-SAIKEISAN-EXT.
            EXIT.
       *****************************************************************
       *    保険情報編集処理
@@ -439,13 +663,69 @@
       *****************************************************************
       *    収納マスター検索
       *****************************************************************
+       900-SYUNOU-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           INITIALIZE                      SYUNOU-REC
+           MOVE    LNKBUNBEN-HOSPNUM   TO  SYU-HOSPNUM
+           MOVE    LNKBUNBEN-NYUGAIKBN TO  SYU-NYUGAIKBN
+           MOVE    LNKBUNBEN-PTID      TO  SYU-PTID
+           MOVE    LNKBUNBEN-RRKNUM    TO  SYU-DENPNUM
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYUNOU-KEY-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納マスター検索
+      *****************************************************************
+       901-SYUNOU-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       901-SYUNOU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    収納マスター検索
+      *****************************************************************
        900-SYUNOU-KEY45-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-SYUNOU
       *
            INITIALIZE                      SYUNOU-REC
            MOVE    LNKBUNBEN-HOSPNUM   TO  SYU-HOSPNUM
-           MOVE    "1"                 TO  SYU-NYUGAIKBN
+           MOVE    LNKBUNBEN-NYUGAIKBN TO  SYU-NYUGAIKBN
            MOVE    LNKBUNBEN-PTID      TO  SYU-PTID
            MOVE    LNKBUNBEN-RRKNUM    TO  SYU-NYUIN-RRKNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -494,6 +774,48 @@
            .
        900-SYUNOU-KEY45-FET-EXT.
            EXIT.
+      *****************************************************************
+      *    収納マスター検索
+      *****************************************************************
+       900-SYUNOU-KEY74-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key74"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       900-SYUNOU-KEY74-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    収納マスター読込
+      *****************************************************************
+       900-SYUNOU-KEY74-FET-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           MOVE    "tbl_syunou"        TO  MCP-TABLE
+           MOVE    "key74"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       900-SYUNOU-KEY74-FET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    患者保険情報マスター検索
@@ -505,7 +827,7 @@
            INITIALIZE                      PTHKNINF-REC
            MOVE    LNKBUNBEN-HOSPNUM   TO  PTHKN-HOSPNUM
            MOVE    LNKBUNBEN-PTID      TO  PTHKN-PTID
-           MOVE    PTNYUINRRK-TAIINYMD TO  PTHKN-TEKSTYMD
+           MOVE    WRK-SRYYMD          TO  PTHKN-TEKSTYMD
                                            PTHKN-TEKEDYMD
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
@@ -639,9 +961,9 @@
            MOVE    ZERO                TO  FLG-KYUSEIRRK
       *
            INITIALIZE                      KYUSEIRRK-REC
-           MOVE    PTNYUINRRK-HOSPNUM  TO  KYUSEI-HOSPNUM
-           MOVE    PTNYUINRRK-PTID     TO  KYUSEI-PTID
-           MOVE    PTNYUINRRK-TAIINYMD TO  KYUSEI-CHGYMD
+           MOVE    LNKBUNBEN-HOSPNUM   TO  KYUSEI-HOSPNUM
+           MOVE    LNKBUNBEN-PTID      TO  KYUSEI-PTID
+           MOVE    WRK-SRYYMD          TO  KYUSEI-CHGYMD
            MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
            MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME

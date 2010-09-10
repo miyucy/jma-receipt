@@ -282,6 +282,11 @@
            END-EVALUATE
       *
       *    Æþ±¡Æü¿ô
+           IF    ( BUNBEN-NYUGAIKBN    =   "1" )
+               MOVE    "Æþ±¡Æü¿ô"      TO  HCN63-LBLNISSU
+           ELSE
+               MOVE    "¿ÇÎÅÆü¿ô"      TO  HCN63-LBLNISSU
+           END-IF
            MOVE    BUNBEN-NYUIN-DAY    TO  WRK-Z03
            MOVE    WRK-Z03             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
@@ -726,6 +731,8 @@
            INITIALIZE                  BUNBEN-REC
            MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
            MOVE    ORCHCN63-PTID   TO  BUNBEN-PTID
+           MOVE    ORCHCN63-NYUGAIKBN
+                                   TO  BUNBEN-NYUGAIKBN
            MOVE    ORCHCN63-RRKNUM TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC      TO  MCPDATA-REC
            MOVE    "tbl_bunben"    TO  MCP-TABLE

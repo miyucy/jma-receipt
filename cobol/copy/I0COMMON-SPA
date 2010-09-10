@@ -31,8 +31,10 @@
          03  SPA-I0ID2-AREA. 
            05  SPA-I0ID2-FLG                   PIC X(02).
       *
+      *
       *    Ìá¤êÀè
          03  SPA-I0-MOTOPG                     PIC X(08).
+         03  SPA-I0-MOTOPG2                    PIC X(08).
       *      £É£°£±¢«¢ª£É£°£²Á«°Ü¾ðÊó
          03  SPA-I01-I02-AREA.
       *        ´µ¼Ô£É£Ä
@@ -83,14 +85,3 @@
            05  SPA-I02-I05-PTRRKNUM            PIC 9(03).
            05  SPA-I02-I05-TAIINYMD            PIC X(08).
            05  SPA-I02-I05-TAIINCD             PIC X(02).
-      *      £É£°£·Á«°Ü¾ðÊó
-         03  SPA-I07-AREA.
-           05  SPA-I07-PTID                    PIC 9(10).
-           05  SPA-I07-PTNUM                   PIC X(20).
-           05  SPA-I07-RRKNUM                  PIC 9(03).
-           05  SPA-I07-MOTOPG                  PIC X(08).
-      *      £É£°£¸Á«°Ü¾ðÊó
-         03  SPA-I08-AREA.
-           05  SPA-I08-PTID                    PIC 9(10).
-           05  SPA-I08-RRKNUM                  PIC 9(03).
-           05  SPA-I08-BTN                     PIC X(03).

@@ -188,3 +188,5 @@
            03  SYUNYUIN-SELCREATEKBN        PIC  X(01).
       *診療日（検索用）
            03  SYUNYUIN-SELSRYYMD           PIC  X(08).
+      *入外区分（検索用）
+           03  SYUNYUIN-SELNYUGAIKBN        PIC  X(01).

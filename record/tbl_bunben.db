@@ -1,8 +1,9 @@
 tbl_bunben {
 	HOSPNUM			number(2,0);
 	PTID			number(10,0);
+	NYUGAIKBN		char(1);
 	SKYYM			char(6);
-	RRKNUM			number(3,0);
+	RRKNUM			number(7,0);
 	PTNUM			char(20);
 	SKYKBN			char(1);
 	RIYOUKBN		char(1);
@@ -44,7 +45,7 @@ tbl_bunben {
 };
 
 primary	{
-	HOSPNUM,PTID,SKYYM,RRKNUM;
+	HOSPNUM,PTID,NYUGAIKBN,SKYYM,RRKNUM;
 };
 
 path	key 	{
@@ -54,6 +55,7 @@ path	key 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   SKYYM       =   :SKYYM
 			AND   RRKNUM      =   :RRKNUM
 		;
@@ -86,6 +88,7 @@ path	del2 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND     PTID      =   :PTID
+			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SKYYM     =   :SKYYM
 		;
 	};
@@ -114,6 +117,7 @@ path	key3 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
 			AND   RRKNUM      =   :RRKNUM
 		;
 	};
@@ -125,7 +129,8 @@ path	del3 	{
 		FROM tbl_bunben
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND     PTID      =   :PTID
-			AND   RRKNUM      =   :RRKNUM
+			AND     NYUGAIKBN =   :NYUGAIKBN
+			AND     RRKNUM    =   :RRKNUM
 		;
 	};
 };

@@ -833,6 +833,8 @@
                05  SSTKJN-CD                       PIC 9(01)
                                                    OCCURS  1000.
       *
+           COPY    "CPLNKS08.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1090,8 +1092,6 @@
            COPY    "I04.INC".
            COPY    "I05.INC".
            COPY    "I06.INC".
-           COPY    "I07.INC".
-           COPY    "I08.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
            COPY    "I0ID2.INC".
@@ -1279,23 +1279,24 @@
                MOVE    I0SUB01-COMMON  TO  SPA-I0KYOUTU
       *
                GO  TO  300-SCREEN-EXT
-           WHEN    "I07"
-               IF    ( SPA-I07-MOTOPG  =   "I01" )
-                   INITIALIZE                  I0SUB01-LNK
-                   MOVE    SPA-TERMID      TO  I0SUB01-TERMID
-                   MOVE    "I"             TO  I0SUB01-KBN
-                   CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
+           WHEN    "S08"
+               INITIALIZE                  I0SUB01-LNK
+               MOVE    SPA-TERMID      TO  I0SUB01-TERMID
+               MOVE    "I"             TO  I0SUB01-KBN
+               CALL    "ORCGI0SUB01"   USING   I0SUB01-LNK
       *
-                   MOVE    I0SUB01-SCRSPA-AREA
-                                           TO  SPA-I0FREE
-                   MOVE    I0SUB01-COMMON  TO  SPA-I0KYOUTU
+               MOVE    I0SUB01-SCRSPA-AREA
+                                       TO  SPA-I0FREE
+               MOVE    I0SUB01-COMMON  TO  SPA-I0KYOUTU
+      *
+               IF    ( SPA-I0-MOTOPG2  =   "I01" )
       *
                    PERFORM 41011-BUNBEN-AREA-EDIT-SEC                   
       *
                    GO  TO  300-SCREEN-EXT
                ELSE
-                   MOVE    SPA-I07-PTNUM   TO  SPA-PTNUM
-                   MOVE    SPA-I07-PTID    TO  SPA-PTID
+                   MOVE    SPA-PTNUM       TO  SPA-PTNUM
+                   MOVE    SPA-PTID        TO  SPA-PTID
                    PERFORM 310-SPASET-SEC
                    MOVE    SPA-PTNUM       TO  I01-PTNUM
                    PERFORM 4100-PTNUM-CHK-SEC
@@ -2442,7 +2443,7 @@
                PERFORM 480-KARUTE-PRT-SEC
            WHEN    "CLICKED"       ALSO    "B15"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
-               PERFORM 480-I07-SENI-SEC
+               PERFORM 480-S08-SENI-SEC
            WHEN    "CLICKED"       ALSO    "B23"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
                PERFORM 480-ZOKUSI-PRT-SEC
@@ -8114,7 +8115,7 @@
       *****************************************************************
       *    出産一時金画面遷移処理
       *****************************************************************
-       480-I07-SENI-SEC                SECTION.
+       480-S08-SENI-SEC                SECTION.
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -8122,6 +8123,21 @@
            IF    ( SPA-GMN-I01-NYUREKILST-SEL >   ZERO )
             AND  ( SPA-GMN-I01-NYUREKILST-SEL
                               <=   SPA-GMN-I01-NYUREKILST-CNT )
+      *
+               MOVE    SPA-NAI-I01-PTID    TO  SPA-PTID
+               MOVE    SPA-GMN-I01-PTNUM   TO  SPA-PTNUM
+               MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
+               INITIALIZE                  LNKS08-AREA
+               MOVE    "I01"               TO  LNKS08-SAKIPG
+               MOVE    SPA-NAI-I01-TRRKNUM (SPA-GMN-I01-NYUREKILST-SEL)
+                                           TO  LNKS08-RRKNUM
+               MOVE    LNKS08-AREA         TO  SPA-WORK
+               MOVE    "I01"               TO  SPA-MOTOPG
+               MOVE    "S08"               TO  SPA-SAKIPG
+               MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+               MOVE    "I01"               TO  SPA-I0-MOTOPG2
       *
       *        ＳＰＡの内容を退避
                INITIALIZE                  I0SUB01-LNK
@@ -8132,18 +8148,9 @@
       *
                CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
       *
-               INITIALIZE                  SPA-I07-AREA
-               MOVE    SPA-NAI-I01-PTID    TO  SPA-I07-PTID
-               MOVE    SPA-NAI-I01-TRRKNUM (SPA-GMN-I01-NYUREKILST-SEL)
-                                           TO  SPA-I07-RRKNUM
-               MOVE    "I01"               TO  SPA-I07-MOTOPG
-      *
       *        出産一時金画面へ遷移する
-               MOVE    "I01"               TO  SPA-MOTOPG
-               MOVE    "I07"               TO  SPA-SAKIPG
-      *
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
-               MOVE   "I07"                TO  MCP-WINDOW
+               MOVE   "S02"                TO  MCP-WINDOW
       *
                PERFORM 900-PUT-WINDOW
       *
@@ -8151,7 +8158,7 @@
            END-IF
       *
            .
-       480-I07-SENI-EXT.
+       480-S08-SENI-EXT.
            EXIT.
       *****************************************************************
       *    収納登録遷移処理
@@ -21440,6 +21447,7 @@
            INITIALIZE                  BUNBEN-REC
            MOVE    NRRK-HOSPNUM    TO  BUNBEN-HOSPNUM
            MOVE    NRRK-PTID       TO  BUNBEN-PTID
+           MOVE    "1"             TO  BUNBEN-NYUGAIKBN
            MOVE    "000000"        TO  BUNBEN-SKYYM
            MOVE    NRRK-RRKNUM     TO  BUNBEN-RRKNUM
            MOVE    SPA-GMN-I01-BUNBEN-CD
@@ -24326,6 +24334,7 @@
            MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
            MOVE    SPA-NAI-I01-PTID
                                    TO  BUNBEN-PTID
+           MOVE    "1"             TO  BUNBEN-NYUGAIKBN
            MOVE    WRK-BUNBENRRKNUM
                                    TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC      TO  MCPDATA-REC

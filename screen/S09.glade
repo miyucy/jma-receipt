@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>I05</name>
-  <program_name>I05</program_name>
+  <name>S09</name>
+  <program_name>S09</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -12,7 +12,7 @@
 
 <widget>
   <class>GtkWindow</class>
-  <name>I08</name>
+  <name>S09</name>
   <width>500</width>
   <height>220</height>
   <signal>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(I08)保険情報変更画面</title>
+  <title>(S09)保険情報変更画面</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>

@@ -228,6 +228,7 @@
                        09  SPA-NAI-LOCK            PIC 9(01).
                        09  SPA-NAI-SLOCK-MSG       PIC X(32).
                        09  SPA-NAI-MODE-SRYYM      PIC X(06).
+                       09  SPA-NAI-SEX             PIC X(01).
                        09  SPA-NAI-BIRTHDAY        PIC X(08).
                        09  SPA-NAI-NYUKIN-HOHO     PIC X(02).
                        09  SPA-NAI-SKYPRT          PIC X(01).
@@ -235,6 +236,7 @@
                            11  SPA-NAI-HKNCOMBI-MAX        PIC 9(05).
                            11  SPA-NAI-HKNCOMBILST         OCCURS  100.
                                13  SPA-NAI-HKNCOMBIL       PIC X(04).
+                               13  SPA-NAI-HOJOKBNL        PIC X(01).
                                13  SPA-NAI-HKNCOMBIMEIL    PIC X(50).
                                13  SPA-NAI-HKNNUML         PIC X(03).
                                13  SPA-NAI-RSI-HKNKBNL     PIC X(01).
@@ -243,8 +245,11 @@
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-THSRYYM         PIC  X(06).
                        09  SPA-NAI-TBLREC  OCCURS  500.
+                           11  SPA-NAI-TBUNBEN     PIC  X(01).
+                           11  SPA-NAI-THOJOKBN    PIC  X(01).
                            11  SPA-NAI-TSRYKA      PIC  X(02).
                            11  SPA-NAI-TSRYKAMEI   PIC  X(16).
+                           11  SPA-NAI-TRECESRYKA  PIC  X(02).
                            11  SPA-NAI-TSRYYMD     PIC  X(08).
                            11  SPA-NAI-THKNNUM     PIC  X(03).
                            11  SPA-NAI-TRSI-HKNKBN PIC  X(01).
@@ -257,6 +262,7 @@
                    07  SPA-NAI-SRYKALST-G.
                        09  SPA-NAI-SRYKALST        OCCURS  99.
                           11  SPA-NAI-SRYKAMEIL    PIC X(06).
+                          11  SPA-NAI-RECEKAL      PIC X(02).
       *
       *    システム領域
        01  SYS-AREA.
@@ -287,6 +293,7 @@
            03  FLG-MEISAI-PRT      PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-MISYORI         PIC 9(01).
+           03  FLG-BUNBENCHK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -304,6 +311,7 @@
            03  IDX12               PIC 9(05).
            03  IDX-LST             PIC 9(05).
            03  IDX-CMB             PIC 9(05).
+           03  IDXB                PIC 9(05).
            03  IDXD                PIC 9(05).
       *
        01  CNT-AREA.
@@ -338,6 +346,7 @@
            03  WRK-KUMINO          PIC X(04).
            03  WRK-HKNKUMI         PIC X(40).
            03  WRK-HKNNUM          PIC X(03).
+           03  WRK-HOJOKBN         PIC X(01).
            03  WRK-RSI-HKNKBN      PIC X(01).
            03  WRK-NYUKIN          PIC S9(10).
       *
@@ -466,6 +475,8 @@
        01  WKSYUMEI-REC.
            COPY    "CPSYUMEI.INC"  REPLACING //SMEI-//
                                    BY        //WKSMEI-//.
+      *
+           COPY    "CPLNKS08.INC".
       *
       **************************************************************
       *    ファイルレイアウト
@@ -612,6 +623,8 @@
            COPY    "S04.INC".
            COPY    "S06.INC".
            COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
            COPY    "S99.INC".
            COPY    "SERR.INC".
            COPY    "SID1.INC".
@@ -744,13 +757,31 @@
                    GO      TO      300-SCREEN-EXT
                END-IF
       *
+               IF    ( SPA-SAKIPG      =   "S08" )
+                   MOVE    SPA-WORK        TO  LNKS08-AREA
+                   INITIALIZE                  SPA-S01KYOUTU
+                   MOVE    SPA-NYUGAIKBN   TO  SPA-S08-NYUGAIKBN
+                   MOVE    LNKS08-RRKNUM   TO  SPA-S08-RRKNUM
+                   MOVE    SPA-MOTOPG      TO  SPA-S08-MOTOPG
+                   MOVE    LNKS08-SAKIPG   TO  SPA-MOTOPG2
+                   PERFORM 480-S08-SENI-SEC
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *
                MOVE    SPA-MOTOPG      TO  SPA-MOTOPG2
+      *
            END-IF
       *
       *
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
       *
            EVALUATE    SPA-MOTOPG
+           WHEN    "S08"
+               IF    ( SPA-S08-MOTOPG  =   "S02" )
+                   PERFORM 320-S03SPASET-SEC
+               ELSE
+                   PERFORM 210-BACK
+               END-IF
            WHEN    "K02"
            WHEN    "K02N"
            WHEN    "KT01"
@@ -1253,6 +1284,7 @@
       *
                MOVE    PTINF-NAME      TO  SPA-GMN-NAME
                MOVE    PTINF-KANANAME  TO  SPA-GMN-KANANAME
+               MOVE    PTINF-SEX       TO  SPA-NAI-SEX
                EVALUATE    PTINF-SEX
                WHEN    "1" 
                    MOVE    "男"        TO  SPA-GMN-SEX
@@ -1331,6 +1363,8 @@
       *
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX-COMB)
                                    TO  SPA-NAI-HKNCOMBIL    (IDX-COMB)
+               MOVE    ORCSHKN-NAI-HOJOKBN (IDX-COMB)
+                                   TO  SPA-NAI-HOJOKBNL     (IDX-COMB)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX-COMB)
                                    TO  SPA-NAI-HKNCOMBIMEIL (IDX-COMB)
                MOVE    ORCSHKN-NAI-HKNNUM  (IDX-COMB)
@@ -1363,6 +1397,11 @@
            MOVE    SPA-S01-PTNUM       TO  SPA-GMN-PTNUM
            MOVE    SPA-S01-PTID        TO  SPA-GMN-PTID
            MOVE    SPA-S01-SEX         TO  SPA-GMN-SEX
+           IF    ( SPA-GMN-SEX         =   "男" )
+               MOVE    "1"             TO  SPA-NAI-SEX
+           ELSE
+               MOVE    "2"             TO  SPA-NAI-SEX
+           END-IF
            MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-SRYYM
            MOVE    SPA-S01-SRYYM       TO  SPA-NAI-SRYYM
            MOVE    SPA-S01-KANANAME    TO  SPA-GMN-KANANAME
@@ -2096,6 +2135,8 @@
                 END-IF
            END-IF
       *
+           MOVE    SYU-BUNBENINFFLG     TO SPA-NAI-TBUNBEN (IDX-LST)
+      *
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1005"               TO SYS-KANRICD
            MOVE    SYU-SRYKA            TO SYS-KBNCD
@@ -2107,6 +2148,7 @@
            MOVE    SYS-1005-SRYKANAME2  TO SPA-GMN-TSRYKA (IDX-LST)
            MOVE    SYU-SRYKA            TO SPA-NAI-TSRYKA (IDX-LST)
            MOVE    SYS-1005-SRYKANAME1  TO SPA-NAI-TSRYKAMEI (IDX-LST)
+           MOVE    SYS-1005-RECESRYKA   TO SPA-NAI-TRECESRYKA (IDX-LST)
       *
       *    診療日
            EVALUATE    SYU-NYUGAIKBN
@@ -2146,6 +2188,7 @@
            PERFORM 510-HKNKUMI-MEI-SEC
            MOVE    WRK-HKNKUMI         TO  SPA-GMN-THKNCOMBI (IDX-LST)
            MOVE    WRK-HKNNUM          TO  SPA-NAI-THKNNUM   (IDX-LST)
+           MOVE    WRK-HOJOKBN         TO  SPA-NAI-THOJOKBN  (IDX-LST)
            MOVE    WRK-RSI-HKNKBN      TO  SPA-NAI-TRSI-HKNKBN(IDX-LST)
       *
       *    患者負担率
@@ -2465,10 +2508,10 @@
                                        TO  S02-SORTKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
-      *    暫定 ST
            MOVE    WIDGET-NORMAL       TO  S02-B04-STATE
            MOVE    WIDGET-INSENSITIVE  TO  S02-B03S-STATE
-      *    暫定 ED
+      *
+           MOVE    "請求取消"          TO  S02-B03S-LABEL
       *
            MOVE    ZERO                TO  FLG-MISYORI
       *
@@ -2481,6 +2524,9 @@
                                        TO  S02-TDENPNUM   (IDX-LST)
                MOVE    SPA-GMN-DENPGRP(IDX-LST)
                                        TO  S02-TDENPNUM   (IDX-LST)(9:1)
+               IF    ( SPA-NAI-TBUNBEN(IDX-LST)    =   "1" )
+                   MOVE    "S"     TO  S02-TDENPNUM   (IDX-LST)(10:1)
+               END-IF
                MOVE    SPA-GMN-TNYUGAIKBN(IDX-LST)
                                        TO  S02-TNYUGAI    (IDX-LST)
                MOVE    SPA-GMN-TSRYKA(IDX-LST)
@@ -2507,14 +2553,21 @@
       *
                IF    ( IDX-LST         =   SPA-GMN-TBL-SEL )
                    MOVE    "T"         TO  S02-SYULIST-SELECT (IDX-LST)
-      *        暫定 ST
                    IF    ( SPA-NAI-TNYUGAIKBN(IDX-LST) =   "1" )
                        MOVE    WIDGET-INSENSITIVE
-                                        TO  S02-B04-STATE
+                                       TO  S02-B04-STATE
                        MOVE    WIDGET-NORMAL
                                         TO  S02-B03S-STATE
+                   ELSE
+                       MOVE    IDX-LST  TO  IDXB
+                       PERFORM 800-BUNBEN-CHK-SEC
+                       IF    ( FLG-BUNBENCHK   =   1 )
+                           MOVE    "出産一時金"
+                                        TO  S02-B03S-LABEL
+                           MOVE    WIDGET-NORMAL
+                                        TO  S02-B03S-STATE
+                       END-IF
                    END-IF
-      *        暫定 ED
                ELSE
                    MOVE    "F"         TO  S02-SYULIST-SELECT (IDX-LST)
                END-IF
@@ -2757,7 +2810,7 @@
       *    再発行
            WHEN    "CLICKED"       ALSO    "B02S"
                    PERFORM 419-SAIHAKKOU-SEC
-      *    請求取消処理
+      *    請求取消（出産一時金）処理
            WHEN    "CLICKED"       ALSO    "B03S"
                    PERFORM 430-TORIKESI-SEC
       *    再計算
@@ -3199,7 +3252,11 @@
            IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" OR "KT01"
                                        OR  "U02" OR "I01" )
                MOVE    SPA-MOTOPG2     TO  SPA-SAKIPG
-               MOVE    "S02"           TO  SPA-MOTOPG
+               IF    ( SPA-MOTOPG      =   "S08" )
+                   CONTINUE
+               ELSE
+                   MOVE    "S02"       TO  SPA-MOTOPG
+               END-IF
                MOVE    SPACE           TO  SPA-MOTOPG2
                MOVE    SPACE           TO  LINKAREA
                MOVE    SPA-KYOUTU      TO  LNK-KYOUTU
@@ -4201,7 +4258,7 @@
            EXIT.
       *
       **************************************************************
-      *    請求取消処理
+      *    請求取消（出産一時金）処理
       **************************************************************
        430-TORIKESI-SEC                SECTION.
       *
@@ -4212,20 +4269,37 @@
       *        外来分の請求取消は不可
                IF    ( SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                        =   "2" )
+                   MOVE    SPA-GMN-SELBAN
+                                       TO  IDXB
+                   PERFORM 800-BUNBEN-CHK-SEC
+                   IF    ( FLG-BUNBENCHK   =   1 )
+                       MOVE    SPA-GMN-PTID
+                                       TO  SPA-PTID
+                       MOVE    SPA-GMN-PTNUM
+                                       TO  SPA-PTNUM
+                       INITIALIZE              SPA-S01KYOUTU
+                       PERFORM 4901-SPAKYOTUKEY-SET-SEC
+                       MOVE    "2"     TO  SPA-S08-NYUGAIKBN
+                       MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN) 
+                                       TO  SPA-S08-RRKNUM
+                       MOVE    "S02"   TO  SPA-S08-MOTOPG
+                       PERFORM 480-S08-SENI-SEC
+                   ELSE
                        MOVE    "0003"  TO  SPA-ERRCD
-               END-IF
+                   END-IF
+               ELSE
       *
-      *        請求取消データの取消不可
-               IF    ( SPA-ERRCD           =   SPACE )
+      *            請求取消データの取消不可
                    IF    ( SPA-NAI-TJYOTAIKBN (SPA-GMN-SELBAN)
                                        =   "3" )
                        MOVE    "0003"  TO  SPA-ERRCD
                    END-IF
+      *
+                   IF    ( SPA-ERRCD   =   SPACE )
+                       MOVE    "2001"  TO  SPA-SIDCD
+                   END-IF
                END-IF
       *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   MOVE    "2001"      TO  SPA-SIDCD
-               END-IF
            END-IF
       *
            .
@@ -5329,6 +5403,28 @@
            .
        490-JIGETU-EXT.
            EXIT.
+      *****************************************************************
+      *    出産一時金画面遷移処理
+      *****************************************************************
+       480-S08-SENI-SEC                 SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "S02"               TO  SPA-MOTOPG
+           MOVE    "S08"               TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "S08"                TO  MCP-WINDOW
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+      *
+       480-S08-SENI-EXT.
+           EXIT.
       **************************************************************
       *    共通パラメタ更新・画面遷移処理
       **************************************************************
@@ -5530,6 +5626,7 @@
       *
            MOVE    SPACE           TO  WRK-HKNKUMI
                                        WRK-HKNNUM
+                                       WRK-HOJOKBN
                                        WRK-RSI-HKNKBN
       *
            MOVE    ZERO            TO  FLG-CHK
@@ -5542,6 +5639,8 @@
                                        TO  WRK-HKNKUMI
                    MOVE    SPA-NAI-HKNNUML (IDX-COMB)
                                        TO  WRK-HKNNUM
+                   MOVE    SPA-NAI-HOJOKBNL (IDX-COMB)
+                                       TO  WRK-HOJOKBN
                    MOVE    SPA-NAI-RSI-HKNKBNL (IDX-COMB)
                                        TO  WRK-RSI-HKNKBN
                    MOVE    1           TO  FLG-CHK
@@ -6030,6 +6129,50 @@
       *
            .
        520-SID3SET-EXT.
+           EXIT.
+      **************************************************************
+      *    分娩チェック
+      **************************************************************
+       800-BUNBEN-CHK-SEC                  SECTION.
+      *
+           MOVE    1                   TO  FLG-BUNBENCHK
+      *
+           IF    ( SPA-NAI-TNYUGAIKBN (IDXB)
+                                       =   "2" )
+               CONTINUE
+           ELSE
+               MOVE    ZERO            TO  FLG-BUNBENCHK
+           END-IF
+      *
+           IF    (( SPA-NAI-SEX    =   "2" )
+             AND  ( SPA-NAI-TRECESRYKA (IDXB)
+                                   =   "23" OR "24" ))
+               CONTINUE
+           ELSE
+               MOVE    ZERO            TO  FLG-BUNBENCHK
+           END-IF
+      *
+           EVALUATE    SPA-NAI-THKNNUM (IDXB)
+           WHEN    "002"
+               IF   (  SPA-NAI-THOJOKBN (IDXB)
+                               NOT =   SPACE )
+                   MOVE    ZERO    TO  FLG-BUNBENCHK
+               END-IF
+           WHEN    "039"
+           WHEN    "040"
+           WHEN    "971"
+           WHEN    "973"
+           WHEN    "975"
+               MOVE    ZERO        TO  FLG-BUNBENCHK
+           END-EVALUATE
+      *
+           IF    ( SPA-NAI-TBUNBEN (IDXB)
+                                   =   1 )
+               MOVE    1           TO  FLG-BUNBENCHK
+           END-IF
+      *
+           .
+       800-BUNBEN-CHK-EXT.
            EXIT.
       **************************************************************
       *    西暦和暦編集処理

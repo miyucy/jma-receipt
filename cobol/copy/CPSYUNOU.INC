@@ -573,6 +573,8 @@
               05  SYU-KYUFUGAI-GOKEI-TEN      PIC  9(07).
       *日別収納フラグ
            03  SYU-DAYINFFLG           PIC  X(01).
+      *分娩管理フラグ
+           03  SYU-BUNBENINFFLG        PIC  X(01).
       *入院履歴番号
            03  SYU-NYUIN-RRKNUM        PIC  9(03).
       *会計変更区分
@@ -596,6 +598,7 @@
       *
       *診療年月日（検索用）
            03  SYU-UPSRYYMD            PIC  X(08).
-      *診療年月日（検索用）
+      *公費ＩＤ（検索用）
            03  SYU-SELKOHID            PIC  9(10).
-      *
+      *入外区分（検索用）
+           03  SYU-SELNYUGAIKBN        PIC  X(01).

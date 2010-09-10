@@ -24,7 +24,8 @@
       ************************************************************
        01  SBUNBENCHK-AREA.
            03  SBUNBENCHK-PTID         PIC 9(10).
-           03  SBUNBENCHK-RRKNUM       PIC 9(03).
+           03  SBUNBENCHK-NYUGAIKBN    PIC X(01).
+           03  SBUNBENCHK-RRKNUM       PIC 9(07).
            03  SBUNBENCHK-SKYSTYMD     PIC X(08).
            03  SBUNBENCHK-SKYEDYMD     PIC X(08).
            03  SBUNBENCHK-BUNBEN       PIC 9(01).

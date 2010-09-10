@@ -914,7 +914,11 @@
                                MOVE    "key2"         TO  MCP-PATHNAME
                                PERFORM  900-SYUMEI-READ-SEC
                        END-PERFORM
-                       PERFORM    4405-SMEI-SAKUSEI-SEC
+                       IF  LNK-ORCSSKS-BUNBENJIHIKBN = "1"
+                         CONTINUE
+                       ELSE
+                         PERFORM    4405-SMEI-SAKUSEI-SEC
+                       END-IF
                  END-IF
                  MOVE     "tbl_syumei"   TO  MCP-TABLE
                  MOVE     "key2"         TO  MCP-PATHNAME
@@ -954,15 +958,19 @@
       *
       *            収納合計マスタの更新
       *
-                   INITIALIZE                      SYUTTL-REC
-                   PERFORM   4406-GOKEI-OKIKAE-SEC
-                   MOVE    SYUTTL-REC          TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "tbl_syutotal"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING  MCPAREA
-                                                      MCPDATA-REC
-                                                      SPA-AREA
+                   IF  LNK-ORCSSKS-BUNBENJIHIKBN = "1"
+                     CONTINUE
+                   ELSE
+                     INITIALIZE                      SYUTTL-REC
+                     PERFORM   4406-GOKEI-OKIKAE-SEC
+                     MOVE    SYUTTL-REC          TO  MCPDATA-REC
+                     MOVE    "DBUPDATE"          TO  MCP-FUNC
+                     MOVE    "tbl_syutotal"      TO  MCP-TABLE
+                     MOVE    "key"               TO  MCP-PATHNAME
+                     CALL    "ORCDBMAIN"         USING  MCPAREA
+                                                        MCPDATA-REC
+                                                        SPA-AREA
+                   END-IF
       *
                  END-IF
       *

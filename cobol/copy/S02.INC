@@ -1,4 +1,5 @@
-      ******************************************************************* * Project code name "ORCA"
+      *******************************************************************
+      * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
@@ -21,6 +22,7 @@
                 04  S02-B04S-STATE   PIC S9(9)   BINARY.
               03  S02-B03S.
                 04  S02-B03S-STATE   PIC S9(9)   BINARY.
+                04  S02-B03S-LABEL   PIC X(10).
               03  S02-B06.
                 04  S02-B06-STATE      PIC S9(9)   BINARY.
                 04  S02-B06-LABEL      PIC X(10).
@@ -76,7 +78,7 @@
                   05  S02-SYULIST-ROWATTR  PIC S9(9)   BINARY.
                   05  S02-SYULIST-ITEM     OCCURS  500 TIMES.
                     06  S02-TNUM        PIC X(5).
-                    06  S02-TDENPNUM    PIC X(9).
+                    06  S02-TDENPNUM    PIC X(10).
                     06  S02-TSRYKA      PIC X(6).
                     06  S02-TNYUGAI     PIC X(4).
                     06  S02-THKN        PIC X(50).

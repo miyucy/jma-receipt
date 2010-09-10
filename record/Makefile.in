@@ -404,9 +404,7 @@ RECORD_files = \
 	appointmod.rec \
 	P02K.rec \
 	W67.rec \
-	I07.rec \
 	G05.rec \
-	I08.rec \
 	XG01.rec \
 	XG02.rec \
 	XG99.rec \
@@ -425,6 +423,8 @@ RECORD_files = \
 	S07.rec \
 	SID3.rec \
 	U2ID1.rec \
+	S08.rec \
+	S09.rec \
 
 DEF_files = \
 

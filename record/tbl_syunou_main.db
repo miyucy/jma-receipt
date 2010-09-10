@@ -201,6 +201,7 @@ tbl_syunou_main {
         KYUFUGAI_OSIN3_TEN              number(7,0);
         KYUFUGAI_GOKEI_TEN              number(7,0);
 	DAYINFFLG			char(1);
+	BUNBENINFFLG			char(1);
 	ACCT_UPDKBN			char(1);
 	JYO_HKNFTNMONEY                 number(7,0);
 	JYO_COMPFTN                     number(7,0);
@@ -215,6 +216,7 @@ tbl_syunou_main {
 	UPSRYYMD			char(8),virtual;
         SELNYUIN_RRKNUM                 number(3,0),virtual;
         SELKOHID	                number(10,0),virtual;
+	SELNYUGAIKBN			char(1),virtual;
 };
 primary	{
 	HOSPNUM,NYUGAIKBN,PTID,DENPNUM;
@@ -1441,7 +1443,7 @@ path	upd1 	{
 		UPDATE	tbl_syunou_main
                 SET	NYUGAIKBN	=    :NYUGAIKBN
 		WHERE   HOSPNUM         =    :HOSPNUM
-		AND     NYUGAIKBN       =    :DENPJTIKBN
+		AND     NYUGAIKBN       =    :SELNYUGAIKBN
 		AND     PTID            =    :PTID
 		AND     CREATEKBN       =    :CREATEKBN
 		AND     SRYYMD		LIKE :SRYYMD
@@ -1449,7 +1451,7 @@ path	upd1 	{
 	};
 };
 
-path	del2 	{
+path	del6 	{
 	DBDELETE	{
 		DELETE	FROM tbl_syunou_main
 		WHERE   HOSPNUM         =    :HOSPNUM
@@ -1496,3 +1498,52 @@ path	key73 	{
 		;
 	};
 };
+
+path	key74 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key74_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   GRP_DENPNUM =   :GRP_DENPNUM
+			ORDER   BY    GRP_RENNUM
+		;
+	};
+};
+
+path	upd2 	{
+	DBUPDATE	{
+		UPDATE	tbl_syunou_main
+                SET	BUNBENINFFLG	=    :BUNBENINFFLG,
+			UPYMD           =    :UPYMD,  
+			UPHMS           =    :UPHMS
+		WHERE   HOSPNUM         =    :HOSPNUM
+		AND     NYUGAIKBN       =    :NYUGAIKBN
+		AND     PTID            =    :PTID
+		AND     DENPNUM         =    :DENPNUM
+		;
+	};
+};
+
+path	upd3 	{
+	DBUPDATE	{
+		UPDATE	tbl_syunou_main
+                SET	NYUGAIKBN	=    :NYUGAIKBN
+		WHERE   HOSPNUM         =    :HOSPNUM
+		AND     NYUGAIKBN       =    :SELNYUGAIKBN
+		AND     PTID            =    :PTID
+		AND     DENPNUM         =    :DENPNUM
+		;
+	};
+};
+
+
+path	abort 	{
+	DBSELECT	{
+		error	
+		;
+	};
+};
+

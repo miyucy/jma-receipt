@@ -111,7 +111,7 @@
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 200-EDIT-SEIKYU-SEC
+           PERFORM 200-EDIT-SYUNOU-SEC
       *
            .
       *
@@ -129,7 +129,7 @@
       *****************************************************************
       *    収納マスタ編集処理
       *****************************************************************
-       200-EDIT-SEIKYU-SEC             SECTION.
+       200-EDIT-SYUNOU-SEC             SECTION.
       *
            MOVE    "tbl_syunou_main"   TO  MCP-TABLE
            MOVE    MCPDATA-REC         TO  SYUNOU-REC
@@ -161,7 +161,7 @@
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
       *
            .
-       200-EDIT-SEIKYU-EXT.
+       200-EDIT-SYUNOU-EXT.
            EXIT.
       *****************************************************************
       *    新収納マスタ（主）編集処理
@@ -303,6 +303,7 @@
                                        TO SYUMAIN-KYUFUGAI-TEN (IDX1)
            END-PERFORM
            MOVE    SYU-DAYINFFLG       TO  SYUMAIN-DAYINFFLG
+           MOVE    SYU-BUNBENINFFLG    TO  SYUMAIN-BUNBENINFFLG
            MOVE    SYU-ACCT-UPDKBN     TO  SYUMAIN-ACCT-UPDKBN
            MOVE    SYU-JYO-HKNFTNMONEY TO  SYUMAIN-JYO-HKNFTNMONEY
            MOVE    SYU-JYO-COMPFTN     TO  SYUMAIN-JYO-COMPFTN
@@ -321,6 +322,7 @@
            MOVE    SYU-UPSRYYMD        TO  SYUMAIN-UPSRYYMD
            MOVE    SYU-NYUIN-RRKNUM    TO  SYUMAIN-SELNYUIN-RRKNUM
            MOVE    SYU-SELKOHID        TO  SYUMAIN-SELKOHID
+           MOVE    SYU-SELNYUGAIKBN    TO  SYUMAIN-SELNYUGAIKBN
       *
            .
        2001-EDIT-SYUMAIN-EXT.
@@ -468,6 +470,7 @@
                                        TO SYU-KYUFUGAI-TEN (IDX1)
            END-PERFORM
            MOVE    SYUMAIN-DAYINFFLG       TO  SYU-DAYINFFLG
+           MOVE    SYUMAIN-BUNBENINFFLG    TO  SYU-BUNBENINFFLG
            MOVE    SYUMAIN-ACCT-UPDKBN     TO  SYU-ACCT-UPDKBN
            MOVE    SYUMAIN-JYO-HKNFTNMONEY TO  SYU-JYO-HKNFTNMONEY
            MOVE    SYUMAIN-JYO-COMPFTN     TO  SYU-JYO-COMPFTN
@@ -480,8 +483,10 @@
            MOVE    SYUMAIN-UPHMS           TO  SYU-UPHMS
            MOVE    SYUMAIN-UPSRYYMD        TO  SYU-UPSRYYMD
            MOVE    SYUMAIN-SELKOHID        TO  SYU-SELKOHID
+           MOVE    SYUMAIN-SELNYUGAIKBN    TO  SYU-SELNYUGAIKBN
       *
-           IF    ( SYUMAIN-NYUGAIKBN       =   "1" )
+      *    "3"には定期請求差額を求めるときに一時的に置き換えている
+           IF    ( SYUMAIN-NYUGAIKBN       =   "1" OR "3" )
                    PERFORM 20011-SYUNYUIN-GET-SEC
            END-IF
       *
@@ -579,7 +584,15 @@
       *
            PERFORM 2001-EDIT-SYUMAIN-SEC
       *
-           PERFORM 2001-SYUNYUIN-INS-SEC
+           EVALUATE    WRK-PATHNAME
+           WHEN    "upd1"
+           WHEN    "upd3"
+               PERFORM 2001-SYUNYUIN-UPD-SEC
+           WHEN    "upd2"
+               CONTINUE
+           WHEN    OTHER
+               PERFORM 2001-SYUNYUIN-INS-SEC
+           END-EVALUATE
       *
            IF    ( MCP-RC          =    ZERO )
                MOVE    SYUMAIN-REC         TO  MCPDATA-REC
@@ -630,6 +643,22 @@
        2001-SYUMAIN-INS-EXT.
            EXIT.
       *****************************************************************
+      *    収納マスタ（入院情報）更新処理
+      *****************************************************************
+       2001-SYUNYUIN-UPD-SEC              SECTION.
+      *
+           INITIALIZE                      SYUNYUIN-REC
+           PERFORM 20011-SYUNYUIN-EDIT-SEC
+      *
+           MOVE    SYUNYUIN-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syunou_nyuin"    TO  MCP-TABLE
+           MOVE    WRK-PATHNAME          TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+      *
+           .
+       2001-SYUNYUIN-UPD-EXT.
+           EXIT.
+      *****************************************************************
       *    収納マスタ（入院情報）削除処理
       *****************************************************************
        2001-SYUNYUIN-DEL-SEC              SECTION.
@@ -652,7 +681,8 @@
       *
            PERFORM 2001-SYUNYUIN-DEL-SEC
       *
-           IF    ( SYU-NYUGAIKBN   =     "1" )
+      *    "3"には定期請求差額を求めるときに一時的に置き換えている
+           IF    ( SYU-NYUGAIKBN   =     "1" OR "3" )
                PERFORM 20011-SYUNYUIN-EDIT-SEC
       *
                IF    ( MCP-RC          =    ZERO )
@@ -743,7 +773,7 @@
            MOVE    SYU-NYUIN-RRKNUM    TO  SYUNYUIN-NYUIN-RRKNUM
            MOVE    SYU-SRYYMD          TO  SYUNYUIN-SELSRYYMD
            MOVE    SYU-CREATEKBN       TO  SYUNYUIN-SELCREATEKBN
-      *
+           MOVE    SYU-SELNYUGAIKBN    TO  SYUNYUIN-SELNYUGAIKBN
            .
        20011-SYUNYUIN-EDIT-EXT.
            EXIT.

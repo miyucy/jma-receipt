@@ -1,10 +1,23 @@
-I07	{
+S08	{
 	fixed6	{
+		B04	{
+			label	varchar(10);
+		};
+		B05	{
+	           	state	int;
+		};
+		B07	{
+			label	varchar(10);
+		};
+		B12	{
+	           	state	int;
+		};
 		PTNUM	{
 			value	varchar(20);
 		};
 		NAME	{
 			value	varchar(60);
+			style	varchar(20);
 		};
 		KANANAME	{
 			value	varchar(60);
@@ -166,8 +179,17 @@ I07	{
 			style	varchar(20);
 		};
 		LBLHEADER	{
-			value	varchar(20);
+			value	varchar(50);
 			style	varchar(20);
+		};
+		LBLNYUINYMD{
+			value	varchar(10);
+		};
+		LBLTAIINYMD{
+			value	varchar(10);
+		};
+		LBLNYUINDAY{
+			value	varchar(10);
 		};
 	};
 };

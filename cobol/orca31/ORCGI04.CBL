@@ -317,6 +317,8 @@
            COPY  "CPORCHCN03.INC"  REPLACING  //ORCHCN03//
                                            BY //WORCHCN03//.
       *
+           COPY  "CPLNKS08.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -453,6 +455,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    入院登録サブ
+           COPY    "CPI0SUB01.INC".
+      *
       *    分娩負担金サブ
        01  LNKBUNBEN-REC.
            COPY  "CPBUNBEN.INC"    REPLACING  //BUNBEN-//
@@ -571,8 +576,6 @@
            COPY    "I04.INC".
            COPY    "I05.INC".
            COPY    "I06.INC".
-           COPY    "I07.INC".
-           COPY    "I08.INC".
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
            COPY    "I0ID2.INC".
@@ -4630,26 +4633,41 @@
       *****************************************************************
       *    出産育児一時金画面遷移処理
       *****************************************************************
-       220-I07-SENI-SEC                    SECTION.
+       220-S08-SENI-SEC                    SECTION.
       *
-           INITIALIZE                      SPA-I07-AREA
-           MOVE    SPA-NAI-I04-PTID    TO  SPA-I07-PTID
-           MOVE    SPA-GMN-I04-PTNUM   TO  SPA-I07-PTNUM
+           MOVE    SPA-NAI-I04-PTID    TO  SPA-PTID
+           MOVE    SPA-GMN-I04-PTNUM   TO  SPA-PTNUM
+           MOVE    "1"                 TO  SPA-NYUGAIKBN
+      *
+           INITIALIZE                      LNKS08-AREA
+           MOVE    "I01"               TO  LNKS08-SAKIPG
            MOVE    SPA-NAI-I04-PTRRKNUM
-                                       TO  SPA-I07-RRKNUM
-           MOVE    "I04"               TO  SPA-I07-MOTOPG
+                                       TO  LNKS08-RRKNUM
+           MOVE    LNKS08-AREA         TO  SPA-WORK
       *
-           MOVE    "I07"               TO  SPA-SAKIPG
+           MOVE    "S08"               TO  SPA-SAKIPG
            MOVE    "I04"               TO  SPA-MOTOPG
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "I04"               TO  SPA-I0-MOTOPG2
+      *
+      *    ＳＰＡの内容を退避
+           INITIALIZE                  I0SUB01-LNK
+           MOVE    SPA-TERMID          TO  I0SUB01-TERMID
+           MOVE    "O"                 TO  I0SUB01-KBN
+           MOVE    SPA-I0FREE          TO  I0SUB01-SCRSPA-AREA
+           MOVE    SPA-I0KYOUTU        TO  I0SUB01-COMMON
+      *
+           CALL    "ORCGI0SUB01"       USING   I0SUB01-LNK
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+           MOVE    "S02"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
-       220-I07-SENI-EXT.
+       220-S08-SENI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4709,7 +4727,7 @@
       *
                IF    ( FLG-END         =   ZERO )
                    IF    ( SPA-I01-I04-BUNBENFTN-FLG   =   1 )
-                       PERFORM 220-I07-SENI-SEC
+                       PERFORM 220-S08-SENI-SEC
                    ELSE
                        MOVE    "B12"       TO  SPA-I01-I04-BTN
                        MOVE    "JOIN"      TO  MCP-PUTTYPE
@@ -5035,7 +5053,7 @@
       *
            IF    ( FLG-END         =   ZERO )
                IF    ( SPA-I01-I04-BUNBENFTN-FLG   =   1 )
-                   PERFORM 220-I07-SENI-SEC
+                   PERFORM 220-S08-SENI-SEC
                ELSE
                    MOVE    "B12"       TO  SPA-I01-I04-BTN
                    MOVE    "JOIN"      TO  MCP-PUTTYPE
@@ -6934,6 +6952,7 @@
            MOVE    SPA-HOSPNUM     TO  LNKBUNBEN-HOSPNUM
            MOVE    SPA-NAI-I04-PTID
                                    TO  LNKBUNBEN-PTID
+           MOVE    "1"             TO  LNKBUNBEN-NYUGAIKBN
            MOVE    SPA-NAI-I04-PTRRKNUM
                                    TO  LNKBUNBEN-RRKNUM
            CALL    "ORCSBUNBENFTN"     USING
@@ -7252,6 +7271,7 @@
            MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
            MOVE    SPA-NAI-I04-PTID
                                    TO  BUNBEN-PTID
+           MOVE    "1"             TO  BUNBEN-NYUGAIKBN
            MOVE    SPA-NAI-I04-PTRRKNUM
                                    TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC      TO  MCPDATA-REC

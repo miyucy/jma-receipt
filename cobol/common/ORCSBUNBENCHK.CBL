@@ -122,10 +122,12 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-           IF    ( SBUNBENCHK-RRKNUM   =   ZERO )
-               PERFORM 2001-PTNYUINRRK-CHK-SEC
-           ELSE
-               MOVE    SBUNBENCHK-RRKNUM   TO  WRK-RRKNUM
+           IF    ( SBUNBENCHK-NYUGAIKBN    =   "1" )
+               IF    ( SBUNBENCHK-RRKNUM   =   ZERO )
+                   PERFORM 2001-PTNYUINRRK-CHK-SEC
+               ELSE
+                   MOVE    SBUNBENCHK-RRKNUM   TO  WRK-RRKNUM
+               END-IF
            END-IF
       *
            IF    ( WRK-RRKNUM          =   ZERO )
@@ -239,6 +241,8 @@
       *
            MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
            MOVE    SBUNBENCHK-PTID TO  BUNBEN-PTID
+           MOVE    SBUNBENCHK-NYUGAIKBN
+                                   TO  BUNBEN-NYUGAIKBN
            MOVE    WRK-RRKNUM      TO  BUNBEN-RRKNUM
            MOVE    BUNBEN-REC      TO  MCPDATA-REC
       *

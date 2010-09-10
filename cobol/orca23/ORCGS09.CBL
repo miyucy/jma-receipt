@@ -17,10 +17,10 @@
       ********************************************************************
       *
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGI08.
+       PROGRAM-ID.                 ORCGS09.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 入院業務
+      *  サブシステム名    : 収納業務
       *  コンポーネント名  : 保険情報変更画面
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -50,10 +50,9 @@
            COPY    "COMMON-SPA".
       *
       *    入退院登録共通領域
-           COPY    "I0COMMON-SPA".
+           COPY    "S01COMMON-SPA".
       *
-      *    画面用ＳＰＡ
-           COPY    "I07SCR-SPA".
+           COPY    "S08SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -100,7 +99,11 @@
       *
       *    分娩管理
        01  BUNBEN-REC.
-           COPY    "CPBUNBEN.INC".
+           COPY  "CPBUNBEN.INC".
+      *
+      *    収納
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -131,18 +134,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "I01.INC".
-           COPY    "I02.INC".
-           COPY    "I03.INC".
-           COPY    "I04.INC".
-           COPY    "I05.INC".
-           COPY    "I06.INC".
-           COPY    "I07.INC".
-           COPY    "I08.INC".
-           COPY    "I0ERR.INC".
-           COPY    "I0ID1.INC".
-           COPY    "I0ID2.INC".
-           COPY    "I041.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -162,8 +166,8 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
-           MOVE    SPA-FREE        TO  SPA-I07FREE.
-           MOVE    SPA-WORK        TO  SPA-I0KYOUTU
+           MOVE    SPA-FREE        TO  SPA-S08FREE.
+           MOVE    SPA-WORK        TO  SPA-S01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD.
            MOVE    ZERO            TO  FLG-END.
@@ -184,9 +188,9 @@
                PERFORM 500-SET-SCREEN
            END-IF.
       *
-           MOVE    SPA-I0KYOUTU    TO  SPA-WORK
-           MOVE    SPA-AREA        TO  SPA-COMMON.
-           MOVE    SPA-I07FREE     TO  SPA-FREE
+           MOVE    SPA-S01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-S08FREE     TO  SPA-FREE
            .
       *
        000-PROC-SEC-EXT.
@@ -198,7 +202,7 @@
        100-INIT-SEC                   SECTION.
       *
       *    エラー画面より
-           IF    ( SPA-MOTOPG          =   "I0ERR" )
+           IF    ( SPA-MOTOPG          =   "SERR" )
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -219,7 +223,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    SPACE               TO  MCP-PUTTYPE
-           MOVE    "I08"               TO  MCP-WINDOW
+           MOVE    "S09"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -245,8 +249,8 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           MOVE    SPACE           TO  SPA-I08
-           INITIALIZE                  SPA-I08
+           MOVE    SPACE           TO  SPA-S09
+           INITIALIZE                  SPA-S09
       *
       *    コンボボックス編集処理
            PERFORM 310-COMBO-EDIT-SEC
@@ -254,25 +258,25 @@
            PERFORM 900-BUNBEN-KEY3-SEL-SEC
       *
            IF    ( BUNBEN-HKNJANUM     NOT =   SPACE )
-               MOVE    BUNBEN-HKNJANUM     TO  SPA-GMN-I08-HKNJANUM
+               MOVE    BUNBEN-HKNJANUM     TO  SPA-GMN-S09-HKNJANUM
                PERFORM 900-HKNJAINF-KEY-SEL-SEC
                IF    ( FLG-HKNJAINF        =   ZERO )
-                   MOVE    HKNJA-HKNJANAME TO  SPA-GMN-I08-HKNJANAME
+                   MOVE    HKNJA-HKNJANAME TO  SPA-GMN-S09-HKNJANAME
                END-IF
            END-IF
       *
            MOVE    BUNBEN-KANYUKBN     TO  WRK-CMB-CD
            PERFORM 4200-SYAKOKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-I08-SYAKOK-G
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-S09-SYAKOK-G
       *
            MOVE    BUNBEN-HONKZKKBN    TO  WRK-CMB-CD
            PERFORM 4200-HONKZKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-I08-HONKZK-G
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-S09-HONKZK-G
       *
-           MOVE    BUNBEN-KIGO         TO  SPA-GMN-I08-KIGO
-           MOVE    BUNBEN-NUM          TO  SPA-GMN-I08-NUM
+           MOVE    BUNBEN-KIGO         TO  SPA-GMN-S09-KIGO
+           MOVE    BUNBEN-NUM          TO  SPA-GMN-S09-NUM
       *
-           MOVE    1                   TO  SPA-GMN-I08-CUR
+           MOVE    1                   TO  SPA-GMN-S09-CUR
       *
            .
        310-SPASET-EXT.
@@ -297,14 +301,14 @@
       *****************************************************************
        3101-SYAKOKLST-SEC              SECTION.
       *
-           INITIALIZE                  SPA-GMN-I08-SYAKOKLST-G
+           INITIALIZE                  SPA-GMN-S09-SYAKOKLST-G
       *
-           MOVE    "1"             TO  SPA-GMN-I08-SYAKOKL   (1)
-           MOVE    "社保"          TO  SPA-GMN-I08-SYAKOKMEIL(1)
-           MOVE    "2"             TO  SPA-GMN-I08-SYAKOKL   (2)
-           MOVE    "国保"          TO  SPA-GMN-I08-SYAKOKMEIL(2)
+           MOVE    "1"             TO  SPA-GMN-S09-SYAKOKL   (1)
+           MOVE    "社保"          TO  SPA-GMN-S09-SYAKOKMEIL(1)
+           MOVE    "2"             TO  SPA-GMN-S09-SYAKOKL   (2)
+           MOVE    "国保"          TO  SPA-GMN-S09-SYAKOKMEIL(2)
       *
-           MOVE    2               TO  SPA-GMN-I08-SYAKOK-MAX
+           MOVE    2               TO  SPA-GMN-S09-SYAKOK-MAX
       *
            .
        3101-SYAKOKLST-EXT.
@@ -314,14 +318,14 @@
       *****************************************************************
        3101-HONKZKLST-SEC              SECTION.
       *
-           INITIALIZE                  SPA-GMN-I08-HONKZKLST-G
+           INITIALIZE                  SPA-GMN-S09-HONKZKLST-G
       *
-           MOVE    "1"             TO  SPA-GMN-I08-HONKZKL   (1)
-           MOVE    "本人"          TO  SPA-GMN-I08-HONKZKMEIL(1)
-           MOVE    "5"             TO  SPA-GMN-I08-HONKZKL   (2)
-           MOVE    "家族"          TO  SPA-GMN-I08-HONKZKMEIL(2)
+           MOVE    "1"             TO  SPA-GMN-S09-HONKZKL   (1)
+           MOVE    "本人"          TO  SPA-GMN-S09-HONKZKMEIL(1)
+           MOVE    "5"             TO  SPA-GMN-S09-HONKZKL   (2)
+           MOVE    "家族"          TO  SPA-GMN-S09-HONKZKMEIL(2)
       *
-           MOVE    2               TO  SPA-GMN-I08-HONKZK-MAX
+           MOVE    2               TO  SPA-GMN-S09-HONKZK-MAX
       *
            .
        3101-HONKZKLST-EXT.
@@ -366,7 +370,7 @@
       *****************************************************************
        400-GMN-INPUT-SEC          SECTION.
       *
-           MOVE    ZERO        TO      SPA-GMN-I08-CUR
+           MOVE    ZERO        TO      SPA-GMN-S09-CUR
       *
            .
       *
@@ -398,11 +402,11 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    I08-HKNJANUM    TO  SPA-GMN-I08-HKNJANUM
-           MOVE    I08-SYAKOK      TO  SPA-GMN-I08-SYAKOK-G
-           MOVE    I08-HONKZK      TO  SPA-GMN-I08-HONKZK-G
-           MOVE    I08-KIGO        TO  SPA-GMN-I08-KIGO
-           MOVE    I08-NUM         TO  SPA-GMN-I08-NUM
+           MOVE    S09-HKNJANUM    TO  SPA-GMN-S09-HKNJANUM
+           MOVE    S09-SYAKOK      TO  SPA-GMN-S09-SYAKOK-G
+           MOVE    S09-HONKZK      TO  SPA-GMN-S09-HONKZK-G
+           MOVE    S09-KIGO        TO  SPA-GMN-S09-KIGO
+           MOVE    S09-NUM         TO  SPA-GMN-S09-NUM
       *
            .
       *
@@ -446,9 +450,9 @@
       *****************************************************************
        4101-HKNJANUM-CHK-SEC           SECTION.
       *
-           MOVE    SPACE                   TO  SPA-GMN-I08-HKNJANAME
+           MOVE    SPACE                   TO  SPA-GMN-S09-HKNJANAME
       *
-           IF    ( SPA-GMN-I08-HKNJANUM    =   SPACE )
+           IF    ( SPA-GMN-S09-HKNJANUM    =   SPACE )
                CONTINUE
            ELSE
       *
@@ -457,25 +461,25 @@
       *        桁数チェック
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-I08-HKNJANUM
+               MOVE    SPA-GMN-S09-HKNJANUM
                                            TO  KANACHK-MAE-INPUT
                MOVE    8                   TO  KANACHK-MAX-CNT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
-               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-I08-HKNJANUM
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-S09-HKNJANUM
       *        半角で間に空白がないこと
                IF    ( KANACHK-RC      NOT =   ZERO  )
                 OR   ( KANACHK-RC2     NOT =   ZERO  )
                 OR   ( KANACHK-SYUBETU     =   2     )
                    MOVE    "0001"          TO  SPA-ERRCD
-                   MOVE    1               TO  SPA-GMN-I08-CUR
+                   MOVE    1               TO  SPA-GMN-S09-CUR
                END-IF
                IF    ( SPA-ERRCD           =   SPACE )
                    IF    ( KANACHK-MAX     =   4  OR  6  OR  8 )
                        MOVE    KANACHK-MAX TO  WRK-KANACHK-MAX
                    ELSE
                        MOVE    "0012"      TO  SPA-ERRCD
-                       MOVE    1           TO  SPA-GMN-I08-CUR
+                       MOVE    1           TO  SPA-GMN-S09-CUR
                    END-IF
                END-IF
       *
@@ -485,12 +489,12 @@
       *
       *            保険者番号あり
                    IF    ( FLG-HKNJAINF        =   ZERO )
-                       MOVE    HKNJA-HKNJANAME TO  SPA-GMN-I08-HKNJANAME
+                       MOVE    HKNJA-HKNJANAME TO  SPA-GMN-S09-HKNJANAME
                        MOVE    HKNJA-HKNNUM    TO  WRK-HKNNUM
       *                記号が空白以外の時、再編集
                        IF    ( HKNJA-KIGO  NOT     =   SPACE )
-                        AND  ( SPA-GMN-I08-KIGO    =   SPACE )
-                           MOVE    HKNJA-KIGO  TO  SPA-GMN-I08-KIGO
+                        AND  ( SPA-GMN-S09-KIGO    =   SPACE )
+                           MOVE    HKNJA-KIGO  TO  SPA-GMN-S09-KIGO
                        END-IF
       *
                    ELSE
@@ -500,13 +504,13 @@
       *
                            INITIALIZE                  LNK-CHKDGT-AREA
                            MOVE    2               TO  LNK-I-SYORIKBN
-                           MOVE    SPA-GMN-I08-HKNJANUM
+                           MOVE    SPA-GMN-S09-HKNJANUM
                                                    TO  LNK-I-CODE
                            CALL    "ORCSCHKDGT"        USING
                                                        LNK-CHKDGT-AREA
                            IF    ( LNK-O-ERRCD     NOT =   ZERO )
                                MOVE    "0002"      TO  SPA-ERRCD
-                               MOVE    1           TO  SPA-GMN-I08-CUR
+                               MOVE    1           TO  SPA-GMN-S09-CUR
                            END-IF
                        END-IF
       *
@@ -534,13 +538,13 @@
                    ELSE
                        IF    ( WRK-HKNNUM  =   "060" OR "067"
                                             OR "068" OR "069" )
-                           MOVE    "2"     TO  SPA-GMN-I08-SYAKOK
+                           MOVE    "2"     TO  SPA-GMN-S09-SYAKOK
                        ELSE
-                           MOVE    "1"     TO  SPA-GMN-I08-SYAKOK
+                           MOVE    "1"     TO  SPA-GMN-S09-SYAKOK
                        END-IF
                        IF    ( WRK-HKNNUM  =   "039" OR "040" )
                            MOVE    "0003"  TO  SPA-ERRCD
-                           MOVE    1       TO  SPA-GMN-I08-CUR
+                           MOVE    1       TO  SPA-GMN-S09-CUR
                        END-IF
                    END-IF
                END-IF
@@ -578,16 +582,16 @@
       *****************************************************************
        4101-SYAKOK-CHK-SEC             SECTION.
       *
-           IF    ( SPA-GMN-I08-SYAKOK-G    =   SPACE )
+           IF    ( SPA-GMN-S09-SYAKOK-G    =   SPACE )
                CONTINUE
            ELSE
-               MOVE    SPA-GMN-I08-SYAKOK  TO  WRK-CMB-CD
+               MOVE    SPA-GMN-S09-SYAKOK  TO  WRK-CMB-CD
                PERFORM 4200-SYAKOKLST-CHK-SEC
                IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    "0004"          TO  SPA-ERRCD
-                   MOVE    2               TO  SPA-GMN-I08-CUR
+                   MOVE    2               TO  SPA-GMN-S09-CUR
                ELSE
-                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-I08-SYAKOK-G
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-S09-SYAKOK-G
                END-IF
            END-IF
       *
@@ -599,22 +603,22 @@
       *****************************************************************
        4101-HONKZK-CHK-SEC             SECTION.
       *
-           IF    ( SPA-GMN-I08-HONKZK-G        =   SPACE )
-               IF    ( SPA-GMN-I08-HKNJANUM    =   SPACE )
+           IF    ( SPA-GMN-S09-HONKZK-G        =   SPACE )
+               IF    ( SPA-GMN-S09-HKNJANUM    =   SPACE )
                    CONTINUE
                ELSE
                    MOVE    "1"             TO  WRK-CMB-CD
                    PERFORM 4200-HONKZKLST-CHK-SEC
-                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-I08-HONKZK-G
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-S09-HONKZK-G
                END-IF
            ELSE
-               MOVE    SPA-GMN-I08-HONKZK  TO  WRK-CMB-CD
+               MOVE    SPA-GMN-S09-HONKZK  TO  WRK-CMB-CD
                PERFORM 4200-HONKZKLST-CHK-SEC
                IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    "0005"          TO  SPA-ERRCD
-                   MOVE    3               TO  SPA-GMN-I08-CUR
+                   MOVE    3               TO  SPA-GMN-S09-CUR
                ELSE
-                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-I08-HONKZK-G
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-S09-HONKZK-G
                END-IF
            END-IF
       *
@@ -626,34 +630,34 @@
       *****************************************************************
        4101-KIGO-CHK-SEC               SECTION.
       *
-           IF    ( SPA-GMN-I08-KIGO    =   SPACE )
+           IF    ( SPA-GMN-S09-KIGO    =   SPACE )
                CONTINUE
            ELSE
-               MOVE    SPA-GMN-I08-KIGO    TO  WRK-KANACHK-STR
+               MOVE    SPA-GMN-S09-KIGO    TO  WRK-KANACHK-STR
                PERFORM 800-ZENKAKU-CHK-SEC
-               MOVE    WRK-KANACHK-STR     TO  SPA-GMN-I08-KIGO
+               MOVE    WRK-KANACHK-STR     TO  SPA-GMN-S09-KIGO
                IF    ( FLG-ENTRYCHK    NOT =   ZERO )
                    MOVE    "0006"          TO  SPA-ERRCD
-                   MOVE    4               TO  SPA-GMN-I08-CUR
+                   MOVE    4               TO  SPA-GMN-S09-CUR
                END-IF
       *
                IF    ( SPA-ERRCD           =   SPACE )
                    MOVE    ZERO            TO  CNT-SPACE
-                   INSPECT SPA-GMN-I08-KIGO    TALLYING
+                   INSPECT SPA-GMN-S09-KIGO    TALLYING
                            CNT-SPACE       FOR ALL "　"
                    IF    ( CNT-SPACE       >   ZERO )
                        MOVE    "0007"      TO  SPA-ERRCD
-                       MOVE    4           TO  SPA-GMN-I08-CUR
+                       MOVE    4           TO  SPA-GMN-S09-CUR
                    END-IF
                END-IF
       *
                IF    ( SPA-ERRCD           =   SPACE )
-                   MOVE    SPA-GMN-I08-KIGO
+                   MOVE    SPA-GMN-S09-KIGO
                                            TO  WRK-STR
                    PERFORM 800-LENGTH-CHK-SEC
                    IF    ( WRK-LENGTH  >   38 )
                        MOVE    "0010"      TO  SPA-ERRCD
-                       MOVE    4           TO  SPA-GMN-I08-CUR
+                       MOVE    4           TO  SPA-GMN-S09-CUR
                    END-IF
                END-IF
       *
@@ -667,33 +671,33 @@
       *****************************************************************
        4101-NUM-CHK-SEC                SECTION.
       *
-           IF    ( SPA-GMN-I08-NUM    =   SPACE )
+           IF    ( SPA-GMN-S09-NUM    =   SPACE )
                CONTINUE
            ELSE
-               MOVE    SPA-GMN-I08-NUM    TO  WRK-KANACHK-STR
+               MOVE    SPA-GMN-S09-NUM    TO  WRK-KANACHK-STR
                PERFORM 800-ZENKAKU-CHK-SEC
-               MOVE    WRK-KANACHK-STR     TO  SPA-GMN-I08-NUM
+               MOVE    WRK-KANACHK-STR     TO  SPA-GMN-S09-NUM
                IF    ( FLG-ENTRYCHK    NOT =   ZERO )
                    MOVE    "0008"          TO  SPA-ERRCD
-                   MOVE    5               TO  SPA-GMN-I08-CUR
+                   MOVE    5               TO  SPA-GMN-S09-CUR
                END-IF
       *
                IF    ( SPA-ERRCD           =   SPACE )
                    MOVE    ZERO            TO  CNT-SPACE
-                   INSPECT SPA-GMN-I08-NUM    TALLYING
+                   INSPECT SPA-GMN-S09-NUM    TALLYING
                            CNT-SPACE       FOR ALL "　"
                    IF    ( CNT-SPACE       >   ZERO )
                        MOVE    "0009"      TO  SPA-ERRCD
-                       MOVE    5           TO  SPA-GMN-I08-CUR
+                       MOVE    5           TO  SPA-GMN-S09-CUR
                    END-IF
                END-IF
       *
                IF    ( SPA-ERRCD           =   SPACE )
-                   MOVE    SPA-GMN-I08-NUM TO  WRK-STR
+                   MOVE    SPA-GMN-S09-NUM TO  WRK-STR
                    PERFORM 800-LENGTH-CHK-SEC
                    IF    ( WRK-LENGTH  >   38 )
                        MOVE    "0011"      TO  SPA-ERRCD
-                       MOVE    5           TO  SPA-GMN-I08-CUR
+                       MOVE    5           TO  SPA-GMN-S09-CUR
                    END-IF
                END-IF
            END-IF
@@ -709,12 +713,12 @@
            INITIALIZE                  WRK-CMB-G
       *
            PERFORM VARYING IDX-CMB     FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-I08-SYAKOK-MAX )
+                   UNTIL ( IDX-CMB         >   SPA-GMN-S09-SYAKOK-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-I08-SYAKOKL (IDX-CMB)
+               IF    ( SPA-GMN-S09-SYAKOKL (IDX-CMB)
                                        =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-I08-SYAKOKLST  (IDX-CMB)
+                   MOVE    SPA-GMN-S09-SYAKOKLST  (IDX-CMB)
                                        TO  WRK-CMB-ITM
                END-IF
       *
@@ -731,12 +735,12 @@
            INITIALIZE                  WRK-CMB-G
       *
            PERFORM VARYING IDX-CMB     FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-I08-HONKZK-MAX )
+                   UNTIL ( IDX-CMB         >   SPA-GMN-S09-HONKZK-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-I08-HONKZKL (IDX-CMB)
+               IF    ( SPA-GMN-S09-HONKZKL (IDX-CMB)
                                        =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-I08-HONKZKLST  (IDX-CMB)
+                   MOVE    SPA-GMN-S09-HONKZKLST  (IDX-CMB)
                                        TO  WRK-CMB-ITM
                END-IF
       *
@@ -750,42 +754,42 @@
       *****************************************************************
        411-KANREN-CHK-SEC              SECTION.
       *
-           IF    ( SPA-GMN-I08-HKNJANUM    =   SPACE )
+           IF    ( SPA-GMN-S09-HKNJANUM    =   SPACE )
                MOVE    "1001"          TO  SPA-ERRCD
-               MOVE    1               TO  SPA-GMN-I08-CUR
+               MOVE    1               TO  SPA-GMN-S09-CUR
            END-IF
       *
            IF    ( SPA-ERRCD               =   SPACE )
-               IF    ( SPA-GMN-I08-SYAKOK-G    =   SPACE )
+               IF    ( SPA-GMN-S09-SYAKOK-G    =   SPACE )
                    MOVE    "1002"      TO  SPA-ERRCD
-                   MOVE    2           TO  SPA-GMN-I08-CUR
+                   MOVE    2           TO  SPA-GMN-S09-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-ERRCD               =   SPACE )
-               IF    ( SPA-GMN-I08-HONKZK-G    =   SPACE )
+               IF    ( SPA-GMN-S09-HONKZK-G    =   SPACE )
                    MOVE    "1003"      TO  SPA-ERRCD
-                   MOVE    3           TO  SPA-GMN-I08-CUR
+                   MOVE    3           TO  SPA-GMN-S09-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-GMN-I08-NUM =   SPACE )
+               IF    ( SPA-GMN-S09-NUM =   SPACE )
                    MOVE    "1004"      TO  SPA-ERRCD
-                   MOVE    5           TO  SPA-GMN-I08-CUR
+                   MOVE    5           TO  SPA-GMN-S09-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
                MOVE    SPACE           TO  WRK-STR
-               STRING  SPA-GMN-I08-KIGO    DELIMITED BY SPACE
-                       SPA-GMN-I08-NUM     DELIMITED BY SPACE
+               STRING  SPA-GMN-S09-KIGO    DELIMITED BY SPACE
+                       SPA-GMN-S09-NUM     DELIMITED BY SPACE
                INTO    WRK-STR
                END-STRING
                PERFORM 800-LENGTH-CHK-SEC
                IF    ( WRK-LENGTH  >   38 )
                    MOVE    "1005"      TO  SPA-ERRCD
-                   MOVE    4           TO  SPA-GMN-I08-CUR
+                   MOVE    4           TO  SPA-GMN-S09-CUR
                END-IF
            END-IF
       *
@@ -798,8 +802,8 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "I07"               TO  SPA-SAKIPG
-           MOVE    "I08"               TO  SPA-MOTOPG
+           MOVE    "S08"               TO  SPA-SAKIPG
+           MOVE    "S09"               TO  SPA-MOTOPG
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
@@ -828,26 +832,10 @@
                PERFORM 900-BUNBEN-KEY3-SEL-SEC
                IF    ( FLG-BUNBEN      =   ZERO )
       *
+                   PERFORM 2201-BUNBEN-HKN-SET-SEC
+      *
                    PERFORM 800-MCNDATE-SEC
       *
-                   MOVE    SPA-GMN-I08-HKNJANUM
-                                           TO  BUNBEN-HKNJANUM
-                   MOVE    SPA-GMN-I08-SYAKOK
-                                           TO  BUNBEN-KANYUKBN
-                   MOVE    SPA-GMN-I08-HONKZK
-                                           TO  BUNBEN-HONKZKKBN
-                   MOVE    SPA-GMN-I08-KIGO
-                                           TO  BUNBEN-KIGO
-                   MOVE    SPA-GMN-I08-NUM TO  BUNBEN-NUM
-                   IF    ( SPA-GMN-I08-HKNJANUM (1:2)
-                                           =   "67" )
-                    AND  ( SPA-GMN-I08-HKNJANUM (8:1)  NOT =   SPACE )
-                       MOVE    SPA-GMN-I08-HKNJANUM (3:)
-                                           TO  BUNBEN-HKNJANUM-S
-                   ELSE
-                       MOVE    SPA-GMN-I08-HKNJANUM
-                                           TO  BUNBEN-HKNJANUM-S
-                   END-IF
                    MOVE    SMCNDATE-YMD    TO  BUNBEN-UPYMD
                    MOVE    SMCNDATE-HMS    TO  BUNBEN-UPHMS
                    MOVE    BUNBEN-REC      TO  MCPDATA-REC
@@ -858,15 +846,17 @@
                        MOVE    "4002"      TO  SPA-ERRCD
                    END-IF
                ELSE
-                   MOVE    "4001"          TO  SPA-ERRCD
-                   MOVE    "tbl_bunben"    TO  MCP-TABLE
-                   MOVE    "abort"         TO  MCP-PATHNAME
-                   PERFORM 910-DBSELECT-SEC
+                   IF    ( SPA-S08-NYUGAIKBN =   "1" )
+                       MOVE    "4001"      TO  SPA-ERRCD
+                       MOVE    "tbl_bunben" TO MCP-TABLE
+                       MOVE    "abort"     TO  MCP-PATHNAME
+                       PERFORM 910-DBSELECT-SEC
+                   END-IF
                END-IF
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               MOVE   "B12"            TO  SPA-I08-BTN
+               MOVE   "B12"            TO  SPA-S09-BTN
                MOVE   "CHANGE"         TO  MCP-PUTTYPE
                PERFORM 210-BACK
            END-IF
@@ -874,6 +864,34 @@
            .
       *
        220-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険情報設定処理
+      *****************************************************************
+       2201-BUNBEN-HKN-SET-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-S09-HKNJANUM
+                                   TO  BUNBEN-HKNJANUM
+           MOVE    SPA-GMN-S09-SYAKOK
+                                   TO  BUNBEN-KANYUKBN
+           MOVE    SPA-GMN-S09-HONKZK
+                                   TO  BUNBEN-HONKZKKBN
+           MOVE    SPA-GMN-S09-KIGO
+                                   TO  BUNBEN-KIGO
+           MOVE    SPA-GMN-S09-NUM TO  BUNBEN-NUM
+           IF    ( SPA-GMN-S09-HKNJANUM (1:2)
+                                   =   "67" )
+            AND  ( SPA-GMN-S09-HKNJANUM (8:1)  NOT =   SPACE )
+               MOVE    SPA-GMN-S09-HKNJANUM (3:)
+                                   TO  BUNBEN-HKNJANUM-S
+           ELSE
+               MOVE    SPA-GMN-S09-HKNJANUM
+                                   TO  BUNBEN-HKNJANUM-S
+           END-IF
+      *
+           .
+      *
+       2201-BUNBEN-HKN-SET-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理
@@ -888,7 +906,7 @@
            END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "I08    "           TO  MCP-WINDOW.
+           MOVE    "S09    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -900,34 +918,34 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  I08
-           INITIALIZE                      I08
+           MOVE    SPACE               TO  S09
+           INITIALIZE                      S09
       *
-           MOVE    SPA-GMN-I08-HKNJANUM    TO  I08-HKNJANUM
-           MOVE    SPA-GMN-I08-HKNJANAME   TO  I08-HKNJANAME
+           MOVE    SPA-GMN-S09-HKNJANUM    TO  S09-HKNJANUM
+           MOVE    SPA-GMN-S09-HKNJANAME   TO  S09-HKNJANAME
       *
-           MOVE    SPA-GMN-I08-SYAKOK-G    TO  I08-SYAKOK
-           MOVE    SPA-GMN-I08-SYAKOK-MAX  TO  I08-SYAKOK-COUNT
+           MOVE    SPA-GMN-S09-SYAKOK-G    TO  S09-SYAKOK
+           MOVE    SPA-GMN-S09-SYAKOK-MAX  TO  S09-SYAKOK-COUNT
            PERFORM VARYING IDX-CMB    FROM 1   BY  1
-                   UNTIL ( IDX-CMB    >    SPA-GMN-I08-SYAKOK-MAX )
+                   UNTIL ( IDX-CMB    >    SPA-GMN-S09-SYAKOK-MAX )
       *
-               MOVE    SPA-GMN-I08-SYAKOKLST (IDX-CMB)
-                                           TO  I08-SYAKOK-ITEM (IDX-CMB)
+               MOVE    SPA-GMN-S09-SYAKOKLST (IDX-CMB)
+                                           TO  S09-SYAKOK-ITEM (IDX-CMB)
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-I08-HONKZK-G    TO  I08-HONKZK
-           MOVE    SPA-GMN-I08-HONKZK-MAX  TO  I08-HONKZK-COUNT
+           MOVE    SPA-GMN-S09-HONKZK-G    TO  S09-HONKZK
+           MOVE    SPA-GMN-S09-HONKZK-MAX  TO  S09-HONKZK-COUNT
            PERFORM VARYING IDX-CMB    FROM 1   BY  1
-                   UNTIL ( IDX-CMB    >    SPA-GMN-I08-HONKZK-MAX )
+                   UNTIL ( IDX-CMB    >    SPA-GMN-S09-HONKZK-MAX )
       *
-               MOVE    SPA-GMN-I08-HONKZKLST (IDX-CMB)
-                                           TO  I08-HONKZK-ITEM (IDX-CMB)
+               MOVE    SPA-GMN-S09-HONKZKLST (IDX-CMB)
+                                           TO  S09-HONKZK-ITEM (IDX-CMB)
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-I08-KIGO        TO  I08-KIGO
-           MOVE    SPA-GMN-I08-NUM         TO  I08-NUM
+           MOVE    SPA-GMN-S09-KIGO        TO  S09-KIGO
+           MOVE    SPA-GMN-S09-NUM         TO  S09-NUM
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -953,11 +971,11 @@
        5001-MAPCUR-SEC              SECTION.
       *
            IF     (SPA-ERRCD           =   SPACE)  AND
-                  (SPA-GMN-I08-CUR     =   ZERO )
+                  (SPA-GMN-S09-CUR     =   ZERO )
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
-           EVALUATE    SPA-GMN-I08-CUR
+           EVALUATE    SPA-GMN-S09-CUR
            WHEN    001
                MOVE    "HKNJANUM"      TO  MCP-WIDGET
            WHEN    002
@@ -983,15 +1001,15 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "HKNJANUM"
-               MOVE    002             TO  SPA-GMN-I08-CUR
+               MOVE    002             TO  SPA-GMN-S09-CUR
            WHEN    "SYAKOK"
-               MOVE    003             TO  SPA-GMN-I08-CUR
+               MOVE    003             TO  SPA-GMN-S09-CUR
            WHEN    "HONKZK"
-               MOVE    004             TO  SPA-GMN-I08-CUR
+               MOVE    004             TO  SPA-GMN-S09-CUR
            WHEN    "KIGO"
-               MOVE    005             TO  SPA-GMN-I08-CUR
+               MOVE    005             TO  SPA-GMN-S09-CUR
            WHEN    "NUM"
-               MOVE    212             TO  SPA-GMN-I08-CUR
+               MOVE    212             TO  SPA-GMN-S09-CUR
            END-EVALUATE
       *
            .
@@ -1057,21 +1075,21 @@
            WHEN    "1005"
                MOVE "記号と番号は合わせて１９文字以内で入力してください"
                                        TO  SPA-ERRMSG
-           WHEN    "4001"  THRU    "4002"
+           WHEN    "4001"  THRU    "4003"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  I0ERR
-           MOVE    SPA-ERRCD            TO  I0ERR-ERRCODE
-           MOVE    SPA-ERRMSG           TO  I0ERR-ERRMSG
+           MOVE    SPACE                TO  SERR
+           MOVE    SPA-ERRCD            TO  SERR-ERRCODE
+           MOVE    SPA-ERRMSG           TO  SERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
-           MOVE    "I08"                TO  SPA-MOTOPG
-           MOVE    "I0ERR"              TO  SPA-SAKIPG
+           MOVE    "S09"                TO  SPA-MOTOPG
+           MOVE    "SERR"               TO  SPA-SAKIPG
       *
            MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "I0ERR"              TO  MCP-WINDOW
+           MOVE    "SERR"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1148,7 +1166,7 @@
       *    保険者番号　検索チェック
            INITIALIZE                      HKNJAINF-REC
            MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
-           MOVE    SPA-GMN-I08-HKNJANUM
+           MOVE    SPA-GMN-S09-HKNJANUM
                                        TO  HKNJA-HKNJANUM
       *
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
@@ -1178,7 +1196,7 @@
       *
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
-           MOVE    SPA-GMN-I08-HKNJANUM(1:2)
+           MOVE    SPA-GMN-S09-HKNJANUM(1:2)
                                    TO  HKN-HBTNUM
            MOVE    SPA-SYSYMD      TO  HKN-TEKSTYMD
            MOVE    SPA-SYSYMD      TO  HKN-TEKEDYMD
@@ -1225,8 +1243,10 @@
            INITIALIZE                  BUNBEN-REC
       *
            MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
-           MOVE    SPA-I08-PTID    TO  BUNBEN-PTID
-           MOVE    SPA-I08-RRKNUM  TO  BUNBEN-RRKNUM
+           MOVE    SPA-PTID        TO  BUNBEN-PTID
+           MOVE    SPA-S08-NYUGAIKBN
+                                   TO  BUNBEN-NYUGAIKBN
+           MOVE    SPA-S08-RRKNUM  TO  BUNBEN-RRKNUM
       *
            MOVE    BUNBEN-REC      TO  MCPDATA-REC
            MOVE    "tbl_bunben"    TO  MCP-TABLE
@@ -1305,6 +1325,20 @@
            .
       *
        910-DBUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ追加処理
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
