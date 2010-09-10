@@ -1285,6 +1285,9 @@
            AND    (SPA-SYORIFLG            =   ZERO )
                PERFORM 3107-NYUKIN-INIT-SEC
            END-IF
+           MOVE    SPA-GMN-NYUKINKBN   TO  SPA-MAE-NYUKINKBN
+           MOVE    SPA-GMN-NYUKIN      TO  SPA-MAE-NYUKIN
+           MOVE    SPA-GMN-HENKIN      TO  SPA-MAE-HENKIN
            .
        3106-IKKATU-INIT-EXT.
            EXIT.
