@@ -66,6 +66,7 @@
       * 04.03.00     NACL=Â¿¡¹Ç¼  08/07/17  ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁÊ£¿ô²ó¿ô²Ä
       * 04.03.00     NACL=Â¿¡¹Ç¼  08/08/07  Ï«ºÒ½é¿ÇÎÁ£È£²£°Ç¯£´·î²þÀµÂÐ±þÂ¾
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  £È£²£²Ç¯£´·î²þÀµÂÐ±þ
+      * 04.06.00     NACL-Â¿¡¹Ç¼  10/09/XX  ¿Ç»¡ÎÁ²Ã»»½èÍýÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -561,6 +562,7 @@
       *
       *    ¥Á¥§¥Ã¥¯¡¢¼«Æ°»»Äê
            PERFORM 1001-NAI-CHK-SEC
+      *
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
                   (WRK-GMN-INPUTCD(IDX-MAX)
@@ -568,7 +570,6 @@
                   (SPA-ERRCD       NOT =   SPACE )
                CONTINUE
            ELSE
-      *
       *        ÅÀ¿ô·×»»
                PERFORM 1002-TENSU-KEI-SEC
            END-IF
@@ -648,29 +649,14 @@
                        END-IF
                      END-IF
                END-EVALUATE
-      *
-      *        ½é¿Ç¡¢ºÆ¿Ç¡¢»ØÆ³¡¢ºßÂð¤Î»þ¡¢²ó¿ô¤Ï£±¤Î¤ß
-      *        IF     (WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR
-      *                                            "12"  OR
-      *                                            "13"  OR
-      *                                            "14" )
-      *           AND (WRK-ERRCD               =   SPACE )
-      *           AND (WRK-GMN-INPUTCD (IDX-Z)(1:1)
-      *                                    NOT =   "."  )
-      *?????          (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
-      *??????     AND  WRK-COM-SRYSYUKBN(IDX-Z)  = "140" )
-      *?????      IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
-      *           IF      (WRK-COM-KAISU(IDX-Z)    >   1  )
-      *                PERFORM 10012-KAISU-CHK-SEC
-      *            END-IF
-      *******  END-IF
            END-PERFORM
+      *
       *    ½é¿Ç¡¢ºÆ¿Ç¡¢»ØÆ³¡¢ºßÂð¤Î»þ¡¢²ó¿ô¤Ï£±¤Î¤ß
            IF     (WRK-ERRCD           =   SPACE)
-               IF     (WRK-COM-SRYKBN (IDX-MAX)  =   "11"  OR
-                                                   "12"  OR
-                                                   "13"  OR
-                                                   "14" )
+               IF     (WRK-COM-SRYKBN (IDX-MAX)    =   "11"
+                                                   OR  "12"
+                                                   OR  "13"
+                                                   OR  "14" )
                   IF      (WRK-COM-KAISU(IDX-MAX)    >   1  )
                        PERFORM 10012-KAISU-CHK-SEC
                    END-IF
@@ -1025,7 +1011,6 @@
            END-IF
       *
            IF      SPA-NYUGAIKBN       =   "2"
-           AND     LNK-ORCSC-PG        =   "K02"
       *    ³°Íè´ÉÍý²Ã»»¤ÎÈ½Äê
                PERFORM 100111-KEIZOKU-CHK-SEC
                IF      FLG-GAIRAI          =   1
@@ -1040,10 +1025,9 @@
            END-IF
       *
       *    ÅÅÏÃºÆ¿Ç¤¬Í­¤ë»þ¡¢³°Íè´ÉÍý²Ã»»¤òºï½ü¤¹¤ë
-           IF      LNK-ORCSC-TELSAI-ARI    =   1
+           IF     (LNK-ORCSC-TELSAI-ARI    =   1  )
+      ***  AND    (LNK-ORCSC-PG        =   "K02"  )
                IF     (FLG-GAIRAI          =   1  )
-      *           ÌÀºÙ½ñÈ¯¹ÔÂÎÀ©²Ã»»
-      *********  OR   (FLG-MEISAKBN        =   1  )
                    INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
                    INITIALIZE              WRK-COM-TBLREC(IDX-Z)
                    GO    TO      100114-SYUGISYORI-CHK-EXT
@@ -1051,9 +1035,10 @@
            END-IF
       *
       *    ËýÀ­áÖÄË¼ÀÉÂ´ÉÍýÎÁ¤¬Í­¤ë»þ¡¢³°Íè´ÉÍý²Ã»»¤òºï½ü¤¹¤ë
-           IF     (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
+           IF    ((LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
       ************(LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
-                  (LNK-ORCSC-GAIRAI-NASI   =   1  )
+                  (LNK-ORCSC-GAIRAI-NASI   =   1  ))
+           AND    (LNK-ORCSC-PG        =   "K02"  )
                IF      FLG-GAIRAI          =   1
       *            ÄûÀµ¤Î»þ¡¢¼«Æ°ºï½ü¤Ï¤·¤Ê¤¤
                 AND    (LNK-ORCSC-SYORIFLG   =   ZERO)
@@ -1062,6 +1047,19 @@
                    GO    TO      100114-SYUGISYORI-CHK-EXT
                END-IF
            END-IF
+      *!!
+           IF      (LNK-ORCSC-SYOSIN2   =   1   ) 
+      *    ½é¿ÇÎÁ»»Äê»þ
+      *        ³°Íè´ÉÍý²Ã»»¡¦ÃÏ°è°åÎÅ¹×¸¥²Ã»»¡¦ÌÀºÙ½ñÈ¯¹ÔÂÎÀ©Åù²Ã»»ºï½ü
+               IF    ((FLG-GAIRAI          =   1  )  AND
+                      (LNK-ORCSC-PG        =   "K02"  ))
+                  OR  (FLG-CHIIKKBN        =   1  )
+                  OR  (FLG-MEISAKBN        =   1  )
+                   PERFORM 1001149-GYODEL-SEC
+                   GO    TO      100114-SYUGISYORI-CHK-EXT
+               END-IF
+           END-IF
+      *!!
       *
       *    ³°Íè´ÉÍý²Ã»»¡¦·ÑÂ³´ÉÍý²Ã»»¤ÎºÞ¤Ï¡¢£±ÌÀºÙ¤Î¤ß¤È¤¹¤ë
            IF      WRK-KASAN-NASI      =   "1"
@@ -1191,6 +1189,34 @@
            EXIT.
       *
       *****************************************************************
+      *    ¹Ôºï½ü½èÍý
+      *****************************************************************
+       1001149-GYODEL-SEC                  SECTION.
+      *
+           PERFORM VARYING     IDX-Z2  FROM    IDX-Z   BY  1
+                   UNTIL       IDX-Z2  >=  SPA-MAX-LINE
+               IF      IDX-Z2          =   IDX-Z
+                   INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
+                   INITIALIZE              WRK-COM-TBLREC(IDX-Z)
+               END-IF
+               IF     (WRK-GMN-INPUTCD (IDX-Z2)    =   SPACE )
+                  AND (WRK-COM-INPUTCD (IDX-Z2)    =   SPACE )
+                   MOVE    WRK-GMN-TBLREC(IDX-Z2 +  1) 
+                                           TO  WRK-GMN-TBLREC(IDX-Z2)
+                   MOVE    WRK-COM-TBLREC(IDX-Z2 +  1) 
+                                           TO  WRK-COM-TBLREC(IDX-Z2)
+                   INITIALIZE              WRK-GMN-TBLREC(IDX-Z2 + 1)
+                   INITIALIZE              WRK-COM-TBLREC(IDX-Z2 + 1)
+               END-IF
+           END-PERFORM
+      *    ºï½ü¹Ô¤Î¼¡¤òÂÐ¾Ý
+           COMPUTE IDX-Z               =   IDX-Z   -   1
+           COMPUTE IDX-MAX             =   IDX-MAX -   1
+           .
+       1001149-GYODEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ³°Íè´ÉÍý²Ã»»,·ÑÂ³´ÉÍý²Ã»»¤ÎÈ½Äê½èÍý
       *****************************************************************
        100111-KEIZOKU-CHK-SEC                  SECTION.
@@ -1267,7 +1293,7 @@
            .
        100111-KEIZOKU-CHK-EXT.
            EXIT.
-      *        
+      *
       *****************************************************************
       *    ¼«ÇåÀÕ¤Î·òÊÝ½àµò¤Î¿Ç»¡ÎÁ¤ÎÈ½Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
@@ -1447,7 +1473,6 @@
                    MOVE    1               TO  FLG-ARI
                    MOVE    IDX-Z           TO  IDX1
                END-IF
-      *
            END-PERFORM
       *
       *    ÅöÆü¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤ò»»ÄêºÑ¤ß¤Î»þ¡¢»þ´Ö³°¤Î¤ß¤Ï£Ï£Ë¤È¤¹¤ë
@@ -4310,6 +4335,21 @@
                        MOVE    1                   TO  FLG-SYOKAI
                    END-IF
                END-IF
+      *!!!!
+      *        ÆýÍÄ»ù°é»ù±ÉÍÜ»ØÆ³ÎÁ¥Á¥§¥Ã¥¯
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "111000470"
+      *            ¿Ç»¡ÎÁ¤¬½é¿Ç°Ê³°¤Ïºï½ü
+                   IF      (IDX-SINSATU        >   ZERO )
+                      IF      (WRK-SINSATU-KBN    =   "F"  )  AND
+                              (WRK-SINSATU-KBN2   =   SPACE)
+                          CONTINUE
+                      ELSE
+                          INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
+                          INITIALIZE              WRK-COM-TBLREC(IDX-Z)
+                      END-IF
+                  END-IF
+               END-IF
+      *!!!!
       *
              END-IF
            END-PERFORM
@@ -4781,7 +4821,6 @@
            IF      WRK-KAISU           >   ZERO
                MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
            END-IF
-      *
            .
        2001-SINSATU-CHK-EXT.
            EXIT.
