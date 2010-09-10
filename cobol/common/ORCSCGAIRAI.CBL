@@ -42,6 +42,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラーメッセー変更対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力・多剤投与他対応
+      *  04.06.00    NACL-多々納  10/09/10  分娩管理テーブル削除対応
       *****************************************************************
       *
       *
@@ -399,6 +400,10 @@
       *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
+      *
+      *    分娩管理テーブル
+       01  BUNBEN-REC.
+           COPY    "CPBUNBEN.INC".
       *
       *    診療行為マスタワーク
        01  LNK-WKSRYACT-AREA.
@@ -4122,6 +4127,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
            END-IF
+      *    分娩管理テーブル削除
+           IF     (FLG-SYUNOU          =   ZERO )   AND
+                  (SYU-BUNBENINFFLG    =   "1"  )
+               INITIALIZE                      BUNBEN-REC
+               MOVE    SYU-HOSPNUM         TO  BUNBEN-HOSPNUM
+               MOVE    SYU-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
+               MOVE    SYU-PTID            TO  BUNBEN-PTID
+               MOVE    SYU-SRYYMD(1:6)     TO  BUNBEN-SKYYM
+               MOVE    SYU-FUKU-DENPNUM    TO  BUNBEN-RRKNUM
+               MOVE    BUNBEN-REC          TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_bunben"        TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+           END-IF
            .
        450041-TEI-SYUNOU-DEL-EXT.
            EXIT.
@@ -4987,6 +5009,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
                END-IF
+           END-IF
+      *    分娩管理テーブル削除
+           IF     (FLG-SYUNOU          =   ZERO )   AND
+                  (SYU-BUNBENINFFLG    =   "1"  )
+               INITIALIZE                      BUNBEN-REC
+               MOVE    SYU-HOSPNUM         TO  BUNBEN-HOSPNUM
+               MOVE    SYU-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
+               MOVE    SYU-PTID            TO  BUNBEN-PTID
+               MOVE    SYU-SRYYMD(1:6)     TO  BUNBEN-SKYYM
+               MOVE    SYU-FUKU-DENPNUM    TO  BUNBEN-RRKNUM
+               MOVE    BUNBEN-REC          TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_bunben"        TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
            END-IF
            .
        45001141-SYUNOU-DELETE-EXT.
