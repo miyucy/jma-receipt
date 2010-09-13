@@ -155,3 +155,16 @@ path	abort	{
  		;
 	};
 };
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_bunben_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_bunben
+			WHERE HOSPNUM     =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   BIRTHDAY    =   :BIRTHDAY
+		;
+	};
+};
+

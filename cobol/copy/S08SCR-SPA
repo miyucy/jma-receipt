@@ -124,6 +124,7 @@
                            11  SPA-GMN-MEIPRTKBNMEIL    PIC X(20).
            03  SPA-NAI-AREA.
                05  SPA-NAI-LOCK                PIC 9(01).
+               05  SPA-NAI-GHKNNUM             PIC X(03).
                05  SPA-NAI-GNEW                PIC 9(01).
                05  SPA-NAI-SLOCK-MSG           PIC X(32).
                05  SPA-NAI-SANKANUM            PIC 9(10).

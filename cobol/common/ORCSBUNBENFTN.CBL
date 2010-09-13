@@ -327,12 +327,22 @@
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   10 )
       *
-               IF    ( SYS-1046-ETCJIHIKBN (IDX1)   IS  NUMERIC )
-                   MOVE    SYS-1046-ETCJIHIKBN (IDX1)
+               IF    ( LNKBUNBEN-NYUGAIKBN =   "1" )
+                   IF    ( SYS-1046-ETCJIHIKBN (IDX1)   IS  NUMERIC )
+                       MOVE    SYS-1046-ETCJIHIKBN (IDX1)
                                    TO  IDX-BUNBEN
+                   ELSE
+                       MOVE    09  TO  IDX-BUNBEN
+                   END-IF
                ELSE
-                   MOVE    09      TO  IDX-BUNBEN
+                   IF    ( SYS-1046-GETCJIHIKBN (IDX1)  IS  NUMERIC )
+                       MOVE    SYS-1046-GETCJIHIKBN (IDX1)
+                                   TO  IDX-BUNBEN
+                   ELSE
+                       MOVE    09  TO  IDX-BUNBEN
+                   END-IF
                END-IF
+      *
                COMPUTE LNKBUNBEN-MONEY (IDX-BUNBEN)
                    =   LNKBUNBEN-MONEY (IDX-BUNBEN)
                    +   SYU-JIHI-TAXNASI (IDX1)

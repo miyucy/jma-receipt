@@ -392,6 +392,8 @@
       *
            ELSE
                PERFORM 900-SYUNOU-KEY-SEL-SEC
+               MOVE    SYU-SYUHKNNUM
+                                   TO  SPA-NAI-GHKNNUM
                MOVE    SYU-SRYYMD  TO  SPA-NAI-SRYYMD
                MOVE    SYU-SRYYMD  TO  WRK-SYMD
                PERFORM 800-HIZUKE-CHK-SEC
@@ -499,8 +501,10 @@
                                            TO  SPA-GMN-DAIRI-MONEY
       *
                IF    ( FLG-SAIKEISAN       =   ZERO )
+                   MOVE    "Ｅ外来出産"    TO  SPA-GMN-BIKOU
                    MOVE    LNKBUNBEN-NYUIN-DAY
                                            TO  BUNBEN-NYUIN-DAY
+      *
                END-IF
       *
            END-IF
@@ -1820,6 +1824,34 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-ERRCD           =   SPACE )
+      *
+               PERFORM 900-BUNBEN-KEY5-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-BUNBEN  NOT =   ZERO )
+                         OR  ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   IF    ( SPA-HOSPNUM =   BUNBEN-HOSPNUM )
+                    AND  ( SPA-PTID    =   BUNBEN-PTID )
+                    AND  ( SPA-S08-NYUGAIKBN
+                                       =   BUNBEN-NYUGAIKBN )
+                    AND  ( SPA-S08-RRKNUM
+                                       =   BUNBEN-RRKNUM )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0013"  TO  SPA-ERRCD
+                   END-IF
+      *
+                   PERFORM 900-BUNBEN-KEY5-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_bunben"    TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           END-IF
+      *
            .
       *
        411-KANREN-CHK-EXT.
@@ -1999,7 +2031,7 @@
                    MOVE    SPACE               TO  SPA-PRT-FLG
                END-IF
       *
-               IF    ( SPA-S08-MOTOPG  =   "I04" )
+               IF    ( SPA-S08-MOTOPG  =   "I04" OR "S02" )
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK
                ELSE
@@ -2218,7 +2250,8 @@
            IF    ( IDX-INFO           >=   4 )
                CONTINUE
            ELSE
-               IF    ( SPA-GMN-BUNBENKBN   =   "2"   )
+               IF   (( SPA-GMN-BUNBENKBN   =   "2"   )
+                   OR( SPA-S08-NYUGAIKBN   =   "2"   ))
                 AND  ( SPA-GMN-BIKOU       =   SPACE )
                    COMPUTE IDX-INFO        =   IDX-INFO    +   1
                    MOVE    "bule"      TO  S08-LBLINFO-STYLE (IDX-INFO)
@@ -2234,10 +2267,28 @@
            IF    ( IDX-INFO           >=   4 )
                CONTINUE
            ELSE
-               COMPUTE IDX-INFO    =   IDX-INFO    +   1
-               MOVE    "blue"      TO  S08-LBLINFO-STYLE (IDX-INFO)
+               IF  ( SPA-S08-NYUGAIKBN       =   "2" )
+                AND( SPA-NAI-GHKNNUM(1:2)    =   "98" )
+                AND( SPA-GMN-BUNBENKBN       =   "2" )
+                   COMPUTE IDX-INFO    =   IDX-INFO    +   1
+                   STRING  "自費保険に異常分娩を紐付けする場合、"
+                                           DELIMITED BY SIZE
+                           "患者登録または診療行為業務で特記事項を"
+                                           DELIMITED BY SIZE
+                           "登録してください。"
+                                           DELIMITED BY SIZE
+                   INTO     S08-LBLINFO (IDX-INFO)
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           IF    ( IDX-INFO           >=   4 )
+               CONTINUE
+           ELSE
                IF    ( SPA-GMN-SANKAKBN        =   "1" OR "3" )
                    IF    ( SPA-GMN-SNK-MONEY   =   ZERO )
+                       COMPUTE IDX-INFO    =   IDX-INFO    +   1
+                       MOVE    "blue"  TO  S08-LBLINFO-STYLE (IDX-INFO)
                        STRING  "産科医療保障制度の金額が未入力です。"
                                                DELIMITED BY SIZE
                        INTO     S08-LBLINFO (IDX-INFO)
@@ -2532,6 +2583,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0012"
                MOVE   "その他の金額がマイナスです"
+                                       TO  SPA-ERRMSG
+           WHEN    "0013"
+               MOVE   "出産年月日の同じデータが既に登録されています"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "在胎週数を入力してください"
@@ -2882,6 +2936,55 @@
            .
       *
        900-BUNBEN-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    分娩管理検索処理
+      *****************************************************************
+       900-BUNBEN-KEY5-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BUNBEN
+           INITIALIZE                  BUNBEN-REC
+      *
+           MOVE    SPA-HOSPNUM     TO  BUNBEN-HOSPNUM
+           MOVE    SPA-PTID        TO  BUNBEN-PTID
+           MOVE    SPA-NAI-BIRTHDAY-BABY
+                                   TO  BUNBEN-BIRTHDAY
+      *
+           MOVE    BUNBEN-REC      TO  MCPDATA-REC
+           MOVE    "tbl_bunben"    TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BUNBEN-REC
+           ELSE
+               INITIALIZE              BUNBEN-REC
+               MOVE    1           TO  FLG-BUNBEN
+           END-IF
+      *
+           .
+      *
+       900-BUNBEN-KEY5-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    分娩管理検索処理
+      *****************************************************************
+       900-BUNBEN-KEY5-FET-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BUNBEN
+      *
+           MOVE    "tbl_bunben"    TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BUNBEN-REC
+           ELSE
+               INITIALIZE              BUNBEN-REC
+               MOVE    1           TO  FLG-BUNBEN
+           END-IF
+      *
+           .
+      *
+       900-BUNBEN-KEY5-FET-EXT.
            EXIT.
       *****************************************************************
       *    旧姓履歴検索処理

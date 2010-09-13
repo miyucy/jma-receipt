@@ -37,14 +37,17 @@
                05  SYS-1046-EDYUKYMD    PIC  X(08).
       *管理テーブル
            03  SYS-1046-TBL.
-      *その他自費緋付区分
+      *その他自費緋付区分（入院）
                05  SYS-1046-ETCJIHIKBN  PIC  X(02)
                                         OCCURS 10.
       *保険適用外明緋付区分
                05  SYS-1046-MEISAIKBN   PIC  X(02)
-                                        OCCURS 16.
+                                        OCCURS 30.
+      *その他自費緋付区分（外来）
+               05  SYS-1046-GETCJIHIKBN PIC  X(02)
+                                        OCCURS 10.
       *予備
-               05  SYS-1046-FIL         PIC  X(448).
+               05  SYS-1046-FIL         PIC  X(400).
       *端末ＩＤ
            03  SYS-1046-TERMID          PIC  X(16).
       *オペーレータＩＤ

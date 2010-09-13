@@ -10,10 +10,13 @@
                 04  W67-MEISAIKBN          PIC X(23).
                 04  W67-MEISAIKBN-COUNT    PIC S9(9)   BINARY.
                 04  W67-MEISAIKBN-ITEM     PIC X(23)   OCCURS  20 TIMES.
-              03  W67-LBLETCJIHI PIC X(20) OCCURS 10.
-              03  W67-CMB-ETCJIHIKBN       OCCURS 10.
-                04  W67-ETCJIHIKBN         PIC X(23).
-                04  W67-ETCJIHIKBN-COUNT   PIC S9(9)   BINARY.
-                04  W67-ETCJIHIKBN-ITEM    PIC X(23)   OCCURS  20 TIMES.
-
-
+              03  W67-LBLNETCJIHI PIC X(20) OCCURS 10.
+              03  W67-LBLGETCJIHI PIC X(20) OCCURS 10.
+              03  W67-CMB-NETCJIHIKBN       OCCURS 10.
+                04  W67-NETCJIHIKBN         PIC X(23).
+                04  W67-NETCJIHIKBN-COUNT   PIC S9(9)   BINARY.
+                04  W67-NETCJIHIKBN-ITEM    PIC X(23)   OCCURS 20 TIMES.
+              03  W67-CMB-GETCJIHIKBN       OCCURS 10.
+                04  W67-GETCJIHIKBN         PIC X(23).
+                04  W67-GETCJIHIKBN-COUNT   PIC S9(9)   BINARY.
+                04  W67-GETCJIHIKBN-ITEM    PIC X(23)   OCCURS 20 TIMES.
