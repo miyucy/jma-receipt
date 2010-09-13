@@ -4135,7 +4135,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SYU-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
                MOVE    SYU-PTID            TO  BUNBEN-PTID
                MOVE    SYU-SRYYMD(1:6)     TO  BUNBEN-SKYYM
-               MOVE    SYU-FUKU-DENPNUM    TO  BUNBEN-RRKNUM
+               MOVE    SYU-DENPNUM         TO  BUNBEN-RRKNUM
                MOVE    BUNBEN-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_bunben"        TO  MCP-TABLE
@@ -5018,7 +5018,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SYU-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
                MOVE    SYU-PTID            TO  BUNBEN-PTID
                MOVE    SYU-SRYYMD(1:6)     TO  BUNBEN-SKYYM
-               MOVE    SYU-FUKU-DENPNUM    TO  BUNBEN-RRKNUM
+               MOVE    SYU-DENPNUM         TO  BUNBEN-RRKNUM
                MOVE    BUNBEN-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_bunben"        TO  MCP-TABLE
