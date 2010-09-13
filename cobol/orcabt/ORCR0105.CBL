@@ -107,6 +107,7 @@
       *                                     病名なし
       *                                     単位コードなし
       *                                     生保の受給者番号なし
+      *  04.06.02    NACL-門脇    10/09/13  出産一時金対応（外来）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -724,11 +725,13 @@
            03  FILLER          PIC X(10)   VALUE   "２０二割".
            03  FILLER          PIC X(02)   VALUE   "21".
            03  FILLER          PIC X(10)   VALUE   "２１高半".
+           03  FILLER          PIC X(02)   VALUE   "25".
+           03  FILLER          PIC X(10)   VALUE   "２５出産".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   19.
+           03  TBL-TOKKI       OCCURS   20.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   19.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   20.
       *
       *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.

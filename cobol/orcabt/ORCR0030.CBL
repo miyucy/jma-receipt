@@ -502,6 +502,7 @@
       *                                     対応
       *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
+      *  04.06.03    NACL-門脇    10/09/13  出産一時金対応（外来）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -685,6 +686,7 @@
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
+           03  FLG-BUNBEN-SET                          PIC 9(01).
            03  FLG-SAIGAI-TAISYO                       PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
@@ -1297,6 +1299,7 @@
            03  CONS-TOKKI19        PIC X(14) VALUE "00000099990119".
            03  CONS-TOKKI20        PIC X(14) VALUE "00000099990120".
            03  CONS-TOKKI21        PIC X(14) VALUE "00000099990121".
+           03  CONS-TOKKI25        PIC X(14) VALUE "00000099990125".
       *
       *    病床数編集フラグ編集の為のコード（特定疾患療養指導料等）
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -1750,6 +1753,10 @@
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
+      *    分娩管理テーブル
+       01  BUNBEN-REC.
+           COPY    "CPBUNBEN.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -2176,6 +2183,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                         FLG-KEISAN-TOK2
                                         WRK-KINGAKU-TOK1
            MOVE      ZERO       TO      FLG-KOUGAKU
+           MOVE      ZERO       TO      FLG-BUNBEN-SET
       *
            PERFORM     211J-SYUKEIKBN-HANBETU-SEC
       *
@@ -3054,6 +3062,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                     (RECE02-SRYYM   >  "201103")             ))
                OR (( RECE02-PTTOKKI-CD(TOKKI-IDX) = "21"     ) AND
                    ( RECE02-SRYYM   <  "200901"              ))
+               OR (( RECE02-PTTOKKI-CD(TOKKI-IDX) = "25"     ) AND
+                   ((RECE02-SRYYM   <  "200910") OR
+                    (RECE02-SRYYM   >  "201103")             ))
                  CONTINUE
                ELSE
                  ADD    1     TO    TOKKI-IDX2
@@ -8822,6 +8833,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE    "20"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI21
                        MOVE    "21"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI25
+                       MOVE    "25"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        2
                EVALUATE    SRY-SRYCD(IDX2)
@@ -8865,6 +8878,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE    "20"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI21(6:9)
                        MOVE    "21"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI25(6:9)
+                       MOVE    "25"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        3
                        MOVE    "14"      TO      WRK-TOKKI
@@ -8894,6 +8909,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE    "11"      TO      WRK-TOKKI
              WHEN       10
                        MOVE    "12"      TO      WRK-TOKKI
+             WHEN       11
+                       MOVE    "25"      TO      WRK-TOKKI
            END-EVALUATE
       *
       *    既に同じ特記事項コードが編集済みのときはセットしない
@@ -8925,6 +8942,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                END-IF
              WHEN      "21"
                IF  (RECE02-SRYYM   <   "200901")
+                   GO  TO  21045-TOKKI-HENSYU-EXT
+               END-IF
+             WHEN      "25"
+               IF  (RECE02-SRYYM   >=  "200910")
+               AND (RECE02-SRYYM   <=  "201103")
+                   CONTINUE
+               ELSE
                    GO  TO  21045-TOKKI-HENSYU-EXT
                END-IF
            END-EVALUATE
@@ -9027,6 +9051,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        IF    SYU-HKNCOMBINUM   =
                                             RECE02-HKNCOMBI (IDX1)
                                 PERFORM 21052-RECE02-HENSYU3-SEC
+                                IF  SYU-BUNBENINFFLG  =  "1"
+                                  PERFORM 21053-BUNBEN-TOKKI-HENSYU-SEC
+                                END-IF
                                 MOVE    10              TO  IDX1
                        END-IF
                    END-PERFORM
@@ -10750,6 +10777,53 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        210524-FTNMONEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    分娩特記事項編集
+      *****************************************************************
+       21053-BUNBEN-TOKKI-HENSYU-SEC      SECTION.
+      *
+           IF   (FLG-BUNBEN-SET  =   ZERO   )
+           AND  (RECE02-SRYYM   >=  "200910")
+           AND  (RECE02-SRYYM   <=  "201103")
+              IF ( RECE02-HKNNUM(1:2)   =  "98"  OR "90"  OR "91" )
+              OR ( RECE02-HKNNUM        =  "039" OR "040"         )
+              OR ((RECE02-HKNNUM        =  "002") AND
+                  (RECE02-HOJOKBN   NOT =  SPACE)                 )
+                CONTINUE
+              ELSE
+                INITIALIZE                    BUNBEN-REC
+                MOVE    RECE02-HOSPNUM    TO  BUNBEN-HOSPNUM
+                MOVE    RECE02-PTID       TO  BUNBEN-PTID
+                MOVE    "2"               TO  BUNBEN-NYUGAIKBN
+                MOVE    SYU-DENPNUM       TO  BUNBEN-RRKNUM
+                MOVE    BUNBEN-REC        TO  MCPDATA-REC
+                MOVE    "tbl_bunben"      TO  MCP-TABLE
+                MOVE    "key3"            TO  MCP-PATHNAME
+                PERFORM   900-DBSELECT-SEC
+                IF      MCP-RC            =   ZERO
+                  MOVE  "tbl_bunben"      TO  MCP-TABLE
+                  MOVE  "key3"            TO  MCP-PATHNAME
+                  PERFORM 900-DBFETCH-SEC
+                  IF    MCP-RC            =   ZERO
+                    MOVE   MCPDATA-REC    TO  BUNBEN-REC
+                    IF   (BUNBEN-RIYOUKBN    =   "1")
+                    AND  (BUNBEN-BUNBENKBN   =   "2")
+                       MOVE     11        TO  FLG-TOKKI
+                       PERFORM  21045-TOKKI-HENSYU-SEC
+                       MOVE     1         TO  FLG-BUNBEN-SET
+                    END-IF
+                  END-IF
+                END-IF
+                MOVE    "tbl_bunben"      TO  MCP-TABLE
+                MOVE    "key3"            TO  MCP-PATHNAME
+                PERFORM   900-CLOSE-SEC
+              END-IF
+           END-IF
+      *
+           .
+       21053-BUNBEN-TOKKI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
