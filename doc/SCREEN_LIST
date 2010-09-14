@@ -59,6 +59,7 @@ U02.glade	orca11	(U02)受付
 U02Q.glade	orca11	(U02Q)受付登録−ＱＲ一覧
 U02X.glade	orca11	(U02X)受付ＣＬＡＩＭ送信選択サブ
 U2ERR.glade	orca11	(U2ERR)エラー情報
+U2ID1.glade	orca11	(U2ID1)確認画面
 
 P02.glade	orca12	(P02)患者登録 - 患者登録
 P02A.glade	orca12	(P02A)患者登録
@@ -164,6 +165,8 @@ S04.glade	orca23	(S04)支払証明書印刷
 S05.glade	orca23	(S05)収納登録−収納検索画面
 S06.glade	orca23	(S06)収納登録−一括入金画面
 S07.glade	orca23	(S07)印刷指示画面
+S08.glade	orca23	(S08)出産育児一時金画面
+S09.glade	orca23	(S09)保険情報変更画面
 S99.glade	orca23	(S99)処理結果
 SERR.glade	orca23	(SERR)エラー情報
 SID1.glade	orca23	(SID1)確認画面
