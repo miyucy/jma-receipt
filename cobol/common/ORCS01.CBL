@@ -11666,7 +11666,7 @@
                        ( COMB-KOH1HKNNUM     = "180" OR "182"
                           OR "186" OR "187" OR "188" OR "189"
                           OR "286" OR "190" OR "280" OR "282"
-                          OR "153"                            ) AND
+                          OR "153" OR "183"                   ) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -12454,11 +12454,11 @@
                        ((COMB-KOH1HKNNUM     = "180" OR "182"
                           OR "186" OR "187" OR "188" OR "189"
                           OR "286" OR "190" OR "280" OR "282"
-                          OR "153"                           ) OR
+                          OR "153" OR "183"                  ) OR
                         (COMB-KOH2HKNNUM     = "180" OR "182"
                           OR "186" OR "187" OR "188" OR "189"
                           OR "286" OR "190" OR "280" OR "282"
-                          OR "153"                           )) AND
+                          OR "153" OR "183"                  )) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -13176,15 +13176,15 @@
                        ((COMB-KOH1HKNNUM     = "180" OR "182"
                           OR "186" OR "187" OR "188" OR "189"
                           OR "286" OR "190" OR "280" OR "282"
-                          OR "153"                           ) OR
+                          OR "153" OR "183"                  ) OR
                         (COMB-KOH2HKNNUM     = "180" OR "182"
                           OR "186" OR "187" OR "188" OR "189"
                           OR "286" OR "190" OR "280" OR "282"
-                          OR "153"                           ) OR
+                          OR "153" OR "183"                  ) OR
                         (COMB-KOH3HKNNUM     = "180" OR "182"
                           OR "186" OR "187" OR "188" OR "189"
                           OR "286" OR "190" OR "280" OR "282"
-                          OR "153"                           )) AND
+                          OR "153" OR "183"                  )) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -17593,19 +17593,19 @@
              IF   COMB-KOH1HKNNUM       =  "180" OR "182" OR "186" OR
                                            "187" OR "188" OR "189" OR
                                            "190" OR "280" OR "282" OR
-                                           "286" OR "153"
+                                           "286" OR "153" OR "183"
                   PERFORM    23081-ZANOKIKAE-HENSYU1-SEC
              END-IF
              IF   COMB-KOH2HKNNUM       =  "180" OR "182" OR "186" OR
                                            "187" OR "188" OR "189" OR
                                            "190" OR "280" OR "282" OR
-                                           "286" OR "153"
+                                           "286" OR "153" OR "183"
                   PERFORM    23082-ZANOKIKAE-HENSYU2-SEC
              END-IF
              IF   COMB-KOH3HKNNUM       =  "180" OR "182" OR "186" OR
                                            "187" OR "188" OR "189" OR
                                            "190" OR "280" OR "282" OR
-                                           "286" OR "153"
+                                           "286" OR "153" OR "183"
                   PERFORM    23083-ZANOKIKAE-HENSYU3-SEC
              END-IF
            END-IF
