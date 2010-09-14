@@ -112,6 +112,9 @@
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
+           IF    ( SBUNBENCHK-NYUGAIKBN    =   SPACE )
+               MOVE    "1"         TO  SBUNBENCHK-NYUGAIKBN
+           END-IF
       *
            .
        100-INIT-EXT.

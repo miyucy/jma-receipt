@@ -176,6 +176,10 @@
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
+           IF    ( LNKBUNBEN-NYUGAIKBN =   SPACE )
+               MOVE    "1"             TO  LNKBUNBEN-NYUGAIKBN
+           END-IF
+      *
            PERFORM 900-BUNBEN-KEY3-SEL-SEC
       *
            IF    ( LNKBUNBEN-NYUGAIKBN =   "1" )
