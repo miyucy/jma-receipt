@@ -831,7 +831,8 @@
            IF      SPA-GMN26-CD        =   "22"
                                        OR  "23"
                                        OR  "24"
-                                       OR  "25"
+      *        出産は外来可
+      ***                              OR  "25"
       *        入院
                MOVE    SPA-GMN26-NYUGAI-LST (2)
                                            TO  SPA-GMN26-NYUGAI-G
