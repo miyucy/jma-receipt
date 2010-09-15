@@ -2033,7 +2033,7 @@
       *
            MOVE    ZERO                TO  WRK-RECE61-TEKSTYMD 
            IF      COMB-HKNNUM         =   SPACE
-               IF      COMB-KOH1HKNNUM     =   "020"
+               IF      COMB-KOH1HKNNUM     =   "020"   OR  "030"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
                END-IF
            END-IF
@@ -2226,7 +2226,8 @@
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE61-TEKSTYMDX  (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
            IF    ( COMB-HKNNUM        =   SPACE )
-           AND   ( COMB-KOH1HKNNUM    =   "020" )
+           AND   ( COMB-KOH1HKNNUM    =   "020"
+                                      OR  "030" )
                MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
                MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
            END-IF

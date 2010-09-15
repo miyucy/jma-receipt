@@ -209,6 +209,8 @@
       *                                     から自立支援単独になったとき
       *                                     のまとめ対応
       *  04.04.05    NACL-門脇    10/08/23  高齢非該当対応
+      *  04.04.06    NACL-藤原    10/09/14  医療観察法対応
+      *                                     公費単独のレセプトとする
       *
       *  04.05.01    NACL-藤原    09/07/23  主科未設定患者の主科再取得対応
       *  04.05.02    NACL-藤原    10/01/05  治験対応
@@ -1147,6 +1149,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
       *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF      RECE01-HKNNUM        =   SPACE
+             IF      RECE01-KOHHKNNUM-O (1)  =   "030"
+                 CONTINUE
+             ELSE 
                IF      RECE01-TEKSTYMD      =   ZERO
                    IF    ( RECE01-KOHHKNNUM-O (1)  =   "012" OR  "025"
                                                    OR  "015" OR  "016"
@@ -1198,6 +1203,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                        GO  TO  210-HENSYU-EXT
                    END-IF
                END-IF
+             END-IF
            END-IF
       *
       *    社保で公費併用の場合（生保、中国残留邦人等、自立支援）

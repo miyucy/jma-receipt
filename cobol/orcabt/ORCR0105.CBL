@@ -80,6 +80,8 @@
       *  04.04.10    NACL-門脇    10/05/21  生保まとめ分点欄記載対応
       *  04.04.11    NACL-藤原    10/08/23  後期高齢非該当対応
       *                                     （高齢受給者票がない場合） 
+      *  04.04.12    NACL-藤原    10/09/14  医療観察法対応
+      *                                     公費単独のレセプトとする
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
@@ -6263,12 +6265,19 @@
       *****************************************************************
        370-HC101-HKN-RIREKI-HEN-SEC      SECTION.
       *
-      *    公費単独以外は保険履歴の記載をしない
+      *    公費単独以外、心身喪失単独は保険履歴の記載をしない
            IF    ( RECE02-HKNNUM       =   SPACE )
            AND   ( RECE02-KOHNUM (1)
                                    NOT =   SPACE )
            AND   ( RECE02-KOHNUM (2)
                                    NOT =   SPACE )
+               GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
+           END-IF
+           IF    ( RECE02-HKNNUM       =   SPACE )
+           AND   ( RECE02-KOHNUM (1)
+                                       =   "030" )
+           AND   ( RECE02-KOHNUM (2)
+                                       =   SPACE )
                GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
            END-IF
       *

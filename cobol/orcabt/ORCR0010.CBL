@@ -168,6 +168,8 @@
       *                                     マル都（８２）は再優先とする
       *  04.04.03    NACL-藤原    09/10/21  月途中の負担者番号変更対応
       *                                     （自立支援の公費単独） 
+      *  04.04.04    NACL-藤原    10/09/14  医療観察法対応
+      *                                     公費単独のレセプトとする
       *
       *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
       *                                     平成２２年４月分以降の政府管
@@ -1559,6 +1561,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            MOVE    PTHKN-HKNJANUM      TO  WRK-RECE01-HKNJANUM
       *****MOVE    PTHKN-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
            MOVE    ZERO                TO  WRK-RECE01-TEKSTYMD 
+           IF      COMB-HKNNUM         =   SPACE
+               IF      COMB-KOH1HKNNUM     =   "030"
+                   MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
+               END-IF
+           END-IF
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
            IF      WRK-STYMD (1:6)     <=   "200609"
              EVALUATE    PTHKN-HKNNUM
@@ -1749,6 +1756,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            MOVE    ACCT-SRYKA         TO  WRK-RECE01-SRYKA (1)
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE01-TEKSTYMDX (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE01-TEKEDYMDX (1)
+           IF    ( COMB-HKNNUM        =   SPACE )
+           AND   ( COMB-KOH1HKNNUM    =   "030" )
+               MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMDX  (1)
+               MOVE    COMB-TEKEDYMD       TO  WRK-RECE01-TEKEDYMDX  (1)
+           END-IF
       *    
       *    主保険情報
            MOVE    PTHKN-HKNID        TO  WRK-RECE01-HKNID
