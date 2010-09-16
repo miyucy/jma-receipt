@@ -2205,6 +2205,11 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            END-IF
       *
            MOVE    PTHKN-HKNJANUM      TO  COLDAT01-HKNJANUM
+           IF    ( COMB-HKNNUM         =   SPACE )
+           AND   ( COMB-KOH1HKNNUM     =   "020"
+                                       OR  "030" )
+               MOVE    COMB-KOH1HKNNUM     TO  COLDAT01-HKNJANUM
+           END-IF
            IF      WRK-PARA-SRYYM      <=  "200609"
              EVALUATE    PTHKN-HKNNUM
                WHEN    "002"

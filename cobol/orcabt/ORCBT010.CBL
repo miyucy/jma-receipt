@@ -93,8 +93,10 @@
       *  04.04.04    NACL-藤原    09/12/17  月途中に医保と自立支援の併用
       *                                     から自立支援単独になったとき
       *                                     のまとめ対応
-      *  04.04.03    NACL-藤原    10/08/23  後期高齢非該当対応
+      *  04.04.05    NACL-藤原    10/08/23  後期高齢非該当対応
       *                                     （高齢受給者票がない場合） 
+      *  04.04.06    NACL-藤原    10/09/14  医療観察法対応
+      *                                     公費単独のレセプトとする
       *
       *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
       *                                     平成２２年４月分以降の政府管
@@ -1481,7 +1483,8 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
            IF    ( COMB-HKNNUM         =   SPACE )
-           AND   ( COMB-KOH1HKNNUM     =   "020" )
+           AND   ( COMB-KOH1HKNNUM     =   "020"
+                                       OR  "030" )
                MOVE    COMB-KOH1HKNNUM     TO  TOUKEI01-HKNJANUM
            END-IF
       *
@@ -2351,9 +2354,10 @@ grpsys                                         SPA-AREA
                    OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
                MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
       *
-      *        公費単独の場合（精神入院・包括以外）
+      *        公費単独の場合（精神入院・心身喪失・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
-                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"     )
+                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
+                                                       "030"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 
@@ -2418,9 +2422,10 @@ grpsys                                         SPA-AREA
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        公費単独の場合（精神入院・包括以外）
+      *        公費単独の場合（精神入院・心身喪失・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
-                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"     )
+                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
+                                                       "030"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 
