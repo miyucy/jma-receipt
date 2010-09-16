@@ -33,6 +33,9 @@
                05  SGDAY-SYSYY          PIC X(04).
                05  SGDAY-SYSMM          PIC X(02).
                05  SGDAY-SYSDD          PIC X(02).
+      *省略区分（１：システム日付１月の１２月入力は前年
+      *          ２：システム日付の過去日）
+           03  SGDAY-SYSKBN             PIC X(01).
       *出力
            03  SGDAY-OT-AREA.
       *        画面用日付（HZ9.Z9.Z9)

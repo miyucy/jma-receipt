@@ -3412,6 +3412,7 @@
            MOVE    SPA-GMN-BIRTHDAYW   TO  SGDAY-INDAY
       *!!
            MOVE    SPA-SYSYMD          TO  SGDAY-SYSYMD
+           MOVE    "2"                 TO  SGDAY-SYSKBN
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
