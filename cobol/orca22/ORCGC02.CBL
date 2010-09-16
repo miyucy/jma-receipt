@@ -3152,6 +3152,7 @@ grpsys                                         SPA-AREA
                MOVE    WRK-HENSYU-DATA-O (2) 
                                            TO  SGDAY-INDAY
                MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
+               MOVE    "1"                 TO  SGDAY-SYSKBN
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
@@ -4355,6 +4356,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN-C02-SRYYMD  TO  SGDAY-INDAY
                MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
+               MOVE    "1"                 TO  SGDAY-SYSKBN
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
@@ -5779,6 +5781,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPA-GMN-C02-TENKIYMD
                                            TO  SGDAY-INDAY
                MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
+               MOVE    "1"                 TO  SGDAY-SYSKBN
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO

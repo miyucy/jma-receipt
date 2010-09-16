@@ -785,6 +785,7 @@
                MOVE    SPA-GMN-C10-TENKIYMD
                                            TO  SGDAY-INDAY
                MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
+               MOVE    "1"                 TO  SGDAY-SYSKBN
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
@@ -819,6 +820,7 @@
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN-C10-SRYYMD  TO  SGDAY-INDAY
                MOVE    SPA-NAI-C02-SYSYMD  TO  SGDAY-SYSYMD
+               MOVE    "1"                 TO  SGDAY-SYSKBN
                CALL    "ORCSGDAY"          USING
                                            ORCSGDAYAREA
                IF      SGDAY-RC            =   ZERO
