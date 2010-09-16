@@ -2031,7 +2031,7 @@
                    MOVE    SPACE               TO  SPA-PRT-FLG
                END-IF
       *
-               IF    ( SPA-S08-MOTOPG  =   "I04" OR "S02" )
+               IF    ( SPA-S08-MOTOPG  =   "I04" )
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK
                ELSE
