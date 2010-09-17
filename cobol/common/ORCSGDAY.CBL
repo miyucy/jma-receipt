@@ -415,7 +415,8 @@
                    END-IF
                WHEN    2
       *            ヵ及瑕互ㄡ瑕反狟昢ヵ及心午�衛リ馱�
-                   IF      WRK-KETA            =   2
+                   IF     (WRK-KETA            <=  2 )
+                     AND  (WRK-YY(1:WRK-KETA)   NUMERIC   )
                        MOVE    SPACE               TO  WRK-HYY
                        STRING  WRK-SYSWGO          DELIMITED  BY  SIZE
                                WRK-YY              DELIMITED  BY  SPACE
