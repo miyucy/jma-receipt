@@ -98,6 +98,7 @@
       *  04.03.00    NACL-小豆沢  08/07/29  最終入院病室の表示追加
       *  04.03.00    NACL-小豆沢  08/08/11  特定入院料コード取得をサブプロに変更
       *  04.05.00    NACL-多々納  09/07/21  入院料削除の入院加算対応
+      *  04.06.00    NACL-多々納  10/09/17  一括修正入力変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -393,15 +394,20 @@
                    07  WRK-DAY         PIC 9(03).
                    07  WRK-DAYDEL      PIC 9(01).
            03  WRK-KOMENT-TBL.
-               05  WRK-KOMENTO-OCC         OCCURS   60.
-                   07  WRK-KAISU           PIC X(60).
-                   07  WRK-DAY1            PIC X(60).
-                   07  WRK-DAY2            PIC X(60).
+               05  WRK-KOMENT-OCC          OCCURS   60.
+                   07  WRK-KAISUT          PIC X(60).
+                   07  WRK-DAYG            OCCURS   30.
+                       09  WRK-DAY1            PIC X(60).
+                       09  WRK-DAY2            PIC X(60).
            03  WRK-KAISU-9              PIC 9(03).
-           03  WRK-DAY1-9               PIC 9(02).
-           03  WRK-DAY2-9               PIC 9(02).
+           03  WRK-DAYG-9               OCCURS   30.
+               05  WRK-DAY1-9               PIC 9(02).
+               05  WRK-DAY2-9               PIC 9(02).
+      *
            03  WRK-IKKATUDAY            PIC 9(02).
            03  WRK-IKKATUKAI            PIC 9(03).
+      *
+           03  WRK-HZNSU              PIC X(60).
       *
       *    診療行為テーブル
        01  TBL-SRYCD-HEN-AREA.
@@ -4187,45 +4193,97 @@
            MOVE    ZERO                TO  FLG-ALL
            MOVE    1                   TO  IDW1
            MOVE    ZERO                TO  FLG-IKKATUFLG
+      *
+           MOVE    SPACE               TO  WRK-HZNSU
+           MOVE    ZERO                TO  IDW1
+           MOVE    ZERO                TO  IDW9
            PERFORM VARYING    IDW5     FROM    1   BY  1
                    UNTIL     (IDW5     >   60  )  OR
                              (SPA-ERRCD    NOT =   SPACE )
       *
                EVALUATE    SPA-GMN-KOMENTO-41 (IDW5:1)
+      **           WHEN    "/"
+      *                MOVE    1           TO  FLG-K1
+      *            WHEN    ","
+      *            WHEN    "."
+      *                MOVE    ZERO        TO  FLG-K1
+      *                MOVE    ZERO        TO  FLG-K2
+      *                ADD     1           TO  IDW1
+      *                MOVE    ZERO        TO  IDW2
+      *                MOVE    ZERO        TO  IDW3
+      *                MOVE    ZERO        TO  IDW4
+      *            WHEN    "-"
+      *                MOVE    1           TO  FLG-K2
+      *            WHEN    "0"  THRU   "9"
+      *                IF      FLG-K1      =   ZERO
+      *                    回数
+      *                    ADD     1           TO  IDW2
+      *                    MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
+      *                                        TO  WRK-KAISU (IDW1)
+      *                                                      (IDW2:1)
+      *                ELSE
+      *                    IF      FLG-K2      =   ZERO
+      *                    開始日
+      *                        ADD     1           TO  IDW3
+      *                        MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
+      *                                        TO  WRK-DAY1 (IDW1)
+      *                                                     (IDW3:1)
+      *                    ELSE
+      *                    終了日
+      *                        ADD     1           TO  IDW4
+      *                        MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
+      *                                        TO  WRK-DAY2 (IDW1)
+      *                                                     (IDW4:1)
+      *                    END-IF
+      **************   END-IF
                    WHEN    "/"
                        MOVE    1           TO  FLG-K1
-                   WHEN    ","
-                   WHEN    "."
-                       MOVE    ZERO        TO  FLG-K1
-                       MOVE    ZERO        TO  FLG-K2
-                       ADD     1           TO  IDW1
-                       MOVE    ZERO        TO  IDW2
-                       MOVE    ZERO        TO  IDW3
-                       MOVE    ZERO        TO  IDW4
-                   WHEN    "-"
-                       MOVE    1           TO  FLG-K2
-                   WHEN    "0"  THRU   "9"
-                       IF      FLG-K1      =   ZERO
-      *                    回数
-                           ADD     1           TO  IDW2
-                           MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
-                                               TO  WRK-KAISU (IDW1)
-                                                             (IDW2:1)
+                       IF      IDW9        >   ZERO
+      *                回数
+                           ADD     1              TO  IDW1
+                           MOVE    WRK-HZNSU      TO  WRK-KAISUT(IDW1)
+                           MOVE    SPACE          TO  WRK-HZNSU
+                           MOVE    ZERO           TO  IDW9
+                           MOVE    ZERO           TO  IDW2
                        ELSE
-                           IF      FLG-K2      =   ZERO
-      *                    開始日
-                               ADD     1           TO  IDW3
-                               MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
-                                               TO  WRK-DAY1 (IDW1)
-                                                            (IDW3:1)
-                           ELSE
-      *                    終了日
-                               ADD     1           TO  IDW4
-                               MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
-                                               TO  WRK-DAY2 (IDW1)
-                                                            (IDW4:1)
+                           IF      IDW1            =   ZERO
+                               ADD     1               TO  IDW1
                            END-IF
                        END-IF
+                   WHEN    ","
+                   WHEN    "."
+                       IF      FLG-K2      =   1
+      *                終了日
+                           MOVE    WRK-HZNSU       TO  WRK-DAY2
+                                                            (IDW1 IDW2)
+                           MOVE    SPACE           TO  WRK-HZNSU
+                           MOVE    ZERO            TO  IDW9
+                       ELSE
+      *                開始日
+                           IF      IDW9        >   ZERO
+                               ADD     1               TO  IDW2
+                               MOVE    WRK-HZNSU       TO  WRK-DAY1
+                                                           (IDW1 IDW2)
+                               MOVE    SPACE           TO  WRK-HZNSU
+                               MOVE    ZERO            TO  IDW9
+                           END-IF
+                       END-IF
+                       MOVE    ZERO        TO  FLG-K2
+                   WHEN    "-"
+                       MOVE    1           TO  FLG-K2
+      *                開始日
+                       IF      IDW9        >   ZERO
+                           ADD     1               TO  IDW2
+                           MOVE    WRK-HZNSU       TO  WRK-DAY1
+                                                           (IDW1 IDW2)
+                           MOVE    SPACE           TO  WRK-HZNSU
+                           MOVE    ZERO            TO  IDW9
+                       END-IF
+                   WHEN    "0"  THRU   "9"
+                       ADD     1               TO  IDW9
+                       MOVE    SPA-GMN-KOMENTO-41 (IDW5:1)
+                                               TO  WRK-HZNSU (IDW9:1)
+      *!!!
                    WHEN    "A"
                    WHEN    "a"
       *                食事のみ 最後に'Ａ'指定
@@ -4247,22 +4305,43 @@
                        MOVE    "0022"              TO  SPA-ERRCD
                END-EVALUATE
            END-PERFORM
+      *!!
+           IF      IDW9            >   ZERO
+               IF      IDW1            =   ZERO
+                   ADD     1               TO  IDW1
+               END-IF
+               IF      FLG-K2          =   1
+      *        終了日
+                   MOVE    WRK-HZNSU       TO  WRK-DAY2(IDW1 IDW2)
+               ELSE
+      *        開始日
+                   ADD     1               TO  IDW2
+                   MOVE    WRK-HZNSU       TO  WRK-DAY1(IDW1 IDW2)
+               END-IF
+           END-IF
+      *    回数がない
+           IF     (FLG-K1              =   ZERO  )  AND
+                  (SPA-GMN-KOMENTO-41  NOT =   SPACE )
+               MOVE    "0061"              TO  SPA-ERRCD
+           END-IF
+      *!!
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41017-KOMENTO-CHK-EXT
            END-IF
       *
+      *!!!
            PERFORM VARYING    IDW1     FROM    1   BY  1
                    UNTIL     (IDW1     >   60  )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
-                            ((WRK-KAISU (IDW1) =   SPACE )  AND
-                             (WRK-DAY1  (IDW1) =   SPACE )  AND
-                             (WRK-DAY2  (IDW1) =   SPACE ))
+                            ((WRK-KAISUT(IDW1) =   SPACE )  AND
+                             (WRK-DAY1  (IDW1 1) =   SPACE )  AND
+                             (WRK-DAY2  (IDW1 1) =   SPACE ))
       *        回数
-               IF      WRK-KAISU (IDW1)    =   SPACE
-                   MOVE    ZERO            TO  WRK-KAISU-9
+               IF      WRK-KAISUT(IDW1)    =   SPACE
+                   MOVE    1               TO  WRK-KAISU-9
                ELSE
                    INITIALIZE                      ORCSNUMAREA
-                   MOVE    WRK-KAISU (IDW1)    TO  SNUM-INX
+                   MOVE    WRK-KAISUT(IDW1)    TO  SNUM-INX
                    CALL    "ORCSNUM"           USING
                                                ORCSNUMAREA
                    IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -4274,12 +4353,17 @@
                        MOVE    SNUM-OUTNUM         TO  WRK-KAISU-9
                    END-IF
                END-IF
+               PERFORM VARYING    IDW2     FROM    1   BY  1
+                       UNTIL     (IDW2     >   30  )  OR
+                             (SPA-ERRCD    NOT =   SPACE ) OR
+                            ((WRK-DAY1  (IDW1 IDW2) =   SPACE )  AND
+                             (WRK-DAY2  (IDW1 IDW2) =   SPACE ))
       *        開始日
-               IF      WRK-DAY1  (IDW1)    =   SPACE
-                   MOVE    ZERO            TO  WRK-DAY1-9
+               IF      WRK-DAY1  (IDW1 IDW2)   =   SPACE
+                   MOVE    ZERO            TO  WRK-DAY1-9(IDW2)
                ELSE
                    INITIALIZE                      ORCSNUMAREA
-                   MOVE    WRK-DAY1 (IDW1)     TO  SNUM-INX
+                   MOVE    WRK-DAY1 (IDW1 IDW2)     TO  SNUM-INX
                    CALL    "ORCSNUM"           USING
                                                ORCSNUMAREA
                    IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -4288,15 +4372,15 @@
                           (SNUM-SEISUU         >   2     )
                        MOVE    "0122"              TO  SPA-ERRCD
                    ELSE
-                       MOVE    SNUM-OUTNUM         TO  WRK-DAY1-9
+                       MOVE    SNUM-OUTNUM         TO  WRK-DAY1-9(IDW2)
                    END-IF
                END-IF
       *        終了日
-               IF      WRK-DAY2  (IDW1)    =   SPACE
-                   MOVE    ZERO            TO  WRK-DAY2-9
+               IF      WRK-DAY2  (IDW1 IDW2)    =   SPACE
+                   MOVE    ZERO            TO  WRK-DAY2-9(IDW2)
                ELSE
                    INITIALIZE                      ORCSNUMAREA
-                   MOVE    WRK-DAY2 (IDW1)     TO  SNUM-INX
+                   MOVE    WRK-DAY2 (IDW1 IDW2)     TO  SNUM-INX
                    CALL    "ORCSNUM"           USING
                                                ORCSNUMAREA
                    IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -4305,18 +4389,24 @@
                           (SNUM-SEISUU         >   3     )
                        MOVE    "0122"              TO  SPA-ERRCD
                    ELSE
-                       MOVE    SNUM-OUTNUM         TO  WRK-DAY2-9
+                       MOVE    SNUM-OUTNUM         TO  WRK-DAY2-9(IDW2)
                    END-IF
                END-IF
       *        回数編集
-               IF     (WRK-DAY1-9      =   ZERO
-                                       OR  99   )  OR
-                      (WRK-DAY2-9      =   ZERO )  OR
-                      (WRK-DAY1-9      >   WRK-DAY2-9 )
+               IF     (WRK-DAY1-9 (IDW2)   >   ZERO )  AND
+                      (WRK-DAY2-9 (IDW2)   =   ZERO )
+                   MOVE    WRK-DAY1-9 (IDW2)   TO  WRK-DAY2-9(IDW2)
+               END-IF
+               IF     (WRK-DAY1-9(IDW2)    >   WRK-DAY2-9(IDW2) )
+                   MOVE    "0125"              TO  SPA-ERRCD
+               END-IF
+      *        回数編集
+               IF     (WRK-DAY1-9 (IDW2)   =   ZERO
+                                           OR  99   )
                    MOVE    "0125"              TO  SPA-ERRCD
                END-IF
       *        一括変更チェック
-               IF      WRK-DAY2-9          =   99
+               IF      WRK-DAY2-9 (IDW2)   =   99
                    IF      SPA-NAI-IKKATUFLG   =   ZERO
                        OR  FLG-ALL             =   1
                        MOVE    "0043"              TO  SPA-ERRCD
@@ -4327,10 +4417,10 @@
                    END-IF
                END-IF
       *
-               PERFORM VARYING     IDW3    FROM    WRK-DAY1-9   BY  1
-                       UNTIL      (IDW3    >   WRK-DAY2-9 )  OR
-                                  (IDW3    >   31         )  OR
-                                  (SPA-ERRCD   NOT =   SPACE )
+               PERFORM VARYING IDW3    FROM    WRK-DAY1-9(IDW2)  BY  1
+                       UNTIL  (IDW3        >   WRK-DAY2-9 (IDW2))  OR
+                              (IDW3        >   31         )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
                    IF      WRK-DAY(IDW3)   NOT =   ZERO
                        MOVE    "0123"              TO  SPA-ERRCD
                    ELSE
@@ -4340,6 +4430,9 @@
                        END-IF
                    END-IF
                END-PERFORM
+      *
+               END-PERFORM
+      *!!!
            END-PERFORM
       *
            IF      SPA-ERRCD       NOT =   SPACE
