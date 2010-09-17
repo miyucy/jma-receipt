@@ -70,6 +70,7 @@ CREATE VIEW view_q001 AS
     AND (tbl_ptkohinf.kohnum = '956'::bpchar 
      OR tbl_ptkohinf.kohnum = '957'::bpchar 
      OR tbl_ptkohinf.kohnum = '958'::bpchar 
+     OR tbl_ptkohinf.kohnum = '959'::bpchar 
      OR tbl_ptkohinf.kohnum = '960'::bpchar 
      OR tbl_ptkohinf.kohnum = '961'::bpchar 
      OR tbl_ptkohinf.kohnum = '962'::bpchar 
