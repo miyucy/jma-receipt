@@ -46,6 +46,7 @@
       * 04.05.00     NACL-Â¿¡¹Ç¼  09/11/XX  Æþ±¡Àº¿ÀÎÅË¡£¶¤«·îÂÐ±þ
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¼«Æ°»»ÄêÂÐ±þ
+      * 04.06.00     NACL-Â¿¡¹Ç¼  10/09/XX  Àº¿ÀÎÅË¡£²£°ºÐÌ¤Ëþ²Ã»»Ì¤ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -458,6 +459,7 @@
            MOVE    LNK-RIGAKU-NCNT-AREA    TO  WRK-RIGAKU-NCNT-AREA
       *
            IF      LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT01"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            END-IF
       *    ½é²ó¤ËÅö·îÊ¬ÊÔ½¸
@@ -1898,6 +1900,10 @@
       *    £È£²£°¡¥£´¤«¤é£±Ç¯Ì¤Ëþ¤È¤¹¤ë
            COMPUTE WRK-SYO2-YY         =   WRK-SYO2-YY   +   1
            IF      SPA-SRYYMD          >=  WRK-SYOYMD2
+               MOVE    1               TO  FLG-NENREI
+           END-IF
+      *    ¼«Æ°»»Äê¤Ê¤·
+           IF      SPA-SEI20KSNKBN     =   "1"
                MOVE    1               TO  FLG-NENREI
            END-IF
       *

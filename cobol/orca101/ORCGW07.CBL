@@ -114,6 +114,7 @@
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/06/21  Í½Ìó¡¦¼õÉÕÏ¢Æ°¤Ê¤ÉÄÉ²Ã
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/07/01  »ÄÎÌÇÑ´þ¼«Æ°¶èÊ¬ÄÉ²Ã
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/08/17  ¼êÄ¢µ­ºÜ²Ã»»³ÎÇ§ÄÉ²Ã
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/09/17  Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -643,6 +644,15 @@
                            11  SPA-GMN-HAIKIKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-HAIKIKBN-MAX   PIC 9(02).
+      *                Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬
+                       09  SPA-GMN-SEI20KSNKBN-G.
+                           11  SPA-GMN-SEI20KSNKBN       PIC X(01).
+                           11  SPA-GMN-SEI20KSNKBN-F1    PIC X(01).
+                           11  SPA-GMN-SEI20KSNKBN-MEI   PIC X(58).
+                       09  SPA-GMN-SEI20KSNKBN-COMB.
+                           11  SPA-GMN-SEI20KSNKBN-LST   PIC X(60)
+                                                        OCCURS  5.
+                           11  SPA-GMN-SEI20KSNKBN-MAX   PIC 9(02).
       *                Æþ¶â¡¦ÊÖ¶â³ÛÀßÄê¶èÊ¬
                        09  SPA-GMN-NYKHNKKBN-G.
                            11  SPA-GMN-NYKHNKKBN       PIC X(01).
@@ -1844,6 +1854,11 @@
            MOVE    "2 ¤¹¤Ù¤Æ¤Î¿ÇÎÅ¶èÊ¬"
                                        TO  SPA-GMN-HAIKIKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-HAIKIKBN-MAX
+      *    Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬
+           MOVE    "0 ¼«Æ°»»Äê¤¹¤ë"    TO  SPA-GMN-SEI20KSNKBN-LST(1)
+           MOVE    "1 ¼«Æ°»»Äê¤·¤Ê¤¤"
+                                       TO  SPA-GMN-SEI20KSNKBN-LST(2)
+           MOVE    2                   TO  SPA-GMN-SEI20KSNKBN-MAX
       *    Æþ¶â¡¦ÊÖ¶â³Û½é´üÀßÄê¶èÊ¬
            MOVE    "0 º£²óÀÁµá³Û¤Î¤ß"  TO  SPA-GMN-NYKHNKKBN-LST(1)
            MOVE    "1 °ì³çÆþ¶âÈ¿±Ç"    TO  SPA-GMN-NYKHNKKBN-LST(2)
@@ -3022,6 +3037,8 @@
            MOVE    SYS-1038-RESPRVFLG      TO  SPA-GMN-RESPRV038
       *    »ÄÎÌÇÑ´þ¶èÊ¬
            MOVE    SYS-1038-HAIKIKBN       TO  SPA-GMN-HAIKIKBN
+      *    Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬
+           MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-GMN-SEI20KSNKBN
       *    Æþ¶â¡¦ÊÖ¶â³ÛÀßÄê¶èÊ¬
            MOVE    SYS-1038-NYKHNKKBN      TO  SPA-GMN-NYKHNKKBN
       *
@@ -3303,6 +3320,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-HAIKIKBN-LST (1)
                                        TO  SPA-GMN-HAIKIKBN-G
+           END-IF
+      *    Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-SEI20KSNKBN-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-SEI20KSNKBN
+                                       =   SPA-GMN-SEI20KSNKBN-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-SEI20KSNKBN-LST (IDY)
+                                       TO  SPA-GMN-SEI20KSNKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SEI20KSNKBN-LST (1)
+                                       TO  SPA-GMN-SEI20KSNKBN-G
            END-IF
       *    Æþ¶â¡¦ÊÖ¶â³ÛÀßÄê¶èÊ¬
            MOVE    ZERO                TO  FLG-OK
@@ -4593,6 +4627,7 @@
            MOVE    W07-HAIKIKBN        TO  SPA-GMN-HAIKIKBN-G
            MOVE    W07-YKJOKUKBN       TO  SPA-GMN-YKJOKUKBN-G
            MOVE    W07-NYKHNKKBN       TO  SPA-GMN-NYKHNKKBN-G
+           MOVE    W07-SEI20KSNKBN     TO  SPA-GMN-SEI20KSNKBN-G
       *
       *    ¼ýÇ¼µ¡Ç½¾ðÊó
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -4892,6 +4927,10 @@
       *            »ÄÎÌÇÑ´þ¶èÊ¬
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-HAIKIKBN-CHK-SEC
+                   END-IF
+      *            Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-SEI20KSNKBN-CHK-SEC
                    END-IF
       *            Æþ¶â´ÉÍý¶èÊ¬¥Á¥§¥Ã¥¯
                    IF      SPA-ERRCD           =   SPACE
@@ -6929,6 +6968,31 @@
        4108-HAIKIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý¡Ê¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó¡Ë
+      *****************************************************************
+       4108-SEI20KSNKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-SEI20KSNKBN-MAX)
+                       OR     (FLG-OK  =   1    ) 
+               IF      SPA-GMN-SEI20KSNKBN
+                                       =   SPA-GMN-SEI20KSNKBN-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-SEI20KSNKBN-LST(IDX)
+                                          TO  SPA-GMN-SEI20KSNKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    310             TO  SPA-GMN-CUR
+               MOVE    "2020"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-SEI20KSNKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Ìô¾ð¡¦¤ªÌô¼êÄ¢ÂÐ¾Ý¥Á¥§¥Ã¥¯½èÍý¡Ê¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó¡Ë
       *****************************************************************
        4108-OKUSURIKBN-CHK-SEC      SECTION.
@@ -8772,6 +8836,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-RESPRV038       TO  SYS-1038-RESPRVFLG
            MOVE    SPA-GMN-HAIKIKBN        TO  SYS-1038-HAIKIKBN
            MOVE    SPA-GMN-NYKHNKKBN       TO  SYS-1038-NYKHNKKBN
+           MOVE    SPA-GMN-SEI20KSNKBN     TO  SYS-1038-SEI20KSNKBN
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -9693,6 +9758,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-HAIKIKBN-MAX
                                        TO  W07-HAIKIKBN-COUNT
+      *    Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬¡Ê¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó¡Ë
+           MOVE    SPA-GMN-SEI20KSNKBN-G   TO  W07-SEI20KSNKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SEI20KSNKBN-MAX
+               MOVE    SPA-GMN-SEI20KSNKBN-LST (IDX)
+                                       TO  W07-SEI20KSNKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SEI20KSNKBN-MAX
+                                       TO  W07-SEI20KSNKBN-COUNT
       *    Ìô¾ð¡¦¤ªÌô¼êÄ¢ÂÐ¾Ý¡Ê¿ÇÎÅ¹Ô°Ùµ¡Ç½¾ðÊó¡Ë
            MOVE    SPA-GMN-YKJOKUKBN-G TO  W07-YKJOKUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -10504,6 +10578,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED  BY  SIZE
                                                    INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2020"
+                   MOVE    "Àº¿ÀÎÅË¡£²£°Ì¤Ëþ²Ã»»¶èÊ¬¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                                                       TO  SPA-ERRMSG
       *    ¼ýÇ¼¾ðÊó
                WHEN    "3003"
                    MOVE    "ÅÐÏ¿»þ¹ïÆþÎÏ¥¨¥é¡¼"
@@ -10841,6 +10918,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "RESPRV038"       TO   MCP-WIDGET
                WHEN    309
                    MOVE  "HAIKIKBN"        TO   MCP-WIDGET
+               WHEN    310
+                   MOVE  "SEI20KSNKBN"     TO   MCP-WIDGET
       *        ÀÁµáÁªÂò
                WHEN    320
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -11192,6 +11271,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "RESPRV038"
                    MOVE    309             TO  SPA-GMN-CUR
                WHEN    "HAIKIKBN"
+      *********    MOVE    320             TO  SPA-GMN-CUR
+                   MOVE    310             TO  SPA-GMN-CUR
+               WHEN    "SEI20KSNKBN"
                    MOVE    320             TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    321             TO  SPA-GMN-CUR

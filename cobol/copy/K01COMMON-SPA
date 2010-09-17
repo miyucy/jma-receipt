@@ -171,6 +171,8 @@
                05  SPA-CHGSRYSYU-FLG       PIC  X(01).
       *残量廃棄区分
                05  SPA-HAIKIKBN-FLG        PIC  X(01).
+      *精神療法２０未満加算区分
+               05  SPA-SEI20KSNKBN         PIC  X(01).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).
