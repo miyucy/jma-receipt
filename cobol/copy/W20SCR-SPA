@@ -73,6 +73,13 @@
                  11  SPA-GMN-W20-KNGHJOFL          PIC X(01).
                  11  SPA-GMN-W20-KNGHJOMEI         PIC X(38).
                09  SPA-GMN-W20-KSN-G.
+      *          未基準（病棟に係る基準を満たさない場合）
+                 11  SPA-GMN-W20-BTUMIKJN-LBL         PIC X(36).
+                 11  SPA-GMN-W20-BTUMIKJN-G.
+                   13  SPA-GMN-W20-BTUMIKJN           PIC X(01).
+                   13  SPA-GMN-W20-BTUMIKJNFL1        PIC X(01).
+                   13  SPA-GMN-W20-BTUMIKJNMEI        PIC X(24).
+                   13  SPA-GMN-W20-BTUMIKJNFL2        PIC X(01).
       *          夜間勤務等看護加算
                  11  SPA-GMN-W20-YKNKNG-LBL        PIC X(36).
                  11  SPA-GMN-W20-YKNKNG-G.
@@ -233,13 +240,6 @@
                    13  SPA-GMN-W20-KJTRIHAFL1        PIC X(01).
                    13  SPA-GMN-W20-KJTRIHAMEI        PIC X(24).
                    13  SPA-GMN-W20-KJTRIHAFL2        PIC X(01).
-      *          未基準（病棟に係る基準を満たさない場合）
-                 11  SPA-GMN-W20-BTUMIKJN-LBL         PIC X(36).
-                 11  SPA-GMN-W20-BTUMIKJN-G.
-                   13  SPA-GMN-W20-BTUMIKJN           PIC X(01).
-                   13  SPA-GMN-W20-BTUMIKJNFL1        PIC X(01).
-                   13  SPA-GMN-W20-BTUMIKJNMEI        PIC X(24).
-                   13  SPA-GMN-W20-BTUMIKJNFL2        PIC X(01).
                09  SPA-GMN-W20-KSN-R   REDEFINES   SPA-GMN-W20-KSN-G.
                  11  SPA-GMN-W20-KSN-OCC           OCCURS 24.
                    13  SPA-GMN-W20-KSN-LBL         PIC X(36).
@@ -320,6 +320,14 @@
                    13  SPA-GMN-W20-KNGHJOFLL        PIC X(01).
                    13  SPA-GMN-W20-KNGHJOMEIL      PIC X(38).
                09  SPA-GMN-W20-KSNLST-G.
+      *          未基準（病棟に係る基準を満たさない場合）
+                 11  SPA-GMN-W20-BTUMIKJNLST-G.
+                   13  SPA-GMN-W20-BTUMIKJN-MAX          PIC 9(03).
+                   13  SPA-GMN-W20-BTUMIKJNLST           OCCURS  10.
+                     15  SPA-GMN-W20-BTUMIKJNL           PIC X(01).
+                     15  SPA-GMN-W20-BTUMIKJNFL1L        PIC X(01).
+                     15  SPA-GMN-W20-BTUMIKJNMEIL        PIC X(24).
+                     15  SPA-GMN-W20-BTUMIKJNFL2L        PIC X(01).
       *          夜間勤務等看護加算コンボ
                  11  SPA-GMN-W20-YKNKNGLST-G.
                    13  SPA-GMN-W20-YKNKNG-MAX      PIC 9(03).
@@ -503,14 +511,6 @@
                      15  SPA-GMN-W20-KJTRIHAFL1L        PIC X(01).
                      15  SPA-GMN-W20-KJTRIHAMEIL        PIC X(24).
                      15  SPA-GMN-W20-KJTRIHAFL2L        PIC X(01).
-      *          休日リハビリテーション提供体制加算
-                 11  SPA-GMN-W20-BTUMIKJNLST-G.
-                   13  SPA-GMN-W20-BTUMIKJN-MAX          PIC 9(03).
-                   13  SPA-GMN-W20-BTUMIKJNLST           OCCURS  10.
-                     15  SPA-GMN-W20-BTUMIKJNL           PIC X(01).
-                     15  SPA-GMN-W20-BTUMIKJNFL1L        PIC X(01).
-                     15  SPA-GMN-W20-BTUMIKJNMEIL        PIC X(24).
-                     15  SPA-GMN-W20-BTUMIKJNFL2L        PIC X(01).
                09  SPA-GMN-W20-KSNLST-R    REDEFINES
                  SPA-GMN-W20-KSNLST-G.
                  11  SPA-GMN-W20-KSNLST-OCC        OCCURS  24.
@@ -599,6 +599,9 @@
                                                    OCCURS  50.
       *
                09  SPA-NAI-W20-KSNINF-G.
+                 11  SPA-NAI-W20-BTUMIKJN-CD        PIC 9(09).
+                 11  SPA-NAI-W20-BTUMIKJN-IDX       PIC 9(03).
+      *
                  11  SPA-NAI-W20-YKNKNG-CD         PIC X(09).
                  11  SPA-NAI-W20-YKNKNG-IDX        PIC 9(03).
       *
@@ -667,9 +670,6 @@
       *
                  11  SPA-NAI-W20-KJTRIHA-CD         PIC 9(09).
                  11  SPA-NAI-W20-KJTRIHA-IDX        PIC 9(03).
-      *
-                 11  SPA-NAI-W20-BTUMIKJN-CD        PIC 9(09).
-                 11  SPA-NAI-W20-BTUMIKJN-IDX       PIC 9(03).
                09  SPA-NAI-W20-KSNINF-R  REDEFINES
                    SPA-NAI-W20-KSNINF-G.
                  11  SPA-NAI-W20-KSNINF-OCC        OCCURS 24.

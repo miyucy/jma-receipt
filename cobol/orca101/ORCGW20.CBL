@@ -845,6 +845,9 @@
       *    ÉÂÅïÌ¤´ð½à¸º»»
            PERFORM 3101-CMB-BTUMIKJN-SET-SEC
       *
+      *    ¿©Æ²²Ã»»
+           PERFORM 3101-CMB-SYOKUDO-SET-SEC
+      *
            .
        31014-CMB-KSN-SYOKI-EXT.
            EXIT.
@@ -2077,6 +2080,8 @@
                EVALUATE    SPA-NAI-W20-KSNINF-CD (IDX-KSN)
                WHEN    CONST-BTUMIKJNCD
                    PERFORM 4101-BTUMIKJN-CHK-SEC
+               WHEN    CONST-SYOKUDOCD
+                   PERFORM 4101-SYOKUDO-CHK-SEC
                END-EVALUATE
       *
            END-IF
@@ -2968,6 +2973,13 @@
                MOVE    CONST-BTUMIKJNCD
                                    TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
+           END-IF
+      *
+      *    ¿©Æ²²Ã»»¶èÊ¬
+           IF    ( SPA-GMN-W20-SYOKUDO =   "2" )
+               MOVE    "2"             TO  SYS-5001-BTU-SYOKUDOKBN
+           ELSE
+               MOVE    "1"             TO  SYS-5001-BTU-SYOKUDOKBN
            END-IF
       *
            .
@@ -4824,7 +4836,7 @@
       *
                IF    ( SYS-5001-KSNKBN (IDX-KSN)   =   "2" )
                    PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   CONST-SBT-MAX )
+                           UNTIL ( IDX0 >  SPA-GMN-W20-SYOUBTUBRM-MAX )
       *
                        IF    ( SYS-5001-KSNCD (IDX-KSN)
                                           =    CONST-SYOUBTUBRMCD(IDX0))
@@ -4842,6 +4854,12 @@
                    END-EVALUATE
                END-IF
            END-PERFORM
+      *
+      *    ¿©Æ²²Ã»»
+           MOVE    SYS-5001-BTU-SYOKUDOKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SYOKUDOLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W20-SYOKUDO-G
       *
            .
        41005-KSN-EDIT-EXT.
@@ -5245,6 +5263,8 @@
                MOVE    "Ì¤´ð½à¡ÊÉÂÅï¤Ë·¸¤ë´ð½à¤òËþ¤¿¤µ¤Ê¤¤¡Ë"
                                            TO  SPA-GMN-W20-BTUMIKJN-LBL
                MOVE    CONST-BTUMIKJNCD    TO  SPA-NAI-W20-BTUMIKJN-CD
+               MOVE    "¿©Æ²²Ã»»"          TO  SPA-GMN-W20-SYOKUDO-LBL
+               MOVE    CONST-SYOKUDOCD     TO  SPA-NAI-W20-SYOKUDO-CD
            WHEN  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H220401 )
       *
                MOVE    "¿©Æ²²Ã»»"          TO  SPA-GMN-W20-SYOKUDO-LBL
