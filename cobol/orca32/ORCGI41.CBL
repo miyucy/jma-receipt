@@ -4412,7 +4412,7 @@
                        MOVE    "0043"              TO  SPA-ERRCD
                    ELSE
                        MOVE    1                   TO  FLG-IKKATUFLG
-                       MOVE    WRK-DAY1-9          TO  WRK-IKKATUDAY
+                       MOVE    WRK-DAY1-9 (IDW2)   TO  WRK-IKKATUDAY
                        MOVE    WRK-KAISU-9         TO  WRK-IKKATUKAI
                    END-IF
                END-IF
