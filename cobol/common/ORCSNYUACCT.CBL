@@ -340,6 +340,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  WRK-HYOU-TEISU-TBL
            MOVE    ZERO                TO  LNK-SCNYUACCT-RC
       *
       *    更新日取得
