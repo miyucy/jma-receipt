@@ -3023,10 +3023,14 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO     700-TAIINDEL-SYORI-EXT
            END-IF
       *
-      *    入院料加算作成
-           PERFORM 210-NYUKHNKSN-SYORI-SEC
-           IF      LNK-SCNYUACCT-RC    NOT =   ZERO
-               GO      TO     700-TAIINDEL-SYORI-EXT
+      *    入院料加算作成（医療観察入院時はこの処理をスキップ）
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1)(1:3) = "188"
+              CONTINUE
+           ELSE
+              PERFORM 210-NYUKHNKSN-SYORI-SEC
+              IF      LNK-SCNYUACCT-RC    NOT =   ZERO
+                  GO      TO     700-TAIINDEL-SYORI-EXT
+              END-IF
            END-IF
       *
       *    その他料作成
@@ -3142,11 +3146,15 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO     800-TENSYUTU-SYORI-EXT
            END-IF
       *
-      *    入院料加算作成
-           MOVE    ZERO                TO  WRK-NISUU
-           PERFORM 210-NYUKHNKSN-SYORI-SEC
-           IF      LNK-SCNYUACCT-RC    NOT =   ZERO
-               GO      TO     800-TENSYUTU-SYORI-EXT
+      *    入院料加算作成（医療観察入院時はこの処理をスキップ）
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1)(1:3) = "188"
+              CONTINUE
+           ELSE
+              MOVE    ZERO                TO  WRK-NISUU
+              PERFORM 210-NYUKHNKSN-SYORI-SEC
+              IF      LNK-SCNYUACCT-RC    NOT =   ZERO
+                  GO      TO     800-TENSYUTU-SYORI-EXT
+              END-IF
            END-IF
       *
       *    その他料作成
@@ -3207,11 +3215,15 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO     900-NEXTTUKI-SYORI-EXT
            END-IF
       *
-      *    入院料加算作成
-           MOVE    ZERO                TO  WRK-NISUU
-           PERFORM 210-NYUKHNKSN-SYORI-SEC
-           IF      LNK-SCNYUACCT-RC    NOT =   ZERO
-               GO      TO     900-NEXTTUKI-SYORI-EXT
+      *    入院料加算作成（医療観察入院時はこの処理をスキップ）
+           IF      LNK-SCNYUACCT-NYUKHN-SRYCD(1)(1:3) = "188"
+              CONTINUE
+           ELSE
+              MOVE    ZERO                TO  WRK-NISUU
+              PERFORM 210-NYUKHNKSN-SYORI-SEC
+              IF      LNK-SCNYUACCT-RC    NOT =   ZERO
+                  GO      TO     900-NEXTTUKI-SYORI-EXT
+              END-IF
            END-IF
       *
       *    その他料作成
