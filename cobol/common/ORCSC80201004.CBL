@@ -1488,10 +1488,11 @@
                            IF     (SPA-HKNKBN          =   1   )
                             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                                IF     (WRK-COM-KZMFLG (IDX-Z)
-                                                          =   SPACE)
-                               AND    (LNK-ORCSC-KEI-IDX  =   ZERO )
-                                   MOVE    IDX-Z  TO  LNK-ORCSC-KEI-IDX
-                                   MOVE    "1"    TO  WRK-COM-KZMFLG
+                                                           =   SPACE)
+                               AND    (LNK-ORCSC-KEI-IDX   =   ZERO )
+                                   MOVE    "K845"      TO  WRK-ERRCD
+                                   MOVE    IDX-Z   TO  LNK-ORCSC-KEI-IDX
+                                   MOVE    "1"     TO  WRK-COM-KZMFLG
                                                            (IDX-Z)
                                ELSE
                                    MOVE    SPACE   TO  WRK-ERRCD
