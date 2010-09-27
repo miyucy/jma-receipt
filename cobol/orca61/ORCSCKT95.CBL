@@ -2850,12 +2850,12 @@
            PERFORM
                UNTIL       FLG-SANTEI      =   1
       *        最後の発生日、当日以降は対象外
-               MOVE    SPACE               TO  WRK-YMD
-               IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
-                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y3
-               ELSE
+               MOVE    ZERO                TO  WRK-YMD
+      *        IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
+      *            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y3
+      *        ELSE
                    MOVE    31                  TO  IDX-Y3
-               END-IF
+      *        END-IF
                MOVE    ZERO                TO  WRK-DD
                PERFORM VARYING     IDX-Y2  FROM    IDX-Y3  BY  -1
                        UNTIL       IDX-Y2  <   1
@@ -2868,7 +2868,7 @@
                    MOVE    SANTEI-SRYYM    TO  WRK-YMD(1:6)
                END-IF
       *
-               IF      WRK-YMD         NOT =   SPACE
+               IF      WRK-YMD         NOT =   ZERO
                EVALUATE    SANTEI-SRYCD
       *        心大血管疾患リハビリテーション
                WHEN    "099800111"

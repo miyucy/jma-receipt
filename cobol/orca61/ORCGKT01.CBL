@@ -2228,6 +2228,7 @@
                END-IF
       *        警告表示をしない
                MOVE    "1"                 TO  SPA-COM-KZMFLG(IDX)
+               MOVE    "1"                 TO  SPA-COM-KZMFLG3(IDX)
                MOVE    "1"                 TO  SPA-COM-HKEIFLG(IDX)
            END-PERFORM
       *    内分泌負荷試験検査情報
@@ -2248,7 +2249,8 @@
                           ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
-                      (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )
+                      (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )  OR
+                      (SPA-COM-KZMFLG3(IDX)    NOT =   SPACE )
       *            約束セット
                    IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
                       OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#" )
@@ -2262,6 +2264,7 @@
       *        警告フラグクリア
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
@@ -4287,6 +4290,7 @@
       *
            IF     (SPA-KIDCD       =   SPACE  )  AND
                   (SPA-ERRCD       =   SPACE
+                                   OR  "K839"
                                    OR  "0021" )  AND
                   (FLG-END         =   ZERO   )
       *        診療コード入力
@@ -4917,7 +4921,10 @@
                                                          (SPA-GMN-IDX)
                    END-STRING
                END-IF
-               MOVE    SPACE                TO  SPA-ERRCD
+               IF      SPA-ERRCD           =   "0021"
+      *            数量下限エラーはなし
+                   MOVE    SPACE                TO  SPA-ERRCD
+               END-IF
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
@@ -5411,6 +5418,8 @@
                            MOVE    SPACE           TO  SPA-COM-KZMFLG
                                                             (IDX-K2)
                            MOVE    SPACE           TO  SPA-COM-KZMFLG2
+                                                            (IDX-K2)
+                           MOVE    SPACE           TO  SPA-COM-KZMFLG3
                                                             (IDX-K2)
                       END-IF
                   END-IF
@@ -7752,6 +7761,7 @@
                MOVE    "1"                 TO  SPA-COM-KZMFLG  (IDX2)
                MOVE    "1"                 TO  SPA-COM-HKEIFLG (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG2 (IDX2)
+               MOVE    "1"                 TO  SPA-COM-KZMFLG3 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG4 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG5 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KINKIFLG(IDX2)

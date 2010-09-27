@@ -141,6 +141,7 @@
       *
            03  IDX-SYU             PIC 9(04).
            03  HZN-IDX             PIC 9(04).
+           03  HZN-IDX2             PIC 9(04).
       *
            03  IDX-Y               PIC 9(04).
            03  IDX-Y2              PIC 9(02).
@@ -207,10 +208,10 @@
       *
            03  WRK-IDX             PIC 9(04).
       *
-           03  WRK-RIGAKU-KBN      PIC X(01).
-           03  WRK-RIGAKU-RYO      PIC X(01).
-           03  WRK-RIGAK-CNTALL    PIC 9(03).
-           03  WRK-TBL-RSI-KBN     PIC X(01).
+      *    03  WRK-RIGAKU-KBN      PIC X(01).
+      *    03  WRK-RIGAKU-RYO      PIC X(01).
+      *    03  WRK-RIGAK-CNTALL    PIC 9(03).
+      *    03  WRK-TBL-RSI-KBN     PIC X(01).
       *!
       *    酸素計算用
            03  WRK-SANSO               PIC 9(08).
@@ -245,10 +246,13 @@
       *****03   WRK-KYUSEI-89      PIC X(08).
            03   WRK-KYUSEI-YMD     PIC X(08).
            03   WRK-KYUSEI         PIC X(08).
-           03   WRK-YMD.
-                05   WRK-YY             PIC 9(04).
-                05   WRK-MM             PIC 9(02).
-                05   WRK-DD             PIC 9(02).
+           03   WRK-KYUSEI-CHK     PIC X(08).
+           03  WRK-YMD.
+               05  WRK-YYMM.
+                   07   WRK-YY             PIC X(04).
+                   07   WRK-MM             PIC X(02).
+               05  WRK-DD                  PIC X(02).
+           03  WRK-SDD             PIC 9(02).
            03   WRK-EDMM           PIC X(02).
            03   WRK-EDDD           PIC X(02).
            03   WRK-KYUSEI-MSG     PIC X(80).
@@ -688,7 +692,6 @@
            MOVE    SPACE               TO  WRK-YMD
            PERFORM
                UNTIL       FLG-SANTEI      =   1
-      *
                IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
                       (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6))
       *            最後の発生日、当日以降は対象外
@@ -701,16 +704,17 @@
                    ELSE
                        MOVE    31                  TO  IDD2
                    END-IF
-                   MOVE    ZERO                TO  WRK-DD
+                   MOVE    ZERO                TO  WRK-SDD
                    PERFORM VARYING     IDD     FROM    IDD2  BY  -1
                            UNTIL       IDD     <   1
                        IF      SANTEI-DAY (IDD)    >   ZERO
-                           MOVE    IDD             TO  WRK-DD
+                           MOVE    IDD             TO  WRK-SDD
                            MOVE    1               TO  IDD
                        END-IF
                    END-PERFORM
-                   IF      WRK-DD              >   ZERO
-                       MOVE    SANTEI-SRYYM    TO  WRK-YMD(1:6)
+                   IF      WRK-SDD             >   ZERO
+                       MOVE    SANTEI-SRYYM    TO  WRK-YYMM
+                       MOVE    WRK-SDD         TO  WRK-DD
                        MOVE    1               TO  FLG-SANTEI
                    END-IF
                END-IF
@@ -724,9 +728,9 @@
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-           IF      WRK-YMD(1:6)        =   SPACE
-               MOVE    SPACE           TO  WRK-YMD
-           END-IF
+      *    IF      WRK-YMD(1:6)        =   SPACE
+      *        MOVE    SPACE           TO  WRK-YMD
+      *    END-IF
       *
            .
        10001-KYUSEI-YMD-EXT.
@@ -1416,13 +1420,13 @@
            IF     (SPA-ERRCD           =   SPACE  )
              AND  (LNK-ORCSC-PG        =   "K02"  )
              AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-RIHAKSN )
-               IF     (SPA-HKNKBN          =   1   )
-                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *        IF     (SPA-HKNKBN          =   1   )
+      *          AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *            労災はチェックなし
-                   CONTINUE
-               ELSE
+      *            CONTINUE
+      *        ELSE
                    PERFORM 20011-RIHAKSN-CHK-SEC
-               END-IF
+      *        END-IF
            END-IF
       *
            .
@@ -1435,7 +1439,7 @@
        20011-RIHAKSN-CHK-SEC                SECTION.
       *
       *    各リハビリ発症日判定
-           IF      WRK-KYUSEI          =   SPACE
+           IF      WRK-KYUSEI-CHK      =   SPACE
                IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
                       (LNK-ORCSC-KEI-IDX        =   ZERO )
                    MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
@@ -1448,7 +1452,7 @@
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    WRK-KYUSEI          TO  LNK-DAY6-KIJUN
+               MOVE    WRK-KYUSEI-CHK      TO  LNK-DAY6-KIJUN
                MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
                MOVE    30                  TO  LNK-DAY6-ZOGEN
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
@@ -1480,6 +1484,22 @@
                                                               (IDX-Z)
                             MOVE    WRK-KYUSEI-30-MSG
                                                     TO  LNK-ORCSC-ERRMSG
+      *                    労災は警告とする
+                           IF     (SPA-HKNKBN          =   1   )
+                            AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+                               IF     (WRK-COM-KZMFLG (IDX-Z)
+                                                          =   SPACE)
+                               AND    (LNK-ORCSC-KEI-IDX  =   ZERO )
+                                   MOVE    IDX-Z  TO  LNK-ORCSC-KEI-IDX
+                                   MOVE    "1"    TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                               ELSE
+                                   MOVE    SPACE   TO  WRK-ERRCD
+                                   MOVE    SPACE   TO  LNK-ORCSC-ERRMSG
+                                   MOVE    SPACE   TO  WRK-COM-CUR
+                                                              (IDX-Z)
+                               END-IF
+                           END-IF
                        END-IF
                    END-IF
                END-PERFORM
@@ -1623,10 +1643,24 @@
       *    リハビリテーション料の労災コード
            IF     (WRK-COM-INPUTCD   (IDX-Z)(1:3)  =   "101")
               AND (WRK-COM-CDKBN-KBN (IDX-Z)       =   "H"  )
-               MOVE    1                   TO  FLG-RIHA-OK
+               MOVE    2                   TO  FLG-RIHA-OK
+               EVALUATE    WRK-COM-CDKBN-KBNNUM (IDX-Z)
+                   WHEN    "000"
+      *                心大血管リハ
+                       MOVE    "1"             TO  WRK-RIHA-KBN
+                   WHEN    "001"
+      *                脳血管疾患等リハ
+                       MOVE    "2"             TO  WRK-RIHA-KBN
+                   WHEN    "002"
+      *                運動器リハ
+                       MOVE    "3"             TO  WRK-RIHA-KBN
+                   WHEN    "003"
+      *                呼吸リハ
+                       MOVE    "4"             TO  WRK-RIHA-KBN
+               END-EVALUATE
            END-IF
       *    H22.4 から　新規の脳血管疾患等・運動器リハコードは区分で判定
-           IF     (FLG-RIHA-OK             =   ZERO    )
+           IF     (FLG-RIHA-OK                 =    ZERO )
               AND (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H"   )
               AND (WRK-COM-CDKBN-KBNNUM (IDX-Z)
                                                =   "001"
@@ -1647,31 +1681,10 @@
            IF     (FLG-RIHA-OK         =   ZERO )
                GO      TO      100112-RIGAKU-CHK-EXT
            END-IF
-      *    労災の時、逓減コードはエラーとする
-           IF     (SPA-HKNKBN          =   1   )
-             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-               IF      WRK-RIHA-GEN        =   "2"
-                   MOVE    "8044"      TO  WRK-ERRCD
-                   MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
-                   GO      TO      100112-RIGAKU-CHK-EXT
-               END-IF
-           END-IF
       *
       *    急性発生日計算処理
            PERFORM 1001121-KYUSEIYMD15-SEC
-      *@@
-      *    逓減開始日計算処理
-      *    PERFORM 100112-TEIGENYMD15-SEC
-      *    労災・自賠責は逓減なしとする
-      *    IF     (SPA-HKNKBN          =   1   )
-     ******  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-      *      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *        MOVE    SPACE           TO  WRK-TEIGEN
-      *        MOVE    SPACE           TO  WRK-TEIGEN-YMD
-      *        MOVE    SPACE           TO  WRK-TEIGEN-MSG
-      **** END-IF
       *
-      *@@
            IF     (SPA-NYUGAIKBN       =   "2" ) OR
                   (LNK-ORCSC-SYORIFLG  =   1   )
       *        外来か訂正の時の日上限と月上限のチェック
@@ -1696,6 +1709,7 @@
        1001121-KYUSEIYMD15-SEC          SECTION.
       *
            MOVE    SPACE           TO  WRK-KYUSEI
+           MOVE    SPACE           TO  WRK-KYUSEI-CHK
            MOVE    SPACE           TO  WRK-KYUSEI-YMD
            MOVE    SPACE           TO  WRK-KYUSEI-MSG
       *    急性発生日計算処理
@@ -1726,6 +1740,29 @@
                    MOVE    90                  TO  WRK-ZOGEN
            END-EVALUATE
       *
+           IF      WRK-KYUSEI          =   SPACE
+      *        発症日なし
+               IF      WRK-ZOGEN           >    ZERO
+                   IF     (WRK-COM-KZMFLG3(IDX-Z)  =   SPACE)  AND
+                          (LNK-ORCSC-KEI-IDX       =   ZERO )
+                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "1"             TO  WRK-COM-KZMFLG3
+                                                             (IDX-Z)
+                       MOVE    "K839"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "2"             TO  WRK-COM-IN2 (IDX-Z)
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    WRK-KYUSEI          TO  WRK-KYUSEI-CHK
+      *        労災は開始日なしとする
+               IF      FLG-RIHA-OK         =   2
+                   MOVE    SPACE           TO  WRK-KYUSEI
+                   MOVE    SPACE           TO  WRK-KYUSEI-YMD
+                   MOVE    SPACE           TO  WRK-KYUSEI-MSG
+               END-IF
+           END-IF
+      *    算定上限日編集
            IF      WRK-KYUSEI      NOT =   SPACE
       *    日後計算
                INITIALIZE                      STS-AREA-DAY
@@ -1753,78 +1790,6 @@
            .
        1001121-KYUSEIYMD15-EXT.
            EXIT.
-      *@@
-      *****************************************************************
-      *     逓減開始日計算処理
-      *****************************************************************
-       100112-TEIGENYMD15-SEC          SECTION.
-      *
-           MOVE    SPACE           TO  WRK-TEIGEN
-           MOVE    SPACE           TO  WRK-TEIGEN-YMD
-           MOVE    SPACE           TO  WRK-TEIGEN-MSG
-      *    急性発生日計算処理
-           EVALUATE    WRK-RIHA-KBN
-               WHEN    "1"
-                   MOVE    WRK-KYUSEI1-YMD     TO  WRK-TEIGEN
-                   IF      WRK-KYUSEI-ST (1)   =   "1"
-                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
-                   END-IF
-                   MOVE    120                 TO  WRK-ZOGEN
-               WHEN    "2"
-                   MOVE    WRK-KYUSEI2-YMD     TO  WRK-TEIGEN
-                   IF      WRK-KYUSEI-ST (2)   =   "1"
-                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
-                   END-IF
-                   MOVE    140                 TO  WRK-ZOGEN
-               WHEN    "3"
-                   MOVE    WRK-KYUSEI3-YMD     TO  WRK-TEIGEN
-                   IF      WRK-KYUSEI-ST (3)   =   "1"
-                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
-                   END-IF
-                   MOVE    120                 TO  WRK-ZOGEN
-               WHEN    "4"
-                   MOVE    WRK-KYUSEI4-YMD     TO  WRK-TEIGEN
-                   IF      WRK-KYUSEI-ST (4)   =   "1"
-                       MOVE    SPA-SRYYMD          TO  WRK-TEIGEN
-                   END-IF
-                   MOVE    80                  TO  WRK-ZOGEN
-           END-EVALUATE
-      *    逓減対象外のコード算定の時、逓減としない
-           IF    ((WRK-TEIGEN-GAI  NOT =   SPACE )
-              AND (WRK-TEIGEN-GAI      >=  WRK-TEIGEN ))
-               OR (WRK-TEIGEN-IN       =   "1"   )
-               MOVE    SPACE               TO  WRK-TEIGEN
-           END-IF
-      *
-           IF      WRK-TEIGEN      NOT =   SPACE
-      *    日後計算
-      *        逓減開始日
-               ADD     1                   TO  WRK-ZOGEN
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY6-AREA
-               MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    WRK-TEIGEN          TO  LNK-DAY6-KIJUN
-               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-               MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KOYOMI     TO  WRK-TEIGEN-YMD
-      *        発生日
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    WRK-TEIGEN-YMD      TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-               STRING  "逓減開始日："      DELIMITED  BY  SIZE
-                       LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
-                      INTO                 WRK-TEIGEN-MSG
-               END-STRING
-           END-IF
-           .
-       100112-TEIGENYMD15-EXT.
-           EXIT.
-      *@@
       *
       *****************************************************************
       *     精神通院の加算チェック処理
@@ -2000,11 +1965,6 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KOYOMI     TO  WRK-NYUIN-YMD
-      *TEST
-      *    DISPLAY "WRK-COM-INPUTCD(IDX-Z):" WRK-COM-INPUTCD(IDX-Z)
-      *      ",WRK-NYUINYMD:"  WRK-NYUINYMD
-      *      ", WRK-NYUIN-YMD:"  WRK-NYUIN-YMD
-      *TEST
       *    入力日分のチェック
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   31  )   OR
@@ -2144,17 +2104,6 @@
       *
            MOVE    IDX-Z               TO  HZN-IDX
       *
-      *    回数チェク
-           IF     (WRK-COM-DATAKBN (IDX-Z) =   "1"  )
-             AND  (WRK-ERRCD           =   SPACE    )
-               IF      LNK-ORCSC-PG        =   "K02"
-                   PERFORM 100112-RIGAKU-CHK-SEC
-                   MOVE    HZN-IDX             TO  IDX-Z
-               END-IF
-           END-IF
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      100113-RSIHKN-SYORI-EXT
-           END-IF
       *    健保のリハビリ料はエラー
            MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
            PERFORM 10011312-RIGAKU-SERCH-SEC
@@ -2169,6 +2118,28 @@
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
+           IF      WRK-ERRCD           =   SPACE
+      *        労災四肢加算自動発生
+               PERFORM 1001131-RSIKASAN-AUTO-SEC
+           END-IF
+      *    リハビリ回数・開始日チェク
+           IF     (WRK-ERRCD           =   SPACE    )
+            AND   (LNK-ORCSC-PG        =   "K02"    )
+               MOVE    IDX-Z               TO  HZN-IDX2
+               MOVE    HZN-IDX             TO  IDX-Z
+               IF     (WRK-COM-DATAKBN (IDX-Z) =   "1"  )
+                   PERFORM 100112-RIGAKU-CHK-SEC
+               END-IF
+           END-IF
+           .
+       100113-RSIHKN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災四肢加算自動発生処理
+      *****************************************************************
+       1001131-RSIKASAN-AUTO-SEC            SECTION.
+      *
       *    労災の時、加算なし（リハビリ料は区分に’Ｈ’）
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
       *        四肢加算チェック
@@ -2178,7 +2149,7 @@
                IF     (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
                    OR (WRK-COM-INPUTCD (IDX-Z) =   "101800010" )
                    OR (WRK-COM-DATAKBN (IDX-Z) =   "2"  )
-                   GO      TO      100113-RSIHKN-SYORI-EXT
+                   GO      TO      1001131-RSIKASAN-AUTO-EXT
                END-IF
            END-IF
       *
@@ -2215,20 +2186,6 @@
                END-EVALUATE
                MOVE    1                    TO  FLG-ROUSAI
            END-IF
-      *??  老人のコードでリハビリは対象とする
-      *    IF      FLG-ROUSAI          =   ZERO
-      *        MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
-      *        PERFORM 10011312-RIGAKU-SERCH-SEC
-      *        IF      FLG-RIGAKU          =   1
-      *            EVALUATE    SPA-RSI-SISIKBN
-      *                WHEN    1
-      *                WHEN    2
-      *                    １．５倍とする
-      *                    MOVE    "101800010"     TO  WRK-SRYCD
-      *            END-EVALUATE
-      *            MOVE    1                    TO  FLG-ROUSAI
-      *        END-IF
-      *??  END-IF
       *
       *    既に他の労災加算が入力されている時は自動算定しない
            MOVE    ZERO                TO  FLG-ROU-ARI
@@ -2253,10 +2210,10 @@
                    MOVE    "8004"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX1 - 1)
                END-IF
-               GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
-           IF      WRK-SRYCD           =   SPACE
-               GO      TO      100113-RSIHKN-SYORI-EXT
+           IF     (WRK-SRYCD           =   SPACE )
+             OR   (FLG-ROU-ARI         =   1     )
+               GO      TO      1001131-RSIKASAN-AUTO-EXT
            END-IF
       *
       *    加算料チェック処理（次ぎの手技料の前に）
@@ -2297,7 +2254,7 @@
                MOVE    2               TO  WRK-COM-SANFLG (IDX-S)
            END-IF
            .
-       100113-RSIHKN-SYORI-EXT.
+       1001131-RSIKASAN-AUTO-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2782,12 +2739,6 @@
       *
            MOVE    SPA-SRYYMD(7:2)    TO  IDD
            MOVE    SPA-SRYYMD         TO  WRK-SRYYMD
-      *@@
-      *    逓減チェック処理
-      *    IF      WRK-SRYYMD         >=  "20070401"
-      *        PERFORM 20020-TEIGEN-CHEK-SEC
-      *    END-IF
-      *@@
       *
            MOVE    ZERO               TO  WRK-DAYCNT
       *

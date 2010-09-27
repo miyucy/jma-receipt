@@ -1587,6 +1587,8 @@
                           (WRK-KIDCD       NOT =   SPACE )
                        MOVE    SPACE           TO  WRK-COM-KZMFLG
                                                     (LNK-ORCSC-KEI-IDX)
+                       MOVE    SPACE           TO  WRK-COM-KZMFLG3
+                                                    (LNK-ORCSC-KEI-IDX)
                    ELSE
                        MOVE    SPA-ERRCD       TO  WRK-KEI-ERRCD
                        MOVE    SPA-ERRMSG2     TO  WRK-KEI-ERRMSG2
@@ -1606,6 +1608,8 @@
                   (WRK-KEI-ERRCD   NOT =   SPACE )  OR
                   (WRK-KIDCD       NOT =   SPACE ))
                MOVE    SPACE           TO  WRK-COM-KZMFLG
+                                                    (LNK-ORCSC-KEI-IDX)
+               MOVE    SPACE           TO  WRK-COM-KZMFLG3
                                                     (LNK-ORCSC-KEI-IDX)
            END-IF
            IF     (SPA-KIDCD       NOT =   SPACE )  AND

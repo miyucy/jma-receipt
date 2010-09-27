@@ -2712,6 +2712,7 @@
                            (SPA-COM-INPUTCD(IDX)   =   SPACE ))
                IF     (SPA-COM-KZMFLG (IDX)    NOT =   SPACE )  OR
                       (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )  OR
+                      (SPA-COM-KZMFLG3(IDX)    NOT =   SPACE )  OR
                       (SPA-COM-NYU-KZMFLG-G(IDX)    NOT =   SPACE )
       *            約束セット
                    IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
@@ -2722,6 +2723,7 @@
                    END-IF
                END-IF
                MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
@@ -4017,7 +4019,8 @@
       *
       *    保険組合
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
-           PERFORM 3101-HKNCOMBI-HEN-SEC
+           PERFORM 41012-HKNCOMBI-CHANGE-SEC
+      **** PERFORM 3101-HKNCOMBI-HEN-SEC
       *
            MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
            IF     (SPA-SYORIFLG        =   ZERO )  AND
@@ -4359,6 +4362,7 @@
            MOVE    SPACE           TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
            IF     (SPA-ERRCD       =   SPACE
+                                   OR  "K839"
                                    OR  "0021" )  AND
                   (SPA-KIDCD       =   SPACE  )  AND
                   (FLG-END         =   ZERO   )
@@ -5020,7 +5024,10 @@
                                                          (SPA-GMN-IDX)
                    END-STRING
                END-IF
-               MOVE    SPACE                TO  SPA-ERRCD
+               IF      SPA-ERRCD           =   "0021"
+      *            数量下限エラーはなし
+                   MOVE    SPACE                TO  SPA-ERRCD
+               END-IF
            END-IF
       *    名称入力へのカーソル移動
            IF      WRK-IN-IDX          >   ZERO
@@ -5462,6 +5469,8 @@
                            MOVE    SPACE           TO  SPA-COM-KZMFLG
                                                             (IDX-K2)
                            MOVE    SPACE           TO  SPA-COM-KZMFLG2
+                                                            (IDX-K2)
+                           MOVE    SPACE           TO  SPA-COM-KZMFLG3
                                                             (IDX-K2)
                       END-IF
                   END-IF
