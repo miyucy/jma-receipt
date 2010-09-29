@@ -2129,7 +2129,9 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2     >   SPA-HKNCOMBI-MAX
                    IF      SPA-GMN-THKNCOMBINUM (IDX2) =   ZERO
-                       OR (SPA-NAI-THYOJIKBN    (IDX2) =   "1" )
+                       OR (SPA-NAI-THYOJIKBN    (IDX2) =   "1"
+                                                       OR  "2"
+                                                       OR  "3"  )
                        CONTINUE
                    ELSE
                        PERFORM 301331-SORTSYORI-SEC
@@ -2152,7 +2154,7 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2     >   SPA-HKNCOMBI-MAX
                    IF      SPA-GMN-THKNCOMBINUM (IDX2) =   ZERO
-                      AND (SPA-NAI-THYOJIKBN    (IDX2) =   SPACE)
+                      AND (SPA-NAI-THYOJIKBN    (IDX2) =   SPACE )
                        CONTINUE
                    ELSE
                        PERFORM 301331-SORTSYORI-SEC

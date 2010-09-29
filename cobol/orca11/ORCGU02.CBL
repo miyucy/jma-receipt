@@ -77,6 +77,7 @@
       *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
       *  04.06.00    NACL-多々納  10/06/21  受付選択一覧遷移追加
       *                                     患者番号と一覧内容の連動他
+      *  04.06.00    NACL-多々納  10/09/29  入外非表示対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,6 +141,7 @@
            03  FLG-SOUSIN              PIC 9(01).
       *
            03  FLG-UKE-OK              PIC 9(01).
+           03  FLG-NYUIN               PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -2823,12 +2825,14 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                        TO  SPA-GMN-SRYNAIYOCD-G
            PERFORM 41041-DRCDLIST-HEN-SEC
       *    前回来院日
+           MOVE    ZERO                TO  FLG-NYUIN
            IF      SPA-GMN-TRRKYMD (IDX)   NOT =   SPACE
                IF      SPA-GMN-TNYUKBN (IDX)   =   "1"
                    STRING  "病棟："
                            SPA-GMN-TRRKYMD (IDX)   DELIMITED  BY  SIZE
                                            INTO    SPA-GMN-LASTYMD
                    END-STRING
+                   MOVE    1                   TO  FLG-NYUIN
                ELSE
                    STRING  "前回："
                            SPA-GMN-TRRKYMD (IDX)   DELIMITED  BY  SIZE
@@ -2881,6 +2885,9 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 410115-KAKUHYOJI-SEC
                    IF      SPA-GMN-SELNUM          =   ZERO
                        PERFORM 410116-JYURRKSET-SEC
+                   ELSE
+      *                保険組合せ非表示判定編集処理
+                       PERFORM 410117-HYOJIKBNHEN-SEC
                    END-IF
       *            患者メモ表示処理
                    PERFORM 410119-PTMEMOINF-SEC
@@ -2921,6 +2928,26 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
            .
        41041-SELNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ非表示判定編集処理
+      *****************************************************************
+       410117-HYOJIKBNHEN-SEC           SECTION.
+      *
+           PERFORM VARYING    IDX-C    FROM    1   BY  1
+                   UNTIL      IDX-C    >   SPA-COMBI-MAX
+               MOVE    SPACE               TO  SPA-NAI-TDELKBN (IDX-C)
+               IF    ((SPA-NAI-THYOJIKBN (IDX-C)   =   "2"  )  AND
+                      (FLG-NYUIN                   =   1    ))
+               OR    ((SPA-NAI-THYOJIKBN (IDX-C)   =   "3"  )  AND
+                      (FLG-NYUIN                   =   ZERO ))
+                   MOVE    "1"                 TO  SPA-NAI-TDELKBN
+                                                               (IDX-C)
+               END-IF
+           END-PERFORM
+           .
+       410117-HYOJIKBNHEN-EXT.
            EXIT.
       *****************************************************************
       *    ドクター一覧編集処理
@@ -3004,7 +3031,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                       (SPA-SYSYMD          <=  COMB-TEKEDYMD) AND
                       (COMB-DELKBN         =   SPACE        )
       *                非表示区分
-                 AND  (COMB-HYOJIKBN       =   SPACE        )
+                 AND  (COMB-HYOJIKBN   NOT =   "1"          )
                    MOVE    1               TO  FLG-HKNOK
       *            労災保険情報の判定
                    IF      COMB-HKNNUM         =   "971"  OR  "973"
@@ -3036,6 +3063,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    MOVE    COMB-HKNID      TO  SPA-NAI-COB-HKNID (IDX)
                    MOVE    COMB-TEKSTYMD   TO  SPA-NAI-TEKSTYMD (IDX)
                    MOVE    COMB-TEKEDYMD   TO  SPA-NAI-TEKEDYMD (IDX)
+                   MOVE    COMB-HYOJIKBN   TO  SPA-NAI-THYOJIKBN (IDX)
       *            労災の時、部位を公費１の項目へ
                    IF      COMB-HKNNUM         =   "971"  OR  "973"
                        PERFORM 4101152-RSI-HENSYU-SEC
@@ -3460,6 +3488,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                        SPA-AREA
       *
       *    入院中は病棟を表示
+           MOVE    ZERO                TO  FLG-NYUIN
            IF      ORCSLASTYMD-BRMNUM  =   SPACE
                IF      ORCSLASTYMD-LASTYMD NOT =   SPACE
                    STRING  "前回："
@@ -3472,7 +3501,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                        ORCSLASTYMD-BRMNUM  DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-LASTYMD
                END-STRING
+               MOVE    1                   TO  FLG-NYUIN
            END-IF
+      *    保険組合せ非表示判定
+           PERFORM 410117-HYOJIKBNHEN-SEC
       *
            INITIALIZE                  WRK-JYURRK-AREA
            MOVE    ORCSLASTYMD-SRYKA   TO  WRK-JRK-SRYKA
@@ -3559,8 +3591,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            IF      WRK-JRK-HKNCOMBI    NOT =   ZERO
                PERFORM VARYING    IDX-C    FROM    1   BY  1
                        UNTIL      IDX-C    >   SPA-COMBI-MAX
-                   IF      WRK-JRK-HKNCOMBI    =   SPA-GMN-HKNCOMBINUM
-                                                          (IDX-C)
+      *            非表示判定
+                   IF     (SPA-NAI-TDELKBN (IDX-C) =   SPACE  )   AND
+                          (WRK-JRK-HKNCOMBI    =   SPA-GMN-HKNCOMBINUM
+                                                          (IDX-C) )
                        MOVE    WRK-JRK-HKNCOMBI    TO  SPA-GMN-COMBINUM
                        MOVE    SPA-COMBI-MAX       TO  IDX-C
                    END-IF
@@ -3611,7 +3645,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            PERFORM VARYING     IDX-C   FROM    1   BY  1
                    UNTIL       IDX-C   >   SPA-COMBI-MAX
       *      自費は対象外
-             IF      SPA-NAI-HKNNUM (IDX-C)(1:2)   =   "98"
+             IF     (SPA-NAI-HKNNUM (IDX-C)(1:2)   =   "98" )
+               OR   (SPA-NAI-TDELKBN(IDX-C)        =   "1"  )
                CONTINUE
              ELSE
                MOVE    ZERO                TO  WRK-CNT-HKN2
@@ -5965,31 +6000,36 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "red"               TO  U02-KOHMSG-STYLE
            END-IF
       *
+           MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-COMBI-MAX
+             IF      SPA-NAI-TDELKBN(IDX)  =   SPACE
+               ADD     1                   TO  IDY
                MOVE    SPA-GMN-HKNCOMBINUM      (IDX)
-                                                TO  U02-HCNUM (IDX)
+                                                TO  U02-HCNUM (IDY)
                MOVE    SPA-GMN-SYU-TANSEIDONAME (IDX)
-                                                TO  U02-HCHKN (IDX)
+                                                TO  U02-HCHKN (IDY)
                MOVE    SPA-GMN-KOH1-TANSEIDONAME(IDX)
-                                                TO  U02-HCKOH1(IDX)
+                                                TO  U02-HCKOH1(IDY)
                MOVE    SPA-GMN-KOH2-TANSEIDONAME(IDX)
-                                                TO  U02-HCKOH2(IDX)
+                                                TO  U02-HCKOH2(IDY)
                MOVE    SPA-GMN-KOH3-TANSEIDONAME(IDX)
-                                                TO  U02-HCKOH3(IDX)
+                                                TO  U02-HCKOH3(IDY)
                MOVE    SPA-GMN-KOH4-TANSEIDONAME(IDX)
-                                                TO  U02-HCKOH4(IDX)
+                                                TO  U02-HCKOH4(IDY)
       *
                IF      SPA-GMN-HKNCOMBINUM (IDX)
                                         =   SPA-GMN-COMBINUM
                    MOVE    "T"          TO  U02-HKNCOMBI-SELECT
-                                                            (IDX)
+                                                            (IDY)
                ELSE
                    MOVE    "F"          TO  U02-HKNCOMBI-SELECT
-                                                            (IDX)
+                                                            (IDY)
                END-IF
+              END-IF
            END-PERFORM
-           MOVE    SPA-COMBI-MAX        TO  U02-HKNCOMBI-COUNT
+      *    MOVE    SPA-COMBI-MAX        TO  U02-HKNCOMBI-COUNT
+           MOVE    IDY                  TO  U02-HKNCOMBI-COUNT
       *
            MOVE    ZERO                TO  U02-MIKAKUNINN-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1

@@ -35,6 +35,7 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/XX  保険組合せ非表示対応
       *  04.05.00    NACL-多々納  09/06/26  入院食事区分対応
+      *  04.06.00    NACL-多々納  10/09/29  入外非表示区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,6 +88,7 @@
            03  FLG-PTBYOMEI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -135,6 +137,8 @@
            03  WRK-KOHNUM          PIC X(03).
            03  WRK-KOHID           PIC 9(10).
            03  WRK-JKYSNUM         PIC X(20).
+      *
+           03  WRK-MCP-PATHNAME    PIC X(60).
       *
       *    非表示区分テーブル（P02SCR-SPA のSPA-HYO-HKNCOMBI-AREA）
            03  WRK-HYO-HKNCOMBI-AREA.
@@ -857,6 +861,8 @@
            EVALUATE    SPA-GMN27-CUR
                WHEN    01
                    MOVE    "P027_SELNUM"   TO  MCP-WIDGET
+               WHEN    03
+                   MOVE    "P027_HYOJIKBN" TO  MCP-WIDGET
                WHEN    02
                    MOVE    "BCOB2"         TO  MCP-WIDGET
            END-EVALUATE
@@ -897,8 +903,8 @@
                WHEN    "CLICKED"       ALSO    "P027_NYUGAIKBN"
                    PERFORM 400-NYUGAI-SYORI-SEC
       *    表示切り替え
-               WHEN    "CLICKED"       ALSO    "P027_HYOJIKBN"
-                   PERFORM 400-HYOJIKBN-SYORI-SEC
+      *        WHEN    "CLICKED"       ALSO    "P027_HYOJIKBN"
+      *            PERFORM 400-HYOJIKBN-SYORI-SEC
       *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
@@ -1130,14 +1136,24 @@
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NAI27-SELNUM    TO  JYURRK-HKNCOMBINUM
+           EVALUATE    SPA-GMN27-HYOJIKBN
+               WHEN    "2"
+                   MOVE    "1"                 TO  JYURRK-NYUGAIKBN
+                   MOVE    "key15"             TO  WRK-MCP-PATHNAME
+               WHEN    "3"
+                   MOVE    "2"                 TO  JYURRK-NYUGAIKBN
+                   MOVE    "key15"             TO  WRK-MCP-PATHNAME
+               WHEN    OTHER
+                   MOVE    "key41"             TO  WRK-MCP-PATHNAME
+           END-EVALUATE
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key41"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
            ELSE
                MOVE    SPACE               TO  JYURRK-REC
@@ -1145,7 +1161,7 @@
                MOVE    1                   TO  FLG-JYURRK
            END-IF
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-JYURRK          =   ZERO
@@ -1199,6 +1215,9 @@
       *        選択番号
                WHEN    ANY             ALSO    "P027_HKNKUMI_LIST"
                    PERFORM 220-HKNKUMI-LIST-SEC
+      *
+               WHEN    OTHER
+                   PERFORM 230-GMN-INPUT-SEC
            END-EVALUATE
       *
            .
@@ -1256,6 +1275,26 @@
                MOVE    1               TO  SPA-GMN27-CUR
                GO  TO                  210-SELNUM-CHK-EXT
            END-IF
+      *
+      *    非表示区分
+           INITIALIZE                      SPA-GMN27-HYOJIKBNLST-G
+           MOVE    "1 非表示"          TO  SPA-GMN27-HYOJIKBNLST (1)
+           MOVE    "2 入院のみ非表示"  TO  SPA-GMN27-HYOJIKBNLST (2)
+           MOVE    "3 外来のみ非表示"  TO  SPA-GMN27-HYOJIKBNLST (3)
+           MOVE    3                   TO  SPA-GMN27-HYOJIKBN-MAX
+           PERFORM VARYING   IDX   FROM    1   BY  1
+                   UNTIL   ( IDX       >   SPA-GMN27-HYOJIKBN-MAX )
+               IF      SPA-GMN27-HYOJIKBN
+                                   =   SPA-GMN27-HYOJIKBNLST(IDX)(1:1)
+                   MOVE    SPA-GMN27-HYOJIKBNLST (IDX)
+                                           TO  SPA-GMN27-HYOJIKBN-G
+                   MOVE    SPA-GMN27-HYOJIKBN-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN27-HYOJIKBN  =   SPACE
+               MOVE    SPACE           TO  SPA-GMN27-HYOJIKBN-G
+           END-IF
+      *
       *    保険組合せ編集
            PERFORM 2109-HONCOMBI-HEN-SEC
            .
@@ -1668,6 +1707,101 @@
       *
           .
        220-HKNKUMI-LIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力処理
+      *****************************************************************
+       230-GMN-INPUT-SEC              SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  SPA-MCP-WIDGET
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+           .
+       230-GMN-INPUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           MOVE    P02-P027-HYOJIKBN   TO  SPA-GMN27-HYOJIKBN-G
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェックと別画面処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC          SECTION.
+      *
+      *    表示区分チェック
+           PERFORM 41021-HYOJIKBN-CHK-SEC
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    表示区分チェック処理
+      *****************************************************************
+       41021-HYOJIKBN-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING   IDX   FROM    1   BY  1
+                   UNTIL   ( IDX       >   SPA-GMN27-HYOJIKBN-MAX )
+                   OR      ( FLG-CHK   =   1           )
+               IF      SPA-GMN27-HYOJIKBN
+                                   =   SPA-GMN27-HYOJIKBNLST(IDX)(1:1)
+                   MOVE    SPA-GMN27-HYOJIKBNLST (IDX)
+                                           TO  SPA-GMN27-HYOJIKBN-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF     (SPA-NAI27-SELNUM    =   ZERO )
+           OR     (SPA-GMN27-HYOJIKBN  =   SPACE)
+               MOVE    SPACE               TO  SPA-GMN27-HYOJIKBN-G
+           ELSE
+      *        保険組合せ選択あり
+               IF      FLG-CHK             =   ZERO
+                   MOVE    "9107"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN27-CUR
+               END-IF
+           END-IF
+      *
+           EVALUATE    SPA-GMN27-HYOJIKBN
+               WHEN    SPACE
+                   CONTINUE
+               WHEN    "1"
+               WHEN    "2"
+               WHEN    "3"
+      *            受診履歴・病名等の算定チェック
+                   IF      SPA-P02-SYORI       =   1
+                       CONTINUE
+                   ELSE
+                       PERFORM 4001-HKNCOMBI-CHK-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           MOVE    3               TO  SPA-GMN27-CUR
+                       END-IF
+                   END-IF
+           END-EVALUATE
+           IF     (SPA-ERRCD           =   SPACE )
+             AND  (SPA-NAI27-IDX       >   ZERO  )
+      *        表示内容変更
+               MOVE    SPA-NAI27-IDX       TO  IDX
+               MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN
+                                                                 (IDX)
+               MOVE    SPA-GMN27-HYOIDX (IDX)
+                                           TO  IDX5
+               MOVE    SPA-GMN27-THYOJIKBN (IDX)
+                                           TO  SPA-HYO-HYOJIKBN (IDX5)
+      *        選択へ
+               MOVE    1                   TO  SPA-GMN27-CUR
+           END-IF
+           .
+       41021-HYOJIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************

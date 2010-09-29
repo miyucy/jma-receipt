@@ -489,9 +489,12 @@
                   05  P02-P027-NYUGAIKBN.
                     06  P02-P027-NYUGAIKBN-VALUE   PIC X.
                     06  P02-P027-NYUGAIKBN-LABEL   PIC X(20).
-                  05  P02-P027-HYOJIKBN.
-                    06  P02-P027-HYOJIKBN-VALUE   PIC X.
-                    06  P02-P027-HYOJIKBN-LABEL   PIC X(10).
+                  05  P02-P027-HYOJIKBN-COB.
+                    06  P02-P027-HYOJIKBN.
+                      07  P02-VALUE   PIC X(20).
+                    06  P02-P027-HYOJIKBN-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P027-HYOJIKBN-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
                 04  P02-FIXPAGE4.
                   05  P02-P021-FAX.
                     06  P02-VALUE   PIC X(15).

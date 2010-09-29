@@ -38,6 +38,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０．４改正対応
       * 04.05.00     NACL-多々納  10/01/XX  治験対応
       * 04.06.00     NACL-太田    10/08/30  補助区分、本人家族区分追加
+      * 04.06.00     NACL-多々納  10/09/29  入院・外来非該当対応
       *****************************************************************
       *
       *
@@ -296,6 +297,24 @@
       *            非表示分は処理区分３＝１ のときのみ対象
                    IF      COMB-HYOJIKBN       =   "1"
                        IF      ORCSHKN-KBN3        =   "1"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-HKNCOMBIERR
+                       END-IF
+                   END-IF
+      *            入院非表示分は外来・処理区分３＝１ のときのみ対象
+                   IF      COMB-HYOJIKBN       =   "2"
+                       IF     (ORCSHKN-KBN3        =   "1" )
+                         OR   (SPA-NYUGAIKBN       =   "2" )
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  FLG-HKNCOMBIERR
+                       END-IF
+                   END-IF
+      *            外来非表示分は入院・処理区分３＝１ のときのみ対象
+                   IF      COMB-HYOJIKBN       =   "3"
+                       IF     (ORCSHKN-KBN3        =   "1" )
+                         OR   (SPA-NYUGAIKBN       =   "1" )
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-HKNCOMBIERR

@@ -2055,6 +2055,7 @@
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
            MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN
       *
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
@@ -7453,6 +7454,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 3103-JYURRK-HEN-SEC
       *    収納更新チェック
            PERFORM 3104-SYUNOU-CHECK-SEC
+      *    保険一覧編集
+           PERFORM 3008-HKNCOMBI-HEN-SEC
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
       *

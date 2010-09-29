@@ -709,7 +709,15 @@
                                13  SPA-GMN27-MEI-MJGNCNT    PIC X(02).
                                13  SPA-GMN27-MEI-FTNKBN2    PIC X(16).
       *
-                   07  SPA-GMN27-HYOJIKBN      PIC X(01).
+      *            07  SPA-GMN27-HYOJIKBN      PIC X(01).
+                   07  SPA-GMN27-HYOJIKBN-G.
+                       09  SPA-GMN27-HYOJIKBN      PIC X(01).
+                       09  SPA-GMN27-HYOJIKBN-H    PIC X(01).
+                       09  SPA-GMN27-HYOJIKBN-MEI  PIC X(18).
+                   07  SPA-GMN27-HYOJIKBNLST-G.
+                       09  SPA-GMN27-HYOJIKBNLST   PIC X(20)
+                                                   OCCURS   5.
+                   07  SPA-GMN27-HYOJIKBN-MAX      PIC 9(02).
       *
                    07  SPA-GMN27-MAX                        PIC 9(04).
                    07  SPA-GMN27-CUR                        PIC 9(04).

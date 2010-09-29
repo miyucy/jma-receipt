@@ -109,7 +109,7 @@
            03  WRK-HKNCOMBI        PIC 9(04).
            03  WRK-HKNCOMBIMEI     PIC X(100).
            03  WRK-HKNKBN-MEI      PIC X(02).
-           03  WRK-DEL-MEI         PIC X(10).
+           03  WRK-DEL-MEI         PIC X(14).
       *
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKAMEI        PIC X(20).
@@ -686,9 +686,14 @@
            ELSE
                MOVE    SPACE               TO  WRK-DEL-MEI
       *
-               IF      COMB-HYOJIKBN       =   "1"
-                   MOVE    "【非表示】"        TO  WRK-DEL-MEI
-               END-IF
+               EVALUATE    COMB-HYOJIKBN
+                   WHEN    "1"
+                       MOVE    "【非表示】"        TO  WRK-DEL-MEI
+                   WHEN    "2"
+                       MOVE    "【入非表示】"      TO  WRK-DEL-MEI
+                   WHEN    "3"
+                       MOVE    "【外非表示】"      TO  WRK-DEL-MEI
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
@@ -1431,8 +1436,18 @@
                    IF      SPA-NAI-TDELKBN (IDX)   =   "1"
                        MOVE    "0012"              TO  SPA-ERRCD
                    END-IF
-      *            削除でないこと
+      *            非表示でないこと
                    IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
+                       MOVE    "0022"              TO  SPA-ERRCD
+                   END-IF
+      *            非表示でないこと
+                   IF     (SPA-NAI-THYOJIKBN (IDX) =   "2" )
+                      AND (SPA-GMN-NYUGAIKBN       =   "1" )
+                       MOVE    "0022"              TO  SPA-ERRCD
+                   END-IF
+      *            非表示でないこと
+                   IF     (SPA-NAI-THYOJIKBN (IDX) =   "3" )
+                      AND (SPA-GMN-NYUGAIKBN       =   "2" )
                        MOVE    "0022"              TO  SPA-ERRCD
                    END-IF
       *

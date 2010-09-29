@@ -704,9 +704,12 @@ P02	{
 					value	bool;
 					label	varchar(20);
 				};
-				P027_HYOJIKBN	{
-					value	bool;
-					label	varchar(10);
+				P027_HYOJIKBN_COB	{
+					P027_HYOJIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
 				};
 			};
 			FP4	{

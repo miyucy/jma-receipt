@@ -3465,9 +3465,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  P02-HKNCOBNAME (IDX2)
                                                             (14:)
       *        非表示
-               IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
+               EVALUATE    SPA-NAI-THYOJIKBN (IDX)
+               WHEN    "1"
                    MOVE    "●非"          TO  P02-HKNCOBNUM (IDX2)
-               END-IF
+               WHEN    "2"
+                   MOVE    "●入"          TO  P02-HKNCOBNUM (IDX2)
+               WHEN    "3"
+                   MOVE    "●外非"        TO  P02-HKNCOBNUM (IDX2)
+               END-EVALUATE
       *
                MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
            END-PERFORM
@@ -3591,9 +3596,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    IDX               TO  P02-P027-HKNKUMI-COUNT
       *
       *        非表示
-               IF      SPA-GMN27-THYOJIKBN (IDX)    =   "1"
-                   MOVE    "非表示"      TO  P02-P027-THYOJIKBN(IDX)
-               END-IF
+               EVALUATE    SPA-GMN27-THYOJIKBN (IDX)
+               WHEN    "1"
+                   MOVE    "非表示"        TO  P02-P027-THYOJIKBN(IDX)
+               WHEN    "2"
+                   MOVE    "入非表示"      TO  P02-P027-THYOJIKBN(IDX)
+               WHEN    "3"
+                   MOVE    "外非表示"      TO  P02-P027-THYOJIKBN(IDX)
+               END-EVALUATE
       *
                IF      SPA-GMN27-NUM (IDX)(1:4)
                                            =   SPA-NAI27-SELNUM
@@ -3796,13 +3806,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    非表示
            IF      SPA-GMN27-SELNUM    >   ZERO
-               IF      SPA-GMN27-HYOJIKBN  =   "1"
-                   MOVE    "T"             TO  P02-P027-HYOJIKBN-VALUE
-                   MOVE    "非表示"        TO  P02-P027-HYOJIKBN-LABEL
-               ELSE
-                   MOVE    "F"             TO  P02-P027-HYOJIKBN-VALUE
-                   MOVE    "表示"          TO  P02-P027-HYOJIKBN-LABEL
-               END-IF
+               MOVE    SPA-GMN27-HYOJIKBN-G    TO  P02-P027-HYOJIKBN
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                        UNTIL    ( IDX     >   SPA-GMN27-HYOJIKBN-MAX)
+                   MOVE    SPA-GMN27-HYOJIKBNLST (IDX)
+                                       TO  P02-P027-HYOJIKBN-ITEM (IDX)
+               END-PERFORM
+               MOVE    SPA-GMN27-HYOJIKBN-MAX
+                                           TO  P02-P027-HYOJIKBN-COUNT
            END-IF
       *
            .

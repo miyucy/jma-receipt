@@ -5380,7 +5380,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
-      *TEST
+      *ver.4.6
+               WHEN    "9107"
+                   STRING  "非表示区分がありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *!!
                WHEN    "9106"
                    STRING  "保険組合せ番号と最大連番のＤＢで不整合が"
                            "発生しています。"

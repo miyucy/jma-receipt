@@ -34,6 +34,7 @@
       *  01.00.04    NACL-多々納  05/11/30  MONFUNC 対応
       *  01.00.05    NACL-多々納  06/05/01  処置・検査改正対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.06.00    NACL-多々納  10/09/29  保険組合せ非表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -663,6 +664,7 @@
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
            MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN 
       *
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
@@ -2425,6 +2427,9 @@
                MOVE    3                   TO  SPA-GMN-CUR
                MOVE    "0002"              TO  SPA-ERRCD
            ELSE
+      *
+      *         保険一覧編集
+                PERFORM 3008-HKNCOMBI-HEN-SEC
       *
       *        画面編集用内容編集処理
                PERFORM 3100-GMNSET-SYORI-SEC
