@@ -3471,7 +3471,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2"
                    MOVE    "¡üÆþ"          TO  P02-HKNCOBNUM (IDX2)
                WHEN    "3"
-                   MOVE    "¡ü³°Èó"        TO  P02-HKNCOBNUM (IDX2)
+                   MOVE    "¡ü³°"          TO  P02-HKNCOBNUM (IDX2)
                END-EVALUATE
       *
                MOVE    "F"             TO  P02-HKNLIST-SELECT (IDX2)
