@@ -106,6 +106,7 @@
       *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
       *  04.06.03    NACL-藤原    10/06/21  自院病名に不明な病名コードが
       *                                     登録された場合のチェックを追加
+      *  04.06.01    NACL-藤原    10/08/25  一括入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -151,6 +152,8 @@
            03  FLG-ROW             PIC 9(01).
            03  FLG-MANSEI          PIC 9(01).
            03  FLG-KYUSEI          PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-BYOMEICD-CHK    PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -201,6 +204,10 @@
       * 
            03  WRK-SEIGYO          PIC X(01).
       *
+           03  WRK-BYOMEICD        PIC X(08).
+      *
+           03  WRK-ERRCD           PIC X(04).
+      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -211,6 +218,13 @@
            03  WRK-ERR-BYOMEI      PIC X(80).
       *
            03  WRK-BYOMEIINPUTCD   PIC X(10).
+      *    入力項目名
+           03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-GMN-C03-BUNRUICD-OLD
+                                   PIC 9(03).
+           03  WRK-GMN-C03-BUNRUIMEI-OLD
+                                   PIC X(30).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -343,6 +357,7 @@
            MOVE    SPA-WORK        TO  SPA-C01KYOUTU
            MOVE    SPA-FREE        TO  SPA-C02FREE
       *
+           MOVE    SPA-ERRCD       TO  WRK-ERRCD
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -376,29 +391,51 @@
        100-INIT-SEC                SECTION.
       *
       *    エラー画面又はコード一覧より戻る
-           IF      SPA-MOTOPG      =   "CERR"  OR  "C09"
+           IF      SPA-MOTOPG      =   "C09"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        初期画面セット
-               PERFORM 300-SCREEN-SEC
-               IF      FLG-END         =   1
-                   GO  TO  100-INIT-EXT
-               END-IF
-      *        画面編集
-               PERFORM 500-GMNHEN-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   PERFORM 510-ERRSET-SEC
-                   GO  TO  100-INIT-EXT
+               IF      SPA-MOTOPG      =   "CERR"
+                   MOVE    SPACE           TO  SPA-MOTOPG
+                   IF      WRK-ERRCD       =   "0074"
+                       MOVE    SPA-C03-HAISI-INDEX
+                                               TO  IDZ
+                       INITIALIZE                  SPA-C03-HAISI-AREA
+                       PERFORM 41021-BYOMEICD-HENSYU-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           PERFORM 510-ERRSET-SEC
+                           GO  TO  100-INIT-EXT
+                       END-IF
+                   ELSE
+                       IF      SPA-C03-ERR-INDEX   >   ZERO
+                           COMPUTE SPA-GMN-C03-CUR
+                                           =   4   +   SPA-C03-ERR-INDEX
+                       END-IF
+                   END-IF
+                   INITIALIZE                  SPA-C03-HAISI-AREA
+                   MOVE    ZERO            TO  SPA-C03-ERR-INDEX
+                   PERFORM 5001-MAPCUR-SEC
+               ELSE
+      *            初期画面セット
+                   PERFORM 300-SCREEN-SEC
+                   IF      FLG-END         =   1
+                       GO  TO  100-INIT-EXT
+                   END-IF
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       PERFORM 510-ERRSET-SEC
+                       GO  TO  100-INIT-EXT
+                   END-IF
                END-IF
            END-IF
       *
            MOVE    SPACE           TO  LINKAREA
       *
-           MOVE    SPACE           TO  MCP-PUTTYPE.
-           MOVE    "C03    "       TO  MCP-WINDOW.
+           MOVE    SPACE           TO  MCP-PUTTYPE
+           MOVE    "C03"           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
            .
@@ -409,9 +446,6 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *****MOVE    SPA-WORK        TO  SPA-C01KYOUTU
-      *
-      *----(03.01.04)--ADD-START---
       *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
@@ -423,7 +457,6 @@
                    GO  TO  300-SCREEN-EXT
                END-IF
            END-IF
-      *----(03.01.04)--ADD-END-----
       *
            IF    SPA-MOTOPG        =   "C99"
                GO  TO  300-SCREEN-EXT
@@ -447,12 +480,10 @@
                WHEN    SPA-MOTOPG(1:4)  =  "CID3"
                    PERFORM 350-CID3-SET-SEC
                    GO  TO  300-SCREEN-EXT
-      *----(03.01.03)--ADD-START---
       *            確認画面５より
                WHEN    SPA-MOTOPG(1:4)  =  "CID5"
                    PERFORM 360-CID5-SET-SEC
                    GO  TO  300-SCREEN-EXT
-      *----(03.01.03)--ADD-END-----
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -584,7 +615,8 @@
                        END-IF
                    END-IF    
                WHEN    "0105"
-      *            慢性と急性の混在警告時の更新の確認
+               WHEN    "0106"
+      *            慢性と急性の混在または分類名警告時の更新の確認
                    IF      SPA-CID1-FLG        =   "OK"
                        PERFORM 4502-TOUROKU-SYORI-SEC
                    END-IF    
@@ -637,6 +669,7 @@
                                            TO  BYO-BYOMEICD
                        PERFORM 410111-BYOMEI-HENSYU-SEC
                    END-IF
+                   MOVE    SPACE           TO  SPA-CIDCD2
                    MOVE    SPA-C03-IKOSAKI-INDEX
                                            TO  IDZ
                    PERFORM 41021-BYOMEICD-HENSYU-SEC
@@ -660,7 +693,8 @@
                                        SPA-CIDCD3
                                        SPA-CIDCD4
                                        SPA-CIDCD5
-                                       SPA-CID1-AREA  
+                                       SPA-CID1-AREA
+           INITIALIZE                  SPA-C03-IKOSAKI-AREA 
            .
        340-CID2-SET-EXT.
            EXIT.
@@ -1125,60 +1159,35 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-TOUROKU-SEC
-      *----(03.01.04)--ADD-START---
       *    情報削除
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 480-JYOUHOU-DEL-SEC
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B32"
                    PERFORM 490-KAKUNIN-SEC
-      *----(03.01.04)--ADD-END-----
            END-EVALUATE
       *
            .
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    会話　処理
+      *    会話処理
       *****************************************************************
        200-ENTRY                   SECTION.
+      *
+      *    入力箇所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-C03-CUR
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "BANGO"
                    PERFORM 41001-BANGO-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "BYOMEIINPUTCD"
                    PERFORM 41002-BYOMEIINPUT-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BUNRUICD"
-                   PERFORM 41003-BUNRUICD-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BUNRUIMEI"
-                   PERFORM 41004-BUNRUIMEI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_1"
-               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_2"
-               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_3"
-               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_4"
-               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_5"
-               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_6"
-                   PERFORM 4102-BYOMEI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BYOMEI"
-                   PERFORM 41013-BYOMEI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "CHARTBYOMEI"
-                   PERFORM 41022-CHARTBYOMEI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "UTAGAIFLG"
-                   PERFORM 41007-UTAGAI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "MANSEIFLG"
-                   PERFORM 41006-MANSEI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HKNBYOMEIFLG"
-                   PERFORM 41014-HKNBYOMEIFLG-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "DSPSEQ"
-                   PERFORM 41010-DSPSEQ-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "BYOMEISBT"
-                   PERFORM 41015-BYOMEISBT-CHK-SEC
-      *        病名行選択
                WHEN    ANY             ALSO    "BYOMEILST"
                    PERFORM 41020-BYOMEISEL-SEC
-      *        分類選択
-               WHEN    ANY             ALSO    "BUNRUILST"
-                   PERFORM 41021-BUNRUILST-SEC
+               WHEN    OTHER
+                   PERFORM 400-INPUT-CHK-SEC
            END-EVALUATE
       *
            .
@@ -1186,7 +1195,7 @@
            EXIT.
       *
       *****************************************************************
-      *    病名番号選択処理
+      *    行番号選択処理
       *****************************************************************
        41001-BANGO-CHK-SEC            SECTION.
       *
@@ -1309,6 +1318,8 @@
                                PERFORM 5002-HIZUKE-HEN-SEC
                                MOVE    LNK-DAY2-EDTYMD3
                                                        TO  WRK-HAISIYMDH
+                               MOVE    BYO-BYOMEI      TO
+                                                   SPA-C03-HAISI-BYOMEI
                              END-IF        
                            END-IF
                        END-IF
@@ -1452,485 +1463,6 @@
            END-IF 
            .
        410111-BYOMEI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    病名コードチェック処理
-      *****************************************************************
-       4102-BYOMEI-CHK-SEC          SECTION.
-      *
-           MOVE    SPACE           TO  WRK-HAISIYMDH
-                                       WRK-SEIGYO
-      *
-           MOVE    MCP-WIDGET      TO  WRK-WIDGET
-           MOVE    WRK-WIDGET2     TO  IDZ
-      *
-           COMPUTE SPA-GMN-C03-CUR     =   4   +   IDZ
-      *
-      *    病名検索へ
-           IF      C03-BYOMEICD (IDZ)(1:2) =   "//"
-               PERFORM 450-C05-SYORI-SEC
-               GO  TO  4102-BYOMEI-CHK-EXT
-           END-IF
-      *
-      *    病名コード欄未入力のとき病名欄へ遷移
-           IF    ( SPA-GMN-C03-BYOMEICD-G
-                                   =   SPACE )
-           AND   ( C03-BYOMEICD (IDZ)
-                                   =   SPACE )
-               MOVE    11              TO  SPA-GMN-C03-CUR
-               GO  TO  4102-BYOMEI-CHK-EXT
-           END-IF    
-      *
-      *    コードの挿入・削除の制御文字取得
-           IF      C03-BYOMEICD (IDZ)  NOT =   SPACE
-               PERFORM VARYING IDX FROM    8   BY  -1
-                       UNTIL   IDX <       2
-                   IF      C03-BYOMEICD (IDZ)(IDX:1)
-                                       NOT =   SPACE
-                       EVALUATE    C03-BYOMEICD (IDZ)(IDX:1)
-                           WHEN    "-"
-                               MOVE    "-"         TO  WRK-SEIGYO
-                           WHEN    "+"
-                               MOVE    "+"         TO  WRK-SEIGYO
-                       END-EVALUATE
-      *                追加のとき
-                       IF      WRK-SEIGYO      =   "+"
-                           IF      SPA-GMN-C03-BYOMEICD (6)
-                                                   NOT =   SPACE
-                               MOVE    SPACE           TO  WRK-SEIGYO
-                           END-IF 
-                           IF      IDZ         >   1
-                               COMPUTE IDW     =   IDZ     -   1
-                               IF      SPA-NAI-C03-BYOMEICD (IDW)
-                                                           =   SPACE 
-                                   MOVE    SPACE       TO  WRK-SEIGYO
-                               END-IF
-                           END-IF
-                           IF      WRK-SEIGYO      =   SPACE
-                               COMPUTE SPA-GMN-C03-CUR =   1   +   IDZ
-                               GO  TO  4102-BYOMEI-CHK-EXT
-                           END-IF
-                       END-IF
-                       MOVE    2               TO  IDX
-                   END-IF 
-               END-PERFORM
-           END-IF
-      *       
-           EVALUATE    WRK-SEIGYO
-               WHEN    "-"
-                   PERFORM VARYING IDX FROM    IDZ BY  1
-                           UNTIL   IDX >       6
-                       IF      IDX             =   6
-                           INITIALIZE  SPA-NAI-C03-BYOMEI-OCC(IDX)
-                                       SPA-GMN-C03-BYOMEICD  (IDX)
-                       ELSE
-                           COMPUTE IDW     =   IDX     +   1
-                           MOVE    SPA-NAI-C03-BYOMEI-OCC (IDW)
-                                   TO  SPA-NAI-C03-BYOMEI-OCC (IDX)
-                           MOVE    SPA-GMN-C03-BYOMEICD   (IDW)
-                                   TO  SPA-GMN-C03-BYOMEICD  (IDX)
-                       END-IF                     
-                   END-PERFORM                           
-                   PERFORM 41021-BYOMEICD-HENSYU-SEC
-                   MOVE    SPACE           TO  WRK-SEIGYO     
-                   GO  TO  4102-BYOMEI-CHK-EXT
-               WHEN    "+"
-                   PERFORM VARYING IDX FROM    6   BY  -1
-                           UNTIL   IDX <       IDZ
-                       IF      IDX             =   IDZ
-                           INITIALIZE  SPA-NAI-C03-BYOMEI-OCC(IDX)
-                                       SPA-GMN-C03-BYOMEICD  (IDX)
-                       ELSE
-                           COMPUTE IDW     =   IDX     -   1
-                           MOVE    SPA-NAI-C03-BYOMEI-OCC (IDW)
-                                   TO  SPA-NAI-C03-BYOMEI-OCC(IDX)
-                           MOVE    SPA-GMN-C03-BYOMEICD   (IDW)
-                                   TO  SPA-GMN-C03-BYOMEICD  (IDX)
-                       END-IF                     
-                   END-PERFORM
-                   PERFORM 41021-BYOMEICD-HENSYU-SEC
-                   MOVE    SPACE           TO  WRK-SEIGYO     
-                   GO  TO  4102-BYOMEI-CHK-EXT
-           END-EVALUATE                               
-      *
-      *    未コード化傷病名入力のとき
-           IF      C03-BYOMEICD (IDZ)
-                                   =   WRK-CONS-BYOMEICD
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       6
-                   IF      SPA-GMN-C03-BYOMEICD (IDX)
-                                          NOT =  SPACE
-                   AND     IDX            NOT =   IDZ                       
-                       MOVE    "0062"      TO  SPA-ERRCD
-                       MOVE    6           TO  IDX
-                   END-IF
-               END-PERFORM                                    
-           ELSE
-      *        未コード化傷病名が既に入力のとき
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       6
-                   IF      SPA-GMN-C03-BYOMEICD(IDX)
-                                       =   WRK-CONS-BYOMEICD
-                       MOVE    "0063"      TO  SPA-ERRCD
-                   END-IF
-               END-PERFORM                                    
-           END-IF
-      *             
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    SPA-GMN-C03-BYOMEICD (IDZ)
-                                   TO  C03-BYOMEICD (IDZ)
-               GO  TO  4102-BYOMEI-CHK-EXT
-           END-IF
-      *
-           INITIALIZE          SPA-NAI-C03-BYOMEI-G (IDZ)
-      *
-           MOVE    C03-BYOMEICD (IDZ)  TO  SPA-GMN-C03-BYOMEICD(IDZ)
-      *
-           IF      SPA-GMN-C03-BYOMEICD(IDZ)(1:1)
-                                       =   "."
-               MOVE    "ZZZ"           TO
-                                       SPA-GMN-C03-BYOMEICD(IDZ)(1:3)
-               MOVE    C03-BYOMEICD(IDZ)(2:)
-                                       TO
-                                        SPA-GMN-C03-BYOMEICD(IDZ)(4:) 
-           END-IF
-           MOVE    SPA-GMN-C03-BYOMEICD(IDZ)
-                                       TO  SPA-NAI-C03-BYOMEICD(IDZ)                                                
-      *
-           MOVE    ZERO                TO  WRK-LENGTH                    
-           PERFORM VARYING IDX FROM    8   BY  -1
-                   UNTIL   IDX <       1
-               IF      SPA-GMN-C03-BYOMEICD(IDZ)(IDX:1)
-                                   NOT =   SPACE
-                   MOVE    IDX             TO  WRK-LENGTH
-                   MOVE    1               TO  IDX
-               END-IF
-           END-PERFORM
-      *
-      *     空白の時コードをずらす
-           EVALUATE    WRK-LENGTH
-               WHEN    ZERO         
-                   PERFORM VARYING IDX FROM    IDZ BY  1
-                           UNTIL   IDX >       6
-                       IF      IDX             =   6
-                           INITIALIZE      SPA-NAI-C03-BYOMEI-G (IDX)
-                                           SPA-GMN-C03-BYOMEICD (IDX)
-                       ELSE
-                           COMPUTE IDW     =   IDX     +   1
-                           MOVE    SPA-NAI-C03-BYOMEI-G (IDW)
-                                           TO  SPA-NAI-C03-BYOMEI-G(IDX)
-                           MOVE    SPA-GMN-C03-BYOMEICD (IDW)
-                                           TO  SPA-GMN-C03-BYOMEICD(IDX)
-                       END-IF                     
-                   END-PERFORM
-               WHEN    7
-      *            病名マスタ読み込み
-                   MOVE    SPA-GMN-C03-BYOMEICD (IDZ) TO  BYO-BYOMEICD
-                   PERFORM 410111-BYOMEI-HENSYU-SEC
-                   IF      FLG-BYOMEI       NOT =   ZERO
-                       MOVE    "1000"           TO  SPA-ERRCD
-                   ELSE
-                       IF    ( BYO-IKOSAKICD   NOT =   SPACE )
-                       AND   ( SPA-C02-1042-MSG2-DSPKBN
-                                                   =   ZERO  )
-                           MOVE    BYO-IKOSAKICD   TO  BYO-BYOMEICD
-                           MOVE    ZERO            TO  FLG-BYOMEI
-                           PERFORM 900-BYOMEI-READ-SEC
-                           IF      FLG-BYOMEI          =   ZERO
-                               MOVE    SPA-GMN-C03-BYOMEICD (IDZ)
-                                                   TO
-                                               SPA-C03-IKOMOTO-BYOMEICD
-                               MOVE    SPA-NAI-C03-BYOMEI   (IDZ)
-                                                   TO
-                                               SPA-C03-IKOMOTO-BYOMEI
-                               MOVE    BYO-BYOMEICD    TO
-                                               SPA-C03-IKOSAKI-BYOMEICD
-                               MOVE    BYO-BYOMEI      TO
-                                               SPA-C03-IKOSAKI-BYOMEI
-                               MOVE    IDZ             TO
-                                               SPA-C03-IKOSAKI-INDEX                    
-                               MOVE    "0103"          TO  SPA-CIDCD2
-                               GO  TO  4102-BYOMEI-CHK-EXT
-                           END-IF    
-                       ELSE
-                           IF      BYO-HAISIYMD        =   ALL "9"
-                                                       OR  SPACE
-                               CONTINUE
-                           ELSE
-                               MOVE    BYO-HAISIYMD    TO  WRK-SYMD
-                               PERFORM 5002-HIZUKE-HEN-SEC
-                               MOVE    LNK-DAY2-EDTYMD3
-                                                       TO  WRK-HAISIYMDH
-                           END-IF        
-                      END-IF        
-                   END-IF
-               WHEN    OTHER
-                   MOVE    "■■■"         TO  SPA-NAI-C03-BYOMEI (IDZ)
-                   MOVE    "0078"           TO  SPA-ERRCD
-           END-EVALUATE                               
-      *
-           PERFORM 41021-BYOMEICD-HENSYU-SEC
-           .
-       4102-BYOMEI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    病名コード編集処理
-      *****************************************************************
-       41021-BYOMEICD-HENSYU-SEC      SECTION.
-      *
-      *    病名編集処理
-           PERFORM 41021-BYOMEI-HENSYU-SEC
-      *
-           IF      SPA-ERRCD           NOT =   SPACE     
-               GO  TO  41021-BYOMEICD-HENSYU-EXT
-           END-IF
-      *
-      *    全ての病名コード未入力又は未コード化傷病名コードのとき病名へ遷移
-           IF      SPA-GMN-C03-CUR         =   5
-               IF    ( SPA-GMN-C03-BYOMEICD-G  =   SPACE             )
-               OR    ( SPA-GMN-C03-BYOMEICD(1) =   WRK-CONS-BYOMEICD )
-                   MOVE    11                  TO  SPA-GMN-C03-CUR
-                   GO  TO  41021-BYOMEICD-HENSYU-EXT
-               END-IF 
-           END-IF 
-      *      
-      *    病名コード未入力のときカルテ病名へ遷移     
-           IF      SPA-GMN-C03-BYOMEICD (IDZ)  =   SPACE                                    
-               IF      WRK-SEIGYO      =   "-"
-                   GO  TO  41021-BYOMEICD-HENSYU-EXT
-               END-IF
-               PERFORM VARYING IDX3    FROM    IDZ   BY  1
-                       UNTIL   IDX3    >       6
-                   IF       SPA-GMN-C03-BYOMEICD (IDX3)
-                                           NOT =   SPACE
-                       GO  TO  41021-BYOMEICD-HENSYU-EXT
-                   END-IF
-               END-PERFORM 
-               MOVE    12                  TO  SPA-GMN-C03-CUR
-           ELSE
-               IF      WRK-SEIGYO      =   "-"
-                   CONTINUE
-               ELSE
-                   ADD     1               TO  SPA-GMN-C03-CUR
-               END-IF
-               IF      SPA-GMN-C03-CUR     =   11
-                   MOVE    12              TO  SPA-GMN-C03-CUR
-               END-IF
-           END-IF      
-      *
-           IF    ( WRK-HAISIYMDH       =   SPACE )
-           OR    ( SPA-C02-1042-MSG3-DSPKBN
-                                       =   "1"   )
-               CONTINUE
-           ELSE
-               MOVE    "0075"              TO  SPA-ERRCD
-           END-IF                     
-           .
-       41021-BYOMEICD-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    病名コード編集チェック処理
-      *****************************************************************
-       41021-BYOMEI-HENSYU-SEC        SECTION.
-      *
-      *    未コード化傷病名のとき
-           IF      SPA-NAI-C03-BYOMEICD (1)
-                                   =   WRK-CONS-BYOMEICD
-               GO  TO  41021-BYOMEI-HENSYU-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  SPA-NAI-C03-BYOMEIMOJI
-      *    病名編集
-           MOVE    SPA-NAI-C03-BYOMEI(1)
-                                       TO  WRK-BYOMEI
-           PERFORM VARYING IDX FROM    2   BY  1
-                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
-               STRING  WRK-BYOMEI              DELIMITED   BY  SPACE
-                       SPA-NAI-C03-BYOMEI(IDX)     DELIMITED   BY  SPACE
-                                       INTO    WRK-BYOMEI
-               END-STRING
-           END-PERFORM
-      *
-      *    疑いフラグ編集
-      *****IF      WRK-BYOMEI          NOT =   SPA-GMN-C03-BYOMEI
-      *      疑いフラグ設定区分による初期化
-             IF      SPA-C02-1042-UTAGAIFLG-KBN
-                                           =   "9"
-                 MOVE    SPACE               TO  SPA-GMN-C03-UTAGAIFLG-G
-             END-IF 
-             PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >         WRK-CONS-BYOMEICD-MAX
-                   OR      SPA-GMN-C03-UTAGAIFLG   =   "3"
-               EVALUATE    SPA-NAI-C03-UTAGAIFLG   (IDX)
-                   WHEN    "1"
-                       IF      SPA-GMN-C03-UTAGAIFLG   =   "2"
-                           MOVE    "3"     TO  SPA-GMN-C03-UTAGAIFLG
-                        ELSE
-                           MOVE    SPA-NAI-C03-UTAGAIFLG(IDX)
-                                           TO  SPA-GMN-C03-UTAGAIFLG
-                        END-IF    
-                   WHEN    "2"
-                       IF      SPA-GMN-C03-UTAGAIFLG   =   "1"
-                           MOVE    "3"     TO  SPA-GMN-C03-UTAGAIFLG
-                        ELSE
-                           MOVE    SPA-NAI-C03-UTAGAIFLG(IDX)
-                                           TO  SPA-GMN-C03-UTAGAIFLG
-                       END-IF
-                   WHEN    "3"
-                       MOVE    "3"         TO  SPA-GMN-C03-UTAGAIFLG
-                END-EVALUATE
-             END-PERFORM
-             PERFORM 5001-UTAGAIFLG-HENSYU-SEC
-      *            
-      *    慢性区分編集
-             MOVE    SPACE                 TO  SPA-GMN-C03-MANSEIKBN-G  
-             PERFORM VARYING IDX   FROM    1   BY  1
-                   UNTIL   IDX >   WRK-CONS-BYOMEICD-MAX
-               IF      SPA-NAI-C03-TOKSKNCD (IDX)   NOT =   ZERO
-                   MOVE    SPA-NAI-C03-TOKSKNCD (IDX)
-                                           TO  SPA-GMN-C03-MANSEIKBN
-                   MOVE    WRK-CONS-BYOMEICD-MAX
-                                           TO  IDX
-               END-IF   
-             END-PERFORM
-             PERFORM 5001-MANSEIKBN-HENSYU-SEC
-      *****END-IF
-      *
-           MOVE    WRK-BYOMEI          TO  SPA-GMN-C03-BYOMEI
-      *
-      *    病名コードエラーの時以下の処理はしない
-           IF      SPA-ERRCD            NOT =   SPACE     
-               GO  TO  41021-BYOMEI-HENSYU-EXT
-           END-IF
-      * 
-      *　　接尾語・接頭語チェック
-           MOVE    SPACE                   TO  WRK-RECECD-TBL
-      * 
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
-                   OR      SPA-NAI-C03-BYOMEICD (IDX)
-                                           =   SPACE
-                   OR      SPA-ERRCD   NOT =   SPACE 
-               EVALUATE    SPA-NAI-C03-BYOMEICD(IDX)(1:1)
-                               ALSO    SPA-NAI-C03-BYOMEICD(IDX)(4:1)
-                   WHEN    "Z"         ALSO    "1"  THRU    "7"
-                       IF    ( WRK-RECECD (2)    NOT =   SPACE )   OR
-                             ( WRK-RECECD (3)    NOT =   SPACE )
-                           MOVE    "0006"        TO  SPA-ERRCD
-                       ELSE
-                           MOVE    SPA-NAI-C03-BYOMEICD(IDX)(4:1)
-                                                 TO  WRK-RECECD (1)
-                       END-IF            
-                   WHEN    "Z"         ALSO    "8"  THRU    "8"
-                       IF      WRK-RECECD (2)    NOT =   SPACE
-                           MOVE    "1"           TO  WRK-RECECD (3)
-                       ELSE
-                           IF      WRK-RECECD (1)    NOT =   SPACE
-                               MOVE    "0006"        TO  SPA-ERRCD
-                           ELSE
-                               MOVE    SPA-NAI-C03-BYOMEICD(IDX)(4:1)
-                                                     TO  WRK-RECECD (3)
-                           END-IF
-                       END-IF
-                   WHEN    "Z"         ALSO    ANY
-                       CONTINUE
-                   WHEN    OTHER                 
-                       IF      WRK-RECECD (3)    NOT =   SPACE
-                           MOVE    "0006"        TO  SPA-ERRCD
-                       ELSE
-                           MOVE    "1"           TO  WRK-RECECD (2)
-                       END-IF
-               END-EVALUATE
-           END-PERFORM
-           IF      SPA-ERRCD         NOT =   SPACE
-               GO  TO  41021-BYOMEI-HENSYU-EXT
-           END-IF
-      *
-      *    病名種別のセット
-           IF      WRK-RECECD-TBL        =   SPACE
-               MOVE    SPACE                 TO  SPA-GMN-C03-BYOMEISBT-G
-           ELSE
-               IF      WRK-RECECD (2)    NOT =   SPACE
-                   MOVE    ZERO              TO  SPA-GMN-C03-BYOMEISBT
-               ELSE
-                   IF      WRK-RECECD (1)    NOT =   SPACE
-                       EVALUATE    WRK-RECECD (1)
-                           WHEN    "1"
-                               MOVE    "1"     TO  SPA-GMN-C03-BYOMEISBT
-                           WHEN    OTHER 
-                               MOVE    "7"     TO  SPA-GMN-C03-BYOMEISBT
-                       END-EVALUATE    
-                   ELSE
-                       MOVE    "8"             TO  SPA-GMN-C03-BYOMEISBT
-                   END-IF
-               END-IF
-               PERFORM 5001-BYOMEISBT-HENSYU-SEC
-           END-IF
-      *
-      *   入力病名コード数カウント
-           MOVE    ZERO                TO  IDX1
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
-               IF      SPA-NAI-C03-BYOMEICD(IDX)
-                                       NOT =   SPACE
-               AND     SPA-NAI-C03-BYOMEICD(IDX)(1:1)
-                                       NOT =   "Z"                        
-                   ADD     1               TO  IDX1
-               END-IF
-           END-PERFORM                                    
-           IF     IDX1                    >   1
-               MOVE    "0056"             TO  SPA-ERRCD
-               GO  TO  41021-BYOMEI-HENSYU-EXT
-           END-IF             
-      *
-      *    文字チェック     
-           PERFORM VARYING     IDX     FROM    1   BY  2
-                   UNTIL       IDX     >       100
-                   OR  WRK-BYOMEI(IDX:2)       =   SPACE
-               IF      WRK-BYOMEI(IDX:2)   =   "■"
-                   MOVE    "0035"          TO  SPA-ERRCD
-                   GO  TO  41021-BYOMEI-HENSYU-EXT
-              END-IF
-           END-PERFORM
-      *
-      *    文字数チェック     
-           MOVE    ZERO                TO  WRK-MOJISU
-           PERFORM VARYING     IDX     FROM    100 BY  -1
-                   UNTIL       IDX     <       1
-               IF      WRK-BYOMEI(IDX:1)   NOT =   SPACE
-                   MOVE    IDX                 TO  WRK-MOJISU 
-                   MOVE    1                   TO  IDX
-               END-IF  
-           END-PERFORM
-           IF      WRK-MOJISU              >   80
-               MOVE    "0007"          TO  SPA-ERRCD
-               GO  TO  41021-BYOMEI-HENSYU-EXT
-           END-IF
-      *
-      *    病名文字数編集
-           COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
-           MOVE    WRK-MOJISU          TO  SPA-NAI-C03-BYOMEIMOJI
-      *
-      *    病名編集フラグセット
-           MOVE    SPACE                   TO  SPA-GMN-C03-BYOMEIHENFLG
-                                               SPA-NAI-C03-BYOMEIHENFLG
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
-               IF    ( SPA-NAI-C03-BYOMEICD(IDX)
-                                       NOT =   SPACE )
-               AND   ( SPA-NAI-C03-BYOMEIHENFLG-O (IDX)
-                                           =   "1"   )
-                   MOVE    "病名編集"      TO  SPA-GMN-C03-BYOMEIHENFLG
-                   MOVE    "1"             TO  SPA-NAI-C03-BYOMEIHENFLG
-                   MOVE    WRK-CONS-BYOMEICD-MAX
-                                           TO  IDX
-               END-IF
-           END-PERFORM                                    
-           .
-       41021-BYOMEI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2118,15 +1650,252 @@
            EXIT.
       *
       *****************************************************************
+      *    行選択処理
+      *****************************************************************
+       41021-BUNRUILST-SEC       SECTION.
+      *          
+      *        行選択
+           MOVE    ZERO                TO  WRK-SELNO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-C03-BUNRUI-MAX
+               IF      C03-BUNRUI-SELECT (IDX) =   "T"
+                   MOVE    SPA-GMN-C03-BBUNRUICD (IDX)
+                                               TO  SPA-GMN-C03-BUNRUICD
+                   MOVE    SPA-GMN-C03-BBUNRUIMEI(IDX)
+                                           TO  SPA-GMN-C03-BUNRUIMEI                           
+      *
+                   IF      IDX             =   SPA-NAI-C03-BUNRUI-SELNO
+                       CONTINUE
+                   ELSE        
+                       MOVE    IDX                 TO  WRK-SELNO
+                       MOVE    SPA-GMN-C03-BUNRUI-MAX  TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNO           >   ZERO
+      *        分類コードのみ入力のとき
+               IF    ( SPA-GMN-C03-BYOMEIINPUTCD
+                                              =   SPACE )
+               AND   ( SPA-GMN-C03-BYOMEI     =   SPACE )
+               AND   ( SPA-GMN-C03-BYOMEICD-G =   SPACE )
+               AND   ( SPA-GMN-C03-BUNRUICD
+                                          NOT =   ZERO  )
+                   MOVE    WRK-SELNO       TO  SPA-NAI-C03-BUNRUI-SELNO
+               END-IF
+           END-IF
+      *
+      *    分類コードのみ入力のとき分類名に属する病名の表示
+           IF    ( SPA-GMN-C03-BYOMEIINPUTCD
+                                          =   SPACE )
+           AND   ( SPA-GMN-C03-BYOMEI     =   SPACE )
+           AND   ( SPA-GMN-C03-BYOMEICD-G =   SPACE )
+           AND   ( SPA-GMN-C03-BUNRUICD
+                                      NOT =   ZERO  )
+               INITIALIZE                  SPA-GMN-C03-BYOMEI-TBL
+                                           SPA-NAI-C03-TBL
+                                           SPA-NAI-C03-SELNO
+               MOVE    ZERO                TO  SPA-GMN-C03-MAX
+               MOVE    1                   TO  SPA-GMN-C03-PAGE 
+      *
+               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
+               INITIALIZE                  USERBYOMEI-REC
+               MOVE    SPA-GMN-C03-BUNRUICD
+                                           TO  USBYO-BUNRUICD
+               PERFORM 3101-USERBYOMEI-LST-SEC
+           END-IF
+      *
+           MOVE    5               TO  SPA-GMN-C03-CUR
+           .
+       41021-BUNRUISEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    行選択処理
+      *****************************************************************
+       41020-BYOMEISEL-SEC       SECTION.
+      *          
+      *        行選択
+           MOVE    ZERO                TO  WRK-SELNO
+      *     
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-C03-MAX
+               IF      C03-BYOMEILST-SELECT (IDX)    =   "T"
+                   IF      IDX             =   SPA-NAI-C03-SELNO
+                       CONTINUE
+                   ELSE        
+                       MOVE    IDX             TO  WRK-SELNO
+                       MOVE    SPA-GMN-C03-MAX     TO  IDX
+                   END-IF
+               END-IF    
+           END-PERFORM
+      *
+           IF      WRK-SELNO           >   ZERO
+               MOVE    WRK-SELNO           TO  SPA-NAI-C03-SELNO
+           END-IF
+      *
+           INITIALIZE                 SPA-GMN-C03-KOUMOKU
+                                      SPA-NAI-C03-KOUMOKU
+      *
+           MOVE    SPA-GMN-C03-TBANGO (SPA-NAI-C03-SELNO)
+                                       TO  SPA-GMN-C03-BANGO
+      *                                 
+           PERFORM 410111-BYOMEI-SELECT-SEC     
+           .
+       41020-BYOMEISEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       400-INPUT-CHK-SEC              SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    病名、病名コードのチェック
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_1"
+               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_2"
+               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_3"
+               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_4"
+               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_5"
+               WHEN    "ACTIVATE"      ALSO    "BYOMEICD_6"
+                   MOVE    MCP-WIDGET      TO  WRK-WIDGET
+                   PERFORM 4102-BYOMEICD-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "BYOMEI"
+                   PERFORM 41013-BYOMEI-CHK-SEC
+               WHEN    OTHER
+                   IF    ( C03-BYOMEI  NOT =   SPA-GMN-C03-BYOMEI      )
+                   AND   ( C03-BYOMEICD (1)
+                                           =   SPA-GMN-C03-BYOMEICD (1))
+                   AND   ( C03-BYOMEICD (2)
+                                           =   SPA-GMN-C03-BYOMEICD (2))
+                   AND   ( C03-BYOMEICD (3)
+                                           =   SPA-GMN-C03-BYOMEICD (3))
+                   AND   ( C03-BYOMEICD (4)
+                                           =   SPA-GMN-C03-BYOMEICD (4))
+                   AND   ( C03-BYOMEICD (5)
+                                           =   SPA-GMN-C03-BYOMEICD (5))
+                   AND   ( C03-BYOMEICD (6)
+                                           =   SPA-GMN-C03-BYOMEICD (6))
+                       PERFORM 41013-BYOMEI-CHK-SEC
+                   END-IF
+                   IF    ( C03-BYOMEI      =   SPA-GMN-C03-BYOMEI      )
+                   AND   ( C03-BYOMEICD (1)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (1)
+                        OR C03-BYOMEICD (2)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (2)
+                        OR C03-BYOMEICD (3)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (3)
+                        OR C03-BYOMEICD (4)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (4)
+                        OR C03-BYOMEICD (5)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (5)
+                        OR C03-BYOMEICD (6)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (6))
+                       MOVE    "BYOMEICD_1"    TO  WRK-WIDGET
+                       PERFORM 4102-BYOMEICD-CHK-SEC
+                   END-IF
+           END-EVALUATE
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    ANY             ALSO    "BUNRUILST"
+      *            分類一覧選択
+                   PERFORM 41021-BUNRUILST-SEC
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      400-INPUT-CHK-EXT
+           END-IF
+      *
+      *    入力箇所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+      *
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      400-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4501-KEIKOKU-CHK-SEC
+           END-IF
+      *
+           .
+       400-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-C03-BUNRUIMEI
+                                       TO  WRK-GMN-C03-BUNRUIMEI-OLD
+      *
+           MOVE    C03-BYOMEISBT       TO  SPA-GMN-C03-BYOMEISBT-G
+           MOVE    C03-BUNRUICD        TO  SPA-GMN-C03-BUNRUICD
+           MOVE    C03-BUNRUIMEI       TO  SPA-GMN-C03-BUNRUIMEI
+           MOVE    C03-CHARTBYOMEI     TO  SPA-GMN-C03-CHARTBYOMEI
+           MOVE    C03-UTAGAIFLG       TO  SPA-GMN-C03-UTAGAIFLG-G
+           MOVE    C03-MANSEIFLG       TO  SPA-GMN-C03-MANSEIKBN-G
+           MOVE    C03-HKNBYOMEIFLG    TO  SPA-GMN-C03-HKNBYOMEIFLG-G
+           MOVE    C03-DSPSEQ          TO  SPA-GMN-C03-DSPSEQ
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 41015-BYOMEISBT-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41003-BUNRUICD-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41004-BUNRUIMEI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41022-CHARTBYOMEI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41007-UTAGAI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41006-MANSEI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41014-HKNBYOMEIFLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 41010-DSPSEQ-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    分類コードチェック処理
       *****************************************************************
        41003-BUNRUICD-CHK-SEC          SECTION.
       *
-           MOVE    3                  TO  SPA-GMN-C03-CUR
-      *         
-           MOVE    C03-BUNRUICD       TO  SPA-GMN-C03-BUNRUICD
-      *
-           MOVE    SPACE              TO  SPA-GMN-C03-BUNRUIMEI
+      *****MOVE    SPACE              TO  SPA-GMN-C03-BUNRUIMEI
       *
            IF      SPA-GMN-C03-BUNRUICD   =   ZERO
                CONTINUE
@@ -2136,14 +1905,25 @@
                        UNTIL   IDX >       SPA-GMN-C03-BUNRUI-MAX
                    IF      SPA-GMN-C03-BUNRUICD
                                        =   SPA-GMN-C03-BBUNRUICD (IDX)
-                       MOVE    SPA-GMN-C03-BBUNRUIMEI  (IDX)
+                       IF    ( MCP-EVENT      =   "ACTIVATE" )
+                       AND   ( MCP-WIDGET     =   "BUNRUICD" )
+                           MOVE    SPA-GMN-C03-BBUNRUIMEI  (IDX)
                                                TO  SPA-GMN-C03-BUNRUIMEI
+                       ELSE
+                           IF      SPA-GMN-C03-BUNRUIMEI
+                                           =   SPACE
+                               MOVE    SPA-GMN-C03-BBUNRUIMEI  (IDX)
+                                               TO  SPA-GMN-C03-BUNRUIMEI
+                           END-IF
+                       END-IF
                        IF    ( SPA-GMN-C03-BYOMEIINPUTCD
                                                =   SPACE )
-                       AND   ( SPA-GMN-C03-BYOMEI     =   SPACE )
-                       AND   ( SPA-GMN-C03-BYOMEICD-G =   SPACE )
+                       AND   ( SPA-GMN-C03-BYOMEI
+                                               =   SPACE )
+                       AND   ( SPA-GMN-C03-BYOMEICD-G
+                                               =   SPACE )
                        AND   ( SPA-GMN-C03-BUNRUICD
-                                              NOT =   ZERO  )
+                                           NOT =   ZERO  )
                            MOVE    IDX            TO  WRK-SELNO
                        END-IF
                        MOVE    SPA-GMN-C03-BUNRUI-MAX  
@@ -2173,13 +1953,10 @@
                MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                MOVE    "key7"              TO  WRK-MCP-PATHNAME
                INITIALIZE                  USERBYOMEI-REC
-      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                MOVE    SPA-GMN-C03-BBUNRUICD (SPA-NAI-C03-BUNRUI-SELNO)
                                            TO  USBYO-BUNRUICD
                PERFORM 3101-USERBYOMEI-LST-SEC
            END-IF
-      *
-           ADD     1                       TO  SPA-GMN-C03-CUR
            .
        41003-BUNRUICD-CHK-EXT.
            EXIT.
@@ -2189,32 +1966,736 @@
       *****************************************************************
        41004-BUNRUIMEI-CHK-SEC          SECTION.
       *
-           MOVE    4                  TO  SPA-GMN-C03-CUR
-      *
-           IF      C03-BUNRUIMEI      =   SPACE
+           IF      SPA-GMN-C03-BUNRUIMEI
+                                        =   SPACE
                CONTINUE
            ELSE    
       *       半角チェック
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
-               MOVE    C03-BUNRUIMEI       TO  KANACHK-MAE-INPUT
+               MOVE    SPA-GMN-C03-BUNRUIMEI
+                                           TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
                IF      KANACHK-RC          =   ZERO
                AND     KANACHK-SYUBETU     =   "2"
-                   MOVE    KANACHK-OUT-INPUT   TO  C03-BUNRUIMEI
+                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-C03-BUNRUIMEI
                ELSE
                    MOVE    "0071"              TO  SPA-ERRCD
-                   GO  TO  41004-BUNRUIMEI-CHK-EXT
+                   MOVE    4                   TO  SPA-GMN-C03-CUR
+                   MOVE   WRK-GMN-C03-BUNRUIMEI-OLD
+                                               TO  SPA-GMN-C03-BUNRUIMEI
                END-IF
            END-IF
-      *         
-           MOVE    C03-BUNRUIMEI      TO  SPA-GMN-C03-BUNRUIMEI
-      *
-           IF      SPA-ERRCD               =   SPACE         
-               MOVE    5                       TO  SPA-GMN-C03-CUR
-           END-IF    
            .
        41004-BUNRUIMEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名コードチェック処理
+      *****************************************************************
+       4102-BYOMEICD-CHK-SEC          SECTION.
+      *
+      *    カーソル位置設定
+           IF      MCP-WIDGET (1:8)   =   "BYOMEICD"
+               MOVE    MCP-WIDGET      TO  WRK-WIDGET
+           ELSE
+               EVALUATE    TRUE 
+                   WHEN    C03-BYOMEICD (1)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (1)
+                       MOVE    1               TO  WRK-WIDGET2
+                   WHEN    C03-BYOMEICD (2)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (2)
+                       MOVE    2               TO  WRK-WIDGET2
+                   WHEN    C03-BYOMEICD (3)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (3)
+                       MOVE    3               TO  WRK-WIDGET2
+                   WHEN    C03-BYOMEICD (4)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (4)
+                       MOVE    4               TO  WRK-WIDGET2
+                   WHEN    C03-BYOMEICD (5)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (5)
+                       MOVE    5               TO  WRK-WIDGET2
+                   WHEN    C03-BYOMEICD (6)
+                                       NOT =   SPA-GMN-C03-BYOMEICD (6)
+                       MOVE    6               TO  WRK-WIDGET2
+               END-EVALUATE
+           END-IF
+      *
+           MOVE    WRK-WIDGET2     TO  IDZZ
+           COMPUTE SPA-GMN-C03-CUR =   4   +   IDZZ
+      *
+           MOVE    SPACE           TO  WRK-HAISIYMDH
+                                       WRK-SEIGYO
+      *
+           IF    ( SPA-GMN-C03-BYOMEICD-G
+                                   =   SPACE )
+               IF    ( C03-BYOMEICD(1) =   SPACE )
+               AND   ( C03-BYOMEICD(2) =   SPACE )
+               AND   ( C03-BYOMEICD(3) =   SPACE )
+               AND   ( C03-BYOMEICD(4) =   SPACE )
+               AND   ( C03-BYOMEICD(5) =   SPACE )
+               AND   ( C03-BYOMEICD(6) =   SPACE )
+      *            病名コード欄未入力のとき病名欄へ遷移
+                   MOVE    11              TO  SPA-GMN-C03-CUR
+                   GO  TO  4102-BYOMEICD-CHK-EXT
+               ELSE
+      *            病名欄入力後コード入力した時の処理
+                   MOVE    ZERO            TO  FLG-BYOMEICD-CHK
+                   PERFORM VARYING IDZ     FROM    1   BY  1
+                           UNTIL   IDZ     >       6
+                       IF      C03-BYOMEICD (IDZ)  NOT =   SPACE
+                           IF      C03-BYOMEICD (IDZ)(1:2) =   "//"
+                               CONTINUE
+                           ELSE
+                               MOVE    1           TO  FLG-BYOMEICD-CHK
+                           END-IF
+                       END-IF 
+                   END-PERFORM
+      *            コード入力があるとき内部情報クリア
+                   IF      FLG-BYOMEICD-CHK    =   1
+                       INITIALIZE              SPA-NAI-C03-BYOMEI-TBL
+                       MOVE    WRK-WIDGET2     TO  IDZZ
+                   END-IF 
+               END-IF
+           END-IF 
+      *
+      *    病名コード格納前チェック処理
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL   IDZ     >       6
+                   OR      SPA-ERRCD   NOT =   SPACE
+               IF    ( SPA-GMN-C03-BYOMEICD (IDZ)
+                                       NOT =   C03-BYOMEICD (IDZ) )
+               OR    ( IDZ                 =   IDZZ               )
+                   PERFORM 41021-BYOMEICD-CHECK-SEC
+               END-IF
+           END-PERFORM
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+           AND   ( SPA-CIDCD2          =   SPACE )
+      *        エラー表示処理
+               PERFORM 41023-BYOMEICD-ERR-HYOUJI-SEC
+      *        病名コード編集処理
+               IF      SPA-CIDCD2          =   SPACE   OR  "9999"
+                   MOVE    WRK-WIDGET2         TO  IDZ
+                   PERFORM 41021-BYOMEICD-HENSYU-SEC
+                   IF      SPA-ERRCD   NOT =   SPACE
+                       MOVE    SPACE               TO  SPA-CIDCD2
+                   END-IF         
+               END-IF
+               IF      SPA-CIDCD2          =   "9999"
+      *            病名検索へ遷移
+                   MOVE    SPACE               TO  SPA-CIDCD2
+                   PERFORM 450-C05-SYORI-SEC
+               END-IF    
+           END-IF
+           .
+       4102-BYOMEICD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名コード格納前チェック処理
+      *****************************************************************
+       41021-BYOMEICD-CHECK-SEC       SECTION.
+      *
+           INITIALIZE          SPA-NAI-C03-BYOMEICD-CHK (IDZ)
+      *
+      *    病名検索へ遷移
+           IF    ( C03-BYOMEICD (IDZ) (1:2) =   "//"  )
+               MOVE    "//"            TO  SPA-NAI-C03-BYOMEICD-FLG(IDZ)
+              MOVE    SPACE           TO  C03-BYOMEICD (IDZ)
+            GO  TO  41021-BYOMEICD-CHECK-EXT
+           END-IF
+      *
+      *    コードの挿入・削除の制御文字取得
+           MOVE    SPACE           TO  WRK-SEIGYO
+      *
+           IF      C03-BYOMEICD (IDZ)  NOT =   SPACE
+               MOVE    C03-BYOMEICD (IDZ)  TO  WRK-BYOMEICD
+               PERFORM VARYING IDX FROM    8   BY  -1
+                       UNTIL   IDX <       2
+                   EVALUATE    WRK-BYOMEICD (IDX:1)
+                       WHEN    "+"
+      *                追加のとき
+                           MOVE    WRK-BYOMEICD(IDX:1) TO  WRK-SEIGYO
+                           IF      SPA-GMN-C03-BYOMEICD (6)
+                                                   NOT =   SPACE
+                               MOVE    SPACE           TO  WRK-SEIGYO
+                           END-IF
+                           IF      IDZ         >   1
+                               COMPUTE IDW     =   IDZ     -   1
+                               IF      SPA-NAI-C03-BYOMEICD (IDW)
+                                                           =   SPACE 
+                                   MOVE    SPACE       TO  WRK-SEIGYO
+                               END-IF
+                           END-IF
+                           IF      WRK-SEIGYO  NOT =   SPACE
+                               MOVE    WRK-SEIGYO
+                                           TO
+                                           SPA-NAI-C03-BYOMEICD-FLG(IDZ)
+                               COMPUTE IDW     =   IDX -   1
+                               MOVE    WRK-BYOMEICD (1:IDW)
+                                               TO  C03-BYOMEICD (IDZ)
+                           ELSE
+                               GO  TO  41021-BYOMEICD-CHECK-EXT
+                           END-IF
+      *
+                           MOVE    2           TO  IDX
+                       WHEN    "-"
+      *                削除のとき
+                           MOVE    WRK-BYOMEICD(IDX:1) TO
+                                           WRK-SEIGYO
+                                           SPA-NAI-C03-BYOMEICD-FLG(IDZ)
+                           MOVE    SPACE   TO  C03-BYOMEICD (IDZ)
+      *
+                           MOVE    2           TO  IDX
+                   END-EVALUATE
+               END-PERFORM
+           END-IF
+      *
+      *    未コード化傷病名入力のとき
+           IF      C03-BYOMEICD (IDZ)
+                                   =   WRK-CONS-BYOMEICD
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       6
+                   IF    ( SPA-GMN-C03-BYOMEICD (IDX)
+                                          NOT =  SPACE )
+                   AND   ( IDX            NOT =   IDZ  )
+                       MOVE    "0062"      TO  SPA-ERRCD
+                       COMPUTE SPA-GMN-C03-CUR =   4   +   IDZ
+                       MOVE    6           TO  IDX
+                   END-IF
+               END-PERFORM                                    
+           ELSE
+      *        未コード化傷病名が既に入力のとき
+               IF      C03-BYOMEICD (IDZ)
+                                   NOT =   SPACE
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       6
+                       IF      SPA-GMN-C03-BYOMEICD(IDX)
+                                           =   WRK-CONS-BYOMEICD
+                           MOVE    "0063"      TO  SPA-ERRCD
+                           COMPUTE SPA-GMN-C03-CUR =   4   +   IDZ
+                           MOVE    6           TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF    
+           END-IF
+      *             
+           IF      SPA-ERRCD       NOT =   SPACE
+               INITIALIZE          SPA-NAI-C03-BYOMEICD-CHK (1)
+                                   SPA-NAI-C03-BYOMEICD-CHK (2)
+                                   SPA-NAI-C03-BYOMEICD-CHK (3)
+                                   SPA-NAI-C03-BYOMEICD-CHK (4)
+                                   SPA-NAI-C03-BYOMEICD-CHK (5)
+                                   SPA-NAI-C03-BYOMEICD-CHK (6)
+               GO  TO  41021-BYOMEICD-CHECK-EXT
+           END-IF
+      *
+           INITIALIZE          SPA-NAI-C03-BYOMEI-G (IDZ)
+      *
+           MOVE    C03-BYOMEICD (IDZ)  TO  SPA-GMN-C03-BYOMEICD(IDZ)
+      *
+           IF      SPA-GMN-C03-BYOMEICD(IDZ)(1:1)
+                                       =   "."
+               MOVE    "ZZZ"           TO
+                                       SPA-GMN-C03-BYOMEICD(IDZ)(1:3)
+               MOVE    C03-BYOMEICD(IDZ)(2:)
+                                       TO
+                                        SPA-GMN-C03-BYOMEICD(IDZ)(4:) 
+           END-IF
+           MOVE    SPA-GMN-C03-BYOMEICD(IDZ)
+                                       TO  SPA-NAI-C03-BYOMEICD(IDZ)                                                
+      *
+           MOVE    ZERO                TO  WRK-LENGTH                    
+           PERFORM VARYING IDX FROM    8   BY  -1
+                   UNTIL   IDX <       1
+               IF      SPA-GMN-C03-BYOMEICD(IDZ)(IDX:1)
+                                   NOT =   SPACE
+                   MOVE    IDX             TO  WRK-LENGTH
+                   MOVE    1               TO  IDX
+               END-IF
+           END-PERFORM
+      *
+      *     空白の時コードをずらす
+           EVALUATE    WRK-LENGTH
+               WHEN    ZERO         
+                   MOVE    "-"         TO  SPA-NAI-C03-BYOMEICD-FLG(IDZ)
+               WHEN    7
+      *            病名マスタ読み込み
+                   MOVE    SPA-GMN-C03-BYOMEICD (IDZ) TO  BYO-BYOMEICD
+                   PERFORM 410111-BYOMEI-HENSYU-SEC
+                   IF      FLG-BYOMEI       NOT =   ZERO
+                       MOVE    "1000"           TO
+                                       SPA-NAI-C03-BYOMEICD-ERRCD (IDZ)
+                   ELSE
+                       IF    ( BYO-IKOSAKICD   NOT =   SPACE )
+                       AND   ( SPA-C02-1042-MSG2-DSPKBN
+                                                   =   ZERO  )
+                           MOVE    BYO-IKOSAKICD   TO  BYO-BYOMEICD
+                           MOVE    ZERO            TO  FLG-BYOMEI
+                           PERFORM 900-BYOMEI-READ-SEC
+                           IF      FLG-BYOMEI      =   ZERO
+                               MOVE    BYO-BYOMEICD    TO
+                                           SPA-NAI-C03-IKOSAKI-BYOMEICD
+                                                            (IDZ)
+                               MOVE    BYO-BYOMEI      TO
+                                           SPA-NAI-C03-IKOSAKI-BYOMEI
+                                                            (IDZ)
+                           END-IF    
+                       ELSE
+                           IF      BYO-HAISIYMD    =   ALL "9" OR  SPACE
+                               CONTINUE
+                           ELSE
+                               IF      SPA-C02-1042-MSG3-DSPKBN
+                                                       =   ZERO
+                                   MOVE    BYO-HAISIYMD    TO  WRK-SYMD
+                                   PERFORM 5002-HIZUKE-HEN-SEC
+                                   MOVE    LNK-DAY2-EDTYMD3
+                                                           TO
+                                               SPA-NAI-C03-HAISIYMD(IDZ)
+                               END-IF
+                           END-IF        
+                      END-IF        
+                   END-IF
+               WHEN    OTHER
+                   MOVE    "■■■"        TO  SPA-NAI-C03-BYOMEI (IDZ)
+                   MOVE    "0078"          TO
+                                           SPA-NAI-C03-BYOMEICD-ERRCD
+                                                                  (IDZ)
+           END-EVALUATE
+      *
+           .
+       41021-BYOMEICD-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名コード編集処理
+      *****************************************************************
+       41021-BYOMEICD-HENSYU-SEC      SECTION.
+      *       
+      *    コードの挿入・削除の制御
+           MOVE    1                  TO  IDX
+           PERFORM            UNTIL   IDX >   6
+               IF      SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                                       NOT =   SPACE
+                   EVALUATE    SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                       WHEN    "-"
+                           MOVE    SPACE               TO
+                                       SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                           PERFORM VARYING IDY FROM    IDX BY  1
+                                   UNTIL   IDY >       6
+                               IF      IDY             =   6
+                                   INITIALIZE
+                                           SPA-NAI-C03-BYOMEI-OCC(IDY)
+                                           SPA-GMN-C03-BYOMEICD  (IDY)
+                               ELSE
+                                   COMPUTE IDW     =   IDY     +   1
+                                   MOVE    SPA-NAI-C03-BYOMEI-OCC (IDW)
+                                       TO  SPA-NAI-C03-BYOMEI-OCC (IDY)
+                                   MOVE    SPA-GMN-C03-BYOMEICD   (IDW)
+                                       TO  SPA-GMN-C03-BYOMEICD   (IDY)
+                               END-IF                     
+                           END-PERFORM                           
+                       WHEN    "+"
+                           MOVE    SPACE               TO
+                                       SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                           PERFORM VARYING IDY FROM    6   BY  -1
+                                   UNTIL   IDY <       IDX
+                               IF      IDY             =   IDX
+                                   INITIALIZE
+                                           SPA-NAI-C03-BYOMEI-OCC(IDY)
+                                           SPA-GMN-C03-BYOMEICD  (IDY)
+                               ELSE
+                                   COMPUTE IDW     =   IDY     -   1
+                                   MOVE    SPA-NAI-C03-BYOMEI-OCC (IDW)
+                                       TO  SPA-NAI-C03-BYOMEI-OCC (IDY)
+                                   MOVE    SPA-GMN-C03-BYOMEICD   (IDW)
+                                       TO  SPA-GMN-C03-BYOMEICD   (IDY)
+                                   IF      SPA-C03-IKOSAKI-INDEX
+                                                   =   IDW
+                                       MOVE    IDY             TO
+                                                   SPA-C03-IKOSAKI-INDEX
+                                   END-IF 
+                                   IF      SPA-C03-HAISI-INDEX
+                                                   =   IDW
+                                       MOVE    IDY             TO
+                                                   SPA-C03-HAISI-INDEX
+                                   END-IF 
+                                   IF      SPA-C03-ERR-INDEX
+                                                   =   IDW
+                                       MOVE    IDY             TO
+                                                   SPA-C03-ERR-INDEX
+                                   END-IF 
+                               END-IF
+                           END-PERFORM
+                           ADD     1               TO  IDX
+                       WHEN    OTHER
+                           ADD     1               TO  IDX
+                   END-EVALUATE
+               ELSE
+                   ADD     1               TO  IDX
+               END-IF 
+           END-PERFORM
+      *
+      *    病名編集処理
+           PERFORM 41021-BYOMEI-HENSYU-SEC
+      *
+           IF    ( SPA-ERRCD           NOT =   SPACE )
+           OR    ( SPA-CIDCD2          NOT =   SPACE )
+               GO  TO  41021-BYOMEICD-HENSYU-EXT
+           END-IF
+      *
+      *    全ての病名コード未入力又は未コード化傷病名コードのとき病名へ遷移
+           IF      SPA-GMN-C03-CUR         =   5
+               IF    ( SPA-GMN-C03-BYOMEICD-G  =   SPACE             )
+               OR    ( SPA-GMN-C03-BYOMEICD(1) =   WRK-CONS-BYOMEICD )
+                   MOVE    11                  TO  SPA-GMN-C03-CUR
+                   GO  TO  41021-BYOMEICD-HENSYU-EXT
+               END-IF 
+           END-IF 
+      *      
+      *    病名コード未入力のときカルテ病名へ遷移
+           IF      SPA-GMN-C03-BYOMEICD (IDZ)  =   SPACE                                    
+               PERFORM VARYING IDX3    FROM    IDZ   BY  1
+                       UNTIL   IDX3    >       6
+                   IF       SPA-GMN-C03-BYOMEICD (IDX3)
+                                           NOT =   SPACE
+                       GO  TO  41021-BYOMEICD-HENSYU-EXT
+                   END-IF
+               END-PERFORM 
+               MOVE    12                  TO  SPA-GMN-C03-CUR
+           ELSE
+               ADD     1               TO  SPA-GMN-C03-CUR
+               IF      SPA-GMN-C03-CUR     =   11
+                   MOVE    12              TO  SPA-GMN-C03-CUR
+               END-IF
+           END-IF
+      *
+           .
+       41021-BYOMEICD-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名コード編集チェック処理
+      *****************************************************************
+       41021-BYOMEI-HENSYU-SEC        SECTION.
+      *
+      *    未コード化傷病名のとき
+           IF      SPA-NAI-C03-BYOMEICD (1)
+                                   =   WRK-CONS-BYOMEICD
+               GO  TO  41021-BYOMEI-HENSYU-EXT
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-NAI-C03-BYOMEIMOJI
+      *    病名編集
+           MOVE    SPA-NAI-C03-BYOMEI(1)
+                                       TO  WRK-BYOMEI
+           PERFORM VARYING IDX FROM    2   BY  1
+                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+               STRING  WRK-BYOMEI              DELIMITED   BY  SPACE
+                       SPA-NAI-C03-BYOMEI(IDX)     DELIMITED   BY  SPACE
+                                       INTO    WRK-BYOMEI
+               END-STRING
+           END-PERFORM
+      *
+      *    疑いフラグ編集
+      *****IF      WRK-BYOMEI          NOT =   SPA-GMN-C03-BYOMEI
+      *      疑いフラグ設定区分による初期化
+             IF      SPA-C02-1042-UTAGAIFLG-KBN
+                                           =   "9"
+                 MOVE    SPACE               TO  SPA-GMN-C03-UTAGAIFLG-G
+             END-IF 
+             PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >         WRK-CONS-BYOMEICD-MAX
+                   OR      SPA-GMN-C03-UTAGAIFLG   =   "3"
+               EVALUATE    SPA-NAI-C03-UTAGAIFLG   (IDX)
+                   WHEN    "1"
+                       IF      SPA-GMN-C03-UTAGAIFLG   =   "2"
+                           MOVE    "3"     TO  SPA-GMN-C03-UTAGAIFLG
+                        ELSE
+                           MOVE    SPA-NAI-C03-UTAGAIFLG(IDX)
+                                           TO  SPA-GMN-C03-UTAGAIFLG
+                        END-IF    
+                   WHEN    "2"
+                       IF      SPA-GMN-C03-UTAGAIFLG   =   "1"
+                           MOVE    "3"     TO  SPA-GMN-C03-UTAGAIFLG
+                        ELSE
+                           MOVE    SPA-NAI-C03-UTAGAIFLG(IDX)
+                                           TO  SPA-GMN-C03-UTAGAIFLG
+                       END-IF
+                   WHEN    "3"
+                       MOVE    "3"         TO  SPA-GMN-C03-UTAGAIFLG
+                END-EVALUATE
+             END-PERFORM
+             PERFORM 5001-UTAGAIFLG-HENSYU-SEC
+      *            
+      *    慢性区分編集
+             MOVE    SPACE                 TO  SPA-GMN-C03-MANSEIKBN-G  
+             PERFORM VARYING IDX   FROM    1   BY  1
+                   UNTIL   IDX >   WRK-CONS-BYOMEICD-MAX
+               IF      SPA-NAI-C03-TOKSKNCD (IDX)   NOT =   ZERO
+                   MOVE    SPA-NAI-C03-TOKSKNCD (IDX)
+                                           TO  SPA-GMN-C03-MANSEIKBN
+                   MOVE    WRK-CONS-BYOMEICD-MAX
+                                           TO  IDX
+               END-IF   
+             END-PERFORM
+             PERFORM 5001-MANSEIKBN-HENSYU-SEC
+      *****END-IF
+      *
+           MOVE    WRK-BYOMEI          TO  SPA-GMN-C03-BYOMEI
+      *
+      *    病名コードエラーの時以下の処理はしない
+           IF      SPA-ERRCD            NOT =   SPACE     
+               GO  TO  41021-BYOMEI-HENSYU-EXT
+           END-IF
+      * 
+      *    接尾語・接頭語チェック
+           MOVE    SPACE                   TO  WRK-RECECD-TBL
+      * 
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+      ***********OR      SPA-NAI-C03-BYOMEICD (IDX)
+      ***********                        =   SPACE
+                   OR      SPA-ERRCD   NOT =   SPACE 
+               IF      SPA-NAI-C03-BYOMEICD (IDX)
+                                           =   SPACE
+                   CONTINUE
+               ELSE
+                 EVALUATE    SPA-NAI-C03-BYOMEICD(IDX)(1:1)
+                               ALSO    SPA-NAI-C03-BYOMEICD(IDX)(4:1)
+                   WHEN    "Z"         ALSO    "1"  THRU    "7"
+                       IF    ( WRK-RECECD (2)    NOT =   SPACE )   OR
+                             ( WRK-RECECD (3)    NOT =   SPACE )
+                           MOVE    "0006"        TO  SPA-ERRCD
+                       ELSE
+                           MOVE    SPA-NAI-C03-BYOMEICD(IDX)(4:1)
+                                                 TO  WRK-RECECD (1)
+                       END-IF            
+                   WHEN    "Z"         ALSO    "8"  THRU    "8"
+                       IF      WRK-RECECD (2)    NOT =   SPACE
+                           MOVE    "1"           TO  WRK-RECECD (3)
+                       ELSE
+                           IF      WRK-RECECD (1)    NOT =   SPACE
+                               MOVE    "0006"        TO  SPA-ERRCD
+                           ELSE
+                               MOVE    SPA-NAI-C03-BYOMEICD(IDX)(4:1)
+                                                     TO  WRK-RECECD (3)
+                           END-IF
+                       END-IF
+                   WHEN    "Z"         ALSO    ANY
+                       CONTINUE
+                   WHEN    OTHER                 
+                       IF      WRK-RECECD (3)    NOT =   SPACE
+                           MOVE    "0006"        TO  SPA-ERRCD
+                       ELSE
+                           MOVE    "1"           TO  WRK-RECECD (2)
+                       END-IF
+                 END-EVALUATE
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD         NOT =   SPACE
+               GO  TO  41021-BYOMEI-HENSYU-EXT
+           END-IF
+      *
+      *    病名種別のセット
+           IF      WRK-RECECD-TBL        =   SPACE
+               MOVE    SPACE                 TO  SPA-GMN-C03-BYOMEISBT-G
+           ELSE
+               IF      WRK-RECECD (2)    NOT =   SPACE
+                   MOVE    ZERO              TO  SPA-GMN-C03-BYOMEISBT
+               ELSE
+                   IF      WRK-RECECD (1)    NOT =   SPACE
+                       EVALUATE    WRK-RECECD (1)
+                           WHEN    "1"
+                               MOVE    "1"     TO  SPA-GMN-C03-BYOMEISBT
+                           WHEN    OTHER 
+                               MOVE    "7"     TO  SPA-GMN-C03-BYOMEISBT
+                       END-EVALUATE    
+                   ELSE
+                       MOVE    "8"             TO  SPA-GMN-C03-BYOMEISBT
+                   END-IF
+               END-IF
+               PERFORM 5001-BYOMEISBT-HENSYU-SEC
+           END-IF
+      *
+      *   入力病名コード数カウント
+           MOVE    ZERO                TO  IDX1
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+               IF      SPA-NAI-C03-BYOMEICD(IDX)
+                                       NOT =   SPACE
+               AND     SPA-NAI-C03-BYOMEICD(IDX)(1:1)
+                                       NOT =   "Z"                        
+                   ADD     1               TO  IDX1
+               END-IF
+           END-PERFORM                                    
+           IF     IDX1                    >   1
+               MOVE    "0056"             TO  SPA-ERRCD
+               GO  TO  41021-BYOMEI-HENSYU-EXT
+           END-IF             
+      *
+      *    文字チェック     
+           PERFORM VARYING     IDX     FROM    1   BY  2
+                   UNTIL       IDX     >       100
+                   OR  WRK-BYOMEI(IDX:2)       =   SPACE
+               IF      WRK-BYOMEI(IDX:2)   =   "■"
+                   MOVE    "0035"          TO  SPA-ERRCD
+                   GO  TO  41021-BYOMEI-HENSYU-EXT
+              END-IF
+           END-PERFORM
+      *
+      *    文字数チェック     
+           MOVE    ZERO                TO  WRK-MOJISU
+           PERFORM VARYING     IDX     FROM    100 BY  -1
+                   UNTIL       IDX     <       1
+               IF      WRK-BYOMEI(IDX:1)   NOT =   SPACE
+                   MOVE    IDX                 TO  WRK-MOJISU 
+                   MOVE    1                   TO  IDX
+               END-IF  
+           END-PERFORM
+           IF      WRK-MOJISU              >   80
+               MOVE    "0007"          TO  SPA-ERRCD
+               GO  TO  41021-BYOMEI-HENSYU-EXT
+           END-IF
+      *
+      *    病名文字数編集
+           COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
+           MOVE    WRK-MOJISU          TO  SPA-NAI-C03-BYOMEIMOJI
+      *
+      *    病名編集フラグセット
+           MOVE    SPACE                   TO  SPA-GMN-C03-BYOMEIHENFLG
+                                               SPA-NAI-C03-BYOMEIHENFLG
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+               IF    ( SPA-NAI-C03-BYOMEICD(IDX)
+                                       NOT =   SPACE )
+               AND   ( SPA-NAI-C03-BYOMEIHENFLG-O (IDX)
+                                           =   "1"   )
+                   MOVE    "病名編集"      TO  SPA-GMN-C03-BYOMEIHENFLG
+                   MOVE    "1"             TO  SPA-NAI-C03-BYOMEIHENFLG
+                   MOVE    WRK-CONS-BYOMEICD-MAX
+                                           TO  IDX
+               END-IF
+           END-PERFORM                                    
+           .
+       41021-BYOMEI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名コードエラー表示処理
+      *****************************************************************
+       41023-BYOMEICD-ERR-HYOUJI-SEC  SECTION.
+      *
+      *    設定なしのとき
+           IF    ( SPA-NAI-C03-BYOMEICD-CHK (1)
+                                       =   SPACE )
+           AND   ( SPA-NAI-C03-BYOMEICD-CHK (2)
+                                       =   SPACE )
+           AND   ( SPA-NAI-C03-BYOMEICD-CHK (3)
+                                       =   SPACE )
+           AND   ( SPA-NAI-C03-BYOMEICD-CHK (4)
+                                       =   SPACE )
+           AND   ( SPA-NAI-C03-BYOMEICD-CHK (5)
+                                       =   SPACE )
+           AND   ( SPA-NAI-C03-BYOMEICD-CHK (6)
+                                       =   SPACE )
+               GO  TO  41023-BYOMEICD-ERR-HYOUJI-EXT
+           END-IF
+      *
+      *    エラーコード表示
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       6
+                   OR      SPA-ERRCD   NOT =   SPACE
+               IF      SPA-NAI-C03-BYOMEICD-ERRCD (IDX)
+                                       NOT =   SPACE
+                   MOVE    SPA-NAI-C03-BYOMEICD-ERRCD (IDX)
+                                           TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-C03-CUR     =   4   +   IDX
+                   MOVE    IDX             TO  SPA-C03-ERR-INDEX
+                   PERFORM VARYING IDY FROM    IDX BY  1
+                           UNTIL   IDY >       6
+                       IF      SPA-ERRCD       =
+                                       SPA-NAI-C03-BYOMEICD-ERRCD (IDY)
+                           MOVE    SPACE           TO
+                                       SPA-NAI-C03-BYOMEICD-ERRCD (IDY)
+                       END-IF
+                   END-PERFORM
+      *************GO  TO  41023-BYOMEICD-ERR-HYOUJI-EXT
+               END-IF
+           END-PERFORM
+      *
+      *    廃止病名警告表示
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       6
+                   OR      SPA-ERRCD   NOT =   SPACE
+               IF      SPA-NAI-C03-HAISIYMD (IDX)
+                                       NOT =   SPACE
+                   MOVE    "0074"              TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-C03-CUR     =   4   +   IDX
+                   MOVE    SPA-NAI-C03-HAISIYMD(IDX)
+                                           TO  WRK-HAISIYMDH
+                   MOVE    SPA-NAI-C03-BYOMEI  (IDX)
+                                           TO  SPA-C03-HAISI-BYOMEI
+                   MOVE    IDX             TO  SPA-C03-HAISI-INDEX 
+                   MOVE    SPACE           TO  SPA-NAI-C03-HAISIYMD(IDX)
+      *************GO  TO  41023-BYOMEICD-ERR-HYOUJI-EXT
+               END-IF
+           END-PERFORM
+      *
+      *    移行病名確認表示
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       6
+                   OR      SPA-ERRCD   NOT =   SPACE
+                   OR      SPA-CIDCD2  NOT =   SPACE
+               IF      SPA-NAI-C03-IKOSAKI-BYOMEICD (IDX)
+                                       NOT =   SPACE
+                   MOVE    SPA-NAI-C03-BYOMEICD        (IDX)
+                                           TO  SPA-C03-IKOMOTO-BYOMEICD
+                   MOVE    SPA-NAI-C03-BYOMEI          (IDX)
+                                           TO  SPA-C03-IKOMOTO-BYOMEI
+                   MOVE    SPA-NAI-C03-IKOSAKI-BYOMEICD(IDX)
+                                           TO  SPA-C03-IKOSAKI-BYOMEICD
+                   MOVE    SPA-NAI-C03-IKOSAKI-BYOMEI  (IDX)
+                                           TO  SPA-C03-IKOSAKI-BYOMEI
+                   MOVE    IDX             TO  SPA-C03-IKOSAKI-INDEX 
+                   MOVE    "0103"          TO  SPA-CIDCD2
+                   INITIALIZE          SPA-NAI-C03-IKOSAKI-BYOMEICD(IDX)
+                                       SPA-NAI-C03-IKOSAKI-BYOMEI  (IDX)
+      *************GO  TO  41023-BYOMEICD-ERR-HYOUJI-EXT
+               END-IF
+           END-PERFORM
+      *           
+      *    エラー等があるとき病名検索はしない
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+           OR    ( SPA-CIDCD2      NOT =   SPACE )
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       6
+                   IF      SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                                               =   "//"
+                       INITIALIZE  SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                   END-IF
+               END-PERFORM
+           ELSE
+      *        病名検索へ
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       6
+                   IF      SPA-NAI-C03-BYOMEICD-FLG (IDX)
+                                               =   "//"
+                       PERFORM VARYING IDY FROM    IDX BY  1
+                               UNTIL   IDY >       6
+                           IF      SPA-NAI-C03-BYOMEICD-FLG (IDY)
+                                               =   "//"
+                               INITIALIZE  SPA-NAI-C03-BYOMEICD-FLG(IDY)
+                           END-IF
+                       END-PERFORM     
+                       MOVE    "9999"          TO  SPA-CIDCD2
+                       GO  TO  41023-BYOMEICD-ERR-HYOUJI-EXT
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       41023-BYOMEICD-ERR-HYOUJI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2222,15 +2703,9 @@
       *****************************************************************
        41010-DSPSEQ-CHK-SEC          SECTION.
       *
-           MOVE    16                 TO  SPA-GMN-C03-CUR
-      *         
-           MOVE    C03-DSPSEQ         TO  SPA-GMN-C03-DSPSEQ
-      *
            IF      SPA-GMN-C03-DSPSEQ     =   ZERO
                MOVE    50                 TO  SPA-GMN-C03-DSPSEQ
            END-IF              
-      *
-           MOVE    3                  TO  SPA-GMN-C03-CUR
            .
        41010-DSPSEQ-CHK-EXT.
            EXIT.
@@ -2239,16 +2714,11 @@
       *    疑い　入力処理
       *****************************************************************
        41007-UTAGAI-CHK-SEC                SECTION.
-      *        
-           MOVE    13                  TO  SPA-GMN-C03-CUR
-      *
-           MOVE    C03-UTAGAIFLG       TO  SPA-GMN-C03-UTAGAIFLG-G
       *
            PERFORM 5001-UTAGAIFLG-HENSYU-SEC
            IF      WRK-HENFLG          =   ZERO
-              MOVE    "0018"               TO  SPA-ERRCD
-           ELSE
-               MOVE    14                  TO  SPA-GMN-C03-CUR
+               MOVE    "0018"              TO  SPA-ERRCD
+               MOVE    13                  TO  SPA-GMN-C03-CUR
            END-IF    
            .
        41007-UTAGAI-CHK-EXT.
@@ -2258,16 +2728,11 @@
       *    慢性　入力処理
       *****************************************************************
        41006-MANSEI-CHK-SEC                SECTION.
-      *   
-           MOVE    14                   TO  SPA-GMN-C03-CUR
-      *
-           MOVE    C03-MANSEIFLG        TO  SPA-GMN-C03-MANSEIKBN-G
       *
            PERFORM 5001-MANSEIKBN-HENSYU-SEC
            IF      WRK-HENFLG           =   ZERO
-              MOVE    "0021"               TO  SPA-ERRCD
-           ELSE
-              MOVE    15                   TO  SPA-GMN-C03-CUR
+               MOVE    "0021"               TO  SPA-ERRCD
+               MOVE    14                   TO  SPA-GMN-C03-CUR
            END-IF    
            .
        41006-MANSEI-CHK-EXT.
@@ -2408,6 +2873,9 @@ grpsys                                         SPA-AREA
                                PERFORM 5002-HIZUKE-HEN-SEC
                                MOVE    LNK-DAY2-EDTYMD3
                                                    TO  WRK-HAISIYMDH
+                               MOVE    LNK-BYO-TBYOMEI (IDX)
+                                                   TO
+                                                   SPA-C03-HAISI-BYOMEI
                            END-IF        
                        END-IF
                    END-PERFORM
@@ -2432,10 +2900,6 @@ grpsys                                         SPA-AREA
       *****************************************************************
        41022-CHARTBYOMEI-CHK-SEC             SECTION.
       *
-           MOVE    12                   TO  SPA-GMN-C03-CUR
-      *
-           MOVE    C03-CHARTBYOMEI      TO  SPA-GMN-C03-CHARTBYOMEI
-      *
            MOVE    ZERO                 TO  SPA-NAI-C03-CHARTBYOMEIMOJI
       
       *    半角チェック
@@ -2454,6 +2918,7 @@ grpsys                                         SPA-AREA
                                                SPA-GMN-C03-CHARTBYOMEI
                ELSE
                    MOVE    "0071"              TO  SPA-ERRCD
+                   MOVE    12                  TO  SPA-GMN-C03-CUR
                    GO  TO  41013-BYOMEI-CHK-EXT
                END-IF
            END-IF    
@@ -2470,8 +2935,6 @@ grpsys                                         SPA-AREA
       *
            COMPUTE WRK-MOJISU   =   WRK-MOJISU  /   2        
            MOVE    WRK-MOJISU           TO  SPA-NAI-C03-CHARTBYOMEIMOJI
-      *
-           MOVE    13                   TO  SPA-GMN-C03-CUR
            .
        41013-BYOMEI-CHK-EXT.
            EXIT.
@@ -2480,10 +2943,6 @@ grpsys                                         SPA-AREA
       *    保険病名フラグ　入力処理
       *****************************************************************
        41014-HKNBYOMEIFLG-CHK-SEC                SECTION.
-      *   
-           MOVE    15                   TO  SPA-GMN-C03-CUR
-      *
-           MOVE    C03-HKNBYOMEIFLG     TO  SPA-GMN-C03-HKNBYOMEIFLG-G
       *
            IF      SPA-GMN-C03-HKNBYOMEIFLG   =   SPACE
                CONTINUE
@@ -2495,17 +2954,16 @@ grpsys                                         SPA-AREA
                    IF      SPA-GMN-C03-HKNBYOMEIFLG 
                                =   SPA-GMN-C03-HKNBYOMEIFLGL (IDY)
                        MOVE    SPA-GMN-C03-HKNBYOMEIFLGLST (IDY)
-                                      TO  SPA-GMN-C03-HKNBYOMEIFLG-G
-                       MOVE    1      TO  WRK-HENFLG
+                                       TO  SPA-GMN-C03-HKNBYOMEIFLG-G
+                       MOVE    1       TO  WRK-HENFLG
                    END-IF
                END-PERFORM
-               IF      WRK-HENFLG         =   ZERO
-                   MOVE    "0028"               TO  SPA-ERRCD
+               IF      WRK-HENFLG          =   ZERO
+                   MOVE    "0028"              TO  SPA-ERRCD
+                   MOVE    15                  TO  SPA-GMN-C03-CUR
                    GO  TO  41014-HKNBYOMEIFLG-CHK-EXT
                END-IF
            END-IF
-      *     
-           MOVE    16                   TO  SPA-GMN-C03-CUR
            .
        41014-HKNBYOMEIFLG-CHK-EXT.
            EXIT.
@@ -2514,16 +2972,29 @@ grpsys                                         SPA-AREA
       *    病名種別入力処理
       *****************************************************************
        41015-BYOMEISBT-CHK-SEC                SECTION.
-      *        
-           MOVE    17                  TO  SPA-GMN-C03-CUR
       *
-           MOVE    C03-BYOMEISBT       TO  SPA-GMN-C03-BYOMEISBT-G
+      *    分類コードのみ入力のとき設定しない
+           IF    ( SPA-GMN-C03-BYOMEIINPUTCD
+                                          =   SPACE )
+           AND   ( SPA-GMN-C03-BYOMEI     =   SPACE )
+           AND   ( SPA-GMN-C03-BYOMEICD-G =   SPACE )
+           AND   ( SPA-GMN-C03-BUNRUICD
+                                      NOT =   ZERO  )
+               MOVE    SPACE              TO  SPA-GMN-C03-BYOMEISBT-G
+               GO  TO  41015-BYOMEISBT-CHK-EXT
+           END-IF
       *
-      *****MOVE    SPACE               TO  SPA-GMN-C03-BYOMEISBTMEI
+      *    病名未入力のときチェックしない
+           IF      SPA-NAI-C03-BYOMEIMOJI   =   ZERO
+      *****    MOVE    SPACE              TO  SPA-GMN-C03-BYOMEISBT-G
+               GO  TO  41015-BYOMEISBT-CHK-EXT
+           END-IF
+      *
            PERFORM 5001-BYOMEISBT-HENSYU-SEC
       *
            IF      WRK-HENFLG          =   ZERO
               MOVE    "0052"               TO  SPA-ERRCD
+              MOVE    17                   TO  SPA-GMN-C03-CUR
               GO  TO  41015-BYOMEISBT-CHK-EXT
            END-IF
       *
@@ -2644,105 +3115,12 @@ grpsys                                         SPA-AREA
                    END-EVALUATE
                END-IF
            END-IF    
-      *        
-           MOVE    14                   TO  SPA-GMN-C03-CUR
-           .
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+              MOVE    17                   TO  SPA-GMN-C03-CUR
+           END-IF
+          .
        41015-BYOMEISBT-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    行選択処理
-      *****************************************************************
-       41020-BYOMEISEL-SEC       SECTION.
-      *          
-      *        行選択
-           MOVE    ZERO                TO  WRK-SELNO
-      *     
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-C03-MAX
-               IF      C03-BYOMEILST-SELECT (IDX)    =   "T"
-                   IF      IDX             =   SPA-NAI-C03-SELNO
-                       CONTINUE
-                   ELSE        
-                       MOVE    IDX             TO  WRK-SELNO
-                       MOVE    SPA-GMN-C03-MAX     TO  IDX
-                   END-IF
-               END-IF    
-           END-PERFORM
-      *
-           IF      WRK-SELNO           >   ZERO
-               MOVE    WRK-SELNO           TO  SPA-NAI-C03-SELNO
-           END-IF
-      *
-           INITIALIZE                 SPA-GMN-C03-KOUMOKU
-                                      SPA-NAI-C03-KOUMOKU
-      *
-           MOVE    SPA-GMN-C03-TBANGO (SPA-NAI-C03-SELNO)
-                                       TO  SPA-GMN-C03-BANGO
-      *                                 
-           PERFORM 410111-BYOMEI-SELECT-SEC     
-           .
-       41020-BYOMEISEL-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    行選択処理
-      *****************************************************************
-       41021-BUNRUILST-SEC       SECTION.
-      *          
-      *        行選択
-           MOVE    ZERO                TO  WRK-SELNO
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-C03-BUNRUI-MAX
-               IF      C03-BUNRUI-SELECT (IDX) =   "T"
-                   MOVE    SPA-GMN-C03-BBUNRUICD (IDX)
-                                               TO  SPA-GMN-C03-BUNRUICD
-                   MOVE    SPA-GMN-C03-BBUNRUIMEI(IDX)
-                                           TO  SPA-GMN-C03-BUNRUIMEI                           
-      *
-                   IF      IDX             =   SPA-NAI-C03-BUNRUI-SELNO
-                       CONTINUE
-                   ELSE        
-                       MOVE    IDX                 TO  WRK-SELNO
-                       MOVE    SPA-GMN-C03-BUNRUI-MAX  TO  IDX
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           IF      WRK-SELNO           >   ZERO
-      *        分類コードのみ入力のとき
-               IF    ( SPA-GMN-C03-BYOMEIINPUTCD
-                                              =   SPACE )
-               AND   ( SPA-GMN-C03-BYOMEI     =   SPACE )
-               AND   ( SPA-GMN-C03-BYOMEICD-G =   SPACE )
-               AND   ( SPA-GMN-C03-BUNRUICD
-                                          NOT =   ZERO  )
-                   MOVE    WRK-SELNO       TO  SPA-NAI-C03-BUNRUI-SELNO
-               END-IF
-           END-IF
-      *
-      *    分類コードのみ入力のとき分類名に属する病名の表示
-           IF    ( SPA-GMN-C03-BYOMEIINPUTCD
-                                          =   SPACE )
-           AND   ( SPA-GMN-C03-BYOMEI     =   SPACE )
-           AND   ( SPA-GMN-C03-BYOMEICD-G =   SPACE )
-           AND   ( SPA-GMN-C03-BUNRUICD
-                                      NOT =   ZERO  )
-               INITIALIZE                  SPA-GMN-C03-BYOMEI-TBL
-                                           SPA-NAI-C03-TBL
-                                           SPA-NAI-C03-SELNO
-               MOVE    ZERO                TO  SPA-GMN-C03-MAX
-               MOVE    1                   TO  SPA-GMN-C03-PAGE 
-      *
-               MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
-               MOVE    "key7"              TO  WRK-MCP-PATHNAME
-               INITIALIZE                  USERBYOMEI-REC
-      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
-               MOVE    SPA-GMN-C03-BUNRUICD    TO  USBYO-BUNRUICD
-               PERFORM 3101-USERBYOMEI-LST-SEC
-           END-IF
-           .
-       41021-BUNRUISEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2817,107 +3195,16 @@ grpsys                                         SPA-AREA
       *****************************************************************
        450-TOUROKU-SEC                SECTION.
       *
-           MOVE    ZERO               TO  WRK-SYOKBN
-      *
-      *    未入力項目のチェック
-           IF      SPA-GMN-C03-BUNRUICD       =   ZERO
-           AND     SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
-               MOVE    "0008"               TO  SPA-ERRCD
-               MOVE    2                    TO  SPA-GMN-C03-CUR
+      *    入力チェック
+           MOVE    1                   TO  FLG-TOUROKU
+           PERFORM 400-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+           OR    ( SPA-CIDCD       NOT =   SPACE )  
                GO  TO  450-TOUROKU-EXT
-           END-IF
-           IF      SPA-GMN-C03-BUNRUICD       =   ZERO
-               IF      SPA-GMN-C03-BUNRUIMEI  NOT =   SPACE
-                   MOVE    "0008"               TO  SPA-ERRCD
-                   MOVE    3                    TO  SPA-GMN-C03-CUR
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           ELSE
-               IF      SPA-GMN-C03-BUNRUIMEI      =   SPACE
-                   MOVE    "0008"               TO  SPA-ERRCD
-                   MOVE    4                    TO  SPA-GMN-C03-CUR
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           END-IF
-           IF      SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
-               IF      SPA-GMN-C03-BYOMEI         NOT =   SPACE
-                   MOVE    "0008"               TO  SPA-ERRCD
-                   MOVE    2                    TO  SPA-GMN-C03-CUR
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           END-IF
-      *
-      *    入力コードのチェック
-           IF      SPA-GMN-C03-BYOMEIINPUTCD  NOT =   SPACE
-           AND     SPA-NAI-C03-BYOMEIINPUTCD      =   SPACE
-               MOVE    "0032"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-C03-CUR
-               GO  TO  450-TOUROKU-EXT
-           END-IF
-      *
-           IF      SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
-               CONTINUE
-           ELSE
-               IF      SPA-NAI-C03-BYOMEIMOJI   =   ZERO
-                   IF      SPA-GMN-C03-BYOMEI       =   SPACE
-                       MOVE    "0010"               TO  SPA-ERRCD
-                   ELSE    
-                       MOVE    "0011"               TO  SPA-ERRCD
-                   END-IF    
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-      *
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       21
-                       OR      SPA-NAI-C03-BYOMEI   (IDX)
-                                   =       SPACE
-                   IF      SPA-NAI-C03-BYOMEI   (IDX)
-                                           =   "■■■"
-                       MOVE    "0076"               TO  SPA-ERRCD
-                       GO  TO  450-TOUROKU-EXT
-                   END-IF    
-               END-PERFORM
-      *
-               MOVE    SPA-GMN-C03-UTAGAIFLG-G     TO  C03-UTAGAIFLG
-               PERFORM 41007-UTAGAI-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-               MOVE    SPA-GMN-C03-MANSEIKBN-G     TO  C03-MANSEIFLG
-               PERFORM 41006-MANSEI-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-               MOVE    SPA-GMN-C03-HKNBYOMEIFLG-G  TO  C03-HKNBYOMEIFLG
-               PERFORM 41014-HKNBYOMEIFLG-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-               MOVE    SPA-GMN-C03-BYOMEISBT-G     TO  C03-BYOMEISBT
-               PERFORM 41015-BYOMEISBT-CHK-SEC
-               IF      SPA-ERRCD           =   "0103"
-                   MOVE    SPACE               TO  SPA-ERRCD
-               END-IF
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-               MOVE    SPA-GMN-C03-CHARTBYOMEI     TO  C03-CHARTBYOMEI
-               PERFORM 41022-CHARTBYOMEI-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-           END-IF    
-      *
-      *    警告チェック
-           IF      SPA-ERRCD            =   SPACE
-               PERFORM 4501-KEIKOKU-CHK-SEC
            END-IF
       *
       *    登録処理
-           IF    ( SPA-ERRCD            =   SPACE )
-           AND   ( SPA-CIDCD            =   SPACE )
-               PERFORM 4502-TOUROKU-SYORI-SEC
-           END-IF
+           PERFORM 4502-TOUROKU-SYORI-SEC
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -2926,6 +3213,8 @@ grpsys                                         SPA-AREA
       *    登録処理
       *****************************************************************
        4502-TOUROKU-SYORI-SEC                SECTION.
+      *
+           MOVE    ZERO               TO  WRK-SYOKBN
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -3153,6 +3442,66 @@ grpsys                                         SPA-AREA
       *    警告チェック処理
       *****************************************************************
        4501-KEIKOKU-CHK-SEC                SECTION.
+      *
+      *    未入力項目のチェック
+           IF      SPA-GMN-C03-BUNRUICD       =   ZERO
+           AND     SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
+               MOVE    "0008"               TO  SPA-ERRCD
+               MOVE    2                    TO  SPA-GMN-C03-CUR
+               GO  TO  4501-KEIKOKU-CHK-EXT
+           END-IF
+           IF      SPA-GMN-C03-BUNRUICD       =   ZERO
+               IF      SPA-GMN-C03-BUNRUIMEI  NOT =   SPACE
+                   MOVE    "0008"               TO  SPA-ERRCD
+                   MOVE    3                    TO  SPA-GMN-C03-CUR
+                   GO  TO  4501-KEIKOKU-CHK-EXT
+               END-IF
+           ELSE
+               IF      SPA-GMN-C03-BUNRUIMEI      =   SPACE
+                   MOVE    "0008"               TO  SPA-ERRCD
+                   MOVE    4                    TO  SPA-GMN-C03-CUR
+                   GO  TO  4501-KEIKOKU-CHK-EXT
+               END-IF
+           END-IF
+           IF      SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
+               IF      SPA-GMN-C03-BYOMEI         NOT =   SPACE
+                   MOVE    "0008"               TO  SPA-ERRCD
+                   MOVE    2                    TO  SPA-GMN-C03-CUR
+                   GO  TO  4501-KEIKOKU-CHK-EXT
+               END-IF
+           END-IF
+      *
+      *    入力コードのチェック
+           IF      SPA-GMN-C03-BYOMEIINPUTCD  NOT =   SPACE
+           AND     SPA-NAI-C03-BYOMEIINPUTCD      =   SPACE
+               MOVE    "0032"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-C03-CUR
+               GO  TO  4501-KEIKOKU-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-C03-BYOMEIINPUTCD  =   SPACE
+               CONTINUE
+           ELSE
+               IF      SPA-NAI-C03-BYOMEIMOJI   =   ZERO
+                   IF      SPA-GMN-C03-BYOMEI       =   SPACE
+                       MOVE    "0010"               TO  SPA-ERRCD
+                   ELSE    
+                       MOVE    "0011"               TO  SPA-ERRCD
+                   END-IF    
+                   GO  TO  4501-KEIKOKU-CHK-EXT
+               END-IF
+      *
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                       OR      SPA-NAI-C03-BYOMEI   (IDX)
+                                   =       SPACE
+                   IF      SPA-NAI-C03-BYOMEI   (IDX)
+                                           =   "■■■"
+                       MOVE    "0076"               TO  SPA-ERRCD
+                       GO  TO  4501-KEIKOKU-CHK-EXT
+                   END-IF    
+               END-PERFORM
+           END-IF    
       * 
            MOVE    SPACE           TO  WRK-ERR-BYOMEI
       * 
@@ -3184,10 +3533,28 @@ grpsys                                         SPA-AREA
                                                TO  WRK-ERR-BYOMEI
                        IF      SPA-CIDCD       =   SPACE
                            MOVE    "0105"          TO  SPA-CIDCD
+                           GO  TO  4501-KEIKOKU-CHK-EXT
                        END-IF 
                    END-IF
                END-IF
            END-IF
+      *
+      *    分類名の警告チェック
+           IF      SPA-GMN-C03-BYOMEIINPUTCD
+                                       NOT =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-C03-BUNRUI-MAX
+                   IF    ( SPA-GMN-C03-BUNRUICD
+                                       =   SPA-GMN-C03-BBUNRUICD (IDX) )
+                   AND   ( SPA-GMN-C03-BUNRUIMEI
+                                   NOT =   SPA-GMN-C03-BBUNRUIMEI(IDX) )
+                       IF      SPA-CIDCD       =   SPACE
+                           MOVE    "0106"          TO  SPA-CIDCD
+                           GO  TO  4501-KEIKOKU-CHK-EXT
+                       END-IF
+                   END-IF     
+               END-PERFORM
+           END-IF 
            .
        4501-KEIKOKU-CHK-EXT.
            EXIT.
@@ -3235,7 +3602,6 @@ grpsys                                         SPA-AREA
            MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
            MOVE    "key3"              TO  WRK-MCP-PATHNAME
            INITIALIZE                  USERBYOMEI-REC
-      *****MOVE    SPA-HOSPID          TO  USBYO-HOSPID
            PERFORM 3101-USERBYOMEI-LST-SEC
       *
            .
@@ -3250,6 +3616,32 @@ grpsys                                         SPA-AREA
            IF      SPA-NAI-C03-BYOMEIHENFLG    =  "1"
                GO  TO  450-C05-SYORI-EXT
            END-IF
+      *
+      *   入力病名コード数カウント
+           MOVE    ZERO                TO  IDX1
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+               IF      SPA-NAI-C03-BYOMEICD(IDX)
+                                       NOT =   SPACE
+               AND     SPA-NAI-C03-BYOMEICD(IDX)(1:1)
+                                       NOT =   "Z"                        
+                   ADD     1               TO  IDX1
+               END-IF
+           END-PERFORM                                    
+           IF     IDX1                    >   1
+               MOVE    "0056"             TO  SPA-ERRCD
+               GO  TO  450-C05-SYORI-EXT
+           END-IF             
+      *
+      *    文字チェック
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       6
+               IF    ( SPA-GMN-C03-BYOMEICD (IDX)  NOT =   SPACE )
+               AND   ( SPA-NAI-C03-BYOMEI   (IDX)(1:2) =   "■"  )
+                   MOVE    "0035"          TO  SPA-ERRCD
+                   GO  TO  450-C05-SYORI-EXT
+               END-IF
+           END-PERFORM
       *
       *    画面移行用のパラメタ変更
       *    受付と患者検索以外の元をセット
@@ -3275,10 +3667,10 @@ grpsys                                         SPA-AREA
       *
            MOVE    SPA-C01KYOUTU       TO  SPA-WORK
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "C05    "            TO  MCP-WINDOW.
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "C05    "            TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
       *
@@ -3292,7 +3684,7 @@ grpsys                                         SPA-AREA
       *****************************************************************
        490-C09-SYORI-SEC           SECTION.
       *
-           IF    ( SPA-GMN-C03-BYOMEI  =   SPACE             )
+           IF    ( SPA-GMN-C03-BYOMEI  =   SPACE         )
       *****OR    ( SPA-NAI-C03-BYOMEICD (1)
       *****                        =   WRK-CONS-BYOMEICD )
                GO  TO  490-C09-SYORI-EXT
@@ -3673,10 +4065,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "C03    "           TO  MCP-WINDOW.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
+           MOVE    "C03    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
@@ -3806,6 +4198,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF    ( SPA-ERRCD           =   SPACE)
+             AND ( SPA-GMN-C03-CUR     =   ZERO )
+               PERFORM 5011-INPUT-CUR-SEC
+           END-IF
+      *
          EVALUATE    SPA-GMN-C03-CUR
              WHEN    1
                      MOVE  "BANGO"      TO  MCP-WIDGET
@@ -3848,6 +4245,54 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       5011-INPUT-CUR-SEC              SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "BANGO"
+                   MOVE    3                   TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEIINPUTCD"
+                   MOVE    3                   TO  SPA-GMN-C03-CUR
+               WHEN    "BUNRUICD"
+                   MOVE    4                   TO  SPA-GMN-C03-CUR
+               WHEN    "BUNRUIMEI"
+                   MOVE    5                   TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEICD_1"
+                   MOVE    6                   TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEICD_2"
+                   MOVE    7                   TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEICD_3"
+                   MOVE    8                   TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEICD_4"
+                   MOVE    9                   TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEICD_5"
+                   MOVE    10                  TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEICD_6"
+                   MOVE    11                  TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEI"
+                   MOVE    12                  TO  SPA-GMN-C03-CUR
+               WHEN    "CHARTBYOMEI"
+                   MOVE    13                  TO  SPA-GMN-C03-CUR
+               WHEN    "UTAGAIFLG"
+                   MOVE    14                  TO  SPA-GMN-C03-CUR
+               WHEN    "MANSEIFLG"
+                   MOVE    15                  TO  SPA-GMN-C03-CUR
+               WHEN    "HKNBYOMEIFLG"
+                   MOVE    16                  TO  SPA-GMN-C03-CUR
+               WHEN    "DSPSEQ"
+                   MOVE    17                  TO  SPA-GMN-C03-CUR
+               WHEN    "BYOMEISBT"
+                   MOVE    3                   TO  SPA-GMN-C03-CUR
+               WHEN    "B12"
+                   MOVE    99                  TO  SPA-GMN-C03-CUR
+           END-EVALUATE
+           .
+      *
+       5011-INPUT-CUR-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3948,13 +4393,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                WHEN    "0072"
                    MOVE    "全角または半角のみで入力して下さい" 
                                                        TO  SPA-ERRMSG
+               WHEN    "0074"
                WHEN    "0075"
-                   MOVE    "入力された病名はマスター上で"
-                                       TO  SPA-ERRMSG
-                   MOVE    WRK-HAISIYMDH
-                                       TO  SPA-ERRMSG (29:22)
-                   MOVE    "で廃止の扱いとなっています。"
-                                       TO  SPA-ERRMSG (51:)
+                   STRING
+                       "入力された病名はマスター上で"
+                                               DELIMITED   BY  SIZE 
+                       WRK-HAISIYMDH           DELIMITED   BY  SIZE 
+                       "で廃止の扱いとなっています。"
+                                               DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0076"
                    STRING
                        "存在しない病名コードが登録されています、"
@@ -4003,6 +4451,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE                TO  CERR
            MOVE    SPA-ERRCD            TO  CERR-ERRCODE
            MOVE    SPA-ERRMSG           TO  CERR-ERRMSG
+           EVALUATE    SPA-ERRCD
+               WHEN    "0074"
+               WHEN    "0075"
+                   MOVE    SPA-C03-HAISI-BYOMEI TO  CERR-BYOMEI
+           END-EVALUATE
+           MOVE    SPACE                TO  SPA-C03-HAISI-BYOMEI
+      *
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "C03"                TO  SPA-MOTOPG
@@ -4047,6 +4502,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                                                 DELIMITED   BY  SIZE 
                                                INTO    WRK-CIDMSG
                    END-STRING
+               WHEN    "0106"
+                   MOVE
+                     "登録済の分類名が変更になります。よろしいですか？"
+                                       TO  WRK-CIDMSG
                WHEN    "6666"
                    MOVE    WRK-SHORIERR    TO  WRK-CIDMSG
                WHEN    OTHER

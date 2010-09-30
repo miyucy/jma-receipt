@@ -96,7 +96,8 @@
       *                                     コード種別の追加 
       *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
       *                                     疑いフラグ設定区分の追加
-      *  04.06.03    NACL-藤原    09/06/20  病名の入力順対応
+      *  04.06.03    NACL-藤原    10/06/20  病名の入力順対応
+      *  04.06.04    NACL-藤原    10/08/25  一括入力対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -552,22 +553,42 @@
                                                        PIC 9(02).
                                        17  SPA-NAI-C03-BYOMEIHENFLG-O
                                                        PIC X(01).
-                           11  SPA-NAI-C03-UPDFLG          PIC 9(01). 
+                                   15  SPA-NAI-C03-BYOMEICD-CHK.
+                                       17  SPA-NAI-C03-BYOMEICD-FLG
+                                                       PIC X(02).
+                                       17  SPA-NAI-C03-BYOMEICD-ERRCD
+                                                       PIC X(04).
+                                       17  SPA-NAI-C03-IKOSAKI-BYOMEICD
+                                                       PIC X(07).
+                                       17  SPA-NAI-C03-IKOSAKI-BYOMEI
+                                                       PIC X(200).
+                                       17  SPA-NAI-C03-HAISIYMD
+                                                       PIC X(22).
+                           11  SPA-NAI-C03-UPDFLG      PIC 9(01). 
       *
                        09  SPA-NAI-C03-TBL.
-                           11  SPA-NAI-C03-TBLO         OCCURS   100.
-                               13  SPA-NAI-C03-TCDSYU      PIC X(01).    
+                           11  SPA-NAI-C03-TBLO        OCCURS   100.
+                               13  SPA-NAI-C03-TCDSYU  PIC X(01).    
       *                         
-                       09  SPA-NAI-C03-SELNO                PIC 9(03).
-                       09  SPA-NAI-C03-BUNRUI-SELNO         PIC 9(03).
+                       09  SPA-NAI-C03-SELNO           PIC 9(03).
+                       09  SPA-NAI-C03-BUNRUI-SELNO    PIC 9(03).
       *                病名コード移行用領域
-                       09  SPA-C03-IKOSAKI-BYOMEICD
-                                                   PIC X(07).
-                       09  SPA-C03-IKOSAKI-BYOMEI  PIC X(200).
-                       09  SPA-C03-IKOSAKI-INDEX   PIC 9(02).  
-                       09  SPA-C03-IKOMOTO-BYOMEICD
-                                                   PIC X(07).
-                       09  SPA-C03-IKOMOTO-BYOMEI  PIC X(200).
+                       09  SPA-C03-IKOSAKI-AREA.
+                           11  SPA-C03-IKOSAKI-BYOMEICD
+                                                       PIC X(07).
+                           11  SPA-C03-IKOSAKI-BYOMEI  PIC X(200).
+                           11  SPA-C03-IKOSAKI-INDEX   PIC 9(02).  
+                           11  SPA-C03-IKOMOTO-BYOMEICD
+                                                       PIC X(07).
+                           11  SPA-C03-IKOMOTO-BYOMEI  PIC X(200).
+      *
+      *                病名コード廃止表示用領域
+                       09  SPA-C03-HAISI-AREA.
+                           11  SPA-C03-HAISI-BYOMEI    PIC X(200).
+                           11  SPA-C03-HAISI-INDEX     PIC 9(02).  
+      *
+      *                病名コードエラー表示用領域
+                       09  SPA-C03-ERR-INDEX           PIC 9(02).
       *
       *    自院病名検索画面
            03  SPA-C04.

@@ -68,6 +68,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *
+      *  04.06.01    NACL-藤原    10/08/25  一括入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,7 +128,9 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
+      *
            03  FLG-ERR             PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
       *
            03  STS-RECEERR         PIC X(02).
       *
@@ -170,6 +174,10 @@
            03  WRK-PAGE            PIC ZZZZ9.
            03  WRK-STYMD           PIC X(22).
            03  WRK-EDYMD           PIC X(22).
+      *  
+      *    入力項目名
+           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-GMN-CUR         PIC 9(03).
       *
            03  WRK-RECE08-PRTJYUN  PIC 9(02).
       *
@@ -1134,8 +1142,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                WHEN    "CLICKED"       ALSO    "CHK23"
                WHEN    "CLICKED"       ALSO    "CHK24"
                WHEN    "CLICKED"       ALSO    "CHK25"
-                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
-                   MOVE    WRK-WIDGET2         TO  IDX 
                    PERFORM 420-CHK-CHK-SEC
            END-EVALUATE
       *
@@ -1147,65 +1153,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+      *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "STDATA01"
-               WHEN    "ACTIVATE"      ALSO    "STDATA02"
-               WHEN    "ACTIVATE"      ALSO    "STDATA03"
-               WHEN    "ACTIVATE"      ALSO    "STDATA04"
-               WHEN    "ACTIVATE"      ALSO    "STDATA05"
-               WHEN    "ACTIVATE"      ALSO    "STDATA06"
-               WHEN    "ACTIVATE"      ALSO    "STDATA07"
-               WHEN    "ACTIVATE"      ALSO    "STDATA08"
-               WHEN    "ACTIVATE"      ALSO    "STDATA09"
-               WHEN    "ACTIVATE"      ALSO    "STDATA10"
-               WHEN    "ACTIVATE"      ALSO    "STDATA11"
-               WHEN    "ACTIVATE"      ALSO    "STDATA12"
-               WHEN    "ACTIVATE"      ALSO    "STDATA13"
-               WHEN    "ACTIVATE"      ALSO    "STDATA14"
-               WHEN    "ACTIVATE"      ALSO    "STDATA15"
-               WHEN    "ACTIVATE"      ALSO    "STDATA16"
-               WHEN    "ACTIVATE"      ALSO    "STDATA17"
-               WHEN    "ACTIVATE"      ALSO    "STDATA18"
-               WHEN    "ACTIVATE"      ALSO    "STDATA19"
-               WHEN    "ACTIVATE"      ALSO    "STDATA20"
-               WHEN    "ACTIVATE"      ALSO    "STDATA21"
-               WHEN    "ACTIVATE"      ALSO    "STDATA22"
-               WHEN    "ACTIVATE"      ALSO    "STDATA23"
-               WHEN    "ACTIVATE"      ALSO    "STDATA24"
-               WHEN    "ACTIVATE"      ALSO    "STDATA25"
-                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
-                   MOVE    WRK-WIDGET3         TO  IDX 
-                   PERFORM 4103-TSTDATA-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "EDDATA01"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA02"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA03"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA04"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA05"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA06"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA07"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA08"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA09"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA10"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA11"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA12"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA13"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA14"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA15"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA16"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA17"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA18"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA19"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA20"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA21"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA22"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA23"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA24"
-               WHEN    "ACTIVATE"      ALSO    "EDDATA25"
-                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
-                   MOVE    WRK-WIDGET3         TO  IDX 
-                   PERFORM 4104-TEDDATA-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "PRTJYUN"
                    PERFORM 4105-PRTJYUN-CHK-SEC
+               WHEN    OTHER
+                   PERFORM 410-ENTRY-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -1213,29 +1167,126 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    一括入力処理
+      *****************************************************************
+       410-ENTRY-SYORI-SEC       SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-R04-CUR
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       410-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *   入力チェック
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET (1:6)
+               WHEN    "ACTIVATE"      ALSO    "STDATA"
+               WHEN    "ACTIVATE"      ALSO    "EDDATA"
+      *            指定印刷のとき
+                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET3         TO  IDX 
+                   IF    ( SPA-GMN-R04-TCHK-VALUE (IDX)
+                                           =   "F" )   
+                       MOVE    "0014"          TO  SPA-ERRCD
+                   END-IF
+           END-EVALUATE
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    99              TO  SPA-GMN-R04-CUR
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      * 
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4103-KAKUTEI-CHK-SEC
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       25
+               MOVE    R04-TSTDATA (IDX)   TO
+                                       SPA-GMN-R04-TSTDATA (IDX)
+               MOVE    R04-TEDDATA (IDX)   TO
+                                       SPA-GMN-R04-TEDDATA (IDX)
+           END-PERFORM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       25
+      *        出力開始（個別）
+               PERFORM 4103-TSTDATA-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+      *
+      *        出力終了（個別）
+               PERFORM 4104-TEDDATA-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+           END-PERFORM
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    出力開始（個別）チェック処理
       *****************************************************************
        4103-TSTDATA-CHK-SEC          SECTION.
       *
-           MOVE    2                  TO  SPA-GMN-R04-CUR
-      *
-           COMPUTE SPA-GMN-R04-CUR        =   SPA-GMN-R04-CUR     +
-                                          IDX *  3
-           MOVE    R04-TSTDATA (IDX)       TO  SPA-GMN-R04-TSTDATA (IDX)
-      *
            IF      SPA-GMN-R04-TSTDATA (IDX)  NOT =   SPACE   
                EVALUATE    SPA-GMN-R04-PRTJYUN   
                    WHEN    "03"
-      *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
                        MOVE    "1"                 TO  KANACHK-SYORI 
                        MOVE    SPA-GMN-R04-TSTDATA (IDX)
                                                    TO  KANACHK-MAE-INPUT
+                       MOVE    100                 TO  KANACHK-MAX-CNT
                        CALL    "ORCSKANACHK"       USING
                                                    ORCSKANACHKAREA
-                       IF      KANACHK-RC          =   ZERO
-                       AND     KANACHK-SYUBETU     =   "2"
+                       MOVE    KANACHK-MAE-INPUT   TO
+                                               SPA-GMN-R04-TSTDATA (IDX)
+                       IF      KANACHK-RC2         =   7
+                           MOVE    KANACHK-OUT-INPUT
+                                           TO  SPA-GMN-R04-TSTDATA (IDX)
+                       END-IF
+                       IF    ( KANACHK-RC          =   ZERO )
+                       AND   ( KANACHK-SYUBETU     =   2    )
                            MOVE    KANACHK-OUT-INPUT
                                            TO  SPA-GMN-R04-TSTDATA (IDX)
                            IF      SPA-GMN-R04-TSTDATA (IDX)(1:2)
@@ -1249,7 +1300,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                            MOVE    "0001"             TO  SPA-ERRCD
                        END-IF
                    WHEN    "04"
-      *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
                        MOVE    "1"                 TO  KANACHK-SYORI 
@@ -1270,8 +1320,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                END-EVALUATE
            END-IF   
       *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-GMN-R04-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               COMPUTE SPA-GMN-R04-CUR    =   2   +
+                                              IDX *  3
            END-IF 
            .
        4103-TSTDATA-CHK-EXT.
@@ -1282,23 +1333,23 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
       *****************************************************************
        4104-TEDDATA-CHK-SEC          SECTION.
       *
-           MOVE    3                  TO  SPA-GMN-R04-CUR
-      *
-           COMPUTE SPA-GMN-R04-CUR        =   SPA-GMN-R04-CUR     +
-                                          IDX *  3
-           MOVE    R04-TEDDATA (IDX)       TO  SPA-GMN-R04-TEDDATA (IDX)
-      *
            IF      SPA-GMN-R04-TEDDATA (IDX)  NOT =   SPACE   
                EVALUATE    SPA-GMN-R04-PRTJYUN   
                    WHEN    "03"
-      *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
                        MOVE    "1"                 TO  KANACHK-SYORI 
                        MOVE    SPA-GMN-R04-TEDDATA (IDX)
                                                    TO  KANACHK-MAE-INPUT
+                       MOVE    100                 TO  KANACHK-MAX-CNT
                        CALL    "ORCSKANACHK"       USING
                                                    ORCSKANACHKAREA
+                       MOVE    KANACHK-MAE-INPUT   TO
+                                               SPA-GMN-R04-TEDDATA (IDX)
+                       IF      KANACHK-RC2         =   7
+                           MOVE    KANACHK-OUT-INPUT
+                                           TO  SPA-GMN-R04-TEDDATA (IDX)
+                       END-IF
                        IF      KANACHK-RC          =   ZERO
                        AND     KANACHK-SYUBETU     =   "2"
                            MOVE    KANACHK-OUT-INPUT
@@ -1335,12 +1386,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                END-EVALUATE
            END-IF   
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF      IDX                 =   25
-                   MOVE    99                  TO  SPA-GMN-R04-CUR
-               ELSE 
-                   ADD     1                   TO  SPA-GMN-R04-CUR
-               END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               COMPUTE SPA-GMN-R04-CUR    =   2   +
+                                              IDX *  3
            END-IF 
            .
        4104-TEDDATA-CHK-EXT.
@@ -1377,6 +1425,28 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    確定ボタン押下時チェック処理
+      *****************************************************************
+       4103-KAKUTEI-CHK-SEC        SECTION.
+      *
+      *    レセプトが選択されているか
+           MOVE    ZERO                TO  IDZ
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       25
+               IF      SPA-GMN-R04-TCHK-VALUE (IDX)    =   "T"
+                   MOVE    1               TO  IDZ
+                   MOVE    25              TO  IDX
+               END-IF
+           END-PERFORM
+           IF      IDZ                 =   ZERO
+               MOVE    "0008"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4103-KAKUTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る前処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -1402,7 +1472,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            .
        210-BACK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    戻る　処理
@@ -1436,6 +1505,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        420-CHK-CHK-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  420-CHK-CHK-EXT
+           END-IF
+      *
+           MOVE    MCP-WIDGET          TO  WRK-WIDGET
+           MOVE    WRK-WIDGET2         TO  IDX 
+      *
            MOVE    1                  TO  SPA-GMN-R04-CUR
       *
            COMPUTE SPA-GMN-R04-CUR        =   SPA-GMN-R04-CUR     +
@@ -1459,6 +1538,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        450-PRINT-GIDMSG-SEC                SECTION.
       *
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  450-PRINT-GIDMSG-EXT
+           END-IF
+      *
+      *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1474,20 +1561,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    GO  TO  450-PRINT-GIDMSG-EXT
                END-IF
            END-IF    
-      *
-      *    レセプトが選択されているか
-           MOVE    ZERO                TO  IDZ
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       25
-               IF      SPA-GMN-R04-TCHK-VALUE (IDX)    =   "T"
-                   MOVE    1               TO  IDZ
-                   MOVE    25              TO  IDX
-               END-IF
-           END-PERFORM
-           IF      IDZ                 =   ZERO
-               MOVE    "0008"          TO  SPA-ERRCD
-               GO  TO  450-PRINT-GIDMSG-EXT
-           END-IF
       *
       *    複数種類のレセプトが選択されているとき（労災・自賠責）
            MOVE    ZERO                TO  WRK-PRTKBN
@@ -1965,6 +2038,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-KAKUNIN-EXT
+           END-IF
+      *
+           MOVE    MCP-WIDGET          TO  WRK-WIDGET
+           MOVE    WRK-WIDGET2         TO  IDX 
       *                                      
       *    画面移行用のパラメタ
            PERFORM 4901-PARA-HENSYU-SEC
@@ -2099,6 +2182,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        490-JYOUHOU-DEL-SEC             SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-JYOUHOU-DEL-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-R02             TO  LNK-SCRSPA
@@ -2127,6 +2217,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    プリンタ一括設定処理
       *****************************************************************
        490-PRINTER-SETTEI-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  490-PRINTER-SETTEI-EXT
+           END-IF
       *
            MOVE    SPACE               TO  SPA-MOTOPG
            IF      SPA-R01-RECE07-NYUGAIKBN    =   "1"
@@ -2314,6 +2411,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+           AND   ( SPA-GMN-R04-CUR =   ZERO  )
+               PERFORM 50011-INPUT-CUR-SEC
+           END-IF
+      *
          EVALUATE    SPA-GMN-R04-CUR
              WHEN    2
                     MOVE  "PREFKBN"    TO  MCP-WIDGET
@@ -2478,9 +2580,109 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       50011-INPUT-CUR-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "PRTJYUN"
+                   MOVE    99         TO  SPA-GMN-R04-CUR
+               WHEN    "CHK01"
+               WHEN    "CHK02"
+               WHEN    "CHK03"
+               WHEN    "CHK04"
+               WHEN    "CHK05"
+               WHEN    "CHK06"
+               WHEN    "CHK07"
+               WHEN    "CHK08"
+               WHEN    "CHK09"
+               WHEN    "CHK10"
+               WHEN    "CHK11"
+               WHEN    "CHK12"
+               WHEN    "CHK13"
+               WHEN    "CHK14"
+               WHEN    "CHK15"
+               WHEN    "CHK16"
+               WHEN    "CHK17"
+               WHEN    "CHK18"
+               WHEN    "CHK19"
+               WHEN    "CHK20"
+               WHEN    "CHK21"
+               WHEN    "CHK22"
+               WHEN    "CHK23"
+               WHEN    "CHK24"
+               WHEN    "CHK25"
+                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET2         TO  IDX
+                   COMPUTE SPA-GMN-R04-CUR         =   2   +   IDX *   3
+               WHEN    "STDATA01"
+               WHEN    "STDATA02"
+               WHEN    "STDATA03"
+               WHEN    "STDATA04"
+               WHEN    "STDATA05"
+               WHEN    "STDATA06"
+               WHEN    "STDATA07"
+               WHEN    "STDATA08"
+               WHEN    "STDATA09"
+               WHEN    "STDATA10"
+               WHEN    "STDATA11"
+               WHEN    "STDATA12"
+               WHEN    "STDATA13"
+               WHEN    "STDATA14"
+               WHEN    "STDATA15"
+               WHEN    "STDATA16"
+               WHEN    "STDATA17"
+               WHEN    "STDATA18"
+               WHEN    "STDATA19"
+               WHEN    "STDATA20"
+               WHEN    "STDATA21"
+               WHEN    "STDATA22"
+               WHEN    "STDATA23"
+               WHEN    "STDATA24"
+               WHEN    "STDATA25"
+                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET3         TO  IDX 
+                   COMPUTE SPA-GMN-R04-CUR         =   3   +   IDX *   3
+               WHEN    "EDDATA01"
+               WHEN    "EDDATA02"
+               WHEN    "EDDATA03"
+               WHEN    "EDDATA04"
+               WHEN    "EDDATA05"
+               WHEN    "EDDATA06"
+               WHEN    "EDDATA07"
+               WHEN    "EDDATA08"
+               WHEN    "EDDATA09"
+               WHEN    "EDDATA10"
+               WHEN    "EDDATA11"
+               WHEN    "EDDATA12"
+               WHEN    "EDDATA13"
+               WHEN    "EDDATA14"
+               WHEN    "EDDATA15"
+               WHEN    "EDDATA16"
+               WHEN    "EDDATA17"
+               WHEN    "EDDATA18"
+               WHEN    "EDDATA19"
+               WHEN    "EDDATA20"
+               WHEN    "EDDATA21"
+               WHEN    "EDDATA22"
+               WHEN    "EDDATA23"
+               WHEN    "EDDATA24"
+                   MOVE    MCP-WIDGET          TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET3         TO  IDX 
+                   COMPUTE SPA-GMN-R04-CUR         =   4   +   IDX *   3
+               WHEN    "EDDATA25"
+                   MOVE    99         TO  SPA-GMN-R04-CUR
+           END-EVALUATE
+           .
+      *
+       5011-INPUT-CUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -2489,20 +2691,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "0002"
                    MOVE    "印刷するレセプトがありません" 
                                                        TO  SPA-ERRMSG
-               WHEN    "0004"
-                   MOVE  "印刷用パラメタファイルが作成できませんでした"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0006"
-                   MOVE    "一括出力のとき入力できません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0007"
-                   MOVE    "個別出力のとき入力できません"
-                                                       TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "印刷するレセプトが選択してありません"
                                                        TO  SPA-ERRMSG
-               WHEN    "5555"
-                   MOVE    "レセ電処理中です"          TO  WRK-RIDMSG
                WHEN    "7777"
                    MOVE    "レセプト印刷またはレセ電処理中です"
                                                        TO  SPA-ERRMSG
