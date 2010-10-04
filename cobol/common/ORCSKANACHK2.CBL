@@ -26,6 +26,10 @@
       *  作成日付    作業者        記述
       *  09/10/27    NACL−多々納  新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.00    NACL-多々納  10/10/01  入力・出力領域をX(5000)へ
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -87,7 +91,7 @@
            03  WRK-ZENMOJI             PIC X(02).
            03  WRK-ZENMOJI2            PIC X(02).
       *
-           03  WRK-MEISYO              PIC X(1000).
+           03  WRK-MEISYO              PIC X(5000).
       *
            03  WRK-ERRCD               PIC X(02).
       *
@@ -102,7 +106,7 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-           COPY    "CPORCXKANACONV.INC".
+           COPY    "CPORCXKANACONV2.INC".
       *
       *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
@@ -132,7 +136,7 @@
            MOVE    SPACE               TO  KANACHK2-OUT-INPUT
       *    最大桁数判定
            MOVE    ZERO                TO  IDX-MAX
-           PERFORM VARYING     IDX     FROM    1000 BY  -1
+           PERFORM VARYING     IDX     FROM    5000 BY  -1
                    UNTIL       IDX     <   1
                IF     KANACHK2-MAE-INPUT (IDX:1)    NOT =   SPACE
                    MOVE    IDX             TO  IDX-MAX
@@ -182,7 +186,7 @@
            IF      KANACHK2-MAX-CNT     =   ZERO
                MOVE    IDX-MAX             TO  KANACONV-LEN
            END-IF
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    256                 TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK2-MAE-INPUT  TO  KANACONV-INDATA
@@ -197,8 +201,8 @@
            END-IF
            MOVE    KANACONV-MAXLEN     TO  IDX-MAX
            MOVE    KANACONV-MAXLEN     TO  KANACHK2-MAX
-           IF      KANACHK2-MAX-CNT     =   ZERO
-               MOVE    100                 TO  KANACHK2-MAX-CNT
+           IF      KANACHK2-MAX-CNT    =   ZERO
+               MOVE    5000                TO  KANACHK2-MAX-CNT
            END-IF
       *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
@@ -230,7 +234,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK2-MAX-CNT     TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    271                 TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK2-MAE-INPUT   TO  KANACONV-INDATA
@@ -240,7 +244,7 @@
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK2-MAX-CNT    TO  KANACONV-LEN
-               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    5000                TO  KANACONV-STLEN
                MOVE    1                   TO  KANACONV-CONV-FLAG
                MOVE    271                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK2-MAE-INPUT   TO  KANACONV-INDATA
@@ -259,7 +263,7 @@
       *        半角のみの判定
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK2-MAX-CNT    TO  KANACONV-LEN
-               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    5000                TO  KANACONV-STLEN
                MOVE    0                   TO  KANACONV-CONV-FLAG
                MOVE    113                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK2-MAE-INPUT  TO  KANACONV-INDATA
@@ -293,7 +297,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK2-MAX-CNT     TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    112                 TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK2-MAE-INPUT   TO  KANACONV-INDATA
@@ -423,7 +427,7 @@
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK2-MAX-CNT    TO  KANACONV-LEN
-               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    5000                TO  KANACONV-STLEN
                MOVE    1                   TO  KANACONV-CONV-FLAG
                MOVE    271                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK2-OUT-INPUT  TO  KANACONV-INDATA
@@ -455,7 +459,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK2-MAX-CNT     TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    1                   TO  KANACONV-CONV-FLAG
            MOVE    271                 TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK2-MAE-INPUT  TO  KANACONV-INDATA

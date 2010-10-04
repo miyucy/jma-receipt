@@ -24,6 +24,8 @@
       *  01.00.02    NACL-多々納  05/07/19  コメントを１６００へ
       *
       *  03.00.01    NACL-藤原    06/06/13  症状詳記区分を追加
+      *  04.06.00    NACL-多々納  10/10/01  コメントを２４００へ
+      *                                     連番追加
       *****************************************************************
       *
       *01  RECECOM-REC.
@@ -44,8 +46,10 @@
                05  RECECOM-SRYDD         PIC X(02).
       *症状詳記区分
                05  RECECOM-SJKBN         PIC X(02).
+      *連番
+               05  RECECOM-RENNUM        PIC 9(02).
       *コメント
-           03  RECECOM-COMMENT           PIC X(1600).
+           03  RECECOM-COMMENT           PIC X(2400).
       *端末ＩＤ
            03  RECECOM-TERMID            PIC X(16).
       *オペーレータＩＤ
@@ -56,3 +60,24 @@
            03  RECECOM-UPYMD             PIC X(08).
       *更新時間
            03  RECECOM-UPHMS             PIC X(06).
+      *
+      *更新用キー
+           03  RECECOM-UPD-KEY.
+      *医療機関ＩＤ
+               05  RECECOM-UPD-HOSPNUM       PIC 9(2).
+      *患者ＩＤ
+               05  RECECOM-UPD-PTID          PIC 9(10).
+      *入外区分
+               05  RECECOM-UPD-NYUGAIKBN     PIC X(01).
+      *診療科
+               05  RECECOM-UPD-SRYKA         PIC X(02).
+      *診療年月
+               05  RECECOM-UPD-SRYYM         PIC X(06).
+      *保険組合せ番号
+               05  RECECOM-UPD-HKNCOMBI      PIC 9(04).
+      *診療日
+               05  RECECOM-UPD-SRYDD         PIC X(02).
+      *症状詳記区分
+               05  RECECOM-UPD-SJKBN         PIC X(02).
+      *連番
+               05  RECECOM-UPD-RENNUM        PIC 9(02).

@@ -9,7 +9,7 @@
                   05  C501-BUNREI-ROWATTR PIC S9(9)   BINARY.
                   05  C501-BUNREI-ITEM       OCCURS  200 TIMES.
                     06  C501-TRENNUM PIC X(3).
-                    06  C501-TCOMMENT PIC X(100).
+                    06  C501-TCOMMENT PIC X(400).
                   05  C501-BUNREI-SELECT
                           PIC X       OCCURS  200 TIMES.
               03  C501-NEXT.

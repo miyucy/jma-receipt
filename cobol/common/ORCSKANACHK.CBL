@@ -24,11 +24,15 @@
       *  返却エラーコード  : 0:正常　1:半角混在、２：変換エラー
       *  管理者            : 
       *  作成日付    作業者        記述
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  02/08/09  入力・出力領域をX(1000)へ
       *  01.00.02    NACL-多々納  04/09/30  全角エラー追加
       *  01.00.03    NACL-多々納  05/08/10  kanaconv 使用へ変更
       *  04.01.00    NACL-多々納  08/01/17  全角空白判定追加
       *  04.05.00    NACL-多々納  09/12/11  全角空白削除追加
+      *  04.06.00    NACL-多々納  10/10/01  入力・出力領域をX(5000)へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -90,7 +94,7 @@
            03  WRK-ZENMOJI             PIC X(02).
            03  WRK-ZENMOJI2            PIC X(02).
       *
-           03  WRK-MEISYO              PIC X(1000).
+           03  WRK-MEISYO              PIC X(5000).
       *
            03  WRK-ERRCD               PIC X(02).
       *
@@ -282,7 +286,7 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-           COPY    "CPORCXKANACONV.INC".
+           COPY    "CPORCXKANACONV2.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -290,10 +294,10 @@
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSKANACHK.INC".
-     *
+      *
        PROCEDURE                    DIVISION    USING
            ORCSKANACHKAREA.
-     *
+      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -308,7 +312,7 @@
            MOVE    SPACE               TO  KANACHK-OUT-INPUT
       *    最大桁数判定
            MOVE    ZERO                TO  IDX-MAX
-           PERFORM VARYING     IDX     FROM    1000 BY  -1
+           PERFORM VARYING     IDX     FROM    5000 BY  -1
                    UNTIL       IDX     <   1
                IF     KANACHK-MAE-INPUT (IDX:1)    NOT =   SPACE
                    MOVE    IDX             TO  IDX-MAX
@@ -321,6 +325,10 @@
            ELSE
                MOVE    IDX-MAX             TO  KANACHK-MAX
            END-IF
+      *TEST
+      *    DISPLAY " KANACHK-MAX:"  KANACHK-MAX
+      *    DISPLAY " KANACHK-MAE-INPUT:"  KANACHK-MAE-INPUT
+      *                    (1:KANACHK-MAX)
       *
            IF      IDX-MAX             >   ZERO
       *        全角の内容判定
@@ -351,7 +359,7 @@
            IF      KANACHK-MAX-CNT     =   ZERO
                MOVE    IDX-MAX             TO  KANACONV-LEN
            END-IF
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -367,7 +375,7 @@
            MOVE    KANACONV-MAXLEN     TO  IDX-MAX
            MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
            IF      KANACHK-MAX-CNT     =   ZERO
-               MOVE    100                 TO  KANACHK-MAX-CNT
+               MOVE    5000                TO  KANACHK-MAX-CNT
            END-IF
       *
            .
@@ -385,7 +393,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    15                  TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -395,7 +403,7 @@
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    5000                TO  KANACONV-STLEN
                MOVE    1                   TO  KANACONV-CONV-FLAG
                MOVE    15                  TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -414,7 +422,7 @@
       *        半角のみの判定
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-               MOVE    1000                TO  KANACONV-STLEN
+               MOVE    5000                TO  KANACONV-STLEN
                MOVE    0                   TO  KANACONV-CONV-FLAG
                MOVE    113                 TO  KANACONV-CHAR-TYPE
                MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -448,7 +456,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    112                 TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
@@ -538,7 +546,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    1                   TO  KANACONV-CONV-FLAG
            MOVE    15                  TO  KANACONV-CHAR-TYPE
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA

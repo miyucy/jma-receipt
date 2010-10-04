@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  02/08/09  入力・出力領域をX(1000)へ
       * 04.05.00     NACL-多々納  09/12/11  全角空白削除追加
+      * 04.06.00     NACL-多々納  10/10/01  入力・出力領域をX(5000)へ
       ************************************************************
       *
        01  ORCSKANACHKAREA.
@@ -31,12 +32,12 @@
       *    処理フラグ２（１：後ろの全角空白削除）
            03  KANACHK-SYORIKBN            PIC X(01).
       *    入力領域
-           03  KANACHK-MAE-INPUT           PIC X(1000).
+           03  KANACHK-MAE-INPUT           PIC X(5000).
       *    出力桁数（全角の最大桁数の指定（省略可））
            03  KANACHK-MAX-CNT             PIC 9(04).
       *
       *    出力領域（半角空白を全角へ置換えて編集）
-           03  KANACHK-OUT-INPUT           PIC X(1000).
+           03  KANACHK-OUT-INPUT           PIC X(5000).
       *    文字タイプ（１：半角、２：全角）
            03  KANACHK-SYUBETU             PIC 9(01).
       *    最大桁数

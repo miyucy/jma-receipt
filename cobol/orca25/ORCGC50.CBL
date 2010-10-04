@@ -31,6 +31,8 @@
       *  03.04.00    NACL-多々納  07/04/12  詳記区分 ５０、５１追加
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.00    NACL-多々納  07/06/05  コメント内容の全角変換
+      *  04.06.00    NACL-多々納  10/10/01  コメント文字　３０００、
+      *                                     連番対応他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,6 +75,7 @@
       *
            03  FLG-HENOK           PIC 9(01).
            03  FLG-HENOK2          PIC 9(01).
+           03  FLG-BUNREI          PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -115,6 +118,7 @@
            03  WRK-SELNUM-X        PIC X(03).
            03  WRK-C50-SELNUM-X   PIC X(40).
       *
+           03  WRK-ZZZZ            PIC ZZZZ.
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-ZZ              PIC ZZ.
       *
@@ -133,6 +137,8 @@
                05  WRK-OLD-SRYKA       PIC X(02).
                05  WRK-OLD-HKNCOMBI    PIC X(04).
                05  WRK-OLD-SRYDD       PIC X(02).
+      *
+           03  WRK-RENNUM-MAX          PIC 9(02).
       *
            03  WRK-ERRCD               PIC X(04).
            03  WRK-C50IDMSG            PIC X(80).
@@ -170,6 +176,8 @@
            03  WRK-SELNUM-AREA.
                05  WRK-SELNUM-OCC    OCCURS   100.
                    07  WRK-SEL         PIC 9(01).
+      *
+           03  WRK-MOJI-MAX            PIC 9(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -238,7 +246,8 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-           COPY    "CPORCXKANACONV.INC".
+      **** COPY    "CPORCXKANACONV.INC".
+           COPY    "CPORCXKANACONV2.INC".
       *
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
@@ -386,6 +395,7 @@
                WHEN    "0101"
                WHEN    "0105"
                WHEN    "0107"
+               WHEN    "0110"
                WHEN    "0201"
                WHEN    "0205"
       *            コメント登録の確認
@@ -1039,6 +1049,7 @@
            INITIALIZE                      SPA-GMN-COMMENTLIST-G
            MOVE    ZERO                TO  SPA-GMN-COMSEL
            MOVE    SPACE               TO  SPA-GMN-SJKBN-G
+           MOVE    ZERO                TO  SPA-NAI-RENNUM
       *    初期表示
            IF      SPA-GMN-SYORI       =   2
                CONTINUE
@@ -1078,7 +1089,7 @@
        31031-RECECOM-SPAHEN-SEC             SECTION.
       *
            MOVE    IDX                 TO  SPA-GMN-RECE-MAX
-           MOVE    IDX                 TO  SPA-GMN-TRENNUM (IDX)
+           MOVE    IDX                 TO  SPA-GMN-TRECNUM (IDX)
            MOVE    RECECOM-SRYKA       TO  SPA-GMN-NSRYKA  (IDX)
            MOVE    RECECOM-SRYYM       TO  SPA-GMN-NSRYYM  (IDX)
            MOVE    RECECOM-HKNCOMBI    TO  SPA-GMN-NHKNCOMBI(IDX)
@@ -1521,7 +1532,7 @@
       *
            INITIALIZE                  ORCXKANACONVAREA
            MOVE    50                  TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
            MOVE    WRK-HKNCOMBIMEI     TO  KANACONV-INDATA
@@ -1649,8 +1660,8 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-RECE-MAX
-               MOVE    SPA-GMN-TRENNUM (IDX)  TO  WRK-ZZZ
-               MOVE    WRK-ZZZ                TO  C50-TRENNUM (IDX)
+               MOVE    SPA-GMN-TRECNUM (IDX)  TO  WRK-ZZZ
+               MOVE    WRK-ZZZ                TO  C50-TRECNUM (IDX)
                MOVE    SPA-GMN-TSRYYM  (IDX)  TO  C50-TSRYYM  (IDX)
                MOVE    SPA-GMN-TSRYKA  (IDX)  TO  C50-TSRYKA  (IDX)
                MOVE    SPA-GMN-THKNCOMBI(IDX) TO  C50-THKNCOMBI(IDX)
@@ -1666,7 +1677,7 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   SPA-GMN-SELNUM-MAX
                    IF      SPA-GMN-SELNUM (IDX2)
-                                           =   SPA-GMN-TRENNUM (IDX)
+                                           =   SPA-GMN-TRECNUM (IDX)
                        MOVE    "T"         TO  C50-RECE-SELECT (IDX)
                        IF      C50-RECE-ROW    =   ZERO
                            MOVE    IDX             TO  C50-RECE-ROW
@@ -1686,6 +1697,8 @@
                MOVE    SPA-GMN-TCOMREN (IDX)  TO  WRK-ZZZ
                MOVE    WRK-ZZZ                TO  C50-TCOMREN (IDX)
                MOVE    SPA-GMN-TSJKBN  (IDX)  TO  C50-TSJKBN  (IDX)
+               MOVE    SPA-GMN-TRENNUM (IDX)  TO  WRK-ZZ
+               MOVE    WRK-ZZ                 TO  C50-TRENNUM (IDX)
                MOVE    SPA-GMN-TCOMMENT(IDX)  TO  C50-TCOMMENT (IDX)
       *
                MOVE    "F"                 TO  C50-COMM-SELECT (IDX)
@@ -1723,6 +1736,15 @@
            MOVE    SPA-GMN-RRKMAX     TO  C50-JYURRK-COUNT
       *
            MOVE    SPA-GMN-JYURRKNUM  TO  C50-JYURRKNUM
+      *!!
+           IF      SPA-NAI-COMMAX     >   ZERO
+               MOVE    SPA-NAI-COMMAX     TO  WRK-ZZZZ
+               STRING  "("
+                       WRK-ZZZZ
+                       ")"
+                                          INTO  C50-MCNT
+               END-STRING
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1900,8 +1922,17 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-           MOVE    C50-COMMENT        TO  SPA-GMN-COMMENT
+           MOVE    C50-COMMENT         TO  SPA-GMN-COMMENT
+           MOVE    ZERO                TO  FLG-BUNREI
            PERFORM 800-COMMENT-CHK-SEC
+      *    文例登録のみは、最大８００文字
+           IF      SPA-GMN-SYORI       =   2
+               IF      KANACHK-MAX         >   800
+                   MOVE    "0090"              TO  SPA-ERRCD
+                   MOVE    1                   TO  FLG-BUNREI
+                   PERFORM 800-COMMENT-CHK-SEC
+               END-IF
+           END-IF
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-PTID        =   ZERO
                    MOVE    7                   TO  SPA-GMN-CUR
@@ -2223,7 +2254,7 @@
                    UNTIL       IDX     >   SPA-GMN-RECE-MAX
                IF      C50-RECE-SELECT (IDX)   =  "T"
                    ADD     1               TO  IDX2
-                   MOVE    SPA-GMN-TRENNUM  (IDX)
+                   MOVE    SPA-GMN-TRECNUM  (IDX)
                                            TO  WRK-SELNUM-CHK (IDX2)
               END-IF
            END-PERFORM
@@ -2409,11 +2440,6 @@
            MOVE    14                  TO  SPA-GMN-CUR
       *
            MOVE    C50-COMSEL          TO  SPA-GMN-COMSEL
-      *TEST
-           DISPLAY "SPA-GMN-COMSEL:" SPA-GMN-COMSEL
-               ",SPA-GMN-SELNUM(1):" SPA-GMN-SELNUM(1)
-               ",SSPA-COMMENT-MAX:" SPA-COMMENT-MAX
-      *TEST
       *
            IF     (SPA-GMN-COMSEL      >=  1   )  AND
                   (SPA-GMN-COMSEL      <=  SPA-COMMENT-MAX )
@@ -2423,6 +2449,7 @@
            ELSE
                IF      SPA-GMN-COMSEL      =   ZERO
                    MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    ZERO                TO  SPA-NAI-RENNUM
                ELSE
                    MOVE    "0040"              TO  SPA-ERRCD
                END-IF
@@ -2460,6 +2487,8 @@
            IF     (WRK-SELNUM         >   ZERO )
               AND (SPA-GMN-COMSEL     >   ZERO )
                PERFORM 21031-COMMENT-HENSYU-SEC
+           ELSE
+               MOVE    ZERO               TO  SPA-NAI-RENNUM
            END-IF
       *
            .
@@ -2495,6 +2524,7 @@
       *    症状詳記区分
            PERFORM 4902-SJKBN-CHK-SEC
       *    コメント
+           MOVE    ZERO                TO  FLG-BUNREI
            PERFORM 800-COMMENT-CHK-SEC
       *    複写年月
            IF      SPA-ERRCD           =   SPACE
@@ -2534,6 +2564,14 @@
                IF      FLG-OK              =   ZERO
                    MOVE    "0009"              TO  SPA-ERRCD
                    MOVE    16                  TO  SPA-GMN-CUR
+               ELSE
+      *            選択判定
+                   IF      SPA-GMN-COMSEL      >   ZERO
+                       IF      SPA-GMN-SJKBN   NOT =   SPA-GMN-TSJKBN
+                                                       (SPA-GMN-COMSEL)
+                           MOVE    ZERO            TO  SPA-NAI-RENNUM
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -2606,7 +2644,9 @@
                MOVE    SPACE               TO  SPA-GMN-COMMENT
                MOVE    ZERO                TO  SPA-GMN-BUNNUM
                MOVE    ZERO                TO  SPA-GMN-COMSEL
+               MOVE    ZERO                TO  SPA-NAI-RENNUM
                MOVE    SPACE               TO  SPA-GMN-SJKBN-G
+               MOVE    ZERO                TO  SPA-NAI-COMMAX
       *        初期表示
                IF      SPA-GMN-SYORI       =   2
                    CONTINUE
@@ -2717,6 +2757,7 @@
                    MOVE    "0105"              TO  SPA-C50IDCD
                    IF      SPA-GMN-SYORI       =   1  OR  5
                                                       OR  ZERO
+                                                      OR  3
                        PERFORM 2124-UPDATE-CHK-SEC
                    END-IF
                ELSE
@@ -2772,10 +2813,23 @@
                        END-IF
                    END-IF
                END-IF
+      *        詳記区分登録あり
+               IF      WRK-RENNUM-MAX      >   ZERO
+                   MOVE    2               TO  FLG-HENOK
+               END-IF
+      *        最大連番
+               IF      WRK-RENNUM-MAX      =   99
+                   MOVE    1                   TO  FLG-HENOK
+                   MOVE    "0099"              TO  SPA-ERRCD
+                   MOVE    SPACE               TO  SPA-C50IDCD
+               END-IF
            END-IF
       *
            IF      FLG-HENOK           =   ZERO
                MOVE    "0107"              TO  SPA-C50IDCD
+           END-IF
+           IF      FLG-HENOK           =   2
+               MOVE    "0110"              TO  SPA-C50IDCD
            END-IF
            .
        2124-UPDATE-CHK-EXT.
@@ -3001,22 +3055,35 @@
                MOVE    ZERO                TO  RECECOM-SRYDD
            END-IF
            MOVE    SPA-GMN-SJKBN       TO  RECECOM-SJKBN
+           IF      SPA-NAI-RENNUM      =   ZERO
+      *        新規追加
+               MOVE    "key14"             TO  WRK-DBPATH
+           ELSE
+               MOVE    SPA-NAI-RENNUM      TO  RECECOM-RENNUM
+               MOVE    "key"               TO  WRK-DBPATH
+           END-IF
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "tbl_rececom"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_rececom"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                PERFORM 920-RECECOM-READ-SEC
            ELSE
                MOVE    1               TO  FLG-RECECOM
                INITIALIZE                  RECECOM-REC
            END-IF
            MOVE    "tbl_rececom"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-DBPATH          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    ZERO                TO  WRK-RENNUM-MAX
+           IF     (SPA-NAI-RENNUM      =   ZERO )  AND
+                  (FLG-RECECOM         =   ZERO )
+               MOVE    RECECOM-RENNUM      TO  WRK-RENNUM-MAX
+            END-IF
       *
            .
        2120-RECECOM-SEL-EXT.
@@ -3054,6 +3121,7 @@
                MOVE    1               TO  FLG-RECECOM
                INITIALIZE                  RECECOM-REC
            END-IF
+      *
            MOVE    "tbl_rececom"       TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -3073,12 +3141,14 @@
                                        ORCSMCNDATEAREA
       *
            PERFORM 2120-RECECOM-SEL-SEC
-           IF      FLG-RECECOM         =   ZERO
+           IF     (FLG-RECECOM         =   ZERO )
+              AND (SPA-NAI-RENNUM      >   ZERO )
       *        更新
                MOVE    SPA-GMN-COMMENT    TO  RECECOM-COMMENT
       *
                MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+               MOVE    SPA-OPID            TO  RECECOM-OPID
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3093,6 +3163,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "0020"              TO  SPA-ERRCD
                END-IF
            ELSE
+      *        最大連番
+               IF      WRK-RENNUM-MAX      =   99
+                   MOVE    "0099"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-GMN-CUR
+               ELSE
       *        追加
                MOVE    SPACE               TO  RECECOM-REC
                INITIALIZE                  RECECOM-REC
@@ -3110,11 +3185,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  RECECOM-SRYDD
                END-IF
                MOVE    SPA-GMN-SJKBN       TO  RECECOM-SJKBN
+               ADD     1                   TO  WRK-RENNUM-MAX
+               MOVE    WRK-RENNUM-MAX      TO  RECECOM-RENNUM
                MOVE    SPA-GMN-COMMENT     TO  RECECOM-COMMENT
       *
                MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
                MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+               MOVE    SPA-OPID            TO  RECECOM-OPID
       *
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
@@ -3128,6 +3206,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "C50 RECECOM INS ERR:" MCP-RC
                            ",KEY:"   RECECOM-KEY    "."
                    MOVE    "0020"              TO  SPA-ERRCD
+               END-IF
                END-IF
            END-IF
       *    変更前の保険組合せが無効の時、削除
@@ -3224,6 +3303,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        コメント選択なし
                MOVE    ZERO                TO  SPA-GMN-COMSEL
                MOVE    SPACE               TO  SPA-GMN-COMMENT
+               MOVE    ZERO                TO  SPA-NAI-RENNUM
+               MOVE    ZERO                TO  SPA-NAI-COMMAX
                PERFORM 31031-SJKBN-INI-SEC
            ELSE
                INITIALIZE                  SPA-GMN-SELNUM-G
@@ -3313,6 +3394,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+               MOVE    SPA-OPID            TO  RECECOM-OPID
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3334,6 +3416,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
                MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+               MOVE    SPA-OPID            TO  RECECOM-OPID
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3480,6 +3563,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  RECECOM-SRYDD
            END-IF
            MOVE    HZN-RECECOM-SJKBN       TO  RECECOM-SJKBN
+           MOVE    HZN-RECECOM-RENNUM      TO  RECECOM-RENNUM
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "tbl_rececom"       TO  MCP-TABLE
@@ -3503,6 +3587,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+               MOVE    SPA-OPID            TO  RECECOM-OPID
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3534,12 +3619,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  RECECOM-SRYDD
                END-IF
                MOVE    HZN-RECECOM-SJKBN   TO  RECECOM-SJKBN
+               MOVE    HZN-RECECOM-RENNUM  TO  RECECOM-RENNUM
                MOVE    HZN-RECECOM-COMMENT TO  RECECOM-COMMENT
       *
                MOVE    SMCNDATE-YMD        TO  RECECOM-CREYMD
                MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
                MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
       *
+               MOVE    SPA-OPID            TO  RECECOM-OPID
       *
                MOVE    RECECOM-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3608,9 +3695,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        800-COMMENT-CHK-SEC             SECTION.
       *
+           IF      FLG-BUNREI          =   1
+               MOVE    800                 TO  WRK-MOJI-MAX
+           ELSE
+               MOVE    2400                TO  WRK-MOJI-MAX
+           END-IF
            INITIALIZE                  ORCXKANACONVAREA
-           MOVE    800                 TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    WRK-MOJI-MAX        TO  KANACONV-LEN
+           MOVE    5000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
            MOVE    SPA-GMN-COMMENT     TO  KANACONV-INDATA
@@ -3626,11 +3718,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
       *    出力桁数（全角の最大桁数の指定（省略可））
-           MOVE    800                 TO  KANACHK-MAX-CNT
+           MOVE    WRK-MOJI-MAX        TO  KANACHK-MAX-CNT
            MOVE    SPA-GMN-COMMENT     TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-COMMENT
+           MOVE    KANACHK-MAX         TO  SPA-NAI-COMMAX
            IF     (KANACHK-RC      NOT =   ZERO  )
       *D       OR (KANACHK-SYUBETU     =   1     )
       *        全角以外エラー
@@ -3657,8 +3750,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN-COMMENT    =   SPACE
                MOVE    "0007"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    ZERO                TO  SPA-NAI-COMMAX
            ELSE
+               MOVE    ZERO                TO  FLG-BUNREI
                PERFORM 800-COMMENT-CHK-SEC
+               IF      KANACHK-MAX         >   800
+                   MOVE    "0090"              TO  SPA-ERRCD
+                   MOVE    1                   TO  FLG-BUNREI
+                   PERFORM 800-COMMENT-CHK-SEC
+               END-IF
            END-IF
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-BUNNUM      =   ZERO
@@ -3759,6 +3859,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
                MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
       *
+               MOVE    SPA-OPID            TO  EXAMPLE-OPID
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -3784,6 +3885,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  EXAMPLE-CREYMD
                MOVE    SMCNDATE-YMD        TO  EXAMPLE-UPYMD
                MOVE    SMCNDATE-HMS        TO  EXAMPLE-UPHMS
+               MOVE    SPA-OPID            TO  EXAMPLE-OPID
       *
                MOVE    EXAMPLE-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -3802,6 +3904,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-GMN-COMMENT
            MOVE    ZERO                TO  SPA-GMN-BUNNUM
            MOVE    ZERO                TO  SPA-GMN-COMSEL
+           MOVE    ZERO                TO  SPA-NAI-RENNUM
+           MOVE    ZERO                TO  SPA-NAI-COMMAX
            PERFORM 31031-SJKBN-INI-SEC
       *    コメントへ
            MOVE    1                   TO  SPA-GMN-CUR
@@ -3899,6 +4003,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    SPA-GMN-TSJKBN (SPA-GMN-COMSEL)
                                        TO  RECECOM-SJKBN
+           MOVE    SPA-GMN-TRENNUM(SPA-GMN-COMSEL)
+                                       TO  RECECOM-RENNUM
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -3911,8 +4017,75 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                DISPLAY "C50 RECECOM DEL ERR:" MCP-RC 
                            ",KEY:"   RECECOM-KEY    "."
                MOVE    "0021"          TO  SPA-ERRCD
+               GO      TO      24012-COMMENT-SJKBNDELETE-EXT
            END-IF
+      *    連番の再編集
       *
+           MOVE    SPACE               TO  RECECOM-REC
+           INITIALIZE                  RECECOM-REC
+           MOVE    SPA-HOSPNUM         TO  RECECOM-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  RECECOM-PTID
+           MOVE    SPA-GMN-NNYUGAIKBN (IDX)
+                                       TO  RECECOM-NYUGAIKBN
+           MOVE    SPA-GMN-NSRYKA (IDX)
+                                       TO  RECECOM-SRYKA
+           MOVE    SPA-GMN-NSRYYM (IDX)
+                                       TO  RECECOM-SRYYM
+           MOVE    SPA-GMN-NHKNCOMBI (IDX)
+                                       TO  RECECOM-HKNCOMBI
+           MOVE    SPA-GMN-TSRYDD (IDX)
+                                       TO  RECECOM-SRYDD
+           IF      SPA-GMN-TSRYDD (IDX)    =   SPACE
+               MOVE    ZERO                TO  RECECOM-SRYDD
+           END-IF
+           MOVE    SPA-GMN-TSJKBN (SPA-GMN-COMSEL)
+                                       TO  RECECOM-SJKBN
+      *
+           MOVE    ZERO                TO  WRK-RENNUM-MAX
+      *
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 920-RECECOM-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+           END-IF
+           PERFORM UNTIL   ( FLG-RECECOM   =   1  )
+                       OR  ( SPA-ERRCD NOT =   SPACE )
+               MOVE    RECECOM-KEY         TO  RECECOM-UPD-KEY
+               ADD     1                   TO  WRK-RENNUM-MAX
+               MOVE    WRK-RENNUM-MAX      TO  RECECOM-RENNUM
+      *
+               MOVE    SMCNDATE-YMD        TO  RECECOM-UPYMD
+               MOVE    SMCNDATE-HMS        TO  RECECOM-UPHMS
+               MOVE    SPA-OPID            TO  RECECOM-OPID
+      *
+               MOVE    RECECOM-REC         TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "upd1"              TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "C50 RECECOM UPD ERR:" MCP-RC
+                           ",KEY:"   RECECOM-KEY    "."
+                   MOVE    "0020"              TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 920-RECECOM-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
        24012-COMMENT-SJKBNDELETE-EXT.
            EXIT.
@@ -4071,6 +4244,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        2103-RECECOM-HEN-SEC          SECTION.
       *
            INITIALIZE                  SPA-GMN-COMMENTLIST-G
+           MOVE    1                   TO  FLG-GMN-INIT2
       *
            MOVE    SPACE               TO  RECECOM-REC
            INITIALIZE                  RECECOM-REC
@@ -4104,11 +4278,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  RECECOM-REC
            END-IF
            PERFORM UNTIL  (FLG-RECECOM         =   1 )
-                       OR (SPA-COMMENT-MAX     >=  20  )
+                       OR (SPA-COMMENT-MAX     >=  100  )
                ADD     1                   TO  SPA-COMMENT-MAX
                MOVE    SPA-COMMENT-MAX     TO  SPA-GMN-TCOMREN
                                                     (SPA-COMMENT-MAX)
                MOVE    RECECOM-SJKBN       TO  SPA-GMN-TSJKBN
+                                                    (SPA-COMMENT-MAX)
+               MOVE    RECECOM-RENNUM      TO  SPA-GMN-TRENNUM
                                                     (SPA-COMMENT-MAX)
                MOVE    RECECOM-COMMENT     TO  SPA-GMN-TCOMMENT
                                                     (SPA-COMMENT-MAX)
@@ -4124,11 +4300,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-COMMENT-MAX     >   ZERO
                MOVE    14                  TO  SPA-GMN-CUR
                MOVE    ZERO                TO  SPA-GMN-COMSEL
+               MOVE    ZERO                TO  SPA-NAI-RENNUM
                MOVE    SPACE               TO  SPA-GMN-COMMENT
+               MOVE    ZERO                TO  SPA-NAI-COMMAX
                PERFORM 31031-SJKBN-INI-SEC
            ELSE
                MOVE    ZERO                TO  SPA-GMN-COMSEL
+               MOVE    ZERO                TO  SPA-NAI-RENNUM
                MOVE    SPACE               TO  SPA-GMN-COMMENT
+               MOVE    ZERO                TO  SPA-NAI-COMMAX
                MOVE    15                  TO  SPA-GMN-CUR
            END-IF
            .
@@ -4144,6 +4324,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-GMN-SJKBN-G
            MOVE    SPA-GMN-TSJKBN (SPA-GMN-COMSEL) TO  SPA-GMN-SJKBN
            PERFORM 4902-SJKBN-CHK-SEC
+      *    連番
+           IF      SPA-GMN-SYORI       =   3
+      *        コピー処理は連番なし
+               MOVE    ZERO                TO  SPA-NAI-RENNUM
+           ELSE
+               MOVE    SPA-GMN-TRENNUM(SPA-GMN-COMSEL)
+                                           TO  SPA-NAI-RENNUM
+           END-IF
       *
            MOVE    SPACE               TO  RECECOM-REC
            INITIALIZE                  RECECOM-REC
@@ -4165,6 +4353,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    SPA-GMN-TSJKBN (SPA-GMN-COMSEL)
                                        TO  RECECOM-SJKBN
+           MOVE    SPA-GMN-TRENNUM(SPA-GMN-COMSEL)
+                                       TO  RECECOM-RENNUM
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "tbl_rececom"       TO  MCP-TABLE
@@ -4183,6 +4373,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    RECECOM-COMMENT     TO  SPA-GMN-COMMENT
+           MOVE    ZERO                TO  SPA-NAI-COMMAX
       *
            MOVE    1                   TO  SPA-GMN-CUR
            .
@@ -4511,6 +4702,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0042"
                    MOVE    "症状詳記区分を選択して下さい。"
                                        TO  SPA-ERRMSG
+      *ver.4.6
+               WHEN    "0090"
+                   STRING  "文例は４００文字までの登録です。"
+                           "４００文字以上は削除します。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0099"
+                   STRING  "連番９９まで登録されています。"
+                           "これ以上追加はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "0020"
                    MOVE    "更新エラーです。"
                                        TO  SPA-ERRMSG
@@ -4583,10 +4788,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-C50IDMSG
                    END-STRING
+               WHEN    "0110"
+                   STRING  "詳記区分の連番を追加して登録します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0108"
                    STRING  "表示されているコメントをすべて登録します。"
                                        DELIMITED  BY  SIZE
-                           "登録済みのコメントは内容を更新します。"
+      **                   "登録済みのコメントは内容を更新します。"
+                           "登録済みのコメントは連番追加で登録します。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-C50IDMSG
                    END-STRING

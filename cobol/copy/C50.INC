@@ -40,7 +40,7 @@
                   05  C50-RECE-ROW PIC S9(9)   BINARY.
                   05  C50-RECE-ROWATTR PIC S9(9)   BINARY.
                   05  C50-ITEM        OCCURS  100 TIMES.
-                    06  C50-TRENNUM   PIC X(3).
+                    06  C50-TRECNUM   PIC X(3).
                     06  C50-TSRYYM    PIC X(6).
                     06  C50-TSRYKA    PIC X(10).
                     06  C50-TNYUGAIKBN   PIC X(2).
@@ -67,16 +67,19 @@
                 04  C50-HKNCOMBI-ITEM
                         PIC X(55)   OCCURS  30 TIMES.
               03  C50-SCROLLEDWINDOW2.
+                04  C50-HPOS    PIC S9(9)   BINARY.
+                04  C50-VPOS    PIC S9(9)   BINARY.
                 04  C50-COMMENTLIST.
                   05  C50-COMM-COUNT   PIC S9(9)   BINARY.
                   05  C50-COMM-ROW PIC S9(9)   BINARY.
                   05  C50-COMM-ROWATTR PIC S9(9)   BINARY.
-                  05  C50-ITEM        OCCURS  20 TIMES.
+                  05  C50-ITEM        OCCURS  100 TIMES.
                     06  C50-TCOMREN   PIC X(3).
                     06  C50-TSJKBN    PIC X(2).
-                    06  C50-TCOMMENT  PIC X(80).
+                    06  C50-TRENNUM   PIC X(2).
+                    06  C50-TCOMMENT  PIC X(100).
                   05  C50-COMM-SELECT
-                          PIC X       OCCURS  20 TIMES.
+                          PIC X       OCCURS  100 TIMES.
               03  C50-SJKBN-COMB.
                 04  C50-SJKBN.
                   05  C50-VALUE   PIC X(53).
@@ -87,5 +90,7 @@
                 04  C50-HPOS    PIC S9(9)   BINARY.
                 04  C50-VPOS    PIC S9(9)   BINARY.
                 04  C50-COMMENT.
-                  05  C50-VALUE   PIC X(800).
+                  05  C50-VALUE   PIC X(2400).
+              03  C50-MCNT.
+                04  C50-VALUE   PIC X(20).
 

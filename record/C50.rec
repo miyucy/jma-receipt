@@ -85,6 +85,8 @@ C50	{
 			item	varchar(55)[30];
 		};
 		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
 			COMMENTLIST	{
 				count	int;
 				row	int;
@@ -92,9 +94,10 @@ C50	{
 				item	{
 					value0	varchar(3);
 					value1	varchar(2);
-					value2	varchar(80);
-				}	[20];
-				select	bool[20];
+					value2	varchar(2);
+					value3	varchar(100);
+				}	[100];
+				select	bool[100];
 			};
 		};
 		SJKBN_COMB	{
@@ -108,8 +111,11 @@ C50	{
 			hpos	int;
 			vpos	int;
 			COMMENT	{
-				value	varchar(800);
+				value	varchar(2400);
 			};
+		};
+		MCNT	{
+			value	varchar(20);
 		};
 	};
 };

@@ -29,12 +29,12 @@
       *    処理フラグ２（１：後ろの全角空白削除）
            03  KANACHK2-SYORIKBN            PIC X(01).
       *    入力領域
-           03  KANACHK2-MAE-INPUT           PIC X(1000).
+           03  KANACHK2-MAE-INPUT           PIC X(5000).
       *    出力桁数（全角の最大桁数の指定（省略可））
            03  KANACHK2-MAX-CNT             PIC 9(04).
       *
       *    出力領域（半角空白を全角へ置換えて編集）
-           03  KANACHK2-OUT-INPUT           PIC X(1000).
+           03  KANACHK2-OUT-INPUT           PIC X(5000).
       *    文字タイプ（１：半角、２：全角）
            03  KANACHK2-SYUBETU             PIC 9(01).
       *    最大桁数

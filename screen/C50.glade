@@ -160,8 +160,8 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>BUNNUM</name>
-      <x>924</x>
-      <y>652</y>
+      <x>932</x>
+      <y>684</y>
       <width>44</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -207,9 +207,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYYM</name>
-      <x>452</x>
+      <x>420</x>
       <y>56</y>
-      <width>92</width>
+      <width>80</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -291,10 +291,10 @@
     <widget>
       <class>GtkPandaCList</class>
       <name>JYURRKLIST</name>
-      <x>792</x>
-      <y>24</y>
+      <x>852</x>
+      <y>28</y>
       <width>132</width>
-      <height>92</height>
+      <height>80</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>select_row</name>
@@ -358,8 +358,8 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>JYURRKNUM</name>
-      <x>792</x>
-      <y>120</y>
+      <x>812</x>
+      <y>84</y>
       <width>32</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -592,8 +592,8 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>COMSEL</name>
-      <x>452</x>
-      <y>332</y>
+      <x>420</x>
+      <y>256</y>
       <width>44</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -660,22 +660,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label4</name>
-      <x>840</x>
-      <y>652</y>
-      <width>80</width>
-      <height>24</height>
-      <label>Ê¸ÎãÅÐÏ¿ÈÖ¹æ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label3</name>
       <x>12</x>
       <y>604</y>
@@ -725,8 +709,8 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>SRYKA_COMB</name>
-      <x>452</x>
-      <y>88</y>
+      <x>640</x>
+      <y>56</y>
       <width>172</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -763,11 +747,43 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label10</name>
+      <x>844</x>
+      <y>8</y>
+      <width>144</width>
+      <height>20</height>
+      <label>¥¢¥Õ¥¿¡¼¥±¥¢¿ÇÎÅÆü</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label4</name>
+      <x>844</x>
+      <y>684</y>
+      <width>80</width>
+      <height>24</height>
+      <label>Ê¸ÎãÅÐÏ¿ÈÖ¹æ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>HKNCOMBI_COMB</name>
-      <x>452</x>
-      <y>120</y>
-      <width>276</width>
+      <x>420</x>
+      <y>84</y>
+      <width>264</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -805,10 +821,10 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow2</name>
-      <x>452</x>
-      <y>156</y>
-      <width>560</width>
-      <height>172</height>
+      <x>420</x>
+      <y>112</y>
+      <width>592</width>
+      <height>140</height>
       <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -817,7 +833,7 @@
       <widget>
 	<class>GtkPandaCList</class>
 	<name>COMMENTLIST</name>
-	<width>548</width>
+	<width>700</width>
 	<height>180</height>
 	<can_focus>True</can_focus>
 	<signal>
@@ -846,9 +862,9 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Tue, 13 Jun 2006 06:39:19 GMT</last_modification_time>
 	</signal>
-	<columns>3</columns>
-	<column_widths>40,58,80</column_widths>
-	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<columns>4</columns>
+	<column_widths>26,58,30,580</column_widths>
+	<selection_mode>GTK_SELECTION_BROWSE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
 
@@ -882,10 +898,23 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label18</name>
-	  <label>¥³¥á¥ó¥È</label>
+	  <label>Ï¢ÈÖ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label19</name>
+	  <label>¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¥³¥á¥ó¥È</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -894,10 +923,62 @@
     </widget>
 
     <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow3</name>
+      <x>420</x>
+      <y>316</y>
+      <width>592</width>
+      <height>360</height>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaText</class>
+	<name>COMMENT</name>
+	<width>374</width>
+	<height>268</height>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Wed, 01 Oct 2008 02:19:36 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Wed, 01 Oct 2008 02:21:33 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ
+£±
+£²
+£µ
+£´
+£µ
+£¶
+£·
+£¸
+£¹
+£±
+£²
+£³
+£´
+£µ
+£¶
+£·</text>
+	<xim_enabled>True</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
       <name>SJKBN_COMB</name>
-      <x>452</x>
-      <y>384</y>
+      <x>420</x>
+      <y>288</y>
       <width>372</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
@@ -934,12 +1015,52 @@
     </widget>
 
     <widget>
+      <class>GtkPandaCombo</class>
+      <name>NYUGAIKBN_COMB</name>
+      <x>516</x>
+      <y>56</y>
+      <width>120</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>NYUGAIKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 04 Feb 2002 01:05:09 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 04 Feb 2002 01:05:21 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>55</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
-      <x>16</x>
-      <y>64</y>
-      <width>416</width>
-      <height>520</height>
+      <x>8</x>
+      <y>66</y>
+      <width>400</width>
+      <height>530</height>
       <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -976,7 +1097,7 @@
 	  <last_modification_time>Wed, 06 Feb 2002 04:56:31 GMT</last_modification_time>
 	</signal>
 	<columns>6</columns>
-	<column_widths>27,55,58,30,130,45</column_widths>
+	<column_widths>27,55,58,30,127,35</column_widths>
 	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -1050,7 +1171,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label13</name>
-	  <label>¿ÇÎÅÆü</label>
+	  <label>¿ÇÆü</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1079,102 +1200,18 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label10</name>
-      <x>788</x>
-      <y>4</y>
-      <width>144</width>
-      <height>20</height>
-      <label>¥¢¥Õ¥¿¡¼¥±¥¢¿ÇÎÅÆü</label>
+      <name>MCNT</name>
+      <x>740</x>
+      <y>684</y>
+      <width>94</width>
+      <height>24</height>
+      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>NYUGAIKBN_COMB</name>
-      <x>608</x>
-      <y>56</y>
-      <width>120</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>NYUGAIKBN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 04 Feb 2002 01:05:09 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 04 Feb 2002 01:05:21 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>55</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkScrolledWindow</class>
-      <name>scrolledwindow3</name>
-      <x>452</x>
-      <y>412</y>
-      <width>384</width>
-      <height>268</height>
-      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-      <widget>
-	<class>GtkPandaText</class>
-	<name>COMMENT</name>
-	<width>374</width>
-	<height>268</height>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Wed, 01 Oct 2008 02:19:36 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Wed, 01 Oct 2008 02:21:33 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ
-£±
-£²
-£µ
-£´
-£µ
-£¶
-£·
-£¸</text>
-	<xim_enabled>True</xim_enabled>
-      </widget>
     </widget>
   </widget>
 </widget>

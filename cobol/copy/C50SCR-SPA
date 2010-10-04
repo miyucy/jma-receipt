@@ -32,7 +32,7 @@
       *
                05  SPA-GMN-SRYYM          PIC X(06).
       *
-               05  SPA-GMN-COMMENT        PIC X(800).
+               05  SPA-GMN-COMMENT        PIC X(2400).
       *
                05  SPA-GMN-NYUGAIKBN-G.
                    07  SPA-GMN-NYUGAIKBN      PIC X(01).
@@ -80,7 +80,7 @@
       *
                05  SPA-GMN-RECECOMLIST-G.
                    07  SPA-GMN-RECECOM-LIST      OCCURS  100.
-                       09  SPA-GMN-TRENNUM       PIC 9(03).
+                       09  SPA-GMN-TRECNUM       PIC 9(03).
                        09  SPA-GMN-TSRYYM        PIC X(06).
                        09  SPA-GMN-TSRYKA        PIC X(06).
                        09  SPA-GMN-TNYUGAIKBN    PIC X(02).
@@ -106,10 +106,11 @@
                    07  SPA-GMN-COPYTUKI       PIC 9(02).
       *
                05  SPA-GMN-COMMENTLIST-G.
-                   07  SPA-GMN-COMMENT-LIST      OCCURS  20.
+                   07  SPA-GMN-COMMENT-LIST      OCCURS  100.
                        09  SPA-GMN-TCOMREN       PIC 9(03).
                        09  SPA-GMN-TSJKBN        PIC X(02).
-                       09  SPA-GMN-TCOMMENT      PIC X(80).
+                       09  SPA-GMN-TRENNUM       PIC 9(02).
+                       09  SPA-GMN-TCOMMENT      PIC X(100).
                    07  SPA-COMMENT-MAX           PIC 9(03).
                05  SPA-GMN-COMSEL                PIC 9(03).
       *        症状詳記区分
@@ -121,9 +122,13 @@
                    07  SPA-GMN-SJKBN-LIST      OCCURS  20.
                        09  SPA-GMN-SJKBNLST    PIC X(53).
                    07  SPA-SJKBN-MAX           PIC 9(03).
+      *        連番
+               05  SPA-NAI-RENNUM              PIC 9(02).
       *
            03  SPA-NAI-AREA.
                05  SPA-NAI-SRYYM          PIC X(06).
+      *
+               05  SPA-NAI-COMMAX         PIC 9(05).
       *
       *    文例入力画面用
            03  SPA-C501-AREA.
@@ -131,7 +136,7 @@
                05  SPA-C501-BUNNREI-G.
                    07  SPA-C501-BUNNREI-LIST      OCCURS  100.
                        09  SPA-C501-TRENNUM       PIC 9(03).
-                       09  SPA-C501-TCOMMENT      PIC X(100).
+                       09  SPA-C501-TCOMMENT      PIC X(400).
                    07  SPA-C501-BUNREIMAX         PIC 9(04).
                05  SPA-C501-SELNUM       PIC 9(03).
                05  SPA-C501-TBL          PIC 9(03).

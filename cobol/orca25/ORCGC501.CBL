@@ -84,7 +84,7 @@
       *
            03  WRK-C50IDMSG        PIC X(80).
       *
-           03  WRK-COMMENT         PIC X(1000).
+           03  WRK-COMMENT         PIC X(2400).
       *    コラムリスト位置
            03  WRK-C501-BUNREI-ROW     PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
@@ -126,7 +126,7 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-           COPY    "CPORCXKANACONV.INC".
+           COPY    "CPORCXKANACONV2.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -590,8 +590,8 @@
                    END-STRING
       *
                   INITIALIZE                  ORCXKANACONVAREA
-                  MOVE    800                 TO  KANACONV-LEN
-                  MOVE    1000                TO  KANACONV-STLEN
+                  MOVE    2400                TO  KANACONV-LEN
+                  MOVE    5000                TO  KANACONV-STLEN
                   MOVE    0                   TO  KANACONV-CONV-FLAG
                   MOVE    0                   TO  KANACONV-CHAR-TYPE
                   MOVE    WRK-COMMENT         TO  KANACONV-INDATA

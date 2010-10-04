@@ -7,15 +7,26 @@ tbl_rececom {
 	HKNCOMBI			number(4);
 	SRYDD				char(2);
 	SJKBN				char(2);
-	COMMENT        		varchar(1600);
+	RENNUM				number(2);
+	COMMENT        			varchar(2400);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#-----> 主キー更新用項目
+	UPHOSPNUM			number(2,0),virtual;
+	UPPTID 				number(10),virtual;
+	UPNYUGAIKBN			char(1),virtual;
+	UPSRYKA				char(2),virtual;
+	UPSRYYM				char(6),virtual;
+	UPHKNCOMBI			number(4),virtual;
+	UPSRYDD				char(2),virtual;
+	UPSJKBN				char(2),virtual;
+	UPRENNUM			number(2),virtual;
 };
 primary	{
-	HOSPNUM,PTID,NYUGAIKBN,SRYKA,SRYYM,HKNCOMBI,SRYDD,SJKBN;
+	HOSPNUM,PTID,NYUGAIKBN,SRYKA,SRYYM,HKNCOMBI,SRYDD,SJKBN,RENNUM;
 };
 
 path	key		{ 	
@@ -31,6 +42,7 @@ path	key		{
 			AND     HKNCOMBI  =   :HKNCOMBI
 			AND     SRYDD     =   :SRYDD
 			AND     SJKBN     =   :SJKBN
+			AND     RENNUM    =   :RENNUM
 		;
 	};
 };
@@ -121,7 +133,8 @@ path	key5		{
                                           SRYKA,
                                           HKNCOMBI,
                                           SRYDD,
-                                          SJKBN
+                                          SJKBN,
+                                          RENNUM
 		;
 	};
 };
@@ -138,7 +151,8 @@ path	key6		{
 			AND     SRYYM     =   :SRYYM
 			AND     HKNCOMBI  =   :HKNCOMBI
                         AND     SRYDD     =   :SRYDD
-			ORDER   BY        SJKBN
+			ORDER   BY        SJKBN,
+                                          RENNUM
 		;
 	};
 };
@@ -168,7 +182,7 @@ path	key8		{
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SJKBN     <   '07'
-			ORDER BY SJKBN,HKNCOMBI,SRYDD
+			ORDER BY SJKBN,HKNCOMBI,SRYDD,SJKBN
 		;
 	};
 };
@@ -261,6 +275,74 @@ path	key13		{
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			ORDER BY HKNCOMBI,SRYDD,SJKBN
+		;
+	};
+};
+
+path	key14		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key14_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND     NYUGAIKBN =   :NYUGAIKBN
+			AND     SRYKA     =   :SRYKA
+			AND     SRYYM     =   :SRYYM
+			AND     HKNCOMBI  =   :HKNCOMBI
+                        AND     SRYDD     =   :SRYDD
+                        AND     SJKBN     =   :SJKBN
+			ORDER   BY        RENNUM  DESC
+		;
+	};
+};
+
+path	key15		{ 	
+	DBSELECT	{
+		DECLARE tbl_rececom_key15_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rececom
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND     NYUGAIKBN =   :NYUGAIKBN
+			AND     SRYKA     =   :SRYKA
+			AND     SRYYM     =   :SRYYM
+			AND     HKNCOMBI  =   :HKNCOMBI
+                        AND     SRYDD     =   :SRYDD
+                        AND     SJKBN     =   :SJKBN
+			ORDER   BY        RENNUM
+		;
+	};
+};
+
+path	upd1	{ 	
+	DBUPDATE	{
+		UPDATE	tbl_rececom 
+				SET	
+                   HOSPNUM             = :HOSPNUM,
+                   PTID                = :PTID,
+		   NYUGAIKBN           = :NYUGAIKBN,
+                   SRYKA               = :SRYKA,
+                   SRYYM               = :SRYYM,
+                   HKNCOMBI            = :HKNCOMBI,
+                   SRYDD               = :SRYDD,
+                   SJKBN               = :SJKBN,
+                   RENNUM              = :RENNUM,
+                   COMMENT             = :COMMENT,
+                   TERMID              = :TERMID,
+                   OPID                = :OPID,
+                   CREYMD              = :CREYMD,
+                   UPYMD               = :UPYMD,
+                   UPHMS               = :UPHMS
+               WHERE   HOSPNUM       =   :UPHOSPNUM
+                 AND   PTID          =   :UPPTID
+ 	  	 AND   NYUGAIKBN     =   :UPNYUGAIKBN
+                 AND   SRYKA         =   :UPSRYKA 
+                 AND   SRYYM         =   :UPSRYYM
+                 AND   HKNCOMBI      =   :UPHKNCOMBI
+                 AND   SRYDD         =   :UPSRYDD
+                 AND   SJKBN         =   :UPSJKBN
+                 AND   RENNUM        =   :UPRENNUM
 		;
 	};
 };
