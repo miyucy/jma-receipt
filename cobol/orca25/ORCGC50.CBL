@@ -1737,14 +1737,14 @@
       *
            MOVE    SPA-GMN-JYURRKNUM  TO  C50-JYURRKNUM
       *!!
-           IF      SPA-NAI-COMMAX     >   ZERO
-               MOVE    SPA-NAI-COMMAX     TO  WRK-ZZZZ
-               STRING  "("
-                       WRK-ZZZZ
-                       ")"
-                                          INTO  C50-MCNT
-               END-STRING
-           END-IF
+      *    IF      SPA-NAI-COMMAX     >   ZERO
+      *        MOVE    SPA-NAI-COMMAX     TO  WRK-ZZZZ
+      *        STRING  "("
+      *                WRK-ZZZZ
+      *                "/2400)"
+      *                                   INTO  C50-MCNT
+      *        END-STRING
+      **** END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .

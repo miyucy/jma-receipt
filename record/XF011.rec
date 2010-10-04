@@ -12,7 +12,7 @@ XF011	{
 				rowattr	int;
 				item	{
 					value0	varchar(3);
-					value1	varchar(100);
+					value1	varchar(400);
 				}	[200];
 				select	bool[200];
 			};

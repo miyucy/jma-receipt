@@ -589,15 +589,15 @@
                            INTO                WRK-COMMENT
                    END-STRING
       *
-                  INITIALIZE                  ORCXKANACONVAREA
-                  MOVE    2400                TO  KANACONV-LEN
-                  MOVE    5000                TO  KANACONV-STLEN
-                  MOVE    0                   TO  KANACONV-CONV-FLAG
-                  MOVE    0                   TO  KANACONV-CHAR-TYPE
-                  MOVE    WRK-COMMENT         TO  KANACONV-INDATA
-                  CALL    "kanaconv"          USING ORCXKANACONVAREA
-                  MOVE    KANACONV-OUTDATA
-                                              TO  SPA-GMN-COMMENT
+                   INITIALIZE                  ORCXKANACONVAREA
+                   MOVE    2400                TO  KANACONV-LEN
+                   MOVE    5000                TO  KANACONV-STLEN
+                   MOVE    0                   TO  KANACONV-CONV-FLAG
+                   MOVE    0                   TO  KANACONV-CHAR-TYPE
+                   MOVE    WRK-COMMENT         TO  KANACONV-INDATA
+                   CALL    "kanaconv"          USING ORCXKANACONVAREA
+                   MOVE    KANACONV-OUTDATA    TO  SPA-GMN-COMMENT
+                   MOVE    ZERO                TO  SPA-NAI-COMMAX
                ELSE
       *            コメント置換え
                    MOVE    EXAMPLE-COMMENT     TO  SPA-GMN-COMMENT
