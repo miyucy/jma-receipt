@@ -8,7 +8,7 @@ tbl_rececom {
 	SRYDD				char(2);
 	SJKBN				char(2);
 	RENNUM				number(2);
-	COMMENT        			varchar(2400);
+	COMMENT        			varchar(4800);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
