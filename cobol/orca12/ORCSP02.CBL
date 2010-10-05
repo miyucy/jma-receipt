@@ -3053,7 +3053,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDZ
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-HKNCOMBI-MAX
-               IF      SPA-NAI-THYOJIKBN (IDX) =   SPACE
+               IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
+                   CONTINUE
+               ELSE
                    ADD     1                   TO  IDZ
                    MOVE    SPA-GMN-THKNCOMBINUM(IDX)
                                            TO   P02-P020-HKNCOBNUM (IDZ)
@@ -3063,6 +3065,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  P02-P020-TEKSTYMD (IDZ)
                    MOVE    SPA-GMN-TTEKEDYMD (IDX)
                                            TO  P02-P020-TEKEDYMD (IDZ)
+      *            非表示
+                   EVALUATE    SPA-NAI-THYOJIKBN (IDX)
+                   WHEN    "2"
+                       MOVE    SPACE       TO  P02-P020-HKNCOBMEI (IDZ)
+                       STRING  "【入非表】" 
+                               SPA-GMN-THKNCOMBIMEI(IDX)
+                                               DELIMITED  BY  SIZE
+                                         INTO  P02-P020-HKNCOBMEI (IDZ)
+                       END-STRING
+                   WHEN    "3"
+                       MOVE    SPACE       TO  P02-P020-HKNCOBMEI (IDZ)
+                       STRING  "【外非表】" 
+                               SPA-GMN-THKNCOMBIMEI(IDX)
+                                               DELIMITED  BY  SIZE
+                                         INTO  P02-P020-HKNCOBMEI (IDZ)
+                       END-STRING
+                   END-EVALUATE
       *
                    IF      SPA-GMN-THKNCOMBINUM (IDX)
                                            =   SPA-NAI20-HKNKUMI

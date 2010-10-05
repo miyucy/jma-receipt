@@ -1854,6 +1854,9 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    U02-SRYNAIYO        TO  SPA-GMN-SRYNAIYOCD-G
            MOVE    U02-KARUTE          TO  SPA-GMN-KARUTE-G
            MOVE    U02-SYOHO           TO  SPA-GMN-SYOHO-G
+           IF      U02-HKNCOMBI    NOT =   SPA-GMN-COMBINUM
+               MOVE    ZERO            TO  SPA-NAI-KEIFLG3
+           END-IF
            MOVE    U02-HKNCOMBI        TO  SPA-GMN-COMBINUM
            MOVE    U02-USERPG          TO  SPA-GMN-USERPG-G
       *
@@ -2740,6 +2743,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            IF      WRK-SELNUM      NOT =   ZERO
                MOVE    WRK-SELNUM      TO  SPA-GMN-COMBINUM
+               MOVE    ZERO            TO  SPA-NAI-KEIFLG3
            END-IF
       *
            IF      SPA-GMN-COMBINUM    NOT =   ZERO
@@ -2825,14 +2829,14 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                        TO  SPA-GMN-SRYNAIYOCD-G
            PERFORM 41041-DRCDLIST-HEN-SEC
       *    前回来院日
-           MOVE    ZERO                TO  FLG-NYUIN
+           MOVE    SPACE               TO  SPA-NAI-NYUINKBN
            IF      SPA-GMN-TRRKYMD (IDX)   NOT =   SPACE
                IF      SPA-GMN-TNYUKBN (IDX)   =   "1"
                    STRING  "病棟："
                            SPA-GMN-TRRKYMD (IDX)   DELIMITED  BY  SIZE
                                            INTO    SPA-GMN-LASTYMD
                    END-STRING
-                   MOVE    1                   TO  FLG-NYUIN
+                   MOVE    "1"                 TO  SPA-NAI-NYUINKBN
                ELSE
                    STRING  "前回："
                            SPA-GMN-TRRKYMD (IDX)   DELIMITED  BY  SIZE
@@ -2885,9 +2889,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    PERFORM 410115-KAKUHYOJI-SEC
                    IF      SPA-GMN-SELNUM          =   ZERO
                        PERFORM 410116-JYURRKSET-SEC
-                   ELSE
-      *                保険組合せ非表示判定編集処理
-                       PERFORM 410117-HYOJIKBNHEN-SEC
                    END-IF
       *            患者メモ表示処理
                    PERFORM 410119-PTMEMOINF-SEC
@@ -2930,25 +2931,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
        41041-SELNUM-SYORI-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    保険組合せ非表示判定編集処理
-      *****************************************************************
-       410117-HYOJIKBNHEN-SEC           SECTION.
-      *
-           PERFORM VARYING    IDX-C    FROM    1   BY  1
-                   UNTIL      IDX-C    >   SPA-COMBI-MAX
-               MOVE    SPACE               TO  SPA-NAI-TDELKBN (IDX-C)
-               IF    ((SPA-NAI-THYOJIKBN (IDX-C)   =   "2"  )  AND
-                      (FLG-NYUIN                   =   1    ))
-               OR    ((SPA-NAI-THYOJIKBN (IDX-C)   =   "3"  )  AND
-                      (FLG-NYUIN                   =   ZERO ))
-                   MOVE    "1"                 TO  SPA-NAI-TDELKBN
-                                                               (IDX-C)
-               END-IF
-           END-PERFORM
-           .
-       410117-HYOJIKBNHEN-EXT.
-           EXIT.
       *****************************************************************
       *    ドクター一覧編集処理
       *****************************************************************
@@ -3488,7 +3470,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                        SPA-AREA
       *
       *    入院中は病棟を表示
-           MOVE    ZERO                TO  FLG-NYUIN
+           MOVE    SPACE               TO  SPA-NAI-NYUINKBN
            IF      ORCSLASTYMD-BRMNUM  =   SPACE
                IF      ORCSLASTYMD-LASTYMD NOT =   SPACE
                    STRING  "前回："
@@ -3501,10 +3483,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                        ORCSLASTYMD-BRMNUM  DELIMITED  BY  SIZE
                                        INTO    SPA-GMN-LASTYMD
                END-STRING
-               MOVE    1                   TO  FLG-NYUIN
+               MOVE    "1"                 TO  SPA-NAI-NYUINKBN
            END-IF
-      *    保険組合せ非表示判定
-           PERFORM 410117-HYOJIKBNHEN-SEC
       *
            INITIALIZE                  WRK-JYURRK-AREA
            MOVE    ORCSLASTYMD-SRYKA   TO  WRK-JRK-SRYKA
@@ -3592,8 +3572,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                PERFORM VARYING    IDX-C    FROM    1   BY  1
                        UNTIL      IDX-C    >   SPA-COMBI-MAX
       *            非表示判定
-                   IF     (SPA-NAI-TDELKBN (IDX-C) =   SPACE  )   AND
-                          (WRK-JRK-HKNCOMBI    =   SPA-GMN-HKNCOMBINUM
+                   IF     (WRK-JRK-HKNCOMBI    =   SPA-GMN-HKNCOMBINUM
                                                           (IDX-C) )
                        MOVE    WRK-JRK-HKNCOMBI    TO  SPA-GMN-COMBINUM
                        MOVE    SPA-COMBI-MAX       TO  IDX-C
@@ -3646,7 +3625,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    UNTIL       IDX-C   >   SPA-COMBI-MAX
       *      自費は対象外
              IF     (SPA-NAI-HKNNUM (IDX-C)(1:2)   =   "98" )
-               OR   (SPA-NAI-TDELKBN(IDX-C)        =   "1"  )
                CONTINUE
              ELSE
                MOVE    ZERO                TO  WRK-CNT-HKN2
@@ -3665,9 +3643,22 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                IF      SPA-GMN-KOH4-TANSEIDONAME(IDX-C)  NOT =   SPACE
                    ADD     1                   TO  WRK-CNT-HKN2
                END-IF
+      *
                IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
                    MOVE    IDX-C               TO  WRK-IDXH
                    MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+               END-IF
+      *        入院中は入院非表示対象外
+               IF     (SPA-NAI-THYOJIKBN (IDX-C)   =   "2" )
+                 AND  (SPA-NAI-NYUINKBN            =   "1" )
+                   MOVE    ZERO                TO  WRK-IDXH
+                   MOVE    ZERO                TO  WRK-CNT-HKN
+               END-IF
+      *        入院中以外は外来非表示対象外
+               IF     (SPA-NAI-THYOJIKBN (IDX-C)   =   "3" )
+                 AND  (SPA-NAI-NYUINKBN            =   SPACE)
+                   MOVE    ZERO                TO  WRK-IDXH
+                   MOVE    ZERO                TO  WRK-CNT-HKN
                END-IF
       *        労災・自賠責があれば対象とする
                IF      SPA-NAI-HKNNUM (IDX-C)  =   "971"
@@ -4494,6 +4485,16 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    END-IF
                END-IF
            END-IF
+      *    保険組合せ非表示チェック
+           IF     (FLG-TOUROKU         =   1     )  AND
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-PTNUM   NOT =   SPACE )
+             AND  (SPA-GMN-COMBINUM
+                                   NOT =   ZERO  )
+               IF      SPA-NAI-KEIFLG3     =   ZERO
+                   PERFORM 41093-HKNCOMBIHIHYOJI-SEC
+               END-IF
+           END-IF
       *    受付重複チェック
            IF     (FLG-TOUROKU         =   1     )  AND
                   (SPA-ERRCD           =   SPACE )  AND
@@ -4513,6 +4514,32 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
            .
        4109-TOUROKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ非表示チェック処理
+      *****************************************************************
+       41093-HKNCOMBIHIHYOJI-SEC              SECTION.
+      *
+           PERFORM VARYING     IDX-C   FROM    1   BY  1
+                   UNTIL       IDX-C   >   SPA-COMBI-MAX
+               IF     (SPA-GMN-COMBINUM    =   SPA-GMN-HKNCOMBINUM
+                                                          (IDX-C) )
+      *            入院中
+                   IF      (SPA-NAI-THYOJIKBN (IDX-C)  =   "2"  )
+                      AND  (SPA-NAI-NYUINKBN           =   "1"  )
+                       MOVE    "K010"              TO  SPA-ERRCD
+                       MOVE    9                   TO  SPA-GMN-CUR
+                   END-IF
+                   IF      (SPA-NAI-THYOJIKBN (IDX-C)  =   "3"  )
+                      AND  (SPA-NAI-NYUINKBN           =   SPACE)
+                       MOVE    "K011"              TO  SPA-ERRCD
+                       MOVE    9                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    1                   TO  SPA-NAI-KEIFLG3
+           .
+       41093-HKNCOMBIHIHYOJI-EXT.
            EXIT.
       *****************************************************************
       *    受付重複チェック処理
@@ -6003,7 +6030,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       SPA-COMBI-MAX
-             IF      SPA-NAI-TDELKBN(IDX)  =   SPACE
                ADD     1                   TO  IDY
                MOVE    SPA-GMN-HKNCOMBINUM      (IDX)
                                                 TO  U02-HCNUM (IDY)
@@ -6026,10 +6052,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "F"          TO  U02-HKNCOMBI-SELECT
                                                             (IDY)
                END-IF
-              END-IF
            END-PERFORM
-      *    MOVE    SPA-COMBI-MAX        TO  U02-HKNCOMBI-COUNT
-           MOVE    IDY                  TO  U02-HKNCOMBI-COUNT
+           MOVE    SPA-COMBI-MAX        TO  U02-HKNCOMBI-COUNT
       *
            MOVE    ZERO                TO  U02-MIKAKUNINN-COUNT
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -6463,6 +6487,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "警告！！"
                            "前回の保険組合せは削除になっています。"
                            "保険組合せを確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K010"
+                   STRING  "警告！！"
+                           "保険組合せが入院非表示となっています。"
+                           "入院では使用できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K011"
+                   STRING  "警告！！"
+                           "保険組合せが外来非表示となっています。"
+                           "外来では使用できません。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING

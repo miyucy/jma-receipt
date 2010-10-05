@@ -85,7 +85,6 @@
                            11  SPA-NAI-COB-HKNID          PIC 9(10).
                            11  SPA-NAI-TEKSTYMD           PIC X(08).
                            11  SPA-NAI-TEKEDYMD           PIC X(08).
-                           11  SPA-NAI-TDELKBN            PIC X(01).
                            11  SPA-NAI-THYOJIKBN          PIC X(01).
       *
                        09  SPA-COMBI-MAX                   PIC 9(04).
@@ -189,6 +188,7 @@
                    07  SPA-NAI-BIRTHDAY                PIC 9(08).
                    07  SPA-NAI-SEX                     PIC X(01).
                    07  SPA-NAI-NENREI                  PIC 9(03).
+                   07  SPA-NAI-NYUINKBN                PIC X(01).
       *
                    07  SPA-NAI-UKEID                   PIC 9(05).
                    07  SPA-NAI-KYYKTIME                PIC X(04).
@@ -198,6 +198,7 @@
       *            ·Ù¹ð
                    07  SPA-NAI-KEIFLG                 PIC 9(01).
                    07  SPA-NAI-KEIFLG2                PIC 9(01).
+                   07  SPA-NAI-KEIFLG3                PIC 9(01).
       *Á°²óÊÝ¸±ÁÈ¹ç¤»È½ÄêÍÑ
                    07  SPA-HKNCHK-FLG                 PIC 9(01).
                    07  SPA-HKNCHK-CHK                 PIC 9(01).
