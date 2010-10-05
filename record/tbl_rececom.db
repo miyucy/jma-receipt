@@ -167,7 +167,7 @@ path	key7		{
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SJKBN     =   '99'
-			ORDER BY HKNCOMBI,SRYDD
+			ORDER BY HKNCOMBI,SRYDD,RENNUM
 		;
 	};
 };
@@ -182,7 +182,7 @@ path	key8		{
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SJKBN     <   '07'
-			ORDER BY SJKBN,HKNCOMBI,SRYDD,SJKBN
+			ORDER BY SJKBN,HKNCOMBI,SRYDD,SJKBN,RENNUM
 		;
 	};
 };
@@ -198,7 +198,7 @@ path	key9		{
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SJKBN     >=  '07'
 			AND     SJKBN     <=  '09'
-			ORDER BY HKNCOMBI,SJKBN,SRYDD
+			ORDER BY HKNCOMBI,SJKBN,SRYDD,RENNUM
 		;
 	};
 };
@@ -213,7 +213,7 @@ path	key10		{
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
-			ORDER BY HKNCOMBI,SJKBN
+			ORDER BY HKNCOMBI,SJKBN,RENNUM
 		;
 	};
 };
@@ -229,7 +229,7 @@ path	key11		{
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SRYDD     =   :SRYDD
-			ORDER BY HKNCOMBI,SJKBN
+			ORDER BY HKNCOMBI,SJKBN,RENNUM
 		;
 	};
 };
@@ -260,7 +260,7 @@ path	key12		{
 			AND     NYUGAIKBN =   :NYUGAIKBN
 			AND     SJKBN     >=  '50'
 			AND     SJKBN     <=  '52'
-			ORDER BY HKNCOMBI,SJKBN,SRYDD
+			ORDER BY HKNCOMBI,SJKBN,SRYDD,RENNUM
 		;
 	};
 };
@@ -274,7 +274,7 @@ path	key13		{
 			AND     PTID      =   :PTID
 			AND     SRYYM     =   :SRYYM
 			AND     NYUGAIKBN =   :NYUGAIKBN
-			ORDER BY HKNCOMBI,SRYDD,SJKBN
+			ORDER BY HKNCOMBI,SRYDD,SJKBN,RENNUM
 		;
 	};
 };

@@ -117,6 +117,7 @@
       *                                     病名なし
       *                                     単位コードなし
       *                                     生保の受給者番号なし
+      *  04.06.02    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -326,9 +327,8 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
-           03  IDXP                PIC 9(02).
-           03  IDY1                PIC 9(03).
-           03  IDY2                PIC 9(03).
+           03  IDY1                PIC 9(04).
+           03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(03).
            03  IDY4                PIC 9(03).                           
            03  IDY5                PIC 9(03).
@@ -631,9 +631,9 @@
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
-                                               OCCURS  16.
-           03  WRK-COMM                        PIC X(800).
-           03  WRK-COMM1                       PIC X(800).
+                                               OCCURS  48.
+           03  WRK-COMM                        PIC X(2400).
+           03  WRK-COMM1                       PIC X(2400).
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
@@ -1052,6 +1052,10 @@
                                    PIC 9(02)   VALUE   50.
            03  WRK-CONS-KOHLIST-MAX
                                    PIC 9(04)   VALUE   2000.
+           03  WRK-CONS-RECECOM-MAX
+                                   PIC 9(02)   VALUE   48.
+           03  WRK-CONS-RECECOM-LENGTH-MAX
+                                   PIC 9(04)   VALUE   2400.
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -7056,15 +7060,17 @@
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       800
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
-                               COMPUTE IDY1     =   IDX     -   1
-                               COMPUTE IDY2     =   IDX     +   1   
+                               COMPUTE IDY1    =   IDX     -   1
+                               COMPUTE IDY2    =   IDX     +   1   
                                MOVE    WRK-COMM (1:IDY1)
-                                                TO  WRK-COMMENT-G
+                                               TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
-                                                TO  WRK-COMM1
-                               MOVE    800      TO  IDX
+                                               TO  WRK-COMM1
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                               TO  IDX
                            END-IF
                        END-PERFORM                                                                                  
                    ELSE
@@ -7114,7 +7120,7 @@
                      END-IF            
       *                 
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       16
+                             UNTIL   IDW >       WRK-CONS-RECECOM-MAX
                            OR      WRK-COMMENT (IDW)   =   SPACE
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE

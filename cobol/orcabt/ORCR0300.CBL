@@ -352,7 +352,9 @@
       *                                     対応
       *  04.05.17    NACL-藤原    10/08/11  「平成２２年７月中国地方豪雨」対応
       *                                     広島県・山口県
-      *                                     ２０１０年７月〜２０１０年１２月対象 
+      *                                     ２０１０年７月〜２０１０年１２月対象
+      *
+      *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -582,8 +584,8 @@ grpsys     COPY    "COMMON-SPA".
            03  IDX                     PIC 9(04). 
            03  IDY                     PIC 9(03). 
            03  IDZ                     PIC 9(03).
-           03  IDY1                    PIC 9(03).
-           03  IDY2                    PIC 9(03).
+           03  IDY1                    PIC 9(04).
+           03  IDY2                    PIC 9(04).
            03  IDY3                    PIC 9(03).
            03  IDXX                    PIC 9(03).
            03  IDXY                    PIC 9(03).
@@ -776,12 +778,12 @@ grpsys     COPY    "COMMON-SPA".
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
-                                               OCCURS  16.
+                                               OCCURS  48.
            03  WRK-COMMENT-R               REDEFINES   WRK-COMMENT-G.
                05  WRK-COMMENT1                PIC X(100)
-                                               OCCURS  8.
-           03  WRK-COMM                        PIC X(800).
-           03  WRK-COMM1                       PIC X(800).
+                                               OCCURS  24.
+           03  WRK-COMM                        PIC X(2400).
+           03  WRK-COMM1                       PIC X(2400).
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
@@ -1480,6 +1482,12 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200704   PIC 9(06)   VALUE   200704.
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.
+      *    レセプトコメント
+           03  WRK-CONS-RECECOM-MAX
+                                   PIC 9(02)   VALUE   48.
+      *    レセプトコメント長さ
+           03  WRK-CONS-RECECOM-LENGTH-MAX
+                                   PIC 9(04)   VALUE   2400.
       *
       *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -1826,10 +1834,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                INITIALIZE                  SYS-200501-REC
                MOVE    WRK-CONS-JYOKEN-TENSU
                                        TO  SYS-200501-NI-JYOKEN(1)
-           END-IF
-           IF      SYS-200501-KOUIKIRECEKBN
-                                       =   SPACE
-               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
            END-IF
            IF      SYS-200501-KOUIKIRECEKBN
                                        =   SPACE
@@ -6745,15 +6749,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       800
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
-                               COMPUTE IDY1     =   IDX     -   1
-                               COMPUTE IDY2     =   IDX     +   1   
+                               COMPUTE IDY1    =   IDX     -   1
+                               COMPUTE IDY2    =   IDX     +   1   
                                MOVE    WRK-COMM (1:IDY1)
-                                                TO  WRK-COMMENT-G
+                                               TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
-                                                TO  WRK-COMM1
-                               MOVE    800      TO  IDX
+                                               TO  WRK-COMM1
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                               TO  IDX
                            END-IF
                        END-PERFORM
                    ELSE
@@ -6763,7 +6769,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                                       
                    IF      WRK-COMMENT-G       NOT =   SPACE
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       16
+                             UNTIL   IDW >       WRK-CONS-RECECOM-MAX
                              OR      WRK-COMMENT(IDW)  =   SPACE
       *
                        ADD     1                   TO  WRK-COM-RENNUM
@@ -6818,7 +6824,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       800
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
                                COMPUTE IDY1     =   IDX     -   1
                                COMPUTE IDY2     =   IDX     +   1   
@@ -6826,7 +6833,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
                                                 TO  WRK-COMM1
-                               MOVE    800      TO  IDX
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                                TO  IDX
                            END-IF
                        END-PERFORM                                                                                  
                    ELSE
@@ -6836,7 +6844,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                                       
                    IF      WRK-COMMENT-G       NOT =   SPACE
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       8
+                             UNTIL   IDW >       24
                              OR      WRK-COMMENT1(IDW)   =   SPACE
       *
                        ADD     1                   TO  WRK-COM-RENNUM
@@ -6873,7 +6881,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    全角スペースのみのレコードは記載しない
            MOVE    ZERO                TO  WRK-SJ-CHK
            PERFORM VARYING IDX FROM    1   BY  2
-                   UNTIL   IDX >       800
+                   UNTIL   IDX >       WRK-CONS-RECECOM-LENGTH-MAX
                    OR      WRK-COMMENT-G(IDX:2)    =   SPACE
                    OR      WRK-SJ-CHK              =   1
                IF      WRK-COMMENT-G(IDX:2)    NOT =   "　"

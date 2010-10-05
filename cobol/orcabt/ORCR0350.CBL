@@ -308,6 +308,8 @@
       *  04.05.21    NACL-藤原    10/08/11  「平成２２年７月中国地方豪雨」対応
       *                                     広島県・山口県
       *                                     ２０１０年７月〜２０１０年１２月対象 
+      *
+      *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -524,11 +526,11 @@
        01  INDEX-AREA.
            03  IDV                     PIC 9(03).
            03  IDW                     PIC 9(03).
-           03  IDX                     PIC 9(03). 
+           03  IDX                     PIC 9(04). 
            03  IDY                     PIC 9(03). 
            03  IDZ                     PIC 9(03).
-           03  IDY1                    PIC 9(03).
-           03  IDY2                    PIC 9(03).
+           03  IDY1                    PIC 9(04).
+           03  IDY2                    PIC 9(04).
            03  IDY3                    PIC 9(03).
            03  IDXX                    PIC 9(03).
            03  IDXY                    PIC 9(03).
@@ -738,12 +740,12 @@
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
-                                               OCCURS  16.
+                                               OCCURS  48.
            03  WRK-COMMENT-R               REDEFINES   WRK-COMMENT-G.
                05  WRK-COMMENT1                PIC X(100)
-                                               OCCURS  8.
-           03  WRK-COMM                        PIC X(800).
-           03  WRK-COMM1                       PIC X(800).
+                                               OCCURS  24.
+           03  WRK-COMM                        PIC X(2400).
+           03  WRK-COMM1                       PIC X(2400).
            03  WRK-COL                         PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
@@ -1403,9 +1405,15 @@
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
            03  WRK-CONS-SRYYM-200704   PIC 9(06)   VALUE   200704.
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.
+      *    レセプトコメント
+           03  WRK-CONS-RECECOM-MAX
+                                   PIC 9(02)   VALUE   48.
+      *    レセプトコメント長さ
+           03  WRK-CONS-RECECOM-LENGTH-MAX
+                                   PIC 9(04)   VALUE   2400.
       *
       *    改行コード
-       01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
+       01  WRK-CONS-RETURN          PIC X(01)  VALUE   X"0A".
       *
       *    保険組み合わせ退避ワーク
        01  THKNCOMBI-AREA.
@@ -7306,15 +7314,17 @@
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       800
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
-                               COMPUTE IDY1     =   IDX     -   1
-                               COMPUTE IDY2     =   IDX     +   1   
+                               COMPUTE IDY1    =   IDX     -   1
+                               COMPUTE IDY2    =   IDX     +   1   
                                MOVE    WRK-COMM (1:IDY1)
-                                                TO  WRK-COMMENT-G
+                                               TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
-                                                TO  WRK-COMM1
-                               MOVE    800      TO  IDX
+                                               TO  WRK-COMM1
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                               TO  IDX
                            END-IF
                        END-PERFORM
                    ELSE
@@ -7324,7 +7334,7 @@
       *                                       
                    IF      WRK-COMMENT-G   NOT =   SPACE
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       16
+                             UNTIL   IDW >       WRK-CONS-RECECOM-MAX
                              OR      WRK-COMMENT(IDW)  =   SPACE
       *
                        ADD     1                   TO  WRK-COM-RENNUM
@@ -7355,7 +7365,7 @@
       *    症状詳記コメント（レセコメント）の改行コード削除処理
       *****************************************************************
        20092-RECECOM-SJ-HENSYU-SEC    SECTION.
-      *                                          
+      *
            MOVE    RECECOM-COMMENT TO  WRK-COMM
            MOVE    ZERO            TO  WRK-RECEHEN
            IF      RECECOM-SJKBN   =   "07"    OR  "08"    OR  "09"
@@ -7379,7 +7389,8 @@
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       800
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
                                COMPUTE IDY1     =   IDX     -   1
                                COMPUTE IDY2     =   IDX     +   1   
@@ -7387,7 +7398,8 @@
                                                 TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
                                                 TO  WRK-COMM1
-                               MOVE    800      TO  IDX
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                                TO  IDX
                            END-IF
                        END-PERFORM                                                                                  
                    ELSE
@@ -7397,7 +7409,7 @@
       *                                       
                    IF      WRK-COMMENT-G   NOT =   SPACE
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       8
+                             UNTIL   IDW >       24
                              OR      WRK-COMMENT1(IDW)   =   SPACE
       *
                        ADD     1                   TO  WRK-COM-RENNUM
@@ -7433,7 +7445,7 @@
       *    全角スペースのみのレコードは記載しない
            MOVE    ZERO                TO  WRK-SJ-CHK
            PERFORM VARYING IDX FROM    1   BY  2
-                   UNTIL   IDX >       800
+                   UNTIL   IDX >       WRK-CONS-RECECOM-LENGTH-MAX
                    OR      WRK-COMMENT-G(IDX:2)    =   SPACE
                    OR      WRK-SJ-CHK              =   1
                IF      WRK-COMMENT-G(IDX:2)    NOT =   "　"

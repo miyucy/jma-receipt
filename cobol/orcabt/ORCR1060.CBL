@@ -49,6 +49,8 @@
       *  04.05.03    NACL-藤原    10/03/29  「改正未対応」の記載をやめる
       *                                     平成２２年４月分以降の処理を
       *                                     行うようにする
+      *
+      *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -186,9 +188,8 @@ grpsys     COPY    "COMMON-SPA".
            03  IDX1                PIC 9(02).
            03  IDX2                PIC 9(02).
            03  IDX3                PIC 9(02).
-           03  IDXP                PIC 9(02).
-           03  IDY1                PIC 9(03).
-           03  IDY2                PIC 9(03).
+           03  IDY1                PIC 9(04).
+           03  IDY2                PIC 9(04).
            03  IDY3                PIC 9(03).
            03  IDXX                PIC 9(03).
            03  IDXY                PIC 9(03).
@@ -329,9 +330,9 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT     PIC X(50)
-                                       OCCURS  16.
-           03  WRK-COMM            PIC X(800).
-           03  WRK-COMM1           PIC X(800).
+                                       OCCURS  48.
+           03  WRK-COMM            PIC X(2400).
+           03  WRK-COMM1           PIC X(2400).
            03  WRK-COL             PIC 9(03). 
            03  WRK-RECECOM         PIC 9(01).
            03  WRK-RECEHEN         PIC 9(01).
@@ -522,7 +523,11 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
        01  WRK-CONS-AREA.    
       *    改行コード
-           03  WRK-CONS-RETURN         PIC X(01)   VALUE   X"0A".
+           03  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
+           03  WRK-CONS-RECECOM-MAX
+                                   PIC 9(02)   VALUE   48.
+           03  WRK-CONS-RECECOM-LENGTH-MAX
+                                   PIC 9(04)   VALUE   2400.
       *
        01  WRK-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -1935,15 +1940,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                FOR ALL WRK-CONS-RETURN
                    IF      WRK-COL         >   ZERO
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       800
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
                            IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
-                               COMPUTE IDY1     =   IDX     -   1
-                               COMPUTE IDY2     =   IDX     +   1   
+                               COMPUTE IDY1    =   IDX     -   1
+                               COMPUTE IDY2    =   IDX     +   1   
                                MOVE    WRK-COMM (1:IDY1)
-                                                TO  WRK-COMMENT-G
+                                               TO  WRK-COMMENT-G
                                MOVE    WRK-COMM (IDY2:)
-                                                TO  WRK-COMM1
-                               MOVE    800      TO  IDX
+                                               TO  WRK-COMM1
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                               TO  IDX
                            END-IF
                        END-PERFORM                                                                                  
                    ELSE
@@ -1983,7 +1990,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      END-IF            
       *                 
                      PERFORM VARYING IDW FROM    1   BY  1
-                             UNTIL   IDW >       16
+                             UNTIL   IDW >       WRK-CONS-RECECOM-MAX
                            OR      WRK-COMMENT (IDW)   =   SPACE
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE
