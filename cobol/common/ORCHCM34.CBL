@@ -293,7 +293,7 @@
                05  WRK-HCM34-LBLTAIINYMD           PIC X(06).
                05  WRK-HCM34-BTUNAME               PIC X(30).
            03  WRK-STR                             PIC X(500).
-           03  WRK-LONGSTR                         PIC X(2000).
+           03  WRK-LONGSTR                         PIC X(5000).
            03  WRK-STR-LEFT                        PIC X(500).
            03  WRK-STR-LEFT-ZX99-G.
                05  WRK-STR-LEFT-ZX99               PIC Z(9)9.99.
@@ -487,7 +487,7 @@
            03  TRECECOM-PNT                        PIC 9(05).
            03  TRECECOM-SKJKBN                     PIC X(02).
            03  TRECECOM-MAX                        PIC 9(05).
-           03  TRECECOM-OCC                        OCCURS  200.
+           03  TRECECOM-OCC                        OCCURS  500.
                05  TRECECOM-COMMENT                PIC X(52).
       *
        01  SRH-AREA.
@@ -695,7 +695,7 @@
                05  CONST-RUIKEI2-R  REDEFINES   CONST-RUIKEI2-VAL.
                    07  CONST-RUIKEI2       PIC 9(02) OCCURS    10.
            03  CONST-TBLCOMBI-MAX      PIC 9(05)   VALUE   100.
-           03  CONST-TRECECOM-MAX      PIC 9(05)   VALUE   200.
+           03  CONST-TRECECOM-MAX      PIC 9(05)   VALUE   500.
            03  CONST-TRECECOM-COMLEN   PIC 9(05)   VALUE   50.
            03  CONST-TRECECOM-MAXLEN
                                        PIC 9(05)   VALUE   52.
