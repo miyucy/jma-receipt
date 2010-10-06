@@ -484,11 +484,13 @@
                05  TCOMBI-SENTEI-PTFTN             PIC 9(08).
       *
        01  TRECECOM-AREA.
+           03  TRECECOM-KARAGYO                    PIC 9(01).
            03  TRECECOM-PNT                        PIC 9(05).
            03  TRECECOM-SKJKBN                     PIC X(02).
-           03  TRECECOM-MAX                        PIC 9(05).
-           03  TRECECOM-OCC                        OCCURS  500.
-               05  TRECECOM-COMMENT                PIC X(52).
+           03  TRECECOM-OCC-G.
+               05  TRECECOM-MAX                    PIC 9(05).
+               05  TRECECOM-OCC                    OCCURS  500.
+                   07  TRECECOM-COMMENT            PIC X(52).
       *
        01  SRH-AREA.
            03  SRH-IDX                             PIC 9(05).
@@ -5623,27 +5625,6 @@
                PERFORM 2002111-RECECOM-HEN-SEC
            END-IF
       *
-           IF    ( TRECECOM-MAX    >   ZERO )
-      *
-               PERFORM 2010-KARAGYO-HEN-SEC
-               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-      *
-               PERFORM VARYING IDX-TRECECOM    FROM    1   BY  1
-                       UNTIL ( IDX-TRECECOM    >   TRECECOM-MAX )
-      *
-                   MOVE    TRECECOM-COMMENT (IDX-TRECECOM)
-                                           TO  WRK-SRYACT-STR
-                   PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    "5"                 TO  WRK-ITEM-KBN
-               MOVE    ZERO                TO  FLG-LINE
-               PERFORM 210-SRYACT-HEN-SEC
-               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-      *
-           END-IF
-      *
            .
        200211-RECECOM-HEN-EXT.
            EXIT.
@@ -5742,14 +5723,12 @@
       *****************************************************************
        20021111-RECECOM-HEN-SEC        SECTION.
       *
-           IF    ( TRECECOM-MAX      >=  CONST-TRECECOM-MAX )
-               GO  TO  20021111-RECECOM-HEN-EXT
-           END-IF
-      *
            PERFORM 800-LONGSTRLEN-CHK-SEC
            IF    ( WRK-STRLEN  <=  ZERO )
                GO  TO  20021111-RECECOM-HEN-EXT
            END-IF
+      *
+           INITIALIZE                  TRECECOM-OCC-G
       *
            PERFORM VARYING IDX6    FROM    1   BY  CONST-TRECECOM-COMLEN
                    UNTIL ( TRECECOM-MAX  >=  CONST-TRECECOM-MAX )
@@ -5759,6 +5738,27 @@
                                    TO  TRECECOM-COMMENT (TRECECOM-MAX)
            END-PERFORM
       *
+           IF    ( TRECECOM-KARAGYO    =   ZERO )
+               PERFORM 2010-KARAGYO-HEN-SEC
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+               MOVE    1           TO  TRECECOM-KARAGYO
+           END-IF
+      *
+           PERFORM VARYING IDX-TRECECOM    FROM    1   BY  1
+                   UNTIL ( IDX-TRECECOM    >   TRECECOM-MAX )
+      *
+               MOVE    TRECECOM-COMMENT (IDX-TRECECOM)
+                                       TO  WRK-SRYACT-STR
+               PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "5"                 TO  WRK-ITEM-KBN
+           MOVE    ZERO                TO  FLG-LINE
+      *
+           PERFORM 210-SRYACT-HEN-SEC
+           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+      *
            .
        20021111-RECECOM-HEN-EXT.
            EXIT.
@@ -5767,12 +5767,30 @@
       *****************************************************************
        20021111-RECECOM-HEN2-SEC       SECTION.
       *
-           IF    ( TRECECOM-MAX      >=  CONST-TRECECOM-MAX )
-               CONTINUE
-           ELSE
-               COMPUTE TRECECOM-MAX  =   TRECECOM-MAX  +   1
-               MOVE    WRK-LONGSTR   TO  TRECECOM-COMMENT (TRECECOM-MAX)
+           INITIALIZE                  TRECECOM-OCC-G
+      *
+           COMPUTE TRECECOM-MAX  =   TRECECOM-MAX  +   1
+           MOVE    WRK-LONGSTR   TO  TRECECOM-COMMENT (TRECECOM-MAX)
+      *
+           IF    ( TRECECOM-KARAGYO    =   ZERO )
+               PERFORM 2010-KARAGYO-HEN-SEC
+               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
+               MOVE    1           TO  TRECECOM-KARAGYO
            END-IF
+      *
+           PERFORM VARYING IDX-TRECECOM    FROM    1   BY  1
+                   UNTIL ( IDX-TRECECOM    >   TRECECOM-MAX )
+      *
+               MOVE    TRECECOM-COMMENT (IDX-TRECECOM)
+                                       TO  WRK-SRYACT-STR
+               PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "5"                 TO  WRK-ITEM-KBN
+           MOVE    ZERO                TO  FLG-LINE
+           PERFORM 210-SRYACT-HEN-SEC
+           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
            .
        20021111-RECECOM-HEN2-EXT.
@@ -6929,7 +6947,7 @@
        800-LONGSTRLEN-CHK-SEC              SECTION.
       *
            MOVE    ZERO            TO  WRK-STRLEN
-           PERFORM VARYING IDXB    FROM    2000 BY  -1
+           PERFORM VARYING IDXB    FROM    5000 BY  -1
                    UNTIL ( IDXB    <   1 )
                IF    ( WRK-LONGSTR (IDXB : 1)  NOT =   SPACE )
                    MOVE    IDXB    TO  WRK-STRLEN
