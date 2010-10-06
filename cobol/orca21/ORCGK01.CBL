@@ -1371,16 +1371,38 @@
                                                             (IDX)
                END-IF
       *    »Û…Ωº®∂Ë ¨
-               IF      ORCSHKN-NAI-HYOJIKBN (IDX)  =   "1"
+               EVALUATE    ORCSHKN-NAI-HYOJIKBN (IDX)
+               WHEN    "1"
                    MOVE    SPACE       TO  WRK-HKNCOMBI
                    STRING  SPA-GMN-THKNCOMBIMEI (IDX)
-                                               DELIMITED  BY  SPACE
-                           "°⁄»Û…Ωº®°€"        DELIMITED  BY  SIZE
+                                                 DELIMITED  BY  "  "
+                           "°⁄»Û…Ωº®°€" 
+                                                 DELIMITED  BY  SIZE
                          INTO             WRK-HKNCOMBI
                    END-STRING
                    MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
                                                             (IDX)
-               END-IF
+               WHEN    "2"
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  SPA-GMN-THKNCOMBIMEI (IDX)
+                                                 DELIMITED  BY  "  "
+                           "°⁄∆˛»Û…Ωº®°€" 
+                                                 DELIMITED  BY  SIZE
+                         INTO             WRK-HKNCOMBI
+                   END-STRING
+                   MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
+                                                            (IDX)
+               WHEN    "3"
+                   MOVE    SPACE       TO  WRK-HKNCOMBI
+                   STRING  SPA-GMN-THKNCOMBIMEI (IDX)
+                                                 DELIMITED  BY  "  "
+                           "°⁄≥∞»Û…Ωº®°€" 
+                                                 DELIMITED  BY  SIZE
+                         INTO             WRK-HKNCOMBI
+                   END-STRING
+                   MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
+                                                            (IDX)
+               END-EVALUATE
       *TEST
       *
                MOVE    ORCSHKN-NAI-HKNNUM (IDX)
@@ -2975,6 +2997,8 @@
                IF      SPA-GMN-THKNCOMBINUM(IDX)
                                                =   SPA-GMN-HKNCOMBINUM
                    MOVE    "T"             TO  K01-HKNKUM-SELECT(IDX)
+                   MOVE    IDX             TO  K01-HKNKUM-ROW
+                   MOVE    2               TO  K01-HKNKUM-ROWATTR
                ELSE
                    MOVE    "F"             TO  K01-HKNKUM-SELECT(IDX)
                END-IF
