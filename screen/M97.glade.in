@@ -431,7 +431,7 @@
       <y>104</y>
       <width>968</width>
       <height>208</height>
-      <hscrollbar_policy>GTK_POLICY_AUTO</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -489,7 +489,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label48</name>
-	  <label>内　　　　　　　　　　容</label>
+	  <label>内　　　容</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
