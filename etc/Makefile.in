@@ -30,6 +30,7 @@ clean:
 distclean:
 	-rm -f jma-receipt-crontab
 	-rm -f jma-receipt.env
+	-rm -f jma-receipt.conf
 	-rm -f Makefile
 
 install: all

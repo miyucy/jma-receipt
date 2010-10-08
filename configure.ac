@@ -259,5 +259,6 @@ tools/Makefile
 Makefile
 Makefile.directories
 etc/jma-receipt.env
+etc/jma-receipt.conf
 ])
 AC_OUTPUT
