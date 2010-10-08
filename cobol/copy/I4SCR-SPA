@@ -122,6 +122,8 @@
                    07  SPA-CHK-SENTEI          PIC X(01).
       *            陸⑨ゥ
                    07  SPA-CHK-GAIHAKU         PIC X(01).
+      *            忡萵賺寧六
+                   07  SPA-CHK-HKNCOMBI        PIC X(01).
       *            啣恓棋說芊及ェ情恔遙爛ゥ
                    07  SPA-CHK-IRYOKNS         PIC X(01).
       *

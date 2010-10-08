@@ -2643,6 +2643,16 @@
                    END-PERFORM
                END-IF
       *
+      *        保険組合せ
+               IF      SPA-GMN-TZAISKBKBN-41 (IDX) =   "5"
+                   PERFORM VARYING IDK     FROM    1   BY  1
+                           UNTIL   IDK     >   31
+                       IF      SPA-NAI-DAY-41 (IDX-N IDK)  NOT =  ZERO
+                           MOVE    "1"     TO  SPA-CHK-HKNCOMBI (IDK)
+                       END-IF
+                   END-PERFORM
+               END-IF
+      *
       *        選定入院料
                IF     (SPA-GMN-TZAISKBKBN-41 (IDX) =   "1"  )  AND
                       (SPA-GMN-TSRYCD (IDX)     =   W-YOYAKU)
@@ -3844,7 +3854,7 @@
                                            OR  "0039"
                                            OR  "0042"
                                            OR  "0046"
-                                           OR  "0053"
+                                           OR  "0054"
                    MOVE    SPA-NAI-DAY-41(SPA-NAI-BANGO IDX-D)
                                            TO  SPA-GMN-DAY-41 (IDX-D)
                    MOVE    SPA-ERRCD       TO  WRK-ERRCD
@@ -3908,7 +3918,7 @@
                    END-IF
       *            医療観察法の入院時は外泊セット不可
                    IF      SPA-CHK-IRYOKNS (IDX-D)   NOT =   SPACE
-                        MOVE    "0053"             TO  SPA-ERRCD
+                        MOVE    "0054"             TO  SPA-ERRCD
                         GO      TO      410121-DAY-NAI-CHK-EXT
                    END-IF
                    IF      SPA-CHK-SENTEI(IDX-D)   =   SPACE
@@ -3984,9 +3994,9 @@
                    END-IF
       *        食事
                WHEN    "4"
-      *            入院基本料算定なし
-                   IF      SPA-CHK-NYUIN (IDX-D)   =   SPACE
-                       MOVE    "0033"             TO  SPA-ERRCD
+      *            保険組合せなし
+                   IF      SPA-CHK-HKNCOMBI (IDX-D)   =   SPACE
+                       MOVE    "0053"             TO  SPA-ERRCD
                    END-IF
                    IF      SPA-NAI-SRYYM         <=  "200603"
                        IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
@@ -9174,6 +9184,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "入院行為照会用テーブルの更新に失敗しました"
                                        TO  WRK-ERRMSG
                WHEN    "0053"
+                   MOVE    "保険組合せが設定されていない日です。内容の"
+                                       TO  WRK-ERRMSG(1:42)
+                   MOVE    "変更はできません。"
+                                       TO  WRK-ERRMSG(43:18)
+               WHEN    "0054"
                    MOVE    "医療観察での入院算定時は外泊入力不可です。"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
