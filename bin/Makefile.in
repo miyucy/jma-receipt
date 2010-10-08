@@ -6,22 +6,27 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 BIN_sources = \
-	jma-receipt-db-setup.sh.in \
-	jma-receipt-db-check.sh.in \
-	jma-receipt-program-upgrade.sh.in \
-	jma-receipt-program-upgrade-check.sh.in \
-	orcvt_exec.sh.in \
 	jma-receipt-sysbase-setup.sh.in \
 	jma-dbsync.sh.in \
 	jma-backupcluster.sh.in \
 	jma-restorecluster.sh.in
+
+EUC_sources = \
+	jma-receipt-db-setup.sh.in \
+	jma-receipt-db-check.sh.in \
+	jma-receipt-program-upgrade.sh.in \
+	jma-receipt-program-upgrade-check.sh.in \
+	orcvt_exec.sh.in
 
 BIN_bin = \
 	orcvt_euc.rb \
 	orcvt_euc_kananame.rb \
 	jma-plugin
 
-BIN_objs = $(BIN_sources:.sh.in=.sh)
+BIN_objs = $(BIN_sources:.sh.in=.sh) \
+	   $(EUC_sources:.sh.in=.sh)
+
+EUC_shell_scripts = $(EUC_sources:.sh.in=.sh)
 
 BIN_files = $(BIN_objs) $(BIN_bin)
 
@@ -33,7 +38,10 @@ BIN_files = $(BIN_objs) $(BIN_bin)
 	$< > $@
 	chmod +x $@
 
-all:	$(BIN_objs)   
+all:	$(BIN_objs)
+
+convutf8: $(EUC_shell_scripts)
+	echo $(EUC_shell_scripts) | xargs nkf -Ewm0 --overwrite
 
 filecheck:
 
@@ -43,6 +51,6 @@ clean:
 distclean: clean
 	-rm -f Makefile
 
-install: all
+install: all convutf8
 	$(INSTALL) -d $(bindir)
 	$(INSTALL_SCRIPT) $(BIN_files) $(bindir)

@@ -20,6 +20,20 @@ wfc  {
 
 #include	<./dbgroup.inc>
 
+db_group "shell" {
+ type "Shell";
+ priority 1000;
+};
+db_group "system" {
+ type "System";
+};
+db_group    "blob_body" {
+ type    "NativeBLOB";
+};
+db_group "xml" {
+ type "XMLIO";
+};
+
 ld	{
 	orca00	 1;
 	orca01	 1;
