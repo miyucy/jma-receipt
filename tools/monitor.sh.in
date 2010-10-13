@@ -1,200 +1,184 @@
 #! /bin/bash
 
 ####################################################################
-# jma-receiptã‚µãƒ¼ãƒãƒ¼ã‚’ã‚½ãƒ¼ã‚¹ã®ä½ç½®ã‹ã‚‰èµ·å‹•ã™ã‚‹
-# é–‹ç™ºç”¨ monitor
-# monitor.sh [LDå]
+# jma-receipt¥µ¡¼¥Ð¡¼¤ò¥½¡¼¥¹¤Î°ÌÃÖ¤«¤éµ¯Æ°¤¹¤ë
+# ³«È¯ÍÑ monitor
+# monitor.sh [LDÌ¾]
 #
-# ä¾‹)
+# Îã) 
 # $ cd jma-receipt
 # $ tools/monitor.sh orca21
 ####################################################################
 
-# ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ç§»å‹•
+# ¥Ç¥£¥ì¥¯¥È¥ê¤Î°ÜÆ°
 cd `dirname $0`/..
 
-# ç’°å¢ƒå¤‰æ•°ã®å–ã‚Šè¾¼ã¿
+
+# ´Ä¶­ÊÑ¿ô¤Î¼è¤ê¹þ¤ß
 if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
-    echo "ç’°å¢ƒè¨­å®šãƒ•ã‚¡ã‚¤ãƒ« $JMARECEIPT_ENV ãŒèª­ã‚ã¾ã›ã‚“"
+    echo "´Ä¶­ÀßÄê¥Õ¥¡¥¤¥ë $JMARECEIPT_ENV ¤¬ÆÉ¤á¤Þ¤»¤ó"
     exit 1
 fi
 
 . $JMARECEIPT_ENV
 
-# ãƒŸãƒ‰ãƒ«ã‚¦ã‚§ã‚¢
-# panda or ginbee (default panda)
-#export "__MCP_MIDDLEWARE_NAME=panda"
 
-# glserver ã‚’èµ·å‹•ã™ã‚‹ã‹ï¼Ÿ
+# glserver ¤òµ¯Æ°¤¹¤ë¤«¡©
 Start_GLSERVER=true
 
-# dbredirector ã‚’èµ·å‹•ã™ã‚‹ã‹ï¼Ÿ
+# dbredirector ¤òµ¯Æ°¤¹¤ë¤«¡©
 Start_dbredirector=false
 
-# jma-receipt ã®ä½ç½®
+# jma-receipt ¤Î°ÌÃÖ
 #ORCA_DIR=prefix
-LDDEF="$ORCA_DIR"/lddef
 
-# èµ·å‹•ã™ã‚‹ LDã®ãƒªã‚¹ãƒˆ(å¼•æ•°ã«ã‚ˆã‚Šä¸Šæ›¸ãã•ã‚Œã‚‹)
-LD=`ls $LDDEF/*.ld|xargs -I{} basename {} .ld`
+# µ¯Æ°¤¹¤ë LD¤Î¥ê¥¹¥È(°ú¿ô¤Ë¤è¤ê¾å½ñ¤­¤µ¤ì¤ë)
+LD="orca01 orca02 orca03 orca04 orca11 orca12 orca13 orca14 orca18 orca19 orca21 orca22
+    orca23 orca24 orca25 orca29 orca31 orca32 orca33 orca34 orca36 orca41 orca42 orca43
+    orca44 orca51 orca52 orca71 orca82 orca101 orca102 orca103 orca104 
+    orca105 orca106 orca107 orca108 orca109 orca06 orca61 orca07 sessionend  orca08"
 
-# å¸¸ã«èµ·å‹•ã™ã‚‹LD
-# ã“ã®LDã¯å¼•æ•°ã«é–¢ä¿‚ãªãèµ·å‹•ã•ã‚Œã‚‹
-ALWAYS_LD="session orca00"
+# ¾ï¤Ëµ¯Æ°¤¹¤ëLD
+# ¤³¤ÎLD¤Ï°ú¿ô¤Ë´Ø·¸¤Ê¤¯µ¯Æ°¤µ¤ì¤ë
+ALWAYS_LD="orca00"
 
-# ãƒˆãƒ¬ãƒ¼ã‚¹ã™ã‚‹LD
-TRACE_LD="orca11"
+# aps ¤Î¥Ý¡¼¥ÈÈÖ¹æ 
+# ¤³¤ÎÈÖ¹æ+ LD¤Î¿ôÃÍ (orca101 ¤Ê¤é 101) = 9201
+# ¤Çµ¯Æ°¤µ¤ì¤ë¡£
+START_PORT=9100
 
-# soãƒã‚§ãƒƒã‚¯
-# èµ·å‹•ã™ã‚‹æ™‚ã«ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ¸ˆã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹ *soãƒ•ã‚¡ã‚¤ãƒ«
-COB_SO="orca00/ORCGM00.so"
+# so¥Á¥§¥Ã¥¯
+# µ¯Æ°¤¹¤ë»þ¤Ë¥³¥ó¥Ñ¥¤¥ëºÑ¤«¥Á¥§¥Ã¥¯¤¹¤ë *so¥Õ¥¡¥¤¥ë
+COB_SO=ORCGM00.so
 
 # MCPSUB lib
-COB_LIBRARY_PATH=/usr/local/lib:/usr/lib:/usr/lib/panda
-# site-libã®å–ã‚Šè¾¼ã¿
+COB_LIBRARY_PATH=/usr/lib:/usr/lib/panda
+# site-lib¤Î¼è¤ê¹þ¤ß
 COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
+# orca lib
+COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim:"$ORCA_DIR"/cobol/cutils
+
+
+
 
 ####################################################################
 
-if test -x /usr/local/bin/monsetup; then
-    PANDA_BIN_DIR=/usr/local/bin
-else
-    PANDA_BIN_DIR=/usr/lib/panda/bin
-fi
-if test -x /usr/local/sbin/aps; then
-    PANDA_SERVER_DIR=/usr/local/sbin
+if test -x /usr/local/panda/bin/aps; then
+    PANDA_SERVER_DIR=/usr/local/panda/bin
 else
     PANDA_SERVER_DIR=/usr/lib/panda/sbin
 fi
 APS="$PANDA_SERVER_DIR"/aps
 WFC="$PANDA_SERVER_DIR"/wfc
-LISTEN_WFC_PORT="/tmp/wfc.term"
 GLSERVER="$PANDA_SERVER_DIR"/glserver
 DBREDIRECTOR="$PANDA_SERVER_DIR"/dbredirector
 
 DIRECTORY="$ORCA_DIR"/lddef/directory
+LDDEF="$ORCA_DIR"/lddef
 SCREEN="$ORCA_DIR"/screen
 RECORD="$ORCA_DIR"/record
 
 if test "x"$1 != "x"; then
     LD=$@
 fi
-LDLIST=(`echo ${LD} ${ALWAYS_LD};`)
-IFS_BACKUP=$IFS
-IFS=$'\n'
-LDLIST=(`echo "${LDLIST[*]}" | sort|uniq`)
-IFS=$IFS_BACKUP
+
 ####################################################################
 if ! test -d $LDDEF ; then
-    echo "${LDDEF} ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒã‚ã‚Šã¾ã›ã‚“"
+    echo "${LDDEF} ¥Ç¥£¥ì¥¯¥È¥ê¤¬¤¢¤ê¤Þ¤»¤ó"
     exit 1
 fi
 if ! test -f $DIRECTORY; then
-    echo "directory ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“"
+    echo "directory ¥Õ¥¡¥¤¥ë¤¬¤¢¤ê¤Þ¤»¤ó"
     exit 1
 fi
 if ! test -d $SCREEN ; then
-    echo "${SCREEN} ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒã‚ã‚Šã¾ã›ã‚“"
+    echo "${SCREEN} ¥Ç¥£¥ì¥¯¥È¥ê¤¬¤¢¤ê¤Þ¤»¤ó"
     exit 1
 fi
 if ! test -f `echo ${SCREEN}/*glade|sed -e "s/ .*//g"` ; then
-    echo "gladeãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“"
+    echo "glade¥Õ¥¡¥¤¥ë¤¬¤¢¤ê¤Þ¤»¤ó"
     exit 1
 fi
 if ! test -d $RECORD ; then
-    echo "${RECORD} ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒã‚ã‚Šã¾ã›ã‚“"
+    echo "${RECORD} ¥Ç¥£¥ì¥¯¥È¥ê¤¬¤¢¤ê¤Þ¤»¤ó"
     exit 1
 fi
-for i in $ALWAYS_LD; do
-    if ! test -d ${ORCA_DIR}/cobol/${i}; then
-        echo "LD(COBOL) ${ORCA_DIR}/cobol/${i} ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒã‚ã‚Šã¾ã›ã‚“"
-        exit 1
-    fi
-done
-if ! test -f ${ORCA_DIR}/cobol/${COB_SO}; then
-    echo "${ORCA_DIR}/cobol/${COB_SO} ãŒã‚ã‚Šã¾ã›ã‚“"
-    echo "ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«å‰ï¼Ÿ"
+if ! test -d ${ORCA_DIR}/cobol/${ALWAYS_LD}; then
+    echo "LD(COBOL) ${ORCA_DIR}/cobol/${ALWAYS_LD} ¥Ç¥£¥ì¥¯¥È¥ê¤¬¤¢¤ê¤Þ¤»¤ó"
+    exit 1
+fi
+if ! test -f ${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO}; then
+    echo "${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO} ¤¬¤¢¤ê¤Þ¤»¤ó"
+    echo "¥³¥ó¥Ñ¥¤¥ëÁ°¡©"
     exit 1
 fi
 
 ####################################################################
-function server_exit() {
-    if test ! -z "$glpid"; then
-	killall glserver
-    fi
-    killall -HUP aps
-    sleep 0.5;
-    killall -HUP wfc
-    if test ! -z "$dbrepid"; then
-	killall -HUP dbredirector
-    fi
-    if test -f $$dbredirector; then
-	rm $$dbredirector
-    fi
-    killall wfc
-    exit 0
-}
 
-####################################################################
-
-if test -x $PANDA_BIN_DIR/monsetup ; then
-    if ! $PANDA_BIN_DIR/monsetup -dir $DIRECTORY ; then
-	echo "monsetup failed"
-	exit 9
-    fi
-fi
-
-for i in "$ORCA_DIR"/cobol/*; do
-    if [ -d $i ] && [ $i != "CVS" ] ; then
-	COB_LIBRARY_PATH=$COB_LIBRARY_PATH:$i
-    fi
+for i in $ALWAYS_LD $LD; do
+    COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/"$i"
 done
 export COB_LIBRARY_PATH
 export JMARECEIPT_ENV="$ORCA_DIR"/etc/jma-receipt.env
 
-trap "server_exit" 2
-
+if test "x"$Start_GLSERVER = "xtrue" || test "x"$Start_dbredirector = "xtrue";
+then
+    trap "server_exit" 2
+    #server end
+    server_exit()
+    {
+	if test ! -z "$glpid"; then
+	    killall glserver
+	fi
+	if test "x"$Start_dbredirector = "xtrue"; then
+	    killall dbredirector
+	fi
+	if test ! -z "$dbrecid"; then
+	    kill $dbrecid
+	fi
+	if test -f $$dbredirector; then
+	    rm $$dbredirector
+	fi
+    	    killall wfc
+	exit 0
+    }
+fi
 if test "x"$Start_GLSERVER = "xtrue"; then
-    $GLSERVER -api -auth api://localhost/session/session_start -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
+    $GLSERVER -api -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
     glpid=$!
 fi
 
 if test "x"$Start_dbredirector = "xtrue"; then
     $DBREDIRECTOR -dir $DIRECTORY -record $RECORD log|tee $$dbredirector &
-    dbrepid=$!
     until [ -s $$dbredirector ]
-    do
+    do 
 	echo "wait..."
 	sleep 1
     done
 fi
 
-$WFC -dir $DIRECTORY  -base $ORCA_DIR &
-while :
-do
-  if /bin/ss -ax|grep ${LISTEN_WFC_PORT} >/dev/null; then
-    break
-  fi
-  sleep 0.5
+$WFC -dir $DIRECTORY  -base $ORCA_DIR >/dev/null &
+	sleep 10
+
+for i in $ALWAYS_LD; do
+    LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
+    ORCA_PORT=`expr $START_PORT + $LDNUM`
+    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i -port $ORCA_PORT &
 done
 
-for i in ${LDLIST[@]}; do
-  OPT='-nocheck'
-  if [ x$i = x$TRACE_LD ] ; then
-    OPT="${OPT} -timer"
-  fi
-  $APS $OPT -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i &
+for i in $LD; do
+    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
 done
 
 while :
-do
-  echo 'Please Type "exit"'
+do 
   read END
   if [ "$END" == "exit" ]; then
-    server_exit
+    killall wfc
+    killall glserver
     break
   fi
 done
