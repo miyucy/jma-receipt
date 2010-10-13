@@ -2313,7 +2313,8 @@
                END-IF
            END-IF
       *    入院日の時、初診料のみ算定する
-           IF      SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6)
+           IF    ( SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6) )
+           AND   ( SPA-NYUGAIKBN           =   "1"    )
                IF      SPA-SYOSIN          =   1
                    CONTINUE
                ELSE
@@ -2354,7 +2355,17 @@
            END-IF
       *
       *    入院日の時、初診料のみ算定する
-           IF      SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6)
+           IF    ( SPA-K02N-NYUINYMD(1:6)  =   SPA-NAI-SRYYMD(1:6))
+           AND   ( SPA-NYUGAIKBN           =   "1"    )
+               IF      SPA-SYOSIN          =   1
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-ERR
+               END-IF
+           END-IF
+      *    入院日の時、初診料のみ算定する
+           IF    ( SPA-K02N-NYUINYMD       =   SPA-NAI-SRYYMD )
+           AND   ( SPA-NYUGAIKBN           =   "2"    )
                IF      SPA-SYOSIN          =   1
                    CONTINUE
                ELSE
@@ -4478,13 +4489,23 @@
       *    在宅末期医療総合診察料チェック
            IF     (SPA-ZAIMATU-ARI     NOT =   ZERO )  OR
                   (SPA-ZAIMATU-ARI2    NOT =   ZERO )
+      *        包括診療はチェックなし
+               IF      SPA-HKTSANTEI-206   =   ZERO
+      *
                PERFORM 5022-ZAIMATU-CHK-SEC
+      *
+               END-IF
            END-IF
       *
       *    在宅時医学総合管理料チェック
            IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )
              OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
+      *        包括診療はチェックなし
+               IF      SPA-HKTSANTEI-204   =   ZERO
+      *
                PERFORM 5022-ZAIKANRI-CHK-SEC
+      *
+               END-IF
            END-IF
       *
       *Ｈ２２．４から廃止
@@ -4497,7 +4518,12 @@
       *    特定施設入居時等医学管理料
            IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )
              OR   (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
+      *        包括診療はチェックなし
+               IF      SPA-HKTSANTEI-205   =   ZERO
+      *
                PERFORM 5022-IGAKUKAN-CHK-SEC
+      *
+               END-IF
            END-IF
       *
            .

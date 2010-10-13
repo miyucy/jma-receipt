@@ -2515,7 +2515,10 @@
       *    在宅末期医療総合診察料チェック
            IF     (SPA-ZAIMATU-ARI     NOT =   ZERO )  OR
                   (SPA-ZAIMATU-ARI2    NOT =   ZERO )
-               IF      SPA-ERRCD           =   SPACE
+      *        包括診療はチェックなし
+               IF    ( SPA-HKTSANTEI-206   =   ZERO  )
+               AND   ( SPA-ERRCD           =   SPACE )
+      *
                    PERFORM 5022-ZAIMATU-CHK-SEC
                END-IF
            END-IF
@@ -2523,7 +2526,9 @@
       *    在宅時医学総合管理料チェック
            IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )
              OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
-               IF      SPA-ERRCD           =   SPACE
+      *        包括診療はチェックなし
+               IF    ( SPA-HKTSANTEI-204   =   ZERO  )
+               AND   ( SPA-ERRCD           =   SPACE )
                    PERFORM 5022-ZAIKANRI-CHK-SEC
                END-IF
            END-IF
@@ -2539,7 +2544,9 @@
       *    特定施設入居時等医学管理料
            IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )
              OR   (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
-               IF      SPA-ERRCD           =   SPACE
+      *        包括診療はチェックなし
+               IF    ( SPA-HKTSANTEI-205   =   ZERO  )
+               AND   ( SPA-ERRCD           =   SPACE )
                    PERFORM 5022-IGAKUKAN-CHK-SEC
                END-IF
            END-IF

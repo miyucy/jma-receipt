@@ -54,6 +54,7 @@
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.05.00     NACL-多々納  09/09/16  "0086XXXXX"コメント対応
       * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
+      * 04.06.00     NACL-多々納  10/10/XX  包括算定（剤）対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4015,6 +4016,13 @@
                IF      SPA-COM-INPUTCD (SPA-GMN-MAX)
                                                =   "099999903"
                    MOVE    SPA-GMN-HKTKBN-LST (1)
+                                               TO  SPA-GMN-HKTKBN-G
+               END-IF
+      *!!
+      *        包括算定（剤）
+               IF      SPA-COM-INPUTCD (SPA-GMN-MAX)
+                                               =   "099999907"
+                   MOVE    SPA-GMN-HKTKBN-LST (2)
                                                TO  SPA-GMN-HKTKBN-G
                END-IF
       *!!

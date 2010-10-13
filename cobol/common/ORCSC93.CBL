@@ -1396,6 +1396,8 @@
                                                              (IDX))
       *        Êñ³ç½ÐÍè¹â
              OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999903" )
+      *        Êñ³ç»»Äê¡ÊºÞ¡Ë
+             OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999907" )
       *        ¥³¥á¥ó¥È
              OR    (SPA-COM-INPUTCD (IDX)(1:1)   =   "8"    )
              OR    (SPA-COM-INPUTCD (IDX)(1:3)   =   "008"  )
@@ -1449,7 +1451,9 @@
                    END-IF
       *            Á°¤¬Êñ³ç½ÐÍè¹â¥³¡¼¥É¤ÏÁ°¹Ô¤Ç½ªÎ»
                    IF      (SPA-COM-INPUTCD (IDX-1)
-                                                   =   "099999903" )
+                                                   =   "099999903"
+      *            Êñ³ç»»Äê¡ÊºÞ¡Ë
+                                                   OR  "099999907" )
                        MOVE    1                   TO  FLG-SYORI
                    END-IF
                ELSE
@@ -1460,7 +1464,9 @@
                                                OR  WRK-HOUKNSKBN  )
       *            Êñ³ç½ÐÍè¹â
                       OR  (SPA-COM-INPUTCD (IDX-1)
-                                               =   "099999903" )
+                                               =   "099999903"
+      *            Êñ³ç»»Äê¡ÊºÞ¡Ë
+                                               OR  "099999907" )
                        CONTINUE
                    ELSE
                        MOVE    2                    TO  FLG-SYORI
@@ -1825,6 +1831,8 @@
                            END-IF
       *                Êñ³ç½ÐÍè¹â»»Äê¡ÊºÞ¡Ë
                        WHEN    "099999903"
+      *                Êñ³ç»»Äê¡ÊºÞ¡Ë
+                       WHEN    "099999907"
                            IF     (IDX             >   ZERO )  AND
                                   (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                    =   "."  )
@@ -1835,7 +1843,12 @@
                                                    TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
                            ELSE
-                               MOVE    "0219"        TO  SPA-ERRCD
+                               IF      SPA-COM-INPUTCD (IDX)
+                                                       =   "099999903"
+                                   MOVE    "0219"          TO  SPA-ERRCD
+                               ELSE
+                                   MOVE    "0229"          TO  SPA-ERRCD
+                               END-IF
                            END-IF
       *                Êñ³ç½ÐÍè¹â»»ÄêÆü
                        WHEN    "099999904"
@@ -2221,6 +2234,7 @@
                   (WRK-KENSA-MAX       <=  WRK-KENSA-CNT )) OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
               OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999903" )
+              OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999907" )
       *       ²ñ·×¾È²ñ¤ÇºÇ½ª¹Ô¤ÎÈ½Äê
               OR  (IDX                  =   1     ) 
               OR  ((LNK-SC93-PG         =   "J04" ) AND

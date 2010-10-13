@@ -32,6 +32,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/09/XX  ³°Íè¤Þ¤È¤áÂÐ±þ
       *                                     ËýÀ­°Ý»ýÆ©ÀÏ°å³Ø´ÉÍýÎÁÅùÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/02/XX  ¥¢¥Õ¥¿¡¼¥±¥¢ÂÐ¾Ý³°ÂÐ±þ
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/10/XX  Êñ³ç»»Äê¡ÊºÞ¡ËÂÐ±þ
       *****************************************************************
       *
       *
@@ -66,6 +67,8 @@
            03  FLG-SANTEIOK            PIC 9(01).
            03  FLG-INPUTOK             PIC 9(01).
            03  FLG-DEKIDAKA            PIC 9(01).
+      *
+           03  FLG-HKTINP              PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -291,13 +294,18 @@
       *            Æþ±¡ÎÁ¥Á¥§¥Ã¥¯½èÍý
                    IF      ORCSCHKTCHK-NYUHKTCHK   =   1
                        PERFORM 600-NYUINDAYCHK-SEC
+                   ELSE
+      *                Êñ³ç¶èÊ¬¥¯¥ê¥¢
+                       PERFORM 602-HOUKATU-INIT-SEC
                    END-IF
                    IF      SPA-HKTSANTEI-FLG   =   1
       *                Êñ³ç¥Á¥§¥Ã¥¯È½Äê
                        PERFORM 2001-TAISYOU-CHK-SEC
-      *                ºÞ¤ÎÊÔ½¸
-                       PERFORM 2002-ZAIHENSYU-SEC
                    END-IF
+      *            Êñ³ç»»Äê¡ÊºÞ¡Ë¥Á¥§¥Ã¥¯
+                   PERFORM 200213-HKTINPUT-CHK-SEC
+      *            ºÞ¤ÎÊÔ½¸
+                   PERFORM 2002-ZAIHENSYU-SEC
            END-EVALUATE
            IF      ORCSCHKTCHK-PG      =   "K02"
                                        OR  "K02N"
@@ -465,14 +473,20 @@
                IF      SPA-COM-INPUTCD (IDX-Z) =   "099999905"
                    MOVE    1                   TO  FLG-DEKIDAKA
                END-IF
+      *        Êñ³ç»»Äê¡ÊºÞ¡ËÈ½Äê
+               IF      SPA-COM-INPUTCD (IDX-Z) =   "099999907"
+                   MOVE    1                   TO  ORCSCHKTCHK-HKTFLG
+               END-IF
            END-PERFORM
       *
            IF      FLG-DEKIDAKA        =   ZERO
       *    Êñ³ç¥Á¥§¥Ã¥¯È½Äê
                PERFORM 2001-TAISYOU-CHK-SEC
-      *    ºÞ¤ÎÊÔ½¸
-               PERFORM 2002-ZAIHENSYU-SEC
            END-IF
+      *    Êñ³ç»»Äê¡ÊºÞ¡Ë¥Á¥§¥Ã¥¯
+           PERFORM 200213-HKTINPUT-CHK-SEC
+      *    ºÞ¤ÎÊÔ½¸
+           PERFORM 2002-ZAIHENSYU-SEC
            .
        200-MAIN-SYORI-EXT.
            EXIT.
@@ -1034,6 +1048,49 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-PERFORM
            .
        20021-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Êñ³ç»»Äê¡ÊºÞ¡ËÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       200213-HKTINPUT-CHK-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKTINP
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
+               IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
+                   OR (SPA-COM-SRYKBN   (IDX-Z)    =   "95"
+                                                   OR  "96"  )
+                   CONTINUE
+               ELSE
+      *            Êñ³ç»»Äê¡ÊºÞ¡Ë
+                   IF      SPA-COM-INPUTCD (IDX-Z) =   "099999907"
+                       MOVE    1                   TO  FLG-HKTINP
+      *                Á°¹Ô¤âÊñ³ç¤È¤¹¤ë
+                       IF      SPA-GMN-INPUTCD (IDX-Z - 1) =   "."
+                           MOVE    1           TO  SPA-COM-HOUKATU-FLG
+                                                          (IDX-Z - 1)
+                           MOVE    ZERO        TO  SPA-COM-HOUKATU-FLG2
+                                                          (IDX-Z - 1)
+                           MOVE    ZERO        TO  SPA-COM-HOUKATU-KERR
+                                                          (IDX-Z - 1)
+                       END-IF
+                   END-IF
+                   IF      FLG-HKTINP          =   1
+                       MOVE    1               TO  SPA-COM-HOUKATU-FLG
+                                                                (IDX-Z)
+                       MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG2
+                                                                (IDX-Z)
+                       MOVE    ZERO            TO  SPA-COM-HOUKATU-KERR
+                                                                (IDX-Z)
+                   END-IF
+               END-IF
+               IF      SPA-COM-ZAIEND (IDX-Z)  =   "1"
+                   MOVE    ZERO                TO  FLG-HKTINP
+               END-IF
+           END-PERFORM
+           .
+       200213-HKTINPUT-CHK-EXT.
            EXIT.
       *
       *****************************************************************

@@ -875,6 +875,9 @@
            MOVE    ZERO                TO  SPA-HKTSANTEI-FLG
            MOVE    ZERO                TO  SPA-HKTSANTEI-202
            MOVE    ZERO                TO  SPA-HKTSANTEI-203
+           MOVE    ZERO                TO  SPA-HKTSANTEI-204
+           MOVE    ZERO                TO  SPA-HKTSANTEI-205
+           MOVE    ZERO                TO  SPA-HKTSANTEI-206
            MOVE    ZERO                TO  SPA-HKTNYUIN-FLG
            PERFORM UNTIL  (FLG-SYSKANRI    =   1  )
                MOVE    MCPDATA-REC         TO  SYS-1014-REC
@@ -892,6 +895,18 @@
       *                À¸³è½¬´·ÉÂ´ÉÍýÎÁ
                        IF      SYS-1014-KBNCD      =   "203"
                            MOVE    1               TO  SPA-HKTSANTEI-203
+                       END-IF
+      *                ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ
+                       IF      SYS-1014-KBNCD      =   "204"
+                           MOVE    1               TO  SPA-HKTSANTEI-204
+                       END-IF
+      *                ÆÃÄê»ÜÀßÆþµï»þÅù°å³Ø´ÉÍýÎÁ
+                       IF      SYS-1014-KBNCD      =   "205"
+                           MOVE    1               TO  SPA-HKTSANTEI-205
+                       END-IF
+      *                ºßÂðËö´ü°åÎÅÁí¹ç¿Ç»¡ÎÁ
+                       IF      SYS-1014-KBNCD      =   "206"
+                           MOVE    1               TO  SPA-HKTSANTEI-206
                        END-IF
                    END-IF
                END-IF

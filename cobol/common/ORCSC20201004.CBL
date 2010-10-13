@@ -629,6 +629,40 @@
                            PERFORM 100101-SRYSYUMEI-HEN-SEC
                        END-IF
                    END-IF
+      *ver.4.6
+      *            在宅時医学総合管理料チェック
+                   IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )  OR
+                          (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-204   NOT =   ZERO
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                   END-IF
+      *            特定施設入居時等医学管理料チェック
+                   IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )  OR
+                          (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-205   NOT =   ZERO
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                   END-IF
+      *            在宅末期医療総合診察料チェック
+                   IF     (SPA-ZAIMATU-ARI    NOT =   ZERO )  OR
+                          (SPA-ZAIMATU-ARI2   NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-206   NOT =   ZERO
+                           MOVE    "0"             TO  WRK-SRYSYUKBN
+                                                               (3:1) 
+                           MOVE    "0"             TO  WRK-GMN-INPUTCD
+                                                        (IDX-Z)(4:1)
+                           PERFORM 100101-SRYSYUMEI-HEN-SEC
+                       END-IF
+                   END-IF
       *        WHEN    "212"
       *        WHEN    "222"
       *        WHEN    "232"

@@ -2735,6 +2735,7 @@
                IF     (WRK-SRY-SRYCD (IDXA)(1:3) =   "058" )
                   OR  (WRK-SRY-SRYCD (IDXA)      =   "630010002" )
                   OR  (WRK-SRY-SRYCD (IDXA)(1:7) =   "0992000" )
+                  OR  (WRK-SRY-SRYCD (IDXA)(1:7) =   "0999999" )
                    CONTINUE
                ELSE
                    IF     (WRK-SRY-SRYCD (IDXA)(1:1)   =   "6"
