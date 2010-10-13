@@ -12,4 +12,5 @@ alter table tbl_bunben DROP CONSTRAINT tbl_bunben_primary_key;
 alter table tbl_bunben add COLUMN  nyugaikbn char(1);
 update tbl_bunben set nyugaikbn = '1';
 alter table tbl_bunben add constraint tbl_bunben_primary_key primary key (hospnum,ptid,nyugaikbn,skyym,rrknum);
-alter table tbl_bunben alter rrknum TYPE numeric(7,0);
+alter table tbl_bunben alter rrknum TYPE integer;
+
