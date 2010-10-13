@@ -39,7 +39,7 @@ Start_dbredirector=false
 LD="orca01 orca02 orca03 orca04 orca11 orca12 orca13 orca14 orca18 orca19 orca21 orca22
     orca23 orca24 orca25 orca29 orca31 orca32 orca33 orca34 orca36 orca41 orca42 orca43
     orca44 orca51 orca52 orca71 orca82 orca101 orca102 orca103 orca104 
-    orca105 orca106 orca107 orca108 orca109 orca06 orca61 orca07 sessionend  orca08"
+    orca105 orca106 orca107 orca108 orca109 orca06 orca61 orca07 sessionend  orca08 api21"
 
 # 常に起動するLD
 # このLDは引数に関係なく起動される
@@ -147,7 +147,7 @@ then
     }
 fi
 if test "x"$Start_GLSERVER = "xtrue"; then
-    $GLSERVER -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
+    $GLSERVER -api -screen $SCREEN -record $RECORD -cache /tmp/cache/ &
     glpid=$!
 fi
 
