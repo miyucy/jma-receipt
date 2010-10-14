@@ -380,6 +380,8 @@
               05  SYUTTL-KYUFUGAI-OSIN3-TEN      PIC  9(07).
       *給付対象外点数（合計）
               05  SYUTTL-KYUFUGAI-GOKEI-TEN      PIC  9(07).
+      *保険適用区分
+           03  SYUTTL-HKNTEKKBN           PIC  X(01).
       *端末ＩＤ
            03  SYUTTL-TERMID              PIC  X(16).
       *オペーレータＩＤ

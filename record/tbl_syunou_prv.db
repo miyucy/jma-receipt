@@ -297,11 +297,13 @@ tbl_syunou_prv {
         KYUFUGAI_OSIN3_TEN              number(7,0);
         KYUFUGAI_GOKEI_TEN              number(7,0);
 	DAYINFFLG			char(1);
+	BUNBENINFFLG			char(1);
         NYUIN_RRKNUM                    number(3,0);
 	ACCT_UPDKBN			char(1);
 	JYO_HKNFTNMONEY                 number(7,0);
 	JYO_COMPFTN                     number(7,0);
 	JYO_COMPFTN_ENTANI              number(8,1);
+	HKNTEKKBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);

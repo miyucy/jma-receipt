@@ -432,6 +432,8 @@
            03  SYUMAIN-JYO-COMPFTN-ENTANI  PIC  9(07)V9(01).
       *請求入金区分（０：請求金額＝入金合計額／１：請求金額≠入金合計額）
            03  SYUMAIN-SKYNYUKINKBN        PIC  X(01).
+      *保険適用区分
+           03  SYUMAIN-HKNTEKKBN           PIC  X(01).
       *端末ＩＤ
            03  SYUMAIN-TERMID              PIC  X(16).
       *オペーレータＩＤ

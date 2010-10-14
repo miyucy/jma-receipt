@@ -207,6 +207,7 @@ tbl_syunou_main {
 	JYO_COMPFTN                     number(7,0);
 	JYO_COMPFTN_ENTANI              number(8,1);
 	SKYNYUKINKBN			char(1);
+	HKNTEKKBN			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);

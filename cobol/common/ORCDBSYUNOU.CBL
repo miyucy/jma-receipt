@@ -314,6 +314,7 @@
            ELSE
                MOVE    "1"             TO  SYUMAIN-SKYNYUKINKBN
            END-IF
+           MOVE    SYU-HKNTEKKBN       TO  SYUMAIN-HKNTEKKBN
            MOVE    SYU-TERMID          TO  SYUMAIN-TERMID
            MOVE    SYU-OPID            TO  SYUMAIN-OPID
            MOVE    SYU-CREYMD          TO  SYUMAIN-CREYMD
@@ -476,6 +477,7 @@
            MOVE    SYUMAIN-JYO-COMPFTN     TO  SYU-JYO-COMPFTN
            MOVE    SYUMAIN-JYO-COMPFTN-ENTANI
                                        TO  SYU-JYO-COMPFTN-ENTANI
+           MOVE    SYUMAIN-HKNTEKKBN       TO  SYU-HKNTEKKBN
            MOVE    SYUMAIN-TERMID          TO  SYU-TERMID
            MOVE    SYUMAIN-OPID            TO  SYU-OPID
            MOVE    SYUMAIN-CREYMD          TO  SYU-CREYMD

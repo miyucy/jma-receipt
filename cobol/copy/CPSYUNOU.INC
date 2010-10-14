@@ -585,6 +585,8 @@
            03  SYU-JYO-COMPFTN         PIC  9(07).
       *変則助成−計算負担金（円単位記録用）
            03  SYU-JYO-COMPFTN-ENTANI  PIC  9(07)V9(01).
+      *保険適用区分
+           03  SYU-HKNTEKKBN           PIC  X(01).
       *端末ＩＤ
            03  SYU-TERMID              PIC  X(16).
       *オペーレータＩＤ

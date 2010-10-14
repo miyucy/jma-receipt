@@ -184,6 +184,7 @@ tbl_syutotal {
         KYUFUGAI_OSIN2_TEN              number(7,0);
         KYUFUGAI_OSIN3_TEN              number(7,0);
         KYUFUGAI_GOKEI_TEN              number(7,0);
+	HKNTEKKBN  			char(1);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
