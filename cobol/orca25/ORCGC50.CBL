@@ -2813,16 +2813,16 @@
                        END-IF
                    END-IF
                END-IF
-      *        詳記区分登録あり
-               IF      WRK-RENNUM-MAX      >   ZERO
-                   MOVE    2               TO  FLG-HENOK
-               END-IF
-      *        最大連番
-               IF      WRK-RENNUM-MAX      =   99
-                   MOVE    1                   TO  FLG-HENOK
-                   MOVE    "0099"              TO  SPA-ERRCD
-                   MOVE    SPACE               TO  SPA-C50IDCD
-               END-IF
+           END-IF
+      *    詳記区分登録あり
+           IF      WRK-RENNUM-MAX      >   ZERO
+               MOVE    2               TO  FLG-HENOK
+           END-IF
+      *    最大連番
+           IF      WRK-RENNUM-MAX      =   99
+               MOVE    1                   TO  FLG-HENOK
+               MOVE    "0099"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-C50IDCD
            END-IF
       *
            IF      FLG-HENOK           =   ZERO
@@ -4775,15 +4775,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "よろしいですか？"
                                        TO  WRK-C50IDMSG(37:)
                WHEN    "0105"
-                   MOVE    "選択されているコメントを変更します。"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-C50IDMSG(37:)
+                   STRING  "選択されているコメントを変更します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0107"
                    STRING  "既に登録済みです。"
-                                       DELIMITED  BY  SIZE
                            "ＯＫでコメント内容を更新します。"
-                                       DELIMITED  BY  SIZE
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-C50IDMSG
