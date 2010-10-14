@@ -49,6 +49,8 @@
       *                                     生保単独になったときの対応
       *  04.04.02    NACL-門脇    10/01/04  月途中に医保と更生等の併用から
       *                                     更生等単独になったときの対応
+      *
+      *  04.06.01    NACL-門脇    10/10/14  編集条件判定修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -431,6 +433,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE04-HOSPNUM
            END-START
            PERFORM   UNTIL
 grpsys              (RECE02-HOSPNUM   NOT = RECE04-HOSPNUM)    OR
+                    (RECE02-SRYYM     NOT = RECE04-SRYYM)     OR
                     (RECE02-NYUGAIKBN NOT = RECE04-NYUGAIKBN) OR
                     (RECE02-PTID      NOT = RECE04-PTID)      OR
                     (RECE02-RECEKA    NOT = RECE04-RECEKA)    OR
@@ -561,6 +564,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
            END-START
            PERFORM   UNTIL
 grpsys            (RECE02-HOSPNUM       NOT =  RECE05-HOSPNUM)    OR
+                  (RECE02-SRYYM         NOT =  RECE05-SRYYM)     OR
                   (RECE02-NYUGAIKBN     NOT =  RECE05-NYUGAIKBN) OR
                   (RECE02-PTID          NOT =  RECE05-PTID)      OR
                   (RECE02-RECEKA        NOT =  RECE05-RECEKA)    OR

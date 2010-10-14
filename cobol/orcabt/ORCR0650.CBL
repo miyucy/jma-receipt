@@ -44,6 +44,8 @@
       *                                     更生等単独になったときの対応
       *
       *  04.05.01    NACL-門脇    09/12/04  食事（特別食）の他保険対応
+      *
+      *  04.06.01    NACL-門脇    10/10/14  編集条件判定修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -457,6 +459,7 @@
            END-START
            PERFORM   UNTIL
                     (RECE62-HOSPNUM   NOT = RECE64-HOSPNUM)   OR
+                    (RECE62-SRYYM     NOT = RECE64-SRYYM)     OR
                     (RECE62-NYUGAIKBN NOT = RECE64-NYUGAIKBN) OR
                     (RECE62-PTID      NOT = RECE64-PTID)      OR
                     (RECE62-RECEKA    NOT = RECE64-RECEKA)    OR
@@ -551,6 +554,7 @@
            END-START
            PERFORM   UNTIL
                   (RECE62-HOSPNUM       NOT =  RECE65-HOSPNUM)   OR
+                  (RECE62-SRYYM         NOT =  RECE65-SRYYM)     OR
                   (RECE62-NYUGAIKBN     NOT =  RECE65-NYUGAIKBN) OR
                   (RECE62-PTID          NOT =  RECE65-PTID)      OR
                   (RECE62-RECEKA        NOT =  RECE65-RECEKA)    OR
