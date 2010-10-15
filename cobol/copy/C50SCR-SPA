@@ -129,6 +129,8 @@
                05  SPA-NAI-SRYYM          PIC X(06).
       *
                05  SPA-NAI-COMMAX         PIC 9(05).
+               05  SPA-NAI-KEIFLG         PIC 9(01).
+               05  SPA-NAI-KEIMSG         PIC X(04).
       *
       *    文例入力画面用
            03  SPA-C501-AREA.

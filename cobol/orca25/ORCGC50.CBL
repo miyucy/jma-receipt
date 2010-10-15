@@ -333,6 +333,13 @@
            IF      SPA-MOTOPG          =   "C50ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
+      *        文例登録時の４００文字以上は確認メッセージ表示
+               IF      SPA-NAI-KEIFLG      =   1
+                   MOVE    SPA-NAI-KEIMSG      TO  SPA-C50IDCD
+                   MOVE    SPACE               TO  SPA-NAI-KEIMSG
+                   MOVE    ZERO                TO  SPA-NAI-KEIFLG
+                   PERFORM 520-C50IDSET-SEC
+               END-IF
            ELSE
       *        初期画面編集
                PERFORM 300-SCREEN-SEC
@@ -1925,14 +1932,6 @@
            MOVE    C50-COMMENT         TO  SPA-GMN-COMMENT
            MOVE    ZERO                TO  FLG-BUNREI
            PERFORM 800-COMMENT-CHK-SEC
-      *    文例登録のみは、最大８００文字
-           IF      SPA-GMN-SYORI       =   2
-               IF      KANACHK-MAX         >   800
-                   MOVE    "0090"              TO  SPA-ERRCD
-                   MOVE    1                   TO  FLG-BUNREI
-                   PERFORM 800-COMMENT-CHK-SEC
-               END-IF
-           END-IF
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-PTID        =   ZERO
                    MOVE    7                   TO  SPA-GMN-CUR
@@ -3755,12 +3754,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  FLG-BUNREI
                PERFORM 800-COMMENT-CHK-SEC
                IF      KANACHK-MAX         >   800
-                   MOVE    "0090"              TO  SPA-ERRCD
-                   MOVE    1                   TO  FLG-BUNREI
-                   PERFORM 800-COMMENT-CHK-SEC
+                   MOVE    "K090"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-NAI-KEIFLG
+      *            MOVE    1                   TO  FLG-BUNREI
+      *            PERFORM 800-COMMENT-CHK-SEC
                END-IF
            END-IF
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE )
+              OR  (SPA-ERRCD(1:1)      =   "K"   )
                IF      SPA-GMN-BUNNUM      =   ZERO
                    MOVE    "0102"              TO  SPA-C50IDCD
                ELSE
@@ -3771,8 +3772,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0106"              TO  SPA-C50IDCD
                    END-IF
                END-IF
+               IF      SPA-ERRCD(1:1)      =   "K"
+                   MOVE    SPA-C50IDCD         TO  SPA-NAI-KEIMSG
+                   MOVE    SPACE               TO  SPA-C50IDCD
+               END-IF
            END-IF
-      *
            .
        280-BUNREI-ADD-EXT.
            EXIT.
@@ -3849,6 +3853,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
                ADD     1                   TO  SPA-GMN-BUNNUM
            END-IF
+      *
+           MOVE    1                   TO  FLG-BUNREI
+           PERFORM 800-COMMENT-CHK-SEC
       *
       *    雛形有無
            PERFORM 28001-EXAMPLE-CHK-SEC
@@ -4703,9 +4710,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "症状詳記区分を選択して下さい。"
                                        TO  SPA-ERRMSG
       *ver.4.6
-               WHEN    "0090"
-                   STRING  "文例は４００文字までの登録です。"
-                           "４００文字以上は削除します。"
+               WHEN    "K090"
+                   STRING  "警告！！"
+                           "文例は４００文字までの登録です。"
+                           "４００文字以上は登録時に削除します。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -4755,25 +4763,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-C50IDMSG
                    END-STRING
                WHEN    "0102"
-                   MOVE    "文例へ追加登録します。"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-C50IDMSG(23:)
+                   STRING  "文例へ追加登録します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0103"
-                   MOVE    "文例登録番号の文例を更新します。"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-C50IDMSG(39:)
+                   STRING  "文例登録番号の文例を更新します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0106"
-                   MOVE    "文例を文例登録番号で追加します。"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-C50IDMSG(39:)
+                   STRING  "文例を文例登録番号で追加します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0104"
-                   MOVE    "選択されているコメントを削除します。"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-C50IDMSG(37:)
+                   STRING  "選択されているコメントを削除します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0105"
                    STRING  "選択されているコメントを変更します。"
                            "よろしいですか？"
@@ -4809,20 +4821,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-C50IDMSG
                    END-STRING
                WHEN    "0201"
-                   MOVE    "診療年月のレセプトコメントの登録と、"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "複写月数分のコメントの複写をします。"
-                                       TO  WRK-C50IDMSG(37:)
+                   STRING  "診療年月のレセプトコメントの登録と、"
+                           "複写月数分のコメントの複写をします。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0205"
-                   MOVE    "選択されているコメントの変更と、"
-                                       TO  WRK-C50IDMSG
-                   MOVE    "複写月数分のコメントの複写をします。"
-                                       TO  WRK-C50IDMSG(33:)
+                   STRING  "選択されているコメントの変更と、"
+                           "複写月数分のコメントの複写をします。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-C50IDMSG
+                   END-STRING
                WHEN    "0206"
                    STRING  "選択番号に登録されているすべてのコメントを"
-                                       DELIMITED  BY  SIZE
                            "複写月数分複写します。"
-                                       DELIMITED  BY  SIZE
                            "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-C50IDMSG
