@@ -965,3 +965,16 @@ path	abort	{
 	};
 };
 
+path	key54		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key54_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPNUM      =   :HOSPNUM 
+			AND	PTID         =   :PTID
+			AND	RRKEDANUM    =   1
+			ORDER BY RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+

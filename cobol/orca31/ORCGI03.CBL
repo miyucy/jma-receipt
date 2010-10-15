@@ -119,6 +119,7 @@
            03  WRK-CREYMD                  PIC X(08).
            03  WRK-SHONUM                  PIC 9(03).
            03  WRK-DAY6-KEISAN             PIC X(08).
+           03  WRK-NYUIN-COUNT             PIC 9(06).
       *
        01  WRK-BAK-AREA.
            03  WRK-BAK-SHOKAI.
@@ -126,6 +127,11 @@
                05                          PIC X(01).
                05  WRK-BAK-SHOKAI-NM       PIC X(06).
            03  WRK-BAK-SHONUM              PIC S9(3).
+      *
+      *    入院履歴ワーク
+       01  WKPTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"  REPLACING
+                               //PTNYUINRRK-// BY //WKPTNYUINRRK-//.
       *
        01  CONST-AREA.
            03  CONST-ZIIN-LBL              PIC X(06)
@@ -1868,6 +1874,12 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
+      **     DISPLAY "==     SPA-I01-I03-SYORIKBN = "
+      **                     SPA-I01-I03-SYORIKBN
+      **     DISPLAY "       PTNYUINRRK-RRKNUM = "
+      **                     PTNYUINRRK-RRKNUM
+      **     DISPLAY "       PTNYUINRRK-RRKEDANUM = "
+      **                     PTNYUINRRK-RRKEDANUM
            MOVE    WIDGET-NORMAL           TO  I03-B02-STT
                                                I03-B03-STT
                                                I03-B04-STT
@@ -1901,11 +1913,20 @@
                                                I03-SHOKAI-STT
                                                I03-SHOKAI-ITM-STT
                                                I03-SHONUM-STT
-                                               I03-NYUINYMD-STT
-                                               I03-TAIINYMD-STT
+      **                                         I03-NYUINYMD-STT
+      **                                         I03-TAIINYMD-STT
                                                I03-TAISYONISSU-STT
                                                I03-RRKKBN-STT
                                                I03-RRKKBN-ITM-STT
+      *
+      *        修正対象の入院歴以降に入院登録が複数回無いことのチェック
+      *        （複数回ある場合は入院日、退院日の変更を不可とする）
+               PERFORM    501-NYUINRRK-SERCH-SEC
+      **         DISPLAY    "WRK-NYUIN-COUNT = " WRK-NYUIN-COUNT
+               IF    WRK-NYUIN-COUNT           >=   2
+                   MOVE    WIDGET-INSENSITIVE  TO   I03-NYUINYMD-STT
+                                                    I03-TAIINYMD-STT
+               END-IF
            END-EVALUATE
       *
            IF    ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
@@ -1918,6 +1939,60 @@
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院登録履歴検索処理
+      *****************************************************************
+       501-NYUINRRK-SERCH-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  WRK-NYUIN-COUNT
+      *
+      *    入院履歴マスタ検索
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+           INITIALIZE  WKPTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  WKPTNYUINRRK-HOSPNUM
+           MOVE    SPA-I01-I03-PTID    TO  WKPTNYUINRRK-PTID
+           MOVE    WKPTNYUINRRK-REC    TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO  )
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key54"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC      =   ZERO  )
+                   MOVE    MCPDATA-REC     TO  WKPTNYUINRRK-REC
+                   MOVE    ZERO            TO  FLG-PTNYUINRRK
+               ELSE
+                   INITIALIZE          WKPTNYUINRRK-REC
+                   MOVE    1       TO  FLG-PTNYUINRRK
+               END-IF
+      *
+               PERFORM  UNTIL  (FLG-PTNYUINRRK     =  1)   OR
+                           (PTNYUINRRK-RRKNUM  =  WKPTNYUINRRK-RRKNUM)
+                   IF      WKPTNYUINRRK-JTIKBN =  "1"
+                           ADD     1           TO WRK-NYUIN-COUNT
+                   END-IF
+                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+                   MOVE    "key54"             TO  MCP-PATHNAME
+                   PERFORM 910-DBFETCH-SEC
+                   IF    ( MCP-RC      =   ZERO  )
+                       MOVE    MCPDATA-REC     TO  WKPTNYUINRRK-REC
+                       MOVE    ZERO    TO  FLG-PTNYUINRRK
+                   ELSE
+                       INITIALIZE          WKPTNYUINRRK-REC
+                       MOVE    1       TO  FLG-PTNYUINRRK
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key54"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       501-NYUINRRK-SERCH-EXT.
            EXIT.
       *****************************************************************
       *    画面カーソルセット処理
