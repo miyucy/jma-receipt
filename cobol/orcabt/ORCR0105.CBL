@@ -4025,16 +4025,7 @@
            MOVE    ZERO                TO  FLG-TENKI                                
       *     
            INITIALIZE                      RECE031-REC
-           MOVE    RECE02-HOSPNUM      TO  RECE031-HOSPNUM
-           MOVE    RECE02-SRYYM        TO  RECE031-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE031-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE031-PTID
-           MOVE    RECE02-RECEKA       TO  RECE031-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE031-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE031-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE031-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE031-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE031-TEKSTYMD
+           MOVE    RECE02-KEY          TO  RECE031-KEY1
       *
            START   RECE031-FILE
                KEY IS    >=   RECE031-KEY
@@ -4046,20 +4037,7 @@
       *
            PERFORM
                UNTIL  ( FLG-RECE031          =   1                    )
-               OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
-               OR     ( RECE02-SRYYM     NOT =   RECE031-SRYYM        )
-               OR     ( RECE02-NYUGAIKBN NOT =   RECE031-NYUGAIKBN    )
-               OR     ( RECE02-PTID      NOT =   RECE031-PTID         )
-               OR     ( RECE02-RECEKA    NOT =   RECE031-RECEKA       )
-               OR     ( RECE02-TEISYUTUSAKI
-                                         NOT =   RECE031-TEISYUTUSAKI )
-               OR     ( RECE02-RECESYUBETU
-                                         NOT =   RECE031-RECESYUBETU  )
-               OR     ( RECE02-HKNJANUM-KEY
-                                         NOT =   RECE031-HKNJANUM     )
-               OR     ( RECE02-HOJOKBN-KEY
-                                         NOT =   RECE031-HOJOKBN      )
-               OR     ( RECE02-TEKSTYMD  NOT =   RECE031-TEKSTYMD     )
+               OR     ( RECE02-KEY       NOT =   RECE031-KEY1         )
       *    
       *        病名編集処理
                PERFORM 3210-BYOMEI-SET-SEC
@@ -5677,16 +5655,7 @@
       *
       *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE061-REC
-           MOVE    RECE02-HOSPNUM      TO  RECE061-HOSPNUM
-           MOVE    RECE02-SRYYM        TO  RECE061-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE061-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE061-PTID
-           MOVE    RECE02-RECEKA       TO  RECE061-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE061-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE061-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE061-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE061-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE061-TEKSTYMD
+           MOVE    RECE02-KEY          TO  RECE061-KEY1
       *
            START   RECE061-FILE
                KEY IS    >=   RECE061-KEY
@@ -5697,21 +5666,8 @@
            END-START
       *
            PERFORM
-               UNTIL  ( FLG-RECE061           =   1 )
-               OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
-               OR     ( RECE02-SRYYM     NOT =   RECE061-SRYYM       )
-               OR     ( RECE02-NYUGAIKBN NOT =   RECE061-NYUGAIKBN   )
-               OR     ( RECE02-PTID      NOT =   RECE061-PTID        )
-               OR     ( RECE02-RECEKA    NOT =   RECE061-RECEKA      )
-               OR     ( RECE02-TEISYUTUSAKI
-                                         NOT =   RECE061-TEISYUTUSAKI)
-               OR     ( RECE02-RECESYUBETU
-                                         NOT =   RECE061-RECESYUBETU )
-               OR     ( RECE02-HKNJANUM-KEY
-                                         NOT =   RECE061-HKNJANUM    )
-               OR     ( RECE02-HOJOKBN-KEY
-                                         NOT =   RECE061-HOJOKBN     )
-               OR     ( RECE02-TEKSTYMD  NOT =   RECE061-TEKSTYMD    )
+               UNTIL  ( FLG-RECE061          =   1            )
+               OR     ( RECE02-KEY       NOT =   RECE061-KEY1 )
       *
       *        適用欄に剤の記載が必要なとき区切り線がまだ記載されていないとき
                IF      FLG-LINE            =   ZERO
@@ -6567,16 +6523,7 @@
            MOVE    "入退院履歴"        TO  WRK-NYUTAI-MSG
       *          
            INITIALIZE                      RECE12-REC
-           MOVE    RECE02-HOSPNUM      TO  RECE12-HOSPNUM
-           MOVE    RECE02-SRYYM        TO  RECE12-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE12-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE12-PTID
-           MOVE    RECE02-RECEKA       TO  RECE12-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE12-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE12-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE12-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE12-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE12-TEKSTYMD
+           MOVE    RECE02-KEY          TO  RECE12-KEY1
       *
            START   RECE12-FILE
                KEY IS    >=   RECE12-KEY
@@ -6587,20 +6534,7 @@
            END-START
       *
            PERFORM UNTIL ( FLG-RECE12           =  1                   )
-                   OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
-                   OR    ( RECE02-SRYYM     NOT =  RECE12-SRYYM        )
-                   OR    ( RECE02-NYUGAIKBN NOT =  RECE12-NYUGAIKBN    )
-                   OR    ( RECE02-PTID      NOT =  RECE12-PTID         )
-                   OR    ( RECE02-RECEKA    NOT =  RECE12-RECEKA       )
-                   OR    ( RECE02-TEISYUTUSAKI
-                                             NOT =  RECE12-TEISYUTUSAKI)
-                   OR    ( RECE02-RECESYUBETU
-                                             NOT =  RECE12-RECESYUBETU )
-                   OR    ( RECE02-HKNJANUM-KEY
-                                             NOT =  RECE12-HKNJANUM    )
-                   OR    ( RECE02-HOJOKBN-KEY
-                                             NOT =  RECE12-HOJOKBN     )
-                   OR    ( RECE02-TEKSTYMD   NOT =  RECE12-TEKSTYMD    )
+                   OR    ( RECE02-KEY       NOT =  RECE12-KEY1         )
       *
                IF      WRK-NYUINCHUKBN     =   ZERO
                    MOVE    RECE12-NYUINYMD     TO  WRK-SYMD

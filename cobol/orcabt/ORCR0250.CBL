@@ -424,16 +424,7 @@
        210-KBNNUM-SET-SEC                SECTION.
       *
            INITIALIZE                      RECE65-REC
-           MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
-           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-           MOVE    RECE64-PTID         TO  RECE65-PTID
-           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE64-KEY1         TO  RECE65-KEY1
            MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
            START   RECE65-FILE
                KEY IS    >=   RECE65-KEY
@@ -448,16 +439,7 @@
                   END-READ
            END-START
            IF  ( FLG-RECE65            =   ZERO )            AND
-               ( RECE64-HOSPNUM        =   RECE65-HOSPNUM)   AND
-               ( RECE64-SRYYM          =   RECE65-SRYYM  )   AND
-               ( RECE64-NYUGAIKBN      =   RECE65-NYUGAIKBN  )  AND
-               ( RECE64-PTID           =   RECE65-PTID         )  AND
-               ( RECE64-RECEKA         =   RECE65-RECEKA       )  AND
-               ( RECE64-TEISYUTUSAKI   =   RECE65-TEISYUTUSAKI )  AND
-               ( RECE64-RECESYUBETU    =   RECE65-RECESYUBETU  )  AND
-               ( RECE64-HKNJANUM       =   RECE65-HKNJANUM     )  AND
-               ( RECE64-HOJOKBN        =   RECE65-HOJOKBN      )  AND
-               ( RECE64-TEKSTYMD       =   RECE65-TEKSTYMD     )  AND
+               ( RECE64-KEY1           =   RECE65-KEY1   )   AND
                ( RECE64-ZAINUM         =   RECE65-ZAINUM       )
       *
       *        表用−区分番号

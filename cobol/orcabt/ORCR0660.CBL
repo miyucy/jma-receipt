@@ -1042,16 +1042,7 @@
            IF   RECE62-COMCNTFLG   =   "1"
       *
              INITIALIZE                      RECE64-REC
-             MOVE    RECE62-HOSPNUM      TO  RECE64-HOSPNUM
-             MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
-             MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
-             MOVE    RECE62-PTID         TO  RECE64-PTID
-             MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
-             MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
-             MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-             MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
-             MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
-             MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
+           MOVE    RECE62-KEY            TO  RECE64-KEY1
              MOVE    ZERO                TO  RECE64-ZAINUM
       *
              START   RECE64-FILE
@@ -1062,21 +1053,8 @@
                      PERFORM 990-RECE64-NEXT-SEC
              END-START
              PERFORM
-               UNTIL  ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE64-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE64-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE64-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE64-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE64-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE64-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE64-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE64-HOJOKBN      )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
+               UNTIL  ( FLG-RECE64           =   1          )
+               OR     ( RECE62-KEY       NOT =  RECE64-KEY1 )
       *
                EVALUATE      RECE64-SRYKBN
                    WHEN      "14"
@@ -1180,16 +1158,7 @@
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE64-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE64-PTID
-           MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE64-KEY1
            MOVE    ZERO                TO  RECE64-ZAINUM
       *
            START   RECE64-FILE
@@ -1200,21 +1169,8 @@
                    PERFORM 990-RECE64-NEXT-SEC
            END-START
            PERFORM
-               UNTIL  ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE64-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE64-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE64-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE64-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE64-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE64-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE64-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE64-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE64-HOJOKBN      )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE64-TEKSTYMD     )
+               UNTIL  ( FLG-RECE64           =   1          )
+               OR     ( RECE62-KEY       NOT =  RECE64-KEY1 )
       *
                INITIALIZE    WRK-JIDO-SETCOM-AREA
                MOVE    ZERO   TO   FLG-KAISIEN
@@ -4220,16 +4176,7 @@
            ADD     1                   TO  CNT-RECE649
       *
            INITIALIZE                      RECE65-REC
-           MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
-           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-           MOVE    RECE64-PTID         TO  RECE65-PTID
-           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE64-KEY1         TO  RECE65-KEY1
            MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
            MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
            START   RECE65-FILE
@@ -5572,16 +5519,7 @@
        20991-RECE65-TENSOU-SEC     SECTION.
       *
            INITIALIZE                      RECE65-REC
-           MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
-           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-           MOVE    RECE64-PTID         TO  RECE65-PTID
-           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE64-KEY1         TO  RECE65-KEY1
            MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
            MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
            START   RECE65-FILE
@@ -5593,18 +5531,7 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE65           =   1                   )
-               OR     ( RECE64-HOSPNUM   NOT =   RECE65-HOSPNUM      )
-               OR     ( RECE64-SRYYM     NOT =   RECE65-SRYYM        )
-               OR     ( RECE64-NYUGAIKBN NOT =   RECE65-NYUGAIKBN    )
-               OR     ( RECE64-PTID      NOT =   RECE65-PTID         )
-               OR     ( RECE64-RECEKA    NOT =   RECE65-RECEKA       )
-               OR     ( RECE64-TEISYUTUSAKI
-                                         NOT =   RECE65-TEISYUTUSAKI )
-               OR     ( RECE64-RECESYUBETU
-                                         NOT =   RECE65-RECESYUBETU  )
-               OR     ( RECE64-HKNJANUM  NOT =   RECE65-HKNJANUM     )
-               OR     ( RECE64-HOJOKBN   NOT =   RECE65-HOJOKBN      )
-               OR     ( RECE64-TEKSTYMD  NOT =   RECE65-TEKSTYMD     )
+               OR     ( RECE64-KEY1      NOT =   RECE65-KEY1         )
                OR     ( RECE64-ZAINUM    NOT =   RECE65-ZAINUM       )
                OR     ( RECE64-ZAIREN    NOT =   RECE65-ZAIREN       )
       *
@@ -5627,16 +5554,7 @@
        200111-RECE65-TAIHI-SEC     SECTION.
       *
            INITIALIZE                      RECE65-REC
-           MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
-           MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-           MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-           MOVE    RECE64-PTID         TO  RECE65-PTID
-           MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-           MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-           MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-           MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-           MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-           MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE64-KEY1         TO  RECE65-KEY1
            MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
            MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
            START   RECE65-FILE
@@ -5659,18 +5577,7 @@
       *
            PERFORM
                UNTIL  ( FLG-RECE65           =   1                   )
-               OR     ( RECE64-HOSPNUM   NOT =   RECE65-HOSPNUM      )
-               OR     ( RECE64-SRYYM     NOT =   RECE65-SRYYM        )
-               OR     ( RECE64-NYUGAIKBN NOT =   RECE65-NYUGAIKBN    )
-               OR     ( RECE64-PTID      NOT =   RECE65-PTID         )
-               OR     ( RECE64-RECEKA    NOT =   RECE65-RECEKA       )
-               OR     ( RECE64-TEISYUTUSAKI
-                                         NOT =   RECE65-TEISYUTUSAKI )
-               OR     ( RECE64-RECESYUBETU
-                                         NOT =   RECE65-RECESYUBETU  )
-               OR     ( RECE64-HKNJANUM  NOT =   RECE65-HKNJANUM     )
-               OR     ( RECE64-HOJOKBN   NOT =   RECE65-HOJOKBN      )
-               OR     ( RECE64-TEKSTYMD  NOT =   RECE65-TEKSTYMD     )
+               OR     ( RECE64-KEY1      NOT =   RECE65-KEY1         )
                OR     ( RECE64-ZAINUM    NOT =   RECE65-ZAINUM       )
                OR     ( RECE64-ZAIREN    NOT =   RECE65-ZAIREN       )
       *
@@ -5856,16 +5763,7 @@
       *
       *    パラメータ６４９ファイルより編集
            INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE649-KEY1
            MOVE    ZERO                TO  RECE649-ZAINUM
       *
            START   RECE649-FILE
@@ -5877,20 +5775,7 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE649          =   1                    )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE649-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE649-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE649-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE649-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE649-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE649-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE649-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE649-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE649-HOJOKBN      )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE649-TEKSTYMD     )
+               OR     ( RECE62-KEY       NOT =   RECE649-KEY1         )
       *
                EVALUATE  RECE649-SRYKBN
                  WHEN      "90"
@@ -5952,16 +5837,7 @@
            INITIALIZE                TBL-SANSO-INF
       *
            INITIALIZE                       RECE659-REC
-           MOVE    RECE649-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE649-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE649-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE649-PTID         TO  RECE659-PTID
-           MOVE    RECE649-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE649-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE649-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE649-HKNJANUM     TO  RECE659-HKNJANUM
-           MOVE    RECE649-HOJOKBN      TO  RECE659-HOJOKBN
-           MOVE    RECE649-TEKSTYMD     TO  RECE659-TEKSTYMD
+           MOVE    RECE649-KEY1         TO  RECE659-KEY1
            MOVE    RECE649-ZAINUM       TO  RECE659-ZAINUM
            MOVE    RECE649-ZAIREN       TO  RECE659-ZAIREN
            START   RECE659-FILE
@@ -5973,18 +5849,7 @@
            END-START
            PERFORM
                UNTIL ( FLG-RECE659           =  1                    )
-               OR    ( RECE649-HOSPNUM   NOT =  RECE659-HOSPNUM      )
-               OR    ( RECE649-SRYYM     NOT =  RECE659-SRYYM        )
-               OR    ( RECE649-NYUGAIKBN NOT =  RECE659-NYUGAIKBN    )
-               OR    ( RECE649-PTID      NOT =  RECE659-PTID         )
-               OR    ( RECE649-RECEKA    NOT =  RECE659-RECEKA       )
-               OR    ( RECE649-TEISYUTUSAKI
-                                         NOT =  RECE659-TEISYUTUSAKI )
-               OR    ( RECE649-RECESYUBETU
-                                         NOT =  RECE659-RECESYUBETU  )
-               OR    ( RECE649-HKNJANUM  NOT =  RECE659-HKNJANUM     )
-               OR    ( RECE649-HOJOKBN   NOT =  RECE659-HOJOKBN      )
-               OR    ( RECE649-TEKSTYMD  NOT =  RECE659-TEKSTYMD     )
+               OR    ( RECE649-KEY1      NOT =  RECE659-KEY1         )
                OR    ( RECE649-ZAINUM    NOT =  RECE659-ZAINUM       )
                OR    ( RECE649-ZAIREN    NOT =  RECE659-ZAIREN       )
       *
@@ -6273,16 +6138,7 @@
        250111-RECE659-TAIHI-SEC     SECTION.
       *
            INITIALIZE                       RECE659-REC
-           MOVE    RECE649-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE649-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE649-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE649-PTID         TO  RECE659-PTID
-           MOVE    RECE649-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE649-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE649-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE649-HKNJANUM     TO  RECE659-HKNJANUM
-           MOVE    RECE649-HOJOKBN      TO  RECE659-HOJOKBN
-           MOVE    RECE649-TEKSTYMD     TO  RECE659-TEKSTYMD
+           MOVE    RECE649-KEY1         TO  RECE659-KEY1
            MOVE    RECE649-ZAINUM       TO  RECE659-ZAINUM
            MOVE    RECE649-ZAIREN       TO  RECE659-ZAIREN
            START   RECE659-FILE
@@ -6305,18 +6161,7 @@
       *
            PERFORM
                UNTIL  ( FLG-RECE659           =   1                    )
-               OR     ( RECE649-HOSPNUM   NOT =   RECE659-HOSPNUM      )
-               OR     ( RECE649-SRYYM     NOT =   RECE659-SRYYM        )
-               OR     ( RECE649-NYUGAIKBN NOT =   RECE659-NYUGAIKBN    )
-               OR     ( RECE649-PTID      NOT =   RECE659-PTID         )
-               OR     ( RECE649-RECEKA    NOT =   RECE659-RECEKA       )
-               OR     ( RECE649-TEISYUTUSAKI
-                                          NOT =   RECE659-TEISYUTUSAKI )
-               OR     ( RECE649-RECESYUBETU
-                                          NOT =   RECE659-RECESYUBETU  )
-               OR     ( RECE649-HKNJANUM  NOT =   RECE659-HKNJANUM     )
-               OR     ( RECE649-HOJOKBN   NOT =   RECE659-HOJOKBN      )
-               OR     ( RECE649-TEKSTYMD  NOT =   RECE659-TEKSTYMD     )
+               OR     ( RECE649-KEY1      NOT =   RECE659-KEY1         )
                OR     ( RECE649-ZAINUM    NOT =   RECE659-ZAINUM       )
                OR     ( RECE649-ZAIREN    NOT =   RECE659-ZAIREN       )
       *
@@ -7139,16 +6984,7 @@
       *
       *    パラメータ６４１ファイルより編集
            INITIALIZE                      RECE641-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE641-PTID
-           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE641-KEY1
            MOVE    ZERO                TO  RECE641-ZAINUM
       *
            START   RECE641-FILE
@@ -7160,20 +6996,7 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE641          =   1                    )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE641-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE641-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE641-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE641-HOJOKBN      )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
+               OR     ( RECE62-KEY       NOT =   RECE641-KEY1         )
       *
                IF     RECE641-SETCOMFLG   =    "1"
                   PERFORM 2601-SETCOM-HENSYU2-SEC
@@ -7212,16 +7035,7 @@
                                  WRK-HEN-SEQNO-J2
       *
            INITIALIZE                       RECE651-REC
-           MOVE    RECE641-HOSPNUM      TO  RECE651-HOSPNUM
-           MOVE    RECE641-SRYYM        TO  RECE651-SRYYM
-           MOVE    RECE641-NYUGAIKBN    TO  RECE651-NYUGAIKBN
-           MOVE    RECE641-PTID         TO  RECE651-PTID
-           MOVE    RECE641-RECEKA       TO  RECE651-RECEKA
-           MOVE    RECE641-TEISYUTUSAKI TO  RECE651-TEISYUTUSAKI
-           MOVE    RECE641-RECESYUBETU  TO  RECE651-RECESYUBETU
-           MOVE    RECE641-HKNJANUM     TO  RECE651-HKNJANUM
-           MOVE    RECE641-HOJOKBN      TO  RECE651-HOJOKBN
-           MOVE    RECE641-TEKSTYMD     TO  RECE651-TEKSTYMD
+           MOVE    RECE641-KEY1         TO  RECE651-KEY1
            MOVE    RECE641-ZAINUM       TO  RECE651-ZAINUM
            MOVE    RECE641-ZAIREN       TO  RECE651-ZAIREN
            START   RECE651-FILE
@@ -7233,18 +7047,7 @@
            END-START
            PERFORM
                UNTIL  ( FLG-RECE651           =   1                    )
-               OR     ( RECE641-HOSPNUM   NOT =   RECE651-HOSPNUM      )
-               OR     ( RECE641-SRYYM     NOT =   RECE651-SRYYM        )
-               OR     ( RECE641-NYUGAIKBN NOT =   RECE651-NYUGAIKBN    )
-               OR     ( RECE641-PTID      NOT =   RECE651-PTID         )
-               OR     ( RECE641-RECEKA    NOT =   RECE651-RECEKA       )
-               OR     ( RECE641-TEISYUTUSAKI
-                                          NOT =   RECE651-TEISYUTUSAKI )
-               OR     ( RECE641-RECESYUBETU
-                                          NOT =   RECE651-RECESYUBETU  )
-               OR     ( RECE641-HKNJANUM  NOT =   RECE651-HKNJANUM     )
-               OR     ( RECE641-HOJOKBN   NOT =   RECE651-HOJOKBN      )
-               OR     ( RECE641-TEKSTYMD  NOT =   RECE651-TEKSTYMD     )
+               OR     ( RECE641-KEY1      NOT =   RECE651-KEY1         )
                OR     ( RECE641-ZAINUM    NOT =   RECE651-ZAINUM       )
                OR     ( RECE641-ZAIREN    NOT =   RECE651-ZAIREN       )
       *

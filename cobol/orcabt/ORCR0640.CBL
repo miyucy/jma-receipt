@@ -20183,16 +20183,7 @@
               MOVE    ZERO                TO  FLG-REWRITE
       *
               INITIALIZE                      RECE65-REC
-              MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
-              MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-              MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-              MOVE    RECE64-PTID         TO  RECE65-PTID
-              MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-              MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-              MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-              MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-              MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-              MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+              MOVE    RECE64-KEY1         TO  RECE65-KEY1
               MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
               MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
               START   RECE65-FILE
@@ -20207,16 +20198,7 @@
                         END-READ
               END-START
               PERFORM   UNTIL
-                  (RECE64-HOSPNUM      NOT =  RECE65-HOSPNUM)     OR
-                  (RECE64-SRYYM        NOT =  RECE65-SRYYM)       OR
-                  (RECE64-NYUGAIKBN    NOT =  RECE65-NYUGAIKBN)   OR
-                  (RECE64-PTID         NOT =  RECE65-PTID)        OR
-                  (RECE64-RECEKA       NOT =  RECE65-RECEKA)      OR
-                  (RECE64-TEISYUTUSAKI NOT =  RECE65-TEISYUTUSAKI) OR
-                  (RECE64-RECESYUBETU  NOT =  RECE65-RECESYUBETU)  OR
-                  (RECE64-HKNJANUM     NOT =  RECE65-HKNJANUM)    OR
-                  (RECE64-HOJOKBN      NOT =  RECE65-HOJOKBN )    OR
-                  (RECE64-TEKSTYMD     NOT =  RECE65-TEKSTYMD)    OR
+                  (RECE64-KEY1         NOT =  RECE65-KEY1  )      OR
                   (RECE64-ZAINUM       NOT =  RECE65-ZAINUM)      OR
                   (RECE64-ZAIREN       NOT =  RECE65-ZAIREN)      OR
                   (FLG-RECE65-ZAN            =      1        )    OR
@@ -20255,16 +20237,7 @@
               MOVE    ZERO                TO  FLG-REWRITE
       *
               INITIALIZE                      RECE65-REC
-              MOVE    RECE64-HOSPNUM      TO  RECE65-HOSPNUM
-              MOVE    RECE64-SRYYM        TO  RECE65-SRYYM
-              MOVE    RECE64-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-              MOVE    RECE64-PTID         TO  RECE65-PTID
-              MOVE    RECE64-RECEKA       TO  RECE65-RECEKA
-              MOVE    RECE64-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-              MOVE    RECE64-RECESYUBETU  TO  RECE65-RECESYUBETU
-              MOVE    RECE64-HKNJANUM     TO  RECE65-HKNJANUM
-              MOVE    RECE64-HOJOKBN      TO  RECE65-HOJOKBN
-              MOVE    RECE64-TEKSTYMD     TO  RECE65-TEKSTYMD
+              MOVE    RECE64-KEY1         TO  RECE65-KEY1
               MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
               MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
               START   RECE65-FILE
@@ -20279,16 +20252,7 @@
                         END-READ
               END-START
               PERFORM   UNTIL
-                  (RECE64-HOSPNUM      NOT =  RECE65-HOSPNUM)     OR
-                  (RECE64-SRYYM        NOT =  RECE65-SRYYM)       OR
-                  (RECE64-NYUGAIKBN    NOT =  RECE65-NYUGAIKBN)   OR
-                  (RECE64-PTID         NOT =  RECE65-PTID)        OR
-                  (RECE64-RECEKA       NOT =  RECE65-RECEKA)      OR
-                  (RECE64-TEISYUTUSAKI NOT =  RECE65-TEISYUTUSAKI) OR
-                  (RECE64-RECESYUBETU  NOT =  RECE65-RECESYUBETU)  OR
-                  (RECE64-HKNJANUM     NOT =  RECE65-HKNJANUM)    OR
-                  (RECE64-HOJOKBN      NOT =  RECE65-HOJOKBN )    OR
-                  (RECE64-TEKSTYMD     NOT =  RECE65-TEKSTYMD)    OR
+                  (RECE64-KEY1         NOT =  RECE65-KEY1  )      OR
                   (RECE64-ZAINUM       NOT =  RECE65-ZAINUM)      OR
                   (RECE64-ZAIREN       NOT =  RECE65-ZAIREN)      OR
                   (FLG-RECE65-ZAN            =      1        )    OR

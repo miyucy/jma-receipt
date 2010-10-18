@@ -37,26 +37,28 @@
       ************************************************************
       *01  RECE061-REC.
            03  RECE061-KEY.
+               05  RECE061-KEY1.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE061-HOSPNUM         PIC 9(2).
+                   07  RECE061-HOSPNUM     PIC 9(2).
       *¿ÇÎÅÇ¯·î
-               05  RECE061-SRYYM           PIC  9(06).
+                   07  RECE061-SRYYM       PIC 9(06).
       *Æþ³°¶èÊ¬
-               05  RECE061-NYUGAIKBN       PIC  X(01).
+                   07  RECE061-NYUGAIKBN   PIC X(01).
       *´µ¼Ô£É£Ä
-               05  RECE061-PTID            PIC  9(10).
+                   07  RECE061-PTID        PIC 9(10).
       *¥ì¥»¥×¥È²Ê
-               05  RECE061-RECEKA          PIC  X(02).
+                   07  RECE061-RECEKA      PIC X(02).
       *¿³ºº»ÙÊ§µ¡´Ø
-               05  RECE061-TEISYUTUSAKI    PIC  9(01).
+                   07  RECE061-TEISYUTUSAKI
+                                          PIC 9(01).
       *¥ì¥»¥×¥È¼ïÊÌ
-               05  RECE061-RECESYUBETU     PIC  9(04).
+                   07  RECE061-RECESYUBETU PIC 9(04).
       *ÊÝ¸±¼ÔÈÖ¹æ        
-               05  RECE061-HKNJANUM        PIC  X(08).
+                   07  RECE061-HKNJANUM    PIC X(08).
       *Êä½õ¶èÊ¬
-               05  RECE061-HOJOKBN         PIC  X(01).
+                   07  RECE061-HOJOKBN     PIC X(01).
       *Å¬ÍÑ³«»ÏÇ¯·îÆü
-               05  RECE061-TEKSTYMD        PIC  X(08). 
+                   07  RECE061-TEKSTYMD    PIC X(08). 
       *¸øÈñÊ¬Î¥¶èÊ¬
                05  RECE061-KOHBUNRI        PIC  9(01).
       *¿ÇÎÅ¶èÊ¬

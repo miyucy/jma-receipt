@@ -30,26 +30,28 @@
       ************************************************************
       *01  RECE68-REC.
            03  RECE68-KEY.
+               05  RECE68-KEY1.
       *医療機関ＩＤ
-               05  RECE68-HOSPNUM         PIC 9(2).
+                   07  RECE68-HOSPNUM      PIC 9(2).
       *診療年月
-               05  RECE68-SRYYM           PIC  9(06).
+                   07  RECE68-SRYYM        PIC 9(06).
       *入外区分
-               05  RECE68-NYUGAIKBN       PIC  X(01).
+                   07  RECE68-NYUGAIKBN    PIC X(01).
       *患者ＩＤ
-               05  RECE68-PTID            PIC  9(10).
+                   07  RECE68-PTID         PIC 9(10).
       *レセプト科
-               05  RECE68-RECEKA          PIC  X(02).
+                   07  RECE68-RECEKA       PIC X(02).
       *審査支払機関
-               05  RECE68-TEISYUTUSAKI    PIC  9(01).
+                   07  RECE68-TEISYUTUSAKI
+                                           PIC 9(01).
       *レセプト種別
-               05  RECE68-RECESYUBETU     PIC  9(04).
+                   07  RECE68-RECESYUBETU  PIC 9(04).
       *保険者番号        
-               05  RECE68-HKNJANUM        PIC  X(08).
+                   07  RECE68-HKNJANUM     PIC X(08).
       *補助区分
-               05  RECE68-HOJOKBN         PIC  X(01).
+                   07  RECE68-HOJOKBN      PIC X(01).
       *適用開始年月日
-               05  RECE68-TEKSTYMD        PIC  X(08). 
+                   07  RECE68-TEKSTYMD     PIC X(08). 
       *入院年月日
                05  RECE68-NYUINYMD        PIC X(08).
       *退院年月日

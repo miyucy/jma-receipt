@@ -3057,16 +3057,7 @@
       *     
       *    傷病名情報
            INITIALIZE                      RECE631-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE631-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE631-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE631-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE631-PTID
-           MOVE    RECE62-RECEKA       TO  RECE631-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE631-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE631-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE631-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE631-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE631-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE631-KEY1
       *
            START   RECE63-FILE
                KEY IS    >=   RECE631-KEY
@@ -3077,26 +3068,8 @@
            END-START
       *     
            PERFORM UNTIL  ( FLG-RECE63   =   1                    )
-                   OR     ( RECE62-HOSPNUM
-                                     NOT =   RECE631-HOSPNUM      )
-                   OR     ( RECE62-SRYYM
-                                     NOT =   RECE631-SRYYM        )
-                   OR     ( RECE62-NYUGAIKBN
-                                     NOT =   RECE631-NYUGAIKBN    )
-                   OR     ( RECE62-PTID
-                                     NOT =   RECE631-PTID         )
-                   OR     ( RECE62-RECEKA
-                                     NOT =   RECE631-RECEKA       )
-                   OR     ( RECE62-TEISYUTUSAKI
-                                     NOT =   RECE631-TEISYUTUSAKI )
-                   OR     ( RECE62-RECESYUBETU
-                                     NOT =   RECE631-RECESYUBETU  )
-                   OR     ( RECE62-HKNJANUM-KEY
-                                     NOT =   RECE631-HKNJANUM     )
-                   OR     ( RECE62-HOJOKBN-KEY
-                                     NOT =   RECE631-HOJOKBN      )
-                   OR     ( RECE62-TEKSTYMD
-                                     NOT =   RECE631-TEKSTYMD     )
+                   OR     ( RECE62-KEY
+                                     NOT =   RECE631-KEY1         )
       *        転帰区分:8(移行)以外 処理対象
                IF      RECE631-TENKIKBN     =   "8"
                    CONTINUE
@@ -3275,16 +3248,7 @@
       *                                        
       *    摘要情報
            INITIALIZE                      RECE641-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE641-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE641-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE641-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE641-PTID
-           MOVE    RECE62-RECEKA       TO  RECE641-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE641-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE641-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE641-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE641-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE641-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE641-KEY1
       *
            START   RECE641-FILE
                KEY IS    >=   RECE641-KEY
@@ -3296,20 +3260,7 @@
            PERFORM
                UNTIL  ( FLG-END              =   1                   )
                OR     ( FLG-RECE64           =   1                   )
-               OR     ( RECE62-HOSPNUM   NOT =   RECE641-HOSPNUM      )
-               OR     ( RECE62-SRYYM     NOT =   RECE641-SRYYM        )
-               OR     ( RECE62-NYUGAIKBN NOT =   RECE641-NYUGAIKBN    )
-               OR     ( RECE62-PTID      NOT =   RECE641-PTID         )
-               OR     ( RECE62-RECEKA    NOT =   RECE641-RECEKA       )
-               OR     ( RECE62-TEISYUTUSAKI
-                                         NOT =   RECE641-TEISYUTUSAKI )
-               OR     ( RECE62-RECESYUBETU
-                                         NOT =   RECE641-RECESYUBETU  )
-               OR     ( RECE62-HKNJANUM-KEY
-                                         NOT =   RECE641-HKNJANUM     )
-               OR     ( RECE62-HOJOKBN-KEY
-                                         NOT =   RECE641-HOJOKBN      )
-               OR     ( RECE62-TEKSTYMD  NOT =   RECE641-TEKSTYMD     )
+               OR     ( RECE62-KEY       NOT =   RECE641-KEY1        )
                OR     ( RECE641-SRYKBN       >=  "90"                 )
       *
       *        負担区分編集処理
@@ -3717,16 +3668,7 @@
            MOVE    ZERO                TO  WRK-NYUINCHUKBN
       *          
            INITIALIZE                      RECE68-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE68-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE68-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE68-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE68-PTID
-           MOVE    RECE62-RECEKA       TO  RECE68-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE68-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE68-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE68-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE68-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE68-TEKSTYMD
+           MOVE    RECE62-KEY          TO  RECE68-KEY1
       *
            START   RECE68-FILE
                KEY IS    >=   RECE68-KEY
@@ -3737,20 +3679,7 @@
            END-START
       *
            PERFORM UNTIL ( FLG-RECE68           =  1                   )
-                   OR    ( RECE62-HOSPNUM   NOT =  RECE68-HOSPNUM      )
-                   OR    ( RECE62-SRYYM     NOT =  RECE68-SRYYM        )
-                   OR    ( RECE62-NYUGAIKBN NOT =  RECE68-NYUGAIKBN    )
-                   OR    ( RECE62-PTID      NOT =  RECE68-PTID         )
-                   OR    ( RECE62-RECEKA    NOT =  RECE68-RECEKA       )
-                   OR    ( RECE62-TEISYUTUSAKI
-                                             NOT =  RECE68-TEISYUTUSAKI)
-                   OR    ( RECE62-RECESYUBETU
-                                             NOT =  RECE68-RECESYUBETU )
-                   OR    ( RECE62-HKNJANUM-KEY
-                                             NOT =  RECE68-HKNJANUM    )
-                   OR    ( RECE62-HOJOKBN-KEY
-                                             NOT =  RECE68-HOJOKBN     )
-                   OR    ( RECE62-TEKSTYMD   NOT =  RECE68-TEKSTYMD    )
+                   OR    ( RECE62-KEY       NOT =  RECE68-KEY1         )
       *
       *        再入院年月日か入院年月日
                IF    ( RECE68-NYUINYMD     =   RECE62-NYUINYMD )
@@ -3909,16 +3838,7 @@
            MOVE    ZERO                 TO  TBL-KENSA-RECE65-MAX
       *
            INITIALIZE                      RECE65-REC
-           MOVE    RECE641-HOSPNUM      TO  RECE65-HOSPNUM
-           MOVE    RECE641-SRYYM        TO  RECE65-SRYYM
-           MOVE    RECE641-NYUGAIKBN    TO  RECE65-NYUGAIKBN
-           MOVE    RECE641-PTID         TO  RECE65-PTID
-           MOVE    RECE641-RECEKA       TO  RECE65-RECEKA
-           MOVE    RECE641-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
-           MOVE    RECE641-RECESYUBETU  TO  RECE65-RECESYUBETU
-           MOVE    RECE641-HKNJANUM     TO  RECE65-HKNJANUM
-           MOVE    RECE641-HOJOKBN      TO  RECE65-HOJOKBN
-           MOVE    RECE641-TEKSTYMD     TO  RECE65-TEKSTYMD
+           MOVE    RECE641-KEY1         TO  RECE65-KEY1
            MOVE    RECE641-ZAINUM       TO  RECE65-ZAINUM
            START   RECE65-FILE
                KEY IS    >=   RECE65-KEY
@@ -3930,18 +3850,7 @@
            PERFORM
                UNTIL  ( FLG-END                =   1                   )
                OR     ( FLG-RECE65             =   1                   )
-               OR     ( RECE641-HOSPNUM    NOT =   RECE65-HOSPNUM      )
-               OR     ( RECE641-SRYYM      NOT =   RECE65-SRYYM        )
-               OR     ( RECE641-NYUGAIKBN  NOT =   RECE65-NYUGAIKBN    )
-               OR     ( RECE641-PTID       NOT =   RECE65-PTID         )
-               OR     ( RECE641-RECEKA     NOT =   RECE65-RECEKA       )
-               OR     ( RECE641-TEISYUTUSAKI
-                                           NOT =   RECE65-TEISYUTUSAKI )
-               OR     ( RECE641-RECESYUBETU
-                                           NOT =   RECE65-RECESYUBETU  )
-               OR     ( RECE641-HKNJANUM   NOT =   RECE65-HKNJANUM     )
-               OR     ( RECE641-HOJOKBN    NOT =   RECE65-HOJOKBN      )
-               OR     ( RECE641-TEKSTYMD   NOT =   RECE65-TEKSTYMD     )
+               OR     ( RECE641-KEY1       NOT =   RECE65-KEY1         )
                OR     ( RECE641-ZAINUM     NOT =   RECE65-ZAINUM       )
       *
              PERFORM   VARYING   IDX   FROM    1   BY  1

@@ -440,16 +440,7 @@
       *
            MOVE    SPACE                TO      RECE64-REC
            INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           MOVE    RECE62-KEY           TO      RECE64-KEY1
            START   RECE64-FILE   KEY  IS  >=    RECE64-KEY
                    INVALID
                        MOVE   1         TO      FLG-RECE64
@@ -458,16 +449,7 @@
                        PERFORM   900-RECE64-NEXT-SEC
            END-START
            PERFORM   UNTIL
-                    (RECE62-HOSPNUM   NOT = RECE64-HOSPNUM)   OR
-                    (RECE62-SRYYM     NOT = RECE64-SRYYM)     OR
-                    (RECE62-NYUGAIKBN NOT = RECE64-NYUGAIKBN) OR
-                    (RECE62-PTID      NOT = RECE64-PTID)      OR
-                    (RECE62-RECEKA    NOT = RECE64-RECEKA)    OR
-                    (RECE62-TEISYUTUSAKI NOT = RECE64-TEISYUTUSAKI) OR
-                    (RECE62-RECESYUBETU  NOT = RECE64-RECESYUBETU)  OR
-                    (RECE62-HKNJANUM-KEY NOT = RECE64-HKNJANUM)  OR
-                    (RECE62-HOJOKBN-KEY  NOT = RECE64-HOJOKBN)  OR
-                    (RECE62-TEKSTYMD  NOT = RECE64-TEKSTYMD)  OR
+                    (RECE62-KEY       NOT = RECE64-KEY1 )     OR
                     (FLG-RECE64       =    1)
                      MOVE   RECE64-ZAINUM    TO   WK-ZAINUM
                      MOVE   RECE64-ZAIREN    TO   WK-ZAIREN
@@ -533,16 +515,7 @@
       *
            MOVE    SPACE                TO      RECE65-REC
            INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           MOVE    RECE62-KEY           TO      RECE65-KEY1
            MOVE    WK-ZAINUM            TO      RECE65-ZAINUM
            MOVE    WK-ZAIREN            TO      RECE65-ZAIREN
            START   RECE65-FILE   KEY  IS  >=    RECE65-KEY
@@ -553,16 +526,7 @@
                        PERFORM   900-RECE65-NEXT-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE62-HOSPNUM       NOT =  RECE65-HOSPNUM)   OR
-                  (RECE62-SRYYM         NOT =  RECE65-SRYYM)     OR
-                  (RECE62-NYUGAIKBN     NOT =  RECE65-NYUGAIKBN) OR
-                  (RECE62-PTID          NOT =  RECE65-PTID)      OR
-                  (RECE62-RECEKA        NOT =  RECE65-RECEKA)    OR
-                  (RECE62-TEISYUTUSAKI  NOT =  RECE65-TEISYUTUSAKI) OR
-                  (RECE62-RECESYUBETU   NOT =  RECE65-RECESYUBETU)  OR
-                  (RECE62-HKNJANUM-KEY  NOT =  RECE65-HKNJANUM)  OR
-                  (RECE62-HOJOKBN-KEY   NOT =  RECE65-HOJOKBN )  OR
-                  (RECE62-TEKSTYMD      NOT =  RECE65-TEKSTYMD)  OR
+                  (RECE62-KEY           NOT =  RECE65-KEY1)   OR
                   (WK-ZAINUM            NOT =  RECE65-ZAINUM)    OR
                   (WK-ZAIREN            NOT =  RECE65-ZAIREN)    OR
                   (FLG-RECE65           =      1)

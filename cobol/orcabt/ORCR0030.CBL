@@ -15166,16 +15166,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
               MOVE    ZERO                TO  FLG-REWRITE
       *
               INITIALIZE                      RECE05-REC
-grpsys        MOVE    RECE04-HOSPNUM      TO  RECE05-HOSPNUM
-              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-              MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-              MOVE    RECE04-PTID         TO  RECE05-PTID
-              MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-              MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-              MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-              MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-              MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
-              MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+              MOVE    RECE04-KEY1         TO  RECE05-KEY1
               MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
               START   RECE05-FILE
                     KEY IS    >=   RECE05-KEY
@@ -15189,19 +15180,10 @@ grpsys        MOVE    RECE04-HOSPNUM      TO  RECE05-HOSPNUM
                         END-READ
               END-START
               PERFORM   UNTIL
-grpsys            (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
-                  (RECE04-SRYYM        NOT =  RECE05-SRYYM)       OR
-                  (RECE04-NYUGAIKBN    NOT =  RECE05-NYUGAIKBN)   OR
-                  (RECE04-PTID         NOT =  RECE05-PTID)        OR
-                  (RECE04-RECEKA       NOT =  RECE05-RECEKA)      OR
-                  (RECE04-TEISYUTUSAKI NOT =  RECE05-TEISYUTUSAKI) OR
-                  (RECE04-RECESYUBETU  NOT =  RECE05-RECESYUBETU)  OR
-                  (RECE04-HKNJANUM     NOT =  RECE05-HKNJANUM)    OR
-                  (RECE04-HOJOKBN      NOT =  RECE05-HOJOKBN )    OR
-                  (RECE04-TEKSTYMD     NOT =  RECE05-TEKSTYMD)    OR
-                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM)      OR
-                  (FLG-RECE05                =      1        )    OR
-                  (FLG-REWRITE               =      1        )
+grpsys            (RECE04-KEY1         NOT =  RECE05-KEY1   )  OR
+                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM )  OR
+                  (FLG-RECE05                =      1       )  OR
+                  (FLG-REWRITE               =      1       )
                    IF    RECE05-RENNUM   =   WRK-RENNUM
                       MOVE    1              TO  FLG-REWRITE
                       PERFORM  VARYING  IDXB  FROM  5   BY  -1
@@ -15236,16 +15218,7 @@ grpsys            (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
               MOVE    ZERO                TO  FLG-REWRITE
       *
               INITIALIZE                      RECE05-REC
-              MOVE    RECE04-HOSPNUM      TO  RECE05-HOSPNUM
-              MOVE    RECE04-SRYYM        TO  RECE05-SRYYM
-              MOVE    RECE04-NYUGAIKBN    TO  RECE05-NYUGAIKBN
-              MOVE    RECE04-PTID         TO  RECE05-PTID
-              MOVE    RECE04-RECEKA       TO  RECE05-RECEKA
-              MOVE    RECE04-TEISYUTUSAKI TO  RECE05-TEISYUTUSAKI
-              MOVE    RECE04-RECESYUBETU  TO  RECE05-RECESYUBETU
-              MOVE    RECE04-HKNJANUM     TO  RECE05-HKNJANUM
-              MOVE    RECE04-HOJOKBN      TO  RECE05-HOJOKBN
-              MOVE    RECE04-TEKSTYMD     TO  RECE05-TEKSTYMD
+              MOVE    RECE04-KEY1         TO  RECE05-KEY1
               MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
               START   RECE05-FILE
                     KEY IS    >=   RECE05-KEY
@@ -15259,19 +15232,10 @@ grpsys            (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
                         END-READ
               END-START
               PERFORM   UNTIL
-                  (RECE04-HOSPNUM      NOT =  RECE05-HOSPNUM)     OR
-                  (RECE04-SRYYM        NOT =  RECE05-SRYYM)       OR
-                  (RECE04-NYUGAIKBN    NOT =  RECE05-NYUGAIKBN)   OR
-                  (RECE04-PTID         NOT =  RECE05-PTID)        OR
-                  (RECE04-RECEKA       NOT =  RECE05-RECEKA)      OR
-                  (RECE04-TEISYUTUSAKI NOT =  RECE05-TEISYUTUSAKI) OR
-                  (RECE04-RECESYUBETU  NOT =  RECE05-RECESYUBETU)  OR
-                  (RECE04-HKNJANUM     NOT =  RECE05-HKNJANUM)    OR
-                  (RECE04-HOJOKBN      NOT =  RECE05-HOJOKBN )    OR
-                  (RECE04-TEKSTYMD     NOT =  RECE05-TEKSTYMD)    OR
-                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM)      OR
-                  (FLG-RECE05                =      1        )    OR
-                  (FLG-REWRITE               =      1        )
+                  (RECE04-KEY1         NOT =  RECE05-KEY1   )  OR
+                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM )  OR
+                  (FLG-RECE05                =      1       )  OR
+                  (FLG-REWRITE               =      1       )
                    IF    RECE05-RENNUM   =   WRK-RENNUM2
                       MOVE    1              TO  FLG-REWRITE
                       PERFORM  VARYING  IDXB  FROM  5   BY  -1

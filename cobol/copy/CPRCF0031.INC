@@ -41,26 +41,28 @@
       ************************************************************
       *01  RECE031-REC.
            03  RECE031-KEY.
+               05  RECE031-KEY1.
       *医療機関ＩＤ
-               05  RECE031-HOSPNUM         PIC 9(2).
+                   07  RECE031-HOSPNUM     PIC 9(2).
       *診療年月
-               05  RECE031-SRYYM           PIC  9(06).
+                   07  RECE031-SRYYM       PIC 9(06).
       *入外区分
-               05  RECE031-NYUGAIKBN       PIC  X(01).
+                   07  RECE031-NYUGAIKBN   PIC X(01).
       *患者ＩＤ
-               05  RECE031-PTID            PIC  9(10).
+                   07  RECE031-PTID        PIC 9(10).
       *レセプト科
-               05  RECE031-RECEKA          PIC  X(02).
+                   07  RECE031-RECEKA      PIC X(02).
       *審査支払機関
-               05  RECE031-TEISYUTUSAKI    PIC  9(01).
+                   07  RECE031-TEISYUTUSAKI
+                                           PIC 9(01).
       *レセプト種別
-               05  RECE031-RECESYUBETU     PIC  9(04).
+                   07  RECE031-RECESYUBETU PIC 9(04).
       *保険者番号        
-               05  RECE031-HKNJANUM        PIC  X(08).
+                   07  RECE031-HKNJANUM    PIC X(08).
       *補助区分
-               05  RECE031-HOJOKBN         PIC  X(01).
+                   07  RECE031-HOJOKBN     PIC X(01).
       *適用開始年月日
-               05  RECE031-TEKSTYMD        PIC  X(08). 
+                   07  RECE031-TEKSTYMD    PIC X(08). 
       *主病名フラグ
                05  RECE031-SYUBYOFLG       PIC X(01).
       *診療開始日
