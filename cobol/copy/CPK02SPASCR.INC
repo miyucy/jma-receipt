@@ -374,7 +374,7 @@
       *                基準不適合逓減区分
                        09  SPA-COM-KIJUNTEIGENKBN      PIC  9(01).
       *                基準不適合逓減対象施設基準
-                       09  SPA-COM-KIJUNTEIGENCD       PIC  9(03).
+                       09  SPA-COM-KIJUNTEIGENCD       PIC  9(04).
       *                手術施設基準不適合
                        09  SPA-COM-KIJUNCHK-FLG        PIC  9(01).
       *    Ｈ１８．改正分
