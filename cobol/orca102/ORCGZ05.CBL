@@ -101,7 +101,7 @@
                    07  SPA-GMN-TANINAME            PIC X(26).
                05  SPA-GMN-TANICDCOB-G.
                    07  SPA-GMN-TANICDCOB           PIC X(30)
-                                                   OCCURS   90.
+                                                   OCCURS  200.
                05  SPA-TANICD-MAX             PIC 9(04).
       *
                05  SPA-GMN-TOKUKIZAIAGEKSNKBN-G.

@@ -106,7 +106,7 @@
                 04  Z04-TANICD.
                   05  Z04-VALUE   PIC X(28).
                 04  Z04-TANICD-COUNT   PIC S9(9)   BINARY.
-                04  Z04-TANICDLST   PIC X(28)   OCCURS  90 TIMES.
+                04  Z04-TANICDLST   PIC X(28)   OCCURS 200 TIMES.
               03  Z04-BUNRUIKBN-COMBO.
                 04  Z04-BUNRUIKBN.
                   05  Z04-VALUE   PIC X(43).

@@ -63,9 +63,9 @@
                 04  Z05-OLDTENSKB-ITEM    PIC X(26)   OCCURS  7 TIMES.
               03  Z05-TANICDCOB.
                 04  Z05-TANICD.
-                  05  Z05-VALUE   PIC X(20).
+                  05  Z05-VALUE   PIC X(28).
                 04  Z05-TANICD-COUNT   PIC S9(9)   BINARY.
-                04  Z05-TANICD-ITEM    PIC X(20)   OCCURS  90 TIMES.
+                04  Z05-TANICD-ITEM    PIC X(28)   OCCURS 200 TIMES.
               03  Z05-MEIUSESKBCOB.
                 04  Z05-MEIUSESKB.
                   05  Z05-VALUE   PIC X(20).

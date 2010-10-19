@@ -95,12 +95,12 @@
                        09  SPA-NAI-YUKOSTYMD       PIC X(08).
                        09  SPA-NAI-YUKOEDYMD       PIC X(08).
                    07  SPA-GMN-SSTKIJUNCD-G.
-                       09  SPA-GMN-SSTKIJUNCD          PIC 9(03)
+                       09  SPA-GMN-SSTKIJUNCD          PIC 9(04)
                                                        OCCURS  10.
                    07  SPA-KIJUN-MAX                   PIC 9(04).
-                   07  SPA-GMN-KIJUNTEIGENCD           PIC 9(03).
+                   07  SPA-GMN-KIJUNTEIGENCD           PIC 9(04).
       *
-                   07  SPA-NAI-KIJUNFLG                PIC 9(03).
+                   07  SPA-NAI-KIJUNFLG                PIC 9(04).
       *
       *    ¸¡º÷²èÌÌÍÑ£Ó£Ð£Á
            COPY    "W25SCR-SPA".

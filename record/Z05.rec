@@ -67,10 +67,10 @@ Z05	{
 		};
 		TANICDCOB	{
 			TANICD	{
-				value	varchar(20);
+				value	varchar(28);
 			};
 			count	int;
-			item	varchar(20)[90];
+			item	varchar(28)[200];
 		};
 		MEIUSESKBCOB	{
 			MEIUSESKB	{

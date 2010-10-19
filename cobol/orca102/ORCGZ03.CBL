@@ -52,6 +52,7 @@
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/05  Á°²ó¸¡ººÆü¶èÊ¬ÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/04/XX  Ä¢É¼Ì¾¾ÎÄÉ²ÃÂÐ±þ
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/10/19  ½ýÉÂ´ØÏ¢¶èÊ¬ÄÉ²ÃÂÐ±þ¡¢»ÜÀß´ð½à£´·åÂÐ±þÂ¾
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -1475,7 +1476,11 @@
                                        TO  SPA-GMN-BYOKANRENKBNCOB (4)
            MOVE    "06 ÈéÉæ²ÊÆÃÄê¼ÀÉÂ»ØÆ³´ÉÍýÎÁ¡Ê£³¡Ë"
                                        TO  SPA-GMN-BYOKANRENKBNCOB (5)
-           MOVE    5                   TO  SPA-BYOKANRENKBN-MAX
+           MOVE    "07 ¤Æ¤ó¤«¤ó»ØÆ³ÎÁ"
+                                       TO  SPA-GMN-BYOKANRENKBNCOB (6)
+           MOVE    "09 ÆñÉÂ³°Íè»ØÆ³´ÉÍýÎÁ"
+                                       TO  SPA-GMN-BYOKANRENKBNCOB (7)
+           MOVE    7                   TO  SPA-BYOKANRENKBN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-BYOKANRENKBN-MAX
                IF      SPA-GMN-BYOKANRENKBN  =   SPA-GMN-BYOKANRENKBNCOB

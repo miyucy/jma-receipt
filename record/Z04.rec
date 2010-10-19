@@ -128,7 +128,7 @@ Z04	{
 				value	varchar(28);
 			};
 			count	int;
-			item	varchar(28)[90];
+			item	varchar(28)[200];
 		};
 		BUNRUIKBN_COMBO	{
 			BUNRUIKBN{
