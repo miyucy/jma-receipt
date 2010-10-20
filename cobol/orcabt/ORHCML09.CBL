@@ -427,6 +427,8 @@
                        MOVE   "てんかん"  TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "08"
                        MOVE   "特疾てん"  TO  HCML09-MANSEIKBN(CNT-LINE)
+                   WHEN    "09"
+                       MOVE   "難病外来"  TO  HCML09-MANSEIKBN(CNT-LINE)
                END-EVALUATE
       *
                EVALUATE    USBYO-UTAGAIFLG
