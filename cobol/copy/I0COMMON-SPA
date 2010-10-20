@@ -31,6 +31,8 @@
          03  SPA-I0ID2-AREA. 
            05  SPA-I0ID2-FLG                   PIC X(02).
       *
+      *    入院カウント
+         03  SPA-I03-NYUIN-COUNT               PIC 9(06).
       *    入院履歴日付変更フラグ
          03  SPA-I03-UPDFLG                    PIC X(01).
       *    変更前通算対象日数

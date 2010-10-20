@@ -119,7 +119,6 @@
            03  WRK-CREYMD                  PIC X(08).
            03  WRK-SHONUM                  PIC 9(03).
            03  WRK-DAY6-KEISAN             PIC X(08).
-           03  WRK-NYUIN-COUNT             PIC 9(06).
       *
        01  WRK-BAK-AREA.
            03  WRK-BAK-SHOKAI.
@@ -483,9 +482,10 @@
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
       *
       *        通算対象日数の変更有無をチェック
-               IF    (SPA-I01-I03-SYORIKBN   =  "2" OR "3")   AND
+               IF    (SPA-I01-I03-SYORIKBN   =   "3")   AND
                      (SPA-GMN-I03-TAISYONISSU
-                                         NOT =  SPA-I03-WKTAISYONISSU)
+                                   NOT =  SPA-I03-WKTAISYONISSU)  AND
+                     (SPA-I03-NYUIN-COUNT  NOT =  ZERO)
                    MOVE   "1"       TO   SPA-I03-UPDFLG
                ELSE
                    MOVE   SPACE     TO   SPA-I03-UPDFLG
@@ -1955,8 +1955,8 @@
       *        修正対象の入院歴以降に入院登録が複数回無いことのチェック
       *        （複数回ある場合は入院日、退院日の変更を不可とする）
                PERFORM    501-NYUINRRK-SERCH-SEC
-      *         DISPLAY    "WRK-NYUIN-COUNT = " WRK-NYUIN-COUNT
-               IF    WRK-NYUIN-COUNT           >=   2
+      *         DISPLAY    "SPA-I03-NYUIN-COUNT = " SPA-I03-NYUIN-COUNT
+               IF    SPA-I03-NYUIN-COUNT           >=   2
                    MOVE    WIDGET-INSENSITIVE  TO   I03-NYUINYMD-STT
                                                     I03-TAIINYMD-STT
                                                     I03-TAISYONISSU-STT
@@ -1980,7 +1980,7 @@
       *****************************************************************
        501-NYUINRRK-SERCH-SEC       SECTION.
       *
-           MOVE    ZERO                TO  WRK-NYUIN-COUNT
+           MOVE    ZERO                TO  SPA-I03-NYUIN-COUNT
       *
       *    入院履歴マスタ検索
            MOVE    ZERO                TO  FLG-PTNYUINRRK
@@ -2006,7 +2006,7 @@
                PERFORM  UNTIL  (FLG-PTNYUINRRK     =  1)   OR
                            (PTNYUINRRK-RRKNUM  =  WKPTNYUINRRK-RRKNUM)
                    IF      WKPTNYUINRRK-JTIKBN =  "1"
-                           ADD     1           TO WRK-NYUIN-COUNT
+                           ADD     1           TO SPA-I03-NYUIN-COUNT
                    END-IF
                    MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                    MOVE    "key54"             TO  MCP-PATHNAME
