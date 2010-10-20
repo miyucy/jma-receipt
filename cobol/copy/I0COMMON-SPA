@@ -31,6 +31,10 @@
          03  SPA-I0ID2-AREA. 
            05  SPA-I0ID2-FLG                   PIC X(02).
       *
+      *    入院履歴日付変更フラグ
+         03  SPA-I03-UPDFLG                    PIC X(01).
+      *    変更前通算対象日数
+         03  SPA-I03-WKTAISYONISSU             PIC 9(05).
       *
       *    戻り先
          03  SPA-I0-MOTOPG                     PIC X(08).

@@ -447,6 +447,9 @@
                    PERFORM 210-BACK
                    MOVE    "B04"   TO  SPA-I01-I03-BTN
       *
+      *        入院歴期間変更
+               WHEN "3002"
+                   PERFORM    480-TOUROKU-SEC
       *
                END-EVALUATE
       *
@@ -478,7 +481,21 @@
                PERFORM 480-DEL-SEC
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
-               PERFORM 480-TOUROKU-SEC
+      *
+      *        通算対象日数の変更有無をチェック
+               IF    (SPA-I01-I03-SYORIKBN   =  "2" OR "3")   AND
+                     (SPA-GMN-I03-TAISYONISSU
+                                         NOT =  SPA-I03-WKTAISYONISSU)
+                   MOVE   "1"       TO   SPA-I03-UPDFLG
+               ELSE
+                   MOVE   SPACE     TO   SPA-I03-UPDFLG
+               END-IF
+      *
+               IF     SPA-I03-UPDFLG   =    SPACE
+                   PERFORM 480-TOUROKU-SEC
+               ELSE
+                   PERFORM 480-UPD-SEC
+               END-IF
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -730,6 +747,11 @@
            MOVE    WRK-HENYMDG     TO  SPA-GMN-I03-TAIINYMD
                                        SPA-NAI-I03-TAIINYMD-MAE
            MOVE    WRK-SYMD        TO  SPA-NAI-I03-TAIINYMD
+      *
+      *    変更前通算対象日数退避
+           MOVE    PTNYUINRRK-TAISYONISSU
+                                   TO  SPA-I03-WKTAISYONISSU
+      **     DISPLAY "SPA-I03-WKTAISYONISSU = " SPA-I03-WKTAISYONISSU
       *
       *    通算対象日数
            MOVE    PTNYUINRRK-TAISYONISSU
@@ -1189,6 +1211,17 @@
            .
       *
        480-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴日付変更処理
+      *****************************************************************
+       480-UPD-SEC                     SECTION.
+      *
+           MOVE    "3002"          TO  SPA-I0IDCD
+      *
+           .
+      *
+       480-UPD-EXT.
            EXIT.
       *****************************************************************
       *    他院歴登録処理
@@ -1874,12 +1907,12 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-      **     DISPLAY "==     SPA-I01-I03-SYORIKBN = "
-      **                     SPA-I01-I03-SYORIKBN
-      **     DISPLAY "       PTNYUINRRK-RRKNUM = "
-      **                     PTNYUINRRK-RRKNUM
-      **     DISPLAY "       PTNYUINRRK-RRKEDANUM = "
-      **                     PTNYUINRRK-RRKEDANUM
+      *     DISPLAY "==     SPA-I01-I03-SYORIKBN = "
+      *                     SPA-I01-I03-SYORIKBN
+      *     DISPLAY "       PTNYUINRRK-RRKNUM = "
+      *                     PTNYUINRRK-RRKNUM
+      *     DISPLAY "       PTNYUINRRK-RRKEDANUM = "
+      *                     PTNYUINRRK-RRKEDANUM
            MOVE    WIDGET-NORMAL           TO  I03-B02-STT
                                                I03-B03-STT
                                                I03-B04-STT
@@ -1915,17 +1948,18 @@
                                                I03-SHONUM-STT
       **                                         I03-NYUINYMD-STT
       **                                         I03-TAIINYMD-STT
-                                               I03-TAISYONISSU-STT
+      **                                         I03-TAISYONISSU-STT
                                                I03-RRKKBN-STT
                                                I03-RRKKBN-ITM-STT
       *
       *        修正対象の入院歴以降に入院登録が複数回無いことのチェック
       *        （複数回ある場合は入院日、退院日の変更を不可とする）
                PERFORM    501-NYUINRRK-SERCH-SEC
-      **         DISPLAY    "WRK-NYUIN-COUNT = " WRK-NYUIN-COUNT
+      *         DISPLAY    "WRK-NYUIN-COUNT = " WRK-NYUIN-COUNT
                IF    WRK-NYUIN-COUNT           >=   2
                    MOVE    WIDGET-INSENSITIVE  TO   I03-NYUINYMD-STT
                                                     I03-TAIINYMD-STT
+                                                    I03-TAISYONISSU-STT
                END-IF
            END-EVALUATE
       *
@@ -2233,6 +2267,11 @@
            WHEN    "3001"
                MOVE    "入院歴情報を削除します"
                                         TO  WRK-I0IDMSG
+           WHEN    "3002"
+               MOVE    "通算対象日数変更の為、登録済み入院会計"
+                                        TO  WRK-I0IDMSG(1:38)
+               MOVE    "の見直しが必要な場合があります"
+                                        TO  WRK-I0IDMSG(39:)
            END-EVALUATE
       *
       *
