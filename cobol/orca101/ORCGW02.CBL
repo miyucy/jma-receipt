@@ -195,7 +195,7 @@
                                                       OCCURS  2.
                            11  SPA-GMN-GENTAIKBNL
                                                       PIC X(01).
-                           11                         PIC X(01).
+                           11  SPA-GMN-GENTAIKBNL-FL  PIC X(01).
                            11  SPA-GMN-GENTAIKBNMEIL
                                                       PIC X(20).
                        09  SPA-GMN-TAX-HASU-KBNLST
@@ -324,7 +324,8 @@
                            11  SPA-GMN-GENTAIKBN-G.
                                13  SPA-GMN-GENTAIKBN
                                                       PIC X(01).
-                               13                     PIC X(01).
+                               13  SPA-GMN-GENTAIKBN-FL
+                                                      PIC X(01).
                                13  SPA-GMN-GENTAIKBNMEI
                                                       PIC X(20).
                            11  SPA-GMN-TAX-HASU-KBN-G.
