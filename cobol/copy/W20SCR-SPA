@@ -267,7 +267,7 @@
                  11  SPA-GMN-W20-TOKNYUIN-MAX      PIC 9(03).
                  11  SPA-GMN-W20-TOKNYUINLST       OCCURS  30.
                    13  SPA-GMN-W20-TOKNYUINL       PIC X(02).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-TOKNYUINFL1     PIC X(01).
                    13  SPA-GMN-W20-TOKNYUINMEIL
                                                    PIC X(40).
       *        病棟科名コンボ
@@ -275,42 +275,42 @@
                  11  SPA-GMN-W20-SRYKA-MAX         PIC 9(03).
                  11  SPA-GMN-W20-SRYKALST          OCCURS  99.
                    13  SPA-GMN-W20-SRYKAL          PIC X(02).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-SRYKAFL1        PIC X(01).
                    13  SPA-GMN-W20-SRYKAMEIL       PIC X(20).
       *        病棟種別コンボ
                09  SPA-GMN-W20-SBTLST-G.
                  11  SPA-GMN-W20-SBT-MAX           PIC 9(03).
                  11  SPA-GMN-W20-SBTLST            OCCURS  15.
                    13  SPA-GMN-W20-SBTL            PIC X(02).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-SBTFL1          PIC X(01).
                    13  SPA-GMN-W20-SBTMEIL         PIC X(20).
       *        レセプト表示区分コンボ
                09  SPA-GMN-W20-RECEDSPKBNLST-G.
                  11  SPA-GMN-W20-RECEDSPKBN-MAX    PIC 9(03).
                  11  SPA-GMN-W20-RECEDSPKBNLST     OCCURS  10.
                    13  SPA-GMN-W20-RECEDSPKBNL     PIC X(02).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-RECEDSPKBNFL1   PIC X(01).
                    13  SPA-GMN-W20-RECEDSPKBNMEIL  PIC X(10).
       *        小規格病棟病床数加算
                09  SPA-GMN-W20-SYOUBTUBRMLST-G.
                  11  SPA-GMN-W20-SYOUBTUBRM-MAX PIC 9(03).
                  11  SPA-GMN-W20-SYOUBTUBRMLST  OCCURS  20.
                    13  SPA-GMN-W20-SYOUBTUBRML  PIC X(02).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-SYOUBTUBRMFL1   PIC X(01).
                    13  SPA-GMN-W20-SYOUBTUBRMMEIL  PIC X(38).
       *        病棟終了区分コンボ
                09  SPA-GMN-W20-EDKBNLST-G.
                  11  SPA-GMN-W20-EDKBN-MAX         PIC 9(03).
                  11  SPA-GMN-W20-EDKBNLST          OCCURS  2.
                    13  SPA-GMN-W20-EDKBNL          PIC X(01).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-EDKBNFL1        PIC X(01).
                    13  SPA-GMN-W20-EDKBNMEIL       PIC X(06).
       *        入院基本料コンボ
                09  SPA-GMN-W20-KHNRYOLST-G.
                  11  SPA-GMN-W20-KHNRYO-MAX        PIC 9(03).
                  11  SPA-GMN-W20-KHNRYOLST         OCCURS  50.
                    13  SPA-GMN-W20-KHNRYOL         PIC X(02).
-                   13                              PIC X(01).
+                   13  SPA-GMN-W20-KHNRYOFL1       PIC X(01).
                    13  SPA-GMN-W20-KHNRYOMEIL      PIC X(60).
       *        看護補助加算コンボ
                09  SPA-GMN-W20-KNGHJOLST-G.
