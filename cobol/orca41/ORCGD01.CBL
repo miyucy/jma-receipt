@@ -88,24 +88,24 @@
                        09  SPA-GMN-D01-EDSRYYMD            PIC 9(02).
                        09  SPA-GMN-D01-PRTSRTKBN-G.
                            11  SPA-GMN-D01-PRTSRTKBN       PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-PRTSRTKBNMEI    PIC X(20).
                        09  SPA-GMN-D01-NYUGAIKBN-G.
                            11  SPA-GMN-D01-NYUGAIKBN       PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-NYUGAIKBNMEI    PIC X(18).
                        09  SPA-GMN-D01-USRCHKKBN-G.
                            11  SPA-GMN-D01-USRCHKKBN       PIC X(02).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-USRCHKKBNMEI    PIC X(30).
                        09  SPA-GMN-D01-CHKKBN-OCC          OCCURS  19.
                            11  SPA-GMN-D01-CHKKBN-G.
                                13  SPA-GMN-D01-CHKKBN      PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-D01-FL1         PIC X(01).
                                13  SPA-GMN-D01-CHKKBNMEI   PIC X(18).
                        09  SPA-GMN-D01-INGAIPROCKBN-G.
                            11  SPA-GMN-D01-INGAIPROCKBN    PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL              PIC X(01).
                            11  SPA-GMN-D01-INGAIPROCKBNMEI PIC X(18).
                    07  SPA-GMN-D01-CHKMSG-OCC              OCCURS  19.
                        09  SPA-GMN-D01-CHKMSG              PIC X(40).
@@ -114,32 +114,32 @@
                        09  SPA-GMN-D01-NYUGAIKBN-MAX       PIC 9(03).
                        09  SPA-GMN-D01-NYUGAIKBNLST        OCCURS  5.
                            11  SPA-GMN-D01-NYUGAIKBNL      PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL1             PIC X(01).
                            11  SPA-GMN-D01-NYUGAIKBNMEIL   PIC X(18).
                    07  SPA-GMN-D01-PRTSRTKBNLST-G.
                        09  SPA-GMN-D01-PRTSRTKBN-MAX       PIC 9(03).
                        09  SPA-GMN-D01-PRTSRTKBNLST        OCCURS   4.
                            11  SPA-GMN-D01-PRTSRTKBNL      PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL1             PIC X(01).
                            11  SPA-GMN-D01-PRTSRTKBNMEIL   PIC X(20).
                    07  SPA-GMN-D01-USRCHKKBNLST-G.
                        09  SPA-GMN-D01-USRCHKKBN-MAX       PIC 9(03).
                        09  SPA-GMN-D01-USRCHKKBNLST        OCCURS  10.
                            11  SPA-GMN-D01-USRCHKKBNL      PIC X(02).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL1             PIC X(01).
                            11  SPA-GMN-D01-USRCHKKBNMEIL
                                                            PIC X(30).
                    07  SPA-GMN-D01-CHKKBNLST-G.
                        09  SPA-GMN-D01-CHKKBN-MAX          PIC 9(03).
                        09  SPA-GMN-D01-CHKKBNLST           OCCURS  5.
                            11  SPA-GMN-D01-CHKKBNL         PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL1             PIC X(01).
                            11  SPA-GMN-D01-CHKKBNMEIL      PIC X(18).
                    07  SPA-GMN-D01-INGAIPROCKBNLST-G.
                        09  SPA-GMN-D01-INGAIPROCKBN-MAX    PIC 9(03).
                        09  SPA-GMN-D01-INGAIPROCKBNLST     OCCURS  5.
                            11  SPA-GMN-D01-INGAIPROCKBNL   PIC X(01).
-                           11                              PIC X(01).
+                           11  SPA-GMN-D01-FL1             PIC X(01).
                            11  SPA-GMN-D01-INGAIPROCKBNMEIL
                                                            PIC X(18).
                05  SPA-NAIB-D01-AREA.
