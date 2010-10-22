@@ -501,12 +501,11 @@
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-NYUGAIKBN
       *    カルテ病名疑い区分
-           MOVE    "CHARTKBN"         TO  WRK-PARA-NAME
+           MOVE    "CHARTKBN"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-CHARTKBN
-           MOVE    WRK-PARA(1:1)       TO  PARA-NYUGAIKBN
       *    備考コメント区分
-           MOVE    "COMMENT"          TO  WRK-PARA-NAME
+           MOVE    "COMMENT"           TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-COMMENT
       *    備考禁忌区分
