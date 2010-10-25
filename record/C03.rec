@@ -100,7 +100,11 @@ C03	{
 				value	varchar(46);
 			};
 			count	int;
-			item	varchar(46)[5];
+			item	varchar(46)[6];
+		};
+		HYOUJI	{
+			style	varchar(20);
+			value	varchar(22);
 		};
 	};
 };

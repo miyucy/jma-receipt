@@ -130,7 +130,7 @@
                 04  C02-MANSEIFLG.
                   05  C02-VALUE   PIC X(46).
                 04  C02-MANSEIFLG-COUNT   PIC S9(9)   BINARY.
-                04  C02-MANSEIFLG-ITEM    PIC X(46)   OCCURS  5 TIMES.
+                04  C02-MANSEIFLG-ITEM    PIC X(46)   OCCURS  6 TIMES.
               03  C02-REZEFLGCOMBO.
                 04  C02-REZEFLG.
                   05  C02-VALUE   PIC X(12).
@@ -172,3 +172,5 @@
                                 PIC S9(9)   BINARY.
                 04  C02-BSRYKALST
                                 PIC X(21)   OCCURS  40 TIMES.
+              03  C02-HYOUJI-STYLE   PIC X(20).
+              03  C02-HYOUJI         PIC X(22).

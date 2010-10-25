@@ -98,6 +98,7 @@
       *                                     疑いフラグ設定区分の追加
       *  04.06.03    NACL-藤原    10/06/20  病名の入力順対応
       *  04.06.04    NACL-藤原    10/08/25  一括入力対応
+      *  04.06.05    NACL-藤原    10/10/20  難病外来指導管理料対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -227,6 +228,7 @@
                                13  SPA-GMN-C02-BSRYKA      PIC X(02).
                                13  SPA-GMN-C02-F1          PIC X(01).
                                13  SPA-GMN-C02-BSRYKAMEI   PIC X(20).
+                           11  SPA-GMN-C02-HYOUJI          PIC X(22).
       *
                        09  SPA-GMN-C02-TBL.
                            11  SPA-GMN-C02-TBLO            OCCURS   200.
@@ -264,11 +266,11 @@
                            11  SPA-GMN-C02-SYUBYOFLGMEIL   PIC X(12).    
                        09  SPA-GMN-C02-SYUBYOFLG-MAX       PIC 9(02).
       *                         
-                       09  SPA-GMN-C02-MANSEIKBNLST        OCCURS  5.
+                       09  SPA-GMN-C02-MANSEIKBNLST        OCCURS  6.
                            11  SPA-GMN-C02-MANSEIKBNL      PIC X(02).
                            11  SPA-GMN-F1L                 PIC X(01).
                            11  SPA-GMN-C02-MANSEIKBNMEIL   PIC X(42).    
-                       09  SPA-GMN-C02-MANSEITANLST        OCCURS  5.
+                       09  SPA-GMN-C02-MANSEITANLST        OCCURS  6.
                            11  SPA-GMN-C02-MANSEIKBNTANL   PIC X(10).    
                        09  SPA-GMN-C02-MANSEIKBN-MAX       PIC 9(02).
       *                         
@@ -325,6 +327,8 @@
                            11  SPA-NAI-C02-BYOMEIHENFLG    PIC X(01).
                            11  SPA-NAI-C02-CHARTBYOMEIMOJI PIC 9(02).
                            11  SPA-NAI-C02-RECEDENFLG      PIC X(01).
+                           11  SPA-NAI-C02-MANSEIKBN       PIC 9(02).
+                           11  SPA-NAI-C02-NANBYOCD        PIC 9(02).
                            11  SPA-NAI-C02-BYOMEI-TBL.
                                13  SPA-NAI-C02-BYOMEI-OCC  OCCURS  21.
                                    15  SPA-NAI-C02-BYOMEICD
@@ -341,6 +345,10 @@
                                        17  SPA-NAI-C02-UTAGAIFLG
                                                            PIC X(01).
                                        17  SPA-NAI-C02-TOKSKNCD
+                                                           PIC 9(02).
+                                       17  SPA-NAI-C02-NANBYOCD-O
+                                                           PIC 9(02).
+                                       17  SPA-NAI-C02-US-TOKSKNCD
                                                            PIC 9(02).
                                        17  SPA-NAI-C02-US-BYOMEIHENFLG
                                                            PIC X(01).
@@ -505,17 +513,18 @@
                                13  SPA-GMN-C03-F1          PIC X(01).
                                13  SPA-GMN-C03-BYOMEISBTMEI
                                                            PIC X(06).
+                           11  SPA-GMN-C03-HYOUJI          PIC X(22).
       *
                        09  SPA-GMN-C03-UTAGAIFLGLST        OCCURS  5.
                            11  SPA-GMN-C03-UTAGAIFLGL      PIC X(01).
                            11  SPA-GMN-C03-F1L             PIC X(01).
                            11  SPA-GMN-C03-UTAGAIFLGMEIL   PIC X(12).
                        09  SPA-GMN-C03-UTAGAIFLG-MAX       PIC 9(02).        
-                       09  SPA-GMN-C03-MANSEIKBNLST        OCCURS  5.
+                       09  SPA-GMN-C03-MANSEIKBNLST        OCCURS  6.
                            11  SPA-GMN-C03-MANSEIKBNL      PIC X(02).
                            11  SPA-GMN-C03-F1L             PIC X(01).
                            11  SPA-GMN-C03-MANSEIKBNMEIL   PIC X(42).
-                       09  SPA-GMN-C03-MANSEITANLST        OCCURS  5.
+                       09  SPA-GMN-C03-MANSEITANLST        OCCURS  6.
                            11  SPA-GMN-C03-MANSEIKBNTANL   PIC X(10).    
                        09  SPA-GMN-C03-MANSEIKBN-MAX       PIC 9(02).        
                        09  SPA-GMN-C03-HKNBYOMEIFLGLST     OCCURS  5.
@@ -551,6 +560,8 @@
                                                        PIC X(01).
                                        17  SPA-NAI-C03-TOKSKNCD
                                                        PIC 9(02).
+                                       17  SPA-NAI-C03-NANBYOCD-O
+                                                           PIC 9(02).
                                        17  SPA-NAI-C03-BYOMEIHENFLG-O
                                                        PIC X(01).
                                    15  SPA-NAI-C03-BYOMEICD-CHK.
@@ -565,6 +576,8 @@
                                        17  SPA-NAI-C03-HAISIYMD
                                                        PIC X(22).
                            11  SPA-NAI-C03-UPDFLG      PIC 9(01). 
+                           11  SPA-NAI-C03-MANSEIKBN   PIC 9(02).
+                           11  SPA-NAI-C03-NANBYOCD    PIC 9(02).
       *
                        09  SPA-NAI-C03-TBL.
                            11  SPA-NAI-C03-TBLO        OCCURS   100.

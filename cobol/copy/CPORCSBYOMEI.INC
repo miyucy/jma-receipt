@@ -30,6 +30,9 @@
       *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     補足コメントの追加
       *                                     単独使用禁止病名の追加
+      *
+      *  04.06.01    NACL-藤原    10/10/20  難病外来指導管理料対応
+      *                                     難病外来コードの追加
       ************************************************************
       *
        01  ORCSBYOMEIAREA.
@@ -69,6 +72,8 @@
                05  LNK-BYO-UTAGAIFLG   PIC X(01).
       *        慢性フラグ
                05  LNK-BYO-MANSEIKBN   PIC 9(02).
+      *        難病外来コード
+               05  LNK-BYO-NANBYOCD    PIC 9(02).
       *        病名文字数
                05  LNK-BYO-BYOMEIMOJI  PIC 9(03).
       *        病名編集フラグ
@@ -130,6 +135,9 @@
                                        PIC 9(02).
       *            特定疾患コード
                    07  LNK-BYO-TTOKSKNCD
+                                       PIC 9(02).
+      *            難病外来コード
+                   07  LNK-BYO-TNANBYOCD
                                        PIC 9(02).
       *            疑いフラグ
                    07  LNK-BYO-TUTAGAIFLG

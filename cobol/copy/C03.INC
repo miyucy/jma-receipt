@@ -79,4 +79,6 @@
                 04  C03-MANSEIFLG.
                   05  C03-VALUE   PIC X(46).
                 04  C03-MANSEIFLG-COUNT     PIC S9(9)   BINARY.
-                04  C03-MANSEIFLG-ITEM      PIC X(46)   OCCURS  5 TIMES.
+                04  C03-MANSEIFLG-ITEM      PIC X(46)   OCCURS  6 TIMES.
+              03  C03-HYOUJI-STYLE   PIC X(20).
+              03  C03-HYOUJI         PIC X(22).

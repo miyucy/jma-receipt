@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01/00/01    MCC-藤原     01.11.09  新しいレイアウトに変更     
       *  02/00/01    NACL-伊藤    02.07.29  新しいレイアウトに変更     
+      *  04/06/01    NACL-伊藤    10.10.19  新しいレイアウトに変更     
       *****************************************************************
       *01  BYOMEI-REC.
       *
@@ -43,6 +44,8 @@
            03  BYO-IKOSAKICD           PIC X(07).
       *特定疾患コード
            03  BYO-TOKSKNCD            PIC 9(02).
+      *難病外来コード
+           03  BYO-NANBYOCD            PIC 9(02).
       *疑いフラグ
            03  BYO-UTAGAIFLG           PIC X(01).
       *単独使用禁止区分
@@ -55,8 +58,10 @@
            03  BYO-SAITAKUKBN          PIC X(01).
       *病名交換用コード
            03  BYO-BYOMEICHGCD         PIC X(04).
-      *ＩＣＤ１０
-           03  BYO-ICD10               PIC X(05).
+      *ＩＣＤ１０ー１
+           03  BYO-ICD10-1             PIC X(05).
+      *ＩＣＤ１０ー２
+           03  BYO-ICD10-2             PIC X(05).
       *収載年月日
            03  BYO-SYUSAIYMD           PIC X(08).
       *変更年月日

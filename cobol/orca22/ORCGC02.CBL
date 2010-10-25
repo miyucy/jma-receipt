@@ -256,6 +256,7 @@
       *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
       *  04.06.03    NACL-藤原    10/06/20  病名の入力順対応
       *  04.06.04    NACL-藤原    10/08/31  年月省略入力対応
+      *  04.06.05    NACL-藤原    10/10/20  難病外来指導管理料対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -847,7 +848,7 @@
                    PERFORM 320-C10SPASET-SEC
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
-      *----(01.00.02) LINE ADD START ----------------------------------
+      *
       *    確認画面より
            IF      SPA-MOTOPG(1:4)     =   "CID1"
                IF      SPA-CIDCD       =   "0101"
@@ -969,6 +970,8 @@
                                        SPA-NAI-C02-HAISIYMD (IDZ)
                            MOVE    BYO-TOKSKNCD    TO
                                        SPA-NAI-C02-TOKSKNCD (IDZ)
+                           MOVE    BYO-NANBYOCD    TO
+                                       SPA-NAI-C02-NANBYOCD-O(IDZ)
                        END-IF
                        MOVE    SPA-NAI-C02-BYOMEI-O (IDZ 1)
                                                TO
@@ -990,7 +993,7 @@
                    GO      TO      300-SCREEN-EXT
                END-IF    
            END-IF
-      *----(01.00.02) LINE ADD END   ----------------------------------
+      *
       *    確認画面４より
            IF      SPA-MOTOPG(1:4)     =   "CID4"
                IF      SPA-CIDCD4      =   "0101"
@@ -1142,7 +1145,11 @@
            MOVE    "特定疾患療養管理料又はてんかん指導料"
                                    TO  SPA-GMN-C02-MANSEIKBNMEIL    (5)
            MOVE    "特定・てん"    TO  SPA-GMN-C02-MANSEIKBNTANL    (5)
-           MOVE    5               TO  SPA-GMN-C02-MANSEIKBN-MAX
+           MOVE    "09"            TO  SPA-GMN-C02-MANSEIKBNL       (6)
+           MOVE    "難病外来指導管理料"
+                                   TO  SPA-GMN-C02-MANSEIKBNMEIL    (6)
+           MOVE    "難病外来"      TO  SPA-GMN-C02-MANSEIKBNTANL    (6)
+           MOVE    6               TO  SPA-GMN-C02-MANSEIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-C02-NYUGAIKBNL       (1)
            MOVE    "入院"          TO  SPA-GMN-C02-NYUGAIKBNMEIL    (1)
@@ -1935,6 +1942,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-NAI-C02-BYOMEICD-O (IDZ IDX3)
                                    MOVE    BYO-TOKSKNCD    TO
                                            SPA-NAI-C02-TOKSKNCD (IDZ)
+                                   MOVE    BYO-NANBYOCD    TO
+                                           SPA-NAI-C02-NANBYOCD-O(IDZ)
                                END-IF 
                            END-IF
                            MOVE    SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
@@ -1976,6 +1985,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                           (IDZ IDX3)
                            MOVE    BYO-TOKSKNCD    TO
                                            SPA-NAI-C02-TOKSKNCD (IDZ)
+                           MOVE    BYO-NANBYOCD    TO
+                                           SPA-NAI-C02-NANBYOCD-O(IDZ)
                        END-IF
                    END-IF
                    MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
@@ -3982,13 +3993,34 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
            END-IF
       *                                 
            MOVE    SPA-PTBYO-HKNBYOMEIFLG
-                                        TO  SPA-GMN-C02-HKNBYOMEIFLG 
+                                       TO  SPA-GMN-C02-HKNBYOMEIFLG 
                                            WRK-KBN
            PERFORM 5001-HKNBYOMEIFLG-HENSYU-SEC
            MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-HKNBYOMEIFLGMEI
       *                                 
            MOVE    SPA-PTBYO-RECEDENFLG
                                        TO  SPA-NAI-C02-RECEDENFLG
+      *
+           MOVE    ZERO                TO  SPA-NAI-C02-NANBYOCD
+                                           SPA-NAI-C02-MANSEIKBN
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       21
+               IF      SPA-NAI-C02-NANBYOCD-O (IDX)  NOT =   ZERO
+                   MOVE    SPA-NAI-C02-NANBYOCD-O (IDX)
+                                           TO  SPA-NAI-C02-NANBYOCD
+                   MOVE    21              TO  IDX
+               END-IF   
+           END-PERFORM
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       21
+               IF      SPA-NAI-C02-TOKSKNCD (IDX)   NOT =   ZERO
+                   MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
+                                       TO  SPA-NAI-C02-MANSEIKBN
+                   MOVE    21              TO  IDX
+               END-IF   
+           END-PERFORM
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
       *
       *   入力病名コード数カウント
            PERFORM 410111-BYOMEICDSU-HENSYU-SEC
@@ -4071,6 +4103,8 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
                        END-IF    
                        MOVE    BYO-TOKSKNCD
                                          TO  SPA-NAI-C02-TOKSKNCD  (IDZ)
+                       MOVE    BYO-NANBYOCD
+                                         TO  SPA-NAI-C02-NANBYOCD-O(IDZ)
                        MOVE    BYO-HAISIYMD
                                          TO  SPA-NAI-C02-HAISIYMD  (IDZ)
                        MOVE    BYO-BYOMEICD
@@ -4248,7 +4282,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                    MOVE    USBYO-UTAGAIFLG
                                          TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
                    MOVE    USBYO-MANSEIKBN
-                                         TO  SPA-NAI-C02-TOKSKNCD (IDZ)
+                                         TO  SPA-NAI-C02-US-TOKSKNCD
+                                                                  (IDZ)
                    MOVE    USBYO-BYOMEIHENFLG
                                          TO
                                        SPA-NAI-C02-US-BYOMEIHENFLG(IDZ)
@@ -4256,7 +4291,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                                          TO
                                        SPA-NAI-C02-US-HKNBYOMEIFLG(IDZ)
                    MOVE    USBYO-BYOMEISBT
-                                         TO  SPA-NAI-C02-BYOMEISBT (IDZ)
+                                         TO  SPA-NAI-C02-BYOMEISBT(IDZ)
                    PERFORM VARYING IDXX    FROM    1   BY  1
                            UNTIL   IDXX    >   21
                            OR      USBYO-BYOMEICD (IDXX)   =   SPACE
@@ -4309,6 +4344,16 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                                            NOT =   ZERO    AND ALL "9" )
                                        MOVE    BYO-HAISIYMD    TO
                                            SPA-NAI-C02-HAISIYMD (IDZ)
+                                   END-IF
+                                   IF      SPA-NAI-C02-TOKSKNCD(IDZ)
+                                               =   ZERO
+                                       MOVE    BYO-TOKSKNCD    TO
+                                           SPA-NAI-C02-TOKSKNCD(IDZ)
+                                   END-IF
+                                   IF      SPA-NAI-C02-NANBYOCD-O(IDZ)
+                                               =   ZERO
+                                       MOVE    BYO-NANBYOCD        TO
+                                           SPA-NAI-C02-NANBYOCD-O(IDZ)
                                    END-IF
                                ELSE
                                    MOVE    "■■■"        TO
@@ -5015,14 +5060,45 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                                            TO  WRK-KBN
              PERFORM 5001-UTAGAIFLG-HENSYU-SEC
              MOVE    WRK-KBNMEI            TO  SPA-GMN-C02-UTAGAIFLGMEI
-      *            
+      *
       *      慢性区分編集
-             MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G  
+             MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G
+             MOVE    ZERO                TO  SPA-NAI-C02-NANBYOCD
+                                             SPA-NAI-C02-MANSEIKBN
+             PERFORM VARYING IDX FROM    1   BY  1
+                     UNTIL   IDX >       21
+                 IF      SPA-NAI-C02-US-TOKSKNCD (IDX) NOT =   ZERO
+                     IF      SPA-GMN-C02-MANSEIKBN
+                                                 =   SPACE
+                         MOVE    SPA-NAI-C02-US-TOKSKNCD (IDX)
+                                             TO  SPA-GMN-C02-MANSEIKBN
+                     END-IF
+                     MOVE    21              TO  IDX
+                 END-IF   
+             END-PERFORM
+             PERFORM VARYING IDX FROM    1   BY  1
+                     UNTIL   IDX >       21
+                 IF      SPA-NAI-C02-NANBYOCD-O (IDX)  NOT =   ZERO
+                     MOVE    SPA-NAI-C02-NANBYOCD-O (IDX)
+                                         TO  SPA-NAI-C02-NANBYOCD
+                     IF      SPA-GMN-C02-MANSEIKBN
+                                                 =   SPACE
+                         MOVE    SPA-NAI-C02-NANBYOCD-O (IDX)
+                                             TO  SPA-GMN-C02-MANSEIKBN
+                     END-IF
+                     MOVE    21              TO  IDX
+                 END-IF   
+             END-PERFORM
              PERFORM VARYING IDX FROM    1   BY  1
                      UNTIL   IDX >       21
                  IF      SPA-NAI-C02-TOKSKNCD (IDX)   NOT =   ZERO
                      MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
+                                         TO  SPA-NAI-C02-MANSEIKBN
+                     IF      SPA-GMN-C02-MANSEIKBN
+                                                 =   SPACE
+                         MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
                                              TO  SPA-GMN-C02-MANSEIKBN
+                     END-IF
                      MOVE    21              TO  IDX
                  END-IF   
              END-PERFORM
@@ -5032,6 +5108,8 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
              PERFORM 5001-MANSEIKBN-HENSYU-SEC
              MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
            END-IF
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
       *
       *    保険病名フラグセット
            MOVE    SPACE               TO  SPA-GMN-C02-HKNBYOMEIFLG-G
@@ -5558,7 +5636,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                GO  TO  4106-MANSEI-CHK-EXT
            END-IF
       *
-           MOVE    C02-MANSEIFLG        TO  SPA-GMN-C02-MANSEIKBN-G
+           MOVE    C02-MANSEIFLG       TO  SPA-GMN-C02-MANSEIKBN-G
+           MOVE    SPACE               TO  SPA-GMN-C02-HYOUJI
       *
            MOVE    SPA-GMN-C02-MANSEIKBN
                                        TO  WRK-KBN
@@ -5572,8 +5651,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   MOVE    "0021"               TO  SPA-ERRCD
                   GO  TO  4106-MANSEI-CHK-EXT
                END-IF
-           END-IF    
-      *
+           END-IF
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
       *
            IF      SPA-ERRCD              =   SPACE
                MOVE    21                   TO  SPA-GMN-C02-CUR
@@ -5922,10 +6002,12 @@ grpsys                                       SPA-AREA
                MOVE    LNK-BYO-TBYOMEI (IDX)
                                        TO  SPA-NAI-C02-BYOMEI   (IDZ)
                                            SPA-NAI-C02-BYOMEI-O (IDZ 1)
-               MOVE   LNK-BYO-TUTAGAIFLG (IDX)
+               MOVE    LNK-BYO-TUTAGAIFLG (IDX)
                                        TO  SPA-NAI-C02-UTAGAIFLG(IDZ)
                MOVE    LNK-BYO-TTOKSKNCD (IDX)
                                        TO  SPA-NAI-C02-TOKSKNCD (IDZ)
+               MOVE    LNK-BYO-TNANBYOCD  (IDX)
+                                       TO  SPA-NAI-C02-NANBYOCD-O(IDZ)
                MOVE    LNK-BYO-THAISIYMD (IDX)
                                        TO  SPA-NAI-C02-HAISIYMD (IDZ)
                MOVE    LNK-BYO-TTANDOKUKBN (IDX)
@@ -5943,15 +6025,30 @@ grpsys                                       SPA-AREA
                                            WRK-KBN
            PERFORM 5001-UTAGAIFLG-HENSYU-SEC
            MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-UTAGAIFLGMEI
-           IF      LNK-BYO-MANSEIKBN
+           IF      LNK-BYO-NANBYOCD
                                    NOT =   ZERO
-               MOVE    LNK-BYO-MANSEIKBN   TO  SPA-GMN-C02-MANSEIKBN
+               MOVE    LNK-BYO-NANBYOCD    TO  SPA-GMN-C02-MANSEIKBN
                                                WRK-KBN
                PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
                MOVE    WRK-KBNMEI          TO  SPA-GMN-C02-MANSEIKBNMEI
            ELSE
-               MOVE    SPACE               TO  SPA-GMN-C02-MANSEIKBN-G
+               IF      LNK-BYO-MANSEIKBN
+                                       NOT =   ZERO
+                   MOVE    LNK-BYO-MANSEIKBN   TO  SPA-GMN-C02-MANSEIKBN
+                                                   WRK-KBN
+                   PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
+                   MOVE    WRK-KBNMEI          TO
+                                               SPA-GMN-C02-MANSEIKBNMEI
+               ELSE
+                   MOVE    SPACE               TO
+                                               SPA-GMN-C02-MANSEIKBN-G
+               END-IF
            END-IF
+           MOVE    LNK-BYO-MANSEIKBN   TO  SPA-NAI-C02-MANSEIKBN
+           MOVE    LNK-BYO-NANBYOCD    TO  SPA-NAI-C02-NANBYOCD
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
+      *
            MOVE    LNK-BYO-RECEDENFLG  TO  SPA-NAI-C02-RECEDENFLG
            MOVE    LNK-BYO-BYOMEIHENFLG
                                        TO  SPA-NAI-C02-BYOMEIHENFLG
@@ -7257,10 +7354,25 @@ grpsys             PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    慢性区分
-           IF    ( SPA-NAI-C02-TOKSKNCD (IDX)  NOT =   ZERO )
-           AND   ( WRK-PTBYO-MANSEIKBN  (IDXX)     =   ZERO )  
-               MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
+           IF    ( SPA-NAI-C02-NANBYOCD-O(IDX) NOT =   ZERO    OR
+                   SPA-NAI-C02-US-TOKSKNCD(IDX)
+                                               NOT =   ZERO    OR
+                   SPA-NAI-C02-TOKSKNCD  (IDX) NOT =   ZERO       )
+           AND   ( WRK-PTBYO-MANSEIKBN  (IDXX)     =   ZERO       )  
+               IF      SPA-NAI-C02-US-TOKSKNCD (IDX)
+                                                   NOT =   ZERO
+                   MOVE    SPA-NAI-C02-US-TOKSKNCD (IDX)
                                        TO  WRK-PTBYO-MANSEIKBN (IDXX)
+               ELSE
+                   IF      SPA-NAI-C02-NANBYOCD-O (IDX)
+                                                       NOT =   ZERO
+                       MOVE    SPA-NAI-C02-NANBYOCD-O (IDX)
+                                       TO  WRK-PTBYO-MANSEIKBN (IDXX)
+                   ELSE
+                       MOVE    SPA-NAI-C02-TOKSKNCD (IDX)
+                                       TO  WRK-PTBYO-MANSEIKBN (IDXX)
+                   END-IF 
+               END-IF 
            END-IF
       *    
       *    病名編集フラグ
@@ -9171,6 +9283,48 @@ grpsys                                          SPA-AREA
            EXIT.
       *
       *****************************************************************
+      *    特定疾患対象区分、難病外来対象区分編集処理
+      *****************************************************************
+       5001-HYOUJI-HENSYU-SEC       SECTION.
+      * 
+           MOVE    SPACE               TO  SPA-GMN-C02-HYOUJI
+      * 
+           EVALUATE    SPA-GMN-C02-MANSEIKBN
+      ***      WHEN    SPACE
+      ***          IF    ( SPA-NAI-C02-NANBYOCD
+      ***                                  NOT =   ZERO             )
+      ***          AND   ( SPA-NAI-C02-MANSEIKBN
+      ***                                      =   "05"    OR  "08" )
+      ***              MOVE    "特定疾患・難病外来対象"
+      ***                                      TO  SPA-GMN-C02-HYOUJI
+      ***          ELSE
+      ***              IF      SPA-NAI-C02-MANSEIKBN
+      ***                                      =   "05"    OR  "08"
+      ***                  MOVE    "特定疾患対象"  TO
+      ***                                          SPA-GMN-C02-HYOUJI
+      ***              END-IF
+      ***              IF      SPA-NAI-C02-NANBYOCD
+      ***                                      NOT =   ZERO
+      ***                  MOVE    "難病外来対象"  TO
+      ***                                          SPA-GMN-C02-HYOUJI
+      ***              END-IF
+      ***          END-IF
+               WHEN    "09"
+                   IF      SPA-NAI-C02-MANSEIKBN
+                                               =   "05"    OR  "08"
+                       MOVE    "特定疾患対象"  TO  SPA-GMN-C02-HYOUJI
+                   END-IF
+               WHEN    OTHER    
+                   IF      SPA-NAI-C02-NANBYOCD
+                                           NOT =   ZERO
+                       MOVE    "難病外来対象"  TO  SPA-GMN-C02-HYOUJI
+                   END-IF
+           END-EVALUATE
+           .
+       5001-HYOUJI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
@@ -9464,6 +9618,8 @@ grpsys                                          SPA-AREA
                                            TO  C02-MANSEIFLG-ITEM (IDX)
                MOVE    IDX                 TO  C02-MANSEIFLG-COUNT
            END-PERFORM
+           MOVE    "blue"                  TO  C02-HYOUJI-STYLE
+           MOVE    SPA-GMN-C02-HYOUJI      TO  C02-HYOUJI
       *
            MOVE    SPA-GMN-C02-NYUGAIKBN-G TO  C02-NYUGAIKBN
            PERFORM VARYING IDX FROM    1   BY  1

@@ -43,6 +43,8 @@
       *
       *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
       *                                     補足コメントのチェック
+      *
+      *  04.06.01    NACL-藤原    10/10/20  難病外来指導管理料対応
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -137,6 +139,9 @@
                                        PIC 9(02).
       *                特定疾患コード
                        09  WRK-BYOMEI-TOKSKNCD
+                                       PIC 9(02).
+      *                難病外来コード
+                       09  WRK-BYOMEI-NANBYOCD
                                        PIC 9(02).
       *                疑いフラグ
                        09  WRK-BYOMEI-UTAGAIFLG
@@ -438,6 +443,8 @@ grpsys     COPY    "COMMON-SPA".
       **   DISPLAY "LNK-BYO-HOSOKU-BYOMEI=" LNK-BYO-HOSOKU-BYOMEI
       **   DISPLAY "LNK-BYO-BYOMEIHENFLG="  LNK-BYO-BYOMEIHENFLG
       **   DISPLAY "LNK-BYO-HAISIYMD-ERR="  LNK-BYO-HAISIYMD-ERR
+      **   DISPLAY "LNK-BYO-MANSEIKBN="     LNK-BYO-MANSEIKBN
+      **   DISPLAY "LNK-BYO-NANBYOCD ="     LNK-BYO-NANBYOCD
       *??
            .
        000-PROC-EXT.
@@ -1008,6 +1015,8 @@ grpsys                            SPA-AREA
                                        WRK-BYOMEI-TANDOKUKBN(IDY IDX)
                MOVE    BYO-TOKSKNCD    TO
                                        WRK-BYOMEI-TOKSKNCD  (IDY IDX)
+               MOVE    BYO-NANBYOCD    TO
+                                       WRK-BYOMEI-NANBYOCD  (IDY IDX)
                MOVE    BYO-UTAGAIFLG   TO
                                        WRK-BYOMEI-UTAGAIFLG (IDY IDX)
       *
@@ -1040,6 +1049,8 @@ grpsys                            SPA-AREA
                                        TO  LNK-BYO-TTANDOKUKBN (IDY)
            MOVE    WRK-BYOMEI-TOKSKNCD   (IDX  IDX2)
                                        TO  LNK-BYO-TTOKSKNCD   (IDY)
+           MOVE    WRK-BYOMEI-NANBYOCD   (IDX  IDX2)
+                                       TO  LNK-BYO-TNANBYOCD   (IDY)
            MOVE    WRK-BYOMEI-UTAGAIFLG  (IDX  IDX2)
                                        TO  LNK-BYO-TUTAGAIFLG  (IDY)
       *
@@ -1140,6 +1151,13 @@ grpsys                            SPA-AREA
                AND     LNK-BYO-MANSEIKBN   =   ZERO
                    MOVE    LNK-BYO-TTOKSKNCD (IDX)
                                            TO  LNK-BYO-MANSEIKBN 
+               END-IF   
+      *
+               IF      LNK-BYO-TNANBYOCD (IDX) 
+                                       NOT =   ZERO
+               AND     LNK-BYO-NANBYOCD    =   ZERO
+                   MOVE    LNK-BYO-TNANBYOCD (IDX)
+                                           TO  LNK-BYO-NANBYOCD
                END-IF   
            END-PERFORM
       *

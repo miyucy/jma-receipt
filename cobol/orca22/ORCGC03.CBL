@@ -106,7 +106,8 @@
       *  04.06.02    NACL-藤原    10/06/16  疑いフラグ設定対応
       *  04.06.03    NACL-藤原    10/06/21  自院病名に不明な病名コードが
       *                                     登録された場合のチェックを追加
-      *  04.06.01    NACL-藤原    10/08/25  一括入力対応
+      *  04.06.04    NACL-藤原    10/08/25  一括入力対応
+      *  04.06.05    NACL-藤原    10/10/20  難病外来指導管理料対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -859,7 +860,11 @@
            MOVE    "特定疾患療養管理料又はてんかん指導料"
                                    TO  SPA-GMN-C03-MANSEIKBNMEIL    (5)
            MOVE    "特定・てん"    TO  SPA-GMN-C03-MANSEIKBNTANL    (5)
-           MOVE    5               TO  SPA-GMN-C03-MANSEIKBN-MAX
+           MOVE    "09"            TO  SPA-GMN-C03-MANSEIKBNL       (6)
+           MOVE    "難病外来指導管理料"
+                                   TO  SPA-GMN-C03-MANSEIKBNMEIL    (6)
+           MOVE    "難病外来"      TO  SPA-GMN-C03-MANSEIKBNTANL    (6)
+           MOVE    6               TO  SPA-GMN-C03-MANSEIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-C03-HKNBYOMEIFLGL    (1)
            MOVE    "保険病名"      TO  SPA-GMN-C03-HKNBYOMEIFLGMEIL (1)
@@ -1329,6 +1334,25 @@
                  END-IF                 
                END-PERFORM
       *
+               MOVE    ZERO                TO  SPA-NAI-C03-NANBYOCD
+                                               SPA-NAI-C03-MANSEIKBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                   IF      SPA-NAI-C03-NANBYOCD-O (IDX)  NOT =   ZERO
+                       MOVE    SPA-NAI-C03-NANBYOCD-O (IDX)
+                                               TO  SPA-NAI-C03-NANBYOCD
+                       MOVE    21              TO  IDX
+                   END-IF   
+               END-PERFORM
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                   IF      SPA-NAI-C03-TOKSKNCD (IDX)   NOT =   ZERO
+                       MOVE    SPA-NAI-C03-TOKSKNCD (IDX)
+                                           TO  SPA-NAI-C03-MANSEIKBN
+                       MOVE    21              TO  IDX
+                   END-IF   
+               END-PERFORM
+      *
                IF      SPA-CIDCD2          =   SPACE
                    PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC              
                    IF    ( WRK-HAISIYMDH       =   SPACE )
@@ -1399,6 +1423,8 @@
       *                                 
            MOVE    USBYO-BYOMEISBT    TO  SPA-GMN-C03-BYOMEISBT
            PERFORM 5001-BYOMEISBT-HENSYU-SEC
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
       *
            MOVE    3                   TO  SPA-GMN-C03-CUR 
       *
@@ -1455,6 +1481,7 @@
                        MOVE    "1"       TO  SPA-NAI-C03-UTAGAIFLG(IDZ)
                    END-IF    
                    MOVE    BYO-TOKSKNCD  TO  SPA-NAI-C03-TOKSKNCD (IDZ)
+                   MOVE    BYO-NANBYOCD  TO  SPA-NAI-C03-NANBYOCD-O(IDZ)
                    MOVE    SPACE         TO  SPA-NAI-C03-BYOMEIHENFLG-O
                                                               (IDZ) 
                ELSE
@@ -2412,14 +2439,14 @@
                    WHEN    "1"
                        IF      SPA-GMN-C03-UTAGAIFLG   =   "2"
                            MOVE    "3"     TO  SPA-GMN-C03-UTAGAIFLG
-                        ELSE
+                       ELSE
                            MOVE    SPA-NAI-C03-UTAGAIFLG(IDX)
                                            TO  SPA-GMN-C03-UTAGAIFLG
-                        END-IF    
+                       END-IF    
                    WHEN    "2"
                        IF      SPA-GMN-C03-UTAGAIFLG   =   "1"
                            MOVE    "3"     TO  SPA-GMN-C03-UTAGAIFLG
-                        ELSE
+                       ELSE
                            MOVE    SPA-NAI-C03-UTAGAIFLG(IDX)
                                            TO  SPA-GMN-C03-UTAGAIFLG
                        END-IF
@@ -2431,17 +2458,36 @@
       *            
       *    慢性区分編集
              MOVE    SPACE                 TO  SPA-GMN-C03-MANSEIKBN-G  
+             MOVE    ZERO                  TO  SPA-NAI-C03-NANBYOCD
+                                               SPA-NAI-C03-MANSEIKBN
+             PERFORM VARYING IDX FROM    1   BY  1
+                     UNTIL   IDX >       WRK-CONS-BYOMEICD-MAX
+                 IF      SPA-NAI-C03-NANBYOCD-O (IDX)  NOT =   ZERO
+                     MOVE    SPA-NAI-C03-NANBYOCD-O (IDX)
+                                             TO  SPA-GMN-C03-MANSEIKBN
+                                                 SPA-NAI-C03-NANBYOCD
+                     MOVE    WRK-CONS-BYOMEICD-MAX
+                                             TO  IDX
+                 END-IF   
+             END-PERFORM
              PERFORM VARYING IDX   FROM    1   BY  1
                    UNTIL   IDX >   WRK-CONS-BYOMEICD-MAX
-               IF      SPA-NAI-C03-TOKSKNCD (IDX)   NOT =   ZERO
-                   MOVE    SPA-NAI-C03-TOKSKNCD (IDX)
+                 IF      SPA-NAI-C03-TOKSKNCD (IDX)   NOT =   ZERO
+                     MOVE    SPA-NAI-C03-TOKSKNCD (IDX)
+                                         TO  SPA-NAI-C03-MANSEIKBN
+                     IF      SPA-GMN-C03-MANSEIKBN
+                                           =   SPACE
+                         MOVE    SPA-NAI-C03-TOKSKNCD (IDX)
                                            TO  SPA-GMN-C03-MANSEIKBN
-                   MOVE    WRK-CONS-BYOMEICD-MAX
+                         MOVE    WRK-CONS-BYOMEICD-MAX
                                            TO  IDX
-               END-IF   
+                     END-IF   
+                 END-IF   
              END-PERFORM
              PERFORM 5001-MANSEIKBN-HENSYU-SEC
       *****END-IF
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
       *
            MOVE    WRK-BYOMEI          TO  SPA-GMN-C03-BYOMEI
       *
@@ -2729,11 +2775,16 @@
       *****************************************************************
        41006-MANSEI-CHK-SEC                SECTION.
       *
+           MOVE    SPACE               TO  SPA-GMN-C03-HYOUJI
+      *
            PERFORM 5001-MANSEIKBN-HENSYU-SEC
            IF      WRK-HENFLG           =   ZERO
                MOVE    "0021"               TO  SPA-ERRCD
                MOVE    14                   TO  SPA-GMN-C03-CUR
+               GO  TO  41006-MANSEI-CHK-EXT
            END-IF    
+      *    
+           PERFORM 5001-HYOUJI-HENSYU-SEC
            .
        41006-MANSEI-CHK-EXT.
            EXIT.
@@ -2782,10 +2833,19 @@ grpsys                                         SPA-AREA
            MOVE    LNK-BYO-BYOMEI      TO  SPA-GMN-C03-BYOMEI
            MOVE    LNK-BYO-UTAGAIFLG   TO  SPA-GMN-C03-UTAGAIFLG
            PERFORM 5001-UTAGAIFLG-HENSYU-SEC
-           IF      LNK-BYO-MANSEIKBN   NOT =   ZERO
-               MOVE    LNK-BYO-MANSEIKBN   TO  SPA-GMN-C03-MANSEIKBN
-               PERFORM 5001-MANSEIKBN-HENSYU-SEC
+           IF      LNK-BYO-NANBYOCD
+                                   NOT =   ZERO
+               MOVE    LNK-BYO-NANBYOCD    TO  SPA-GMN-C03-MANSEIKBN
+               PERFORM 5001-MANSEIKBN-HENSYU-SEC                                
+           ELSE
+               IF      LNK-BYO-MANSEIKBN   NOT =   ZERO
+                   MOVE    LNK-BYO-MANSEIKBN   TO  SPA-GMN-C03-MANSEIKBN
+                   PERFORM 5001-MANSEIKBN-HENSYU-SEC
+               END-IF
            END-IF
+           MOVE    LNK-BYO-MANSEIKBN   TO  SPA-NAI-C03-MANSEIKBN
+           MOVE    LNK-BYO-NANBYOCD    TO  SPA-NAI-C03-NANBYOCD
+           PERFORM 5001-HYOUJI-HENSYU-SEC
            MOVE    LNK-BYO-BYOMEIMOJI  TO  SPA-NAI-C03-BYOMEIMOJI
            IF      LNK-BYO-BYOMEICD-ERR    =   1
                CONTINUE
@@ -2815,6 +2875,8 @@ grpsys                                         SPA-AREA
                                        TO  SPA-NAI-C03-UTAGAIFLG(IDZ)
                MOVE    LNK-BYO-TTOKSKNCD (IDX)
                                        TO  SPA-NAI-C03-TOKSKNCD (IDZ)
+               MOVE    LNK-BYO-TNANBYOCD  (IDX)
+                                       TO  SPA-NAI-C03-NANBYOCD-O(IDZ)
            END-PERFORM
       *
       *    病名コード最大個数オーバー
@@ -4032,6 +4094,48 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            EXIT.
       *
       *****************************************************************
+      *    特定疾患対象区分、難病外来対象区分編集処理
+      *****************************************************************
+       5001-HYOUJI-HENSYU-SEC       SECTION.
+      * 
+           MOVE    SPACE               TO  SPA-GMN-C03-HYOUJI
+      *
+           EVALUATE    SPA-GMN-C03-MANSEIKBN
+      ***      WHEN    SPACE
+      ***          IF    ( SPA-NAI-C03-NANBYOCD
+      ***                                  NOT =   ZERO             )
+      ***          AND   ( SPA-NAI-C03-MANSEIKBN
+      ***                                      =   "05"    OR  "08" )
+      ***              MOVE    "特定疾患・難病外来対象"
+      ***                                      TO  SPA-GMN-C03-HYOUJI
+      ***          ELSE
+      ***              IF      SPA-NAI-C03-MANSEIKBN
+      ***                                      =   "05"    OR  "08"
+      ***                  MOVE    "特定疾患対象"  TO
+      ***                                          SPA-GMN-C03-HYOUJI
+      ***              END-IF
+      ***              IF      SPA-NAI-C03-NANBYOCD
+      ***                                      NOT =   ZERO
+      ***                  MOVE    "難病外来対象"  TO
+      ***                                          SPA-GMN-C03-HYOUJI
+      ***              END-IF
+      ***          END-IF
+               WHEN    "09"
+                   IF      SPA-NAI-C03-MANSEIKBN
+                                               =   "05"    OR  "08"
+                       MOVE    "特定疾患対象"  TO  SPA-GMN-C03-HYOUJI
+                   END-IF
+               WHEN    OTHER    
+                   IF      SPA-NAI-C03-NANBYOCD
+                                           NOT =   ZERO
+                       MOVE    "難病外来対象"  TO  SPA-GMN-C03-HYOUJI
+                   END-IF
+           END-EVALUATE
+           .
+       5001-HYOUJI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
@@ -4085,6 +4189,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            END-IF
       * 
            MOVE    SPACE               TO  C03
+           INITIALIZE                      C03
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-C03-MAX
@@ -4161,13 +4266,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            END-PERFORM
       *
            MOVE    SPA-GMN-C03-MANSEIKBN-G TO  C03-MANSEIFLG
-           PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL       IDX     >   5
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-C03-MANSEIKBN-MAX
                    OR          SPA-GMN-C03-MANSEIKBNL  (IDX)  =   SPACE
                MOVE    SPA-GMN-C03-MANSEIKBNLST (IDX)
                                            TO  C03-MANSEIFLG-ITEM (IDX)
                MOVE    IDX                 TO  C03-MANSEIFLG-COUNT
            END-PERFORM
+      *
+           MOVE    "blue"                  TO  C03-HYOUJI-STYLE
+           MOVE    SPA-GMN-C03-HYOUJI      TO  C03-HYOUJI
       *
            MOVE    SPA-GMN-C03-HKNBYOMEIFLG-G TO  C03-HKNBYOMEIFLG
            PERFORM VARYING IDX FROM    1       BY  1

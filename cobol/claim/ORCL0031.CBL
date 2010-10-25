@@ -60,7 +60,8 @@
       *  04.05.00    NACL-多々納  10/01/15  治験対応
       *
       *  04.06.01    NACL-藤原    10/06/20  病名の入力順対応
-      *  04.06.00    NACL-多々納  10/08/09  複数公費対応
+      *  04.06.02    NACL-多々納  10/08/09  複数公費対応
+      *  04.06.03    NACL-藤原    10/10/20  難病外来指導管理料対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2868,7 +2869,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    WRK-TUTAGAIFLG (IDY)
                            IF      WRK-TBYOMEICD (IDY) (1:1)
                                                NOT =   "Z"
-                               MOVE    BYO-TOKSKNCD    TO  WRK-TOKSKNCD
+                               IF      BYO-NANBYOCD
+                                                   NOT =   ZERO
+                                   MOVE    BYO-NANBYOCD
+                                                       TO  WRK-TOKSKNCD
+                               ELSE 
+                                   MOVE    BYO-TOKSKNCD
+                                                       TO  WRK-TOKSKNCD
+                               END-IF
                            END-IF
                        END-IF      
                    END-IF
@@ -3386,10 +3394,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-EVALUATE
                END-IF      
       *        慢性区分
-               IF      LNK-BYO-MANSEIKBN   NOT =   ZERO
-                   MOVE    LNK-BYO-MANSEIKBN   TO  PTBYO-MANSEIKBN
+               IF      LNK-BYO-NANBYOCD
+                                   NOT =   ZERO
+                   MOVE    LNK-BYO-NANBYOCD    TO  PTBYO-MANSEIKBN
+               ELSE
+                   IF      LNK-BYO-MANSEIKBN   NOT =   ZERO
+                       MOVE    LNK-BYO-MANSEIKBN   TO  PTBYO-MANSEIKBN
+                   END-IF
                END-IF
-      *       病名コード
+      *        病名コード
                PERFORM VARYING IDX4    FROM    1   BY  1
                        UNTIL   IDX4    >       LNK-BYO-BYOMEI-MAX
                    MOVE    LNK-BYO-TBYOMEICD (IDX4)
