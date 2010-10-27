@@ -156,3 +156,10 @@
            03  SYS-200501-UPYMD            PIC X(08).
       *更新時間
            03  SYS-200501-UPHMS            PIC X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-200501-KEY.
+               05  SYSUP-200501-HOSPNUM     PIC 9(2).
+               05  SYSUP-200501-KANRICD     PIC X(04).
+               05  SYSUP-200501-KBNCD       PIC X(08).
+               05  SYSUP-200501-STYUKYMD    PIC X(08).
+               05  SYSUP-200501-EDYUKYMD    PIC X(08).

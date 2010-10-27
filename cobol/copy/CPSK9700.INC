@@ -58,3 +58,10 @@
            03  SYS-9700-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-9700-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-9700-KEY.
+               05  SYSUP-9700-HOSPNUM     PIC 9(2).
+               05  SYSUP-9700-KANRICD     PIC X(04).
+               05  SYSUP-9700-KBNCD       PIC X(08).
+               05  SYSUP-9700-STYUKYMD    PIC X(08).
+               05  SYSUP-9700-EDYUKYMD    PIC X(08).

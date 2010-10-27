@@ -59,3 +59,10 @@
            03  SYS-5007-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-5007-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-5007-KEY.
+               05  SYSUP-5007-HOSPNUM     PIC 9(2).
+               05  SYSUP-5007-KANRICD     PIC X(04).
+               05  SYSUP-5007-KBNCD       PIC X(08).
+               05  SYSUP-5007-STYUKYMD    PIC X(08).
+               05  SYSUP-5007-EDYUKYMD    PIC X(08).

@@ -75,3 +75,10 @@
            03  SYS-5010-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-5010-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-5010-KEY.
+               05  SYSUP-5010-HOSPNUM     PIC 9(2).
+               05  SYSUP-5010-KANRICD     PIC X(04).
+               05  SYSUP-5010-KBNCD       PIC X(08).
+               05  SYSUP-5010-STYUKYMD    PIC X(08).
+               05  SYSUP-5010-EDYUKYMD    PIC X(08).

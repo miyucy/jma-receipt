@@ -58,3 +58,10 @@
            03  SYS-1046-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1046-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-1046-KEY.
+               05  SYSUP-1046-HOSPNUM     PIC 9(2).
+               05  SYSUP-1046-KANRICD     PIC X(04).
+               05  SYSUP-1046-KBNCD       PIC X(08).
+               05  SYSUP-1046-STYUKYMD    PIC X(08).
+               05  SYSUP-1046-EDYUKYMD    PIC X(08).

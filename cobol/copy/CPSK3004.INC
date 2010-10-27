@@ -61,3 +61,10 @@
            03  SYS-3004-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-3004-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-3004-KEY.
+               05  SYSUP-3004-HOSPNUM     PIC 9(2).
+               05  SYSUP-3004-KANRICD     PIC X(04).
+               05  SYSUP-3004-KBNCD       PIC X(08).
+               05  SYSUP-3004-STYUKYMD    PIC X(08).
+               05  SYSUP-3004-EDYUKYMD    PIC X(08).

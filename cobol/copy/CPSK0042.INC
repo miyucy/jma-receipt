@@ -52,3 +52,10 @@
            03  SYS-0042-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-0042-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-0042-KEY.
+               05  SYSUP-0042-HOSPNUM     PIC 9(2).
+               05  SYSUP-0042-KANRICD     PIC X(04).
+               05  SYSUP-0042-KBNCD       PIC X(08).
+               05  SYSUP-0042-STYUKYMD    PIC X(08).
+               05  SYSUP-0042-EDYUKYMD    PIC X(08).

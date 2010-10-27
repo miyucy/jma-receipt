@@ -51,3 +51,10 @@
            03  SYS-5109-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-5109-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-5109-KEY.
+               05  SYSUP-5109-HOSPNUM     PIC 9(2).
+               05  SYSUP-5109-KANRICD     PIC X(04).
+               05  SYSUP-5109-KBNCD       PIC X(08).
+               05  SYSUP-5109-STYUKYMD    PIC X(08).
+               05  SYSUP-5109-EDYUKYMD    PIC X(08).

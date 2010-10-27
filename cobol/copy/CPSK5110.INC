@@ -60,3 +60,10 @@
            03  SYS-5110-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-5110-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-5110-KEY.
+               05  SYSUP-5110-HOSPNUM     PIC 9(2).
+               05  SYSUP-5110-KANRICD     PIC X(04).
+               05  SYSUP-5110-KBNCD       PIC X(08).
+               05  SYSUP-5110-STYUKYMD    PIC X(08).
+               05  SYSUP-5110-EDYUKYMD    PIC X(08).

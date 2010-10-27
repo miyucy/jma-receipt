@@ -88,3 +88,10 @@
                05  SYS-1009-UPYMD           PIC  X(08).
       *更新時間
                05  SYS-1009-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-1009-KEY.
+               05  SYSUP-1009-HOSPNUM     PIC 9(2).
+               05  SYSUP-1009-KANRICD     PIC X(04).
+               05  SYSUP-1009-KBNCD       PIC X(08).
+               05  SYSUP-1009-STYUKYMD    PIC X(08).
+               05  SYSUP-1009-EDYUKYMD    PIC X(08).

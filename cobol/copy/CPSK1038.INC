@@ -97,3 +97,10 @@
            03  SYS-1038-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1038-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-1038-KEY.
+               05  SYSUP-1038-HOSPNUM     PIC 9(2).
+               05  SYSUP-1038-KANRICD     PIC X(04).
+               05  SYSUP-1038-KBNCD       PIC X(08).
+               05  SYSUP-1038-STYUKYMD    PIC X(08).
+               05  SYSUP-1038-EDYUKYMD    PIC X(08).

@@ -62,3 +62,10 @@
            03  SYS-1045-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1045-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-1045-KEY.
+               05  SYSUP-1045-HOSPNUM     PIC 9(2).
+               05  SYSUP-1045-KANRICD     PIC X(04).
+               05  SYSUP-1045-KBNCD       PIC X(08).
+               05  SYSUP-1045-STYUKYMD    PIC X(08).
+               05  SYSUP-1045-EDYUKYMD    PIC X(08).

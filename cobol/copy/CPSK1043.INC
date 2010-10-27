@@ -57,3 +57,10 @@
            03  SYS-1043-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1043-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-1043-KEY.
+               05  SYSUP-1043-HOSPNUM     PIC 9(2).
+               05  SYSUP-1043-KANRICD     PIC X(04).
+               05  SYSUP-1043-KBNCD       PIC X(08).
+               05  SYSUP-1043-STYUKYMD    PIC X(08).
+               05  SYSUP-1043-EDYUKYMD    PIC X(08).

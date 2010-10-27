@@ -56,3 +56,10 @@
            03  SYS-9001-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-9001-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-9001-KEY.
+               05  SYSUP-9001-HOSPNUM     PIC 9(2).
+               05  SYSUP-9001-KANRICD     PIC X(04).
+               05  SYSUP-9001-KBNCD       PIC X(08).
+               05  SYSUP-9001-STYUKYMD    PIC X(08).
+               05  SYSUP-9001-EDYUKYMD    PIC X(08).

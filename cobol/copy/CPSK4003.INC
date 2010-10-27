@@ -48,3 +48,10 @@
            03  SYS-4003-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-4003-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-4003-KEY.
+               05  SYSUP-4003-HOSPNUM     PIC 9(2).
+               05  SYSUP-4003-KANRICD     PIC X(04).
+               05  SYSUP-4003-KBNCD       PIC X(08).
+               05  SYSUP-4003-STYUKYMD    PIC X(08).
+               05  SYSUP-4003-EDYUKYMD    PIC X(08).

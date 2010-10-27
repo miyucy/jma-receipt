@@ -53,3 +53,10 @@
            03  SYS-1031-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1031-UPHMS           PIC  X(06).
+      *　　主キー更新用項目
+           03  SYSUPD-1031-KEY.
+               05  SYSUP-1031-HOSPNUM     PIC 9(2).
+               05  SYSUP-1031-KANRICD     PIC X(04).
+               05  SYSUP-1031-KBNCD       PIC X(08).
+               05  SYSUP-1031-STYUKYMD    PIC X(08).
+               05  SYSUP-1031-EDYUKYMD    PIC X(08).
