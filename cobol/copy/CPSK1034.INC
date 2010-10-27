@@ -53,10 +53,10 @@
            03  SYS-1034-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1034-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-1034-KEY.
-               05  SYSUP-1034-HOSPNUM     PIC 9(2).
-               05  SYSUP-1034-KANRICD     PIC X(04).
-               05  SYSUP-1034-KBNCD       PIC X(08).
-               05  SYSUP-1034-STYUKYMD    PIC X(08).
-               05  SYSUP-1034-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-1034-UPD-KEY.
+               05  SYS-1034-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-1034-UPD-KANRICD     PIC X(04).
+               05  SYS-1034-UPD-KBNCD       PIC X(08).
+               05  SYS-1034-UPD-STYUKYMD    PIC X(08).
+               05  SYS-1034-UPD-EDYUKYMD    PIC X(08).

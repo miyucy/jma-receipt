@@ -69,10 +69,10 @@
            03  SYS-1101-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1101-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-1101-KEY.
-               05  SYSUP-1101-HOSPNUM     PIC 9(2).
-               05  SYSUP-1101-KANRICD     PIC X(04).
-               05  SYSUP-1101-KBNCD       PIC X(08).
-               05  SYSUP-1101-STYUKYMD    PIC X(08).
-               05  SYSUP-1101-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-1101-UPD-KEY.
+               05  SYS-1101-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-1101-UPD-KANRICD     PIC X(04).
+               05  SYS-1101-UPD-KBNCD       PIC X(08).
+               05  SYS-1101-UPD-STYUKYMD    PIC X(08).
+               05  SYS-1101-UPD-EDYUKYMD    PIC X(08).

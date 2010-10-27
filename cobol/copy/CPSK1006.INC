@@ -49,10 +49,10 @@
            03  SYS-1006-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1006-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-1006-KEY.
-               05  SYSUP-1006-HOSPNUM     PIC 9(2).
-               05  SYSUP-1006-KANRICD     PIC X(04).
-               05  SYSUP-1006-KBNCD       PIC X(08).
-               05  SYSUP-1006-STYUKYMD    PIC X(08).
-               05  SYSUP-1006-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-1006-UPD-KEY.
+               05  SYS-1006-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-1006-UPD-KANRICD     PIC X(04).
+               05  SYS-1006-UPD-KBNCD       PIC X(08).
+               05  SYS-1006-UPD-STYUKYMD    PIC X(08).
+               05  SYS-1006-UPD-EDYUKYMD    PIC X(08).

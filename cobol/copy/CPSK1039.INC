@@ -124,10 +124,10 @@
            03  SYS-1039-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1039-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-1039-KEY.
-               05  SYSUP-1039-HOSPNUM     PIC 9(2).
-               05  SYSUP-1039-KANRICD     PIC X(04).
-               05  SYSUP-1039-KBNCD       PIC X(08).
-               05  SYSUP-1039-STYUKYMD    PIC X(08).
-               05  SYSUP-1039-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-1039-UPD-KEY.
+               05  SYS-1039-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-1039-UPD-KANRICD     PIC X(04).
+               05  SYS-1039-UPD-KBNCD       PIC X(08).
+               05  SYS-1039-UPD-STYUKYMD    PIC X(08).
+               05  SYS-1039-UPD-EDYUKYMD    PIC X(08).

@@ -55,10 +55,10 @@
            03  SYS-4100-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-4100-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-4100-KEY.
-               05  SYSUP-4100-HOSPNUM     PIC 9(2).
-               05  SYSUP-4100-KANRICD     PIC X(04).
-               05  SYSUP-4100-KBNCD       PIC X(08).
-               05  SYSUP-4100-STYUKYMD    PIC X(08).
-               05  SYSUP-4100-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-4100-UPD-KEY.
+               05  SYS-4100-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-4100-UPD-KANRICD     PIC X(04).
+               05  SYS-4100-UPD-KBNCD       PIC X(08).
+               05  SYS-4100-UPD-STYUKYMD    PIC X(08).
+               05  SYS-4100-UPD-EDYUKYMD    PIC X(08).

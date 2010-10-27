@@ -83,10 +83,10 @@
            03  SYS-9000-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-9000-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-9000-KEY.
-               05  SYSUP-9000-HOSPNUM     PIC 9(2).
-               05  SYSUP-9000-KANRICD     PIC X(04).
-               05  SYSUP-9000-KBNCD       PIC X(08).
-               05  SYSUP-9000-STYUKYMD    PIC X(08).
-               05  SYSUP-9000-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-9000-UPD-KEY.
+               05  SYS-9000-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-9000-UPD-KANRICD     PIC X(04).
+               05  SYS-9000-UPD-KBNCD       PIC X(08).
+               05  SYS-9000-UPD-STYUKYMD    PIC X(08).
+               05  SYS-9000-UPD-EDYUKYMD    PIC X(08).

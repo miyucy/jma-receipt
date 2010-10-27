@@ -49,10 +49,10 @@
            03  SYS-2004-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-2004-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-2004-KEY.
-               05  SYSUP-2004-HOSPNUM     PIC 9(2).
-               05  SYSUP-2004-KANRICD     PIC X(04).
-               05  SYSUP-2004-KBNCD       PIC X(08).
-               05  SYSUP-2004-STYUKYMD    PIC X(08).
-               05  SYSUP-2004-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-2004-UPD-KEY.
+               05  SYS-2004-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-2004-UPD-KANRICD     PIC X(04).
+               05  SYS-2004-UPD-KBNCD       PIC X(08).
+               05  SYS-2004-UPD-STYUKYMD    PIC X(08).
+               05  SYS-2004-UPD-EDYUKYMD    PIC X(08).

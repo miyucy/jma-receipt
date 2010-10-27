@@ -54,10 +54,10 @@
            03  SYS-5015-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-5015-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-5015-KEY.
-               05  SYSUP-5015-HOSPNUM     PIC 9(2).
-               05  SYSUP-5015-KANRICD     PIC X(04).
-               05  SYSUP-5015-KBNCD       PIC X(08).
-               05  SYSUP-5015-STYUKYMD    PIC X(08).
-               05  SYSUP-5015-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-5015-UPD-KEY.
+               05  SYS-5015-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-5015-UPD-KANRICD     PIC X(04).
+               05  SYS-5015-UPD-KBNCD       PIC X(08).
+               05  SYS-5015-UPD-STYUKYMD    PIC X(08).
+               05  SYS-5015-UPD-EDYUKYMD    PIC X(08).

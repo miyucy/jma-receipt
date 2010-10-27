@@ -55,10 +55,10 @@
            03  SYS-5106-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-5106-UPHMS           PIC  X(06).
-      *　　主キー更新用項目
-           03  SYSUPD-5106-KEY.
-               05  SYSUP-5106-HOSPNUM     PIC 9(2).
-               05  SYSUP-5106-KANRICD     PIC X(04).
-               05  SYSUP-5106-KBNCD       PIC X(08).
-               05  SYSUP-5106-STYUKYMD    PIC X(08).
-               05  SYSUP-5106-EDYUKYMD    PIC X(08).
+      *主キー更新用項目
+           03  SYS-5106-UPD-KEY.
+               05  SYS-5106-UPD-HOSPNUM     PIC 9(2).
+               05  SYS-5106-UPD-KANRICD     PIC X(04).
+               05  SYS-5106-UPD-KBNCD       PIC X(08).
+               05  SYS-5106-UPD-STYUKYMD    PIC X(08).
+               05  SYS-5106-UPD-EDYUKYMD    PIC X(08).
