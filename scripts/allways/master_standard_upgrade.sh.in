@@ -162,6 +162,7 @@ fi
 if [	-e ${PRFFILE}	];	then 
   rm ${PRFFILE}
 fi
+touch ${PRFFILE}
 
 
 if ! [	-d	${HOME}/${HOSPNUM}/${MSTDIR}	];	then 

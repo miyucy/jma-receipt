@@ -217,7 +217,7 @@ grpsys     COPY    "COMMON-SPA".
       *    Ï¢Íí¡¡ÎÎ°è
       *****************************************************************
        LINKAGE                     SECTION.
-       01  PARA-REC                PIC   X(400).
+       01  PARA-REC                PIC   X(500).
       *
        PROCEDURE                       DIVISION
            USING
