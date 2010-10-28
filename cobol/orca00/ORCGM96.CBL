@@ -602,7 +602,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    DBKANRI-VERSION     TO  SPA-GMN-VERSION     (IDX)
            MOVE    DBKANRI-DBSVERSION1 TO  SPA-GMN-DBSVERSION1 (IDX)
            MOVE    DBKANRI-DBSVERSION2 TO  SPA-GMN-DBSVERSION2 (IDX)
-           IF      DBKANRI-UPYMD       =   SPACE
+           IF      DBKANRI-UPYMD       =   SPACE  OR  "00000000"
                MOVE    DBKANRI-CREYMD      TO  WRK-SYMD
            ELSE
                MOVE    DBKANRI-UPYMD       TO  WRK-SYMD

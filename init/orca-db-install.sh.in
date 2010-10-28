@@ -269,7 +269,7 @@ do
 
 #DB管理情報更新
 
-        echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}' where kanricd='ORCADB00';" | su - orca -c "psql -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+        echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') where kanricd='ORCADB00';" | su - orca -c "psql -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 done
 
 #vacuum analyze
