@@ -6890,6 +6890,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    RECE09-FILE
                    RECE11-FILE
                    RECE055-FILE
+		   RECE12-FILE 
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
