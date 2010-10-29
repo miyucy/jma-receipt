@@ -121,7 +121,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:55:26 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>設定コピー</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -137,7 +137,13 @@
 	<key>GDK_F5</key>
 	<signal>clicked</signal>
       </accelerator>
-      <label></label>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 09 Feb 2001 02:55:26 GMT</last_modification_time>
+      </signal>
+      <label>設定一括</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -160,7 +166,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 23:57:24 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>設定複写</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

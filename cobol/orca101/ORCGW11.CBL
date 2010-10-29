@@ -1296,6 +1296,17 @@
                        PERFORM 490-KOUSHIN-SEC
                    WHEN    "1002"
                        PERFORM 490-SAKUJYO-SEC
+                   WHEN    "1003"
+                       EVALUATE    SPA-GMN-PAGENO
+                           WHEN    1
+                               PERFORM 4101-PRTNM-SET-SEC
+                           WHEN    2
+                               PERFORM 4101-PRTNM-N-SET-SEC
+                       END-EVALUATE
+                   WHEN    "1004"
+                       PERFORM 4101-COPY-SET-SEC
+                   WHEN    "1005"
+                       PERFORM 4101-COPY-GMN-SET-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-W01-KANRICD
@@ -1396,6 +1407,21 @@
                PERFORM  410-SAKUJYO-SEC
       *----(02.00.03)--ADD-END-----
       *
+      *    出力設定コピー
+           WHEN    "CLICKED"       ALSO    "B04"
+               IF      SPA-W01-KANRICD     =   "1031"
+                   PERFORM 410-PRINTCOPY-SYORI-SEC
+               END-IF
+      *    プリンタセット
+           WHEN    "CLICKED"       ALSO    "B05"
+               IF      SPA-W01-KANRICD     =   "1031"
+                   PERFORM 410-PRINT-SET-SEC
+               END-IF
+      *    出力設定複写
+           WHEN    "CLICKED"       ALSO    "B06"
+               IF      SPA-W01-KANRICD     =   "1031"
+                   PERFORM 410-SELNUMSET-SYORI-SEC
+               END-IF
       *    タグ切替え
            WHEN    "CLICKED"       ALSO    "B08"
            WHEN    "CLICKED"       ALSO    "N0101"
@@ -1465,6 +1491,135 @@
       *
            .
        410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来プリンタ名セット処理
+      *****************************************************************
+       4101-PRTNM-SET-SEC          SECTION.
+      *
+      *    出力先プリンタ割り当て
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   20 )
+                       OR    ( SPA-GMN-TNAME (IDX)     =   SPACE )
+               MOVE    W11-PRTNM (01)      TO  SPA-GMN-TPRTNM (IDX)
+           END-PERFORM
+           .
+       4101-PRTNM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院プリンタ名セット処理
+      *****************************************************************
+       4101-PRTNM-N-SET-SEC        SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   20 )
+                       OR    ( SPA-GMN-TNAME-N (IDX)   =   SPACE )
+               MOVE    W11-PRTNM-N (01)    TO  SPA-GMN-TPRTNM-N (IDX)
+           END-PERFORM
+           .
+       4101-PRTNM-N-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   コピーセット処理
+      *****************************************************************
+       4101-COPY-SET-SEC           SECTION.
+      *
+            INITIALIZE                 SPA-COPY-AREA
+      *     外来
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   20
+                MOVE    SPA-GMN-TNAME(IDX)
+                                           TO  SPA-COPY-TNAME(IDX)
+                MOVE    SPA-GMN-TPRTNM(IDX)
+                                           TO  SPA-COPY-TPRTNM(IDX)
+            END-PERFORM
+      *
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   SPA-GPGNM-MAX
+                MOVE    SPA-GMN-TORGPGNM(IDX)
+                                           TO  SPA-COPY-TORGPGNM(IDX)
+                MOVE    SPA-GMN-TORGPGCHK(IDX)
+                                           TO  SPA-COPY-TORGPGCHK(IDX)
+                MOVE    SPA-GMN-TCSTPGNM(IDX)
+                                           TO  SPA-COPY-TCSTPGNM(IDX)
+                MOVE    SPA-GMN-TCSTPGCHK(IDX)
+                                           TO  SPA-COPY-TCSTPGCHK(IDX)
+            END-PERFORM
+      *     入院
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   20
+                MOVE    SPA-GMN-TNAME-N(IDX)
+                                           TO  SPA-COPY-TNAME-N(IDX)
+                MOVE    SPA-GMN-TPRTNM-N(IDX)
+                                           TO  SPA-COPY-TPRTNM-N(IDX)
+            END-PERFORM
+      *
+            PERFORM VARYING IDX        FROM    1   BY  1
+                    UNTIL   IDX        >   SPA-NPGNM-MAX
+                MOVE    SPA-GMN-TORGPGNM-N(IDX)
+                                           TO  SPA-COPY-TORGPGNM-N(IDX)
+                MOVE    SPA-GMN-TORGPGCHK-N(IDX)
+                                           TO  SPA-COPY-TORGPGCHK-N(IDX)
+                MOVE    SPA-GMN-TCSTPGNM-N(IDX)
+                                           TO  SPA-COPY-TCSTPGNM-N(IDX)
+                MOVE    SPA-GMN-TCSTPGCHK-N(IDX)
+                                           TO  SPA-COPY-TCSTPGCHK-N(IDX)
+            END-PERFORM
+      *
+            .
+       4101-COPY-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   標準項目画面セット処理
+      *****************************************************************
+       4101-COPY-GMN-SET-SEC       SECTION.
+      *
+            PERFORM VARYING IDX FROM    1   BY  1
+                    UNTIL   IDX >       20
+                MOVE    SPA-COPY-TNAME(IDX)
+                                    TO  SPA-GMN-TNAME(IDX)
+                MOVE    SPA-COPY-TPRTNM(IDX)
+                                    TO  SPA-GMN-TPRTNM(IDX)
+            END-PERFORM
+      *
+            PERFORM VARYING IDX FROM    1   BY  1
+                    UNTIL   IDX >       SPA-GPGNM-MAX
+                MOVE    SPA-COPY-TORGPGNM(IDX)
+                                    TO  SPA-GMN-TORGPGNM(IDX)
+                MOVE    SPA-COPY-TORGPGCHK(IDX)
+                                    TO  SPA-GMN-TORGPGCHK(IDX)
+                MOVE    SPA-COPY-TCSTPGNM(IDX)
+                                    TO  SPA-GMN-TCSTPGNM(IDX)
+                MOVE    SPA-COPY-TCSTPGCHK(IDX)
+                                    TO  SPA-GMN-TCSTPGCHK(IDX)
+            END-PERFORM
+      *
+            PERFORM VARYING IDX FROM    1   BY  1
+                    UNTIL   IDX >       20
+                MOVE    SPA-COPY-TNAME-N(IDX)
+                                    TO  SPA-GMN-TNAME-N(IDX)
+                MOVE    SPA-COPY-TPRTNM-N(IDX)
+                                    TO  SPA-GMN-TPRTNM-N(IDX)
+            END-PERFORM
+      *
+            PERFORM VARYING IDX FROM    1   BY  1
+                    UNTIL   IDX >       SPA-NPGNM-MAX
+                MOVE    SPA-COPY-TORGPGNM-N(IDX)
+                                    TO  SPA-GMN-TORGPGNM-N(IDX)
+                MOVE    SPA-COPY-TORGPGCHK-N(IDX)
+                                    TO  SPA-GMN-TORGPGCHK-N(IDX)
+                MOVE    SPA-COPY-TCSTPGNM-N(IDX)
+                                    TO  SPA-GMN-TCSTPGNM-N(IDX)
+                MOVE    SPA-COPY-TCSTPGCHK-N(IDX)
+                                    TO  SPA-GMN-TCSTPGCHK-N(IDX)
+            END-PERFORM
+      *
+           .
+       4101-COPY-GMN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2248,6 +2403,53 @@
            END-IF
            .
        410-SAKUJYO-EXT.
+           EXIT.
+      *****************************************************************
+      *    プリンタセット
+      *****************************************************************
+       410-PRINT-SET-SEC           SECTION.
+      *
+           IF      SPA-W01-KANRICD      =   "1031"
+               IF      SPA-ERRCD        =   SPACE
+                    MOVE    "1003"           TO  SPA-WIDCD
+               END-IF
+           END-IF
+           .
+       410-PRINT-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    出力プリンタ設定コピー
+      *****************************************************************
+       410-PRINTCOPY-SYORI-SEC     SECTION.
+      *
+           IF      SPA-GMN-SELNUM  =   ZERO
+               MOVE    "0007"          TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD       =   SPACE
+               MOVE    "1004"          TO  SPA-WIDCD
+           END-IF
+      *
+           .
+       410-PRINTCOPY-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    出力プリンタ設定個別複写
+      *****************************************************************
+       410-SELNUMSET-SYORI-SEC     SECTION.
+      *
+           IF      SPA-GMN-SELNUM  =   ZERO
+               MOVE    "0007"          TO  SPA-ERRCD
+           ELSE
+               IF      SPA-COPY-AREA   =   SPACE
+                   MOVE    "0015"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           IF      SPA-ERRCD       =   SPACE
+               MOVE    "1005"          TO  SPA-WIDCD
+           END-IF
+      *
+           .
+       410-SELNUMSET-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    帳票オフセット画面処理
@@ -3459,6 +3661,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-EDYUKYMD     TO  W11-EDYUKYMD
       *
            MOVE    WIDGET-NORMAL        TO  W11-B03-STATE
+                                            W11-B04-STATE
+                                            W11-B05-STATE
+                                            W11-B06-STATE
                                             W11-B08-STATE
                                             W11-B09-STATE
                                             W11-B10-STATE
@@ -3473,6 +3678,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  W11-B03-STATE
                END-IF
            WHEN    "1031"
+               MOVE    "設定コピー"            TO  W11-B04-LABEL
+               MOVE    "設定一括"              TO  W11-B05-LABEL
+               MOVE    "設定複写"              TO  W11-B06-LABEL
                MOVE    "タブ切替"              TO  W11-B08-LABEL
                MOVE    "オフセット"            TO  W11-B09-LABEL
                MOVE    "印字テスト"            TO  W11-B10-LABEL
@@ -3839,6 +4047,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0012"
                    MOVE    "選択番号が正しくありません"
                                                       TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "複写する情報がありません"
+                                                      TO  SPA-ERRMSG
                WHEN    "3001"  THRU    "3999"
                    MOVE    "削除処理に失敗しました"
                                                       TO  SPA-ERRMSG
@@ -3876,11 +4087,34 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "登録処理をします"    TO  WRK-WIDMSG
+                   MOVE    "登録処理をします"  TO  WRK-WIDMSG
       *----(02.00.03)--ADD-START---
                WHEN    "1002"
-                   MOVE    "削除処理をします"    TO  WRK-WIDMSG
+                   MOVE    "削除処理をします"  TO  WRK-WIDMSG
       *----(02.00.03)--ADD-END-----
+               WHEN    "1003"
+                   EVALUATE    SPA-GMN-PAGENO
+                   WHEN    1
+                       STRING  "プリンタ名をすべて"
+                                                   DELIMITED BY SIZE
+                               W11-PRTNM (01)      DELIMITED BY SPACE
+                               "にします"          DELIMITED BY SIZE
+                                           INTO    WRK-WIDMSG
+                       END-STRING
+                   WHEN    2
+                       STRING  "プリンタ名をすべて"
+                                                   DELIMITED BY SIZE
+                               W11-PRTNM-N (01)    DELIMITED BY SPACE
+                               "にします"          DELIMITED BY SIZE
+                                           INTO    WRK-WIDMSG
+                       END-STRING
+                   END-EVALUATE
+               WHEN    "1004"
+                   MOVE    "プリンタ出力設定をコピーします"
+                                                 TO  WRK-WIDMSG
+               WHEN    "1005"
+                   MOVE    "プリンタ出力設定を選択ユーザーに複写します"
+                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1

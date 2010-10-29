@@ -19,6 +19,15 @@
       *      02  W11-FIXED2.
               03  W11-B03.
                 04  W11-B03-STATE              PIC S9(9)   BINARY.
+              03  W11-B04.
+                04  W11-B04-STATE              PIC S9(9)   BINARY.
+                04  W11-B04-LABEL              PIC X(10).
+              03  W11-B05.
+                04  W11-B05-STATE              PIC S9(9)   BINARY.
+                04  W11-B05-LABEL              PIC X(10).
+              03  W11-B06.
+                04  W11-B06-STATE              PIC S9(9)   BINARY.
+                04  W11-B06-LABEL              PIC X(10).
               03  W11-B08.
                 04  W11-B08-STATE              PIC S9(9)   BINARY.
                 04  W11-B08-LABEL              PIC X(10).

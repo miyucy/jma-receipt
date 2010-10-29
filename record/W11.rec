@@ -3,6 +3,18 @@ W11	{
 		B03	{
 			state	int;
 		};
+		B04	{
+			state	int;
+			label	varchar(10);
+		};
+		B05	{
+			state	int;
+			label	varchar(10);
+		};
+		B06	{
+			state	int;
+			label	varchar(10);
+		};
 		B08	{
 			state	int;
 			label	varchar(10);
