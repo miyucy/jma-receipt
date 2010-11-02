@@ -71,6 +71,7 @@ db	{
 	tbl_userbyomei;
 	tbl_sryacct_main;
 	tbl_sryacct_sub;
+	tbl_synonym;
 };
 
 /* #include "orcadb.inc" */

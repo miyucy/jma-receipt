@@ -99,6 +99,7 @@
       *  04.06.03    NACL-藤原    10/06/20  病名の入力順対応
       *  04.06.04    NACL-藤原    10/08/25  一括入力対応
       *  04.06.05    NACL-藤原    10/10/20  難病外来指導管理料対応
+      *  04.06.06    NACL-藤原    10/10/26  同義語変換対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -367,6 +368,9 @@
                                        17  SPA-NAI-C02-TANDOKUKBN-O 
                                                            PIC 9(02)
                                                            OCCURS  21.
+                                       17  SPA-NAI-C02-HAISIYMD-O
+                                                           PIC 9(08)
+                                                           OCCURS  21.
       ***                  11  SPA-NAI-C02-BYOMEICDSU      PIC 9(01).
                            11  SPA-NAI-C02-BYOMEICD-MAX    PIC 9(01).
       *       
@@ -431,10 +435,8 @@
                                                    PIC 9(01).  
       *            警告メッセージ用病名
                        09  SPA-C02-KEIKOKU-BYOMEI  PIC X(80).
-      *----(01.00.01) LINE ADD START ----------------------------------
       *            更新フラグ
                        09  SPA-C02-UPDFLG          PIC X(01).
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *            病名コード移行用領域
                        09  SPA-C02-IKOSAKI-BYOMEICD
                                                    PIC X(07).
@@ -573,6 +575,8 @@
                                                        PIC X(07).
                                        17  SPA-NAI-C03-IKOSAKI-BYOMEI
                                                        PIC X(200).
+                                       17  SPA-NAI-C03-IKOSAKI-ERRCD
+                                                       PIC X(04).
                                        17  SPA-NAI-C03-HAISIYMD
                                                        PIC X(22).
                            11  SPA-NAI-C03-UPDFLG      PIC 9(01). 
@@ -652,16 +656,17 @@
                        09  SPA-NAI-C04-TBLO        OCCURS   100.
                            11  SPA-NAI-C04-TBYOMEISBT  PIC X(01).
       *            病名コード移行用領域
-                   09  SPA-C04-IKOSAKI-BYOMEICD
+                   07  SPA-C04-IKOSAKI-AREA.
+                       09  SPA-C04-IKOSAKI-BYOMEICD
                                                    PIC X(07).
-                   09  SPA-C04-IKOSAKI-BYOMEI      PIC X(200).
-                   09  SPA-C04-IKOSAKI-INDEX       PIC 9(02).  
-                   09  SPA-C04-IKOSAKI-INDEX1      PIC 9(02).  
-                   09  SPA-C04-IKOMOTO-BYOMEICD
+                       09  SPA-C04-IKOSAKI-BYOMEI  PIC X(200).
+                       09  SPA-C04-IKOSAKI-INDEX   PIC 9(02).  
+                       09  SPA-C04-IKOSAKI-INDEX1  PIC 9(02).  
+                       09  SPA-C04-IKOMOTO-BYOMEICD
                                                    PIC X(07).
-                   09  SPA-C04-IKOMOTO-BYOMEI      PIC X(200).
+                       09  SPA-C04-IKOMOTO-BYOMEI  PIC X(200).
       *            病名コード移行用領域
-                   09  SPA-C04-IKOFLG          PIC X(01).
+                   07  SPA-C04-IKOFLG          PIC X(01).
       *
       *    病名検索画面
            03  SPA-C05.

@@ -154,4 +154,5 @@ db	{
 	tbl_srysrh;
 	tbl_rrksrh;
 	tbl_ptsrh;
+	tbl_synonym;
 };

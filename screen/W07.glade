@@ -7675,38 +7675,6 @@
 	<name>TAG5</name>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label277</name>
-	  <x>40</x>
-	  <y>146</y>
-	  <width>240</width>
-	  <height>24</height>
-	  <label>移行病名警告メッセージの表示</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label278</name>
-	  <x>40</x>
-	  <y>196</y>
-	  <width>240</width>
-	  <height>24</height>
-	  <label>廃止年月日警告メッセージの表示</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>MSG3_DSPKBN_COMBO</name>
 	  <x>270</x>
@@ -7827,24 +7795,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label282</name>
-	  <x>40</x>
-	  <y>246</y>
-	  <width>240</width>
-	  <height>36</height>
-	  <label>他診療科の同一病名警告メッセージ
-の表示
-</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>MSG1_DSPKBN_COMBO</name>
 	  <x>270</x>
@@ -7882,54 +7832,6 @@
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label324</name>
-	  <x>16</x>
-	  <y>36</y>
-	  <width>104</width>
-	  <height>24</height>
-	  <label>＜病名＞</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label242</name>
-	  <x>40</x>
-	  <y>96</y>
-	  <width>240</width>
-	  <height>24</height>
-	  <label>主病名確認メッセージの表示</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label325</name>
-	  <x>548</x>
-	  <y>36</y>
-	  <width>104</width>
-	  <height>24</height>
-	  <label>＜コメント＞</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
@@ -8029,38 +7931,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label280</name>
-	  <x>40</x>
-	  <y>346</y>
-	  <width>240</width>
-	  <height>24</height>
-	  <label>初期表示する病名の対象期間</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label326</name>
-	  <x>556</x>
-	  <y>96</y>
-	  <width>120</width>
-	  <height>24</height>
-	  <label>詳記区分初期表示</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>SRYKA_DSPKBN_COMBO</name>
 	  <x>270</x>
@@ -8142,15 +8012,146 @@
 
 	<widget>
 	  <class>GtkLabel</class>
+	  <name>label277</name>
+	  <x>40</x>
+	  <y>146</y>
+	  <width>230</width>
+	  <height>36</height>
+	  <label>移行病名・推奨病名警告メッセージ
+の表示</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label282</name>
+	  <x>40</x>
+	  <y>246</y>
+	  <width>230</width>
+	  <height>36</height>
+	  <label>他診療科の同一病名警告メッセージ
+の表示
+</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label242</name>
+	  <x>40</x>
+	  <y>96</y>
+	  <width>240</width>
+	  <height>24</height>
+	  <label>主病名確認メッセージの表示</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label278</name>
+	  <x>40</x>
+	  <y>196</y>
+	  <width>240</width>
+	  <height>24</height>
+	  <label>廃止年月日警告メッセージの表示</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label280</name>
+	  <x>40</x>
+	  <y>346</y>
+	  <width>240</width>
+	  <height>24</height>
+	  <label>初期表示する病名の対象期間</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
 	  <name>label368</name>
 	  <x>40</x>
 	  <y>396</y>
 	  <width>230</width>
 	  <height>24</height>
 	  <label>疑いフラグの自動消去</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label324</name>
+	  <x>16</x>
+	  <y>36</y>
+	  <width>104</width>
+	  <height>24</height>
+	  <label>＜病名＞</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label325</name>
+	  <x>548</x>
+	  <y>36</y>
+	  <width>104</width>
+	  <height>24</height>
+	  <label>＜コメント＞</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>7.45058e-09</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label326</name>
+	  <x>556</x>
+	  <y>96</y>
+	  <width>120</width>
+	  <height>24</height>
+	  <label>詳記区分初期表示</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>7.45058e-09</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>

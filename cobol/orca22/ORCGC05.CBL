@@ -56,6 +56,8 @@
       *  03.04.01    NACL-藤原    06/11/27   ＳＰＡデータの削除
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.06.01    NACL-藤原    10/10/26  同義語変換対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,7 +96,7 @@
            03  FLG-BYOMEI          PIC 9(01).
            03  FLG-GKOU            PIC 9(02).
            03  FLG-BYOCD           PIC 9(01).
-           03  FLG-KANJI           PIC 9(01).
+           03  FLG-SYNONYM         PIC 9(01).
       *
       *
       *    添字領域
@@ -157,6 +159,10 @@
       *    病名マスタ−
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
+      *
+      *    同義語マスタ
+       01  SYNONYM-REC.
+           COPY    "CPSYNONYM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -262,6 +268,10 @@
                PERFORM 300-SCREEN-SEC
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       * 
            MOVE  SPACE             TO  LINKAREA
@@ -325,6 +335,7 @@
       *
            EVALUATE    SPA-CIDCD2
                WHEN    "0101"
+               WHEN    "0102"
       *            選択病名移行処理
                    IF      SPA-CID2-FLG    =   "OK"
                        MOVE    SPA-C05-IKOSAKI-INDEX
@@ -346,6 +357,7 @@
            END-EVALUATE
       *     
            MOVE    SPACE           TO  SPA-CIDCD2
+                                       SPA-CID2-FLG
            .
        340-CID2-SET-EXT.
            EXIT.
@@ -1026,7 +1038,7 @@
            IF    ( SPA-NAI-C05-TIKOSAKICD (SPA-NAI-C05-SELNO1)
                                NOT =   SPACE )
            AND   ( SPA-C02-1042-MSG2-DSPKBN
-                                   =   ZERO  )
+                                   =   "0"   )
                MOVE    SPA-NAI-C05-TIKOSAKICD (SPA-NAI-C05-SELNO1)
                                        TO  BYO-BYOMEICD
                PERFORM 900-BYOMEI-INV-SEC
@@ -1047,15 +1059,41 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-GMN-C05-THAISIYMD (SPA-NAI-C05-SELNO1)
-                                   =   SPACE     )
-           OR    ( SPA-C02-1042-MSG3-DSPKBN
-                                       =   "1"   )
-               MOVE    SPACE           TO  WRK-HAISIYMDH
+           IF      SPA-GMN-C05-THAISIYMD (SPA-NAI-C05-SELNO1)
+                                   =   SPACE   OR  ALL "9"
+               CONTINUE
            ELSE    
-               MOVE    SPA-NAI-C05-THAISIYMDH (SPA-NAI-C05-SELNO1)
-                                       TO  WRK-HAISIYMDH
-               MOVE    "0075"              TO  SPA-ERRCD
+               IF      SPA-C02-1042-MSG2-DSPKBN
+                                       =   "0"
+      *            同義語マスタチェック処理
+                   INITIALIZE                  SYNONYM-REC
+                   MOVE    SPA-GMN-C05-TBYOMEI (SPA-NAI-C05-SELNO1)
+                                           TO  SYNONYM-BYOMEI
+                   PERFORM 5001-SYNONYM-CHK-SEC
+                   IF      FLG-SYNONYM =   ZERO
+                       MOVE    SPA-GMN-C05-TBYOCD (SPA-NAI-C05-SELNO1) 
+                                           TO  SPA-C05-IKOMOTO-BYOMEICD
+                       MOVE    SPA-GMN-C05-TBYOMEI (SPA-NAI-C05-SELNO1)
+                                           TO  SPA-C05-IKOMOTO-BYOMEI
+                       MOVE    BYO-BYOMEICD
+                                           TO  SPA-C05-IKOSAKI-BYOMEICD
+                       MOVE    BYO-BYOMEI  TO  SPA-C05-IKOSAKI-BYOMEI
+                       MOVE    SPA-GMN-C05-BYOMEICD-MAX
+                                           TO  SPA-C05-IKOSAKI-INDEX                    
+                       MOVE    "0102"          TO  SPA-CIDCD2
+                       GO  TO  410121-SELNUM1-CHK-EXT
+                   END-IF
+               ELSE
+                   IF      SPA-C02-1042-MSG3-DSPKBN
+                                           =   "0"
+      *                廃止病名チェック処理
+                       MOVE    SPACE           TO  WRK-HAISIYMDH
+                       MOVE    SPA-NAI-C05-THAISIYMDH
+                                                   (SPA-NAI-C05-SELNO1)
+                                               TO  WRK-HAISIYMDH
+                       MOVE    "0075"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
            END-IF                            
       *
       *    編集病名変換処理
@@ -1190,6 +1228,32 @@ grpsys                                       SPA-AREA
            PERFORM 410121-SELNUM1-CHK-SEC     
            .
        41015-BYOMEISEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同義語マスタチェック処理
+      *****************************************************************
+       5001-SYNONYM-CHK-SEC            SECTION.
+      *
+           PERFORM 900-SYNONYM-READ-SEC
+      *
+           IF      FLG-SYNONYM         =   ZERO
+               MOVE    SYNONYM-BYOMEICD    TO  BYO-BYOMEICD
+               MOVE    ZERO                TO  FLG-BYOMEI
+               PERFORM 900-BYOMEI-INV-SEC
+               IF      FLG-BYOMEI          =   1
+                   MOVE    1                   TO  FLG-SYNONYM
+               ELSE
+                   IF      BYO-HAISIYMD        =   SPACE   OR  ALL "9"
+                       CONTINUE
+                   ELSE    
+                       MOVE    1                   TO  FLG-SYNONYM
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       5001-SYNONYM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1393,13 +1457,23 @@ grpsys                                       SPA-AREA
        530-CIDSET2-SEC              SECTION.
       *
            MOVE    SPACE               TO  SPA-CID2-FLG
+                                           WRK-CIDMSG
       *
            EVALUATE    SPA-CIDCD2
                WHEN    "0101"
-                   MOVE    "選択された病名はマスター上で移行"
-                                       TO  WRK-CIDMSG
-                   MOVE    "病名の扱いとなっています。"
-                                       TO  WRK-CIDMSG (33:)
+                   STRING  "選択された病名はマスター上で移行"
+                                       DELIMITED  BY  SIZE
+                           "病名の扱いとなっています。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-CIDMSG
+                   END-STRING
+               WHEN    "0102"
+                   STRING  "入力された病名は「傷病名コードの統一の"
+                                       DELIMITED  BY  SIZE
+                           "推進」による推奨病名があります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-CIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  CID2
@@ -1476,6 +1550,40 @@ grpsys                                       SPA-AREA
            .
        900-BYOMEI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    同義語マスタ読込
+      *****************************************************************
+       900-SYNONYM-READ-SEC         SECTION.
+      *
+           MOVE    SYNONYM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_synonym"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_synonym"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYNONYM-REC
+                   MOVE    ZERO            TO  FLG-SYNONYM
+               ELSE
+                   INITIALIZE                  SYNONYM-REC
+                   MOVE    1               TO  FLG-SYNONYM
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYNONYM
+               INITIALIZE                      SYNONYM-REC
+           END-IF
+      *
+           MOVE    "tbl_synonym"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-SYNONYM-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＤＢＳＥＬＥＣＴ処理
