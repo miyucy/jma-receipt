@@ -243,8 +243,8 @@
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
-           03  WRK-INPUT-TBL.
-               05  WRK-INPUT-SET       PIC 9(03)   OCCURS  8.
+           03  WRK-INPUT-TBL           OCCURS   4.
+               05  WRK-INPUT-SET       PIC 9(03).
            03  WRK-INPUT-TBL-R         REDEFINES   WRK-INPUT-TBL.
                05  WRK-INPUT-TBL2          OCCURS  4.
                    07  WRK-INPUT-ICHI      PIC 9(03).
@@ -3404,8 +3404,8 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
       *    診療科名埋め込み再編集
-           IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "83")  AND
-                  (SPA-COM-ATAI1   (IDX-T)     NOT =   SPACE)
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "83")
+             AND  (SPA-COM-ATAI1   (IDX-T)     NOT =   SPACE)
       *D          (LNK-SC92-LSTSRYKA           NOT =   SPACE)
                 PERFORM 3003-INPUT-MEISYO2-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
@@ -3836,7 +3836,7 @@
       *    施設基準コード（入力値編集）
            PERFORM VARYING IDX-SST     FROM    1   BY  1
                    UNTIL   IDX-SST     >   8
-               MOVE    TNS-SSTKIJUNCDTBL(IDX-SST)
+               MOVE    TNS-SSTKIJUNCD (IDX-SST)
                                       TO  WRK-INPUT-SET (IDX-SST)
            END-PERFORM
       *
@@ -4041,7 +4041,7 @@
       *    施設基準コード（入力値編集）
            PERFORM VARYING IDX-SST     FROM    1   BY  1
                    UNTIL   IDX-SST     >   8
-               MOVE    TNS-SSTKIJUNCDTBL(IDX-SST)
+               MOVE    TNS-SSTKIJUNCD (IDX-SST)
                                       TO  WRK-INPUT-SET (IDX-SST)
            END-PERFORM
       *

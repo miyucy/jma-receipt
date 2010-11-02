@@ -163,6 +163,8 @@
            03  FLG-KA-ARI           PIC 9(01).
            03  FLG-SRYKBN           PIC 9(01).
            03  FLG-TOKUTEI          PIC 9(02).
+           03  FLG-TOKUTEI05        PIC 9(02).
+           03  FLG-ADD2             PIC 9(01).
       *
            03  FLG-FUKU-ARI         PIC 9(01).
       *
@@ -1165,6 +1167,7 @@
            MOVE    ZERO                TO  SPA-GAIRAI-NASI
       *    æ√±Íƒ√ƒÀ≈˘ΩË√÷
            MOVE    ZERO                TO  SPA-SYOEN-CNT
+           MOVE    ZERO                TO  SPA-TOKUTEI-CNT
       *    ∫ﬂ¬ª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡
            MOVE    ZERO                TO  SPA-ZAIKANRI-ARI
            MOVE    ZERO                TO  SPA-ZAIKANRI-ARI2
@@ -1188,7 +1191,7 @@
                        UNTIL     (IDX-T    >   SPA-MAX-LINE )  OR
                                  (SPA-K02-TEI-SRYCD(IDX-T) =   SPACE)
                    EVALUATE    SPA-K02-TEI-SRYCD(IDX-T)
-      *        æÆª˘≤ ≥∞ÕËø«Œ≈≤ 
+      *            æÆª˘≤ ≥∞ÕËø«Œ≈≤ 
                        WHEN    "113003510"
                        WHEN    "113003610"
                        WHEN    "113003710"
@@ -1464,6 +1467,13 @@
                WHEN    "140002450"
                    ADD     WRK-SYOEN-CNT       TO  SPA-SYOEN-CNT
       *§ﬁ§«
+      *!!
+      *        ∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡
+               WHEN    "113001910"
+               WHEN    "113002010"
+               WHEN    "113001810"
+                   ADD     WRK-SYOEN-CNT       TO  SPA-TOKUTEI-CNT
+      *!!
       *        ∫ﬂ¬Œ≈Õ‹ªÿ∆≥Œ¡§Œ»ΩƒÍ
                WHEN    OTHER
                    IF      SANTEI-SRYCD(1:3)   =   "114"
@@ -2531,7 +2541,10 @@
                PERFORM 330123-RYOYOU-TEATE-SEC
            ELSE
       *        ªÿ∆≥Œ¡§Œº´∆∞»Ø¿∏
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
                PERFORM 33012-SIDOU-SYORI-SEC
+      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ° ÀÃ≥§∆ª°À
+               PERFORM 330123-RYOYOU-TEATE-SEC
            END-IF
       *
            .
@@ -2925,7 +2938,7 @@
                                            TO  SPA-COM-SRYKBN
                                                          (SPA-GMN-IDX)
            END-IF
-     *
+      *
            .
        3101-INPUTCD-HEN-EXT.
            EXIT.
@@ -3219,21 +3232,43 @@
       *****************************************************************
       *    ªÿ∆≥Œ¡§Œº´∆∞»Ø¿∏ΩËÕ˝
       *****************************************************************
-       33012-SIDOU-SYORI-SEC      SECTION.
+       33012-SIDOU-SYORI-SEC           SECTION.
       *
-      *    ∆√ƒÍÀ˝¿≠º¿¥µªÿ∆≥Œ¡
-           IF      SPA-TOKUTEI     NOT =   ZERO
+      *    ∆√ƒÍº¿¥µ≤ 
+           MOVE    ZERO                TO  FLG-TOKUTEI
+           MOVE    ZERO                TO  FLG-TOKUTEI05
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   10  )  OR
+                              (SPA-TOKU-SRYKA(IDX) =   SPACE ) OR
+                              (FLG-TOKUTEI     NOT =   ZERO )
+               IF      SPA-TOKU-SRYKA (IDX)    =   WRK-SRYKA
+                   MOVE    SPA-TOKU-FLG (IDX)      TO  FLG-TOKUTEI
+                   MOVE    SPA-TOKU05-FLG (IDX)    TO  FLG-TOKUTEI05
+               END-IF
+           END-PERFORM
+      *
+      *    ≥∞ÕË∆Ò…¬º¿¥µ
+           IF      FLG-TOKUTEI         =   09
+      *        ∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡ªªƒÍ∫—§ﬂ§«§¢§Ï§–°¢ªÿ∆≥Œ¡
+               IF      SPA-TOKUTEI-CNT     >   ZERO
+                   MOVE    FLG-TOKUTEI05       TO  FLG-TOKUTEI
+                END-IF
+           END-IF
+      *    ≥∞ÕË∆Ò…¬º¿¥µ
+           IF      FLG-TOKUTEI         =   09
+               PERFORM 330123-NANBYOU-SIDOU-SEC
+           END-IF
+      *    ∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡
+           IF      FLG-TOKUTEI         =   05
+                                       OR  08
                PERFORM 330121-TOKUTEI-SIDOU-SEC
            END-IF
       *
       *    »È…Ê≤ ∆√ƒÍº¿¥µ
-           IF      SPA-TOKUTEI-F   NOT =   ZERO
-               MOVE    SPA-TOKUTEI-F       TO  FLG-TOKUTEI
+           IF      FLG-TOKUTEI         =   03
+                                       OR  04
                PERFORM 330122-HIFUKA-SIDOU-SEC
            END-IF
-      *
-      *    Œ≈Õ‹√¥≈ˆºÍ≈ˆ° ÀÃ≥§∆ª°À
-           PERFORM 330123-RYOYOU-TEATE-SEC
       *
            .
        33012-SIDOU-SYORI-EXT.
@@ -3244,18 +3279,6 @@
       *****************************************************************
        330121-TOKUTEI-SIDOU-SEC      SECTION.
       *
-      *    ªÿ∆≥Œ¡§Œº´∆∞»Ø¿∏
-      *!!  EVALUATE    SPA-NAI-ROUJIN  ALSO  SPA-HOSPSBT
-      *!!      œ∑øÕ°°…¬±°
-      *        WHEN    1        ALSO         1
-      *            IF      SPA-BEDSU           <   100
-      *                MOVE    "113700710"         TO  WRK-SRYCD
-      *            ELSE
-      *                MOVE    "113700810"         TO  WRK-SRYCD
-      *            END-IF
-      *        œ∑øÕ°¢ø«Œ≈ΩÍ
-      *        WHEN    1        ALSO         2
-      *!!!         MOVE    "113700610"         TO  WRK-SRYCD
            EVALUATE    SPA-HOSPSBT
       *        ∞Ï»Ã°°…¬±°
                WHEN    1
@@ -3274,9 +3297,34 @@
       *        ªÿ∆≥Œ¡ƒ…≤√°¢•¡•ß•√•ØΩËÕ˝
                MOVE    ZERO                TO  FLG-SIDOU
                PERFORM 3301211-SIDOU-ADD-SEC
+      *
+               IF      FLG-ADD2            =   1
+                   MOVE    1                   TO  SPA-TOKUTEI-CNT
+               END-IF
            END-IF
            .
        330121-TOKUTEI-SIDOU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ∆Ò…¬≥∞ÕËªÿ∆≥Œ¡§Œº´∆∞»Ø¿∏ΩËÕ˝
+      *****************************************************************
+       330123-NANBYOU-SIDOU-SEC      SECTION.
+      *
+           MOVE    "113002910"         TO  WRK-SRYCD
+      *
+      *    º´∆∞»Ø¿∏∂Ë ¨»ΩƒÍ
+           IF      SPA-BYOMEIAUTO-FLG  =  "1"
+      *        ªÿ∆≥Œ¡ƒ…≤√°¢•¡•ß•√•ØΩËÕ˝
+               MOVE    ZERO                TO  FLG-SIDOU
+               PERFORM 3301211-SIDOU-ADD-SEC
+      *        ƒ…≤√•®•È°º§»§ §√§øª˛°¢∆√ƒÍº¿¥µŒ≈Õ‹ªÿ∆≥Œ¡§ÿ
+               IF     (FLG-ADD2            =   ZERO )
+               AND    (FLG-TOKUTEI05   NOT =   ZERO )
+                   MOVE    FLG-TOKUTEI05       TO  FLG-TOKUTEI
+               END-IF
+           END-IF
+           .
+       330123-NANBYOU-SIDOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3284,7 +3332,8 @@
       *****************************************************************
        3301211-SIDOU-ADD-SEC           SECTION.
       *
-           EVALUATE    LNK-SC10S-SYORI
+          MOVE    ZERO                 TO  FLG-ADD2
+          EVALUATE    LNK-SC10S-SYORI
       *        √Ê≈”Ω™Œª≈∏≥´
                WHEN    "W"
       *        ø«ª°Œ¡§Œ§ﬂ§Œ —ππΩËÕ˝
@@ -3355,6 +3404,7 @@
       *        ∫∆ ‘Ω∏ΩËÕ˝
                MOVE    SPA-GMN-IDX         TO  IDX
                PERFORM 3101-INPUTCD-HEN-SEC
+               MOVE    1                   TO  FLG-ADD2
            END-IF
            MOVE    SPA-GMN-IDX         TO  IDX2
       *
@@ -6464,36 +6514,43 @@
       *****************************************************************
        10151122-TOKUTEI-HENSYU-SEC       SECTION.
       *
-      *    ∆√ƒÍº¿¥µ≤ 
-           MOVE    ZERO                TO  FLG-TOKUTEI
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   10  )  OR
-                              (SPA-TOKU-SRYKA(IDX) =   SPACE ) OR
-                              (FLG-TOKUTEI     NOT =   ZERO )
-               IF      SPA-TOKU-SRYKA (IDX)    =   WRK-SRYKA
-                   MOVE    SPA-TOKU-FLG (IDX)  TO  FLG-TOKUTEI
-               END-IF
-           END-PERFORM
-      *    ∆√ƒÍÀ˝¿≠º¿¥µªÿ∆≥Œ¡
-           IF      FLG-TOKUTEI         =   05
-                                       OR  08
-               IF      IDX-HKN         >   IDX-A
-                   MOVE    IDX-HKN         TO  SPA-GMN-IDX
-               ELSE
-                   MOVE    IDX-A           TO  SPA-GMN-IDX
-               END-IF
-               PERFORM 330121-TOKUTEI-SIDOU-SEC
+           IF      IDX-HKN         >   IDX-A
+               MOVE    IDX-HKN         TO  SPA-GMN-IDX
+           ELSE
+               MOVE    IDX-A           TO  SPA-GMN-IDX
            END-IF
+      *    ªÿ∆≥Œ¡§Œº´∆∞»Ø¿∏
+           PERFORM 33012-SIDOU-SYORI-SEC
+      *    ∆√ƒÍº¿¥µ≤ 
+      *    MOVE    ZERO                TO  FLG-TOKUTEI
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL      (IDX         >   10  )  OR
+      *                       (SPA-TOKU-SRYKA(IDX) =   SPACE ) OR
+      *                       (FLG-TOKUTEI     NOT =   ZERO )
+      *        IF      SPA-TOKU-SRYKA (IDX)    =   WRK-SRYKA
+      *            MOVE    SPA-TOKU-FLG (IDX)  TO  FLG-TOKUTEI
+      *        END-IF
+      *    END-PERFORM
+      *    ∆√ƒÍÀ˝¿≠º¿¥µªÿ∆≥Œ¡
+      *    IF      FLG-TOKUTEI         =   05
+      *                                OR  08
+      *        IF      IDX-HKN         >   IDX-A
+      *            MOVE    IDX-HKN         TO  SPA-GMN-IDX
+      *        ELSE
+      *            MOVE    IDX-A           TO  SPA-GMN-IDX
+      *        END-IF
+      *        PERFORM 330121-TOKUTEI-SIDOU-SEC
+      *    END-IF
       *
       *    »È…Ê≤ ∆√ƒÍº¿¥µ
-           IF      FLG-TOKUTEI         =   03  OR  04
-               IF      IDX-HKN         >   IDX-A
-                   MOVE    IDX-HKN         TO  SPA-GMN-IDX
-               ELSE
-                   MOVE    IDX-A           TO  SPA-GMN-IDX
-               END-IF
-               PERFORM 330122-HIFUKA-SIDOU-SEC
-           END-IF
+      *    IF      FLG-TOKUTEI         =   03  OR  04
+      *        IF      IDX-HKN         >   IDX-A
+      *            MOVE    IDX-HKN         TO  SPA-GMN-IDX
+      *        ELSE
+      *            MOVE    IDX-A           TO  SPA-GMN-IDX
+      *        END-IF
+      *        PERFORM 330122-HIFUKA-SIDOU-SEC
+      *    END-IF
       *
            .
        10151122-TOKUTEI-HENSYU-EXT.

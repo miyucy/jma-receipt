@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL=多々納  10/03/XX  平成２２年４月改正対応
       *  04.06.00    NACL=多々納  10/07/01  残量廃棄区分対応
+      *  04.06.00    NACL=多々納  10/11/02  難病外来指導管理料対応
       *****************************************************************
       *
       *
@@ -254,6 +255,9 @@
                05  IDX-B2                  PIC 9(04).
                05  IDX-B3                  PIC 9(04).
                05  FLG-BYOMEI-END          PIC 9(01).
+      *        主病名フラグ
+               05  WRK-SYUBYOFLG-AREA.
+                   07  WRK-SYUBYOFLG       PIC X(01)   OCCURS   10.
            03  WRK-BYO-KIKAN.
                05  WRK-B-SYMD               PIC X(10).
                05  WRK-B-H                  PIC X(02).
@@ -2637,6 +2641,8 @@
       *            疾患区分
                    MOVE    PTBYO-MANSEIKBN     TO  SPA-NAI-MANSEIKBN
                                                               (IDX-B)
+                   MOVE    PTBYO-SYUBYOFLG     TO  SPA-NAI-SYUBYOFLG
+                                                              (IDX-B)
       *            アトピー性皮膚炎判定
                    IF      PTBYO-MANSEIKBN     =   04
                        PERFORM 110111-ATOPIICHEK-SEC
@@ -2765,31 +2771,21 @@
                                                TO  SPA-TOKU-SRYKA (IDX)
                        MOVE    SPA-NAI-MANSEIKBN(IDX-B)
                                                TO  SPA-TOKU-FLG   (IDX)
+      *                主病名フラグ
+                       MOVE    SPA-NAI-SYUBYOFLG (IDX-B)
+                                               TO  WRK-SYUBYOFLG (IDX)
+                       IF      SPA-NAI-MANSEIKBN(IDX-B)    =   05
+                                                           OR  08
+                           MOVE    SPA-NAI-MANSEIKBN(IDX-B)
+                                               TO  SPA-TOKU05-FLG(IDX)
+                       END-IF
                        MOVE    10              TO  IDX
                    ELSE
                        IF      SPA-TOKU-SRYKA(IDX) =   SPA-NAI-SRYKA
                                                                 (IDX-B)
-                       EVALUATE    SPA-TOKU-FLG (IDX)
-                           WHEN    05
-                           WHEN    08
-                               CONTINUE
-                           WHEN    03
-                               IF      SPA-NAI-MANSEIKBN (IDX-B)
-                                                           =   05
-                                                           OR  08
-                                   MOVE    SPA-NAI-MANSEIKBN (IDX-B)
-                                                   TO  SPA-TOKU-FLG(IDX)
-                               END-IF
-                           WHEN    04
-                               IF      SPA-NAI-MANSEIKBN (IDX-B)
-                                                           =   03
-                                                           OR  05
-                                                           OR  08
-                                   MOVE    SPA-NAI-MANSEIKBN (IDX-B)
-                                                   TO  SPA-TOKU-FLG(IDX)
-                               END-IF
-                       END-EVALUATE
-                       MOVE    10              TO  IDX
+      *                    疾患区分優先設定
+                           PERFORM 110111-MANSEIKBN-CHK-SEC
+                           MOVE    10              TO  IDX
                        END-IF
                    END-IF
                END-PERFORM
@@ -2797,6 +2793,84 @@
       *
            .
        110111-MANSEIKBN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    疾患区分優先編集処理
+      *****************************************************************
+       110111-MANSEIKBN-CHK-SEC          SECTION.
+      *
+           EVALUATE    SPA-TOKU-FLG (IDX)
+           WHEN    09
+      *        難病外来
+               IF      WRK-SYUBYOFLG (IDX) =   SPACE
+      *            難病外来が主病以外で特定疾患が主病
+                   IF      (SPA-NAI-MANSEIKBN (IDX-B)  =   05
+                                                       OR  08   )
+                      AND  (SPA-NAI-SYUBYOFLG (IDX-B)  =  "1"   )
+                       MOVE    SPA-NAI-MANSEIKBN(IDX-B)
+                                                   TO  SPA-TOKU-FLG(IDX)
+                       MOVE    SPA-NAI-SYUBYOFLG(IDX-B)
+                                                   TO  WRK-SYUBYOFLG
+                                                                   (IDX)
+                   END-IF
+                   IF      (SPA-NAI-MANSEIKBN (IDX-B)  =   09 )
+                      AND  (SPA-NAI-SYUBYOFLG (IDX-B)  =  "1" )
+                       MOVE    SPA-NAI-SYUBYOFLG(IDX-B)
+                                                   TO  WRK-SYUBYOFLG
+                                                                   (IDX)
+                   END-IF
+               END-IF
+           WHEN    05
+           WHEN    08
+      *        特定疾患
+               IF     (SPA-NAI-MANSEIKBN (IDX-B)   =   05
+                                                   OR  08 )
+                 AND  (SPA-NAI-SYUBYOFLG (IDX-B)   =  "1" )
+                   MOVE    SPA-NAI-SYUBYOFLG (IDX-B)
+                                               TO  WRK-SYUBYOFLG (IDX)
+               END-IF
+               IF     (SPA-NAI-MANSEIKBN (IDX-B)   =   09    ) 
+      *            特定疾患が主病以外であれば変更
+                   IF      (WRK-SYUBYOFLG (IDX)    =   SPACE )
+                       MOVE    SPA-NAI-MANSEIKBN (IDX-B)
+                                                   TO  SPA-TOKU-FLG(IDX)
+                       MOVE    SPA-NAI-SYUBYOFLG (IDX-B)
+                                                   TO  WRK-SYUBYOFLG
+                                                                   (IDX)
+                   END-IF
+               END-IF
+           WHEN    03
+      *        皮膚科特定（１）
+               IF      SPA-NAI-MANSEIKBN (IDX-B)   =   05
+                                                   OR  08
+                                                   OR  09
+                   MOVE    SPA-NAI-MANSEIKBN (IDX-B)
+                                               TO  SPA-TOKU-FLG  (IDX)
+                   MOVE    SPA-NAI-SYUBYOFLG (IDX-B)
+                                               TO  WRK-SYUBYOFLG (IDX)
+               END-IF
+           WHEN    04
+      *        皮膚科特定（２）
+               IF      SPA-NAI-MANSEIKBN (IDX-B)   =   03
+                                                   OR  05
+                                                   OR  08
+                                                   OR  09
+                   MOVE    SPA-NAI-MANSEIKBN (IDX-B)
+                                               TO  SPA-TOKU-FLG  (IDX)
+                   MOVE    SPA-NAI-SYUBYOFLG (IDX-B)
+                                               TO  WRK-SYUBYOFLG (IDX)
+               END-IF
+           END-EVALUATE
+      *    特定疾患
+           IF      SPA-NAI-MANSEIKBN (IDX-B)   =   05
+                                               OR  08
+               MOVE    SPA-NAI-MANSEIKBN (IDX-B)
+                                               TO  SPA-TOKU05-FLG(IDX)
+           END-IF
+      *
+           .
+       110111-MANSEIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    急性発生日決定処理

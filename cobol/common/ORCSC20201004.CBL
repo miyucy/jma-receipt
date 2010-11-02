@@ -52,6 +52,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³ÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  £È£²£²Ç¯£´·î²þÀµÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/08/18  ¼êÄ¢µ­ºÜ²Ã»»³ÎÇ§ÄÉ²Ã
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/02  ÆñÉÂ³°Íè¼À´µ¶èÊ¬ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1203,7 +1204,8 @@
                                   (SPA-TOKU-SRYKA (IDX-KA2)
                                                =   SPACE   )
                    IF      SPA-TOKU-SRYKA (IDX-KA2)    =   WRK-SRYKA
-                       IF      SPA-TOKU-FLG(IDX-KA2)   =   05
+                       IF     (SPA-TOKU-FLG(IDX-KA2)   =   05 )
+                          OR  (SPA-TOKU05-FLG(IDX-KA2) =   05 )
                            MOVE    1           TO  FLG-TOKUTEI
                        END-IF
                        MOVE    10              TO  IDX-KA2
