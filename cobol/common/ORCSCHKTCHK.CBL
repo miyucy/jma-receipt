@@ -474,7 +474,7 @@
                    MOVE    1                   TO  FLG-DEKIDAKA
                END-IF
       *        Êñ³ç»»Äê¡ÊºÞ¡ËÈ½Äê
-               IF      SPA-COM-INPUTCD (IDX-Z) =   "099999907"
+               IF      SPA-COM-INPUTCD (IDX-Z) =   "099999908"
                    MOVE    1                   TO  ORCSCHKTCHK-HKTFLG
                END-IF
            END-PERFORM
@@ -1064,7 +1064,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    CONTINUE
                ELSE
       *            Êñ³ç»»Äê¡ÊºÞ¡Ë
-                   IF      SPA-COM-INPUTCD (IDX-Z) =   "099999907"
+                   IF      SPA-COM-INPUTCD (IDX-Z) =   "099999908"
                        MOVE    1                   TO  FLG-HKTINP
       *                Á°¹Ô¤âÊñ³ç¤È¤¹¤ë
                        IF      SPA-GMN-INPUTCD (IDX-Z - 1) =   "."

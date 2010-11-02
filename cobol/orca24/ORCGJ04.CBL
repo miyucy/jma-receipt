@@ -4021,7 +4021,7 @@
       *!!
       *        Êñ³ç»»Äê¡ÊºÞ¡Ë
                IF      SPA-COM-INPUTCD (SPA-GMN-MAX)
-                                               =   "099999907"
+                                               =   "099999908"
                    MOVE    SPA-GMN-HKTKBN-LST (2)
                                                TO  SPA-GMN-HKTKBN-G
                END-IF

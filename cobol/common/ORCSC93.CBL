@@ -1397,7 +1397,7 @@
       *        Êñ³ç½ÐÍè¹â
              OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999903" )
       *        Êñ³ç»»Äê¡ÊºÞ¡Ë
-             OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999907" )
+             OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999908" )
       *        ¥³¥á¥ó¥È
              OR    (SPA-COM-INPUTCD (IDX)(1:1)   =   "8"    )
              OR    (SPA-COM-INPUTCD (IDX)(1:3)   =   "008"  )
@@ -1453,7 +1453,7 @@
                    IF      (SPA-COM-INPUTCD (IDX-1)
                                                    =   "099999903"
       *            Êñ³ç»»Äê¡ÊºÞ¡Ë
-                                                   OR  "099999907" )
+                                                   OR  "099999908" )
                        MOVE    1                   TO  FLG-SYORI
                    END-IF
                ELSE
@@ -1466,7 +1466,7 @@
                       OR  (SPA-COM-INPUTCD (IDX-1)
                                                =   "099999903"
       *            Êñ³ç»»Äê¡ÊºÞ¡Ë
-                                               OR  "099999907" )
+                                               OR  "099999908" )
                        CONTINUE
                    ELSE
                        MOVE    2                    TO  FLG-SYORI
@@ -1832,7 +1832,7 @@
       *                Êñ³ç½ÐÍè¹â»»Äê¡ÊºÞ¡Ë
                        WHEN    "099999903"
       *                Êñ³ç»»Äê¡ÊºÞ¡Ë
-                       WHEN    "099999907"
+                       WHEN    "099999908"
                            IF     (IDX             >   ZERO )  AND
                                   (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                    =   "."  )
@@ -2234,7 +2234,7 @@
                   (WRK-KENSA-MAX       <=  WRK-KENSA-CNT )) OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
               OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999903" )
-              OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999907" )
+              OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999908" )
       *       ²ñ·×¾È²ñ¤ÇºÇ½ª¹Ô¤ÎÈ½Äê
               OR  (IDX                  =   1     ) 
               OR  ((LNK-SC93-PG         =   "J04" ) AND
