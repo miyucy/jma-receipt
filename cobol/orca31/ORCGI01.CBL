@@ -5578,6 +5578,15 @@
                PERFORM 4103-CMB-KSN-CHK-SEC
                IF    ( WRK-CMB-ITM     =   SPACE )
                    MOVE    "1"         TO  WRK-CMB-CD
+      *
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190135470"
+                       IF    SYS-5000-IPPANKSNKBN   =   SPACE  OR  "0"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       ELSE
+                           MOVE   "2"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
+      *
                    PERFORM 4103-CMB-KSN-CHK-SEC
                    MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
                ELSE
@@ -7179,13 +7188,13 @@
                IF    ( SPA-GMN-I01-KSNL (IDX-KSN IDX-CMB)
                                    =   WRK-CMB-CD )
       *
-                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190135470"
-                       IF    SYS-5000-IPPANKSNKBN   =   SPACE  OR  "0"
-                           MOVE    1      TO     IDX-CMB
-                       ELSE
-                           MOVE    2      TO     IDX-CMB
-                       END-IF
-                   END-IF
+      **             IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190135470"
+      **                 IF    SYS-5000-IPPANKSNKBN   =   SPACE  OR  "0"
+      **                     MOVE    1      TO     IDX-CMB
+      **                 ELSE
+      **                     MOVE    2      TO     IDX-CMB
+      **                 END-IF
+      **             END-IF
       *
                    MOVE    IDX-CMB TO  WRK-CMB-IDX
                    MOVE    SPA-GMN-I01-KSN-ITM (IDX-KSN IDX-CMB)
