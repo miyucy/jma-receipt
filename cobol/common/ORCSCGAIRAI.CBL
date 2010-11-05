@@ -43,6 +43,7 @@
       *  04.05.00    NACL-多々納  09/09/15  同日会計の上限エラーメッセー変更対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力・多剤投与他対応
       *  04.06.00    NACL-多々納  10/09/10  分娩管理テーブル削除対応
+      *  04.06.00    NACL-多々納  10/11/05  発行日変更対応
       *****************************************************************
       *
       *
@@ -549,6 +550,11 @@
       *****************************************************************
        100-SAKUSEI-SYORI-SEC           SECTION.
       *
+      *    発行日
+           IF      ORCSCGAIRAI-HAKYMD  =   SPACE
+               MOVE    SPA-SYSYMD          TO  ORCSCGAIRAI-HAKYMD
+           END-IF
+      *
       *    初診料算定のみの時初診料を算定する
            IF      SPA-SYOSIN-YMD  NOT =   SPACE
                PERFORM 400-SYOSIN-SYORI-SEC
@@ -941,7 +947,8 @@
       *
            MOVE    WRK-DENPNUM         TO  SYU-DENPNUM
       *    伝票番号発行日
-           MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
+      *!!! MOVE    SPA-SYSYMD          TO  SYU-DENPPRTYMD
+           MOVE    ORCSCGAIRAI-HAKYMD  TO  SYU-DENPPRTYMD
       *    ドクター
       *!   MOVE    SPA-DRCD(2:4)       TO  SYU-DRCD
       *    調整金
@@ -1567,7 +1574,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *伝票番号
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
       *請求発行日（発行日の西暦）
-           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+      *?   MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+           MOVE    ORCSCGAIRAI-HAKYMD  TO  SMEI-SKYPRINTYMD
       *請求再発行日
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
       *領収書発行日
@@ -1723,7 +1731,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *伝票状態区分
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
       *請求発行日（発行日の西暦）
-           MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+      *??  MOVE    SPA-SYSYMD          TO  SMEI-SKYPRINTYMD
+           MOVE    ORCSCGAIRAI-HAKYMD  TO  SMEI-SKYPRINTYMD
       *請求再発行日
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
       *領収書発行日

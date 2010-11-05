@@ -43,6 +43,8 @@
                05  ORCSCGAIRAI-SYORI           PIC 9(01).
       *    発行方法
                05  ORCSCGAIRAI-HAKHOUFLG       PIC 9(01).
+      *    発行日
+               05  ORCSCGAIRAI-HAKYMD          PIC X(08).
       *
       *    伝票番号
       *!       05  ORCSCGAIRAI-DENPNUM         PIC 9(07).

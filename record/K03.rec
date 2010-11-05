@@ -23,7 +23,8 @@ K03	{
 			value	varchar(5);
 		};
 		HAKYMD	{
-			value	varchar(9);
+			state	int;
+			value	varchar(10);
 		};
 		DENPNUM	{
 			value	varchar(10);
@@ -420,6 +421,10 @@ K03	{
 			item	varchar(18)[5];
 		};
 		B10	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B03	{
 	           	state	int;
 			label	varchar(10);
 		};

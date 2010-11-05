@@ -69,6 +69,7 @@
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
       *  04.06.00    NACL-多々納  10/08/02  入院未収額変更
       *                                     未収額・過入金額反映対応
+      *  04.06.00    NACL-多々納  10/11/05  発行日変更対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -489,6 +490,8 @@
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *    画面日付変換サブ
+           COPY    "CPORCSGDAY.INC".
       *
       *    負担金額計算用パラメタ
            COPY    "CPORCS01.INC".
@@ -1398,6 +1401,7 @@
       *
       *    発行日
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HAKYMD
+           MOVE    SPA-SYSYMD          TO  SPA-NAI-HAKYMD
       *    伝票番号
       *    MOVE    SYU-DENPNUM          TO  SPA-GMN-DENPNUM
            IF      SPA-SYORIFLG        =   1
@@ -3272,6 +3276,12 @@
            ELSE
                MOVE    "今回請求"          TO  K03-B10-LABEL
            END-IF
+      *!!
+           IF      SPA-SYORIFLG        =   0
+               MOVE    SPACE               TO  K03-B03-LABEL
+           ELSE
+               MOVE    "発行日"            TO  K03-B03-LABEL
+           END-IF
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
@@ -3449,8 +3459,15 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  K03-HENKIN-STATE
            END-IF
+      *    発行日
+      *    IF      SPA-HAKYMD-FLG      =   1
+               MOVE    WIDGET-NORMAL       TO  K03-HAKYMD-STATE
+      *    ELSE
+      *        MOVE    WIDGET-INSENSITIVE  TO  K03-HAKYMD-STATE
+      *    END-IF
       *
            MOVE    WIDGET-NORMAL       TO  K03-B10-STATE
+           MOVE    WIDGET-NORMAL       TO  K03-B03-STATE
       *
            .
        51O-GSRAUTH-EXT.
@@ -3503,6 +3520,8 @@
                    MOVE    "OKUSURIFLG"      TO  MCP-WIDGET
                WHEN    18
                    MOVE    "YYKHYOFLG"       TO  MCP-WIDGET
+               WHEN    20
+                   MOVE    "HAKYMD"          TO  MCP-WIDGET
                WHEN    90
                    MOVE    "B12"             TO  MCP-WIDGET
       *!       WHEN    08
@@ -3611,9 +3630,12 @@
                    IF      SPA-USERPG-MAX      >   1
                        MOVE    15              TO  SPA-GMN-CUR
                    END-IF
-      *       Ｕ・Ｐ
+      *        Ｕ・Ｐ
                WHEN    "USERPG"
                    MOVE    90          TO  SPA-GMN-CUR
+      *        発行日
+               WHEN    "HAKYMD"
+                   MOVE    1           TO  SPA-GMN-CUR
            END-EVALUATE
            .
       *
@@ -3658,6 +3680,10 @@
       *        一括入金・返金
                WHEN    "CLICKED"       ALSO    "B10"
                     PERFORM 410-IKKATU-SYORI-SEC
+      *!!
+      *        発行日変更
+               WHEN    "CLICKED"       ALSO    "B03"
+                    PERFORM 440-HAKKO-SYORI-SEC
            END-EVALUATE
           .
       *
@@ -3820,6 +3846,15 @@
            MOVE    K03-YYKHYOFLG       TO  SPA-GMN-YYKHYOFLG-G
            MOVE    K03-DRCD            TO  SPA-GMN-DRCD-G
            MOVE    K03-USERPG          TO  SPA-GMN-USERPG-G
+      *    発行日
+           IF      SPA-SYORIFLG        =   1
+               MOVE    K03-HAKYMD          TO  SPA-GMN-HAKYMD
+           ELSE
+               IF      K03-HAKYMD      NOT =   SPA-GMN-HAKYMD
+                   MOVE    "0035"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -3830,6 +3865,13 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
+      *    発行日
+           IF      SPA-SYORIFLG        =   1
+               PERFORM 410-HAKYMD-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      4102-KIHON-CHK-EXT
+               END-IF
+           END-IF
       *    調整金
            IF     (SPA-GMN-HKNCOMBI    =   ZERO )  OR
                   (SPA-GMN-SRYKA       =   ZERO )
@@ -3926,7 +3968,6 @@
            END-IF
       *
            .
-      *
        4102-KIHON-CHK-EXT.
            EXIT.
       *
@@ -4829,6 +4870,40 @@
            EXIT.
       *
       *****************************************************************
+      *    発行日入力　処理
+      *****************************************************************
+       410-HAKYMD-CHK-SEC              SECTION.
+      *
+           IF      SPA-GMN-HAKYMD      =   SPACE
+               MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HAKYMD
+           END-IF
+           IF      SPA-GMN-HAKYMD(1:1) =   "*"
+               MOVE    SPA-SRYYMD          TO  SPA-GMN-HAKYMD
+           END-IF
+      *
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    SPA-GMN-HAKYMD      TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+           IF      SGDAY-RC            =   ZERO
+               MOVE    SGDAY-OTDAY         TO  SPA-GMN-HAKYMD
+               MOVE    SGDAY-SDAY          TO  SPA-NAI-HAKYMD
+      *        未来日は警告表示
+               IF     (SGDAY-SDAY          >   SPA-SYSYMD )
+                 AND  (SPA-HAKYMD-KEIFLG   =   ZERO       )
+                   MOVE    "K034"              TO  SPA-ERRCD
+                   MOVE    20                  TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-HAKYMD-KEIFLG
+               END-IF
+           ELSE
+               MOVE    "0034"              TO  SPA-ERRCD
+               MOVE    20                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       410-HAKYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    請求発行入力　処理
       *****************************************************************
        420-SKYKUKBN-CHK-SEC              SECTION.
@@ -5500,6 +5575,20 @@
       *!!!!
       *
       *****************************************************************
+      *    発行日変更処理
+      *****************************************************************
+       440-HAKKO-SYORI-SEC             SECTION.
+      *
+           IF      SPA-SYORIFLG        =   1
+               MOVE    1               TO  SPA-HAKYMD-FLG
+               MOVE    20              TO  SPA-GMN-CUR
+           END-IF
+           .
+       440-HAKKO-SYORI-EXT.
+           EXIT.
+      *!!!!
+      *
+      *****************************************************************
       *    確定　処理
       *****************************************************************
        450-TOROKU-SEC             SECTION.
@@ -5899,6 +5988,8 @@
            MOVE    SPA-GMN-NYUKINHOU   TO  ORCSCGAIRAI-NYUKIN-HOHO
       *    発行方法
            MOVE    SPA-GMN-HAKHOUFLG   TO  ORCSCGAIRAI-HAKHOUFLG
+      *    発行日
+           MOVE    SPA-NAI-HAKYMD      TO  ORCSCGAIRAI-HAKYMD
       *    複数科まとめ
       **** MOVE    SPA-GMN-SYORI       TO  ORCSCGAIRAI-SYORI
       *    収納情報
@@ -6729,6 +6820,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -6748,12 +6840,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0004"
-                   MOVE
-                   "今回請求額がゼロ以下になります。"
-                                       TO  SPA-ERRMSG(1:)
-                   MOVE
-                   "調整金を再入力して下さい"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "今回請求額がゼロ以下になります。"
+                           "調整金を再入力して下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0005"
                    STRING  "【ＤＢ更新がエラーになりました。"
                            "ＳＥに連絡して下さい。】"
@@ -6855,28 +6946,33 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "診療科がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0032"
-                   MOVE    "合計を表示中です。今回請求額以下の場合は、"
-                                       TO  SPA-ERRMSG
-                   MOVE    "各科・保険毎で入力して下さい。"
-                                       TO  SPA-ERRMSG(43:)
+                   STRING  "合計を表示中です。今回請求額以下の場合は、"
+                           "各科・保険毎で入力して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0033"
                    MOVE    "調整金は入力できません。"
                                        TO  SPA-ERRMSG
+      *
                WHEN    "1030"
-                   MOVE    "処方せんプログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "処方せんプログラムがありません。"
+                           "システム管理を確認して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1031"
-                   MOVE    "請求書プログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "請求書プログラムがありません。"
+                           "システム管理を確認して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1036"
-                   MOVE    "受診履歴の伝票番号がゼロです。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "訂正できません。"
-                                       TO  SPA-ERRMSG(31:)
+                   STRING  "受診履歴の伝票番号がゼロです。"
+                           "訂正できません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *        返金追加
                WHEN    "0106"
                    MOVE    "返金額は整数で入力して下さい。"
@@ -6912,6 +7008,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *ver.4.6
+               WHEN    "0034"
+                   MOVE    "発行日が暦日エラーです。"
+                                       TO  SPA-ERRMSG
+               WHEN    "K034"
+                   STRING  "警告！！"
+                           "発行日＞システム日付です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0035"
+                   MOVE    "発行日は訂正の時のみ変更可能です。"
+                                       TO  SPA-ERRMSG
+      *ver.4.6
       *
                WHEN    "9000"
                    MOVE    "【算定履歴の更新ができませんでした】"
