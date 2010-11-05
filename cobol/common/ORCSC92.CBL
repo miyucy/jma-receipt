@@ -244,8 +244,7 @@
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
            03  WRK-INPUT-TBL.
-               05  WRK-INPUT-SET       PIC 9(03)
-                                           OCCURS   4.
+               05  WRK-INPUT-SET       PIC 9(03)   OCCURS  8.
            03  WRK-INPUT-TBL-R         REDEFINES   WRK-INPUT-TBL.
                05  WRK-INPUT-TBL2          OCCURS  4.
                    07  WRK-INPUT-ICHI      PIC 9(03).
