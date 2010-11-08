@@ -289,6 +289,8 @@
       *                                     設定機能
       *  04.05.02    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *  04.05.03    NACL-門脇    10/01/07  治験対応
+      *
+      *  04.06.01    NACL-門脇    10/11/08  主保険＋マル長の請求対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1374,6 +1376,7 @@
            MOVE    SPACE           TO  LNK-SYU-KOHTAIYKZKBN.
            MOVE    ZERO            TO  LNK-SYU-YKZKENNUM.
            MOVE    SPACE           TO  LNK-SYU-SAIKEISANKBN.
+           MOVE    SPACE           TO  LNK-SYU-HKNTEKKBN.
       *
            MOVE    ZERO            TO  FLG-SEISINJYO
                                        FLG-TOKUREI-HKNJYA.
@@ -2137,6 +2140,12 @@
       *    請求金額の計算（調整金の加減算）
            COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY    +
                                             LNK-SYU-CHOSEI.
+      *
+           IF     (LNK-SYU-SYUHKNNUM   NOT =   SPACE     )
+           AND    (LNK-SYU-KOH1HKNNUM  =   "972" OR "974")
+           AND    (LNK-SYU-KOH2HKNNUM  =       SPACE     )
+              MOVE     "1"     TO     LNK-SYU-HKNTEKKBN
+           END-IF.
       *
        MAIN-EXT.
            EXIT PROGRAM

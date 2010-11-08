@@ -53,6 +53,7 @@
       *  04.05.03    NACL-門脇    10/01/26  東京都マル子追加対応
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
+      *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1175,6 +1176,8 @@
            MOVE     SYUTTL-ZAITAKU        TO  LNK-SYU-ZAITAKU(IDY)
       *診療区分別給付外点数
            MOVE     SYUTTL-KYUFUGAI       TO  LNK-SYU-KYUFUGAI(IDY)
+      *保険適用区分
+           MOVE     SYUTTL-HKNTEKKBN      TO  LNK-SYU-HKNTEKKBN(IDY)
       *端末ＩＤ
            MOVE     SYUTTL-TERMID         TO  LNK-SYU-TERMID(IDY)
       *オペーレータＩＤ
@@ -3054,6 +3057,8 @@
            MOVE    LNK-SYU-ZAITAKU(IDY)        TO  SYUTTL-ZAITAKU
       *診療区分別給付外点数
            MOVE    LNK-SYU-KYUFUGAI(IDY)       TO  SYUTTL-KYUFUGAI
+      *保険適用区分
+           MOVE    LNK-SYU-HKNTEKKBN(IDY)      TO  SYUTTL-HKNTEKKBN
       *端末ＩＤ
            MOVE    LNK-SYU-TERMID(IDY)         TO  SYUTTL-TERMID
       *オペーレータＩＤ

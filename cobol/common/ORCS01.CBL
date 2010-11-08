@@ -327,6 +327,7 @@
       *  04.05.07    NACL-門脇    10/03/26  一括再計算方法選択機能対応修正
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
+      *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1405,6 +1406,8 @@
                                        LNK-SYU-SKJ-FTNDAY(IDX)
            END-PERFORM.
       *
+           MOVE    SPACE           TO  LNK-SYU-HKNTEKKBN.
+      *
            MOVE    ZERO            TO  FLG-SEISINJYO
                                        FLG-TOKUREI-HKNJYA.
       *
@@ -2134,6 +2137,12 @@
                MOVE   ZERO            TO   LNK-SYU-SKYMONEY
            ELSE
                MOVE   WK-KEISAN       TO   LNK-SYU-SKYMONEY
+           END-IF.
+      *
+           IF     (LNK-SYU-SYUHKNNUM   NOT =   SPACE     )
+           AND    (LNK-SYU-KOH1HKNNUM  =   "972" OR "974")
+           AND    (LNK-SYU-KOH2HKNNUM  =       SPACE     )
+              MOVE     "1"     TO     LNK-SYU-HKNTEKKBN
            END-IF.
       *
        MAIN-EXT.
