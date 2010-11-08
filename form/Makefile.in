@@ -434,6 +434,7 @@ FORM_files = \
 	      HCML03.red \
 	      HCML06.red \
 	      HCML09.red \
+	      HCM19V01.red \
 
 all:   
 
