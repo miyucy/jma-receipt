@@ -3562,6 +3562,10 @@
       *
                IF    ( DCSRY-SRYCD(1:2)    =   "84" )
                 OR   ( DCSRY-SRYCD(1:4)    =   "0084" )
+                 IF  ( DCSRY-SRYCD         =   "840000042"
+                                           OR  "840000101" )
+                   CONTINUE
+                 ELSE
                    MOVE    DCSRY-SRYCD     TO  WRK-SRYCD
                    MOVE    DCACCT-SRYYMD   TO  WRK-TNS-YMD
                    PERFORM 900-TENSU-KEY-SEL-SEC
@@ -3578,6 +3582,7 @@
                                            TO  WRK-ERRCOM
                        MOVE    1           TO  FLG-COMERR
                    END-EVALUATE
+                 END-IF
                END-IF
            END-IF
       *
