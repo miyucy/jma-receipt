@@ -399,8 +399,6 @@
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
-      *    Êñ³ç»»Äê¡ÊºÞ¡ËÆþÎÏ
-           MOVE    LNK-SC93-HKTSANTEI-08   TO  SPA-HKTSANTEI-08
       *
            IF     (SPA-ERRCD       NOT =   SPACE )
               AND (ORCSC100-INIT       =   ZERO )
@@ -444,6 +442,7 @@
            MOVE    SPACE               TO  WRK-KYUSEI-INP-G
       *    Æ±Æü½é¿Ç¥Õ¥é¥°
            MOVE    ZERO                TO  WRK-DOUSIN
+           MOVE    ZERO                TO  SPA-HKTSANTEI-08
            PERFORM VARYING     IDX     FROM    SPA-MAX-LINE BY  -1
                    UNTIL      (IDX     <   1   )
                IF     (SPA-GMN-INPUTCD (IDX)   =   SPACE )  AND
@@ -477,6 +476,19 @@
                           (SPA-COM-INPUTCD(IDX)    =   "111011810"
                                                    OR  "101110040")
                        MOVE    1               TO  WRK-DOUSIN
+                   END-IF
+      *
+      *            Êñ³ç»»Äê¡ÊºÞ¡ËÆþÎÏÈ½Äê
+                   IF     (SPA-COM-HKNCOMBI(IDX)   NOT =   "9999") AND
+                          (SPA-COM-INPUTCD(IDX)    =   "099999908" )
+                       IF     (SPA-COM-SRYKBN (IDX)    =   "95"
+                                                       OR  "96"
+                                                       OR  "98"
+                                                       OR  "99"    )
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO  SPA-HKTSANTEI-08
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM

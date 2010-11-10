@@ -1060,7 +1060,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
                IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
                    OR (SPA-COM-SRYKBN   (IDX-Z)    =   "95"
-                                                   OR  "96"  )
+                                                   OR  "96"
+                                                   OR  "98"
+                                                   OR  "99"  )
                    CONTINUE
                ELSE
       *            Êñ³ç»»Äê¡ÊºÞ¡Ë

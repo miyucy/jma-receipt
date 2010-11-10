@@ -4058,8 +4058,6 @@
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
-      *    Êñ³ç»»Äê¡ÊºÞ¡ËÆþÎÏ
-           MOVE    LNK-SC93-HKTSANTEI-08   TO  SPA-HKTSANTEI-08
       *
       *    ¿Ç»¡ÎÁ¤Î¤ßÊÑ´¹¤¹¤ë
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -8447,9 +8445,6 @@
            IF      ORCSCHKTCHK-HKTERR  =   1
                MOVE    "0150"          TO  SPA-KIDCD
            END-IF
-      *TEST
-           DISPLAY " ORCSCHKTCHK-HKTFLG:"  ORCSCHKTCHK-HKTFLG
-              ",SPA-HKTSANTEI-CHK:" SPA-HKTSANTEI-CHK
            .
        5109-HKTSANTEI-CHK-EXT.
            EXIT.

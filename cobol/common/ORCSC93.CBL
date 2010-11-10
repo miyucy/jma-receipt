@@ -469,7 +469,6 @@
                    UNTIL       IDX     >   SPA-MAX-LINE
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
            END-PERFORM
-           MOVE    ZERO                TO  LNK-SC93-HKTSANTEI-08
       *
            MOVE    ZERO                TO  FLG-SYUGI
       *!
@@ -1855,9 +1854,6 @@
                                MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                                    TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                        包括チェックあり
-                               MOVE    1           TO
-                                                   LNK-SC93-HKTSANTEI-08
                            ELSE
                                MOVE    "0229"          TO  SPA-ERRCD
                            END-IF

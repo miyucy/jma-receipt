@@ -42,8 +42,6 @@
            03  LNK-SC93-KENSAARIFLG    PIC  9(01).
       *    残量廃棄区分
            03  LNK-SC93-HAIKIKBN-FLG   PIC  9(01).
-      *    包括算定（剤）入力
-           03  LNK-SC93-HKTSANTEI-08   PIC  9(01).
       *
       *    入院検査まとめエラー
            03  LNK-SC93-ERRCD          PIC  9(01).
