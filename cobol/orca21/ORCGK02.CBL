@@ -4058,6 +4058,8 @@
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
+      *    Êñ³ç»»Äê¡ÊºÞ¡ËÆþÎÏ
+           MOVE    LNK-SC93-HKTSANTEI-08   TO  SPA-HKTSANTEI-08
       *
       *    ¿Ç»¡ÎÁ¤Î¤ßÊÑ´¹¤¹¤ë
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -7884,12 +7886,14 @@
       *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-KIDCD           =   SPACE )  AND
-                  (FLG-HKTCHK          =   1 ) AND
-                  (SPA-HKTSANTEI-FLG   =   1 ) AND
+                  (FLG-HKTCHK          =   1     ) AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
       *       ¼£¸³¤ÏÂÐ¾Ý³°
       ******  AND (SPA-CHIKENKBN   NOT =   "1"        )
-               PERFORM 5109-HKTSANTEI-CHK-SEC
+               IF     (SPA-HKTSANTEI-FLG   =   1    ) OR
+                      (SPA-HKTSANTEI-08    =   1    )
+                   PERFORM 5109-HKTSANTEI-CHK-SEC
+               END-IF
            END-IF
       *    £·£°ºÐÅþÃ£¤Î·Ù¹ð
            IF      SPA-ERRCD       =   SPACE
@@ -8443,6 +8447,9 @@
            IF      ORCSCHKTCHK-HKTERR  =   1
                MOVE    "0150"          TO  SPA-KIDCD
            END-IF
+      *TEST
+           DISPLAY " ORCSCHKTCHK-HKTFLG:"  ORCSCHKTCHK-HKTFLG
+              ",SPA-HKTSANTEI-CHK:" SPA-HKTSANTEI-CHK
            .
        5109-HKTSANTEI-CHK-EXT.
            EXIT.

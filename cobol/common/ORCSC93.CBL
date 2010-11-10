@@ -469,6 +469,7 @@
                    UNTIL       IDX     >   SPA-MAX-LINE
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
            END-PERFORM
+           MOVE    ZERO                TO  LNK-SC93-HKTSANTEI-08
       *
            MOVE    ZERO                TO  FLG-SYUGI
       *!
@@ -1831,6 +1832,18 @@
                            END-IF
       *                Êñ³ç½ÐÍè¹â»»Äê¡ÊºÞ¡Ë
                        WHEN    "099999903"
+                           IF     (IDX             >   ZERO )  AND
+                                  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
+                                                   =   "."  )
+                               MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
+                                                   TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+                           ELSE
+                               MOVE    "0219"          TO  SPA-ERRCD
+                           END-IF
       *                Êñ³ç»»Äê¡ÊºÞ¡Ë
                        WHEN    "099999908"
                            IF     (IDX             >   ZERO )  AND
@@ -1842,13 +1855,11 @@
                                MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                                    TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
+      *                        Êñ³ç¥Á¥§¥Ã¥¯¤¢¤ê
+                               MOVE    1           TO
+                                                   LNK-SC93-HKTSANTEI-08
                            ELSE
-                               IF      SPA-COM-INPUTCD (IDX)
-                                                       =   "099999903"
-                                   MOVE    "0219"          TO  SPA-ERRCD
-                               ELSE
-                                   MOVE    "0229"          TO  SPA-ERRCD
-                               END-IF
+                               MOVE    "0229"          TO  SPA-ERRCD
                            END-IF
       *                Êñ³ç½ÐÍè¹â»»ÄêÆü
                        WHEN    "099999904"

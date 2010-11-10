@@ -7604,10 +7604,12 @@
       *        Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
                IF     (SPA-ERRCD           =   SPACE )  AND
                       (SPA-KIDCD           =   SPACE )  AND
-                      (SPA-HKTSANTEI-FLG   =   1     ) AND
                       (SPA-HKNCOMBINUM NOT =   "9999")
                 AND   (SPA-CHIKENKBN       =   SPACE )
-                   PERFORM 5109-HKTSANTEI-CHK-SEC
+                   IF     (SPA-HKTSANTEI-FLG   =   1    ) OR
+                          (SPA-HKTSANTEI-08    =   1    )
+                       PERFORM 5109-HKTSANTEI-CHK-SEC
+                   END-IF
                END-IF
       *
                IF      SPA-ERRCD           =   SPACE
@@ -7737,10 +7739,12 @@
       *        Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
                IF     (SPA-ERRCD           =   SPACE )  AND
                       (SPA-KIDCD           =   SPACE )  AND
-                      (SPA-HKTSANTEI-FLG   =   1     ) AND
                       (SPA-HKNCOMBINUM NOT =   "9999")
                  AND  (SPA-CHIKENKBN       =   SPACE )
-                   PERFORM 5109-HKTSANTEI-CHK-SEC
+                   IF     (SPA-HKTSANTEI-FLG   =   1    ) OR
+                          (SPA-HKTSANTEI-08    =   1    )
+                       PERFORM 5109-HKTSANTEI-CHK-SEC
+                   END-IF
                END-IF
       *
            END-IF

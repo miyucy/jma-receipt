@@ -439,6 +439,9 @@
       *当月外来管理加算の取れない患者
                07  SPA-GAIRAI-NASI         PIC  9(01).
       *
+      *包括剤コード入力
+               05  SPA-HKTSANTEI-08        PIC  9(01).
+      *
       *急性発症１８０日以内
                05  SPA-KYUSEI-180          PIC  X(08).
       *急性発症９０日以内

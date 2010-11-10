@@ -398,6 +398,8 @@
                                        SPA-AREA
                                        ORCSC93AREA
                                        MSYU-DATA-REC
+      *    Êñ³ç»»Äê¡ÊºÞ¡ËÆþÎÏ
+           MOVE    LNK-SC93-HKTSANTEI-08   TO  SPA-HKTSANTEI-08
            IF     (SPA-ERRCD       NOT =   SPACE )
               AND (ORCSC100-INIT       =   ZERO )
                GO      TO      5101-TBLSAIHEN-EXT
@@ -2316,6 +2318,7 @@
                MOVE    LNK-NAIACCT-AREA    TO  SPA-NAIACCT-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+               MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
       *
                IF      LNK-ORCSC-KIDCD     NOT =   SPACE
                    MOVE    SPACE           TO  SPA-ERRCD
