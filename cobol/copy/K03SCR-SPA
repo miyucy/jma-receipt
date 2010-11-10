@@ -238,8 +238,8 @@
                05  SPA-NAI-AREA.
       *            È¯¹ÔÆü
                    07  SPA-NAI-HAKYMD            PIC X(08).
-                   07  SPA-HAKYMD-FLG            PIC 9(01).
-                   07  SPA-HAKYMD-KEIFLG         PIC 9(01).
+                   07  SPA-MAE-HAKYMD            PIC X(08).
+                   07  SPA-HAKYMD-FLG            PIC X(01).
       *
                    07  SPA-NAI-SEIKYU            PIC S9(07).
                    07  SPA-KON-SKYMONEY          PIC S9(07).

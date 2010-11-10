@@ -1402,6 +1402,7 @@
       *    発行日
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HAKYMD
            MOVE    SPA-SYSYMD          TO  SPA-NAI-HAKYMD
+           MOVE    SPA-SYSYMD          TO  SPA-MAE-HAKYMD
       *    伝票番号
       *    MOVE    SYU-DENPNUM          TO  SPA-GMN-DENPNUM
            IF      SPA-SYORIFLG        =   1
@@ -2312,11 +2313,14 @@
                END-IF
       *        入金・返金額設定区分
                MOVE    SYS-1038-NYKHNKKBN      TO  SPA-NAI-NYKHNKKBN
+      *        発行日変更区分
+               MOVE    SYS-1038-YMDHENKBN      TO  SPA-HAKYMD-FLG
            ELSE
                MOVE    "1"                     TO  SPA-GMN-NYUKINKBN
                MOVE    "1"                     TO  SPA-GMN-HAKHOUFLG
                MOVE    "0"                     TO  SPA-NAI-TEIKINKBN
                MOVE    "0"                     TO  SPA-NAI-NYKHNKKBN
+               MOVE    "0"                     TO  SPA-HAKYMD-FLG
            END-IF
       *    訂正の時、入金管理区分は１のみとする
            IF      SPA-SYORIFLG        =   1
@@ -3277,10 +3281,10 @@
                MOVE    "今回請求"          TO  K03-B10-LABEL
            END-IF
       *!!
-           IF      SPA-SYORIFLG        =   0
-               MOVE    SPACE               TO  K03-B03-LABEL
-           ELSE
+           IF      SPA-HAKYMD-FLG      =   1
                MOVE    "発行日"            TO  K03-B03-LABEL
+           ELSE
+               MOVE    SPACE               TO  K03-B03-LABEL
            END-IF
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
@@ -3847,13 +3851,8 @@
            MOVE    K03-DRCD            TO  SPA-GMN-DRCD-G
            MOVE    K03-USERPG          TO  SPA-GMN-USERPG-G
       *    発行日
-           IF      SPA-SYORIFLG        =   1
+           IF      SPA-HAKYMD-FLG      =   1
                MOVE    K03-HAKYMD          TO  SPA-GMN-HAKYMD
-           ELSE
-               IF      K03-HAKYMD      NOT =   SPA-GMN-HAKYMD
-                   MOVE    "0035"          TO  SPA-ERRCD
-                   MOVE    1               TO  SPA-GMN-CUR
-               END-IF
            END-IF
            .
       *
@@ -3866,7 +3865,7 @@
        4102-KIHON-CHK-SEC          SECTION.
       *
       *    発行日
-           IF      SPA-SYORIFLG        =   1
+           IF      SPA-HAKYMD-FLG      =   1
                PERFORM 410-HAKYMD-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      4102-KIHON-CHK-EXT
@@ -4888,16 +4887,26 @@
            IF      SGDAY-RC            =   ZERO
                MOVE    SGDAY-OTDAY         TO  SPA-GMN-HAKYMD
                MOVE    SGDAY-SDAY          TO  SPA-NAI-HAKYMD
-      *        未来日は警告表示
-               IF     (SGDAY-SDAY          >   SPA-SYSYMD )
-                 AND  (SPA-HAKYMD-KEIFLG   =   ZERO       )
-                   MOVE    "K034"              TO  SPA-ERRCD
-                   MOVE    20                  TO  SPA-GMN-CUR
-                   MOVE    1                   TO  SPA-HAKYMD-KEIFLG
-               END-IF
            ELSE
                MOVE    "0034"              TO  SPA-ERRCD
                MOVE    20                  TO  SPA-GMN-CUR
+           END-IF
+      *
+           IF      (SPA-ERRCD          =   SPACE )
+             AND   (SPA-NAI-HAKYMD NOT =   SPA-MAE-HAKYMD)
+      *        未来日は警告表示
+               IF     (SPA-NAI-HAKYMD      >   SPA-SYSYMD )
+               AND    (SPA-NAI-HAKYMD  NOT =   SPA-SRYYMD )
+                   MOVE    "K034"              TO  SPA-ERRCD
+                   MOVE    20                  TO  SPA-GMN-CUR
+               END-IF
+      *        診療日＞発行日は警告
+               IF     (SPA-NAI-HAKYMD      <   SPA-SRYYMD )
+               AND    (SPA-NAI-HAKYMD  NOT =   SPA-SYSYMD )
+                   MOVE    "K035"              TO  SPA-ERRCD
+                   MOVE    20                  TO  SPA-GMN-CUR
+               END-IF
+               MOVE    SPA-NAI-HAKYMD          TO  SPA-MAE-HAKYMD
            END-IF
            .
        410-HAKYMD-CHK-EXT.
@@ -5579,8 +5588,7 @@
       *****************************************************************
        440-HAKKO-SYORI-SEC             SECTION.
       *
-           IF      SPA-SYORIFLG        =   1
-               MOVE    1               TO  SPA-HAKYMD-FLG
+           IF      SPA-HAKYMD-FLG      =   "1"
                MOVE    20              TO  SPA-GMN-CUR
            END-IF
            .
@@ -7018,9 +7026,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-               WHEN    "0035"
-                   MOVE    "発行日は訂正の時のみ変更可能です。"
-                                       TO  SPA-ERRMSG
+               WHEN    "K035"
+                   STRING  "警告！！"
+                           "発行日＞診療日付です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *ver.4.6
       *
                WHEN    "9000"

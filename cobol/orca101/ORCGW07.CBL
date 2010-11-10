@@ -652,7 +652,7 @@
                        09  SPA-GMN-SEI20KSNKBN-COMB.
                            11  SPA-GMN-SEI20KSNKBN-LST   PIC X(60)
                                                         OCCURS  5.
-                           11  SPA-GMN-SEI20KSNKBN-MAX   PIC 9(02).
+                           11  SPA-GMN-SEI20KSNKBN-MAX   PIC 9(01).
       *                入金・返金額設定区分
                        09  SPA-GMN-NYKHNKKBN-G.
                            11  SPA-GMN-NYKHNKKBN       PIC X(01).
@@ -662,6 +662,15 @@
                            11  SPA-GMN-NYKHNKKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-NYKHNKKBN-MAX   PIC 9(02).
+      *                発行日変更区分
+                       09  SPA-GMN-YMDHENKBN-G.
+                           11  SPA-GMN-YMDHENKBN       PIC X(01).
+                           11  SPA-GMN-YMDHENKBN-F1    PIC X(01).
+                           11  SPA-GMN-YMDHENKBN-MEI   PIC X(58).
+                       09  SPA-GMN-YMDHENKBN-COMB.
+                           11  SPA-GMN-YMDHENKBN-LST   PIC X(60)
+                                                        OCCURS  5.
+                           11  SPA-GMN-YMDHENKBN-MAX   PIC 9(01).
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -1867,6 +1876,11 @@
            MOVE    "3 一括入金・返金反映"
                                        TO  SPA-GMN-NYKHNKKBN-LST(4)
            MOVE    4                   TO  SPA-GMN-NYKHNKKBN-MAX
+      *    発行日変更区分
+           MOVE    "0 変更不可"        TO  SPA-GMN-YMDHENKBN-LST(1)
+           MOVE    "1 変更可能とする"
+                                       TO  SPA-GMN-YMDHENKBN-LST(2)
+           MOVE    2                   TO  SPA-GMN-YMDHENKBN-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -3041,6 +3055,8 @@
            MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-GMN-SEI20KSNKBN
       *    入金・返金額設定区分
            MOVE    SYS-1038-NYKHNKKBN      TO  SPA-GMN-NYKHNKKBN
+      *    発行日変更区分
+           MOVE    SYS-1038-YMDHENKBN      TO  SPA-GMN-YMDHENKBN
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -3354,6 +3370,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-NYKHNKKBN-LST (1)
                                        TO  SPA-GMN-NYKHNKKBN-G
+           END-IF
+      *    発行日変更区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-YMDHENKBN-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-YMDHENKBN
+                                       =   SPA-GMN-YMDHENKBN-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YMDHENKBN-LST (IDY)
+                                       TO  SPA-GMN-YMDHENKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-YMDHENKBN-LST (1)
+                                       TO  SPA-GMN-YMDHENKBN-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -4628,6 +4661,7 @@
            MOVE    W07-YKJOKUKBN       TO  SPA-GMN-YKJOKUKBN-G
            MOVE    W07-NYKHNKKBN       TO  SPA-GMN-NYKHNKKBN-G
            MOVE    W07-SEI20KSNKBN     TO  SPA-GMN-SEI20KSNKBN-G
+           MOVE    W07-YMDHENKBN       TO  SPA-GMN-YMDHENKBN-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -4963,6 +4997,10 @@
       *            入金・返金額設定区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-NYKHNKKBN-CHK-SEC
+                   END-IF
+      *            発行日変更区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-YMDHENKBN-CHK-SEC
                    END-IF
                WHEN    "1039"
       *            請求書兼領収書発行区分（外来）チェック
@@ -7074,6 +7112,30 @@
        4108-NYKHNKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    発行日変更区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-YMDHENKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YMDHENKBN-MAX
+               IF      SPA-GMN-YMDHENKBN
+                                       =   SPA-GMN-YMDHENKBN-LST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-YMDHENKBN-LST(IDX)
+                                           TO  SPA-GMN-YMDHENKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    328             TO  SPA-GMN-CUR
+               MOVE    "2021"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-YMDHENKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
       *****************************************************************
        4109-SYUNYKNKNRKBN-CHK-SEC      SECTION.
@@ -8837,6 +8899,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HAIKIKBN        TO  SYS-1038-HAIKIKBN
            MOVE    SPA-GMN-NYKHNKKBN       TO  SYS-1038-NYKHNKKBN
            MOVE    SPA-GMN-SEI20KSNKBN     TO  SYS-1038-SEI20KSNKBN
+           MOVE    SPA-GMN-YMDHENKBN       TO  SYS-1038-YMDHENKBN
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -9796,6 +9859,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-NYKHNKKBN-MAX
                                        TO  W07-NYKHNKKBN-COUNT
+      *    発行日変更区分（診療行為機能情報）
+           MOVE    SPA-GMN-YMDHENKBN-G TO  W07-YMDHENKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YMDHENKBN-MAX
+               MOVE    SPA-GMN-YMDHENKBN-LST (IDX)
+                                       TO  W07-YMDHENKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-YMDHENKBN-MAX
+                                       TO  W07-YMDHENKBN-COUNT
       *
       *    入金管理区分（収納機能情報）
            MOVE    SPA-GMN-SYUNYKNKNRKBN-G TO  W07-SYUNYKNKNRKBN
@@ -10581,6 +10653,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2020"
                    MOVE    "精神療法２０未満加算区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2021"
+                   MOVE    "発行日変更区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -10937,6 +11012,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "YKJOKUKBN"       TO   MCP-WIDGET
                WHEN    327
                    MOVE  "NYKHNKKBN"       TO   MCP-WIDGET
+               WHEN    328
+                   MOVE  "YMDHENKBN"       TO   MCP-WIDGET
       *収納情報
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -11290,6 +11367,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "YKJOKUKBN"
                    MOVE    327             TO  SPA-GMN-CUR
                WHEN    "NYKHNKKBN"
+                   MOVE    328             TO  SPA-GMN-CUR
+               WHEN    "YMDHENKBN"
                    MOVE    999             TO  SPA-GMN-CUR
       *
       *収納情報

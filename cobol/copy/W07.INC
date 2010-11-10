@@ -419,6 +419,12 @@
                     06  W07-SEI20KSNKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SEI20KSNKBN-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-YMDHENKBN-COMB.
+                    06  W07-YMDHENKBN.
+                      07  W07-VALUE   PIC X(60).
+                    06  W07-YMDHENKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YMDHENKBN-ITEM
+                            PIC X(60)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
