@@ -45,7 +45,7 @@
            SELECT  DTCHK005N-FILE
                                    ASSIGN  DTCHK005NPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK005N-KEY
                                    FILE    STATUS  IS  STS-DTCHK005.
       *
@@ -53,7 +53,7 @@
            SELECT  DTCHK005G-FILE
                                    ASSIGN  DTCHK005GPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK005G-KEY
                                    FILE    STATUS  IS  STS-DTCHK005.
       *

@@ -40,14 +40,14 @@
       *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(IN)
            SELECT  TEIKI01-FILE    ASSIGN   TEIKI01PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TEIKI01-KEY
                                    FILE    STATUS  IS  STS-TEIKI01.
       *
       *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ë(IN)
            SELECT  TEIKI04-FILE    ASSIGN   TEIKI04PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TEIKI04-KEY
                                    FILE    STATUS  IS  STS-TEIKI04.
       *

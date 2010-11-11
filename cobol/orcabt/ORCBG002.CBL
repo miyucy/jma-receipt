@@ -42,7 +42,7 @@
 grpsys*DD  SELECT  BG00201-FILE   ASSIGN   ORCBG002PARA
 grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
                                   ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  SEQUENTIAL
+                                  ACCESS  MODE    IS  DYNAMIC
                                   RECORD  KEY     IS  BG00201-ISAM-KEY
                                   FILE    STATUS  IS  STS-BG00201.
       * 

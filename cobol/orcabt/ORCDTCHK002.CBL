@@ -41,14 +41,14 @@
       *    データチェック診療会計
            SELECT  DCACCT-FILE     ASSIGN  DTCHKACCTPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCACCT-KEY
                                    FILE    STATUS  IS  STS-DCACCT.
       *
       *    データチェック診療行為
            SELECT  DCSRY-FILE      ASSIGN  DTCHKSRYPARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
                                    FILE    STATUS  IS  STS-DCSRY.
       *
