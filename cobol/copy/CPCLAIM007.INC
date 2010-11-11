@@ -62,7 +62,12 @@
       *        05  CLAIM007-ORCA-T210   PIC  X(2)   VALUE   "21" .
                05  CLAIM007-CLAIM-T210  PIC  X(3)   VALUE   "210" .
                05  CLAIM007-NAME-T210   PIC  X(40)  
-                   VALUE   "ÅêÌô¡ÊÆâÉþ¡¦ÆÖÉþ¡¦Ä´ºÞ¡Ë¡ÊÆþ±¡³°¡Ë" .
+                   VALUE   "ÅêÌô¡ÊÆâÉþ¡¦Ä´ºÞ¡Ë¡ÊÆþ±¡³°¡Ë" .
+             03  CLAIM007-T210.
+      *        05  CLAIM007-ORCA-T220   PIC  X(2)   VALUE   "22" .
+               05  CLAIM007-CLAIM-T220  PIC  X(3)   VALUE   "220" .
+               05  CLAIM007-NAME-T220   PIC  X(40)  
+                   VALUE   "ÅêÌô¡ÊÆÖÉþ¡Ë" .
              03  CLAIM007-T230.
       *        05  CLAIM007-ORCA-T230   PIC  X(2)   VALUE   "23" .
                05  CLAIM007-CLAIM-T230  PIC  X(3)   VALUE   "230" .
@@ -194,9 +199,9 @@
                05  FILLER               PIC  X(40)  
                    VALUE   "¼«Èñ¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë" .
            02  CLAIM007-R  REDEFINES   CLAIM007-T.
-             03  CLAIM007-TX           OCCURS  37.
+             03  CLAIM007-TX           OCCURS  38.
       *        05  CLAIM007-ORCA       PIC  X(2).
                05  CLAIM007-CLAIM      PIC  X(3).
                05  CLAIM007-NAME       PIC  X(40).
-       01  CLAIM007-MAX                PIC  9(03)  VALUE   37.
+       01  CLAIM007-MAX                PIC  9(03)  VALUE   38.
       *
