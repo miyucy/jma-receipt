@@ -224,7 +224,6 @@ EvalEmbedStruct(EmbedStruct *embed, char *p, int *rc)
 	size = 0;
 	for (i = 0; i < embed->occurs; i++) {
 		for (j = 0; j < embed->child_num; j++) {
-printf("size:%d p:%p\n",size,p + size);
 			size += EvalEmbedStruct(embed->child[j],p + size,rc);
 		}
 		if (embed->block_size > 0) {
