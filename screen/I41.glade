@@ -46,7 +46,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>12</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -69,7 +69,7 @@
       <class>GtkButton</class>
       <name>B02</name>
       <x>92</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -92,7 +92,7 @@
       <class>GtkButton</class>
       <name>B03</name>
       <x>172</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -115,7 +115,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>252</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -138,7 +138,7 @@
       <class>GtkButton</class>
       <name>B05</name>
       <x>344</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -161,7 +161,7 @@
       <class>GtkButton</class>
       <name>B06</name>
       <x>424</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -184,7 +184,7 @@
       <class>GtkButton</class>
       <name>B07</name>
       <x>504</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -207,7 +207,7 @@
       <class>GtkButton</class>
       <name>B08</name>
       <x>584</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -230,7 +230,7 @@
       <class>GtkButton</class>
       <name>B09</name>
       <x>672</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -253,7 +253,7 @@
       <class>GtkButton</class>
       <name>B10</name>
       <x>752</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -276,7 +276,7 @@
       <class>GtkButton</class>
       <name>B11</name>
       <x>832</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -299,7 +299,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>912</x>
-      <y>724</y>
+      <y>716</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1409,7 +1409,7 @@
       <class>GtkButton</class>
       <name>B03S</name>
       <x>172</x>
-      <y>700</y>
+      <y>692</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1432,7 +1432,7 @@
       <class>GtkButton</class>
       <name>B04S</name>
       <x>252</x>
-      <y>700</y>
+      <y>692</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1682,7 +1682,7 @@
       <class>GtkPandaEntry</class>
       <name>KOMENTO</name>
       <x>80</x>
-      <y>664</y>
+      <y>660</y>
       <width>365</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1730,22 +1730,6 @@
       <width>64</width>
       <height>24</height>
       <label>¿ÇÎÅ²ó¿ô</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label177</name>
-      <x>8</x>
-      <y>664</y>
-      <width>64</width>
-      <height>24</height>
-      <label>°ì³ç½¤Àµ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1893,15 +1877,6 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>4</x>
-      <y>688</y>
-      <width>991</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -2096,7 +2071,7 @@
       <class>GtkButton</class>
       <name>B05S</name>
       <x>344</x>
-      <y>700</y>
+      <y>692</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -2824,6 +2799,31 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label177</name>
+      <x>8</x>
+      <y>660</y>
+      <width>64</width>
+      <height>24</height>
+      <label>°ì³ç½¤Àµ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>4</x>
+      <y>680</y>
+      <width>991</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>
