@@ -155,6 +155,7 @@
            03  MATOME-IDX                  PIC 9(04).
            03  CIDX                        PIC 9(04).
            03  CIDX2                       PIC 9(04).
+           03  IDX-DAY                     PIC 9(04).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -454,6 +455,8 @@
                        09  WRK-SKJ7-SKJFTN-SU   PIC 9(01).
                    07  WRK-SKJ7-SRYCDTOTAL      PIC 9(14).
                    07  WRK-SKJ7-KAISU           PIC 9(02).
+                   07  WRK-SKJ7-DAY-TBL.
+                       09  WRK-SKJ7-DAY         PIC 9(01)  OCCURS  31.
       *
       *    入院時生活療養（環境療養）ワーク
            03  WRK-KANKYO-TABLE.
@@ -464,6 +467,8 @@
                        09  WRK-KANKYO-FTN       PIC X(09).
                    07  WRK-KANKYO-SRYCDTOTAL    PIC 9(14).
                    07  WRK-KANKYO-KAISU         PIC 9(02).
+                   07  WRK-KANKYO-DAY-TBL.
+                       09  WRK-KANKYO-DAY       PIC 9(01)  OCCURS  31.
       *
       *    点数マスタ退避ワーク
            03  WRK-TENSU-OCC                   OCCURS  200.
@@ -3088,7 +3093,7 @@
                      MOVE  WRK-SO-MEISAISU(IDX1)   TO
                                      LNK-NYURECEDEN-MEISAISU(1 IDX2)
                      MOVE  WRK-SO-DAY-TBL(IDX1)    TO
-                                     LNK-NYURECEDEN-DAY-TBL(1 IDX2)
+                                      LNK-NYURECEDEN-DAY-TBL(1 IDX2)
       *
                      PERFORM   VARYING   IDX3   FROM   1   BY  1
                                UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
@@ -3107,7 +3112,7 @@
                                MOVE   WRK-SO-TEN(IDX1)   TO
                                       LNK-NYURECEDEN-TEN(1 IDX2 IDX3)
                                MOVE   WRK-SO-KAISU(IDX1)   TO
-                                     LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
+                                      LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
                          END-IF
                      END-PERFORM
       *
@@ -3447,6 +3452,7 @@
                                      LNK-NYURECEDEN-MEISAISU(2 IDX2)
                      MOVE  WRK-SO-DAY-TBL(IDX1)    TO
                                      LNK-NYURECEDEN-DAY-TBL(2 IDX2)
+      *
                      PERFORM   VARYING   IDX3   FROM   1   BY  1
                                UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
                                   OR (IDX3   >   20)
@@ -3464,7 +3470,7 @@
                                MOVE   WRK-SO-TEN(IDX1)   TO
                                       LNK-NYURECEDEN-TEN(2 IDX2 IDX3)
                                MOVE   WRK-SO-KAISU(IDX1)   TO
-                                     LNK-NYURECEDEN-KAISU(2 IDX2 IDX3)
+                                      LNK-NYURECEDEN-KAISU(2 IDX2 IDX3)
                          END-IF
                      END-PERFORM
       *              外泊コメントセット処理
@@ -5761,6 +5767,7 @@
                END-EVALUATE
                ADD   WRK-SKJ7-SKJFTN-SU(IDX1)
                                      TO  WRK-SKJ7-SRYCDTOTAL(IDX1)
+               MOVE  1               TO  WRK-SKJ7-DAY(IDX1 IDX1)
            END-PERFORM
       *
       *     DISPLAY "WRK-SKJ7  MATOME BEFORE"
@@ -5829,6 +5836,7 @@
                                         WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1)
                              END-IF
                              ADD     1    TO    WRK-SKJ7-KAISU(IDX1)
+                             MOVE    1    TO    WRK-SKJ7-DAY(IDX1 IDX3)
                              INITIALIZE   WRK-SKJ7-TBL(IDX3)
                        END-IF
                    END-PERFORM
@@ -5872,6 +5880,8 @@
                     ADD    1     TO    IDX2
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
                                     LNK-NYURECEDEN-HKNCOMBI(3 IDX2)
+                    MOVE  WRK-SKJ7-DAY-TBL(IDX1)  TO
+                                    LNK-NYURECEDEN-DAY-TBL(3 IDX2)
                     MOVE   ZERO     TO    IDX4
                     IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
                         ADD     1     TO    IDX4
@@ -6199,6 +6209,8 @@
                     ADD    1     TO    IDX3
                     MOVE  WRK-SKJ7-HKNCOMBI-DAY(IDX1) TO
                                     LNK-NYURECEDEN-HKNCOMBI(4 IDX3)
+                    MOVE  WRK-SKJ7-DAY-TBL(IDX1)  TO
+                                    LNK-NYURECEDEN-DAY-TBL(4 IDX3)
                     MOVE   ZERO     TO    IDX5
                     IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
                         ADD     1     TO    IDX5
@@ -6622,6 +6634,14 @@
                                  TO   LNK-NYURECEDEN-HKNCOMBI(3 IDX1)
                        MOVE  1   
                                  TO   LNK-NYURECEDEN-MEISAISU(3 IDX1)
+                       PERFORM   VARYING   IDX-DAY   FROM  1   BY  1
+                                 UNTIL     IDX-DAY   >  31
+                           IF    ACCT-DAY (1 IDX-DAY)   NOT =   ZERO
+                               MOVE   ACCT-DAY (1 IDX-DAY)   TO
+                                            LNK-NYURECEDEN-DAY
+                                                    (3 IDX1 IDX-DAY)
+                           END-IF
+                       END-PERFORM
                        MOVE   "SI"
                                  TO   LNK-NYURECEDEN-RECSKB(3 IDX1 1)
                        MOVE   "97"
@@ -6734,6 +6754,14 @@
                                  TO   LNK-NYURECEDEN-HKNCOMBI(4 IDX1)
                        MOVE  1   
                                  TO   LNK-NYURECEDEN-MEISAISU(4 IDX1)
+                       PERFORM   VARYING   IDX-DAY   FROM  1   BY  1
+                                 UNTIL     IDX-DAY   >  31
+                           IF    ACCT-DAY (1 IDX-DAY)   NOT =   ZERO
+                               MOVE   ACCT-DAY (1 IDX-DAY)   TO
+                                            LNK-NYURECEDEN-DAY
+                                                    (4 IDX1 IDX-DAY)
+                           END-IF
+                       END-PERFORM
                        MOVE   "SI"
                                  TO   LNK-NYURECEDEN-RECSKB(4 IDX1 1)
                        MOVE   "97"
@@ -6778,6 +6806,7 @@
                      (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4 OR 5)
                    MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                      TO  WRK-KANKYO-HKNCOMBI-DAY(IDX1)
+                   MOVE   1          TO  WRK-KANKYO-DAY(IDX1 IDX1)
                    MOVE   LNK-NYULIFE-KAN-SRYCD(IDX1)
                                      TO  WRK-KANKYO-RYOYO(IDX1)
                    MOVE   LNK-NYULIFE-KANFTN-SRYCD(IDX1)
@@ -6811,6 +6840,8 @@
                              (WRK-KANKYO-SRYCDTOTAL(IDX3)  =
                                        WRK-KANKYO-SRYCDTOTAL(IDX1))
                              ADD     1    TO    WRK-KANKYO-KAISU(IDX1)
+                             MOVE    1    TO    WRK-KANKYO-DAY
+                                                          (IDX1 IDX3)
                              INITIALIZE   WRK-KANKYO-TBL(IDX3)
                        END-IF
                    END-PERFORM
@@ -6825,6 +6856,8 @@
                     ADD    1     TO    IDX2
                     MOVE  WRK-KANKYO-HKNCOMBI-DAY(IDX1) TO
                                     LNK-NYURECEDEN-HKNCOMBI(5 IDX2)
+                    MOVE  WRK-KANKYO-DAY-TBL(IDX1) TO
+                                    LNK-NYURECEDEN-DAY-TBL(5 IDX2)
                     MOVE   ZERO     TO    IDX4
                     IF   WRK-KANKYO-RYOYO(IDX1)  NOT =  SPACE
                         ADD     1     TO    IDX4
