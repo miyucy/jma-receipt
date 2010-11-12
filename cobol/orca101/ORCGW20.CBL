@@ -2661,6 +2661,7 @@
       *****************************************************************
        4201-BTU-INSERT-SEC             SECTION.
       *
+           MOVE    SPACE           TO  SYS-5001-REC
            INITIALIZE                  SYS-5001-REC
       *
       *    病棟情報編集処理

@@ -104,7 +104,7 @@
                05  SPA-GMN-L04-HAED-INPUT-AREA.
                    07  SPA-GMN-L04-PROCKBN-G.
                        09  SPA-GMN-L04-PROCKBN     PIC X(01).
-                       09                          PIC X(01).
+                       09  SPA-GMN-L04-PROCKBNFL   PIC X(01).
                        09  SPA-GMN-L04-PROCKBNMEI  PIC X(48).
       *
                05  SPA-GMN-L04-VIEW-AREA.
@@ -131,7 +131,7 @@
                        09  SPA-GMN-L04-EDMIN       PIC 9(02).
                    07  SPA-GMN-L04-HOURSKBN-G.
                        09  SPA-GMN-L04-HOURSKBN    PIC X(01).
-                       09                          PIC X(01).
+                       09  SPA-GMN-L04-HOURSKBNFL  PIC X(01).
                        09  SPA-GMN-L04-HOURSKBNMEI PIC X(08).
                05  SPA-GMN-L04-CMB-AREA.
                    07  SPA-GMN-L04-PROCKBNLST-G.
@@ -139,14 +139,15 @@
                        09  SPA-GMN-L04-PROCKBNLST  OCCURS  10.
                            11  SPA-GMN-L04-PROCKBNL
                                                    PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-L04-PROCKBNFLL
+                                                   PIC X(01).
                            11  SPA-GMN-L04-PROCKBNMEIL
                                                    PIC X(48).
                    07  SPA-GMN-L04-HOURSKBNLST-G.
                        09  SPA-GMN-L04-HOURSKBN-MAX    PIC 9(03).
                        09  SPA-GMN-L04-HOURSKBNLST     OCCURS  5.
                            11  SPA-GMN-L04-HOURSKBNL   PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-L04-HOURSKBNFLL PIC X(01).
                            11  SPA-GMN-L04-HOURSKBNMEIL
                                                        PIC X(08).
                05  SPA-NAI-L04-MES-AREA.

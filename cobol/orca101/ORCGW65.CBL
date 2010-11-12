@@ -1460,6 +1460,7 @@
       *****************************************************************
        4201-SYS2010-EDIT-SEC            SECTION.
       *
+           MOVE    SPACE                  TO  SYS-2010-REC
            INITIALIZE                         SYS-2010-REC
            MOVE    SPA-HOSPNUM            TO  SYS-2010-HOSPNUM
            MOVE    "2010"                 TO  SYS-2010-KANRICD

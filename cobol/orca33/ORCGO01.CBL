@@ -65,7 +65,7 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-PRTKBN-G.
                        09  SPA-GMN-PRTKBN          PIC X(01).
-                       09                          PIC X(01).
+                       09  SPA-GMN-PRTKBNFL        PIC X(01).
                        09  SPA-GMN-PRTKBNMEI       PIC X(18).
                    07  SPA-GMN-SRYYM               PIC X(07).
                    07  SPA-GMN-DENPPRTYMD          PIC X(10).
@@ -94,7 +94,7 @@
                        09  SPA-GMN-PRTKBN-MAX       PIC 9(05).
                        09  SPA-GMN-PRTKBNLST        OCCURS   5.
                            11  SPA-GMN-PRTKBNL      PIC X(01).
-                           11                       PIC X(01).
+                           11  SPA-GMN-PRTKBNFLL    PIC X(01).
                            11  SPA-GMN-PRTKBNMEIL   PIC X(18).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-DELKBN              PIC X(01).

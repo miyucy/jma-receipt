@@ -41,7 +41,7 @@
                05  SYS-0042-DENPNUMMAX-NYU
                                         PIC  9(08).
       *Í½È÷
-           03                           PIC  X(492).
+               05  SYS-0042-YOBI        PIC  X(492).
       *Ã¼Ëö£É£Ä
            03  SYS-0042-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

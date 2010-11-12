@@ -104,7 +104,7 @@
            03  WRK-MISYU                           PIC 9(08).
            03  WRK-NYUGAIKBN                       PIC X(01).
            03  WRK-GMN-RITU.
-               05  FILLER                          PIC X(02).
+               05  FILLER                         PIC X(02) VALUE SPACE.
                05  WRK-GMN-FTNRITU                 PIC ZZZ.
                05  WRK-GMN-PA                      PIC X(01).
            03  WRK-CMB-CD                          PIC X(10).

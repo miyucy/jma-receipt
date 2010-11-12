@@ -248,48 +248,48 @@
            03  B02-NYUGAIKBN           PIC X(02).
            03  B02-NYUGAIBNDKBN        PIC X(02).
            03  B02-SRYCD1              PIC X(09).
-           03  FILLER                  PIC X(01).
+           03  B02-FL01                PIC X(01).
            03  B02-NAME1               PIC X(50).
-           03  FILLER                  PIC X(03).
+           03  B02-FL02                PIC X(03).
            03  B02-DMKBN               PIC X(02).
-           03  FILLER                  PIC X(01).
+           03  B02-FL03                PIC X(01).
            03  B02-TEKIYO              PIC X(88).
            03  B02-TEKIYO-R1           REDEFINES   B02-TEKIYO.
                05  B02-SRYCD2          PIC X(09).
-               05  FILLER              PIC X(01).
+               05  B02-FL04            PIC X(01).
                05  B02-NAME2           PIC X(78).
        01  BODY-03.
            03  B03-NYUGAIKBN           PIC X(02).
            03  B03-NYUGAIBNDKBN        PIC X(02).
            03  B03-COMPKBN             PIC X(02).
-           03  FILLER                  PIC X(02).
+           03  B03-FL01                PIC X(02).
            03  B03-LEFT                PIC X(60).
            03  B03-LEFT-R1             REDEFINES   B03-LEFT.
                05  B03-BYOMEICD        PIC X(07).
-               05  FILLER              PIC X(03).
+               05  B03-FL02            PIC X(03).
                05  B03-BYOMEI          PIC X(50).
            03  B03-LEFT-R2             REDEFINES   B03-LEFT.
-               05  FILLER              PIC X(10).
+               05  B03-FL03            PIC X(10).
                05  B03-MEISAI          PIC X(50).
-           03  FILLER                  PIC X(03).
+           03  B03-FL04                PIC X(03).
            03  B03-DMKBN               PIC X(02).
-           03  FILLER                  PIC X(01).
+           03  B03-FL05                PIC X(01).
            03  B03-RIGHT               PIC X(84).
            03  B03-RIGHT-R1            REDEFINES   B03-RIGHT.
                05  B03-SRYCD           PIC X(09).
-               05  FILLER              PIC X(01).
+               05  B03-FL06            PIC X(01).
                05  B03-NAME            PIC X(74).
        01  BODY-04.
            03  B04-SRYCD1              PIC X(09).
-           03  FILLER                  PIC X(01).
+           03  B04-FL01                PIC X(01).
            03  B04-NAME1               PIC X(50).
-           03  FILLER                  PIC X(03).
+           03  B04-FL02                PIC X(03).
            03  B04-NYUGAIBNDKBN        PIC X(02).
            03  B04-CHKERR              PIC X(02).
            03  B04-DATAKBN             PIC X(02).
-           03  FILLER                  PIC X(01).
+           03  B04-FL03                PIC X(01).
            03  B04-SRYCD2              PIC X(09).
-           03  FILLER                  PIC X(01).
+           03  B04-FL04                PIC X(01).
            03  B04-NAME2               PIC X(78).
       *
        01  CONST-AREA.

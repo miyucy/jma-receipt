@@ -54,7 +54,7 @@
                05  SYS-1041-NYKN-JYOTAI-T
                                         PIC  X(01).
       *Í½È÷
-               05                       PIC  X(455).
+               05  SYS-1041-YOBI        PIC  X(455).
       *Ã¼Ëö£É£Ä
            03  SYS-1041-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

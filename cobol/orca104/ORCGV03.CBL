@@ -58,26 +58,26 @@
                    07  SPA-GMN-INPUT-AREA.
                        09  SPA-GMN-PREFNUM-G.
                            11  SPA-GMN-PREFNUM         PIC X(2).
-                           11                          PIC X(1).
+                           11  SPA-GMN-PREFNUMFL       PIC X(1).
                            11  SPA-GMN-PREFNUMMEI      PIC X(20).
                        09  SPA-GMN-CITYNUM             PIC X(3).
                        09  SPA-GMN-KOHNUM              PIC X(3).
                        09  SPA-GMN-SEIDONAME           PIC X(100).
                        09  SPA-GMN-PTKBN-G.
                            11  SPA-GMN-PTKBN           PIC X(1).
-                           11                          PIC X(1).
+                           11  SPA-GMN-PTKBNFL         PIC X(1).
                            11  SPA-GMN-PTKBNMEI        PIC X(18).
                        09  SPA-GMN-FTNKBN-G.
                            11  SPA-GMN-FTNKBN          PIC X(1).
-                           11                          PIC X(1).
+                           11  SPA-GMN-FTNKBNFL        PIC X(1).
                            11  SPA-GMN-FTNKBNMEI       PIC X(38).
                        09  SPA-GMN-RECESKYKBN-G.
                            11  SPA-GMN-RECESKYKBN      PIC X(1).
-                           11                          PIC X(1).
+                           11  SPA-GMN-RECESKYKBNFL    PIC X(1).
                            11  SPA-GMN-RECESKYKBNMEI   PIC X(38).
                        09  SPA-GMN-NYUSKJRYYKBN-G.
                            11  SPA-GMN-NYUSKJRYYKBN    PIC X(1).
-                           11                          PIC X(1).
+                           11  SPA-GMN-NYUSKJRYYKBNFL  PIC X(1).
                            11  SPA-GMN-NYUSKJRYYKBNMEI PIC X(38).
                        09  SPA-GMN-YUKOSTYMD           PIC X(10).
                        09  SPA-GMN-YUKOEDYMD           PIC X(10).
@@ -85,31 +85,31 @@
                        09  SPA-GMN-PREFNUM-MAX         PIC 9(03).
                        09  SPA-GMN-PREFNUMLST          OCCURS  50.
                            11  SPA-GMN-PREFNUML        PIC X(02).
-                           11                          PIC X(01).
+                           11  SPA-GMN-PREFNUMFLL      PIC X(01).
                            11  SPA-GMN-PREFNUMMEIL     PIC X(20).
                    07  SPA-GMN-PTKBNLST-G.
                        09  SPA-GMN-PTKBN-MAX           PIC 9(03).
                        09  SPA-GMN-PTKBNLST            OCCURS  5.
                            11  SPA-GMN-PTKBNL          PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-PTKBNFLL        PIC X(01).
                            11  SPA-GMN-PTKBNMEIL       PIC X(18).
                    07  SPA-GMN-FTNKBNLST-G.
                        09  SPA-GMN-FTNKBN-MAX          PIC 9(03).
                        09  SPA-GMN-FTNKBNLST           OCCURS  5.
                            11  SPA-GMN-FTNKBNL         PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-FTNKBNFLL       PIC X(01).
                            11  SPA-GMN-FTNKBNMEIL      PIC X(38).
                    07  SPA-GMN-RECESKYKBNLST-G.
                        09  SPA-GMN-RECESKYKBN-MAX      PIC 9(03).
                        09  SPA-GMN-RECESKYKBNLST       OCCURS  10.
                            11  SPA-GMN-RECESKYKBNL     PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-RECESKYKBNFLL   PIC X(01).
                            11  SPA-GMN-RECESKYKBNMEIL  PIC X(38).
                    07  SPA-GMN-NYUSKJRYYKBNLST-G.
                        09  SPA-GMN-NYUSKJRYYKBN-MAX    PIC 9(03).
                        09  SPA-GMN-NYUSKJRYYKBNLST     OCCURS  10.
                            11  SPA-GMN-NYUSKJRYYKBNL   PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-NYUSKJRYYKBNFLL PIC X(01).
                            11  SPA-GMN-NYUSKJRYYKBNMEIL
                                                        PIC X(38).
                    07  SPA-GMN-KOHPLUSLST.

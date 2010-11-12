@@ -60,13 +60,13 @@
                                                        OCCURS  200.
                05  SPA-X03-GMN-CHKKBN-G.
                    07  SPA-X03-GMN-CHKKBN              PIC X(01).
-                   07                                  PIC X(01).
+                   07  SPA-X03-GMN-CHKKBNFL            PIC X(01).
                    07  SPA-X03-GMN-CHKKBNMEI           PIC X(70).
                05  SPA-X03-GMN-CHKKBNLST-G.
                    07  SPA-X03-GMN-CHKKBN-MAX          PIC 9(03).
                    07  SPA-X03-GMN-CHKKBNLST           OCCURS  05.
                        09  SPA-X03-GMN-CHKKBNL         PIC X(01).
-                       09                              PIC X(01).
+                       09  SPA-X03-GMN-CHKKBNFLL       PIC X(01).
                        09  SPA-X03-GMN-CHKKBNMEIL      PIC X(70).
                05  SPA-X03-GMN-SELNAME                 PIC X(70).
                05  SPA-X03-GMN-SELCHKLST.

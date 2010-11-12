@@ -102,7 +102,7 @@
       *番号桁数上限
                05  CK4-1102-NMKETAMAX      PIC  X(02).
       *
-               05                          PIC  X(456).
+               05  CK4-1102-YOBI           PIC  X(456).
       *端末ＩＤ
            03  CK4-1102-TERMID             PIC  X(16).
       *オペーレータＩＤ

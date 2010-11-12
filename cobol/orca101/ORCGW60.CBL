@@ -62,7 +62,7 @@
                    07  SPA-GMN-BYOSRYKAKBNMEI  PIC X(08).
                05  SPA-GMN-SYUBYOCHK-G.
                    07  SPA-GMN-SYUBYOCHK       PIC X(01).
-                   07                          PIC X(01).
+                   07  SPA-GMN-SYUBYOCHKFL     PIC X(01).
                    07  SPA-GMN-SYUBYOCHKMEI    PIC X(08).
                05  SPA-GMN-UTAGAIKKN           PIC 9(01).
                05  SPA-GMN-KYUSEIKKNKBN-G.
@@ -86,7 +86,7 @@
                    07  SPA-GMN-YBUTAGAIKBNMEI  PIC X(30).
                05  SPA-GMN-SRYHEIWRNKBN-G.
                    07  SPA-GMN-SRYHEIWRNKBN    PIC X(01).
-                   07                          PIC X(01).
+                   07  SPA-GMN-SRYHEIWRNKBNFL  PIC X(01).
                    07  SPA-GMN-SRYHEIWRNKBNMEI PIC X(30).
                05  SPA-GMN-REIGAICHKKBN-G.
                    07  SPA-GMN-REIGAICHKKBN    PIC X(01).
@@ -1901,6 +1901,7 @@
        4901-KOUSHIN-SEC           SECTION.
       *
            IF    ( SPA-W01-SELNUM          >   ZERO )
+               MOVE    SPACE           TO  SYS-1101-REC
                INITIALIZE                  SYS-1101-REC
                MOVE    "1101"          TO  SYS-1101-KANRICD
                MOVE    "*"             TO  SYS-1101-KBNCD
@@ -1910,6 +1911,7 @@
                MOVE    SYS-1101-REC    TO  SYSKANRI-REC
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            ELSE
+               MOVE    SPACE           TO  SYS-1101-REC
                INITIALIZE                  SYS-1101-REC
                MOVE    "1101"          TO  SYS-1101-KANRICD
                MOVE    "*"             TO  SYS-1101-KBNCD

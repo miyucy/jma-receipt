@@ -956,6 +956,7 @@
       *
            EVALUATE    SPA-W22-KANRICD-C
                WHEN    "5101"
+                   MOVE    SPACE       TO          SYS-5101-REC
                    INITIALIZE                      SYS-5101-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5101-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -969,6 +970,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5101-BTU-SBT-NM
                WHEN    "5102"
+                   MOVE    SPACE       TO          SYS-5102-REC
                    INITIALIZE                      SYS-5102-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5102-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -982,6 +984,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5102-BTU-HEIKINZAIKBN-NM
                WHEN    "5103"
+                   MOVE    SPACE       TO          SYS-5103-REC
                    INITIALIZE                      SYS-5103-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5103-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -995,6 +998,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5103-BTU-KNGHAICHIKBN-NM
                WHEN    "5104"
+                   MOVE    SPACE       TO          SYS-5104-REC
                    INITIALIZE                      SYS-5104-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5104-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1008,6 +1012,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5104-BTU-KNGHIRITUKBN-NM
                WHEN    "5105"
+                   MOVE    SPACE       TO          SYS-5105-REC
                    INITIALIZE                      SYS-5105-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5105-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1021,6 +1026,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5105-BTU-KNGHJOKSN-NM
                WHEN    "5106"
+                   MOVE    SPACE       TO          SYS-5106-REC
                    INITIALIZE                      SYS-5106-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5106-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1034,6 +1040,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5106-BTU-YAKANKNGKSN-NM
                WHEN    "5107"
+                   MOVE    SPACE       TO          SYS-5107-REC
                    INITIALIZE                      SYS-5107-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5107-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1047,6 +1054,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5107-BTU-KNGSISUKBN-NM
                WHEN    "5108"
+                   MOVE    SPACE       TO          SYS-5108-REC
                    INITIALIZE                      SYS-5108-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5108-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1060,6 +1068,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5108-BRM-SBT-NM
                WHEN    "5109"
+                   MOVE    SPACE       TO          SYS-5109-REC
                    INITIALIZE                      SYS-5109-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5109-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1073,6 +1082,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5109-BRM-SEX-NM
                WHEN    "5110"
+                   MOVE    SPACE       TO          SYS-5110-REC
                    INITIALIZE                      SYS-5110-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5110-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1086,6 +1096,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5110-BTU-TOKUTEINYUIN-NM
                WHEN    "5111"
+                   MOVE    SPACE       TO          SYS-5111-REC
                    INITIALIZE                      SYS-5111-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5111-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1099,6 +1110,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5111-BRM-TOKUTEINYUIN-NM
                WHEN    "5113"
+                   MOVE    SPACE       TO          SYS-5113-REC
                    INITIALIZE                      SYS-5113-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5113-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1114,6 +1126,7 @@
                    MOVE    WRK-SAGAKU1-9
                                        TO  SYS-5113-BRM-SAGAKU-NM
                WHEN    "5114"
+                   MOVE    SPACE       TO          SYS-5114-REC
                    INITIALIZE                      SYS-5114-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5114-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C
@@ -1127,6 +1140,7 @@
                    MOVE    SPA-W22-MEISYOU
                                        TO  SYS-5114-BTU-HIKSISUKBN-NM
                WHEN    "5115"
+                   MOVE    SPACE       TO          SYS-5115-REC
                    INITIALIZE                      SYS-5115-REC
                    MOVE    SPA-HOSPNUM TO  SYS-5115-HOSPNUM
                    MOVE    SPA-W22-KANRICD-C

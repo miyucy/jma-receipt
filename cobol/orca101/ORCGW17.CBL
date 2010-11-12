@@ -76,64 +76,64 @@
                    07  SPA-GMN-SELNUM          PIC 9(03).
                    07  SPA-GMN-KOUHI-G.
                        09  SPA-GMN-KOHCD       PIC X(03).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL01        PIC X(01).
                        09  SPA-GMN-KOHMEI      PIC X(20).
                    07  SPA-GMN-FTSNUM-G.
                        09  SPA-GMN-FTSCD       PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL02        PIC X(01).
                        09  SPA-GMN-FTSMEI      PIC X(14).
                    07  SPA-GMN-JKSNUM-G.
                        09  SPA-GMN-JKSCD       PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL03        PIC X(01).
                        09  SPA-GMN-JKSMEI      PIC X(14).
                    07  SPA-GMN-FTSHANKAKU-G.
                        09  SPA-GMN-FTSHANKAKUCD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL04        PIC X(01).
                        09  SPA-GMN-FTSHANKAKUMEI
                                                PIC X(18).
                    07  SPA-GMN-FTSZENKAKU-G.
                        09  SPA-GMN-FTSZENKAKUCD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL05        PIC X(01).
                        09  SPA-GMN-FTSZENKAKUMEI
                                                PIC X(18).
                    07  SPA-GMN-FTSNUMERIC-G.
                        09  SPA-GMN-FTSNUMERICCD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL06        PIC X(01).
                        09  SPA-GMN-FTSNUMERICMEI
                                                PIC X(18).
                    07  SPA-GMN-FTSKETA-G.
                        09  SPA-GMN-FTSKETACD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL07        PIC X(01).
                        09  SPA-GMN-FTSKETAMEI
                                                PIC X(18).
                    07  SPA-GMN-FTSKETAMIN-G.
                        09  SPA-GMN-FTSKETAMINCD PIC X(02).
-                       09  FILLER              PIC  X(01).
+                       09  SPA-GMN-FL08        PIC  X(01).
                        09  SPA-GMN-FTSKETAMINMEI
                                                PIC  X(16).
                    07  SPA-GMN-JKSHANKAKU-G.
                        09  SPA-GMN-JKSHANKAKUCD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL09        PIC X(01).
                        09  SPA-GMN-JKSHANKAKUMEI
                                                PIC X(18).
                    07  SPA-GMN-JKSZENKAKU-G.
                        09  SPA-GMN-JKSZENKAKUCD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL10        PIC X(01).
                        09  SPA-GMN-JKSZENKAKUMEI
                                                PIC X(18).
                    07  SPA-GMN-JKSNUMERIC-G.
                        09  SPA-GMN-JKSNUMERICCD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL11        PIC X(01).
                        09  SPA-GMN-JKSNUMERICMEI
                                                PIC X(18).
                    07  SPA-GMN-JKSKETA-G.
                        09  SPA-GMN-JKSKETACD PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL12        PIC X(01).
                        09  SPA-GMN-JKSKETAMEI
                                                PIC X(18).
                    07  SPA-GMN-JKSKETAMIN-G.
                        09  SPA-GMN-JKSKETAMINCD PIC X(02).
-                       09  FILLER              PIC  X(01).
+                       09  SPA-GMN-FL13        PIC  X(01).
                        09  SPA-GMN-JKSKETAMINMEI
                                                PIC  X(16).
                    07  SPA-GMN-YUKOSTYMD   PIC X(09).
@@ -142,89 +142,89 @@
                05  SPA-GMN-KOUHICOMBO-AREA.
                    07  SPA-GMN-KOUHI-LIST  OCCURS 99.
                        09  SPA-GMN-KOHCDL      PIC X(03).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL14        PIC X(01).
                        09  SPA-GMN-KOHMEIL     PIC X(20).
                    07  SPA-GMN-KOUHI-MAX   PIC 9(04).
       *
                05  SPA-GMN-FTSNUMCOMBO-AREA.
                    07  SPA-GMN-FTSNUM-LIST OCCURS 2.
                        09  SPA-GMN-FTSCDL      PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL15        PIC X(01).
                        09  SPA-GMN-FTSMEIL     PIC X(14).
                    07  SPA-GMN-FTSNUM-MAX  PIC 9(04).
       *
                05  SPA-GMN-JKSNUMCOMBO-AREA.
                    07  SPA-GMN-JKSNUM-LIST OCCURS 2.
                        09  SPA-GMN-JKSCDL      PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL16        PIC X(01).
                        09  SPA-GMN-JKSMEIL     PIC X(14).
                    07  SPA-GMN-JKSNUM-MAX  PIC 9(04).
       *
                05  SPA-GMN-FTSHANKAKUCOMBO-AREA.
                    07  SPA-GMN-FTSHANKAKU-LIST OCCURS 2.
                        09  SPA-GMN-FTSHANKAKUCDL    PIC X(01).
-                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FL17             PIC X(01).
                        09  SPA-GMN-FTSHANKAKUMEIL   PIC X(18).
                    07  SPA-GMN-FTSHANKAKU-MAX       PIC 9(04).
                05  SPA-GMN-FTSZENKAKUCOMBO-AREA.
                    07  SPA-GMN-FTSZENKAKU-LIST OCCURS 2.
                        09  SPA-GMN-FTSZENKAKUCDL    PIC X(01).
-                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FL18             PIC X(01).
                        09  SPA-GMN-FTSZENKAKUMEIL   PIC X(18).
                    07  SPA-GMN-FTSZENKAKU-MAX       PIC 9(04).
       *
                05  SPA-GMN-FTSNUMERICCOMBO-AREA.
                    07  SPA-GMN-FTSNUMERIC-LIST OCCURS 2.
                        09  SPA-GMN-FTSNUMERICCDL    PIC X(01).
-                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FL19             PIC X(01).
                        09  SPA-GMN-FTSNUMERICMEIL   PIC X(18).
                    07  SPA-GMN-FTSNUMERIC-MAX       PIC 9(04).
       *
                05  SPA-GMN-FTSKETACOMBO-AREA.
                    07  SPA-GMN-FTSKETA-LIST OCCURS 2.
                        09  SPA-GMN-FTSKETACDL    PIC X(01).
-                       09  FILLER                PIC X(01).
+                       09  SPA-GMN-FL20          PIC X(01).
                        09  SPA-GMN-FTSKETAMEIL   PIC X(18).
                    07  SPA-GMN-FTSKETA-MAX       PIC 9(04).
       *
                05  SPA-GMN-FTSKETAMINCOMBO-AREA.
                    07  SPA-GMN-FTSKETAMIN-LIST OCCURS 10.
                        09  SPA-GMN-FTSKETAMINCDL    PIC X(02).
-                       09  FILLER                   PIC X(01).
+                       09  SPA-GMN-FL21             PIC X(01).
                        09  SPA-GMN-FTSKETAMINMEIL   PIC X(16).
                    07  SPA-GMN-FTSKETAMIN-MAX       PIC 9(04).
       *
                05  SPA-GMN-JKSHANKAKUCOMBO-AREA.
                    07  SPA-GMN-JKSHANKAKU-LIST OCCURS 2.
                        09  SPA-GMN-JKSHANKAKUCDL    PIC X(01).
-                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FL22             PIC X(01).
                        09  SPA-GMN-JKSHANKAKUMEIL   PIC X(18).
                    07  SPA-GMN-JKSHANKAKU-MAX       PIC 9(04).
                05  SPA-GMN-JKSZENKAKUCOMBO-AREA.
                    07  SPA-GMN-JKSZENKAKU-LIST OCCURS 2.
                        09  SPA-GMN-JKSZENKAKUCDL    PIC X(01).
-                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FL23             PIC X(01).
                        09  SPA-GMN-JKSZENKAKUMEIL   PIC X(18).
                    07  SPA-GMN-JKSZENKAKU-MAX       PIC 9(04).
       *
                05  SPA-GMN-JKSNUMERICCOMBO-AREA.
                    07  SPA-GMN-JKSNUMERIC-LIST OCCURS 2.
                        09  SPA-GMN-JKSNUMERICCDL    PIC X(01).
-                       09  FILLER                  PIC X(01).
+                       09  SPA-GMN-FL24             PIC X(01).
                        09  SPA-GMN-JKSNUMERICMEIL   PIC X(18).
                    07  SPA-GMN-JKSNUMERIC-MAX       PIC 9(04).
       *
                05  SPA-GMN-JKSKETACOMBO-AREA.
                    07  SPA-GMN-JKSKETA-LIST OCCURS 2.
                        09  SPA-GMN-JKSKETACDL    PIC X(01).
-                       09  FILLER                PIC X(01).
+                       09  SPA-GMN-FL25          PIC X(01).
                        09  SPA-GMN-JKSKETAMEIL   PIC X(18).
                    07  SPA-GMN-JKSKETA-MAX       PIC 9(04).
       *
                05  SPA-GMN-JKSKETAMINCOMBO-AREA.
                    07  SPA-GMN-JKSKETAMIN-LIST OCCURS 20.
                        09  SPA-GMN-JKSKETAMINCDL    PIC X(02).
-                       09  FILLER                   PIC X(01).
+                       09  SPA-GMN-FL26             PIC X(01).
                        09  SPA-GMN-JKSKETAMINMEIL   PIC X(16).
                    07  SPA-GMN-JKSKETAMIN-MAX       PIC 9(04).
       *

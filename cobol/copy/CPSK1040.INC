@@ -79,7 +79,7 @@
                05  SYS-1040-JKYSKETAMAX
                                         PIC  X(02).
       *Í½È÷
-               05                       PIC  X(482).
+               05  SYS-1040-YOBI        PIC  X(482).
       *Ã¼Ëö£É£Ä
            03  SYS-1040-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -2417,6 +2417,7 @@
       *****************************************************************
        4811-HOSP-NYUINKHN-EDIT-SEC     SECTION.
       *
+           MOVE    SPACE           TO  SYS-5000-REC
            INITIALIZE                  SYS-5000-REC
       *
            MOVE    SPA-HOSPNUM         TO  SYS-5000-HOSPNUM

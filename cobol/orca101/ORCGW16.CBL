@@ -84,7 +84,7 @@
        01  WRK-AREA.
            03  WRK-KBNCD.
                05  WRK-KBNNUM                      PIC 9(02).
-               05                                  PIC X(06).
+               05  WRK-KBNNUMFL                    PIC X(06).
            03  WRK-WIDMSG                          PIC X(70). 
            03  WRK-YMD                             PIC X(10). 
            03  WRK-SYMD.

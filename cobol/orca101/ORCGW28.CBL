@@ -73,7 +73,7 @@
       *          …È√¥∑◊ªª∂Ë ¨
                  11  SPA-GMN-W28-SENTEI-FTNKBN.
                    13  SPA-GMN-W28-SENTEI-FTNKBN-CD    PIC X(01).
-                   13                                  PIC X(01).
+                   13  SPA-GMN-W28-SENTEI-FTNKBN-FL    PIC X(01).
                    13  SPA-GMN-W28-SENTEI-FTNKBN-NM    PIC X(20).
       *          ≈¿øÙ√±≤¡
                  11  SPA-GMN-W28-SENTEI-TANKA          PIC S9(4).
@@ -84,7 +84,7 @@
       *          æ√»Ò¿«
                  11  SPA-GMN-W28-SENTEI-TAX.
                    13  SPA-GMN-W28-SENTEI-TAX-CD       PIC X(01).
-                   13                                  PIC X(01).
+                   13  SPA-GMN-W28-SENTEI-TAX-FL       PIC X(01).
                    13  SPA-GMN-W28-SENTEI-TAX-NM       PIC X(18).
       *
       *        ¥Ω‡∆¸

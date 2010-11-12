@@ -519,7 +519,7 @@
            03  WRK-STR-LEFT                            PIC X(500).
            03  WRK-STR-LEFT-Z      REDEFINES           WRK-STR-LEFT.
                05  WRK-STR-LEFT-ZX99                   PIC Z(9)9.
-               05                                      PIC X(490).
+               05  WRK-STR-LEFT-FL                     PIC X(490).
            03  WRK-STR-LEFT-TMP                        PIC X(500).
            03  WRK-N.
                05  WRK-KNS-N                           PIC X(10).
@@ -548,7 +548,7 @@
                        09  WRK-NISSU-ST-Z9             PIC Z9.
                    07  WRK-NISSU-ST-R2 REDEFINES   WRK-NISSU-ST-X.
                        09  WRK-NISSU-ST-9              PIC 9(01).
-                       09                              PIC X(01).
+                       09  WRK-NISSU-ST-FL             PIC X(01).
                05  WRK-NISSU-ED-G.
                    07  WRK-NISSU-ED                    PIC 9(02).
                    07  WRK-NISSU-ED-X                  PIC X(02).
@@ -556,7 +556,7 @@
                        09  WRK-NISSU-ED-Z9             PIC Z9.
                    07  WRK-NISSU-ED-R2 REDEFINES   WRK-NISSU-ED-X.
                        09  WRK-NISSU-ED-9              PIC 9(01).
-                       09                              PIC X(01).
+                       09  WRK-NISSU-ED-FL             PIC X(01).
                05  WRK-NISSU-MES                       PIC X(200).
                05  WRK-NISSU-PTR                       PIC 9(03).
                05  WRK-NISSU-LASTYMD                   PIC X(08).

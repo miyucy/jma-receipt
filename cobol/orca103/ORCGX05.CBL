@@ -67,18 +67,19 @@
                    07  SPA-GMN-NAME        PIC X(100).
                    07  SPA-GMN-NYUGAIKBN-G.
                        09  SPA-GMN-NYUGAIKBN   PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-NYUGAIKBNFL PIC X(01).
                        09  SPA-GMN-NYUGAIKBNMEI
                                                PIC X(20).
                    07  SPA-GMN-NYUGAIBNDKBN-G.
                        09  SPA-GMN-NYUGAIBNDKBN
                                                PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-NYUGAIBNDKBNFL
+                                               PIC X(01).
                        09  SPA-GMN-NYUGAIBNDKBNMEI
                                                PIC X(20).
                    07  SPA-GMN-JYKNKBN-G.
                        09  SPA-GMN-JYKNKBN     PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-JYKNKBNFL   PIC X(01).
                        09  SPA-GMN-JYKNKBNMEI  PIC X(10).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-MAX     PIC 9(05).
@@ -96,19 +97,19 @@
                        09  SPA-GMN-NYUGAIKBN-MAX       PIC 9(05).
                        09  SPA-GMN-NYUGAIKBNLST        OCCURS   5.
                            11  SPA-GMN-NYUGAIKBNL      PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-NYUGAIKBNFLL    PIC X(01).
                            11  SPA-GMN-NYUGAIKBNMEIL   PIC X(20).
                    07  SPA-GMN-NYUGAIBNDKBNLST-G.
                        09  SPA-GMN-NYUGAIBNDKBN-MAX    PIC 9(05).
                        09  SPA-GMN-NYUGAIBNDKBNLST     OCCURS   5.
                            11  SPA-GMN-NYUGAIBNDKBNL   PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-NYUGAIBNDKBNFLL PIC X(01).
                            11  SPA-GMN-NYUGAIBNDKBNMEIL    PIC X(20).
                    07  SPA-GMN-JYKNKBNLST-G.
                        09  SPA-GMN-JYKNKBN-MAX         PIC 9(05).
                        09  SPA-GMN-JYKNKBNLST          OCCURS   5.
                            11  SPA-GMN-JYKNKBNL        PIC X(01).
-                           11                          PIC X(01).
+                           11  SPA-GMN-JYKNKBNFLL      PIC X(01).
                            11  SPA-GMN-JYKNKBNMEIL     PIC X(10).
       *
            COPY    "ENUM-VALUE".
@@ -154,10 +155,6 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-XIDMSG              PIC X(70). 
-           03  WRK-WIDGET.
-               05  WRK-WIDGET1         PIC X(05).
-               05  WRK-WIDGET2         PIC 9(02).
-               05                      PIC X(03). 
            03  WRK-YMD                 PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).

@@ -147,7 +147,7 @@
            03  WRK-STR-LEFT                        PIC X(500).
            03  WRK-STR-LEFT-Z      REDEFINES       WRK-STR-LEFT.
                05  WRK-STR-LEFT-ZX99               PIC Z(9)9.
-               05                                  PIC X(490).
+               05  WRK-STR-LEFT-FL                 PIC X(490).
            03  WRK-STR-LEFT-TMP                    PIC X(500).
       *        ¡¥≥— ‘Ω∏Õ—π‡Ã‹
            03  WRK-N.

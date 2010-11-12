@@ -62,7 +62,7 @@
                        09  SPA-GMN-NAME            PIC X(100).
                        09  SPA-GMN-NYUGAIKBN-G.
                            11  SPA-GMN-NYUGAIKBN   PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYUGAIKBNFL PIC X(01).
                            11  SPA-GMN-NYUGAIKBNMEI
                                                    PIC X(08).
                        09  SPA-GMN-LBLMSG          PIC X(50).
@@ -72,29 +72,30 @@
                        09  SPA-GMN-RD-NYUKIN-KBT   PIC X(01).
                        09  SPA-GMN-NYKNKNRKBN-G.
                            11  SPA-GMN-NYKNKNRKBN  PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYKNKNRKBNFL PIC X(01).
                            11  SPA-GMN-NYKNKNRKBNMEI
                                                    PIC X(40).
                        09  SPA-GMN-IKTSRYYMKBN-G.
                            11  SPA-GMN-IKTSRYYMKBN PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-IKTSRYYMKBNFL
+                                                   PIC X(01).
                            11  SPA-GMN-IKTSRYYMKBNMEI
                                                    PIC X(30).
                        09  SPA-GMN-IKTSRYYM        PIC X(10).
                        09  SPA-GMN-NYUKINYMD       PIC X(10).
                        09  SPA-GMN-NYKNHOHO-G.
                            11  SPA-GMN-NYKNHOHO    PIC X(02).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYKNHOHOFL  PIC X(01).
                            11  SPA-GMN-NYKNHOHOMEI
                                                    PIC X(30).
                        09  SPA-GMN-SKYPRTKBN-G.
                            11  SPA-GMN-SKYPRTKBN   PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-SKYPRTKBNFL PIC X(01).
                            11  SPA-GMN-SKYPRTKBNMEI
                                                    PIC X(30).
                        09  SPA-GMN-SKYSUMKBN-G.
                            11  SPA-GMN-SKYSUMKBN   PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-SKYSUMKBNFL PIC X(01).
                            11  SPA-GMN-SKYSUMKBNMEI
                                                    PIC X(40).
                        09  SPA-GMN-IKT-NYUKIN-VAL.
@@ -118,42 +119,44 @@
                        09  SPA-GMN-NYUGAIKBN-MAX   PIC 9(03).
                        09  SPA-GMN-NYUGAIKBNLST    OCCURS  3.
                            11  SPA-GMN-NYUGAIKBNL  PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYUGAIKBNFLL PIC X(01).
                            11  SPA-GMN-NYUGAIKBNMEIL
                                                    PIC X(08).
                    07  SPA-GMN-NYKNKNRKBNLST-G.
                        09  SPA-GMN-NYKNKNRKBN-MAX  PIC 9(03).
                        09  SPA-GMN-NYKNKNRKBNLST   OCCURS  5.
                            11  SPA-GMN-NYKNKNRKBNL PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYKNKNRKBNFLL
+                                                   PIC X(01).
                            11  SPA-GMN-NYKNKNRKBNMEIL
                                                    PIC X(40).
                    07  SPA-GMN-IKTSRYYMKBNLST-G.
                        09  SPA-GMN-IKTSRYYMKBN-MAX PIC 9(03).
                        09  SPA-GMN-IKTSRYYMKBNLST  OCCURS  5.
                            11  SPA-GMN-IKTSRYYMKBNL PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-IKTSRYYMKBNFLL
+                                                   PIC X(01).
                            11  SPA-GMN-IKTSRYYMKBNMEIL
                                                    PIC X(30).
                    07  SPA-GMN-NYKNHOHOLST-G.
                        09  SPA-GMN-NYKNHOHO-MAX    PIC 9(03).
                        09  SPA-GMN-NYKNHOHOLST     OCCURS  5.
                            11  SPA-GMN-NYKNHOHOL   PIC X(02).
-                           11                      PIC X(01).
+                           11  SPA-GMN-NYKNHOHOFLL PIC X(01).
                            11  SPA-GMN-NYKNHOHOMEIL
                                                    PIC X(30).
                    07  SPA-GMN-SKYPRTKBNLST-G.
                        09  SPA-GMN-SKYPRTKBN-MAX   PIC 9(03).
                        09  SPA-GMN-SKYPRTKBNLST    OCCURS  5.
                            11  SPA-GMN-SKYPRTKBNL  PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-SKYPRTKBNFLL PIC X(01).
                            11  SPA-GMN-SKYPRTKBNMEIL
                                                    PIC X(30).
                    07  SPA-GMN-SKYSUMKBNLST-G.
                        09  SPA-GMN-SKYSUMKBN-MAX   PIC 9(03).
                        09  SPA-GMN-SKYSUMKBNLST    OCCURS  5.
                            11  SPA-GMN-SKYSUMKBNL  PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-SKYSUMKBNFLL PIC X(01).
                            11  SPA-GMN-SKYSUMKBNMEIL
                                                    PIC X(40).
                    07  SPA-GMN-SYULIST.
@@ -299,7 +302,7 @@
        01  WK-GMN-RITU.
            03  WK-GMN-FTNRITU              PIC ZZZ.
            03  WK-GMN-PA                   PIC X(01).
-           03  FILLER                      PIC X(01).
+           03  WK-GMN-FL                   PIC X(01).
       *
        01  S1005-SRYKALST-G.
            03  S1005-SRYKALST-MAX          PIC 9(05).

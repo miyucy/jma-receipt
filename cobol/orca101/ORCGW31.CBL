@@ -1131,6 +1131,7 @@
       *****************************************************************
        4801-SYS5014-TOUROKU-SEC        SECTION.
       *
+           MOVE    SPACE               TO  SYS-5014-REC
            INITIALIZE                      SYS-5014-REC
            MOVE    "5014"              TO  SYS-5014-KANRICD
            MOVE    "*"                 TO  SYS-5014-KBNCD
@@ -1193,6 +1194,7 @@
       *
                ELSE
       *
+                   MOVE    SPACE       TO      SYS-5014-REC
                    INITIALIZE                  SYS-5014-REC
                    MOVE    "5014"      TO  SYS-5014-KANRICD
                    MOVE    SPA-NAI-MEDKBN-ZAINUM (IDX-CHK)
@@ -1243,6 +1245,7 @@
       *****************************************************************
        4801-SYS5015-TOUROKU-SEC        SECTION.
       *
+           MOVE    SPACE               TO  SYS-5015-REC
            INITIALIZE                      SYS-5015-REC
            MOVE    "5015"              TO  SYS-5015-KANRICD
            MOVE    "*"                 TO  SYS-5015-KBNCD
@@ -1253,6 +1256,7 @@
            IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    SYSKANRI-REC    TO  SYS-5015-REC
            ELSE
+               MOVE    SPACE           TO  SYS-5015-REC
                INITIALIZE                  SYS-5015-REC
            END-IF
       *

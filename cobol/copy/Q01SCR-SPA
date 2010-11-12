@@ -222,7 +222,8 @@
                            11  SPA-GMN-Q01-HONKZKKBN-G.
                                13  SPA-GMN-Q01-HONKZKKBN
                                                        PIC X(1).
-                               13                      PIC X(1).
+                               13  SPA-GMN-Q01-HONKZKKBNFL
+                                                       PIC X(1).
                                13  SPA-GMN-Q01-HONKZKKBNMEI
                                                        PIC X(8).
       *                    保険　保険者番号
@@ -571,31 +572,31 @@
                            11  SPA-GMN-Q01-UTAGAIKBNLST-MAX PIC 9(05).
                            11  SPA-GMN-Q01-UTAGAIKBNLST    OCCURS 3.
                                13  SPA-GMN-Q01-UTAGAIKBNL  PIC X(1).
-                               13                          PIC X(1).
+                               13  SPA-GMN-Q01-UTAGAIKBNFLL PIC X(1).
                                13  SPA-GMN-Q01-UTAGAIKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-KYUSEIKBNLST-G.
                            11  SPA-GMN-Q01-KYUSEIKBNLST-MAX PIC 9(05).
                            11  SPA-GMN-Q01-KYUSEIKBNLST    OCCURS 3.
                                13  SPA-GMN-Q01-KYUSEIKBNL  PIC X(1).
-                               13                          PIC X(1).
+                               13  SPA-GMN-Q01-KYUSEIKBNFLL PIC X(1).
                                13  SPA-GMN-Q01-KYUSEIKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-TENKIKBNLST-G.
                            11  SPA-GMN-Q01-TENKIKBNLST-MAX PIC 9(05).
                            11  SPA-GMN-Q01-TENKIKBNLST      OCCURS 10.
                                13  SPA-GMN-Q01-TENKIKBNL    PIC X(1).
-                               13                           PIC X(1).
+                               13  SPA-GMN-Q01-TENKIKBNFLL  PIC X(1).
                                13  SPA-GMN-Q01-TENKIKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-SYUBYOKBNLST-G.
                            11  SPA-GMN-Q01-SYUBYOKBNLST-MAX PIC 9(05).
                            11  SPA-GMN-Q01-SYUBYOKBNLST      OCCURS 5.
                                13  SPA-GMN-Q01-SYUBYOKBNL    PIC X(1).
-                               13                            PIC X(1).
+                               13  SPA-GMN-Q01-SYUBYOKBNFLL  PIC X(1).
                                13  SPA-GMN-Q01-SYUBYOKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-UBYOMEILST-G.
                            11  SPA-GMN-Q01-UBYOMEILST-MAX  PIC 9(05).
                            11  SPA-GMN-Q01-UBYOMEILST      OCCURS 100.
                                13  SPA-GMN-Q01-UBYOMEIL    PIC X(3).
-                               13                          PIC X(1).
+                               13  SPA-GMN-Q01-UBYOMEIFLL  PIC X(1).
                                13  SPA-GMN-Q01-UBYOMEIMEIL PIC X(20).
                        09  SPA-GMN-Q01-SORTLST-G.
                            11  SPA-GMN-Q01-SORTLST-MAX     PIC 9(05).

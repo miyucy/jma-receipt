@@ -62,17 +62,17 @@
            03  SPA-GMN-AREA.
                05  SPA-GMN-SIHARAIKBN-G.
                    07  SPA-GMN-SIHARAIKBN  PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL01        PIC X(01).
                    07  SPA-GMN-SIHARAIMEI  PIC X(10).
       *
                05  SPA-GMN-NYUGAIKBN-G.
                    07  SPA-GMN-NYUGAIKBN   PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL02        PIC X(01).
                    07  SPA-GMN-NYUGAIMEI   PIC X(04).
       *
                05  SPA-GMN-SRYKBN-G.
                    07  SPA-GMN-SRYKBN      PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL03        PIC X(01).
                    07  SPA-GMN-SRYMEI      PIC X(06).
       *
                05  SPA-GMN-STRSRYYMD       PIC X(10).
@@ -80,83 +80,83 @@
       *
                05  SPA-GMN-KIKANKBN-G.
                    07  SPA-GMN-KIKANKBN    PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL04        PIC X(01).
                    07  SPA-GMN-KIKANMEI    PIC X(08).
       *
                05  SPA-GMN-DSPKBN-G.
                    07  SPA-GMN-DSPKBN      PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL05        PIC X(01).
                    07  SPA-GMN-DSPMEI      PIC X(18).
       *
                05  SPA-GMN-SUMKBN-G.
                    07  SPA-GMN-SUMKBN      PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL06        PIC X(01).
                    07  SPA-GMN-SUMMEI      PIC X(16).
       *
                05  SPA-GMN-SYORIKBN-G.
                    07  SPA-GMN-SYORIKBN    PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL07        PIC X(01).
                    07  SPA-GMN-SYORIMEI    PIC X(16).
       *
                05  SPA-GMN-JIHIKBN-G.
                    07  SPA-GMN-JIHIKBN     PIC X(01).
-                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-FL08        PIC X(01).
                    07  SPA-GMN-JIHIMEI     PIC X(10).
       *
                05  SPA-GMN-SIHARAILIST-G.
                    07  SPA-GMN-SIHARAILIST-MAX PIC 9(05).
                    07  SPA-GMN-SIHARAILIST         OCCURS  3.
                        09  SPA-GMN-SIHARAIKBNL PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL09        PIC X(01).
                        09  SPA-GMN-SIHARAIMEIL PIC X(10).
       *
                05  SPA-GMN-NYUGAILIST-G.
                    07  SPA-GMN-NYUGAILIST-MAX  PIC 9(05).
                    07  SPA-GMN-NYUGAILIST          OCCURS  3.
                        09  SPA-GMN-NYUGAIKBNL  PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL10        PIC X(01).
                        09  SPA-GMN-NYUGAIMEIL  PIC X(04).
       *
                05  SPA-GMN-SRYLIST-G.
                    07  SPA-GMN-SRYLIST-MAX     PIC 9(05).
                    07  SPA-GMN-SRYLIST             OCCURS  3.
                        09  SPA-GMN-SRYKBNL     PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL11        PIC X(01).
                        09  SPA-GMN-SRYMEIL     PIC X(06).
       *
                05  SPA-GMN-KIKANLIST-G.
                    07  SPA-GMN-KIKANLIST-MAX   PIC 9(05).
                    07  SPA-GMN-KIKANLIST           OCCURS  2.
                        09  SPA-GMN-KIKANKBNL   PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL12        PIC X(01).
                        09  SPA-GMN-KIKANMEIL   PIC X(08).
       *
                05  SPA-GMN-DSPLIST-G.
                    07  SPA-GMN-DSPLIST-MAX     PIC 9(05).
                    07  SPA-GMN-DSPLIST             OCCURS  3.
                        09  SPA-GMN-DSPKBNL     PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL13        PIC X(01).
                        09  SPA-GMN-DSPMEIL     PIC X(18).
       *
                05  SPA-GMN-SUMKBNLIST-G.
                    07  SPA-GMN-SUMKBNLIST-MAX  PIC 9(05).
                    07  SPA-GMN-SUMKBNLIST      OCCURS  2.
                        09  SPA-GMN-SUMKBNL     PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL14        PIC X(01).
                        09  SPA-GMN-SUMKBNMEIL  PIC X(16).
       *
                05  SPA-GMN-SYORILIST-G.
                    07  SPA-GMN-SYORILIST-MAX   PIC 9(05).
                    07  SPA-GMN-SYORILIST           OCCURS  2.
                        09  SPA-GMN-SYORIKBNL   PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL15        PIC X(01).
                        09  SPA-GMN-SYORIMEIL   PIC X(16).
       *
                05  SPA-GMN-JIHILIST-G.
                    07  SPA-GMN-JIHILIST-MAX    PIC 9(05).
                    07  SPA-GMN-JIHILIST            OCCURS  3.
                        09  SPA-GMN-JIHIKBNL    PIC X(01).
-                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-FL16        PIC X(01).
                        09  SPA-GMN-JIHIMEIL    PIC X(10).
       *
            03  SPA-NAI-AREA.

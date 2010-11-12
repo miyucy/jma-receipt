@@ -127,7 +127,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-PIN.
                05  PIN9            PIC 9(03).
-               05  FILLER          REDEFINES  PIN9.
+               05  WRK-PIN-R       REDEFINES  PIN9.
                    07  PIN10       PIC 9(02).
                    07  PIN1        PIC 9(01).
            03  WRK-PED.
@@ -188,7 +188,7 @@
            03  WRK-STR-LEFT                        PIC X(500).
            03  WRK-STR-LEFT-Z      REDEFINES       WRK-STR-LEFT.
                05  WRK-STR-LEFT-ZX99               PIC Z(9)9.
-               05                                  PIC X(490).
+               05  WRK-STR-LEFT-FL                 PIC X(490).
            03  WRK-STR-LEFT-TMP                    PIC X(500).
            03  WRK-ZZZ             PIC ZZZ.
            03  WRK-SKIP-MAX        PIC 9(05).

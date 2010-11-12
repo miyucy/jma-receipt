@@ -1682,6 +1682,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-STRING
       *
                OPEN    OUTPUT  MST-SYSKANRI
+               MOVE    SPACE   TO  SYSWK-REC
                INITIALIZE      SYSWK-REC
                IF    ( SPA-W10-SELNUM  >   ZERO )
                    MOVE    "U"         TO  SYSWK-SYORIKBN
@@ -1805,6 +1806,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    INTO        ASS-TMEMO
                    END-STRING
                    OPEN OUTPUT MST-TMEMO
+                   MOVE    SPACE           TO  TOUKEIMEMOWK-REC
                    INITIALIZE                  TOUKEIMEMOWK-REC
                    IF    ( SPA-W10-SELNUM  >   ZERO )
                        MOVE    "U"         TO  TKIMEMOWK-SYORIKBN

@@ -580,6 +580,7 @@
       *****************************************************************
        4801-TOUROKU-SEC                SECTION.
       *
+           MOVE    SPACE           TO  SYS-5013-REC
            INITIALIZE                  SYS-5013-REC
       *
            MOVE    SPA-HOSPNUM         TO  SYS-5013-HOSPNUM

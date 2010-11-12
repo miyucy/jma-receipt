@@ -72,7 +72,7 @@
            03  SYS-2010-JGNFTN-TAIKBN       PIC  X(01).
       *
       *Í½È÷
-           03  FILLER                       PIC  X(476).
+           03  SYS-2010-YOBI                PIC  X(476).
       *Ã¼Ëö£É£Ä
            03  SYS-2010-TERMID              PIC  X(16).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä

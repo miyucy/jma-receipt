@@ -297,7 +297,7 @@
            03  WRK-STR-LEFT                        PIC X(500).
            03  WRK-STR-LEFT-ZX99-G.
                05  WRK-STR-LEFT-ZX99               PIC Z(9)9.99.
-               05                                  PIC X(487).
+               05  WRK-STR-LEFT-FL                 PIC X(487).
            03  WRK-STRLEN                          PIC 9(05).
            03  WRK-STRLEN-MAX                      PIC 9(05).
       *        ¡¥≥— ‘Ω∏Õ—π‡Ã‹

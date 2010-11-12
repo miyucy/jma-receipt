@@ -136,10 +136,6 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-XIDMSG          PIC X(70). 
-           03  WRK-WIDGET.
-               05  WRK-WIDGET1     PIC X(05).
-               05  WRK-WIDGET2     PIC 9(02).
-               05                  PIC X(03). 
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).

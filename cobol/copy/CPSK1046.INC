@@ -47,7 +47,7 @@
                05  SYS-1046-GETCJIHIKBN PIC  X(02)
                                         OCCURS 10.
       *Í½È÷
-               05  SYS-1046-FIL         PIC  X(400).
+               05  SYS-1046-YOBI        PIC  X(400).
       *Ã¼Ëö£É£Ä
            03  SYS-1046-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

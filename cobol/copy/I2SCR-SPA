@@ -60,17 +60,17 @@
                    07  SPA-GMN-JOTAI-MAX       PIC 9(02). 
                    07  SPA-GMN-TAIINCDLST      OCCURS  50.
                        09  SPA-GMN-TAIINCDL    PIC X(02).
-                       09                      PIC X(01).
+                       09  SPA-GMN-TAIINCDFLL  PIC X(01).
                        09  SPA-GMN-TAIINCDMEIL PIC X(20).
                    07  SPA-GMN-TAIINCD-MAX     PIC 9(02). 
                    07  SPA-GMN-DEATHKBNLST     OCCURS  5.
                        09  SPA-GMN-DEATHKBNL   PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-DEATHKBNFLL PIC X(01).
                        09  SPA-GMN-DEATHKBNMEIL PIC X(08).
                    07  SPA-GMN-DEATHKBN-MAX    PIC 9(02). 
                    07  SPA-GMN-SRTKBNLST       OCCURS  10.
                        09  SPA-GMN-SRTKBNL     PIC X(01).
-                       09                      PIC X(01).
+                       09  SPA-GMN-SRTKBNFLL   PIC X(01).
                        09  SPA-GMN-SRTKBNMEIL  PIC X(20).
                    07  SPA-GMN-SRTKBN-MAX      PIC 9(02). 
       *
@@ -105,16 +105,16 @@
                            11  SPA-GMN-BTUNUMMEI   PIC X(20).
                        09  SPA-GMN-JOTAI-G.
                            11  SPA-GMN-JOTAI       PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-JOTAIFL     PIC X(01).
                            11  SPA-GMN-JOTAIMEI    PIC X(12).
                        09  SPA-GMN-CHKTESTPT       PIC X(1).
                        09  SPA-GMN-TAIINCD-G.
                            11  SPA-GMN-TAIINCD     PIC X(02).
-                           11                      PIC X(01).
+                           11  SPA-GMN-TAIINCDFL   PIC X(01).
                            11  SPA-GMN-TAIINCDMEI  PIC X(20).
                        09  SPA-GMN-DEATHKBN-G.
                            11  SPA-GMN-DEATHKBN    PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-DEATHKBNFL  PIC X(01).
                            11  SPA-GMN-DEATHKBNMEI PIC X(08).
                        09  SPA-GMN-SRT1KBN-G.
                            11  SPA-GMN-SRT1KBN     PIC X(01).

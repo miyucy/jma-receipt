@@ -429,7 +429,7 @@
        01  WK-GMN-RITU.
            03  WK-GMN-FTNRITU      PIC ZZZ.
            03  WK-GMN-PA           PIC X(01).
-           03  FILLER              PIC X(01).
+           03  WK-GMN-FL           PIC X(01).
       *
       *    スパ領域 ワーク
            COPY "COMMON-SPA"       REPLACING //SPA-//

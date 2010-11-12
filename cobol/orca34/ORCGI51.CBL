@@ -145,7 +145,7 @@
            03  WRK-AGE-G.
                05  WRK-AGE-Z               PIC ZZ9.
                05  WRK-AGE-MEI             PIC X(02).
-               05                          PIC X(01).
+               05  WRK-AGE-FL              PIC X(01).
            03  WRK-AGE-M-R     REDEFINES   WRK-AGE-G.
                05  WRK-AGE-M-Z             PIC Z9.
                05  WRK-AGE-M-MEI           PIC X(04).

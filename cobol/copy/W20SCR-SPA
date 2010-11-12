@@ -60,7 +60,7 @@
       *        レセプト表示区分
                09  SPA-GMN-W20-RECEDSPKBN-G.
                  11  SPA-GMN-W20-RECEDSPKBN        PIC X(02).
-                 11                                PIC X(01).
+                 11  SPA-GMN-W20-RECEDSPKBNFL      PIC X(01).
                  11  SPA-GMN-W20-RECEDSPKBNMEI     PIC X(10).
       *        小規格病棟病床数加算
                09  SPA-GMN-W20-SYOUBTUBRM-G.

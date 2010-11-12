@@ -94,7 +94,7 @@
                    07  SPA-GMN-W19-SELNUM          PIC 9(03).
                    07  SPA-GMN-W19-TYOHYOKBN-G.
                        09  SPA-GMN-W19-TYOHYOKBN   PIC X(01).
-                       09                          PIC X(01).
+                       09  SPA-GMN-W19-TYOHYOKBNFL PIC X(01).
                        09  SPA-GMN-W19-TYOHYOKBNMEI
                                                    PIC X(20).
                    07  SPA-GMN-W19-TYOHYOKBNLST-G.
@@ -104,7 +104,8 @@
                                                    OCCURS  2.
                            11  SPA-GMN-W19-TYOHYOKBNL
                                                    PIC X(01).
-                           11                      PIC X(01).
+                           11  SPA-GMN-W19-TYOHYOKBNFLL
+                                                   PIC X(01).
                            11  SPA-GMN-W19-TYOHYOKBNMEIL
                                                    PIC X(20).
       *

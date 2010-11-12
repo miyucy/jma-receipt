@@ -110,8 +110,6 @@
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(03).
                05  WRK-WIDGET2     PIC 9(02).
-               05  FILLER          PIC X(01).
-               05  WRK-WIDGET3     PIC 9(02). 
            03  WRK-OIDMSG          PIC X(70).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).

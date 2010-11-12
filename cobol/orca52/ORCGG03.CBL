@@ -84,10 +84,6 @@
            03  WRK-CHK-CUR                     PIC 9(05).
            03  WRK-MCP-WIDGET                  PIC X(64).
            03  WRK-PARA-NUM                    PIC 9(01).
-           03  WRK-MCP-PATH.
-               05  FILLER      PIC S9(9)   BINARY.
-               05  FILLER      PIC S9(9)   BINARY.
-               05  FILLER      PIC S9(9)   BINARY.
            03  WRK-MCP-TABLE                   PIC X(64).
            03  WRK-MCP-PATHNAME                PIC X(64).
            03  WRK-MAE-INPUT                   PIC X(100).

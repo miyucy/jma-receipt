@@ -1067,6 +1067,7 @@
       *****************************************************************
        4801-TOUROKU-SEC                SECTION.
       *
+           MOVE    SPACE           TO  SYS-1046-REC
            INITIALIZE                  SYS-1046-REC
       *
            MOVE    SPA-HOSPNUM         TO  SYS-1046-HOSPNUM

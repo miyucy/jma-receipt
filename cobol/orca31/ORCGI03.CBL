@@ -123,7 +123,7 @@
        01  WRK-BAK-AREA.
            03  WRK-BAK-SHOKAI.
                05  WRK-BAK-SHOKAI-CD       PIC X(01).
-               05                          PIC X(01).
+               05  WRK-BAK-SHOKAI-FL       PIC X(01).
                05  WRK-BAK-SHOKAI-NM       PIC X(06).
            03  WRK-BAK-SHONUM              PIC S9(3).
       *

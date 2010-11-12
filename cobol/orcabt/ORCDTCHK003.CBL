@@ -113,11 +113,11 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYMD-G                        PIC X(04).
                05  WRK-SRYYMD-Y                        PIC X(04).
-               05                                      PIC X(02).
+               05  WRK-SRYYMD-FL01                     PIC X(02).
                05  WRK-SRYYMD-M                        PIC X(04).
-               05                                      PIC X(02).
+               05  WRK-SRYYMD-FL02                     PIC X(02).
                05  WRK-SRYYMD-D                        PIC X(04).
-               05                                      PIC X(02).
+               05  WRK-SRYYMD-FL03                     PIC X(02).
            03  WRK-ZZZZ9                               PIC ZZZZ9.
            03  WRK-ZZ9                                 PIC ZZ9.
            03  WRK-Z9                                  PIC Z9.

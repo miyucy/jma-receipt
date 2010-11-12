@@ -52,7 +52,7 @@
                05  SYS-3001-HISSU-KBN   OCCURS  10
                                         PIC X(01).
       *Í½È÷
-               05                       PIC  X(06).
+               05  SYS-3001-YOBI        PIC  X(06).
       *Ã¼Ëö£É£Ä
            03  SYS-3001-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

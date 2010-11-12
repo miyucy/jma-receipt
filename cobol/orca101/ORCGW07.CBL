@@ -983,7 +983,7 @@
                            11  SPA-GMN-MSG1-DSPKBN-MAX     PIC 9(03).
                            11  SPA-GMN-MSG1-DSPKBNLST      OCCURS  2.
                                13  SPA-GMN-MSG1-DSPKBNL    PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-MSG1-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-MSG1-DSPKBNMEIL PIC X(10).
       *
                        09  SPA-GMN-MSG2-DSPKBN-G.
@@ -995,7 +995,7 @@
                            11  SPA-GMN-MSG2-DSPKBN-MAX     PIC 9(03).
                            11  SPA-GMN-MSG2-DSPKBNLST      OCCURS  2.
                                13  SPA-GMN-MSG2-DSPKBNL    PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-MSG2-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-MSG2-DSPKBNMEIL PIC X(10).
       *
                        09  SPA-GMN-MSG3-DSPKBN-G.
@@ -1007,7 +1007,7 @@
                            11  SPA-GMN-MSG3-DSPKBN-MAX     PIC 9(03).
                            11  SPA-GMN-MSG3-DSPKBNLST      OCCURS  2.
                                13  SPA-GMN-MSG3-DSPKBNL    PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-MSG3-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-MSG3-DSPKBNMEIL PIC X(10).
       *
                        09  SPA-GMN-MSG4-DSPKBN-G.
@@ -1019,7 +1019,7 @@
                            11  SPA-GMN-MSG4-DSPKBN-MAX     PIC 9(03).
                            11  SPA-GMN-MSG4-DSPKBNLST      OCCURS  2.
                                13  SPA-GMN-MSG4-DSPKBNL    PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-MSG4-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-MSG4-DSPKBNMEIL PIC X(10).
       *
                        09  SPA-GMN-SRYKA-DSPKBN-G.
@@ -1031,7 +1031,7 @@
                            11  SPA-GMN-SRYKA-DSPKBN-MAX    PIC 9(02).
                            11  SPA-GMN-SRYKA-DSPKBNLST     OCCURS  3.
                                13  SPA-GMN-SRYKA-DSPKBNL   PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SRYKA-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-SRYKA-DSPKBNMEIL
                                                            PIC X(38).
       *
@@ -1044,7 +1044,7 @@
                            11  SPA-GMN-SYOKBN-DSPKBN-MAX   PIC 9(02).
                            11  SPA-GMN-SYOKBN-DSPKBNLST    OCCURS  3.
                                13  SPA-GMN-SYOKBN-DSPKBNL  PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SYOKBN-DSPKBN-F1L PIC X(01).
                                13  SPA-GMN-SYOKBN-DSPKBNMEIL
                                                            PIC X(10).
       *
@@ -1057,7 +1057,8 @@
                            11  SPA-GMN-UTAGAIFLG-KBN-MAX   PIC 9(02).
                            11  SPA-GMN-UTAGAIFLG-KBNLST    OCCURS  5.
                                13  SPA-GMN-UTAGAIFLG-KBNL  PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-UTAGAIFLG-KBN-F1L
+                                                           PIC X(01).
                                13  SPA-GMN-UTAGAIFLG-KBNMEIL
                                                            PIC X(34).
       *                詳記区分初期設定
