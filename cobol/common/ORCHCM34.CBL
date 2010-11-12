@@ -431,10 +431,9 @@
                05  WRK-DD                          PIC 9(2).
            03  WRK-TOTAL-MAX                   PIC 9(06).
            03  WRK-TOTAL-G.
-               05  WRK-TOTALZ                      PIC --------9.
-               05  WRK-TOTALX  REDEFINES WRK-TOTALZ
-                                                   PIC X(09).
+               05  WRK-TOTALZ                      PIC -------9.
                05  WRK-TOTAL-TANI                  PIC X(02).
+               05  WRK-TOTAL-KAKKO                 PIC X(01).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -464,6 +463,7 @@
            03  WRK-SRYACT-SRYKBN                   PIC X(02).
            03  WRK-SRYACT-MARK                     PIC X(04).
            03  WRK-SRYACT-HKNCOMBI                 PIC X(04).
+           03  WRK-SRYACT-JIHOKBN                  PIC X(01).
       *    TANI 1:TEN 2:EN
            03  WRK-SRYACT-TANI                     PIC 9(01).
            03  WRK-SRYACT-TOTAL                    PIC S9(11).
@@ -3801,6 +3801,8 @@
                MOVE    SRY-SRYKBN      TO  WRK-SRYACT-SRYKBN
            END-IF
       *
+           MOVE    ACCT-JIHOKBN        TO  WRK-SRYACT-JIHOKBN
+      *
       *    ø«Œ≈∂Ë ¨
            MOVE    SPACE               TO  WRK-SRYACT-MARK
            EVALUATE    TRUE
@@ -6418,6 +6420,8 @@
       *****************************************************************
        210-SRYACT-TOTAL-HEN-SEC        SECTION.
       *
+           INITIALIZE                  WRK-TOTAL-G
+      *
            EVALUATE    WRK-SRYACT-TANI
            WHEN    1
                MOVE    WRK-SRYACT-TOTAL
@@ -6428,6 +6432,11 @@
                                    TO  WRK-TOTALZ
                MOVE    "±ﬂ"        TO  WRK-TOTAL-TANI
            END-EVALUATE
+      *
+           IF    ( WRK-SRYACT-JIHOKBN  =   "1" )
+               MOVE    ")"         TO  WRK-TOTAL-KAKKO
+               MOVE    " ("        TO  WRK-TOTAL-G(1:2)
+           END-IF
       *
            .
        210-SRYACT-TOTAL-HEN-EXT.
@@ -6464,17 +6473,25 @@
                    =   WRK-SRYACT-TOTAL
                    + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
       *
-               COMPUTE WRK-TTL-TEN
-                   =   WRK-TTL-TEN
-                   + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+               IF    ( ACCT-JIHOKBN    =   "1" )
+                   CONTINUE
+               ELSE
+                   COMPUTE WRK-TTL-TEN
+                       =   WRK-TTL-TEN
+                       + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+               END-IF
            ELSE
                COMPUTE WRK-SRYACT-TOTAL
                    =   WRK-SRYACT-TOTAL
                    - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
       *
-               COMPUTE WRK-TTL-TEN
-                   =   WRK-TTL-TEN
-                   - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+               IF    ( ACCT-JIHOKBN    =   "1" )
+                   CONTINUE
+               ELSE
+                   COMPUTE WRK-TTL-TEN
+                       =   WRK-TTL-TEN
+                       - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
+               END-IF
            END-IF
       *
            .
