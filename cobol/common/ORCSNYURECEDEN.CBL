@@ -239,7 +239,7 @@
                05  WRK-NYUIN-SORT-TBL      OCCURS  31.
                    07  WRK-SO-MEISAISU     PIC 9(02).
                    07  WRK-SO-DAY-TBL.
-                     09  WRK-SO-DAY        PIC 9(01)  OCCURS 31.
+                     09  WRK-SO-DAY        PIC 9(03)  OCCURS 31.
                    07  WRK-SO-HKNCOMBI-DAY PIC 9(03).
                    07  WRK-SO-SRYKBN       PIC X(02).
                    07  WRK-SO-SRYCD        PIC X(09)  OCCURS 20.

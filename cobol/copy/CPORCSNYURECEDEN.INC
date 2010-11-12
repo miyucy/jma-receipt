@@ -52,7 +52,7 @@
                    07  LNK-NYURECEDEN-MEISAISU       PIC  9(03).
       *日別情報
                    07  LNK-NYURECEDEN-DAY-TBL.
-                       09  LNK-NYURECEDEN-DAY        PIC  9(03)
+                       09  LNK-NYURECEDEN-DAY        PIC  9(01)
                                                           OCCURS 31.
       *レセ電記録エリア
                    07  LNK-NYURECEDEN-NYUIN          OCCURS 300.
