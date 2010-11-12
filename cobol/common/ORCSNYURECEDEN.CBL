@@ -238,6 +238,8 @@
            03  WRK-NYUIN-SORT-TABLE.
                05  WRK-NYUIN-SORT-TBL      OCCURS  31.
                    07  WRK-SO-MEISAISU     PIC 9(02).
+                   07  WRK-SO-DAY-TBL.
+                     09  WRK-SO-DAY        PIC 9(01)  OCCURS 31.
                    07  WRK-SO-HKNCOMBI-DAY PIC 9(03).
                    07  WRK-SO-SRYKBN       PIC X(02).
                    07  WRK-SO-SRYCD        PIC X(09)  OCCURS 20.
@@ -2810,6 +2812,10 @@
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
+      *        回数情報のセット
+               IF    WRK-SO-SRYCD(IDX1 1) NOT  =   SPACE
+                   MOVE     1      TO    WRK-SO-DAY(IDX1 IDX1)
+               END-IF
            END-PERFORM
       *
       *     PERFORM    VARYING   IDX1   FROM  1  BY  1
@@ -2868,8 +2874,6 @@
       *     END-PERFORM
       *
       *
-           MOVE      ZERO      TO   MATOME-IDX
-      *
       *    再構築した入院会計情報から同一剤のまとめ処理
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
@@ -2900,6 +2904,7 @@
                                                  WRK-IRYOADL-DAY(IDX3)
                              END-IF
                              ADD     1    TO    WRK-SO-KAISU(IDX1)
+                             MOVE    1    TO    WRK-SO-DAY(IDX1 IDX3)
                              IF  WRK-SO-GAIHAKU-KBN(IDX3 IDX3)
                                                              NOT = ZERO
                                  MOVE  WRK-SO-GAIHAKU-KBN(IDX3 IDX3)
@@ -2910,6 +2915,14 @@
                        END-IF
                    END-PERFORM
                END-IF
+           END-PERFORM
+      *
+           DISPLAY "===  DAY-SET2 ======"
+           PERFORM   VARYING   IDX1    FROM   1  BY  1
+             UNTIL   IDX1     >   31
+             DISPLAY "IDX1 = "IDX1
+               DISPLAY "      ----5----0----5----0----5----0-"
+               DISPLAY "DAY = " WRK-SO-DAY-TBL(IDX1)
            END-PERFORM
       *
       *    療養レセコメントの同一剤まとめ処理
@@ -3074,6 +3087,9 @@
                                      LNK-NYURECEDEN-HKNCOMBI(1 IDX2)
                      MOVE  WRK-SO-MEISAISU(IDX1)   TO
                                      LNK-NYURECEDEN-MEISAISU(1 IDX2)
+                     MOVE  WRK-SO-DAY-TBL(IDX1)    TO
+                                     LNK-NYURECEDEN-DAY-TBL(1 IDX2)
+      *
                      PERFORM   VARYING   IDX3   FROM   1   BY  1
                                UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
                                   OR (IDX3   >   20)
@@ -3429,6 +3445,8 @@
                                      LNK-NYURECEDEN-HKNCOMBI(2 IDX2)
                      MOVE  WRK-SO-MEISAISU(IDX1)   TO
                                      LNK-NYURECEDEN-MEISAISU(2 IDX2)
+                     MOVE  WRK-SO-DAY-TBL(IDX1)    TO
+                                     LNK-NYURECEDEN-DAY-TBL(2 IDX2)
                      PERFORM   VARYING   IDX3   FROM   1   BY  1
                                UNTIL (WRK-SO-SRYCD(IDX1 IDX3) = SPACE)
                                   OR (IDX3   >   20)
