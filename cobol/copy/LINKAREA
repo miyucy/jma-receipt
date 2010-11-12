@@ -33,7 +33,7 @@
       ***    03  FILLER                PIC X(200000).
       ***    03  FILLER                PIC X(502000).
       ***    03  FILLER                PIC X(514400).
-             03  FILLER                PIC X(620000).
+             03  LINKDATA-FILLER       PIC X(620000).
            02  LINKORCA              REDEFINES  LINKDATA-REDEFINE.
                04  LNK-KYOUTU          PIC X(20000).
                04  LNK-FREE.
