@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
+      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,49 +15,107 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
+      ******************************************************************
+      *    £Á£Ð£É¥ì¥¹¥Ý¥ó¥¹Í½Ìó¾ðÊó           COPY (CPACCPTXMLRES.INC)
+      ******************************************************************
         01  XML-APPOINTRES.
             02  APNTRES-OBJECT         PIC X(8).
             02  APNTRES-MODE           PIC S9(9)   BINARY.
             02  APNTRES-APPOINTRES.
-              03  APNTRES-INFORMATION-DATE    PIC X(8).
-              03  APNTRES-INFORMATION-TIME    PIC X(6).
-              03  APNTRES-API-RESULT   PIC X(2).
+      *       ¼Â»ÜÆü
+              03  APNTRES-INFORMATION-DATE    PIC X(10).
+      *       ¼Â»Ü»þ´Ö
+              03  APNTRES-INFORMATION-TIME    PIC X(8).
+      *       ÊÖµÑ¥³¡¼¥É
+              03  APNTRES-API-RESULT          PIC X(2).
+      *       ÊÖµÑ¥á¥Ã¥»¡¼¥¸
               03  APNTRES-API-RESULT-MSG      PIC X(100).
-              03  APNTRES-RESKEY  PIC X(100).
-              03  APNTRES-APPOINT-DATE        PIC X(8).
-              03  APNTRES-APPOINT-TIME        PIC X(4).
+      *
+              03  APNTRES-RESKEY              PIC X(100).
+      *       Í½ÌóÆü
+              03  APNTRES-APPOINT-DATE        PIC X(10).
+      *       Í½Ìó»þ´Ö
+              03  APNTRES-APPOINT-TIME        PIC X(8).
+      *       Í½Ìó£É£Ä
               03  APNTRES-APPOINT-ID          PIC X(5).
+      *       ¿ÇÎÅ²Ê
               03  APNTRES-APPOINT-DEP-CODE    PIC X(2).
+      *       ¿ÇÎÅ²ÊÌ¾¾Î
               03  APNTRES-APPOINT-DEP-NAME    PIC X(80).
+      *       ¥É¥¯¥¿¡¼¥³¡¼¥É
               03  APNTRES-APPOINT-DR-CODE     PIC X(5).
+      *       ¥É¥¯¥¿¡¼»áÌ¾
               03  APNTRES-APPOINT-DR-NAME     PIC X(80).
+      *       ¿ÇÎÅÆâÍÆ¶èÊ¬
+              03  APNTRES-APPOINT-DEP-INFO    PIC X(2).
+      *       Í½Ìó¶èÊ¬
+              03  APNTRES-APPOINT-INFO        PIC X(2).
+      *       Í½Ìó¥á¥â
               03  APNTRES-APPOINT-MEMO        PIC X(100).
+      *       ¿ÇÎÅÆâÍÆ¶èÊ¬
               03  APNTRES-PATIENT-INFOMATION.
+      *         ´µ¼ÔÈÖ¹æ
                 04  APNTRES-PATIENTID         PIC X(20).
+      *         ´µ¼Ô»áÌ¾
                 04  APNTRES-NAME              PIC X(100).
+      *         ´µ¼Ô¥«¥Ê»áÌ¾
                 04  APNTRES-KANANAME          PIC X(100).
-                04  APNTRES-BIRTHDAY          PIC X(8).
+      *         ÃÂÀ¸Æü
+                04  APNTRES-BIRTHDAY          PIC X(10).
+      *         À­ÊÌ
                 04  APNTRES-SEX               PIC X(1).
+      *         ¼«Âð¾ðÊó
                 04  APNTRES-ADDRESS-INFO.
+      *           Í¹ÊØÈÖ¹æ
                   05  APNTRES-HOME-ZIP-CODE   PIC X(7).
+      *           ½»½ê
                   05  APNTRES-HOME-ADDRESSES  PIC X(100).
-                04  APNTRES-INSURANCE-INFO          OCCURS  4 TIMES.
-                  05  APNTRES-MAIN-INSURANCE-CLASS    PIC X(10).
-                  05  APNTRES-MAIN-INSURANCE-NUMBER   PIC X(10).
-                  05  APNTRES-MAIN-INSURANCE-NAME PIC X(10).
-                  05  APNTRES-MAIN-MARK       PIC X(80).
-                  05  APNTRES-MAIN-NUMBER     PIC X(80).
-                  05  APNTRES-MAIN-CONTINUATION   PIC X(10).
-                  05  APNTRES-MAIN-ASSISTANCE PIC X(10).
-                  05  APNTRES-MAIN-FAMILY     PIC X(10).
-                  05  APNTRES-MAIN-POLICYHOLDER   PIC X(100).
-                  05  APNTRES-MAIN-START-DATE PIC X(10).
-                  05  APNTRES-MAIN-END-DATE   PIC X(10).
-                  05  APNTRES-PUBLIC-INSURANCE-INFO 
-                                              OCCURS  3 TIMES.
-                    06  APNTRES-INSURANCE-NUMBER    PIC X(10).
-                    06  APNTRES-INSURANCE-NAME  PIC X(10).
-                    06  APNTRES-PROVIDER-NUMBER PIC X(10).
-                    06  APNTRES-RECIPIENT-NUMBER    PIC X(10).
-                    06  APNTRES-INSURANCE-START-DATE    PIC X(10).
-                    06  APNTRES-INSURANCE-END-DATE  PIC X(10).
+      *         ÊÝ¸±¾ðÊó
+                04  APNTRES-INSURANCE-G.
+                  05  APNTRES-INSURANCE-INFO          OCCURS 20 TIMES.
+      *             ÊÝ¸±¤Î¼ïÎà
+                    06  APNTRES-MAIN-INSURANCE-CLASS   PIC X(03).
+      *             ÊÝ¸±¼ÔÈÖ¹æ
+                    06  APNTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
+      *             ÊÝ¸±¤Î¼ïÎàÌ¾¾Î
+                    06  APNTRES-MAIN-INSURANCE-NAME    PIC X(20).
+      *             µ­¹æ
+                    06  APNTRES-MAIN-MARK              PIC X(80).
+      *             ÈÖ¹æ
+                    06  APNTRES-MAIN-NUMBER            PIC X(80).
+      *             ·ÑÂ³¶èÊ¬
+                    06  APNTRES-MAIN-CONTINUATION      PIC X(01).
+      *             Êä½õ¶èÊ¬
+                    06  APNTRES-MAIN-ASSISTANCE        PIC X(01).
+      *             ËÜ¿Í²ÈÂ²¶èÊ¬
+                    06  APNTRES-MAIN-FAMILY            PIC X(01).
+      *             ÈïÊÝ¸±¼ÔÌ¾
+                    06  APNTRES-MAIN-POLICYHOLDER      PIC X(100).
+      *             Í­¸ú³«»ÏÆü
+                    06  APNTRES-MAIN-START-DATE        PIC X(10).
+      *             Í­¸ú½ªÎ»Æü
+                    06  APNTRES-MAIN-END-DATE          PIC X(10).
+      *             ¸øÈñ¾ðÊó
+                    06  APNTRES-PUBLIC-INSURANCE-INFO           
+                                              OCCURS  4 TIMES.
+      *               ¸øÈñ¤Î¼ïÎà
+                      07  APNTRES-INSURANCE-CLASS         PIC X(03).
+      *               ¸øÈñ¤Î¼ïÎàÌ¾¾Î
+                      07  APNTRES-INSURANCE-NAME          PIC X(20).
+      *               ÉéÃ´¼ÔÈÖ¹æ
+                      07  APNTRES-PROVIDER-NUMBER         PIC X(08).
+      *               ¼õµë¼ÔÈÖ¹æ
+                      07  APNTRES-RECIPIENT-NUMBER        PIC X(20).
+      *               Æþ±¡¡ÝÉéÃ´Î¨¡Ê³ä¡Ë
+                      07  APNTRES-RATE-ADMISSION          PIC X(04).
+      *               Æþ±¡¡Ý¸ÇÄê³Û
+                      07  APNTRES-MONEY-ADMISSION         PIC X(06).
+      *               ³°Íè¡ÝÉéÃ´Î¨¡Ê³ä¡Ë
+                      07  APNTRES-RATE-OUTPATIENT         PIC X(04).
+      *               ³°Íè¡Ý¸ÇÄê³Û
+                      07  APNTRES-MONEY-OUTPATIENT        PIC X(06).
+      *               Í­¸ú³«»ÏÆü
+                      07  APNTRES-INSURANCE-START-DATE    PIC X(10).
+      *               Í­¸ú½ªÎ»Æü
+                      07  APNTRES-INSURANCE-END-DATE      PIC X(10).
+      *
