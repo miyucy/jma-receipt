@@ -3,6 +3,8 @@ xml_appointreq {
 	mode	int;
 	appointreq {
 		Patient_ID			varchar(20);
+        	WholeName			varchar(100);
+        	WholeName_inKana		varchar(100);
 		Appointment_Date		varchar(10);
 		Appointment_Time		varchar(8);
 		Appointment_Id			varchar(5);
@@ -11,7 +13,5 @@ xml_appointreq {
 		Medical_Information		varchar(2);
 		Appointment_Information		varchar(2);
 		Appointment_Note		varchar(100);
-		Appointment_Name		varchar(100);
-		Appointment_Name_inKana		varchar(100);
 	};
 };

@@ -24,6 +24,10 @@
             02  APNTREQ-APPOINT.
       *       ´µ¼ÔÈÖ¹æ
               03  APNTREQ-PATIENTID    PIC X(20).
+      *       Í½Ìó»áÌ¾
+              03  APNTREQ-APPOINT-NAME     PIC X(100).
+      *       Í½Ìó¥«¥Ê»áÌ¾
+              03  APNTREQ-APPOINT-KANANAME PIC X(100).
       *       Í½ÌóÆü
               03  APNTREQ-APPOINT-DATE PIC X(10).
       *       Í½Ìó»þ´Ö
@@ -40,7 +44,3 @@
               03  APNTREQ-APPOINT-INFO PIC X(2).
       *       Í½Ìó¥á¥â
               03  APNTREQ-APPOINT-MEMO PIC X(100).
-      *       Í½Ìó»áÌ¾
-              03  APNTREQ-APPOINT-NAME     PIC X(100).
-      *       Í½Ìó¥«¥Ê»áÌ¾
-              03  APNTREQ-APPOINT-KANANAME PIC X(100).
