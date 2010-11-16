@@ -4459,6 +4459,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SYU-ZAITAKU         TO  SYUTTL-ZAITAKU
       *¿ÇÎÅ¶èÊ¬ÊÌµëÉÕ³°ÅÀ¿ô
            MOVE    SYU-KYUFUGAI        TO  SYUTTL-KYUFUGAI
+      *ÊÝ¸±Å¬ÍÑ¶èÊ¬
+           MOVE    SYU-HKNTEKKBN       TO  SYUTTL-HKNTEKKBN
       *
       *    ÅÁÉ¼¾õÂÖ¶èÊ¬
            IF      SYUTTL-SKYMONEY     >   SYUTTL-NYUKIN-TOTAL

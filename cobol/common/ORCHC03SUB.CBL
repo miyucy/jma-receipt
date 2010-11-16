@@ -330,6 +330,13 @@
                PERFORM 2001-TEISEI-SYORI-SEC
       *        º˝«º ‘Ω∏
                ADD     1                   TO  IDX-TBL
+      *!!!
+      *        •ﬁ•Îƒπ§Œ∏¯»Ò…È√¥§Ú ›∏±≈¨Õ—∂‚≥€§ÿ
+               IF      SYU-HKNTEKKBN   =   "1"
+                   MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
+                   MOVE    ZERO                TO  SYU-KOH-FTN
+               END-IF
+      *!!!
                MOVE    SYUNOU-REC          TO  TBL-SYUNOU-REC(IDX-TBL)
                MOVE    WRK-SKYMONEY        TO  TBL-SKYMONEY  (IDX-TBL)
                MOVE    WRK-SKYMONEY-TAX
@@ -535,6 +542,13 @@
            MOVE    "tbl_syutotal"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!!!
+      *    •ﬁ•Îƒπ§Œ∏¯»Ò…È√¥§Ú ›∏±≈¨Õ—∂‚≥€§ÿ
+           IF      SYUTTL-HKNTEKKBN    =   "1"
+               MOVE    SYUTTL-KOH-FTN      TO  SYUTTL-HKNTEKMONEY
+               MOVE    ZERO                TO  SYUTTL-KOH-FTN
+           END-IF
+      *!!!
       *
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
@@ -599,6 +613,8 @@
            MOVE    SYUTTL-ZAITAKU      TO  SYU-ZAITAKU
       *ø«Œ≈∂Ë ¨ ÃµÎ…’≥∞≈¿øÙ
            MOVE    SYUTTL-KYUFUGAI     TO  SYU-KYUFUGAI
+      * ›∏±≈¨Õ—∂Ë ¨
+           MOVE    SYUTTL-HKNTEKKBN    TO  SYU-HKNTEKKBN
       *
       *    ∆±ª˛∆˛Œœø«Œ≈≤ 
            PERFORM VARYING     IDH2    FROM    1   BY  1

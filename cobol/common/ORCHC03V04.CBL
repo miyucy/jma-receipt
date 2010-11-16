@@ -1035,6 +1035,13 @@
            MOVE    ORCHC03-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-KEN-SEC
       *
+      *!!!
+      *    マル長の公費負担を保険適用金額へ
+           IF      SYU-HKNTEKKBN   =   "1"
+               MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
+               MOVE    ZERO                TO  SYU-KOH-FTN
+           END-IF
+      *!!!
       *    見出し合計編集処理
            PERFORM 21001-HAED-KEISAN-SEC
       *    見出し編集処理

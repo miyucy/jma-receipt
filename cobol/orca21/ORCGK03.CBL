@@ -70,6 +70,7 @@
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/08/02  Æþ±¡Ì¤¼ý³ÛÊÑ¹¹
       *                                     Ì¤¼ý³Û¡¦²áÆþ¶â³ÛÈ¿±ÇÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/05  È¯¹ÔÆüÊÑ¹¹ÂÐ±þ
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/16  ¥Þ¥ëÄ¹ÉéÃ´³Û¤òÊÝ¸±ÉéÃ´³ÛÈ¿±Ç
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1431,7 +1432,9 @@
            MOVE    SYU-HKNTEKMONEY     TO  SPA-GMN-HKNTEKI
       *    Ï·¿Í°ìÉôÉéÃ´¶â
            MOVE    SYU-RJN-FTN         TO  SPA-GMN-ROUFTN
+      *    ¸øÈñ°ìÉôÉéÃ´
            MOVE    SYU-KOH-FTN         TO  SPA-GMN-KOHFTN
+      *
       *    ¼«Èñ£±
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
@@ -1879,6 +1882,12 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SYUNOU-MAX
                MOVE    SPA-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
+      *        ¥Þ¥ëÄ¹¤Î¸øÈñÉéÃ´¤òÊÝ¸±Å¬ÍÑ¶â³Û¤Ø
+               IF      WRK-SYU-HKNTEKKBN   =   "1"
+                   MOVE    WRK-SYU-KOH-FTN     TO  WRK-SYU-HKNTEKMONEY
+                   MOVE    ZERO                TO  WRK-SYU-KOH-FTN
+               END-IF
+      *
                IF      SPA-GMN-HKNCOMBI    =   "0000"
                    IF       SPA-GMN-SRYKA      =   WRK-SYU-SRYKA
       *                ½¸·×
@@ -2016,6 +2025,7 @@
            ADD     WRK-SYU-TAX-TAISHOU TO  SYU-TAX-TAISHOU
            ADD     WRK-SYU-TAX-MONEY   TO  SYU-TAX-MONEY
            ADD     WRK-SYU-SKYGK       TO  SYU-SKYGK
+      *    ÊÝ¸±Å¬ÍÑ¶â³Û
            ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
            ADD     WRK-SYU-SHOHOU-SAI  TO  SYU-SHOHOU-SAI
            PERFORM VARYING     IDS1    FROM    1   BY  1
