@@ -1541,6 +1541,10 @@
            MOVE    WRK-YYKID           TO  APNTRES-APPOINT-ID
       *    予約区分
            MOVE    WRK-YYKNAIYO        TO  APNTRES-APPOINT-INFO
+      *    予約日＜システム日付
+           IF      WRK-APPOINT-YMD     <   SPA-SYSYMD
+               MOVE    "K5"            TO  WRK-KEICD
+           END-IF
       *
       *    明細レコード追加
            MOVE    SPACE               TO  YYK-REC
@@ -2089,6 +2093,12 @@
            WHEN    "K4"
                STRING  "警告！"
                        "予約枠の最大件数以上登録。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+               END-STRING
+           WHEN    "K5"
+               STRING  "警告！"
+                       "予約日＜システム日付です"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
