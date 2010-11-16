@@ -1,4 +1,5 @@
-#!/usr/bin/ruby # print_parent2.rb のプレビュー用対応 
+#!/usr/bin/ruby 
+# print_parent2.rb のプレビュー用対応 
 # 文字列の改行区切りで配列にして、それを引数のプログラムに渡す処理 
 # (2002/03/07 竹田氏追加依頼) 
 # 引数指定のものを、一部dataファイルに含めるように変更(2002/04/16 :竹田氏依頼 :曳野対応) 
@@ -20,7 +21,13 @@
 # (2007/12/27 ) patch-lib 対応
 # (2008/07/30 ) 労災、自賠枠なし対応
 # (2008/11/12 ) レイアウトオプション対応
+# (2010/11/08 ) クライアント印刷対応
 #
+
+# クライアント印刷用(複数ps をまとめる)
+$:.unshift(File.dirname(__FILE__))
+require "monpeps"
+
 
 # ※複数のプロセスの実行はできない
 # For Debug st
@@ -104,6 +111,9 @@ RED_EXEC = 'red2ps'
 # .redファイルで、LP名を省略された際に使用するプリンタ名
 DEFAULT_LP = 'lp1'
 
+# クライアント印刷用(複数ps をまとめる)
+Print_Area = []
+PDF = "ps2pdf"
 
 
 # ============================================================
@@ -578,6 +588,7 @@ end
 				puts	'出力ファイル名未設定'
 			else
 				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name + ' ' + LAYEROPTION
+				Print_Area.push(psfile_name)
 			end
 		when	'4'     # PSファイル出力の指示
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
@@ -585,6 +596,15 @@ end
 				puts	'出力ファイル名未設定'
 			else
 				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name + ' ' + LAYEROPTION
+			end
+		when	'5'     # クライアント印刷指示
+		puts	'take3 Start [' + psfile_name + ']'
+			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
+			if psfile_name == ''
+				puts	'出力ファイル名未設定'
+			else
+				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name + ' ' + LAYEROPTION
+				Print_Area.push(psfile_name)
 			end
 		else
 			puts	'出力区分内容設定エラー'
@@ -608,6 +628,11 @@ end
 # **
 		# 実行前メッセージ出力
 		puts	'Print Start [' + String(li_cnt1) + ']'
+#クライアント印刷処理
+		if (li_cnt1 == 1)
+			ADD_File=psfile_name[-5..-1]
+		end
+#
 		# プログラムの実行
 		pid = fork do
 			exec w_exec
@@ -762,7 +787,20 @@ end
 
 	end
 end
-
+#クライアント印刷処理
+        case    prt_flg
+        when    '5'     # PSファイル出力の指示
+#		PS_File="/tmp/" + File.basename(psfile_name).gsub(/[0-9]{5}$/, "00000.ps")
+		PS_File="/tmp/" + File.basename(psfile_name) + ADD_File + ".ps"
+		puts PS_File
+#		PDF_File="/tmp/" + File.basename(psfile_name).gsub(/[0-9]{5}$/, "00000.pdf")
+		PDF_File="/tmp/" + File.basename(psfile_name) + ADD_File + ".pdf"
+		API_File=PDF_File.sub("pdf","api")
+		MONPEPS::merge_ps(PS_File,Print_Area)
+		system(PDF,PS_File, PDF_File)
+		api_file = File.open(API_File,'w')
+		api_file.close
+	end
 
 
 	puts '[end ' + `date` + ']'

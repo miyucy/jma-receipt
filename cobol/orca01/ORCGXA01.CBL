@@ -40,6 +40,7 @@
       *  04.05.01    NACL-藤原    10/04/30  削除後の画面表示の修正
       *
       *  04.06.01    NACL-藤原    10/08/18  一括入力対応
+      *  04.06.02    NACL-竹田    10/11/02  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -263,6 +264,7 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+           COPY    "ORCA-SYSTEM".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -280,6 +282,7 @@
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
            COPY    "XAID2.INC".
+           COPY    "XAPRT.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -324,6 +327,16 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-XA01        TO  SPA-FREE
       *
+           EVALUATE    SPA-MOTOPG
+      *    クライアント印刷処理
+               WHEN    "XA99" 
+                 IF  XA99-COUNT        >  ZERO  
+                     DISPLAY "X99 return"
+      *              PERFORM 600-CLIENT-PRINT
+                 END-IF
+           END-EVALUATE 
+           DISPLAY "XA01-PRTPATH(01) = " XA01-PRTPATH(01)
+           DISPLAY "XA99-MSG = " XA99-MSG
            .
            EXIT    PROGRAM.
            .
@@ -343,10 +356,16 @@
                    GO  TO  100-INIT-EXT
                END-IF
       *        画面編集
+           DISPLAY "SPA-MOTOPG = " SPA-MOTOPG
                PERFORM 500-GMNHEN-SEC
+               DISPLAY "500-gmn start"
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
+               END-IF
+               IF  SPA-MOTOPG      =   "XA99"
+                     DISPLAY "client prt start"
+                   PERFORM 600-CLIENT-PRINT
                END-IF
            END-IF
       *
@@ -373,6 +392,7 @@
       *    作表処理
                WHEN    "XA99" 
                    PERFORM 340-XA99-SET-SEC
+            DISPLAY "X99 back"
                    GO      TO      300-SCREEN-EXT
                WHEN    "XAID1"
                    PERFORM 330-XAID1-SET-SEC
@@ -564,6 +584,12 @@
                END-EVALUATE
            ELSE        
                MOVE    SPACE           TO  SPA-XAID1-FLG
+           END-IF
+      *
+           IF      SPA-XAID1-FLG        =   "CP"
+               DISPLAY "client print start"
+               MOVE 'orca01/print?filename=1.pdf' TO XA01-PRTPATH(01)
+               MOVE 'テスト'                     TO XA01-PRTTITLE(01)
            END-IF
       *
            MOVE    SPACE           TO  SPA-XA99-FLG
@@ -1480,6 +1506,8 @@
            EVALUATE    SPA-XAID1-FLG
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "CP"
+                   MOVE    "5"             TO  SHELLTBL-ARG17
                WHEN    "NO"
                    MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
@@ -1989,6 +2017,91 @@
       *
            .
        530-XAID2SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     クライアント印刷処理
+      *****************************************************************
+       600-CLIENT-PRINT            SECTION.
+      *
+           IF  XA99-COUNT        =  ZERO  
+               GO  TO            600-CLIENT-PRINT-EXT
+           END-IF
+           DISPLAY "SPA-NAI-SELNUM = " SPA-NAI-SELNUM
+           DISPLAY "LNK-XC01-ST-PAGE = "  LNK-XC01-ST-PAGE
+           DISPLAY "LNK-XC01-ED-PAGE = "  LNK-XC01-ED-PAGE
+           DISPLAY "SPA-GMN-STPAGE = "  SPA-GMN-STPAGE
+           DISPLAY "SPA-GMN-STPAGE = "  SPA-GMN-EDPAGE
+      *    AGENT 取得
+           INITIALIZE                      ORCA-SYSTEM
+           MOVE    "GETVALUE"          TO  MCP-FUNC
+           MOVE    MCP-TERM            TO  ORCA-SYSTEM-ID
+           MOVE    10                  TO  ORCA-SYSTEM-NUM
+           MOVE    "agent"             TO  ORCA-SYSTEM-KEY(1)
+           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
+           MOVE    "system"      TO  MCP-TABLE
+           MOVE    "key"         TO  MCP-PATHNAME
+           CALL   "ORCDBMAIN"        USING
+                                     MCPAREA
+                                     MCPDATA-REC
+                                     SPA-AREA
+           IF    ( MCP-RC              =   ZERO    OR  1 )
+               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
+           ELSE
+               INITIALIZE                      ORCA-SYSTEM
+           END-IF
+      *
+           DISPLAY "SPA-PRTKANRI-TBL-KEY  = " SPA-PRTKANRI-TBL-KEY
+           DISPLAY "SPA-GMN-RENNUM    = " SPA-GMN-RENNUM
+           DISPLAY "SPA-GMN-SHORI-RENNUM    = " SPA-GMN-SHORI-RENNUM
+           DISPLAY "SPA-GMN-TBL-GROUP  = " SPA-GMN-TBL-GROUP
+           DISPLAY "LNK-XC01-RENNUM    = " LNK-XC01-RENNUM
+           DISPLAY "LNK-XC01-TBL-GROUP = " LNK-XC01-TBL-GROUP
+           IF    ORCA-SYSTEM-VALUE(1)(1:9) = "glclient/"
+                 STRING  "orca01/print?filename=" 
+                                           DELIMITED   BY  SIZE
+                         SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         SPA-PRTKANRI-TBL-KEY
+                                           DELIMITED   BY  SPACE
+                         SPA-GMN-RENNUM    DELIMITED   BY  SPACE
+                         SPA-GMN-TBL-GROUP DELIMITED   BY  SPACE
+                         SPA-GMN-SHORI-RENNUM 
+                                           DELIMITED   BY  SPACE
+                         SPA-GMN-EDPAGE
+                                           DELIMITED   BY  SPACE
+                         SPA-GMN-STPAGE
+                                           DELIMITED   BY  SPACE
+                         ".ps"
+                                           DELIMITED   BY  SIZE
+                 INTO    XA01-PRTPATH(01)
+                 END-STRING
+                     MOVE SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
+                                       TO XA01-PRTTITLE(01)
+           ELSE
+                 STRING  "orca01/print?filename=" 
+                                           DELIMITED   BY  SIZE
+                         SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         SPA-PRTKANRI-TBL-KEY
+                                           DELIMITED   BY  SPACE
+                         SPA-GMN-RENNUM    DELIMITED   BY  SPACE
+                         SPA-GMN-TBL-GROUP DELIMITED   BY  SPACE
+                         SPA-GMN-SHORI-RENNUM 
+                                           DELIMITED   BY  SPACE
+                         SPA-GMN-EDPAGE
+                                           DELIMITED   BY  SPACE
+                         SPA-GMN-STPAGE
+                                           DELIMITED   BY  SPACE
+                         ".pdf"
+                                           DELIMITED   BY  SIZE
+                 INTO    XA01-PRTPATH(01)
+                 END-STRING
+                     MOVE SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
+                                       TO XA01-PRTTITLE(01)
+           END-IF
+           DISPLAY "ORCA-SYSTEM-VALUE= " ORCA-SYSTEM-VALUE
+           DISPLAY "XA01-PRTPATH(01) = " XA01-PRTPATH(01)
+           . 
+       600-CLIENT-PRINT-EXT.
            EXIT.
       *
       *****************************************************************

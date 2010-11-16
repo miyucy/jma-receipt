@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-太田    03.07.03  タイマーイベント追加
       *  02.07.00    NACL-竹田    05/10/24  MONFUNC 対応
+      *  04.06.00    NACL-竹田    10/11/02  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -123,6 +124,7 @@
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
            COPY    "XAID2.INC".
+           COPY    "XAPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

@@ -80,6 +80,7 @@
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
            COPY    "XAID2.INC".
+           COPY    "XAPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -131,6 +132,10 @@
       *     プレビュー
                WHEN    "CLICKED"       ALSO    "B10"
                    MOVE    "PV"            TO  SPA-XAID1-FLG
+                   PERFORM 210-BACK
+      *     クライアント印刷
+               WHEN    "CLICKED"       ALSO    "B11"
+                   MOVE    "CP"            TO  SPA-XAID1-FLG
                    PERFORM 210-BACK
       *     登録
                WHEN    "CLICKED"       ALSO    "B12"
