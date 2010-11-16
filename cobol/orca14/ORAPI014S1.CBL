@@ -158,6 +158,8 @@
            COPY    "CPORCXKANACONV.INC".
       *
            COPY    "CPORCSKANACHK.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK2.INC".
       *    日付変換サブ
            COPY     "CPORCSGDAY.INC".
       *    排他制御サブパラメタ
@@ -800,7 +802,12 @@
       *        全角変換
                MOVE    WRK-NAME            TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-LEN
-               PERFORM 890-HALF-ZEN-SEC
+               IF      SPA-ENCODING        =   2
+      *            拡張漢字対応
+                   PERFORM 890-HALF-ZEN02-SEC
+               ELSE
+                   PERFORM 890-HALF-ZEN-SEC
+               END-IF
                MOVE    WRK-ATO-INPUT       TO  WRK-NAME
                IF      FLG-ERR             =   1
                    MOVE    "18"                TO  WRK-ERRCD
@@ -814,7 +821,12 @@
       *        全角変換
                MOVE    WRK-KANANAME        TO  WRK-MAE-INPUT
                MOVE    50                  TO  WRK-LEN
-               PERFORM 890-HALF-ZEN-SEC
+               IF      SPA-ENCODING        =   2
+      *            拡張漢字対応
+                   PERFORM 890-HALF-ZEN02-SEC
+               ELSE
+                   PERFORM 890-HALF-ZEN-SEC
+               END-IF
                MOVE    WRK-ATO-INPUT       TO  WRK-KANANAME
                IF      FLG-ERR             =   1
                    MOVE    "19"                TO  WRK-ERRCD
@@ -1914,6 +1926,30 @@
       *
            .
        890-HALF-ZEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    全角変換処理
+      *****************************************************************
+       890-HALF-ZEN02-SEC            SECTION.
+      *
+           INITIALIZE                  ORCSKANACHK2AREA
+           MOVE    "2"                 TO  KANACHK2-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK2-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK2-MAX-CNT
+           CALL    "ORCSKANACHK2"      USING
+                                       ORCSKANACHK2AREA
+           MOVE    KANACHK2-MAE-INPUT  TO  WRK-MAE-INPUT
+           IF     (KANACHK2-RC     NOT =   ZERO  )
+               MOVE    1                   TO  FLG-ERR
+               MOVE    KANACHK2-MAE-INPUT  TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    ZERO                TO  FLG-ERR
+               MOVE    KANACHK2-OUT-INPUT  TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       890-HALF-ZEN02-EXT.
            EXIT.
       *****************************************************************
       *    日付編集処理
