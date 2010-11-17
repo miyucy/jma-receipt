@@ -41,7 +41,7 @@
                05  SYS-5107-BTU-KNGSISUKBN-NM
                                         PIC  X(10).
       *Í½È÷
-           03                           PIC  X(490).
+           03  SYS-5107-YOBI            PIC  X(490).
       *Ã¼Ëö£É£Ä
            03  SYS-5107-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

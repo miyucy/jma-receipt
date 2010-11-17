@@ -46,7 +46,7 @@
                05  SYS-5112-KANSATUMEI2
                                         PIC  X(30).
       *Í½È÷
-               05                       PIC  X(401).
+               05  SYS-5121-YOBI        PIC  X(401).
       *Ã¼Ëö£É£Ä
            03  SYS-5112-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -40,7 +40,7 @@
       *病室種別名称
                05  SYS-5108-BRM-SBT-NM  PIC  X(20).
       *予備
-           03                           PIC  X(480).
+           03  SYS-5108-YOBI            PIC  X(480).
       *端末ＩＤ
            03  SYS-5108-TERMID          PIC  X(16).
       *オペーレータＩＤ

@@ -40,7 +40,7 @@
       *性別特定名称
                05  SYS-5109-BRM-SEX-NM  PIC  X(10).
       *予備
-           03                           PIC  X(490).
+           03  SYS-5109-YOBI            PIC  X(490).
       *端末ＩＤ
            03  SYS-5109-TERMID          PIC  X(16).
       *オペーレータＩＤ

@@ -44,7 +44,7 @@
                05  SYS-5106-BTU-YAKANKNGKSN-NM2
                                         PIC  X(10).
       *Í½È÷
-           03                           PIC  X(470).
+           03  SYS-5106-YOBI            PIC  X(470).
       *Ã¼Ëö£É£Ä
            03  SYS-5106-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -49,7 +49,7 @@
                05  SYS-5110-SEIKATU-RYOKBN
                                         PIC  X(01).
       *Í½È÷
-               05                       PIC  X(406).
+               05  SYS-5110-YOBI        PIC  X(406).
       *Ã¼Ëö£É£Ä
            03  SYS-5110-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

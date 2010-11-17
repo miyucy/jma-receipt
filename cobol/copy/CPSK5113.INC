@@ -41,7 +41,7 @@
                05  SYS-5113-BRM-SAGAKU-NM
                                         PIC  9(06).
       *Í½È÷
-           03                           PIC  X(494).
+           03  SYS-5113-YOBI            PIC  X(494).
       *Ã¼Ëö£É£Ä
            03  SYS-5113-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
