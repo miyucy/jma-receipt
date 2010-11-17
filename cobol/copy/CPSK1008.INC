@@ -71,7 +71,7 @@
            03  SYS-1008-CHUTOTENKAI-FLG    PIC X(01).
       *予備
       *****03  FILLER                   PIC X(04).
-           03  FILLER                   PIC X(01).
+           03  SYS-1008-YOBI1           PIC X(01).
       *外来カーソル移動
            03  SYS-1008-GAI-CURSOR-SET-1   PIC X(01).
       *入院初診料自動発生
@@ -134,7 +134,7 @@
       *****03  FILLER                   PIC X(450).
       *****03  FILLER                   PIC X(449).
       **** 03  FILLER                   PIC X(445).
-           03  FILLER                   PIC X(440).
+           03  SYS-1008-YOBI2           PIC X(440).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ

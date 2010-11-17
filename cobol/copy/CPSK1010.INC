@@ -59,7 +59,7 @@
                05  SYS-1010-HKNDRNUMK   PIC  X(12).
       *専門科コード
                05  SYS-1010-SEMONKACD  OCCURS  5.
-                   07                   PIC  X(02).
+                   07  SYS-1010-SEMONKACD-X  PIC  X(02).
       *業務処理権限
                05  SYS-1010-GSRAUTH     PIC  X(70).
       *管理者権限フラグ
@@ -95,7 +95,7 @@
       *****03                           PIC  X(174).
       *****03                           PIC  X(168).
       *****03                           PIC  X(06).
-           03                           PIC  X(05).
+           03  SYS-1010-YOBI            PIC  X(05).
       *端末ＩＤ
            03  SYS-1010-TERMID          PIC  X(16).
       *オペーレータＩＤ

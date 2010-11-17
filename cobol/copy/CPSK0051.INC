@@ -39,7 +39,7 @@
            03  SYS-0051-TBL.
                05  SYS-0051-YYKKAKNAME  PIC  X(40).
       *Í½È÷
-           03                           PIC  X(460).
+           03  SYS-0051-YOBI            PIC  X(460).
       *Ã¼Ëö£É£Ä
            03  SYS-0051-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

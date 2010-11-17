@@ -40,7 +40,7 @@
       *最大伝票番号
                05  SYS-0041-DENPNUMMAX  PIC  9(08).
       *予備
-           03                           PIC  X(492).
+           03  SYS-0041-YOBI            PIC  X(492).
       *端末ＩＤ
            03  SYS-0041-TERMID          PIC  X(16).
       *オペーレータＩＤ
