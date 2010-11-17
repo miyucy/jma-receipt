@@ -1417,7 +1417,7 @@
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM 410-PRINT-SET-SEC
                END-IF
-      *    出力設定複写
+      *    出力設定貼付
            WHEN    "CLICKED"       ALSO    "B06"
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM 410-SELNUMSET-SYORI-SEC
@@ -2360,6 +2360,17 @@
                PERFORM 4901-KANRENCHK-SEC
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-USERKBN     NOT =   "*" )   AND
+                    (( SPA-GMN-TPRTNM (4)  NOT =
+                                           SPA-NAI-TPRTNM(4) ) OR
+                     ( SPA-GMN-TPRTNM (5)  NOT =
+                                           SPA-NAI-TPRTNM(5) ))
+                   MOVE    "0016"          TO  SPA-ERRCD
+                   MOVE    SPA-NAI-TPRTNM(4)   TO  SPA-GMN-TPRTNM (4)
+                   MOVE    SPA-NAI-TPRTNM(5)   TO  SPA-GMN-TPRTNM (5)
+               END-IF
+           END-IF
            IF      SPA-ERRCD        =   SPACE
                MOVE    "1001"           TO  SPA-WIDCD
            END-IF
@@ -2409,10 +2420,8 @@
       *****************************************************************
        410-PRINT-SET-SEC           SECTION.
       *
-           IF      SPA-W01-KANRICD      =   "1031"
-               IF      SPA-ERRCD        =   SPACE
-                    MOVE    "1003"           TO  SPA-WIDCD
-               END-IF
+           IF      SPA-ERRCD        =   SPACE
+               MOVE    "1003"           TO  SPA-WIDCD
            END-IF
            .
        410-PRINT-SET-EXT.
@@ -3680,7 +3689,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "1031"
                MOVE    "設定コピー"            TO  W11-B04-LABEL
                MOVE    "設定一括"              TO  W11-B05-LABEL
-               MOVE    "設定複写"              TO  W11-B06-LABEL
+               MOVE    "設定貼付"              TO  W11-B06-LABEL
                MOVE    "タブ切替"              TO  W11-B08-LABEL
                MOVE    "オフセット"            TO  W11-B09-LABEL
                MOVE    "印字テスト"            TO  W11-B10-LABEL
@@ -4050,6 +4059,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0015"
                    MOVE    "複写する情報がありません"
                                                       TO  SPA-ERRMSG
+               WHEN    "0016"
+                   STRING  "診療報酬明細書と総括表は" DELIMITED BY SIZE
+                   "ユーザー設定ができません。"       DELIMITED BY SIZE
+                   "標準のプリンタ名に戻します。"     DELIMITED BY SIZE
+                                                      INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "3001"  THRU    "3999"
                    MOVE    "削除処理に失敗しました"
                                                       TO  SPA-ERRMSG

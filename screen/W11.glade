@@ -166,7 +166,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 23:57:24 GMT</last_modification_time>
       </signal>
-      <label>設定複写</label>
+      <label>設定貼付</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
