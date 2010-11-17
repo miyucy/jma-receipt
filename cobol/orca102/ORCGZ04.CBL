@@ -4493,6 +4493,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                            STS-AREA-DAY
            EVALUATE  WRK-LNKYMD(1:8)
+               WHEN  SPACE
                WHEN  ZERO 
                WHEN  "99999999"
                    MOVE    WRK-LNKYMD            TO  WRK-HENYMDG
