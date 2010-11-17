@@ -44,7 +44,7 @@
            03  BRPARA-INFO-PARA-X       REDEFINES    BTPARA-INFO-PARA.
                05  BTPARA-INFO-PTID     PIC 9(10).
                05  BTPARA-INFO-PTNUM    PIC X(20).
-               05  FILLER               PIC X(470).
+               05  BTPARA-FILLER        PIC X(470).
       *Ã¼Ëö£É£Ä
            03  BTPARA-TERMID            PIC X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
