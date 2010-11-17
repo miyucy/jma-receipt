@@ -29,15 +29,15 @@
            03  PGKANRIC-SYSTEMVERSION       PIC  X(10).
       *プログラム番号
            03  PGKANRIC-PGNO                PIC  X(03).
-           03  FILLER                       PIC  X(01).
+           03  PGKANRIC-YOBI1               PIC  X(01).
       *リリース年月日
            03  PGKANRIC-RELEASEYMD          PIC  X(08).
-           03  FILLER                       PIC  X(01).
+           03  PGKANRIC-YOBI2               PIC  X(01).
       *プログラム名
            03  PGKANRIC-PGNAME              PIC  X(32).
       *再起動フラグ
            03  PGKANRIC-RESTARTFLG          PIC  X(01).
-           03  FILLER                       PIC  X(01).
+           03  PGKANRIC-YOBI3               PIC  X(01).
       *インストール位置
            03  PGKANRIC-INSTALLDIR          PIC  X(64).
       *内容

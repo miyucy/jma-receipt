@@ -46,7 +46,7 @@
       *        プログラム識別番号
                05  COLDAT91-PRGSKBNO       PIC  X(08).
       *
-               05  FILLER                  PIC  X(68).
+               05  COLDAT91-YOBI1          PIC  X(68).
            03  COLDAT91-BODY-2             REDEFINES
                                            COLDAT91-BODY-1.
       *        診療科コード
@@ -56,13 +56,13 @@
       *        診療科名
                05  COLDAT91-SRYKANAME      PIC  X(40).
       *
-               05  FILLER                  PIC  X(75).
+               05  COLDAT91-YOBI2          PIC  X(75).
            03  COLDAT91-BODY-3             REDEFINES
                                            COLDAT91-BODY-1.
       *        施設基準コード
                05  COLDAT91-SSTKIJUNCD     PIC  9(03).
       *
-               05  FILLER                  PIC  X(116).
+               05  COLDAT91-YOBI3          PIC  X(116).
            03  COLDAT91-BODY-4             REDEFINES
                                            COLDAT91-BODY-1.
       *        保険番号
