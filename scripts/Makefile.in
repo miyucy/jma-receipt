@@ -120,6 +120,7 @@ ruby_scripts = \
 	monthly/lib/orcadas/utils.rb \
 	allways/program_upgrade_patchmd5.rb \
 	allways/program_upgrade_verify.rb \
+	daily/monpeps.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \

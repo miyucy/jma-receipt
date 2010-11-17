@@ -331,12 +331,10 @@
       *    クライアント印刷処理
                WHEN    "XA99" 
                  IF  XA99-COUNT        >  ZERO  
-                     DISPLAY "X99 return"
+                     CONTINUE
       *              PERFORM 600-CLIENT-PRINT
                  END-IF
            END-EVALUATE 
-           DISPLAY "XA01-PRTPATH(01) = " XA01-PRTPATH(01)
-           DISPLAY "XA99-MSG = " XA99-MSG
            .
            EXIT    PROGRAM.
            .
@@ -356,15 +354,12 @@
                    GO  TO  100-INIT-EXT
                END-IF
       *        画面編集
-           DISPLAY "SPA-MOTOPG = " SPA-MOTOPG
                PERFORM 500-GMNHEN-SEC
-               DISPLAY "500-gmn start"
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
                IF  SPA-MOTOPG      =   "XA99"
-                     DISPLAY "client prt start"
                    PERFORM 600-CLIENT-PRINT
                END-IF
            END-IF
@@ -392,7 +387,6 @@
       *    作表処理
                WHEN    "XA99" 
                    PERFORM 340-XA99-SET-SEC
-            DISPLAY "X99 back"
                    GO      TO      300-SCREEN-EXT
                WHEN    "XAID1"
                    PERFORM 330-XAID1-SET-SEC
@@ -587,7 +581,6 @@
            END-IF
       *
            IF      SPA-XAID1-FLG        =   "CP"
-               DISPLAY "client print start"
                MOVE 'orca01/print?filename=1.pdf' TO XA01-PRTPATH(01)
                MOVE 'テスト'                     TO XA01-PRTTITLE(01)
            END-IF
@@ -2027,11 +2020,6 @@
            IF  XA99-COUNT        =  ZERO  
                GO  TO            600-CLIENT-PRINT-EXT
            END-IF
-           DISPLAY "SPA-NAI-SELNUM = " SPA-NAI-SELNUM
-           DISPLAY "LNK-XC01-ST-PAGE = "  LNK-XC01-ST-PAGE
-           DISPLAY "LNK-XC01-ED-PAGE = "  LNK-XC01-ED-PAGE
-           DISPLAY "SPA-GMN-STPAGE = "  SPA-GMN-STPAGE
-           DISPLAY "SPA-GMN-STPAGE = "  SPA-GMN-EDPAGE
       *    AGENT 取得
            INITIALIZE                      ORCA-SYSTEM
            MOVE    "GETVALUE"          TO  MCP-FUNC
@@ -2051,12 +2039,6 @@
                INITIALIZE                      ORCA-SYSTEM
            END-IF
       *
-           DISPLAY "SPA-PRTKANRI-TBL-KEY  = " SPA-PRTKANRI-TBL-KEY
-           DISPLAY "SPA-GMN-RENNUM    = " SPA-GMN-RENNUM
-           DISPLAY "SPA-GMN-SHORI-RENNUM    = " SPA-GMN-SHORI-RENNUM
-           DISPLAY "SPA-GMN-TBL-GROUP  = " SPA-GMN-TBL-GROUP
-           DISPLAY "LNK-XC01-RENNUM    = " LNK-XC01-RENNUM
-           DISPLAY "LNK-XC01-TBL-GROUP = " LNK-XC01-TBL-GROUP
            IF    ORCA-SYSTEM-VALUE(1)(1:9) = "glclient/"
                  STRING  "orca01/print?filename=" 
                                            DELIMITED   BY  SIZE
@@ -2098,8 +2080,6 @@
                      MOVE SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
                                        TO XA01-PRTTITLE(01)
            END-IF
-           DISPLAY "ORCA-SYSTEM-VALUE= " ORCA-SYSTEM-VALUE
-           DISPLAY "XA01-PRTPATH(01) = " XA01-PRTPATH(01)
            . 
        600-CLIENT-PRINT-EXT.
            EXIT.
