@@ -623,6 +623,11 @@
       *
            PERFORM 900-SYUNOU-KEY-SEL-SEC
       *
+           IF    ( SYU-HKNTEKKBN       =   "1" )
+               MOVE    SYU-KOH-FTN     TO  SYU-HKNTEKMONEY
+               MOVE    ZERO            TO  SYU-KOH-FTN
+           END-IF
+      *
            MOVE    SYU-DENPPRTYMD      TO  SPA-NAI-O04-DENPPRTYMD
            MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-O04-HEAD-DENPJTIKBN
            MOVE    SYU-SYUHKNNUM       TO  SPA-NAI-O04-HKNNUM

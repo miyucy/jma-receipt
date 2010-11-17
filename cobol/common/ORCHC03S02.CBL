@@ -1180,6 +1180,11 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           IF    ( SYU-HKNTEKKBN       =   "1" )
+               MOVE    SYU-KOH-FTN     TO  SYU-HKNTEKMONEY
+               MOVE    ZERO            TO  SYU-KOH-FTN
+           END-IF
+      *
            .
       *
        900-SYUNOU-KEY-SEL-EXT.

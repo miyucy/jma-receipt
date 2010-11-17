@@ -976,6 +976,11 @@
                GO  TO  3101-SYUNOU-SET-EXT
            END-IF
       *
+           IF    ( SYU-HKNTEKKBN       =   "1" )
+               MOVE    SYU-KOH-FTN     TO  SYU-HKNTEKMONEY
+               MOVE    ZERO            TO  SYU-KOH-FTN
+           END-IF
+      *
       *    ©гнег╞╥Н
            MOVE    SYU-SRYYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC

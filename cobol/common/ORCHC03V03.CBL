@@ -2343,6 +2343,11 @@
                MOVE    1               TO  FLG-SYUNOU
            END-IF
       *
+           IF    ( SYU-HKNTEKKBN       =   "1" )
+               MOVE    SYU-KOH-FTN     TO  SYU-HKNTEKMONEY
+               MOVE    ZERO            TO  SYU-KOH-FTN
+           END-IF
+      *
            .
        980-SYUNOU-READ-EXT.
            EXIT.

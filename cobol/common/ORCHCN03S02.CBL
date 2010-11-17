@@ -439,6 +439,11 @@
       *****************************************************************
        2001-SUM-SYUNOU-SEC             SECTION.
       *
+           IF    ( SYU-HKNTEKKBN       =   "1" )
+               MOVE    SYU-KOH-FTN     TO  SYU-HKNTEKMONEY
+               MOVE    ZERO            TO  SYU-KOH-FTN
+           END-IF
+      *
            COMPUTE CNT-SYU =   CNT-SYU +   1
       *
            IF    ( CNT-SYU =   1 )

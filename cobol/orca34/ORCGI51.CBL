@@ -1892,6 +1892,13 @@
                    OR    ( SUMSYUNOU-CNT    >=  13 )
                    OR    ( LNK-SYU-SKYSTYMD (IDX11)    =   SPACE )
       *
+      *
+               IF    ( LNK-SYU-HKNTEKKBN (IDX11)      =   "1" )
+                   MOVE    LNK-SYU-KOH-FTN (IDX11)
+                                   TO  LNK-SYU-HKNTEKMONEY (IDX11)
+                   MOVE    ZERO    TO  LNK-SYU-KOH-FTN (IDX11)
+               END-IF
+      *
                IF    ( LNK-SYU-SKYSTYMD (IDX11) (1 : 6)
                                    NOT =   WRK-SKYSTYM )
       *

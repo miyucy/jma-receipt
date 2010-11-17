@@ -730,6 +730,15 @@
                =   TTLSYU-HKNTEKMONEY
                +   KONSYU-HKNTEKMONEY (IDX-KON)
       *
+           IF    ( KONSYU-HKNTEKKBN  (IDX-KON) =   "1" )
+               COMPUTE SUMSYU-HKNTEKMONEY (IDX-SUM)
+                   =   SUMSYU-HKNTEKMONEY (IDX-SUM)
+                   +   KONSYU-KOH-FTN  (IDX-KON)
+               COMPUTE TTLSYU-HKNTEKMONEY
+                   =   TTLSYU-HKNTEKMONEY
+                   +   KONSYU-KOH-FTN  (IDX-KON)
+           END-IF
+      *
       *    戏客办婶砷么垛
            COMPUTE SUMSYU-RJN-FTN  (IDX-SUM)
                =   SUMSYU-RJN-FTN  (IDX-SUM)
@@ -739,12 +748,14 @@
                +   KONSYU-RJN-FTN  (IDX-KON)
       *
       *    给锐办婶砷么垛
-           COMPUTE SUMSYU-KOH-FTN  (IDX-SUM)
-               =   SUMSYU-KOH-FTN  (IDX-SUM)
-               +   KONSYU-KOH-FTN  (IDX-KON)
-           COMPUTE TTLSYU-KOH-FTN
-               =   TTLSYU-KOH-FTN
-               +   KONSYU-KOH-FTN  (IDX-KON)
+           IF    ( KONSYU-HKNTEKKBN  (IDX-KON) =   SPACE )
+               COMPUTE SUMSYU-KOH-FTN  (IDX-SUM)
+                   =   SUMSYU-KOH-FTN  (IDX-SUM)
+                   +   KONSYU-KOH-FTN  (IDX-KON)
+               COMPUTE TTLSYU-KOH-FTN
+                   =   TTLSYU-KOH-FTN
+                   +   KONSYU-KOH-FTN  (IDX-KON)
+           END-IF
       *
       *    极锐
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1

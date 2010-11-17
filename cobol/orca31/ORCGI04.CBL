@@ -1711,6 +1711,10 @@
            MOVE    SPA-I0-SYUNOU-DAT (WRK-LST-IDX)
                                        TO  WKSYUNOU-REC
       *
+           IF    ( WKSYU-HKNTEKKBN     =   "1" )
+               MOVE    WKSYU-KOH-FTN   TO  WKSYU-HKNTEKMONEY
+               MOVE    ZERO            TO  WKSYU-KOH-FTN
+           END-IF
       *
       *     ›∏±Œ¡
            PERFORM VARYING     IDX1     FROM    1   BY  1
