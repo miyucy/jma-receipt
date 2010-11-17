@@ -50,7 +50,7 @@
                    07  SYS-1014-SRYKBN-KBN   PIC X(01)
                                              OCCURS   50.
       *Í½È÷
-           03                           PIC  X(446).
+           03  SYS-1014-YOBI            PIC  X(446).
       *Ã¼Ëö£É£Ä
            03  SYS-1014-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

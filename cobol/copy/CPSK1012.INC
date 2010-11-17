@@ -44,7 +44,7 @@
       *診療内容初期表示区分
                05  SYS-1012-SRYNAIYOHYOJI    PIC  X(01).
       *予備
-           03                           PIC  X(435).
+           03  SYS-1012-YOBI            PIC  X(435).
       *端末ＩＤ
            03  SYS-1012-TERMID          PIC  X(16).
       *オペーレータＩＤ

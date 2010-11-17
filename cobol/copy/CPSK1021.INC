@@ -40,7 +40,7 @@
       *分類名
                05  SYS-1021-BUNRUINAME  PIC  X(80).
       *予備
-           03                           PIC  X(420).
+           03  SYS-1021-YOBI            PIC  X(420).
       *端末ＩＤ
            03  SYS-1021-TERMID          PIC  X(16).
       *オペーレータＩＤ

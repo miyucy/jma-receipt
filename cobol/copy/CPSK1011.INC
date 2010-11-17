@@ -45,7 +45,7 @@
       *Í½È÷
                    07  SYS-1011-YOBI1       PIC  X(02).
       *Í½È÷
-           03  FILLER                   PIC  X(280).
+           03  SYS-1011-YOBI2           PIC  X(280).
       *Ã¼Ëö£É£Ä
            03  SYS-1011-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

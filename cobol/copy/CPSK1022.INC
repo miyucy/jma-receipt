@@ -41,7 +41,7 @@
                05  SYS-1022-BYOMEICD   OCCURS 6
                                         PIC  X(05).
       *Í½È÷
-           03                           PIC  X(470).
+           03  SYS-1022-YOBI            PIC  X(470).
       *Ã¼Ëö£É£Ä
            03  SYS-1022-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

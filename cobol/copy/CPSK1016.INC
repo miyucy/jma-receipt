@@ -41,7 +41,7 @@
       *¸¡ºº¥³¡¼¥É
                    07  SYS-1016-SRYCD          PIC X(09).
       *Í½È÷
-           03  FILLER                   PIC X(005).
+           03  SYS-1016-YOBI            PIC X(005).
       *Ã¼Ëö£É£Ä
            03  SYS-1016-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

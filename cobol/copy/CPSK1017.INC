@@ -82,7 +82,7 @@
       **** 03  FILLER                   PIC X(495).
       **** 03  FILLER                   PIC X(493).
       **** 03  FILLER                   PIC X(490).
-           03  FILLER                   PIC X(482).
+           03  SYS-1017-YOBI            PIC X(482).
       *Ã¼Ëö£É£Ä
            03  SYS-1017-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

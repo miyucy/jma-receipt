@@ -44,7 +44,7 @@
       *アイコンファイル名
                05  SYS-1018-ICON-FILENAME    PIC  X(100).
       *予備
-           03                           PIC  X(356).
+           03  SYS-1018-YOBI            PIC  X(356).
       *端末ＩＤ
            03  SYS-1018-TERMID          PIC  X(16).
       *オペーレータＩＤ
