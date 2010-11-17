@@ -48,7 +48,7 @@
       *        °õºþÉô¿ô
                    07  SYS-5007-SIJISEN-PRT    PIC 9(02).
       *Í½È÷
-               05  FILLER               PIC  X(371).
+               05  SYS-5007-YOBI             PIC  X(371).
       *Ã¼Ëö£É£Ä
            03  SYS-5007-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -41,7 +41,7 @@
                05  SYS-5103-BTU-KNGHAICHIKBN-NM
                                         PIC  X(14).
       *Í½È÷
-           03                           PIC  X(486).
+           03  SYS-5103-YOBI            PIC  X(486).
       *Ã¼Ëö£É£Ä
            03  SYS-5103-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

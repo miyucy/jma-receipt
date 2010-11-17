@@ -37,7 +37,7 @@
                05  SYS-4003-SRYCD       PIC  X(09)
                                         OCCURS  50.
       *Í½È÷
-           03                           PIC  X(50).
+           03  SYS-4003-YOBI            PIC  X(50).
       *Ã¼Ëö£É£Ä
            03  SYS-4003-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

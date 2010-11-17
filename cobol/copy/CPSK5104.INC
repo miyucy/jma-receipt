@@ -41,7 +41,7 @@
                05  SYS-5104-BTU-KNGHIRITUKBN-NM
                                         PIC  X(20).
       *Í½È÷
-           03                           PIC  X(480).
+           03  SYS-5104-YOBI            PIC  X(480).
       *Ã¼Ëö£É£Ä
            03  SYS-5104-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

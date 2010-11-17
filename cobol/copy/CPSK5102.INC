@@ -41,7 +41,7 @@
                05  SYS-5102-BTU-HEIKINZAIKBN-NM
                                         PIC  X(12).
       *Í½È÷
-           03                           PIC  X(488).
+           03  SYS-5102-YOBI            PIC  X(488).
       *Ã¼Ëö£É£Ä
            03  SYS-5102-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

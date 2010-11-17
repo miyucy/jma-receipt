@@ -41,7 +41,7 @@
                05  SYS-5105-BTU-KNGHJOKSN-NM
                                         PIC  X(40).
       *Í½È÷
-           03                           PIC  X(460).
+           03  SYS-5105-YOBI            PIC  X(460).
       *Ã¼Ëö£É£Ä
            03  SYS-5105-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

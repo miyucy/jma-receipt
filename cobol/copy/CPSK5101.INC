@@ -41,7 +41,7 @@
                05  SYS-5101-BTU-SBT-NM
                                         PIC  X(20).
       *Í½È÷
-           03                           PIC  X(480).
+           03  SYS-5101-YOBI            PIC  X(480).
       *Ã¼Ëö£É£Ä
            03  SYS-5101-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
