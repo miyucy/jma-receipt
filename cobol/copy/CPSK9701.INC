@@ -48,7 +48,7 @@
       *¼Â¹Ô·Á¼°
                05  SYS-9701-EXECUTE-YTPE   PIC  X(01).
       *Í½È÷
-           03  FILLER                   PIC  X(352).
+           03  SYS-9701-YOBI            PIC  X(352).
       *Ã¼Ëö£É£Ä
            03  SYS-9701-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

@@ -52,7 +52,7 @@
                05  SYS-8000-MONTHLY-UPYMD
                                        PIC  X(08).
       *Í½È÷
-           03  FILLER                  PIC  X(466).
+           03  SYS-8000-YOBI           PIC  X(466).
       *Ã¼Ëö£É£Ä
            03  SYS-8000-TERMID         PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
