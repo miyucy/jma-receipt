@@ -42,7 +42,7 @@
       *点数表区分
                    07  SYS-1031-PRTNM   PIC  X(16).
       *予備
-           03                           PIC  X(180).
+           03  SYS-1031-YOBI            PIC  X(180).
       *端末ＩＤ
            03  SYS-1031-TERMID          PIC  X(16).
       *オペーレータＩＤ

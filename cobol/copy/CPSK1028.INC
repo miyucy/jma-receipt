@@ -44,7 +44,7 @@
       *初期表示区分
                05  SYS-1028-HYOJIKBN         PIC  X(01).
       *予備
-           03                           PIC  X(459).
+           03  SYS-1028-YOBI            PIC  X(459).
       *端末ＩＤ
            03  SYS-1028-TERMID          PIC  X(16).
       *オペーレータＩＤ

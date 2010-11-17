@@ -46,7 +46,7 @@
       *独自開発プログラムチェック状態
                05  SYS-1035-ORCACSTCHK  PIC  X(01).
       *予備
-           03                           PIC  X(458).
+           03  SYS-1035-YOBI            PIC  X(458).
       *端末ＩＤ
            03  SYS-1035-TERMID          PIC  X(16).
       *オペーレータＩＤ

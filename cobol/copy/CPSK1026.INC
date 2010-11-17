@@ -44,7 +44,7 @@
       *³ä°úÂÐ¾Ý
                05  SYS-1026-DISCOUNT-OBJ     PIC  X(01).
       *Í½È÷
-           03                           PIC  X(457).
+           03  SYS-1026-YOBI            PIC  X(457).
       *Ã¼Ëö£É£Ä
            03  SYS-1026-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

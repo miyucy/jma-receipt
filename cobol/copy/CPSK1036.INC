@@ -40,7 +40,7 @@
       *分類名
                05  SYS-1036-BUNRUIMEI   PIC  X(40).
       *予備
-           03                           PIC  X(460).
+           03  SYS-1036-YOBI            PIC  X(460).
       *端末ＩＤ
            03  SYS-1036-TERMID          PIC  X(16).
       *オペーレータＩＤ

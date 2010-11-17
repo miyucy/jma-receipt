@@ -55,9 +55,7 @@
                05  SYS-1030-KOUHATUKA
                                         PIC  X(01).
       *Í½È÷
-      *****03  FILLER                   PIC  X(499).
-      *     03  FILLER                   PIC  X(478).
-           03  FILLER                   PIC  X(349).
+           03  SYS-1030-YOBI            PIC  X(349).
       *Ã¼Ëö£É£Ä
            03  SYS-1030-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

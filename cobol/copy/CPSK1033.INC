@@ -41,7 +41,7 @@
                05  SYS-1033-HKNJANUM    PIC  X(08)
                                              OCCURS 20.
       *Í½È÷
-           03                           PIC  X(340).
+           03  SYS-1033-YOBI            PIC  X(340).
       *Ã¼Ëö£É£Ä
            03  SYS-1033-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

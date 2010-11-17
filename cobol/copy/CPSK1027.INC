@@ -42,7 +42,7 @@
       *³ä°úÎ¨
                05  SYS-1027-DISCOUNT-RATE    PIC  9(07).
       *Í½È÷
-           03                           PIC  X(492).
+           03  SYS-1027-YOBI            PIC  X(492).
       *Ã¼Ëö£É£Ä
            03  SYS-1027-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
