@@ -50,7 +50,7 @@
       *プリンタ名
            03  SYS-3004-PRTNM           PIC  X(16).
       *予備
-           03                           PIC  X(418).
+           03  SYS-3004-YOBI            PIC  X(418).
       *端末ＩＤ
            03  SYS-3004-TERMID          PIC  X(16).
       *オペーレータＩＤ

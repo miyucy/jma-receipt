@@ -49,7 +49,7 @@
       *レセプト種類区分
                05  SYS-2002-RECEKBN     PIC  X(01).
       *予備
-           03                           PIC  X(462).
+           03  SYS-2002-YOBI            PIC  X(462).
       *端末ＩＤ
            03  SYS-2002-TERMID          PIC  X(16).
       *オペーレータＩＤ

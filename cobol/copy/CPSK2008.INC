@@ -55,7 +55,7 @@
       *医療機関の所在地保険者印刷位置
            03  SYS-2008-HKNJANUM-PRTKBN PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(486).
+           03  SYS-2008-YOBI            PIC  X(486).
       *端末ＩＤ
            03  SYS-2008-TERMID          PIC  X(16).
       *オペレータＩＤ

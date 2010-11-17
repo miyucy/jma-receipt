@@ -57,7 +57,7 @@
       *主科広域連合設定フラグ
            03  SYS-2009-SYUKA-KOUIKI    PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(492).
+           03  SYS-2009-YOBI            PIC  X(492).
       *端末ＩＤ
            03  SYS-2009-TERMID          PIC  X(16).
       *オペレータＩＤ

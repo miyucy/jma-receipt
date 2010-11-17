@@ -38,7 +38,7 @@
       *レセプト出力順
                05  SYS-2004-PRTJYUNI    PIC  X(02).
       *予備
-           03                           PIC  X(458).
+           03  SYS-2004-YOBI            PIC  X(458).
       *端末ＩＤ
            03  SYS-2004-TERMID          PIC  X(16).
       *オペーレータＩＤ

@@ -145,7 +145,7 @@
                05  SYS-200501-BYOMEI-PRTJYUN
                                            PIC X(01).
       *Í½È÷
-           03  FILLER                      PIC X(391).
+           03  SYS-200501-YOBI             PIC X(391).
       *Ã¼Ëö£É£Ä
            03  SYS-200501-TERMID           PIC X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

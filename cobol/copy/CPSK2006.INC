@@ -53,11 +53,11 @@
       *条件：負担者番号内容
            03  SYS-2006-FTNJANUM-JYOKEN PIC  X(08).
       *予備
-           03  FILLER                   PIC  X(91).
+           03  SYS-2006-YOBI1           PIC  X(91).
       *給付割合
            03  SYS-2006-KYURATE         PIC  9(03).
       *予備
-           03  FILLER                   PIC  X(02).
+           03  SYS-2006-YOBI2           PIC  X(02).
       *レセ電：特記事項
            03  SYS-2006-RECEDEN-TOKKI   PIC  X(02).
       *レセ電：給付割合
@@ -78,7 +78,7 @@
            03  SYS-2006-TEKIYOU-COMMENT2KBN
                                         PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(49).
+           03  SYS-2006-YOBI3           PIC  X(49).
       *負担者番号編集区分
            03  SYS-2006-FTNJANUMKBN     PIC  X(02).
       *負担者番号編集内容
@@ -99,7 +99,7 @@
       *レセ電：受給者番号編集内容
            03  SYS-2006-RECEDEN-JKYSNUM PIC  X(07).
       *予備
-           03  FILLER                   PIC  X(158).
+           03  SYS-2006-YOBI4           PIC  X(158).
       *端末ＩＤ
            03  SYS-2006-TERMID          PIC  X(16).
       *オペレータＩＤ
