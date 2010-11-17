@@ -557,8 +557,14 @@
            MOVE    TNS-DATAKBN         TO  SPA-GMN-DATAKBN  
            MOVE    TNS-KEIKASOCHIYMD   TO  SPA-NAI-KEIKASOCHIYMD
                                            WRK-LNKYMD
-           PERFORM 832-YMDCONV21-SEC
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-KEIKASOCHIYMD
+           IF      TNS-KEIKASOCHIYMD   =   SPACE
+      *        経過措置日　空白はゼロとする
+               MOVE    "00000000"          TO  SPA-GMN-KEIKASOCHIYMD
+               MOVE    ZERO                TO  SPA-NAI-KEIKASOCHIYMD
+           ELSE
+               PERFORM 832-YMDCONV21-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-KEIKASOCHIYMD
+           END-IF
            MOVE    TNS-CDKBN-BU        TO  SPA-GMN-CDKBN-BU
            MOVE    TNS-CDKBN-KBNNUM    TO  SPA-GMN-CDKBN-KBNNUM
       *
@@ -2715,7 +2721,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  LNK-DAY6-ZOGEN
                    CALL  "ORCSDAY"             USING   STS-AREA-DAY
                                                        LNK-DAY6-AREA
-                  MOVE    LNK-DAY6-KEISAN      TO  WRK-OTYMD
+                   IF      SGDAY-RC            =   ZERO
+                       MOVE    LNK-DAY6-KEISAN      TO  WRK-OTYMD
+                   ELSE
+                       MOVE    SPACE                TO  WRK-OTYMD
+                   END-IF
            END-EVALUATE
       *
            .
@@ -2792,7 +2802,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   MOVE  WRK-LNKYMD(1:8)          TO  LNK-DAY2-YMD
                   CALL  "ORCSDAY"                USING   STS-AREA-DAY
                                                  LNK-DAY2-AREA
-                  MOVE    LNK-DAY2-EDTYMD1       TO  WRK-HENYMDG
+                  IF      SGDAY-RC            =   ZERO
+                      MOVE    LNK-DAY2-EDTYMD1       TO  WRK-HENYMDG
+                  ELSE
+                      MOVE    SPACE                  TO  WRK-HENYMDG
+                  END-IF
            END-EVALUATE
            .
       *
