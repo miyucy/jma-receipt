@@ -51,7 +51,7 @@
       *予約受付番号連動区分
                05  SYS-1045-YYKUKE-KBN  PIC  X(01).
       *予備
-               05                       PIC  X(489).
+               05  SYS-1045-YOBI        PIC  X(489).
       *端末ＩＤ
            03  SYS-1045-TERMID          PIC  X(16).
       *オペーレータＩＤ

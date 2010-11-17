@@ -46,7 +46,7 @@
       *レセプトブレビュー
                05  SYS-1043-RESPRVFLG   PIC  X(01).
       *予備
-               05                       PIC  X(497).
+               05  SYS-1043-YOBI        PIC  X(497).
       *端末ＩＤ
            03  SYS-1043-TERMID          PIC  X(16).
       *オペーレータＩＤ

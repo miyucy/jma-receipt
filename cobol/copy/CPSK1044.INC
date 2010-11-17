@@ -46,7 +46,7 @@
       *オフセット（ｙ方向）
                05  SYS-1044-OFFSET-Y    PIC  X(05).
       *予備
-           03                           PIC  X(454).
+           03  SYS-1044-YOBI            PIC  X(454).
       *端末ＩＤ
            03  SYS-1044-TERMID          PIC  X(16).
       *オペーレータＩＤ

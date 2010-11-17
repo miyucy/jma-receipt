@@ -47,7 +47,7 @@
                05  SYS-1901-HOSPNAME1MOJI
                                         PIC  9(02).
       *Í½È÷
-           03                           PIC  X(18).
+           03  SYS-1901-YOBI            PIC  X(18).
       *Ã¼Ëö£É£Ä
            03  SYS-1901-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

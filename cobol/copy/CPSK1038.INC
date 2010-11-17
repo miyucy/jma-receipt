@@ -89,7 +89,7 @@
                05  SYS-1038-YMDHENKBN     PIC  X(01).
       *Í½È÷
       *******  05                          PIC  X(488).
-               05                          PIC  X(480).
+               05  SYS-1038-YOBI           PIC  X(480).
       *Ã¼Ëö£É£Ä
            03  SYS-1038-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

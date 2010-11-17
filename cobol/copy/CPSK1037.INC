@@ -47,7 +47,7 @@
       *独自計算プログラム名（入院）
                05  SYS-1037-PGID-NYU    PIC  X(10).
       *予備
-           03  FILLER                   PIC  X(456).
+           03  SYS-1037-YOBI            PIC  X(456).
       *端末ＩＤ
            03  SYS-1037-TERMID          PIC  X(16).
       *オペーレータＩＤ

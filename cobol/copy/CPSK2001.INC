@@ -57,7 +57,7 @@
       *レセプト作成区分（１：点検用レセ）
                05  SYS-2001-PRTKBN      PIC  X(01).
       *予備
-           03  FILLER                   PIC  X(489).
+           03  SYS-2001-YOBI            PIC  X(489).
       *端末ＩＤ
            03  SYS-2001-TERMID          PIC  X(16).
       *オペーレータＩＤ

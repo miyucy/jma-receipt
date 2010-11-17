@@ -52,7 +52,7 @@
       *所在地（１行目）文字数
                05  SYS-1902-ADRS1MOJI   PIC  9(02).
       *予備
-           03                           PIC  X(05).
+           03  SYS-1902-YOBI            PIC  X(05).
       *端末ＩＤ
            03  SYS-1902-TERMID          PIC  X(16).
       *オペーレータＩＤ
