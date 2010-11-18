@@ -177,5 +177,3 @@
                05  RECE01-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE01-ERR-TEKSTYMD    PIC 9(08).
                05  RECE01-ERR-TEKEDYMD    PIC 9(08).
-      *Í½È÷
-           03  FILLER                     PIC  X(20).

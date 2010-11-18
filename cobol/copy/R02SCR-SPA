@@ -189,7 +189,7 @@
                    07  SPA-NAI-PRTNM-TABLE.
                        09  SPA-NAI-PRTNM-G                 OCCURS  6.
                            11  SPA-NAI-PRTNM       PIC X(02).
-                           11  FILLER              PIC X(01).
+                           11  SPA-NAI-FIL         PIC X(01).
                            11  SPA-NAI-PRTNMMEI    PIC X(16).
       *
                    07  SPA-NAI-2008-ZAITAKU        PIC  X(01).
