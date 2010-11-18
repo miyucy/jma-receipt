@@ -536,7 +536,7 @@
       * 回数もしくは日数(Z編集)
                05  LF04-KAISU          PIC  X(50).
       * <明細テーブル(診療項目 1)>
-               05  LF04-SRYTBL       OCCURS  40.
+               05  LF04-SRYTBL1       OCCURS  40.
       * 診療種別区分コード(0:手技、1:材料,2:薬剤) (claim:subclassCode)
                    07  LF04-SRYSYUBETSU
                                        PIC  X(01).
