@@ -494,7 +494,7 @@
                            11  SPA-GMN-SRYNYKNKNRKBN-MAX   PIC 9(03).
                            11  SPA-GMN-SRYNYKNKNRKBNLST    OCCURS  5.
                                13  SPA-GMN-SRYNYKNKNRKBNL  PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SRYNL-F1        PIC X(01).
                                13  SPA-GMN-SRYNYKNKNRKBNMEIL
                                                            PIC X(38).
       *                複数科まとめ集計
@@ -506,7 +506,7 @@
                            11  SPA-GMN-KAGRPFLG-MAX   PIC 9(03).
                            11  SPA-GMN-KAGRPFLG-LST    OCCURS  5.
                                13  SPA-GMN-KAGRPFLGL  PIC X(01).
-                               13                      PIC X(01).
+                               13  SPA-GMN-KGRAL-F1    PIC X(01).
                                13  SPA-GMN-KAGRPFLGMEIL
                                                        PIC X(38).
       *                請求書発行方法
@@ -518,7 +518,7 @@
                            11  SPA-GMN-HAKHOUFLG-MAX   PIC 9(03).
                            11  SPA-GMN-HAKHOUFLG-LST    OCCURS  5.
                                13  SPA-GMN-HAKHOUFLGL  PIC X(01).
-                               13                      PIC X(01).
+                               13  SPA-GMN-HAKL-F1     PIC X(01).
                                13  SPA-GMN-HAKHOUFLGMEIL
                                                        PIC X(38).
       *                訂正の請求書金額
@@ -530,7 +530,7 @@
                            11  SPA-GMN-TEIKINKBN-MAX   PIC 9(02).
                            11  SPA-GMN-TEIKINKBN-LST    OCCURS  5.
                                13  SPA-GMN-TEIKINKBNL  PIC X(01).
-                               13                      PIC X(01).
+                               13  SPA-GMN-TEIL-F1     PIC X(01).
                                13  SPA-GMN-TEIKINKBNMEIL
                                                        PIC X(38).
       *                薬剤情報提供書発行

@@ -164,7 +164,7 @@
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-TENSU-X.
-               05  FILLER          PIC X(08).
+               05  WRK-TEN-F1      PIC X(08).
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS-Z    PIC ZZZZ9.99.

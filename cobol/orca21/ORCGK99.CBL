@@ -64,7 +64,7 @@
            03  WRK-ERRMSG          PIC X(40).
            03  WRK-PIN.
                05  PIN9            PIC 9(02).
-               05  FILLER          REDEFINES  PIN9.
+               05  PIN9-R          REDEFINES  PIN9.
                    07  PIN10       PIC 9(01).
                    07  PIN1        PIC 9(01).
            03  WRK-PED.

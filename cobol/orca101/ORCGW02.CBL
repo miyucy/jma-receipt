@@ -386,7 +386,7 @@
                        09  SPA-GMN-DISCOUNT-KBNLST    OCCURS  99.
                            11  SPA-GMN-DISCOUNT-KBNL
                                                   PIC X(02).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1026-F1    PIC X(01).
                            11  SPA-GMN-DISCOUNT-KBNMEIL
                                                   PIC X(20).
                        09  SPA-GMN-DISCOUNT-KBN-MAX
@@ -395,29 +395,29 @@
                        09  SPA-GMN-DISCOUNT-KBN-G.
                            11  SPA-GMN-DISCOUNT-KBN
                                                   PIC X(02).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1026-F2    PIC X(01).
                            11  SPA-GMN-DISCOUNT-KBNMEI
                                                   PIC X(20).
                        09  SPA-GMN-DISCOUNT-OBJLST    OCCURS  10.
                            11  SPA-GMN-DISCOUNT-OBJL
                                                   PIC X(01).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1026-F3    PIC X(01).
                            11  SPA-GMN-DISCOUNT-OBJMEIL
                                                   PIC X(18).
                        09  SPA-GMN-DISCOUNT-OBJ-G.
                            11  SPA-GMN-DISCOUNT-OBJ
                                                   PIC X(01).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1026-F4    PIC X(01).
                            11  SPA-GMN-DISCOUNT-OBJMEI
                                                   PIC X(18).
                    07  SPA-GMN-1027-AREA.
                        09  SPA-GMN-TEIRITULST         OCCURS  2.
                            11  SPA-GMN-TEIRITUL       PIC X(01).
-                           11                         PIC X(01).
+                           11  SPA-GMN-1027-F1        PIC X(01).
                            11  SPA-GMN-TEIRITUMEIL    PIC X(08).
                        09  SPA-GMN-TEIRITU-G.
                            11  SPA-GMN-TEIRITU        PIC X(01).
-                           11                         PIC X(01).
+                           11  SPA-GMN-1027-F2        PIC X(01).
                            11  SPA-GMN-TEIRITUMEI     PIC X(08).
                        09  SPA-GMN-DISCOUNT-RATE  PIC 9(07).
                        09  SPA-GMN-LBL-RATE       PIC X(02).
@@ -447,19 +447,19 @@
                        09  SPA-GMN-NYKN-BUNRUI-G.
                            11  SPA-GMN-NYKN-BUNRUI
                                                   PIC X(02).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1041-F1    PIC X(01).
                            11  SPA-GMN-NYKN-BUNRUIMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-BUNRUILST OCCURS  10.
                            11  SPA-GMN-NYKN-BUNRUIL    PIC X(02).
-                           11                          PIC X(01).
+                           11  SPA-GMN-1041-F2         PIC X(01).
                            11  SPA-GMN-NYKN-BUNRUIMEIL PIC X(20).
                        09  SPA-GMN-NYKN-BUNRUI-MAX     PIC 9(03).
       *                入金状態
                        09  SPA-GMN-NYKN-JYOTAI-G.
                            11  SPA-GMN-NYKN-JYOTAI
                                                   PIC X(01).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1041-F3    PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAIMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-JYOTAILST-G.
@@ -469,7 +469,7 @@
                        09  SPA-GMN-NYKN-JYOTAI-N-G.
                            11  SPA-GMN-NYKN-JYOTAI-N
                                                   PIC X(01).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1041-F4    PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAI-NMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-JYOTAI-N-LST-G.
@@ -479,7 +479,7 @@
                        09  SPA-GMN-NYKN-JYOTAI-T-G.
                            11  SPA-GMN-NYKN-JYOTAI-T
                                                   PIC X(01).
-                           11                     PIC X(01).
+                           11  SPA-GMN-1041-F5    PIC X(01).
                            11  SPA-GMN-NYKN-JYOTAI-TMEI
                                                   PIC X(20).
                        09  SPA-GMN-NYKN-JYOTAI-T-LST-G.
