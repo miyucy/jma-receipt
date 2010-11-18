@@ -114,9 +114,9 @@
            03  WRK-HENYMDG.
                05  WRK-HENYMD-G    PIC X(04).
                05  WRK-HENYMD-Y    PIC X(04).
-               05  FILLER          PIC X(02).
+               05  WRK-HENYMD-FIL1 PIC X(02).
                05  WRK-HENYMD-M    PIC X(04).
-               05  FILLER          PIC X(02).
+               05  WRK-HENYMD-FIL2 PIC X(02).
                05  WRK-HENYMD-D    PIC X(04).
       *
       *****************************************************************

@@ -150,7 +150,7 @@
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(03).
                05  WRK-WIDGET2     PIC 9(02).
-               05  FILLER          PIC X(01).
+               05  WRK-WIDGET-FIL  PIC X(01).
                05  WRK-WIDGET3     PIC 9(02). 
            03  WRK-RIDMSG          PIC X(70).
            03  WRK-Z9              PIC ZZZ9.
@@ -200,12 +200,13 @@
       *
            03  WRK-PRTNM           PIC 9(04).
            03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
-               05  FILLER          PIC X(02).
+               05  WRK-PRTNM-FIL   PIC X(02).
                05  WRK-PRTNM-X     PIC X(02). 
       *
            03  WRK-GMN-PRTNM-G.
                05  WRK-GMN-PRTNM   PIC X(02).
-               05  FILLER          PIC X(01).
+               05  WRK-GMN-PRTNM-FIL
+                                   PIC X(01).
                05  WRK-GMN-PRTNMMEI
                                    PIC X(16).
            03  WRK-PRTNMMEI        PIC X(16).

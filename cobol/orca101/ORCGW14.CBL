@@ -121,7 +121,7 @@
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(07).
                05  WRK-WIDGET2     PIC 9(02).
-               05                  PIC X(03). 
+               05  WRK-WIDGET-FIL  PIC X(03). 
            03  WRK-HENFLG          PIC 9(01).
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.

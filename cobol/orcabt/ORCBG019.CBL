@@ -114,10 +114,10 @@
            03  FILLER                  PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
       *
        01  BODY-01.
-           03  FILLER                  PIC X(02).
+           03  B01-FIL1                PIC X(02).
            03  B01-PTNUM               PIC X(20).
            03  B01-NAME                PIC X(20).
-           03  FILLER                  PIC X(04).
+           03  B01-FIL2                PIC X(04).
            03  B01-SRYYM               PIC X(18).
            03  B01-TEISYUTUSAKI        PIC X(08).
            03  B01-NYUGAIKBN           PIC X(06).

@@ -176,12 +176,12 @@
                05  WRK-RECE09-DRCD         PIC X(05).
                05  WRK-RECE09-DRCD-PRTJYUNKBN
                                            PIC X(01).
-               05  FILLER                  PIC X(06).
+               05  WRK-RECE09-DRCD-FIL     PIC X(06).
            03  WRK-RECE09-DATA-R1          REDEFINES    WRK-RECE09-DATA.
                05  WRK-RECE09-BTUNUM       PIC X(02).
                05  WRK-RECE09-BTUNUM-PRTJYUNKBN
                                            PIC X(01).
-               05  FILLER                  PIC X(09).
+               05  WRK-RECE09-BTUNUM-FIL   PIC X(09).
        01  WRK-RECE09-STDATA               PIC X(100).
        01  WRK-RECE09-EDDATA               PIC X(100).
       *
@@ -234,7 +234,7 @@
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(03).
                05  WRK-WIDGET2     PIC 9(02).
-               05  FILLER          PIC X(01).
+               05  WRK-WIDGET-FIL  PIC X(01).
                05  WRK-WIDGET3     PIC 9(02).
                05  WRK-WIDGET4     PIC 9(02).
       *
@@ -286,12 +286,13 @@
       *
            03  WRK-PRTNM           PIC 9(04).
            03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
-               05  FILLER          PIC X(02).
+               05  WRK-PRTNM-FIL   PIC X(02).
                05  WRK-PRTNM-X     PIC X(02). 
       *
            03  WRK-GMN-PRTNM-G.
                05  WRK-GMN-PRTNM   PIC X(02).
-               05  FILLER          PIC X(01).
+               05  WRK-GMN-PRTNM-FIL
+                                   PIC X(01).
                05  WRK-GMN-PRTNMMEI
                                    PIC X(16).
            03  WRK-PRTNMMEI        PIC X(16).

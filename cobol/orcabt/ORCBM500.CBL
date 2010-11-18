@@ -260,7 +260,7 @@ grpsys COPY    "COMMON-SPA".
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG             PIC 9(08).
            03  WRK-HENYMDGR            REDEFINES   WRK-HENYMDG.
-               05  FILLER              PIC 9(01).
+               05  WRK-HENYMD-FIL      PIC 9(01).
                05  WRK-HENYMD          PIC 9(07).
       *
        01  TABLE-AREA.

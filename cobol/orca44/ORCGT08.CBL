@@ -71,7 +71,7 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG.
                05  WRK-HENYM       PIC X(06).
-               05  FILLER          PIC X(03).
+               05  WRK-HENYM-FIL   PIC X(03).
            03  WRK-HENYMDG3        PIC X(22).
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).

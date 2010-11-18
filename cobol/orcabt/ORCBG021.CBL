@@ -155,39 +155,39 @@
        01  BODY-01.
            03  B01-PTNUM               PIC X(20).
            03  B01-NAME                PIC X(14).
-           03  FILLER                  PIC X(01).
+           03  B01-FIL1                PIC X(01).
            03  B01-SRYKA               PIC X(06).
-           03  FILLER                  PIC X(01).
+           03  B01-FIL2                PIC X(01).
            03  B01-SRYYMD              PIC X(10).
            03  B01-NYUGAIKBN           PIC X(04).
-           03  FILLER                  PIC X(01).
+           03  B01-FIL3                PIC X(01).
            03  B01-BYOMEI              PIC X(80).
       *
        01  BODY-02.
-           03  FILLER                  PIC X(54).
+           03  B02-FIL1                PIC X(54).
            03  B02-RIYUU               PIC X(104).
            03  B02-RIYUU-R             REDEFINES   B02-RIYUU.
                05  B02-RIYUU1          PIC X(24).
-               05  FILLER              PIC X(01).
+               05  B02-FIL2            PIC X(01).
                05  B02-HAISIYMD        PIC X(09).
-               05  FILLER              PIC X(01).
+               05  B02-FIL3            PIC X(01).
                05  B02-BYOMEICD        PIC X(07).
-               05  FILLER              PIC X(01).
+               05  B02-FIL4            PIC X(01).
                05  B02-BYOMEI          PIC X(60).
-               05  FILLER              PIC X(01).
+               05  B02-FIL5            PIC X(01).
       *
        01  BODY-03.
-           03  FILLER                  PIC X(54).
+           03  B03-FIL1                PIC X(54).
            03  B03-RIYUU               PIC X(24).
-           03  FILLER                  PIC X(01).
+           03  B03-FIL2                PIC X(01).
            03  B03-HAISIYMD            PIC X(09).
-           03  FILLER                  PIC X(01).
+           03  B03-FIL3                PIC X(01).
            03  B03-BYOMEICD            PIC X(07).
-           03  FILLER                  PIC X(01).
+           03  B03-FIL4                PIC X(01).
            03  B03-BYOMEI              PIC X(60).
       *
        01  BODY-04.
-           03  FILLER                  PIC X(54).
+           03  B04-FIL1                PIC X(54).
            03  B04-BYOMEIINPUTCD       PIC X(22)   OCCURS  4.
       *
        01  WRK-CONST-AREA.

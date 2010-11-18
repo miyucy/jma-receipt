@@ -115,9 +115,11 @@
            03  WRK-SRYYMWH.
                05  WRK-SRYYMWH-G   PIC X(04).
                05  WRK-SRYYMWH-Y   PIC X(04).
-               05  FILLER          PIC X(02).
+               05  WRK-SRYYMWH-FIL1
+                                   PIC X(02).
                05  WRK-SRYYMWH-M   PIC X(04).
-               05  FILLER          PIC X(02).
+               05  WRK-SRYYMWH-FIL2
+                                   PIC X(02).
            03  WRK-SRYYMD          PIC X(08).
       *  
            03  WRK-SYMD.

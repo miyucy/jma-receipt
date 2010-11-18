@@ -56,11 +56,6 @@
                05  WRK-SYSYM       PIC X(06).
                05  WRK-SYSDD       PIC 9(02).
       *
-           03  WRK-DBPATH.
-               05  FILLER          PIC S9(09)  BINARY.
-               05  FILLER          PIC S9(09)  BINARY.
-               05  FILLER          PIC S9(09)  BINARY.
-      *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *     

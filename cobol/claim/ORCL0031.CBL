@@ -281,11 +281,6 @@
                05  WRK-SYSDD       PIC 9(02).
       *                             
            03  WRK-PATHNAME             PIC X(64).
-      *                             
-           03  WRK-DBPATH.
-               05  FILLER              PIC S9(9)   BINARY.
-               05  FILLER              PIC S9(9)   BINARY.
-               05  FILLER              PIC S9(9)   BINARY.
       *
       *    コメント入力値編集
            03  WRK-INPUTCHI-G.

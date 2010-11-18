@@ -73,7 +73,8 @@
       *
            03  WRK-GMN-PRTNM-G.
                05  WRK-GMN-PRTNM   PIC X(02).
-               05  FILLER          PIC X(01).
+               05  WRK-GMN-PRTNM-FIL
+                                   PIC X(01).
                05  WRK-GMN-PRTNMMEI
                                    PIC X(16).
            03  WRK-PRTNMMEI        PIC X(16).

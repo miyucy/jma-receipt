@@ -167,16 +167,16 @@
                "代理受取額".
       *
        01  BODY-01.
-           03  FILLER                  PIC X(2).
+           03  B01-FIL1                PIC X(2).
            03  B01-HKNJANUM            PIC X(10).
            03  B01-BUNBENKBN           PIC X(10).
            03  B01-PTNUM               PIC X(20).
            03  B01-NAME                PIC X(40).
-           03  FILLER                  PIC X(01).
+           03  B01-FIL2                PIC X(01).
            03  B01-BIRTHDAY            PIC X(09).
-           03  FILLER                  PIC X(03).
+           03  B01-FIL3                PIC X(03).
            03  B01-TEISYUTUBIKBN       PIC X(08).
-           03  FILLER                  PIC X(08).
+           03  B01-FIL4                PIC X(08).
            03  B01-DAIRI-MONEY         PIC X(10).
       *
        01  BODY-02.

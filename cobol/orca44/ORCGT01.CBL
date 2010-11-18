@@ -246,7 +246,7 @@
       *
            03  WRK-PRTNM           PIC 9(04).
            03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
-               05  FILLER          PIC X(02).
+               05  WRK-PRTNM-FIL   PIC X(02).
                05  WRK-PRTNM-X     PIC X(02). 
            03  WRK-DASUPLOAD       PIC 9(01).
       *
