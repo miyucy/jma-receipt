@@ -44,6 +44,7 @@
       *  04.02.01    NACL-多々納  08/03/14  Ｈ２０年４月改正対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  10/01/XX  治験・拡張漢字対応
+      *  04.06.00    NACL-多々納  10/11/16  マル長負担額を保険負担額反映
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2092,6 +2093,12 @@
                GO      TO      2005-SYUNOU-SET-EXT
            END-IF
       *
+      *    マル長の公費負担を保険適用金額へ
+           IF      SYU-HKNTEKKBN   =   "1"
+               MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
+               MOVE    ZERO                TO  SYU-KOH-FTN
+           END-IF
+      *
       *    請求点数
            ADD     1                   TO  IDX-LF2
       *    ２０剤以上の時エラー
@@ -2223,6 +2230,7 @@
                END-EVALUATE
            END-PERFORM
       *    保険適用金額
+      *
            ADD     1                   TO  IDX-IJ
            ADD     1                   TO  IDX-IJ2
            MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
