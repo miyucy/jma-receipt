@@ -89,7 +89,6 @@
       *01  SRYKBN-REC.
       *    03  SYRKBN-DATA.
       *        05  SYRKBN-SRYKBN         PIC X(02).
-      *        05                        PIC X(01).
       *        05  SYRKBN-SRYSYUKBN      PIC X(03).
       *********05  SYRKBN-SRYMEI         PIC X(40).
       *
@@ -281,6 +280,11 @@
                05  WRK-SYSDD       PIC 9(02).
       *                             
            03  WRK-PATHNAME             PIC X(64).
+      *                             
+           03  WRK-DBPATH.
+               05  FIL1                PIC S9(9)   BINARY.
+               05  FIL2                PIC S9(9)   BINARY.
+               05  FIL3                PIC S9(9)   BINARY.
       *
       *    コメント入力値編集
            03  WRK-INPUTCHI-G.
@@ -295,14 +299,14 @@
       *
        01  WRK-HENYMD.
            03  WRK-HENYY           PIC X(04).
-           03  FILLER              PIC X(01)   VALUE   "-".  
+           03  WRK-HENF1           PIC X(01)   VALUE   "-".  
            03  WRK-HENMM           PIC X(02).
-           03  FILLER              PIC X(01)   VALUE   "-".
+           03  WRK-HENF2           PIC X(01)   VALUE   "-".
            03  WRK-HENDD           PIC X(02).
       *
       *    ワーク診療行為マスタ−テーブル
        01  TBL-WKSRYACT-AREA.
-           02  TBL-WKSRYACT-REC      OCCURS   20.
+           02  TBL-WKSRYACT-REC      OCCURS   40.
            COPY    "CPWKSRYACT.INC"  REPLACING  //WKSRY//
                                      BY         //TBL-WKSRY//.
       *
@@ -472,11 +476,17 @@
        01  LF04-REC. 
            COPY    "CPRLF004.INC".
       *
+      *    claim連携リターンエリア
+       01  LNK-ERROR-AREA.
+           03  LNK-KBN-CODE            PIC X(01).
+           03  LNK-ERR-CODE            PIC 9(02).
+           03  LNK-ERR-MSG             PIC X(100).
       ******************************************************************
       *
        PROCEDURE                       DIVISION
                                        USING
-                                               LF04-REC.
+                                               LF04-REC
+                                               LNK-ERROR-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -784,7 +794,8 @@
            INITIALIZE                  TBL-WKSRYACT-AREA
            MOVE    ZERO                TO  TBL-MAX
            PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   20  )  OR
+                   UNTIL      (IDX1    >   40  )  OR
+      *            UNTIL      (IDX1    >   20  )  OR
                              (LF04-SRYCD (IDX1)   =   SPACE)  OR
                              (FLG-END             =   1    )
                          OR  (FLG-ERR             =   1    )
@@ -2620,6 +2631,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                   ",SRYKA:" WRK-SRYKA
                                   ",SRYYMD:" WRK-SRYYMD
                                   ",HKNCOMBI:" WRK-HKNCOMBI
+                         IF  LNK-KBN-CODE  = "1"
+                           MOVE  01        TO  LNK-ERR-CODE
+                           MOVE 
+                       "内容が変更されているため置換できませんでした"
+                                           TO  LNK-ERR-MSG
+                         END-IF
                        ELSE
       *                    置換えの為、データ削除
                            PERFORM 200101-WKSRYACT-DEL-SEC
@@ -2631,6 +2648,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                   ",SRYKA:" WRK-SRYKA
                                   ",SRYYMD:" WRK-SRYYMD
                                   ",HKNCOMBI:" WRK-HKNCOMBI
+                         IF  LNK-KBN-CODE  = "1"
+                           MOVE  02        TO  LNK-ERR-CODE
+                           MOVE 
+                       "内容を置き換えました"
+                                           TO  LNK-ERR-MSG
+                         END-IF
                        END-IF
                    ELSE
                        MOVE    1               TO  FLG-ERR
@@ -2642,6 +2665,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                               ",SRYYMD:" WRK-SRYYMD
                               ",HKNCOMBI:" WRK-HKNCOMBI
                               ",WKSRY-KARTE-FLG:" WKSRY-KARTE-FLG
+                         IF  LNK-KBN-CODE  = "1"
+                           MOVE  03        TO  LNK-ERR-CODE
+                           MOVE 
+                       "既に同日の診療データが登録されています"
+                                           TO  LNK-ERR-MSG
+                         END-IF
                    END-IF
                ELSE
       *            展開中エラー

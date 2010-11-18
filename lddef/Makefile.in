@@ -51,6 +51,7 @@ LDFILE_sources = \
 	orca108.ld.in \
 	orca109.ld.in \
 	sessionend.ld.in \
+	api21.ld.in \
 
 hosp_LDFILE_sources = \
 	orca31.ld.in \

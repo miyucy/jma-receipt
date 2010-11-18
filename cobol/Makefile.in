@@ -46,7 +46,8 @@ SUBDIRS = \
 	orca109 \
 	orcabt \
 	claim \
-	cutils 
+	cutils \
+	api21
 
 hosp_SUBDIRS = \
 	orca31 \
