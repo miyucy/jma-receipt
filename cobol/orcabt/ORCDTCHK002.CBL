@@ -366,6 +366,7 @@
            03  FLG-INPUTSET                            PIC 9(01).
            03  FLG-SRYCDCHG                            PIC 9(01).
            03  FLG-COMERR                              PIC 9(01).
+           03  FLG-ZAIARI                              PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -459,6 +460,7 @@
            03  IDX-KANRIRYO                            PIC 9(05).
            03  IDX-KGNM                                PIC 9(05).
            03  IDX-TTNSP2                              PIC 9(05).
+           03  IDX-PTSRY                               PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -2193,9 +2195,9 @@
       *****************************************************************
        200111-SRYINF-TAIHI-SEC         SECTION.
       *
-           PERFORM 200111-DCACCT-TAIHI-SEC
-      *
            PERFORM 200111-DCSRY-TAIHI-SEC
+      *
+           PERFORM 200111-DCACCT-TAIHI-SEC
       *
            INITIALIZE                  KEY-AREA
       *
@@ -10019,9 +10021,9 @@
       *****************************************************************
        200121-SRYINF-TAIHI-SEC         SECTION.
       *
-           PERFORM 200121-DCACCT-TAIHI-SEC
-      *
            PERFORM 200111-DCSRY-TAIHI-SEC
+      *
+           PERFORM 200121-DCACCT-TAIHI-SEC
       *
            INITIALIZE                  KEY-AREA
       *
@@ -12056,6 +12058,23 @@
                             OR   ( DCACCT-JIHOKBN  =   "1" )
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
+      *
+                           MOVE    ZERO       TO   FLG-ZAIARI
+                           PERFORM VARYING IDX-PTSRY FROM 1 BY 1
+                                   UNTIL ( IDX-PTSRY   >   PTSRY-MAX )
+                                    OR   ( FLG-ZAIARI  =   1 )
+                               IF   (  DCACCT-ZAINUM
+                                       =   PTSRY-ZAINUM (IDX-PTSRY))
+                                AND (  DCACCT-ACCTKBN
+                                       =   PTSRY-ACCTKBN(IDX-PTSRY))
+                                   MOVE    1  TO   FLG-ZAIARI
+                               END-IF
+                           END-PERFORM
+      *
+                           IF    ( FLG-ZAIARI =    ZERO )
+                               MOVE    ZERO   TO   FLG-LOOP-END
+                           END-IF
+      *
                        END-IF
                    END-IF
                END-READ
@@ -12122,6 +12141,22 @@
                                MOVE   ZERO    TO   FLG-LOOP-END
                            END-IF
       *
+                           MOVE    ZERO       TO   FLG-ZAIARI
+                           PERFORM VARYING IDX-PTSRY FROM 1 BY 1
+                                   UNTIL ( IDX-PTSRY   >   PTSRY-MAX )
+                                    OR   ( FLG-ZAIARI  =   1 )
+                               IF   (  DCACCT-ZAINUM
+                                       =   PTSRY-ZAINUM (IDX-PTSRY))
+                                AND (  DCACCT-ACCTKBN
+                                       =   PTSRY-ACCTKBN(IDX-PTSRY))
+                                   MOVE    1  TO   FLG-ZAIARI
+                               END-IF
+                           END-PERFORM
+      *
+                           IF    ( FLG-ZAIARI =    ZERO )
+                               MOVE    ZERO   TO   FLG-LOOP-END
+                           END-IF
+      *
                        ELSE
                                MOVE   ZERO    TO   FLG-LOOP-END
                        END-IF
@@ -12164,14 +12199,29 @@
       *****************************************************************
        900-DCSRY-READ-SEC              SECTION.
       *
-           READ    DCSRY-FILE     NEXT
-           AT  END
-                   MOVE    1           TO  FLG-DCSRY
-           NOT AT  END
-               IF    ( DTCHK003-PTID   NOT =   DCSRY-PTID )
-                   MOVE    1           TO  FLG-DCSRY
-               END-IF
-           END-READ
+           MOVE    ZERO                TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-DCSRY       NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               READ    DCSRY-FILE     NEXT
+               AT  END
+                       MOVE    1           TO  FLG-DCSRY
+               NOT AT  END
+                   IF    ( DTCHK003-PTID   NOT =   DCSRY-PTID )
+                       MOVE    1           TO  FLG-DCSRY
+                   ELSE
+                       MOVE    1           TO  FLG-LOOP-END
+                   END-IF
+      *
+                   IF    ( DCSRY-SRYSYUKBN (1:2)   =   "99" )
+                    AND  ( DCSRY-SRYCD (1:4)   =   "0085" OR "0086" )
+                       MOVE    ZERO        TO  FLG-LOOP-END
+                   END-IF
+      *
+               END-READ
+      *
+           END-PERFORM
       *
            .
       *
