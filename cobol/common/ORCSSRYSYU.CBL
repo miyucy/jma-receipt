@@ -125,6 +125,7 @@
       *****************************************************************
        1001-SRYKBN-SET-SEC             SECTION.
       *
+           MOVE    SPACE               TO  MSYU-DATA-REC
            INITIALIZE                  MSYU-DATA-REC
            MOVE    ZERO                TO  FLG-SRYKBN
            MOVE    ZERO                TO  IDX
@@ -134,8 +135,8 @@
                        MOVE    1           TO  FLG-SRYKBN
                    NOT AT  END
                       ADD     1           TO  IDX
-                      IF      IDX         >   100
-                           DISPLAY "SRYSYU 100 OVER !!! TBL ERR"
+                      IF      IDX         >   200
+                           DISPLAY "SRYSYU 200 OVER !!! TBL ERR"
                            MOVE    1           TO  FLG-SRYKBN
                        ELSE
                            MOVE    SRYKBN-REC      TO  MSYU-TBL-OCC

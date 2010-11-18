@@ -48,12 +48,12 @@
       *            ÅÔÆ»ÉÜ¸©£Ã£Ä
                    07  SPA-GMN-PREFCD-G.
                        09  SPA-GMN-PREFCD         PIC X(02).
-                       09  FILLER                 PIC X(01).
+                       09  SPA-GMN-FILLER1        PIC X(01).
                        09  SPA-GMN-PREFMEI        PIC X(10).
       *            ÅÔÆ»ÉÜ¸©£Ã£Ä¥³¥ó¥Ü
                    07  SPA-GMN-PREFCD-LIST    OCCURS  47.
                        09  SPA-GMN-PREFCDL        PIC X(02).
-                       09  FILLER                 PIC X(01).
+                       09  SPA-GMN-FILLER2        PIC X(01).
                        09  SPA-GMN-PREFMEIL       PIC X(10).
                    07  SPA-GMN-PREFCD-MAX         PIC 9(03).
       *            Ä®°è¥ê¥¹¥È

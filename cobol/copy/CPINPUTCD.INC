@@ -34,16 +34,16 @@
                05  ICD-INPUTCD         PIC  X(20).
                05  ICD-INPUTCD-R1      REDEFINES   ICD-INPUTCD.
                    07  ICD-CD4         PIC  X(04).
-                   07                  PIC  X(16).
+                   07  ICD-FIL1        PIC  X(16).
                05  ICD-INPUTCD-R2      REDEFINES   ICD-INPUTCD.
                    07  ICD-CD5         PIC  X(05).
-                   07                  PIC  X(15).
+                   07  ICD-FIL2        PIC  X(15).
                05  ICD-INPUTCD-R3      REDEFINES   ICD-INPUTCD.
                    07  ICD-CD6         PIC  X(06).
                    07  ICD-CD6-R1      REDEFINES   ICD-CD6.
                        09  ICD-BURCD   PIC  X(03).
                        09  ICD-MEICD   PIC  X(03).
-                   07                  PIC  X(14).
+                   07  ICD-FIL3        PIC  X(14).
       *ø«Œ≈∂Ë ¨
            03  ICD-SRYKBN              PIC  X(02).
       *ø«Œ≈•≥°º•…
