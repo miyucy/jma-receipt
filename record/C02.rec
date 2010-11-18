@@ -123,6 +123,18 @@ C02	{
 		BYOMEI	{
 			value	varchar(480);
 		};
+		HOSOKUCD_1	{
+			value	varchar(12);
+		};
+		HOSOKUCD_2	{
+			value	varchar(12);
+		};
+		HOSOKUCD_3	{
+			value	varchar(12);
+		};
+		HOSOKU_COMMENT	{
+			value	varchar(40);
+		};
 		CHARTBYOMEI	{
 			value	varchar(480);
 		};

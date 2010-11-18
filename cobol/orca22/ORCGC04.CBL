@@ -62,6 +62,7 @@
       *  04.06.01    NACL-藤原    10/04/28  自院病名に不明な病名コードが
       *                                     登録された場合のチェックを追加
       *  04.06.02    NACL-藤原    10/10/26  同義語変換対応
+      *  04.06.03    NACL-藤原    10/11/04  補足コメント対応
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,6 +124,8 @@
            03  WRK-WIDGET.
                05  WRK-WIDGET1     PIC X(07).
                05  WRK-WIDGET2     PIC 9(01).  
+               05  WRK-WIDGET3     PIC 9(01).  
+               05  WRK-WIDGET4     PIC 9(01).  
            05  WRK-BYOMEI          PIC X(400).
       *
            03  WRK-SYMD.
@@ -179,11 +182,11 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    自院病名マスタ−
+      *    自院病名マスタ
        01  USERBYOMEI-REC.
            COPY    "CPUSERBYOMEI.INC".
       *
-      *    病名マスタ−
+      *    病名マスタ
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
@@ -192,7 +195,7 @@
            COPY    "CPSYNONYM.INC".
       *
       *****************************************************************
-      *    サブプロ用　領域
+      *    サブプロ用領域
       *****************************************************************
       *
       *    半角チェックサブ
@@ -208,7 +211,7 @@
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    連絡　領域
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -241,7 +244,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -320,10 +323,10 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "C04    "           TO  MCP-WINDOW.
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "C04    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
@@ -393,9 +396,16 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *    検索画面スパ編集処理     
            INITIALIZE              SPA-C04
       *
+      *    検索対象設定
+           IF      SPA-C01-WIDGET      =   SPACE
+               MOVE    "BYOMEICD"          TO  SPA-NAI-C04-B10-WIDGET
+           ELSE
+               MOVE    SPA-C01-WIDGET      TO  SPA-NAI-C04-B10-WIDGET
+           END-IF
+      *
+      *    病名編集
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       6
                IF      SPA-C01-TBYOMEICD(IDX)  NOT =   SPACE
@@ -403,7 +413,8 @@
                                        TO  SPA-GMN-C04-INPUTCD(IDX)
       *
                  IF      SPA-C01-TUSERBYOMEIFLG (IDX)    =   "1"
-                   IF      SPA-C01-INDEX   =   ZERO
+                   IF    ( SPA-C01-INDEX   =   ZERO       )
+                   OR    ( SPA-C01-WIDGET  =   "HOSOKUCD" )
                        PERFORM VARYING IDZ FROM    1   BY  1
                                UNTIL   IDZ >       6
                            IF      SPA-C01-TBYOMEICD-INDEX (IDX)
@@ -446,14 +457,24 @@
                  END-IF
                END-IF            
            END-PERFORM
-      *
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       6
                PERFORM 3101-BYOMEITOP-HENSYU-SEC
            END-PERFORM
-      *
-      *    病名編集 
            PERFORM 3100-BYOMEI-HENSYU-SEC
+      *   
+      *    補足コメント編集
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       3
+               IF      SPA-C01-THOSOKUCD(IDX)  NOT =   SPACE
+                   MOVE    SPA-C01-THOSOKUCD(IDX)
+                                       TO  SPA-GMN-C04-HOSOKUCD (IDX)
+                   MOVE    SPA-C01-THOSOKU-COMMENT(IDX)
+                                       TO  SPA-NAI-C04-HOSOKU-COMMENT
+                                                                (IDX)
+               END-IF
+           END-PERFORM
+           PERFORM 3103-HOSOKU-COMMENT-HENSYU-SEC
       *
            IF      SPA-C01-INDEX   =   ZERO
       *        分類一覧
@@ -473,7 +494,6 @@
                END-IF
                IF      SPA-GMN-C04-BUNRUICD    =   ZERO
                    INITIALIZE                      USERBYOMEI-REC
-      *************MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                    MOVE    "tbl_userbyomei"    TO  WRK-MCP-TABLE
                    MOVE    "key3"              TO  WRK-MCP-PATHNAME
                    PERFORM 3101-USERBYOMEI-LST-SEC
@@ -486,7 +506,6 @@
       *        自院病名一覧
                MOVE    1                   TO  SPA-GMN-C04-PAGE
                INITIALIZE                      USERBYOMEI-REC
-      *********MOVE    SPA-HOSPID          TO  USBYO-HOSPID
                STRING  SPA-C01-BYOMEIINPUTCD   DELIMITED   BY  SPACE
                        "%"                     DELIMITED   BY  SIZE
                                            INTO    USBYO-BYOMEIINPUTCD
@@ -707,6 +726,28 @@
            EXIT.
       *
       *****************************************************************
+      *    補足コメント編集処理
+      *****************************************************************
+       3103-HOSOKU-COMMENT-HENSYU-SEC  SECTION.
+      *
+           MOVE    SPACE           TO  SPA-GMN-C04-HOSOKU-COMMENT
+                                       WRK-BYOMEI
+      *     
+           STRING  SPA-NAI-C04-HOSOKU-COMMENT (1)
+                                    DELIMITED   BY  SPACE
+                   SPA-NAI-C04-HOSOKU-COMMENT (2)
+                                    DELIMITED   BY  SPACE
+                   SPA-NAI-C04-HOSOKU-COMMENT (3)
+                                    DELIMITED   BY  SPACE    
+                                       INTO    WRK-BYOMEI
+                                           
+           END-STRING
+           MOVE    WRK-BYOMEI          TO  SPA-GMN-C04-HOSOKU-COMMENT
+           .
+       3103-HOSOKU-COMMENT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    分類一覧 編集処理
       *****************************************************************
        3102-BUNRUI-LST-SEC         SECTION.
@@ -846,6 +887,9 @@
       *    次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-ATOGMN-SEC
+      *    検索切替
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 490-KENSAKU-CHANGE-SEC
       *    確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KAKUTEI-SEC
@@ -855,7 +899,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    会話　処理
+      *    会話処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -871,6 +915,10 @@
                WHEN    "ACTIVATE"      ALSO    "INPUTCD5"
                WHEN    "ACTIVATE"      ALSO    "INPUTCD6"
                    PERFORM 41003-INPUTCD-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "HOSOKUCD_1"
+               WHEN    "ACTIVATE"      ALSO    "HOSOKUCD_2"
+               WHEN    "ACTIVATE"      ALSO    "HOSOKUCD_3"
+                   PERFORM 41005-HOSOKUCD-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "KENBYOMEI"
                    PERFORM 41004-KENBYOMEI-CHK-SEC
       *        病名選択
@@ -1104,31 +1152,67 @@
       *    病名編集処理（自院病名検索時）
       *****************************************************************
        410022-BYOMEI-HENSYU-SEC      SECTION.
-      * 
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       6
-               PERFORM 3101-BYOMEITOP-HENSYU-SEC
-           END-PERFORM
+      *
+           EVALUATE    SPA-NAI-C04-B10-WIDGET
+               WHEN    "BYOMEICD"
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       6
+                       PERFORM 3101-BYOMEITOP-HENSYU-SEC
+                   END-PERFORM
       *                                     
-           PERFORM 3100-BYOMEI-HENSYU-SEC
+                   PERFORM 3100-BYOMEI-HENSYU-SEC
       *
-      *    変更処理のときの複数病名入力
-           IF    ( SPA-NAI-C04-BYOMEISU-MAX
-                                       >   1    )
-           AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
-               MOVE    99                  TO  SPA-GMN-C04-CUR
-               MOVE    "0003"              TO  SPA-ERRCD
-           END-IF
+      *            変更処理のときの複数病名入力
+                   IF    ( SPA-NAI-C04-BYOMEISU-MAX
+                                               >   1    )
+                   AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
+                       MOVE    99                  TO  SPA-GMN-C04-CUR
+                       MOVE    "0003"              TO  SPA-ERRCD
+                   END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF    ( WRK-HAISIYMDH       =   SPACE )
-               OR    ( SPA-C02-1042-MSG3-DSPKBN
-                                           =   "1"   )
-                   CONTINUE
-               ELSE
-                   MOVE    "0075"              TO  SPA-ERRCD
-               END-IF                     
-           END-IF
+                   IF      SPA-ERRCD           =   SPACE
+                       IF    ( WRK-HAISIYMDH       =   SPACE )
+                       OR    ( SPA-C02-1042-MSG3-DSPKBN
+                                                   =   "1"   )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0075"              TO  SPA-ERRCD
+                       END-IF                     
+                   END-IF
+               WHEN    "HOSOKUCD"
+                   PERFORM 3103-HOSOKU-COMMENT-HENSYU-SEC 
+      *
+      *            文字数チェック
+                   INITIALIZE                      ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI 
+                   MOVE    WRK-BYOMEI          TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC          =   0 )
+                   AND   ( KANACHK-SYUBETU     =   2 )
+      *                病名文字数           
+                       IF      KANACHK-MAX         >   40
+                           MOVE    "0095"              TO  SPA-ERRCD
+                       END-IF
+      *************ELSE
+      *************    MOVE    "0071"              TO  SPA-ERRCD
+                   END-IF
+      *
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO  TO  410022-BYOMEI-HENSYU-EXT
+                   END-IF
+      *
+      *            前後の（）チェック 
+                   IF      SPA-GMN-C04-HOSOKU-COMMENT
+                                           NOT =   SPACE
+                       COMPUTE IDX3    =   KANACHK-MAX     -   1
+                       IF    ( SPA-GMN-C04-HOSOKU-COMMENT (1:2)
+                                                   =   "（" )
+                       OR    ( SPA-GMN-C04-HOSOKU-COMMENT (IDX3:2)
+                                                   =   "）" )
+                           MOVE    "0092"              TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+          END-EVALUATE
       *
            .
        410022-BYOMEI-HENSYU-EXT.
@@ -1166,6 +1250,33 @@
            END-IF
            .
        410023-BYOMEI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択病名編集処理（補足コメント）
+      *****************************************************************
+       410024-HOSOKUCD-HENSYU-SEC        SECTION.
+      *
+           INITIALIZE                      SPA-NAI-C04-HOSOKU-G (IDZ)
+      *
+           IF      SPA-GMN-C04-HOSOKUCD (IDZ)
+                                   NOT =   SPACE
+               INITIALIZE                      USERBYOMEI-REC
+               MOVE    SPA-GMN-C04-HOSOKUCD (IDZ)
+                                           TO  USBYO-BYOMEIINPUTCD
+               PERFORM 900-USBYO-INV-SEC                            
+               IF      FLG-USERBYOMEI      =   1
+                   MOVE    "0004"          TO  SPA-ERRCD    
+                   MOVE    "■■■"        TO
+                                       SPA-NAI-C04-HOSOKU-COMMENT (IDZ)
+               ELSE
+                   MOVE    USBYO-BYOMEI    TO
+                                       SPA-NAI-C04-HOSOKU-COMMENT (IDZ)
+               END-IF
+           END-IF
+      *
+           .
+       410024-HOSOKUCD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1540,16 +1651,174 @@
            EXIT.
       *
       *****************************************************************
+      *    補足コメントコードチェック処理
+      *****************************************************************
+       41005-HOSOKUCD-CHK-SEC          SECTION.
+      *
+           MOVE    SPACE           TO  WRK-SEIGYO
+      *
+           MOVE    MCP-WIDGET      TO  WRK-WIDGET
+           MOVE    WRK-WIDGET4     TO  IDZ
+      *
+           COMPUTE SPA-GMN-C04-CUR =   9   +   IDZ
+      *
+      *    コードの挿入・削除の制御文字取得
+           IF      C04-HOSOKUCD (IDZ)
+                               NOT =   SPACE
+               PERFORM VARYING IDX FROM    10  BY  -1
+                       UNTIL   IDX <       2
+                   IF      C04-HOSOKUCD (IDZ)(IDX:1)
+                                       NOT =   SPACE
+                       EVALUATE    C04-HOSOKUCD (IDZ)(IDX:1)
+                           WHEN    "-"
+                               MOVE    "-"         TO  WRK-SEIGYO
+                           WHEN    "+"
+                               MOVE    "+"         TO  WRK-SEIGYO
+                           WHEN    OTHER
+                               IF      IDX             >   2
+                                   COMPUTE IDW     =   IDX     -   1
+                                   IF      C04-HOSOKUCD (IDZ)(IDW:2)
+                                                   =   "−"
+                                       MOVE    "-"     TO  WRK-SEIGYO
+                                   END-IF
+                                   IF      C04-HOSOKUCD (IDZ)(IDW:2)
+                                                   =   "＋"
+                                       MOVE    "+"     TO  WRK-SEIGYO
+                                   END-IF
+                               END-IF
+                       END-EVALUATE
+      *??
+                 DISPLAY "WRK-SEIGYO=" WRK-SEIGYO "#"
+      *??
+      *                追加のとき
+                       IF      WRK-SEIGYO      =   "+"
+                           IF      SPA-GMN-C04-HOSOKUCD (3)
+                                                   NOT =   SPACE
+                               MOVE    SPACE           TO  WRK-SEIGYO
+                           END-IF 
+                           IF      IDZ         >   1
+                               COMPUTE IDW     =   IDZ     -   1
+                               IF      SPA-GMN-C04-HOSOKUCD (IDW)
+                                                           =   SPACE 
+                                   MOVE    SPACE       TO  WRK-SEIGYO
+                               END-IF
+                           END-IF
+                           IF      WRK-SEIGYO      =   SPACE
+                               COMPUTE SPA-GMN-C04-CUR =   9   +   IDZ
+                               GO  TO  41005-HOSOKUCD-CHK-EXT
+                           END-IF
+                       END-IF
+                       MOVE    2               TO  IDX
+                   END-IF 
+               END-PERFORM
+           ELSE
+               MOVE    "-"                     TO  WRK-SEIGYO
+           END-IF
+      *       
+      *??
+                 DISPLAY "WRK-SEIGYO=" WRK-SEIGYO "#"
+      *??
+           EVALUATE    WRK-SEIGYO
+               WHEN    "-"
+                   PERFORM VARYING IDX FROM    IDZ BY  1
+                           UNTIL   IDX >       3
+                       IF      IDX             =   3
+                           INITIALIZE  SPA-NAI-C04-HOSOKU-G (IDX)
+                                       SPA-GMN-C04-HOSOKUCD  (IDX)
+                       ELSE
+                           COMPUTE IDW     =   IDX     +   1
+                           MOVE    SPA-NAI-C04-HOSOKU-G (IDW)
+                                   TO  SPA-NAI-C04-HOSOKU-G (IDX)
+                           MOVE    SPA-GMN-C04-HOSOKUCD   (IDW)
+                                   TO  SPA-GMN-C04-HOSOKUCD  (IDX)
+                       END-IF                     
+                   END-PERFORM                           
+                   PERFORM 410022-BYOMEI-HENSYU-SEC 
+                   MOVE    SPACE           TO  WRK-SEIGYO     
+                   GO  TO  41005-HOSOKUCD-CHK-EXT
+               WHEN    "+"
+                   PERFORM VARYING IDX FROM    3   BY  -1
+                           UNTIL   IDX <       IDZ
+                       IF      IDX             =   IDZ
+                           INITIALIZE  SPA-NAI-C04-HOSOKU-G (IDX)
+                                       SPA-GMN-C04-HOSOKUCD (IDX)
+                       ELSE
+                           COMPUTE IDW     =   IDX     -   1
+                           MOVE    SPA-NAI-C04-HOSOKU-G (IDW)
+                                   TO  SPA-NAI-C04-HOSOKU-G(IDX)
+                           MOVE    SPA-GMN-C04-HOSOKUCD (IDW)
+                                   TO  SPA-GMN-C04-HOSOKUCD  (IDX)
+                       END-IF                     
+                   END-PERFORM
+                   PERFORM 410022-BYOMEI-HENSYU-SEC 
+                   MOVE    SPACE           TO  WRK-SEIGYO     
+                   GO  TO  41005-HOSOKUCD-CHK-EXT
+           END-EVALUATE                               
+      *
+           INITIALIZE              SPA-NAI-C04-HOSOKU-G (IDZ)
+      *??
+                 DISPLAY "C04-HOSOKUCD=" IDZ "#" C04-HOSOKUCD (IDZ) "#"
+      *??
+      *
+      *    半角チェック
+           IF      C04-HOSOKUCD (IDZ)   =   SPACE
+               CONTINUE
+           ELSE    
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    C04-HOSOKUCD (IDZ)  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-RC2         =   ZERO )
+                   MOVE    KANACHK-OUT-INPUT   TO  C04-HOSOKUCD (IDZ)
+               ELSE
+                   MOVE    "0072"              TO  SPA-ERRCD
+                   GO  TO  41005-HOSOKUCD-CHK-EXT
+               END-IF
+           END-IF    
+      *
+           MOVE    C04-HOSOKUCD (IDZ)   TO  SPA-GMN-C04-HOSOKUCD(IDZ)
+      *
+           PERFORM 410024-HOSOKUCD-HENSYU-SEC
+      *
+           PERFORM 410022-BYOMEI-HENSYU-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               ADD     1                   TO  SPA-GMN-C04-CUR
+               IF      SPA-GMN-C04-CUR     >   12
+                   MOVE    2                   TO  SPA-GMN-C04-CUR
+               END-IF
+           END-IF
+           .
+       41005-HOSOKUCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    自院病名行選択処理
       *****************************************************************
        41020-BYOMEISEL-SEC       SECTION.
+      *
+           EVALUATE    SPA-NAI-C04-B10-WIDGET
+               WHEN    "BYOMEICD"
+                   PERFORM 410201-BYOMEI-SELECT-SEC
+               WHEN    "HOSOKUCD"
+                   PERFORM 410202-HOSOKU-SELECT-SEC
+           END-EVALUATE
+           .
+       41020-BYOMEISEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自院病名行選択処理（病名検索時）
+      *****************************************************************
+       410201-BYOMEI-SELECT-SEC       SECTION.
       *
       *    病名コードが６つのとき
            IF      SPA-NAI-C04-BYOMEICD-MAX
                                        =   6
                MOVE    99                  TO  SPA-GMN-C04-CUR
                MOVE    "0013"              TO  SPA-ERRCD
-               GO  TO  41020-BYOMEISEL-EXT
+               GO  TO  410201-BYOMEI-SELECT-EXT
            END-IF
       * 
            MOVE    ZERO                TO  WRK-SELNO
@@ -1584,7 +1853,7 @@
            END-IF
       *
            IF      SPA-CIDCD2      NOT =   SPACE
-               GO  TO  41020-BYOMEISEL-EXT
+               GO  TO  410201-BYOMEI-SELECT-EXT
            END-IF
       *
            IF      SPA-C01-INDEX   =   ZERO
@@ -1602,7 +1871,78 @@
                END-IF 
            END-IF
            .
-       41020-BYOMEISEL-EXT.
+       410201-BYOMEI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自院病名行選択処理（補足コメント検索時）
+      *****************************************************************
+       410202-HOSOKU-SELECT-SEC       SECTION.
+      *
+      *    補足コメントコードが３つのとき
+               IF    ( SPA-GMN-C04-HOSOKUCD (1)
+                                   NOT =   SPACE )
+               AND   ( SPA-GMN-C04-HOSOKUCD (2)
+                                   NOT =   SPACE )
+               AND   ( SPA-GMN-C04-HOSOKUCD (3)
+                                   NOT =   SPACE )
+               MOVE    99                  TO  SPA-GMN-C04-CUR
+               MOVE    "0013"              TO  SPA-ERRCD
+               GO  TO  410202-HOSOKU-SELECT-EXT
+           END-IF
+      * 
+           MOVE    ZERO                TO  WRK-SELNO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-C04-MAX
+               IF      C04-BYOMEILST-SELECT (IDX)    =   "T"
+                   MOVE    IDX                  TO  WRK-SELNO
+                   MOVE    SPA-GMN-C04-MAX      TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-SELNO           TO  WRK-BANGO
+      * 
+           IF      SPA-C01-INDEX       =   ZERO
+               MOVE    ZERO            TO  IDZ
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       3
+                   IF      SPA-GMN-C04-HOSOKUCD (IDXX)  =   SPACE
+                       MOVE    SPA-GMN-C04-TINPUTCD   (WRK-BANGO)
+                                           TO  SPA-GMN-C04-HOSOKUCD
+                                                                 (IDXX)
+                       MOVE    IDXX        TO  IDZ
+                       PERFORM 410024-HOSOKUCD-HENSYU-SEC
+      *
+                       MOVE    3           TO  IDXX
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    SPA-C01-INDEX   TO  IDZ
+               MOVE    SPA-GMN-C04-TINPUTCD (WRK-BANGO)
+                                       TO  SPA-GMN-C04-HOSOKUCD(IDZ)
+               PERFORM 410024-HOSOKUCD-HENSYU-SEC
+           END-IF
+      *
+           IF      SPA-CIDCD2      NOT =   SPACE
+               GO  TO  410202-HOSOKU-SELECT-EXT
+           END-IF
+      *
+           IF      SPA-C01-INDEX   =   ZERO
+               PERFORM 410022-BYOMEI-HENSYU-SEC
+           ELSE
+               PERFORM 410023-BYOMEI-HENSYU-SEC
+           END-IF 
+      *
+           MOVE    2               TO  SPA-GMN-C04-CUR     
+           IF      SPA-C01-INDEX   =   ZERO
+               CONTINUE
+           ELSE
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 450-KAKUTEI-SEC
+               END-IF 
+           END-IF
+           .
+       410202-HOSOKU-SELECT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1783,7 +2123,30 @@
       *
       *
       *****************************************************************
-      *    確定　処理
+      *    検索切替処理
+      *****************************************************************
+       490-KENSAKU-CHANGE-SEC      SECTION.
+      *
+           EVALUATE    SPA-NAI-C04-B10-WIDGET
+               WHEN    "BYOMEICD"
+                   MOVE    "HOSOKUCD"      TO  SPA-NAI-C04-B10-WIDGET
+                   EVALUATE    SPA-GMN-C04-CUR
+                       WHEN    3   THRU    8
+                           MOVE    10          TO  SPA-GMN-C04-CUR
+                   END-EVALUATE 
+               WHEN    "HOSOKUCD"
+                   MOVE    "BYOMEICD"      TO  SPA-NAI-C04-B10-WIDGET
+                   EVALUATE    SPA-GMN-C04-CUR
+                       WHEN    10  THRU    12
+                           MOVE    3           TO  SPA-GMN-C04-CUR
+                   END-EVALUATE 
+           END-EVALUATE
+           .
+       490-KENSAKU-CHANGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定処理
       *****************************************************************
        450-KAKUTEI-SEC             SECTION.
       *
@@ -1854,12 +2217,57 @@
                        END-IF
                    END-IF
                END-PERFORM
-           END-PERFORM        
+           END-PERFORM
       *
-           MOVE    ZERO            TO  IDY
+      *    補足コメント入力可のときのチェック
+           IF      SPA-C01-B10-FLG =   ZERO
+      *        コードチェック
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       3
+                   IF    ( SPA-GMN-C04-HOSOKUCD (IDX)
+                                               NOT =   SPACE )
+                   AND   ( SPA-NAI-C04-HOSOKU-COMMENT(IDX) (1:2)
+                                                   =   "■"  )
+                       COMPUTE SPA-GMN-C04-CUR     =   IDX     +   9
+                       MOVE    "0004"              TO  SPA-ERRCD
+                       GO  TO  450-KAKUTEI-EXT
+                   END-IF
+               END-PERFORM 
+      *        文字数チェック
+               PERFORM 3103-HOSOKU-COMMENT-HENSYU-SEC 
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI 
+               MOVE    WRK-BYOMEI          TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   0 )
+               AND   ( KANACHK-SYUBETU     =   2 )
+      *            病名文字数
+                   IF      KANACHK-MAX         >   40
+                       MOVE    "0095"              TO  SPA-ERRCD
+                       GO  TO  450-KAKUTEI-EXT
+                   END-IF
+      *********ELSE
+      *********    MOVE    "0071"              TO  SPA-ERRCD
+               END-IF
+      *        前後の（）チェック 
+      *********IF      SPA-GMN-C04-HOSOKU-COMMENT
+      *********                        NOT =   SPACE
+      *********    COMPUTE IDX3    =   KANACHK-MAX     -   1
+      *********    IF    ( SPA-GMN-C04-HOSOKU-COMMENT (1:2)
+      *********                                =   "（" )
+      *********    OR    ( SPA-GMN-C04-HOSOKU-COMMENT (IDX3:2)
+      *********                                =   "）" )
+      *********        MOVE    "0092"              TO  SPA-ERRCD
+      *********        GO  TO  450-KAKUTEI-EXT
+      *********    END-IF
+      *********END-IF
+           END-IF            
+      *
       *     
            IF      SPA-C01-INDEX   =   ZERO
                INITIALIZE                  SPA-C01KYOUTU
+      *
+               MOVE    ZERO            TO  IDY
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       6
                    IF      SPA-GMN-C04-INPUTCD (IDX)   NOT =   SPACE
@@ -1870,12 +2278,31 @@
                                                                  (IDY)
                    END-IF 
                END-PERFORM
+      *
+               MOVE    ZERO            TO  IDY
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       3
+                   IF      SPA-GMN-C04-HOSOKUCD (IDX)   NOT =   SPACE
+                       ADD     1           TO  IDY    
+                       MOVE    SPA-GMN-C04-HOSOKUCD  (IDX)
+                                           TO  SPA-C01-THOSOKUCD (IDY)
+                       MOVE    IDX         TO  SPA-C01-THOSOKUCD-INDEX
+                                                                 (IDY)
+                   END-IF 
+               END-PERFORM
            ELSE
-               MOVE    SPA-C01-INDEX       TO  IDX
-               MOVE    SPA-GMN-C04-INPUTCD  (IDX)
-                                           TO  SPA-C01-BYOMEIINPUTCD
+               EVALUATE    SPA-C01-WIDGET (1:8)
+                   WHEN    "BYOMEICD"
+                       MOVE    SPA-C01-INDEX   TO  IDX
+                       MOVE    SPA-GMN-C04-INPUTCD  (IDX)
+                                               TO  SPA-C01-BYOMEIINPUTCD
+                   WHEN    "HOSOKUCD"
+                       MOVE    SPA-C01-INDEX   TO  IDX
+                       MOVE    SPA-GMN-C04-HOSOKUCD (IDX)
+                                               TO  SPA-C01-BYOMEIINPUTCD
+               END-EVALUATE
            END-IF
-      *     
+      *
            MOVE    SPA-C01KYOUTU   TO  SPA-WORK
       *
            PERFORM 210-BACK
@@ -1995,6 +2422,7 @@
            END-IF
       * 
            MOVE    SPACE               TO  C04
+           INITIALIZE                      C04
       *
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2021,6 +2449,12 @@
                MOVE    SPA-GMN-C04-INPUTCD(IDX)   TO  C04-INPUTCD (IDX)
            END-PERFORM
            MOVE    SPA-GMN-C04-BYOMEI      TO  C04-BYOMEI
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >      3
+               MOVE    SPA-GMN-C04-HOSOKUCD(IDX)  TO  C04-HOSOKUCD(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-C04-HOSOKU-COMMENT
+                                           TO  C04-HOSOKU-COMMENT
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-C04-BUNRUI-MAX
@@ -2040,15 +2474,45 @@
       *
            IF      SPA-C01-INDEX   =   ZERO
                MOVE    WIDGET-NORMAL       TO  C04-B04-STATE
+                                               C04-B10-STATE
                                                C04-B12-STATE
                                                C04-BUNRUICD-STATE
                                                C04-KENBYOMEI-STATE
-               PERFORM VARYING     IDX     FROM   1   BY  1
-                       UNTIL       IDX     >      6
-                   MOVE    WIDGET-NORMAL   TO  C04-INPUTCD-STATE (IDX)
-               END-PERFORM
+               IF      SPA-NAI-C04-B10-WIDGET
+                                       =   "BYOMEICD"
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >       6
+                       MOVE    WIDGET-NORMAL   TO  C04-INPUTCD-STATE
+                                                               (IDX)
+                   END-PERFORM
+                   PERFORM VARYING     IDX     FROM   1   BY  1
+                           UNTIL       IDX     >      3
+                       MOVE    WIDGET-INSENSITIVE
+                                           TO  C04-HOSOKUCD-STATE (IDX)
+                   END-PERFORM
+                   MOVE    "F10:補足検索"      TO  C04-B10-LABEL
+                   IF      SPA-C01-B10-FLG     =   ZERO
+                       MOVE    WIDGET-NORMAL       TO  C04-B10-STATE
+                   ELSE
+                       MOVE    WIDGET-INSENSITIVE  TO  C04-B10-STATE
+                   END-IF
+               ELSE
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >       6
+                       MOVE    WIDGET-INSENSITIVE
+                                           TO  C04-INPUTCD-STATE
+                                                               (IDX)
+                   END-PERFORM
+                   PERFORM VARYING     IDX     FROM   1   BY  1
+                           UNTIL       IDX     >      3
+                       MOVE    WIDGET-NORMAL  
+                                           TO  C04-HOSOKUCD-STATE (IDX)
+                   END-PERFORM
+                   MOVE    "F10:病名検索"  TO  C04-B10-LABEL
+               END-IF    
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  C04-B04-STATE
+                                               C04-B10-STATE
                                                C04-B12-STATE
                                                C04-BUNRUICD-STATE
                                                C04-KENBYOMEI-STATE
@@ -2057,6 +2521,17 @@
                    MOVE    WIDGET-INSENSITIVE
                                            TO  C04-INPUTCD-STATE (IDX)
                END-PERFORM
+               PERFORM VARYING     IDX     FROM   1   BY  1
+                       UNTIL       IDX     >      3
+                   MOVE    WIDGET-INSENSITIVE
+                                           TO  C04-HOSOKUCD-STATE (IDX)
+               END-PERFORM
+               IF      SPA-NAI-C04-B10-WIDGET
+                                       =   "BYOMEICD"
+                   MOVE    "F10:補足検索"  TO  C04-B10-LABEL
+               ELSE
+                   MOVE    "F10:病名検索"  TO  C04-B10-LABEL
+               END-IF
            END-IF
       *
            IF      SPA-C01-INDEX   =   ZERO
@@ -2095,6 +2570,12 @@
                      MOVE  "INPUTCD6"   TO  MCP-WIDGET
              WHEN    9
                      MOVE  "BUNRUICD"   TO  MCP-WIDGET
+             WHEN    10
+                     MOVE  "HOSOKUCD_1" TO  MCP-WIDGET
+             WHEN    11
+                     MOVE  "HOSOKUCD_2" TO  MCP-WIDGET
+             WHEN    12
+                     MOVE  "HOSOKUCD_3" TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -2154,6 +2635,16 @@
                                        TO  SPA-ERRMSG (29:22)
                    MOVE    "で廃止の扱いとなっています。"
                                        TO  SPA-ERRMSG (51:)
+               WHEN    "0092"
+                   MOVE    "補足コメントの前後に（）があります"
+                                               TO  SPA-ERRMSG   
+               WHEN    "0094"
+                   MOVE
+                     "複数病名の入力時は補足コメントの入力はできません"
+                                               TO  SPA-ERRMSG   
+               WHEN    "0095"
+                   MOVE    "補足コメントが長すぎます"
+                                               TO  SPA-ERRMSG
                WHEN    "1003"
                    MOVE    "自院病名マスタが存在しません"
                                                        TO  SPA-ERRMSG

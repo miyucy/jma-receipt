@@ -91,6 +91,11 @@
                   05  C02-VALUE PIC X(12).
               03  C02-BYOMEI.
                 04  C02-VALUE   PIC X(480).
+              03  C02-HOSOKUCD-G    OCCURS  3.
+                04  C02-HOSOKUCD.
+                  05  C02-VALUE PIC X(12).
+              03  C02-HOSOKU-COMMENT.
+                04  C02-VALUE   PIC X(40).
               03  C02-CHARTBYOMEI.
                 04  C02-VALUE   PIC X(480).
               03  C02-SYUBYOFLGCOMBO.

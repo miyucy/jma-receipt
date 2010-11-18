@@ -14,9 +14,9 @@
   <class>GtkWindow</class>
   <name>C04</name>
   <x>285</x>
-  <y>315</y>
+  <y>245</y>
   <width>730</width>
-  <height>430</height>
+  <height>500</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -49,7 +49,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>16</x>
-      <y>400</y>
+      <y>470</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -72,7 +72,7 @@
       <class>GtkButton</class>
       <name>B06</name>
       <x>290</x>
-      <y>400</y>
+      <y>470</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -95,7 +95,7 @@
       <class>GtkButton</class>
       <name>B07</name>
       <x>370</x>
-      <y>400</y>
+      <y>470</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -118,7 +118,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>632</x>
-      <y>400</y>
+      <y>470</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -565,7 +565,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>104</x>
-      <y>400</y>
+      <y>470</y>
       <width>100</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -585,19 +585,138 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>TITLE</name>
-      <x>50</x>
-      <y>8</y>
-      <width>70</width>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>511</x>
+      <y>470</y>
+      <width>95</width>
       <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
+      </signal>
       <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>7.45058e-09</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>HOSOKUCD_1</name>
+      <x>176</x>
+      <y>392</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 31 Jan 2001 01:21:46 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 31 Jan 2001 01:22:18 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>HOSOKUCD_2</name>
+      <x>256</x>
+      <y>392</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:07:59 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:08:17 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>HOSOKUCD_3</name>
+      <x>336</x>
+      <y>392</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:08:42 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:08:57 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>10</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>HOSOKU_COMMENT</name>
+      <x>176</x>
+      <y>424</y>
+      <width>297</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:16:19 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:16:40 GMT</last_modification_time>
+      </signal>
+      <editable>False</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>40</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
     </widget>
 
     <widget>
@@ -618,15 +737,15 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label476</name>
-      <x>224</x>
-      <y>296</y>
-      <width>64</width>
+      <name>TITLE</name>
+      <x>50</x>
+      <y>8</y>
+      <width>70</width>
       <height>24</height>
-      <label>選択番号  </label>
+      <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
-      <xalign>7.45058e-09</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -635,14 +754,14 @@
     <widget>
       <class>GtkLabel</class>
       <name>label526</name>
-      <x>96</x>
+      <x>90</x>
       <y>328</y>
       <width>72</width>
       <height>24</height>
       <label>病名コード</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
-      <xalign>7.45058e-09</xalign>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -651,11 +770,43 @@
     <widget>
       <class>GtkLabel</class>
       <name>label502</name>
-      <x>96</x>
+      <x>90</x>
       <y>360</y>
       <width>72</width>
       <height>24</height>
       <label>病    名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label528</name>
+      <x>90</x>
+      <y>392</y>
+      <width>84</width>
+      <height>24</height>
+      <label>補足コメント</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label476</name>
+      <x>224</x>
+      <y>296</y>
+      <width>64</width>
+      <height>24</height>
+      <label>選択番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>7.45058e-09</xalign>

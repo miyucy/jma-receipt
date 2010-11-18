@@ -31,8 +31,9 @@
       *  03.04.01    NACL-藤原    06/10/31  削除フラグ、削除オペレータ
       *                                     ＩＤを追加
       *
-      *  04.06.01    NACL-藤原    09/06/20  病名の入力順対応
+      *  04.06.01    NACL-藤原    10/06/20  病名の入力順対応
       *                                     入力順連番を追加 
+      *  04.06.02    NACL-藤原    10/11/05  補足コメント対応
       *****************************************************************
       *
       *01  PTBYOMEI-REC.
@@ -108,12 +109,16 @@
            03  PTBYO-CHARTBYOMEI       PIC X(160).
       *カルテ病名文字数
            03  PTBYO-CHARTBYOMEIMOJI   PIC 9(02).
+      *補足コメント
+           03  PTBYO-HOSOKU-COMMENT    PIC X(80).
+      *補足コメントコード
+           03  PTBYO-HOSOKUCD-G.
+               05  PTBYO-HOSOKUCD      PIC X(20)
+                                       OCCURS   3.
       *病名編集フラグ
            03  PTBYO-BYOMEIHENFLG      PIC X(01).
-      *----(01.00.01) LINE ADD START ----------------------------------
       *保険病名フラグ
            03  PTBYO-HKNBYOMEIFLG      PIC X(01).
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *レセ電エラーフラグ
            03  PTBYO-RECEDENFLG        PIC X(01).
       *保険番号

@@ -136,7 +136,7 @@
            03  WRK-NENREI-GR       REDEFINES   WRK-NENREI-G.
                05  WRK-NENREI-ZN   PIC Z9.
                05  WRK-NENREI-MEIN PIC X(04).
-               05  FILLER          PIC X(01).
+               05  WRK-NENREI-FIL  PIC X(01).
       *
       *    日付変換用
            03  WRK-SYMD            PIC X(08).

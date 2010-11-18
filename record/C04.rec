@@ -3,6 +3,10 @@ C04	{
 		B04	{
 			state	int;
 		};
+		B10	{
+			state	int;
+			label	varchar(12);
+		};
 		B12	{
 			state	int;
 		};
@@ -38,6 +42,21 @@ C04	{
 		};
 		BYOMEI	{
 			value	varchar(400);
+		};
+		HOSOKUCD_1	{
+			state	int;
+			value	varchar(10);
+		};
+		HOSOKUCD_2	{
+			state	int;
+			value	varchar(10);
+		};
+		HOSOKUCD_3	{
+			state	int;
+			value	varchar(10);
+		};
+		HOSOKU_COMMENT	{
+			value	varchar(40);
 		};
 		BUNRUICD	{
 			state	int;

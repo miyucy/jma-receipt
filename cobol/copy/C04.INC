@@ -17,6 +17,8 @@
       ********************************************************************
           02  C04.
               03  C04-B04-STATE PIC S9(9)   BINARY.
+              03  C04-B10-STATE PIC S9(9)   BINARY.
+              03  C04-B10-LABEL PIC X(12).
               03  C04-B12-STATE PIC S9(9)   BINARY.
               03  C04-TITLE     PIC X(10).
               03  C04-SELNUM2.
@@ -26,6 +28,11 @@
                 04  C04-INPUTCD PIC X(10).
               03  C04-BYOMEI.
                 04  C04-VALUE   PIC X(400).
+              03  C04-HOSOKUCD-G    OCCURS  3.
+                04  C04-HOSOKUCD-STATE   PIC S9(9)   BINARY.
+                04  C04-HOSOKUCD PIC X(10).
+              03  C04-HOSOKU-COMMENT.
+                04  C04-VALUE   PIC X(40).
               03  C04-BUNRUICD-STATE   PIC S9(9)   BINARY.
               03  C04-BUNRUICD.
                 04  C04-VALUE   PIC S9(3).

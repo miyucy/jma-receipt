@@ -26,6 +26,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/11/05  補足コメント対応
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -341,7 +342,21 @@
                    MOVE    PTBYO-SRYKA     TO  WRK-KBN
                    PERFORM 5001-SRYKA-HENSYU-SEC
                    MOVE    WRK-KBNMEI      TO  SPA-GMN-C12-TSRYKA  (IDX)
-                   MOVE    PTBYO-BYOMEI    TO  SPA-GMN-C12-TBYOMEI (IDX)
+      *??
+                   IF       PTBYO-HOSOKU-COMMENT
+                                       =   SPACE
+                       MOVE     PTBYO-BYOMEI
+                                           TO  SPA-GMN-C12-TBYOMEI (IDX)
+                   ELSE
+                       STRING  PTBYO-BYOMEI   DELIMITED   BY  SPACE
+                               "（"            DELIMITED   BY  SIZE
+                                PTBYO-HOSOKU-COMMENT
+                                               DELIMITED   BY  SPACE
+                               "）"            DELIMITED   BY  SIZE
+                                       INTO    SPA-GMN-C12-TBYOMEI (IDX)
+                       END-STRING
+                   END-IF
+      *??
                    MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG     TO  SPA-GMN-C12-TSRYYMD (IDX)

@@ -63,6 +63,7 @@
       *  04.04.01    NACL-藤原    09/05/08  病名複写時のチェックの修正
       *
       *  04.06.01    NACL-藤原    10/08/31  年月省略入力対応
+      *  04.06.02    NACL-藤原    10/11/05  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -127,12 +128,12 @@
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-ERR-HENSYU-AREA.
-               05  WRK-ERR-BYOMEI  PIC X(80).
+               05  WRK-ERR-BYOMEI  PIC X(130).
                05  WRK-ERR-SRYYMD  PIC X(22).
                05  WRK-ERR-SRYKA   PIC X(20).
       *
            03  WRK-CHK-HENSYU-AREA.
-               05  WRK-CHK-BYOMEI  PIC X(80).
+               05  WRK-CHK-BYOMEI  PIC X(130).
                05  WRK-CHK-SRYKA   PIC X(02).
            03  WRK-CHK-SRYYMD      PIC X(08).
            03  WRK-CHK-TENKIYMD    PIC X(08).            
@@ -1271,8 +1272,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                        TO  PTBYO-SRYKA
-           MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+           MOVE    SPA-NAI-C02-TBYOMEI (IDX)
                                        TO  PTBYO-BYOMEI
+           MOVE    SPA-NAI-C02-THOSOKU-COMMENT (IDX)
+                                       TO  PTBYO-HOSOKU-COMMENT
            MOVE    SPA-NAI-C02-TNYUGAIKBN (IDX)
                                        TO  PTBYO-NYUGAIKBN
            IF      WRK-HENSYU-DATA-O (6)   =   SPACE
@@ -1575,8 +1578,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                        TO  PTBYO-SRYKA
-           MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+           MOVE    SPA-NAI-C02-TBYOMEI (IDX)
                                        TO  PTBYO-BYOMEI
+           MOVE    SPA-NAI-C02-THOSOKU-COMMENT (IDX)
+                                       TO  PTBYO-HOSOKU-COMMENT
            MOVE    SPA-NAI-C02-TNYUGAIKBN (IDX)
                                        TO  PTBYO-NYUGAIKBN
            IF      WRK-HENSYU-DATA-O (6)   =   SPACE
@@ -1762,8 +1767,11 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
                        MOVE    SPA-NAI-C02-TSRYKA  (IDX)
                                                    TO  PTBYO-SRYKA
-                       MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                       MOVE    SPA-NAI-C02-TBYOMEI (IDX)
                                                    TO  PTBYO-BYOMEI
+                       MOVE    SPA-NAI-C02-THOSOKU-COMMENT (IDX)
+                                                   TO
+                                                   PTBYO-HOSOKU-COMMENT
                        MOVE    SPA-NAI-C02-TNYUGAIKBN (IDX)
                                                    TO  PTBYO-NYUGAIKBN
                        IF      WRK-HENSYU-DATA-O (6)   =   SPACE
@@ -1928,8 +1936,10 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
            MOVE    SPA-GMN-C10-SRYKA   TO  PTBYO-SRYKA
-           MOVE    SPA-GMN-C02-TBYOMEI    (IDX)
+           MOVE    SPA-NAI-C02-TBYOMEI (IDX)
                                        TO  PTBYO-BYOMEI
+           MOVE    SPA-NAI-C02-THOSOKU-COMMENT (IDX)
+                                       TO  PTBYO-HOSOKU-COMMENT
            MOVE    SPA-NAI-C02-TNYUGAIKBN (IDX)
                                        TO  PTBYO-NYUGAIKBN
            IF      PTBYO-NYUGAIKBN     =   SPACE
