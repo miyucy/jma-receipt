@@ -67,6 +67,7 @@
       *                                     種別不明レセ対応
       *                                     病名なし時のエラー設定
       *  04.06.02    NACL-藤原    10/07/20  レセプト病名記載順対応
+      *  04.06.03    NACL-藤原    10/11/04  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -243,7 +244,7 @@ grpsys     COPY    "COMMON-SPA".
            END-IF 
            .
       *****************************************************************
-      *    初期　処理
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -328,7 +329,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
            END-IF
       *
-      *        レセプト明細０２読み込み
+      *    レセプト明細０２読み込み
            PERFORM 900-RECE02-READ-SEC
            .
        100-INIT-EXT.
@@ -341,7 +342,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *    
            MOVE    ZERO                TO  CNT-RECE-OUT
       *
-      *    患者病名読み込み（患者ＩＤ、診療年月日、診療科順）
+      *    患者病名読み込み
            INITIALIZE                  PTBYOMEI-REC
 grpsys     MOVE    RECE02-HOSPNUM      TO  PTBYO-HOSPNUM
            MOVE    RECE02-PTID         TO  PTBYO-PTID
@@ -529,8 +530,27 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        20011-RECE03-WRITE-SEC              SECTION.
       *
+           IF      PTBYO-BYOMEIHENFLG  =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                   IF      PTBYO-BYOMEICD (IDX) (1:4)  =   "ZZZC"
+                                                       OR  "ZZZ("
+                       MOVE    "1"         TO  RECE03-BYOMEIHENFLG
+                       MOVE    21          TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF   
+      *
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    PTBYO-HOSOKU-COMMENT
+                                       TO  KANACHK-MAE-INPUT
+           MOVE    40                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  PTBYO-HOSOKU-COMMENT
+      *
            IF      PTBYO-BYOMEIHENFLG  =   "1"
-               INITIALIZE                  ORCSKANACHKAREA
+               INITIALIZE                      ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
                MOVE    PTBYO-BYOMEI        TO  KANACHK-MAE-INPUT
                MOVE    80                  TO  KANACHK-MAX-CNT
@@ -542,12 +562,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    PTBYO-BYOMEI        TO  WRK-PTBYO-BYOMEI
            MOVE    PTBYO-BYOMEIMOJI    TO  WRK-PTBYO-BYOMEIMOJI
       *
-      *    疑いフラグより病名を編集
+      *    疑いフラグ、補足コメントより病名を編集
       *   （病名のみ編集を行う）
-           IF      PTBYO-UTAGAIFLG NOT =   SPACE
+           IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
+           OR    ( PTBYO-HOSOKU-COMMENT
+                                   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+               MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  SMKBYO-HOSOKU-COMMENT
                MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
                MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
@@ -612,16 +636,8 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE03-HOSPNUM
            MOVE    WRK-PTBYO-BYOMEIMOJI
                                        TO  RECE03-IN-BYOMEIMOJI
       *
-           IF      PTBYO-BYOMEIHENFLG  =   SPACE
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       21
-                   IF      PTBYO-BYOMEICD (IDX) (1:4)  =   "ZZZC"
-                                                       OR  "ZZZ("
-                       MOVE    "1"         TO  RECE03-BYOMEIHENFLG
-                       MOVE    21          TO  IDX
-                   END-IF
-               END-PERFORM
-           END-IF   
+           MOVE    PTBYO-HOSOKU-COMMENT
+                                       TO  RECE03-HOSOKU-COMMENT
       *
            WRITE   RECE03-REC
            ADD     1                   TO  CNT-OUT

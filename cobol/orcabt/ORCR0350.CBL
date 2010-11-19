@@ -313,6 +313,7 @@
       *                                     ２０１０年１０月〜２０１１年３月対象 
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
+      *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3220,7 +3221,7 @@
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    補足コメント
-           MOVE    RECE631-HOSOKU-BYOMEI
+           MOVE    RECE631-HOSOKU-COMMENT
                                        TO  WRK-DATA
            MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 

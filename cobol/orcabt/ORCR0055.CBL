@@ -46,6 +46,7 @@
       *                                     入力病名、入力病名文字数の追加
       *
       *  04.06.01    NACL-藤原    10/07/20  レセプト病名記載順対応
+      *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -347,6 +348,8 @@ grpsys     MOVE    RECE03-HOSPNUM      TO  RECE031-HOSPNUM
            MOVE    RECE03-IN-BYOMEI    TO  RECE031-IN-BYOMEI
            MOVE    RECE03-IN-BYOMEIMOJI
                                        TO  RECE031-IN-BYOMEIMOJI
+           MOVE    RECE03-HOSOKU-COMMENT
+                                       TO  RECE031-HOSOKU-COMMENT
       *
       *    病名記載順対応
            IF      SYS-200501-BYOMEI-PRTJYUN

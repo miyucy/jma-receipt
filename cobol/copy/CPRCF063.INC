@@ -111,16 +111,10 @@
       *病名文字数
            03  RECE63-BYOMEIMOJI        PIC 9(03).
       *補足コメント
-           03  RECE63-HOSOKU-BYOMEI     PIC X(40).
+           03  RECE63-HOSOKU-COMMENT    PIC X(40).
       *入力病名
            03  RECE63-IN-BYOMEI         PIC X(160).
       *入力病名文字数
            03  RECE63-IN-BYOMEIMOJI     PIC 9(03).
       *病名編集フラグ
            03  RECE63-BYOMEIHENFLG      PIC X(01).
-      *IＣＤ１０
-           03  RECE63-ICD10             PIC X(05).
-      *管理番号
-           03  RECE63-KNRNUM            PIC 9(05).
-      *標準病名コード
-           03  RECE63-HYOJUNCD          PIC X(09).

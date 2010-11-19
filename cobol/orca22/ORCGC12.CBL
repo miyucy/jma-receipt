@@ -130,6 +130,9 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
+      *    病名組立サブ
+           COPY    "CPORCSMKBYOMEI.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -342,21 +345,14 @@
                    MOVE    PTBYO-SRYKA     TO  WRK-KBN
                    PERFORM 5001-SRYKA-HENSYU-SEC
                    MOVE    WRK-KBNMEI      TO  SPA-GMN-C12-TSRYKA  (IDX)
-      *??
-                   IF       PTBYO-HOSOKU-COMMENT
-                                       =   SPACE
-                       MOVE     PTBYO-BYOMEI
-                                           TO  SPA-GMN-C12-TBYOMEI (IDX)
-                   ELSE
-                       STRING  PTBYO-BYOMEI   DELIMITED   BY  SPACE
-                               "（"            DELIMITED   BY  SIZE
-                                PTBYO-HOSOKU-COMMENT
-                                               DELIMITED   BY  SPACE
-                               "）"            DELIMITED   BY  SIZE
-                                       INTO    SPA-GMN-C12-TBYOMEI (IDX)
-                       END-STRING
-                   END-IF
-      *??
+                   INITIALIZE              ORCSMKBYOMEIAREA
+                   MOVE    PTBYO-BYOMEI
+                                       TO  SMKBYO-BYOMEI
+                   MOVE    PTBYO-HOSOKU-COMMENT
+                                       TO  SMKBYO-HOSOKU-COMMENT
+                   CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
+                   MOVE    SMKBYO-BYOMEI
+                                       TO  SPA-GMN-C12-TBYOMEI (IDX)
                    MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG     TO  SPA-GMN-C12-TSRYYMD (IDX)

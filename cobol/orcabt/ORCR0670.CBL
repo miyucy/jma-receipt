@@ -137,13 +137,13 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
-               05  WRK-PARA-SRYYM  PIC  X(06).
-               05  WRK-PARA-TERMID PIC  X(16).
-               05  WRK-PARA-SYSYMD PIC  X(08).
-               05  WRK-PARA-JOBID  PIC  9(07).
+               05  WRK-PARA-SRYYM  PIC X(06).
+               05  WRK-PARA-TERMID PIC X(16).
+               05  WRK-PARA-SYSYMD PIC X(08).
+               05  WRK-PARA-JOBID  PIC 9(07).
                05  WRK-PARA-SHELLID
-                                   PIC  X(08).
-           03  WRK-PARA-HOSPNUM    PIC  9(02).
+                                   PIC X(08).
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
            03  WRK-YM              PIC 9(06).
            03  WRK-RENNUM          PIC 9(03).
@@ -506,6 +506,25 @@
       *****************************************************************
        20011-RECE63-WRITE-SEC              SECTION.
       *
+           IF      PTBYO-BYOMEIHENFLG  =   SPACE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       21
+                   IF      PTBYO-BYOMEICD (IDX) (1:4)  =   "ZZZC"
+                                                       OR  "ZZZ("
+                       MOVE    "1"         TO  RECE63-BYOMEIHENFLG
+                       MOVE    21          TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF   
+      *
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI 
+           MOVE    PTBYO-HOSOKU-COMMENT
+                                       TO  KANACHK-MAE-INPUT
+           MOVE    40                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  PTBYO-HOSOKU-COMMENT
+      *
            IF      PTBYO-BYOMEIHENFLG  =   "1"
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
@@ -519,12 +538,16 @@
            MOVE    PTBYO-BYOMEI        TO  WRK-PTBYO-BYOMEI
            MOVE    PTBYO-BYOMEIMOJI    TO  WRK-PTBYO-BYOMEIMOJI
       *
-      *    疑いフラグより病名を編集
+      *    疑いフラグ、補足コメントより病名を編集
       *   （病名のみ編集を行う）
-           IF      PTBYO-UTAGAIFLG NOT =   SPACE
+           IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
+           OR    ( PTBYO-HOSOKU-COMMENT
+                                   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+               MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  SMKBYO-HOSOKU-COMMENT
                MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
                MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
@@ -589,16 +612,8 @@
            MOVE    WRK-PTBYO-BYOMEIMOJI
                                        TO  RECE63-IN-BYOMEIMOJI
       *
-           IF      PTBYO-BYOMEIHENFLG  =   SPACE
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       21
-                   IF      PTBYO-BYOMEICD (IDX) (1:4)  =   "ZZZC"
-                                                       OR  "ZZZ("
-                       MOVE    "1"         TO  RECE63-BYOMEIHENFLG
-                       MOVE    21          TO  IDX
-                   END-IF
-               END-PERFORM
-           END-IF   
+           MOVE    PTBYO-HOSOKU-COMMENT
+                                       TO  RECE63-HOSOKU-COMMENT
       *
            WRITE   RECE63-REC
            ADD     1                   TO  CNT-OUT   

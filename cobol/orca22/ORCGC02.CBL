@@ -1629,22 +1629,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PTBYO-SRYYMD-HOSOKU-COMMENT  (IDZZ)
                                        TO  SPA-NAI-C02-THOSOKU-COMMENT
                                                                   (IDX)
-      *??
-                   IF      SPA-NAI-C02-THOSOKU-COMMENT (IDX) 
-                                       =   SPACE
-                       MOVE    SPA-NAI-C02-TBYOMEI    (IDX)
-                                           TO  SPA-GMN-C02-TBYOMEI (IDX)
-                   ELSE
-                       STRING  SPA-NAI-C02-TBYOMEI    (IDX)
-                                               DELIMITED   BY  SPACE
-                               "¡Ê"            DELIMITED   BY  SIZE
-                               SPA-NAI-C02-THOSOKU-COMMENT (IDX) 
-                                               DELIMITED   BY  SPACE
-                               "¡Ë"            DELIMITED   BY  SIZE
-                                       INTO    SPA-GMN-C02-TBYOMEI (IDX)
-                       END-STRING
-                   END-IF
-      *??
+                   INITIALIZE              ORCSMKBYOMEIAREA
+                   MOVE    SPA-NAI-C02-TBYOMEI         (IDX)
+                                       TO  SMKBYO-BYOMEI
+                   MOVE    SPA-NAI-C02-THOSOKU-COMMENT (IDX)
+                                       TO  SMKBYO-HOSOKU-COMMENT
+                   CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
+                   MOVE    SMKBYO-BYOMEI
+                                       TO  SPA-GMN-C02-TBYOMEI (IDX)
       *
                    MOVE    WRK-PTBYO-SRYYMD-SRYYMD  (IDZZ)
                                        TO  SPA-NAI-C02-TSRYYMD    (IDX)
