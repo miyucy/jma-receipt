@@ -603,6 +603,7 @@ DB_files = \
 	xml_medicalres.db \
 	xml_medicalreq.db \
 	medicalmod.rec \
+	tbl_synonym.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
@@ -610,13 +611,14 @@ shell.db: shell.db.in
 all: shell.db  
 
 filecheck:
-	@(for i in $(DEF_files) $(RECORD_files) $(DB_files) ;do echo "make	$${i}"; done ;\
+	@(for i in $(DEF_files) $(RECORD_files) $(DB_files) shell.db.in;do echo "make	$${i}"; done ;\
 	find . \
 	-name "." -o \
 	-name "CVS" -prune -o \
 	-name "Makefile*" -o \
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
+	-name "shell.db" -o \
 	-printf "file\t%f\n") \
 	|sort -k2 |uniq -u -f1 
 
