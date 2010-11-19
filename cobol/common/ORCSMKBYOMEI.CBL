@@ -51,7 +51,7 @@
            03  IDX-PNT                 PIC 9(05).
       *
        01  WRK-AREA.
-           03  WRK-BYOMEI              PIC X(160).
+           03  WRK-BYOMEI              PIC X(240).
       *
        01  CONST-AREA.
            03  CONST-DEBUG             PIC 9(01)   VALUE   0.
@@ -130,6 +130,11 @@
       *
            IF    ( SMKBYO-BYOMEICD (1)     NOT =   SPACE )
                PERFORM 2001-EDIT-BYOMEICD-SEC
+           END-IF
+      *
+           IF    ( SMKBYO-HOSOKU-COMMENT
+                                           NOT =   SPACE )
+               PERFORM 2001-EDIT-HOSOKU-SEC
            END-IF
       *
            .
@@ -234,6 +239,25 @@
       *
            .
        2001-EDIT-BYOMEICD-EXT.
+           EXIT.
+      *****************************************************************
+      *    補足病名編集処理
+      *****************************************************************
+       2001-EDIT-HOSOKU-SEC            SECTION.
+      *
+           MOVE    SMKBYO-BYOMEI       TO  WRK-BYOMEI
+           MOVE    SPACE               TO  SMKBYO-BYOMEI
+      *
+           STRING  WRK-BYOMEI          DELIMITED BY SPACE
+                   "（"                DELIMITED BY SIZE
+                   SMKBYO-HOSOKU-COMMENT
+                                       DELIMITED BY SPACE
+                   "）"                DELIMITED BY SIZE
+           INTO    SMKBYO-BYOMEI
+           END-STRING
+      *
+           .
+       2001-EDIT-HOSOKU-EXT.
            EXIT.
       *****************************************************************
       *    病名文字列長取得処理
