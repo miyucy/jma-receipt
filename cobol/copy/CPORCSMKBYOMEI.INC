@@ -26,9 +26,11 @@
            03  SMKBYO-IN.
       *        疑い病名フラグ
                05  SMKBYO-UTAGAIFLG      PIC X(01).
+      *        補足コメント
+               05  SMKBYO-HOSOKU-COMMENT PIC X(80).
            03  SMKBYO-IO.
       *        病名
-               05  SMKBYO-BYOMEI         PIC X(160).
+               05  SMKBYO-BYOMEI         PIC X(240).
       *        病名コード
                05  SMKBYO-BYOMEICD-G.
                    07  SMKBYO-BYOMEICD   PIC X(07)
