@@ -493,8 +493,8 @@
                                        SPA-AREA
            IF (MCP-RC = ZERO OR 1)
                MOVE    MDCREQ-PATIENTID    TO  WRK-PTNUM
-               MOVE    MDCREQ-DEP-CODE     TO  WRK-SRYKA
-               MOVE    MDCREQ-DR-CODE      TO  WRK-DRCD
+               MOVE    MDCREQ-DEP-CODE(1)  TO  WRK-SRYKA
+               MOVE    MDCREQ-DR-CODE(1)   TO  WRK-DRCD
             IF MDCREQ-PERFORM-DATE(5:1)    =   "-"
                MOVE    MDCREQ-PERFORM-DATE TO  WRK-PERFORM-YMD-G
                MOVE    MDCREQ-PERFORM-DATE(1:4)
