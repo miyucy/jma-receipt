@@ -41,6 +41,8 @@
       *
       *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/20  realtime preview 処理追加
+      *
+      *  04.06.01    NACL-藤原    10/11/04  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -451,11 +453,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                COMPUTE PTBYO-BYOMEIMOJI    =   KANACHK-MAX  /   2
            END-IF        
       *
-      *    疑いフラグより病名を編集
-           IF      PTBYO-UTAGAIFLG NOT =   SPACE
+      *    疑いフラグ、補足コメントより病名を編集
+           IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
+           OR    ( PTBYO-HOSOKU-COMMENT
+                                   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+               MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  SMKBYO-HOSOKU-COMMENT
                MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
                MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA

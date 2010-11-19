@@ -43,6 +43,8 @@
       *
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *
+      *  04.06.01    NACL-藤原    10/11/04  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -62,12 +64,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE42-KEY
                                    FILE    STATUS  IS  STS-RECE42.
-      *
-           SELECT  RECE42W-FILE    ASSIGN  RECE42PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE42W-KEY
-                                   FILE    STATUS  IS  STS-RECE42.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -84,10 +80,6 @@
        01  RECE42-REC. 
            COPY    "CPRCF042.INC".
       *
-       FD  RECE42W-FILE.
-       01  RECE42W-REC. 
-           COPY    "CPRCF042.INC"  REPLACING  //RECE42//
-                                   BY         //RECE42W//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -258,8 +250,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE42W-FILE
-           CLOSE                       RECE42W-FILE
+           OPEN    OUTPUT              RECE42-FILE
+           CLOSE                       RECE42-FILE
       *
            OPEN    INPUT               RECE41-FILE    
            OPEN    I-O                 RECE42-FILE
@@ -446,11 +438,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                COMPUTE PTBYO-BYOMEIMOJI    =   KANACHK-MAX  /   2
            END-IF
       *
-      *    疑いフラグより病名を編集
-           IF      PTBYO-UTAGAIFLG NOT =   SPACE
+      *    疑いフラグ、補足コメントより病名を編集
+           IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
+           OR    ( PTBYO-HOSOKU-COMMENT
+                                   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+               MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  SMKBYO-HOSOKU-COMMENT
                MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
                MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
