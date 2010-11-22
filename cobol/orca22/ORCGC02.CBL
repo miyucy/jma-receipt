@@ -2136,10 +2136,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-BYOMEI      TO  SPA-GMN-C02-HOSOKU-COMMENT
       *
            IF      SPA-C01-INDEX   =   ZERO
-               MOVE    28              TO  SPA-GMN-C02-CUR
+               MOVE    9               TO  SPA-GMN-C02-CUR
            ELSE
                IF      SPA-C01-INDEX   =   3
-                   MOVE    28              TO  SPA-GMN-C02-CUR
+                   MOVE    9               TO  SPA-GMN-C02-CUR
                ELSE
                    COMPUTE SPA-GMN-C02-CUR =   SPA-C01-INDEX   +   33
                END-IF
