@@ -334,7 +334,6 @@ path	key13	{
 			AND     PTID      =   :PTID
 			AND     SRYKA     =   :SRYKA
 			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
 			AND   DLTFLG      =   ' '
 		;
 	};
@@ -469,7 +468,6 @@ path	key21	{
 			AND     SRYKA     =   :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
 			AND   DLTFLG      =   ' '
 		;
 	};
@@ -567,7 +565,6 @@ path	key27	{
 			AND     PTID      =   :PTID
 			AND     SRYKA     <>  :SRYKA
 			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
 			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA,RENNUM
 		;
@@ -584,7 +581,6 @@ path	key28	{
 			AND     SRYKA     <>  :SRYKA
 			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
 			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
 			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYKA,RENNUM
 		;
@@ -766,6 +762,70 @@ path	key39	{
 			AND   PTID        =   :PTID
 			AND   DLTFLG      =   ' '
 			ORDER  BY  SRYYMD,SEQNUM,SRYKA,RENNUM
+		;
+	};
+};
+
+path	key40	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key40_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND     SRYKA     =   :SRYKA
+			AND     BYOMEI    =   :BYOMEI
+			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
+			AND   DLTFLG      =   ' '
+		;
+	};
+};
+
+path	key41	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key41_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND     SRYKA     =   :SRYKA
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND     BYOMEI    =   :BYOMEI
+			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
+			AND   DLTFLG      =   ' '
+		;
+	};
+};
+
+path	key42	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key42_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND     SRYKA     <>  :SRYKA
+			AND     BYOMEI    =   :BYOMEI
+			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
+			AND   DLTFLG      =   ' '
+			ORDER  BY  SRYKA,RENNUM
+		;
+	};
+};
+
+path	key43	{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key43_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     PTID      =   :PTID
+			AND     SRYKA     <>  :SRYKA
+			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
+			AND     BYOMEI    =   :BYOMEI
+			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
+			AND   DLTFLG      =   ' '
+			ORDER  BY  SRYKA,RENNUM
 		;
 	};
 };

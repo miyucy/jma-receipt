@@ -3527,10 +3527,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            END-IF     
            IF      PTBYO-NYUGAIKBN     =   SPACE 
                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-               MOVE    "key13"             TO  WRK-MCP-PATHNAME
+               MOVE    "key40"             TO  WRK-MCP-PATHNAME
            ELSE
                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-               MOVE    "key21"             TO  WRK-MCP-PATHNAME
+               MOVE    "key41"             TO  WRK-MCP-PATHNAME
            END-IF    
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
@@ -7103,7 +7103,7 @@ grpsys                                       SPA-AREA
                GO  TO  410241-HOSOKUCD-HENSYU-EXT
            END-IF
       *
-      *    補足コード未入力のときカルテ病名へ遷移     
+      *    補足コード未入力のとき開始日へ遷移     
            IF      SPA-GMN-C02-HOSOKUCD (IDZ)  =   SPACE
                IF      WRK-SEIGYO      =   "-"
                    GO  TO  410241-HOSOKUCD-HENSYU-EXT
@@ -7115,14 +7115,14 @@ grpsys                                       SPA-AREA
                            GO  TO  410241-HOSOKUCD-HENSYU-EXT
                        END-IF
                    END-PERFORM 
-                   MOVE    28                  TO  SPA-GMN-C02-CUR
+                   MOVE    9                   TO  SPA-GMN-C02-CUR
                    GO  TO  410241-HOSOKUCD-HENSYU-EXT
                END-IF
            END-IF
       *
            ADD     1                   TO  SPA-GMN-C02-CUR
            IF      SPA-GMN-C02-CUR     =   37
-               MOVE    28                  TO  SPA-GMN-C02-CUR
+               MOVE    9                   TO  SPA-GMN-C02-CUR
            END-IF
            .
        410241-HOSOKUCD-HENSYU-EXT.
@@ -7223,7 +7223,7 @@ grpsys                                       SPA-AREA
                                        =   SPACE
                 INITIALIZE                 SPA-GMN-C02-HOSOKUCD-G
                                            SPA-NAI-C02-HOSOKU-TBL
-                MOVE    28                 TO  SPA-GMN-C02-CUR
+                MOVE    9                  TO  SPA-GMN-C02-CUR
            ELSE
       *        半角・文字数チェック
                INITIALIZE                      ORCSKANACHKAREA
@@ -7947,10 +7947,10 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                TO  PTBYO-NYUGAIKBN
                    IF      PTBYO-NYUGAIKBN     =   SPACE
                        MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                       MOVE    "key27"             TO  WRK-MCP-PATHNAME
+                       MOVE    "key42"             TO  WRK-MCP-PATHNAME
                    ELSE
                        MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                       MOVE    "key28"             TO  WRK-MCP-PATHNAME
+                       MOVE    "key43"             TO  WRK-MCP-PATHNAME
                    END-IF
       *
                    MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
@@ -8513,10 +8513,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                        TO  PTBYO-NYUGAIKBN
            IF      PTBYO-NYUGAIKBN     =   SPACE
                MOVE    "tbl_ptbyomei"          TO  WRK-MCP-TABLE
-               MOVE    "key13"                 TO  WRK-MCP-PATHNAME
+               MOVE    "key40"                 TO  WRK-MCP-PATHNAME
            ELSE
                MOVE    "tbl_ptbyomei"          TO  WRK-MCP-TABLE
-               MOVE    "key21"                 TO  WRK-MCP-PATHNAME
+               MOVE    "key41"                 TO  WRK-MCP-PATHNAME
            END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC

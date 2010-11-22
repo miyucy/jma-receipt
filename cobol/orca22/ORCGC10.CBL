@@ -1290,10 +1290,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            END-IF     
            IF      PTBYO-NYUGAIKBN     =   SPACE 
                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-               MOVE    "key13"             TO  WRK-MCP-PATHNAME
+               MOVE    "key40"             TO  WRK-MCP-PATHNAME
            ELSE
                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-               MOVE    "key21"             TO  WRK-MCP-PATHNAME
+               MOVE    "key41"             TO  WRK-MCP-PATHNAME
            END-IF    
            PERFORM 900-PTBYO-INV-SEC
       *
@@ -1596,10 +1596,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            END-IF     
            IF      PTBYO-NYUGAIKBN     =   SPACE 
                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-               MOVE    "key13"             TO  WRK-MCP-PATHNAME
+               MOVE    "key40"             TO  WRK-MCP-PATHNAME
            ELSE
                MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-               MOVE    "key21"             TO  WRK-MCP-PATHNAME
+               MOVE    "key41"             TO  WRK-MCP-PATHNAME
            END-IF    
            PERFORM 900-PTBYO-INV-SEC
       *
@@ -1786,10 +1786,10 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                        END-IF     
                        IF      PTBYO-NYUGAIKBN     =   SPACE
                            MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
-                           MOVE    "key27"         TO  WRK-MCP-PATHNAME
+                           MOVE    "key42"         TO  WRK-MCP-PATHNAME
                        ELSE
                            MOVE    "tbl_ptbyomei"  TO  WRK-MCP-TABLE
-                           MOVE    "key28"         TO  WRK-MCP-PATHNAME
+                           MOVE    "key43"         TO  WRK-MCP-PATHNAME
                        END-IF
       *
                        PERFORM 900-PTBYO-INV-SEC
@@ -1944,10 +1944,10 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                        TO  PTBYO-NYUGAIKBN
            IF      PTBYO-NYUGAIKBN     =   SPACE
                MOVE    "tbl_ptbyomei"          TO  WRK-MCP-TABLE
-               MOVE    "key13"                 TO  WRK-MCP-PATHNAME
+               MOVE    "key40"                 TO  WRK-MCP-PATHNAME
            ELSE
                MOVE    "tbl_ptbyomei"          TO  WRK-MCP-TABLE
-               MOVE    "key21"                 TO  WRK-MCP-PATHNAME
+               MOVE    "key41"                 TO  WRK-MCP-PATHNAME
            END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
