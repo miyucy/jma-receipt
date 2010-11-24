@@ -473,6 +473,7 @@
                05  WRK-NAI-C02-TNYUGAIKBN  PIC X(01).
                05  WRK-NAI-C02-TTENKIYMD   PIC X(08).
                05  WRK-NAI-C02-THKNCOMBI   PIC X(04).
+               05  WRK-NAI-C02-TBYOMEI     PIC X(80).
                05  WRK--NAI-C02-THOSOKU-COMMENT
                                            PIC X(40).
                05  WRK-NAI-C02-TUPDOWN     PIC 9(01).
@@ -3997,12 +3998,13 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
            END-IF
            MOVE    SPA-NAI-C02-SELNO   TO  C02-BYO-ROW
       *
-      *    選択病名と同じ開始日があるとき移動処理可能とする
+      *    病名がひとつのとき移動処理不可
            IF      SPA-GMN-C02-MAX     =   1
                MOVE    9                   TO  SPA-NAI-C02-UPDOWN
                GO  TO  410111-BYOMEI-SELECT-EXT
            END-IF
       *
+      *    選択病名と同じ開始日があるとき移動処理可能とする
            IF     SPA-NAI-C02-SELNO   >   1
                COMPUTE IDXX    =   SPA-NAI-C02-SELNO   -   1
       *        上の病名と開始日が同じとき
@@ -8995,7 +8997,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    ZERO            TO  IDY1
                                            IDY2
                MOVE    SPACE           TO  WRK-SRYYMD
-               MOVE    ZERO            TO  WRK-RENNUM  
+               MOVE    ZERO            TO  WRK-RENNUM
       *
       *        移動対象の開始日取得
                PERFORM VARYING IDXX    FROM    WRK-ST  BY  1
