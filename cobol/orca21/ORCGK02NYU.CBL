@@ -4094,6 +4094,16 @@
                    GO      TO      41011-KOUI-ALLHEN-EXT
                 END-IF
            END-IF
+      *    入院期間チェック
+           IF     (SPA-K02N-NYUINYMD   =   SPACE )
+              OR  (SPA-K02N-NYUINYMD   >   SPA-SRYYMD )
+              OR  (SPA-K02N-TAIINYMD   <   SPA-SRYYMD )
+               IF      K02N-INPUTCD(1)     NOT =   SPACE
+                   MOVE    00              TO  SPA-GMN-CUR
+                   MOVE    "9001"          TO  SPA-ERRCD
+                   GO      TO      41011-KOUI-ALLHEN-EXT
+                END-IF
+           END-IF
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *

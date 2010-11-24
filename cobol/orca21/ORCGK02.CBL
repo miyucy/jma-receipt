@@ -2178,6 +2178,23 @@
       *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
+      *!!
+           IF      SPA-KIDCD           =   "0121"
+      *        入院中自費保険確認
+               IF      SPA-HKNNUM (1:2)    =   "98"
+                   MOVE    SPACE               TO  SPA-KIDCD
+      *            入院中自費保険へ
+                   MOVE    1                   TO  SPA-NAI-NYUIN
+                   MOVE    ZERO                TO  FLG-NYUIN
+      *            入院日編集
+                   MOVE    "入院日"            TO  SPA-GMN-LASTMID
+                   MOVE    SPA-K02N-NYUINYMD   TO  WRK-SYMD
+                   PERFORM 520-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-GMN-LASTYMD-G
+               ELSE
+                   GO      TO  30091-SAIHEN2-EXT
+               END-IF
+           END-IF
       *
       *    保険組合せのエラーをクリアする
            IF      SPA-HKN-ERR     NOT =   ZERO

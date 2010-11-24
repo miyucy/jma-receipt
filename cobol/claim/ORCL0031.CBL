@@ -3296,7 +3296,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "患者病名登録エラー"
                                            TO  LNK-ERR-MSG 
            ELSE
-               ADD     1                   TO  CNT-OUT01
+               ADD     1                   TO  CNT-OUT02
            END-IF
            .
        2006123-KOUSIN-01-EXT.

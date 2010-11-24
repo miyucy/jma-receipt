@@ -873,10 +873,15 @@
                    MOVE    "数量ゼロは入力できません。"
                                        TO  SPA-ERRMSG
                WHEN    "9001"
-                   MOVE    "診療日付では入院は存在しません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "診療日付を変更して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+      *            MOVE    "診療日付では入院は存在しません。"
+      *                                TO  SPA-ERRMSG
+      *            MOVE    "診療日付を変更して下さい。"
+      *                                TO  SPA-ERRMSG(33:)
+                   STRING   "診療日が入院期間ではありません。"
+                            "登録はできません。"
+                                        DELIMITED  BY  SIZE
+                                        INTO      SPA-ERRMSG
+                   END-STRING
                WHEN    "9002"
                    MOVE    "時間外区分がありません。"
                                        TO  SPA-ERRMSG
