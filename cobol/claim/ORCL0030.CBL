@@ -123,6 +123,9 @@
            03  WRK-KBN-CODE            PIC X(01).
            03  WRK-ERR-CODE            PIC 9(02).
            03  WRK-ERR-MSG             PIC X(100).
+           03  WRK-OUT-HKNCOMBI        PIC X(04).
+           03  WRK-OUT-CNT1            PIC 9(04).
+           03  WRK-OUT-CNT2            PIC 9(04).
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -251,10 +254,9 @@
        1001-LF04MAKE-SEC           SECTION.
       *
            MOVE    WRK-LF041-REC       TO  WRK-LF04-REC
-      *    INITIALIZE  LF04-SRYTBL
+           INITIALIZE  LF04-SRYTBL-G
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   20
-              INITIALIZE  LF04-SRYTBL (IDX)
               MOVE     WRK-LF041-SRYCD(IDX) 
                                        TO  WRK-LF04-SRYCD(IDX)
               MOVE     WRK-LF041-SRYCDTBL(IDX) 

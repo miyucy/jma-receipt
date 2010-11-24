@@ -3322,6 +3322,8 @@
                PERFORM 520-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-LASTYMD-G
                MOVE    1                   TO  SPA-GMN-CUR
+      *        中途終了データ判定
+               PERFORM 410121-HKNCOMBI-SAI-SEC
            ELSE
       *        入院日を診療日にして登録する
                PERFORM 30017-NYUINHEN-SEC
@@ -5018,7 +5020,9 @@
        4102-PTNUM-HENSYU-SEC         SECTION.
       *
       *    スパ共通編集処理
-           PERFORM 310-SPA-SET-SEC
+           IF      SPA-NAI-NYUIN   NOT =   1
+               PERFORM 310-SPA-SET-SEC
+           END-IF
       *    誕生日以前の時、エラー
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )

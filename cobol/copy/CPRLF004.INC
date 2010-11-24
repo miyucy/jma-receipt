@@ -517,7 +517,8 @@
       * チェックディジット方式 (mmlCm:checkDigitSchema)
            03  LF04-SNRBT-CDSCHEMA      PIC X(03).
       * <診療括り 1>
-           03  LF04-SRYTBL             OCCURS  40.
+           03  LF04-SRYTBL-G.
+             04  LF04-SRYTBL             OCCURS  40.
       * 診療行為区分コード (claim:classCode)
                05  LF04-SRYCD          PIC  X(03).
       * 診療行為区分コードのテーブル名 (claim:classCodeId) (Claim002)
