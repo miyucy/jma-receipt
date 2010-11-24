@@ -3756,6 +3756,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
            IF      MCP-RC      NOT =   ZERO 
                DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
+           ELSE
+               ADD     1                   TO  CNT-OUT02
            END-IF
            .
        2006124-KOUSIN-02-EXT.
