@@ -1070,6 +1070,9 @@
       *    °åÎÅ´Ñ»¡Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥Ñ¥é¥á¥¿
            COPY  "CPORCSIRYOKNS.INC".
       *
+      *    ÉÂÌ¾ÊÔ½¸
+           COPY  "CPORCSMKBYOMEI.INC".
+      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -4010,7 +4013,18 @@
                            TO  WRK-REKI-BYO-RENNUM (IDX-RRKBYO)
                        MOVE    PTBYO-SRYYMD
                            TO  WRK-REKI-BYO-SRYYMD (IDX-RRKBYO)
+      *
+                       INITIALIZE              ORCSMKBYOMEIAREA
+                       MOVE    PTBYO-UTAGAIFLG
+                                           TO  SMKBYO-UTAGAIFLG
+                       MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  SMKBYO-HOSOKU-COMMENT
                        MOVE    PTBYO-BYOMEI
+                                           TO  SMKBYO-BYOMEI
+      *
+                       CALL    "ORCSMKBYOMEI"   USING
+                                                ORCSMKBYOMEIAREA
+                       MOVE    SMKBYO-BYOMEI
                            TO  WRK-REKI-BYO-BYOMEI (IDX-RRKBYO)
                        MOVE    PTBYO-TENKIKBN
                            TO  WRK-REKI-BYO-TENKIKBN (IDX-RRKBYO)

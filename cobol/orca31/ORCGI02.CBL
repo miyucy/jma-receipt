@@ -197,6 +197,9 @@
       *    入院請求期間取得
            COPY    "CPORCSS006.INC".
       *
+      *    病名編集
+           COPY    "CPORCSMKBYOMEI.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -1054,7 +1057,17 @@
                                    TO  SPA-GMN-I02-TSRYKA (IDX2)
       *
       *    病名
+           INITIALIZE              ORCSMKBYOMEIAREA
+           MOVE    PTBYO-UTAGAIFLG
+                                   TO  SMKBYO-UTAGAIFLG
+           MOVE    PTBYO-HOSOKU-COMMENT
+                                   TO  SMKBYO-HOSOKU-COMMENT
            MOVE    PTBYO-BYOMEI
+                                   TO  SMKBYO-BYOMEI
+      *
+           CALL    "ORCSMKBYOMEI"  USING
+                                   ORCSMKBYOMEIAREA
+           MOVE    SMKBYO-BYOMEI
                                    TO  SPA-GMN-I02-TBYOMEI (IDX2)
       *
       *    開始日
