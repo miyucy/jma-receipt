@@ -4141,7 +4141,7 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
                    IF      SPA-GMN-C02-HOSOKUCD (IDX)(IDZ:1)
                                            NOT =   SPACE
                        MOVE    IDZ             TO  WRK-LENGTH
-                       MOVE    1               TO  IDX
+                       MOVE    1               TO  IDZ
                    END-IF
                END-PERFORM
       *
@@ -4158,8 +4158,9 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
                OR    ( WRK-LENGTH      NOT =   7 )
                    INITIALIZE                  USERBYOMEI-REC
                    MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
-                   MOVE    SPA-GMN-C02-HOSOKUCD(IDZ)
+                   MOVE    SPA-GMN-C02-HOSOKUCD(IDX)
                                                TO  USBYO-BYOMEIINPUTCD
+                   MOVE    IDX                 TO  IDZ
                    PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
                END-IF
            END-PERFORM
