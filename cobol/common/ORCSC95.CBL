@@ -56,6 +56,7 @@
       *  04.05.00    NACL=多々納  10/03/XX  平成２２年４月改正対応
       *  04.06.00    NACL=多々納  10/07/01  残量廃棄区分対応
       *  04.06.00    NACL=多々納  10/11/02  難病外来指導管理料対応
+      *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *****************************************************************
       *
       *
@@ -488,6 +489,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    病名編集サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -3243,7 +3247,9 @@
       *
                ADD     1               TO  IDX-B
                MOVE    PTBYO-SRYKA     TO  WRK-BYOMEI-NO(IDX-B)
-               MOVE    PTBYO-BYOMEI    TO  WRK-BYOMEI (IDX-B)
+      ***      MOVE    PTBYO-BYOMEI    TO  WRK-BYOMEI (IDX-B)
+               PERFORM 110121-ORCSMKBYOMEI-SEC
+               MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
       *        疾患区分
                IF      PTBYO-MANSEIKBN NOT =   ZERO
                    MOVE    SPACE           TO  WRK-BYOMEI-HEN
@@ -3353,6 +3359,21 @@
            END-IF
            .
        11012-BYOMEI-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名補助コメント編集処理
+      *****************************************************************
+       110121-ORCSMKBYOMEI-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSMKBYOMEIAREA
+           MOVE    SPACE               TO  SMKBYO-UTAGAIFLG
+           MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+           MOVE    PTBYO-HOSOKU-COMMENT    TO  SMKBYO-HOSOKU-COMMENT
+           CALL    "ORCSMKBYOMEI"      USING
+                                           ORCSMKBYOMEIAREA
+           MOVE    SMKBYO-BYOMEI       TO  WRK-BYOMEI-HEN
+           .
+       110121-ORCSMKBYOMEI-EXT.
            EXIT.
       *****************************************************************
       *    診療科毎の特定疾患編集処理

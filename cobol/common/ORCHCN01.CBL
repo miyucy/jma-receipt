@@ -31,6 +31,7 @@
       *  01.00.02    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *  04.04.00    NACL-太田    08/12/25  プログラムオプション
+      *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1057,19 +1058,22 @@
        3103-HCN01-BYOMEI-SET-SEC          SECTION.
       *
            INITIALIZE                  ORCSMKBYOMEIAREA
-           MOVE    PTBYO-UTAGAIFLG TO  SMKBYO-UTAGAIFLG
-           MOVE    PTBYO-BYOMEI            TO  SMKBYO-BYOMEI
+           MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+      *    補足コメント
+           MOVE    PTBYO-HOSOKU-COMMENT    TO  SMKBYO-HOSOKU-COMMENT
            IF    ( PARA-UTAGAIKBN      =   "1" )
-               CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+               MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
            END-IF
+           CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+      *
       *    カルテ病名がある時はカルテ病名
            IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
-               MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
-               IF    ( PARA-CHARTKBN   =   "1" )
-                   CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+               IF    ( PARA-CHARTKBN       =   "1" )
+                   MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                END-IF
+               CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
            END-IF
            MOVE    SMKBYO-BYOMEI       TO  HCN01-BYOMEI (IDX)
       *

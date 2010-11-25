@@ -57,6 +57,7 @@
       *  04.05.00    NACL-多々納  09/07/XX  備考コメント追加
       *  04.05.00    NACL-多々納  09/12/XX  備考禁忌・アレルギー・感染症追加
       *  04.06.00    NACL-多々納  10/06/XX  受給者番号１５文字対応
+      *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,8 +241,11 @@
            03  WRK-ERRMSG          PIC X(40).
       *    カルテ病名区分
            03  WRK-KARUTE-BYOMEI   PIC X(01).
-      *
+      *    病名
            03  WRK-BYOMEI          PIC X(100).
+      *    補足コメント
+           03  WRK-HOSOKU-COMMENT      PIC X(80).
+           03  WRK-UTAGAIFLG           PIC X(01).
       *
            03  WRK-MCP-PATHNAME    PIC X(64).
       *    備考コメント編集
@@ -1321,18 +1325,21 @@
            IF      PTBYO-CHARTBYOMEI   =   SPACE
       *        病名
                MOVE    PTBYO-BYOMEI        TO  WRK-BYOMEI
-               IF      PARA-UTAGAIKBN      =   "1"
-      *            疑い区分編集
-                   PERFORM 200211-BYOMEI-UTAGAI-SEC
-               END-IF
+      *        補足コメント
+               MOVE    PTBYO-HOSOKU-COMMENT    TO  WRK-HOSOKU-COMMENT
            ELSE
       *        カルテ病名
                MOVE    PTBYO-CHARTBYOMEI   TO  WRK-BYOMEI
-               IF      PARA-CHARTKBN       =   "1"
-      *            疑い区分編集
-                   PERFORM 200211-BYOMEI-UTAGAI-SEC
-               END-IF
+               MOVE    SPACE               TO  WRK-HOSOKU-COMMENT
            END-IF
+           IF      PARA-UTAGAIKBN      =   "1"
+      *        疑い区分編集
+               MOVE    PTBYO-UTAGAIFLG     TO  WRK-UTAGAIFLG
+           ELSE
+               MOVE    SPACE               TO  WRK-UTAGAIFLG
+           END-IF
+      *    病名編集
+           PERFORM 200211-BYOMEI-UTAGAI-SEC
            .
        200211-BYOMEI-HEN-EXT.
            EXIT.
@@ -1342,8 +1349,9 @@
        200211-BYOMEI-UTAGAI-SEC          SECTION.
       *
            INITIALIZE                  ORCSMKBYOMEIAREA
-           MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
+           MOVE    WRK-UTAGAIFLG       TO  SMKBYO-UTAGAIFLG
            MOVE    WRK-BYOMEI          TO  SMKBYO-BYOMEI
+           MOVE    WRK-HOSOKU-COMMENT  TO  SMKBYO-HOSOKU-COMMENT
            CALL    "ORCSMKBYOMEI"      USING
                                            ORCSMKBYOMEIAREA
            MOVE    SMKBYO-BYOMEI       TO  WRK-BYOMEI
