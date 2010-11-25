@@ -2142,7 +2142,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      SPA-C01-INDEX   =   3
                    MOVE    9               TO  SPA-GMN-C02-CUR
                ELSE
-                   COMPUTE SPA-GMN-C02-CUR =   SPA-C01-INDEX   +   33
+                   COMPUTE SPA-GMN-C02-CUR =   SPA-C01-INDEX   +   34
                END-IF
            END-IF
            .
@@ -5238,6 +5238,15 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                    END-IF
                END-IF
            END-IF        
+      *    
+      *    複数病名のとき補足コメントの入力不可
+           IF      SPA-ERRCD               =   SPACE  
+               IF    ( SPA-NAI-C02-BYOMEICD-MAX    >   1     )
+               AND   ( SPA-GMN-C02-HOSOKU-COMMENT
+                                       NOT =   SPACE )
+                   MOVE    "0094"              TO  SPA-ERRCD
+               END-IF
+           END-IF        
       *
       *    括弧で始まる部位が末尾の警告以外のとき
            IF    ( SPA-ERRCD            NOT =   SPACE  )
@@ -7760,6 +7769,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF    ( SPA-NAI-C02-BYOMEICD-MAX    >   1    )
                IF    ( SPA-GMN-C02-BANGO           >   ZERO )
                    MOVE    "0056"             TO  SPA-ERRCD
+                   MOVE    2                  TO  SPA-GMN-C02-CUR
                    GO      TO      450-TOUROKU-EXT
                END-IF
            END-IF
@@ -7768,8 +7778,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF    ( SPA-NAI-C02-BYOMEICD-MAX    >   1     )
            AND   ( SPA-GMN-C02-HOSOKU-COMMENT
                                            NOT =   SPACE )
-               MOVE    "0094"             TO  SPA-ERRCD
-               GO      TO      450-TOUROKU-EXT
+               MOVE    "0094"              TO  SPA-ERRCD
+               MOVE    34                  TO  SPA-GMN-C02-CUR
+               GO  TO  450-TOUROKU-EXT
            END-IF
       *
       *    単独使用禁止の病名のとき

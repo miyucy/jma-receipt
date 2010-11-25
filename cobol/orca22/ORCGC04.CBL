@@ -999,14 +999,6 @@
       *                                     
            MOVE    2                   TO  SPA-GMN-C04-CUR
       *
-      *    病名コードが６つのとき
-           IF      SPA-NAI-C04-BYOMEICD-MAX
-                                       =   6
-               MOVE    99                  TO  SPA-GMN-C04-CUR
-               MOVE    "0013"              TO  SPA-ERRCD
-               GO  TO  41002-SELNUM2-CHK-EXT
-           END-IF
-      *
            MOVE    C04-SELNUM2         TO  SPA-GMN-C04-SELNUM
       *
            IF      SPA-GMN-C04-SELNUM  >   ZERO
@@ -1017,50 +1009,19 @@
                OR    ( WRK-BANGO           <   1               )
                    MOVE    "0012"              TO  SPA-ERRCD
                ELSE
-                   IF      SPA-C01-INDEX       =   ZERO
-                       MOVE    ZERO            TO  IDZ
-                       PERFORM VARYING IDXX    FROM    1   BY  1
-                               UNTIL   IDXX    >       6
-                           IF      SPA-GMN-C04-INPUTCD (IDXX)  =   SPACE
-                               MOVE    SPA-GMN-C04-TINPUTCD (WRK-BANGO)
-                                           TO  SPA-GMN-C04-INPUTCD(IDXX)
-                               MOVE    IDXX    TO  IDZ
-                               PERFORM 410021-INPUTCD-HENSYU-SEC
       *
-                               MOVE    6       TO  IDXX
-                           END-IF
-                       END-PERFORM
-                   ELSE
-                       MOVE    SPA-C01-INDEX   TO  IDZ
-                       MOVE    SPA-GMN-C04-TINPUTCD (WRK-BANGO)
-                                           TO  SPA-GMN-C04-INPUTCD(IDZ)
-                       PERFORM 410021-INPUTCD-HENSYU-SEC
-                   END-IF
+                   EVALUATE    SPA-NAI-C04-B10-WIDGET
+                       WHEN    "BYOMEICD"
+                           PERFORM 410201-BYOMEI-SELECT-SEC
+                       WHEN    "HOSOKUCD"
+                           PERFORM 410202-HOSOKU-SELECT-SEC
+                   END-EVALUATE
                END-IF
            ELSE 
                IF      SPA-C01-INDEX   >   ZERO
                    MOVE    "0008"              TO  SPA-ERRCD
                    GO  TO  41002-SELNUM2-CHK-EXT
                END-IF
-           END-IF
-      *
-           IF      SPA-CIDCD2      NOT =   SPACE
-               GO  TO  41002-SELNUM2-CHK-EXT
-           END-IF
-      *      
-           IF      SPA-C01-INDEX   =   ZERO
-               PERFORM 410022-BYOMEI-HENSYU-SEC
-           ELSE
-               PERFORM 410023-BYOMEI-HENSYU-SEC
-           END-IF 
-      *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-C01-INDEX   =   ZERO
-                   MOVE    ZERO                TO  SPA-GMN-C04-SELNUM
-                   MOVE    9                   TO  SPA-GMN-C04-CUR
-               ELSE
-                   PERFORM 450-KAKUTEI-SEC
-               END-IF 
            END-IF
            .
        41002-SELNUM2-CHK-EXT.
@@ -1797,6 +1758,17 @@
       *    自院病名行選択処理
       *****************************************************************
        41020-BYOMEISEL-SEC       SECTION.
+      * 
+           MOVE    ZERO                TO  WRK-SELNO
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-C04-MAX
+               IF      C04-BYOMEILST-SELECT (IDX)    =   "T"
+                   MOVE    IDX                  TO  WRK-SELNO
+                   MOVE    SPA-GMN-C04-MAX      TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-SELNO           TO  WRK-BANGO
       *
            EVALUATE    SPA-NAI-C04-B10-WIDGET
                WHEN    "BYOMEICD"
@@ -1820,17 +1792,6 @@
                MOVE    "0013"              TO  SPA-ERRCD
                GO  TO  410201-BYOMEI-SELECT-EXT
            END-IF
-      * 
-           MOVE    ZERO                TO  WRK-SELNO
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-C04-MAX
-               IF      C04-BYOMEILST-SELECT (IDX)    =   "T"
-                   MOVE    IDX                  TO  WRK-SELNO
-                   MOVE    SPA-GMN-C04-MAX      TO  IDX
-               END-IF
-           END-PERFORM
-      *
-           MOVE    WRK-SELNO           TO  WRK-BANGO
       * 
            IF      SPA-C01-INDEX       =   ZERO
                MOVE    ZERO            TO  IDZ
@@ -1890,17 +1851,6 @@
                MOVE    "0013"              TO  SPA-ERRCD
                GO  TO  410202-HOSOKU-SELECT-EXT
            END-IF
-      * 
-           MOVE    ZERO                TO  WRK-SELNO
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-C04-MAX
-               IF      C04-BYOMEILST-SELECT (IDX)    =   "T"
-                   MOVE    IDX                  TO  WRK-SELNO
-                   MOVE    SPA-GMN-C04-MAX      TO  IDX
-               END-IF
-           END-PERFORM
-      *
-           MOVE    WRK-SELNO           TO  WRK-BANGO
       * 
            IF      SPA-C01-INDEX       =   ZERO
                MOVE    ZERO            TO  IDZ
