@@ -101,6 +101,8 @@
       *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
       *                                     平成２２年４月分以降の政府管
       *                                     掌をエラーとする
+      *
+      *  04.06.01    NACL-藤原    10/11/05  補足コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2865,10 +2867,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  PTBYO-BYOMEICDSU    
       *
       *    疑いフラグより病名を編集
-           IF      PTBYO-UTAGAIFLG NOT =   SPACE
+           IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
+           OR    ( PTBYO-HOSOKU-COMMENT
+                                   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+               MOVE    PTBYO-HOSOKU-COMMENT
+                                           TO  SMKBYO-HOSOKU-COMMENT
                MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
                MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
