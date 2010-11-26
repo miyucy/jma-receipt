@@ -790,6 +790,7 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    初期画面処理
       *****************************************************************
@@ -5618,6 +5619,11 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
            END-IF    
       *
       *    病名編集フラグセット
+           IF      SPA-NAI-C02-BYOMEICD(1)
+                                        =   WRK-CONS-BYOMEICD
+                   MOVE    "1"             TO  SPA-NAI-C02-BYOMEIHENFLG
+           END-IF
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                IF      SPA-NAI-C02-US-BYOMEIHENFLG (IDX)
@@ -6600,7 +6606,7 @@ grpsys                                       SPA-AREA
            AND   ( SPA-C02-1042-MSG3-DSPKBN
                                        =   ZERO  )
                MOVE    "0075"          TO  SPA-ERRCD
-           END-IF    
+           END-IF
            .
        41013-BYOMEI-CHK-EXT.
            EXIT.
