@@ -314,6 +314,7 @@
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.03    NACL-藤原    10/11/20  日付情報の記録を行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4753,11 +4754,11 @@
       *            日付情報
                    PERFORM VARYING IDV     FROM    1   BY  1
                            UNTIL   IDV     >       31
-      *************    IF      RECE641-KAISU (1 IDV)   >   ZERO
-      *************        MOVE    RECE641-KAISU (1 IDV)
-      *************                                TO  WRK-NUM
-      *************        MOVE    3               TO  WRK-NAGASA
-      *************    END-IF
+                       IF      RECE641-KAISU (1 IDV)   >   ZERO
+                           MOVE    RECE641-KAISU (1 IDV)
+                                                   TO  WRK-NUM
+                           MOVE    3               TO  WRK-NAGASA
+                       END-IF
                        IF      IDV                 =   31
                            MOVE    1                   TO  WRK-END 
                        END-IF     
@@ -5424,11 +5425,11 @@
       *                日付情報
                        PERFORM VARYING IDV     FROM    1   BY  1
                                UNTIL   IDV     >       31
-      *****************    IF      RECE641-KAISU (1 IDV)   >   ZERO
-      *****************        MOVE    RECE641-KAISU (1 IDV)
-      *****************                                TO  WRK-NUM
-      *****************        MOVE    3               TO  WRK-NAGASA
-      *****************    END-IF
+                           IF      RECE641-KAISU (1 IDV)   >   ZERO
+                               MOVE    RECE641-KAISU (1 IDV)
+                                                       TO  WRK-NUM
+                               MOVE    3               TO  WRK-NAGASA
+                           END-IF
                            IF      IDV                 =   31
                                MOVE    1                   TO  WRK-END 
                            END-IF     
@@ -5733,11 +5734,11 @@
       *    日付情報
            PERFORM VARYING IDV     FROM    1   BY  1
                    UNTIL   IDV     >       31
-      *********IF      RECE641-KAISU (1 IDV)   >   ZERO
-      *********    MOVE    RECE641-KAISU (1 IDV)
-      *********                            TO  WRK-NUM
-      *********    MOVE    3               TO  WRK-NAGASA
-      *********END-IF
+               IF      RECE641-KAISU (1 IDV)   >   ZERO
+                   MOVE    RECE641-KAISU (1 IDV)
+                                           TO  WRK-NUM
+                   MOVE    3               TO  WRK-NAGASA
+               END-IF
                IF      IDV                 =   31
                    MOVE    1                   TO  WRK-END 
                END-IF     
@@ -5949,11 +5950,11 @@
       *    日付情報
            PERFORM VARYING IDV     FROM    1   BY  1
                    UNTIL   IDV     >       31
-      *********IF      RECE641-KAISU (1 IDV)  >   ZERO
-      *********    MOVE    RECE641-KAISU (1 IDV)
-      *********                            TO  WRK-NUM
-      *********    MOVE    3               TO  WRK-NAGASA
-      *********END-IF
+               IF      RECE641-KAISU (1 IDV)  >   ZERO
+                   MOVE    RECE641-KAISU (1 IDV)
+                                           TO  WRK-NUM
+                   MOVE    3               TO  WRK-NAGASA
+               END-IF
                IF      IDV                 =   31
                    MOVE    1                   TO  WRK-END 
                END-IF     
@@ -6130,11 +6131,11 @@
       *    日付情報
            PERFORM VARYING IDV     FROM    1   BY  1
                    UNTIL   IDV     >       31
-      *********IF      RECE641-KAISU (1 IDV)   >   ZERO
-      *********    MOVE    RECE641-KAISU (1 IDV)
-      *********                            TO  WRK-NUM
-      *********    MOVE    3               TO  WRK-NAGASA
-      *********END-IF
+               IF      RECE641-KAISU (1 IDV)   >   ZERO
+                   MOVE    RECE641-KAISU (1 IDV)
+                                           TO  WRK-NUM
+                   MOVE    3               TO  WRK-NAGASA
+               END-IF
                IF      IDV                 =   31
                    MOVE    1                   TO  WRK-END 
                END-IF     
@@ -6404,13 +6405,14 @@
       *                            日付情報
                                    PERFORM VARYING IDV FROM    1   BY  1
                                            UNTIL   IDV >       31
-      *********                        IF      LNK-NYURECEDEN-?? (1 IDV)
-      *********                                        >   ZERO
-      *********                            MOVE    LNK-NYURECEDEN-??
-      *********                                                  (1 IDV)
-      *********                                        TO  WRK-NUM
-      *********                            MOVE    3   TO  WRK-NAGASA
-      *********                        END-IF
+                                       IF      LNK-NYURECEDEN-DAY
+                                                       (IDZ1 IDZ2 IDV)
+                                                       >   ZERO
+                                           MOVE    LNK-NYURECEDEN-DAY
+                                                       (IDZ1 IDZ2 IDV)
+                                                       TO  WRK-NUM
+                                           MOVE    3   TO  WRK-NAGASA
+                                       END-IF
                                        IF      IDV     =   31
                                            MOVE    1       TO  WRK-END 
                                        END-IF     
