@@ -99,6 +99,9 @@ grpsys     COPY    "COMMON-SPA".
        01  IDX-AREA.
            03  IDX-PNT1                PIC 9(05).
            03  IDX-PNT2                PIC 9(05).
+           03  IDX-PNT3                PIC 9(05).
+           03  IDX                     PIC 9(03).
+           03  IDY                     PIC 9(03).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -108,6 +111,8 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-DEL                 PIC 9(06).
            03  CNT-ERR                 PIC 9(06).
            03  CNT-PLF                 PIC 9(06).
+           03  CNT-MAE                 PIC 9(03).
+           03  CNT-ATO                 PIC 9(03).
       *
        01  SYS-DATE.
            03  SYS-YY                  PIC 9(02).
@@ -130,6 +135,13 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-IN                  PIC X(01).
            03  WRK-OPTION              PIC X(60000).
            03  WRK-OPTION-LEN          PIC 9(08).
+      *
+           03  WRK-MAE-NAIYO           PIC X(100).
+           03  WRK-ATO-NAIYO           PIC X(100).
+           03  WRK-MAE-AREA.
+               05  WRK-MAE-OPTION      PIC X(100) OCCURS 100.
+           03  WRK-ATO-AREA.
+               05  WRK-ATO-OPTION      PIC X(100) OCCURS 100.
       *
       *    旧マスタデータ退避領域
        01  PRGWK-REC.
@@ -253,7 +265,7 @@ grpsys     COPY    "COMMON-SPA".
            OPEN    INPUT               IN-FILE
            IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
-               DISPLAY "*(ORCMUP0151)* IN-FILE OPN STS["
+               DISPLAY "*(ORCMUP0161)* IN-FILE OPN STS["
                                        STS-IN "]"
            END-IF
       *
@@ -475,9 +487,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF     (PRGOPTIONWK-KBNCD   =   "*")
              AND  (PRGOPTION-OPID     NOT = SPACE)
              AND  (PRGOPTION-UPYMD    NOT = SPACE)
-                  CONTINUE
+               PERFORM 220-PRGOPTION-HENSYU-SEC
            ELSE
                PERFORM 220-PRGOPTION-EDIT-SEC
+           END-IF
       *
                MOVE    PRGOPTION-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -492,7 +505,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      WRK-ERRCD           =   ZERO
                    ADD     1               TO  CNT-UPD
                END-IF
-           END-IF
+      *     END-IF
            .
        20101-PRGOPTION-UPD-EXT.
            EXIT.
@@ -576,6 +589,165 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        220-PRGOPTION-EDIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    オプション編集マージ処理
+      *****************************************************************
+       220-PRGOPTION-HENSYU-SEC       SECTION.
+      *
+      *    既存データ
+           MOVE    SPACE               TO  WRK-OPTION
+           MOVE    1                   TO  WRK-OPTION-LEN
+           STRING  PRGOPTION-OPTION    DELIMITED   BY  SIZE
+           INTO    WRK-OPTION
+           WITH    POINTER             WRK-OPTION-LEN
+           END-STRING
+      *
+           COMPUTE WRK-OPTION-LEN      =   WRK-OPTION-LEN  -  1
+      *
+           MOVE    0                   TO  CNT-MAE
+           MOVE    1                   TO  IDX-PNT1
+           MOVE    1                   TO  IDX-PNT2
+           MOVE    SPACE               TO  WRK-MAE-NAIYO
+           MOVE    SPACE               TO  WRK-MAE-AREA
+      *
+           PERFORM UNTIL ( IDX-PNT1    >   WRK-OPTION-LEN )
+                   OR    ( PRGOPTION-OPTION(IDX-PNT1:) =   SPACE )
+      *        行が終わったとき
+               IF    ( PRGOPTION-OPTION(IDX-PNT1:1)    =   X"0A" )
+                   MOVE    ZERO       TO  FLG-LF
+      *            コメントチェック
+                   IF      WRK-MAE-NAIYO(1:1)  NOT =   "#"
+                       PERFORM VARYING IDX-PNT2 FROM 1 BY 1
+                               UNTIL ( IDX-PNT2 >   100 )
+                               OR    ( WRK-MAE-NAIYO(IDX-PNT2:)
+                                                           =   SPACE )
+                           IF      WRK-MAE-NAIYO(IDX-PNT2:1)   =   "="
+                               MOVE    1               TO  FLG-LF
+                               MOVE    100             TO  IDX-PNT2
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *            コメントでない場合セット
+                   IF      FLG-LF      =   1
+                       COMPUTE CNT-MAE     =   CNT-MAE     +   1
+                       MOVE    WRK-MAE-NAIYO
+                                           TO  WRK-MAE-OPTION(CNT-MAE)
+                   END-IF
+                   MOVE    1               TO  IDX-PNT2
+                   MOVE    SPACE           TO  WRK-MAE-NAIYO
+               ELSE
+                   MOVE    PRGOPTION-OPTION(IDX-PNT1:1)
+                                           TO  WRK-MAE-NAIYO(IDX-PNT2:1)
+                   COMPUTE IDX-PNT2    =   IDX-PNT2    +   1
+               END-IF
+               COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
+           END-PERFORM
+      *
+      *    更新データ
+           INITIALIZE                      PRGOPTION-REC
+           MOVE    PRGOPTIONWK-REC(2:) TO  PRGOPTION-REC
+      *
+           MOVE    SPACE               TO  WRK-OPTION
+           MOVE    1                   TO  WRK-OPTION-LEN
+           STRING  PRGOPTION-OPTION    DELIMITED   BY  SIZE
+           INTO    WRK-OPTION
+           WITH    POINTER             WRK-OPTION-LEN
+           END-STRING
+      *
+           COMPUTE WRK-OPTION-LEN      =   WRK-OPTION-LEN  -  1
+      *
+           MOVE    0                   TO  CNT-ATO
+           MOVE    1                   TO  IDX-PNT1
+           MOVE    1                   TO  IDX-PNT2
+           MOVE    SPACE               TO  WRK-ATO-NAIYO
+           MOVE    SPACE               TO  WRK-ATO-AREA
+      *
+           PERFORM UNTIL ( IDX-PNT1    >   WRK-OPTION-LEN )
+                   OR    ( PRGOPTION-OPTION(IDX-PNT1:) =   SPACE )
+      *        行が終わるまで
+               IF    ( PRGOPTION-OPTION(IDX-PNT1:2)    =   "\n" )
+                   COMPUTE CNT-ATO     =   CNT-ATO     +   1
+                   MOVE    WRK-ATO-NAIYO   TO  WRK-ATO-OPTION(CNT-ATO)
+                   MOVE    1               TO  IDX-PNT2
+                   MOVE    SPACE           TO  WRK-ATO-NAIYO
+                   COMPUTE IDX-PNT1    =   IDX-PNT1    +   1
+               ELSE
+                   MOVE    PRGOPTION-OPTION(IDX-PNT1:1)
+                                       TO  WRK-ATO-NAIYO(IDX-PNT2:1)
+                   COMPUTE IDX-PNT2    =   IDX-PNT2   +   1
+               END-IF
+               COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
+           END-PERFORM
+      *
+      *    マージ処理
+           MOVE    1                   TO  IDX-PNT1
+           MOVE    1                   TO  IDX-PNT2
+           MOVE    1                   TO  IDX-PNT3
+           MOVE    SPACE               TO  WRK-OPTION
+           MOVE    SPACE               TO  WRK-MAE-NAIYO
+           MOVE    SPACE               TO  WRK-ATO-NAIYO
+      *
+           PERFORM VARYING IDX FROM 1 BY 1
+                   UNTIL ( IDX >   CNT-ATO )
+               MOVE    WRK-ATO-OPTION(IDX) TO  WRK-ATO-NAIYO
+               MOVE    ZERO            TO  FLG-LF
+               PERFORM VARYING IDX-PNT1 FROM 1 BY 1
+                       UNTIL ( IDX-PNT1 >   100 )
+                       OR    ( WRK-ATO-NAIYO(IDX-PNT1:)    =  SPACE )
+                       OR    ( FLG-LF  =   1 )
+      *            コメントチェック
+                   IF      WRK-ATO-NAIYO(IDX-PNT1:1)   =   "="
+                       PERFORM VARYING IDY FROM 1 BY 1
+                               UNTIL ( IDY >   CNT-MAE )
+                               OR    ( FLG-LF  =   1 )
+                           MOVE    WRK-MAE-OPTION(IDY) TO  WRK-MAE-NAIYO
+      *                    オプションチェック
+                           IF      WRK-ATO-NAIYO(1:1)    =   "#"
+                               COMPUTE IDX-PNT2  =   IDX-PNT1  -   1
+                               IF      WRK-ATO-NAIYO(2:IDX-PNT2)
+                                   =   WRK-MAE-NAIYO(1:IDX-PNT2)
+                                   MOVE    1       TO  FLG-LF
+                               END-IF
+                           ELSE
+                               IF      WRK-ATO-NAIYO(1:IDX-PNT1)
+                                   =   WRK-MAE-NAIYO(1:IDX-PNT1)
+                                   MOVE    1       TO  FLG-LF
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+      *
+               IF  ( FLG-LF  =  ZERO )
+                   PERFORM VARYING IDX-PNT1 FROM 1 BY 1
+                           UNTIL ( IDX-PNT1 >   100 )
+                           OR    ( WRK-ATO-NAIYO(IDX-PNT1:)  =   SPACE )
+                       CONTINUE
+                   END-PERFORM
+                   MOVE    WRK-ATO-NAIYO(1:IDX-PNT1)
+                                       TO  WRK-OPTION(IDX-PNT3:IDX-PNT1)
+               ELSE
+                   PERFORM VARYING IDX-PNT1 FROM 1 BY 1
+                           UNTIL ( IDX-PNT1 >   100 )
+                           OR    ( WRK-MAE-NAIYO(IDX-PNT1:)  =   SPACE )
+                       CONTINUE
+                   END-PERFORM
+                   MOVE    WRK-MAE-NAIYO(1:IDX-PNT1)
+                                       TO  WRK-OPTION(IDX-PNT3:IDX-PNT1)
+               END-IF
+               COMPUTE IDX-PNT3    =   IDX-PNT3   +   IDX-PNT1
+               MOVE    X"0A"       TO  WRK-OPTION(IDX-PNT3:1)
+               COMPUTE IDX-PNT3    =   IDX-PNT3   +   1
+           END-PERFORM
+      *
+           MOVE    WRK-OPTION          TO  PRGOPTION-OPTION
+      *
+           MOVE    LNK-MNTYMD          TO  PRGOPTION-UPYMD
+           MOVE    LNK-MNTHMS          TO  PRGOPTION-UPHMS
+           .
+       220-PRGOPTION-HENSYU-EXT.
+           EXIT.
       *****************************************************************
       *    エラー処理
       *****************************************************************
@@ -637,7 +809,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
-               DISPLAY "*(ORCMUP0151)* PLFFILE OPN STS[" STS-PLF "]"
+               DISPLAY "*(ORCMUP0161)* PLFFILE OPN STS[" STS-PLF "]"
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
            MOVE    WRK-SYY             TO  MES-TITLE1-YY
