@@ -2922,13 +2922,13 @@
                END-IF
            END-PERFORM
       *
-           DISPLAY "===  DAY-SET2 ======"
-           PERFORM   VARYING   IDX1    FROM   1  BY  1
-             UNTIL   IDX1     >   31
-             DISPLAY "IDX1 = "IDX1
-               DISPLAY "      ----5----0----5----0----5----0-"
-               DISPLAY "DAY = " WRK-SO-DAY-TBL(IDX1)
-           END-PERFORM
+      **     DISPLAY "===  DAY-SET2 ======"
+      **     PERFORM   VARYING   IDX1    FROM   1  BY  1
+      **       UNTIL   IDX1     >   31
+      **       DISPLAY "IDX1 = "IDX1
+      **         DISPLAY "      ----5----0----5----0----5----0-"
+      **         DISPLAY "DAY = " WRK-SO-DAY-TBL(IDX1)
+      **     END-PERFORM
       *
       *    療養レセコメントの同一剤まとめ処理
            IF    (MATOME-IDX     NOT =   ZERO)   AND
