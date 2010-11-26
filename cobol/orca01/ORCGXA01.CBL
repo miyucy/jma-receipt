@@ -1994,6 +1994,12 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  XAID2
+      *    グループ指定時は、クライアント印刷不可とする
+           IF      SPA-GMN-SHORI-RENNUM  =  ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  XAID2-B11-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL   TO  XAID2-B11-STATE
+           END-IF
            MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID2-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

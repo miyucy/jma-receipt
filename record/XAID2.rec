@@ -1,5 +1,8 @@
 XAID2	{
 	fixed1	{
+		B11     {
+			state   int;
+		};
 		ID1CODE	{
 			value	varchar(10);
 		};
