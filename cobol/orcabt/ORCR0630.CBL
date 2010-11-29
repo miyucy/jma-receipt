@@ -883,6 +883,9 @@
                MOVE    WRK-PARA-HOSPNUM    TO   RECE62PARA-HOSPNUM
       *
                PERFORM 2001-HENSYU-SEC
+               IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    1           TO  FLG-END
+               END-IF
            END-PERFORM 
       *
            MOVE    1                   TO  FLG-END
