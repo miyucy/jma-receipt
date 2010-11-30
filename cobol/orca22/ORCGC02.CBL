@@ -1491,7 +1491,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
       *
-           PERFORM UNTIL ( WRK-LINE        >=  WRK-CONS-C02-MAX )
+           PERFORM UNTIL ( WRK-LINE        >=  WRK-CONS-C02-MAX
+                           AND
+                           WRK-PAGE        =   SPA-GMN-C02-PAGE )
                    OR    ( FLG-PTBYOMEI    =   1                )
                PERFORM 3101-PTBYO-SPA-SEC
            END-PERFORM
@@ -1593,7 +1595,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-GMN-C02-MAX =   ZERO
                ADD     1               TO  WRK-PAGE
            END-IF
-      * 
+      *
       *    表示可能か
            COMPUTE WRK-LINE    =   SPA-GMN-C02-MAX
                                +   WRK-PTBYOMEI-SRYYMD-MAX
