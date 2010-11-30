@@ -87,15 +87,11 @@
       *           診療種別区分
                   05  MDCREQ-MDC-CLASS               PIC X(3).
       *??
-                  05  MDCREQ-MDC-CLASS-ID            PIC X(2).
-      *??
                   05  MDCREQ-MDC-CLASS-NAME          PIC X(50).
       *           回数
                   05  MDCREQ-MDC-CLASS-NUMBER        PIC X(50).
       *           剤内容
                   05  MDCREQ-PRESCRIPTION-INFO        OCCURS  40 TIMES.
-      *??
-                    06  MDCREQ-PRSCRPT-CLASS         PIC X(3).
       *             診療コード
                     06  MDCREQ-PRSCRPT-CODE          PIC X(9).
       *             診療名称（コメント）
