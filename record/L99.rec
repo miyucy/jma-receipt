@@ -26,5 +26,9 @@ L99	{
 		pandatimer1     {
 			duration        int;
 		};
+                download1 {
+                        objectdata      object;
+                        filename        varchar(1024);
+                };
 	};
 };

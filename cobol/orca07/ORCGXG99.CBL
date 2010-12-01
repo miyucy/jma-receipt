@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.00    NACL-竹田    10/11/25  クライアント保存拡張対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -396,7 +397,7 @@
                                        SPA-AREA
       *
            INITIALIZE                      XGFIL 
-           MOVE    ORCA-BLOB-OBJECT    TO  XGFIL-OBJECTDATA
+           MOVE    ORCA-BLOB-OBJECT    TO  XG99-OBJECTDATA
       *****STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
       *****                            DELIMITED  BY  SPACE
       *****        SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
@@ -404,7 +405,7 @@
       *****                            INTO  XGFIL-ENTRY1
       *****END-STRING
            MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       TO  XGFIL-ENTRY1
+                                       TO  XG99-FILENAME
            MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
                                        TO  XGFIL-TITLE
            MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
@@ -413,8 +414,8 @@
       *
            MOVE    ZERO                TO  XG99-DURATION
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "XGFIL"             TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "XGFIL"             TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END

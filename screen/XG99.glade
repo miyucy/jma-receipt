@@ -237,6 +237,14 @@
 	</widget>
       </widget>
     </widget>
+    <widget>
+      <class>GtkPandaDownload</class>
+      <name>download1</name>
+      <x>176</x>
+      <y>24</y>
+      <width>21</width>
+      <height>21</height>
+    </widget>
   </widget>
 </widget>
 

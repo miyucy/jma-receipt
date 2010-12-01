@@ -17,3 +17,6 @@
               03  G99-B12-STATE   PIC S9(9)   BINARY.
               03  G99-B12-LABEL   PIC X(14).
               03  G99-DURATION   PIC S9(09) BINARY.
+              03  G99-DOWNLOAD1.
+                  05  G99-OBJECTDATA   PIC X(8).
+                  05  G99-FILENAME     PIC X(1024).

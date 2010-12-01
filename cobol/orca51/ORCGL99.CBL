@@ -30,6 +30,7 @@
       *  01.00.01    NACL-太田    03.07.02  タイマーイベント追加
       *  03.05.00    NACL-太田    07.05.28  グループ診療対応
       *  03.05.01    NACL-藤原    07/09/19  クライアント保存対応
+      *  04.06.00    NACL-竹田    10/11/25  クライアント保存拡張対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -503,13 +504,15 @@
                                        SPA-AREA
       *
            INITIALIZE                      LFIL 
-           MOVE    ORCA-BLOB-OBJECT    TO  LFIL-OBJECTDATA
+           MOVE    ORCA-BLOB-OBJECT    TO  L99-OBJECTDATA
            STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
                                        DELIMITED  BY  SPACE
                    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
                                        DELIMITED  BY  SPACE
-                                       INTO  LFIL-ENTRY1
+                                       INTO  L99-FILENAME
            END-STRING
+           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       TO  L99-FILENAME
            MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
                                        TO  LFIL-TITLE
            MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
@@ -518,8 +521,8 @@
       *
            MOVE    ZERO                TO  L99-DURATION
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "LFIL"              TO  MCP-WINDOW
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "LFIL"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END
