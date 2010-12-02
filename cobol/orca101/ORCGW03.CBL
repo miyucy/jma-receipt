@@ -1587,7 +1587,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MEISYO       TO  W03-MEISYO
            MOVE    SPA-GMN-YUKOKIKAN    TO  W03-YUKOKIKAN
            MOVE    SPA-GMN-KIJUNTEIGENCD    TO  W03-TEIGENCD
-           PERFORM VARYING     IDX      FROM    IDX   BY  1
+           PERFORM VARYING     IDX      FROM    1     BY  1
                    UNTIL       IDX      >       10
                MOVE    SPA-GMN-SSTKIJUNCD (IDX) TO  W03-KIJUNCD (IDX)
            END-PERFORM
