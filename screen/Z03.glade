@@ -4135,7 +4135,7 @@
 	    <last_modification_time>Sat, 03 Feb 2001 04:58:26 GMT</last_modification_time>
 	  </signal>
 	  <editable>True</editable>
-	  <format>9999</format>
+	  <format>ZZZ9</format>
 	</widget>
 
 	<widget>
