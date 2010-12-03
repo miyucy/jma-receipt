@@ -1276,6 +1276,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *    °õºþ½èÍý
       *
       *                                   
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    "PVERROR"           TO  RECEERR-FILE-ID
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    "PVERROR"           TO  RECEERR-FILE-ID
+           MOVE    MCP-TERM            TO  RECEERR-TERMID
            MOVE    RECEERR             TO  SHELL-ERRFILE
       *             
            MOVE    SPACE               TO  SHELLTBL
@@ -1319,7 +1324,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
-           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG12
+      *    MOVE    SHELL-ARG4          TO  SHELLTBL-ARG12
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
@@ -1391,6 +1397,9 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ACCEPT  SYS-TIME            FROM    TIME
       *
       *    °õºþ½èÍý
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+           MOVE    "PVERROR"           TO  RECEERR-FILE-ID
+           MOVE    MCP-TERM            TO  RECEERR-TERMID
       *****MOVE    RECEERR             TO  SHELL-ERRFILE
       *
            MOVE    SPACE               TO  SHELLTBL
