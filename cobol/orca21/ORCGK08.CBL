@@ -345,6 +345,8 @@
            03  IDX-SYU2            PIC 9(04).
       *
            03  IDX-TS              PIC 9(04).
+      *
+           03  IDM2                PIC 9(04).
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
@@ -429,8 +431,11 @@
            03  WRK-Z9-X            PIC X(10).
            03  WRK-Z9              PIC Z,ZZZ,ZZZ.
            03  WRK-Z92             PIC --,---,---.
+           03  WRK-Z7              PIC Z(07).
       *
            03  WRK-KIN             PIC 9(07).
+      *
+           03  WRK-TJIHI           PIC X(40).
       *
            03  WRK-ZAITEN              PIC 9(08).
            03  WRK-SRYKAISUKEI         PIC 9(03).
@@ -1759,7 +1764,9 @@
            END-IF
       *
       *    自費の時、計を表示しない
-           IF     (WRK-JIHIMONEY       >   ZERO  )  OR
+           IF    ((WRK-JIHIMONEY       >   ZERO  )
+      *        自賠責金額入力以外
+             AND (LNK-WKSRY-SRYKBN(01)(1:1)    =   "9" ))  OR
       *        回数入力がなく、入院回数入力がある時、入院回数のみ
                  ((FLG-KAISUU-ARI      =   ZERO )  AND
                   (FLG-KAISUU-ARI2     =   1    ))
@@ -2477,6 +2484,14 @@
                MOVE    SPA-GMN-TMEISYO2(IDG)   TO  WRK-HOUKNS-NAME
            END-IF
       *!
+      *!
+      *    自賠責金額入力
+           IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   "809")  AND
+                  (LNK-WKSRY-JIHIMONEY(IDX IDZ)  >   ZERO )
+               PERFORM 310124-RSI-JIHIMONEY-HEN-SEC
+           END-IF
+      *!
+      *!
            INSPECT SPA-GMN-TBANGO2 (IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
@@ -2878,6 +2893,49 @@
            END-PERFORM
            .
        310122-BUNGSU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   自賠責金額入力編集処理
+      *****************************************************************
+       310124-RSI-JIHIMONEY-HEN-SEC                  SECTION.
+      *
+           MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)    TO  WRK-Z7
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-Z7             TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+      *
+           MOVE    SPACE               TO  WRK-TJIHI
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-ZAIKEIJ(IDM:1)  =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-ZAIKEIJ(IDM:2)  =   "　"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-ZAIKEIJ (IDM:2)
+                                               TO  WRK-TJIHI
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  SPA-GMN-HEN1(IDG)
+           STRING  "（"                DELIMITED   BY  SIZE
+                   WRK-TJIHI           DELIMITED   BY  SPACE
+                   "円）"              DELIMITED   BY  SIZE
+                      INTO             SPA-GMN-HEN1 (IDG)
+           END-STRING
+           .
+       310124-RSI-JIHIMONEY-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3482,6 +3540,9 @@
                    EVALUATE    WRK-SRYSYUKBN
       *            リハビリ
                    WHEN    "800"
+                       MOVE    11               TO  IDX-TS
+      *            自賠責金額
+                   WHEN    "809"
                        MOVE    11               TO  IDX-TS
       *            処方せん料
                    WHEN    "820"
@@ -4550,6 +4611,12 @@
                                                            "09594" )
                        MOVE    1                   TO  FLG-RSIFLG
                    END-IF
+      *            自賠責金額入力
+                   IF      LNK-WKSRY-SRYSYUKBN(IDX)    =   "809"
+                       MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)
+                                                   TO  TNS-TEN
+                   END-IF
+      *
                    IF      FLG-RSIFLG          =   1
                        COMPUTE WRK-TEN         =   TNS-TEN   /   10
                        ADD     WRK-TEN         TO  WRK-SYUTEN1

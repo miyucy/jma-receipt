@@ -1182,6 +1182,9 @@
                    MOVE    LNK-WKSRY-INPUTKBN(IDX1 IDX2)
                                                TO  ORCSCZAICHK-INPUTKBN
                                                              (IDX-ATO)
+                   MOVE    LNK-WKSRY-JIHIMONEY(IDX1 IDX2)
+                                               TO  ORCSCZAICHK-JIHIMONEY
+                                                             (IDX-ATO)
                END-PERFORM
            END-PERFORM
       *

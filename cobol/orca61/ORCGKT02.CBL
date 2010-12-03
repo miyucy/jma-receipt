@@ -322,6 +322,7 @@
            03  IDG2                PIC 9(04).
            03  IDG3                PIC 9(04).
            03  IDM                 PIC 9(04).
+           03  IDM2                PIC 9(04).
            03  IDK1                PIC 9(04).
            03  IDK2                PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -527,8 +528,11 @@
       *
            03  CNT-ZAI                 PIC 9(04).
       *
-           03  WRK-DAY-HENSYU     PIC X(100).
-           03  WRK-HENSYU         PIC X(100).
+           03  WRK-DAY-HENSYU      PIC X(100).
+           03  WRK-HENSYU          PIC X(100).
+      *
+           03  WRK-TJIHI           PIC X(40).
+           03  WRK-Z7              PIC Z(07).
       *
       *    ½¸·×¼ýÇ¼ÀÁµáÆâÍÆ
        01  WRK-SUM-AREA.
@@ -2229,6 +2233,13 @@
                MOVE    SPA-GMN-TMEISYO2(IDG)   TO  WRK-HOUKNS-NAME
            END-IF
       *!
+      *    ¼«ÇåÀÕ¶â³ÛÆþÎÏ
+           IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   "809")  AND
+                  (LNK-WKSRY-JIHIMONEY(IDX IDZ)  >   ZERO )
+               PERFORM 310124-RSI-JIHIMONEY-HEN-SEC
+           END-IF
+      *!
+      *!
            INSPECT SPA-GMN-TBANGO2 (IDG) REPLACING  ALL "  "  BY  "¡¡"
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "¡¡"
            INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "¡¡"
@@ -2247,6 +2258,50 @@
            .
        31012-ZAIMEI-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *   ¼«ÇåÀÕ¶â³ÛÆþÎÏÊÔ½¸½èÍý
+      *****************************************************************
+       310124-RSI-JIHIMONEY-HEN-SEC                  SECTION.
+      *
+           MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)    TO  WRK-Z7
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-Z7             TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+      *
+           MOVE    SPACE               TO  WRK-TJIHI
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-ZAIKEIJ(IDM:1)  =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-ZAIKEIJ(IDM:2)  =   "¡¡"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-ZAIKEIJ (IDM:2)
+                                               TO  WRK-TJIHI
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  SPA-GMN-HEN1(IDG)
+           STRING  "¡Ê"                DELIMITED   BY  SIZE
+                   WRK-TJIHI           DELIMITED   BY  SPACE
+                   "±ß¡Ë"              DELIMITED   BY  SIZE
+                      INTO             SPA-GMN-HEN1 (IDG)
+           END-STRING
+           .
+       310124-RSI-JIHIMONEY-HEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *   ºÞÆâÌÀºÙ¡Ê¼«Èñ¡Ë  ÊÔ½¸½èÍý
@@ -4272,7 +4327,7 @@
                    IF     LNK-WKSRY-SRYCD(IDX IDS)     =   "140037490"
                                                        OR  "140040110"
                                                        OR  "150266970"
-      *                    ðôÉô¸ÇÄêÂÓ²Ã»»
+      *                   ðôÉô¸ÇÄêÂÓ²Ã»»
                                                        OR  "140052610"
                        MOVE    LNK-WKSRY-SRYCD (IDX IDS)   TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC

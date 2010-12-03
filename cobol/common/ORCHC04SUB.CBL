@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.00    NACL-多々納  10/11/29  自賠責金額入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -565,6 +566,10 @@
                END-IF
       *        自賠責のその他
                IF     (SRY-SRYCD (IDXA)(1:4)   =   "0959" )
+      *            自賠責金額入力を点数とする
+                   IF     (SRY-SRYSYUKBN       =   "809")
+                       MOVE    SRY-JIHIMONEY(IDXA)     TO  TNS-TEN
+                   END-IF
                    MOVE    TNS-TEN             TO  WRK-TBL-TEN (IDX-S)
                    MOVE    TNS-TENSIKIBETU     TO  WRK-TBL-TENSIKIBETU
                                                             (IDX-S)
@@ -607,6 +612,8 @@
                EVALUATE    WRK-SRYSYUKBN
                    WHEN    "800"
                        MOVE    "80"        TO  TBL-SRYKBN (IDX-TBL)
+                   WHEN    "809"
+                       MOVE    "86"        TO  TBL-SRYKBN (IDX-TBL)
                    WHEN    "820"
                        MOVE    "29"        TO  TBL-SRYKBN (IDX-TBL)
                    WHEN    "830"

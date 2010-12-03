@@ -1129,8 +1129,8 @@
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
                                                    "09592"  OR
                                                    "09593"  OR
-                                                   "09594"  )  AND
-                  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
+                                                   "09594"  )
+      **     AND  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
       *D       IF      WRK-COM-SURYO(IDX-Z)    >   1
                IF      WRK-COM-SURYO(IDX-Z)    NOT =   1
                    MOVE    "1002"              TO  WRK-ERRCD

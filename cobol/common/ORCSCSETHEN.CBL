@@ -721,6 +721,15 @@
                                        =   "09591"  OR
                                            "09592"  OR
                                            "09593"  )
+      *        ¼«ÇåÀÕÆþÎÏ
+               IF    (SPA-COM-SRYSYUKBN (SPA-GMN-IDX)  =   "809")
+                   MOVE    "1"                 TO  SPA-COM-KEIFLG
+                                                         (SPA-GMN-IDX)
+                   MOVE    1                   TO  SPA-COM-SURYO
+                                                        (SPA-GMN-IDX)
+                   MOVE    ISET-SURYO1         TO  SPA-COM-JIHIMONEY
+                                                         (SPA-GMN-IDX)
+               END-IF
                GO     TO      4101191-JIHI-HEN-EXT
            END-IF
       *

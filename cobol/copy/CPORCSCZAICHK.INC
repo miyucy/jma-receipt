@@ -63,6 +63,8 @@
       *                換算値数量
                        09  ORCSCZAICHK-KANSURYO    PIC  9(05)V9(05).
                        09  ORCSCZAICHK-INPUTKBN    PIC  X(01).
+      *                自費金額
+                       09  ORCSCZAICHK-JIHIMONEY   PIC  9(07).
       *出力
            03  ORCSCZAICHK-OUT-AREA.
       *    対象剤番号

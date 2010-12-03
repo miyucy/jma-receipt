@@ -2300,6 +2300,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                              (IDX)
                    MOVE    SRY-SRYKAISU(IDX2)  TO  ORCSCZAICHK-SRYKAISU
                                                              (IDX)
+      *            ¼«Èñ¶â³Û
+                   MOVE    SRY-JIHIMONEY(IDX2) TO  ORCSCZAICHK-JIHIMONEY
+                                                             (IDX)
       *            ´¹»»ÃÍ¿ôÎÌ
                    MOVE    SRY-KANSURYO(IDX2)  TO  ORCSCZAICHK-KANSURYO
                                                              (IDX)

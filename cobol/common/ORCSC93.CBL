@@ -60,6 +60,7 @@
       * 04.04.00     NACL-多々納  09/01/09  包括検査コメント編集追加
       * 04.04.00     NACL-多々納  09/02/12  外来まとめ対応
       * 04.05.00     NACL-多々納  10/01/XX  治験対応
+      * 04.06.00     NACL-多々納  10/12/01  自賠責金額入力対応
       *****************************************************************
       *
       *
@@ -768,6 +769,24 @@
                            END-IF
                        END-IF
                    END-IF
+      *ver.4.6.0
+      *            自賠責金額入力はＨ２２年４月から
+                   IF      WRK-SRYSYUKBN       =   "809"
+                       IF      SPA-SRYYMD          <   "20100401"
+                           MOVE    "0503"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
+                       IF     (SPA-HKNKBN          =   1   )
+                         AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+                           CONTINUE
+                       ELSE
+                           IF      SPA-ERRCD       =   SPACE
+                               MOVE    "0502"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                                 (IDX)
+                           END-IF
+                       END-IF
+                   END-IF
                WHEN    OTHER
       *        その他
                    IF      FLG-JIHI            =   1
@@ -899,6 +918,14 @@
                                                                 (IDX)
                            MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
+      *                    診療種別入力
+      *                    IF      WRK-SRYSYUKBN   NOT =   SPACE
+      *                        MOVE    WRK-SRYSYUKBN
+      *                                            TO  SPA-COM-SRYSYUKBN
+      *                                                         (IDX)
+      *                        MOVE    SPACE       TO  SPA-COM-ZAIEND
+      *                                                         (IDX)
+      *                    END-IF
                        END-IF
                    END-IF
       *            時間入力の時、前のコードをチェックする
@@ -1003,6 +1030,8 @@
                           (WRK-SRYKBN              =   "21"  )
                      AND  (FLG-HASSYO              =   ZERO  )
                      AND  (FLG-SYOHO               =   ZERO  )
+                     AND  (SPA-COM-SRYSYUKBN(IDX - 1)
+                                               NOT =   "809" )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
                            WHEN    "21"
                            WHEN    "22"
@@ -1033,6 +1062,8 @@
                           (WRK-SRYKBN              =   "23"  )
                      AND  (FLG-HASSYO              =   ZERO  )
                      AND  (FLG-SYOHO               =   ZERO  )
+                     AND  (SPA-COM-SRYSYUKBN(IDX - 1)
+                                               NOT =   "809" )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****指導料削除       WHEN    "13"
                            WHEN    "14"
@@ -1060,6 +1091,8 @@
                               (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
                          AND  (FLG-HASSYO              =   ZERO  )
                          AND  (FLG-SYOHO               =   ZERO  )
+                         AND  (SPA-COM-SRYSYUKBN(IDX - 1)
+                                                   NOT =   "809" )
                            EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****指導料削除           WHEN    "13"
                                WHEN    "14"
@@ -1300,6 +1333,18 @@
                      ((SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =   ".") OR
                       (SPA-COM-SRYKBN (IDX - 1)
                                        NOT =   SPA-COM-SRYKBN(IDX)))
+                   MOVE    2               TO  FLG-SYORI
+               ELSE
+                   MOVE    1               TO  FLG-SYORI
+               END-IF
+           END-IF
+      *    １剤１明細のコード（自賠責その他）の時は、剤終了とする
+           IF      FLG-ZAI             =   2
+               IF     (IDX             >   1   )  AND
+                     ((SPA-COM-SRYSYUKBN (IDX - 1)
+                                       NOT =   SPA-COM-SRYSYUKBN(IDX))
+                 OR   (SPA-GMN-INPUTCD   (IDX - 1)(1:1)
+                                       NOT =   "."               ))
                    MOVE    2               TO  FLG-SYORI
                ELSE
                    MOVE    1               TO  FLG-SYORI
@@ -1618,8 +1663,14 @@
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
+      *                点数マスタ金額＝０
+                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
+                       AND    (SPA-SRYYMD           >=  "20100401")
+                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                       END-IF
                        MOVE    "1"         TO  SPA-COM-ZAIEND (IDX)
-                       MOVE    1           TO  FLG-ZAI
+                       MOVE    2           TO  FLG-ZAI
                    END-IF
       *            労災の時、８０とする
                    IF     (SPA-RSI-HKNKBN            =  "1"
@@ -1630,8 +1681,14 @@
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09593")
                        MOVE    "80"        TO  SPA-COM-SRYKBN  (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN(IDX)
+      *                点数マスタ金額＝０
+                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
+                       AND    (SPA-SRYYMD           >=  "20100401")
+                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                       END-IF
                        MOVE    "1"         TO  SPA-COM-ZAIEND  (IDX)
-                       MOVE    1           TO  FLG-ZAI
+                       MOVE    2           TO  FLG-ZAI
                    END-IF
       *            労災・自賠責で入院の時、８０とする
                    IF     (SPA-HKNKBN                =  1  ) AND
@@ -1640,8 +1697,14 @@
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
+      *                点数マスタ金額＝０
+                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
+                       AND    (SPA-SRYYMD           >=  "20100401")
+                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
+                                                               (IDX)
+                       END-IF
                        MOVE    "1"         TO  SPA-COM-ZAIEND  (IDX)
-                       MOVE    1           TO  FLG-ZAI
+                       MOVE    2           TO  FLG-ZAI
                    END-IF
       *        保険外（自費）（1行１剤とする）
                WHEN    "096"
@@ -1697,6 +1760,14 @@
                                                TO  SPA-COM-ZAIEND(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
+      *                診療種別入力
+      *                 IF      WRK-SRYSYUKBN   NOT =   SPACE
+      *                     MOVE    WRK-SRYSYUKBN
+      *                                             TO  SPA-COM-SRYSYUKBN
+      *                                                          (IDX)
+      *                     MOVE    SPACE           TO  SPA-COM-ZAIEND
+      *                                                          (IDX)
+      **                 END-IF
                    END-IF
       *        フリーの時、点数マスタより、決定
                WHEN    OTHER

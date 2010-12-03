@@ -5100,6 +5100,14 @@
                                                    =   "0992000" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      **                 自賠責金額入力
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0959"   ) AND
+                              (SPA-COM-SRYSYUKBN(SPA-GMN-IDX)
+                                                       =   "809" ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
+      *
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -5278,7 +5286,8 @@
       *    保険適用区分が保険適用外のもの（ユーザー登録の自費分）
            IF      SPA-COM-HKNTEKKBN(SPA-GMN-IDX)  =   2
       *        数量を金額とする
-               IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
+      ****     IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
+               IF      SPA-COM-TEN     (SPA-GMN-IDX)  =   ZERO
                    MOVE    1               TO  SPA-COM-SURYO
                                                           (SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
@@ -5393,6 +5402,13 @@
                                                    =   "09500" OR
                                                        "09600" )
       *            自費
+                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
+               END-IF
+      *        自賠責金額
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                               =   "0959" )
                    IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
                        MOVE    1                   TO  FLG-IN1
                    END-IF

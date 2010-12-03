@@ -620,7 +620,8 @@
                    MOVE    SPA-GMN-TBLREC (IDX)
                                            TO  WRK-GMN-TBLREC(IDX-Z)
       *            自費以外の計をクリアする
-                   IF      WRK-COM-SRYKBN (IDX-Z)   =   "95"  OR "96"
+                   IF     (WRK-COM-SRYKBN (IDX-Z)   =   "95"  OR "96" )
+                     OR   (WRK-COM-SRYSYUKBN(IDX-Z) =   "809"         )
                        CONTINUE
                    ELSE
                        MOVE    ZERO            TO  WRK-COM-KEI(IDX-Z)

@@ -525,7 +525,7 @@
            COPY    "CPORCSDRSET.INC".
       *
       *    診療会計剤チェックパラメタ
-           COPY    "CPORCSCZAICHK.INC".
+      *    COPY    "CPORCSCZAICHK.INC".
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".

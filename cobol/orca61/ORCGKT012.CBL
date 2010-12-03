@@ -295,6 +295,8 @@
            03  WRK-TSURYO              PIC X(30).
            03  IDM2                    PIC 9(04).
       *
+           03  WRK-TSURYO              PIC X(40).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -2080,7 +2082,9 @@
            END-IF
       *
       *    自費の時、計を表示しない
-           IF      WRK-JIHIMONEY       >   ZERO
+           IF     (WRK-JIHIMONEY       >   ZERO     )
+            AND   (LNK-WKSRY-SRYKBN (01)   =   "95" 
+                                           OR  "96" )
                CONTINUE
            ELSE
       *
@@ -2358,6 +2362,13 @@
                MOVE    SPA-GMN-TMEISYO2(IDG)   TO  WRK-HOUKNS-NAME
            END-IF
       *!
+      *!
+      *    自賠責金額入力
+           IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   "809")  AND
+                  (LNK-WKSRY-JIHIMONEY(IDX IDZ)  >   ZERO )
+               PERFORM 310124-RSI-JIHIMONEY-HEN-SEC
+           END-IF
+      *!
       *
            INSPECT SPA-GMN-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
@@ -2381,6 +2392,49 @@
       *
            .
        31012-ZAIMEI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   自賠責金額入力編集処理
+      *****************************************************************
+       310124-RSI-JIHIMONEY-HEN-SEC                  SECTION.
+      *
+           MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)    TO  WRK-KEI
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-KEI             TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+      *
+           MOVE    SPACE               TO  WRK-TSURYO
+           MOVE    1                   TO  IDM
+           MOVE    1                   TO  IDM2
+           PERFORM
+                   UNTIL       IDM     >   22
+               IF      WRK-ZAIKEIJ(IDM:1)  =   SPACE
+                   ADD     1               TO  IDM
+               ELSE
+                   IF      WRK-ZAIKEIJ(IDM:2)  =   "　"
+                       ADD     2               TO  IDM
+                   ELSE
+                       MOVE    WRK-ZAIKEIJ (IDM:2)
+                                               TO  WRK-TSURYO
+                                                        (IDM2:2)
+                       ADD     2               TO  IDM2
+                       ADD     2               TO  IDM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  SPA-GMN-HEN1(IDG)
+           STRING  "（"                DELIMITED   BY  SIZE
+                   WRK-TSURYO          DELIMITED   BY  SPACE
+                   "円）"              DELIMITED   BY  SIZE
+                      INTO             SPA-GMN-HEN1 (IDG)
+           END-STRING
+           .
+       310124-RSI-JIHIMONEY-HEN-EXT.
            EXIT.
       *
       *****************************************************************

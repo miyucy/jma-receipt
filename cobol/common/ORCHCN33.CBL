@@ -906,6 +906,10 @@
                               (TNS-SRYCD (1:5)     =   "09591" OR
                                                        "09592" OR
                                                        "09593" )
+      *                自賠責金額入力を点数とする
+                           IF     (SRY-SRYSYUKBN       =   "809")
+                              MOVE    SRY-JIHIMONEY(IDZ)   TO  TNS-TEN
+                           END-IF
                            COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
                                                    +  (TNS-TEN
                                                    /   10  )

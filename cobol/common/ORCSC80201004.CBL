@@ -1195,7 +1195,8 @@
                                                    "09592"  OR
                                                    "09593"  OR
                                                    "09594"  )  AND
-                  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
+      ****        (WRK-COM-TENOTEN (IDX-Z)     >   ZERO     )
+                  (WRK-COM-TEN     (IDX-Z)     >   ZERO     )
       *D       IF      WRK-COM-SURYO(IDX-Z)    >   1
                IF      WRK-COM-SURYO(IDX-Z)    NOT =   1
                    MOVE    "1002"              TO  WRK-ERRCD
@@ -2507,6 +2508,20 @@
                                                    "09594"
                CONTINUE
            ELSE
+               GO      TO      10021-JIHI-KEI-EXT
+           END-IF
+      *    金額入力対応
+           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "809")
+            AND   (WRK-COM-TEN      (IDX-Z)    =   ZERO )
+            AND   (WRK-COM-JIHIMONEY(IDX-Z)    >   ZERO )
+               COMPUTE WRK-COM-KISOTEN(IDX-Z)  =   WRK-COM-JIHIMONEY
+                                                            (IDX-Z)
+                                               /   10
+               ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-SUM-TENGAKEI
+               MOVE    WRK-SUM-TENGAKEI        TO  LNK-SC90-TENSU
+      *        回数
+               MOVE    LNK-ORCSC-KAISU         TO  WRK-COM-KAISU (IDX-Z)
+               MOVE    "1"                     TO  WRK-COM-KEIFLG(IDX-Z)
                GO      TO      10021-JIHI-KEI-EXT
            END-IF
       *

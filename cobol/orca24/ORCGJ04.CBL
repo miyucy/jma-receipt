@@ -313,6 +313,7 @@
            03  WRK-SRYCD-9         PIC 9(09).
       *
            03  WRK-EN              PIC 9(08).
+           03  WRK-TANKA           PIC 9(08).
       *
            03  WRK-TANINAME        PIC X(04).
       *
@@ -1928,6 +1929,13 @@
                                            "09593"  OR
                                            "09594"  )
                MOVE    SPACE               TO  SPA-COM-KEIFLG(IDX2)
+      *        金額入力
+               IF     (SPA-COM-SRYSYUKBN (IDX2)    =   "809")
+               AND    (SRY-JIHIMONEY  (IDS)        >   ZERO )
+                   MOVE    SRY-JIHIMONEY(IDS)  TO  SPA-COM-JIHIMONEY
+                                                                  (IDX2)
+                   MOVE    "1"                 TO  SPA-COM-KEIFLG(IDX2)
+               END-IF
                GO      TO      31011-SPA-HEN-EXT
            END-IF
       *
@@ -3115,7 +3123,8 @@
       *!!  保険適用区分が保険適用外のもの（ユーザー登録の自費分）
            IF      SPA-COM-HKNTEKKBN(SPA-GMN-IDX)  =   2
       *        数量を金額とする
-               IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
+      *        IF      SPA-COM-KISOTEN (SPA-GMN-IDX)  =   ZERO
+               IF      SPA-COM-TEN     (SPA-GMN-IDX)  =   ZERO
                    MOVE    1               TO  SPA-COM-SURYO
                                                           (SPA-GMN-IDX)
                    MOVE    WRK-SURYO       TO  SPA-COM-KEI(SPA-GMN-IDX)
@@ -3185,6 +3194,13 @@
                IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:5)
                                                    =   "09500" OR
                                                        "09600" )
+      *            自費
+                   IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
+                       MOVE    1                   TO  FLG-IN1
+                   END-IF
+               END-IF
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:4)
+                                                   =   "0959"  )
       *            自費
                    IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
                        MOVE    1                   TO  FLG-IN1
@@ -5340,8 +5356,8 @@
       *
       *        画面の計を集計する（１剤で１件）
                IF      SPA-COM-ZAIEND (IDX)    =   "1"
-      *************IF      SPA-COM-SRYKBN (IDX)    =   "95" OR "96"
-                   IF      SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"
+                   IF     (SPA-COM-SRYKBN (IDX)    =   "95" OR "96" )
+                   AND    (SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2" )
                        MOVE    WRK-KINGAK              TO  WRK-ZAITEN
                    ELSE
                        MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
@@ -5423,7 +5439,7 @@
                                                TO  ORCSCZAICHK-SRYSURYO
                                                              (IDX-ATO)
                    IF      SPA-COM-DATAKBN (IDX1)   =   "3"
-                       MOVE    SPA-COM-BUNGSU (IDX)
+                       MOVE    SPA-COM-BUNGSU (IDX1)
                                                TO  ORCSCZAICHK-SRYKAISU
                                                              (IDX-ATO)
                    END-IF
@@ -5435,7 +5451,7 @@
                    END-IF
       *            入力コメント
                    IF      SPA-COM-MEIFLG (IDX1)    =   "1"
-                       IF      SPA-COM-INPUTCD(IDX)    =   "810000001"
+                       IF      SPA-COM-INPUTCD(IDX1)  =   "810000001"
                                                        OR  "008500000"
                                                        OR  "008600000"
                            MOVE    SPA-GMN-MEISYO-G (IDX1)
@@ -5447,11 +5463,11 @@
                                                              (IDX-ATO)
                        END-IF
                    ELSE
-                       IF     (SPA-COM-INPUTCD(IDX)(1:2) =   "83"
-                                                         OR  "84")
-                          OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
-                                                         OR  "0084")
-                           MOVE    SPA-GMN-MEISYO(IDX)
+                       IF     (SPA-COM-INPUTCD(IDX1)(1:2) =   "83"
+                                                          OR  "84")
+                          OR  (SPA-COM-INPUTCD(IDX1)(1:4) =   "0083"
+                                                          OR  "0084")
+                           MOVE    SPA-GMN-MEISYO(IDX1)
                                            TO  ORCSCZAICHK-INPUTCOMENT
                                                              (IDX-ATO)
                        END-IF
@@ -5460,6 +5476,12 @@
                           (SPA-COM-INPUTCD(IDX1)(1:4)  =   "0084")
                        MOVE    SPA-COM-INPUTCHI-G(IDX1)
                                            TO  ORCSCZAICHK-INPUTCHI-G
+                                                             (IDX-ATO)
+                   END-IF
+      *            自費金額
+                   IF      SPA-COM-KEIFLG (IDX1)   =   "1"  OR  "2"
+                       MOVE    SPA-COM-JIHIMONEY(IDX1)
+                                               TO  ORCSCZAICHK-JIHIMONEY
                                                              (IDX-ATO)
                    END-IF
                END-IF
@@ -5496,6 +5518,17 @@
       *****************************************************************
        450112-WKSRYACTPLUS-SEC          SECTION.
       *
+      *    自賠責の時、診断料・明細料はその他の編集する
+           IF     (SPA-HKNKBN          =   1   )  AND
+                  (SPA-COM-SRYKBN (IDX)
+                                       =   "80"  )  AND
+                  (SPA-COM-INPUTCD(IDX)(1:5)   =   "09591"
+                                               OR  "09592"
+                                               OR  "09593"
+                                               OR  "09594")
+               PERFORM 450112-JIBAISEKI-SET-SEC
+           END-IF
+      *
       *    労災保険は円と点数に分ける
            IF     (SPA-COM-TENSIKIBETU (IDX)   =   1  )  AND
                   (SPA-COM-RSIKBN      (IDX)   =   1  )  AND
@@ -5503,8 +5536,9 @@
       *        円
                COMPUTE WRK-EN          =   SPA-COM-TEN (IDX)
                                        *   SPA-COM-KAISU (IDX)
-      *        労災の円
-               MOVE    WRK-EN          TO  SPA-COM-RSIKIN(IDX)
+               MOVE    SPA-COM-TEN (IDX)       TO  WRK-TANKA
+      *        労災の円（単価）
+               MOVE    WRK-TANKA       TO  SPA-COM-RSIKIN(IDX)
            END-IF
       *    労災の円
            IF      SPA-HKNKBN          =   1
@@ -5579,6 +5613,31 @@
       *
            .
        450112-WKSRYACTPLUS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責診断料・明細料その他の編集処理
+      *****************************************************************
+       450112-JIBAISEKI-SET-SEC        SECTION.
+      *
+      *    自賠責の時、診断料・明細料はその他の編集する
+           IF     (SPA-COM-SRYSYUKBN (IDX)
+                                       =   "809"  )
+      *        金額入力
+               COMPUTE WRK-EN              =   SPA-COM-JIHIMONEY (IDX)
+                                           *   SPA-COM-KAISU (IDX)
+               MOVE    SPA-COM-JIHIMONEY (IDX) TO  WRK-TANKA
+           ELSE
+      *    労災保険−その他
+               COMPUTE WRK-EN              =   SPA-COM-TEN (IDX)
+                                           *   SPA-COM-KAISU (IDX)
+               MOVE    SPA-COM-TEN (IDX)       TO  WRK-TANKA
+           END-IF
+      *    労災の円
+           MOVE    WRK-TANKA           TO  SPA-COM-RSIKIN(IDX)
+      *
+           .
+       450112-JIBAISEKI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5846,8 +5905,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    画面の計を集計する（１剤で１件）
            IF      SPA-COM-ZAIEND (IDX)    =   "1"
-      *********IF      SPA-COM-SRYKBN (IDX)    =   "95" OR  96"
-               IF      SPA-COM-KEIFLG (IDX)   =   "1"  OR  "2"
+               IF     (SPA-COM-SRYKBN (IDX)    =   "95" OR "96" )
+               AND    (SPA-COM-KEIFLG (IDX)    =   "1"  OR  "2"  )
                    MOVE    WRK-KINGAK              TO  WRK-ZAITEN
                ELSE
                    MOVE    SPA-COM-TENSU  (IDX)    TO  WRK-ZAITEN
@@ -6976,6 +7035,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療会計マスタ追加
            PERFORM 45042-SRYACCT-INS-SEC
+      *!!
+      *    診療会計附加情報処理 
+           PERFORM 45023-SRYACCTPLUS-SYORI-SEC
+      *!!
       *
            IF      SPA-J04-SYORI       =   ZERO
       *        受診履歴修正
@@ -7909,11 +7972,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    点数
            MOVE    SPA-GMN-TENSU(WRK-IDX)  TO  WRK-TENSU-X
-      *    金額入力時のみ、編集
-           IF      SPA-COM-KEIFLG (WRK-IDX)   =   SPACE
-               MOVE    SPACE                   TO  WRK-GOKEI-X
-           ELSE
+      *    自費金額入力時のみ、編集
+      ***  IF     (SPA-COM-KEIFLG (WRK-IDX)    =   SPACE )
+      *        MOVE    SPACE                   TO  WRK-GOKEI-X
+      *    ELSE
+      *        MOVE    SPA-GMN-KEI (WRK-IDX)   TO  WRK-GOKEI-Z
+      ***  END-IF
+           IF     (SPA-COM-SRYKBN (WRK-IDX)    =   "95" OR  "96")
                MOVE    SPA-GMN-KEI (WRK-IDX)   TO  WRK-GOKEI-Z
+           ELSE
+               MOVE    SPACE                   TO  WRK-GOKEI-X
            END-IF
       *
       *    画面編集

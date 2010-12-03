@@ -40,6 +40,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
       *  04.05.00    NACL-太田    10/03/11  平成２２年４月改正対応
+      *  04.06.00    NACL-多々納  10/12/01  自賠責金額入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1250,6 +1251,10 @@
                END-IF
       *        自賠責のその他
                IF     (SRY-SRYCD (IDXA)(1:4)   =   "0959" )
+      *            自賠責金額入力を点数とする
+                   IF     (SRY-SRYSYUKBN       =   "809")
+                       MOVE    SRY-JIHIMONEY(IDXA)     TO  TNS-TEN
+                   END-IF
                    MOVE    TNS-TEN             TO  TBL-TEN (IDX-S)
                    MOVE    TNS-TENSIKIBETU     TO  TBL-TENSIKIBETU
                                                             (IDX-S)
@@ -1298,6 +1303,8 @@
                        MOVE    "85"        TO  TBL-SRYKBN
                    WHEN    "890"
                        MOVE    "89"        TO  TBL-SRYKBN
+                   WHEN    "809"
+                       MOVE    "86"        TO  TBL-SRYKBN
                    WHEN    OTHER
                        MOVE    "80"        TO  TBL-SRYKBN
                END-EVALUATE

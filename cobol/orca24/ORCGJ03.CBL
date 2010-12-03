@@ -2095,6 +2095,11 @@
                                                            "09592" OR
                                                            "09593" OR
                                                            "09594" )
+      *                        ¼«ÇåÀÕ¶â³ÛÆþÎÏ
+                               IF      SRY-SRYSYUKBN       =   "809"
+                                   MOVE    SRY-JIHIMONEY (IDZ)
+                                                           TO  TNS-TEN
+                               END-IF
                                COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
                                                        +  (TNS-TEN
                                                        /   10  )

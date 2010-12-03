@@ -38,6 +38,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/09/16  "0086XXXXX"¥³¥á¥ó¥ÈÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/02  ´¹»»ÃÍ¿ôÃÍÂ¾ÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³ÂÐ±þ
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/29  ¼«ÇåÀÕ¶â³ÛÆþÎÏÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -128,6 +129,8 @@
            03  FLG-HKN999          PIC 9(01).
            03  FLG-HEN-CHK2        PIC 9(01).
       *
+           03  FLG-RSITEN          PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -204,6 +207,7 @@
       *    Ï«ºÒÊÝ¸±ÍÑ
            03  WRK-TENSU           PIC S9(08).
            03  WRK-EN              PIC 9(08).
+           03  WRK-TANKA           PIC 9(08).
       *
            03  WRK-SYU-DENPNUM     PIC 9(07).
            03  WRK-TNSSRYSYUKBN        PIC X(03).
@@ -214,6 +218,7 @@
       *
            03  WRK-YAKUHYO             PIC X(01).
            03  WRK-GENTEN              PIC X(01).
+      *
       *    ½¸·×¼ýÇ¼ÀÁµáÆâÍÆ
        01  WRK-SUM-AREA.
            03  SUM-SYU-SKY-NAIYOU.
@@ -1397,6 +1402,17 @@
                                            TO  SPA-COM-MAE-TENSU (IDX2)
                ELSE
                    MOVE    SPACE               TO  SPA-COM-KEIFLG(IDX2)
+      *            ¶â³ÛÆþÎÏ
+                   IF      SPA-COM-SRYSYUKBN(IDX2) =   "809"
+                       MOVE    SPA-COM-INPUTCD (IDX2)  TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+                       IF      TNS-TEN                 =   ZERO
+                           MOVE    LNK-WKSRY-JIHIMONEY(IDX IDY)
+                                               TO  SPA-COM-JIHIMONEY
+                                                                 (IDX2)
+                           MOVE    "1"         TO  SPA-COM-KEIFLG(IDX2)
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -2165,6 +2181,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *            ¼«Èñ¶â³Û
                    IF      SPA-COM-SRYKBN (IDX)     =   "96"  OR  "95"
+                       MOVE    SPA-COM-JIHIMONEY (IDX)
+                                                    TO  WKSRY-JIHIMONEY
+                                                                 (IDY)
+                   END-IF
+      *            ¼«ÇåÀÕ¶â³Û
+                   IF     (SPA-COM-SRYSYUKBN (IDX)  =   "809" )
+                    OR    (SPA-COM-JIHIMONEY (IDX)  >   ZERO  )
                        MOVE    SPA-COM-JIHIMONEY (IDX)
                                                     TO  WKSRY-JIHIMONEY
                                                                  (IDY)
@@ -3163,6 +3186,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    ¼ýÇ¼ÅÀ¿ô½¸·×
            INITIALIZE                  WRK-SUM-AREA
+           MOVE    ZERO                TO  FLG-RSITEN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
@@ -3176,6 +3200,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                          ((WRK-SRYKA               =   ZERO   )  OR
                           (SPA-COM-SRYKA    (IDX)  =   WRK-SRYKA  )))
                        PERFORM 4501-SEIKYU-KEI-SEC
+      *                ºÞ½ªÎ»»þ¥¯¥ê¥¢
+                       IF      SPA-COM-ZAIEND (IDX)    =   "1"
+                           MOVE    ZERO                TO  FLG-RSITEN
+                       END-IF
                    END-IF
                END-IF
            END-PERFORM
@@ -3626,12 +3654,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        450112-JIBAISEKI-SET-SEC        SECTION.
       *
       *    ¼«ÇåÀÕ¤Î»þ¡¢¿ÇÃÇÎÁ¡¦ÌÀºÙÎÁ¤Ï¤½¤ÎÂ¾¤ÎÊÔ½¸¤¹¤ë
+           IF     (SPA-COM-SRYSYUKBN (IDX)
+                                       =   "809"  )
+      *        ¶â³ÛÆþÎÏ
+               COMPUTE WRK-EN              =   SPA-COM-JIHIMONEY (IDX)
+                                           *   SPA-COM-KAISU (IDX)
+               MOVE    SPA-COM-JIHIMONEY (IDX) TO  WRK-TANKA
+           ELSE
       *    Ï«ºÒÊÝ¸±¡Ý¤½¤ÎÂ¾
-           COMPUTE WRK-EN              =   SPA-COM-TEN (IDX)
-                                       *   SPA-COM-KAISU (IDX)
+               COMPUTE WRK-EN              =   SPA-COM-TEN (IDX)
+                                           *   SPA-COM-KAISU (IDX)
+               MOVE    SPA-COM-TEN (IDX)       TO  WRK-TANKA
+           END-IF
            ADD     WRK-EN              TO  SYU-RSIETC-MONEY
       *    Ï«ºÒ¤Î±ß
-           MOVE    WRK-EN              TO  SPA-COM-RSIKIN(IDX)
+           MOVE    WRK-TANKA           TO  SPA-COM-RSIKIN(IDX)
+      *
+           MOVE    1                   TO  FLG-RSITEN
       *
            .
        450112-JIBAISEKI-SET-EXT.
@@ -3652,6 +3691,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO            TO  WRK-TENSU
       *        Ï«ºÒ¤Î±ß
                MOVE    WRK-EN          TO  SPA-COM-RSIKIN(IDX)
+               MOVE    1               TO  FLG-RSITEN
            ELSE
                COMPUTE WRK-TENSU       =   SPA-COM-KISOTEN (IDX)
                                        *   SPA-COM-KAISU (IDX)
@@ -3663,6 +3703,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO            TO  WRK-EN
       *        Ï«ºÒ¤Î±ß
                MOVE    ZERO            TO  SPA-COM-RSIKIN(IDX)
+           END-IF
+      *
+           IF     (SPA-COM-SRYKBN  (IDX)   =   "11"
+                                           OR  "12"
+                                           OR  "13" ) OR
+                 ((SPA-COM-SRYKBN (IDX)    =   "80" ) AND
+                  (FLG-RSITEN              =   1    ))
+               CONTINUE
+           ELSE
+               IF      SPA-COM-ZAIEND (IDX)    NOT =   "1"
+                   GO      TO      45011-RSI-SYUNOU-EXT
+               END-IF
            END-IF
       *
            EVALUATE    SPA-COM-SRYKBN  (IDX)
@@ -3716,7 +3768,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            Ï«ºÒÊÝ¸±¡Ý¤½¤ÎÂ¾
                    ADD     WRK-EN              TO  SYU-RSIETC-MONEY
       *            ¤½¤ÎÂ¾¤Î±ß¤ÈÅÀ¿ô¤ÏºÞÆâ¤Çº®ºß¤·¤Ê¤¤¤³¤È¤È¤¹¤ë(H14.8)
-                   IF      WRK-EN              =   ZERO
+                   IF     (WRK-EN              =   ZERO )
+                     AND  (FLG-RSITEN          =   ZERO )
                        PERFORM 45011-HKNTEN-SONOTA-SEC
                    END-IF
            END-EVALUATE
@@ -3818,7 +3871,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4504-JIDOUKEI-SONOTA-SEC               SECTION.
       *
            EVALUATE    ORCSCWKSRY-KSN-SRYSYUKBN (IDX)
-      *        ¥ê¥Ï¥Ó¥ê
+      *        ¥ê¥Ï¥Ó¥ê¡Ê¤½¤ÎÂ¾¡Ë
                WHEN    "800"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
                                                TO  SUM-SYU-HKNTEN (11)

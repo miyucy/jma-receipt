@@ -277,6 +277,12 @@
                        IF      SPA-COM-KISOTEN (IDX)   =   ZERO
                            MOVE    SPA-COM-KEI(IDX)    TO  WRK-KEI-Z
                            MOVE    WRK-KEI-X           TO  WRK-SURYO-X
+      *                    ¼«ÇåÀÕ¶â³ÛÆþÎÏ
+                           IF      SPA-COM-SRYSYUKBN(IDX)  =   "809"
+                               MOVE    SPA-COM-JIHIMONEY(IDX)
+                                                       TO  WRK-KEI-Z
+                               MOVE    WRK-KEI-X       TO  WRK-SURYO-X
+                           END-IF
                        END-IF
                    END-IF
                    IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR

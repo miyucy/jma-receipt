@@ -88,6 +88,7 @@
                        09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
                    07  TBL-MAE-KANSURYO    PIC  9(05)V9(05).
                    07  TBL-MAE-INPUTKBN    PIC  X(01).
+                   07  TBL-MAE-JIHIMONEY   PIC  9(07).
            03  TBL-ATO-AREA.
                05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
@@ -98,6 +99,7 @@
                        09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
                    07  TBL-ATO-KANSURYO    PIC  9(05)V9(05).
                    07  TBL-ATO-INPUTKBN    PIC  X(01).
+                   07  TBL-ATO-JIHIMONEY   PIC  9(07).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -323,6 +325,9 @@
                                                              (IDX-SIN)
                        MOVE    SRY-SRYKAISU(IDX2)  TO  TBL-MAE-SRYKAISU
                                                              (IDX-SIN)
+      *                自費金額
+                       MOVE    SRY-JIHIMONEY(IDX2) TO  TBL-MAE-JIHIMONEY
+                                                             (IDX-SIN)
       *                換算値数量
                        MOVE    SRY-KANSURYO(IDX2)  TO  TBL-MAE-KANSURYO
                                                              (IDX-SIN)
@@ -388,6 +393,9 @@
                                            TO  TBL-ATO-KANSURYO(IDX-ATO)
                MOVE    ORCSCZAICHK-INPUTKBN (IDX1)
                                            TO  TBL-ATO-INPUTKBN(IDX-ATO)
+               MOVE    ORCSCZAICHK-JIHIMONEY (IDX1)
+                                           TO  TBL-ATO-JIHIMONEY
+                                                              (IDX-ATO)
            END-PERFORM
       *
       *    診療行為数が違う
