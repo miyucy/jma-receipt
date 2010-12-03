@@ -45,9 +45,9 @@
     <widget>
       <class>GtkButton</class>
       <name>BYOMEI_UP</name>
-      <x>990</x>
+      <x>989</x>
       <y>176</y>
-      <width>20</width>
+      <width>23</width>
       <height>50</height>
       <can_focus>True</can_focus>
       <signal>
@@ -63,9 +63,9 @@
     <widget>
       <class>GtkButton</class>
       <name>BYOMEI_DOWN</name>
-      <x>990</x>
+      <x>989</x>
       <y>255</y>
-      <width>20</width>
+      <width>23</width>
       <height>50</height>
       <can_focus>True</can_focus>
       <signal>
@@ -1643,7 +1643,7 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow28</name>
-      <x>3</x>
+      <x>2</x>
       <y>80</y>
       <width>984</width>
       <height>315</height>
