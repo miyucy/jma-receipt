@@ -37,7 +37,9 @@
       *  07/06/02    NACL−竹田            タイマーの停止処理
       *  03.05.01    NACL−竹田    07/05/09  グループ診療対応およびオンライン
       *                                      帳票対応
-      *  03.05.02    NACL−竹田    07/06/22  労災自倍対応
+      *  03.05.02    NACL−竹田    07/06/22  労災自賠対応
+      *
+      *  04.06.01    NACL-藤原     10/10/12  設定による初期表示の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -538,7 +540,11 @@
            PERFORM 2011-PRVKANRI-HEN-SEC
            MOVE    1                      TO  SPA-GMN-CUR
       *
-           MOVE    ZERO                   TO  SPA-XC01-HYOUJI
+           IF      LNK-XC01-MODE          =   "2"
+               MOVE    2                      TO  SPA-XC01-HYOUJI
+           ELSE
+               MOVE    ZERO                   TO  SPA-XC01-HYOUJI
+           END-IF
       *
            .
        310-SPASET-EXT.
