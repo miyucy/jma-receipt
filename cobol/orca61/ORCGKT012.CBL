@@ -295,8 +295,6 @@
            03  WRK-TSURYO              PIC X(30).
            03  IDM2                    PIC 9(04).
       *
-           03  WRK-TSURYO              PIC X(40).
-      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
