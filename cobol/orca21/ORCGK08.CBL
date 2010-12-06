@@ -4613,7 +4613,7 @@
                    END-IF
       *            ¼«ÇåÀÕ¶â³ÛÆþÎÏ
                    IF      LNK-WKSRY-SRYSYUKBN(IDX)    =   "809"
-                       MOVE    LNK-WKSRY-JIHIMONEY(IDX IDZ)
+                       MOVE    LNK-WKSRY-JIHIMONEY(IDX IDS)
                                                    TO  TNS-TEN
                    END-IF
       *
