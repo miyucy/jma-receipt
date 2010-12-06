@@ -418,7 +418,7 @@
                                        TO  WRK-KAISU
       *    回数ゼロ、点数ゼロ、コメントは対象外
            IF     (WRK-KAISU           =   ZERO )  OR
-                  (ACCT-ZAITEN         =   ZERO )  OR
+      *******     (ACCT-ZAITEN         =   ZERO )  OR
                   (ACCT-SRYKBN         =   "98"
                                        OR  "99" )
       *        包括分は対象外
@@ -455,6 +455,12 @@
            ELSE
                INITIALIZE                  SRYACT-REC
                MOVE    1               TO  FLG-SRYACT
+           END-IF
+      *
+      *    自費金額・点数＝ゼロは対象外
+           IF     (ACCT-ZAITEN         =   ZERO )  AND
+                  (SRY-JIHIMONEYTOTAL  =   ZERO )
+               MOVE    1                   TO  FLG-SRYACT
            END-IF
       *
            INITIALIZE                  WRK-MEISAI-AREA

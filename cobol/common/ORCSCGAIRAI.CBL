@@ -3141,7 +3141,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
       *    剤点数がゼロの時、自費を点数へ
-           IF      WRK-ZAITEN          =   ZERO
+      ***  IF      WRK-ZAITEN          =   ZERO
+           IF    ( LNK-WKSRY-SRYKBN(01)    =   "95"
+                                           OR  "96" )
                MOVE   WRK-JIHIMONEY        TO  WRK-ZAITEN
            END-IF
       *

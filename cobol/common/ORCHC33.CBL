@@ -717,10 +717,10 @@
                ELSE
       *            ÊÝ¸±ÊÔ½¸
                    PERFORM 20013-HKNCOMBI-HEN-SEC
-                   IF      ACCT-ZAITEN         >   ZERO
+      *!!          IF      ACCT-ZAITEN         >   ZERO
                        MOVE    1                   TO  FLG-SYORI
                        PERFORM 20011-SRYACCT-HEN-SEC
-                   END-IF
+      *!!          END-IF
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE

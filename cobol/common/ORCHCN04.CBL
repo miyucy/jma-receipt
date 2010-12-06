@@ -1091,7 +1091,7 @@
                END-PERFORM
       *
                IF    ( WRK-KAISU           =   ZERO )
-                OR   ( ACCT-ZAITEN         =   ZERO )
+      ****      OR   ( ACCT-ZAITEN         =   ZERO )
                 OR   ( ACCT-SRYKBN         =   "98" OR "99" )
                 OR   ( ACCT-HKNCOMBI       =   "9999")
                 OR   ( ACCT-JIHOKBN        =   "1"   )
@@ -1141,6 +1141,11 @@
                MOVE    1               TO  FLG-SRYACT
            END-IF
       *
+      *    ¼«Èñ¶â³Û¡¦ÅÀ¿ô¡á¥¼¥í¤ÏÂÐ¾Ý³°
+           IF     (ACCT-ZAITEN         =   ZERO )  AND
+                  (SRY-JIHIMONEYTOTAL  =   ZERO )
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
       *
            MOVE    ZERO                TO  IDX-S
            MOVE    SRY-SRYCD(1)        TO  WRK-SRYCD
