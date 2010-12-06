@@ -78,9 +78,10 @@
       *
       *    ø«Œ≈≤ ¬‡»Ú•Ô°º•Ø
          02  TSRYKA-AREA.
-           03  TSRYKA-ALL-SYOSIN-DAY                   PIC 9(01)
+           03  TSRYKA-ALL-G.
+               05  TSRYKA-ALL-SYOSIN-DAY               PIC 9(01)
                                                        OCCURS 31.
-           03  TSRYKA-ALL-JNISSU-DAY                   PIC 9(01)
+               05  TSRYKA-ALL-JNISSU-DAY               PIC 9(01)
                                                        OCCURS 31.
            03  TSRYKA-MAX                              PIC 9(05).
            03  TSRYKA-OCC                              OCCURS 30.

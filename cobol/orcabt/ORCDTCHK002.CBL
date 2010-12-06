@@ -2161,6 +2161,8 @@
        200111-TKAISU-AREA-INIT-SEC     SECTION.
       *
            MOVE    ZERO            TO  TKAISU-MAX
+      *
+           INITIALIZE                  TSRYKA-ALL-G
            INITIALIZE                  TKAISU-OCC (1)
       *
            PERFORM VARYING IDX0    FROM    2   BY  1
