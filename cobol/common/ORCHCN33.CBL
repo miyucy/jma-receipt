@@ -898,14 +898,16 @@
                    IF      (SRY-SRYCD (IDZ)(1:3)   =   "101"  )  OR
                            (SRY-SRYCD (IDZ)(1:5)   =   "09591" OR
                                                        "09592" OR
-                                                       "09593" )
+                                                       "09593" OR
+                                                       "09594" )
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
       *                労災の金額算定分の時、点数をゼロとする
                        IF     (TNS-TENSIKIBETU     =   1  )  OR
                               (TNS-SRYCD (1:5)     =   "09591" OR
                                                        "09592" OR
-                                                       "09593" )
+                                                       "09593" OR
+                                                       "09594" )
       *                自賠責金額入力を点数とする
                            IF     (SRY-SRYSYUKBN       =   "809")
                               MOVE    SRY-JIHIMONEY(IDZ)   TO  TNS-TEN
