@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.06.00     NACL-多々納  10/12/07  チェック追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -311,6 +312,7 @@
            03  FLG-SYU40           PIC 9(01).
       *    ユーザプログラム起動
            03  FLG-USERPG              PIC 9(01).
+           03  FLG-PRVSYORI            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2734,9 +2736,12 @@
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 450-TOROKU-SEC
-      *    プレビュー
+      *        プレビュー
                WHEN    "CLICKED"       ALSO    "B01S"
                    PERFORM 4010-PREVIEW-SYORI-SEC
+      *        リアルタイムデータチェック
+               WHEN    "CLICKED"       ALSO    "B02S"
+                   PERFORM 4020-DATACHK-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -4909,6 +4914,7 @@
                PERFORM 40102-PREVIEW-GAI-SEC
                IF      SPA-ERRCD           =   SPACE
       *            プレビュー処理
+                   MOVE    1                   TO  FLG-PRVSYORI
                    PERFORM 4130-PREVIEW-SEC
                ELSE
                    IF      SPA-ERRCD       =   "0006"
@@ -5025,6 +5031,12 @@
            MOVE    99999               TO  LNK-XC01-ED-PAGE
            MOVE    "1"                 TO  LNK-XC01-MODE
            MOVE    WRK-PRV-HKNKBN      TO  LNK-XC01-HKNKBN
+      *    リアルタイムデータチェック
+           IF      FLG-PRVSYORI        =   2
+               MOVE    2                   TO  LNK-XC01-RENNUM
+               MOVE    "2"                 TO  LNK-XC01-MODE
+           END-IF
+      *
            MOVE    LNK-XC01-AREA       TO  SPA-WORK
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
@@ -5056,7 +5068,9 @@
            END-IF
       *    レセプトプレビュー区分
            MOVE    SPA-NAI-RESPRVFLG   TO  WRK-PRV-KBN
-           CALL    "ORCSRECEARGMK"     USING
+           IF      FLG-PRVSYORI        =   1
+      *        レセプトプレビュー
+               CALL    "ORCSRECEARGMK"     USING
                                        "1"
                                        SPA-PTID
                                        SPA-SRYYMD(1:6)
@@ -5065,11 +5079,59 @@
                                        WRK-PRV-RSI-HKNKBN
                                        WRK-PRV-KBN
                                        SPA-AREA
+           ELSE
+      *        リアルタイムデータチェック
+               CALL    "ORCSDTCKARGMK"     USING
+                                       "1"
+                                       SPA-PTID
+                                       SPA-SRYYMD(1:6)
+                                       SPA-NYUGAIKBN
+                                       WRK-PRV-HKNKBN
+                                       WRK-PRV-RSI-HKNKBN
+                                       WRK-PRV-KBN
+                                       SPA-AREA
+           END-IF
       *
            .
        41301-PREVIEW-KICK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    リアルタイムデータチェック処理
+      *****************************************************************
+       4020-DATACHK-SYORI-SEC          SECTION.
+      *
+           IF      (SPA-HKNCOMBINUM    =    "9999" )
+               MOVE    "9011"          TO  SPA-ERRCD
+           ELSE
+               IF      (SPA-SYORIFLG       =   ZERO)  AND
+                       (SPA-KT02-MAX        =   ZERO)
+                   MOVE    "9012"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *    表示日更新処理
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4100-RRKKOUSIN-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 40102-PREVIEW-GAI-SEC
+               IF      SPA-ERRCD           =   SPACE
+      *            プレビュー処理
+                   MOVE    2                   TO  FLG-PRVSYORI
+                   PERFORM 4130-PREVIEW-SEC
+               ELSE
+                   IF      SPA-ERRCD       =   "0006"
+                       MOVE    "9014"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "9013"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4020-DATACHK-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    西暦和暦編集処理
       *****************************************************************
@@ -5429,6 +5491,30 @@
                WHEN    "9004"
                    STRING  "１日の受診履歴が１３５剤以上になります。"
                            "プレビューデータ作成が失敗しました。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *!
+      *ver.4.6.0
+               WHEN    "9011"
+                   STRING  "リアルタイムデータチェックが"
+                           "できない保険組合せです。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "9012"
+                   MOVE    "診療内容がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9013"
+                   STRING  "リアルタイムデータチェック作成が"
+                           "失敗しました。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "9014"
+                   STRING  "１日の受診履歴が１３５剤以上になります。"
+                           "リアルタイムデータチェック作成が"
+                           "失敗しました。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
