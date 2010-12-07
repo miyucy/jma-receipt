@@ -4196,7 +4196,12 @@
                 AND  ( SRY-SRYCD (IDX9)(1:5)   <=  "09594" )
                    MOVE    SRY-SRYCD (IDX9)(5:1)
                                            TO  WRK-JBI-SONOTA-KBN
-                   MOVE    TNS-TEN         TO  WRK-JBI-SONOTA-TEN
+                   IF    ( SRY-SRYSYUKBN   =   "809" )
+                       MOVE    SRY-JIHIMONEY  (IDX9)
+                                           TO  WRK-JBI-SONOTA-TEN
+                   ELSE
+                       MOVE    TNS-TEN     TO  WRK-JBI-SONOTA-TEN
+                   END-IF
                    MOVE    SRY-SRYCD (IDX9)
                                            TO  WRK-JBI-SONOTA-SRYCD
                ELSE
