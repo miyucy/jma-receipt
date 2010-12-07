@@ -1255,3 +1255,28 @@ path	key55 	{
 		;
 	};
 };
+
+path	key56 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_main_key56_csr CURSOR FOR
+		SELECT A.*
+		FROM tbl_sryacct_main A,tbl_sryact B
+			WHERE   A.HOSPNUM    =   :HOSPNUM
+			AND   A.NYUGAIKBN   =   :NYUGAIKBN
+			AND   A.PTID        =   :PTID
+			AND   A.SRYYM       =   :SRYYM
+			AND   A.HKNCOMBI    =   :HKNCOMBI
+			AND   A.ZAIKAISU    >   0
+                        AND   A.HOSPNUM     = B.HOSPNUM
+                        AND   A.NYUGAIKBN  = B.NYUGAIKBN
+                        AND   A.PTID       = B.PTID
+                        AND   A.SRYYM      = B.SRYYM
+                        AND   A.ZAINUM     = B.ZAINUM
+                        AND   1            = B.RENNUM
+			ORDER  BY   A.SRYKBN,
+                                    B.SRYSYUKBN,
+                                    A.ZAINUM
+		;
+	};
+};
+

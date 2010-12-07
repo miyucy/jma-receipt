@@ -1072,11 +1072,11 @@
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key47"             TO  MCP-PATHNAME
+           MOVE    "key56"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key47"             TO  MCP-PATHNAME
+               MOVE    "key56"             TO  MCP-PATHNAME
                PERFORM 930-SRYACCT-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACCT
@@ -1101,12 +1101,12 @@
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key47"             TO  MCP-PATHNAME
+               MOVE    "key56"             TO  MCP-PATHNAME
                PERFORM 930-SRYACCT-READ-SEC
            END-PERFORM
       *
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key47"             TO  MCP-PATHNAME
+           MOVE    "key56"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
        2003-SRYACCT-SYORI-EXT.
