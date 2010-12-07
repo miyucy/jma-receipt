@@ -54,6 +54,8 @@
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
+      *  04.06.03    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
+      *                                     コード対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1548,6 +1550,7 @@
                       EVALUATE   SRY-SRYSYUKBN
       *                リハ
                        WHEN         "800"
+                       WHEN         "809"
       ***              WHEN         "810"
                         COMPUTE LNK-SYU-HKNTEN(IDY 11) =
                                 LNK-SYU-HKNTEN(IDY 11) +
@@ -2572,10 +2575,20 @@
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
                                                      OR    "09592"     
                                                      OR    "09593"     
-                           COMPUTE WK-RSIETC = WK-RSIETC +             
-                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
-                           COMPUTE WK-RSIETC2 = WK-RSIETC2 +           
-                                  (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
+                           IF  SRY-SRYSYUKBN = "809"
+                             COMPUTE WRK-TEN    = SRY-JIHIMONEY(IDX3)
+                                                / 10
+                             COMPUTE WK-RSIETC  = WK-RSIETC +
+                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
+                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
+                                    (SRY-JIHIMONEY(IDX3)
+                                              *   TBL-ZAIKAISU (IDX1))
+                           ELSE
+                             COMPUTE WK-RSIETC  = WK-RSIETC +
+                                    (WRK-TEN  *   TBL-ZAIKAISU (IDX1))
+                             COMPUTE WK-RSIETC2 = WK-RSIETC2 +
+                                    (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
+                           END-IF
       *
       *                    自賠責保険処理
                            IF    LNK-SYU-SYUHKNNUM(IDY)  =   "973"
@@ -2587,19 +2600,36 @@
                                    TO  LNK-S01-SONOTA-SRYCD(IDY IDX5)
                                 MOVE   TBL-ZAIKAISU (IDX1)
                                    TO  LNK-S01-SONOTA-ZAIKAISU(IDY IDX5)
-                                MOVE   TNS-TEN
+                                IF  SRY-SRYSYUKBN = "809"
+                                  MOVE SRY-JIHIMONEY(IDX3)
                                    TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
+                                ELSE
+                                  MOVE TNS-TEN
+                                   TO  LNK-S01-SONOTA-TANKA(IDY IDX5)
+                                END-IF
                               END-IF
                             END-IF
       *
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
+                          IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WK-SINDAN = WK-SINDAN +             
+                                  (SRY-JIHIMONEY(IDX3)
+                                            *   TBL-ZAIKAISU (IDX1))
+                          ELSE
                            COMPUTE WK-SINDAN = WK-SINDAN +             
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
+                          END-IF
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09592"     
+                          IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WK-MEISAI = WK-MEISAI +
+                                  (SRY-JIHIMONEY(IDX3)
+                                            *   TBL-ZAIKAISU (IDX1))
+                          ELSE
                            COMPUTE WK-MEISAI = WK-MEISAI +             
                                   (TNS-TEN  *   TBL-ZAIKAISU (IDX1))   
+                          END-IF
                          END-IF                                        
       *
                          IF    SRY-SRYCD (IDX3)  =   "140037490"

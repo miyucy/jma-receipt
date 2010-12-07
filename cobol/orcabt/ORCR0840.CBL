@@ -195,6 +195,8 @@
       *  04.06.01    NACL-門脇    10/07/01  自賠責文書料レセプト摘要欄記載
       *                                     （１通時）対応
       *  04.06.02    NACL-門脇    10/08/16  入院の点滴入力改善対応
+      *  04.06.03    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
+      *                                     コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2710,9 +2712,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       ELSE
                         PERFORM   220214-JIBAI-BUNSYO-TENSU-HENSYU-SEC
                         MOVE  WRK-TEN-BUN TO  RECE85-TEN(IDX4)
+                        MOVE  WRK-TEN-BUN TO  WRK-JIBAIKZI-TNS(IDX2)
                       END-IF
                     ELSE
-                        MOVE  TNS-TEN     TO  RECE85-TEN(IDX4)
+                      IF  SRY-SRYSYUKBN = "809"
+                        MOVE   SRY-JIHIMONEY(IDX2)
+                                          TO  RECE85-TEN(IDX4)
+                        MOVE   SRY-JIHIMONEY(IDX2)
+                                          TO  WRK-JIBAIKZI-TNS(IDX2)
+                      ELSE
+                        MOVE   TNS-TEN    TO  RECE85-TEN(IDX4)
+                        MOVE   TNS-TEN    TO  WRK-JIBAIKZI-TNS(IDX2)
+                      END-IF
                     END-IF
                ELSE                                                     
                  IF   RECE82-HKNKBN     =  "4"
@@ -2917,8 +2928,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      <= "101910400"    )
       *
                      ADD      1          TO  WRK-MEISAI-CNT
-                     COMPUTE  WRK-TEN    =   WRK-TEN   +
-                                           ( TNS-TEN   /  10 ) 
+                     IF  SRY-SRYSYUKBN = "809"
+                        COMPUTE  WRK-TEN = WRK-TEN +
+                                          (SRY-JIHIMONEY(IDX2) / 10)
+                     ELSE
+                        COMPUTE  WRK-TEN = WRK-TEN +
+                                          (TNS-TEN / 10)
+                     END-IF
       *
                      ADD      1          TO  WRK-SURYOUTOTAL
                      MOVE  SRY-SRYCD(IDX2) 
@@ -3667,17 +3683,37 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *       特定器材等消費税計算
               IF   FLG-TAIGAI  =  ZERO
                    IF    WRK-TAX1001-KBN  =  "1"
+                    IF  SRY-SRYSYUKBN = "809"
+                      COMPUTE  WRK-TEN-KZI  =
+                              (SRY-JIHIMONEY(IDX2)
+                                        *  1.05)  +  0.5
+                    ELSE
                       COMPUTE  WRK-TEN-KZI  =
                               (TNS-TEN  *  1.05)  +  0.5
+                    END-IF
                    ELSE
+                    IF  SRY-SRYSYUKBN = "809"
+                      COMPUTE  WRK-TEN-KZI  =
+                              (SRY-JIHIMONEY(IDX2)
+                                        *  1.05)
+                    ELSE
                       COMPUTE  WRK-TEN-KZI  =
                               (TNS-TEN  *  1.05)
+                    END-IF
                    END-IF
               ELSE
-                   MOVE     TNS-TEN       TO     WRK-TEN-KZI
+                   IF  SRY-SRYSYUKBN = "809"
+                      MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-KZI
+                   ELSE
+                      MOVE  TNS-TEN              TO   WRK-TEN-KZI
+                   END-IF
               END-IF
            ELSE
-                   MOVE     TNS-TEN       TO     WRK-TEN-KZI
+              IF  SRY-SRYSYUKBN = "809"
+                      MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-KZI
+              ELSE
+                      MOVE  TNS-TEN              TO   WRK-TEN-KZI
+              END-IF
            END-IF
       *
            .
@@ -3759,14 +3795,30 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *
            IF   RECE82-TAXKBN   =   "2"
               IF    WRK-TAX1001-KBN  =  "1"
+               IF  SRY-SRYSYUKBN = "809"
+                  COMPUTE  WRK-TEN-BUN  =
+                          (SRY-JIHIMONEY(IDX2)
+                                    *  1.05)  +  0.5
+               ELSE
                   COMPUTE  WRK-TEN-BUN  =
                           (TNS-TEN  *  1.05)  +  0.5
+               END-IF
               ELSE
+               IF  SRY-SRYSYUKBN = "809"
+                  COMPUTE  WRK-TEN-BUN  =
+                          (SRY-JIHIMONEY(IDX2)
+                                    *  1.05)
+               ELSE
                   COMPUTE  WRK-TEN-BUN  =
                           (TNS-TEN  *  1.05)
+               END-IF
               END-IF
            ELSE
-              MOVE     TNS-TEN       TO     WRK-TEN-BUN
+               IF  SRY-SRYSYUKBN = "809"
+                  MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-BUN
+               ELSE
+                  MOVE  TNS-TEN              TO   WRK-TEN-BUN
+               END-IF
            END-IF
       *
            .
@@ -4162,9 +4214,22 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                             CONS-ROUSAI20 )
                    OR ((ACCT-SRYKBN          =  "80"     )  AND
                        (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
-                         COMPUTE    RECE82-KINGAKU2(2)  =
-                                    RECE82-KINGAKU2(2)  +
-                                  (TNS-TEN     *   ACCT-ZAIKAISU)
+                         IF   SRY-SRYCD(IDX3)(1:5) =  "09594"
+                           COMPUTE RECE82-KINGAKU2(2)  =
+                                   RECE82-KINGAKU2(2)  +
+                                  (WRK-JIBAIKZI-TNS(IDX3)
+                                            *   ACCT-ZAIKAISU)
+                           IF   FLG-TAISYO  =   1
+                            COMPUTE  WRK-ZAITENNASHI  =
+                                     WRK-ZAITENNASHI  +
+                                    (WRK-JIBAIKZI-TNS(IDX3)
+                                            *   ACCT-ZAIKAISU)
+                           END-IF
+                         ELSE
+                           COMPUTE RECE82-KINGAKU2(2)  =
+                                   RECE82-KINGAKU2(2)  +
+                                  (TNS-TEN  *   ACCT-ZAIKAISU)
+                         END-IF
                          EVALUATE   SRY-SRYCD(IDX3)
                               WHEN   CONS-ROUSAI13
                               WHEN   CONS-ROUSAI14
@@ -4212,15 +4277,22 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          (SRY-SRYCD(IDX3)(1:5) =  "09593"))
                      OR ( SRY-SRYCD(IDX3) >= "101910110" AND
                                           <= "101910400"  )
+                       IF SRY-SRYCD(IDX3)(1:5) =  "09593"
+                         COMPUTE   RECE82-KINGAKU2(2)  =
+                                   RECE82-KINGAKU2(2)  +
+                                  (WRK-JIBAIKZI-TNS(IDX3)
+                                               *   ACCT-ZAIKAISU)
+                         IF   FLG-TAISYO  =   1
+                          COMPUTE  WRK-ZAITENNASHI  =
+                                   WRK-ZAITENNASHI  +
+                                  (WRK-JIBAIKZI-TNS(IDX3)
+                                               *   ACCT-ZAIKAISU)
+                         END-IF
+                       ELSE
                          COMPUTE   RECE82-KINGAKU2(2)  =
                                    RECE82-KINGAKU2(2)  +
                                   (TNS-TEN     *   ACCT-ZAIKAISU)
-                         IF   (FLG-TAISYO           =   1     )
-                         AND  (SRY-SRYCD(IDX3)(1:5) =  "09593")
-                          COMPUTE  WRK-ZAITENNASHI  =
-                                   WRK-ZAITENNASHI  +
-                                  (TNS-TEN     *   ACCT-ZAIKAISU)
-                         END-IF
+                       END-IF
                      ELSE                
                        IF    TNS-NYUTENTTLKBN   =    130
                          COMPUTE   RECE82-TENSU(2)  =
@@ -4541,9 +4613,16 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                            CONS-ROUSAI20 )
                   OR ((ACCT-SRYKBN          =  "80"     )  AND
                       (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
-                       COMPUTE    RECE82-KINGAKU3(1)  =
-                                  RECE82-KINGAKU3(1)  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                       IF   SRY-SRYCD(IDX3)(1:5) =  "09594"
+                         COMPUTE RECE82-KINGAKU3(1)  =
+                                 RECE82-KINGAKU3(1)  +
+                                (WRK-JIBAIKZI-TNS(IDX3)
+                                           *   ACCT-ZAIKAISU)
+                       ELSE
+                         COMPUTE RECE82-KINGAKU3(1)  =
+                                 RECE82-KINGAKU3(1)  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                       END-IF
                        EVALUATE   SRY-SRYCD(IDX3)
                               WHEN   CONS-ROUSAI13
                               WHEN   CONS-ROUSAI14
@@ -5113,9 +5192,16 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                            CONS-ROUSAI20 )
                   OR ((ACCT-SRYKBN          =  "80"     )  AND
                       (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
-                       COMPUTE    RECE82-SITURYO-JYU  =
-                                  RECE82-SITURYO-JYU  +
-                                 (TNS-TEN   *   ACCT-ZAIKAISU)
+                       IF   SRY-SRYCD(IDX3)(1:5) =  "09594"
+                         COMPUTE RECE82-SITURYO-JYU  =
+                                 RECE82-SITURYO-JYU  +
+                                (WRK-JIBAIKZI-TNS(IDX3)
+                                           *   ACCT-ZAIKAISU)
+                       ELSE
+                         COMPUTE RECE82-SITURYO-JYU  =
+                                 RECE82-SITURYO-JYU  +
+                                (TNS-TEN   *   ACCT-ZAIKAISU)
+                       END-IF
                        EVALUATE   SRY-SRYCD(IDX3)
                               WHEN   CONS-ROUSAI13
                               WHEN   CONS-ROUSAI14
@@ -5561,18 +5647,25 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                             CONS-ROUSAI20 )
                    OR ((ACCT-SRYKBN          =  "80"     )  AND
                        (SRY-SRYCD(IDX3)(1:5) =  "09594"  ))
-                     CONTINUE
+                     IF   (FLG-TAISYO           =   1     )
+                     AND  (SRY-SRYCD(IDX3)(1:5) =  "09594")
+                         COMPUTE   WRK-ZAITENNASHI  =
+                                   WRK-ZAITENNASHI  +
+                                  (WRK-JIBAIKZI-TNS(IDX3)
+                                               *   ACCT-ZAIKAISU)
+                     END-IF
                    ELSE
                      IF ((ACCT-SRYKBN          =  "80"   )  AND
                          (SRY-SRYCD(IDX3)(1:5) =  "09593"))
                      OR ( SRY-SRYCD(IDX3) >= "101910110" AND
                                           <= "101910400"  )
-                         IF   (FLG-TAISYO           =   1     )
-                         AND  (SRY-SRYCD(IDX3)(1:5) =  "09593")
+                       IF   (FLG-TAISYO           =   1     )
+                       AND  (SRY-SRYCD(IDX3)(1:5) =  "09593")
                           COMPUTE  WRK-ZAITENNASHI  =
                                    WRK-ZAITENNASHI  +
-                                  (TNS-TEN     *   ACCT-ZAIKAISU)
-                         END-IF
+                                  (WRK-JIBAIKZI-TNS(IDX3)
+                                               *   ACCT-ZAIKAISU)
+                       END-IF
                      ELSE                
                        IF    TNS-NYUTENTTLKBN   =    130
                          COMPUTE   RECE82-TENSU(9)  =

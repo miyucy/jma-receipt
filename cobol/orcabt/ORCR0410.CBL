@@ -80,6 +80,9 @@
       *  04.05.01    NACL-ÌçÏÆ    09/06/29  ÎÅÍÜ´ü´Öµ­ºÜÊýË¡ÁªÂòµ¡Ç½
       *                                     ¡ÊµÙ¶È¾ÚÌÀÀÁµá»þ¡Ë
       *  04.05.02    NACL-ÌçÏÆ    10/01/21  ¼£¸³ÂÐ±þ
+      *
+      *  04.06.01    NACL-ÌçÏÆ    10/12/06  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¶â³Û¥Õ¥ê¡¼ÆþÎÏ
+      *                                     ¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1174,6 +1177,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                           OR  "99" 
                                    PERFORM   21031-SHOSAISIN-HANTEI-SEC
                                END-IF
+                               IF    RECE41-HKNKBN   =   "4"
+                                 IF   ACCT-SRYKBN  =  "80"
+                                   PERFORM   21036-SINDAN-HANTEI-SEC
+                                 END-IF
+                               END-IF
                                PERFORM   21038-TENSOU-SEC
                    END-IF
       *                 
@@ -1455,9 +1463,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        OR ((SRY-SRYCD(IDY) =  CONS-ROUSAI8   )   AND
                            (RECE41-SRYYM   <  "200804"       ))
       *
-                               ADD    TNS-TEN      TO    WRK-KIN
-                               COMPUTE  WRK-TEN  =   WRK-TEN   +
-                                        ( TNS-TEN / 10)
+                          IF  SRY-SRYSYUKBN = "809"
+                            ADD  SRY-JIHIMONEY(IDY)  TO  WRK-KIN
+                            COMPUTE  WRK-TEN  =  WRK-TEN   +
+                                    (SRY-JIHIMONEY(IDY) / 10)
+                          ELSE
+                            ADD  TNS-TEN             TO  WRK-KIN
+                            COMPUTE  WRK-TEN  =  WRK-TEN   +
+                                    (TNS-TEN / 10)
+                          END-IF
       *
                        END-IF
       *
@@ -1513,24 +1527,39 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ****
                           IF    WRK-TAXKBN      =   "2"
                             IF  WRK-TAX1001-KBN =   "1"
-                               COMPUTE  WRK-KEISAN  =
-                                   (TNS-TEN     *  1.05)  +  0.5
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                 (SRY-JIHIMONEY(IDY) *  1.05) + 0.5
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                 (TNS-TEN            *  1.05) + 0.5
+                              END-IF
                             ELSE
-                               COMPUTE  WRK-KEISAN  =
-                                    TNS-TEN     *  1.05
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                  SRY-JIHIMONEY(IDY) *  1.05
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                  TNS-TEN            *  1.05
+                              END-IF
                             END-IF
                             COMPUTE  WRK-KEISAN2     =  WRK-KEISAN
                                                      *  ACCT-ZAIKAISU
                             COMPUTE  WRK-SINDAN-KIN  =  WRK-SINDAN-KIN
                                                      +  WRK-KEISAN2
                           ELSE
-                            COMPUTE  WRK-SINDAN-KIN  =  WRK-SINDAN-KIN +
-                                       ( TNS-TEN  *  ACCT-ZAIKAISU )
+                            IF  SRY-SRYSYUKBN = "809"
+                              COMPUTE  WRK-SINDAN-KIN  =
+                                       WRK-SINDAN-KIN  +
+                                      (SRY-JIHIMONEY(IDY)
+                                                *  ACCT-ZAIKAISU)
+                            ELSE
+                              COMPUTE  WRK-SINDAN-KIN  =
+                                       WRK-SINDAN-KIN  +
+                                      (TNS-TEN  *  ACCT-ZAIKAISU)
+                            END-IF
                           END-IF
       ****
-      ***>                COMPUTE  WRK-SINDAN-KIN = WRK-SINDAN-KIN +
-      ***>                             ( TNS-TEN  *  ACCT-ZAIKAISU )         
-      *
                        END-IF
       *
                        IF   SRY-SRYCD(IDY)(1:5) =  "09592"
@@ -1540,24 +1569,39 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ****
                           IF    WRK-TAXKBN      =   "2"
                             IF  WRK-TAX1001-KBN =   "1"
-                               COMPUTE  WRK-KEISAN  =
-                                   (TNS-TEN     *  1.05)  +  0.5
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                 (SRY-JIHIMONEY(IDY) *  1.05) + 0.5
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                 (TNS-TEN            *  1.05) + 0.5
+                              END-IF
                             ELSE
-                               COMPUTE  WRK-KEISAN  =
-                                    TNS-TEN     *  1.05
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                  SRY-JIHIMONEY(IDY) *  1.05
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                  TNS-TEN            *  1.05
+                              END-IF
                             END-IF
                             COMPUTE  WRK-KEISAN2     =  WRK-KEISAN
                                                      *  ACCT-ZAIKAISU
                             COMPUTE  WRK-MEISAI-KIN  =  WRK-MEISAI-KIN
                                                      +  WRK-KEISAN2
                           ELSE
-                            COMPUTE  WRK-MEISAI-KIN  =  WRK-MEISAI-KIN +
-                                       ( TNS-TEN  *  ACCT-ZAIKAISU )
+                            IF  SRY-SRYSYUKBN = "809"
+                              COMPUTE  WRK-MEISAI-KIN  =
+                                       WRK-MEISAI-KIN  +
+                                      (SRY-JIHIMONEY(IDY)
+                                                *  ACCT-ZAIKAISU)
+                            ELSE
+                              COMPUTE  WRK-MEISAI-KIN  =
+                                       WRK-MEISAI-KIN  +
+                                      (TNS-TEN  *  ACCT-ZAIKAISU)
+                            END-IF
                           END-IF
       ****
-      ***>                COMPUTE  WRK-MEISAI-KIN = WRK-MEISAI-KIN +
-      ***>                             ( TNS-TEN  *  ACCT-ZAIKAISU )         
-      *
                        END-IF
       *
       *
@@ -1677,10 +1721,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            ( SRY-SRYCD(IDY)(1:5) =  "09591" 
                                                  OR "09592" 
                                                  OR "09593" )           
-                               COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
-                               COMPUTE  TBL-SYUTEN-JI(ID1)  =
-                                        TBL-SYUTEN-JI(ID1)  -
-                                 ( WRK-ZAIKAISU-JI * WRK-TEN-JI )
+                         IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WRK-TEN-JI = SRY-JIHIMONEY(IDY) / 10
+                         ELSE
+                           COMPUTE WRK-TEN-JI = TNS-TEN / 10
+                         END-IF
+                         COMPUTE   TBL-SYUTEN-JI(ID1)  =
+                                   TBL-SYUTEN-JI(ID1)  -
+                                  (WRK-ZAIKAISU-JI * WRK-TEN-JI)
                        END-IF
       *
                        IF   SRY-SRYCD(IDY) =  CONS-YOUBUKASAN

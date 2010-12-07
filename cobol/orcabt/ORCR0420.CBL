@@ -206,6 +206,8 @@
       *  04.06.02    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
       *                                     対応
+      *  04.06.03    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
+      *                                     コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1754,7 +1756,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  MOVE   WRK-TEN-BUN     TO  WRK-TNS-TEN(IDX2)
                END-IF
              ELSE
-                MOVE    TNS-TEN         TO  WRK-TNS-TEN(IDX2)
+               IF   (ACCT-SRYKBN          =  "80"              )
+               AND  (SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
+                                                     OR "09593")
+                 IF  SRY-SRYSYUKBN = "809"
+                   MOVE SRY-JIHIMONEY(IDX2)
+                                        TO  WRK-TNS-TEN(IDX2)
+                 ELSE
+                   MOVE TNS-TEN         TO  WRK-TNS-TEN(IDX2)
+                 END-IF
+               ELSE
+                 MOVE   TNS-TEN         TO  WRK-TNS-TEN(IDX2)
+               END-IF
              END-IF
       *
              MOVE    TNS-GAITENTTLKBN   TO  WRK-TNS-GAITENTTLKBN(IDX2)
@@ -2495,8 +2508,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *           IF     TNS-TENSIKIBETU   =   1
                      ADD      1          TO  WRK-MEISAI-CNT
-                     COMPUTE  WRK-TEN    =   WRK-TEN   +
-                                           ( TNS-TEN   /  10 ) 
+                     IF  SRY-SRYSYUKBN = "809"
+                        COMPUTE  WRK-TEN = WRK-TEN +
+                                          (SRY-JIHIMONEY(IDX2) / 10)
+                     ELSE
+                        COMPUTE  WRK-TEN = WRK-TEN +
+                                          (TNS-TEN / 10)
+                     END-IF
       *
                      ADD      1          TO  WRK-SURYOUTOTAL
                      MOVE  SRY-SRYCD(IDX2) 
@@ -3438,17 +3456,37 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *       特定器材等消費税計算
               IF   FLG-TAIGAI  =  ZERO
                    IF    WRK-TAX1001-KBN  =  "1"
+                    IF  SRY-SRYSYUKBN = "809"
+                      COMPUTE  WRK-TEN-KZI  =
+                              (SRY-JIHIMONEY(IDX2)
+                                        *  1.05)  +  0.5
+                    ELSE
                       COMPUTE  WRK-TEN-KZI  =
                               (TNS-TEN  *  1.05)  +  0.5
+                    END-IF
                    ELSE
+                    IF  SRY-SRYSYUKBN = "809"
+                      COMPUTE  WRK-TEN-KZI  =
+                              (SRY-JIHIMONEY(IDX2)
+                                        *  1.05)
+                    ELSE
                       COMPUTE  WRK-TEN-KZI  =
                               (TNS-TEN  *  1.05)
+                    END-IF
                    END-IF
               ELSE
-                   MOVE     TNS-TEN       TO     WRK-TEN-KZI
+                   IF  SRY-SRYSYUKBN = "809"
+                      MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-KZI
+                   ELSE
+                      MOVE  TNS-TEN              TO   WRK-TEN-KZI
+                   END-IF
               END-IF
            ELSE
-                   MOVE     TNS-TEN       TO     WRK-TEN-KZI
+              IF  SRY-SRYSYUKBN = "809"
+                      MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-KZI
+              ELSE
+                      MOVE  TNS-TEN              TO   WRK-TEN-KZI
+              END-IF
            END-IF
       *
            .
@@ -3464,14 +3502,30 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
            IF   RECE41-TAXKBN   =   "2"
               IF    WRK-TAX1001-KBN  =  "1"
+               IF  SRY-SRYSYUKBN = "809"
+                  COMPUTE  WRK-TEN-BUN  =
+                          (SRY-JIHIMONEY(IDX2)
+                                    *  1.05)  +  0.5
+               ELSE
                   COMPUTE  WRK-TEN-BUN  =
                           (TNS-TEN  *  1.05)  +  0.5
+               END-IF
               ELSE
+               IF  SRY-SRYSYUKBN = "809"
+                  COMPUTE  WRK-TEN-BUN  =
+                          (SRY-JIHIMONEY(IDX2)
+                                    *  1.05)
+               ELSE
                   COMPUTE  WRK-TEN-BUN  =
                           (TNS-TEN  *  1.05)
+               END-IF
               END-IF
            ELSE
-              MOVE     TNS-TEN       TO     WRK-TEN-BUN
+               IF  SRY-SRYSYUKBN = "809"
+                  MOVE  SRY-JIHIMONEY(IDX2)  TO   WRK-TEN-BUN
+               ELSE
+                  MOVE  TNS-TEN              TO   WRK-TEN-BUN
+               END-IF
            END-IF
       *
            .

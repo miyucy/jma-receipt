@@ -124,6 +124,9 @@
       *
       *  04.05.01    NACL-門脇    09/12/04  食事（特別食）の他保険対応
       *  04.05.02    NACL-門脇    10/01/07  治験対応
+      *
+      *  04.06.01    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
+      *                                     コード対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -4839,6 +4842,7 @@ grpsys                                     SPA-AREA
                     IF      FLG-SRYACT          =   ZERO
                       EVALUATE   SRY-SRYSYUKBN
                        WHEN        "800"
+                       WHEN        "809"
       ***              WHEN        "810"
                          COMPUTE SYU-HKNTEN (11) =  SYU-HKNTEN (11)  +
                                 (ACCT-ZAITEN  *   SINRYO-COUNT)
@@ -5173,10 +5177,20 @@ grpsys                              SPA-AREA
       *
                          IF    SRY-SRYCD (IDZ)(1:5)   =   "09593"
                                                     OR    "09594"
+                          IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WRK-TEN    = SRY-JIHIMONEY(IDZ)
+                                              / 10
+                           COMPUTE WRK-RSIETC = WRK-RSIETC +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                           COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
+                                  (SRY-JIHIMONEY(IDZ)
+                                            *   SINRYO-COUNT)
+                          ELSE
                            COMPUTE WRK-RSIETC = WRK-RSIETC +
                                   (WRK-TEN  *   SINRYO-COUNT)
                            COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
       *
                       END-IF
@@ -5187,18 +5201,40 @@ grpsys                              SPA-AREA
                                                     OR    "09592"
                                                     OR    "09593"
                                                     OR    "09594"
+                          IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WRK-TEN    = SRY-JIHIMONEY(IDZ)
+                                              / 10
+                           COMPUTE WRK-RSIETC = WRK-RSIETC +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                           COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
+                                  (SRY-JIHIMONEY(IDZ)
+                                            *   SINRYO-COUNT)
+                          ELSE
                            COMPUTE WRK-RSIETC = WRK-RSIETC +
                                   (WRK-TEN  *   SINRYO-COUNT)
                            COMPUTE WRK-RSIETC2 = WRK-RSIETC2 +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDZ)(1:5)   =   "09591"
+                          IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WRK-SINDAN = WRK-SINDAN +
+                                  (SRY-JIHIMONEY(IDZ)
+                                            *   SINRYO-COUNT)
+                          ELSE
                            COMPUTE WRK-SINDAN = WRK-SINDAN +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
                          IF    SRY-SRYCD (IDZ)(1:5)   =   "09592"
+                          IF  SRY-SRYSYUKBN = "809"
+                           COMPUTE WRK-MEISAI = WRK-MEISAI +
+                                  (SRY-JIHIMONEY(IDZ)
+                                            *   SINRYO-COUNT)
+                          ELSE
                            COMPUTE WRK-MEISAI = WRK-MEISAI +
                                   (TNS-TEN  *   SINRYO-COUNT)
+                          END-IF
                          END-IF
       *
                          IF    SRY-SRYCD (IDZ)  =   "140037490"
@@ -5242,8 +5278,13 @@ grpsys                              SPA-AREA
                                 TO  WRK-JIBAI-SONOTA-SRYCD(IDX IDX3)
                              MOVE   SINRYO-COUNT
                                 TO  WRK-JIBAI-SONOTA-ZAIKAISU(IDX IDX3)
-                             MOVE   TNS-TEN
+                             IF  SRY-SRYSYUKBN = "809"
+                               MOVE SRY-JIHIMONEY(IDZ)
                                 TO  WRK-JIBAI-SONOTA-TANKA(IDX IDX3)
+                             ELSE
+                               MOVE TNS-TEN
+                                TO  WRK-JIBAI-SONOTA-TANKA(IDX IDX3)
+                             END-IF
                            END-IF
                          END-IF
       *
