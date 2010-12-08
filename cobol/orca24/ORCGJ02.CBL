@@ -213,7 +213,8 @@
            03  FLG-HKN-CHK         PIC 9(01).
            03  FLG-DEKIDAKA        PIC 9(01).
       *
-           03  FLG-RSIGAIRAI        PIC 9(01).
+           03  FLG-RSIGAIRAI       PIC 9(01).
+           03  FLG-NYUGAICHG       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1394,7 +1395,7 @@
                    END-IF
                WHEN    "0112"
                    MOVE    SPACE           TO  SPA-JIDCD
-      *            診療内容
+      *            入外区分
                    IF      SPA-JID1-FLG        =   "OK"
                        PERFORM 410171-NYUGAIKBN-CHANGE-SEC
                        IF      SPA-GMN-MAX         =   ZERO
@@ -7427,6 +7428,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        410171-NYUGAIKBN-CHANGE-SYORI-SEC     SECTION.
       *
+           IF      SPA-GMN-NYUGAIKBN   =   SPA-NYUGAIKBN
+               MOVE    ZERO                TO  FLG-NYUGAICHG
+           ELSE
+               MOVE    1                   TO  FLG-NYUGAICHG
+           END-IF
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN
       *
       *****INITIALIZE                  SPA-J02-AREA
@@ -7455,7 +7461,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    収納更新チェック
            PERFORM 3104-SYUNOU-CHECK-SEC
       *    保険一覧編集
-           PERFORM 3008-HKNCOMBI-HEN-SEC
+           IF      FLG-NYUGAICHG       =   1
+               PERFORM 3008-HKNCOMBI-HEN-SEC
+           END-IF
       *
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
