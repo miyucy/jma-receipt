@@ -1738,13 +1738,14 @@
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+               MOVE    ZERO                TO  FLG-YUKETU
       *        レセプト編集に包括診療は対象外
                IF     (ORCSTEN-KBN         =   "2"   )
                  AND  (ACCT-JIHOKBN        =   "1"   )
                    MOVE    1                   TO  FLG-YUKETU
                END-IF
       *        輸血の判定
-               IF      ACCT-SYUTEN1        >   ZERO
+               IF     (ACCT-SYUTEN1        >   ZERO   )
       *        包括まとめ入力は対象外とする
                  AND  (ACCT-HKNCOMBI   NOT =   "9999" )
                  AND  (ACCT-ZAIKBN     NOT =   1      )
