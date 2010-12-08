@@ -643,6 +643,24 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
            END-PERFORM
+      *    最終行
+           MOVE    ZERO       TO  FLG-LF
+      *    コメントチェック
+           IF      WRK-MAE-NAIYO(1:1)  NOT =   "#"
+               PERFORM VARYING IDX-PNT2 FROM 1 BY 1
+                       UNTIL ( IDX-PNT2 >   100 )
+                       OR    ( WRK-MAE-NAIYO(IDX-PNT2:)    =   SPACE )
+                   IF      WRK-MAE-NAIYO(IDX-PNT2:1)   =   "="
+                       MOVE    1               TO  FLG-LF
+                       MOVE    100             TO  IDX-PNT2
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    コメントでない場合セット
+           IF      FLG-LF      =   1
+               COMPUTE CNT-MAE     =   CNT-MAE     +   1
+               MOVE    WRK-MAE-NAIYO   TO  WRK-MAE-OPTION(CNT-MAE)
+           END-IF
       *
       *    更新データ
            INITIALIZE                      PRGOPTION-REC
@@ -679,6 +697,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
            END-PERFORM
+      *    最終行
+           COMPUTE CNT-ATO     =   CNT-ATO     +   1
+           MOVE    WRK-ATO-NAIYO   TO  WRK-ATO-OPTION(CNT-ATO)
       *
       *    マージ処理
            MOVE    1                   TO  IDX-PNT1
@@ -723,20 +744,19 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    PERFORM VARYING IDX-PNT1 FROM 1 BY 1
                            UNTIL ( IDX-PNT1 >   100 )
                            OR    ( WRK-ATO-NAIYO(IDX-PNT1:)  =   SPACE )
-                       CONTINUE
+                       MOVE    WRK-ATO-NAIYO(IDX-PNT1:1)
+                                       TO  WRK-OPTION(IDX-PNT3:1)
+                       COMPUTE IDX-PNT3    =   IDX-PNT3   +   1
                    END-PERFORM
-                   MOVE    WRK-ATO-NAIYO(1:IDX-PNT1)
-                                       TO  WRK-OPTION(IDX-PNT3:IDX-PNT1)
                ELSE
                    PERFORM VARYING IDX-PNT1 FROM 1 BY 1
                            UNTIL ( IDX-PNT1 >   100 )
                            OR    ( WRK-MAE-NAIYO(IDX-PNT1:)  =   SPACE )
-                       CONTINUE
+                       MOVE    WRK-MAE-NAIYO(IDX-PNT1:1)
+                                       TO  WRK-OPTION(IDX-PNT3:1)
+                       COMPUTE IDX-PNT3    =   IDX-PNT3   +   1
                    END-PERFORM
-                   MOVE    WRK-MAE-NAIYO(1:IDX-PNT1)
-                                       TO  WRK-OPTION(IDX-PNT3:IDX-PNT1)
                END-IF
-               COMPUTE IDX-PNT3    =   IDX-PNT3   +   IDX-PNT1
                MOVE    X"0A"       TO  WRK-OPTION(IDX-PNT3:1)
                COMPUTE IDX-PNT3    =   IDX-PNT3   +   1
            END-PERFORM
