@@ -2579,6 +2579,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
            MOVE    SPACE                TO  XAID2
            MOVE    SPA-XAIDCD2          TO  XAID2-ID1CODE
            MOVE    WRK-XAIDMSG          TO  XAID2-ID1MSG
+      *
+           MOVE    WIDGET-INSENSITIVE   TO  XAID2-B11-STATE
+      *
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "XA02"               TO  SPA-MOTOPG
