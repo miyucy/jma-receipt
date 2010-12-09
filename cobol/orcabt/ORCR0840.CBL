@@ -2454,10 +2454,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        COMPUTE  RECE84-RUIKEITOTAL  =
                                 RECE84-RUIKEITOTAL  +
                               ( WRK-FUKA-VALUE    * WRK-SRYCD)
-                       COMPUTE  WRK-FUKA-KINGAKU    =
-                                WRK-FUKA-KINGAKU    +
+                       IF  (ACCT-SRYKBN          =  "80" )
+                       AND (SRY-SRYCD(IDX2)(1:5) =
+                            "09591" OR "09592" OR "09593"
+                                               OR "09594")
+                       AND (SRY-SRYSYUKBN        =  "809")
+                        COMPUTE WRK-FUKA-KINGAKU  =
+                                WRK-FUKA-KINGAKU  +
+                              ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                                  * SRY-JIHIMONEY(IDX2))
+                       ELSE
+                        COMPUTE WRK-FUKA-KINGAKU  =
+                                WRK-FUKA-KINGAKU  +
                               ((WRK-FUKA-VALUE^4) * FUKA-IDX
                                                   * SRY-SRYSURYO(IDX2))
+                       END-IF
                      END-IF
                    END-PERFORM
                    COMPUTE  RECE84-RUIKEITOTAL  =
