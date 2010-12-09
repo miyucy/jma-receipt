@@ -2047,6 +2047,7 @@
       *
       *    計を表示
            IF      WRK-JIHIMONEY       >   ZERO
+           AND    (LNK-WKSRY-SRYKBN (IDX)  =   "95"  OR  "96")
       *        自費
                IF      FLG-KAISUU-ARI3     =   1
                    ADD    1                    TO  IDG
