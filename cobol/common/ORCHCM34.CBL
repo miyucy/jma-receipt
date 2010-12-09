@@ -74,6 +74,7 @@
                                            BY          //HCM34ACCT-//.
            03  HCM34ACCT-RUIKEITOTAL               PIC 9(15).
            03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15).
+           03  HCM34ACCT-JIHIMONEYTOTAL            PIC 9(07).
            03  HCM34ACCT-SRT-SRYCD                 PIC X(09).
            03  HCM34ACCT-SRT-SRYSYUKBN             PIC X(03).
            03  HCM34ACCT-SRT-SRYCOMMENT            PIC 9(01).
@@ -400,6 +401,7 @@
                05  WRK-RSI-SONOTA-KBN              PIC X(01).
                05  WRK-RSI-SONOTA-TEN              PIC 9(08).
            03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
+           03  WRK-JIHIMONEYTOTAL                  PIC 9(07).
            03  WRK-RUIKEI                          PIC 9(15).
            03  WRK-RUIKEITOTAL                     PIC 9(15).
            03  WRK-RUIKEITOTAL2                    PIC 9(15).
@@ -753,6 +755,7 @@
                    REPLACING   //ACCT-//  BY //WKACCT-//.
                03 WKACCT-RUIKEITOTAL      PIC 9(15).
                03 WKACCT-RUIKEITOTAL2     PIC 9(15).
+               03 WKACCT-JIHIMONEYTOTAL   PIC 9(07).
                03 WKACCT-SRT-SRYCD        PIC X(09).
                03 WKACCT-SRT-SRYSYUKBN    PIC X(03).
                03 WKACCT-SRT-SRYCOMMENT   PIC 9(01).
@@ -2823,6 +2826,8 @@
       *
                MOVE    WRK-RUIKEITOTAL TO  HCM34ACCT-RUIKEITOTAL
                MOVE    WRK-RUIKEITOTAL2 TO  HCM34ACCT-RUIKEITOTAL2
+               MOVE    WRK-JIHIMONEYTOTAL
+                                       TO  HCM34ACCT-JIHIMONEYTOTAL
                MOVE    WRK-SRYCD       TO  HCM34ACCT-SRT-SRYCD
                MOVE    WRK-SRYSYUKBN   TO  HCM34ACCT-SRT-SRYSYUKBN
                IF    ( FLG-SRYSTATUS   =   2 )
@@ -2908,6 +2913,9 @@
                                                        (WKSRYACCT-IDX)
             AND    HCM34ACCT-RUIKEITOTAL2
                                        =   WKACCT-RUIKEITOTAL2
+                                                       (WKSRYACCT-IDX)
+            AND    HCM34ACCT-JIHIMONEYTOTAL
+                                       =   WKACCT-JIHIMONEYTOTAL
                                                        (WKSRYACCT-IDX)
                INITIALIZE  COMMENT-CHK-AREA
                MOVE    ACCT-ZAINUM     TO  COMMENT-ZAINUM (1)
@@ -3244,6 +3252,7 @@
       *
            MOVE    ZERO                TO  WRK-RUIKEITOTAL
                                            WRK-RUIKEITOTAL2
+                                           WRK-JIHIMONEYTOTAL
                                            WRK-TNSTEN
       *
            OPEN    INPUT   HCM34SRY-FILE
@@ -3253,6 +3262,11 @@
            PERFORM UNTIL ( FLG-HCM34SRY    NOT =   ZERO )
       *
                MOVE    HCM34SRY-DAT    TO  SRYACT-REC
+      *
+               IF    ( SRY-RENNUM      =   1 )
+                   MOVE    SRY-JIHIMONEYTOTAL
+                                       TO  WRK-JIHIMONEYTOTAL
+               END-IF
       *
                IF    ( WRK-SRYSYUKBN   =   SPACE )
                    MOVE    SRY-SRYSYUKBN   TO  WRK-SRYSYUKBN
@@ -5388,6 +5402,7 @@
       *
            MOVE    WRK-RUIKEITOTAL     TO  HCM34ACCT-RUIKEITOTAL
            MOVE    WRK-RUIKEITOTAL2    TO  HCM34ACCT-RUIKEITOTAL2
+           MOVE    ZERO                TO  HCM34ACCT-JIHIMONEYTOTAL
            MOVE    WRK-SRYCD           TO  HCM34ACCT-SRT-SRYCD
            MOVE    WRK-SRYSYUKBN       TO  HCM34ACCT-SRT-SRYSYUKBN
            MOVE    "2"                 TO  HCM34ACCT-ACCTKBN
