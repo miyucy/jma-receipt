@@ -1622,7 +1622,7 @@
                                        TO  LNK-PRTKANRI-TBL-KEY
            MOVE    SMCNDATE-YMD        TO  LNK-PRTKANRI-TBL-GROUP (1:8)
            MOVE    SMCNDATE-HMS        TO  LNK-PRTKANRI-TBL-GROUP (9:)
-           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    1                   TO  LNK-PRTKANRI-SHORI-RENNUM
            MOVE    SPA-O01-SRYYM       TO  LNK-PRTKANRI-SRYYM
            MOVE    SPA-SYSYMD          TO  LNK-PRTKANRI-SKYYMD
            MOVE    "teiki2.sh"         TO  LNK-PRTKANRI-SHELLID
