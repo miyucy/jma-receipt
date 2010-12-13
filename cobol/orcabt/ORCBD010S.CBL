@@ -341,6 +341,7 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "¼«ÈñÀÁµá³Û".
            03  FILLER              PIC X(01)   VALUE   ",".
+       01  CSV-HEAD-011.
            03  FILLER              PIC X(06)   VALUE   "¸ºÌÈ³Û".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "Ä´À°¶â£±".
@@ -356,6 +357,16 @@
            03  FILLER              PIC X(08)   VALUE   "Æþ¶âÊýË¡".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "º£²óÌ¤¼ý³Û".
+       01  CSV-HEAD-012.
+           03  FILLER              PIC X(06)   VALUE   "Ä´À°¶â".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "º£²óÀÁµá³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "Æþ¶â³Û".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "Æþ¶âÊýË¡".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "Ì¤¼ý³Û".
       *    ¥Ø¥Ã¥À¡¼¾ðÊó
        01  CSV-HEAD-02.
            03  FILLER              PIC X(06)   VALUE   "¹ç·×É½".
@@ -1443,7 +1454,17 @@
                    MOVE    "¿ÇÎÅÇ¯·îÆü"    TO  CSV-SRYYMDMEI
                    MOVE    "½éºÆ"          TO  CSV-SYOSAIMEI
                END-IF
-               MOVE    CSV-HEAD-01     TO  WRK-REC
+               IF    ( TPARA-FORM      =   ZERO )
+                   STRING  CSV-HEAD-01     DELIMITED BY SIZE
+                           CSV-HEAD-011    DELIMITED BY SIZE
+                                           INTO  WRK-REC
+                   END-STRING
+               ELSE
+                   STRING  CSV-HEAD-01     DELIMITED BY SIZE
+                           CSV-HEAD-012    DELIMITED BY SIZE
+                                           INTO  WRK-REC
+                   END-STRING
+               END-IF
                PERFORM 500-TOUKEICSV-SEC
                PERFORM UNTIL ( FLG-BD01004 NOT =   ZERO )
                         OR   ( BD01004-SRT-NYUGAIKBN
@@ -2130,6 +2151,70 @@
                MOVE    BD01004-TTLMISYU    TO  WRK-ZX99
                MOVE    WRK-ZX99        TO  HCM51V02-MISYU(CNT-LINE)
            END-IF
+      *
+           MOVE    BD01004-HOKENTEN    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-HKNTEN
+           MOVE    BD01004-FTNMONEY    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYHOKEN
+           MOVE    BD01004-JIHIMONEY   TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYJIHI
+           MOVE    WRK-CHOSEI          TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-CHOSEI
+           MOVE    BD01004-SKYMONEY    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-SKYMONEY
+           MOVE    BD01004-NYUKIN      TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-NYUKIN
+           MOVE    BD01004-TTLMISYU    TO  WRK-SURYO
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO        TO  CSV-MISYU
+      *
+           INITIALIZE                  WRK-REC
+           STRING  BD01004-DENPNUM     DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-PTNUM       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-NAME        DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-KANANAME    DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SRYYMD          DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51V02-SYOSAI(CNT-LINE)
+                                       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51V02-HOKEN (CNT-LINE)
+                                       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   BD01004-SRYKA       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51V02-SRYKA (CNT-LINE)
+                                       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-HKNTEN          DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SKYHOKEN        DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SKYJIHI         DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-CHOSEI          DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-SKYMONEY        DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-NYUKIN          DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   HCM51V02-HOHO (CNT-LINE)
+                                       DELIMITED  BY  SPACE
+                   ","                 DELIMITED  BY  SIZE
+                   CSV-MISYU           DELIMITED  BY  SPACE
+                   INTO                WRK-REC
+           END-STRING
+           PERFORM 500-TOUKEICSV-SEC
       *
            .
        220-BODY-FORM1-EXT.
