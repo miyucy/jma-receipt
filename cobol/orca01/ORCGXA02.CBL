@@ -1178,7 +1178,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                OR      SPA-GMN-RENNUM          =   ZERO
                OR      SPA-GMN-SHORI-RENNUM    =   ZERO
                OR      SPA-GMN-SELNUM          =   ZERO
-                   MOVE    "0003"              TO  SPA-ERRCD
+                   IF      SPA-GMN-SELNUM          =   ZERO
+                       MOVE    "0003"              TO  SPA-ERRCD
+                   END-IF
                ELSE    
                    IF      SPA-GMN-STPAGE      >
                                        SPA-GMN-TPAGE (SPA-GMN-SELNUM) 
@@ -1212,7 +1214,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                OR      SPA-GMN-RENNUM          =   ZERO
                OR      SPA-GMN-SHORI-RENNUM    =   ZERO
                OR      SPA-GMN-SELNUM          =   ZERO
-                   MOVE    "0003"              TO  SPA-ERRCD
+                   IF      SPA-GMN-SELNUM          =   ZERO
+                       MOVE    "0003"              TO  SPA-ERRCD
+                   END-IF
                ELSE    
                    IF      SPA-GMN-EDPAGE      >
                                        SPA-GMN-TPAGE (SPA-GMN-SELNUM) 
