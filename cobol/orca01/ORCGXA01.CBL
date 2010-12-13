@@ -1999,7 +1999,9 @@
       *
            MOVE    SPACE                TO  XAID2
       *    グループ指定時は、クライアント印刷不可とする
-           IF      SPA-GMN-SHORI-RENNUM  =  ZERO
+           IF     (SPA-GMN-SHORI-RENNUM  =  ZERO)
+             AND  (SPA-GMN-STPAGE        =  ZERO 
+             OR    SPA-GMN-EDPAGE        =  ZERO)
                MOVE    WIDGET-INSENSITIVE  TO  XAID2-B11-STATE
            ELSE
                MOVE    WIDGET-NORMAL   TO  XAID2-B11-STATE
