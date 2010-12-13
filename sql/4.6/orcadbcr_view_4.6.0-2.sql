@@ -102,3 +102,11 @@ AND (b.jtikbn <> '6'::bpchar)) AND (b.hospnum = e.hospnum)) AND (b.ptid = e.ptid
 
 SET client_encoding = 'EUC_JP';
 COMMENT ON VIEW view_i001 IS '入院患者照会ビュー';
+
+CREATE VIEW view_bd003 AS
+SELECT a.hospnum, a.nyugaikbn, a.ptid, a.denpnum, a.denpedanum, a.skymoney, a.nyuhen_money, a.nyuhen_ymd, b.sryymd
+FROM tbl_syumei a
+JOIN tbl_syunou_main b on (a.hospnum::smallint=b.hospnum and a.ptid::bigint = b.ptid and a.nyugaikbn = b.nyugaikbn and a.denpnum::int = b.denpnum );
+
+SET client_encoding = 'EUC_JP';
+COMMENT ON VIEW view_bd003 IS '収納ビュー3';
