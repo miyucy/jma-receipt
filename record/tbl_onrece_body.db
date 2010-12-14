@@ -27,6 +27,7 @@ tbl_onrece_body   {
 	TEISYUTUSAKI_B		char(1);
 	RECEKA  		char(2);
 	HOJOKBN			char(1);
+	KOHID			number(10);
 	TEKSTYMD        	char(8);
 	H_TTL_TEN		number(8);
 	FTNNUM_1		varchar(8);
@@ -221,6 +222,7 @@ path    upd1    {
 	TEISYUTUSAKI_B	=	:TEISYUTUSAKI_B,
 	RECEKA		=	:RECEKA,
 	HOJOKBN		=	:HOJOKBN,
+	KOHID		=	:KOHID,
 	TEKSTYMD	=	:TEKSTYMD,
 	H_TTL_TEN	=	:H_TTL_TEN,
 	FTNNUM_1	=	:FTNNUM_1,

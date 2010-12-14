@@ -38,6 +38,8 @@
       *
       *  04.06.01    NACL-藤原    10/07/20  レセプト病名記載順対応
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -134,6 +136,7 @@
                05  KEY-N-RECESYUBETU   PIC 9(04).
                05  KEY-N-HKNJANUM      PIC X(08).
                05  KEY-N-HOJOKBN       PIC X(01).
+               05  KEY-N-KOHID         PIC 9(10).
                05  KEY-N-TEKSTYMD      PIC X(08). 
                05  KEY-N-SRYYMD        PIC X(08).
                05  KEY-N-TENKIKBN      PIC X(01).
@@ -152,6 +155,7 @@
                05  KEY-O-TEKSTYMD      PIC X(08). 
                05  KEY-O-SRYYMD        PIC X(08).
                05  KEY-O-TENKIKBN      PIC X(01).
+               05  KEY-O-KOHID         PIC 9(10).
                05  KEY-O-TENKIYMD      PIC X(08).
                05  KEY-O-BYOMEI        PIC X(160).
       *
@@ -309,6 +313,7 @@
            MOVE    RECE63-RECESYUBETU  TO  RECE631-RECESYUBETU
            MOVE    RECE63-HKNJANUM     TO  RECE631-HKNJANUM
            MOVE    RECE63-HOJOKBN      TO  RECE631-HOJOKBN
+           MOVE    RECE63-KOHID        TO  RECE631-KOHID
            MOVE    RECE63-TEKSTYMD     TO  RECE631-TEKSTYMD
            MOVE    RECE63-SRYYMD       TO  RECE631-SRYYMD
            MOVE    RECE63-SYUBYOFLG    TO  RECE631-SYUBYOFLG   
@@ -487,6 +492,7 @@
                    MOVE    RECE63-RECESYUBETU  TO  KEY-N-RECESYUBETU
                    MOVE    RECE63-HKNJANUM     TO  KEY-N-HKNJANUM
                    MOVE    RECE63-HOJOKBN      TO  KEY-N-HOJOKBN
+                   MOVE    RECE63-KOHID        TO  KEY-N-KOHID
                    MOVE    RECE63-TEKSTYMD     TO  KEY-N-TEKSTYMD
                    MOVE    RECE63-SRYYMD       TO  KEY-N-SRYYMD
                    MOVE    RECE63-TENKIKBN     TO  KEY-N-TENKIKBN

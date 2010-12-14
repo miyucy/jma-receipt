@@ -35,6 +35,9 @@
       *                                     （生保の公費単独のみ） 
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -311,6 +314,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                    TO  LNK-SYUACC-IO-HKNJANUM     (IDY)
                    MOVE    LNK-SYUBETU-HOJOKBN      (IDY)
                                    TO  LNK-SYUACC-IO-HOJOKBN      (IDY)
+                   MOVE    LNK-SYUBETU-KOHID        (IDY)
+                                   TO  LNK-SYUACC-IO-KOHID        (IDY)
                    MOVE    LNK-SYUBETU-HKNNUM       (IDY)
                                    TO  LNK-SYUACC-IO-HKNNUM       (IDY)
       *            精神入院か生保単独複数のとき

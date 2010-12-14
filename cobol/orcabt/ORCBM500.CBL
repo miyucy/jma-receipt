@@ -73,6 +73,9 @@
       *  04.05.01    NACL-Æ£¸¶    10/03/23  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *                                     ÀÁµá¤Ë·¸¤ï¤ëµ­Ï¿¾ò·ï»ÅÍÍ¤Î
       *                                     ÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
+      *
+      *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
+      *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1138,6 +1141,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            =   RECE10-HKNJANUM     )
                        AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
                                            =   RECE10-HOJOKBN-KEY  )
+                       AND   ( HENREI-B-S-KOHID-KEY  (IDZZ)
+                                           =   RECE10-KOHID-KEY  )
                        AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
                                            =   RECE10-TEKSTYMD     )
                            MOVE    HENREI-B-REC    TO  WRK-HENREI-B-REC
@@ -1287,6 +1292,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                    WRK-HENREI-B-S-HKNJANUM    (IDZZ)
                    AND     RECE10-HOJOKBN-KEY  =
                                    WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+                   AND     RECE10-KOHID-KEY  = 
+                                   WRK-HENREI-B-S-KOHID-KEY   (IDZZ)
                    AND     RECE10-TEKSTYMD     =
                                    WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
                        MOVE    SMCNDATE-YMD    TO

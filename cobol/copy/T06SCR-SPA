@@ -28,10 +28,13 @@
       *  04.04.04    NACL-藤原    09/03/24  主科設定時の主科未設定データ
       *                                     の有無チェック
      *
-      *  04.05.02    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
+      *  04.05.01    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
       *                                     対応
       *                                     ファイル出力先のデフォルト値
       *                                     の設定も可能にする 
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
        01  SPA-T06.
       *    個別指示画面
@@ -172,6 +175,8 @@
                                                        PIC X(08).
                                13  SPA-NAI-T06-RECE10-HOJOKBN
                                                        PIC X(01).
+                               13  SPA-NAI-T06-RECE10-KOHID-KEY
+                                                       PIC 9(10).
                                13  SPA-NAI-T06-RECE10-TEKSTYMD
                                                        PIC X(08).
       *
@@ -251,6 +256,8 @@
                            11  SPA-NAI-T09-RECE10-THKNJANUM
                                                            PIC X(08).
                            11  SPA-NAI-T09-RECE10-THOJOKBN PIC X(01).
+                           11  SPA-NAI-T09-RECE10-KOHID-KEY
+                                                           PIC 9(10).
                            11  SPA-NAI-T09-RECE10-TTEKSTYMD
                                                            PIC X(08).
       *    レセ電作成指示画面

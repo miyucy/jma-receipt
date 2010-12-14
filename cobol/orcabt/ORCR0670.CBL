@@ -55,6 +55,8 @@
       *                                     種別不明レセ対応
       *                                     病名なし時のエラー設定
       *  04.06.02    NACL-藤原    10/07/20  レセプト病名記載順対応
+      *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -570,6 +572,7 @@
       *
            ADD     1                   TO  WRK-RENNUM
       *
+           MOVE    SPACE               TO  RECE63-REC
            INITIALIZE                      RECE63-REC
            MOVE    RECE62-HOSPNUM      TO  RECE63-HOSPNUM
            MOVE    RECE62-SRYYM        TO  RECE63-SRYYM
@@ -580,6 +583,7 @@
            MOVE    RECE62-RECESYUBETU  TO  RECE63-RECESYUBETU
            MOVE    RECE62-HKNJANUM-KEY TO  RECE63-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE63-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE63-KOHID
            MOVE    RECE62-TEKSTYMD     TO  RECE63-TEKSTYMD
            MOVE    PTBYO-SRYYMD        TO  RECE63-SRYYMD
            MOVE    WRK-RENNUM          TO  RECE63-RENNUM

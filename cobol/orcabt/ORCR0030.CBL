@@ -505,6 +505,7 @@
       *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
       *  04.06.03    NACL-門脇    10/09/13  出産一時金対応（外来）
+      *  04.06.04    NACL-門脇    10/12/13  保険別請求チェック表の本体取込み
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -688,6 +689,8 @@
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
            03  FLG-BUNBEN-SET                          PIC 9(01).
+           03  FLG-WRKFILE-CLEAR                       PIC 9(01).
+           03  FLG-WRKFILE-RECE                        PIC 9(01).
            03  FLG-SAIGAI-TAISYO                       PIC 9(01).
            03  FLG-CHIIKI                              PIC 9(01).
       *
@@ -909,6 +912,16 @@
                  07  WRK-TAIHI-FTNMONEY-EN             PIC 9(09).
                  07  WRK-TAIHI-FTNMONEY-EN2            PIC 9(09)V9(01).
       *
+       01  WRK-SKY-AREA.
+           03  WRK-SKY-KEISAN                          PIC 9(09).
+           03  WRK-SKY-KEISAN2                         PIC 9(09).
+           03  WRK-SKY-HOKENJA                         PIC 9(09).
+           03  WRK-SKY-ICHIBUFTN                       PIC 9(09).
+           03  WRK-SKY-ZENGAKU                         PIC 9(09).
+           03  WRK-SKY-FTNMONEY                        PIC 9(09).
+           03  WRK-SKY-ZENGAKU2                        PIC 9(09).
+           03  WRK-SKY-FTNMONEY2                       PIC 9(09).
+      *
       *    点数マスタ情報退避領域
        01  WRK-TNS-TAIHI-AREA.
            03  WRK-TNS-TAIHI-TABLE                     OCCURS  5.
@@ -937,6 +950,10 @@
            03  TBL-JNISSU-HKN-GEN                      OCCURS   5.
                05  TBL-JNISSU-DAY-GEN                  PIC X(01)
                                                        OCCURS   31.
+      *    実日数減カウント用領域（まとめ）
+       01  TBL-JNISSU-MATOME.
+           03  TBL-JNISSU-HKN-MATOME                   OCCURS  31.
+               05  TBL-JNISSU-DAY-M                    PIC X(01).
       *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  100.
@@ -2146,9 +2163,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            END-IF
       *
            INITIALIZE                   WRK-AREA-SAIKEI
+           INITIALIZE                   WRK-SKY-AREA
            INITIALIZE                   TBL-JNISSU                      
            INITIALIZE                   TBL-JNISSU2
            INITIALIZE                   TBL-JNISSU-GEN
+           INITIALIZE                   TBL-JNISSU-MATOME
       *
            INITIALIZE                   FLG-KHNTEN-AREA
            INITIALIZE                   FLG-SAISIN-AREA
@@ -2188,6 +2207,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                         WRK-KINGAKU-TOK1
            MOVE      ZERO       TO      FLG-KOUGAKU
            MOVE      ZERO       TO      FLG-BUNBEN-SET
+           MOVE      ZERO       TO      FLG-WRKFILE-CLEAR
       *
            PERFORM     211J-SYUKEIKBN-HANBETU-SEC
       *
@@ -2253,8 +2273,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            IF    RECE02-ZAITAKU    =    "1"  OR  "2"
              PERFORM        2101-KOREISYA-KOHI-SEC
-             PERFORM        211A-ZENKOKUKOHI-NISYU-CHECK-SEC
            END-IF
+           PERFORM          211A-ZENKOKUKOHI-NISYU-CHECK-SEC
            IF  ( RECE02-ZAITAKU    =    "1"  OR  "2"    )
            OR  ( FLG-TOKU75        =     1  OR  2  OR 3 )
              PERFORM        2102-KOREISYA-CHECK-SEC
@@ -2363,6 +2383,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                PERFORM    2104-RECE04-HENSYU-SEC
                PERFORM    2105-YKZFTN-SET-SEC
            END-PERFORM
+           PERFORM     211M-WRKFILE-CLEAR-SEC
            PERFORM     211H-GENTEN-HENSYU-SEC
            PERFORM     2106-JNISSU-SET-SEC                                   
            PERFORM     2107-KHNTEN-CLEAR-SEC
@@ -2547,6 +2568,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            END-IF
       *
            PERFORM     211G-PTTOKKI-HENSYU-SEC
+      *
+      *    請求額情報編集
+           PERFORM     211N-SKY-HENSYU-SEC
       *
            PERFORM     RECE02-REWRITE-SEC
            .
@@ -9087,6 +9111,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        21052-RECE02-HENSYU3-SEC               SECTION.
       *
+      *    請求額収納編集
+           PERFORM   210526-SKY-SYUNOU-HENSYU-SEC
+      *
       *    収納より総点数を集計
            ADD       SYU-TOTAL-HKNTEN   TO   RECE02-RJNGAIFTN
       *
@@ -9125,6 +9152,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      WHEN        4
                           MOVE   1      TO   RECE02-RJNNYUFTN
                    END-EVALUATE
+                END-IF
+                IF  (IDZ                 =     1    )
+                AND (RECE02-SRYYM       >=  "201101")
+                AND (SYU-SYUHKNNUM   NOT =   SPACE  )
+                  IF    RECE02-SENIN-TUUSAI     =    "1"
+                    CONTINUE
+                  ELSE
+                    MOVE    1    TO   FLG-WRKFILE-CLEAR
+                    IF  ((RECE02-AGE         >=   70  ) OR
+                         (RECE02-HKNNUM       =  "039"))
+                    AND ( RECE02-YOBIETC(8)   =  ZERO  )
+                      PERFORM   210521-HOKEN-FUTAN-HENSYU-SEC
+                    ELSE
+                      PERFORM   210525-HOKEN-FUTAN-HENSYU2-SEC
+                    END-IF
+                  END-IF
                 END-IF
              END-IF
            ELSE
@@ -9238,6 +9281,26 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE     ZERO    TO   FLG-KEISAN2
            MOVE     ZERO    TO   FLG-KEISAN3
       *
+           MOVE     ZERO    TO   FLG-WRKFILE-RECE
+           IF   FLG-WRKFILE-CLEAR  =  1
+             IF   SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
+               IF ((RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1) ))
+               OR ((RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(2) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1) ))
+               OR ((RECE02-KOHNUM(3) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(3) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1) ))
+               OR ((RECE02-KOHNUM(4) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(4) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(4)  = RECE02-KOHIDHC(IDX1 1) ))
+                  MOVE    1    TO   FLG-WRKFILE-RECE
+               END-IF
+             END-IF
+           END-IF
+      *
            COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                * 10
                                * RECE02-KYURATE
@@ -9296,7 +9359,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE     1        TO   FLG-KEISAN-TOK2
                    MOVE     4        TO   FLG-KEISAN
                  END-IF
-                 IF      RECE02-TEISYOTOKU  NOT =  SPACE
+                 IF     (RECE02-TEISYOTOKU  NOT =  SPACE)
+                 AND    (FLG-WRKFILE-CLEAR      =  ZERO )
                     IF  FLG-TOKU75 = 1 OR 2
                       MOVE    4000   TO   WRK-KINGAKU
                     ELSE
@@ -9315,7 +9379,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  PERFORM      2105219-ICHIBUFTN-NISYU-HEN-SEC
                ELSE
                  IF      FLG-ZENKOH-ARI  =  ZERO
-                   PERFORM    2105212-ICHIBUFTN-KOH-HEN1-SEC
+                   IF  FLG-WRKFILE-CLEAR  =  ZERO
+                   OR  FLG-WRKFILE-RECE   =   1
+                     PERFORM   2105212-ICHIBUFTN-KOH-HEN1-SEC
+                   ELSE
+                     ADD    WRK-FTNKEI   TO   RECE02-FTNMONEY(1)
+                   END-IF
                  ELSE
                    IF  ((SYU-KOH-HKNNUM(1)     NOT = "027") AND
                         (SYU-KOH-HKNNUM(1)(1:1)    = "0"  ))
@@ -9395,7 +9464,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        ELSE
                           MOVE      1     TO   FLG-KEISAN
                        END-IF
-                       PERFORM   2105212-ICHIBUFTN-KOH-HEN1-SEC
+                       IF  FLG-WRKFILE-CLEAR  =  ZERO
+                       OR  FLG-WRKFILE-RECE   =   1
+                         PERFORM   2105212-ICHIBUFTN-KOH-HEN1-SEC
+                       ELSE
+                         ADD    WRK-FTNKEI   TO   RECE02-FTNMONEY(1)
+                       END-IF
                      END-IF
                    END-IF
                  END-IF
@@ -9419,6 +9493,26 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE     ZERO    TO   FLG-KEISAN
            MOVE     ZERO    TO   FLG-KEISAN2
            MOVE     ZERO    TO   FLG-KEISAN3
+      *
+           MOVE     ZERO    TO   FLG-WRKFILE-RECE
+           IF   FLG-WRKFILE-CLEAR  =  1
+             IF   SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
+               IF ((RECE02-KOHNUM(1) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1) ))
+               OR ((RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(2) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1) ))
+               OR ((RECE02-KOHNUM(3) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(3) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(3)  = RECE02-KOHIDHC(IDX1 1) ))
+               OR ((RECE02-KOHNUM(4) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE02-KOHNUM(4) = RECE02-KOHNUMHC(IDX1 1)) AND
+                   (RECE02-KOHID(4)  = RECE02-KOHIDHC(IDX1 1) ))
+                  MOVE    1    TO   FLG-WRKFILE-RECE
+               END-IF
+             END-IF
+           END-IF
       *
            COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                * 10
@@ -9526,8 +9620,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    PERFORM   2105219-ICHIBUFTN-NISYU-HEN-SEC
                  ELSE
                    IF      FLG-ZENKOH-ARI  =  ZERO
-                     MOVE        4      TO   FLG-JYOGENKBN2
-                     PERFORM     2105213-ICHIBUFTN-KOH-HEN2-SEC
+                     IF  FLG-WRKFILE-CLEAR  =  ZERO
+                     OR  FLG-WRKFILE-RECE   =   1
+                       MOVE        4       TO   FLG-JYOGENKBN2
+                       PERFORM   2105213-ICHIBUFTN-KOH-HEN2-SEC
+                     ELSE
+                       ADD    WRK-FTNKEI   TO   RECE02-FTNMONEY(1)
+                     END-IF
                    ELSE
                      IF  ( SYU-KOH-HKNNUM(1)(1:1)  = "0" )
                      OR  ( SYU-KOH-HKNNUM(2)(1:1)  = "0" )
@@ -9578,8 +9677,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        ELSE
                           MOVE   1      TO   FLG-KEISAN
                        END-IF
-                       MOVE      2      TO   FLG-JYOGENKBN
-                       PERFORM   2105213-ICHIBUFTN-KOH-HEN2-SEC
+                       IF  FLG-WRKFILE-CLEAR  =  ZERO
+                       OR  FLG-WRKFILE-RECE   =   1
+                         MOVE        2       TO   FLG-JYOGENKBN
+                         PERFORM   2105213-ICHIBUFTN-KOH-HEN2-SEC
+                       ELSE
+                         ADD    WRK-FTNKEI   TO   RECE02-FTNMONEY(1)
+                       END-IF
                      END-IF
                    END-IF
                  END-IF
@@ -9737,6 +9841,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"   ) AND
                 (RECE02-SRYYM      >= "201010"                 ) AND
                 (IDZ                =  1                       ))
+           OR  ( FLG-WRKFILE-RECE   =  1                        )
                  IF  FLG-TOKU75 = 1 OR 2
                      MOVE    6000      TO   WRK-KINGAKU
                  ELSE
@@ -9818,6 +9923,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (SYU-KOH-HKNNUM(1)  = "141" OR "241"           ) AND
                 (IDZ                =  1                       ) AND
                 (RECE02-SRYYM      <= "200803"                 ))
+           OR  ( FLG-WRKFILE-RECE   =  1                        )
       *
             MOVE     ZERO    TO   FLG-KOHYONKAIME-NO
             IF  (SYS-1001-PREFNUM   =  01            )
@@ -10789,6 +10895,54 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    請求額収納編集
+      *****************************************************************
+       210526-SKY-SYUNOU-HENSYU-SEC               SECTION.
+      *
+           ADD   SYU-TOTAL-HKNTEN   TO   RECE02-SKYIRYO-TOTALTEN
+      *
+           ADD   SYU-HKNTEKMONEY    TO   RECE02-SKYIRYO-ICHIBUFTN
+           ADD   SYU-KOH-FTN        TO   RECE02-SKYIRYO-ICHIBUFTN
+      *
+           IF   SYU-SYUHKNNUM   NOT =  SPACE
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+                                       * (100 - RECE02-KYURATE)
+                                       /  100
+              ADD      WRK-SKY-KEISAN   TO   RECE02-SKYIRYO-HOKENJA
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-HOKENJA
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+                                       *  RECE02-KYURATE
+                                       /  100
+              COMPUTE  WRK-SKY-KEISAN  =   WRK-SKY-KEISAN +  5
+              COMPUTE  WRK-SKY-KEISAN  =   WRK-SKY-KEISAN / 10
+              COMPUTE  WRK-SKY-KEISAN  =   WRK-SKY-KEISAN * 10
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ICHIBUFTN
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ZENGAKU
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-HKNTEKMONEY
+                                       +  SYU-KOH-FTN
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-FTNMONEY
+           ELSE
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ZENGAKU2
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-HKNTEKMONEY
+                                       +  SYU-KOH-FTN
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-FTNMONEY2
+           END-IF
+      *
+           .
+       210526-SKY-SYUNOU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    分娩特記事項編集
       *****************************************************************
        21053-BUNBEN-TOKKI-HENSYU-SEC      SECTION.
@@ -10863,6 +11017,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-PERFORM
            END-PERFORM
       *
+           PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
+                       UNTIL     HKN-IDX    >      5
+             PERFORM    VARYING    ACCT-IDX    FROM    1   BY   1
+                         UNTIL     ACCT-IDX    >      31
+                IF   TBL-JNISSU-DAY(HKN-IDX ACCT-IDX)      NOT =  SPACE
+                    MOVE   "1"   TO  TBL-JNISSU-DAY-M(ACCT-IDX)
+                END-IF
+             END-PERFORM
+           END-PERFORM
+      *
       *実日数編集
            PERFORM    VARYING    HKN-IDX    FROM   1   BY   1
                       UNTIL      HKN-IDX    >      5
@@ -10884,6 +11048,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                           ADD    1      TO    TBL-JNISSU2-MON(HKN-IDX)
                     END-IF
                END-PERFORM
+           END-PERFORM
+      *
+           PERFORM    VARYING    ACCT-IDX    FROM    1   BY   1
+                      UNTIL      ACCT-IDX    >     31
+                    IF    TBL-JNISSU-DAY-M(ACCT-IDX)
+                                        NOT =  SPACE
+                          ADD    1      TO    RECE02-SKYIRYO-NISSU
+                    END-IF
            END-PERFORM
       *
       *実日数テーブル編集
@@ -11659,6 +11831,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       PERFORM   21045-TOKKI-HENSYU-SEC
                END-IF
       *
+           END-IF
+      *
+           IF   (IDZ               =     1      )
+           AND  (RECE02-SRYYM     >=  "201101"  )
+           AND  (RECE02-ZAITAKU    =  "1" OR "2")
+             MOVE   RECE02-FTNMONEY(1)   TO   RECE02-FTNMONEY-SKY
            END-IF
       *
            IF   WK-GENGAKUKBN   =   ZERO
@@ -12745,13 +12923,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 END-IF
              END-IF
       *
-      ***    IF   FLG-HOKENICHIBU-SYU  = ZERO
-      ***       IF   (IDZ               =     1      )
-      ***       AND  (RECE02-SRYYM     >=  "201101"  )
-      ***       AND  (RECE02-ZAITAKU    =  "1" OR "2")
-      ***         MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
-      ***       END-IF
-      ***    END-IF
+             IF   FLG-HOKENICHIBU-SYU  = ZERO
+                IF   (IDZ               =     1      )
+                AND  (RECE02-SRYYM     >=  "201101"  )
+                AND  (RECE02-ZAITAKU    =  "1" OR "2")
+                  MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
+                END-IF
+             END-IF
            END-IF
       *
            .
@@ -12830,13 +13008,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 END-IF
              END-IF
       *
-      ***    IF   FLG-HOKENICHIBU-SYU  = ZERO
-      ***       IF   (IDZ               =     1      )
-      ***       AND  (RECE02-SRYYM     >=  "201101"  )
-      ***       AND  (RECE02-ZAITAKU    =  "1" OR "2")
-      ***         MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
-      ***       END-IF
-      ***    END-IF
+             IF   FLG-HOKENICHIBU-SYU  = ZERO
+                IF   (IDZ               =     1      )
+                AND  (RECE02-SRYYM     >=  "201101"  )
+                AND  (RECE02-ZAITAKU    =  "1" OR "2")
+                  MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
+                END-IF
+             END-IF
            END-IF
       *
            .
@@ -13984,6 +14162,67 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
       *
            .
        211L-SAIGAI-TAISYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ワークファイルクリア
+      *****************************************************************
+       211M-WRKFILE-CLEAR-SEC      SECTION.
+      *
+           IF  (IDZ                 =     1    )
+           AND (RECE02-SRYYM       >=  "201101")
+              MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
+              IF   FLG-WRKFILE-CLEAR   =   1
+                MOVE   ZERO              TO   RECE02-FTNMONEY(1)
+                MOVE   ZERO              TO   FLG-KEISAN-TOK1
+                MOVE   ZERO              TO   FLG-KEISAN-TOK2
+                MOVE   ZERO              TO   FTN-KOH-XXX
+                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU
+                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU2
+              END-IF
+           END-IF
+      *
+           .
+       211M-WRKFILE-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    請求額情報編集
+      *****************************************************************
+       211N-SKY-HENSYU-SEC      SECTION.
+      *
+           IF   (IDZ             =    1    )
+           AND  (RECE02-SRYYM   >= "201101")
+      *      主保険がある保険組み合わせ
+             IF    (WRK-SKY-ZENGAKU      >  ZERO            )
+             AND   (WRK-SKY-ICHIBUFTN    >  WRK-SKY-FTNMONEY)
+               COMPUTE  WRK-SKY-KEISAN     =  WRK-SKY-ZENGAKU
+                                           -  WRK-SKY-HOKENJA
+               IF  (WRK-SKY-ICHIBUFTN    >  RECE02-FTNMONEY-SKY)
+               AND (WRK-SKY-KEISAN       >  RECE02-FTNMONEY-SKY)
+                 COMPUTE  WRK-SKY-KEISAN2  =  WRK-SKY-KEISAN
+                                           -  RECE02-FTNMONEY-SKY
+                 ADD  WRK-SKY-KEISAN2   TO  RECE02-SKYIRYO-HOKENJA
+               END-IF
+               IF   RECE02-FTNMONEY-SKY  >  WRK-SKY-FTNMONEY
+                 COMPUTE  WRK-SKY-KEISAN2  =  RECE02-FTNMONEY-SKY
+                                           -  WRK-SKY-FTNMONEY
+                 ADD  WRK-SKY-KEISAN2   TO  RECE02-SKYIRYO-KOHFTN
+               END-IF
+             END-IF
+      *      主保険がない保険組み合わせ
+             IF    (WRK-SKY-ZENGAKU2     >  ZERO             )
+             AND   (WRK-SKY-ZENGAKU2     >  WRK-SKY-FTNMONEY2)
+               COMPUTE    WRK-SKY-KEISAN2  =  WRK-SKY-ZENGAKU2
+                                           -  WRK-SKY-FTNMONEY2
+               ADD    WRK-SKY-KEISAN2   TO  RECE02-SKYIRYO-KOHFTN
+             END-IF
+           ELSE
+             INITIALIZE        RECE02-SKYIRYO-INF
+           END-IF
+      *
+           .
+       211N-SKY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

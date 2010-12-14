@@ -83,6 +83,8 @@
       *
       *  04.05.01    NACL-藤原    09/04/16  主科設定時の主科未設定のチェ
       *                                     ック追加
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -922,6 +924,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                                            (IDXX IDZZ) )
                        AND   ( SPA-RECE10-HOJOKBN      =
                                            TBL-HENREI-B-S-HOJOKBN-KEY 
+                                                           (IDXX IDZZ) )
+                       AND   ( SPA-RECE10-KOHID-KEY    =
+                                           TBL-HENREI-B-S-KOHID-KEY
                                                            (IDXX IDZZ) )
                        AND   ( SPA-RECE10-TEKSTYMD     =
                                            TBL-HENREI-B-S-TEKSTYMD    
@@ -1914,6 +1919,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            =   SPA-RECE10-HKNJANUM     )
                    AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
                                            =   SPA-RECE10-HOJOKBN      )
+                   AND   ( HENREI-B-S-KOHID-KEY    (IDZZ)
+                                           =   SPA-RECE10-KOHID-KEY    )
                    AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
                                            =   SPA-RECE10-TEKSTYMD     )
                        IF      SPA-HENREI-B-HOSPNUM    =   ZERO
@@ -2332,6 +2339,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                            =   SPA-RECE10-HKNJANUM     )
                    AND   ( TBL-HENREI-B-S-HOJOKBN-KEY  (IDXX IDZZ)
                                            =   SPA-RECE10-HOJOKBN      )
+                   AND   ( TBL-HENREI-B-S-KOHID-KEY    (IDXX IDZZ)
+                                           =   SPA-RECE10-KOHID-KEY    )
                    AND   ( TBL-HENREI-B-S-TEKSTYMD     (IDXX IDZZ)
                                            =   SPA-RECE10-TEKSTYMD     )
                        MOVE    1       TO  TBL-HENREI-B-ERR
@@ -2995,6 +3004,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                        =   SPA-RECE10-HKNJANUM     )
                AND   ( WRK-HENREI-B-S-HOJOKBN-KEY  (IDZZ)
                                        =   SPA-RECE10-HOJOKBN      )
+               AND   ( WRK-HENREI-B-S-KOHID-KEY    (IDZZ)
+                                       =   SPA-RECE10-KOHID-KEY    )
                AND   ( WRK-HENREI-B-S-TEKSTYMD     (IDZZ)
                                        =   SPA-RECE10-TEKSTYMD     )
                AND   ( WRK-HENREI-B-S-HENREIYM     (IDZZ)
@@ -3016,6 +3027,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                        WRK-HENREI-B-S-HKNJANUM    (IDZZ)
                    MOVE    SPA-RECE10-HOJOKBN      TO
                                        WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+                   MOVE    SPA-RECE10-KOHID-KEY    TO
+                                       WRK-HENREI-B-S-KOHID-KEY   (IDZZ)
                    MOVE    SPA-RECE10-TEKSTYMD     TO
                                        WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
       *
@@ -3104,6 +3117,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                        SPA-HENREI-B-S-HKNJANUM    (IDZZ)
                AND     SPA-RECE10-HOJOKBN      =
                                        SPA-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+               AND     SPA-RECE10-KOHID-KEY    =
+                                       SPA-HENREI-B-S-KOHID-KEY   (IDZZ)
                AND     SPA-RECE10-TEKSTYMD     =
                                        SPA-HENREI-B-S-TEKSTYMD    (IDZZ)
                    INITIALIZE                  SPA-HENREI-B-SEIKYU-OCC

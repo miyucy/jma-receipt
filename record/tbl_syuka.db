@@ -8,6 +8,7 @@ tbl_syuka {
     TEISYUTUSAKI        char(1);
     HKNJANUM            char(8);
     HOJOKBN             char(1);
+    KOHID               number(10,0);
     RECESYUBETU         char(4);
     SRYKA               char(2);
 #------> key
@@ -41,7 +42,7 @@ tbl_syuka {
     XXPTNUM             char(20),virtual;
 };
 primary {
-    HOSPNUM,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA;
+    HOSPNUM,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA;
 };
 
 
@@ -58,6 +59,7 @@ path	key		{
 			AND     TEISYUTUSAKI   =   :TEISYUTUSAKI
 			AND     HKNJANUM       =   :HKNJANUM
 			AND     HOJOKBN        =   :HOJOKBN
+			AND     KOHID          =   :KOHID
 			AND     RECESYUBETU    =   :RECESYUBETU
 			AND     SRYKA          =   :SRYKA
 		;
@@ -76,7 +78,7 @@ path	key2		{
 			AND     SRYYM          =   :SRYYM
 			AND     DLT_FLG        <>  '1'
 			AND     RECESYUBETU    <>  'YYYY'
-			ORDER   BY  TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+			ORDER   BY  TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA
 		;
 	};
 };
@@ -91,7 +93,7 @@ path	key3		{
 			AND     PTID           =   :PTID
 			AND     SRYYM          =   :SRYYM
 			AND     TEN_KBN        =   :TEN_KBN
-			ORDER   BY  TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+			ORDER   BY  TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA
 		;
 	};
 };
@@ -157,6 +159,7 @@ path	key7		{
 			AND     RECESYUBETU    =    :RECESYUBETU
 			AND     HKNJANUM       =    :HKNJANUM
 			AND     HOJOKBN        =    :HOJOKBN
+			AND     KOHID          =    :KOHID
 			AND     DLT_FLG        <>   '1'
 			ORDER BY SRYKA,TEN_KBN
 		;
@@ -176,7 +179,7 @@ path	key8		{
 			AND     DLT_FLG        <>   '1'
 			AND     RECESYUBETU    <>   '8888'
 			AND     RECESYUBETU    <>   'YYYY'
-			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA
 		;
 	};
 };
@@ -192,7 +195,7 @@ path	key9		{
 			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
 			AND     PTID           =    :PTID
 			AND     DLT_FLG        <>   '1'
-			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+			ORDER BY TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA
 		;
 	};
 };
@@ -212,7 +215,7 @@ path	key10		{
 			AND     a.PTID         =   b.PTID
 			AND     PTNUM          >=  :XXPTNUM
 			AND     DLT_FLG        <>   '1'
-			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA
 		;
 	};
 };
@@ -232,7 +235,7 @@ path	key11		{
 			AND     a.PTID         =   b.PTID
 			AND     DLT_FLG        <>   '1'
 			AND     SRYKA_INPUT    =   ''
-			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,RECESYUBETU,SRYKA
+			ORDER   BY  PTNUM,TEN_KBN,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA
 		;
 	};
 };
@@ -263,6 +266,7 @@ path	upd2	{
 			AND     TEISYUTUSAKI   =   :TEISYUTUSAKI
 			AND     HKNJANUM       =   :HKNJANUM
 			AND     HOJOKBN        =   :HOJOKBN
+			AND     KOHID          =   :KOHID
 			AND     RECESYUBETU    =   :RECESYUBETU
 		;
 	};

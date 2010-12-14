@@ -42,6 +42,9 @@
       *                                     （診療区分６４：病理診断対応）
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -409,6 +412,7 @@
                MOVE    RECE64-RECESYUBETU  TO  RECE642-RECESYUBETU
                MOVE    RECE64-HKNJANUM     TO  RECE642-HKNJANUM
                MOVE    RECE64-HOJOKBN      TO  RECE642-HOJOKBN
+               MOVE    RECE64-KOHID        TO  RECE642-KOHID
                MOVE    RECE64-TEKSTYMD     TO  RECE642-TEKSTYMD
                MOVE    RECE64-KOHBUNRI     TO  RECE642-KOHBUNRI
                MOVE    RECE64-SRYKBN       TO  RECE642-SRYKBN

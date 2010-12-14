@@ -38,6 +38,9 @@
       *                                     ファイル出力先のデフォルト値
       *                                     の設定も可能にする 
       *  04.05.02    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -2567,6 +2570,8 @@
                                                =   RECE10-HKNJANUM     )
                            AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
                                                =   RECE10-HOJOKBN-KEY  )
+                           AND   ( HENREI-B-S-KOHID-KEY    (IDZZ)
+                                               =   RECE10-KOHID-KEY    )
                            AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
                                                =   RECE10-TEKSTYMD     )
                                MOVE    1   TO  FLG-HENREI-B-SEIKYU-CHK
@@ -3366,6 +3371,8 @@
                MOVE    ONRECE-B-HOJOKBN
                                        TO  SPA-NAI-T06-RECE10-HOJOKBN
                                                                (IDX)
+               MOVE    ONRECE-B-KOHID  TO  SPA-NAI-T06-RECE10-KOHID-KEY
+                                                               (IDX)
                MOVE    ONRECE-B-TEKSTYMD
                                        TO  SPA-NAI-T06-RECE10-TEKSTYMD
                                                                (IDX)
@@ -3784,6 +3791,8 @@
                                            TO  ONRECE-B-RECEKA
                MOVE    SPA-NAI-T06-RECE10-HOJOKBN     (IDX)
                                            TO  ONRECE-B-HOJOKBN
+               MOVE    SPA-NAI-T06-RECE10-KOHID-KEY   (IDX)
+                                           TO  ONRECE-B-KOHID
                MOVE    SPA-NAI-T06-RECE10-TEKSTYMD    (IDX)
                                            TO  ONRECE-B-TEKSTYMD
                MOVE    SPA-GMN-T06-R-TPTNUM           (IDX)

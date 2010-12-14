@@ -56,6 +56,9 @@
       *                                     関係コメント存在フラグ追加
       *  04.05.03    NACL-藤原    10/01/13  治験対応
       *                                     剤区分の追加
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -201,6 +204,7 @@
                05  OLD-RECE64-RECESYUBETU PIC  9(04).
                05  OLD-RECE64-HKNJANUM    PIC  X(08).
                05  OLD-RECE64-HOJOKBN     PIC  X(01).
+               05  OLD-RECE64-KOHID       PIC  9(10).
                05  OLD-RECE64-TEKSTYMD    PIC  X(08). 
       *
       *****************************************************************
@@ -326,7 +330,7 @@
            OPEN    I-O                 RECE641-FILE
       *
            PERFORM 900-RECE64-READ-SEC
-           MOVE    RECE64-KEY(1:43)    TO  OLD-KEY
+           MOVE    RECE64-KEY1         TO  OLD-KEY
            MOVE  9                     TO  WRK-KOHBUNRI
            MOVE  ZERO                  TO  WRK-HKNCOMBI
            .
@@ -348,16 +352,17 @@
            MOVE    RECE64-RECESYUBETU  TO  RECE641-RECESYUBETU
            MOVE    RECE64-HKNJANUM     TO  RECE641-HKNJANUM
            MOVE    RECE64-HOJOKBN      TO  RECE641-HOJOKBN
+           MOVE    RECE64-KOHID        TO  RECE641-KOHID
            MOVE    RECE64-TEKSTYMD     TO  RECE641-TEKSTYMD
            IF      RECE64-SRYKBN       =   "33"
                PERFORM   210-KBNNUM-SET-SEC
            END-IF
            MOVE    RECE64-ZAINUM       TO  RECE641-ZAINUM
            MOVE    RECE64-KOHBUNRI     TO  RECE641-KOHBUNRI
-           IF      RECE64-KEY(1:43)    NOT =   OLD-KEY
+           IF      RECE64-KEY1     NOT =   OLD-KEY
                 MOVE  9                TO  WRK-KOHBUNRI
                 MOVE  ZERO             TO  WRK-HKNCOMBI
-                MOVE  RECE64-KEY(1:43) TO  OLD-KEY
+                MOVE  RECE64-KEY1      TO  OLD-KEY
            END-IF
            IF      RECE64-KOHBUNRI     <   WRK-KOHBUNRI
                 MOVE   RECE64-KOHBUNRI TO  WRK-KOHBUNRI

@@ -483,6 +483,9 @@
       *  04.06.01    NACL-Æ£¸¶    10/06/23  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
       *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
       *  04.06.02    NACL-ÌçÏÆ    10/08/16  Æþ±¡¤ÎÅÀÅ©ÆþÎÏ²þÁ±ÂÐ±þ
+      *  04.06.03    NACL-ÌçÏÆ    10/12/13  ÊÝ¸±ÊÌÀÁµá¥Á¥§¥Ã¥¯É½¤ÎËÜÂÎ¼è¹þ¤ß
+      *  04.06.04    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
+      *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -683,6 +686,8 @@
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
            03  FLG-KOUREI-KBN                          PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
+           03  FLG-WRKFILE-CLEAR                       PIC 9(01).
+           03  FLG-WRKFILE-RECE                        PIC 9(01).
            03  FLG-SAIGAI-TAISYO                       PIC 9(01).
            03  FLG-CHIIKI                              PIC 9(01).
       *
@@ -879,6 +884,9 @@
            03  FLG-KOH                                 PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
            03  WRK-FTNKEI-OKIKAE                       PIC 9(09).
+           03  WRK-FTNKEI-SAGAKU                       PIC S9(09).
+           03  WRK-FTNKEI-SAGAKU2                      PIC S9(09).
+           03  WRK-FTNKEI-SAGAKU9                      PIC S9(09).
            03  WRK-FTNKEI-FTN                          PIC 9(09).
            03  WRK-FTNKEI2                             PIC 9(09).
            03  WRK-FTNKEI3                             PIC 9(09).
@@ -903,6 +911,21 @@
            03  WRK-KOHTANINF-AREA.
              05  WRK-KOHTANINF             OCCURS  5.
                  07  WRK-KOHTAN-SHOKUJIRYOYOHI         PIC 9(09).
+      *
+       01  WRK-SKY-AREA.
+           03  WRK-SKY-KEISAN                          PIC 9(09).
+           03  WRK-SKY-KEISAN2                         PIC 9(09).
+           03  WRK-SKY-HOKENJA                         PIC 9(09).
+           03  WRK-SKY-ICHIBUFTN                       PIC 9(09).
+           03  WRK-SKY-ZENGAKU                         PIC 9(09).
+           03  WRK-SKY-FTNMONEY                        PIC 9(09).
+           03  WRK-SKY-ZENGAKU2                        PIC 9(09).
+           03  WRK-SKY-FTNMONEY2                       PIC 9(09).
+           03  WRK-SKY-SKJ-ICHIBUFTN                   PIC 9(09).
+           03  WRK-SKY-SKJ-ZENGAKU                     PIC 9(09).
+           03  WRK-SKY-SKJ-FTNMONEY                    PIC 9(09).
+           03  WRK-SKY-SKJ-ZENGAKU2                    PIC 9(09).
+           03  WRK-SKY-SKJ-FTNMONEY2                   PIC 9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -2520,6 +2543,7 @@
            END-IF
       *
            INITIALIZE          WRK-AREA-SAIKEI
+           INITIALIZE          WRK-SKY-AREA
       *
            INITIALIZE          WRK-DAY-TABLE
                                WRK-MIJ-TABLE
@@ -2742,6 +2766,9 @@
            END-IF
       *
            PERFORM     2112-PTTOKKI-HENSYU-SEC
+      *
+      *    ÀÁµá³Û¾ðÊóÊÔ½¸
+           PERFORM     2116-SKY-HENSYU-SEC
       *
            PERFORM     RECE62-REWRITE-SEC
            .
@@ -3162,18 +3189,7 @@
       *****************************************************************
        21011-RECE64-TENSOU-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    ACCT-SRYKBN          TO      RECE64-SRYKBN
            IF      ACCT-SRYKBN = "90" OR "92"
@@ -3302,18 +3318,7 @@
       *****************************************************************
        210121-RECE65-TENSOU-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE65-REC
-           INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            MOVE    SRY-ZAINUM           TO      RECE65-ZAINUM
            MOVE    ZERO                 TO      RECE65-ZAIREN
@@ -7457,18 +7462,7 @@
       *****************************************************************
        210205-RECE64-TENSOU2-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            IF      NACCT-ZAISKBKBN      =       "1"
@@ -7595,18 +7589,7 @@
       *****************************************************************
        2102061-RECE65-TENSOU2-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE65-REC
-           INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
       *
            EVALUATE  NACCT-ZAISKBKBN
@@ -7903,18 +7886,7 @@
       *****************************************************************
        210207-RECE64-TENSOU2-SEN-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            IF      NACCT-ZAISKBKBN      =       "1"
@@ -8025,18 +7997,7 @@
       *****************************************************************
        2102081-RECE65-TENSOU2-SEN-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE65-REC
-           INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            COMPUTE WRK-ZAINUM   =  99999800  +  WRK-ZAINUM-CNT
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
@@ -8468,18 +8429,7 @@
       *****************************************************************
        210210-RECE64-TENSOU2-GAI-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            IF      WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =   1 OR 3
               MOVE    "90"              TO      RECE64-SRYKBN
@@ -8591,18 +8541,7 @@
       *****************************************************************
        2102111-RECE65-TENSOU2-GAI-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE65-REC
-           INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            COMPUTE WRK-ZAINUM    =  99999900  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
@@ -8876,18 +8815,7 @@
       *****************************************************************
        210213-RECE64-TENSOU2-SKJ-SEC               SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    NACCT-SRYKBN         TO      RECE64-SRYKBN
            MOVE    NACCT-ZAISKBKBN      TO      RECE64-ZAISKBKBN
@@ -8993,19 +8921,7 @@
              END-EVALUATE
            END-IF
       *
-      *
-           MOVE    SPACE                TO  RECE64-REC
-           INITIALIZE                       RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO  RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO  RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO  RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO  RECE64-PTID
-           MOVE    RECE62-RECEKA        TO  RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO  RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO  RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO  RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO  RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO  RECE64-KOHBUNRI
            MOVE    "97"                 TO  RECE64-SRYKBN
            MOVE    "4"                  TO  RECE64-ZAISKBKBN
@@ -9051,18 +8967,7 @@
       *****************************************************************
        210219-RECE64-TENSOU2-SKJ200610-KAN-SEC               SECTION.
       *
-           MOVE    SPACE                TO  RECE64-REC
-           INITIALIZE                       RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO  RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO  RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO  RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO  RECE64-PTID
-           MOVE    RECE62-RECEKA        TO  RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO  RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO  RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO  RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO  RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO  RECE64-KOHBUNRI
            MOVE    "97"                 TO  RECE64-SRYKBN
            MOVE    "4"                  TO  RECE64-ZAISKBKBN
@@ -9103,18 +9008,7 @@
       *****************************************************************
        210221-RECE64-TENSOU2-SKJ200610FTN-SEC               SECTION.
       *
-           MOVE    SPACE                TO  RECE64-REC
-           INITIALIZE                       RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO  RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO  RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO  RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO  RECE64-PTID
-           MOVE    RECE62-RECEKA        TO  RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO  RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO  RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO  RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO  RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO  RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO  RECE64-KOHBUNRI
            MOVE    "97"                 TO  RECE64-SRYKBN
            MOVE    "4"                  TO  RECE64-ZAISKBKBN
@@ -9207,18 +9101,7 @@
       *****************************************************************
        2102141-RECE65-TENSOU2-SKJ-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE65-REC
-           INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            COMPUTE WRK-ZAINUM    =  99999920  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO      RECE65-ZAINUM
@@ -9309,18 +9192,7 @@
       *****************************************************************
        210214-RECE65-HENSYU2-SKJ200604-SEC               SECTION.
       *
-           MOVE    SPACE                TO   RECE65-REC
-           INITIALIZE                        RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO   RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO   RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO   RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO   RECE65-PTID
-           MOVE    RECE62-RECEKA        TO   RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO   RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO   RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO   RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO   RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
            IF   WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
                 COMPUTE WRK-ZAINUM  =  99996100  +  SYUKEI-IDX3
@@ -9451,18 +9323,7 @@
       *****************************************************************
        210220-RECE65-HENSYU2-SKJ200610-KAN-SEC               SECTION.
       *
-           MOVE    SPACE                TO   RECE65-REC
-           INITIALIZE                        RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO   RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO   RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO   RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO   RECE65-PTID
-           MOVE    RECE62-RECEKA        TO   RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO   RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO   RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO   RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO   RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
            COMPUTE WRK-ZAINUM   =  99996300  +  SYUKEI-IDX3
            MOVE    WRK-ZAINUM           TO   RECE65-ZAINUM
@@ -9537,18 +9398,7 @@
       *****************************************************************
        210222-RECE65-HENSYU2-SKJ200610FTN-SEC               SECTION.
       *
-           MOVE    SPACE                TO   RECE65-REC
-           INITIALIZE                        RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO   RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO   RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO   RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO   RECE65-PTID
-           MOVE    RECE62-RECEKA        TO   RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO   RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO   RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO   RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO   RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
            EVALUATE  FLG-SKJ200610FTN
              WHEN        1
@@ -9718,18 +9568,7 @@
       *****************************************************************
        210216-RECE64-TENSOU2-MIJ-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            IF      FLG-MIJISI2   =   1
               MOVE    "90"              TO      RECE64-SRYKBN
@@ -9850,18 +9689,7 @@
       *****************************************************************
        210217-RECE65-TENSOU2-MIJ-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE65-REC
-           INITIALIZE                           RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE65-PTID
-           MOVE    RECE62-RECEKA        TO      RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE65-KOHBUNRI
            IF      FLG-MIJISI2   =   1
              COMPUTE WRK-ZAINUM    =  99999960  +  SYUKEI-IDX3
@@ -10262,18 +10090,7 @@
       *****************************************************************
        21032-RECE64-TENSOU3-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    "33"                 TO      RECE64-SRYKBN
            MOVE    SPACE                TO      RECE64-ZAISKBKBN
@@ -10348,18 +10165,7 @@
       *****************************************************************
        21032X-RECE64-TENSOU3-SEC                SECTION.
       *
-           MOVE    SPACE                TO      RECE64-REC
-           INITIALIZE                           RECE64-REC
-           MOVE    RECE62-HOSPNUM       TO      RECE64-HOSPNUM
-           MOVE    RECE62-SRYYM         TO      RECE64-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO      RECE64-NYUGAIKBN
-           MOVE    RECE62-PTID          TO      RECE64-PTID
-           MOVE    RECE62-RECEKA        TO      RECE64-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO      RECE64-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO      RECE64-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO      RECE64-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO      RECE64-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO      RECE64-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    ZERO                 TO      RECE64-KOHBUNRI
            MOVE    "33"                 TO      RECE64-SRYKBN
            MOVE    SPACE                TO      RECE64-ZAISKBKBN
@@ -10420,18 +10226,7 @@
                   UNTIL     (IDX2      >   IDX5)    OR
                             (WRK-ORCSTEN-SRYCD(IDX2)  =   SPACE)
       *
-              MOVE    SPACE                TO   RECE65-REC
-              INITIALIZE                        RECE65-REC
-              MOVE    RECE62-HOSPNUM       TO   RECE65-HOSPNUM
-              MOVE    RECE62-SRYYM         TO   RECE65-SRYYM
-              MOVE    RECE62-NYUGAIKBN     TO   RECE65-NYUGAIKBN
-              MOVE    RECE62-PTID          TO   RECE65-PTID
-              MOVE    RECE62-RECEKA        TO   RECE65-RECEKA
-              MOVE    RECE62-TEISYUTUSAKI  TO   RECE65-TEISYUTUSAKI
-              MOVE    RECE62-RECESYUBETU   TO   RECE65-RECESYUBETU
-              MOVE    RECE62-HKNJANUM-KEY  TO   RECE65-HKNJANUM
-              MOVE    RECE62-HOJOKBN-KEY   TO   RECE65-HOJOKBN
-              MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
+             PERFORM 500-RECE65-KEY-HENSYU-SEC
               MOVE    ZERO                 TO   RECE65-KOHBUNRI
               IF    FLG-SIKIBETU  =  1
                 COMPUTE WRK-KEISAN    =  (CNT-ZAIREN *  31) -  31
@@ -10748,18 +10543,7 @@
       *****************************************************************
        21033X-RECE65-TENSOU3-SEC                SECTION.
       *
-           MOVE    SPACE                TO   RECE65-REC
-           INITIALIZE                        RECE65-REC
-           MOVE    RECE62-HOSPNUM       TO   RECE65-HOSPNUM
-           MOVE    RECE62-SRYYM         TO   RECE65-SRYYM
-           MOVE    RECE62-NYUGAIKBN     TO   RECE65-NYUGAIKBN
-           MOVE    RECE62-PTID          TO   RECE65-PTID
-           MOVE    RECE62-RECEKA        TO   RECE65-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI  TO   RECE65-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU   TO   RECE65-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY  TO   RECE65-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY   TO   RECE65-HOJOKBN
-           MOVE    RECE62-TEKSTYMD      TO   RECE65-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    ZERO                 TO   RECE65-KOHBUNRI
            IF    FLG-SIKIBETU  =  3
              COMPUTE WRK-KEISAN    =  (CNT-ZAIREN *  31) -  31
@@ -11013,6 +10797,8 @@
       *
            MOVE    ZERO                 TO      FLG-KOUREI-KBN
       *
+           MOVE    ZERO                 TO      FLG-WRKFILE-CLEAR
+      *
            IF  (RECE62-NYUINRYOFLG   =   "1"     )
            AND (RECE62-KOUREI        =   "1"     )
            AND (RECE62-SRYYM        >=   "200904")
@@ -11116,8 +10902,8 @@
       *
            IF    RECE62-KOUREI    =    "1"  OR  "2"
               PERFORM      21041-KOREISYA-KOHI-SEC
-              PERFORM      2104C-ZENKOKUKOHI-NISYU-CHECK-SEC
            END-IF
+           PERFORM         2104C-ZENKOKUKOHI-NISYU-CHECK-SEC
            IF  ( RECE62-KOUREI    =    "1"  OR  "2"    )
            OR  ( FLG-TOKU75       =     1  OR  2  OR 3 )
               PERFORM      21042-KOREISYA-CHECK-SEC
@@ -11259,6 +11045,8 @@
            MOVE    "tbl_syunou"         TO      MCP-TABLE
            MOVE    "key17"              TO      MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+      *
+           PERFORM         2104H-WRKFILE-CLEAR-SEC
       *
       *    °ìÉôÉéÃ´¶âºÆ·Ç¤Î·×»»½èÍý
       *
@@ -11926,6 +11714,9 @@
       *****************************************************************
        21044-RECE62-FTN-HENSYU-SEC               SECTION.
       *
+      *    ÀÁµá³Û¼ýÇ¼ÊÔ½¸
+           PERFORM   210448-SKY-SYUNOU-HENSYU-SEC
+      *
       *    ¼ýÇ¼¤è¤êÁíÅÀ¿ô¤ò½¸·×
            ADD       SYU-TOTAL-HKNTEN   TO   RECE62-RJNGAIFTN
       *
@@ -11977,6 +11768,22 @@
       *         Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²
                 IF    RECE62-SENIN-TUUSAI     =    "1"
                    ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)
+                END-IF
+                IF  (IDZ                 =     1    )
+                AND (RECE62-SRYYM       >=  "201101")
+                AND (SYU-SYUHKNNUM   NOT =   SPACE  )
+                  IF    RECE62-SENIN-TUUSAI     =    "1"
+                    CONTINUE
+                  ELSE
+                    MOVE    1    TO   FLG-WRKFILE-CLEAR
+                    IF  ((RECE62-AGE         >=   70  ) OR
+                         (RECE62-HKNNUM       =  "039"))
+                    AND ( RECE62-YOBIETC(8)   =  ZERO  )
+                      PERFORM   210442-HOKEN-FUTAN-HENSYU-SEC
+                    ELSE
+                      PERFORM   210447-HOKEN-FUTAN-HENSYU2-SEC
+                    END-IF
+                  END-IF
                 END-IF
              END-IF
            ELSE
@@ -12187,6 +11994,26 @@
            MOVE     ZERO    TO   FLG-KEISAN2
            MOVE     ZERO    TO   FLG-KEISAN3
       *
+           MOVE     ZERO    TO   FLG-WRKFILE-RECE
+           IF   FLG-WRKFILE-CLEAR  =  1
+             IF   SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
+               IF ((RECE62-KOHNUM(1) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(1) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(1)  = RECE62-KOHIDHC(IDX1 1) ))
+               OR ((RECE62-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(2) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(2)  = RECE62-KOHIDHC(IDX1 1) ))
+               OR ((RECE62-KOHNUM(3) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(3) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(3)  = RECE62-KOHIDHC(IDX1 1) ))
+               OR ((RECE62-KOHNUM(4) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(4) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(4)  = RECE62-KOHIDHC(IDX1 1) ))
+                  MOVE    1    TO   FLG-WRKFILE-RECE
+               END-IF
+             END-IF
+           END-IF
+      *
            COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                * 10
                                * RECE62-KYURATE
@@ -12284,7 +12111,12 @@
                     PERFORM   210442B-ICHIBUFTN-NISYU-HEN-SEC
                 ELSE
                  IF   FLG-ZENKOH-ARI  =   ZERO
-                      PERFORM 2104422-ICHIBUFTN-KOH-HEN1-SEC
+                   IF  FLG-WRKFILE-CLEAR  =  ZERO
+                   OR  FLG-WRKFILE-RECE   =   1
+                     PERFORM   2104422-ICHIBUFTN-KOH-HEN1-SEC
+                   ELSE
+                     ADD    WRK-FTNKEI   TO   RECE62-FTNMONEY(1)
+                   END-IF
                  ELSE
                    IF  ((SYU-KOH-HKNNUM(1)     NOT = "027") AND
                         (SYU-KOH-HKNNUM(1)(1:1)    = "0"  ))
@@ -12339,7 +12171,12 @@
                       ELSE
                         MOVE     1    TO   FLG-KEISAN
                       END-IF
-                      PERFORM 2104422-ICHIBUFTN-KOH-HEN1-SEC
+                      IF  FLG-WRKFILE-CLEAR  =  ZERO
+                      OR  FLG-WRKFILE-RECE   =   1
+                        PERFORM   2104422-ICHIBUFTN-KOH-HEN1-SEC
+                      ELSE
+                        ADD    WRK-FTNKEI   TO   RECE62-FTNMONEY(1)
+                      END-IF
                    END-IF
                  END-IF
                 END-IF
@@ -12364,6 +12201,26 @@
            MOVE     ZERO    TO   FLG-KEISAN
            MOVE     ZERO    TO   FLG-KEISAN2
            MOVE     ZERO    TO   FLG-KEISAN3
+      *
+           MOVE     ZERO    TO   FLG-WRKFILE-RECE
+           IF   FLG-WRKFILE-CLEAR  =  1
+             IF   SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
+               IF ((RECE62-KOHNUM(1) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(1) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(1)  = RECE62-KOHIDHC(IDX1 1) ))
+               OR ((RECE62-KOHNUM(2) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(2) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(2)  = RECE62-KOHIDHC(IDX1 1) ))
+               OR ((RECE62-KOHNUM(3) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(3) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(3)  = RECE62-KOHIDHC(IDX1 1) ))
+               OR ((RECE62-KOHNUM(4) = SYU-KOH-HKNNUM(1)      ) AND
+                   (RECE62-KOHNUM(4) = RECE62-KOHNUMHC(IDX1 1)) AND
+                   (RECE62-KOHID(4)  = RECE62-KOHIDHC(IDX1 1) ))
+                  MOVE    1    TO   FLG-WRKFILE-RECE
+               END-IF
+             END-IF
+           END-IF
       *
            COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
                                * 10
@@ -12490,8 +12347,13 @@
                     PERFORM   210442B-ICHIBUFTN-NISYU-HEN-SEC
                 ELSE
                  IF   FLG-ZENKOH-ARI    =   ZERO
-                     MOVE     4       TO   FLG-JYOGENKBN2
-                     PERFORM  2104424-ICHIBUFTN-KOH-HEN3-SEC
+                   IF  FLG-WRKFILE-CLEAR  =  ZERO
+                   OR  FLG-WRKFILE-RECE   =   1
+                     MOVE        4       TO   FLG-JYOGENKBN2
+                     PERFORM   2104424-ICHIBUFTN-KOH-HEN3-SEC
+                   ELSE
+                     ADD    WRK-FTNKEI   TO   RECE62-FTNMONEY(1)
+                   END-IF
                  ELSE
                    IF  ( SYU-KOH-HKNNUM(1)(1:1)    = "0" )
                    OR  ( SYU-KOH-HKNNUM(2)(1:1)    = "0" )
@@ -12534,7 +12396,11 @@
                            MOVE    2    TO   FLG-KEISAN2
                         END-IF
                      END-IF
-                     IF    SYU-KOHTAIYKZKBN    NOT =  "9"
+                     IF   (SYU-KOHTAIYKZKBN    NOT =  "9" )
+                     AND  (FLG-WRKFILE-CLEAR       =  ZERO)
+                        COMPUTE  WRK-FTNKEI-SAGAKU9 =
+                                 WRK-FTNKEI         -
+                                 WRK-FTNKEI-OKIKAE
                         MOVE   WRK-FTNKEI-OKIKAE   TO   WRK-FTNKEI
                      END-IF
                      PERFORM  2104429-TOKUSITU-HENSYU2-SEC
@@ -12545,8 +12411,13 @@
                      ELSE
                         MOVE     1    TO   FLG-KEISAN
                      END-IF
-                     MOVE     2       TO   FLG-JYOGENKBN
-                     PERFORM  2104424-ICHIBUFTN-KOH-HEN3-SEC
+                     IF  FLG-WRKFILE-CLEAR  =  ZERO
+                     OR  FLG-WRKFILE-RECE   =   1
+                       MOVE        2       TO   FLG-JYOGENKBN
+                       PERFORM   2104424-ICHIBUFTN-KOH-HEN3-SEC
+                     ELSE
+                       ADD    WRK-FTNKEI   TO   RECE62-FTNMONEY(1)
+                     END-IF
                    END-IF
                  END-IF
                 END-IF
@@ -12654,9 +12525,13 @@
                  IF  WRK-FTNKEI   >   FTN-KOH-YYY
                       ADD      FTN-KOH-YYY  TO  RECE62-FTNMONEY(1)
                                                 FTN-KOH-XXX
+                      MOVE     ZERO         TO  WRK-FTNKEI-SAGAKU
                  ELSE
                       ADD      WRK-FTNKEI   TO  RECE62-FTNMONEY(1)
                                                 FTN-KOH-XXX
+                      COMPUTE  WRK-FTNKEI-SAGAKU  =
+                               WRK-FTNKEI-SAGAKU  +
+                               WRK-FTNKEI-SAGAKU9
                  END-IF
                WHEN         2
                  IF  FTN-KOH-XX3  >   WRK-KINGAKU
@@ -12667,10 +12542,14 @@
                       ADD      FTN-KOH-YY3  TO  RECE62-FTNMONEY(1)
                                                 FTN-KOH-XX3
                                                 WRK-KOH-GAI
+                      MOVE     ZERO         TO  WRK-FTNKEI-SAGAKU2
                  ELSE
                       ADD      WRK-FTNKEI   TO  RECE62-FTNMONEY(1)
                                                 FTN-KOH-XX3
                                                 WRK-KOH-GAI
+                      COMPUTE  WRK-FTNKEI-SAGAKU2 =
+                               WRK-FTNKEI-SAGAKU2 +
+                               WRK-FTNKEI-SAGAKU9
                  END-IF
              END-EVALUATE
            END-IF
@@ -12705,6 +12584,7 @@
                 (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"   ) AND
                 (RECE62-SRYYM      >= "201010"                 ) AND
                 (IDZ                =  1                       ))
+           OR  ( FLG-WRKFILE-RECE   =  1                        )
                IF    RECE62-SRYYM   >=  "200610"
                    IF  FLG-TOKU75 = 1 OR 2
                      MOVE    22200   TO   WRK-KINGAKU
@@ -12860,6 +12740,7 @@
                 (SYU-KOH-HKNNUM(1)  = "141" OR "241"           ) AND
                 (IDZ                =  1                       ) AND
                 (RECE62-SRYYM      <= "200803"                 ))
+           OR  ( FLG-WRKFILE-RECE   =  1                        )
       *
             MOVE     ZERO    TO   FLG-KOHYONKAIME-NO
             IF  (WRK-PREFNUM        = "01"           )
@@ -14449,6 +14330,92 @@
       *
            .
        210446-FTNMONEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµá³Û¼ýÇ¼ÊÔ½¸
+      *****************************************************************
+       210448-SKY-SYUNOU-HENSYU-SEC               SECTION.
+      *
+           ADD   SYU-TOTAL-HKNTEN   TO   RECE62-SKYIRYO-TOTALTEN
+      *
+           ADD   SYU-HKNTEKMONEY    TO   RECE62-SKYIRYO-ICHIBUFTN
+           ADD   SYU-KOH-FTN        TO   RECE62-SKYIRYO-ICHIBUFTN
+      *
+           IF   SYU-SYUHKNNUM   NOT =  SPACE
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+                                       * (100 - RECE62-KYURATE)
+                                       /  100
+              ADD      WRK-SKY-KEISAN   TO   RECE62-SKYIRYO-HOKENJA
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-HOKENJA
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+                                       *  RECE62-KYURATE
+                                       /  100
+              COMPUTE  WRK-SKY-KEISAN  =   WRK-SKY-KEISAN +  5
+              COMPUTE  WRK-SKY-KEISAN  =   WRK-SKY-KEISAN / 10
+              COMPUTE  WRK-SKY-KEISAN  =   WRK-SKY-KEISAN * 10
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ICHIBUFTN
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ZENGAKU
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-HKNTEKMONEY
+                                       +  SYU-KOH-FTN
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-FTNMONEY
+           ELSE
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-TOTAL-HKNTEN
+                                       *  10
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-ZENGAKU2
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-HKNTEKMONEY
+                                       +  SYU-KOH-FTN
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-FTNMONEY2
+           END-IF
+      *
+      *****
+      *
+           ADD   SYU-RYOYOHI-SKJ    TO   RECE62-SKYSKJ-RYOYOHI
+           ADD   SYU-RYOYOHI-LIFE   TO   RECE62-SKYSKJ-RYOYOHI
+      *
+           ADD   SYU-SKYMONEY-SKJ   TO   RECE62-SKYSKJ-ICHIBUFTN
+           ADD   SYU-SKYMONEY-LIFE  TO   RECE62-SKYSKJ-ICHIBUFTN
+      *
+           IF   SYU-SYUHKNNUM   NOT =  SPACE
+              ADD      SYU-SYUSKJ-NISSU TO   RECE62-SKYSKJ-KAISU
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-SYUSKJ-RYOYOHI
+                                       -  SYU-SYUSKJ-FTN-RECE
+              ADD      WRK-SKY-KEISAN   TO   RECE62-SKYSKJ-HOKENJA
+      *
+              ADD      SYU-SYUSKJ-FTN-RECE
+                                        TO   WRK-SKY-SKJ-ICHIBUFTN
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-RYOYOHI-SKJ
+                                       +  SYU-RYOYOHI-LIFE
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-SKJ-ZENGAKU
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-SKYMONEY-SKJ
+                                       +  SYU-SKYMONEY-LIFE
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-SKJ-FTNMONEY
+           ELSE
+              ADD      SYU-KOH1SKJ-NISSU
+                                        TO   RECE62-SKYSKJ-KAISU
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-RYOYOHI-SKJ
+                                       +  SYU-RYOYOHI-LIFE
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-SKJ-ZENGAKU2
+      *
+              COMPUTE  WRK-SKY-KEISAN  =  SYU-SKYMONEY-SKJ
+                                       +  SYU-SKYMONEY-LIFE
+              ADD      WRK-SKY-KEISAN   TO   WRK-SKY-SKJ-FTNMONEY2
+           END-IF
+      *
+           .
+       210448-SKY-SYUNOU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -16241,6 +16208,12 @@
       *
            END-IF
       *
+           IF   (IDZ               =     1      )
+           AND  (RECE62-SRYYM     >=  "201101"  )
+           AND  (RECE62-KOUREI     =  "1" OR "2")
+             MOVE   RECE62-FTNMONEY(1)   TO   RECE62-FTNMONEY-SKY
+           END-IF
+      *
            IF   WK-GENGAKUKBN   =   ZERO
       *
             IF      RECE62-SRYYM      >=  "200210"
@@ -17433,13 +17406,13 @@
                 END-IF
              END-IF
       *
-      ***    IF   FLG-HOKENICHIBU-SYU  = ZERO
-      ***       IF   (IDZ               =     1      )
-      ***       AND  (RECE62-SRYYM     >=  "201101"  )
-      ***       AND  (RECE62-KOUREI     =  "1" OR "2")
-      ***         MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
-      ***       END-IF
-      ***    END-IF
+             IF   FLG-HOKENICHIBU-SYU  = ZERO
+                IF   (IDZ               =     1      )
+                AND  (RECE62-SRYYM     >=  "201101"  )
+                AND  (RECE62-KOUREI     =  "1" OR "2")
+                  MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
+                END-IF
+             END-IF
            END-IF
       *
            .
@@ -17518,13 +17491,13 @@
                 END-IF
              END-IF
       *
-      ***    IF   FLG-HOKENICHIBU-SYU  = ZERO
-      ***       IF   (IDZ               =     1      )
-      ***       AND  (RECE62-SRYYM     >=  "201101"  )
-      ***       AND  (RECE62-KOUREI     =  "1" OR "2")
-      ***         MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
-      ***       END-IF
-      ***    END-IF
+             IF   FLG-HOKENICHIBU-SYU  = ZERO
+                IF   (IDZ               =     1      )
+                AND  (RECE62-SRYYM     >=  "201101"  )
+                AND  (RECE62-KOUREI     =  "1" OR "2")
+                  MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
+                END-IF
+             END-IF
            END-IF
       *
            .
@@ -18632,6 +18605,33 @@
            EXIT.
       *
       *****************************************************************
+      *    ¥ï¡¼¥¯¥Õ¥¡¥¤¥ë¥¯¥ê¥¢
+      *****************************************************************
+       2104H-WRKFILE-CLEAR-SEC      SECTION.
+      *
+           IF  (IDZ                 =     1    )
+           AND (RECE62-SRYYM       >=  "201101")
+              MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
+              IF   FLG-WRKFILE-CLEAR   =   ZERO
+                COMPUTE  RECE62-FTNMONEY-SKY =
+                         RECE62-FTNMONEY-SKY +
+                          (WRK-FTNKEI-SAGAKU + WRK-FTNKEI-SAGAKU2)
+              END-IF
+              IF   FLG-WRKFILE-CLEAR   =   1
+                MOVE   ZERO              TO   RECE62-FTNMONEY(1)
+                MOVE   ZERO              TO   FLG-KEISAN-TOK1
+                MOVE   ZERO              TO   FLG-KEISAN-TOK2
+                MOVE   ZERO              TO   FTN-KOH-XXX
+                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU
+                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU2
+              END-IF
+           END-IF
+      *
+           .
+       2104H-WRKFILE-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    Êñ³çÅÀ¿ô¤Î¼£¸³¸ºÅÀÊ¬ÊÔ½¸
       *****************************************************************
        2113-GENTEN-HENSYU-SEC      SECTION.
@@ -18859,6 +18859,66 @@
       *
            .
        2115-SAIGAI-TAISYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµá³Û¾ðÊóÊÔ½¸
+      *****************************************************************
+       2116-SKY-HENSYU-SEC      SECTION.
+      *
+           IF   (IDZ             =    1    )
+           AND  (RECE62-SRYYM   >= "201101")
+      *
+      *      ¡ã°åÎÅÈñ¡ä
+      *
+      *      ¼çÊÝ¸±¤¬¤¢¤ëÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+             IF    (WRK-SKY-ZENGAKU      >  ZERO            )
+             AND   (WRK-SKY-ICHIBUFTN    >  WRK-SKY-FTNMONEY)
+               COMPUTE  WRK-SKY-KEISAN     =  WRK-SKY-ZENGAKU
+                                           -  WRK-SKY-HOKENJA
+               IF  (WRK-SKY-ICHIBUFTN    >  RECE62-FTNMONEY-SKY)
+               AND (WRK-SKY-KEISAN       >  RECE62-FTNMONEY-SKY)
+                 COMPUTE  WRK-SKY-KEISAN2  =  WRK-SKY-KEISAN
+                                           -  RECE62-FTNMONEY-SKY
+                 ADD  WRK-SKY-KEISAN2   TO  RECE62-SKYIRYO-HOKENJA
+               END-IF
+               IF   RECE62-FTNMONEY-SKY  >  WRK-SKY-FTNMONEY
+                 COMPUTE  WRK-SKY-KEISAN2  =  RECE62-FTNMONEY-SKY
+                                           -  WRK-SKY-FTNMONEY
+                 ADD  WRK-SKY-KEISAN2   TO  RECE62-SKYIRYO-KOHFTN
+               END-IF
+             END-IF
+      *      ¼çÊÝ¸±¤¬¤Ê¤¤ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+             IF    (WRK-SKY-ZENGAKU2     >  ZERO             )
+             AND   (WRK-SKY-ZENGAKU2     >  WRK-SKY-FTNMONEY2)
+               COMPUTE    WRK-SKY-KEISAN2  =  WRK-SKY-ZENGAKU2
+                                           -  WRK-SKY-FTNMONEY2
+               ADD    WRK-SKY-KEISAN2   TO  RECE62-SKYIRYO-KOHFTN
+             END-IF
+      *
+      *      ¡ã¿©»ö¡ä
+      *
+      *      ¼çÊÝ¸±¤¬¤¢¤ëÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+             IF    (WRK-SKY-SKJ-ZENGAKU      >  ZERO                )
+             AND   (WRK-SKY-SKJ-ICHIBUFTN    >  WRK-SKY-SKJ-FTNMONEY)
+                 COMPUTE  WRK-SKY-KEISAN2  =  WRK-SKY-SKJ-ICHIBUFTN
+                                           -  WRK-SKY-SKJ-FTNMONEY
+                 ADD  WRK-SKY-KEISAN2   TO  RECE62-SKYSKJ-KOHFTN
+             END-IF
+      *      ¼çÊÝ¸±¤¬¤Ê¤¤ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+             IF    (WRK-SKY-SKJ-ZENGAKU2     >  ZERO                 )
+             AND   (WRK-SKY-SKJ-ZENGAKU2     >  WRK-SKY-SKJ-FTNMONEY2)
+               COMPUTE    WRK-SKY-KEISAN2  =  WRK-SKY-SKJ-ZENGAKU2
+                                           -  WRK-SKY-SKJ-FTNMONEY2
+               ADD    WRK-SKY-KEISAN2   TO  RECE62-SKYSKJ-KOHFTN
+             END-IF
+           ELSE
+             INITIALIZE        RECE62-SKYIRYO-INF
+             INITIALIZE        RECE62-SKYSKJ-INF
+           END-IF
+      *
+           .
+       2116-SKY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -19743,6 +19803,50 @@
       *
            .
        300-KYUFUGAI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ë£Å£ÙÊÔ½¸½èÍý
+      *****************************************************************
+       500-RECE64-KEY-HENSYU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  RECE64-REC
+           INITIALIZE                      RECE64-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE64-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE64-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE64-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE64-PTID
+           MOVE    RECE62-RECEKA       TO  RECE64-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE64-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE64-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE64-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE64-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE64-KOHID
+           MOVE    RECE62-TEKSTYMD     TO  RECE64-TEKSTYMD
+           .
+       500-RECE64-KEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ë£Å£ÙÊÔ½¸½èÍý
+      *****************************************************************
+       500-RECE65-KEY-HENSYU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  RECE65-REC
+           INITIALIZE                      RECE65-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE65-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE65-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE65-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE65-PTID
+           MOVE    RECE62-RECEKA       TO  RECE65-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE65-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE65-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE65-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE65-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE65-KOHID
+           MOVE    RECE62-TEKSTYMD     TO  RECE65-TEKSTYMD
+           .
+       500-RECE65-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

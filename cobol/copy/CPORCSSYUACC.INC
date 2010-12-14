@@ -27,6 +27,9 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
       ************************************************************
       *
            03  LNK-SYUACC-IN.
@@ -60,6 +63,9 @@
       *            補助区分
                    07  LNK-SYUACC-IO-HOJOKBN
                                        PIC X(01).
+      *            公費ＩＤ（公費単独のみ）
+                   07  LNK-SYUACC-IO-KOHID
+                                       PIC 9(10).
       *            保険番号（主保険）
                    07  LNK-SYUACC-IO-HKNNUM
                                        PIC X(03).
@@ -93,6 +99,7 @@
                                        PIC 9(02).
       *
            03  LNK-SYUACC-IO2.
+      *      主科データと同じレイアウト
              05  LNK-SYUACC-IO2-OCC               OCCURS  100.
                07  LNK-IO2-SYU-KEY.
       *医療機関ＩＤ
@@ -111,6 +118,8 @@
                  09  LNK-IO2-SYU-HKNJANUM      PIC X(08).
       *補助区分
                  09  LNK-IO2-SYU-HOJOKBN       PIC X(01).
+      *公費ＩＤ（公費単独のみ）
+                 09  LNK-IO2-SYU-KOHID         PIC 9(10).
       *レセプト種別
                  09  LNK-IO2-SYU-RECESYUBETU   PIC X(04).
       *診療科

@@ -79,6 +79,9 @@
       *                                     リアルタイムプレビュー時の表示
       *  04.05.01    NACL-門脇    10/02/08  地方公費の全国公費併用分請求点
       *                                     集計対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2211,6 +2214,7 @@
                MOVE    RECE62X-HOJOKBN-KEY
                                        TO  KOHSKY-HOJOKBN-KEY
            END-IF
+           MOVE    RECE62X-KOHID-KEY   TO  KOHSKY-KOHID-KEY
            IF      RECE62X-TEKSTYMD    =   SPACE
                MOVE    ZERO                TO  KOHSKY-TEKSTYMD
            ELSE
@@ -4420,6 +4424,7 @@
            MOVE    RECE62-RECESYUBETU  TO  RECE631-RECESYUBETU
            MOVE    RECE62-HKNJANUM-KEY TO  RECE631-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE631-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE631-KOHID
            MOVE    RECE62-TEKSTYMD     TO  RECE631-TEKSTYMD
       *
            START   RECE631-FILE
@@ -4445,6 +4450,7 @@
                                          NOT =   RECE631-HKNJANUM     )
                OR     ( RECE62-HOJOKBN-KEY
                                          NOT =   RECE631-HOJOKBN      )
+               OR     ( RECE62-KOHID-KEY NOT =   RECE631-KOHID        )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE631-TEKSTYMD     )
       *    
       *        病名編集処理
@@ -5802,6 +5808,7 @@
            MOVE    RECE62-RECESYUBETU  TO  RECE661-RECESYUBETU
            MOVE    RECE62-HKNJANUM-KEY TO  RECE661-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE661-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE661-KOHID
            MOVE    RECE62-TEKSTYMD     TO  RECE661-TEKSTYMD
       *
            START   RECE661-FILE
@@ -5826,6 +5833,7 @@
                                          NOT =   RECE661-HKNJANUM    )
                OR     ( RECE62-HOJOKBN-KEY
                                          NOT =   RECE661-HOJOKBN     )
+               OR     ( RECE62-KOHID-KEY NOT =   RECE661-KOHID       )
                OR     ( RECE62-TEKSTYMD  NOT =   RECE661-TEKSTYMD    )
       *
       *        適用欄に剤の記載が必要なとき区切り線がまだ記載されていないとき
@@ -6483,6 +6491,7 @@
            MOVE    RECE62-RECESYUBETU  TO  RECE68-RECESYUBETU
            MOVE    RECE62-HKNJANUM-KEY TO  RECE68-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE68-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE68-KOHID
            MOVE    RECE62-TEKSTYMD     TO  RECE68-TEKSTYMD
       *
            START   RECE68-FILE
@@ -6507,6 +6516,7 @@
                                              NOT =  RECE68-HKNJANUM    )
                    OR    ( RECE62-HOJOKBN-KEY
                                              NOT =  RECE68-HOJOKBN     )
+                   OR    ( RECE62-KOHID-KEY  NOT =  RECE68-KOHID       )
                    OR    ( RECE62-TEKSTYMD   NOT =  RECE68-TEKSTYMD    )
       *
                IF      WRK-NYUINCHUKBN     =   ZERO
@@ -7802,6 +7812,7 @@
            ELSE
                MOVE    RECE62-HOJOKBN-KEY  TO  RECE10-HOJOKBN-KEY
            END-IF   
+           MOVE    RECE62-KOHID-KEY    TO  RECE10-KOHID-KEY
            IF      RECE62-TEKSTYMD     =   SPACE
                MOVE    ZERO            TO  RECE10-TEKSTYMD
            ELSE

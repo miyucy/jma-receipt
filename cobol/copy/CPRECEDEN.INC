@@ -27,6 +27,10 @@
       *                                     レセ電データを２５００に変更
       *
       *  03.00.01    NACL-藤原    06/06/15  症状詳記区分の追加
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
       ************************************************************
        01  RECEDEN-REC.
       *ＫＥＹ
@@ -49,6 +53,8 @@
                05  RECEDEN-HKNJANUM         PIC  X(08).
       *補助区分（船員保険のときのみ）
                05  RECEDEN-HOJOKBN-KEY      PIC  X(01).
+      *公費ＩＤ（公費単独のみ）
+               05  RECEDEN-KOHID-KEY        PIC  9(10).
       *適用開始年月日
                05  RECEDEN-TEKSTYMD         PIC  X(08).
       *レコード区分（１：レセ電、２：症状詳記）
@@ -57,6 +63,8 @@
                05  RECEDEN-RENNUM           PIC  9(04).
       *作成年月日
            03  RECEDEN-CREYMD               PIC  X(08).
+      *作成時間
+           03  RECEDEN-CREHMS               PIC  X(06).
       *合計点数
            03  RECEDEN-TOTALTEN             PIC  9(10).
       *症状詳記区分（レコード区分２のみ）

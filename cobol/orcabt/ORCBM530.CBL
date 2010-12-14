@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1023,6 +1025,7 @@
                                        TO  RECEDEN-RECESYUBETU
            MOVE    ONRECE-B-HKNJANUM   TO  RECEDEN-HKNJANUM 
            MOVE    ONRECE-B-HOJOKBN    TO  RECEDEN-HOJOKBN-KEY
+           MOVE    ONRECE-B-KOHID      TO  RECEDEN-KOHID-KEY
            MOVE    ONRECE-B-TEKSTYMD   TO  RECEDEN-TEKSTYMD
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
@@ -1097,6 +1100,7 @@
                                        TO  RECE10-RECESYUBETU
            MOVE    ONRECE-B-HKNJANUM   TO  RECE10-HKNJANUM 
            MOVE    ONRECE-B-HOJOKBN    TO  RECE10-HOJOKBN-KEY
+           MOVE    ONRECE-B-KOHID      TO  RECE10-KOHID-KEY
            MOVE    ONRECE-B-TEKSTYMD   TO  RECE10-TEKSTYMD
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

@@ -20,6 +20,8 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
       ************************************************************
       *01  HENREI-BODY-REC.
            03  HENREI-B-HOSPNUM    PIC 9(2).
@@ -72,6 +74,7 @@
                    07  HENREI-B-S-RECESYUBETU  PIC X(04).
                    07  HENREI-B-S-HKNJANUM     PIC X(08).
                    07  HENREI-B-S-HOJOKBN-KEY  PIC X(01).
+                   07  HENREI-B-S-KOHID-KEY    PIC 9(10).
                    07  HENREI-B-S-TEKSTYMD     PIC X(08).
       *
                    07  HENREI-B-S-KIGO         PIC X(40).

@@ -315,6 +315,9 @@
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
       *  04.06.03    NACL-藤原    10/11/20  日付情報の記録を行う
+      *  04.06.04    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6910,7 +6913,6 @@
                    PERFORM 50011-KEY-HENSYU-SEC
                    MOVE    "2"                 TO  RECEDEN-RECKBN
                    MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                   MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                    MOVE    RECE62-2006-TEKIYOU-COMMENT1 (IDXX)
                                                TO  RECEDEN-RECEDATA
       *
@@ -6925,26 +6927,42 @@
            PERFORM 20081-OPECOM-HEN-SEC
       *
       *    保険履歴情報
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       WRK-RIREKI-MAX  
       *
-               ADD     1                   TO  WRK-COM-RENNUM
+      *    公費単独以外、精神入院単独、心身喪失単独は保険履歴の記載をしない
+           IF    ( RECE62-HKNNUM       =   SPACE )
+           AND   ( RECE62-KOHNUM (1)
+                                   NOT =   SPACE )
+           AND   ( RECE62-KOHNUM (2)
+                                   NOT =   SPACE )
+               CONTINUE
+           ELSE
+               IF    ( RECE62-HKNNUM       =   SPACE             )
+               AND   ( RECE62-KOHNUM (1)   =   "020"   OR  "030" )
+               AND   ( RECE62-KOHNUM (2)   =   SPACE             )
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       WRK-RIREKI-MAX  
+      *
+                       ADD     1                   TO  WRK-COM-RENNUM
       *          
-      *        キー編集処理
-               PERFORM 50011-KEY-HENSYU-SEC
-               MOVE    "2"                 TO  RECEDEN-RECKBN
-               MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-               MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
-               INSPECT WRK-HKN-RIREKI-TBL  (IDXX)  REPLACING   ALL "  "
+      *                キー編集処理
+                       PERFORM 50011-KEY-HENSYU-SEC
+                       MOVE    "2"                 TO  RECEDEN-RECKBN
+                       MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
+                       INSPECT WRK-HKN-RIREKI-TBL  (IDXX)
+                                                   REPLACING   ALL "  "
                                                                BY  "　"
-               MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
-                                           TO  RECEDEN-RECEDATA
+                       MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
+                                                   TO  RECEDEN-RECEDATA
       *
-               PERFORM 50012-DBINSERT-SEC
+                       PERFORM 50012-DBINSERT-SEC
       *
-      *        症状詳記（コメント）編集処理
-               PERFORM 20099-COMMENT-HENSYU-SEC
-           END-PERFORM
+      *                症状詳記（コメント）編集処理
+                       PERFORM 20099-COMMENT-HENSYU-SEC
+                   END-PERFORM
+               END-IF
+           END-IF
            .
        2008-COMMENT-HEN-01-EXT.
            EXIT.
@@ -7087,7 +7105,6 @@
            PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            INSPECT WRK-OPECOM-HEN      REPLACING   ALL "  "
                                                    BY  "　"
            MOVE    WRK-OPECOM-HEN      TO  RECEDEN-RECEDATA
@@ -7121,7 +7138,6 @@
                    PERFORM 50011-KEY-HENSYU-SEC
                    MOVE    "2"                 TO  RECEDEN-RECKBN
                    MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                   MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                    MOVE    RECE62-2006-TEKIYOU-COMMENT2 (IDXX)
                                                TO  RECEDEN-RECEDATA
       *
@@ -7258,7 +7274,6 @@
                        PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                       MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
                        MOVE    "99"                TO  RECEDEN-SJKBN
       *
@@ -7333,7 +7348,6 @@
                        PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                       MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT1 (IDW)  TO  RECEDEN-RECEDATA
                        MOVE    RECECOM-SJKBN       TO  WRK-SJKBN-X
                        MOVE    WRK-SJKBN           TO  RECEDEN-SJKBN
@@ -7690,7 +7704,6 @@
                MOVE    "9"                 TO  RECEDEN-RECKBN
            END-IF
            MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            IF      FLG-TOTALTEN        =   1
                MOVE    SUM-TOTALTEN        TO  RECEDEN-TOTALTEN
            END-IF
@@ -7747,6 +7760,7 @@
            ELSE
                MOVE    RECE62-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
            END-IF   
+           MOVE    RECE62-KOHID-KEY    TO  RECEDEN-KOHID-KEY
            IF      RECE62-TEKSTYMD     =   SPACE
                MOVE    ZERO            TO  RECEDEN-TEKSTYMD
            ELSE
@@ -7760,6 +7774,10 @@
       *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        50012-DBINSERT-SEC          SECTION.
+      *
+           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
+      *****MOVE    WRK-PARA-CREHMS (1:6)
+      *****                            TO  RECEDEN-CREHMS
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC

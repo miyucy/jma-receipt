@@ -22,6 +22,9 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-藤原    09/03/12  フラグ、データエリア追加
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       ************************************************************
        01  KOHSKY-REC.
            03  KOHSKY-KEY.
@@ -42,7 +45,9 @@
       *保険者番号        
                05  KOHSKY-HKNJANUM-KEY    PIC  X(08).
       *補助区分（船員保険のときのみ）
-               05  KOHSKY-HOJOKBN-KEY      PIC  X(01).
+               05  KOHSKY-HOJOKBN-KEY     PIC  X(01).
+      *公費ＩＤ（公費単独のみ）
+               05  KOHSKY-KOHID-KEY       PIC  9(10).
       *適用開始年月日
                05  KOHSKY-TEKSTYMD        PIC  X(08). 
       *患者番号

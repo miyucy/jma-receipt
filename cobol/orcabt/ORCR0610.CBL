@@ -138,6 +138,9 @@
       *                                     掌をエラーとする
       *  04.05.02    NACL-藤原    10/04/13  愛知県対応
       *                                     生保と特定疾患９１の記載順 
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2035,6 +2038,7 @@
            IF      COMB-HKNNUM         =   SPACE
                IF      COMB-KOH1HKNNUM     =   "020"   OR  "030"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+                   MOVE    COMB-KOH1ID         TO  WRK-RECE61-KOH-KOHID
                END-IF
            END-IF
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE61-HONKZKKBN

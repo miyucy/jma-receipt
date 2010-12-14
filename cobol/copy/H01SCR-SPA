@@ -41,6 +41,9 @@
       *  04.03.03    NACL-Æ£¸¶    08/06/18  ¸øÈñÀÁµáÊ¬¤ÎÀÁµáÇ¯·îÅù¤ÎÄÉ²Ã
       *
       *  04.04.01    NACL-Æ£¸¶    09/12/10  ÊÖÌáÂÐ±þ
+      *
+      *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
+      *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
       *****************************************************************
        01  SPA-H01FREE.
          02  SPA-H01FREE-AREA.
@@ -163,6 +166,8 @@
                                                PIC  X(04).
                        09  SPA-RECE10-HKNJANUM PIC  X(08).
                        09  SPA-RECE10-HOJOKBN  PIC  X(01).
+                       09  SPA-RECE10-KOHID-KEY
+                                               PIC  9(10).
                        09  SPA-RECE10-TEKSTYMD PIC  X(08).
                    07  SPA-RECE10-HKNNUM       PIC  X(03).
                    07  SPA-RECE10-KIGO         PIC  X(80).
@@ -239,6 +244,7 @@
                        09  SPA-H02NAI-TS-HKNJANUM  PIC X(08).
                        09  SPA-H02NAI-TS-HOJOKBN-KEY
                                                    PIC X(01).
+                       09  SPA-H02NAI-TS-KOHID-KEY PIC 9(10).
                        09  SPA-H02NAI-TS-TEKSTYMD  PIC X(08).
       *
       *£È£¹£¹²èÌÌ
@@ -286,5 +292,7 @@
                        09  SPA-H99NAI-RECE10-HKNJANUM
                                                      PIC X(08).
                        09  SPA-H99NAI-RECE10-HOJOKBN PIC X(01).
+                       09  SPA-H99NAI-RECE10-KOHID-KEY
+                                                     PIC  9(10).
                        09  SPA-H99NAI-RECE10-TEKSTYMD
                                                      PIC X(08).

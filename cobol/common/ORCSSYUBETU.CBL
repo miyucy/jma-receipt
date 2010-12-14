@@ -90,6 +90,8 @@
       *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
       *                                     平成２２年４月分以降の政府管
       *                                     掌をエラーとする
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1244,6 +1246,7 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            IF      COMB-HKNNUM         =   SPACE
                IF      COMB-KOH1HKNNUM     =   "020"   OR  "030"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+                   MOVE    COMB-KOH1ID         TO  WRK-RECE61-KOH-KOHID
                END-IF
            END-IF
            IF      LNK-SYUBETU-SRYYM   <=   "200609"
@@ -2068,8 +2071,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
            AND   (  WRK-KOH-RECE61-HOSPNUM >   ZERO )
       *        主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
       *        公費単独の場合
-               MOVE    WRK-KOH-RECE61-REC
-                                           TO  WRK-RECE61-REC
+               MOVE    WRK-KOH-RECE61-REC  TO  WRK-RECE61-REC
       *        レセプト情報設定処理
                PERFORM 30011-SYUBETUGET-CALL-SEC
            ELSE
@@ -2123,6 +2125,9 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *    補助区分
            MOVE    WRK-RECE61-HOJOKBN
                                    TO  LNK-SYUBETU-HOJOKBN  (IDZZ)
+      *    公費ＩＤ
+           MOVE    WRK-RECE61-KOH-KOHID
+                                   TO  LNK-SYUBETU-KOHID    (IDZZ)
       *    適用開始年月日
            MOVE    WRK-RECE61-TEKSTYMD
                                    TO  LNK-SYUBETU-TEKSTYMD (IDZZ)

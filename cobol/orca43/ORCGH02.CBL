@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,6 +427,8 @@
                                    TO  SPA-H02NAI-TS-HKNJANUM     (IDY)
                    MOVE    TBL-HENREI-B-S-HOJOKBN-KEY      (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-HOJOKBN-KEY  (IDY)
+                   MOVE    TBL-HENREI-B-S-KOHID-KEY        (IDZZ IDX)
+                                   TO  SPA-H02NAI-TS-KOHID-KEY    (IDY)
                    MOVE    TBL-HENREI-B-S-TEKSTYMD         (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-TEKSTYMD     (IDY)
                    MOVE    TBL-HENREI-B-S-KIGO             (IDZZ IDX)

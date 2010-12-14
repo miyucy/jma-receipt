@@ -120,6 +120,9 @@
       *  04.05.02    NACL-門脇    09/11/25  リハビリコメント対応
       *  04.05.03    NACL-門脇    09/11/30  レセ電フォーマットコメント拡張
       *                                     対応（ファイル編集）
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1435,17 +1438,7 @@
       *****************************************************************
        2001-NYUINRYO-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    99999999            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "90"                TO  RECE649-SRYKBN
@@ -1456,17 +1449,7 @@
            WRITE   RECE649-REC
            ADD     1                   TO  CNT-RECE649
       *
-           INITIALIZE                      RECE659-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE659-PTID
-           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    99999999            TO  RECE659-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
            MOVE    "90"                TO  RECE659-SRYKBN
@@ -1524,17 +1507,7 @@
       *****************************************************************
        2001-ZAISIEN-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            COMPUTE WRK-ZAINUM    =  99999964  +  IDX
            MOVE    WRK-ZAINUM          TO  RECE649-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
@@ -1548,17 +1521,7 @@
            WRITE   RECE649-REC
            ADD     1                   TO  CNT-RECE649
       *
-           INITIALIZE                      RECE659-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE659-PTID
-           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            COMPUTE WRK-ZAINUM    =  99999964  +  IDX
            MOVE    WRK-ZAINUM          TO  RECE659-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX  -  1
@@ -1591,17 +1554,7 @@
       *****************************************************************
        2001-KOUREI-TOKUREI-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    99999998            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
@@ -1612,17 +1565,7 @@
            WRITE   RECE649-REC
            ADD     1                   TO  CNT-RECE649
       *
-           INITIALIZE                      RECE659-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE659-PTID
-           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    99999998            TO  RECE659-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
            MOVE    "99"                TO  RECE659-SRYKBN
@@ -1648,17 +1591,7 @@
       *****************************************************************
        2001-TAIN-TOKUBETU-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    99999990            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
@@ -1669,17 +1602,7 @@
            WRITE   RECE649-REC
            ADD     1                   TO  CNT-RECE649
       *
-           INITIALIZE                      RECE659-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE659-PTID
-           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    99999990            TO  RECE659-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
            MOVE    "99"                TO  RECE659-SRYKBN
@@ -1770,17 +1693,7 @@
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE65  =    1
-                INITIALIZE                       RECE659-REC
-                MOVE    RECE62-HOSPNUM       TO  RECE659-HOSPNUM
-                MOVE    RECE62-SRYYM         TO  RECE659-SRYYM
-                MOVE    RECE62-NYUGAIKBN     TO  RECE659-NYUGAIKBN
-                MOVE    RECE62-PTID          TO  RECE659-PTID
-                MOVE    RECE62-RECEKA        TO  RECE659-RECEKA
-                MOVE    RECE62-TEISYUTUSAKI  TO  RECE659-TEISYUTUSAKI
-                MOVE    RECE62-RECESYUBETU   TO  RECE659-RECESYUBETU
-                MOVE    RECE62-HKNJANUM-KEY  TO  RECE659-HKNJANUM
-                MOVE    RECE62-HOJOKBN-KEY   TO  RECE659-HOJOKBN
-                MOVE    RECE62-TEKSTYMD      TO  RECE659-TEKSTYMD
+               PERFORM 500-RECE65-KEY-HENSYU-SEC
                 MOVE    99999980             TO  RECE659-ZAINUM
                 MOVE    WRK-KOHBUNRI-JIDO    TO  RECE659-KOHBUNRI
                 MOVE    "99"                 TO  RECE659-SRYKBN
@@ -1805,17 +1718,7 @@
            END-PERFORM
       *
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    99999980            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
@@ -1835,17 +1738,7 @@
       *****************************************************************
        2001-KOHSAIKEI-COMMENT-SEC          SECTION.
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    99999997            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
@@ -1856,17 +1749,7 @@
            WRITE   RECE649-REC
            ADD     1                   TO  CNT-RECE649
       *
-           INITIALIZE                      RECE659-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE659-PTID
-           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           PERFORM 500-RECE65-KEY-HENSYU-SEC
            MOVE    99999997            TO  RECE659-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
            MOVE    "99"                TO  RECE659-SRYKBN
@@ -2642,17 +2525,7 @@
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE65  =    1
-                INITIALIZE                       RECE659-REC
-                MOVE    RECE62-HOSPNUM       TO  RECE659-HOSPNUM
-                MOVE    RECE62-SRYYM         TO  RECE659-SRYYM
-                MOVE    RECE62-NYUGAIKBN     TO  RECE659-NYUGAIKBN
-                MOVE    RECE62-PTID          TO  RECE659-PTID
-                MOVE    RECE62-RECEKA        TO  RECE659-RECEKA
-                MOVE    RECE62-TEISYUTUSAKI  TO  RECE659-TEISYUTUSAKI
-                MOVE    RECE62-RECESYUBETU   TO  RECE659-RECESYUBETU
-                MOVE    RECE62-HKNJANUM-KEY  TO  RECE659-HKNJANUM
-                MOVE    RECE62-HOJOKBN-KEY   TO  RECE659-HOJOKBN
-                MOVE    RECE62-TEKSTYMD      TO  RECE659-TEKSTYMD
+               PERFORM 500-RECE65-KEY-HENSYU-SEC
                 MOVE    99999996             TO  RECE659-ZAINUM
                 MOVE    WRK-KOHBUNRI-JIDO    TO  RECE659-KOHBUNRI
                 MOVE    "99"                 TO  RECE659-SRYKBN
@@ -2677,17 +2550,7 @@
            END-PERFORM
       *
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    99999996            TO  RECE649-ZAINUM
            MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
            MOVE    "99"                TO  RECE649-SRYKBN
@@ -2913,17 +2776,7 @@
            MOVE       ZERO             TO      WRK-RENNUM
            MOVE       ZERO             TO      WRK-CNT-MEISAI
            PERFORM    UNTIL     FLG-WRKRECE65  =    1
-                INITIALIZE                       RECE659-REC
-                MOVE    RECE62-HOSPNUM       TO  RECE659-HOSPNUM
-                MOVE    RECE62-SRYYM         TO  RECE659-SRYYM
-                MOVE    RECE62-NYUGAIKBN     TO  RECE659-NYUGAIKBN
-                MOVE    RECE62-PTID          TO  RECE659-PTID
-                MOVE    RECE62-RECEKA        TO  RECE659-RECEKA
-                MOVE    RECE62-TEISYUTUSAKI  TO  RECE659-TEISYUTUSAKI
-                MOVE    RECE62-RECESYUBETU   TO  RECE659-RECESYUBETU
-                MOVE    RECE62-HKNJANUM-KEY  TO  RECE659-HKNJANUM
-                MOVE    RECE62-HOJOKBN-KEY   TO  RECE659-HOJOKBN
-                MOVE    RECE62-TEKSTYMD      TO  RECE659-TEKSTYMD
+               PERFORM 500-RECE65-KEY-HENSYU-SEC
                 MOVE    WRK-ZAINUM           TO  RECE659-ZAINUM
                 COMPUTE WRK-KOHBUNRI  =  IDX14  -  1
                 MOVE    WRK-KOHBUNRI         TO  RECE659-KOHBUNRI
@@ -2949,17 +2802,7 @@
            END-PERFORM
       *
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            MOVE    WRK-ZAINUM          TO  RECE649-ZAINUM
            COMPUTE WRK-KOHBUNRI  =  IDX14  -  1
            MOVE    WRK-KOHBUNRI        TO  RECE649-KOHBUNRI
@@ -3973,18 +3816,7 @@
       *
            PERFORM
                UNTIL  ( FLG-RECE65           =   1                   )
-               OR     ( RECE64-HOSPNUM   NOT =   RECE65-HOSPNUM      )
-               OR     ( RECE64-SRYYM     NOT =   RECE65-SRYYM        )
-               OR     ( RECE64-NYUGAIKBN NOT =   RECE65-NYUGAIKBN    )
-               OR     ( RECE64-PTID      NOT =   RECE65-PTID         )
-               OR     ( RECE64-RECEKA    NOT =   RECE65-RECEKA       )
-               OR     ( RECE64-TEISYUTUSAKI
-                                         NOT =   RECE65-TEISYUTUSAKI )
-               OR     ( RECE64-RECESYUBETU
-                                         NOT =   RECE65-RECESYUBETU  )
-               OR     ( RECE64-HKNJANUM  NOT =   RECE65-HKNJANUM     )
-               OR     ( RECE64-HOJOKBN   NOT =   RECE65-HOJOKBN      )
-               OR     ( RECE64-TEKSTYMD  NOT =   RECE65-TEKSTYMD     )
+               OR     ( RECE64-KEY1      NOT =   RECE65-KEY1         )
                OR     ( RECE64-ZAINUM    NOT =   RECE65-ZAINUM       )
                OR     ( RECE64-ZAIREN    NOT =   RECE65-ZAIREN       )
       *
@@ -5382,17 +5214,7 @@
                END-IF
            END-PERFORM
       *
-           INITIALIZE                      RECE649-REC
-           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
-           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
-           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
-           MOVE    RECE62-PTID         TO  RECE649-PTID
-           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
-           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
-           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
-           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
-           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
-           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           PERFORM 500-RECE64-KEY-HENSYU-SEC
            COMPUTE IDX19                =  RECE64-KOHBUNRI + 1
            EVALUATE  RECE64-SRYKBN
              WHEN      "90"
@@ -6642,18 +6464,7 @@
       *
            PERFORM
                UNTIL  ( FLG-RECE659           =   1                    )
-               OR     ( RECE649-HOSPNUM   NOT =   RECE659-HOSPNUM      )
-               OR     ( RECE649-SRYYM     NOT =   RECE659-SRYYM        )
-               OR     ( RECE649-NYUGAIKBN NOT =   RECE659-NYUGAIKBN    )
-               OR     ( RECE649-PTID      NOT =   RECE659-PTID         )
-               OR     ( RECE649-RECEKA    NOT =   RECE659-RECEKA       )
-               OR     ( RECE649-TEISYUTUSAKI
-                                          NOT =   RECE659-TEISYUTUSAKI )
-               OR     ( RECE649-RECESYUBETU
-                                          NOT =   RECE659-RECESYUBETU  )
-               OR     ( RECE649-HKNJANUM  NOT =   RECE659-HKNJANUM     )
-               OR     ( RECE649-HOJOKBN   NOT =   RECE659-HOJOKBN      )
-               OR     ( RECE649-TEKSTYMD  NOT =   RECE659-TEKSTYMD     )
+               OR     ( RECE649-KEY1      NOT =   RECE659-KEY1         )
                OR     ( RECE649-ZAINUM    NOT =   RECE659-ZAINUM       )
                OR     ( RECE649-ZAIREN    NOT =   RECE659-ZAIREN       )
       *
@@ -6913,18 +6724,7 @@
       *
            PERFORM
                UNTIL  ( FLG-RECE659           =   1                    )
-               OR     ( RECE649-HOSPNUM   NOT =   RECE659-HOSPNUM      )
-               OR     ( RECE649-SRYYM     NOT =   RECE659-SRYYM        )
-               OR     ( RECE649-NYUGAIKBN NOT =   RECE659-NYUGAIKBN    )
-               OR     ( RECE649-PTID      NOT =   RECE659-PTID         )
-               OR     ( RECE649-RECEKA    NOT =   RECE659-RECEKA       )
-               OR     ( RECE649-TEISYUTUSAKI
-                                          NOT =   RECE659-TEISYUTUSAKI )
-               OR     ( RECE649-RECESYUBETU
-                                          NOT =   RECE659-RECESYUBETU  )
-               OR     ( RECE649-HKNJANUM  NOT =   RECE659-HKNJANUM     )
-               OR     ( RECE649-HOJOKBN   NOT =   RECE659-HOJOKBN      )
-               OR     ( RECE649-TEKSTYMD  NOT =   RECE659-TEKSTYMD     )
+               OR     ( RECE649-KEY1      NOT =   RECE659-KEY1         )
                OR     ( RECE649-ZAINUM    NOT =   RECE659-ZAINUM       )
                OR     ( RECE649-ZAIREN    NOT =   RECE659-ZAIREN       )
       *
@@ -7228,6 +7028,49 @@
       *
            .
        26011-SETCOM-HENSYU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＫＥＹ編集処理
+      *****************************************************************
+       500-RECE64-KEY-HENSYU-SEC       SECTION.
+      *
+           INITIALIZE                      RECE649-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE649-PTID
+           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE649-KOHID
+           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           .
+       500-RECE64-KEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＫＥＹ編集処理
+      *****************************************************************
+       500-RECE65-KEY-HENSYU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  RECE659-REC
+           INITIALIZE                      RECE659-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE659-PTID
+           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE659-KOHID
+           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           .
+       500-RECE65-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

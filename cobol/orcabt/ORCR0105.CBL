@@ -114,6 +114,7 @@
       *                                     生保の受給者番号なし
       *  04.06.02    NACL-門脇    10/09/13  出産一時金対応（外来）
       *  04.06.03    NACL-藤原    10/10/04  レセプトコメント文字数増対応
+      *  04.06.04    NACL-門脇    10/12/13  保険別請求チェック表の本体取込み
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8253,6 +8254,12 @@
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
                                        TO  RECE10-RESERVE-AREA
+      *
+           MOVE    RECE02-SKYIRYO-INF  TO  RECE10-SKYIRYO-INF
+           PERFORM  VARYING  IDX  FROM  1  BY  1
+                     UNTIL   IDX   >   10
+             MOVE  RECE02-HKNCOMBI(IDX)  TO  RECE10-HKNCOMBI(IDX)
+           END-PERFORM
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

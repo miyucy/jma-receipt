@@ -120,6 +120,7 @@
       *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
       *                                     レセプト種別不明エラー情報変更
+      *  04.06.03    NACL-門脇    10/12/13  請求額情報の追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -627,6 +628,22 @@
                    07  RECE02-PTTOKKI-NAIYO
                                           PIC  X(12).
                    07  RECE02-PTTOKKI-CD  PIC  X(02).
+      *
+      *請求額情報（計算用）
+           03  RECE02-FTNMONEY-SKY             PIC 9(09).
+      *
+      *請求額情報（医療費）
+           03  RECE02-SKYIRYO-INF.
+      *実日数
+               05  RECE02-SKYIRYO-NISSU        PIC 9(02).
+      *請求点
+               05  RECE02-SKYIRYO-TOTALTEN     PIC 9(08).
+      *患者負担
+               05  RECE02-SKYIRYO-ICHIBUFTN    PIC 9(09).
+      *保険者負担
+               05  RECE02-SKYIRYO-HOKENJA      PIC 9(09).
+      *公費負担
+               05  RECE02-SKYIRYO-KOHFTN       PIC 9(09).
       *
       *予備
            03  RECE02-YOBIETC-AREA.

@@ -35,6 +35,9 @@
       *  04.05.01    NACL-Æ£¸¶    10/03/23  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *                                     ÀÁµá¤Ë·¸¤ï¤ëµ­Ï¿¾ò·ï»ÅÍÍ¤Î
       *                                     ÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
+      *
+      *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
+      *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -87,7 +90,6 @@
            03  FLG-ONRECE-B            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-RECEDEN             PIC 9(01).
-           03  FLG-RECE10              PIC 9(01).
            03  FLG-BTPARA              PIC 9(01).
            03  FLG-HENREI-B            PIC 9(01).
       *
@@ -246,8 +248,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-      *
-           COPY    "CPRCF010.INC".
       *
       *    ¥ì¥»¥×¥ÈÅÅ»»
            COPY    "CPRECEDEN.INC".
@@ -1053,6 +1053,8 @@
                                            =   ONRECE-B-HKNJANUM     )
                        AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
                                            =   ONRECE-B-HOJOKBN      )
+                       AND   ( HENREI-B-S-KOHID-KEY  (IDZZ)
+                                           =   ONRECE-B-KOHID        )
                        AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
                                            =   ONRECE-B-TEKSTYMD     )
                            MOVE    HENREI-B-REC    TO  WRK-HENREI-B-REC
@@ -1202,6 +1204,8 @@
                                    WRK-HENREI-B-S-HKNJANUM    (IDZZ)
                    AND     ONRECE-B-HOJOKBN        =
                                    WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+                   AND     ONRECE-B-KOHID          =
+                                   WRK-HENREI-B-S-KOHID-KEY   (IDZZ)
                    AND     ONRECE-B-TEKSTYMD       =
                                    WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
                        MOVE    SMCNDATE-YMD    TO
@@ -1711,6 +1715,7 @@
                                        TO  RECEDEN-RECESYUBETU
            MOVE    ONRECE-B-HKNJANUM   TO  RECEDEN-HKNJANUM 
            MOVE    ONRECE-B-HOJOKBN    TO  RECEDEN-HOJOKBN-KEY
+           MOVE    ONRECE-B-KOHID      TO  RECEDEN-KOHID-KEY
            MOVE    ONRECE-B-TEKSTYMD   TO  RECEDEN-TEKSTYMD
            MOVE    "1"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC

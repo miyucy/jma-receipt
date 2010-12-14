@@ -179,7 +179,10 @@
       *  04.05.01    NACL-藤原    09/07/23  主科未設定患者の主科再取得対応
       *  04.05.02    NACL-藤原    10/01/05  治験対応
       *                                     平成２０年４月分より自費レセ
-      *                                     とする 
+      *                                     とする
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1172,6 +1175,11 @@
                MOVE    RECE61-HKNJANUM      TO  RECE62-HKNJANUM-KEY
            END-IF
            MOVE    RECE61-HOJOKBN       TO  RECE62-HOJOKBN-KEY
+           IF    ( RECE61-HKNNUM        =   SPACE         )
+           AND   ( RECE61-KOHHKNNUM-O (1)
+                                        = "020" OR  "030" )
+               MOVE    RECE61-KOH-KOHID TO  RECE62-KOHID-KEY
+           END-IF
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                    OR      RECE61-TEKSTYMDX (IDX)  =   SPACE
@@ -1761,6 +1769,8 @@
                                    TO  LNK-SYUACC-IO-HOJOKBN     (1)
            MOVE    RECE62-TEISYUTUSAKI
                                    TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
+           MOVE    RECE62-KOHID-KEY
+                                   TO  LNK-SYUACC-IO-KOHID       (1)
       *    精神入院か生保単独複数のとき
            IF    ( RECE62-HKNNUM   =   SPACE      )
            AND   ( RECE62-TEKSTYMD
@@ -3611,6 +3621,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
            MOVE    RECE62-RECESYUBETU  TO  RECE68-RECESYUBETU
            MOVE    RECE62-HKNJANUM-KEY TO  RECE68-HKNJANUM
            MOVE    RECE62-HOJOKBN-KEY  TO  RECE68-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE68-KOHID
            MOVE    RECE62-TEKSTYMD     TO  RECE68-TEKSTYMD
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE68-NYUINYMD
            MOVE    RECE68-REC          TO  WRK-RECE68-REC          

@@ -20,6 +20,8 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
       ************************************************************
       *01  ONRECE-BODY-REC.
            03  ONRECE-B-HOSPNUM    PIC 9(2).
@@ -53,6 +55,7 @@
                                    PIC X(1).
            03  ONRECE-B-RECEKA     PIC X(02).
            03  ONRECE-B-HOJOKBN    PIC X(01).
+           03  ONRECE-B-KOHID      PIC 9(10).
            03  ONRECE-B-TEKSTYMD   PIC X(08).
            03  ONRECE-B-H-TTL-TEN  PIC 9(8).
            03  ONRECE-B-KO-AREA.

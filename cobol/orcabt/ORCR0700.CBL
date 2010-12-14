@@ -53,6 +53,9 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    10/01/12  治験対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -275,6 +278,7 @@
            MOVE    RECE66-RECESYUBETU   TO      RECE661-RECESYUBETU
            MOVE    RECE66-HKNJANUM      TO      RECE661-HKNJANUM
            MOVE    RECE66-HOJOKBN       TO      RECE661-HOJOKBN
+           MOVE    RECE66-KOHID         TO      RECE661-KOHID
            MOVE    RECE66-TEKSTYMD      TO      RECE661-TEKSTYMD
            MOVE    RECE66-KOHBUNRI      TO      RECE661-KOHBUNRI
            MOVE    RECE66-ZAINUM        TO      RECE661-ZAINUM

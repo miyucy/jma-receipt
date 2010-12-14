@@ -60,6 +60,9 @@
       *
       *  04.05.01    NACL-藤原    09/04/16  主科設定時の主科未設定のチェ
       *                                     ック追加
+      *
+      *  04.06.01    NACL-藤原    10/12/07  公費単独の負担者番号、受給者
+      *                                     番号の表示に自立支援を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -489,43 +492,50 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-H99GMN-TCREYMD (IDX)
       *
-      *       公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *       公費単独で生保又は中国残留邦人等、自立支援のとき負担者番号、
       *       受給者番号をセット
-               IF    ( RECE10-HKNNUM       =   SPACE               )
-                   IF    ( RECE10-KOHNUM (1)   =   "012"  OR "025"
-                                                          OR "020" )
-                   AND   ( RECE10-KOHNUM (2)   =   SPACE           )
+               IF    ( RECE10-HKNNUM       =   SPACE                 )
+                   IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"
+                                               OR  "021"   OR  "020"
+                                               OR  "015"   OR  "016" )
+                   AND   ( RECE10-KOHNUM (2)   =   SPACE             )
                        INITIALIZE                  PTKOHINF-REC
                        MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                        MOVE    RECE10-PTID     TO  PTKOH-PTID
                        MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
                        MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                        PERFORM 900-PTKOHINF-READ-SEC
-                       MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
-                       MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-                       MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
-                       MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
-                       MOVE    RECE10-NYUGAIKBN
-                                               TO  MONTHLYNUM-NYUGAIKBN
-                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
-                       PERFORM 900-MONTHLYNUM-READ-SEC
-                       IF      FLG-MONTHLYNUM  =   ZERO
-                           MOVE    MONTHLYNUM-JKYSNUM
-                                               TO  PTKOH-JKYSNUM
-                       ELSE
-                           MOVE    SPA-HOSPNUM TO  MONTHLYNUM-HOSPNUM
-                           MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
-                           MOVE    ZERO        TO  MONTHLYNUM-KOHID
-                           MOVE    RECE10-SRYYM
-                                               TO  MONTHLYNUM-SRYYM
+                       IF      RECE10-KOHNUM (1)   =   "012"   OR  "025"
+                           MOVE    SPA-HOSPNUM     TO
+                                                   MONTHLYNUM-HOSPNUM
+                           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                           MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
+                           MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
                            MOVE    RECE10-NYUGAIKBN
-                                               TO  MONTHLYNUM-NYUGAIKBN
-                           MOVE    MONTHLYNUM-REC
-                                               TO  MCPDATA-REC
+                                                   TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                            PERFORM 900-MONTHLYNUM-READ-SEC
-                           IF      FLG-MONTHLYNUM   =   ZERO
+                           IF      FLG-MONTHLYNUM  =   ZERO
                                MOVE    MONTHLYNUM-JKYSNUM
-                                                    TO  PTKOH-JKYSNUM
+                                                   TO  PTKOH-JKYSNUM
+                           ELSE
+                               MOVE    SPA-HOSPNUM TO
+                                                   MONTHLYNUM-HOSPNUM
+                               MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
+                               MOVE    ZERO        TO  MONTHLYNUM-KOHID
+                               MOVE    RECE10-SRYYM
+                                                   TO  MONTHLYNUM-SRYYM
+                               MOVE    RECE10-NYUGAIKBN
+                                                   TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                               MOVE    MONTHLYNUM-REC
+                                                   TO  MCPDATA-REC
+                               PERFORM 900-MONTHLYNUM-READ-SEC
+                               IF      FLG-MONTHLYNUM  =   ZERO
+                                   MOVE    MONTHLYNUM-JKYSNUM
+                                                       TO  PTKOH-JKYSNUM
+                               END-IF
                            END-IF
                        END-IF
                        STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE

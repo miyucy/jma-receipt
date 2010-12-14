@@ -56,6 +56,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_1		char(4);
 	S_HKNJANUM_1		char(8);
 	S_HOJOKBN_KEY_1		char(1);
+	S_KOHID_KEY_1		number(10);
 	S_TEKSTYMD_1		char(8);
 	S_KIGO_1		varchar(40);
 	S_SYORIYMD_2		char(8);
@@ -68,6 +69,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_2		char(4);
 	S_HKNJANUM_2		char(8);
 	S_HOJOKBN_KEY_2		char(1);
+	S_KOHID_KEY_2		number(10);
 	S_TEKSTYMD_2		char(8);
 	S_KIGO_2		varchar(40);
 	S_SYORIYMD_3		char(8);
@@ -80,6 +82,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_3		char(4);
 	S_HKNJANUM_3		char(8);
 	S_HOJOKBN_KEY_3		char(1);
+	S_KOHID_KEY_3		number(10);
 	S_TEKSTYMD_3		char(8);
 	S_KIGO_3		varchar(40);
 	S_SYORIYMD_4		char(8);
@@ -92,6 +95,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_4		char(4);
 	S_HKNJANUM_4		char(8);
 	S_HOJOKBN_KEY_4		char(1);
+	S_KOHID_KEY_4		number(10);
 	S_TEKSTYMD_4		char(8);
 	S_KIGO_4		varchar(40);
 	S_SYORIYMD_5		char(8);
@@ -104,6 +108,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_5		char(4);
 	S_HKNJANUM_5		char(8);
 	S_HOJOKBN_KEY_5		char(1);
+	S_KOHID_KEY_5		number(10);
 	S_TEKSTYMD_5		char(8);
 	S_KIGO_5		varchar(40);
 	S_SYORIYMD_6		char(8);
@@ -116,6 +121,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_6		char(4);
 	S_HKNJANUM_6		char(8);
 	S_HOJOKBN_KEY_6		char(1);
+	S_KOHID_KEY_6		number(10);
 	S_TEKSTYMD_6		char(8);
 	S_KIGO_6		varchar(40);
 	S_SYORIYMD_7		char(8);
@@ -128,6 +134,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_7		char(4);
 	S_HKNJANUM_7		char(8);
 	S_HOJOKBN_KEY_7		char(1);
+	S_KOHID_KEY_7		number(10);
 	S_TEKSTYMD_7		char(8);
 	S_KIGO_7		varchar(40);
 	S_SYORIYMD_8		char(8);
@@ -140,6 +147,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_8		char(4);
 	S_HKNJANUM_8		char(8);
 	S_HOJOKBN_KEY_8		char(1);
+	S_KOHID_KEY_8		number(10);
 	S_TEKSTYMD_8		char(8);
 	S_KIGO_8		varchar(40);
 	S_SYORIYMD_9		char(8);
@@ -152,6 +160,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_9		char(4);
 	S_HKNJANUM_9		char(8);
 	S_HOJOKBN_KEY_9		char(1);
+	S_KOHID_KEY_9		number(10);
 	S_TEKSTYMD_9		char(8);
 	S_KIGO_9		varchar(40);
 	S_SYORIYMD_10		char(8);
@@ -164,6 +173,7 @@ tbl_henrei_body	{
 	S_RECESYUBETU_10	char(4);
 	S_HKNJANUM_10		char(8);
 	S_HOJOKBN_KEY_10	char(1);
+	S_KOHID_KEY_10		number(10);
 	S_TEKSTYMD_10		char(8);
 	S_KIGO_10		varchar(40);
 #-----> ここまで
@@ -240,6 +250,7 @@ path    upd1    {
                 S_RECESYUBETU_1  =   :S_RECESYUBETU_1,
                 S_HKNJANUM_1     =   :S_HKNJANUM_1,
                 S_HOJOKBN_KEY_1  =   :S_HOJOKBN_KEY_1,
+                S_KOHID_KEY_1    =   :S_KOHID_KEY_1, 
                 S_TEKSTYMD_1     =   :S_TEKSTYMD_1,
                 S_KIGO_1         =   :S_KIGO_1,
                 S_SYORIYMD_2     =   :S_SYORIYMD_2,
@@ -252,6 +263,7 @@ path    upd1    {
                 S_RECESYUBETU_2  =   :S_RECESYUBETU_2,
                 S_HKNJANUM_2     =   :S_HKNJANUM_2,
                 S_HOJOKBN_KEY_2  =   :S_HOJOKBN_KEY_2,
+                S_KOHID_KEY_2    =   :S_KOHID_KEY_2, 
                 S_TEKSTYMD_2     =   :S_TEKSTYMD_2,
                 S_KIGO_2         =   :S_KIGO_2,
                 S_SYORIYMD_3     =   :S_SYORIYMD_3,
@@ -264,6 +276,7 @@ path    upd1    {
                 S_RECESYUBETU_3  =   :S_RECESYUBETU_3,
                 S_HKNJANUM_3     =   :S_HKNJANUM_3,
                 S_HOJOKBN_KEY_3  =   :S_HOJOKBN_KEY_3,
+                S_KOHID_KEY_3    =   :S_KOHID_KEY_3, 
                 S_TEKSTYMD_3     =   :S_TEKSTYMD_3,
                 S_KIGO_3         =   :S_KIGO_3,
                 S_SYORIYMD_4     =   :S_SYORIYMD_4,
@@ -276,6 +289,7 @@ path    upd1    {
                 S_RECESYUBETU_4  =   :S_RECESYUBETU_4,
                 S_HKNJANUM_4     =   :S_HKNJANUM_4,
                 S_HOJOKBN_KEY_4  =   :S_HOJOKBN_KEY_4,
+                S_KOHID_KEY_4    =   :S_KOHID_KEY_4, 
                 S_TEKSTYMD_4     =   :S_TEKSTYMD_4,
                 S_KIGO_4         =   :S_KIGO_4,
                 S_SYORIYMD_5     =   :S_SYORIYMD_5,
@@ -288,6 +302,7 @@ path    upd1    {
                 S_RECESYUBETU_5  =   :S_RECESYUBETU_5,
                 S_HKNJANUM_5     =   :S_HKNJANUM_5,
                 S_HOJOKBN_KEY_5  =   :S_HOJOKBN_KEY_5,
+                S_KOHID_KEY_5    =   :S_KOHID_KEY_5, 
                 S_TEKSTYMD_5     =   :S_TEKSTYMD_5,
                 S_KIGO_5         =   :S_KIGO_5,
                 S_SYORIYMD_6     =   :S_SYORIYMD_6,
@@ -300,6 +315,7 @@ path    upd1    {
                 S_RECESYUBETU_6  =   :S_RECESYUBETU_6,
                 S_HKNJANUM_6     =   :S_HKNJANUM_6,
                 S_HOJOKBN_KEY_6  =   :S_HOJOKBN_KEY_6,
+                S_KOHID_KEY_6    =   :S_KOHID_KEY_6, 
                 S_TEKSTYMD_6     =   :S_TEKSTYMD_6,
                 S_KIGO_6         =   :S_KIGO_6,
                 S_SYORIYMD_7     =   :S_SYORIYMD_7,
@@ -312,6 +328,7 @@ path    upd1    {
                 S_RECESYUBETU_7  =   :S_RECESYUBETU_7,
                 S_HKNJANUM_7     =   :S_HKNJANUM_7,
                 S_HOJOKBN_KEY_7  =   :S_HOJOKBN_KEY_7,
+                S_KOHID_KEY_7    =   :S_KOHID_KEY_7, 
                 S_TEKSTYMD_7     =   :S_TEKSTYMD_7,
                 S_KIGO_7         =   :S_KIGO_7,
                 S_SYORIYMD_8     =   :S_SYORIYMD_8,
@@ -324,6 +341,7 @@ path    upd1    {
                 S_RECESYUBETU_8  =   :S_RECESYUBETU_8,
                 S_HKNJANUM_8     =   :S_HKNJANUM_8,
                 S_HOJOKBN_KEY_8  =   :S_HOJOKBN_KEY_8,
+                S_KOHID_KEY_8    =   :S_KOHID_KEY_8, 
                 S_TEKSTYMD_8     =   :S_TEKSTYMD_8,
                 S_KIGO_8         =   :S_KIGO_8,
                 S_SYORIYMD_9     =   :S_SYORIYMD_9,
@@ -336,6 +354,7 @@ path    upd1    {
                 S_RECESYUBETU_9  =   :S_RECESYUBETU_9,
                 S_HKNJANUM_9     =   :S_HKNJANUM_9,
                 S_HOJOKBN_KEY_9  =   :S_HOJOKBN_KEY_9,
+                S_KOHID_KEY_9    =   :S_KOHID_KEY_9, 
                 S_TEKSTYMD_9     =   :S_TEKSTYMD_9,
                 S_KIGO_9         =   :S_KIGO_9,
                 S_SYORIYMD_10     =  :S_SYORIYMD_10,
@@ -348,6 +367,7 @@ path    upd1    {
                 S_RECESYUBETU_10  =  :S_RECESYUBETU_10,
                 S_HKNJANUM_10     =  :S_HKNJANUM_10,
                 S_HOJOKBN_KEY_10  =  :S_HOJOKBN_KEY_10,
+                S_KOHID_KEY_10    =   :S_KOHID_KEY_10, 
                 S_TEKSTYMD_10     =  :S_TEKSTYMD_10,
                 S_KIGO_10         =  :S_KIGO_10,
                 UPYMD             =  :UPYMD,
