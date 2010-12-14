@@ -917,12 +917,16 @@
        01  WRK-SKY-AREA.
            03  WRK-SKY-KEISAN                          PIC 9(09).
            03  WRK-SKY-KEISAN2                         PIC 9(09).
+           03  WRK-SKY-KEISAN3                         PIC 9(09).
+           03  WRK-SKY-KEISAN4                         PIC 9(09).
            03  WRK-SKY-HOKENJA                         PIC 9(09).
            03  WRK-SKY-ICHIBUFTN                       PIC 9(09).
            03  WRK-SKY-ZENGAKU                         PIC 9(09).
            03  WRK-SKY-FTNMONEY                        PIC 9(09).
            03  WRK-SKY-ZENGAKU2                        PIC 9(09).
            03  WRK-SKY-FTNMONEY2                       PIC 9(09).
+           03  WRK-SKY-FTNMONEY9                       PIC 9(09).
+           03  WRK-SKY-FTNMONEY-XXX                    PIC S9(09).
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¾ðÊóÂàÈòÎÎ°è
        01  WRK-TNS-TAIHI-AREA.
@@ -2275,9 +2279,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            PERFORM          211B-TOKU75-HANTEI-SEC
       *
-           IF    RECE02-ZAITAKU    =    "1"  OR  "2"
-             PERFORM        2101-KOREISYA-KOHI-SEC
-           END-IF
+           PERFORM          2101-KOREISYA-KOHI-SEC
            PERFORM          211A-ZENKOKUKOHI-NISYU-CHECK-SEC
            IF  ( RECE02-ZAITAKU    =    "1"  OR  "2"    )
            OR  ( FLG-TOKU75        =     1  OR  2  OR 3 )
@@ -11871,12 +11873,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            END-IF
       *
-           IF   (IDZ               =     1      )
-           AND  (RECE02-SRYYM     >=  "201101"  )
-           AND  (RECE02-ZAITAKU    =  "1" OR "2")
-             MOVE   RECE02-FTNMONEY(1)   TO   RECE02-FTNMONEY-SKY
-           END-IF
-      *
            IF   WK-GENGAKUKBN   =   ZERO
       *
             IF      RECE02-SRYYM      >=  "200210"
@@ -11940,6 +11936,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE     RECE02-TOTALTEN(1)  TO  WRK-HANTEI-TOTALTEN
                    PERFORM  21094-JYOGENGAKU-HENSYU-SEC
                    IF   RECE02-FTNMONEY(1)  >  WRK-KINGAKU3
+                     COMPUTE   WRK-SKY-KEISAN3 = WRK-KINGAKU3
+                                               / 2
+                     IF  RECE02-ZAITAKU-SAIKEI > WRK-SKY-KEISAN3
+                      COMPUTE  WRK-SKY-KEISAN4 = RECE02-ZAITAKU-SAIKEI
+                                               - WRK-SKY-KEISAN3
+                     ELSE
+                      MOVE     ZERO    TO   WRK-SKY-KEISAN4
+                     END-IF
+                     COMPUTE   WRK-SKY-FTNMONEY-XXX =
+                              (RECE02-FTNMONEY(1)   -  WRK-KINGAKU3)
+                                                    -  WRK-SKY-KEISAN4
                      MOVE   WRK-KINGAKU3   TO  RECE02-FTNMONEY(1)
                      IF   RECE02-RJNGENMENKBN   =   "1"
                        MOVE    4    TO      FLG-TOKKI
@@ -12088,6 +12095,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE     RECE02-TOTALTEN(1)  TO  WRK-HANTEI-TOTALTEN
                    PERFORM  21094-JYOGENGAKU-HENSYU-SEC
                    IF   RECE02-FTNMONEY(1)  >  WRK-KINGAKU3
+                     COMPUTE  WRK-SKY-FTNMONEY-XXX =
+                              RECE02-FTNMONEY(1)   -  WRK-KINGAKU3
                      MOVE   WRK-KINGAKU3   TO  RECE02-FTNMONEY(1)
                      IF RECE02-FTNMONEY(1)  >  RECE02-ZAITAKU-SAIKEI
                         CONTINUE
@@ -12134,6 +12143,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
             END-EVALUATE
       *
+           END-IF
+      *
+           IF   (IDZ               =     1      )
+           AND  (RECE02-SRYYM     >=  "201101"  )
+           AND  (RECE02-ZAITAKU    =  "1" OR "2")
+             MOVE   RECE02-FTNMONEY(1)   TO   RECE02-FTNMONEY-SKY
            END-IF
       *
            .
@@ -12992,14 +13007,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   MOVE   1    TO   RECE02-RJNNYUKOHFTN(3)
                 END-IF
              END-IF
-      *
-             IF   FLG-HOKENICHIBU-SYU  = ZERO
-                IF   (IDZ               =     1      )
-                AND  (RECE02-SRYYM     >=  "201101"  )
-                AND  (RECE02-ZAITAKU    =  "1" OR "2")
-                  MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
-                END-IF
-             END-IF
            END-IF
       *
            .
@@ -13075,14 +13082,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 AND  FLG-HOKENICHIBU2   NOT = ZERO
                 AND  FLG-HOKENICHIBU3   NOT = ZERO
                   MOVE   1    TO   RECE02-RJNNYUKOHFTN(3)
-                END-IF
-             END-IF
-      *
-             IF   FLG-HOKENICHIBU-SYU  = ZERO
-                IF   (IDZ               =     1      )
-                AND  (RECE02-SRYYM     >=  "201101"  )
-                AND  (RECE02-ZAITAKU    =  "1" OR "2")
-                  MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
                 END-IF
              END-IF
            END-IF
@@ -14274,9 +14273,18 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                                            -  RECE02-FTNMONEY-SKY
                  ADD  WRK-SKY-KEISAN2   TO  RECE02-SKYIRYO-HOKENJA
                END-IF
-               IF   RECE02-FTNMONEY-SKY  >  WRK-SKY-FTNMONEY
+               MOVE WRK-SKY-FTNMONEY    TO  WRK-SKY-FTNMONEY9
+      ***      IF   WRK-SKY-FTNMONEY > WRK-SKY-FTNMONEY-XXX
+      ***        COMPUTE  WRK-SKY-FTNMONEY9         =
+      ***                 WRK-SKY-FTNMONEY          -
+      ***                 WRK-SKY-FTNMONEY-XXX
+      ***        COMPUTE  RECE02-SKYIRYO-ICHIBUFTN  =
+      ***                 RECE02-SKYIRYO-ICHIBUFTN  -
+      ***                 WRK-SKY-FTNMONEY-XXX
+      ***      END-IF
+               IF   RECE02-FTNMONEY-SKY  >  WRK-SKY-FTNMONEY9
                  COMPUTE  WRK-SKY-KEISAN2  =  RECE02-FTNMONEY-SKY
-                                           -  WRK-SKY-FTNMONEY
+                                           -  WRK-SKY-FTNMONEY9
                  ADD  WRK-SKY-KEISAN2   TO  RECE02-SKYIRYO-KOHFTN
                END-IF
              END-IF
