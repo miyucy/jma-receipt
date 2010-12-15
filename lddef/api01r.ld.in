@@ -1,0 +1,23 @@
+name	api01r;
+
+arraysize	20;
+textsize	400;
+
+bindapi	"appointmod"	"OpenCOBOL"	"ORAPI014R1";
+
+multiplex_group	api01r;
+
+
+data	{
+	spa	orcaspa;
+	window	{
+		appointmod;
+	};
+};
+db "xml" {
+ xml_appointlstreq;
+ xml_appointlstres;
+};
+
+#include "orcadb.inc"
+#include "orcadbh.inc"
