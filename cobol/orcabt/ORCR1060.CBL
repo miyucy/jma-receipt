@@ -51,6 +51,9 @@
       *                                     行うようにする
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
+      *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2498,6 +2501,7 @@ grpsys     MOVE    RECE100-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    RECE100-RECESYUBETU TO  RECE10-RECESYUBETU
            MOVE    ZERO                TO  RECE10-HKNJANUM
            MOVE    ZERO                TO  RECE10-HOJOKBN-KEY
+           MOVE    ZERO                TO  RECE10-KOHID-KEY
            IF      RECE100-TEKSTYMD    =   SPACE
                MOVE    ZERO                TO  RECE10-TEKSTYMD
            ELSE
@@ -2509,7 +2513,9 @@ grpsys     MOVE    RECE100-HOSPNUM     TO  RECE10-HOSPNUM
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
-               MOVE    WRK-PARA-SYSYMD     TO  RECE10-UPDYMD
+               MOVE    WRK-PARA-CREYMD     TO  RECE10-UPDYMD
+               MOVE    WRK-PARA-CREHMS (1:6)
+                                           TO  RECE10-UPDHMS
                IF      RECE10-SKYKBN       =   "2"
                    MOVE    "1"                 TO  RECE10-SKYKBN
                END-IF 
@@ -2526,8 +2532,11 @@ grpsys     MOVE    RECE100-HOSPNUM     TO  RECE10-HOSPNUM
                                                RECE10-HENREIYM
                                                RECE10-TEISEIKBN
                MOVE    ZERO                TO  RECE10-HKNJANUM-S
-               MOVE    WRK-PARA-SYSYMD     TO  RECE10-CREYMD
+               MOVE    WRK-PARA-CREYMD     TO  RECE10-CREYMD
+               MOVE    WRK-PARA-CREHMS (1:6)
+                                           TO  RECE10-CREHMS
                MOVE    ZERO                TO  RECE10-UPDYMD
+                                               RECE10-UPDHMS
            END-IF
       *
            MOVE    RECE100-JNISSU      TO  RECE10-JNISSU   (1)

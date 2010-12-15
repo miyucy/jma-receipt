@@ -360,6 +360,9 @@
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
       *  04.06.03    NACL-藤原    10/11/20  日付情報の記録を行う
+      *  04.06.04    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -644,6 +647,8 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-KKHRECEKBN PIC X(01).
                05  WRK-PARA-KOUIKIRECEKBN
                                        PIC X(01).
+               05  WRK-PARA-CREYMD     PIC X(08).
+               05  WRK-PARA-CREHMS     PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
@@ -1628,6 +1633,8 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
+                                               WRK-PARA-CREYMD
+                                               WRK-PARA-CREHMS
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -6239,7 +6246,6 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                    PERFORM 50011-KEY-HENSYU-SEC
                    MOVE    "2"                 TO  RECEDEN-RECKBN
                    MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                   MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                    MOVE    RECE02-2006-TEKIYOU-COMMENT1 (IDXX)
                                                TO  RECEDEN-RECEDATA
       *
@@ -6270,7 +6276,6 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                PERFORM 50011-KEY-HENSYU-SEC
                MOVE    "2"                 TO  RECEDEN-RECKBN
                MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-               MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                INSPECT WRK-HKN-RIREKI-TBL  (IDXX)  REPLACING   ALL "  "
                                                                BY  "　"
                MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
@@ -6431,7 +6436,6 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            INSPECT WRK-OPECOM-HEN      REPLACING   ALL "  "
                                                    BY  "　"
            MOVE    WRK-OPECOM-HEN      TO  RECEDEN-RECEDATA
@@ -6521,7 +6525,6 @@ grpsys             OR    ( RECE02-KEY       NOT =  RECE12-KEY1         )
            PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
                                                        BY  "　"
            MOVE    WRK-NYUTAI-RIREKI-AREA
@@ -6555,7 +6558,6 @@ grpsys             OR    ( RECE02-KEY       NOT =  RECE12-KEY1         )
                    PERFORM 50011-KEY-HENSYU-SEC
                    MOVE    "2"                 TO  RECEDEN-RECKBN
                    MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                   MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                    MOVE    RECE02-2006-TEKIYOU-COMMENT2 (IDXX)
                                                TO  RECEDEN-RECEDATA
       *
@@ -6692,7 +6694,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                       MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
                        MOVE    "99"                TO  RECEDEN-SJKBN
       *
@@ -6767,7 +6768,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-                       MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
                        MOVE    WRK-COMMENT1 (IDW)  TO  RECEDEN-RECEDATA
                        MOVE    RECECOM-SJKBN       TO  WRK-SJKBN-X
                        MOVE    WRK-SJKBN           TO  RECEDEN-SJKBN
@@ -6995,7 +6995,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "9"                 TO  RECEDEN-RECKBN
            END-IF
            MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            IF      FLG-TOTALTEN        =   1
                MOVE    SUM-TOTALTEN        TO  RECEDEN-TOTALTEN
            END-IF
@@ -7065,6 +7064,10 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
       *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        50012-DBINSERT-SEC          SECTION.
+      *
+           MOVE    WRK-PARA-CREYMD     TO  RECEDEN-CREYMD
+           MOVE    WRK-PARA-CREHMS (1:6)
+                                       TO  RECEDEN-CREHMS
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC

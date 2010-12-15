@@ -115,6 +115,9 @@
       *  04.06.02    NACL-門脇    10/09/13  出産一時金対応（外来）
       *  04.06.03    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.04    NACL-門脇    10/12/13  保険別請求チェック表の本体取込み
+      *  04.06.05    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2290,6 +2293,7 @@
            ELSE
                MOVE    RECE02X-HOJOKBN-KEY     TO  KOHSKY-HOJOKBN-KEY
            END-IF
+      *****MOVE    RECE02X-KOHID-KEY   TO  KOHSKY-KOHID-KEY
            IF      RECE02X-TEKSTYMD    =   SPACE
                MOVE    ZERO                TO  KOHSKY-TEKSTYMD
            ELSE
@@ -2324,14 +2328,14 @@
            PERFORM 900-KOHSKY-INV-SEC
            IF      FLG-KOHSKY          =   ZERO
                MOVE    MCPDATA-REC         TO  KOHSKY-REC
-               MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-UPDYMD
+               MOVE    WRK-PARA-CREYMD     TO  KOHSKY-UPDYMD
                IF      KOHSKY-SKYKBN       =   "2"
                    MOVE    "1"                 TO  KOHSKY-SKYKBN
                END-IF 
                MOVE    "2"                 TO  KOHSKY-TEISEIKBN
            ELSE
                MOVE    "1"                 TO  KOHSKY-SKYKBN
-               MOVE    WRK-PARA-SYSYMD     TO  KOHSKY-CREYMD
+               MOVE    WRK-PARA-CREYMD     TO  KOHSKY-CREYMD
                MOVE    ZERO                TO  KOHSKY-UPDYMD
                MOVE    ZERO                TO  KOHSKY-SKYYM
                                                KOHSKY-HENREIYM
@@ -7982,6 +7986,7 @@
            ELSE
                MOVE    RECE02-HOJOKBN-KEY  TO  RECE10-HOJOKBN-KEY
            END-IF   
+      *****MOVE    RECE02-KOHID-KEY    TO  RECE10-KOHID-KEY
            IF      RECE02-TEKSTYMD     =   SPACE
                MOVE    ZERO            TO  RECE10-TEKSTYMD
            ELSE
@@ -7993,7 +7998,9 @@
            PERFORM 900-SEIKYU-INV-SEC
            IF      FLG-SEIKYU          =   ZERO
                MOVE    MCPDATA-REC         TO  RECE10-REC
-               MOVE    WRK-PARA-SYSYMD     TO  RECE10-UPDYMD
+               MOVE    WRK-PARA-CREYMD     TO  RECE10-UPDYMD
+               MOVE    WRK-PARA-CREHMS (1:6)
+                                           TO  RECE10-UPDHMS
                IF      RECE10-SKYKBN       =   "2"
                    MOVE    "1"                 TO  RECE10-SKYKBN
                END-IF 
@@ -8038,8 +8045,11 @@
                END-IF
                MOVE    RECE08-PREFKBN      TO  RECE10-PREFKBN
                MOVE    RECE08-PREFNUM      TO  RECE10-PREFNUM
-               MOVE    WRK-PARA-SYSYMD     TO  RECE10-CREYMD
+               MOVE    WRK-PARA-CREYMD     TO  RECE10-CREYMD
+               MOVE    WRK-PARA-CREHMS (1:6)
+                                           TO  RECE10-CREHMS
                MOVE    ZERO                TO  RECE10-UPDYMD
+                                               RECE10-UPDHMS
            END-IF
       *
       *    治験は請求区分を０：請求しないとする

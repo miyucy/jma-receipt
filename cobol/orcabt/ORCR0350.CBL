@@ -603,6 +603,8 @@
                05  WRK-PARA-KKHRECEKBN PIC X(01).
                05  WRK-PARA-KOUIKIRECEKBN
                                        PIC X(01).
+               05  WRK-PARA-CREYMD     PIC X(08).
+               05  WRK-PARA-CREHMS     PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
@@ -1548,6 +1550,8 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
+                                               WRK-PARA-CREYMD
+                                               WRK-PARA-CREHMS
                                                RECEERR
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -7775,9 +7779,9 @@
       *****************************************************************
        50012-DBINSERT-SEC          SECTION.
       *
-           MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
-      *****MOVE    WRK-PARA-CREHMS (1:6)
-      *****                            TO  RECEDEN-CREHMS
+           MOVE    WRK-PARA-CREYMD     TO  RECEDEN-CREYMD
+           MOVE    WRK-PARA-CREHMS (1:6)
+                                       TO  RECEDEN-CREHMS
       *
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC

@@ -85,6 +85,8 @@
       *                                     ック追加
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *  04.06.02    NACL-藤原    10/10/12  キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2881,6 +2883,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            END-EVALUATE
       *     
            MOVE    SMCNDATE-YMD        TO  RECE10-UPDYMD
+           MOVE    SMCNDATE-HMS        TO  RECE10-UPDHMS
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
