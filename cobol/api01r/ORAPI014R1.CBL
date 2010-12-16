@@ -104,7 +104,7 @@
        01  TBL-SRYKA-AREA.
            03  TBL-SRYKA-G             OCCURS   99.
                05  TBL-SRYKA           PIC X(02).
-               05  TBL-SRYKA-NAME      PIC X(20).
+               05  TBL-SRYKA-NAME      PIC X(80).
       *    ドクターテーブル
        01  TBL-DRCD-AREA.
            03  TBL-DRCD-G             OCCURS   99.
@@ -725,6 +725,8 @@
                    MOVE    99          TO  IDK
                END-IF
            END-PERFORM
+      *    来院済み
+           MOVE    YYK-RAIINZUMI       TO  APLSTRES-VISIT-INFO (IDX)
       *
            IF      YYK-PTID            =   ZERO
       *        新規患者
@@ -840,7 +842,7 @@
                ADD     1                   TO  IDK
                MOVE    MCPDATA-REC         TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD(1:2) TO  TBL-SRYKA     (IDK)
-               MOVE    SYS-1005-SRYKANAME2 TO  TBL-SRYKA-NAME(IDK)
+               MOVE    SYS-1005-SRYKANAME  TO  TBL-SRYKA-NAME(IDK)
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME

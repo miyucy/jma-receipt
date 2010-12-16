@@ -3,7 +3,7 @@ name	api01r;
 arraysize	20;
 textsize	400;
 
-bindapi	"appointmod"	"OpenCOBOL"	"ORAPI014R1";
+bindapi	"appointlst"	"OpenCOBOL"	"ORAPI014R1";
 
 multiplex_group	api01r;
 
@@ -11,7 +11,7 @@ multiplex_group	api01r;
 data	{
 	spa	orcaspa;
 	window	{
-		appointmod;
+		appointlst;
 	};
 };
 db "xml" {

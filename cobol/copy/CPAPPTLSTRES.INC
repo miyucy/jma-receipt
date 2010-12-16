@@ -49,6 +49,8 @@
                       07  APLSTRES-APPOINT-DR-CODE     PIC X(5).
       *               ドクター氏名
                       07  APLSTRES-APPOINT-DR-NAME     PIC X(80).
+      *               来院済区分
+                      07  APLSTRES-VISIT-INFO          PIC X(1).
       *               患者情報
                       07  APLSTRES-PATIENT-INFOMATION.
       *                   患者番号

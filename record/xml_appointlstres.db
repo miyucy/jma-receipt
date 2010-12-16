@@ -15,6 +15,7 @@ xml_appointlstres {
         	Department_WholeName				varchar(80);
         	Physician_Code					varchar(5);
         	Physician_WholeName				varchar(80);
+        	Visit_Information				varchar(1);
 		Patient_Infomation {
         		Patient_ID				varchar(20);
         		WholeName				varchar(100);
