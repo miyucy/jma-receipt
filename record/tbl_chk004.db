@@ -235,3 +235,13 @@ path	del2		{
 	};
 };
 
+path    del3            {
+        DBDELETE        {
+                DELETE  FROM    tbl_chk004
+                WHERE   HOSPNUM         =       :HOSPNUM
+                        AND     KANRICD         =       :KANRICD
+                        AND     KBNCD           =       :KBNCD
+                ;
+        };
+};
+

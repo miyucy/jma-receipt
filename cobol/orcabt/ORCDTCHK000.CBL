@@ -100,8 +100,10 @@
            PERFORM 200-MAIN-SEC
       *
            PERFORM 300-END-SEC
+           DISPLAY "ORCDTCHK000 end"
       *
-           STOP    RUN
+           EXIT PROGRAM
+      *    STOP    RUN
       *
            .
       *****************************************************************
@@ -147,9 +149,64 @@
                                                ORCBSD01-CHIKENPROCKBN
            END-UNSTRING
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           DISPLAY "ORCBSD01-IKTKBT = " ORCBSD01-IKTKBT
+           DISPLAY "ORCBSD01-SRYYM  = " ORCBSD01-SRYYM
+           DISPLAY "ORCBSD01-NYUGAIKBN = " ORCBSD01-NYUGAIKBN
+           DISPLAY "ORCBSD01-CHKKBN-G  = " ORCBSD01-CHKKBN-G
+           DISPLAY "ORCBSD01-SYAHOPROCKBN = " ORCBSD01-SYAHOPROCKBN
+           DISPLAY "ORCBSD01-KOKUHOPROCKBN = " 
+                                           ORCBSD01-KOKUHOPROCKBN
+           DISPLAY "ORCBSD01-RSIPROCKBN = " ORCBSD01-RSIPROCKBN
+           DISPLAY "ORCBSD01-JBIPROCKBN = " ORCBSD01-JBIPROCKBN
+           DISPLAY "ORCBSD01-INGAIPROCKBN = "  ORCBSD01-INGAIPROCKBN
+           DISPLAY "ORCBSD01-PRTSRTKBN = " ORCBSD01-PRTSRTKBN
+           DISPLAY "ORCBSD01-PRTPTLSTKBN = " ORCBSD01-PRTPTLSTKBN 
+           DISPLAY "ORCBSD01-SRYYMDKBN = " ORCBSD01-SRYYMDKBN
+           DISPLAY "ORCBSD01-STSRYYMD = " ORCBSD01-STSRYYMD
+           DISPLAY "ORCBSD01-EDSRYYMD = " ORCBSD01-EDSRYYMD
+           DISPLAY "ORCBSD01-KGIPROCKBN = " ORCBSD01-KGIPROCKBN
+           DISPLAY "ORCBSD01-KOUKIPROCKBN = " ORCBSD01-KOUKIPROCKBN
+           DISPLAY " " 
+           DISPLAY " " 
       *
-           PERFORM 100-DBOPEN-SEC
+           DISPLAY "WRK-PARA-HOSPNUM = " WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-JOBID   = " WRK-PARA-JOBID
+           DISPLAY "WRK-PARA-SHELLID = " WRK-PARA-SHELLID
+      *    IF      LNK-PRTKANRI-TBL-KEY  =  "RECEPTX"
+      *    MOVE    "RECEPTX"           TO  WRK-PARA-SHELLID
+      *    END-IF
+           DISPLAY "LNK-PRTKANRI-RENNUM       = " LNK-PRTKANRI-RENNUM
+           DISPLAY "LNK-PRTKANRI-TBL-KEY      = " LNK-PRTKANRI-TBL-KEY
+           DISPLAY "LNK-PRTKANRI-TBL-GROUP    = " LNK-PRTKANRI-TBL-GROUP
+           DISPLAY "LNK-PRTKANRI-SHORI-RENNUM = " 
+                                              LNK-PRTKANRI-SHORI-RENNUM
+           DISPLAY "LNK-PRTKANRI-SRYYM        = " LNK-PRTKANRI-SRYYM
+           DISPLAY "LNK-PRTKANRI-SKYYMD       = " LNK-PRTKANRI-SKYYMD
+           DISPLAY "LNK-PRTKANRI-SHELLID      = " LNK-PRTKANRI-SHELLID
+           DISPLAY "LNK-PRTKANRI-PRIORITY     = " LNK-PRTKANRI-PRIORITY
+           DISPLAY "LNK-PRTKANRI-TERMID       = " LNK-PRTKANRI-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      * take for debug start
+      *    MOVE    01                  TO  SPA-HOSPNUM
+      *    MOVE    "01"                TO  WRK-PARA-HOSPNUM
+      *    MOVE    "2"                 TO  ORCBSD01-IKTKBT
+      *    MOVE    "200903"            TO  ORCBSD01-SRYYM
+      *    MOVE    "2"                 TO  ORCBSD01-NYUGAIKBN
+      *    MOVE    "222222222222222222"
+      *                                TO  ORCBSD01-CHKKBN-G
+      *    MOVE    "1"                 TO  ORCBSD01-SYAHOPROCKBN
+      *    MOVE    "1"                 TO  ORCBSD01-KOKUHOPROCKBN
+      *    MOVE    "1"                 TO  ORCBSD01-RSIPROCKBN
+      *    MOVE    "0"                 TO  ORCBSD01-JBIPROCKBN
+      *    MOVE    "2"                 TO  ORCBSD01-PRTSRTKBN
+      *    MOVE    "2"                 TO  ORCBSD01-PRTPTLSTKBN
+      *    MOVE    "1"                 TO  ORCBSD01-KGIPROCKBN
+      *    MOVE    "1"                 TO  ORCBSD01-KOUKIPROCKBN
+      * take for debug end
+      *
+           IF      LNK-PRTKANRI-TBL-KEY  NOT = "RECEPTX"
+                   PERFORM 100-DBOPEN-SEC
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -262,6 +319,11 @@
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK008"
            END-IF
       *
+           IF      LNK-PRTKANRI-TBL-KEY  = "RECEPTX"
+             PERFORM 900-DBDISCONNECT-SEC
+             PERFORM 100-DBOPEN-SEC
+             PERFORM 100-DBSTART-SEC
+           END-IF
            IF    ( DTCHK-RC            =   ZERO )
                IF  ( ORCBSD01-PRTPTLSTKBN  =   "2" )
                    PERFORM 800-MCNDATE-SEC
@@ -296,7 +358,9 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
+           IF      LNK-PRTKANRI-TBL-KEY  NOT = "RECEPTX"
            PERFORM 900-DBDISCONNECT-SEC
+           END-IF
       *     
            .
        300-END-EXT.
@@ -326,6 +390,22 @@
                                        SPA-AREA
            .
        100-DBOPEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ　スタート処理
+      *****************************************************************
+       100-DBSTART-SEC                SECTION.
+      *
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC.
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
+       100-DBSTART-EXT.
            EXIT.
       *
       *****************************************************************

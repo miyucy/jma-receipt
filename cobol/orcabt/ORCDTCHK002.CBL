@@ -1128,17 +1128,19 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           PERFORM 900-DBSTART-SEC
+           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
+               PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK002"       TO  JOB-PGID
-           MOVE    "データチェック"    TO  JOB-SHELLMSG
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+               MOVE    "STS"               TO  SJOBKANRI-MODE
+               INITIALIZE                      JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+               MOVE    "ORCDTCHK002"       TO  JOB-PGID
+               MOVE    "データチェック"    TO  JOB-SHELLMSG
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
+           END-IF
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
@@ -10915,12 +10917,15 @@
                    WRK-TIME-N          DELIMITED BY SPACE
            INTO    JOB-YOBI
            END-STRING
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK002"       TO  JOB-PGID
-           MOVE    "データチェック"    TO  JOB-SHELLMSG
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+      *
+           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
+               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+               MOVE    "ORCDTCHK002"       TO  JOB-PGID
+               MOVE    "データチェック"    TO  JOB-SHELLMSG
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
+           END-IF
       *
            .
        20011-SYORI-KEIKA-HEN-EXT.
@@ -11333,6 +11338,7 @@
                WRITE   DTCHKERR-REC
                CLOSE   DTCHKERR-FILE
       *
+             IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -11343,6 +11349,7 @@
                MOVE    "9999"          TO  JOB-ERRCD
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
+             END-IF
            END-IF
       *
            MOVE    1                   TO  FLG-ERR
@@ -11364,16 +11371,18 @@
                                        DTCHK010-FILE
                                        DTCHK011-FILE
       *
+           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
       *
-           PERFORM 900-DBCOMMIT-SEC
+               PERFORM 900-DBCOMMIT-SEC
+           END-IF
       *     
            DISPLAY "*** ORCDTCHK002 END ***"
            DISPLAY "DTCHK004 CNT [" CNT-DTCHK004 "]"

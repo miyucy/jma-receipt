@@ -190,17 +190,19 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           PERFORM 900-DBSTART-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK009"       TO  JOB-PGID
-           MOVE    "受診患者抽出"      TO  JOB-SHELLMSG
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+               MOVE    "STS"               TO  SJOBKANRI-MODE
+               INITIALIZE                      JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+               MOVE    "ORCDTCHK009"       TO  JOB-PGID
+               MOVE    "受診患者抽出"      TO  JOB-SHELLMSG
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
+           END-IF
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
@@ -213,9 +215,10 @@
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
-           PERFORM 900-DBCOMMIT-SEC
-      *
-           PERFORM 900-DBSTART-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               PERFORM 900-DBCOMMIT-SEC
+               PERFORM 900-DBSTART-SEC
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -298,6 +301,7 @@
            MOVE    WRK-SYMD        TO  CHK004-STYUKYMD
                                        CHK004-EDYUKYMD
            PERFORM 900-CHK004-KEY7-SEL-SEC
+           DISPLAY "009 mcp rc = " MCP-RC " " WRK-SYMD
       *
            PERFORM UNTIL ( FLG-CHK004  NOT =   ZERO )
       *
@@ -319,6 +323,7 @@
                END-IF
       *
                PERFORM 900-CHK004-KEY7-FET-SEC
+           DISPLAY "009 chk004 loop  " MCP-RC
       *
            END-PERFORM
       *
@@ -345,6 +350,7 @@
                MOVE    WRK-DTCHKERR    TO  DTCHKERR-REC
                WRITE   DTCHKERR-REC
                CLOSE   DTCHKERR-FILE
+             IF    WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
@@ -356,6 +362,7 @@
                MOVE    "9999"          TO  JOB-ERRCD
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
+             END-IF
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -377,9 +384,10 @@
                                    TO  JOB-SHELLID
            MOVE    ZERO            TO  JOB-UPDCNT
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
-      *
-           PERFORM 900-DBCOMMIT-SEC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               PERFORM 800-ORCSJOB-SEC
+               PERFORM 900-DBCOMMIT-SEC
+           END-IF
       *     
            DISPLAY "*** ORCDTCHK009 END ***"
            .

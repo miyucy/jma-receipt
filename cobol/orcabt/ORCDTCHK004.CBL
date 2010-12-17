@@ -230,6 +230,7 @@
            DISPLAY "*** ORCDTCHK004 START ***"
       *
            PERFORM 100-INIT-SEC
+           DISPLAY "004 WRK-PARA-SHELLID = " WRK-PARA-SHELLID
       *
            PERFORM 200-MAIN-SEC
       *
@@ -257,17 +258,19 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           PERFORM 900-DBSTART-SEC
+           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
+               PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
-           MOVE    "STS"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-           MOVE    "ORCDTCHK004"       TO  JOB-PGID
-           MOVE    "診療会計情報抽出"  TO  JOB-SHELLMSG
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+               MOVE    "STS"               TO  SJOBKANRI-MODE
+               INITIALIZE                      JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+               MOVE    "ORCDTCHK004"       TO  JOB-PGID
+               MOVE    "診療会計情報抽出"  TO  JOB-SHELLMSG
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
+           END-IF
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
@@ -292,9 +295,10 @@
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
-           PERFORM 900-DBCOMMIT-SEC
-      *
-           PERFORM 900-DBSTART-SEC
+           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
+               PERFORM 900-DBCOMMIT-SEC
+               PERFORM 900-DBSTART-SEC
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -615,6 +619,7 @@
                MOVE    WRK-DTCHKERR    TO  DTCHKERR-REC
                WRITE   DTCHKERR-REC
                CLOSE   DTCHKERR-FILE
+             IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *
       *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
@@ -626,6 +631,7 @@
                MOVE    "9999"          TO  JOB-ERRCD
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
+             END-IF
            END-IF
       *
            MOVE    1                   TO  FLG-END
@@ -640,16 +646,18 @@
        300-END-SEC                     SECTION.
       *
       *    ステップ管理終了処理
-           MOVE    "STE"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    ZERO            TO  JOB-UPDCNT
-           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           PERFORM 800-ORCSJOB-SEC
+           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
+               MOVE    "STE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+               MOVE    WRK-PARA-SHELLID
+                                       TO  JOB-SHELLID
+               MOVE    ZERO            TO  JOB-UPDCNT
+               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+               PERFORM 800-ORCSJOB-SEC
       *
-           PERFORM 900-DBCOMMIT-SEC
+               PERFORM 900-DBCOMMIT-SEC
+           END-IF
       *     
            DISPLAY "*** ORCDTCHK004 END ***"
            .

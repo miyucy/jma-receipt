@@ -92,6 +92,7 @@ utf8_shell_sources = \
 	allways/plugin.sh.in \
 	execshell.sh.in \
 	allways/ORCBQ03.sh.in \
+	monthly/dtck_prv.sh.in \
 
 eucjp_shell_sources = \
 	allways/program_upgrade_check_log.sh.in \
