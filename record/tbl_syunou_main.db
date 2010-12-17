@@ -1548,3 +1548,31 @@ path	abort 	{
 	};
 };
 
+path	key75 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key75_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY    PTID,HKNCOMBINUM
+		;
+	};
+};
+
+path	key76 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key76_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYYMD     LIKE :SRYYMD
+			AND   CREATEKBN   =   '3'
+			ORDER   BY    PTID,HKNCOMBINUM
+		;
+	};
+};
+
