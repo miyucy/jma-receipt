@@ -128,6 +128,8 @@
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
       *                                     対応
+      *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -159,21 +161,11 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE041-KEY
                                    FILE    STATUS  IS  STS-RECE041.
-           SELECT  RECE0441-FILE   ASSIGN  RECE041PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE0441-KEY
-                                   FILE    STATUS  IS  STS-RECE041.
       *    レセプト０５データ（ＯＵＴ）
            SELECT  RECE051-FILE    ASSIGN  RECE051PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE051-KEY
-                                   FILE    STATUS  IS  STS-RECE051.
-           SELECT  RECE0551-FILE   ASSIGN  RECE051PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE0551-KEY
                                    FILE    STATUS  IS  STS-RECE051.
       *    レセプト０４データ（ＯＵＴ）（ワーク）
            SELECT  RECE049-FILE    ASSIGN  RECE049PARA
@@ -181,32 +173,17 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE049-KEY
                                    FILE    STATUS  IS  STS-RECE049.
-           SELECT  RECE0449-FILE   ASSIGN  RECE049PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE0449-KEY
-                                   FILE    STATUS  IS  STS-RECE049.
       *    レセプト０５データ（ＯＵＴ）（ワーク）
            SELECT  RECE059-FILE    ASSIGN  RECE059PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE059-KEY
                                    FILE    STATUS  IS  STS-RECE059.
-           SELECT  RECE0559-FILE   ASSIGN  RECE059PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE0559-KEY
-                                   FILE    STATUS  IS  STS-RECE059.
       *
            SELECT  RECE055-FILE    ASSIGN  RECE055PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE055-KEY
-                                   FILE    STATUS  IS  STS-RECE055.
-           SELECT  RECE0555-FILE   ASSIGN  RECE055PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE0555-KEY
                                    FILE    STATUS  IS  STS-RECE055.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -239,16 +216,6 @@
        01  RECE051-REC. 
            COPY    "CPRCF005.INC"  REPLACING   //RECE05//
                                    BY          //RECE051//.
-      *
-       FD  RECE0441-FILE.
-       01  RECE0441-REC. 
-           COPY    "CPRCF004.INC"  REPLACING   //RECE04//
-                                   BY          //RECE0441//.
-      *
-       FD  RECE0551-FILE.
-       01  RECE0551-REC. 
-           COPY    "CPRCF005.INC"  REPLACING   //RECE05//
-                                   BY          //RECE0551//.
       *ワーク
        FD  RECE049-FILE.
        01  RECE049-REC. 
@@ -260,24 +227,9 @@
            COPY    "CPRCF005.INC"  REPLACING   //RECE05//
                                    BY          //RECE059//.
       *
-       FD  RECE0449-FILE.
-       01  RECE0449-REC. 
-           COPY    "CPRCF004.INC"  REPLACING   //RECE04//
-                                   BY          //RECE0449//.
-      *
-       FD  RECE0559-FILE.
-       01  RECE0559-REC. 
-           COPY    "CPRCF005.INC"  REPLACING   //RECE05//
-                                   BY          //RECE0559//.
-      *
        FD  RECE055-FILE.
        01  RECE055-REC. 
            COPY    "CPRCF0055.INC".
-      *
-       FD  RECE0555-FILE.
-       01  RECE0555-REC. 
-           COPY    "CPRCF0055.INC" REPLACING   //RECE055//
-                                   BY          //RECE0555//.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -1037,20 +989,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE059PARA-HOSPNUM
       *
            OPEN    INPUT               RECE05-FILE
       *
-           OPEN    OUTPUT              RECE0441-FILE
-           CLOSE                       RECE0441-FILE
+           OPEN    OUTPUT              RECE041-FILE
+           CLOSE                       RECE041-FILE
       *
-           OPEN    OUTPUT              RECE0551-FILE
-           CLOSE                       RECE0551-FILE
+           OPEN    OUTPUT              RECE051-FILE
+           CLOSE                       RECE051-FILE
       *
-           OPEN    OUTPUT              RECE0449-FILE
-           CLOSE                       RECE0449-FILE
+           OPEN    OUTPUT              RECE049-FILE
+           CLOSE                       RECE049-FILE
       *
-           OPEN    OUTPUT              RECE0559-FILE
-           CLOSE                       RECE0559-FILE
+           OPEN    OUTPUT              RECE059-FILE
+           CLOSE                       RECE059-FILE
       *
-           OPEN    OUTPUT              RECE0555-FILE
-           CLOSE                       RECE0555-FILE
+           OPEN    OUTPUT              RECE055-FILE
+           CLOSE                       RECE055-FILE
       *
            OPEN    I-O                 RECE041-FILE
            OPEN    I-O                 RECE049-FILE

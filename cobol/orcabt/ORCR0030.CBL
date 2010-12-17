@@ -508,6 +508,8 @@
       *                                     種別不明レセ対応
       *  04.06.03    NACL-門脇    10/09/13  出産一時金対応（外来）
       *  04.06.04    NACL-門脇    10/12/13  保険別請求チェック表の本体取込み
+      *  04.06.05    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -524,20 +526,10 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE04-KEY
                                    FILE    STATUS  IS  STS-RECE04.
-           SELECT  RECE044-FILE    ASSIGN  RECE04PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE044-KEY
-                                   FILE    STATUS  IS  STS-RECE04.
            SELECT  RECE05-FILE     ASSIGN  RECE05PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE05-KEY
-                                   FILE    STATUS  IS  STS-RECE05.
-           SELECT  RECE055-FILE    ASSIGN  RECE05PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE055-KEY
                                    FILE    STATUS  IS  STS-RECE05.
            SELECT  RECE09-FILE     ASSIGN  RECE09PARA
                                    ORGANIZATION    IS  INDEXED
@@ -559,19 +551,9 @@
        01  RECE04-REC. 
            COPY    "CPRCF004.INC".
       *
-       FD  RECE044-FILE.
-       01  RECE044-REC. 
-           COPY    "CPRCF004.INC"  REPLACING  //RECE04//
-                                   BY         //RECE044//.
-      *
        FD  RECE05-FILE.
        01  RECE05-REC. 
            COPY    "CPRCF005.INC".
-      *
-       FD  RECE055-FILE.
-       01  RECE055-REC. 
-           COPY    "CPRCF005.INC"  REPLACING  //RECE05//
-                                   BY         //RECE055//.
       *
        FD  RECE09-FILE.
        01  RECE09-REC. 
@@ -2113,14 +2095,13 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
            IF      IDZ             =   1               
       *    レセプト処理
-               OPEN    OUTPUT              RECE044-FILE
-               CLOSE                       RECE044-FILE
+               OPEN    OUTPUT              RECE04-FILE
+               CLOSE                       RECE04-FILE
       *
-               OPEN    OUTPUT              RECE055-FILE
-               CLOSE                       RECE055-FILE
+               OPEN    OUTPUT              RECE05-FILE
+               CLOSE                       RECE05-FILE
       *
                OPEN    OUTPUT              RECE04-FILE
-      ****                                 RECE05-FILE
                OPEN    I-O                 RECE05-FILE
            END-IF
            OPEN    I-O                 RECE02-FILE
@@ -5103,6 +5084,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE04-HOSPNUM
            MOVE    RECE02-RECESYUBETU   TO      RECE04-RECESYUBETU
            MOVE    RECE02-HKNJANUM-KEY  TO      RECE04-HKNJANUM
            MOVE    RECE02-HOJOKBN-KEY   TO      RECE04-HOJOKBN
+           MOVE    RECE02-KOHID-KEY     TO      RECE04-KOHID
            MOVE    RECE02-TEKSTYMD      TO      RECE04-TEKSTYMD
            MOVE    ZERO                 TO      RECE04-KOHBUNRI
            MOVE    ACCT-SRYKBN          TO      RECE04-SRYKBN
@@ -5231,6 +5213,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
            MOVE    RECE02-RECESYUBETU   TO      RECE05-RECESYUBETU
            MOVE    RECE02-HKNJANUM-KEY  TO      RECE05-HKNJANUM
            MOVE    RECE02-HOJOKBN-KEY   TO      RECE05-HOJOKBN
+           MOVE    RECE02-KOHID-KEY     TO      RECE05-KOHID
            MOVE    RECE02-TEKSTYMD      TO      RECE05-TEKSTYMD
            MOVE    ZERO                 TO      RECE05-KOHBUNRI
            MOVE    SRY-ZAINUM           TO      RECE05-ZAINUM

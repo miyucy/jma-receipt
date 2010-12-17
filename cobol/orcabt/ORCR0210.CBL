@@ -55,12 +55,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE039-KEY
                                    FILE    STATUS  IS  STS-RECE039.
-      *
-           SELECT  RECE039W-FILE   ASSIGN  RECE039PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE039W-KEY
-                                   FILE    STATUS  IS  STS-RECE039.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -78,12 +72,6 @@
            COPY    "CPRCF0031.INC"  REPLACING  //RECE031//
                                    BY          //RECE039//.
            03  RECE039-SYUBYOFLG-X PIC X(01).
-      *
-       FD  RECE039W-FILE.
-       01  RECE039W-REC. 
-           COPY    "CPRCF0031.INC"  REPLACING  //RECE031//
-                                   BY          //RECE039W//.
-           03  RECE039W-SYUBYOFLG-X PIC X(01).
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -253,8 +241,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE03PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE039PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE039PARA-HOSPNUM
       *
-           OPEN    OUTPUT              RECE039W-FILE
-           CLOSE                       RECE039W-FILE
+           OPEN    OUTPUT              RECE039-FILE
+           CLOSE                       RECE039-FILE
       *
            OPEN    INPUT               RECE03-FILE
            OPEN    OUTPUT              RECE039-FILE

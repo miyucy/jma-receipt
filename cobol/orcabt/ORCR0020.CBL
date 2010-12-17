@@ -220,6 +220,9 @@
       *                                     請求に係わる記録条件仕様の
       *                                     変更に伴う修正
       *                                     診療科２、３を追加
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,20 +239,10 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE02-KEY
                                    FILE    STATUS  IS  STS-RECE02.
-           SELECT  RECE022-FILE    ASSIGN  RECE02PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE022-KEY
-                                   FILE    STATUS  IS  STS-RECE02.
            SELECT  RECE09-FILE     ASSIGN  RECE09PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE09-KEY
-                                   FILE    STATUS  IS  STS-RECE09.
-           SELECT  RECE091-FILE    ASSIGN  RECE09PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE091-KEY
                                    FILE    STATUS  IS  STS-RECE09.
       *    レセプト（県単用項目）データ
            SELECT  RECE11-FILE     ASSIGN  RECE11PARA
@@ -261,11 +254,6 @@
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE12-KEY
-                                   FILE    STATUS  IS  STS-RECE12.
-           SELECT  RECE12X-FILE    ASSIGN  RECE12PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE12X-KEY
                                    FILE    STATUS  IS  STS-RECE12.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -282,19 +270,9 @@
        01  RECE02-REC. 
            COPY    "CPRCF002.INC".
       *
-       FD  RECE022-FILE.
-       01  RECE022-REC. 
-           COPY    "CPRCF002.INC"  REPLACING  //RECE02//
-                                   BY         //RECE022//.
-      *
        FD  RECE09-FILE.
        01  RECE09-REC. 
            COPY    "CPRCF009.INC".
-      *
-       FD  RECE091-FILE.
-       01  RECE091-REC. 
-           COPY    "CPRCF009.INC"  REPLACING  //RECE09//
-                                   BY         //RECE091//.
       *
       *    レセプト（県単用項目）データ
        FD  RECE11-FILE.
@@ -305,11 +283,6 @@
        01  RECE12-REC. 
            COPY    "CPRCF068.INC"  REPLACING  //RECE68//
                                    BY         //RECE12//.
-      *
-       FD  RECE12X-FILE.
-       01  RECE12X-REC. 
-           COPY    "CPRCF068.INC"  REPLACING  //RECE68//
-                                   BY         //RECE12X//.
       *     
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -1022,20 +995,20 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    ZERO                TO  FLG-RECE01
            MOVE    LOW-VALUE           TO  KEY-AREA1
       *
-           OPEN    OUTPUT              RECE022-FILE
-           CLOSE                       RECE022-FILE
+           OPEN    OUTPUT              RECE02-FILE
+           CLOSE                       RECE02-FILE
       *
            IF      IDZ             =   1               
-               OPEN    OUTPUT              RECE091-FILE
-               CLOSE                       RECE091-FILE
+               OPEN    OUTPUT              RECE09-FILE
+               CLOSE                       RECE09-FILE
       *
                OPEN    I-O                 RECE09-FILE
       *
                OPEN    OUTPUT              RECE11-FILE
                CLOSE                       RECE11-FILE
       *
-               OPEN    OUTPUT              RECE12X-FILE
-               CLOSE                       RECE12X-FILE
+               OPEN    OUTPUT              RECE12-FILE
+               CLOSE                       RECE12-FILE
                OPEN    I-O                 RECE12-FILE
       *
            END-IF    
@@ -1313,6 +1286,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
            END-IF
            MOVE    RECE01-HOJOKBN       TO  RECE02-HOJOKBN-KEY
+           IF    ( RECE01-HKNNUM        =   SPACE         )
+           AND   ( RECE01-KOHHKNNUM-O (1)
+                                        =   "030" )
+               MOVE    RECE01-KOH-KOHID TO  RECE02-KOHID-KEY
+           END-IF
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                    OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
@@ -1860,6 +1838,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
                                    TO  LNK-SYUACC-IO-HOJOKBN     (1)
            MOVE    RECE02-TEISYUTUSAKI
                                    TO  LNK-SYUACC-IO-TEISYUTUSAKI(1)
+           MOVE    RECE02-KOHID-KEY
+                                   TO  LNK-SYUACC-IO-KOHID       (1)
       *    精神入院か生保単独複数のとき
            IF    ( RECE02-HKNNUM   =   SPACE      )
            AND   ( RECE02-TEKSTYMD
@@ -4182,6 +4162,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE12-HOSPNUM
            MOVE    RECE02-RECESYUBETU  TO  RECE12-RECESYUBETU
            MOVE    RECE02-HKNJANUM-KEY TO  RECE12-HKNJANUM
            MOVE    RECE02-HOJOKBN-KEY  TO  RECE12-HOJOKBN
+           MOVE    RECE02-KOHID-KEY    TO  RECE12-KOHID
            MOVE    RECE02-TEKSTYMD     TO  RECE12-TEKSTYMD
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE12-NYUINYMD
            MOVE    RECE12-REC          TO  WRK-RECE12-REC          

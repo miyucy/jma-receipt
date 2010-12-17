@@ -6268,24 +6268,42 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            PERFORM 20081-OPECOM-HEN-SEC
       *
       *    保険履歴情報
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       WRK-RIREKI-MAX  
       *
-               ADD     1                   TO  WRK-COM-RENNUM
-      *        キー編集処理
-               PERFORM 50011-KEY-HENSYU-SEC
-               MOVE    "2"                 TO  RECEDEN-RECKBN
-               MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
-               INSPECT WRK-HKN-RIREKI-TBL  (IDXX)  REPLACING   ALL "  "
+      *    公費単独以外、心身喪失単独は保険履歴の記載をしない
+           IF    ( RECE02-HKNNUM       =   SPACE )
+           AND   ( RECE02-KOHNUM (1)
+                                   NOT =   SPACE )
+           AND   ( RECE02-KOHNUM (2)
+                                   NOT =   SPACE )
+               CONTINUE
+           ELSE
+               IF    ( RECE02-HKNNUM       =   SPACE )
+               AND   ( RECE02-KOHNUM (1)   =   "030" )
+               AND   ( RECE02-KOHNUM (2)   =   SPACE )
+                  CONTINUE
+               ELSE
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       WRK-RIREKI-MAX  
+      *
+                       ADD     1                   TO  WRK-COM-RENNUM
+      *          
+      *                キー編集処理
+                       PERFORM 50011-KEY-HENSYU-SEC
+                       MOVE    "2"                 TO  RECEDEN-RECKBN
+                       MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
+                       INSPECT WRK-HKN-RIREKI-TBL  (IDXX)
+                                                   REPLACING   ALL "  "
                                                                BY  "　"
-               MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
-                                           TO  RECEDEN-RECEDATA
+                       MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
+                                                   TO  RECEDEN-RECEDATA
       *
-               PERFORM 50012-DBINSERT-SEC
+                       PERFORM 50012-DBINSERT-SEC
       *
-      *        症状詳記（コメント）編集処理
-               PERFORM 20099-COMMENT-HENSYU-SEC
-           END-PERFORM
+      *                症状詳記（コメント）編集処理
+                       PERFORM 20099-COMMENT-HENSYU-SEC
+                   END-PERFORM
+               END-IF
+           END-IF
            .
        2008-COMMENT-HEN-01-EXT.
            EXIT.
@@ -7051,6 +7069,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            ELSE
                MOVE    RECE02-HOJOKBN-KEY  TO  RECEDEN-HOJOKBN-KEY
            END-IF   
+           MOVE    RECE02-KOHID-KEY    TO  RECEDEN-KOHID-KEY
            IF      RECE02-TEKSTYMD     =   SPACE
                MOVE    ZERO            TO  RECEDEN-TEKSTYMD
            ELSE

@@ -47,6 +47,8 @@
       *
       *  04.06.01    NACL-藤原    10/07/20  レセプト病名記載順対応
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,6 +145,7 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-N-RECESYUBETU   PIC 9(04).
                05  KEY-N-HKNJANUM      PIC X(08).
                05  KEY-N-HOJOKBN       PIC X(01).
+               05  KEY-N-KOHID         PIC 9(10).
                05  KEY-N-TEKSTYMD      PIC X(08). 
                05  KEY-N-SRYYMD        PIC X(08).
                05  KEY-N-TENKIKBN      PIC X(01).
@@ -158,6 +161,7 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-O-RECESYUBETU   PIC 9(04).
                05  KEY-O-HKNJANUM      PIC X(08).
                05  KEY-O-HOJOKBN       PIC X(01).
+               05  KEY-O-KOHID         PIC 9(10).
                05  KEY-O-TEKSTYMD      PIC X(08). 
                05  KEY-O-SRYYMD        PIC X(08).
                05  KEY-O-TENKIKBN      PIC X(01).
@@ -317,16 +321,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
        200-MAIN-SEC                SECTION.
       *    
            INITIALIZE                      RECE031-REC
-grpsys     MOVE    RECE03-HOSPNUM      TO  RECE031-HOSPNUM
-           MOVE    RECE03-SRYYM        TO  RECE031-SRYYM
-           MOVE    RECE03-NYUGAIKBN    TO  RECE031-NYUGAIKBN
-           MOVE    RECE03-PTID         TO  RECE031-PTID
-           MOVE    RECE03-RECEKA       TO  RECE031-RECEKA
-           MOVE    RECE03-TEISYUTUSAKI TO  RECE031-TEISYUTUSAKI
-           MOVE    RECE03-RECESYUBETU  TO  RECE031-RECESYUBETU
-           MOVE    RECE03-HKNJANUM     TO  RECE031-HKNJANUM
-           MOVE    RECE03-HOJOKBN      TO  RECE031-HOJOKBN
-           MOVE    RECE03-TEKSTYMD     TO  RECE031-TEKSTYMD
+           MOVE    RECE03-KEY1         TO  RECE031-KEY1
            MOVE    RECE03-SRYYMD       TO  RECE031-SRYYMD
            MOVE    RECE03-SYUBYOFLG    TO  RECE031-SYUBYOFLG   
            MOVE    RECE03-TENKIKBN     TO  RECE031-TENKIKBN
@@ -501,6 +496,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE03-RECESYUBETU  TO  KEY-N-RECESYUBETU
                    MOVE    RECE03-HKNJANUM     TO  KEY-N-HKNJANUM
                    MOVE    RECE03-HOJOKBN      TO  KEY-N-HOJOKBN
+                   MOVE    RECE03-KOHID        TO  KEY-N-KOHID
                    MOVE    RECE03-TEKSTYMD     TO  KEY-N-TEKSTYMD
                    MOVE    RECE03-SRYYMD       TO  KEY-N-SRYYMD
                    MOVE    RECE03-TENKIKBN     TO  KEY-N-TENKIKBN

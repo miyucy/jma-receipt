@@ -254,12 +254,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE06-KEY
                                    FILE    STATUS  IS  STS-RECE.
-      *    レセプト０６´データ
-           SELECT  RECE066-FILE     ASSIGN  RECE06PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE066-KEY
-                                   FILE    STATUS  IS  STS-RECE.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -286,12 +280,6 @@
        FD  RECE06-FILE.
        01  RECE06-REC. 
            COPY    "CPRCF006.INC".
-      *
-      *    レセプト０６´データ
-       FD  RECE066-FILE.
-       01  RECE066-REC. 
-           COPY    "CPRCF006.INC"  REPLACING  //RECE06//
-                                   BY         //RECE066//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -1283,8 +1271,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE06PARA-HOSPNUM
       *
            OPEN    INPUT               RECE05-FILE
       *
-           OPEN    OUTPUT              RECE066-FILE
-           CLOSE                       RECE066-FILE
+           OPEN    OUTPUT              RECE06-FILE
+           CLOSE                       RECE06-FILE
       *
            OPEN    I-O                 RECE06-FILE
       *

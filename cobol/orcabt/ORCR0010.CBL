@@ -179,6 +179,9 @@
       *                                     ÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
       *  04.05.03    NACL-Æ£¸¶    10/04/13  °¦ÃÎ¸©ÂÐ±þ
       *                                     À¸ÊÝ¤ÈÆÃÄê¼À´µ£¹£±¤Îµ­ºÜ½ç 
+      *
+      *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
+      *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -193,24 +196,12 @@
                                    RECORD  KEY     IS  RECE01-KEY
                                    FILE    STATUS  IS  STS-RECE01.
       *
-           SELECT  RECE011-FILE    ASSIGN  RECE01PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE011-KEY
-                                   FILE    STATUS  IS  STS-RECE011.
-      *
       *    °åÎÅÈñÀÁµá½ñ  
            SELECT  RECE01X-FILE    ASSIGN  RECE01XPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE01X-KEY
                                    FILE    STATUS  IS  STS-RECE01X.
-      *
-           SELECT  RECE011X-FILE   ASSIGN  RECE01XPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE011X-KEY
-                                   FILE    STATUS  IS  STS-RECE011X.
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -223,21 +214,12 @@
        01  RECE01-REC. 
            COPY    "CPRCF001.INC".
       *
-       FD  RECE011-FILE.
-       01  RECE011-REC. 
-           COPY    "CPRCF001.INC"  REPLACING  //RECE01//
-                                   BY         //RECE011//.
-      *
       *    °åÎÅÈñÀÁµá½ñ  
        FD  RECE01X-FILE.
        01  RECE01X-REC. 
            COPY    "CPRCF001.INC"  REPLACING  //RECE01//
                                    BY         //RECE01X//.
       *
-       FD  RECE011X-FILE.
-       01  RECE011X-REC. 
-           COPY    "CPRCF001.INC"  REPLACING  //RECE01//
-                                   BY         //RECE011X//.
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -260,9 +242,7 @@
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
            03  STS-RECE01                              PIC X(02).
-           03  STS-RECE011                             PIC X(02).
            03  STS-RECE01X                             PIC X(02).
-           03  STS-RECE011X                            PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
        01  FLG-AREA.
@@ -870,13 +850,13 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
            END-IF
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
-           OPEN    OUTPUT              RECE011-FILE
-           CLOSE                       RECE011-FILE
+           OPEN    OUTPUT              RECE01-FILE
+           CLOSE                       RECE01-FILE
       *
            OPEN    I-O                 RECE01-FILE  
       *
-           OPEN    OUTPUT              RECE011X-FILE
-           CLOSE                       RECE011X-FILE
+           OPEN    OUTPUT              RECE01X-FILE
+           CLOSE                       RECE01X-FILE
       *
            OPEN    I-O                 RECE01X-FILE  
            .
@@ -1564,6 +1544,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            IF      COMB-HKNNUM         =   SPACE
                IF      COMB-KOH1HKNNUM     =   "030"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
+                   MOVE    COMB-KOHID          TO  WRK-RECE01-KOH-KOHID
                END-IF
            END-IF
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN

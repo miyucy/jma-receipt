@@ -77,6 +77,9 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    10/01/12  治験対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -93,11 +96,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE061-KEY
                                    FILE    STATUS  IS  STS-RECE061.
-           SELECT  RECE0661-FILE   ASSIGN  RECE061PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE0661-KEY
-                                   FILE    STATUS  IS  STS-RECE061.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -112,12 +110,7 @@
        FD  RECE061-FILE.
        01  RECE061-REC. 
            COPY    "CPRCF0061.INC".
-      *
-       FD  RECE0661-FILE.
-       01  RECE0661-REC. 
-           COPY    "CPRCF0061.INC"  REPLACING  //RECE061//
-                                   BY          //RECE0661//.
-006900*    エラーファイル
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -136,7 +129,6 @@ grpsys     COPY    "COMMON-SPA".
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
       *
       *    フラグ領域
        01  STS-AREA.
@@ -258,8 +250,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
       *
-           OPEN    OUTPUT              RECE0661-FILE
-           CLOSE                       RECE0661-FILE
+           OPEN    OUTPUT              RECE061-FILE
+           CLOSE                       RECE061-FILE
       *
            OPEN    INPUT               RECE06-FILE
            OPEN    I-O                 RECE061-FILE
@@ -303,6 +295,7 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
            MOVE    RECE06-RECESYUBETU   TO      RECE061-RECESYUBETU
            MOVE    RECE06-HKNJANUM      TO      RECE061-HKNJANUM
            MOVE    RECE06-HOJOKBN       TO      RECE061-HOJOKBN
+           MOVE    RECE06-KOHID         TO      RECE061-KOHID
            MOVE    RECE06-TEKSTYMD      TO      RECE061-TEKSTYMD
            MOVE    RECE06-KOHBUNRI      TO      RECE061-KOHBUNRI
            MOVE    RECE06-ZAINUM        TO      RECE061-ZAINUM

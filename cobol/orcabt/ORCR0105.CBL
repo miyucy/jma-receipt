@@ -2293,7 +2293,7 @@
            ELSE
                MOVE    RECE02X-HOJOKBN-KEY     TO  KOHSKY-HOJOKBN-KEY
            END-IF
-      *****MOVE    RECE02X-KOHID-KEY   TO  KOHSKY-KOHID-KEY
+           MOVE    RECE02X-KOHID-KEY   TO  KOHSKY-KOHID-KEY
            IF      RECE02X-TEKSTYMD    =   SPACE
                MOVE    ZERO                TO  KOHSKY-TEKSTYMD
            ELSE
@@ -7986,7 +7986,7 @@
            ELSE
                MOVE    RECE02-HOJOKBN-KEY  TO  RECE10-HOJOKBN-KEY
            END-IF   
-      *****MOVE    RECE02-KOHID-KEY    TO  RECE10-KOHID-KEY
+           MOVE    RECE02-KOHID-KEY    TO  RECE10-KOHID-KEY
            IF      RECE02-TEKSTYMD     =   SPACE
                MOVE    ZERO            TO  RECE10-TEKSTYMD
            ELSE

@@ -49,6 +49,9 @@
       *                                     （診療区分６４：病理診断対応）
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,20 +78,10 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE042-KEY
                                    FILE    STATUS  IS  STS-RECE042.
-           SELECT  RECE042X-FILE   ASSIGN  RECE042PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE042X-KEY
-                                   FILE    STATUS  IS  STS-RECE042.
            SELECT  RECE04W-FILE    ASSIGN  RECE04WPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE04W-KEY
-                                   FILE    STATUS  IS  STS-RECE04W.
-           SELECT  RECE04WX-FILE   ASSIGN  RECE04WPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE04WX-KEY
                                    FILE    STATUS  IS  STS-RECE04W.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -113,20 +106,10 @@
        01  RECE042-REC. 
            COPY    "CPRCF0042.INC".
       *
-       FD  RECE042X-FILE.
-       01  RECE042X-REC. 
-           COPY    "CPRCF0042.INC" REPLACING  //RECE042//
-                                   BY         //RECE042X//.
-      *
        FD  RECE04W-FILE.
        01  RECE04W-REC. 
            COPY    "CPRCF004.INC"  REPLACING  //RECE04//
                                    BY         //RECE04W//.
-      *
-       FD  RECE04WX-FILE.
-       01  RECE04WX-REC. 
-           COPY    "CPRCF004.INC"  REPLACING  //RECE04//
-                                   BY         //RECE04WX//.
       * 
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -326,11 +309,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE042X-FILE
-           CLOSE                       RECE042X-FILE
+           OPEN    OUTPUT              RECE042-FILE
+           CLOSE                       RECE042-FILE
       *
-           OPEN    OUTPUT              RECE04WX-FILE
-           CLOSE                       RECE04WX-FILE
+           OPEN    OUTPUT              RECE04W-FILE
+           CLOSE                       RECE04W-FILE
       *
           .
        100-INIT-EXT.
@@ -423,6 +406,7 @@ grpsys             MOVE    RECE04-HOSPNUM      TO  RECE042-HOSPNUM
                    MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
                    MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
                    MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
+                   MOVE    RECE04-KOHID        TO  RECE042-KOHID
                    MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
@@ -460,6 +444,7 @@ grpsys             MOVE    RECE04-HOSPNUM      TO  RECE042-HOSPNUM
                    MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
                    MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
                    MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
+                   MOVE    RECE04-KOHID        TO  RECE042-KOHID
                    MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN

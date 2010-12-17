@@ -68,6 +68,8 @@
       *                                     病名なし時のエラー設定
       *  04.06.02    NACL-藤原    10/07/20  レセプト病名記載順対応
       *  04.06.03    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.04    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -595,16 +597,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ADD     1                   TO  WRK-RENNUM
       *
            INITIALIZE                      RECE03-REC
-grpsys     MOVE    RECE02-HOSPNUM      TO  RECE03-HOSPNUM
-           MOVE    RECE02-SRYYM        TO  RECE03-SRYYM
-           MOVE    RECE02-NYUGAIKBN    TO  RECE03-NYUGAIKBN
-           MOVE    RECE02-PTID         TO  RECE03-PTID
-           MOVE    RECE02-RECEKA       TO  RECE03-RECEKA
-           MOVE    RECE02-TEISYUTUSAKI TO  RECE03-TEISYUTUSAKI
-           MOVE    RECE02-RECESYUBETU  TO  RECE03-RECESYUBETU
-           MOVE    RECE02-HKNJANUM-KEY TO  RECE03-HKNJANUM
-           MOVE    RECE02-HOJOKBN-KEY  TO  RECE03-HOJOKBN
-           MOVE    RECE02-TEKSTYMD     TO  RECE03-TEKSTYMD
+           MOVE    RECE02-KEY          TO  RECE03-KEY1
            MOVE    PTBYO-SRYYMD        TO  RECE03-SRYYMD
            MOVE    WRK-RENNUM          TO  RECE03-RENNUM
            MOVE    RECE02-PTNUM        TO  RECE03-PTNUM

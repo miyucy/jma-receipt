@@ -55,6 +55,9 @@
       *                                     診療種別区分の追加
       *  04.05.02    NACL-藤原    09/11/27  レセ電コメント拡張対応
       *                                     関係コメント存在フラグ追加
+      *
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,12 +78,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE041-KEY
                                    FILE    STATUS  IS  STS-RECE041.
-      *
-           SELECT  RECE04W-FILE     ASSIGN  RECE041PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE04W-KEY
-                                   FILE    STATUS  IS  STS-RECE041.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -97,10 +94,6 @@
        01  RECE041-REC. 
            COPY    "CPRCF0041.INC".
       *
-       FD  RECE04W-FILE.
-       01  RECE04W-REC. 
-           COPY    "CPRCF0041.INC"  REPLACING  //RECE041//
-                                   BY          //RECE04W//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -165,7 +158,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-RECEERR             PIC X(200). 
            03  WRK-KOHBUNRI            PIC 9(01).
            03  WRK-HKNCOMBI            PIC 9(04).
-      *****03  OLD-KEY                 PIC X(65).
            03  OLD-KEY.
                05  OLD-RECE041-HOSPNUM     PIC  9(02).
                05  OLD-RECE041-SRYYM       PIC  9(06).
@@ -177,6 +169,7 @@ grpsys     COPY    "COMMON-SPA".
                05  OLD-RECE041-RECESYUBETU PIC  9(04).
                05  OLD-RECE041-HKNJANUM    PIC  X(08).
                05  OLD-RECE041-HOJOKBN     PIC  X(01).
+               05  OLD-RECE041-KOHID       PIC  9(10).
                05  OLD-RECE041-TEKSTYMD    PIC  X(08). 
       *
       *****************************************************************
@@ -290,8 +283,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE04PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE041PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE041PARA-HOSPNUM
       *
-           OPEN    OUTPUT              RECE04W-FILE
-           CLOSE                       RECE04W-FILE
+           OPEN    OUTPUT              RECE041-FILE
+           CLOSE                       RECE041-FILE
       *
            OPEN    INPUT               RECE04-FILE
       *
@@ -299,7 +292,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE041PARA-HOSPNUM
       *
       *        レセプト明細０３読み込み
            PERFORM 900-RECE04-READ-SEC
-           MOVE    RECE04-KEY(1:43)    TO  OLD-KEY
+           MOVE    RECE04-KEY1         TO  OLD-KEY
            MOVE  9                     TO  WRK-KOHBUNRI
            MOVE  ZERO                  TO  WRK-HKNCOMBI
            .
@@ -312,22 +305,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE041PARA-HOSPNUM
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      RECE041-REC
-grpsys     MOVE    RECE04-HOSPNUM      TO  RECE041-HOSPNUM
-           MOVE    RECE04-SRYYM        TO  RECE041-SRYYM
-           MOVE    RECE04-NYUGAIKBN    TO  RECE041-NYUGAIKBN
-           MOVE    RECE04-PTID         TO  RECE041-PTID
-           MOVE    RECE04-RECEKA       TO  RECE041-RECEKA
-           MOVE    RECE04-TEISYUTUSAKI TO  RECE041-TEISYUTUSAKI
-           MOVE    RECE04-RECESYUBETU  TO  RECE041-RECESYUBETU
-           MOVE    RECE04-HKNJANUM     TO  RECE041-HKNJANUM
-           MOVE    RECE04-HOJOKBN      TO  RECE041-HOJOKBN
-           MOVE    RECE04-TEKSTYMD     TO  RECE041-TEKSTYMD
+           MOVE    RECE04-KEY1         TO  RECE041-KEY1
            MOVE    RECE04-ZAINUM       TO  RECE041-ZAINUM
            MOVE    RECE04-KOHBUNRI     TO  RECE041-KOHBUNRI
-           IF      RECE04-KEY(1:43)    NOT =   OLD-KEY
+           IF      RECE04-KEY1     NOT =   OLD-KEY
                 MOVE  9                TO  WRK-KOHBUNRI
                 MOVE  ZERO             TO  WRK-HKNCOMBI
-                MOVE  RECE04-KEY(1:43) TO  OLD-KEY
+                MOVE  RECE04-KEY1      TO  OLD-KEY
            END-IF
            IF      RECE04-KOHBUNRI     <   WRK-KOHBUNRI
                 MOVE   RECE04-KOHBUNRI TO  WRK-KOHBUNRI
