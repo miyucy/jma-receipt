@@ -9253,12 +9253,14 @@
            MOVE    "00000000000000000000000000000000000000000000000000"
                                        TO  RECE10-RESERVE-AREA
       *
-           MOVE    RECE62-SKYIRYO-INF  TO  RECE10-SKYIRYO-INF
-           MOVE    RECE62-SKYSKJ-INF   TO  RECE10-SKYSKJ-INF
-           PERFORM  VARYING  IDX  FROM  1  BY  1
-                     UNTIL   IDX   >   10
-             MOVE  RECE62-HKNCOMBI(IDX)  TO  RECE10-HKNCOMBI(IDX)
-           END-PERFORM
+           IF      RECE62-SRYYM    >=   "201004"
+             MOVE    RECE62-SKYIRYO-INF    TO  RECE10-SKYIRYO-INF
+             MOVE    RECE62-SKYSKJ-INF     TO  RECE10-SKYSKJ-INF
+             PERFORM  VARYING  IDX  FROM  1  BY  1
+                       UNTIL   IDX   >   10
+               MOVE  RECE62-HKNCOMBI(IDX)  TO  RECE10-HKNCOMBI(IDX)
+             END-PERFORM
+           END-IF
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

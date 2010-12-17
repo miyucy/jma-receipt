@@ -9171,7 +9171,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-EVALUATE
                 END-IF
                 IF  (IDZ                 =     1    )
-                AND (RECE02-SRYYM       >=  "201101")
+                AND (RECE02-SRYYM       >=  "201004")
                 AND (SYU-SYUHKNNUM   NOT =   SPACE  )
                   IF    RECE02-SENIN-TUUSAI     =    "1"
                     CONTINUE
@@ -12129,7 +12129,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF   (IDZ               =     1      )
-           AND  (RECE02-SRYYM     >=  "201101"  )
+           AND  (RECE02-SRYYM     >=  "201004"  )
            AND  (RECE02-ZAITAKU    =  "1" OR "2")
              MOVE   RECE02-FTNMONEY(1)   TO   RECE02-FTNMONEY-SKY
            END-IF
@@ -14222,15 +14222,13 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
        211M-WRKFILE-CLEAR-SEC      SECTION.
       *
            IF  (IDZ                 =     1    )
-           AND (RECE02-SRYYM       >=  "201101")
+           AND (RECE02-SRYYM       >=  "201004")
               MOVE   RECE02-FTNMONEY(1)  TO   RECE02-FTNMONEY-SKY
               IF   FLG-WRKFILE-CLEAR   =   1
                 MOVE   ZERO              TO   RECE02-FTNMONEY(1)
                 MOVE   ZERO              TO   FLG-KEISAN-TOK1
                 MOVE   ZERO              TO   FLG-KEISAN-TOK2
                 MOVE   ZERO              TO   FTN-KOH-XXX
-                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU
-                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU2
               END-IF
            END-IF
       *
@@ -14244,7 +14242,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
        211N-SKY-HENSYU-SEC      SECTION.
       *
            IF   (IDZ             =    1    )
-           AND  (RECE02-SRYYM   >= "201101")
+           AND  (RECE02-SRYYM   >= "201004")
       *      主保険がある保険組み合わせ
              IF    (WRK-SKY-ZENGAKU      >  ZERO            )
              AND   (WRK-SKY-ICHIBUFTN    >  WRK-SKY-FTNMONEY)

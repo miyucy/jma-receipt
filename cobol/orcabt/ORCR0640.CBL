@@ -11790,7 +11790,7 @@
                    ADD    SYU-SYUCOMPFTN   TO   RECE62-FTNMONEY(1)
                 END-IF
                 IF  (IDZ                 =     1    )
-                AND (RECE62-SRYYM       >=  "201101")
+                AND (RECE62-SRYYM       >=  "201004")
                 AND (SYU-SYUHKNNUM   NOT =   SPACE  )
                   IF    RECE62-SENIN-TUUSAI     =    "1"
                     CONTINUE
@@ -12416,10 +12416,10 @@
                            MOVE    2    TO   FLG-KEISAN2
                         END-IF
                      END-IF
-                     IF   (SYU-KOHTAIYKZKBN    NOT =  "9" )
-                     AND  (FLG-WRKFILE-CLEAR       =  ZERO)
-                        MOVE   WRK-FTNKEI-OKIKAE   TO   WRK-FTNKEI
-                     END-IF
+      ***            IF   (SYU-KOHTAIYKZKBN    NOT =  "9" )
+      ***            AND  (FLG-WRKFILE-CLEAR       =  ZERO)
+      ***               MOVE   WRK-FTNKEI-OKIKAE   TO   WRK-FTNKEI
+      ***            END-IF
                      PERFORM  2104429-TOKUSITU-HENSYU2-SEC
                    ELSE
                      MOVE        1    TO   FLG-HOKENICHIBU3
@@ -16520,7 +16520,7 @@
            END-IF
       *
            IF   (IDZ               =     1      )
-           AND  (RECE62-SRYYM     >=  "201101"  )
+           AND  (RECE62-SRYYM     >=  "201004"  )
            AND  (RECE62-KOUREI     =  "1" OR "2")
              MOVE   RECE62-FTNMONEY(1)   TO   RECE62-FTNMONEY-SKY
            END-IF
@@ -18665,15 +18665,13 @@
        2104H-WRKFILE-CLEAR-SEC      SECTION.
       *
            IF  (IDZ                 =     1    )
-           AND (RECE62-SRYYM       >=  "201101")
+           AND (RECE62-SRYYM       >=  "201004")
               MOVE   RECE62-FTNMONEY(1)  TO   RECE62-FTNMONEY-SKY
               IF   FLG-WRKFILE-CLEAR   =   1
                 MOVE   ZERO              TO   RECE62-FTNMONEY(1)
                 MOVE   ZERO              TO   FLG-KEISAN-TOK1
                 MOVE   ZERO              TO   FLG-KEISAN-TOK2
                 MOVE   ZERO              TO   FTN-KOH-XXX
-                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU
-                MOVE   ZERO              TO   FLG-ZENKOKUKOHI-NISYU2
               END-IF
            END-IF
       *
@@ -18917,7 +18915,7 @@
        2116-SKY-HENSYU-SEC      SECTION.
       *
            IF   (IDZ             =    1    )
-           AND  (RECE62-SRYYM   >= "201101")
+           AND  (RECE62-SRYYM   >= "201004")
       *
       *      °„∞ÂŒ≈»Ò°‰
       *
