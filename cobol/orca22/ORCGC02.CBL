@@ -259,6 +259,8 @@
       *  04.06.05    NACL-藤原    10/10/20  難病外来指導管理料対応
       *  04.06.06    NACL-藤原    10/10/26  同義語変換対応
       *  04.06.07    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.08    NACL-藤原    10/12/17  補足コメントの入力があるとき
+      *                                     単独使用禁止エラーとしない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6587,9 +6589,11 @@ grpsys                                       SPA-AREA
                GO  TO  41013-BYOMEI-CHK-EXT
            END-IF
       *
-      *    単独使用禁止エラー
-           IF      LNK-BYO-TANDOKUKBN-ERR
-                                       =   1
+      *    単独使用禁止エラー（補足コメントの入力がないとき）
+           IF    ( LNK-BYO-TANDOKUKBN-ERR
+                                       =   1     )
+           AND   ( SPA-GMN-C02-HOSOKU-COMMENT 
+                                       =   SPACE )
                MOVE    "0076"          TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-CIDCD2
                                            WRK-HAISIYMDH
@@ -7799,7 +7803,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                IF    ( SPA-NAI-C02-BYOMEITOP (IDZ)
                                            =   "1" )
                AND   ( IDZ                 >   1   )
-                   IF      WRK-TANDOKUKBN      =   ZERO
+                   IF    ( WRK-TANDOKUKBN      =   ZERO  )
+                   AND   ( SPA-GMN-C02-HOSOKU-COMMENT
+                                               =   SPACE )
                        MOVE    "0076"              TO  SPA-ERRCD  
                        GO  TO  450-TOUROKU-EXT
                    END-IF
@@ -7821,7 +7827,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-PERFORM
            END-PERFORM
       *
-           IF      WRK-TANDOKUKBN      =   ZERO
+           IF    ( WRK-TANDOKUKBN      =   ZERO  )
+           AND   ( SPA-GMN-C02-HOSOKU-COMMENT
+                                       =   SPACE )
                MOVE    "0076"              TO  SPA-ERRCD
                MOVE    8                   TO  SPA-GMN-C02-CUR
                GO  TO  450-TOUROKU-EXT
