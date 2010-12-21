@@ -1374,7 +1374,8 @@
                IF      TNS-TEN                 =   ZERO
                    MOVE    "1"                 TO  SPA-COM-KEIFLG(IDX2)
       *            CLAIM¤Ï¼«Èñ¶â³Û¤Ï¿ôÎÌ¤Ë
-                   IF     (LNK-WKSRY-KARTE-FLG     =   ZERO )
+                   IF     (LNK-WKSRY-KARTE-FLG (IDX)
+                                                   =   ZERO )
                      AND  (LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                    =   ZERO )
                      AND  (LNK-WKSRY-SRYSURYO (IDX IDY)
@@ -1422,7 +1423,8 @@
                        PERFORM 910-TENSU-READ-SEC
                        IF      TNS-TEN                 =   ZERO
       *                    CLAIM¤Ï¼«Èñ¶â³Û¤Ï¿ôÎÌ¤Ë
-                           IF     (LNK-WKSRY-KARTE-FLG     =   ZERO )
+                           IF     (LNK-WKSRY-KARTE-FLG (IDX)
+                                                           =   ZERO )
                              AND  (LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                            =   ZERO )
                              AND  (LNK-WKSRY-SRYSURYO (IDX IDY)
