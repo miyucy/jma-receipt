@@ -67,6 +67,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/12/09  ´µ¼Ô¶Ø´÷ÌôºÞ´ü´ÖÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/07/XX  ¥¨¥é¡¼ÆâÍÆÊÑ¹¹
+      *  04.06.00    NACL-Â¿¡¹Ç¼  10/12/20  ´µ¼Ô¶Ø´÷ÌôºÞ·Ð²áÁ¼ÃÖÂÐ±þ
       *****************************************************************
       *
       *
@@ -3317,6 +3318,34 @@
            MOVE    "tbl_ptkinki"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTKINKI         =   1
+      *        ·Ð²áÁ¼ÃÖÌôºÞ¥Á¥§¥Ã¥¯
+               INITIALIZE                      PTKINKI-REC
+               MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
+               MOVE    SPA-PTID            TO  PTKINKI-PTID
+               MOVE    TNS-SRYCD           TO  PTKINKI-SRYCD
+               MOVE    PTKINKI-REC         TO  MCPDATA-REC
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+                   MOVE    "key3"               TO  MCP-PATHNAME
+                   PERFORM 900-PTKINKI-READ-SEC
+      *            ·Ð²áÁ¼ÃÖÌô
+                   IF      FLG-PTKINKI         =   ZERO
+                       MOVE    1               TO  SPA-COM-PTKINKICD
+                                                           (IDX-T)
+                   END-IF
+               ELSE
+                   MOVE    1                   TO  FLG-PTKINKI
+                   INITIALIZE                      PTKINKI-REC
+               END-IF
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
       *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯
            IF      FLG-PTKINKI         =   ZERO
                MOVE    1               TO  SPA-COM-PTKINKI-ARI

@@ -62,3 +62,19 @@ path	del1 	{
 	};
 };
 
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_ptkinki_key3_csr CURSOR FOR
+		SELECT A.*
+		FROM tbl_ptkinki A,tbl_srycdchg B
+			WHERE   A.HOSPNUM    =   :HOSPNUM
+			AND   A.PTID         =   :PTID
+			AND  (A.SRYCD        =   :SRYCD
+                        OR   (A.HOSPNUM      =  B.HOSPNUM
+                        AND   A.SRYCD        =  B.IPNSRYCD
+                        AND   B.RJNSRYCD     =     :SRYCD ))
+		;
+	};
+};
+

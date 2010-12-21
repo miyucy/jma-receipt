@@ -1469,6 +1469,7 @@
       *
                    07  SPA-P02Y-KINKSTYMD          PIC X(08).
                    07  SPA-P02Y-TOUYOYMD           PIC X(08).
+                   07  SPA-P02Y-CHNGCD             PIC X(09).
       *        À‹±° ¨±°
                05  SPA-P02Y-HOSPNUM                PIC 9(02).
                05  SPA-P02Y-PTID                   PIC 9(10).

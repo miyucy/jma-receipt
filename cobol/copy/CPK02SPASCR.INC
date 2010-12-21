@@ -423,4 +423,5 @@
                        09  SPA-COM-PTKINKI-ARI         PIC 9(01).
                        09  SPA-COM-KINKSTYMD           PIC X(08).
                        09  SPA-COM-TOUYOYMD            PIC X(08).
+                       09  SPA-COM-PTKINKICD           PIC 9(01).
       * 

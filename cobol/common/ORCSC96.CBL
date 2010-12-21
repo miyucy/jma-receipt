@@ -1436,6 +1436,21 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K212"
+                   STRING  "·Ù¹ð¡ª¡ª"
+                           "·Ð²áÁ¼ÃÖÁ°¤¬´µ¼Ô¶Ø´÷ÌôºÞ¤Ç¤¹¡£"
+                           "´µ¼Ô¶Ø´÷ÌôºÞ¤òÅÐÏ¿¤·¤Æ²¼¤µ¤¤¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K213"
+                   STRING  "·Ù¹ð¡ª¡ª"
+                           "¥»¥Ã¥ÈÆâ¤Î´µ¼Ô¶Ø´÷ÌôºÞ¤Ï·Ð²áÁ¼ÃÖÁ°"
+                           "¤Ç¤¹¡£"
+                           "´µ¼Ô¶Ø´÷ÌôºÞ¤òÅÐÏ¿¤·¤Æ²¼¤µ¤¤¡£"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *£È£²£°¡¥£´¤«¤é
                WHEN    "K835"
                    STRING  "·Ù¹ð¡ª¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê"

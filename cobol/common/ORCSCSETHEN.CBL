@@ -949,6 +949,20 @@
                MOVE    "1"             TO  SPA-COM-CUR (WRK-GMN-IDX)
            END-IF
       *
+      *    数量ゼロエラー
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-ERRCD2      NOT =   SPACE
+                   MOVE    WRK-ERRCD2          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *    マスタなしエラー
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-ERRCD1      NOT =   SPACE
+                   MOVE    WRK-ERRCD1          TO  SPA-ERRCD
+                   MOVE    WRK-ERRMSG1         TO  ORCSCSETHEN-ERRMSG2
+               END-IF
+           END-IF
+      *
            .
        200-SSET-TENKAI-EXT.
            EXIT.

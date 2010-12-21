@@ -560,6 +560,9 @@
                IF      SPA-COM-SET (IDX-Z)     =   "1"
                    IF      SPA-COM-KINKIFLG (IDX-SET)  =   SPACE
                        MOVE    "K210"      TO  SPA-ERRCD
+                       IF      SPA-COM-PTKINKICD (IDX-Z) =   1
+                           MOVE    "K213"          TO  SPA-ERRCD
+                       END-IF
                        PERFORM 3001-KINKIERR-HEN-SEC
                        MOVE    "1"         TO  SPA-COM-KINKIFLG
                                                             (IDX-SET)
@@ -570,6 +573,9 @@
                ELSE
                    IF      SPA-COM-KINKIFLG (IDX-Z)  =   SPACE
                        MOVE    "K211"          TO  SPA-ERRCD
+                       IF      SPA-COM-PTKINKICD (IDX-Z) =   1
+                           MOVE    "K212"          TO  SPA-ERRCD
+                       END-IF
                        PERFORM 3001-KINKIERR-HEN-SEC
                        MOVE    "1"             TO  SPA-COM-KINKIFLG
                                                                (IDX-Z)
