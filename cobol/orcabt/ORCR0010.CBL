@@ -1544,7 +1544,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            IF      COMB-HKNNUM         =   SPACE
                IF      COMB-KOH1HKNNUM     =   "030"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
-                   MOVE    COMB-KOHID          TO  WRK-RECE01-KOH-KOHID
+                   MOVE    COMB-KOH1ID         TO  WRK-RECE01-KOH-KOHID
                END-IF
            END-IF
       *****MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HONKZKKBN
