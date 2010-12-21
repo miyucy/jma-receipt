@@ -44,6 +44,7 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
       *****************************************************************
        01  SPA-H01FREE.
          02  SPA-H01FREE-AREA.
@@ -204,6 +205,8 @@
                        09  SPA-H02GMN-TRENNUM      PIC 9(2).
                        09  SPA-H02GMN-TSYORIYM     PIC X(7).
                        09  SPA-H02GMN-TNYUGAIKBN   PIC X(2).
+                       09  SPA-H02GMN-TTEISYUTUSAKI2
+                                                   PIC X(2).
                        09  SPA-H02GMN-TRECESYUBETU PIC X(4).
                        09  SPA-H02GMN-THKNJANUM    PIC X(8).
                        09  SPA-H02GMN-TKIGO        PIC X(20).
@@ -227,6 +230,8 @@
                        09  SPA-H02NAI-TINDEX       PIC 9(02). 
                        09  SPA-H02NAI-TSYORIYM     PIC 9(06).
                        09  SPA-H02NAI-TNYUGAIKBN   PIC X(01).
+                       09  SPA-H02NAI-TTEISYUTUSAKI2
+                                                   PIC 9(01).
                        09  SPA-H02NAI-TTEISYUTUSAKI
                                                    PIC 9(01).
                        09  SPA-H02NAI-TRECEIPT-NO  PIC X(06).

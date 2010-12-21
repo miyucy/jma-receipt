@@ -30,6 +30,8 @@
       *  04.04.01    NACL-藤原    09/12/10  返戻対応
       *  04.04.02    NACL-藤原    10/12/10  返戻ファイルの保存用ファイル名
       *                                     の変更
+      *
+      *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -360,11 +362,11 @@
            INITIALIZE                      SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key8"              TO  MCP-PATHNAME
@@ -543,6 +545,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    データ取り込み処理（返戻ファイル）
       *****************************************************************
        2002-PARA-HENSYU-SEC             SECTION.
+      *
+           EVALUATE    WRK-FILE-TMP (10:)
+               WHEN    "RECEIPTC.HEN"
+                   MOVE    "0"         TO  WRK-HENREI-K-TEISYUTUSAKI2
+               WHEN    "RECEIPTC.SAH"
+                   MOVE    "1"         TO  WRK-HENREI-K-TEISYUTUSAKI2
+           END-EVALUATE
       *
       *    取り込みデータファイル読み込み処理
            PERFORM 900-PARA-READ-SEC
@@ -2544,6 +2553,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    WRK-PARA-HOSPNUM        TO  HENREI-B-HOSPNUM
                MOVE    WRK-HENREI-K-TEISYUTUSAKI
                                                TO  HENREI-B-TEISYUTUSAKI
+               MOVE    WRK-HENREI-K-TEISYUTUSAKI2
+                                               TO
+                                               HENREI-B-TEISYUTUSAKI2
                MOVE    WRK-HENREI-K-SYORIYM    TO  HENREI-B-SYORIYM
                MOVE    IDX                     TO  HENREI-B-PT-RENNUM
                MOVE    TBL-HENREI-B-SELECT-FLG   (IDX)

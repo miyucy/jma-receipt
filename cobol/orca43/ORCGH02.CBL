@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -315,6 +316,8 @@
                                    =   TBL-HENREI-B-SYORIYM     (IDZZ) )
                AND   ( WRK-HENREI-B-TEISYUTUSAKI
                                    =   TBL-HENREI-B-TEISYUTUSAKI(IDZZ) )
+               AND   ( WRK-HENREI-B-TEISYUTUSAKI2
+                                   =   TBL-HENREI-B-TEISYUTUSAKI2(IDZZ))
                AND   ( WRK-HENREI-B-RECEIPT-NO
                                    =   TBL-HENREI-B-RECEIPT-NO  (IDZZ) )
                    MOVE    "*"             TO
@@ -327,16 +330,26 @@
                                            TO  SPA-H02GMN-TSYORIYM(IDY)
                END-IF
       *
+               MOVE    TBL-HENREI-B-TEISYUTUSAKI2 (IDZZ)
+                                   TO  SPA-H02NAI-TTEISYUTUSAKI2
+                                                          (IDY)
+               EVALUATE    SPA-H02NAI-TTEISYUTUSAKI2 (IDY)
+                   WHEN    "0"
+                       MOVE    "　"    TO  SPA-H02GMN-TTEISYUTUSAKI2
+                                                              (IDY)
+                   WHEN    "1"
+                       MOVE    "保"    TO  SPA-H02GMN-TTEISYUTUSAKI2
+                                                              (IDY)
+               END-EVALUATE
+      *
                MOVE    TBL-HENREI-B-NYUGAIKBN (IDZZ)
                                    TO  SPA-H02NAI-TNYUGAIKBN
                                                           (IDY)
-               EVALUATE    SPA-H02NAI-TNYUGAIKBN    (IDZZ)
+               EVALUATE    SPA-H02NAI-TNYUGAIKBN    (IDY)
                    WHEN    "1"
-                       MOVE    "入"
-                                       TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
+                       MOVE    "入"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
                    WHEN    "2"
-                       MOVE    "外"
-                                       TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
+                       MOVE    "外"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
                END-EVALUATE
                MOVE    TBL-HENREI-B-RECESYUBETU(IDZZ)
                                    TO  SPA-H02GMN-TRECESYUBETU    (IDY)
@@ -1033,6 +1046,8 @@
                MOVE    WRK-Z9          TO  H02-TRENNUM      (IDX)
                MOVE    SPA-H02GMN-TSYORIYM     (IDX)
                                        TO  H02-TSYORIYM     (IDX)
+               MOVE    SPA-H02GMN-TTEISYUTUSAKI2  (IDX)
+                                       TO  H02-TTEISYUTUSAKI2 (IDX)
                MOVE    SPA-H02GMN-TNYUGAIKBN   (IDX)
                                        TO  H02-TNYUGAIKBN   (IDX)
                MOVE    SPA-H02GMN-TRECESYUBETU (IDX)

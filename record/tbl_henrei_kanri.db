@@ -1,6 +1,7 @@
 tbl_henrei_kanri	{
 	HOSPNUM			number(2,0);
 	TEISYUTUSAKI		char(1);
+	TEISYUTUSAKI2		char(1);
 #---->  審査側が処理した年月(HIレコードの年月)
 	SYORIYM			char(6);
 	RECV_TOTAL_CNT		number(5);
@@ -16,7 +17,7 @@ tbl_henrei_kanri	{
 };
 
 primary	{
-	HOSPNUM,TEISYUTUSAKI,SYORIYM;
+	HOSPNUM,TEISYUTUSAKI,TEISYUTUSAKI2,SYORIYM;
 };
 
 path    key             {
@@ -26,6 +27,7 @@ path    key             {
                 FROM tbl_henrei_kanri
                 WHERE   HOSPNUM         = :HOSPNUM
                     AND TEISYUTUSAKI    = :TEISYUTUSAKI
+                    AND TEISYUTUSAKI2   = :TEISYUTUSAKI2
                     AND SYORIYM         = :SYORIYM
                 ;
         };

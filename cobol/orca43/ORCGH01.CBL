@@ -87,6 +87,7 @@
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *  04.06.02    NACL-藤原    10/10/12  キーにkohid 追加
       *                                     調査用にcrehms,updhms 追加
+      *  04.06.03    NACL-藤原    10/12/20  保険者からの返戻対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -894,6 +895,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                                              (IDXX) )
                AND   ( WRK-HENREI-B-TEISYUTUSAKI
                                        =   TBL-HENREI-B-TEISYUTUSAKI
+                                                             (IDXX) )
+               AND   ( WRK-HENREI-B-TEISYUTUSAKI2
+                                       =   TBL-HENREI-B-TEISYUTUSAKI2
                                                              (IDXX) )
                AND   ( WRK-HENREI-B-SYORIYM
                                        =   TBL-HENREI-B-SYORIYM 
@@ -2670,6 +2674,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                    =   "T"
                IF      SPA-H01NAI-SKYYM    =   ZERO
                    MOVE    "0006"          TO  SPA-ERRCD
+                   MOVE    4               TO  SPA-H01GMN-CUR
                ELSE
                    IF      SPA-H01NAI-HENREIYM
                                            >   SPA-H01NAI-SKYYM
@@ -2946,11 +2951,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *            設定されていた情報と同じ返戻データのときは更新しない   
                    IF      SPA-HENREI-B-HOSPNUM    >   ZERO
                        IF    ( SPA-HENREI-B-TEISYUTUSAKI
-                                       =   WRK-HENREI-B-TEISYUTUSAKI )
+                                       =   WRK-HENREI-B-TEISYUTUSAKI  )
+                       AND   ( SPA-HENREI-B-TEISYUTUSAKI2
+                                       =   WRK-HENREI-B-TEISYUTUSAKI2 )
                        AND   ( SPA-HENREI-B-SYORIYM
-                                       =   WRK-HENREI-B-SYORIYM      )
-                       AND   (  SPA-HENREI-B-RECEIPT-NO
-                                       =   WRK-HENREI-B-RECEIPT-NO   )
+                                       =   WRK-HENREI-B-SYORIYM       )
+                       AND   ( SPA-HENREI-B-RECEIPT-NO
+                                       =   WRK-HENREI-B-RECEIPT-NO    )
                            GO  TO  4501-HENREI-B-UPDATE-EXT
                        ELSE
       *                    返戻データ請求管理情報更新処理
@@ -2967,11 +2974,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *            設定されていた情報と違う返戻データのときはクリアする
                    IF      SPA-HENREI-B-HOSPNUM    >   ZERO
                        IF    ( SPA-HENREI-B-TEISYUTUSAKI
-                                       =   WRK-HENREI-B-TEISYUTUSAKI )
+                                       =   WRK-HENREI-B-TEISYUTUSAKI  )
+                       AND   ( SPA-HENREI-B-TEISYUTUSAKI2
+                                       =   WRK-HENREI-B-TEISYUTUSAKI2 )
                        AND   ( SPA-HENREI-B-SYORIYM
-                                       =   WRK-HENREI-B-SYORIYM      )
-                       AND   (  SPA-HENREI-B-RECEIPT-NO
-                                       =   WRK-HENREI-B-RECEIPT-NO   )
+                                       =   WRK-HENREI-B-SYORIYM       )
+                       AND   ( SPA-HENREI-B-RECEIPT-NO
+                                       =   WRK-HENREI-B-RECEIPT-NO    )
                            CONTINUE
                        ELSE
       *                    返戻データ請求管理情報クリア処理

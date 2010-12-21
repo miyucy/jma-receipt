@@ -32,6 +32,8 @@
       *                                     の変更
       *
       *  04.05.01    NACL-藤原    09/07/23  返戻ファイルの小文字対応
+      *
+      *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -756,11 +758,19 @@
       * 
            IF      WRK-FILENM(1:6)     =   "RECEIP"    OR  
                                            "receip"
+               EVALUATE    WRK-FILENM
+                   WHEN    "receiptc.hen"
+                   WHEN    "RECEIPTC.HEN"
+                       MOVE    "RECEIPTC.HEN"      TO  WRK-FILENM 
+                   WHEN    "receiptc.sah"
+                   WHEN    "RECEIPTC.SAH"
+                       MOVE    "RECEIPTC.SAH"      TO  WRK-FILENM
+               END-EVALUATE
                MOVE    IDY                 TO  WRK-INDEX-9
                STRING  "/tmp/"             DELIMITED   BY  SIZE
                        SPA-HOSPNUM         DELIMITED   BY  SIZE
                        WRK-INDEX           DELIMITED   BY  SIZE
-                       "RECEIPTC.HEN"      DELIMITED   BY  SIZE
+                       WRK-FILENM          DELIMITED   BY  SPACE
                                    INTO    SPA-NAI-T05-SAVE-NAME (IDY)
                END-STRING
            ELSE
@@ -866,7 +876,9 @@
       *
       *    返戻合計レコードチェック
            IF      WRK-FILENM          =  "RECEIPTC.HEN"   OR
-                                          "receiptc.hen"
+                                          "receiptc.hen"   OR
+                                          "RECEIPTC.SAH"   OR
+                                          "receiptc.sah"
                IF      FLG-HG-CHK          =   ZERO
                    MOVE    "存在しないレコードがあります"
                                                TO  SPA-GMN-T05-ERRMSG1
@@ -1094,6 +1106,8 @@
       *                    ファイル名
                            IF      WRK-FILENM      =   "RECEIPTC.HEN" 
                                                    OR  "receiptc.hen"
+                                                   OR  "RECEIPTC.SAH" 
+                                                   OR  "receiptc.sah"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
@@ -1184,8 +1198,17 @@
                                MOVE    2               TO  WK-BODY-LINE
                            WHEN    "RECEIP"
                            WHEN    "receip"
-                               MOVE    "オンライン返戻ファイル"
-                                                       TO  WRK-TITLE
+                               EVALUATE    WRK-FILENM
+                                   WHEN    "receiptc.hen"
+                                   WHEN    "RECEIPTC.HEN"
+                                       MOVE    "オンライン返戻ファイル"
+                                                           TO  WRK-TITLE
+                                   WHEN    "receiptc.sah"
+                                   WHEN    "RECEIPTC.SAH"
+                                       MOVE
+                                      "オンライン返戻ファイル（保険者）"
+                                                           TO  WRK-TITLE
+                               END-EVALUATE
                                MOVE    PARA-DATA       TO
                                                        SJISTOEUC-INDATA
                                PERFORM 7002-FILE-CONVERT-SEC
@@ -1253,7 +1276,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
            IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
-                                       "receiptc.hen"
+                                       "receiptc.hen"  OR
+                                       "RECEIPTC.SAH"  OR
+                                       "receiptc.sah"
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       TBL-SYS1001-MAX
                    MOVE    TBL-SYS1001-REC (IDX)   TO  SYS-1001-REC
@@ -1287,9 +1312,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    ファイル名
            MOVE    WRK-TITLE           TO  SPA-GMN-T05-TNAIYO(IDY)
+      *    返戻元
+           EVALUATE    WRK-FILENM
+               WHEN    "RECEIPTC.HEN"
+               WHEN    "receiptc.hen"
+                   MOVE    "0"             TO  SPA-NAI-T05-TFLG2 (IDY)
+               WHEN    "RECEIPTC.SAH"
+               WHEN    "receiptc.sah" 
+                   MOVE    "1"             TO  SPA-NAI-T05-TFLG2 (IDY)
+               WHEN    OTHER
+                   MOVE    SPACE           TO  SPA-NAI-T05-TFLG2 (IDY)
+           END-EVALUATE
+      *
       *    審査支払機関名称
            IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
-                                       "receiptc.hen" 
+                                       "receiptc.hen"  OR
+                                       "RECEIPTC.SAH"  OR
+                                       "receiptc.sah" 
                MOVE    WRK-TEISYUTUSAKI    TO  SPA-NAI-T05-TFLG3 (IDY)
            ELSE
                MOVE    WRK-FILENM (7:1)    TO  SPA-NAI-T05-TFLG3 (IDY)
@@ -1299,8 +1338,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      IDY                 >   1
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
-                   IF      SPA-NAI-T05-TFLG3   (IDX)
-                                           =   SPA-NAI-T05-TFLG3 (IDY)
+                   IF    ( SPA-NAI-T05-TFLG3   (IDX)
+                                           =   SPA-NAI-T05-TFLG3 (IDY) )
+                   AND   ( SPA-NAI-T05-TFLG2   (IDX)
+                                           =   SPA-NAI-T05-TFLG2 (IDY) )
                        IF      SPA-GMN-T05-TFILENM (IDX)
                                                    =   WRK-FILENM
                            MOVE    3               TO  WRK-ERRMSG1
@@ -1320,6 +1361,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                OR  "receiptc.hen" )
                        AND   ( WRK-FILENM      =   "RECEIPTC.HEN"
                                                OR  "receiptc.hen" )
+                           MOVE    3               TO  WRK-ERRMSG1
+                           GO  TO  7002-FILE-CHECK-EXT
+                       END-IF
+                       IF    ( SPA-GMN-T05-TFILENM (IDX)
+                                               =   "RECEIPTC.SAH"
+                                               OR  "receiptc.sah" )
+                       AND   ( WRK-FILENM      =   "RECEIPTC.SAH"
+                                               OR  "receiptc.sah" )
                            MOVE    3               TO  WRK-ERRMSG1
                            GO  TO  7002-FILE-CHECK-EXT
                        END-IF
@@ -1385,6 +1434,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE   SPA-HOSPNUM      TO  HENREI-K-HOSPNUM
                    MOVE   SPA-NAI-T05-TFLG3 (IDY)
                                            TO  HENREI-K-TEISYUTUSAKI
+                   MOVE   SPA-NAI-T05-TFLG2 (IDY)
+                                           TO  HENREI-K-TEISYUTUSAKI2
                    MOVE   SPA-NAI-T05-TSRYYM(IDY)
                                            TO  HENREI-K-SYORIYM
                    MOVE    "tbl_henrei_kanri"
@@ -1443,7 +1494,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *        最後の項目は長さを減らす
                IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
-                                           "receiptc.hen"
+                                           "receiptc.hen"  OR
+                                           "RECEIPTC.SAH"  OR
+                                           "receiptc.sah"
                    CONTINUE
                ELSE
                    IF      WRK-KOUMOKU-NO  =   SPILIT-CNT
@@ -1807,8 +1860,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        7003-SEND-CHECK-SEC           SECTION.
       *
-           IF      SPA-NAI-T05-TFLG3(IDY)
-                                       =   SPA-NAI-T05-TFLG3(IDX)
+           IF    ( SPA-NAI-T05-TFLG3(IDY)
+                                       =   SPA-NAI-T05-TFLG3(IDX) )
+           AND   ( SPA-NAI-T05-TFLG2(IDY)
+                                       =   SPA-NAI-T05-TFLG2(IDX) )
                IF      SPA-GMN-T05-TUKAISU(IDY)
                                        NOT =   SPA-GMN-T05-TUKAISU(IDX)
                    MOVE    "受付の送信回数が異なります"
@@ -2445,10 +2500,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE  SPA-GMN-T05-TNAIYO (IDX)
                                        TO  T05-DATALST-TDATA   (IDX)
                EVALUATE    SPA-NAI-T05-TFLG3 (IDX)
-               WHEN    "1"
-                   MOVE    "社"        TO  T05-DATALST-TFLG3   (IDX)
-               WHEN    "2"
-                   MOVE    "国"        TO  T05-DATALST-TFLG3   (IDX)
+                   WHEN    "1"
+                       MOVE    "社"        TO  T05-DATALST-TFLG3   (IDX)
+                   WHEN    "2"
+                       MOVE    "国"        TO  T05-DATALST-TFLG3   (IDX)
+               END-EVALUATE
+               EVALUATE    SPA-NAI-T05-TFLG2 (IDX)
+                   WHEN    "0"
+                       MOVE    "　"        TO  T05-DATALST-TFLG2   (IDX)
+                   WHEN    "1"
+                       MOVE    "保"        TO  T05-DATALST-TFLG2   (IDX)
                END-EVALUATE
                MOVE  SPA-GMN-T05-TFLG4 (IDX)
                                        TO  T05-DATALST-TFLG4   (IDX)

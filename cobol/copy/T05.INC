@@ -25,6 +25,7 @@
                     06  T05-DATALST-TSKAISU PIC X(3).
                     06  T05-DATALST-TDATA   PIC X(100).
                     06  T05-DATALST-TFLG3   PIC X(2).
+                    06  T05-DATALST-TFLG2   PIC X(2).
                     06  T05-DATALST-TFLG4   PIC X(2).
                     06  T05-DATALST-TCNT    PIC X(5).
                   05  T05-DATALST-SELECT

@@ -33,7 +33,8 @@ T05	{
 					value6  varchar(100);
 					value7  varchar(2);
 					value8  varchar(2);
-					value9  varchar(5);
+					value9  varchar(2);
+					value10  varchar(5);
 				}	[50];
 				select  bool[50];
 			};

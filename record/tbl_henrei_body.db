@@ -1,6 +1,7 @@
 tbl_henrei_body	{
 	HOSPNUM			number(2,0);
 	TEISYUTUSAKI		char(1);
+	TEISYUTUSAKI2		char(1);
 #---->  審査側が処理した年月(HIレコードの年月)
 	SYORIYM			char(6);
 	RECEIPT_NO		char(6);
@@ -187,7 +188,7 @@ XXTEISYUTUSAKI                  char(1),virtual;
 };
 
 primary	{
-	HOSPNUM,TEISYUTUSAKI,SYORIYM,RECEIPT_NO,PT_RENNUM;
+	HOSPNUM,TEISYUTUSAKI,TEISYUTUSAKI2,SYORIYM,RECEIPT_NO,PT_RENNUM;
 };
 
 path    key             {
@@ -216,7 +217,7 @@ path    key2            {
                     AND  (TEISYUTUSAKI    =  :TEISYUTUSAKI  OR
                           TEISYUTUSAKI    =  :XXTEISYUTUSAKI)
                     AND    PT_RENNUM       = 1 
-                    ORDER BY SYORIYM DESC
+                    ORDER BY SYORIYM DESC,TEISYUTUSAKI2 DESC
                 ;
         };
 };
@@ -228,6 +229,7 @@ path    key3            {
                 FROM tbl_henrei_body
                 WHERE     HOSPNUM         = :HOSPNUM
                     AND   TEISYUTUSAKI    = :TEISYUTUSAKI
+                    AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
                     AND   SYORIYM         = :SYORIYM
                     AND   RECEIPT_NO      = :RECEIPT_NO
                     AND   SELECT_FLG      = 1 
@@ -374,6 +376,7 @@ path    upd1    {
                 UPHMS             =  :UPHMS
                 WHERE     HOSPNUM         = :HOSPNUM
                     AND   TEISYUTUSAKI    = :TEISYUTUSAKI
+                    AND   TEISYUTUSAKI2   = :TEISYUTUSAKI2
                     AND   SYORIYM         = :SYORIYM
                     AND   RECEIPT_NO      = :RECEIPT_NO
                 ;

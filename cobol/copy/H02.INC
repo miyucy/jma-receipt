@@ -24,6 +24,7 @@
                   05  H02-HENREILIST-ITEM      OCCURS  30 TIMES.
                     06  H02-TRENNUM            PIC X(2).
                     06  H02-TSYORIYM           PIC X(7).
+                    06  H02-TTEISYUTUSAKI2     PIC X(2).
                     06  H02-TNYUGAIKBN         PIC X(2).
                     06  H02-TRECESYUBETU       PIC X(4).
                     06  H02-THKNJANUM          PIC X(8).

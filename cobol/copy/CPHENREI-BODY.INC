@@ -22,10 +22,13 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     kohid 追加
+      *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
       ************************************************************
       *01  HENREI-BODY-REC.
            03  HENREI-B-HOSPNUM    PIC 9(2).
            03  HENREI-B-TEISYUTUSAKI
+                                   PIC X(1).
+           03  HENREI-B-TEISYUTUSAKI2
                                    PIC X(1).
            03  HENREI-B-SYORIYM    PIC X(6).
            03  HENREI-B-RECEIPT-NO PIC X(6).
