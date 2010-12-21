@@ -427,6 +427,7 @@ RECORD_files = \
 	S09.rec \
 	acceptmod.rec \
 	print.rec \
+	appointlst.rec \
 
 DEF_files = \
 
