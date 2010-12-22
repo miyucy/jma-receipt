@@ -115,7 +115,7 @@
       *----(02.00.03)--ADD-START---
            03  IDX3                              PIC 9(03).
       *----(02.00.03)--ADD-END-----
-           03  IDX2                              PIC 9(02).
+           03  IDX2                              PIC 9(04).
            03  IDX4                              PIC 9(02).
       *
       *    °ì»þÎÎ°è
@@ -163,6 +163,8 @@
       *----(01.00.03) LINE ADD END   --------------------------
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-WIDGET-NUM.
+               05  WRK-WIDGET-NUM9 PIC 9(02).
            03  WRK-KANACHK-MAE-INPUT
                                    PIC X(400).
       *
@@ -3723,29 +3725,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  MCP-WIDGET
            EVALUATE    SPA-GMN-CUR
                WHEN    1       THRU   20
-                   MOVE    SPA-GMN-CUR     TO  IDX2
+                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
                    MOVE    "PRTNM"         TO  MCP-WIDGET
-                   MOVE    IDX2            TO  MCP-WIDGET(6:2)
+                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(6:2)
                    MOVE    1               TO  SPA-GMN-PAGENO
                WHEN    21      THRU   40
-                   MOVE    SPA-GMN-CUR     TO  IDX2
-                   COMPUTE IDX2            =   IDX2    -   20
+                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
+                   COMPUTE WRK-WIDGET-NUM9 =   WRK-WIDGET-NUM9    -   20
                    MOVE    "ORCACSTNM"     TO  MCP-WIDGET
-                   MOVE    IDX2            TO  MCP-WIDGET(10:2)
+                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(10:2)
                    MOVE    1               TO  SPA-GMN-PAGENO
       *        Æþ±¡
                WHEN    51      THRU   70
-                   MOVE    SPA-GMN-CUR     TO  IDX2
-                   COMPUTE IDX2            =   IDX2    -   50
+                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
+                   COMPUTE WRK-WIDGET-NUM9 =   WRK-WIDGET-NUM9    -   50
                    MOVE    "PRTNM"         TO  MCP-WIDGET
-                   MOVE    IDX2            TO  MCP-WIDGET(6:2)
+                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(6:2)
                    MOVE    "N"             TO  MCP-WIDGET(8:1)
                    MOVE    2               TO  SPA-GMN-PAGENO
                WHEN    71      THRU   80
-                   MOVE    SPA-GMN-CUR     TO  IDX2
-                   COMPUTE IDX2            =   IDX2    -   70
+                   MOVE    SPA-GMN-CUR     TO  WRK-WIDGET-NUM9
+                   COMPUTE WRK-WIDGET-NUM9 =   WRK-WIDGET-NUM9    -   70
                    MOVE    "ORCACSTNM"     TO  MCP-WIDGET
-                   MOVE    IDX2            TO  MCP-WIDGET(10:2)
+                   MOVE    WRK-WIDGET-NUM  TO  MCP-WIDGET(10:2)
                    MOVE    "N"             TO  MCP-WIDGET(12:1)
                    MOVE    2               TO  SPA-GMN-PAGENO
       *----(02.00.03)--ADD-START---
