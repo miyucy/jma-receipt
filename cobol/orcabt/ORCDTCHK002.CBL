@@ -901,6 +901,11 @@
            COPY    "CPHKNNUM.INC"  REPLACING  //HKN-//
                                    BY         //THKN-//.
       *
+      *    データチェック中間ファイルワーク
+           COPY    "CPDTCHK001.INC"
+                                   REPLACING  //DTCHK001//
+                                   BY         //WKDTCHK003//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1123,6 +1128,7 @@
                                        WRK-AREA
                                        SPA-AREA
                                        THKN-AREA
+                                       WKDTCHK003-REC
       *
            MOVE    LNKDTCHKERRPARA     TO  DTCHKERRPARA
       *
@@ -10197,6 +10203,8 @@
       *
            MOVE    WRK-ERRMES      TO  DTCHK004-ERRMSG
       *
+           DISPLAY "DTCHK004-ERRMSG=" DTCHK004-ERRMSG
+      *
            WRITE   DTCHK004-REC
            COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
       *
@@ -11363,6 +11371,16 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
+           IF    ( LNK-PRTKANRI-TBL-KEY    =  "RECEPTX" )
+               IF    ( CNT-DTCHK004        =  ZERO )
+                   MOVE    WKDTCHK003-REC  TO DTCHK003-REC
+                   PERFORM 900-PTNUM-KEY-SEL-SEC
+                   MOVE    "990011"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 210-ERRMES-HEN-SEC
+               END-IF
+           END-IF
+      *
            CLOSE                       DCACCT-FILE
                                        DCSRY-FILE
                                        DTCHK003-FILE
@@ -11700,6 +11718,9 @@
       *
            IF    ( FLG-DTCHK003        =   ZERO )
                COMPUTE CNT-DTCHK003    =   CNT-DTCHK003    +   1
+               IF    ( CNT-DTCHK003    =   1 )
+                   MOVE    DTCHK003-REC    TO  WKDTCHK003-REC
+               END-IF
            END-IF
       *
            .

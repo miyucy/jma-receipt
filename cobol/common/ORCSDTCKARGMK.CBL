@@ -138,6 +138,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
@@ -205,6 +208,12 @@
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
                                        LINK-ERRCD
+      *
+           INITIALIZE                  SYS-2001-REC
+                                       SYS-2005-REC
+                                       SYS-200501-REC
+                                       SYS-4001-REC
+      *
       *    作成日・時間の設定
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -229,233 +238,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
                INITIALIZE                  SYS-1001-REC
            END-IF
       *
-      *    レセプト編集情報の取得
-           INITIALIZE                  SYS-2005-REC
-           MOVE    "2005"          TO  SYS-2005-KANRICD
-           MOVE    "*"             TO  SYS-2005-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-2005-STYUKYMD
-                                       SYS-2005-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
-           MOVE    SYS-2005-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE   MCPDATA-REC      TO  SYS-2005-REC
-           ELSE
-               INITIALIZE                  SYS-2005-REC
+      *    出力先プリンタ名割り当て情報編集
+           INITIALIZE                      SYSKANRI-REC
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYSKANRI-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               INITIALIZE                  SYSKANRI-REC
            END-IF
-      *
-      *    レセプト編集情報の取得（区分コード０１）
-           INITIALIZE                  SYS-200501-REC
-           MOVE    "2005"          TO  SYS-200501-KANRICD
-           MOVE    "01"            TO  SYS-200501-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
-                                       SYS-200501-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC  TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE   MCPDATA-REC  TO  SYS-200501-REC
-           ELSE
-               INITIALIZE              SYS-200501-REC
-               MOVE    SYS-2005-TERMID (1:4)
-                                   TO  SYS-200501-TBL (1:4)
-           END-IF
-      *
-           IF      SYS-2005-PREFPRGID (1) (1:1)
-                                       NOT =  "S"
-               MOVE  "NOPG"                TO  SYS-2005-PREFPRGID (1)
-           END-IF
-           IF      SYS-2005-PREFPRGID (2) (1:1)
-                                       NOT =  "S"
-               MOVE  "NOPG"                TO  SYS-2005-PREFPRGID (2)
-           END-IF
-           IF      SYS-2005-FRAME-JIBAIPRTKBN
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-2005-FRAME-JIBAIPRTKBN
-           END-IF
-           IF      SYS-2005-FRAME-JIBAIPRTKBN-N
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-2005-FRAME-JIBAIPRTKBN-N
-           END-IF
-           IF      SYS-200501-JIBAIPRTKBN    =   SPACE
-               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN
-           END-IF
-           IF      SYS-200501-JIBAIPRTKBN-N  =   SPACE
-               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN-N
-           END-IF
-           IF      SYS-200501-FRAME-ROUPRTKBN
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-200501-FRAME-ROUPRTKBN
-           END-IF
-           IF      SYS-200501-FRAME-ROUPRTKBN-N
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-200501-FRAME-ROUPRTKBN-N
-           END-IF
-           IF      SYS-200501-COMMENT-ROU-KSIKBN
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-200501-COMMENT-ROU-KSIKBN
-           END-IF
-      *                
-      *    出力先プリンタ名割り当て情報の取得
-           MOVE    SPACE           TO  SYS-1031-REC
-           INITIALIZE                  SYS-1031-REC
-           MOVE    "1031"          TO  SYS-1031-KANRICD
-           MOVE    "*"             TO  SYS-1031-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-1031-STYUKYMD
-                                       SYS-1031-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1031-HOSPNUM
-           MOVE    SYS-1031-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1031-REC
-           ELSE    
-               INITIALIZE                  SYS-1031-REC
-           END-IF
-      *                                     
-      *    社保印刷先
-           IF      SYS-2005-SYAPRTNM   =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO SYS-2005-SYAPRTNM
-           END-IF                                              
-           IF      SYS-2005-SYAPRTNM-N =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-SYAPRTNM-N
-           END-IF                                              
-      *    国保印刷先
-           IF      SYS-2005-KKHPRTNM   =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-KKHPRTNM
-           END-IF                                              
-           IF      SYS-2005-KKHPRTNM-N =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-KKHPRTNM-N
-           END-IF                                              
-      *    広域印刷先
-           IF      SYS-200501-KOUIKIPRTNM
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-200501-KOUIKIPRTNM
-           END-IF                                              
-           IF      SYS-200501-KOUIKIPRTNM-N
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-200501-KOUIKIPRTNM-N
-           END-IF                                              
-      *    社保印刷先（続紙）
-           IF      SYS-2005-SYAPRTNM-NEXT  =   SPACE
-               IF      SYS-2005-SYAPRTNM       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-2005-SYAPRTNM-NEXT
-               ELSE                                              
-                   MOVE    SYS-2005-SYAPRTNM   TO
-                                           SYS-2005-SYAPRTNM-NEXT
-               END-IF
-           END-IF                                              
-           IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
-               IF      SYS-2005-SYAPRTNM-N       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-2005-SYAPRTNM-NEXT-N
-               ELSE                                              
-                   MOVE    SYS-2005-SYAPRTNM-N   TO
-                                           SYS-2005-SYAPRTNM-NEXT-N
-               END-IF
-           END-IF                                              
-      *    国保印刷先（続紙）
-           IF      SYS-2005-KKHPRTNM-NEXT  =   SPACE
-               IF      SYS-2005-KKHPRTNM       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-2005-KKHPRTNM-NEXT
-               ELSE                                              
-                   MOVE    SYS-2005-KKHPRTNM   TO
-                                           SYS-2005-KKHPRTNM-NEXT
-               END-IF
-           END-IF                                              
-           IF      SYS-2005-KKHPRTNM-NEXT-N  =   SPACE
-               IF      SYS-2005-KKHPRTNM-N       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-2005-KKHPRTNM-NEXT-N
-               ELSE                                              
-                   MOVE    SYS-2005-KKHPRTNM-N  TO
-                                           SYS-2005-KKHPRTNM-NEXT-N
-               END-IF
-           END-IF                                              
-      *    広域印刷先（続紙）
-           IF      SYS-200501-KOUIKIPRTNM-NEXT  =   SPACE
-               IF      SYS-200501-KOUIKIPRTNM       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT
-               ELSE                                              
-                   MOVE    SYS-200501-KOUIKIPRTNM   TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT
-               END-IF
-           END-IF                                              
-           IF      SYS-200501-KOUIKIPRTNM-NEXT-N  =   SPACE
-               IF      SYS-200501-KOUIKIPRTNM-N       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT-N
-               ELSE                                              
-                   MOVE    SYS-200501-KOUIKIPRTNM-N  TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT-N
-               END-IF
-           END-IF                                              
-      *    労災印刷先
-           IF      SYS-2005-ROUPRTNM   =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM
-           END-IF                                              
-           IF      SYS-2005-ROUPRTNM-N =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM-N
-           END-IF
-           IF      SYS-2005-ROUPRTNM-NEXT
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM-NEXT
-           END-IF                                              
-           IF      SYS-2005-ROUPRTNM-NEXT-N
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-ROUPRTNM-NEXT-N
-           END-IF
-      *    自賠責印刷先
-           IF      SYS-2005-JBAIPRTNM  =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM
-           END-IF                                              
-           IF      SYS-2005-JBAIPRTNM-N
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM-N
-           END-IF
-           IF      SYS-2005-JBAIPRTNM-NEXT
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM-NEXT
-           END-IF                                              
-           IF      SYS-2005-JBAIPRTNM-NEXT-N
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-JBAIPRTNM-NEXT-N  
-           END-IF
-      *
-      *    健保準拠か労災準拠のチェック（自賠責）
-           IF      LINK-HKNKBN          =   "2"
-               INITIALIZE                  SYS-4001-REC
-               MOVE    "4001"          TO  SYS-4001-KANRICD
-               MOVE    "*"             TO  SYS-4001-KBNCD
-               MOVE    LINK-SRYYM      TO  SYS-4001-STYUKYMD (1:6)
-               MOVE    "01"            TO  SYS-4001-STYUKYMD (7:2)
-               MOVE    SYS-4001-STYUKYMD
-                                       TO  SYS-4001-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM     TO  SYS-4001-HOSPNUM
-               MOVE    SYS-4001-REC    TO  MCPDATA-REC
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-4001-REC
-               ELSE
-                   INITIALIZE                  SYS-4001-REC
-               END-IF
-               IF      SYS-4001-JIBAIKBN   =    SPACE
-                   MOVE    "1"                  TO  SYS-4001-JIBAIKBN
-               END-IF
-           END-IF
+           MOVE    SYSKANRI-REC        TO  SYS-1031-REC
       *
       *    ジョブ管理チェック処理
            PERFORM 1001-JOBKANRI-CHK-SEC
@@ -666,6 +462,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            MOVE    WRK-PTID        TO  LNK-PRTKANRI-TERMID
            MOVE    WRK-CONST-Z     TO  LNK-PRTKANRI-TERMID(17:)
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           MOVE    SYS-1031-PRTNM (11)
+                                   TO  LNK-PRTKANRI-PRTNM
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG17
            MOVE    LNK-PRTKANRI-TBL-KEY

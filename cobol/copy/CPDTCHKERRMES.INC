@@ -547,8 +547,13 @@
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990011".
+           05 PIC  X(30)   VALUE   "データチェックでエラーとなる項".
+           05 PIC  X(30)   VALUE   "目はありませんでした          ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  96.
+           05 ERRMES-OCC   OCCURS  97.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   96.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   97.
