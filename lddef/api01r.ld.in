@@ -4,6 +4,7 @@ arraysize	20;
 textsize	400;
 
 bindapi	"appointlst"	"OpenCOBOL"	"ORAPI014R1";
+bindapi	"acceptlst"	"OpenCOBOL"	"ORAPI011R1";
 
 multiplex_group	api01r;
 
@@ -12,11 +13,14 @@ data	{
 	spa	orcaspa;
 	window	{
 		appointlst;
+		acceptlst;
 	};
 };
 db "xml" {
  xml_appointlstreq;
  xml_appointlstres;
+ xml_acceptlstreq;
+ xml_acceptlstres;
 };
 
 #include "orcadb.inc"
