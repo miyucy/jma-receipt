@@ -148,7 +148,6 @@
                IF      LNK-SKYGET-SRYYM  <  201004
                       MOVE    4     TO   LNK-SKYGET-RC
                END-IF
-      *
              WHEN      OTHER
                       MOVE    5     TO   LNK-SKYGET-RC
            END-EVALUATE
@@ -225,6 +224,8 @@
                             TO  LNK-SKYGET-KOHETC-SHOKUJIFTN(IDX1)
                END-PERFORM
              END-IF
+           ELSE
+             MOVE    11     TO  LNK-SKYGET-RC
            END-IF
       *
       ***  PERFORM   VARYING   IDX1   FROM  1  BY  1
