@@ -204,7 +204,7 @@
            COPY    "YERR.INC".
            COPY    "YID1.INC".
            COPY    "APPOINTMOD.INC".
-           COPY    "CPAPIMODV2.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -605,7 +605,6 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  Y05
-           INITIALIZE                      Y05
       *
            MOVE    SPA-GMN-PTNUM       TO  Y05-PTNUM
            MOVE    SPA-GMN-NAME        TO  Y05-NAME
