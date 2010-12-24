@@ -1380,7 +1380,7 @@
                      AND  (LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                    =   ZERO )
                      AND  (LNK-WKSRY-SRYSURYO (IDX IDY)
-                                                   >   ZERO )
+                                                   >   1    )
                        MOVE    LNK-WKSRY-SRYSURYO (IDX IDY) 
                                                TO  LNK-WKSRY-JIHIMONEY
                                                              (IDX IDY)
@@ -1426,10 +1426,12 @@
       *                    CLAIM¤Ï¼«Èñ¶â³Û¤Ï¿ôÎÌ¤Ë
                            IF     (LNK-WKSRY-KARTE-FLG (IDX)
                                                            =   ZERO )
+                             AND  (LNK-WKSRY-TERMID (1)    =
+                                                           "WKSRYACT" )
                              AND  (LNK-WKSRY-JIHIMONEY(IDX IDY)
                                                            =   ZERO )
                              AND  (LNK-WKSRY-SRYSURYO (IDX IDY)
-                                                           >   ZERO )
+                                                           >   1    )
                                MOVE    LNK-WKSRY-SRYSURYO (IDX IDY) 
                                                TO  LNK-WKSRY-JIHIMONEY
                                                              (IDX IDY)
