@@ -118,63 +118,6 @@ CREATE VIEW view_q003 AS
 COMMENT 
         ON VIEW view_q003 IS '患者照会ビュー3';
 
-CREATE VIEW view_i001 AS
-    SELECT a.hospnum,
-           a.ptid,
-           b.rrknum,
-           b.rrkedanum,
-           e.rrkedanum_max,
-           c.ptnum,
-           a.kananame,
-           a.name,
-           a.sex,
-           a.birthday,
-           a.home_post,
-           a.home_adrs,
-           a.home_banti,
-           a.deathkbn,
-           b.btunum,
-           b.brmnum,
-           b.nyuinka,
-           b.nyuinymd,
-           b.taiinymd,
-           b.taiincd,
-           b.tennyuymd,
-           b.tenstuymd,
-           a.tstptnumkbn 
-      FROM tbl_ptnyuinrrk b,
-           tbl_ptnyuinrrk d,
-           
-   (SELECT tbl_ptnyuinrrk.hospnum,
-           tbl_ptnyuinrrk.ptid,
-           tbl_ptnyuinrrk.rrknum,
-           max(tbl_ptnyuinrrk.rrkedanum) AS rrkedanum_max 
-      FROM tbl_ptnyuinrrk 
-     GROUP BY tbl_ptnyuinrrk.hospnum,
-           tbl_ptnyuinrrk.ptid,
-           tbl_ptnyuinrrk.rrknum) e,
-           tbl_ptinf a,
-           tbl_ptnum c 
-     WHERE ((((((((((((((((b.hospnum = a.hospnum) 
-       AND (b.ptid = a.ptid)) 
-       AND (b.hospnum = c.hospnum)) 
-       AND (b.ptid = c.ptid)) 
-       AND (b.hospnum = d.hospnum)) 
-       AND (b.ptid = d.ptid)) 
-       AND (a.rrknum <> (0)::numeric)) 
-       AND (a.rrkedanum <> (0)::numeric)) 
-       AND (a.rrknum = d.rrknum)) 
-       AND (a.rrkedanum = d.rrkedanum)) 
-       AND (d.kensaku_dispkbn = '1'::bpchar)) 
-       AND (b.jtikbn <> '5'::bpchar)) 
-       AND (b.jtikbn <> '6'::bpchar)) 
-       AND (b.hospnum = e.hospnum)) 
-       AND (b.ptid = e.ptid)) 
-       AND (b.rrknum = e.rrknum));
-
-COMMENT 
-        ON VIEW view_i001 IS '入院患者照会ビュー';
-
 CREATE VIEW view_bd001 AS
     SELECT a.hospnum, a.ptid, b.ptnum, c.name, c.sex, c.birthday, a.sryka, a.denpprtymd, a.skymoney, a.nyukin_total FROM tbl_syunou_main a, tbl_ptnum b, tbl_ptinf c WHERE ((((((((a.hospnum = b.hospnum) AND (a.ptid = b.ptid)) AND (a.hospnum = c.hospnum)) AND (a.ptid = c.ptid)) AND (a.denpjtikbn <> '3')) AND (a.denpjtikbn <> '7')) AND (a.createkbn <> '3')) AND (c.tstptnumkbn <> '1'));
 
@@ -619,3 +562,57 @@ UNION ALL
 COMMENT 
         ON VIEW view_q002 IS '患者照会ビュー2';
 
+CREATE VIEW view_i001 AS
+    SELECT a.hospnum,
+           a.ptid,
+           b.rrknum,
+           b.rrkedanum,
+           e.rrkedanum_max,
+           c.ptnum,
+           a.kananame,
+           a.name,
+           a.sex,
+           a.birthday,
+           a.home_post,
+           a.home_adrs,
+           a.home_banti,
+           a.deathkbn,
+           b.btunum,
+           b.brmnum,
+           b.nyuinka,
+           b.nyuinymd,
+           b.taiinymd,
+           b.taiincd,
+           b.tennyuymd,
+           b.tenstuymd,
+           a.tstptnumkbn
+      FROM tbl_ptnyuinrrk b,
+           tbl_ptnyuinrrk d,
+   (SELECT tbl_ptnyuinrrk.hospnum,
+           tbl_ptnyuinrrk.ptid,
+           tbl_ptnyuinrrk.rrknum,
+           max(tbl_ptnyuinrrk.rrkedanum) AS rrkedanum_max
+      FROM tbl_ptnyuinrrk
+     GROUP BY tbl_ptnyuinrrk.hospnum,
+           tbl_ptnyuinrrk.ptid,
+           tbl_ptnyuinrrk.rrknum) e,
+           tbl_ptinf a,
+           tbl_ptnum c
+     WHERE ((((((((((((((((b.hospnum = a.hospnum)
+       AND (b.ptid = a.ptid))
+       AND (b.hospnum::smallint = c.hospnum))
+       AND (b.ptid::bigint = c.ptid))
+       AND (b.hospnum = d.hospnum))
+       AND (b.ptid = d.ptid))
+       AND (a.rrknum <> (0)::numeric))
+       AND (a.rrkedanum <> (0)::numeric))
+       AND (a.rrknum = d.rrknum))
+       AND (a.rrkedanum = d.rrkedanum))
+       AND (d.kensaku_dispkbn = '1'::bpchar))
+       AND (b.jtikbn <> '5'::bpchar))
+       AND (b.jtikbn <> '6'::bpchar))
+       AND (b.hospnum = e.hospnum))
+       AND (b.ptid = e.ptid))
+       AND (b.rrknum = e.rrknum));
+
+COMMENT ON VIEW view_i001 IS '入院患者照会ビュー';
