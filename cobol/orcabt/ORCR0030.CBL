@@ -900,7 +900,7 @@
            03  WRK-SKY-KEISAN                          PIC 9(09).
            03  WRK-SKY-KEISAN2                         PIC 9(09).
            03  WRK-SKY-KEISAN3                         PIC 9(09).
-           03  WRK-SKY-KEISAN4                         PIC 9(09).
+           03  WRK-SKY-KEISAN4                         PIC S9(09).
            03  WRK-SKY-HOKENJA                         PIC 9(09).
            03  WRK-SKY-ICHIBUFTN                       PIC 9(09).
            03  WRK-SKY-ZENGAKU                         PIC 9(09).
@@ -11876,6 +11876,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  MOVE     RECE02-TOTALTEN(1)  TO  WRK-HANTEI-TOTALTEN
                  PERFORM  21094-JYOGENGAKU-HENSYU-SEC
                  IF     RECE02-FTNMONEY(1)   >  WRK-KINGAKU3
+                       COMPUTE  WRK-SKY-FTNMONEY-XXX =
+                                RECE02-FTNMONEY(1)   -  WRK-KINGAKU3
                        MOVE   WRK-KINGAKU3   TO  RECE02-FTNMONEY(1)
                        IF   RECE02-RJNGENMENKBN   =   "1"
                           MOVE    4    TO      FLG-TOKKI
@@ -11929,12 +11931,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   RECE02-FTNMONEY(1)  >  WRK-KINGAKU3
                      COMPUTE   WRK-SKY-KEISAN3 = WRK-KINGAKU3
                                                / 2
-                     IF  RECE02-ZAITAKU-SAIKEI > WRK-SKY-KEISAN3
-                      COMPUTE  WRK-SKY-KEISAN4 = RECE02-ZAITAKU-SAIKEI
+                     COMPUTE   WRK-SKY-KEISAN4 = RECE02-ZAITAKU-SAIKEI
                                                - WRK-SKY-KEISAN3
-                     ELSE
-                      MOVE     ZERO    TO   WRK-SKY-KEISAN4
-                     END-IF
                      COMPUTE   WRK-SKY-FTNMONEY-XXX =
                               (RECE02-FTNMONEY(1)   -  WRK-KINGAKU3)
                                                     -  WRK-SKY-KEISAN4
@@ -12974,6 +12972,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            - WRK-CHK-KOKIGAK2
              ELSE
                MOVE     ZERO    TO  WRK-CHK-KOKIGAK3
+             END-IF
+      *
+             IF   FLG-CHIIKI    =   ZERO
+               IF    FLG-HOKENICHIBU-SYU     =    1
+                  COMPUTE  WRK-SKY-FTNMONEY-XXX =
+                           RECE02-FTNMONEY(1)   -
+                           (WRK-CHK-KOKIGAK3    +    FTN-KOH-XXX)
+               END-IF
              END-IF
       *
              COMPUTE  RECE02-FTNMONEY(1) = WRK-CHK-KOKIGAK3

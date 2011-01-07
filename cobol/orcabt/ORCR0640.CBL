@@ -915,7 +915,7 @@
            03  WRK-SKY-KEISAN                          PIC 9(09).
            03  WRK-SKY-KEISAN2                         PIC 9(09).
            03  WRK-SKY-KEISAN3                         PIC 9(09).
-           03  WRK-SKY-KEISAN4                         PIC 9(09).
+           03  WRK-SKY-KEISAN4                         PIC S9(09).
            03  WRK-SKY-HOKENJA                         PIC 9(09).
            03  WRK-SKY-ICHIBUFTN                       PIC 9(09).
            03  WRK-SKY-ZENGAKU                         PIC 9(09).
@@ -16243,6 +16243,8 @@
                  MOVE     RECE62-TOTALTEN(1)  TO  WRK-HANTEI-TOTALTEN
                  PERFORM  210464-JYOGENGAKU-HENSYU-SEC
                  IF     RECE62-FTNMONEY(1)   >  WRK-KINGAKU3
+                       COMPUTE  WRK-SKY-FTNMONEY-XXX =
+                                RECE62-FTNMONEY(1)   -  WRK-KINGAKU3
                        MOVE   WRK-KINGAKU3   TO  RECE62-FTNMONEY(1)
                        IF   RECE62-RJNGENMENKBN   =   "1"
                            MOVE    4    TO      FLG-TOKKI
@@ -16299,12 +16301,8 @@
                    IF   RECE62-FTNMONEY(1)  >  WRK-KINGAKU3
                      COMPUTE   WRK-SKY-KEISAN3 = WRK-KINGAKU3
                                                / 2
-                     IF  RECE62-KOUREI-SAIKEI  > WRK-SKY-KEISAN3
-                      COMPUTE  WRK-SKY-KEISAN4 = RECE62-KOUREI-SAIKEI
+                     COMPUTE   WRK-SKY-KEISAN4 = RECE62-KOUREI-SAIKEI
                                                - WRK-SKY-KEISAN3
-                     ELSE
-                      MOVE     ZERO    TO   WRK-SKY-KEISAN4
-                     END-IF
                      COMPUTE   WRK-SKY-FTNMONEY-XXX =
                               (RECE62-FTNMONEY(1)   -  WRK-KINGAKU3)
                                                     -  WRK-SKY-KEISAN4
@@ -17449,6 +17447,14 @@
                                            - WRK-CHK-KOKIGAK2
              ELSE
                MOVE     ZERO    TO  WRK-CHK-KOKIGAK3
+             END-IF
+      *
+             IF   FLG-CHIIKI    =   ZERO
+               IF    FLG-HOKENICHIBU-SYU     =    1
+                  COMPUTE  WRK-SKY-FTNMONEY-XXX =
+                           RECE62-FTNMONEY(1)   -
+                           (WRK-CHK-KOKIGAK3    +    FTN-KOH-XXX)
+               END-IF
              END-IF
       *
              COMPUTE  RECE62-FTNMONEY(1) = WRK-CHK-KOKIGAK3
