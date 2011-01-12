@@ -214,6 +214,37 @@
            03  CONST-JOBID             PIC 9(07)   VALUE   1.
            03  CONST-JOB-SHELLID                   PIC X(08)
                VALUE   "ORCBQ01".
+      * 
+       01  CONST-CSV-HEADER.
+           03  CONST-CSV-NO            PIC X(20)   VALUE "番号".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-PTNUM         PIC X(20)   VALUE "患者番号".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-NAME          PIC X(20)   VALUE "氏名".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-SEX           PIC X(20)   VALUE "性別".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-BIRTHDAY      PIC X(20)   VALUE "生年月日".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-AGENUM        PIC X(20)   VALUE "年齢".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-AGETANI       PIC X(20)   VALUE "年齢ラベル".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-HKN           PIC X(20)   VALUE "保険".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-BTUNUM        PIC X(20)   VALUE "病棟番号".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-BRMNUM        PIC X(20)   VALUE "病室番号".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-LASTYMD       PIC X(20)   VALUE "最終受診日".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-TEL           PIC X(20)   VALUE "電話番号".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-POST          PIC X(20)   VALUE "郵便番号".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-JYUSYO        PIC X(20)   VALUE "住所".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-KANANAME      PIC X(20)   VALUE "カナ氏名".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -589,6 +620,29 @@
       *    ＣＳＶ編集処理
       *****************************************************************
        800-CSV-EDIT-SEC                SECTION.
+      *
+           INITIALIZE                  CSV-NO
+                                       CSV-PTNUM
+                                       CSV-NAME
+                                       CSV-SEX
+                                       CSV-BIRTHDAY
+                                       CSV-AGENUM
+                                       CSV-AGETANI
+                                       CSV-HKN
+                                       CSV-BTUNUM
+                                       CSV-BRMNUM
+                                       CSV-LASTYMD
+                                       CSV-TEL
+                                       CSV-POST
+                                       CSV-JYUSYO
+                                       CSV-KANANAME
+      *
+           COMPUTE CNT-CSV =   CNT-CSV +   1
+           IF    ( CNT-CSV =   1 )
+               MOVE    CONST-CSV-HEADER
+                                   TO  CSV-REC
+               WRITE   CSV-REC
+           END-IF
       *
            MOVE    CNT-KNS         TO  CSV-NO
            MOVE    PTSRH-PTNUM

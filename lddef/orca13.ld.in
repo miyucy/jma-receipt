@@ -6,6 +6,8 @@ textsize	400;
 bind	""		"OpenCOBOL"	"ORCGQ01";
 bind	"Q01"		"OpenCOBOL"	"ORCGQ01";
 bind	"Q02"		"OpenCOBOL"	"ORCGQ02";
+bind	"Q02A"		"OpenCOBOL"	"ORCGQ02A";
+bind	"Q02B"		"OpenCOBOL"	"ORCGQ02B";
 bind	"Q03"		"OpenCOBOL"	"ORCGQ03";
 bind	"Q04"		"OpenCOBOL"	"ORCGQ04";
 bind	"Q96"		"OpenCOBOL"	"ORCGQ96";
@@ -24,6 +26,8 @@ data	{
 	window	{
 		Q01;
 		Q02;
+		Q02A;
+		Q02B;
 		Q03;
 		Q04;
 		Q96;

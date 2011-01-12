@@ -28,6 +28,9 @@ Q01	{
 		EDSRYYMD	{
 			value	varchar(10);
 		};
+		LBLSENISAKI	{
+			value	varchar(40);
+		};
 		not3	{
 			pageno	int;
 			fixed16	{
@@ -289,6 +292,9 @@ Q01	{
 					};
 					count	int;
 					item	varchar(33)[50];
+				};
+				TOTALTEN	{
+					value	number(7);
 				};
 			};
 			fixed17	{
@@ -605,6 +611,81 @@ Q01	{
 						select	bool[200];
 					};
 				};
+				CMB_SRYVALITEM	{
+					SRYVALITEM	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[10];
+				};
+				LBLSRYVAL	{
+					value	varchar(10);
+				};
+				SRYVAL1	{
+					value	varchar(11);
+					state	int;
+				};
+				SRYVAL2	{
+					value	varchar(11);
+					state	int;
+				};
+				SRYVAL3	{
+					value	varchar(11);
+					state	int;
+				};
+				SRYVAL4	{
+					value	varchar(11);
+					state	int;
+				};
+				SRYVAL5	{
+					value	varchar(11);
+					state	int;
+				};
+				CMB_SRYVALCOMP1	{
+					SRYVALCOMP1	{
+						value	varchar(22);
+						state	int;
+					};
+					count	int;
+					item	varchar(22)[10];
+					state	int;
+				};
+				CMB_SRYVALCOMP2	{
+					SRYVALCOMP2	{
+						value	varchar(22);
+						state	int;
+					};
+					count	int;
+					item	varchar(22)[10];
+					state	int;
+				};
+				CMB_SRYVALCOMP3	{
+					SRYVALCOMP3	{
+						value	varchar(22);
+						state	int;
+					};
+					count	int;
+					item	varchar(22)[10];
+					state	int;
+				};
+				CMB_SRYVALCOMP4	{
+					SRYVALCOMP4	{
+						value	varchar(22);
+						state	int;
+					};
+					count	int;
+					item	varchar(22)[10];
+					state	int;
+				};
+				CMB_SRYVALCOMP5	{
+					SRYVALCOMP5	{
+						value	varchar(22);
+						state	int;
+					};
+					count	int;
+					item	varchar(22)[10];
+					state	int;
+				};
 				RECECOM1	{
 					value	varchar(50);
 				};
@@ -678,6 +759,84 @@ Q01	{
 				LBLORDER3	{
 					value	varchar(80);
 					style   varchar(20);
+				};
+				CMB_TKMK1	{
+					TKMK1	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				CMB_TKMK2	{
+					TKMK2	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				CMB_TKMK3	{
+					TKMK3	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				TRDIO11	{
+					value	bool;
+				};
+				TRDIO12	{
+					value	bool;
+				};
+				TRDIO21	{
+					value	bool;
+				};
+				TRDIO22	{
+					value	bool;
+				};
+				TRDIO31	{
+					value	bool;
+				};
+				TRDIO32	{
+					value	bool;
+				};
+				CMB_SKMK1	{
+					SKMK1	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				CMB_SKMK2	{
+					SKMK2	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				CMB_SKMK3	{
+					SKMK3	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[10];
+				};
+				SRDIO11	{
+					value	bool;
+				};
+				SRDIO12	{
+					value	bool;
+				};
+				SRDIO21	{
+					value	bool;
+				};
+				SRDIO22	{
+					value	bool;
+				};
+				SRDIO31	{
+					value	bool;
+				};
+				SRDIO32	{
+					value	bool;
 				};
 			};
 		};

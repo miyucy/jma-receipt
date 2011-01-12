@@ -67,9 +67,7 @@
            03  WRK-MCP-WIDGET                      PIC X(64).
       *
       *    ¸ÇÄêÃÍÎÎ°è
-       01  CONST-AREA.
-           03  CONST-LINE                          PIC 9(05)
-               VALUE   30.
+      *01  CONST-AREA.
       *
            03  CONST-JOBID         PIC 9(07)   VALUE   1.
            03  CONST-JOBID2        PIC 9(07)   VALUE   2.
@@ -102,6 +100,8 @@
        01  SCRAREA.
            COPY    "Q01.INC".
            COPY    "Q02.INC".
+           COPY    "Q02A.INC".
+           COPY    "Q02B.INC".
            COPY    "Q03.INC".
            COPY    "Q04.INC".
            COPY    "Q96.INC".
@@ -572,10 +572,12 @@
            IF  ( SPA-Q02-Q100-PROC-FLG     =   1 )
       *        ³«»Ï·ï¿ô
                COMPUTE SPA-Q02-Q100-STKNS
-                   = ( SPA-GMN-Q100-STNUM  -   1 ) *   CONST-LINE  +   1
+                   = ( SPA-GMN-Q100-STNUM  -   1 )
+                   *   SPA-Q02-Q100-LINE   +   1
       *        ½ªÎ»·ï¿ô
                COMPUTE SPA-Q02-Q100-EDKNS
-                   =   SPA-GMN-Q100-EDNUM          *   CONST-LINE
+                   =   SPA-GMN-Q100-EDNUM
+                   *   SPA-Q02-Q100-LINE
       *        ³«»Ï¥Ú¡¼¥¸
                MOVE    SPA-GMN-Q100-STNUM
                                        TO  SPA-Q02-Q100-STPAGE

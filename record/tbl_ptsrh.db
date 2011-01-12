@@ -7,6 +7,16 @@ tbl_ptsrh {
 	SEX				char(1);
 	BIRTHDAY			char(8);
 	JKYSNUM				varchar(20);
+	NYUGAIKBN			char(1); 
+	HKNNUM				char(3); 
+	KOHNUM1				char(3); 
+	KOHNUM2				char(3); 
+	TOTALTEN			number(10,0);
+	SRYCD				char(9);
+	SRYNAME				varchar(100);
+	SRYKANANAME			varchar(100);
+	SRYSEQ				number(1,1);
+	MEMO				varchar(200);
 	DATAKBN				char(1);
 	CREYMD				char(8);
 	UPYMD				char(8);
@@ -67,29 +77,49 @@ path	ins1 	{
 
 path	ins2 	{
 	DBINSERT	{
-		INSERT INTO  tbl_ptsrh
-              ( HOSPNUM,
-                TERMID,
-                PTID,
-                PTNUM,
-                KANANAME,
-                SEX,
-                BIRTHDAY,
-                JKYSNUM,
-                DATAKBN,
-                CREYMD,
-                UPYMD,
-                UPHMS
+		INSERT INTO  tbl_ptsrh (
+		HOSPNUM,
+		TERMID,
+		PTID,
+		PTNUM,
+		KANANAME,
+		SEX,
+		BIRTHDAY,
+		JKYSNUM,
+		NYUGAIKBN,
+		HKNNUM,
+		KOHNUM1,
+		KOHNUM2,
+		TOTALTEN,
+		SRYCD,
+		SRYNAME,
+		SRYKANANAME,
+		SRYSEQ,
+		MEMO,
+		DATAKBN,
+		CREYMD,
+		UPYMD,
+		UPHMS
 		)
                 SELECT
-                HOSPNUM,
-                TERMID,
-                PTID,
-                PTNUM,
-                KANANAME,
-                SEX,
-                BIRTHDAY,
-                JKYSNUM,
+		HOSPNUM,
+		TERMID,
+		PTID,
+		PTNUM,
+		KANANAME,
+		SEX,
+		BIRTHDAY,
+		JKYSNUM,
+		NYUGAIKBN,
+		HKNNUM,
+		KOHNUM1,
+		KOHNUM2,
+		TOTALTEN,
+		SRYCD,
+		SRYNAME,
+		SRYKANANAME,
+		SRYSEQ,
+		MEMO,
                 :DATAKBN,
                 :CREYMD,
                 :UPYMD,
@@ -115,7 +145,7 @@ path	key 	{
 path	cnt 	{
 	DBSELECT	{
 		DECLARE tbl_ptsrh_cnt_csr CURSOR FOR
-                SELECT COUNT(*) AS PTID	
+                SELECT COUNT(PTID) AS PTID,COUNT(DISTINCT PTID) AS TOTALTEN
 		FROM tbl_ptsrh
 		WHERE	HOSPNUM    =    :HOSPNUM
 		AND     TERMID     =    :TERMID

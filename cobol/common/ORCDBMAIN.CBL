@@ -176,6 +176,7 @@
                MOVE    1           TO  MCP-REDIRECT
       *
                IF    ( MCP-TABLE   =   "tbl_srysrh"
+                                    OR "tbl_skysrh"
                                     OR "tbl_rrksrh"
                                     OR "tbl_ptsrh"
                                                     )

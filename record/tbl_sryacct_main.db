@@ -1280,3 +1280,15 @@ path	key56 	{
 	};
 };
 
+path	key57 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_main_key57_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct_main
+			WHERE HOSPNUM  =   :HOSPNUM
+			AND   PTID     =   :PTID
+                        AND   ZAINUM   =   :ZAINUM
+		;
+	};
+};
+

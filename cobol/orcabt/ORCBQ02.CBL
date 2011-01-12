@@ -40,6 +40,15 @@
                                    ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-BQ01.
       *
+      *    一時ファイル（患者重複チェック）
+           SELECT  BQ03T01-FILE    ASSIGN  BQ03T01PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  BQ03T01-KEY
+                                   FILE    STATUS  IS  STS-BQ03T01.
+           
+      
+      *
       *    エラーファイル
            SELECT  BQERR-FILE      ASSIGN  ERRFNAME
                                    FILE    STATUS  IS  STS-BQERR.
@@ -50,6 +59,13 @@
       *    パラメータファイル
        FD  BQ01-FILE.
            COPY    "CPBQ01.INC".
+      *
+      *    一時ファイル（患者重複チェック）
+       FD  BQ03T01-FILE.
+       01  BQ03T01-REC.
+           03  BQ03T01-KEY.
+               05  BQ03T01-HOSPNUM     PIC 9(02).
+               05  BQ03T01-PTID        PIC 9(10).
       *
       *    パラメータファイル
        FD  BQERR-FILE.
@@ -72,10 +88,16 @@
            03  PRFNAME                 PIC X(100).
            03  ERRFNAME                PIC X(200).
       *
+           COPY    "CPCOMMONDAT2.INC"
+                                           REPLACING   //RECE01//
+                                           BY          //BQ03T01//.
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
+      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-BQ01                PIC X(02).
            03  STS-BQERR               PIC X(02).
+           03  STS-BQ03T01             PIC X(02).
       *
       *    インデックス領域
        01  IDX-AREA.
@@ -88,6 +110,7 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-PTSRH               PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
+           03  FLG-BQ03T01             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -176,6 +199,9 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -237,10 +263,21 @@
       *
            PERFORM 900-JOB-STEP-START-SEC
       *
+           MOVE    SPA-HOSPNUM         TO  BQ03T01PARA-HOSPNUM
+           MOVE    "BQ03T01"           TO  BQ03T01PARA-FILE-ID
+           MOVE    SPA-TERMID          TO  BQ03T01PARA-TERMID
+      *
            MOVE    WRK-PARA-PAFNAME    TO  PRFNAME
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE
+      *
+           OPEN    OUTPUT              BQ03T01-FILE
+           DISPLAY "OUTPUT[" STS-BQ03T01 "]"
+           CLOSE   BQ03T01-FILE
+           DISPLAY "CLOSE[" STS-BQ03T01 "]"
+           OPEN    I-O                 BQ03T01-FILE
+           DISPLAY "I-O[" STS-BQ03T01 "]"
       *
       *    パラメータファイル読み込み
            READ    BQ01-FILE
@@ -292,19 +329,33 @@
       *    患者対象データ検索処理
            PERFORM 900-PTSRH-ODR-SEL-SEC
       *
+           DISPLAY "FLG-PTSRH   =" FLG-PTSRH   
+      *
            PERFORM UNTIL ( FLG-PTSRH   NOT =   ZERO )
                     OR   ( FLG-END     NOT =   ZERO )
       *
-               PERFORM 900-PTINF-KEY-SEL-SEC
-      *
-               IF        ( WKBQ01-LNKKBN   =   "1" )
-                   IF    ( CNT-PTINF      >=   CONST-PTINF-MAX )
-                       MOVE    1           TO  FLG-PTSRH
-                   ELSE
-                       PERFORM 20011-QTORSUB-EDIT-SEC
-                   END-IF
+               PERFORM 900-BQ03T01-READ-SEC
+               DISPLAY "[" FLG-BQ03T01 "][" PTSRH-PTID "]"
+               IF    ( FLG-BQ03T01     =   ZERO )
+                   CONTINUE
                ELSE
-                   PERFORM 20011-QTOANY-EDIT-SEC
+                   INITIALIZE  BQ03T01-REC
+                   MOVE    PTSRH-HOSPNUM   TO  BQ03T01-HOSPNUM
+                   MOVE    PTSRH-PTID      TO  BQ03T01-PTID
+                   WRITE   BQ03T01-REC
+      *
+                   PERFORM 900-PTINF-KEY-SEL-SEC
+      *
+                   IF        ( WKBQ01-LNKKBN   =   "1" )
+                       IF    ( CNT-PTINF      >=   CONST-PTINF-MAX )
+                           MOVE    1           TO  FLG-PTSRH
+                       ELSE
+                           PERFORM 20011-QTORSUB-EDIT-SEC
+                       END-IF
+                   ELSE
+                       PERFORM 20011-QTOANY-EDIT-SEC
+                   END-IF
+      *
                END-IF
       *
                IF    ( FLG-PTSRH       =   ZERO )
@@ -577,6 +628,13 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
+           CLOSE   BQ03T01-FILE
+      *
+           MOVE    ZERO        TO  IF-RESULT
+           MOVE    BQ03T01PARA TO  IF-FILENAME
+           CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
+      *
            PERFORM 900-PTSRH-DEL1-SEC
       *
            PERFORM 900-JOB-STEP-END-SEC
@@ -692,6 +750,25 @@
       *
            .
        900-PTSRH-DEL1-EXT.
+           EXIT.
+      *****************************************************************
+      *    一時ファイル（患者重複チェック）読込処理
+      *****************************************************************
+       900-BQ03T01-READ-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BQ03T01
+      *
+           INITIALIZE                  BQ03T01-REC
+           MOVE    PTSRH-HOSPNUM   TO  BQ03T01-HOSPNUM
+           MOVE    PTSRH-PTID      TO  BQ03T01-PTID
+           READ    BQ03T01-FILE
+           INVALID
+               MOVE    1           TO  FLG-BQ03T01
+           END-READ
+           DISPLAY "STS-BQ03T01[" STS-BQ03T01 "]"
+      *
+           .
+       900-BQ03T01-READ-EXT.
            EXIT.
       *****************************************************************
       *    ステップ管理開始処理

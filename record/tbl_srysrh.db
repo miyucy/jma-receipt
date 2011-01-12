@@ -2,23 +2,39 @@ tbl_srysrh {
 	HOSPNUM				number(2,0);
 	TERMID				char(64);
 	PTID				number(10,0);
+	ZAINUM 				number(9,0);
 	NYUGAIKBN			char(1);
 	SRYKA				char(2);
+	HKNCOMBINUM			number(4,0);
 	SRYKBN				char(2);
 	SRYSYUKBN			char(3);
 	SRYYMD				char(8);
+	ZAIKAISU 			number(5,0);
+	SURYOTOTAL 			number(12,5);
+	RENNUM				number(2,0);
 	SRYCD1				char(9);
+	SRYSURYO1 			number(10,5);
 	SRYCD2				char(9);
+	SRYSURYO2 			number(10,5);
 	SRYCD3				char(9);
+	SRYSURYO3 			number(10,5);
 	SRYCD4				char(9);
+	SRYSURYO4 			number(10,5);
 	SRYCD5				char(9);
+	SRYSURYO5 			number(10,5);
+	ACCTKBN				char(1);
 	CREYMD				char(8);
 	UPYMD				char(8);
 	UPHMS				char(6);
+	PTNUM				varchar(20),virtual;
+	KANANAME			varchar(100),virtual;
+	SEX				char(1),virtual;
+	BIRTHDAY			char(8),virtual;
 	STSRYYMD			char(8),virtual;
 	EDSRYYMD			char(8),virtual;
 	STSRYYM				char(6),virtual;
 	EDSRYYM				char(6),virtual;
+	SQL                             dbcode(15000),virtual;
 };
 
 path	all 	{
@@ -48,16 +64,27 @@ path	ins1 	{
 	       HOSPNUM,
 	       TERMID,
 	       PTID,
+	       ZAINUM,
 	       NYUGAIKBN,
 	       SRYKA,
+	       HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
+	       ZAIKAISU,
+	       SURYOTOTAL,
+	       RENNUM,
 	       SRYCD1,
+	       SRYSURYO1,
 	       SRYCD2,
+	       SRYSURYO2,
 	       SRYCD3,
+	       SRYSURYO3,
 	       SRYCD4,
+	       SRYSURYO4,
 	       SRYCD5,
+	       SRYSURYO5,
+	       ACCTKBN,
 	       CREYMD,
 	       UPYMD,
 	       UPHMS
@@ -65,16 +92,27 @@ path	ins1 	{
 	SELECT HOSPNUM,
 	      :TERMID,
 	       PTID,
+	       ZAINUM,
 	       NYUGAIKBN,
 	       SRYKA,
+	       0,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       '',
+	       0,
+	       0.0,
+	       RENNUM,
 	       SRYCD1,
+	       SRYSURYO1,
 	       SRYCD2,
+	       SRYSURYO2,
 	       SRYCD3,
+	       SRYSURYO3,
 	       SRYCD4,
+	       SRYSURYO4,
 	       SRYCD5,
+	       SRYSURYO5,
+	       '1',
 	      :CREYMD,
 	      :UPYMD,
 	      :UPHMS
@@ -126,21 +164,41 @@ path	ins1 	{
 	     ))
 	    )
 	;
+	
+	UPDATE TBL_SRYSRH
+	SET    HKNCOMBINUM = A.HKNCOMBI
+	FROM   TBL_SRYACCT_MAIN AS A
+	WHERE  TBL_SRYSRH.HOSPNUM = A.HOSPNUM
+	 AND   TBL_SRYSRH.PTID    = A.PTID
+	 AND   TBL_SRYSRH.ZAINUM  = A.ZAINUM
+	;
+	
 	INSERT INTO TBL_SRYSRH
 	    ( 
 	       HOSPNUM,
 	       TERMID,
 	       PTID,
+	       ZAINUM,
 	       NYUGAIKBN,
 	       SRYKA,
+	       HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
+	       ZAIKAISU,
+	       SURYOTOTAL,
+	       RENNUM,
 	       SRYCD1,
+	       SRYSURYO1,
 	       SRYCD2,
+	       SRYSURYO2,
 	       SRYCD3,
+	       SRYSURYO3,
 	       SRYCD4,
+	       SRYSURYO4,
 	       SRYCD5,
+	       SRYSURYO5,
+	       ACCTKBN,
 	       CREYMD,
 	       UPYMD,
 	       UPHMS
@@ -148,16 +206,27 @@ path	ins1 	{
 	SELECT HOSPNUM,
 	      :TERMID,
 	       PTID,
+	       ZAINUM,
 	       '1',
 	       SRYKA,
+	       cast(HKNCOMBINUM as smallint),
 	       SRYKBN,
 	       '',
 	       '',
+	       1,
+	       SRYSURYO,
+	       1,
 	       SRYCD,
+	       SRYSURYO,
 	       '',
+	       0.0,
 	       '',
+	       0.0,
 	       '',
+	       0.0,
 	       '',
+	       0.0,
+	      '2',
 	      :CREYMD,
 	      :UPYMD,
 	      :UPHMS
@@ -177,16 +246,27 @@ path	ins2 	{
 	       HOSPNUM,
 	       TERMID,
 	       PTID,
+	       ZAINUM,
 	       NYUGAIKBN,
 	       SRYKA,
+	       HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
+	       ZAIKAISU,
+	       SURYOTOTAL,
+	       RENNUM,
 	       SRYCD1,
+	       SRYSURYO1,
 	       SRYCD2,
+	       SRYSURYO2,
 	       SRYCD3,
+	       SRYSURYO3,
 	       SRYCD4,
+	       SRYSURYO4,
 	       SRYCD5,
+	       SRYSURYO5,
+	       ACCTKBN,
 	       CREYMD,
 	       UPYMD,
 	       UPHMS
@@ -195,16 +275,27 @@ path	ins2 	{
         A.HOSPNUM,
         :TERMID,
         A.PTID,
+        A.ZAINUM,
         A.NYUGAIKBN,
         A.SRYKA,
+	cast (B.HKNCOMBINUM as smallint),
         A.SRYKBN,
         A.SRYSYUKBN,
         B.SRYYMD,
+        1,
+        0.0,
+        A.RENNUM,
         A.SRYCD1,
+        A.SRYSURYO1,
         A.SRYCD2,
+        A.SRYSURYO2,
         A.SRYCD3,
+        A.SRYSURYO3,
         A.SRYCD4,
+        A.SRYSURYO4,
         A.SRYCD5,
+        A.SRYSURYO5,
+        '1',
 	:CREYMD,
 	:UPYMD,
 	:UPHMS
@@ -218,7 +309,7 @@ path	ins2 	{
        AND A.SRYYM    >= :STSRYYM
        AND A.SRYYM    <= :EDSRYYM
        AND A.HOSPNUM   = B.HOSPNUM
-       AND A.PTID      = cast(B.PTID as bigint)
+       AND A.PTID      = B.PTID
        AND A.NYUGAIKBN = B.NYUGAIKBN
        AND A.SRYKA     = B.SRYKA
        AND B.SRYYMD   >= :STSRYYMD
@@ -287,16 +378,27 @@ path	ins2 	{
 	       HOSPNUM,
 	       TERMID,
 	       PTID,
+	       ZAINUM,
 	       NYUGAIKBN,
 	       SRYKA,
+	       HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
+	       ZAIKAISU,
+	       SURYOTOTAL,
+	       RENNUM,
 	       SRYCD1,
+	       SRYSURYO1,
 	       SRYCD2,
+	       SRYSURYO2,
 	       SRYCD3,
+	       SRYSURYO3,
 	       SRYCD4,
+	       SRYSURYO4,
 	       SRYCD5,
+	       SRYSURYO5,
+	       ACCTKBN,
 	       CREYMD,
 	       UPYMD,
 	       UPHMS
@@ -304,16 +406,27 @@ path	ins2 	{
         SELECT A.HOSPNUM,
                :TERMID,
                A.PTID,
+	       A.ZAINUM,
                '1',
                B.SRYKA,
+	       cast(B.HKNCOMBINUM as smallint),
                B.SRYKBN,
                '',
                A.SRYYMD,
+               1,
+               B.SRYSURYO,
+               1,
                B.SRYCD,
+               B.SRYSURYO,
                '',
+               0.0,
                '',
+               0.0,
                '',
+               0.0,
                '',
+               0.0,
+               '2',
                :CREYMD,
                :UPYMD,
                :UPHMS
@@ -334,6 +447,7 @@ path	ins2 	{
 	};
 };
 
+#-----> ¿ÇÎÅ¶èÊ¬¡¢¿ÇÎÅ¼ïÊÌ¤Î¤ß¤Ç¤Î¸¡º÷
 path	ins3 	{
 	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
@@ -343,6 +457,7 @@ path	ins3 	{
 	       PTID,
 	       NYUGAIKBN,
 	       SRYKA,
+               HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
@@ -355,29 +470,30 @@ path	ins3 	{
 	       UPYMD,
 	       UPHMS
 	)
-	SELECT DISTINCT ON (HOSPNUM,PTID,NYUGAIKBN,SRYKA,SRYKBN,SRYSYUKBN) 
-	       HOSPNUM,
+	SELECT DISTINCT ON (A.HOSPNUM,A.PTID,A.NYUGAIKBN,A.SRYKA,B.HKNCOMBI,A.SRYKBN,A.SRYSYUKBN) 
+	       A.HOSPNUM,
 	      :TERMID,
-	       PTID,
-	       NYUGAIKBN,
-	       SRYKA,
-	       SRYKBN,
-	       SRYSYUKBN,
+	       A.PTID,
+	       A.NYUGAIKBN,
+	       A.SRYKA,
+               B.HKNCOMBI,
+	       A.SRYKBN,
+	       A.SRYSYUKBN,
 	       '',
-	       SRYCD1,
-	       SRYCD2,
-	       SRYCD3,
-	       SRYCD4,
-	       SRYCD5,
+	       A.SRYCD1,
+	       A.SRYCD2,
+	       A.SRYCD3,
+	       A.SRYCD4,
+	       A.SRYCD5,
 	      :CREYMD,
 	      :UPYMD,
 	      :UPHMS
-	FROM  TBL_SRYACT
-	WHERE HOSPNUM = :HOSPNUM
-	 AND  NYUGAIKBN LIKE :NYUGAIKBN
-	 AND  SRYKA     LIKE :SRYKA
-         AND SRYKBN LIKE :SRYKBN
-         AND SRYSYUKBN LIKE :SRYSYUKBN
+	FROM  TBL_SRYACT AS A JOIN TBL_SRYACCT_MAIN AS B USING (HOSPNUM,PTID,ZAINUM)
+	WHERE A.HOSPNUM = :HOSPNUM
+	 AND  A.NYUGAIKBN LIKE :NYUGAIKBN
+	 AND  A.SRYKA     LIKE :SRYKA
+         AND A.SRYKBN LIKE :SRYKBN
+         AND A.SRYSYUKBN LIKE :SRYSYUKBN
 	;
 
 	INSERT INTO TBL_SRYSRH
@@ -387,6 +503,7 @@ path	ins3 	{
 	       PTID,
 	       NYUGAIKBN,
 	       SRYKA,
+               HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
@@ -399,12 +516,13 @@ path	ins3 	{
 	       UPYMD,
 	       UPHMS
 	)
-	SELECT DISTINCT ON (HOSPNUM,PTID,SRYKA,SRYKBN) 
+	SELECT DISTINCT ON (HOSPNUM,PTID,SRYKA,HKNCOMBINUM,SRYKBN) 
 	       HOSPNUM,
 	      :TERMID,
 	       PTID,
 	       '1',
 	       SRYKA,
+	       cast(HKNCOMBINUM as smallint),
 	       SRYKBN,
 	       '',
 	       '',
@@ -424,6 +542,7 @@ path	ins3 	{
 	};
 };
 
+#-----> ¿ÇÎÅ¶èÊ¬¡¢¿ÇÎÅ¼ïÊÌ¤Î¤ß¤Ç¤Î¸¡º÷
 path	ins4 	{
 	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
@@ -433,6 +552,7 @@ path	ins4 	{
 	       PTID,
 	       NYUGAIKBN,
 	       SRYKA,
+	       HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
@@ -445,12 +565,13 @@ path	ins4 	{
 	       UPYMD,
 	       UPHMS
 	)
-	SELECT DISTINCT ON (A.HOSPNUM,A.PTID,A.NYUGAIKBN,A.SRYKA,A.SRYKBN,B.SRYYMD,A.SRYSYUKBN) 
+	SELECT DISTINCT ON (A.HOSPNUM,A.PTID,A.NYUGAIKBN,A.SRYKA,B.HKNCOMBINUM,A.SRYKBN,B.SRYYMD,A.SRYSYUKBN) 
         A.HOSPNUM,
         :TERMID,
         A.PTID,
         A.NYUGAIKBN,
         A.SRYKA,
+	cast(B.HKNCOMBINUM as smallint),
         A.SRYKBN,
         A.SRYSYUKBN,
         B.SRYYMD,
@@ -472,7 +593,7 @@ path	ins4 	{
        AND A.SRYYM    >= :STSRYYM
        AND A.SRYYM    <= :EDSRYYM
        AND A.HOSPNUM   = B.HOSPNUM
-       AND A.PTID      = cast(B.PTID as bigint)
+       AND A.PTID      = B.PTID
        AND A.NYUGAIKBN = B.NYUGAIKBN
        AND A.SRYKA     = B.SRYKA
        AND B.SRYYMD   >= :STSRYYMD
@@ -502,6 +623,7 @@ path	ins4 	{
 	       PTID,
 	       NYUGAIKBN,
 	       SRYKA,
+	       HKNCOMBINUM,
 	       SRYKBN,
 	       SRYSYUKBN,
 	       SRYYMD,
@@ -514,13 +636,13 @@ path	ins4 	{
 	       UPYMD,
 	       UPHMS
 	)
-        SELECT DISTINCT ON (A.HOSPNUM,A.PTID,B.SRYKA,B.SRYKBN,A.SRYYMD) 
-
+        SELECT DISTINCT ON (A.HOSPNUM,A.PTID,B.SRYKA,B.HKNCOMBINUM,B.SRYKBN,A.SRYYMD) 
                A.HOSPNUM,
                :TERMID,
                A.PTID,
                '1',
                B.SRYKA,
+	       cast(HKNCOMBINUM as smallint),
                B.SRYKBN,
                '',
                A.SRYYMD,
@@ -546,5 +668,13 @@ path	ins4 	{
        AND A.SRYYMD   <= :EDSRYYMD
 	;
 	};
+};
+
+path    key     {
+        DBSELECT        {
+                DECLARE tbl_srysrh_key_csr CURSOR FOR
+                :SQL
+                ;
+        };
 };
 

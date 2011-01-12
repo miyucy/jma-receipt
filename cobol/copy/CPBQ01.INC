@@ -44,10 +44,12 @@
            03  BQ01-KJYNYMD            PIC 9(08).
       *----(01.00.02) LINE ADD END   ----------------------------------
       *    ø«Œ≈«Ø∑Ó
-           03  BQ01-SRYYM              PIC 9(06).
+           03  BQ01-SRYYM              PIC X(06).
       *    ∆˛≥∞∂Ë ¨
            03  BQ01-NYUGAIKBN          PIC X(01).
       *    œ¢∑»∂Ë ¨
            03  BQ01-LNKKBN             PIC X(01).
       *    SQL
            03  BQ01-SQL                PIC X(15000).
+      *    SPA-Q01KYOUTU
+           03  BQ01-Q01KYOUTU          PIC X(20000).

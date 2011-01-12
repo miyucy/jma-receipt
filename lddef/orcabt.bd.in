@@ -112,6 +112,8 @@ bind	"ORHCML10"	"OpenCOBOL";
 bind	"ORHCML11"	"OpenCOBOL";
 bind	"ORCBPRT"	"OpenCOBOL";
 bind	"ORCBQ01"	"OpenCOBOL";
+bind	"ORCBQ01A"	"OpenCOBOL";
+bind	"ORCBQ01B"	"OpenCOBOL";
 bind	"ORCHC30"	"OpenCOBOL";
 bind    "ORCL0010"	"OpenCOBOL";
 bind    "ORCL0020"	"OpenCOBOL";

@@ -1,5 +1,7 @@
 SRCS = ORCGQ01.CBL \
        ORCGQ02.CBL \
+       ORCGQ02A.CBL \
+       ORCGQ02B.CBL \
        ORCGQ03.CBL \
        ORCGQ98.CBL \
        ORCGQ99.CBL \

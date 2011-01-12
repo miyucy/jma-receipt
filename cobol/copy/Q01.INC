@@ -28,6 +28,7 @@
                 05  Q01-CMB-SELPATTERN-ITEM    PIC X(33)   OCCURS  50.
               04  Q01-STSRYYMD                 PIC X(10).
               04  Q01-EDSRYYMD                 PIC X(10).
+              04  Q01-LBLSENISAKI              PIC X(40).
               04  Q01-NOTEBOOK3.
                 05  Q01-PAGENO                 PIC S9(9)   BINARY.
                 05  Q01-FIXED16.
@@ -125,6 +126,7 @@
                     07  Q01-TOKKIINFO              PIC X(33).
                     07  Q01-CMB-TOKKIINFO-COUNT    PIC S9(9) BINARY.
                     07  Q01-CMB-TOKKIINFO-ITEM     PIC X(33) OCCURS 50.
+                  06  Q01-TOTALTEN                 PIC S9(7).
                 05  Q01-FIXED17.
                   06  Q01-CMB-HONKZKKBN.
                     07  Q01-HONKZKKBN          PIC X(10).
@@ -233,6 +235,25 @@
                         09  Q01-SRYLST-SRYACT  PIC X(80).
                       08  Q01-SRYLST-SELECT-TBL.
                         09  Q01-SRYLST-SELECT  PIC X   OCCURS  200.
+                  06  Q01-CMB-SRYVALITEM.
+                    07 Q01-SRYVALITEM       PIC X(32).
+                    07 Q01-CMB-SRYVALITEM-COUNT PIC S9(9) BINARY.
+                    07 Q01-CMB-SRYVALITEM-ITEM  PIC X(32) OCCURS 10.
+                  06  Q01-LBLSRYVAL     PIC X(10).
+                  06  Q01-SRYVAL-OCC    OCCURS   5.
+                      07  Q01-SRYVAL    PIC X(11).
+                      07  Q01-SRYVAL-STATE      PIC S9(9) BINARY.
+                  06  Q01-CMB-SRYVALCOMP-G.
+                    07  Q01-CMB-SRYVALCOMP-OCC  OCCURS   5.
+                      08  Q01-CMB-SRYVALCOMP.
+                        09 Q01-SRYVALCOMP       PIC X(22).
+                        09 Q01-SRYVALCOMP-STATE PIC S9(9) BINARY.
+                        09 Q01-CMB-SRYVALCOMP-COUNT
+                                                   PIC S9(9)   BINARY.
+                        09 Q01-CMB-SRYVALCOMP-ITEM
+                                                   PIC X(22) OCCURS 10.
+                        09 Q01-CMB-SRYVALCOMP-ITEM-STATE
+                                                   PIC S9(9) BINARY.
                   06  Q01-RECECOM-TBL.
                     07  Q01-RECECOM            PIC X(50)   OCCURS 3.
                   06  Q01-RDBYOMEI-AND         PIC X.
@@ -253,4 +274,22 @@
                     07  Q01-LBLORDER-OCC   OCCURS  3.
                       08  Q01-LBLORDER         PIC X(80).
                       08  Q01-LBLORDER-STYLE   PIC X(20).
+                  06  Q01-CMB-TKMK-TBL.
+                    07  Q01-CMB-TKMK-OCC    OCCURS  3.
+                      08  Q01-CMB-TKMK          PIC X(30).
+                      08  Q01-CMB-TKMK-COUNT    PIC S9(9) BINARY.
+                      08  Q01-CMB-TKMK-ITEM     PIC X(30) OCCURS  10.
+                  06  Q01-TRDIO-TBL.
+                    07  Q01-TRDIO-OCC       OCCURS  3.
+                      08  Q01-TRDIO1            PIC X.
+                      08  Q01-TRDIO2            PIC X.
+                  06  Q01-CMB-SKMK-TBL.
+                    07  Q01-CMB-SKMK-OCC    OCCURS  3.
+                      08  Q01-CMB-SKMK          PIC X(30).
+                      08  Q01-CMB-SKMK-COUNT    PIC S9(9) BINARY.
+                      08  Q01-CMB-SKMK-ITEM     PIC X(30) OCCURS  10.
+                  06  Q01-SRDIO-TBL.
+                    07  Q01-SRDIO-OCC       OCCURS  3.
+                      08  Q01-SRDIO1            PIC X.
+                      08  Q01-SRDIO2            PIC X.
 

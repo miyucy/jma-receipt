@@ -22,4 +22,4 @@
          02  QERR.
             03  QERR-FIXED1.
               04  QERR-ERRCODE     PIC X(10).
-              04  QERR-ERRMSG      PIC X(60).
+              04  QERR-ERRMSG      PIC X(100).

@@ -217,6 +217,8 @@
                                13  SPA-GMN-Q01-TOKKIINFO     PIC X(02).
                                13  SPA-GMN-Q01-TOKKIINFOFL   PIC X(01).
                                13  SPA-GMN-Q01-TOKKIINFOMEI  PIC X(30).
+      *                    ÅÀ¿ô
+                           11  SPA-GMN-Q01-TOTALTEN          PIC 9(07).
       *                ÊÝ¸±¡¡¸øÈñ
                        09  SPA-GMN-Q01-HOKEN-AREA.
                            11  SPA-GMN-Q01-HONKZKKBN-G.
@@ -367,6 +369,26 @@
                                13  SPA-GMN-Q01-SRYACT
                                                        PIC X(80)
                                                        OCCURS  5. 
+      *                    ¿ÇÎÅ¹Ô°Ù¿ôÃÍ
+                           11  SPA-GMN-Q01-SRYVALITEM-G.
+                               13  SPA-GMN-Q01-SRYVALITEM
+                                                       PIC X(01).
+                               13  SPA-GMN-Q01-SRYVALITEMF
+                                                       PIC X(01).
+                               13  SPA-GMN-Q01-SRYVALITEMMEI
+                                                       PIC X(30).
+                           11  SPA-GMN-Q01-SRYVAL-G.
+                               13  SPA-GMN-Q01-SRYVAL-OCC
+                                                       OCCURS  5.
+                                   15  SPA-GMN-Q01-SRYVAL
+                                                       PIC X(11). 
+                                   15  SPA-GMN-Q01-SRYVALCOMP-G.
+                                       17  SPA-GMN-Q01-SRYVALCOMP
+                                                       PIC X(01).
+                                       17  SPA-GMN-Q01-SRYVALCOMPF
+                                                       PIC X(01).
+                                       17  SPA-GMN-Q01-SRYVALCOMPMEI
+                                                       PIC X(20).
       *                    ¥ì¥»¥×¥È¥³¥á¥ó¥È
                            11  SPA-GMN-Q01-RECECOMTBL.
                                13  SPA-GMN-Q01-RECECOM PIC X(50)
@@ -408,6 +430,26 @@
                            11  SPA-GMN-Q01-RDIO-G      OCCURS  3.
                                13  SPA-GMN-Q01-RDIO1   PIC X(01).
                                13  SPA-GMN-Q01-RDIO2   PIC X(01).
+                           11  SPA-GMN-Q01-TKMKTBL.
+                               13  SPA-GMN-Q01-TKMK-G   OCCURS  3.
+                                   15  SPA-GMN-Q01-TKMK PIC X(01).
+                                   15  SPA-GMN-Q01-TKMKFL
+                                                       PIC X(01).
+                                   15  SPA-GMN-Q01-TKMKMEI
+                                                       PIC X(28).
+                           11  SPA-GMN-Q01-TRDIO-G     OCCURS  3.
+                               13  SPA-GMN-Q01-TRDIO1  PIC X(01).
+                               13  SPA-GMN-Q01-TRDIO2  PIC X(01).
+                           11  SPA-GMN-Q01-SKMKTBL.
+                               13  SPA-GMN-Q01-SKMK-G   OCCURS  3.
+                                   15  SPA-GMN-Q01-SKMK PIC X(01).
+                                   15  SPA-GMN-Q01-SKMKFL
+                                                       PIC X(01).
+                                   15  SPA-GMN-Q01-SKMKMEI
+                                                       PIC X(28).
+                           11  SPA-GMN-Q01-SRDIO-G     OCCURS  3.
+                               13  SPA-GMN-Q01-SRDIO1  PIC X(01).
+                               13  SPA-GMN-Q01-SRDIO2  PIC X(01).
       *                ¥¿¥Ö¥Ú¡¼¥¸ÈÖ¹æ
                        09  SPA-GMN-Q01-PAGENO          PIC 9(01).
       *
@@ -450,6 +492,8 @@
                                13  SPA-NAI-Q01-SRYCD-YUKOEDYMD
                                                        PIC X(08).
                                13  SPA-NAI-Q01-SRYCD   PIC X(09).
+                           11  SPA-NAI-Q01-SRYVAL-OCC  OCCURS  5.
+                               13  SPA-NAI-Q01-SRYVAL  PIC 9(05)V9(05).
       *                ÊÂ¤Ó½ç
                        09  SPA-NAI-Q01-NARABI-AREA.
                            11  SPA-NAI-Q01-NARABI-DMY  PIC X(01).
@@ -598,12 +642,40 @@
                                13  SPA-GMN-Q01-UBYOMEIL    PIC X(3).
                                13  SPA-GMN-Q01-UBYOMEIFLL  PIC X(1).
                                13  SPA-GMN-Q01-UBYOMEIMEIL PIC X(20).
-                       09  SPA-GMN-Q01-SORTLST-G.
-                           11  SPA-GMN-Q01-SORTLST-MAX     PIC 9(05).
-                           11  SPA-GMN-Q01-SORTLST         OCCURS 10.
-                               13  SPA-GMN-Q01-SORTL       PIC X(01).
-                               13  SPA-GMN-Q01-SORTFLL     PIC X(01).
-                               13  SPA-GMN-Q01-SORTMEIL    PIC X(28).
+                       09  SPA-GMN-Q01-SRYVALITEMLST-G.
+                           11  SPA-GMN-Q01-SRYVALITEMLST-MAX
+                                                            PIC 9(05).
+                           11  SPA-GMN-Q01-SRYVALITEMLST    OCCURS  10.
+                               13  SPA-GMN-Q01-SRYVALITEML  PIC X(01).
+                               13  SPA-GMN-Q01-SRYVALITEMFLL
+                                                            PIC X(01).
+                               13  SPA-GMN-Q01-SRYVALITEMMEIL
+                                                            PIC X(30).
+                       09  SPA-GMN-Q01-SRYVALCOMPLST-G.
+                           11  SPA-GMN-Q01-SRYVALCOMPLST-MAX
+                                                           PIC 9(05).
+                           11  SPA-GMN-Q01-SRYVALCOMPLST    OCCURS  10.
+                               13  SPA-GMN-Q01-SRYVALCOMPL    PIC X(01).
+                               13  SPA-GMN-Q01-SRYVALCOMPFLL  PIC X(01).
+                               13  SPA-GMN-Q01-SRYVALCOMPMEIL PIC X(20).
+                       09  SPA-GMN-Q01-KMKLST-G.
+                           11  SPA-GMN-Q01-KMKLST-MAX      PIC 9(05).
+                           11  SPA-GMN-Q01-KMKLST          OCCURS 10.
+                               13  SPA-GMN-Q01-KMKL        PIC X(01).
+                               13  SPA-GMN-Q01-KMKFLL      PIC X(01).
+                               13  SPA-GMN-Q01-KMKMEIL     PIC X(28).
+                       09  SPA-GMN-Q01-TKMKLST-G.
+                           11  SPA-GMN-Q01-TKMKLST-MAX     PIC 9(05).
+                           11  SPA-GMN-Q01-TKMKLST         OCCURS 10.
+                               13  SPA-GMN-Q01-TKMKL       PIC X(01).
+                               13  SPA-GMN-Q01-TKMKFLL     PIC X(01).
+                               13  SPA-GMN-Q01-TKMKMEIL    PIC X(28).
+                       09  SPA-GMN-Q01-SKMKLST-G.
+                           11  SPA-GMN-Q01-SKMKLST-MAX     PIC 9(05).
+                           11  SPA-GMN-Q01-SKMKLST         OCCURS 10.
+                               13  SPA-GMN-Q01-SKMKL       PIC X(01).
+                               13  SPA-GMN-Q01-SKMKFLL     PIC X(01).
+                               13  SPA-GMN-Q01-SKMKMEIL    PIC X(28).
                        09  SPA-GMN-Q01-GENMENLST-G.
                            11  SPA-GMN-Q01-GENMENLST-MAX   PIC 9(05).
                            11  SPA-GMN-Q01-GENMENLST       OCCURS 99.
@@ -640,7 +712,7 @@
                            11  SPA-NAI-Q01-SELPATTERN-OCC  OCCURS  50.
                                13  SPA-NAI-Q01-SELPATTERN-UIDL
                                                               PIC X(36).
-      *    £Ñ£°£²ÍÑ
+      *    £Ñ£°£²¡¢£Ñ£°£²£Á¡¢£Ñ£°£²£ÂÍÑ
            03  SPA-Q02.
                05  SPA-Q02-AREA.
                    07  SPA-GMN-Q02-CTLSEQ              PIC 9(02).
@@ -671,43 +743,78 @@
                        09  SPA-GMN-Q02-KEKKATBL.
                            11  SPA-GMN-Q02-KEKKAOCC    OCCURS 200.
       *                        Ï¢ÈÖ
-                               13  SPA-GMN-Q02-KEKKALST-NO
+                               13  SPA-GMN-Q02-TNO
                                                        PIC X(5).
       *                        ´µ¼ÔÈÖ¹æ
-                               13  SPA-GMN-Q02-KEKKALST-PTNUM
+                               13  SPA-GMN-Q02-TPTNUM
                                                        PIC X(20).
       *                        »áÌ¾
-                               13  SPA-GMN-Q02-KEKKALST-NAME
+                               13  SPA-GMN-Q02-TNAME
                                                        PIC X(50).
       *                        À­ÊÌ
-                               13  SPA-GMN-Q02-KEKKALST-SEX
+                               13  SPA-GMN-Q02-TSEX
                                                        PIC X(2).
       *                        ÃÂÀ¸Æü
-                               13  SPA-GMN-Q02-KEKKALST-BIRTH
+                               13  SPA-GMN-Q02-TBIRTH
                                                        PIC X(10).
       *                        Ç¯Îð
-                               13  SPA-GMN-Q02-KEKKALST-AGE
+                               13  SPA-GMN-Q02-TAGE
                                                        PIC X(08).
       *
       *                        ÊÝ¸±ÁÈ¹ç¤»
-                               13  SPA-GMN-Q02-KEKKALST-HKN
-                                                       PIC X(10).
+                               13  SPA-GMN-Q02-THKN
+                                                       PIC X(20).
+      *
+      *                        ¸øÈñ¤Î¼ïÎà£±
+                               13  SPA-GMN-Q02-TKOH1
+                                                       PIC X(20).
+      *
+      *                        ¸øÈñ¤Î¼ïÎà£²
+                               13  SPA-GMN-Q02-TKOH2
+                                                       PIC X(20).
       *
       *                        Í¹ÊØÈÖ¹æ
-                               13  SPA-GMN-Q02-KEKKALST-POST
+                               13  SPA-GMN-Q02-TPOST
                                                        PIC X(8).
       *
       *                        ¿ÇÎÅÆâÍÆ
-                               13  SPA-GMN-Q02-KEKKALST-SRYACT
+                               13  SPA-GMN-Q02-TSRYACT
                                                        PIC X(200).
       *
       *                        ÅÅÏÃÈÖ¹æ
-                               13  SPA-GMN-Q02-KEKKALST-TEL
+                               13  SPA-GMN-Q02-TTEL
                                                        PIC X(15).
       *
       *                        ºÇ½ª¼õ¿ÇÆü
-                               13  SPA-GMN-Q02-KEKKALST-LASTYMD
+                               13  SPA-GMN-Q02-TLASTYMD
                                                        PIC X(10).
+      *                        Æþ³°¶èÊ¬
+                               13  SPA-GMN-Q02-TNYUGAI
+                                                       PIC X(01).
+      *                        ÅÀ¿ô
+                               13  SPA-GMN-Q02-TTOTALTEN
+                                                       PIC 9(10).
+      *                        ¿ÇÎÅ¥³¡¼¥É
+                               13  SPA-GMN-Q02-TSRYCD
+                                                       PIC X(09).
+      *                        ¿ÇÎÅ¹Ô°ÙÌ¾¾Î
+                               13  SPA-GMN-Q02-TSRYNAME
+                                                       PIC X(80).
+      *                        ¿ôÎÌ
+                               13  SPA-GMN-Q02-TSRYSURYO
+                                                       PIC 9(05)V9(05).
+      *                        ¿ôÎÌÊÔ½¸¥Õ¥é¥°
+                               13  SPA-GMN-Q02-TSURYO-EDIT
+                                                       PIC 9(1).
+      *                        ²ó¿ô
+                               13  SPA-GMN-Q02-TZAIKAISU
+                                                       PIC 9(07).
+      *                        ¹ç·×
+                               13  SPA-GMN-Q02-TSURYOTOTAL
+                                                       PIC 9(07)V9(05).
+      *                        È÷¹Í
+                               13  SPA-GMN-Q02-TMEMO
+                                                       PIC X(200).
       *
                            11  SPA-GMN-Q02-KEKKA-MAX   PIC 9(05).
                            11  SPA-GMN-Q02-KEKKA-SEL   PIC 9(05).
@@ -717,6 +824,8 @@
                        09  SPA-GMN-Q02-TOTAL-NUM       PIC 9(09).
       *                Áí·ï¿ô¼èÆÀ½èÍý¥Õ¥é¥°
                        09  SPA-GMN-Q02-TOTAL-GET-FLG   PIC 9(1).
+      *                ¼Â¿Í¿ô
+                       09  SPA-GMN-Q02-NINZU           PIC 9(09).
       *
       *                ÁªÂòÈÖ¹æ
                        09  SPA-GMN-Q02-SELNUM          PIC 9(05).
@@ -936,6 +1045,7 @@
            03  SPA-Q01KYOUTU.
       *        Q01¢«¢ªQ02Á«°Ü¾ðÊó
                05  SPA-Q01-Q02-SENI-AREA.
+                   07  SPA-Q01-SAKIPG                  PIC X(10).
                    07  SPA-Q01-GAITO-TBL.
                        09  SPA-Q01-GTBL                PIC X(01)
                                                        OCCURS  12.
@@ -993,6 +1103,7 @@
                        09  SPA-Q01-TOKKI-G.
                            11  SPA-Q01-TOKKICD         PIC X(02).
                            11  SPA-Q01-TOKKINAME       PIC X(12).
+                       09  SPA-Q01-TOTALTEN            PIC 9(07).
       *            ÊÝ¸±¡¡¸øÈñ
                    07  SPA-Q01-HOKEN-AREA.
                        09  SPA-Q01-HONKZKKBN           PIC X(01).
@@ -1046,17 +1157,24 @@
                        09  SPA-Q01-SRYCD-G.
                            11  SPA-Q01-SRYCD           PIC X(09)
                                                        OCCURS  5.
+                       09  SPA-Q01-SRYVAL-G.
+                           11  SPA-Q01-SRYVALITEM   PIC X(01).
+                           11  SPA-Q01-SRYVAL-OCC      OCCURS  5.
+                               13  SPA-Q01-SRYVAL      PIC X(20).
+                               13  SPA-Q01-SRYVALNUM   PIC 9(05)V9(05).
+                               13  SPA-Q01-SRYVALCOMP
+                                                       PIC X(01).
                        09  SPA-Q01-RECECOM-G.
                            11  SPA-Q01-RECECOM         OCCURS  3
                                                        PIC X(50).
       *
       *            ÊÂ¤Ó½ç
                    07  SPA-Q01-NARABI-AREA.
-                       09  SPA-Q01-KOUMOKU-TBL.
-                           11  SPA-Q01-KMK             PIC 9(01)
+                       09  SPA-Q01-SORTITEM-TBL.
+                           11  SPA-Q01-SORTITEM        PIC 9(01)
                                                        OCCURS  3.
-                       09  SPA-Q01-NARABE-TBL.
-                           11  SPA-Q01-NARABE          PIC 9(01)
+                       09  SPA-Q01-SORTKBN-TBL.
+                           11  SPA-Q01-SORTKBN         PIC 9(01)
                                                        OCCURS  3.
       *
       *        Q01¢«¢ªQ04Á«°Ü¾ðÊó
@@ -1117,6 +1235,8 @@
                    07  SPA-Q02-Q100-STNUM              PIC  9(09).
       *            ½ªÎ»·ï¿ô¡Ê¥Ú¡¼¥¸¿ô¡Ë(I)
                    07  SPA-Q02-Q100-EDNUM              PIC  9(09).
+      *            £±ÊÇ¹Ô¿ô
+                   07  SPA-Q02-Q100-LINE               PIC  9(09).
       *            ³«»Ï·ï¿ô(O)
                    07  SPA-Q02-Q100-STKNS              PIC  9(09).
       *            ½ªÎ»·ï¿ô(O)

@@ -155,4 +155,5 @@ db	{
 	tbl_rrksrh;
 	tbl_ptsrh;
 	tbl_synonym;
+	tbl_skysrh;
 };

@@ -26,31 +26,27 @@ fi
 #        $13 FILENM FOLDER
 #        $14 FILENM 
 #        $15 WKCSVファイル名
+#        $16 検索パターン 0:通常/1:点数/2:診療行為
 #
 #-------------------------------------------#
 
         LOG_FILE="/var/log/jma-receipt/${7}ORCBQ01.log"
 
-        echo "arg2   = [" ${2}   "]" >$LOG_FILE
+        echo "all params [" $@ "]"   >$LOG_FILE
+        echo "arg2   = [" ${2}   "]" <>$LOG_FILE
         echo "arg11  = [" ${11}  "]" >>$LOG_FILE
         echo "arg12  = [" ${12}  "]" >>$LOG_FILE
-
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBQ01 -parameter $3,$4,$5,$6,$7,$8,${11},${13},${14},${15} >> $LOG_FILE 2>&1
+##
+        PGNAME=ORCBQ01
+        [ ${16} == "1" ] && PGNAME=ORCBQ01A
+        [ ${16} == "2" ] && PGNAME=ORCBQ01B
+##
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter $3,$4,$5,$6,$7,$8,${11},${13},${14},${15},${16} >> $LOG_FILE 2>&1
 
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
             if  [ -e ${15} ]; then
-                awk ' {
-                #     行頭の空白を取り除く
-                      sub(/^ */,"");
-                #     行末の空白を取り除く
-                      sub(/ *$/,"");
-                #     カンマの後の空白を取り除く
-                      gsub(/, */,",");
-                #     カンマの前の空白を取り除く
-                      gsub(/ *,/,",");
-                      print $0
-                }'  ${15} > ${2}.tmp
+		ruby -e 'STDIN.readlines.each{|y| puts y.split(",").each{|x|  x.strip!}.join(",")}' <  ${15} > ${2}.tmp
 
                 if   [ ${11} = '1' ]; then
 #                   クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ−ｊｉｓ）

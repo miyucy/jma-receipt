@@ -59,9 +59,9 @@
            03  IDX2                                PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDX-LEN                             PIC 9(05).
-           03  IDX-KMK1                            PIC 9(05).
-           03  IDX-KMK2                            PIC 9(05).
-           03  IDX-KMK3                            PIC 9(05).
+           03  IDX-SITM1                            PIC 9(05).
+           03  IDX-SITM2                            PIC 9(05).
+           03  IDX-SITM3                            PIC 9(05).
            03  IDX-SRT1                            PIC 9(05).
            03  IDX-SRT2                            PIC 9(05).
            03  IDX-SRT3                            PIC 9(05).
@@ -108,25 +108,8 @@
       *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
-           03  CONST-ITEM-AREA.
-               05  CONST-ITEM-MAX          PIC 9(03) VALUE 6.
-               05  CONST-ITEM-VAL.
-                   07  CONST-HOSPNUM-TBL   PIC X(01) VALUE "A".
-                   07  CONST-HOSPNUM       PIC X(20) VALUE "HOSPNUM".
-                   07  CONST-PTID-TBL      PIC X(01) VALUE "A".
-                   07  CONST-PTID          PIC X(20) VALUE "PTID".
-                   07  CONST-PTNUM-TBL     PIC X(01) VALUE "H".
-                   07  CONST-PTNUM         PIC X(20) VALUE "PTNUM".
-                   07  CONST-KANANAME-TBL  PIC X(01) VALUE "A".
-                   07  CONST-KANANAME      PIC X(20) VALUE "KANANAME".
-                   07  CONST-SEX-TBL       PIC X(01) VALUE "A".
-                   07  CONST-SEX           PIC X(20) VALUE "SEX".
-                   07  CONST-BIRTHDAY-TBL  PIC X(01) VALUE "A".
-                   07  CONST-BIRTHDAY      PIC X(20) VALUE "BIRTHDAY".
-               05  CONST-ITEM-R    REDEFINES   CONST-ITEM-VAL.
-                   07  CONST-ITEM-OCC      OCCURS    6.
-                       09  CONST-ITEM-TBL  PIC X(01).
-                       09  CONST-ITEM      PIC X(20).
+           03  CONST-AND                   PIC X(01) VALUE "1".
+           03  CONST-OR                    PIC X(01) VALUE " ".
            03  CONST-TABLE-AREA.
                05  CONST-TBL-A     PIC X(20) VALUE "TBL_PTINF       A".
                05  CONST-TBL-B     PIC X(20) VALUE "TBL_SRYKARRK    B".
@@ -134,13 +117,13 @@
                05  CONST-TBL-D     PIC X(20) VALUE "TBL_PTHKNINF    D".
                05  CONST-TBL-E     PIC X(20) VALUE "TBL_PTKOHINF    E".
                05  CONST-TBL-F     PIC X(20) VALUE "TBL_RRKSRH      F".
-               05  CONST-TBL-GT    PIC X(20) VALUE "TBL_SRHACT      G".
+               05  CONST-TBL-GT    PIC X(20) VALUE "TBL_SRYSRH      G".
                05  CONST-TBL-H     PIC X(20) VALUE "TBL_PTNUM       H".
                05  CONST-TBL-I     PIC X(20) VALUE "TMPV_Q001       D".
                05  CONST-TBL-J1    PIC X(20) VALUE "TBL_TSYRRK      J".
                05  CONST-TBL-J2    PIC X(20) VALUE "TBL_TNKRRK      J".
                05  CONST-TBL-K     PIC X(20) VALUE "TBL_RECECOM     K".
-               05  CONST-TBL-L     PIC X(20) VALUE "TBL_SEIKYU_MAIN L".
+               05  CONST-TBL-L     PIC X(20) VALUE "TBL_SKYSRH      L".
            03  CONST-KMK-ITEM-AREA.
                05  FILLER          PIC X(12)   VALUE "PTNUM".
                05  FILLER          PIC X(12)   VALUE "KANANAME".
@@ -149,6 +132,26 @@
                05  FILLER          PIC X(12)   VALUE "JKYSNUM".
            03  CONST-KMK-ITEM-R    REDEFINES   CONST-KMK-ITEM-AREA.
                05  CONST-KMK-ITEM  PIC X(12)   OCCURS  5.
+      *
+           03  CONST-TKMK-ITEM-AREA.
+               05  FILLER          PIC X(12)   VALUE "TOTALTEN".
+               05  FILLER          PIC X(12)   VALUE "NYUGAIKBN".
+               05  FILLER          PIC X(12)   VALUE "PTNUM".
+               05  FILLER          PIC X(12)   VALUE "KANANAME".
+               05  FILLER          PIC X(12)   VALUE "SEX".
+               05  FILLER          PIC X(12)   VALUE "BIRTHDAY".
+           03  CONST-TKMK-ITEM-R   REDEFINES   CONST-TKMK-ITEM-AREA.
+               05  CONST-TKMK-ITEM PIC X(12)   OCCURS  6.
+      *
+           03  CONST-SKMK-ITEM-AREA.
+               05  FILLER      PIC X(12)   VALUE "PTNUM".
+               05  FILLER      PIC X(12)   VALUE "KANANAME".
+               05  FILLER      PIC X(12)   VALUE "SEX".
+               05  FILLER      PIC X(12)   VALUE "BIRTHDAY".
+               05  FILLER      PIC X(12)   VALUE "SRYCD".
+               05  FILLER      PIC X(12)   VALUE "SRYKANANAME".
+           03  CONST-SKMK-ITEM-R   REDEFINES   CONST-SKMK-ITEM-AREA.
+               05  CONST-SKMK-ITEM PIC X(12)   OCCURS  6.
       *
            03  CONST-ORDER-AREA.
                05  FILLER          PIC X(5)    VALUE "ASC".
@@ -209,7 +212,7 @@
            MOVE    1               TO  WRK-SQL-PNT
                                        WRK-SQL-ORDER-PNT
       *
-           IF    ( SPA-Q01-HKNKOH-JKN  =   " " )
+           IF    ( SPA-Q01-HKNKOH-JKN  =   CONST-OR )
             AND  ( SPA-Q01-GTBL (5)    =   "1" )
             AND  ( SPA-Q01-GTBL (6)    =   "1" )
                PERFORM 1001-JYOKEN-EDIT-SEC
@@ -222,9 +225,27 @@
            WITH    POINTER   WRK-SQL-PNT
            END-STRING
       *
-           PERFORM 1001-GROUP-EDIT-SEC
+           EVALUATE    TRUE
+           WHEN  ( SPA-Q01-SRYVALITEM  NOT =   SPACE )
+               CONTINUE
+           WHEN  ( SPA-Q01-TOTALTEN    NOT =   ZERO )
+               PERFORM 1002-GROUP-EDIT-SEC
+           WHEN    OTHER
+               PERFORM 1001-GROUP-EDIT-SEC
+           END-EVALUATE
       *
            PERFORM 1001-ORDER-EDIT-SEC
+      *
+           IF    ( QSUB02-LIMITCONTROL     =   1 )
+      *
+               STRING  " LIMIT "                   DELIMITED   BY  SIZE
+                       QSUB02-LIMIT                DELIMITED   BY  SIZE
+                       " OFFSET "                  DELIMITED   BY  SIZE
+                       QSUB02-OFFSET               DELIMITED   BY  SIZE
+               INTO    WRK-SQL-ORDER
+               WITH    POINTER WRK-SQL-ORDER-PNT
+               END-STRING
+           END-IF
       *
            MOVE    SPACE               TO  WRK-SQL (WRK-SQL-PNT:)
       *
@@ -303,7 +324,7 @@
            MOVE    "@@"            TO  WRK-KOHTBLID
            IF    ( SPA-Q01-GTBL (6)  =   "1" )
                IF    ( SPA-Q01-GTBL (8)  =   "1" )
-                   IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+                   IF    ( SPA-Q01-KOHNUM-JKN      =   CONST-AND )
                     AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
                        PERFORM VARYING IDX2    FROM    1   BY  1
                                UNTIL ( IDX2    >   5 )
@@ -323,7 +344,7 @@
                        MOVE    "D"         TO  WRK-KOHTBLID
                    END-IF
                ELSE
-                   IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+                   IF    ( SPA-Q01-KOHNUM-JKN      =   CONST-AND )
                     AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
                        PERFORM VARYING IDX2    FROM    1   BY  1
                                UNTIL ( IDX2    >   5 )
@@ -474,6 +495,23 @@
       *****************************************************************
        10011-JYOKEN-INIT-SEC           SECTION.
       *
+           EVALUATE    TRUE
+           WHEN  ( SPA-Q01-SRYVALITEM  NOT =   SPACE )
+               PERFORM 100113-JYOKEN-INIT-SEC
+           WHEN  ( SPA-Q01-TOTALTEN    NOT =   ZERO )
+               PERFORM 100112-JYOKEN-INIT-SEC
+           WHEN    OTHER
+               PERFORM 100111-JYOKEN-INIT-SEC
+           END-EVALUATE
+      *
+           .
+       10011-JYOKEN-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸¡º÷¾ò·ïÊÔ½¸½é´ü½èÍý¡ÊÄÌ¾ï¸¡º÷¡Ë
+      *****************************************************************
+       100111-JYOKEN-INIT-SEC          SECTION.
+      *
            IF    ( FLG-TBLNAME     =   ZERO )
       *
                STRING    "INSERT   INTO  TBL_PTSRH ("
@@ -554,7 +592,107 @@
            END-EVALUATE
       *
            .
-       10011-JYOKEN-INIT-EXT.
+       100111-JYOKEN-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸¡º÷¾ò·ïÊÔ½¸½é´ü½èÍý¡ÊÅÀ¿ô¸¡º÷¡Ë
+      *****************************************************************
+       100112-JYOKEN-INIT-SEC          SECTION.
+      *
+           IF    ( FLG-TBLNAME     =   ZERO )
+      *
+               STRING    "INSERT   INTO  TBL_PTSRH ("
+                                              DELIMITED    BY SIZE
+                         "HOSPNUM,"           DELIMITED    BY SIZE
+                         "TERMID,"            DELIMITED    BY SIZE
+                         "PTID,"              DELIMITED    BY SIZE
+                         "PTNUM,"             DELIMITED    BY SIZE
+                         "KANANAME,"          DELIMITED    BY SIZE
+                         "SEX,"               DELIMITED    BY SIZE
+                         "BIRTHDAY,"          DELIMITED    BY SIZE
+                         "NYUGAIKBN,"         DELIMITED    BY SIZE
+                         "HKNNUM,"            DELIMITED    BY SIZE
+                         "KOHNUM1,"           DELIMITED    BY SIZE
+                         "KOHNUM2,"           DELIMITED    BY SIZE
+                         "TOTALTEN,"          DELIMITED    BY SIZE
+                         "DATAKBN,"           DELIMITED    BY SIZE
+                         "CREYMD,"            DELIMITED    BY SIZE
+                         "UPYMD,"             DELIMITED    BY SIZE
+                         "UPHMS"              DELIMITED    BY SIZE
+                         ")"                  DELIMITED    BY SIZE
+                         "SELECT "            DELIMITED    BY SIZE
+                         "HOSPNUM,'"          DELIMITED    BY SIZE
+                         SPA-TERMID           DELIMITED    BY SPACE
+                         "',PTID,"            DELIMITED    BY SIZE
+                         "PTNUM,"             DELIMITED    BY SIZE
+                         "KANANAME,"          DELIMITED    BY SIZE
+                         "SEX,"               DELIMITED    BY SIZE
+                         "BIRTHDAY,"          DELIMITED    BY SIZE
+                         "NYUGAIKBN,"         DELIMITED    BY SIZE
+                         "HKNNUM,"            DELIMITED    BY SIZE
+                         "KOHNUM1,"            DELIMITED    BY SIZE
+                         "KOHNUM2,"            DELIMITED    BY SIZE
+                         "TOTALTEN,"          DELIMITED    BY SIZE
+                         "'1',"               DELIMITED    BY SIZE
+                         "'"                  DELIMITED    BY SIZE
+                         QSUB02-YMD           DELIMITED    BY SPACE
+                         "',"                 DELIMITED    BY SIZE
+                         "'"                  DELIMITED    BY SIZE
+                         QSUB02-YMD           DELIMITED    BY SPACE
+                         "',"                 DELIMITED    BY SIZE
+                         "'"                  DELIMITED    BY SIZE
+                         QSUB02-HMS           DELIMITED    BY SPACE
+                         "'"                  DELIMITED    BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING    "SELECT "            DELIMITED    BY SIZE
+                         "A.HOSPNUM,"         DELIMITED    BY SIZE
+                         "A.PTID,"            DELIMITED    BY SIZE
+                         "H.PTNUM,"           DELIMITED    BY SIZE
+                         "A.KANANAME,"        DELIMITED    BY SIZE
+                         "A.SEX,"             DELIMITED    BY SIZE
+                         "A.BIRTHDAY,"        DELIMITED    BY SIZE
+                         "L.NYUGAIKBN,"       DELIMITED    BY SIZE
+                         "L.HKNNUM,"          DELIMITED    BY SIZE
+                         "L.KOHNUM1,"         DELIMITED    BY SIZE
+                         "L.KOHNUM2,"         DELIMITED    BY SIZE
+                         "L.TOTALTEN,"        DELIMITED    BY SIZE
+                         "L.OID"              DELIMITED    BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           .
+       100112-JYOKEN-INIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸¡º÷¾ò·ïÊÔ½¸½é´ü½èÍý¡Ê¿ÇÎÅ¹Ô°Ù¿ôÃÍ¸¡º÷¡Ë
+      *****************************************************************
+       100113-JYOKEN-INIT-SEC          SECTION.
+      *
+           IF    ( FLG-TBLNAME     =   ZERO )
+               STRING    "SELECT "            DELIMITED    BY SIZE
+                         "DISTINCT *"         DELIMITED    BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING    "SELECT "
+                         "G.*,G.OID,"
+                         "H.PTNUM,"           DELIMITED    BY SIZE
+                         "A.KANANAME,"        DELIMITED    BY SIZE
+                         "A.SEX,"             DELIMITED    BY SIZE
+                         "A.BIRTHDAY"         DELIMITED    BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           .
+       100113-JYOKEN-INIT-EXT.
            EXIT.
       *****************************************************************
       *    Á°·î¼èÆÀ½èÍý
@@ -734,7 +872,7 @@
       *
       *    ÉÂÌ¾¥³¡¼¥É
            IF  ( SPA-Q01-GTBL (4)  =   "1" )
-               IF    ( SPA-Q01-BYOMEI-JKN  =   "1" )
+               IF    ( SPA-Q01-BYOMEI-JKN  =   CONST-AND )
                  AND ( SPA-Q01-BYOMEI-G    NOT =   SPACE )
                    PERFORM 1001-PTBYOMEI-SQL-AND-EDIT-SEC
                ELSE
@@ -748,7 +886,7 @@
            IF      ((  SPA-Q01-GTBL (5)    =   "1" )
                 OR  (  SPA-Q01-GTBL (6)    =   "1" ))
                IF  (   SPA-Q01-GTBL (8)    =   "1" )
-                   IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+                   IF    ( SPA-Q01-KOHNUM-JKN      =   CONST-AND )
                     AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
                        PERFORM 1001-TMPVQ001-SQL-AND-EDIT-SEC
                    ELSE
@@ -764,7 +902,7 @@
                    END-IF
       *
                    IF   ( SPA-Q01-GTBL (6)  =   "1" )
-                       IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+                       IF    ( SPA-Q01-KOHNUM-JKN      =   CONST-AND )
                         AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
                            PERFORM 1001-PTKOHINF-SQL-AND-EDIT-SEC
                        ELSE
@@ -806,7 +944,7 @@
       *
       *    ¿ÇÎÅ¶èÊ¬¡¦¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
            IF   ( SPA-Q01-GTBL (9)  =   "1" )
-               IF    ( SPA-Q01-SRYACT-JKN  =   "1" )
+               IF    ( SPA-Q01-SRYACT-JKN  =   CONST-AND )
                 AND  ( SPA-Q01-SRYCD-G NOT =   SPACE )
                    PERFORM     1001-SRYACT-SQL-AND-EDIT-SEC
                ELSE
@@ -875,7 +1013,7 @@
       *****************************************************************
        1001-TMPVQ001-JYOKEN-EDIT-SEC   SECTION.
       *
-           IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+           IF    ( SPA-Q01-KOHNUM-JKN      =   CONST-AND )
             AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
                MOVE    2               TO  FLG-HKNSELPTN
                PERFORM VARYING IDX2    FROM    1   BY  1
@@ -907,7 +1045,7 @@
       *****************************************************************
        1001-PTKOHINF-JYOKEN-EDIT-SEC   SECTION.
       *
-           IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+           IF    ( SPA-Q01-KOHNUM-JKN      =   CONST-AND )
             AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2    >   5 )
@@ -939,7 +1077,7 @@
       *****************************************************************
        1001-BYOMEI-JYOKEN-EDIT-SEC     SECTION.
       *
-           IF    ( SPA-Q01-BYOMEI-JKN      =   "1" )
+           IF    ( SPA-Q01-BYOMEI-JKN      =   CONST-AND )
              AND ( SPA-Q01-BYOMEI-G    NOT =   SPACE )
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2    >   5 )
@@ -969,7 +1107,7 @@
       *****************************************************************
        1001-SRYACT-JYOKEN-EDIT-SEC     SECTION.
       *
-           IF    ( SPA-Q01-SRYACT-JKN  =   "1" )
+           IF    ( SPA-Q01-SRYACT-JKN  =   CONST-AND )
             AND  ( SPA-Q01-SRYCD-G NOT =   SPACE )
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2    >   5 )
@@ -993,6 +1131,14 @@
                    END-IF
       *
                END-PERFORM
+      *
+               IF    ( SPA-Q01-SRYVALITEM  NOT =   SPACE )
+                   STRING  ",TBL_SRYSRH G"  DELIMITED  BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+      *
            ELSE
                IF    ( SPA-Q01-GTBL(8) =   SPACE )
                    STRING  ",TBL_SRYSRH G"         DELIMITED  BY  SIZE
@@ -1028,7 +1174,7 @@
       *****************************************************************
        1001-SEIKYU-MAIN-JYOKEN-EDIT-SEC     SECTION.
       *
-           STRING  ",TBL_SEIKYU_MAIN L"     DELIMITED  BY  SIZE
+           STRING  ",TBL_SKYSRH L"     DELIMITED  BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER WRK-SQL-PNT
            END-STRING
@@ -1242,43 +1388,64 @@
                PERFORM 900-SQL-JYOKEN-EDIT3-SEC
            END-IF
       *
-           MOVE    ZERO                TO  CNT-JYOKEN
+           IF    ( SPA-Q01-TOKKICD     NOT =   SPACE )
+            OR   ( SPA-Q01-TOKKINAME   NOT =   SPACE )
       *
-           IF    ( SPA-Q01-TOKKICD NOT =   SPACE )
+               MOVE    ZERO                TO  CNT-JYOKEN
       *
-               COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+               IF    ( SPA-Q01-TOKKICD NOT =   SPACE )
+      *
+                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+                   STRING  "'"                 DELIMITED BY SIZE
+                       SPA-Q01-TOKKICD         DELIMITED BY SIZE
+                       "'"                     DELIMITED BY SIZE
+                      "in(L.TOKKI1,L.TOKKI2,L.TOKKI3,L.TOKKI4,L.TOKKI5)"
+                                               DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+      *
+               IF    ( SPA-Q01-TOKKINAME   NOT =   SPACE )
+      *
+                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+                   STRING  "'"                 DELIMITED BY SIZE
+                       SPA-Q01-TOKKINAME       DELIMITED BY SPACE
+                       "'"                     DELIMITED BY SIZE
+                       "in(L.TOKKINM1,L.TOKKINM2,L.TOKKINM3"
+                                               DELIMITED BY SIZE
+                       ",L.TOKKINM4,L.TOKKINM5)"
+                                               DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           END-IF
+      *
+           IF    ( SPA-Q01-TOTALTEN    >   ZERO )
+      *
+               MOVE    1           TO  CNT-JYOKEN
       *
                PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
-               STRING  "'"                 DELIMITED BY SIZE
-                   SPA-Q01-TOKKICD         DELIMITED BY SIZE
-                   "'"                     DELIMITED BY SIZE
-                   "in(L.TOKKI1,L.TOKKI2,L.TOKKI3,L.TOKKI4,L.TOKKI5)"
-                                           DELIMITED BY SIZE
+               STRING  "L.TOTALTEN >= " DELIMITED BY SIZE
+                       SPA-Q01-TOTALTEN DELIMITED BY SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
            END-IF
-      *
-           IF    ( SPA-Q01-TOKKINAME   NOT =   SPACE )
-      *
-               COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
-      *
-               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
-               STRING  "'"                 DELIMITED BY SIZE
-                   SPA-Q01-TOKKINAME       DELIMITED BY SPACE
-                   "'"                     DELIMITED BY SIZE
-                   "in(L.TOKKINM1,L.TOKKINM2,L.TOKKINM3"
-                                           DELIMITED BY SIZE
-                   ",L.TOKKINM4,L.TOKKINM5)"
-                                           DELIMITED BY SIZE
-               INTO    WRK-SQL
-               WITH    POINTER WRK-SQL-PNT
-               END-STRING
-           END-IF
-      *
-           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
       *
            PERFORM 900-SQL-JYOKEN-EDIT4-SEC
       *
@@ -2432,6 +2599,10 @@
                PERFORM 10011-SRYKBN-SQL-EDIT-SEC
            END-IF
       *
+           IF    ( SPA-Q01-GTBL(5)     =   "1" )
+               PERFORM 10011-HKNCOMBINUM-SQL-EDIT-SEC
+           END-IF
+      *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )
@@ -2517,6 +2688,10 @@
                        PERFORM 10011-SRYKBN-SQL-EDIT-SEC
                    END-IF
       *
+                   IF    ( SPA-Q01-GTBL(5)     =   "1" )
+                       PERFORM 10011-HKNCOMBINUM-SQL-EDIT-SEC
+                   END-IF
+      *
                    MOVE    1               TO      CNT-JYOKEN
       *
                    PERFORM 900-SQL-JYOKEN-EDIT2-SEC
@@ -2560,6 +2735,52 @@
       *
            END-PERFORM
       *
+           IF    ( SPA-Q01-SRYVALITEM  NOT =   SPACE )
+      *
+               MOVE    ZERO            TO  FLG-JYOKEN-AND
+      *
+               MOVE    "G"             TO  WRK-SQL-TBL-NAME
+               PERFORM 900-SQL-JYOKEN-EDIT1-SEC
+      *
+               MOVE    1               TO      CNT-JYOKEN
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               STRING    "G.OID IN (null"   DELIMITED BY SIZE
+               INTO      WRK-SQL
+               WITH POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL   (   IDXA    >   5 )
+      *
+                   MOVE    IDXA            TO  WRK-NAME-SEQ
+                   MOVE    "G"             TO  WRK-SQL-TBL-NAME
+                   MOVE    WRK-NAME-SEQ    TO  WRK-SQL-TBL-NAME (2 : 1)
+      *
+                   IF      ( SPA-Q01-SRYCD     (IDXA)  NOT =   SPACE )
+                       STRING    ","               DELIMITED BY SPACE
+                                 WRK-SQL-TBL-NAME  DELIMITED BY SPACE
+                                 ".OID"
+                       INTO      WRK-SQL
+                       WITH POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+               END-PERFORM
+      *
+               STRING    ")"                       DELIMITED BY SIZE
+               INTO      WRK-SQL
+               WITH POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT4-SEC
+      *
+               MOVE    1               TO  FLG-JYOKEN
+      *
+           END-IF
+      *
            .
        1001-SRYACT-SQL-AND-EDIT-EXT.
            EXIT.
@@ -2578,7 +2799,7 @@
            STRING  "((H.HOSPNUM="              DELIMITED   BY  SIZE
                    SPA-HOSPNUM                 DELIMITED   BY  SIZE
                    ")AND("                     DELIMITED   BY  SIZE
-                   "H.PTID=A.PTID::bigint) "   DELIMITED   BY  SIZE
+                   "H.PTID=A.PTID) "   DELIMITED   BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER     WRK-SQL-PNT
            END-STRING
@@ -3248,6 +3469,52 @@
        10011-SRYKBN-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸½èÍý
+      *****************************************************************
+       10011-HKNCOMBINUM-SQL-EDIT-SEC  SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           IF    ( FLG-HKNSELPTN           =   2 )
+               STRING  WRK-SQL-TBL-NAME        DELIMITED BY SPACE
+                       ".HKNCOMBI in (0"  DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   5 )
+      *
+                   IF    (SPA-Q01-KOHNUM (IDX1)    NOT =   SPACE )
+                       MOVE    IDX1    TO  WRK-NAME-SEQ
+                       STRING  ",D"            DELIMITED  BY  SIZE
+                               WRK-NAME-SEQ    DELIMITED  BY  SIZE
+                               ".HKNCOMBINUM"  DELIMITED  BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+               END-PERFORM
+               STRING  ")"     DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING  WRK-SQL-TBL-NAME        DELIMITED BY SPACE
+                       ".HKNCOMBINUM = D.HKNCOMBINUM"
+                                               DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-HKNCOMBINUM-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ³°¶èÊ¬ÊÔ½¸½èÍý
       *****************************************************************
        10011-NYUGAIKBN-SQL-EDIT-SEC    SECTION.
@@ -3441,79 +3708,125 @@
        10011-TENKIKBN-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    GROUP BYÊÔ½¸½èÍý
+      *    GROUP BYÊÔ½¸½èÍý(ÄÌ¾ï¸¡º÷)
       *****************************************************************
        1001-GROUP-EDIT-SEC                 SECTION.
       *
            STRING  " GROUP BY "        DELIMITED   BY  SIZE
+                   "HOSPNUM,"          DELIMITED   BY  SIZE
+                   "PTID,"             DELIMITED   BY  SIZE
+                   "PTNUM,"            DELIMITED   BY  SIZE
+                   "KANANAME,"         DELIMITED   BY  SIZE
+                   "SEX,"              DELIMITED   BY  SIZE
+                   "BIRTHDAY"          DELIMITED   BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER WRK-SQL-PNT
            END-STRING
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   CONST-ITEM-MAX )
-      *
-               IF    ( IDX0    >   1 )
-                   STRING  ","         DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER   WRK-SQL-PNT
-                   END-STRING
-               ELSE
-                   CONTINUE
-               END-IF
-      *
-               STRING  CONST-ITEM     (IDX0)   DELIMITED   BY  SPACE
-               INTO    WRK-SQL
-               WITH    POINTER   WRK-SQL-PNT
-               END-STRING
-      *
-           END-PERFORM
       *
            .
        1001-GROUP-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÂ¤ÙÂØ¤¨½çÊÔ½¸½èÍý
+      *    GROUP BYÊÔ½¸½èÍý(ÅÀ¿ô¸¡º÷)
+      *****************************************************************
+       1002-GROUP-EDIT-SEC                 SECTION.
+      *
+           STRING  " GROUP BY "        DELIMITED   BY  SIZE
+                   "HOSPNUM,"          DELIMITED   BY  SIZE
+                   "PTID,"             DELIMITED   BY  SIZE
+                   "PTNUM,"            DELIMITED   BY  SIZE
+                   "KANANAME,"         DELIMITED   BY  SIZE
+                   "SEX,"              DELIMITED   BY  SIZE
+                   "BIRTHDAY,"         DELIMITED   BY  SIZE
+                   "NYUGAIKBN,"        DELIMITED   BY  SIZE
+                   "HKNNUM,"           DELIMITED   BY  SIZE
+                   "KOHNUM1,"          DELIMITED   BY  SIZE
+                   "KOHNUM2,"          DELIMITED   BY  SIZE
+                   "TOTALTEN,"         DELIMITED   BY  SIZE
+                   "OID"               DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           .
+       1002-GROUP-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÂ¤ÙÂØ¤¨½çÊÔ½¸½èÍý(¿ÇÎÅ¹Ô°Ù¸¡º÷)
       *****************************************************************
        1001-ORDER-EDIT-SEC                 SECTION.
       *
-           MOVE    SPA-Q01-KMK (1)     TO  IDX-KMK1
-           MOVE    SPA-Q01-KMK (2)     TO  IDX-KMK2
-           MOVE    SPA-Q01-KMK (3)     TO  IDX-KMK3
+           MOVE    SPA-Q01-SORTITEM (1)    TO  IDX-SITM1
+           MOVE    SPA-Q01-SORTITEM (2)    TO  IDX-SITM2
+           MOVE    SPA-Q01-SORTITEM (3)    TO  IDX-SITM3
       *
-           MOVE    SPA-Q01-NARABE (1)  TO  IDX-SRT1
-           MOVE    SPA-Q01-NARABE (2)  TO  IDX-SRT2
-           MOVE    SPA-Q01-NARABE (3)  TO  IDX-SRT3
+           MOVE    SPA-Q01-SORTKBN  (1)    TO  IDX-SRT1
+           MOVE    SPA-Q01-SORTKBN  (2)    TO  IDX-SRT2
+           MOVE    SPA-Q01-SORTKBN  (3)    TO  IDX-SRT3
       *
-           STRING  " ORDER BY "                DELIMITED   BY  SIZE
-                   CONST-KMK-ITEM (IDX-KMK1)   DELIMITED   BY  SPACE
-                   " "                         DELIMITED   BY  SIZE
-                   CONST-ORDER (IDX-SRT1)
-                                               DELIMITED   BY  SPACE
-                   ","                         DELIMITED   BY  SIZE
-                   CONST-KMK-ITEM (IDX-KMK2)   DELIMITED   BY  SPACE
-                   " "                         DELIMITED   BY  SIZE
-                   CONST-ORDER (IDX-SRT2)
-                                               DELIMITED   BY  SPACE
-                   ","                         DELIMITED   BY  SIZE
-                   CONST-KMK-ITEM (IDX-KMK3)   DELIMITED   BY  SPACE
-                   " "                         DELIMITED   BY  SIZE
-                   CONST-ORDER (IDX-SRT3)
-                                               DELIMITED   BY  SPACE
-           INTO    WRK-SQL-ORDER
-           WITH    POINTER WRK-SQL-ORDER-PNT
-           END-STRING
+           EVALUATE    TRUE
+           WHEN  ( SPA-Q01-SRYVALITEM  NOT =   SPACE )
       *
-           IF    ( QSUB02-LIMITCONTROL     =   1 )
-      *
-               STRING  " LIMIT "                   DELIMITED   BY  SIZE
-                       QSUB02-LIMIT                DELIMITED   BY  SIZE
-                       " OFFSET "                  DELIMITED   BY  SIZE
-                       QSUB02-OFFSET               DELIMITED   BY  SIZE
+               STRING  " ORDER BY "                DELIMITED   BY  SIZE
+                       CONST-SKMK-ITEM (IDX-SITM1) DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT1)
+                                                   DELIMITED   BY  SPACE
+                       ","                         DELIMITED   BY  SIZE
+                       CONST-SKMK-ITEM (IDX-SITM2) DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT2)
+                                                   DELIMITED   BY  SPACE
+                       ","                         DELIMITED   BY  SIZE
+                       CONST-SKMK-ITEM (IDX-SITM3) DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT3)
+                                                   DELIMITED   BY  SPACE
+                       ",SRYCD ASC"                DELIMITED   BY  SIZE
                INTO    WRK-SQL-ORDER
                WITH    POINTER WRK-SQL-ORDER-PNT
                END-STRING
-           END-IF
+           WHEN  ( SPA-Q01-TOTALTEN >  ZERO )
+      *
+               STRING  " ORDER BY "                DELIMITED   BY  SIZE
+                       CONST-TKMK-ITEM (IDX-SITM1) DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT1)
+                                                   DELIMITED   BY  SPACE
+                       ","                         DELIMITED   BY  SIZE
+                       CONST-TKMK-ITEM (IDX-SITM2) DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT2)
+                                                   DELIMITED   BY  SPACE
+                       ","                         DELIMITED   BY  SIZE
+                       CONST-TKMK-ITEM (IDX-SITM3) DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT3)
+                                                   DELIMITED   BY  SPACE
+               INTO    WRK-SQL-ORDER
+               WITH    POINTER WRK-SQL-ORDER-PNT
+               END-STRING
+           WHEN  OTHER
+      *
+               STRING  " ORDER BY "                DELIMITED   BY  SIZE
+                       CONST-KMK-ITEM (IDX-SITM1)  DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT1)
+                                                   DELIMITED   BY  SPACE
+                       ","                         DELIMITED   BY  SIZE
+                       CONST-KMK-ITEM (IDX-SITM2)  DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT2)
+                                                   DELIMITED   BY  SPACE
+                       ","                         DELIMITED   BY  SIZE
+                       CONST-KMK-ITEM (IDX-SITM3)  DELIMITED   BY  SPACE
+                       " "                         DELIMITED   BY  SIZE
+                       CONST-ORDER (IDX-SRT3)
+                                                   DELIMITED   BY  SPACE
+               INTO    WRK-SQL-ORDER
+               WITH    POINTER WRK-SQL-ORDER-PNT
+               END-STRING
+           END-EVALUATE
       *
            .
       *

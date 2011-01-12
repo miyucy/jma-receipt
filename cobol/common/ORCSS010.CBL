@@ -77,6 +77,7 @@
                05  KEY-HKNCOMBI9       PIC 9(04).
            03  KEY-SRYKBN              PIC X(02).
            03  KEY-SRYCD               PIC X(09).
+           03  KEY-SRYSURYO            PIC 9(05).
            03  KEY-BRMNUM              PIC X(08).
            03  KEY-RM-SAGAKU           PIC X(02).
            03  KEY-RRKNUM              PIC 9(03).
@@ -104,6 +105,7 @@
                05  TNSHOUKAI-HKNCOMBI      PIC X(04).
                05  TNSHOUKAI-SRYKBN        PIC X(02).
                05  TNSHOUKAI-SRYCD         PIC X(09).
+               05  TNSHOUKAI-SRYSURYO      PIC 9(05).
                05  TNSHOUKAI-BRMNUM        PIC X(08).
                05  TNSHOUKAI-RM-SAGAKU     PIC X(02).
                05  TNSHOUKAI-DAY-G.
@@ -466,6 +468,8 @@
                                            TO  KEY-SRYKBN
                    MOVE    SS009-SRYCD   (IDX0 IDX1)
                                            TO  KEY-SRYCD
+                   MOVE    SS009-SURYO   (IDX0 IDX1)
+                                           TO  KEY-SRYSURYO
                    MOVE    SS009-BRMNUM-DAY(IDX-DAY)
                                            TO  KEY-BRMNUM
                    MOVE    SS009-SAGAKUCD-DAY(IDX-DAY)
@@ -496,6 +500,7 @@
                                        =   TNSHOUKAI-HKNCOMBI(IDX3))
                     AND  ( KEY-SRYKBN  =   TNSHOUKAI-SRYKBN  (IDX3))
                     AND  ( KEY-SRYCD   =   TNSHOUKAI-SRYCD   (IDX3))
+                    AND  ( KEY-SRYSURYO =  TNSHOUKAI-SRYSURYO(IDX3))
                     AND  ( KEY-BRMNUM  =   TNSHOUKAI-BRMNUM  (IDX3))
                     AND  ( KEY-RM-SAGAKU
                                        =   TNSHOUKAI-RM-SAGAKU(IDX3))
@@ -521,6 +526,8 @@
                MOVE    KEY-SRYKBN      TO  TNSHOUKAI-SRYKBN
                                                        (IDX-TNSHOUKAI)
                MOVE    KEY-SRYCD       TO  TNSHOUKAI-SRYCD
+                                                       (IDX-TNSHOUKAI)
+               MOVE    KEY-SRYSURYO    TO  TNSHOUKAI-SRYSURYO
                                                        (IDX-TNSHOUKAI)
                MOVE    KEY-BRMNUM      TO  TNSHOUKAI-BRMNUM
                                                        (IDX-TNSHOUKAI)
@@ -576,6 +583,7 @@
                    MOVE    "00"
                                            TO  KEY-SRYKBN
                    MOVE    WRK-SRYCD       TO  KEY-SRYCD
+                   MOVE    1               TO  KEY-SRYSURYO
                    MOVE    SS009-BRMNUM-DAY(IDX-DAY)
                                            TO  KEY-BRMNUM
                    MOVE    SS009-SAGAKUCD-DAY(IDX-DAY)
@@ -616,6 +624,8 @@
                                        TO  NSRYSRH-SRYKBN
                MOVE    TNSHOUKAI-SRYCD (IDX3)
                                        TO  NSRYSRH-SRYCD
+               MOVE    TNSHOUKAI-SRYSURYO (IDX3)
+                                       TO  NSRYSRH-SRYSURYO
                MOVE    TNSHOUKAI-BRMNUM (IDX3)
                                        TO  NSRYSRH-BRMNUM
                MOVE    TNSHOUKAI-RM-SAGAKU (IDX3)
@@ -710,6 +720,7 @@
                                    " "      TNSHOUKAI-HKNCOMBI(IDX3)
                                    " "      TNSHOUKAI-SRYKBN(IDX3)
                                    " "      TNSHOUKAI-SRYCD(IDX3)
+                                   " "      TNSHOUKAI-SRYSURYO(IDX3)
                                    " "      SS010-SRYYM
                                             IDX-DAY
                        END-IF

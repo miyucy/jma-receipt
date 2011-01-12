@@ -437,6 +437,9 @@ FORM_files = \
 	      HCM19V01.red \
 	      HC02V01.red \
 	      HC02QV01.red \
+	      HCM28A.red \
+	      HCM28B.red \
+
 
 all:   
 

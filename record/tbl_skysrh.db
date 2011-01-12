@@ -1,0 +1,107 @@
+tbl_skysrh {
+	HOSPNUM				number(2,0);
+	TERMID				char(64);
+	PTID				number(10,0);
+	NYUGAIKBN			char(1);
+	SRYYM				char(6);
+	HKNID				number(10,0);
+	HKNNUM				char(3);
+	KOHNUM1				char(3);
+	KOHNUM2				char(3);
+	TOTALTEN			number(10,0);
+	TOKKI1				varchar(2);
+	TOKKI2				varchar(2);
+	TOKKI3				varchar(2);
+	TOKKI4				varchar(2);
+	TOKKI5				varchar(2);
+	TOKKINM1			varchar(12);
+	TOKKINM2			varchar(12);
+	TOKKINM3			varchar(12);
+	TOKKINM4			varchar(12);
+	TOKKINM5			varchar(12);
+	STSRYYM				varchar(6),virtual;
+	EDSRYYM				varchar(6),virtual;
+};
+
+path	key	{
+	DBSELECT	{
+		DECLARE tbl_skysrh_key csr CURSOR FOR
+		SELECT *
+		FROM tbl_skysrh
+	        WHERE	HOSPNUM    =    :HOSPNUM
+		AND	TERMID	   =	:TERMID		
+		AND	PTID	   =	:PTID	
+		AND	NYUGAIKBN  =	:NYUGAIKBN	
+		AND	SRYYM	   =	:SRYYM	
+ 		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_skysrh
+		WHERE	HOSPNUM    =    :HOSPNUM
+		AND     TERMID     =    :TERMID
+ 		;
+	};
+};
+
+path	ins1 	{
+	DBINSERT	{
+		INSERT	
+		INTO    tbl_skysrh
+		(
+		HOSPNUM,
+		TERMID,
+ 		PTID,
+		NYUGAIKBN,
+		SRYYM,
+		HKNID,
+		HKNNUM,
+		KOHNUM1,
+		KOHNUM2,
+		TOTALTEN,
+		TOKKI1,
+		TOKKI2,	
+		TOKKI3,	
+		TOKKI4,	
+		TOKKI5,	
+		TOKKINM1,
+		TOKKINM2,	
+		TOKKINM3,	
+		TOKKINM4,	
+		TOKKINM5
+		)
+		SELECT 
+		HOSPNUM,
+		:TERMID,
+ 		PTID,
+		NYUGAIKBN,
+		SRYYM,
+		HKNID,
+		HKNNUM,
+		KOHNUM1,
+		KOHNUM2,
+		SKYIRYO_TOTALTEN,
+		TOKKI1,
+		TOKKI2,	
+		TOKKI3,	
+		TOKKI4,	
+		TOKKI5,	
+		TOKKINM1,
+		TOKKINM2,	
+		TOKKINM3,	
+		TOKKINM4,	
+		TOKKINM5
+		FROM tbl_seikyu_main
+		WHERE 	HOSPNUM   =	:HOSPNUM
+		AND	NYUGAIKBN LIKE :NYUGAIKBN
+		AND	SRYYM	 >=     :STSRYYM
+		AND	SRYYM	 <=     :EDSRYYM
+		AND	SKYIRYO_TOTALTEN >=     :TOTALTEN
+		AND  (( :TOKKI1   IN (:TOKKI2,TOKKI1,TOKKI2,TOKKI3,TOKKI4,TOKKI5 ))
+		  OR  ( :TOKKINM1 IN (:TOKKINM2,TOKKINM1,TOKKINM2,TOKKINM3,TOKKINM4,TOKKINM5,:TOKKI2)))
+		;
+	};
+};

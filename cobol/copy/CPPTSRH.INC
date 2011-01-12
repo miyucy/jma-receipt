@@ -39,6 +39,36 @@
            03  PTSRH-BIRTHDAY     PIC X(8).
       *受給者番号
            03  PTSRH-JKYSNUM      PIC X(20).
+      *入外区分
+           03  PTSRH-NYUGAIKBN    PIC X(01).
+      *保険の種類
+           03  PTSRH-HKNNUM       PIC X(03).
+      *公費の種類１
+           03  PTSRH-KOHNUM1      PIC X(03).
+      *公費の種類２
+           03  PTSRH-KOHNUM2      PIC X(03).
+      *点数
+           03  PTSRH-TOTALTEN     PIC 9(10).
+      *診療行為コード
+           03  PTSRH-SRYCD        PIC X(09).
+      *診療行為名称
+           03  PTSRH-SRYNAME      PIC X(100).
+      *診療行為カナ名称
+           03  PTSRH-SRYKANANAME  PIC X(100).
+      *診療行為入力順番
+           03  PTSRH-SRYSEQ       PIC 9(01).
+      *メモ
+           03  PTSRH-MEMO-G.
+               05  PTSRH-MEMO         PIC X(200).
+               05  PTSRH-MEMO-R       REDEFINES    PTSRH-MEMO.
+                   07  PTSRH-SRYSURYO     PIC 9(05)V9(05).
+                   07  PTSRH-ZAIKAISU     PIC 9(05).
+                   07  PTSRH-SURYOTOTAL   PIC 9(07)V9(05).
+                   07  PTSRH-SURYO-EDIT
+                                      PIC 9(01).
+                   07  PTSRH-DAY      PIC 9(03)
+                                      OCCURS  31.
+                   07  PTSRH-R1-FIL   PIC X(79).
       *データ区分
            03  PTSRH-DATAKBN      PIC X(1).
       *作成日
