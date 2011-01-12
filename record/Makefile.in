@@ -431,6 +431,7 @@ RECORD_files = \
 	acceptlst.rec \
 	Q02A.rec \
 	Q02B.rec \
+	patientmod.rec \
 	
 
 DEF_files = \

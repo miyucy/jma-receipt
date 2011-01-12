@@ -15,8 +15,12 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
+      ******************************************************************
+      *    ＡＰＩリクエスト患者情報取得       COPY (CPPATIENTXMLSEQ.INC)
+      ******************************************************************
         01  XML-PATIENTINFOREQ.
             02  PTREQ-OBJECT           PIC X(8).
             02  PTREQ-MODE             PIC S9(9)   BINARY.
             02  PTREQ-PATIENTINFOREQ.
+      *       患者番号
               03  PTREQ-PATIENTID      PIC X(20).

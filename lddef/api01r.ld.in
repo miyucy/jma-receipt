@@ -5,6 +5,8 @@ textsize	400;
 
 bindapi	"appointlst"	"OpenCOBOL"	"ORAPI014R1";
 bindapi	"acceptlst"	"OpenCOBOL"	"ORAPI011R1";
+bindapi	"patientget"	"OpenCOBOL"	"ORAPI012R1";
+
 
 multiplex_group	api01r;
 
@@ -14,6 +16,7 @@ data	{
 	window	{
 		appointlst;
 		acceptlst;
+		patientget;
 	};
 };
 db "xml" {
@@ -21,6 +24,8 @@ db "xml" {
  xml_appointlstres;
  xml_acceptlstreq;
  xml_acceptlstres;
+ xml_patientinforeq;
+ xml_patientinfores;
 };
 
 #include "orcadb.inc"
