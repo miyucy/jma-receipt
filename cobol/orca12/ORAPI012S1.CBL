@@ -265,6 +265,56 @@
            .
        200-MAIN-EXT.
            EXIT.
+      *****************************************************************
+      *    日付編集処理
+      *****************************************************************
+       801-DAYHEN01-SEC                SECTION.
+      *
+           IF      WRK-SYMD            =   SPACE
+               MOVE    SPACE           TO  WRK-HEN-DATE
+           ELSE
+               INITIALIZE                  WRK-HEN-DATE
+               MOVE    WRK-SYY             TO  WRK-HEN-YY
+               MOVE    WRK-SMM             TO  WRK-HEN-MM
+               MOVE    WRK-SDD             TO  WRK-HEN-DD
+               MOVE    "-"                 TO  WRK-HEN-H1
+               MOVE    "-"                 TO  WRK-HEN-H2
+               IF      WRK-SYMD            =   "99999999"
+                   MOVE    "12"                TO  WRK-HEN-MM
+                   MOVE    "31"                TO  WRK-HEN-DD
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  WRK-HEN-TIME
+           MOVE    WRK-THH             TO  WRK-HEN-THH
+           MOVE    WRK-TMM             TO  WRK-HEN-TMM
+           MOVE    WRK-TSS             TO  WRK-HEN-TSS
+           MOVE    ":"                 TO  WRK-HEN-T1
+           MOVE    ":"                 TO  WRK-HEN-T2
+           .
+       801-DAYHEN01-EXT.
+           EXIT.
+      *****************************************************************
+      *    日付変換編集処理
+      *****************************************************************
+       802-DAYHEN02-SEC                SECTION.
+      *
+           INITIALIZE                  WRK-SYMD
+           MOVE    WRK-HEN-YY          TO  WRK-SYY
+           MOVE    WRK-HEN-MM          TO  WRK-SMM
+           MOVE    WRK-HEN-DD          TO  WRK-SDD
+           IF      WRK-SYMD            =   "99991231"
+               MOVE    "99"                TO  WRK-SMM
+               MOVE    "99"                TO  WRK-SDD
+           END-IF
+      *
+           INITIALIZE                  WRK-THMS
+           MOVE    WRK-HEN-THH         TO  WRK-THH
+           MOVE    WRK-HEN-TMM         TO  WRK-TMM
+           MOVE    WRK-HEN-TSS         TO  WRK-TSS
+           .
+       802-DAYHEN02-EXT.
+           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理
