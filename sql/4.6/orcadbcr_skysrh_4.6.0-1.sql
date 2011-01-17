@@ -6,7 +6,7 @@
 create	table	tbl_skysrh	(
 	HOSPNUM	smallint,
 	TERMID	char(64),
-	PTID	bigint(10,0),
+	PTID	bigint,
 	NYUGAIKBN	char(1),
 	SRYYM	char(6),
 	HKNID	bigint,
