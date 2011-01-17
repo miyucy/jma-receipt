@@ -4,9 +4,9 @@
 -- Create Date : 2010/09/29        --
 --
 create	table	tbl_skysrh	(
-	HOSPNUM	numeric(2,0),
+	HOSPNUM	smallint,
 	TERMID	char(64),
-	PTID	numeric(10,0),
+	PTID	bigint(10,0),
 	NYUGAIKBN	char(1),
 	SRYYM	char(6),
 	HKNID	bigint,
