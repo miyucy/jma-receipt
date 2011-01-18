@@ -231,6 +231,7 @@
            03  FLG-NSRYSRH                 PIC 9(01).
            03  FLG-NRRKSRH                 PIC 9(01).
            03  FLG-SST                     PIC 9(01).
+           03  FLG-TEST                    PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
