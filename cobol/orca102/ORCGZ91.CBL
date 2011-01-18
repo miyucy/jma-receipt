@@ -246,6 +246,7 @@
            COPY    "ZID3.INC".
            COPY    "Z100.INC".
            COPY    "ZFIL.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE               DIVISION    USING
            MCPAREA

@@ -23,6 +23,7 @@ bind	"ZID2"		"OpenCOBOL"	"ORCGZID2";
 bind	"ZID3"		"OpenCOBOL"	"ORCGZID3";
 bind	"Z100"		"OpenCOBOL"	"ORCGZ100";
 bind	"ZFIL"		"OpenCOBOL"	"ORCGZFIL";
+bindapi	"medicatonmod"	"OpenCOBOL"	"ORAPI102S1";
 
 multiplex_group	orca102;
 
@@ -49,8 +50,14 @@ data	{
 		ZID3;
 		Z100;
 		ZFIL;
+		medicatonmod;
 	};
 };
+db "xml" {
+ xml_medicationreq;
+ xml_medicationres;
+};
+
 
 #include "orcadb.inc"
 #include "orcadbh.inc"

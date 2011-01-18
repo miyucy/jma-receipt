@@ -432,6 +432,7 @@ RECORD_files = \
 	Q02A.rec \
 	Q02B.rec \
 	patientmod.rec \
+	medicatonmod.rec \
 	
 
 DEF_files = \
@@ -615,6 +616,8 @@ DB_files = \
 	xml_acceptlstreq.db \
 	xml_acceptlstres.db \
 	tbl_skysrh.db \
+	xml_medicationreq.db \
+	xml_medicationres.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
