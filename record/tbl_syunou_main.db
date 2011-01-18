@@ -1592,3 +1592,20 @@ path	key77 	{
 		;
 	};
 };
+
+
+path	key78 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key78_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   LIKE :NYUGAIKBN
+			AND   CREATEKBN   <>  '3'
+			AND   SRYYMD      < :SRYYMD
+			AND   SKYNYUKINKBN =  '1'
+			AND   SKYMONEY    <>  NYUKIN_TOTAL
+			ORDER   BY            SRYYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};
