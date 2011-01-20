@@ -15618,10 +15618,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
       *    レセプト処理
            IF    (  IDZ            =   1         )
-           AND   ( WRK-PARA-SHELLID
-                               NOT =   "RECEPTX" )
-      *        診療会計マスタ付加情報設定
-               PERFORM 9001-SRYACCTPLUS-HENSYU-SEC
+               IF      WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX"
+      *            診療会計マスタ付加情報設定
+                   PERFORM 9001-SRYACCTPLUS-HENSYU-SEC
+               END-IF
       * 
                WRITE   RECE04-REC
       *
