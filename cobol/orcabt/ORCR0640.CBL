@@ -672,6 +672,7 @@
            03  FLG-HOKENICHIBU2                        PIC 9(01).
            03  FLG-HOKENICHIBU3                        PIC 9(01).
            03  FLG-HOKENICHIBU4                        PIC 9(01).
+           03  FLG-HOKENICHIBU5                        PIC 9(01).
            03  FLG-HOUSEI-COM                          PIC 9(01).
            03  FLG-HOUMON-COM                          PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU                   PIC 9(01).
@@ -11025,6 +11026,7 @@
            MOVE    ZERO                 TO      FLG-HOKENICHIBU2
            MOVE    ZERO                 TO      FLG-HOKENICHIBU3
            MOVE    ZERO                 TO      FLG-HOKENICHIBU4
+           MOVE    ZERO                 TO      FLG-HOKENICHIBU5
            MOVE    ZERO                 TO      WRK-HOKENICHIBUGAK
       *
            INITIALIZE                           WRK-TOKUSYU-SKJFLG-T
@@ -12213,16 +12215,6 @@
                       ELSE
                         ADD    WRK-FTNKEI   TO   RECE62-FTNMONEY(1)
                       END-IF
-                      IF (RECE62-KOHSKY-KOHNUM(1)
-                                            = SYU-KOH-HKNNUM(1))
-                      OR (RECE62-KOHSKY-KOHNUM(2)
-                                            = SYU-KOH-HKNNUM(1))
-                      OR (RECE62-KOHSKY-KOHNUM(3)
-                                            = SYU-KOH-HKNNUM(1))
-                      OR (RECE62-KOHSKY-KOHNUM(4)
-                                            = SYU-KOH-HKNNUM(1))
-                        MOVE    1    TO   FLG-HOKENICHIBU4
-                      END-IF
                    END-IF
                  END-IF
                 END-IF
@@ -12458,6 +12450,9 @@
                         MOVE   WRK-FTNKEI-OKIKAE   TO   WRK-FTNKEI
                      END-IF
                      PERFORM  2104429-TOKUSITU-HENSYU2-SEC
+                     IF  SYU-KOHTAIYKZKBN   = "9"
+                      MOVE       1    TO   FLG-HOKENICHIBU5
+                     END-IF
                    ELSE
                      MOVE        1    TO   FLG-HOKENICHIBU3
                      IF   FLG-ZENKOKUKOHI-NISYU  =  2
@@ -12480,7 +12475,9 @@
                                            = SYU-KOH-HKNNUM(1))
                      OR (RECE62-KOHSKY-KOHNUM(4)
                                            = SYU-KOH-HKNNUM(1))
-                       MOVE    1    TO   FLG-HOKENICHIBU4
+                       IF  SYU-KOHTAIYKZKBN   = "9"
+                        MOVE    1    TO   FLG-HOKENICHIBU4
+                       END-IF
                      END-IF
                    END-IF
                  END-IF
@@ -16339,7 +16336,6 @@
              AND (RECE62-KOHNUM(4)       = SPACE             )
              AND (RECE62-HKNCOMBI(2) NOT = ZERO              )
              AND (RECE62-TOTALTEN(1) NOT = RECE62-TOTALTEN(2))
-             AND (FLG-HOKENICHIBU4   NOT = ZERO              )
                IF   FLG-HOKENICHIBU-SYU  = ZERO
                  MOVE     ZERO    TO   FLG-CHIIKI
                  PERFORM  210467-HOKEN-ICHIBUFTN-CHK2-SEC
@@ -17558,8 +17554,11 @@
       *****************************************************************
        210467-HOKEN-ICHIBUFTN-CHK2-SEC               SECTION.
       *
-           IF  (FLG-HOKENICHIBU2   NOT = ZERO)
-           OR  (FLG-HOKENICHIBU4   NOT = ZERO)
+           IF  ( FLG-HOKENICHIBU2  NOT = ZERO )
+           OR  ((FLG-CHIIKI            = ZERO) AND
+                (RECE62-KOUREI         = "2" ) AND
+                (FLG-HOKENICHIBU4  NOT = ZERO) AND
+                (FLG-HOKENICHIBU5  NOT = ZERO))
              MOVE   RECE62-TOTALTEN(1)  TO  WRK-HANTEI-TOTALTEN
            ELSE
              COMPUTE  WRK-HANTEI-TOTALTEN = RECE62-TOTALTEN(1)
@@ -17577,11 +17576,21 @@
              END-IF
            END-IF
       *
-           IF   WRK-KINGAKU3  >  WRK-CHK-KOKIGAK2
-             COMPUTE  WRK-CHK-KOKIGAK5  =  WRK-KINGAKU3
-                                        -  WRK-CHK-KOKIGAK2
+           IF  ( FLG-HOKENICHIBU2  NOT = ZERO )
+           OR  ( FLG-CHIIKI        NOT = ZERO )
+           OR  ( RECE62-KOUREI         = "1"  )
+           OR  ((FLG-CHIIKI            = ZERO) AND
+                (RECE62-KOUREI         = "2" ) AND
+                (FLG-HOKENICHIBU4  NOT = ZERO) AND
+                (FLG-HOKENICHIBU5  NOT = ZERO))
+             IF   WRK-KINGAKU3  >  WRK-CHK-KOKIGAK2
+               COMPUTE  WRK-CHK-KOKIGAK5  =  WRK-KINGAKU3
+                                          -  WRK-CHK-KOKIGAK2
+             ELSE
+               MOVE     ZERO         TO    WRK-CHK-KOKIGAK5
+             END-IF
            ELSE
-             MOVE     ZERO     TO    WRK-CHK-KOKIGAK5
+             MOVE     WRK-KINGAKU3   TO    WRK-CHK-KOKIGAK5
            END-IF
       *
            COMPUTE  WRK-HANTEI-TOTALTEN = RECE62-TOTALTEN(1)
