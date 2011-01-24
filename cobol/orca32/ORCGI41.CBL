@@ -9053,6 +9053,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0125"
                    MOVE    "日が違います。正しい日を入力して下さい。"
                                        TO  WRK-ERRMSG
+               WHEN    "0061"
+                   MOVE    "回数の指定がありません。"
+                                       TO  WRK-ERRMSG
                WHEN    "0023"
                    MOVE    "全科指定では指定できません。"
                                        TO  WRK-ERRMSG
