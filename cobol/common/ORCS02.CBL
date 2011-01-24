@@ -23971,9 +23971,9 @@
                                     + LNK-SYU-SKYMONEY-LIFE-TAX.
       *
       ******
-      ***  IF  (LNK-SYU-SRYYMD(1:6)  >= "201101")
-           IF  (LNK-SYU-SRYYMD(1:6)  >= "201004")
+           IF  (LNK-SYU-SRYYMD(1:6)  >= "201101")
            OR  (FLG-HIKAKU            =  ZERO   )
+           OR  (LNK-S02-TEIKI-KBN     =  "X"    )
              CONTINUE
            ELSE
              IF  ((FLG-HIKAKU = 1 OR 2                     ) AND

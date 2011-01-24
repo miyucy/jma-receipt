@@ -228,54 +228,6 @@
              MOVE    11     TO  LNK-SKYGET-RC
            END-IF
       *
-      ***  PERFORM   VARYING   IDX1   FROM  1  BY  1
-      ***             UNTIL    IDX1                  >  10
-      ***              OR      RECE10-HKNCOMBI(IDX1) = ZERO
-      ***    INITIALIZE                         SYUNOU-REC
-      ***    MOVE    RECE10-HOSPNUM        TO   SYU-HOSPNUM
-      ***    MOVE    RECE10-NYUGAIKBN      TO   SYU-NYUGAIKBN
-      ***    MOVE    RECE10-PTID           TO   SYU-PTID
-      ***    MOVE    RECE10-SRYYM          TO   SYU-SRYYMD(1:6)
-      ***    MOVE    "__"                  TO   SYU-SRYYMD(7:2)
-      ***    MOVE    RECE10-HKNCOMBI(IDX1) TO   SYU-HKNCOMBINUM
-      ***    MOVE    SYUNOU-REC            TO   MCPDATA-REC
-      ***    MOVE    "tbl_syunou"          TO   MCP-TABLE
-      ***    IF  RECE10-NYUGAIKBN = "1"
-      ***      MOVE  "key19"               TO   MCP-PATHNAME
-      ***    ELSE
-      ***      MOVE  "key41"               TO   MCP-PATHNAME
-      ***    END-IF
-      ***    PERFORM 900-DBSELECT-SEC
-      ***    IF      MCP-RC   =   ZERO
-      ***      MOVE    "tbl_syunou"        TO   MCP-TABLE
-      ***      IF  RECE10-NYUGAIKBN = "1"
-      ***        MOVE  "key19"             TO   MCP-PATHNAME
-      ***      ELSE
-      ***        MOVE  "key41"             TO   MCP-PATHNAME
-      ***      END-IF
-      ***      PERFORM 900-SYUNOU-READ-SEC
-      ***      PERFORM    UNTIL   (FLG-SYUNOU   =   1)
-      *
-      ***        CONTINUE
-      *
-      ***        MOVE    "tbl_syunou"      TO   MCP-TABLE
-      ***        IF  RECE10-NYUGAIKBN = "1"
-      ***          MOVE  "key19"           TO   MCP-PATHNAME
-      ***        ELSE
-      ***          MOVE  "key41"           TO   MCP-PATHNAME
-      ***        END-IF
-      ***        PERFORM 900-SYUNOU-READ-SEC
-      ***      END-PERFORM
-      ***    END-IF
-      ***    MOVE    "tbl_syunou"          TO   MCP-TABLE
-      ***    IF  RECE10-NYUGAIKBN = "1"
-      ***      MOVE  "key19"               TO   MCP-PATHNAME
-      ***    ELSE
-      ***      MOVE  "key41"               TO   MCP-PATHNAME
-      ***    END-IF
-      ***    PERFORM 900-CLOSE-SEC
-      ***  END-PERFORM
-      *
            .
        2001-HENSYU1-EXT.
            EXIT.
@@ -345,33 +297,6 @@
            MOVE    "key75"               TO   MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    入院（調整金編集）
-           INITIALIZE                         SYUNOU-REC
-           MOVE    SPA-HOSPNUM           TO   SYU-HOSPNUM
-           MOVE    "1"                   TO   SYU-NYUGAIKBN
-           MOVE    LNK-SKYGET-SRYYM      TO   SYU-SRYYMD(1:6)
-           MOVE    "__"                  TO   SYU-SRYYMD(7:2)
-           MOVE    SYUNOU-REC            TO   MCPDATA-REC
-           MOVE    "tbl_syunou"          TO   MCP-TABLE
-           MOVE    "key75"               TO   MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC   =   ZERO
-             MOVE    "tbl_syunou"        TO   MCP-TABLE
-             MOVE    "key75"             TO   MCP-PATHNAME
-             PERFORM 900-SYUNOU-READ-SEC
-             PERFORM    UNTIL   (FLG-SYUNOU   =   1)
-               IF  SYU-DENPJTIKBN    NOT =  "3"
-                 PERFORM   20022-KINGAKU-HENSYU2-SEC
-               END-IF
-               MOVE    "tbl_syunou"      TO   MCP-TABLE
-               MOVE    "key75"           TO   MCP-PATHNAME
-               PERFORM 900-SYUNOU-READ-SEC
-             END-PERFORM
-           END-IF
-           MOVE    "tbl_syunou"          TO   MCP-TABLE
-           MOVE    "key75"               TO   MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
            .
        2002-HENSYU2-EXT.
            EXIT.
@@ -382,7 +307,7 @@
        20021-KINGAKU-HENSYU-SEC            SECTION.
       *
       *    インデックス編集
-           PERFORM   20023-INDEX-HENSYU-SEC
+           PERFORM   200211-INDEX-HENSYU-SEC
       *
            IF  (WRK-TAIHI-PTID         =  SYU-PTID       )
            AND (WRK-TAIHI-HKNCOMBINUM  =  SYU-HKNCOMBINUM)
@@ -613,25 +538,9 @@
            EXIT.
       *
       *****************************************************************
-      *    区分”２”（入院の調整金編集）
-      *****************************************************************
-       20022-KINGAKU-HENSYU2-SEC            SECTION.
-      *
-      *    インデックス編集
-           PERFORM   20023-INDEX-HENSYU-SEC
-      *
-           COMPUTE   LNK-SKYGET-CHOSEI(IDX1 IDX2) =
-                     LNK-SKYGET-CHOSEI(IDX1 IDX2) +
-                     SYU-CHOSEI
-      *
-           .
-       20022-KINGAKU-HENSYU2-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    区分”２”（インデックス編集）
       *****************************************************************
-       20023-INDEX-HENSYU-SEC            SECTION.
+       200211-INDEX-HENSYU-SEC            SECTION.
       *
            MOVE      ZERO            TO    IDX1
       *    自費保険
@@ -674,7 +583,7 @@
            MOVE    SYU-NYUGAIKBN     TO    IDX2
       *
            .
-       20023-INDEX-HENSYU-EXT.
+       200211-INDEX-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
