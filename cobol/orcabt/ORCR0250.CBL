@@ -59,14 +59,13 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    11/01/05  機能追加（注加算、同時併施等）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
-      *
-      *    レセプト明細書  
       *
            SELECT  RECE64-FILE     ASSIGN  RECE64PARA
                                    ORGANIZATION    IS  INDEXED
@@ -79,14 +78,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE641-KEY
                                    FILE    STATUS  IS  STS-RECE641.
-      *
-           SELECT  RECE64W-FILE     ASSIGN  RECE641PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE64W-KEY
-                                   FILE    STATUS  IS  STS-RECE641.
-      *
-      *    レセプト６５  
       *
            SELECT  RECE65-FILE     ASSIGN  RECE65PARA
                                    ORGANIZATION    IS  INDEXED
@@ -108,11 +99,6 @@
        FD  RECE641-FILE.
        01  RECE641-REC. 
            COPY    "CPRCF0641.INC".
-      *
-       FD  RECE64W-FILE.
-       01  RECE64W-REC. 
-           COPY    "CPRCF0641.INC"  REPLACING  //RECE641//
-                                   BY          //RECE64W//.
       *
       *    レセプト６５  
        FD  RECE65-FILE.
@@ -189,7 +175,6 @@
                                        PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
-           03  WRK-RECEERR             PIC X(200). 
            03  WRK-KOHBUNRI            PIC 9(01).
            03  WRK-HKNCOMBI            PIC 9(04).
       *    03  OLD-KEY                 PIC X(65).
@@ -206,6 +191,19 @@
                05  OLD-RECE64-HOJOKBN     PIC  X(01).
                05  OLD-RECE64-KOHID       PIC  9(10).
                05  OLD-RECE64-TEKSTYMD    PIC  X(08). 
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR                         PIC X(200).
+           03  WRK-ERRMSG                          PIC X(300).
+           03  WRK-MCP-RC                          PIC 9(9).
+           03  WRK-ERR-FILE-STS                    PIC X(02).
+           03  WRK-ERR-FILE-MSG                    PIC X(100).
+           03  WRK-ERR-FILE-MSG1                   PIC X(17).
+           03  WRK-ERR-FLG                         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
+                                   BY         //WRK-ERR-FILE-NM//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -321,11 +319,31 @@
            MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE65PARA-HOSPNUM
       *
-           OPEN    OUTPUT              RECE64W-FILE
-           CLOSE                       RECE64W-FILE
+           OPEN    OUTPUT              RECE641-FILE
+           CLOSE                       RECE641-FILE
       *
            OPEN    INPUT               RECE64-FILE
+           IF      STS-RECE64          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE64PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE64          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
            OPEN    INPUT               RECE65-FILE
+           IF      STS-RECE64          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE64PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE64          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    I-O                 RECE641-FILE
       *
@@ -413,8 +431,23 @@
            MOVE    RECE64-SRYSYUKBN    TO  RECE641-SRYSYUKBN
            MOVE    RECE64-SETCOMFLG    TO  RECE641-SETCOMFLG
            MOVE    RECE64-ZAIKBN       TO  RECE641-ZAIKBN
+           MOVE    RECE64-ACCTP-SYUGI-TBL-G
+                                       TO  RECE641-ACCTP-SYUGI-TBL-G
       *
            WRITE   RECE641-REC
+      *
+           IF      STS-RECE641         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE641PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE641         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-OUT
       *
       *
@@ -526,6 +559,66 @@
            EXIT.
       *
       *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0250 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -561,6 +654,17 @@
                    AT  END
                        MOVE    1           TO  FLG-END
                    NOT AT  END
+                       IF      STS-RECE64          =   "00"
+                           CONTINUE
+                       ELSE
+                           MOVE    SPACE           TO  WRK-ERR-AREA
+                           INITIALIZE                  WRK-ERR-AREA
+                           MOVE    2               TO  WRK-ERR-FLG
+                           MOVE    RECE64PARA      TO  WRK-ERR-FILE-NM
+                           MOVE    STS-RECE64      TO  WRK-ERR-FILE-STS
+                           PERFORM 500-FILE-ERR-ABORT-SEC
+                       END-IF
+      *
                        IF  ( ( WRK-PARA-SYARECEKBN =   ZERO
                                                    OR  "1" )   AND
                              ( RECE64-TEISYUTUSAKI
@@ -646,7 +750,35 @@ grpsys         PERFORM 900-DBFETCH-SEC
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+               STRING  "ＤＢ読み込みエラー　TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+      *
+               STRING  "ORCR0250 select err TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " PATHNAME="        DELIMITED   BY  SIZE
+                       MCP-PATHNAME        DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                       LOW-VALUE           DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
+               PERFORM 500-COBABORT-SEC
+           END-IF
            .
        900-DBSELECT-EXT.
            EXIT.

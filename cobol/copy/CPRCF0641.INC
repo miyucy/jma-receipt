@@ -41,6 +41,7 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    11/01/05  機能追加（注加算、同時併施等）
       ************************************************************
       *01  RECE641-REC.
            03  RECE641-KEY.
@@ -130,3 +131,23 @@
              04  RECE641-DAY-TBL           OCCURS  4.
                  05  RECE641-KAISUINF      OCCURS  31.
                      07  RECE641-KAISU     PIC  9(03).
+      *
+      *手技毎の内容（手術・画像診断・処置）
+           03  RECE641-ACCTP-SYUGI-TBL-G.
+               05  RECE641-ACCTP-SYUGI-TBL  OCCURS  5.
+      *手技開始コード
+                   07  RECE641-ACCTP-SRYCD  PIC X(09).
+      *手技点数
+                   07  RECE641-ACCTP-SYUTEN PIC 9(07).
+      *薬剤点数
+                   07  RECE641-ACCTP-YKZTEN PIC 9(07).
+      *その他器材点数（フィルム・酸素・窒素以外）
+                   07  RECE641-ACCTP-KIZAITEN
+                                           PIC 9(07).
+      *フィルム点数
+                   07  RECE641-ACCTP-FIRTEN PIC 9(07).
+      *酸素点数
+           03  RECE641-ACCTP-SANSOTEN       PIC 9(07).
+      *窒素点数
+           03  RECE641-ACCTP-CHISOTEN       PIC 9(07).
+
