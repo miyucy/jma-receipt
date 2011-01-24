@@ -1090,6 +1090,19 @@
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
+      *    末尾文字編集
+           MOVE    SPA-GMN-PHOTO   TO  WRK-NAIYOU
+           PERFORM 430-KANACHK-HENSYU-SEC
+           MOVE    WRK-NAIYOU      TO  SPA-GMN-PHOTO
+      *    カナチェック
+           IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
+                 ( KANACHK-RC          NOT =   ZERO )  OR
+                 ( KANACHK-RC2             =   7    )
+               MOVE    "0003"      TO  SPA-ERRCD
+               MOVE    10          TO  SPA-GMN-CUR
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           END-IF
+      *
       *    拡張子が違えば処理抜ける
            PERFORM 431-GAZO-TYPE-CHK-SEC
       *
