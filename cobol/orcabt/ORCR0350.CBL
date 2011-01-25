@@ -5620,7 +5620,7 @@
                                                    SPA-AREA
                IF      ORCSRECESORT-ERRCD  =   ZERO
                    PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >       4
+                           UNTIL   IDXX    >       8
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >       50
                                OR      ORCSRECESORT-SRYCD (IDXX IDX)

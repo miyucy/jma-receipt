@@ -4877,7 +4877,7 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                                                    SPA-AREA
                IF      ORCSRECESORT-ERRCD  =   0
                    PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >       4
+                           UNTIL   IDXX    >       8
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >       50
                                OR      ORCSRECESORT-SRYCD (IDXX IDX)
@@ -6970,7 +6970,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-STRING
            PERFORM 500-ERR-HENSYU-SEC
       *
-           STRING  "ORCR0030 "             DELIMITED   BY  SIZE
+           STRING  "ORCR0300 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-NM         DELIMITED   BY  SIZE

@@ -638,7 +638,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
       *
-               STRING  "ORCR0300 select err TABLE="
+               STRING  "ORCR0200 select err TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " PATHNAME="        DELIMITED   BY  SIZE

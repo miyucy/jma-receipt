@@ -93,7 +93,8 @@
       *出力
            03  ORCSRECESORT-OUT-AREA.
       *        器材テーブル（１：フィルム、２：酸素、３：窒素、４：その他器材）
-               05  ORCSRECESORT-DATE-TBL       OCCURS   4.
+      *                     ５：フィルム２〜８：フィルム５）
+               05  ORCSRECESORT-DATE-TBL       OCCURS   8.
       *            点数
                    07  ORCSRECESORT-ZAITEN     PIC  9(08).
       *            ＭＡＸ
