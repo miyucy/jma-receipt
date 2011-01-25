@@ -237,7 +237,7 @@
       *****************************************************************
        2002-HENSYU2-SEC            SECTION.
       *
-      *    Æþ±¡¡Ê¶â³ÛÊÔ½¸¡Ë
+      *    Æþ±¡¡Ê²¾¼ýÇ¼¡Ë
            MOVE    ZERO                  TO   FLG-SYUKEI
            INITIALIZE                         WRK-TAIHI-AREA
            INITIALIZE                         WRK-TAIHI-AREA2
@@ -256,6 +256,7 @@
              PERFORM 900-SYUNOU-READ-SEC
              PERFORM    UNTIL   (FLG-SYUNOU   =   1)
                IF  SYU-DENPJTIKBN    NOT =  "3"
+                 MOVE      1             TO   IDX2
                  PERFORM   20021-KINGAKU-HENSYU-SEC
                END-IF
                MOVE    "tbl_syunou"      TO   MCP-TABLE
@@ -267,7 +268,7 @@
            MOVE    "key76"               TO   MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    ³°Íè¡Ê¶â³ÛÊÔ½¸¡Ë
+      *    ³°Íè
            MOVE    ZERO                  TO   FLG-SYUKEI
            INITIALIZE                         WRK-TAIHI-AREA
            INITIALIZE                         WRK-TAIHI-AREA2
@@ -286,6 +287,38 @@
              PERFORM 900-SYUNOU-READ-SEC
              PERFORM    UNTIL   (FLG-SYUNOU   =   1)
                IF  SYU-DENPJTIKBN    NOT =  "3"
+                 MOVE      2             TO   IDX2
+                 PERFORM   20021-KINGAKU-HENSYU-SEC
+               END-IF
+               MOVE    "tbl_syunou"      TO   MCP-TABLE
+               MOVE    "key75"           TO   MCP-PATHNAME
+               PERFORM 900-SYUNOU-READ-SEC
+             END-PERFORM
+           END-IF
+           MOVE    "tbl_syunou"          TO   MCP-TABLE
+           MOVE    "key75"               TO   MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    Æþ±¡¡ÊËÜ¼ýÇ¼¡Ë
+           MOVE    ZERO                  TO   FLG-SYUKEI
+           INITIALIZE                         WRK-TAIHI-AREA
+           INITIALIZE                         WRK-TAIHI-AREA2
+           INITIALIZE                         SYUNOU-REC
+           MOVE    SPA-HOSPNUM           TO   SYU-HOSPNUM
+           MOVE    "1"                   TO   SYU-NYUGAIKBN
+           MOVE    LNK-SKYGET-SRYYM      TO   SYU-SRYYMD(1:6)
+           MOVE    "__"                  TO   SYU-SRYYMD(7:2)
+           MOVE    SYUNOU-REC            TO   MCPDATA-REC
+           MOVE    "tbl_syunou"          TO   MCP-TABLE
+           MOVE    "key75"               TO   MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC   =   ZERO
+             MOVE    "tbl_syunou"        TO   MCP-TABLE
+             MOVE    "key75"             TO   MCP-PATHNAME
+             PERFORM 900-SYUNOU-READ-SEC
+             PERFORM    UNTIL   (FLG-SYUNOU   =   1)
+               IF  SYU-DENPJTIKBN    NOT =  "3"
+                 MOVE      3             TO   IDX2
                  PERFORM   20021-KINGAKU-HENSYU-SEC
                END-IF
                MOVE    "tbl_syunou"      TO   MCP-TABLE
@@ -320,7 +353,8 @@
              INITIALIZE                    WRK-TAIHI-AREA2
            END-IF
       *
-           IF    IDX1  =   4  OR  5  OR  6
+           IF   (IDX1  =   4  OR  5  OR  6)
+           AND  (IDX2  =   1  OR  2       )
       *
              IF    FLG-SYUKEI   =   1
                IF  SYU-TOTAL-HKNTEN    NOT =  ZERO
@@ -390,7 +424,8 @@
       *
            END-IF
       *
-           IF    IDX1  =   7  OR  8  OR  9
+           IF   (IDX1  =   7  OR  8  OR  9)
+           AND  (IDX2  =   1  OR  2       )
       *
              COMPUTE    WRK-KEISAN                 =
                         SYU-SYUSKJ-RYOYOHI         +
@@ -488,9 +523,17 @@
                         LNK-SKYGET-DISCOUNT-MONEY(IDX1 IDX2) +
                         WRK-KEISAN2
       *
-           COMPUTE      LNK-SKYGET-CHOSEI(IDX1 IDX2) =
-                        LNK-SKYGET-CHOSEI(IDX1 IDX2) +
+           COMPUTE      LNK-SKYGET-CHOSEI (IDX1 IDX2) =
+                        LNK-SKYGET-CHOSEI (IDX1 IDX2) +
                         SYU-CHOSEI
+      *
+           COMPUTE      LNK-SKYGET-CHOSEI1(IDX1 IDX2) =
+                        LNK-SKYGET-CHOSEI1(IDX1 IDX2) +
+                        SYU-CHOSEI1
+      *
+           COMPUTE      LNK-SKYGET-CHOSEI2(IDX1 IDX2) =
+                        LNK-SKYGET-CHOSEI2(IDX1 IDX2) +
+                        SYU-CHOSEI2
       *
            IF    IDX1  =   7  OR  8  OR  9
              IF   SYU-PTFTNRATE   =  100
@@ -579,8 +622,6 @@
            IF    IDX1   =   ZERO
               MOVE     1             TO    IDX1
            END-IF
-      *
-           MOVE    SYU-NYUGAIKBN     TO    IDX2
       *
            .
        200211-INDEX-HENSYU-EXT.

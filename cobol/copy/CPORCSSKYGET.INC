@@ -92,8 +92,8 @@
       *      (8)¼«ÇåÀÕ
       *      (9)¸ø³²
              04  LNK-SKYGET-OUT2-OCC                    OCCURS 9.
-      *        (1)Æþ±¡(2)³°Íè
-               05  LNK-SKYGET-OUT2-OCC2                 OCCURS 2.
+      *        (1)Æþ±¡¤Î²¾¼ýÇ¼(2)³°Íè(3)Æþ±¡¤ÎËÜ¼ýÇ¼
+               05  LNK-SKYGET-OUT2-OCC2                 OCCURS 3.
       *
       *  ·ï¿ô
                  06  LNK-SKYGET-KENSU                   PIC 9(06).
@@ -128,8 +128,12 @@
                  06  LNK-SKYGET-JIHI                    PIC 9(09).
       *  ¸ºÌÈ¶â³Û
                  06  LNK-SKYGET-DISCOUNT-MONEY          PIC S9(09).
-      *  Ä´À°¶â
+      *  Ä´À°¶â·×
                  06  LNK-SKYGET-CHOSEI                  PIC S9(09).
+      *  Ä´À°¶â£±
+                 06  LNK-SKYGET-CHOSEI1                 PIC S9(09).
+      *  Ä´À°¶â£²
+                 06  LNK-SKYGET-CHOSEI2                 PIC S9(09).
       *  Ã¼¿ôÄ´À°¶â³Û
                  06  LNK-SKYGET-HASU                    PIC S9(09).
       *
