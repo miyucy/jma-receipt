@@ -33,6 +33,7 @@
       *  03.05.00    NACL-多々納   07/05/16  グループ診療対応
       *
       *  04.06.01    NACL-藤原     09/06/20  病名の入力順対応
+      *  04.06.02    NACL-森脇     11/01/24  補足コメント追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -219,6 +220,10 @@
                    "--------------------------------------------------".
                    07  FILLER          PIC X(49) VALUE
                    "-------------------------------------------------".
+               05  MES-TITLE2-L4.
+                   07  FILLER          PIC X(10) VALUE "       MSG".
+                   07  FILLER          PIC X(20) VALUE
+                   " [A]補足コメント警告".
       *
        01  ERRLST-AREA.
       *    エラー番号１・２・３で使用
@@ -678,7 +683,7 @@
       *    患者病名ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
            PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL   ( IDX           >   33   )
+                   UNTIL   ( IDX           >   34   )
                    OR      ( WRK-PO-ED     >=  300  )
                    OR      ( IDE           >   4    )
       *
@@ -736,7 +741,7 @@
       *
       *        カンマの位置
                IF    ( CSV-X (IDY)         =   "," ) OR
-                     ((IDX                 =   33 )  AND
+                     ((IDX                 =   34 )  AND
                      ( CSV-X (IDY)         =   SPACE))
                    MOVE    IDY                 TO  WRK-PO-ED
                    MOVE    1                   TO  FLG-COMMA
@@ -851,6 +856,9 @@
       *    ２４：転帰日
            WHEN    24
                PERFORM 2410-TENKIYMD-SET-SEC
+      *    ３４：補足コメント
+           WHEN    34
+               PERFORM 2410-HOSOKU-SET-SEC
            END-EVALUATE
       *
            IF      FLG-ERR         NOT =   ZERO
@@ -1299,6 +1307,45 @@
       *
            .
        2410-TENKIYMD-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    項目３４：補足コメント　処理
+      *****************************************************************
+       2410-HOSOKU-SET-SEC         SECTION.
+      *
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-HOSOKU-SET-EXT
+           END-IF
+      *
+      *    桁チェック
+           IF      WRK-MO-CNT      >   40
+               MOVE    2               TO  FLG-ERR
+               GO  TO  2410-HOSOKU-SET-EXT
+           END-IF
+      *
+      *    空白チェック
+           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   SPACE
+               GO  TO  2410-HOSOKU-SET-EXT
+           END-IF
+      *
+      *    病名セット
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WRK-DATA
+           MOVE    40              TO  WRK-CNT
+           PERFORM 2402-ZENKAKU-HEN-SEC
+           IF      FLG-ERR         =   ZERO
+               MOVE    WRK-DATA (1:WRK-LEN)
+                                       TO  WKPTBYO-HOSOKU-COMMENT
+               COMPUTE IDZ     =   WRK-LEN     -   1
+               IF    ( WRK-DATA (1:2)      =   "（" )  OR
+                     ( WRK-DATA (IDZ:2)    =   "）" )
+                   PERFORM 2910-ERRREC-EDIT-HOSOKU-SEC
+               END-IF
+           END-IF
+      *
+           .
+       2410-HOSOKU-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1756,6 +1803,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    補足リスト編集　処理
+      *****************************************************************
+       2910-ERRREC-EDIT-HOSOKU-SEC SECTION.
+      *
+           MOVE    SPACE           TO  ERR-REC2
+           MOVE    CNT-CSV         TO  ERR2-LINENO
+           MOVE    "[A]"           TO  ERR2-ERRNO
+           MOVE    "患者番号:"     TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"     TO  ERR2-PTIDMES
+           MOVE    "コメント:"     TO  ERR2-BYOMEIMES
+      *
+           MOVE    SPA-PTNUM       TO  ERR2-PTNUM
+           MOVE    WKPTBYO-PTID    TO  ERR2-PTID
+           MOVE    WKPTBYO-HOSOKU-COMMENT
+                                   TO  ERR2-BYOMEI
+           MOVE    "MSG"           TO  ERR2-NAIYO
+      *
+           MOVE    ERR-REC2        TO  ERR-REC
+           WRITE   ERR-REC
+      *
+           .
+       2910-ERRREC-EDIT-HOSOKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーリスト出力処理
       *****************************************************************
        270-ERRLST-OUT-SEC          SECTION.
@@ -1790,6 +1862,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    MES-TITLE2-L1   TO  ERR-REC
            WRITE   ERR-REC
            MOVE    MES-TITLE2-L2   TO  ERR-REC
+           WRITE   ERR-REC
+           MOVE    MES-TITLE2-L4   TO  ERR-REC
            WRITE   ERR-REC
            MOVE    MES-TITLE2-L3   TO  ERR-REC
            WRITE   ERR-REC
