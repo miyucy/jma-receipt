@@ -2205,7 +2205,6 @@ path	key72	{
                        OR (( SKYYM       =    :SKYYM    )
                        AND ( SKYKBN      <>   '0'       )))
                   AND (      NYUGAIKBN   LIKE    :NYUGAIKBN  )
-                  AND (      HENREIYM    =    '000000'    )
 		;
 	};
 };
@@ -2225,7 +2224,6 @@ path	key73	{
                        OR (( SKYYM       =   :SKYYM    )
                        AND ( SKYKBN      <>  '0'       )))
                   AND (      NYUGAIKBN   LIKE   :NYUGAIKBN  )
-                  AND (      HENREIYM    =   '000000'    )
 		;
 	};
 };
@@ -2244,7 +2242,6 @@ path	key74	{
                        OR (( SKYYM       =   :SKYYM    )
                        AND ( SKYKBN      <>  '0'       )))
                   AND (      NYUGAIKBN   LIKE   :NYUGAIKBN  )
-                  AND (      HENREIYM    =   '000000'    )
 		;
 	};
 };
