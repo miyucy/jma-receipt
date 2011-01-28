@@ -60,6 +60,7 @@
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    11/01/05  機能追加（注加算、同時併施等）
+      *  04.06.03    NACL-藤原    11/01/28  キーに剤連番追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -376,6 +377,7 @@
                PERFORM   210-KBNNUM-SET-SEC
            END-IF
            MOVE    RECE64-ZAINUM       TO  RECE641-ZAINUM
+           MOVE    RECE64-ZAIREN       TO  RECE641-ZAIREN
            MOVE    RECE64-KOHBUNRI     TO  RECE641-KOHBUNRI
            IF      RECE64-KEY1     NOT =   OLD-KEY
                 MOVE  9                TO  WRK-KOHBUNRI
