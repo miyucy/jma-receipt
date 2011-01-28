@@ -32,11 +32,10 @@ SRYYMD=${7}
 SRYKA=${8}
 BEDFLG=${9}
 
-INFECFILE=$DASDIR/${HOSPNUM}/infection.csv.$$
-INFECRFILE=$DASDIR/${HOSPNUM}/infection.csv
+INFECFILE=$DASDIR/${HOSPNUM}/infection.csv
 ERRFILE=/tmp/${HOSPNUM}infectionerror_real
 LOG=/var/log/jma-receipt/${HOSPNUM}infectiondata2.log
-LOG_FILE=/var/log/jma-receipt/${HOSPNUM}infectiondata2_real.log
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}infectiondata2_real.log
 
 DASUPLOAD=das-infection2.sh
 
@@ -50,13 +49,13 @@ if ! [ -d $DASDIR/${HOSPNUM}/infection ]; then
   mkdir $DASDIR/${HOSPNUM}/infection
 fi
 
-#if [ -e $LOGFILE ]; then
-#  cat $LOGFILE >> $LOG
-#fi
-rm -f ${LOG_FILE}
+if [ -e $LOGFILE ]; then
+  cat $LOGFILE >> $LOG
+fi
+rm -f $LOGFILE
 
-echo "SYORIBI [ $SRYYMD ]"
-echo "SYORIFLG [ $SYORIFLG ]"
+echo "SYORIBI [ $SRYYMD ]" | tee -a $LOGFILE
+echo "SYORIFLG [ $SYORIFLG ]" | tee -a $LOGFILE
 
 #感染症データ作成
 
@@ -64,7 +63,7 @@ rm -f $ERRFILE
 
 PARA0="${GMNID},${HOSPNUM},${SYORIFLG},${NYUGAI},${PTID},${SRYYMD}"
 PARAM="${PARA0},${SRYKA},${INFECFILE},${ERRFILE},${PKGVER}"
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF2 -parameter ${PARAM}
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINF2 -parameter ${PARAM} 2>&1 | tee -a $LOGFILE
 
 if [ -e $ERRFILE ]; then
   rm -f $INFECFILE
@@ -73,15 +72,13 @@ fi
 if [ -e $INFECFILE ]; then
   if [ -s $INFECFILE ]; then
     TIMESTAMP=`(date +%Y%m%d%H%M%S)`
-    RANDOMIZE=`%RUBY% -e 'print sprintf("%04d",rand(10000))'`
-    mv $INFECFILE $INFECRFILE.$TIMESTAMP$RANDOMIZE
-    gzip $INFECRFILE.$TIMESTAMP$RANDOMIZE
-  else
-    rm -f $INFECFILE
+    RANDOMIZE=`ruby -e 'print sprintf("%04d",rand(10000))'`
+    mv $INFECFILE $INFECFILE.$TIMESTAMP$RANDOMIZE
+    gzip $INFECFILE.$TIMESTAMP$RANDOMIZE
   fi
 fi
 
-echo "感染症データ送信処理 起動"
-$DASUPLOAD ${HOSPNUM} ${HOSPID} 2 &
+echo "感染症データ送信処理 起動" 2>&1 | tee -a $LOGFILE
+$DASUPLOAD ${HOSPNUM} ${HOSPID} &
 
 exit 0

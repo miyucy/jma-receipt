@@ -34,7 +34,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
-      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -42,30 +41,51 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    定点設定データ
+           SELECT  CONFIG-FILE     ASSIGN  FILE-NAME
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-CONFIG.
+      *
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
+      *    定点設定データ
+       FD  CONFIG-FILE.
+       01  CONFIG-REC              PIC X(600).
+      *
        WORKING-STORAGE             SECTION.
       *
+       01  FILE-NAME.
+           03  FILLER              PIC X(40)   VALUE
+           "/etc/jma-receipt/das-upload.d/das-upload".
+           03  FILE-HOSPNUM        PIC 9(02)   VALUE   ZERO.
+           03  FILLER              PIC X(05)   VALUE   ".conf".
+      *
       *    フラグ領域
-       01  FLG-AREA.
-           03  FLG-DASCONF         PIC 9(01).
+       01  STS-AREA.
+           03  STS-CONFIG          PIC X(02).
       *
       *    ワーク領域
        01  WRK-AREA.
+           03  FLG-CONFIG          PIC 9(01).
+           03  WRK-AGREEMENT       PIC X(01).
+           03  WRK-SENDRESULT      PIC X(03).
       *    ジョブ管理ＤＢのキー値（感染症データ）
            03  WRK-CONS-JOB-SHELLID-INFECT
                                    PIC X(08)   VALUE   "INFECTIO".
            03  WRK-CONS-JOB-JOBID-INFECT
                                    PIC 9(07)   VALUE   1.
+       01  WRK-DATA-AGREE.
+           03  FILLER              PIC X(16)   VALUE
+               '"Agreement" => "'.
+       01  WRK-DATA-RESULT.
+           03  FILLER              PIC X(17)   VALUE
+               '"SendResult" => "'.
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *
-      *    定点設定
-       01  DASCF-REC.
-           COPY    "CPDASCONF.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -75,8 +95,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-           COPY    "MCPAREA".
-           COPY    "MCPDATA.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -99,7 +117,8 @@
            MOVE    ZERO                TO  INFCHK-RC
       *
       *    ジョブ管理チェック（データ収集）
-           IF      SPA-DATAINFECTIONKBN    NOT =   2
+      *##  IF      SPA-DATACREATEFLG   NOT =   1
+           IF      SPA-DATATEISYUTUKBN NOT =   2
                MOVE    10                  TO  INFCHK-RC
            END-IF
       *
@@ -119,9 +138,9 @@
                PERFORM 100-JOBEXEC-CHK-SEC
            END-IF
       *
-      **   IF      INFCHK-RC           =   ZERO
-      **       PERFORM 200-AGREEMENT-CHK-SEC
-      **   END-IF
+           IF      INFCHK-RC           =   ZERO
+               PERFORM 200-AGREEMENT-CHK-SEC
+           END-IF
            .
       *
        000-PROC-EXT.
@@ -165,10 +184,12 @@
       *****************************************************************
        200-AGREEMENT-CHK-SEC       SECTION.
       *
-           PERFORM 900-DASCONF-READ-SEC
-           IF      FLG-DASCONF         =   ZERO
-               IF    ( DASCF-AGREEMENT      =   "1"   )  AND
-                     ( DASCF-SENDRESULT     =   "000" )
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+           OPEN    INPUT               CONFIG-FILE
+           IF      STS-CONFIG          =   ZERO
+               PERFORM 2001-AGREEMENT-CHK-SEC
+               IF    ( WRK-AGREEMENT        =   "1"   )  AND
+                     ( WRK-SENDRESULT       =   "000" )
                    CONTINUE
                ELSE
                    MOVE    50              TO  INFCHK-RC
@@ -176,51 +197,38 @@
            ELSE
                MOVE    50              TO  INFCHK-RC
            END-IF
+           CLOSE                       CONFIG-FILE
            .
        200-AGREEMENT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    定点設定読込
+      *    収集データファイル有無チェック処理
       *****************************************************************
-       900-DASCONF-READ-SEC            SECTION.
+       2001-AGREEMENT-CHK-SEC      SECTION.
       *
-           INITIALIZE                      DASCF-REC
-           MOVE    SPA-HOSPNUM         TO  DASCF-HOSPNUM
-           MOVE    DASCF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_das_conf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
-               MOVE    "tbl_das_conf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-DASCONF
-                   MOVE    MCPDATA-REC         TO  DASCF-REC
-               ELSE
-                   MOVE    1                   TO  FLG-DASCONF
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-DASCONF
-           END-IF
-      *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-           MOVE    "tbl_das_conf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"           USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           MOVE    SPACE           TO  WRK-AGREEMENT
+           MOVE    SPACE           TO  WRK-SENDRESULT
+           MOVE    ZERO            TO  FLG-CONFIG
+           MOVE    SPACE           TO  CONFIG-REC
+           PERFORM UNTIL   FLG-CONFIG  =   1
+               READ    CONFIG-FILE     NEXT
+                   AT  END
+                       MOVE    1           TO  FLG-CONFIG
+                   NOT AT  END
+                       IF      CONFIG-REC(1:16)  =   WRK-DATA-AGREE
+                           UNSTRING  CONFIG-REC(17:) DELIMITED  BY '",'
+                                               INTO  WRK-AGREEMENT
+                           END-UNSTRING
+                       END-IF
+                       IF      CONFIG-REC(1:17)  =   WRK-DATA-RESULT
+                           UNSTRING  CONFIG-REC(18:) DELIMITED  BY '",'
+                                               INTO  WRK-SENDRESULT
+                           END-UNSTRING
+                       END-IF
+               END-READ
+           END-PERFORM
            .
-       900-DASCONF-READ-EXT.
+       2001-AGREEMENT-CHK-EXT.
            EXIT.
       *

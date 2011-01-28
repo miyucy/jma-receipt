@@ -4,7 +4,7 @@ tbl_ptbyomei {
 	SRYKA				char(2);
 	SRYYMD				char(8);
 	RENNUM  			number(2);
-	KHNBYOMEICD			varchar(7);
+	KHNBYOMEICD			char(7);
 	BYOMEIINPUTCD_1		varchar(20);
 	BYOMEIINPUTCD_2		varchar(20);
 	BYOMEIINPUTCD_3		varchar(20);
@@ -12,65 +12,55 @@ tbl_ptbyomei {
 	BYOMEIINPUTCD_5		varchar(20);
 	BYOMEIINPUTCD_6		varchar(20);
 	BYOMEICDSU			number(2);
-	BYOMEICD_1			varchar(7);
-	BYOMEICD_2			varchar(7);
-	BYOMEICD_3 			varchar(7);
-	BYOMEICD_4			varchar(7);
-	BYOMEICD_5			varchar(7);
-	BYOMEICD_6			varchar(7);
-	BYOMEICD_7			varchar(7);
-	BYOMEICD_8			varchar(7);
-	BYOMEICD_9 			varchar(7);
-	BYOMEICD_10			varchar(7);
-	BYOMEICD_11			varchar(7);
-	BYOMEICD_12			varchar(7);
-	BYOMEICD_13			varchar(7);
-	BYOMEICD_14			varchar(7);
-	BYOMEICD_15			varchar(7);
-	BYOMEICD_16			varchar(7);
-	BYOMEICD_17			varchar(7);
-	BYOMEICD_18			varchar(7);
-	BYOMEICD_19			varchar(7);
-	BYOMEICD_20			varchar(7);
-	BYOMEICD_21			varchar(7);
-	UTAGAIFLG			char(1);
-	SYUBYOFLG   			char(1);
+	BYOMEICD_1			char(7);
+	BYOMEICD_2			char(7);
+	BYOMEICD_3 			char(7);
+	BYOMEICD_4			char(7);
+	BYOMEICD_5			char(7);
+	BYOMEICD_6			char(7);
+	BYOMEICD_7			char(7);
+	BYOMEICD_8			char(7);
+	BYOMEICD_9 			char(7);
+	BYOMEICD_10			char(7);
+	BYOMEICD_11			char(7);
+	BYOMEICD_12			char(7);
+	BYOMEICD_13			char(7);
+	BYOMEICD_14			char(7);
+	BYOMEICD_15			char(7);
+	BYOMEICD_16			char(7);
+	BYOMEICD_17			char(7);
+	BYOMEICD_18			char(7);
+	BYOMEICD_19			char(7);
+	BYOMEICD_20			char(7);
+	BYOMEICD_21			char(7);
+	UTAGAIFLG           char(1);
+	SYUBYOFLG   		char(1);
 	MANSEIKBN  			number(2);
 	NYUGAIKBN			char(1);
-	HKNCOMBI       			number(4);
-	KOHID				number(10);
+	HKNCOMBI       		number(4);
 	REZEFLG        		char(1);
 	REZEMM         		number(2);
 	TENKIKBN       		char(1);
-	TENKIYMD       		varchar(8);
+	TENKIYMD       		char(8);
 	BYOMEI         		varchar(160);
 	BYOMEIMOJI     		number(2);
 	CHARTBYOMEI        	varchar(160);
 	CHARTBYOMEIMOJI    	number(2);
-	HOSOKU_COMMENT		varchar(80);
-	HOSOKUCD_1		varchar(20);
-	HOSOKUCD_2		varchar(20);
-	HOSOKUCD_3		varchar(20);
 	BYOMEIHENFLG		char(1);
 	HKNBYOMEIFLG		char(1);
 	RECEDENFLG  		char(1);
-	HKNNUM      		varchar(3);
-	KHNBUICD_1  		varchar(7);
-	KHNBUICD_2  		varchar(7);
-	KHNBUICD_3  		varchar(7);
-	SEQNUM 			number(4);
-	DISCHARGEFLG		char(1);
-	CLASS1			number(2);
-	CLASS2			number(2);
+	HKNNUM      		char(3);
+	KHNBUICD_1  		char(7);
+	KHNBUICD_2  		char(7);
+	KHNBUICD_3  		char(7);
 	DLTFLG  			char(1);
 	DLT_OPID    		varchar(16);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);
-	CREHMS				varchar(6);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
 	XXBYOMEI    		varchar(160),virtual;
 };
 primary	{
@@ -394,7 +384,7 @@ path	key17	{
 			AND   PTID        =   :PTID
 			AND   SRYYMD      <=  :SRYYMD
 			AND   DLTFLG      =   ' '
-			ORDER  BY  PTID,SRYYMD,SEQNUM,SRYKA,RENNUM
+			ORDER  BY  PTID,SRYYMD,SRYKA,RENNUM
 		;
 	};
 };
@@ -538,7 +528,7 @@ path	key25	{
 			AND  (TENKIKBN    =   :TENKIKBN  OR
                               TENKIYMD    >=  :SRYYMD)
 			AND   DLTFLG      =   ' '
-			ORDER BY SRYYMD,SEQNUM,SRYKA,RENNUM
+			ORDER BY SRYYMD,SRYKA,RENNUM
 		;
 	};
 };
@@ -727,114 +717,6 @@ path	key36		{
 	};
 };
 
-path	key37		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key37_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID         =   :PTID
-			AND   SRYKA        like   :SRYKA 
-			AND   SRYYMD       <=  :SRYYMD
-			AND   DLTFLG       =   ' '
-			ORDER  BY  SRYYMD,SEQNUM,SRYKA,RENNUM
-		;
-	};
-};
-
-path	key38		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key38_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID         =   :PTID
-			AND   SRYKA        like   :SRYKA 
-			AND   SRYYMD       <=  :SRYYMD
-			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
-			AND   DLTFLG       =   ' '
-			ORDER  BY  SRYYMD,SEQNUM,SRYKA,RENNUM
-		;
-	};
-};
-
-path	key39	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key39_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   DLTFLG      =   ' '
-			ORDER  BY  SRYYMD,SEQNUM,SRYKA,RENNUM
-		;
-	};
-};
-
-path	key40	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key40_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     SRYKA     =   :SRYKA
-			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
-			AND   DLTFLG      =   ' '
-		;
-	};
-};
-
-path	key41	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key41_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     SRYKA     =   :SRYKA
-			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
-			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
-			AND   DLTFLG      =   ' '
-		;
-	};
-};
-
-path	key42	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key42_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     SRYKA     <>  :SRYKA
-			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
-			AND   DLTFLG      =   ' '
-			ORDER  BY  SRYKA,RENNUM
-		;
-	};
-};
-
-path	key43	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key43_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     SRYKA     <>  :SRYKA
-			AND   NYUGAIKBN   IN (' ',:NYUGAIKBN)
-			AND     BYOMEI    =   :BYOMEI
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
-			AND   DLTFLG      =   ' '
-			ORDER  BY  SRYKA,RENNUM
-		;
-	};
-};
-
 path	key44	{ 	
 	DBSELECT	{
 		DECLARE tbl_ptbyomei_key44_csr CURSOR FOR
@@ -847,133 +729,3 @@ path	key44	{
 		;
 	};
 };
-
-path	key45	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key45_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   DLTFLG      =   ' '
-			ORDER BY SYUBYOFLG DESC,SRYYMD,RENNUM
-		;
-	};
-};
-
-path	key46	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key46_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   DLTFLG      =   ' '
-			ORDER  BY  PTID,SYUBYOFLG DESC,SRYYMD,RENNUM,SRYKA
-		;
-	};
-};
-
-path	key47	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key47_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     SRYYMD    =   :SRYYMD
-			AND   ( BYOMEI    =  :BYOMEI  OR
-			        BYOMEI    =  :XXBYOMEI )
-			AND     HOSOKU_COMMENT =   :HOSOKU_COMMENT
-			AND   DLTFLG      =   ' '
-			ORDER  BY  SRYKA,BYOMEI
-		;
-	};
-};
-
-path	key48	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key48_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM   =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     TENKIKBN  =   '2'
-			AND   DLTFLG      =   ' '
-		;
-	};
-};
-
-path	key49	{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key49_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM   =   :HOSPNUM
-			AND     PTID      =   :PTID
-			AND     DISCHARGEFLG  =   '1'
-			AND   DLTFLG      =   ' '
-			ORDER  BY  SYUBYOFLG DESC,SRYYMD
-		;
-	};
-};
-
-path	key50		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key50_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID         =   :PTID
-			AND   SRYKA        like   :SRYKA 
-			AND   SRYYMD       <=  :SRYYMD
-			AND   DLTFLG       =   ' '
-			ORDER  BY  SRYYMD DESC,SEQNUM,SRYKA,RENNUM
-		;
-	};
-};
-
-path	key51		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key51_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     TENKIKBN   <>  ' '
-			AND     TENKIYMD   <=  :SRYYMD
-			AND     TENKIYMD   >=  :TENKIYMD
-			AND    DLTFLG      =   ' '
-			ORDER  BY  PTID,SRYYMD DESC,SEQNUM,SRYKA,RENNUM
-		;
-	};
-};
-
-path	key52		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key52_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     SRYYMD     <=  :SRYYMD
-			AND   ( TENKIKBN   =   ' '  OR
-			       (TENKIYMD   <=  :SRYYMD AND
-			        TENKIYMD   >=  :TENKIYMD ))
-			AND   DLTFLG       =   ' '
-			ORDER  BY  PTID,SRYYMD DESC,SEQNUM,SRYKA,RENNUM
-		;
-	};
-};
-
-path	key53		{ 	
-	DBSELECT	{
-		DECLARE tbl_ptbyomei_key53_csr CURSOR FOR
-		SELECT MIN(TENKIYMD) AS TENKIYMD
-		FROM tbl_ptbyomei
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     TENKIYMD   <>  ''
-			AND    DLTFLG      =   ' '
-		;
-	};
-};
-
