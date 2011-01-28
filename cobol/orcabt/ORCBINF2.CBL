@@ -62,14 +62,7 @@
       *01  PRGSKBNO                PIC X(08)  VALUE "20091218".
       *01  PRGSKBNO                PIC X(08)  VALUE "20101026".
       *01  PRGSKBNO                PIC X(08)  VALUE "20101125".
-      *    レイアウト変更（リアルタイム導入）
-      *01  PRGSKBNO                PIC X(08)  VALUE "20110201".
-      *    レイアウト変更（データ作成区分）
-      *01  PRGSKBNO                PIC X(08)  VALUE "20110520".
-      *    レイアウト変更（属性区分）
-      *01  PRGSKBNO                PIC X(08)  VALUE "20120706".
-      *    データ作成区分に空白がセットされる修正
-       01  PRGSKBNO                PIC X(08)  VALUE "20130425".
+       01  PRGSKBNO                PIC X(08)  VALUE "20110201".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -82,13 +75,13 @@
            03  FLG-PTINF                       PIC 9(01).
            03  FLG-SRYACT                      PIC 9(01).
            03  FLG-SRYACCT                     PIC 9(01).
+           03  FLG-TENSU                       PIC 9(01).
            03  FLG-JYURRK                      PIC 9(01).
            03  FLG-PTBYOMEI                    PIC 9(01).
            03  FLG-INFECTION                   PIC 9(01).
+      *
            03  FLG-SRYACCT-READ                PIC 9(01).
            03  FLG-P-REC                       PIC 9(01).
-           03  FLG-TENSU                       PIC 9(01).
-           03  FLG-TENSUPLUS                   PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -96,13 +89,18 @@
            03  CNT-INFEC                       PIC 9(06).
       *
        01  INDEX-AREA.
-           03  IDU                             PIC 9(05).
-           03  IDV                             PIC 9(05).
-           03  IDW                             PIC 9(05).
-           03  IDX                             PIC 9(05).
-           03  IDY                             PIC 9(05).
-           03  IDY1                            PIC 9(05).
-           03  IDZ                             PIC 9(05).
+           03  IDU                             PIC 9(03).
+           03  IDV                             PIC 9(03).
+           03  IDW                             PIC 9(03).
+           03  IDX                             PIC 9(03).
+           03  IDY                             PIC 9(03).
+           03  IDZ                             PIC 9(03).
+      *
+       01  KEY-AREA                            VALUE   LOW-VALUE.
+           03  KEY-NEW.
+               05  KEY-N-PTID                  PIC 9(10).
+           03  KEY-OLD.
+               05  KEY-O-PTID                  PIC 9(10).
       *
       *    一時領域
        01  WRK-AREA.
@@ -135,11 +133,6 @@
                05  WRK-BIRTHDAY-R          REDEFINES   WRK-BIRTHDAY.
                    07  WRK-BIRTHDAY-YM         PIC 9(06).
                    07  WRK-BIRTHDAY-D          PIC 9(02).
-               05  WRK-ATTR                    PIC 9(02).
-      *
-           03  WRK-SAVE-AREA.
-               05  WRK-S-KHNBYOMEICD           PIC X(07).
-               05  WRK-S-SRYYMD                PIC 9(08).
       *
       *    出力データ編集用
            03  WRK-REC                         PIC X(3000).
@@ -155,37 +148,29 @@
            03  WRK-RECKBN                      PIC 9(01).
            03  WRK-INFECERR                    PIC X(200).
            03  WRK-ERRMSG                      PIC X(300).
-           03  WRK-SRYACT-MAX                  PIC 9(03).
+      *
+      *    点数マスタ退避ワーク
+           COPY    "CPTTNS.INC".
       *
        01  TBL-DISEASE-AREA.
            03  TBL-DISEASE-OCC     OCCURS   99  INDEXED  I-D.
                05  TBL-DISEASE            PIC 9(02).
            03  TBL-DISEASE-MAX            PIC 9(02).
       *
-      * 2012.7 テーブル数 100->10000 へ増加
        01  TBL-JUDGMENT-AREA.
-           03  TBL-JUDGMENT-B-OCC  OCCURS  10000  INDEXED  I-J-B.
+           03  TBL-JUDGMENT-B-OCC  OCCURS  100  INDEXED  I-J-B.
                05  TBL-JUDGMENT-BYOMEICD  PIC X(07).
-           03  TBL-JUDGMENT-B-MAX         PIC 9(05).
-           03  TBL-JUDGMENT-S-OCC  OCCURS  10000  INDEXED  I-J-S.
+           03  TBL-JUDGMENT-B-MAX         PIC 9(03).
+           03  TBL-JUDGMENT-S-OCC  OCCURS  100  INDEXED  I-J-S.
                05  TBL-JUDGMENT-SRYCD     PIC X(09).
                05  TBL-JUDGMENT-CDKBN     PIC 9(01).
-           03  TBL-JUDGMENT-S-MAX         PIC 9(05).
-      *
-       01  TBL-SRYACT-AREA.
-      *    診療種別区分
-           03  TBL-SRY-SRYSYUKBN           PIC  X(03).
-      *    診療区分
-           03  TBL-SRY-SRYKBN              PIC  X(02).
-           03  TBL-SRYACT-AREA-G   OCCURS  100.
-      *        診療コード
-               05  TBL-SRY-SRYCD           PIC  X(09).
-      *        数量
-               05  TBL-SRY-SRYSURYO        PIC  9(05)V9(05).
+           03  TBL-JUDGMENT-S-MAX         PIC 9(03).
       *
        01  WRK-CONS-AREA.
       *    コンマ
            03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
+      *    改行コード
+           03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -203,9 +188,6 @@
       *
       *    医療機関情報
            COPY    "CPSK1002.INC".
-      *
-      *    帳票編集区分情報
-           COPY    "CPSK1030.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -231,16 +213,12 @@
        01  INFECTION-REC.
            COPY    "CPINFECTION.INC".
       *
-      *    判定
-       01  INFJUDGMENT-REC.
-           COPY    "CPINFJUDGMENT.INC".
-      *
       *    点数
            COPY    "CPTENSU.INC".
       *
-      *    点数マスタ付加コード
-       01  TENSUPLUS-REC.
-           COPY    "CPTENSUPLUS.INC".
+      *    判定
+       01  INFJUDGMENT-REC.
+           COPY    "CPINFJUDGMENT.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -281,7 +259,8 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
-           INITIALIZE                  SPA-AREA
+           INITIALIZE                  TTNS-AREA
+                                       SPA-AREA
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA-GMNID
@@ -309,6 +288,9 @@
       *
            PERFORM 900-DBOPEN-SEC
       *
+      *##?     OPEN    OUTPUT              INFEC-FILE
+      *##?     CLOSE                       INFEC-FILE
+      *
            OPEN    OUTPUT              INFEC-FILE
       *
            PERFORM 1001-INIT-PTCHK-SEC
@@ -332,17 +314,6 @@
                                            TO  WRK-INFECERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
-           IF      SYS-1001-DATAINFECTIONKBN   =   SPACE
-               IF      SYS-1001-DATACREATEFLG  =   "1"
-                   MOVE    "1"         TO  SYS-1001-DATAINFECTIONKBN
-               ELSE
-                   MOVE    "0"         TO  SYS-1001-DATAINFECTIONKBN
-               END-IF
-           END-IF
-           IF      SYS-1001-DATAINFECTIONKBN   NOT =   "1"
-               MOVE    1                   TO  FLG-END
-               GO  TO  100-INIT-EXT
-           END-IF
       *
       *    医療機関基本情報1002
            INITIALIZE                      SYS-1002-REC
@@ -357,21 +328,6 @@
                MOVE    MCPDATA-REC         TO  SYS-1002-REC
            ELSE
                INITIALIZE                      SYS-1002-REC
-           END-IF
-      *
-      *    帳票編集区分情報1030
-           INITIALIZE                      SYS-1030-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-           MOVE    "1030"              TO  SYS-1030-KANRICD
-           MOVE    "*"                 TO  SYS-1030-KBNCD
-           MOVE    WRK-PARA-SRYYMD     TO  SYS-1030-STYUKYMD
-                                           SYS-1030-EDYUKYMD
-           MOVE    SYS-1030-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-1030-REC
-           ELSE
-               INITIALIZE                  SYS-1030-REC
            END-IF
       *
       *    判定テーブルから病原体区分のサマリをテーブルに取得
@@ -405,7 +361,6 @@
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      WRK-HENSYU-AREA
-           INITIALIZE                      WRK-SAVE-AREA
            MOVE    ZERO                TO  FLG-P-REC
       *
            PERFORM VARYING I-D     FROM  1  BY  1
@@ -431,7 +386,6 @@
        2001-MAIN-SINRYO-SEC        SECTION.
       *
            MOVE    WRK-PARA-SRYYMD     TO  WRK-SRYYMD
-      *
       *    受診履歴読み込み
            INITIALIZE                      JYURRK-REC
            MOVE    WRK-PARA-HOSPNUM    TO  JYURRK-HOSPNUM
@@ -459,12 +413,6 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *
-      *    クリア（削除）処理
-      *    IF     (WRK-PARA-SYORIFLG   =   2)  AND
-      *           (CNT-INFEC           =   0)
-      *        PERFORM 2002-CLEAR-DATA-SEC
-      *    END-IF
            .
        2001-MAIN-SINRYO-EXT.
            EXIT.
@@ -479,8 +427,6 @@
                       OR   (JYURRK-ZAINUM(IDX)  =  ZERO)
                MOVE    ZERO                TO  FLG-SRYACCT-READ
                MOVE    ZERO                TO  FLG-SRYACT
-               MOVE    ZERO                TO  IDY
-               INITIALIZE                      TBL-SRYACT-AREA
                MOVE    SPACE               TO  SRYACT-REC
                INITIALIZE                      SRYACT-REC
                MOVE    JYURRK-HOSPNUM      TO  SRY-HOSPNUM
@@ -503,7 +449,7 @@
                    MOVE    1                   TO  FLG-SRYACT
                END-IF
                PERFORM UNTIL   FLG-SRYACT  =  1
-                   PERFORM 20011-SRYACT-SAVE-SEC
+                   PERFORM 20012-SRYCD-JUDGE-SEC
                    MOVE    "tbl_sryact"        TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-SRYACT-READ-SEC
@@ -511,36 +457,9 @@
                MOVE    "tbl_sryact"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
-      *
-               PERFORM 20012-SRYCD-JUDGE-SEC
            END-PERFORM
            .
        20011-SRYCD-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為検索処理
-      *****************************************************************
-       20011-SRYACT-SAVE-SEC       SECTION.
-      *
-           IF      IDY                 =   ZERO
-               MOVE    SRY-SRYSYUKBN       TO  TBL-SRY-SRYSYUKBN
-               MOVE    SRY-SRYKBN          TO  TBL-SRY-SRYKBN
-           END-IF
-      *
-           PERFORM VARYING IDY1  FROM  1  BY  1
-                   UNTIL  (IDY1            >   5)
-                      OR  (SRY-SRYCD (IDY1) =   SPACE)
-               COMPUTE IDY                 =   IDY  +  1
-               IF      IDY                 >   100
-                   DISPLAY "TBL-SRYACT-AREA TABLE OVER !!"
-               END-IF
-               MOVE    SRY-SRYCD (IDY1)    TO  TBL-SRY-SRYCD (IDY)
-               MOVE    SRY-SRYSURYO (IDY1) TO  TBL-SRY-SRYSURYO (IDY)
-           END-PERFORM
-           MOVE    IDY                 TO  WRK-SRYACT-MAX
-           .
-       20011-SRYACT-SAVE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -549,152 +468,34 @@
        20012-SRYCD-JUDGE-SEC       SECTION.
       *
            PERFORM VARYING IDY  FROM  1  BY  1
-                   UNTIL  (IDY             >   WRK-SRYACT-MAX)
-                      OR  (TBL-SRY-SRYCD (IDY) =   SPACE)
+                   UNTIL  (IDY             >   5)
+                      OR  (SRY-SRYCD (IDY) =   SPACE)
                PERFORM VARYING I-J-S  FROM  1  BY  1
                        UNTIL   I-J-S  >  TBL-JUDGMENT-S-MAX
-                   IF      TBL-SRY-SRYCD (IDY) =   TBL-JUDGMENT-SRYCD
+                   IF      SRY-SRYCD (IDY)     =   TBL-JUDGMENT-SRYCD
                                                    (I-J-S)
                        MOVE    TBL-JUDGMENT-CDKBN (I-J-S)
                                                    TO  WRK-CDKBN
-                       MOVE    TBL-SRY-SRYKBN      TO  WRK-SRYKBN
-                       MOVE    TBL-SRY-SRYCD (IDY) TO  WRK-SRYCD
-                       MOVE    TBL-SRY-SRYSURYO (IDY)
-                                                   TO  WRK-SURYO
+                       MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
+                       MOVE    SRY-SRYCD (IDY)     TO  WRK-SRYCD
+                       MOVE    SRY-SRYSURYO (IDY)  TO  WRK-SURYO
                        IF      FLG-SRYACCT-READ    =   ZERO
                            PERFORM 900-SRYACCT-READ-SEC
                            MOVE    1               TO  FLG-SRYACCT-READ
-                           IF      FLG-SRYACCT         =   ZERO
-                               MOVE    ACCT-ZAIKAISU   TO  WRK-ZAIKAISU
-                           ELSE
-                               MOVE    ZERO            TO  WRK-ZAIKAISU
-                           END-IF
-                       END-IF
-      *
-                       IF     (WRK-CDKBN           =   2)  AND
-                              (WRK-SRYKBN          =   "21" OR "22"
-                                                            OR "23")
-                           PERFORM 20013-SYOHO-HENSYU-SEC
+                       IF      FLG-SRYACCT         =   ZERO
+                           MOVE    ACCT-ZAIKAISU       TO  WRK-ZAIKAISU
                        ELSE
-                           MOVE    ZERO                TO  WRK-ATTR
+                           MOVE    ZERO                TO  WRK-ZAIKAISU
                        END-IF
-      *
                        MOVE    2                   TO  WRK-RECKBN
                        PERFORM 2003-OUT-SYORI-SEC
-      *                感染症プルーフ読み込み
-                       PERFORM 2004-INFECTION-READ-SEC
-                       IF      FLG-INFECTION       =   1
-                           PERFORM 2004-INFECTION-INSERT-SEC
-                       ELSE
-                           PERFORM 2004-INFECTION-UPDATE-SEC
-                       END-IF
+      **                 PERFORM 2004-INFECTION-INSERT-SEC
                        MOVE    TBL-JUDGMENT-S-MAX  TO  I-J-S
                    END-IF
                END-PERFORM
            END-PERFORM
            .
        20012-SRYCD-JUDGE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    院内・院外別、銘柄名・一般名記載決定
-      *****************************************************************
-       20013-SYOHO-HENSYU-SEC          SECTION.
-      *
-      *    院内、院外の区別
-           IF     (ACCT-ZAITEN     NOT =   ZERO)  OR
-                  (TBL-SRY-SRYSYUKBN   =   "213" OR "223" OR "233")
-      *        院内処方
-               MOVE    1                   TO  WRK-ATTR
-           ELSE
-      *        院外処方（銘柄名）
-               MOVE    2                   TO  WRK-ATTR
-           END-IF
-      *
-           IF      WRK-ATTR            =   1
-               GO  TO  20013-SYOHO-HENSYU-EXT
-           END-IF
-      *
-           PERFORM 900-TENSU-READ-SEC
-      *
-      *    点数附加情報検索
-           IF     (WRK-SRYCD(1:1)      =   "6" )  AND
-                  (FLG-TENSU           =   ZERO)
-               PERFORM 900-TENSUPLUS-READ-SEC
-           ELSE
-               INITIALIZE                      TENSUPLUS-REC
-           END-IF
-      *
-           IF     (WRK-SRYCD(1:1)      =   "6" )  AND
-                  (FLG-TENSU           =   ZERO)
-      *        システム管理の変更可によって一般名記載とする
-               IF     (TNSP-IPN-KISAIKBN       =   ZERO    )  AND
-                      (SYS-1030-KOUHATUKA      =   "1"     )  AND
-                      (TNS-KOUHATUKBN          =   1  OR  2
-                                                      OR  7)
-                   MOVE    1               TO  TNSP-IPN-KISAIKBN
-               END-IF
-           END-IF
-      *
-      *    システム予約により銘柄名へ変更か調べる
-           PERFORM 20013-SYOHO-HENSYU-2-SEC
-      *
-           IF      TNSP-IPN-KISAIKBN   =   1  OR  3
-               MOVE    3                   TO  WRK-ATTR
-           END-IF
-           .
-       20013-SYOHO-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療行為データを読みシステム予約マスタが入力されていないか
-      *    調べる
-      *****************************************************************
-       20013-SYOHO-HENSYU-2-SEC    SECTION.
-      *
-           COMPUTE IDY1                =   IDY  +  1
-      *
-           IF      TBL-SRY-SRYCD (IDY1)    =   SPACE
-               GO  TO  20013-SYOHO-HENSYU-2-EXT
-           END-IF
-      *
-           EVALUATE    TBL-SRY-SRYCD (IDY1)
-               WHEN    "099209903"
-      *            後発医薬品へ変更不可
-                   MOVE    ZERO                TO  TNSP-IPN-KISAIKBN
-      *        WHEN    "099209905"
-      *            含量規格変更不可
-      *        WHEN    "099209906"
-      *            剤型変更不可
-               WHEN    "099209907"
-      *            銘柄名記載
-                   MOVE    ZERO                TO  TNSP-IPN-KISAIKBN
-               WHEN    "099209908"
-      *            一般名記載
-                   MOVE    1                   TO  TNSP-IPN-KISAIKBN
-               WHEN    OTHER
-                   CONTINUE
-           END-EVALUATE
-           .
-       20013-SYOHO-HENSYU-2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クリア（削除）処理
-      *****************************************************************
-       2002-CLEAR-DATA-SEC         SECTION.
-      *
-           PERFORM 2004-INFECTION-READ-SEC
-           IF      FLG-INFECTION       =   ZERO
-               IF     (INFECT-SRYCD    NOT =   SPACE)  OR
-                      (INFECT-MEDSRYCD NOT =   SPACE)
-                   MOVE    3                   TO  WRK-RECKBN
-                   PERFORM 2003-OUT-SYORI-SEC
-                   PERFORM 2004-INFECTION-SRYCD-CLEAR-SEC
-               END-IF
-           END-IF
-           .
-       2002-CLEAR-DATA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -748,31 +549,16 @@
                    UNTIL      (I-J-B   >  TBL-JUDGMENT-B-MAX)
                IF      PTBYO-KHNBYOMEICD   =   TBL-JUDGMENT-BYOMEICD
                                                (I-J-B)
-                   IF      PTBYO-KHNBYOMEICD   =   WRK-S-KHNBYOMEICD
-                     AND   PTBYO-SRYYMD        =   WRK-S-SRYYMD
-                     AND   PTBYO-DLTFLG        =   1
-                           CONTINUE
-                   ELSE
-                       MOVE    PTBYO-KHNBYOMEICD   TO  WRK-S-KHNBYOMEICD
-                       MOVE    PTBYO-SRYYMD        TO  WRK-S-SRYYMD
-                       MOVE    PTBYO-KHNBYOMEICD   TO  WRK-BYOMEICD
-                       MOVE    PTBYO-UTAGAIFLG     TO  WRK-UTAGAIFLG
-                       MOVE    PTBYO-SRYYMD        TO  WRK-BYOSRYYMD
-                       MOVE    PTBYO-SRYYMD        TO  WRK-SRYYMD
-                       MOVE    PTBYO-TENKIKBN      TO  WRK-TENKIKBN
-                       MOVE    PTBYO-TENKIYMD      TO  WRK-TENKIYMD
-                       MOVE    PTBYO-DLTFLG        TO  WRK-DLTFLG
-                       MOVE    1                   TO  WRK-RECKBN
-                       PERFORM 2003-OUT-SYORI-SEC
-      *                感染症プルーフ読み込み
-                       PERFORM 2004-INFECTION-READ-SEC
-                       IF      FLG-INFECTION       =   1
-                           PERFORM 2004-INFECTION-INSERT-SEC
-                       ELSE
-                           PERFORM 2004-INFECTION-UPDATE-SEC
-                       END-IF
-                       MOVE    TBL-JUDGMENT-B-MAX  TO  I-J-B
-                   END-IF
+                   MOVE    PTBYO-KHNBYOMEICD   TO  WRK-BYOMEICD
+                   MOVE    PTBYO-UTAGAIFLG     TO  WRK-UTAGAIFLG
+                   MOVE    PTBYO-SRYYMD        TO  WRK-BYOSRYYMD
+                   MOVE    PTBYO-TENKIKBN      TO  WRK-TENKIKBN
+                   MOVE    PTBYO-TENKIYMD      TO  WRK-TENKIYMD
+                   MOVE    PTBYO-DLTFLG        TO  WRK-DLTFLG
+                   MOVE    1                   TO  WRK-RECKBN
+                   PERFORM 2003-OUT-SYORI-SEC
+      **             PERFORM 2004-INFECTION-INSERT-SEC
+                   MOVE    TBL-JUDGMENT-B-MAX  TO  I-J-B
                END-IF
            END-PERFORM
            .
@@ -801,10 +587,6 @@
                PERFORM 400-SY-REC-SEC
            END-IF
       *
-           IF      WRK-RECKBN          =   3
-               PERFORM 400-SY-CLEAR-REC-SEC
-           END-IF
-      *
       *    IF      STS-INFEC           =   "00"
       *        CONTINUE
       *    ELSE
@@ -830,7 +612,8 @@
            MOVE    SPA-HOSPNUM         TO  INFECT-HOSPNUM
            MOVE    SMCNDATE-YMD        TO  INFECT-SENDYMD
            MOVE    PTINF-PTID          TO  INFECT-PTID
-           MOVE    TBL-DISEASE (I-D)   TO  INFECT-DISEASE
+      *    インフルエンザ
+           MOVE    1                   TO  INFECT-DISEASE
            MOVE    WRK-SRYYMD          TO  INFECT-SRYYMD
       *
            MOVE    INFECTION-REC       TO  MCPDATA-REC
@@ -862,17 +645,12 @@
            MOVE    SPA-HOSPNUM         TO  INFECT-HOSPNUM
            MOVE    SMCNDATE-YMD        TO  INFECT-SENDYMD
            MOVE    PTINF-PTID          TO  INFECT-PTID
-           MOVE    TBL-DISEASE (I-D)   TO  INFECT-DISEASE
+      *    インフルエンザ
+           MOVE    1                   TO  INFECT-DISEASE
            MOVE    WRK-SRYYMD          TO  INFECT-SRYYMD
-      *    診療行為
-           IF      WRK-CDKBN           =   2
-               MOVE    WRK-SRYCD           TO  INFECT-MEDSRYCD
-           ELSE
-               IF      WRK-CDKBN           =   3
-                   MOVE    WRK-SRYCD           TO  INFECT-SRYCD
-               END-IF
-           END-IF
-      *    病名
+      *
+      *##     MOVE    WRK-SRYCD           TO  INFECT-SRYCD
+      *##     MOVE    WRK-SRYCD           TO  INFECT-MEDSRYCD
            MOVE    WRK-BYOMEICD        TO  INFECT-BYOMEICD
            IF      WRK-BYOSRYYMD   NOT =   ZERO
                MOVE    WRK-BYOSRYYMD       TO  INFECT-BYOSRYYMD
@@ -898,90 +676,6 @@
            END-IF
            .
        2004-INFECTION-INSERT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症プルーフ処理
-      *****************************************************************
-       2004-INFECTION-UPDATE-SEC   SECTION.
-      *
-      *    INITIALIZE                      INFECTION-REC
-      *    MOVE    SPA-HOSPNUM         TO  INFECT-HOSPNUM
-      *    MOVE    SMCNDATE-YMD        TO  INFECT-SENDYMD
-      *    MOVE    PTINF-PTID          TO  INFECT-PTID
-      *    MOVE    TBL-DISEASE (I-D)   TO  INFECT-DISEASE
-      *    MOVE    WRK-SRYYMD          TO  INFECT-SRYYMD
-      *
-           IF      WRK-PARA-GMNID      =   "C02"
-      *        病名
-               MOVE    WRK-BYOMEICD        TO  INFECT-BYOMEICD
-               IF      WRK-BYOSRYYMD   NOT =   ZERO
-                   MOVE    WRK-BYOSRYYMD       TO  INFECT-BYOSRYYMD
-               END-IF
-               MOVE    WRK-TENKIKBN        TO  INFECT-TENKIKBN
-               IF      WRK-TENKIYMD    NOT =   ZERO
-                   MOVE    WRK-TENKIYMD        TO  INFECT-TENKIYMD
-               END-IF
-           ELSE
-      *    診療行為
-               IF      WRK-CDKBN           =   2
-                   MOVE    WRK-SRYCD           TO  INFECT-MEDSRYCD
-               ELSE
-                   IF      WRK-CDKBN           =   3
-                       MOVE    WRK-SRYCD           TO  INFECT-SRYCD
-                   END-IF
-               END-IF
-           END-IF
-      *
-           MOVE    SMCNDATE-YMD        TO  INFECT-CREYMD
-           MOVE    SPACE               TO  INFECT-UPYMD
-           MOVE    SMCNDATE-HMS        TO  INFECT-UPHMS
-      *
-           MOVE    INFECTION-REC       TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_infection"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "ORCBINF2 INFECTION INS ERR:"  MCP-RC  "."
-           END-IF
-           .
-       2004-INFECTION-UPDATE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    感染症プルーフ処理
-      *****************************************************************
-       2004-INFECTION-SRYCD-CLEAR-SEC SECTION.
-      *
-      *    INITIALIZE                      INFECTION-REC
-      *    MOVE    SPA-HOSPNUM         TO  INFECT-HOSPNUM
-      *    MOVE    SMCNDATE-YMD        TO  INFECT-SENDYMD
-      *    MOVE    PTINF-PTID          TO  INFECT-PTID
-      *    MOVE    TBL-DISEASE (I-D)   TO  INFECT-DISEASE
-      *    MOVE    WRK-SRYYMD          TO  INFECT-SRYYMD
-      *    診療行為
-           MOVE    SPACE               TO  INFECT-MEDSRYCD
-           MOVE    SPACE               TO  INFECT-SRYCD
-      *
-           MOVE    SMCNDATE-YMD        TO  INFECT-CREYMD
-           MOVE    SPACE               TO  INFECT-UPYMD
-           MOVE    SMCNDATE-HMS        TO  INFECT-UPHMS
-      *
-           MOVE    INFECTION-REC       TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_infection"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "ORCBINF2 INFECTION UPD ERR:"  MCP-RC  "."
-           END-IF
-           .
-       2004-INFECTION-SRYCD-CLEAR-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1044,11 +738,6 @@
       *    日レセバージョン
            MOVE    WRK-PARA-VERSION    TO  WRK-DATA
            MOVE    100                 TO  WRK-NAGASA
-           PERFORM 4002-MOJI-HENSYU-SEC
-      *    データ作成区分
-           MOVE    SYS-1001-DATAINFECTIONKBN
-                                       TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END
            PERFORM 4002-MOJI-HENSYU-SEC
       *
@@ -1197,24 +886,14 @@
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 4003-NUM-HENSYU-SEC
       *    処理区分
-           IF      WRK-PARA-SYORIFLG   =   2
-      *        クリア（削除）処理であるが判定コードがあるため
-      *        訂正の扱いにする
-               MOVE    2                   TO  WRK-NUM
-           ELSE
-               COMPUTE WRK-NUM             =   WRK-PARA-SYORIFLG  +  1
-           END-IF
+           MOVE    WRK-PARA-SYORIFLG   TO  WRK-NUM
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 4003-NUM-HENSYU-SEC
       *    入外区分
            MOVE    WRK-PARA-NYUGAIKBN  TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
-           PERFORM 4002-MOJI-HENSYU-SEC
-      *    属性区分
-           MOVE    WRK-ATTR            TO  WRK-NUM
-           MOVE    2                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END
-           PERFORM 4003-NUM-HENSYU-SEC
+           PERFORM 4002-MOJI-HENSYU-SEC
       *
            PERFORM 4001-FILE-WRITE-SEC
            .
@@ -1222,52 +901,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ＣＳＶデータ（クリア）作成処理
-      *****************************************************************
-       400-SY-CLEAR-REC-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  WRK-REC
-           MOVE    ZERO                TO  WRK-REC-LENGTH
-           MOVE    ZERO                TO  WRK-END
-      *    レコード識別
-           MOVE    "S"                 TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
-           PERFORM 4002-MOJI-HENSYU-SEC
-      *    病原体区分
-           MOVE    TBL-DISEASE (I-D)   TO  WRK-NUM
-           MOVE    2                   TO  WRK-NAGASA
-           PERFORM 4003-NUM-HENSYU-SEC
-      *    診療日
-           MOVE    WRK-SRYYMD          TO  WRK-NUM
-           MOVE    8                   TO  WRK-NAGASA
-           PERFORM 4003-NUM-HENSYU-SEC
-      *    診療行為区分
-      *    コード
-      *    数量
-      *    剤回数
-      *    処理区分
-           MOVE    "0,,0,0,3"          TO  WRK-DATA
-           MOVE    8                   TO  WRK-NAGASA
-           PERFORM 4002-MOJI-HENSYU-SEC
-      *    入外区分
-           MOVE    WRK-PARA-NYUGAIKBN  TO  WRK-DATA
-           MOVE    1                   TO  WRK-NAGASA
-           PERFORM 4002-MOJI-HENSYU-SEC
-      *    属性区分
-           MOVE    ZERO                TO  WRK-NUM
-           MOVE    2                   TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END
-           PERFORM 4003-NUM-HENSYU-SEC
-      *
-           PERFORM 4001-FILE-WRITE-SEC
-           .
-       400-SY-CLEAR-REC-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ファイル出力処理
       *****************************************************************
        4001-FILE-WRITE-SEC         SECTION.
+      *
+      *    改行コード編集
+           STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
+                   WRK-KAIGYO                DELIMITED  BY  SIZE
+                   INTO        WRK-REC
+           END-STRING
       *
            MOVE    WRK-REC             TO  INFEC-REC
            WRITE   INFEC-REC
@@ -1450,7 +1092,7 @@
            MOVE    ZERO                TO  I-J-S
       *
            INITIALIZE                      INFJUDGMENT-REC
-           MOVE    TBL-DISEASE (I-D)   TO  INFJUD-DISEASE
+           MOVE    I-D                 TO  INFJUD-DISEASE
            MOVE    INFJUDGMENT-REC     TO  MCPDATA-REC
            MOVE    "tbl_infection_judgment"
                                        TO  MCP-TABLE
@@ -1464,18 +1106,6 @@
                PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  INFJUDGMENT-REC
-      * 2012.7 テーブルオーバーの対処
-                   EVALUATE    INFJUD-CODE-KBN
-                       WHEN    5
-                           MOVE    1               TO  INFJUD-CODE-KBN
-                       WHEN    6
-                           MOVE    2               TO  INFJUD-CODE-KBN
-                       WHEN    7
-                           MOVE    3               TO  INFJUD-CODE-KBN
-                       WHEN    OTHER
-                           CONTINUE
-                   END-EVALUATE
-      *
                    IF      INFJUD-CODE-KBN     =   1
                        COMPUTE I-J-B               =   I-J-B  +  1
                        MOVE    INFJUD-CODE         TO
@@ -1555,6 +1185,10 @@
                MOVE    MCPDATA-REC         TO  JYURRK-REC
            ELSE
                MOVE    1                   TO  FLG-JYURRK
+           END-IF
+      *
+           IF      FLG-JYURRK          =   ZERO
+               MOVE    JYURRK-PTID         TO  KEY-N-PTID
            END-IF
            .
        900-JYURRK-READ-EXT.
@@ -1661,6 +1295,103 @@
            EXIT.
       *
       *****************************************************************
+      *    点数読込
+      *****************************************************************
+       900-TENSU-READ-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSU
+      *
+           MOVE    TNS-SRYCD           TO  TTNS-CHK-SRYCD
+           MOVE    WRK-PARA-SRYYMD     TO  TTNS-CHK-YMD
+      *
+      *    点数マスタ退避ワークチェック
+           PERFORM 9001-TTNS-CHK-SEC
+      *
+      *    退避ワークに存在しない場合はＤＢを検索
+           IF    ( TTNS-FLG            =   ZERO )
+               INITIALIZE                      TNS-TENSU-REC
+               MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
+               MOVE    TTNS-CHK-YMD        TO  TNS-YUKOSTYMD
+                                               TNS-YUKOEDYMD
+               MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_tensu"     TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 900-DBFETCH-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+                       MOVE    ZERO            TO  FLG-TENSU
+      *
+      *                点数マスタ退避ワークに編集する
+                       PERFORM 9001-TTNS-HEN-SEC
+                   ELSE
+                       INITIALIZE                  TNS-TENSU-REC
+                       MOVE    1                   TO  FLG-TENSU
+                   END-IF
+               ELSE
+                   INITIALIZE                  TNS-TENSU-REC
+                   MOVE    1                   TO  FLG-TENSU
+               END-IF
+      *
+               MOVE    "tbl_tensu"     TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+           END-IF
+           .
+       900-TENSU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ退避ワークチェック処理
+      *****************************************************************
+       9001-TTNS-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  TTNS-FLG
+           INITIALIZE                      TNS-TENSU-REC
+      *
+           PERFORM VARYING TTNS-IDX    FROM    1   BY  1
+                   UNTIL ( TTNS-IDX    >   TTNS-MAX )
+                    OR   ( TTNS-FLG    =   1 )
+               IF    ( TTNS-KEY-SRYCD (TTNS-IDX)
+                                       =   TTNS-CHK-SRYCD )
+                 AND ( TTNS-KEY-YUKOSTYMD (TTNS-IDX)
+                                      <=   TTNS-CHK-YMD )
+                 AND ( TTNS-KEY-YUKOEDYMD (TTNS-IDX)
+                                      >=   TTNS-CHK-YMD )
+                   MOVE    1           TO  TTNS-FLG
+                   MOVE    TTNS-DAT (TTNS-IDX)
+                                       TO  TNS-TENSU-REC
+               END-IF
+           END-PERFORM
+           .
+       9001-TTNS-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    点数マスタ退避ワーク編集処理
+      *****************************************************************
+       9001-TTNS-HEN-SEC           SECTION.
+      *
+           IF    ( TTNS-CONST-MAX  >   TTNS-MAX )
+               COMPUTE TTNS-MAX    =   TTNS-MAX    +   1
+               MOVE    TNS-SRYCD       TO  TTNS-KEY-SRYCD
+                                                   (TTNS-MAX)
+               MOVE    TNS-YUKOSTYMD   TO  TTNS-KEY-YUKOSTYMD
+                                                   (TTNS-MAX)
+               MOVE    TNS-YUKOEDYMD   TO  TTNS-KEY-YUKOEDYMD
+                                                   (TTNS-MAX)
+               MOVE    TNS-TENSU-REC   TO  TTNS-DAT
+                                                   (TTNS-MAX)
+           END-IF
+           .
+       9001-TTNS-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    診療行為読込
       *****************************************************************
        900-SRYACT-READ-SEC         SECTION.
@@ -1675,80 +1406,6 @@
            END-IF
            .
        900-SRYACT-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタ検索処理
-      *****************************************************************
-       900-TENSU-READ-SEC          SECTION.
-      *
-           INITIALIZE                      TNS-TENSU-REC
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
-           MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
-                                           TNS-YUKOEDYMD
-           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-TENSU
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-               ELSE
-                   MOVE    1                   TO  FLG-TENSU
-                   INITIALIZE                      TNS-TENSU-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSU
-               INITIALIZE                      TNS-TENSU-REC
-           END-IF
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           .
-       900-TENSU-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスタ付加情報検索処理
-      *****************************************************************
-       900-TENSUPLUS-READ-SEC      SECTION.
-      *
-           INITIALIZE                      TENSUPLUS-REC
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
-           MOVE    WRK-SRYCD           TO  TNSP-SRYCD
-           MOVE    WRK-SRYYMD          TO  TNSP-YUKOSTYMD
-                                           TNSP-YUKOEDYMD
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-TENSUPLUS
-                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
-               ELSE
-                   MOVE    1                   TO  FLG-TENSUPLUS
-                   INITIALIZE                      TENSUPLUS-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPLUS
-               INITIALIZE                      TENSUPLUS-REC
-           END-IF
-      *
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           .
-       900-TENSUPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
