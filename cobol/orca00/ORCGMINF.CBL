@@ -27,9 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
-      * 04.06.00     NACL-伊藤    10/02/13  リアルタイム送信
-      *                                     初期表示は当日報告日
-      *                                     １日１回は前日
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -140,6 +137,8 @@
            COPY    "M01N.INC".
            COPY    "M02.INC".
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -150,7 +149,6 @@
            COPY    "MDAS.INC".
            COPY    "MLOG.INC".
            COPY    "MINF.INC".
-           COPY    "MPRT.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -264,7 +262,7 @@
            MOVE    1               TO  SPA-MINF-STR
       *
            MOVE    SPA-SYSYMD      TO  WRK-SYMD
-           IF      SPA-DATAINFECTIONKBN    =   2
+           IF      SPA-DATATEISYUTUKBN =   2
       *        前日
                PERFORM 31012-ZENJITU-HEN-SEC
            END-IF
