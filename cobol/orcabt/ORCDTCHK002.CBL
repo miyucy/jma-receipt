@@ -2146,6 +2146,7 @@
        200111-TSRYKA-AREA-INIT-SEC     SECTION.
       *
            MOVE    ZERO            TO  TSRYKA-MAX
+           INITIALIZE                  TSRYKA-ALL-G
            INITIALIZE                  TSRYKA-OCC (1)
       *
            PERFORM VARYING IDX0    FROM    2   BY  1
@@ -2163,7 +2164,6 @@
       *
            MOVE    ZERO            TO  TKAISU-MAX
       *
-           INITIALIZE                  TSRYKA-ALL-G
            INITIALIZE                  TKAISU-OCC (1)
       *
            PERFORM VARYING IDX0    FROM    2   BY  1
@@ -4022,6 +4022,15 @@
            INITIALIZE                  PTACCT-AREA
                                        PTSRY-AREA
                                        PTZAI-AREA
+      *
+           IF    ( ORCBSD01-CHKKBN (8) =   ZERO  )
+               MOVE    1               TO  FLG-CHKEND (8)
+           END-IF
+      *
+           IF    ( ORCBSD01-CHKKBN (9) =   ZERO  )
+               MOVE    1               TO  FLG-CHKEND (9)
+           END-IF
+      *
       *    (A)
            PERFORM 200113-SRYINF-TAIHI-SEC
       *
@@ -4032,13 +4041,13 @@
            END-IF
       *
       *    薬剤と病名チェック処理
-           IF    ( FLG-CHKEND (8)      =   ZERO )
+           IF    ( ORCBSD01-CHKKBN (8) NOT =   ZERO  )
             AND  ( FLG-YKZBYO          =   1 )
                PERFORM 200112-YKZ-BYO-CHK-SEC
            END-IF
       *
       *    診療行為と病名チェック処理
-           IF    ( FLG-CHKEND (9)      =   ZERO )
+           IF    ( ORCBSD01-CHKKBN (9) NOT =   ZERO  )
             AND  ( FLG-SRYBYO          =   1 )
                PERFORM 200112-SRY-BYO-CHK-SEC
            END-IF
@@ -5224,14 +5233,6 @@
       *
            IF    ( ORCBSD01-CHKKBN (7) =   ZERO  )
                MOVE    1               TO  FLG-CHKEND (7)
-           END-IF
-      *
-           IF    ( ORCBSD01-CHKKBN (8) =   ZERO  )
-               MOVE    1               TO  FLG-CHKEND (8)
-           END-IF
-      *
-           IF    ( ORCBSD01-CHKKBN (9) =   ZERO  )
-               MOVE    1               TO  FLG-CHKEND (9)
            END-IF
       *
       *    疑い病名開始日チェック用年月
