@@ -4623,7 +4623,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "1067"
                    STRING  "補助区分２割は前期高齢者の補助区分では"
-                           "ありません。３割に変更して下さい。"
+                           "ありません。変更して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
