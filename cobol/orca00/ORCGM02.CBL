@@ -38,7 +38,6 @@
       *  01.02.07    NACL-多々納  05/01/21  109 ヘルプマスタ追加
       *  01.02.08    NACL-伊藤    06/02/22  MONFUNC 対応
       *  04.05.00    NACL-多々納  10/02/05  プラグイン画面追加
-      *  04.08.00    NACL-伊藤    14/09/26  プラグインを別メニューへ移動
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -153,6 +152,8 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -163,7 +164,6 @@
            COPY    "MDAS.INC".
            COPY    "MLOG.INC".
            COPY    "MINF.INC".
-           COPY    "MPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -302,13 +302,19 @@
                        MOVE    SYS-1001-DATATEISYUTUKBN
                                              TO  SPA-DATATEISYUTUKBN
                    END-IF
-      *            データ感染症区分
-                   IF     (SYS-1001-DATAINFECTIONKBN  =   SPACE )  OR
-                          (SYS-1001-DATAINFECTIONKBN  NOT NUMERIC)
-                       MOVE    ZERO          TO  SPA-DATAINFECTIONKBN
+      *            感染症データ作成
+      *            データ提出方法区分（未使用）を臨時で使用
+      *            本来はCOPY句で定義してORCSCOMMONで設定
+                   IF     (SYS-1001-TBL(459:1) =   SPACE  )  OR
+                          (SYS-1001-TBL(459:1) NOT NUMERIC)
+                       IF     SPA-DATACREATEFLG    =   1
+                           MOVE    1           TO  SPA-DATATEISYUTUKBN
+                       ELSE
+                           MOVE    ZERO        TO  SPA-DATATEISYUTUKBN
+                       END-IF
                    ELSE
-                       MOVE    SYS-1001-DATAINFECTIONKBN
-                                             TO  SPA-DATAINFECTIONKBN
+                       MOVE    SYS-1001-TBL(459:1)
+                                               TO  SPA-DATATEISYUTUKBN
                    END-IF
                ELSE
                    INITIALIZE              SYS-1001-REC
@@ -579,6 +585,15 @@
                    ELSE
                        MOVE    "N41"           TO  SPA-SAKIPG
                    END-IF
+      *        プラグイン処理
+               WHEN    "201"
+                   IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+                   AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+                   AND   ( SPA-SUPERVISOR          =   "T" )
+                       MOVE    "M80"           TO  SPA-SAKIPG
+                   ELSE
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF 
               WHEN    OTHER
                    MOVE    "0001"          TO  SPA-ERRCD
            END-EVALUATE.
@@ -689,6 +704,7 @@
            MOVE    WIDGET-INSENSITIVE      TO  M02-G107-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M02-G108-STATE
            MOVE    WIDGET-INSENSITIVE      TO  M02-G109-STATE
+           MOVE    WIDGET-INSENSITIVE      TO  M02-G201-STATE
       *
            IF      SYS-1010-GSRAUTH(1:1)    =  "0"
                CONTINUE
@@ -723,6 +739,12 @@
       *----(01.02.06)----END-------------------
                IF      SYS-1010-GSRAUTH(69:1)   =  "1"
                    MOVE    WIDGET-NORMAL      TO  M02-G109-STATE
+               END-IF
+      *        プラグイン処理
+               IF    ( SYS-1010-KANRIAUTHFLG   =   "T" )
+               AND   ( SYS-1010-GSRAUTH(3:1)    =  "1" )
+               AND   ( SPA-SUPERVISOR          =   "T" )
+                   MOVE    WIDGET-NORMAL      TO  M02-G201-STATE
                END-IF
            END-IF
            .
