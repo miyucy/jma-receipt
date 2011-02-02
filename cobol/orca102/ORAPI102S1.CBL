@@ -324,6 +324,9 @@
       *
       *    XML情報取り出し
            PERFORM 1000-MEDIXMLREAD-SEC
+           IF      WRK-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
       *
            MOVE    ZERO                TO  MEDIRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
@@ -347,7 +350,9 @@
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
       *    入力項目チェック処理
-           PERFORM 2001-INPUT-CHK-SEC
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 2001-INPUT-CHK-SEC
+           END-IF
            IF      WRK-ERRCD       NOT =   SPACE
       *TEST!!
       *        PERFORM 890-ERRCD-MSG-SEC
@@ -403,6 +408,7 @@
                CONTINUE
            ELSE
                DISPLAY "XMLOPEN failure = " MCP-RC
+               MOVE   "97"             TO  WRK-ERRCD
            END-IF
       *
       *
@@ -417,7 +423,8 @@
            IF     (MCP-RC              =   ZERO  OR  1  )
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
+               DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "98"             TO  WRK-ERRCD
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
@@ -2059,6 +2066,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
                MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+           WHEN    "97"
+               MOVE   "送信内容に誤りがあります。"
+                                               TO  WRK-ERRMSG
+           WHEN    "98"
+               MOVE   "送信内容の読込ができませんでした"
+                                               TO  WRK-ERRMSG
            WHEN    "99"
                MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
