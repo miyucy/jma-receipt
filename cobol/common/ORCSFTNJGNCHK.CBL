@@ -100,6 +100,7 @@
            03  FLG-CHECK           PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ARI             PIC 9(01).
+           03  FLG-ARI2            PIC 9(01).
            03  FLG-GENMEN          PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-TOKU75          PIC 9(01).
@@ -1027,6 +1028,7 @@
            MOVE      ZERO          TO      WRK-SKJ-FTN
            MOVE      ZERO          TO      FLG-TOKU75
            MOVE      ZERO          TO      FLG-SKJRYOYOHI-ARI
+           MOVE      ZERO          TO      FLG-ARI2
            PERFORM   UNTIL    FLG-SYUNOU  =   1
              MOVE    ZERO          TO      FLG-ARI
              PERFORM   VARYING   IDX1   FROM  1  BY  1
@@ -1121,6 +1123,7 @@
       *           IF  WRK-HKNCOMBINUM(IDX1) = LNK-FTNJGNCHK-HKNCOMBINUM
                   IF  WRK-HKNCOMBINUM-HKNID(IDX1)
                                             = LNK-FTNJGNCHK-HKNID
+                     MOVE       1    TO    FLG-ARI2
                      ADD    SYU-TOTAL-HKNTEN       TO  WRK-SEIKYU
                      IF  SYU-SYUSKJ-RYOYOHI   NOT = ZERO
                      OR  SYU-KOH1SKJ-RYOYOHI  NOT = ZERO
@@ -1306,6 +1309,7 @@
            END-IF
       *
            IF    LNK-FTNJGNCHK-RC  =   ZERO
+           AND   FLG-ARI2          =    1
              IF  WRK-SEIKYU         =  ZERO
              AND FLG-SKJRYOYOHI-ARI =  ZERO
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
@@ -1469,6 +1473,7 @@
            MOVE      ZERO       TO      WRK-KOHFTN-HKNFTNMONEY
            MOVE      ZERO       TO      WRK-SEIKYU
            MOVE      ZERO       TO      FLG-SKJRYOYOHI-ARI
+           MOVE      ZERO       TO      FLG-ARI2
            PERFORM   UNTIL    FLG-SYUNOU     =  1
              MOVE    ZERO       TO      FLG-ARI
              PERFORM   VARYING   IDX1   FROM  1  BY  1
@@ -1514,6 +1519,7 @@
       *           IF  WRK-HKNCOMBINUM(IDX1) = LNK-FTNJGNCHK-HKNCOMBINUM
                   IF  WRK-HKNCOMBINUM-HKNID(IDX1)
                                             = LNK-FTNJGNCHK-HKNID
+                     MOVE       1    TO    FLG-ARI2
                      ADD    SYU-TOTAL-HKNTEN  TO  WRK-SEIKYU
                      IF  SYU-SYUSKJ-RYOYOHI   NOT = ZERO
                      OR  SYU-KOH1SKJ-RYOYOHI  NOT = ZERO
@@ -1534,6 +1540,7 @@
            END-PERFORM
       *
            IF    LNK-FTNJGNCHK-RC  =   ZERO
+           AND   FLG-ARI2          =    1
              IF  WRK-SEIKYU         =  ZERO
              AND FLG-SKJRYOYOHI-ARI =  ZERO
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
