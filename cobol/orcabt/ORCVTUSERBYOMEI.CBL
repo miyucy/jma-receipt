@@ -1128,11 +1128,6 @@
                                    NOT =   ZERO
                MOVE     LNK-BYO-NANBYOCD
                                        TO  WKUSBYO-MANSEIKBN
-      *        慢性フラグ
-               IF      LNK-BYO-MANSEIKBN   NOT =  ZERO
-                   MOVE    LNK-BYO-MANSEIKBN
-                                           TO  WKUSBYO-MANSEIKBN
-               END-IF
            ELSE
       *        慢性フラグ
                IF      WKUSBYO-MANSEIKBN   =  ZERO

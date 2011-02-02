@@ -1484,8 +1484,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    疑いフラグ
            MOVE    LNK-BYO-UTAGAIFLG   TO  WKPTBYO-UTAGAIFLG
-      *    慢性フラグ
-           MOVE    LNK-BYO-MANSEIKBN   TO  WKPTBYO-MANSEIKBN
+      *
+      *    難病外来
+           IF      LNK-BYO-NANBYOCD
+                                   NOT =   ZERO
+               MOVE     LNK-BYO-NANBYOCD
+                                       TO  WKPTBYO-MANSEIKBN
+           ELSE
+      *        慢性フラグ
+               IF      LNK-BYO-MANSEIKBN   =  ZERO
+                   MOVE    LNK-BYO-MANSEIKBN
+                                           TO  WKPTBYO-MANSEIKBN
+               END-IF
+           END-IF
       *
       *    病名セット
            MOVE    LNK-BYO-BYOMEI      TO  WKPTBYO-BYOMEI
