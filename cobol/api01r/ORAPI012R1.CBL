@@ -244,6 +244,9 @@
       *
       *    XML情報取り出し
            PERFORM 1000-PTIXMLREAD-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
       *
            MOVE    ZERO                TO  PTRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
@@ -283,8 +286,7 @@
            IF     (MCP-RC              = ZERO  OR  1)
                CONTINUE
            ELSE
-               MOVE   "99"           TO  PTRES-API-RESULT
-               MOVE   "構文誤りです" TO  PTRES-API-RESULT-MSG
+               MOVE   "97"               TO  WRK-ERRCD
                GO     TO   1000-PTIXMLREAD-EXT
            END-IF
       *
@@ -668,7 +670,8 @@
            WHEN    "91"
                MOVE    "処理区分未設定"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "構文誤りです"           TO  WRK-ERRMSG
+               MOVE   "送信内容に誤りがあります。"
+                                               TO  WRK-ERRMSG
            WHEN    "99"
                MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG

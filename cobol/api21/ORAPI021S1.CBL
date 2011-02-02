@@ -158,9 +158,10 @@
            COPY    "CPORCXKANACONV.INC".
       *
            COPY    "CPORCSKANACHK.INC".
-      *   日付変換サブ
-          COPY     "CPORCSGDAY.INC".
-      *   患者番号発生サブ
+      *    日付変換サブ
+           COPY    "CPORCSDAY.INC".
+           COPY    "CPORCSLNK.INC".
+      *    患者番号発生サブ
            COPY    "CPORCSP01.INC".
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
@@ -333,6 +334,9 @@
       *
       *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
       *
            MOVE    ZERO                TO  MDCRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
@@ -347,7 +351,9 @@
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
       *    入力項目チェック処理
-           PERFORM 2001-INPUT-CHK-SEC
+           IF      WRK-ERRCD           =   SPACE
+               PERFORM 2001-INPUT-CHK-SEC
+           END-IF
            IF      WRK-ERRCD       NOT =   SPACE
       *TEST!!
       *        PERFORM 890-ERRCD-MSG-SEC
@@ -408,6 +414,7 @@
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
+               MOVE   "97"             TO  WRK-ERRCD
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
@@ -690,11 +697,15 @@
        20011-PERFORM-CHK-SEC    SECTION.
       *
       *    日付チェックサブ
-           INITIALIZE                      ORCSGDAYAREA
-           MOVE    WRK-PERFORM-YMD     TO  SGDAY-INDAY
-           CALL    "ORCSGDAY"          USING
-                                       ORCSGDAYAREA
-           IF      SGDAY-RC            NOT =   ZERO
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           MOVE    SPACE               TO  LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-PERFORM-YMD     TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "11"                TO  WRK-ERRCD
                DISPLAY "Accept Ymd =  " WRK-PERFORM-YMD
            END-IF
@@ -1289,6 +1300,9 @@
            WHEN    "91"
                MOVE    "処理区分未設定"        TO  WRK-ERRMSG
            WHEN    "97"
+               MOVE   "送信内容に誤りがあります。"
+                                               TO  WRK-ERRMSG
+           WHEN    "98"
                MOVE   "構文誤りです"           TO  WRK-ERRMSG
            WHEN    "99"
                MOVE    "ユーザＩＤ未登録。"
