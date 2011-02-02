@@ -7038,7 +7038,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "K035"
                    STRING  "警告！！"
-                           "発行日＞診療日付です。"
+                           "発行日＜診療日付です。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
