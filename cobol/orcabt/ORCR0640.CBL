@@ -3327,11 +3327,9 @@
                      PERFORM RECE65-WRITE-SEC
                      MOVE  1            TO      FLG-WRITE65
                    END-IF
-                   IF   FLG-ZANHAIKI  =  1
+                   IF  FLG-ZANHAIKI      =  1
+                   OR  FLG-FORMAL-KISAI  =  1
                       PERFORM  RECE65-REWRITE-SEC
-                   END-IF
-                   IF  FLG-FORMAL-KISAI  =  1
-                      PERFORM  RECE65-REWRITE2-SEC
                    END-IF
                    MOVE    "tbl_sryact"      TO      MCP-TABLE
                    MOVE    "key9"            TO      MCP-PATHNAME
@@ -20549,6 +20547,30 @@
        RECE62-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理
+      *****************************************************************
+       RECE65-READ-SEC            SECTION.
+      *
+           READ    RECE65-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-RECE65-ZAN
+               NOT  AT  END
+                   IF      STS-RECE65          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE65PARA          TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE65          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+           END-READ
+           .
+       RECE65-READ-EXT.
+           EXIT.
+      *
       ****************************************************************
       *    診療年月の対象となるシス管理を取得（個別処理のみ
       ****************************************************************
@@ -20809,10 +20831,7 @@
                         MOVE    1         TO  FLG-RECE65-ZAN
                     NOT INVALID
                         MOVE    ZERO      TO  FLG-RECE65-ZAN
-                        READ    RECE65-FILE   NEXT
-                          AT  END
-                            MOVE    1     TO  FLG-RECE65-ZAN
-                        END-READ
+                        PERFORM    RECE65-READ-SEC
               END-START
               PERFORM   UNTIL
                   (RECE64-KEY1         NOT =  RECE65-KEY1  )      OR
@@ -20820,13 +20839,22 @@
                   (RECE64-ZAIREN       NOT =  RECE65-ZAIREN)      OR
                   (FLG-RECE65-ZAN            =      1        )    OR
                   (FLG-REWRITE               =      1        )
-                   IF    RECE65-RENNUM   =   WRK-RENNUM
+                   IF ((FLG-ZANHAIKI     =  1          ) AND
+                       (RECE65-RENNUM    =  WRK-RENNUM ))
+                   OR ((FLG-FORMAL-KISAI =  1          ) AND
+                       (RECE65-RENNUM    =  WRK-RENNUM2))
                       MOVE    1              TO  FLG-REWRITE
                       PERFORM  VARYING  IDXB  FROM  5   BY  -1
                                 UNTIL   IDXB   <    1
                         IF  RECE65-SRYCD(IDXB)  NOT = SPACE
-                          MOVE WRK-SRYSURYO3 TO RECE65-SRYSURYO(IDXB)
-                          MOVE 1             TO IDXB
+                          IF   FLG-ZANHAIKI     =  1
+                            MOVE   WRK-SRYSURYO3
+                                          TO  RECE65-SRYSURYO (IDXB)
+                          END-IF
+                          IF   FLG-FORMAL-KISAI =  1
+                            MOVE   "1"    TO  RECE65-RECEPTFLG(IDXB)
+                          END-IF
+                          MOVE      1     TO  IDXB
                         END-IF
                       END-PERFORM
                       REWRITE   RECE65-REC
@@ -20845,84 +20873,13 @@
                           PERFORM 500-FILE-ERR-ABORT-SEC
                       END-IF
                    END-IF
-                   READ    RECE65-FILE   NEXT
-                     AT  END
-                       MOVE    1     TO  FLG-RECE65-ZAN
-                   END-READ
+                   PERFORM    RECE65-READ-SEC
               END-PERFORM
       *
            END-IF 
       *
            .
        RECE65-REWRITE-EXT.
-           EXIT.                                                       
-      *
-      *****************************************************************
-      *    データ出力処理（Ｆ００５）
-      *****************************************************************
-       RECE65-REWRITE2-SEC              SECTION.
-      *
-           IF      IDZ             =   1               
-      *    レセプト処理
-      *
-              MOVE    ZERO                TO  FLG-REWRITE
-      *
-              INITIALIZE                      RECE65-REC
-              MOVE    RECE64-KEY1         TO  RECE65-KEY1
-              MOVE    RECE64-ZAINUM       TO  RECE65-ZAINUM
-              MOVE    RECE64-ZAIREN       TO  RECE65-ZAIREN
-              START   RECE65-FILE
-                    KEY IS    >=   RECE65-KEY
-                    INVALID
-                        MOVE    1         TO  FLG-RECE65-ZAN
-                    NOT INVALID
-                        MOVE    ZERO      TO  FLG-RECE65-ZAN
-                        READ    RECE65-FILE   NEXT
-                          AT  END
-                            MOVE    1     TO  FLG-RECE65-ZAN
-                        END-READ
-              END-START
-              PERFORM   UNTIL
-                  (RECE64-KEY1         NOT =  RECE65-KEY1  )      OR
-                  (RECE64-ZAINUM       NOT =  RECE65-ZAINUM)      OR
-                  (RECE64-ZAIREN       NOT =  RECE65-ZAIREN)      OR
-                  (FLG-RECE65-ZAN            =      1        )    OR
-                  (FLG-REWRITE               =      1        )
-                   IF    RECE65-RENNUM   =   WRK-RENNUM2
-                      MOVE    1              TO  FLG-REWRITE
-                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
-                                UNTIL   IDXB   <    1
-                        IF  RECE65-SRYCD(IDXB)  NOT = SPACE
-                          MOVE   "1"  TO   RECE65-RECEPTFLG(IDXB)
-                          MOVE    1   TO   IDXB
-                        END-IF
-                      END-PERFORM
-                      REWRITE   RECE65-REC
-      *
-                      IF      STS-RECE65          =   "00"
-                          CONTINUE
-                      ELSE
-                          MOVE    SPACE               TO  WRK-ERR-AREA
-                          INITIALIZE                      WRK-ERR-AREA
-      *
-                          MOVE    4                   TO  WRK-ERR-FLG
-                          MOVE    RECE65PARA          TO
-                                                      WRK-ERR-FILE-NM
-                          MOVE    STS-RECE65          TO
-                                                      WRK-ERR-FILE-STS
-                          PERFORM 500-FILE-ERR-ABORT-SEC
-                      END-IF
-                   END-IF
-                   READ    RECE65-FILE   NEXT
-                     AT  END
-                       MOVE    1     TO  FLG-RECE65-ZAN
-                   END-READ
-              END-PERFORM
-      *
-           END-IF 
-      *
-           .
-       RECE65-REWRITE2-EXT.
            EXIT.                                                       
       *
       ****************************************************************

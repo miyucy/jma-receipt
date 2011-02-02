@@ -5220,11 +5220,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       PERFORM  RECE05-WRITE-SEC
                       MOVE  1    TO  FLG-WRITE05
                    END-IF
-                   IF  FLG-ZANHAIKI  =  1
+                   IF  FLG-ZANHAIKI      =  1
+                   OR  FLG-FORMAL-KISAI  =  1
                       PERFORM  RECE05-REWRITE-SEC
-                   END-IF
-                   IF  FLG-FORMAL-KISAI  =  1
-                      PERFORM  RECE05-REWRITE2-SEC
                    END-IF
                    MOVE    "tbl_sryact"         TO  MCP-TABLE
                    MOVE    "key2"               TO  MCP-PATHNAME
@@ -15654,6 +15652,30 @@ grpsys         PERFORM 900-DBFETCH-SEC
        RECE02-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    中間ファイルＲＥＡＤ処理
+      *****************************************************************
+       RECE05-READ-SEC            SECTION.
+      *
+           READ    RECE05-FILE   NEXT
+               AT  END
+                   MOVE    1     TO    FLG-RECE05
+               NOT  AT  END
+                   IF      STS-RECE05          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE05PARA          TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE05          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+           END-READ
+           .
+       RECE05-READ-EXT.
+           EXIT.
+      *
       ****************************************************************
       *    診療年月の対象となるシス管理を取得（個別処理のみ
       ****************************************************************
@@ -15866,23 +15888,29 @@ grpsys         PERFORM 900-DBFETCH-SEC
                         MOVE    1         TO  FLG-RECE05
                     NOT INVALID
                         MOVE    ZERO      TO  FLG-RECE05
-                        READ    RECE05-FILE   NEXT
-                          AT  END
-                            MOVE    1     TO  FLG-RECE05
-                        END-READ
+                        PERFORM    RECE05-READ-SEC
               END-START
               PERFORM   UNTIL
 grpsys            (RECE04-KEY1         NOT =  RECE05-KEY1   )  OR
                   (RECE04-ZAINUM       NOT =  RECE05-ZAINUM )  OR
                   (FLG-RECE05                =      1       )  OR
                   (FLG-REWRITE               =      1       )
-                   IF    RECE05-RENNUM   =   WRK-RENNUM
+                   IF ((FLG-ZANHAIKI     =  1          ) AND
+                       (RECE05-RENNUM    =  WRK-RENNUM ))
+                   OR ((FLG-FORMAL-KISAI =  1          ) AND
+                       (RECE05-RENNUM    =  WRK-RENNUM2))
                       MOVE    1              TO  FLG-REWRITE
                       PERFORM  VARYING  IDXB  FROM  5   BY  -1
                                 UNTIL   IDXB   <    1
                         IF  RECE05-SRYCD(IDXB)  NOT = SPACE
-                          MOVE WRK-SRYSURYO3 TO RECE05-SRYSURYO(IDXB)
-                          MOVE 1             TO IDXB
+                          IF   FLG-ZANHAIKI     =  1
+                            MOVE   WRK-SRYSURYO3
+                                          TO  RECE05-SRYSURYO (IDXB)
+                          END-IF
+                          IF   FLG-FORMAL-KISAI =  1
+                            MOVE   "1"    TO  RECE05-RECEPTFLG(IDXB)
+                          END-IF
+                          MOVE      1     TO  IDXB
                         END-IF
                       END-PERFORM
                       REWRITE   RECE05-REC
@@ -15902,83 +15930,13 @@ grpsys            (RECE04-KEY1         NOT =  RECE05-KEY1   )  OR
                       END-IF
       *
                    END-IF
-                   READ    RECE05-FILE   NEXT
-                     AT  END
-                       MOVE    1     TO  FLG-RECE05
-                   END-READ
+                   PERFORM    RECE05-READ-SEC
               END-PERFORM
       *
            END-IF 
       *
            .
        RECE05-REWRITE-EXT.
-           EXIT.                                                        
-      *
-      *****************************************************************
-      *    データ出力処理（Ｆ００５）
-      *****************************************************************
-       RECE05-REWRITE2-SEC              SECTION.
-      *
-           IF      IDZ             =   1               
-      *    レセプト処理
-      *
-              MOVE    ZERO                TO  FLG-REWRITE
-      *
-              INITIALIZE                      RECE05-REC
-              MOVE    RECE04-KEY1         TO  RECE05-KEY1
-              MOVE    RECE04-ZAINUM       TO  RECE05-ZAINUM
-              START   RECE05-FILE
-                    KEY IS    >=   RECE05-KEY
-                    INVALID
-                        MOVE    1         TO  FLG-RECE05
-                    NOT INVALID
-                        MOVE    ZERO      TO  FLG-RECE05
-                        READ    RECE05-FILE   NEXT
-                          AT  END
-                            MOVE    1     TO  FLG-RECE05
-                        END-READ
-              END-START
-              PERFORM   UNTIL
-                  (RECE04-KEY1         NOT =  RECE05-KEY1   )  OR
-                  (RECE04-ZAINUM       NOT =  RECE05-ZAINUM )  OR
-                  (FLG-RECE05                =      1       )  OR
-                  (FLG-REWRITE               =      1       )
-                   IF    RECE05-RENNUM   =   WRK-RENNUM2
-                      MOVE    1              TO  FLG-REWRITE
-                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
-                                UNTIL   IDXB   <    1
-                        IF  RECE05-SRYCD(IDXB)  NOT = SPACE
-                          MOVE   "1"  TO   RECE05-RECEPTFLG(IDXB)
-                          MOVE    1   TO   IDXB
-                        END-IF
-                      END-PERFORM
-                      REWRITE   RECE05-REC
-      *
-                      IF      STS-RECE05          =   "00"
-                          CONTINUE
-                      ELSE
-                          MOVE    SPACE               TO  WRK-ERR-AREA
-                          INITIALIZE                      WRK-ERR-AREA
-      *
-                          MOVE    4                   TO  WRK-ERR-FLG
-                          MOVE    RECE05PARA          TO
-                                                      WRK-ERR-FILE-NM
-                          MOVE    STS-RECE05          TO
-                                                      WRK-ERR-FILE-STS
-                          PERFORM 500-FILE-ERR-ABORT-SEC
-                      END-IF
-      *
-                   END-IF
-                   READ    RECE05-FILE   NEXT
-                     AT  END
-                       MOVE    1     TO  FLG-RECE05
-                   END-READ
-              END-PERFORM
-      *
-           END-IF
-      *
-           .
-       RECE05-REWRITE2-EXT.
            EXIT.                                                        
       *
       ****************************************************************
