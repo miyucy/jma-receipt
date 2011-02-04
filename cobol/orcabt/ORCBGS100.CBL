@@ -165,21 +165,24 @@
            MOVE    3                   TO  TMPFLPARA-SYOKBN2
            MOVE    TMPFLPARA           TO  BGS100P-HKNJAFNAME
       *
+           MOVE    4                   TO  TMPFLPARA-SYOKBN2
+           MOVE    TMPFLPARA           TO  BGS100P-ETCFNAME
+      *
            EVALUATE    BGS100P-FORMKBN
            WHEN    "0"
-               MOVE    "新保険別請求チェック表（社保）"
+               MOVE    "保険別請求チェック表（社保）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "1"
-               MOVE    "新保険別請求チェック表（国保）"
+               MOVE    "保険別請求チェック表（国保）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "2"
-               MOVE    "新保険別請求チェック表（総括表）"
+               MOVE    "保険別請求チェック表（総括表）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "3"
-               MOVE    "新保険別請求チェック表（後期高齢者）"
+               MOVE    "保険別請求チェック表（後期高齢者）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            WHEN    OTHER
-               MOVE    "新保険別請求チェック表"
+               MOVE    "保険別請求チェック表（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            END-EVALUATE
       *
@@ -340,6 +343,12 @@
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            PERFORM 800-ORCSJOB-SEC
+      *
+           IF    ( BGS100P-PAGE        =   ZERO )
+               MOVE    "処理対象のデータがありませんでした"
+                                   TO  WRK-ERRMSG
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
       *
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC

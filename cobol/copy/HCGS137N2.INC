@@ -4,6 +4,7 @@
             02  HCGS137N2-SRYYM PIC X(16).
             02  HCGS137N2-NYUGAI    PIC X(4).
             02  HCGS137N2-SRYKANAME PIC X(20).
+            02  HCGS137N2-KOHMSG    PIC X(50).
             02  HCGS137N2-HKN-TBL       OCCURS  10 TIMES.
               03  HCGS137N2-KENSU PIC X(4).
               03  HCGS137N2-NISSU PIC X(4).
@@ -17,6 +18,7 @@
               03  HCGS137N2-SKJHKNMONEY   PIC X(9).
               03  HCGS137N2-SKJKOHMONEY   PIC X(9).
               03  HCGS137N2-SKJFTNMONEY   PIC X(9).
+              03  HCGS137N2-TTLTTLMONEY   PIC X(9).
             02  HCGS137N2-KOH-TBL       OCCURS  30 TIMES.
               03  HCGS137N2-KOHNAME   PIC X(24).
               03  HCGS137N2-KOHKENSU  PIC X(4).
@@ -39,3 +41,10 @@
               03  HCGS137N2-GSKJHKNMONEY  PIC X(9).
               03  HCGS137N2-GSKJKOHMONEY  PIC X(9).
               03  HCGS137N2-GSKJFTNMONEY  PIC X(9).
+              03  HCGS137N2-GTTLTTLMONEY  PIC X(9).
+            02  HCGS137N2-ETC-TBL.
+              03  HCGS137N2-JIHIMONEY PIC X(9).
+              03  HCGS137N2-GENMEN    PIC X(9).
+              03  HCGS137N2-CHOSEI1   PIC X(9).
+              03  HCGS137N2-CHOSEI2   PIC X(9).
+              03  HCGS137N2-HASU  PIC X(9).

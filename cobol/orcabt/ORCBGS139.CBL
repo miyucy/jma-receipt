@@ -48,6 +48,13 @@
                                    RECORD  KEY     IS  BGSKOH-KEY
                                    FILE    STATUS  IS  STS-BGSKOH.
       *
+      *    その他請求ファイル
+           SELECT  BGSETC-FILE     ASSIGN  ASS-BGSETC
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  BGSETC-KEY
+                                   FILE    STATUS  IS  STS-BGSETC.
+      *
       *    エラーファイル
            SELECT  BGS100ERR-FILE  ASSIGN  ASS-BGS100ERR
                                    FILE    STATUS  IS  STS-BGS100ERR.
@@ -57,13 +64,21 @@
       *
       *    請求ファイル
        FD  BGSSKY-FILE.
+       01  BGSSKY-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSSKY-//.
       *
       *    公費ファイル
        FD  BGSKOH-FILE.
+       01  BGSKOH-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSKOH-//.
+      *
+      *    その他請求ファイル
+       FD  BGSETC-FILE.
+       01  BGSETC-REC.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //BGSETC-//.
       *
       *    エラーファイル
        FD  BGS100ERR-FILE.
@@ -77,11 +92,13 @@
        01  ASS-AREA.
            03  ASS-BGSSKY          PIC X(255).
            03  ASS-BGSKOH          PIC X(255).
+           03  ASS-BGSETC          PIC X(255).
            03  ASS-BGS100ERR       PIC X(255).
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
            03  STS-BGSKOH          PIC X(02).
+           03  STS-BGSETC          PIC X(02).
            03  STS-BGS100ERR       PIC X(02).
       *
        01  CNT-AREA.
@@ -94,6 +111,7 @@
        01  FLG-AREA.
            03  FLG-BGSSKY          PIC 9(01).
            03  FLG-BGSKOH          PIC 9(01).
+           03  FLG-BGSETC          PIC 9(01).
            03  FLG-LOOPEND         PIC 9(01).
       *
        01  IDX-AREA.
@@ -116,6 +134,7 @@
            03  WRK-Z4              PIC Z(4).
            03  WRK-Z5              PIC Z(5).
            03  WRK-Z9              PIC Z(9).
+           03  WRK-M9              PIC -(9).
            03  WRK-TTLID           PIC 9(5).
            03  WRK-PRT-SRYYM       PIC X(16).
            03  WRK-PRT-SAKYMD      PIC X(22).
@@ -137,11 +156,11 @@
                    07  THKN-SKJHKNMONEY    PIC 9(09).
                    07  THKN-SKJKOHMONEY    PIC 9(09).
                    07  THKN-TTLTTLMONEY    PIC 9(09).
-                   07  THKN-JIHIMONEY      PIC 9(08).
-                   07  THKN-GENMEN         PIC 9(08).
-                   07  THKN-CHOSEI1        PIC 9(08).
-                   07  THKN-CHOSEI2        PIC 9(08).
-                   07  THKN-HASU           PIC 9(09).
+                   07  THKN-JIHIMONEY      PIC S9(08).
+                   07  THKN-GENMEN         PIC S9(08).
+                   07  THKN-CHOSEI1        PIC S9(08).
+                   07  THKN-CHOSEI2        PIC S9(08).
+                   07  THKN-HASU           PIC S9(09).
       *
        01  TKOH-AREA.
            03  TKOH-NYUGAI-OCC             OCCURS  3.
@@ -194,6 +213,7 @@
            03  CONST-THKN-MAX      PIC 9(03) VALUE 31.
       *
       *    集計領域
+       01  TTLHKN-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //TTLHKN-//.
       *
@@ -211,9 +231,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    保険別請求チェック表サブ
-           COPY    "CPORCSSKYGET.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -275,6 +292,7 @@
       *
            MOVE    BGS100P-SKYFNAME    TO  ASS-BGSSKY
            MOVE    BGS100P-KOHFNAME    TO  ASS-BGSKOH
+           MOVE    BGS100P-ETCFNAME    TO  ASS-BGSETC
            MOVE    BGS100P-ERRFNAME    TO  ASS-BGS100ERR
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
@@ -312,6 +330,7 @@
            END-IF
       *
            IF    ( CNT-GAIRAI  >   ZERO )
+               MOVE    2       TO  IDX1
                PERFORM 2001-HCGS139G-EDIT-SEC
            END-IF
       *
@@ -672,8 +691,7 @@
            COMPUTE THKN-SKJKOHMONEY (IDX1 IDX2)
                =   THKN-SKJKOHMONEY (IDX1 IDX2)  + BGSSKY-SKJKOHMONEY
            COMPUTE THKN-TTLTTLMONEY (IDX1 IDX2)
-               =   THKN-TTLTTLMONEY (IDX1 IDX2)  + BGSSKY-TTLMONEY
-                                                 + BGSSKY-SKJTTLMONEY
+               =   THKN-TTLTTLMONEY (IDX1 IDX2)  + BGSSKY-TTLTTLMONEY
       *
            EVALUATE    IDX1
            WHEN    1
@@ -690,84 +708,96 @@
       *****************************************************************
        2001-ETC-SKY-EDIT-SEC           SECTION.
       *
-           INITIALIZE                  ORCSSKYGETAREA
-           MOVE    "2"             TO  LNK-SKYGET-KBN
-           MOVE    BGS100P-SRYYM   TO  LNK-SKYGET-SRYYM
-           CALL    "ORCSSKYGET"        USING
-                                       ORCSSKYGETAREA
-                                       RECE10-REC
-                                       SPA-AREA
+           OPEN    INPUT               BGSETC-FILE
       *
-           PERFORM VARYING IDX-NG    FROM    1   BY  1
-                   UNTIL ( IDX-NG    >   2 )
+           PERFORM 900-BGSETC-READ-SEC
       *
-               PERFORM VARYING IDX-HKN    FROM    1   BY  1
-                       UNTIL ( IDX-HKN >  9 )
+           PERFORM UNTIL ( FLG-BGSETC  NOT =   ZERO )
       *
-                   EVALUATE    IDX-HKN
-                   WHEN    CONST-SYAHO
-                   WHEN    CONST-KOKUHO
-                   WHEN    CONST-KOUKI
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-HKNTTL    TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-HKNTTL    TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   WHEN    CONST-TOKURYO
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-TOKTTL    TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-TOKTTL    TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   WHEN    CONST-JIHIHKN
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-JIHITTL   TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-JIHITTL   TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   WHEN    CONST-CHIKEN
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-CHIKENTTL TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-CHIKENTTL TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   WHEN    CONST-ROUSAI
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-ROUSAITTL TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-ROUSAITTL TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   WHEN    CONST-JIBAI
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-JIBAITTL  TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-JIBAITTL  TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   WHEN    CONST-KOUGAI
-                       MOVE    IDX-NG            TO  IDX1
-                       MOVE    CONST-KOUGAITTL TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                       MOVE    3               TO  IDX1
-                       MOVE    CONST-KOUGAITTL TO  IDX2
-                       PERFORM 20011-ETC-SKY-SUM-SEC
-                   END-EVALUATE
+               IF    ( BGSETC-NYUGAIKBN    =   "1" )
+                   MOVE    1           TO  IDX-NG
+               ELSE
+                   MOVE    2           TO  IDX-NG
+               END-IF
       *
+               EVALUATE    BGSETC-HOKEN
+               WHEN    CONST-SYAHO
                    MOVE    IDX-NG            TO  IDX1
-                   MOVE    CONST-ALLTTL    TO  IDX2
+                   MOVE    CONST-SYATTL      TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3                 TO  IDX1
+                   MOVE    CONST-SYATTL      TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-KOKUHO
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-KOKTTL      TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3                 TO  IDX1
+                   MOVE    CONST-KOKTTL      TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-KOUKI
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-KOUTTL      TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3                 TO  IDX1
+                   MOVE    CONST-KOUTTL      TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-TOKURYO
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-TOKTTL    TO  IDX2
                    PERFORM 20011-ETC-SKY-SUM-SEC
                    MOVE    3               TO  IDX1
-                   MOVE    CONST-ALLTTL    TO  IDX2
+                   MOVE    CONST-TOKTTL    TO  IDX2
                    PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-JIHIHKN
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-JIHITTL   TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3               TO  IDX1
+                   MOVE    CONST-JIHITTL   TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-CHIKEN
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-CHIKENTTL TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3               TO  IDX1
+                   MOVE    CONST-CHIKENTTL TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-ROUSAI
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-ROUSAITTL TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3               TO  IDX1
+                   MOVE    CONST-ROUSAITTL TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-JIBAI
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-JIBAITTL  TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3               TO  IDX1
+                   MOVE    CONST-JIBAITTL  TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               WHEN    CONST-KOUGAI
+                   MOVE    IDX-NG            TO  IDX1
+                   MOVE    CONST-KOUGAITTL TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+                   MOVE    3               TO  IDX1
+                   MOVE    CONST-KOUGAITTL TO  IDX2
+                   PERFORM 20011-ETC-SKY-SUM-SEC
+               END-EVALUATE
       *
-               END-PERFORM
+               MOVE    IDX-NG            TO  IDX1
+               MOVE    CONST-ALLTTL    TO  IDX2
+               PERFORM 20011-ETC-SKY-SUM-SEC
+               MOVE    3               TO  IDX1
+               MOVE    CONST-ALLTTL    TO  IDX2
+               PERFORM 20011-ETC-SKY-SUM-SEC
+      *
+               PERFORM 900-BGSETC-READ-SEC
       *
            END-PERFORM
+      *
+           CLOSE   BGSETC-FILE
       *
            .
        2001-ETC-SKY-EDIT-EXT.
@@ -777,114 +807,92 @@
       *****************************************************************
        20011-ETC-SKY-SUM-SEC           SECTION.
       *
-           IF    ( IDX-HKN         =   CONST-SYAHO
+           IF    ( BGSETC-HOKEN    =   CONST-SYAHO
                                     OR CONST-KOKUHO
                                     OR CONST-KOUKI  )
                CONTINUE
            ELSE
                COMPUTE THKN-KENSU (IDX1 IDX2)
                    =   THKN-KENSU (IDX1 IDX2)
-                   +   LNK-SKYGET-KENSU (IDX-HKN IDX-NG)
+                   +   BGSETC-KENSU
       *
                COMPUTE THKN-NISSU (IDX1 IDX2)
                    =   THKN-NISSU (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-NISSU (IDX-HKN IDX-NG)
+                   +   BGSETC-NISSU
       *
                COMPUTE THKN-TENSU (IDX1 IDX2)
                    =   THKN-TENSU (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-TOTALTEN (IDX-HKN IDX-NG)
+                   +   BGSETC-TENSU
       *
                COMPUTE THKN-FTNMONEY (IDX1 IDX2)
                    =   THKN-FTNMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-ICHIBUFTN (IDX-HKN IDX-NG)
+                   +   BGSETC-FTNMONEY
       *
                COMPUTE THKN-HKNMONEY (IDX1 IDX2)
                    =   THKN-HKNMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-HOKENJA (IDX-HKN IDX-NG)
+                   +   BGSETC-HKNMONEY
       *
                COMPUTE THKN-KOHMONEY (IDX1 IDX2)
                    =   THKN-KOHMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-KOHFTN (IDX-HKN IDX-NG)
+                   +   BGSETC-KOHMONEY
       *
                COMPUTE THKN-TTLMONEY (IDX1 IDX2)
                    =   THKN-TTLMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-ICHIBUFTN (IDX-HKN IDX-NG)
-                   +   LNK-SKYGET-IRYO2-HOKENJA   (IDX-HKN IDX-NG)
-                   +   LNK-SKYGET-IRYO2-KOHFTN    (IDX-HKN IDX-NG)
+                   +   BGSETC-TTLMONEY
       *
                COMPUTE THKN-SKJKAISU (IDX1 IDX2)
                    =   THKN-SKJKAISU (IDX1 IDX2)
-                   +   LNK-SKYGET-SKJ2-KAISU (IDX-HKN IDX-NG)
+                   +   BGSETC-SKJKAISU
       *
                COMPUTE THKN-SKJTTLMONEY (IDX1 IDX2)
                    =   THKN-SKJTTLMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-SKJ2-RYOYOHI (IDX-HKN IDX-NG)
+                   +   BGSETC-SKJTTLMONEY
       *
                COMPUTE THKN-SKJFTNMONEY (IDX1 IDX2)
                    =   THKN-SKJFTNMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-SKJ2-ICHIBUFTN (IDX-HKN IDX-NG)
+                   +   BGSETC-SKJFTNMONEY
       *
                COMPUTE THKN-SKJHKNMONEY (IDX1 IDX2)
                    =   THKN-SKJHKNMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-SKJ2-HOKENJA (IDX-HKN IDX-NG)
+                   +   BGSETC-SKJHKNMONEY
       *
                COMPUTE THKN-SKJKOHMONEY (IDX1 IDX2)
                    =   THKN-SKJKOHMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-SKJ2-KOHFTN  (IDX-HKN IDX-NG)
+                   +   BGSETC-SKJKOHMONEY
       *
                COMPUTE THKN-TTLTTLMONEY (IDX1 IDX2)
                    =   THKN-TTLTTLMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-IRYO2-ICHIBUFTN (IDX-HKN IDX-NG)
-                   +   LNK-SKYGET-IRYO2-HOKENJA   (IDX-HKN IDX-NG)
-                   +   LNK-SKYGET-IRYO2-KOHFTN    (IDX-HKN IDX-NG)
-                   +   LNK-SKYGET-SKJ2-KOHFTN     (IDX-HKN IDX-NG)
+                   +   BGSETC-TTLTTLMONEY
       *
+               IF    ( BGSETC-KENSU        NOT =   ZERO )
+                   EVALUATE    BGSETC-NYUGAIKBN
+                   WHEN    "1"
+                       COMPUTE CNT-NYUIN   =   CNT-NYUIN   +   1
+                   WHEN    "2"
+                       COMPUTE CNT-GAIRAI  =   CNT-GAIRAI  +   1
+                   END-EVALUATE
+               END-IF
            END-IF
       *
                COMPUTE THKN-JIHIMONEY (IDX1 IDX2)
                    =   THKN-JIHIMONEY (IDX1 IDX2)
-                   +   LNK-SKYGET-JIHI (IDX-HKN IDX-NG)
+                   +   BGSETC-JIHIMONEY
       *
                COMPUTE THKN-GENMEN (IDX1 IDX2)
                    =   THKN-GENMEN (IDX1 IDX2)
-                   +   LNK-SKYGET-DISCOUNT-MONEY (IDX-HKN IDX-NG)
+                   +   BGSETC-GENMEN
       *
-               IF    ( IDX-NG            =   1 )
-                   COMPUTE THKN-CHOSEI1 (IDX1 IDX2)
-                       =   THKN-CHOSEI1 (IDX1 IDX2)
-                       +   LNK-SKYGET-CHOSEI1 (IDX-HKN 3)
+               COMPUTE THKN-CHOSEI1 (IDX1 IDX2)
+                   =   THKN-CHOSEI1 (IDX1 IDX2)
+                   +   BGSETC-CHOSEI1
       *
-                   COMPUTE THKN-CHOSEI2 (IDX1 IDX2)
-                       =   THKN-CHOSEI2 (IDX1 IDX2)
-                       +   LNK-SKYGET-CHOSEI2 (IDX-HKN 3)
-               ELSE
-                   COMPUTE THKN-CHOSEI1 (IDX1 IDX2)
-                       =   THKN-CHOSEI1 (IDX1 IDX2)
-                       +   LNK-SKYGET-CHOSEI1 (IDX-HKN IDX-NG)
-      *
-                   COMPUTE THKN-CHOSEI2 (IDX1 IDX2)
-                       =   THKN-CHOSEI2 (IDX1 IDX2)
-                       +   LNK-SKYGET-CHOSEI2 (IDX-HKN IDX-NG)
-               END-IF
+               COMPUTE THKN-CHOSEI2 (IDX1 IDX2)
+                   =   THKN-CHOSEI2 (IDX1 IDX2)
+                   +   BGSETC-CHOSEI2
       *
                COMPUTE THKN-HASU (IDX1 IDX2)
                    =   THKN-HASU (IDX1 IDX2)
-                   +   LNK-SKYGET-HASU (IDX-HKN IDX-NG)
-      *
-           IF    ( LNK-SKYGET-KENSU (IDX-HKN IDX-NG)    NOT =   ZERO )
-            OR   ( LNK-SKYGET-JIHI (IDX-HKN IDX-NG)     NOT =   ZERO )
-            OR   ( LNK-SKYGET-DISCOUNT-MONEY (IDX-HKN IDX-NG)
-                                                      NOT =   ZERO )
-            OR   ( LNK-SKYGET-CHOSEI (IDX-HKN IDX-NG)   NOT =   ZERO )
-            OR   ( LNK-SKYGET-HASU (IDX-HKN IDX-NG)     NOT =   ZERO )
-      *
-               EVALUATE    IDX1
-               WHEN    1
-                   COMPUTE CNT-NYUIN   =   CNT-NYUIN   +   1
-               WHEN    2
-                   COMPUTE CNT-GAIRAI  =   CNT-GAIRAI  +   1
-               END-EVALUATE
-           END-IF
+                   +   BGSETC-HASU
       *
            .
        20011-ETC-SKY-SUM-EXT.
@@ -993,21 +1001,32 @@
                MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS139N-SKJKOHMONEY (CNT-LINE)
       *
-               IF    ( IDX2    >=  CONST-HKNTTL )
-                   MOVE    THKN-TTLTTLMONEY (IDX1 IDX2) TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-TTLTTLMONEY (CNT-LINE)
-                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-GENMEN (CNT-LINE)
-                   MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-CHOSEI1 (CNT-LINE)
-                   MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-CHOSEI2 (CNT-LINE)
-                   MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139N-HASU    (CNT-LINE)
+               MOVE    THKN-TTLTTLMONEY (IDX1 IDX2) TO WRK-Z9
+               MOVE    WRK-Z9  TO  HCGS139N-TTLTTLMONEY (CNT-LINE)
+      *
+               IF    ( IDX2     =      CONST-SYATTL
+                                 OR    CONST-KOKTTL
+                                 OR    CONST-KOUTTL
+                                 OR    CONST-TOKTTL
+                                 OR    CONST-JIHITTL
+                                 OR    CONST-CHIKENTTL
+                                 OR    CONST-ROUSAITTL
+                                 OR    CONST-JIBAITTL
+                                 OR    CONST-KOUGAITTL
+                                 OR    CONST-ALLTTL )
+      *
+                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
+                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
+                   MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139N-GENMEN (CNT-LINE)
+                   MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139N-CHOSEI1 (CNT-LINE)
+                   MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139N-CHOSEI2 (CNT-LINE)
+                   MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139N-HASU    (CNT-LINE)
       *
                END-IF
       *
@@ -1057,46 +1076,56 @@
       *
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
       *
-               MOVE    THKN-KENSU (2 IDX2)     TO  WRK-Z4
+               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS139G-KENSU (CNT-LINE)
       *
-               MOVE    THKN-NISSU (2 IDX2)     TO  WRK-Z4
+               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS139G-NISSU (CNT-LINE)
       *
-               MOVE    THKN-TENSU (2 IDX2)     TO  WRK-Z9
+               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS139G-TENSU (CNT-LINE)
       *
-               MOVE    THKN-FTNMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS139G-FTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-HKNMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS139G-HKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-KOHMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS139G-KOHMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS139G-TTLMONEY (CNT-LINE)
       *
-               IF    ( IDX2    >=  CONST-HKNTTL )
-                   MOVE    THKN-JIHIMONEY  (2 IDX2)    TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-JIHIMONEY  (2 IDX2)    TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-GENMEN    (2 IDX2)     TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139G-GENMEN (CNT-LINE)
-                   MOVE    THKN-CHOSEI1   (2 IDX2)     TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139G-CHOSEI1 (CNT-LINE)
-                   MOVE    THKN-CHOSEI2   (2 IDX2)     TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139G-CHOSEI2 (CNT-LINE)
-                   MOVE    THKN-HASU      (2 IDX2)     TO WRK-Z9
-                   MOVE    WRK-Z9  TO  HCGS139G-HASU    (CNT-LINE)
+               IF    ( IDX2     =      CONST-SYATTL
+                                 OR    CONST-KOKTTL
+                                 OR    CONST-KOUTTL
+                                 OR    CONST-TOKTTL
+                                 OR    CONST-JIHITTL
+                                 OR    CONST-CHIKENTTL
+                                 OR    CONST-ROUSAITTL
+                                 OR    CONST-JIBAITTL
+                                 OR    CONST-KOUGAITTL
+                                 OR    CONST-ALLTTL )
+      *
+                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
+                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
+                   MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139G-GENMEN (CNT-LINE)
+                   MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139G-CHOSEI1 (CNT-LINE)
+                   MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139G-CHOSEI2 (CNT-LINE)
+                   MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
+                   MOVE    WRK-M9  TO  HCGS139G-HASU    (CNT-LINE)
       *
                END-IF
       *
            END-PERFORM
       *
-           MOVE    TKOH-KENSU (2)      TO  WRK-Z4
+           MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139G-KOHKENSU
       *
            PERFORM 230-HCGS139G-PRINT-SEC
@@ -1316,6 +1345,31 @@
            .
       *
        900-BGSKOH-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    その他請求ファイル読込処理
+      *****************************************************************
+       900-BGSETC-READ-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BGSETC
+                                       FLG-LOOPEND
+      *
+           PERFORM UNTIL ( FLG-BGSETC  NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               READ    BGSETC-FILE     NEXT
+               AT  END
+                   MOVE    1       TO  FLG-BGSETC
+               NOT AT  END
+      *
+                   MOVE    1       TO  FLG-LOOPEND
+      *
+               END-READ
+           END-PERFORM
+      *
+           .
+      *
+       900-BGSETC-READ-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

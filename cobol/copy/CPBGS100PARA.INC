@@ -34,6 +34,7 @@
            03  BGS100P-SKYFNAME        PIC X(255).
            03  BGS100P-KOHFNAME        PIC X(255).
            03  BGS100P-HKNJAFNAME      PIC X(255).
+           03  BGS100P-ETCFNAME        PIC X(255).
            03  BGS100P-SHELLMSG        PIC X(100).
            03  BGS100P-SYAHO           PIC 9(01).
            03  BGS100P-KOKUHO          PIC 9(01).

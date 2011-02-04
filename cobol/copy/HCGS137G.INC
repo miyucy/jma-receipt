@@ -4,6 +4,7 @@
             02  HCGS137G-SRYYM  PIC X(16).
             02  HCGS137G-NYUGAI PIC X(4).
             02  HCGS137G-SRYKANAME  PIC X(20).
+            02  HCGS137G-KOHMSG PIC X(50).
             02  HCGS137G-HKN-TBL        OCCURS  58 TIMES.
               03  HCGS137G-KENSU  PIC X(4).
               03  HCGS137G-NISSU  PIC X(4).
@@ -29,3 +30,9 @@
               03  HCGS137G-GHKNMONEY  PIC X(9).
               03  HCGS137G-GKOHMONEY  PIC X(9).
               03  HCGS137G-GTTLMONEY  PIC X(9).
+            02  HCGS137G-ETC-TBL.
+              03  HCGS137G-JIHIMONEY  PIC X(9).
+              03  HCGS137G-GENMEN PIC X(9).
+              03  HCGS137G-CHOSEI1    PIC X(9).
+              03  HCGS137G-CHOSEI2    PIC X(9).
+              03  HCGS137G-HASU   PIC X(9).

@@ -20,3 +20,4 @@
                 04  HCGS138N2-SKJHKNMONEY   PIC X(9).
                 04  HCGS138N2-SKJKOHMONEY   PIC X(9).
                 04  HCGS138N2-SKJFTNMONEY   PIC X(9).
+                04  HCGS138N2-TTLTTLMONEY   PIC X(9).

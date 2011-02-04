@@ -17,3 +17,4 @@
               03  HCGS137N1-SKJHKNMONEY   PIC X(9).
               03  HCGS137N1-SKJKOHMONEY   PIC X(9).
               03  HCGS137N1-SKJFTNMONEY   PIC X(9).
+              03  HCGS137N1-TTLTTLMONEY   PIC X(9).

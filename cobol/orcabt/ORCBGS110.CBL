@@ -55,6 +55,13 @@
                                    RECORD  KEY     IS  BGSHKNJA-KEY
                                    FILE    STATUS  IS  STS-BGSHKNJA.
       *
+      *    その他請求ファイル
+           SELECT  BGSETC-FILE     ASSIGN  ASS-BGSETC
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  BGSETC-KEY
+                                   FILE    STATUS  IS  STS-BGSETC.
+      *
       *    エラーファイル
            SELECT  BGS100ERR-FILE  ASSIGN  ASS-BGS100ERR
                                    FILE    STATUS  IS  STS-BGS100ERR.
@@ -64,18 +71,27 @@
       *
       *    請求ファイル
        FD  BGSSKY-FILE.
+       01  BGSSKY-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSSKY-//.
       *
       *    公費ファイル
        FD  BGSKOH-FILE.
+       01  BGSKOH-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSKOH-//.
       *
       *    保険者別請求ファイル
        FD  BGSHKNJA-FILE.
+       01  BGSHKNJA-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSHKNJA-//.
+      *
+      *    その他請求ファイル
+       FD  BGSETC-FILE.
+       01  BGSETC-REC.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //BGSETC-//.
       *
       *    エラーファイル
        FD  BGS100ERR-FILE.
@@ -86,7 +102,8 @@
        01  ASS-AREA.
            03  ASS-BGSSKY          PIC X(255).
            03  ASS-BGSKOH          PIC X(255).
-           03  ASS-BGSHKNJA       PIC X(255).
+           03  ASS-BGSHKNJA        PIC X(255).
+           03  ASS-BGSETC          PIC X(255).
            03  ASS-BGS100ERR       PIC X(255).
       *
        01  CNT-AREA.
@@ -102,7 +119,8 @@
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
            03  STS-BGSKOH          PIC X(02).
-           03  STS-BGSHKNJA       PIC X(02).
+           03  STS-BGSHKNJA        PIC X(02).
+           03  STS-BGSETC          PIC X(02).
            03  STS-BGS100ERR       PIC X(02).
       *
        01  FLG-AREA.
@@ -115,6 +133,8 @@
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
            03  IDX-KOH             PIC 9(05).
+           03  IDX-NG              PIC 9(05).
+           03  IDX-HKN             PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-TABLE           PIC X(64).
@@ -211,12 +231,12 @@
            MOVE    BGS100P-SKYFNAME    TO  ASS-BGSSKY
            MOVE    BGS100P-KOHFNAME    TO  ASS-BGSKOH
            MOVE    BGS100P-HKNJAFNAME  TO  ASS-BGSHKNJA
+           MOVE    BGS100P-ETCFNAME    TO  ASS-BGSETC
            MOVE    BGS100P-ERRFNAME    TO  ASS-BGS100ERR
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    "作表用データ作成中"
-                                       TO  JOB-YOBI
+           MOVE    SPACE               TO  JOB-YOBI
            PERFORM 800-ORCSJOB-SEC
       *
            OPEN    OUTPUT  BGSSKY-FILE
@@ -239,6 +259,8 @@
            OPEN    I-O     BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
+      *
+           OPEN    OUTPUT  BGSETC-FILE
       *
       *    社保分
            IF    ( BGS100P-SYAHO   =   1 )
@@ -264,9 +286,14 @@
                PERFORM 2001-SEIKYU-EDIT-SEC
            END-IF
       *
+      *    その他請求
+           PERFORM 2001-ETC-SEIKYU-EDIT-SEC
+      *
            CLOSE           BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
+                           BGSETC-FILE
+      *
       *
            .
        200-MAIN-EXT.
@@ -396,6 +423,11 @@
                =   BGSSKY-SKJHKNMONEY  + LNK-SKYGET-SKJ-HOKENJA
            COMPUTE BGSSKY-SKJKOHMONEY
                =   BGSSKY-SKJKOHMONEY  + LNK-SKYGET-SKJ-KOHFTN
+           COMPUTE BGSSKY-TTLTTLMONEY
+               =   BGSSKY-TTLTTLMONEY  + LNK-SKYGET-IRYO-ICHIBUFTN
+                                       + LNK-SKYGET-IRYO-HOKENJA
+                                       + LNK-SKYGET-IRYO-KOHFTN
+                                       + LNK-SKYGET-SKJ-RYOYOHI
       *
            IF    ( FLG-BGSSKY          =   ZERO )
                REWRITE BGSSKY-REC
@@ -493,6 +525,11 @@
                =   BGSHKNJA-SKJHKNMONEY  + LNK-SKYGET-SKJ-HOKENJA
            COMPUTE BGSHKNJA-SKJKOHMONEY
                =   BGSHKNJA-SKJKOHMONEY  + LNK-SKYGET-SKJ-KOHFTN
+           COMPUTE BGSHKNJA-TTLTTLMONEY
+               =   BGSHKNJA-TTLTTLMONEY  + LNK-SKYGET-IRYO-ICHIBUFTN
+                                         + LNK-SKYGET-IRYO-HOKENJA
+                                         + LNK-SKYGET-IRYO-KOHFTN
+                                         + LNK-SKYGET-SKJ-RYOYOHI
       *
            IF    ( FLG-BGSHKNJA          =   ZERO )
                REWRITE BGSHKNJA-REC
@@ -510,6 +547,101 @@
       *
            .
        200111-BGSHKNJA-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    その他請求データ編集処理
+      *****************************************************************
+       2001-ETC-SEIKYU-EDIT-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSSKYGETAREA
+           MOVE    "2"             TO  LNK-SKYGET-KBN
+           MOVE    BGS100P-SRYYM   TO  LNK-SKYGET-SRYYM
+           CALL    "ORCSSKYGET"        USING
+                                       ORCSSKYGETAREA
+                                       RECE10-REC
+                                       SPA-AREA
+      *
+           PERFORM VARYING IDX-NG    FROM    1   BY  1
+                   UNTIL ( IDX-NG    >   2 )
+      *
+               PERFORM VARYING IDX-HKN    FROM    1   BY  1
+                       UNTIL ( IDX-HKN >  9 )
+      *
+                   INITIALIZE              BGSETC-REC
+                   MOVE   IDX-HKN      TO  BGSETC-HOKEN
+                   IF    ( IDX-NG      =   1 )
+                       MOVE    "1"     TO  BGSETC-NYUGAIKBN
+                   ELSE
+                       MOVE    "2"     TO  BGSETC-NYUGAIKBN
+                   END-IF
+                   MOVE   LNK-SKYGET-KENSU (IDX-HKN IDX-NG)
+                                       TO  BGSETC-KENSU
+                   MOVE   LNK-SKYGET-IRYO2-NISSU (IDX-HKN IDX-NG)
+                                       TO  BGSETC-NISSU
+                   MOVE   LNK-SKYGET-IRYO2-TOTALTEN (IDX-HKN IDX-NG)
+                                       TO  BGSETC-TENSU
+                   MOVE   LNK-SKYGET-IRYO2-ICHIBUFTN (IDX-HKN IDX-NG)
+                                       TO  BGSETC-FTNMONEY
+                   MOVE   LNK-SKYGET-IRYO2-HOKENJA (IDX-HKN IDX-NG)
+                                       TO  BGSETC-HKNMONEY
+                   MOVE   LNK-SKYGET-IRYO2-KOHFTN (IDX-HKN IDX-NG)
+                                       TO  BGSETC-KOHMONEY
+      *
+                   COMPUTE BGSETC-TTLMONEY
+                       =   LNK-SKYGET-IRYO2-ICHIBUFTN (IDX-HKN IDX-NG)
+                       +   LNK-SKYGET-IRYO2-HOKENJA   (IDX-HKN IDX-NG)
+                       +   LNK-SKYGET-IRYO2-KOHFTN    (IDX-HKN IDX-NG)
+      *
+                   MOVE    LNK-SKYGET-SKJ2-KAISU (IDX-HKN IDX-NG)
+                                       TO  BGSETC-SKJKAISU
+                   MOVE    LNK-SKYGET-SKJ2-RYOYOHI (IDX-HKN IDX-NG)
+                                       TO  BGSETC-SKJTTLMONEY
+                   MOVE    LNK-SKYGET-SKJ2-ICHIBUFTN (IDX-HKN IDX-NG)
+                                       TO  BGSETC-SKJFTNMONEY
+                   MOVE    LNK-SKYGET-SKJ2-HOKENJA (IDX-HKN IDX-NG)
+                                       TO  BGSETC-SKJHKNMONEY
+                   MOVE    LNK-SKYGET-SKJ2-KOHFTN  (IDX-HKN IDX-NG)
+                                       TO  BGSETC-SKJKOHMONEY
+      *
+                   COMPUTE BGSETC-TTLTTLMONEY
+                       =   LNK-SKYGET-IRYO2-ICHIBUFTN (IDX-HKN IDX-NG)
+                       +   LNK-SKYGET-IRYO2-HOKENJA   (IDX-HKN IDX-NG)
+                       +   LNK-SKYGET-IRYO2-KOHFTN    (IDX-HKN IDX-NG)
+                       +   LNK-SKYGET-SKJ2-RYOYOHI    (IDX-HKN IDX-NG)
+      *
+      *
+                   IF    ( IDX-NG            =   1 )
+                       MOVE    LNK-SKYGET-JIHI (IDX-HKN 3)
+                                       TO  BGSETC-JIHIMONEY
+                       MOVE    LNK-SKYGET-DISCOUNT-MONEY (IDX-HKN 3)
+                                       TO  BGSETC-GENMEN
+                       MOVE    LNK-SKYGET-CHOSEI1 (IDX-HKN 3)
+                                       TO  BGSETC-CHOSEI1
+                       MOVE    LNK-SKYGET-CHOSEI2 (IDX-HKN 3)
+                                       TO  BGSETC-CHOSEI2
+                       MOVE    LNK-SKYGET-HASU (IDX-HKN 3)
+                                       TO  BGSETC-HASU
+                   ELSE
+                       MOVE    LNK-SKYGET-JIHI (IDX-HKN IDX-NG)
+                                       TO  BGSETC-JIHIMONEY
+                       MOVE    LNK-SKYGET-DISCOUNT-MONEY(IDX-HKN IDX-NG)
+                                       TO  BGSETC-GENMEN
+                       MOVE    LNK-SKYGET-CHOSEI1 (IDX-HKN IDX-NG)
+                                       TO  BGSETC-CHOSEI1
+                       MOVE    LNK-SKYGET-CHOSEI2 (IDX-HKN IDX-NG)
+                                       TO  BGSETC-CHOSEI2
+                       MOVE    LNK-SKYGET-HASU (IDX-HKN IDX-NG)
+                                       TO  BGSETC-HASU
+                   END-IF
+      *
+                   WRITE   BGSETC-REC
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           .
+       2001-ETC-SEIKYU-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了　　処理

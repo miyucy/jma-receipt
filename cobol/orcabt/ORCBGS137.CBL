@@ -48,6 +48,13 @@
                                    RECORD  KEY     IS  BGSKOH-KEY
                                    FILE    STATUS  IS  STS-BGSKOH.
       *
+      *    その他請求ファイル
+           SELECT  BGSETC-FILE     ASSIGN  ASS-BGSETC
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  BGSETC-KEY
+                                   FILE    STATUS  IS  STS-BGSETC.
+      *
       *    エラーファイル
            SELECT  BGS100ERR-FILE  ASSIGN  ASS-BGS100ERR
                                    FILE    STATUS  IS  STS-BGS100ERR.
@@ -57,13 +64,20 @@
       *
       *    請求ファイル
        FD  BGSSKY-FILE.
+       01  BGSSKY-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSSKY-//.
       *
       *    公費ファイル
        FD  BGSKOH-FILE.
+       01  BGSKOH-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSKOH-//.
+      *    その他請求ファイル
+       FD  BGSETC-FILE.
+       01  BGSETC-REC.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //BGSETC-//.
       *
       *    エラーファイル
        FD  BGS100ERR-FILE.
@@ -78,11 +92,13 @@
        01  ASS-AREA.
            03  ASS-BGSSKY          PIC X(255).
            03  ASS-BGSKOH          PIC X(255).
+           03  ASS-BGSETC          PIC X(255).
            03  ASS-BGS100ERR       PIC X(255).
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
            03  STS-BGSKOH          PIC X(02).
+           03  STS-BGSETC          PIC X(02).
            03  STS-BGS100ERR       PIC X(02).
       *
        01  CNT-AREA.
@@ -95,6 +111,7 @@
        01  FLG-AREA.
            03  FLG-BGSSKY          PIC 9(01).
            03  FLG-BGSKOH          PIC 9(01).
+           03  FLG-BGSETC          PIC 9(01).
            03  FLG-LOOPEND         PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
       *
@@ -117,6 +134,7 @@
            03  WRK-Z4              PIC Z(4).
            03  WRK-Z5              PIC Z(5).
            03  WRK-Z9              PIC Z(9).
+           03  WRK-M9              PIC -(9).
            03  WRK-HKNNUM          PIC X(3).
            03  WRK-TTLID           PIC 9(5).
            03  WRK-PRT-SRYYM       PIC X(16).
@@ -138,16 +156,27 @@
                    07  THKN-SKJFTNMONEY    PIC 9(09).
                    07  THKN-SKJHKNMONEY    PIC 9(09).
                    07  THKN-SKJKOHMONEY    PIC 9(09).
+                   07  THKN-TTLTTLMONEY    PIC 9(09).
       *
        01  TKOH-AREA.
            03  TKOH-NYUGAI-OCC     OCCURS  2.
                05  TKOH-CNT                PIC 9(05).
                05  TKOH-MAX                PIC 9(05).
+               05  TKOH-KOHMSG             PIC 9(01).
                05  TKOH-BODY-OCC   OCCURS  30.
                    07  TKOH-KOHNUM         PIC X(03).
+                   07  TKOH-KOHKBN         PIC X(01).
                    07  TKOH-KENSU          PIC 9(06).
                    07  TKOH-NISSU          PIC 9(08).
                    07  TKOH-TENSU          PIC 9(08).
+      *
+       01  TETC-AREA.
+           03  TETC-NYUGAI-OCC     OCCURS  2.
+               05  TETC-JIHIMONEY          PIC S9(08).
+               05  TETC-GENMEN             PIC S9(08).
+               05  TETC-CHOSEI1            PIC S9(08).
+               05  TETC-CHOSEI2            PIC S9(08).
+               05  TETC-HASU               PIC S9(08).
       *
        01  CONST-AREA.
            03  CONST-SYAHO         PIC 9(01) VALUE 1.
@@ -238,9 +267,11 @@
                                            WRK-AREA
                                            THKN-AREA
                                            TKOH-AREA
+                                           TETC-AREA
       *
            MOVE    BGS100P-SKYFNAME    TO  ASS-BGSSKY
            MOVE    BGS100P-KOHFNAME    TO  ASS-BGSKOH
+           MOVE    BGS100P-ETCFNAME    TO  ASS-BGSETC
            MOVE    BGS100P-ERRFNAME    TO  ASS-BGS100ERR
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
@@ -270,12 +301,16 @@
       *
            PERFORM 2001-KOH-EDIT-SEC
       *
+           PERFORM 2001-ETC-EDIT-SEC
+      *
            IF    ( CNT-NYUIN   >   ZERO )
+               MOVE    1       TO  IDX1
                PERFORM 2001-HCGS137N1-EDIT-SEC
                PERFORM 2001-HCGS137N2-EDIT-SEC
            END-IF
       *
            IF    ( CNT-GAIRAI  >   ZERO )
+               MOVE    2       TO  IDX1
                PERFORM 2001-HCGS137G-EDIT-SEC
            END-IF
       *
@@ -477,6 +512,8 @@
                =   THKN-SKJHKNMONEY (IDX1 IDX2)  + BGSSKY-SKJHKNMONEY
            COMPUTE THKN-SKJKOHMONEY (IDX1 IDX2)
                =   THKN-SKJKOHMONEY (IDX1 IDX2)  + BGSSKY-SKJKOHMONEY
+           COMPUTE THKN-TTLTTLMONEY (IDX1 IDX2)
+               =   THKN-TTLTTLMONEY (IDX1 IDX2)  + BGSSKY-TTLTTLMONEY
       *
            IF    ( IDX1    =   1 )
                COMPUTE CNT-NYUIN   =   CNT-NYUIN   +   1
@@ -591,6 +628,10 @@
                MOVE    TKOH-CNT (IDX1) TO  IDX2
                                            TKOH-MAX (IDX1)
                MOVE    BGSKOH-KOHNUM   TO  TKOH-KOHNUM (IDX1 IDX2)
+               MOVE    BGSKOH-KOHKBN   TO  TKOH-KOHKBN (IDX1 IDX2)
+               IF    ( BGSKOH-KOHKBN   =   "2" )
+                   MOVE    1           TO  TKOH-KOHMSG (IDX1)
+               END-IF
            END-IF
       *
            COMPUTE TKOH-KENSU (IDX1 IDX2)
@@ -604,6 +645,38 @@
       *
            .
        20011-KOH-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求情報編集処理
+      *****************************************************************
+       2001-ETC-EDIT-SEC           SECTION.
+      *
+            OPEN    INPUT  BGSETC-FILE
+      *
+            PERFORM 900-BGSETC-READ-SEC
+      *
+            PERFORM UNTIL ( FLG-BGSETC NOT =   ZERO )
+      *
+               IF    ( BGSETC-NYUGAIKBN    =  "1" )
+                   MOVE    1           TO  IDX1
+               ELSE
+                   MOVE    2           TO  IDX1
+               END-IF
+      *
+               MOVE    BGSETC-JIHIMONEY    TO  TETC-JIHIMONEY (IDX1)
+               MOVE    BGSETC-GENMEN       TO  TETC-GENMEN    (IDX1)
+               MOVE    BGSETC-CHOSEI1      TO  TETC-CHOSEI1   (IDX1)
+               MOVE    BGSETC-CHOSEI2      TO  TETC-CHOSEI2   (IDX1)
+               MOVE    BGSETC-HASU         TO  TETC-HASU      (IDX1)
+      *
+               PERFORM 900-BGSETC-READ-SEC
+      *
+            END-PERFORM
+      *
+            CLOSE   BGSETC-FILE
+      *
+           .
+       2001-ETC-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入院チェック表編集処理（１枚目）
@@ -626,41 +699,44 @@
       *
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
       *
-               MOVE    THKN-KENSU (1 IDX2)     TO  WRK-Z4
+               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N1-KENSU (CNT-LINE)
       *
-               MOVE    THKN-NISSU (1 IDX2)     TO  WRK-Z4
+               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N1-NISSU (CNT-LINE)
       *
-               MOVE    THKN-TENSU (1 IDX2)     TO  WRK-Z9
+               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-TENSU (CNT-LINE)
       *
-               MOVE    THKN-FTNMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-FTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-HKNMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-HKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-KOHMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-KOHMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-TTLMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJKAISU (1 IDX2)  TO  WRK-Z5
+               MOVE    THKN-SKJKAISU (IDX1 IDX2)  TO  WRK-Z5
                MOVE    WRK-Z5  TO  HCGS137N1-SKJKAISU (CNT-LINE)
       *
-               MOVE    THKN-SKJTTLMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-SKJTTLMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJFTNMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJFTNMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-SKJFTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJHKNMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJHKNMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-SKJHKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJKOHMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N1-SKJKOHMONEY (CNT-LINE)
+      *
+               MOVE    THKN-TTLTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
+               MOVE    WRK-Z9  TO  HCGS137N1-TTLTTLMONEY (CNT-LINE)
       *
            END-PERFORM
       *
@@ -705,95 +781,112 @@
       *
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
       *
-               MOVE    THKN-KENSU (1 IDX2)     TO  WRK-Z4
+               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N2-KENSU (CNT-LINE)
       *
-               MOVE    THKN-NISSU (1 IDX2)     TO  WRK-Z4
+               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N2-NISSU (CNT-LINE)
       *
-               MOVE    THKN-TENSU (1 IDX2)     TO  WRK-Z9
+               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-TENSU (CNT-LINE)
       *
-               MOVE    THKN-FTNMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-FTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-HKNMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-HKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-KOHMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-KOHMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-TTLMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJKAISU (1 IDX2)  TO  WRK-Z5
+               MOVE    THKN-SKJKAISU (IDX1 IDX2)  TO  WRK-Z5
                MOVE    WRK-Z5  TO  HCGS137N2-SKJKAISU (CNT-LINE)
       *
-               MOVE    THKN-SKJTTLMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-SKJTTLMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJFTNMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJFTNMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-SKJFTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJHKNMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJHKNMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-SKJHKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJKOHMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-SKJKOHMONEY (CNT-LINE)
+      *
+               MOVE    THKN-TTLTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
+               MOVE    WRK-Z9  TO  HCGS137N2-TTLTTLMONEY (CNT-LINE)
       *
            END-PERFORM
       *
                MOVE    CONST-HKNKOHTTL         TO  IDX2
       *
-               MOVE    THKN-KENSU (1 IDX2)     TO  WRK-Z4
+               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N2-GKENSU
       *
-               MOVE    THKN-NISSU (1 IDX2)     TO  WRK-Z4
+               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N2-GNISSU
       *
-               MOVE    THKN-TENSU (1 IDX2)     TO  WRK-Z9
+               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GTENSU
       *
-               MOVE    THKN-FTNMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GFTNMONEY
       *
-               MOVE    THKN-HKNMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GHKNMONEY
       *
-               MOVE    THKN-KOHMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GKOHMONEY
       *
-               MOVE    THKN-TTLMONEY (1 IDX2)  TO  WRK-Z9
+               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GTTLMONEY
       *
-               MOVE    THKN-SKJKAISU (1 IDX2)  TO  WRK-Z5
+               MOVE    THKN-SKJKAISU (IDX1 IDX2)  TO  WRK-Z5
                MOVE    WRK-Z5  TO  HCGS137N2-GSKJKAISU
       *
-               MOVE    THKN-SKJTTLMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GSKJTTLMONEY
       *
-               MOVE    THKN-SKJFTNMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJFTNMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GSKJFTNMONEY
       *
-               MOVE    THKN-SKJHKNMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJHKNMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GSKJHKNMONEY
       *
-               MOVE    THKN-SKJKOHMONEY (1 IDX2)   TO  WRK-Z9
+               MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)   TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-GSKJKOHMONEY
+      *
+               MOVE    THKN-TTLTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
+               MOVE    WRK-Z9  TO  HCGS137N2-GTTLTTLMONEY
       *
            MOVE    ZERO                TO  CNT-LINE
            MOVE    ZERO                TO  CNT-KENSU
            PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >       TKOH-MAX (1) )
+                   UNTIL ( IDX2    >       TKOH-MAX (IDX1) )
       *
                COMPUTE CNT-LINE  = CNT-LINE  +   1
       *
-               COMPUTE CNT-KENSU = CNT-KENSU +   TKOH-KENSU (1 IDX2)
+               COMPUTE CNT-KENSU = CNT-KENSU +   TKOH-KENSU (IDX1 IDX2)
       *
-               MOVE    TKOH-KOHNUM (1 IDX2)    TO  WRK-HKNNUM
+               MOVE    TKOH-KOHNUM (IDX1 IDX2)    TO  WRK-HKNNUM
                PERFORM 900-HKNNUM-KEY-SEL-SEC
                MOVE    SPACE           TO  WRK-KANACHK-STR
                MOVE    1               TO  IDXP
+               IF    ( TKOH-KOHKBN (IDX1 IDX2)    =   "1" )
+                   STRING  "　"            DELIMITED BY SIZE
+                   INTO    WRK-KANACHK-STR
+                   WITH    POINTER IDXP
+                   END-STRING
+               ELSE
+                   STRING    "＊"          DELIMITED BY SIZE
+                   INTO    WRK-KANACHK-STR
+                   WITH    POINTER IDXP
+                   END-STRING
+               END-IF
                STRING  HKN-HBTNUM          DELIMITED BY SIZE
                        "（"                DELIMITED BY SIZE
                        HKN-TANSEIDONAME    DELIMITED BY SPACE
@@ -802,7 +895,7 @@
                WITH    POINTER IDXP
                END-STRING
                IF    ( IDX2        =       CONST-TKOH-MAX )
-                AND  ( TKOH-CNT(1) >       CONST-TKOH-MAX )
+                AND  ( TKOH-CNT(IDX1) >       CONST-TKOH-MAX )
                    STRING    "　他"        DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
@@ -811,18 +904,38 @@
                PERFORM 800-ZENKAKU-SEC
                MOVE    WRK-KANACHK-STR TO  HCGS137N2-KOHNAME (CNT-LINE)
       *
-               MOVE    TKOH-KENSU (1 IDX2)     TO  WRK-Z4
+               MOVE    TKOH-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N2-KOHKENSU (CNT-LINE)
       *
-               MOVE    TKOH-NISSU (1 IDX2)     TO  WRK-Z4
+               MOVE    TKOH-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137N2-KOHNISSU (CNT-LINE)
       *
-               MOVE    TKOH-TENSU (1 IDX2)     TO  WRK-Z9
+               MOVE    TKOH-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137N2-KOHTENSU (CNT-LINE)
       *
            END-PERFORM
            MOVE    CNT-KENSU       TO  WRK-Z4
            MOVE    WRK-Z4          TO  HCGS137N2-GKOHKENSU
+           IF    ( TKOH-KOHMSG (IDX1) =   1 )
+               MOVE    "＊：レセプトで請求を行わない公費"
+                                   TO  HCGS137N2-KOHMSG
+           END-IF
+      *
+           MOVE    TETC-JIHIMONEY (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137N2-JIHIMONEY
+           MOVE    TETC-GENMEN    (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137N2-GENMEN
+           MOVE    TETC-CHOSEI1   (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137N2-CHOSEI1
+           MOVE    TETC-CHOSEI2   (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137N2-CHOSEI2
+           MOVE    TETC-HASU      (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137N2-HASU
       *
            PERFORM 230-HCGS137N2-PRINT-SEC
       *
@@ -865,25 +978,25 @@
       *
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
       *
-               MOVE    THKN-KENSU (2 IDX2)     TO  WRK-Z4
+               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137G-KENSU (CNT-LINE)
       *
-               MOVE    THKN-NISSU (2 IDX2)     TO  WRK-Z4
+               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137G-NISSU (CNT-LINE)
       *
-               MOVE    THKN-TENSU (2 IDX2)     TO  WRK-Z9
+               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-TENSU (CNT-LINE)
       *
-               MOVE    THKN-FTNMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-FTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-HKNMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-HKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-KOHMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-KOHMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-TTLMONEY (CNT-LINE)
       *
       *
@@ -891,40 +1004,51 @@
       *
                MOVE    CONST-HKNKOHTTL         TO  IDX2
       *
-               MOVE    THKN-KENSU (2 IDX2)     TO  WRK-Z4
+               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137G-GKENSU
       *
-               MOVE    THKN-NISSU (2 IDX2)     TO  WRK-Z4
+               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137G-GNISSU
       *
-               MOVE    THKN-TENSU (2 IDX2)     TO  WRK-Z9
+               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-GTENSU
       *
-               MOVE    THKN-FTNMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-GFTNMONEY
       *
-               MOVE    THKN-HKNMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-GHKNMONEY
       *
-               MOVE    THKN-KOHMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-GKOHMONEY
       *
-               MOVE    THKN-TTLMONEY (2 IDX2)  TO  WRK-Z9
+               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-GTTLMONEY
       *
            MOVE    ZERO                TO  CNT-LINE
            MOVE    ZERO                TO  CNT-KENSU
            PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >       TKOH-MAX (2) )
+                   UNTIL ( IDX2    >       TKOH-MAX (IDX1) )
       *
                COMPUTE CNT-LINE  = CNT-LINE  +   1
       *
-               COMPUTE CNT-KENSU = CNT-KENSU +   TKOH-KENSU (2 IDX2)
+               COMPUTE CNT-KENSU = CNT-KENSU +   TKOH-KENSU (IDX1 IDX2)
       *
-               MOVE    TKOH-KOHNUM (2 IDX2)    TO  WRK-HKNNUM
+               MOVE    TKOH-KOHNUM (IDX1 IDX2)    TO  WRK-HKNNUM
                PERFORM 900-HKNNUM-KEY-SEL-SEC
                MOVE    SPACE           TO  WRK-KANACHK-STR
                MOVE    1               TO  IDXP
+               IF    ( TKOH-KOHKBN (IDX1 IDX2)    =   "1" )
+                   STRING    "　"          DELIMITED BY SIZE
+                   INTO    WRK-KANACHK-STR
+                   WITH    POINTER IDXP
+                   END-STRING
+               ELSE
+                   STRING    "＊"          DELIMITED BY SIZE
+                   INTO    WRK-KANACHK-STR
+                   WITH    POINTER IDXP
+                   END-STRING
+               END-IF
                STRING  HKN-HBTNUM          DELIMITED BY SIZE
                        "（"                DELIMITED BY SIZE
                        HKN-TANSEIDONAME    DELIMITED BY SPACE
@@ -933,7 +1057,7 @@
                WITH    POINTER IDXP
                END-STRING
                IF    ( IDX2        =       CONST-TKOH-MAX )
-                AND  ( TKOH-CNT(2) >       CONST-TKOH-MAX )
+                AND  ( TKOH-CNT(IDX1) >       CONST-TKOH-MAX )
                    STRING    "　他"        DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
@@ -942,18 +1066,38 @@
                PERFORM 800-ZENKAKU-SEC
                MOVE    WRK-KANACHK-STR TO  HCGS137G-KOHNAME (CNT-LINE)
       *
-               MOVE    TKOH-KENSU (2 IDX2)     TO  WRK-Z4
+               MOVE    TKOH-KENSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137G-KOHKENSU (CNT-LINE)
       *
-               MOVE    TKOH-NISSU (2 IDX2)     TO  WRK-Z4
+               MOVE    TKOH-NISSU (IDX1 IDX2)     TO  WRK-Z4
                MOVE    WRK-Z4  TO  HCGS137G-KOHNISSU (CNT-LINE)
       *
-               MOVE    TKOH-TENSU (2 IDX2)     TO  WRK-Z9
+               MOVE    TKOH-TENSU (IDX1 IDX2)     TO  WRK-Z9
                MOVE    WRK-Z9  TO  HCGS137G-KOHTENSU (CNT-LINE)
       *
            END-PERFORM
            MOVE    CNT-KENSU       TO  WRK-Z4
            MOVE    WRK-Z4          TO  HCGS137G-GKOHKENSU
+           IF    ( TKOH-KOHMSG (IDX1) =   1 )
+               MOVE    "＊：レセプトで請求を行わない公費"
+                                   TO  HCGS137G-KOHMSG
+           END-IF
+      *
+           MOVE    TETC-JIHIMONEY (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137G-JIHIMONEY
+           MOVE    TETC-GENMEN    (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137G-GENMEN
+           MOVE    TETC-CHOSEI1   (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137G-CHOSEI1
+           MOVE    TETC-CHOSEI2   (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137G-CHOSEI2
+           MOVE    TETC-HASU      (IDX1)
+                                   TO  WRK-M9
+           MOVE    WRK-M9          TO  HCGS137G-HASU
       *
            PERFORM 230-HCGS137G-PRINT-SEC
       *
@@ -1194,6 +1338,42 @@
            .
       *
        900-BGSKOH-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    その他請求ファイル読込処理
+      *****************************************************************
+       900-BGSETC-READ-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BGSETC
+                                       FLG-LOOPEND
+      *
+           PERFORM UNTIL ( FLG-BGSETC  NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               READ    BGSETC-FILE     NEXT
+               AT  END
+                   MOVE    1       TO  FLG-BGSETC
+               NOT AT  END
+      *
+                   MOVE    1       TO  FLG-LOOPEND
+      *
+                   IF    ( BGSETC-HOKEN    NOT =   CONST-SYAHO )
+                       MOVE    ZERO    TO  FLG-LOOPEND
+                   END-IF
+      *
+                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
+                       IF    ( BGS100P-NYUGAIKBN
+                                           NOT =  BGSETC-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
+               END-READ
+           END-PERFORM
+      *
+           .
+      *
+       900-BGSETC-READ-EXT.
            EXIT.
       *****************************************************************
       *    保険番号マスタ検索処理

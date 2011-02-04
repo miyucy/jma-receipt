@@ -23,7 +23,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  BGSF01-REC.
+      *01  BGSF01-REC.
            03  BGSF01-KEY.
       *    保険
       *      1:社保/2:国保/3:後期高齢者/4:特別療養費/5:自費/
@@ -70,13 +70,17 @@
            03  BGSF01-SKJHKNMONEY      PIC 9(09).
       *    食事公費負担
            03  BGSF01-SKJKOHMONEY      PIC 9(09).
+      *    合計２（合計＋食事請求円）
+           03  BGSF01-TTLTTLMONEY      PIC 9(09).
       *
-      *    以下は合計データのみで使用
-      *    自費診療分
-           03  BGSF01-JIHI             PIC 9(09).
+      *    以下その他請求で使用
+      *    自費
+           03  BGSF01-JIHIMONEY        PIC S9(09).
       *    減免
-           03  BGSF01-GENMEN           PIC 9(09).
+           03  BGSF01-GENMEN           PIC S9(09).
       *    調整金
-           03  BGSF01-CHOSEI           PIC 9(09).
+           03  BGSF01-CHOSEI1          PIC S9(09).
+      *    調整金
+           03  BGSF01-CHOSEI2          PIC S9(09).
       *    端数調整金
-           03  BGSF01-HASU             PIC 9(09).
+           03  BGSF01-HASU             PIC S9(09).
