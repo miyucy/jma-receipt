@@ -58,6 +58,7 @@
       *  04.05.00    NACL-多々納  09/12/XX  備考禁忌・アレルギー・感染症追加
       *  04.06.00    NACL-多々納  10/06/XX  受給者番号１５文字対応
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
+      *  04.06.00    NACL=多々納  11/02/03  保険適応病名判定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -147,6 +148,8 @@
            03  IDXC1                   PIC 9(04).
            03  IDXC2                   PIC 9(04).
            03  IDX-STR                 PIC 9(04).
+      *
+           03  IDX-H                   PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -255,6 +258,13 @@
            03  WRK-COMMENT-H           PIC X(200).
            03  COM-MAX                 PIC 9(03).
       *
+           03  WRK-COMB-HKNNUM         PIC X(03).
+      *
+      *    保険組合せテーブル
+       01  TBL-HKNCOMBI-AREA.
+           03  TBL-HKNCOMBI-OCC        OCCURS   20.
+               05  TBL-HKNCOMBINUM     PIC X(04).
+               05  TBL-HKNNUM          PIC X(03).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -288,6 +298,7 @@
            03  PARA-TABOO              PIC X(01).
            03  PARA-ALLERGY            PIC X(01).
            03  PARA-KANSENSYO          PIC X(01).
+           03  PARA-HKNCOMBIKBN        PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -524,6 +535,10 @@
            MOVE    "KANSENSYO"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-KANSENSYO
+      *    保険適応病名区分
+           MOVE    "HKNCOMBIKBN"       TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-HKNCOMBIKBN
       *
       *    病名編集オプション設定
            IF      PARA-BYOMEIKBN      =   "0"
@@ -1180,6 +1195,18 @@
       *****************************************************************
        2002-BYOMEI-HEN-SEC        SECTION.
       *
+      *    保険組合せテーブル編集
+           INITIALIZE                  TBL-HKNCOMBI-AREA
+           IF      SPA-HKNCOMBINUM     =   ZERO
+               MOVE    SPACE               TO  WRK-COMB-HKNNUM
+           ELSE
+               MOVE    COMB-HKNNUM         TO  WRK-COMB-HKNNUM
+           END-IF
+           IF     (PARA-HKNCOMBIKBN    =   "1"
+                                       OR  "2" )
+               PERFORM 2009-HKNCOMBI-HEN-SEC
+           END-IF
+      *
       *    患者病名マスタより編集
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PRT-CNT
@@ -1220,6 +1247,11 @@
                IF     (PARA-NYUGAIKBN      =   "1" )  AND
                       (PTBYO-NYUGAIKBN     =   "1" )
                    MOVE    1                   TO  FLG-INNO
+               END-IF
+      *        保険適応病名判定
+               IF     (FLG-INNO            =   ZERO  )  AND
+                      (PARA-HKNCOMBIKBN    =   "1"  OR  "2")
+                   PERFORM 20024-HKNCOMBI-CHK-SEC
                END-IF
       *
                IF      FLG-INNO        =   ZERO
@@ -1275,6 +1307,48 @@
       *
            .
        2002-BYOMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険適応病名判定処理
+      *****************************************************************
+       20024-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           EVALUATE    PARA-HKNCOMBIKBN
+           WHEN    "1"
+      *        労災・自賠責とその他保険
+               IF      WRK-COMB-HKNNUM         =   "971"
+                                               OR  "973"
+      *            保険組合せ一致のみ
+                   IF      SPA-HKNCOMBINUM     =   PTBYO-HKNCOMBI
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-INNO
+                   END-IF
+               ELSE
+      *            労災・自賠責は対象外
+                   PERFORM VARYING IDX-H   FROM    1   BY  1
+                           UNTIL   (IDX-H          >   20  )  OR
+                                   (TBL-HKNCOMBINUM (IDX-H)  =   SPACE)
+                       IF      PTBYO-HKNCOMBI      =   TBL-HKNCOMBINUM
+                                                               (IDX-H)
+                           IF      TBL-HKNNUM (IDX-H)  =   "971"
+                                                       OR  "973"
+                               MOVE    1                   TO  FLG-INNO
+                           END-IF
+                           MOVE    20                  TO  IDX-H
+                       END-IF
+                   END-PERFORM
+               END-IF
+           WHEN    "2"
+      *        保険組合せ一致のみ
+               IF      SPA-HKNCOMBINUM     =   PTBYO-HKNCOMBI
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-INNO
+               END-IF
+           END-EVALUATE
+           .
+       20024-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    続紙印刷処理
@@ -1465,8 +1539,53 @@
            .
        3102-PTKOHINF-HEN-EXT.
            EXIT.
-      *---- (01.00.05) LINE MOD START ----------------------------
       *
+      *****************************************************************
+      *    保険組合せテーブル編集処理
+      *****************************************************************
+       2009-HKNCOMBI-HEN-SEC        SECTION.
+      *
+           INITIALIZE                      TBL-HKNCOMBI-AREA
+           MOVE    ZERO                TO  IDX-H
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    SPA-SYSYMD          TO  COMB-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  COMB-TEKEDYMD
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key6"               TO  MCP-PATHNAME
+               PERFORM 909-HKNCOMBI-NEXT-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           PERFORM UNTIL   (FLG-HKNCOMBI   =   1  )
+                       OR  (IDX-H          >=  20 )
+               IF      COMB-DELKBN         =   SPACE
+                   ADD     1                   TO  IDX-H
+                   MOVE    COMB-HKNCOMBINUM    TO  TBL-HKNCOMBINUM
+                                                               (IDX-H)
+                   MOVE    COMB-HKNNUM         TO  TBL-HKNNUM
+                                                               (IDX-H)
+               END-IF
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 909-HKNCOMBI-NEXT-SEC
+           END-PERFORM
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 900-DBCLOSE-SEC
+           .
+       2009-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *---- (01.00.05) LINE MOD START ----------------------------
       *****************************************************************
       *    続紙頭書印刷処理
       *****************************************************************
@@ -1653,18 +1772,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-                   MOVE    ZERO            TO  FLG-HKNCOMBI
-               ELSE
-                   MOVE    1               TO  FLG-HKNCOMBI
-               END-IF
+               PERFORM 909-HKNCOMBI-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
@@ -1675,6 +1785,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-HKNCOMBI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せマスター読み込み
+      *****************************************************************
+       909-HKNCOMBI-NEXT-SEC         SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           .
+       909-HKNCOMBI-NEXT-EXT.
            EXIT.
       *****************************************************************
       *    保険マスター読み込み
