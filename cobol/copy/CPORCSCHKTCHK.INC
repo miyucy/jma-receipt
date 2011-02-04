@@ -42,6 +42,8 @@
                05  ORCSCHKTCHK-NYUHKTCHK       PIC 9(01).
       *        ¿ÇÎÅÆü¤ÎÊñ³ç¶èÊ¬
                05  ORCSCHKTCHK-NYUHKTCD        PIC X(03).
+      *        ¿ÇÎÅÆü¤ÎÆþ±¡ÎÁ¥³¡¼¥É
+               05  ORCSCHKTCHK-NYUSRYCD        PIC X(09).
                05  ORCSCHKTCHK-NYUHKT-G.
                    07  ORCSCHKTCHK-NYUHKT-OCC  OCCURS   31.
       *                £°¡§°ã¤¦Êñ³ç¡¢£±¡§Æ±¤¸Êñ³ç

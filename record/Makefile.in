@@ -433,6 +433,7 @@ RECORD_files = \
 	Q02B.rec \
 	patientmod.rec \
 	medicatonmod.rec \
+	W321.rec \
 	
 
 DEF_files = \
@@ -618,6 +619,17 @@ DB_files = \
 	tbl_skysrh.db \
 	xml_medicationreq.db \
 	xml_medicationres.db \
+	tbl_etensu_1.db \
+	tbl_etensu_2.db \
+	tbl_etensu_2_jma.db \
+	tbl_etensu_2_off.db \
+	tbl_etensu_2_sample.db \
+	tbl_etensu_3_1.db \
+	tbl_etensu_3_2.db \
+	tbl_etensu_3_3.db \
+	tbl_etensu_3_4.db \
+	tbl_etensu_4.db \
+	tbl_etensu_5.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

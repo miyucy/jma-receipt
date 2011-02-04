@@ -156,4 +156,15 @@ db	{
 	tbl_ptsrh;
 	tbl_synonym;
 	tbl_skysrh;
+	tbl_etensu_1;
+	tbl_etensu_2;
+	tbl_etensu_2_jma;
+	tbl_etensu_2_off;
+	tbl_etensu_2_sample;
+	tbl_etensu_3_1;
+	tbl_etensu_3_2;
+	tbl_etensu_3_3;
+	tbl_etensu_3_4;
+	tbl_etensu_4;
+	tbl_etensu_5;
 };

@@ -28,7 +28,7 @@ W32	{
 				value	varchar(40);
 			};
 			count	int;
-			item	varchar(40)[100];
+			item	varchar(40)[200];
 		};
 		SANTEIHOU_COMB	{
 			SANTEIHOU	{
@@ -137,6 +137,13 @@ W32	{
 		};
 		SRYKBN12_COMB	{
 			SRYKBN12	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
+		SRYKBN13_COMB	{
+			SRYKBN13	{
 				value	varchar(20);
 			};
 			count	int;

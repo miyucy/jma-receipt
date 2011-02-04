@@ -2533,6 +2533,7 @@
                INITIALIZE                  ORCSCHKTCHKAREA
                MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
                MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
+               MOVE    SPA-NYUHKTSRYCD     TO  ORCSCHKTCHK-NYUSRYCD
                MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
                MOVE    "2"                 TO  ORCSCHKTCHK-SYORI
                MOVE    "K02"               TO  ORCSCHKTCHK-PG

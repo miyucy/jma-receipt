@@ -1,0 +1,124 @@
+tbl_etensu_2_jma {
+	H_GROUP 			varchar(7);
+	SRYCD				char(9);
+	YUKOSTYMD			char(8);
+	YUKOEDYMD			char(8);
+	CHGYMD   			char(8);
+#-----> åüçıÉLÅ[çÄñ⁄
+	HOSPNUM				number(2,0),virtual;
+	SRYKBN				char(2);
+	SRYSYUKBN			char(3);
+	SRYKBN2				char(2);
+	SRYSYUKBN2			char(3);
+};
+primary	{
+	H_GROUP,SRYCD,YUKOSTYMD,YUKOEDYMD;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_etensu_2_jma
+		WHERE   H_GROUP  =   :H_GROUP
+		AND     SRYCD    =   :SRYCD
+ 		AND   YUKOSTYMD  <=  :YUKOSTYMD
+		AND   YUKOEDYMD  >=  :YUKOEDYMD
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_etensu_2_jma
+		WHERE 	H_GROUP      = :H_GROUP
+		AND	YUKOSTYMD  >=  :YUKOSTYMD
+		AND	YUKOEDYMD  <=  :YUKOEDYMD
+			ORDER   BY  SRYCD,
+				    YUKOSTYMD
+		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key3_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_etensu_2_jma a,tbl_tensu b
+		WHERE 	a.H_GROUP      = :H_GROUP
+		AND	a.YUKOSTYMD  >=  :YUKOSTYMD
+		AND	a.YUKOEDYMD  <=  :YUKOEDYMD
+		AND     a.SRYCD       =  b.SRYCD 
+		AND     b.HOSPNUM     =  :HOSPNUM 
+		AND   ( b.SRYKBN    >=  :SRYKBN    AND
+			b.SRYKBN    <=  :SRYKBN2 )
+		AND	a.YUKOSTYMD  >=  b.YUKOSTYMD
+		AND	a.YUKOEDYMD  <=  b.YUKOEDYMD
+			ORDER   BY  b.CDKBN_KBN,
+                                    b.CDKBN_KBNNUM,
+                                    a.SRYCD,
+				    a.YUKOSTYMD
+		;
+	};
+};
+
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key4_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_etensu_2_jma a,tbl_tensu b
+		WHERE 	a.H_GROUP      = :H_GROUP
+		AND	a.YUKOSTYMD  >=  :YUKOSTYMD
+		AND	a.YUKOEDYMD  <=  :YUKOEDYMD
+		AND     a.SRYCD       =  b.SRYCD 
+		AND     b.HOSPNUM     =  :HOSPNUM 
+		AND  (( b.SRYKBN    >=  :SRYKBN    AND
+			b.SRYKBN    <=  :SRYKBN2 )
+		OR    ( b.SRYSYUKBN  >= :SRYSYUKBN  AND
+		        b.SRYSYUKBN  <= :SRYSYUKBN2))
+		AND	a.YUKOSTYMD  >=  b.YUKOSTYMD
+		AND	a.YUKOEDYMD  <=  b.YUKOEDYMD
+			ORDER   BY  b.CDKBN_KBN,
+                                    b.CDKBN_KBNNUM,
+                                    a.SRYCD,
+				    a.YUKOSTYMD
+		;
+	};
+};
+
+path	key5	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_key5_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_etensu_2_jma a,tbl_tensu b
+		WHERE 	a.H_GROUP      = :H_GROUP
+		AND	a.YUKOSTYMD  >=  :YUKOSTYMD
+		AND	a.YUKOEDYMD  <=  :YUKOEDYMD
+		AND     a.SRYCD       =  b.SRYCD 
+		AND     b.HOSPNUM     =  :HOSPNUM 
+		AND   ( b.SRYSYUKBN   = :SRYSYUKBN  OR
+		        b.SRYSYUKBN   = :SRYSYUKBN2)
+		AND	a.YUKOSTYMD  >=  b.YUKOSTYMD
+		AND	a.YUKOEDYMD  <=  b.YUKOEDYMD
+			ORDER   BY  b.CDKBN_KBN,
+                                    b.CDKBN_KBNNUM,
+                                    a.SRYCD,
+				    a.YUKOSTYMD
+		;
+	};
+};
+
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_etensu_2_jma_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_etensu_2_jma
+			ORDER   BY  H_GROUP,
+				    SRYCD,
+				    YUKOSTYMD
+ 		;
+	};
+};

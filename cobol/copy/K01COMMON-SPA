@@ -372,6 +372,7 @@
                05  SPA-NYUHKT-AREA.
                    07  SPA-NYUHKTCHK           PIC 9(01).
                    07  SPA-NYUHKTCD            PIC X(03).
+                   07  SPA-NYUHKTSRYCD         PIC X(09).
                    07  SPA-NYUHKT-G.
                        09  SPA-NYUHKT-OCCURS   OCCURS   31.
                            11  SPA-NYUHKTFLG       PIC 9(01).
