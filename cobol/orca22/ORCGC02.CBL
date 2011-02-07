@@ -2937,6 +2937,7 @@ grpsys                                         SPA-AREA
                                        SPA-GMN-C02-TBL
                                        SPA-NAI-C02-TBL
                                        SPA-GMN-C02-MAX
+                                       SPA-GMN-C02-NEXT
                                        SPA-PTBYOMEI-REC
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
