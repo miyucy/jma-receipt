@@ -321,7 +321,7 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "´µ¼ÔÌ¾".
+           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô»áÌ¾".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -329,11 +329,11 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-SYOSAIMEI       PIC X(04)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "ÊÝ¸±".
+           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(10)   VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±ÅÀ¿ô".
            03  FILLER              PIC X(01)   VALUE   ",".

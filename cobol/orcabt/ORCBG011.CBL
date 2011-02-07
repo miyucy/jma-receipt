@@ -93,7 +93,6 @@
            03  FLG-PTNUM                   PIC 9(01).
            03  FLG-SKIP                    PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
-           03  FLG-HIZUKE-ERR              PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
       *
       *    システム領域
@@ -112,6 +111,8 @@
            03  CNT-PTSYU                   PIC 9(04).
            03  CNT-KNS                     PIC 9(05).
            03  CNT-BG011                   PIC 9(05).
+           03  CNT-KETA                    PIC 9(02).
+           03  CNT-KETA2                   PIC 9(02).
       *
       *    パラメタ領域
        01  PARA-AREA.
@@ -120,10 +121,10 @@
            03  WRK-PARA-SHELLID            PIC X(08).
            03  WRK-PARA-HOSPNUM            PIC 9(02).
            03  RECEERR                     PIC X(100).
-           03  WRK-PARA-KKNLMTKBN          PIC X(01).
-           03  WRK-PARA-KKNSTYM            PIC X(06).
-           03  WRK-PARA-KKNEDYM            PIC X(06).
-           03  WRK-PARA-KKNPROCKBN         PIC X(01).
+           03  WRK-PARA-SITEIKBN           PIC X(01).
+           03  WRK-PARA-YUKOSTRYM          PIC X(06).
+           03  WRK-PARA-YUKOENDYM          PIC X(06).
+           03  WRK-PARA-SYORIKBN           PIC X(01).
            03  WRK-PARA-NYUGAIKBN          PIC X(01).
            03  WRK-PARA-MISYUKBN           PIC X(01).
       *
@@ -135,11 +136,14 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SYMD                            PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYY             PIC 9(04).
+               05  WRK-SMM             PIC 9(02).
+               05  WRK-SDD             PIC 9(02).
            03  WRK-DBPATH                          PIC X(100).
            03  WRK-DBTABLE                         PIC X(100).
-           03  WRK-EDTYMD1                         PIC X(10).
-           03  WRK-EDTYMD3                         PIC X(22).
+           03  WRK-HENYMD              PIC X(09).
+           03  WRK-HENYMDG             PIC X(22).
            03  WRK-RECEERR                         PIC X(200).
            03  WRK-PTNUM                           PIC X(20).
            03  WRK-TITLE                           PIC X(100).
@@ -179,6 +183,72 @@
            03  WRK-SKYMONEY-TTL                    PIC S9(10).
            03  WRK-MISYU-TTL                       PIC S9(10).
            03  WRK-NYUKIN-TTL                      PIC S9(10).
+      *
+           03  WRK-SAKUSEIBI           PIC X(22).
+           03  WRK-KIKAN               PIC X(40).
+           03  WRK-MES                 PIC X(50).
+           03  WRK-TOUKEIERR       PIC X(200).
+           03  WRK-YUKOSTRYM           PIC X(16).
+           03  WRK-YUKOENDYM           PIC X(16).
+           03  WRK-YUKOSTRYMD          PIC X(08).
+           03  WRK-YUKOENDYMD          PIC X(08).
+           03  WRK-SRYSTRYMD          PIC X(10).
+           03  WRK-SRYENDYMD          PIC X(10).
+           03  WRK-HENSURYO        PIC X(10).
+           03  WRK-MISYUCSV        PIC X(10).
+           03  WRK-SKYCSV          PIC X(10).
+           03  WRK-NYUHENCSV       PIC X(10).
+           03  WRK-CSV             PIC ---------9.
+           03  WRK-REC             PIC X(20000).
+      *
+       01  WRK-HEN-YMD-OT.
+           03  WRK-HEN-YY-OT       PIC X(04).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-MM-OT       PIC X(02).
+           03  FILLER              PIC X(01)   VALUE   "/". 
+           03  WRK-HEN-DD-OT       PIC X(02).
+      *
+      *    出力先ファイル名
+       01  WRK-TO-DATA-G.
+           03  WRK-TO-DATA.
+               05  WRK-TO-DATA-HOSPNUM PIC 9(02).
+               05  FILLER              PIC X(17)   VALUE
+                                       "misyuukin_denpyo_".
+               05  WRK-TO-DATA-KIKAN   PIC X(21).
+           03  WRK-TO-DATA1.
+               05  WRK-TO-DATA-YMD     PIC X(06).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+           03  WRK-TO-DATA2.
+               05  WRK-TO-DATA-STRYMD  PIC X(06).
+               05  FILLER              PIC X(01)   VALUE   "-".
+               05  WRK-TO-DATA-ENDYMD  PIC X(06).
+               05  FILLER              PIC X(04)   VALUE   ".csv".
+      *
+      *    ヘッダー情報
+       01  CSV-HEAD-01.
+           03  FILLER              PIC X(08)   VALUE   "入外区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "入外区分名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "患者氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "伝票番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "診療科名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  CSV-SRYYMD          PIC X(08)   VALUE   SPACE.
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "未収金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "請求金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "入金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "備考".
       *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                            PIC 9(10).
@@ -248,6 +318,9 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    統計ＣＳＶ制御サブ
+           COPY    "CPORCSTOUKEICSV.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -320,10 +393,10 @@
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPNUM
                                        RECEERR
-                                       WRK-PARA-KKNLMTKBN
-                                       WRK-PARA-KKNSTYM
-                                       WRK-PARA-KKNEDYM
-                                       WRK-PARA-KKNPROCKBN
+                                       WRK-PARA-SITEIKBN
+                                       WRK-PARA-YUKOSTRYM
+                                       WRK-PARA-YUKOENDYM
+                                       WRK-PARA-SYORIKBN
                                        WRK-PARA-NYUGAIKBN
                                        WRK-PARA-MISYUKBN
            END-UNSTRING
@@ -389,14 +462,22 @@
        1001-PARA-CHK-SEC               SECTION.
       *
       *    期間指定区分チェック
-           PERFORM 1001-KKNLMTKBN-CHK-SEC
-           IF    ( FLG-END         NOT =   ZERO )
-               GO  TO  1001-PARA-CHK-EXT
-           END-IF
-      *
-      *    期間指定区分＝１のとき
-           IF    ( WRK-PARA-KKNLMTKBN  =   "1" )
-      *
+           EVALUATE    WRK-PARA-SITEIKBN 
+           WHEN    "0"
+               IF   (( WRK-PARA-YUKOSTRYM  NOT =   SPACE ) AND
+                     ( WRK-PARA-YUKOSTRYM  NOT =   "000000" ))
+               OR   (( WRK-PARA-YUKOENDYM  NOT =   SPACE ) AND
+                     ( WRK-PARA-YUKOENDYM  NOT =   "999999" ))
+                   MOVE
+                   "期間指定なしの場合は期間を入力しないでください"
+                                       TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  1001-PARA-CHK-EXT
+               END-IF
+               MOVE    "00000000"      TO  WRK-YUKOSTRYMD
+               MOVE    "99999999"      TO  WRK-YUKOENDYMD
+               MOVE    "1"             TO  WRK-PARA-SYORIKBN
+           WHEN    "1"
       *        期間開始年月チェック
                PERFORM 1001-KKNSTYM-CHK-SEC
                IF    ( FLG-END         NOT =   ZERO )
@@ -404,84 +485,82 @@
                END-IF
       *
       *        期間終了年月チェック
-               IF    ( WRK-PARA-KKNEDYM    NOT =   SPACE )
-                   PERFORM 1001-KKNEDYM-CHK-SEC
-                   IF    ( FLG-END         NOT =   ZERO )
-                       GO  TO  1001-PARA-CHK-EXT
-                   END-IF
+               PERFORM 1001-KKNEDYM-CHK-SEC
+               IF    ( FLG-END         NOT =   ZERO )
+                   GO  TO  1001-PARA-CHK-EXT
                END-IF
+           WHEN    OTHER
+               MOVE    SPACE           TO  WRK-RECEERR
+               STRING  "期間指定区分が誤りです［"
+                                                   DELIMITED   BY  SIZE
+                       WRK-PARA-SITEIKBN          DELIMITED   BY  SIZE
+                       "］"                        DELIMITED   BY  SIZE
+               INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  1001-PARA-CHK-EXT
+           END-EVALUATE
       *
-               IF    ( WRK-PARA-KKNEDYM    NOT =   "999999" )
-      *            期間処理区分チェック
-                   PERFORM 1001-KKNPROCKBN-CHK-SEC
-                   IF    ( FLG-END         NOT =   ZERO )
-                       GO  TO  1001-PARA-CHK-EXT
-                   END-IF
-               END-IF
+      *    期間範囲チェック
+           PERFORM 1201-PARA-KIKAN-CHECK-SEC
+           IF      FLG-END         NOT =   ZERO
+               MOVE    "期間を正しく入力してください"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  1001-PARA-CHK-EXT
+           END-IF
+      *
+      *    期間処理区分チェック
+           IF      WRK-YUKOENDYMD  NOT =   "99999999"
+               PERFORM 1201-PARA-SYORIKBN-CHECK-SEC
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-TO-DATA-KIKAN
+           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
+           IF      WRK-YUKOSTRYMD(1:6) =   WRK-YUKOENDYMD(1:6) 
+               MOVE    WRK-YUKOSTRYMD(1:6) TO  WRK-TO-DATA-YMD
+               MOVE    WRK-TO-DATA1    TO  WRK-TO-DATA-KIKAN
+           ELSE
+               MOVE    WRK-YUKOSTRYMD(1:6) TO  WRK-TO-DATA-STRYMD
+               MOVE    WRK-YUKOENDYMD(1:6) TO  WRK-TO-DATA-ENDYMD
+               MOVE    WRK-TO-DATA2    TO  WRK-TO-DATA-KIKAN
            END-IF
       *
            .
        1001-PARA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    期間指定区分チェック
-      *****************************************************************
-       1001-KKNLMTKBN-CHK-SEC          SECTION.
-      *
-      *    期間指定区分＝０，１であること
-           IF    ( WRK-PARA-KKNLMTKBN  =   "0" OR  "1" )
-               CONTINUE
-           ELSE
-               MOVE    SPACE           TO  WRK-RECEERR
-               STRING  "期間指定区分が誤りです［"
-                                                   DELIMITED   BY  SIZE
-                       WRK-PARA-KKNLMTKBN          DELIMITED   BY  SIZE
-                       "］"                        DELIMITED   BY  SIZE
-               INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  1001-KKNLMTKBN-CHK-EXT
-           END-IF
-      *
-           .
-       1001-KKNLMTKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    期間開始年月チェック
       *****************************************************************
        1001-KKNSTYM-CHK-SEC            SECTION.
       *
-      *    開始年月が設定されていること
-           IF    ( WRK-PARA-KKNSTYM    NOT =   SPACE )
-               CONTINUE
-           ELSE
+      *    期間開始年月チェック
+           EVALUATE    WRK-PARA-YUKOSTRYM
+           WHEN    SPACE
                MOVE    "開始年月が未設定です"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  1001-KKNSTYM-CHK-EXT
-           END-IF
-      *
-      *    開始年月が"000000"か日付として妥当であること
-           IF    ( WRK-PARA-KKNSTYM    =   "000000" )
-               CONTINUE
-           ELSE
-               MOVE    WRK-PARA-KKNSTYM    TO  WRK-SYMD
-               MOVE    "01"            TO  WRK-SYMD (7:2)
-               PERFORM 800-SEIWA-HEN-SEC
-               IF    ( FLG-HIZUKE-ERR  =   ZERO )
-                   CONTINUE
+           WHEN    "000000"
+               MOVE    "00000000"      TO  WRK-YUKOSTRYMD
+           WHEN    OTHER
+               MOVE    WRK-PARA-YUKOSTRYM  TO  WRK-SYMD (1:6)
+               MOVE    "01"                TO  WRK-SYMD (7:2)
+               PERFORM 31012-SEIWA-HEN-SEC
+               IF          STS-DAY-RC1     =   ZERO
+                   MOVE    WRK-HENYMDG(1:16)
+                                           TO  WRK-YUKOSTRYM
+                   MOVE    WRK-SYMD        TO  WRK-YUKOSTRYMD
                ELSE
                    MOVE    SPACE           TO  WRK-RECEERR
                    STRING  "開始年月が誤りです［"
                                                DELIMITED   BY  SIZE
-                       WRK-PARA-KKNSTYM        DELIMITED   BY  SIZE
+                       WRK-PARA-YUKOSTRYM        DELIMITED   BY  SIZE
                        "］"                    DELIMITED   BY  SIZE
                    INTO    WRK-RECEERR
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  1001-KKNSTYM-CHK-EXT
                END-IF
-           END-IF
+           END-EVALUATE
       *
            .
        1001-KKNSTYM-CHK-EXT.
@@ -491,34 +570,53 @@
       *****************************************************************
        1001-KKNEDYM-CHK-SEC            SECTION.
       *
-      *    終了年月が"999999"か日付として妥当であること
-           IF    ( WRK-PARA-KKNEDYM    =   "999999" )
-               CONTINUE
-           ELSE
-               MOVE    WRK-PARA-KKNEDYM    TO  WRK-SYMD
-               MOVE    "01"            TO  WRK-SYMD (7:2)
-               PERFORM 800-SEIWA-HEN-SEC
-               IF    ( FLG-HIZUKE-ERR  =   ZERO )
-                   CONTINUE
+      *    期間終了年月チェック
+           EVALUATE    WRK-PARA-YUKOENDYM
+           WHEN    "999999"
+               MOVE    "99999999"        TO  WRK-YUKOENDYMD
+           WHEN    OTHER
+      *        月末日取得
+               IF          WRK-PARA-YUKOENDYM  =   SPACE
+                   MOVE    WRK-PARA-YUKOSTRYM  TO  WRK-SYMD(1:6)
                ELSE
+                   MOVE    WRK-PARA-YUKOENDYM  TO  WRK-SYMD(1:6)
+               END-IF
+               PERFORM 20021-GETUMATU-GET-SEC
+               IF          STS-DAY-RC1     NOT =   ZERO
                    MOVE    SPACE           TO  WRK-RECEERR
                    STRING  "終了年月が誤りです［"
                                                DELIMITED   BY  SIZE
-                       WRK-PARA-KKNEDYM        DELIMITED   BY  SIZE
+                       WRK-PARA-YUKOENDYM      DELIMITED   BY  SIZE
                        "］"                    DELIMITED   BY  SIZE
                    INTO    WRK-RECEERR
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  1001-KKNEDYM-CHK-EXT
                END-IF
-           END-IF
       *
-      *    開始年月≦終了年月であること
-           IF    ( WRK-PARA-KKNSTYM   <=   WRK-PARA-KKNEDYM )
+               PERFORM 31012-SEIWA-HEN-SEC
+               IF          STS-DAY-RC1     =   ZERO
+                   MOVE    WRK-HENYMDG(1:16)
+                                           TO  WRK-YUKOENDYM
+                   MOVE    WRK-SYMD        TO  WRK-YUKOENDYMD
+               ELSE
+                   MOVE    SPACE           TO  WRK-RECEERR
+                   STRING  "終了年月が誤りです［"
+                                               DELIMITED   BY  SIZE
+                       WRK-PARA-YUKOENDYM      DELIMITED   BY  SIZE
+                       "］"                    DELIMITED   BY  SIZE
+                   INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  1001-KKNEDYM-CHK-EXT
+               END-IF
+           END-EVALUATE
+      *
+           IF      WRK-YUKOSTRYMD  <=   WRK-YUKOENDYMD
                CONTINUE
            ELSE
                MOVE    "開始年月＞終了年月となっています"
-                                           TO  WRK-RECEERR
+                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  1001-KKNEDYM-CHK-EXT
            END-IF
@@ -527,27 +625,66 @@
        1001-KKNEDYM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    期間処理区分チェック
+      *    期間範囲チェック処理
       *****************************************************************
-       1001-KKNPROCKBN-CHK-SEC         SECTION.
+       1201-PARA-KIKAN-CHECK-SEC   SECTION.
       *
-      *    期間処理区分＝１，２であること
-           IF    ( WRK-PARA-KKNPROCKBN =   "1" OR  "2" )
-               CONTINUE
+           DISPLAY "WRK-YUKOSTRYM=" WRK-YUKOSTRYMD(1:6)
+           DISPLAY "WRK-YUKOENDYM=" WRK-YUKOENDYMD(1:6)
+      *    範囲チェック
+           IF          WRK-YUKOSTRYMD(1:6)
+                                   =   WRK-YUKOENDYMD(1:6)
+               MOVE    WRK-YUKOSTRYM   TO  WRK-KIKAN
            ELSE
+               IF        ( WRK-YUKOSTRYMD  =   "00000000" )
+                   AND   ( WRK-YUKOENDYMD  =   "99999999" )
+                   MOVE    "指定なし"      TO  WRK-KIKAN
+               ELSE
+                   IF          WRK-YUKOSTRYMD  =   "OOOOOO00"
+                       MOVE    SPACE           TO  WRK-KIKAN(1:16)
+                   ELSE
+                       MOVE    WRK-YUKOSTRYM   TO  WRK-KIKAN(1:16)
+                   END-IF
+                   IF          WRK-YUKOENDYMD  =   "99999999"
+                       MOVE    SPACE           TO  WRK-KIKAN(19:16)
+                   ELSE
+                       MOVE    WRK-YUKOENDYM   TO  WRK-KIKAN(19:16)
+                   END-IF
+                   MOVE    "〜"            TO  WRK-KIKAN(17:2)
+               END-IF
+           END-IF
+      *
+           .
+      *
+       1201-PARA-KIKAN-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    期間処理区分チェック処理
+      *****************************************************************
+       1201-PARA-SYORIKBN-CHECK-SEC    SECTION.
+      *
+      *    期間処理区分チェック
+           EVALUATE    WRK-PARA-SYORIKBN
+           WHEN    "1"
+               MOVE    "締月翌月以降の訂正・入金を含む"
+                                       TO  WRK-MES
+           WHEN    "2"
+               MOVE    "締月翌月以降の訂正・入金は含まず"
+                                       TO  WRK-MES
+           WHEN    OTHER
                MOVE    SPACE           TO  WRK-RECEERR
                STRING  "処理区分が誤りです［"
                                                    DELIMITED   BY  SIZE
-                       WRK-PARA-KKNPROCKBN         DELIMITED   BY  SIZE
+                       WRK-PARA-SYORIKBN           DELIMITED   BY  SIZE
                        "］"                        DELIMITED   BY  SIZE
                INTO    WRK-RECEERR
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  1001-KKNPROCKBN-CHK-EXT
-           END-IF
+           END-EVALUATE
+       .
       *
-           .
-       1001-KKNPROCKBN-CHK-EXT.
+       1201-PARA-SYORIKBN-CHECK-EXT.
            EXIT.
       *
       *************************************************************
@@ -667,70 +804,22 @@
                MOVE    "　未収金一覧表−入院（伝票別）　"
                                        TO  WKHCM39-TITLE
                MOVE    "請求期間"      TO  WKHCM39-DAI
+                                           CSV-SRYYMD
            ELSE
                MOVE    "　未収金一覧表−外来（伝票別）　"
                                        TO  WKHCM39-TITLE
                MOVE    "診療日"        TO  WKHCM39-DAI
+                                           CSV-SRYYMD
            END-IF
       *
       *    作成日
-           MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
-           PERFORM 800-SEIWA-HEN-SEC
-           MOVE    WRK-EDTYMD3         TO  WKHCM39-SAKUSEIBI
+           MOVE     WRK-SAKUSEIBI      TO  WKHCM39-SAKUSEIBI
       *
-           IF    ( WRK-PARA-KKNLMTKBN  =   "1" )
+      *    期間
+           MOVE    WRK-KIKAN           TO  WKHCM39-KIKAN
       *
-               IF    ( WRK-PARA-KKNSTYM    =   "000000" )
-                AND  ( WRK-PARA-KKNEDYM    =   "999999" )
-                   MOVE    "指定なし"              TO  WKHCM39-KIKAN
-               ELSE
-      *            期間
-                   INITIALIZE  WRK-KKN-HEN
-      *
-                   IF    ( WRK-PARA-KKNSTYM    NOT =   "000000" )
-                       MOVE    WRK-PARA-KKNSTYM    TO  WRK-SYMD
-                       MOVE    "01"                TO  WRK-SYMD(7:2)
-                       PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-EDTYMD3 (1:16)  TO  WRK-KKNSTYMD
-                   END-IF
-      *
-      *
-                   IF    ( WRK-PARA-KKNEDYM    NOT =   SPACE )
-                       MOVE    "〜"                    TO  WRK-KKNMID
-                   END-IF
-      *
-                   EVALUATE    WRK-PARA-KKNEDYM
-                   WHEN    SPACE
-                   WHEN    "999999"
-                       MOVE    SPACE               TO  WRK-KKNEDYMD
-                   WHEN    OTHER
-                       MOVE    WRK-PARA-KKNEDYM    TO  WRK-SYMD
-                       MOVE    "01"                TO  WRK-SYMD(7:2)
-                       PERFORM 800-SEIWA-HEN-SEC
-                       MOVE    WRK-EDTYMD3 (1:16)  TO  WRK-KKNEDYMD
-                   END-EVALUATE
-      *
-                   IF      WRK-KKNSTYMD        =   WRK-KKNEDYMD
-                       MOVE    WRK-KKNSTYMD        TO  WKHCM39-KIKAN
-                   ELSE
-                       MOVE    WRK-KKN-HEN         TO  WKHCM39-KIKAN
-                   END-IF
-      *
-                   IF    ( WRK-PARA-KKNEDYM    NOT =   "999999" )
-      *                処理区分
-                       IF    ( WRK-PARA-KKNPROCKBN     =   "1" )
-                           MOVE    "締月翌月以降の訂正・入金を含む"
-                                                   TO  WKHCM39-MES
-                       ELSE
-                           MOVE    "締月翌月以降の訂正・入金を含まず"
-                                                   TO  WKHCM39-MES
-                       END-IF
-                   END-IF
-               END-IF
-      *
-           ELSE
-               MOVE    "指定なし"                  TO  WKHCM39-KIKAN
-           END-IF
+      *    処理区分
+           MOVE    WRK-MES             TO  WKHCM39-MES
       *
            .
        1001-HEADER-HEN-EXT.
@@ -743,6 +832,12 @@
       *    未収一覧ビューより抽出処理
            PERFORM 2001-BD003-HEN-SEC
       *
+           IF      CNT-BG011       NOT =   ZERO
+      *        ＣＳＶ出力処理
+               INITIALIZE                  WRK-REC
+               MOVE    CSV-HEAD-01     TO  WRK-REC
+               PERFORM 500-TOUKEICSV-SEC
+           END-IF
            IF      CNT-BG011       NOT =   ZERO
       *        未収患者一覧編集処理
                PERFORM 2001-MISYU-HEN-SEC
@@ -809,24 +904,10 @@
            INITIALIZE                      BD003-REC
            MOVE    SPA-HOSPNUM         TO  BD003-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN  TO  BD003-NYUGAIKBN
-           IF    ( WRK-PARA-KKNLMTKBN  =   "0" )
-               MOVE    "00000000"      TO  BD003-STSRYYMD
-               MOVE    "99999999"      TO  BD003-EDSRYYMD
-           ELSE
-               MOVE    WRK-PARA-KKNSTYM    TO  BD003-STSRYYMD
-               MOVE    "01"                TO  BD003-STSRYYMD(7:2)
-               IF    ( WRK-PARA-KKNEDYM    =   SPACE )
-                   MOVE    WRK-PARA-KKNSTYM
-                                           TO  BD003-EDSRYYMD
-                   MOVE    "31"            TO  BD003-EDSRYYMD(7:2)
-               ELSE
-                   MOVE    WRK-PARA-KKNEDYM
-                                           TO  BD003-EDSRYYMD
-                   MOVE    "31"            TO  BD003-EDSRYYMD(7:2)
-               END-IF
-           END-IF
+           MOVE    WRK-YUKOSTRYMD      TO  BD003-STSRYYMD
+           MOVE    WRK-YUKOENDYMD      TO  BD003-EDSRYYMD
       *
-           IF    ( WRK-PARA-KKNPROCKBN     =   "1" )
+           IF    ( WRK-PARA-SYORIKBN     =   "1" )
                MOVE    "99999999"          TO  BD003-NYUHEN-YMD
            ELSE
                MOVE    BD003-EDSRYYMD      TO  BD003-NYUHEN-YMD
@@ -1080,41 +1161,64 @@
       *
            END-PERFORM
       *
+           MOVE    SPACE               TO  WRK-SRYSTRYMD
+                                           WRK-SRYENDYMD
       *    診療日
            IF    ( SYU-NYUGAIKBN       =   "1" )
       *
                INITIALIZE                      WRK-NYU-SKYYMD-HEN
       *
                MOVE    SYU-SKYSTYMD        TO  WRK-SYMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-EDTYMD1         TO  WRK-NYU-SKYSTYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMD         TO  WRK-NYU-SKYSTYMD
+               MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+               MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+               MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+               MOVE    WRK-HEN-YMD-OT  TO  WRK-SRYSTRYMD
       *
                MOVE    "-"                 TO  WRK-NYU-SKYYMD-MID
       *
                MOVE    SYU-SKYEDYMD        TO  WRK-SYMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-EDTYMD1         TO  WRK-NYU-SKYEDYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMD         TO  WRK-NYU-SKYEDYMD
+               MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+               MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+               MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+               MOVE    WRK-HEN-YMD-OT  TO  WRK-SRYENDYMD
       *
                MOVE    WRK-NYU-SKYYMD-HEN  TO  HCM39-SRYYMDN (CNT-LINE)
       *
            ELSE
                MOVE    SYU-SRYYMD          TO  WRK-SYMD
-               PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-EDTYMD1         TO  HCM39-SRYYMDG (CNT-LINE)
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMD         TO  HCM39-SRYYMDG (CNT-LINE)
+               MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
+               MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
+               MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
+               MOVE    WRK-HEN-YMD-OT  TO  WRK-SRYSTRYMD
            END-IF
       *    未収額
            COMPUTE WRK-MISYU   =   BG01101-SKYMONEY
                                -   BG01101-NYUHEN-MONEY
            MOVE    WRK-MISYU               TO  WRK-MISYUF
            MOVE    WRK-MISYUF              TO  HCM39-MISYU  (CNT-LINE)
+           MOVE    WRK-MISYU       TO  WRK-CSV
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO    TO  WRK-MISYUCSV
       *
       *    請求額
            MOVE    BG01101-SKYMONEY        TO  WRK-SKYMONEYF
            MOVE    WRK-SKYMONEYF           TO  HCM39-SEIKYU (CNT-LINE)
+           MOVE    BG01101-SKYMONEY        TO  WRK-CSV
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO    TO  WRK-SKYCSV
       *
       *    請求額
            MOVE    BG01101-NYUHEN-MONEY    TO  WRK-NYUKINF
            MOVE    WRK-NYUKINF             TO  HCM39-NYUKIN (CNT-LINE)
+           MOVE    BG01101-NYUHEN-MONEY    TO  WRK-CSV
+           PERFORM 400-ZHEN-SURYO-SET-SEC
+           MOVE    WRK-HENSURYO    TO  WRK-NYUHENCSV
       *
       *    備考
            IF    ( SYU-NYUGAIKBN       =   "1" )
@@ -1135,6 +1239,66 @@
       *
            COMPUTE WRK-NYUKIN-TTL      =   WRK-NYUKIN-TTL
                                        +   BG01101-NYUHEN-MONEY
+      *
+           INITIALIZE                      WRK-REC
+      *
+           IF    ( SYU-NYUGAIKBN       =   "1" )
+               STRING  SYU-NYUGAIKBN           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       "入"                    DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       BG01101-PTNUM           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       PTINF-NAME              DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       PTINF-KANANAME          DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       BG01101-DENPNUM         DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       HCM39-SRYKA(CNT-LINE)   DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-SRYSTRYMD          DELIMITED  BY  SPACE
+                       "-"                     DELIMITED  BY  SIZE
+                       WRK-SRYENDYMD          DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-MISYUCSV            DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-SKYCSV              DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-NYUHENCSV           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       HCM39-BIKO(CNT-LINE)    DELIMITED  BY  SPACE
+                       INTO                    WRK-REC
+               END-STRING
+           ELSE
+               STRING  SYU-NYUGAIKBN           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       "外"                    DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       BG01101-PTNUM           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       PTINF-NAME              DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       PTINF-KANANAME          DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       BG01101-DENPNUM         DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       HCM39-SRYKA(CNT-LINE)   DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-SRYSTRYMD          DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-MISYUCSV            DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-SKYCSV              DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-NYUHENCSV           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       HCM39-BIKO(CNT-LINE)    DELIMITED  BY  SPACE
+                       INTO                    WRK-REC
+               END-STRING
+           END-IF
+      *
+           PERFORM 500-TOUKEICSV-SEC
       *
            .
        20011-MISYU-HEN-EXT.
@@ -1205,11 +1369,34 @@
                MOVE    "合計"          TO  HCM39-GTTL
                MOVE    WRK-MISYU-TTL   TO  WRK-MISYUF
                MOVE    WRK-MISYUF      TO  HCM39-MISYUG
+               MOVE    WRK-MISYU-TTL   TO  WRK-CSV
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO    TO  WRK-MISYUCSV
+      *
                MOVE    WRK-SKYMONEY-TTL
                                        TO  WRK-SKYMONEYF
                MOVE    WRK-SKYMONEYF   TO  HCM39-SEIKYUG
+               MOVE    WRK-SKYMONEY-TTL    TO  WRK-CSV
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO    TO  WRK-SKYCSV
+      *
                MOVE    WRK-NYUKIN-TTL  TO  WRK-NYUKINF
                MOVE    WRK-NYUKINF     TO  HCM39-NYUKING
+               MOVE    WRK-NYUKIN-TTL  TO  WRK-CSV
+               PERFORM 400-ZHEN-SURYO-SET-SEC
+               MOVE    WRK-HENSURYO    TO  WRK-NYUHENCSV
+      *
+               INITIALIZE                      WRK-REC
+               STRING  ",,,,,,,合計,"          DELIMITED  BY  SIZE
+                       WRK-MISYUCSV            DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-SKYCSV              DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       WRK-NYUHENCSV           DELIMITED  BY  SPACE
+                       ","                     DELIMITED  BY  SIZE
+                       INTO                    WRK-REC
+               END-STRING
+               PERFORM 500-TOUKEICSV-SEC
            END-IF
       *
            PERFORM 250-PRINT-SEC
@@ -1265,6 +1452,26 @@
        250-PRINT-EXT.
            EXIT.
       *****************************************************************
+      *   帳票Ｚ編集処理
+      *****************************************************************
+       400-ZHEN-SURYO-SET-SEC      SECTION.
+      *
+           MOVE    SPACE           TO  WRK-HENSURYO
+           MOVE    ZERO            TO  CNT-KETA
+           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
+                   UNTIL   CNT-KETA2   >   10
+               IF      WRK-CSV(CNT-KETA2:1)    NOT =   SPACE
+                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
+                   MOVE    WRK-CSV(CNT-KETA2:1)
+                                           TO  WRK-HENSURYO(CNT-KETA:1)
+               END-IF
+           END-PERFORM
+      *
+           .
+       400-ZHEN-SURYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
@@ -1298,6 +1505,66 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    統計ＣＳＶ出力処理
+      *****************************************************************
+       500-TOUKEICSV-SEC           SECTION.
+      *
+           INITIALIZE                  ORCSTOUKEICSVAREA
+           MOVE    "INS"           TO  STOUKEICSV-MODE
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  STOUKEICSV-TBL-KEY
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  STOUKEICSV-RENNUM
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  STOUKEICSV-TBL-GROUP
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  STOUKEICSV-SHORI-RENNUM
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  STOUKEICSV-SHELLID
+           MOVE    WRK-PARA-YUKOSTRYM  TO  STOUKEICSV-SRYYM
+           MOVE    WRK-PARA-NYUGAIKBN
+                                   TO  STOUKEICSV-NYUGAIKBN
+           MOVE    ZERO            TO  STOUKEICSV-PTID
+           MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
+           MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
+           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
+           MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
+           MOVE    "未収金一覧表（伝票別）ＣＳＶ作成"
+                                   TO  STOUKEICSV-TITLE
+      *
+           CALL    "ORCSTOUKEICSV"     USING
+                                       ORCSTOUKEICSVAREA
+                                       SPA-AREA
+           IF      STOUKEICSV-RETURN   =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
+                                      TO  WRK-TOUKEIERR
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+           .
+      *
+       500-TOUKEICSV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    異常終了処理
+      *****************************************************************
+       500-COBABORT-SEC          SECTION.
+      *
+           MOVE    SPACE           TO  WRK-RECEERR
+           STRING  "ORCBG011"      DELIMITED  BY  SIZE
+                   WRK-TOUKEIERR   DELIMITED  BY  SIZE
+                   LOW-VALUE       DELIMITED  BY  SIZE
+                                   INTO    WRK-RECEERR
+           END-STRING
+           CALL    "cobabort"      USING   WRK-RECEERR
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1381,29 +1648,27 @@
       *****************************************************************
       *    月末日取得処理
       *****************************************************************
-       800-GETUMATU-SEC            SECTION.
+       20021-GETUMATU-GET-SEC      SECTION.
       *
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY1-AREA
-           MOVE    "71"                TO   LNK-DAY7-IRAI
-           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+           MOVE    "71"            TO  LNK-DAY7-IRAI
+           MOVE    WRK-SYMD(1:6)   TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING
+                                       STS-AREA-DAY
                                        LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
+           MOVE    LNK-DAY7-KOYOMI TO  WRK-SYMD
       *
            .
-       800-GETUMATU-EXT.
+       20021-GETUMATU-GET-EXT.
             EXIT.
-      *
       *****************************************************************
       *    西暦日本語変換処理
       *****************************************************************
-       800-SEIWA-HEN-SEC           SECTION.
+       31012-SEIWA-HEN-SEC           SECTION.
       *
-           MOVE    SPACE           TO  WRK-EDTYMD1
-                                       WRK-EDTYMD3
-           MOVE    ZERO            TO  FLG-HIZUKE-ERR
-      *
+           MOVE    SPACE           TO  WRK-HENYMD
+                                       WRK-HENYMDG
       *    日付画面チェックサブ
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY2-AREA
@@ -1413,15 +1678,13 @@
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            IF        ( STS-DAY-RC1     =   ZERO )
-               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
-               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-               INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "　"
-           ELSE
-               MOVE    1               TO  FLG-HIZUKE-ERR
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
+               MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
+               INSPECT WRK-HENYMDG     REPLACING  ALL "  "  BY  "　"
            END-IF
       *
            .
-       800-SEIWA-HEN-EXT.
+       31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************

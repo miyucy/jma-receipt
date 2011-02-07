@@ -275,43 +275,43 @@
        01  CSV-HEAD-01.
            03  FILLER              PIC X(08)   VALUE   "ÀÁµáÇ¯·î".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "½èÍý¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "½èÍý¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "Äó½ÐÀè¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(10)   VALUE   "Äó½ÐÀèÌ¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "ÊÝ¸±¼ÔÈÖ¹æ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±¼ÔÌ¾".
+           03  FILLER              PIC X(10)   VALUE   "ÊÝ¸±¼ÔÌ¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "ºßÁí¿Ç¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(10)   VALUE   "ºßÁí¿ÇÌ¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅÇ¯·î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¼ïÊÌ¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "¼ïÊÌ¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¾ÜºÙ¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "¾ÜºÙ¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "Ï¢ÈÖ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "´µ¼ÔÌ¾".
+           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô»áÌ¾".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
            03  FILLER              PIC X(01)   VALUE   ",".

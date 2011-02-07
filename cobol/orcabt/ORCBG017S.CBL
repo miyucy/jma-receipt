@@ -233,33 +233,33 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅ¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(10)   VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(14)   VALUE   "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¿ÇÎÅ¹Ô°ÙÌ¾".
+           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ¹Ô°ÙÌ¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ÅÀ¿ôÃ±²Á".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ã±°Ì".
+           03  FILLER              PIC X(08)   VALUE   "ÅÀ¿ôÃ±°Ì".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "¿ôÎÌ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ã±°Ì".
+           03  FILLER              PIC X(08)   VALUE   "¿ôÎÌÃ±°Ì".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "²ó¿ô".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "¹ç·×".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ã±°Ì".
+           03  FILLER              PIC X(08)   VALUE   "¹ç·×Ã±°Ì".
       *
        01  TSRYKBN-AREA.
            03  TSRYKBN-MAX         PIC 9(03).

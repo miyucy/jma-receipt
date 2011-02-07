@@ -261,15 +261,15 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "±¡³°¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "±¡³°¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "ÌôºÞ¶èÊ¬".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(12)   VALUE   "ÌôºÞ¶èÊ¬Ì¾¾Î".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(14)   VALUE   "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -1484,7 +1484,7 @@
                                        WRK-REC-LENGTH
       *
            MOVE    CSV-HEAD-01     TO  WRK-DATA
-           MOVE    84              TO  WRK-NAGASA
+           MOVE    108             TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
            PERFORM VARYING IDZ         FROM    1   BY  1

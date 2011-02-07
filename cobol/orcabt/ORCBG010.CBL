@@ -184,7 +184,7 @@
        01  CSV-HEAD-01.
            03  FILLER              PIC X(08)   VALUE   "患者番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "患者名".
+           03  FILLER              PIC X(08)   VALUE   "患者氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "カナ氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -192,9 +192,9 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(10)   VALUE   "最終入金日".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "最終受信日".
+           03  FILLER              PIC X(10)   VALUE   "最終受診日".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "最終受診科".
+           03  FILLER              PIC X(14)   VALUE   "最終受診科名称".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(08)   VALUE   "電話番号".
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -568,6 +568,7 @@
                    INTO    WRK-RECEERR
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  1201-PARA-END-CHECK-EXT
                END-IF
       *
                PERFORM 31012-SEIWA-HEN-SEC
@@ -584,8 +585,18 @@
                    INTO    WRK-RECEERR
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
+                   GO  TO  1201-PARA-END-CHECK-EXT
                END-IF
            END-EVALUATE
+      *
+           IF      WRK-YUKOSTRYMD  <=   WRK-YUKOENDYMD
+               CONTINUE
+           ELSE
+               MOVE    "開始年月＞終了年月となっています"
+                                        TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               GO  TO  1201-PARA-END-CHECK-EXT
+           END-IF
       *
            .
       *
@@ -602,13 +613,6 @@
                                    =   WRK-YUKOENDYMD(1:6)
                MOVE    WRK-YUKOSTRYM   TO  WRK-KIKAN
            ELSE
-               IF          WRK-YUKOSTRYMD(1:6)
-                                       >   WRK-YUKOENDYMD(1:6)
-                   MOVE    "開始年月＞終了年月となっています"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  1201-PARA-KIKAN-CHECK-EXT
-               END-IF
                IF        ( WRK-YUKOSTRYMD  =   "00000000" )
                    AND   ( WRK-YUKOENDYMD  =   "99999999" )
                    MOVE    "指定なし"      TO  WRK-KIKAN
