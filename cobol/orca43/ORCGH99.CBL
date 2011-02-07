@@ -63,6 +63,8 @@
       *
       *  04.06.01    NACL-藤原    10/12/07  公費単独の負担者番号、受給者
       *                                     番号の表示に自立支援を追加
+      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -497,7 +499,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                IF    ( RECE10-HKNNUM       =   SPACE                 )
                    IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"
                                                OR  "021"   OR  "020"
-                                               OR  "015"   OR  "016" )
+                                               OR  "015"   OR  "016"
+                                               OR  "053"             )
                    AND   ( RECE10-KOHNUM (2)   =   SPACE             )
                        INITIALIZE                  PTKOHINF-REC
                        MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM

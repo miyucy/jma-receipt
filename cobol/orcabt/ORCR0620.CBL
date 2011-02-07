@@ -183,6 +183,8 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -209,20 +211,10 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE68-KEY
                                    FILE    STATUS  IS  STS-RECE68.
-           SELECT  RECE68X-FILE    ASSIGN  RECE68PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE68X-KEY
-                                   FILE    STATUS  IS  STS-RECE68.
            SELECT  RECE69-FILE     ASSIGN  RECE69PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE69-KEY
-                                   FILE    STATUS  IS  STS-RECE69.
-           SELECT  RECE69X-FILE    ASSIGN  RECE69PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE69X-KEY
                                    FILE    STATUS  IS  STS-RECE69.
       *    レセプト（県単用項目）データ
            SELECT  RECE67-FILE     ASSIGN  RECE67PARA
@@ -254,19 +246,9 @@
        01  RECE68-REC. 
            COPY    "CPRCF068.INC".
       *
-       FD  RECE68X-FILE.
-       01  RECE68X-REC. 
-           COPY    "CPRCF068.INC"  REPLACING  //RECE68//
-                                   BY         //RECE68X//.
-      *
        FD  RECE69-FILE.
        01  RECE69-REC. 
            COPY    "CPRCF069.INC".
-      *
-       FD  RECE69X-FILE.
-       01  RECE69X-REC. 
-           COPY    "CPRCF069.INC"  REPLACING  //RECE69//
-                                   BY         //RECE69X//.
       *
       *    レセプト（県単用項目）データ
        FD  RECE67-FILE.
@@ -914,12 +896,12 @@
            CLOSE                       RECE62X-FILE
       *
            IF      IDZ             =   1               
-               OPEN    OUTPUT              RECE68X-FILE
-               CLOSE                       RECE68X-FILE
+               OPEN    OUTPUT              RECE68-FILE
+               CLOSE                       RECE68-FILE
                OPEN    I-O                 RECE68-FILE
       *
-               OPEN    OUTPUT              RECE69X-FILE
-               CLOSE                       RECE69X-FILE
+               OPEN    OUTPUT              RECE69-FILE
+               CLOSE                       RECE69-FILE
                OPEN    OUTPUT              RECE69-FILE
       *
                OPEN    OUTPUT              RECE67-FILE
@@ -1035,7 +1017,8 @@
       *
       *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF      RECE61-HKNNUM        =   SPACE
-               IF      RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
+               IF      RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"   OR
+                                                 "053"
                    CONTINUE
                ELSE 
                    IF      RECE61-TEKSTYMD     =   ZERO
@@ -1175,9 +1158,9 @@
                MOVE    RECE61-HKNJANUM      TO  RECE62-HKNJANUM-KEY
            END-IF
            MOVE    RECE61-HOJOKBN       TO  RECE62-HOJOKBN-KEY
-           IF    ( RECE61-HKNNUM        =   SPACE         )
+           IF    ( RECE61-HKNNUM        =   SPACE                    )
            AND   ( RECE61-KOHHKNNUM-O (1)
-                                        = "020" OR  "030" )
+                                        = "020" OR  "030"  OR  "053" )
                MOVE    RECE61-KOH-KOHID TO  RECE62-KOHID-KEY
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2962,7 +2945,8 @@
                                                     OR  "025"
                                                     OR  "015"
                                                     OR  "016"
-                                                    OR  "021" )
+                                                    OR  "021"
+                                                    OR  "053" )
                    AND ( RECE61-KOHHKNNUM-O (2)     =   SPACE ) )
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
@@ -2974,11 +2958,12 @@
                  MOVE    RECE61-NYUGAIKBN     TO  RECE69-NYUGAIKBN
                  MOVE    RECE61-PTID          TO  RECE69-PTID
                  MOVE    RECE61-RECEKA        TO  RECE69-RECEKA
+                 MOVE    "000"                TO  RECE69-KOHNUM
                  MOVE    RECE61-TEKSTYMDX (IDX)
                                               TO  RECE69-TEKSTYMD
                  PERFORM VARYING IDYY    FROM    1   BY  1
                          UNTIL   IDYY    >       100
-      *            公費単独と主保険の摘要年月日が重複するとき
+      *            公費単独と主保険の適用年月日が重複するとき
 grpsys             IF    ( TBL-RECE69-HOSPNUM (IDYY)
                                              >   ZERO  )
                    AND   ( RECE61-HKNNUM NOT =   SPACE )

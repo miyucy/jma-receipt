@@ -223,6 +223,8 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1122,7 +1124,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
       *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF      RECE01-HKNNUM        =   SPACE
-             IF      RECE01-KOHHKNNUM-O (1)  =   "030"
+             IF      RECE01-KOHHKNNUM-O (1)  =   "030" OR  "053" 
                  CONTINUE
              ELSE 
                IF      RECE01-TEKSTYMD      =   ZERO
@@ -1286,9 +1288,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
            END-IF
            MOVE    RECE01-HOJOKBN       TO  RECE02-HOJOKBN-KEY
-           IF    ( RECE01-HKNNUM        =   SPACE         )
+           IF    ( RECE01-HKNNUM        =   SPACE            )
            AND   ( RECE01-KOHHKNNUM-O (1)
-                                        =   "030" )
+                                        =   "030"  OR  "053" )
                MOVE    RECE01-KOH-KOHID TO  RECE02-KOHID-KEY
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
@@ -3507,7 +3509,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
                                                     OR  "025"
                                                     OR  "015"
                                                     OR  "016"
-                                                    OR  "021" )
+                                                    OR  "021"
+                                                    OR  "053" )
                    AND ( RECE01-KOHHKNNUM-O (2)     =   SPACE ) )
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
@@ -3519,6 +3522,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                  MOVE    RECE01-NYUGAIKBN     TO  RECE09-NYUGAIKBN
                  MOVE    RECE01-PTID          TO  RECE09-PTID
                  MOVE    RECE01-RECEKA        TO  RECE09-RECEKA
+                 MOVE    "000"                TO  RECE09-KOHNUM
                  MOVE    RECE01-TEKSTYMDX (IDX)
                                               TO  RECE09-TEKSTYMD
                  PERFORM VARYING IDYY    FROM    1   BY  1

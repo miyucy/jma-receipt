@@ -105,6 +105,8 @@
       *  04.06.01    NACL-藤原    10/11/05  補足コメント対応
       *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.03    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1488,7 +1490,8 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
            IF    ( COMB-HKNNUM         =   SPACE )
            AND   ( COMB-KOH1HKNNUM     =   "020"
-                                       OR  "030" )
+                                       OR  "030"
+                                       OR  "053" )
       *********MOVE    COMB-KOH1HKNNUM     TO  TOUKEI01-HKNJANUM
                MOVE    COMB-TEKSTYMD       TO  TOUKEI01-HKNJANUM
                MOVE    COMB-KOH1ID         TO  TOUKEI01-KOH-KOHID
@@ -2360,10 +2363,11 @@ grpsys                                         SPA-AREA
                    OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
                MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
       *
-      *        公費単独の場合（精神入院・心身喪失・包括以外）
+      *        公費単独の場合（精神入院・心身喪失・児童保護・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
                    IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
-                                                       "030"     )
+                                                       "030"   OR
+                                                       "053"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 
@@ -2428,10 +2432,11 @@ grpsys                                         SPA-AREA
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        公費単独の場合（精神入院・心身喪失・包括以外）
+      *        公費単独の場合（精神入院・心身喪失・児童保護・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
                    IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
-                                                       "030"     )
+                                                       "030"   OR
+                                                       "053"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 

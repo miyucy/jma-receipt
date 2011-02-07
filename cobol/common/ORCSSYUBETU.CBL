@@ -92,6 +92,8 @@
       *                                     掌をエラーとする
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1244,7 +1246,8 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            MOVE    PTHKN-HKNJANUM      TO  WRK-RECE61-HKNJANUM       
            MOVE    ZERO                TO  WRK-RECE61-TEKSTYMD 
            IF      COMB-HKNNUM         =   SPACE
-               IF      COMB-KOH1HKNNUM     =   "020"   OR  "030"
+               IF      COMB-KOH1HKNNUM     =   "020"   OR  "030"   OR
+                                               "053"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
                    MOVE    COMB-KOH1ID         TO  WRK-RECE61-KOH-KOHID
                END-IF
@@ -1499,7 +1502,8 @@ grpsys                                     SPA-AREA
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE61-TEKEDYMDX  (1)
            IF    ( COMB-HKNNUM        =   SPACE )
            AND   ( COMB-KOH1HKNNUM    =   "020" 
-                                      OR  "030" )
+                                      OR  "030"
+                                      OR  "053" )
                MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
                MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
            END-IF
@@ -1887,9 +1891,10 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    OR      FLG-SEIHO                  =   1
                MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
       *
-      *        公費単独の場合（精神入院、心身喪失以外）
+      *        公費単独の場合（精神入院、心身喪失、児童保護以外）
                IF      WRK-RECE61-HKNNUM       =   SPACE
                    IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
+                                                               OR  "053"
                        CONTINUE
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD =   ZERO
@@ -1959,9 +1964,10 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        公費単独の場合（精神入院、心身喪失以外）
+      *        公費単独の場合（精神入院、心身喪失、児童保護以外）
                IF      WRK-RECE61-HKNNUM        =   SPACE
                    IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
+                                                               OR  "053"
                        CONTINUE
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD  =   ZERO

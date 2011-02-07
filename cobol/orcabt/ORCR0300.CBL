@@ -364,6 +364,8 @@
       *                                     キーにkohid 追加
       *                                     調査用にcrehms,updhms 追加
       *  04.06.05    NACL-藤原    11/01/05  機能追加（注加算、同時併施等）
+      *  04.06.06    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6043,7 +6045,11 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
                EVALUATE    RECE09-TEISYUTUSAKI
                    WHEN    "1"
-                       MOVE    "社保"     TO  WRK-HKN-TEISYUTUSAKI
+                       IF      RECE09-HKNID   >   ZERO
+                           MOVE    "社保"     TO  WRK-HKN-TEISYUTUSAKI
+                       ELSE
+                           MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
+                       END-IF
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
@@ -6097,7 +6103,9 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                        END-IF
                    END-IF
                    MOVE    SPACE                  TO  WRK-HKN-RIREKI-X
-                   STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
+                   IF      RECE09-HKNID   >   ZERO
+                       STRING
+                           WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
                            "　"                   DELIMITED  BY  SIZE
                            WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
@@ -6105,8 +6113,18 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
                            WRK-HKN-FIL            DELIMITED  BY  SPACE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
-                              INTO    WRK-HKN-RIREKI-X
-                   END-STRING
+                                              INTO    WRK-HKN-RIREKI-X
+                       END-STRING
+                   ELSE
+                       STRING
+                           RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
+                           "　"                   DELIMITED  BY  SIZE
+                           WRK-HKN-KIGO           DELIMITED  BY  SPACE
+                           WRK-HKN-FIL            DELIMITED  BY  SPACE
+                           WRK-HKN-NUM            DELIMITED  BY  SPACE
+                                              INTO    WRK-HKN-RIREKI-X
+                       END-STRING
+                   END-IF
                    IF      WRK-HKN-RIREKI-X (53:) NOT =   SPACE           
                        STRING  WRK-HKN-TEISYUTUSAKI
                                                   DELIMITED  BY  SPACE

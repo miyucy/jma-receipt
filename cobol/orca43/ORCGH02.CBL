@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.03    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -361,7 +363,8 @@
                IF      TBL-HENREI-B-RECESYUBETU(IDZZ)
                                        =   "1211" OR "1212"
                    IF    ( TBL-HENREI-B-FTNNUM (IDZZ 1) (1:2)
-                                           =   "12" OR  "25" OR  "20" )
+                                           =   "12" OR  "25" OR  "20"
+                                           OR  "53"   )
                        STRING  TBL-HENREI-B-FTNNUM (IDZZ 1)
                                                DELIMITED   BY  SPACE
                                "　"            DELIMITED   BY  SIZE
@@ -478,7 +481,8 @@
                IF      WRK-HENREI-B-RECESYUBETU
                                        =   "1211" OR "1212"
                    IF    ( WRK-HENREI-B-FTNNUM (1) (1:2)
-                                           =   "12" OR  "25" OR  "20" )
+                                           =   "12" OR  "25" OR  "20"
+                                           OR  "53" )
                        STRING  WRK-HENREI-B-FTNNUM (1)
                                                DELIMITED   BY  SPACE
                                "　"            DELIMITED   BY  SIZE

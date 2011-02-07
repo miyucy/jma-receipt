@@ -182,6 +182,8 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1542,7 +1544,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
       *****MOVE    PTHKN-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
            MOVE    ZERO                TO  WRK-RECE01-TEKSTYMD 
            IF      COMB-HKNNUM         =   SPACE
-               IF      COMB-KOH1HKNNUM     =   "030"
+               IF      COMB-KOH1HKNNUM     =   "030"   OR  "053"
                    MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
                    MOVE    COMB-KOH1ID         TO  WRK-RECE01-KOH-KOHID
                END-IF
@@ -1738,7 +1740,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            MOVE    PTHKN-TEKSTYMD     TO  WRK-RECE01-TEKSTYMDX (1)
            MOVE    PTHKN-TEKEDYMD     TO  WRK-RECE01-TEKEDYMDX (1)
            IF    ( COMB-HKNNUM        =   SPACE )
-           AND   ( COMB-KOH1HKNNUM    =   "030" )
+           AND   ( COMB-KOH1HKNNUM    =   "030"
+                                      OR  "053" )
                MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMDX  (1)
                MOVE    COMB-TEKEDYMD       TO  WRK-RECE01-TEKEDYMDX  (1)
            END-IF
