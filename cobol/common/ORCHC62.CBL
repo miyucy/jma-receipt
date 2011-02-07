@@ -398,6 +398,10 @@
       *           ( WRK-SRYCD(1:3)  NOT =   "001" )
       *         GO  TO  230-NAIYO-HENSYU-EXT
       *     END-IF
+      *    減の文字は対象外
+           IF      WRK-SRYCD   =   "820000047"
+               GO  TO  230-NAIYO-HENSYU-EXT
+           END-IF
       *
       *    点数検索
            PERFORM 900-TENSU-READ-SEC

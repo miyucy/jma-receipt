@@ -479,6 +479,11 @@
       *    点数検索
            MOVE    ORCHCN62-SRYCD(IDX-ZAI IDX-SRY)
                                        TO  WRK-SRYCD
+      *    減の文字は対象外
+           IF      WRK-SRYCD   =   "820000047"
+               GO  TO  230-NAIYO-HENSYU-EXT
+           END-IF
+      *
            PERFORM 900-TENSU-READ-SEC
       *
            COMPUTE CNT-SRY             =   CNT-SRY     +   1
