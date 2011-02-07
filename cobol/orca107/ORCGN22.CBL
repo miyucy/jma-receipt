@@ -32,6 +32,7 @@
       *  04.02.01    NACL-森脇     08/02/20  参照情報表示追加
       *                                      リスト行数５０→４０に変更
       *                                      タイマーイベントクリア追加
+      *  04.06.00    NACL-森脇     11/02/07  情報削除追加
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -80,6 +81,7 @@
            03  WRK-GAZO            PIC X(256).
            03  WRK-GAZOFILE        PIC X(256).
            03  WRK-OBJECT          PIC X(8).
+           03  WRK-N21IDMSG        PIC X(70).
       *
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(34)  VALUE
@@ -225,6 +227,9 @@
                WHEN    "CLICKED"   ALSO    "B01"
                    MOVE    SPACE           TO  SPA-N22-FLG
                    PERFORM 450-BACK
+      *    情報削除
+               WHEN    "CLICKED"       ALSO    "B02"
+                   PERFORM 201-DELETE-SEC
       *    状況
       *----(01.01.02)---ADD-START---
                WHEN    "CLICKED"   ALSO    "pandatimer1"
@@ -266,6 +271,16 @@
       *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
+      *
+           EVALUATE    SPA-MOTOPG
+      *        確認画面ＯＫ処理
+               WHEN    "N21ID1"
+                   PERFORM 490-JYOUHOU-DEL-SEC
+                   GO  TO  300-SCREEN-EXT
+           END-EVALUATE
+      *
+           MOVE    SPACE           TO  SPA-N21ID1-FLG
+           MOVE    SPACE           TO  SPA-N21IDCD
       *
            INITIALIZE                  SPA-N22-AREA
            MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
@@ -918,12 +933,60 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    情報削除　処理
+      *****************************************************************
+       201-DELETE-SEC                  SECTION.
+      *
+      *    ＪＯＢ管理検索
+           MOVE    3               TO  WRK-CONS-JOB-JOBID
+           PERFORM 820-JOBKANRI-READ-SEC
+      *
+           IF    (  SJOBKANRI-RETURN   =   ZERO )
+               MOVE    "0001"          TO  SPA-N21IDCD
+               MOVE    SPACE           TO  SPA-N22-MESSAGE
+               MOVE    SPACE           TO  SPA-N22-MESSAGE-STYLE
+           ELSE
+               MOVE    "ＪＯＢ管理情報は、ありません"
+                                       TO  SPA-N22-MESSAGE
+               MOVE    "blue"          TO  SPA-N22-MESSAGE-STYLE
+           END-IF
+           .
+       201-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    情報削除
+      *****************************************************************
+       490-JYOUHOU-DEL-SEC             SECTION.
+      *
+           IF      SPA-N21ID1-FLG    =   "OK"
+      *        ジョブ管理削除
+               MOVE    3               TO  WRK-CONS-JOB-JOBID
+               PERFORM 820-JOBKANRI-DEL-SEC
+               MOVE    4               TO  WRK-CONS-JOB-JOBID
+               PERFORM 820-JOBKANRI-DEL-SEC
+               MOVE    ZERO            TO  SPA-N22-DURATION
+           END-IF
+           MOVE    SPACE           TO  SPA-N21ID1-FLG
+           MOVE    SPACE           TO  SPA-N21IDCD
+      *
+           .
+       490-JYOUHOU-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
       *    画面編集処理
            PERFORM 500-GMNHEN-SEC
+      *
+      *    確認メッセージ表示処理
+           IF      SPA-N21IDCD     NOT =   SPACE
+               PERFORM 520-N21IDSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
       *
            MOVE    SPACE           TO  LINKAREA
       *
@@ -1000,6 +1063,40 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ表示処理
+      *****************************************************************
+       520-N21IDSET-SEC            SECTION.
+      *
+           MOVE    SPACE           TO  WRK-N21IDMSG
+      *
+           EVALUATE    SPA-N21IDCD
+               WHEN    "0001"
+                   MOVE
+                   "ＪＯＢ管理情報を削除します。よろしいですか？"
+                                           TO  WRK-N21IDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE           TO  N21ID1
+           MOVE    SPA-N21IDCD     TO  N21ID1-ID1CODE
+           MOVE    WRK-N21IDMSG    TO  N21ID1-ID1MSG
+           MOVE    "B12"           TO  MCP-WIDGET
+      *
+           MOVE    "N22"           TO  SPA-MOTOPG
+           MOVE    "N21ID1"        TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "N21ID1"        TO  MCP-WINDOW
+      *
+      *    ＰＵＴ処理
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       520-N21IDSET-EXT.
            EXIT.
       *
       *****************************************************************
