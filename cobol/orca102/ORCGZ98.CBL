@@ -93,6 +93,8 @@
            03  FLG-KIKAN           PIC 9(01).
            03  FLG-KENSAKU01       PIC 9(01).
       *
+           03  FLG-INPUTCD-ARI     PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -1299,6 +1301,9 @@
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX2
+      *!!
+           MOVE    ZERO                TO  FLG-INPUTCD-ARI
+      *!!
            PERFORM
                UNTIL      (IDX             >  200  )   OR
                           (FLG-INPUTCD     =   1   )
@@ -1324,7 +1329,14 @@
                                    PERFORM 31012-INPUTCD-HEN-SEC
                                END-IF
                            END-IF
+      *!!
+                       ELSE
+      *                    一致する入力ＣＤあり
+                           IF      ICD-INPUTCD     =   SPA-Z98-GMN-INPUT
+                               MOVE    1           TO  FLG-INPUTCD-ARI
+                           END-IF
                        END-IF
+      *!!
                    END-IF
       *
                END-IF
@@ -1338,6 +1350,12 @@
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    対象がなく、入力内容と一致するコードがある場合
+           IF     (WRK-CNT-ENT         =   ZERO )
+             AND  (FLG-INPUTCD-ARI     =   1    )
+               PERFORM 31019-INPUTCD-ERR-SEC
+           END-IF
+      *
            MOVE    WRK-CNT-ENT         TO  SPA-Z98-GMN-MAX
            IF      FLG-MAX         NOT =   ZERO
       ******** MOVE    "0005"              TO  SPA-ERRCD
@@ -1348,6 +1366,65 @@
       *
            .
        3101-INPUTCD-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   セット一覧編集処理
+      *****************************************************************
+       31019-INPUTCD-ERR-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  INPUTCD-REC
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-Z98-CDSYUBETU   TO  ICD-CDSYU
+           MOVE    SPA-Z98-GMN-INPUT   TO  ICD-INPUTCD
+           MOVE    "key2"              TO  WRK-PATH
+      *
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM                     930-INPUTCD-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-INPUTCD
+           END-IF
+      *
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX2
+           PERFORM
+               UNTIL      (IDX             >  200  )   OR
+                          (FLG-INPUTCD     =   1   )
+               INITIALIZE                  TNS-TENSU-REC
+               MOVE    ICD-SRYCD           TO  TNS-SRYCD
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 910-TENSU-SELECT-SEC
+               IF      FLG-TENSU           =   ZERO
+                   PERFORM 31021-TENSU-CHK-SEC
+                   IF      FLG-CHK         =   ZERO
+                       ADD     1               TO  IDX2
+      *                次ページの時、表示分は読み飛ばし
+                       IF      IDX2            >=  WRK-STR
+                           PERFORM 31012-INPUTCD-HEN-SEC
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+               MOVE    "tbl_inputcd"       TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM                     930-INPUTCD-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       31019-INPUTCD-ERR-EXT.
            EXIT.
       *
       *****************************************************************
