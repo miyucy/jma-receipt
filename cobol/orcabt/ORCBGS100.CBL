@@ -340,14 +340,16 @@
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
-           MOVE    "STM"               TO  SJOBKANRI-MODE
-           INITIALIZE                      JOBKANRI-REC
-           PERFORM 800-ORCSJOB-SEC
-      *
            IF    ( BGS100P-PAGE        =   ZERO )
                MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           IF    ( BGS100P-RC          =   ZERO )
+               MOVE    "STM"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               PERFORM 800-ORCSJOB-SEC
            END-IF
       *
            MOVE    "STE"           TO  SJOBKANRI-MODE
