@@ -1004,8 +1004,15 @@
                GO  TO  2410-SRYKA-SET-EXT
            END-IF
       *
-           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+           IF      WRK-MO-CNT      =   1
+                MOVE    0          TO  WKPTBYO-SRYKA(1:1)
+                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WKPTBYO-SRYKA(2:1)
+           ELSE
+                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WKPTBYO-SRYKA
+           END-IF
+      *
       *    ø«Œ≈≤ •¡•ß•√•Ø
            PERFORM 120-CP1005-KENSAKU-SEC
            IF      FLG-SYSKANRI    =   1
