@@ -184,7 +184,7 @@
            OR    (LNK-SKYGET-SKJ-RYOYOHI     NOT = ZERO)
              PERFORM   VARYING   IDX1   FROM  1  BY  1
                         UNTIL    IDX1                >  4
-                         OR      RECE10-KOHNUM(IDX1) = SPACE
+               IF   RECE10-KOHNUM(IDX1)  NOT = SPACE
                  MOVE  RECE10-KOHNUM(IDX1)
                             TO  LNK-SKYGET-KOH-HKNNUM(IDX1)
                  MOVE  RECE10-JNISSU(IDX1 + 1)
@@ -199,6 +199,7 @@
                             TO  LNK-SKYGET-KOH-RYOYOHI(IDX1)
                  MOVE  RECE10-SHOKUJIFTN(IDX1 + 1)
                             TO  LNK-SKYGET-KOH-SHOKUJIFTN(IDX1)
+               END-IF
              END-PERFORM
       *
              INITIALIZE                          KOHSKY-REC
@@ -207,7 +208,11 @@
              IF       FLG-KOHSKY  =   ZERO
                PERFORM   VARYING   IDX1   FROM  1  BY  1
                           UNTIL    IDX1                >  4
-                           OR      KOHSKY-KOHNUM(IDX1) = SPACE
+                IF  (KOHSKY-KOHNUM(IDX1) NOT = SPACE                   )
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(1))
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(2))
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(3))
+                AND (KOHSKY-KOHNUM(IDX1) NOT = LNK-SKYGET-KOH-HKNNUM(4))
                  MOVE  KOHSKY-KOHNUM(IDX1)
                             TO  LNK-SKYGET-KOHETC-HKNNUM(IDX1)
                  MOVE  KOHSKY-JNISSU(IDX1 + 1)
@@ -222,6 +227,7 @@
                             TO  LNK-SKYGET-KOHETC-RYOYOHI(IDX1)
                  MOVE  KOHSKY-SHOKUJIFTN(IDX1 + 1)
                             TO  LNK-SKYGET-KOHETC-SHOKUJIFTN(IDX1)
+                END-IF
                END-PERFORM
              END-IF
            ELSE
