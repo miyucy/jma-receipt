@@ -24,7 +24,6 @@ db "xml" {
  xml_appointlstres;
  xml_acceptlstreq;
  xml_acceptlstres;
- xml_patientinforeq;
  xml_patientinfores;
 };
 

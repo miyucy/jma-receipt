@@ -184,8 +184,7 @@
        01  SCRAREA.
            COPY    "CPAPIMOD.INC".
            COPY    "CPAPILST.INC".
-           COPY    "CPAPILST.INC"    REPLACING
-                                     //APILST-// BY //APILST3-//.
+           COPY    "CPAPIPTA.INC" .
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

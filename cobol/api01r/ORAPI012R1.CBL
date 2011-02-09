@@ -105,8 +105,8 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    API XML読み込み用定義体
-           COPY    "CPPATIENTXMLREQ.INC".
+      ***  API XML読み込み用定義体
+      ***  COPY    "CPPATIENTXMLREQ.INC".
       *    API XML読み込み用定義体
            COPY    "CPPATIENTXMLRES.INC".
       *
@@ -146,8 +146,7 @@
            COPY    "CPAPIMOD.INC".
            COPY    "CPAPILST.INC"    REPLACING
                                      //APILST-// BY //APILST2-//.
-           COPY    "CPAPILST.INC"    REPLACING
-                                     //APILST-// BY //APILST3-//.
+           COPY    "CPAPIPTA.INC" .
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -195,7 +194,6 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
-           INITIALIZE                      XML-PATIENTINFOREQ
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -242,11 +240,12 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           MOVE    APIPTA-PTNUM       TO  WRK-PTNUM
       *    XML情報取り出し
-           PERFORM 1000-PTIXMLREAD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
+      *    PERFORM 1000-PTIXMLREAD-SEC
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      200-MAIN-EXT
+      *    END-IF
       *
            MOVE    ZERO                TO  PTRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
@@ -263,63 +262,6 @@
       *
            .
        200-MAIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    XML情報から内容を取り出す
-      *****************************************************************
-       1000-PTIXMLREAD-SEC   SECTION.
-      *
-           IF      APILST3-BODY    NOT =   LOW-VALUE
-               DISPLAY "API-BODY not low_value"
-           END-IF
-      * XML情報取り出し
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_patientinforeq"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST3-BODY        TO  PTREQ-OBJECT
-           MOVE    ZERO                TO  PTREQ-MODE
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-PATIENTINFOREQ
-                                       SPA-AREA
-           IF     (MCP-RC              = ZERO  OR  1)
-               CONTINUE
-           ELSE
-               MOVE   "97"               TO  WRK-ERRCD
-               GO     TO   1000-PTIXMLREAD-EXT
-           END-IF
-      *
-      *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_patientinforeq"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  PTREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-PATIENTINFOREQ
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO    OR  1  )
-               MOVE    PTREQ-PATIENTID     TO  WRK-PTNUM
-           ELSE
-               DISPLAY "XMLREAD failure = " MCP-RC
-               MOVE   "98"               TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientinforeq"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  PTREQ-OBJECT
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-PATIENTINFOREQ
-                                       SPA-AREA
-           IF (MCP-RC = ZERO OR 1)
-               CONTINUE
-           END-IF
-      *
-           .
-       1000-PTIXMLREAD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -413,7 +355,7 @@
                MOVE    WRK-ERRMSG          TO  PTRES-API-RESULT-MSG
            END-IF
       *
-           IF      APILST3-BODY        NOT =   LOW-VALUE
+           IF      APIPTA-BODY     NOT =   LOW-VALUE
                DISPLAY "ACPLSTRES-OBJECT not low_value"
            END-IF
       *
@@ -457,8 +399,8 @@
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLCLOSE OK   = " MCP-RC
-               MOVE    PTRES-OBJECT        TO  APILST3-BODY 
-               MOVE    "application/xml"   TO  APILST3-CONTENT-TYPE
+               MOVE    PTRES-OBJECT        TO  APIPTA-BODY 
+               MOVE    "application/xml"   TO  APIPTA-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "patient res xml write failure "

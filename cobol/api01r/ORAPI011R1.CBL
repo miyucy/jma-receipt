@@ -186,8 +186,7 @@
            COPY    "CPAPIMOD.INC".
            COPY    "CPAPILST.INC"    REPLACING
                                      //APILST-// BY //APILST2-//.
-           COPY    "CPAPILST.INC"    REPLACING
-                                     //APILST-// BY //APILST3-//.
+           COPY    "CPAPIPTA.INC" .
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

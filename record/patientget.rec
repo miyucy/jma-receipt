@@ -1,6 +1,6 @@
 patientget {
 		argument {
-			id			varchar(02);
+			id			varchar(20);
 		};
 		methodtype			varchar(100);
 		content_type		varchar(100);
