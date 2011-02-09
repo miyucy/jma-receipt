@@ -114,6 +114,7 @@
            03  FLG-BGSETC          PIC 9(01).
            03  FLG-LOOPEND         PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
@@ -124,6 +125,7 @@
            03  IDX-KOH             PIC 9(05).
            03  IDX-BASE            PIC 9(05).
            03  IDXP                PIC 9(05).
+           03  IDX-RECEKA          PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD            PIC X(08).
@@ -140,6 +142,11 @@
            03  WRK-PRT-SRYYM       PIC X(16).
            03  WRK-PRT-SAKYMD      PIC X(22).
            03  WRK-KANACHK-STR     PIC X(500).
+           03  WRK-RECEKA-MAX      PIC 9(05).
+           03  WRK-SRYKANAME1      PIC X(24).
+      *
+       01  KEY-AREA.
+           03  KEY-RECEKA          PIC X(02).
       *
        01  THKN-AREA.
            03  THKN-NYUGAI-OCC     OCCURS  2.
@@ -197,6 +204,10 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    システム管理
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK1005.INC".
       *
       *    保険番号
        01  HKNNUM-REC.
@@ -297,6 +308,60 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF    ( BGS100P-SYUKA-SYA   =   1 )
+               PERFORM VARYING IDX-RECEKA  FROM    1   BY  1
+                       UNTIL ( IDX-RECEKA  >   BGS100P-RECEKA-MAX )
+      *
+                   MOVE    BGS100P-RECEKA (IDX-RECEKA)
+                                   TO  KEY-RECEKA
+      *
+                   PERFORM 2001-MAIN-SEC
+               END-PERFORM
+               MOVE    SPACE       TO  KEY-RECEKA
+               PERFORM 2001-MAIN-SEC
+           ELSE
+               MOVE    SPACE       TO  KEY-RECEKA
+               PERFORM 2001-MAIN-SEC
+           END-IF
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主　処理
+      *****************************************************************
+       2001-MAIN-SEC               SECTION.
+      *
+           MOVE    ZERO            TO      CNT-NYUIN
+                                           CNT-GAIRAI
+      *
+           INITIALIZE                      THKN-AREA
+                                           TKOH-AREA
+                                           TETC-AREA
+      *
+           MOVE    SPACE           TO      WRK-SRYKANAME1
+           IF    ( BGS100P-SYUKA-SYA   =   1 )
+               EVALUATE    KEY-RECEKA
+               WHEN    SPACE
+                   MOVE    "全科計"    TO  WRK-SRYKANAME1
+               WHEN    "00"
+                   MOVE    "主科設定なし"
+                                       TO  WRK-SRYKANAME1
+               WHEN    OTHER
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                   MOVE    "1005"          TO  SYS-KANRICD
+                   MOVE    KEY-RECEKA      TO  SYS-KBNCD
+                   MOVE    BGS100P-SRYYMD  TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-1005-REC
+                   MOVE    SYS-1005-SRYKANAME1
+                                       TO  WRK-SRYKANAME1
+               END-EVALUATE
+           END-IF
+      *
            PERFORM 2001-SKY-EDIT-SEC
       *
            PERFORM 2001-KOH-EDIT-SEC
@@ -314,12 +379,9 @@
                PERFORM 2001-HCGS137G-EDIT-SEC
            END-IF
       *
-           CLOSE           BGSKOH-FILE
-      *
            .
-       200-MAIN-EXT.
+       2001-MAIN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    請求情報編集処理
       *****************************************************************
@@ -428,13 +490,9 @@
                PERFORM 2001111-SKY-SUM-SEC
            WHEN    "1231"
            WHEN    "1232"
-               MOVE    CONST-KOH3HEI   TO  IDX2
-               PERFORM 2001111-SKY-SUM-SEC
-               MOVE    CONST-KOHTTL    TO  IDX2
-               PERFORM 2001111-SKY-SUM-SEC
            WHEN    "1241"
            WHEN    "1242"
-               MOVE    CONST-KOH4HEI   TO  IDX2
+               MOVE    CONST-KOH3HEI   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
                MOVE    CONST-KOHTTL    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
@@ -688,6 +746,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS137N1-SRYYM
            MOVE    "入院"              TO  HCGS137N1-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS137N1-SYSYMD
+           MOVE    WRK-SRYKANAME1      TO  HCGS137N1-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
@@ -770,6 +829,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS137N2-SRYYM
            MOVE    "入院"              TO  HCGS137N2-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS137N2-SYSYMD
+           MOVE    WRK-SRYKANAME1      TO  HCGS137N2-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
@@ -967,6 +1027,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS137G-SRYYM
            MOVE    "外来"              TO  HCGS137G-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS137G-SYSYMD
+           MOVE    WRK-SRYKANAME1      TO  HCGS137G-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
@@ -1291,7 +1352,13 @@
       *
                    IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
                        IF    ( BGS100P-NYUGAIKBN
-                                           NOT =  BGSSKY-NYUGAIKBN )
+                                           NOT =   BGSSKY-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
+                   IF    ( KEY-RECEKA      NOT =   SPACE )
+                       IF    ( KEY-RECEKA  NOT =   BGSSKY-RECEKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
@@ -1327,7 +1394,13 @@
       *
                    IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
                        IF    ( BGS100P-NYUGAIKBN
-                                           NOT =  BGSKOH-NYUGAIKBN )
+                                           NOT =   BGSKOH-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
+                   IF    ( KEY-RECEKA      NOT =   SPACE )
+                       IF    ( KEY-RECEKA  NOT =   BGSKOH-RECEKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
@@ -1363,7 +1436,13 @@
       *
                    IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
                        IF    ( BGS100P-NYUGAIKBN
-                                           NOT =  BGSETC-NYUGAIKBN )
+                                           NOT =   BGSETC-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
+                   IF    ( KEY-RECEKA      NOT =   SPACE )
+                       IF    ( KEY-RECEKA  NOT =   BGSETC-RECEKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
@@ -1405,6 +1484,32 @@
       *
            .
        900-HKNNUM-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

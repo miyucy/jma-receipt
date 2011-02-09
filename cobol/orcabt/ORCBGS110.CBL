@@ -126,12 +126,14 @@
        01  FLG-AREA.
            03  FLG-BGSSKY          PIC 9(01).
            03  FLG-BGSKOH          PIC 9(01).
-           03  FLG-BGSHKNJA       PIC 9(01).
+           03  FLG-BGSHKNJA        PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
+           03  IDX1                PIC 9(05).
            03  IDX-KOH             PIC 9(05).
            03  IDX-NG              PIC 9(05).
            03  IDX-HKN             PIC 9(05).
@@ -144,6 +146,7 @@
            03  WRK-KOHKBN          PIC X(1).
            03  WRK-KOHNUM          PIC X(3).
            03  WRK-TTLID           PIC 9(5).
+           03  WRK-RECEKA          PIC X(2).
       *
        01  CONST-AREA.
            03  CONST-SYAHO         PIC 9(01)   VALUE 1.
@@ -155,10 +158,15 @@
            03  CONST-ROUSAI        PIC 9(01)   VALUE 7.
            03  CONST-JIBAI         PIC 9(01)   VALUE 8.
            03  CONST-KOUGAI        PIC 9(01)   VALUE 9.
+           03  CONST-RECEKA-MAX    PIC 9(05)   VALUE 100.
       *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    システム管理
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK2009.INC".
       *
       *    患者情報
        01  PTINF-REC.
@@ -238,6 +246,36 @@
            INITIALIZE                      JOBKANRI-REC
            MOVE    SPACE               TO  JOB-YOBI
            PERFORM 800-ORCSJOB-SEC
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "2009"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    BGS100P-SRYYMD      TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-2009-REC
+      *
+           MOVE    ZERO                TO  BGS100P-SYUKA
+                                           BGS100P-SYUKA-SYA
+                                           BGS100P-SYUKA-KOK
+                                           BGS100P-SYUKA-KOU
+           INITIALIZE                      BGS100P-RECEKA-G
+      *
+           IF    ( SYS-2009-SYUKA-KBN  =   "1" )
+      *
+                   MOVE    1           TO  BGS100P-SYUKA
+      *
+               IF    ( SYS-2009-SYUKA-SYAHO    =   "1" )
+                   MOVE    1           TO  BGS100P-SYUKA-SYA
+               END-IF
+               IF    ( SYS-2009-SYUKA-KOKUHO   =   "1" )
+                   MOVE    1           TO  BGS100P-SYUKA-KOK
+               END-IF
+               IF    ( SYS-2009-SYUKA-KOUIKI   =   "1" )
+                   MOVE    1           TO  BGS100P-SYUKA-KOU
+               END-IF
+           END-IF
       *
            OPEN    OUTPUT  BGSSKY-FILE
                            BGSKOH-FILE
@@ -346,6 +384,29 @@
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           IF    ( BGS100P-RECEKA-MAX  >   ZERO )
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   BGS100P-RECEKA-MAX  - 1 )
+                   COMPUTE IDX1    =   IDX1    +   1
+                   PERFORM VARYING IDX1    FROM    IDX1    BY  1
+                           UNTIL ( IDX1    >   BGS100P-RECEKA-MAX )
+                       IF    ( BGS100P-RECEKA (IDX0)
+                                       >   BGS100P-RECEKA (IDX1))
+                           MOVE    BGS100P-RECEKA (IDX0)
+                                           TO  WRK-RECEKA
+                           MOVE    BGS100P-RECEKA (IDX1)
+                                           TO  BGS100P-RECEKA (IDX0)
+                           MOVE    WRK-RECEKA
+                                           TO  BGS100P-RECEKA (IDX1)
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+           END-IF
+      *
+           COMPUTE BGS100P-RECEKA-MAX
+               =   BGS100P-RECEKA-MAX      +   1
+           MOVE    "00"        TO  BGS100P-RECEKA (BGS100P-RECEKA-MAX)
+      *
            .
        2001-SEIKYU-EDIT-EXT.
            EXIT.
@@ -385,6 +446,23 @@
            IF    ( WRK-HOKEN    =  CONST-KOKUHO
                                 OR CONST-KOUKI )
                PERFORM 200111-BGSHKNJA-EDIT-SEC
+           END-IF
+      *
+           IF    ( RECE10-RECEKA       NOT =   "00" )
+               PERFORM VARYING IDX0 FROM    1   BY  1
+                      UNTIL ( IDX0 >   CONST-RECEKA-MAX )
+                       OR   ( BGS100P-RECEKA (IDX0)
+                                           =   RECE10-RECEKA )
+      *
+                   IF    ( IDX0            >   BGS100P-RECEKA-MAX )
+                       MOVE    RECE10-RECEKA
+                                           TO  BGS100P-RECEKA (IDX0)
+                       MOVE    IDX0        TO  BGS100P-RECEKA-MAX
+                       MOVE    CONST-RECEKA-MAX
+                                           TO  IDX0
+                   END-IF
+      *
+               END-PERFORM
            END-IF
       *
            .
@@ -574,6 +652,7 @@
                    ELSE
                        MOVE    "2"     TO  BGSETC-NYUGAIKBN
                    END-IF
+                   MOVE   "00"         TO  BGSETC-RECEKA
                    MOVE   LNK-SKYGET-KENSU (IDX-HKN IDX-NG)
                                        TO  BGSETC-KENSU
                    MOVE   LNK-SKYGET-IRYO2-NISSU (IDX-HKN IDX-NG)
@@ -791,6 +870,32 @@
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-SYSKANRI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    請求ファイル読込処理
       *****************************************************************
        900-BGSSKY-READ-SEC             SECTION.
@@ -800,6 +905,21 @@
            INITIALIZE                  BGSSKY-REC
            MOVE    RECE10-NYUGAIKBN
                                    TO  BGSSKY-NYUGAIKBN
+      *
+           IF    ( WRK-HOKEN       =   CONST-SYAHO
+             OR                        CONST-KOKUHO
+             OR                        CONST-KOUKI )
+               IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
+                                   =   1 )
+                   MOVE    RECE10-RECEKA
+                                   TO  BGSSKY-RECEKA
+               ELSE
+                   MOVE    "00"    TO  BGSSKY-RECEKA
+               END-IF
+           ELSE
+                   MOVE    "00"    TO  BGSSKY-RECEKA
+           END-IF
+      *
            MOVE    WRK-HOKEN       TO  BGSSKY-HOKEN
            MOVE    RECE10-RECESYUBETU
                                    TO  BGSSKY-RECESBT
@@ -823,6 +943,20 @@
            INITIALIZE                  BGSKOH-REC
            MOVE    RECE10-NYUGAIKBN
                                    TO  BGSKOH-NYUGAIKBN
+      *
+           IF    ( WRK-HOKEN       =   CONST-SYAHO
+             OR                        CONST-KOKUHO
+             OR                        CONST-KOUKI )
+               IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
+                                   =   1 )
+                   MOVE    RECE10-RECEKA
+                                   TO  BGSKOH-RECEKA
+               ELSE
+                   MOVE    "00"    TO  BGSKOH-RECEKA
+               END-IF
+           ELSE
+                   MOVE    "00"    TO  BGSKOH-RECEKA
+           END-IF
            MOVE    WRK-HOKEN       TO  BGSKOH-HOKEN
            MOVE    WRK-KOHKBN      TO  BGSKOH-KOHKBN
            MOVE    WRK-KOHNUM      TO  BGSKOH-KOHNUM
@@ -845,6 +979,19 @@
            INITIALIZE                  BGSHKNJA-REC
            MOVE    RECE10-NYUGAIKBN
                                    TO  BGSHKNJA-NYUGAIKBN
+           IF    ( WRK-HOKEN       =   CONST-SYAHO
+             OR                        CONST-KOKUHO
+             OR                        CONST-KOUKI )
+               IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
+                                   =   1 )
+                   MOVE    RECE10-RECEKA
+                                   TO  BGSHKNJA-RECEKA
+               ELSE
+                   MOVE    "00"    TO  BGSHKNJA-RECEKA
+               END-IF
+           ELSE
+                   MOVE    "00"    TO  BGSHKNJA-RECEKA
+           END-IF
            MOVE    WRK-HOKEN       TO  BGSHKNJA-HOKEN
            MOVE    RECE10-PREFKBN  TO  BGSHKNJA-PREFKBN
            MOVE    RECE10-HKNJANUM-S

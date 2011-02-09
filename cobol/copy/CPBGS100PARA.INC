@@ -40,5 +40,17 @@
            03  BGS100P-KOKUHO          PIC 9(01).
            03  BGS100P-KOUKI           PIC 9(01).
            03  BGS100P-SOUKATU         PIC 9(01).
+           03  BGS100P-SYUKA           PIC 9(01).
+           03  BGS100P-SYUKA-HKN-G.
+               05  BGS100P-SYUKA-SYA   PIC 9(01).
+               05  BGS100P-SYUKA-KOK   PIC 9(01).
+               05  BGS100P-SYUKA-KOU   PIC 9(01).
+           03  BGS100P-SYUKA-HKN-R     REDEFINES   BGS100P-SYUKA-HKN-G.
+               05  BGS100P-SYUKA-HKN   PIC 9(01)
+                                       OCCURS  3.
+           03  BGS100P-RECEKA-G.
+               05  BGS100P-RECEKA-MAX  PIC S9(03).
+               05  BGS100P-RECEKA-OCC  OCCURS  100.
+                   07  BGS100P-RECEKA  PIC X(02).
            03  BGS100P-PAGE            PIC 9(05).
            03  BGS100P-RC              PIC 9(02).

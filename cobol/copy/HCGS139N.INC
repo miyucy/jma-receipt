@@ -4,6 +4,8 @@
             02  HCGS139N-SYSYMD PIC X(22).
             02  HCGS139N-SRYKANAME  PIC X(20).
             02  HCGS139N-NYUGAI PIC X(20).
+            02  HCGS139N-ETCHKNMSG  PIC X(200).
+            02  HCGS139N-ETCMSG PIC X(100).
             02  HCGS139N-MEISAI-AREA.
               03  HCGS139N-KOHKENSU   PIC X(4).
               03  HCGS139N-HKN-TBL        OCCURS  31 TIMES.

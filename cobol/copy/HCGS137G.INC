@@ -5,6 +5,7 @@
             02  HCGS137G-NYUGAI PIC X(4).
             02  HCGS137G-SRYKANAME  PIC X(20).
             02  HCGS137G-KOHMSG PIC X(50).
+            02  HCGS137G-ETCMSG PIC X(100).
             02  HCGS137G-HKN-TBL        OCCURS  58 TIMES.
               03  HCGS137G-KENSU  PIC X(4).
               03  HCGS137G-NISSU  PIC X(4).

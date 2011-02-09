@@ -346,8 +346,6 @@
                PERFORM 2001-HCGS138G2-EDIT-SEC
            END-IF
       *
-           CLOSE           BGSKOH-FILE
-      *
            .
        200-MAIN-EXT.
            EXIT.

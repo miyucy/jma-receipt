@@ -340,8 +340,6 @@
                PERFORM 2001-HCGS139N-EDIT-SEC
            END-IF
       *
-           CLOSE           BGSKOH-FILE
-      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -1017,8 +1015,6 @@
       *
                    MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
                    MOVE    WRK-M9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
                    MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
                    MOVE    WRK-M9  TO  HCGS139N-GENMEN (CNT-LINE)
                    MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
@@ -1028,9 +1024,23 @@
                    MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
                    MOVE    WRK-M9  TO  HCGS139N-HASU    (CNT-LINE)
       *
+                   DISPLAY IDX1 ":"IDX2 " "
+                           "JIHIMONEY[" THKN-JIHIMONEY(IDX1 IDX2) "]"
+                           "GENMEN["    THKN-GENMEN   (IDX1 IDX2) "]"
+                           "CHOSEI1["   THKN-CHOSEI1  (IDX1 IDX2) "]"
+                           "CHOSEI2["   THKN-CHOSEI2  (IDX1 IDX2) "]"
+                           "HASU["      THKN-HASU     (IDX1 IDX2) "]"
                END-IF
       *
            END-PERFORM
+      *
+           STRING  "（注）件数は患者数（複数保険使用の場合はその数）"
+                                           DELIMITED BY SIZE
+                   "の集計結果となります。実際のレセプト件数・日数と"
+                                           DELIMITED BY SIZE
+                   "一致しない場合があります。"
+           INTO    HCGS139N-ETCHKNMSG
+           END-STRING
       *
            MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139N-KOHKENSU
@@ -1110,8 +1120,6 @@
       *
                    MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
                    MOVE    WRK-M9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
                    MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
                    MOVE    WRK-M9  TO  HCGS139G-GENMEN (CNT-LINE)
                    MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
@@ -1124,6 +1132,14 @@
                END-IF
       *
            END-PERFORM
+      *
+           STRING  "（注）件数は患者数（複数保険使用の場合はその数）"
+                                           DELIMITED BY SIZE
+                   "の集計結果となります。実際のレセプト件数・日数と"
+                                           DELIMITED BY SIZE
+                   "一致しない場合があります。"
+           INTO    HCGS139G-ETCHKNMSG
+           END-STRING
       *
            MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139G-KOHKENSU
@@ -1314,6 +1330,13 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
+                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
+                       IF    ( BGS100P-NYUGAIKBN
+                                           NOT =   BGSSKY-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
                END-READ
            END-PERFORM
       *
@@ -1339,6 +1362,13 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
+                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
+                       IF    ( BGS100P-NYUGAIKBN
+                                           NOT =   BGSKOH-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
                END-READ
            END-PERFORM
       *
@@ -1363,6 +1393,13 @@
                NOT AT  END
       *
                    MOVE    1       TO  FLG-LOOPEND
+      *
+                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
+                       IF    ( BGS100P-NYUGAIKBN
+                                           NOT =   BGSETC-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
       *
                END-READ
            END-PERFORM

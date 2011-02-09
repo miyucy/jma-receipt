@@ -5,6 +5,7 @@
             02  HCGS140N1-NYUGAI    PIC X(4).
             02  HCGS140N1-SRYKANAME PIC X(20).
             02  HCGS140N1-KOHMSG    PIC X(50).
+            02  HCGS140N1-ETCMSG    PIC X(100).
             02  HCGS140N1-CITY-AREA.
               03  HCGS140N1-KBN1-TBL      OCCURS  3 TIMES.
                 04  HCGS140N1-KENSU PIC X(4).
