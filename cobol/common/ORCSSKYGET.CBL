@@ -45,6 +45,7 @@
            03  FLG-KOHSKY                PIC 9(01).
            03  FLG-SYUNOU                PIC 9(01).
            03  FLG-SYUKEI                PIC 9(01).
+           03  FLG-JIHIRANSYUKEI         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -79,6 +80,9 @@
       *****************************************************************
       *
            COPY    "MCPDATA.INC".
+      *
+      *    患者番号変換サブ
+           COPY    "CPORCSPTID.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -359,6 +363,39 @@
              INITIALIZE                    WRK-TAIHI-AREA2
            END-IF
       *
+           MOVE     ZERO     TO    FLG-JIHIRANSYUKEI
+           IF  (SYU-TOTAL-HKNTEN      =  ZERO)
+           AND (SYU-TOTAL-MONEY   NOT =  ZERO)
+           AND (IDX1                  =   5  )
+           AND (SYU-JYO-COMPFTN   NOT =  ZERO)
+           AND (LNK-SKYGET-SRYYM  >=   201103)
+             MOVE    1       TO    FLG-JIHIRANSYUKEI
+           END-IF
+      *
+           IF  (SYU-TOTAL-HKNTEN      =  ZERO)
+           AND (IDX1                  =   5  )
+           AND (SYU-JYO-COMPFTN       =  ZERO)
+           AND (LNK-SKYGET-SRYYM  >=   201103)
+      *      入院（仮収納）のDISPLAYがでてなくて、
+      *      入院（本収納）のDISPLAYがでていたら、
+      *      入院（本収納）の再処理が必要となる。
+             DISPLAY   "*******"
+             DISPLAY   "NYUGAIKBN=" SYU-NYUGAIKBN
+             DISPLAY   "IDX2="      IDX2
+             DISPLAY   "SRYYM="     LNK-SKYGET-SRYYM
+             INITIALIZE             ORCSPTIDAREA
+             MOVE  SPA-HOSPNUM  TO  SPTID-HOSPNUM
+             MOVE  SYU-PTID     TO  SPTID-PTID
+             CALL "ORCSPTID"    USING   ORCSPTIDAREA
+                                        SPA-AREA
+             IF   SPTID-RC  =   ZERO
+               DISPLAY "PTNUM="     SPTID-PTNUM
+             END-IF
+             DISPLAY   "PTID="      SYU-PTID
+             DISPLAY   "DENPNUM="   SYU-DENPNUM
+             DISPLAY   "*******"
+           END-IF
+      *
            IF   (IDX1  =   4  OR  5  OR  6)
            AND  (IDX2  =   1  OR  2       )
       *
@@ -366,6 +403,7 @@
                IF  SYU-TOTAL-HKNTEN    NOT =  ZERO
                OR  SYU-RYOYOHI-SKJ     NOT =  ZERO
                OR  SYU-RYOYOHI-LIFE    NOT =  ZERO
+               OR  FLG-JIHIRANSYUKEI       =   1
                  COMPUTE  LNK-SKYGET-KENSU(IDX1 IDX2) =
                           LNK-SKYGET-KENSU(IDX1 IDX2) +
                           1
@@ -374,6 +412,7 @@
              END-IF
       *
              IF    SYU-TOTAL-HKNTEN    NOT =  ZERO
+             OR    FLG-JIHIRANSYUKEI       =   1
                EVALUATE  SYU-NYUGAIKBN
                  WHEN      "1"
                    PERFORM   VARYING   IDX3   FROM  1  BY  1
@@ -396,17 +435,28 @@
                    END-IF
                END-EVALUATE
              END-IF
-             COMPUTE    LNK-SKYGET-IRYO2-TOTALTEN(IDX1 IDX2) =
-                        LNK-SKYGET-IRYO2-TOTALTEN(IDX1 IDX2) +
-                        SYU-TOTAL-HKNTEN
-             IF    IDX1  =   4  OR  5
-               COMPUTE  LNK-SKYGET-IRYO2-ICHIBUFTN(IDX1 IDX2) =
-                        LNK-SKYGET-IRYO2-ICHIBUFTN(IDX1 IDX2) +
-                        SYU-HKNTEKMONEY
+             IF    SYU-TOTAL-HKNTEN    NOT =  ZERO
+               COMPUTE    LNK-SKYGET-IRYO2-TOTALTEN(IDX1 IDX2) =
+                          LNK-SKYGET-IRYO2-TOTALTEN(IDX1 IDX2) +
+                          SYU-TOTAL-HKNTEN
+               IF    IDX1  =   4  OR  5
+                 COMPUTE  LNK-SKYGET-IRYO2-ICHIBUFTN(IDX1 IDX2) =
+                          LNK-SKYGET-IRYO2-ICHIBUFTN(IDX1 IDX2) +
+                          SYU-HKNTEKMONEY
+               ELSE
+                 COMPUTE  LNK-SKYGET-IRYO2-HOKENJA(IDX1 IDX2) =
+                          LNK-SKYGET-IRYO2-HOKENJA(IDX1 IDX2) +
+                          SYU-HKNTEKMONEY
+               END-IF
              ELSE
-               COMPUTE  LNK-SKYGET-IRYO2-HOKENJA(IDX1 IDX2) =
-                        LNK-SKYGET-IRYO2-HOKENJA(IDX1 IDX2) +
-                        SYU-HKNTEKMONEY
+               IF    FLG-JIHIRANSYUKEI   =   1
+                 COMPUTE    LNK-SKYGET-IRYO2-TOTALTEN(IDX1 IDX2) =
+                            LNK-SKYGET-IRYO2-TOTALTEN(IDX1 IDX2) +
+                            SYU-TOTAL-MONEY
+                 COMPUTE    LNK-SKYGET-IRYO2-ICHIBUFTN(IDX1 IDX2) =
+                            LNK-SKYGET-IRYO2-ICHIBUFTN(IDX1 IDX2) +
+                            SYU-JYO-COMPFTN
+               END-IF
              END-IF
       *
              COMPUTE    LNK-SKYGET-SKJ2-KAISU(IDX1 IDX2) =
@@ -521,6 +571,12 @@
                         SYU-TOTAL-TGMONEY-TAX      +
                         SYU-JIHI-TOTAL             +
                         SYU-JIHI-TOTAL-TAX
+      *
+           IF    FLG-JIHIRANSYUKEI   =   1
+             COMPUTE    LNK-SKYGET-JIHI(IDX1 IDX2) =
+                        LNK-SKYGET-JIHI(IDX1 IDX2) -
+                        SYU-JYO-COMPFTN
+           END-IF
       *
            COMPUTE      WRK-KEISAN2        =
                         SYU-DISCOUNT-MONEY *
