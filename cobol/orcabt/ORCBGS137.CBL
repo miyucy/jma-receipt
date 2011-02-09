@@ -142,7 +142,6 @@
            03  WRK-PRT-SRYYM       PIC X(16).
            03  WRK-PRT-SAKYMD      PIC X(22).
            03  WRK-KANACHK-STR     PIC X(500).
-           03  WRK-RECEKA-MAX      PIC 9(05).
            03  WRK-SRYKANAME1      PIC X(24).
       *
        01  KEY-AREA.
@@ -344,7 +343,7 @@
            IF    ( BGS100P-SYUKA-SYA   =   1 )
                EVALUATE    KEY-RECEKA
                WHEN    SPACE
-                   MOVE    "全科計"    TO  WRK-SRYKANAME1
+                   MOVE    "全科合計"  TO  WRK-SRYKANAME1
                WHEN    "00"
                    MOVE    "主科設定なし"
                                        TO  WRK-SRYKANAME1
@@ -981,21 +980,29 @@
                                    TO  HCGS137N2-KOHMSG
            END-IF
       *
-           MOVE    TETC-JIHIMONEY (IDX1)
+           IF    ( KEY-RECEKA      =   SPACE )
+               MOVE    TETC-JIHIMONEY (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137N2-JIHIMONEY
-           MOVE    TETC-GENMEN    (IDX1)
+               MOVE    WRK-M9      TO  HCGS137N2-JIHIMONEY
+               MOVE    TETC-GENMEN    (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137N2-GENMEN
-           MOVE    TETC-CHOSEI1   (IDX1)
+               MOVE    WRK-M9      TO  HCGS137N2-GENMEN
+               MOVE    TETC-CHOSEI1   (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137N2-CHOSEI1
-           MOVE    TETC-CHOSEI2   (IDX1)
+               MOVE    WRK-M9      TO  HCGS137N2-CHOSEI1
+               MOVE    TETC-CHOSEI2   (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137N2-CHOSEI2
-           MOVE    TETC-HASU      (IDX1)
+               MOVE    WRK-M9      TO  HCGS137N2-CHOSEI2
+               MOVE    TETC-HASU      (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137N2-HASU
+               MOVE    WRK-M9      TO  HCGS137N2-HASU
+           ELSE
+               MOVE    SPACE   TO  HCGS137N2-ETCMSG
+               STRING  "その他計は全科合計に編集されます。"
+                                       DELIMITED   BY  SIZE
+               INTO    HCGS137N2-ETCMSG
+               END-STRING
+           END-IF
       *
            PERFORM 230-HCGS137N2-PRINT-SEC
       *
@@ -1144,21 +1151,29 @@
                                    TO  HCGS137G-KOHMSG
            END-IF
       *
-           MOVE    TETC-JIHIMONEY (IDX1)
+           IF    ( KEY-RECEKA      =   SPACE )
+               MOVE    TETC-JIHIMONEY (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137G-JIHIMONEY
-           MOVE    TETC-GENMEN    (IDX1)
+               MOVE    WRK-M9      TO  HCGS137G-JIHIMONEY
+               MOVE    TETC-GENMEN    (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137G-GENMEN
-           MOVE    TETC-CHOSEI1   (IDX1)
+               MOVE    WRK-M9      TO  HCGS137G-GENMEN
+               MOVE    TETC-CHOSEI1   (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137G-CHOSEI1
-           MOVE    TETC-CHOSEI2   (IDX1)
+               MOVE    WRK-M9      TO  HCGS137G-CHOSEI1
+               MOVE    TETC-CHOSEI2   (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137G-CHOSEI2
-           MOVE    TETC-HASU      (IDX1)
+               MOVE    WRK-M9      TO  HCGS137G-CHOSEI2
+               MOVE    TETC-HASU      (IDX1)
                                    TO  WRK-M9
-           MOVE    WRK-M9          TO  HCGS137G-HASU
+               MOVE    WRK-M9      TO  HCGS137G-HASU
+           ELSE
+               MOVE    SPACE   TO  HCGS137G-ETCMSG
+               STRING  "その他計は全科合計に編集されます。"
+                                       DELIMITED   BY  SIZE
+               INTO    HCGS137G-ETCMSG
+               END-STRING
+           END-IF
       *
            PERFORM 230-HCGS137G-PRINT-SEC
       *

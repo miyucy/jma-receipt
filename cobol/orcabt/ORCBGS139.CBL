@@ -113,6 +113,7 @@
            03  FLG-BGSKOH          PIC 9(01).
            03  FLG-BGSETC          PIC 9(01).
            03  FLG-LOOPEND         PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
@@ -124,6 +125,7 @@
            03  IDX-KOH             PIC 9(05).
            03  IDX-BASE            PIC 9(05).
            03  IDXP                PIC 9(05).
+           03  IDX-RECEKA          PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD            PIC X(08).
@@ -139,6 +141,10 @@
            03  WRK-PRT-SRYYM       PIC X(16).
            03  WRK-PRT-SAKYMD      PIC X(22).
            03  WRK-KANACHK-STR     PIC X(500).
+           03  WRK-SRYKANAME1      PIC X(24).
+      *
+       01  KEY-AREA.
+           03  KEY-RECEKA          PIC X(02).
       *
        01  THKN-AREA.
            03  THKN-NYUGAI-OCC     OCCURS  3.
@@ -221,6 +227,10 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK1005.INC".
+      *
       *    請求管理
            COPY    "CPRCF010.INC".
       *
@@ -287,8 +297,6 @@
                                            FLG-AREA
                                            IDX-AREA
                                            WRK-AREA
-                                           THKN-AREA
-                                           TKOH-AREA
       *
            MOVE    BGS100P-SKYFNAME    TO  ASS-BGSSKY
            MOVE    BGS100P-KOHFNAME    TO  ASS-BGSKOH
@@ -318,6 +326,58 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF    ( BGS100P-SYUKA   =   1 )
+               PERFORM VARYING IDX-RECEKA  FROM    1   BY  1
+                       UNTIL ( IDX-RECEKA  >   BGS100P-RECEKA-MAX )
+      *
+                   MOVE    BGS100P-RECEKA (IDX-RECEKA)
+                                   TO  KEY-RECEKA
+      *
+                   PERFORM 2001-MAIN-SEC
+               END-PERFORM
+               MOVE    SPACE       TO  KEY-RECEKA
+               PERFORM 2001-MAIN-SEC
+           ELSE
+               MOVE    SPACE       TO  KEY-RECEKA
+               PERFORM 2001-MAIN-SEC
+           END-IF
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    主　処理
+      *****************************************************************
+       2001-MAIN-SEC                SECTION.
+      *
+           MOVE    ZERO            TO      CNT-NYUIN
+                                           CNT-GAIRAI
+      *
+           INITIALIZE                      THKN-AREA
+                                           TKOH-AREA
+      *
+           MOVE    SPACE           TO      WRK-SRYKANAME1
+           IF    ( BGS100P-SYUKA   =   1 )
+               EVALUATE    KEY-RECEKA
+               WHEN    SPACE
+                   MOVE    "全科合計"  TO  WRK-SRYKANAME1
+               WHEN    "00"
+                   MOVE    "主科設定なし"
+                                       TO  WRK-SRYKANAME1
+               WHEN    OTHER
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+                   MOVE    "1005"          TO  SYS-KANRICD
+                   MOVE    KEY-RECEKA      TO  SYS-KBNCD
+                   MOVE    BGS100P-SRYYMD  TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-1005-REC
+                   MOVE    SYS-1005-SRYKANAME1
+                                       TO  WRK-SRYKANAME1
+               END-EVALUATE
+           END-IF
+      *
            PERFORM 2001-SKY-EDIT-SEC
       *
            PERFORM 2001-ETC-SKY-EDIT-SEC
@@ -341,7 +401,7 @@
            END-IF
       *
            .
-       200-MAIN-EXT.
+       2001-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -952,6 +1012,7 @@
                                        TO  HCGS139N-NYUGAI
            END-IF
            MOVE    WRK-PRT-SAKYMD      TO  HCGS139N-SYSYMD
+           MOVE    WRK-SRYKANAME1      TO  HCGS139N-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
@@ -963,44 +1024,56 @@
       *
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
       *
-               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
-               MOVE    WRK-Z4  TO  HCGS139N-KENSU (CNT-LINE)
+               IF    ( KEY-RECEKA  NOT =   SPACE )
+                AND  ( IDX2     =      CONST-TOKTTL
+                                 OR    CONST-JIHITTL
+                                 OR    CONST-CHIKENTTL
+                                 OR    CONST-ROUSAITTL
+                                 OR    CONST-JIBAITTL
+                                 OR    CONST-KOUGAITTL
+                                 OR    CONST-ALLTTL )
+                   CONTINUE
+               ELSE
       *
-               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
-               MOVE    WRK-Z4  TO  HCGS139N-NISSU (CNT-LINE)
+                   MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
+                   MOVE    WRK-Z4  TO  HCGS139N-KENSU (CNT-LINE)
       *
-               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-TENSU (CNT-LINE)
+                   MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
+                   MOVE    WRK-Z4  TO  HCGS139N-NISSU (CNT-LINE)
       *
-               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-FTNMONEY (CNT-LINE)
+                   MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-TENSU (CNT-LINE)
       *
-               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-HKNMONEY (CNT-LINE)
+                   MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-FTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-KOHMONEY (CNT-LINE)
+                   MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-HKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-TTLMONEY (CNT-LINE)
+                   MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-KOHMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJKAISU (IDX1 IDX2)  TO  WRK-Z5
-               MOVE    WRK-Z5  TO  HCGS139N-SKJKAISU (CNT-LINE)
+                   MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-TTLMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-SKJTTLMONEY (CNT-LINE)
+                   MOVE    THKN-SKJKAISU (IDX1 IDX2)  TO  WRK-Z5
+                   MOVE    WRK-Z5  TO  HCGS139N-SKJKAISU (CNT-LINE)
       *
-               MOVE    THKN-SKJFTNMONEY (IDX1 IDX2)   TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-SKJFTNMONEY (CNT-LINE)
+                   MOVE    THKN-SKJTTLMONEY (IDX1 IDX2)   TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-SKJTTLMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJHKNMONEY (IDX1 IDX2)   TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-SKJHKNMONEY (CNT-LINE)
+                   MOVE    THKN-SKJFTNMONEY (IDX1 IDX2)   TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-SKJFTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)   TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-SKJKOHMONEY (CNT-LINE)
+                   MOVE    THKN-SKJHKNMONEY (IDX1 IDX2)   TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-SKJHKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLTTLMONEY (IDX1 IDX2) TO WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139N-TTLTTLMONEY (CNT-LINE)
+                   MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)   TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-SKJKOHMONEY (CNT-LINE)
+      *
+                   MOVE    THKN-TTLTTLMONEY (IDX1 IDX2) TO WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139N-TTLTTLMONEY (CNT-LINE)
+               END-IF
       *
                IF    ( IDX2     =      CONST-SYATTL
                                  OR    CONST-KOKTTL
@@ -1013,34 +1086,54 @@
                                  OR    CONST-KOUGAITTL
                                  OR    CONST-ALLTTL )
       *
-                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139N-GENMEN (CNT-LINE)
-                   MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139N-CHOSEI1 (CNT-LINE)
-                   MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139N-CHOSEI2 (CNT-LINE)
-                   MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139N-HASU    (CNT-LINE)
+                   IF    ( KEY-RECEKA      =   SPACE )
+                       MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139N-JIHIMONEY (CNT-LINE)
+                       MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139N-GENMEN (CNT-LINE)
+                       MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139N-CHOSEI1 (CNT-LINE)
+                       MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139N-CHOSEI2 (CNT-LINE)
+                       MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139N-HASU    (CNT-LINE)
       *
-                   DISPLAY IDX1 ":"IDX2 " "
+                       DISPLAY IDX1 ":"IDX2 " "
                            "JIHIMONEY[" THKN-JIHIMONEY(IDX1 IDX2) "]"
                            "GENMEN["    THKN-GENMEN   (IDX1 IDX2) "]"
                            "CHOSEI1["   THKN-CHOSEI1  (IDX1 IDX2) "]"
                            "CHOSEI2["   THKN-CHOSEI2  (IDX1 IDX2) "]"
                            "HASU["      THKN-HASU     (IDX1 IDX2) "]"
+                   END-IF
                END-IF
       *
            END-PERFORM
       *
-           STRING  "（注）件数は患者数（複数保険使用の場合はその数）"
+           IF    ( KEY-RECEKA          =   SPACE )
+               MOVE    SPACE           TO  HCGS139N-ETCHKNMSG
+               STRING  "（注）件数は患者数"
                                            DELIMITED BY SIZE
-                   "の集計結果となります。実際のレセプト件数・日数と"
+                       "（複数保険使用の場合はその数）"
                                            DELIMITED BY SIZE
-                   "一致しない場合があります。"
-           INTO    HCGS139N-ETCHKNMSG
-           END-STRING
+                       "の集計結果となります。実際のレセプト件数"
+                                           DELIMITED BY SIZE
+                       "・日数と一致しない場合があります。"
+                                           DELIMITED BY SIZE
+               INTO    HCGS139N-ETCHKNMSG
+               END-STRING
+           ELSE
+               MOVE    SPACE           TO  HCGS139N-ETCHKNMSG
+               STRING    "（注）全科合計に編集されます。"
+                                           DELIMITED   BY  SIZE
+               INTO    HCGS139N-ETCHKNMSG
+               END-STRING
+      *
+               MOVE    SPACE   TO  HCGS139N-ETCMSG
+               STRING  "その他計は全科合計に編集されます。"
+                                       DELIMITED   BY  SIZE
+               INTO    HCGS139N-ETCMSG
+               END-STRING
+           END-IF
       *
            MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139N-KOHKENSU
@@ -1075,6 +1168,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS139G-SRYYM
            MOVE    "外来"              TO  HCGS139G-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS139G-SYSYMD
+           MOVE    WRK-SRYKANAME1      TO  HCGS139G-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-Z3
@@ -1086,26 +1180,37 @@
       *
                COMPUTE CNT-LINE    =   CNT-LINE    +   1
       *
-               MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
-               MOVE    WRK-Z4  TO  HCGS139G-KENSU (CNT-LINE)
+               IF    ( KEY-RECEKA  NOT =   SPACE )
+                AND  ( IDX2     =      CONST-TOKTTL
+                                 OR    CONST-JIHITTL
+                                 OR    CONST-CHIKENTTL
+                                 OR    CONST-ROUSAITTL
+                                 OR    CONST-JIBAITTL
+                                 OR    CONST-KOUGAITTL
+                                 OR    CONST-ALLTTL )
+                   CONTINUE
+               ELSE
+                   MOVE    THKN-KENSU (IDX1 IDX2)     TO  WRK-Z4
+                   MOVE    WRK-Z4  TO  HCGS139G-KENSU (CNT-LINE)
       *
-               MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
-               MOVE    WRK-Z4  TO  HCGS139G-NISSU (CNT-LINE)
+                   MOVE    THKN-NISSU (IDX1 IDX2)     TO  WRK-Z4
+                   MOVE    WRK-Z4  TO  HCGS139G-NISSU (CNT-LINE)
       *
-               MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139G-TENSU (CNT-LINE)
+                   MOVE    THKN-TENSU (IDX1 IDX2)     TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139G-TENSU (CNT-LINE)
       *
-               MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139G-FTNMONEY (CNT-LINE)
+                   MOVE    THKN-FTNMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139G-FTNMONEY (CNT-LINE)
       *
-               MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139G-HKNMONEY (CNT-LINE)
+                   MOVE    THKN-HKNMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139G-HKNMONEY (CNT-LINE)
       *
-               MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139G-KOHMONEY (CNT-LINE)
+                   MOVE    THKN-KOHMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139G-KOHMONEY (CNT-LINE)
       *
-               MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
-               MOVE    WRK-Z9  TO  HCGS139G-TTLMONEY (CNT-LINE)
+                   MOVE    THKN-TTLMONEY (IDX1 IDX2)  TO  WRK-Z9
+                   MOVE    WRK-Z9  TO  HCGS139G-TTLMONEY (CNT-LINE)
+               END-IF
       *
                IF    ( IDX2     =      CONST-SYATTL
                                  OR    CONST-KOKTTL
@@ -1118,28 +1223,55 @@
                                  OR    CONST-KOUGAITTL
                                  OR    CONST-ALLTTL )
       *
-                   MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
-                   MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139G-GENMEN (CNT-LINE)
-                   MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139G-CHOSEI1 (CNT-LINE)
-                   MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139G-CHOSEI2 (CNT-LINE)
-                   MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
-                   MOVE    WRK-M9  TO  HCGS139G-HASU    (CNT-LINE)
+                   IF    ( KEY-RECEKA      =   SPACE )
+                       MOVE    THKN-JIHIMONEY  (IDX1 IDX2)  TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139G-JIHIMONEY (CNT-LINE)
+                       MOVE    THKN-GENMEN    (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139G-GENMEN (CNT-LINE)
+                       MOVE    THKN-CHOSEI1   (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139G-CHOSEI1 (CNT-LINE)
+                       MOVE    THKN-CHOSEI2   (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139G-CHOSEI2 (CNT-LINE)
+                       MOVE    THKN-HASU      (IDX1 IDX2)   TO WRK-M9
+                       MOVE    WRK-M9  TO  HCGS139G-HASU    (CNT-LINE)
+      *
+                       DISPLAY IDX1 ":"IDX2 " "
+                           "JIHIMONEY[" THKN-JIHIMONEY(IDX1 IDX2) "]"
+                           "GENMEN["    THKN-GENMEN   (IDX1 IDX2) "]"
+                           "CHOSEI1["   THKN-CHOSEI1  (IDX1 IDX2) "]"
+                           "CHOSEI2["   THKN-CHOSEI2  (IDX1 IDX2) "]"
+                           "HASU["      THKN-HASU     (IDX1 IDX2) "]"
+                   END-IF
       *
                END-IF
       *
            END-PERFORM
       *
-           STRING  "（注）件数は患者数（複数保険使用の場合はその数）"
+           IF    ( KEY-RECEKA          =   SPACE )
+               MOVE    SPACE           TO  HCGS139G-ETCHKNMSG
+               STRING  "（注）件数は患者数"
                                            DELIMITED BY SIZE
-                   "の集計結果となります。実際のレセプト件数・日数と"
+                       "（複数保険使用の場合はその数）"
                                            DELIMITED BY SIZE
-                   "一致しない場合があります。"
-           INTO    HCGS139G-ETCHKNMSG
-           END-STRING
+                       "の集計結果となります。実際のレセプト件数"
+                                           DELIMITED BY SIZE
+                       "・日数と一致しない場合があります。"
+                                           DELIMITED BY SIZE
+               INTO    HCGS139G-ETCHKNMSG
+               END-STRING
+           ELSE
+               MOVE    SPACE           TO  HCGS139G-ETCHKNMSG
+               STRING    "（注）全科合計に編集されます。"
+                                           DELIMITED   BY  SIZE
+               INTO    HCGS139G-ETCHKNMSG
+               END-STRING
+      *
+               MOVE    SPACE   TO  HCGS139G-ETCMSG
+               STRING  "その他計は全科合計に編集されます。"
+                                       DELIMITED   BY  SIZE
+               INTO    HCGS139G-ETCMSG
+               END-STRING
+           END-IF
       *
            MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139G-KOHKENSU
@@ -1336,6 +1468,12 @@
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
+       *
+                   IF    ( KEY-RECEKA      NOT =   SPACE )
+                       IF    ( KEY-RECEKA  NOT =   BGSSKY-RECEKA )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
       *
                END-READ
            END-PERFORM
@@ -1365,6 +1503,12 @@
                    IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
                        IF    ( BGS100P-NYUGAIKBN
                                            NOT =   BGSKOH-NYUGAIKBN )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+       *
+                   IF    ( KEY-RECEKA      NOT =   SPACE )
+                       IF    ( KEY-RECEKA  NOT =   BGSKOH-RECEKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
@@ -1401,12 +1545,44 @@
                        END-IF
                    END-IF
       *
+                   IF    ( KEY-RECEKA      NOT =   SPACE )
+                       IF    ( KEY-RECEKA  NOT =   BGSETC-RECEKA )
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
+                   END-IF
+      *
                END-READ
            END-PERFORM
       *
            .
       *
        900-BGSETC-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

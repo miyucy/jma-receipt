@@ -327,6 +327,11 @@
       *    ¤½¤ÎÂ¾ÀÁµá
            PERFORM 2001-ETC-SEIKYU-EDIT-SEC
       *
+      *    ¿ÇÎÅ²ÊÊÔ½¸
+           IF    ( BGS100P-RECEKA-MAX  >   ZERO )
+               PERFORM 2001-RECEKA-EDIT-SEC
+           END-IF
+      *
            CLOSE           BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
@@ -383,29 +388,6 @@
            MOVE    WRK-TABLE           TO  MCP-TABLE
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( BGS100P-RECEKA-MAX  >   ZERO )
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   BGS100P-RECEKA-MAX  - 1 )
-                   COMPUTE IDX1    =   IDX1    +   1
-                   PERFORM VARYING IDX1    FROM    IDX1    BY  1
-                           UNTIL ( IDX1    >   BGS100P-RECEKA-MAX )
-                       IF    ( BGS100P-RECEKA (IDX0)
-                                       >   BGS100P-RECEKA (IDX1))
-                           MOVE    BGS100P-RECEKA (IDX0)
-                                           TO  WRK-RECEKA
-                           MOVE    BGS100P-RECEKA (IDX1)
-                                           TO  BGS100P-RECEKA (IDX0)
-                           MOVE    WRK-RECEKA
-                                           TO  BGS100P-RECEKA (IDX1)
-                       END-IF
-                   END-PERFORM
-               END-PERFORM
-           END-IF
-      *
-           COMPUTE BGS100P-RECEKA-MAX
-               =   BGS100P-RECEKA-MAX      +   1
-           MOVE    "00"        TO  BGS100P-RECEKA (BGS100P-RECEKA-MAX)
       *
            .
        2001-SEIKYU-EDIT-EXT.
@@ -652,7 +634,7 @@
                    ELSE
                        MOVE    "2"     TO  BGSETC-NYUGAIKBN
                    END-IF
-                   MOVE   "00"         TO  BGSETC-RECEKA
+                   MOVE   "  "         TO  BGSETC-RECEKA
                    MOVE   LNK-SKYGET-KENSU (IDX-HKN IDX-NG)
                                        TO  BGSETC-KENSU
                    MOVE   LNK-SKYGET-IRYO2-NISSU (IDX-HKN IDX-NG)
@@ -721,6 +703,35 @@
       *
            .
        2001-ETC-SEIKYU-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *****************************************************************
+       2001-RECEKA-EDIT-SEC        SECTION.
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   BGS100P-RECEKA-MAX  - 1 )
+               COMPUTE IDX1    =   IDX0    +   1
+               PERFORM VARYING IDX1    FROM    IDX1    BY  1
+                       UNTIL ( IDX1    >   BGS100P-RECEKA-MAX )
+                   IF    ( BGS100P-RECEKA (IDX0)
+                                       >   BGS100P-RECEKA (IDX1))
+                       MOVE    BGS100P-RECEKA (IDX0)
+                                       TO  WRK-RECEKA
+                       MOVE    BGS100P-RECEKA (IDX1)
+                                       TO  BGS100P-RECEKA (IDX0)
+                       MOVE    WRK-RECEKA
+                                       TO  BGS100P-RECEKA (IDX1)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *
+           COMPUTE BGS100P-RECEKA-MAX
+               =   BGS100P-RECEKA-MAX      +   1
+           MOVE    "00"        TO  BGS100P-RECEKA (BGS100P-RECEKA-MAX)
+      *
+           .
+       2001-RECEKA-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ½ªÎ»¡¡¡¡½èÍý
