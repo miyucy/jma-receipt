@@ -1468,7 +1468,7 @@
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
-       *
+      *
                    IF    ( KEY-RECEKA      NOT =   SPACE )
                        IF    ( KEY-RECEKA  NOT =   BGSSKY-RECEKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
@@ -1506,7 +1506,7 @@
                            MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
                    END-IF
-       *
+      *
                    IF    ( KEY-RECEKA      NOT =   SPACE )
                        IF    ( KEY-RECEKA  NOT =   BGSKOH-RECEKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
