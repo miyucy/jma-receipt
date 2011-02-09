@@ -605,7 +605,6 @@ DB_files = \
 	tbl_ptsrh.db \
 	tbl_srysrh.db \
 	tbl_rrksrh.db \
-	xml_patientinforeq.db \
 	xml_acceptreq.db \
 	xml_acceptres.db \
 	xml_medicalres.db \
