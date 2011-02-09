@@ -135,7 +135,7 @@
       *
            COPY    "CPPATIENTXMLRES.INC".
       *
-           COPY    "CPPATIENTXMLREQ.INC".
+      *    COPY    "CPPATIENTXMLREQ.INC".
       *
            COPY    "ORCA-BLOB".
       *
