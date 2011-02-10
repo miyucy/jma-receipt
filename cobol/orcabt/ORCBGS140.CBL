@@ -1039,6 +1039,17 @@
                PERFORM 900-HKNNUM-KEY-SEL-SEC
                MOVE    SPACE           TO  WRK-KANACHK-STR
                MOVE    1               TO  IDXP
+               IF    ( TKOH-KOHKBN (IDX1 IDX2)    =   "1" )
+                   STRING  "¡¡"            DELIMITED BY SIZE
+                   INTO    WRK-KANACHK-STR
+                   WITH    POINTER IDXP
+                   END-STRING
+               ELSE
+                   STRING    "¡ö"          DELIMITED BY SIZE
+                   INTO    WRK-KANACHK-STR
+                   WITH    POINTER IDXP
+                   END-STRING
+               END-IF
                STRING  HKN-HBTNUM          DELIMITED BY SIZE
                        "¡Ê"                DELIMITED BY SIZE
                        HKN-TANSEIDONAME    DELIMITED BY SPACE
