@@ -66,6 +66,10 @@
            03  CONST-SYS3001           PIC X(04)   VALUE   "3001".
            03  CONST-SYS3002           PIC X(04)   VALUE   "3002".
       *
+      *    日次パラメタ一時ファイル領域
+           COPY    "CPSK3001.INC"      REPLACING   //SYS-//
+                                       BY          //TMP-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -222,11 +226,14 @@
                        MOVE    SPA-SYSYMD  TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
                        PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                       MOVE    SYSKANRI-REC    TO  TMP-3001-REC
                        IF    ( FLG-SYSKANRI    =   ZERO )
-                           IF    ( SYS-3001-TBL    =   SYS-KANRITBL )
+                           IF    ( SYS-3001-PARA-AREA
+                                               =   TMP-3001-PARA-AREA )
                                CONTINUE
                            ELSE
-                               MOVE    SYS-KANRITBL    TO  SYS-3001-TBL
+                               MOVE    TMP-3001-PARA-AREA
+                                               TO  SYS-3001-PARA-AREA
                                MOVE    SYS-3001-REC    TO  MCPDATA-REC
                                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                                MOVE    "key"           TO  MCP-PATHNAME

@@ -169,17 +169,17 @@
            MOVE    TMPFLPARA           TO  BGS100P-ETCFNAME
       *
            EVALUATE    BGS100P-FORMKBN
-           WHEN    "0"
+           WHEN    "1"
                MOVE    "保険別請求チェック表（社保）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
-           WHEN    "1"
-               MOVE    "保険別請求チェック表（国保）（標準帳票）"
-                                       TO  BGS100P-SHELLMSG
            WHEN    "2"
-               MOVE    "保険別請求チェック表（総括表）（標準帳票）"
+               MOVE    "保険別請求チェック表（国保）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "3"
                MOVE    "保険別請求チェック表（後期高齢者）（標準帳票）"
+                                       TO  BGS100P-SHELLMSG
+           WHEN    "9"
+               MOVE    "保険別請求チェック表（総括表）（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            WHEN    OTHER
                MOVE    "保険別請求チェック表（標準帳票）"
@@ -201,10 +201,10 @@
       *****************************************************************
        1001-PARA-CHK-SEC               SECTION.
       *
-           IF    ( BGS100P-FORMKBN = " " OR "0" OR "1" OR "2" OR "3" )
+           IF    ( BGS100P-FORMKBN = "0" OR "1" OR "2" OR "3" OR "9" )
                CONTINUE
            ELSE
-               MOVE    SPACE       TO  BGS100P-FORMKBN
+               MOVE    "0"         TO  BGS100P-FORMKBN
            END-IF
       *
            IF    ( BGS100P-NYUGAIKBN   = " " OR "1" OR "2" )
@@ -217,19 +217,19 @@
            MOVE    "01"            TO  BGS100P-SRYYMD(7:2)
       *
            EVALUATE    BGS100P-FORMKBN
-           WHEN    " "
+           WHEN    "0"
                MOVE    1           TO  BGS100P-SYAHO
                                        BGS100P-KOKUHO
                                        BGS100P-KOUKI
                                        BGS100P-SOUKATU
-           WHEN    "0"
-               MOVE    1           TO  BGS100P-SYAHO
            WHEN    "1"
-               MOVE    1           TO  BGS100P-KOKUHO
+               MOVE    1           TO  BGS100P-SYAHO
            WHEN    "2"
-               MOVE    1           TO  BGS100P-SOUKATU
+               MOVE    1           TO  BGS100P-KOKUHO
            WHEN    "3"
                MOVE    1           TO  BGS100P-KOUKI
+           WHEN    "9"
+               MOVE    1           TO  BGS100P-SOUKATU
            END-EVALUATE
       *
            IF    ( BGS100P-SRYYM   >=  CONST-H2204 )

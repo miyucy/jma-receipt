@@ -43,13 +43,15 @@
       *プログラム名
                05  SYS-3001-PRGNAME     PIC  X(24).
       *パラメタ
-               05  SYS-3001-PARA-TBL.
-                   07  SYS-3001-PARA-G  OCCURS  10.
-                       09  SYS-3001-PARAHYOJI
+               05  SYS-3001-PARA-AREA.
+                   07  SYS-3001-PARA-TBL.
+                       09  SYS-3001-PARA-G  OCCURS  10.
+                           11  SYS-3001-PARAHYOJI
                                         PIC X(20).
-                       09  SYS-3001-PARA    PIC X(10).
+                           11  SYS-3001-PARA    PIC X(10).
       *必須区分（SPACE or 1:必須2:任意）
-               05  SYS-3001-HISSU-KBN   OCCURS  10
+                   07  SYS-3001-HISSU-KBN
+                                        OCCURS  10
                                         PIC X(01).
       *予備
                05  SYS-3001-YOBI        PIC  X(06).
