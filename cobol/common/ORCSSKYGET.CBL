@@ -81,9 +81,6 @@
       *
            COPY    "MCPDATA.INC".
       *
-      *    患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -368,32 +365,8 @@
            AND (SYU-TOTAL-MONEY   NOT =  ZERO)
            AND (IDX1                  =   5  )
            AND (SYU-JYO-COMPFTN   NOT =  ZERO)
-           AND (LNK-SKYGET-SRYYM  >=   201103)
+           AND (LNK-SKYGET-SRYYM  >=   201104)
              MOVE    1       TO    FLG-JIHIRANSYUKEI
-           END-IF
-      *
-           IF  (SYU-TOTAL-HKNTEN      =  ZERO)
-           AND (IDX1                  =   5  )
-           AND (SYU-JYO-COMPFTN       =  ZERO)
-           AND (LNK-SKYGET-SRYYM  >=   201103)
-      *      入院（仮収納）のDISPLAYがでてなくて、
-      *      入院（本収納）のDISPLAYがでていたら、
-      *      入院（本収納）の再処理が必要となる。
-             DISPLAY   "*******"
-             DISPLAY   "NYUGAIKBN=" SYU-NYUGAIKBN
-             DISPLAY   "IDX2="      IDX2
-             DISPLAY   "SRYYM="     LNK-SKYGET-SRYYM
-             INITIALIZE             ORCSPTIDAREA
-             MOVE  SPA-HOSPNUM  TO  SPTID-HOSPNUM
-             MOVE  SYU-PTID     TO  SPTID-PTID
-             CALL "ORCSPTID"    USING   ORCSPTIDAREA
-                                        SPA-AREA
-             IF   SPTID-RC  =   ZERO
-               DISPLAY "PTNUM="     SPTID-PTNUM
-             END-IF
-             DISPLAY   "PTID="      SYU-PTID
-             DISPLAY   "DENPNUM="   SYU-DENPNUM
-             DISPLAY   "*******"
            END-IF
       *
            IF   (IDX1  =   4  OR  5  OR  6)
