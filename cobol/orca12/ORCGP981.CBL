@@ -31,6 +31,7 @@
       * 01.00.02     NACL-多々納  05/11/14  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.05.00    NACL-多々納  09/12/22  一括入力対応
+      * 04.06.00     NACL-多々納  11/02/10  京都府通り名称編集対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -476,6 +477,16 @@
                    IF      FLG-ADRS                =   ZERO
                        MOVE    ADRS-EDITADRS-NAME
                                                TO  SPA-GMN981-TOWNNAME
+                       IF     (ADRS-LPUBCD(1:2)    =   "26"  )
+                         AND  (ADRS-TOWNNAME2      NOT =   SPACE)
+                         AND  (ADRS-TOWNNAME2(1:2) NOT =   "（" )
+                           STRING  "通り名："
+                                   ADRS-TOWNNAME2
+                                   ADRS-TOWNNAME
+                                               DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN981-TOWNNAME2
+                           END-STRING
+                       END-IF
                    END-IF
                END-IF
       *
@@ -504,6 +515,15 @@
            IF      FLG-ADRS            =   ZERO
                MOVE    ADRS-EDITADRS-NAME
                                            TO  SPA-GMN981-TOWNNAME
+               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
+                 AND  (ADRS-TOWNNAME2      NOT =   SPACE)
+                 AND  (ADRS-TOWNNAME2(1:2) NOT =   "（" )
+                   STRING  "通り名："
+                           ADRS-TOWNNAME2
+                                               DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN981-TOWNNAME2
+                   END-STRING
+               END-IF
                IF      SPA-GMN981-TOWNNAMEDSP  =   SPACE
                    MOVE    ADRS-TOWNNAME   TO  SPA-GMN981-TOWNNAMEDSP
                END-IF
@@ -514,6 +534,7 @@
                MOVE    5                   TO  SPA-GMN981-CUR
            ELSE
                MOVE    SPACE               TO  SPA-GMN981-TOWNNAME
+               MOVE    SPACE               TO  SPA-GMN981-TOWNNAME2
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-GMN981-CUR
            END-IF
@@ -860,6 +881,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN981-TOWNNAMEDSP
                                        TO  P981-TOWNNAMEDSP
            MOVE    SPA-GMN981-TOWNNAME TO  P981-TOWNNAME
+           MOVE    SPA-GMN981-TOWNNAME2    TO  P981-TOWNNAME2
       *
            PERFORM 5001-MAPCUR-SEC
       *

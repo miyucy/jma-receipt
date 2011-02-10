@@ -5,14 +5,15 @@ tbl_adrs {
 	RENNUM				number(2);
 	PREFKANA			varchar(40);
 	CITYKANA			varchar(200);
-	TOWNKANA			varchar(200);
+	TOWNKANA			varchar(400);
 	PREFNAME			varchar(20);
 	CITYNAME			varchar(100);
-	TOWNNAME			varchar(100);
-	EDITADRS_KANA		varchar(440);
-	EDITADRS_NAME		varchar(220);
+	TOWNNAME			varchar(200);
+	EDITADRS_KANA		varchar(640);
+	EDITADRS_NAME		varchar(320);
 	TOWNDIVFLG			char(1);
 	MANYTOWNFLG			char(1);
+	TOWNNAME2			varchar(1200);
 };
 
 primary	{
@@ -128,7 +129,8 @@ path	key8		{
 		SELECT *
 		FROM tbl_adrs
 			WHERE (HOSPNUM      =   :HOSPNUM)
-			AND   (EDITADRS_NAME   LIKE :EDITADRS_NAME)
+			AND  ((EDITADRS_NAME   LIKE :EDITADRS_NAME)
+			OR    (PREFNAME || CITYNAME || TOWNNAME2  LIKE :EDITADRS_NAME))
 			ORDER  BY  POST,
                                    RENNUM
 ;

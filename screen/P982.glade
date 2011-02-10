@@ -15,7 +15,7 @@
   <name>P982</name>
   <x>320</x>
   <y>180</y>
-  <width>700</width>
+  <width>750</width>
   <height>560</height>
   <signal>
     <name>map_event</name>
@@ -205,11 +205,27 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>NEXT</name>
+      <x>408</x>
+      <y>528</y>
+      <width>116</width>
+      <height>24</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
       <x>8</x>
       <y>8</y>
-      <width>691</width>
+      <width>734</width>
       <height>512</height>
       <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -246,8 +262,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Thu, 07 Feb 2002 06:04:20 GMT</last_modification_time>
 	</signal>
-	<columns>4</columns>
-	<column_widths>25,57,65,50</column_widths>
+	<columns>5</columns>
+	<column_widths>25,57,65,320,217</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -303,23 +319,20 @@
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	</widget>
-      </widget>
-    </widget>
 
-    <widget>
-      <class>GtkLabel</class>
-      <name>NEXT</name>
-      <x>408</x>
-      <y>528</y>
-      <width>116</width>
-      <height>24</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label466</name>
+	  <label>通り名称　　</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
     </widget>
   </widget>
 </widget>

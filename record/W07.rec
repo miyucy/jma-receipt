@@ -412,6 +412,13 @@ W07	{
 					count	int;
 					item	varchar(28)[5];
 				};
+				TOWNNAME2KBN_COMB	{
+					TOWNNAME2KBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[5];
+				};
 			};
 			TAGNAME2    {
 			    state   int;

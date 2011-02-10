@@ -39,6 +39,7 @@
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/03  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/27  ËÜ±¡Ê¬±¡ÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/XX  ´µ¼Ô¸øÈñÉéÃ´³Ûµ¡Ç½ÄÉ²Ã
+      *  04.06.00    NACL-Â¿¡¹Ç¼  11/02/XX  µþÅÔÉÜÄÌ¤êÌ¾¾ÎÊÔ½¸µ¡Ç½ÄÉ²Ã
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -1090,6 +1091,7 @@
                05  SPA-GMN981-AREA.
                    07  SPA-GMN981-KBNCD             PIC 9(03).
                    07  SPA-GMN981-TOWNNAME          PIC X(100).
+                   07  SPA-GMN981-TOWNNAME2         PIC X(100).
                    07  SPA-GMN981-LPUBCD            PIC X(05).
                    07  SPA-GMN981-TOWNNAMEDSP       PIC X(20).
                    07  SPA-GMN981-POST              PIC X(07).
@@ -1128,11 +1130,11 @@
                    07  SPA-GMN982-LPUBCD            PIC X(05).
                    07  SPA-GMN982-POST              PIC X(07).
                    07  SPA-GMN982-RENNUM            PIC 9(02).
-               05  SPA-GMN982-TOWNNAME              PIC X(100).
+               05  SPA-GMN982-TOWNNAME              PIC X(200).
       *        »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
-               05  SPA-GMN982-CITYNAMET             PIC X(100).
+               05  SPA-GMN982-CITYNAMET             PIC X(200).
       *
-               05  SPA-GMN982-KEYNAME               PIC X(100).
+               05  SPA-GMN982-KEYNAME               PIC X(200).
       *
                05  SPA-GMN982-SELNUM                PIC X(03).
                05  SPA-NAI982-SELNUM                PIC 9(03).
@@ -1143,10 +1145,13 @@
                        09  SPA-GMN982-TPOST         PIC X(07).
                        09  SPA-GMN982-TLPUBCD       PIC X(05).
                        09  SPA-GMN982-TTOWNNAME     PIC X(100).
+                       09  SPA-GMN982-TTOWNNAME2    PIC X(300).
       *
                        09  SPA-GMN982-TRENNUM       PIC 9(02).
       *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
-                       09  SPA-GMN982-TCITYNAMET    PIC X(100).
+                       09  SPA-GMN982-TCITYNAMET    PIC X(200).
+      *                ¸©Ì¾¡Ü»ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+                       09  SPA-GMN982-TCITYNAMET2   PIC X(200).
                    07  SPA-GMN982-MAX               PIC 9(04).
       *
       *    P02D (Ï«ºÒÊÝ¸±ÆþÎÏ²èÌÌ¡Ë

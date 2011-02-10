@@ -30,6 +30,7 @@
       * 01.00.01     NACL-Â¿¡¹Ç¼  05/11/14  MONFUNC ÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.04.00    NACL-Â¿¡¹Ç¼  08/12/03  ½»½ê¤«¤éÍ¹ÊØÈÖ¹æÀßÄêÄÉ²Ã
+      * 04.06.00     NACL-Â¿¡¹Ç¼  11/02/10  µþÅÔÉÜÄÌ¤êÌ¾¾ÎÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -85,8 +86,8 @@
                05  WRK-SEMM        PIC 9(02).
                05  WRK-SEDD        PIC 9(02).
       *
-           03  WRK-TOWNNAME            PIC X(100).
-           03  WRK-ADRSNAME            PIC X(102).
+           03  WRK-TOWNNAME            PIC X(160).
+           03  WRK-ADRSNAME            PIC X(162).
            03  WRK-MAX-CNT             PIC 9(04).
            03  WRK-Z9                  PIC ZZ9.
       *
@@ -269,6 +270,8 @@
                                            TO  SPA-GMN982-TOWNNAME
                MOVE    SPA-GMN982-TCITYNAMET (IDX)
                                            TO  SPA-GMN982-CITYNAMET
+               MOVE    SPA-GMN982-TCITYNAMET2 (IDX)
+                                           TO  SPA-GMN982-TOWNNAME
            END-IF
            .
        300-SCREEN-EXT.
@@ -381,6 +384,9 @@
                                                                    (IDX)
                        MOVE    ADRS-EDANUM     TO  SPA-GMN982-TRENNUM
                                                                    (IDX)
+      *                ÄÌ¤êÌ¾
+                       MOVE    ADRS-TOWNNAME2  TO  SPA-GMN982-TTOWNNAME2
+                                                                   (IDX)
       *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
                        STRING  ADRS-CITYNAME
                                ADRS-TOWNNAME       DELIMITED  BY  SPACE
@@ -394,6 +400,35 @@
                            MOVE    ADRS-CITYNAME
                                                TO  SPA-GMN982-TCITYNAMET
                                                                   (IDX)
+                       END-IF
+                       MOVE    ADRS-EDITADRS-NAME
+                                           TO  SPA-GMN982-TCITYNAMET2
+                                                                   (IDX)
+      *                µþÅÔ¤ÇÄÌ¤êÌ¾¾Î¤òÊÔ½¸¤¹¤ë»þ
+                       IF     (ADRS-LPUBCD(1:2)    =   "26"  )
+                         AND  (ADRS-TOWNNAME2  NOT =   SPACE )
+                         AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
+                           IF      ADRS-TOWNNAME2(1:2)     =   "¡Ê" 
+                               CONTINUE
+                           ELSE
+      *                        »ÔÄ®Â¼Ì¾¡ÜÄÌ¤êÌ¾¾Î¡ÜÄ®°èÌ¾
+                               STRING  ADRS-CITYNAME
+                                       ADRS-TOWNNAME2
+                                       ADRS-TOWNNAME
+                                                   DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN982-TCITYNAMET
+                                                                  (IDX)
+                               END-STRING
+      *                        ÅÔÆ»ÉÜ¸©Ì¾¡Ü»ÔÄ®Â¼Ì¾¡ÜÄÌ¤êÌ¾¾Î¡ÜÄ®°èÌ¾
+                               STRING  ADRS-PREFNAME
+                                       ADRS-CITYNAME
+                                       ADRS-TOWNNAME2
+                                       ADRS-TOWNNAME
+                                                   DELIMITED  BY  SPACE
+                                           INTO  SPA-GMN982-TCITYNAMET2
+                                                                  (IDX)
+                               END-STRING
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -437,7 +472,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN982-TOWNNAME TO  KANACHK-MAE-INPUT
-           MOVE    100                 TO  KANACHK-MAX-CNT
+           MOVE    160                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAX         TO  WRK-MAX-CNT
@@ -570,6 +605,8 @@
       *
                    MOVE    SPA-GMN982-TCITYNAMET (IDX)
                                            TO  SPA-GMN982-CITYNAMET
+                   MOVE    SPA-GMN982-TCITYNAMET2(IDX)
+                                           TO  SPA-GMN982-TOWNNAME
       *
                    PERFORM 210-BACK
                END-IF
@@ -640,6 +677,8 @@
                                            TO  SPA-GMN982-TOWNNAME
                MOVE    SPA-GMN982-TCITYNAMET (IDX)
                                            TO  SPA-GMN982-CITYNAMET
+               MOVE    SPA-GMN982-TCITYNAMET2(IDX)
+                                           TO  SPA-GMN982-TOWNNAME
       *
                PERFORM 210-BACK
            END-IF
@@ -746,6 +785,8 @@
                                                TO  P982-LPUBCD (IDX)
                MOVE    SPA-GMN982-TTOWNNAME (IDX)
                                                TO  P982-TOWNNAME(IDX)
+               MOVE    SPA-GMN982-TTOWNNAME2(IDX)
+                                               TO  P982-TOWNNAME2(IDX)
                IF      SPA-GMN982-SEQNO (IDX)  =   SPA-NAI982-SELNUM
                    MOVE    "T"                 TO  P982-SELECT (IDX)
                ELSE

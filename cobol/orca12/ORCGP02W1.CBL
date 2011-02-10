@@ -91,6 +91,7 @@
       *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
       *                                     都道府県名記載なし対応
       * 04.06.00     NACL-多々納  10/06/30  本人家族区分、補助区分変更対応
+      * 04.06.00     NACL-多々納  11/02/10  京都府通り名称編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3792,8 +3793,48 @@
            ELSE
                MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-EDITADRS-NAME
            END-IF
+      *    京都で通り名称を編集する時
+           IF     (ADRS-LPUBCD(1:2)    =   "26"  )
+             AND  (ADRS-TOWNNAME2  NOT =   SPACE )
+             AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
+               IF     (ADRS-TOWNNAME2(1:2)     =   "（"  )
+                   CONTINUE
+               ELSE
+                   PERFORM 41011-ADRS-KYOTOHEN-SEC
+               END-IF
+           END-IF
            .
        41011-ADRS-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    京都通り名称編集処理
+      *****************************************************************
+       41011-ADRS-KYOTOHEN-SEC         SECTION.
+      *
+           IF      SPA-NAI-KENMEIKBN-FLG   =   "0"
+      *    都道府県名なし
+               MOVE    SPACE               TO  SPA-GMN-EDITADRS-NAME
+      *        市町村名＋通り名称
+               STRING  ADRS-CITYNAME
+                       ADRS-TOWNNAME2
+                       ADRS-TOWNNAME
+                                           DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN-EDITADRS-NAME
+               END-STRING
+           ELSE
+      *        都道府県名＋市町村名＋通り名称
+               MOVE    SPACE               TO  SPA-GMN-EDITADRS-NAME
+               STRING  ADRS-PREFNAME
+                       ADRS-CITYNAME
+                       ADRS-TOWNNAME2
+                       ADRS-TOWNNAME
+                                           DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN-EDITADRS-NAME
+               END-STRING
+           END-IF
+           .
+       41011-ADRS-KYOTOHEN-EXT.
            EXIT.
       *
       *****************************************************************

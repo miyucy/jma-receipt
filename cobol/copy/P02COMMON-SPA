@@ -89,6 +89,8 @@
            03  SPA-NAI-POSTKBN-FLG        PIC X(01).
       *    都道府県名記載区分
            03  SPA-NAI-KENMEIKBN-FLG      PIC X(01).
+      *    京都府通り名称編集区分
+           03  SPA-NAI-TOWNNAME2KBN-FLG   PIC X(01).
       *
       *    更新時警告あり
            03  SPA-KEI2-FLG               PIC 9(01).

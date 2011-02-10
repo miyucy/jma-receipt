@@ -13,6 +13,7 @@ P982	{
 					value2	varchar(7);
 					value3	varchar(5);
 					value4	varchar(100);
+					value5	varchar(600);
 				}	[100];
 				select	bool[100];
 			};

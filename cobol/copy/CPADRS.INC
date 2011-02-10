@@ -35,20 +35,22 @@
            03  ADRS-PREFKANA           PIC X(40).
       *»ÔÄ®Â¼Ì¾¥«¥Ê
            03  ADRS-CITYKANA           PIC X(200).
-      *Ä®°èÌ¾¥«¥Ê
-           03  ADRS-TOWNKANA           PIC X(200).
+      *Ä®°èÌ¾¥«¥Ê(200->400)4.6.0
+           03  ADRS-TOWNKANA           PIC X(400).
       *ÅÔÆ»ÉÜ¸©Ì¾
            03  ADRS-PREFNAME           PIC X(20).
       *»ÔÄ®Â¼Ì¾
            03  ADRS-CITYNAME           PIC X(100).
-      *Ä®°èÌ¾
-           03  ADRS-TOWNNAME           PIC X(100).
-      *ÊÔ½¸¸å½»½ê¥«¥Ê
-           03  ADRS-EDITADRS-KANA      PIC X(440).
-      *ÊÔ½¸¸å½»½ê
-           03  ADRS-EDITADRS-NAME      PIC X(220).
+      *Ä®°èÌ¾(100->200)4.6.0
+           03  ADRS-TOWNNAME           PIC X(200).
+      *ÊÔ½¸¸å½»½ê¥«¥Ê(440->640)4.6.0
+           03  ADRS-EDITADRS-KANA      PIC X(640).
+      *ÊÔ½¸¸å½»½ê(220->320)4.6.0
+           03  ADRS-EDITADRS-NAME      PIC X(320).
       *Ä®°èÊ¬³ä¥Õ¥é¥°
            03  ADRS-TOWNDIVFLG         PIC X(01).
       *Ê£¿ôÄ®°è¥Õ¥é¥°
            03  ADRS-MANYTOWNFLG        PIC X(01).
+      *ÊäÂ­¡ÊÄÌ¤êÌ¾¡Ë4.6.0
+           03  ADRS-TOWNNAME2          PIC X(1200).
       *

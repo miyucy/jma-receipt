@@ -33,3 +33,5 @@
                 04  P981-VALUE  PIC X(100).
               03  P981-KBNCD.
                 04  P981-VALUE  PIC S9(3).
+              03  P981-TOWNNAME2.
+                04  P981-VALUE  PIC X(100).

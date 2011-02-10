@@ -33,6 +33,7 @@
                     06  P982-POST     PIC X(7).
                     06  P982-LPUBCD   PIC X(5).
                     06  P982-TOWNNAME  PIC X(100).
+                    06  P982-TOWNNAME2  PIC X(600).
                   05  P982-SELECT PIC X       OCCURS  100 TIMES.
               03  P982-NEXT.
                 04  P982-NEXT-STYLE   PIC X(20).

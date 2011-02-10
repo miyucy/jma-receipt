@@ -18,5 +18,8 @@ P981	{
 		KBNCD	{
 			value	number(3);
 		};
+		TOWNNAME2	{
+			value	varchar(100);
+		};
 	};
 };

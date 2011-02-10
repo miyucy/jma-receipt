@@ -902,6 +902,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ≈‘∆ª…‹∏©Ãæµ≠∫‹∂Ë ¨
                MOVE    SYS-1017-KENMEIKBN-FLG
                                            TO  SPA-NAI-KENMEIKBN-FLG
+      *        µ˛≈‘…‹ƒÃ§ÍÃææŒ ‘Ω∏∂Ë ¨
+               MOVE    SYS-1017-TOWNNAME2KBN-FLG
+                                           TO  SPA-NAI-TOWNNAME2KBN-FLG
            ELSE
       *        Ã§≈–œø§Œª˛°¢•º•Ì§»§π§Î
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -964,6 +967,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-NAI-KENMEIKBN-FLG   =   SPACE
                MOVE    "1"                 TO  SPA-NAI-KENMEIKBN-FLG
+           END-IF
+      *    µ˛≈‘…‹ƒÃ§ÍÃææŒ ‘Ω∏∂Ë ¨
+           IF      SPA-NAI-TOWNNAME2KBN-FLG    =   SPACE
+               MOVE    "2"                 TO  SPA-NAI-TOWNNAME2KBN-FLG
            END-IF
       *
            .

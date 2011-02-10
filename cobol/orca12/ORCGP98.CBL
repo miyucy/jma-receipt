@@ -655,6 +655,30 @@
                IF      ADRS-TOWNNAME       =   "°Ê²¼¤Ë·ÇºÜ¤¬¤Ê¤¤¾ì¹ç"
                    MOVE    ADRS-CITYNAME   TO  JPAR-CITYNAME-NAME
                END-IF
+      *        µþÅÔ¤ÇÄÌ¤êÌ¾¾Î¤òÊÔ½¸¤¹¤ë»þ
+               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
+                 AND  (ADRS-TOWNNAME2  NOT =   SPACE )
+                 AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
+                   IF     (ADRS-TOWNNAME2(1:2)     =   "¡Ê"  )
+                       CONTINUE
+                   ELSE
+      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+                       MOVE    SPACE           TO  JPAR-CITYNAME-NAME
+                       STRING  ADRS-CITYNAME
+                               ADRS-TOWNNAME2
+                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
+                                           INTO    JPAR-CITYNAME-NAME
+                       END-STRING
+      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+                       MOVE    SPACE           TO  JPAR-CITYNAME-NAME
+                       STRING  ADRS-PREFNAME
+                               ADRS-CITYNAME
+                               ADRS-TOWNNAME2
+                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
+                                           INTO    JPAR-EDITADRS-NAME
+                       END-STRING
+                   END-IF
+               END-IF
            ELSE
                MOVE    SPACE               TO  JPAR-POST
                MOVE    SPACE               TO  JPAR-EDITADRS-NAME
@@ -767,6 +791,23 @@
            IF      FLG-ADRS            =   ZERO
                MOVE    ADRS-POST           TO  SPA-GMN98-POST
                MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN98-ADRS
+      *        µþÅÔ¤ÇÄÌ¤êÌ¾¾Î¤òÊÔ½¸¤¹¤ë»þ
+               IF     (ADRS-LPUBCD(1:2)    =   "26"  )
+                 AND  (ADRS-TOWNNAME2  NOT =   SPACE )
+                 AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
+                   IF     (ADRS-TOWNNAME2(1:2)     =   "¡Ê"  )
+                       CONTINUE
+                   ELSE
+      *                »ÔÄ®Â¼Ì¾¡ÜÄ®°èÌ¾
+                       MOVE    SPACE           TO  SPA-GMN98-ADRS
+                       STRING  ADRS-PREFNAME
+                               ADRS-CITYNAME
+                               ADRS-TOWNNAME2
+                               ADRS-TOWNNAME       DELIMITED  BY  SPACE
+                                           INTO    SPA-GMN98-ADRS
+                       END-STRING
+                   END-IF
+               END-IF
                MOVE    ADRS-EDANUM         TO  SPA-GMN98-EDANUM
                MOVE    2                   TO  SPA-GMN98-CUR
            ELSE
