@@ -242,9 +242,9 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-SRYYMD          PIC X(08)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "Ì¤¼ý¶â³Û".
+           03  FILLER              PIC X(08)   VALUE   "Ì¤¼ý¶â³Û".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "ÀÁµá¶â³Û".
+           03  FILLER              PIC X(08)   VALUE   "ÀÁµá¶â³Û".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(06)   VALUE   "Æþ¶â³Û".
            03  FILLER              PIC X(01)   VALUE   ",".
