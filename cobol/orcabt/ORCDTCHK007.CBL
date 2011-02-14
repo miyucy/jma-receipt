@@ -910,6 +910,7 @@
                    PERFORM 900-DBSTART-SEC
                    MOVE    ZERO    TO  CNT-PRINT
                END-IF
+             END-IF
            ELSE
                MOVE    "印刷ＤＢに更新できませんでした"
                                        TO  WRK-DTCHKERR
