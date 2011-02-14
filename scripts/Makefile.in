@@ -93,6 +93,8 @@ utf8_shell_sources = \
 	execshell.sh.in \
 	allways/ORCBQ03.sh.in \
 	monthly/dtck_prv.sh.in \
+	daily/infectiondata2.sh.in \
+	daily/das-infection2.sh.in \
 
 eucjp_shell_sources = \
 	allways/program_upgrade_check_log.sh.in \
@@ -122,6 +124,7 @@ ruby_scripts = \
 	allways/program_upgrade_patchmd5.rb \
 	allways/program_upgrade_verify.rb \
 	daily/monpeps.rb \
+	daily/das-upload2.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \

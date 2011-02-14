@@ -302,6 +302,14 @@
                        MOVE    SYS-1001-DATATEISYUTUKBN
                                              TO  SPA-DATATEISYUTUKBN
                    END-IF
+      *            ¥Ç¡¼¥¿´¶À÷¾É¶èÊ¬
+                   IF     (SYS-1001-DATAINFECTIONKBN  =   SPACE )  OR
+                          (SYS-1001-DATAINFECTIONKBN  NOT NUMERIC)
+                       MOVE    ZERO          TO  SPA-DATAINFECTIONKBN
+                   ELSE
+                       MOVE    SYS-1001-DATAINFECTIONKBN
+                                             TO  SPA-DATAINFECTIONKBN
+                   END-IF
                ELSE
                    INITIALIZE              SYS-1001-REC
                END-IF

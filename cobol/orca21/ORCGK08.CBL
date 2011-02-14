@@ -56,6 +56,7 @@
       *  04.03.00    NACL-多々納  08/07/08  お薬手帳発行の連動
       *  04.03.00    NACL-多々納  08/08/01  入院調剤料保険組合せ期間チェック追加
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -300,6 +301,8 @@
            03  FLG-SYU40           PIC 9(01).
       *    ユーザプログラム起動
            03  FLG-USERPG              PIC 9(01).
+      *    感染症削除
+           03  FLG-INFEC-DLT           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -520,6 +523,8 @@
       *
            03  CNT-ZAI                 PIC 9(04).
       *
+           03  WRK-PTID                PIC X(10).
+      *
       *    集計収納請求内容
        01  WRK-SUM-AREA.
            03  SUM-SYU-SKY-NAIYOU.
@@ -563,6 +568,10 @@
        01  MAX-GMN                 PIC 9(04)   VALUE   800.
       *処理テーブルＭＡＸ
        01  MAX-LINE                PIC 9(04)   VALUE   600.
+      *
+      *    感染症ファイル名
+       01  INFECTION-FILE          PIC X(17)   VALUE
+                                   "infectiondata2.sh".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -755,6 +764,9 @@
        01  WRK-PREV-AREA.
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                    PIC X(08)   VALUE   "RECEPTX".
+      *
+      *    for Infection
+           COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -5225,6 +5237,12 @@
       *****************************************************************
        45021-END-SYORI-SEC             SECTION.
       *
+      *    感染症送信
+           IF      SPA-DATAINFECTIONKBN    =   1
+               MOVE    ZERO                TO  FLG-INFEC-DLT
+               PERFORM 4908-INFECTION-SEND-SEC
+           END-IF
+      *
       *    ユーザプログラム起動
            PERFORM 4907-USERPG-SEC
            IF      FLG-END             =   ZERO
@@ -5345,6 +5363,37 @@
            MOVE    1                   TO  FLG-END
            .
        49071-XD01-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    感染症送信処理
+      *****************************************************************
+       4908-INFECTION-SEND-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    INFECTION-FILE      TO  SHELLTBL-NAME
+           MOVE    "K08"               TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
+           MOVE    SPA-SYORIFLG        TO  SHELLTBL-ARG4
+           IF      FLG-INFEC-DLT       =   1
+               MOVE    "2"                 TO  SHELLTBL-ARG4
+           END-IF
+           MOVE    SPA-NYUGAIKBN       TO  SHELLTBL-ARG5
+           MOVE    SPA-PTID            TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG6
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG7
+           MOVE    SPA-SRYKA           TO  SHELLTBL-ARG8
+           MOVE    SPA-BEDFLG          TO  SHELLTBL-ARG9
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "daily"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       4908-INFECTION-SEND-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5502,9 +5551,11 @@
            IF      LNK-WKSRYACT-MAX   =   ZERO
       *        削除
                MOVE    "2"                 TO  ORCSCGAIRAI-KBN
+               MOVE    1                   TO  FLG-INFEC-DLT
            ELSE
       *        新規、更新
                MOVE    "1"                 TO  ORCSCGAIRAI-KBN
+               MOVE    ZERO                TO  FLG-INFEC-DLT
            END-IF
       *    収納情報
            MOVE    LNK-SYUNOU-MAX      TO  ORCSCGAIRAI-SYUNOU-MAX
@@ -5519,6 +5570,11 @@
                                        ORCSCGAIRAIAREA
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO     4503-HOUKATU-SYORI-EXT
+           END-IF
+      *
+      *    感染症送信
+           IF      SPA-DATAINFECTIONKBN    =   1
+               PERFORM 4908-INFECTION-SEND-SEC
            END-IF
       *
       *    排他制御解除処理

@@ -125,6 +125,12 @@
                     06  W02-DATATEISYU-COUNT   PIC S9(9)   BINARY.
                     06  W02-DATATEISYU-ITEM
                             PIC X(14)   OCCURS  5 TIMES.
+                  05  W02-DATAINFECT-COMB.
+                    06  W02-DATAINFECT.
+                      07  W02-VALUE   PIC X(14).
+                    06  W02-DATAINFECT-COUNT   PIC S9(9)   BINARY.
+                    06  W02-DATAINFECT-ITEM
+                            PIC X(14)   OCCURS  5 TIMES.
                   05  W02-JIHIPOSITION-COMB.
                     06  W02-JIHIPOSITION.
                       07  W02-VALUE   PIC X(40).

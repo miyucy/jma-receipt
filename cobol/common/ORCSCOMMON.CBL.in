@@ -27,6 +27,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.05.00     NACL-多々納  09/12/14  エンコーディング追加
+      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -271,6 +272,18 @@
                ELSE
                    MOVE    SYS-1001-DATATEISYUTUKBN
                                            TO  SPA-DATATEISYUTUKBN
+               END-IF
+      *        データ感染症区分
+               IF     (SYS-1001-DATAINFECTIONKBN  =   SPACE )  OR
+                      (SYS-1001-DATAINFECTIONKBN  NOT NUMERIC)
+                   IF      SPA-DATACREATEFLG   =   1
+                       MOVE    1           TO  SPA-DATAINFECTIONKBN
+                   ELSE
+                       MOVE    ZERO        TO  SPA-DATAINFECTIONKBN
+                   END-IF
+               ELSE
+                   MOVE    SYS-1001-DATAINFECTIONKBN
+                                           TO  SPA-DATAINFECTIONKBN
                END-IF
       *
       *        県番号

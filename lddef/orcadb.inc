@@ -167,4 +167,5 @@ db	{
 	tbl_etensu_3_4;
 	tbl_etensu_4;
 	tbl_etensu_5;
+	tbl_infection_judgment;
 };

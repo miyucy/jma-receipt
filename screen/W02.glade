@@ -765,7 +765,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>DATATEISYU_COMB</name>
 	  <x>180</x>
-	  <y>600</y>
+	  <y>576</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -802,13 +802,69 @@
 	</widget>
 
 	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>DATAINFECT_COMB</name>
+	  <x>180</x>
+	  <y>600</y>
+	  <width>150</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>DATAINFECT</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>14</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1625</name>
+	  <x>12</x>
+	  <y>600</y>
+	  <width>164</width>
+	  <height>24</height>
+	  <label>データ収集感染症区分</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1621</name>
-	  <x>52</x>
-	  <y>600</y>
-	  <width>128</width>
+	  <x>12</x>
+	  <y>576</y>
+	  <width>164</width>
 	  <height>24</height>
-	  <label>提出方法区分</label>
+	  <label>データ収集提出方法区分</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -820,11 +876,11 @@
 	<widget>
 	  <class>GtkLabel</class>
 	  <name>label1620</name>
-	  <x>52</x>
-	  <y>576</y>
-	  <width>128</width>
+	  <x>12</x>
+	  <y>552</y>
+	  <width>164</width>
 	  <height>24</height>
-	  <label>作成フラグ</label>
+	  <label>データ収集作成フラグ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
@@ -1673,7 +1729,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>DATACREATE_COMB</name>
 	  <x>180</x>
-	  <y>576</y>
+	  <y>552</y>
 	  <width>150</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -2235,22 +2291,6 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label1619</name>
-	  <x>24</x>
-	  <y>552</y>
-	  <width>156</width>
-	  <height>24</height>
-	  <label>データ収集</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
 
 	<widget>

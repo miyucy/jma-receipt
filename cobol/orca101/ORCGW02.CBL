@@ -70,6 +70,7 @@
       *  04.05.00    NACL-太田    09.06.23  保険自費毎の消費税端数区分追加
       *  04.05.00    NACL-太田    09.07.27  分娩機関管理番号追加
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
+      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -370,6 +371,17 @@
                                13  SPA-GMN-DATATEISYUTU-LST  PIC X(14)
                                                       OCCURS   5.
                                13  SPA-DATATEISYUTU-MAX     PIC 9(02).
+      *                    データ感染症区分
+                           11  SPA-GMN-DATAINFECT-G.
+                               13  SPA-GMN-DATAINFECT
+                                                      PIC X(01).
+                               13  SPA-GMN-F18        PIC X(01).
+                               13  SPA-GMN-DATAINFECT-MEI
+                                                      PIC X(12).
+                           11  SPA-GMN-DATAINFECT-LST-G.
+                               13  SPA-GMN-DATAINFECT-LST  PIC X(14)
+                                                      OCCURS   5.
+                               13  SPA-GMN-DATAINFECT-MAX  PIC 9(02).
       *----(01.00.09) LINE ADD END   ----------------------------------
                    07  SPA-GMN-1002-AREA.
                        09  SPA-GMN-POST           PIC X(07).
@@ -1132,6 +1144,12 @@
            MOVE    "1 自動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (2)
            MOVE    "2 手動で送信"      TO  SPA-GMN-DATATEISYUTU-LST (3)
            MOVE    3                   TO  SPA-DATATEISYUTU-MAX
+      *    感染症作成区分
+           MOVE    "0 作成しない"      TO  SPA-GMN-DATAINFECT-LST (1)
+           MOVE    "1 作成する"        TO  SPA-GMN-DATAINFECT-LST (2)
+           MOVE    "2 作成する／日"    TO  SPA-GMN-DATAINFECT-LST (3)
+           MOVE    "9 作成しない消"    TO  SPA-GMN-DATAINFECT-LST (4)
+           MOVE    4                   TO  SPA-GMN-DATAINFECT-MAX
       *    自費保険集計先区分
            MOVE    "1"                 TO  SPA-GMN-JIHIPOSITIONL (1)
            MOVE    "保険分欄（負担金額四捨五入）"
@@ -1877,6 +1895,21 @@
                 END-IF
            END-PERFORM
       *
+      *    データ感染症区分 空白の時、"0"とする
+           IF      SYS-1001-DATAINFECTIONKBN   =   SPACE
+               MOVE    "0"             TO  SYS-1001-DATAINFECTIONKBN
+           END-IF
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-DATAINFECT-MAX
+               IF      SYS-1001-DATAINFECTIONKBN
+                                       =   SPA-GMN-DATAINFECT-LST
+                                                            (IDY)(1:1)
+                   MOVE    SPA-GMN-DATAINFECT-LST (IDY)
+                                           TO  SPA-GMN-DATAINFECT-G
+                   MOVE    SPA-GMN-DATAINFECT-MAX  TO  IDY
+                END-IF
+           END-PERFORM
+      *
       *    データ提出方法区分 空白の時、"0"とする
            IF      SYS-1001-JIHIPOSITION   =   SPACE
                MOVE    "1"             TO  SYS-1001-JIHIPOSITION
@@ -2108,6 +2141,7 @@
            MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
            MOVE    W02-DATACREATE      TO  SPA-GMN-DATACREATE-G
            MOVE    W02-DATATEISYU      TO  SPA-GMN-DATATEISYUTU-G
+           MOVE    W02-DATAINFECT      TO  SPA-GMN-DATAINFECT-G
            MOVE    W02-JIHIPOSITION    TO  SPA-GMN-JIHIPOSITION-G
       *
       *    連絡先情報タグ
@@ -2318,6 +2352,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4131-DATATEISYUTU-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4131-DATAINFECTION-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -3308,11 +3346,37 @@
            END-PERFORM
            IF      FLG-OK              =   ZERO
                MOVE    "0204"          TO  SPA-ERRCD
-               MOVE    204             TO  SPA-GMN-CUR
+               MOVE    218             TO  SPA-GMN-CUR
            END-IF
       *
            .
        4131-DATATEISYUTU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    データ収集提出方法フラグ
+      *****************************************************************
+       4131-DATAINFECTION-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATAINFECT-MAX
+               IF      SPA-GMN-DATAINFECT
+                                       =   SPA-GMN-DATAINFECT-LST
+                                                          (IDY)(1:1)
+                   MOVE    SPA-GMN-DATAINFECT-LST (IDY)
+                                       TO  SPA-GMN-DATAINFECT-G
+                   MOVE    SPA-GMN-DATAINFECT-MAX  TO  IDY
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0217"          TO  SPA-ERRCD
+               MOVE    204             TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       4131-DATAINFECTION-CHK-EXT.
            EXIT.
       *****************************************************************
       *    自費保険集計先区分チェック処理
@@ -3851,6 +3915,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SYS-1001-DATACREATEFLG
                    MOVE    SPA-GMN-DATATEISYUTU
                                        TO  SYS-1001-DATATEISYUTUKBN
+                   MOVE    SPA-GMN-DATAINFECT
+                                       TO  SYS-1001-DATAINFECTIONKBN
                    MOVE    SPA-GMN-JIHIPOSITION
                                        TO  SYS-1001-JIHIPOSITION
                    MOVE    SYS-1001-REC    TO  SYSKANRI-REC
@@ -4449,6 +4515,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-DATATEISYUTU-MAX  TO  W02-DATATEISYU-COUNT
       *
+           MOVE    SPA-GMN-DATAINFECT-G  TO  W02-DATAINFECT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-DATAINFECT-MAX
+               MOVE    SPA-GMN-DATAINFECT-LST (IDX)
+                                       TO  W02-DATAINFECT-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-DATAINFECT-MAX  TO  W02-DATAINFECT-COUNT
+      *
            MOVE    SPA-GMN-JIHIPOSITION-G    TO  W02-JIHIPOSITION
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       3
@@ -4788,6 +4862,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED BY  SIZE
                    INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0217"
+                   MOVE    "データ収集感染症区分入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -4985,6 +5062,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    217
                     MOVE  "SANKANUM"
                                            TO   MCP-WIDGET
+                WHEN    218
+                    MOVE  "DATAINFECT"     TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -5150,6 +5229,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   MOVE    204              TO  SPA-GMN-CUR
               WHEN    "DATATEISYU"
                   MOVE    208              TO  SPA-GMN-CUR
+              WHEN    "DATAINFECT"
+                  MOVE    218              TO  SPA-GMN-CUR
               WHEN    "JIHIPOSITION"
                   MOVE    207              TO  SPA-GMN-CUR
               WHEN    "CHIHOUNUMKBN"

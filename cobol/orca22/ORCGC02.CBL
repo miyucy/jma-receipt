@@ -261,6 +261,7 @@
       *  04.06.07    NACL-藤原    10/11/04  補足コメント対応
       *  04.06.08    NACL-藤原    10/12/17  補足コメントの入力があるとき
       *                                     単独使用禁止エラーとしない
+      *  04.06.09    NACL-伊藤    11/01/28  リアルタイム送信
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -441,6 +442,8 @@
            03  WRK-SRYYMD          PIC X(08).
            03  WRK-ST              PIC 9(03).
       *
+           03  WRK-PTID            PIC X(10).
+      *
       *    年齢表示
            03  WRK-NENREI-G.
                05  WRK-NENREI-Z    PIC ZZ9.
@@ -577,6 +580,10 @@
       *    D04画面からの遷移情報
            COPY    "CPLNKD04.INC".
       *
+      *    感染症ファイル名
+       01  INFECTION-FILE          PIC X(17)   VALUE
+                                   "infectiondata2.sh".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -675,6 +682,9 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *
+      *    for Infection
+           COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -7387,6 +7397,12 @@ grpsys                                       SPA-AREA
            END-IF
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
+      *    感染症送信
+           IF     (SPA-DATAINFECTIONKBN    =      1)  AND
+                  (SPA-NAI-C02-PTID    NOT =   ZERO)
+               PERFORM 690-INFECTION-SEND-SEC
+           END-IF
+      *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -7443,6 +7459,11 @@ grpsys                                       SPA-AREA
                INITIALIZE              SPA-NAI-C02-UPDOWN
                MOVE    1               TO  SPA-GMN-C02-CUR
            ELSE                             
+      *        感染症送信
+               IF     (SPA-DATAINFECTIONKBN    =      1)  AND
+                      (SPA-NAI-C02-PTID    NOT =   ZERO)
+                   PERFORM 690-INFECTION-SEND-SEC
+               END-IF
       *
       *        排他制御解除処理
                PERFORM 990-LOCK-OUT-SEC
@@ -11425,6 +11446,34 @@ grpsys                                          SPA-AREA
       *
            .
        540-CIDSET4-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    感染症送信処理
+      *****************************************************************
+       690-INFECTION-SEND-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    INFECTION-FILE      TO  SHELLTBL-NAME
+           MOVE    "C02"               TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
+           MOVE    SPACE               TO  SHELLTBL-ARG4
+           MOVE    SPA-NYUGAIKBN       TO  SHELLTBL-ARG5
+           MOVE    SPA-PTID            TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG6
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG9
+           MOVE    SPA-SRYKA           TO  SHELLTBL-ARG8
+           MOVE    SPA-BEDFLG          TO  SHELLTBL-ARG9
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "daily"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       690-INFECTION-SEND-EXT.
            EXIT.
       *
       *****************************************************************

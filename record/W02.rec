@@ -203,6 +203,13 @@ W02	{
 					count	int;
 					item	varchar(14)[5];
 				};
+				DATAINFECT_COMB	{
+					DATAINFECT	{
+						value	varchar(14);
+					};
+					count	int;
+					item	varchar(14)[5];
+				};
 				JIHIPOSITION_COMB	{
 					JIHIPOSITION	{
 						value	varchar(40);

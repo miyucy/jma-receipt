@@ -34,6 +34,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -117,7 +118,7 @@
            MOVE    ZERO                TO  INFCHK-RC
       *
       *    ジョブ管理チェック（データ収集）
-           IF      SPA-DATACREATEFLG   NOT =   1
+           IF      SPA-DATAINFECTIONKBN    NOT =   2
                MOVE    10                  TO  INFCHK-RC
            END-IF
       *
@@ -137,9 +138,9 @@
                PERFORM 100-JOBEXEC-CHK-SEC
            END-IF
       *
-           IF      INFCHK-RC           =   ZERO
-               PERFORM 200-AGREEMENT-CHK-SEC
-           END-IF
+      **   IF      INFCHK-RC           =   ZERO
+      **       PERFORM 200-AGREEMENT-CHK-SEC
+      **   END-IF
            .
       *
        000-PROC-EXT.

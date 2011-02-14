@@ -71,6 +71,7 @@
       *                                     Ì¤¼ý³Û¡¦²áÆþ¶â³ÛÈ¿±ÇÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/05  È¯¹ÔÆüÊÑ¹¹ÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/16  ¥Þ¥ëÄ¹ÉéÃ´³Û¤òÊÝ¸±ÉéÃ´³ÛÈ¿±Ç
+      *  04.06.01    NACL-°ËÆ£    11/01/28  ¥ê¥¢¥ë¥¿¥¤¥àÁ÷¿®
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -161,6 +162,8 @@
       *
            03  FLG-JYOTAI              PIC 9(01).
            03  FLG-SOUSIN              PIC 9(01).
+      *    ´¶À÷¾Éºï½ü
+           03  FLG-INFEC-DLT           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -370,6 +373,10 @@
       *
        01  WRK-SYSTIME.
            03  WRK-SYSTIME-X       PIC X(08).
+      *
+      *    ´¶À÷¾É¥Õ¥¡¥¤¥ëÌ¾
+       01  INFECTION-FILE          PIC X(17)   VALUE
+                                   "infectiondata2.sh".
       *
       *    £Ã£Ì£Á£É£Í¥Õ¥¡¥¤¥ëÌ¾
        01  CLAIM-FILE.
@@ -5962,6 +5969,12 @@
       *    ³ÆÄ¢É¼°õºþ
            PERFORM 45009-PRINT-SEC
       *
+      *    ´¶À÷¾ÉÁ÷¿®
+           IF      SPA-DATAINFECTIONKBN    =   1
+               MOVE    ZERO                TO  FLG-INFEC-DLT
+               PERFORM 4904-INFECTION-SEND-SEC
+           END-IF
+      *
       *    £Ã£Ì£Á£É£ÍÁ÷¿®
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-CLAIM       =   1     )
@@ -6219,6 +6232,13 @@
                    MOVE    1               TO  SPA-KEI-FLG
                 END-IF
            END-IF
+      *
+      *    ´¶À÷¾ÉÁ÷¿®
+           IF      SPA-DATAINFECTIONKBN    =   1
+               MOVE    1                   TO  FLG-INFEC-DLT
+               PERFORM 4904-INFECTION-SEND-SEC
+           END-IF
+      *
       *    ¥æ¡¼¥¶¥×¥í¥°¥é¥àµ¯Æ°
            IF      SPA-ERRCD           =   SPACE
                MOVE    3               TO  FLG-USERPG
@@ -6514,6 +6534,37 @@
            .
       *
        4901-PRINT-PG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´¶À÷¾ÉÁ÷¿®½èÍý
+      *****************************************************************
+       4904-INFECTION-SEND-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    INFECTION-FILE      TO  SHELLTBL-NAME
+           MOVE    "K03"               TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPID          TO  SHELLTBL-ARG3
+           MOVE    SPA-SYORIFLG        TO  SHELLTBL-ARG4
+           IF      FLG-INFEC-DLT       =   1
+               MOVE    "2"                 TO  SHELLTBL-ARG4
+           END-IF
+           MOVE    SPA-NYUGAIKBN       TO  SHELLTBL-ARG5
+           MOVE    SPA-PTID            TO  WRK-PTID
+           MOVE    WRK-PTID            TO  SHELLTBL-ARG6
+           MOVE    SPA-SRYYMD          TO  SHELLTBL-ARG7
+           MOVE    SPA-SRYKA           TO  SHELLTBL-ARG8
+           MOVE    SPA-BEDFLG          TO  SHELLTBL-ARG9
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "daily"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       4904-INFECTION-SEND-EXT.
            EXIT.
       *
       *****************************************************************
