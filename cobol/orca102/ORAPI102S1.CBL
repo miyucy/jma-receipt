@@ -1345,7 +1345,7 @@
       *        金額
                MOVE    WRK-TENSU           TO  TNS-TEN
       *        保険適用外
-               MOVE    "2"                 TO  TNS-HKNTEKKBN
+               MOVE    2                   TO  TNS-HKNTEKKBN
       *        集計先
                MOVE    WRK-GAITENTTLKBN    TO  TNS-GAITENTTLKBN
                MOVE    WRK-NYUTENTTLKBN    TO  TNS-NYUTENTTLKBN

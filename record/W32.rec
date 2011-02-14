@@ -25,10 +25,10 @@ W32	{
 		};
 		KBNCD_COMB	{
 			KBNCD	{
-				value	varchar(40);
+				value	varchar(60);
 			};
 			count	int;
-			item	varchar(40)[200];
+			item	varchar(60)[200];
 		};
 		SANTEIHOU_COMB	{
 			SANTEIHOU	{

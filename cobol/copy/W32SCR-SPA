@@ -30,12 +30,12 @@
                    07  SPA-GMN-KBNCD-G.
                        09  SPA-GMN-KBNCD          PIC X(03).
                        09  SPA-GMN-KBNCD-F        PIC X(01).
-                       09  SPA-GMN-KBNCD-MEI      PIC X(36).
+                       09  SPA-GMN-KBNCD-MEI      PIC X(56).
                    07  SPA-GMN-KBNCD-LST-G.
                        09  SPA-GMN-KBNCD-LST      OCCURS   200.
                            11  SPA-GMN-TKBNCD     PIC X(03).
                            11  SPA-GMN-TKBNCD-F   PIC X(01).
-                           11  SPA-GMN-TKBNCD-MEI PIC X(36).
+                           11  SPA-GMN-TKBNCD-MEI PIC X(56).
                        09  SPA-KBNCD-MAX            PIC 9(04).
       *
                05  SPA-GMN-AREA2.

@@ -20,10 +20,10 @@
                           PIC X       OCCURS  10 TIMES.
               03  W32-KBNCD-COMB.
                 04  W32-KBNCD.
-                  05  W32-VALUE   PIC X(40).
+                  05  W32-VALUE   PIC X(60).
                 04  W32-KBNCD-COUNT   PIC S9(9)   BINARY.
                 04  W32-KBNCD-ITEM
-                        PIC X(40)   OCCURS  200 TIMES.
+                        PIC X(60)   OCCURS  200 TIMES.
               03  W32-SANTEIHOU-COMB.
                 04  W32-SANTEIHOU.
                   05  W32-VALUE   PIC X(40).
