@@ -970,7 +970,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    京都府通り名称編集区分
            IF      SPA-NAI-TOWNNAME2KBN-FLG    =   SPACE
-               MOVE    "2"                 TO  SPA-NAI-TOWNNAME2KBN-FLG
+               MOVE    "1"                 TO  SPA-NAI-TOWNNAME2KBN-FLG
            END-IF
       *
            .
