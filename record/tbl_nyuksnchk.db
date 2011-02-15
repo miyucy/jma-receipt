@@ -41,3 +41,25 @@ path	all		{
 		;
 	};
 };
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_nyuksnchk
+				SET
+				NYUINKBN      = :NYUINKBN,
+				KSNKBN      = :KSNKBN,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				CHKKBN      = :CHKKBN,
+				TERMID      = :TERMID,
+				OPID      = :OPID,
+				CREYMD      = :CREYMD,
+				UPYMD      = :UPYMD,
+				UPHMS      = :UPHMS
+			WHERE 	NYUINKBN      =  :UPNYUINKBN
+			AND	KSNKBN	=	:UPKSNKBN
+			AND	YUKOSTYMD	=	:UPYUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
+	};
+};
+
