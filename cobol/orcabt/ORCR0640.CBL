@@ -12275,6 +12275,8 @@
            MOVE     ZERO    TO   FLG-KEISAN2
            MOVE     ZERO    TO   FLG-KEISAN3
       *
+           MOVE     ZERO    TO   WRK-FTNKEI-SAGAKU9
+      *
            MOVE     ZERO    TO   FLG-KGKIPNTAI
            MOVE     ZERO    TO   FLG-WRKFILE-KGKTAI
            IF    SYU-KOH-HKNNUM(1)(1:1)  >= "1" AND <= "8"
