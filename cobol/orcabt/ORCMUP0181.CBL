@@ -262,7 +262,7 @@
       *    入力ファイル
            MOVE    SPACE           TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-      *             LNK-DBFILE          DELIMITED  BY  SPACE
+                   LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                                        INTO    ASS-IN
