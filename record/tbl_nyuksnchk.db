@@ -41,6 +41,19 @@ path	all		{
 		;
 	};
 };
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_nyuksnchk_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuksnchk
+			WHERE NYUINKBN        = :NYUINKBN
+			AND   KSNKBN          = :KSNKBN
+			ORDER	BY	YUKOSTYMD
+		;
+	};
+};
+
 path	upd1	{
 	DBUPDATE		{
 		UPDATE	tbl_nyuksnchk
@@ -62,4 +75,3 @@ path	upd1	{
 		;
 	};
 };
-

@@ -396,7 +396,7 @@
                IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOEDYMD2)
                  AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD2)
       *            £Ä£Â¹¹¿·
-                   MOVE    NYUKHNWK-YUKOEDYMD
+                   MOVE    NYUKHN-YUKOEDYMD
                                            TO  NYUKHN-UPYUKOEDYMD
                    MOVE    NYUKHNWK-YUKOEDYMD2
                                            TO  NYUKHN-YUKOEDYMD
@@ -451,9 +451,9 @@
                IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOSTYMD)
                  AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD)
       *            £Ä£Â¹¹¿·
-                   MOVE    NYUKHNWK-INF    TO  NYUKHN-INF
-                   MOVE    NYUKHNWK-YUKOEDYMD
+                   MOVE    NYUKHN-YUKOEDYMD
                                            TO  NYUKHN-UPYUKOEDYMD
+                   MOVE    NYUKHNWK-INF    TO  NYUKHN-INF
                    PERFORM 20101-NYUKHN-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
