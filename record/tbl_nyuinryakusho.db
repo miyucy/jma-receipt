@@ -9,6 +9,8 @@ tbl_nyuinryakusho	{
 	CREYMD		char(8);
 	UPYMD		char(8);
 	UPHMS		char(6);
+#-----> 主キー更新用項目
+	UPYUKOEDYMD 		char(8),virtual;
 };
 
 primary	{SRYCD,YUKOSTYMD,YUKOEDYMD;
@@ -19,8 +21,7 @@ path	key		{
 		DECLARE tbl_nyuinryakusho_key_csr CURSOR FOR
 		SELECT *
 		FROM tbl_nyuinryakusho
-			WHERE
-					SRYCD      =  :SRYCD
+			WHERE	SRYCD      =  :SRYCD
 			AND		YUKOSTYMD     <=  :YUKOSTYMD
 			AND		YUKOEDYMD     >=  :YUKOEDYMD
 		;
@@ -33,5 +34,37 @@ path	all	{
 		SELECT *
 		FROM tbl_nyuinryakusho
       		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_nyuinryakusho_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinryakusho
+		WHERE 	SRYCD	= :SRYCD
+			ORDER	BY	YUKOSTYMD
+		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_nyuinryakusho
+				SET
+				SRYCD      = :SRYCD,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				RYAKUSHO      = :RYAKUSHO,
+				NAME      = :NAME,
+				TERMID      = :TERMID,
+				OPID      = :OPID,
+				CREYMD      = :CREYMD,
+				UPYMD      = :UPYMD,
+				UPHMS      = :UPHMS
+			WHERE 	SRYCD      =  :SRYCD
+			AND	YUKOSTYMD	=	:YUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
 	};
 };
