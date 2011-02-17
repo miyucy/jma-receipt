@@ -215,15 +215,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           MOVE    SPACE           TO  LNK-DBFILE
-           MOVE    "NYUKSNCHK.DAT" TO  LNK-UPFILE
-           MOVE    SPACE           TO  LNK-DBRVERSION
-           MOVE    01              TO  LNK-HOSPNUM
-           MOVE    "20110216"      TO  LNK-MNTYMD
-           MOVE    "144001"        TO  LNK-MNTHMS
-           MOVE    1               TO  LNK-COUNT
-           MOVE    0               TO  LNK-RC
-      *
            MOVE    ZERO            TO  FLG-AREA
            MOVE    ZERO            TO  CNT-AREA
            INITIALIZE                  WRK-AREA
@@ -239,7 +230,7 @@
            ACCEPT  SYS-TIME        FROM    TIME
       *
       *    DB OPEN
-          PERFORM 100-DBOPEN-SEC
+      *    PERFORM 100-DBOPEN-SEC
       *
            PERFORM 101-ASSIN-GET-SEC
       *
@@ -702,7 +693,7 @@
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
-          PERFORM 900-DBDISCONNECT-SEC
+      *    PERFORM 900-DBDISCONNECT-SEC
       *
       *    出力ファイル　終了処理
            CLOSE                       IN-FILE
