@@ -502,6 +502,7 @@
       *                                     （記録）の設定項目追加対応
       *  04.05.11    NACL-門脇    10/09/06  地方公費の全国公費併用分請求点
       *                                     集計対応（レセ電負担区分対応）
+      *  04.05.12    NACL-門脇    11/02/17  災害対応修正（平成２３年１月〜）
       *
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
@@ -2568,6 +2569,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                  ( SYS-1001-PREFNUM    =   "46"         ) AND
                  ( RECE02-SRYYM       >=   201010       ) AND
                  ( RECE02-SRYYM       <=   201103       ))
+           OR   (( IDZ                 =   1            ) AND
+                 ( RECE02-SRYYM       >=   201101       ))
                IF    ( RECE02-HKNNUM   NOT =   SPACE )
                AND   ( RECE02-HKNJANUM     =   SPACE )
                    MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
