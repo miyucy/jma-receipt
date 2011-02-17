@@ -70,6 +70,18 @@ path	all	{
       		;
 	};
 };
+
+path	key3	{
+	DBSELECT	{
+		DECLARE tbl_nyuinkhn_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nyuinkhn
+		WHERE 	KHN_SRYCD	= :KHN_SRYCD
+			ORDER	BY	YUKOSTYMD
+		;
+	};
+};
+
 path	upd1	{
 	DBUPDATE		{
 		UPDATE	tbl_nyuinkhn
