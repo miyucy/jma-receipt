@@ -17,3 +17,25 @@ path	key	{
 	};
 };
 
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_synonym
+				SET
+				BYOMEI      = :BYOMEI,
+				BYOMEICD      = :BYOMEICD,
+				CREYMD      = :CREYMD,
+				UPYMD      = :UPYMD,
+				UPHMS      = :UPHMS
+			WHERE 	BYOMEI      =  :BYOMEI
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_synonym
+			WHERE   BYOMEI     =   :BYOMEI
+		;
+	};
+};
