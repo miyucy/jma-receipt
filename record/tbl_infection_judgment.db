@@ -72,3 +72,20 @@ path	all		{
 		;
 	};
 };
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_infection_judgment
+				SET
+				ID      = :ID,
+				DISEASE      = :DISEASE,
+				JUDGMENT_CODE      = :JUDGMENT_CODE,
+				CODE_KBN      = :CODE_KBN,
+				SRYKBN      = :SRYKBN,
+				CREYMD      = :CREYMD,
+				UPYMD      = :UPYMD,
+				UPHMS      = :UPHMS
+			WHERE        ID  =  :ID
+		;
+	};
+};
