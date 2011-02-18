@@ -34,6 +34,8 @@
       *  04.05.01    NACL-藤原    09/07/23  返戻ファイルの小文字対応
       *
       *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.02    NACL-藤原    11/02/10  登録済エラー時の情報追加
+      *  04.06.03    NACL-藤原    11/02/14  OpenCOBOL 1.0.0 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -59,9 +61,7 @@
       *
       *    パラメータファイル
        FD  PARA-FILE.
-       01  PARA-REC.
-           03  PARA-DATA.
-               05  CSV-X           PIC X(01)  OCCURS   3000.
+       01  PARA-REC            PIC X(3000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -130,6 +130,12 @@
            03  WRK-INDEX.
                05  WRK-INDEX-9         PIC 9(02).
       *
+           03  WRK-ERRMSG-HENSYU-AREA.
+               05  WRK-ERRMSG-TEISYUTUSAKI
+                                       PIC X(04).
+               05  WRK-ERRMSG-SRYYM    PIC X(06).
+               05  WRK-ERRMSG-HKNJA    PIC X(20).
+      *
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
       *    カウンタ
@@ -168,6 +174,10 @@
                05  FLG-NODATA          PIC 9(01).
            03  FLG-HG-CHK              PIC 9(01).
            03  FLG-DB-INSERT           PIC 9(01).
+      *
+       01  WRK-PARA-REC.
+           03  PARA-DATA.
+               05  CSV-X           PIC X(01)  OCCURS   3000.
       *
        01  TABLE-SAVE-AREA.
            03  TBL-SAVE-MAX            PIC 9(02).
@@ -800,6 +810,24 @@
       *    取り込みファイルチェック処理
            PERFORM 7002-FILE-CHECK-SEC
            IF      WRK-ERRMSG1         >   ZERO
+               INITIALIZE              WRK-ERRMSG-HENSYU-AREA
+               EVALUATE    SPA-NAI-T05-TFLG3 (IDY)
+                   WHEN    "1"
+                       MOVE    "社保"          TO
+                                               WRK-ERRMSG-TEISYUTUSAKI
+                   WHEN    "2"
+                       MOVE    "国保"          TO
+                                               WRK-ERRMSG-TEISYUTUSAKI
+               END-EVALUATE
+               MOVE    SPA-GMN-T05-TSRYYM(IDY) TO  WRK-ERRMSG-SRYYM
+               EVALUATE    SPA-NAI-T05-TFLG2 (IDY)
+                   WHEN    "0"
+                       CONTINUE
+                   WHEN    "1"
+                       MOVE    "（保険者からの返戻）"
+                                               TO  WRK-ERRMSG-HKNJA
+               END-EVALUATE
+      *
                INITIALIZE                  SPA-GMN-T05-DATALST (IDY)
                                            SPA-NAI-T05-DATALST (IDY)
                EVALUATE    WRK-ERRMSG1
@@ -815,8 +843,17 @@
                        MOVE    "既に取り込み済のファイルです"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    4
-                       MOVE    "既にＤＢ登録済のファイルです"
-                                               TO  SPA-GMN-T05-ERRMSG1
+                       STRING   "既にＤＢ登録済のファイルです　提出先："
+                                               DELIMITED  BY  SIZE
+                                WRK-ERRMSG-TEISYUTUSAKI
+                                               DELIMITED  BY  SIZE
+                                "　処理年月：" DELIMITED  BY  SIZE
+                                WRK-ERRMSG-SRYYM
+                                               DELIMITED  BY  SIZE
+                                WRK-ERRMSG-HKNJA
+                                               DELIMITED  BY  SPACE
+                                               INTO  SPA-GMN-T05-ERRMSG1
+                       END-STRING
                    WHEN    9
                        MOVE    "ファイルがオープンできません"
                                                TO  SPA-GMN-T05-ERRMSG1
@@ -1004,7 +1041,8 @@
                            MOVE    1                   TO  WRK-ERRMSG1
                            MOVE    1                   TO  WRK-ERRMSG2
                    END-EVALUATE
-                   MOVE 11                 TO  SPILIT-CNT
+      **           MOVE 11                 TO  SPILIT-CNT
+                   MOVE 9                  TO  SPILIT-CNT
                WHEN    "RIfixf"
                WHEN    "rifixf"
       *            請求確定状況ファイル
@@ -1174,6 +1212,11 @@
       *
            PERFORM             UNTIL   FLG-PARA    =   1
                                OR      WRK-ERRMSG1 >   ZERO
+      *
+               MOVE    PARA-REC        TO   SJISTOEUC-INDATA
+               PERFORM 7002-FILE-CONVERT-SEC
+               MOVE    SJISTOEUC-OUTDATA
+                                       TO  PARA-DATA
                IF       PARA-DATA(1:1) =   X"0D"
                    MOVE    1               TO  WRK-ERRMSG1
                ELSE
@@ -1183,9 +1226,6 @@
                            WHEN    "rihasp"
                            WHEN    "RIuasp"
                            WHEN    "riuasp"
-                               MOVE    PARA-DATA       TO
-                                                       SJISTOEUC-INDATA
-                               PERFORM 7002-FILE-CONVERT-SEC
                                MOVE    SJISTOEUC-OUTDATA
                                                        TO  WRK-TITLE
                                MOVE    2               TO  WK-HEAD-LINE
@@ -1209,9 +1249,6 @@
                                       "オンライン返戻ファイル（保険者）"
                                                            TO  WRK-TITLE
                                END-EVALUATE
-                               MOVE    PARA-DATA       TO
-                                                       SJISTOEUC-INDATA
-                               PERFORM 7002-FILE-CONVERT-SEC
                                MOVE    1               TO  WK-HEAD-LINE
                                MOVE    2               TO  WK-BODY-LINE
                        END-EVALUATE
@@ -1492,18 +1529,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *
-      *        最後の項目は長さを減らす
-               IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
-                                           "receiptc.hen"  OR
-                                           "RECEIPTC.SAH"  OR
-                                           "receiptc.sah"
-                   CONTINUE
-               ELSE
-                   IF      WRK-KOUMOKU-NO  =   SPILIT-CNT
-                       COMPUTE WRK-MO-CNT  =   WRK-MO-CNT  -   1
-                   END-IF
-               END-IF
-      *
                IF      FLG-DATAEND     =   ZERO
                 IF     CNT-PARA        =   WK-HEAD-LINE
       *            ヘッダ項目別編集処理
@@ -1694,12 +1719,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2401-UKE-SRYYM-SET-SEC        SECTION.
       *
-           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SJISTOEUC-INDATA
-           PERFORM 7002-FILE-CONVERT-SEC
       *
            INITIALIZE                      ORCSZENHANCNVAREA
-           MOVE    SJISTOEUC-OUTDATA(1:WRK-MO-CNT)
+           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                        TO  LNK-ZENHANCNV-IN-DATA
            MOVE    16                  TO  LNK-ZENHANCNV-IN-LEN
            MOVE    WRK-MO-CNT          TO  LNK-ZENHANCNV-IN-LEN1
@@ -1722,12 +1744,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2402-UKE-SENDYMD-SET-SEC        SECTION.
       *
-           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SJISTOEUC-INDATA
-           PERFORM 7002-FILE-CONVERT-SEC
       *
            INITIALIZE                      ORCSZENHANCNVAREA
-           MOVE    SJISTOEUC-OUTDATA(1:WRK-MO-CNT)
+           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                        TO  LNK-ZENHANCNV-IN-DATA
            MOVE    22                  TO  LNK-ZENHANCNV-IN-LEN
            MOVE    WRK-MO-CNT          TO  LNK-ZENHANCNV-IN-LEN1
@@ -1748,12 +1767,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2404-UKE-SENDNUM-SET-SEC        SECTION.
       *
-           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  SJISTOEUC-INDATA
-           PERFORM 7002-FILE-CONVERT-SEC
       *
            INITIALIZE                      ORCSZENHANCNVAREA
-           MOVE    SJISTOEUC-OUTDATA(1:WRK-MO-CNT)
+           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                        TO  LNK-ZENHANCNV-IN-DATA
            MOVE    6                   TO  LNK-ZENHANCNV-IN-LEN
            MOVE    WRK-MO-CNT          TO  LNK-ZENHANCNV-IN-LEN1
@@ -2684,11 +2700,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    UNTIL   ( IDYY           >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
       *        カンマの位置
-               IF    ( CSV-X (IDYY)     =   "," )  OR
-                     ((IDX             =   10  OR  11) AND
-                     ( CSV-X (IDYY)     =   SPACE))
-                   MOVE    IDYY         TO  WRK-PO-ED
-                   MOVE    1           TO  FLG-COMMA
+               IF    ( CSV-X (IDYY)    =   ","              )  OR
+                   ( ( IDX             =   SPILIT-CNT ) AND
+                     ( CSV-X (IDYY)    =   SPACE      )     )
+                   MOVE    IDYY            TO  WRK-PO-ED
+                   MOVE    1               TO  FLG-COMMA
                ELSE
       *            カンマが足りない場合の終了位置決定
                    IF      CSV-X (IDYY) NOT =   SPACE

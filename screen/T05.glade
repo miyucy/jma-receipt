@@ -182,7 +182,7 @@
       <name>ERRMSG1</name>
       <x>315</x>
       <y>35</y>
-      <width>400</width>
+      <width>550</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>

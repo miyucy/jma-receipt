@@ -32,6 +32,7 @@
       *                                     の変更
       *
       *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.02    NACL-藤原    11/02/14  OpenCOBOL 1.0.0 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -786,15 +787,6 @@
       *    項目別処理
       *****************************************************************
        200113-KOUMOKU-BETU-SEC        SECTION.
-      *
-           EVALUATE    WRK-FILE-TMP(6:6)
-               WHEN    "RIhasp"
-               WHEN    "RIuasp"
-               WHEN    "RIfixf"
-                   IF      WRK-KOUMOKU-NO      =  SPLIT-CNT
-                       COMPUTE WRK-MO-CNT  =  WRK-MO-CNT - 1
-                   END-IF
-           END-EVALUATE
       *
            EVALUATE    WRK-FILE-TMP(6:6)
                WHEN    "RIhasp"

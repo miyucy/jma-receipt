@@ -377,7 +377,7 @@
       *                                             
                    07  SPA-GMN-T05-KOUMOKU.
                        09  SPA-GMN-T05-SELNUM      PIC 9(02).
-                       09  SPA-GMN-T05-ERRMSG1     PIC X(100).
+                       09  SPA-GMN-T05-ERRMSG1     PIC X(120).
                        09  SPA-GMN-T05-ERRMSG2     PIC X(100).
                        09  SPA-GMN-T05-ERRDETAIL   PIC X(20).
                        09  SPA-GMN-T05-SELNAME1    PIC X(100).

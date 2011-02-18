@@ -11,7 +11,7 @@ T05	{
 		};
 		ERRMSG1	{
 			style	varchar(20);
-			value	varchar(100);
+			value	varchar(120);
 		};
 		ERRMSG2	{
 			style   varchar(20);

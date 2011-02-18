@@ -6,7 +6,7 @@
                 04  T05-ENTRY1      PIC X(200).
               03  T05-ERRMSG1.
                 04  T05-ERRMSG1-STYLE   PIC X(20).
-                04  T05-ERRMSG1-VALUE   PIC X(100).
+                04  T05-ERRMSG1-VALUE   PIC X(120).
               03  T05-ERRMSG2.
                 04  T05-ERRMSG2-STYLE   PIC X(20).
                 04  T05-ERRMSG2-VALUE   PIC X(100).
