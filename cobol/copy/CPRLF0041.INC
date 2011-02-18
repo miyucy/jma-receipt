@@ -554,7 +554,7 @@
       * 医事請求名称
                    07  LF041-ALSNAME    PIC  X(80).
       * 数量(Z編集)
-                   07  LF041-SURYO      PIC  X(12).
+                   07  LF041-SURYO      PIC  X(40).
       * 数量コード (claim:numberCode)
                    07  LF041-SURYOCD    PIC  X(02).
       * 数量コードのテーブル名 (claim:numberCodeId) (Claim004)

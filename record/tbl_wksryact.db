@@ -22,7 +22,8 @@ tbl_wksryact {
 	INPUTCHI1_2			char(8);
 	INPUTCHI1_3			char(8);
 	INPUTCHI1_4			char(8);
-	INPUTCD_1  			char(22);
+	INPUTCHI1_5			char(8);
+	INPUTCD_1  			char(54);
 	JIHIMONEY_1			number(7,0);
 	INPUTKBN_1			char(1);
 	KANSURYO_1			number(10,5);
@@ -37,7 +38,8 @@ tbl_wksryact {
 	INPUTCHI2_2			char(8);
 	INPUTCHI2_3			char(8);
 	INPUTCHI2_4			char(8);
-	INPUTCD_2  			char(22);
+	INPUTCHI2_5			char(8);
+	INPUTCD_2  			char(54);
 	JIHIMONEY_2			number(7,0);
 	INPUTKBN_2			char(1);
 	KANSURYO_2			number(10,5);
@@ -52,7 +54,8 @@ tbl_wksryact {
 	INPUTCHI3_2			char(8);
 	INPUTCHI3_3			char(8);
 	INPUTCHI3_4			char(8);
-	INPUTCD_3  			char(22);
+	INPUTCHI3_5			char(8);
+	INPUTCD_3  			char(54);
 	JIHIMONEY_3			number(7,0);
 	INPUTKBN_3			char(1);
 	KANSURYO_3			number(10,5);
@@ -67,7 +70,8 @@ tbl_wksryact {
 	INPUTCHI4_2			char(8);
 	INPUTCHI4_3			char(8);
 	INPUTCHI4_4			char(8);
-	INPUTCD_4  			char(22);
+	INPUTCHI4_5			char(8);
+	INPUTCD_4  			char(54);
 	JIHIMONEY_4			number(7,0);
 	INPUTKBN_4			char(1);
 	KANSURYO_4			number(10,5);
@@ -82,7 +86,8 @@ tbl_wksryact {
 	INPUTCHI5_2			char(8);
 	INPUTCHI5_3			char(8);
 	INPUTCHI5_4			char(8);
-	INPUTCD_5  			char(22);
+	INPUTCHI5_5			char(8);
+	INPUTCD_5  			char(54);
 	JIHIMONEY_5			number(7,0);
 	INPUTKBN_5			char(1);
 	KANSURYO_5			number(10,5);

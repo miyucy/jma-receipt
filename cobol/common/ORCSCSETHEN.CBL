@@ -541,6 +541,7 @@
            MOVE    ISET-ATAI (02)  TO  SPA-COM-ATAI2 (SPA-GMN-IDX)
            MOVE    ISET-ATAI (03)  TO  SPA-COM-ATAI3 (SPA-GMN-IDX)
            MOVE    ISET-ATAI (04)  TO  SPA-COM-ATAI4 (SPA-GMN-IDX)
+           MOVE    ISET-ATAI (05)  TO  SPA-COM-ATAI5 (SPA-GMN-IDX)
       *    ¥πªª√Õ
            MOVE    ISET-KANSURYO       TO  SPA-COM-KANSURYO
                                                            (SPA-GMN-IDX)

@@ -25,7 +25,7 @@
       *
        01  ORCSNDAYCHGAREA.
       *    入力内容
-           03  ORCSNDAYCHG-INPUTCD          PIC X(50).
+           03  ORCSNDAYCHG-INPUTCD          PIC X(54).
       *    診療年月日
            03  ORCSNDAYCHG-SRYYMD           PIC X(08).
       *    入力桁数

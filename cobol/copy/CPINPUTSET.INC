@@ -55,8 +55,10 @@
                05 ISET-ATAI3           PIC  X(08).
       *入力値４
                05 ISET-ATAI4           PIC  X(08).
+      *入力値５
+               05 ISET-ATAI5           PIC  X(08).
            03  ISET-ATAI-AREA-R        REDEFINES    ISET-ATAI-AREA.
-               05 ISET-ATAI            PIC  X(08)   OCCURS  4.
+               05 ISET-ATAI            PIC  X(08)   OCCURS  5.
       *入力区分（１：関係コメント指示、２：内服種類数指示）
            03 ISET-INPUTKBN            PIC  X(01).
       *換算入力数量

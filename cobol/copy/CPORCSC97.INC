@@ -23,6 +23,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.00    NACL-多々納  11/02/14  用法コメント対応
       ************************************************************
       *
        01  ORCSC97AREA.
@@ -32,7 +33,7 @@
       *              １：半角変換のみ）
            03  LNK-SC97-KBN            PIC X(01).
       *    入力出力領域
-           03  LNK-SC97-INPUTCD        PIC X(22).
+           03  LNK-SC97-INPUTCD        PIC X(54).
       *    ＳＰＡライン
            03  LNK-SC97-GMN-IDX        PIC 9(04).
       *    画面ライン
@@ -47,7 +48,7 @@
       *        コード変更有無（０：変更なし、１：変更あり）
                05  LNK-SC97-NYURYOKU       PIC 9(01).
       *        入力コード
-               05  LNK-SC97-INCD           PIC X(22).
+               05  LNK-SC97-INCD           PIC X(54).
       *        入力コード桁数
                05  LNK-SC97-INCDCNT        PIC 9(02).
       *        入力コード種別
@@ -65,6 +66,7 @@
                    07  LNK-SC97-MOJI2          PIC X(10).
                    07  LNK-SC97-MOJI3          PIC X(10).
                    07  LNK-SC97-MOJI4          PIC X(10).
+                   07  LNK-SC97-MOJI5          PIC X(10).
       *        時間外フラグ
                    07  LNK-SC97-JIKAN          PIC 9(01).
       *
@@ -82,6 +84,7 @@
                    07  LNK-SC97-MCNT2          PIC 9(02).
                    07  LNK-SC97-MCNT3          PIC 9(02).
                    07  LNK-SC97-MCNT4          PIC 9(02).
+                   07  LNK-SC97-MCNT5          PIC 9(02).
       *        残量廃棄
                    07  LNK-SC97-AUTOFLG2        PIC X(01).
       *        換算値入力

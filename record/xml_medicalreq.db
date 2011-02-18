@@ -37,7 +37,7 @@ xml_medicalreq {
 			Medication_info   {
 				Medication_Code		varchar(09);
 				Medication_Name		varchar(50);
-				Medication_Number	varchar(10);
+				Medication_Number	varchar(40);
 			} [40];
 		}[40] ;
 		Disease_Information  {

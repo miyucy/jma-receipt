@@ -362,6 +362,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    TO  TNSP-UP-YUKOEDYMD
                        MOVE    SPA-HOSPNUM         TO  TNSP-UP-HOSPNUM
       *
+                       MOVE    SPA-OPID            TO  TNSP-OPID
                        MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                        MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
       *
@@ -393,6 +394,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    TO  TNSP-UP-YUKOEDYMD
                        MOVE    SPA-HOSPNUM         TO  TNSP-UP-HOSPNUM
       *
+                       MOVE    SPA-OPID            TO  TNSP-OPID
                        MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                        MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS
       *
@@ -422,6 +424,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZS02-NAI-YUKOEDYMD  TO  TNSP-YUKOEDYMD
                PERFORM 2001-TENSUPLUS-HEN-SEC
       *
+               MOVE    SPA-OPID            TO  TNSP-OPID
                MOVE    SMCNDATE-YMD        TO  TNSP-CREYMD
                MOVE    SMCNDATE-YMD        TO  TNSP-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNSP-UPHMS

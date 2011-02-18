@@ -85,7 +85,7 @@
                    07  TBL-MAE-SRYKAISU    PIC  9(03).
                    07  TBL-MAE-INPUTCOMENT PIC  X(80).
                    07  TBL-MAE-ATAI-G.
-                       09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
+                       09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  5.
                    07  TBL-MAE-KANSURYO    PIC  9(05)V9(05).
                    07  TBL-MAE-INPUTKBN    PIC  X(01).
                    07  TBL-MAE-JIHIMONEY   PIC  9(07).
@@ -96,7 +96,7 @@
                    07  TBL-ATO-SRYKAISU    PIC  9(03).
                    07  TBL-ATO-INPUTCOMENT PIC  X(80).
                    07  TBL-ATO-ATAI-G.
-                       09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
+                       09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  5.
                    07  TBL-ATO-KANSURYO    PIC  9(05)V9(05).
                    07  TBL-ATO-INPUTKBN    PIC  X(01).
                    07  TBL-ATO-JIHIMONEY   PIC  9(07).
@@ -343,6 +343,7 @@
       *
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008")
+                       OR     (SRY-SRYCD (IDX2)(1:3)   =   "001")
                            MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                            MOVE    SRY-PTID            TO  PTCOM-PTID
                            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM

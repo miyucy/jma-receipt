@@ -3362,6 +3362,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            患者コメント作成
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
+                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
       *               入力があれば作成
                        IF      (LNK-WKSRY-INPUTCHI-G (IDX IDX-SIN)
                                                        =  SPACE ) AND

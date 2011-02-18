@@ -13,6 +13,7 @@ tbl_inputset {
 	ATAI2				char(8);
 	ATAI3				char(8);
 	ATAI4				char(8);
+	ATAI5				char(8);
 	INPUTKBN			char(1);
 	KANSURYO			number(10,5);
 	TERMID  			varchar(16);

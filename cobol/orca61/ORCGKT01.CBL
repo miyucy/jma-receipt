@@ -32,6 +32,7 @@
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
       *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *  04.06.00    NACL-多々納  10/08/12  診療科変更対応
+      *  04.06.00    NACL-多々納  11/02/16  用法コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -543,7 +544,7 @@
       *    入力時表示用
            03  IDX-INCNT               PIC 9(04).
            03  FLG-NYURYOKU            PIC 9(01).
-           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCD         PIC X(54).
            03  FLG-IN-ATAI             PIC 9(01).
       *
       *    入力位置判定用
@@ -583,6 +584,7 @@
                05  WRK-HZN-ATAI2           PIC X(10).
                05  WRK-HZN-ATAI3           PIC X(10).
                05  WRK-HZN-ATAI4           PIC X(10).
+               05  WRK-HZN-ATAI5           PIC X(10).
       *
       *    初期業務識別区分
            03  WRK-GYOUMU-KBN          PIC X(04).
@@ -702,7 +704,8 @@
            03  WRK-MCNT2           PIC 9(02).
            03  WRK-MCNT3           PIC 9(02).
            03  WRK-MCNT4           PIC 9(02).
-           03  WRK-CD              PIC X(22).
+           03  WRK-MCNT5           PIC 9(02).
+           03  WRK-CD              PIC X(54).
            03  WRK-KAI             PIC X(20).
            03  WRK-SUR             PIC X(20).
            03  IDM                 PIC 9(04).
@@ -4316,7 +4319,7 @@
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  FLG-COPY
            PERFORM VARYING     IDX3    FROM    2   BY  1
-                   UNTIL      (IDX3        >   22  )
+                   UNTIL      (IDX3        >   54  )
                          OR   (FLG-COPY    =   1   )
                IF      SPA-GMN-INPUTCD (IDX)(IDX3:1)
                                           =   "C"  OR  "c"
@@ -4900,7 +4903,8 @@
                                             TO  WRK-INPUTCD
                MOVE    "3"                  TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001"
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001" )
+                 AND  (SPA-COM-YCOMKBN (SPA-GMN-IDX)       =   ZERO  )
       *            投薬の時のみ、回数入力へ
                    IF      SPA-COM-SRYKBN(SPA-GMN-IDX)     =   "21" OR
                                                                "22" OR
@@ -4962,7 +4966,7 @@
                    MOVE    ZERO                TO  WRK-IN-IDX2
                    MOVE    ZERO                TO  FLG-ARI
                    PERFORM VARYING     IDX     FROM    1   BY  1
-                           UNTIL       IDX     >   22
+                           UNTIL       IDX     >   54
                        IF      SPA-GMN-INPUTCD (SPA-GMN-IDX)(IDX:1)
                                                    =   "*"
                                                    OR  "_"
@@ -4974,7 +4978,7 @@
                        END-IF
                    END-PERFORM
                    IF     (FLG-ARI                 =   ZERO )  AND
-                          (WRK-IN-IDX2             <   22   )
+                          (WRK-IN-IDX2             <   54   )
                        ADD     1                   TO  WRK-IN-IDX2
                        IF    ((SPA-COM-IN3 (SPA-GMN-IDX)  =   "1" ) AND
                               (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
@@ -4996,6 +5000,11 @@
                                                    =   "0992000" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      **                 用法コメント
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                                   =   "001"     ) AND
+                              (SPA-COM-YCOMKBN(SPA-GMN-IDX)
+                                                       =   1     ))
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
                                                      (WRK-IN-IDX2:)
@@ -5091,6 +5100,7 @@
            MOVE    SPA-COM-ATAI2 (SPA-GMN-IDX) TO  WRK-HZN-ATAI2
            MOVE    SPA-COM-ATAI3 (SPA-GMN-IDX) TO  WRK-HZN-ATAI3
            MOVE    SPA-COM-ATAI4 (SPA-GMN-IDX) TO  WRK-HZN-ATAI4
+           MOVE    SPA-COM-ATAI5 (SPA-GMN-IDX) TO  WRK-HZN-ATAI5
       *
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
@@ -5172,7 +5182,8 @@
            IF     (WRK-HZN-ATAI1   =   SPA-COM-ATAI1 (SPA-GMN-IDX)) AND
                   (WRK-HZN-ATAI2   =   SPA-COM-ATAI2 (SPA-GMN-IDX)) AND
                   (WRK-HZN-ATAI3   =   SPA-COM-ATAI3 (SPA-GMN-IDX)) AND
-                  (WRK-HZN-ATAI3   =   SPA-COM-ATAI4 (SPA-GMN-IDX))
+                  (WRK-HZN-ATAI4   =   SPA-COM-ATAI4 (SPA-GMN-IDX)) AND
+                  (WRK-HZN-ATAI5   =   SPA-COM-ATAI5 (SPA-GMN-IDX))
                MOVE    ZERO                TO  FLG-IN-ATAI
            ELSE
                MOVE    1                   TO  FLG-IN-ATAI
@@ -5247,6 +5258,7 @@
                   (WRK-MCNT2           =   ZERO )  AND
                   (WRK-MCNT3           =   ZERO )  AND
                   (WRK-MCNT4           =   ZERO )  AND
+                  (WRK-MCNT5           =   ZERO )  AND
                   (FLG-KAISU           =   ZERO )
                MOVE    ZERO                TO  FLG-IN1
       *        薬剤と数量入力必須の診療行為、薬剤コメント
@@ -5289,6 +5301,12 @@
                    IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
                        MOVE    1                   TO  FLG-IN1
                    END-IF
+               END-IF
+      *        用法コメント
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                               =   "001" )
+                 AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
+                   MOVE    1                   TO  FLG-IN1
                END-IF
       *
                IF      FLG-IN1             =   1
@@ -5368,6 +5386,7 @@
            MOVE    LNK-SC97-MCNT2      TO  WRK-MCNT2
            MOVE    LNK-SC97-MCNT3      TO  WRK-MCNT3
            MOVE    LNK-SC97-MCNT4      TO  WRK-MCNT4
+           MOVE    LNK-SC97-MCNT5      TO  WRK-MCNT5
            .
        4101121-MOJI-SET-EXT.
            EXIT.
@@ -5653,7 +5672,7 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-KAISU
            PERFORM VARYING     IDX-KAI FROM    1   BY  1
-                   UNTIL       IDX-KAI     >   22
+                   UNTIL       IDX-KAI     >   54
                IF      FLG-OK              =   1
                    IF      SPA-GMN-INPUTCD(IDX)(IDX-KAI:1) NUMERIC
                        MOVE    1               TO  FLG-KAISU
@@ -7629,11 +7648,13 @@
                END-IF
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE )
+             AND  (WRK-ERRCD1(1:1) NOT =   "K"   )
                MOVE    WRK-ERRCD1          TO  SPA-ERRCD
            END-IF
-           IF     (SPA-ERRCD           =   SPACE )   AND
-                  (WRK-ERRCD3      NOT =   SPACE )
+           IF     (SPA-ERRCD           =   SPACE )
+             AND  (WRK-ERRCD3      NOT =   SPACE )
+             AND  (WRK-ERRCD3(1:1) NOT =   "K"   )
                MOVE    WRK-ERRCD3          TO  SPA-ERRCD
            END-IF
            .

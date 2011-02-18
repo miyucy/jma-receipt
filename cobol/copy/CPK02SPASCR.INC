@@ -39,6 +39,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  画像等手術支援
       *                                     麻酔識別追加
       * 04.05.00     NACL-多々納  09/10/02  換算値入力他対応
+      * 04.06.00     NACL-多々納  11/02/14  用法コメント対応
       ************************************************************
       *
       *01  SPA-K02SCR-REC.
@@ -49,7 +50,7 @@
                05  SPA-GMN-TBL             OCCURS   400.
                    07  SPA-GMN-TBLREC.
                        09  SPA-GMN-SRYKBN        PIC X(02).
-                       09  SPA-GMN-INPUTCD       PIC X(22).
+                       09  SPA-GMN-INPUTCD       PIC X(54).
                        09  SPA-GMN-MEISYO-G.
                            11  SPA-GMN-MEIH      PIC X(02).
                            11  SPA-GMN-MEISYO    PIC X(78).
@@ -104,10 +105,11 @@
                            11  SPA-COM-ATAI2         PIC X(08).
                            11  SPA-COM-ATAI3         PIC X(08).
                            11  SPA-COM-ATAI4         PIC X(08).
+                           11  SPA-COM-ATAI5         PIC X(08).
                        09  SPA-COM-INPUTCHI-R    REDEFINES
                                                  SPA-COM-INPUTCHI-G.
                            11  SPA-COM-ATAI          PIC X(08)
-                                                     OCCURS  4.
+                                                     OCCURS  5.
       *                手技料計１
                        09  SPA-COM-SYUTEN1       PIC 9(08).
       *                手技料計２
@@ -389,6 +391,9 @@
                        09  SPA-COM-GAZOOPESUP          PIC  9(01).
       *                麻酔識別区分
                        09  SPA-COM-MASUISKBKBN         PIC  9(01).
+      *ver.4.6
+      *                用法の数量埋め込み区分
+                       09  SPA-COM-YCOMKBN             PIC  9(01).
       *    点数マスタ付加情報より
       *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).

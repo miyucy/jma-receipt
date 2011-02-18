@@ -449,7 +449,7 @@
       *
       *    入力時表示用
            03  FLG-NYURYOKU            PIC 9(01).
-           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCD         PIC X(54).
            03  FLG-IN-ATAI             PIC 9(01).
       *
       *    入力位置判定用
@@ -493,6 +493,7 @@
                05  WRK-HZN-ATAI2           PIC X(10).
                05  WRK-HZN-ATAI3           PIC X(10).
                05  WRK-HZN-ATAI4           PIC X(10).
+               05  WRK-HZN-ATAI5           PIC X(10).
       *    老人年齢
            03  WRK-ROU-NEN             PIC 9(02).
       *    入院日
@@ -612,15 +613,15 @@
            03  WRK-MCNT2           PIC 9(02).
            03  WRK-MCNT3           PIC 9(02).
            03  WRK-MCNT4           PIC 9(02).
-           03  WRK-CD              PIC X(22).
+           03  WRK-MCNT5           PIC 9(02).
+           03  WRK-CD              PIC X(54).
      ***   03  WRK-KAI             PIC X(20).
      ***   03  WRK-SUR             PIC X(20).
            03  WRK-MOJI1           PIC X(10).
            03  WRK-MOJI2           PIC X(10).
            03  WRK-MOJI3           PIC X(10).
            03  WRK-MOJI4           PIC X(10).
-           03  WRK-HENKAN-MAE      PIC X(20).
-           03  WRK-HENKAN-ATO      PIC X(20).
+           03  WRK-MOJI5           PIC X(10).
       *
       *    自動加算テーブル
        01  WRK-KASAN-AREA.
@@ -629,12 +630,12 @@
                05  WRK-KSN-SRYKBN          PIC X(02).
                05  WRK-KSN-SRYCD           PIC X(09).
                05  WRK-KSN-ATAI-G.
-                   07  WRK-KSN-ATAI        PIC X(08)   OCCURS  4.
+                   07  WRK-KSN-ATAI        PIC X(08)   OCCURS  5.
                05  WRK-KSN-TENSU           PIC 9(08).
                05  WRK-KSN-SURYO           PIC 9(05)V9(05).
                05  WRK-KSN-ZAINUM          PIC 9(08).
                05  WRK-KSN-ZAIEND          PIC X(01).
-               05  WRK-KSN-INPUTCD         PIC X(22).
+               05  WRK-KSN-INPUTCD         PIC X(54).
                05  WRK-KSN-AUTOKBN         PIC X(01).
            03  WRK-KSN-IDX             PIC 9(04).
       *
@@ -678,6 +679,9 @@
       *画面ページ数（処理最大行÷画面最大行）
        01  MAX-PAGE                PIC 9(04)   VALUE   16.
        01  MAX-PAGE2               PIC 9(04)   VALUE   17.
+      *
+      *入力文字数
+       01  CONS-INPUT              PIC 9(04)   VALUE   54.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -4401,7 +4405,7 @@
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  FLG-COPY
            PERFORM VARYING     IDX3    FROM    2   BY  1
-                   UNTIL      (IDX3        >   22  )
+                   UNTIL      (IDX3        >   CONS-INPUT  )
                          OR   (FLG-COPY    =   1   )
                IF      SPA-GMN-INPUTCD (IDX)(IDX3:1)
                                           =   "C"  OR  "c"
@@ -5025,9 +5029,21 @@
                                             TO  WRK-INPUTCD
                MOVE    "3"                  TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001"
-                   MOVE    SPACE            TO  SPA-COM-CUR
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001")
+                  AND (SPA-COM-YCOMKBN (SPA-GMN-IDX)       =   ZERO )
+      *            投薬の時のみ、回数入力へ
+                   IF      SPA-COM-SRYKBN(SPA-GMN-IDX)     =   "21" OR
+                                                               "22" OR
+                                                               "23"
+                       STRING  WRK-INPUTCD      DELIMITED  BY  SPACE
+                               "*"              DELIMITED  BY  SIZE
+                                                INTO  SPA-GMN-INPUTCD
+                                                         (SPA-GMN-IDX)
+                       END-STRING
+                   ELSE
+                       MOVE    SPACE            TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
+                   END-IF
                ELSE
                    STRING  WRK-INPUTCD          DELIMITED  BY  SPACE
                            "_"                  DELIMITED  BY  SIZE
@@ -5068,7 +5084,7 @@
                    MOVE    ZERO                TO  WRK-IN-IDX2
                    MOVE    ZERO                TO  FLG-ARI
                    PERFORM VARYING     IDX     FROM    1   BY  1
-                           UNTIL       IDX     >   22
+                           UNTIL       IDX     >   54
                        IF      SPA-GMN-INPUTCD (SPA-GMN-IDX)(IDX:1)
                                                    =   "*"
                            MOVE    1               TO  FLG-ARI
@@ -5079,7 +5095,7 @@
                        END-IF
                    END-PERFORM
                    IF     (FLG-ARI                 =   ZERO )  AND
-                          (WRK-IN-IDX2             <   22   )
+                          (WRK-IN-IDX2             <   54   )
                        ADD     1                   TO  WRK-IN-IDX2
                        IF    ((SPA-COM-IN3 (SPA-GMN-IDX)  =   "1" ) AND
                               (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)
@@ -5108,6 +5124,10 @@
                                                        =   "809" ) AND
                               (SPA-COM-SURFLG (SPA-GMN-IDX)
                                                        =   SPACE ))
+      *                  用法コメント
+                         OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                                   =   "001"     ) AND
+                              (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 ))
       *
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)
@@ -5168,6 +5188,7 @@
            MOVE    SPA-COM-ATAI2 (SPA-GMN-IDX) TO  WRK-HZN-ATAI2
            MOVE    SPA-COM-ATAI3 (SPA-GMN-IDX) TO  WRK-HZN-ATAI3
            MOVE    SPA-COM-ATAI4 (SPA-GMN-IDX) TO  WRK-HZN-ATAI4
+           MOVE    SPA-COM-ATAI5 (SPA-GMN-IDX) TO  WRK-HZN-ATAI5
       *
            MOVE    SPACE               TO  SPA-COM-IN3 (SPA-GMN-IDX)
       *    点数マスタ編集・基本チェック
@@ -5244,7 +5265,8 @@
            IF     (WRK-HZN-ATAI1   =   SPA-COM-ATAI1 (SPA-GMN-IDX)) AND
                   (WRK-HZN-ATAI2   =   SPA-COM-ATAI2 (SPA-GMN-IDX)) AND
                   (WRK-HZN-ATAI3   =   SPA-COM-ATAI3 (SPA-GMN-IDX)) AND
-                  (WRK-HZN-ATAI3   =   SPA-COM-ATAI4 (SPA-GMN-IDX))
+                  (WRK-HZN-ATAI4   =   SPA-COM-ATAI4 (SPA-GMN-IDX)) AND
+                  (WRK-HZN-ATAI5   =   SPA-COM-ATAI5 (SPA-GMN-IDX))
                MOVE    ZERO                TO  FLG-IN-ATAI
            ELSE
                MOVE    1                   TO  FLG-IN-ATAI
@@ -5364,6 +5386,7 @@
                   (WRK-MCNT2           =   ZERO )  AND
                   (WRK-MCNT3           =   ZERO )  AND
                   (WRK-MCNT4           =   ZERO )  AND
+                  (WRK-MCNT5           =   ZERO )  AND
                   (FLG-KAISU           =   ZERO )
                MOVE    ZERO                TO  FLG-IN1
       *        薬剤と数量入力必須の診療行為、薬剤コメント
@@ -5414,6 +5437,12 @@
                        MOVE    1                   TO  FLG-IN1
                    END-IF
                END-IF
+      *        用法コメント
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                               =   "001" )
+                 AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
+                   MOVE    1                   TO  FLG-IN1
+               END-IF
       *
                IF      FLG-IN1             =   1
                    MOVE    "2"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
@@ -5440,10 +5469,12 @@
            MOVE    LNK-SC97-MCNT2      TO  WRK-MCNT2
            MOVE    LNK-SC97-MCNT3      TO  WRK-MCNT3
            MOVE    LNK-SC97-MCNT4      TO  WRK-MCNT4
+           MOVE    LNK-SC97-MCNT5      TO  WRK-MCNT5
            MOVE    LNK-SC97-MOJI1      TO  WRK-MOJI1
            MOVE    LNK-SC97-MOJI2      TO  WRK-MOJI2
            MOVE    LNK-SC97-MOJI3      TO  WRK-MOJI3
            MOVE    LNK-SC97-MOJI4      TO  WRK-MOJI4
+           MOVE    LNK-SC97-MOJI5      TO  WRK-MOJI5
            .
        4101121-MOJI-SET-EXT.
            EXIT.
@@ -5865,7 +5896,7 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-KAISU
            PERFORM VARYING     IDX-KAI FROM    1   BY  1
-                   UNTIL       IDX-KAI     >   22
+                   UNTIL       IDX-KAI     >   CONS-INPUT
                IF      FLG-OK              =   1
                    IF      SPA-GMN-INPUTCD(IDX)(IDX-KAI:1) NUMERIC
                        MOVE    1               TO  FLG-KAISU

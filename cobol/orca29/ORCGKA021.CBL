@@ -779,6 +779,16 @@
                       "¡Û"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    Ëä¤á¹þ¤ßÍ­
+           IF     (SPA-PARA-INPUTCOMENT(IDX IDZ)   NOT =  SPACE )
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING     "¡Ú"             DELIMITED   BY  SIZE
+                          SPA-PARA-INPUTCOMENT(IDX IDZ)
+                                           DELIMITED   BY  SPACE
+                          "¡Û"             DELIMITED   BY  SIZE
+                          INTO             WRK-MEISYO
+               END-STRING
+           END-IF
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.

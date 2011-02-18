@@ -72,10 +72,11 @@
                            11  SPA-NAI-INPUTCHI2       PIC  X(08).
                            11  SPA-NAI-INPUTCHI3       PIC  X(08).
                            11  SPA-NAI-INPUTCHI4       PIC  X(08).
+                           11  SPA-NAI-INPUTCHI5       PIC  X(08).
                        09  SPA-NAI-INPUTCHI-R      REDEFINES
                                                    SPA-NAI-INPUTCHI-G.
                            11  SPA-NAI-INPUTCHI        PIC  X(08)
-                                                       OCCURS  4.
+                                                       OCCURS  5.
                        09  SPA-NAI-DAY-AREA.
                            11  SPA-NAI-DAY-TBL     OCCURS   4.
                                13   SPA-NAI-DAY    PIC  9(03)

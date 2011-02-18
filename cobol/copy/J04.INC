@@ -20,7 +20,7 @@
               03  J04-SRYKBN    OCCURS  20.
                 04  J04-VALUE   PIC X(2).
               03  J04-INPUTCD   OCCURS  20.
-                04  J04-VALUE   PIC X(22).
+                04  J04-VALUE   PIC X(54).
               03  J04-MEISYO-G    OCCURS  20.
                 04  J04-MEISYO-STYLE   PIC X(20).
                 04  J04-MEISYO    PIC X(80).

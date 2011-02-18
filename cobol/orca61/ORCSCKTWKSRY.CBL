@@ -2415,6 +2415,10 @@
                            SPA-COM-MEIFLG (IDX)      =   "1"   )
                       OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0086" AND
                            SPA-COM-MEIFLG (IDX)      =   "1"   )
+      *               用法コメント
+                      OR  (SPA-COM-INPUTCD(IDX)(1:3) =   "001"  AND
+                           SPA-COM-YCOMKBN(IDX)      =   1     )
+      *
                        ADD     1                   TO  WRK-MEINUM
                        MOVE    WRK-MEINUM          TO  WKSRY-INPUTNUM
                                                                  (IDY)
@@ -2429,6 +2433,9 @@
       *                入力値
                        MOVE    SPA-COM-ATAI4(IDX)  TO  WKSRY-INPUTCHI
                                                                 (IDY 4)
+      *                入力値
+                       MOVE    SPA-COM-ATAI5(IDX)  TO  WKSRY-INPUTCHI
+                                                                (IDY 5)
       *                入力コメント
                        IF      SPA-COM-MEIFLG (IDX)    =   "1"
                            IF   (SPA-COM-INPUTCD(IDX)  =   "810000001"
@@ -2455,6 +2462,12 @@
                               OR  (SPA-COM-INPUTCD(IDX)(1:4) =   "0083"
                                                              OR  "0084")
                                MOVE    SPA-GMN-MEISYO(IDX)
+                                                  TO  WKSRY-INPUTCOMENT
+                                                                  (IDY)
+                           END-IF
+      *                    用法コメント
+                           IF     (SPA-COM-INPUTCD(IDX)(1:3) =   "001" )
+                               MOVE    SPA-COM-NAME  (IDX)
                                                   TO  WKSRY-INPUTCOMENT
                                                                   (IDY)
                            END-IF
@@ -3843,6 +3856,7 @@
            MOVE    WRK-COM-ATAI2(01)   TO  WKSRY-INPUTCHI  (IDY 2)
            MOVE    WRK-COM-ATAI3(01)   TO  WKSRY-INPUTCHI  (IDY 3)
            MOVE    WRK-COM-ATAI4(01)   TO  WKSRY-INPUTCHI  (IDY 4)
+           MOVE    WRK-COM-ATAI5(01)   TO  WKSRY-INPUTCHI  (IDY 5)
            MOVE    WRK-GMN-MEISYO(01)  TO  WKSRY-INPUTCOMENT (IDY)
       *
            .

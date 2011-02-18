@@ -2106,6 +2106,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TNSUP-YUKOEDYMD
                MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -2173,6 +2174,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  TNSUP-YUKOEDYMD
                MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -2208,6 +2210,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
            PERFORM 4121-KOUMOKUISO-SEC
       *
+           MOVE    SPA-OPID            TO  TNS-OPID
            MOVE    SMCNDATE-YMD        TO  TNS-CREYMD
            MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
            MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
@@ -2407,6 +2410,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  TNSP2-HOSPNUM
            PERFORM 41291-TENSUPLUS2-HEN-SEC
       *
+           MOVE    SPA-OPID            TO  TNSP2-OPID
            MOVE    SMCNDATE-YMD        TO  TNSP2-CREYMD
            MOVE    SMCNDATE-YMD        TO  TNSP2-UPYMD
            MOVE    SMCNDATE-HMS        TO  TNSP2-UPHMS
@@ -2437,6 +2441,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  TNSP2-HOSPNUM
            PERFORM 41291-TENSUPLUS2-HEN-SEC
       *
+           MOVE    SPA-OPID            TO  TNSP2-OPID
            MOVE    SMCNDATE-YMD        TO  TNSP2-UPYMD
            MOVE    SMCNDATE-HMS        TO  TNSP2-UPHMS
       *
@@ -2581,6 +2586,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  CHG-CREYMD
            MOVE    SMCNDATE-YMD        TO  CHG-UPYMD
            MOVE    SMCNDATE-HMS        TO  CHG-UPHMS
+           MOVE    SPA-OPID            TO  CHG-OPID
       *
            MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
@@ -2608,6 +2614,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-CHNGCD      TO  CHG-RJNSRYCD
       *
+           MOVE    SPA-OPID            TO  CHG-OPID
            MOVE    SMCNDATE-YMD        TO  CHG-UPYMD
            MOVE    SMCNDATE-HMS        TO  CHG-UPHMS
       *

@@ -255,7 +255,7 @@
       *
            03  WRK-SRYSYUMEI-H     PIC X(400).
       *
-           03  WRK-MEISYO          PIC X(40).
+           03  WRK-MEISYO          PIC X(80).
       *    ¿ôÎÌÉ½¼¨ÍÑ
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -2182,6 +2182,7 @@
                MOVE    PTCOM-INPUTCHI (2)  TO  WKSRY-INPUTCHI (IDY 2)
                MOVE    PTCOM-INPUTCHI (3)  TO  WKSRY-INPUTCHI (IDY 3)
                MOVE    PTCOM-INPUTCHI (4)  TO  WKSRY-INPUTCHI (IDY 4)
+               MOVE    PTCOM-INPUTCHI (5)  TO  WKSRY-INPUTCHI (IDY 5)
            END-IF
            .
        490111-PTCOM-SET-EXT.
@@ -2701,6 +2702,16 @@
                       "¡Û"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    Ëä¤á¹þ¤ßÍ­
+           IF     (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING     "¡Ú"             DELIMITED   BY  SIZE
+                          LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           DELIMITED   BY  SPACE
+                          "¡Û"             DELIMITED   BY  SIZE
+                          INTO             WRK-MEISYO
+               END-STRING
+           END-IF
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.

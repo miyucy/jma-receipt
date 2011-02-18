@@ -228,7 +228,7 @@
                WHEN    "0029"
       ****         MOVE    "コメントの入力値エラー"
       **                               TO  SPA-ERRMSG
-                   STRING  "コメントの入力値がエラーです。"
+                   STRING  "コメント入力値のエラーです。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -1821,6 +1821,18 @@
                WHEN    "0229"
                    STRING  "包括算定コードは剤の最初に入力して下さい"
                                        DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0129"
+                   STRING  "コメントの入力値は８文字までです。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K029"
+                   STRING  "警告！"
+                           "入力値変換後の名称が表示できません。"
+                           "コメントの入力値を変更して下さい。"
+                                               DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
            END-EVALUATE

@@ -53,7 +53,7 @@
                    07  ORCSCWKSRY-KSN-SRYCD       PIC X(09).
                    07  ORCSCWKSRY-KSN-ATAI-G.
                        09  ORCSCWKSRY-KSN-ATAI    PIC X(08)
-                                                  OCCURS  4.
+                                                  OCCURS  5.
                    07  ORCSCWKSRY-KSN-TENSU       PIC 9(08).
                    07  ORCSCWKSRY-KSN-SURYO       PIC 9(05)V9(03).
                    07  ORCSCWKSRY-KSN-ZAINUM      PIC 9(08).

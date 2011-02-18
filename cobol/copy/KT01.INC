@@ -26,7 +26,7 @@
                 04  KT01-SRYKBN-STYLE  PIC X(20).
                 04  KT01-SRYKBN  PIC X(2).
               03  KT01-INPUTCD-G    OCCURS  23.
-                04  KT01-INPUTCD  PIC X(22).
+                04  KT01-INPUTCD  PIC X(54).
               03  KT01-MEISYO-G     OCCURS  23.
                 04  KT01-MEISYO-STYLE  PIC X(20).
                 04  KT01-MEISYO      PIC X(80).

@@ -227,23 +227,23 @@
            03  WRK-HKNERR              PIC X(01).
       *
       *    ø«Œ≈π‘∞Ÿ∆‚Õ∆»Ê≥”Õ—•∆°º•÷•Î
-       01  TBL-AREA.
-           03  TBL-MAE-AREA.
-               05  TBL-MAE-REC     OCCURS   50.
-                   07  TBL-MAE-SRYCD       PIC  X(09).
-                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(05).
-                   07  TBL-MAE-SRYKAISU    PIC  9(03).
-                   07  TBL-MAE-INPUTCOMENT PIC  X(40).
-                   07  TBL-MAE-ATAI-G.
-                       09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
-           03  TBL-ATO-AREA.
-               05  TBL-ATO-REC     OCCURS   50.
-                   07  TBL-ATO-SRYCD       PIC  X(09).
-                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(05).
-                   07  TBL-ATO-SRYKAISU    PIC  9(03).
-                   07  TBL-ATO-INPUTCOMENT PIC  X(40).
-                   07  TBL-ATO-ATAI-G.
-                       09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
+      *01  TBL-AREA.
+      *    03  TBL-MAE-AREA.
+      *        05  TBL-MAE-REC     OCCURS   50.
+      *            07  TBL-MAE-SRYCD       PIC  X(09).
+      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(05).
+      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
+      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
+      *            07  TBL-MAE-ATAI-G.
+      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
+      *    03  TBL-ATO-AREA.
+      *        05  TBL-ATO-REC     OCCURS   50.
+      *            07  TBL-ATO-SRYCD       PIC  X(09).
+      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(05).
+      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
+      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
+      *            07  TBL-ATO-ATAI-G.
+      *                09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
       *    ∫ﬁ•∆°º•÷•ÎŒŒ∞Ë
        01  WRK-TBL-ZAINUM-AREA.
@@ -863,7 +863,7 @@
            MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
            MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
                                        TO  ORCSNDAYCHG-INPUTCD
-           MOVE    22                  TO  ORCSNDAYCHG-KETA
+           MOVE    54                  TO  ORCSNDAYCHG-KETA
            CALL    "ORCSNDAYCHG"       USING
                                        SPA-AREA
                                        ORCSNDAYCHGAREA
@@ -1510,6 +1510,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ¥µº‘•≥•·•Û•»∫Ó¿Æ
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
+                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
                        PERFORM 45011-PTCOM-SYROI-SEC
                    END-IF
                END-IF

@@ -53,7 +53,7 @@
       *       コメントコード領域
               03  MEDIREQ-COMMENT-AREA.
       *           カラム位置
-                  05  MEDIREQ-COMMENT-OCC      OCCURS   4.
+                  05  MEDIREQ-COMMENT-OCC      OCCURS   5.
                       07  MEDIREQ-COLUMN-POSITION  PIC X(3).
                       07  MEDIREQ-DIGIT-NUMBER     PIC X(3).
       *       用法コード領域
@@ -61,6 +61,8 @@
       *           服用時点
                   05  MEDIREQ-MEDICATION-OCC      OCCURS   5.
                       07  MEDIREQ-MEDICATION-POINT  PIC X(1).
+      *           用法コメント区分
+                  05  MEDIREQ-MEDICATION-CATEGORY   PIC X(1).
       *       特定器材コード領域
               03  MEDIREQ-EQUIPMENT-AREA.
       *           単位コード

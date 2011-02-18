@@ -92,20 +92,20 @@
            03  WRK-STDD                PIC 9(02).
            03  WRK-EDDD                PIC 9(02).
       *
-           03  WRK-HENKAN-MAE          PIC X(50).
-           03  WRK-HENKAN-ATO          PIC X(50).
+      *    03  WRK-HENKAN-MAE          PIC X(50).
+      *    03  WRK-HENKAN-ATO          PIC X(50).
       *
        01  WRK-NYUMOJI-AREA.
            03  WRK-HI              PIC 9(02).
-           03  WRK-NISUU           PIC X(22).
+           03  WRK-NISUU           PIC X(54).
            03  WRK-MAE-CD          PIC X(01).
            03  WRK-ACCT-MCNT       PIC 9(02).
-           03  WRK-KAI             PIC X(22).
+           03  WRK-KAI             PIC X(54).
            03  WRK-MCNT1           PIC 9(02).
       *
       *    入院期間
        01  TBL-NYUIN-KAISU-AREA.
-           03  TBL-NYUIN-OCC           OCCURS   10.
+           03  TBL-NYUIN-OCC           OCCURS   31.
                05  TBL-HI              PIC 9(02).
                05  TBL-SEL             PIC X(01).
       *
@@ -177,7 +177,7 @@
            INITIALIZE                      ORCSNDAYCHG-OUTAREA
       *    最大文字数
            IF      ORCSNDAYCHG-KETA    =   ZERO
-               MOVE    22                  TO  ORCSNDAYCHG-KETA
+               MOVE    54                  TO  ORCSNDAYCHG-KETA
            END-IF
       *    最大文字数チェック
            INITIALIZE                  ORCSSTRINGAREA
@@ -299,9 +299,9 @@
            INITIALIZE                      ORCSNDAYCHG-NYUIN-KAISU
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
-                   UNTIL      (IDX-D2      >   10       )  OR
-                              (TBL-HI(IDX-D2)  =   ZERO )  OR
-                              (ORCSNDAYCHG-ERRCD   NOT =   SPACE )
+                   UNTIL      (IDX-D2      >   31       )
+                       OR     (ORCSNDAYCHG-ERRCD   NOT =   SPACE )
+                       OR     (TBL-HI(IDX-D2)  =   ZERO )
                IF     (IDX-D2                  >   1   )  AND
                       (TBL-SEL (IDX-D2 - 1)    =   "-" )  AND
                       (TBL-HI  (IDX-D2 - 1)    <   TBL-HI (IDX-D2))
@@ -341,6 +341,7 @@
                       (SNUM-SEISUU         >   2     )   OR
                       (SNUM-SYOSUU         >   ZERO  )
                    MOVE    "9012"              TO  ORCSNDAYCHG-ERRCD
+                   MOVE    ZERO                TO  WRK-HI
                ELSE
                    MOVE    SNUM-OUTNUM         TO  WRK-HI
                END-IF

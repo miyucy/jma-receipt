@@ -131,7 +131,7 @@
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
       *    入力時表示用
-           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCD         PIC X(54).
       *    診察料有無
            03  WRK-SINSATU-ARI         PIC 9(01).
       *    同日初診フラグ
@@ -159,12 +159,12 @@
                05  WRK-KSN-SRYKBN          PIC X(02).
                05  WRK-KSN-SRYCD           PIC X(09).
                05  WRK-KSN-ATAI-G.
-                   07  WRK-KSN-ATAI        PIC X(08)   OCCURS  4.
+                   07  WRK-KSN-ATAI        PIC X(08)   OCCURS  5.
                05  WRK-KSN-TENSU           PIC 9(08).
                05  WRK-KSN-SURYO           PIC 9(05)V9(05).
                05  WRK-KSN-ZAINUM          PIC 9(08).
                05  WRK-KSN-ZAIEND          PIC X(01).
-               05  WRK-KSN-INPUTCD         PIC X(22).
+               05  WRK-KSN-INPUTCD         PIC X(54).
                05  WRK-KSN-AUTOKBN         PIC X(01).
                05  WRK-KSN-HKTKBN          PIC 9(01).
            03  WRK-KSN-IDX             PIC 9(04).
@@ -843,7 +843,7 @@
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-KAISU
            PERFORM VARYING     IDX-KAI FROM    1   BY  1
-                   UNTIL       IDX-KAI     >   22
+                   UNTIL       IDX-KAI     >   54
                IF      FLG-OK              =   1
                    IF      SPA-GMN-INPUTCD(IDX)(IDX-KAI:1) NUMERIC
                        MOVE    1               TO  FLG-KAISU
@@ -1779,7 +1779,7 @@
       *        *　以降を削除
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING     IDX-KAI FROM    1   BY  1
-                       UNTIL      (IDX-KAI     >   22  )   OR
+                       UNTIL      (IDX-KAI     >   54  )   OR
                                   (FLG-OK      =   1   )
                    IF      WRK-GMN-INPUTCD(IDX-Z)(IDX-KAI:1)   =   "*"
                        MOVE    IDX-KAI         TO  IDX-KAI2

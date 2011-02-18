@@ -117,64 +117,64 @@ K02	{
 			value	varchar(2);
 		};
 		INPUTCD01	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD02	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD03	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD04	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD05	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD06	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD07	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD08	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD09	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD10	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD11	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD12	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD13	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD14	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD15	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD16	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD17	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD18	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD19	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		INPUTCD20	{
-			value	varchar(22);
+			value	varchar(54);
 		};
 		MEISYO01	{
 			style   varchar(20);

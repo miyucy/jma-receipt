@@ -187,6 +187,7 @@
       *---- (01.00.01) LINE ADD START --------------------------------
            MOVE    IDX                 TO  ICD-DSPSEQ
       *---- (01.00.01) LINE ADD END   --------------------------------
+           MOVE    SPA-OPID            TO  ICD-OPID
            MOVE    SMCNDATE-YMD        TO  ICD-CREYMD
            MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
            MOVE    SMCNDATE-HMS        TO  ICD-UPHMS

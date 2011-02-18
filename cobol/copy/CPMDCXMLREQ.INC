@@ -97,7 +97,7 @@
       *             診療名称（コメント）
                     06  MDCREQ-PRSCRPT-NAME          PIC X(50).
       *             数量
-                    06  MDCREQ-PRSCRPT-NUMBER        PIC X(10).
+                    06  MDCREQ-PRSCRPT-NUMBER        PIC X(40).
       *         病名
                 04  MDCREQ-DIAGNOSIS-INFO           OCCURS  50 TIMES.
                   05  MDCREQ-DIAGNOSIS-NUMBER        PIC X(50).

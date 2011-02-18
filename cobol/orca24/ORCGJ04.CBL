@@ -392,7 +392,7 @@
            03  WRK-ERR-IDX             PIC 9(04).
            03  IDX-INCNT               PIC 9(04).
            03  FLG-NYURYOKU            PIC 9(01).
-           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCD         PIC X(54).
            03  FLG-IN-ATAI             PIC 9(01).
       *    検査回数
            03  WRK-KENSA-CNT       PIC 9(04).
@@ -414,6 +414,7 @@
                05  WRK-HZN-ATAI2           PIC X(10).
                05  WRK-HZN-ATAI3           PIC X(10).
                05  WRK-HZN-ATAI4           PIC X(10).
+               05  WRK-HZN-ATAI5           PIC X(10).
       *    入力名称
            03  WRK-MEISYO-G.
                05  WRK-MEIH                PIC X(02).
@@ -489,18 +490,18 @@
            03  WRK-MCNT2           PIC 9(02).
            03  WRK-MCNT3           PIC 9(02).
            03  WRK-MCNT4           PIC 9(02).
-           03  WRK-CD              PIC X(22).
+           03  WRK-MCNT5           PIC 9(02).
+           03  WRK-CD              PIC X(54).
            03  WRK-KAI             PIC X(20).
            03  WRK-SUR             PIC X(20).
            03  WRK-MOJI1           PIC X(10).
            03  WRK-MOJI2           PIC X(10).
            03  WRK-MOJI3           PIC X(10).
            03  WRK-MOJI4           PIC X(10).
+           03  WRK-MOJI5           PIC X(10).
            03  IDM                 PIC 9(04).
            03  IDMS                PIC 9(04).
       *
-           03  WRK-HENKAN-MAE      PIC X(20).
-           03  WRK-HENKAN-ATO      PIC X(20).
            03  IDH1                PIC 9(04).
            03  IDH2                PIC 9(04).
            03  IDX-D               PIC 9(02).
@@ -1859,32 +1860,6 @@
                GO      TO      31011-SPA-HEN-EXT
            END-IF
       *
-           INITIALIZE                  ORCSC92AREA
-           MOVE    IDX2                TO  LNK-SC92-GMN-IDX
-           MOVE    "J04"               TO  LNK-SC92-PG
-           MOVE    SPA-COM-INPUTCD(IDX2)
-                                       TO  LNK-SC92-SRYCD
-           MOVE    SPA-NAI-NENREI      TO  LNK-SC92-NENREI
-           MOVE    SPA-ROUJIN          TO  LNK-SC92-ROUJIN
-           MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
-           MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
-           CALL    "ORCSC92"           USING
-                                       MCPAREA
-                                       ORCSC92AREA
-                                       SPA-SCR-REC
-                                       SPA-AREA
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    SPACE           TO  SPA-ERRCD
-           END-IF 
-      *
-      *    フィルムの判定
-           IF      SRY-SRYKBN          =   "70"
-               IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "7" )  AND
-                      (SPA-COM-DATAKBN (IDX2)      =   "3" )
-                   MOVE    1               TO  FLG-FIRUMU
-               END-IF
-           END-IF
-      *
       *    コメントの時、コメント内容編集
            IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "0"  OR  "8" )  AND
                   (SRY-INPUTNUM    (IDS)   NOT =   ZERO         )
@@ -1915,6 +1890,63 @@
                                                                 (IDX2)
                 END-IF
            END-IF
+      *
+           INITIALIZE                  ORCSC92AREA
+           MOVE    IDX2                TO  LNK-SC92-GMN-IDX
+           MOVE    "J04"               TO  LNK-SC92-PG
+           MOVE    SPA-COM-INPUTCD(IDX2)
+                                       TO  LNK-SC92-SRYCD
+           MOVE    SPA-NAI-NENREI      TO  LNK-SC92-NENREI
+           MOVE    SPA-ROUJIN          TO  LNK-SC92-ROUJIN
+           MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
+           MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       SPA-SCR-REC
+                                       SPA-AREA
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF 
+      *
+      *    フィルムの判定
+           IF      SRY-SRYKBN          =   "70"
+               IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "7" )  AND
+                      (SPA-COM-DATAKBN (IDX2)      =   "3" )
+                   MOVE    1               TO  FLG-FIRUMU
+               END-IF
+           END-IF
+      *
+      *    コメントの時、コメント内容編集
+      *    IF     (SPA-COM-INPUTCD (IDX2)(1:1) =   "0"  OR  "8" )  AND
+      *           (SRY-INPUTNUM    (IDS)   NOT =   ZERO         )
+      *        INITIALIZE                  PTCOM-REC
+      *        MOVE    SPA-HOSPNUM          TO  PTCOM-HOSPNUM
+      *        MOVE    SPA-GMN-PTID        TO  PTCOM-PTID
+      *        MOVE    SPA-ZAINUM          TO  PTCOM-ZAINUM
+      *        MOVE    SRY-SRYCD    (IDS)  TO  PTCOM-SRYCD
+      *        MOVE    SRY-INPUTNUM (IDS)  TO  PTCOM-RENNUM
+      *        PERFORM 960-PTCOM-READ-SEC
+      *        IF      FLG-PTCOM           =   ZERO
+      *            IF      PTCOM-INPUTCOMENT   NOT =   SPACE
+      *                IF      SRY-SRYCD (IDS)         =   "810000001"
+      *                                                OR  "008500000"
+      *                                                OR  "008600000"
+      *                    MOVE    PTCOM-INPUTCOMENT
+      *                                        TO  SPA-GMN-MEISYO-G
+      *                                                          (IDX2)
+      *                    MOVE    "1"             TO  SPA-COM-MEIFLG
+      *                                                          (IDX2)
+      *                ELSE
+      *                    MOVE    PTCOM-INPUTCOMENT
+      *                                        TO  SPA-GMN-MEISYO
+      *                                                          (IDX2)
+      *                END-IF
+      *            END-IF
+      *            MOVE    PTCOM-INPUTCHI-AREA  TO  SPA-COM-INPUTCHI-G
+      *                                                         (IDX2)
+      *         END-IF
+      ***  END-IF
       *
       *    金額入力時、金額へ
       *
@@ -2955,7 +2987,8 @@
                                             TO  WRK-INPUTCD
                MOVE    "1"                  TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
-               IF      SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001"
+               IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:3)  =   "001" )
+                  AND (SPA-COM-YCOMKBN (SPA-GMN-IDX)       =   ZERO  )
                    MOVE    SPACE            TO  SPA-COM-CUR
                                                        (SPA-GMN-IDX)
                ELSE
@@ -3205,6 +3238,12 @@
                    IF     (SPA-COM-TEN (SPA-GMN-IDX)   =   ZERO )
                        MOVE    1                   TO  FLG-IN1
                    END-IF
+               END-IF
+      *        用法コメント
+               IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
+                                               =   "001" )
+                 AND  (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 )
+                   MOVE    1                   TO  FLG-IN1
                END-IF
       *
                IF      FLG-IN1             =   1
@@ -5401,7 +5440,9 @@
            END-PERFORM
       *
       *    剤点数がゼロの時、自費を点数へ
-           IF      WRK-ZAITEN          =   ZERO
+      ***  IF      WRK-ZAITEN          =   ZERO
+           IF    ( SPA-J04-SRYKBN      =   "95"
+                                       OR  "96" )
                MOVE   WRK-JIHIMONEY        TO  WRK-ZAITEN
            END-IF
       *
@@ -5474,6 +5515,9 @@
                    END-IF
                    IF     (SPA-COM-INPUTCD(IDX1)(1:1)  =   "8"   ) OR
                           (SPA-COM-INPUTCD(IDX1)(1:4)  =   "0084")
+      *             用法コメント
+                    OR   ((SPA-COM-INPUTCD(IDX1)(1:3)  =   "001" )  AND
+                          (SPA-COM-YCOMKBN(IDX1)       =   1     ))
                        MOVE    SPA-COM-INPUTCHI-G(IDX1)
                                            TO  ORCSCZAICHK-INPUTCHI-G
                                                              (IDX-ATO)
@@ -5882,6 +5926,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                OR  "84" )  OR
                   (SPA-COM-INPUTCD(IDX)(1:4)   =   "0083"
                                                OR  "0084" )
+      *     用法コメント
+            OR   ((SPA-COM-INPUTCD(IDX)(1:3)   =   "001" )  AND
+                  (SPA-COM-YCOMKBN(IDX)        =   1     ))
                IF      (SPA-COM-INPUTCD(IDX)(1:4)  =   "0085"
                                                    OR  "0086" ) AND
                        (SPA-GMN-MEISYO (IDX)   =   SPA-COM-NAME (IDX))
@@ -6004,6 +6051,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    SPA-GMN-MEISYO   (IDX)
                                            TO  PTCOM-INPUTCOMENT
+           END-IF
+      *用法コメント
+           IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "001" )
+               MOVE    SPA-COM-NAME (IDX)  TO  PTCOM-INPUTCOMENT
            END-IF
       *入力値
            MOVE    SPA-COM-INPUTCHI-G (IDX)

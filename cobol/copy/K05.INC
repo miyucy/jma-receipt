@@ -7,7 +7,7 @@
               03  K05-SRYKBN    OCCURS  23.
                 04  K05-VALUE   PIC X(2).
               03  K05-INPUTCD   OCCURS  23.
-                04  K05-VALUE   PIC X(22).
+                04  K05-VALUE   PIC X(54).
               03  K05-MEISYO    OCCURS  23.
                 04  K05-VALUE   PIC X(80).
               03  K05-SURYO-G     OCCURS  23.

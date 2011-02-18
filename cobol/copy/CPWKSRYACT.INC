@@ -66,9 +66,9 @@
                05  WKSRY-INPUTCOMENT    PIC  X(80).
       **入力値
                05  WKSRY-INPUTCHI-G.
-                   07  WKSRY-INPUTCHI   PIC  X(08)   OCCURS  4.
+                   07  WKSRY-INPUTCHI   PIC  X(08)   OCCURS  5.
       *入力コード
-               05  WKSRY-INPUTCD        PIC  X(22).
+               05  WKSRY-INPUTCD        PIC  X(54).
       *自費金額
                05  WKSRY-JIHIMONEY      PIC  9(07).
       *

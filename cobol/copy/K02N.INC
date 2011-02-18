@@ -45,7 +45,7 @@
                 04  K02N-SRYKBN-STYLE   PIC X(20).
                 04  K02N-SRYKBN   PIC X(2).
               03  K02N-INPUTCD   OCCURS   24.
-                04  K02N-VALUE   PIC X(22).
+                04  K02N-VALUE   PIC X(54).
               03  K02N-MEISYO-G    OCCURS   24.
                 04  K02N-MEISYO-STYLE   PIC X(20).
                 04  K02N-MEISYO   PIC X(80).

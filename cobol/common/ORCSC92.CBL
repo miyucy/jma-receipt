@@ -273,14 +273,35 @@
       *
            03  WRK-TIME                PIC 9(01).
       *
-           03  WRK-HEN-INPUTCD         PIC X(22).
+           03  WRK-HEN-INPUTCD         PIC X(54).
            03  WRK-IDX-FT              PIC 9(04).
            03  WRK-CD-MCNT             PIC 9(04).
+      *
+      *VER.4.6
+      *    埋込みコメント桁指定なし
+           03  WRK-INPUTICH-G.
+               05  WRK-INPUTICH-OCC        OCCURS  5.
+                   07  WRK-FUK-ICHI        PIC 9(03).
+                   07  WRK-FUK-SURYO       PIC X(20).
+           03  WRK-MEISYO-GRP.
+               05  WRK-MEI-G           PIC X(80)
+                                       OCCURS   12.
+           03  WRK-MEISYO-J1           PIC X(200).
+           03  WRK-MEISYO-J2           PIC X(200).
+           03  FLG-KCHK                PIC 9(01).
+           03  WRK-ICHI-1              PIC 9(02).
+           03  IDX-SS3                 PIC 9(04).
+           03  IDX-M1                  PIC 9(04).
+           03  IDX-M2                  PIC 9(04).
+           03  IDX-M3                  PIC 9(04).
+           03  IDX-IMAX                PIC 9(04).
+           03  WRK-KETA-MAX            PIC 9(02).
+      *
       *
       *    老人・一般変換用
            03  WRK-SRYCD-CHG-AREA.
                05  WRK-SRYCDCHG        PIC X(09)   OCCURS  5.
-           03  WRK-NAIYOU              PIC X(22).
+           03  WRK-NAIYOU              PIC X(54).
            03  WRK-PATH                PIC X(64).
       *
       *    施設規準テーブル
@@ -733,7 +754,7 @@
                MOVE    LNK-SC92-SRYCD      TO  SPA-COM-INPUTCD (IDX-T)
                MOVE    ZERO                TO  WRK-CD-MCNT
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX         >   22  )   OR
+                       UNTIL      (IDX         >   54  )   OR
                                   (SPA-GMN-INPUTCD(IDX-T)(IDX:1)
                                            =   SPACE   OR  "*" )
                    MOVE    IDX                 TO  WRK-CD-MCNT
@@ -1023,7 +1044,7 @@
                MOVE    1                   TO  WRK-IDX-FT
            END-IF
            PERFORM VARYING     IDX     FROM    WRK-IDX-FT  BY  1
-                   UNTIL      (IDX         >   22  )   OR
+                   UNTIL      (IDX         >   54  )   OR
                               (SPA-GMN-INPUTCD(IDX-T)(IDX:1)
                                            =   SPACE   OR  "*" )
                MOVE    IDX                 TO  WRK-CD-MCNT
@@ -1324,6 +1345,20 @@
            MOVE    LNK-SC97-MOJI2      TO  SPA-COM-ATAI2 (IDX-T)
            MOVE    LNK-SC97-MOJI3      TO  SPA-COM-ATAI3 (IDX-T)
            MOVE    LNK-SC97-MOJI4      TO  SPA-COM-ATAI4 (IDX-T)
+           MOVE    LNK-SC97-MOJI5      TO  SPA-COM-ATAI5 (IDX-T)
+      *    埋込み数値は８文字まで
+           IF     (LNK-SC92-SRYCD (1:2)    =   "84") 
+             OR   (LNK-SC92-SRYCD (1:4)    =   "0084")
+             OR   (LNK-SC92-SRYCD (1:3)    =   "001" )
+               IF     (LNK-SC97-MCNT1      >   8   )
+                  OR  (LNK-SC97-MCNT2      >   8   )
+                  OR  (LNK-SC97-MCNT3      >   8   )
+                  OR  (LNK-SC97-MCNT4      >   8   )
+                  OR  (LNK-SC97-MCNT5      >   8   )
+                   MOVE    "0129"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
+               END-IF
+           END-IF
       *
            .
        2002-KOMOKU-HENSYU-EXT.
@@ -3646,6 +3681,14 @@
            MOVE    TNS-GAZOOPESUP      TO  SPA-COM-GAZOOPESUP (IDX-T)
       *    麻酔識別区分
            MOVE    TNS-MASUISKBKBN     TO  SPA-COM-MASUISKBKBN (IDX-T)
+      *ver.4.6 から
+      *    用法のカラム位置指定あり
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:3)    =   "001" )  AND
+                  (TNS-SSTKIJUNCD (6)  NOT =   ZERO          )
+               MOVE    1               TO  SPA-COM-YCOMKBN (IDX-T)
+           ELSE
+               MOVE    ZERO            TO  SPA-COM-YCOMKBN (IDX-T)
+           END-IF
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
@@ -3660,7 +3703,6 @@
              AND  (LNK-SC92-PG     NOT =   "K05")
                PERFORM 3008-PTKINKI-CHK-SEC
            END-IF
-      *
            .
        300-TENSU-HENSYU-EXT.
            EXIT.
@@ -3736,6 +3778,11 @@
                       "】"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    数値埋め込み
+           IF     (SPA-COM-YCOMKBN (IDX-T) =   1 )
+           OR     (TNS-SSTKIJUNCD (6)  NOT =   ZERO )
+               PERFORM 30011-FUKYO-MEIHEN-SEC
+           END-IF
            .
        3001-FUKIYO-MEISYO-EXT.
            EXIT.
@@ -3851,7 +3898,7 @@
            .
        30021-KOUHEN-MEISYO-EXT.
            EXIT.
-     *
+      *
       *****************************************************************
       *     入力値コメントの時、再編集処理
       *****************************************************************
@@ -3868,6 +3915,26 @@
                MOVE    TNS-SSTKIJUNCD (IDX-SST)
                                       TO  WRK-INPUT-SET (IDX-SST)
            END-PERFORM
+      *
+      *TEST
+      *    カラム位置の指定のみ
+           MOVE    ZERO                TO  FLG-KCHK
+           PERFORM VARYING IDX-SST     FROM    1   BY  1
+                   UNTIL  (IDX-SST         >   4     )   OR
+                          (SPA-ERRCD   NOT =   SPACE )
+               IF    ( WRK-INPUT-KETA (IDX-SST)        =   ZERO)
+                AND  ( WRK-INPUT-ICHI (IDX-SST)    NOT =   ZERO)
+                   MOVE    1               TO  FLG-KCHK
+               END-IF
+           END-PERFORM
+      *    ユーザコメントで位置のみ指定
+           IF     (FLG-KCHK            =   1    )  AND
+                  (SPA-COM-INPUTCD (IDX-T)(1:4)  =  "0084" )
+               PERFORM 30011-FUKYO-MEIHEN02-SEC
+               GO      TO  3002-INPUT-MEISYO-EXT
+           END-IF
+      *!!!!
+      *TEST
       *
            MOVE    ZERO                TO  FLG-INPUT-CHK
       *
@@ -3949,6 +4016,181 @@
            .
        3002-INPUT-MEISYO-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *     埋め込みコメント桁数指定なし編集処理
+      *****************************************************************
+       30011-FUKYO-MEIHEN02-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+           MOVE    TNS-NAME            TO  WRK-MEISYO
+      *
+           INITIALIZE                  WRK-INPUTICH-G
+      *    施設基準コード（カラム位置編集）
+           MOVE    TNS-SSTKIJUNCD (1)  TO  WRK-FUK-ICHI (1)
+           MOVE    TNS-SSTKIJUNCD (3)  TO  WRK-FUK-ICHI (2)
+           MOVE    TNS-SSTKIJUNCD (5)  TO  WRK-FUK-ICHI (3)
+           MOVE    TNS-SSTKIJUNCD (7)  TO  WRK-FUK-ICHI (4)
+           MOVE    ZERO                TO  WRK-FUK-ICHI (5)
+      *    入力値埋め込み
+           MOVE    4                  TO  IDX-IMAX
+           MOVE    78                 TO  WRK-KETA-MAX
+           PERFORM 30011-FUKCOM-HEN-SEC
+           .
+       30011-FUKYO-MEIHEN02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     埋め込みコメント桁数指定なし編集処理
+      *****************************************************************
+       30011-FUKCOM-HEN-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  IDX-SS2
+      *    入力値を桁数にあわせて数字変換する
+           PERFORM VARYING IDX-SST     FROM    1   BY  1
+                   UNTIL  (IDX-SST         >   5     )   OR
+                          (SPA-ERRCD   NOT =   SPACE )
+      *        桁位置なしは空白とする
+               IF     (WRK-FUK-ICHI (IDX-SST)  =   ZERO )
+                   MOVE    SPACE               TO  SPA-COM-ATAI
+                                                     (IDX-T IDX-SST)
+               END-IF
+      *
+               IF     (SPA-COM-ATAI (IDX-T IDX-SST)  NOT =   SPACE)
+                   INITIALIZE                      ORCSNUMAREA
+                   MOVE    SPA-COM-ATAI (IDX-T IDX-SST)
+                                               TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF     (SNUM-RC         NOT =   ZERO  )   OR
+                          (SNUM-MINKBN     NOT =   SPACE )   OR
+                          (SNUM-SEISUU         >   5     )   OR
+                          (SNUM-SYOSUU         >   5     )   OR
+                          ((SNUM-SEISUU  +  SNUM-SYOSUU )
+                                               >=  8     )
+                       MOVE    "0029"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    SNUM-OUTNUM     TO  WRK-SURYO
+                       PERFORM 2001-SURYO-HEN-SEC
+                       ADD     1               TO  IDX-SS2
+                       MOVE    WRK-SURYO-H     TO  WRK-FUK-SURYO
+                                                        (IDX-SS2)
+                       IF      WRK-SURYO       =   ZERO 
+                           MOVE    "０"        TO   WRK-FUK-SURYO
+                                                   (IDX-SS2)(1:2)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE               TO  WRK-MEISYO-GRP
+           MOVE    ZERO                TO  FLG-KCHK
+           MOVE    ZERO                TO  IDX-SS2
+           MOVE    1                   TO  IDX-SS3
+           MOVE    1                   TO  IDX-M2
+           MOVE    1                   TO  WRK-ICHI-1
+           PERFORM VARYING IDX-SST     FROM    1   BY  1
+                   UNTIL  (IDX-SST     >   IDX-IMAX     )
+                     OR   (FLG-KCHK    =   1         )
+                     OR   (SPA-ERRCD   NOT =   SPACE )
+               IF      (WRK-FUK-ICHI (IDX-SST) =   ZERO )
+                   MOVE    WRK-MEISYO(IDX-M2:) TO  WRK-MEI-G
+                                                    (IDX-SS3)
+                   MOVE    1                   TO  FLG-KCHK
+                   ADD     1                   TO  IDX-SS3
+               ELSE
+                   MOVE    WRK-FUK-ICHI (IDX-SST)  TO  WRK-ICHI
+                   COMPUTE IDX-SS2             =  (WRK-ICHI
+                                               -   WRK-ICHI-1  )
+                                               *   2
+                   MOVE    WRK-MEISYO (IDX-M2:IDX-SS2)
+                                               TO  WRK-MEI-G
+                                                       (IDX-SS3)
+                   ADD     1                   TO  IDX-SS3
+                   COMPUTE IDX-M3              =   IDX-M2  +   IDX-SS2
+                   MOVE    IDX-M3              TO  IDX-M2
+                   MOVE    WRK-FUK-ICHI (IDX-SST)  TO  WRK-ICHI-1
+               END-IF
+               IF      (WRK-FUK-ICHI (IDX-SST) >   ZERO )
+                   MOVE    WRK-FUK-SURYO (IDX-SST)
+                                               TO  WRK-MEI-G (IDX-SS3)
+                   ADD     1                   TO  IDX-SS3
+               END-IF
+           END-PERFORM
+           IF     (FLG-KCHK            =   ZERO )
+            AND   (IDX-M2              <   80   ) 
+            AND   (IDX-SS3             <=  12   ) 
+               MOVE    WRK-MEISYO(IDX-M2:) TO  WRK-MEI-G
+                                                    (IDX-SS3)
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-MEISYO-J1
+           MOVE    SPACE               TO  WRK-MEISYO-J2
+           PERFORM VARYING IDX-M1      FROM    1   BY  1
+                   UNTIL  (IDX-M1          >   12    )
+               MOVE    WRK-MEISYO-J1       TO  WRK-MEISYO-J2
+               MOVE    SPACE               TO  WRK-MEISYO-J1
+               STRING  WRK-MEISYO-J2       DELIMITED  BY  SPACE
+                       WRK-MEI-G (IDX-M1)  DELIMITED  BY  SPACE
+                       INTO              WRK-MEISYO-J1
+               END-STRING
+           END-PERFORM
+      *    漢字変換
+           IF      WRK-MEISYO-J1       =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-MEISYO-J1       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-RC          =   ZERO
+                   IF      KANACHK-MAX         >   WRK-KETA-MAX
+                       IF      SPA-COM-KZMFLG (IDX-T)  =   SPACE
+                           MOVE    "K029"              TO  SPA-ERRCD
+                       END-IF
+                       MOVE    WRK-KETA-MAX        TO  KANACHK-MAX
+                   END-IF
+                   MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               TO  WRK-MEISYO
+               ELSE
+                   MOVE    "0029"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+        30011-FUKCOM-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *     薬剤服用コメント再編集処理
+      *****************************************************************
+       30011-FUKYO-MEIHEN-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MEISYO
+           MOVE    TNS-NAME            TO  WRK-MEISYO
+      *
+           INITIALIZE                  WRK-INPUTICH-G
+      *    施設基準コード（カラム位置編集）
+           MOVE    TNS-SSTKIJUNCD (6)  TO  WRK-FUK-ICHI (1)
+           MOVE    TNS-SSTKIJUNCD (7)  TO  WRK-FUK-ICHI (2)
+           MOVE    TNS-SSTKIJUNCD (8)  TO  WRK-FUK-ICHI (3)
+           MOVE    TNS-SSTKIJUNCD (9)  TO  WRK-FUK-ICHI (4)
+           MOVE    TNS-SSTKIJUNCD (10) TO  WRK-FUK-ICHI (5)
+      *    入力値埋め込み
+           MOVE    5                   TO  IDX-IMAX
+           MOVE    76                  TO  WRK-KETA-MAX
+           PERFORM 30011-FUKCOM-HEN-SEC
+      *
+           MOVE    WRK-MEISYO          TO  SPA-COM-NAME (IDX-T)
+           STRING  "【"                DELIMITED   BY  SIZE
+                   WRK-MEISYO          DELIMITED   BY  SPACE
+                   "】"                DELIMITED   BY  SIZE
+                   INTO                WRK-MEISYO-2
+           END-STRING
+           MOVE    WRK-MEISYO-2        TO  WRK-MEISYO
+           .
+       30011-FUKYO-MEIHEN-EXT.
+           EXIT.
+      *!!!!
       *
       *****************************************************************
       *     数字変換処理
@@ -4640,6 +4882,20 @@
                    MOVE    "0001"              TO  SPA-ERRCD
                END-IF
            END-IF
+      *!!
+      *    用法コメント埋め込み
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:3)  =  "001" )  AND
+                  (SPA-COM-YCOMKBN (IDX-T)       =   1    )
+               MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
+               PERFORM 910-TENSU-READ-SEC
+               IF      FLG-TENSU           =   ZERO
+                   PERFORM 30011-FUKYO-MEIHEN-SEC
+                   MOVE    WRK-MEISYO      TO  SPA-GMN-MEISYO (IDX-T)
+               ELSE
+                   MOVE    "0001"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *!!!!
       *!
       *    用量割合再編集
            IF     (SPA-COM-INPUTCD (IDX-T)(1:7)    =   "0992000")  AND

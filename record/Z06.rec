@@ -62,5 +62,27 @@ Z06	{
 			count	int;
 			item	varchar(12)[2];
 		};
+		DIGIT1	{
+			value	number(3);
+		};
+		DIGIT2	{
+			value	number(3);
+		};
+		DIGIT3	{
+			value	number(3);
+		};
+		DIGIT4	{
+			value	number(3);
+		};
+		DIGIT5	{
+			value	number(3);
+		};
+		COMMENTKBN_COMB	{
+			COMMENTKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
+		};
 	};
 };

@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応 他
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  04.01.00    NACL-森脇    07/11/28  起床時追加
+      *  04.06.00    NACL-多々納  11/02/14  コメント対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -120,6 +121,20 @@
                    07  SPA-GMN-JITEN5MEIL      PIC X(10).
       *----(04.01.00)--ADD-END---------------------------------------
       *
+      *        カラム位置
+               05  SPA-GMN-DIGIT-G.
+                   07  SPA-GMN-DIGIT           PIC 9(03)
+                                               OCCURS   5.
+      *        コメント区分
+               05  SPA-GMN-COMMENTKBN-G.
+                   07  SPA-GMN-COMMENTKBN      PIC X(01).
+                   07  SPA-GMN-COMMENTKBN-F    PIC X(01).
+                   07  SPA-GMN-COMMENTKBN-MEI  PIC X(28).
+               05  SPA-GMN-COMMENTKBN-LSTG.
+                   07  SPA-GMN-COMMENTKBN-LST  PIC X(30)
+                                               OCCURS   5.
+               05  SPA-GMN-COMKBN-MAX          PIC 9(02).
+      *
       *    第二画面内容
            03  SPA-NAI-AREA.
                05  SPA-NAI-YUKOSTYMD           PIC X(08).
@@ -144,10 +159,8 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                               PIC 9(02).
-           03  IDXX                              PIC 9(02).
-           03  IDXY                              PIC 9(02).
-           03  IDXZ                              PIC 9(02).
+           03  IDX                               PIC 9(04).
+           03  IDZ                               PIC 9(04).
       *
       *    ワーク領域
        01  WRK-AREA.
@@ -399,6 +412,12 @@
            MOVE    "服用する"          TO  SPA-GMN-JITEN5MEIL (2)
       *----(04.01.00)--ADD-END---------------------------------------
       *
+      *    コメント区分
+           MOVE    "0 服用方法"        TO  SPA-GMN-COMMENTKBN-LST (1)
+           MOVE    "1 服用方法コメント有"
+                                       TO  SPA-GMN-COMMENTKBN-LST (2)
+           MOVE    "2 コメント"        TO  SPA-GMN-COMMENTKBN-LST (3)
+           MOVE    3                   TO  SPA-GMN-COMKBN-MAX
       *    点数マスタ検索
            INITIALIZE                  TNS-TENSU-REC
       *
@@ -442,17 +461,28 @@
                MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-GMN-JITEN2
                MOVE    TNS-SSTKIJUNCD(3)   TO  SPA-GMN-JITEN3
                MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-GMN-JITEN4
-      *----(04.01.00)--ADD-START-------------------------------------
                MOVE    TNS-SSTKIJUNCD(5)   TO  SPA-GMN-JITEN5
-      *----(04.01.00)--ADD-END---------------------------------------
+      *        カラム位置
+               MOVE    TNS-SSTKIJUNCD(6)   TO  SPA-GMN-DIGIT (1)
+               MOVE    TNS-SSTKIJUNCD(7)   TO  SPA-GMN-DIGIT (2)
+               MOVE    TNS-SSTKIJUNCD(8)   TO  SPA-GMN-DIGIT (3)
+               MOVE    TNS-SSTKIJUNCD(9)   TO  SPA-GMN-DIGIT (4)
+               MOVE    TNS-SSTKIJUNCD(10)  TO  SPA-GMN-DIGIT (5)
+      *        コメント区分
+               MOVE    TNS-KENTAICOMMENT   TO  SPA-GMN-COMMENTKBN
            ELSE
                MOVE    ZERO                TO  SPA-GMN-JITEN1
                MOVE    ZERO                TO  SPA-GMN-JITEN2
                MOVE    ZERO                TO  SPA-GMN-JITEN3
                MOVE    ZERO                TO  SPA-GMN-JITEN4
-      *----(04.01.00)--ADD-START-------------------------------------
                MOVE    ZERO                TO  SPA-GMN-JITEN5
-      *----(04.01.00)--ADD-END---------------------------------------
+      *        カラム位置
+               MOVE    ZERO                TO  SPA-GMN-DIGIT (1)
+               MOVE    ZERO                TO  SPA-GMN-DIGIT (2)
+               MOVE    ZERO                TO  SPA-GMN-DIGIT (3)
+               MOVE    ZERO                TO  SPA-GMN-DIGIT (4)
+               MOVE    ZERO                TO  SPA-GMN-DIGIT (5)
+               MOVE    ZERO                TO  SPA-GMN-COMMENTKBN
            END-IF
       *    朝
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -497,6 +527,16 @@
            END-PERFORM
       *----(04.01.00)--ADD-END---------------------------------------
       *
+      *    コメント区分
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-COMKBN-MAX
+               IF      SPA-GMN-COMMENTKBN  =   SPA-GMN-COMMENTKBN-LST
+                                                      (IDX)(1:1)
+                  MOVE    SPA-GMN-COMMENTKBN-LST (IDX)
+                                           TO  SPA-GMN-COMMENTKBN-G
+               END-IF
+           END-PERFORM
+      *
            MOVE    1                   TO  SPA-GMNZ6-CUR
            .
        310-SPASET-EXT.
@@ -507,20 +547,28 @@
       *****************************************************************
        330-ZID1-SET-SEC            SECTION.
       *
-           IF      SPA-ZID1-FLG    =   "OK"
-               IF      SPA-ZIDCD            =   "0001"
-                   PERFORM  4031-DEL-SEC
-               ELSE
-                   PERFORM  4121-TOUROKU-SEC
-               END-IF
-           END-IF
+           EVALUATE    SPA-ZIDCD
+      *        削除
+               WHEN    "0001"
+                   MOVE    SPACE           TO  SPA-ZIDCD
+                   IF      SPA-ZID1-FLG    =   "OK"
+                       PERFORM 4031-DEL-SEC
+                   ELSE
+                       MOVE    1                   TO  SPA-GMNZ6-CUR
+                   END-IF
+      *        登録
+               WHEN    "0002"
+                   MOVE    SPACE           TO  SPA-ZIDCD
+                   IF      SPA-ZID1-FLG    =   "OK"
+                       PERFORM  4121-TOUROKU-SEC
+                   END-IF
+           END-EVALUATE
       *
            IF      SPA-ERRCD       NOT =  SPACE
                PERFORM 510-ERRSET-SEC
            END-IF
       *
            MOVE    SPACE           TO  SPA-ZID1-FLG
-           MOVE    SPACE           TO  SPA-ZIDCD      
            .
        330-ZID1-SET-EXT.
            EXIT.
@@ -605,9 +653,14 @@
            MOVE    Z06-JITEN2          TO  SPA-GMN-JITEN2-G
            MOVE    Z06-JITEN3          TO  SPA-GMN-JITEN3-G
            MOVE    Z06-JITEN4          TO  SPA-GMN-JITEN4-G
-      *----(04.01.00)--ADD-START-------------------------------------
            MOVE    Z06-JITEN5          TO  SPA-GMN-JITEN5-G
-      *----(04.01.00)--ADD-END---------------------------------------
+      *    カラム位置
+           MOVE    Z06-DIGIT1          TO  SPA-GMN-DIGIT (1)
+           MOVE    Z06-DIGIT2          TO  SPA-GMN-DIGIT (2)
+           MOVE    Z06-DIGIT3          TO  SPA-GMN-DIGIT (3)
+           MOVE    Z06-DIGIT4          TO  SPA-GMN-DIGIT (4)
+           MOVE    Z06-DIGIT5          TO  SPA-GMN-DIGIT (5)
+           MOVE    Z06-COMMENTKBN      TO  SPA-GMN-COMMENTKBN-G
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -620,56 +673,50 @@
       *
       *    有効開始年月日チェック
            PERFORM 501-YUKOSTYMDCHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
       *    有効開始年月日チェック
-           PERFORM 502-YUKOEDYMDCHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 502-YUKOEDYMDCHK-SEC
            END-IF
       *    カナ名称チェック
-           PERFORM 503-KANANAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 503-KANANAME-CHK-SEC
            END-IF
       *    漢字名称チェック
-           PERFORM 504-NAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 504-NAME-CHK-SEC
            END-IF
       *    通称名称チェック
-           PERFORM 505-FORMALNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 505-FORMALNAME-CHK-SEC
            END-IF
       *    朝チェック
-           PERFORM 506-JITEN1-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-JITEN1-CHK-SEC
            END-IF
-      *    朝チェック
-           PERFORM 506-JITEN2-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+      *    昼チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-JITEN2-CHK-SEC
            END-IF
-      *    朝チェック
-           PERFORM 506-JITEN3-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+      *    夜チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-JITEN3-CHK-SEC
            END-IF
-      *    朝チェック
-           PERFORM 506-JITEN4-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+      *    寝前チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-JITEN4-CHK-SEC
            END-IF
-      *----(04.01.00)--ADD-START-------------------------------------
       *    起床チェック
-           PERFORM 506-JITEN5-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-JITEN5-CHK-SEC
            END-IF
-      *----(04.01.00)--ADD-END---------------------------------------
+      *    カラム位置チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-DIGIT-CHK-SEC
+           END-IF
+      *    コメント区分チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-COMMENTKBN-CHK-SEC
+           END-IF
            .
       *
        4102-KIHON-CHK-EXT.
@@ -877,7 +924,6 @@
        506-JITEN4-CHK-EXT.
            EXIT.
       *
-      *----(04.01.00)--ADD-START-------------------------------------
       *****************************************************************
       *    服用時点起床チェック処理
       *****************************************************************
@@ -902,8 +948,67 @@
       *
        506-JITEN5-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    コメント位置チェック処理
+      *****************************************************************
+       506-DIGIT-CHK-SEC          SECTION.
       *
-      *----(04.01.00)--ADD-END---------------------------------------
+           PERFORM VARYING     IDX     FROM    2   BY  1
+                   UNTIL      (IDX         >   5  )  OR
+                              (SPA-ERRCD   NOT =   SPACE )
+               IF     (SPA-GMN-DIGIT (IDX) NOT =   ZERO )
+      *            前ゼロはエラー
+                   PERFORM VARYING     IDZ     FROM    IDX   BY  -1
+                           UNTIL      (IDZ         <   1  ) 
+                                   OR (SPA-ERRCD   NOT =   SPACE )
+                       IF      SPA-GMN-DIGIT (IDZ)     =   ZERO
+                           MOVE    "0018"              TO  SPA-ERRCD
+                           MOVE    1                   TO  IDZ
+                       END-IF
+                   END-PERFORM
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       EVALUATE    IDX
+                       WHEN    2
+                           MOVE    13          TO  SPA-GMNZ6-CUR
+                       WHEN    3
+                           MOVE    14          TO  SPA-GMNZ6-CUR
+                       WHEN    4
+                           MOVE    15          TO  SPA-GMNZ6-CUR
+                       WHEN    5
+                           MOVE    16          TO  SPA-GMNZ6-CUR
+                       END-EVALUATE
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       506-DIGIT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    コメント区分チェック処理
+      *****************************************************************
+       506-COMMENTKBN-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-GMN-COMKBN-MAX )  OR
+                              (FLG-OK      =   1  )
+               IF      SPA-GMN-COMMENTKBN  =   SPA-GMN-COMMENTKBN-LST
+                                                        (IDX)(1:1)
+                   MOVE    SPA-GMN-COMMENTKBN-LST (IDX)
+                                               TO  SPA-GMN-COMMENTKBN-G
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    17                  TO  SPA-GMNZ6-CUR
+           END-IF
+           .
+       506-COMMENTKBN-CHK-EXT.
+           EXIT.
+      *
       ****************************************************************
       *    登録前、必須入力チェック処理
       ****************************************************************
@@ -922,7 +1027,7 @@
            END-IF
       *
            IF      SPA-NAI-YUKOSTYMD   >=  SPA-NAI-YUKOEDYMD
-               MOVE    "0010"              TO  SPA-ERRCD
+               MOVE    "1010"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-GMNZ6-CUR
                GO      TO      4109-TOUROKU-CHK-EXT
            END-IF
@@ -950,7 +1055,7 @@
                    PERFORM 800-DAYSET-SEC
                    IF      SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM + 1)
                                                    <   WRK-OTYMD
-                       MOVE    "0011"              TO  SPA-ERRCD
+                       MOVE    "1011"              TO  SPA-ERRCD
                        MOVE    2                   TO  SPA-GMNZ6-CUR
                        GO      TO      4109-TOUROKU-CHK-EXT
                    END-IF
@@ -960,24 +1065,23 @@
            IF      SPA-Z01-SYORIKBN    =   3
                IF      SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
                                            >=  SPA-NAI-YUKOSTYMD
-                   MOVE    "0012"              TO  SPA-ERRCD
+                   MOVE    "1012"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMNZ6-CUR
                    GO      TO      4109-TOUROKU-CHK-EXT
                END-IF
       *
                IF  SPA-NAI-YUKOEDYMD    NOT    =  ALL "9"
-                   MOVE    "0013"              TO  SPA-ERRCD
+                   MOVE    "1013"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMNZ6-CUR
                    GO      TO      4109-TOUROKU-CHK-EXT
                END-IF
            END-IF
       *
            IF      SPA-GMN-NAME        =   SPACE
-               MOVE    "0004"              TO  SPA-ERRCD
+               MOVE    "1014"              TO  SPA-ERRCD
                MOVE    4                   TO  SPA-GMNZ6-CUR
            END-IF
            .
-      *
        4109-TOUROKU-CHK-EXT.
            EXIT.
       *
@@ -1219,6 +1323,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -1269,7 +1374,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-TENSU
                INITIALIZE                      TNS-TENSU-REC
            END-IF
-      *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBLOSEC-SEC
@@ -1280,16 +1384,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
                PERFORM 4121-KOUMOKUISO-SEC
       *
+               MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
                MOVE    SPA-Z01-SRYCD       TO  TNSUP-SRYCD
                MOVE    SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOSTYMD
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
-               MOVE    SPA-HOSPNUM         TO  TNSUP-HOSPNUM
                MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -1323,6 +1428,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
            PERFORM 4121-KOUMOKUISO-SEC
       *
+           MOVE    SPA-OPID            TO  TNS-OPID
            MOVE    SMCNDATE-YMD        TO  TNS-CREYMD
            MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
            MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
@@ -1373,9 +1479,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JITEN2      TO  TNS-SSTKIJUNCD(2)
            MOVE    SPA-GMN-JITEN3      TO  TNS-SSTKIJUNCD(3)
            MOVE    SPA-GMN-JITEN4      TO  TNS-SSTKIJUNCD(4)
-      *----(04.01.00)--ADD-START-------------------------------------
            MOVE    SPA-GMN-JITEN5      TO  TNS-SSTKIJUNCD(5)
-      *----(04.01.00)--ADD-END---------------------------------------
+      *    カラム位置
+           MOVE    SPA-GMN-DIGIT (1)   TO  TNS-SSTKIJUNCD(6)
+           MOVE    SPA-GMN-DIGIT (2)   TO  TNS-SSTKIJUNCD(7)
+           MOVE    SPA-GMN-DIGIT (3)   TO  TNS-SSTKIJUNCD(8)
+           MOVE    SPA-GMN-DIGIT (4)   TO  TNS-SSTKIJUNCD(9)
+           MOVE    SPA-GMN-DIGIT (5)   TO  TNS-SSTKIJUNCD(10)
+      *    コメント区分
+           MOVE    SPA-GMN-COMMENTKBN  TO  TNS-KENTAICOMMENT
       *
            .
        4121-KOUMOKUISO-EXT.
@@ -1438,6 +1550,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-GMNHEN-SEC                            SECTION.
       *
+            MOVE    SPACE                  TO  Z06
             INITIALIZE                     Z06
       *
             MOVE   SPA-GMN-SRYCDH          TO  Z06-SRYCDH
@@ -1489,8 +1602,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
             END-PERFORM
       *----(04.01.00)--ADD-END---------------------------------------
       *
-           PERFORM 5001-MAPCUR-SEC
+      *    カラム位置
+           MOVE    SPA-GMN-DIGIT (1)   TO  Z06-DIGIT1
+           MOVE    SPA-GMN-DIGIT (2)   TO  Z06-DIGIT2
+           MOVE    SPA-GMN-DIGIT (3)   TO  Z06-DIGIT3
+           MOVE    SPA-GMN-DIGIT (4)   TO  Z06-DIGIT4
+           MOVE    SPA-GMN-DIGIT (5)   TO  Z06-DIGIT5
       *
+           MOVE    SPA-GMN-COMMENTKBN-G    TO  Z06-COMMENTKBN
+           PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN-COMKBN-MAX
+               MOVE    SPA-GMN-COMMENTKBN-LST(IDX)
+                                          TO  Z06-COMMENTKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-COMKBN-MAX TO  Z06-COMMENTKBN-COUNT
+      *
+           PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
            EXIT.
@@ -1511,10 +1638,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    "NAME"
                        MOVE    5                 TO  SPA-GMNZ6-CUR
                    WHEN    "FORMALNAME"
-      *----(04.01.00)--UPD-START-------------------------------------
-      *                 MOVE    6                 TO  SPA-GMNZ6-CUR
                        MOVE    11                TO  SPA-GMNZ6-CUR
-      *----(04.01.00)--UPD-END---------------------------------------
                    WHEN    "JITEN1"
                        MOVE    7                 TO  SPA-GMNZ6-CUR
                    WHEN    "JITEN2"
@@ -1522,11 +1646,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    "JITEN3"
                        MOVE    9                 TO  SPA-GMNZ6-CUR
                    WHEN    "JITEN4"
-                       MOVE    10                TO  SPA-GMNZ6-CUR
-      *----(04.01.00)--ADD-START-------------------------------------
+      ***********      MOVE    10                TO  SPA-GMNZ6-CUR
+                       MOVE    12                TO  SPA-GMNZ6-CUR
                    WHEN    "JITEN5"
                        MOVE    6                 TO  SPA-GMNZ6-CUR
-      *----(04.01.00)--ADD-END---------------------------------------
+      *
+                   WHEN    "DIGIT1"
+                       MOVE    "13"              TO  SPA-GMNZ6-CUR
+                   WHEN    "DIGIT2"
+                       MOVE    "14"              TO  SPA-GMNZ6-CUR
+                   WHEN    "DIGIT3"
+                       MOVE    "15"              TO  SPA-GMNZ6-CUR
+                   WHEN    "DIGIT4"
+                       MOVE    "16"              TO  SPA-GMNZ6-CUR
+                   WHEN    "DIGIT5"
+                       MOVE    "17"              TO  SPA-GMNZ6-CUR
+                   WHEN    "COMMENTKBN"
+                       MOVE    "99"              TO  SPA-GMNZ6-CUR
+      *
                    WHEN    OTHER
                        MOVE    1                 TO  SPA-GMNZ6-CUR
                END-EVALUATE
@@ -1550,12 +1687,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   MOVE  "JITEN3"           TO  MCP-WIDGET
               WHEN     9
                   MOVE  "JITEN4"           TO  MCP-WIDGET
-              WHEN     10
-                  MOVE  "B12"              TO  MCP-WIDGET
-      *----(04.01.00)--ADD-START-------------------------------------
               WHEN     11
                   MOVE  "JITEN5"           TO  MCP-WIDGET
-      *----(04.01.00)--ADD-END---------------------------------------
+              WHEN     12
+                  MOVE  "DIGIT1"            TO  MCP-WIDGET
+              WHEN     13
+                  MOVE  "DIGIT2"            TO  MCP-WIDGET
+              WHEN     14
+                  MOVE  "DIGIT3"            TO  MCP-WIDGET
+              WHEN     15
+                  MOVE  "DIGIT4"            TO  MCP-WIDGET
+              WHEN     16
+                  MOVE  "DIGIT5"            TO  MCP-WIDGET
+              WHEN     17
+                  MOVE  "COMMENTKBN"        TO  MCP-WIDGET
+      *
+              WHEN     99
+                  MOVE     "B12"            TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1596,35 +1744,55 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0009"
                    MOVE    "寝前コードがありません"
                                                  TO  SPA-ERRMSG
-               WHEN    "0010"
-                   MOVE
-                   "有効開始年月日≧有効終了年月日で入力して下さい"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0011"
-                   MOVE    "有効年月日の範囲が違います"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0012"
-                   MOVE    "有効年月日が重複しています"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0013"
-                   MOVE    "改正の終了年月日はＡＬＬ９のみ入力できます"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0014"
-                   MOVE    "登録処理が失敗しました"
-                                                 TO  SPA-ERRMSG
-               WHEN    "0015"
-                   MOVE    "削除処理が失敗しました"
-                                                 TO  SPA-ERRMSG
-      *----(04.01.00)--ADD-START-------------------------------------
                WHEN    "0016"
                    MOVE    "起床コードがありません"
                                                  TO  SPA-ERRMSG
-      *----(04.01.00)--ADD-END---------------------------------------
+               WHEN    "0017"
+                   MOVE    "コメント区分がありません"
+                                                 TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "カラム位置は順番に設定して下さい"
+                                                 TO  SPA-ERRMSG
+      *
+      *        以下共通
+               WHEN    "1010"
+                   MOVE
+                   "有効開始年月日≧有効終了年月日で入力して下さい"
+                                                 TO  SPA-ERRMSG
+               WHEN    "1011"
+                   MOVE    "有効年月日の範囲が違います"
+                                                 TO  SPA-ERRMSG
+               WHEN    "1012"
+                   MOVE    "有効年月日が重複しています"
+                                                 TO  SPA-ERRMSG
+               WHEN    "1013"
+                   MOVE    "改正の終了年月日はＡＬＬ９のみ入力できます"
+                                                 TO  SPA-ERRMSG
+               WHEN    "1014"
+                   MOVE    "漢字名称を入力してください"
+                                                 TO  SPA-ERRMSG
+              WHEN    "1001"
+                   MOVE    "入力コード更新エラー"
+                                                 TO  SPA-ERRMSG
+               WHEN    "9001"
+                   MOVE    "削除処理が失敗しました"
+                                                 TO  SPA-ERRMSG
+               WHEN    "9002"
+                   MOVE    "更新処理が失敗しました"
+                                                 TO  SPA-ERRMSG
+               WHEN    "9003"
+                   MOVE    "追加処理が失敗しました"
+                                                 TO  SPA-ERRMSG
+               WHEN    "9004"
+                   MOVE    "点数マスタ付加情報が更新できません"
+                                                 TO  SPA-ERRMSG
+               WHEN    OTHER
+                   MOVE    SPA-ERRCD             TO  SPA-ERRMSG
            END-EVALUATE.
       *
            MOVE    SPACE                         TO  ZERR
            MOVE    SPA-ERRCD                     TO  ZERR-ERRCODE
-           MOVE    SPA-ERRMSG                TO  ZERR-ERRMSG
+           MOVE    SPA-ERRMSG                    TO  ZERR-ERRMSG
       *
            MOVE    "Z06"                         TO  SPA-MOTOPG
            MOVE    "ZERR"                        TO  SPA-SAKIPG

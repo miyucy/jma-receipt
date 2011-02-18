@@ -3211,6 +3211,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       "¡Û"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    Ëä¤á¹þ¤ßÍ­
+           IF     (SRY-INPUTNUM(IDZ)   NOT =   ZERO)
+               PERFORM 310122-KNJCOM-SET-SEC
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING     "¡Ú"             DELIMITED   BY  SIZE
+                          SPA-GMN-TMEISYO (IDG)
+                                           DELIMITED   BY  SPACE
+                          "¡Û"             DELIMITED   BY  SIZE
+                          INTO             WRK-MEISYO
+               END-STRING
+               MOVE    WRK-MEISYO          TO  SPA-GMN-TMEISYO (IDG)
+           END-IF
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.
@@ -3311,6 +3323,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    PTCOM-INPUTCHI (2)  TO  SPA-NAI-INPUTCHI2(IDG)
                MOVE    PTCOM-INPUTCHI (3)  TO  SPA-NAI-INPUTCHI3(IDG)
                MOVE    PTCOM-INPUTCHI (4)  TO  SPA-NAI-INPUTCHI4(IDG)
+               MOVE    PTCOM-INPUTCHI (5)  TO  SPA-NAI-INPUTCHI5(IDG)
            END-IF
       *
            .

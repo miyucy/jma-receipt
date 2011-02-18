@@ -230,7 +230,7 @@
                        09  SPA-WKSRY-ZAIKAIKEI         PIC  9(07).
                        09  SPA-WKSRY-SINRYO-TBL        OCCURS   50.
                            11  SPA-WKSRY-SRYCD         PIC  X(09).
-                           11  SPA-WKSRY-NAME          PIC  X(50).
+                           11  SPA-WKSRY-NAME          PIC  X(80).
                            11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(05).
                            11  SPA-WKSRY-KANSURYO   PIC  9(05)V9(05).
                            11  SPA-WKSRY-SRYKAISU      PIC  9(03).
@@ -324,7 +324,7 @@
       *
       *    ¿ÇÎÅ¹Ô°ÙÌ¾¾Î
            03  WRK-SRYSYUMEI       PIC X(40).
-           03  WRK-MEISYO          PIC X(40).
+           03  WRK-MEISYO          PIC X(100).
       *    ¿ôÎÌÉ½¼¨ÍÑ
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -1556,6 +1556,7 @@
                MOVE    PTCOM-INPUTCHI (2)  TO  WKSRY-INPUTCHI (IDY 2)
                MOVE    PTCOM-INPUTCHI (3)  TO  WKSRY-INPUTCHI (IDY 3)
                MOVE    PTCOM-INPUTCHI (4)  TO  WKSRY-INPUTCHI (IDY 4)
+               MOVE    PTCOM-INPUTCHI (5)  TO  WKSRY-INPUTCHI (IDY 5)
            END-IF
            .
        490111-PTCOM-SET-EXT.
@@ -1737,7 +1738,8 @@
            MOVE    TNS-NAME            TO  SPA-WKSRY-NAME
                                                    (SPA-WKSRY-MAX IDX-W)
       *    ¹Ô°ÙÌ¾¾Î
-           MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO2(IDG)
+           MOVE    TNS-NAME            TO  WRK-MEISYO
+      **** MOVE    TNS-NAME            TO  SPA-GMN-TMEISYO2(IDG)
       *    ÌôºÞÉþÍÑ¥³¥á¥ó¥È¤Î»þ¡¢ºÆÊÔ½¸
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:3)  =   "001"
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
@@ -1757,9 +1759,12 @@
                   (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
                MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-GMN-TMEISYO2(IDG)
+               MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           TO  WRK-MEISYO
            END-IF
       *
-           MOVE    SPA-GMN-TMEISYO2(IDG)   TO  SPA-WKSRY-NAME
+           MOVE    WRK-MEISYO          TO  SPA-GMN-TMEISYO2(IDG)
+           MOVE    WRK-MEISYO          TO  SPA-WKSRY-NAME
                                                    (SPA-WKSRY-MAX IDX-W)
       *!
       *    ÍÑÎÌ³ä¹çºÆÊÔ½¸
@@ -1948,6 +1953,16 @@
                       "¡Û"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    Ëä¤á¹þ¤ßÍ­
+           IF     (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING     "¡Ú"             DELIMITED   BY  SIZE
+                          LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           DELIMITED   BY  SPACE
+                          "¡Û"             DELIMITED   BY  SIZE
+                          INTO             WRK-MEISYO
+               END-STRING
+           END-IF
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.

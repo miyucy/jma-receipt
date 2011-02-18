@@ -22,6 +22,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.06.00     NACL-多々納  11/02/14  用法コメント対応
       ************************************************************
       *01  PTCOM-REC.
       *キー
@@ -48,8 +49,10 @@
                05  PTCOM-INPUTCHI3      PIC  X(08).
       *入力値４
                05  PTCOM-INPUTCHI4      PIC  X(08).
+      *入力値５
+               05  PTCOM-INPUTCHI5      PIC  X(08).
            03  PTCOM-INPUTCHI-AREA-R    REDEFINES   PTCOM-INPUTCHI-AREA
-                                        OCCURS  4.
+                                        OCCURS  5.
       *入力値
                05  PTCOM-INPUTCHI       PIC  X(08).
       *端末ＩＤ

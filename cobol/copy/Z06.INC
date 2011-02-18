@@ -60,3 +60,19 @@
                   05  Z06-VALUE   PIC X(12).
                 04  Z06-JITEN5-COUNT   PIC S9(9)   BINARY.
                 04  Z06-JITEN5-ITEM    PIC X(12)   OCCURS  2 TIMES.
+              03  Z06-DIGIT1.
+                04  Z06-VALUE   PIC S9(3).
+              03  Z06-DIGIT2.
+                04  Z06-VALUE   PIC S9(3).
+              03  Z06-DIGIT3.
+                04  Z06-VALUE   PIC S9(3).
+              03  Z06-DIGIT4.
+                04  Z06-VALUE   PIC S9(3).
+              03  Z06-DIGIT5.
+                04  Z06-VALUE   PIC S9(3).
+              03  Z06-COMMENTKBN-COMB.
+                04  Z06-COMMENTKBN.
+                  05  Z06-VALUE   PIC X(30).
+                04  Z06-COMMENTKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z06-COMMENTKBN-ITEM
+                        PIC X(30)   OCCURS  5 TIMES.

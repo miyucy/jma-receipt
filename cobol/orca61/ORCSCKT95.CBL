@@ -4362,6 +4362,7 @@
                MOVE    PTCOM-INPUTCHI (2)  TO  WKSRY-INPUTCHI (IDX 2)
                MOVE    PTCOM-INPUTCHI (3)  TO  WKSRY-INPUTCHI (IDX 3)
                MOVE    PTCOM-INPUTCHI (4)  TO  WKSRY-INPUTCHI (IDX 4)
+               MOVE    PTCOM-INPUTCHI (5)  TO  WKSRY-INPUTCHI (IDX 5)
            END-IF
            .
        490111-PTCOM-SET-EXT.

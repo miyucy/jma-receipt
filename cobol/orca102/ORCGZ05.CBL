@@ -1903,6 +1903,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -1970,6 +1971,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -2010,6 +2012,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  TNS-CREYMD
            MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
            MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
+           MOVE    SPA-OPID            TO  TNS-OPID
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC

@@ -46,7 +46,7 @@
                 04  K02-SRYKBN-STYLE   PIC X(20).
                 04  K02-SRYKBN   PIC X(2).
               03  K02-INPUTCD   OCCURS 20.
-                04  K02-VALUE   PIC X(22).
+                04  K02-VALUE   PIC X(54).
               03  K02-MEISYO-G    OCCURS  20.
                 04  K02-MEISYO-STYLE   PIC X(20).
                 04  K02-MEISYO    PIC X(80).

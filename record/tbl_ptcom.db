@@ -9,6 +9,7 @@ tbl_ptcom {
 	INPUTCHI2			char(8);
 	INPUTCHI3			char(8);
 	INPUTCHI4			char(8);
+	INPUTCHI5			char(8);
 	TERMID  			varchar(16);
 	OPID    			varchar(16);
 	CREYMD  			char(8);

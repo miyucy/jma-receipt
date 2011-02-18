@@ -57,6 +57,7 @@
       *  04.03.00    NACL-多々納  08/08/01  入院調剤料保険組合せ期間チェック追加
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
+      *  04.06.00    NACL-多々納  11/02/18  用法コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -398,7 +399,7 @@
       *    診療行為名称
            03  WRK-SRYSYUMEI       PIC X(40).
       *
-           03  WRK-MEISYO          PIC X(40).
+           03  WRK-MEISYO          PIC X(60).
       *    数量表示用
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -1630,11 +1631,11 @@
                IF      LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)(1:1) =   "*"
                    MOVE    1                   TO  FLG-KAISUU-ARI2
                    PERFORM VARYING     IDX3    FROM   2   BY  1
-                           UNTIL       IDX3    >   22
+                           UNTIL       IDX3    >   54
                        IF       LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)
                                                    (IDX3:1) =   "/"
                            MOVE    1               TO  FLG-KAISUU-ARI3
-                           MOVE    22              TO  IDX3
+                           MOVE    54              TO  IDX3
                        END-IF
                    END-PERFORM
                END-IF
@@ -1986,7 +1987,7 @@
        310100-KAISUU-CHK-SEC                  SECTION.
       *
            PERFORM VARYING     IDX3    FROM   1   BY  1
-                   UNTIL       IDX3    >   22
+                   UNTIL       IDX3    >   54
                IF       LNK-WKSRY-INPUTCD(IDX IDZ)(IDX3:1) =   "*" 
                    IF       IDX3                >   1
                        MOVE    1               TO  FLG-KAISUU-ARI
@@ -2742,6 +2743,16 @@
                       "】"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    埋め込み有
+           IF     (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING     "【"             DELIMITED   BY  SIZE
+                          LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           DELIMITED   BY  SPACE
+                          "】"             DELIMITED   BY  SIZE
+                          INTO             WRK-MEISYO
+               END-STRING
+           END-IF
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.

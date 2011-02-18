@@ -246,7 +246,7 @@
                        09  LNK-ORCSC-SRYCD-KS      PIC X(09).
                        09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(05).
                        09  LNK-ORCSC-ATAI-G.
-                           11  LNK-ORCSC-ATAI   PIC X(08) OCCURS  4.
+                           11  LNK-ORCSC-ATAI   PIC X(08) OCCURS  5.
       *                入院時の回数
                        09  LNK-ORCSC-INPUTCD-G.
                            11  LNK-ORCSC-INPUTCD       PIC X(22)

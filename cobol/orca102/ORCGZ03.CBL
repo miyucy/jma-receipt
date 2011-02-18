@@ -3789,6 +3789,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -3857,6 +3858,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
                                            TO  TNSUP-YUKOEDYMD
       *
+               MOVE    SPA-OPID            TO  TNS-OPID
                MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
                MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
       *
@@ -3893,6 +3895,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-YUKOEDYMD   TO  TNS-YUKOEDYMD
            PERFORM 4121-KOUMOKUISO-SEC
       *
+           MOVE    SPA-OPID            TO  TNS-OPID
            MOVE    SMCNDATE-YMD        TO  TNS-CREYMD
            MOVE    SMCNDATE-YMD        TO  TNS-UPYMD
            MOVE    SMCNDATE-HMS        TO  TNS-UPHMS
@@ -4182,6 +4185,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                IF      CHG-IPNSRYCD        NOT =   SPACE
       *
+                   MOVE    SPA-OPID            TO  CHG-OPID
                    MOVE    SMCNDATE-YMD        TO  CHG-CREYMD
                    MOVE    SMCNDATE-YMD        TO  CHG-UPYMD
                    MOVE    SMCNDATE-HMS        TO  CHG-UPHMS

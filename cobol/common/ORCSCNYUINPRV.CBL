@@ -196,23 +196,23 @@
            03  WRK-SRYKA               PIC X(02).
       *
       *    診療行為内容比較用テーブル
-       01  TBL-AREA.
-           03  TBL-MAE-AREA.
-               05  TBL-MAE-REC     OCCURS   50.
-                   07  TBL-MAE-SRYCD       PIC  X(09).
-                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(05).
-                   07  TBL-MAE-SRYKAISU    PIC  9(03).
-                   07  TBL-MAE-INPUTCOMENT PIC  X(40).
-                   07  TBL-MAE-ATAI-G.
-                       09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
-           03  TBL-ATO-AREA.
-               05  TBL-ATO-REC     OCCURS   50.
-                   07  TBL-ATO-SRYCD       PIC  X(09).
-                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(05).
-                   07  TBL-ATO-SRYKAISU    PIC  9(03).
-                   07  TBL-ATO-INPUTCOMENT PIC  X(40).
-                   07  TBL-ATO-ATAI-G.
-                       09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
+      *01  TBL-AREA.
+      *    03  TBL-MAE-AREA.
+      *        05  TBL-MAE-REC     OCCURS   50.
+      *            07  TBL-MAE-SRYCD       PIC  X(09).
+      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(05).
+      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
+      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
+      *            07  TBL-MAE-ATAI-G.
+      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  5.
+      *    03  TBL-ATO-AREA.
+      *        05  TBL-ATO-REC     OCCURS   50.
+      *            07  TBL-ATO-SRYCD       PIC  X(09).
+      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(05).
+      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
+      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
+      *            07  TBL-ATO-ATAI-G.
+      *                09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  5
       *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
@@ -375,6 +375,8 @@
       *    主情報アクセス用パラメタ
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
+      *    一括日変換パラメタ
+           COPY    "CPORCSNDAYCHG.INC".
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -770,16 +772,26 @@
        1001-KAISUU-SYORI-SEC              SECTION.
       *
       *
-           INITIALIZE                  ORCSC97AREA
-           MOVE    SPACE               TO  SPA-SCR-REC
+      *    INITIALIZE                  ORCSC97AREA
+      *    MOVE    SPACE               TO  SPA-SCR-REC
       *    ＰＧ名
-           MOVE    "K02N"              TO  LNK-SC97-PG
+      *    MOVE    "K02N"              TO  LNK-SC97-PG
+      *    MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
+      *                                TO  LNK-SC97-INPUTCD
+      *    CALL    "ORCSC97"           USING
+      *                                SPA-AREA
+      *                                ORCSC97AREA
+      *                                SPA-SCR-REC
+      *
+           INITIALIZE                      ORCSNDAYCHGAREA
+           MOVE    SPA-SRYYMD          TO  ORCSNDAYCHG-SRYYMD
            MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
-                                       TO  LNK-SC97-INPUTCD
-           CALL    "ORCSC97"           USING
+                                       TO  ORCSNDAYCHG-INPUTCD
+           MOVE    54                  TO  ORCSNDAYCHG-KETA
+           CALL    "ORCSNDAYCHG"       USING
                                        SPA-AREA
-                                       ORCSC97AREA
-                                       SPA-SCR-REC
+                                       ORCSNDAYCHGAREA
+           MOVE    ORCSNDAYCHG-ERRCD   TO  SPA-ERRCD
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      1001-KAISUU-SYORI-EXT
@@ -1401,6 +1413,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            患者コメント作成
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
+                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
                        PERFORM 45011-PTCOM-SYROI-SEC
                    END-IF
                END-IF

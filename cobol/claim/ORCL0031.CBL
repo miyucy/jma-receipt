@@ -63,6 +63,7 @@
       *  04.06.02    NACL-多々納  10/08/09  複数公費対応
       *  04.06.03    NACL-藤原    10/10/20  難病外来指導管理料対応
       *  04.06.02    NACL-多々納  10/11/19  ４０剤、４０明細対応他
+      *  04.06.02    NACL-多々納  11/02/18  用法コメント対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -182,6 +183,7 @@
       *
            03  IDK1                PIC 9(04).
            03  HZN-IDK             PIC 9(04).
+           03  IDX-IMAX            PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -294,7 +296,7 @@
       *
       *    コメント入力値編集
            03  WRK-INPUTCHI-G.
-               05  WRK-INPUTCHI        PIC X(12)   OCCURS  4.
+               05  WRK-INPUTCHI        PIC X(40)   OCCURS  5.
       *
            03  SYS-YMD.
                05  SYS-SYSYY1      PIC 9(02) VALUE  20.
@@ -2068,7 +2070,9 @@
            IF    ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
                                        =   "84"   )  OR
                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
-                                       =   "0084"  ))  AND
+                                       =   "0084"  ) OR
+                  (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
+                                       =   "001"   ))  AND
                   (LF04-SURYO (IDX1 IDX2)  NOT =   SPACE )
                PERFORM 200321-INPUTCHI-HEN-SEC
                MOVE    1               TO  FLG-SURYO
@@ -2185,8 +2189,8 @@
            MOVE    1                   TO  IDX-I1
            MOVE    ZERO                TO  IDX-I2
            PERFORM VARYING     IDX-I   FROM    1   BY  1
-                   UNTIL      (IDX-I   >   12  )   OR
-                              (IDX-I1  >   4   )
+                   UNTIL      (IDX-I   >   40  )   OR
+                              (IDX-I1  >   5   )
                IF      LF04-SURYO (IDX1 IDX2)(IDX-I:1) =   "-"
                    ADD     1               TO  IDX-I1
                    MOVE    ZERO            TO  IDX-I2
@@ -2197,8 +2201,14 @@
                                                  (IDX-I1)(IDX-I2:1)
                END-IF
            END-PERFORM
+      *    用法コメントは５まで
+           IF      TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)    =   "001"
+               MOVE    5                   TO  IDX-IMAX
+           ELSE
+               MOVE    4                   TO  IDX-IMAX
+           END-IF
            PERFORM VARYING     IDX-I   FROM    1   BY  1
-                   UNTIL       IDX-I   >   4
+                   UNTIL       IDX-I   >   IDX-IMAX
                IF      WRK-INPUTCHI(IDX-I) NOT =   SPACE
                    INITIALIZE                      ORCSNUMAREA
                    MOVE    WRK-INPUTCHI(IDX-I)
@@ -2208,7 +2218,7 @@
       *            整数のみ対象
                    IF     (SNUM-RC         NOT =   ZERO  )   OR
                           (SNUM-MINKBN         =   "1"   )   OR
-                          (SNUM-SEISUU         >   12    )   OR
+                          (SNUM-SEISUU         >   8     )   OR
                           (SNUM-SYOSUU         >   5     )
                         CONTINUE
                    ELSE
@@ -2224,9 +2234,11 @@
                                                   (TBL-MAX IDX-S IDX-I)
                        END-IF
       *                ユーザコメントで小数部がある時、そのまま
-                       IF    (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
-                                               =   "0084"   )  AND
-                             (SNUM-SYOSUU      >   0        )
+                       IF   ((TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
+                                               =   "0084"   )  OR
+                             (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:3)
+                                               =   "001"    ))
+                        AND  (SNUM-SYOSUU      >   0        )
                            MOVE    WRK-INPUTCHI(IDX-I)
                                                TO  TBL-WKSRY-INPUTCHI
                                                    (TBL-MAX IDX-S IDX-I)

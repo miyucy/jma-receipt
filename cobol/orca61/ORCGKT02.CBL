@@ -1483,11 +1483,11 @@
                IF      LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)(1:1) =   "*"
                    MOVE    1                   TO  FLG-KAISUU-ARI2
                    PERFORM VARYING     IDX3    FROM   2   BY  1
-                           UNTIL       IDX3    >   22
+                           UNTIL       IDX3    >   54
                        IF       LNK-WKSRY-INPUTCD(IDX-KOUI IDZ)
                                                    (IDX3:1) =   "/"
                            MOVE    1               TO  FLG-KAISUU-ARI3
-                           MOVE    22              TO  IDX3
+                           MOVE    54              TO  IDX3
                        END-IF
                    END-PERFORM
                END-IF
@@ -1743,7 +1743,7 @@
        310100-KAISUU-CHK-SEC                  SECTION.
       *
            PERFORM VARYING     IDX3    FROM   1   BY  1
-                   UNTIL       IDX3    >   22
+                   UNTIL       IDX3    >   54
                IF       LNK-WKSRY-INPUTCD(IDX IDZ)(IDX3:1) =   "*" 
                    IF       IDX3                >   1
                        MOVE    1               TO  FLG-KAISUU-ARI
@@ -2512,6 +2512,16 @@
                       "¡Û"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
+      *    Ëä¤á¹þ¤ßÍ­
+           IF     (LNK-WKSRY-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
+               MOVE    SPACE               TO  WRK-MEISYO
+               STRING     "¡Ú"             DELIMITED   BY  SIZE
+                          LNK-WKSRY-INPUTCOMENT(IDX IDZ)
+                                           DELIMITED   BY  SPACE
+                          "¡Û"             DELIMITED   BY  SIZE
+                          INTO             WRK-MEISYO
+               END-STRING
+           END-IF
            .
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.

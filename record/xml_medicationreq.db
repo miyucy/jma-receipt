@@ -17,10 +17,11 @@ xml_medicationreq {
 		Comment_Information   {
 			Column_Position		varchar(3);
 			Digit_Number		varchar(3);
-			} [4];
+			} [5];
 		Medication_Information   {
 			Medication_Point	varchar(1);
 			} [5];
+		Medication_Category		varchar(1);
 		Unit_Code			varchar(3);
 		Data_Category			varchar(1);
         	CommercialName			varchar(200);

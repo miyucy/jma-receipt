@@ -114,7 +114,8 @@
       *
            03  WRK-MEDICATION-AREA.
                05  WRK-MEDICATION-TBL      OCCURS   5.
-                   07  WRK-POINT           PIC 9(03).
+                   07  WRK-POINT           PIC 9(01).
+                   07  WRK-YPOSITION       PIC 9(03).
       *
            03  WRK-TANICD              PIC X(03).
            03  WRK-TANINAME            PIC X(12).
@@ -765,6 +766,11 @@
       *****************************************************************
        20011-NAME-CHK-SEC    SECTION.
       *
+      *TEST
+           MOVE    "テスト"         TO  MEDIREQ-MEDICATION-NAME
+      *TEST
+      *TEST
+      *TEST
       *    漢字名称
            IF     (MEDIREQ-MEDICATION-NAME =   SPACE  )
                MOVE    "12"                TO  WRK-ERRCD
@@ -1077,8 +1083,7 @@
                    CONTINUE
                ELSE
                    IF     (WRK-POSITION (IDX)  =   ZERO )
-                      OR  (WRK-NUMBER   (IDX)  =   ZERO )
-      *                位置・桁数は必須
+      *                位置は必須
                        MOVE    "23"            TO  WRK-ERRCD
                    ELSE
       *                埋め込みに空きがないこと
@@ -1089,6 +1094,15 @@
                    END-IF
                END-IF
            END-PERFORM
+      *    コメント位置は４までとする
+           IF      (MEDIRES-COLUMN-POSITION(5) =   SPACE
+                                               OR  ZERO  )
+              AND  (MEDIRES-DIGIT-NUMBER (5)   =   SPACE
+                                               OR  ZERO  )
+               CONTINUE
+           ELSE
+               MOVE    "23"                TO  WRK-ERRCD
+           END-IF
            .
        20011-COMMENT-CHK-EXT.
            EXIT.
@@ -1103,13 +1117,9 @@
                    UNTIL      (IDX     >   5    )
       *        服用時点
                IF      MEDIRES-MEDICATION-POINT(IDX)
-                                           =   SPACE
-                   MOVE    "0"             TO  MEDIRES-MEDICATION-POINT
-                                                               (IDX)
-               END-IF
-               IF      MEDIRES-MEDICATION-POINT(IDX)
-                                           =   "0"
-                                           OR  "1"
+                                               =   "0"
+                                               OR  "1"
+                                               OR  SPACE
                    INITIALIZE                      ORCSNUMAREA
                    MOVE    MEDIRES-MEDICATION-POINT(IDX)
                                                TO  SNUM-INX
@@ -1120,7 +1130,53 @@
                     MOVE    "24"           TO  WRK-ERRCD
                END-IF
            END-PERFORM
+      *    カラム位置
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   5    )
+                           OR (WRK-ERRCD   NOT =   SPACE )
+      *        開始位置
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    MEDIRES-COLUMN-POSITION (IDX)   TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-SEISUU         >   3     )   OR
+                      (SNUM-SYOKBN         =   "1"   )   OR
+                      (SNUM-MINKBN         =   "1"   )
+                   MOVE    "23"                TO  WRK-ERRCD
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  WRK-YPOSITION(IDX)
+               END-IF
+           END-PERFORM
+      *    埋め込みに空きがないこと
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   5    )
+                           OR (WRK-ERRCD   NOT =   SPACE )
+               IF     (WRK-YPOSITION (IDX)  =   ZERO )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  IDY
+                   IF      IDY         NOT =   IDX
+                       MOVE    "23"            TO  WRK-ERRCD
+                   END-IF
+               END-IF
+           END-PERFORM
       *
+      *    コメント区分
+           IF      MEDIRES-MEDICATION-CATEGORY =   SPACE
+               MOVE    "0"             TO  MEDIRES-MEDICATION-CATEGORY
+           END-IF
+           EVALUATE    MEDIRES-MEDICATION-CATEGORY
+               WHEN    "0"
+               WHEN    "1"
+               WHEN    "2"
+                   CONTINUE
+               WHEN    OTHER
+                   IF      WRK-ERRCD           =   SPACE
+                       MOVE    "36"                TO  WRK-ERRCD
+                   END-IF
+           END-EVALUATE
            .
        20011-MEDICATION-CHK-EXT.
            EXIT.
@@ -1385,6 +1441,15 @@
                MOVE    WRK-POINT  (4)      TO  TNS-SSTKIJUNCD(3)
       *        寝前
                MOVE    WRK-POINT  (5)      TO  TNS-SSTKIJUNCD(4)
+      *        カラム位置
+               MOVE    WRK-YPOSITION (1)   TO  TNS-SSTKIJUNCD(6)
+               MOVE    WRK-YPOSITION (2)   TO  TNS-SSTKIJUNCD(7)
+               MOVE    WRK-YPOSITION (3)   TO  TNS-SSTKIJUNCD(8)
+               MOVE    WRK-YPOSITION (4)   TO  TNS-SSTKIJUNCD(9)
+               MOVE    WRK-YPOSITION (5)   TO  TNS-SSTKIJUNCD(10)
+      *        コメント区分
+               MOVE    MEDIREQ-MEDICATION-CATEGORY
+                                           TO  TNS-KENTAICOMMENT
            END-IF
       *    器材コード
            IF      WRK-SRYCD (1:3)     =   "059"
@@ -1996,6 +2061,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-ERRMSG
            WHEN    "24"
                MOVE    "服用時点区分設定誤り"
+                                               TO  WRK-ERRMSG
+           WHEN    "36"
+               MOVE    "服用コメント区分設定誤り"
                                                TO  WRK-ERRMSG
            WHEN    "25"
                MOVE    "単位区分設定誤り"
