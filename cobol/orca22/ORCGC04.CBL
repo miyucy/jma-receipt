@@ -1823,11 +1823,11 @@
                PERFORM 410023-BYOMEI-HENSYU-SEC
            END-IF 
       *
-           MOVE    2               TO  SPA-GMN-C04-CUR     
-           IF      SPA-C01-INDEX   =   ZERO
-               CONTINUE
-           ELSE
-               IF      SPA-ERRCD       =   SPACE
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-C01-INDEX   =   ZERO
+                   MOVE    ZERO                TO  SPA-GMN-C04-SELNUM
+                   MOVE    9                   TO  SPA-GMN-C04-CUR
+               ELSE
                    PERFORM 450-KAKUTEI-SEC
                END-IF 
            END-IF
@@ -1883,11 +1883,11 @@
                PERFORM 410023-BYOMEI-HENSYU-SEC
            END-IF 
       *
-           MOVE    2               TO  SPA-GMN-C04-CUR     
-           IF      SPA-C01-INDEX   =   ZERO
-               CONTINUE
-           ELSE
-               IF      SPA-ERRCD       =   SPACE
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-C01-INDEX   =   ZERO
+                   MOVE    ZERO                TO  SPA-GMN-C04-SELNUM
+                   MOVE    9                   TO  SPA-GMN-C04-CUR
+               ELSE
                    PERFORM 450-KAKUTEI-SEC
                END-IF 
            END-IF
