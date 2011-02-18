@@ -3144,8 +3144,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                OR (( RECE02-PTTOKKI-CD(TOKKI-IDX) = "21"     ) AND
                    ( RECE02-SRYYM   <  "200901"              ))
                OR (( RECE02-PTTOKKI-CD(TOKKI-IDX) = "25"     ) AND
-                   ((RECE02-SRYYM   <  "200910") OR
-                    (RECE02-SRYYM   >  "201103")             ))
+                   ( RECE02-SRYYM   <  "200910"              ))
                  CONTINUE
                ELSE
                  ADD    1     TO    TOKKI-IDX2
@@ -9053,10 +9052,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    GO  TO  21045-TOKKI-HENSYU-EXT
                END-IF
              WHEN      "25"
-               IF  (RECE02-SRYYM   >=  "200910")
-               AND (RECE02-SRYYM   <=  "201103")
-                   CONTINUE
-               ELSE
+               IF  (RECE02-SRYYM   <   "200910")
                    GO  TO  21045-TOKKI-HENSYU-EXT
                END-IF
            END-EVALUATE
@@ -11127,7 +11123,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF   (FLG-BUNBEN-SET  =   ZERO   )
            AND  (RECE02-SRYYM   >=  "200910")
-           AND  (RECE02-SRYYM   <=  "201103")
               IF ( RECE02-HKNNUM(1:2)   =  "98"  OR "90"  OR "91" )
               OR ( RECE02-HKNNUM        =  "039" OR "040"         )
               OR ((RECE02-HKNNUM        =  "002") AND
