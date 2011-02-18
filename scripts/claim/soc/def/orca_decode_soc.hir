@@ -1518,7 +1518,7 @@ $Repeat, 20, @@CLM_BUNDLE@@, 0
 				claim:name[1] = 80
 
 				# 数量
-				claim:number[1] = 12
+				claim:number[1] = 40
 				# 数量コード
 				claim:number[1]@claim:numberCode = 2
 				# 数量コードテーブル
