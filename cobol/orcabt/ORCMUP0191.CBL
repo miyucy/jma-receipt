@@ -660,7 +660,7 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "Æþ±¡¥ì¥»¥×¥Èµ­ºÜÎ¬¾Î¥Þ¥¹¥¿ÅÐÏ¿ºÑ¤ß"
+                   MOVE  "Æþ±¡¥ì¥»µ­ºÜÎ¬¾Î¥Þ¥¹¥¿ÅÐÏ¿ºÑ¤ß"
                                            TO  WRK-MSG-01
                WHEN    2
                    MOVE  "ÄÉ²Ã¥¨¥é¡¼"      TO  WRK-MSG-01
