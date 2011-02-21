@@ -1652,17 +1652,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    6                 TO  SPA-GMNZ6-CUR
       *
                    WHEN    "DIGIT1"
-                       MOVE    "13"              TO  SPA-GMNZ6-CUR
+                       MOVE    13                TO  SPA-GMNZ6-CUR
                    WHEN    "DIGIT2"
-                       MOVE    "14"              TO  SPA-GMNZ6-CUR
+                       MOVE    14                TO  SPA-GMNZ6-CUR
                    WHEN    "DIGIT3"
-                       MOVE    "15"              TO  SPA-GMNZ6-CUR
+                       MOVE    15                TO  SPA-GMNZ6-CUR
                    WHEN    "DIGIT4"
-                       MOVE    "16"              TO  SPA-GMNZ6-CUR
+                       MOVE    16                TO  SPA-GMNZ6-CUR
                    WHEN    "DIGIT5"
-                       MOVE    "17"              TO  SPA-GMNZ6-CUR
+                       MOVE    17                TO  SPA-GMNZ6-CUR
                    WHEN    "COMMENTKBN"
-                       MOVE    "99"              TO  SPA-GMNZ6-CUR
+                       MOVE    99                TO  SPA-GMNZ6-CUR
       *
                    WHEN    OTHER
                        MOVE    1                 TO  SPA-GMNZ6-CUR

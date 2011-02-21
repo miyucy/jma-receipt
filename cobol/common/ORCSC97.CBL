@@ -397,8 +397,8 @@
                        MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-INPUTCD3
                                                              (IDX2:1)
                    ELSE
-                       IF    ((WRK-CHK-FLG         =   SPACE)  AND
-                              (IDX2                =   ZERO      ) OR
+                       IF    ( WRK-CHK-FLG         =   SPACE )  AND
+                             ((IDX2                =   ZERO      ) OR
                               (IDX                 =   CONS-INPUT) OR
                               (WRK-INPUTCD2(IDX3:) =   SPACE     ))
                            MOVE    WRK-INPUTCD2(IDX:1) TO  WRK-CHK-FLG
