@@ -252,7 +252,7 @@
            03  B01-HENSYU-3            REDEFINES   B01-HENSYU.
                05  B01-YOBI131             PIC X(20).
                05  B01-HENSYU-4            PIC X(56).
-           03  B01-HENSYU-4            REDEFINES   B01-HENSYU.
+           03  B01-HENSYU-5G           REDEFINES   B01-HENSYU.
                05  B01-YOBI141             PIC X(31).
                05  B01-HENSYU-5            PIC X(45).
       *
