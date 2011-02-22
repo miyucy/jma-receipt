@@ -177,10 +177,14 @@ AC_ARG_WITH(open-cobol-exec-prefix,
       elif test "x${cobc_major_version}" = x0  && \
         (expr "${cobc_minor_version}" \< "20") > /dev/null ; then
 	  COBOLFLAGS="-m -dynamic -fixed "
-  	  EXEC_COBOLFLAGS="-main -dynamic -fixed " 
+  	  EXEC_COBOLFLAGS="-main -dynamic -fixed "
       else
 	  COBOLFLAGS="-m -dynamic -fixed -fimplicit-init -std=cobol85 -Wall "
   	  EXEC_COBOLFLAGS="-x -dynamic -fixed -std=cobol85 -Wall "
+	  if test "x$enable_debug" = "xyes"; then
+	    COBOLFLAGS="${COBOLFLAGS}-g -debug -fdebugging-line -fsource-location -ftrace "
+	    EXEC_COBOLFLAGS="${EXEC_COBOLFLAGS}-g -debug -fdebugging-line -ftrace"
+	  fi
       fi	
   else
       AC_MSG_RESULT(no)
