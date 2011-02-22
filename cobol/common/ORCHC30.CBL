@@ -812,10 +812,19 @@
            MOVE    0               TO  WRK-ZENSURYO
       *
       *    用法編集
-           MOVE    ORCHC30-YSRYCD(CNT-PARA)    TO  WRK-SRYCD
-           PERFORM 900-TENSU-READ-SEC
-           MOVE    TNS-NAME        TO  WRK-HENSYUDATA
-           PERFORM 250-HENSYU-SYORI-SEC
+           IF      ORCHC30-YSRYCD(CNT-PARA)    =   SPACE
+               IF      ORCHC30-YSRYCD-NAME(CNT-PARA)   NOT =   SPACE
+                   MOVE    ORCHC30-YSRYCD-NAME(CNT-PARA)
+                                           TO  WRK-HENSYUDATA
+                   PERFORM 250-HENSYU-SYORI-SEC
+               END-IF
+           ELSE
+               MOVE    ORCHC30-YSRYCD(CNT-PARA)
+                                       TO  WRK-SRYCD
+               PERFORM 900-TENSU-READ-SEC
+               MOVE    TNS-NAME        TO  WRK-HENSYUDATA
+               PERFORM 250-HENSYU-SYORI-SEC
+           END-IF
       *
       *    回数カウント
            MOVE    SPACE           TO  WRK-SSTKIJUNCD
@@ -1133,14 +1142,23 @@
       *
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL  (IDX-KBN     >   5 )
-                   OR     (ORCHC30-YOHOU(CNT-PARA IDX-KBN) =   SPACE )
-      *        点数マスタ検索
-               MOVE    ORCHC30-YOHOU (CNT-PARA IDX-KBN)
-                                       TO  WRK-SRYCD
-               PERFORM 900-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
-                   MOVE    TNS-NAME        TO  WRK-HENSYUDATA
-                   PERFORM 250-HENSYU-SYORI-SEC
+      *             OR     (ORCHC30-YOHOU(CNT-PARA IDX-KBN) =   SPACE )
+               IF      ORCHC30-YOHOU(CNT-PARA IDX-KBN) =   SPACE
+                   IF      ORCHC30-YOHOU-NAME(CNT-PARA IDX-KBN)
+                                                       NOT =   SPACE
+                       MOVE    ORCHC30-YOHOU-NAME(CNT-PARA IDX-KBN)
+                                               TO  WRK-HENSYUDATA
+                       PERFORM 250-HENSYU-SYORI-SEC
+                   END-IF
+               ELSE
+      *            点数マスタ検索
+                   MOVE    ORCHC30-YOHOU (CNT-PARA IDX-KBN)
+                                           TO  WRK-SRYCD
+                   PERFORM 900-TENSU-READ-SEC
+                   IF      FLG-TENSU           =   ZERO
+                       MOVE    TNS-NAME        TO  WRK-HENSYUDATA
+                       PERFORM 250-HENSYU-SYORI-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *
