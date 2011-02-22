@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.06.00    NACL-多々納  11/02/22  用法コードコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -448,11 +449,21 @@
       *****************************************************************
        240-YOUHOU-HENSYU-SEC       SECTION.
       *
-           STRING  "【"            DELIMITED   BY  SIZE
-                   TNS-NAME        DELIMITED   BY  SPACE
-                   "】"            DELIMITED   BY  SIZE
-                   INTO            WRK-YOUHOU
-           END-STRING
+      *    コメント名称判定
+           IF      WRK-INPUTCOMENT(CNT-SRY)    =   SPACE
+               STRING  "【"            DELIMITED   BY  SIZE
+                       TNS-NAME        DELIMITED   BY  SPACE
+                       "】"            DELIMITED   BY  SIZE
+                       INTO            WRK-YOUHOU
+               END-STRING
+           ELSE
+               STRING  "【"            DELIMITED   BY  SIZE
+                       WRK-INPUTCOMENT(CNT-SRY)
+                                       DELIMITED   BY  SPACE
+                       "】"            DELIMITED   BY  SIZE
+                       INTO            WRK-YOUHOU
+               END-STRING
+           END-IF
       *
            MOVE    WRK-YOUHOU      TO  WRK-HENSYUDATA
            PERFORM 250-HENSYU-SYORI-SEC

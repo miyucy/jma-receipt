@@ -34,6 +34,7 @@
       * 03.05.00     NACL-多々納  07/05/22  再印刷処理追加
       * 04.01.00     NACL-多々納  07/11/22  器材商品名コード対応
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
+      * 04.06.00     NACL-多々納  11/02/22  用法コメント対応
       *****************************************************************
       *
       *
@@ -853,6 +854,15 @@
                               "】"             DELIMITED   BY  SIZE
                           INTO                 WRK-TNS-NAME
                    END-STRING
+                   IF      LNK-ORDERPRT-INPUTCOMENT (IDX)  NOT =   SPACE
+                       MOVE    SPACE           TO  WRK-TNS-NAME
+                       STRING     "【"             DELIMITED   BY  SIZE
+                                  LNK-ORDERPRT-INPUTCOMENT (IDX)
+                                                   DELIMITED   BY  SPACE
+                                  "】"             DELIMITED   BY  SIZE
+                              INTO                 WRK-TNS-NAME
+                       END-STRING
+                   END-IF
                ELSE
       *            その他
                    IF      LNK-ORDERPRT-INPUTCOMENT (IDX)  =   SPACE
@@ -1183,6 +1193,15 @@
                               "】"             DELIMITED   BY  SIZE
                           INTO                 WRK-TNS-NAME
                    END-STRING
+                   IF      LNK-ORDERPRT-INPUTCOMENT (IDX)  NOT =   SPACE
+                       MOVE    SPACE           TO  WRK-TNS-NAME
+                       STRING     "【"             DELIMITED   BY  SIZE
+                                  LNK-ORDERPRT-INPUTCOMENT (IDX)
+                                                   DELIMITED   BY  SPACE
+                                  "】"             DELIMITED   BY  SIZE
+                              INTO                 WRK-TNS-NAME
+                       END-STRING
+                   END-IF
                ELSE
       *            その他
                    IF      LNK-ORDERPRT-INPUTCOMENT (IDX)  =   SPACE

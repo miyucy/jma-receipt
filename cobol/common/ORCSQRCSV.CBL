@@ -29,7 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/05/31  グループ診療対応
       *  04.01.00    NACL-多々納  08/01/21  公費編集パラメタ対応
-      * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      *  04.06.00    NACL-多々納  11/02/21  用法コメント対応
       *****************************************************************
       *
       *
@@ -739,6 +740,8 @@
                        IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:1) =  "8" )
                            OR (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "008"
                                                               OR "099")
+                       OR    ((ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "001")
+                          AND (ORCSQRCSV-YCOMMNTKBN(IDX IDX2) =   "2" ))
                            PERFORM 20030-RP281-SYORI-SEC
                        END-IF
                    END-PERFORM
@@ -821,7 +824,9 @@
                    UNTIL      (IDX2    <   1    )
                          OR   (WRK-RP-11   >   ZERO  )
       *        用法レコード
-               IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "001")
+               IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =   "001")
+               AND    (ORCSQRCSV-YCOMMNTKBN(IDX IDX2) =   "1"
+                                                      OR  "0" )
                    PERFORM 20021-RP111-SEC
                    MOVE    SPACE       TO  ORCSQRCSV-SRYCD(IDX IDX2)
                END-IF
@@ -831,6 +836,8 @@
                    UNTIL      (IDX2    >   50   )
       *        用法補助レコード
                IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "001")
+               AND    (ORCSQRCSV-YCOMMNTKBN(IDX IDX2) =   "1"
+                                                      OR  "0" )
                    PERFORM 20022-RP181-SEC
                END-IF
            END-PERFORM
@@ -842,6 +849,8 @@
       *            用法レコード
                    IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:1) =  "8") OR
                           (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "008")
+                   OR    ((ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "001")
+                      AND (ORCSQRCSV-YCOMMNTKBN(IDX IDX2) =   "2" ))
                        PERFORM 20021-RP111-SEC
                        MOVE    SPACE       TO  ORCSQRCSV-SRYCD(IDX IDX2)
                    END-IF

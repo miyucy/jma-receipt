@@ -30,6 +30,7 @@
       *  04.03.00    NACL-多々納  08/10/31  包括保険対象対応
       *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応他
       *  04.05.00    NACL-多々納  09/10/XX  換算値数量対応
+      * 04.06.00     NACL-多々納  11/02/22  用法コードコメント対応
       *****************************************************************
       *
       *
@@ -463,14 +464,14 @@
            END-PERFORM
       *
       *TEST
-           DISPLAY "ORCHC62-DRCD:" ORCHC62-DRCD
-             ",ORCHC62-CNT:" ORCHC62-CNT
-           DISPLAY "ORCHC62-DENPNUM:" ORCHC62-DENPNUM
-           PERFORM VARYING    IDY   FROM    1  BY  1
-                   UNTIL      IDY   >  10 
-            DISPLAY "ORCHC62-GRP-DENPNUM "  IDY 
-                       ":" ORCHC62-GRP-DENPNUM(IDY)
-           END-PERFORM
+      *    DISPLAY "ORCHC62-DRCD:" ORCHC62-DRCD
+      *      ",ORCHC62-CNT:" ORCHC62-CNT
+      *    DISPLAY "ORCHC62-DENPNUM:" ORCHC62-DENPNUM
+      *    PERFORM VARYING    IDY   FROM    1  BY  1
+      *            UNTIL      IDY   >  10 
+      *     DISPLAY "ORCHC62-GRP-DENPNUM "  IDY 
+      *                ":" ORCHC62-GRP-DENPNUM(IDY)
+      *    END-PERFORM
       *   PERFORM VARYING    IDY   FROM    1  BY  1
       *            UNTIL      IDY   >  50 
       *       IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
@@ -1299,7 +1300,8 @@
                                                            (WRK-SRY-MAX)
       *            名称
                    IF    ((WKSRY-SRYCD (IDXA)(1:1) =    "8")   OR
-                          (WKSRY-SRYCD (IDXA)(1:3) =    "008")) AND
+                          (WKSRY-SRYCD (IDXA)(1:3) =    "008") OR
+                          (WKSRY-SRYCD (IDXA)(1:3) =    "001")) AND
                           (WKSRY-INPUTCOMENT (IDXA)
                                                NOT =   SPACE)
                        MOVE    WKSRY-INPUTCOMENT (IDXA)
@@ -1468,7 +1470,9 @@
            IF    ((ORCSCH62-SRYCD (IDX-L IDX-L2)(1:1)
                                        =    "8")   OR
                   (ORCSCH62-SRYCD (IDX-L IDX-L2)(1:3)
-                                       =    "008")) AND
+                                       =    "008")  OR
+                  (ORCSCH62-SRYCD (IDX-L IDX-L2)(1:3)
+                                       =    "001")) AND
                   (ORCSCH62-INPUTCOMENT (IDX-L IDX-L2)
                                    NOT =   SPACE)
                MOVE    ORCSCH62-INPUTCOMENT (IDX-L IDX-L2)

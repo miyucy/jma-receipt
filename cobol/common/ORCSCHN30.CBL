@@ -30,6 +30,7 @@
       *  04.03.00    NACL-太田   08/10/31   オン帳票バッチ起動対応
       *  04.05.00    NACL-多々納 09/07/23   在宅・コメント対象対応
       *  04.05.00    NACL-多々納 09/09/XX   表示コメントコード対応
+      *  04.06.00    NACL-多々納  11/02/22  用法コメント対応
       *****************************************************************
       *
       *
@@ -94,11 +95,14 @@
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
                05  WRK-YSRYCD              PIC X(09).
+               05  WRK-YSRYCD-NAME         PIC X(80).
                05  WRK-SRYKBN              PIC X(02).
                05  WRK-SRYSYUKBN           PIC X(03).
       *
                05  WRK-YOHOU-G.
-                   07  WRK-YOHOU           PIC X(09)   OCCURS  5.
+                   07  WRK-YOHOU-TBL       OCCURS  5.
+                       09  WRK-YOHOU           PIC X(09).
+                       09  WRK-YOHOU-NAME      PIC X(80).
       *        コメント
                05  TBL-COMMENT-G           OCCURS   20.
                    07  TBL-COMMENT             PIC X(09).
@@ -190,26 +194,29 @@
       *TEST
       *    DISPLAY "ORCSHCN30-KBN:" ORCSHCN30-KBN
       *    DISPLAY "ORCHCN30-MAX:" ORCHCN30-MAX
-      *    PERFORM VARYING    IDX   FROM    1  BY  1
-      *            UNTIL      IDX   >  ORCHCN30-MAX
-      *      DISPLAY "ORCHCN30-SRYCD:" ORCHCN30-SRYCD (IDX)
-      *              ",ORCHCN30-ZAIKBN:" ORCHCN30-ZAIKBN (IDX)
-      *              ",ORCHCN30-SURYO:" ORCHCN30-SURYO (IDX)
-      *              ",ORCHCN30-YSRYCD:" ORCHCN30-YSRYCD (IDX)
+           PERFORM VARYING    IDX   FROM    1  BY  1
+                   UNTIL      IDX   >  ORCHCN30-MAX
+             DISPLAY "ORCHCN30-SRYCD:" ORCHCN30-SRYCD (IDX)
+                     ",ORCHCN30-ZAIKBN:" ORCHCN30-ZAIKBN (IDX)
+                     ",ORCHCN30-SURYO:" ORCHCN30-SURYO (IDX)
+                     ",ORCHCN30-YSRYCD:" ORCHCN30-YSRYCD (IDX)
+                        "," ORCHCN30-YSRYCD-NAME (IDX)
       *              ",ORCHCN30-YOURYOU 1:" ORCHCN30-YOURYOU (IDX 1)
       *              ",2:" ORCHCN30-YOURYOU (IDX 2)
       *              ",3:" ORCHCN30-YOURYOU (IDX 3)
       *              ",4:" ORCHCN30-YOURYOU (IDX 4)
       *              ",ORCHCN30-SRYKAISU:" ORCHCN30-SRYKAISU (IDX)
-      *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 1)
-      *       "," ORCHCN30-COMMENT-MEI (IDX 1)
+             DISPLAY "ORCHCN30-YOHOU:" ORCHCN30-YOHOU (IDX 1)
+              "," ORCHCN30-YOHOU-NAME(IDX 1)
+             DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 1)
+              "," ORCHCN30-COMMENT-MEI (IDX 1)
       *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 2)
       *       "," ORCHCN30-COMMENT-MEI (IDX 2)
       *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 3)
       *       "," ORCHCN30-COMMENT-MEI (IDX 3)
       *      DISPLAY "ORCHCN30-COMMENT-CD:" ORCHCN30-COMMENT-CD (IDX 4)
       *       "," ORCHCN30-COMMENT-MEI (IDX 4)
-      *    END-PERFORM 
+           END-PERFORM 
       *TEST
       *
       *    印刷処理へ
@@ -327,16 +334,21 @@
       *        点数マスタを検索して、用法時点を判定する
                MOVE    ORCSHCN30-SRYCD(IDT IDXA)    TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
+               IF     (FLG-TENSU           =   ZERO   )
+      *         コメントは対象外
+               AND    (TNS-KENTAICOMMENT   =   0  OR  1  )
                    IF     (TNS-SSTKIJUNCD(1)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(3)   =   ZERO )  AND
-                          (TNS-SSTKIJUNCD(4)   =   ZERO )
+                          (TNS-SSTKIJUNCD(4)   =   ZERO )  AND
+                          (TNS-SSTKIJUNCD(5)   =   ZERO )
                        CONTINUE
                    ELSE
                        IF      WRK-YSRYCD      =   SPACE
                            MOVE    ORCSHCN30-SRYCD(IDT IDXA) 
                                                        TO  WRK-YSRYCD
+                           MOVE    ORCSHCN30-INPUTCOMENT(IDT IDXA)
+                                                   TO  WRK-YSRYCD-NAME
                            MOVE    1                   TO  FLG-YSET
                        END-IF
                    END-IF
@@ -345,6 +357,9 @@
                        IF      IDXY                <=  5
                            MOVE    ORCSHCN30-SRYCD(IDT IDXA) 
                                                    TO  WRK-YOHOU
+                                                                (IDXY)
+                           MOVE    ORCSHCN30-INPUTCOMENT(IDT IDXA)
+                                                   TO  WRK-YOHOU-NAME
                                                                 (IDXY)
                        END-IF
                    END-IF
@@ -385,6 +400,10 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
+      *       用法コメント
+              OR ((ORCSHCN30-SRYCD(IDT IDXA)(1:3)
+                                               =   "001" ) AND
+                  (TNS-KENTAICOMMENT           =   2     ))
                ADD     1                       TO  IDXC
                MOVE    ORCSHCN30-SRYCD (IDT IDXA)
                                                TO  TBL-COMMENT (IDXC)
@@ -418,6 +437,7 @@
                MOVE    TBL-SRYKAISU (IDX)  TO  ORCHCN30-SRYKAISU (IDY)
       *
                MOVE    WRK-YSRYCD          TO  ORCHCN30-YSRYCD(IDY)
+               MOVE    WRK-YSRYCD-NAME     TO  ORCHCN30-YSRYCD-NAME(IDY)
                MOVE    WRK-KAISU           TO  ORCHCN30-KAISU (IDY)
       *
                MOVE    ZERO                TO  IDXY2
@@ -427,9 +447,15 @@
                    IF      ORCHCN30-YSRYCD(IDY)     =   SPACE
                        MOVE    WRK-YOHOU(IDXY)     TO  ORCHCN30-YSRYCD
                                                                 (IDY)
+                       MOVE    WRK-YOHOU-NAME (IDXY) 
+                                               TO  ORCHCN30-YSRYCD-NAME
+                                                                (IDY)
                    ELSE
                        ADD     1                   TO  IDXY2
                        MOVE    WRK-YOHOU(IDXY)     TO  ORCHCN30-YOHOU
+                                                            (IDY IDXY2)
+                       MOVE    WRK-YOHOU-NAME(IDXY)
+                                               TO  ORCHCN30-YOHOU-NAME
                                                             (IDY IDXY2)
                    END-IF
                END-PERFORM

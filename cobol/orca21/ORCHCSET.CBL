@@ -37,6 +37,7 @@
       *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
       *  04.05.00    NACL-多々納  09/06/XX  撮影料等の数量ゼロ対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力他対応・レイアウト変更
+      *  04.06.00    NACL-多々納  11/02/22  用法コメント対応
       *****************************************************************
       *
       *
@@ -99,6 +100,7 @@
            03  FLG-OK-KEIKA         PIC 9(01).
       *
            03  FLG-KIZAI            PIC 9(01).
+           03  FLG-OVER             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -250,6 +252,9 @@
            03  B01-HENSYU-3            REDEFINES   B01-HENSYU.
                05  B01-YOBI131             PIC X(20).
                05  B01-HENSYU-4            PIC X(56).
+           03  B01-HENSYU-4            REDEFINES   B01-HENSYU.
+               05  B01-YOBI141             PIC X(31).
+               05  B01-HENSYU-5            PIC X(45).
       *
        01  WRK-B01-HENSYU.
            03  WRK-B01-SURYO-HEN           PIC X(15).
@@ -281,6 +286,8 @@
            03  B01-ATAI3               PIC X(08).
            03  B01-ATAI3F              PIC X(01).
            03  B01-ATAI4               PIC X(08).
+           03  B01-ATAI4F              PIC X(01).
+           03  B01-ATAI5               PIC X(08).
       *
        01  WRK-HEN-INPUTHEN.
            03  B01-INPUTKBN            PIC X(03).
@@ -1128,16 +1135,51 @@
            END-IF
       *    その他
            IF      ISET-ATAI-AREA      NOT =   SPACE
-               MOVE    SPACE           TO  B01-HENSYU-I
-               STRING  ISET-ATAI1      DELIMITED  BY  SPACE
-                       ","             DELIMITED  BY  SIZE
-                       ISET-ATAI2      DELIMITED  BY  SPACE
-                       ","             DELIMITED  BY  SIZE
-                       ISET-ATAI3      DELIMITED  BY  SPACE
-                       ","             DELIMITED  BY  SIZE
-                       ISET-ATAI4      DELIMITED  BY  SPACE
-                       INTO                    B01-HENSYU-I
-               END-STRING
+      *        用法コメント
+               IF      ISET-INPUTCD(1:3)   =   "001" 
+                   MOVE    ZERO            TO  FLG-OVER
+                   MOVE    SPACE           TO  B01-HENSYU-I
+                   STRING  ISET-ATAI1      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI2      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI3      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI4      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI5      DELIMITED  BY  SPACE
+                           INTO                    B01-HENSYU-I
+                           ON  OVERFLOW
+                               MOVE   1            TO  FLG-OVER
+                   END-STRING
+                   IF      FLG-OVER        =   1
+                       MOVE    SPACE           TO  B01-HENSYU-I
+                       MOVE    SPACE           TO  B01-HENSYU-5
+                       STRING
+                           ISET-ATAI1      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI2      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI3      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI4      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI5      DELIMITED  BY  SPACE
+                           INTO                    B01-HENSYU-5
+                       END-STRING
+                   END-IF
+               ELSE
+                   MOVE    SPACE           TO  B01-HENSYU-I
+                   STRING  ISET-ATAI1      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI2      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI3      DELIMITED  BY  SPACE
+                           ","             DELIMITED  BY  SIZE
+                           ISET-ATAI4      DELIMITED  BY  SPACE
+                           INTO                    B01-HENSYU-I
+                   END-STRING
+               END-IF
            END-IF
       *
       *    換算値
@@ -1158,7 +1200,9 @@
                MOVE    "(I)"                TO  B01-INPUTKBN
            END-IF
            IF      WRK-HEN-INPUTHEN (10:)   =   SPACE
-               MOVE    WRK-HEN-INPUTHEN     TO  B01-INPUT-HEN
+               IF      ISET-ATAI-AREA           =   SPACE
+                   MOVE    WRK-HEN-INPUTHEN     TO  B01-INPUT-HEN
+               END-IF
            ELSE
       *        １行編集
                PERFORM 20024-TBL-HEN01-SEC

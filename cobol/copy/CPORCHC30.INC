@@ -26,6 +26,7 @@
       * 04.01.00     NACL-多々納  07/12/11  起床追加
       * 04.05.00     NACL-森脇    09/06/22  小数点以下５桁に変更
       * 04.05.00     NACL-多々納  09/07/23  在宅薬剤、コメント追加
+      * 04.06.00     NACL-多々納  11/02/22  用法コメント対応追加
       ************************************************************
       *
        01  ORCHC30AREA.
@@ -38,6 +39,8 @@
                05  ORCHC30-SRYCD       PIC X(09).
       *        用法コード（空白あり）
                05  ORCHC30-YSRYCD      PIC X(09).
+      *        用法コメント名称
+               05  ORCHC30-YSRYCD-NAME PIC X(80).
       *        数量（１日量／外用は総量）
                05  ORCHC30-SURYO       PIC 9(05)V9(05).
       *        日数（回数）（外用は１回）
@@ -51,10 +54,13 @@
       *        外用日数（日数入力があった時のみ）
                05  ORCHC30-SRYKAISU        PIC 9(03).
       *        換算値数量（１日量）
-               05  ORCHC30-KANSURYO    PIC 9(05)V9(05).
+               05  ORCHC30-KANSURYO        PIC 9(05)V9(05).
       *        用法コード２（表示のみ）
                05  ORCHC30-YOHOU-G.
-                   07  ORCHC30-YOHOU       PIC X(09)   OCCURS  5.
+                   07  ORCHC30-YOHOU-TBL   OCCURS  5.
+                       09  ORCHC30-YOHOU       PIC X(09).
+      *                用法コメント名称
+                       09  ORCHC30-YOHOU-NAME  PIC X(80).
       *        コメントコード
                05  ORCHC30-COMMENT-G.
                    07  ORCHC30-COMMENT-OCCURS  OCCURS  10.

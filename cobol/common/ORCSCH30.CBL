@@ -42,6 +42,7 @@
       * 04.05.00     NACL-多々納  09/07/23  在宅薬剤、コメント対象対応
       * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
       * 04.05.00     NACL-多々納  09/10/XX  換算値数量対応
+      * 04.06.00     NACL-多々納  11/02/22  用法コメント対応
       *****************************************************************
       *
       *
@@ -117,12 +118,17 @@
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
                05  WRK-YSRYCD              PIC X(09).
+               05  WRK-YSRYCD-NAME         PIC X(80).
                05  WRK-YOHOU-G.
-                   07  WRK-YOHOU           PIC X(09)   OCCURS  5.
+                   07  WRK-YOHOU-TBL       OCCURS  5.
+                       09  WRK-YOHOU           PIC X(09).
+                       09  WRK-YOHOU-NAME      PIC X(80).
       *        コメント
                05  TBL-COMMENT-G           OCCURS   20.
                    07  TBL-COMMENT             PIC X(09).
                    07  TBL-INPUTCOMENT         PIC X(80).
+      *
+           03  WRK-SRYNAME              PIC X(80).
       *
            03  WRK-ZAITENKEI            PIC 9(07).
       *
@@ -290,8 +296,11 @@
                      ",3:" ORCHC30-YOURYOU (IDX 3)
                      ",4:" ORCHC30-YOURYOU (IDX 4)
                      ",ORCHC30-SRYKAISU:" ORCHC30-SRYKAISU (IDX)
-      *      DISPLAY "ORCHC30-COMMENT1:"  ORCHC30-COMMENT-CD (IDX 1)
-      *                 "," ORCHC30-COMMENT-MEI (IDX 1)
+             DISPLAY "ORCHC30-YSRYCD-NAME:"  ORCHC30-YSRYCD-NAME (IDX)
+             DISPLAY "ORCHC30-YOHOU-NAME:"  ORCHC30-YOHOU-NAME (IDX 1)
+                     ",CD:" ORCHC30-YOHOU (IDX 1)
+             DISPLAY "ORCHC30-COMMENT1:"  ORCHC30-COMMENT-CD (IDX 1)
+                        "," ORCHC30-COMMENT-MEI (IDX 1)
       *      IF      ORCHC30-COMMENT-CD (IDX 2) NOT =   SPACE
       *      DISPLAY "ORCHC30-COMMENT2:"  ORCHC30-COMMENT-CD (IDX 2)
       *                 "," ORCHC30-COMMENT-MEI (IDX 2)
@@ -796,6 +805,7 @@
            MOVE    ZERO                TO  IDXY
            MOVE    ZERO                TO  IDXC
            MOVE    SPACE               TO  WRK-YSRYCD
+           MOVE    SPACE               TO  WRK-YSRYCD-NAME
            MOVE    SPACE               TO  WRK-YOHOU-G
       *
            IF      FLG-HEN             =   1
@@ -840,16 +850,30 @@
       *        点数マスタを検索して、用法時点を判定する
                MOVE    TBL-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
-                   IF     (TNS-SSTKIJUNCD(1)   =   ZERO )  AND
+               IF     (FLG-TENSU           =   ZERO      )
+      *         コメントは対象外
+               AND    (TNS-KENTAICOMMENT   =   0  OR  1  )
+      *            コメント名称編集
+                   IF     (TBL-SRY-INPUTNUM (IDXA) NOT =   ZERO )
+                       PERFORM 200221-PTCOM-HEN-SEC
+                       MOVE    PTCOM-INPUTCOMENT       TO  WRK-SRYNAME
+                   ELSE
+                       MOVE    TBL-SRY-COM-NAME (IDXA)
+                                                       TO  WRK-SRYNAME
+                   END-IF
+      *
+                   IF    ((TNS-SSTKIJUNCD(1)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(3)   =   ZERO )  AND
-                          (TNS-SSTKIJUNCD(4)   =   ZERO )
+                          (TNS-SSTKIJUNCD(4)   =   ZERO )  AND
+                          (TNS-SSTKIJUNCD(5)   =   ZERO ))
                        CONTINUE
                    ELSE
                        IF      WRK-YSRYCD      =   SPACE
                            MOVE    TBL-SRY-SRYCD (IDXA)
                                                        TO  WRK-YSRYCD
+                           MOVE    WRK-SRYNAME         TO
+                                                       WRK-YSRYCD-NAME
                            MOVE    1                   TO  FLG-YSET
                        END-IF
                    END-IF
@@ -857,6 +881,8 @@
                        ADD     1                   TO  IDXY
                        IF      IDXY                <=  5
                            MOVE    TBL-SRY-SRYCD (IDXA)    TO  WRK-YOHOU
+                                                                (IDXY)
+                           MOVE    WRK-SRYNAME        TO  WRK-YOHOU-NAME
                                                                 (IDXY)
                        END-IF
                    END-IF
@@ -895,6 +921,9 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
+      *       用法コメント
+              OR ((TBL-SRY-SRYCD (IDXA)(1:3)   =   "001" ) AND
+                  (TNS-KENTAICOMMENT           =   2     ))
                ADD     1                       TO  IDXC
                MOVE    TBL-SRY-SRYCD (IDXA)    TO  TBL-COMMENT (IDXC)
                IF     (TBL-SRY-INPUTNUM (IDXA) NOT =   ZERO )
@@ -950,6 +979,7 @@
                MOVE    TBL-SRYKAISU (IDX)  TO  ORCHC30-SRYKAISU (IDY)
       *
                MOVE    WRK-YSRYCD          TO  ORCHC30-YSRYCD(IDY)
+               MOVE    WRK-YSRYCD-NAME     TO  ORCHC30-YSRYCD-NAME(IDY)
                MOVE    WRK-KAISU           TO  ORCHC30-KAISU (IDY)
       *
                MOVE    ZERO                TO  IDXY2
@@ -959,9 +989,15 @@
                    IF      ORCHC30-YSRYCD(IDY)     =   SPACE
                        MOVE    WRK-YOHOU(IDXY)     TO  ORCHC30-YSRYCD
                                                                 (IDY)
+                       MOVE    WRK-YOHOU-NAME(IDXY)
+                                               TO  ORCHC30-YSRYCD-NAME
+                                                                (IDY)
                    ELSE
                        ADD     1                   TO  IDXY2
                        MOVE    WRK-YOHOU(IDXY)     TO  ORCHC30-YOHOU
+                                                            (IDY IDXY2)
+                       MOVE    WRK-YOHOU-NAME(IDXY)
+                                               TO  ORCHC30-YOHOU-NAME
                                                             (IDY IDXY2)
                    END-IF
                END-PERFORM
@@ -1135,7 +1171,8 @@
                                                                 (IDX)
       *            名称
                    IF    ((WKSRY-SRYCD (IDXA)(1:1) =    "8")   OR
-                          (WKSRY-SRYCD (IDXA)(1:3) =    "008")) AND
+                          (WKSRY-SRYCD (IDXA)(1:3) =    "008") OR
+                          (WKSRY-SRYCD (IDXA)(1:3) =    "001")) AND
                           (WKSRY-INPUTCOMENT (IDXA)
                                                NOT =   SPACE)
                        MOVE    WKSRY-INPUTCOMENT (IDXA)
@@ -1219,16 +1256,21 @@
       *        点数マスタを検索して、用法時点を判定する
                MOVE    ORCSCH30-SRYCD(IDT IDXA)    TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
-               IF      FLG-TENSU           =   ZERO
+               IF     (FLG-TENSU           =   ZERO      )
+      *         コメントは対象外
+               AND    (TNS-KENTAICOMMENT   =   0  OR  1  )
                    IF     (TNS-SSTKIJUNCD(1)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(3)   =   ZERO )  AND
-                          (TNS-SSTKIJUNCD(4)   =   ZERO )
+                          (TNS-SSTKIJUNCD(4)   =   ZERO )  AND
+                          (TNS-SSTKIJUNCD(5)   =   ZERO )
                        CONTINUE
                    ELSE
                        IF      WRK-YSRYCD      =   SPACE
                            MOVE    ORCSCH30-SRYCD(IDT IDXA) 
                                                        TO  WRK-YSRYCD
+                           MOVE    ORCSCH30-INPUTCOMENT(IDT IDXA)
+                                                   TO  WRK-YSRYCD-NAME
                            MOVE    1                   TO  FLG-YSET
                        END-IF
                    END-IF
@@ -1237,6 +1279,9 @@
                        IF      IDXY                <=  5
                            MOVE    ORCSCH30-SRYCD(IDT IDXA) 
                                                    TO  WRK-YOHOU
+                                                                (IDXY)
+                           MOVE    ORCSCH30-INPUTCOMENT(IDT IDXA)
+                                                   TO  WRK-YOHOU-NAME
                                                                 (IDXY)
                        END-IF
                    END-IF
@@ -1277,6 +1322,10 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
+      *       用法コメント
+              OR ((ORCSCH30-SRYCD(IDT IDXA)(1:3)
+                                               =   "001" ) AND
+                  (TNS-KENTAICOMMENT           =   2     ))
                ADD     1                       TO  IDXC
                MOVE    ORCSCH30-SRYCD(IDT IDXA)
                                                TO  TBL-COMMENT (IDXC)
