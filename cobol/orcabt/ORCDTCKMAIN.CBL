@@ -63,139 +63,25 @@
       *    一時領域
       *
        01  WRK-AREA.
-           03  WRK-PARA.
-               05  WRK-PARA-A1.
-                   07  WRK-PARA-A1-1                   PIC  X(06).
-                   07  WRK-PARA-A1-2                   PIC  X(16).
-                   07  WRK-PARA-A1-3                   PIC  X(08).
-               05  WRK-PARA-A2                         PIC  X(01).
-               05  WRK-PARA-A3                         PIC  X(01).
-               05  WRK-PARA-A4                         PIC  X(100).
-               05  WRK-PARA-A5                         PIC  9(07).
-               05  WRK-PARA-A6                         PIC  X(08).
-               05  WRK-PARA-A7                         PIC  X(15).
-               05  WRK-PARA-A8                         PIC  X(06).
-               05  WRK-PARA-A9                         PIC  X(08).
-               05  WRK-PARA-A10                        PIC  X(08).
-               05  WRK-PARA-A11                        PIC  X(02).
-      *
-               05  WRK-PARA-A12                        PIC  X(01).
-               05  WRK-PARA-A13                        PIC  X(01).
-               05  WRK-PARA-A14                        PIC  X(01).
-      *
-               05  WRK-PARA-A15                        PIC  X(16).
-               05  WRK-PARA-A16                        PIC  X(16).
-               05  WRK-PARA-A17                        PIC  9(04).
-               05  WRK-PARA-A18                        PIC  X(08).
-               05  WRK-PARA-A19                        PIC  X(14).
-               05  WRK-PARA-A20                        PIC  9(04).
-               05  WRK-PARA-A21                        PIC  X(06).
-               05  WRK-PARA-A22                        PIC  X(08).
-               05  WRK-PARA-A23                        PIC  X(20).
-               05  WRK-PARA-A24                        PIC  9(04).
-               05  WRK-PARA-A25                        PIC  X(64).
-               05  WRK-PARA-A26                        PIC  X(16).
-               05  WRK-PARA-A27                        PIC  X(16).
-               05  WRK-PARA-A28                        PIC  X(34).
-               05  WRK-PARA-A29                        PIC  X(34).
-               05  WRK-PARA-A35                        PIC  X(01).
-      *
-               05  WRK-PARA-PTID                       PIC  9(10).
-               05  WRK-PARA-NYUGAIKBN                  PIC  X(01).
-               05  WRK-PARA-HKNKBN                     PIC  X(01).
-               05  WRK-PARA-SHORI-KBN                  PIC  X(01).
-               05  WRK-PARA-HOSPID                     PIC  X(24).
-               05  WRK-PARA-HOSPNUM                    PIC  9(02).
-               05  WRK-PARA-PRTKBN                     PIC  X(01).
-      *
-           03  WRK-PARA0.
-               05  WRK-PARA0-A1.
-                   07  WRK-PARA0-A1-1                  PIC  X(06).
-                   07  WRK-PARA0-A1-2                  PIC  X(16).
-                   07  WRK-PARA0-A1-3                  PIC  X(08).
-               05  WRK-PARA0-A2                        PIC  X(01).
-               05  WRK-PARA0-A3                        PIC  X(01).
-               05  WRK-PARA0-A5                        PIC  9(07).
-               05  WRK-PARA0-A6                        PIC  X(08).
-               05  WRK-PARA0-A7                        PIC  9(10).
-               05  WRK-PARA0-A8                        PIC  X(06).
-      *
-           03  WRK-PARA1.
-               05  WRK-PARA1-A1.
-                   07  WRK-PARA1-A1-1                  PIC  X(06).
-                   07  WRK-PARA1-A1-2                  PIC  X(16).
-                   07  WRK-PARA1-A1-3                  PIC  X(08).
-               05  WRK-PARA1-A3                        PIC  X(01).
-               05  WRK-PARA1-A5                        PIC  9(07).
-               05  WRK-PARA1-A6                        PIC  X(08).
-           03  WRK-PARA2.
-               05  WRK-PARA2-A1.
-                   07  WRK-PARA2-A1-1                  PIC  X(06).
-                   07  WRK-PARA2-A1-2                  PIC  X(16).
-                   07  WRK-PARA2-A1-3                  PIC  X(08).
-               05  WRK-PARA2-A5                        PIC  9(07).
-               05  WRK-PARA2-A6                        PIC  X(08).
-      *
-           03  WRK-PARA3.
-               05  WRK-PARA3-A9                        PIC  X(08).
-               05  WRK-PARA3-A10                       PIC  X(08).
-               05  WRK-PARA3-A1.
-                   07  WRK-PARA3-A1-1                  PIC  X(06).
-                   07  WRK-PARA3-A1-2                  PIC  X(16).
-                   07  WRK-PARA3-A1-3                  PIC  X(08).
-               05  WRK-PARA3-A2                        PIC  X(01).
-               05  WRK-PARA3-A3                        PIC  X(01).
-               05  WRK-PARA3-A8                        PIC  X(06).
-               05  WRK-PARA3-A5                        PIC  9(07).
-               05  WRK-PARA3-A6                        PIC  X(08).
-      *
-           03  WRK-PARA4.
-               05  WRK-PARA4-A9                        PIC  X(08).
-               05  WRK-PARA4-A10                       PIC  X(08).
-               05  WRK-PARA4-A1.
-                   07  WRK-PARA4-A1-1                  PIC  X(06).
-                   07  WRK-PARA4-A1-2                  PIC  X(16).
-                   07  WRK-PARA4-A1-3                  PIC  X(08).
-               05  WRK-PARA4-A3                        PIC  X(01).
-               05  WRK-PARA4-A8                        PIC  X(06).
-               05  WRK-PARA4-A5                        PIC  9(07).
-               05  WRK-PARA4-A6                        PIC  X(08).
-      *
-           03  WRK-ARG                 PIC X(512).
-           03  IDX                     PIC 9(10).
-      *
-           03  WRK-PTID-X.
-               05  WRK-PTID            PIC 9(10).
-      *
+           03  WRK-ARG                                 PIC X(512).
            03  WRK-SRYYMD.
-               05  WRK-SRYYM           PIC X(06).
-               05  WRK-SRYDD           PIC X(02).
-      *  
-           03  WRK-ZAINUM              PIC 9(08).
-           03  WRK-STPAGE              PIC 9(05).
-           03  WRK-EDPAGE              PIC 9(05).
+               05  WRK-SRYYM                           PIC X(06).
+               05  WRK-SRYDD                           PIC X(02).
+           03  WRK-ZAINUM                              PIC 9(08).
+           03  WRK-STPAGE                              PIC 9(05).
+           03  WRK-EDPAGE                              PIC 9(05).
       *
-       01  WRK-AREA2.
+       01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-        01  WRK-CONS-AREA.
-      *    帳票出力用パラメタ  
-           03  WRK-CONS-ARG.       
-               05  WRK-CONS-ARG-PRTID  PIC X(04)   VALUE   "HC06".
-               05  WRK-CONS-ARG-SRYYM  PIC X(06)   VALUE   "999999".
-               05  WRK-CONS-ARG-CREYMD PIC X(08).
-               05  WRK-CONS-ARG-CREHMS PIC X(06).
-               05  WRK-CONS-ARG-PREFKBN
-                                       PIC X(01)   VALUE   "0".
-               05  WRK-CONS-ARG-TEISYUTUSAKI
-                                       PIC X(01)   VALUE   "0".
-               05  WRK-CONS-ARG-RECESYUBETU
-                                       PIC X(04)   VALUE   "0000".
-               05  WRK-CONS-ARG-NYUGAIKBN
-                                       PIC X(01).
-               05  WRK-CONS-ARG-PRTJYUN
-                                       PIC X(02)   VALUE   "05".
+           03  WRK-PARA-JOBID      PIC 9(07).
+           03  WRK-PARA-SHELLID    PIC X(08).
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  WRK-PARA-SHORI-KBN  PIC X(01).
+           03  WRK-PARA-HKNKBN     PIC X(01).
+           03  WRK-PARA-PTID       PIC 9(10).
       *
-           03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
+      *    データチェック一括処理パラメータ
+           COPY    "CPORCBSD01PARA.INC".
       *
            COPY    "MCPAREA".
       *
@@ -307,49 +193,54 @@
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
+                                       WRK-PARA
       *
       *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED BY ","
-                                   INTO  WRK-PARA-A1
-                                         WRK-PARA-A2
-                                         WRK-PARA-A3
-                                         WRK-PARA-A5
-                                         WRK-PARA-A6
-                                         WRK-PARA-A7
-                                         LNK-PRTKANRI-SRYYM
-                                         WRK-PARA-A9
-                                         WRK-PARA-A10
-                                         WRK-PARA-A11
-                                         WRK-PARA-A12
-                                         WRK-PARA-A13
-                                         WRK-PARA-A14
-                                         WRK-PARA-A15
-                                         WRK-PARA-A16
-                                         LNK-PRTKANRI-RENNUM
-                                         LNK-PRTKANRI-TBL-KEY
-                                         LNK-PRTKANRI-TBL-GROUP
-                                         LNK-PRTKANRI-SHORI-RENNUM
-                                         LNK-PRTKANRI-SRYYM
-                                         LNK-PRTKANRI-SKYYMD
-                                         LNK-PRTKANRI-SHELLID
-                                         LNK-PRTKANRI-PRIORITY
-                                         LNK-PRTKANRI-TERMID
-                                         LNK-PRTKANRI-OPID
-                                         LNK-PRTKANRI-PRTNM
-                                         WRK-PARA-A28
-                                         WRK-PARA-A29
-                                         WRK-PARA-PTID
-                                         WRK-PARA-NYUGAIKBN
-                                         WRK-PARA-HKNKBN
-                                         WRK-PARA-SHORI-KBN
-                                         WRK-PARA-HOSPNUM
-                                         WRK-PARA-A35
-                                         WRK-PARA-PRTKBN 
-                                         RECEERR
+           INTO                        WRK-PARA-HOSPNUM
+                                       LNK-PRTKANRI-RENNUM
+                                       LNK-PRTKANRI-TBL-KEY
+                                       LNK-PRTKANRI-TBL-GROUP
+                                       LNK-PRTKANRI-SHORI-RENNUM
+                                       LNK-PRTKANRI-SRYYM
+                                       LNK-PRTKANRI-SKYYMD
+                                       LNK-PRTKANRI-SHELLID
+                                       LNK-PRTKANRI-PRIORITY
+                                       LNK-PRTKANRI-TERMID
+                                       LNK-PRTKANRI-OPID
+                                       LNK-PRTKANRI-PRTNM
+                                       WRK-PARA-JOBID
+                                       WRK-PARA-SHELLID
+                                       SPA-HOSPNUM
+                                       RECEERR
+                                       ORCBSD01-IKTKBT
+                                       ORCBSD01-SRYYM
+                                       ORCBSD01-NYUGAIKBN
+                                       ORCBSD01-CHKKBN-G
+                                       ORCBSD01-SYAHOPROCKBN
+                                       ORCBSD01-KOKUHOPROCKBN
+                                       ORCBSD01-RSIPROCKBN
+                                       ORCBSD01-JBIPROCKBN
+                                       ORCBSD01-JIHIPROCKBN
+                                       ORCBSD01-INGAIPROCKBN
+                                       ORCBSD01-PRTSRTKBN
+                                       ORCBSD01-PRTPTLSTKBN
+                                       ORCBSD01-SRYYMDKBN
+                                       ORCBSD01-STSRYYMD
+                                       ORCBSD01-EDSRYYMD
+                                       ORCBSD01-KGIPROCKBN
+                                       ORCBSD01-KOUKIPROCKBN
+                                       ORCBSD01-CHIKENPROCKBN
+                                       WRK-PARA-SHORI-KBN
+                                       WRK-PARA-HKNKBN
+                                       WRK-PARA-PTID
            END-UNSTRING
-           MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-SHORI-KBN[" WRK-PARA-SHORI-KBN "]"
+           DISPLAY "WRK-PARA-HKNKBN   [" WRK-PARA-HKNKBN "]"
+           DISPLAY "WRK-PARA-PTID     [" WRK-PARA-PTID "]"
       *
            PERFORM 20010-PRVDATA-DEL-SEC
       *    前回分削除(存在すれば)
@@ -361,50 +252,6 @@
            PERFORM 100-DBOPEN-SEC
       *    CHK004 ダミー作成
            PERFORM 20011-CHK004-DB-MAKE-SEC
-      *
-           MOVE     WRK-PARA-A1    TO  WRK-PARA0-A1
-           MOVE     WRK-PARA-A2    TO  WRK-PARA0-A2
-           MOVE     WRK-PARA-A3    TO  WRK-PARA0-A3
-           MOVE     WRK-PARA-A5    TO  WRK-PARA0-A5
-           MOVE     WRK-PARA-A6    TO  WRK-PARA0-A6
-           MOVE     WRK-PARA-PTID  TO  WRK-PARA0-A7
-           MOVE     LNK-PRTKANRI-SRYYM
-                                   TO  WRK-PARA0-A8
-                                       WRK-PARA-A8
-      *
-           MOVE     WRK-PARA-A1    TO  WRK-PARA1-A1
-           MOVE     WRK-PARA-A3    TO  WRK-PARA1-A3
-           MOVE     WRK-PARA-A5    TO  WRK-PARA1-A5
-           MOVE     WRK-PARA-A6    TO  WRK-PARA1-A6
-      *
-           MOVE     WRK-PARA-A1    TO  WRK-PARA2-A1
-           MOVE     WRK-PARA-A5    TO  WRK-PARA2-A5
-           MOVE     WRK-PARA-A6    TO  WRK-PARA2-A6
-      *
-           MOVE     WRK-PARA-A1    TO  WRK-PARA3-A1
-           MOVE     WRK-PARA-A2    TO  WRK-PARA3-A2
-           MOVE     WRK-PARA-A3    TO  WRK-PARA3-A3
-           MOVE     WRK-PARA-A5    TO  WRK-PARA3-A5
-           MOVE     WRK-PARA-A6    TO  WRK-PARA3-A6
-           MOVE     LNK-PRTKANRI-SRYYM
-                                   TO  WRK-PARA3-A8
-           MOVE     WRK-PARA-A9    TO  WRK-PARA3-A9
-           MOVE     WRK-PARA-A10   TO  WRK-PARA3-A10
-      *
-           MOVE     WRK-PARA-A1    TO  WRK-PARA4-A1
-           MOVE     WRK-PARA-A3    TO  WRK-PARA4-A3
-           MOVE     WRK-PARA-A5    TO  WRK-PARA4-A5
-           MOVE     WRK-PARA-A6    TO  WRK-PARA4-A6
-           MOVE     LNK-PRTKANRI-SRYYM
-                                   TO  WRK-PARA4-A8
-           MOVE     WRK-PARA-A9    TO  WRK-PARA4-A9
-           MOVE     WRK-PARA-A10   TO  WRK-PARA4-A10
-      *
-      *    作成日・時間の設定
-           MOVE    WRK-PARA-A9     TO  WRK-CONS-ARG-CREYMD
-           MOVE    WRK-PARA-A10    TO  WRK-CONS-ARG-CREHMS
-           MOVE    WRK-PARA-NYUGAIKBN
-                                   TO  WRK-CONS-ARG-NYUGAIKBN
       *
            .
        100-INIT-EXT.
@@ -435,103 +282,79 @@
       *****************************************************************
       *    医保（入院外）処理
       *****************************************************************
-       2001-DTCHK-PARA-SEC                SECTION.
+       2001-DTCHK-PARA-SEC                 SECTION.
       *
-           DISPLAY "LNK-PRTKANRI-RENNUM       = " LNK-PRTKANRI-RENNUM
-           DISPLAY "LNK-PRTKANRI-TBL-KEY      = " LNK-PRTKANRI-TBL-KEY
-           DISPLAY "LNK-PRTKANRI-TBL-GROUP    = " LNK-PRTKANRI-TBL-GROUP
-           DISPLAY "LNK-PRTKANRI-SHORI-RENNUM = "
-                                              LNK-PRTKANRI-SHORI-RENNUM
-           DISPLAY "LNK-PRTKANRI-SRYYM        = " LNK-PRTKANRI-SRYYM
-           DISPLAY "LNK-PRTKANRI-SKYYMD       = " LNK-PRTKANRI-SKYYMD
-           DISPLAY "LNK-PRTKANRI-SHELLID      = " LNK-PRTKANRI-SHELLID
-           DISPLAY "LNK-PRTKANRI-PRIORITY     = " LNK-PRTKANRI-PRIORITY
-           DISPLAY "LNK-PRTKANRI-TERMID       = " LNK-PRTKANRI-TERMID
-           MOVE     SPACE       TO WRK-ARG
-           MOVE    WRK-PARA-PTID       TO  WRK-PTID-X
-           MOVE    WRK-PTID            TO  LNK-PRTKANRI-TBL-GROUP
-           STRING   LNK-PRTKANRI-RENNUM    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-TBL-KEY   DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-TBL-GROUP DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-SHORI-RENNUM 
-                                           DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-SRYYM     DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-SKYYMD    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-SHELLID   DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-PRIORITY  DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-TERMID    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-OPID      DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-PRTNM     DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    LNK-PRTKANRI-TBL-KEY   DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    SPA-HOSPNUM            DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                    RECEERR                DELIMITED   BY  SPACE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-IKTKBT
-                    "2"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-SRYYM
-                    LNK-PRTKANRI-SRYYM     DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-NYUGAIKBN
-                    WRK-PARA-NYUGAIKBN     DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-CHKKBN-G
-                    "222222222222222222"   DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-SYAHOPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-KOKUHOPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-RSIPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-JBIPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-JIHIPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-INGAIPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-PRTSRTKBN
-                    "2"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-PRTPTLSTKBN
-                    "2"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-SRYYMDKBN
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-STSRYYMD
-                    "00"                   DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-EDSRYYMD
-                    "00"                   DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-KGIPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-      *  ORCBSD01-KOUKIPROCKBN
-                    "1"                    DELIMITED   BY  SIZE
-                    ","                    DELIMITED   BY  SIZE
-                                   INTO    WRK-ARG
+           MOVE     SPACE              TO  WRK-ARG
+      *
+           STRING  LNK-PRTKANRI-RENNUM         DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-TBL-KEY        DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-TBL-GROUP      DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-SHORI-RENNUM   DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-SRYYM          DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-SKYYMD         DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-SHELLID        DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-PRIORITY       DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-TERMID         DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-OPID           DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   LNK-PRTKANRI-PRTNM          DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   WRK-PARA-JOBID              DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   WRK-PARA-SHELLID            DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   SPA-HOSPNUM                 DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   RECEERR                     DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-IKTKBT             DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-SRYYM              DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-NYUGAIKBN          DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-CHKKBN-G           DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-SYAHOPROCKBN       DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-KOKUHOPROCKBN      DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-RSIPROCKBN         DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-JBIPROCKBN         DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-JIHIPROCKBN        DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-INGAIPROCKBN       DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-PRTSRTKBN          DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-PRTPTLSTKBN        DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-SRYYMDKBN          DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-STSRYYMD           DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-EDSRYYMD           DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-KGIPROCKBN         DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-KOUKIPROCKBN       DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+                   ORCBSD01-CHIKENPROCKBN      DELIMITED   BY  SIZE
+                   ","                         DELIMITED   BY  SIZE
+           INTO    WRK-ARG
            END-STRING
+      *
            DISPLAY "ORCDTCHK000 start = [" WRK-ARG "]"
            CALL    "ORCDTCHK000"       USING
                                        WRK-ARG
@@ -609,8 +432,7 @@
       *
            INITIALIZE                  PRVKANRI-REC
            MOVE    "RECEPTX"           TO  PRVKANRI-TBL-KEY
-           MOVE    WRK-PARA-PTID       TO  WRK-PTID-X
-           MOVE    WRK-PTID            TO  PRVKANRI-TBL-GROUP
+           MOVE    WRK-PARA-PTID       TO  PRVKANRI-TBL-GROUP
 grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_prvkanri"      TO  MCP-TABLE
@@ -641,13 +463,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                DISPLAY "PAGE = [" PRVKANRI-PAGE "]"
       *        MOVE    PRVKANRI-PAGE   TO  MAX-PAGE-CNT
       *        PERFORM 100-DBOPEN-SEC
-               MOVE    LNK-PRTKANRI-SRYYM
-                                       TO  WRK-SRYYM
       *
                CALL    "ORCSPRVPSDEL"   USING
 grpsys                                  WRK-PARA-HOSPNUM
-                                        WRK-PTID
-                                        WRK-SRYYM
+                                        WRK-PARA-PTID
+                                        LNK-PRTKANRI-SRYYM
                                         WRK-PARA-HKNKBN
 grpsys                                  SPA-AREA
       *
@@ -831,10 +651,9 @@ grpsys                                  SPA-AREA
            DISPLAY "real db(jyurrk) delete st  "
                    " "  LNK-TIMEOFDAY(1:20)
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      JYURRK-PTID
-           MOVE    WRK-PARA-A8          TO      WRK-SRYYM
+           MOVE    ORCBSD01-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      JYURRK-PTID
+           MOVE    ORCBSD01-SRYYM       TO      WRK-SRYYM
            MOVE    "% "                 TO      WRK-SRYDD
            MOVE    WRK-SRYYMD           TO      JYURRK-SRYYMD
            MOVE    JYURRK-REC           TO      MCPDATA-REC
@@ -848,11 +667,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            DISPLAY "real db(sryacct) delete st  "
                    " "  LNK-TIMEOFDAY(1:20)
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      ACCT-PTID
-           MOVE    WRK-PARA-A8          TO      ACCT-SRYYM
-           DISPLAY "WRK-PARA-A8 = " WRK-PARA-A8
+           MOVE    ORCBSD01-NYUGAIKBN   TO      ACCT-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      ACCT-PTID
+           MOVE    ORCBSD01-SRYYM       TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_sryacct"        TO      MCP-TABLE
@@ -866,9 +683,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *算定履歴削除
            DISPLAY "real db(santei) del ed  "
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SANTEI-PTID
-           MOVE    WRK-PARA-A8          TO      SANTEI-SRYYM
+           MOVE    WRK-PARA-PTID        TO      SANTEI-PTID
+           MOVE    ORCBSD01-SRYYM       TO      SANTEI-SRYYM
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "tbl_santei"         TO  MCP-TABLE
            MOVE    "del1"               TO  MCP-PATHNAME
@@ -884,10 +700,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        200111-REAL-SRYACY-DB-DELETE2-SEC   SECTION.
       *
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SRY-PTID
-           MOVE    WRK-PARA-A8          TO      SRY-SRYYM
+           MOVE    ORCBSD01-NYUGAIKBN   TO      SRY-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      SRY-PTID
+           MOVE    ORCBSD01-SRYYM       TO      SRY-SRYYM
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "tbl_sryact"         TO  MCP-TABLE
            MOVE    "key4"               TO  MCP-PATHNAME
@@ -926,7 +741,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-HOSPNUM    TO      CHK004-HOSPNUM
            MOVE    "2001"              TO      CHK004-KANRICD
            MOVE    "10000001"          TO      CHK004-KBNCD
-           MOVE    WRK-PTID            TO      CHK004-PTID
+           MOVE    WRK-PARA-PTID       TO      CHK004-PTID
            MOVE    CHK004-REC          TO      MCPDATA-REC
            DISPLAY "hospnum = " CHK004-HOSPNUM
            DISPLAY "ptid    = " CHK004-PTID
@@ -938,8 +753,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-HOSPNUM    TO      CHK004-HOSPNUM
            MOVE    "2001"              TO      CHK004-KANRICD
            MOVE    "10000001"          TO      CHK004-KBNCD
-           MOVE    WRK-PARA-PTID       TO      WRK-PTID-X
-           MOVE    WRK-PTID            TO      CHK004-PTID
+           MOVE    WRK-PARA-PTID       TO      CHK004-PTID
            MOVE    "00000000"          TO      CHK004-STYUKYMD
            MOVE    "99999999"          TO      CHK004-EDYUKYMD
            MOVE    " 1"                TO      CHK004-KANRITBL
@@ -965,7 +779,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *   される。(どうする)
       *収納マスタ
       **   MOVE    WRK-PARA-HOSPNUM      TO      SYU-HOSPNUM
-      **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
+      **   MOVE    ORCBSD01-NYUGAIKBN   TO      SYU-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SYU-PTID
       **   MOVE    SYUNOU-REC           TO      MCPDATA-REC
@@ -997,7 +811,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *収納明細マスタ
       **   MOVE    WRK-PARA-HOSPNUM      TO      SMEI-HOSPNUM
-      **   MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
+      **   MOVE    ORCBSD01-NYUGAIKBN   TO      SMEI-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SMEI-PTID
       **   MOVE    SYUMEI-REC           TO      MCPDATA-REC
@@ -1030,7 +844,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *収納トータルマスタ
       **   MOVE    WRK-PARA-HOSPNUM      TO      SYUTTL-HOSPNUM
-      **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
+      **   MOVE    ORCBSD01-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
       **   MOVE    WRK-PTID             TO      SYUTTL-PTID
       **   MOVE    SYUTTL-REC           TO      MCPDATA-REC
@@ -1062,9 +876,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *会計マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      ACCT-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      ACCT-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      ACCT-PTID
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
            MOVE    "key40"              TO  MCP-PATHNAME
@@ -1084,7 +897,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take acct read err  "
-                                WRK-PARA-HOSPNUM WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
       * ★ DBCLOSECURSOR
@@ -1094,9 +907,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *診療行為マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SRY-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      SRY-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      SRY-PTID
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
            MOVE    "key12"              TO  MCP-PATHNAME
@@ -1119,7 +931,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take act read err  "
-                                WRK-PARA-HOSPNUM WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
       * ★ DBCLOSECURSOR
@@ -1129,10 +941,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *算定履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
-      *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
+      *    MOVE    ORCBSD01-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SANTEI-PTID
+           MOVE    WRK-PARA-PTID        TO      SANTEI-PTID
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "tbl_santei_prv"     TO  MCP-TABLE
            MOVE    "key2"               TO  MCP-PATHNAME
@@ -1155,7 +966,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take santei read err  "
-                                WRK-PARA-HOSPNUM WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
       * ★ DBCLOSECURSOR
@@ -1165,9 +976,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *受診履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      JYURRK-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      JYURRK-PTID
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
            MOVE    "key30"              TO  MCP-PATHNAME
@@ -1187,7 +997,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take jyurrk read err  "
-                                WRK-PARA-HOSPNUM WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
       * ★ DBCLOSECURSOR
@@ -1197,8 +1007,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *--------------------------------------------------
       *診療科履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      KARRK-PTID
+           MOVE    WRK-PARA-PTID        TO      KARRK-PTID
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
            MOVE    "key2"               TO  MCP-PATHNAME
@@ -1230,7 +1039,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                END-PERFORM
            ELSE
                         DISPLAY "take srykarrk read err  "
-                                WRK-PARA-HOSPNUM WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
       * ★ DBCLOSECURSOR
@@ -1240,8 +1049,7 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
       *--------------------------------------------------
       *患者コメントマスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
-           MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      PTCOM-PTID
+           MOVE    WRK-PARA-PTID        TO      PTCOM-PTID
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
            MOVE    "key3"               TO  MCP-PATHNAME
@@ -1289,7 +1097,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
                         DISPLAY "take ptcom read err  "
-                                WRK-PARA-HOSPNUM WRK-PTID
+                                WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
       * ★ DBCLOSECURSOR
@@ -1487,9 +1295,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20011-TMPDB-DELETE-SEC        SECTION.
       *収納マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SYU-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      SYU-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      SYU-PTID
            MOVE    SYUNOU-REC           TO      MCPDATA-REC
            DISPLAY "take tmp db delete syunou st = " SYU-PTID "," 
                                            SYU-HOSPNUM ","
@@ -1501,9 +1308,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
       *
       *収納明細マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SMEI-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      SMEI-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      SMEI-PTID
            MOVE    SYUMEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_syumei_prv"     TO  MCP-TABLE
@@ -1513,9 +1319,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
       *
       *収納トータルマスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SYUTTL-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      SYUTTL-PTID
            MOVE    SYUTTL-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            DISPLAY "take tmp db delete syutotal st = " SYUTTL-PTID "," 
@@ -1525,9 +1330,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
       *
       *会計マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      ACCT-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      ACCT-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      ACCT-PTID
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
@@ -1537,9 +1341,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
       *
       *診療行為マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SRY-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      SRY-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      SRY-PTID
            MOVE    SRYACT-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
@@ -1549,10 +1352,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
       *
       *算定履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
-      *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
+      *    MOVE    ORCBSD01-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      SANTEI-PTID
+           MOVE    WRK-PARA-PTID        TO      SANTEI-PTID
            MOVE    SANTEI-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_santei_prv"     TO  MCP-TABLE
@@ -1562,9 +1364,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *
       *受診履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      JYURRK-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      JYURRK-PTID
            MOVE    JYURRK-REC           TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
@@ -1574,8 +1375,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
       *
       *診療科履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      KARRK-PTID
+           MOVE    WRK-PARA-PTID        TO      KARRK-PTID
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
@@ -1585,8 +1385,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
       *
       *患者コメントマスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      PTCOM-PTID
+           MOVE    WRK-PARA-PTID        TO      PTCOM-PTID
            MOVE    PTCOM-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
@@ -1596,8 +1395,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
       *
       *患者マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      PTINF-PTID
+           MOVE    WRK-PARA-PTID        TO      PTINF-PTID
            MOVE    PTINF-REC            TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_ptinf_prv"      TO  MCP-TABLE
@@ -1606,9 +1404,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
            PERFORM  900-REALDB-INS-SEC
       *診療行為付加情報マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
-           MOVE    WRK-PARA-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
-           MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
-           MOVE    WRK-PTID             TO      ACCTP-PTID
+           MOVE    ORCBSD01-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
+           MOVE    WRK-PARA-PTID        TO      ACCTP-PTID
            MOVE    SRYACCTPLUS-REC      TO      MCPDATA-REC
            MOVE    "DBDELETE"           TO      MCP-FUNC
            MOVE    "tbl_sryacctplus_prv"
