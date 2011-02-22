@@ -4121,12 +4121,15 @@
       *
       *    ÌôºÞÉþÍÑ¥³¥á¥ó¥È¤Î»þ¡¢ºÆÊÔ½¸
            IF    ( SRY-SRYCD (IDX9)(1:3)   =   "001" )
-      *
-               STRING "¡Ú"                 DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      "¡Û"                 DELIMITED   BY  SIZE
-               INTO   WRK-SRYACT-STR
-               END-STRING
+               IF    ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
+                   PERFORM 2001111-PTCOM-SET-SEC
+               ELSE
+                   STRING "¡Ú"                 DELIMITED   BY  SIZE
+                          TNS-NAME             DELIMITED   BY  SPACE
+                          "¡Û"                 DELIMITED   BY  SIZE
+                   INTO   WRK-SRYACT-STR
+                   END-STRING
+               END-IF
            END-IF
       *
       *    ´ïºà¾¦ÉÊÌ¾¤Î´ïºà¥³¡¼¥É
@@ -4507,8 +4510,18 @@
            ELSE
                MOVE    MCPDATA-REC     TO  PTCOM-REC
                IF    ( PTCOM-INPUTCOMENT   NOT =   SPACE )
-                   MOVE    PTCOM-INPUTCOMENT
+                   IF    ( SRY-SRYCD   (IDX9)(1:3) =   "001" )
+                       MOVE    SPACE   TO  WRK-SRYACT-STR
+                       STRING "¡Ú"         DELIMITED   BY  SIZE
+                              PTCOM-INPUTCOMENT
+                                           DELIMITED   BY  SPACE
+                              "¡Û"         DELIMITED   BY  SIZE
+                       INTO   WRK-SRYACT-STR
+                       END-STRING
+                   ELSE
+                       MOVE    PTCOM-INPUTCOMENT
                                        TO  WRK-SRYACT-STR
+                   END-IF
                END-IF
            END-IF
       *
