@@ -766,11 +766,6 @@
       *****************************************************************
        20011-NAME-CHK-SEC    SECTION.
       *
-      *TEST
-           MOVE    "テスト"         TO  MEDIREQ-MEDICATION-NAME
-      *TEST
-      *TEST
-      *TEST
       *    漢字名称
            IF     (MEDIREQ-MEDICATION-NAME =   SPACE  )
                MOVE    "12"                TO  WRK-ERRCD
