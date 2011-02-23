@@ -370,9 +370,10 @@
                END-STRING
                MOVE    BUNBEN-DAIRI-MONEY 
                                        TO  WRK-Z10
-               MOVE    WRK-Z10         TO  WRK-MOJI-IN
-               PERFORM 31011-KANA-HEN-SEC
+               MOVE    WRK-Z10         TO  WRK-MOJI-OUT
                PERFORM 31011-LTRIM-SEC
+               MOVE    WRK-MOJI-OUT    TO  WRK-MOJI-IN
+               PERFORM 31011-KANA-HEN-SEC
                STRING  WRK-MOJI-OUT    DELIMITED   BY  SPACE
                        "±ß¤Ë¤Ä¤­¡¢¸½¶âÀº»»¤Ï"
                INTO    HCN63-MOJI1
@@ -382,9 +383,10 @@
                    =   BUNBEN-NINPUFTN-MONEY
                    -   BUNBEN-DAIRI-MONEY
                MOVE    WRK-SKYMONEY   TO   WRK-Z10
-               MOVE    WRK-Z10        TO   WRK-MOJI-IN
-               PERFORM 31011-KANA-HEN-SEC
+               MOVE    WRK-Z10        TO   WRK-MOJI-OUT
                PERFORM 31011-LTRIM-SEC
+               MOVE    WRK-MOJI-OUT   TO  WRK-MOJI-IN
+               PERFORM 31011-KANA-HEN-SEC
                STRING  WRK-MOJI-OUT    DELIMITED   BY  SPACE
                        "±ß"
                INTO    HCN63-MOJI1
@@ -477,7 +479,7 @@
        31011-LTRIM-SEC             SECTION.
       *
            MOVE    SPACE           TO  WRK-STR-G
-           UNSTRING    WRK-MOJI-OUT    DELIMITED   BY  ALL "¡¡"
+           UNSTRING    WRK-MOJI-OUT    DELIMITED   BY  ALL " "
            INTO        WRK-STR1 ,
                        WRK-STR2
            END-UNSTRING

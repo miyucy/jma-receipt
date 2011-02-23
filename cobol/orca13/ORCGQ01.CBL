@@ -206,6 +206,7 @@
            03  WRK-QIDMSG                          PIC X(80).
            03  WRK-UPDKBN               PIC X(03).
            03  WRK-RECECOM-G.
+               05  WRK-RECECOM-ALL      PIC X(50).
                05  WRK-RECECOM          PIC X(50)
                                         OCCURS     5.
            03  WRK-STSRYYMD             PIC X(08).
@@ -5622,8 +5623,11 @@
                                    TO  SPA-GMN-Q01-RECECOM (IDXA)
       *
            MOVE    SPACE       TO  WRK-RECECOM-G
-           UNSTRING    SPA-GMN-Q01-COMMENT (IDXA)
-                                   DELIMITED BY  ALL "¡¡"
+           MOVE    SPA-GMN-Q01-RECECOM (IDXA)
+                               TO  WRK-RECECOM-ALL
+           INSPECT WRK-RECECOM-ALL REPLACING     ALL "¡¡" BY "  "
+           UNSTRING    WRK-RECECOM-ALL
+                                   DELIMITED BY  ALL " "
            INTO        WRK-RECECOM (1)
                        WRK-RECECOM (2)
                        WRK-RECECOM (3)
