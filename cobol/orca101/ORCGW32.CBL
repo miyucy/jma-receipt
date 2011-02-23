@@ -543,15 +543,6 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "523"
                    MOVE    "認知症治療病棟入院料" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
-               WHEN    "524"
-                   MOVE    "短期滞在手術基本料１" 
-                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
-               WHEN    "525"
-                   MOVE    "短期滞在手術基本料２" 
-                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
-               WHEN    "526"
-                   MOVE    "短期滞在手術基本料３" 
-                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
            END-EVALUATE
            . 
        3101-KBNCDMEI-HEN-EXT.
