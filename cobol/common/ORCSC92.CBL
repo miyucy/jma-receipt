@@ -3916,7 +3916,6 @@
                                       TO  WRK-INPUT-SET (IDX-SST)
            END-PERFORM
       *
-      *TEST
       *    カラム位置の指定のみ
            MOVE    ZERO                TO  FLG-KCHK
            PERFORM VARYING IDX-SST     FROM    1   BY  1
@@ -3934,7 +3933,6 @@
                GO      TO  3002-INPUT-MEISYO-EXT
            END-IF
       *!!!!
-      *TEST
       *
            MOVE    ZERO                TO  FLG-INPUT-CHK
       *
@@ -3956,20 +3954,20 @@
                           (SNUM-SYOKBN     NOT =   SPACE )   OR
                           (SNUM-KETSUU         >   WRK-KETA)
                        MOVE    "0029"          TO  SPA-ERRCD
-      *                ユーザコメントで小数点以下は対象
-                       IF     (SPA-COM-INPUTCD (IDX-T)(1:4) =   "0084")
-                           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                                  (SNUM-MINKBN     NOT =   SPACE )   OR
-                                 ((SNUM-SEISUU +  SNUM-SYOSUU + 1)
-                                                       >   WRK-KETA )
-                               CONTINUE
-                           ELSE
-                               MOVE    1               TO  FLG-INPUT-CHK
-                               MOVE    SPACE           TO  SPA-ERRCD
-                               MOVE    1               TO  WRK-SYOKBN
-                                                               (IDX-SST)
-                           END-IF
-                       END-IF
+      ****             ユーザコメントで小数点以下は対象
+      *                IF     (SPA-COM-INPUTCD (IDX-T)(1:4) =   "0084")
+      *                    IF     (SNUM-RC         NOT =   ZERO  )   OR
+      *                           (SNUM-MINKBN     NOT =   SPACE )   OR
+      *                          ((SNUM-SEISUU +  SNUM-SYOSUU + 1)
+      *                                                >   WRK-KETA )
+      *                        CONTINUE
+      *                    ELSE
+      *                        MOVE    1               TO  FLG-INPUT-CHK
+      *                        MOVE    SPACE           TO  SPA-ERRCD
+      *                        MOVE    1               TO  WRK-SYOKBN
+      *                                                        (IDX-SST)
+      *                    END-IF
+      *****            END-IF
                    ELSE
                        MOVE    SNUM-OUTEDT(WRK-KETA2:WRK-KETA)
                                                TO  SPA-COM-ATAI
