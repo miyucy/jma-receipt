@@ -40,6 +40,7 @@
       *  04.02.00    NACL-多々納  08/03/07  病理診断判定追加
       *  04.03.00    NACL-多々納  08/09/19  自賠責集計等取扱追加
       *  04.05.00    NACL-多々納  09/09/19  '0086'コメント追加
+      *  04.06.00    NACL-多々納  11/02/23  コメント変更チェック追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -817,6 +818,10 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 505-FORMALNAME-CHK-SEC
            END-IF
+      *    カラム位置チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-DIGIT-CHK-SEC
+           END-IF
       *    保険適用チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 506-HKNTEKKBN-CHK-SEC
@@ -1042,6 +1047,60 @@
            .
        508-JIBAIKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    カラム位置、桁数チェック処理
+      *****************************************************************
+       506-DIGIT-CHK-SEC          SECTION.
+      *
+           IF      SPA-Z01-SRYCD (1:2) =   "84"
+      *        カラム位置か桁数のみはエラー
+               IF     ((SPA-GMN-COLUMN1    =   ZERO )  AND
+                       (SPA-GMN-DIGIT1     =   ZERO ))
+                 OR   ((SPA-GMN-COLUMN1    >   ZERO )  AND
+                       (SPA-GMN-DIGIT1     >   ZERO ))
+                   CONTINUE
+               ELSE
+                   MOVE    "0011"              TO  SPA-ERRCD
+                   MOVE    6                   TO  SPA-GMN-CUR
+               END-IF
+               IF     ((SPA-GMN-COLUMN2    =   ZERO )  AND
+                       (SPA-GMN-DIGIT2     =   ZERO ))
+                 OR   ((SPA-GMN-COLUMN2    >   ZERO )  AND
+                       (SPA-GMN-DIGIT2     >   ZERO ))
+                   CONTINUE
+               ELSE
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0011"              TO  SPA-ERRCD
+                       MOVE    8                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+               IF     ((SPA-GMN-COLUMN3    =   ZERO )  AND
+                       (SPA-GMN-DIGIT3     =   ZERO ))
+                 OR   ((SPA-GMN-COLUMN3    >   ZERO )  AND
+                       (SPA-GMN-DIGIT3     >   ZERO ))
+                   CONTINUE
+               ELSE
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0011"              TO  SPA-ERRCD
+                       MOVE    10                  TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+               IF     ((SPA-GMN-COLUMN4    =   ZERO )  AND
+                       (SPA-GMN-DIGIT4     =   ZERO ))
+                 OR   ((SPA-GMN-COLUMN4    >   ZERO )  AND
+                       (SPA-GMN-DIGIT4     >   ZERO ))
+                   CONTINUE
+               ELSE
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0011"              TO  SPA-ERRCD
+                       MOVE    12                  TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       506-DIGIT-CHK-EXT.
+           EXIT.
       *
       ****************************************************************
       *    登録前、必須入力チェック処理
@@ -1124,10 +1183,15 @@
                    GO      TO      4109-TOUROKU-CHK-EXT
                END-IF
            END-IF
+      *    カラム位置チェック
+           IF     (SPA-Z01-SRYCD(1:2)  =   "84"  )  OR
+                  (SPA-Z01-SRYCD(1:4)  =   "0084")
+               CONTINUE
+           ELSE
+               PERFORM 41092-COLUMN-CHK-SEC
+           END-IF
       *    自費コードの時、コードチェック
            IF      SPA-Z01-SRYCD(1:3)  =  "095"  OR  "096"
-      *        カラム位置
-               PERFORM 41092-COLUMN-CHK-SEC
                IF      SPA-ERRCD           =   SPACE
                    IF      SPA-SRYCDCHK       =   ZERO
                        PERFORM 41091-SRYCD-CHK-SEC
@@ -1143,7 +1207,7 @@
       *****************************************************************
        41092-COLUMN-CHK-SEC          SECTION.
       *
-      *    自費の時入力不可
+      *    84,0084　以外の時入力不可
            IF      (SPA-GMN-COLUMN1    =   ZERO )  AND
                    (SPA-GMN-DIGIT1     =   ZERO )  AND
                    (SPA-GMN-COLUMN2    =   ZERO )  AND
@@ -2001,10 +2065,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                WHEN    "0008"
                    STRING  "レセプト編集情報はコメントコードでのみ"
-                                                   DELIMITED BY  SIZE
                            "設定可能です。"
                                                    DELIMITED BY  SIZE
                                                  INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0011"
+                   STRING  "カラム位置と桁数の設定をして下さい。"
+                                                   DELIMITED BY  SIZE
+                                                   INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K001"
