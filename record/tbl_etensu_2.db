@@ -6,10 +6,10 @@ tbl_etensu_2 {
 	CHGYMD   			char(8);
 #-----> åüçıÉLÅ[çÄñ⁄
 	HOSPNUM				number(2,0),virtual;
-	SRYKBN				char(2);
-	SRYSYUKBN			char(3);
-	SRYKBN2				char(2);
-	SRYSYUKBN2			char(3);
+	SRYKBN				char(2),virtual;
+	SRYSYUKBN			char(3),virtual;
+	SRYKBN2				char(2),virtual;
+	SRYSYUKBN2			char(3),virtual;
 };
 primary	{
 	H_GROUP,SRYCD,YUKOSTYMD,YUKOEDYMD;

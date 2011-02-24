@@ -39,4 +39,4 @@
       *    特例条件
            03  ETENSU5-TOKUREI                 PIC  9(01).
       *    作成年月日
-           03  ETENSU5-CREYMD                  PIC  X(08).
+           03  ETENSU5-CHGYMD                  PIC  X(08).

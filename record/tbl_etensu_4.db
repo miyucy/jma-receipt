@@ -4,7 +4,7 @@ tbl_etensu_4 {
 	YUKOSTYMD			char(8);
 	YUKOEDYMD			char(8);
 	KASAN				number(1,0);
-	CREYMD   			char(8);
+	CHGYMD   			char(8);
 };
 primary	{
 	N_GROUP,SRYCD,YUKOSTYMD,YUKOEDYMD;

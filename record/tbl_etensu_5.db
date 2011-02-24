@@ -6,7 +6,7 @@ tbl_etensu_5 {
 	TANINAME			varchar(12);
 	KAISU				number(3,0);
 	TOKUREI				number(1,0);
-	CREYMD   			char(8);
+	CHGYMD   			char(8);
 };
 primary	{
 	SRYCD,YUKOSTYMD,YUKOEDYMD;

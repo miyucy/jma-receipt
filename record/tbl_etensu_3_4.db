@@ -5,7 +5,7 @@ tbl_etensu_3_4 {
 	YUKOEDYMD			char(8);
 	HAIHAN				number(1,0);
 	TOKUREI				number(1,0);
-	CREYMD   			char(8);
+	CHGYMD   			char(8);
 };
 primary	{
 	SRYCD1,SRYCD2,YUKOSTYMD,YUKOEDYMD;

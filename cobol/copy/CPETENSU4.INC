@@ -35,4 +35,4 @@
       *    加算識別
            03  ETENSU4-KASAN                   PIC  9(01).
       *    作成年月日
-           03  ETENSU4-CREYMD                  PIC  X(08).
+           03  ETENSU4-CHGYMD                  PIC  X(08).
