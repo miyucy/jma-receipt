@@ -418,6 +418,13 @@ W12	{
 					count	int;
 					item	varchar(40)[10];
 				};
+				DELIMITER_FLG_COMBO	{
+					DELIMITER_FLG	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
 			};
 			fi26	{
 				PR_PRTJYUN_COMBO	{

@@ -1328,7 +1328,7 @@
            MOVE    WRK-PARA-TERMID     TO  RECE67PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE67PARA-HOSPNUM
       *
-           OPEN    INPUT               RECE62-FILE
+           OPEN    I-O                 RECE62-FILE
            IF      STS-RECE62          =   "00"
                CONTINUE
            ELSE
@@ -1996,6 +1996,7 @@
       *                                      
                        PERFORM 2001-SYORI-SEC
       *
+                       REWRITE RECE62-REC
                        PERFORM 900-RECE62-READ-SEC
                    END-PERFORM
                END-PERFORM    
@@ -7965,6 +7966,9 @@
                    MOVE    "00"            TO  RECE08-PREFNUM
                END-IF
            END-IF
+      *
+           MOVE    RECE08-PREFKBN      TO  RECE62-PREFKBN
+      *
            MOVE    RECE62-HKNJANUM-KEY TO  RECE08-HKNJANUM   
            MOVE    RECE62-TEKSTYMD     TO  RECE08-TEKSTYMD
            MOVE    RECE62-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI

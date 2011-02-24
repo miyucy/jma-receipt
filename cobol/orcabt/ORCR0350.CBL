@@ -308,9 +308,11 @@
       *  04.05.21    NACL-藤原    10/08/11  「平成２２年７月中国地方豪雨」対応
       *                                     広島県・山口県
       *                                     ２０１０年７月〜２０１０年１２月対象 
-      *  04.05.21    NACL-藤原    10/11/16  「鹿児島県奄美市等における局地的大雨」対応
+      *  04.05.22    NACL-藤原    10/11/16  「鹿児島県奄美市等における局地的大雨」対応
       *                                     鹿児島県
       *                                     ２０１０年１０月〜２０１１年３月対象 
+      *  04.05.23    NACL-藤原    11/02/22  レセ電データの記号番号区切り
+      *                                     文字設定対応
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
@@ -718,6 +720,15 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-ACCTP-SYUTEN        PIC 9(07).
+      *
+      *    区切り文字設定
+           03  WRK-DELIMITER-AREA.
+               05  WRK-DELIMITER-IN.
+                   07  WRK-DELIMITER-IN-O
+                                       PIC X(02)   OCCURS 30.
+               05  WRK-DELIMITER-OUT.
+                   07  WRK-DELIMITER-OUT-O
+                                       PIC X(02)   OCCURS 30.
       *
       *    食事療養編集情報
            03  WRK-FUKUSHIFLG-SKJINF-AREA.
@@ -1495,6 +1506,8 @@
       *
            COPY    "CPSK2009.INC".
       *
+           COPY    "CPSK2011.INC".
+      *
       *    医療機関情報
            COPY   "CPSK1001.INC".
       *
@@ -1929,6 +1942,24 @@
            AND   ( SYS-2009-SYUKA-KOUIKI
                                    =   SPACE )
                MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+           END-IF
+      *         
+      *    記号番号区切り文字設定情報
+           MOVE    SPACE           TO  SYS-2011-REC
+           INITIALIZE                  SYS-2011-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-2011-HOSPNUM
+           MOVE    "2011"          TO  SYS-2011-KANRICD
+           MOVE    "*"             TO  SYS-2011-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-2011-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-2011-STYUKYMD (7:2)
+           MOVE    SYS-2011-STYUKYMD
+                                   TO  SYS-2011-EDYUKYMD
+           MOVE    SYS-2011-REC    TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-2011-REC
+           ELSE    
+               INITIALIZE                  SYS-2011-REC
            END-IF
       *    
            .
@@ -2680,11 +2711,29 @@
            MOVE    8                     TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    記号
-           MOVE    RECE62-KIGO           TO  WRK-DATA
+           IF    ( SYS-2011-DELIMITER-FLG
+                                     NOT =   0   )
+           AND   ( RECE62-TEISYUTUSAKI   =   "2" )
+           AND   ( RECE62-PREFKBN        =   "1" )
+               MOVE    RECE62-KIGO           TO  WRK-DELIMITER-IN
+               PERFORM 20031-DELIMITER-FLG-HENSYU-SEC
+               MOVE    WRK-DELIMITER-OUT     TO  WRK-DATA
+           ELSE
+               MOVE    RECE62-KIGO           TO  WRK-DATA
+           END-IF
            MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    番号
-           MOVE    RECE62-NUM            TO  WRK-DATA
+           IF    ( SYS-2011-DELIMITER-FLG
+                                     NOT =   0   )
+           AND   ( RECE62-TEISYUTUSAKI   =   "2" )
+           AND   ( RECE62-PREFKBN        =   "1" )
+               MOVE    RECE62-NUM            TO  WRK-DELIMITER-IN
+               PERFORM 20031-DELIMITER-FLG-HENSYU-SEC
+               MOVE    WRK-DELIMITER-OUT     TO  WRK-DATA
+           ELSE
+               MOVE    RECE62-NUM            TO  WRK-DATA
+           END-IF
            MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療実日数     
@@ -2817,6 +2866,44 @@
            PERFORM 5001-FILE-WRITE-SEC
            .
        2003-HENSYU-EXT.
+           EXIT. 
+      *            
+      *****************************************************************
+      *    記号番号区切り文字設定情報による編集処理
+      *****************************************************************
+       20031-DELIMITER-FLG-HENSYU-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  WRK-DELIMITER-OUT
+      *
+           IF      WRK-DELIMITER-IN    =   SPACE
+               GO  TO  20031-DELIMITER-FLG-HENSYU-EXT
+           END-IF
+      *
+      *    全角ハイフン、全角マイナス、長音、ダッシュを設定情報より変換
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       20
+               MOVE    WRK-DELIMITER-IN-O (IDXX)
+                                           TO  WRK-DELIMITER-OUT-O(IDXX)
+               EVALUATE    SYS-2011-DELIMITER-FLG
+                   WHEN    1
+      *                全角ハイフンを設定
+                       IF      WRK-DELIMITER-IN-O (IDXX)   =   "─"
+                                                           OR  "−"
+                                                           OR  "ー"
+                           MOVE    "‐"    TO  WRK-DELIMITER-OUT-O(IDXX) 
+                       END-IF      
+                   WHEN    2
+      *                全角マイナスを設定
+                       IF      WRK-DELIMITER-IN-O (IDXX)   =   "─"
+                                                           OR  "‐"
+                                                           OR  "ー"
+                           MOVE    "−"    TO  WRK-DELIMITER-OUT-O(IDXX) 
+                       END-IF      
+               END-EVALUATE
+           END-PERFORM
+      *
+           .
+       20031-DELIMITER-FLG-HENSYU-EXT.
            EXIT. 
       *            
       *****************************************************************
