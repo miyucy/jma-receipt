@@ -14,7 +14,7 @@ tbl_etensu_1 {
 	R_WEEK				number(1,0);
 	N_GROUP				number(3,0);
 	C_KAISU				number(1,0);
-	CREYMD   			char(8);
+	CHGYMD   			char(8);
 };
 primary	{
 	SRYCD,YUKOSTYMD,YUKOEDYMD;

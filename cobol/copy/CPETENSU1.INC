@@ -52,4 +52,4 @@
       *        算定回数
                05  ETENSU1-C-KAISU             PIC  9(01).
       *    作成年月日
-           03  ETENSU1-CREYMD                  PIC  X(08).
+           03  ETENSU1-CHGYMD                  PIC  X(08).
