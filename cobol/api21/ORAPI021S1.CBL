@@ -334,7 +334,7 @@
       *
       *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
       *
