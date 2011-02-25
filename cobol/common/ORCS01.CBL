@@ -331,6 +331,7 @@
       *  04.05.06    NACL-ÌçÏÆ    10/01/26  ÅìµþÅÔ¥Þ¥ë»ÒÄÉ²ÃÂÐ±þ
       *  04.05.07    NACL-ÌçÏÆ    10/03/26  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ½¤Àµ
       *  04.05.08    NACL-ÌçÏÆ    11/02/18  £·£°ºÐÂåÁ°È¾¤ÎÆÃÎãÁ¼ÃÖ±äÄ¹ÂÐ±þ
+      *  04.05.09    NACL-ÌçÏÆ    11/02/28  Ä¹ºê¸©ÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.06.01    NACL-ÌçÏÆ    10/09/02  ½Ð»º°é»ù°ì»þ¶âÄ¾ÀÜ»ÙÊ§À©ÅÙ¡Ê³°Íè¡Ë
       *  04.06.02    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
@@ -5323,6 +5324,15 @@
                  END-IF
                END-IF
       *
+               IF  (WK-1001-PREFNUM       =  42     )
+               AND (COMB-KOH1HKNNUM       = "280"   )
+               AND (LNK-S01-JIKANGAI      = "1"     )
+               AND (LNK-SYU-SRYYMD(1:6)  >= "201104")
+                    MOVE    800    TO    MAX-KIN-KOHI1-D
+                    MOVE   1600    TO    MAX-KIN-KOHI1-M
+                    MOVE    "1"    TO    COMB-KOH1-GAIJGNKBN
+               END-IF
+      *
                IF    WK-CYO-OKIKAE(1)  =  1
                    IF (COMB-KOH2HKNNUM         = "972") OR
                       (COMB-KOH3HKNNUM         = "972") OR
@@ -5477,6 +5487,15 @@
                  END-IF
                END-IF
       *
+               IF  (WK-1001-PREFNUM       =  42     )
+               AND (COMB-KOH2HKNNUM       = "280"   )
+               AND (LNK-S01-JIKANGAI      = "1"     )
+               AND (LNK-SYU-SRYYMD(1:6)  >= "201104")
+                    MOVE    800    TO    MAX-KIN-KOHI2-D
+                    MOVE   1600    TO    MAX-KIN-KOHI2-M
+                    MOVE    "1"    TO    COMB-KOH2-GAIJGNKBN
+               END-IF
+      *
                IF    WK-CYO-OKIKAE(2)  =  1
                    IF (COMB-KOH1HKNNUM         = "972") OR
                       (COMB-KOH3HKNNUM         = "972") OR
@@ -5611,6 +5630,15 @@
                  END-IF
                END-IF
       *
+               IF  (WK-1001-PREFNUM       =  42     )
+               AND (COMB-KOH3HKNNUM       = "280"   )
+               AND (LNK-S01-JIKANGAI      = "1"     )
+               AND (LNK-SYU-SRYYMD(1:6)  >= "201104")
+                    MOVE    800    TO    MAX-KIN-KOHI3-D
+                    MOVE   1600    TO    MAX-KIN-KOHI3-M
+                    MOVE    "1"    TO    COMB-KOH3-GAIJGNKBN
+               END-IF
+      *
                IF    WK-CYO-OKIKAE(3)  =  1
                    IF (COMB-KOH1HKNNUM         = "972") OR
                       (COMB-KOH2HKNNUM         = "972") OR
@@ -5743,6 +5771,15 @@
                     MOVE   20000   TO    MAX-KIN-KOHI4-M
                     MOVE    "1"    TO    COMB-KOH4-GAIJGNKBN
                  END-IF
+               END-IF
+      *
+               IF  (WK-1001-PREFNUM       =  42     )
+               AND (COMB-KOH4HKNNUM       = "280"   )
+               AND (LNK-S01-JIKANGAI      = "1"     )
+               AND (LNK-SYU-SRYYMD(1:6)  >= "201104")
+                    MOVE    800    TO    MAX-KIN-KOHI4-D
+                    MOVE   1600    TO    MAX-KIN-KOHI4-M
+                    MOVE    "1"    TO    COMB-KOH4-GAIJGNKBN
                END-IF
       *
                IF    WK-CYO-OKIKAE(4)  =  1

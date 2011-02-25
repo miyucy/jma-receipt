@@ -51,6 +51,7 @@
       *  04.05.01    NACL-門脇    09/06/16  一括再計算方法選択機能対応
       *  04.05.02    NACL-門脇    10/01/19  治験対応
       *  04.05.03    NACL-門脇    10/01/26  東京都マル子追加対応
+      *  04.05.04    NACL-門脇    11/02/28  長崎県地方公費対応
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
@@ -1238,6 +1239,19 @@
       *
            END-IF
       *
+           IF    (LNK-SYU-SYUHKNNUM(IDY)
+                                      NOT =   "971" AND "973"
+                                                    AND "975"   )
+           AND   (ACCT-SRYKBN             =   "99"              )
+           AND   (ACCT-ZAITEN             =    ZERO             )
+           AND   (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO)
+           AND   (ACCT-JIHOKBN            =    SPACE            )
+           AND   (LNK-S01-JIKANGAI        =    SPACE            )
+      *
+              PERFORM  44014-SRYACT-KENSAKU3-SEC
+      *
+           END-IF
+      *
            IF   ((ACCT-ZAITEN       NOT = ZERO                  ) AND
                  (ACCT-DAY(SAI-IDX  WRK-SAIKEISAN-DD) NOT = ZERO) AND
                  (ACCT-JIHOKBN          = SPACE                 ))
@@ -1418,6 +1432,51 @@
            .
       *
        44013-SRYACT-KENSAKU2-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    診療行為情報検索
+      **************************************************************
+       44014-SRYACT-KENSAKU3-SEC           SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN       TO      SRY-NYUGAIKBN
+           MOVE    ACCT-PTID            TO      SRY-PTID
+           MOVE    ACCT-SRYYM           TO      SRY-SRYYM
+           MOVE    ACCT-ZAINUM          TO      SRY-ZAINUM
+           MOVE    "099409907"          TO      SRY-SRYCD(1)
+           MOVE    "099409907"          TO      SRY-SRYCD(2)
+           MOVE    "099409907"          TO      SRY-SRYCD(3)
+           MOVE    "099409907"          TO      SRY-SRYCD(4)
+           MOVE    "099409907"          TO      SRY-SRYCD(5)
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key8"               TO      MCP-PATHNAME
+           CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"        TO      MCP-FUNC
+               MOVE    "tbl_sryact"     TO      MCP-TABLE
+               MOVE    "key8"           TO      MCP-PATHNAME
+               CALL    "ORCDBMAIN"      USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+               IF      MCP-RC          =   ZERO
+                   MOVE   MCPDATA-REC   TO      SRYACT-REC
+                   MOVE   "1"           TO      LNK-S01-JIKANGAI
+               END-IF
+           END-IF
+      *
+           MOVE     "tbl_sryact"        TO      MCP-TABLE
+           MOVE     "key8"              TO      MCP-PATHNAME
+           PERFORM   DB-CLOSE-SEC
+      *
+           .
+      *
+       44014-SRYACT-KENSAKU3-EXT.
            EXIT.
       *
       ******************************************************************
