@@ -66,10 +66,6 @@
            03  CONST-SYS3001           PIC X(04)   VALUE   "3001".
            03  CONST-SYS3002           PIC X(04)   VALUE   "3002".
       *
-      *    日次パラメタ一時ファイル領域
-           COPY    "CPSK3001.INC"      REPLACING   //SYS-//
-                                       BY          //TMP-//.
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -79,6 +75,7 @@
            COPY    "CPSK0043.INC".
       *    日次パラメタファイル       ※月次用にも使用
            COPY    "CPSK3001.INC".
+           COPY    "CPSK3002.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -226,14 +223,15 @@
                        MOVE    SPA-SYSYMD  TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
                        PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                       MOVE    SYSKANRI-REC    TO  TMP-3001-REC
                        IF    ( FLG-SYSKANRI    =   ZERO )
-                           IF    ( SYS-3001-PARA-AREA
-                                               =   TMP-3001-PARA-AREA )
+                           MOVE    SYS-KANRITBL    TO  SYS-3002-TBL
+                           MOVE    SYS-3001-HCNAME TO  SYS-3002-HCNAME
+                           IF    ( SYS-3001-TBL    =   SYS-3002-TBL )
                                CONTINUE
                            ELSE
-                               MOVE    TMP-3001-PARA-AREA
-                                               TO  SYS-3001-PARA-AREA
+                               MOVE    SYS-KANRITBL    TO  SYS-3001-TBL
+                               MOVE    SYS-3002-HCNAME
+                                                   TO  SYS-3001-HCNAME
                                MOVE    SYS-3001-REC    TO  MCPDATA-REC
                                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                                MOVE    "key"           TO  MCP-PATHNAME
@@ -242,24 +240,6 @@
                                        "/"        SYS-3001-KBNCD
                                        "/"        WRK-PGID
                            END-IF
-      *
-                           INITIALIZE                  SYSKANRI-REC
-                           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-                           IF    ( SYS-3001-KANRICD = "3001" )
-                               MOVE    "3101"      TO  SYS-KANRICD
-                           ELSE
-                               MOVE    "3102"      TO  SYS-KANRICD
-                           END-IF
-                           MOVE    SYS-3001-KBNCD  TO  SYS-KBNCD
-                           MOVE    SYS-3001-STYUKYMD
-                                                   TO  SYS-STYUKYMD
-                           MOVE    SYS-3001-EDYUKYMD
-                                                   TO  SYS-EDYUKYMD
-                           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 910-DBDELETE-SEC
-      *
                        END-IF
                    END-IF
       *
@@ -416,19 +396,4 @@
            .
       *
        910-DBUPDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＤＢＤＥＬＥＴＥ処理
-      *****************************************************************
-       910-DBDELETE-SEC            SECTION.
-      *
-           MOVE    "DBDELETE"  TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING
-                                   MCPAREA
-                                   MCPDATA-REC
-                                   SPA-AREA
-      *
-           .
-      *
-       910-DBDELETE-EXT.
            EXIT.
