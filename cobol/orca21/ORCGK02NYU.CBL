@@ -795,18 +795,18 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+      *D  COPY    "CPORCSPTID.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
       *
       *    負担金額計算用パラメタ
-           COPY    "CPORCS01.INC".
+      *D   COPY    "CPORCS01.INC".
       *
       *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
-           COPY    "CPORCSC91.INC".
+      *D   COPY    "CPORCSC91.INC".
       *
       *    点数マスタ編集パラメタ
            COPY    "CPORCSC92.INC".
@@ -827,7 +827,7 @@
            COPY    "CPORCSC97.INC".
       *
       *    投与量等チェックパラメタ
-           COPY    "CPORCSC98.INC".
+      *D   COPY    "CPORCSC98.INC".
       *
       *    診察料自動発生パラメタ
            COPY    "CPORCSC10S.INC".

@@ -420,12 +420,12 @@
            COPY    "CPSYUNOU.INC".
       *
       *    患者病名
-       01  PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC".
+      *01  PTBYOMEI-REC.
+      *    COPY    "CPPTBYOMEI.INC".
       *
       *    患者労災保険情報
-       01  PTRSIINF-REC.
-           COPY    "CPPTRSIINF.INC".
+      *01  PTRSIINF-REC.
+      *    COPY    "CPPTRSIINF.INC".
       *
       *    患者入院履歴
        01  PTNYUINRRK-REC.
@@ -447,7 +447,7 @@
            COPY    "CPORCSGDAY.INC".
       *
       *    初期ＳＰＡ編集処理パラメタ
-           COPY    "CPORCSC95.INC".
+      *    COPY    "CPORCSC95.INC".
       *
       *    ドクター編集処理パラメタ
            COPY    "CPORCSDRSET.INC".

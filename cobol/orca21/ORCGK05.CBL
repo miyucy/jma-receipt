@@ -499,13 +499,13 @@
       *D   COPY    "CPORCSPTID.INC".
       *
       *    負担金額計算用パラメタ
-           COPY    "CPORCS01.INC".
+      *D   COPY    "CPORCS01.INC".
       *
       *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
-           COPY    "CPORCSC91.INC".
+      *    COPY    "CPORCSC91.INC".
       *
       *    点数編集チェックパラメタ
            COPY    "CPORCSC92.INC".

@@ -702,7 +702,7 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *    数字変換領域
-           COPY    "CPORCSNUM.INC".
+      *D   COPY    "CPORCSNUM.INC".
       *
       *    負担金額計算用パラメタ
            COPY    "CPORCS01.INC".

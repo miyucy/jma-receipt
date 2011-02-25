@@ -338,10 +338,10 @@
            COPY    "CPORCSLNK.INC".
       *
       *    数字変換領域
-           COPY    "CPORCSNUM.INC".
+      *    COPY    "CPORCSNUM.INC".
       *
       *    診療行為算定用共通パラメタ
-           COPY    "CPORCSC00.INC".
+      *    COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
            COPY    "CPORCSC91.INC".
@@ -353,7 +353,7 @@
            COPY    "CPORCSC94.INC".
       *
       *    診察料自動発生パラメタ
-           COPY    "CPORCSC10S.INC".
+      *    COPY    "CPORCSC10S.INC".
       *
       *    診療行為入力項目変換パラメタ
            COPY    "CPORCSC97.INC".

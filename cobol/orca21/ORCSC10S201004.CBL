@@ -512,39 +512,39 @@
            COPY    "CPORCSLNK.INC".
       *
       *    画面日付変換サブ
-           COPY    "CPORCSGDAY.INC".
+      *    COPY    "CPORCSGDAY.INC".
       *
       *    数字変換領域
-           COPY    "CPORCSNUM.INC".
+      *    COPY    "CPORCSNUM.INC".
       *    患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+      *    COPY    "CPORCSPTID.INC".
       *
       *    負担金額計算用パラメタ
-           COPY    "CPORCS01.INC".
+      *    COPY    "CPORCS01.INC".
       *
       *    診療行為算定用共通パラメタ
-           COPY    "CPORCSC00.INC".
+      *    COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
-           COPY    "CPORCSC91.INC".
+      *    COPY    "CPORCSC91.INC".
       *
       *    点数マスタ編集パラメタ
            COPY    "CPORCSC92.INC".
       *
       *    剤分離パラメタ
-           COPY    "CPORCSC93.INC".
+      *    COPY    "CPORCSC93.INC".
       *
       *    画面再編集パラメタ
            COPY    "CPORCSC94.INC".
       *
       *    初期ＳＰＡ画面編集パラメタ
-           COPY    "CPORCSC95.INC".
+      *    COPY    "CPORCSC95.INC".
       *
       *    エラーメッセージ編集パラメタ
-           COPY    "CPORCSC96.INC".
+      *    COPY    "CPORCSC96.INC".
       *
       *    エラーメッセージ編集パラメタ
-           COPY    "CPORCSC97.INC".
+      *    COPY    "CPORCSC97.INC".
       *
       *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".

@@ -497,15 +497,15 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+      *D   COPY    "CPORCSPTID.INC".
       *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
       *    負担金額計算用パラメタ
-           COPY    "CPORCS01.INC".
+      *    COPY    "CPORCS01.INC".
       *
       *    処方箋印刷パラメタ
-           COPY    "CPORCHC02.INC".
+      *D   COPY    "CPORCHC02.INC".
       *
       *    処方箋印刷パラメタ（Ａ５）
            COPY    "CPORCHC19.INC".
@@ -523,10 +523,10 @@
            COPY    "CPORCSCH62.INC".
       *
       *   診療科算定履歴更新サブ
-           COPY    "CPORCSKARRK.INC".
+      *    COPY    "CPORCSKARRK.INC".
       *
       *   算定履歴更新サブ
-           COPY    "CPORCSSANTEI.INC".
+      *    COPY    "CPORCSSANTEI.INC".
       *
       *    ドクター編集処理パラメタ
            COPY    "CPORCSDRSET.INC".

@@ -814,24 +814,24 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+      *    COPY    "CPORCSPTID.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
       *
       *    負担金額計算用パラメタ
-           COPY    "CPORCS01.INC".
+      *D   COPY    "CPORCS01.INC".
       *
       *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
-           COPY    "CPORCSC91.INC".
+      *    COPY    "CPORCSC91.INC".
       *
       *    点数マスタ編集パラメタ
            COPY    "CPORCSC92.INC".
       *
       *    剤分離パラメタ
-           COPY    "CPORCSC93.INC".
+      *    COPY    "CPORCSC93.INC".
       *
       *    画面再編集パラメタ
            COPY    "CPORCSC94.INC".
@@ -846,7 +846,7 @@
            COPY    "CPORCSC97.INC".
       *
       *    投与量等チェックパラメタ
-           COPY    "CPORCSC98.INC".
+      *    COPY    "CPORCSC98.INC".
       *
       *    包括診療チェックパラメタ
            COPY    "CPORCSCHKTCHK.INC".
@@ -879,7 +879,7 @@
       *    ワーク診療行為展開・作成
            COPY    "CPORCSCKTWKSRY.INC".
       *    内分泌負荷試験更新パラメタ
-           COPY    "CPORCSSANFUKA.INC".
+      *D   COPY    "CPORCSSANFUKA.INC".
       *
       *    禁忌薬剤チェックパラメタ
            COPY    "CPORCSCKNKCHK.INC".
