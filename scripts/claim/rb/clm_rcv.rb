@@ -12,6 +12,10 @@
 #                  '03-10-15 by hiki
 # version 1.4.2 途中で接続が切れたり、nmapコマンドへの対策
 #                  '05-02-08 by hiki
+# version 1.4.3 fix correction of socket opening.
+#                  '2011-02-09
+
+$DEBUG = false
 
 Dir.chdir(File.dirname(__FILE__))
 
@@ -31,24 +35,15 @@ $file_path = "/var/tmp"
 $logfl = "/tmp/claim_rcv.log"
 
 $sh_path_name = "../../../scripts/claim/HL03.sh"
-# 2002/11/12 add start (hiki)
-# 識別番号
 $seq_put = 0        # 格納時にセットした識別番号
 $seq_exec = 0       # 実行中識別番号
 $seq_max = 32767    # 識別番号の最大値
 $thr_sleeptime = 1  # スレッドの順序待ち時のsleep時間
-# 2002/11/12 add end (hiki)
-# 2003/10/15 add start (hiki)
 $fname_seq = 0      # 受信カウンタ(ファイル名に使用する)
-# 2002/10/15 add end (hiki)
 
-#----- Define Classes --------------------------------
-
-# 2005/02/08 add start (hiki)
 # 例外クラス
 class ConnectError < StandardError ; end
 class CReadError < StandardError ; end
-# 2005/02/08 add end (hiki)
 
 class FileSockRcv
   def initialize(fl, s)
@@ -60,7 +55,6 @@ class FileSockRcv
   def start
     open(@fl_path_name, "wb") do |f|
       buf = ""
-# 2005/02/08 edit start (hiki)
       begin
         while @eot != (buf = @sckt.read(1))
           if buf == nil
@@ -77,7 +71,6 @@ class FileSockRcv
         # nmapコマンドへの対応
         raise CReadError, 'socket read error.'
       end
-# 2005/02/08 edit end (hiki)
     end
   end
 end
@@ -98,19 +91,22 @@ class SndRsp
   end
 end
 
-# 2002/11/12 add start (hiki)
 # マルチスレッド時に実行するクラス
 class ExecThreadMain
   # コンストラクタ
-  #    引数
-  # seq <= 生成スレッドのシーケンシャル番号(0〜32767)
-  # sh_path <= 起動シェルのフルパス名
-  # xml_path <= 読み込みXMLファイルのフルパス名
-  # out_file <= 出力テキストファイル名
-  #    注意
-  # $seq_putの値は、スレッドに値を渡してからカウントアップしてください。
+  #
+  #   引数
+  #     seq      <= 生成スレッドのシーケンシャル番号(0〜32767)
+  #     sh_path  <= 起動シェルのフルパス名
+  #     xml_path <= 読み込みXMLファイルのフルパス名
+  #     out_file <= 出力テキストファイル名
+  #
+  #   注意
+  #     $seq_putの値は、スレッドに値を渡してからカウントアップしてください。
+  #
   def initialize(seq, sh_path, xml_path, out_file)
-    @thr_seq = seq          # シーケンシャル番号をクラス変数領域に保存
+    # シーケンシャル番号をクラス変数領域に保存
+    @thr_seq = seq
     @sh_pathname = sh_path
     @xml_pathname = xml_path
     @out_filename = out_file
@@ -124,19 +120,19 @@ class ExecThreadMain
 
 
   # 実行待ち関数
-  #    格納識別番号と実行識別番号の比較とウエイト処理と格納識別番号のカウントアップ
+  # 格納識別番号と実行識別番号の比較とウエイト処理と格納識別番号のカウントアップ
   def exec_start
     while @thr_seq != $seq_exec
-      sleep $thr_sleeptime   # 順序待ち
+      # 順序待ち
+      sleep $thr_sleeptime
     end
   end
 
 
   # 実行完了関数
-  #    実行識別番号のカウントアップ
+  # 実行識別番号のカウントアップ
   def exec_end
     $seq_exec += 1
-    # 32768以上になったら、０に戻す
     if $seq_exec > $seq_max
       $seq_exec = 0
     end
@@ -144,128 +140,167 @@ class ExecThreadMain
 
 
   # スレッドメイン処理
-  #    ここから、順次実行待ち・処理実行を呼び出す(public)
+  # ここから、順次実行待ち・処理実行を呼び出す(public)
   def main
-    exec_start      # 順序待ち
+    exec_start  # 順序待ち
     decode_main # 順次実行
     exec_end    # 処理終了通知
   end
-
 
   public  :main
   private :decode_main
   private :exec_start
   private :exec_end
 end
-# 2002/11/12 add end (hiki)
 
-#----- Define Methods --------------------------------
-
-def file_chk(fl)
-  if File.exists?(fl)
-    ans = fl + " exists. Overwrite!"
-  else 
-    ans = fl + " is New file!"
+class ClaimRcv
+  def initialize
+    require 'date'
+    @claim_log = "/var/tmp/claim_err_#{Date.today.to_s}.log"
   end
-end
 
-def make_file_name
-# 2003/10/15 edit start (hiki)
-#  flname = "claim_rcv_" + Time.now.strftime("%m%d_%H%M%S") + ".xml"
-  flname = "claim_rcv_" + Time.now.strftime("%m%d_%H%M%S") + "_" + sprintf("%02d", $fname_seq) + ".xml"
-  $fname_seq += 1
-  if $fname_seq > 99
-    $fname_seq = 0
+  def file_chk(fl)
+    if File.exists?(fl)
+      ans = fl + " exists. Overwrite!"
+    else 
+      ans = fl + " is New file!"
+    end
   end
-  return flname
-# 2002/10/15 edit end (hiki)
-end
 
-#----- Main -----------------------------------------
+  def make_file_name
+    name_A = "claim_rcv_" + Time.now.strftime("%m%d_%H%M%S")
+    name_B = "_" + sprintf("%02d", $fname_seq) + ".xml"
+    flname = name_A + name_B
+    $fname_seq += 1
+    if $fname_seq > 99
+      $fname_seq = 0
+    end
+    return flname
+  end
 
-svppt = "server:>> "
+  def socket_thread(sock)
+    Log("Client login\n")
 
-while true
-  gsock = TCPServer.open($port)
-  print svppt + "No #{$port} port open [" + Time.now.strftime("%H:%M:%S") + "]\n"
-  print svppt + "Waiting...\n"
-  sock = gsock.accept
-  print svppt + "Client login\n"
+    file_path_name = File.join($file_path, make_file_name)
+    Log(file_chk(file_path_name) + "\n")
 
-  file_path_name = File.join($file_path, make_file_name)
-  print svppt + file_chk(file_path_name) + "\n"
+    rcvbuf = FileSockRcv.new(file_path_name, sock)
+    ans = SndRsp.new(sock)
+    
+    Log("Start Receiving File --------------------------\n")
 
-  rcvbuf = FileSockRcv.new(file_path_name, sock)
-  ans = SndRsp.new(sock)
-  
-  print svppt + "Start Receiving File --------------------------\n"
-# 2005/02/08 edit start (hiki)
-#  rcvbuf.start
-  begin
-    rcvbuf.start
-  rescue ConnectError, CReadError
-    print svppt + "Connection Error\n"
-    print svppt + "Client disconnects\n"
-    gsock.close
-    print svppt + "temporary file delete.\n"
-    File.delete(file_path_name)
-  else
-# 2005/02/08 edit end (hiki)
-    print svppt + "Complete Receiving File -----------------------\n"
-  
-#----- convert claim data J-code to UTF8 ---------------
-    print svppt + "Convert to UTF-8\n"
-    u8_file = file_path_name.gsub(/.xml$/, "_u8.xml")
-    `ruby xml_jcnv.rb #{file_path_name} tou8 -f > #{u8_file}`  
-    file_path_name = u8_file
-
-#----- check claim data and send respons to client -----
-    print svppt + "Claim valid check\n"
-    if parser_check(file_path_name, $dtdfl, $logfl)
-      print svppt + "Send [ack] to client\n" ; ans.ok ; valid_check_flg = true
+    begin
+      rcvbuf.start
+    rescue ConnectError, CReadError
+      Log("Connection Error\n")
+      Log("Client disconnects\n")
+      @gsock.close
+      @gsock = nil
+      Log("temporary file delete.\n")
+      File.delete(file_path_name)
     else
-      print svppt + "Send [nak] to client\n" ; ans.ng ; valid_check_flg = false
-    end
+      Log("Complete Receiving File -----------------------\n")
+    
+      # convert claim data J-code to UTF8
+      Log("Convert to UTF-8\n")
+      u8_file = file_path_name.gsub(/.xml$/, "_u8.xml")
+      `ruby xml_jcnv.rb #{file_path_name} tou8 -f > #{u8_file}`  
+      file_path_name = u8_file
 
-#-------------------------------------------------------
-    print svppt + "Client disconnects\n"
-    gsock.close
-    print svppt + "Close port [" + Time.now.strftime("%H:%M:%S") + "]\n\n"
-
-#----- kick shell script ( decode(ruby) and cobol) ) ---
-    if valid_check_flg
-      out_file = file_path_name.gsub(/_u8.xml$/, ".txt")
-      print svppt + "Decode claim data to #{out_file} and kick COBOL\n"
-      print "#{$sh_path_name} #{file_path_name} #{out_file}\n\n"
-# 2002/11/12 update start (hiki)
-#      `#{$sh_path_name} #{file_path_name} #{out_file}`
-      # スレッドの生成処理
-      thr_execflg = 0
-      Thread.start {
-        print svppt + "Thread Start[" + String($seq_put + 1) + "]\n"     if $debug != 0
-        thr_start_time = ''; thr_end_time = ''                           if $debug != 0
-        thr_start_time = Time.now.strftime("%H:%M:%S")                   if $debug != 0
-        thr = nil
-        # スレッド生成メイン処理
-        thr = ExecThreadMain.new($seq_put, $sh_path_name, file_path_name, out_file)
-        $seq_put += 1
-        if $seq_put > $seq_max
-          $seq_put = 0
-        end
-        thr_execflg = 1
-        thr.main  # メイン処理
-        thr_end_time = Time.now.strftime("%H:%M:%S")                      if $debug != 0
-        print svppt + "Thread End[" + String($seq_exec) + "] [" + thr_start_time + "〜" + thr_end_time + "]\n"       if $debug != 0
-        print svppt + "End Sequence NO. = [" + String($seq_put) + "]\n"       if $debug != 0
-      }
-      # スレッド生成のウエイト処理
-      while thr_execflg == 0
-        sleep 1
+      # check claim data and send respons to client
+      Log("Claim valid check\n")
+      if parser_check(file_path_name, $dtdfl, $logfl)
+        Log("Send [ack] to client\n")
+        ans.ok
+        valid_check_flg = true
+      else
+        Log("Send [nak] to client\n")
+        ans.ng
+        valid_check_flg = false
       end
-# 2002/11/12 update end (hiki)
-# 2005/02/08 add start (hiki)
+
+      #  kick shell script ( decode(ruby) and cobol) )
+      if valid_check_flg
+        out_file = file_path_name.gsub(/_u8.xml$/, ".txt")
+        Log("Decode claim data to #{out_file} and kick COBOL\n")
+        Log("#{$sh_path_name} #{file_path_name} #{out_file}\n\n")
+
+        # スレッドの生成処理
+        thr_execflg = 0
+        #Thread.start {
+          if $DEBUG
+            Log("Thread Start[" + String($seq_put + 1) + "]\n")
+            Log("Thread Start[" + String($seq_put + 1) + "]\n")
+            thr_start_time = ''; thr_end_time = ''
+            thr_start_time = Time.now.strftime("%H:%M:%S")
+          end
+
+          thr = nil
+          # スレッド生成メイン処理
+          thr = ExecThreadMain.new($seq_put, $sh_path_name, file_path_name, out_file)
+          $seq_put += 1
+          if $seq_put > $seq_max
+            $seq_put = 0
+          end
+
+          thr_execflg = 1
+          # メイン処理
+          thr.main
+
+          if $DEBUG
+            thr_end_time = Time.now.strftime("%H:%M:%S")
+            Log("Thread End[" + String($seq_exec) + "] ")
+            Log("[" + thr_start_time + "〜" + thr_end_time + "]\n")
+            Log("End Sequence NO. = [" + String($seq_put) + "]\n")
+          end
+        #}
+
+        # スレッド生成のウエイト処理
+        while thr_execflg == 0
+          sleep 1
+        end
+      end
     end
-# 2005/02/08 add end (hiki)
+  end
+
+  def Log_Save
+    File.open(@claim_log, "a+") do |file|
+      STDOUT.reopen(file)
+      STDERR.reopen(file)
+    end
+  end
+
+  def Log(text)
+    print text
+  end
+
+  def Reception
+    begin
+      Log("server:>> ")
+      @gsock = TCPServer.open($port)
+
+      Log("No #{$port} port open ")
+      Log("[" + Time.now.strftime("%H:%M:%S") + "]\n")
+      Log("Waiting...\n")
+
+      while true
+        Thread.start(@gsock.accept) do |sock|
+          socket_thread(sock)
+          Log("Close port [" + Time.now.strftime("%H:%M:%S") + "]\n")
+          Log("Client disconnects\n")
+          sock.close
+        end
+      end
+    rescue => error
+      Log("#{error}\n")
+      retry
+    end
+    @gsock.close if @gsock != nil
   end
 end
-#----- Script end -----------------------------------
+
+if __FILE__ == $0
+  claim = ClaimRcv.new
+  claim.Reception
+end
+
