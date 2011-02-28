@@ -47,9 +47,9 @@
                05  ETENSU1-R-SAME              PIC  9(01).
       *        １週間につき
                05  ETENSU1-R-WEEK              PIC  9(01).
-      *        入院基本料識別
-               05  ETENSU1-N-GROUP             PIC  9(03).
-      *        算定回数
-               05  ETENSU1-C-KAISU             PIC  9(01).
+      *    入院基本料識別
+           03  ETENSU1-N-GROUP                 PIC  9(03).
+      *    算定回数
+           03  ETENSU1-C-KAISU                 PIC  9(01).
       *    作成年月日
            03  ETENSU1-CHGYMD                  PIC  X(08).
