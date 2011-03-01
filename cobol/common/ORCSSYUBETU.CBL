@@ -94,6 +94,8 @@
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1248,7 +1250,14 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            IF      COMB-HKNNUM         =   SPACE
                IF      COMB-KOH1HKNNUM     =   "020"   OR  "030"   OR
                                                "053"
-                   MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+      *********    MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+                   INITIALIZE                      PTKOHINF-REC
+                   MOVE    WRK-RECE61-HOSPNUM  TO  PTKOH-HOSPNUM
+                   MOVE    WRK-RECE61-PTID     TO  PTKOH-PTID
+                   MOVE    COMB-KOHID (1)      TO  PTKOH-KOHID
+                   MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-PTKOHINF-READ-SEC
+                   MOVE    PTKOH-TEKSTYMD      TO  WRK-RECE61-TEKSTYMD
                    MOVE    COMB-KOH1ID         TO  WRK-RECE61-KOH-KOHID
                END-IF
            END-IF
@@ -1504,8 +1513,16 @@ grpsys                                     SPA-AREA
            AND   ( COMB-KOH1HKNNUM    =   "020" 
                                       OR  "030"
                                       OR  "053" )
-               MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
-               MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
+      *********MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
+      *********MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    WRK-RECE61-HOSPNUM  TO  PTKOH-HOSPNUM
+               MOVE    WRK-RECE61-PTID     TO  PTKOH-PTID
+               MOVE    COMB-KOHID (1)      TO  PTKOH-KOHID
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               PERFORM 900-PTKOHINF-READ-SEC
+               MOVE    PTKOH-TEKSTYMD      TO  WRK-RECE61-TEKSTYMDX  (1)
+               MOVE    PTKOH-TEKEDYMD      TO  WRK-RECE61-TEKEDYMDX  (1)
            END-IF
       *    
       *    主保険情報
@@ -1891,10 +1908,10 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    OR      FLG-SEIHO                  =   1
                MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
       *
-      *        公費単独の場合（精神入院、心身喪失、児童保護以外）
+      *        公費単独の場合（精神入院、心身喪失以外）
                IF      WRK-RECE61-HKNNUM       =   SPACE
                    IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
-                                                               OR  "053"
+      *********                                                OR  "053"
                        CONTINUE
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD =   ZERO
@@ -1964,10 +1981,10 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        公費単独の場合（精神入院、心身喪失、児童保護以外）
+      *        公費単独の場合（精神入院、心身喪失以外）
                IF      WRK-RECE61-HKNNUM        =   SPACE
                    IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
-                                                               OR  "053"
+      *************                                            OR  "053"
                        CONTINUE
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD  =   ZERO
@@ -1998,10 +2015,12 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                    END-IF
                                END-IF
                            ELSE
-                               IF      FLG-SEIHO            =   1
+                               IF    ( FLG-SEIHO       =   1     )
+                               AND   ( WRK-RECE61-KOHHKNNUM-O (1)
+                                                   NOT =   "053" )
                                    CONTINUE
                                ELSE 
-                                  MOVE    1           TO  FLG-WRITE
+                                  MOVE    1            TO  FLG-WRITE
                                END-IF
                            END-IF
                        ELSE
@@ -2010,13 +2029,13 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                   END-IF
                END-IF
       *
-      *        社保で公費併用の場合（生保、中国残留邦人等、自立支援）
+      *    社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
                IF    ( WRK-RECE61-HKNNUM
                                        NOT =   SPACE                 )
                AND   ( WRK-RECE61-KOHHKNNUM-O (1)
                                            =   "012"   OR  "025"   OR 
                                                "015"   OR  "016"   OR
-                                               "021"                )
+                                               "021"   OR  "053"     )
                AND   ( WRK-RECE61-KOHHKNNUM-O (2)
                                            =   SPACE                )
                    IF      WRK-RECE61-HKNNUM   =

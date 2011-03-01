@@ -225,6 +225,8 @@
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1124,7 +1126,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
       *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF      RECE01-HKNNUM        =   SPACE
-             IF      RECE01-KOHHKNNUM-O (1)  =   "030" OR  "053" 
+      *******IF      RECE01-KOHHKNNUM-O (1)  =   "030" OR  "053" 
+             IF      RECE01-KOHHKNNUM-O (1)  =   "030"
                  CONTINUE
              ELSE 
                IF      RECE01-TEKSTYMD      =   ZERO
@@ -1168,7 +1171,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                        MOVE    1               TO  FLG-SEIHO
                    END-IF
                ELSE
-                   IF      FLG-SEIHO            =   1
+                   IF    ( FLG-SEIHO            =   1     )
+                   AND   ( RECE01-KOHHKNNUM-O (1)
+                                            NOT =   "053" )
                        GO  TO  210-HENSYU-EXT
                    ELSE
       *                公費単独の場合退避
@@ -1181,12 +1186,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
              END-IF
            END-IF
       *
-      *    社保で公費併用の場合（生保、中国残留邦人等、自立支援）
+      *    社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
            IF    ( RECE01-HKNNUM   NOT =   SPACE )
            AND   ( RECE01-KOHHKNNUM-O (1)
                                        =   "012"   OR  "025"   OR 
                                            "015"   OR  "016"   OR
-                                           "021"                  )
+                                           "021"   OR  "053"      )
            AND   ( RECE01-KOHHKNNUM-O (2)
                                        =   SPACE                  )
                IF      RECE01-HKNNUM       =   "060"   OR  "067"   OR
@@ -1800,7 +1805,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
            IF      WRK-SEIHO-FLG           =   1
                IF    ( RECE02-KOHNUM (1)       =   "012"   OR  "025"
                                                OR  "015"   OR  "016"
-                                               OR  "021"             )
+                                               OR  "021"   OR  "053" )
                AND   ( RECE02-KOHNUM (2)       =   SPACE             )
                    MOVE    "1"                 TO  RECE02-SEIHOFLG
                END-IF

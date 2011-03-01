@@ -186,6 +186,8 @@
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1018,8 +1020,9 @@
       *
       *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF      RECE61-HKNNUM        =   SPACE
-               IF      RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"   OR
-                                                 "053"
+      *********IF      RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"   OR
+      *********                                  "053"
+               IF      RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
                    CONTINUE
                ELSE 
                    IF      RECE61-TEKSTYMD     =   ZERO
@@ -1064,7 +1067,9 @@
                            MOVE    1               TO  FLG-SEIHO
                        END-IF
                    ELSE
-                       IF      FLG-SEIHO            =   1
+                       IF    ( FLG-SEIHO            =   1     )
+                       AND   ( RECE61-KOHHKNNUM-O (1)
+                                            NOT =   "053" )
                            GO  TO  210-HENSYU-EXT
                        ELSE
       *                    公費単独の場合退避
@@ -1077,12 +1082,12 @@
               END-IF
            END-IF
       *
-      *    社保で公費併用の場合（生保、中国残留邦人等、自立支援）
+      *    社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
            IF    ( RECE61-HKNNUM   NOT =   SPACE )
            AND   ( RECE61-KOHHKNNUM-O (1)
                                        =   "012"   OR  "025"   OR 
                                            "015"   OR  "016"   OR
-                                           "021"                  )
+                                           "021"   OR  "053"      )
            AND   ( RECE61-KOHHKNNUM-O (2)
                                        =   SPACE                  )
                IF      RECE61-HKNNUM       =   "060"   OR  "067"   OR
@@ -1713,7 +1718,7 @@
            IF      WRK-SEIHO-FLG           =   1
                IF    ( RECE62-KOHNUM (1)       =   "012"   OR  "025"
                                                OR  "015"   OR  "016"
-                                               OR  "021"             )
+                                               OR  "021"   OR  "053" )
                AND   ( RECE62-KOHNUM (2)       =   SPACE             )
                    MOVE    "1"                 TO  RECE62-SEIHOFLG
                END-IF

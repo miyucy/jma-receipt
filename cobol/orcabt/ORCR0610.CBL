@@ -143,6 +143,8 @@
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2236,8 +2238,16 @@
            AND   ( COMB-KOH1HKNNUM    =   "020"
                                       OR  "030"
                                       OR  "053" )
-               MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
-               MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
+      *********MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMDX  (1)
+      *********MOVE    COMB-TEKEDYMD       TO  WRK-RECE61-TEKEDYMDX  (1)
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    WRK-RECE61-HOSPNUM  TO  PTKOH-HOSPNUM
+               MOVE    WRK-RECE61-PTID     TO  PTKOH-PTID
+               MOVE    COMB-KOHID (1)      TO  PTKOH-KOHID
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               PERFORM 900-PTKOHINF-READ-SEC
+               MOVE    PTKOH-TEKSTYMD      TO  WRK-RECE61-TEKSTYMDX  (1)
+               MOVE    PTKOH-TEKEDYMD      TO  WRK-RECE61-TEKEDYMDX  (1)
            END-IF
       *    
       *    主保険情報
@@ -2512,7 +2522,8 @@
            EXIT.
       *            
       *****************************************************************
-      *    出力処理（生保単独のときのみ）
+      *    出力処理
+      *    公費単独の場合（生保、中国残留邦人等、自立支援）
       *****************************************************************
        20013-SEIHO-RECE61-WRITE-SEC              SECTION.
       *

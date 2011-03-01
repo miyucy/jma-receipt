@@ -107,6 +107,8 @@
       *                                     キーにkohid 追加
       *  04.06.03    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.04    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2363,11 +2365,10 @@ grpsys                                         SPA-AREA
                    OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
                MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
       *
-      *        公費単独の場合（精神入院・心身喪失・児童保護・包括以外）
+      *        公費単独の場合（精神入院・心身喪失・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
                    IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
-                                                       "030"   OR
-                                                       "053"     )
+                                                       "030"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 
@@ -2432,11 +2433,10 @@ grpsys                                         SPA-AREA
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        公費単独の場合（精神入院・心身喪失・児童保護・包括以外）
+      *        公費単独の場合（精神入院・心身喪失・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
                    IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
-                                                       "030"   OR
-                                                       "053"     )
+                                                       "030"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 
@@ -2468,7 +2468,9 @@ grpsys                                         SPA-AREA
                                    END-IF
                                END-IF
                            ELSE
-                               IF      FLG-SEIHO            =   1
+                               IF    ( FLG-SEIHO       =   1     )
+                               AND   ( TOUKEI01-TKOHHKNNUM (1)
+                                                   NOT =   "053" )
                                    CONTINUE
                                ELSE 
                                   MOVE    1           TO  FLG-WRITE
@@ -2480,12 +2482,12 @@ grpsys                                         SPA-AREA
                   END-IF
                END-IF
       *
-      *        社保で公費併用の場合（生保、中国残留邦人等、自立支援）
+      *        社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
                IF    ( TOUKEI01-HKNNUM   NOT =   SPACE )
                AND   ( TOUKEI01-TKOHHKNNUM (1)
                                            =   "012"   OR  "025"   OR 
                                                "015"   OR  "016"   OR
-                                               "021"                  )
+                                               "021"   OR  "053"      )
                AND   ( TOUKEI01-TKOHHKNNUM (2)
                                            =   SPACE                  )
                    IF      TOUKEI01-HKNNUM   =
