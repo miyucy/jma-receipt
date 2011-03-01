@@ -30,7 +30,7 @@
       *  04.03.00    NACL-太田   08/10/31   オン帳票バッチ起動対応
       *  04.05.00    NACL-多々納 09/07/23   在宅・コメント対象対応
       *  04.05.00    NACL-多々納 09/09/XX   表示コメントコード対応
-      *  04.06.00    NACL-多々納  11/02/22  用法コメント対応
+      *  04.06.00    NACL-多々納 11/02/22   用法コメント対応
       *****************************************************************
       *
       *
@@ -71,6 +71,7 @@
            03  IDXY                PIC 9(04).
            03  IDXY2               PIC 9(04).
            03  IDT                 PIC 9(04).
+           03  IDXD                PIC 9(04).
       *
            03  IDX-ACT             PIC 9(02).
            03  IDX-REN             PIC 9(04).
@@ -94,15 +95,20 @@
                    07  TBL-YOURYOU         PIC 9(05)V9(05)
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
+      *            用法コメント
+                   07  TBL-YCOMMENT-OCC         OCCURS   20.
+                       09  TBL-YCOMMENT             PIC X(09).
+                       09  TBL-YINPUTCOMENT         PIC X(80).
                05  WRK-YSRYCD              PIC X(09).
                05  WRK-YSRYCD-NAME         PIC X(80).
                05  WRK-SRYKBN              PIC X(02).
                05  WRK-SRYSYUKBN           PIC X(03).
       *
                05  WRK-YOHOU-G.
-                   07  WRK-YOHOU-TBL       OCCURS  5.
+                   07  WRK-YOHOU-TBL       OCCURS  10.
                        09  WRK-YOHOU           PIC X(09).
                        09  WRK-YOHOU-NAME      PIC X(80).
+                       09  WRK-YOHOU-KBN       PIC X(01).
       *        コメント
                05  TBL-COMMENT-G           OCCURS   20.
                    07  TBL-COMMENT             PIC X(09).
@@ -287,7 +293,8 @@
                                            TO  WRK-SRYKBN
                MOVE    ORCSHCN30-SRYSYUKBN (IDT)
                                            TO  WRK-SRYSYUKBN
-               MOVE    SPACE               TO  WRK-YOHOU-G
+               INITIALIZE                      WRK-YOHOU-G
+               MOVE    ZERO                TO  IDXD
                PERFORM VARYING     IDXA    FROM    1   BY  1
                        UNTIL      (IDXA    >   50   )  OR
                                   (ORCSHCN30-SRYCD(IDT IDXA)  =   SPACE)
@@ -327,6 +334,7 @@
                                                    TO  TBL-SRYKAISU
                                                                  (IDX-S)
                END-IF
+               MOVE    ZERO                TO  IDXD
            END-IF
       *    用法編集
            IF      ORCSHCN30-SRYCD(IDT IDXA)(1:3)   =   "001"
@@ -342,26 +350,20 @@
                           (TNS-SSTKIJUNCD(3)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(4)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(5)   =   ZERO )
-                       CONTINUE
+                       MOVE    ZERO                TO  FLG-YSET
                    ELSE
-                       IF      WRK-YSRYCD      =   SPACE
-                           MOVE    ORCSHCN30-SRYCD(IDT IDXA) 
-                                                       TO  WRK-YSRYCD
-                           MOVE    ORCSHCN30-INPUTCOMENT(IDT IDXA)
-                                                   TO  WRK-YSRYCD-NAME
-                           MOVE    1                   TO  FLG-YSET
-                       END-IF
+                       MOVE    1                   TO  FLG-YSET
                    END-IF
-                   IF      FLG-YSET            =   ZERO
-                       ADD     1                   TO  IDXY
-                       IF      IDXY                <=  5
-                           MOVE    ORCSHCN30-SRYCD(IDT IDXA) 
+                   ADD     1                   TO  IDXY
+                   IF      IDXY                <=  10
+                       MOVE    ORCSHCN30-SRYCD(IDT IDXA)
                                                    TO  WRK-YOHOU
-                                                                (IDXY)
-                           MOVE    ORCSHCN30-INPUTCOMENT(IDT IDXA)
+                                                               (IDXY)
+                       MOVE    ORCSHCN30-INPUTCOMENT(IDT IDXA)
                                                    TO  WRK-YOHOU-NAME
-                                                                (IDXY)
-                       END-IF
+                                                               (IDXY)
+                       MOVE    FLG-YSET            TO  WRK-YOHOU-KBN
+                                                               (IDXY)
                    END-IF
                END-IF
            END-IF
@@ -400,16 +402,24 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
-      *       用法コメント
-              OR ((ORCSHCN30-SRYCD(IDT IDXA)(1:3)
-                                               =   "001" ) AND
-                  (TNS-KENTAICOMMENT           =   2     ))
                ADD     1                       TO  IDXC
                MOVE    ORCSHCN30-SRYCD (IDT IDXA)
                                                TO  TBL-COMMENT (IDXC)
                MOVE    ORCSHCN30-INPUTCOMENT (IDT IDXA)
                                                TO  TBL-INPUTCOMENT
                                                              (IDXC)
+           END-IF
+      *    用法コメント
+           IF    ((ORCSHCN30-SRYCD(IDT IDXA)(1:3)
+                                               =   "001" ) AND
+                  (TNS-KENTAICOMMENT           =   2     ))
+               ADD     1                       TO  IDXD
+               MOVE    ORCSHCN30-SRYCD (IDT IDXA)
+                                               TO  TBL-YCOMMENT
+                                                          (IDX-S IDXD)
+               MOVE    ORCSHCN30-INPUTCOMENT (IDT IDXA)
+                                               TO  TBL-YINPUTCOMENT
+                                                          (IDX-S IDXD)
            END-IF
       *
            .
@@ -419,6 +429,32 @@
       *    薬情報パラメタ編集処理
       *****************************************************************
        1001-HCN30TBL-SET-SEC         SECTION.
+      *
+      *    用法は最後の用法コードとする
+           MOVE    ZERO                TO  IDXY2
+           PERFORM VARYING     IDXY    FROM    10  BY  -1
+                   UNTIL      (IDXY        <   1      )
+               IF     (WRK-YOHOU(IDXY)     NOT =   SPACE )
+               AND    (WRK-YOHOU-KBN(IDXY)     =   "1"       )
+                   MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
+                   MOVE    WRK-YOHOU-NAME(IDXY)
+                                               TO  WRK-YSRYCD-NAME
+                   MOVE    SPACE               TO  WRK-YOHOU(IDXY)
+                   MOVE    1                   TO  IDXY
+               ELSE
+                   IF     (WRK-YOHOU(IDXY)     NOT =   SPACE )
+                   AND    (IDXY2               =   ZERO      )
+                       MOVE    IDXY            TO  IDXY2
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF     (WRK-YSRYCD              =   SPACE )
+              AND (IDXY2                   >   ZERO  )
+               MOVE    WRK-YOHOU(IDXY2)    TO  WRK-YSRYCD
+               MOVE    WRK-YOHOU-NAME(IDXY2)
+                                           TO  WRK-YSRYCD-NAME
+               MOVE    SPACE               TO  WRK-YOHOU(IDXY2)
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-S   )   OR
@@ -442,15 +478,9 @@
       *
                MOVE    ZERO                TO  IDXY2
                PERFORM VARYING     IDXY    FROM    1   BY  1
-                       UNTIL      (IDXY        >   5   )   OR
-                                  (WRK-YOHOU(IDXY) =   SPACE)
-                   IF      ORCHCN30-YSRYCD(IDY)     =   SPACE
-                       MOVE    WRK-YOHOU(IDXY)     TO  ORCHCN30-YSRYCD
-                                                                (IDY)
-                       MOVE    WRK-YOHOU-NAME (IDXY) 
-                                               TO  ORCHCN30-YSRYCD-NAME
-                                                                (IDY)
-                   ELSE
+                       UNTIL      (IDXY        >   10   )   OR
+                                  (IDXY2       >=  5    )
+                   IF      WRK-YOHOU(IDXY)     NOT =   SPACE
                        ADD     1                   TO  IDXY2
                        MOVE    WRK-YOHOU(IDXY)     TO  ORCHCN30-YOHOU
                                                             (IDY IDXY2)
@@ -459,15 +489,30 @@
                                                             (IDY IDXY2)
                    END-IF
                END-PERFORM
+      *        用法コメント
+               MOVE    ZERO                TO  IDXD
+               PERFORM VARYING     IDXC    FROM    1   BY  1
+                       UNTIL      (IDXC        >   10   )   OR
+                                  (TBL-YCOMMENT (IDX IDXC)  =   SPACE)
+                   ADD     1                   TO  IDXD
+                   MOVE    TBL-YCOMMENT (IDX IDXC)
+                                               TO  ORCHCN30-COMMENT-CD
+                                                            (IDY IDXD)
+                   MOVE    TBL-YINPUTCOMENT (IDX IDXC)
+                                               TO  ORCHCN30-COMMENT-MEI
+                                                            (IDY IDXD)
+               END-PERFORM
       *        コメント
                PERFORM VARYING     IDXC    FROM    1   BY  1
                        UNTIL      (IDXC        >   10   )   OR
                                   (TBL-COMMENT (IDXC)  =   SPACE)
+                             OR   (IDXD        >=  10   )
+                   ADD     1                   TO  IDXD
                    MOVE    TBL-COMMENT (IDXC)  TO  ORCHCN30-COMMENT-CD
-                                                            (IDY IDXC)
+                                                            (IDY IDXD)
                    MOVE    TBL-INPUTCOMENT (IDXC)
                                                TO  ORCHCN30-COMMENT-MEI
-                                                            (IDY IDXC)
+                                                            (IDY IDXD)
                END-PERFORM
       *
                EVALUATE    WRK-SRYKBN

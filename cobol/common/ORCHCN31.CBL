@@ -30,6 +30,7 @@
       * 04.05.00     NACL-森脇     09/06/22  小数点以下５桁に変更
       * 04.05.01     NACL-森脇     09/11/20  在宅・コメント対応
       * 04.05.02     NACL-森脇     10/01/26  コメント２、単位対応
+      * 04.06.00     NACL-多々納   11/02/28  用法コメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -798,17 +799,14 @@
            MOVE    0               TO  WRK-ZENSURYO
       *
       *    用法編集
-           IF      ORCHCN30-YSRYCD(CNT-PARA)   =   SPACE
-               IF      ORCHCN30-YSRYCD-NAME(CNT-PARA)    NOT =   SPACE
-                   MOVE    ORCHCN30-YSRYCD-NAME(CNT-PARA)
-                                           TO  WRK-HENSYUDATA
-                   PERFORM 250-HENSYU-SYORI-SEC
-               END-IF
-           ELSE
-               MOVE    ORCHCN30-YSRYCD(CNT-PARA)
-                                       TO  WRK-SRYCD
+           IF      ORCHCN30-YSRYCD-NAME(CNT-PARA)  =   SPACE
+               MOVE    ORCHCN30-YSRYCD(CNT-PARA)   TO  WRK-SRYCD
                PERFORM 900-TENSU-READ-SEC
-               MOVE    TNS-NAME        TO  WRK-HENSYUDATA
+               MOVE    TNS-NAME            TO  WRK-HENSYUDATA
+               PERFORM 250-HENSYU-SYORI-SEC
+           ELSE
+               MOVE    ORCHCN30-YSRYCD-NAME(CNT-PARA)
+                                           TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
            END-IF
       *
@@ -856,11 +854,11 @@
                PERFORM 241-NAIYO-YOUHOU-SET-SEC
            END-IF
       *    コメント
-           IF      PARA-COMMENT        =   1
+      *D   IF      PARA-COMMENT        =   1
                IF      ORCHCN30-COMMENT-G(CNT-PARA)    NOT =   SPACE
                    PERFORM 241-NAIYO-COMMENT-SET-SEC
                END-IF
-           END-IF
+      *D   END-IF
       *
       *    日数編集
            IF    ( ORCHCN30-ZAIKBN(CNT-PARA)   NOT =   3 ) AND
@@ -1128,16 +1126,10 @@
       *
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL  (IDX-KBN     >   5 )
-      *             OR     (ORCHCN30-YOHOU(CNT-PARA IDX-KBN) =   SPACE )
-      *        点数マスタ検索
-               IF      ORCHCN30-YOHOU(CNT-PARA IDX-KBN) =   SPACE
-                   IF      ORCHCN30-YOHOU-NAME(CNT-PARA IDX-KBN)
-                                                        NOT =   SPACE
-                       MOVE    ORCHCN30-YOHOU-NAME(CNT-PARA IDX-KBN)
-                                               TO  WRK-HENSYUDATA
-                       PERFORM 250-HENSYU-SYORI-SEC
-                   END-IF
-               ELSE
+                   OR     (ORCHCN30-YOHOU(CNT-PARA IDX-KBN) =   SPACE )
+               IF      ORCHCN30-YOHOU-NAME (CNT-PARA IDX-KBN)
+                                           =   SPACE
+      *            点数マスタ検索
                    MOVE    ORCHCN30-YOHOU (CNT-PARA IDX-KBN)
                                            TO  WRK-SRYCD
                    PERFORM 900-TENSU-READ-SEC
@@ -1145,6 +1137,10 @@
                        MOVE    TNS-NAME        TO  WRK-HENSYUDATA
                        PERFORM 250-HENSYU-SYORI-SEC
                    END-IF
+               ELSE
+                   MOVE    ORCHCN30-YOHOU-NAME (CNT-PARA IDX-KBN)
+                                               TO  WRK-HENSYUDATA
+                   PERFORM 250-HENSYU-SYORI-SEC
                END-IF
            END-PERFORM
       *
@@ -1161,6 +1157,10 @@
                    UNTIL  (IDX-KBN     >   10 )
                    OR     (ORCHCN30-COMMENT-CD(CNT-PARA IDX-KBN)
                                        =   SPACE )
+      *      コメント表示あり、または、用法コメント
+           IF     (PARA-COMMENT        =   1  )
+            OR    (ORCHCN30-COMMENT-CD(CNT-PARA IDX-KBN)(1:3)
+                                       =   "001"  )
                IF      ORCHCN30-COMMENT-MEI(CNT-PARA IDX-KBN)
                                            =   SPACE
       *            点数マスタ検索
@@ -1179,6 +1179,8 @@
                                            TO  WRK-HENSYUDATA
                    PERFORM 250-HENSYU-SYORI-SEC
                END-IF
+           END-IF
+      *
            END-PERFORM
       *
            .
