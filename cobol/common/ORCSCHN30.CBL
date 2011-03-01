@@ -410,9 +410,10 @@
                                                              (IDXC)
            END-IF
       *    用法コメント
-           IF    ((ORCSHCN30-SRYCD(IDT IDXA)(1:3)
+           IF     (ORCSHCN30-SRYCD(IDT IDXA)(1:3)
                                                =   "001" ) AND
-                  (TNS-KENTAICOMMENT           =   2     ))
+                  (TNS-KENTAICOMMENT           =   2     ) AND
+                  (IDX-S                   >   ZERO      )
                ADD     1                       TO  IDXD
                MOVE    ORCSHCN30-SRYCD (IDT IDXA)
                                                TO  TBL-YCOMMENT

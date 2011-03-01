@@ -935,8 +935,9 @@
                END-IF
            END-IF
       *    用法コメント
-           IF    ((TBL-SRY-SRYCD (IDXA)(1:3)   =   "001" ) AND
-                  (TNS-KENTAICOMMENT           =   2     ))
+           IF     (TBL-SRY-SRYCD (IDXA)(1:3)   =   "001" ) AND
+                  (TNS-KENTAICOMMENT           =   2     ) AND
+                  (IDX-S                       >   ZERO  )
                ADD     1                       TO  IDXD
                MOVE    TBL-SRY-SRYCD (IDXA)    TO  TBL-YCOMMENT
                                                        (IDX-S IDXD)
@@ -1375,9 +1376,10 @@
                                                              (IDXC)
            END-IF
       *    用法コメント
-           IF    ((ORCSCH30-SRYCD(IDT IDXA)(1:3)
+           IF     (ORCSCH30-SRYCD(IDT IDXA)(1:3)
                                                =   "001" ) AND
-                  (TNS-KENTAICOMMENT           =   2     ))
+                  (TNS-KENTAICOMMENT           =   2     ) AND
+                  (IDX-S                       >   ZERO  )
                ADD     1                       TO  IDXD
                MOVE    ORCSCH30-SRYCD(IDT IDXA)
                                                TO  TBL-YCOMMENT
