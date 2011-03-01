@@ -1069,7 +1069,7 @@
                    ELSE
                        IF    ( FLG-SEIHO            =   1     )
                        AND   ( RECE61-KOHHKNNUM-O (1)
-                                            NOT =   "053" )
+                                                NOT =   "053" )
                            GO  TO  210-HENSYU-EXT
                        ELSE
       *                    ¸øÈñÃ±ÆÈ¤Î¾ì¹çÂàÈò
