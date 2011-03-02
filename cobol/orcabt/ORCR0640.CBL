@@ -486,6 +486,7 @@
       *  04.05.15    NACL-門脇    11/02/17  災害対応修正（平成２３年１月〜）
       *  04.05.16    NACL-門脇    11/02/18  ７０歳代前半の特例措置延長対応
       *  04.05.17    NACL-門脇    11/02/18  出産一時金対応期間修正
+      *  04.05.18    NACL-門脇    11/03/02  山梨県地方公費対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -13176,6 +13177,22 @@
                 (RECE62-KOHNUM(4)   = RECE62-KOHNUMHC(IDX1 1)) AND
                 (RECE62-KOHID(4)    = RECE62-KOHIDHC(IDX1 1) ) AND
                 (TBL-TOKUSITUFLG(4) =  1                     ))
+           OR  ((RECE62-KOHNUM(1)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(1)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(1)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(1) =  1                     ))
+           OR  ((RECE62-KOHNUM(2)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(2)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(2)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(2) =  1                     ))
+           OR  ((RECE62-KOHNUM(3)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(3)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(3)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(3) =  1                     ))
+           OR  ((RECE62-KOHNUM(4)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(4)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(4)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(4) =  1                     ))
            OR  ((IDZ                =  2                     ) AND
                 (SYU-SKJ-FTNDAY(3)  =  1                     ))
               PERFORM 2104428-ICHIBUFTN-KOH-HEN5-SEC
@@ -13282,6 +13299,22 @@
            OR  ((RECE62-KOHNUM(4)   = SYU-KOH-HKNNUM(1)      ) AND
                 (RECE62-KOHNUM(4)   = RECE62-KOHNUMHC(IDX1 1)) AND
                 (RECE62-KOHID(4)    = RECE62-KOHIDHC(IDX1 1) ) AND
+                (TBL-TOKUSITUFLG(4) =  1                     ))
+           OR  ((RECE62-KOHNUM(1)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(1)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(1)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(1) =  1                     ))
+           OR  ((RECE62-KOHNUM(2)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(2)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(2)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(2) =  1                     ))
+           OR  ((RECE62-KOHNUM(3)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(3)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(3)    = RECE62-KOHIDHC(IDX1 2) ) AND
+                (TBL-TOKUSITUFLG(3) =  1                     ))
+           OR  ((RECE62-KOHNUM(4)   = SYU-KOH-HKNNUM(2)      ) AND
+                (RECE62-KOHNUM(4)   = RECE62-KOHNUMHC(IDX1 2)) AND
+                (RECE62-KOHID(4)    = RECE62-KOHIDHC(IDX1 2) ) AND
                 (TBL-TOKUSITUFLG(4) =  1                     ))
            OR  ((IDZ                =  2                     ) AND
                 (SYU-SKJ-FTNDAY(3)  =  1                     ))
@@ -14869,89 +14902,6 @@
                               0.5
                    END-IF
                  END-PERFORM
-      *
-               END-IF
-      *
-             WHEN    "19"
-      *
-               IF     (RECE62-KOHNUM(1)    =  "051" OR "091")
-               AND    (RECE62-KOHHBTNUM(2) =  "41"          )
-               AND    (RECE62-SRYYM       >=  "200804"      )
-      *
-                   COMPUTE  WRK-FTNKEI  = RECE62-HENTOTALTEN(3)
-                                        * 10
-                                        * RECE62-KYURATE
-                                        / 100
-                   IF   WK-GENGAKUKBN    NOT =   ZERO
-                      EVALUATE   WK-GENGAKUKBN
-                        WHEN        1
-                          IF  WK-GENGAKU-RITU = 100
-                            MOVE   ZERO   TO   WRK-FTNKEI
-                          ELSE
-                            COMPUTE  WK-GENGAKU-RITUX =
-                                     100 - WK-GENGAKU-RITU
-                            IF    WRK-FTNKEI  NOT = ZERO
-                              COMPUTE  WRK-FTNKEI         =
-                                       WRK-FTNKEI         *
-                                       WK-GENGAKU-RITUX   /
-                                       100
-                            END-IF
-                          END-IF
-                        WHEN        2
-                          CONTINUE
-                        WHEN        3
-                        WHEN        4
-                            MOVE   ZERO   TO   WRK-FTNKEI
-                      END-EVALUATE
-                   END-IF
-                   COMPUTE  WRK-FTNKEI  = WRK-FTNKEI  +  5
-                   COMPUTE  WRK-FTNKEI  = WRK-FTNKEI  / 10
-                   COMPUTE  WRK-FTNKEI  = WRK-FTNKEI  * 10
-      *
-                   COMPUTE  WRK-FTNKEI2 = RECE62-HENTOTALTEN(3)
-                                        * 10
-                                        * RECE62-HON-NYUKFTNRATE(2)
-                                        / 100
-                   COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 +  5
-                   COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 / 10
-                   COMPUTE  WRK-FTNKEI2 = WRK-FTNKEI2 * 10
-      *
-                   IF    WRK-FTNKEI2  >  WRK-FTNKEI
-                       MOVE  WRK-FTNKEI   TO  WRK-FTNKEI3
-                   ELSE
-                       MOVE  WRK-FTNKEI2  TO  WRK-FTNKEI3
-                   END-IF
-      *
-                   IF  RECE62-HON-NYUKFTNRATE(2) = 10
-                     EVALUATE    RECE62-TEISYOTOKU2(2)
-                       WHEN    SPACE
-                            MOVE   40200  TO  WRK-JYOGEN41
-                       WHEN    OTHER
-                            MOVE   24600  TO  WRK-JYOGEN41
-                     END-EVALUATE
-                   ELSE
-                            MOVE   72300  TO  WRK-JYOGEN41
-                   END-IF
-                   IF    WRK-JYOGEN41  >  WRK-FTNKEI3
-                       MOVE  WRK-FTNKEI3  TO  WRK-FTNKEI4
-                   ELSE
-                       MOVE  WRK-JYOGEN41 TO  WRK-FTNKEI4
-                   END-IF
-      *
-                   IF   RECE62-KOUREI    =  SPACE
-                     MOVE    WRK-FTNKEI4   TO  RECE62-FTNMONEY(3)
-                                               RECE62-FTNMONEY-KOJ(3)
-                   ELSE
-                     MOVE RECE62-HENTOTALTEN(3) TO WRK-HANTEI-TOTALTEN
-                     PERFORM  210464-JYOGENGAKU-HENSYU-SEC
-                     IF    WRK-FTNKEI4  >   WRK-KINGAKU3
-                       MOVE  WRK-KINGAKU3  TO  RECE62-FTNMONEY(3)
-                                               RECE62-FTNMONEY-KOJ(3)
-                     ELSE
-                       MOVE  WRK-FTNKEI4   TO  RECE62-FTNMONEY(3)
-                                               RECE62-FTNMONEY-KOJ(3)
-                     END-IF
-                   END-IF
       *
                END-IF
       *
