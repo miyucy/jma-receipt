@@ -179,6 +179,9 @@
       *                                     ÊÑ¹¹¤ËÈ¼¤¦½¤Àµ
       *  04.05.03    NACL-Æ£¸¶    10/04/13  °¦ÃÎ¸©ÂÐ±þ
       *                                     À¸ÊÝ¤ÈÆÃÄê¼À´µ£¹£±¤Îµ­ºÜ½ç 
+      *  04.05.04    NACL-Æ£¸¶    11/03/01  »³Íü¸©ÂÐ±þ
+      *                                     Ï·¿Í°åÎÅÈñ£´£±¤ÈÆÃÄê¼À´µ¤Î
+      *                                     µ­ºÜ½ç 
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
       *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
@@ -2264,6 +2267,38 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                    END-IF
                    IF      WRK-RECE01-KOHHKNNUM-O (IDX)
                                                =   "191"
+                       IF      WRK-SEIHO-IDX       >   0
+                           MOVE    WRK-RECE01-KOHI-TBL(IDX)
+                                               TO  WRK-KOHI
+                           MOVE    WRK-RECE01-KOHI-TBL (WRK-SEIHO-IDX)
+                                               TO  WRK-RECE01-KOHI-TBL
+                                                   (IDX)
+                           MOVE    WRK-KOHI    TO  WRK-RECE01-KOHI-TBL
+                                                   (WRK-SEIHO-IDX)
+                       END-IF
+                       MOVE    4                   TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    »³Íü¤ÎÆÃÄê¼À´µ¤ÈÏ·¿Í°åÎÅÈñ¡Ê£°£µ£±¡¢£°£¹£±¡Ü£±£´£±¡¢£²£´£±¡Ë
+           IF      SYS-1001-PREFNUM    =   "19"
+               MOVE    ZERO                TO  WRK-SEIHO-IDX
+                                               WRK-HIBAKU-IDX                                                 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       4
+                       OR      WRK-RECE01-KOHHKNNUM-O (IDX)
+                                   =       SPACE
+                   IF      WRK-RECE01-KOHHKNNUM-O (IDX)
+                                               =   "051"   OR  "091"
+                       IF      WRK-HIBAKU-IDX      =   0 
+                           MOVE    IDX                 TO  WRK-SEIHO-IDX
+                       ELSE
+                           MOVE    4                   TO  IDX
+                       END-IF
+                   END-IF
+                   IF      WRK-RECE01-KOHHKNNUM-O (IDX)
+                                               =   "141"   OR  "241"
                        IF      WRK-SEIHO-IDX       >   0
                            MOVE    WRK-RECE01-KOHI-TBL(IDX)
                                                TO  WRK-KOHI
