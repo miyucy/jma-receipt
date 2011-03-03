@@ -40,3 +40,6 @@
                05  ETENSU2-TK-SRYSYUKBN         PIC  X(03).
                05  ETENSU2-TK-SRYKBN-2          PIC  X(02).
                05  ETENSU2-TK-SRYSYUKBN-2       PIC  X(03).
+      *¹¹¿·ÍÑ
+           03  ETENSU2-UP-AREA.
+               05  ETENSU2-UPYUKOEDYMD  PIC  X(08).

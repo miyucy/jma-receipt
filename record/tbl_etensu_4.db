@@ -5,6 +5,8 @@ tbl_etensu_4 {
 	YUKOEDYMD			char(8);
 	KASAN				number(1,0);
 	CHGYMD   			char(8);
+#-----> 主キー更新用項目
+	UPYUKOEDYMD char(8),virtual;
 };
 primary	{
 	N_GROUP,SRYCD,YUKOSTYMD,YUKOEDYMD;
@@ -44,5 +46,35 @@ path	all	{
 				    SRYCD,
 				    YUKOSTYMD
  		;
+	};
+};
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_etensu_4_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_etensu_4
+		WHERE   N_GROUP  =   :N_GROUP
+		AND     SRYCD    =   :SRYCD
+			ORDER   BY  YUKOSTYMD
+		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_etensu_4
+				SET
+				N_GROUP      = :N_GROUP,
+				SRYCD      = :SRYCD,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				KASAN      = :KASAN,
+				CHGYMD      = :CHGYMD
+			WHERE 	N_GROUP      = :N_GROUP
+			AND	SRYCD      =  :SRYCD
+			AND	YUKOSTYMD	=	:YUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
 	};
 };

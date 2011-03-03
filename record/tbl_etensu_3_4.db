@@ -6,6 +6,8 @@ tbl_etensu_3_4 {
 	HAIHAN				number(1,0);
 	TOKUREI				number(1,0);
 	CHGYMD   			char(8);
+#-----> 主キー更新用項目
+	UPYUKOEDYMD char(8),virtual;
 };
 primary	{
 	SRYCD1,SRYCD2,YUKOSTYMD,YUKOEDYMD;
@@ -33,5 +35,36 @@ path	all	{
 				    SRYCD2,
 				    YUKOSTYMD
  		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_etensu_3_4_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_etensu_3_4
+		WHERE   SRYCD1   =   :SRYCD1
+		AND     SRYCD2   =   :SRYCD2
+			ORDER   BY  YUKOSTYMD
+		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_etensu_3_4
+				SET
+				SRYCD1      = :SRYCD1,
+				SRYCD2      = :SRYCD2,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				HAIHAN      = :HAIHAN,
+				TOKUREI      = :TOKUREI,
+				CHGYMD      = :CHGYMD
+			WHERE 	SRYCD1   =   :SRYCD1
+			AND     SRYCD2   =   :SRYCD2
+			AND	YUKOSTYMD	=	:YUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
 	};
 };

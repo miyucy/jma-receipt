@@ -15,6 +15,8 @@ tbl_etensu_1 {
 	N_GROUP				number(3,0);
 	C_KAISU				number(1,0);
 	CHGYMD   			char(8);
+#-----> 主キー更新用項目
+	UPYUKOEDYMD char(8),virtual;
 };
 primary	{
 	SRYCD,YUKOSTYMD,YUKOEDYMD;
@@ -64,5 +66,32 @@ path	all	{
 			ORDER   BY  SRYCD,
 				    YUKOSTYMD
  		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_etensu_1
+				SET
+				SRYCD      = :SRYCD,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				H_TANI1      = :H_TANI1,
+				H_GROUP1      = :H_GROUP1,
+				H_TANI2      = :H_TANI2,
+				H_GROUP2      = :H_GROUP2,
+				H_TANI3      = :H_TANI3,
+				H_GROUP3      = :H_GROUP3,
+				R_DAY      = :R_DAY,
+				R_MONTH      = :R_MONTH,
+				R_SAME      = :R_SAME,
+				R_WEEK      = :R_WEEK,
+				N_GROUP      = :N_GROUP,
+				C_KAISU      = :C_KAISU,
+				CHGYMD      = :CHGYMD
+			WHERE 	SRYCD      =  :SRYCD
+			AND	YUKOSTYMD	=	:YUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
 	};
 };

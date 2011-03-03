@@ -7,6 +7,8 @@ tbl_etensu_5 {
 	KAISU				number(3,0);
 	TOKUREI				number(1,0);
 	CHGYMD   			char(8);
+#-----> 主キー更新用項目
+	UPYUKOEDYMD char(8),virtual;
 };
 primary	{
 	SRYCD,YUKOSTYMD,YUKOEDYMD;
@@ -43,5 +45,24 @@ path	all	{
 			ORDER   BY  SRYCD,
 				    YUKOSTYMD
  		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_etensu_5
+				SET
+				SRYCD      = :SRYCD,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				TANICD      = :TANICD,
+				TANINAME      = :TANINAME,
+				KAISU      = :KAISU,
+				TOKUREI      = :TOKUREI,
+				CHGYMD      = :CHGYMD
+			WHERE 	SRYCD      =  :SRYCD
+			AND	YUKOSTYMD	=	:YUKOSTYMD
+			AND	YUKOEDYMD	=	:UPYUKOEDYMD
+		;
 	};
 };

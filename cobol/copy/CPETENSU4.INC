@@ -36,3 +36,6 @@
            03  ETENSU4-KASAN                   PIC  9(01).
       *    作成年月日
            03  ETENSU4-CHGYMD                  PIC  X(08).
+      *更新用
+           03  ETENSU4-UP-AREA.
+               05  ETENSU4-UPYUKOEDYMD  PIC  X(08).

@@ -40,4 +40,7 @@
            03  ETENSU3-TOKUREI             PIC  9(01).
       *作成年月日
            03  ETENSU3-CHGYMD              PIC  X(08).
+      *更新用
+           03  ETENSU3-UP-AREA.
+               05  ETENSU3-UPYUKOEDYMD  PIC  X(08).
       *

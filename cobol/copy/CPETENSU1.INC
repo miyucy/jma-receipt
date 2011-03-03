@@ -53,3 +53,6 @@
            03  ETENSU1-C-KAISU                 PIC  9(01).
       *    作成年月日
            03  ETENSU1-CHGYMD                  PIC  X(08).
+      *更新用
+           03  ETENSU1-UP-AREA.
+               05  ETENSU1-UPYUKOEDYMD  PIC  X(08).

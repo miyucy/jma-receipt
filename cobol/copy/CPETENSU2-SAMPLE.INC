@@ -39,3 +39,6 @@
            03  ETNSSMP-SAMPLECD            PIC  X(09).
       *作成年月日
            03  ETNSSMP-CHGYMD              PIC  X(08).
+      *更新用
+           03  ETNSSMP-UP-AREA.
+               05  ETNSSMP-UPYUKOEDYMD  PIC  X(08).
