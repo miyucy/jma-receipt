@@ -33,7 +33,7 @@
       *    算定単位コード
            03  ETENSU5-TANICD                  PIC  9(03).
       *    算定単位名称
-           03  ETENSU5-TANICD                  PIC  X(12).
+           03  ETENSU5-TANINAME                PIC  X(12).
       *    算定回数
            03  ETENSU5-KAISU                   PIC  9(03).
       *    特例条件
