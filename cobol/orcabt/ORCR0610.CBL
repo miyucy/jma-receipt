@@ -138,9 +138,12 @@
       *                                     ¾¸¤ò¥¨¥é¡¼¤È¤¹¤ë
       *  04.05.02    NACL-Æ£¸¶    10/04/13  °¦ÃÎ¸©ÂÐ±þ
       *                                     À¸ÊÝ¤ÈÆÃÄê¼À´µ£¹£±¤Îµ­ºÜ½ç 
-      *  04.05.04    NACL-Æ£¸¶    11/03/01  »³Íü¸©ÂÐ±þ
+      *  04.05.03    NACL-Æ£¸¶    11/03/01  »³Íü¸©ÂÐ±þ
       *                                     Ï·¿Í°åÎÅÈñ£´£±¤ÈÆÃÄê¼À´µ¤Î
       *                                     µ­ºÜ½ç 
+      *  04.05.04    NACL-Æ£¸¶    11/03/02  ÆÁÅç¸©ÂÐ±þ
+      *                                     Æý»ù£´£µ¡¢£´£¸¤¬·îÅÓÃæ¤ÇÊÑ¹¹
+      *                                     ¤Ë¤Ê¤Ã¤¿¾ì¹ç¤Îµ­ºÜ½ç
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
       *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
@@ -383,11 +386,14 @@
                    07  WRK-KOHPAYKBN-O PIC  X(02).
                    07  WRK-RECESKYKBN-O
                                        PIC  X(01).
+                   07  WRK-KOHTEKSTYMD-O
+                                       PIC  X(08).
            03  WRK-KOHI.
                05  WRK-KOHID           PIC  9(10).
                05  WRK-KOHHKNNUM       PIC  X(03).
                05  WRK-KOHPAYKBN       PIC  X(02).
                05  WRK-RECESKYKBN      PIC  X(01).
+               05  WRK-KOHTEKSTYMD     PIC  X(08).
       *
       *    ÀÁµá¶èÊ¬ÊÌ¸øÈñ¾ðÊó¡Ê£±¡§¥ì¥»¥×¥È¡¡£²¡§ÀÁµá½ñ¡Ë
            03  WRK-SEIKYUKBN-KOHI-AREA.
@@ -397,6 +403,7 @@
                        09  WRK-SEIKYU-KOHHKNNUM  PIC  X(03).
                        09  WRK-SEIKYU-KOHPAYKBN  PIC  X(02).
                        09  WRK-SEIKYU-RECESKYKBN PIC  X(01).
+                       09  WRK-SEIKYU-TEKSTYMD   PIC  X(08).
       *
        01  WRK-SRT-AREA.
            03  WRK-SRT-TABLE.
@@ -1360,6 +1367,8 @@
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
                        MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
+                       MOVE    COMB-TEKSTYMD          TO
+                                          WRK-SEIKYU-TEKSTYMD (IDX1 IDY)
       *                Ê¡²¬¸©¤Î¹ñÊÝ¤Î¤È¤­¡Ê£´£±Ï·¿Í°Ê³°¡Ë
                        IF    ( COMB-HKNNUM     =   "060"   OR  "067" )
                        AND   ( SYS-1001-PREFNUM
@@ -1810,6 +1819,8 @@
                                           WRK-SEIKYU-KOHHKNNUM(IDX1 IDY)
                        MOVE    COMB-KOHID     (IDX)   TO
                                           WRK-SEIKYU-KOHID    (IDX1 IDY)
+                       MOVE    COMB-TEKSTYMD          TO
+                                          WRK-SEIKYU-TEKSTYMD (IDX1 IDY)
       *                Ê¡²¬¸©¤Î¹ñÊÝ¤Î¤È¤­¡Ê£´£±Ï·¿Í°Ê³°¡Ë
                        IF    ( COMB-HKNNUM     =   "060"   OR  "067" )
                        AND   ( SYS-1001-PREFNUM
@@ -2700,7 +2711,42 @@
                                    END-IF
                                END-IF    
                            ELSE
-                               IF      WRK-KOHHKNNUM-O (IDX)
+      *                        ÆÁÅç¸©¤ÎÃÏÊý¸øÈñ¡ÊË¡ÊÌ£´£µ¡¢£´£¸¡Ë
+                               IF    ( SYS-1001-PREFNUM    =   "36"    ) 
+                               AND   ( WRK-KOHHKNNUM-O (IDX) (2:2)
+                                                   =   "45"    OR "48" )
+                               AND   ( WRK-KOHHKNNUM-O (IDY) (2:2)
+                                                   =   "45"    OR "48" )
+                                   IF      WRK-KOHTEKSTYMD-O (IDX)
+                                                   <   WRK-KOHTEKSTYMD-O
+                                                                (IDY)
+                                       CONTINUE
+                                   ELSE
+                                       IF      WRK-KOHTEKSTYMD-O (IDX)
+                                                   >   WRK-KOHTEKSTYMD-O
+                                                                (IDY)
+                                           MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                           MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                           MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                       ELSE
+                                           IF    ( WRK-KOHHKNNUM-O (IDX)
+                                                   >   WRK-KOHHKNNUM-O
+                                                                (IDY) )
+                                               MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                               MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                               MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                           END-IF
+                                       END-IF
+                                   END-IF
+                               ELSE
+      *
+                                 IF      WRK-KOHHKNNUM-O (IDX)
                                                >   WRK-KOHHKNNUM-O (IDY)
                                    MOVE    WRK-KOHI-TBL(IDX)
                                                    TO  WRK-KOHI
@@ -2708,6 +2754,7 @@
                                                    TO  WRK-KOHI-TBL(IDX)
                                    MOVE    WRK-KOHI
                                                    TO  WRK-KOHI-TBL(IDY)
+                                 END-IF
                                END-IF
                            END-IF
                        END-IF    
@@ -2838,6 +2885,13 @@
                    MOVE    WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)
                                            TO  WRK-KOHHKNNUM-O(IDY)
                    MOVE    WRK-RECESKYKBN  TO  WRK-RECESKYKBN-O(IDY)
+      *            ÆÁÅç¸©¤ÎÃÏÊý¸øÈñ¡ÊË¡ÊÌ£´£µ¡¢£´£¸¡Ë¤Î¤È¤­³«»ÏÆü¥»¥Ã¥È
+                   IF    ( SYS-1001-PREFNUM    =   "36"             )
+                   AND   ( WRK-SEIKYU-KOHHKNNUM(IDX1 IDX) (2:2)
+                                               =   "45"    OR  "48" )
+                       MOVE    WRK-SEIKYU-TEKSTYMD (IDX1 IDX)
+                                           TO  WRK-KOHTEKSTYMD-O (IDY)
+                   END-IF 
                    MOVE    1               TO  FLG-ADDKBN
                    MOVE    4               TO  IDY
                ELSE 
