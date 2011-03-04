@@ -194,6 +194,7 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
+           INITIALIZE                      XML-PATIENTINFORES
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
