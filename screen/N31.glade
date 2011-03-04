@@ -415,22 +415,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label549</name>
-      <x>56</x>
-      <y>624</y>
-      <width>144</width>
-      <height>24</height>
-      <label>町域名</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>POST</name>
       <x>136</x>
@@ -493,8 +477,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Fri, 06 Aug 2004 01:45:56 GMT</last_modification_time>
 	</signal>
-	<columns>4</columns>
-	<column_widths>20,40,60,80</column_widths>
+	<columns>5</columns>
+	<column_widths>20,40,60,336,200</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -543,6 +527,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label552</name>
 	  <label>町域名</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label555</name>
+	  <label>通り名称</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -781,6 +778,82 @@
       <text>あいうえおかきくけこさしすせそたちつてとなにぬねの</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>TOWNNAME2</name>
+      <x>200</x>
+      <y>660</y>
+      <width>720</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:05:17 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:05:36 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>600</text_max_length>
+      <text></text>
+      <input_mode>XIM</input_mode>
+      <xim_enabled>True</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label549</name>
+      <x>56</x>
+      <y>624</y>
+      <width>144</width>
+      <height>24</height>
+      <label>町域名</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label556</name>
+      <x>56</x>
+      <y>660</y>
+      <width>144</width>
+      <height>24</height>
+      <label>通り名称</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NEXT</name>
+      <x>872</x>
+      <y>376</y>
+      <width>104</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

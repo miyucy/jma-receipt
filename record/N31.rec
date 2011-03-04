@@ -1,24 +1,27 @@
 N31	{
 	fixed6	{
 		B06	{
-			state   int;
+			state	int;
 		};
 		B07	{
-			state   int;
+			state	int;
 		};
 		POST	{
 			value	varchar(7);
 		};
 		scrolledwindow1	{
 			CYOIKILST	{
+				label554	{
+					value	varchar(2);
+				};
 				count	int;
 				row	int;
-				rowattr	int;
 				item	{
 					value0	varchar(2);
 					value1	varchar(4);
 					value2	varchar(7);
 					value3	varchar(100);
+					value4	varchar(600);
 				}	[100];
 				select	bool[100];
 			};
@@ -50,6 +53,13 @@ N31	{
 		};
 		TOWNNAME	{
 			value	varchar(50);
+		};
+		TOWNNAME2	{
+			value	varchar(600);
+		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
 		};
 	};
 };
