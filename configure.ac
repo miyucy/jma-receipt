@@ -10,7 +10,7 @@ AC_SUBST(VERSION)
 AC_PREFIX_DEFAULT(/usr/local/orca)
 
 dnl --enable-debug
-AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging [default=yes]],,enable_debug="yes")
+AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging [default=no]],,enable_debug="no")
 
 if test "x$enable_debug" = "xyes"; then
   DEBUG="debug"
