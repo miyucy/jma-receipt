@@ -45,6 +45,7 @@
       *                                     入院中１回のチェック追加
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
       *                                     他月数９９　対応
+      *  04.06.00    NACL-多々納  10/12/XX  週回数対応
       *****************************************************************
       *
       *
@@ -163,6 +164,7 @@
                05  WRK-END-YM          PIC 9(06).
                05  WRK-END-DD          PIC 9(02).
            03  WRK-SRYYM               PIC X(06).
+           03  WRK-SRYYMD              PIC X(08).
            03  IDX-Y3                  PIC 9(02).
            03  IDX-ST                  PIC 9(02).
            03  IDX-ED                  PIC 9(02).
@@ -1143,17 +1145,20 @@
            MOVE    WRK-STR-YM          TO  WRK-SRYYM
            PERFORM 1091-SANTEIREC-KEN-SEC
       *
+      *    MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           MOVE    WRK-END-YMD         TO  WRK-SRYYMD
+      *
            MOVE    ZERO                TO  WRK-WEEK-CNT
            MOVE    WRK-STR-DD          TO  IDX-ST
-           IF      WRK-STR-YMD(1:6)    =   SPA-SRYYMD(1:6)
-               MOVE    SPA-SRYYMD(7:2)     TO  IDX-ED
+           IF      WRK-STR-YMD(1:6)    =   WRK-SRYYMD(1:6)
+               MOVE    WRK-SRYYMD(7:2)     TO  IDX-ED
            ELSE
                MOVE    31                  TO  IDX-ED
            END-IF
            MOVE    ZERO                TO  WRK-CNT-DAY
       *    外来まとめの当月分は対象外
            IF     (LNK-SC91-KT01FLG    =   "1"             )
-              AND (WRK-SRYYM           =   SPA-SRYYMD(1:6) )
+              AND (WRK-SRYYM           =   WRK-SRYYMD(1:6) )
                MOVE    32                  TO  IDX-ST
            END-IF
       *
@@ -1162,7 +1167,7 @@
                IF     (SANTEI-DAY (IDD)    >   ZERO    )
                    ADD     SANTEI-DAY (IDD)    TO  WRK-WEEK-CNT
                    IF     (WRK-TEI-CNT         >   ZERO  )  AND
-                          (IDD                 =   SPA-SRYYMD(7:2))
+                          (IDD                 =   WRK-SRYYMD(7:2))
                        CONTINUE
                    ELSE
                        MOVE    IDD                 TO  WRK-CNT-DAY
@@ -1175,20 +1180,20 @@
                MOVE    WRK-CNT-DAY         TO  WRK-CHK-SRYDD
            END-IF
       *
-           IF      WRK-STR-YMD(1:6)    NOT =   SPA-SRYYMD(1:6)
+           IF      WRK-STR-YMD(1:6)    NOT =   WRK-SRYYMD(1:6)
       *    外来まとめの当月分は対象外
            AND    (LNK-SC91-KT01FLG    NOT =   "1"             )
-               MOVE    SPA-SRYYMD (1:6)    TO  WRK-SRYYM
+               MOVE    WRK-SRYYMD (1:6)    TO  WRK-SRYYM
                PERFORM 1091-SANTEIREC-KEN-SEC
                MOVE    1                   TO  IDX-ST
-               MOVE    SPA-SRYYMD(7:2)     TO  IDX-ED
+               MOVE    WRK-SRYYMD(7:2)     TO  IDX-ED
                MOVE    ZERO                TO  WRK-CNT-DAY
                PERFORM VARYING     IDD     FROM    IDX-ST  BY  1
                        UNTIL       IDD     >   IDX-ED
                    IF     (SANTEI-DAY (IDD)    >   ZERO    )
                        ADD     SANTEI-DAY (IDD)    TO  WRK-WEEK-CNT
                        IF     (WRK-TEI-CNT         >   ZERO  )  AND
-                              (IDD                 =   SPA-SRYYMD(7:2))
+                              (IDD                 =   WRK-SRYYMD(7:2))
                            CONTINUE
                        ELSE
                            MOVE    IDD                 TO  WRK-CNT-DAY
