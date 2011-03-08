@@ -576,13 +576,14 @@
                END-UNSTRING
                MOVE    WRK-PARA-REC1       TO  WRK-PARA-REC
       *
-               EVALUATE    WRK-PARA-REC (1:2)
-                   WHEN    "HI"
+               EVALUATE    WRK-PARA-REC (1:2)  
+                                           ALSO    WRK-FILE-TMP(10:12)
+                   WHEN    "HI"            ALSO     ANY
                        MOVE    ZERO            TO  IDZZ
                        MOVE    8               TO  SPLIT-CNT
                        MOVE    9               TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "RE"
+                   WHEN    "RE"            ALSO     ANY
                        IF      IDZZ            >   ZERO
       *                    ＤＢ更新処理（返戻ファイル）
                            PERFORM 20021-DB-UPDATE-SEC
@@ -596,27 +597,31 @@
                        MOVE    14              TO  SPLIT-CNT
                        MOVE    15              TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "HO"
+                   WHEN    "HO"            ALSO     ANY
                        ADD     1               TO  IDZZ
                        MOVE    4               TO  SPLIT-CNT
                        MOVE    5               TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "KO"
+                   WHEN    "KO"            ALSO     ANY
                        ADD     1               TO  IDZZ
                        MOVE    4               TO  SPLIT-CNT
                        MOVE    5               TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "8,"
+                   WHEN    "8,"            ALSO     "RECEIPTC.HEN"
+                   WHEN    "1,"            ALSO     "RECEIPTC.SAH"
+                   WHEN    "2,"            ALSO     "RECEIPTC.SAH"
+                   WHEN    "3,"            ALSO     "RECEIPTC.SAH"
+                   WHEN    "4,"            ALSO     "RECEIPTC.SAH"
                        ADD     1               TO  IDZZ
                        MOVE    5               TO  SPLIT-CNT
                        MOVE    6               TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "HR"
+                   WHEN    "HR"            ALSO     ANY
                        ADD     1               TO  IDZZ
                        MOVE    14              TO  SPLIT-CNT
                        MOVE    15              TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
-                   WHEN    "HG"
+                   WHEN    "HG"            ALSO     ANY
                        ADD     1               TO  IDZZ
                        MOVE    4               TO  SPLIT-CNT
                        MOVE    5               TO  SPLIT-CNT1
@@ -1512,8 +1517,8 @@
       *****************************************************************
        2001133-RECEIPTC-KOUMOKU-BETU-SEC     SECTION.
       *
-           EVALUATE    WRK-PARA-REC(1:2)
-               WHEN    "HI"
+           EVALUATE    WRK-PARA-REC(1:2)     ALSO    WRK-FILE-TMP(10:12)
+               WHEN    "HI"                  ALSO    ANY
                    EVALUATE    WRK-KOUMOKU-NO
       *                審査支払機関コード
                        WHEN    2
@@ -1559,7 +1564,7 @@
                                PERFORM 500-COBABORT-SEC
                            END-IF
                    END-EVALUATE
-               WHEN    "HR"
+               WHEN    "HR"                  ALSO    ANY
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1677,7 +1682,7 @@
                                END-IF
                            END-IF
                    END-EVALUATE
-               WHEN    "HG"
+               WHEN    "HG"                  ALSO    ANY
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1728,7 +1733,7 @@
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
-               WHEN    "RE"
+               WHEN    "RE"                  ALSO    ANY
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE ZERO               TO  KO-B-CNT
@@ -1828,7 +1833,7 @@
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
-               WHEN    "HO"
+               WHEN    "HO"                  ALSO    ANY
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1856,7 +1861,7 @@
                            MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-NUM
                    END-EVALUATE
-               WHEN    "KO"
+               WHEN    "KO"                  ALSO    ANY
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1875,21 +1880,25 @@
                                                    TO
                                            WRK-HENREI-B-JKYNUM(KO-B-CNT)
                     END-EVALUATE
-               WHEN    "KH"
-               WHEN    "SY"
-               WHEN    "SI"
-               WHEN    "IY"
-               WHEN    "TO"
-               WHEN    "CO"
-               WHEN    "NI"
-               WHEN    "SJ"
+               WHEN    "KH"                  ALSO    ANY
+               WHEN    "SY"                  ALSO    ANY
+               WHEN    "SI"                  ALSO    ANY
+               WHEN    "IY"                  ALSO    ANY
+               WHEN    "TO"                  ALSO    ANY
+               WHEN    "CO"                  ALSO    ANY
+               WHEN    "NI"                  ALSO    ANY
+               WHEN    "SJ"                  ALSO    ANY
                    MOVE    0               TO  TBL-HENREI-B-SELECT-FLG
                                                             (IDZZ)
                    MOVE    SPACE           TO  TBL-HENREI-B-HENREI-INFO1
                                                             (IDZZ)
                    MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
-               WHEN    "8,"
+               WHEN    "8,"                  ALSO    "RECEIPTC.HEN"
+               WHEN    "1,"                  ALSO    "RECEIPTC.SAH"
+               WHEN    "2,"                  ALSO    "RECEIPTC.SAH"
+               WHEN    "3,"                  ALSO    "RECEIPTC.SAH"
+               WHEN    "4,"                  ALSO    "RECEIPTC.SAH"
                    EVALUATE    WRK-KOUMOKU-NO
       *                データ識別
                        WHEN    1
