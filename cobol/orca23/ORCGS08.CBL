@@ -93,6 +93,7 @@
            03  WRK-SKYYMD.
                05  WRK-SKYYM               PIC X(06).
                05  WRK-SKYDD               PIC X(02).
+           03  WRK-BUNBENKBN               PIC X(01).
       *
       *
        01  CONST-AREA.
@@ -464,7 +465,6 @@
            MOVE    BUNBEN-NINPUFTN-MONEY
                                        TO  SPA-GMN-NINPUFTN-MONEY
            MOVE    BUNBEN-DAIRI-MONEY  TO  SPA-GMN-DAIRI-MONEY
-           MOVE    BUNBEN-BIKOU        TO  SPA-GMN-BIKOU
            MOVE    BUNBEN-HKNJANUM-S   TO  SPA-NAI-HKNJANUM-S
       *
            IF    ( SPA-NAI-GNEW    =   1 )
@@ -500,8 +500,10 @@
                MOVE    LNKBUNBEN-DAIRI-MONEY
                                            TO  SPA-GMN-DAIRI-MONEY
       *
-               IF    ( FLG-SAIKEISAN       =   ZERO )
+               IF    ( SPA-NAI-GNEW    =   1 )
+                AND  ( FLG-SAIKEISAN   =   ZERO )
                    MOVE    "Ｅ外来出産"    TO  SPA-GMN-BIKOU
+                                               BUNBEN-BIKOU
                    MOVE    LNKBUNBEN-NYUIN-DAY
                                            TO  BUNBEN-NYUIN-DAY
       *
@@ -599,6 +601,18 @@
                                        TO  SPA-GMN-BUNBENKBN-G
            END-IF
       *
+           MOVE    BUNBEN-TEISYUTUSAKI TO SPA-GMN-TEISYUTUSAKI
+      *
+           MOVE    SPA-GMN-TEISYUTUSAKI TO WRK-CMB-CD
+           PERFORM 4200-TEISYUTUSAKILST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-TEISYUTUSAKI-G
+           IF    ( WRK-CMB-ITM             =   SPACE )
+               PERFORM 3121-TEISYUTUSAKI-EDIT-SEC
+               MOVE    SPA-GMN-TEISYUTUSAKI    TO  WRK-CMB-CD
+               PERFORM 4200-TEISYUTUSAKILST-CHK-SEC
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-TEISYUTUSAKI-G
+           END-IF
+      *
            MOVE    BUNBEN-BIRTHDAY     TO  SPA-NAI-BIRTHDAY-BABY
            MOVE    BUNBEN-BIRTHDAY     TO  WRK-SYMD
            PERFORM 800-HIZUKE-CHK-SEC
@@ -630,9 +644,28 @@
                                    TO  SPA-GMN-SANKAKBN-G
                END-IF
            END-IF
+           MOVE    BUNBEN-BIKOU        TO  SPA-GMN-BIKOU
       *
            .
        312-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    提出先編集処理
+      *****************************************************************
+       3121-TEISYUTUSAKI-EDIT-SEC              SECTION.
+      *
+           IF    ( SPA-GMN-BUNBENKBN       =   "1" )
+                   MOVE    "2"     TO  SPA-GMN-TEISYUTUSAKI
+           ELSE
+               IF    ( SPA-NAI-RECESAKI    =   "2" )
+                   MOVE    "2"     TO  SPA-GMN-TEISYUTUSAKI
+               ELSE
+                   MOVE    "1"     TO  SPA-GMN-TEISYUTUSAKI
+               END-IF
+           END-IF
+      *
+           .
+       3121-TEISYUTUSAKI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    コンボボックス編集処理
@@ -650,6 +683,9 @@
       *
       *    分娩区分
            PERFORM 3101-BUNBENKBNLST-SEC
+      *
+      *    提出先区分
+           PERFORM 3101-TEISYUTUSAKILST-SEC
       *
       *    死産有無区分
            PERFORM 3101-SIZANKBNLST-SEC
@@ -730,6 +766,22 @@
        3101-BUNBENKBNLST-EXT.
            EXIT.
       *****************************************************************
+      *    提出先コンボ初期処理
+      *****************************************************************
+       3101-TEISYUTUSAKILST-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-GMN-TEISYUTUSAKILST-G
+           MOVE    "1"             TO  SPA-GMN-TEISYUTUSAKIL   (1)
+           MOVE    "支払基金"      TO  SPA-GMN-TEISYUTUSAKIMEIL(1)
+           MOVE    "2"             TO  SPA-GMN-TEISYUTUSAKIL   (2)
+           MOVE    "国保連合会"    TO  SPA-GMN-TEISYUTUSAKIMEIL(2)
+      *
+           MOVE    2               TO  SPA-GMN-TEISYUTUSAKI-MAX
+      *
+           .
+       3101-TEISYUTUSAKILST-EXT.
+           EXIT.
+      *****************************************************************
       *    死産有無区分コンボ初期処理
       *****************************************************************
        3101-SIZANKBNLST-SEC            SECTION.
@@ -800,6 +852,8 @@
       *****************************************************************
        320-SAIKEISAN-SEC                 SECTION.
       *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
            IF    ( SPA-S08-NYUGAIKBN    =   "2" )
                PERFORM 800-ORCSBUNBENFTN-SEC
       *
@@ -807,6 +861,8 @@
       *
                MOVE    1               TO  FLG-SAIKEISAN
                PERFORM 311-SPASET-SEC
+               PERFORM 4102-KIHON-CHK-SEC
+               MOVE    SPACE           TO  SPA-ERRCD
            END-IF
       *
            .
@@ -989,11 +1045,14 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+           MOVE    SPA-GMN-BUNBENKBN-G TO  WRK-BUNBENKBN
+      *
            MOVE    S08-RIYOUKBN        TO  SPA-GMN-RIYOUKBN-G
            MOVE    S08-SKYYM           TO  SPA-GMN-SKYYM
            MOVE    S08-TEISYUTUBIKBN   TO  SPA-GMN-TEISYUTUBIKBN-G
            MOVE    S08-SKYKBN          TO  SPA-GMN-SKYKBN-G
            MOVE    S08-BUNBENKBN       TO  SPA-GMN-BUNBENKBN-G
+           MOVE    S08-TEISYUTUSAKI    TO  SPA-GMN-TEISYUTUSAKI-G
            MOVE    S08-ZAIWEEK         TO  SPA-GMN-ZAIWEEK
            MOVE    S08-BIRTHDAY-BABY   TO  SPA-GMN-BIRTHDAY-BABY
            MOVE    S08-SIZANKBN        TO  SPA-GMN-SIZANKBN-G
@@ -1041,6 +1100,10 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-BUNBENKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4101-TEISYUTUSAKI-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1226,11 +1289,8 @@
                                        TO  SPA-GMN-BUNBENKBN-G
            END-IF
       *
-           IF    ( SPA-GMN-BUNBENKBN   =   "2" )
-               IF    ( SPA-GMN-TEISYUTUBIKBN   =   "2" )
-                   MOVE    "0011"      TO  SPA-ERRCD
-                   MOVE    23          TO  SPA-GMN-CUR
-               END-IF
+           IF    ( SPA-GMN-BUNBENKBN   NOT =   WRK-BUNBENKBN )
+               PERFORM 3121-TEISYUTUSAKI-EDIT-SEC
            END-IF
       *
            IF    ( SPA-GMN-BUNBENKBN   =   "2" )
@@ -1242,6 +1302,24 @@
       *
            .
        4101-BUNBENKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    提出先チェック処理
+      *****************************************************************
+       4101-TEISYUTUSAKI-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-TEISYUTUSAKI    TO  WRK-CMB-CD
+           PERFORM 4200-TEISYUTUSAKILST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-TEISYUTUSAKI-G
+           IF    ( WRK-CMB-ITM             =   SPACE )
+               PERFORM 3121-TEISYUTUSAKI-EDIT-SEC
+               MOVE    SPA-GMN-TEISYUTUSAKI    TO  WRK-CMB-CD
+               PERFORM 4200-TEISYUTUSAKILST-CHK-SEC
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-TEISYUTUSAKI-G
+           END-IF
+      *
+           .
+       4101-TEISYUTUSAKI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    在胎週数チェック処理
@@ -1619,6 +1697,29 @@
        4200-BUNBENKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    提出先コンボチェック処理
+      *****************************************************************
+       4200-TEISYUTUSAKILST-CHK-SEC    SECTION.
+      *
+           INITIALIZE                  WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-TEISYUTUSAKI-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-TEISYUTUSAKIL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-TEISYUTUSAKILST  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-TEISYUTUSAKILST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    死産有無区分コンボチェック処理
       *****************************************************************
        4200-SIZANKBNLST-CHK-SEC       SECTION.
@@ -1757,6 +1858,50 @@
                 AND  ( SPA-GMN-BUNBEN-MONEY >   ZERO )
                    MOVE    "1008"          TO  SPA-ERRCD
                    MOVE    14              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-RIYOUKBN        =   "1" )
+                   IF    ( SPA-GMN-TEISYUTUSAKI    =   SPACE )
+                       MOVE    "1012"      TO  SPA-ERRCD
+                       MOVE    14          TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-BUNBENKBN   =   "1" )
+                   IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
+                       MOVE    "1013"      TO  SPA-ERRCD
+                       MOVE    14          TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-RIYOUKBN    =   "1" )
+                   IF    ( SPA-GMN-BUNBENKBN   =   "2" )
+                    AND  ( SPA-NAI-RECESAKI    =   "1" )
+                    AND  ( SPA-GMN-SYAKOK      =   "1" )
+                       IF    ( SPA-GMN-TEISYUTUSAKI    =   "2" )
+                           MOVE    "1014"  TO  SPA-ERRCD
+                           MOVE    7       TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-RIYOUKBN    =   "1" )
+                   IF    ( SPA-GMN-BUNBENKBN   =   "2" )
+                    AND  ( SPA-NAI-RECESAKI    =   "2" )
+                    AND  ( SPA-GMN-SYAKOK      =   "2" )
+                       IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
+                           MOVE    "1015"  TO  SPA-ERRCD
+                           MOVE    7       TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -1919,18 +2064,8 @@
            MOVE    SPA-GMN-RIYOUKBN        TO   BUNBEN-RIYOUKBN
            MOVE    SPA-GMN-BUNBENKBN       TO   BUNBEN-BUNBENKBN
       *
-           IF    ( SPA-GMN-RIYOUKBN    =   "0" )
-               CONTINUE
-           ELSE
-               IF    ( SPA-GMN-BUNBENKBN       =   "1" )
-                   MOVE    "2"             TO  BUNBEN-TEISYUTUSAKI
-               ELSE
-                   IF    ( SPA-NAI-RECESAKI    =   "2" )
-                           MOVE    "2"     TO  BUNBEN-TEISYUTUSAKI
-                   ELSE
-                           MOVE    "1"     TO  BUNBEN-TEISYUTUSAKI
-                   END-IF
-               END-IF
+           IF    ( SPA-GMN-RIYOUKBN    =   "1" )
+               MOVE    SPA-GMN-TEISYUTUSAKI TO BUNBEN-TEISYUTUSAKI
            END-IF
       *
            MOVE    SPA-GMN-SYAKOK          TO  BUNBEN-KANYUKBN
@@ -2163,18 +2298,16 @@
            IF    ( SPA-GMN-RIYOUKBN    =   "0" )
                CONTINUE
            ELSE
-               IF    ( SPA-GMN-BUNBENKBN       =   "1" )
-                       MOVE    "提出先：国保連合会"
-                                           TO  S08-LBLTEISYUTUSAKI
-               ELSE
-                   IF    ( SPA-NAI-RECESAKI    =   "2" )
-                       MOVE    "提出先：国保連合会"
-                                           TO  S08-LBLTEISYUTUSAKI
-                   ELSE
-                       MOVE    "提出先：支払基金"
-                                           TO  S08-LBLTEISYUTUSAKI
-                   END-IF
-               END-IF
+               MOVE    SPA-GMN-TEISYUTUSAKI-G
+                                           TO  S08-TEISYUTUSAKI
+               MOVE    SPA-GMN-TEISYUTUSAKI-MAX
+                                           TO  S08-TEISYUTUSAKI-COUNT
+               PERFORM VARYING IDX-CMB FROM    1   BY  1
+                       UNTIL ( IDX-CMB >   SPA-GMN-TEISYUTUSAKI-MAX )
+                   MOVE    SPA-GMN-TEISYUTUSAKILST (IDX-CMB)
+                                               TO  S08-TEISYUTUSAKI-ITEM
+                                                               (IDX-CMB)
+               END-PERFORM
            END-IF
            MOVE    SPA-GMN-ZAIWEEK         TO  S08-ZAIWEEK
            MOVE    SPA-GMN-BIRTHDAY-BABY   TO  S08-BIRTHDAY-BABY
@@ -2253,6 +2386,7 @@
                IF   (( SPA-GMN-BUNBENKBN   =   "2"   )
                    OR( SPA-S08-NYUGAIKBN   =   "2"   ))
                 AND  ( SPA-GMN-BIKOU       =   SPACE )
+                AND  ( SPA-GMN-RIYOUKBN    =   "1" )
                    COMPUTE IDX-INFO        =   IDX-INFO    +   1
                    MOVE    "bule"      TO  S08-LBLINFO-STYLE (IDX-INFO)
                    STRING  "補足情報等が必要な場合は"
@@ -2270,6 +2404,7 @@
                IF  ( SPA-S08-NYUGAIKBN       =   "2" )
                 AND( SPA-NAI-GHKNNUM(1:2)    =   "98" )
                 AND( SPA-GMN-BUNBENKBN       =   "2" )
+                AND( SPA-GMN-RIYOUKBN        =   "1" )
                    COMPUTE IDX-INFO    =   IDX-INFO    +   1
                    STRING  "自費保険に異常分娩を紐付けする場合、"
                                            DELIMITED BY SIZE
@@ -2340,6 +2475,8 @@
                                            S08-TEISYUTUBIKBN-ITEM-STATE
                                            S08-SKYKBN-STATE
                                            S08-SKYKBN-ITEM-STATE
+                                           S08-TEISYUTUSAKI-STATE
+                                           S08-TEISYUTUSAKI-ITEM-STATE
                                            S08-SANKAKBN-STATE
                                            S08-SANKAKBN-ITEM-STATE
                                            S08-B05-STATE
@@ -2359,6 +2496,12 @@
                                            S08-TEISYUTUBIKBN-ITEM-STATE
                                            S08-SKYKBN-STATE
                                            S08-SKYKBN-ITEM-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-RIYOUKBN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  S08-TEISYUTUSAKI-STATE
+                                           S08-TEISYUTUSAKI-ITEM-STATE
            END-IF
       *
            IF    ( SPA-NAI-SANKANUM    =   ZERO )
@@ -2429,6 +2572,8 @@
                MOVE    "MEIPRTKBN"     TO  MCP-WIDGET
            WHEN    023
                MOVE    "TEISYUTUBIKBN" TO  MCP-WIDGET
+           WHEN    024
+               MOVE    "TEISYUTUSAKI"  TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2452,6 +2597,8 @@
            WHEN    "SKYKBN"
                MOVE    004             TO  SPA-GMN-CUR
            WHEN    "BUNBENKBN"
+               MOVE    024             TO  SPA-GMN-CUR
+           WHEN    "TEISYUTUSAKI"
                MOVE    005             TO  SPA-GMN-CUR
            WHEN    "ZAIWEEK"
                MOVE    006             TO  SPA-GMN-CUR
@@ -2516,6 +2663,13 @@
            IF    ( SPA-GMN-CUR     =   3 )
                IF    ( S08-SKYKBN-STATE =   WIDGET-INSENSITIVE )
                    MOVE    4       TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   24 )
+               IF    ( S08-TEISYUTUSAKI-STATE
+                                   =   WIDGET-INSENSITIVE )
+                   MOVE    5       TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -2631,6 +2785,22 @@
                        "入力されています"  DELIMITED BY SIZE
                INTO    SPA-ERRMSG
                END-STRING
+           WHEN    "1012"
+               MOVE    "提出先を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1013"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "正常分娩の場合、"  DELIMITED   BY  SIZE
+                       "提出先に国保連合会を選択してください"
+                                           DELIMITED   BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
+           WHEN    "1014"
+               MOVE    "提出先に支払基金を選択してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1015"
+               MOVE    "提出先に国保連合会を選択してください"
+                                       TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4005"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG

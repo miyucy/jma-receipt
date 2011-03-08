@@ -56,7 +56,12 @@
                 04  S08-BUNBENKBN          PIC X(22).
                 04  S08-BUNBENKBN-COUNT    PIC S9(9)   BINARY.
                 04  S08-BUNBENKBN-ITEM     PIC X(22)   OCCURS  5 TIMES.
-              03  S08-LBLTEISYUTUSAKI      PIC X(30).
+              03  S08-CMB-TEISYUTUSAKI.
+                04  S08-TEISYUTUSAKI       PIC X(22).
+                04  S08-TEISYUTUSAKI-STATE PIC S9(9)   BINARY.
+                04  S08-TEISYUTUSAKI-COUNT PIC S9(9)   BINARY.
+                04  S08-TEISYUTUSAKI-ITEM  PIC X(22)   OCCURS  5 TIMES.
+                04  S08-TEISYUTUSAKI-ITEM-STATE  PIC S9(9)   BINARY.
               03  S08-ZAIWEEK              PIC S9(2).
               03  S08-BIRTHDAY-BABY        PIC X(10).
               03  S08-CMB-SIZANKBN.
