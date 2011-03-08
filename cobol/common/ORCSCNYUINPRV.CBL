@@ -805,12 +805,12 @@
            END-IF
       *
       *    回数
-           IF      LNK-SC97-KAISU      =   ZERO
-               MOVE    1               TO  LNK-SC97-KAISU
+           IF      ORCSNDAYCHG-KAISU   =   ZERO
+               MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
       *    外用薬の時、回数は１回とする
            IF      LNK-WKSRY-SRYKBN (01)   =   "23"
-               MOVE    1               TO  LNK-SC97-KAISU
+               MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
            MOVE    ZERO                TO  IDX-KAI1
            MOVE    ZERO                TO  IDX-KAI2
@@ -819,9 +819,9 @@
                               (IDX-KAI1    >   ZERO )
                IF      TBL-KAISU (IDX2)     =   ZERO
                    MOVE    IDX2            TO  IDX-KAI1
-                   MOVE    LNK-SC97-KAISU  TO  TBL-KAISU (IDX-KAI1)
+                   MOVE    ORCSNDAYCHG-KAISU   TO  TBL-KAISU (IDX-KAI1)
                ELSE
-                   IF       LNK-SC97-KAISU     =   TBL-KAISU (IDX2)
+                   IF       ORCSNDAYCHG-KAISU     =   TBL-KAISU (IDX2)
                        MOVE    IDX2            TO  IDX-KAI1
                    END-IF
                END-IF
@@ -831,7 +831,7 @@
            MOVE    ZERO                TO  FLG-DAY
            PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
                    UNTIL       IDX-KAI2    >   31
-               IF      LNK-SC97-NYU-DAY (IDX-KAI2) NOT =   ZERO
+               IF      ORCSNDAYCHG-NYU-DAY (IDX-KAI2) NOT =   ZERO
                    MOVE    1               TO  TBL-DAY
                                                    (IDX-KAI1 IDX-KAI2)
                    MOVE    1               TO  FLG-DAY
@@ -861,24 +861,24 @@
            MOVE    LNK-DAY7-KOYOMI(7:2)    TO  WRK-MATU
       *
       *    算定開始日を設定する
-           IF      LNK-SC97-NYUIN-KAISU    =   ZERO
+           IF      ORCSNDAYCHG-NYUIN-KAISU    =   ZERO
                MOVE    SPA-SRYYMD(7:2) TO  IDX-2
-               MOVE    1               TO  LNK-SC97-NYU-DAY (IDX-2)
+               MOVE    1               TO  ORCSNDAYCHG-NYU-DAY (IDX-2)
            END-IF
       *    １日１回とする
            MOVE    1                   TO  IDX-KAI1
            MOVE    1                   TO  TBL-KAISU (IDX-KAI1)
       *    回数
-           IF      LNK-SC97-KAISU      =   ZERO
-               MOVE    1               TO  LNK-SC97-KAISU
+           IF      ORCSNDAYCHG-KAISU      =   ZERO
+               MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
       *
       *    算定日
            PERFORM VARYING     IDX-2       FROM    1   BY  1
                    UNTIL       IDX-2       >   31
-               IF      LNK-SC97-NYU-DAY (IDX-2) NOT =   ZERO
+               IF      ORCSNDAYCHG-NYU-DAY (IDX-2) NOT =   ZERO
                    PERFORM VARYING  IDX-KAI3    FROM    1   BY  1
-                           UNTIL    IDX-KAI3    >   LNK-SC97-KAISU
+                           UNTIL    IDX-KAI3    >   ORCSNDAYCHG-KAISU
                        COMPUTE IDX-KAI4    =   IDX-2
                                            +   IDX-KAI3
                                            -   1
