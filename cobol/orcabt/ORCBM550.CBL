@@ -160,6 +160,11 @@
       *
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
+           03  WRK-RIREKIKANRI-CHK.
+               05  WRK-SIKIBETU        PIC X(02).
+               05  WRK-DATA            PIC X(500).
+               05  WRK-RIREKIKANRI-FLG PIC 9(01).
+      *
        01  CNT-RESEDEN.
            03  PATIENT-CNT             PIC 9(05).
            03  NOPATIENT-CNT           PIC 9(05).
@@ -576,9 +581,11 @@
                END-UNSTRING
                MOVE    WRK-PARA-REC1       TO  WRK-PARA-REC
       *
-               EVALUATE    WRK-PARA-REC (1:2)  
-                                           ALSO    WRK-FILE-TMP(10:12)
-                   WHEN    "HI"            ALSO     ANY
+               INITIALIZE                      WRK-RIREKIKANRI-CHK
+      * 
+               EVALUATE    WRK-PARA-REC (1:2)
+                                           ALSO    WRK-FILE-TMP(10:12) 
+                   WHEN    "HI"            ALSO    ANY
                        MOVE    ZERO            TO  IDZZ
                        MOVE    8               TO  SPLIT-CNT
                        MOVE    9               TO  SPLIT-CNT1
@@ -608,10 +615,8 @@
                        MOVE    5               TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
                    WHEN    "8,"            ALSO     "RECEIPTC.HEN"
-                   WHEN    "1,"            ALSO     "RECEIPTC.SAH"
-                   WHEN    "2,"            ALSO     "RECEIPTC.SAH"
-                   WHEN    "3,"            ALSO     "RECEIPTC.SAH"
-                   WHEN    "4,"            ALSO     "RECEIPTC.SAH"
+                       MOVE    1               TO  WRK-RIREKIKANRI-FLG
+      *
                        ADD     1               TO  IDZZ
                        MOVE    5               TO  SPLIT-CNT
                        MOVE    6               TO  SPLIT-CNT1
@@ -627,10 +632,40 @@
                        MOVE    5               TO  SPLIT-CNT1
                        PERFORM 20011-PARA-SPLIT-SEC
                    WHEN    OTHER
-                       ADD     1               TO  IDZZ
-                       MOVE    1               TO  SPLIT-CNT
-                       MOVE    2               TO  SPLIT-CNT1
-                       PERFORM 20011-PARA-SPLIT-SEC
+                       IF      WRK-FILE-TMP(10:12)  =   "RECEIPTC.SAH"
+      *                    データ識別が数字のとき履歴管理ブロックとして取り込み
+                           UNSTRING    WRK-PARA-REC (1:10)
+                                                   DELIMITED  BY  ","
+                                                   INTO    WRK-SIKIBETU
+                                                           WRK-DATA
+                           INITIALIZE              ORCSNUMAREA
+                           MOVE    WRK-SIKIBETU    TO  SNUM-INX
+                           CALL    "ORCSNUM"       USING
+                                                   ORCSNUMAREA
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
+                           AND   ( SNUM-SEISUU         <=  2     )
+                           AND   ( SNUM-OUTNUM         >   ZERO  )
+                               MOVE    1               TO
+                                                   WRK-RIREKIKANRI-FLG
+      *
+                               ADD     1               TO  IDZZ
+                               MOVE    5               TO  SPLIT-CNT
+                               MOVE    6               TO  SPLIT-CNT1
+                               PERFORM 20011-PARA-SPLIT-SEC
+                           ELSE
+                               ADD     1               TO  IDZZ
+                               MOVE    1               TO  SPLIT-CNT
+                               MOVE    2               TO  SPLIT-CNT1
+                               PERFORM 20011-PARA-SPLIT-SEC
+                           END-IF
+                       ELSE
+                           ADD     1               TO  IDZZ
+                           MOVE    1               TO  SPLIT-CNT
+                           MOVE    2               TO  SPLIT-CNT1
+                           PERFORM 20011-PARA-SPLIT-SEC
+                       END-IF
                END-EVALUATE
       *
       *        取り込みデータファイル読み込み処理
@@ -1517,8 +1552,8 @@
       *****************************************************************
        2001133-RECEIPTC-KOUMOKU-BETU-SEC     SECTION.
       *
-           EVALUATE    WRK-PARA-REC(1:2)     ALSO    WRK-FILE-TMP(10:12)
-               WHEN    "HI"                  ALSO    ANY
+           EVALUATE    WRK-PARA-REC(1:2)
+               WHEN    "HI"
                    EVALUATE    WRK-KOUMOKU-NO
       *                審査支払機関コード
                        WHEN    2
@@ -1564,7 +1599,7 @@
                                PERFORM 500-COBABORT-SEC
                            END-IF
                    END-EVALUATE
-               WHEN    "HR"                  ALSO    ANY
+               WHEN    "HR"
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1682,7 +1717,7 @@
                                END-IF
                            END-IF
                    END-EVALUATE
-               WHEN    "HG"                  ALSO    ANY
+               WHEN    "HG"
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1733,7 +1768,7 @@
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
-               WHEN    "RE"                  ALSO    ANY
+               WHEN    "RE"
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE ZERO               TO  KO-B-CNT
@@ -1833,7 +1868,7 @@
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
-               WHEN    "HO"                  ALSO    ANY
+               WHEN    "HO"
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1861,7 +1896,7 @@
                            MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-NUM
                    END-EVALUATE
-               WHEN    "KO"                  ALSO    ANY
+               WHEN    "KO"
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE    0               TO  
@@ -1880,114 +1915,113 @@
                                                    TO
                                            WRK-HENREI-B-JKYNUM(KO-B-CNT)
                     END-EVALUATE
-               WHEN    "KH"                  ALSO    ANY
-               WHEN    "SY"                  ALSO    ANY
-               WHEN    "SI"                  ALSO    ANY
-               WHEN    "IY"                  ALSO    ANY
-               WHEN    "TO"                  ALSO    ANY
-               WHEN    "CO"                  ALSO    ANY
-               WHEN    "NI"                  ALSO    ANY
-               WHEN    "SJ"                  ALSO    ANY
+               WHEN    "KH"
+               WHEN    "SY"
+               WHEN    "SI"
+               WHEN    "IY"
+               WHEN    "TO"
+               WHEN    "CO"
+               WHEN    "NI"
+               WHEN    "SJ"
                    MOVE    0               TO  TBL-HENREI-B-SELECT-FLG
                                                             (IDZZ)
                    MOVE    SPACE           TO  TBL-HENREI-B-HENREI-INFO1
                                                             (IDZZ)
                    MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
-               WHEN    "8,"                  ALSO    "RECEIPTC.HEN"
-               WHEN    "1,"                  ALSO    "RECEIPTC.SAH"
-               WHEN    "2,"                  ALSO    "RECEIPTC.SAH"
-               WHEN    "3,"                  ALSO    "RECEIPTC.SAH"
-               WHEN    "4,"                  ALSO    "RECEIPTC.SAH"
-                   EVALUATE    WRK-KOUMOKU-NO
-      *                データ識別
-                       WHEN    1
-                           MOVE    1       TO  TBL-HENREI-B-SELECT-FLG
+               WHEN    OTHER
+                   IF      WRK-RIREKIKANRI-FLG =   1
+      *              履歴管理ブロック
+                     EVALUATE    WRK-KOUMOKU-NO
+      *                  データ識別
+                         WHEN    1
+                             MOVE    1   TO  TBL-HENREI-B-SELECT-FLG
                                                             (IDZZ)
-      *                行番号
-                       WHEN    2
-                           INITIALIZE          ORCSNUMAREA
-                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+      *                  行番号
+                         WHEN    2
+                             INITIALIZE          ORCSNUMAREA
+                             MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
-                           CALL    "ORCSNUM"   USING   ORCSNUMAREA
-                           IF    ( SNUM-RC         =   ZERO   )
-                           AND   ( SNUM-MINKBN     =   SPACE  )
-                           AND   ( SNUM-SYOKBN     =   SPACE  )
-                           AND   ( SNUM-SEISUU     <=  5      )
-      *********************AND   ( SNUM-OUTNUM     >   ZERO   )
-                               CONTINUE
-                           ELSE
-                               MOVE    "W20"       TO  WRK-ERRCD
-                               PERFORM 500-ERRCD-HENSYU-SEC
-                           END-IF
-      *                枝番号
-                       WHEN    3
-                           INITIALIZE          ORCSNUMAREA
-                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
-                                               TO  SNUM-INX
-                           CALL    "ORCSNUM"   USING   ORCSNUMAREA
-                           IF    ( SNUM-RC         =   ZERO   )
-                           AND   ( SNUM-MINKBN     =   SPACE  )
-                           AND   ( SNUM-SYOKBN     =   SPACE  )
-                           AND   ( SNUM-SEISUU     <=  3      )
-      *********************AND   ( SNUM-OUTNUM     >   ZERO   )
-                               CONTINUE
-                           ELSE
-                               MOVE    "W21"       TO  WRK-ERRCD
-                               PERFORM 500-ERRCD-HENSYU-SEC
-                           END-IF
-      *                レコード識別情報
-                       WHEN    4
-                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
-                                               TO  WRK-RECORD-SIKIBETU
-                           IF      WRK-RECORD-SIKIBETU
-                                               =   "RC"
-                               MOVE    1           TO  FLG-SIKIBETU-RC
-                           END-IF
+                             CALL    "ORCSNUM"   USING   ORCSNUMAREA
+                             IF    ( SNUM-RC         =   ZERO   )
+                             AND   ( SNUM-MINKBN     =   SPACE  )
+                             AND   ( SNUM-SYOKBN     =   SPACE  )
+                             AND   ( SNUM-SEISUU     <=  5      )
+      *********************  AND   ( SNUM-OUTNUM     >   ZERO   )
+                                 CONTINUE
+                             ELSE
+                                 MOVE    "W20"       TO  WRK-ERRCD
+                                 PERFORM 500-ERRCD-HENSYU-SEC
+                             END-IF
+      *                  枝番号
+                         WHEN    3
+                             INITIALIZE          ORCSNUMAREA
+                             MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                                 TO  SNUM-INX
+                             CALL    "ORCSNUM"   USING   ORCSNUMAREA
+                             IF    ( SNUM-RC         =   ZERO   )
+                             AND   ( SNUM-MINKBN     =   SPACE  )
+                             AND   ( SNUM-SYOKBN     =   SPACE  )
+                             AND   ( SNUM-SEISUU     <=  3      )
+      *********************  AND   ( SNUM-OUTNUM     >   ZERO   )
+                                 CONTINUE
+                             ELSE
+                                 MOVE    "W21"       TO  WRK-ERRCD
+                                 PERFORM 500-ERRCD-HENSYU-SEC
+                             END-IF
+      *                  レコード識別情報
+                         WHEN    4
+                             MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                                 TO  WRK-RECORD-SIKIBETU
+                             IF      WRK-RECORD-SIKIBETU
+                                                 =   "RC"
+                                MOVE    1           TO  FLG-SIKIBETU-RC
+                             END-IF
       *
-                           COMPUTE IDYY    =   WRK-MO-ST   -   1
-                           MOVE    WRK-PARA-REC (1:IDYY)
+                             COMPUTE IDYY    =   WRK-MO-ST   -   1
+                             MOVE    WRK-PARA-REC (1:IDYY)
                                            TO  TBL-HENREI-B-HENREI-INFO1
                                                             (IDZZ)
-                           MOVE    WRK-PARA-REC (WRK-MO-ST:)
+                             MOVE    WRK-PARA-REC (WRK-MO-ST:)
                                            TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
-      *                履歴請求データ
-                       WHEN    5
-                           IF      WRK-RECORD-SIKIBETU
+      *                  履歴請求データ
+                         WHEN    5
+                             IF      WRK-RECORD-SIKIBETU
                                                =   "RC"
-      *                        管理情報（チェックデータ）
-                               INITIALIZE              ORCSKANACHKAREA
-                               MOVE    "1"         TO  KANACHK-SYORI
-                               MOVE
+      *                          管理情報（チェックデータ）
+                                 INITIALIZE              ORCSKANACHKAREA
+                                 MOVE    "1"         TO  KANACHK-SYORI
+                                 MOVE
                                    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    TO  KANACHK-MAE-INPUT
-                               CALL    "ORCSKANACHK"   USING
+                                 CALL    "ORCSKANACHK"   USING
                                                        ORCSKANACHKAREA
-                               IF    ( KANACHK-RC      =   ZERO )
-                               AND   ( KANACHK-RC2     =   ZERO )
-                               AND   ( KANACHK-SYUBETU =   1    )
-                               AND   ( KANACHK-MAX     <=  100  )
-                                   MOVE
+                                 IF    ( KANACHK-RC      =   ZERO )
+                                 AND   ( KANACHK-RC2     =   ZERO )
+                                 AND   ( KANACHK-SYUBETU =   1    )
+                                 AND   ( KANACHK-MAX     <=  100  )
+                                     MOVE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-CHECK-NO
-                               ELSE
-                                   MOVE    "E02"       TO  WRK-ERRCD
-                                   PERFORM 500-ERRCD-HENSYU-SEC
-                               END-IF
-                           END-IF
-                   END-EVALUATE
-               WHEN    OTHER
-                   MOVE    0               TO  TBL-HENREI-B-SELECT-FLG
+                                 ELSE
+                                     MOVE    "E02"       TO  WRK-ERRCD
+                                     PERFORM 500-ERRCD-HENSYU-SEC
+                                 END-IF
+                             END-IF
+                     END-EVALUATE
+                   ELSE
+                     MOVE    0             TO  TBL-HENREI-B-SELECT-FLG
                                                             (IDZZ)
-                   MOVE    SPACE           TO  TBL-HENREI-B-HENREI-INFO1
+                     MOVE    SPACE         TO  TBL-HENREI-B-HENREI-INFO1
                                                             (IDZZ)
-                   MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
+                     MOVE    WRK-PARA-REC  TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
       *
-                   MOVE    "E99"       TO  WRK-ERRCD
-                   PERFORM 500-ERRCD-HENSYU-SEC
+                     MOVE    "E99"         TO  WRK-ERRCD
+                     PERFORM 500-ERRCD-HENSYU-SEC
+                   END-IF
            END-EVALUATE
       *
            .
