@@ -161,7 +161,7 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-RIREKIKANRI-CHK.
-               05  WRK-SIKIBETU        PIC X(02).
+               05  WRK-SIKIBETU        PIC X(03).
                05  WRK-DATA            PIC X(500).
                05  WRK-RIREKIKANRI-FLG PIC 9(01).
       *
