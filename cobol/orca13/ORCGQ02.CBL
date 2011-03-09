@@ -544,6 +544,8 @@
                MOVE    "D"             TO  SFILESV-MODE
                MOVE    CONST-JOB-SHELLID
                                        TO  SFILESV-TBL-KEY
+               MOVE    SPA-GMN-Q02-SELHMS
+                                       TO  SFILESV-SRYYM(1)
                CALL    "ORCSFILESV"    USING
                                            ORCSFILESVAREA
                                            SPA-AREA
@@ -639,6 +641,8 @@
       *
            CLOSE   BQ01-FILE
       *
+           MOVE    SPA-GMN-Q02-SELHMS
+                                   TO  SPA-Q97-SELHMS
            MOVE    ZERO            TO  SPA-Q97-FILESV-CHK-FLG
       *
            MOVE    SPACE           TO  WRK-FILENM-AREA
@@ -665,6 +669,8 @@
            MOVE    "D"             TO  SFILESV-MODE
            MOVE    CONST-JOB-SHELLID
                                    TO  SFILESV-TBL-KEY
+           MOVE    SPA-GMN-Q02-SELHMS
+                                   TO  SFILESV-SRYYM(1)
            CALL    "ORCSFILESV"    USING
                                        ORCSFILESVAREA
                                        SPA-AREA  
@@ -676,6 +682,10 @@
       *    印刷用スクリプト処理
       *
       *    フィアルデイレクトリ位置指定
+      *
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  SHELLTBL
+      *
            INITIALIZE              ORCSMKPASSAREA
            MOVE    CONST-SHELNAME  TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
@@ -695,7 +705,8 @@
            MOVE    PRFNAME         TO  SHELLTBL-ARG3
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
-           MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG6
+           MOVE    SPA-GMN-Q02-SELHMS
+                                   TO  SHELLTBL-ARG6
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG8
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
@@ -708,10 +719,12 @@
            MOVE    WRK-FILENM-FOLDER
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
+           MOVE    SPACE           TO  SHELLTBL-ARG15
            STRING   "/tmp/"                DELIMITED  BY  SIZE
                     WRK-FILENM             DELIMITED  BY  SPACE
+                    SPA-TERMID             DELIMITED  BY SIZE
                     ".wk"                  DELIMITED  BY  SIZE
-                                           INTO  SHELLTBL-ARG15
+           INTO  SHELLTBL-ARG15
            END-STRING
       *
       *    検索結果パターン

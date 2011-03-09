@@ -29,6 +29,7 @@
       *
        01  SPA-I2FREE.
            03  SPA-I20-AREA.
+               05  SPA-GMN-SELHMS      PIC X(08).
                05  SPA-GMN-MAX         PIC 9(04).
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-CUR         PIC 9(02).

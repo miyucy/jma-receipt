@@ -539,6 +539,7 @@
            CLOSE   BI201-FILE
       *
            MOVE    ZERO            TO  SPA-I23-FILESV-CHK-FLG
+           MOVE    SPA-GMN-SELHMS  TO  SPA-I23-SELHMS
       *
            MOVE    SPACE           TO  WRK-FILENM-AREA
            PERFORM VARYING IDX4    FROM    100 BY  -1
@@ -564,6 +565,7 @@
            MOVE    "D"             TO  SFILESV-MODE
            MOVE    CONST-JOB-SHELLID
                                    TO  SFILESV-TBL-KEY
+           MOVE    SPA-GMN-SELHMS  TO  SFILESV-SRYYM(1)
            CALL    "ORCSFILESV"    USING
                                        ORCSFILESVAREA
                                        SPA-AREA  
@@ -572,6 +574,8 @@
            PERFORM 900-JOBKANRI-HENSYU-SEC
       *
       *    印刷用スクリプト処理
+      *
+           INITIALIZE              SHELLTBL
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
@@ -593,8 +597,8 @@
            MOVE    PRFNAME         TO  SHELLTBL-ARG3
            MOVE    PRFNAME-TERMID  TO  SHELLTBL-ARG4
            MOVE    SPA-SYSYMD      TO  SHELLTBL-ARG5
-           MOVE    SMCNDATE-HMS    TO  SHELLTBL-ARG6
-           MOVE    SPA-HOSPNUM      TO  SHELLTBL-ARG7
+           MOVE    SPA-GMN-SELHMS  TO  SHELLTBL-ARG6
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-STAFFCD     TO  SHELLTBL-ARG8
            MOVE    CONST-JOBID     TO  SHELLTBL-ARG9
            MOVE    CONST-JOB-SHELLID
@@ -608,6 +612,7 @@
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
            STRING   "/tmp/"                DELIMITED  BY  SIZE
                     WRK-FILENM             DELIMITED  BY  SPACE
+                    SPA-TERMID             DELIMITED  BY  SIZE
                     ".wk"                  DELIMITED  BY  SIZE
                                            INTO  SHELLTBL-ARG15
            END-STRING
@@ -644,6 +649,7 @@
                MOVE    "D"             TO  SFILESV-MODE
                MOVE    CONST-JOB-SHELLID
                                        TO  SFILESV-TBL-KEY
+               MOVE    SPA-GMN-SELHMS  TO  SFILESV-SRYYM(1)
                CALL    "ORCSFILESV"    USING
                                            ORCSFILESVAREA
                                            SPA-AREA
@@ -662,9 +668,11 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *
            INITIALIZE              SPA-I20-AREA
                                    SPA-I2KYOUTU
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-HMS    TO  SPA-GMN-SELHMS
       *
            MOVE    "01"            TO  SPA-GMN-STAGEL        (1)
            MOVE    "02"            TO  SPA-GMN-STAGEL        (2)

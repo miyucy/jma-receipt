@@ -57,7 +57,8 @@
                07  SPA-I20-I22-RTOK-FLG     PIC 9(01).
       *
       *    I23Á«°Ü¾ðÊó
-           05  SPA-Q00-I23-AREA.
+           05  SPA-I23KYOTU.
+               07  SPA-I23-SELHMS           PIC X(08).
                07  SPA-I23-FILESV-CHK-FLG   PIC 9(01).
                07  SPA-I23-MOTOPG           PIC X(08).
       *

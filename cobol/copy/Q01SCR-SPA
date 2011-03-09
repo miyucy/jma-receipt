@@ -1260,6 +1260,7 @@
       *
       *        Q97Á«°Ü¾ðÊó
                05  SPA-Q00-Q97-AREA.
+                   07  SPA-Q97-SELHMS                  PIC X(08).
                    07  SPA-Q97-FILESV-CHK-FLG          PIC 9(01).
                    07  SPA-Q97-MOTOPG                  PIC X(08).
 

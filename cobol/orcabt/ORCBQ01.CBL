@@ -552,14 +552,13 @@
                MOVE    "ORCBQ01.sh"    TO  SFILESV-SHELLID  (WRK-RENNUM)
                MOVE    1               TO  SFILESV-SHORI-RENNUM
                                                             (WRK-RENNUM)
+               MOVE    WRK-PARA-SYSTIME
+                                       TO  SFILESV-SRYYM (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
                MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
-               STRING   WRK-PARA-FILENM    DELIMITED  BY  SPACE
-                        ".wk"              DELIMITED  BY  SIZE
-                                           INTO
-                                           SFILESV-FOR-DATA (WRK-RENNUM)
-               END-STRING
+               MOVE    WRK-PARA-CSVFILENM (6:)
+                                       TO  SFILESV-FOR-DATA (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM-FOLDER
                                        TO  SFILESV-TO-FOLDER(WRK-RENNUM)
                MOVE    WRK-PARA-FILENM TO  SFILESV-TO-DATA  (WRK-RENNUM)

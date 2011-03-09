@@ -376,6 +376,7 @@
            MOVE    "R"             TO  SFILESV-MODE
            MOVE    CONST-JOB-SHELLID
                                    TO  SFILESV-TBL-KEY
+           MOVE    SPA-I23-SELHMS  TO  SFILESV-SRYYM(1)
            CALL    "ORCSFILESV"    USING
                                        ORCSFILESVAREA
                                        SPA-AREA  
