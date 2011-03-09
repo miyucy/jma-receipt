@@ -26,4 +26,4 @@
        01  ORCHCN63AREA.
            03  ORCHCN63-PTID               PIC 9(10).
            03  ORCHCN63-NYUGAIKBN          PIC X(01).
-           03  ORCHCN63-RRKNUM             PIC 9(03).
+           03  ORCHCN63-RRKNUM             PIC 9(07).
