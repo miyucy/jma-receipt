@@ -81,6 +81,7 @@
            03  IDX-T1              PIC 9(04).
            03  IDX-T2              PIC 9(04).
            03  IDX-T3              PIC 9(04).
+           03  IDX-T4              PIC 9(04).
            03  IDX-L               PIC 9(04).
            03  IDX-L1              PIC 9(04).
            03  IDX-L2              PIC 9(04).
@@ -160,6 +161,13 @@
                        09  TBL-SRYKAISU        PIC  9(03).
       *                名称入力番号
                        09  TBL-INPUTCOMENT     PIC  X(80).
+      *                用量（0992000)
+                       09  TBL-YOURYOU-G.
+                           11  TBL-YOURYOU-1   PIC 9(05)V9(05).
+                           11  TBL-YOURYOU-2   PIC 9(05)V9(05).
+                           11  TBL-YOURYOU-3   PIC 9(05)V9(05).
+                           11  TBL-YOURYOU-4   PIC 9(05)V9(05).
+                           11  TBL-YOURYOU-5   PIC 9(05)V9(05).
       *        処方コメント
                05  TBL-COM-MAX             PIC 9(03).
                05  TBL-COMMENT-TBL         OCCURS   10.
@@ -436,6 +444,10 @@
                    MOVE    TBL-INPUTCOMENT (IDX-T1 IDX-T2 IDX-T3)
                                            TO  ORCHC62-INPUTCOMENT
                                                    (IDX-T2 IDX-T3)
+      *            用量
+                   MOVE    TBL-YOURYOU-G (IDX-T1 IDX-T2 IDX-T3)
+                                           TO  ORCHC62-YOURYOU-TBL
+                                               (IDX-T2 IDX-T3)
                END-PERFORM
            END-PERFORM
       *    処方備考コメント
@@ -472,15 +484,23 @@
       *     DISPLAY "ORCHC62-GRP-DENPNUM "  IDY 
       *                ":" ORCHC62-GRP-DENPNUM(IDY)
       *    END-PERFORM
-      *   PERFORM VARYING    IDY   FROM    1  BY  1
-      *            UNTIL      IDY   >  50 
-      *       IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
-      *      DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
-      *              ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
-      *              ",KANSURYO:" ORCHC62-KANSURYO (IDX IDY)
-      *            ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
-      *       END-IF
-      *    END-PERFORM 
+          PERFORM VARYING    IDX   FROM    1  BY  1
+                   UNTIL      IDX   >  100
+          PERFORM VARYING    IDY   FROM    1  BY  1
+                   UNTIL      IDY   >  50 
+              IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
+             DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
+                     ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
+                     ",KANSURYO:" ORCHC62-KANSURYO (IDX IDY)
+      ***          ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
+                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 1)
+                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 2)
+                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 3)
+                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 4)
+                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 5)
+              END-IF
+           END-PERFORM 
+           END-PERFORM 
       *TEST
       *    印刷処理
            PERFORM 300-HC62-PRINT-SEC
@@ -976,6 +996,7 @@
            MOVE    WRK-KAISU           TO  TBL-ZAIKAIKEI (IDX-T1 IDX-T2)
            MOVE    WRK-ZAINUM          TO  TBL-ZAINUM    (IDX-T1 IDX-T2)
            MOVE    ZERO                TO  IDX-T3
+           MOVE    ZERO                TO  IDX-T4
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   WRK-SRY-MAX   )   OR
                               (WRK-SRY-SRYCD (IDXA)    =   SPACE)
@@ -991,6 +1012,11 @@
                        CONTINUE
                    ELSE
                        ADD     1               TO  IDX-T3
+      *
+                       IF     (WRK-SRY-SRYCD (IDXA)(1:1)   =   "6")
+                            MOVE    IDX-T3         TO  IDX-T4
+                       END-IF
+      *
                        MOVE    WRK-SRY-SRYCD (IDXA)
                                                TO  TBL-SRYCD
                                                   (IDX-T1 IDX-T2 IDX-T3)
@@ -1014,6 +1040,32 @@
                                                   (IDX-T1 IDX-T2 IDX-T3)
                        END-IF
                    END-IF
+               END-IF
+      *        用量
+               IF      (WRK-SRY-SRYCD (IDXA)(1:7)   =   "0992000" )
+                  AND  (IDX-T4             >   ZERO   )
+                  EVALUATE    WRK-SRY-SRYCD (IDXA)
+      *            朝
+                   WHEN    "099200011"
+                       MOVE    WRK-SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU-1
+                                                 (IDX-T1 IDX-T2 IDX-T4)
+      *            昼
+                   WHEN    "099200012"
+                       MOVE    WRK-SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU-2
+                                                (IDX-T1 IDX-T2 IDX-T4)
+      *            夜
+                   WHEN    "099200013"
+                       MOVE    WRK-SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU-3
+                                                (IDX-T1 IDX-T2 IDX-T4)
+      *            寝
+                   WHEN    "099200014"
+                       MOVE    WRK-SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU-4
+                                                (IDX-T1 IDX-T2 IDX-T4)
+      *            起床
+                   WHEN    "099200015"
+                       MOVE    WRK-SRY-SRYSURYO (IDXA) TO  TBL-YOURYOU-5
+                                                (IDX-T1 IDX-T2 IDX-T4)
+                   END-EVALUATE
                END-IF
            END-PERFORM
       *    対象がない時
@@ -1276,6 +1328,7 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
+                 OR   (WKSRY-SRYCD (IDXA)(1:7) =   "0992000" )
                    MOVE    WKSRY-DRCD          TO  WRK-TBL-DRCD
       *
                    ADD     1                   TO  WRK-SRY-MAX

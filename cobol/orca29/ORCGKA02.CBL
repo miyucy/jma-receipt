@@ -141,12 +141,13 @@
            03  IDK1                PIC 9(04).
            03  IDK2                PIC 9(04).
            03  IDX1                PIC 9(04).
+           03  IDX3                PIC 9(04).
       *
            03  IDX-KOUI             PIC 9(04).
            03  IDX-KAI              PIC 9(04).
       *
            03  IDX11               PIC 9(01).
-           03  IDX2                PIC 9(02).
+           03  IDX2                PIC 9(04).
            03  IDX-S2              PIC 9(02).
            03  IDX-STR             PIC 9(04).
       *
@@ -4109,6 +4110,7 @@
                    MOVE    SPA-PARA-ZAINUM (IDX-W)
                                            TO  ORCHCN62-ZAINUM (IDX1)
                    MOVE    ZERO            TO  IDX2
+                   MOVE    ZERO            TO  IDX3
                    PERFORM VARYING     IDX-W2  FROM    1   BY  1
                            UNTIL      (IDX-W2  >   50      )  OR
                                       (SPA-PARA-SRYCD (IDX-W IDX-W2)
@@ -4143,6 +4145,43 @@
                            MOVE    SPA-PARA-INPUTCOMENT (IDX-W IDX-W2)
                                            TO  ORCHCN62-INPUTCOMENT
                                                              (IDX1 IDX2)
+      *                    ÌôºÞ
+                           IF      SPA-PARA-SRYCD (IDX-W IDX-W2)(1:1)
+                                                       =   "6"
+                               MOVE    IDX2                TO  IDX3
+                           END-IF
+                       END-IF
+      *                ÍÑÎÌ³ä¹çºÆÊÔ½¸
+                       IF     (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:7)
+                                                   =   "0992000") AND
+                              (IDX3                >   ZERO     )
+                           EVALUATE    SPA-PARA-SRYCD (IDX-W IDX-W2)
+      *                    Ä«
+                           WHEN    "099200011"
+                               MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
+                                                   TO  ORCHCN62-YOURYOU
+                                                         (IDX1 IDX3 1)
+      *                    Ãë
+                           WHEN    "099200012"
+                               MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
+                                                   TO  ORCHCN62-YOURYOU
+                                                         (IDX1 IDX3 2)
+      *                    Ìë
+                           WHEN    "099200013"
+                               MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
+                                                   TO  ORCHCN62-YOURYOU
+                                                         (IDX1 IDX3 3)
+      *                    ¿²
+                           WHEN    "099200014"
+                               MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
+                                                   TO  ORCHCN62-YOURYOU
+                                                         (IDX1 IDX3 4)
+      *                    µ¯¾²
+                           WHEN    "099200015"
+                               MOVE    SPA-PARA-SRYSURYO (IDX-W IDX-W2)
+                                                   TO  ORCHCN62-YOURYOU
+                                                         (IDX1 IDX3 5)
+                           END-EVALUATE
                        END-IF
                    END-PERFORM
                END-IF
@@ -4194,8 +4233,30 @@
                MOVE    "0101"              TO  SPA-ERRCD
            END-IF
       *
+      *TEST
+      *TEST
+      *TEST
+          PERFORM VARYING    IDX2  FROM    1  BY  1
+                   UNTIL      IDX2  >  100
+          PERFORM VARYING    IDX3  FROM    1  BY  1
+                   UNTIL      IDX3  >  50 
+              IF      ORCHCN62-SRYCD (IDX2 IDX3)  NOT =   SPACE
+             DISPLAY "ORCHCN62-SRYCD:" ORCHCN62-SRYCD (IDX2 IDX3)
+                     ",ORCHCN62-SRYSURYO:" ORCHCN62-SRYSURYO (IDX2 IDX3)
+                     ",KANSURYO:" ORCHCN62-KANSURYO (IDX2 IDX3)
+                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 1)
+                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 2)
+                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 3)
+                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 4)
+                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 5)
+              END-IF
+           END-PERFORM 
+           END-PERFORM 
+      *TEST
+      *TEST
+      *
            .
-       41041-ORCSCH62-HENSYU-EXT.
+       41041-ORCHC62-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    ±¡³°½èÊý¤»¤ó°õºþ½èÍý
