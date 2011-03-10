@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者        日付      内容
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.06.00    NACL-多々納  11/02/22  用法コードコメント対応
+      *  04.06.00    NACL-森脇    11/03/10  用量割合コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,6 +89,7 @@
       *
            03  IDX-ZAI             PIC 9(03).
            03  IDX-SRY             PIC 9(02).
+           03  IDX-KBN             PIC 9(01).
       *
       *    一時領域
        01  WRK-AREA.
@@ -133,6 +135,9 @@
                05  WRK-SRYSURYO    PIC 9(05)V9(05).
                05  WRK-SRYKAISU    PIC 9(03).
                05  WRK-INPUTCOMENT PIC X(80).
+               05  WRK-YOURYOU-TBL.
+                   07  WRK-YOURYOU     PIC 9(05)V9(05)
+                                       OCCURS   5.
       *
       *    印刷編集領域
        01  WRK-LINE-AREA.
@@ -159,6 +164,13 @@
            03  WRK-LINE-5.
                05  FILLER          PIC X(54)   VALUE
                "＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿".
+      *
+      *    プログラムオプションパラメタ
+       01  PARA-AREA.
+           03  PARA-COMMENT2           PIC X(01).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA                PIC X(50).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -210,6 +222,9 @@
       *
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
+      *
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -267,8 +282,36 @@
       *    職員情報
            PERFORM 900-1010-READ-SEC
       *
+      *    プログラムオプション設定
+           INITIALIZE                  PARA-AREA
+      *    コメント２
+           MOVE    "COMMENT2"      TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)   TO  PARA-COMMENT2
+      *
            .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC        SECTION.
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHC62"       TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME   TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING
+                                       SPA-AREA
+                                       ORCSPRGOPTIONAREA
+           MOVE    SPACE           TO  WRK-PARA
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+           END-IF
+      *
+           .
+       1001-OPTION-CALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -420,6 +463,8 @@
                                    TO  WRK-SRYKAISU(CNT-SRY)
            MOVE    ORCHC62-INPUTCOMENT(IDX-ZAI IDX-SRY)
                                    TO  WRK-INPUTCOMENT(CNT-SRY)
+           MOVE    ORCHC62-YOURYOU-TBL(IDX-ZAI IDX-SRY)
+                                   TO  WRK-YOURYOU-TBL(CNT-SRY)
       *
            INITIALIZE                  WRK-HEN-AREA
       *
@@ -438,6 +483,11 @@
                PERFORM 240-YKZNAME-HENSYU-SEC
       *        数量編集
                PERFORM 240-SURYOU-HENSYU-SEC
+           END-IF
+      *
+           IF      PARA-COMMENT2   =   "1"
+      *        用量編集
+               PERFORM 240-YOURYOU-HENSYU-SEC
            END-IF
       *
            .
@@ -584,6 +634,50 @@
       *
            .
        240-KAISUU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    用量編集処理
+      *****************************************************************
+       240-YOURYOU-HENSYU-SEC       SECTION.
+      *
+           PERFORM VARYING IDX-KBN     FROM    1   BY  1
+                   UNTIL ( IDX-KBN     >   5 )
+      *        用量コードがあった場合
+               IF      WRK-YOURYOU(CNT-SRY IDX-KBN)    >   ZERO
+                   MOVE    SPACE       TO  WRK-HENSYUDATA
+      *
+                   EVALUATE    IDX-KBN
+                       WHEN    1
+                           MOVE    "　朝："    TO  WRK-HENSYUDATA(1:6)
+                       WHEN    2
+                           MOVE    "　昼："    TO  WRK-HENSYUDATA(1:6)
+                       WHEN    3
+                           MOVE    "　夕："    TO  WRK-HENSYUDATA(1:6)
+                       WHEN    4
+                           MOVE    "　寝："    TO  WRK-HENSYUDATA(1:6)
+                       WHEN    5
+                           MOVE    "　起："    TO  WRK-HENSYUDATA(1:6)
+                   END-EVALUATE
+      *
+                   MOVE    WRK-YOURYOU(CNT-SRY IDX-KBN)
+                                               TO  WRK-SURYO
+                   PERFORM 250-ZHEN-SURYO-SET-SEC
+                   MOVE    WRK-HENSURYO        TO  WRK-SURYOU
+      *
+                   STRING  " "             DELIMITED  BY  SIZE
+                           WRK-SURYOU      DELIMITED  BY  SPACE
+                           " "             DELIMITED  BY  SIZE
+                           TNS-TANINAME    DELIMITED  BY  SPACE
+                           INTO            WRK-HENSYUDATA(7:)
+                   END-STRING
+      *
+                   PERFORM 250-HENSYU-SYORI-SEC
+               END-IF
+           END-PERFORM
+      *
+           .
+       240-YOURYOU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
