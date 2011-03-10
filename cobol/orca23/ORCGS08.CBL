@@ -511,28 +511,15 @@
       *
            END-IF
       *
-           IF    ( SPA-S08-MOTOPG          =   "I04")
-               IF    ( BUNBEN-KANYUKBN =   "2" )
-                   MOVE    "2"         TO  SPA-NAI-RECESAKI
-               ELSE
-                   MOVE    "1"         TO  SPA-NAI-RECESAKI
-               END-IF
+           IF    ( LNKBUNBEN-KANYUKBN  =   "2" )
+               MOVE    "2"         TO  SPA-NAI-RECESAKI
            ELSE
-               IF    ( BUNBEN-RIYOUKBN     =   "1" )
-                AND  ( BUNBEN-BUNBENKBN    =   "2" )
-                   IF    ( BUNBEN-TEISYUTUSAKI
-                                       =   "2" )
-                       MOVE    "2"     TO  SPA-NAI-RECESAKI
-                   ELSE
-                       MOVE    "1"     TO  SPA-NAI-RECESAKI
-                   END-IF
-               ELSE
-                   IF    ( LNKBUNBEN-KANYUKBN  =   "2" )
-                       MOVE    "2"     TO  SPA-NAI-RECESAKI
-                   ELSE
-                       MOVE    "1"     TO  SPA-NAI-RECESAKI
-                   END-IF
-               END-IF
+               MOVE    "1"         TO  SPA-NAI-RECESAKI
+           END-IF
+      *
+           IF    ( SPA-S08-MOTOPG          =   "I04")
+               CONTINUE
+           ELSE
       *
                IF    ( SPA-NAI-GNEW    =   1 )
                    CONTINUE
