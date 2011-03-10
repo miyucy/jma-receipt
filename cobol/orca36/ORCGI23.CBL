@@ -75,6 +75,7 @@
       *
        01  CONST-AREA.
            03  CONST-JOBID         PIC 9(07)   VALUE   1.
+           03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "ORCBI201".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -98,9 +99,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    クライアント保存ＤＢ制御サブ
-           COPY    "CPORCSFILESV.INC".
-      *
            COPY    "ORCA-BLOB".
       *
       *    ファイル削除パラメタ
@@ -116,8 +114,14 @@
       *
            COPY    "LINKAREA".
       *
-       01 SCRAREA.
-           COPY    "ORCA36SCRAREA.INC".
+       01  SCRAREA.
+           COPY    "I20.INC".
+           COPY    "I21.INC".
+           COPY    "I22.INC".
+           COPY    "I23.INC".
+           COPY    "I2ERR.INC".
+           COPY    "I2ID1.INC".
+           COPY    "I2FIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -153,6 +157,15 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "I2FIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -225,7 +238,6 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  I23
-           INITIALIZE                      I23
            MOVE    ZERO                TO  I23-COUNT
       *
            MOVE    5                   TO  I23-DURATION
@@ -235,7 +247,8 @@
            INITIALIZE                  JOBKANRI-REC
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    SPA-I23-SHELLID TO  JOB-SHELLID
+           MOVE    CONST-JOB-SHELLID
+                                   TO  JOB-SHELLID
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
                                    JOBKANRI-REC
@@ -356,42 +369,9 @@
       *****************************************************************
        4902-FILE-INFO-CHK-SEC          SECTION.
       *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "R"             TO  SFILESV-MODE
-           MOVE    SPA-I23-SHELLID TO  SFILESV-TBL-KEY
-           MOVE    SPA-I23-SELHMS  TO  SFILESV-SRYYM(1)
-           CALL    "ORCSFILESV"    USING
-                                       ORCSFILESVAREA
-                                       SPA-AREA  
-           IF      SFILESV-RETURN  =   ZERO
-               INITIALIZE               SPA-SFILESV-AREA
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       100
-                       OR      SFILESV-SHELLID (IDX)
-                                   =       SPACE
-                   MOVE    SFILESV-TITLE        (IDX)
-                                       TO  SPA-SFILESV-TITLE     (IDX)
-                   MOVE    SFILESV-CNT-ALL      (IDX)
-                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
-                   MOVE    SFILESV-FOR-FOLDER   (IDX)
-                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
-                   MOVE    SFILESV-FOR-DATA     (IDX)
-                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
-                   MOVE    SFILESV-TO-FOLDER    (IDX)
-                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
-                   MOVE    SFILESV-TO-DATA      (IDX)
-                                       TO  SPA-SFILESV-TO-DATA   (IDX)
-                   MOVE    SFILESV-CODE-TYPE    (IDX)
-                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
-                   MOVE    SFILESV-DATA-TYPE    (IDX)
-                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
-                   ADD     1           TO  SPA-SFILESV-MAX
-               END-PERFORM
+           MOVE    1                   TO  SPA-I23-FILESV-CHK-FLG
       *
-               MOVE    1                   TO  SPA-I23-FILESV-CHK-FLG
-      *
-               MOVE    1                   TO  I23-DURATION
-           END-IF
+           MOVE    1                   TO  I23-DURATION
       *
            .
        4902-FILE-INFO-CHK-EXT.
@@ -417,10 +397,24 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
-           MOVE    ORCA-BLOB-OBJECT    TO  I23-OBJECTDATA
-           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       TO  I23-FILENAME
+           INITIALIZE                      I2FIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  I2FIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  I2FIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  I2FIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  I2FIL-KENSU
+      *
            MOVE    ZERO                TO  I23-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "I2FIL"             TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END

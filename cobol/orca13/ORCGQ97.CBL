@@ -102,9 +102,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    クライアント保存ＤＢ制御サブ
-           COPY    "CPORCSFILESV.INC".
-      *
            COPY    "ORCA-BLOB".
       *
       *    ファイル削除パラメタ
@@ -121,7 +118,18 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA13SCRAREA.INC".
+           COPY    "Q01.INC".
+           COPY    "Q02.INC".
+           COPY    "Q03.INC".
+           COPY    "Q04.INC".
+           COPY    "Q96.INC".
+           COPY    "Q97.INC".
+           COPY    "Q98.INC".
+           COPY    "Q99.INC".
+           COPY    "Q100.INC".
+           COPY    "QERR.INC".
+           COPY    "QID1.INC".
+           COPY    "QFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -155,6 +163,15 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "QFIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -384,43 +401,10 @@
       *****************************************************************
        4902-FILE-INFO-CHK-SEC          SECTION.
       *
-           INITIALIZE                  ORCSFILESVAREA
-           MOVE    "R"             TO  SFILESV-MODE
-           MOVE    CONST-JOB-SHELLID
-                                   TO  SFILESV-TBL-KEY
-           MOVE    SPA-Q97-SELHMS  TO  SFILESV-SRYYM(1)
-           CALL    "ORCSFILESV"    USING
-                                       ORCSFILESVAREA
-                                       SPA-AREA  
-           IF      SFILESV-RETURN  =   ZERO
-               INITIALIZE               SPA-SFILESV-AREA
-               PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       100
-                       OR      SFILESV-SHELLID (IDX)
-                                   =       SPACE
-                   MOVE    SFILESV-TITLE        (IDX)
-                                       TO  SPA-SFILESV-TITLE     (IDX)
-                   MOVE    SFILESV-CNT-ALL      (IDX)
-                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
-                   MOVE    SFILESV-FOR-FOLDER   (IDX)
-                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
-                   MOVE    SFILESV-FOR-DATA     (IDX)
-                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
-                   MOVE    SFILESV-TO-FOLDER    (IDX)
-                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
-                   MOVE    SFILESV-TO-DATA      (IDX)
-                                       TO  SPA-SFILESV-TO-DATA   (IDX)
-                   MOVE    SFILESV-CODE-TYPE    (IDX)
-                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
-                   MOVE    SFILESV-DATA-TYPE    (IDX)
-                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
-                   ADD     1           TO  SPA-SFILESV-MAX
-               END-PERFORM
       *
-               MOVE    1                   TO  SPA-Q97-FILESV-CHK-FLG
+           MOVE    1                   TO  SPA-Q97-FILESV-CHK-FLG
       *
-               MOVE    1                   TO  Q97-DURATION
-           END-IF
+           MOVE    1                   TO  Q97-DURATION
       *
            .
        4902-FILE-INFO-CHK-EXT.
@@ -446,10 +430,24 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
-           MOVE    ORCA-BLOB-OBJECT    TO  Q97-OBJECTDATA
-           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       TO  Q97-FILENAME
+           INITIALIZE                      QFIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  QFIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  QFIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  QFIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  QFIL-KENSU
+      *
            MOVE    ZERO                TO  Q97-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "QFIL"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END
