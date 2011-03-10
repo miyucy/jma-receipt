@@ -35,10 +35,20 @@
                05  SYS-2011-STYUKYMD   PIC X(08).
       *有効終了年月日
                05  SYS-2011-EDYUKYMD   PIC X(08).
-      *区切り文字設定フラグ
-           03  SYS-2011-DELIMITER-FLG  PIC 9(01).
+      *区切り文字設定フラグ（記号）
+           03  SYS-2011-KIGO-DELIMITER-FLG
+                                       PIC X(01).
+      *区切り文字設定対象保険者フラグ（記号）
+           03  SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+                                       PIC X(01).
+      *区切り文字設定フラグ（番号）
+           03  SYS-2011-NUM-DELIMITER-FLG
+                                       PIC X(01).
+      *区切り文字設定対象保険者フラグ（番号）
+           03  SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+                                       PIC X(01).
       *予備
-           03  SYS-2011-YOBI           PIC X(499).
+           03  SYS-2011-YOBI           PIC X(496).
       *端末ＩＤ
            03  SYS-2011-TERMID         PIC X(16).
       *オペレータＩＤ

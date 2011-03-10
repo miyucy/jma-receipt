@@ -348,12 +348,30 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-RECEDEN-DATAKBNMEI
                                               PIC X(38).
-                       09  SPA-GMN-DELIMITER-FLG-G.
-                           11  SPA-GMN-DELIMITER-FLG
+                       09  SPA-GMN-KIGO-DELIMITER-FLG-G.
+                           11  SPA-GMN-KIGO-DELIMITER-FLG
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
-                           11  SPA-GMN-DELIMITER-FLGMEI
-                                              PIC X(18).
+                           11  SPA-GMN-KIGO-DELIMITER-FLGMEI
+                                              PIC X(28).
+                       09  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G.
+                           11  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGMEI
+                                              PIC X(28).
+                       09  SPA-GMN-NUM-DELIMITER-FLG-G.
+                           11  SPA-GMN-NUM-DELIMITER-FLG
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-NUM-DELIMITER-FLGMEI
+                                              PIC X(28).
+                       09  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G.
+                           11  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGMEI
+                                              PIC X(28).
                        09  SPA-GMN-SRYKAHENKBN-G.
                            11  SPA-GMN-SRYKAHENKBN
                                               PIC X(01).
@@ -892,13 +910,40 @@
                    07  SPA-GMN-RECEDEN-DATAKBN-MAX
                                               PIC 9(02).    
       *                                        
-                   07  SPA-GMN-DELIMITER-FLGLST    OCCURS  5.
-                       09  SPA-GMN-DELIMITER-FLGL
+                   07  SPA-GMN-KIGO-DELIMITER-FLGLST    OCCURS  5.
+                       09  SPA-GMN-KIGO-DELIMITER-FLGL
                                                PIC X(01).
                        09  SPA-GMN-F1L         PIC X(01).
-                       09  SPA-GMN-DELIMITER-FLGMEIL
-                                               PIC X(18).
-                   07  SPA-GMN-DELIMITER-FLG-MAX
+                       09  SPA-GMN-KIGO-DELIMITER-FLGMEIL
+                                               PIC X(28).
+                   07  SPA-GMN-KIGO-DELIMITER-FLG-MAX
+                                               PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGLST OCCURS  5.
+                       09  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGL
+                                               PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGMEIL
+                                               PIC X(28).
+                   07  SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+                                               PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-NUM-DELIMITER-FLGLST    OCCURS  5.
+                       09  SPA-GMN-NUM-DELIMITER-FLGL
+                                               PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-NUM-DELIMITER-FLGMEIL
+                                               PIC X(28).
+                   07  SPA-GMN-NUM-DELIMITER-FLG-MAX
+                                               PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGLST OCCURS  5.
+                       09  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGL
+                                               PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGMEIL
+                                               PIC X(28).
+                   07  SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
                                                PIC 9(02).    
       *                                        
                    07  SPA-GMN-SRYKAHENKBNLST OCCURS  2.
@@ -1807,16 +1852,96 @@
                                                                      (6)
            MOVE    6                   TO  SPA-GMN-RECEDEN-DATAKBN-MAX
       *     
-           MOVE    "0"                 TO  SPA-GMN-DELIMITER-FLGL  (1)
-           MOVE    "設定なし"          TO  SPA-GMN-DELIMITER-FLGMEIL
+           MOVE    "0"                 TO  SPA-GMN-KIGO-DELIMITER-FLGL
                                                                    (1)
-           MOVE    "1"                 TO  SPA-GMN-DELIMITER-FLGL  (2)
-           MOVE    "全角ハイフン"      TO  SPA-GMN-DELIMITER-FLGMEIL
+           MOVE    "編集なし"          TO
+                                       SPA-GMN-KIGO-DELIMITER-FLGMEIL
+                                                                   (1)
+           MOVE    "1"                 TO  SPA-GMN-KIGO-DELIMITER-FLGL
                                                                    (2)
-           MOVE    "2"                 TO  SPA-GMN-DELIMITER-FLGL  (3)
-           MOVE    "全角マイナス"      TO  SPA-GMN-DELIMITER-FLGMEIL
+           MOVE    "「−」を全角ハイフンに変換" 
+                                       TO
+                                       SPA-GMN-KIGO-DELIMITER-FLGMEIL
+                                                                   (2)
+           MOVE    "2"                 TO  SPA-GMN-KIGO-DELIMITER-FLGL
                                                                    (3)
-           MOVE    3                   TO  SPA-GMN-DELIMITER-FLG-MAX
+           MOVE    "「−」を全角マイナスに変換"
+                                       TO
+                                       SPA-GMN-KIGO-DELIMITER-FLGMEIL
+                                                                   (3)
+           MOVE    "9"                 TO  SPA-GMN-KIGO-DELIMITER-FLGL
+                                                                   (4)
+           MOVE    "「−」を削除"      TO
+                                       SPA-GMN-KIGO-DELIMITER-FLGMEIL
+                                                                   (4)
+           MOVE    4                   TO
+                                       SPA-GMN-KIGO-DELIMITER-FLG-MAX
+      *     
+           MOVE    "0"                 TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGL
+                                                                   (1)
+           MOVE    "設定なし"          TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGMEIL
+                                                                   (1)
+           MOVE    "1"                 TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGL
+                                                                   (2)
+           MOVE    "県内保険者"        TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGMEIL
+                                                                   (2)
+           MOVE    "2"                 TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGL
+                                                                   (3)
+           MOVE    "県内保険者と県内扱い保険者"
+                                       TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGMEIL
+                                                                   (3)
+           MOVE    3                   TO
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+      *     
+           MOVE    "0"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
+                                                                   (1)
+           MOVE    "編集なし"          TO
+                                       SPA-GMN-NUM-DELIMITER-FLGMEIL
+                                                                   (1)
+           MOVE    "1"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
+                                                                   (2)
+           MOVE    "「−」を全角ハイフンに変換" 
+                                       TO
+                                       SPA-GMN-NUM-DELIMITER-FLGMEIL
+                                                                   (2)
+           MOVE    "2"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
+                                                                   (3)
+           MOVE    "「−」を全角マイナスに変換"
+                                       TO
+                                       SPA-GMN-NUM-DELIMITER-FLGMEIL
+                                                                   (3)
+           MOVE    "9"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
+                                                                   (4)
+           MOVE    "「−」を削除"      TO
+                                       SPA-GMN-NUM-DELIMITER-FLGMEIL
+                                                                   (4)
+           MOVE    4                   TO
+                                       SPA-GMN-NUM-DELIMITER-FLG-MAX
+      *     
+           MOVE    "0"                 TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGL (1)
+           MOVE    "設定なし"          TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGMEIL
+                                                                   (1)
+           MOVE    "1"                 TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGL (2)
+           MOVE    "県内保険者"        TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGMEIL
+                                                                   (2)
+           MOVE    "2"                 TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGL (3)
+           MOVE    "県内保険者と県内扱い保険者"
+                                       TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGMEIL
+                                                                   (3)
+           MOVE    3                   TO
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
       *       
            MOVE    "0"                 TO  SPA-GMN-SRYKAHENKBNL    (1)
            MOVE    "診療科を表示する"  TO  SPA-GMN-SRYKAHENKBNMEIL (1)
@@ -3388,16 +3513,83 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            ELSE
                INITIALIZE                      SYS-2011-REC
            END-IF
+           IF      SYS-2011-KIGO-DELIMITER-FLG
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-2011-KIGO-DELIMITER-FLG
+           END-IF 
+           IF      SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+                                       =   SPACE
+               MOVE    "0"             TO
+                                   SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+           END-IF 
+           IF      SYS-2011-NUM-DELIMITER-FLG
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-2011-NUM-DELIMITER-FLG
+           END-IF 
+           IF      SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+                                       =   SPACE
+               MOVE    "0"             TO
+                                   SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+           END-IF 
       *
-           MOVE    SYS-2011-DELIMITER-FLG
-                                       TO  SPA-GMN-DELIMITER-FLG
+           MOVE    SYS-2011-KIGO-DELIMITER-FLG
+                                       TO  SPA-GMN-KIGO-DELIMITER-FLG
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       SPA-GMN-DELIMITER-FLG-MAX
-               IF      SPA-GMN-DELIMITER-FLG 
-                                   =   SPA-GMN-DELIMITER-FLGL (IDY)
-                   MOVE    SPA-GMN-DELIMITER-FLGLST (IDY)
-                                           TO  SPA-GMN-DELIMITER-FLG-G
-                   MOVE    SPA-GMN-DELIMITER-FLG-MAX
+                   UNTIL   IDY >       SPA-GMN-KIGO-DELIMITER-FLG-MAX
+               IF      SPA-GMN-KIGO-DELIMITER-FLG 
+                                   =   SPA-GMN-KIGO-DELIMITER-FLGL (IDY)
+                   MOVE    SPA-GMN-KIGO-DELIMITER-FLGLST (IDY)
+                                           TO
+                                           SPA-GMN-KIGO-DELIMITER-FLG-G
+                   MOVE    SPA-GMN-KIGO-DELIMITER-FLG-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+                                       TO
+                                   SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >
+                           SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+               IF      SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG 
+                                   =
+                           SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGL (IDY)
+                   MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGLST (IDY)
+                                           TO
+                                   SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G
+                   MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-2011-NUM-DELIMITER-FLG
+                                       TO  SPA-GMN-NUM-DELIMITER-FLG
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-NUM-DELIMITER-FLG-MAX
+               IF      SPA-GMN-NUM-DELIMITER-FLG 
+                                   =   SPA-GMN-NUM-DELIMITER-FLGL (IDY)
+                   MOVE    SPA-GMN-NUM-DELIMITER-FLGLST (IDY)
+                                           TO
+                                           SPA-GMN-NUM-DELIMITER-FLG-G
+                   MOVE    SPA-GMN-NUM-DELIMITER-FLG-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+                                       TO
+                                   SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >
+                           SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
+               IF      SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG 
+                                   =
+                           SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGL (IDY)
+                   MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGLST (IDY)
+                                           TO
+                                   SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G
+                   MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
                                            TO  IDY
                END-IF
            END-PERFORM
@@ -3499,11 +3691,6 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        =   SPACE
                MOVE    SPA-GMN-RECEDEN-DATAKBNLST (1)
                                            TO  SPA-GMN-RECEDEN-DATAKBN-G
-           END-IF                                              
-           IF     SPA-GMN-DELIMITER-FLG
-                                       =   SPACE
-               MOVE    SPA-GMN-DELIMITER-FLGLST (1)
-                                           TO  SPA-GMN-DELIMITER-FLG-G
            END-IF                                              
            IF     SPA-GMN-SRYKAHENKBN  =   SPACE
                MOVE    SPA-GMN-SRYKAHENKBNLST (1)
@@ -3757,7 +3944,16 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-RECEDEN-RIREKIKBN
                                        TO  SPA-GMN-RECEDEN-RIREKIKBN-G
            MOVE    W12-RECEDEN-DATAKBN TO  SPA-GMN-RECEDEN-DATAKBN-G
-           MOVE    W12-DELIMITER-FLG   TO  SPA-GMN-DELIMITER-FLG-G
+           MOVE    W12-KIGO-DELIMITER-FLG
+                                       TO  SPA-GMN-KIGO-DELIMITER-FLG-G
+           MOVE    W12-KIGO-DELIMITER-HKNJANUM-FLG
+                                       TO
+                                SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G
+           MOVE    W12-NUM-DELIMITER-FLG
+                                       TO  SPA-GMN-NUM-DELIMITER-FLG-G
+           MOVE    W12-NUM-DELIMITER-HKNJANUM-FLG
+                                       TO
+                                SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G
            MOVE    W12-SYAPRTNM-N      TO  SPA-GMN-SYAPRTNM-N
            MOVE    W12-KKHPRTNM-N      TO  SPA-GMN-KKHPRTNM-N
            MOVE    W12-SYAPRTNM-NEXT-N TO  SPA-GMN-SYAPRTNM-NEXT-N
@@ -4132,7 +4328,22 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-           PERFORM 4176-DELIMITER-FLG-CHK-SEC
+           PERFORM 4176-KIGO-DELIMITER-FLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4177-KIGO-DELIMITER-HKNJANUM-FLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4178-NUM-DELIMITER-FLG-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4179-NUM-DELIMITER-HKNJANUM-FLG-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -6129,33 +6340,149 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    記号番号区切り文字設定フラグチェック
+      *    記号番号区切り文字設定フラグ（記号）チェック
       *****************************************************************
-       4176-DELIMITER-FLG-CHK-SEC       SECTION.
+       4176-KIGO-DELIMITER-FLG-CHK-SEC       SECTION.
       *
-           IF      SPA-GMN-DELIMITER-FLG
+           IF      SPA-GMN-KIGO-DELIMITER-FLG
                                    =   SPACE
-               MOVE    SPA-GMN-DELIMITER-FLGLST (1)
-                                       TO  SPA-GMN-DELIMITER-FLG-G
+               MOVE    SPA-GMN-KIGO-DELIMITER-FLGLST (1)
+                                       TO  SPA-GMN-KIGO-DELIMITER-FLG-G
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       SPA-GMN-DELIMITER-FLG-MAX
-                   IF      SPA-GMN-DELIMITER-FLG
-                                   =   SPA-GMN-DELIMITER-FLGL (IDY)
-                       MOVE    SPA-GMN-DELIMITER-FLGLST (IDY)
-                                           TO  SPA-GMN-DELIMITER-FLG-G
-                       MOVE    SPA-GMN-DELIMITER-FLG-MAX
+                       UNTIL   IDY >   SPA-GMN-KIGO-DELIMITER-FLG-MAX
+                   IF      SPA-GMN-KIGO-DELIMITER-FLG
+                                   =   SPA-GMN-KIGO-DELIMITER-FLGL (IDY)
+                       MOVE    SPA-GMN-KIGO-DELIMITER-FLGLST (IDY)
+                                           TO
+                                           SPA-GMN-KIGO-DELIMITER-FLG-G
+                       MOVE    SPA-GMN-KIGO-DELIMITER-FLG-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *
+               IF      SPA-GMN-KIGO-DELIMITER-FLGMEI   =   SPACE
+                   MOVE    116                     TO  SPA-GMN-CUR
+                   MOVE    "0108"                  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-GMN-KIGO-DELIMITER-FLG
+                                   =   "0"
+               MOVE    "0"             TO
+                                   SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+           END-IF
+           .
+       4176-KIGO-DELIMITER-FLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    記号番号区切り文字対象保険者フラグ（記号）チェック
+      *****************************************************************
+       4177-KIGO-DELIMITER-HKNJANUM-FLG-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+                                   =   SPACE
+               MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGLST (1)
+                                       TO
+                                   SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+                   IF      SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+                                   =
+                           SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGL (IDY)
+                       MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGLST
+                                                                (IDY)
+                                           TO
+                                   SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G
+                       MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
                                            TO  IDY
                    END-IF                                     
                END-PERFORM
       *     
-               IF      SPA-GMN-DELIMITER-FLGMEI   =   SPACE
-                   MOVE    116                     TO  SPA-GMN-CUR
-                   MOVE    "0108"                  TO  SPA-ERRCD
+               IF      SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGMEI
+                                   =   SPACE
+                   MOVE    117                     TO  SPA-GMN-CUR
+                   MOVE    "0109"                  TO  SPA-ERRCD
                END-IF
            END-IF    
            .
-       4176-DELIMITER-FLG-CHK-EXT.
+       4177-KIGO-DELIMITER-HKNJANUM-FLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    記号番号区切り文字設定フラグ（番号）チェック
+      *****************************************************************
+       4178-NUM-DELIMITER-FLG-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-NUM-DELIMITER-FLG
+                                   =   SPACE
+               MOVE    SPA-GMN-NUM-DELIMITER-FLGLST (1)
+                                       TO  SPA-GMN-NUM-DELIMITER-FLG-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-NUM-DELIMITER-FLG-MAX
+                   IF      SPA-GMN-NUM-DELIMITER-FLG
+                                   =   SPA-GMN-NUM-DELIMITER-FLGL (IDY)
+                       MOVE    SPA-GMN-NUM-DELIMITER-FLGLST (IDY)
+                                           TO
+                                           SPA-GMN-NUM-DELIMITER-FLG-G
+                       MOVE    SPA-GMN-NUM-DELIMITER-FLG-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-NUM-DELIMITER-FLGMEI   =   SPACE
+                   MOVE    118                     TO  SPA-GMN-CUR
+                   MOVE    "0110"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           IF      SPA-GMN-NUM-DELIMITER-FLG
+                                   =   "0"
+               MOVE    "0"             TO
+                                   SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+           END-IF
+           .
+       4178-NUM-DELIMITER-FLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    記号番号区切り文字対象保険者フラグ（番号）チェック
+      *****************************************************************
+       4179-NUM-DELIMITER-HKNJANUM-FLG-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+                                   =   SPACE
+               MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGLST (1)
+                                       TO
+                                   SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
+                   IF      SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+                                   =
+                           SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGL (IDY)
+                       MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGLST
+                                                                (IDY)
+                                           TO
+                                   SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G
+                       MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGMEI
+                                   =   SPACE
+                   MOVE    119                     TO  SPA-GMN-CUR
+                   MOVE    "0111"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4179-NUM-DELIMITER-HKNJANUM-FLG-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6772,6 +7099,26 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF
       *
+      *    記号番号区切り文字設定の関連チェック
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-KIGO-DELIMITER-FLG
+                                       NOT =   "0" )
+               AND   ( SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+                                           =   "0" )
+                   MOVE    117                 TO  SPA-GMN-CUR
+                   MOVE    "0112"              TO  SPA-ERRCD                    
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-NUM-DELIMITER-FLG
+                                       NOT =   "0" )
+               AND   ( SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+                                           =   "0" )
+                   MOVE    119                 TO  SPA-GMN-CUR
+                   MOVE    "0112"              TO  SPA-ERRCD                    
+               END-IF
+           END-IF                         
+      *
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -7103,8 +7450,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-W01-STYUKYMD    TO  SYS-2011-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD    TO  SYS-2011-EDYUKYMD
-           MOVE    SPA-GMN-DELIMITER-FLG
-                                       TO  SYS-2011-DELIMITER-FLG
+           MOVE    SPA-GMN-KIGO-DELIMITER-FLG
+                                       TO  SYS-2011-KIGO-DELIMITER-FLG
+           MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG
+                                       TO
+                                   SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+           MOVE    SPA-GMN-NUM-DELIMITER-FLG
+                                       TO  SYS-2011-NUM-DELIMITER-FLG
+           MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG
+                                       TO
+                                   SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
            MOVE    SYS-2011-REC        TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -7374,7 +7729,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                             TO  W12-RECEDEN-RIREKIKBN
            MOVE    SPA-GMN-RECEDEN-DATAKBN-G
                                             TO  W12-RECEDEN-DATAKBN
-           MOVE    SPA-GMN-DELIMITER-FLG-G  TO  W12-DELIMITER-FLG
+           MOVE    SPA-GMN-KIGO-DELIMITER-FLG-G
+                                            TO  W12-KIGO-DELIMITER-FLG
+           MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G
+                                            TO
+                                        W12-KIGO-DELIMITER-HKNJANUM-FLG
+           MOVE    SPA-GMN-NUM-DELIMITER-FLG-G
+                                            TO  W12-NUM-DELIMITER-FLG
+           MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G
+                                            TO
+                                        W12-NUM-DELIMITER-HKNJANUM-FLG
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -8005,14 +8369,48 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-RECEDEN-DATAKBN-MAX
                                        TO  W12-RECEDEN-DATAKBN-COUNT 
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-KIGO-DELIMITER-FLG-MAX
+               MOVE    SPA-GMN-KIGO-DELIMITER-FLGLST (IDY)
+                                       TO  W12-KIGO-DELIMITER-FLGLST
+                                                                   (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KIGO-DELIMITER-FLG-MAX
+                                       TO  W12-KIGO-DELIMITER-FLG-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       SPA-GMN-DELIMITER-FLG-MAX
-               MOVE    SPA-GMN-DELIMITER-FLGLST (IDY)
-                                       TO  W12-DELIMITER-FLGLST (IDY)
+                   UNTIL   IDY     >
+                               SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+               MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLGLST (IDY)
+                                       TO
+                                   W12-KIGO-DELIMITER-HKNJANUM-FLGLST
+                                                                   (IDY)
            END-PERFORM
-           MOVE    SPA-GMN-DELIMITER-FLG-MAX
-                                       TO  W12-DELIMITER-FLG-COUNT 
+           MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-MAX
+                                       TO
+                                   W12-KIGO-DELIMITER-HKNJANUM-FLG-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-NUM-DELIMITER-FLG-MAX
+               MOVE    SPA-GMN-NUM-DELIMITER-FLGLST (IDY)
+                                       TO  W12-NUM-DELIMITER-FLGLST
+                                                                   (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-NUM-DELIMITER-FLG-MAX
+                                       TO  W12-NUM-DELIMITER-FLG-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >
+                               SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
+               MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLGLST (IDY)
+                                       TO
+                                   W12-NUM-DELIMITER-HKNJANUM-FLGLST
+                                                                   (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-MAX
+                                       TO
+                                   W12-NUM-DELIMITER-HKNJANUM-FLG-COUNT 
       *
            IF      SPA-BEDSU       >   ZERO
                MOVE    WIDGET-NORMAL       TO  W12-PREFPRGID1-STATE
@@ -8268,7 +8666,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "ファイル出力先設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0108"
-                   MOVE    "記号番号区切り文字設定入力エラー"
+                   MOVE    "記号編集設定入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0109"
+                   MOVE    "記号対象保険者入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0110"
+                   MOVE    "番号編集設定入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0111"
+                   MOVE    "番号対象保険者入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0112"
+                   MOVE    "対象保険者を設定して下さい"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1003"
@@ -8556,7 +8966,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    115
                     MOVE  "RECEDEN_DATAKBN"    TO  MCP-WIDGET
                 WHEN    116
-                    MOVE  "DELIMITER_FLG"      TO  MCP-WIDGET
+                    MOVE  "KIGO_DELI_FLG"      TO  MCP-WIDGET
+                WHEN    117
+                    MOVE  "KIGO_DELI_HKNJA"
+                                               TO  MCP-WIDGET
+                WHEN    118
+                    MOVE  "NUM_DELI_FLG"       TO  MCP-WIDGET
+                WHEN    119
+                    MOVE  "NUM_DELI_HKNJA"
+                                               TO  MCP-WIDGET
       * 
                 WHEN    11
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
@@ -8596,7 +9014,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE    1                TO  W12-PAGENO
                 WHEN    200 THRU    214
                     MOVE    2                TO  W12-PAGENO
-                WHEN    100 THRU    116
+                WHEN    100 THRU    119
                     MOVE    3                TO  W12-PAGENO
                 WHEN    70  THRU    80
                     MOVE    4                TO  W12-PAGENO
@@ -8863,7 +9281,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    115         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_DATAKBN"
                    MOVE    116         TO  SPA-GMN-CUR
-               WHEN    "DELIMITER_FLG"
+               WHEN    "KIGO_DELI_FLG"
+                   MOVE    117         TO  SPA-GMN-CUR
+               WHEN    "KIGO_DELI_HKNJA"
+                   MOVE    118         TO  SPA-GMN-CUR
+               WHEN    "NUM_DELI_FLG"
+                   MOVE    119         TO  SPA-GMN-CUR
+               WHEN    "NUM_DELI_HKNJA"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
       *

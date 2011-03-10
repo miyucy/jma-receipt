@@ -723,6 +723,10 @@
       *
       *    区切り文字設定
            03  WRK-DELIMITER-AREA.
+               05  WRK-DELIMITER-FLG   PIC X(01).
+               05  WRK-DELIMITER-HKNJANUM-FLG
+                                       PIC X(01).
+               05  WRK-DELIMITER-MAX   PIC 9(02).
                05  WRK-DELIMITER-IN.
                    07  WRK-DELIMITER-IN-O
                                        PIC X(02)   OCCURS 30.
@@ -1961,6 +1965,33 @@
            ELSE    
                INITIALIZE                  SYS-2011-REC
            END-IF
+           IF      SYS-2011-KIGO-DELIMITER-FLG
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-2011-KIGO-DELIMITER-FLG
+           END-IF 
+           IF      SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+                                       =   SPACE
+               MOVE    "0"             TO
+                                   SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+           END-IF 
+           IF      SYS-2011-NUM-DELIMITER-FLG
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-2011-NUM-DELIMITER-FLG
+           END-IF 
+           IF      SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+                                       =   SPACE
+               MOVE    "0"             TO
+                                   SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+           END-IF 
+      *
+           DISPLAY "SYS-2011-KIGO-DELIMITER-FLG=" 
+                                   SYS-2011-KIGO-DELIMITER-FLG
+                   " SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG="
+                                   SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+           DISPLAY "SYS-2011-NUM-DELIMITER-FLG ="
+                                   SYS-2011-NUM-DELIMITER-FLG
+                   " SYS-2011-NUM-DELIMITER-HKNJANUM-FLG ="
+                                   SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
       *    
            .
        110-SYSKANRI-HENSYU-EXT.
@@ -2711,28 +2742,46 @@
            MOVE    8                     TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    記号
-           IF    ( SYS-2011-DELIMITER-FLG
-                                     NOT =   0   )
-           AND   ( RECE62-TEISYUTUSAKI   =   "2" )
-           AND   ( RECE62-PREFKBN        =   "1" )
-               MOVE    RECE62-KIGO           TO  WRK-DELIMITER-IN
-               PERFORM 20031-DELIMITER-FLG-HENSYU-SEC
-               MOVE    WRK-DELIMITER-OUT     TO  WRK-DATA
+           IF      RECE62-TEISYUTUSAKI =   "2"
+               IF    ( SYS-2011-KIGO-DELIMITER-FLG
+                                           =   "0" )
+               OR    ( RECE62-PREFKBN      =   "2" )
+                   MOVE    RECE62-KIGO         TO  WRK-DATA
+               ELSE
+                   INITIALIZE                      WRK-DELIMITER-AREA
+                   MOVE    RECE62-KIGO         TO  WRK-DELIMITER-IN
+                   MOVE    SYS-2011-KIGO-DELIMITER-FLG
+                                               TO  WRK-DELIMITER-FLG
+                   MOVE    SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
+                                               TO
+                                           WRK-DELIMITER-HKNJANUM-FLG
+                   PERFORM 20031-DELIMITER-FLG-HENSYU-SEC
+                   MOVE    WRK-DELIMITER-OUT   TO  WRK-DATA
+               END-IF
            ELSE
-               MOVE    RECE62-KIGO           TO  WRK-DATA
+               MOVE    RECE62-KIGO         TO  WRK-DATA
            END-IF
            MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    番号
-           IF    ( SYS-2011-DELIMITER-FLG
-                                     NOT =   0   )
-           AND   ( RECE62-TEISYUTUSAKI   =   "2" )
-           AND   ( RECE62-PREFKBN        =   "1" )
-               MOVE    RECE62-NUM            TO  WRK-DELIMITER-IN
-               PERFORM 20031-DELIMITER-FLG-HENSYU-SEC
-               MOVE    WRK-DELIMITER-OUT     TO  WRK-DATA
+           IF      RECE62-TEISYUTUSAKI =   "2"
+               IF    ( SYS-2011-NUM-DELIMITER-FLG
+                                           =   "0" )
+               OR    ( RECE62-PREFKBN      =   "2" )
+                   MOVE    RECE62-NUM          TO  WRK-DATA
+               ELSE
+                   INITIALIZE                      WRK-DELIMITER-AREA
+                   MOVE    RECE62-NUM          TO  WRK-DELIMITER-IN
+                   MOVE    SYS-2011-NUM-DELIMITER-FLG
+                                               TO  WRK-DELIMITER-FLG
+                   MOVE    SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
+                                               TO
+                                           WRK-DELIMITER-HKNJANUM-FLG
+                   PERFORM 20031-DELIMITER-FLG-HENSYU-SEC
+                   MOVE    WRK-DELIMITER-OUT   TO  WRK-DATA
+               END-IF
            ELSE
-               MOVE    RECE62-NUM            TO  WRK-DATA
+               MOVE    RECE62-NUM          TO  WRK-DATA
            END-IF
            MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -2873,33 +2922,68 @@
       *****************************************************************
        20031-DELIMITER-FLG-HENSYU-SEC      SECTION.
       *
-           MOVE    SPACE               TO  WRK-DELIMITER-OUT
+           MOVE    WRK-DELIMITER-IN    TO  WRK-DELIMITER-OUT
       *
            IF      WRK-DELIMITER-IN    =   SPACE
                GO  TO  20031-DELIMITER-FLG-HENSYU-EXT
            END-IF
       *
+      *    設定保険者によるチェック
+           EVALUATE    WRK-DELIMITER-HKNJANUM-FLG
+               WHEN    "1"
+      *            県内保険者
+                   IF    ( RECE62-PREFKBN      =   "1"              )
+                   AND   ( RECE62-HKNJANUM-PREFNUM
+                                               =   SYS-1001-PREFNUM )
+                       CONTINUE
+                   ELSE
+                       GO  TO  20031-DELIMITER-FLG-HENSYU-EXT
+                   END-IF
+               WHEN    "2"
+      *            県内保険者と県内扱い保険者
+                   IF    ( RECE62-PREFKBN      =   "1"              )
+                       CONTINUE
+                   ELSE
+                       GO  TO  20031-DELIMITER-FLG-HENSYU-EXT
+                   END-IF
+           END-EVALUATE
+      *
       *    全角ハイフン、全角マイナス、長音、ダッシュを設定情報より変換
+           MOVE    SPACE               TO  WRK-DELIMITER-OUT
+           MOVE    ZERO                TO  WRK-DELIMITER-MAX
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       20
-               MOVE    WRK-DELIMITER-IN-O (IDXX)
-                                           TO  WRK-DELIMITER-OUT-O(IDXX)
-               EVALUATE    SYS-2011-DELIMITER-FLG
-                   WHEN    1
-      *                全角ハイフンを設定
-                       IF      WRK-DELIMITER-IN-O (IDXX)   =   "─"
-                                                           OR  "−"
-                                                           OR  "ー"
-                           MOVE    "‐"    TO  WRK-DELIMITER-OUT-O(IDXX) 
-                       END-IF      
-                   WHEN    2
-      *                全角マイナスを設定
-                       IF      WRK-DELIMITER-IN-O (IDXX)   =   "─"
-                                                           OR  "‐"
-                                                           OR  "ー"
-                           MOVE    "−"    TO  WRK-DELIMITER-OUT-O(IDXX) 
-                       END-IF      
-               END-EVALUATE
+               IF      WRK-DELIMITER-IN-O (IDXX)   =   "─"
+                                                   OR  "−"
+                                                   OR  "ー"
+                                                   OR  "‐"
+                   EVALUATE    WRK-DELIMITER-FLG
+                       WHEN    "1"
+      *                    全角ハイフンを設定
+                           ADD     1       TO  WRK-DELIMITER-MAX
+                           MOVE    "‐"    TO  WRK-DELIMITER-OUT-O
+                                                   (WRK-DELIMITER-MAX) 
+                       WHEN    "2"
+      *                    全角マイナスを設定
+                           ADD     1       TO  WRK-DELIMITER-MAX
+                           MOVE    "−"    TO  WRK-DELIMITER-OUT-O
+                                                   (WRK-DELIMITER-MAX) 
+                       WHEN    "9"
+      *                    削除
+                           CONTINUE
+                       WHEN    OTHER
+                           ADD     1       TO  WRK-DELIMITER-MAX
+                           MOVE    WRK-DELIMITER-IN-O (IDXX)
+                                           TO  WRK-DELIMITER-OUT-O
+                                                   (WRK-DELIMITER-MAX) 
+                   END-EVALUATE
+               ELSE    
+                   ADD     1           TO  WRK-DELIMITER-MAX
+                   MOVE    WRK-DELIMITER-IN-O (IDXX)
+                                       TO  WRK-DELIMITER-OUT-O
+                                                   (WRK-DELIMITER-MAX)
+               END-IF    
            END-PERFORM
       *
            .
@@ -8578,6 +8662,8 @@
       *
                            DISPLAY "RECE62  PTNUM=" RECE62-PTNUM  
                                "  RJNGAIKOHFTN=" RECE62-RJNGAIKOHFTN(1)    
+                                " PREFKBN=" RECE62-PREFKBN
+                                " PREFNUM=" RECE62-HKNJANUM-PREFNUM
                        ELSE
                            MOVE    ZERO        TO  FLG-READ     
                        END-IF

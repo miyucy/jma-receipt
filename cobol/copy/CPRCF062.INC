@@ -592,6 +592,8 @@
            03  RECE62-PREFNUM             PIC  9(02).
       *県内・県外区分（１：県内　２：県外　）
            03  RECE62-PREFKBN             PIC  X(01).
+      *県番号（保険者）
+           03  RECE62-HKNJANUM-PREFNUM    PIC  X(02).
       *公費分離区分最小値
            03  RECE62-KOHBUNRI-MIN        PIC  9(01).
       *病床数編集フラグ（特定疾患療養指導料等）

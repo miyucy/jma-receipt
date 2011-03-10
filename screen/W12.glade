@@ -76,7 +76,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
-      <text></text>
+      <text>00000000</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -92,7 +92,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>9</text_max_length>
-      <text></text>
+      <text>99999999</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -2684,15 +2684,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator2</name>
-	  <x>530</x>
-	  <y>30</y>
-	  <width>460</width>
-	  <height>10</height>
-	</widget>
-
-	<widget>
 	  <class>GtkLabel</class>
 	  <name>label436</name>
 	  <x>600</x>
@@ -3419,6 +3410,15 @@
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
 	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator2</name>
+	  <x>530</x>
+	  <y>30</y>
+	  <width>460</width>
+	  <height>10</height>
+	</widget>
       </widget>
 
       <widget>
@@ -3463,7 +3463,7 @@
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
 	  <text_max_length>30</text_max_length>
-	  <text>123456789012345678901234567899</text>
+	  <text></text>
 	  <input_mode>ASCII</input_mode>
 	  <xim_enabled>False</xim_enabled>
 	</widget>
@@ -3658,22 +3658,6 @@
 	  </signal>
 	  <editable>True</editable>
 	  <format>ZZZZZZZZ</format>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label241</name>
-	  <x>48</x>
-	  <y>220</y>
-	  <width>200</width>
-	  <height>24</height>
-	  <label>日計表記録条件（合計点数）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
@@ -3886,22 +3870,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label242</name>
-	  <x>48</x>
-	  <y>296</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>国保</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>False</wrap>
-	  <xalign>1</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label517</name>
 	  <x>48</x>
 	  <y>336</y>
@@ -4110,45 +4078,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label627</name>
-	  <x>510</x>
-	  <y>56</y>
-	  <width>148</width>
-	  <height>24</height>
-	  <label>ファイル出力先設定</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label516</name>
 	  <x>48</x>
 	  <y>96</y>
 	  <width>160</width>
 	  <height>24</height>
 	  <label>広域連合レセ電出力区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label630</name>
-	  <x>512</x>
-	  <y>92</y>
-	  <width>170</width>
-	  <height>38</height>
-	  <label>記号番号区切り文字設定
-（国保・県内扱い保険者）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4276,12 +4211,143 @@
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
 	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label627</name>
+	  <x>510</x>
+	  <y>56</y>
+	  <width>148</width>
+	  <height>24</height>
+	  <label>ファイル出力先設定</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkVSeparator</class>
+	  <name>vseparator1</name>
+	  <x>450</x>
+	  <y>216</y>
+	  <width>13</width>
+	  <height>400</height>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator4</name>
+	  <x>455</x>
+	  <y>208</y>
+	  <width>533</width>
+	  <height>16</height>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label242</name>
+	  <x>48</x>
+	  <y>296</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>国保</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label241</name>
+	  <x>48</x>
+	  <y>220</y>
+	  <width>200</width>
+	  <height>24</height>
+	  <label>日計表記録条件（合計点数）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label630</name>
+	  <x>470</x>
+	  <y>256</y>
+	  <width>50</width>
+	  <height>24</height>
+	  <label>記号</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label631</name>
+	  <x>470</x>
+	  <y>296</y>
+	  <width>50</width>
+	  <height>24</height>
+	  <label>番号</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label632</name>
+	  <x>541</x>
+	  <y>224</y>
+	  <width>85</width>
+	  <height>24</height>
+	  <label>編集設定</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label633</name>
+	  <x>774</x>
+	  <y>224</y>
+	  <width>132</width>
+	  <height>24</height>
+	  <label>対象保険者（国保）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>DELIMITER_FLG_COMBO</name>
-	  <x>700</x>
-	  <y>96</y>
-	  <width>208</width>
+	  <name>KIGO_DELI_HKNJA_CMB</name>
+	  <x>760</x>
+	  <y>256</y>
+	  <width>220</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4293,7 +4359,7 @@
 	  <widget>
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>DELIMITER_FLG</name>
+	    <name>KIGO_DELI_HKNJA</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -4309,8 +4375,128 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>20</text_max_length>
-	    <text>1 全角ハイフン</text>
+	    <text_max_length>30</text_max_length>
+	    <text>0 設定なし</text>
+	    <input_mode>ASCII</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>NUM_DELI_HKNJA_CMB</name>
+	  <x>760</x>
+	  <y>296</y>
+	  <width>220</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>NUM_DELI_HKNJA</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>30</text_max_length>
+	    <text>2 県内保険者と県内扱い保険者</text>
+	    <input_mode>ASCII</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>KIGO_DELI_FLG_CMB</name>
+	  <x>524</x>
+	  <y>256</y>
+	  <width>227</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KIGO_DELI_FLG</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>30</text_max_length>
+	    <text>0 編集なし</text>
+	    <input_mode>ASCII</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>NUM_DELI_FLG_CMB</name>
+	  <x>524</x>
+	  <y>296</y>
+	  <width>227</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>NUM_DELI_FLG</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>30</text_max_length>
+	    <text>2 「−」を全角マイナス変換</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
