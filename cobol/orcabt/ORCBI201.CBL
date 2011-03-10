@@ -207,6 +207,39 @@
            03  CONST-JOBID             PIC 9(07)   VALUE   1.
            03  CONST-JOB-SHELLID       PIC X(08)
                VALUE   "ORCBI201".
+      * 
+       01  CONST-CSV-HEADER.
+           03  CONST-CSV-NO            PIC X(20)   VALUE "ÈÖ¹æ".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-PTNUM         PIC X(20)   VALUE "´µ¼ÔÈÖ¹æ".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-NAME          PIC X(20)   VALUE "»áÌ¾".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-SEX           PIC X(20)   VALUE "À­ÊÌ".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-AGENUM        PIC X(20)   VALUE "Ç¯Îð".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-AGETANI       PIC X(20)   VALUE "Ç¯Îð¥é¥Ù¥ë".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-BTU-NANE      PIC X(20)   VALUE "ÉÂÅï".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-BRMNUM        PIC X(20)   VALUE "ÉÂ¼¼".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-NYUINYMD      PIC X(20)   VALUE "Æþ±¡Æü".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-TAIINYMD      PIC X(20)   VALUE "Âà±¡Æü".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-TAIINCD       PIC X(20)   VALUE "Âà±¡»öÍ³".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-SRYKANAME     PIC X(20)   VALUE "¿ÇÎÅ²Ê".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-POST          PIC X(20)   VALUE "Í¹ÊØÈÖ¹æ".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-JYUSYO        PIC X(20)   VALUE "½»½ê".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-KANANAME      PIC X(20)   VALUE "¥«¥Ê»áÌ¾".
+           03  FILLER                  PIC X(01)   VALUE ",".
+           03  CONST-CSV-HKNMEI        PIC X(20)   VALUE "ÊÝ¸±ÁÈ¹ç¤»".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -590,6 +623,30 @@
       *    £Ã£Ó£ÖÊÔ½¸½èÍý
       *****************************************************************
        800-CSV-EDIT-SEC            SECTION.
+      *
+           INITIALIZE              CSV-NO
+                                   CSV-PTNUM
+                                   CSV-NAME
+                                   CSV-SEX
+                                   CSV-AGENUM
+                                   CSV-AGETANI
+                                   CSV-BTU-NAME
+                                   CSV-BRMNUM
+                                   CSV-NYUINYMD
+                                   CSV-TAIINYMD
+                                   CSV-TAIINCD
+                                   CSV-SRYKANAME
+                                   CSV-POST
+                                   CSV-JYUSYO
+                                   CSV-KANANAME
+                                   CSV-HKNMEI
+      *
+           COMPUTE CNT-CSV =   CNT-CSV +   1
+           IF    ( CNT-CSV =   1 )
+               MOVE    CONST-CSV-HEADER
+                                   TO  CSV-REC
+               WRITE   CSV-REC
+           END-IF
       *
            MOVE    CNT-KNS         TO  CSV-NO
            MOVE    I001-PTNUM      TO  CSV-PTNUM
