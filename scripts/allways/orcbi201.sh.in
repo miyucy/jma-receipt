@@ -62,6 +62,7 @@ fi
                     fi
                 else
                     mv  ${2}.tmp $2
+                    rm  ${15}
                 fi 
             fi
         fi

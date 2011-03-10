@@ -575,7 +575,8 @@
       *
       *    印刷用スクリプト処理
       *
-           INITIALIZE              SHELLTBL
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  SHELLTBL
       *
       *    フィアルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA

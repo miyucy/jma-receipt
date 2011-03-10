@@ -720,11 +720,11 @@
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-FILENM      TO  SHELLTBL-ARG14
            MOVE    SPACE           TO  SHELLTBL-ARG15
-           STRING   "/tmp/"                DELIMITED  BY  SIZE
-                    WRK-FILENM             DELIMITED  BY  SPACE
-                    SPA-TERMID             DELIMITED  BY SIZE
-                    ".wk"                  DELIMITED  BY  SIZE
-           INTO  SHELLTBL-ARG15
+           STRING   "/tmp/"            DELIMITED  BY  SIZE
+                    WRK-FILENM         DELIMITED  BY  SPACE
+                    SPA-TERMID         DELIMITED  BY  SIZE
+                    ".wk"              DELIMITED  BY  SIZE
+           INTO     SHELLTBL-ARG15
            END-STRING
       *
       *    検索結果パターン
