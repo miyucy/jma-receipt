@@ -319,9 +319,11 @@
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(04)   VALUE   "≈¿øÙ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "Œ≈Õ‹»Ò".
+           03  FILLER              PIC X(16)   VALUE
+                                               "ø©ªˆ°¶¿∏≥ËŒ≈Õ‹»Ò".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ø©ªˆ…È√¥".
+           03  FILLER              PIC X(20)   VALUE
+                                               "ø©ªˆ°¶¿∏≥Ë…∏Ω‡…È√¥≥€".
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
