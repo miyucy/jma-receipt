@@ -7151,7 +7151,9 @@
       *                  用法コメント
                          OR  ((SPA-COM-INPUTCD(SPA-GMN-IDX)(1:3)
                                                    =   "001"     ) AND
-                              (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 ))
+                              (SPA-COM-YCOMKBN(SPA-GMN-IDX) =   1 ) AND
+                              (SPA-COM-SURFLG (SPA-GMN-IDX)
+                                                       =   SPACE ))
       *
                            MOVE    "_"             TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)

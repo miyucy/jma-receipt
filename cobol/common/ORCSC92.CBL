@@ -1358,6 +1358,14 @@
                    MOVE    "0129"          TO  SPA-ERRCD
                    MOVE    "1"             TO  SPA-COM-CUR (IDX-T)
                END-IF
+      *        入力あり( _ 表示なし）
+               IF     (LNK-SC97-MCNT1      >   0   )
+                  OR  (LNK-SC97-MCNT2      >   0   )
+                  OR  (LNK-SC97-MCNT3      >   0   )
+                  OR  (LNK-SC97-MCNT4      >   0   )
+                  OR  (LNK-SC97-MCNT5      >   0   )
+                   MOVE    "1"             TO  SPA-COM-SURFLG(IDX-T)
+               END-IF
            END-IF
       *
            .
