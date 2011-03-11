@@ -810,8 +810,8 @@
                END-IF
                MOVE    PTKOHINF-REC        TO  TBL-PTKOHINF-REC (IDX)
            ELSE
-               IF      HZN-HKN-TEKSTYMD(1) <   TBL-PTKOH-TEKEDYMD(IDX)
       *        保険の開始日を変更する
+               IF      HZN-HKN-TEKSTYMD(1) <   TBL-PTKOH-TEKEDYMD(IDX)
                    MOVE    HZN-HKN-TEKSTYMD(1) TO  TBL-PTKOH-TEKSTYMD
                                                                 (IDX)
                    MOVE    "B"                 TO  TBL-ISAM-ERR (IDX)
