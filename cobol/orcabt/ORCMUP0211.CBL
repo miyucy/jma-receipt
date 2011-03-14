@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : ＤＢ作成処理
-      *  コンポーネント名  : 感染症更新処理
+      *  コンポーネント名  : 同義語更新処理
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    入力：感染症更新データ
+      *    入力：同義語更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,16 +54,17 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    入力：感染症更新データ
+      *    入力：同義語更新データ
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
-       01  ERR-INFJUDWK-REC.
-           03  ERR-INFJUDWK-SYORIKBN   PIC X(01).
-           COPY    "CPINFJUDGMENT.INC" REPLACING  //INFJUD//
-                                              BY  //ERR-INFJUDWK//.
+       01  ERR-SYNONYMWK-REC.
+           03  ERR-SYNONYMWK-SYORIKBN
+                                       PIC  X(01).
+           COPY    "CPSYNONYM.INC"     REPLACING  //SYNONYM//
+                                              BY  //ERR-SYNONYMWK//.
       *
       *    出力：プルーフファイル
        FD  PLF-FILE.
@@ -88,7 +89,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
-           03  FLG-INFJUD              PIC 9(01).
+           03  FLG-SYNONYM             PIC 9(01).
            03  FLG-PLF                 PIC 9(01).
       *
       *    インデックス領域
@@ -148,15 +149,7 @@
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  WRK-SYORIKBN            PIC X(01).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-ID                  PIC 9(05).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-DISEASE             PIC 9(02).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-CODE                PIC X(09).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-CODE-KBN            PIC 9(01).
-           03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-SRYKBN              PIC X(02).
+           03  WRK-BYOMEI              PIC X(200).
       *
        01  WRK-HOMEDIR.
            03  FILLER                  PIC X(28)  VALUE
@@ -167,13 +160,13 @@
       *    ファイル定義
       *****************************************************************
       *
-       01  INFJUDWK-REC.
-           03  INFJUDWK-SYORIKBN       PIC X(01).
-           COPY    "CPINFJUDGMENT.INC" REPLACING   //INFJUD//
-                                              BY   //INFJUDWK//.
-      *    感染症
-       01  INFJUD-REC.
-           COPY    "CPINFJUDGMENT.INC".
+       01  SYNONYMWK-REC.
+           03  SYNONYMWK-SYORIKBN      PIC X(01).
+           COPY    "CPSYNONYM.INC"     REPLACING   //SYNONYM//
+                                              BY   //SYNONYMWK//.
+      *    同義語
+       01  SYNONYM-REC.
+           COPY    "CPSYNONYM.INC".
       *
       *    ジョブ管理情報
        01  JOBKANRI-REC.
@@ -245,7 +238,7 @@
       *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    感染症データ読込み処理
+      *    同義語データ読込み処理
            IF      FLG-IN          =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -299,7 +292,7 @@
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
-           EVALUATE    INFJUDWK-SYORIKBN
+           EVALUATE    SYNONYMWK-SYORIKBN
       *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
@@ -311,7 +304,7 @@
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    感染症データ読込み処理
+      *    同義語データ読込み処理
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -323,35 +316,33 @@
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
-           INITIALIZE                  INFJUD-REC
-           MOVE    INFJUDWK-ID     TO  INFJUD-ID
-           MOVE    INFJUD-REC      TO  MCPDATA-REC
+           INITIALIZE                  SYNONYM-REC
+           MOVE    SYNONYMWK-BYOMEI
+                                   TO  SYNONYM-BYOMEI
+           MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_infection_judgment"
-                                       TO  MCP-TABLE
-               MOVE    "key3"          TO  MCP-PATHNAME
-               PERFORM  910-INFJUD-READ-SEC
+               MOVE    "tbl_synonym"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM  910-SYNONYM-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-INFJUD
+               MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym" TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    追加エラー（同一キー存在）
-           IF      FLG-INFJUD       =   ZERO
+           IF      FLG-SYNONYM       =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
       *        ＤＢ追加
-               PERFORM 20101-INFJUD-INS-SEC
+               PERFORM 20101-SYNONYM-INS-SEC
            END-IF
       *
            .
@@ -363,31 +354,29 @@
       *****************************************************************
        2020-UPDATE-SYORI-SEC       SECTION.
       *
-           INITIALIZE                  INFJUD-REC
-           MOVE    INFJUDWK-ID     TO  INFJUD-ID
-           MOVE    INFJUD-REC      TO  MCPDATA-REC
+           INITIALIZE                  SYNONYM-REC
+           MOVE    SYNONYMWK-BYOMEI
+                                   TO  SYNONYM-BYOMEI
+           MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_infection_judgment"
-                                       TO  MCP-TABLE
-               MOVE    "key3"          TO  MCP-PATHNAME
-               PERFORM  910-INFJUD-READ-SEC
+               MOVE    "tbl_synonym"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM  910-SYNONYM-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-INFJUD
+               MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF      FLG-INFJUD     =   ZERO
+           IF      FLG-SYNONYM     =   ZERO
       *        ＤＢ更新
-               PERFORM 20101-INFJUD-UPD-SEC
+               PERFORM 20101-SYNONYM-UPD-SEC
            ELSE
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -402,31 +391,29 @@
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
-           INITIALIZE                  INFJUD-REC
-           MOVE    INFJUDWK-ID     TO  INFJUD-ID
-           MOVE    INFJUD-REC      TO  MCPDATA-REC
+           INITIALIZE                  SYNONYM-REC
+           MOVE    SYNONYMWK-BYOMEI
+                                   TO  SYNONYM-BYOMEI
+           MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_infection_judgment"
-                                       TO  MCP-TABLE
-               MOVE    "key3"          TO  MCP-PATHNAME
-               PERFORM  910-INFJUD-READ-SEC
+               MOVE    "tbl_synonym"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM  910-SYNONYM-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-INFJUD
+               MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
-           IF      FLG-INFJUD     =   ZERO
+           IF      FLG-SYNONYM     =   ZERO
       *        ＤＢ削除
-               PERFORM 20101-INFJUD-DEL-SEC
+               PERFORM 20101-SYNONYM-DEL-SEC
            ELSE
                MOVE    6               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -439,19 +426,18 @@
       *****************************************************************
       *    ＤＢ追加  処理
       *****************************************************************
-       20101-INFJUD-INS-SEC        SECTION.
+       20101-SYNONYM-INS-SEC       SECTION.
       *
-           INITIALIZE                  INFJUD-REC
-           MOVE    INFJUDWK-REC(2:)
-                                   TO  INFJUD-REC
-           MOVE    LNK-MNTYMD      TO  INFJUD-CREYMD
-                                       INFJUD-UPYMD
-           MOVE    LNK-MNTHMS      TO  INFJUD-UPHMS
-           MOVE    INFJUD-REC      TO  MCPDATA-REC
+           INITIALIZE                  SYNONYM-REC
+           MOVE    SYNONYMWK-REC(2:)
+                                   TO  SYNONYM-REC
+           MOVE    LNK-MNTYMD      TO  SYNONYM-CREYMD
+                                       SYNONYM-UPYMD
+           MOVE    LNK-MNTHMS      TO  SYNONYM-UPHMS
+           MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    1               TO  LNK-RC
@@ -463,26 +449,21 @@
            END-IF
       *
            .
-       20101-INFJUD-INS-EXT.
+       20101-SYNONYM-INS-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
-       20101-INFJUD-UPD-SEC        SECTION.
+       20101-SYNONYM-UPD-SEC       SECTION.
       *
-           MOVE    INFJUDWK-DISEASE
-                                   TO  INFJUD-DISEASE
-           MOVE    INFJUDWK-CODE   TO  INFJUD-CODE
-           MOVE    INFJUDWK-CODE-KBN
-                                   TO  INFJUD-CODE-KBN
-           MOVE    INFJUDWK-SRYKBN TO  INFJUD-SRYKBN
-           MOVE    LNK-MNTYMD      TO  INFJUD-UPYMD
-           MOVE    LNK-MNTHMS      TO  INFJUD-UPHMS
-           MOVE    INFJUD-REC      TO  MCPDATA-REC
+           MOVE    SYNONYMWK-BYOMEICD
+                                   TO  SYNONYM-BYOMEICD
+           MOVE    LNK-MNTYMD      TO  SYNONYM-UPYMD
+           MOVE    LNK-MNTHMS      TO  SYNONYM-UPHMS
+           MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
            MOVE    "upd1"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -495,18 +476,17 @@
            END-IF
       *
            .
-       20101-INFJUD-UPD-EXT.
+       20101-SYNONYM-UPD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ削除  処理
       *****************************************************************
-       20101-INFJUD-DEL-SEC       SECTION.
+       20101-SYNONYM-DEL-SEC       SECTION.
       *
-           MOVE    INFJUD-REC      TO  MCPDATA-REC
+           MOVE    SYNONYM-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_infection_judgment"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_synonym"   TO  MCP-TABLE
            MOVE    "del1"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -519,7 +499,7 @@
            END-IF
       *
            .
-       20101-INFJUD-DEL-EXT.
+       20101-SYNONYM-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -528,8 +508,8 @@
        2040-ERR-SYORI-SEC          SECTION.
       *
       *    エラー出力
-           MOVE    INFJUDWK-REC    TO  ERR-INFJUDWK-REC
-           WRITE   ERR-INFJUDWK-REC
+           MOVE    SYNONYMWK-REC   TO  ERR-SYNONYMWK-REC
+           WRITE   ERR-SYNONYMWK-REC
            ADD     1               TO  CNT-ERR
       *
       *    エラーメッセージ出力
@@ -544,17 +524,14 @@
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
-           MOVE    INFJUDWK-ID     TO  WRK-ID
-           MOVE    INFJUDWK-DISEASE
-                                   TO  WRK-DISEASE
-           MOVE    INFJUDWK-CODE   TO  WRK-CODE
-           MOVE    INFJUDWK-CODE-KBN
-                                   TO  WRK-CODE-KBN
-           MOVE    INFJUDWK-SRYKBN TO  WRK-SRYKBN
+           MOVE    SYNONYMWK-SYORIKBN
+                                   TO  WRK-SYORIKBN
+           MOVE    SYNONYMWK-BYOMEI
+                                   TO  WRK-BYOMEI
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "感染症マスタ登録済み"
+                   MOVE  "同義語マスタ登録済み"
                                            TO  WRK-MSG-01
                WHEN    2
                    MOVE  "追加エラー"      TO  WRK-MSG-01
@@ -644,7 +621,7 @@
            EXIT.
       *
       *****************************************************************
-      *     感染症読込み処理
+      *     同義語読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -657,8 +634,8 @@
           END-READ
       *
           IF      FLG-IN           =   ZERO
-              MOVE    SPACE            TO  INFJUDWK-REC
-              MOVE    IN-REC           TO  INFJUDWK-REC
+              MOVE    SPACE            TO  SYNONYMWK-REC
+              MOVE    IN-REC           TO  SYNONYMWK-REC
           END-IF
       *
           .
@@ -666,22 +643,22 @@
           EXIT.
       *
       *****************************************************************
-      *    感染症読込
+      *    同義語読込
       *****************************************************************
-       910-INFJUD-READ-SEC         SECTION.
+       910-SYNONYM-READ-SEC        SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    MCPDATA-REC     TO  INFJUD-REC
-               MOVE    ZERO            TO  FLG-INFJUD
+               MOVE    MCPDATA-REC     TO  SYNONYM-REC
+               MOVE    ZERO            TO  FLG-SYNONYM
            ELSE
-               INITIALIZE                  INFJUD-REC
-               MOVE    1               TO  FLG-INFJUD
+               INITIALIZE                  SYNONYM-REC
+               MOVE    1               TO  FLG-SYNONYM
            END-IF
       *
            .
-       910-INFJUD-READ-EXT.
+       910-SYNONYM-READ-EXT.
            EXIT.
       *
       *****************************************************************

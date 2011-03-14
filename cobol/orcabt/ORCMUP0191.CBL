@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : ＤＢ作成処理
-      *  コンポーネント名  : 入院レセプト記載略称更新処理
+      *  コンポーネント名  : 入院料チェック更新処理
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    入力：入院レセプト記載略称更新データ
+      *    入力：入院料チェック更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,19 +54,19 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    入力：入院レセプト記載略称更新データ
+      *    入力：入院料チェック更新データ
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
-       01  ERR-RYAKUSHOWK-REC.
-           03  ERR-RYAKUSHOWK-SYORIKBN PIC  X(01).
-           03  ERR-RYAKUSHOWK-YUKOEDYMD2
+       01  ERR-NYUKSNCHKWK-REC.
+           03  ERR-NYUKSNCHKWK-SYORIKBN
+                                       PIC  X(01).
+           03  ERR-NYUKSNCHKWK-YUKOEDYMD2
                                        PIC X(08).
-           COPY    "CPNYUINRYAKUSHO.INC"
-                                       REPLACING  //NYURYAKUSHO//
-                                              BY  //ERR-RYAKUSHOWK//.
+           COPY    "CPNYUKSNCHK.INC"   REPLACING  //NYUKSNCHK//
+                                              BY  //ERR-NYUKSNCHKWK//.
       *
       *    出力：プルーフファイル
        FD  PLF-FILE.
@@ -91,7 +91,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
-           03  FLG-RYAKUSHO            PIC 9(01).
+           03  FLG-NYUKSNCHK           PIC 9(01).
            03  FLG-PLF                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
       *
@@ -152,9 +152,9 @@
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  WRK-SYORIKBN            PIC X(01).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-SRYCD               PIC X(09).
+           03  WRK-NYUINKBN            PIC X(03).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-RYAKUSHO            PIC X(20).
+           03  WRK-KSNKBN              PIC X(03).
       *
        01  WRK-HOMEDIR.
            03  FILLER                  PIC X(28)  VALUE
@@ -165,17 +165,14 @@
       *    ファイル定義
       *****************************************************************
       *
-       01  RYAKUSHOWK-REC.
-           03  RYAKUSHOWK-SYORIKBN     PIC X(01).
-           03  RYAKUSHOWK-YUKOEDYMD2   PIC X(08).
-           COPY    "CPNYUINRYAKUSHO.INC"
-                                       REPLACING   //NYURYAKUSHO//
-                                              BY   //RYAKUSHOWK//.
-      *    入院レセプト記載略称
-       01  RYAKUSHO-REC.
-           COPY    "CPNYUINRYAKUSHO.INC"
-                                       REPLACING   //NYURYAKUSHO//
-                                              BY   //RYAKUSHO//.
+       01  NYUKSNCHKWK-REC.
+           03  NYUKSNCHKWK-SYORIKBN    PIC X(01).
+           03  NYUKSNCHKWK-YUKOEDYMD2  PIC X(08).
+           COPY    "CPNYUKSNCHK.INC"   REPLACING   //NYUKSNCHK//
+                                              BY   //NYUKSNCHKWK//.
+      *    入院料チェック
+       01  NYUKSNCHK-REC.
+           COPY    "CPNYUKSNCHK.INC".
       *
       *    ジョブ管理情報
        01  JOBKANRI-REC.
@@ -247,7 +244,7 @@
       *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    入院レセプト記載略称データ読込み処理
+      *    入院料チェックデータ読込み処理
            IF      FLG-IN          =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -301,7 +298,7 @@
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
-           EVALUATE    RYAKUSHOWK-SYORIKBN
+           EVALUATE    NYUKSNCHKWK-SYORIKBN
       *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
@@ -313,7 +310,7 @@
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    入院レセプト記載略称データ読込み処理
+      *    入院料チェックデータ読込み処理
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -326,7 +323,7 @@
        2010-INSERT-SYORI-SEC       SECTION.
       *
       *    単純追加
-           IF      RYAKUSHOWK-YUKOEDYMD2
+           IF      NYUKSNCHKWK-YUKOEDYMD2
                                    =   SPACE
                PERFORM 2011-INSERT-SYORI-SEC
            ELSE
@@ -342,35 +339,32 @@
       *****************************************************************
        2011-INSERT-SYORI-SEC       SECTION.
       *
-           INITIALIZE                  RYAKUSHO-REC
-           MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           INITIALIZE                  NYUKSNCHK-REC
+           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_nyuinryakusho"
-                                       TO  MCP-TABLE
+               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM  910-RYAKUSHO-READ-SEC
+               PERFORM  910-NYUKSNCHK-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-RYAKUSHO
+               MOVE    1               TO  FLG-NYUKSNCHK
            END-IF
       *
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    追加エラー（同一キー存在）
-           IF      FLG-RYAKUSHO    =   ZERO
+           IF      FLG-NYUKSNCHK       =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
       *        ＤＢ追加
-               PERFORM 20101-RYAKUSHO-INS-SEC
+               PERFORM 20101-NYUKSNCHK-INS-SEC
            END-IF
       *
            .
@@ -384,58 +378,52 @@
       *
            MOVE    ZERO            TO  FLG-SYORI
       *
-           INITIALIZE                  RYAKUSHO-REC
-           MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           INITIALIZE                  NYUKSNCHK-REC
+           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinryakusho"
-                                       TO  MCP-TABLE
+               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 910-RYAKUSHO-READ-SEC
+               PERFORM 910-NYUKSNCHK-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-RYAKUSHO
+               MOVE    1               TO  FLG-NYUKSNCHK
            END-IF
       *
-           PERFORM UNTIL  (FLG-RYAKUSHO    =   1)
+           PERFORM UNTIL  (FLG-NYUKSNCHK   =   1)
                      OR   (FLG-SYORI       =   1)
-               IF     (RYAKUSHO-YUKOSTYMD <=  RYAKUSHOWK-YUKOEDYMD2)
-                 AND  (RYAKUSHO-YUKOEDYMD >=  RYAKUSHOWK-YUKOEDYMD2)
+               IF     (NYUKSNCHK-YUKOSTYMD <=  NYUKSNCHKWK-YUKOEDYMD2)
+                 AND  (NYUKSNCHK-YUKOEDYMD >=  NYUKSNCHKWK-YUKOEDYMD2)
       *            更新
-                   MOVE    RYAKUSHO-YUKOEDYMD
-                                           TO  RYAKUSHO-UPYUKOEDYMD
-                   MOVE    RYAKUSHOWK-YUKOEDYMD2
-                                           TO  RYAKUSHO-YUKOEDYMD
-                   PERFORM 20101-RYAKUSHO-UPD-SEC
+                   MOVE    NYUKSNCHK-KEY   TO  NYUKSNCHKUP-KEY
+                   MOVE    NYUKSNCHKWK-YUKOEDYMD2
+                                           TO  NYUKSNCHK-YUKOEDYMD
+                   PERFORM 20101-NYUKSNCHK-UPD-SEC
       *            ＤＢ追加
-                   PERFORM 20101-RYAKUSHO-INS-SEC
+                   PERFORM 20101-NYUKSNCHK-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinryakusho"
-                                           TO  MCP-TABLE
+                   MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM 910-RYAKUSHO-READ-SEC
+                   PERFORM 910-NYUKSNCHK-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
       *        ＤＢ追加
-               PERFORM 20101-RYAKUSHO-INS-SEC
+               PERFORM 20101-NYUKSNCHK-INS-SEC
            END-IF
       *
            .
        2012-INSERT-SYORI-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
@@ -443,48 +431,43 @@
       *
            MOVE    ZERO            TO  FLG-SYORI
       *
-           INITIALIZE                  RYAKUSHO-REC
-           MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           INITIALIZE                  NYUKSNCHK-REC
+           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinryakusho"
-                                       TO  MCP-TABLE
+               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM  910-RYAKUSHO-READ-SEC
+               PERFORM  910-NYUKSNCHK-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-RYAKUSHO
+               MOVE    1               TO  FLG-NYUKSNCHK
            END-IF
       *
-           PERFORM UNTIL  (FLG-RYAKUSHO    =   1)
+           PERFORM UNTIL  (FLG-NYUKSNCHK   =   1)
                      OR   (FLG-SYORI       =   1)
-               IF     (RYAKUSHO-YUKOSTYMD  <=  RYAKUSHOWK-YUKOSTYMD)
-                 AND  (RYAKUSHO-YUKOEDYMD  >=  RYAKUSHOWK-YUKOEDYMD)
+               IF     (NYUKSNCHK-YUKOSTYMD <=  NYUKSNCHKWK-YUKOSTYMD)
+                 AND  (NYUKSNCHK-YUKOEDYMD >=  NYUKSNCHKWK-YUKOEDYMD)
       *            ＤＢ更新
-                   MOVE    RYAKUSHO-YUKOEDYMD
-                                           TO  RYAKUSHO-UPYUKOEDYMD
-                   MOVE    RYAKUSHOWK-RYAKUSHO
-                                           TO  RYAKUSHO-RYAKUSHO
-                   MOVE    RYAKUSHOWK-NAME TO  RYAKUSHO-NAME
-                   MOVE    RYAKUSHOWK-TERMID
-                                           TO  RYAKUSHO-TERMID
-                   MOVE    RYAKUSHOWK-OPID TO  RYAKUSHO-OPID
-                   PERFORM 20101-RYAKUSHO-UPD-SEC
+                   MOVE    NYUKSNCHK-KEY   TO  NYUKSNCHKUP-KEY
+                   MOVE    NYUKSNCHKWK-CHKKBN
+                                           TO  NYUKSNCHK-CHKKBN
+                   MOVE    NYUKSNCHKWK-TERMID
+                                           TO  NYUKSNCHK-TERMID
+                   MOVE    NYUKSNCHKWK-OPID
+                                           TO  NYUKSNCHK-OPID
+                   PERFORM 20101-NYUKSNCHK-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinryakusho"
-                                           TO  MCP-TABLE
+                   MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM  910-RYAKUSHO-READ-SEC
+                   PERFORM  910-NYUKSNCHK-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -504,39 +487,36 @@
       *
            MOVE    ZERO            TO  FLG-SYORI
       *
-           INITIALIZE                  RYAKUSHO-REC
-           MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           INITIALIZE                  NYUKSNCHK-REC
+           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuinryakusho"
-                                       TO  MCP-TABLE
+               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM  910-RYAKUSHO-READ-SEC
+               PERFORM  910-NYUKSNCHK-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-RYAKUSHO
+               MOVE    1               TO  FLG-NYUKSNCHK
            END-IF
       *
-           PERFORM UNTIL  (FLG-RYAKUSHO    =   1)
+           PERFORM UNTIL  (FLG-NYUKSNCHK   =   1)
                      OR   (FLG-SYORI       =   1)
-               IF     (RYAKUSHO-YUKOSTYMD  <=  RYAKUSHOWK-YUKOSTYMD)
-                 AND  (RYAKUSHO-YUKOEDYMD  >=  RYAKUSHOWK-YUKOEDYMD)
+               IF     (NYUKSNCHK-YUKOSTYMD <=  NYUKSNCHKWK-YUKOSTYMD)
+                 AND  (NYUKSNCHK-YUKOEDYMD >=  NYUKSNCHKWK-YUKOEDYMD)
       *            ＤＢ削除
-                   PERFORM 20101-RYAKUSHO-DEL-SEC
+                   PERFORM 20101-NYUKSNCHK-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuinryakusho"
-                                           TO  MCP-TABLE
+                   MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                    MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM  910-RYAKUSHO-READ-SEC
+                   PERFORM  910-NYUKSNCHK-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuinryakusho" TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
@@ -552,18 +532,17 @@
       *****************************************************************
       *    ＤＢ追加  処理
       *****************************************************************
-       20101-RYAKUSHO-INS-SEC      SECTION.
+       20101-NYUKSNCHK-INS-SEC     SECTION.
       *
-           INITIALIZE                  RYAKUSHO-REC
-           MOVE    RYAKUSHOWK-REC(10:)
-                                   TO  RYAKUSHO-REC
-           MOVE    LNK-MNTYMD      TO  RYAKUSHO-CREYMD
-                                       RYAKUSHO-UPYMD
-           MOVE    LNK-MNTHMS      TO  RYAKUSHO-UPHMS
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           INITIALIZE                  NYUKSNCHK-REC
+           MOVE    NYUKSNCHKWK-REC(10:)
+                                   TO  NYUKSNCHK-REC
+           MOVE    LNK-MNTYMD      TO  NYUKSNCHK-CREYMD
+                                       NYUKSNCHK-UPYMD
+           MOVE    LNK-MNTHMS      TO  NYUKSNCHK-UPHMS
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -576,20 +555,19 @@
            END-IF
       *
            .
-       20101-RYAKUSHO-INS-EXT.
+       20101-NYUKSNCHK-INS-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
-       20101-RYAKUSHO-UPD-SEC      SECTION.
+       20101-NYUKSNCHK-UPD-SEC     SECTION.
       *
-           MOVE    LNK-MNTYMD      TO  RYAKUSHO-UPYMD
-           MOVE    LNK-MNTHMS      TO  RYAKUSHO-UPHMS
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           MOVE    LNK-MNTYMD      TO  NYUKSNCHK-UPYMD
+           MOVE    LNK-MNTHMS      TO  NYUKSNCHK-UPHMS
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "upd1"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -602,18 +580,17 @@
            END-IF
       *
            .
-       20101-RYAKUSHO-UPD-EXT.
+       20101-NYUKSNCHK-UPD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ削除  処理
       *****************************************************************
-       20101-RYAKUSHO-DEL-SEC      SECTION.
+       20101-NYUKSNCHK-DEL-SEC     SECTION.
       *
-           MOVE    RYAKUSHO-REC    TO  MCPDATA-REC
+           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuinryakusho"
-                                   TO  MCP-TABLE
+           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -626,7 +603,7 @@
            END-IF
       *
            .
-       20101-RYAKUSHO-DEL-EXT.
+       20101-NYUKSNCHK-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -635,8 +612,8 @@
        2040-ERR-SYORI-SEC          SECTION.
       *
       *    エラー出力
-           MOVE    RYAKUSHOWK-REC  TO  ERR-RYAKUSHOWK-REC
-           WRITE   ERR-RYAKUSHOWK-REC
+           MOVE    NYUKSNCHKWK-REC TO  ERR-NYUKSNCHKWK-REC
+           WRITE   ERR-NYUKSNCHKWK-REC
            ADD     1               TO  CNT-ERR
       *
       *    エラーメッセージ出力
@@ -651,16 +628,15 @@
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
-           MOVE    RYAKUSHOWK-SYORIKBN
+           MOVE    NYUKSNCHKWK-SYORIKBN
                                    TO  WRK-SYORIKBN
-           MOVE    RYAKUSHOWK-SRYCD
-                                   TO  WRK-SRYCD
-           MOVE    RYAKUSHOWK-RYAKUSHO
-                                   TO  WRK-RYAKUSHO
-      *
+           MOVE    NYUKSNCHKWK-NYUINKBN
+                                   TO  WRK-NYUINKBN
+           MOVE    NYUKSNCHKWK-KSNKBN
+                                   TO  WRK-KSNKBN
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "入院レセ記載略称マスタ登録済み"
+                   MOVE  "入院料チェックマスタ登録済み"
                                            TO  WRK-MSG-01
                WHEN    2
                    MOVE  "追加エラー"      TO  WRK-MSG-01
@@ -688,14 +664,14 @@
        2700-OUTLST-INIT-SEC        SECTION.
       *
            OPEN    OUTPUT              ERR-FILE
-           IF      STS-ERR     NOT =   ZERO
+           IF      STS-ERR         NOT =   ZERO
                DISPLAY "*(ORCMUP0191)* OUTFILE OPN STS[" STS-ERR "]"
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
       *
       *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
-           IF      STS-PLF     NOT =   ZERO
+           IF      STS-PLF         NOT =   ZERO
                DISPLAY "*(ORCMUP0191)* PLFFILE OPN STS[" STS-PLF "]"
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
@@ -724,7 +700,7 @@
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
       *
-           IF      LNK-RC          =   ZERO
+           IF      LNK-RC              =   ZERO
                IF      CNT-IN      NOT =   LNK-COUNT
                    MOVE    99              TO  LNK-RC
                    INITIALIZE                  JOBKANRI-REC
@@ -750,7 +726,7 @@
            EXIT.
       *
       *****************************************************************
-      *     入院レセプト記載略称読込み処理
+      *     入院料チェック読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -763,8 +739,8 @@
           END-READ
       *
           IF      FLG-IN           =   ZERO
-              MOVE    SPACE            TO  RYAKUSHOWK-REC
-              MOVE    IN-REC           TO  RYAKUSHOWK-REC
+              MOVE    SPACE            TO  NYUKSNCHKWK-REC
+              MOVE    IN-REC           TO  NYUKSNCHKWK-REC
           END-IF
       *
           .
@@ -772,22 +748,22 @@
           EXIT.
       *
       *****************************************************************
-      *    入院レセプト記載略称読込
+      *    入院料チェック読込
       *****************************************************************
-       910-RYAKUSHO-READ-SEC    SECTION.
+       910-NYUKSNCHK-READ-SEC      SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    MCPDATA-REC     TO  RYAKUSHO-REC
-               MOVE    ZERO            TO  FLG-RYAKUSHO
+               MOVE    MCPDATA-REC     TO  NYUKSNCHK-REC
+               MOVE    ZERO            TO  FLG-NYUKSNCHK
            ELSE
-               INITIALIZE                  RYAKUSHO-REC
-               MOVE    1               TO  FLG-RYAKUSHO
+               INITIALIZE                  NYUKSNCHK-REC
+               MOVE    1               TO  FLG-NYUKSNCHK
            END-IF
       *
            .
-       910-RYAKUSHO-READ-EXT.
+       910-NYUKSNCHK-READ-EXT.
            EXIT.
       *
       *****************************************************************

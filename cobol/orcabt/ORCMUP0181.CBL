@@ -20,11 +20,11 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : ＤＢ作成処理
-      *  コンポーネント名  : 入院料チェック更新処理
+      *  コンポーネント名  : 入院基本料更新処理
       *                    : 
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  11.02.15    NACL-森脇     新規作成
+      *  11.02.08    NACL-森脇     新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    入力：入院料チェック更新データ
+      *    入力：入院基本料更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,26 +54,24 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    入力：入院料チェック更新データ
+      *    入力：入院基本料更新データ
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
-       01  ERR-NYUKSNCHKWK-REC.
-           03  ERR-NYUKSNCHKWK-SYORIKBN
-                                       PIC  X(01).
-           03  ERR-NYUKSNCHKWK-YUKOEDYMD2
-                                       PIC X(08).
-           COPY    "CPNYUKSNCHK.INC"   REPLACING  //NYUKSNCHK//
-                                              BY  //ERR-NYUKSNCHKWK//.
+       01  ERR-NYUKHNWK-REC.
+           03  ERR-NYUKHNWK-SYORIKBN   PIC  X(01).
+           03  ERR-NYUKHNWK-YUKOEDYMD2 PIC X(08).
+           COPY    "CPNYUINKHN.INC"    REPLACING  //NYUKHN-//
+                                              BY  //ERR-NYUKHNWK-//.
       *
       *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-      *
+     *
            COPY    "COMMON-SPA".
       *
       *    ファイル指定領域
@@ -91,7 +89,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
-           03  FLG-NYUKSNCHK           PIC 9(01).
+           03  FLG-NYUKHN              PIC 9(01).
            03  FLG-PLF                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
       *
@@ -152,9 +150,9 @@
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  WRK-SYORIKBN            PIC X(01).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-NYUINKBN            PIC X(03).
+           03  WRK-KHNSRYCD            PIC  X(09).
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  WRK-KSNKBN              PIC X(03).
+           03  WRK-KHNTEN              PIC  9(06).
       *
        01  WRK-HOMEDIR.
            03  FILLER                  PIC X(28)  VALUE
@@ -165,14 +163,14 @@
       *    ファイル定義
       *****************************************************************
       *
-       01  NYUKSNCHKWK-REC.
-           03  NYUKSNCHKWK-SYORIKBN    PIC X(01).
-           03  NYUKSNCHKWK-YUKOEDYMD2  PIC X(08).
-           COPY    "CPNYUKSNCHK.INC"   REPLACING   //NYUKSNCHK//
-                                              BY   //NYUKSNCHKWK//.
-      *    入院料チェック
-       01  NYUKSNCHK-REC.
-           COPY    "CPNYUKSNCHK.INC".
+       01  NYUKHNWK-REC.
+           03  NYUKHNWK-SYORIKBN       PIC X(01).
+           03  NYUKHNWK-YUKOEDYMD2     PIC X(08).
+           COPY    "CPNYUINKHN.INC"    REPLACING   //NYUKHN-//
+                                              BY   //NYUKHNWK-//.
+      *    入院基本料
+       01  NYUKHN-REC.
+           COPY    "CPNYUINKHN.INC".
       *
       *    ジョブ管理情報
        01  JOBKANRI-REC.
@@ -236,7 +234,7 @@
       *
       *    入力　初期処理
            OPEN    INPUT               IN-FILE
-           IF      STS-IN       NOT =   ZERO
+           IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
                DISPLAY "*(ORCMUP0181)* IN-FILE OPN STS[" STS-IN "]"
            END-IF
@@ -244,7 +242,7 @@
       *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    入院料チェックデータ読込み処理
+      *    入院基本料データ読込み処理
            IF      FLG-IN          =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -298,7 +296,7 @@
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
-           EVALUATE    NYUKSNCHKWK-SYORIKBN
+           EVALUATE    NYUKHNWK-SYORIKBN
       *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
@@ -310,7 +308,7 @@
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    入院料チェックデータ読込み処理
+      *    入院基本料データ読込み処理
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -323,7 +321,7 @@
        2010-INSERT-SYORI-SEC       SECTION.
       *
       *    単純追加
-           IF      NYUKSNCHKWK-YUKOEDYMD2
+           IF      NYUKHNWK-YUKOEDYMD2
                                    =   SPACE
                PERFORM 2011-INSERT-SYORI-SEC
            ELSE
@@ -339,32 +337,32 @@
       *****************************************************************
        2011-INSERT-SYORI-SEC       SECTION.
       *
-           INITIALIZE                  NYUKSNCHK-REC
-           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           INITIALIZE                  NYUKHN-REC
+           MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM  910-NYUKSNCHK-READ-SEC
+               PERFORM 910-NYUKHN-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-NYUKSNCHK
+               MOVE    1               TO  FLG-NYUKHN
            END-IF
       *
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
       *    追加エラー（同一キー存在）
-           IF      FLG-NYUKSNCHK       =   ZERO
+           IF      FLG-NYUKHN      =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
       *        ＤＢ追加
-               PERFORM 20101-NYUKSNCHK-INS-SEC
+               PERFORM 20101-NYUKHN-INS-SEC
            END-IF
       *
            .
@@ -378,52 +376,54 @@
       *
            MOVE    ZERO            TO  FLG-SYORI
       *
-           INITIALIZE                  NYUKSNCHK-REC
-           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           INITIALIZE                  NYUKHN-REC
+           MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 910-NYUKSNCHK-READ-SEC
+               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 910-NYUKHN-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-NYUKSNCHK
+               MOVE    1               TO  FLG-NYUKHN
            END-IF
       *
-           PERFORM UNTIL  (FLG-NYUKSNCHK   =   1)
-                     OR   (FLG-SYORI       =   1)
-               IF     (NYUKSNCHK-YUKOSTYMD <=  NYUKSNCHKWK-YUKOEDYMD2)
-                 AND  (NYUKSNCHK-YUKOEDYMD >=  NYUKSNCHKWK-YUKOEDYMD2)
-      *            更新
-                   MOVE    NYUKSNCHK-KEY   TO  NYUKSNCHKUP-KEY
-                   MOVE    NYUKSNCHKWK-YUKOEDYMD2
-                                           TO  NYUKSNCHK-YUKOEDYMD
-                   PERFORM 20101-NYUKSNCHK-UPD-SEC
+           PERFORM UNTIL  (FLG-NYUKHN      =   1  )
+                     OR   (FLG-SYORI       =   1  )
+               IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOEDYMD2)
+                 AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD2)
+      *            ＤＢ更新
+                   MOVE    NYUKHN-YUKOEDYMD
+                                           TO  NYUKHN-UPYUKOEDYMD
+                   MOVE    NYUKHNWK-YUKOEDYMD2
+                                           TO  NYUKHN-YUKOEDYMD
+                   PERFORM 20101-NYUKHN-UPD-SEC
       *            ＤＢ追加
-                   PERFORM 20101-NYUKSNCHK-INS-SEC
+                   PERFORM 20101-NYUKHN-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM 910-NYUKSNCHK-READ-SEC
+                   MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 910-NYUKHN-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
       *        ＤＢ追加
-               PERFORM 20101-NYUKSNCHK-INS-SEC
+               PERFORM 20101-NYUKHN-INS-SEC
            END-IF
       *
            .
        2012-INSERT-SYORI-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
@@ -431,44 +431,42 @@
       *
            MOVE    ZERO            TO  FLG-SYORI
       *
-           INITIALIZE                  NYUKSNCHK-REC
-           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           INITIALIZE                  NYUKHN-REC
+           MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM  910-NYUKSNCHK-READ-SEC
+               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 910-NYUKHN-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-NYUKSNCHK
+               MOVE    1               TO  FLG-NYUKHN
            END-IF
       *
-           PERFORM UNTIL  (FLG-NYUKSNCHK   =   1)
-                     OR   (FLG-SYORI       =   1)
-               IF     (NYUKSNCHK-YUKOSTYMD <=  NYUKSNCHKWK-YUKOSTYMD)
-                 AND  (NYUKSNCHK-YUKOEDYMD >=  NYUKSNCHKWK-YUKOEDYMD)
+           PERFORM UNTIL  (FLG-NYUKHN      =   1  )
+                     OR   (FLG-SYORI       =   1  )
+               IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOSTYMD)
+                 AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD)
       *            ＤＢ更新
-                   MOVE    NYUKSNCHK-KEY   TO  NYUKSNCHKUP-KEY
-                   MOVE    NYUKSNCHKWK-CHKKBN
-                                           TO  NYUKSNCHK-CHKKBN
-                   MOVE    NYUKSNCHKWK-TERMID
-                                           TO  NYUKSNCHK-TERMID
-                   MOVE    NYUKSNCHKWK-OPID
-                                           TO  NYUKSNCHK-OPID
-                   PERFORM 20101-NYUKSNCHK-UPD-SEC
+                   MOVE    NYUKHN-YUKOEDYMD
+                                           TO  NYUKHN-UPYUKOEDYMD
+                   MOVE    NYUKHNWK-INF    TO  NYUKHN-INF
+                   MOVE    NYUKHNWK-TERMID TO  NYUKHN-TERMID
+                   MOVE    NYUKHNWK-OPID   TO  NYUKHN-OPID
+                   PERFORM 20101-NYUKHN-UPD-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM  910-NYUKSNCHK-READ-SEC
+                   MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 910-NYUKHN-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
@@ -487,37 +485,37 @@
       *
            MOVE    ZERO            TO  FLG-SYORI
       *
-           INITIALIZE                  NYUKSNCHK-REC
-           MOVE    NYUKSNCHKWK-KEY TO  NYUKSNCHK-KEY
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           INITIALIZE                  NYUKHN-REC
+           MOVE    NYUKHNWK-KEY    TO  NYUKHN-KEY
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM  910-NYUKSNCHK-READ-SEC
+               MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 910-NYUKHN-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-NYUKSNCHK
+               MOVE    1               TO  FLG-NYUKHN
            END-IF
       *
-           PERFORM UNTIL  (FLG-NYUKSNCHK   =   1)
-                     OR   (FLG-SYORI       =   1)
-               IF     (NYUKSNCHK-YUKOSTYMD <=  NYUKSNCHKWK-YUKOSTYMD)
-                 AND  (NYUKSNCHK-YUKOEDYMD >=  NYUKSNCHKWK-YUKOEDYMD)
+           PERFORM UNTIL  (FLG-NYUKHN      =   1  )
+                     OR   (FLG-SYORI       =   1  )
+               IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOSTYMD)
+                 AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD)
       *            ＤＢ削除
-                   PERFORM 20101-NYUKSNCHK-DEL-SEC
+                   PERFORM 20101-NYUKHN-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
-                   MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-                   MOVE    "key2"          TO  MCP-PATHNAME
-                   PERFORM  910-NYUKSNCHK-READ-SEC
+                   MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+                   MOVE    "key3"          TO  MCP-PATHNAME
+                   PERFORM 910-NYUKHN-READ-SEC
                END-IF
            END-PERFORM
       *
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
@@ -532,20 +530,20 @@
       *****************************************************************
       *    ＤＢ追加  処理
       *****************************************************************
-       20101-NYUKSNCHK-INS-SEC     SECTION.
+       20101-NYUKHN-INS-SEC        SECTION.
       *
-           INITIALIZE                  NYUKSNCHK-REC
-           MOVE    NYUKSNCHKWK-REC(10:)
-                                   TO  NYUKSNCHK-REC
-           MOVE    LNK-MNTYMD      TO  NYUKSNCHK-CREYMD
-                                       NYUKSNCHK-UPYMD
-           MOVE    LNK-MNTHMS      TO  NYUKSNCHK-UPHMS
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           INITIALIZE                  NYUKHN-REC
+           MOVE    NYUKHNWK-REC(10:)
+                                   TO  NYUKHN-REC
+           MOVE    LNK-MNTYMD      TO  NYUKHN-CREYMD
+                                       NYUKHN-UPYMD
+           MOVE    LNK-MNTHMS      TO  NYUKHN-UPHMS
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC          NOT =   ZERO
+           IF      MCP-RC      NOT =   ZERO
                MOVE    1               TO  LNK-RC
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -555,55 +553,55 @@
            END-IF
       *
            .
-       20101-NYUKSNCHK-INS-EXT.
+       20101-NYUKHN-INS-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
-       20101-NYUKSNCHK-UPD-SEC     SECTION.
+       20101-NYUKHN-UPD-SEC        SECTION.
       *
-           MOVE    LNK-MNTYMD      TO  NYUKSNCHK-UPYMD
-           MOVE    LNK-MNTHMS      TO  NYUKSNCHK-UPHMS
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           MOVE    LNK-MNTYMD      TO  NYUKHN-UPYMD
+           MOVE    LNK-MNTHMS      TO  NYUKHN-UPHMS
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
            MOVE    "upd1"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC          NOT =   ZERO
+           IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC
                MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
-           IF      WRK-ERRCD           =   ZERO
+           IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-UPD
            END-IF
       *
            .
-       20101-NYUKSNCHK-UPD-EXT.
+       20101-NYUKHN-UPD-EXT.
            EXIT.
       *
       *****************************************************************
       *    ＤＢ削除  処理
       *****************************************************************
-       20101-NYUKSNCHK-DEL-SEC     SECTION.
+       20101-NYUKHN-DEL-SEC        SECTION.
       *
-           MOVE    NYUKSNCHK-REC   TO  MCPDATA-REC
+           MOVE    NYUKHN-REC      TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
+           MOVE    "tbl_nyuinkhn"  TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
-           IF      MCP-RC          NOT =   ZERO
+           IF      MCP-RC      NOT =   ZERO
                MOVE    3               TO  LNK-RC
                MOVE    4               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
-           IF      WRK-ERRCD           =   ZERO
+           IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-DEL
            END-IF
       *
            .
-       20101-NYUKSNCHK-DEL-EXT.
+       20101-NYUKHN-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -612,8 +610,8 @@
        2040-ERR-SYORI-SEC          SECTION.
       *
       *    エラー出力
-           MOVE    NYUKSNCHKWK-REC TO  ERR-NYUKSNCHKWK-REC
-           WRITE   ERR-NYUKSNCHKWK-REC
+           MOVE    NYUKHNWK-REC    TO  ERR-NYUKHNWK-REC
+           WRITE   ERR-NYUKHNWK-REC
            ADD     1               TO  CNT-ERR
       *
       *    エラーメッセージ出力
@@ -628,15 +626,15 @@
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
-           MOVE    NYUKSNCHKWK-SYORIKBN
+           MOVE    NYUKHNWK-SYORIKBN
                                    TO  WRK-SYORIKBN
-           MOVE    NYUKSNCHKWK-NYUINKBN
-                                   TO  WRK-NYUINKBN
-           MOVE    NYUKSNCHKWK-KSNKBN
-                                   TO  WRK-KSNKBN
+           MOVE    NYUKHNWK-KHNSRYCD
+                                   TO  WRK-KHNSRYCD
+           MOVE    NYUKHNWK-KHNTEN TO  WRK-KHNTEN
+      *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "入院料チェックマスタ登録済み"
+                   MOVE  "入院基本料マスタ登録済み"
                                            TO  WRK-MSG-01
                WHEN    2
                    MOVE  "追加エラー"      TO  WRK-MSG-01
@@ -664,14 +662,14 @@
        2700-OUTLST-INIT-SEC        SECTION.
       *
            OPEN    OUTPUT              ERR-FILE
-           IF      STS-ERR         NOT =   ZERO
+           IF      STS-ERR     NOT =   ZERO
                DISPLAY "*(ORCMUP0181)* OUTFILE OPN STS[" STS-ERR "]"
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
       *
       *    エラーレコード出力ファイル　オープン
-           OPEN    OUTPUT              PLF-FILE
-           IF      STS-PLF         NOT =   ZERO
+           OPEN    OUTPUT             PLF-FILE
+           IF      STS-PLF    NOT =   ZERO
                DISPLAY "*(ORCMUP0181)* PLFFILE OPN STS[" STS-PLF "]"
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
@@ -700,9 +698,10 @@
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
       *
-           IF      LNK-RC              =   ZERO
+           IF      LNK-RC          =   ZERO
                IF      CNT-IN      NOT =   LNK-COUNT
                    MOVE    99              TO  LNK-RC
+      *
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    1               TO  JOB-HOSPNUM
                    MOVE    "tbl_jobkanri"  TO  MCP-TABLE
@@ -711,6 +710,7 @@
                    MOVE    "DBSELECT"      TO  MCP-FUNC
                    PERFORM 900-ORCDBMAIN-SEC
                END-IF
+      *
            END-IF
       *
            DISPLAY "*(ORCMUP0181)* INPUT  /I   CNT[" CNT-IN  "]"
@@ -726,7 +726,7 @@
            EXIT.
       *
       *****************************************************************
-      *     入院料チェック読込み処理
+      *     入院基本料読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -739,8 +739,8 @@
           END-READ
       *
           IF      FLG-IN           =   ZERO
-              MOVE    SPACE            TO  NYUKSNCHKWK-REC
-              MOVE    IN-REC           TO  NYUKSNCHKWK-REC
+              MOVE    SPACE            TO  NYUKHNWK-REC
+              MOVE    IN-REC           TO  NYUKHNWK-REC
           END-IF
       *
           .
@@ -748,22 +748,22 @@
           EXIT.
       *
       *****************************************************************
-      *    入院料チェック読込
+      *    入院基本料読込
       *****************************************************************
-       910-NYUKSNCHK-READ-SEC      SECTION.
+       910-NYUKHN-READ-SEC         SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
-               MOVE    MCPDATA-REC     TO  NYUKSNCHK-REC
-               MOVE    ZERO            TO  FLG-NYUKSNCHK
+               MOVE    MCPDATA-REC     TO  NYUKHN-REC
+               MOVE    ZERO            TO  FLG-NYUKHN
            ELSE
-               INITIALIZE                  NYUKSNCHK-REC
-               MOVE    1               TO  FLG-NYUKSNCHK
+               INITIALIZE                  NYUKHN-REC
+               MOVE    1               TO  FLG-NYUKHN
            END-IF
       *
            .
-       910-NYUKSNCHK-READ-EXT.
+       910-NYUKHN-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -825,7 +825,7 @@
                                    MCPAREA
                                    MCPDATA-REC
                                    SPA-AREA
-           .
       *
+           .
        900-ORCDBMAIN-EXT.
            EXIT.
