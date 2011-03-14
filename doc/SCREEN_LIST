@@ -86,6 +86,8 @@ PID1.glade	orca12	(PID1)確認画面
 
 Q01.glade	orca13	(Q01)患者照会  -  検索条件入力
 Q02.glade	orca13	(Q02)患者照会 - 検索結果
+Q02A.glade	orca13	(Q02A)患者照会 - 検索結果（点数情報）
+Q02B.glade	orca13	(Q02B)患者照会 - 検索結果（診療行為情報）
 Q03.glade	orca13	(Q03)他業務連携確認
 Q04.glade	orca13	(Q04)検索条件登録
 Q96.glade	orca13	(Q96)診療行為一覧選択
@@ -362,6 +364,7 @@ W29.glade	orca101	(W29)システム管理情報−退院事由設定
 W30.glade	orca101	(W30)システム管理情報−入院指示せん設定
 W31.glade	orca101	(W31)システム管理情報−医療区分表示設定
 W32.glade	orca101	(W32)システム管理情報−包括診療行為設定
+W321.glade	orca101	(W321)包括診療行為包括一覧サブ
 W33.glade	orca101	(W33)システム管理情報−印刷情報削除設定
 W34.glade	orca101	(W34)システム管理情報−プログラムオプション設定
 W35.glade	orca101	(W35)システム管理情報−外来迅速検体検査設定
