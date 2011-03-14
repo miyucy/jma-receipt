@@ -38,6 +38,7 @@
       *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
       *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
       *  04.03.00    NACL-太田    08/05/27  エラー処理強化
+      *  04.06.00    NACL-伊藤    11/03/10  新マスター追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -677,6 +678,24 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                           TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    "ORCADB16"
                    MOVE    "オプションマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB17"
+                   MOVE    "感染症判定マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB18"
+                   MOVE    "入院基本料マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB19"
+                   MOVE    "入院料加算チェックマスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB20"
+                   MOVE    "入院レセプト記載略称マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB21"
+                   MOVE    "同義語マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB22"
+                   MOVE    "電子点数表マスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
                    MOVE    MSTKANRI-KANRICD
