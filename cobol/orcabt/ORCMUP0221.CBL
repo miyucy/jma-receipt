@@ -718,8 +718,8 @@
                WHEN    50
                    IF     (ETENSU5-YUKOSTYMD   <=  ETENSU5WK-YUKOSTYMD)
                      AND  (ETENSU5-YUKOEDYMD   >=  ETENSU5WK-YUKOEDYMD)
-                       MOVE    ETENSU5WK-REC(26:)
-                                               TO  ETENSU5-REC(26:)
+                       MOVE    ETENSU5WK-REC(29:)
+                                               TO  ETENSU5-REC(29:)
                        MOVE    ETENSU5-YUKOEDYMD
                                                TO  ETENSU5-UPYUKOEDYMD
                        MOVE    1               TO  FLG-SYORI
