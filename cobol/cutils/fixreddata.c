@@ -121,8 +121,7 @@ Element(xmlTextReaderPtr reader)
 	occurs = 0;
 	
 	node_type = xmlTextReaderNodeType(reader);
-	if ((name = xmlTextReaderName(reader)) != NULL) {
-		if (node_type == XML_READER_TYPE_ELEMENT ) {
+	if ((name = xmlTextReaderName(reader)) != NULL && node_type == XML_READER_TYPE_ELEMENT ) {
 		if (!xmlStrcmp(name, "element")) {
 			occurs = 1;
 			if ((value = GetAttributeValue(reader, "name")) != NULL) {
@@ -138,7 +137,6 @@ printf("element occurs[%s]\n",value);
 				occurs = atoi(value);
 				xmlFree(value);
 			}
-		}
 		}
 		xmlFree(name);
 	}
@@ -157,11 +155,9 @@ Element_close(xmlTextReaderPtr reader)
 	
 	closing = 0;
 	node_type = xmlTextReaderNodeType(reader);
-	if ((name = xmlTextReaderName(reader)) != NULL) { 
-		if (node_type == XML_READER_TYPE_END_ELEMENT ) {
+	if ((name = xmlTextReaderName(reader)) != NULL && node_type == XML_READER_TYPE_END_ELEMENT ) {
 		if (!xmlStrcmp(name, "element")) {
 			closing = 1;
-		}
 		}
 		xmlFree(name);
 	}
@@ -198,7 +194,6 @@ FreeEmbedStruct(EmbedStruct *embed)
 	for (i = 0; i < embed->child_num; i++) {
 		FreeEmbedStruct(embed->child[i]);
 	}
-    free(embed->child);
 	free(embed);
 }
 
@@ -386,10 +381,6 @@ main(
 	data = Strndup(arg + sizeof(struct _prefix) + p->path_size,p->data_size);
 printf("%s\n",data);
 printf("%d\n",p->rc);
-
-    free(path);
-    free(data);
-    free(arg);
 
 	return 0;
 }
