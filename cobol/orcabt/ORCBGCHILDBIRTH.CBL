@@ -36,6 +36,9 @@
       *                                     う修正
       *
       *  04.06.01    NACL-藤原    10/06/17  被保険者番号の桁数拡張対応
+      *  04.06.02    NACL-藤原    11/03/15  平成２３年４月以降提出分は
+      *                                     様式変更（１枚１名記載） 
+      *                                     HCN61V02.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -77,6 +80,8 @@
       *    請求書
            COPY    "HCN61V01.INC"  REPLACING  //HCN61V01//
                                    BY         //HCN61//.
+      *    平成２３年４月以降提出分
+           COPY    "HCN61V02.INC".
       *    集計票
            COPY    "HCN65.INC".
       *    送付書
@@ -165,7 +170,7 @@
       *
            03  WRK-TEISYUTUSAKI    PIC X(01).
       *
-           03  WRK-PRTID           PIC X(10).
+           03  WRK-PRTID           PIC X(20).
       *
            03  WRK-LNK-PRTKANRI-SHORI-RENNUM
                                    PIC 9(04).
@@ -177,6 +182,9 @@
            03  WRK-CHILD-BIRTHDAYH PIC X(07).
            03  WRK-BIKOU.
                05  WRK-BIKOU-O     PIC X(40)   OCCURS  2.
+      *
+           03  WRK-LINE            PIC 9(05).
+           03  WRK-FORMID          PIC X(20).
       *
            03  WRK-9               PIC 9.
            03  WRK-ZZ9             PIC ZZ9.
@@ -261,6 +269,8 @@
       *    ジョブ管理ＤＢのキー値
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
+      *
+           03  WRK-CONS-SRYYM      PIC X(06)   VALUE   "201104".      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -406,7 +416,6 @@
            DISPLAY "TEISYUTUSAKI =" WRK-PARA-TEISYUTUSAKI
            DISPLAY "PRTKBN       =" WRK-PARA-PRTKBN
       *
-      *
            MOVE    WRK-PARA-HOSPNUM
                                    TO  SPA-HOSPNUM
            MOVE    ZERO            TO  LNK-PRTKANRI-SHORI-RENNUM
@@ -495,6 +504,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    "２５日請求時は社保のみは設定できません" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+      *    
+           IF      WRK-PARA-SKYYM  >=  WRK-CONS-SRYYM
+               MOVE    1               TO  WRK-LINE
+               MOVE    "HCN61V02"      TO  WRK-FORMID
+           ELSE
+               MOVE    3               TO  WRK-LINE
+               MOVE    "HCN61V01"      TO  WRK-FORMID
            END-IF
            .
        100-INIT-EXT.
@@ -655,10 +673,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    IDYY                TO  WRK-PAGE1
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-LIST-MAX        TO  WRK-PAGE2
-                   MOVE    TBL-LIST-PRTDATA (IDYY)
-                                               TO  HCN61
-                   MOVE    WRK-HEN-PAGE-AREA   TO  HCN61-PAGE
-                   MOVE   "HCN61"          TO  WRK-PRTID
+                   EVALUATE    WRK-FORMID
+                       WHEN    "HCN61V01"
+                           MOVE    TBL-LIST-PRTDATA (IDYY)
+                                                       TO  HCN61
+                           MOVE    WRK-HEN-PAGE-AREA   TO  HCN61-PAGE
+                       WHEN    "HCN61V02"
+                           MOVE    TBL-LIST-PRTDATA (IDYY)
+                                                       TO  HCN61V02
+                           MOVE    WRK-HEN-PAGE-AREA   TO  HCN61V02-PAGE
+                   END-EVALUATE
+                   MOVE    WRK-FORMID          TO  WRK-PRTID
                    PERFORM 2004-PRINT-OUT-SEC
                END-PERFORM
       *
@@ -742,43 +767,80 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *    見出し編集処理
       *****************************************************************
        2001-HEAD-PRINT-SEC                SECTION.
-      *
-           MOVE    SPACE           TO  HCN61
-      *
-           MOVE    KEY-N-HKNJANUM  TO  WRK-HENKAN
-           MOVE    8               TO  WRK-LENGTH 
-           PERFORM 5003-DATA-RIGHT-HENSYU-SEC
-           MOVE    WRK-HENKAN      TO  HCN61-HKNJANUM
-      *
-           MOVE    WRK-SKYYM       TO  HCN61-SKYYM
-           EVALUATE    KEY-N-BUNBENKBN
-               WHEN    1
-                   MOVE    "○"            TO  HCN61-BUNBENKBN (1)
-               WHEN    2
-                   MOVE    "○"            TO  HCN61-BUNBENKBN (2)
-           END-EVALUATE
-           MOVE    SYS-1001-PREFNUM
-                                   TO  HCN61-HOSPCD (1:2)
-           MOVE    "1"             TO  HCN61-HOSPCD (3:1) 
-           MOVE    SYS-1001-HOSPCD TO  HCN61-HOSPCD (4:7)
-           IF      SYS-1001-SANKANUM
-                                   =   ZERO
-               CONTINUE
-           ELSE
-               MOVE    SYS-1001-SANKANUM
-                                       TO  HCN61-SANKANUM
-           END-IF
-           MOVE    WRK-HOSPADRS1   TO  HCN61-HOSPADRS (1)
-           MOVE    WRK-HOSPADRS2   TO  HCN61-HOSPADRS (2)
-           MOVE    WRK-HOSPNAME1   TO  HCN61-HOSPNAME (1)
-           MOVE    WRK-HOSPNAME2   TO  HCN61-HOSPNAME (2)
       *     
            ADD     1               TO  WRK-PAGE
                                        CNT-PAGE
                                        SUM-PAGE (1)
                                        SUM-PAGE (2)
-           MOVE    WRK-PAGE        TO  WRK-ZZ9
-           MOVE    WRK-ZZ9         TO  HCN61-PAGE
+      *
+           EVALUATE    WRK-FORMID
+               WHEN    "HCN61V01"
+                   MOVE    SPACE           TO  HCN61
+      *
+                   MOVE    KEY-N-HKNJANUM  TO  WRK-HENKAN
+                   MOVE    8               TO  WRK-LENGTH 
+                   PERFORM 5003-DATA-RIGHT-HENSYU-SEC
+                   MOVE    WRK-HENKAN      TO  HCN61-HKNJANUM
+      *
+                   MOVE    WRK-SKYYM       TO  HCN61-SKYYM
+                   EVALUATE    KEY-N-BUNBENKBN
+                       WHEN    1
+                           MOVE    "○"        TO  HCN61-BUNBENKBN (1)
+                       WHEN    2
+                           MOVE    "○"        TO  HCN61-BUNBENKBN (2)
+                   END-EVALUATE
+                   MOVE    SYS-1001-PREFNUM
+                                           TO  HCN61-HOSPCD (1:2)
+                   MOVE    "1"             TO  HCN61-HOSPCD (3:1) 
+                   MOVE    SYS-1001-HOSPCD TO  HCN61-HOSPCD (4:7)
+                   IF      SYS-1001-SANKANUM
+                                           =   ZERO
+                       CONTINUE
+                   ELSE
+                       MOVE    SYS-1001-SANKANUM
+                                               TO  HCN61-SANKANUM
+                   END-IF
+                   MOVE    WRK-HOSPADRS1   TO  HCN61-HOSPADRS (1)
+                   MOVE    WRK-HOSPADRS2   TO  HCN61-HOSPADRS (2)
+                   MOVE    WRK-HOSPNAME1   TO  HCN61-HOSPNAME (1)
+                   MOVE    WRK-HOSPNAME2   TO  HCN61-HOSPNAME (2)
+      *
+                   MOVE    WRK-PAGE        TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  HCN61-PAGE
+               WHEN    "HCN61V02"
+                   MOVE    SPACE           TO  HCN61V02
+      *
+                   MOVE    KEY-N-HKNJANUM  TO  WRK-HENKAN
+                   MOVE    8               TO  WRK-LENGTH 
+                   PERFORM 5003-DATA-RIGHT-HENSYU-SEC
+                   MOVE    WRK-HENKAN      TO  HCN61V02-HKNJANUM
+      *
+                   MOVE    WRK-SKYYM       TO  HCN61V02-SKYYM
+                   EVALUATE    KEY-N-BUNBENKBN
+                       WHEN    1
+                           MOVE    "○"        TO  HCN61V02-BUNBENKBN(1)
+                       WHEN    2
+                           MOVE    "○"        TO  HCN61V02-BUNBENKBN(2)
+                   END-EVALUATE
+                   MOVE    SYS-1001-PREFNUM
+                                           TO  HCN61V02-HOSPCD (1:2)
+                   MOVE    "1"             TO  HCN61V02-HOSPCD (3:1) 
+                   MOVE    SYS-1001-HOSPCD TO  HCN61V02-HOSPCD (4:7)
+                   IF      SYS-1001-SANKANUM
+                                           =   ZERO
+                       CONTINUE
+                   ELSE
+                       MOVE    SYS-1001-SANKANUM
+                                               TO  HCN61V02-SANKANUM
+                   END-IF
+                   MOVE    WRK-HOSPADRS1   TO  HCN61V02-HOSPADRS (1)
+                   MOVE    WRK-HOSPADRS2   TO  HCN61V02-HOSPADRS (2)
+                   MOVE    WRK-HOSPNAME1   TO  HCN61V02-HOSPNAME (1)
+                   MOVE    WRK-HOSPNAME2   TO  HCN61V02-HOSPNAME (2)
+      *
+                   MOVE    WRK-PAGE        TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  HCN61V02-PAGE
+           END-EVALUATE
       *
            MOVE    ZERO            TO  CNT-LINE
            .
@@ -795,7 +857,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            PERFORM          UNTIL   FLG-END        =   1
                             OR      KEY-NEW    NOT =   KEY-OLD
-                            OR      CNT-LINE       >=  3
+                            OR      CNT-LINE       >=  WRK-LINE
       *
                ADD     1               TO  CNT-LINE
       *
@@ -814,6 +876,42 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       ******** MOVE    BUNBEN-PTID         TO  PTINF-PTID
       ******** PERFORM 900-PTINF-READ-SEC
       *
+      *        明細様式別編集処理
+               PERFORM 20021-BODY-HENSYU-SEC
+      *
+               ADD     1                   TO  SUM-CNT      (1)
+                                               SUM-CNT      (2)
+               ADD     BUNBEN-BIRTHCNT     TO  SUM-BIRTHCNT (1)
+                                               SUM-BIRTHCNT (2)
+               ADD     BUNBEN-MONEY (12)   TO  SUM-MONEY    (1)
+                                               SUM-MONEY    (2)
+      *
+      *        ＣＳＶ（データレコード）編集処理
+               PERFORM 2001-CSV-DATA-7121-RECORD-HENSYU-SEC
+      *
+      *        更新用ファイル出力処理
+               PERFORM 230-UPD-FILE-HENSYU-SEC
+      *        分娩管理読込   
+               PERFORM 900-BUNBEN-READ-N-SEC
+           END-PERFORM
+      *
+      *    帳票印刷処理
+           IF      KEY-NEW         =   KEY-OLD
+      *        帳票格納処理
+               PERFORM 2006-TABLE-SET-SEC
+           END-IF
+ 
+           .
+       2002-BODY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *        明細様式別編集処理
+      *****************************************************************
+       20021-BODY-HENSYU-SEC           SECTION.
+      *
+           EVALUATE    WRK-FORMID
+             WHEN    "HCN61V01"
                EVALUATE    BUNBEN-KANYUKBN
                    WHEN    "1"
                        MOVE    "○"            TO  HCN61-TEISYUTUSAKI
@@ -959,31 +1057,135 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    WRK-BIKOU-O (1) TO  HCN61-BIKOU2(CNT-LINE 1)
                    MOVE    WRK-BIKOU-O (2) TO  HCN61-BIKOU2(CNT-LINE 2)
                END-IF
+             WHEN    "HCN61V02"
+               EVALUATE    BUNBEN-KANYUKBN
+                   WHEN    "1"
+                       MOVE    "○"            TO  HCN61V02-TEISYUTUSAKI
+                                                           (1)
+                   WHEN    "2"
+                       MOVE    "○"            TO  HCN61V02-TEISYUTUSAKI
+                                                           (2)
+               END-EVALUATE
+               EVALUATE    BUNBEN-HONKZKKBN
+                   WHEN    "1"
+                       MOVE    "○"            TO  HCN61V02-HONKZKKBN
+                                                           (1)
+                   WHEN    "5"
+                       MOVE    "○"            TO  HCN61V02-HONKZKKBN
+                                                           (2)
+               END-EVALUATE
+               IF      BUNBEN-KIGO (23:)   =   SPACE
+                   MOVE    BUNBEN-KIGO         TO  HCN61V02-KIGO
+               ELSE
+                   MOVE    BUNBEN-KIGO (1:20)  TO  HCN61V02-KIGO2  (1)
+                   MOVE    BUNBEN-KIGO (21:)   TO  HCN61V02-KIGO2  (2)
+               END-IF
+               IF      BUNBEN-NUM  (23:)   =   SPACE
+                   MOVE    BUNBEN-NUM          TO  HCN61V02-NUM
+               ELSE
+                   MOVE    BUNBEN-NUM (1:20)   TO  HCN61V02-NUM2   (1)
+                   MOVE    BUNBEN-NUM (21:)    TO  HCN61V02-NUM2   (2)
+               END-IF
+               IF      BUNBEN-NAME (35:)   =   SPACE
+                   MOVE    BUNBEN-NAME         TO  HCN61V02-NAME
+               ELSE
+                   MOVE    BUNBEN-NAME         TO  HCN61V02-NAME2
+               END-IF
+               MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-BIRTHDAYH
+               EVALUATE    WRK-LNK-DAY2-EDTYMD1-G
+                   WHEN    "S"
+                       MOVE    "○"            TO  HCN61V02-BIRTHG (1)
+                   WHEN    "H"
+                       MOVE    "○"            TO  HCN61V02-BIRTHG (2)
+               END-EVALUATE
+               MOVE    WRK-LNK-DAY2-EDTYMD1-Y
+                                           TO  HCN61V02-BIRTHY
+               MOVE    WRK-LNK-DAY2-EDTYMD1-M
+                                           TO  HCN61V02-BIRTHM
+               MOVE    WRK-LNK-DAY2-EDTYMD1-D
+                                           TO  HCN61V02-BIRTHD
+               MOVE    BUNBEN-ZAIWEEK      TO  WRK-Z9
+               MOVE    WRK-Z9              TO  HCN61V02-ZAIWEEK
+               MOVE    BUNBEN-BIRTHDAY     TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-CHILD-BIRTHDAYH
+               MOVE    WRK-LNK-DAY2-EDTYMD1-Y
+                                           TO  HCN61V02-CBIRTHY
+               MOVE    WRK-LNK-DAY2-EDTYMD1-M
+                                           TO  HCN61V02-CBIRTHM
+               MOVE    WRK-LNK-DAY2-EDTYMD1-D
+                                           TO  HCN61V02-CBIRTHD
+               EVALUATE    BUNBEN-SIZANKBN
+                   WHEN    "1"
+                       MOVE    "○"            TO  HCN61V02-SIZANKBN
+                                                           (1)
+                   WHEN    "2"
+                       MOVE    "○"            TO  HCN61V02-SIZANKBN
+                                                           (2)
+                   WHEN    "3"
+                       MOVE    "○"            TO  HCN61V02-SIZANKBN
+                                                           (3)
+               END-EVALUATE
+               MOVE    BUNBEN-BIRTHCNT     TO  WRK-9
+               MOVE    WRK-9               TO  HCN61V02-BIRTHCNT
+               MOVE    BUNBEN-NYUIN-DAY    TO  WRK-ZZ9
+               MOVE    WRK-ZZ9             TO  HCN61V02-NYUINDAY 
+               EVALUATE    BUNBEN-SANKAKBN
+                   WHEN    "1"
+                       MOVE    "○"            TO  HCN61V02-SANKAKBN
+                                                           (1)
+                   WHEN    "2"
+                       MOVE    "○"            TO  HCN61V02-SANKAKBN
+                                                           (2)
+                   WHEN    "3"
+                       MOVE    "○"            TO  HCN61V02-SANKAKBN
+                                                           (3)
+               END-EVALUATE
+               MOVE    BUNBEN-MONEY (1)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-NYU-MONEY
+               MOVE    BUNBEN-MONEY (2)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-RMSGK-MONEY
+               IF      BUNBEN-BUNBENKBN    =   "2"
+                   MOVE    BUNBEN-MONEY (3)    TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-KAIJO-MONEY
+               ELSE
+                   MOVE    "　−　　　"        TO  HCN61V02-KAIJO-MONEY
+               END-IF
+               IF      BUNBEN-BUNBENKBN    =   "1"
+                   MOVE    BUNBEN-MONEY (4)    TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-BUNBEN-MONEY
+               ELSE
+                   MOVE    "　−　　　"        TO  HCN61V02-BUNBEN-MONEY
+               END-IF
+               MOVE    BUNBEN-MONEY (5)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-SHIN-MONEY
+               MOVE    BUNBEN-MONEY (6)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-KNS-MONEY
+               MOVE    BUNBEN-MONEY (7)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-SYC-MONEY
+               MOVE    BUNBEN-MONEY (8)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-SNK-MONEY
+               MOVE    BUNBEN-MONEY (9)    TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-ETC-MONEY
+               MOVE    BUNBEN-MONEY (10)   TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-ICBFTN-MONEY
+               MOVE    BUNBEN-MONEY (11)   TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-NINPUFTN-MONEY
+               MOVE    BUNBEN-MONEY (12)   TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-DAIRI-MONEY
+               MOVE    BUNBEN-BIKOU        TO  WRK-BIKOU
+               IF      WRK-BIKOU-O (2)     =   SPACE
+                   MOVE    WRK-BIKOU           TO  HCN61V02-BIKOU
+               ELSE
+                   MOVE    WRK-BIKOU-O (1)     TO  HCN61V02-BIKOU2 (1)
+                   MOVE    WRK-BIKOU-O (2)     TO  HCN61V02-BIKOU2 (2)
+               END-IF
+           END-EVALUATE
       *
-               ADD     1                   TO  SUM-CNT      (1)
-                                               SUM-CNT      (2)
-               ADD     BUNBEN-BIRTHCNT     TO  SUM-BIRTHCNT (1)
-                                               SUM-BIRTHCNT (2)
-               ADD     BUNBEN-MONEY (12)   TO  SUM-MONEY    (1)
-                                               SUM-MONEY    (2)
-      *
-      *        ＣＳＶ（データレコード）編集処理
-               PERFORM 2001-CSV-DATA-7121-RECORD-HENSYU-SEC
-      *
-      *        更新用ファイル出力処理
-               PERFORM 230-UPD-FILE-HENSYU-SEC
-      *        分娩管理読込   
-               PERFORM 900-BUNBEN-READ-N-SEC
-           END-PERFORM
-      *
-      *    帳票印刷処理
-           IF      KEY-NEW         =   KEY-OLD
-      *        帳票格納処理
-               PERFORM 2006-TABLE-SET-SEC
-           END-IF
- 
            .
-       2002-BODY-HENSYU-EXT.
+       20021-BODY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1018,12 +1220,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *****************************************************************
        2003-TERM-PRINT-SEC                SECTION.
       *
-           MOVE    SUM-CNT     (1) TO  WRK-ZZ9
-           MOVE    WRK-ZZ9         TO  HCN61-GCNT
-           MOVE    SUM-BIRTHCNT(1) TO  WRK-ZZ9
-           MOVE    WRK-ZZ9         TO  HCN61-GBIRTHCNT
-           MOVE    SUM-MONEY   (1) TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9    TO  HCN61-GDAIRI-MONEY
+           EVALUATE    WRK-FORMID
+               WHEN    "HCN61V01"
+                   MOVE    SUM-CNT     (1) TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  HCN61-GCNT
+                   MOVE    SUM-BIRTHCNT(1) TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  HCN61-GBIRTHCNT
+                   MOVE    SUM-MONEY   (1) TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9    TO  HCN61-GDAIRI-MONEY
+               WHEN    "HCN61V02"
+                   MOVE    SUM-CNT     (1) TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  HCN61V02-GCNT
+                   MOVE    SUM-BIRTHCNT(1) TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  HCN61V02-GBIRTHCNT
+                   MOVE    SUM-MONEY   (1) TO  WRK-ZZZZZZZ9
+                   MOVE    WRK-ZZZZZZZ9    TO  HCN61V02-GDAIRI-MONEY
+           END-EVALUATE
            .
       *
        2003-TERM-PRINT-EXT.
@@ -1259,9 +1471,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            EVALUATE    WRK-PRTID
-               WHEN    "HCN61"
+               WHEN    "HCN61V01"
                    MOVE   "HCN61V01.red"   TO  SPRT-PRTID
                    MOVE    HCN61           TO  SPRT-PRTDATA
+                   EVALUATE    WRK-TEISYUTUSAKI
+                       WHEN    "1"
+                           MOVE
+                          "（社保）出産育児一時金等代理申請・受取請求書"
+                                                   TO  SPRT-TITLE
+                       WHEN    "2"
+                           MOVE
+                          "（国保）出産育児一時金等代理申請・受取請求書"
+                                                    TO  SPRT-TITLE
+                   END-EVALUATE
+               WHEN    "HCN61V02"
+                   MOVE   "HCN61V02.red"   TO  SPRT-PRTID
+                   MOVE    HCN61V02        TO  SPRT-PRTDATA
                    EVALUATE    WRK-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE
@@ -1324,9 +1549,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
        2006-TABLE-SET-SEC          SECTION.
       *
            ADD     1               TO  TBL-LIST-MAX
-      * 
-           MOVE    "HCN61V01.red"  TO  TBL-LIST-FORMID  (TBL-LIST-MAX)
-           MOVE    HCN61           TO  TBL-LIST-PRTDATA (TBL-LIST-MAX)
+      *
+           EVALUATE    WRK-FORMID
+               WHEN    "HCN61V01"
+                   MOVE    "HCN61V01.red"  TO
+                                       TBL-LIST-FORMID  (TBL-LIST-MAX)
+                   MOVE    HCN61           TO
+                                       TBL-LIST-PRTDATA (TBL-LIST-MAX)
+               WHEN    "HCN61V02"
+                   MOVE    "HCN61V02.red"  TO
+                                       TBL-LIST-FORMID  (TBL-LIST-MAX)
+                   MOVE    HCN61V02        TO
+                                       TBL-LIST-PRTDATA (TBL-LIST-MAX)
+           END-EVALUATE
       *
            .
        2006-TABLE-SET-EXT.
