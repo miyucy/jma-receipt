@@ -30,8 +30,8 @@
                05  ETENSU5-YUKOSTYMD           PIC  X(08).
       *        有効終了日
                05  ETENSU5-YUKOEDYMD           PIC  X(08).
-      *    算定単位コード
-           03  ETENSU5-TANICD                  PIC  9(03).
+      *        算定単位コード
+               05  ETENSU5-TANICD              PIC  9(03).
       *    算定単位名称
            03  ETENSU5-TANINAME                PIC  X(12).
       *    算定回数
