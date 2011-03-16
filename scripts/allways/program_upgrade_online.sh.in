@@ -28,6 +28,10 @@ PATCHLIST=$PATCHDIR/patch-file-list
 PATCHMD5=$PATCHDIR/patchmd5.yml
 CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
 LOGDIR=/var/log/jma-receipt
+MONINFO=/usr/lib/panda/bin/moninfo
+
+PGUP_WORK_DIR=/tmp/jma-receipt-patch-work
+
 if [ "$METHOD" = "update" ]; then
   LOG="$LOGDIR"/program_upgrade_online.log
 else
@@ -36,7 +40,7 @@ fi
 
 # echo message (default character-code EUC)
 echomsg() {
-  if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.UTF8" ]; then
+  if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
     echo `echo $1 | nkf -wE | tee -a $2`
   else
     echo $1 | tee -a $2
@@ -159,11 +163,50 @@ if [ "$METHOD" = "update" ]; then
   echomsg "site-upgrade end." ${LOG}
 fi
 
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT51,$HOSPNUM
+
 if [ "$METHOD" = "update" ]; then
   #monitor restart (SIGHUP)
   if [ -e /var/run/jma-receipt/monitor.pid ]; then
+    if [ -z "$PGUPGRADE_RESTART_LIMIT" ]; then
+      #set default 30 second
+      PGUPGRADE_RESTART_LIMIT=30
+    fi
+
+    echomsg "pgupdate_restart_limit = $PGUPGRADE_RESTART_LIMIT" ${LOG}
+    NOTICE_MSG="$PGUPGRADE_RESTART_LIMIT秒経過後に日レセを再起動しますので端末を終了してください。接続中の端末は強制的に切断します。"
+
+    if [ $PGUPGRADE_RESTART_LIMIT -ne 0 ]; then
+      CONN_NUMBER=`$MONINFO who | wc -l`
+      if [ $CONN_NUMBER -gt 1 ]; then
+        echomsg "moninfo sendmsgall go! $NOTICE_MSG" ${LOG}
+        $MONINFO sendmsgall $NOTICE_MSG
+        #sleep 5
+      fi
+    fi
+
+    limit_sec=0
+    while [ $limit_sec -ne $PGUPGRADE_RESTART_LIMIT ]
+    do
+      sleep 1
+      CONN_NUMBER=`$MONINFO who | wc -l`
+      if [ $CONN_NUMBER = 1 ]; then
+        echomsg "there is no terminal under the connection." ${LOG}
+        break
+      fi
+      limit_sec=`expr $limit_sec + 1`
+    done
+
+    if [ $CONN_NUMBER -gt 1 ]; then
+      NOTICE_MSG="接続中の端末は強制終了しました。"
+      echomsg "moninfo abortall go! $NOTICE_MSG" ${LOG}
+      $MONINFO abortall $NOTICE_MSG
+      #sleep 10
+    fi
     echomsg "monitor restart." ${LOG}
     kill -HUP `cat /var/run/jma-receipt/monitor.pid`
+    cp -rp ${PGUP_WORK_DIR}/* ${PATCHLIBDIR}
+    rm -rf ${PGUP_WORK_DIR}
   else
     RESULT="[ERROR] monitor.pid is not found. don't start again."
     echomsg "${RESULT}" ${LOG}

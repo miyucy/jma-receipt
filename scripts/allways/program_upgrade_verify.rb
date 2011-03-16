@@ -4,11 +4,11 @@ require "digest/md5"
 require "yaml"
 
 patchmd5 = "/var/lib/jma-receipt/patch/patchmd5.yml"
-patch_lib = "/usr/lib/jma-receipt/patch-lib"   # ex. /usr/lib/jma-receipt/patch-lib/
-check_log_sh = "/usr/lib/jma-receipt/scripts/allways/program_upgrade_check_log.sh"
+patch_lib_org = "/usr/lib/jma-receipt/patch-lib"   # ex. /usr/lib/jma-receipt/patch-lib/
+patch_lib_tmp = "/tmp/jma-receipt-patch-work"
+check_log_sh = "program_upgrade_check_log.sh"
 
-def local_md5list(patch_lib)
-  dir_list = []
+def local_md5list(patch_lib,dir_list)
   Dir.glob(patch_lib+"/**/*").each do |path|
     if FileTest.directory?(path)
     else
@@ -29,8 +29,7 @@ def local_md5list(patch_lib)
       end
     end
   end
-  dir_list.sort!
-  return dir_list
+  return
 end
 
 #-- Main --
@@ -47,7 +46,9 @@ rescue Exception => ex
 end
 
 releasemd5 = md5hash.values
-localmd5 = local_md5list(patch_lib)
+localmd5 = []
+local_md5list(patch_lib_org, localmd5)
+local_md5list(patch_lib_tmp, localmd5)
 releasemd5.sort!
 localmd5.sort!
 

@@ -31,6 +31,7 @@
       *  01.01.02    NACL-伊藤    06/02/22  MONFUNC 対応
       *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
       *  03.05.00    NACL-多々納  07/05/28  グループ診療対応
+      *  04.06.00    NACL-伊藤    11/03/15  再機動の確認対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -122,9 +123,8 @@
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(41)  VALUE
                "program_upgrade_online.sh".
-      *         "scripts/allways/program_upgrade_online.sh".
-      *     03  SHELL-NAME2         PIC X(42)  VALUE
-      *         "scripts/allways/program_upgrade_offline.sh".
+           03  SHELL-NAME2         PIC X(42)  VALUE
+               "program_upgrade_restart.sh".
       *     03  SHELL-NAME3         PIC X(40)  VALUE
       *         "scripts/allways/program_upgrade_check.sh".
       *
@@ -331,12 +331,12 @@
       *
            PERFORM 820-JOBKANRI-READ2-SEC
       *
-           IF      SKBN-RUN   =   "RUN"
-               MOVE    "0301"          TO  SPA-MIDCD
-               PERFORM 520-MIDSET-SEC
-           ELSE
+      *    IF      SKBN-RUN   =   "RUN"
+      *        MOVE    "0301"          TO  SPA-MIDCD
+      *        PERFORM 520-MIDSET-SEC
+      *    ELSE
                PERFORM 830-GAMENN-SET6-SEC
-           END-IF
+      *    END-IF
       *
            .
        210-BACK-EXT.
@@ -440,6 +440,11 @@
       *                戻る処理
                        PERFORM 830-GAMENN-SET6-SEC
                    END-IF
+      ***      WHEN    "0401"
+      ***          IF      SPA-MID1-FLG    =   "OK"
+      *            更新処理
+      ***              PERFORM 420-RESTART-SEC
+      ***          END-IF
            END-EVALUATE
       *
            MOVE    1               TO  SPA-GMN-CUR
@@ -582,64 +587,78 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ1-SEC
       *
            IF      SJOBKANRI-RETURN    =   ZERO
-             IF    JOB-ERRCD(1:2)      =   "99"
-               MOVE    SPACE           TO  SKBN-RUN
-               MOVE    "プログラム更新は異常終了しました。"
-                                       TO  SPA-GMN-MSG
-               MOVE    "red"           TO  SPA-GMN-MSG-STYLE
-             ELSE
-               IF    JOB-ERRCD(1:2)      =   "98"
-                 MOVE    SPACE           TO  SKBN-RUN
-                 MOVE    "プログラムチェックは異常終了しました。"
-                                         TO  SPA-GMN-MSG
-                 MOVE    "red"           TO  SPA-GMN-MSG-STYLE
-               ELSE
-                 IF    JOB-ERRCD(1:2)      =   "97"
-                   MOVE    SPACE           TO  SKBN-RUN
-                   STRING  "異常終了 / "   DELIMITED BY SIZE
-                           JOB-YOBI(9:)    DELIMITED BY SIZE
-                                         INTO  SPA-GMN-MSG
-                   END-STRING
-                   MOVE    "red"           TO  SPA-GMN-MSG-STYLE
-                 ELSE
-                   IF      JOB-ERRCD(1:2)    =   "01"
-                     MOVE    SPACE         TO  SKBN-RUN
-                     MOVE    "更新データはありませんでした。"
-                                           TO  SPA-GMN-MSG
-                     MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
-                   ELSE
-                     IF  (JOB-ENDTIME       NOT =   SPACE)  AND
-                         (JOB-ENDYMD        NOT =   SPACE)
-                         MOVE    SPACE        TO  SKBN-RUN
-                         MOVE    "処理は正常に終了しました。"
-                                              TO  SPA-GMN-MSG
-                         MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
-                     ELSE
-                         MOVE    "処理中です。"
-                                              TO  SPA-GMN-MSG
-                         MOVE    "blue"       TO  SPA-GMN-MSG-STYLE
-                     END-IF
-                   END-IF
-                 END-IF
-               END-IF
-             END-IF
+               EVALUATE    JOB-ERRCD(1:2)
+                   WHEN    "99"
+                       MOVE    SPACE           TO  SKBN-RUN
+                       MOVE    "プログラム更新は異常終了しました。"
+                                               TO  SPA-GMN-MSG
+                       MOVE    "red"           TO  SPA-GMN-MSG-STYLE
+                   WHEN    "98"
+                       MOVE    SPACE           TO  SKBN-RUN
+                       MOVE
+                           "プログラムチェックは異常終了しました。"
+                                               TO  SPA-GMN-MSG
+                       MOVE    "red"           TO  SPA-GMN-MSG-STYLE
+                   WHEN    "97"
+                       MOVE    SPACE           TO  SKBN-RUN
+                       STRING  "異常終了 / "   DELIMITED BY SIZE
+                               JOB-YOBI(9:)    DELIMITED BY SIZE
+                                             INTO  SPA-GMN-MSG
+                       END-STRING
+                       MOVE    "red"           TO  SPA-GMN-MSG-STYLE
+                   WHEN    "01"
+                       MOVE    SPACE           TO  SKBN-RUN
+                       MOVE    "更新データはありませんでした。"
+                                               TO  SPA-GMN-MSG
+                       MOVE    "blue"          TO  SPA-GMN-MSG-STYLE
+                   WHEN    "51"
+                       MOVE    SPACE           TO  SKBN-RUN
+                       MOVE    "再起動待機中です。"
+                                               TO  SPA-GMN-MSG
+                       MOVE    "blue"          TO  SPA-GMN-MSG-STYLE
+                   WHEN    OTHER
+                       IF     (JOB-ENDTIME NOT =   SPACE)  AND
+                              (JOB-ENDYMD  NOT =   SPACE)
+                           MOVE    SPACE           TO  SKBN-RUN
+                           MOVE    "処理は正常に終了しました。"
+                                                   TO  SPA-GMN-MSG
+                           MOVE    "blue"          TO  SPA-GMN-MSG-STYLE
+                       ELSE
+                           MOVE    "処理中です。"
+                                                   TO  SPA-GMN-MSG
+                           MOVE    "blue"          TO  SPA-GMN-MSG-STYLE
+                       END-IF
+               END-EVALUATE
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG
                MOVE    SPACE           TO  SPA-GMN-MSG-STYLE
            END-IF
       *
       *----(03.04.01)--ADD-START---
-           MOVE    0           TO  SPA-GMN-DURATION
+           MOVE    ZERO                TO  SPA-GMN-DURATION
       *
            IF    ( SJOBKANRI-RETURN    =   ZERO )  AND
                  ( JOB-ERRCD(1:2)  NOT =   "99" )  AND
                  ( JOB-ERRCD(1:2)  NOT =   "01" )
                IF    ( JOB-ENDTIME     =   SPACE)  OR
                      ( JOB-ENDYMD      =   SPACE)
-                   MOVE    5           TO  SPA-GMN-DURATION
+                   MOVE    5                   TO  SPA-GMN-DURATION
                END-IF
            END-IF
+           IF    ( SJOBKANRI-RETURN    =   ZERO )  AND
+                 ( JOB-ERRCD(1:2)      =   "51" )
+               MOVE    3                   TO  SPA-GMN-DURATION
+           END-IF
       *----(03.04.01)--ADD-END-----
+      ***  IF      SJOBKANRI-RETURN    =   ZERO
+      ***    IF    JOB-ERRCD(1:2)      =   "55"
+      *           MOVE    "プログラム更新は異常終了しました。"
+      *                                   TO  SPA-GMN-MSG
+      *           MOVE    "red"           TO  SPA-GMN-MSG-STYLE
+      ***         MOVE    "0401"          TO  SPA-MIDCD
+      ***         PERFORM 520-MIDSET-SEC
+      ***    END-IF
+      ***  END-IF
            .
        400-JYOKYO-SET-EXT.
            EXIT.
@@ -782,7 +801,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  ORCSMKPASSAREA
       *
       *    オンライン
-           DISPLAY "SPA-GMN-ONKBN=" SPA-GMN-ONKBN
+      *    DISPLAY "SPA-GMN-ONKBN=" SPA-GMN-ONKBN
       *     IF      SPA-GMN-ONKBN       =   "T"
       *         MOVE    SHELL-NAME1     TO  MKPASS-IN-01
       *         MOVE    "2"             TO  SHELLTBL-ARG1
@@ -818,7 +837,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-           DISPLAY "420-KOUSHIN-END"
            .
       *
        420-KOUSHIN-EXT.
@@ -849,6 +867,32 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        420-SENDALL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       再起動処理
+      *****************************************************************
+       420-RESTART-SEC             SECTION.
+      *
+      *    日レセ再起動処理
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  ORCSMKPASSAREA
+      *
+           MOVE    SHELL-NAME2     TO  SHELLTBL-NAME
+           MOVE    "update"        TO  SHELLTBL-ARG1
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
+           MOVE    SPA-SUPERVISOR  TO  SHELLTBL-ARG3
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+      *
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "allways"       TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       420-RESTART-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1037,6 +1081,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0301"
                    MOVE    "処理中ですがよろしいですか？"
                                            TO  WRK-MIDMSG
+      ***      WHEN    "0401"
+      ***      MOVE "再起動しますので端末を切断します。よろしいですか？"
+      ***                                  TO  WRK-MIDMSG
                WHEN    OTHER
                    MOVE    SPA-MIDCD       TO  WRK-MIDMSG
            END-EVALUATE
@@ -1089,6 +1136,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      JOB-ERRCD(1:2)      =   "99"
                    MOVE    SPACE           TO  SKBN-RUN
                ELSE
+      ***        IF      JOB-ERRCD(1:2)      =   "55"
+      ***            MOVE    "RST"           TO  SKBN-RUN
+      ***        ELSE
                    IF      JOB-ERRCD(1:2)      =   "01"
                        MOVE    SPACE           TO  SKBN-RUN
                    ELSE
@@ -1099,6 +1149,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "RUN"           TO  SKBN-RUN
                        END-IF
                    END-IF
+      ***        END-IF
                END-IF
            ELSE
                MOVE    SPACE            TO  SKBN-RUN
