@@ -131,6 +131,15 @@
       *
            03  WRK-CNT             PIC 9(03).
       *
+      *    用法テーブル
+           03  WRK-YOHOU-G.
+               05  WRK-YOHOU-TBL       OCCURS  10.
+                   07  WRK-YOHOU           PIC X(09).
+                   07  WRK-YOHOU-KBN       PIC X(01).
+           03  WRK-YSRYCD              PIC X(09).
+           03  IDXY                    PIC 9(04).
+           03  FLG-YSET                PIC 9(01).
+      *
       *
        01  TBL-DATA-AREA.
       *    ドクター毎
@@ -168,6 +177,8 @@
                            11  TBL-YOURYOU-3   PIC 9(05)V9(05).
                            11  TBL-YOURYOU-4   PIC 9(05)V9(05).
                            11  TBL-YOURYOU-5   PIC 9(05)V9(05).
+      *            用法コード
+                   07  TBL-YSRYCD              PIC X(09).
       *        処方コメント
                05  TBL-COM-MAX             PIC 9(03).
                05  TBL-COMMENT-TBL         OCCURS   10.
@@ -449,6 +460,9 @@
                                            TO  ORCHC62-YOURYOU-TBL
                                                (IDX-T2 IDX-T3)
                END-PERFORM
+      *        用法コード
+               MOVE    TBL-YSRYCD (IDX-T1 IDX-T2)
+                                       TO  ORCHC62-YSRYCD   (IDX-T2)
            END-PERFORM
       *    処方備考コメント
            PERFORM VARYING     IDX-T2  FROM    1   BY  1
@@ -485,7 +499,9 @@
       *                ":" ORCHC62-GRP-DENPNUM(IDY)
       *    END-PERFORM
           PERFORM VARYING    IDX   FROM    1  BY  1
-                   UNTIL      IDX   >  100
+                   UNTIL      IDX   >  ORCHC62-ZAI-MAX
+             DISPLAY "ORCHC62-SRYKBN:" ORCHC62-SRYKBN (IDX)
+               ",YSRYCD:" ORCHC62-YSRYCD (IDX)
           PERFORM VARYING    IDY   FROM    1  BY  1
                    UNTIL      IDY   >  50 
               IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
@@ -997,6 +1013,8 @@
            MOVE    WRK-ZAINUM          TO  TBL-ZAINUM    (IDX-T1 IDX-T2)
            MOVE    ZERO                TO  IDX-T3
            MOVE    ZERO                TO  IDX-T4
+           MOVE    ZERO                TO  IDXY
+           INITIALIZE                      WRK-YOHOU-G
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL      (IDXA    >   WRK-SRY-MAX   )   OR
                               (WRK-SRY-SRYCD (IDXA)    =   SPACE)
@@ -1067,7 +1085,53 @@
                                                 (IDX-T1 IDX-T2 IDX-T4)
                    END-EVALUATE
                END-IF
+      *
+      *        用法編集
+               IF      WRK-SRY-SRYCD (IDXA)(1:3)   =   "001"
+                   MOVE    ZERO                TO  FLG-YSET
+      *            点数マスタを検索して、用法時点を判定する
+                   MOVE    WRK-SRY-SRYCD(IDXA) TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   IF     (FLG-TENSU           =   ZERO      )
+      *            コメントは対象外
+                   AND    (TNS-KENTAICOMMENT   =   0  OR  1  )
+                       IF    ((TNS-SSTKIJUNCD(1)   =   ZERO )  AND
+                              (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
+                              (TNS-SSTKIJUNCD(3)   =   ZERO )  AND
+                              (TNS-SSTKIJUNCD(4)   =   ZERO )  AND
+                              (TNS-SSTKIJUNCD(5)   =   ZERO ))
+                           MOVE    ZERO                TO  FLG-YSET
+                       ELSE
+                           MOVE    1                   TO  FLG-YSET
+                       END-IF
+                       ADD     1                   TO  IDXY
+                       IF      IDXY                <=  10
+                           MOVE    WRK-SRY-SRYCD(IDXA) TO  WRK-YOHOU
+                                                               (IDXY)
+                           MOVE    FLG-YSET            TO  WRK-YOHOU-KBN
+                                                               (IDXY)
+                       END-IF
+                   END-IF
+               END-IF
            END-PERFORM
+      *
+      *    用法は最後の用法コードとする
+           MOVE    SPACE               TO  WRK-YSRYCD
+           PERFORM VARYING     IDXY    FROM    10  BY  -1
+                   UNTIL      (IDXY        <   1      )
+               IF     (WRK-YOHOU(IDXY)     NOT =   SPACE )
+               AND    (WRK-YOHOU-KBN(IDXY)     =   "1"   )
+                   MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
+                   MOVE    1                   TO  IDXY
+               ELSE
+                   IF     (WRK-YOHOU(IDXY) NOT =   SPACE )
+                   AND    (WRK-YSRYCD          =   SPACE )
+                       MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    WRK-YSRYCD          TO  TBL-YSRYCD  (IDX-T1 IDX-T2)
+      *
       *    対象がない時
            IF      IDX-T3              =   ZERO
                COMPUTE TBL-MAX (IDX-T1)     =   TBL-MAX (IDX-T1)  -  1

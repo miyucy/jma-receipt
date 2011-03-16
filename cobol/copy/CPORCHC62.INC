@@ -62,6 +62,8 @@
                        09  ORCHC62-YOURYOU-TBL.
                            11  ORCHC62-YOURYOU     PIC 9(05)V9(05)
                                                    OCCURS   5.
+      *            用法コード（空白あり）
+                   07  ORCHC62-YSRYCD          PIC X(09).
       *
       *    伝票番号（主の伝票番号）
            03  ORCHC62-DENPNUM         PIC 9(07).

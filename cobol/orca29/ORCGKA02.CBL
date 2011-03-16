@@ -241,6 +241,14 @@
            03  WRK-AMARI               PIC 9(04).
            03  WRK-KANZANTANINAME      PIC X(08).
            03  WRK-KANSURYO-9          PIC 9(05)V9(05).
+      *    用法テーブル
+           03  WRK-YOHOU-G.
+               05  WRK-YOHOU-TBL       OCCURS  10.
+                   07  WRK-YOHOU           PIC X(09).
+                   07  WRK-YOHOU-KBN       PIC X(01).
+           03  WRK-YSRYCD              PIC X(09).
+           03  IDXY                    PIC 9(04).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -1784,6 +1792,24 @@
       *
            MOVE    WRK-MEISYO              TO  SPA-WKSRY-NAME
                                                    (SPA-WKSRY-MAX IDX-W)
+      *    用法コード編集
+           IF      LNK-WKSRY-SRYCD  (IDX IDZ)(1:3) =   "001"
+      *        コメント区分
+               MOVE    TNS-KENTAICOMMENT   TO  SPA-WKSRY-KENTAICOMMENT
+                                                   (SPA-WKSRY-MAX IDX-W)
+      *        服用時点設定判定
+               IF    ((TNS-SSTKIJUNCD(1)   =   ZERO )  AND
+                      (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
+                      (TNS-SSTKIJUNCD(3)   =   ZERO )  AND
+                      (TNS-SSTKIJUNCD(4)   =   ZERO )  AND
+                      (TNS-SSTKIJUNCD(5)   =   ZERO ))
+                   MOVE    ZERO                TO  SPA-WKSRY-YSETKBN
+                                                   (SPA-WKSRY-MAX IDX-W)
+               ELSE
+                   MOVE    1                   TO  SPA-WKSRY-YSETKBN
+                                                   (SPA-WKSRY-MAX IDX-W)
+               END-IF
+           END-IF
       *!
       *    用量割合再編集
            IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:7)  =   "0992000")  AND
@@ -3424,6 +3450,13 @@
                                            TO  SPA-PARA-KANZANTANINAME
                                                              (IDX1 IDX2)
       *
+                   MOVE    SPA-WKSRY-KENTAICOMMENT (IDX-W IDX-W2)
+                                           TO  SPA-PARA-KENTAICOMMENT
+                                                             (IDX1 IDX2)
+                   MOVE    SPA-WKSRY-YSETKBN (IDX-W IDX-W2)
+                                           TO  SPA-PARA-YSETKBN
+                                                             (IDX1 IDX2)
+      *
                    MOVE    SPA-WKSRY-ERRKBN (IDX-W IDX-W2)
                                            TO  SPA-PARA-ERRKBN
                                                              (IDX1 IDX2)
@@ -4111,6 +4144,8 @@
                                            TO  ORCHCN62-ZAINUM (IDX1)
                    MOVE    ZERO            TO  IDX2
                    MOVE    ZERO            TO  IDX3
+                   MOVE    ZERO                TO  IDXY
+                   INITIALIZE                      WRK-YOHOU-G
                    PERFORM VARYING     IDX-W2  FROM    1   BY  1
                            UNTIL      (IDX-W2  >   50      )  OR
                                       (SPA-PARA-SRYCD (IDX-W IDX-W2)
@@ -4183,7 +4218,25 @@
                                                          (IDX1 IDX3 5)
                            END-EVALUATE
                        END-IF
+      *!!
+      *                用法コード判定
+                       IF     (SPA-PARA-SRYCD (IDX-W IDX-W2)(1:3)
+                                                   =   "001"  )
+                       AND    (SPA-PARA-KENTAICOMMENT(IDX-W IDX-W2)
+                                                   =   "0"  OR  "1" )
+                           ADD     1                   TO  IDXY
+                           IF      IDXY                <=  10
+                               MOVE    SPA-PARA-SRYCD (IDX-W IDX-W2)
+                                                       TO  WRK-YOHOU
+                                                               (IDXY)
+                               MOVE    SPA-PARA-YSETKBN (IDX-W IDX-W2)
+                                                       TO  WRK-YOHOU-KBN
+                                                               (IDXY)
+                           END-IF
+                       END-IF
                    END-PERFORM
+      *            用法コード設定
+                   PERFORM 451-ORCHC62-YOUHO-SEC
                END-IF
            END-PERFORM
       *
@@ -4237,7 +4290,10 @@
       *TEST
       *TEST
           PERFORM VARYING    IDX2  FROM    1  BY  1
-                   UNTIL      IDX2  >  100
+                   UNTIL    ( IDX2  >  100 )
+                      OR    ( ORCHCN62-SRYKBN (IDX2) =  SPACE)
+            DISPLAY "IDX2:" IDX2
+                  ",ORCHCN62-YSRYCD:" ORCHCN62-YSRYCD (IDX2)
           PERFORM VARYING    IDX3  FROM    1  BY  1
                    UNTIL      IDX3  >  50 
               IF      ORCHCN62-SRYCD (IDX2 IDX3)  NOT =   SPACE
@@ -4258,6 +4314,31 @@
            .
        41041-ORCHC62-HENSYU-EXT.
            EXIT.
+      *****************************************************************
+      *    用法コード設定処理
+      *****************************************************************
+       451-ORCHC62-YOUHO-SEC              SECTION.
+      *
+      *    用法は最後の用法コードとする
+           MOVE    SPACE               TO  WRK-YSRYCD
+           PERFORM VARYING     IDXY    FROM    10  BY  -1
+                   UNTIL      (IDXY        <   1      )
+               IF     (WRK-YOHOU(IDXY)     NOT =   SPACE )
+               AND    (WRK-YOHOU-KBN(IDXY)     =   "1"   )
+                   MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
+                   MOVE    1                   TO  IDXY
+               ELSE
+                   IF     (WRK-YOHOU(IDXY) NOT =   SPACE )
+                   AND    (WRK-YSRYCD          =   SPACE )
+                       MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
+                   END-IF
+               END-IF
+           END-PERFORM
+           MOVE    WRK-YSRYCD          TO  ORCHCN62-YSRYCD (IDX1)
+           .
+       451-ORCHC62-YOUHO-EXT.
+           EXIT.
+      *!!!
       *****************************************************************
       *    院外処方せん印刷処理
       *****************************************************************

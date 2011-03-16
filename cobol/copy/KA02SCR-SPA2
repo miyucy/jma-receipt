@@ -51,6 +51,9 @@
                        11  SPA-WKSRY-KANZANCHI     PIC  9(05)V9(5).
                        11  SPA-WKSRY-KANZANTANINAME
                                                    PIC  X(08).
+      *                用法コード用
+                       11  SPA-WKSRY-KENTAICOMMENT PIC  X(01).
+                       11  SPA-WKSRY-YSETKBN       PIC  9(01).
       *
                        11  SPA-WKSRY-ERRKBN        PIC  9(01).
       *     帳票編集内容スパ領域
@@ -76,5 +79,9 @@
                            11  SPA-PARA-KANZANCHI     PIC  9(05)V9(5).
                            11  SPA-PARA-KANZANTANINAME
                                                       PIC  X(08).
+      *                    用法コード用
+                           11  SPA-PARA-KENTAICOMMENT PIC  X(01).
+                           11  SPA-PARA-YSETKBN       PIC  X(01).
+      *
                            11  SPA-PARA-ERRKBN        PIC  9(01).
       *

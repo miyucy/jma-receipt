@@ -66,4 +66,6 @@
                        09  ORCHCN62-YOURYOU-TBL.
                            11  ORCHCN62-YOURYOU     PIC 9(05)V9(05)
                                                    OCCURS   5.
+      *            用法コード（空白あり）
+                   07  ORCHCN62-YSRYCD          PIC X(09).
       *
