@@ -175,7 +175,8 @@ noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 
 all:   $(noinst_shell_scripts) $(shell_scripts) convutf8
 
-convutf8: $(utf8_shell_scripts)
+convutf8:
+	touch convutf8
 	echo $(utf8_shell_scripts) | xargs nkf -Ewm0 --overwrite
 
 filecheck:
@@ -211,6 +212,7 @@ filecheck:
 clean: 
 	-rm -f $(noinst_shell_scripts)
 	-rm -f $(shell_scripts)
+	-rm -f convutf8
 
 distclean: clean
 	-rm -f Makefile
