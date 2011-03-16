@@ -268,7 +268,7 @@
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
            IF      SPA-ERRCD       NOT =   SPACE
-               MOVE   "98"             TO  WRK-ERRCD
+               MOVE   "89"             TO  WRK-ERRCD
            END-IF
       *
            .
@@ -1127,7 +1127,7 @@
                MOVE    "対象の受付はありませんでした。"
                                                TO  WRK-ERRMSG
       *共通エラー
-           WHEN    "98"
+           WHEN    "89"
       *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
