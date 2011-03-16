@@ -4159,7 +4159,7 @@
            MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
            MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    " ›∏± Ã¿¡µ·≥Œ«ß•Í•π•»£√£”£÷∫Ó¿Æ"
+           MOVE    " ›∏±¿¡µ·≥Œ«ß•Í•π•»£√£”£÷∫Ó¿Æ"
                                    TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
