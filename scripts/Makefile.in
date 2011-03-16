@@ -173,7 +173,7 @@ noinst_shell_scripts = $(noinst_shell_sources:.sh.in=.sh)
 	$< > $@
 	chmod +x $@
 
-all:   $(noinst_shell_scripts) $(shell_scripts)
+all:   $(noinst_shell_scripts) $(shell_scripts) convutf8
 
 convutf8: $(utf8_shell_scripts)
 	echo $(utf8_shell_scripts) | xargs nkf -Ewm0 --overwrite
@@ -215,7 +215,7 @@ clean:
 distclean: clean
 	-rm -f Makefile
 
-install: all convutf8
+install: all
 	$(INSTALL) -d $(scriptsdir)
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily

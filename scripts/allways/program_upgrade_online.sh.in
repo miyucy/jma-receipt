@@ -174,7 +174,7 @@ if [ "$METHOD" = "update" ]; then
     fi
 
     echomsg "pgupdate_restart_limit = $PGUPGRADE_RESTART_LIMIT" ${LOG}
-    NOTICE_MSG="$PGUPGRADE_RESTART_LIMIT秒経過後に日レセを再起動しますので端末を終了してください。接続中の端末は強制的に切断します。"
+    NOTICE_MSG="$PGUPGRADE_RESTART_LIMIT�÷в������쥻��Ƶ�ư���ޤ��Τ�ü����λ���Ƥ�����������³���ü���϶���Ū�����Ǥ��ޤ���"
 
     if [ $PGUPGRADE_RESTART_LIMIT -ne 0 ]; then
       CONN_NUMBER=`$MONINFO who | wc -l`
@@ -198,12 +198,15 @@ if [ "$METHOD" = "update" ]; then
     done
 
     if [ $CONN_NUMBER -gt 1 ]; then
-      NOTICE_MSG="接続中の端末は強制終了しました。"
+      NOTICE_MSG="��³���ü���϶�����λ���ޤ�����"
       echomsg "moninfo abortall go! $NOTICE_MSG" ${LOG}
       $MONINFO abortall $NOTICE_MSG
       #sleep 10
     fi
     echomsg "monitor restart." ${LOG}
+    if [ -d ${PGUP_WORK_DIR}/record ]; then 
+      cp -rp ${PGUP_WORK_DIR}/record ${PATCHLIBDIR}
+    fi
     kill -HUP `cat /var/run/jma-receipt/monitor.pid`
     cp -rp ${PGUP_WORK_DIR}/* ${PATCHLIBDIR}
     rm -rf ${PGUP_WORK_DIR}
