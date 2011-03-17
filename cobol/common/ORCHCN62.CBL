@@ -71,6 +71,8 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
      *
+           03  FLG-KBN             PIC 9(01).
+     *
            03  FLG-OK              PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-SOURYO          PIC 9(01).
@@ -82,6 +84,7 @@
            03  CNT-LINE            PIC 9(02).
            03  CNT-ZAI             PIC 9(03).
            03  CNT-SRY             PIC 9(02).
+           03  CNT-KAISU           PIC 9(01).
       *
       *    インデックス領域
        01  IDX-AREA.
@@ -134,6 +137,14 @@
                05  WRK-KAISUU      PIC X(03).
       *
            03  WRK-HENSYUDATA      PIC X(100).
+      *
+           03  WRK-SSTKIJUNCD      PIC X(05).
+           03  WRK-HENKBN-G.
+               05  WRK-HENKBN      PIC 9(08)V9(05)
+                                               OCCURS  5.
+      *
+           03  WRK-YOURYO          PIC 9(05)V9(05).
+           03  WRK-KAISU           PIC 9(01).
       *
        01  WRK-MEISAI-AREA.
            03  WRK-M-KETA              PIC 9(03).
@@ -494,6 +505,21 @@
                                    TO  WRK-SRYSYUKBN
            MOVE    ORCHCN62-SRYKBN(IDX-ZAI)
                                    TO  WRK-SRYKBN
+           IF      ORCHCN62-YSRYCD(IDX-ZAI) NOT =   SPACE
+               MOVE    ORCHCN62-YSRYCD(IDX-ZAI) TO  WRK-SRYCD
+      *        点数検索
+               PERFORM 900-TENSU-READ-SEC
+      *        回数カウント
+               MOVE    SPACE           TO  WRK-SSTKIJUNCD
+               MOVE    ZERO            TO  CNT-KAISU
+               PERFORM VARYING IDX-KBN     FROM    1   BY  1
+                       UNTIL   IDX-KBN     >   5
+                   IF      TNS-SSTKIJUNCD(IDX-KBN) =   1
+                       COMPUTE CNT-KAISU   =   CNT-KAISU   +   1
+                       MOVE    "1"         TO  WRK-SSTKIJUNCD(IDX-KBN:1)
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            MOVE    ZERO            TO  CNT-SRY
            PERFORM VARYING IDX-SRY     FROM    1   BY  1
@@ -567,12 +593,11 @@
                      ( WRK-SRYCD(1:3)      =   "059" )
       *            数量編集
                    PERFORM 2304-SURYOU-HENSYU-SEC
+                   IF      PARA-COMMENT2   =   "1"
+      *                用量編集
+                       PERFORM 240-YOURYOU-HENSYU-SEC
+                   END-IF
                END-IF
-           END-IF
-      *
-           IF      PARA-COMMENT2   =   "1"
-      *        用量編集
-               PERFORM 240-YOURYOU-HENSYU-SEC
            END-IF
       *
            .
@@ -755,10 +780,61 @@
       *****************************************************************
        240-YOURYOU-HENSYU-SEC       SECTION.
       *
+      *    用量コード設定分セット
+           MOVE    WRK-SRYSURYO(CNT-SRY)   TO  WRK-SURYO
+           MOVE    CNT-KAISU       TO  WRK-KAISU
+           MOVE    ZERO            TO  WRK-HENKBN-G
+           MOVE    ZERO            TO  FLG-KBN
+           PERFORM VARYING IDX-KBN     FROM    1   BY  1
+                   UNTIL ( IDX-KBN     >   5 )
+                   OR    ( FLG-KBN     =   1 )
+      *        用量コードがあった場合
+               IF      WRK-YOURYOU(CNT-SRY IDX-KBN)     >   ZERO
+      *            指定してない服用時点ならエラー
+                   IF      WRK-SSTKIJUNCD(IDX-KBN:1)   NOT  =   "1"
+                       MOVE    1               TO  FLG-KBN
+                   ELSE
+      *                用量の方が多い場合エラー
+                       IF      WRK-SURYO      <
+                                   WRK-YOURYOU(CNT-SRY IDX-KBN) 
+                           MOVE    1               TO  FLG-KBN
+                       ELSE
+                           MOVE    WRK-YOURYOU(CNT-SRY IDX-KBN) 
+                                               TO  WRK-HENKBN(IDX-KBN)
+      *                    用量コード使用分は計算にいれない
+                           COMPUTE WRK-SURYO  =   WRK-SURYO
+                               -   WRK-YOURYOU(CNT-SRY IDX-KBN) 
+                           COMPUTE WRK-KAISU   =   WRK-KAISU   -   1
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *    エラーなら処理抜ける
+           IF      FLG-KBN  =   1
+               GO  TO  240-YOURYOU-HENSYU-EXT
+           END-IF
+      *
+      *    入力分をセット
+           COMPUTE WRK-YOURYO   =   WRK-SURYO  /   WRK-KAISU
+      *    割切れない場合処理抜ける
+           IF      WRK-SURYO    =   WRK-YOURYO *   WRK-KAISU
+               PERFORM VARYING  IDX-KBN    FROM    1   BY  1
+                       UNTIL  ( IDX-KBN    >   5 )
+      *            服用時点コードで設定していない場合は割ったものをセット
+                   IF      WRK-SSTKIJUNCD(IDX-KBN:1)   =   "1"
+                       IF      WRK-HENKBN(IDX-KBN)     =   0
+                           MOVE    WRK-YOURYO  TO  WRK-HENKBN(IDX-KBN)
+                       END-IF
+                   END-IF
+               END-PERFORM
+           ELSE
+               GO  TO  240-YOURYOU-HENSYU-EXT
+           END-IF
+      *
            PERFORM VARYING IDX-KBN     FROM    1   BY  1
                    UNTIL ( IDX-KBN     >   5 )
       *        用量コードがあった場合
-               IF      WRK-YOURYOU(CNT-SRY IDX-KBN)    >   ZERO
+               IF      WRK-HENKBN(IDX-KBN)    >   ZERO
                    MOVE    SPACE       TO  WRK-HENSYUDATA
       *
                    EVALUATE    IDX-KBN
@@ -774,7 +850,7 @@
                            MOVE    "　起："    TO  WRK-HENSYUDATA(1:6)
                    END-EVALUATE
       *
-                   MOVE    WRK-YOURYOU(CNT-SRY IDX-KBN)
+                   MOVE    WRK-HENKBN(IDX-KBN)
                                                TO  WRK-SURYO
                    PERFORM 250-ZHEN-SURYO-SET-SEC
                    MOVE    WRK-HENSURYO        TO  WRK-SURYOU
