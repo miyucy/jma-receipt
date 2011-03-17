@@ -89,6 +89,7 @@
            03  WRK-MAE-INPUT                   PIC X(100).
            03  WRK-ATO-INPUT                   PIC X(100).
            03  WRK-STR                         PIC X(100).
+           03  WRK-ERRMSG                      PIC X(200).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -604,8 +605,6 @@
                                        TO  SPA-NAI-G03-HENPARA (IDXA)
                    MOVE    WRK-HENYMDG(1:6)
                                        TO  SPA-GMN-G03-PARA    (IDXA)
-               ELSE
-                   GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
            WHEN    "KKNYM"
                MOVE    SPA-GMN-G03-PARA (IDXA) TO  WRK-YMD
@@ -615,8 +614,6 @@
                                        TO  SPA-NAI-G03-HENPARA (IDXA)
                    MOVE    WRK-HENYMDG(1:6)
                                        TO  SPA-GMN-G03-PARA    (IDXA)
-               ELSE
-                   GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
            WHEN    "YMD"
                MOVE    SPA-GMN-G03-PARA (IDXA)    TO  WRK-YMD
@@ -624,8 +621,6 @@
                IF    ( SPA-ERRCD       =   SPACE )
                    MOVE    WRK-SYMD    TO  SPA-NAI-G03-HENPARA (IDXA)
                    MOVE    WRK-HENYMDG TO  SPA-GMN-G03-PARA    (IDXA)
-               ELSE
-                   GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
            WHEN    "PSN1"
                IF    ( SPA-GMN-G03-PARA (IDXA)(1:1)   IS  NUMERIC )
@@ -634,11 +629,9 @@
                            TO  SPA-NAI-G03-HENPARA (IDXA)
                    ELSE
                        MOVE    "0002"  TO  SPA-ERRCD
-                       GO  TO  41012-PARA-NAIYO-CHK-EXT
                    END-IF
                ELSE
                    MOVE    "0002"      TO  SPA-ERRCD
-                   GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
            WHEN    "PTNUM"
                IF    ( SPA-GMN-G03-PARA (IDXA)    =   "*" or "＊" )
@@ -656,13 +649,20 @@
                                            SPA-GMN-G03-PARA    (IDXA)
                    ELSE
                        MOVE    "0002"      TO  SPA-ERRCD
-                       GO  TO  41012-PARA-NAIYO-CHK-EXT
                    END-IF
                END-IF
            WHEN    OTHER
                MOVE    SPA-GMN-G03-PARA (IDXA)
                                        TO  SPA-NAI-G03-HENPARA (IDXA)
            END-EVALUATE
+      *
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+              MOVE    SPACE                TO  WRK-ERRMSG
+              STRING  SPA-GMN-G03-PARAHYOJI (IDXA)
+                                                   DELIMITED BY SPACE
+              INTO    WRK-ERRMSG
+              END-STRING
+           END-IF
       *
            .
        41012-PARA-NAIYO-CHK-EXT.
@@ -1134,7 +1134,12 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0002"
-               MOVE    "入力エラー"                TO  SPA-ERRMSG
+               STRING  "入力エラー"            DELIMITED BY  SIZE
+                       "【"                    DELIMITED BY  SIZE
+                       WRK-ERRMSG              DELIMITED BY  SPACE
+                       "】"                    DELIMITED BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "0003"
                MOVE    "項目に入力がありません"    TO  SPA-ERRMSG
            WHEN    "0004"

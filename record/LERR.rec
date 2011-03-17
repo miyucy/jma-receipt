@@ -4,7 +4,7 @@ LERR	{
 			value	varchar(10);
 		};
 		ERRMSG	{
-			value	varchar(60);
+			value	varchar(80);
 		};
 	};
 };

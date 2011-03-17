@@ -18,4 +18,4 @@
          02  LERR.
             03  LERR-FIXED1.
               04  LERR-ERRCODE    PIC X(10).
-              04  LERR-ERRMSG     PIC X(60).
+              04  LERR-ERRMSG     PIC X(80).

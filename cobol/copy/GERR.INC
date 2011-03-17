@@ -18,4 +18,4 @@
          02  GERR.
             03  GERR-FIXED1.
               04  GERR-ERRCODE    PIC X(10).
-              04  GERR-ERRMSG     PIC X(60).
+              04  GERR-ERRMSG     PIC X(80).
