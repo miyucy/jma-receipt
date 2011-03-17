@@ -60,24 +60,8 @@
       *
       *  04.05.01    NACL-藤原    09/04/16  主科設定時の主科未設定のチェ
       *                                     ック追加
-      *  04.05.02    NACL-藤原    11/08/25  公費単独対応
-      *                                     公費を最大５０に変更
-      *
-      *  04.06.01    NACL-藤原    10/12/07  公費単独の負担者番号、受給者
-      *                                     番号の表示に自立支援を追加
-      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *  04.05.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
-      *  04.06.03    NACL-藤原    11/12/12  点検レセ０点公費印字対応
-      *  04.06.04    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *
-      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
-      *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
-      *
-      *  04.08.01    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
-      *                                     レセプトの分割対応
-      *  04.08.02    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,8 +141,6 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-SYURUINAME      PIC X(40).
       *
-       01  WRK-ERRCD               PIC X(04).
-      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -223,7 +205,6 @@
        01  SCRAREA.
            COPY    "H01.INC".
            COPY    "H02.INC".
-           COPY    "H03.INC".
            COPY    "H99.INC".
            COPY    "HERR.INC".
            COPY    "HID1.INC".
@@ -243,7 +224,6 @@
            MOVE    SPA-FREE        TO  SPA-H01FREE
            MOVE    SPA-WORK        TO  SPA-H01KYOUTU
       *
-           MOVE    SPA-ERRCD       TO  WRK-ERRCD
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -280,10 +260,6 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "HERR"
-               IF      WRK-ERRCD           =   "0009"
-                   PERFORM 210-BACK
-                   GO  TO  100-INIT-EXT
-               END-IF
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -414,15 +390,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                TO  IDX 
            PERFORM     UNTIL       FLG-SEIKYU     =   1
-                       OR          IDX            =  50
+                       OR          IDX            =  10
                ADD     1                   TO  IDX
                MOVE    MCPDATA-REC     TO  RECE10-REC
-               MOVE    RECE10-KEY      TO  SPA-H99NAI-RECE10-KEY   (IDX)
-      *        点検レセ０点公費あり
-               MOVE    RECE10-SKYKBN-RECEDEN
-                                       TO  SPA-H99NAI-SKYKBN-RECEDEN
-                                                                   (IDX)
-      *  
+               MOVE    RECE10-KEY      TO
+                                   SPA-H99NAI-RECE10-KEY (IDX)
                MOVE    IDX             TO  WRK-Z9
                MOVE    WRK-Z9          TO
                                    SPA-H99GMN-TRENNUM    (IDX)
@@ -459,12 +431,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    WHEN    "2"
                        MOVE    "国保連合会"    TO
                                            SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "3"
-                       MOVE    "労災"          TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
-                   WHEN    "4"
-                       MOVE    "自賠責"        TO
-                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
                    WHEN    "5"
                        MOVE    "公害"          TO
                                            SPA-H99GMN-TTEISYUTUSAKI(IDX)
@@ -485,9 +451,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                            MOVE    RECE10-HKNJANUM     TO
                                            SPA-H99GMN-THKNJANUM (IDX)
                        END-IF
-                   WHEN    "3"
-                       MOVE    RECE10-KOFUNUM      TO
-                                           SPA-H99GMN-THKNJANUM (IDX)
                END-EVALUATE
       *
                EVALUATE    RECE10-HKNNUM
@@ -517,10 +480,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                EVALUATE    RECE10-TEISYUTUSAKI
                    WHEN    "6"
                        MOVE    RECE10-NUM  TO  SPA-H99GMN-TKIGO(IDX)
-                   WHEN    "3"
-                   WHEN    "4"
-                       MOVE    RECE10-COMMENT
-                                           TO  SPA-H99GMN-TKIGO(IDX)
                    WHEN    OTHER
                        STRING  RECE10-KIGO     DELIMITED   BY  SPACE
                                "　"            DELIMITED   BY  SIZE
@@ -532,64 +491,45 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-H99GMN-TCREYMD (IDX)
       *
-               EVALUATE    RECE10-RECEIPT-KBN (1:1)
-                   WHEN    "1"
-                       MOVE    "老併"          TO
-                                           SPA-H99GMN-TRECEIPT-KBN (IDX)
-                   WHEN    "2"
-                       MOVE    "老健"          TO
-                                           SPA-H99GMN-TRECEIPT-KBN (IDX)
-               END-EVALUATE
-               IF      RECE10-ETC-YKZFTN (1)   >   ZERO
-                   MOVE    "災"            TO
-                                           SPA-H99GMN-TDISASTER (IDX)
-               END-IF
-      *
-      *       公費単独で生保又は中国残留邦人等、自立支援のとき負担者番号、
-      *       受給者番号をセット
+      *       公費単独で生保又は中国残留邦人等、自立支援、児童保護のとき
+      *       負担者番号、受給者番号をセット
                IF    ( RECE10-HKNNUM       =   SPACE                 )
                    IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"
                                                OR  "021"   OR  "020"
                                                OR  "015"   OR  "016"
                                                OR  "053"             )
-                   AND   ( RECE10-KOHNUM (2)   =   SPACE             )
+                   AND   ( RECE10-KOHNUM (2)   =   SPACE           )
                        INITIALIZE                  PTKOHINF-REC
                        MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                        MOVE    RECE10-PTID     TO  PTKOH-PTID
                        MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
                        MOVE    PTKOHINF-REC    TO  MCPDATA-REC
                        PERFORM 900-PTKOHINF-READ-SEC
-                       IF      RECE10-KOHNUM (1)   =   "012"   OR  "025"
-                           MOVE    SPA-HOSPNUM     TO
-                                                   MONTHLYNUM-HOSPNUM
-                           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-                           MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
-                           MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
+                       MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
+                       MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                       MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
+                       MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
+                       MOVE    RECE10-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       PERFORM 900-MONTHLYNUM-READ-SEC
+                       IF      FLG-MONTHLYNUM  =   ZERO
+                           MOVE    MONTHLYNUM-JKYSNUM
+                                               TO  PTKOH-JKYSNUM
+                       ELSE
+                           MOVE    SPA-HOSPNUM TO  MONTHLYNUM-HOSPNUM
+                           MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
+                           MOVE    ZERO        TO  MONTHLYNUM-KOHID
+                           MOVE    RECE10-SRYYM
+                                               TO  MONTHLYNUM-SRYYM
                            MOVE    RECE10-NYUGAIKBN
-                                                   TO
-                                                   MONTHLYNUM-NYUGAIKBN
-                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC
+                                               TO  MCPDATA-REC
                            PERFORM 900-MONTHLYNUM-READ-SEC
-                           IF      FLG-MONTHLYNUM  =   ZERO
+                           IF      FLG-MONTHLYNUM   =   ZERO
                                MOVE    MONTHLYNUM-JKYSNUM
-                                                   TO  PTKOH-JKYSNUM
-                           ELSE
-                               MOVE    SPA-HOSPNUM TO
-                                                   MONTHLYNUM-HOSPNUM
-                               MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
-                               MOVE    ZERO        TO  MONTHLYNUM-KOHID
-                               MOVE    RECE10-SRYYM
-                                                   TO  MONTHLYNUM-SRYYM
-                               MOVE    RECE10-NYUGAIKBN
-                                                   TO
-                                                   MONTHLYNUM-NYUGAIKBN
-                               MOVE    MONTHLYNUM-REC
-                                                   TO  MCPDATA-REC
-                               PERFORM 900-MONTHLYNUM-READ-SEC
-                               IF      FLG-MONTHLYNUM  =   ZERO
-                                   MOVE    MONTHLYNUM-JKYSNUM
-                                                       TO  PTKOH-JKYSNUM
-                               END-IF
+                                                    TO  PTKOH-JKYSNUM
                            END-IF
                        END-IF
                        STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
@@ -631,50 +571,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            IF      RECE10-RECESYUBETU  =   "6666"
                MOVE    "特別療養費"        TO  WRK-RECESYUBETU
-               GO  TO  530-RECESYUBETU-HENSYU-EXT
-           END-IF        
-      *
-           IF      RECE10-TEISYUTUSAKI =   "3" OR  "4"
-               EVALUATE    RECE10-RECESYUBETU
-                   WHEN    "7101"
-                   WHEN    "7091"
-                       MOVE    "傷病・業務"        TO  WRK-RECESYUBETU
-                   WHEN    "7102"
-                   WHEN    "7092"
-                       MOVE    "傷病・通勤"        TO  WRK-RECESYUBETU
-                   WHEN    "7071"
-                   WHEN    "7081"
-                       MOVE    "短期・業務"        TO  WRK-RECESYUBETU
-                   WHEN    "7072"
-                   WHEN    "7082"
-                       MOVE    "短期・通勤"        TO  WRK-RECESYUBETU
-                   WHEN    "7021"
-                       MOVE    "アフターケア"      TO  WRK-RECESYUBETU
-                   WHEN    "7051"
-                   WHEN    "7061"
-                       MOVE    "公務災害"          TO  WRK-RECESYUBETU
-                   WHEN    "7011"
-                   WHEN    "7001"
-                       EVALUATE    RECE10-RECEKBN
-                           WHEN    "4"
-                              MOVE    "新様式"     TO  WRK-RECESYUBETU
-                           WHEN    "5"
-                               EVALUATE    RECE10-HKNKBN
-                                   WHEN    "5"
-                                       MOVE    "従来様式・労災"
-                                                   TO  WRK-RECESYUBETU
-                                   WHEN    "6"
-                                       MOVE    "従来様式・健保"
-                                                   TO  WRK-RECESYUBETU
-                                   WHEN    OTHER
-                                       MOVE    "従来様式"
-                                                   TO  WRK-RECESYUBETU
-                               END-EVALUATE
-                           WHEN    "6"
-                               MOVE    "第三者行為"
-                                                   TO  WRK-RECESYUBETU
-                       END-EVALUATE
-               END-EVALUATE
                GO  TO  530-RECESYUBETU-HENSYU-EXT
            END-IF        
       *
@@ -881,12 +777,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
-      *        点検用レセ０点公費のとき入力不可
-               IF      SPA-H99NAI-SKYKBN-RECEDEN  (SPA-H99GMN-SELNUM)
-                                           =   "1"
-                   MOVE    "0009"              TO  SPA-ERRCD
-                   GO  TO  4104-SELNUM-CHK-EXT
-               END-IF
       *        主科設定時の主科未設定のチェック（特別療養費を除く）
                IF    ( SPA-H99-RECEKA          =   "00"   )
                AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
@@ -922,10 +812,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >       SPA-H99GMN-MAX
+                   UNTIL       IDX     >   5
                IF      H99-SELECT (IDX)    =   "T"
                    MOVE    IDX             TO  WRK-SELNO
-                   MOVE    SPA-H99GMN-MAX  TO  IDX
+                   MOVE    5               TO  IDX
                END-IF    
            END-PERFORM
       *
@@ -933,12 +823,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
-      *    点検用レセ０点公費のとき入力不可
-           IF      SPA-H99NAI-SKYKBN-RECEDEN  (SPA-H99GMN-SELNUM)
-                                       =   "1"
-               MOVE    "0009"              TO  SPA-ERRCD
-               GO  TO  4105-RECESEL-EXT
-           END-IF
       *    主科設定時の主科未設定のチェック（特別療養費を除く）
            IF    ( SPA-H99-RECEKA          =   "00"   )
            AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
@@ -946,24 +830,24 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "1"
                        IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
                            MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  4105-RECESEL-EXT
+                           GO  TO  41016-BYOMEISEL-EXT
                        END-IF
                    WHEN    "2"
                        IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
                            MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  4105-RECESEL-EXT
+                           GO  TO  41016-BYOMEISEL-EXT
                        END-IF
                    WHEN    "6"
                        IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
                            MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  4105-RECESEL-EXT
+                           GO  TO  41016-BYOMEISEL-EXT
                        END-IF
                END-EVALUATE
            END-IF
       *
            PERFORM 210-BACK
            .
-       4105-RECESEL-EXT.
+       41016-BYOMEISEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -991,11 +875,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
        450-KAKUTEI-SEC                SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-H99GMN-MAX
+                   UNTIL   IDX >       5
                IF      H99-SELECT (IDX)    =   "T"
                    MOVE    SPA-H99NAI-RECE10-KEY (IDX)
                                            TO  SPA-H99-KEY
-                   MOVE    SPA-H99GMN-MAX  TO  IDX 
+                   MOVE    5               TO  IDX 
                END-IF
            END-PERFORM
       * 
@@ -1051,7 +935,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                         H99-SRYKANAME-VALUE
       *
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       SPA-H99GMN-MAX
+                   UNTIL   IDX     >       5
                    OR      SPA-H99GMN-TNYUGAIKBN (IDX)
                                                =   SPACE
                MOVE    SPA-H99GMN-TRENNUM      (IDX)
@@ -1072,10 +956,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                    TO  H99-TKIGO        (IDX)
                MOVE    SPA-H99GMN-TCREYMD      (IDX)
                                    TO  H99-TCREYMD      (IDX)
-               MOVE    SPA-H99GMN-TRECEIPT-KBN (IDX)
-                                   TO  H99-TRECEIPT-KBN (IDX)
-               MOVE    SPA-H99GMN-TDISASTER    (IDX)
-                                   TO  H99-TDISASTER    (IDX)
                MOVE    IDX         TO  H99-COUNT
            END-PERFORM
       ***  MOVE    "T"              TO  H99-SELECT (1)
@@ -1114,10 +994,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示処理
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -1126,10 +1005,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                WHEN    "0003"
                    MOVE    "対象のレセプトは存在しません"
                                              TO  SPA-ERRMSG
-               WHEN    "0009"
-                   MOVE
-                   "０点公費記載のレセプトです、更新処理はできません" 
-                                               TO  SPA-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
@@ -1162,7 +1037,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
        520-HIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  HID1
-           INITIALIZE                       HID1
            MOVE    SPA-HIDCD            TO  HID1-ID1CODE
            EVALUATE    SPA-HIDCD
                WHEN    "1006"
