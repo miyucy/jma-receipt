@@ -27,18 +27,10 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
-      *  04.06.02    NACL-Æ£¸¶    10/12/20  ÊÝ¸±¼Ô¤«¤é¤ÎÊÖÌáÂÐ±þ
-      *  04.06.03    NACL-Æ£¸¶    11/02/01  ¼çÊÝ¸±¤¬¤Ê¤¤¾ì¹ç¡¢»ùÆ¸ÊÝ¸î(53)
+      *  04.05.01    NACL-Æ£¸¶    11/02/01  ¼çÊÝ¸±¤¬¤Ê¤¤¾ì¹ç¡¢»ùÆ¸ÊÝ¸î(53)
       *                                     ¤Ï¸øÈñÃ±ÆÈ¤Î¥ì¥»¥×¥È¤È¤¹¤ë
-      *  04.06.04    NACL-Æ£¸¶    12/10/26  ÆÃµ­»ö¹à£°£·¡ÊÏ·Ê»¡ËµÚ¤Ó
-      *                                     £°£¸¡ÊÏ··ò¡Ë¤Î¥ì¥»¥×¥ÈÂÐ±þ
-      *                                     receipt_kbn ÄÉ²Ã
-      *
-      *  04.07.01    NACL-Æ£¸¶    13/10/07  Ï«ºÒ¥ì¥»ÅÅÊÖÌáÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    16/08/08  ºÒ³²³ºÅöÊ¬¡ÊÈó¸ºÌÈÂÐ¾Ý¤È¸ºÌÈÂÐ¾Ý¡Ë
-      *                                     ¥ì¥»¥×¥È¤ÎÊ¬³äÂÐ±þ
+      *  04.05.02    NACL-Æ£¸¶    11/02/01  ¼çÊÝ¸±¤¬¤Ê¤¤¾ì¹ç¡¢»ùÆ¸ÊÝ¸î(53)
+      *                                     ¤Ï¸øÈñÃ±ÆÈ¤Î¥ì¥»¥×¥È¤È¤¹¤ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,7 +153,6 @@
        01  SCRAREA.
            COPY    "H01.INC".
            COPY    "H02.INC".
-           COPY    "H03.INC".
            COPY    "H99.INC".
            COPY    "HERR.INC".
            COPY    "HID1.INC".
@@ -327,8 +318,6 @@
                                    =   TBL-HENREI-B-SYORIYM     (IDZZ) )
                AND   ( WRK-HENREI-B-TEISYUTUSAKI
                                    =   TBL-HENREI-B-TEISYUTUSAKI(IDZZ) )
-               AND   ( WRK-HENREI-B-TEISYUTUSAKI2
-                                   =   TBL-HENREI-B-TEISYUTUSAKI2(IDZZ))
                AND   ( WRK-HENREI-B-RECEIPT-NO
                                    =   TBL-HENREI-B-RECEIPT-NO  (IDZZ) )
                    MOVE    "*"             TO
@@ -341,56 +330,19 @@
                                            TO  SPA-H02GMN-TSYORIYM(IDY)
                END-IF
       *
-               MOVE    TBL-HENREI-B-TEISYUTUSAKI2 (IDZZ)
-                                   TO  SPA-H02NAI-TTEISYUTUSAKI2
-                                                          (IDY)
-               EVALUATE    SPA-H02NAI-TTEISYUTUSAKI2 (IDY)
-                   WHEN    "0"
-                       MOVE    "¡¡"    TO  SPA-H02GMN-TTEISYUTUSAKI2
-                                                              (IDY)
-                   WHEN    "1"
-                       MOVE    "ÊÝ"    TO  SPA-H02GMN-TTEISYUTUSAKI2
-                                                              (IDY)
-               END-EVALUATE
-      *
                MOVE    TBL-HENREI-B-NYUGAIKBN (IDZZ)
                                    TO  SPA-H02NAI-TNYUGAIKBN
                                                           (IDY)
-               EVALUATE    SPA-H02NAI-TNYUGAIKBN    (IDY)
+               EVALUATE    SPA-H02NAI-TNYUGAIKBN    (IDZZ)
                    WHEN    "1"
-                       MOVE    "Æþ"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
+                       MOVE    "Æþ"
+                                       TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
                    WHEN    "2"
-                       MOVE    "³°"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
+                       MOVE    "³°"
+                                       TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
                END-EVALUATE
-      *
-               EVALUATE    TBL-HENREI-B-TEISYUTUSAKI (IDZZ)
-                   WHEN    "3"
-                       EVALUATE    TBL-HENREI-B-RECESYUBETU(IDZZ)
-                           WHEN    "7101"
-                           WHEN    "7091"
-                               MOVE    "½ýÉÂ¡¦¶ÈÌ³"
+               MOVE    TBL-HENREI-B-RECESYUBETU(IDZZ)
                                    TO  SPA-H02GMN-TRECESYUBETU    (IDY)
-                           WHEN    "7102"
-                           WHEN    "7092"
-                               MOVE    "½ýÉÂ¡¦ÄÌ¶Ð"
-                                   TO  SPA-H02GMN-TRECESYUBETU    (IDY)
-                           WHEN    "7071"
-                           WHEN    "7081"
-                               MOVE    "Ã»´ü¡¦¶ÈÌ³"
-                                   TO  SPA-H02GMN-TRECESYUBETU    (IDY)
-                           WHEN    "7072"
-                           WHEN    "7082"
-                               MOVE    "Ã»´ü¡¦ÄÌ¶Ð"
-                                   TO  SPA-H02GMN-TRECESYUBETU    (IDY)
-                           WHEN    OTHER
-                               MOVE    TBL-HENREI-B-RECESYUBETU(IDZZ)
-                                   TO  SPA-H02GMN-TRECESYUBETU    (IDY)
-                       END-EVALUATE
-                   WHEN    OTHER
-                       MOVE    TBL-HENREI-B-RECESYUBETU(IDZZ)
-                                   TO  SPA-H02GMN-TRECESYUBETU    (IDY)
-               END-EVALUATE
-      * 
                MOVE    TBL-HENREI-B-HKNJANUM   (IDZZ)
                                    TO  SPA-H02GMN-THKNJANUM       (IDY)
       *
@@ -418,21 +370,6 @@
                                            INTO    SPA-H02GMN-TKIGO(IDY)
                    END-STRING
                END-IF
-               EVALUATE    TBL-HENREI-B-RECEIPT-KBN (IDZZ)(1:1)
-                   WHEN    "1"
-                       MOVE    "Ï·Ê»"      TO  SPA-H02GMN-TRECEIPT-KBN
-                                                                  (IDY)
-                   WHEN    "2"
-                       MOVE    "Ï··ò"      TO  SPA-H02GMN-TRECEIPT-KBN
-                                                                  (IDY)
-               END-EVALUATE
-               EVALUATE    TBL-HENREI-B-DISASTER (IDZZ)
-                   WHEN    "00"
-                       CONTINUE
-                   WHEN    OTHER
-                       MOVE    "ºÒ"            TO  SPA-H02GMN-TDISASTER
-                                                                  (IDY)
-               END-EVALUATE
                MOVE    TBL-HENREI-B-HR-MSG (IDZZ)
                                        TO  SPA-H02GMN-TERR        (IDY)
       *
@@ -490,66 +427,14 @@
                                    TO  SPA-H02NAI-TS-RECEKA       (IDY)
                    MOVE    TBL-HENREI-B-S-RECESYUBETU      (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-RECESYUBETU  (IDY)
-                   EVALUATE    SPA-H02NAI-TS-TEISYUTUSAKI  (IDY)
-                       WHEN    "3"
-                           EVALUATE    SPA-H02NAI-TS-RECESYUBETU  (IDY)
-                               WHEN    "7101"
-                               WHEN    "7091"
-                                   MOVE    "½ýÉÂ¡¦¶ÈÌ³"    TO
-                                       SPA-H02GMN-TS-RECESYUBETU  (IDY)
-                               WHEN    "7102"
-                               WHEN    "7092"
-                                   MOVE    "½ýÉÂ¡¦ÄÌ¶Ð"    TO
-                                       SPA-H02GMN-TS-RECESYUBETU  (IDY)
-                               WHEN    "7071"
-                               WHEN    "7081"
-                                   MOVE    "Ã»´ü¡¦¶ÈÌ³"    TO
-                                       SPA-H02GMN-TS-RECESYUBETU  (IDY)
-                               WHEN    "7072"
-                               WHEN    "7082"
-                                   MOVE    "Ã»´ü¡¦ÄÌ¶Ð"    TO
-                                       SPA-H02GMN-TS-RECESYUBETU  (IDY)
-                               WHEN    OTHER
-                                   MOVE
-                                       SPA-H02NAI-TS-RECESYUBETU (IDY)
-                                                           TO
-                                       SPA-H02GMN-TS-RECESYUBETU  (IDY)
-                           END-EVALUATE
-                       WHEN    OTHER
-                           MOVE    SPA-H02NAI-TS-RECESYUBETU  (IDY)
-                                   TO  SPA-H02GMN-TS-RECESYUBETU  (IDY)
-                   END-EVALUATE
                    MOVE    TBL-HENREI-B-S-HKNJANUM         (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-HKNJANUM     (IDY)
                    MOVE    TBL-HENREI-B-S-HOJOKBN-KEY      (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-HOJOKBN-KEY  (IDY)
-                   MOVE    TBL-HENREI-B-S-KOHID-KEY        (IDZZ IDX)
-                                   TO  SPA-H02NAI-TS-KOHID-KEY    (IDY)
                    MOVE    TBL-HENREI-B-S-TEKSTYMD         (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-TEKSTYMD     (IDY)
-                   MOVE    TBL-HENREI-B-S-RECEIPT-KBN      (IDZZ IDX)
-                                   TO  SPA-H02NAI-TS-RECEIPT-KBN  (IDY)
                    MOVE    TBL-HENREI-B-S-KIGO             (IDZZ IDX)
                                    TO  SPA-H02GMN-TS-KIGO         (IDY)
-      *
-                   EVALUATE    TBL-HENREI-B-S-RECEIPT-KBN(IDZZ IDX)(1:1)
-                       WHEN    "1"
-                           MOVE    "Ï·Ê»"          TO
-                                       SPA-H02GMN-TS-RECEIPT-KBN (IDY)
-                       WHEN    "2"
-                           MOVE    "Ï··ò"          TO
-                                       SPA-H02GMN-TS-RECEIPT-KBN (IDY)
-                   END-EVALUATE
-      *
-                   EVALUATE    TBL-HENREI-B-S-DISASTER (IDZZ IDX)
-                       WHEN    "00"
-                       WHEN    SPACE
-                           MOVE    SPACE           TO
-                                       SPA-H02GMN-TS-DISASTER (IDY)
-                       WHEN    OTHER
-                           MOVE    "ºÒ"            TO
-                                       SPA-H02GMN-TS-DISASTER (IDY)
-                   END-EVALUATE
                END-PERFORM
            END-PERFORM
       *
@@ -583,7 +468,7 @@
                                        =   "1211" OR "1212"
                    IF    ( WRK-HENREI-B-FTNNUM (1) (1:2)
                                            =   "12" OR  "25" OR  "20"
-                                           OR  "53" )
+                                           OR  "53"   )
                        STRING  WRK-HENREI-B-FTNNUM (1)
                                                DELIMITED   BY  SPACE
                                "¡¡"            DELIMITED   BY  SIZE
@@ -1151,8 +1036,6 @@
                MOVE    WRK-Z9          TO  H02-TRENNUM      (IDX)
                MOVE    SPA-H02GMN-TSYORIYM     (IDX)
                                        TO  H02-TSYORIYM     (IDX)
-               MOVE    SPA-H02GMN-TTEISYUTUSAKI2  (IDX)
-                                       TO  H02-TTEISYUTUSAKI2 (IDX)
                MOVE    SPA-H02GMN-TNYUGAIKBN   (IDX)
                                        TO  H02-TNYUGAIKBN   (IDX)
                MOVE    SPA-H02GMN-TRECESYUBETU (IDX)
@@ -1161,10 +1044,6 @@
                                        TO  H02-THKNJANUM    (IDX)
                MOVE    SPA-H02GMN-TKIGO        (IDX)
                                        TO  H02-TKIGO        (IDX)
-               MOVE    SPA-H02GMN-TRECEIPT-KBN (IDX)
-                                       TO  H02-TRECEIPT-KBN (IDX)
-               MOVE    SPA-H02GMN-TDISASTER    (IDX)
-                                       TO  H02-TDISASTER    (IDX)
                MOVE    SPA-H02GMN-TERR         (IDX)
                                        TO  H02-TERR         (IDX)
                MOVE    SPA-H02GMN-TS-MAKE-FLG  (IDX)
@@ -1173,7 +1052,7 @@
                                        TO  H02-TS-SKYYM     (IDX)
                MOVE    SPA-H02GMN-TS-NYUGAIKBN (IDX)
                                        TO  H02-TS-NYUGAIKBN (IDX)
-               MOVE    SPA-H02GMN-TS-RECESYUBETU (IDX)
+               MOVE    SPA-H02NAI-TS-RECESYUBETU (IDX)
                                        TO  H02-TS-RECESYUBETU(IDX)
                IF      SPA-H02NAI-TS-HKNJANUM   (IDX)
                                        NOT =   "00000000"
@@ -1184,10 +1063,6 @@
                                        TO  H02-TS-KIGO      (IDX)
                MOVE    SPA-H02GMN-TS-HOJOKBN-KEY(IDX)
                                        TO  H02-TS-HOJOKBN   (IDX)
-               MOVE    SPA-H02GMN-TS-RECEIPT-KBN(IDX)
-                                       TO  H02-TS-RECEIPT-KBN (IDX)
-               MOVE    SPA-H02GMN-TS-DISASTER   (IDX)
-                                       TO  H02-TS-DISASTER  (IDX)
                MOVE    SPA-H02GMN-TS-HENREI-SIJI-FLG (IDX)
                                        TO  H02-TS-HENREI-SIJI-FLG (IDX)
       *
@@ -1326,7 +1201,6 @@
        520-HIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  HID1
-           INITIALIZE                       HID1
            MOVE    SPA-HIDCD            TO  HID1-ID1CODE
       *
            EVALUATE    SPA-HIDCD
