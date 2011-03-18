@@ -37,10 +37,8 @@ LDFILE_sources = \
 	orca43.ld.in \
 	orca44.ld.in \
 	orca51.ld.in \
-	orca52.ld.in \
 	orca71.ld.in \
 	orca61.ld.in \
-	orca82.ld.in \
 	orca101.ld.in \
 	orca102.ld.in \
 	orca103.ld.in \

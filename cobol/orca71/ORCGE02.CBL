@@ -268,6 +268,10 @@ grpsys     03  EIE01PARA-FILE      PIC X(23).
            COPY    "EERR.INC".
            COPY    "EID1.INC".
            COPY    "EID2.INC".
+           COPY    "F01.INC".
+           COPY    "FERR.INC".
+           COPY    "FID1.INC".
+           COPY    "FID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING

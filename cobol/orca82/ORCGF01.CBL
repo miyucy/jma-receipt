@@ -179,6 +179,11 @@ grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
            COPY    "LINKAREA".
       *
        01  SCRAREA.
+           COPY    "E01.INC".
+           COPY    "E02.INC".
+           COPY    "EERR.INC".
+           COPY    "EID1.INC".
+           COPY    "EID2.INC".
            COPY    "F01.INC".
            COPY    "FERR.INC".
            COPY    "FID1.INC".

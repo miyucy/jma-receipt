@@ -68,6 +68,15 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L99.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "LFIL.INC".
            COPY    "G01.INC".
            COPY    "G02.INC".
            COPY    "G03.INC".

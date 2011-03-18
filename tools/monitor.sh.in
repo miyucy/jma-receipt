@@ -170,7 +170,7 @@ for i in $ALWAYS_LD; do
 done
 
 for i in $LD; do
-    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
+    [ -e $LDDEF/$i.ld ]&& $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
 done
 
 while :

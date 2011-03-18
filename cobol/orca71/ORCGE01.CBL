@@ -204,6 +204,10 @@ grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
            COPY    "EERR.INC".
            COPY    "EID1.INC".
            COPY    "EID2.INC".
+           COPY    "F01.INC".
+           COPY    "FERR.INC".
+           COPY    "FID1.INC".
+           COPY    "FID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING

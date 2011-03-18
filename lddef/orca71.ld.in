@@ -9,6 +9,10 @@ bind	"E02"		"OpenCOBOL"	"ORCGE02";
 bind	"EERR"		"OpenCOBOL"	"ORCGEERR";
 bind	"EID1"		"OpenCOBOL"	"ORCGEID1";
 bind	"EID2"		"OpenCOBOL"	"ORCGEID2";
+bind	"F01"		"OpenCOBOL"	"ORCGF01";
+bind	"FERR"		"OpenCOBOL"	"ORCGFERR";
+bind	"FID1"		"OpenCOBOL"	"ORCGFID1";
+bind	"FID2"		"OpenCOBOL"	"ORCGFID2";
 
 multiplex_group	orca71;
 
@@ -22,6 +26,10 @@ data	{
 		EERR;
 		EID1;
 		EID2;
+		F01;
+		FERR;
+		FID1;
+		FID2;
 	};
 };
 
