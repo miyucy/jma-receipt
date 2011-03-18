@@ -821,10 +821,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
+                   UNTIL       IDX     >       SPA-H99GMN-MAX
                IF      H99-SELECT (IDX)    =   "T"
                    MOVE    IDX             TO  WRK-SELNO
-                   MOVE    5               TO  IDX
+                   MOVE    SPA-H99GMN-MAX  TO  IDX
                END-IF    
            END-PERFORM
       *
@@ -884,11 +884,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
        450-KAKUTEI-SEC                SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       5
+                   UNTIL   IDX >       SPA-H99GMN-MAX
                IF      H99-SELECT (IDX)    =   "T"
                    MOVE    SPA-H99NAI-RECE10-KEY (IDX)
                                            TO  SPA-H99-KEY
-                   MOVE    5               TO  IDX 
+                   MOVE    SPA-H99GMN-MAX  TO  IDX 
                END-IF
            END-PERFORM
       * 
@@ -944,7 +944,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                         H99-SRYKANAME-VALUE
       *
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       5
+                   UNTIL   IDX     >       SPA-H99GMN-MAX
                    OR      SPA-H99GMN-TNYUGAIKBN (IDX)
                                                =   SPACE
                MOVE    SPA-H99GMN-TRENNUM      (IDX)
