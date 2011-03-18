@@ -2335,7 +2335,8 @@
                                        WRK-HKN-RIREKI (WRK-RIREKI-MAX)  
                    END-IF   
                END-IF                   
-               IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
+      *********IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
+               IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)
                                           NOT =   SPACE
                    ADD     1                   TO  WRK-RIREKI-MAX
                    IF      WRK-RIREKI-MAX     >   50
