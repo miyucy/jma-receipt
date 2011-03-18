@@ -2517,7 +2517,7 @@ grpsys                                         SPA-AREA
                                                        TO
                                                  WRK-TOUKEI01-SEIHO-KEY
                                                               (IDXX IDB)
-                                           MOVE    5   TO  IDB
+                                           MOVE    10  TO  IDB
                                        END-IF
                                    END-PERFORM
                                    PERFORM VARYING IDB FROM    1   BY  1
@@ -2537,7 +2537,7 @@ grpsys                                         SPA-AREA
                                            MOVE    10          TO  IDB
                                        END-IF
                                    END-PERFORM    
-                                   MOVE    4           TO  IDYY
+                                   MOVE    10          TO  IDYY
                                    MOVE    TBL-SEIHO-TOUKEI01-MAX
                                                        TO  IDA
                                END-IF
