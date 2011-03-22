@@ -426,13 +426,13 @@ V03.glade	orca104	(V03)公費付加情報設定
 VERR.glade	orca104	(VERR)エラー情報
 VID1.glade	orca104	(VID1)確認画面
 
-N01.glade	orca105	(N01)保険者マスタ登録
-NERR.glade	orca105	(NERR)エラー情報
-NID1.glade	orca105	(NID1)確認画面
+N01.glade	orca104	(N01)保険者マスタ登録
+NERR.glade	orca104	(NERR)エラー情報
+NID1.glade	orca104	(NID1)確認画面
 
-N11.glade	orca106	(N11)人名辞書マスタ設定
-N11ERR.glade	orca106	(N11ERR)エラー情報
-N11ID1.glade	orca106	(N11ID1)確認画面
+N11.glade	orca104	(N11)人名辞書マスタ設定
+N11ERR.glade	orca104	(N11ERR)エラー情報
+N11ID1.glade	orca104	(N11ID1)確認画面
 
 N21.glade	orca107	(N21)薬剤情報マスタ設定
 N22.glade	orca107	(N22)薬剤情報マスタ−参照情報
@@ -443,10 +443,10 @@ N21ID1.glade	orca107	(N21ID1)確認画面
 N21ID2.glade	orca107	(N21ID2)確認画面
 N21FIL.glade	orca107	(N21FIL)画像選択画面
 
-N31.glade	orca108	(N31)住所マスタ登録
-N31ERR.glade	orca108	(N31ERR)エラー情報
-N31ID1.glade	orca108	(N31ID1)確認画面
+N31.glade	orca104	(N31)住所マスタ登録
+N31ERR.glade	orca104	(N31ERR)エラー情報
+N31ID1.glade	orca104	(N31ID1)確認画面
 
-N41.glade	orca109	(N41)ヘルプ登録
-N41ERR.glade	orca109	(N41ERR)エラー情報
-N41ID1.glade	orca109	(N41ID1)確認画面
+N41.glade	orca104	(N41)ヘルプ登録
+N41ERR.glade	orca104	(N41ERR)エラー情報
+N41ID1.glade	orca104	(N41ID1)確認画面
