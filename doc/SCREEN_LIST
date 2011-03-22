@@ -300,14 +300,14 @@ LID1.glade	orca51	(LID1)確認画面
 LID2.glade	orca51	(LID2)確認画面
 LFIL.glade	orca51	(LFIL)クライアント保存画面
 
-G01.glade	orca52	(G01)月次統計
-G02.glade	orca52	(G02)月次統計データ作成
-G03.glade	orca52	(G03)月次統計−パラメータ説明
-G99.glade	orca52	(G99)処理結果
-GERR.glade	orca52	(GERR)エラー情報
-GID1.glade	orca52	(GID1)確認画面
-GID2.glade	orca52	(GID2)確認画面
-GFIL.glade	orca52	(GFIL)クライアント保存画面
+G01.glade	orca51	(G01)月次統計
+G02.glade	orca51	(G02)月次統計データ作成
+G03.glade	orca51	(G03)月次統計−パラメータ説明
+G99.glade	orca51	(G99)処理結果
+GERR.glade	orca51	(GERR)エラー情報
+GID1.glade	orca51	(GID1)確認画面
+GID2.glade	orca51	(GID2)確認画面
+GFIL.glade	orca51	(GFIL)クライアント保存画面
 
 KT01.glade	orca61	(KT01)外来まとめ入力−診療行為入力
 KT011.glade	orca61	(KT011)外来まとめ−禁忌薬剤一覧
@@ -327,10 +327,10 @@ EERR.glade	orca71	(EERR)エラー情報
 EID1.glade	orca71	(EID1)確認画面
 EID2.glade	orca71	(EID2)確認画面
 
-F01.glade	orca82	(F01)テーブルバックアップ指示
-FERR.glade	orca82	(FERR)エラー情報
-FID1.glade	orca82	(FID1)確認画面
-FID2.glade	orca82	(FID2)確認画面
+F01.glade	orca71	(F01)テーブルバックアップ指示
+FERR.glade	orca71	(FERR)エラー情報
+FID1.glade	orca71	(FID1)確認画面
+FID2.glade	orca71	(FID2)確認画面
 
 W01.glade	orca101	(W01)システム管理情報設定
 W02.glade	orca101	(W02)システム管理情報−医療機関情報入力
