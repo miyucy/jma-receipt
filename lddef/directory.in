@@ -71,11 +71,7 @@ ld	{
 	orca102	 1;
 	orca103	 1;
 	orca104	 1;
-	orca105	 1; 
-	orca106	 1; 
 	orca107	 1; 
-	orca108	 1; 
-	orca109	 1; 
 	sessionend   1;
 	api21	 1; 
 	api01r	 1; 

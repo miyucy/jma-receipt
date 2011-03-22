@@ -43,11 +43,7 @@ LDFILE_sources = \
 	orca102.ld.in \
 	orca103.ld.in \
 	orca104.ld.in \
-	orca105.ld.in \
-	orca106.ld.in \
 	orca107.ld.in \
-	orca108.ld.in \
-	orca109.ld.in \
 	sessionend.ld.in \
 	api21.ld.in \
 	api01r.ld.in \

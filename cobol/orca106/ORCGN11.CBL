@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  00.00.01    NACL-森脇    03/05/13  カナ入力のチェック中止
       *  00.00.02    NACL-森脇    04/10/05  半角全角チェックの追加
+      *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -131,9 +132,28 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
+      *orca104
+           COPY    "V01.INC".
+           COPY    "V02.INC".
+           COPY    "V03.INC".
+           COPY    "VERR.INC".
+           COPY    "VID1.INC".
+      *orca105
+           COPY    "N01.INC".
+           COPY    "NERR.INC".
+           COPY    "NID1.INC".
+      *orca106
            COPY    "N11.INC".
            COPY    "N11ERR.INC".
            COPY    "N11ID1.INC".
+      *orca108
+           COPY    "N31.INC".
+           COPY    "N31ERR.INC".
+           COPY    "N31ID1.INC".
+      *orca109
+           COPY    "N41.INC".
+           COPY    "N41ERR.INC".
+           COPY    "N41ID1.INC".
       *
        PROCEDURE               DIVISION    USING
            MCPAREA
