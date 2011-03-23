@@ -16,7 +16,6 @@ LDFILE_sources = \
 	orca02.ld.in \
 	orca03.ld.in \
 	orca04.ld.in \
-	orca05.ld.in \
 	orca06.ld.in \
 	orca07.ld.in \
 	orca08.ld.in \
