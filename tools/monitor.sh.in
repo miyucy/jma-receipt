@@ -34,12 +34,11 @@ Start_dbredirector=false
 
 # jma-receipt の位置
 #ORCA_DIR=prefix
+LDDEF="$ORCA_DIR"/lddef
 
 # 起動する LDのリスト(引数により上書きされる)
-LD="orca01 orca02 orca03 orca04 orca11 orca12 orca13 orca14 orca18 orca19 orca21 orca22
-    orca23 orca24 orca25 orca29 orca31 orca32 orca33 orca34 orca36 orca41 orca42 orca43
-    orca44 orca51 orca52 orca71 orca82 orca101 orca102 orca103 orca104 
-    orca105 orca106 orca107 orca108 orca109 orca06 orca61 orca07 sessionend  orca08 api21 api01r"
+echo "$LDDEF"
+LD=`ls $LDDEF/*.ld|xargs -I{} basename {} .ld`
 
 # 常に起動するLD
 # このLDは引数に関係なく起動される
@@ -55,7 +54,7 @@ START_PORT=9100
 COB_SO=ORCGM00.so
 
 # MCPSUB lib
-COB_LIBRARY_PATH=/usr/lib:/usr/lib/panda
+COB_LIBRARY_PATH=/usr/local/lib:/usr/lib:/usr/lib/panda
 # site-libの取り込み
 COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
 # orca lib
@@ -66,8 +65,8 @@ COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/or
 
 ####################################################################
 
-if test -x /usr/local/panda/bin/aps; then
-    PANDA_SERVER_DIR=/usr/local/panda/bin
+if test -x /usr/local/sbin/aps; then
+    PANDA_SERVER_DIR=/usr/local/sbin
 else
     PANDA_SERVER_DIR=/usr/lib/panda/sbin
 fi
@@ -77,7 +76,6 @@ GLSERVER="$PANDA_SERVER_DIR"/glserver
 DBREDIRECTOR="$PANDA_SERVER_DIR"/dbredirector
 
 DIRECTORY="$ORCA_DIR"/lddef/directory
-LDDEF="$ORCA_DIR"/lddef
 SCREEN="$ORCA_DIR"/screen
 RECORD="$ORCA_DIR"/record
 
@@ -118,7 +116,7 @@ fi
 
 ####################################################################
 
-for i in $ALWAYS_LD $LD; do
+for i in $LD; do
     COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/"$i"
 done
 export COB_LIBRARY_PATH
@@ -133,8 +131,11 @@ then
 	if test ! -z "$glpid"; then
 	    killall glserver
 	fi
+	killall -HUP aps
+	sleep 0.5;
+	killall -HUP wfc
 	if test "x"$Start_dbredirector = "xtrue"; then
-	    killall dbredirector
+	    killall -HUP dbredirector
 	fi
 	if test ! -z "$dbrecid"; then
 	    kill $dbrecid
@@ -142,7 +143,7 @@ then
 	if test -f $$dbredirector; then
 	    rm $$dbredirector
 	fi
-    	    killall wfc
+    	killall wfc
 	exit 0
     }
 fi
@@ -160,8 +161,8 @@ if test "x"$Start_dbredirector = "xtrue"; then
     done
 fi
 
-$WFC -dir $DIRECTORY  -base $ORCA_DIR >/dev/null &
-	sleep 10
+$WFC -dir $DIRECTORY  -base $ORCA_DIR &
+	sleep 5
 
 for i in $ALWAYS_LD; do
     LDNUM=`echo $i|sed -e "s/[^0-9]//g"`
@@ -170,7 +171,9 @@ for i in $ALWAYS_LD; do
 done
 
 for i in $LD; do
-    [ -e $LDDEF/$i.ld ]&& $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
+    if [ $i != $ALWAYS_LD ]; then
+      $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
+    fi
 done
 
 while :
