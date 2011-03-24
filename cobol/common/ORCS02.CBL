@@ -298,6 +298,7 @@
       *  04.05.05    NACL-ÌçÏÆ    11/03/02  »³Íü¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.05.06    NACL-ÌçÏÆ    11/03/04  ·²ÇÏ¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.05.07    NACL-ÌçÏÆ    11/03/09  Ê¡Åç¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.05.08    NACL-ÌçÏÆ    11/03/24  ºÒ³²ÂÐ±þ
       *
       *  04.06.01    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
       ****************************************************************
@@ -449,6 +450,7 @@
            03  FLG-KOREI-HIGAITO       PIC 9(01).
            03  FLG-OITA-GENBUTU70      PIC 9(01).
            03  FLG-OITA-SYUKEI         PIC 9(01).
+           03  FLG-JYOGEN-OKIKAE       PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -7480,6 +7482,7 @@
       ***                                        "7" OR "8"          )
       *
                 MOVE       ZERO           TO  WK-NYUJGNGAK
+                MOVE       ZERO           TO  FLG-JYOGEN-OKIKAE
       *
       *         ¸øÈñ·î¾å¸Â³Û¼èÆÀ
                 INITIALIZE                    LNK-ORCSJGNGET-REC
@@ -7728,7 +7731,8 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
-                              IF   MAX-KIN-KOHI1-M = ZERO
+                              IF  (MAX-KIN-KOHI1-M   = ZERO)
+                              AND (FLG-JYOGEN-OKIKAE = ZERO)
                                  MOVE   1
                                        TO WK-JIRITU-SKJGENMEN(KOH-IDX)
                               END-IF
@@ -8181,7 +8185,8 @@
                               MOVE  2  TO WK-JIRITU-CYUKANSOU(KOH-IDX)
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                        TO WK-JIRITU-TAFTNRUIKEI(KOH-IDX)
-                              IF   MAX-KIN-KOHI2-M = ZERO
+                              IF  (MAX-KIN-KOHI2-M   = ZERO)
+                              AND (FLG-JYOGEN-OKIKAE = ZERO)
                                  MOVE   1
                                        TO WK-JIRITU-SKJGENMEN(KOH-IDX)
                               END-IF
@@ -8584,18 +8589,21 @@
                    WHEN          1
                      IF  WK-GENGAKU-RITU = 100
                        MOVE   ZERO   TO   LNK-ORCSJGNGET-NYUJGNGAK
+                       MOVE    1     TO   FLG-JYOGEN-OKIKAE
                      END-IF
                    WHEN          2
                      CONTINUE
                    WHEN          3
                    WHEN          4
                      MOVE     ZERO   TO   LNK-ORCSJGNGET-NYUJGNGAK
+                     MOVE      1     TO   FLG-JYOGEN-OKIKAE
                  END-EVALUATE
              ELSE
                  EVALUATE   WK-GENGAKUKBN
                    WHEN          1
                      IF  WK-GENGAKU-RITU = 100
                        MOVE   ZERO   TO   LNK-ORCSJGNGET-NYUJGNGAK
+                       MOVE    1     TO   FLG-JYOGEN-OKIKAE
                      ELSE
                        COMPUTE  WK-GENGAKU-RITUX =
                                 100 - WK-GENGAKU-RITU
@@ -8609,6 +8617,7 @@
                    WHEN          3
                    WHEN          4
                      MOVE     ZERO   TO   LNK-ORCSJGNGET-NYUJGNGAK
+                     MOVE      1     TO   FLG-JYOGEN-OKIKAE
                  END-EVALUATE
                  COMPUTE  LNK-ORCSJGNGET-NYUJGNGAK =
                           LNK-ORCSJGNGET-NYUJGNGAK +  5

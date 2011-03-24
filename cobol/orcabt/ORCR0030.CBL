@@ -505,6 +505,7 @@
       *  04.05.12    NACL-ÃÁœ∆    11/02/17  ∫“≥≤¬–±˛Ω§¿µ°  ø¿Æ£≤£≥«Ø£±∑Ó°¡°À
       *  04.05.13    NACL-ÃÁœ∆    11/02/18  £∑£∞∫–¬Â¡∞»æ§Œ∆√Œ„¡º√÷±‰ƒπ¬–±˛
       *  04.05.14    NACL-ÃÁœ∆    11/03/02  ª≥Õ¸∏©√œ ˝∏¯»Ò¬–±˛
+      *  04.05.15    NACL-ÃÁœ∆    11/03/24  ∫“≥≤¬–±˛
       *
       *  04.06.01    NACL-ÃÁœ∆    10/07/02  æÆª˘∆√ƒÍº¿¥µ•´•¶•Û•ª•Í•Û•∞Œ¡§Œ
       *                                     •Ï•ª•◊•»•≥•·•Û•»º´∆∞µ≠∫‹° Ω≈ £ª˛°À
@@ -776,6 +777,7 @@
            03  IDX10                                   PIC 9(03).
            03  IDX11                                   PIC 9(03).
            03  IDX13                                   PIC 9(03).
+           03  IDX-SAI                                 PIC 9(03).
       *
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
@@ -2578,17 +2580,17 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                  ( RECE02-SRYYM       >=   201101       ))
                IF    ( RECE02-HKNNUM   NOT =   SPACE )
                AND   ( RECE02-HKNJANUM     =   SPACE )
-                   MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
+                   IF  RECE02-SRYYM   >=  "201101"
+                       MOVE    1           TO  RECE02-RJNGAIKOHFTN (1)
+                   ELSE
+                       MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
+                   END-IF
                ELSE
                    IF    ( RECE02-RJNHKNNUM
                                            NOT =   SPACE )
                    AND   ( RECE02-RJNFTNJANUM  =   SPACE )
                        MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
                    ELSE
-      *                ∏∫Ã»¬–æ›º‘§Œ§»§≠   
-                       IF      RECE02-GENMENKBN    >   ZERO
-                           MOVE    2       TO  RECE02-RJNGAIKOHFTN (1)
-                       END-IF
       *                µ≠πÊ°¶»÷πÊ§¨…‘Ã¿§Œ§»§≠
                        IF    ( RECE02-HKNNUM   NOT =   SPACE )
                        AND   ( RECE02-KIGO         =   SPACE )
@@ -2601,6 +2603,26 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                        AND   ( RECE02-RJNJKYSNUM   =   SPACE )
                            MOVE    1       TO  RECE02-RJNGAIKOHFTN (1)
                        END-IF
+      *                ∏¯»Ò…È√¥º‘»÷πÊÀÙ§œºıµÎº‘»÷πÊ§¨…‘Ã¿§Œ§»§≠
+                       IF  (RECE02-SRYYM          >= "201101")
+                       AND (RECE02-RJNGAIKOHFTN(1) =  ZERO   )
+                         PERFORM  VARYING  IDX-SAI  FROM   1   BY   1
+                                   UNTIL   IDX-SAI    >    4
+                           IF  (RECE02-KOHNUM(IDX-SAI) NOT =  SPACE)
+                           AND (RECE02-KOHNUM(IDX-SAI) NOT = 
+                                                    "972" AND "974")
+                             IF  RECE02-KOHFTNJANUM(IDX-SAI) = SPACE
+                             OR  RECE02-KOHJKYSNUM(IDX-SAI)  = SPACE
+                               MOVE    1   TO  RECE02-RJNGAIKOHFTN (1)
+                             END-IF
+                           END-IF
+                         END-PERFORM
+                       END-IF
+      *                ∏∫Ã»¬–æ›º‘§Œ§»§≠
+                       IF  (RECE02-RJNGAIKOHFTN(1) =  ZERO)
+                       AND (RECE02-GENMENKBN       >  ZERO)
+                           MOVE    2       TO  RECE02-RJNGAIKOHFTN (1)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -2608,12 +2630,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                    MOVE     ZERO     TO   FLG-SAIGAI-TAISYO
                    PERFORM   211L-SAIGAI-TAISYO-HANTEI-SEC
                    IF   FLG-SAIGAI-TAISYO   =   1
-                     CONTINUE
+                     IF  (RECE02-SRYYM          >= "201101")
+                     AND (RECE02-RJNGAIKOHFTN(1) =  ZERO   )
+                       MOVE    3     TO   RECE02-RJNGAIKOHFTN (1)
+                     END-IF
                    ELSE
                      MOVE    ZERO    TO   RECE02-RJNGAIKOHFTN (1)
                    END-IF
                END-IF
-      *
            END-IF
       *
            IF   FLG-ZENKI-TOKUREI  =   1
@@ -14527,7 +14551,6 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
        211L-SAIGAI-TAISYO-HANTEI-SEC      SECTION.
       *
            IF     RECE02-HKNNUM   NOT =   SPACE
-      *
              IF  (RECE02-HKNNUM(1:2)  =   "98"  OR "90"  OR "91" )
              OR  (RECE02-HKNNUM       =   "068" OR "069" OR "040")
                CONTINUE
@@ -14539,40 +14562,60 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                ELSE
                   MOVE   01                 TO   WK-GENGAKU-DD
                END-IF
-               INITIALIZE                       PTKOHINF-REC
-               MOVE    RECE02-HOSPNUM       TO  PTKOH-HOSPNUM
-               MOVE    RECE02-PTID          TO  PTKOH-PTID
-               MOVE    "959"                TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC         TO  MCPDATA-REC
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC               =   ZERO
-                 MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
-                 MOVE    "key4"             TO  MCP-PATHNAME
-                 PERFORM  900-PTKOHINF-READ-SEC
-                 PERFORM  UNTIL   FLG-PTKOHINF    =   1
-                   IF  (PTKOH-TEKSTYMD  <=   WK-GENGAKU-YMD)
-                   AND (WK-GENGAKU-YMD  <=   PTKOH-TEKEDYMD)
-                   AND (PTKOH-SAKJOKBN   =   SPACE         )
-                     MOVE     1             TO  FLG-SAIGAI-TAISYO
-                     MOVE     1             TO  FLG-PTKOHINF
-                   ELSE
-                     MOVE    "tbl_ptkohinf" TO  MCP-TABLE
-                     MOVE    "key4"         TO  MCP-PATHNAME
-                     PERFORM  900-PTKOHINF-READ-SEC
-                   END-IF
-                 END-PERFORM
-               END-IF
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
+               PERFORM  211L1-SAIGAI-TAISYO-HENSYU-SEC
              END-IF
-      *
+           ELSE
+               MOVE      RECE02-SRYYM       TO   WK-GENGAKU-YM
+               IF   RECE02-KOHTEKSTYMD(1)(1:6)
+                                          >=  RECE02-SRYYM
+                  MOVE   RECE02-KOHTEKSTYMD(1)(7:2)
+                                            TO   WK-GENGAKU-DD
+               ELSE
+                  MOVE   01                 TO   WK-GENGAKU-DD
+               END-IF
+               PERFORM  211L1-SAIGAI-TAISYO-HENSYU-SEC
            END-IF
       *
            .
        211L-SAIGAI-TAISYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ∫“≥≤≥∫≈ˆº‘§Œ ‘Ω∏
+      *****************************************************************
+       211L1-SAIGAI-TAISYO-HENSYU-SEC      SECTION.
+      *
+           INITIALIZE                       PTKOHINF-REC
+           MOVE    RECE02-HOSPNUM       TO  PTKOH-HOSPNUM
+           MOVE    RECE02-PTID          TO  PTKOH-PTID
+           MOVE    "959"                TO  PTKOH-KOHNUM
+           MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC               =   ZERO
+              MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+              MOVE    "key4"             TO  MCP-PATHNAME
+              PERFORM  900-PTKOHINF-READ-SEC
+              PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                IF  (PTKOH-TEKSTYMD  <=   WK-GENGAKU-YMD)
+                AND (WK-GENGAKU-YMD  <=   PTKOH-TEKEDYMD)
+                AND (PTKOH-SAKJOKBN   =   SPACE         )
+                  MOVE     1             TO  FLG-SAIGAI-TAISYO
+                  MOVE     1             TO  FLG-PTKOHINF
+                ELSE
+                  MOVE    "tbl_ptkohinf" TO  MCP-TABLE
+                  MOVE    "key4"         TO  MCP-PATHNAME
+                  PERFORM  900-PTKOHINF-READ-SEC
+                END-IF
+              END-PERFORM
+           END-IF
+           MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+           MOVE    "key4"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       211L1-SAIGAI-TAISYO-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
