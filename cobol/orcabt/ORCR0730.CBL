@@ -116,6 +116,7 @@
       *  04.05.15    NACL-藤原    10/09/14  医療観察法対応
       *                                     公費単独のレセプトとする
       *  04.05.16    NACL-門脇    11/02/17  災害対応修正（平成２３年１月〜）
+      *  04.05.17    NACL-藤原    11/03/24  災害対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -253,7 +254,8 @@
                                    REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *       
-           COPY    "HCN09V01.INC"  REPLACING  //HCN09V01//
+      *****COPY    "HCN09V01.INC"  REPLACING  //HCN09V01//
+           COPY    "HCN09V02.INC"  REPLACING  //HCN09V02//
                                    BY         //HC06//.
            COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
                                    BY         //HC061//.
@@ -7838,7 +7840,8 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCN09V01.red"      TO
+      *********MOVE    "HCN09V01.red"      TO
+               MOVE    "HCN09V02.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -8105,7 +8108,8 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCN09V01.red"
+      *****************WHEN    "HCN09V01.red"
+                       WHEN    "HCN09V02.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE

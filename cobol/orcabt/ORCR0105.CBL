@@ -109,6 +109,7 @@
       *  04.05.12    NACL-門脇    11/02/17  災害対応修正（平成２３年１月〜）
       *  04.05.13    NACL-藤原    11/02/22  レセ電データの記号番号区切り
       *                                     文字設定対応
+      *  04.05.15    NACL-藤原    11/03/24  災害対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -251,7 +252,8 @@
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-           COPY    "HCM11V01.INC"  REPLACING  //HCM11V01//
+      *****COPY    "HCM11V01.INC"  REPLACING  //HCM11V01//
+           COPY    "HCM11V02.INC"  REPLACING  //HCM11V02//
                                    BY         //HC06//.
            COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
                                    BY         //HC061//.
@@ -6879,14 +6881,16 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM11V01.red"      TO
+      *********MOVE    "HCM11V01.red"      TO
+               MOVE    "HCM11V02.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
                EVALUATE    SYS-2005-NEXTPRTKBN-G
                    WHEN    ZERO
-                       MOVE    "HCM11V01.red"      TO
+      *****************MOVE    "HCM11V01.red"      TO
+                       MOVE    "HCM11V02.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -7154,7 +7158,8 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM11V01.red"
+      *****************WHEN    "HCM11V01.red"
+                       WHEN    "HCM11V02.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
