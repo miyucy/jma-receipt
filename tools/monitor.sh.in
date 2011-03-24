@@ -116,8 +116,8 @@ fi
 
 ####################################################################
 
-for i in $LD; do
-    COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/"$i"
+for i in "$ORCA_DIR"/cobol/*; do
+    COB_LIBRARY_PATH=$COB_LIBRARY_PATH:$i
 done
 export COB_LIBRARY_PATH
 export JMARECEIPT_ENV="$ORCA_DIR"/etc/jma-receipt.env
