@@ -107,9 +107,10 @@
       *  04.05.11    NACL-藤原    10/09/14  医療観察法対応
       *                                     公費単独のレセプトとする
       *  04.05.12    NACL-門脇    11/02/17  災害対応修正（平成２３年１月〜）
-      *  04.05.13    NACL-藤原    11/02/22  レセ電データの記号番号区切り
+      *  04.05.14    NACL-藤原    11/02/22  レセ電データの記号番号区切り
       *                                     文字設定対応
       *  04.05.15    NACL-藤原    11/03/24  災害対応
+      *  04.05.16    NACL-門脇    11/03/25  災害対応（災２対応）
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -2904,9 +2905,11 @@
            IF      CNT-PAGE            =   1
                EVALUATE    RECE02-RJNGAIKOHFTN (1)
                    WHEN    1
-                       MOVE    "（不詳）"  TO  HC06-HEAD4 (2)(1:8)
+                       MOVE    "（不詳）"  TO  HC06-HEAD5
                    WHEN    2
-                       MOVE    "（災１）"  TO  HC06-HEAD4 (2)(1:8)
+                       MOVE    "（災１）"  TO  HC06-HEAD5
+                   WHEN    4
+                       MOVE    "（災２）"  TO  HC06-HEAD5
                END-EVALUATE
            END-IF
       *
@@ -6272,6 +6275,10 @@
                                        =   "030" )
            AND   ( RECE02-KOHNUM (2)
                                        =   SPACE )
+               GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
+           END-IF
+      *    災害（災２）は保険履歴の記載をしない
+           IF      RECE02-YOBIETC(9)   =    1
                GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
            END-IF
       *
