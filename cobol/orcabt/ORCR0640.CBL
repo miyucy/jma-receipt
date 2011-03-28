@@ -489,6 +489,8 @@
       *  04.05.18    NACL-門脇    11/03/02  山梨県地方公費対応
       *  04.05.19    NACL-門脇    11/03/24  災害対応
       *  04.05.20    NACL-門脇    11/03/25  災害対応（災２対応）
+      *  04.05.21    NACL-門脇    11/03/28  特定保険者＋精神、結核対応
+      *                                     (233064)平成２３年３月まで
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -15147,13 +15149,16 @@
                     MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                   IF  (RECE62-KOHNUM(KOHFTN-IDX) =  "010" OR "021"   )
-                  AND (RECE62-HKNJANUM(1:6) =
-                         "133033" OR "133280" OR "133041" OR "133066" OR
-                         "133074" OR "133090" OR "133116" OR "133132" OR
-                         "133140" OR "133157" OR "133165" OR "133173" OR
-                         "133181" OR "133199" OR "133207" OR "133223" OR
-                         "133249" OR "133256" OR "133272" OR "233064" OR
-                         "283077"                                    )
+                   IF ( RECE62-HKNJANUM(1:6)
+                                 =  "133033" OR "133280" OR "133041" OR
+                                    "133066" OR "133074" OR "133090" OR
+                                    "133116" OR "133132" OR "133140" OR
+                                    "133157" OR "133165" OR "133173" OR
+                                    "133181" OR "133199" OR "133207" OR
+                                    "133223" OR "133249" OR "133256" OR
+                                    "133272" OR "283077" )
+                   OR ((RECE62-HKNJANUM(1:6) =  "233064") AND
+                       (RECE62-SRYYM        <=  "201103"))
                     IF  ( RECE62-RJNHKNNUM  NOT =  SPACE    )
                     OR  ((WRK-PREFNUM           =  "29"    ) AND
                          (RECE62-HKNJANUM(1:6)  =  "133033"))
@@ -15162,6 +15167,7 @@
                       MOVE  "1" TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                       MOVE  "1" TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                     END-IF
+                   END-IF
                   END-IF
                 END-IF
       *
@@ -16976,18 +16982,16 @@
                      MOVE  1      TO   FLG-IRYOHI70K
                 END-EVALUATE
              END-IF
-             IF  RECE62-HKNJANUM(1:6)
-                           =  "133033" OR "133280" OR
-                              "133041" OR "133066" OR
-                              "133074" OR "133090" OR
-                              "133116" OR "133132" OR
-                              "133140" OR "133157" OR
-                              "133165" OR "133173" OR
-                              "133181" OR "133199" OR
-                              "133207" OR "133223" OR
-                              "133249" OR "133256" OR
-                              "133272" OR "233064" OR
-                              "283077"
+             IF ( RECE62-HKNJANUM(1:6)
+                           =  "133033" OR "133280" OR "133041" OR
+                              "133066" OR "133074" OR "133090" OR
+                              "133116" OR "133132" OR "133140" OR
+                              "133157" OR "133165" OR "133173" OR
+                              "133181" OR "133199" OR "133207" OR
+                              "133223" OR "133249" OR "133256" OR
+                              "133272" OR "283077" )
+             OR ((RECE62-HKNJANUM(1:6) =  "233064") AND
+                 (RECE62-SRYYM        <=  "201103"))
                IF  ( RECE62-RJNHKNNUM  NOT =  SPACE    )
                OR  ((WRK-PREFNUM           =  "29"    ) AND
                     (RECE62-HKNJANUM(1:6)  =  "133033"))
