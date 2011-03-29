@@ -2790,6 +2790,10 @@
                AND   ( RECE62-HKNJANUM     =   SPACE )
                    IF  RECE62-SRYYM   >=  "201101"
                        MOVE    1           TO  RECE62-RJNGAIKOHFTN (1)
+      *                保険者不明＋減免対象者のとき
+                       IF    RECE62-GENMENKBN   >  ZERO
+                           MOVE    5       TO  RECE62-RJNGAIKOHFTN (1)
+                       END-IF
                    ELSE
                        MOVE    3           TO  RECE62-RJNGAIKOHFTN (1)
                    END-IF
@@ -2826,6 +2830,13 @@
                              END-IF
                            END-IF
                          END-PERFORM
+                       END-IF
+      *                記号番号不明＋減免対象者のとき
+                       IF  (RECE62-RJNGAIKOHFTN(1) =   1  )
+                       AND (RECE62-GENMENKBN       >  ZERO)
+                         IF   RECE62-SRYYM    >= "201101"
+                           MOVE    5       TO  RECE62-RJNGAIKOHFTN (1)
+                         END-IF
                        END-IF
       *                減免対象者のとき
                        IF  (RECE62-RJNGAIKOHFTN(1) =  ZERO)
