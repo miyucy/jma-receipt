@@ -136,7 +136,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -159,7 +159,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>936</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -716,7 +716,7 @@
       <class>GtkButton</class>
       <name>button1</name>
       <x>88</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -739,7 +739,7 @@
       <class>GtkButton</class>
       <name>button2</name>
       <x>168</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -762,7 +762,7 @@
       <class>GtkButton</class>
       <name>button3</name>
       <x>248</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -785,7 +785,7 @@
       <class>GtkButton</class>
       <name>button4</name>
       <x>352</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -808,7 +808,7 @@
       <class>GtkButton</class>
       <name>button5</name>
       <x>432</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -831,7 +831,7 @@
       <class>GtkButton</class>
       <name>button6</name>
       <x>512</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -849,7 +849,7 @@
       <class>GtkButton</class>
       <name>button7</name>
       <x>592</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -867,7 +867,7 @@
       <class>GtkButton</class>
       <name>button8</name>
       <x>696</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -885,7 +885,7 @@
       <class>GtkButton</class>
       <name>B10</name>
       <x>776</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -908,7 +908,7 @@
       <class>GtkButton</class>
       <name>button10</name>
       <x>856</x>
-      <y>720</y>
+      <y>718</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1033,7 +1033,7 @@
       <class>GtkButton</class>
       <name>B01S</name>
       <x>8</x>
-      <y>696</y>
+      <y>694</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
