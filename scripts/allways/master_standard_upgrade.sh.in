@@ -349,6 +349,27 @@ if [ ${UPDCOUNT} -ge ${VACUUMCOUNT} ] ; then
 		                echo "vacuum analyze tbl_toukeimemo;"   | psql ${DBNAME} ;;
 		'16')
 		                echo "vacuum analyze tbl_prgoption;"    | psql ${DBNAME} ;;
+		'17')
+		                echo "vacuum analyze tbl_infection_judgment;"  | psql ${DBNAME} ;;
+		'18')
+		                echo "vacuum analyze tbl_nyuinkhn;"     | psql ${DBNAME} ;;
+		'19')
+		                echo "vacuum analyze tbl_nyuksnchk;"    | psql ${DBNAME} ;;
+		'20')
+		                echo "vacuum analyze tbl_nyuinryakusho;"       | psql ${DBNAME} ;;
+		'21')
+		                echo "vacuum analyze tbl_synonym;"      | psql ${DBNAME} ;;
+		'22')
+		                echo "vacuum analyze tbl_etensu_1;"     | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_2;"     | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_2_jma;" | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_2_sample;"     | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_3_1;"   | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_3_2;"   | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_3_3;"   | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_3_4;"   | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_4;"     | psql ${DBNAME}
+		                echo "vacuum analyze tbl_etensu_5;"     | psql ${DBNAME} ;;
 		esac
 	done
 fi
