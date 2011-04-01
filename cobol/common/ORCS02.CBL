@@ -3768,8 +3768,9 @@
            MOVE     ZERO     TO     WK-GENGAKU-KOHID
            MOVE     ZERO     TO     FLG-SAIGAI-TAISYO
       *
-           IF   (LNK-SYU-SRYYMD(1:6)       >=  "200610")
-           AND  (COMB-HKNNUM            NOT =   SPACE  )
+           IF  ((LNK-SYU-SRYYMD(1:6)       >=  "200610") AND
+                (COMB-HKNNUM            NOT =   SPACE  ))
+           OR  ( LNK-SYU-SRYYMD(1:6)       >=  "201101" )
       *
             IF  (COMB-SYU-HKNKOHSBTKBN   =  "8" OR "9"  )
             OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
@@ -3862,6 +3863,14 @@
       *
             IF   WK-GENGAKUKBN    =   2
                    MOVE     ZERO    TO    WK-GENGAKUKBN
+            END-IF
+            IF   COMB-HKNNUM      =   SPACE
+              IF  (WK-GENGAKUKBN      =   3 OR 4)
+              AND (FLG-SAIGAI-TAISYO  =   1     )
+                   CONTINUE
+              ELSE
+                   MOVE     ZERO    TO    WK-GENGAKUKBN
+              END-IF
             END-IF
             IF   FLG-SAIGAI-TAISYO  =   1
               EVALUATE   WK-GENGAKUKBN
@@ -19601,6 +19610,13 @@
               END-IF
            END-IF.
       *
+           IF  (COMB-HKNNUM              =  SPACE  )
+           AND (COMB-KOHHKNNUM(KOH-IDX)  =  "010"  )
+           AND (WK-GENGAKUKBN            =   3 OR 4)
+           AND (FLG-SAIGAI-TAISYO        =   1     )
+                   MOVE     ZERO     TO    WK-NYUKFTNRATE
+           END-IF.
+      *
            MOVE      ZERO      TO        FLG-MIYAGI.
            IF     (WK-1001-PREFNUM         =  04           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "183" OR "383" 
@@ -20044,6 +20060,11 @@
              IF    WK-NYUKFTNRATE  =  ZERO
                  MOVE  SPACE  TO  COMB-KOH-NYUJGNKBN(KOH-IDX)
              END-IF
+           END-IF.
+      *
+           IF   (WK-GENGAKUKBN      =   3 OR 4)
+           AND  (FLG-SAIGAI-TAISYO  =   1     )
+                 MOVE   "3"   TO  WK-NYUSKJRYYKBN
            END-IF.
       *
       *    累計ベース計算
