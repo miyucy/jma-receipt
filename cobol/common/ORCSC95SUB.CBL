@@ -540,8 +540,7 @@
            PERFORM 10010-HKTSANTEI-SEC
       *
       *    £Ã£Ì£Á£É£ÍÅ¸³«¤Î¿Ç»¡ÎÁÊÑ´¹
-           IF     (LNK-SC95-PG         =   "K02" )
-              AND (SPA-NYUGAIKBN       =   "2"   )
+           IF     (SPA-NYUGAIKBN       =   "2"   )
                PERFORM 10011-CLAIM-HEN-SEC
            END-IF
            .
