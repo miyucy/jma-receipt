@@ -696,6 +696,10 @@
            03  FLG-SKY-TOKKOH                          PIC 9(01).
            03  FLG-GENMEN-ARI                          PIC 9(01).
            03  FLG-GENMEN-NASI                         PIC 9(01).
+           03  FLG-SAIGAI-JGN-ETC1                     PIC 9(01).
+           03  FLG-SAIGAI-JGN-ETC2                     PIC 9(01).
+           03  FLG-SAIGAI-JGN-SEIHO                    PIC 9(01).
+           03  FLG-SAIGAI-ETC1-ARI                     PIC 9(01).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
        01  FLG-KHNTEN-AREA.
@@ -2594,10 +2598,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                IF    ( RECE02-HKNNUM   NOT =   SPACE )
                AND   ( RECE02-HKNJANUM     =   SPACE )
                    IF  RECE02-SRYYM   >=  "201101"
-                       MOVE    1           TO  RECE02-RJNGAIKOHFTN (1)
+                       MOVE    6           TO  RECE02-RJNGAIKOHFTN (1)
       *                ÊÝ¸±¼ÔÉÔÌÀ¡Ü¸ºÌÈÂÐ¾Ý¼Ô¤Î¤È¤­
                        IF    RECE02-GENMENKBN   >  ZERO
-                           MOVE    5       TO  RECE02-RJNGAIKOHFTN (1)
+                           MOVE    7       TO  RECE02-RJNGAIKOHFTN (1)
                        END-IF
                    ELSE
                        MOVE    3           TO  RECE02-RJNGAIKOHFTN (1)
@@ -2631,17 +2635,23 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                                     "972" AND "974")
                              IF  RECE02-KOHFTNJANUM(IDX-SAI) = SPACE
                              OR  RECE02-KOHJKYSNUM(IDX-SAI)  = SPACE
-                               MOVE    1   TO  RECE02-RJNGAIKOHFTN (1)
+                               MOVE    6   TO  RECE02-RJNGAIKOHFTN (1)
                              END-IF
                            END-IF
                          END-PERFORM
                        END-IF
       *                µ­¹æÈÖ¹æÉÔÌÀ¡Ü¸ºÌÈÂÐ¾Ý¼Ô¤Î¤È¤­
-      *                ¸øÈñÉéÃ´¼ÔÈÖ¹æËô¤Ï¼õµë¼ÔÈÖ¹æÉÔÌÀ¡Ü¸ºÌÈÂÐ¾Ý¼Ô¤Î¤È¤­
                        IF  (RECE02-RJNGAIKOHFTN(1) =   1  )
                        AND (RECE02-GENMENKBN       >  ZERO)
                          IF   RECE02-SRYYM    >= "201101"
                            MOVE    5       TO  RECE02-RJNGAIKOHFTN (1)
+                         END-IF
+                       END-IF
+      *                ¸øÈñÉéÃ´¼ÔÈÖ¹æËô¤Ï¼õµë¼ÔÈÖ¹æÉÔÌÀ¡Ü¸ºÌÈÂÐ¾Ý¼Ô¤Î¤È¤­
+                       IF  (RECE02-RJNGAIKOHFTN(1) =   6  )
+                       AND (RECE02-GENMENKBN       >  ZERO)
+                         IF   RECE02-SRYYM    >= "201101"
+                           MOVE    7       TO  RECE02-RJNGAIKOHFTN (1)
                          END-IF
                        END-IF
       *                ¸ºÌÈÂÐ¾Ý¼Ô¤Î¤È¤­
@@ -2670,6 +2680,56 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                END-IF
       *
                IF   RECE02-SRYYM   >=  "201007"
+                   IF  (RECE02-SRYYM          >= "201101")
+                   AND (RECE02-HKNNUM          =  SPACE  )
+                   AND (FLG-SAIGAI-TAISYO      =   1     )
+                   AND (RECE02-RJNGAIKOHFTN(1) =  2 OR 4 )
+      *              ¾å¸Â³Û³ÎÇ§
+                     MOVE     ZERO      TO    FLG-SAIGAI-JGN-ETC1
+                     MOVE     ZERO      TO    FLG-SAIGAI-JGN-ETC2
+                     MOVE     9         TO    FLG-SAIGAI-JGN-SEIHO
+                     MOVE     ZERO      TO    FLG-SAIGAI-ETC1-ARI
+                     PERFORM  VARYING  IDX-SAI  FROM   1   BY   1
+                               UNTIL   IDX-SAI    >    4
+                       IF  (RECE02-KOHNUM(IDX-SAI) NOT =  SPACE)
+                       AND (RECE02-KOHNUM(IDX-SAI) NOT = 
+                                                "972" AND "974")
+                         IF  RECE02-KOHNUM(IDX-SAI)  =  "010"
+                            MOVE   1    TO    FLG-SAIGAI-JGN-ETC1
+                         END-IF
+                         IF  RECE02-KOHNUM(IDX-SAI)  =
+                             "012" OR "015" OR "016" OR "021" OR
+                             "024" OR "025" OR "038" OR "051" OR
+                             "052" OR "079"
+                            PERFORM   211P-SAIGAI-JGN-CHECK-SEC
+                         END-IF
+                       END-IF
+                     END-PERFORM
+                     EVALUATE   FLG-SAIGAI-JGN-SEIHO
+                       WHEN        ZERO
+                         IF  (FLG-SAIGAI-JGN-ETC2 =  1)
+                            CONTINUE
+                         ELSE
+                            MOVE   ZERO   TO   FLG-SAIGAI-TAISYO
+                         END-IF
+                       WHEN        1
+                         IF ( FLG-SAIGAI-ETC1-ARI =  ZERO )
+                         OR ((FLG-SAIGAI-JGN-ETC1 =  1   ) AND
+                             (FLG-SAIGAI-ETC1-ARI =  1   ))
+                         OR ( FLG-SAIGAI-JGN-ETC2 =  1    )
+                            CONTINUE
+                         ELSE
+                            MOVE   ZERO   TO   FLG-SAIGAI-TAISYO
+                         END-IF
+                       WHEN        9
+                         IF  (FLG-SAIGAI-JGN-ETC1 =  1)
+                         OR  (FLG-SAIGAI-JGN-ETC2 =  1)
+                            CONTINUE
+                         ELSE
+                            MOVE   ZERO   TO   FLG-SAIGAI-TAISYO
+                         END-IF
+                     END-EVALUATE
+                   END-IF
                    IF   FLG-SAIGAI-TAISYO   =   1
                      IF  (RECE02-SRYYM          >= "201101")
                      AND (RECE02-RJNGAIKOHFTN(1) =  ZERO   )
@@ -2679,6 +2739,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                        EVALUATE  RECE02-RJNGAIKOHFTN(1)
                          WHEN       2
                          WHEN       5
+                         WHEN       7
                             MOVE    96   TO      FLG-TOKKI
                             PERFORM   21045-TOKKI-HENSYU-SEC
                          WHEN       4
@@ -2706,6 +2767,46 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            PERFORM     RECE02-REWRITE-SEC
            .
        210-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÃ±ÆÈ¤ÎºÒ³²ÂÐ¾Ý¾å¸Â³Û¥Á¥§¥Ã¥¯
+      *****************************************************************
+       211P-SAIGAI-JGN-CHECK-SEC      SECTION.
+      *
+           INITIALIZE                        LNK-ORCSJGNGET-REC
+           MOVE   RECE02-HOSPNUM         TO  LNK-ORCSJGNGET-HOSPNUM
+           MOVE   RECE02-NYUGAIKBN       TO  LNK-ORCSJGNGET-NYUGAIKBN
+           MOVE   RECE02-PTID            TO  LNK-ORCSJGNGET-PTID
+           MOVE   RECE02-KOHNUM(IDX-SAI) TO  LNK-ORCSJGNGET-KOHHKNNUM
+           MOVE   RECE02-KOHID(IDX-SAI)  TO  LNK-ORCSJGNGET-KOHID
+           MOVE   RECE02-SRYYM           TO  LNK-ORCSJGNGET-SRYYM
+           CALL    "ORCSJGNGET"          USING
+                                         LNK-ORCSJGNGET-REC
+                                         SPA-AREA
+           IF   LNK-ORCSJGNGET-RC  =  ZERO
+             IF   RECE02-KOHNUM(IDX-SAI)  =  "012" OR "025"
+               IF   LNK-ORCSJGNGET-GAIJGNGAK  NOT = ZERO
+                    MOVE     1     TO    FLG-SAIGAI-JGN-SEIHO
+               ELSE
+                    MOVE    ZERO   TO    FLG-SAIGAI-JGN-SEIHO
+               END-IF
+             ELSE
+               IF   RECE02-KOHNUM(IDX-SAI)  =  "015" OR "016" OR "021"
+                 IF   LNK-ORCSJGNGET-GAIJGNGAK  NOT = ZERO
+                    MOVE     1     TO    FLG-SAIGAI-JGN-ETC2
+                 END-IF
+               ELSE
+                 MOVE        1     TO    FLG-SAIGAI-ETC1-ARI
+                 IF   LNK-ORCSJGNGET-GAIJGNGAK  NOT = ZERO
+                    MOVE     1     TO    FLG-SAIGAI-JGN-ETC1
+                 END-IF
+               END-IF
+             END-IF
+           END-IF
+      *
+           .
+       211P-SAIGAI-JGN-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -12010,7 +12111,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-PERFORM
       *
       *    ¸ºÌÈ¸øÈñÂÐ±þ
-           IF   WK-GENGAKUKBN    NOT =   ZERO
+           IF  (WK-GENGAKUKBN    NOT =   ZERO )
+           AND (WK-GENGAKUKBN    NOT = 3 AND 4)
              IF  (RECE02-SRYYM        >= "200709")
              AND (RECE02-HKNNUM    NOT =  SPACE  )
                IF (RECE02-KOHNUM(1) = "010" OR "012" OR "015" OR
