@@ -2929,6 +2929,7 @@
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   FLG-SAIGAI-TAISYO
+                            MOVE   ZERO   TO   RECE62-GENMENKBN
                          END-IF
                        WHEN        1
                          IF ( FLG-SAIGAI-ETC1-ARI =  ZERO )
@@ -2938,6 +2939,7 @@
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   FLG-SAIGAI-TAISYO
+                            MOVE   ZERO   TO   RECE62-GENMENKBN
                          END-IF
                        WHEN        9
                          IF  (FLG-SAIGAI-JGN-ETC1 =  1)
@@ -2945,6 +2947,7 @@
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   FLG-SAIGAI-TAISYO
+                            MOVE   ZERO   TO   RECE62-GENMENKBN
                          END-IF
                      END-EVALUATE
                    END-IF
