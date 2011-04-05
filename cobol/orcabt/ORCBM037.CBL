@@ -32,24 +32,6 @@
       *
       *  04.05.01    NACL-藤原    11/04/04  災害対応
       *                                     備考欄の記載等追加
-      *  04.05.02    NACL-藤原    11/04/18  災害対応
-      *                                     確定分の記載を中止
-      *  04.05.03    NACL-藤原    12/04/17  平成２４年４月改正対応
-      *                                     平成２４年４月分以降はまとめる
-      *  04.05.04    NACL-藤原    12/09/10  一部負担金の記載対応
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
-      *                                     支払機関請求対応
-      *  04.07.03    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    16/06/13  社保診療報酬請求書の災害該当
-      *                                     分のまとめ対応
-      *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -71,9 +53,10 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
-           COPY    "HCM3CV02.INC"  REPLACING  //HCM3CV02//
+           COPY    "HCM3CV01.INC"  REPLACING  //HCM3CV01//
                                    BY         //HCM3C//.
       *****COPY    "HCM3D.INC".
            COPY    "HCM3DV01.INC"  REPLACING  //HCM3DV01//
@@ -136,8 +119,6 @@
            03  WRK-KENSU9          PIC ZZZZZ9.
            03  WRK-TENSU9          PIC ZZ,ZZZ,ZZ9.
            03  WRK-FTNMONEY9       PIC Z,ZZZ,ZZ9. 
-      *
-           03  WRK-SPRT-TITLE      PIC X(100).
       *             
            03  WRK-KOHKBN.
                05  WRK-KOHNUM      PIC X(04).
@@ -150,7 +131,6 @@
            03  WRK-HOSPADRS-R      REDEFINES   WRK-HOSPADRS.
                05  WRK-HOSPADRS1   PIC X(50).
                05  WRK-HOSPADRS2   PIC X(50).
-           03  WRK-KAISETUNAME     PIC X(80).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -185,7 +165,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
       *
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -306,21 +285,17 @@
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-MARUCHO    PIC X(01).
            03  WRK-PARA-GENMENKBN  PIC X(01).
-           03  WRK-PARA-STSRYYM    PIC 9(06).
-           03  WRK-PARA-EDSRYYM    PIC 9(06).
-      *
-       01  WRK-PARA1.
-           03  WRK-PARA-HKNJANUM-S PIC X(08).
-           03  WRK-PARA-HKNJANAME  PIC X(30).
       *
        01  WRK-SYOKBN              PIC X(01).
       *
        01  WRK-PRTFLG              PIC 9(01).
+      *    
+       01  WRK-GENMENKBN           PIC X(01).
       *
            COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //LNK-RECEERR//.
       *
       ******************************************************************
@@ -330,9 +305,9 @@
                                                WRK-PARA
                                                WRK-SYOKBN
                                                WRK-PRTFLG
+                                               WRK-GENMENKBN
                                                SPA-AREA
                                                LNK-RECEERR
-                                               WRK-PARA1
            .
       *
       *****************************************************************
@@ -398,11 +373,7 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1001-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1001-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD 
            MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
@@ -427,11 +398,7 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1002-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1002-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1002-STYUKYMD (7:2)
            MOVE    SYS-1002-STYUKYMD   TO  SYS-1002-EDYUKYMD 
            MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
@@ -450,8 +417,6 @@
            END-IF 
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
@@ -504,8 +469,7 @@
       *        
                    PERFORM VARYING IDX1    FROM   1   BY  1
                            UNTIL   IDX1    >      2
-                       IF    ( SUM-GOK-KENSU (IDX3 IDX1 4) >   ZERO )
-                       OR    ( SUM-BIKOU-KENSU (IDX3 IDX1) >   ZERO )
+                       IF      SUM-GOK-KENSU (IDX3 IDX1 4)     >   ZERO 
                            MOVE    ZERO            TO  FLG-PRTKBN
       *           
       *                    帳票編集<見出し・ＨＣＭ３Ｃ>処理
@@ -555,22 +519,23 @@
            MOVE    WRK-SRYYMWH         TO  HCM3C-PRTYM
       *
       *    医療機関住所
+      *    MOVE    SYS-1002-ADRS       TO  HCM3C-ADRS
+      *    医療機関名
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM3C-HOSPNAME
+      *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM3C-ADRS
-           INSPECT HCM3C-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM3C-HOSPNAME
-           INSPECT HCM3C-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
       *    開設者名
-           MOVE    WRK-KAISETUNAME     TO  HCM3C-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM3C-KAISETUNAME
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM3C-HOSPCD
       *
            EVALUATE    IDX1
                WHEN    1
-                   IF      WRK-PRTFLG          <   5
-                       MOVE    "その他のレセ"      TO  HCM3C-TITLE
-                   END-IF
+                   MOVE    "その他のレセ"      TO  HCM3C-TITLE  
                WHEN    2
                    IF      WRK-PRTFLG          =   1
                        MOVE    "在総診または在医総を算定したレセ"
@@ -595,13 +560,20 @@
       *    新潟県中越沖地震対応
            EVALUATE    WRK-PARA-GENMENKBN
                WHEN    ZERO
-               WHEN    "9"
                    MOVE    SYS-1005-SRYKANAME    TO  HCM3C-SRYKA
                WHEN    "1"
-                   STRING  "（未確定分）"      DELIMITED   BY  SIZE
-                           SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
-                                               INTO  HCM3C-SRYKA
-                   END-STRING
+                   IF      WRK-GENMENKBN       =   "0"
+                       STRING  "（確定分）"        DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME
+                                                   DELIMITED   BY  SPACE  
+                                                   INTO  HCM3C-SRYKA
+                       END-STRING
+                   ELSE
+                       STRING  "（未確定分）"      DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
+                                                   INTO  HCM3C-SRYKA
+                       END-STRING
+                   END-IF
            END-EVALUATE
            .
        310-HEAD-HEN-01-EXT.
@@ -618,9 +590,7 @@
       *
            EVALUATE    IDX1
                WHEN    1
-                   IF      WRK-PRTFLG          <   5
-                       MOVE    "その他のレセ"      TO  HCM3D-TITLE
-                   END-IF
+                   MOVE    "その他のレセ"      TO  HCM3D-TITLE  
                WHEN    2
                    IF      WRK-PRTFLG          =   1
                        MOVE    "在総診または在医総を算定したレセ"
@@ -645,13 +615,20 @@
       *    新潟県中越沖地震対応
            EVALUATE    WRK-PARA-GENMENKBN
                WHEN    ZERO
-               WHEN    "9"
                    MOVE    SYS-1005-SRYKANAME    TO  HCM3D-SRYKA
                WHEN    "1"
-                   STRING  "（未確定分）"      DELIMITED   BY  SIZE
-                           SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
-                                               INTO  HCM3D-SRYKA
-                   END-STRING
+                   IF      WRK-GENMENKBN       =   "0"
+                       STRING  "（確定分）"        DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME
+                                                   DELIMITED   BY  SPACE  
+                                                   INTO  HCM3D-SRYKA
+                       END-STRING
+                   ELSE
+                       STRING  "（未確定分）"      DELIMITED   BY  SIZE
+                               SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
+                                                   INTO  HCM3D-SRYKA
+                       END-STRING
+                   END-IF
            END-EVALUATE
       *
            .
@@ -719,16 +696,10 @@
                MOVE    WRK-NISSUZ              TO  HCM3C-NISSU3 (IDY) 
                MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM3C-TENSU3 (IDY)
-               IF      WRK-PRTFLG      =   5
-                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
+               IF      IDY             =   3
+                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY) 
                                                TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN3 (IDY)
-               ELSE
-                   IF      IDY             =   3
-                       MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY) 
-                                               TO  WRK-FTNMONEYZ
-                       MOVE    WRK-FTNMONEYZ   TO  HCM3C-ITBFTN3 (IDY)
-                   END-IF
+                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN3
                END-IF
            END-PERFORM
            MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
@@ -737,11 +708,6 @@
            MOVE    WRK-NISSUZ              TO  HCM3C-NISSU3 (12) 
            MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM3C-TENSU3 (12)
-           IF      WRK-PRTFLG      =   5
-               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
-                                               TO  WRK-FTNMONEYZ
-               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN3(12)
-           END-IF
       *
       *    医保単独（家族）
            MOVE    4                   TO  IDX
@@ -753,11 +719,6 @@
                MOVE    WRK-NISSUZ              TO  HCM3C-NISSU4 (IDY) 
                MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM3C-TENSU4 (IDY)
-               IF      WRK-PRTFLG      =   5
-                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
-                                               TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN4 (IDY)
-               END-IF
            END-PERFORM
            MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSU4 (9)
@@ -765,11 +726,6 @@
            MOVE    WRK-NISSUZ              TO  HCM3C-NISSU4 (9) 
            MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM3C-TENSU4 (9)
-           IF      WRK-PRTFLG      =   5
-               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
-                                               TO  WRK-FTNMONEYZ
-               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN4 (9)
-           END-IF
       *
       *    医保単独（三歳）
            MOVE    5                   TO  IDX
@@ -781,11 +737,6 @@
                MOVE    WRK-NISSUZ              TO  HCM3C-NISSU5 (IDY) 
                MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM3C-TENSU5 (IDY)
-               IF      WRK-PRTFLG      =   5
-                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
-                                               TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN5 (IDY)
-               END-IF
            END-PERFORM
            MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSU5 (9)
@@ -793,11 +744,6 @@
            MOVE    WRK-NISSUZ              TO  HCM3C-NISSU5 (9) 
            MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM3C-TENSU5 (9)
-           IF      WRK-PRTFLG      =   5
-               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
-                                               TO  WRK-FTNMONEYZ
-               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN5 (9)
-           END-IF
       *
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 1)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSUG   
@@ -959,11 +905,12 @@
            MOVE    WRK-GKENSUZ             TO  HCM3D-GKENSU
       *
       *    備考欄
-           IF    ( WRK-PARA-GENMENKBN  =   "1"     )
-           OR    ( WRK-PARA-GENMENKBN  =   "9" AND
-                   SUM-BIKOU-KENSU (IDX3 IDX1)
-                                       >   ZERO    )
-               MOVE    "未確定分："    TO  HCM3D-BIKOH-TITLE
+           IF      WRK-PARA-GENMENKBN  =   "1"
+               IF      WRK-GENMENKBN   =   "0"
+                   MOVE    "確定分："      TO  HCM3D-BIKOH-TITLE
+               ELSE
+                   MOVE    "未確定分："    TO  HCM3D-BIKOH-TITLE
+               END-IF    
                MOVE    "件数"          TO  HCM3D-BIKOH-TITLE-KENSU
                MOVE    "日数"          TO  HCM3D-BIKOH-TITLE-NISSU
                MOVE    "点数"          TO  HCM3D-BIKOH-TITLE-TENSU
@@ -1008,7 +955,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
-               MOVE    "HCM3CV02.red"      TO  SPRT-PRTID
+               MOVE    "HCM3CV01.red"      TO  SPRT-PRTID
                MOVE    HCM3C               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM3D.red"         TO  SPRT-PRTID
@@ -1046,26 +993,6 @@
                                                    TO  SPRT-TITLE
                END-EVALUATE
            END-IF
-           IF      WRK-PARA-GENMENKBN  =   "1" 
-               MOVE    SPRT-TITLE          TO  WRK-SPRT-TITLE
-               MOVE    SPACE               TO  SPRT-TITLE
-               STRING  "未確定分・"        DELIMITED  BY  SIZE
-                       WRK-SPRT-TITLE      DELIMITED  BY  SPACE
-                                           INTO    SPRT-TITLE
-               END-STRING
-           END-IF
-      *
-           IF      WRK-PARA-HKNJANAME  NOT =   SPACE    
-               MOVE    SPRT-TITLE          TO  WRK-SPRT-TITLE
-               MOVE    SPACE               TO  SPRT-TITLE
-               STRING  "【"                DELIMITED  BY  SIZE
-                       WRK-PARA-HKNJANAME  DELIMITED  BY  SPACE
-                       "】"                DELIMITED  BY  SIZE
-                       WRK-SPRT-TITLE      DELIMITED  BY  SPACE
-                                           INTO    SPRT-TITLE
-               END-STRING
-           END-IF
-      *
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
@@ -1171,11 +1098,8 @@
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
            MOVE    "*"             TO  SYS-1900-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1900-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1900-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1900-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
            MOVE    SYS-1900-STYUKYMD
                                    TO  SYS-1900-EDYUKYMD
@@ -1189,8 +1113,6 @@
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -1211,11 +1133,8 @@
            MOVE    "1901"          TO  SYS-1901-KANRICD
            MOVE    SYS-1900-PRTKBN(7)
                                    TO  SYS-1901-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1901-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1901-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1901-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
            MOVE    SYS-1901-STYUKYMD
                                    TO  SYS-1901-EDYUKYMD
@@ -1245,11 +1164,8 @@
            MOVE    "1902"          TO  SYS-1902-KANRICD
            MOVE    SYS-1900-PRTKBN(7)
                                    TO  SYS-1902-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1902-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1902-STYUKYMD (1:6)
-           END-IF
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1902-STYUKYMD (1:6)
            MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
            MOVE    SYS-1902-STYUKYMD
                                    TO  SYS-1902-EDYUKYMD
@@ -1266,39 +1182,6 @@
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(7)
-                                   TO  SYS-1903-KBNCD
-           IF      WRK-PARA-STSRYYM    =   "999999"
-               MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-1903-STYUKYMD (1:6)
-           ELSE
-               MOVE    WRK-PARA-EDSRYYM    TO  SYS-1903-STYUKYMD (1:6)
-           END-IF
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************
