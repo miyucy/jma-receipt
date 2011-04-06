@@ -59,7 +59,7 @@
       *
       *    入力：住所更新データ
        FD  IN-FILE.
-       01  IN-REC                      PIC X(50200).
+       01  IN-REC                      PIC X(5000).
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
@@ -360,6 +360,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  ADRS-REC
            MOVE    ADRSWK-REC(2:)  TO  ADRS-REC
+grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
@@ -424,7 +425,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  ADRS-REC
            MOVE    ADRSWK-REC(2:)  TO  ADRS-REC
-      *
+grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            MOVE    ADRS-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "tbl_adrs"      TO  MCP-TABLE
