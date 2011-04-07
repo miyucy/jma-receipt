@@ -50,12 +50,6 @@
       *
       *  04.05.01    NACL-藤原    11/04/04  災害対応
       *                                     備考欄の記載等追加
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *  04.07.02    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -77,7 +71,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
            COPY    "HCM2KV05.INC"  REPLACING  //HCM2KV05//
                                    BY         //HCM2K//.
@@ -148,7 +143,6 @@
            03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
                05  WRK-HOSPADRS1       PIC X(50).
                05  WRK-HOSPADRS2       PIC X(50).
-           03  WRK-KAISETUNAME         PIC X(80).
       *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSHELLTBL.INC".
@@ -185,7 +179,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
       *----(03.04.01)--ADD-END-----
       *
        01  PRTKANRI-REC.
@@ -315,7 +308,7 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //LNK-RECEERR//.
       *
       ******************************************************************
@@ -437,8 +430,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
       *
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
@@ -527,15 +518,20 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            MOVE    WRK-SRYYMWH         TO  HCM2K-PRTYM
       *
+      *----(03.04.01)--UPD-START---
+      *    医療機関住所
+      *    MOVE    SYS-1002-ADRS       TO  HCM2K-ADRS
+      *    医療機関名
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2K-HOSPNAME
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM2K-ADRS
-           INSPECT HCM2K-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM2K-HOSPNAME
-           INSPECT HCM2K-HOSPNAME      REPLACING   ALL "  "    BY  "　"
+      *----(03.04.01)--UPD-END-----
       *
       *    開設者名
-           MOVE    WRK-KAISETUNAME     TO  HCM2K-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  HCM2K-KAISETUNAME
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM2K-HOSPCD
       *
@@ -1155,8 +1151,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -1226,33 +1220,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(7)
-                                   TO  SYS-1903-KBNCD
-           MOVE    WRK-SYMD        TO  SYS-1903-STYUKYMD
-                                       SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 800-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *----(03.04.01)--ADD-END-----
