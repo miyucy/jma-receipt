@@ -48,7 +48,7 @@ echomsg() {
 }
 
 jobend97() {
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter JBE0000001PRGMNT97,$HOSPNUM,,,"$1"
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE0000001PRGMNT  9700,$HOSPNUM,,,${1}"
   rm -rf $PRGDIR
   exit 97
 }
@@ -63,7 +63,7 @@ if [ -z "$MINSIZE" ]; then
 fi
 if [ $VOLSIZE -lt $MINSIZE ]; then
   ERRMSG="[ERROR] The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter JBE0000001PRGMNT97,$HOSPNUM,,,"${ERRMSG}"
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE0000001PRGMNT  9700,$HOSPNUM,,,${ERRMSG}"
   echomsg "${ERRMSG}" ${LOG}
   exit 1
 fi
@@ -100,7 +100,7 @@ if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
   jobend97 "${RESULT}"
 else
   if [ $RC -ne 0 ]; then
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT01,$HOSPNUM
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE0000001PRGMNT  0100,$HOSPNUM,,,"
     exit 0
   fi
 fi
@@ -163,25 +163,19 @@ if [ "$METHOD" = "update" ]; then
   echomsg "site-upgrade end." ${LOG}
 fi
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT51,$HOSPNUM
-
 if [ "$METHOD" = "update" ]; then
   #monitor restart (SIGHUP)
   if [ -e /var/run/jma-receipt/monitor.pid ]; then
     if [ -z "$PGUPGRADE_RESTART_LIMIT" ]; then
       #set default 30 second
-      PGUPGRADE_RESTART_LIMIT=30
+      PGUPGRADE_RESTART_LIMIT=31
     fi
-
-    echomsg "pgupdate_restart_limit = $PGUPGRADE_RESTART_LIMIT" ${LOG}
-    NOTICE_MSG="$PGUPGRADE_RESTART_LIMIT秒経過後に日レセを再起動しますので端末を終了してください。接続中の端末は強制的に切断します。"
 
     if [ $PGUPGRADE_RESTART_LIMIT -ne 0 ]; then
       CONN_NUMBER=`$MONINFO who | wc -l`
       if [ $CONN_NUMBER -gt 1 ]; then
-        echomsg "moninfo sendmsgall go! $NOTICE_MSG" ${LOG}
-        $MONINFO sendmsgall $NOTICE_MSG
-        #sleep 5
+         disp_sec=`printf "%02d" ${PGUPGRADE_RESTART_LIMIT}`
+         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE0000001PRGMNT  51${disp_sec},${HOSPNUM},,,"
       fi
     fi
 
@@ -195,13 +189,16 @@ if [ "$METHOD" = "update" ]; then
         break
       fi
       limit_sec=`expr $limit_sec + 1`
+      work_sec=`expr ${PGUPGRADE_RESTART_LIMIT} - $limit_sec`
+      disp_sec=`printf "%02d" $work_sec`
+      $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE0000001PRGMNT  51${disp_sec},${HOSPNUM},,,"
     done
 
     if [ $CONN_NUMBER -gt 1 ]; then
-      NOTICE_MSG="接続中の端末は強制終了しました。"
+      NOTICE_MSG="端末は強制終了しました。"
       echomsg "moninfo abortall go! $NOTICE_MSG" ${LOG}
       $MONINFO abortall $NOTICE_MSG
-      #sleep 10
+      sleep 4
     fi
     echomsg "monitor restart." ${LOG}
     if [ -d ${PGUP_WORK_DIR}/record ]; then 
@@ -218,6 +215,6 @@ if [ "$METHOD" = "update" ]; then
 fi
 
 echomsg "patch program processing succeeded." ${LOG}
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE0000001PRGMNT00,$HOSPNUM
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE0000001PRGMNT  0000,${HOSPNUM},,,"
 
 exit 0

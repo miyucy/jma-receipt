@@ -119,6 +119,8 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-MIDMSG          PIC X(80).
+           03  WRK-SECOND.
+               05  WRK-SEC         PIC Z9.
       *
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(41)  VALUE
@@ -613,9 +615,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "blue"          TO  SPA-GMN-MSG-STYLE
                    WHEN    "51"
                        MOVE    SPACE           TO  SKBN-RUN
-                       MOVE    "再起動待機中です。"
-                                               TO  SPA-GMN-MSG
-                       MOVE    "blue"          TO  SPA-GMN-MSG-STYLE
+                       MOVE    JOB-ERRCD(3:2)  TO  WRK-SEC
+                       STRING  WRK-SECOND      DELIMITED BY SIZE
+                               " 秒後に日レセを再起動しますので"
+                                               DELIMITED BY SIZE
+                               "端末を終了してください。"
+                                               DELIMITED BY SIZE
+                                             INTO  SPA-GMN-MSG
+                       END-STRING
+                       IF      JOB-ERRCD(3:2)  =   "00"
+                           MOVE    "日レセを再起動します。"
+                                                   TO  SPA-GMN-MSG
+                       END-IF
+                       MOVE    "red"           TO  SPA-GMN-MSG-STYLE
                    WHEN    OTHER
                        IF     (JOB-ENDTIME NOT =   SPACE)  AND
                               (JOB-ENDYMD  NOT =   SPACE)
@@ -647,7 +659,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            IF    ( SJOBKANRI-RETURN    =   ZERO )  AND
                  ( JOB-ERRCD(1:2)      =   "51" )
-               MOVE    3                   TO  SPA-GMN-DURATION
+               MOVE    4                   TO  SPA-GMN-DURATION
            END-IF
       *----(03.04.01)--ADD-END-----
       ***  IF      SJOBKANRI-RETURN    =   ZERO
