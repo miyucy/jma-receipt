@@ -716,7 +716,7 @@ path	key30	{
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
-                   ORDER BY RECENUM,RECENUM,RENNUM
+                   ORDER BY RECENUM,RENNUM
 		;
 	};
 };
