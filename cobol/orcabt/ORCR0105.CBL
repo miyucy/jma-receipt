@@ -111,6 +111,16 @@
       *                                     文字設定対応
       *  04.05.15    NACL-藤原    11/03/24  災害対応
       *  04.05.16    NACL-門脇    11/03/25  災害対応（災２対応）
+      *  04.05.17    NACL-藤原    11/03/25  災害対応
+      *                                     「不詳」のとき連絡先記載
+      *  04.05.18    NACL-藤原    11/03/29  災害対応
+      *                                     「不詳・災１」の追加
+      *  04.05.19    NACL-藤原    11/03/30  災害対応
+      *                                     特記事項９６、９７の追加
+      *  04.05.20    NACL-藤原    11/04/01  災害対応
+      *                                     「〒」「ＴＥＬ：」の記載追加
+      *  04.05.21    NACL-藤原    11/04/04  災害対応
+      *                                     震災以前一部負担金の記載追加
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -254,7 +264,8 @@
                                    BY         //RECEERR//.
       *
       *****COPY    "HCM11V01.INC"  REPLACING  //HCM11V01//
-           COPY    "HCM11V02.INC"  REPLACING  //HCM11V02//
+      *****COPY    "HCM11V02.INC"  REPLACING  //HCM11V02//
+           COPY    "HCM11V03.INC"  REPLACING  //HCM11V03//
                                    BY         //HC06//.
            COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
                                    BY         //HC061//.
@@ -632,6 +643,12 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-FUTAN           PIC ZZZ,ZZZ,ZZ9. 
+           03  WRK-TITLE           PIC X(50).
+           03  WRK-TEKIYOU         PIC X(50).
+           03  WRK-ADRS.
+               05  WRK-ADRS-R      PIC X(50)  OCCURS  5.
+      *
       *    県単用項目ファイル用ワーク     
            COPY    "HC06.INC"      REPLACING  //HC06//
                                    BY         //RECE11-HC06//.
@@ -754,11 +771,15 @@
            03  FILLER          PIC X(10)   VALUE   "２１高半".
            03  FILLER          PIC X(02)   VALUE   "25".
            03  FILLER          PIC X(10)   VALUE   "２５出産".
+           03  FILLER          PIC X(02)   VALUE   "96".
+           03  FILLER          PIC X(10)   VALUE   "９６".
+           03  FILLER          PIC X(02)   VALUE   "97".
+           03  FILLER          PIC X(10)   VALUE   "９７".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   20.
+           03  TBL-TOKKI       OCCURS   22.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   20.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   22.
       *
       *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.
@@ -2889,6 +2910,11 @@
                END-IF
            END-IF
       *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HC06-LABEL
+           END-IF     
+      *
       *    リアルタイムプレビュー時の表示
            IF      WRK-PARA-SHELLID    =   "RECEPTX"
                MOVE    SPACE                TO  WRK-HC06-HEAD4-G
@@ -2897,19 +2923,29 @@
                MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (53:)
            END-IF
       *
-      *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN     =   "2"
-               MOVE    "点検用レセプト"    TO  HC06-LABEL
-           END-IF     
-      *
            IF      CNT-PAGE            =   1
+               IF      RECE02-RJNGAIKOHFTN (1)   =   1   OR  2  OR  4
+                                                 OR  5   OR  7
+                   MOVE    SPACE                TO  WRK-HC06-HEAD4-G
+                   MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+                   MOVE    SPACE                TO  HC06-HEAD4-G    
+                   MOVE    WRK-HC06-HEAD4-G (1:48)
+                                                TO  HC06-HEAD4 (1) (15:)
+                   MOVE    WRK-HC06-HEAD4-G (49:48)
+                                                TO  HC06-HEAD4 (2) (15:)
+               END-IF
+      *        
                EVALUATE    RECE02-RJNGAIKOHFTN (1)
                    WHEN    1
                        MOVE    "（不詳）"  TO  HC06-HEAD5
                    WHEN    2
+                   WHEN    7
                        MOVE    "（災１）"  TO  HC06-HEAD5
                    WHEN    4
                        MOVE    "（災２）"  TO  HC06-HEAD5
+                   WHEN    5
+                       MOVE    "（不詳・災１）"
+                                           TO  HC06-HEAD5
                END-EVALUATE
            END-IF
       *
@@ -6486,6 +6522,357 @@
                END-PERFORM
            END-IF
       *
+      *    災害対応
+           IF      RECE02-RJNGAIKOHFTN (1) =   1   OR  2   OR  4   OR  5
+                                           OR  6   OR  7
+      *
+      *        摘要欄に記載されている場合１行あける
+               IF      WRK-LINETEK     >   ZERO
+                   IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   ELSE
+                       ADD     1               TO  WRK-LINETEK
+                   END-IF
+               END-IF
+      *
+               IF      RECE02-RJNGAIKOHFTN (1) =   1   OR  2   OR  4
+                                               OR  5   OR  7
+                 EVALUATE    RECE02-RJNGAIKOHFTN (1)
+                   WHEN    1
+                      MOVE     "（不詳）"      TO  WRK-TITLE
+                   WHEN    2
+                   WHEN    7
+                       MOVE    "（災１）"      TO  WRK-TITLE
+                   WHEN    4
+                       MOVE    "（災２）"      TO  WRK-TITLE
+                   WHEN    5
+                       MOVE    "（不詳・災１）"
+                                               TO  WRK-TITLE
+                 END-EVALUATE
+                 INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
+      * 
+                 IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+                 END-IF    
+                 ADD     1                   TO  WRK-LINETEK
+      *
+                 IF      CNT-PAGE        =   1   
+                   MOVE    WRK-TITLE       TO  HC06-TEKIYO (WRK-LINETEK)
+                 ELSE                    
+                   EVALUATE    SYS-2005-NEXTPRTKBN-G
+                       WHEN    "0"   
+                           MOVE  WRK-TITLE TO  HC06-TEKIYO (WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE  WRK-TITLE TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE  WRK-TITLE TO  HC062-TEKIYO(WRK-LINETEK)
+                       WHEN    "3"   
+                           MOVE  WRK-TITLE TO  HC063-TEKIYO(WRK-LINETEK)
+                    END-EVALUATE
+                 END-IF
+               END-IF
+      *
+      *        震災以前一部負担金の記載（災２）
+               IF      RECE02-RJNGAIKOHFTN (1) =   4
+                   MOVE    SPACE               TO  WRK-TITLE
+                   MOVE    RECE02-YOBIETC (4)
+                                           TO  WRK-FUTAN
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    WRK-FUTAN       TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC      =   ZERO )
+                   AND   ( KANACHK-MAX     >   ZERO )
+                       STRING  "【震災以前一部負担金】"
+                                               DELIMITED  BY  SIZE
+                               KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               DELIMITED  BY  SIZE
+                               "円"            DELIMITED  BY  SIZE
+                                               INTO    WRK-TITLE
+                       END-STRING
+                   END-IF
+                   INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
+      * 
+                   IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     1                   TO  WRK-LINETEK
+      *
+                   IF      CNT-PAGE        =   1   
+                       MOVE    WRK-TITLE   TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE                    
+                       EVALUATE    SYS-2005-NEXTPRTKBN-G
+                           WHEN    "0"   
+                               MOVE    WRK-TITLE   TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                           WHEN    "1"   
+                               MOVE    WRK-TITLE   TO
+                                               HC061-TEKIYO(WRK-LINETEK)
+                           WHEN    "2"   
+                               MOVE    WRK-TITLE   TO
+                                               HC062-TEKIYO(WRK-LINETEK)
+                           WHEN    "3"   
+                               MOVE    WRK-TITLE   TO
+                                               HC063-TEKIYO(WRK-LINETEK)
+                        END-EVALUATE
+                   END-IF
+               END-IF
+      *                   
+      *        災害対応（連絡先記載）
+               IF      RECE02-RJNGAIKOHFTN (1) =   6   OR  7
+                   IF    ( RECE02-HOME-POST1
+                                           =   SPACE )
+                   AND   ( RECE02-HOME-ADRS1
+                                           =   SPACE )
+                   AND   ( RECE02-RENRAKU-POST1
+                                           =   SPACE )
+                   AND   ( RECE02-RENRAKU-NAME
+                                           =   SPACE )
+                   AND   ( RECE02-RENRAKU-ADRS1
+                                           =   SPACE )
+                   AND   ( RECE02-TEL      =   SPACE )
+                       CONTINUE
+                   ELSE
+      *                自宅住所記載
+                       IF   ( RECE02-HOME-ADRS1      =   SPACE )
+                       AND  ( RECE02-HOME-POST1      =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE     "【住所】"      TO  WRK-TITLE
+                           INSPECT WRK-TITLE
+                                       REPLACING   ALL "  "    BY  "　"
+      * 
+                           IF      WRK-LINETEK     >=  WRK-TEKIYOU-LINE
+                               PERFORM 34120-PAGE-SEC
+                           END-IF    
+      * 
+                           ADD     1                   TO  WRK-LINETEK
+                           IF      CNT-PAGE        =   1   
+                               MOVE    WRK-TITLE       TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                           ELSE                    
+                               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE  WRK-TITLE TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  WRK-TITLE TO
+                                               HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  WRK-TITLE TO
+                                               HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "3"   
+                                       MOVE  WRK-TITLE TO
+                                               HC063-TEKIYO(WRK-LINETEK)
+                               END-EVALUATE
+                           END-IF
+      *                    自宅住所記載
+                           MOVE    SPACE               TO  WRK-ADRS
+                           IF      RECE02-HOME-POST1   =   SPACE
+                               MOVE    RECE02-HOME-ADRS1   TO  WRK-ADRS
+                           ELSE
+                               STRING   "〒"       DELIMITED  BY  SIZE
+                                    RECE02-HOME-POST1
+                                                   DELIMITED  BY  SPACE
+                                    RECE02-HOME-ADRS1
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-ADRS
+                               END-STRING
+                           END-IF
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       5
+                                   OR      WRK-ADRS-R (IDY)
+                                                   =       SPACE
+                               INSPECT WRK-ADRS-R (IDY)
+                                       REPLACING   ALL "  "    BY  "　"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "3"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-PERFORM
+                       END-IF
+      *                連絡先記載
+                       IF    ( RECE02-RENRAKU-POST1
+                                               =   SPACE )
+                       AND   ( RECE02-RENRAKU-NAME
+                                               =   SPACE )
+                       AND   ( RECE02-RENRAKU-ADRS1
+                                               =   SPACE )
+                       AND   ( RECE02-TEL      =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE     "【連絡先】"  TO  WRK-TITLE
+                           INSPECT WRK-TITLE
+                                       REPLACING   ALL "  "    BY  "　"
+      * 
+                           IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                               PERFORM 34120-PAGE-SEC
+                           END-IF    
+                           ADD     1               TO  WRK-LINETEK
+      * 
+                           IF      CNT-PAGE        =   1   
+                               MOVE    WRK-TITLE       TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                           ELSE                    
+                               EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE  WRK-TITLE TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  WRK-TITLE TO
+                                               HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  WRK-TITLE TO
+                                               HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "3"   
+                                       MOVE  WRK-TITLE TO
+                                               HC063-TEKIYO(WRK-LINETEK)
+                               END-EVALUATE
+                           END-IF
+
+      *                    事業所名記載
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       2
+                                   OR      RECE02-RENRAKU-NAME-R (IDY)
+                                                   =       SPACE
+                               INSPECT RECE02-RENRAKU-NAME-R (IDY)
+                                       REPLACING   ALL "  "    BY  "　"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    RECE02-RENRAKU-NAME-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "3"   
+                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-PERFORM
+      *                    連絡先住所記載
+                           MOVE    SPACE               TO  WRK-ADRS
+                           IF      RECE02-RENRAKU-POST1
+                                                       =   SPACE
+                               MOVE    RECE02-RENRAKU-ADRS1
+                                                           TO  WRK-ADRS
+                           ELSE
+                               STRING   "〒"       DELIMITED  BY  SIZE
+                                    RECE02-RENRAKU-POST1
+                                                   DELIMITED  BY  SPACE
+                                    RECE02-RENRAKU-ADRS1
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-ADRS
+                               END-STRING
+                           END-IF
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       5
+                                   OR      WRK-ADRS-R (IDY)
+                                                   =       SPACE
+                               INSPECT WRK-ADRS-R (IDY)
+                                       REPLACING   ALL "  "    BY  "　"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "3"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-PERFORM
+      *                    連絡先記載
+                           IF     RECE02-TEL      =   SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    SPACE          TO  WRK-TEKIYOU
+                               STRING   "ＴＥＬ：" DELIMITED  BY  SIZE
+                                        RECE02-TEL DELIMITED  BY  SIZE
+                                                   INTO    WRK-TEKIYOU
+                               END-STRING
+                               INSPECT WRK-TEKIYOU
+                                       REPLACING   ALL "  "    BY  "　"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-TEKIYOU
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN-G
+                                   WHEN    "0"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "3"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    適用欄上段コメント（レセプト特記事項編集情報）
            IF    ( RECE02-2006-TEKIYOU-COMMENT1 (1)    =   SPACE )
            AND   ( RECE02-2006-TEKIYOU-COMMENT1 (2)    =   SPACE )
@@ -6494,7 +6881,7 @@
            AND   ( RECE02-2006-TEKIYOU-COMMENT1 (5)    =   SPACE )
                CONTINUE
            ELSE
-      *        摘要欄に病名が記載されている場合１行あける
+      *        摘要欄に記載されている場合１行あける
                IF  WRK-LINETEK             >   ZERO
                    IF      WRK-LINETEK         >=   WRK-TEKIYOU-LINE
                        PERFORM 34120-PAGE-SEC
@@ -6889,7 +7276,8 @@
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
       *********MOVE    "HCM11V01.red"      TO
-               MOVE    "HCM11V02.red"      TO
+      *********MOVE    "HCM11V02.red"      TO
+               MOVE    "HCM11V03.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -6897,7 +7285,8 @@
                EVALUATE    SYS-2005-NEXTPRTKBN-G
                    WHEN    ZERO
       *****************MOVE    "HCM11V01.red"      TO
-                       MOVE    "HCM11V02.red"      TO
+      *********        MOVE    "HCM11V02.red"      TO
+                       MOVE    "HCM11V03.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -7166,7 +7555,8 @@
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
       *****************WHEN    "HCM11V01.red"
-                       WHEN    "HCM11V02.red"
+      *****************WHEN    "HCM11V02.red"
+                       WHEN    "HCM11V03.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
@@ -9478,7 +9868,9 @@
                        END-IF
                    END-IF
       *        
-                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM     
+                   DISPLAY "RECE02  PTNUM=" RECE02-PTNUM
+                           " RJNGAIKOHFTN(1)="
+                                            RECE02-RJNGAIKOHFTN (1)
       *
                    ADD     1               TO  CNT-RECE02
                    MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM

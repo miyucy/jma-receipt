@@ -124,6 +124,9 @@
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
       *  04.06.02    NACL-藤原    10/07/10  病名記載順設定対応
+      *  04.06.03    NACL-藤原    11/03/25  災害対応
+      *                                     災害該当レセプトのレセ電作成
+      *                                     区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7322,6 +7325,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYS-200501-RECEDEN-RIREKIKBN
            MOVE    SPA-GMN-RECEDEN-DATAKBN TO
                                            SYS-200501-RECEDEN-DATAKBN
+           MOVE    SPACE                   TO
+                                           SYS-200501-RECEDEN-DISASTER
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC

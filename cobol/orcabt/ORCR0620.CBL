@@ -181,6 +181,8 @@
       *  04.05.03    NACL-藤原    10/09/14  医療観察法対応
       *                                     公費単独のレセプトとする
       *  04.05.04    NACL-門脇    11/02/18  出産一時金対応期間修正
+      *  04.05.05    NACL-藤原    11/03/25  災害対応
+      *                                     連絡先情報追加
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -1223,6 +1225,17 @@
            MOVE    RECE61-AGE          TO  WRK-NENREI
                                            RECE62-AGE
            MOVE    RECE61-SYUGAKUKBN   TO  RECE62-SYUGAKUKBN
+      *
+           MOVE    RECE61-HOME-POST    TO  RECE62-HOME-POST
+           MOVE    RECE61-HOME-ADRS    TO  RECE62-HOME-ADRS
+           MOVE    RECE61-HOME-BANTI   TO  RECE62-HOME-BANTI
+           MOVE    RECE61-RENRAKU-POST TO  RECE62-RENRAKU-POST
+           MOVE    RECE61-RENRAKU-NAME TO  RECE62-RENRAKU-NAME
+           MOVE    RECE61-RENRAKU-ADRS TO  RECE62-RENRAKU-ADRS
+           MOVE    RECE61-RENRAKU-BANTI
+                                       TO  RECE62-RENRAKU-BANTI
+           MOVE    RECE61-RENRAKU-TEL1 TO  RECE62-RENRAKU-TEL1
+           MOVE    RECE61-RENRAKU-TEL2 TO  RECE62-RENRAKU-TEL2
       *    旧姓履歴の取得（月途中で保険変更があるとき）
            IF    ( RECE61-TEISEIKBN    NOT =   "1"   )
            AND   ( RECE62-TEKSTYMD-X   NOT =   SPACE )

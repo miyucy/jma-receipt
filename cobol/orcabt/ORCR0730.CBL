@@ -118,6 +118,16 @@
       *  04.05.16    NACL-ÌçÏÆ    11/02/17  ºÒ³²ÂÐ±þ½¤Àµ¡ÊÊ¿À®£²£³Ç¯£±·î¡Á¡Ë
       *  04.05.19    NACL-Æ£¸¶    11/03/24  ºÒ³²ÂÐ±þ
       *  04.05.20    NACL-ÌçÏÆ    11/03/25  ºÒ³²ÂÐ±þ¡ÊºÒ£²ÂÐ±þ¡Ë
+      *  04.05.21    NACL-Æ£¸¶    11/03/25  ºÒ³²ÂÐ±þ
+      *                                     ¡ÖÉÔ¾Ü¡×¤Î¤È¤­Ï¢ÍíÀèµ­ºÜ
+      *  04.05.22    NACL-Æ£¸¶    11/03/29  ºÒ³²ÂÐ±þ
+      *                                     ¡ÖÉÔ¾Ü¡¦ºÒ£±¡×¤ÎÄÉ²Ã
+      *  04.05.23    NACL-Æ£¸¶    11/03/30  ºÒ³²ÂÐ±þ
+      *                                     ÆÃµ­»ö¹à£¹£¶¡¢£¹£·¤ÎÄÉ²Ã
+      *  04.05.24    NACL-Æ£¸¶    11/04/01  ºÒ³²ÂÐ±þ
+      *                                     ¡Ö¢©¡×¡Ö£Ô£Å£Ì¡§¡×¤Îµ­ºÜÄÉ²Ã
+      *  04.05.25    NACL-Æ£¸¶    11/04/04  ºÒ³²ÂÐ±þ
+      *                                     ¿ÌºÒ°ÊÁ°°ìÉôÉéÃ´¶â¤Îµ­ºÜÄÉ²Ã
       *
       *  04.06.01    NACL-Æ£¸¶    10/06/23  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
       *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
@@ -256,7 +266,8 @@
                                    BY         //RECEERR//.
       *       
       *****COPY    "HCN09V01.INC"  REPLACING  //HCN09V01//
-           COPY    "HCN09V02.INC"  REPLACING  //HCN09V02//
+      *****COPY    "HCN09V02.INC"  REPLACING  //HCN09V02//
+           COPY    "HCN09V03.INC"  REPLACING  //HCN09V03//
                                    BY         //HC06//.
            COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
                                    BY         //HC061//.
@@ -480,6 +491,13 @@
                                    PIC X(08).
                    07  WRK-1033-EDYUKYMD 
                                    PIC X(08).                                       
+      *
+           03  WRK-FUTAN           PIC ZZZ,ZZZ,ZZ9. 
+           03  WRK-FUTAN1          PIC ZZZ,ZZ9. 
+           03  WRK-TITLE           PIC X(50).
+           03  WRK-TEKIYOU         PIC X(50).
+           03  WRK-ADRS.
+               05  WRK-ADRS-R      PIC X(50)  OCCURS  5.
       *
       *    ¸©Ã±ÍÑ¹àÌÜ¥Õ¥¡¥¤¥ëÍÑ¥ï¡¼¥¯     
            COPY    "HCN06.INC"     REPLACING  //HCN06//
@@ -788,11 +806,15 @@
            03  FILLER          PIC X(10)   VALUE   "£²£´Â¿Äã".
            03  FILLER          PIC X(02)   VALUE   "25".
            03  FILLER          PIC X(10)   VALUE   "£²£µ½Ð»º".
+           03  FILLER          PIC X(02)   VALUE   "96".
+           03  FILLER          PIC X(10)   VALUE   "£¹£¶".
+           03  FILLER          PIC X(02)   VALUE   "97".
+           03  FILLER          PIC X(10)   VALUE   "£¹£·".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   23.
+           03  TBL-TOKKI       OCCURS   25.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX           PIC 9(02)   VALUE   23.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   25.
       *
       *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
        01  TBL-RECECOM-AREA.
@@ -2984,6 +3006,11 @@
                END-IF
            END-IF
       *
+      *    ÅÀ¸¡ÍÑ¥ì¥»¥×¥ÈºîÀ®»þ
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "ÅÀ¸¡ÍÑ¥ì¥»¥×¥È"    TO  HC06-LABEL
+           END-IF     
+      *
       *    ¥ê¥¢¥ë¥¿¥¤¥à¥×¥ì¥Ó¥å¡¼»þ¤ÎÉ½¼¨
            IF      WRK-PARA-SHELLID    =   "RECEPTX"
                MOVE    SPACE                TO  WRK-HC06-HEAD4-G
@@ -2992,19 +3019,29 @@
                MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (53:)
            END-IF
       *
-      *    ÅÀ¸¡ÍÑ¥ì¥»¥×¥ÈºîÀ®»þ
-           IF      WRK-PARA-PRTKBN     =   "2"
-               MOVE    "ÅÀ¸¡ÍÑ¥ì¥»¥×¥È"    TO  HC06-LABEL
-           END-IF     
-      *
            IF      CNT-PAGE            =   1
+               IF      RECE62-RJNGAIKOHFTN (1)   =   1   OR  2  OR  4
+                                                 OR  5   OR  7
+                   MOVE    SPACE                TO  WRK-HC06-HEAD4-G
+                   MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+                   MOVE    SPACE                TO  HC06-HEAD4-G    
+                   MOVE    WRK-HC06-HEAD4-G (1:48)
+                                                TO  HC06-HEAD4 (1) (15:)
+                   MOVE    WRK-HC06-HEAD4-G (49:48)
+                                                TO  HC06-HEAD4 (2) (15:)
+               END-IF
+      *        
                EVALUATE    RECE62-RJNGAIKOHFTN (1)
                    WHEN    1
                        MOVE    "¡ÊÉÔ¾Ü¡Ë"  TO  HC06-HEAD5
                    WHEN    2
+                   WHEN    7
                        MOVE    "¡ÊºÒ£±¡Ë"  TO  HC06-HEAD5
                    WHEN    4
                        MOVE    "¡ÊºÒ£²¡Ë"  TO  HC06-HEAD5
+                   WHEN    5
+                       MOVE    "¡ÊÉÔ¾Ü¡¦ºÒ£±¡Ë"
+                                           TO  HC06-HEAD5
                END-EVALUATE
            END-IF
       *
@@ -7365,6 +7402,369 @@
                END-PERFORM
            END-IF
       *
+      *    ºÒ³²ÂÐ±þ
+           IF      RECE62-RJNGAIKOHFTN (1) =   1   OR  2   OR  4   OR  5
+                                           OR  6   OR  7
+      *
+      *        Å¦Í×Íó¤Ëµ­ºÜ¤µ¤ì¤Æ¤¤¤ë¾ì¹ç£±¹Ô¤¢¤±¤ë
+               IF      WRK-LINETEK     >   ZERO
+                   IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   ELSE
+                       ADD     1               TO  WRK-LINETEK
+                   END-IF
+               END-IF
+      *
+               IF      RECE62-RJNGAIKOHFTN (1) =   1   OR  2   OR  4
+                                               OR  5   OR  7
+                 EVALUATE    RECE62-RJNGAIKOHFTN (1)
+                   WHEN    1
+                      MOVE     "¡ÊÉÔ¾Ü¡Ë"      TO  WRK-TITLE
+                   WHEN    2
+                   WHEN    7
+                       MOVE    "¡ÊºÒ£±¡Ë"      TO  WRK-TITLE
+                   WHEN    4
+                       MOVE    "¡ÊºÒ£²¡Ë"      TO  WRK-TITLE
+                   WHEN    5
+                       MOVE    "¡ÊÉÔ¾Ü¡¦ºÒ£±¡Ë"
+                                               TO  WRK-TITLE
+                 END-EVALUATE
+                 INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                 IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                   PERFORM 34120-PAGE-SEC
+                 END-IF    
+                 ADD     1                   TO  WRK-LINETEK
+      *
+                 IF      CNT-PAGE        =   1   
+                   MOVE    WRK-TITLE       TO  HC06-TEKIYO (WRK-LINETEK)
+                 ELSE                    
+                   EVALUATE    SYS-2005-NEXTPRTKBN
+                       WHEN    "0"   
+                           MOVE  WRK-TITLE TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE  WRK-TITLE TO  HC062-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE  WRK-TITLE TO  HC063-TEKIYO(WRK-LINETEK)
+                    END-EVALUATE
+                 END-IF
+               END-IF
+      *
+      *        ºÒ³²ÂÐ±þ¡Ê¿ÌºÒ°ÊÁ°°ìÉôÉéÃ´¶â¤Îµ­ºÜ¡ÊºÒ£²¡Ë¡Ë
+               IF      RECE62-RJNGAIKOHFTN (1) =   4
+                   MOVE    SPACE               TO  WRK-TITLE
+                   MOVE    RECE62-YOBIETC (4)
+                                           TO  WRK-FUTAN
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    WRK-FUTAN       TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC      =   ZERO )
+                   AND   ( KANACHK-MAX     >   ZERO )
+                       STRING  "¡Ú¿ÌºÒ°ÊÁ°°ìÉôÉéÃ´¶â¡Û¡¡¡¡"
+                                               DELIMITED  BY  SIZE
+                               KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               DELIMITED  BY  SIZE
+                               "±ß"            DELIMITED  BY  SIZE
+                                               INTO    WRK-TITLE
+                       END-STRING
+                   END-IF
+                   INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                   IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     1                   TO  WRK-LINETEK
+      *
+                   IF      CNT-PAGE        =   1   
+                       MOVE    WRK-TITLE   TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE                    
+                   EVALUATE    SYS-2005-NEXTPRTKBN
+                       WHEN    "0"   
+                           MOVE  WRK-TITLE TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE  WRK-TITLE TO  HC062-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE  WRK-TITLE TO  HC063-TEKIYO(WRK-LINETEK)
+                    END-EVALUATE
+                   END-IF
+      *
+      *            ¿ÌºÒ°ÊÁ°°ìÉô¿©»öÀ¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¤Îµ­ºÜ¡ÊºÒ£²¡Ë
+                   MOVE    SPACE               TO  WRK-TITLE
+                   MOVE    RECE62-YOBIETC (5)
+                                           TO  WRK-FUTAN1
+                   INITIALIZE              ORCSKANACHKAREA
+                   MOVE    "2"             TO  KANACHK-SYORI 
+                   MOVE    WRK-FUTAN1      TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                   IF    ( KANACHK-RC      =   ZERO )
+                   AND   ( KANACHK-MAX     >   ZERO )
+                       STRING  "¡Ú¿ÌºÒ°ÊÁ°¿©»öÀ¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¡Û"
+                                               DELIMITED  BY  SIZE
+                               KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               DELIMITED  BY  SIZE
+                               "±ß"            DELIMITED  BY  SIZE
+                                               INTO    WRK-TITLE
+                       END-STRING
+                   END-IF
+                   INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                   IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
+                       PERFORM 34120-PAGE-SEC
+                   END-IF    
+                   ADD     1                   TO  WRK-LINETEK
+      *
+                   IF      CNT-PAGE        =   1   
+                       MOVE    WRK-TITLE   TO  HC06-TEKIYO (WRK-LINETEK)
+                   ELSE                    
+                     EVALUATE    SYS-2005-NEXTPRTKBN
+                       WHEN    "0"   
+                           MOVE  WRK-TITLE TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE  WRK-TITLE TO  HC062-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE  WRK-TITLE TO  HC063-TEKIYO(WRK-LINETEK)
+                      END-EVALUATE
+                   END-IF
+               END-IF
+      *                   
+      *        ºÒ³²ÂÐ±þ¡ÊÏ¢ÍíÀèµ­ºÜ¡Ë
+               IF      RECE62-RJNGAIKOHFTN (1) =   6   OR  7
+                   IF    ( RECE62-HOME-POST1
+                                           =   SPACE )
+                   AND   ( RECE62-HOME-ADRS1
+                                           =   SPACE )
+                   AND   ( RECE62-RENRAKU-POST1
+                                           =   SPACE )
+                   AND   ( RECE62-RENRAKU-NAME
+                                           =   SPACE )
+                   AND   ( RECE62-RENRAKU-ADRS1
+                                           =   SPACE )
+                   AND   ( RECE62-TEL      =   SPACE )
+                       CONTINUE
+                   ELSE
+      *                ¼«Âð½»½êµ­ºÜ
+                       IF   ( RECE62-HOME-ADRS1      =   SPACE )
+                       AND  ( RECE62-HOME-POST1      =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE     "¡Ú½»½ê¡Û"      TO  WRK-TITLE
+                           INSPECT WRK-TITLE
+                                       REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                           IF      WRK-LINETEK     >=  WRK-TEKIYOU-LINE
+                               PERFORM 34120-PAGE-SEC
+                           END-IF    
+                           ADD     1                   TO  WRK-LINETEK
+      * 
+                           IF      CNT-PAGE        =   1   
+                               MOVE    WRK-TITLE       TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                           ELSE                    
+                               EVALUATE    SYS-2005-NEXTPRTKBN
+                                   WHEN    "0"   
+                                       MOVE  WRK-TITLE TO
+                                               HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  WRK-TITLE TO
+                                               HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  WRK-TITLE TO
+                                               HC063-TEKIYO(WRK-LINETEK)
+                               END-EVALUATE
+                           END-IF
+      *                    ¼«Âð½»½êµ­ºÜ
+                           MOVE    SPACE               TO  WRK-ADRS
+                           IF      RECE62-HOME-POST1   =   SPACE
+                               MOVE    RECE62-HOME-ADRS1   TO  WRK-ADRS
+                           ELSE
+                               STRING   "¢©"       DELIMITED  BY  SIZE
+                                    RECE62-HOME-POST1
+                                                   DELIMITED  BY  SPACE
+                                    RECE62-HOME-ADRS1
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-ADRS
+                               END-STRING
+                           END-IF
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       5
+                                   OR      WRK-ADRS-R (IDY)
+                                                   =       SPACE
+                               INSPECT WRK-ADRS-R (IDY)
+                                       REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN
+                                   WHEN    "0"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-PERFORM
+                       END-IF
+      *                Ï¢ÍíÀèµ­ºÜ
+                       IF    ( RECE62-RENRAKU-POST1
+                                               =   SPACE )
+                       AND   ( RECE62-RENRAKU-NAME
+                                               =   SPACE )
+                       AND   ( RECE62-RENRAKU-ADRS1
+                                               =   SPACE )
+                       AND   ( RECE62-TEL      =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE     "¡ÚÏ¢ÍíÀè¡Û"  TO  WRK-TITLE
+                           INSPECT WRK-TITLE
+                                       REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                           IF      WRK-LINETEK     >=  WRK-TEKIYOU-LINE
+                               PERFORM 34120-PAGE-SEC
+                           END-IF    
+                           ADD     1                   TO  WRK-LINETEK
+      * 
+                           IF      CNT-PAGE        =   1   
+                               MOVE    WRK-TITLE       TO
+                                               HC06-TEKIYO (WRK-LINETEK)
+                           ELSE                    
+                               EVALUATE    SYS-2005-NEXTPRTKBN
+                                   WHEN    "0"   
+                                       MOVE  WRK-TITLE TO
+                                               HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  WRK-TITLE TO
+                                               HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  WRK-TITLE TO
+                                               HC063-TEKIYO(WRK-LINETEK)
+                               END-EVALUATE
+                           END-IF
+
+      *                    »ö¶È½êÌ¾µ­ºÜ
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       2
+                                   OR      RECE62-RENRAKU-NAME-R (IDY)
+                                                   =       SPACE
+                               INSPECT RECE62-RENRAKU-NAME-R (IDY)
+                                       REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    RECE62-RENRAKU-NAME-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN
+                                   WHEN    "0"   
+                                       MOVE  RECE62-RENRAKU-NAME-R (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  RECE62-RENRAKU-NAME-R (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  RECE62-RENRAKU-NAME-R (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-PERFORM
+      *                    Ï¢ÍíÀè½»½êµ­ºÜ
+                           MOVE    SPACE               TO  WRK-ADRS
+                           IF      RECE62-RENRAKU-POST1
+                                                       =   SPACE
+                               MOVE    RECE62-RENRAKU-ADRS1
+                                                           TO  WRK-ADRS
+                           ELSE
+                               STRING   "¢©"       DELIMITED  BY  SIZE
+                                    RECE62-RENRAKU-POST1
+                                                   DELIMITED  BY  SPACE
+                                    RECE62-RENRAKU-ADRS1
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-ADRS
+                               END-STRING
+                           END-IF
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       5
+                                   OR      WRK-ADRS-R (IDY)
+                                                   =       SPACE
+                               INSPECT WRK-ADRS-R (IDY)
+                                       REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-ADRS-R (IDY)
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN
+                                   WHEN    "0"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE  WRK-ADRS-R (IDY)
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-PERFORM
+      *                    Ï¢ÍíÀèµ­ºÜ
+                           IF     RECE62-TEL      =   SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    SPACE          TO  WRK-TEKIYOU
+                               STRING   "£Ô£Å£Ì¡§" DELIMITED  BY  SIZE
+                                        RECE62-TEL DELIMITED  BY  SIZE
+                                                   INTO    WRK-TEKIYOU
+                               END-STRING
+                               INSPECT WRK-TEKIYOU
+                                       REPLACING   ALL "  "    BY  "¡¡"
+      * 
+                               IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
+                                   PERFORM 34120-PAGE-SEC
+                               END-IF    
+                               ADD     1               TO  WRK-LINETEK
+      *
+                               IF      CNT-PAGE        =   1   
+                                   MOVE    WRK-TEKIYOU
+                                           TO  HC06-TEKIYO (WRK-LINETEK)
+                               ELSE                    
+                                 EVALUATE    SYS-2005-NEXTPRTKBN
+                                   WHEN    "0"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC061-TEKIYO(WRK-LINETEK)
+                                   WHEN    "1"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC062-TEKIYO(WRK-LINETEK)
+                                   WHEN    "2"   
+                                       MOVE    WRK-TEKIYOU
+                                           TO  HC063-TEKIYO(WRK-LINETEK)
+                                 END-EVALUATE
+                               END-IF                    
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    Å¬ÍÑÍó¾åÃÊ¥³¥á¥ó¥È¡Ê¥ì¥»¥×¥ÈÆÃµ­»ö¹àÊÔ½¸¾ðÊó¡Ë
            IF    ( RECE62-2006-TEKIYOU-COMMENT1 (1)    =   SPACE )
            AND   ( RECE62-2006-TEKIYOU-COMMENT1 (2)    =   SPACE )
@@ -7848,7 +8248,8 @@
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
       *********MOVE    "HCN09V01.red"      TO
-               MOVE    "HCN09V02.red"      TO
+      *********MOVE    "HCN09V02.red"      TO
+               MOVE    "HCN09V03.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -8116,7 +8517,8 @@
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
       *****************WHEN    "HCN09V01.red"
-                       WHEN    "HCN09V02.red"
+      *****************WHEN    "HCN09V02.red"
+                       WHEN    "HCN09V03.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
@@ -10168,6 +10570,8 @@
                    END-IF    
       *
                    DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
+                           " RJNGAIKOHFTN(1)="
+                                            RECE62-RJNGAIKOHFTN (1)
       *
                    ADD     1               TO  CNT-RECE62
                    MOVE    RECE62-HOSPNUM  TO  KEY-N-HOSPNUM

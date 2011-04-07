@@ -144,6 +144,8 @@
       *  04.05.04    NACL-藤原    11/03/02  徳島県対応
       *                                     乳児４５、４８が月途中で変更
       *                                     になった場合の記載順
+      *  04.05.05    NACL-藤原    11/03/25  災害対応
+      *                                     連絡先情報追加
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -2317,6 +2319,16 @@
            MOVE   PTINF-BIRTHDAY       TO  WRK-RECE61-BIRTHDAY
            MOVE   PTINF-DEATHKBN       TO  WRK-RECE61-DEATHKBN
            MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE61-TSTPTNUMKBN
+      *
+           MOVE   PTINF-HOME-POST      TO  WRK-RECE61-HOME-POST
+           MOVE   PTINF-HOME-ADRS      TO  WRK-RECE61-HOME-ADRS
+           MOVE   PTINF-HOME-BANTI     TO  WRK-RECE61-HOME-BANTI
+           MOVE   PTINF-RENRAKU-POST   TO  WRK-RECE61-RENRAKU-POST
+           MOVE   PTINF-RENRAKU-NAME   TO  WRK-RECE61-RENRAKU-NAME
+           MOVE   PTINF-RENRAKU-ADRS   TO  WRK-RECE61-RENRAKU-ADRS
+           MOVE   PTINF-RENRAKU-BANTI  TO  WRK-RECE61-RENRAKU-BANTI
+           MOVE   PTINF-RENRAKU-TEL1   TO  WRK-RECE61-RENRAKU-TEL1
+           MOVE   PTINF-RENRAKU-TEL2   TO  WRK-RECE61-RENRAKU-TEL2
       *    患者年齢
            MOVE   WRK-NENREI           TO  WRK-RECE61-AGE
            MOVE    AGECHK-SYUGAKUKBN   TO  WRK-RECE61-SYUGAKUKBN

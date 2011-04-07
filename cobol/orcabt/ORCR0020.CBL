@@ -220,6 +220,8 @@
       *                                     請求に係わる記録条件仕様の
       *                                     変更に伴う修正
       *                                     診療科２、３を追加
+      *  04.05.04    NACL-藤原    11/03/25  災害対応
+      *                                     連絡先情報追加
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -1352,6 +1354,17 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    RECE01-AGE          TO  WRK-NENREI
                                            RECE02-AGE
            MOVE    RECE01-SYUGAKUKBN   TO  RECE02-SYUGAKUKBN
+      *
+           MOVE    RECE01-HOME-POST    TO  RECE02-HOME-POST
+           MOVE    RECE01-HOME-ADRS    TO  RECE02-HOME-ADRS
+           MOVE    RECE01-HOME-BANTI   TO  RECE02-HOME-BANTI
+           MOVE    RECE01-RENRAKU-POST TO  RECE02-RENRAKU-POST
+           MOVE    RECE01-RENRAKU-NAME TO  RECE02-RENRAKU-NAME
+           MOVE    RECE01-RENRAKU-ADRS TO  RECE02-RENRAKU-ADRS
+           MOVE    RECE01-RENRAKU-BANTI
+                                       TO  RECE02-RENRAKU-BANTI
+           MOVE    RECE01-RENRAKU-TEL1 TO  RECE02-RENRAKU-TEL1
+           MOVE    RECE01-RENRAKU-TEL2 TO  RECE02-RENRAKU-TEL2
       *    旧姓履歴の取得（月途中で保険変更があるとき）
            IF    ( RECE01-TEISEIKBN    NOT =   "1"   )
            AND   ( RECE02-TEKSTYMD-X   NOT =   SPACE )
