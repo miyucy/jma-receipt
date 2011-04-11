@@ -498,6 +498,8 @@
       *                                     一律一般の金額で記載
       *  04.05.25    NACL-門脇    11/04/11  北海道地方公費（１８３）の
       *                                     一部負担金記載修正
+      *  04.05.26    NACL-門脇    11/04/11  大阪府地方公費に関わる保険欄
+      *                                     の記載対応（後期高齢）
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -17039,6 +17041,23 @@
                END-IF
       *      大阪府地方公費
              WHEN    "27"
+               IF  (FLG-ZENKOKUKOHI-NISYU  =  2)
+               AND (RECE62-TEISYUTUSAKI    =  6)
+                 COMPUTE  WRK-CHK-KOKIGAK4 = RECE62-TOTALTEN(2)
+                                           + RECE62-HENTOTALTEN(3)
+                 IF  (RECE62-TOTALTEN(1) NOT = RECE62-TOTALTEN(2))
+                 AND ((RECE62-TOTALTEN(1)  = WRK-CHK-KOKIGAK4  ) OR
+                      (RECE62-TOTALTEN(1)  =
+                                          RECE62-HENTOTALTEN(3)) )
+                      IF   RECE62-KYURATE   NOT =    30
+                          MOVE     3       TO   FLG-CHIIKI
+                          PERFORM  210466-HOKEN-ICHIBUFTN-CHK-SEC
+                      ELSE
+                          MOVE     3       TO   FLG-CHIIKI
+                          PERFORM  210467-HOKEN-ICHIBUFTN-CHK2-SEC
+                      END-IF
+                 END-IF
+               END-IF
                IF  (FLG-ZENKOKUKOHI-NISYU  =  2 OR 3)
                AND (RECE62-TEISYUTUSAKI    =  2 OR 6)
                  IF  ((RECE62-KOHNUM(1)(1:1)  =  "0"              ) AND
@@ -18031,6 +18050,12 @@
                   MOVE   999999999     TO  RECE62-KOUREI-SAIKEI2
                END-IF
              END-IF
+             IF   FLG-CHIIKI    =   3
+               MOVE  WRK-CHK-KOKIGAK3  TO  RECE62-KOUREI-SAIKEI2
+               IF    RECE62-KOUREI-SAIKEI2  =   ZERO
+                  MOVE       1         TO  RECE62-YOBIETC(7)
+               END-IF
+             END-IF
       *
              IF   FLG-KOH  =   2
                COMPUTE  RECE62-FTNMONEY(2) = WRK-CHK-KOKIGAK2
@@ -18172,6 +18197,12 @@
                MOVE  WRK-CHK-KOKIGAK7  TO  RECE62-KOUREI-SAIKEI2
                IF    RECE62-KOUREI-SAIKEI2  =   ZERO
                   MOVE   999999999     TO  RECE62-KOUREI-SAIKEI2
+               END-IF
+             END-IF
+             IF   FLG-CHIIKI    =   3
+               MOVE  WRK-CHK-KOKIGAK7  TO  RECE62-KOUREI-SAIKEI2
+               IF    RECE62-KOUREI-SAIKEI2  =   ZERO
+                  MOVE       1         TO  RECE62-YOBIETC(7)
                END-IF
              END-IF
       *

@@ -516,6 +516,8 @@
       *                                     一律一般の金額で記載
       *  04.05.21    NACL-門脇    11/04/11  北海道地方公費（１８３）の
       *                                     一部負担金記載修正
+      *  04.05.22    NACL-門脇    11/04/11  大阪府地方公費に関わる保険欄
+      *                                     の記載対応（後期高齢）
       *
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
@@ -12664,6 +12666,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *      大阪府地方公費
              WHEN    "27"
+               IF  (FLG-ZENKOKUKOHI-NISYU  =  2)
+               AND (RECE02-TEISYUTUSAKI    =  6)
+                 COMPUTE  WRK-CHK-KOKIGAK4 = RECE02-TOTALTEN(2)
+                                           + RECE02-HENTOTALTEN(3)
+                 IF  (RECE02-TOTALTEN(1) NOT = RECE02-TOTALTEN(2))
+                 AND ((RECE02-TOTALTEN(1)  = WRK-CHK-KOKIGAK4  ) OR
+                      (RECE02-TOTALTEN(1)  =
+                                          RECE02-HENTOTALTEN(3)) )
+                          MOVE     3       TO   FLG-CHIIKI
+                          PERFORM  21096-HOKEN-ICHIBUFTN-CHK-SEC
+                 END-IF
+               END-IF
                IF  (FLG-ZENKOKUKOHI-NISYU  =  2 OR 3)
                AND (RECE02-TEISYUTUSAKI    =  2 OR 6)
                  IF  ((RECE02-KOHNUM(1)(1:1)  =  "0"              ) AND
@@ -13567,6 +13581,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE  WRK-CHK-KOKIGAK3  TO  RECE02-ZAITAKU-SAIKEI2
                IF    RECE02-ZAITAKU-SAIKEI2  =   ZERO
                   MOVE   999999999     TO  RECE02-ZAITAKU-SAIKEI2
+               END-IF
+             END-IF
+             IF   FLG-CHIIKI    =   3
+               MOVE  WRK-CHK-KOKIGAK3  TO  RECE02-ZAITAKU-SAIKEI2
+               IF    RECE02-ZAITAKU-SAIKEI2  =   ZERO
+                  MOVE       1         TO  RECE02-YOBIETC(7)
                END-IF
              END-IF
       *
