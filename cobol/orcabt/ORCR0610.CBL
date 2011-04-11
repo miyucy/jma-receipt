@@ -146,6 +146,11 @@
       *                                     ¤Ë¤Ê¤Ã¤¿¾ì¹ç¤Îµ­ºÜ½ç
       *  04.05.05    NACL-Æ£¸¶    11/03/25  ºÒ³²ÂÐ±þ
       *                                     Ï¢ÍíÀè¾ðÊóÄÉ²Ã
+      *  04.05.06    NACL-Æ£¸¶    11/04/08  ÆàÎÉ¸©ÂÐ±þ
+      *                                     ¹ñÊÝ¡¢¸å´ü¹âÎð¼Ô¤Î¤È¤­
+      *                                     Ë¡ÊÌ£·£±¡¢£¸£±¡¢£¹£±¤Ï¸øÈñÀÁ
+      *                                     µá½ñ¤âºîÀ®¤¹¤ë  
+      *
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
       *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
@@ -1385,6 +1390,23 @@
                                           WRK-SEIKYU-KOHID    (2 IDZ)
                            MOVE    1                      TO  FLG-KOH 
                        END-IF
+      *                ÆàÎÉ¸©¤Î¹ñÊÝ¡¢¸å´ü¹âÎð¼Ô¤Î¤È¤­
+      *               ¡ÊË¡ÊÌ£·£±¡ÊÆýÍÄ»ù¡Ë¡¢£¸£±¡Ê¾ã³²¡Ë¡¢£¹£±¡ÊÊì»Ò¡Ë¡Ë
+                       IF    ( COMB-HKNNUM     =   "060"   OR  "067"
+                                               OR  "039"             )
+                       AND   ( SYS-1001-PREFNUM
+                                               =   "29"              )
+                       AND   ( HKN-HBTNUM      =   "71"    OR  "81"
+                                               OR  "91"              )    
+                       AND   ( COMB-KOHHKNNUM(IDX)(1:1)
+                                               >=  "1" AND <=  "8"   )
+                           ADD     1                      TO  IDZ    
+                           MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                                          WRK-SEIKYU-KOHHKNNUM(2 IDZ)
+                           MOVE    COMB-KOHID     (IDX)   TO
+                                          WRK-SEIKYU-KOHID    (2 IDZ)
+                           MOVE    1                      TO  FLG-KOH 
+                       END-IF
                    END-IF    
                ELSE
                    ADD     1                      TO  IDZ    
@@ -1828,6 +1850,23 @@
                        AND   ( SYS-1001-PREFNUM
                                                =   "40"              )
                        AND   ( HKN-HBTNUM  NOT =   "41"              )    
+                       AND   ( COMB-KOHHKNNUM(IDX)(1:1)
+                                               >=  "1" AND <=  "8"   )
+                           ADD     1                      TO  IDZ    
+                           MOVE    COMB-KOHHKNNUM (IDX)   TO 
+                                          WRK-SEIKYU-KOHHKNNUM(2 IDZ)
+                           MOVE    COMB-KOHID     (IDX)   TO
+                                          WRK-SEIKYU-KOHID    (2 IDZ)
+                           MOVE    1                      TO  FLG-KOH 
+                       END-IF
+      *                ÆàÎÉ¸©¤Î¹ñÊÝ¡¢¸å´ü¹âÎð¼Ô¤Î¤È¤­
+      *               ¡ÊË¡ÊÌ£·£±¡ÊÆýÍÄ»ù¡Ë¡¢£¸£±¡Ê¾ã³²¡Ë¡¢£¹£±¡ÊÊì»Ò¡Ë¡Ë
+                       IF    ( COMB-HKNNUM     =   "060"   OR  "067"
+                                               OR  "039"             )
+                       AND   ( SYS-1001-PREFNUM
+                                               =   "29"              )
+                       AND   ( HKN-HBTNUM      =   "71"    OR  "81"
+                                               OR  "91"              )    
                        AND   ( COMB-KOHHKNNUM(IDX)(1:1)
                                                >=  "1" AND <=  "8"   )
                            ADD     1                      TO  IDZ    
