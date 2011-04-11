@@ -10672,7 +10672,8 @@
       *    介護病棟からの急性増悪による入院時
            IF      PTNYUINRRK-KAIGOKBN    =    "2"
                MOVE    ZERO        TO  SYOKIKSN-IN-TUSANNISSU
-           END-IF
+               MOVE    ZERO        TO  WRK-TSUSAN
+          END-IF
       *
            MOVE    WRK-SANTEISTYMD
                                    TO  SYOKIKSN-IN-SANTEISTYMD
