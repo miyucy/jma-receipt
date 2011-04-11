@@ -493,6 +493,11 @@
       *                                     (233064)Ê¿À®£²£³Ç¯£³·î¤Þ¤Ç
       *  04.05.23    NACL-ÌçÏÆ    11/04/07  ÆÃÄêÊÝ¸±¼Ô¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
       *                                     (133280)Ê¿À®£²£³Ç¯£³·î¤Þ¤Ç
+      *  04.05.24    NACL-ÌçÏÆ    11/04/08  ¿·³ã¸©ÃÏÊý¸øÈñÂÐ±þ
+      *                                     ¼ÒÊÝÊ¬ÊÝ¸±Íó°ìÉôÉéÃ´¶âµ­ºÜ
+      *                                     °ìÎ§°ìÈÌ¤Î¶â³Û¤Çµ­ºÜ
+      *  04.05.25    NACL-ÌçÏÆ    11/04/11  ËÌ³¤Æ»ÃÏÊý¸øÈñ¡Ê£±£¸£³¡Ë¤Î
+      *                                     °ìÉôÉéÃ´¶âµ­ºÜ½¤Àµ
       *
       *  04.06.01    NACL-Æ£¸¶    10/06/23  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
       *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
@@ -13034,7 +13039,8 @@
       *
            IF  ((WRK-PREFNUM        = "42"                     ) AND
                 (SYU-KOH-HKNNUM(1)  = "186"                    ))
-           OR  ((WRK-PREFNUM        = "13" OR "08" OR "27"     ) AND
+           OR  ((WRK-PREFNUM        = "13" OR "08" OR "27"
+                                                   OR "15"     ) AND
                 (SYU-SYUHKNNUM  NOT = "060" AND "067" AND "039") AND
                 (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"   ) AND
                 (IDZ                =  1                       ))
@@ -13189,7 +13195,8 @@
       *
            IF  ((WRK-PREFNUM        = "42"                     ) AND
                 (SYU-KOH-HKNNUM(1)  = "186"                    ))
-           OR  ((WRK-PREFNUM        = "13" OR "08" OR "27"     ) AND
+           OR  ((WRK-PREFNUM        = "13" OR "08" OR "27"
+                                                   OR "15"     ) AND
                 (SYU-SYUHKNNUM  NOT = "060" AND "067"          ) AND
                 (SYU-KOH-HKNNUM(1)(1:1)  >=  "1" AND <=  "8"   ) AND
                 (IDZ                =  1                       ))
@@ -14354,10 +14361,6 @@
                                          >=  "1" AND <=  "8"  ) AND
                          (RECE62-KOHNUM(KH-IDX - 1)
                                          NOT = "100" AND "200"))
-                  OR    ((RECE62-KOUREI          =  "1" OR "2") AND
-                         (RECE62-SRYYM          >=  "200810"  ) AND
-                         (WRK-PREFNUM            =   01       ) AND
-                         (RECE62-KOHNUM(KH-IDX - 1) = "183"   ))
                   OR    ((RECE62-KOUREI          =  "1" OR "2") AND
                          (WRK-PREFNUM            =   13       ) AND
                          (RECE62-KOHNUM(KH-IDX - 1) =
@@ -16360,9 +16363,6 @@
       ***          OR  ((WRK-PREFNUM             =   33           ) AND
       ***               (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
       ***                                       >= "1" AND <=  "8"))
-                   OR  ((WRK-PREFNUM               =  01          ) AND
-                        (RECE62-KOHNUM(KOHFTN-IDX) = "183"        ) AND
-                        (RECE62-SRYYM             >= "200810"     ))
                    OR  ( TBL-TOKATUKAIFLG(KOHFTN-IDX)   =  1       )
                       MOVE  WRK-TAIHI-FTNMONEY    (KOHFTN-IDX + 1)
                                 TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
