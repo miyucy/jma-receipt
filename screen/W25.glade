@@ -186,7 +186,7 @@
       <name>B10</name>
       <x>368</x>
       <y>8</y>
-      <width>62</width>
+      <width>68</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -207,9 +207,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>432</x>
+      <x>436</x>
       <y>8</y>
-      <width>62</width>
+      <width>68</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -230,7 +230,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SENTAKU</name>
-      <x>504</x>
+      <x>512</x>
       <y>8</y>
       <width>200</width>
       <height>24</height>
@@ -443,9 +443,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B07S</name>
-      <x>488</x>
+      <x>484</x>
       <y>524</y>
-      <width>98</width>
+      <width>102</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
