@@ -1,0 +1,10 @@
+sql_execute {
+	SQL		          dbcode(20000),virtual;
+	};
+
+path	key		{ 	
+	DBUPDATE	{
+		:SQL
+		;
+	};
+};
