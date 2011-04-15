@@ -518,6 +518,8 @@
       *                                     一部負担金記載修正
       *  04.05.22    NACL-門脇    11/04/11  大阪府地方公費に関わる保険欄
       *                                     の記載対応（後期高齢）
+      *  04.05.23    NACL-門脇    11/04/14  ７０歳未満現物給付計算修正
+      *                                     自立支援(999999)の月途中変更時
       *
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
@@ -709,6 +711,8 @@
            03  FLG-SAIGAI-JGN-ETC2                     PIC 9(01).
            03  FLG-SAIGAI-JGN-SEIHO                    PIC 9(01).
            03  FLG-SAIGAI-ETC1-ARI                     PIC 9(01).
+           03  FLG-JIRITU-CYUKANSOU1                   PIC 9(01).
+           03  FLG-JIRITU-CYUKANSOU2                   PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -928,6 +932,7 @@
            03  WRK-JYOGENKBN-TEN2                      PIC 9(09).
            03  WRK-JYOGENKBN-TEN4                      PIC 9(09).
            03  WRK-JYOGENKBN-TEN5                      PIC 9(09).
+           03  WRK-JYOGENKBN-TEN6                      PIC 9(09).
            03  WRK-JYOGENKBN-TEN9                      PIC 9(09).
            03  WRK-TAIHI-FTNMONEYINF-AREA.
              05  WRK-TAIHI-FTNMONEYINF     OCCURS  5.
@@ -1079,6 +1084,7 @@
            03  WRK-CHK-KOKIGAK7                        PIC 9(07).
            03  WRK-CHK-KOKIGAK8                        PIC 9(07).
            03  WRK-CHK-KOKIGAK9                        PIC 9(07).
+           03  WRK-CHK-KOKIGAK10                       PIC S9(07).
       *
            03  WRK-KEISAN1                             PIC 9(07).
            03  WRK-KEISAN2                             PIC 9(07).
@@ -2290,6 +2296,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE      ZERO       TO      FLG-GENMEN-ARI
            MOVE      ZERO       TO      FLG-GENMEN-NASI
            MOVE      ZERO       TO      WRK-GENMEN-NASI-KIN
+      *
+           MOVE      ZERO       TO      FLG-JIRITU-CYUKANSOU1
+           MOVE      ZERO       TO      FLG-JIRITU-CYUKANSOU2
       *
            PERFORM     211J-SYUKEIKBN-HANBETU-SEC
       *
@@ -9952,6 +9961,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  MOVE   1                TO   FLG-JYOGENKBN
                  ADD    SYU-TOTAL-HKNTEN TO   WRK-JYOGENKBN-TEN
                                               WRK-JYOGENKBN-TEN4
+                                              WRK-JYOGENKBN-TEN6
                  ADD    WRK-FTNKEI       TO   WRK-HOKENICHIBUGAK
              END-IF
            ELSE
@@ -10092,11 +10102,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          AND RECE02-KOHNUM(1) = RECE02-KOHNUMHC(IDX1 1)
                          AND RECE02-KOHID(1)  = RECE02-KOHIDHC(IDX1 1)
                             MOVE    1    TO   FLG-KEISAN2
+                            IF   SYU-NYNSHOKAISU  =  1
+                              MOVE  1    TO   FLG-JIRITU-CYUKANSOU1
+                            END-IF
                          END-IF
                          IF  RECE02-KOHNUM(2) = SYU-KOH-HKNNUM(1)
                          AND RECE02-KOHNUM(2) = RECE02-KOHNUMHC(IDX1 1)
                          AND RECE02-KOHID(2)  = RECE02-KOHIDHC(IDX1 1)
                             MOVE    2    TO   FLG-KEISAN2
+                            IF   SYU-NYNSHOKAISU  =  1
+                              MOVE  1    TO   FLG-JIRITU-CYUKANSOU2
+                            END-IF
                          END-IF
                        END-IF
                        PERFORM   2105217-TOKUSITU-HENSYU2-SEC
@@ -10132,6 +10148,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          ADD    SYU-TOTAL-HKNTEN
                                       TO   WRK-JYOGENKBN-TEN5
                        END-IF
+                       ADD   SYU-TOTAL-HKNTEN
+                                      TO   WRK-JYOGENKBN-TEN6
                      END-IF
                    END-IF
                  END-IF
@@ -12485,6 +12503,27 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       RECE02-HENTOTALTEN(3)) )
                  MOVE     ZERO    TO   FLG-CHIIKI
                  PERFORM  21097-HOKEN-ICHIBUFTN-CHK2-SEC
+             END-IF
+      *
+             COMPUTE  WRK-CHK-KOKIGAK4  = RECE02-TOTALTEN(2)
+                                        + RECE02-HENTOTALTEN(3)
+             COMPUTE  WRK-CHK-KOKIGAK   = RECE02-TOTALTEN(1)
+                                        - WRK-JYOGENKBN-TEN6
+             IF  (RECE02-ZAITAKU         =  "2"              )
+             AND (FLG-JIRITU-CYUKANSOU1  =   1               )
+             AND (FLG-JIRITU-CYUKANSOU2  =   1               )
+             AND (WRK-CHK-KOKIGAK        =   WRK-CHK-KOKIGAK4)
+               MOVE   WRK-CHK-KOKIGAK   TO   WRK-HANTEI-TOTALTEN
+               PERFORM  21094-JYOGENGAKU-HENSYU-SEC
+               IF     WRK-KINGAKU3  >  RECE02-ZAITAKU-SAIKEI
+                 COMPUTE  WRK-CHK-KOKIGAK2   =  WRK-KINGAKU3
+                                             -  RECE02-ZAITAKU-SAIKEI
+                 COMPUTE  WRK-CHK-KOKIGAK10  =  RECE02-ZAITAKU-SAIKEI2
+                                             -  WRK-CHK-KOKIGAK2
+                 MOVE     WRK-CHK-KOKIGAK2  TO  RECE02-ZAITAKU-SAIKEI2
+                 COMPUTE  RECE02-FTNMONEY(1) =  RECE02-FTNMONEY(1)
+                                             -  WRK-CHK-KOKIGAK10
+               END-IF
              END-IF
             END-IF
       *
