@@ -57,6 +57,8 @@
       *  04.06.02    NACL-藤原    10/07/20  レセプト病名記載順対応
       *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.06.03    NACL-藤原    11/04/12  拡張漢字対応（病名）
+      *                                     エラー時処理終了
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -155,6 +157,8 @@
                                    PIC 9(03).
       *
            03  WRK-RECEERR         PIC X(200). 
+           03  WRK-ERRMSG          PIC X(300).
+           03  WRK-MCP-RC          PIC 9(9).
       *                             
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -200,6 +204,9 @@
       *
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    拡張漢字チェックサブ
+           COPY    "CPORCSKANACHK2.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -409,6 +416,25 @@
       *    患者病名チェック処理
       *****************************************************************
        2001-PTBYO-CHK-SEC         SECTION.
+      *
+      *    拡張漢字チェック
+           INITIALIZE                      ORCSKANACHK2AREA
+           MOVE    "1"                 TO  KANACHK2-SYORI
+           MOVE    PTBYO-BYOMEI        TO  KANACHK2-MAE-INPUT
+           CALL    "ORCSKANACHK2"      USING   ORCSKANACHK2AREA
+           IF      KANACHK2-RC4        =   ZERO
+               CONTINUE
+           ELSE
+               CALL    "coblog" USING   "ptbyomei kanachk2 err"
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "病名名称文字コード不正　患者番号="
+                                               DELIMITED  BY  SIZE
+                       RECE62-PTNUM            DELIMITED  BY  SPACE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
       *
       *    診療科
            MOVE    ZERO                TO  FLG-CHK 
@@ -655,6 +681,23 @@
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCR0670 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
