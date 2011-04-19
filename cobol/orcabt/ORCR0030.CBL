@@ -2689,7 +2689,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                          AND (FLG-GENMEN-ARI   =  1      )
                          AND (FLG-GENMEN-NASI  =  1      )
                            MOVE    4       TO  RECE02-RJNGAIKOHFTN (1)
-                           MOVE    1       TO  RECE02-YOBIETC(9)
                            MOVE  WRK-GENMEN-NASI-KIN
                                            TO  RECE02-YOBIETC(4)
                            IF   (RECE02-GENMENKBN   =   2  OR  3)
@@ -2739,7 +2738,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   RECE02-RJNGAIKOHFTN(1)
-                            MOVE   ZERO   TO   RECE02-YOBIETC(9)
                             MOVE   ZERO   TO   RECE02-YOBIETC(4)
                             MOVE   ZERO   TO   RECE02-GENMENKBN
                          END-IF
@@ -2751,7 +2749,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   RECE02-RJNGAIKOHFTN(1)
-                            MOVE   ZERO   TO   RECE02-YOBIETC(9)
                             MOVE   ZERO   TO   RECE02-YOBIETC(4)
                             MOVE   ZERO   TO   RECE02-GENMENKBN
                          END-IF
@@ -2761,7 +2758,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   RECE02-RJNGAIKOHFTN(1)
-                            MOVE   ZERO   TO   RECE02-YOBIETC(9)
                             MOVE   ZERO   TO   RECE02-YOBIETC(4)
                             MOVE   ZERO   TO   RECE02-GENMENKBN
                          END-IF
@@ -2839,7 +2835,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                      END-IF
                    ELSE
                      MOVE    ZERO    TO   RECE02-RJNGAIKOHFTN (1)
-                     MOVE    ZERO    TO   RECE02-YOBIETC(9)
                      MOVE    ZERO    TO   RECE02-YOBIETC(4)
                    END-IF
                END-IF

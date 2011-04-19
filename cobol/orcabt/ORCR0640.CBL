@@ -2888,7 +2888,6 @@
                          AND   (FLG-GENMEN-ARI   =  1      )
                          AND   (FLG-GENMEN-NASI  =  1      )
                            MOVE    4       TO  RECE62-RJNGAIKOHFTN (1)
-                           MOVE    1       TO  RECE62-YOBIETC(9)
                            MOVE  WRK-GENMEN-NASI-KIN
                                            TO  RECE62-YOBIETC(4)
                            MOVE  WRK-GENMEN-NASI-SKJ
@@ -2952,7 +2951,6 @@
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   RECE62-RJNGAIKOHFTN(1)
-                            MOVE   ZERO   TO   RECE62-YOBIETC(9)
                             MOVE   ZERO   TO   RECE62-YOBIETC(4)
                             MOVE   ZERO   TO   RECE62-YOBIETC(5)
                             MOVE   ZERO   TO   RECE62-GENMENKBN
@@ -2965,7 +2963,6 @@
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   RECE62-RJNGAIKOHFTN(1)
-                            MOVE   ZERO   TO   RECE62-YOBIETC(9)
                             MOVE   ZERO   TO   RECE62-YOBIETC(4)
                             MOVE   ZERO   TO   RECE62-YOBIETC(5)
                             MOVE   ZERO   TO   RECE62-GENMENKBN
@@ -2976,7 +2973,6 @@
                             CONTINUE
                          ELSE
                             MOVE   ZERO   TO   RECE62-RJNGAIKOHFTN(1)
-                            MOVE   ZERO   TO   RECE62-YOBIETC(9)
                             MOVE   ZERO   TO   RECE62-YOBIETC(4)
                             MOVE   ZERO   TO   RECE62-YOBIETC(5)
                             MOVE   ZERO   TO   RECE62-GENMENKBN
@@ -3055,7 +3051,6 @@
                      END-IF
                    ELSE
                      MOVE    ZERO    TO   RECE62-RJNGAIKOHFTN (1)
-                     MOVE    ZERO    TO   RECE62-YOBIETC(9)
                      MOVE    ZERO    TO   RECE62-YOBIETC(4)
                      MOVE    ZERO    TO   RECE62-YOBIETC(5)
                    END-IF
