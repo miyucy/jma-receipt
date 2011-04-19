@@ -176,3 +176,4 @@
            03  SHKITEMID-SRDIO01       PIC 9(05)   VALUE   151.
            03  SHKITEMID-SRDIO02       PIC 9(05)   VALUE   152.
            03  SHKITEMID-SRDIO03       PIC 9(05)   VALUE   153.
+           03  SHKITEMID-SAIGAIKBN     PIC 9(05)   VALUE   154.

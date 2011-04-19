@@ -159,6 +159,7 @@
            03  SEL-DATAKBN                         PIC X(01).
            03  SEL-RRKSRH                          PIC 9(01).
            03  SEL-SRYSRH                          PIC 9(01).
+           03  SEL-SKYSRH                          PIC 9(01).
            03  SEL-UPYMD                           PIC X(08).
            03  SEL-UPHMS                           PIC X(06).
       *
@@ -441,6 +442,15 @@
                END-IF
            END-IF
       *
+      *    ¿Ç»¡Ç¯·îÆü
+           IF   ( SPA-Q01-GTBL (8)  =   "1" )
+               MOVE    1           TO  SEL-RRKSRH
+           END-IF
+      *
+           IF    ( SPA-Q01-GTBL(12) =   "1" )
+               MOVE    1           TO  SEL-SKYSRH
+           END-IF
+      *
            .
        1001-INIT-EXT.
            EXIT.
@@ -459,9 +469,11 @@
                                                MCPDATA-REC
                                                SPA-AREA
       *
-           IF   ( SPA-Q01-TOTALTEN >   ZERO )
+           IF   ( SEL-SKYSRH       =   1 )
                PERFORM 900-SKYSRH-DEL1-SEC
-               PERFORM 2001-SYUNOU-GET-SEC
+               IF   ( SPA-Q01-TOTALTEN >   ZERO )
+                   PERFORM 2001-SYUNOU-GET-SEC
+               END-IF
                PERFORM 900-SKYSRH-INS1-SEC
                PERFORM 910-DBCOMMIT-SEC
                PERFORM 910-DBSTART-SEC
@@ -1188,7 +1200,11 @@
       *
            MOVE    SKYSRH-REC      TO  MCPDATA-REC
            MOVE    "tbl_skysrh"    TO  MCP-TABLE
-           MOVE    "ins1"          TO  MCP-PATHNAME
+           IF    ( SPA-Q01-SAIGAIKBN   =   SPACE )
+               MOVE    "ins1"      TO  MCP-PATHNAME
+           ELSE
+               MOVE    "ins2"      TO  MCP-PATHNAME
+           END-IF
            PERFORM 910-DBINSERT-SEC
       *
            .

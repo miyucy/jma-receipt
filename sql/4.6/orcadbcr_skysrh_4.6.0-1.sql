@@ -23,5 +23,6 @@ create	table	tbl_skysrh	(
 	TOKKINM2	varchar(12),
 	TOKKINM3	varchar(12),
 	TOKKINM4	varchar(12),
-	TOKKINM5	varchar(12)
+	TOKKINM5	varchar(12),
+	ETC_YKZFTN1	integer
 ) with oids ;

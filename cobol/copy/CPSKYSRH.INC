@@ -46,6 +46,8 @@
       *    特記事項名称
            03  SKYSRH-TOKKINM-G.
                05  SKYSRH-TOKKINM      PIC X(12) OCCURS 5.
+      *    記載外公費−薬剤一部負担金情報
+           03  SKYSRH-ETC-YKZFTN1      PIC  9(05).
       *    開始診療年月
            03  SKYSRH-STSRYYM          PIC X(6).
       *    終了診療年月

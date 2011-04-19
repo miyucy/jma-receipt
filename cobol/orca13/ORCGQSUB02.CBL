@@ -1447,6 +1447,30 @@
       *
            END-IF
       *
+           IF    ( SPA-Q01-SAIGAIKBN   =   "1" OR "2" )
+      *
+               MOVE    1           TO  CNT-JYOKEN
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               EVALUATE   SPA-Q01-SAIGAIKBN
+               WHEN    "1"
+                   STRING  "L.ETC_YKZFTN1"      DELIMITED BY SIZE
+                       " in( 6,7,8)"            DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               WHEN    "2"
+                   STRING  "L.ETC_YKZFTN1"      DELIMITED BY SIZE
+                       " not in( 0, 6,7,8)"     DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-EVALUATE
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           END-IF
+      *
            PERFORM 900-SQL-JYOKEN-EDIT4-SEC
       *
            .
