@@ -87,6 +87,7 @@
                05  WRK-PARA-HOSPNUM            PIC 9(02).
                05  WRK-PARA-SQLFILE            PIC X(256).
            03  WRK-IN                  PIC X(01).
+           03  WRK-RC                  PIC S9(9)   BINARY.
       *
       *****************************************************************
       *    ファイル定義
@@ -174,6 +175,7 @@
                MOVE    1               TO  FLG-END
                DISPLAY "*(ORCBSQL1)* SQL ERR /RC[ " MCP-RC "] "
                        " LINE[ " CNT-SQL-LINE " ]"
+               MOVE    MCP-RC          TO  WRK-RC
            ELSE
                PERFORM 900-SQL-SEC
            END-IF
@@ -192,6 +194,8 @@
       *
            DISPLAY "*(ORCBSQL1)* INPUT  /I   CNT[" CNT-IN  "]"
       **** ACCEPT  WRK-IN
+      *
+           MOVE    WRK-RC              TO  RETURN-CODE
            .
        300-END-EXT.
            EXIT.

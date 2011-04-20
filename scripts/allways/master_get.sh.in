@@ -79,7 +79,7 @@ case "${MASTERID}" in
     ;;
 esac
 
-echomsg "${MSTURI}/${FILENAME}.p7m" ${LOG}
+echomsg "${MSTURL}/${FILENAME}.p7m" ${LOG}
 LOGMSG=`orcadt_verify.rb --dir ${WORKDIR} --cacert ${CACERTFILE} ${MSTURL}/${FILENAME}.p7m 2>&1`
 RESULT=`echo "$LOGMSG" | head -1`
 if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
