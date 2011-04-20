@@ -100,6 +100,7 @@ eucjp_shell_sources = \
 	allways/program_upgrade_check_log.sh.in \
 	allways/master_standard_upgrade.sh.in \
 	allways/master_license_upgrade.sh.in \
+	allways/master_get.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
@@ -125,6 +126,7 @@ ruby_scripts = \
 	allways/program_upgrade_verify.rb \
 	daily/monpeps.rb \
 	daily/das-upload2.rb \
+	allways/mksqldata.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \

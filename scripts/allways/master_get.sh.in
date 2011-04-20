@@ -1,0 +1,112 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#------------------------------------
+# $1 : 医療機関識別番号(HOSPNUM)
+# $2 : 端末ＩＤ
+# $3 : ジョブＩＤ
+# $4 : シェルＩＤ
+# $5 : マスターＩＤ
+# $6 : コード１
+# $7 : コード２
+# $8 : コード３
+# $9 : コード４
+# $10: コード５
+#------------------------------------
+
+HOSPNUM=${1}
+TERMID=${2}
+JOBID=${3}
+SHELLID=$(printf "%-8s" ${4})
+
+MASTERID=${5}
+CODE1=${6}
+CODE2=${7}
+CODE3=${8}
+CODE4=${9}
+CODE5=${10}
+
+WORKDIR=/tmp
+
+CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
+
+LOGDIR=/var/log/jma-receipt
+LOG="$LOGDIR"/${HOSPNUM}master_get.log
+
+# echo message (default character-code EUC)
+echomsg() {
+  echo `echo ${1} | nkf | tee -a ${2}`
+}
+
+jobend() {
+  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 \
+            -parameter "JBE${4}${5}${2},${3},,,${6}"
+  echomsg "${6}" ${7} 
+  exit ${1}
+}
+
+rm -f ${LOG}
+
+# disk space check
+VOLSIZE=`df -m ${WORKDIR} | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
+echo "${VOLSIZE}"
+echo "${MINSIZE}"
+if [ -z "$MINSIZE" ]; then
+#set default 500MB
+  MINSIZE=500
+fi
+if [ $VOLSIZE -lt $MINSIZE ]; then
+  ERRMSG="The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
+  jobend 99 8901 ${HOSPNUM} "${JOBID}" "${SHELLID}" "${ERRMSG}" ${LOG}
+fi
+
+case "${MASTERID}" in
+  HKNNUM)
+    FILENAME=hknnum-"${CODE1}"-"${CODE2}".dat
+    MSTURL="${MSTSRVPATH}"/hknnum
+    ;;
+  *)
+    FILENAME=
+    MSTURL=
+    ;;
+esac
+
+echomsg "${MSTURI}/${FILENAME}.p7m" ${LOG}
+LOGMSG=`orcadt_verify.rb --dir ${WORKDIR} --cacert ${CACERTFILE} ${MSTURL}/${FILENAME}.p7m 2>&1`
+RESULT=`echo "$LOGMSG" | head -1`
+if [ "[ERROR]" = "${RESULT:0:7}" ] ; then
+  echomsg "${LOGMSG}" ${LOG} 
+  jobend 99 9902 ${HOSPNUM} "${JOBID}" "${SHELLID}" "${RESULT}" ${LOG}
+fi
+
+creymd=`date +'%Y%m%d'`
+sed -e "s/:HOSPNUM:/${HOSPNUM}/g" \
+    -e "s/:TERMID:/${TERMID}/g" \
+    -e "s/:CREYMD:/${creymd}/g" \
+    ${WORKDIR}/${FILENAME} > ${WORKDIR}/${FILENAME}.wk
+
+mksqldata.rb ${WORKDIR}/${FILENAME}.wk ${WORKDIR}/${FILENAME}.sql
+rm -f ${WORKDIR}/${FILENAME}.wk
+
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
+          -parameter ${HOSPNUM},${WORKDIR}/${FILENAME}.sql 2>&1 >> ${LOG}
+if [ $? -ne 0 ] ; then 
+  rm -f ${WORKDIR}/${FILENAME}.wk
+  ERRMSG="マスター登録処理でエラーが発生しました"
+  jobend 99 9903 ${HOSPNUM} "${JOBID}" "${SHELLID}" "${ERRMSG}" ${LOG}
+fi
+
+rm -f ${WORKDIR}/${FILENAME}.wk
+
+MSG="マスター取得処理が終了しました"
+jobend 0 0000 ${HOSPNUM} "${JOBID}" "${SHELLID}" "${MSG}" ${LOG}
+
+exit 0
