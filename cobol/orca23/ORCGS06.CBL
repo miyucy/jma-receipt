@@ -1178,6 +1178,7 @@
       *
            MOVE    ZERO                TO  IDX4
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+                    OR   ( IDX4           >=   50 )
       *
                COMPUTE IDX4    =   IDX4    +   1
       *
