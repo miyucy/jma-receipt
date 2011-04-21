@@ -28,6 +28,8 @@
            03  ORCSAPIHKN-KBN              PIC  X(01).
       *診療科（前回受診履歴より）
            03  ORCSAPIHKN-SRYKA            PIC  X(02).
+      *処理区分２（１：患者登録時）
+           03  ORCSAPIHKN-KBN2             PIC  X(01).
       *保険情報
            03  ORCSAPIHKN-IN-HKNAREA.
       *        保険種類
@@ -86,6 +88,9 @@
       *            適用期間
                    07  ORCSAPIHKN-NAI-TEKSTYMD     PIC  X(08).
                    07  ORCSAPIHKN-NAI-TEKEDYMD     PIC  X(08).
+      *            資格取得日
+                   07  ORCSAPIHKN-SKKGETYMD        PIC  X(10).
+                   07  ORCSAPIHKN-NAI-SKKGETYMD    PIC  X(08).
       *            非表示区分
                    07  ORCSAPIHKN-HYOJIKBN         PIC  X(01).
       *            公費種類・公費ＩＤ

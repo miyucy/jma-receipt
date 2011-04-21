@@ -3711,6 +3711,44 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        510-ERRSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  SPA-ERRMSG
+      *    エラーメッセージ編集（ＡＰＩと共通）
+           CALL    "ORCSP90"           USING   SPA-AREA
+                                               SPA-P02KYOUTU
+                                               SPA-P02SCRAREA
+      *
+           EVALUATE    SPA-ERRCD
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+               WHEN    "9998"
+                   STRING  "他端末で使用中です。" 
+                           "更新はできません。"    DELIMITED  BY  SIZE
+                           SLOCK-MSG               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+           END-EVALUATE
+      *
+           MOVE    MCP-WIDGET          TO  SPA-WIDGET
+      *
+           MOVE    SPACE               TO  PERR
+           MOVE    SPA-ERRCD           TO  PERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  PERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "PERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "PERR"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+      *!!!	以下削除
+           GO     TO      510-ERRSET-EXT
+      *!!!
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "カナ氏名は全角で入力して下さい"

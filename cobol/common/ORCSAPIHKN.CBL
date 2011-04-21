@@ -60,6 +60,7 @@
            03  FLG-OK3             PIC 9(01).
            03  FLG-IN-OK           PIC 9(01).
            03  FLG-KOHARI          PIC 9(01).
+           03  FLG-CHK-OK          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -75,6 +76,7 @@
            03  IDH-MAX             PIC 9(04).
            03  IDK-MAX             PIC 9(04).
            03  IDX-KOH             PIC 9(04).
+           03  IDX-TBL             PIC 9(04).
       *
            03  HZN-IDK             PIC 9(04).
       *
@@ -312,10 +314,21 @@
            MOVE    ZERO                TO  IDX-MAX
            PERFORM UNTIL   (FLG-HKNCOMBI   =   1   )  OR
                            (IDX-MAX        >   40  )
-               IF     (SPA-SYSYMD              >=  COMB-TEKSTYMD ) AND
-                      (SPA-SYSYMD              <=  COMB-TEKEDYMD ) AND
-                      (COMB-DELKBN             =   SPACE         ) AND
-                      (COMB-HYOJIKBN       NOT =   "1"           )
+               MOVE    ZERO                TO  FLG-CHK-OK
+               IF     (COMB-DELKBN         =   SPACE     ) AND
+                      (COMB-HYOJIKBN   NOT =   "1"       )
+                   IF      ORCSAPIHKN-KBN2     =   "1"
+      *                新規登録時すべて
+                       MOVE    1                   TO  FLG-CHK-OK
+                   ELSE
+      *                当日有効
+                       IF     (SPA-SYSYMD      >=  COMB-TEKSTYMD ) AND
+                              (SPA-SYSYMD      <=  COMB-TEKEDYMD )
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   END-IF
+               END-IF
+               IF      FLG-CHK-OK            =   1
                    ADD     1                 TO  IDX-MAX
                    MOVE    HKNCOMBI-REC      TO  TBL-HKNCOMBI-REC
                                                          (IDX-MAX)
@@ -349,10 +362,20 @@
            MOVE    ZERO                TO  IDH-MAX 
            PERFORM     UNTIL   ( FLG-PTHKNINF  =   1 )  OR
                                ( IDH-MAX       >=  40)
-      *        当日有効であること
-               IF     (PTHKN-SAKJOKBN        =   SPACE )  AND
-                      (PTHKN-TEKSTYMD        <=  SPA-SYSYMD )  AND
-                      (PTHKN-TEKEDYMD        >=  SPA-SYSYMD )
+               MOVE    ZERO                TO  FLG-CHK-OK
+               IF     (PTHKN-SAKJOKBN      =   SPACE )
+                   IF      ORCSAPIHKN-KBN2     =   "1"
+      *                新規登録時すべて
+                       MOVE    1                   TO  FLG-CHK-OK
+                   ELSE
+      *                当日有効であること
+                       IF     (PTHKN-TEKSTYMD    <=  SPA-SYSYMD )  AND
+                              (PTHKN-TEKEDYMD    >=  SPA-SYSYMD )
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   END-IF
+               END-IF
+               IF      FLG-CHK-OK            =   1
                    ADD     1                   TO  IDH-MAX 
                    MOVE    PTHKNINF-REC        TO  TBL-PTHKNINF-REC
                                                             (IDH-MAX)
@@ -386,10 +409,20 @@
            MOVE    ZERO                TO  IDK-MAX 
            PERFORM     UNTIL   ( FLG-PTKOHINF  =   1 )  OR
                                ( IDK-MAX       >=  40)
-      *        当日有効であること
-               IF     (PTKOH-SAKJOKBN        =   SPACE )  AND
-                      (PTKOH-TEKSTYMD        <=  SPA-SYSYMD )  AND
-                      (PTKOH-TEKEDYMD        >=  SPA-SYSYMD )
+               MOVE    ZERO                TO  FLG-CHK-OK
+               IF     (PTKOH-SAKJOKBN      =   SPACE )
+                   IF      ORCSAPIHKN-KBN2     =   "1"
+      *                新規登録時すべて
+                       MOVE    1                   TO  FLG-CHK-OK
+                   ELSE
+      *                当日有効であること
+                       IF     (PTKOH-TEKSTYMD    <=  SPA-SYSYMD )  AND
+                              (PTKOH-TEKEDYMD    >=  SPA-SYSYMD )
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   END-IF
+               END-IF
+               IF      FLG-CHK-OK            =   1
                    ADD     1                   TO  IDK-MAX 
                    MOVE    PTKOHINF-REC        TO  TBL-PTKOHINF-REC
                                                             (IDK-MAX)
@@ -458,6 +491,10 @@
       *
       *    出力編集
            PERFORM 290-HKNCOMBI-OUTHENSYU-SEC
+      *    新規登録時、保険組合せ対象外の公費
+           IF      ORCSAPIHKN-KBN2     =   "1"
+               PERFORM 299-PTKOHINF-OUTHEN-SEC
+           END-IF
       *
            .
        200-HKNCOMBI-SET-EXT.
@@ -836,11 +873,13 @@
       *****************************************************************
        290-HKNCOMBI-OUTHENSYU-SEC             SECTION.
       *
+           MOVE    ZERO                TO  IDX-TBL
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   IDX-MAX )
                           OR  (IDX     >   20      )
                IF      TBL-COMB-HKNCOMBINUM (IDX)  NOT =   SPACE
                    PERFORM 2901-HKNCOMBI-HEN-SEC
+                   MOVE    IDX                 TO  IDX-TBL
                END-IF
            END-PERFORM
            .
@@ -897,6 +936,17 @@
                    MOVE    TBL-PTHKN-TEKEDYMD (IDH)
                                            TO  ORCSAPIHKN-NAI-TEKEDYMD
                                                                (IDX)
+      *            資格取得日
+                   IF      TBL-PTHKN-SKKGETYMD (IDH) NOT =   SPACE
+                       MOVE    TBL-PTHKN-SKKGETYMD (IDH) TO  WRK-SYMD
+                       PERFORM 800-DAYHEN01-SEC
+                       MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-SKKGETYMD
+                                                                (IDX)
+                   END-IF
+                   MOVE    TBL-PTHKN-SKKGETYMD (IDH)
+                                           TO  ORCSAPIHKN-NAI-SKKGETYMD
+                                                                (IDX)
+      *
                    MOVE    IDH-MAX         TO  IDH
                END-IF
            END-PERFORM
@@ -1096,6 +1146,66 @@
                                                                (IDX IDY)
            .
        400-KOHFTN-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ対象外の公費編集処理
+      *****************************************************************
+       299-PTKOHINF-OUTHEN-SEC                SECTION.
+      *
+           MOVE    IDX-TBL             TO  IDX
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL      (IDH     >   IDK-MAX )
+                          OR  (IDX     >=  20      )
+      *        特定公費（減免〜後期非該当）
+               IF      (TBL-PTKOH-KOHNUM (IDH) =   "956"
+                                               OR  "957"
+                                               OR  "958"
+                                               OR  "959"
+                                               OR  "977"
+                                               OR  "978"
+                                               OR  "979"
+                                               OR  "976"  )
+               OR     (TBL-PTKOH-KOHNUM(IDH) (1:2)  =   "96"  )
+                   ADD     1               TO  IDX
+      *            保険組合せ作成なし
+                   MOVE    ALL "*"         TO  ORCSAPIHKN-THKNCOMBI(IDX)
+                   MOVE    ALL "*"         TO  ORCSAPIHKN-HKNNUM (IDX)
+                   MOVE    ALL "＊"        TO  ORCSAPIHKN-HKNNUM-NAME
+                                                                 (IDX)
+                   MOVE    1               TO  IDY
+      *            公費の種類
+                   MOVE    TBL-PTKOH-KOHNUM (IDH)
+                                           TO  ORCSAPIHKN-KOHNUM
+                                                               (IDX IDY)
+      *            負担者番号
+                   MOVE    TBL-PTKOH-FTNJANUM (IDH)
+                                           TO  ORCSAPIHKN-FTNJANUM
+                                                               (IDX IDY)
+      *            受給者番号
+                   MOVE    TBL-PTKOH-JKYSNUM (IDH)
+                                           TO  ORCSAPIHKN-JKYSNUM
+                                                               (IDX IDY)
+      *            有効開始日
+                   MOVE    TBL-PTKOH-TEKSTYMD (IDH)    TO  WRK-SYMD
+                   PERFORM 800-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKSTYMD
+                                                               (IDX IDY)
+      *            有効終了日
+                   MOVE    TBL-PTKOH-TEKEDYMD (IDH)    TO  WRK-SYMD
+                   PERFORM 800-DAYHEN01-SEC
+                   MOVE    WRK-HEN-DATE    TO  ORCSAPIHKN-KOH-TEKEDYMD
+                                                               (IDX IDY)
+      *            負担率・負担額編集
+                   PERFORM 400-KOHFTN-HENSYU-SEC
+      *            公費の名称
+                   MOVE    HKN-TANSEIDONAME
+                                           TO  ORCSAPIHKN-KOHNUM-NAME
+                                                               (IDX IDY)
+               END-IF
+           END-PERFORM
+           .
+       299-PTKOHINF-OUTHEN-EXT.
            EXIT.
       *
       *****************************************************************

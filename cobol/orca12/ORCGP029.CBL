@@ -382,8 +382,15 @@
            END-IF
       *
            IF      FLG-END         =   ZERO
+               IF      SPA-P02-GAMEN   =   "API"
+      *        ＡＰＩ更新処理
+                   PERFORM 300-API-KOUSIN-SEC
+               ELSE
+      *
       *        ＤＢ更新処理
                PERFORM 200-MAIN-SEC
+           END-IF
+      *
            END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
@@ -2532,6 +2539,55 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        21001-HC02-CALL-EXT.
            EXIT.
       *****************************************************************
+      *    ＡＰＩ患者保険情報更新処理
+      *****************************************************************
+       300-API-KOUSIN-SEC         SECTION.
+      *
+      *    保険・公費・保険組合せのみ
+      *    パラメタファイルより
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           PERFORM
+               UNTIL  (FLG-PARA            =   1 )
+               EVALUATE    PARA-FILEMEI
+                   WHEN    "PTHKNINF"
+                       PERFORM 220-PTHKNINF-SYORI-SEC
+                       ADD     1        TO  WRK-HKN-CNT
+                   WHEN    "PTKOHINF"
+                       PERFORM 230-PTKOHINF-SYORI-SEC
+                       ADD     1        TO  WRK-KOH-CNT
+                   WHEN    "HKNCOMBI"
+                       PERFORM 250-HKNCOMBI-SYORI-SEC
+               END-EVALUATE
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       300-API-KOUSIN-EXT.
+           EXIT.
+      *****************************************************************
       *    患者マスター読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
@@ -2707,6 +2763,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        930-UKETUKE-READ-EXT.
+           EXIT.
       *****************************************************************
       *    患者番号変換読み込み
       *****************************************************************

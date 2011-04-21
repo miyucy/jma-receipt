@@ -294,6 +294,7 @@
                       (SPA-PIDCD       NOT =   SPACE )
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
+                   MOVE    IDX-K           TO  SPA-KOH-ERRIDX
                END-IF
            END-PERFORM
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -312,6 +313,10 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
+               END-IF
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )
+                   MOVE    IDX-K           TO  SPA-KOH-ERRIDX
                END-IF
            END-PERFORM
       *
@@ -1793,6 +1798,10 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
+               END-IF
+               IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                      (SPA-PIDCD       NOT =   SPACE )
+                   MOVE    IDX-K           TO  SPA-KOH-ERRIDX
                END-IF
            END-PERFORM
       *

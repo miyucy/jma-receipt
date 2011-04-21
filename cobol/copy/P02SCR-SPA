@@ -331,6 +331,8 @@
                    07  SPA-NAI-KOHSTR          PIC 9(04).
       *            公費表示最終
                    07  SPA-NAI-KOHEND          PIC 9(04).
+      *            公費エラー位置（API用）
+                   07  SPA-KOH-ERRIDX          PIC 9(02).
       *
       *        保険組合せ（受付と共通）
                05  SPA-HKNCOMBI-AREA.

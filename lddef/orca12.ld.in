@@ -122,7 +122,8 @@ db	{
 */
 
 db "xml" {
- xml_patientinfores;
+ xml_patientmodreq;
+ xml_patientmodres;
 };
 
 #include "orcadb.inc"
