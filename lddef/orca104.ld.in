@@ -54,8 +54,13 @@ db	{
 	tbl_hknjainf;
 	tbl_adrs;
 	tbl_jinmei;
+	tbl_jobkanri;
 	tbl_syskanri;
 	tbl_help;
+};
+
+ db	"shell"	{
+	shell;
 };
 
 /* #include "orcadb.inc" */

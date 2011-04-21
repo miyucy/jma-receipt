@@ -71,12 +71,26 @@
                            11  SPA-GMN-TSTYUKYMD  PIC X(09).
                            11  SPA-GMN-TEDYUKYMD  PIC X(09).  
                    07  SPA-GMN-HKNNUM             PIC X(03).
+                   07  SPA-GMN-HKNNUM-NO          PIC 9(03).
                    07  SPA-GMN-KOUMOKU.
                        09  SPA-GMN-SELNUM         PIC 9(03).
                        09  SPA-GMN-STYUKYMD       PIC X(10).
                        09  SPA-GMN-EDYUKYMD       PIC X(10).
                        09  SPA-GMN-TANSEIDONAME   PIC X(10).
                        09  SPA-GMN-PAYKBN         PIC X(02). 
+                   07  SPA-GMN-PREFNUM-G.
+                       09  SPA-GMN-PREFNUM         PIC X(2).
+                       09  SPA-GMN-PREFNUMFL       PIC X(1).
+                       09  SPA-GMN-PREFNUMMEI      PIC X(20).
+                   07  SPA-GMN-PREFNUMLST-G.
+                       09  SPA-GMN-PREFNUM-MAX         PIC 9(03).
+                       09  SPA-GMN-PREFNUMLST          OCCURS  50.
+                           11  SPA-GMN-PREFNUML        PIC X(02).
+                           11  SPA-GMN-PREFNUMFLL      PIC X(01).
+                           11  SPA-GMN-PREFNUMMEIL     PIC X(20).
+                   07  SPA-GMN-MESSAGE-STYLE   PIC X(20).
+                   07  SPA-GMN-MESSAGE         PIC X(100).
+                   07  SPA-GMN-DURATION        PIC S9(09) BINARY.
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-HKNNUM             PIC X(03).
@@ -90,8 +104,11 @@
       *
               05  SPA-NAI-SELNO                   PIC 9(03).
       *
-      *   
            COPY    "ENUM-VALUE".
+      *
+           COPY    "CPSHELLTBL.INC".
+      *
+           COPY    "CPMKPASS.INC".
       *
       *    ¥Õ¥é¥°¥¨¥ê¥¢
        01  FLG-AREA.
@@ -99,13 +116,17 @@
            03  FLG-HKNNUM                         PIC 9(01).
            03  FLG-CHK                            PIC 9(01).
            03  FLG-KOUSIN                         PIC 9(01).
-      *
+           03  FLG-OK                             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                               PIC 9(04).
            03  IDY                               PIC 9(04).
            03  IDZ                               PIC 9(04).
+      *
+      *    ½èÍý¶èÊ¬ÎÎ°è
+       01  SKBN-AREA.
+           03  SKBN-RUN            PIC X(03).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -137,7 +158,15 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-                    
+       01  SHELL-AREA.
+           03  SHELL-NAME          PIC X(13)  VALUE
+               "master_get.sh".
+      *
+       01  WRK-CONS-AREA.
+      *    ¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ  
+           03  WRK-CONS-JOB-SHELLID
+                                   PIC X(08)   VALUE   "MSTGET".
+           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -145,6 +174,10 @@
       *
        01  HKNNUM-REC.
            COPY  "CPHKNNUM.INC".
+      *
+      *    ¥¸¥ç¥Ö´ÉÍý
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -161,6 +194,9 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
+      *
+      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+           COPY    "CPORCSJOBKANRI.INC".
       *
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
@@ -324,10 +360,119 @@
                                    SPA-V01KYOUTU
            MOVE    1               TO  SPA-GMN-CUR
       *
+      *    ÅÔÆ»ÉÜ¸©ÈÖ¹æ¥³¥ó¥Ü¹àÌÜÀßÄê
+           PERFORM 3101-PREFNUMLST-SET-SEC
+      *
            .
        310-SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ÅÔÆ»ÉÜ¸©ÈÖ¹æ¥³¥ó¥Ü¹àÌÜÀßÄê½èÍý
+      *****************************************************************
+       3101-PREFNUMLST-SET-SEC         SECTION.
+      *
+           INITIALIZE                      SPA-GMN-PREFNUMLST-G
+           MOVE    47                  TO  SPA-GMN-PREFNUM-MAX
+      *
+           MOVE    "01"                TO  SPA-GMN-PREFNUML   (1) 
+           MOVE    "ËÌ³¤Æ»"            TO  SPA-GMN-PREFNUMMEIL(1)
+           MOVE    "02"                TO  SPA-GMN-PREFNUML   (2)
+           MOVE    "ÀÄ¿¹"              TO  SPA-GMN-PREFNUMMEIL(2)
+           MOVE    "03"                TO  SPA-GMN-PREFNUML   (3)
+           MOVE    "´ä¼ê"              TO  SPA-GMN-PREFNUMMEIL(3) 
+           MOVE    "04"                TO  SPA-GMN-PREFNUML   (4)
+           MOVE    "µÜ¾ë"              TO  SPA-GMN-PREFNUMMEIL(4)
+           MOVE    "05"                TO  SPA-GMN-PREFNUML   (5)
+           MOVE    "½©ÅÄ"              TO  SPA-GMN-PREFNUMMEIL(5)
+           MOVE    "06"                TO  SPA-GMN-PREFNUML   (6)
+           MOVE    "»³·Á"              TO  SPA-GMN-PREFNUMMEIL(6)
+           MOVE    "07"                TO  SPA-GMN-PREFNUML   (7)
+           MOVE    "Ê¡Åç"              TO  SPA-GMN-PREFNUMMEIL(7)
+           MOVE    "08"                TO  SPA-GMN-PREFNUML   (8)
+           MOVE    "°ñ¾ë"              TO  SPA-GMN-PREFNUMMEIL(8)
+           MOVE    "09"                TO  SPA-GMN-PREFNUML   (9)
+           MOVE    "ÆÊÌÚ"              TO  SPA-GMN-PREFNUMMEIL(9)
+           MOVE    "10"                TO  SPA-GMN-PREFNUML   (10)
+           MOVE    "·²ÇÏ"              TO  SPA-GMN-PREFNUMMEIL(10)
+           MOVE    "11"                TO  SPA-GMN-PREFNUML   (11)
+           MOVE    "ºë¶Ì"              TO  SPA-GMN-PREFNUMMEIL(11)
+           MOVE    "12"                TO  SPA-GMN-PREFNUML   (12)
+           MOVE    "ÀéÍÕ"              TO  SPA-GMN-PREFNUMMEIL(12)
+           MOVE    "13"                TO  SPA-GMN-PREFNUML   (13)
+           MOVE    "Åìµþ"              TO  SPA-GMN-PREFNUMMEIL(13)
+           MOVE    "14"                TO  SPA-GMN-PREFNUML   (14)
+           MOVE    "¿ÀÆàÀî"            TO  SPA-GMN-PREFNUMMEIL(14)
+           MOVE    "15"                TO  SPA-GMN-PREFNUML   (15)
+           MOVE    "¿·³ã"              TO  SPA-GMN-PREFNUMMEIL(15)
+           MOVE    "16"                TO  SPA-GMN-PREFNUML   (16)
+           MOVE    "ÉÙ»³"              TO  SPA-GMN-PREFNUMMEIL(16)
+           MOVE    "17"                TO  SPA-GMN-PREFNUML   (17)
+           MOVE    "ÀÐÀî"              TO  SPA-GMN-PREFNUMMEIL(17)
+           MOVE    "18"                TO  SPA-GMN-PREFNUML   (18)
+           MOVE    "Ê¡°æ"              TO  SPA-GMN-PREFNUMMEIL(18)
+           MOVE    "19"                TO  SPA-GMN-PREFNUML   (19)
+           MOVE    "»³Íü"              TO  SPA-GMN-PREFNUMMEIL(19)
+           MOVE    "20"                TO  SPA-GMN-PREFNUML   (20)
+           MOVE    "Ä¹Ìî"              TO  SPA-GMN-PREFNUMMEIL(20)
+           MOVE    "21"                TO  SPA-GMN-PREFNUML   (21)
+           MOVE    "´ôÉì"              TO  SPA-GMN-PREFNUMMEIL(21)
+           MOVE    "22"                TO  SPA-GMN-PREFNUML   (22)
+           MOVE    "ÀÅ²¬"              TO  SPA-GMN-PREFNUMMEIL(22)
+           MOVE    "23"                TO  SPA-GMN-PREFNUML   (23)
+           MOVE    "°¦ÃÎ"              TO  SPA-GMN-PREFNUMMEIL(23)
+           MOVE    "24"                TO  SPA-GMN-PREFNUML   (24)
+           MOVE    "»°½Å"              TO  SPA-GMN-PREFNUMMEIL(24)
+           MOVE    "25"                TO  SPA-GMN-PREFNUML   (25)
+           MOVE    "¼¢²ì"              TO  SPA-GMN-PREFNUMMEIL(25)
+           MOVE    "26"                TO  SPA-GMN-PREFNUML   (26)
+           MOVE    "µþÅÔ"              TO  SPA-GMN-PREFNUMMEIL(26)
+           MOVE    "27"                TO  SPA-GMN-PREFNUML   (27)
+           MOVE    "Âçºå"              TO  SPA-GMN-PREFNUMMEIL(27)
+           MOVE    "28"                TO  SPA-GMN-PREFNUML   (28)
+           MOVE    "Ê¼¸Ë"              TO  SPA-GMN-PREFNUMMEIL(28)
+           MOVE    "29"                TO  SPA-GMN-PREFNUML   (29)
+           MOVE    "ÆàÎÉ"              TO  SPA-GMN-PREFNUMMEIL(29)
+           MOVE    "30"                TO  SPA-GMN-PREFNUML   (30)
+           MOVE    "ÏÂ²Î»³"            TO  SPA-GMN-PREFNUMMEIL(30)
+           MOVE    "31"                TO  SPA-GMN-PREFNUML   (31)
+           MOVE    "Ä»¼è"              TO  SPA-GMN-PREFNUMMEIL(31)
+           MOVE    "32"                TO  SPA-GMN-PREFNUML   (32)
+           MOVE    "Åçº¬"              TO  SPA-GMN-PREFNUMMEIL(32)
+           MOVE    "33"                TO  SPA-GMN-PREFNUML   (33)
+           MOVE    "²¬»³"              TO  SPA-GMN-PREFNUMMEIL(33)
+           MOVE    "34"                TO  SPA-GMN-PREFNUML   (34)
+           MOVE    "¹­Åç"              TO  SPA-GMN-PREFNUMMEIL(34)
+           MOVE    "35"                TO  SPA-GMN-PREFNUML   (35)
+           MOVE    "»³¸ý"              TO  SPA-GMN-PREFNUMMEIL(35)
+           MOVE    "36"                TO  SPA-GMN-PREFNUML   (36)
+           MOVE    "ÆÁÅç"              TO  SPA-GMN-PREFNUMMEIL(36)
+           MOVE    "37"                TO  SPA-GMN-PREFNUML   (37)
+           MOVE    "¹áÀî"              TO  SPA-GMN-PREFNUMMEIL(37)
+           MOVE    "38"                TO  SPA-GMN-PREFNUML   (38)
+           MOVE    "°¦É²"              TO  SPA-GMN-PREFNUMMEIL(38)
+           MOVE    "39"                TO  SPA-GMN-PREFNUML   (39)
+           MOVE    "¹âÃÎ"              TO  SPA-GMN-PREFNUMMEIL(39)
+           MOVE    "40"                TO  SPA-GMN-PREFNUML   (40)
+           MOVE    "Ê¡²¬"              TO  SPA-GMN-PREFNUMMEIL(40)
+           MOVE    "41"                TO  SPA-GMN-PREFNUML   (41)
+           MOVE    "º´²ì"              TO  SPA-GMN-PREFNUMMEIL(41)
+           MOVE    "42"                TO  SPA-GMN-PREFNUML   (42)
+           MOVE    "Ä¹ºê"              TO  SPA-GMN-PREFNUMMEIL(42)
+           MOVE    "43"                TO  SPA-GMN-PREFNUML   (43)
+           MOVE    "·§ËÜ"              TO  SPA-GMN-PREFNUMMEIL(43)
+           MOVE    "44"                TO  SPA-GMN-PREFNUML   (44)
+           MOVE    "ÂçÊ¬"              TO  SPA-GMN-PREFNUMMEIL(44)
+           MOVE    "45"                TO  SPA-GMN-PREFNUML   (45)
+           MOVE    "µÜºê"              TO  SPA-GMN-PREFNUMMEIL(45)
+           MOVE    "46"                TO  SPA-GMN-PREFNUML   (46)
+           MOVE    "¼¯»ùÅç"            TO  SPA-GMN-PREFNUMMEIL(46)
+           MOVE    "47"                TO  SPA-GMN-PREFNUML   (47)
+           MOVE    "²­Æì"              TO  SPA-GMN-PREFNUMMEIL(47)
+      *
+           . 
+       3101-PREFNUMLST-SET-EXT.
+           EXIT.
       *****************************************************************
       *    ²èÌÌÁ«°Ü½èÍý
       *****************************************************************
@@ -345,6 +490,15 @@
                    IF    ( SPA-PREFNUM =   40 )
                        PERFORM  450-V03-SENI-SEC
                    END-IF
+      *        ¾õ¶·
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
+                   PERFORM 400-JYOKYO-SEC
+      *        ¾ðÊóºï½ü
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 400-JOBDEL-SEC
+      *        »²¾È
+               WHEN    "CLICKED"       ALSO    "B11"
+                   PERFORM 400-JYOUHOU-SEC
       *        ³ÎÄê
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  410-KAKUTEI-SEC
@@ -407,6 +561,7 @@
            MOVE    V01-STYUKYMD        TO  SPA-GMN-STYUKYMD
            MOVE    V01-EDYUKYMD        TO  SPA-GMN-EDYUKYMD
            MOVE    V01-PAYKBN          TO  SPA-GMN-PAYKBN
+           MOVE    V01-PREFNUM         TO  SPA-GMN-PREFNUM-G
             .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -416,6 +571,11 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
+      *    ÅÔÆ»ÉÜ¸©ÈÖ¹æ¥Á¥§¥Ã¥¯
+           PERFORM 4101-PREFNUM-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
            PERFORM  4105-PAYKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -475,7 +635,7 @@
       *****************************************************************
        4101-SELNUM-CHK-SEC       SECTION.
       *
-           MOVE    2               TO  SPA-GMN-CUR
+           MOVE    3               TO  SPA-GMN-CUR
       *
            INITIALIZE                     SPA-GMN-KOUMOKU
                                           SPA-NAI-KOUMOKU
@@ -486,10 +646,10 @@
       *    ÁªÂòÈÖ¹æ¥Á¥§¥Ã¥¯
            IF      SPA-GMN-SELNUM      =   ZERO
                IF      SPA-GMN-HKNNUM  =   "027"
-                   MOVE    5                   TO  SPA-GMN-CUR
+                   MOVE    6                   TO  SPA-GMN-CUR
                ELSE
                    MOVE    ZERO                TO  SPA-GMN-PAYKBN
-                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    4                   TO  SPA-GMN-CUR
                END-IF         
                GO  TO  4101-SELNUM-CHK-EXT 
            ELSE
@@ -543,7 +703,7 @@
                MOVE    HKN-TANSEIDONAME        TO  SPA-GMN-TANSEIDONAME
            END-IF
       *
-           MOVE    3                   TO  SPA-GMN-CUR 
+           MOVE    4                   TO  SPA-GMN-CUR 
            .
        41011-SELNUM-HENSYU-EXT.
            EXIT.
@@ -565,7 +725,7 @@
                MOVE    WRK-SYMD             TO  SPA-NAI-STYUKYMD 
                MOVE    WRK-HENYMDG          TO  SPA-GMN-STYUKYMD
            ELSE
-               MOVE    3                  TO  SPA-GMN-CUR
+               MOVE    4                  TO  SPA-GMN-CUR
                GO  TO  4102-STYUKYMD-CHK-EXT
            END-IF
       *
@@ -596,7 +756,7 @@
                MOVE    WRK-SYMD             TO  SPA-NAI-EDYUKYMD 
                MOVE    WRK-HENYMDG          TO  SPA-GMN-EDYUKYMD
            ELSE
-               MOVE    4                  TO  SPA-GMN-CUR
+               MOVE    5                  TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -655,14 +815,15 @@
            PERFORM 900-HKNNUM-CLOSE-SEC
       *
            MOVE    SPA-GMN-HKNNUM      TO  SPA-NAI-HKNNUM
+           MOVE    SPA-GMN-HKNNUM      TO  SPA-GMN-HKNNUM-NO
       *     
            EVALUATE    SPA-GMN-MAX
                WHEN    ZERO
                    IF      SPA-GMN-HKNNUM  =   "027"
-                       MOVE    5                   TO  SPA-GMN-CUR
+                       MOVE    6                   TO  SPA-GMN-CUR
                    ELSE
                        MOVE    ZERO                TO  SPA-GMN-PAYKBN
-                       MOVE    3                   TO  SPA-GMN-CUR
+                       MOVE    4                   TO  SPA-GMN-CUR
                    END-IF         
                WHEN    1
                    MOVE    SPA-GMN-TSTYUKYMD (1)   TO  SPA-GMN-STYUKYMD
@@ -676,7 +837,7 @@
                    MOVE    1                       TO  SPA-NAI-SELNO 
                    MOVE    12                      TO  SPA-GMN-CUR
                WHEN    OTHER
-                   MOVE    2                       TO  SPA-GMN-CUR
+                   MOVE    3                       TO  SPA-GMN-CUR
            END-EVALUATE           
            .
        4104-HKNNUM-CHK-EXT.
@@ -692,6 +853,36 @@
            END-IF
            .
        4105-PAYKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÅÔÆ»ÉÜ¸©ÈÖ¹æ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-PREFNUM-CHK-SEC            SECTION.
+      *
+           IF    ( SPA-GMN-PREFNUM-G   =   SPACE )
+               GO  TO  4101-PREFNUM-CHK-EXT
+           END-IF
+      *
+           MOVE    ZERO            TO  FLG-OK
+      *
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL ( IDY     >   SPA-GMN-PREFNUM-MAX )
+               IF    ( SPA-GMN-PREFNUM =   SPA-GMN-PREFNUML (IDY) )
+                   MOVE    SPA-GMN-PREFNUMLST (IDY)
+                                       TO  SPA-GMN-PREFNUM-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-PREFNUM-MAX TO  IDY
+               END-IF
+           END-PERFORM
+      *
+          IF      FLG-OK          =   ZERO
+               MOVE    "0007"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-GMN-CUR
+           END-IF
+           .
+      *
+       4101-PREFNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -722,6 +913,101 @@
            PERFORM 41011-SELNUM-HENSYU-SEC
            .
        41015-LIST1SEL-EXT.
+           EXIT.
+      *
+     *****************************************************************
+      *    ¾õ¶·
+      *****************************************************************
+       400-JYOKYO-SEC              SECTION.
+      *
+           PERFORM 820-JOBKANRI-READ-SEC
+      *
+           IF      SKBN-RUN        =   "RUN"
+               MOVE    "½èÍýÃæ¤Ç¤¹"    TO  SPA-GMN-MESSAGE
+               MOVE    "blue"          TO  SPA-GMN-MESSAGE-STYLE
+               MOVE    5               TO  SPA-GMN-DURATION
+               GO  TO  400-JYOKYO-EXT
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-MESSAGE
+               MOVE    SPACE           TO  SPA-GMN-MESSAGE-STYLE
+               MOVE    ZERO            TO  SPA-GMN-DURATION
+           END-IF
+      *
+           PERFORM 4104-HKNNUM-CHK-SEC
+      *
+           IF      SPA-GMN-MAX     =  ZERO
+               MOVE    SPACE         TO  SKBN-RUN
+               MOVE    "¹¹¿·¥Ç¡¼¥¿¤Ï¤¢¤ê¤Þ¤»¤ó¡£"
+                                     TO  SPA-GMN-MESSAGE
+               MOVE    "blue"        TO  SPA-GMN-MESSAGE-STYLE
+               GO  TO  400-JYOKYO-EXT
+           END-IF
+      *
+           .
+       400-JYOKYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¾ðÊóÆþ¼ê
+      *****************************************************************
+       400-JYOUHOU-SEC             SECTION.
+      *
+           PERFORM 820-JOBKANRI-READ-SEC
+      *
+           IF      SKBN-RUN        =   "RUN"
+               MOVE    "½èÍýÃæ¤Ç¤¹"    TO  SPA-GMN-MESSAGE
+               MOVE    "blue"          TO  SPA-GMN-MESSAGE-STYLE
+               MOVE    5               TO  SPA-GMN-DURATION
+               GO  TO  400-JYOUHOU-EXT
+           END-IF
+      *
+      *    ¥¸¥ç¥Ö´ÉÍýºï½ü
+           PERFORM 820-JOBKANRI-DEL-SEC
+      *
+      *    ¥¸¥ç¥Ö´ÉÍýºîÀ®
+           PERFORM 820-JOBKANRI-JBS-SEC
+      *
+      *    ½èÍý
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  ORCSMKPASSAREA
+      *
+           MOVE    SHELL-NAME      TO  SHELLTBL-NAME
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
+           MOVE    SPA-TERMID      TO  SHELLTBL-ARG2
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG3
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG4
+           MOVE    "HKNNUM"        TO  SHELLTBL-ARG5
+           MOVE    SPA-GMN-PREFNUM TO  SHELLTBL-ARG6
+           MOVE    SPA-GMN-HKNNUM-NO   TO  SHELLTBL-ARG7
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "allways"       TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           PERFORM 400-JYOKYO-SEC
+      *
+           .
+       400-JYOUHOU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¸¥ç¥Öºï½ü
+      *****************************************************************
+       400-JOBDEL-SEC              SECTION.
+      *
+           PERFORM 820-JOBKANRI-DEL-SEC
+           MOVE    SPACE           TO  SPA-GMN-MESSAGE
+           MOVE    SPACE           TO  SPA-GMN-MESSAGE-STYLE
+           MOVE    ZERO            TO  SPA-GMN-DURATION
+      *
+           .
+       400-JOBDEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -775,7 +1061,7 @@
                END-IF
            END-PERFORM 
            IF      SPA-ERRCD           NOT =   SPACE
-               MOVE    2                   TO  SPA-GMN-CUR
+               MOVE    3                   TO  SPA-GMN-CUR
                GO  TO  410-KAKUTEI-EXT
            END-IF      
       *
@@ -993,7 +1279,6 @@
                                        TO  V01-TANSEIDONAME
            MOVE    SPA-GMN-PAYKBN      TO  V01-PAYKBN
       *
-      *
            IF    ( SPA-NAI-HKNNUM     =   "027" )
            AND   ( SPA-GMN-SELNUM     =   ZERO  )
                MOVE    WIDGET-NORMAL      TO  V01-PAYKBN-STATE
@@ -1006,6 +1291,35 @@
            ELSE
                MOVE    SPACE           TO V01-B05
            END-IF
+      *
+           IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
+                 ( SPA-GMN-HKNNUM-NO   <=  899 )
+               MOVE    WIDGET-NORMAL       TO  V01-PREFNUM-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  V01-PREFNUM-STATE
+               MOVE    SPACE               TO  SPA-GMN-PREFNUM-G
+           END-IF
+      *
+      *    ÅÔÆ»ÉÜ¸©ÈÖ¹æ
+           MOVE    SPA-GMN-PREFNUM-G       TO  V01-PREFNUM
+           MOVE    SPA-GMN-PREFNUM-MAX     TO  V01-PREFNUM-COUNT
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL ( IDY     >   SPA-GMN-PREFNUM-MAX )
+               MOVE    SPA-GMN-PREFNUMLST (IDY)
+                                           TO  V01-PREFNUMLST (IDY)
+           END-PERFORM
+      *
+           IF        ( SPA-GMN-PREFNUM NOT =   SPACE )
+               AND   ( SPA-ERRCD           =   SPACE )
+               MOVE    WIDGET-NORMAL       TO  V01-B11-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  V01-B11-STATE
+           END-IF
+      *
+           MOVE    SPA-GMN-MESSAGE     TO  V01-MESSAGE
+           MOVE    SPA-GMN-MESSAGE-STYLE
+                                       TO  V01-MESSAGE-STYLE
+           MOVE    SPA-GMN-DURATION    TO  V01-DURATION
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1024,14 +1338,16 @@
       *
            EVALUATE    SPA-GMN-CUR
                 WHEN   1
-                    MOVE  "HKNNUM"    TO  MCP-WIDGET
+                    MOVE  "HKNNUM"     TO  MCP-WIDGET
                 WHEN   2
-                    MOVE  "SELNUM"     TO  MCP-WIDGET
+                    MOVE  "PREFNUM"    TO  MCP-WIDGET
                 WHEN   3
-                    MOVE  "STYUKYMD"   TO  MCP-WIDGET
+                    MOVE  "SELNUM"     TO  MCP-WIDGET
                 WHEN   4
-                    MOVE  "EDYUKYMD"   TO  MCP-WIDGET
+                    MOVE  "STYUKYMD"   TO  MCP-WIDGET
                 WHEN   5
+                    MOVE  "EDYUKYMD"   TO  MCP-WIDGET
+                WHEN   6
                     MOVE  "PAYKBN"      TO  MCP-WIDGET
                 WHEN   12
                     MOVE  "B12"        TO  MCP-WIDGET
@@ -1048,9 +1364,9 @@
       *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "PAYKBN"
-                   MOVE    3               TO  SPA-GMN-CUR
-               WHEN    "STYUKYMD"
                    MOVE    4               TO  SPA-GMN-CUR
+               WHEN    "STYUKYMD"
+                   MOVE    5               TO  SPA-GMN-CUR
                WHEN    "EDYUKYMD"
                    MOVE    12              TO  SPA-GMN-CUR
            END-EVALUATE
@@ -1080,6 +1396,8 @@
                WHEN    "0006"
                    MOVE    "¥¨¥é¡¼¤¬¤¢¤ë¹àÌÜ¤¬¤¢¤ê¤Þ¤¹"
                                                       TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "ÅÔÆ»ÉÜ¸©¤¬¤Á¤¬¤¤¤Þ¤¹"     TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  VERR
@@ -1133,6 +1451,92 @@
       *
            .
        520-VIDSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¸¥ç¥Ö´ÉÍýÆÉ¹þ
+      *****************************************************************
+       820-JOBKANRI-READ-SEC       SECTION.
+      *
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+      *
+           IF      SJOBKANRI-RETURN    =   ZERO
+               IF      JOB-ERRCD(1:2)      =   "99"
+                   MOVE    SPACE           TO  SKBN-RUN
+               ELSE
+                   IF      JOB-ERRCD(1:2)      =   "01"
+                       MOVE    SPACE           TO  SKBN-RUN
+                   ELSE
+                       IF     (JOB-ENDTIME     NOT =   SPACE)  AND
+                              (JOB-ENDYMD      NOT =   SPACE)
+                           MOVE    SPACE           TO  SKBN-RUN
+                       ELSE
+                           MOVE    "RUN"           TO  SKBN-RUN
+                       END-IF
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    SPACE            TO  SKBN-RUN
+           END-IF
+           .
+      *
+       820-JOBKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¸¥ç¥Ö´ÉÍýºï½ü
+      *****************************************************************
+       820-JOBKANRI-DEL-SEC        SECTION.
+      *
+      *    ¥¸¥ç¥Ö´ÉÍýºï½ü
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+           .
+      *
+       820-JOBKANRI-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥¸¥ç¥Ö´ÉÍýºîÀ®
+      *****************************************************************
+       820-JOBKANRI-JBS-SEC        SECTION.
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    "ÊÝ¸±ÈÖ¹æ¾ðÊóÌä¹ç¤»"
+                                   TO  JOB-SHELLMSG
+      *
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+           .
+      *
+       820-JOBKANRI-JBS-EXT.
            EXIT.
       *
       *****************************************************************

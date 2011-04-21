@@ -3,6 +3,9 @@ V01	{
 		B05	{
 			label	varchar(8);
 		};
+		B11	{
+         		state	int;
+		};
 		STYUKYMD	{
 			value	varchar(11);
 		};
@@ -35,6 +38,21 @@ V01	{
 				}	[100];
 				select	bool[100];
 			};
+		};
+		CMB_PREFNUM	{
+			PREFNUM	{
+				value	varchar(23);
+			};
+			state   int;
+			count	int;
+			item	varchar(23)[50];
+		};
+		MESSAGE	{
+			style   varchar(20);
+			value	varchar(100);
+		};
+		pandatimer1     {
+			duration        int;
 		};
 	};
 };

@@ -18,6 +18,7 @@
         02  V01.
             03  V01-FIXED1.
               04  V01-B05       PIC X(08).
+              04  V01-B11-STATE PIC S9(9)   BINARY.
               04  V01-STYUKYMD.
                 05  V01-VALUE   PIC X(11).
               04  V01-EDYUKYMD.
@@ -42,3 +43,11 @@
                     07  V01-TSTYUKYMD PIC X(10).
                     07  V01-TEDYUKYMD PIC X(10).
                   06  V01-SELECT  PIC X       OCCURS  100 TIMES.
+              04  V01-CMB-PREFNUM.
+                05  V01-PREFNUM            PIC X(23).
+                05  V01-PREFNUM-STATE      PIC S9(9)   BINARY.
+                05  V01-PREFNUM-COUNT      PIC S9(9)   BINARY.
+                05  V01-PREFNUMLST         PIC X(23)   OCCURS  50 TIMES.
+              04  V01-MESSAGE-STYLE  PIC X(20).
+              04  V01-MESSAGE        PIC X(100).
+              04  V01-DURATION       PIC S9(09) BINARY.
