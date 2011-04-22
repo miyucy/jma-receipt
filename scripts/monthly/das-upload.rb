@@ -1,6 +1,6 @@
 #! /usr/bin/ruby
 
-$:.unshift(File.dirname(__FILE__) + "/../monthly/lib")
+$:.unshift(File.dirname(__FILE__) + "/lib")
 
 require "uri"
 require "net/https"
@@ -12,13 +12,10 @@ require "orcadas/utils"
 module OrcaDAS
   class Command
     def initialize()
-      @config = {
-        "Host" => "https://orca-das.orca.med.or.jp",
-        "PathInf" => "/realtime_infection/upload.cgi",
-        "CertificateCAFile" => "/etc/ssl/certs/orca-project-ca-1.crt",
-        "User" => "0000102",
-        "Password" => "Xinfection"
-      }
+      @config = self.load_config
+      if @config.nil? || @config.length <= 0 || @config["Host"].nil?
+        raise "101 config failure"
+      end
     end
 
     def http_request(url, http_method, header, body, config)
@@ -65,6 +62,9 @@ module OrcaDAS
       formdata = OrcaDAS::FormData.new
       data = File.open(filename).read
       formdata.add_data(data, filename)
+      form = OrcaDAS::FormData::Content.new("id",Digest::SHA1.hexdigest(DAS_CHECK_HOSPID),"id")
+      form.encoding = "quoted-printable"
+      formdata.add(form)
       #agreement = 0
       http_post(url, formdata.header, formdata.body, config){ |res|
         if res.code.to_i != 200
@@ -80,6 +80,9 @@ module OrcaDAS
     def login_check(config=@config)
       url = config["Host"] + config["Path"]
       formdata = OrcaDAS::FormData.new
+      form = OrcaDAS::FormData::Content.new("id",Digest::SHA1.hexdigest(DAS_CHECK_HOSPID),"id")
+      form.encoding = "quoted-printable"
+      formdata.add(form)
       agreement = 0
       http_post(url, formdata.header, formdata.body, config){ |res|
         if res.code.to_i != 200
@@ -119,7 +122,7 @@ module OrcaDAS
       logmessage = ""
       das = self.new
       if argv.length <= 0
-        STDERR.puts "das-upload2.rb $file"
+        STDERR.puts "das-upload.rb $file"
         exit 1
       end
       opt = argv.shift
@@ -131,8 +134,12 @@ module OrcaDAS
             exit!(das.login_check ? 0 : 1)
           elsif opt == "-c"
             exit!(das.server_check ? 0 : 1)
+          elsif opt == "-p"
+            exit!(das.run("PathProf",filename) ? 0 : 1)
           elsif opt == "-i"
             exit!(das.run("PathInf",filename) ? 0 : 1)
+          else
+            exit!(das.run("Path",filename) ? 0 : 1)
           end
         rescue Exception => ex
           if /^[0-9][0-9][0-9]/ =~ ex.message
@@ -147,4 +154,6 @@ module OrcaDAS
   end
 end
 
+DAS_CHECK_HOSPID = ENV['DAS_CHECK_HOSPID']
+CLIENT_CONFIG_FILE = ENV['CLIENT_CONFIG_FILE']
 OrcaDAS::Command.main(ARGV) if $0 == __FILE__
