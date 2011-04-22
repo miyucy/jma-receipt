@@ -23,7 +23,7 @@
       *  •≥•Û•›°º•Õ•Û•»Ãæ  : ¥µº‘¥À‹æ Û¿ﬂƒÍ° ≈–œø°¶∫ÔΩ¸°À
       *  ¥…Õ˝º‘            :
       *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  11/04/21    NACL°›¬ø°π«º  ø∑µ¨∫Ó¿Æ
+      *  11/04/XX    NACL°›¬ø°π«º°°ø∑µ¨∫Ó¿Æ
       *****************************************************************
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
@@ -127,8 +127,6 @@
       *
       *     ‰Ωı∂Ë ¨
            03  WRK-PTHKN-HOJOKBN       PIC X(01).
-      *    π‚Œº‘…È√¥≥‰πÁ
-           03  WRK-RJN-RATE            PIC 9(03).
       *    •Ê°º•∂•◊•Ì•∞•È•‡
            03  WRK-PTID                PIC X(10).
            03  WRK-RENNUM              PIC 9(02).
@@ -172,6 +170,7 @@
        01  WRK-XML-AREA.
            03  WRK-PTNUM               PIC X(20).
            03  WRK-BIRTHDAY-YMD        PIC X(08).
+           03  WRK-RJN-RATE            PIC X(01).
       *
       *    £√£Ã£¡£…£Õ•’•°•§•ÎÃæ
        01  CLAIM-FILE.
@@ -2020,21 +2019,6 @@
                MOVE    "39"                TO  WRK-ERRCD
            END-IF
       *
-      *    π‚Œº‘…È√¥≥‰πÁ
-           IF      PTMODREQ-MAIN-RATE  =   SPACE
-               MOVE    ZERO                TO  WRK-RJN-RATE
-           ELSE
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    PTMODREQ-MAIN-RATE  TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF      SNUM-RC         NOT =   ZERO
-                   MOVE    ZERO                TO  WRK-RJN-RATE
-               ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-RJN-RATE
-               END-IF
-           END-IF
-      *
            IF      SPA-PTHKN-HKNJANUM (IDX)    NOT =   SPACE
       *         ›∏±º‘»÷πÊ§´§È ›∏±§ŒºÔŒ‡§» ‰Ωı∂Ë ¨¿ﬂƒÍ
                PERFORM 2002121-HKNJANUM-CHK-SEC
@@ -2101,57 +2085,59 @@
       *****************************************************************
        2002121-HOJOKBN-ROU-SEC     SECTION.
       *
+           MOVE    PTMODREQ-RATE-CLASS TO  WRK-RJN-RATE
+      *
            MOVE    SPACE               TO  WRK-PTHKN-HOJOKBN
            EVALUATE    SPA-PTHKN-HKNNUM (IDX)
       *    ¡•∞˜
            WHEN    "002"
-               EVALUATE  WRK-RJN-RATE    ALSO  SPA-PTHKN-HOJOKBN(IDX)
+               EVALUATE    WRK-RJN-RATE    ALSO  SPA-PTHKN-HOJOKBN(IDX)
       *        …È√¥≥‰πÁ° £±£∞°Û°À
-                   WHEN    10      ALSO    SPACE
-                   WHEN    10      ALSO    "0"
+                   WHEN    "1"     ALSO    SPACE
+                   WHEN    "1"     ALSO    "0"
                        MOVE    "9"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    10      ALSO    "1"
+                   WHEN    "1"     ALSO    "1"
                        MOVE    "A"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    10      ALSO    "2"
+                   WHEN    "1"     ALSO    "2"
                        MOVE    "B"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    10      ALSO    "3"
+                   WHEN    "1"     ALSO    "3"
                        MOVE    "C"             TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ° £≤£∞°Û°À
-                   WHEN    20      ALSO    SPACE
-                   WHEN    20      ALSO    "0"
+                   WHEN    "2"     ALSO    SPACE
+                   WHEN    "2"     ALSO    "0"
                        MOVE    "8"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    20      ALSO    "1"
+                   WHEN    "2"     ALSO    "1"
                        MOVE    "D"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    20      ALSO    "2"
+                   WHEN    "2"     ALSO    "2"
                        MOVE    "E"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    20      ALSO    "3"
+                   WHEN    "2"     ALSO    "3"
                        MOVE    "F"             TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ° £≥£∞°Û°À
-                   WHEN    30      ALSO    SPACE
-                   WHEN    30      ALSO    "0"
+                   WHEN    "3"     ALSO    SPACE
+                   WHEN    "3"     ALSO    "0"
                        MOVE    "7"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    30      ALSO    "1"
+                   WHEN    "3"     ALSO    "1"
                        MOVE    "G"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    30      ALSO    "2"
+                   WHEN    "3"     ALSO    "2"
                        MOVE    "H"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    30      ALSO    "3"
+                   WHEN    "3"     ALSO    "3"
                        MOVE    "I"             TO  WRK-PTHKN-HOJOKBN
                END-EVALUATE
       *    ∂¶∫—
            WHEN    "031"   THRU    "034"
                EVALUATE    WRK-RJN-RATE  ALSO  SPA-PTHKN-HOJOKBN(IDX)
-                   WHEN    10      ALSO    "2"
+                   WHEN    "1"     ALSO    "2"
                        MOVE    "B"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    20      ALSO    "2"
+                   WHEN    "2"     ALSO    "2"
                        MOVE    "E"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    10      ALSO    ANY
+                   WHEN    "1"     ALSO    ANY
                        MOVE    "9"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    20      ALSO    ANY
+                   WHEN    "2"     ALSO    ANY
                        MOVE    "8"             TO  WRK-PTHKN-HOJOKBN
       *            £≥≥‰
-                   WHEN    30      ALSO    "2"
+                   WHEN    "3"     ALSO    "2"
                        MOVE    "H"             TO  WRK-PTHKN-HOJOKBN
-                   WHEN    30      ALSO    ANY
+                   WHEN    "3"     ALSO    ANY
                        MOVE    "7"             TO  WRK-PTHKN-HOJOKBN
                END-EVALUATE
       *    πÒ ›
@@ -2160,13 +2146,13 @@
            WHEN    "068"
                EVALUATE    WRK-RJN-RATE
       *        …È√¥≥‰πÁ£±
-                   WHEN    10
+                   WHEN    "1"
                        MOVE    "1"         TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ£≤
-                   WHEN    20
+                   WHEN    "2"
                        MOVE    "2"         TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ£≥
-                   WHEN    30
+                   WHEN    "3"
                        MOVE    "3"         TO  WRK-PTHKN-HOJOKBN
                END-EVALUATE
       *    ∏Â¥¸π‚Œº‘
@@ -2174,23 +2160,23 @@
            WHEN    "040"
                EVALUATE    WRK-RJN-RATE
       *        …È√¥≥‰πÁ£±
-                   WHEN    10
+                   WHEN    "1"
                        MOVE    "1"             TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ£≥
-                   WHEN    30
+                   WHEN    "3"
                        MOVE    "3"             TO  WRK-PTHKN-HOJOKBN
                END-EVALUATE
            WHEN    OTHER
       *    ƒÃæÔ§ŒæÏπÁ
                EVALUATE    WRK-RJN-RATE
       *        …È√¥≥‰πÁ£±
-                   WHEN    10
+                   WHEN    "1"
                        MOVE    "9"             TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ£≤
-                   WHEN    20
+                   WHEN    "2"
                        MOVE    "8"             TO  WRK-PTHKN-HOJOKBN
       *        …È√¥≥‰πÁ£≥
-                   WHEN    30
+                   WHEN    "3"
                        MOVE    "7"             TO  WRK-PTHKN-HOJOKBN
                END-EVALUATE
            END-EVALUATE

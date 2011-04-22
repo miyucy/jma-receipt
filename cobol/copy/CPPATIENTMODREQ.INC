@@ -113,8 +113,8 @@
                     07  PTMODREQ-MAIN-ASSISTANCE         PIC X(01).
       *             本人家族区分
                     07  PTMODREQ-MAIN-FAMILY             PIC X(01).
-      *             高齢者負担率（％）
-                    07  PTMODREQ-MAIN-RATE               PIC X(03).
+      *             高齢者負担区分
+                    07  PTMODREQ-RATE-CLASS              PIC X(01).
       *             被保険者名
                     07  PTMODREQ-MAIN-POLICYHOLDER       PIC X(100).
       *             有効開始日

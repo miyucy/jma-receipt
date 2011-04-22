@@ -44,7 +44,7 @@ xml_patientmodreq {
             	HealthInsuredPerson_Continuation	varchar(01);
             	HealthInsuredPerson_Assistance		varchar(01);
             	RelationToInsuredPerson			varchar(01);
-		Rate					varchar(03);
+            	Rate_Class				varchar(01);
             	HealthInsuredPerson_WholeName		varchar(100);
             	Certificate_StartDate			varchar(10);
             	Certificate_ExpiredDate			varchar(10);
