@@ -33,8 +33,6 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     の作成のチェックを追加
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,8 +52,6 @@
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC".
       *
            COPY    "HCPOM.INC".
       *
@@ -83,6 +79,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
       *
       *    一時領域
@@ -114,18 +111,18 @@
       *
        01  HEAD-02.
            03  FILLER                  PIC X(02)   VALUE   SPACE.
-           03  FILLER                  PIC X(22)   VALUE   "患者番号".
+           03  FILLER                  PIC X(20)   VALUE   "患者番号".
            03  FILLER                  PIC X(20)   VALUE   "氏名".
-           03  FILLER                  PIC X(02)   VALUE   SPACE.
-           03  FILLER                  PIC X(16)   VALUE   "診療年月".
+           03  FILLER                  PIC X(04)   VALUE   SPACE.
+           03  FILLER                  PIC X(18)   VALUE   "診療年月".
            03  FILLER                  PIC X(08)   VALUE   "提出先".
            03  FILLER                  PIC X(08)   VALUE   "入外区分".
       *
        01  BODY-01.
-           03  B01-FIL1                PIC X(02).
+           03  FILLER                  PIC X(02).
            03  B01-PTNUM               PIC X(20).
            03  B01-NAME                PIC X(20).
-           03  B01-FIL2                PIC X(04).
+           03  FILLER                  PIC X(04).
            03  B01-SRYYM               PIC X(18).
            03  B01-TEISYUTUSAKI        PIC X(08).
            03  B01-NYUGAIKBN           PIC X(06).
@@ -180,9 +177,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -228,8 +222,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
-           INITIALIZE                  RECEERR
-      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -261,12 +253,6 @@
                                     TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
       *
       *    診療年月編集
            MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD (1:6)
