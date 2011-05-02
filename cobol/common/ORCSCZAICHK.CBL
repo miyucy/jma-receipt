@@ -89,6 +89,8 @@
                    07  TBL-MAE-KANSURYO    PIC  9(05)V9(05).
                    07  TBL-MAE-INPUTKBN    PIC  X(01).
                    07  TBL-MAE-JIHIMONEY   PIC  9(07).
+               05  TBL-MAE-CHKFLG          PIC  X(01)
+                                           OCCURS   50.
            03  TBL-ATO-AREA.
                05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
@@ -100,6 +102,8 @@
                    07  TBL-ATO-KANSURYO    PIC  9(05)V9(05).
                    07  TBL-ATO-INPUTKBN    PIC  X(01).
                    07  TBL-ATO-JIHIMONEY   PIC  9(07).
+               05  TBL-ATO-CHKFLG          PIC  X(01)
+                                           OCCURS   50.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -412,8 +416,11 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   IDX-SIN  )  OR
                                   (FLG-ARI     =   1        )
-                   IF      TBL-ATO-REC (IDX1)  =   TBL-MAE-REC(IDX2)
+                   IF     (TBL-ATO-REC (IDX1)  =   TBL-MAE-REC(IDX2) )
+                     AND  (TBL-MAE-CHKFLG (IDX2)   =   SPACE         )
                         MOVE    1                  TO  FLG-ARI
+                        MOVE    "1"                TO  TBL-MAE-CHKFLG
+                                                               (IDX2)
                    END-IF
                END-PERFORM
                IF      FLG-ARI             =   ZERO
