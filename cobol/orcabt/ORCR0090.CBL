@@ -222,6 +222,8 @@
       *                                     「不詳・災１」の追加
       *  04.05.09    NACL-藤原    11/04/01  災害対応
       *                                     「〒」「ＴＥＬ：」の記載追加
+      *  04.05.10    NACL-藤原    11/04/20  災害対応
+      *                                     公費負担医療の連絡先情報追加
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -1598,6 +1600,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
                EVALUATE    RECE02-RJNGAIKOHFTN (1)
                    WHEN    6
                    WHEN    7
+                   WHEN    8
+                   WHEN    9
+                   WHEN    11
                        INITIALIZE              ORCSKANACHKAREA
                        MOVE    "2"             TO  KANACHK-SYORI 
                        MOVE    RECE02-HOME-POST

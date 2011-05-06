@@ -121,6 +121,10 @@
       *                                     「〒」「ＴＥＬ：」の記載追加
       *  04.05.21    NACL-藤原    11/04/04  災害対応
       *                                     震災以前一部負担金の記載追加
+      *  04.05.22    NACL-藤原    11/04/18  災害対応
+      *                                     災２の保険履歴記載の判定削除
+      *  04.05.23    NACL-藤原    11/04/20  災害対応
+      *                                     公費負担医療の記載対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -2924,28 +2928,38 @@
            END-IF
       *
            IF      CNT-PAGE            =   1
-               IF      RECE02-RJNGAIKOHFTN (1)   =   1   OR  2  OR  4
-                                                 OR  5   OR  7
-                   MOVE    SPACE                TO  WRK-HC06-HEAD4-G
-                   MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
-                   MOVE    SPACE                TO  HC06-HEAD4-G    
-                   MOVE    WRK-HC06-HEAD4-G (1:48)
-                                                TO  HC06-HEAD4 (1) (15:)
-                   MOVE    WRK-HC06-HEAD4-G (49:48)
-                                                TO  HC06-HEAD4 (2) (15:)
-               END-IF
-      *        
                EVALUATE    RECE02-RJNGAIKOHFTN (1)
                    WHEN    1
-                       MOVE    "（不詳）"  TO  HC06-HEAD5
+                   WHEN    8
+                   WHEN    10
+                   WHEN    11
                    WHEN    2
                    WHEN    7
-                       MOVE    "（災１）"  TO  HC06-HEAD5
                    WHEN    4
-                       MOVE    "（災２）"  TO  HC06-HEAD5
                    WHEN    5
-                       MOVE    "（不詳・災１）"
-                                           TO  HC06-HEAD5
+                       MOVE    SPACE            TO  WRK-HC06-HEAD4-G
+                       MOVE    HC06-HEAD4-G (5:)
+                                                TO  WRK-HC06-HEAD4-G
+                       MOVE    SPACE            TO  HC06-HEAD4-G    
+                       MOVE    WRK-HC06-HEAD4-G (1:48)
+                                                TO  HC06-HEAD4 (1) (15:)
+                       MOVE    WRK-HC06-HEAD4-G (49:48)
+                                                TO  HC06-HEAD4 (2) (15:)
+                       EVALUATE    RECE02-RJNGAIKOHFTN (1)
+                           WHEN    1
+                           WHEN    8
+                           WHEN    10
+                           WHEN    11
+                               MOVE    "（不詳）"  TO  HC06-HEAD5
+                           WHEN    2
+                           WHEN    7
+                               MOVE    "（災１）"  TO  HC06-HEAD5
+                           WHEN    4
+                               MOVE    "（災２）"  TO  HC06-HEAD5
+                           WHEN    5
+                               MOVE    "（不詳・災１）"
+                                                   TO  HC06-HEAD5
+                       END-EVALUATE
                END-EVALUATE
            END-IF
       *
@@ -3452,7 +3466,12 @@
                    RECE02-KOHNUM (4)      =   SPACE   AND  
                    RECE02-HKNNUM          =   SPACE            
       *        ３種の場合（８桁）
-               MOVE    RECE02-KOHFTNJANUM(SEIHIDX)  TO  WRK-HKNJANUM
+               IF    ( RECE02-RJNGAIKOHFTN (1)      =   6   OR  7 )
+               AND   ( RECE02-KOHFTNJANUM(SEIHIDX)  =   SPACE     )
+                   MOVE    RECE02-KOHHBTNUM(SEIHIDX)    TO  WRK-HKNJANUM
+               ELSE
+                   MOVE    RECE02-KOHFTNJANUM(SEIHIDX)  TO  WRK-HKNJANUM
+               END-IF
            ELSE
                IF  RECE02-TEISYUTUSAKI    =   "2"
                    IF      RECE02-HKNJANUM (1:2)  =   "67"
@@ -3817,6 +3836,24 @@
                    END-IF
                END-IF                        
            END-IF    
+      *    
+      *    災害対応
+      *
+           IF      RECE02-RJNGAIKOHFTN (1) =   6   OR  7   OR  9   OR
+                                               11
+      *        公負１
+               IF    ( RECE02-KOHNUM     (IDA) NOT =   SPACE )
+               AND   ( RECE02-KOHFTNJANUM(IDA)     =   SPACE )
+                   MOVE    RECE02-KOHHBTNUM(IDA)   TO HC06-KOHFTNJANUM1 
+                   MOVE    SPACE                   TO HC06-KOHFTNJANUM1N
+               END-IF
+      *        公負２
+               IF    ( RECE02-KOHNUM     (IDB) NOT =   SPACE )
+               AND   ( RECE02-KOHFTNJANUM(IDB)     =   SPACE )
+                   MOVE    RECE02-KOHHBTNUM(IDB)   TO HC06-KOHFTNJANUM2
+                   MOVE    SPACE                   TO HC06-KOHFTNJANUM2N
+               END-IF
+           END-IF
       *
       *    <診療実日数>
            IF      CNT-PAGE        =   1
@@ -6313,10 +6350,6 @@
                                        =   SPACE )
                GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
            END-IF
-      *    災害（災２）は保険履歴の記載をしない
-           IF      RECE02-YOBIETC(9)   =    1
-               GO  TO  370-HC101-HKN-RIREKI-HEN-EXT
-           END-IF
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-RIREKI-MAX  
@@ -6408,6 +6441,19 @@
                        END-IF
                    ELSE
                        MOVE    SPACE           TO  WRK-KOH-FTNJANUM     
+      *                災害対応     
+                       IF      RECE02-RJNGAIKOHFTN (1) =   6   OR  7
+                                                       OR  9   OR  11
+                           MOVE    RECE02-KOHHBTNUM (IDY)
+                                               TO  KANACHK-MAE-INPUT
+                           CALL    "ORCSKANACHK"
+                                               USING   ORCSKANACHKAREA
+                           IF    ( KANACHK-RC      =   ZERO )
+                           AND   ( KANACHK-MAX     >   ZERO )
+                               MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                                   TO  WRK-KOH-FTNJANUM
+                           END-IF
+                       END-IF 
                    END-IF
                    IF      RECE02-KOHJKYSNUM (IDY)
                                            NOT =   SPACE
@@ -6523,9 +6569,9 @@
            END-IF
       *
       *    災害対応
-           IF      RECE02-RJNGAIKOHFTN (1) =   1   OR  2   OR  4   OR  5
-                                           OR  6   OR  7
-      *
+           IF      RECE02-RJNGAIKOHFTN (1) =   3   OR  ZERO
+               CONTINUE
+           ELSE
       *        摘要欄に記載されている場合１行あける
                IF      WRK-LINETEK     >   ZERO
                    IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
@@ -6535,19 +6581,29 @@
                    END-IF
                END-IF
       *
-               IF      RECE02-RJNGAIKOHFTN (1) =   1   OR  2   OR  4
-                                               OR  5   OR  7
+               EVALUATE    RECE02-RJNGAIKOHFTN (1)
+                WHEN    1
+                WHEN    8
+                WHEN    10
+                WHEN    11
+                WHEN    2
+                WHEN    7
+                WHEN    4
+                WHEN    5
                  EVALUATE    RECE02-RJNGAIKOHFTN (1)
-                   WHEN    1
-                      MOVE     "（不詳）"      TO  WRK-TITLE
-                   WHEN    2
-                   WHEN    7
-                       MOVE    "（災１）"      TO  WRK-TITLE
-                   WHEN    4
-                       MOVE    "（災２）"      TO  WRK-TITLE
-                   WHEN    5
-                       MOVE    "（不詳・災１）"
-                                               TO  WRK-TITLE
+                         WHEN    1
+                         WHEN    8
+                         WHEN    10
+                         WHEN    11
+                             MOVE    "（不詳）"  TO  WRK-TITLE
+                         WHEN    2
+                         WHEN    7
+                             MOVE    "（災１）"  TO  WRK-TITLE
+                         WHEN    4
+                             MOVE    "（災２）"  TO  WRK-TITLE
+                         WHEN    5
+                             MOVE    "（不詳・災１）"
+                                                   TO  WRK-TITLE
                  END-EVALUATE
                  INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
       * 
@@ -6570,7 +6626,7 @@
                            MOVE  WRK-TITLE TO  HC063-TEKIYO(WRK-LINETEK)
                     END-EVALUATE
                  END-IF
-               END-IF
+               END-EVALUATE
       *
       *        震災以前一部負担金の記載（災２）
                IF      RECE02-RJNGAIKOHFTN (1) =   4
@@ -6619,7 +6675,12 @@
                END-IF
       *                   
       *        災害対応（連絡先記載）
-               IF      RECE02-RJNGAIKOHFTN (1) =   6   OR  7
+               EVALUATE    RECE02-RJNGAIKOHFTN (1)
+                 WHEN    6
+                 WHEN    7
+                 WHEN    8
+                 WHEN    9
+                 WHEN    11
                    IF    ( RECE02-HOME-POST1
                                            =   SPACE )
                    AND   ( RECE02-HOME-ADRS1
@@ -6750,14 +6811,16 @@
                                                HC063-TEKIYO(WRK-LINETEK)
                                END-EVALUATE
                            END-IF
-
       *                    事業所名記載
                            PERFORM VARYING IDY     FROM    1   BY  1
                                    UNTIL   IDY     >       2
                                    OR      RECE02-RENRAKU-NAME-R (IDY)
                                                    =       SPACE
-                               INSPECT RECE02-RENRAKU-NAME-R (IDY)
+                               MOVE    RECE02-RENRAKU-NAME-R (IDY)
+                                                       TO  WRK-TITLE
+                               INSPECT WRK-TITLE
                                        REPLACING   ALL "  "    BY  "　"
+                               
       * 
                                IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
                                    PERFORM 34120-PAGE-SEC
@@ -6770,16 +6833,16 @@
                                ELSE                    
                                  EVALUATE    SYS-2005-NEXTPRTKBN-G
                                    WHEN    "0"   
-                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                       MOVE  WRK-TITLE
                                            TO  HC06-TEKIYO (WRK-LINETEK)
                                    WHEN    "1"   
-                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                       MOVE  WRK-TITLE
                                            TO  HC061-TEKIYO(WRK-LINETEK)
                                    WHEN    "2"   
-                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                       MOVE  WRK-TITLE
                                            TO  HC062-TEKIYO(WRK-LINETEK)
                                    WHEN    "3"   
-                                       MOVE  RECE02-RENRAKU-NAME-R (IDY)
+                                       MOVE  WRK-TITLE
                                            TO  HC063-TEKIYO(WRK-LINETEK)
                                  END-EVALUATE
                                END-IF                    
@@ -6870,7 +6933,7 @@
                            END-IF
                        END-IF
                    END-IF
-               END-IF
+               END-EVALUATE
            END-IF
       *
       *    適用欄上段コメント（レセプト特記事項編集情報）

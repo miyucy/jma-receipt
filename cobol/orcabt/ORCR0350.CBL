@@ -313,6 +313,9 @@
       *                                     £²£°£±£°Ç¯£±£°·î¡Á£²£°£±£±Ç¯£³·îÂÐ¾Ý 
       *  04.05.23    NACL-Æ£¸¶    11/02/22  ¥ì¥»ÅÅ¥Ç¡¼¥¿¤Îµ­¹æÈÖ¹æ¶èÀÚ¤ê
       *                                     Ê¸»úÀßÄêÂÐ±þ
+      *  04.05.24    NACL-Æ£¸¶    11/04/20  ºÒ³²ÂÐ±þ
+      *                                     ºÒ³²³ºÅö¥ì¥»¥×¥È¤Î¥ì¥»ÅÅ¥Ç¡¼
+      *                                     ¥¿ºîÀ®ÂÐ±þ
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/04  ¥ì¥»¥×¥È¥³¥á¥ó¥ÈÊ¸»ú¿ôÁýÂÐ±þ
       *  04.06.02    NACL-Æ£¸¶    10/11/04  ÊäÂ­¥³¥á¥ó¥ÈÂÐ±þ
@@ -720,6 +723,13 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-ACCTP-SYUTEN        PIC 9(07).
+      *
+      *    ºÒ³²ÍÑ¥³¥á¥ó¥È
+           03  WRK-DISASTER-COMMENT    PIC X(76).
+           03  WRK-FUTAN               PIC ZZZ,ZZZ,ZZ9. 
+           03  WRK-FUTAN1              PIC ZZZ,ZZ9. 
+           03  WRK-ADRS.
+               05  WRK-ADRS-R          PIC X(76)  OCCURS  4.
       *
       *    ¶èÀÚ¤êÊ¸»úÀßÄê
            03  WRK-DELIMITER-AREA.
@@ -2737,6 +2747,12 @@
                                          TO  WRK-HENKAN
                END-IF
            END-IF
+      *    ºÒ³²ÂÐ±þ
+           IF    ( RECE62-RJNGAIKOHFTN (1)
+                                         >   0     )
+           AND   ( RECE62-HKNJANUM       =   SPACE )
+               MOVE    "99999999"            TO  WRK-HENKAN
+           END-IF
            MOVE    8                     TO  WRK-LENGTH 
            PERFORM 5003-DATA-RIGHT-HENSYU-SEC
            MOVE    WRK-HENKAN            TO  WRK-DATA
@@ -2783,6 +2799,12 @@
                END-IF
            ELSE
                MOVE    RECE62-NUM          TO  WRK-DATA
+           END-IF
+      *    ºÒ³²ÂÐ±þ
+           IF    ( RECE62-RJNGAIKOHFTN (1)
+                                         >   0     )
+           AND   ( RECE62-NUM            =   SPACE )
+               MOVE    "999999999"           TO  WRK-DATA
            END-IF
            MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -3206,6 +3228,17 @@
                        END-IF
                    END-IF
            END-EVALUATE
+      *    ºÒ³²ÂÐ±þ
+           IF    ( RECE62-RJNGAIKOHFTN (1)
+                                         >   0     )
+           AND   ( RECE62-KOHFTNJANUM (IDY)
+                                         =   SPACE )
+               MOVE    SPACE                 TO  WRK-DATA
+               STRING  RECE62-KOHHBTNUM (IDY)    DELIMITED BY  SIZE
+                       "888888"                  DELIMITED BY  SIZE  
+                                                 INTO    WRK-DATA
+               END-STRING
+           END-IF
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC     
       *    ¼õµë¼ÔÈÖ¹æ                             
@@ -3260,6 +3293,13 @@
                        END-IF
                    END-IF
            END-EVALUATE
+      *    ºÒ³²ÂÐ±þ
+           IF    ( RECE62-RJNGAIKOHFTN (1)
+                                         >   0     )
+           AND   ( RECE62-KOHJKYSNUM  (IDY)
+                                         =   SPACE )
+               MOVE    "9999999"             TO   WRK-DATA
+           END-IF
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    Ç¤°ÕµëÉÕ¶èÊ¬                             
@@ -3572,7 +3612,14 @@
            MOVE    SPACE               TO  WRK-FUKUSHIFLG-SKJINF-AREA
            PERFORM 20070-FTNKBN-HENSYU-SEC
       *
-      *        ¾É¾õ¾Üµ­¡ÊÅ¬ÍÑÍó¾åÃÊ¥³¥á¥ó¥È¡¦¼ê½ÑÎò¡¦ÊÝ¸±ÍúÎò¡Ë
+      *    ºÒ³²ÂÐ±þ
+           IF      RECE62-RJNGAIKOHFTN (1) =   3   OR  ZERO
+               CONTINUE
+           ELSE
+               PERFORM 20070-DISASTER-HENSYU-SEC
+           END-IF
+      *
+      *    ¾É¾õ¾Üµ­¡ÊÅ¬ÍÑÍó¾åÃÊ¥³¥á¥ó¥È¡¦¼ê½ÑÎò¡¦ÊÝ¸±ÍúÎò¡Ë
            MOVE    WRK-FTNKBN          TO  WRK-COM-FTNKBN
            MOVE    ZERO                TO  FLG-TOYAKUFLG
            PERFORM 2008-COMMENT-HEN-01-SEC
@@ -3988,6 +4035,230 @@
            .
        200701-FTNKBN-HENSYU-200804-EXT.
            EXIT. 
+      *
+      *****************************************************************
+      *    Å¦Í×¥Ç¡¼¥¿¡ÊºÒ³²¥³¥á¥ó¥È¡ËÊÔ½¸½èÍý
+      *****************************************************************
+       20070-DISASTER-HENSYU-SEC       SECTION.
+      *
+           MOVE    "01"                TO  WRK-SRYKBN 
+      *
+           MOVE    SPACE               TO  WRK-DISASTER-COMMENT
+           EVALUATE    RECE62-RJNGAIKOHFTN (1)
+               WHEN    1
+               WHEN    8
+               WHEN    10
+               WHEN    11
+                   MOVE    "¡ÊÉÔ¾Ü¡Ë"      TO  WRK-DISASTER-COMMENT
+               WHEN    2
+               WHEN    7
+                   MOVE    "¡ÊºÒ£±¡Ë"      TO  WRK-DISASTER-COMMENT
+               WHEN    4
+                   MOVE    "¡ÊºÒ£²¡Ë"      TO  WRK-DISASTER-COMMENT
+               WHEN    5
+                   MOVE    "¡ÊÉÔ¾Ü¡¦ºÒ£±¡Ë"
+                                           TO  WRK-DISASTER-COMMENT
+           END-EVALUATE
+           PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+      *
+           MOVE    SPACE               TO  WRK-DISASTER-COMMENT
+           IF      RECE62-RJNGAIKOHFTN (1) =   4
+      *        ¿ÌºÒ°ÊÁ°°ìÉôÉéÃ´¶â¤Îµ­ºÜ¡ÊºÒ£²¡Ë
+               MOVE    RECE62-YOBIETC (4)  TO  WRK-FUTAN
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI 
+               MOVE    WRK-FUTAN           TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-MAX         >   ZERO )
+                   STRING  "¡Ú¿ÌºÒ°ÊÁ°°ìÉôÉéÃ´¶â¡Û¡¡¡¡"
+                                               DELIMITED  BY  SIZE
+                           KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               DELIMITED  BY  SIZE
+                           "±ß"                DELIMITED  BY  SIZE
+                                           INTO    WRK-DISASTER-COMMENT
+                   END-STRING
+               END-IF
+               PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+      *
+      *        ¿ÌºÒ°ÊÁ°°ìÉô¿©»öÀ¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¤Îµ­ºÜ¡ÊºÒ£²¡Ë
+               MOVE    SPACE               TO  WRK-DISASTER-COMMENT
+               MOVE    RECE62-YOBIETC (5)  TO  WRK-FUTAN1
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI 
+               MOVE    WRK-FUTAN1          TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC      =   ZERO )
+               AND   ( KANACHK-MAX     >   ZERO )
+                   STRING  "¡Ú¿ÌºÒ°ÊÁ°¿©»öÀ¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¡Û"
+                                               DELIMITED  BY  SIZE
+                           KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                               DELIMITED  BY  SIZE
+                           "±ß"                DELIMITED  BY  SIZE
+                                           INTO    WRK-DISASTER-COMMENT
+                   END-STRING
+               END-IF
+               PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+           END-IF
+      *                   
+      *    ºÒ³²ÂÐ±þ¡ÊÏ¢ÍíÀèµ­ºÜ¡Ë
+           MOVE    SPACE               TO  WRK-DISASTER-COMMENT
+           EVALUATE    RECE62-RJNGAIKOHFTN (1)
+               WHEN    6
+               WHEN    7
+               WHEN    8
+               WHEN    9
+               WHEN    11
+                   IF    ( RECE62-HOME-POST1
+                                           =   SPACE )
+                   AND   ( RECE62-HOME-ADRS1
+                                           =   SPACE )
+                   AND   ( RECE62-RENRAKU-POST1
+                                           =   SPACE )
+                   AND   ( RECE62-RENRAKU-NAME
+                                           =   SPACE )
+                   AND   ( RECE62-RENRAKU-ADRS1
+                                           =   SPACE )
+                   AND   ( RECE62-TEL      =   SPACE )
+                       CONTINUE
+                   ELSE
+      *                ¼«Âð½»½êµ­ºÜ
+                       IF   ( RECE62-HOME-ADRS1      =   SPACE )
+                       AND  ( RECE62-HOME-POST1      =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE    "¡Ú½»½ê¡Û"  TO  WRK-DISASTER-COMMENT
+                           PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+      *                    ¼«Âð½»½êµ­ºÜ
+                           MOVE    SPACE               TO  WRK-ADRS
+                           IF      RECE62-HOME-POST1   =   SPACE
+                               MOVE    RECE62-HOME-ADRS1   TO  WRK-ADRS
+                           ELSE
+                               STRING   "¢©"       DELIMITED  BY  SIZE
+                                    RECE62-HOME-POST1
+                                                   DELIMITED  BY  SPACE
+                                    RECE62-HOME-ADRS1
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-ADRS
+                               END-STRING
+                           END-IF
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       4
+                                   OR      WRK-ADRS-R (IDY)
+                                                   =       SPACE
+                              MOVE    WRK-ADRS-R (IDY)    TO
+                                                   WRK-DISASTER-COMMENT
+                              PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+                          END-PERFORM
+                       END-IF
+      *                Ï¢ÍíÀèµ­ºÜ
+                       IF    ( RECE62-RENRAKU-POST1
+                                               =   SPACE )
+                       AND   ( RECE62-RENRAKU-NAME
+                                               =   SPACE )
+                       AND   ( RECE62-RENRAKU-ADRS1
+                                               =   SPACE )
+                       AND   ( RECE62-TEL      =   SPACE )
+                           CONTINUE
+                       ELSE
+                           MOVE    "¡ÚÏ¢ÍíÀè¡Û"
+                                               TO  WRK-DISASTER-COMMENT
+                           PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+      *                    »ö¶È½êÌ¾µ­ºÜ
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       2
+                                   OR      RECE62-RENRAKU-NAME-R (IDY)
+                                                   =       SPACE
+                              MOVE    RECE62-RENRAKU-NAME-R (IDY)
+                                               TO  WRK-DISASTER-COMMENT
+                              PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+                          END-PERFORM
+      *                    Ï¢ÍíÀè½»½êµ­ºÜ
+                           MOVE    SPACE               TO  WRK-ADRS
+                           IF      RECE62-RENRAKU-POST1
+                                                       =   SPACE
+                               MOVE    RECE62-RENRAKU-ADRS1
+                                                           TO  WRK-ADRS
+                           ELSE
+                               STRING   "¢©"       DELIMITED  BY  SIZE
+                                    RECE62-RENRAKU-POST1
+                                                   DELIMITED  BY  SPACE
+                                    RECE62-RENRAKU-ADRS1
+                                                   DELIMITED  BY  SPACE
+                                                   INTO    WRK-ADRS
+                               END-STRING
+                           END-IF
+                           PERFORM VARYING IDY     FROM    1   BY  1
+                                   UNTIL   IDY     >       4
+                                   OR      WRK-ADRS-R (IDY)
+                                                   =       SPACE
+                              MOVE    WRK-ADRS-R (IDY)    TO
+                                                   WRK-DISASTER-COMMENT
+                              PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+                           END-PERFORM
+      *                    Ï¢ÍíÀèµ­ºÜ
+                           IF     RECE62-TEL       =   SPACE
+                               CONTINUE
+                           ELSE
+                               MOVE    SPACE       TO
+                                                   WRK-DISASTER-COMMENT
+                               STRING  "£Ô£Å£Ì¡§"  DELIMITED  BY  SIZE
+                                       RECE62-TEL  DELIMITED  BY  SIZE
+                                                   INTO
+                                                   WRK-DISASTER-COMMENT
+                               END-STRING
+                              PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+                          END-IF
+                      END-IF
+                  END-IF
+           END-EVALUATE
+
+           .
+       20070-DISASTER-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Å¦Í×¥Ç¡¼¥¿¡ÊºÒ³²ÍÑ¥³¥á¥ó¥È¡ËÊÔ½¸½èÍý
+      *****************************************************************
+       200701-DISASTER-COMMENT-HENSYU-SEC  SECTION.
+      *
+           IF      WRK-DISASTER-COMMENT         =   SPACE
+               GO  TO  200701-DISASTER-COMMENT-HENSYU-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *
+           MOVE    "CO,"               TO  WRK-REC
+           MOVE    3                   TO  WRK-REC-LENGTH
+      *    ¿ÇÎÅ¼±ÊÌ
+           IF      WRK-SRYKBN      NOT =   SPACE     
+               MOVE    WRK-SRYKBN          TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
+               MOVE    SPACE               TO  WRK-SRYKBN
+           END-IF    
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    ÉéÃ´¶èÊ¬
+           MOVE    WRK-FTNKBN          TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    ¥³¥á¥ó¥È¥³¡¼¥É
+           MOVE    "810000001"         TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    Ê¸»ú¥Ç¡¼¥¿
+           MOVE    WRK-DISASTER-COMMENT         TO  WRK-DATA
+           MOVE    76                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *
+           PERFORM 5001-FILE-WRITE-SEC
+      *
+      *    ¥³¥á¥ó¥È¤Î¥¯¥ê¥¢
+           MOVE    SPACE                TO  WRK-DISASTER-COMMENT
+           .
+       200701-DISASTER-COMMENT-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ÆþÂà±¡ÍúÎòÊÔ½¸½èÍý
@@ -8642,11 +8913,11 @@
                                    MOVE    1           TO  FLG-READ
                                END-IF
                            ELSE
-      *                        ºÒ³²ÂÐ±þÊ¬¤ÏÂÐ¾Ý¤È¤·¤Ê¤¤ 
-                               IF      RECE62-RJNGAIKOHFTN (1)
-                                                       =   ZERO
+      *************************ºÒ³²ÂÐ±þÊ¬¤ÏÂÐ¾Ý¤È¤·¤Ê¤¤ 
+      *************************IF      RECE62-RJNGAIKOHFTN (1)
+      *************************                            =   ZERO
                                    MOVE    1           TO  FLG-READ
-                               END-IF
+      *************************END-IF
                            END-IF
                        END-IF    
       *

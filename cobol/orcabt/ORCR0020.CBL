@@ -222,6 +222,9 @@
       *                                     診療科２、３を追加
       *  04.05.04    NACL-藤原    11/03/25  災害対応
       *                                     連絡先情報追加
+      *  04.05.05    NACL-藤原    11/04/18  災害対応
+      *                                     主保険情報が同じで適用期間が
+      *                                     区切られている場合の保険履歴 
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -3617,6 +3620,30 @@ grpsys                   PERFORM 900-DBSELECT-SEC
                                      MOVE    1   TO  FLG-RIREKI-HEN
                                  END-IF  
                              END-IF
+      *
+                             PERFORM VARYING IDZZ    FROM    1   BY  1
+                                     UNTIL   IDZZ    >       100
+                                     OR      FLG-RIREKI-HEN   =   1
+      *                          主保険が同じ保険があるときは対象外とする
+                                 IF    ( TBL-RECE09-HOSPNUM  (IDZZ)
+                                                     >   ZERO          )
+                                 AND   ( TBL-RECE09-HKNNUM   (IDZZ)
+                                                     =   PTHKN-HKNNUM  )
+                                 AND   ( TBL-RECE09-HKNJANUM (IDZZ)
+                                                     =   PTHKN-HKNJANUM)
+                                 AND   ( TBL-RECE09-HONKZKKBN(IDZZ)
+                                                     =
+                                                     PTHKN-HONKZKKBN   )
+                                 AND   ( TBL-RECE09-HOJOKBN  (IDZZ)
+                                                     =   PTHKN-HOJOKBN )
+                                 AND   ( TBL-RECE09-KIGO     (IDZZ)
+                                                     =   PTHKN-KIGO    )
+                                 AND   ( TBL-RECE09-NUM      (IDZZ)
+                                                     =   PTHKN-NUM     )
+                                     MOVE    1   TO  FLG-RIREKI-HEN
+                                 END-IF
+                             END-PERFORM
+      *
                              IF      FLG-RIREKI-HEN  =   ZERO
                                  MOVE   PTHKN-HKNID  TO  RECE09-HKNID
                                  MOVE   PTHKN-HKNNUM TO  RECE09-HKNNUM
