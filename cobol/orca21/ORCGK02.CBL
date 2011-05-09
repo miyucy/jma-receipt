@@ -1186,7 +1186,6 @@
       *
            OPEN    INPUT               SPASCR-FILE
            IF      STS-SPASCR      NOT =   ZERO
-               MOVE    "XXXX"              TO  SPA-ERRCD
                GO      TO      1002-K02SPA-SET-EXT
            END-IF
       *
@@ -1991,14 +1990,18 @@
            IF     (SPA-MOTOPG          =   "P02"  OR  "U02" 
                                                   OR  "K02N" )  AND
                   (SPA-PTID        NOT =   SPA-GMN-PTID )
-               IF      SPA-MOTOPG          =   "P02"  OR  "U02"
-                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
-                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
-               END-IF
-               IF      SPA-SRYYMD          =   SPACE
-                   MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-                   MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
-               END-IF
+      ***      IF      SPA-MOTOPG          =   "P02"  OR  "U02"
+      *            MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+      *            MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+      *        END-IF
+      *        IF      SPA-SRYYMD          =   SPACE
+      *            MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+      *            MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+      ***      END-IF
+      *        患者変更時は、診療日＝システム日付とする
+               MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+               MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+      *
                MOVE    1                   TO  FLG-SYOKAI
       *
                IF      SPA-MOTOPG          =   "K01"

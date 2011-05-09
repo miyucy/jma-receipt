@@ -1651,14 +1651,17 @@
       *    初期ＳＰＡ編集処理
            IF     (SPA-MOTOPG          =   "P02"  OR  "U02" )  AND
                   (SPA-PTID        NOT =   SPA-GMN-PTID )
-               IF      SPA-MOTOPG          =   "P02"  OR  "U02"
-                   MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
-                   MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
-                   IF      SPA-SRYYMD          =   SPACE
-                       MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-                       MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
-                   END-IF
-               END-IF
+      **       IF      SPA-MOTOPG          =   "P02"  OR  "U02"
+      *            MOVE    SPA-GMN-SRYYMD      TO  SPA-SRYYMDW
+      *            MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+      *            IF      SPA-SRYYMD          =   SPACE
+      *                MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+      *                MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+      **           END-IF
+      *        END-IF
+      *        患者変更時は、診療日＝システム日付とする
+               MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+               MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
       *        初期ＳＰＡ編集処理
                INITIALIZE                  ORCSC95AREA
                MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
@@ -3365,6 +3368,11 @@
                IF      ORCSCNYUHEN-NYUIN-KBN   =   ZERO
                    IF      ORCSCNYUHEN-LAST-TAIINYMD
                                                >   SPA-SRYYMD
+                       MOVE    "2"                 TO  SPA-NYUGAIKBN
+                   END-IF
+      *            他院履歴のみ（退院日なし）
+                   IF     (ORCSCNYUHEN-LAST-TAIINYMD
+                                               =   SPACE  )
                        MOVE    "2"                 TO  SPA-NYUGAIKBN
                    END-IF
                END-IF
