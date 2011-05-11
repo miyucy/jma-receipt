@@ -341,6 +341,7 @@
       *                                     (133280)Ê¿À®£²£³Ç¯£³·î¤Þ¤Ç
       *  04.05.15    NACL-ÌçÏÆ    11/04/14  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ·×»»½¤Àµ
       *                                     ¼«Î©»Ù±ç(999999)¤Î·îÅÓÃæÊÑ¹¹»þ
+      *  04.05.16    NACL-ÌçÏÆ    11/05/11  ¥Þ¥ëÄ¹·×»»½¤Àµ
       *
       *  04.06.01    NACL-ÌçÏÆ    10/09/02  ½Ð»º°é»ù°ì»þ¶âÄ¾ÀÜ»ÙÊ§À©ÅÙ¡Ê³°Íè¡Ë
       *  04.06.02    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
@@ -14421,9 +14422,6 @@
              ELSE
                IF WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL
                  IF    FLG-MARUKO  =  ZERO
-                    MOVE  SYU-KOH-FTN    TO  WK-SYU-SYUCOMPFTN
-                    COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                    MOVE   ZERO  TO  FLG-TAISYO
                     IF  (FLG-FTNRATE100          =   1            )
                     AND (LNK-SYU-KOH2HKNNUM  NOT = "972" AND "974")
                     AND (LNK-SYU-KOH3HKNNUM  NOT = "972" AND "974")
@@ -14464,6 +14462,22 @@
                           MOVE   1   TO  FLG-SYUKEI3
                         END-IF
                       END-IF
+                    END-IF
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                       MOVE    ZERO            TO  WK-SYU-SYUCOMPFTN
+                       MOVE    ZERO            TO  WK-ENTANI
+                       MOVE    1               TO  FLG-TAISYO
+                    ELSE
+                       MOVE    SYU-KOH-FTN     TO  WK-SYU-SYUCOMPFTN
+                       COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                       MOVE    ZERO            TO  FLG-TAISYO
                     END-IF
                  ELSE
                    IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
@@ -14510,19 +14524,28 @@
                OR  (SYU-KOH2HKNNUM     NOT = SPACE)
                OR  (SYU-KOH3HKNNUM     NOT = SPACE)
                OR  (SYU-KOH4HKNNUM     NOT = SPACE)
-                  MOVE   SYU-KOH-FTN    TO   WK-SYU-SYUCOMPFTN
+                 IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                      (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                      (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                      (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                 AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                 AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                 AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                 AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                    MOVE    ZERO            TO  WK-SYU-SYUCOMPFTN
+                    MOVE    ZERO            TO  WK-ENTANI
+                    MOVE    1               TO  FLG-TAISYO
+                 ELSE
+                    MOVE    SYU-KOH-FTN     TO  WK-SYU-SYUCOMPFTN
+                    COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI    + 0.9
+                    MOVE    ZERO            TO  FLG-TAISYO
+                 END-IF
+               ELSE
+                    COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.9
+                    MOVE    ZERO            TO  FLG-TAISYO
                END-IF
-               ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-      *
-               COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.9
-               IF  (SYU-KOH1HKNNUM     NOT = SPACE)
-               OR  (SYU-KOH2HKNNUM     NOT = SPACE)
-               OR  (SYU-KOH3HKNNUM     NOT = SPACE)
-               OR  (SYU-KOH4HKNNUM     NOT = SPACE)
-                  COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-               END-IF
-               ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-               MOVE  ZERO               TO   FLG-TAISYO
+               ADD   WK-SYU-SYUCOMPFTN      TO  FTN-SYU-M
+               ADD   WK-ENTANI              TO  FTN-SYU-M-ENTANI
              ELSE
                MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
                MOVE   ZERO    TO    WK-ENTANI
@@ -14536,19 +14559,28 @@
                  OR  (SYU-KOH2HKNNUM     NOT = SPACE)
                  OR  (SYU-KOH3HKNNUM     NOT = SPACE)
                  OR  (SYU-KOH4HKNNUM     NOT = SPACE)
-                    MOVE   SYU-KOH-FTN    TO   WK-SYU-SYUCOMPFTN
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                       MOVE    ZERO            TO  WK-SYU-SYUCOMPFTN
+                       MOVE    ZERO            TO  WK-ENTANI
+                       MOVE    1               TO  FLG-TAISYO
+                    ELSE
+                       MOVE    SYU-KOH-FTN     TO  WK-SYU-SYUCOMPFTN
+                       COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI    + 0.9
+                       MOVE    ZERO            TO  FLG-TAISYO
+                    END-IF
+                 ELSE
+                       COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.9
+                       MOVE    ZERO            TO  FLG-TAISYO
                  END-IF
-                 ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-      *
-                 COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.9
-                 IF  (SYU-KOH1HKNNUM     NOT = SPACE)
-                 OR  (SYU-KOH2HKNNUM     NOT = SPACE)
-                 OR  (SYU-KOH3HKNNUM     NOT = SPACE)
-                 OR  (SYU-KOH4HKNNUM     NOT = SPACE)
-                    COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                 END-IF
-                 ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                 MOVE  ZERO               TO   FLG-TAISYO
+                 ADD   WK-SYU-SYUCOMPFTN       TO  FTN-SYU-M
+                 ADD   WK-ENTANI               TO  FTN-SYU-M-ENTANI
                ELSE
                  MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
                  MOVE   ZERO    TO    WK-ENTANI
@@ -15751,11 +15783,24 @@
                       (SYU-KOH2HKNNUM  = "972" OR "974") OR
                       (SYU-KOH3HKNNUM  = "972" OR "974") OR
                       (SYU-KOH4HKNNUM  = "972" OR "974"))
-                      MOVE  SYU-KOH-FTN        TO   WK-SYU-SYUCOMPFTN
-                      ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                      MOVE  ZERO               TO   FLG-TAISYO
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                      MOVE  ZERO                TO   WK-SYU-SYUCOMPFTN
+                      MOVE  ZERO                TO   WK-ENTANI
+                      MOVE  1                   TO   FLG-TAISYO
+                    ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE  ZERO                TO   FLG-TAISYO
+                    END-IF
                  ELSE
                       MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
                       MOVE   ZERO    TO    WK-ENTANI
@@ -15768,11 +15813,24 @@
                       (SYU-KOH2HKNNUM   = "972" OR "974") OR
                       (SYU-KOH3HKNNUM   = "972" OR "974") OR
                       (SYU-KOH4HKNNUM   = "972" OR "974"))
-                      MOVE  SYU-KOH-FTN        TO   WK-SYU-SYUCOMPFTN
-                      ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                      MOVE  ZERO               TO   FLG-TAISYO
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                      MOVE  ZERO                TO   WK-SYU-SYUCOMPFTN
+                      MOVE  ZERO                TO   WK-ENTANI
+                      MOVE  1                   TO   FLG-TAISYO
+                    ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE  ZERO                TO   FLG-TAISYO
+                    END-IF
                  ELSE
                       MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
                       MOVE   ZERO    TO    WK-ENTANI
@@ -15786,30 +15844,43 @@
                     (SYU-KOH3HKNNUM   = "972" OR "974") OR
                     (SYU-KOH4HKNNUM   = "972" OR "974"))
                  IF    FLG-MARUKO  =  ZERO
-                      MOVE  SYU-KOH-FTN        TO   WK-SYU-SYUCOMPFTN
-                      ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                      MOVE  ZERO               TO   FLG-TAISYO
+                   IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                        (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                        (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                        (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                   AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                   AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                   AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                   AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                      MOVE  ZERO                TO   WK-SYU-SYUCOMPFTN
+                      MOVE  ZERO                TO   WK-ENTANI
+                      MOVE  1                   TO   FLG-TAISYO
+                   ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE  ZERO                TO   FLG-TAISYO
+                   END-IF
                  ELSE
-                      IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH1ID))
-                      OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH2ID))
-                      OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH3ID))
-                      OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
-                        MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
-                        MOVE   ZERO    TO    WK-ENTANI
-                        MOVE   1       TO    FLG-TAISYO
-                      ELSE
-                        MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
-                        ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
-                        COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                        ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
-                        MOVE   ZERO               TO   FLG-TAISYO
-                      END-IF
+                   IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH1ID))
+                   OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH2ID))
+                   OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH3ID))
+                   OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
+                      MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
+                      MOVE   ZERO    TO    WK-ENTANI
+                      MOVE   1       TO    FLG-TAISYO
+                   ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE   ZERO               TO   FLG-TAISYO
+                   END-IF
                  END-IF
                ELSE
                       MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
@@ -15838,11 +15909,24 @@
                       (SYU-KOH2HKNNUM  = "972" OR "974") OR
                       (SYU-KOH3HKNNUM  = "972" OR "974") OR
                       (SYU-KOH4HKNNUM  = "972" OR "974"))
-                      MOVE  SYU-KOH-FTN        TO   WK-SYU-SYUCOMPFTN
-                      ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                      MOVE  ZERO               TO   FLG-TAISYO
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                      MOVE  ZERO                TO   WK-SYU-SYUCOMPFTN
+                      MOVE  ZERO                TO   WK-ENTANI
+                      MOVE  1                   TO   FLG-TAISYO
+                    ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE  ZERO                TO   FLG-TAISYO
+                    END-IF
                  ELSE
                       MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
                       MOVE   ZERO    TO    WK-ENTANI
@@ -15855,11 +15939,24 @@
                       (SYU-KOH2HKNNUM   = "972" OR "974") OR
                       (SYU-KOH3HKNNUM   = "972" OR "974") OR
                       (SYU-KOH4HKNNUM   = "972" OR "974"))
-                      MOVE  SYU-KOH-FTN        TO   WK-SYU-SYUCOMPFTN
-                      ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                      MOVE  ZERO               TO   FLG-TAISYO
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                      MOVE  ZERO                TO   WK-SYU-SYUCOMPFTN
+                      MOVE  ZERO                TO   WK-ENTANI
+                      MOVE  1                   TO   FLG-TAISYO
+                    ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE  ZERO                TO   FLG-TAISYO
+                    END-IF
                  ELSE
                       MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
                       MOVE   ZERO    TO    WK-ENTANI
@@ -15873,30 +15970,43 @@
                     (SYU-KOH3HKNNUM   = "972" OR "974") OR
                     (SYU-KOH4HKNNUM   = "972" OR "974"))
                  IF    FLG-MARUKO  =  ZERO
-                      MOVE  SYU-KOH-FTN        TO   WK-SYU-SYUCOMPFTN
-                      ADD   WK-SYU-SYUCOMPFTN  TO   FTN-SYU-M
-                      COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                      ADD   WK-ENTANI          TO   FTN-SYU-M-ENTANI
-                      MOVE  ZERO               TO   FLG-TAISYO
+                    IF  ((COMB-KOH1HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH2HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH3HKNNUM   =  "972" OR "974") OR
+                         (COMB-KOH4HKNNUM   =  "972" OR "974"))
+                    AND ( SYU-KOH1HKNNUM    =  "972" OR "974" )
+                    AND ( SYU-KOH2HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH3HKNNUM    =   SPACE         )
+                    AND ( SYU-KOH4HKNNUM    =   SPACE         )
+                      MOVE  ZERO                TO   WK-SYU-SYUCOMPFTN
+                      MOVE  ZERO                TO   WK-ENTANI
+                      MOVE  1                   TO   FLG-TAISYO
+                    ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE  ZERO                TO   FLG-TAISYO
+                    END-IF
                  ELSE
-                      IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH1ID))
-                      OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH2ID))
-                      OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH3ID))
-                      OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM ) AND
-                          (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
-                        MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
-                        MOVE   ZERO    TO    WK-ENTANI
-                        MOVE   1       TO    FLG-TAISYO
-                      ELSE
-                        MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
-                        ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
-                        COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
-                        ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
-                        MOVE   ZERO               TO   FLG-TAISYO
-                      END-IF
+                   IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH1ID))
+                   OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH2ID))
+                   OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH3HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH3ID))
+                   OR ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH4HKNNUM ) AND
+                       (COMB-KOH1ID         =  WRK-COMB-KOH4ID))
+                      MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
+                      MOVE   ZERO    TO    WK-ENTANI
+                      MOVE   1       TO    FLG-TAISYO
+                   ELSE
+                      MOVE  SYU-KOH-FTN         TO   WK-SYU-SYUCOMPFTN
+                      ADD   WK-SYU-SYUCOMPFTN   TO   FTN-SYU-M
+                      COMPUTE  WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
+                      ADD   WK-ENTANI           TO   FTN-SYU-M-ENTANI
+                      MOVE   ZERO               TO   FLG-TAISYO
+                   END-IF
                  END-IF
                ELSE
                       MOVE   ZERO    TO    WK-SYU-SYUCOMPFTN
