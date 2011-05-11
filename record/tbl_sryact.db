@@ -378,11 +378,9 @@ path	key11 	{
 path	key12	{
 	DBSELECT	{
 		DECLARE tbl_sryact_key12_csr CURSOR FOR
-		SELECT * FROM (
-			SELECT *
-			FROM tbl_sryact
+		SELECT *
+		FROM tbl_sryact
 			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   '1'
 			AND   PTID        =   :PTID
 			AND   SRYYM       =   :SRYYM
 			AND ((SRYCD1      =   :SRYCD1)
@@ -390,19 +388,6 @@ path	key12	{
 			 OR  (SRYCD3      =   :SRYCD3)
 			 OR  (SRYCD4      =   :SRYCD4)
 			 OR  (SRYCD5      =   :SRYCD5))
-			UNION ALL
-			SELECT *
-			FROM tbl_sryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   '2'
-			AND   PTID        =   :PTID
-			AND   SRYYM       =   :SRYYM
-			AND ((SRYCD1      =   :SRYCD1)
-			 OR  (SRYCD2      =   :SRYCD2)
-			 OR  (SRYCD3      =   :SRYCD3)
-			 OR  (SRYCD4      =   :SRYCD4)
-			 OR  (SRYCD5      =   :SRYCD5))
-		) AS sryact
 			ORDER   BY        SRYKA,
                                           SRYYM,
                                           ZAINUM,
@@ -513,104 +498,6 @@ path key18  {
 		 AND     a.HOSPNUM      =      b.HOSPNUM
 		 AND     a.PTID         =      b.PTID
 		 AND     b.TSTPTNUMKBN  <>     '1'
-		;
-	};
-};
-
-path	key19 	{
-	DBSELECT	{
-		DECLARE tbl_sryact_key19_csr CURSOR FOR
-		SELECT *
-		FROM tbl_sryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND     NYUGAIKBN  LIKE     :NYUGAIKBN
-			AND     SRYYM     >=   :SRYYM
-			AND     SRYYM     <=   :CREYMD
-			AND     SRYKBN    LIKE :SRYKBN
-			ORDER   BY PTID,SRYYM,ZAINUM,RENNUM
-		;
-	};
-};
-
-path	key20 	{
-	DBSELECT	{
-		DECLARE tbl_sryact_key20_csr CURSOR FOR
-		SELECT *
-		FROM tbl_sryact
-			WHERE   HOSPNUM   =   :HOSPNUM
-			AND     NYUGAIKBN LIKE  :NYUGAIKBN
-			AND     PTID	  =    :PTID
-			AND     SRYYM     >=   :SRYYM
-			AND     SRYYM     <=   :CREYMD
-			AND     SRYKBN    LIKE :SRYKBN
-		    AND   ( SRYCD1     =     :SRYCD1
-		         OR SRYCD2     =     :SRYCD2
-		         OR SRYCD3     =     :SRYCD3
-		         OR SRYCD4     =     :SRYCD4
-		         OR SRYCD5     =     :SRYCD5 )
-		;
-	};
-};
-
-path	key21	{
-	DBSELECT	{
-		DECLARE tbl_sryact_key21_csr CURSOR FOR
-		SELECT *
-		FROM tbl_sryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYYM      >=   :SRYYM
-			AND ((SRYCD1      =   :SRYCD1)
-			 OR  (SRYCD2      =   :SRYCD2)
-			 OR  (SRYCD3      =   :SRYCD3)
-			 OR  (SRYCD4      =   :SRYCD4)
-			 OR  (SRYCD5      =   :SRYCD5))
-			ORDER   BY        SRYYM,
-			                  ZAINUM,
-			                  RENNUM
-		;
-	};
-};
-
-path	key22	{
-	DBSELECT	{
-		DECLARE tbl_sryact_key22_csr CURSOR FOR
-		SELECT *
-		FROM tbl_sryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYYM      >=   :SRYYM
-			AND ((SRYCD1      =   :SRYCD1)
-			 OR  (SRYCD2      =   :SRYCD2)
-			 OR  (SRYCD3      =   :SRYCD3)
-			 OR  (SRYCD4      =   :SRYCD4)
-			 OR  (SRYCD5      =   :SRYCD5))
-			ORDER   BY        SRYYM    DESC,
-			                  ZAINUM,
-			                  RENNUM
-		;
-	};
-};
-
-path	key23	{
-	DBSELECT	{
-		DECLARE tbl_sryact_key23_csr CURSOR FOR
-		SELECT *
-		FROM tbl_sryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYYM       <   :SRYYM
-			AND ((SRYCD1      =   :SRYCD1)
-			 OR  (SRYCD2      =   :SRYCD2)
-			 OR  (SRYCD3      =   :SRYCD3)
-			 OR  (SRYCD4      =   :SRYCD4)
-			 OR  (SRYCD5      =   :SRYCD5))
-			ORDER   BY        SRYYM    DESC,
-			                  ZAINUM,
-			                  RENNUM
 		;
 	};
 };
