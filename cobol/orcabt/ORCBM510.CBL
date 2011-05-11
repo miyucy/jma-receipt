@@ -46,19 +46,10 @@
       *  04.02.02    NACL-森脇    08/04/25  帳票変更
       *  04.03.01    NACL-森脇    08/06/24  医療機関情報編集名セット
       *
-      *  04.05.01    NACL-藤原    11/04/20  災害対応
+      *  04.05.02    NACL-藤原    11/04/20  災害対応
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
-      *                                     のチェックを行う
-      *
-      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
-      *                                     支払機関請求対応
-      *  04.07.02    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
+      *                                     の作成を行う
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,8 +69,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *----(04.02.02)--UPD-START---
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+      *     COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+      *                             BY         //RECEERR//.
+      *----(04.02.02)--UPD-END-----
       *
       *----(04.02.02)--UPD-START---
            COPY    "HCM37V01.INC"  REPLACING  //HCM37V01//
@@ -126,9 +120,9 @@
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
-           05  WRK-PARA-HKNJANUM       PIC X(08).
-           05  WRK-PARA-STSRYYM        PIC 9(06).
-           05  WRK-PARA-EDSRYYM        PIC 9(06).
+      *----(04.02.01)--ADD-START---
+           05  RECEERR                 PIC X(100).
+      *----(04.02.01)--ADD-END-----
       *
       *    一時領域
        01  WRK-AREA.
@@ -195,12 +189,6 @@
            03  WRK-MOJI11.
                05  FILLER111           PIC X(50)   VALUE
                    "【廃用症候群に係る評価表】".
-           03  WRK-MOJI12.
-               05  FILLER121           PIC X(50)   VALUE
-                   "【上記以外の診療報酬明細書】".
-           03  WRK-MOJI13.
-               05  FILLER              PIC X(50)   VALUE
-               "【医薬品医療機器等法に規定する治験に係る治験概要】".
       *
        01  CONST-AREA.
            03  CONST-H2004             PIC X(06)   VALUE    "200804".
@@ -278,8 +266,6 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -348,24 +334,10 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
-                                               WRK-PARA-HKNJANUM
                                                WRK-PARA-HOSPNUM
-                                               WRK-PARA-STSRYYM
-                                               WRK-PARA-EDSRYYM
                                                RECEERR
            END-UNSTRING
-      *
-           DISPLAY "WRK-PARA-STSRYYM     ="  WRK-PARA-STSRYYM
-           DISPLAY "WRK-PARA-EDSRYYM     ="  WRK-PARA-EDSRYYM
-      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -464,7 +436,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "key67"     TO  WRK-PATH
       *----(04.02.01)--ADD-END-----
            END-EVALUATE
-           MOVE    "key80"         TO  WRK-PATH
            MOVE    "tbl_seikyu"    TO  WRK-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
       *
@@ -478,18 +449,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        200-MAIN-SEC                SECTION.
       *
            PERFORM UNTIL   FLG-END     =   1
-      *???
-               DISPLAY "PTNUM=" RECE10-PTNUM
-                       " TEISYUTUSAKI=" RECE10-TEISYUTUSAKI 
-                       " SRYYM="        RECE10-SRYYM 
-                       " RECESYUBETU="  RECE10-RECESYUBETU 
-                       " HENREIYM="     RECE10-HENREIYM
-                       " HENREI-SIJI-FLG="  RECE10-HENREI-SIJI-FLG
-                       " ETC-YKZFTN1="  RECE10-ETC-YKZFTN (1)
-                       " SKYKBN-RECEDEN="  RECE10-SKYKBN-RECEDEN
-                       " HKNJANUM-S="  RECE10-HKNJANUM-S
-                       " DIRECT-FLG="  RECE10-DIRECT-FLG
-      *???
       *        レセプト電算情報読み込み
                PERFORM 900-RECEDEN-SELECT-SEC
       *
@@ -550,13 +509,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  HCM37-NAIYO(CNT-LINE)
       *----(03.04.02)--ADD-START---
                            WHEN    "50"
-                               IF      RECE10-SRYYM    <   201412
-                                   MOVE    WRK-MOJI9
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               ELSE
-                                   MOVE    WRK-MOJI13
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               END-IF
+                               MOVE    WRK-MOJI9
+                                       TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "51"
                                MOVE    WRK-MOJI10
                                        TO  HCM37-NAIYO(CNT-LINE)
@@ -566,9 +520,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                MOVE    WRK-MOJI11
                                        TO  HCM37-NAIYO(CNT-LINE)
       *----(04.02.01)--ADD-END-----
-                           WHEN    "90"
-                               MOVE    WRK-MOJI12
-                                       TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "99"
                                MOVE    WRK-MOJI8
                                        TO  HCM37-NAIYO(CNT-LINE)
@@ -1056,7 +1007,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-           DISPLAY "***          PAGE "  CNT-GPAGE
            DISPLAY "*** ORCBM510 END ***"
       *
            .
@@ -1212,37 +1162,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+      *----(04.02.01)--ADD-START---
            EVALUATE    WRK-PARA-TEISYUTUSAKI
-               WHEN    "1"
-                   MOVE    1                   TO  RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI 
-               WHEN    "2"
-                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI 
-               WHEN    "3"
+                           ALSO    WRK-PARA-NYUGAIKBN
+               WHEN    "3" ALSO    ZERO
                    MOVE    6                   TO  RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI 
-               WHEN    "4"
-                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
-                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
-           END-EVALUATE
-           EVALUATE    WRK-PARA-NYUGAIKBN
-               WHEN    ZERO
+                                                   RECE10-XXTEISYUTUSAKI
                    MOVE    "%"                 TO  RECE10-NYUGAIKBN
-               WHEN    ANY
+               WHEN    "3" ALSO    ANY
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ZERO
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ANY
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            END-EVALUATE
-           EVALUATE    WRK-PARA-HKNJANUM
-               WHEN    "99999999"
-                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
-                   MOVE    "%"                 TO  RECE10-DIRECT-FLG
-               WHEN    "00000000"
-                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
-                   MOVE    "0"                 TO  RECE10-DIRECT-FLG
-               WHEN    ANY
-                   MOVE    WRK-PARA-HKNJANUM   TO  RECE10-HKNJANUM-S
-                   MOVE    "1"                 TO  RECE10-DIRECT-FLG
-           END-EVALUATE
+      *----(04.02.01)--ADD-END-----
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-TABLE       TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
@@ -1269,15 +1209,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
-      *
-               IF      WRK-PARA-STSRYYM    =   "999999"
-                   CONTINUE
-               ELSE
-                   IF    ( RECE10-SRYYM    <   WRK-PARA-STSRYYM )
-                   OR    ( RECE10-SRYYM    >   WRK-PARA-EDSRYYM )
-                       GO  TO  900-SEIKYU-READ-SEC
-                   END-IF
-               END-IF
       *
       *        未確定分をレセ電データに記録するか
                IF    (  SYS-200501-RECEDEN-DISASTER
@@ -1347,7 +1278,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *----(04.02.01)--ADD-START---
                                            OR  "52"
       *----(04.02.01)--ADD-END-----
-                                           OR  "90"
                                            OR  "99"
                        ADD     1               TO  CNT-RECEDEN
                        MOVE    1               TO  FLG-RECEDENOK
