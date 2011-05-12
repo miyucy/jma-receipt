@@ -1682,6 +1682,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    ¹¹¿·½èÍý
            PERFORM 49001-KOUSIN-SEC
       *
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+           END-IF
+      *
           .
        3009-CLAIM-SYORI-EXT.
            EXIT.
@@ -4337,7 +4341,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
       *
       *    £Ã£Ì£Á£É£ÍÀÜÂ³¥Á¥§¥Ã¥¯½èÍý
-           PERFORM 4905-CLAIM-CHK-SEC
+           IF      SPA-GMN-PTNUM       =   SPACE
+      *        ¿·µ¬´µ¼Ô¤Ï¤Ê¤·
+               MOVE    ZERO                TO  FLG-CLAIM
+           ELSE
+               PERFORM 4905-CLAIM-CHK-SEC
+           END-IF
            IF      FLG-CLAIM       =   2 
                GO      TO      490-TOUROKU-EXT
            END-IF
@@ -4407,7 +4416,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM   
-      *********CALL    "ORCHC01"           USING  SPA-AREA 
                MOVE    SPA-GMN-KARUTE      TO  ORCHC01-SYORIKBN
                CALL    WRK-KARUTE-PG       USING  SPA-AREA
                                                   ORCHC01AREA
@@ -4434,8 +4442,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                INITIALIZE                      ORCHC19AREA
                MOVE    ZERO                TO  ORCHC19-RENNUM
                MOVE    "1"                 TO  ORCHC19-KBN
-      ******** CALL    "ORCHC19"           USING   SPA-AREA
-      ********                                     ORCHC19AREA
                CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                    ORCHC19AREA
            END-IF
@@ -4646,6 +4652,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        4901-UKEADD-SEC              SECTION.
       *
+           IF      SPA-GMN-NAME            =  SPACE
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
+               GO  TO  4901-UKEADD-EXT
+           END-IF
+      *
       *    ¼õÉÕ£É£Ä¡á£°£°¸¡º÷
            MOVE    SPACE               TO  UKETUKE-REC
            INITIALIZE                  UKETUKE-REC
@@ -4777,6 +4789,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               OR  (SPA-NAI-UKEID           =   ZERO          )
                MOVE    "1010"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      4902-UKEUPD-EXT
+           END-IF
+      *
+           IF      SPA-GMN-NAME            =  SPACE
+               MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
                GO      TO      4902-UKEUPD-EXT
            END-IF
       *
@@ -5082,7 +5100,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-U02
-     *
+      *
            MOVE    "U02"               TO  SPA-MOTOPG
            MOVE    "U02X"              TO  SPA-SAKIPG
       *    ¥«¡¼¥½¥ë°ÜÆ°
