@@ -117,6 +117,7 @@
            03  FLG-CHK                            PIC 9(01).
            03  FLG-KOUSIN                         PIC 9(01).
            03  FLG-OK                             PIC 9(01).
+           03  FLG-SYSKANRI                       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -174,6 +175,9 @@
       *
        01  HKNNUM-REC.
            COPY  "CPHKNNUM.INC".
+      *
+      *    医療機関情報情報
+           COPY    "CPSK1001.INC".
       *
       *    ジョブ管理
        01  JOBKANRI-REC.
@@ -512,6 +516,10 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+           MOVE    SPACE           TO  SPA-GMN-MESSAGE
+           MOVE    SPACE           TO  SPA-GMN-MESSAGE-STYLE
+           MOVE    ZERO            TO  SPA-GMN-DURATION
+      *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -519,6 +527,7 @@
       *        保険番号
                WHEN    "ACTIVATE"       ALSO    "HKNNUM"
                    PERFORM  4104-HKNNUM-CHK-SEC
+                   PERFORM  41041-HKNNUM-HENSYU-SEC
       *        選択番号
                WHEN    "ACTIVATE"       ALSO    "SELNUM"
                    PERFORM  4101-SELNUM-CHK-SEC
@@ -713,7 +722,6 @@
       *****************************************************************
        4102-STYUKYMD-CHK-SEC          SECTION.
       *
-      *
            IF      SPA-GMN-STYUKYMD   =   SPACE
                MOVE    "00000000"         TO  SPA-GMN-STYUKYMD
                MOVE    ZERO               TO  SPA-NAI-STYUKYMD
@@ -737,7 +745,6 @@
       *    有効終了年月日チェック処理
       *****************************************************************
        4103-EDYUKYMD-CHK-SEC          SECTION.
-      *
       *
            IF      SPA-GMN-EDYUKYMD    =   SPACE
                IF     (MCP-WIDGET      =   "EDYUKYMD"  )  OR
@@ -817,13 +824,32 @@
            MOVE    SPA-GMN-HKNNUM      TO  SPA-NAI-HKNNUM
            MOVE    SPA-GMN-HKNNUM      TO  SPA-GMN-HKNNUM-NO
       *     
+           .
+       4104-HKNNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号　編集処理
+      *****************************************************************
+       41041-HKNNUM-HENSYU-SEC     SECTION.
+      *
            EVALUATE    SPA-GMN-MAX
                WHEN    ZERO
                    IF      SPA-GMN-HKNNUM  =   "027"
                        MOVE    6                   TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    ZERO                TO  SPA-GMN-PAYKBN
-                       MOVE    4                   TO  SPA-GMN-CUR
+                       IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
+                             ( SPA-GMN-HKNNUM-NO   <=  899 )
+                           PERFORM 900-SYSKANRI-READ-SEC
+                           MOVE    SYS-1001-PREFNUM
+                                                   TO  SPA-GMN-PREFNUM
+                           PERFORM 4101-PREFNUM-CHK-SEC
+                           MOVE    ZERO            TO  SPA-GMN-PAYKBN
+                           MOVE    2               TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    ZERO            TO  SPA-GMN-PAYKBN
+                           MOVE    4               TO  SPA-GMN-CUR
+                       END-IF 
                    END-IF         
                WHEN    1
                    MOVE    SPA-GMN-TSTYUKYMD (1)   TO  SPA-GMN-STYUKYMD
@@ -840,7 +866,7 @@
                    MOVE    3                       TO  SPA-GMN-CUR
            END-EVALUATE           
            .
-       4104-HKNNUM-CHK-EXT.
+       41041-HKNNUM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -923,7 +949,7 @@
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
-               MOVE    "処理中です"    TO  SPA-GMN-MESSAGE
+               MOVE    "参照中です。"  TO  SPA-GMN-MESSAGE
                MOVE    "blue"          TO  SPA-GMN-MESSAGE-STYLE
                MOVE    5               TO  SPA-GMN-DURATION
                GO  TO  400-JYOKYO-EXT
@@ -935,13 +961,17 @@
       *
            PERFORM 4104-HKNNUM-CHK-SEC
       *
-           IF      SPA-GMN-MAX     =  ZERO
-               MOVE    SPACE         TO  SKBN-RUN
-               MOVE    "更新データはありません。"
-                                     TO  SPA-GMN-MESSAGE
-               MOVE    "blue"        TO  SPA-GMN-MESSAGE-STYLE
+           IF      SPA-GMN-MAX     =   ZERO
+               MOVE    SPACE           TO  SKBN-RUN
+               MOVE    "該当データはありませんでした。"
+                                       TO  SPA-GMN-MESSAGE
+               MOVE    "blue"          TO  SPA-GMN-MESSAGE-STYLE
+               MOVE    SPACE           TO  SPA-GMN-PREFNUM-G
+               MOVE    4               TO  SPA-GMN-CUR
                GO  TO  400-JYOKYO-EXT
            END-IF
+      *
+           PERFORM 41041-HKNNUM-HENSYU-SEC
       *
            .
        400-JYOKYO-EXT.
@@ -955,7 +985,7 @@
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
-               MOVE    "処理中です"    TO  SPA-GMN-MESSAGE
+               MOVE    "参照中です。"  TO  SPA-GMN-MESSAGE
                MOVE    "blue"          TO  SPA-GMN-MESSAGE-STYLE
                MOVE    5               TO  SPA-GMN-DURATION
                GO  TO  400-JYOUHOU-EXT
@@ -980,7 +1010,8 @@
                                    TO  SHELLTBL-ARG4
            MOVE    "HKNNUM"        TO  SHELLTBL-ARG5
            MOVE    SPA-GMN-PREFNUM TO  SHELLTBL-ARG6
-           MOVE    SPA-GMN-HKNNUM-NO   TO  SHELLTBL-ARG7
+           MOVE    SPA-GMN-HKNNUM-NO
+                                   TO  SHELLTBL-ARG7
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1293,7 +1324,8 @@
            END-IF
       *
            IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
-                 ( SPA-GMN-HKNNUM-NO   <=  899 )
+                 ( SPA-GMN-HKNNUM-NO   <=  899 )  AND
+                 ( SPA-GMN-MAX         =   ZERO )
                MOVE    WIDGET-NORMAL       TO  V01-PREFNUM-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  V01-PREFNUM-STATE
@@ -1363,6 +1395,8 @@
        50011-GMN-CUR-SET-SEC      SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
+               WHEN    "PREFNUM"
+                   MOVE    4               TO  SPA-GMN-CUR
                WHEN    "PAYKBN"
                    MOVE    4               TO  SPA-GMN-CUR
                WHEN    "STYUKYMD"
@@ -1599,6 +1633,57 @@
       *
            .
        900-HKNNUM-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読み込み処理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC       SECTION.
+      *
+           INITIALIZE                  SYS-1001-REC
+           MOVE    "1001"          TO  SYS-1001-KANRICD
+           MOVE    "*"             TO  SYS-1001-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
+                                       SYS-1001-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
+      *
+           MOVE    SYS-1001-REC    TO  MCPDATA-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC     TO  SYS-1001-REC
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+                   INITIALIZE                  SYS-1001-REC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
