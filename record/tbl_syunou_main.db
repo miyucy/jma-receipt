@@ -467,7 +467,7 @@ path	key17 	{
 			AND   PTID        =   :PTID
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   =   '3'
-			ORDER   BY          DENPNUM
+			ORDER   BY        CAST(DENPNUM AS NUMERIC(7,0))
 		;
 	};
 };
