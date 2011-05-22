@@ -265,6 +265,7 @@ bind	"ORCBQ03"	"OpenCOBOL";
 bind	"ORCDTCKMAIN"	"OpenCOBOL";
 bind    "ORCBINF2"      "OpenCOBOL";
 bind    "ORCBSQL1"      "OpenCOBOL";
+bind    "ORCBINFA"      "OpenCOBOL";
 
 
 #include "orcadb.inc"

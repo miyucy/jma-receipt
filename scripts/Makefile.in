@@ -95,6 +95,7 @@ utf8_shell_sources = \
 	monthly/dtck_prv.sh.in \
 	daily/infectiondata2.sh.in \
 	daily/das-infection2.sh.in \
+	daily/infectionagree.sh.in \
 
 eucjp_shell_sources = \
 	allways/program_upgrade_check_log.sh.in \

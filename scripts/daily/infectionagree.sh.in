@@ -1,0 +1,78 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="/etc/jma-receipt/jma-receipt.env"
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    感染症データ作成
+#        $1  TERMID
+#        $2  HOSPNUM
+#        $3  HOSPID
+#        $4  JOBID
+#        $5  SHELLID
+#-------------------------------------------#
+TERMID=${1}
+HOSPNUM=${2}
+HOSPID=${3}
+JOBID=${4}
+SHELLID=${5}
+
+INFECFILE=$DASDIR/${HOSPNUM}/infection.csv.$$
+INFECRFILE=$DASDIR/${HOSPNUM}/infection.csv
+ERRFILE=/tmp/${HOSPNUM}infectionerror
+LOG=/var/log/jma-receipt/${HOSPNUM}infectiondata.log
+LOGFILE=/var/log/jma-receipt/${HOSPNUM}infectionagree.log
+
+DASUPLOAD=das-infection2.sh
+
+DPKGLT=`dpkg -l | grep 'ii  jma-receipt' | grep 'JMA Standard Receipt'`
+PKGVER=`echo $DPKGLT | sed 's/\s\{1,\}/ /g' | cut -d' ' -f 3`
+
+
+if ! [ -d $DASDIR/${HOSPNUM} ]; then 
+  mkdir $DASDIR/${HOSPNUM}
+fi
+if ! [ -d $DASDIR/${HOSPNUM}/infection ]; then 
+  mkdir $DASDIR/${HOSPNUM}/infection
+fi
+
+#if [ -e $LOGFILE ]; then
+#  cat $LOGFILE >> $LOG
+#fi
+rm -f $LOGFILE
+
+#感染症データ作成
+
+rm -f $ERRFILE
+
+PARAM="${HOSPNUM},${INFECFILE},${ERRFILE},${PKGVER}"
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBINFA -parameter ${PARAM} 2>&1 | tee -a $LOGFILE
+
+if [ -e $ERRFILE ]; then
+  rm -f $INFECFILE
+fi
+
+if [ -e $INFECFILE ]; then
+  if [ -s $INFECFILE ]; then
+    TIMESTAMP=`(date +%Y%m%d%H%M%S)`
+    RANDOMIZE=`ruby -e 'print sprintf("%04d",rand(10000))'`
+    mv $INFECFILE $INFECRFILE.$TIMESTAMP$RANDOMIZE
+    gzip $INFECRFILE.$TIMESTAMP$RANDOMIZE
+  else
+    rm -f $INFECFILE
+  fi
+fi
+
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM} 2>&1 | tee -a $LOGFILE
+
+echo "感染症データ送信処理 起動" 2>&1 | tee -a $LOGFILE
+$DASUPLOAD ${HOSPNUM} ${HOSPID} 1 &
+
+exit 0

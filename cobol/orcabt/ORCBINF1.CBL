@@ -66,7 +66,9 @@
       *01  PRGSKBNO                PIC X(08)  VALUE "20101026".
       *01  PRGSKBNO                PIC X(08)  VALUE "20101125".
       *    レイアウト変更（リアルタイム導入）
-       01  PRGSKBNO                PIC X(08)  VALUE "20110201".
+      *01  PRGSKBNO                PIC X(08)  VALUE "20110201".
+      *    レイアウト変更（データ作成区分）
+       01  PRGSKBNO                PIC X(08)  VALUE "20110520".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -906,6 +908,11 @@
       *    日レセバージョン
            MOVE    WRK-PARA-VERSION    TO  WRK-DATA
            MOVE    100                 TO  WRK-NAGASA
+           PERFORM 4002-MOJI-HENSYU-SEC
+      *    データ作成区分
+           MOVE    SYS-1001-DATAINFECTIONKBN
+                                       TO  WRK-DATA
+           MOVE    1                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END
            PERFORM 4002-MOJI-HENSYU-SEC
       *
