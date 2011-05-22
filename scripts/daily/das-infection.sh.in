@@ -40,7 +40,7 @@ do
      $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infection","2","0",$OBJECTDATE,"000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
      rm $file
   else
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infection","2","1",$OBJECTDATE,"${RESULT:0:3}","${RESULT:4}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-infection","2","1",$OBJECTDATE,"${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
      echo "${RESULT:0:3}","${RESULT:4}" | tee -a $LOGFILE
   fi
   sleep 1

@@ -29,5 +29,5 @@ RESULT=`$UPLOAD_COMMAND -a 2>&1|head -1`
 if [ "LOGIN OK" = "$RESULT" ]; then
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-check","2","0","","200","login success",$HOSPNUM 2>&1 | tee -a $LOGFILE
 else
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-check","2","1","","${RESULT:0:3}","${RESULT:4}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-check","2","1","","${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
 fi

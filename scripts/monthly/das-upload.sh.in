@@ -32,7 +32,7 @@ do
      $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","0",$OBJECTYYM,"000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
      rm $file
   else
-     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1",$OBJECTYYM,"${RESULT:0:3}","${RESULT:4}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-upload","2","1",$OBJECTYYM,"${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
      echo "${RESULT:0:3}","${RESULT:4}"
   fi
   sleep 1

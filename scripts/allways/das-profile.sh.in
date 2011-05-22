@@ -62,7 +62,7 @@ if [ -e $FILE_PROFILE ]; then
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-profile","2","0","","000","Upload success",$HOSPNUM 2>&1 | tee -a $LOGFILE
   else
     confupdate ${RESULT:0:3}
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-profile","2","1","","${RESULT:0:3}","${RESULT:4}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-profile","2","1","","${RESULT:0:3}","${RESULT:4:200}",$HOSPNUM 2>&1 | tee -a $LOGFILE
     echo "${RESULT:0:3}","${RESULT:4}"
   fi
   rm $FILE_PROFILE

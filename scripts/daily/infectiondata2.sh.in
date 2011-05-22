@@ -32,7 +32,8 @@ SRYYMD=${7}
 SRYKA=${8}
 BEDFLG=${9}
 
-INFECFILE=$DASDIR/${HOSPNUM}/infection.csv
+INFECFILE=$DASDIR/${HOSPNUM}/infection.csv.$$
+INFECRFILE=$DASDIR/${HOSPNUM}/infection.csv
 ERRFILE=/tmp/${HOSPNUM}infectionerror_real
 LOG=/var/log/jma-receipt/${HOSPNUM}infectiondata2.log
 LOGFILE=/var/log/jma-receipt/${HOSPNUM}infectiondata2_real.log
@@ -73,8 +74,8 @@ if [ -e $INFECFILE ]; then
   if [ -s $INFECFILE ]; then
     TIMESTAMP=`(date +%Y%m%d%H%M%S)`
     RANDOMIZE=`ruby -e 'print sprintf("%04d",rand(10000))'`
-    mv $INFECFILE $INFECFILE.$TIMESTAMP$RANDOMIZE
-    gzip $INFECFILE.$TIMESTAMP$RANDOMIZE
+    mv $INFECFILE $INFECRFILE.$TIMESTAMP$RANDOMIZE
+    gzip $INFECRFILE.$TIMESTAMP$RANDOMIZE
   else
     rm -f $INFECFILE
   fi
