@@ -92,6 +92,7 @@ sed -e "s/:HOSPNUM:/${HOSPNUM}/g" \
     -e "s/:TERMID:/${TERMID}/g" \
     -e "s/:CREYMD:/${creymd}/g" \
     ${WORKDIR}/${FILENAME} > ${WORKDIR}/${FILENAME}.wk
+rm -f ${WORKDIR}/${FILENAME}
 
 mksqldata.rb ${WORKDIR}/${FILENAME}.wk ${WORKDIR}/${FILENAME}.sql
 rm -f ${WORKDIR}/${FILENAME}.wk
