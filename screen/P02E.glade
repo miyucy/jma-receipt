@@ -327,22 +327,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label251</name>
-      <x>52</x>
-      <y>60</y>
-      <width>52</width>
-      <height>24</height>
-      <label>会    叹</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label262</name>
       <x>264</x>
       <y>92</y>
@@ -453,35 +437,10 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label252</name>
-      <x>52</x>
-      <y>124</y>
-      <width>52</width>
-      <height>24</height>
-      <label>交    疥</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator2</name>
       <x>0</x>
       <y>40</y>
-      <width>668</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>0</x>
-      <y>296</y>
       <width>668</width>
       <height>16</height>
     </widget>
@@ -643,6 +602,47 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label251</name>
+      <x>52</x>
+      <y>60</y>
+      <width>52</width>
+      <height>24</height>
+      <label>会  叹</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label252</name>
+      <x>52</x>
+      <y>124</y>
+      <width>52</width>
+      <height>24</height>
+      <label>交  疥</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>296</y>
+      <width>668</width>
+      <height>16</height>
     </widget>
   </widget>
 </widget>
