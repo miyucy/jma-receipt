@@ -239,9 +239,9 @@
                05  WRK-BYOMM           PIC 9(02).
                05  WRK-BYODD           PIC 9(02).
            03  WRK-TENKIYMD.
-               05  WRK-TENKIYY         PIC 9(04).
-               05  WRK-TENKIMM         PIC 9(02).
-               05  WRK-TENKIDD         PIC 9(02).
+               05  WRK-TENKIYY         PIC X(04).
+               05  WRK-TENKIMM         PIC X(02).
+               05  WRK-TENKIDD         PIC X(02).
            03  WRK-TENKI               PIC X(01).
            03  WRK-SYUBYOFLG           PIC X(01).
            03  WRK-UTAGAIFLG           PIC X(01).
