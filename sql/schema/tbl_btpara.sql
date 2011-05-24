@@ -15,8 +15,6 @@ CREATE TABLE tbl_btpara (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_btpara IS 'バッチ連係パラメタ';
-
 ALTER TABLE ONLY tbl_btpara
     ADD CONSTRAINT tbl_btpara_primary_key PRIMARY KEY (hospnum, shellid, run_opid, dsp_rennum, rennum);
 

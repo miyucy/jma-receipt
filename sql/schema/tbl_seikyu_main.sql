@@ -199,11 +199,34 @@ CREATE TABLE tbl_seikyu_main (
     tokkinm2 character varying(12),
     tokkinm3 character varying(12),
     tokkinm4 character varying(12),
-    tokkinm5 character varying(12)
+    tokkinm5 character varying(12),
+    skyiryo_nissu smallint DEFAULT 0,
+    skyiryo_totalten integer DEFAULT 0,
+    skyiryo_ichibuftn integer DEFAULT 0,
+    skyiryo_hokenja integer DEFAULT 0,
+    skyiryo_kohftn integer DEFAULT 0,
+    skyskj_kaisu smallint DEFAULT 0,
+    skyskj_ryoyohi integer DEFAULT 0,
+    skyskj_ichibuftn integer DEFAULT 0,
+    skyskj_hokenja integer DEFAULT 0,
+    skyskj_kohftn integer DEFAULT 0,
+    hkncombi1 smallint DEFAULT 0,
+    hkncombi2 smallint DEFAULT 0,
+    hkncombi3 smallint DEFAULT 0,
+    hkncombi4 smallint DEFAULT 0,
+    hkncombi5 smallint DEFAULT 0,
+    hkncombi6 smallint DEFAULT 0,
+    hkncombi7 smallint DEFAULT 0,
+    hkncombi8 smallint DEFAULT 0,
+    hkncombi9 smallint DEFAULT 0,
+    hkncombi10 smallint DEFAULT 0,
+    kohid_key bigint DEFAULT 0 NOT NULL,
+    crehms character(6),
+    updhms character(6)
 );
 
 ALTER TABLE ONLY tbl_seikyu_main
-    ADD CONSTRAINT tbl_seikyu_main_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd);
+    ADD CONSTRAINT tbl_seikyu_main_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, kohid_key, tekstymd);
 
 CREATE INDEX idx_seikyu_main_skyym ON tbl_seikyu_main USING btree (hospnum, skyym, skykbn);
 

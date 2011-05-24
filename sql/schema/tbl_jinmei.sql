@@ -6,8 +6,6 @@ CREATE TABLE tbl_jinmei (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_jinmei IS '¿ÍÌ¾¼­½ñ';
-
 ALTER TABLE ONLY tbl_jinmei
     ADD CONSTRAINT tbl_jinmei_primary_key PRIMARY KEY (hospnum, kanji, kana);
 

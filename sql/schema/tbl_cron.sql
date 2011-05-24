@@ -15,8 +15,6 @@ CREATE TABLE tbl_cron (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_cron IS 'クーロン情報';
-
 ALTER TABLE ONLY tbl_cron
     ADD CONSTRAINT tbl_cron_primary_key PRIMARY KEY (cronid);
 

@@ -14,8 +14,6 @@ CREATE TABLE tbl_ptnum (
     hospnum smallint NOT NULL
 );
 
-COMMENT ON TABLE tbl_ptnum IS '患者番号変換';
-
 ALTER TABLE ONLY tbl_ptnum
     ADD CONSTRAINT tbl_ptnum_primary_key PRIMARY KEY (hospnum, ptid);
 

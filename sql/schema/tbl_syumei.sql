@@ -1,18 +1,18 @@
 CREATE TABLE tbl_syumei (
     nyugaikbn character(1) NOT NULL,
-    ptid numeric(10,0) NOT NULL,
-    denpnum numeric(7,0) NOT NULL,
-    denpedanum numeric(2,0) NOT NULL,
-    nyukinrennum numeric(3,0) DEFAULT 0,
+    ptid bigint NOT NULL,
+    denpnum integer NOT NULL,
+    denpedanum smallint NOT NULL,
+    nyukinrennum smallint DEFAULT 0,
     sryka character(2),
     meisaijoutaikbn character(1),
     sky_printymd character(8),
     sky_reprintymd character(8),
     ryosyu_printymd character(8),
     ryosyu_reprintymd character(8),
-    skymoney numeric(7,0) DEFAULT 0,
+    skymoney integer DEFAULT 0,
     nyuhen_kbn character(1),
-    nyuhen_money numeric(7,0) DEFAULT 0,
+    nyuhen_money integer DEFAULT 0,
     nyuhen_ymd character(8),
     nyukin_hoho character(2),
     joutaikbn character(1),
@@ -24,12 +24,10 @@ CREATE TABLE tbl_syumei (
     upymd character(8),
     uphms character(6),
     syurrkupdkbn character(1),
-    hospnum numeric(2,0) NOT NULL,
-    syurrknum numeric(2,0),
-    syuedanum numeric(2,0)
+    hospnum smallint NOT NULL,
+    syurrknum smallint,
+    syuedanum smallint
 );
-
-COMMENT ON TABLE tbl_syumei IS '¼ýÇ¼ÌÀºÙ';
 
 ALTER TABLE ONLY tbl_syumei
     ADD CONSTRAINT tbl_syumei_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum, denpedanum);

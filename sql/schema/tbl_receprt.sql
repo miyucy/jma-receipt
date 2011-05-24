@@ -46,8 +46,6 @@ CREATE TABLE tbl_receprt (
     sort_1 character varying(10)
 );
 
-COMMENT ON TABLE tbl_receprt IS 'レセプト明細書';
-
 ALTER TABLE ONLY tbl_receprt
     ADD CONSTRAINT tbl_receprt_primary_key PRIMARY KEY (hospnum, prtid, receym, creymd, crehms, teisyutusaki, sryka, prefkbn_srt, hknjanum_srt, hknjanum, recesyubetu, tekstymd, zaitaku, chouki, ptnum, rennum, recenum);
 

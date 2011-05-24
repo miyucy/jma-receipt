@@ -32,13 +32,12 @@ CREATE TABLE tbl_syuka (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    kohid bigint DEFAULT 0 NOT NULL
 );
 
-COMMENT ON TABLE tbl_syuka IS '¼ç²Ê';
-
 ALTER TABLE ONLY tbl_syuka
-    ADD CONSTRAINT tbl_syuka_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, ten_kbn, sryym, teisyutusaki, hknjanum, hojokbn, recesyubetu, sryka);
+    ADD CONSTRAINT tbl_syuka_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, ten_kbn, sryym, teisyutusaki, hknjanum, hojokbn, kohid, recesyubetu, sryka);
 
 CREATE INDEX idx_syuka_sryym ON tbl_syuka USING btree (hospnum, nyugaikbn, sryym);
 

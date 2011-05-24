@@ -15,8 +15,6 @@ CREATE TABLE tbl_csv_info (
     crehms character varying(6)
 );
 
-COMMENT ON TABLE tbl_csv_info IS 'CSV情報格納テーブル';
-
 ALTER TABLE ONLY tbl_csv_info
     ADD CONSTRAINT tbl_csv_info_primary_key PRIMARY KEY (hospnum, tbl_key, sryym, shellid, rennum, shori_rennum, seq_no);
 

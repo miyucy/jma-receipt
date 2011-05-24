@@ -404,8 +404,6 @@ CREATE TABLE tbl_lock (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_lock IS '排他制御管理';
-
 ALTER TABLE ONLY tbl_lock
     ADD CONSTRAINT tbl_lock_primary_key PRIMARY KEY (hospnum, lock_termid);
 

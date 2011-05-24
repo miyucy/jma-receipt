@@ -19,8 +19,6 @@ CREATE TABLE tbl_chksnd (
     utagaikbn character(1)
 );
 
-COMMENT ON TABLE tbl_chksnd IS 'チェック2';
-
 ALTER TABLE ONLY tbl_chksnd
     ADD CONSTRAINT tbl_chksnd_primary_key PRIMARY KEY (hospnum, chkkbn, srycd, yukostymd, yukoedymd, cdkbn, rennum);
 

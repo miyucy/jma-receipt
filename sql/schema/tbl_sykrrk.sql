@@ -14,8 +14,6 @@ CREATE TABLE tbl_sykrrk (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_sykrrk IS '¾Ò²ðÍúÎò¾ðÊó';
-
 ALTER TABLE ONLY tbl_sykrrk
     ADD CONSTRAINT tbl_sykrrk_primary_key PRIMARY KEY (hospnum, ptid, sykkbn, sykymd);
 

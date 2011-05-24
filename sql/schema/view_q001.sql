@@ -20,7 +20,7 @@ CREATE VIEW view_q001 AS
       FROM (((tbl_hkncombi JOIN view_q004 
         ON ((((tbl_hkncombi.hospnum = view_q004.hospnum) 
        AND (tbl_hkncombi.ptid = view_q004.ptid)) 
-       AND (tbl_hkncombi.hkncombinum = to_number((view_q004.hkncombinum)::text,
+       AND ((tbl_hkncombi.hkncombinum)::numeric = to_number((view_q004.hkncombinum)::text,
            '9999'::text))))) 
       LEFT JOIN tbl_pthkninf 
         ON (((((tbl_hkncombi.hospnum = tbl_pthkninf.hospnum) 
@@ -60,7 +60,7 @@ CREATE VIEW view_q001 AS
         ON ((((view_q004.hospnum = tbl_hkncombi.hospnum) 
        AND (view_q004.ptid = tbl_hkncombi.ptid)) 
        AND (to_number((view_q004.hkncombinum)::text,
-           '9999'::text) = tbl_hkncombi.hkncombinum)))) 
+           '9999'::text) = (tbl_hkncombi.hkncombinum)::numeric)))) 
       LEFT JOIN tbl_pthkninf 
         ON (((((tbl_hkncombi.hospnum = tbl_pthkninf.hospnum) 
        AND (tbl_hkncombi.ptid = tbl_pthkninf.ptid)) 
@@ -69,9 +69,10 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf 
      WHERE (((((view_q004.hospnum = tbl_ptkohinf.hospnum) 
        AND (view_q004.ptid = tbl_ptkohinf.ptid)) 
-       AND ((((((((((((((((tbl_ptkohinf.kohnum = '956'::bpchar) 
+       AND ((((((((((((((((((tbl_ptkohinf.kohnum = '956'::bpchar) 
         OR (tbl_ptkohinf.kohnum = '957'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '958'::bpchar)) 
+        OR (tbl_ptkohinf.kohnum = '959'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '960'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '961'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '962'::bpchar)) 
@@ -82,6 +83,7 @@ CREATE VIEW view_q001 AS
         OR (tbl_ptkohinf.kohnum = '967'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '968'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '969'::bpchar)) 
+        OR (tbl_ptkohinf.kohnum = '976'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '977'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '978'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '979'::bpchar))) 

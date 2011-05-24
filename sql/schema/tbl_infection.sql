@@ -19,8 +19,6 @@ CREATE TABLE tbl_infection (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_infection IS '´¶À÷¾É';
-
 ALTER TABLE ONLY tbl_infection
     ADD CONSTRAINT tbl_infection_primary_key PRIMARY KEY (hospnum, sendymd, ptid, disease, sryymd);
 

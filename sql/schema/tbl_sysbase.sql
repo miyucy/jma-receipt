@@ -10,8 +10,6 @@ CREATE TABLE tbl_sysbase (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_sysbase IS 'システム基本';
-
 ALTER TABLE ONLY tbl_sysbase
     ADD CONSTRAINT tbl_sysbase_primary_key PRIMARY KEY (grpnum);
 

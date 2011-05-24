@@ -48,9 +48,10 @@ CREATE TABLE tbl_seikyu_etc (
     etc_shokujiftn3 integer DEFAULT 0,
     etc_shokujinissu4 smallint DEFAULT 0,
     etc_shokujiryoyohi4 integer DEFAULT 0,
-    etc_shokujiftn4 integer DEFAULT 0
+    etc_shokujiftn4 integer DEFAULT 0,
+    kohid_key bigint DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE ONLY tbl_seikyu_etc
-    ADD CONSTRAINT tbl_seikyu_etc_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd);
+    ADD CONSTRAINT tbl_seikyu_etc_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, kohid_key, tekstymd);
 

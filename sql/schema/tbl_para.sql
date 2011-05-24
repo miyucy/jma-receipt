@@ -7,8 +7,6 @@ CREATE TABLE tbl_para (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_para IS 'パラメタ';
-
 ALTER TABLE ONLY tbl_para
     ADD CONSTRAINT tbl_para_primary_key PRIMARY KEY (hospnum, gyoumuid, termid, filemei, edanum);
 

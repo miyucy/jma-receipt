@@ -14,8 +14,6 @@ CREATE TABLE tbl_ptkohftnetc (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_ptkohftnetc IS '´µ¼Ô¸øÈñÉéÃ´Â¾±¡';
-
 ALTER TABLE ONLY tbl_ptkohftnetc
     ADD CONSTRAINT tbl_kohftnetc_primary_key PRIMARY KEY (hospnum, ptid, kohid, sryymd, rennum);
 

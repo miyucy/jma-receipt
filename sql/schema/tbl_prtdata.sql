@@ -20,8 +20,6 @@ CREATE TABLE tbl_prtdata (
     creymd character varying(8)
 );
 
-COMMENT ON TABLE tbl_prtdata IS '°õºþ¥Ç¡¼¥¿';
-
 ALTER TABLE ONLY tbl_prtdata
     ADD CONSTRAINT tbl_prtdata_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, tbl_uuid, shori_rennum, page);
 

@@ -37,8 +37,6 @@ CREATE TABLE tbl_ptrsiinf (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_ptrsiinf IS '´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó';
-
 ALTER TABLE ONLY tbl_ptrsiinf
     ADD CONSTRAINT tbl_ptrsiinf_primary_key PRIMARY KEY (hospnum, ptid, hknid);
 

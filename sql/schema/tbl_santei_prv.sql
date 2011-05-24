@@ -50,8 +50,6 @@ CREATE TABLE tbl_santei_prv (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_santei_prv IS '算定履歴(プレビュー)';
-
 ALTER TABLE ONLY tbl_santei_prv
     ADD CONSTRAINT tbl_santei_prv_primary_key PRIMARY KEY (hospnum, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum);
 

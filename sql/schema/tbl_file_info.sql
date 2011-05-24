@@ -25,8 +25,6 @@ CREATE TABLE tbl_file_info (
     crehms character varying(6)
 );
 
-COMMENT ON TABLE tbl_file_info IS '出力ファイル(CSV)情報管理';
-
 ALTER TABLE ONLY tbl_file_info
     ADD CONSTRAINT tbl_file_info_primary_key PRIMARY KEY (hospnum, tbl_key, sryym, shellid, rennum, shori_rennum);
 

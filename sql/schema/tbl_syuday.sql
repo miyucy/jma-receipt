@@ -664,8 +664,6 @@ CREATE TABLE tbl_syuday (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_syuday IS 'ÆüÊÌ¼ýÇ¼';
-
 ALTER TABLE ONLY tbl_syuday
     ADD CONSTRAINT tbl_syuday_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum);
 

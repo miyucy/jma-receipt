@@ -155,11 +155,22 @@ CREATE TABLE tbl_henrei_body (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
+    s_kohid_key_1 bigint DEFAULT 0,
+    s_kohid_key_2 bigint DEFAULT 0,
+    s_kohid_key_3 bigint DEFAULT 0,
+    s_kohid_key_4 bigint DEFAULT 0,
+    s_kohid_key_5 bigint DEFAULT 0,
+    s_kohid_key_6 bigint DEFAULT 0,
+    s_kohid_key_7 bigint DEFAULT 0,
+    s_kohid_key_8 bigint DEFAULT 0,
+    s_kohid_key_9 bigint DEFAULT 0,
+    s_kohid_key_10 bigint DEFAULT 0,
+    teisyutusaki2 character(1) NOT NULL
 );
 
 ALTER TABLE ONLY tbl_henrei_body
-    ADD CONSTRAINT tbl_henrei_body_primary_key PRIMARY KEY (hospnum, teisyutusaki, syoriym, receipt_no, pt_rennum);
+    ADD CONSTRAINT tbl_henrei_body_primary_key PRIMARY KEY (hospnum, teisyutusaki, teisyutusaki2, syoriym, receipt_no, pt_rennum);
 
 CREATE INDEX idx_henrei_body_kanriinfo ON tbl_henrei_body USING btree (hospnum, check_no);
 

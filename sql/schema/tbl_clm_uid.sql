@@ -48,8 +48,6 @@ CREATE TABLE tbl_clm_uid (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_clm_uid IS 'CLAIM UID´ÉÍý';
-
 ALTER TABLE ONLY tbl_clm_uid
     ADD CONSTRAINT tbl_clm_uid_primary_key PRIMARY KEY (hospnum, ptid, sryka);
 

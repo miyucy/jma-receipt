@@ -59,8 +59,6 @@ CREATE TABLE tbl_orderprt (
     kansuryo numeric(10,5) DEFAULT 0
 );
 
-COMMENT ON TABLE tbl_orderprt IS '¥ª¡¼¥ÀÄ¢É¼';
-
 ALTER TABLE ONLY tbl_orderprt
     ADD CONSTRAINT tbl_orderprt_primary_key PRIMARY KEY (hospnum, ptid, ptnum, nyugaikbn, sryka, hkncombi, sysymd, printymd, printhms, prtkbn, ordernum, rennum);
 

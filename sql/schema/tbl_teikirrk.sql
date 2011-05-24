@@ -9,8 +9,6 @@ CREATE TABLE tbl_teikirrk (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_teikirrk IS 'Äê´üÀÁµáÍúÎò';
-
 ALTER TABLE ONLY tbl_teikirrk
     ADD CONSTRAINT tbl_teikirrk_primary_key PRIMARY KEY (hospnum, sryym, kbt);
 

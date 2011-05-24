@@ -14,11 +14,11 @@ CREATE TABLE tbl_receden (
     totalten numeric(10,0) DEFAULT 0,
     sjkbn character(2),
     recedata character varying(2500),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    kohid_key bigint DEFAULT 0 NOT NULL,
+    crehms character(6)
 );
 
-COMMENT ON TABLE tbl_receden IS 'レセプト電算';
-
 ALTER TABLE ONLY tbl_receden
-    ADD CONSTRAINT tbl_receden_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd, reckbn, rennum);
+    ADD CONSTRAINT tbl_receden_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, kohid_key, tekstymd, reckbn, rennum);
 

@@ -11,8 +11,6 @@ CREATE TABLE tbl_prgoption (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_prgoption IS 'プログラムオプション';
-
 ALTER TABLE ONLY tbl_prgoption
     ADD CONSTRAINT tbl_prgoption_primary_key PRIMARY KEY (hospnum, prgid, kbncd);
 

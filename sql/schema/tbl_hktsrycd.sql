@@ -11,8 +11,6 @@ CREATE TABLE tbl_hktsrycd (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_hktsrycd IS 'Êñ³ç¿ÇÎÅ¥³¡¼¥É';
-
 ALTER TABLE ONLY tbl_hktsrycd
     ADD CONSTRAINT tbl_hktsrycd_pkey PRIMARY KEY (kanricd, rennum, yukostymd, yukoedymd);
 

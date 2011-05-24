@@ -56,8 +56,6 @@ CREATE TABLE tbl_sryact (
     kansuryo5 numeric(10,5) DEFAULT 0
 );
 
-COMMENT ON TABLE tbl_sryact IS '©гне╧т╟ы';
-
 ALTER TABLE ONLY tbl_sryact
     ADD CONSTRAINT tbl_sryact_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
 

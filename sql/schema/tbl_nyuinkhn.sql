@@ -24,8 +24,6 @@ CREATE TABLE tbl_nyuinkhn (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_nyuinkhn IS 'Æş±¡´ğËÜÎÁ';
-
 ALTER TABLE ONLY tbl_nyuinkhn
     ADD CONSTRAINT tbl_nyuinkhn_primary_key PRIMARY KEY (khn_srycd, yukostymd, yukoedymd);
 

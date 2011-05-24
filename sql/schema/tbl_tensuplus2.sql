@@ -55,8 +55,6 @@ CREATE TABLE tbl_tensuplus2 (
     tukijgntouyoryo numeric(10,5) DEFAULT 0
 );
 
-COMMENT ON TABLE tbl_tensuplus2 IS '点数付加2';
-
 ALTER TABLE ONLY tbl_tensuplus2
     ADD CONSTRAINT tbl_tensuplus2_primary_key PRIMARY KEY (hospnum, srycd);
 

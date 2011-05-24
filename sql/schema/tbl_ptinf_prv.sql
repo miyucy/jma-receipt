@@ -1,5 +1,5 @@
 CREATE TABLE tbl_ptinf_prv (
-    ptid numeric(10,0) NOT NULL,
+    ptid bigint NOT NULL,
     kananame character varying(100),
     name character varying(100),
     nickname character varying(100),
@@ -49,19 +49,17 @@ CREATE TABLE tbl_ptinf_prv (
     kisei_tel character varying(15),
     tstptnumkbn character(1),
     nyukin_hoho character(2),
-    maxzainum numeric(8,0) DEFAULT 0,
-    rrknum numeric(3,0) DEFAULT 0,
-    rrkedanum numeric(3,0) DEFAULT 0,
+    maxzainum integer DEFAULT 0,
+    rrknum smallint DEFAULT 0,
+    rrkedanum smallint DEFAULT 0,
     skyprtflg character(1),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum smallint NOT NULL
 );
-
-COMMENT ON TABLE tbl_ptinf_prv IS '患者情報(プレビュー)';
 
 ALTER TABLE ONLY tbl_ptinf_prv
     ADD CONSTRAINT tbl_ptinf_prv_primary_key PRIMARY KEY (hospnum, ptid);

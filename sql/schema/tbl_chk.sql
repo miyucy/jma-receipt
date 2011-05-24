@@ -20,8 +20,6 @@ CREATE TABLE tbl_chk (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_chk IS 'チェック';
-
 ALTER TABLE ONLY tbl_chk
     ADD CONSTRAINT tbl_chk_primary_key PRIMARY KEY (hospnum, chkkbn, srycd, grpnum, yukostymd, yukoedymd, cdkbn, cd);
 

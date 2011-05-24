@@ -10,8 +10,6 @@ CREATE TABLE tbl_dbkanri (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_dbkanri IS 'データベース管理情報';
-
 ALTER TABLE ONLY tbl_dbkanri
     ADD CONSTRAINT tbl_dbkanri_primary_key PRIMARY KEY (kanricd);
 

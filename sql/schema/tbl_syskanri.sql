@@ -12,8 +12,6 @@ CREATE TABLE tbl_syskanri (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_syskanri IS 'システム管理情報';
-
 ALTER TABLE ONLY tbl_syskanri
     ADD CONSTRAINT tbl_syskanri_primary_key PRIMARY KEY (hospnum, kanricd, kbncd, styukymd, edyukymd);
 

@@ -21,8 +21,6 @@ CREATE TABLE tbl_opecom (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_opecom IS '手術歴コメント';
-
 ALTER TABLE ONLY tbl_opecom
     ADD CONSTRAINT tbl_opecom_primary_key PRIMARY KEY (hospnum, ptid, sryymd, srycd, rennum);
 

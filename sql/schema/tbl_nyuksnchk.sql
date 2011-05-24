@@ -11,8 +11,6 @@ CREATE TABLE tbl_nyuksnchk (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_nyuksnchk IS '入院加算チェック';
-
 ALTER TABLE ONLY tbl_nyuksnchk
     ADD CONSTRAINT tbl_nyuksnchk_primary_key PRIMARY KEY (nyuinkbn, ksnkbn, yukostymd, yukoedymd);
 

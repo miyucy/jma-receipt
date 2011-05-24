@@ -9,8 +9,6 @@ CREATE TABLE tbl_sskijyo (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_sskijyo IS '¾É¾õÁ¼ÃÖµ¡½ø';
-
 ALTER TABLE ONLY tbl_sskijyo
     ADD CONSTRAINT tbl_sskijyo_primary_key PRIMARY KEY (syojyoucd);
 

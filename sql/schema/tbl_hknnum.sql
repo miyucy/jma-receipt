@@ -108,8 +108,6 @@ CREATE TABLE tbl_hknnum (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_hknnum IS ' ›∏±»÷πÊ';
-
 ALTER TABLE ONLY tbl_hknnum
     ADD CONSTRAINT tbl_hknnum_primary_key PRIMARY KEY (hospnum, hknnum, tekstymd, paykbn);
 

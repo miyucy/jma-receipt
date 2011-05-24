@@ -22,8 +22,6 @@ CREATE TABLE tbl_rece_putb (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_rece_putb IS 'レセプト編綴順明細';
-
 ALTER TABLE ONLY tbl_rece_putb
     ADD CONSTRAINT tbl_rece_putb_primary_key PRIMARY KEY (hospnum, prefkbn, syubetu_srt1, grp_no1, syubetu_srt2, grp_no2, kouhi_no, styukymd, edyukymd);
 

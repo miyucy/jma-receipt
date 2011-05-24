@@ -12,8 +12,6 @@ CREATE TABLE tbl_srykarrk (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_srykarrk IS 'ø«Œ≈≤ Õ˙ŒÚ';
-
 ALTER TABLE ONLY tbl_srykarrk
     ADD CONSTRAINT tbl_srykarrk_primary_key PRIMARY KEY (hospnum, ptid, sryka);
 

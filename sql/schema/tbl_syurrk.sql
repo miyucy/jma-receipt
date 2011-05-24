@@ -144,8 +144,6 @@ CREATE TABLE tbl_syurrk (
     chosei2 integer DEFAULT 0
 );
 
-COMMENT ON TABLE tbl_syurrk IS '¼ýÇ¼ÍúÎò';
-
 ALTER TABLE ONLY tbl_syurrk
     ADD CONSTRAINT tbl_syurrk_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, denpnum, syurrknum, syuedanum);
 

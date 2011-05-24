@@ -1,30 +1,30 @@
 CREATE TABLE tbl_byomei (
     byomeicd character(7) NOT NULL,
     byomei character varying(200) NOT NULL,
-    byomeimoji numeric(3,0) DEFAULT 0,
+    byomeimoji smallint DEFAULT 0,
     tanbyomei character varying(200) NOT NULL,
-    tanbyomeimoji numeric(3,0) DEFAULT 0,
+    tanbyomeimoji smallint DEFAULT 0,
     byomeikana character varying(200) NOT NULL,
-    ikosakicd character(7),
-    tokskncd numeric(2,0) DEFAULT 0,
+    ikosakicd character varying(7),
+    tokskncd smallint DEFAULT 0,
     utagaiflg character(1),
-    tandokukbn numeric(2,0) DEFAULT 0,
-    hknskykbn numeric(1,0) DEFAULT 0,
-    hyojuncd character(8),
+    tandokukbn smallint DEFAULT 0,
+    hknskykbn smallint DEFAULT 0,
+    hyojuncd character varying(8),
     saitakukbn character(1),
     byomeichgcd character varying(4),
-    icd10 character varying(5),
-    syusaiymd character(8),
-    chgymd character(8),
-    haisiymd character(8),
+    icd10_1 character varying(5),
+    syusaiymd character varying(8),
+    chgymd character varying(8),
+    haisiymd character varying(8),
     termid character varying(32),
     opid character varying(16),
-    creymd character(8),
-    upymd character(8),
-    uphms character(6)
+    creymd character varying(8),
+    upymd character varying(8),
+    uphms character varying(6),
+    icd10_2 character varying(5),
+    nanbyocd smallint DEFAULT 0
 );
-
-COMMENT ON TABLE tbl_byomei IS 'ибл╬';
 
 ALTER TABLE ONLY tbl_byomei
     ADD CONSTRAINT tbl_byomei_primary_key PRIMARY KEY (byomeicd);

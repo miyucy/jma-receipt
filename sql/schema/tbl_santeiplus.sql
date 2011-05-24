@@ -16,8 +16,6 @@ CREATE TABLE tbl_santeiplus (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_santeiplus IS 'ªªƒÍ…’≤√';
-
 ALTER TABLE ONLY tbl_santeiplus
     ADD CONSTRAINT tbl_santeiplus_primary_key PRIMARY KEY (hospnum, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum, daykey, rennum);
 

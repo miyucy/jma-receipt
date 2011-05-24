@@ -24,8 +24,6 @@ CREATE TABLE tbl_toukeimemo (
     para10 character varying(20)
 );
 
-COMMENT ON TABLE tbl_toukeimemo IS 'Åý·×³Ð½ñ';
-
 ALTER TABLE ONLY tbl_toukeimemo
     ADD CONSTRAINT tbl_toukeimemo_primary_key PRIMARY KEY (hospnum, pgid, kanricd, kbncd, styukymd, edyukymd);
 

@@ -12,8 +12,6 @@ CREATE TABLE tbl_kyuseirrk (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_kyuseirrk IS 'µלְ«ֽת־ע';
-
 ALTER TABLE ONLY tbl_kyuseirrk
     ADD CONSTRAINT tbl_kyuseirrk_primary_key PRIMARY KEY (hospnum, ptid, chgymd);
 

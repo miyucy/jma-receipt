@@ -17,8 +17,6 @@ CREATE TABLE tbl_yakujyo_temp (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_yakujyo_temp IS '薬剤情報参照用';
-
 ALTER TABLE ONLY tbl_yakujyo_temp
     ADD CONSTRAINT tbl_yakujyo_temp_primary_key PRIMARY KEY (hospnum, termid, srycd, yjcd, rennum);
 

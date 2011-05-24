@@ -13,8 +13,6 @@ CREATE TABLE tbl_ptmemoinf (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_ptmemoinf IS '´µ¼Ô¥á¥â';
-
 ALTER TABLE ONLY tbl_ptmemoinf
     ADD CONSTRAINT tbl_ptmemoinf_key PRIMARY KEY (hospnum, ptid, sysymd, memokbn, rennum, sryka);
 

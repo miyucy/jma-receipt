@@ -10,8 +10,6 @@ CREATE TABLE tbl_teikikanri (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_teikikanri IS 'Äê´üÀÁµá´ÉÍý';
-
 ALTER TABLE ONLY tbl_teikikanri
     ADD CONSTRAINT tbl_teikikanri_primary_key PRIMARY KEY (hospnum, btunum);
 

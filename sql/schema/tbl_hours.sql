@@ -11,8 +11,6 @@ CREATE TABLE tbl_hours (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_hours IS 'Äù¤á»þ¹ï´ÉÍý';
-
 ALTER TABLE ONLY tbl_hours
     ADD CONSTRAINT tbl_hours_primary_key PRIMARY KEY (hospnum, sryymd, "time");
 

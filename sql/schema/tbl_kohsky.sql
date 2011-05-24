@@ -531,11 +531,10 @@ CREATE TABLE tbl_kohsky (
     flg2 numeric(1,0) DEFAULT 0,
     flg3 numeric(1,0) DEFAULT 0,
     flg4 numeric(1,0) DEFAULT 0,
-    flg5 numeric(1,0) DEFAULT 0
+    flg5 numeric(1,0) DEFAULT 0,
+    kohid_key bigint DEFAULT 0 NOT NULL
 );
 
-COMMENT ON TABLE tbl_kohsky IS '√œ ˝∏¯»Ò¿¡µ·ΩÒ';
-
 ALTER TABLE ONLY tbl_kohsky
-    ADD CONSTRAINT tbl_kohsky_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum_key, hojokbn_key, tekstymd);
+    ADD CONSTRAINT tbl_kohsky_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum_key, hojokbn_key, kohid_key, tekstymd);
 

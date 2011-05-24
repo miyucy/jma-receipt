@@ -14,8 +14,6 @@ CREATE TABLE tbl_pttokki (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_pttokki IS '´µ¼ÔÆÃµ­»ö¹à';
-
 ALTER TABLE ONLY tbl_pttokki
     ADD CONSTRAINT tbl_pttokki_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, rennum);
 

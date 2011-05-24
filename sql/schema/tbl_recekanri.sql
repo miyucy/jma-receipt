@@ -38,8 +38,6 @@ CREATE TABLE tbl_recekanri (
     prtkbn character(1)
 );
 
-COMMENT ON TABLE tbl_recekanri IS 'レセプト管理';
-
 ALTER TABLE ONLY tbl_recekanri
     ADD CONSTRAINT tbl_recekanri_primary_key PRIMARY KEY (hospnum, prtid, syokbn, creymd, crehms, teisyutusaki, sryka, prefkbn_srt, hknjanum_srt, hknjanum, recesyubetu, recesyubetu_srt, zaitaku, chouki);
 

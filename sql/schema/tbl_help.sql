@@ -16,8 +16,6 @@ CREATE TABLE tbl_help (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_help IS '¥Ø¥ë¥×';
-
 ALTER TABLE ONLY tbl_help
     ADD CONSTRAINT tbl_help_primary_key PRIMARY KEY (hospnum, helpkbn, key_opid, ldname, menunum1, menunum2, edanum);
 

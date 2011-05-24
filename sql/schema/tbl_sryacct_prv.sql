@@ -151,8 +151,6 @@ CREATE TABLE tbl_sryacct_prv (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_sryacct_prv IS '診療会計(プレビュー)';
-
 ALTER TABLE ONLY tbl_sryacct_prv
     ADD CONSTRAINT tbl_sryacct_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
 

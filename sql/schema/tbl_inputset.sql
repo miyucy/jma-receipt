@@ -19,10 +19,9 @@ CREATE TABLE tbl_inputset (
     uphms character(6),
     hospnum smallint NOT NULL,
     inputkbn character(1),
-    kansuryo numeric(10,5) DEFAULT 0
+    kansuryo numeric(10,5) DEFAULT 0,
+    atai5 character varying(8)
 );
-
-COMMENT ON TABLE tbl_inputset IS '入力セット';
 
 ALTER TABLE ONLY tbl_inputset
     ADD CONSTRAINT tbl_inputset_primary_key PRIMARY KEY (hospnum, setcd, yukostymd, yukoedymd, setseq);

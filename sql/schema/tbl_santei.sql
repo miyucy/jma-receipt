@@ -50,8 +50,6 @@ CREATE TABLE tbl_santei (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_santei IS '»»ÄêÍúÎò';
-
 ALTER TABLE ONLY tbl_santei
     ADD CONSTRAINT tbl_santei_primary_key PRIMARY KEY (hospnum, ptid, sryym, srycd, nyugaikbn, sryka, hkncombinum);
 

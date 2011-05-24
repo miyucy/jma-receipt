@@ -1,5 +1,5 @@
 CREATE TABLE tbl_tsyrrk (
-    ptid numeric(10,0) NOT NULL,
+    ptid bigint NOT NULL,
     ninstymd character(8) NOT NULL,
     ninedymd character(8),
     skjgnstymd character(8),
@@ -8,12 +8,10 @@ CREATE TABLE tbl_tsyrrk (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL,
+    hospnum smallint NOT NULL,
     skjninstymd character(8),
     hkntekkbn character(1)
 );
-
-COMMENT ON TABLE tbl_tsyrrk IS 'ƒ„ΩÍ∆¿º‘Õ˙ŒÚ';
 
 ALTER TABLE ONLY tbl_tsyrrk
     ADD CONSTRAINT tbl_tsyrrk_primary_key PRIMARY KEY (hospnum, ptid, ninstymd);

@@ -65,9 +65,10 @@ CREATE TABLE tbl_seikyu_koh (
     shokujinissu smallint DEFAULT 0,
     shokujiryoyohi integer DEFAULT 0,
     shokujiftn integer DEFAULT 0,
-    ykzftn integer DEFAULT 0
+    ykzftn integer DEFAULT 0,
+    kohid_key bigint DEFAULT 0 NOT NULL
 );
 
 ALTER TABLE ONLY tbl_seikyu_koh
-    ADD CONSTRAINT tbl_seikyu_koh_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd, rennum);
+    ADD CONSTRAINT tbl_seikyu_koh_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, kohid_key, tekstymd, rennum);
 

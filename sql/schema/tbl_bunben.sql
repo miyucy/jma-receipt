@@ -2,7 +2,7 @@ CREATE TABLE tbl_bunben (
     hospnum smallint NOT NULL,
     ptid bigint DEFAULT 0 NOT NULL,
     skyym character(6) NOT NULL,
-    rrknum smallint DEFAULT 0 NOT NULL,
+    rrknum integer DEFAULT 0 NOT NULL,
     ptnum character(20) NOT NULL,
     skykbn character(1) NOT NULL,
     riyoukbn character(1) NOT NULL,
@@ -40,9 +40,10 @@ CREATE TABLE tbl_bunben (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    teisyutubikbn character(1)
+    teisyutubikbn character(1),
+    nyugaikbn character(1) NOT NULL
 );
 
 ALTER TABLE ONLY tbl_bunben
-    ADD CONSTRAINT tbl_bunben_primary_key PRIMARY KEY (hospnum, ptid, skyym, rrknum);
+    ADD CONSTRAINT tbl_bunben_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, skyym, rrknum);
 

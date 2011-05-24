@@ -19,8 +19,6 @@ CREATE TABLE tbl_prtkanri (
     creymd character varying(8)
 );
 
-COMMENT ON TABLE tbl_prtkanri IS '°õºþ´ÉÍý';
-
 ALTER TABLE ONLY tbl_prtkanri
     ADD CONSTRAINT tbl_prtkanri_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, tbl_uuid, shori_rennum);
 

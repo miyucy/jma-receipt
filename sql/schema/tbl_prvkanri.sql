@@ -33,8 +33,6 @@ CREATE TABLE tbl_prvkanri (
     gyoumu_cd numeric(3,0)
 );
 
-COMMENT ON TABLE tbl_prvkanri IS 'プレビュー管理';
-
 ALTER TABLE ONLY tbl_prvkanri
     ADD CONSTRAINT tbl_prvkanri_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, tbl_uuid, shori_rennum, page);
 

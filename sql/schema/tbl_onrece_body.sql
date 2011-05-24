@@ -58,7 +58,8 @@ CREATE TABLE tbl_onrece_body (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
+    kohid bigint DEFAULT 0
 );
 
 ALTER TABLE ONLY tbl_onrece_body

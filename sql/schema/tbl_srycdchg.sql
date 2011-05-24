@@ -9,8 +9,6 @@ CREATE TABLE tbl_srycdchg (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_srycdchg IS '一般老人置換';
-
 ALTER TABLE ONLY tbl_srycdchg
     ADD CONSTRAINT tbl_srycdchg_primary_key PRIMARY KEY (hospnum, ipnsrycd, rjnsrycd);
 

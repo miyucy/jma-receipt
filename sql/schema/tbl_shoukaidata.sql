@@ -10,8 +10,6 @@ CREATE TABLE tbl_shoukaidata (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_shoukaidata IS '´µ¼Ô¾È²ñ¸¡º÷¾ò·ïÍÑ¥Ç¡¼¥¿';
-
 ALTER TABLE ONLY tbl_shoukaidata
     ADD CONSTRAINT tbl_shoukaidata_primary_key PRIMARY KEY (hospnum, uid, itemid);
 

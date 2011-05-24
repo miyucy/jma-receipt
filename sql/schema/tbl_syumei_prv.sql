@@ -1,35 +1,33 @@
 CREATE TABLE tbl_syumei_prv (
     nyugaikbn character(1) NOT NULL,
-    ptid numeric(10,0) NOT NULL,
-    denpnum numeric(7,0) NOT NULL,
-    denpedanum numeric(2,0) NOT NULL,
-    nyukinrennum numeric(3,0) DEFAULT 0,
+    ptid bigint NOT NULL,
+    denpnum integer NOT NULL,
+    denpedanum smallint NOT NULL,
+    nyukinrennum smallint DEFAULT 0,
     sryka character(2),
     meisaijoutaikbn character(1),
     sky_printymd character(8),
     sky_reprintymd character(8),
     ryosyu_printymd character(8),
     ryosyu_reprintymd character(8),
-    skymoney numeric(7,0) DEFAULT 0,
+    skymoney integer DEFAULT 0,
     nyuhen_kbn character(1),
-    nyuhen_money numeric(7,0) DEFAULT 0,
+    nyuhen_money integer DEFAULT 0,
     nyuhen_ymd character(8),
     nyukin_hoho character(2),
     joutaikbn character(1),
     dailykey character(12),
     termid character varying(16),
     opid character varying(16),
-    creymd character(8) NOT NULL,
+    creymd character(8),
     crehms character(6),
     upymd character(8),
     uphms character(6),
     syurrkupdkbn character(1),
-    hospnum numeric(2,0) NOT NULL,
-    syurrknum numeric(2,0),
-    syuedanum numeric(2,0)
+    hospnum smallint NOT NULL,
+    syurrknum smallint,
+    syuedanum smallint
 );
-
-COMMENT ON TABLE tbl_syumei_prv IS '収納明細(プレビュー)';
 
 ALTER TABLE ONLY tbl_syumei_prv
     ADD CONSTRAINT tbl_syumei_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum, denpedanum);

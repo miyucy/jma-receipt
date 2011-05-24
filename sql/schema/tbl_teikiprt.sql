@@ -7,8 +7,6 @@ CREATE TABLE tbl_teikiprt (
     name character varying(100)
 );
 
-COMMENT ON TABLE tbl_teikiprt IS 'Äê´üÀÁµá°õºþ¾ðÊó';
-
 ALTER TABLE ONLY tbl_teikiprt
     ADD CONSTRAINT tbl_teikiprt_primary_key PRIMARY KEY (hospnum, btunum, denpnum);
 

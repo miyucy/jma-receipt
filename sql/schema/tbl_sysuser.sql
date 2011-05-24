@@ -5,8 +5,6 @@ CREATE TABLE tbl_sysuser (
     upymd character(8)
 );
 
-COMMENT ON TABLE tbl_sysuser IS 'システムユーザー';
-
 ALTER TABLE ONLY tbl_sysuser
     ADD CONSTRAINT tbl_sysuser_primary_key PRIMARY KEY (userid);
 

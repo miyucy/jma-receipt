@@ -56,8 +56,6 @@ CREATE TABLE tbl_nyuinacct (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_nyuinacct IS 'Æþ±¡²ñ·×';
-
 ALTER TABLE ONLY tbl_nyuinacct
     ADD CONSTRAINT tbl_nyuinacct_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
 

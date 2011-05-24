@@ -1,7 +1,7 @@
 CREATE TABLE tbl_nsrysrh (
-    hospnum numeric(2,0) NOT NULL,
-    ptid numeric(10,0) NOT NULL,
-    zainum numeric(9,0) NOT NULL,
+    hospnum smallint NOT NULL,
+    ptid bigint NOT NULL,
+    zainum integer NOT NULL,
     sryym character(6) NOT NULL,
     sryka character(2),
     hkncombinum character(4),
@@ -13,10 +13,9 @@ CREATE TABLE tbl_nsrysrh (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
+    srysuryo numeric(10,5)
 );
-
-COMMENT ON TABLE tbl_nsrysrh IS 'Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñ';
 
 ALTER TABLE ONLY tbl_nsrysrh
     ADD CONSTRAINT tbl_nsrysrh_primary_key PRIMARY KEY (hospnum, ptid, zainum, sryym);

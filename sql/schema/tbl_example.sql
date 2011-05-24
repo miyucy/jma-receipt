@@ -10,8 +10,6 @@ CREATE TABLE tbl_example (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_example IS '¿÷·¿';
-
 ALTER TABLE ONLY tbl_example
     ADD CONSTRAINT tbl_example_primary_key PRIMARY KEY (hospnum, kubun, rennum);
 

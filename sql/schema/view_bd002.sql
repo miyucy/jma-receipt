@@ -413,10 +413,10 @@ CREATE VIEW view_bd002 AS
            denpnum)),
            tbl_ptnum c,
            tbl_ptinf d 
-     WHERE ((((((((a.hospnum)::numeric = (c.hospnum)::numeric) 
-       AND ((a.ptid)::numeric = (c.ptid)::numeric)) 
-       AND ((a.hospnum)::numeric = d.hospnum)) 
-       AND ((a.ptid)::numeric = d.ptid)) 
+     WHERE (((((((a.hospnum = c.hospnum) 
+       AND (a.ptid = c.ptid)) 
+       AND (a.hospnum = d.hospnum)) 
+       AND (a.ptid = d.ptid)) 
        AND (a.denpjtikbn <> '3'::bpchar)) 
        AND (a.createkbn <> '3'::bpchar)) 
        AND (d.tstptnumkbn <> '1'::bpchar));

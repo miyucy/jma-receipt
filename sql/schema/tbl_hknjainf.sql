@@ -24,8 +24,6 @@ CREATE TABLE tbl_hknjainf (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_hknjainf IS '保険者情報';
-
 ALTER TABLE ONLY tbl_hknjainf
     ADD CONSTRAINT tbl_hknjainf_primary_key PRIMARY KEY (hospnum, hknjanum);
 

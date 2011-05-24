@@ -12,8 +12,6 @@ CREATE TABLE tbl_srykarrk_prv (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_srykarrk_prv IS '¿ÇÎÅ²ÊÍúÎò(¥×¥ì¥Ó¥å¡¼)';
-
 ALTER TABLE ONLY tbl_srykarrk_prv
     ADD CONSTRAINT tbl_srykarrk_prv_primary_key PRIMARY KEY (hospnum, ptid, sryka, creymd);
 

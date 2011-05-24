@@ -17,8 +17,6 @@ CREATE TABLE tbl_kohplus (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_kohplus IS '∏¯»Ò…’≤√';
-
 ALTER TABLE ONLY tbl_kohplus
     ADD CONSTRAINT tbl_kohplus_primary_key PRIMARY KEY (hospnum, prefnum, citynum, kohnum, ptkbn, yukostymd);
 

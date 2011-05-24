@@ -60,8 +60,6 @@ CREATE TABLE tbl_ldmap (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_ldmap IS '排他制御業務管理';
-
 ALTER TABLE ONLY tbl_ldmap
     ADD CONSTRAINT tbl_ldmap_primary_key PRIMARY KEY (hospnum, map_ldname);
 

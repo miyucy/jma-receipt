@@ -1,6 +1,6 @@
 CREATE TABLE tbl_ptkohinf (
-    ptid numeric(10,0) NOT NULL,
-    kohid numeric(10,0) NOT NULL,
+    ptid bigint NOT NULL,
+    kohid bigint NOT NULL,
     kohnum character(3),
     paykbn character(2),
     ftnjanum character(8),
@@ -14,11 +14,9 @@ CREATE TABLE tbl_ptkohinf (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL,
+    hospnum smallint NOT NULL,
     tekedchkkbn character(1)
 );
-
-COMMENT ON TABLE tbl_ptkohinf IS '´µ¼Ô¸øÈñ¾ðÊó';
 
 ALTER TABLE ONLY tbl_ptkohinf
     ADD CONSTRAINT tbl_ptkohinf_primary_key PRIMARY KEY (hospnum, ptid, kohid);

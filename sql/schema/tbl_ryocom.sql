@@ -45,8 +45,6 @@ CREATE TABLE tbl_ryocom (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_ryocom IS '療養レセプトコメント';
-
 ALTER TABLE ONLY tbl_ryocom
     ADD CONSTRAINT tbl_ryocom_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryym, zainum);
 

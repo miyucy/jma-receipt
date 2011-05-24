@@ -11,8 +11,6 @@ CREATE TABLE tbl_nyuinryakusho (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_nyuinryakusho IS 'Æþ±¡¥ì¥»¥×¥Èµ­ºÜÎ¬¾Î';
-
 ALTER TABLE ONLY tbl_nyuinryakusho
     ADD CONSTRAINT tbl_nyuinryakusho_primary_key PRIMARY KEY (srycd, yukostymd, yukoedymd);
 

@@ -1,6 +1,6 @@
 CREATE TABLE tbl_pthkninf (
-    ptid numeric(10,0) NOT NULL,
-    hknid numeric(10,0) NOT NULL,
+    ptid bigint NOT NULL,
+    hknid bigint NOT NULL,
     hknnum character(3),
     hknjanum character(8),
     hihknjaname character varying(100),
@@ -19,10 +19,8 @@ CREATE TABLE tbl_pthkninf (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum smallint NOT NULL
 );
-
-COMMENT ON TABLE tbl_pthkninf IS '¥µº‘ ›∏±æ Û';
 
 ALTER TABLE ONLY tbl_pthkninf
     ADD CONSTRAINT tbl_pthkninf_primary_key PRIMARY KEY (hospnum, ptid, hknid);

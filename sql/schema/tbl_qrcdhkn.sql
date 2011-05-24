@@ -29,8 +29,6 @@ CREATE TABLE tbl_qrcdhkn (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_qrcdhkn IS '£—£“•≥°º•… ›∏±';
-
 ALTER TABLE ONLY tbl_qrcdhkn
     ADD CONSTRAINT tbl_qrcdhkn_primary_key PRIMARY KEY (hospnum, registymd, registid);
 

@@ -19,8 +19,6 @@ CREATE TABLE tbl_toukeicsv_h (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_toukeicsv_h IS 'Åý·×£Ã£Ó£Ö³ÊÇ¼´ÉÍý';
-
 ALTER TABLE ONLY tbl_toukeicsv_h
     ADD CONSTRAINT tbl_toukeicsv_h_primary_key PRIMARY KEY (hospnum, tbl_key, rennum, tbl_group, shori_rennum);
 

@@ -10,8 +10,6 @@ CREATE TABLE tbl_mstkanri (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_mstkanri IS 'マスタ管理';
-
 ALTER TABLE ONLY tbl_mstkanri
     ADD CONSTRAINT tbl_mstkanri_primary_key PRIMARY KEY (hospnum, kanricd);
 

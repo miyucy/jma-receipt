@@ -17,8 +17,6 @@ CREATE TABLE tbl_chktrd (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_chktrd IS 'チェック3';
-
 ALTER TABLE ONLY tbl_chktrd
     ADD CONSTRAINT tbl_chktrd_primary_key PRIMARY KEY (hospnum, chkkbn, srycd, yukostymd, yukoedymd, cdkbn, rennum);
 

@@ -23,8 +23,6 @@ CREATE TABLE tbl_ptteikirrk (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_ptteikirrk IS '´µ¼ÔÄê´üÀÁµáÍúÎò';
-
 ALTER TABLE ONLY tbl_ptteikirrk
     ADD CONSTRAINT tbl_ptteikirrk_primary_key PRIMARY KEY (hospnum, ptid, sryym, sakkbn, hkncombinum, denpnum);
 

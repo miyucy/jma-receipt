@@ -21,7 +21,7 @@ CREATE TABLE tbl_wksryact (
     inputchi1_2 character varying(8),
     inputchi1_3 character varying(8),
     inputchi1_4 character varying(8),
-    inputcd_1 character varying(22),
+    inputcd_1 character varying(54),
     jihimoney_1 integer DEFAULT 0,
     srycd_2 character(9),
     srysuryo_2 numeric(10,5) DEFAULT 0,
@@ -34,7 +34,7 @@ CREATE TABLE tbl_wksryact (
     inputchi2_2 character varying(8),
     inputchi2_3 character varying(8),
     inputchi2_4 character varying(8),
-    inputcd_2 character varying(22),
+    inputcd_2 character varying(54),
     jihimoney_2 integer DEFAULT 0,
     srycd_3 character(9),
     srysuryo_3 numeric(10,5) DEFAULT 0,
@@ -47,7 +47,7 @@ CREATE TABLE tbl_wksryact (
     inputchi3_2 character varying(8),
     inputchi3_3 character varying(8),
     inputchi3_4 character varying(8),
-    inputcd_3 character varying(22),
+    inputcd_3 character varying(54),
     jihimoney_3 integer DEFAULT 0,
     srycd_4 character(9),
     srysuryo_4 numeric(10,5) DEFAULT 0,
@@ -60,7 +60,7 @@ CREATE TABLE tbl_wksryact (
     inputchi4_2 character varying(8),
     inputchi4_3 character varying(8),
     inputchi4_4 character varying(8),
-    inputcd_4 character varying(22),
+    inputcd_4 character varying(54),
     jihimoney_4 integer DEFAULT 0,
     srycd_5 character(9),
     srysuryo_5 numeric(10,5) DEFAULT 0,
@@ -73,7 +73,7 @@ CREATE TABLE tbl_wksryact (
     inputchi5_2 character varying(8),
     inputchi5_3 character varying(8),
     inputchi5_4 character varying(8),
-    inputcd_5 character varying(22),
+    inputcd_5 character varying(54),
     jihimoney_5 integer DEFAULT 0,
     zaitenkei integer DEFAULT 0,
     zaikaikei integer DEFAULT 0,
@@ -103,10 +103,13 @@ CREATE TABLE tbl_wksryact (
     kansuryo_3 numeric(10,5) DEFAULT 0,
     kansuryo_4 numeric(10,5) DEFAULT 0,
     kansuryo_5 numeric(10,5) DEFAULT 0,
-    zaikbn smallint DEFAULT 0
+    zaikbn smallint DEFAULT 0,
+    inputchi1_5 character varying(8),
+    inputchi2_5 character varying(8),
+    inputchi3_5 character varying(8),
+    inputchi4_5 character varying(8),
+    inputchi5_5 character varying(8)
 );
-
-COMMENT ON TABLE tbl_wksryact IS '¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù';
 
 ALTER TABLE ONLY tbl_wksryact
     ADD CONSTRAINT tbl_wksryact_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryymd, hkncombi, zainum, rennum);

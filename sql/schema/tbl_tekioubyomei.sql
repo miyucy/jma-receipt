@@ -37,8 +37,6 @@ CREATE TABLE tbl_tekioubyomei (
     uphms character(6)
 );
 
-COMMENT ON TABLE tbl_tekioubyomei IS '適応病名';
-
 ALTER TABLE ONLY tbl_tekioubyomei
     ADD CONSTRAINT tbl_tekioubyomei_primary_key PRIMARY KEY (chkkbn, srycd, rennum);
 

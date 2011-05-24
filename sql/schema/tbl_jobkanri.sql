@@ -30,8 +30,6 @@ CREATE TABLE tbl_jobkanri (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_jobkanri IS 'ジョブ管理情報';
-
 ALTER TABLE ONLY tbl_jobkanri
     ADD CONSTRAINT tbl_jobkanri_primary_key PRIMARY KEY (hospnum, jobid, shellid, run_opid);
 
