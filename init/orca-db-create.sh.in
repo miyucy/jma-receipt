@@ -14,7 +14,10 @@ ORCAGROUP=orca
 LOGDIR=/var/log/jma-receipt
 
 DBUSER="orca"
-DBENCODING="EUC-JP"
+if [ ! -z "$DBENCODING" ]
+then
+  DBENCODING="EUC-JP"
+fi
 DBVERSIONSQL="SELECT version();"
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
