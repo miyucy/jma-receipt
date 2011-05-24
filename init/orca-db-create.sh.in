@@ -14,7 +14,7 @@ ORCAGROUP=orca
 LOGDIR=/var/log/jma-receipt
 
 DBUSER="orca"
-if [ ! -z "$DBENCODING" ]
+if [ -z "$DBENCODING" ]
 then
   DBENCODING="EUC-JP"
 fi
