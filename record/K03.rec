@@ -428,5 +428,11 @@ K03	{
 	           	state	int;
 			label	varchar(10);
 		};
+                pandaprint1 {
+                        item {
+                                path    varchar(256);
+                                title   varchar(256);
+                        }[10];
+                };
 	};
 };

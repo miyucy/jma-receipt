@@ -247,6 +247,10 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    °õºþÀ©¸æ¥Þ¥¹¥¿
+       01  PRTCTRL-REC.
+           COPY    "CPPRTCTRL.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -282,7 +286,6 @@
            COPY    "XAERR.INC".
            COPY    "XAID1.INC".
            COPY    "XAID2.INC".
-           COPY    "XAPRT.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -2052,7 +2055,7 @@
            END-IF
       *
            IF    ORCA-SYSTEM-VALUE(1)(1:9) = "glclient/"
-                 STRING  "orca01/print?filename=" 
+                 STRING  "orca00/print?filename=" 
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
                          SPA-PRTKANRI-TBL-KEY
@@ -2072,7 +2075,7 @@
                      MOVE SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
                                        TO XA01-PRTTITLE(01)
            ELSE
-                 STRING  "orca01/print?filename=" 
+                 STRING  "orca00/print?filename=" 
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
                          SPA-PRTKANRI-TBL-KEY
@@ -2092,8 +2095,85 @@
                      MOVE SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
                                        TO XA01-PRTTITLE(01)
            END-IF
+      *    PERFORM 6001-PRTDBINSERT-SEC
            . 
        600-CLIENT-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     °õºþÀ©¸æ£Ä£Â½ñ¤­¹þ¤ß
+      *****************************************************************
+       6001-PRTDBINSERT-SEC        SECTION.
+      *
+           INITIALIZE PRTCTRL-REC
+           MOVE    SPA-HOSPNUM         TO  PRTCTRL-HOSPNUM
+           MOVE    SPA-TERMID          TO  PRTCTRL-TERMID
+           MOVE    SPA-PRTKANRI-TBL-KEY  TO  PRTCTRL-TBL-KEY
+           MOVE    SPA-GMN-RENNUM      TO  PRTCTRL-RENNUM
+           MOVE    SPA-GMN-TBL-GROUP   TO  PRTCTRL-TBL-GROUP
+           MOVE    SPA-GMN-SHORI-RENNUM  TO  PRTCTRL-SHORI-RENNUM
+      *    MOVE    XA01-PRTPATH(01)    TO  PRTCTRL-PRT-PATH(01)
+      *    MOVE    XA01-PRTTITLE(01)   TO  PRTCTRL-PRT-TITLE(01)
+      *    IF    ORCA-SYSTEM-VALUE(1)(1:9) = "glclient/"
+      *          STRING  "/tmp/" 
+      *                                    DELIMITED   BY  SIZE
+      *                  SPA-HOSPNUM       DELIMITED   BY  SPACE
+      *                  SPA-PRTKANRI-TBL-KEY
+      *                                    DELIMITED   BY  SPACE
+      *                  SPA-GMN-RENNUM    DELIMITED   BY  SPACE
+      *                  SPA-GMN-TBL-GROUP DELIMITED   BY  SPACE
+      *                  SPA-GMN-SHORI-RENNUM 
+      *                                    DELIMITED   BY  SPACE
+      *                  SPA-GMN-EDPAGE
+      *                                    DELIMITED   BY  SPACE
+      *                  SPA-GMN-STPAGE
+      *                                    DELIMITED   BY  SPACE
+      *                  ".ps"
+      *                                    DELIMITED   BY  SIZE
+      *          INTO    PRTCTRL-FILE-PATH(01)
+      *          END-STRING
+      *    ELSE
+      *          STRING  "/tmp/" 
+      *                                    DELIMITED   BY  SIZE
+      *                  SPA-HOSPNUM       DELIMITED   BY  SPACE
+      *                  SPA-PRTKANRI-TBL-KEY
+      *                                    DELIMITED   BY  SPACE
+      *                  SPA-GMN-RENNUM    DELIMITED   BY  SPACE
+      *                  SPA-GMN-TBL-GROUP DELIMITED   BY  SPACE
+      *                  SPA-GMN-SHORI-RENNUM 
+      *                                    DELIMITED   BY  SPACE
+      *                  SPA-GMN-EDPAGE
+      *                                    DELIMITED   BY  SPACE
+      *                  SPA-GMN-STPAGE
+      *                                    DELIMITED   BY  SPACE
+      *                  ".pdf"
+      *                                    DELIMITED   BY  SIZE
+      *          INTO    PRTCTRL-FILE-PATH(01)
+      *          END-STRING
+      *    END-IF
+      *    PERFORM 900-PRTCTRL-INSERT-SEC
+           . 
+       6001-PRTDBINSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     °õºþ´ÉÍý£Ä£ÂÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       900-PRTCTRL-INSERT-SEC            SECTION.
+      *
+           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
+               PERFORM 900-DBINSERT-SEC
+      *                                  
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PRTKANRI-REC
+               MOVE    ZERO                TO  FLG-PRTKANRI
+           ELSE
+               MOVE    1                   TO  FLG-PRTKANRI
+           END-IF
+           .
+       900-PRTCTRL-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2200,6 +2280,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBINSERT-SEC               SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBINSERT-EXT.
            EXIT.
       *
       *****************************************************************

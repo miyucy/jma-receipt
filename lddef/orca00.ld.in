@@ -21,6 +21,7 @@ bind	"MID2"		"OpenCOBOL"	"ORCGMID2";
 bind	"MDAS"		"OpenCOBOL"	"ORCGMDAS";
 bind	"MLOG"		"OpenCOBOL"	"ORCGMLOG";
 bind	"MINF"		"OpenCOBOL"	"ORCGMINF";
+bindapi "print"         "OpenCOBOL"     "ORCGMPRT";
 
 multiplex_group	orca00;
 
@@ -45,6 +46,7 @@ data	{
 		MDAS;
 		MLOG;
 		MINF;
+		print;
 	};
 };
 
@@ -63,7 +65,10 @@ db	{
 	tbl_infection;
 	tbl_ptinf;
 	tbl_byomei;
-  tbl_dbcatalog;
+	tbl_dbcatalog;
+	tbl_prtctrl;
+	tbl_prtkanri;
+	tbl_prtdata;
 };
 
 /* #include "orcadb.inc" */

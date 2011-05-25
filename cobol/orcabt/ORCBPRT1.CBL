@@ -38,6 +38,7 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
+      *  04.07.00    NACL-竹田    11/03/28  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -134,6 +135,7 @@ grpsys COPY    "COMMON-SPA".
       *
       *  01.01.02  ADD START 
            03  WRK-FILENAME        PIC X(8). 
+           03  WRK-FILENAME2       PIC X(256). 
       *  01.01.02  ADD END   
            03  WRK-ENCODING        PIC X(01).
            03  WRK-ENCODING9       REDEFINES WRK-ENCODING
@@ -208,7 +210,7 @@ grpsys COPY    "COMMON-SPA".
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(256).
+           02  FILLER      PIC X(400).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -265,7 +267,9 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-HOSPNUM
                                                LNK-PRTKANRI-TBL-UUID
                                                LNK-PRTKANRI-GYOUMU-CD
+                                               WRK-FILENAME2
            END-UNSTRING
+           DISPLAY "ORCBPRT1 WRK-FILENAME2 = " WRK-FILENAME2
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            IF      LNK-PRTKANRI-GYOUMU-CD NOT NUMERIC
                    MOVE  ZERO          TO
@@ -356,6 +360,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
 grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
+               MOVE    WRK-FILENAME2   TO  SHELLTBL-ARG4
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE

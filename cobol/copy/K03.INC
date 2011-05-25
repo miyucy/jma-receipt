@@ -307,4 +307,9 @@
               03  K03-B03.
                 04  K03-B03-STATE   PIC S9(9)   BINARY.
                 04  K03-B03-LABEL   PIC X(10).
+              03  K03-PANDAPRINT1.
+                04  K03-PRTITEM            OCCURS  10 TIMES.
+                  05  K03-PRTPATH         PIC X(256).
+                  05  K03-PRTTITLE        PIC X(256).
+
 

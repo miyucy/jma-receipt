@@ -19,9 +19,11 @@ export HOME=/home/orca
 #       1:DATAファイル名称
 #       2:HOSPNUM
 #       3:エンコーディング(1:EUC-JP/2:UTF8/3:OTHER)
+#       4:DATAファイル名称(オリジナル)
 #----------------------------------------------------------------------#
 
 	echo	`date`
+	echo $#
 	echo	$1
 #whether encoding is utf-8 or not.
 if [ "$3"  == '2' ]; then
@@ -36,4 +38,16 @@ fi
         	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter $1,$2
 	fi
 	rm -f $1
+        if [ -z "$4" ]  ; then
+                echo "HCALL end"
+                exit
+        fi
+        if [ ${4:0:4} = "/tmp" ] ; then
+#------ 処方せんQRイメージ削除
+	if      [ ${4:7:4} = "HC2Q" ]   ;then
+		ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' ${4} | xargs rm -f
+	fi
+	rm ${4}
+	fi
+
 	echo	`date`

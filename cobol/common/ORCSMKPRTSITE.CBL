@@ -133,6 +133,13 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           IF      SPA-CLIENT-PRT-FLG  =   1
+               MOVE  2                 TO  SPA-CLIENT-TEMP-FLG
+               CALL   "ORCSMKPRT1"     USING
+                                       ORCSMKPRTAREA
+                                       SPA-AREA
+               EXIT    PROGRAM
+           END-IF
            INITIALIZE                  IDX-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA

@@ -212,6 +212,7 @@
            COPY    "MDAS.INC".
            COPY    "MLOG.INC".
            COPY    "MINF.INC".
+           COPY    "MPRT.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -661,6 +662,13 @@
       *    印刷削除
                WHEN    "CLICKED"       ALSO    "B07"
                    MOVE    "0001"      TO  SPA-MIDCD
+      *    クライアント印刷指示(For Test)
+               WHEN    "CLICKED"       ALSO    "B09"
+                 IF  SPA-CLIENT-PRT-FLG =  1
+                   MOVE    ZERO   TO  SPA-CLIENT-PRT-FLG
+                 ELSE
+                   MOVE    1      TO  SPA-CLIENT-PRT-FLG
+                 END-IF
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
