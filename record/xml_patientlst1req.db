@@ -1,0 +1,9 @@
+xml_patientlst1req {
+	object		object;
+	mode		int;
+	patientlst1req {
+		Start_Date		varchar(10);
+		End_Date		varchar(10);
+		Test_Code		varchar(01);
+   	};
+};

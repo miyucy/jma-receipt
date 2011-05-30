@@ -434,6 +434,8 @@ RECORD_files = \
 	patientmod.rec \
 	medicatonmod.rec \
 	W321.rec \
+	patientlst1.rec \
+	patientlst2.rec \
 	
 
 DEF_files = \
@@ -634,6 +636,10 @@ DB_files = \
 	xml_patientmodres.db \
 	exec_sql.db \
 	tbl_prtctrl.db \
+	xml_patientlst1req.db \
+	xml_patientlst1res.db \
+	xml_patientlst2req.db \
+	xml_patientlst2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

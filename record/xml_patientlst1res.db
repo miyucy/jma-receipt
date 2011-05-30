@@ -1,0 +1,21 @@
+xml_patientlst1res {
+    object  object;
+	mode	int;
+	patientlst1res {
+	Information_Date	varchar(10);
+       	Information_Time	varchar(8);
+	Api_Result		varchar(2);
+	API_Result_Message	varchar(100);
+       	Reskey			varchar(100);
+	Patient_Infomation	{
+		Patient_ID		varchar(20);
+		WholeName		varchar(100);
+		WholeName_inKana	varchar(100);
+		BirthDate		varchar(10);
+		Sex			varchar(1);
+		CreDate			varchar(10);
+		UpDate			varchar(10);
+		TestPatient		varchar(1);
+    	} [1000];
+   	};
+};
