@@ -13,9 +13,9 @@ xml_patientlst1res {
 		WholeName_inKana	varchar(100);
 		BirthDate		varchar(10);
 		Sex			varchar(1);
-		CreDate			varchar(10);
-		UpDate			varchar(10);
-		TestPatient		varchar(1);
+		CreateDate		varchar(10);
+		UpdateDate		varchar(10);
+		TestPatient_Flag	varchar(1);
     	} [1000];
    	};
 };
