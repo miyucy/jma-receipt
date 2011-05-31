@@ -1,11 +1,11 @@
 xml_patientlst2res {
     object  object;
 	mode	int;
-	patientlst3res {
+	patientlst2res {
 	Information_Date	varchar(10);
        	Information_Time	varchar(8);
 	Api_Result		varchar(2);
-	API_Result_Message	varchar(100);
+	Api_Result_Message	varchar(100);
        	Reskey			varchar(100);
 	Patient_Infomation	{
 		Patient_ID		varchar(20);
