@@ -31,6 +31,10 @@
       *       返却メッセージ
               03  PATLSTRES-API-RESULT-MSG     PIC X(100).
               03  PATLSTRES-RESKEY             PIC X(100).
+      *       対象患者件数
+              03  PATLSTRES-PATIENTID-CNT      PIC X(03).
+      *       エラー患者件数
+              03  PATLSTRES-PATIENTID-ERR      PIC X(03).
       *       患者情報
               03  PATLSTRES-PATIENT-INFOMATION    OCCURS   100.
       *           患者番号
@@ -79,19 +83,19 @@
                       06  PATLSTRES-MAIN-START-DATE        PIC X(10).
       *               有効終了日
                       06  PATLSTRES-MAIN-END-DATE          PIC X(10).
-      *               公費情報
-                      04  PATLSTRES-PUBLIC-INSURANCE-INFO           
+      *            公費情報
+                   04  PATLSTRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *                 公費の種類
-                        06  PATLSTRES-INSURANCE-CLASS         PIC X(03).
-      *                 公費の種類名称
-                        06  PATLSTRES-INSURANCE-NAME          PIC X(20).
-      *                 負担者番号
-                        06  PATLSTRES-PROVIDER-NUMBER         PIC X(08).
-      *                 受給者番号
-                        06  PATLSTRES-RECIPIENT-NUMBER        PIC X(20).
-      *                 有効開始日
-                        06  PATLSTRES-INSURANCE-START-DATE    PIC X(10).
-      *                 有効終了日
-                        06  PATLSTRES-INSURANCE-END-DATE      PIC X(10).
+      *               公費の種類
+                      06  PATLSTRES-INSURANCE-CLASS         PIC X(03).
+      *               公費の種類名称
+                      06  PATLSTRES-INSURANCE-NAME          PIC X(20).
+      *               負担者番号
+                      06  PATLSTRES-PROVIDER-NUMBER         PIC X(08).
+      *               受給者番号
+                      06  PATLSTRES-RECIPIENT-NUMBER        PIC X(20).
+      *               有効開始日
+                      06  PATLSTRES-INSURANCE-START-DATE    PIC X(10).
+      *               有効終了日
+                      06  PATLSTRES-INSURANCE-END-DATE      PIC X(10).
       *

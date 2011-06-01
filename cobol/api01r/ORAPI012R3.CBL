@@ -91,6 +91,9 @@
       *
            03  WRK-ZZ9                 PIC ZZ9.
       *
+           03  WRK-CNT                 PIC 9(03).
+           03  WRK-ERR-CNT             PIC 9(03).
+      *
            03  WRK-HKNNUM              PIC X(03).
            03  WRK-PAYKBN              PIC X(02).
            03  WRK-TEKSTYMD            PIC X(08).
@@ -366,6 +369,8 @@
       *
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  FLG-ERR
+           MOVE    ZERO                TO  WRK-CNT
+           MOVE    ZERO                TO  WRK-ERR-CNT
            MOVE    SPACE               TO  WRK-ERRMSG
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   100
@@ -376,8 +381,10 @@
                    PERFORM 20011-INPUT-CHK-SEC
       *            患者一覧処理
                    IF      FLG-ERR             =   ZERO
+                       ADD     1               TO  WRK-CNT
                        PERFORM 20012-PTINF-HEN-SEC
                    ELSE
+                       ADD     1               TO  WRK-ERR-CNT
                        MOVE    WRK-PTNUM       TO  PATLSTRES-PATIENTID
                                                                   (IDY)
                        MOVE    WRK-ERRMSG      TO  PATLSTRES-NAME (IDY)
@@ -657,18 +664,16 @@
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
+      *    処理対象件数
+           MOVE    WRK-CNT             TO  PATLSTRES-PATIENTID-CNT
+           MOVE    WRK-ERR-CNT         TO  PATLSTRES-PATIENTID-ERR
       *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
-               MOVE    IDY                 TO  WRK-ZZ9
-               STRING  "処理終了。（"
-                       WRK-ZZ9
-                       "件）"          DELIMITED   BY  SIZE
-                                       INTO    PATLSTRES-API-RESULT-MSG
-               END-STRING
+               MOVE    "処理終了"          TO  PATLSTRES-API-RESULT-MSG
            ELSE
       *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC

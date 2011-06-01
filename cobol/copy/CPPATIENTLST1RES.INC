@@ -31,6 +31,8 @@
       *       返却メッセージ
               03  PATLSTRES-API-RESULT-MSG     PIC X(100).
               03  PATLSTRES-RESKEY             PIC X(100).
+      *       対象患者件数
+              03  PATLSTRES-PATIENTID-CNT      PIC X(04).
       *       患者情報
               03  PATLSTRES-PATIENT-INFOMATION    OCCURS   1000.
       *           患者番号

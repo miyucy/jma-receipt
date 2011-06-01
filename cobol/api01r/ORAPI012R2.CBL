@@ -85,7 +85,9 @@
            03  WRK-KEICD               PIC X(02).
       *
            03  WRK-MCP-PATHNAME        PIC X(64).
-           03  WRK-ZZ9                 PIC ZZ9.
+           03  WRK-ZZ9                 PIC ZZZ9.
+      *
+           03  WRK-CNT                 PIC 9(04).
       *
            03  WRK-START-YMD           PIC X(08).
            03  WRK-END-YMD             PIC X(08).
@@ -436,6 +438,7 @@
                PERFORM 900-PTNUM-READ-SEC
            END-IF
            MOVE    ZERO                TO  FLG-SYORI-END
+           MOVE    ZERO                TO  WRK-CNT
            PERFORM UNTIL     (FLG-PTNUM    NOT =   ZERO )
                        OR    (FLG-SYORI-END    =   1    )
                        OR    (WRK-ERRCD    NOT =   SPACE)
@@ -490,6 +493,8 @@
                ADD     1               TO  IDX
                IF      IDX             >   1000
                    MOVE    "10"            TO  WRK-ERRCD
+      *            1000件オーバー
+                   MOVE    9999            TO  WRK-CNT
                ELSE
                    PERFORM 20021-PTINF-HEN-SEC
                END-IF
@@ -502,6 +507,8 @@
       *    患者情報編集処理
       *****************************************************************
        20021-PTINF-HEN-SEC     SECTION.
+      *
+           ADD     1                   TO  WRK-CNT
       *
            MOVE    PTNUM-PTNUM         TO  PATLSTRES-PATIENTID (IDX)
            MOVE    PTINF-NAME          TO  PATLSTRES-NAME      (IDX)
@@ -530,18 +537,15 @@
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
+      *    処理対象件数
+           MOVE    WRK-CNT             TO  PATLSTRES-PATIENTID-CNT
       *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
-               MOVE    IDX                 TO  WRK-ZZ9
-               STRING  "処理終了。（"
-                       WRK-ZZ9
-                       "件）"          DELIMITED   BY  SIZE
-                                       INTO    PATLSTRES-API-RESULT-MSG
-               END-STRING
+               MOVE    "処理終了"          TO  PATLSTRES-API-RESULT-MSG
            ELSE
       *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
