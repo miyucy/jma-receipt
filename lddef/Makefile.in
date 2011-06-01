@@ -4,65 +4,51 @@ include $(top_srcdir)/Makefile.directories
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 
-HOSP = @HOSP@
+LDFILE = \
+	orca00.ld \
+	orca01.ld \
+	orca02.ld \
+	orca03.ld \
+	orca04.ld \
+	orca06.ld \
+	orca07.ld \
+	orca08.ld \
+	orca11.ld \
+	orca12.ld \
+	orca13.ld \
+	orca14.ld \
+	orca18.ld \
+	orca19.ld \
+	orca21.ld \
+	orca22.ld \
+	orca23.ld \
+	orca24.ld \
+	orca25.ld \
+	orca29.ld \
+	orca41.ld \
+	orca42.ld \
+	orca43.ld \
+	orca44.ld \
+	orca51.ld \
+	orca71.ld \
+	orca61.ld \
+	orca101.ld \
+	orca102.ld \
+	orca103.ld \
+	orca104.ld \
+	orca107.ld \
+	sessionend.ld \
+	api21.ld \
+	api01r.ld \
+	orca31.ld \
+	orca32.ld \
+	orca33.ld \
+	orca34.ld \
+	orca36.ld
 
-CPP = @CPP@
-# dummy flags
-LDFILEFLAGS = -x c
+BDFILE = \
+	orcabt.bd
 
-LDFILE_sources = \
-	orca00.ld.in \
-	orca01.ld.in \
-	orca02.ld.in \
-	orca03.ld.in \
-	orca04.ld.in \
-	orca06.ld.in \
-	orca07.ld.in \
-	orca08.ld.in \
-	orca11.ld.in \
-	orca12.ld.in \
-	orca13.ld.in \
-	orca14.ld.in \
-	orca18.ld.in \
-	orca19.ld.in \
-	orca21.ld.in \
-	orca22.ld.in \
-	orca23.ld.in \
-	orca24.ld.in \
-	orca25.ld.in \
-	orca29.ld.in \
-	orca41.ld.in \
-	orca42.ld.in \
-	orca43.ld.in \
-	orca44.ld.in \
-	orca51.ld.in \
-	orca71.ld.in \
-	orca61.ld.in \
-	orca101.ld.in \
-	orca102.ld.in \
-	orca103.ld.in \
-	orca104.ld.in \
-	orca107.ld.in \
-	sessionend.ld.in \
-	api21.ld.in \
-	api01r.ld.in \
-
-hosp_LDFILE_sources = \
-	orca31.ld.in \
-	orca32.ld.in \
-	orca33.ld.in \
-	orca34.ld.in \
-	orca36.ld.in 
-
-ifeq ($(HOSP), hosp)
-  LDFILE_sources += $(hosp_LDFILE_sources)
-endif
-
-BDFILE_sources = \
-	orcabt.bd.in 
-
-LDFILE = $(LDFILE_sources:.ld.in=.ld)
-BDFILE = $(BDFILE_sources:.bd.in=.bd)
 
 DIRECTORYFILE_in = directory.in
 DIRECTORYFILE = directory
@@ -74,17 +60,11 @@ INSTALL_LDFILE = $(LDFILE) $(BDFILE) $(DIRECTORYFILE) \
 
 .SUFFIXES: .ld.in .bd.in .ld .bd 
 
-.ld.in.ld .bd.in.bd:
-	$(CPP) $(LDFILEFLAGS) $< > $@
-
 all: $(LDFILE) $(BDFILE) $(DIRECTORYFILE) dbgroup.inc kentan.inc orcadbs.inc
-
-$(LDFILE) $(BDFILE):  orcadb.inc orcadbh.inc 
 
 filecheck:
 
 directory: directory.in
-	awk -f mkdirectory.awk $(DIRECTORYFILE_in) @DEBUG@ @HOSP@ | \
 	sed -e 's,\@ORCA_DIR\@,$(ORCA_DIR),g' \
 	    -e 's,\@lddefdir\@,$(lddefdir),g' \
 	    -e 's,\@recorddir\@,$(recorddir),g' \
@@ -94,7 +74,7 @@ directory: directory.in
 	    -e 's,\@sitedir\@,$(SITEDIR),g' \
 	    -e 's,\@sitelddefdir\@,$(SITELDDEFDIR),g' \
 	    -e 's,\@siterecorddir\@,$(SITERECORDDIR),g' \
-	    > $(DIRECTORYFILE) 
+                    $(DIRECTORYFILE_in) > $(DIRECTORYFILE)
 
 dbgroup.inc: 
 	ln -sf ../etc/dbgroup.inc .
@@ -106,7 +86,6 @@ kentan.inc:
 	ln -sf ../etc/kentan.inc .
 
 clean: 
-	-rm -f $(LDFILE) $(BDFILE)
 	-rm -f directory dbgroup.inc kentan.inc orcadbs.inc
 
 distclean: clean
