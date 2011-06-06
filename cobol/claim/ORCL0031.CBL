@@ -64,6 +64,8 @@
       *  04.06.03    NACL-藤原    10/10/20  難病外来指導管理料対応
       *  04.06.02    NACL-多々納  10/11/19  ４０剤、４０明細対応他
       *  04.06.02    NACL-多々納  11/02/18  用法コメント対応
+      *
+      *  04.07.01    NACL-藤原    10/10/20  病名の削除処理対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -129,6 +131,7 @@
       *    3:コード順エラー 4:修飾語のみ
       *    5:未コード化傷病名コード
            03  FLG-BYOMEI-CHK      PIC 9(01). 
+           03  FLG-BYOMEI-DELETE   PIC 9(01). 
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-OK1             PIC 9(01).
@@ -3069,12 +3072,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-TENKIDD
       *    転帰
            MOVE    SPACE               TO  WRK-TENKI
-           IF      LF04-SND-SKNENDDATE(IDX)    NOT =   SPACE
-      *        転帰が空白の時、治癒
-               IF      LF04-SND-TENKI  (IDX)       =   SPACE 
-                   MOVE    "1"              TO  WRK-TENKI
-               ELSE
-                   PERFORM 2006121-TENKSET-SEC
+           IF      LF04-SND-TENKI  (IDX)   =   "delete"
+               MOVE    1                   TO  FLG-BYOMEI-DELETE
+           ELSE
+               MOVE    0                   TO  FLG-BYOMEI-DELETE
+               IF      LF04-SND-SKNENDDATE(IDX)    NOT =   SPACE
+      *            転帰が空白の時、治癒
+                   IF      LF04-SND-TENKI  (IDX)       =   SPACE 
+                       MOVE    "1"              TO  WRK-TENKI
+                   ELSE
+                       PERFORM 2006121-TENKSET-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -3113,31 +3121,49 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
+           IF      FLG-BYOMEI-DELETE   =   1
+               IF      WRK-UTAGAIFLG-KETASU    >   ZERO
+                   EVALUATE    WRK-UTAGAIFLG
+                       WHEN    SPACE
+                       WHEN    "1"
+                           MOVE    "1"         TO  WRK-UTAGAIFLG
+                       WHEN    "2"
+                       WHEN    "3"
+                           MOVE    "3"         TO  WRK-UTAGAIFLG
+                   END-EVALUATE
+               END-IF    
+           END-IF    
+      *
       *    患者病名マスタ検索（同一開始日・病名）
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-PTID            TO  PTBYO-PTID
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
-           IF      WRK-UTAGAIFLG-KETASU    =   ZERO
+           IF      FLG-BYOMEI-DELETE   =   1 
                MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
-               STRING  WRK-BYOMEI1 (1:80)  DELIMITED BY  SPACE
-                       "の疑い"            DELIMITED BY  SIZE  
-                                           INTO    PTBYO-XXBYOMEI
-               END-STRING
+                                               PTBYO-XXBYOMEI
            ELSE
-               IF      WRK-UTAGAIFLG-KETASU    =   1
+               IF      WRK-UTAGAIFLG-KETASU    =   ZERO
                    MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
-                                                   PTBYO-XXBYOMEI
-               ELSE
-                   MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
-                   STRING  WRK-BYOMEI1 (1:WRK-UTAGAIFLG-KETASU - 1)
-                                               DELIMITED BY  SIZE
-                           WRK-BYOMEI1 (WRK-UTAGAIFLG-KETASU + 6:)
-                                               DELIMITED BY  SPACE
+                   STRING  WRK-BYOMEI1 (1:80)  DELIMITED BY  SPACE
+                           "の疑い"            DELIMITED BY  SIZE  
                                                INTO    PTBYO-XXBYOMEI
                    END-STRING
+               ELSE
+                   IF      WRK-UTAGAIFLG-KETASU    =   1
+                       MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                                                       PTBYO-XXBYOMEI
+                   ELSE
+                       MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                       STRING  WRK-BYOMEI1 (1:WRK-UTAGAIFLG-KETASU - 1)
+                                                   DELIMITED BY  SIZE
+                               WRK-BYOMEI1 (WRK-UTAGAIFLG-KETASU + 6:)
+                                                   DELIMITED BY  SPACE
+                                               INTO    PTBYO-XXBYOMEI
+                       END-STRING
+                   END-IF
                END-IF
-           END-IF
+           END-IF    
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
@@ -3263,6 +3289,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    患者病名マスタ追加処理
       *****************************************************************
        2006123-KOUSIN-01-SEC           SECTION.
+      *
+           IF      FLG-BYOMEI-DELETE   =   1
+               GO  TO  2006123-KOUSIN-01-EXT
+           END-IF
       *
       *    連番取得
            MOVE    ZERO                TO  WRK-PTBYO-RENNUM
@@ -3527,6 +3557,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2006124-KOUSIN-02-SEC           SECTION.
       *
+           IF      FLG-BYOMEI-DELETE   =   1
+               MOVE    "1"                 TO  PTBYO-DLTFLG
+               MOVE    "claim"             to  PTBYO-DLT-OPID
+           ELSE
+      *
       *    転帰日
            MOVE    WRK-TENKIYMD        TO  PTBYO-TENKIYMD
       *    転帰区分
@@ -3702,7 +3737,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-IF    
-           ELSE
+             ELSE
       *        疾患コードがエラー又は未コード化傷病名コードのとき
       *        病名からコード検索
                INITIALIZE                  ORCSBYOMEIAREA
@@ -3760,6 +3795,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    LNK-BYO-BYOMEIHENFLG
                                                TO  PTBYO-BYOMEIHENFLG
                END-IF
+             END-IF
            END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
@@ -4067,6 +4103,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                MOVE    ZERO            TO  FLG-PTBYOMEI
+               IF      FLG-BYOMEI-DELETE   =   1
+                   IF    ( WRK-TENKIYMD    =   PTBYO-TENKIYMD  )
+                   AND   ( WRK-UTAGAIFLG   =   PTBYO-UTAGAIFLG )
+                       CONTINUE
+                   ELSE
+                       GO  TO  900-PTBYO-READ-SEC
+                   END-IF
+               END-IF
            ELSE
                INITIALIZE                  PTBYOMEI-REC
                MOVE    1               TO  FLG-PTBYOMEI
