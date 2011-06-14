@@ -67,10 +67,10 @@ W12	{
 				};
 				NYUTAIINREKI_COMBO	{
 					NYUTAIINREKI	{
-						value	varchar(24);
+						value	varchar(42);
 					};
 					count	int;
-					item	varchar(24)[2];
+					item	varchar(42)[3];
 				};
 				SRYKAHENKBN_COMBO	{
 					SRYKAHENKBN	{

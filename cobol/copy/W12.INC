@@ -56,10 +56,10 @@
                             PIC X(22)   OCCURS  3 TIMES.
                   05  W12-NYUTAIINREKI-COMBO.
                     06  W12-NYUTAIINREKI.
-                      07  W12-VALUE   PIC X(24).
+                      07  W12-VALUE   PIC X(42).
                     06  W12-NYUTAIINREKI-COUNT   PIC S9(9)   BINARY.
                     06  W12-NYUTAIINREKILST
-                            PIC X(24)   OCCURS  2 TIMES.
+                            PIC X(42)   OCCURS  3 TIMES.
                   05  W12-SRYKAHENKBN-COMBO.
                     06  W12-SRYKAHENKBN.
                       07  W12-VALUE   PIC X(20).

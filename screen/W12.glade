@@ -618,7 +618,7 @@
 	  <name>NYUTAIINREKI_COMBO</name>
 	  <x>190</x>
 	  <y>336</y>
-	  <width>208</width>
+	  <width>316</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -646,7 +646,7 @@
 	    </signal>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
-	    <text_max_length>24</text_max_length>
+	    <text_max_length>42</text_max_length>
 	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>

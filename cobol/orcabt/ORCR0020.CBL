@@ -232,6 +232,9 @@
       *                                     は公費単独のレセプトとする
       *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
       *                                     併用から単独になったときのまとめ
+      *
+      *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
+      *                                     「2自費分は含まない」を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -522,6 +525,9 @@
                05  WRK-TEKSTYMD-X      PIC X(08). 
       *        適用終了年月日
                05  WRK-TEKEDYMD-X      PIC X(08). 
+      *
+      *    初回番号(最新の入院歴分)                                                                 
+       01  WRK-SHONUM                  PIC 9(03).                     
       *
       *    ワーク入力ファイル退避
        01  WRK-RECE01-REC.
@@ -895,10 +901,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
                END-IF
       *
-               DISPLAY "SYS-2009=" SYS-2009-SYUKA-KBN " "
-                                   SYS-2009-SYUKA-SYAHO " "
-                                   SYS-2009-SYUKA-KOKUHO " "
-                                   SYS-2009-SYUKA-KOUIKI
+               DISPLAY "SYS-2009-SYUKA-KBN   =" SYS-2009-SYUKA-KBN
+               DISPLAY "SYS-2009-SYUKA-SYAHO =" SYS-2009-SYUKA-SYAHO
+               DISPLAY "SYS-2009-SYUKA-KOKUHO=" SYS-2009-SYUKA-KOKUHO
+               DISPLAY "SYS-2009-SYUKA-KOUIKI=" SYS-2009-SYUKA-KOUIKI
       *         
       *        レセプト編集情報
                MOVE    SPACE           TO  SYSKANRI-REC
@@ -940,6 +946,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                        =   SPACE
                    MOVE    "0"         TO  SYS-200501-DRCD-PRTKBN
                END-IF
+      *
+               DISPLAY "SYS-2005-NYUTAIINREKI-KSIKBN=" 
+                                   SYS-2005-NYUTAIINREKI-KSIKBN " "
+               DISPLAY "SYS-200501-DRCD-PRTKBN      =" 
+                                   SYS-200501-DRCD-PRTKBN " "
           END-IF
       *
           .
@@ -1769,7 +1780,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *    入退院履歴出力処理
            IF    ( IDZ             =   1   )
            AND   ( SYS-2005-NYUTAIINREKI-KSIKBN
-                                   =   "1" )               
+                               NOT =   "0" )               
                PERFORM 240-PTNYUINRRK-SYORI-SEC
            END-IF
       *
@@ -3950,6 +3961,22 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  COMB-HOSPNUM
                                            WRK-CONS-KOUGAI-HKNNUM 
                                    MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
+                               ELSE
+      *                            自費入院分の履歴は記載しない場合
+                                   IF      SYS-2005-NYUTAIINREKI-KSIKBN
+                                                           =   "2"
+                                       INITIALIZE          HKNNUM-REC
+                                       MOVE   RECE02-HOSPNUM
+                                                       TO  HKN-HOSPNUM
+                                       MOVE   COMB-HKNNUM
+                                                       TO  HKN-HKNNUM
+                                       PERFORM 900-HKNNUM-CHK-SEC
+                                       IF      HKN-HKNKOHSBTKBN
+                                                       =   "8"
+                                           MOVE    "1"     TO
+                                           WRK-HKNCOMBI-SYOKBN (IDX1)
+                                       END-IF
+                                   END-IF
                                END-IF
                            ELSE
                                MOVE    WRK-DAY (2 IDX) TO
@@ -3974,11 +4001,11 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  COMB-HOSPNUM
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       10
                        IF      WRK-HKNCOMBI (IDX)  =   ZERO
-                           MOVE    COMB-HKNCOMBINUM    TO
+                           MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
                                                    WRK-HKNCOMBI (IDX)
                            MOVE    10                   TO  IDX
                        ELSE
-                           IF      COMB-HKNCOMBINUM    =
+                           IF      WRK-COMB-HKNCOMBINUM (IDX2)   =
                                                    WRK-HKNCOMBI (IDX)
                                MOVE    10                   TO  IDX
                            END-IF
@@ -4021,19 +4048,31 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  COMB-HOSPNUM
                                                WRK-CONS-KOUGAI-HKNNUM
                        CONTINUE
                    ELSE    
-                       PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >       10
-                           IF      WRK-HKNCOMBI (IDX)      =   ZERO
-                               MOVE    COMB-HKNCOMBINUM    TO
+      *                自費入院分の履歴は記載しない場合
+                       INITIALIZE                  HKNNUM-REC
+                       MOVE    RECE02-HOSPNUM  TO  HKN-HOSPNUM
+                       MOVE    COMB-HKNNUM     TO  HKN-HKNNUM
+                       PERFORM 900-HKNNUM-CHK-SEC
+                       IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
+                                               =   "2" )
+                       AND   ( HKN-HKNKOHSBTKBN
+                                               =   "8" )
+                           CONTINUE
+                       ELSE
+                           PERFORM VARYING IDX FROM    1   BY  1
+                                   UNTIL   IDX >       10
+                               IF      WRK-HKNCOMBI (IDX)      =   ZERO
+                                   MOVE    COMB-HKNCOMBINUM    TO
                                                    WRK-HKNCOMBI (IDX)
-                               MOVE    10                  TO  IDX
-                           ELSE
-                               IF      COMB-HKNCOMBINUM    =
+                                   MOVE    10                  TO  IDX
+                               ELSE
+                                   IF      COMB-HKNCOMBINUM    =
                                                    WRK-HKNCOMBI (IDX)
-                                   MOVE    10              TO  IDX
+                                       MOVE    10              TO  IDX
+                                   END-IF
                                END-IF
-                           END-IF
-                       END-PERFORM
+                          END-PERFORM
+                       END-IF
                    END-IF
                END-IF    
       *
@@ -4086,6 +4125,8 @@ grpsys             MOVE    RECE02-HOSPNUM      TO  PTHKN-HOSPNUM
                    END-IF
                END-IF
            END-PERFORM
+      *
+           INITIALIZE                      WRK-SHONUM
       *
       *    診療月内の入退院情報
            INITIALIZE                      PTNYUINRRK-REC
@@ -4159,6 +4200,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2401-PTNYUINRRK-HENSYU-SEC           SECTION.
       *
+           IF      WRK-SHONUM          =   ZERO
+               MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
+           END-IF
+      *
       *    入退院履歴情報
            PERFORM 24012-RECE12-WRITE-SEC
       *
@@ -4175,7 +4220,7 @@ grpsys         MOVE    RECE01-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"
                                        TO  MCP-TABLE
-               MOVE    "key22"         TO  MCP-PATHNAME
+               MOVE    "key51"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
@@ -4190,7 +4235,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *                 
                MOVE    "tbl_ptnyuinrrk"
                                        TO  MCP-TABLE
-               MOVE    "key22"         TO  MCP-PATHNAME
+               MOVE    "key51"         TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
@@ -4201,6 +4246,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    入退院履歴出力処理
       *****************************************************************
        24012-RECE12-WRITE-SEC         SECTION.
+      *
+      *    他院歴の履歴は記載しない
+           IF    ( PTNYUINRRK-JTIKBN        =   "5" )
+           AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
+               GO  TO  24012-RECE12-WRITE-EXT
+           END-IF
       *
 grpsys     MOVE    RECE02-HOSPNUM      TO  RECE12-HOSPNUM
            MOVE    RECE02-SRYYM        TO  RECE12-SRYYM
@@ -4221,6 +4272,10 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE12-HOSPNUM
                MOVE    PTNYUINRRK-TAIINYMD TO  RECE12-TAIINYMD
                MOVE    PTNYUINRRK-NYUINCHUKBN
                                            TO  RECE12-NYUINCHUKBN
+      *        入院年月日と同じ初回番号のときのみセット
+               IF      PTNYUINRRK-SHONUM   =    WRK-SHONUM
+                   MOVE    WRK-SHONUM           TO  RECE12-SHONUM
+               END-IF
                WRITE   RECE12-REC
                ADD     1                   TO  CNT-RECE12
                MOVE    "1"                 TO  RECE02-NYUINRRK-FLG
@@ -4679,11 +4734,18 @@ grpsys         PERFORM 900-DBFETCH-SEC
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *    
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key22"             TO  MCP-PATHNAME
+           MOVE    "key51"             TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+               IF      PTNYUINRRK-JTIKBN    =   "5"
+                   IF      PTNYUINRRK-TAINRELKBN    =   "1"
+                       CONTINUE
+                   ELSE
+                       GO  TO  900-PTNYUINRRK-KEY22-READ-SEC
+                   END-IF
+               END-IF
            ELSE
                MOVE    1                    TO  FLG-PTNYUINRRK22
            END-IF

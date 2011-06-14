@@ -131,6 +131,11 @@
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
       *  04.06.02    NACL-藤原    10/07/10  病名記載順設定対応
+      *
+      *  04.07.01    NACL-藤原    11/06/02  入退院履歴の記載区分に
+      *                                     自費入院分の記載設定を追加
+      *  04.07.02    NACL-藤原    11/06/08  レセ電作成設定時の広域連合作
+      *                                     成区分との関連チェックを追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -236,7 +241,7 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-NYUTAIINREKI-KSIKBNMEI
-                                              PIC X(22).
+                                              PIC X(40).
                        09  SPA-GMN-PREFPRGID  PIC X(15).              
                        09  SPA-GMN-PREFPRGID1 PIC X(15).              
                        09  SPA-GMN-SYAPRTNM   PIC X(16).              
@@ -741,12 +746,12 @@
                    07  SPA-GMN-KOUIKIOCRKBN-MAX
                                               PIC 9(02).    
       *                                        
-                   07  SPA-GMN-NYUTAIINREKI-KSIKBNLST  OCCURS  2.
+                   07  SPA-GMN-NYUTAIINREKI-KSIKBNLST  OCCURS  3.
                        09  SPA-GMN-NYUTAIINREKI-KSIKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
                        09  SPA-GMN-NYUTAIINREKI-KSIKBNMEIL
-                                              PIC X(22).
+                                              PIC X(40).
                    07  SPA-GMN-NYUTAIINREKI-KSIKBN-MAX
                                               PIC 9(02).    
       *                                        
@@ -1314,6 +1319,13 @@
                05  SPA-1001-HOSPSBT1          PIC 9(01). 
                05  SPA-W12-PAGENO             PIC S9(9)   BINARY.
       *
+               05  SPA-WIDCD-1004-FLG         PIC 9(01).
+      *
+               05  SPA-GMN-KKHRECEKBN-O             PIC X(01).
+               05  SPA-GMN-SYARECEKBN-O             PIC X(01).
+               05  SPA-GMN-KOUIKIRECEKBN-O          PIC X(01).
+               05  SPA-GMN-KOUIKIKBN-O              PIC X(01).
+      *
            COPY    "ENUM-VALUE".
       *
        01  STS-AREA.
@@ -1342,7 +1354,7 @@
       *
        01  WRK-AREA.
            03  WRK-GMN-CUR         PIC 9(02).
-           03  WRK-WIDMSG          PIC X(70). 
+           03  WRK-WIDMSG          PIC X(100). 
            03  WRK-YMD             PIC X(09). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -1554,6 +1566,14 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+               IF      SPA-WIDCD       NOT =   SPACE
+                   PERFORM 520-WIDSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+               IF      SPA-WIDCD2      NOT =   SPACE
+                   PERFORM 530-WID2SET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -1580,6 +1600,9 @@
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "WID2"
+                   PERFORM 330-WID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
                WHEN    "W121"
                    PERFORM 310-SPASET-SEC
                    MOVE    70           TO  SPA-GMN-CUR
@@ -1593,7 +1616,7 @@
            EXIT.
       *
       *****************************************************************
-      *    確認画面（ＣＩＤ１）ＯＫ処理
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
@@ -1607,9 +1630,10 @@
                                            TO  SPA-GMN-SYUBYOHENFLG-G
                END-EVALUATE
            ELSE
-               IF      SPA-WIDCD       =   "1003"
-                   MOVE    65              TO  SPA-GMN-CUR
-               END-IF
+               EVALUATE    SPA-WIDCD
+                   WHEN    "1003"
+                       MOVE    65              TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
@@ -1619,11 +1643,33 @@
            EXIT.
       *
       *****************************************************************
+      *    確認画面（ＷＩＤ２）ＯＫ処理
+      *****************************************************************
+       330-WID2-SET-SEC            SECTION.
+      *
+           IF      SPA-WID2-FLG    =   "OK"
+               EVALUATE    SPA-WIDCD2
+                   WHEN    "1004"
+                       MOVE    SPA-GMN-KOUIKIKBNLST (2)
+                                           TO  SPA-GMN-KOUIKIKBN-G
+               END-EVALUATE
+           END-IF
+      *
+      **** MOVE    0               TO  SPA-WIDCD2-1004-FLG 
+           MOVE    SPACE           TO  SPA-WID2-FLG
+           MOVE    SPACE           TO  SPA-WIDCD2      
+           .
+       330-WID2-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE   SPA-W12-AREA
+      *
+           MOVE    2                   TO  SPA-WIDCD-1004-FLG 
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-HSTYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-HEDYUKYMD
@@ -1740,7 +1786,12 @@
            MOVE    "入退院履歴を記載する"
                                        TO
                                    SPA-GMN-NYUTAIINREKI-KSIKBNMEIL (2)
-           MOVE    2                   TO
+           MOVE    "2"                 TO
+                                   SPA-GMN-NYUTAIINREKI-KSIKBNL    (3)
+           MOVE    "入退院履歴を記載する（自費入院分は除く）"
+                                       TO
+                                   SPA-GMN-NYUTAIINREKI-KSIKBNMEIL (3)
+           MOVE    3                   TO
                                    SPA-GMN-NYUTAIINREKI-KSIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHPRTKBNL    (1)
@@ -3879,6 +3930,13 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            SPA-GMN-SEIHO-DSPKBN-G
            END-IF                                              
       *
+      *    入力前退避
+           MOVE    SPA-GMN-KKHRECEKBN  TO  SPA-GMN-KKHRECEKBN-O 
+           MOVE    SPA-GMN-SYARECEKBN  TO  SPA-GMN-SYARECEKBN-O 
+           MOVE    SPA-GMN-KOUIKIRECEKBN
+                                       TO  SPA-GMN-KOUIKIRECEKBN-O
+           MOVE    SPA-GMN-KOUIKIKBN   TO  SPA-GMN-KOUIKIKBN-O
+      *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
        31O-SPASET-EXT.
@@ -3934,9 +3992,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
-      *
+      * 
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
+      *
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -6985,7 +7044,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                IF    ( SPA-ERRCD            =   SPACE )
       *            関連チェック
                    PERFORM 4900-KANRENCHK-SEC
-                   IF      SPA-ERRCD        =   SPACE
+                   IF    ( SPA-ERRCD        =   SPACE             )
+                   AND   ( SPA-WIDCD        =   SPACE             )
+                   AND   ( SPA-WIDCD2       =   SPACE  OR  "1004" )
                        EVALUATE    IDX
                            WHEN    0
                                MOVE    1            TO  SPA-GMN-CUR
@@ -7061,15 +7122,19 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
               GO      TO      490-TOUROKU-EXT
            END-IF
       *
+      *    入力項目の関連チェック処理
            PERFORM 4900-KANRENCHK-SEC
       *
       *    レセ電データ出力先チェック
-           IF      SPA-ERRCD       =   SPACE
+           IF    ( SPA-ERRCD        =   SPACE )
+           AND   ( SPA-WIDCD        =   SPACE )
+           AND   ( SPA-WIDCD2       =   SPACE )
                PERFORM 4103-RECEDENOUT-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD        =   SPACE )
            AND   ( SPA-WIDCD        =   SPACE )
+           AND   ( SPA-WIDCD2       =   SPACE )
               MOVE    "1001"           TO  SPA-WIDCD
            END-IF
            .
@@ -7204,6 +7269,46 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF                         
       *
+      *    レセ電出力区分と広域連合作成区分チェック
+           IF    ( SPA-ERRCD        =   SPACE )
+           AND   ( SPA-WIDCD        =   SPACE )
+      *        入力チェック
+               IF      SPA-WIDCD-1004-FLG  =   2
+                   CONTINUE
+               ELSE
+                   IF    ( SPA-GMN-KOUIKIKBN   =   SPA-GMN-KOUIKIKBN-O )
+                   AND   ( SPA-GMN-KKHRECEKBN  =   SPA-GMN-KKHRECEKBN-O)
+      *************AND   ( SPA-GMN-SYARECEKBN  =   SPA-GMN-SYARECEKBN-O)
+                   AND   ( SPA-GMN-KOUIKIRECEKBN
+                                               =
+                                               SPA-GMN-KOUIKIRECEKBN-O )
+                       MOVE    ZERO            TO  SPA-WIDCD-1004-FLG
+                   ELSE
+                       MOVE    1               TO  SPA-WIDCD-1004-FLG
+                   END-IF
+                   MOVE    SPA-GMN-KKHRECEKBN  TO  SPA-GMN-KKHRECEKBN-O 
+                   MOVE    SPA-GMN-SYARECEKBN  TO  SPA-GMN-SYARECEKBN-O 
+                   MOVE    SPA-GMN-KOUIKIRECEKBN
+                                               TO
+                                               SPA-GMN-KOUIKIRECEKBN-O
+                   MOVE    SPA-GMN-KOUIKIKBN   TO  SPA-GMN-KOUIKIKBN-O
+               END-IF
+      *
+               IF      SPA-WIDCD-1004-FLG  >   ZERO
+                   IF    ( SPA-GMN-KOUIKIKBN   =   "0" OR  SPACE )
+      *****************IF    ( SPA-GMN-SYARECEKBN
+      *****************                        NOT =   "0" AND SPACE )
+                       IF    ( SPA-GMN-KKHRECEKBN
+                                               NOT =   "0" AND SPACE )
+                       OR    ( SPA-GMN-KOUIKIRECEKBN
+                                               NOT =   "0" AND SPACE )
+                           MOVE    "1004"          TO  SPA-WIDCD2
+                       END-IF
+                   END-IF 
+               END-IF
+      *
+               MOVE    ZERO        TO  SPA-WIDCD-1004-FLG 
+           END-IF
            .
        4900-KANRENCHK-EXT.
            EXIT.
@@ -7714,6 +7819,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-WIDCD2      NOT =   SPACE
+               PERFORM 530-WID2SET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -7723,6 +7833,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        500-SET-SCREEN-EXT.
            EXIT.
+      *
       *****************************************************************
       *    画面編集処理
       *****************************************************************
@@ -8853,6 +8964,45 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        520-WIDSET-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    ガイドメッセージ表示２
+      *****************************************************************
+       530-WID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-WIDMSG
+      *
+           EVALUATE    SPA-WIDCD2
+               WHEN    "1004"
+                   STRING  "広域連合作成区分の設定を"
+                                           DELIMITED  BY  SIZE
+                          "国保分とまとめて作成に変更しますか"
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-WIDMSG
+                   END-STRING
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  WID2
+           MOVE    SPA-WIDCD2          TO  WID2-ID1CODE
+           MOVE    WRK-WIDMSG          TO  WID2-ID1MSG
+           MOVE    "いいえ"            TO  WID2-B01
+           MOVE    "は  い"            TO  WID2-B12
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "W12"               TO  SPA-MOTOPG
+           MOVE    "WID2"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "WID2"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END              
+      *
+           .
+       530-WID2SET-EXT.
            EXIT.
       *
       *****************************************************************

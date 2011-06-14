@@ -374,6 +374,9 @@
       *  04.06.07    NACL-藤原    11/06/02  再診（時間外）の記録方法の修正
       *  04.06.08    NACL-藤原    11/06/10  基本項目でデータ区分２の記録
       *                                     方法の修正
+      *
+      *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
+      *                                     「2自費分は含まない」を追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6784,7 +6787,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
       *    入退院履歴情報
            IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
-                                   =   "1" )               
+                               NOT =   "0" )               
            AND   ( RECE02-NYUINRRK-FLG
                                    =   "1" )               
                PERFORM 20082-NYUTAI-RIREKI-HEN-SEC
