@@ -22,6 +22,7 @@ xml_patientlst2res {
 			PhoneNumber1		varchar(15);
 			PhoneNumber2		varchar(15);
         	};
+		Outpatient_Class		varchar(1);
 		HealthInsurance_Information	{
 		InsuranceProvider_Class			varchar(03);
             	InsuranceProvider_Number		varchar(08);

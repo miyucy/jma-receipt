@@ -59,6 +59,8 @@
                       06  PATLSTRES-HOME-HPONE1        PIC X(15).
       *               自宅電話番号（昼）
                       06  PATLSTRES-HOME-HPONE2        PIC X(15).
+      *           入院区分（１：入院中）
+                  04  PATLSTRES-OUTPATIENT-CLASS       PIC X(01).
       *           保険情報
                   04  PATLSTRES-INSURANCE-INFO     OCCURS  3 TIMES.
       *               保険の種類
