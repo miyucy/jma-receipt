@@ -1222,6 +1222,7 @@
       *
            IF      SPA-GMN20-KARUTE      =   "0"    OR  "1"
                                          OR  "2"
+                                         OR  "3"
       *        保険組合せが１件の時、１へ
                IF     (SPA-GMN20-KARUTE      =   "1"  )  AND
                       (SPA-HKNCOMBI-MAX      =   1    )

@@ -37,10 +37,10 @@ U02	{
 		};
 		KARUTE_COMBO	{
 			KARUTE	{
-				value	varchar(14);
+				value	varchar(30);
 			};
 			count	int;
-			item	varchar(14)[3];
+			item	varchar(30)[5];
 		};
 		SYOHO_COMBO	{
 			SYOHO	{
@@ -152,6 +152,10 @@ U02	{
 		};
 		SEX	{
 			value	varchar(2);
+		};
+		CHKMSG	{
+			style	varchar(20);
+			value	varchar(20);
 		};
 		B05	{
 	           	state	int;

@@ -55,6 +55,9 @@
               03  P02-B03S.
                 04  P02-B03S-STATE   PIC S9(9)   BINARY.
                 04  P02-B03S-LABEL   PIC X(20).
+              03  P02-B02S.
+                04  P02-B02S-STATE   PIC S9(9)   BINARY.
+                04  P02-B02S-LABEL   PIC X(20).
               03  P02-NB2.
                 04  P02-PAGENO  PIC S9(9)   BINARY.
                 04  P02-FIXPAGE1.
@@ -97,14 +100,14 @@
                     06  P02-P020-SRYNAIYO-ITEM    PIC X(21)   OCCURS 99.
                   05  P02-P020-KARUTE-COB.
                     06  P02-P020-KARUTE.
-                      07  P02-VALUE   PIC X(16).
+                      07  P02-VALUE   PIC X(30).
                     06  P02-P020-KARUTE-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-KARUTE-ITEM    PIC X(16)   OCCURS  3.
+                    06  P02-P020-KARUTE-ITEM    PIC X(30)   OCCURS  5.
                   05  P02-P020-SYOHOU-COB.
                     06  P02-P020-SYOHOU.
                       07  P02-VALUE   PIC X(16).
                     06  P02-P020-SYOHOU-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-SYOHOU-ITEM    PIC X(16)   OCCURS  3.
+                    06  P02-P020-SYOHOU-ITEM    PIC X(16)   OCCURS  5.
                   05  P02-P020-HKNKUMI.
                     06  P02-VALUE   PIC X(4).
                   05  P02-SCROLLEDWINDOW9.
@@ -139,9 +142,9 @@
                     06  P02-VALUE   PIC X(8).
                   05  P02-P02-HAKKOCOB.
                     06  P02-P02-HAKKO.
-                      07  P02-VALUE   PIC X(16).
+                      07  P02-VALUE   PIC X(30).
                     06  P02-P02-HAKKO-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-HAKKO-ITEM    PIC X(16)   OCCURS  2.
+                    06  P02-P02-HAKKO-ITEM    PIC X(30)   OCCURS  5.
                   05  P02-TSTPTNUMKBN-COB.
                     06  P02-TSTPTNUMKBN.
                       07  P02-VALUE   PIC X(16).

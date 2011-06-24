@@ -44,9 +44,9 @@
                 04  U02-SRYNAIYO-ITEM    PIC X(21)   OCCURS  99 TIMES.
               03  U02-KARUTE-COMBO.
                 04  U02-KARUTE.
-                  05  U02-VALUE   PIC X(14).
+                  05  U02-VALUE   PIC X(30).
                 04  U02-KARUTE-COUNT   PIC S9(9)   BINARY.
-                04  U02-KARUTE-ITEM    PIC X(14)   OCCURS  3 TIMES.
+                04  U02-KARUTE-ITEM    PIC X(30)   OCCURS  5 TIMES.
               03  U02-SYOHO-COMBO.
                 04  U02-SYOHO.
                   05  U02-VALUE   PIC X(14).
@@ -134,6 +134,9 @@
                 04  U02-LABEL-VALUE   PIC X(50).
               03  U02-SEX.
                 04  U02-VALUE   PIC X(2).
+              03  U02-CHKMSG.
+                04  U02-CHKMSG-STYLE  PIC X(20).
+                04  U02-CHKMSG-VALUE   PIC X(20).
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.

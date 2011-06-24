@@ -92,6 +92,7 @@
       *                                     都道府県名記載なし対応
       * 04.06.00     NACL-多々納  10/06/30  本人家族区分、補助区分変更対応
       * 04.06.00     NACL-多々納  11/02/10  京都府通り名称編集対応
+      * 04.07.00     NACL-多々納  11/06/15  保険・公費毎頁変更対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -188,6 +189,8 @@
       *    0:対象１件/1:対象なし/2:複数件該当
            03  FLG-NAME            PIC 9(01)   OCCURS 2.
       *----(01.00.15) LINE ADD END   ---------------------------------
+      *
+           03  FLG-KYUSEI          PIC 9(01).
       *
            03  FLG-RJNCHK          PIC 9(01).
            03  FLG-HKNCHK          PIC 9(01).
@@ -1051,6 +1054,12 @@
       *        住所確認
                WHEN    "1098"
                    PERFORM 30011-P982SET-SEC
+      *        旧姓履歴確認
+               WHEN    "0250"
+                   IF      SPA-PID1-FLG        =   "OK"
+                       MOVE    1                   TO  FLG-KYUSEI
+                       PERFORM 41091-KYUSEI-KOU-SEC
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
@@ -2572,7 +2581,6 @@
            END-IF
       *
            .
-      *
        410-INPUT-CHK-EXT.
            EXIT.
       *
@@ -2585,6 +2593,11 @@
            IF      FLG-TOUROKU         =   1
                PERFORM 4109-TOUROKU-CHK-SEC
            END-IF
+           IF     (SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-PIDCD       NOT =   SPACE )
+               GO     TO      410-INPUT-CHK2-EXT
+           END-IF
+      *
       *    保険・公費のテーブルセットとチェック
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-HKNKOH-FLG      =   1
@@ -2635,6 +2648,8 @@
                MOVE    ZERO                TO  SPA-P02A-FLG1
                MOVE    ZERO                TO  SPA-P02A-FLG2
                MOVE    ZERO                TO  SPA-P02G-FLG
+      *ver.4.7
+               MOVE    ZERO                TO  SPA-NAI-KYUSEIKBN
            END-IF
            MOVE    P02-P02-NAME        TO  SPA-GMN-NAME
       *    氏名変更
@@ -2883,41 +2898,49 @@
       *
       *    性別
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-SEX-CHK-SEC
            END-IF
       *    生年月日
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-BIRTHDAY-CHK-SEC
            END-IF
       *    通称
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-NICKNAME-CHK-SEC
            END-IF
       *    テスト患者
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-TSTPTNUMKBN-CHK-SEC
            END-IF
       *    カルテ発行
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-HAKKO-CHK-SEC
            END-IF
       *    Ｕ・Ｐチェック処理
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-USERPG-CHK-SEC
            END-IF
       *    保険者番号
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KHNJANUM-CHK-SEC
            END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-PIDCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                IF      FLG-HKN-DEL         =   ZERO
       *            保険情報チェックサブ
@@ -3393,7 +3416,6 @@
                END-IF
            END-IF
       *
-      *
            MOVE    SPA-GMN-NAME        TO  SPA-MAE-NAME
       *    見出しへ
            MOVE    SPA-GMN-NAME        TO  SPA-GMN-NAMEH
@@ -3415,7 +3437,13 @@
                    PERFORM 41012-NIJYU-TRKGMN-SEC
                END-IF
            END-IF
-      *
+      *ver.4.7
+      *    旧姓履歴
+      *    IF    (SPA-NAI-KYUSEIKBN    =   ZERO )
+      *      AND (SPA-P02-SYORI    NOT =   1    )
+      *        MOVE    ZERO                TO  FLG-KYUSEI
+      *        PERFORM 41091-KYUSEI-KOU-SEC
+      ***  END-IF
            .
        4101-NAME-CHK-EXT.
            EXIT.
@@ -3639,7 +3667,7 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-HAKKO-MAX
                IF      SPA-GMN-HAKKO   =   SPA-GMN-HAKKO-LST(IDX)(1:1)
                    MOVE    SPA-GMN-HAKKO-LST (IDX)
                                            TO  SPA-GMN-HAKKO-G
@@ -4430,8 +4458,13 @@
            END-IF
       *
       *    旧姓履歴の更新
-           PERFORM 41091-KYUSEI-KOU-SEC
-      *
+     ****  PERFORM 41091-KYUSEI-KOU-SEC
+      *    旧姓履歴
+           IF    (SPA-NAI-KYUSEIKBN    =   ZERO )
+             AND (SPA-P02-SYORI    NOT =   1    )
+               MOVE    ZERO                TO  FLG-KYUSEI
+               PERFORM 41091-KYUSEI-KOU-SEC
+           END-IF
            .
       *
        4109-TOUROKU-CHK-EXT.
@@ -4443,9 +4476,12 @@
        41091-KYUSEI-KOU-SEC      SECTION.
       *
       *    新規の時、旧姓履歴は出力しない
-           IF      SPA-P02-SYORI       =   1
-               GO      TO      41091-KYUSEI-KOU-EXT
-           END-IF
+      *    IF      SPA-P02-SYORI       =   1
+      *        GO      TO      41091-KYUSEI-KOU-EXT
+      *    END-IF
+      *ver.4.7
+           MOVE    1               TO  SPA-NAI-KYUSEIKBN
+      *ver.4.7
       *
            MOVE    ZERO                TO  IDX
            IF     (SPA-OLD-NAME    NOT =   SPACE   )  AND
@@ -4459,6 +4495,11 @@
                   AND  SPA-GMN25-KYU-NICKNAME(IDX) =  SPA-OLD-NICKNAME))
                    CONTINUE
                ELSE
+      *ver.4.7
+                   IF      FLG-KYUSEI      =   ZERO
+                       MOVE    "0250"          TO  SPA-PIDCD
+                   ELSE
+      *
                    ADD     1               TO  IDX
                    IF      IDX             >   20
                       MOVE    "2510"           TO  SPA-ERRCD
@@ -4480,7 +4521,14 @@
                    MOVE    SPA-SYSYMDWH    TO  SPA-GMN25-KYU-CHGYMDW
                                                               (IDX)
                    MOVE    SPA-SYSYMD      TO  SPA-GMN25-KYU-UPYMD(IDX)
+      *!!!
+                   MOVE    "1"             TO  SPA-GMN25-KYU-INSKBN(IDX)
+      *            旧姓を見出しへ
+                   MOVE    SPA-OLD-NAME    TO  SPA-GMN-KYUSEIH
+      *!!!
                END-IF
+           END-IF
+      *
            END-IF
       *
            .
@@ -6769,6 +6817,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-FLG-END     NOT =   ZERO  )
                GO      TO      440-ZEN-GMNHYOUJI-EXT
            END-IF
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  1
       *
       *    保険情報
            IF      SPA-NAI-HKNSTR      >   1
@@ -6781,8 +6832,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-HKNSTR          TO  SPA-NAI-HKNSTR
                    PERFORM 3101-HKN-TBL-SPA-SEC
                END-IF
-               MOVE    8               TO  SPA-GMN-CUR
+               MOVE    8                   TO  SPA-GMN-CUR
+           ELSE
+               IF     SPA-NAI-NEXTFLG      =   1
+                   MOVE    "0111"              TO  SPA-ERRCD
+               END-IF
            END-IF
+      *ver.4.7.0
+           END-IF
+      *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  2
       *
       *    公費情報
            IF      SPA-NAI-KOHSTR      >   1
@@ -6807,7 +6868,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-KOHSTR          TO  SPA-NAI-KOHSTR
                    PERFORM 3101-KOH-TBL-SPA-SEC
                END-IF
-               MOVE    20              TO  SPA-GMN-CUR
+               MOVE    20                  TO  SPA-GMN-CUR
+           ELSE
+      *        前頁なし
+               IF     SPA-NAI-NEXTFLG      =   2
+                   MOVE    "0113"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            END-IF
       *
            IF      SPA-GMN-CUR         =   ZERO
@@ -6870,6 +6938,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      450-TUGI-GMNHYOUJI-EXT
            END-IF
            MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  1
+      *
       *    保険情報
            IF      SPA-NAI-HKNSTR      <   SPA-PTHKN-MAX
                MOVE    SPA-NAI-HKNSTR      TO  WRK-HKNSTR
@@ -6883,7 +6955,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 3101-HKN-TBL-SPA-SEC
                END-IF
                MOVE    8               TO  SPA-GMN-CUR
+           ELSE
+               IF     SPA-NAI-NEXTFLG      =   1
+                   MOVE    "0114"              TO  SPA-ERRCD
+               END-IF
            END-IF
+      *
+           END-IF
+      *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  2
       *
       *    公費情報
            IF     (SPA-NAI-KOHEND      <   SPA-PTKOH-MAX )  AND
@@ -6899,6 +6981,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 3101-KOH-TBL-SPA-SEC
                END-IF
                MOVE    20                  TO  SPA-GMN-CUR
+           ELSE
+               IF     SPA-NAI-NEXTFLG      =   2
+                   MOVE    "0115"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            END-IF
       *
            IF      SPA-GMN-CUR         =   ZERO
@@ -7197,6 +7285,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 450-HKNCOMBI-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-FLG-END     NOT =   ZERO  )
+              OR  (SPA-PIDCD       NOT =   SPACE )
                GO      TO      490-TOUROKU-EXT
            END-IF
       *    保険組合せ公費単独チェック
@@ -7214,6 +7303,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    カルテ発行ありの時、保険組合せのチェック
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-HAKKO       =   "1"
+                                           OR  "2"
                    IF      SPA-NAI-KARUTE-HAKKO    =   "2"
                        IF      SPA-GMN-SELNUM      =   ZERO
                            PERFORM 4901-KARUTE-CHEK-SEC

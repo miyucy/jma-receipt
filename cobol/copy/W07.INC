@@ -669,5 +669,11 @@
                     06  W07-YYKUKE-KBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-YYKUKE-KBN-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-UKEHKNCHK-COMB.
+                    06  W07-UKEHKNCHK.
+                      07  W07-VALUE   PIC X(50).
+                    06  W07-UKEHKNCHK-COUNT   PIC S9(9)   BINARY.
+                    06  W07-UKEHKNCHK-ITEM
+                            PIC X(50)   OCCURS  5 TIMES.
                 04  W07-TAGNAME7.
                   05  W07-TAGNAME7-STATE   PIC S9(9)   BINARY.

@@ -983,6 +983,12 @@
                        MOVE    "P02 "          TO  SPA-P02-GAMEN
                        PERFORM 3002-GMNSET-SEC
                    END-IF
+      *VER.4.7
+      *        旧姓履歴確認
+               WHEN    "0250"
+                       MOVE    "P02 "          TO  SPA-P02-GAMEN
+                       PERFORM 3002-GMNSET-SEC
+      ***
       *        住所確認
                WHEN    "1098"
                    IF      SPA-PID1-FLG        =   "OK"
@@ -1476,6 +1482,10 @@
       *    患者紐付け
                WHEN    "CLICKED"       ALSO    "B03S"
                    PERFORM 4032-GRPPTNUM-SEC
+      *ver.4.7
+      *    前・次切替え
+               WHEN    "CLICKED"       ALSO    "B02S"
+                   PERFORM 4034-NEXTCHG-SEC
       *    タグ切り替え
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
@@ -2249,6 +2259,24 @@
       *
            .
        40321-P02G2-SYORI-EXT.
+           EXIT.
+      *ver.4.7
+      *
+      *****************************************************************
+      *    前・次切替え処理
+      *****************************************************************
+       4034-NEXTCHG-SEC            SECTION.
+      *
+           EVALUATE    SPA-NAI-NEXTFLG
+               WHEN    0
+                   MOVE    1           TO  SPA-NAI-NEXTFLG
+               WHEN    1
+                   MOVE    2           TO  SPA-NAI-NEXTFLG
+               WHEN    2
+                   MOVE    0           TO  SPA-NAI-NEXTFLG
+           END-EVALUATE
+           .
+       4034-NEXTCHG-EXT.
            EXIT.
       *****************************************************************
       *    ＱＲ一覧へ処理
@@ -4960,6 +4988,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-PIDMSG
                    END-STRING
+      *ver.4.7
+               WHEN    "0250"
+                   STRING  "漢字氏名が変更されました。"
+                           "ＯＫで旧姓履歴に追加します。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
+      *ver.4.7
       *        Ｈ１８．１０改正から
                WHEN    "0110"
                    STRING  SPA-PIDMSG    DELIMITED  BY  SPACE
@@ -5021,6 +5057,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "ＯＫ"              TO  PID1-B12
            EVALUATE    SPA-PIDCD
                WHEN    "1098"
+               WHEN    "0250"
                    MOVE    "ＮＯ"              TO  PID1-B01
            END-EVALUATE
       *

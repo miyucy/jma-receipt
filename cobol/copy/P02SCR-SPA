@@ -83,9 +83,10 @@
                    07  SPA-GMN-HAKKO-G.
                        09  SPA-GMN-HAKKO           PIC X(01).
                        09  SPA-GMN-HAKKOH          PIC X(01).
-                       09  SPA-GMN-HAKKOMEI        PIC X(14).
+                       09  SPA-GMN-HAKKOMEI        PIC X(28).
                    07  SPA-GMN-HAKKO-COB.
-                       09  SPA-GMN-HAKKO-LST       PIC X(16)  OCCURS 2.
+                       09  SPA-GMN-HAKKO-LST       PIC X(30)  OCCURS 5.
+                   07  SPA-HAKKO-MAX              PIC 9(02).
       *           ¥æ¡¼¥¶¥×¥í¥°¥é¥àµ¯Æ°
                    07  SPA-GMN-USERPG-G.
                        09  SPA-GMN-USERPG          PIC X(01).
@@ -451,6 +452,11 @@
                    07  SPA-NAI-GRPAREA-G.
                        09  SPA-NAI-GRPHOSPNUM      PIC 9(02).
                        09  SPA-NAI-GRPPTID         PIC 9(10).
+      *ver.4.7
+      *            ²þ¥Ú¡¼¥¸ÂÐ¾Ý¶èÊ¬
+                   07  SPA-NAI-NEXTFLG         PIC 9(01).
+      *            µìÀ«ÍúÎò¶èÊ¬
+                   07  SPA-NAI-KYUSEIKBN       PIC 9(01).
       *
       *        ÆþÎÏÁ°ÎÎ°è
                05  SPA-P02-MAE-AREA.
@@ -636,9 +642,9 @@
                    07  SPA-GMN20-KARUTE-G.
                        09  SPA-GMN20-KARUTE        PIC X(01).
                        09  SPA-GMN20-KARUTEF       PIC X(01).
-                       09  SPA-GMN20-KARUTEMEI     PIC X(14).
+                       09  SPA-GMN20-KARUTEMEI     PIC X(28).
                    07  SPA-GMN20-KARUTE-COB.
-                       09  SPA-GMN20-KARUTE-LST    PIC X(16)  OCCURS 3.
+                       09  SPA-GMN20-KARUTE-LST    PIC X(30)  OCCURS 5.
                    07  SPA-KARUTE-MAX              PIC 9(04).
       *
       *            07  SPA-GMN20-SYOHOU          PIC X(01).
@@ -950,6 +956,7 @@
       *
                            11  SPA-GMN25-KYU-CHGYMD        PIC X(08).
                            11  SPA-GMN25-KYU-DELKBN        PIC X(01).
+                           11  SPA-GMN25-KYU-INSKBN        PIC X(01).
                            11  SPA-GMN25-KYU-CREYMD        PIC X(08).
                            11  SPA-GMN25-KYU-UPYMD         PIC X(08).
                        09  SPA-NAI25-KYU-MAX               PIC 9(04).

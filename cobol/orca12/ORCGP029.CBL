@@ -2392,6 +2392,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    基本画面のカルテ出力
            IF      SPA-GMN-HAKKO       =   "1"  OR  "2"
+                                       OR  "3"
                PERFORM 21003-HC01-CALL2-SEC
            END-IF
       *
@@ -2404,7 +2405,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *********IF  ( SPA-GMN20-TKARUTE (IDX2)      =   "1"   )  AND
       *            ( SPA-GMN20-THKNCOMBI(IDX2)  NOT =   SPACE  AND
       **********     SPA-GMN20-THKNCOMBI(IDX2)  NOT =   ZERO  )
-               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2" )
+               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2"
+                                                   OR  "3"  )
                    PERFORM 21001-HC01-CALL-SEC
                END-IF
       *        処方箋出力
@@ -2477,6 +2479,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
            MOVE    SPA-GMN-HAKKO       TO  ORCHC01-SYORIKBN
+      *    病名なしは、区分＝４へ
+           IF      SPA-GMN-HAKKO       =   "3"
+               MOVE    "4"             TO  ORCHC01-SYORIKBN
+           END-IF
       *
            CALL    WRK-KARUTE-PG     USING  SPA-AREA
                                             ORCHC01AREA
@@ -2506,6 +2512,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-SRYKAMEI
            MOVE    SPA-GMN20-TKARUTE (IDX2)
                                        TO  ORCHC01-SYORIKBN
+      *    病名なしは、区分＝４へ
+           IF      SPA-GMN20-TKARUTE (IDX2)    =   "3"
+               MOVE    "4"             TO  ORCHC01-SYORIKBN
+           END-IF
            CALL    WRK-KARUTE-PG       USING  SPA-AREA
                                               ORCHC01AREA
       *

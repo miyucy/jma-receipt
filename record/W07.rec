@@ -969,6 +969,13 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				UKEHKNCHK_COMB	{
+					UKEHKNCHK	{
+						value	varchar(50);
+					};
+					count	int;
+					item	varchar(50)[5];
+				};
 			};
 			TAGNAME7    {
 			  	state   int;

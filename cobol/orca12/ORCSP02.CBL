@@ -1302,6 +1302,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "0 カルテ発行なし"  TO  SPA-GMN-HAKKO-LST (1)
            MOVE    "1 カルテ発行あり"  TO  SPA-GMN-HAKKO-LST (2)
+           MOVE    "3 カルテ発行あり（病名無）"
+                                       TO  SPA-GMN-HAKKO-LST (3)
+           MOVE    3                   TO  SPA-HAKKO-MAX
            MOVE    SPA-GMN-HAKKO-LST (1)
                                        TO  SPA-GMN-HAKKO-G
       *    新規患者の時の患者登録のカルテ発行
@@ -1315,7 +1318,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "0 発行なし"        TO  SPA-GMN20-KARUTE-LST (1)
            MOVE    "1 発行あり"        TO  SPA-GMN20-KARUTE-LST (2)
            MOVE    "2 続紙頭書"        TO  SPA-GMN20-KARUTE-LST (3)
-           MOVE    3                   TO  SPA-KARUTE-MAX
+           MOVE    "3 発行あり（病名無）"
+                                       TO  SPA-GMN20-KARUTE-LST (4)
+           MOVE    4                   TO  SPA-KARUTE-MAX
            MOVE    SPA-GMN20-KARUTE-LST(1)
                                        TO  SPA-GMN20-KARUTE-G
       *    患者登録のカルテ発行
@@ -2938,6 +2943,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-NORMAL       TO  P02-B03S-STATE
                MOVE    "患者紐付け"        TO  P02-B03S-LABEL
            END-IF
+      *ver.4.7
+      *    前次切替え
+           MOVE    WIDGET-NORMAL       TO  P02-B02S-STATE
+           EVALUATE    SPA-NAI-NEXTFLG
+               WHEN    0
+                   MOVE    "↑↓全"        TO  P02-B02S-LABEL
+               WHEN    1
+                   MOVE    "↑↓保険"      TO  P02-B02S-LABEL
+               WHEN    2
+                   MOVE    "↑↓公費"      TO  P02-B02S-LABEL
+           END-EVALUATE
       *    排他中更新不可
            IF      SPA-LOCK            =   ZERO
                MOVE    WIDGET-NORMAL       TO  P02-B12-STATE
@@ -3143,7 +3159,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    カルテ発行有無
            MOVE    SPA-GMN-HAKKO-G     TO  P02-P02-HAKKO
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-HAKKO-MAX
                MOVE    SPA-GMN-HAKKO-LST (IDX)
                                        TO  P02-P02-HAKKO-ITEM (IDX)
                MOVE    IDX             TO  P02-P02-HAKKO-COUNT

@@ -57,7 +57,7 @@
                    07  SPA-GMN-KARUTE-G.
                        09  SPA-GMN-KARUTE             PIC X(01).
                        09  SPA-GMN-KARUTE01           PIC X(01).
-                       09  SPA-GMN-KARUTEMEI          PIC X(08).
+                       09  SPA-GMN-KARUTEMEI          PIC X(28).
       *
                    07  SPA-GMN-SYOHO-G.
                        09  SPA-GMN-SYOHO             PIC X(01).
@@ -119,8 +119,9 @@
                                                       OCCURS  99.
                    07  SPA-SRYNAIYO-MAX               PIC 9(04).
       *            カルテ
-                   07  SPA-GMN-KARUTELST              PIC X(14)
-                                                      OCCURS  3.
+                   07  SPA-GMN-KARUTELST              PIC X(30)
+                                                      OCCURS  5.
+                   07  SPA-KARUTE-MAX                 PIC 9(02).
       *            処方箋
                    07  SPA-GMN-SYOHOLST               PIC X(14)
                                                       OCCURS  2.
@@ -135,6 +136,8 @@
                    07  SPA-ZENHKNCHK-FLG              PIC X(01).
       *            予約連携区分
                    07  SPA-NAI-YYKUKE-KBN             PIC X(01).
+      *            保険組合せ区分
+                   07  SPA-NAI-UKEHKNCHK              PIC X(01).
       *
               05  SPA-GMN-LISTTBL.
                    07  SPA-GMN-TBL.
@@ -199,6 +202,7 @@
                    07  SPA-NAI-KEIFLG                 PIC 9(01).
                    07  SPA-NAI-KEIFLG2                PIC 9(01).
                    07  SPA-NAI-KEIFLG3                PIC 9(01).
+                   07  SPA-NAI-KEIFLG4                PIC 9(01).
       *前回保険組合せ判定用
                    07  SPA-HKNCHK-FLG                 PIC 9(01).
                    07  SPA-HKNCHK-CHK                 PIC 9(01).

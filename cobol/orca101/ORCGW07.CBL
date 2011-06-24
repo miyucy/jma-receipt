@@ -116,6 +116,7 @@
       *  04.06.00    NACL-多々納  10/08/17  手帳記載加算確認追加
       *  04.06.00    NACL-多々納  10/09/17  精神療法２０未満加算追加
       *  04.06.00    NACL-多々納  11/02/09  京都府通り名編集区分追加
+      *  04.07.00    NACL-多々納  11/06/XX  受付保険組合せ区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1159,6 +1160,15 @@
                            11  SPA-GMN-YYKUKE-LIST         PIC X(40)
                                                            OCCURS  5.
                        09  SPA-GMN-YYKUKE-MAX              PIC 9(04).
+      *                受付保険組合せ区分
+                       09  SPA-GMN-UKEHKNCHK-KBN-G.
+                           11  SPA-GMN-UKEHKNCHK-KBN       PIC X(01).
+                           11  SPA-GMN-UKEHKNCHK-F1        PIC X(01).
+                           11  SPA-GMN-UKEHKNCHK-MEI       PIC X(48).
+                       09  SPA-GMN-UKEHKNCHK-COMB.
+                           11  SPA-GMN-UKEHKNCHK-LIST      PIC X(50)
+                                                           OCCURS  5.
+                       09  SPA-GMN-UKEHKNCHK-MAX           PIC 9(04).
       *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
@@ -2091,6 +2101,14 @@
            MOVE    "2 連動する（予約のみ）"
                                        TO  SPA-GMN-YYKUKE-LIST(3)
            MOVE    3                   TO  SPA-GMN-YYKUKE-MAX
+      *    受付保険組合せ区分
+           MOVE    "0 空白チェックなし"
+                                       TO  SPA-GMN-UKEHKNCHK-LIST(1)
+           MOVE    "1 空白チェックあり"
+                                       TO  SPA-GMN-UKEHKNCHK-LIST(2)
+           MOVE    "2 空白チェックあり（予約設定有）"
+                                       TO  SPA-GMN-UKEHKNCHK-LIST(3)
+           MOVE    3                   TO  SPA-GMN-UKEHKNCHK-MAX
       *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
@@ -4422,6 +4440,9 @@
       *    予約受付連携区分
            MOVE    SYS-1045-YYKUKE-KBN
                                        TO  SPA-GMN-YYKUKE-KBN
+      *    受付保険組合せ区分
+           MOVE    SYS-1045-UKEHKNCHK-KBN
+                                       TO  SPA-GMN-UKEHKNCHK-KBN
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -4515,6 +4536,25 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-YYKPTNUM-LIST (1)
                                        TO  SPA-GMN-YYKPTNUM-KBN-G
+           END-IF
+      *
+      *    受付保険組合せ区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-UKEHKNCHK-MAX
+               IF      SPA-GMN-UKEHKNCHK-KBN
+                                       =   SPA-GMN-UKEHKNCHK-LIST(IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-UKEHKNCHK-LIST(IDY)
+                                           TO  SPA-GMN-UKEHKNCHK-KBN-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-UKEHKNCHK-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-UKEHKNCHK-LIST (1)
+                                       TO  SPA-GMN-UKEHKNCHK-KBN-G
            END-IF
       *
            MOVE    700                 TO  SPA-GMN-CUR
@@ -4767,6 +4807,7 @@
            MOVE    W07-YYKHYO-KBN      TO  SPA-GMN-YYKHYO-KBN-G
            MOVE    W07-YYKUKE-KBN      TO  SPA-GMN-YYKUKE-KBN-G
            MOVE    W07-YYKPTNUM-KBN    TO  SPA-GMN-YYKPTNUM-KBN-G
+           MOVE    W07-UKEHKNCHK       TO  SPA-GMN-UKEHKNCHK-KBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -5224,6 +5265,10 @@
       *            患者番号連動区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4511-YYKPTNUM-KBN-CHK-SEC
+                   END-IF
+      *            受付保険組合せ区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4511-UKEHKNCHK-KBN-CHK-SEC
                    END-IF
            END-EVALUATE
       *
@@ -8309,6 +8354,31 @@
            .
        4511-YYKPTNUM-KBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    受付保険組合せ区分チェック処理（予約機能情報）
+      *****************************************************************
+       4511-UKEHKNCHK-KBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-UKEHKNCHK-MAX )
+                          OR  (FLG-OK  =   1    )
+               IF      SPA-GMN-UKEHKNCHK-KBN
+                                       =   SPA-GMN-UKEHKNCHK-LIST(IDX)
+                                                             (1:1)
+                   MOVE    SPA-GMN-UKEHKNCHK-LIST(IDX)
+                                           TO  SPA-GMN-UKEHKNCHK-KBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    706             TO  SPA-GMN-CUR
+               MOVE    "6007"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4511-UKEHKNCHK-KBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -9196,6 +9266,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-YYKMAXCNT       TO  SYS-1045-YYKMAXCNT
            MOVE    SPA-GMN-YYKUKE-KBN      TO  SYS-1045-YYKUKE-KBN
            MOVE    SPA-GMN-YYKPTNUM-KBN    TO  SYS-1045-YYKPTNUM-KBN
+           MOVE    SPA-GMN-UKEHKNCHK-KBN   TO  SYS-1045-UKEHKNCHK-KBN
       *
            MOVE    SYS-1045-REC            TO  SYSKANRI-REC
       *
@@ -10373,6 +10444,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                       TO  W07-YYKPTNUM-KBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-YYKPTNUM-MAX    TO  W07-YYKPTNUM-KBN-COUNT
+      *    受付保険組合せ区分
+           MOVE    SPA-GMN-UKEHKNCHK-KBN-G  TO  W07-UKEHKNCHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-UKEHKNCHK-MAX
+               MOVE    SPA-GMN-UKEHKNCHK-LIST (IDX)
+                                      TO  W07-UKEHKNCHK-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-UKEHKNCHK-MAX    TO  W07-UKEHKNCHK-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -10810,6 +10889,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6006"
                    MOVE    "患者番号連動区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "6007"
+                   MOVE    "受付保険組合せ区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
@@ -11224,6 +11306,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "YYKPTNUM_KBN"    TO   MCP-WIDGET
                WHEN    705
                    MOVE  "YYKUKE_KBN"      TO   MCP-WIDGET
+               WHEN    706
+                   MOVE  "UKEHKNCHK"       TO   MCP-WIDGET
       *
                WHEN    999
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -11594,6 +11678,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "YYKPTNUM_KBN"
                    MOVE    705             TO  SPA-GMN-CUR
                WHEN    "YYKUKE_KBN"
+                   MOVE    706             TO  SPA-GMN-CUR
+               WHEN    "UKEHKNCHK"
                    MOVE    999             TO  SPA-GMN-CUR
            END-EVALUATE
       *

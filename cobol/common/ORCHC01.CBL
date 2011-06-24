@@ -59,6 +59,7 @@
       *  04.06.00    NACL-多々納  10/06/XX  受給者番号１５文字対応
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *  04.06.00    NACL=多々納  11/02/03  保険適応病名判定対応
+      *  04.07.00    NACL=多々納  11/06/XX  病名なし処理区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -414,6 +415,7 @@
            EVALUATE    ORCHC01-SYORIKBN
       *        カルテ印刷（オンライン）
                WHEN    "1"
+               WHEN    "4"
                    PERFORM 200-ALL-PRT-SEC
       *        続紙頭書（オンライン）
                WHEN    "2"
@@ -580,6 +582,7 @@
            PERFORM 2001-HC01-SYORI-SEC
       *    病名を印刷する
            IF      WRK-KARUTE-BYOMEI   =   "2"
+           OR     (ORCHC01-SYORIKBN    =   "4"  )
       *        病名なしの時
       *        カルテ印刷
                PERFORM 20031-HC01-PRINT-SEC
@@ -600,6 +603,7 @@
       *        オンライン
                WHEN    "1"
                WHEN    "2"
+               WHEN    "4"
                    PERFORM 20031-HC01-ONL-SEC
       *        一括印刷
                WHEN    "3"

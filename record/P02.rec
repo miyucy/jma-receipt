@@ -47,6 +47,10 @@ P02	{
 	           	state	int;
 			label	varchar(20);
 		};
+		B02S	{
+	           	state	int;
+			label	varchar(20);
+		};
 		nb2	{
 			pageno	int;
 			FP1	{
@@ -95,17 +99,17 @@ P02	{
 				};
 				P020_KARUTE_COB	{
 					P020_KARUTE	{
-						value	varchar(16);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(16)[03];
+					item	varchar(30)[05];
 				};
 				P020_SYOHOU_COB	{
 					P020_SYOHOU	{
 						value	varchar(16);
 					};
 					count	int;
-					item	varchar(16)[03];
+					item	varchar(16)[05];
 				};
 				P020_HKNKUMI	{
 					value	varchar(4);
@@ -154,10 +158,10 @@ P02	{
 				};
 				P02_HAKKOCOB	{
 					P02_HAKKO	{
-						value	varchar(16);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(16)[02];
+					item	varchar(30)[05];
 				};
 				TSTPTNUMKBN_COB	{
 					TSTPTNUMKBN	{

@@ -686,6 +686,19 @@
                WHEN    "0110"
                    MOVE    "この画面では選択できません。"
                                                TO  SPA-ERRMSG
+      *ver.4.7.0
+               WHEN    "0111"
+                   MOVE    "保険の前頁はありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0113"
+                   MOVE    "公費の次頁はありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0114"
+                   MOVE    "保険の次頁はありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0115"
+                   MOVE    "公費の次頁はありません。"
+                                               TO  SPA-ERRMSG
       *    保険組合せ
                WHEN    "2701"
                    MOVE    "保険組合せがありません。"

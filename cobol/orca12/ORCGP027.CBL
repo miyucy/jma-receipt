@@ -920,24 +920,35 @@
       *****************************************************************
        440-ZEN-GMNHYOUJI-SEC           SECTION.
       *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
       *    組合せ情報
-           IF  SPA-P027-PG             >   1
-               COMPUTE   SPA-P027-PG   =   SPA-P027-PG   -   1
+               IF  SPA-P027-PG             >   1
+                   COMPUTE   SPA-P027-PG   =   SPA-P027-PG   -   1
+               END-IF
            END-IF
       *
       *    パラメタより編集
            PERFORM 320-PARAFILE-KENSAKU-SEC
       *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  1
       *    保険
-           IF      SPA-GMN27-HKN-PCNT  >   1
-               COMPUTE SPA-GMN27-HKN-PCNT  =   SPA-GMN27-HKN-PCNT
-                                           -   1
+               IF      SPA-GMN27-HKN-PCNT  >   1
+                   COMPUTE SPA-GMN27-HKN-PCNT  =   SPA-GMN27-HKN-PCNT
+                                               -   1
+               END-IF
            END-IF
       *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  2
       *    公費
-           IF      SPA-GMN27-KOH-PCNT  >   1
-               COMPUTE SPA-GMN27-KOH-PCNT  =   SPA-GMN27-KOH-PCNT
-                                           -   1
+               IF      SPA-GMN27-KOH-PCNT  >   1
+                   COMPUTE SPA-GMN27-KOH-PCNT  =   SPA-GMN27-KOH-PCNT
+                                               -   1
+               END-IF
            END-IF
       *
            .
@@ -951,12 +962,17 @@
       *
       *    組合せ情報
       *    IF  SPA-P027-PG             <   SPA-P027-PGMAX
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
                ADD     1               TO  SPA-P027-PG
-      *    END-IF
+           END-IF
       *
       *    パラメタより編集
            PERFORM 320-PARAFILE-KENSAKU-SEC
       *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  1
       *    保険
            IF      SPA-GMN27-HKN-PCNT  <   8
                COMPUTE IDX             =   SPA-GMN27-HKN-PCNT  +  1
@@ -965,12 +981,19 @@
                END-IF
            END-IF
       *
+           END-IF
+      *
+      *ver.4.7.0
+           IF     SPA-NAI-NEXTFLG      =   0
+                                       OR  2
       *    公費
            IF      SPA-GMN27-KOH-PCNT  <   8
                COMPUTE IDX             =   SPA-GMN27-KOH-PCNT  +  1
                IF      SPA-GMN27-KOHRENNUM (IDX 1)  NOT =   ZERO
                    MOVE    IDX             TO  SPA-GMN27-KOH-PCNT
                END-IF
+           END-IF
+      *
            END-IF
       *
            .

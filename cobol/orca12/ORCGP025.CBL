@@ -714,6 +714,22 @@
       *
            IF     SPA-ERRCD            =   SPACE
                MOVE    "1"                 TO  SPA-GMN25-KYU-DELKBN(IDY)
+      *        追加分は削除
+               IF      SPA-GMN25-KYU-INSKBN (IDY)  =   "1"
+                   MOVE    SPACE               TO  SPA-GMN-KYUSEIH
+                   INITIALIZE              SPA-GMN25-KYU-REC (IDY)
+                   COMPUTE SPA-NAI25-KYU-MAX   =   SPA-NAI25-KYU-MAX
+                                               -   1
+                   PERFORM VARYING IDX     FROM    SPA-NAI25-KYU-MAX
+                                                   BY  -1
+                           UNTIL  (IDX       <    1 )
+                       IF      SPA-GMN25-KYU-DELKBN (IDX)    =   SPACE
+                           MOVE    SPA-GMN25-KYU-NAME (IDX)
+                                                   TO  SPA-GMN-KYUSEIH
+                           MOVE    1               TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
       *
                MOVE    SPACE               TO  SPA-GMN25-TKYUSEI-REC
                MOVE    SPACE               TO  SPA-GMN25-SELNUM
