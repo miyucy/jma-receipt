@@ -27,8 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
-      *  04.08.01    NACL-森脇     14/08/21  一時ファイルディレクトリ設定
-      *  05.00.00    NACL-森脇     17/02/22  自費薬剤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -81,18 +79,6 @@
            COPY    "HCM47.INC".
            COPY    "HCMSL80.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    エラーファイル 名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //YKJMERR//.
-           COPY    "CPASGNPARA.INC"
-                                   REPLACING  //ASGNPARA//
-                                   BY         //TNSCHK//.
-           COPY    "CPASGNPARA.INC"
-                                   REPLACING  //ASGNPARA//
-                                   BY         //TNSCHK2//.
-      *----(04.08.01)--ADD-END-----
-      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-YKJMERR             PIC X(02).
@@ -136,11 +122,9 @@
            03  WRK-PARA-CYU            PIC X(01).
            03  WRK-PARA-PRT            PIC X(01).
            03  WRK-PARA-SYU            PIC X(01).
-      *----(04.08.01)--UPD-START---
-      *     03  YKJMERR                 PIC X(100).
-      *     03  TNSCHK                  PIC X(200).
-      *     03  TNSCHK2                 PIC X(200).
-      *----(04.08.01)--UPD-END-----
+           03  YKJMERR                 PIC X(100).
+           03  TNSCHK                  PIC X(100).
+           03  TNSCHK2                 PIC X(100).
       *
       *    一時領域
        01  WRK-AREA.
@@ -190,7 +174,7 @@
                                            "診療コード　薬剤名".
            03  WRK-PRT-LINE3.
                05  WRK-PRT-SRYCD       PIC X(09)   VALUE   SPACE.
-               05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(01)   VALUE   SPACE.
                05  WRK-PRT-NAME        PIC X(96)   VALUE   SPACE.
       *
       *    ファイル名
@@ -257,10 +241,6 @@
            COPY    "CPORCSFDEL.INC".
       *    点数チェックサブプロ
            COPY    "CPORCSS004.INC".
-      *
-      *----(04.08.01)--ADD-START---
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -352,13 +332,6 @@
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
                                            SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    YKJMERR-BASENAME    TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  YKJMERR
-      *----(04.08.01)--ADD-END-----
       *
            .
        100-INIT-EXT.
@@ -413,23 +386,19 @@
                                        ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  FILE-NAME
       *
-      *----(05.00.00)--UPD-START---
       *    点数チェックサブプロ
            INITIALIZE                  SS004-AREA
            MOVE    WRK-PARA-KIKAN  TO  SS004-KIKAN
-      *     MOVE    "1"             TO  SS004-SRYCDKBN
-           MOVE    "0"             TO  SS004-SRYCDKBN
+           MOVE    "1"             TO  SS004-SRYCDKBN
            CALL    "ORCSS004"          USING
                                        SS004-AREA
                                        SPA-AREA
-      *----(05.00.00)--UPD-END-----
       *    中間ファイル名セット
            MOVE    SS004-FILENAME  TO  TNSCHK
            STRING  SS004-FILENAME      DELIMITED  BY  SPACE
                    "2"                 DELIMITED  BY  SIZE
                               INTO     TNSCHK2
            END-STRING
-           DISPLAY "SS004-FILENAME=" SS004-FILENAME
       *
            OPEN    OUTPUT              TNSCHK2-FILE
            CLOSE                       TNSCHK2-FILE
@@ -749,12 +718,6 @@
                    MOVE    1           TO  FLG-OK
                NOT AT  END
                    MOVE    ZERO        TO  FLG-TNSCHK
-      *----(05.00.00)--ADD-START---
-                   EVALUATE    TNSCHK-SRYCD
-                   WHEN    "600000000" THRU    "699999999"
-                   WHEN    "095210001" THRU    "095279999"
-                   WHEN    "096210001" THRU    "096279999"
-      *----(05.00.00)--ADD-END-----
       *            薬剤区分をチェック
                    IF        ( TNSCHK-YKZKBN      =   "1" )
                        OR    ( TNSCHK-YKZKBN      =   "6" )
@@ -771,11 +734,6 @@
                    ELSE
                        MOVE    ZERO        TO  FLG-OK
                    END-IF
-      *----(05.00.00)--ADD-START---
-                   WHEN    OTHER
-                       MOVE    ZERO        TO  FLG-OK
-                   END-EVALUATE
-      *----(05.00.00)--ADD-END-----
                END-READ
            END-PERFORM
            .
@@ -949,17 +907,13 @@
       *
            INITIALIZE                  YAKUJYO-REC
       *
-      *----(05.00.00)--UPD-START---
            MOVE    "tbl_yakujyo"   TO  WRK-TABLE
            EVALUATE    WRK-PARA-SYU
-               WHEN    "1"
-      *            MOVE    "key5s"     TO  WRK-PATHNAME
-                   MOVE    "key5js"    TO  WRK-PATHNAME
-               WHEN    "2"
-      *            MOVE    "key5k"     TO  WRK-PATHNAME
-                   MOVE    "key5jk"    TO  WRK-PATHNAME
+           WHEN    "1"
+               MOVE    "key5s"     TO  WRK-PATHNAME
+           WHEN    "2"
+               MOVE    "key5k"     TO  WRK-PATHNAME
            END-EVALUATE
-      *----(05.00.00)--UPD-END-----
       *
            MOVE    SPA-HOSPNUM     TO  YAKUJYO-HOSPNUM
            MOVE    LNK-PRTKANRI-SKYYMD
