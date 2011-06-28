@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-藤原    11/06/27  ２頁以降の頁チェックの修正
+      *
       *  04.06.01    NACL-藤原    10/08/18  一括入力対応
       *****************************************************************
       *
@@ -1040,7 +1042,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                    MOVE    SPA-GMN-MAX         TO  IDX
                END-IF         
            END-PERFORM
- 
            .
        2011-SELECT-HENSYU-EXT.
            EXIT.
@@ -1176,13 +1177,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                IF      SPA-NAI-TBL-GROUP       =   SPACE
                OR      SPA-GMN-RENNUM          =   ZERO
                OR      SPA-GMN-SHORI-RENNUM    =   ZERO
-               OR      SPA-GMN-SELNUM          =   ZERO
-                   IF      SPA-GMN-SELNUM          =   ZERO
+               OR      SPA-NAI-SELNUM          =   ZERO
+                   IF      SPA-NAI-SELNUM          =   ZERO
                        MOVE    "0003"              TO  SPA-ERRCD
                    END-IF
                ELSE    
                    IF      SPA-GMN-STPAGE      >
-                                       SPA-GMN-TPAGE (SPA-GMN-SELNUM) 
+                                       SPA-GMN-TPAGE (SPA-NAI-SELNUM) 
                        MOVE    "0002"              TO  SPA-ERRCD
                    END-IF                                    
                END-IF
@@ -1190,7 +1191,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                IF      SPA-NAI-TBL-GROUP   NOT =   SPACE
                AND     SPA-GMN-RENNUM          >   ZERO
                AND     SPA-GMN-SHORI-RENNUM    >   ZERO
-               AND     SPA-GMN-SELNUM          >   ZERO
+               AND     SPA-NAI-SELNUM          >   ZERO
                    MOVE    "0002"              TO  SPA-ERRCD
                END-IF
            END-IF                                                  
@@ -1212,13 +1213,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                IF      SPA-NAI-TBL-GROUP       =   SPACE
                OR      SPA-GMN-RENNUM          =   ZERO
                OR      SPA-GMN-SHORI-RENNUM    =   ZERO
-               OR      SPA-GMN-SELNUM          =   ZERO
-                   IF      SPA-GMN-SELNUM          =   ZERO
+               OR      SPA-NAI-SELNUM          =   ZERO
+                   IF      SPA-NAI-SELNUM          =   ZERO
                        MOVE    "0003"              TO  SPA-ERRCD
                    END-IF
                ELSE    
                    IF      SPA-GMN-EDPAGE      >
-                                       SPA-GMN-TPAGE (SPA-GMN-SELNUM) 
+                                       SPA-GMN-TPAGE (SPA-NAI-SELNUM) 
                        MOVE    "0002"              TO  SPA-ERRCD
                    ELSE    
                        IF      SPA-GMN-EDPAGE      <   SPA-GMN-STPAGE 
@@ -1230,7 +1231,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                IF      SPA-NAI-TBL-GROUP   NOT =   SPACE
                AND     SPA-GMN-RENNUM          >   ZERO
                AND     SPA-GMN-SHORI-RENNUM    >   ZERO
-               AND     SPA-GMN-SELNUM          >   ZERO
+               AND     SPA-NAI-SELNUM          >   ZERO
                    MOVE    "0002"              TO  SPA-ERRCD
                END-IF
            END-IF                                                  
@@ -1449,13 +1450,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
       *
       *    印刷時のみチェック
            IF     MCP-WIDGET           =   "B12"
-               IF      SPA-GMN-SELNUM  =   ZERO
+               IF      SPA-NAI-SELNUM  =   ZERO
                    CONTINUE
                ELSE
                    IF      SPA-GMN-STPAGE      >
-                                   SPA-GMN-TPAGE (SPA-GMN-SELNUM)
+                                   SPA-GMN-TPAGE (SPA-NAI-SELNUM)
                    OR      SPA-GMN-EDPAGE      >
-                                   SPA-GMN-TPAGE (SPA-GMN-SELNUM)
+                                   SPA-GMN-TPAGE (SPA-NAI-SELNUM)
                        MOVE    "0002"              TO  SPA-ERRCD
                    ELSE
                        IF      SPA-GMN-EDPAGE      <   SPA-GMN-STPAGE
