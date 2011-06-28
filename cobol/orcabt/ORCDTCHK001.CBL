@@ -93,30 +93,10 @@
            03  FLG-DCACCT                              PIC 9(01).
            03  FLG-LOOP-END                            PIC 9(01).
            03  FLG-TAISYO-HKN                          PIC 9(01).
-           03  FLG-STATUS-G.
-               05  FLG-STATUS-VAL.
-                   07  FLG-STS-NYUKHN                  PIC 9(01).
-                   07  FLG-STS-GAIHAKU                 PIC 9(01).
-                   07  FLG-STS-HKNCOMBI                PIC 9(01).
-                   07  FLG-STS-NYUKSN                  PIC 9(01).
-                   07  FLG-STS-NYUGEN                  PIC 9(01).
-                   07  FLG-STS-JITDAY                  PIC 9(01).
-                   07  FLG-STS-SNTDAY                  PIC 9(01).
-                   07  FLG-STS-08                      PIC 9(01).
-                   07  FLG-STS-09                      PIC 9(01).
-                   07  FLG-STS-10                      PIC 9(01).
-                   07  FLG-STS-11                      PIC 9(01).
-                   07  FLG-STS-12                      PIC 9(01).
-                   07  FLG-STS-13                      PIC 9(01).
-                   07  FLG-STS-14                      PIC 9(01).
-                   07  FLG-STS-15                      PIC 9(01).
-                   07  FLG-STS-16                      PIC 9(01).
-               05  FLG-STATUS-R    REDEFINES   FLG-STATUS-VAL.
-                   07  FLG-STATUS                      PIC 9(01)
-                                                       OCCURS  16.
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
+           03  CNT-DCACCT                              PIC 9(06).
            03  CNT-DTCHK003                            PIC 9(06).
            03  CNT-HKNKBN-G.
                05  CNT-HKNKBN-VAL.
@@ -129,9 +109,10 @@
                    07  CNT-KOUKI                       PIC 9(03).
                    07  CNT-CHIKEN                      PIC 9(03).
                    07  CNT-HOUKATU                     PIC 9(03).
+                   07  CNT-ETC                         PIC 9(03).
                05  CNT-HKNKBN-R    REDEFINES   CNT-HKNKBN-VAL.
                    07  CNT-HKNKBN                      PIC 9(03)
-                                                       OCCURS   9.
+                                                       OCCURS   10.
            03  CNT-HKNKBN-TTL                          PIC 9(03).
       *
        01  IDX-AREA.
@@ -155,12 +136,13 @@
                    07  WRK-KOUKIPROCKBN                PIC X(01).
                    07  WRK-CHIKENPROCKBN               PIC X(01).
                    07  WRK-HOUKATUPROCKBN              PIC X(01).
+                   07  WRK-ETCPROCKBN                  PIC X(01).
                05  WRK-HKNKBN-R    REDEFINES           WRK-HKNKBN-VAL.
                    07  WRK-HKNKBN                      PIC X(01)
-                                                       OCCURS  9.
+                                                       OCCURS  10.
       *
        01  CONST-AREA.
-           03  CONST-HKNKBN-MAX                PIC 9(03)   VALUE   9.
+           03  CONST-HKNKBN-MAX                PIC 9(03)   VALUE    9.
            03  CONST-HKNKBN-G.
                05  CONST-HKNKBN-VAL.
                    07  CONST-SYAHO             PIC X(01)   VALUE   "1".
@@ -172,8 +154,9 @@
                    07  CONST-KOUKI             PIC X(01)   VALUE   "7".
                    07  CONST-CHIKEN            PIC X(01)   VALUE   "8".
                    07  CONST-HOUKATU           PIC X(01)   VALUE   "H".
+                   07  CONST-ETC               PIC X(01)   VALUE   "E".
                05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
-                   07  CONST-HKNKBN            PIC X(01)   OCCURS  9.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS   9.
       *
            COPY    "COMMON-SPA".
       *
@@ -367,16 +350,8 @@
                PERFORM UNTIL ( WRK-PTID    NOT =   DCACCT-PTID )
                         OR   ( FLG-DCACCT  NOT =   ZERO )
       *
-                   INITIALIZE                  FLG-STATUS-G
-                   MOVE    DCACCT-STATUS   TO  WRK-STATUS
-      *
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   16 )
-                       DIVIDE  WRK-STATUS  BY  2   GIVING  WRK-STATUS
-                               REMAINDER   FLG-STATUS (IDX0)
-                   END-PERFORM
-      *
-                   IF    ( FLG-STS-HKNCOMBI    =   ZERO )
+                   IF    ( DCACCT-STS-NYUINDAY =   ZERO )
+                    OR   ( DCACCT-STS-NODATA   =   "1" )
                        MOVE    DCACCT-HKNNUM   TO  WRK-ZAIHKNNUM
                        MOVE    DCACCT-HKNCOMBI TO  WRK-ZAIHKNCOMBI
                        PERFORM 220-TAISYO-HKN-CHK-SEC
@@ -579,7 +554,8 @@
            END-IF
       *     
            DISPLAY "*** ORCDTCHK001 END ***"
-           DISPLAY "DTCHK003 CNT [" CNT-DTCHK003 "]"
+           DISPLAY "I DCACCT   CNT [" CNT-DCACCT "]"
+           DISPLAY "O DTCHK003 CNT [" CNT-DTCHK003 "]"
            DISPLAY "***********************"
            .
        300-END-EXT.
@@ -625,6 +601,8 @@
                AT  END
                    MOVE    1       TO  FLG-DCACCT
                NOT AT  END
+      *
+                   COMPUTE CNT-DCACCT  =   CNT-DCACCT  +   1
       *
                    MOVE    1   TO  FLG-LOOP-END
       *

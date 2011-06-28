@@ -60,17 +60,18 @@
                                                        OCCURS  31.
       *
          02  TNACCT-KKN-AREA.
+           03  TNACCT-KKN-NODATA                       PIC 9(01).
+           03  TNACCT-KKN-STYMD.
+               05  TNACCT-KKN-STYM                     PIC X(06).
+               05  TNACCT-KKN-STDD                     PIC 9(02).
+           03  TNACCT-KKN-EDYMD.
+               05  TNACCT-KKN-EDYM                     PIC X(06).
+               05  TNACCT-KKN-EDDD                     PIC 9(02).
            03  TNACCT-KKN-DAY                          PIC 9(03)
                                                        OCCURS 31.
       *
          02  TNYUINRYO-AREA.
            03  TNYUINRYO-DAY                           PIC 9(03)
-                                                       OCCURS 31.
-         02  TKHNRYO-HKNCOMBI-AREA.
-           03  TKHNRYO-HKNCOMBI-MAX                    PIC 9(05).
-           03  TKHNRYO-HKNCOMBI-OCC                    OCCURS 20.
-               05  TKHNRYO-HKNCOMBI                    PIC 9(04).
-               05  TKHNRYO-HKNCOMBI-DAY                PIC 9(01)
                                                        OCCURS 31.
          02  TNACCT-GAIHAKU-AREA.
            03  TNACCT-GAIHAKU-DAY                      PIC 9(03)
@@ -180,7 +181,8 @@
       *
       *    Æþ±¡¿ÇÎÅ¹Ô°ÙÆüÂàÈò¥ï¡¼¥¯
          02  TNYUIN-ACCT-AREA.
-           03  TNYUIN-ACCT-DAY                         PIC 9(01)
+           03  TNYUIN-ACCT-DAY-G.
+               05  TNYUIN-ACCT-DAY                     PIC 9(01)
                                                        OCCURS 31.
       *
       *    Ê»ÍÑ¶Ø´÷¡Ê»»Äê¡ËÂàÈò¥ï¡¼¥¯

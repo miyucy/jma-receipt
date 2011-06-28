@@ -318,27 +318,6 @@
            03  FLG-SANTEI                              PIC 9(01).
            03  FLG-NBFUKACD                            PIC 9(01).
            03  FLG-NBFUKATG                            PIC 9(01).
-           03  FLG-STATUS-G.
-               05  FLG-STATUS-VAL.
-                   07  FLG-STS-NYUKHN                  PIC 9(01).
-                   07  FLG-STS-GAIHAKU                 PIC 9(01).
-                   07  FLG-STS-HKNCOMBI                PIC 9(01).
-                   07  FLG-STS-NYUKSN                  PIC 9(01).
-                   07  FLG-STS-NYUGEN                  PIC 9(01).
-                   07  FLG-STS-JITDAY                  PIC 9(01).
-                   07  FLG-STS-SNTDAY                  PIC 9(01).
-                   07  FLG-STS-08                      PIC 9(01).
-                   07  FLG-STS-09                      PIC 9(01).
-                   07  FLG-STS-10                      PIC 9(01).
-                   07  FLG-STS-11                      PIC 9(01).
-                   07  FLG-STS-12                      PIC 9(01).
-                   07  FLG-STS-13                      PIC 9(01).
-                   07  FLG-STS-14                      PIC 9(01).
-                   07  FLG-STS-15                      PIC 9(01).
-                   07  FLG-STS-16                      PIC 9(01).
-               05  FLG-STATUS-R    REDEFINES   FLG-STATUS-VAL.
-                   07  FLG-STATUS                      PIC 9(01)
-                                                       OCCURS  16.
            03  FLG-TAISYO-BYOMEI                       PIC 9(01).
            03  FLG-KOHERR                              PIC 9(01).
            03  FLG-SRYSNT-G.
@@ -568,7 +547,6 @@
                05  WRK-SYOSIN-CHK-DD                   PIC 9(02).
            03  WRK-TNS-NBFUKATEN                       PIC 9(10).
            03  WRK-SNT-NBFUKATEN                       PIC 9(10).
-           03  WRK-STATUS                              PIC 9(05).
            03  WRK-ACCTNAME                            PIC X(20).
            03  WRK-TENKIYMD                            PIC X(08).
            03  WRK-MAE-SRYYM-G.
@@ -624,6 +602,7 @@
            03  WRK-MAXLEN                              PIC 9(08).
            03  WRK-COMLEN                              PIC 9(08).
            03  WRK-TNSLEN                              PIC 9(08).
+           03  WRK-GETUMATU                            PIC X(08).
       *
        01  TERRINF-AREA.
            03  TERRINF-SRYCD                           PIC X(09).
@@ -1034,6 +1013,16 @@
       *    サブプロ用領域
       *****************************************************************
       *
+      *    入院負担金計算サブ
+       01  LNK-ORCS02-REC.
+           COPY  "CPORCS02.INC".
+       01  LNK-SYUNOU-REC-T.
+         02 LNK-SYUNOU-REC     OCCURS 10.
+           COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //LNK-SYU-//.
+       01  LNK-SYUDAY-REC-T.
+         02 LNK-SYUDAY-REC     OCCURS 10.
+           COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
+      *
       *    文字列操作サブ
            COPY    "CPORCSSTRING.INC".
       *
@@ -1258,6 +1247,10 @@
       *
            MOVE    ORCBSD01-SRYYM      TO  WRK-KJNYMD
            MOVE    "01"                TO  WRK-KJNYMD(7:2)
+      *
+           MOVE    ORCBSD01-SRYYM      TO  WRK-SYMD
+           PERFORM 800-GETUMATU-SEC
+           MOVE    WRK-SYMD            TO  WRK-GETUMATU
       *
            INITIALIZE                      TCHK-AREA
                                            TTNS-AREA
@@ -2116,7 +2109,6 @@
                                        TKOHID-AREA
                                        THKNCOMBI-AREA
                                        TNACCT-KKN-AREA
-                                       TKHNRYO-HKNCOMBI-AREA
                                        TNYUINRYO-AREA
                                        TNACCT-GAIHAKU-AREA
                                        TSRYCD-AREA
@@ -2228,8 +2220,6 @@
       *
                PERFORM 200111-TNYUINRYO-TAIHI-SEC
       *
-               PERFORM 200111-TKHNRYO-HKNCOMBI-HEN-SEC
-      *
                PERFORM 200111-NACCT-GAIHAKU-TAIHI-SEC
       *
            END-IF
@@ -2296,26 +2286,17 @@
       *****************************************************************
        2001111-SRYINF-TAIHI-SEC        SECTION.
       *
-           INITIALIZE                  FLG-STATUS-G
-           MOVE    DCACCT-STATUS   TO  WRK-STATUS
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   16 )
-               DIVIDE  WRK-STATUS  BY  2   GIVING  WRK-STATUS
-                       REMAINDER   FLG-STATUS (IDX0)
-           END-PERFORM
-      *
            MOVE    PTZAI-HKNNUM (IDX-ZAI)
                                    TO   WRK-ZAIHKNNUM
            PERFORM 2001111-TAISYO-HKN-CHK-SEC
            IF    ( FLG-TAISYO-HKN      =   1 )
-           AND   ( FLG-STS-HKNCOMBI    =   ZERO )
+           AND   ( DCACCT-STS-NYUINDAY =   ZERO )
       *
                PERFORM 20011111-SRYINF-TAIHI-SEC
       *
            END-IF
       *
-           IF    ( FLG-STS-HKNCOMBI    =   1 )
+           IF    ( DCACCT-STS-NYUINDAY     =   1 )
                PERFORM 200111-NACCT-KKN-TAIHI-SEC
            END-IF
       *
@@ -3436,8 +3417,8 @@
                END-IF
            END-IF
       *
-           IF    ( FLG-STS-NYUKHN      =   1 )
-            OR   ( FLG-STS-GAIHAKU     =   1 )
+           IF    ( DCACCT-STS-NYUKHN   =   1 )
+            OR   ( DCACCT-STS-GAIHAKU  =   1 )
                MOVE    1               TO  FLG-SHOSAISIN
            END-IF
       *
@@ -3766,16 +3747,7 @@
       *****************************************************************
        2001121-SRYINF-TAIHI-SEC        SECTION.
       *
-           INITIALIZE                  FLG-STATUS-G
-           MOVE    DCACCT-STATUS   TO  WRK-STATUS
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   16 )
-               DIVIDE  WRK-STATUS  BY  2   GIVING  WRK-STATUS
-                       REMAINDER   FLG-STATUS (IDX0)
-           END-PERFORM
-      *
-           IF    ( FLG-STS-HKNCOMBI    =   ZERO )
+           IF    ( DCACCT-STS-NYUINDAY    =   ZERO )
       *
                PERFORM VARYING IDX-SRY FROM    1   BY  1
                        UNTIL ( IDX-SRY     >   PTSRY-MAX )
@@ -3808,50 +3780,6 @@
       *
            .
        2001121-SRYINF-TAIHI-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院基本料保険組合せ退避領域編集処理
-      *****************************************************************
-       200111-TKHNRYO-HKNCOMBI-HEN-SEC     SECTION.
-      *
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
-      *
-               IF    ( TNYUINRYO-DAY (IDX-DAY)     =   1 )
-                AND  ( TNACCT-KKN-DAY(IDX-DAY) >   ZERO )
-      *
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
-                            OR   ( TNACCT-KKN-DAY(IDX-DAY)
-                                   =   TKHNRYO-HKNCOMBI (IDX0) )
-      *
-                       CONTINUE
-      *
-                   END-PERFORM
-      *
-                   IF    ( IDX0            >   TKHNRYO-HKNCOMBI-MAX )
-      *
-                       IF    ( CONST-TKHNRYO-HKNCOMBI-MAX
-                                           >   TKHNRYO-HKNCOMBI-MAX )
-      *
-                           COMPUTE TKHNRYO-HKNCOMBI-MAX
-                               =   TKHNRYO-HKNCOMBI-MAX    +   1
-      *
-                           MOVE    TNACCT-KKN-DAY(IDX-DAY)
-                                   TO  TKHNRYO-HKNCOMBI
-                                              (TKHNRYO-HKNCOMBI-MAX)
-                           MOVE    1       TO  TKHNRYO-HKNCOMBI-DAY
-                                      (TKHNRYO-HKNCOMBI-MAX IDX-DAY)
-                       END-IF
-                   ELSE
-                       MOVE    1       TO  TKHNRYO-HKNCOMBI-DAY
-                                      (IDX0 IDX-DAY)
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           .
-       200111-NACCT-KHNRYO-TAIHI-EXT.
            EXIT.
       *****************************************************************
       *    入院料算定日退避処理
@@ -3939,7 +3867,19 @@
       *****************************************************************
        200111-NACCT-KKN-TAIHI-SEC      SECTION.
       *
+           MOVE    DCACCT-STS-NODATA
+                                   TO  TNACCT-KKN-NODATA
            MOVE    DCACCT-DAYCNT   TO  TNACCT-KKN-DAY (DCACCT-DAY)
+      *
+           IF    ( TNACCT-KKN-STDD     =   ZERO )
+             OR  ( DCACCT-DAY          <   TNACCT-KKN-STDD )
+               MOVE    DCACCT-DAY  TO  TNACCT-KKN-STDD
+           END-IF
+      *
+           IF    ( TNACCT-KKN-EDDD     =   ZERO )
+             OR  ( DCACCT-DAY          >   TNACCT-KKN-EDDD )
+               MOVE    DCACCT-DAY  TO  TNACCT-KKN-EDDD
+           END-IF
       *
            .
        200111-NACCT-KKN-TAIHI-EXT.
@@ -9557,118 +9497,66 @@
       *****************************************************************
        200111-NYUKSN-CHK-SEC           SECTION.
       *
-           PERFORM VARYING IDX22   FROM    1   BY  1
-                   UNTIL ( IDX22   >   31 )
+           MOVE    ORCBSD01-SRYYM  TO  TNACCT-KKN-STYM
+                                       TNACCT-KKN-EDYM
+           IF    ( TNACCT-KKN-STDD =   ZERO )
+               MOVE    1           TO  TNACCT-KKN-STDD
+           END-IF
+           IF    ( TNACCT-KKN-EDDD =   ZERO )
+               MOVE    WRK-GETUMATU
+                                   TO  TNACCT-KKN-EDYMD
+           END-IF
       *
-               PERFORM VARYING IDX23   FROM    1   BY  1
-                       UNTIL ( IDX23   >   TNYUKSN-MAX )
+           MOVE    SPACE           TO  LNK-ORCS02-REC
+                                       LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
-                   IF  ( TNYUKSN-HKNCOMBI-DAY    (IDX23 IDX22)
-                                           NOT =   ZERO )
+           INITIALIZE                  LNK-ORCS02-REC
+                                       LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
       *
-                       PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
-                            OR   ( TNYUKSN-HKNCOMBI (IDX23)
-                                           =   TKHNRYO-HKNCOMBI (IDX0))
+           MOVE    SPA-HOSPNUM     TO  LNK-S02-HOSPNUM
+           MOVE    "1"             TO  LNK-S02-NYUGAIKBN
+           MOVE    DTCHK003-PTID   TO  LNK-S02-PTID
+           MOVE    TNACCT-KKN-STYMD TO  LNK-S02-SKYSTYMD
+           MOVE    TNACCT-KKN-EDYMD TO  LNK-S02-SKYEDYMD
+           MOVE    "X"             TO  LNK-S02-TEIKI-KBN
+           MOVE    WRK-KJNYMD      TO  LNK-S02-SYSYMD
+           MOVE    "9"             TO  LNK-S02-SYORI-KBN
+           CALL    "ORCSNYUFTN"    USING
+                                       SPA-AREA
+                                       LNK-ORCS02-REC
+                                       LNK-SYUNOU-REC-T
+                                       LNK-SYUDAY-REC-T
+           IF    ( LNK-S02-RC      NOT =   ZERO )
       *
-                           CONTINUE
-      *
-                       END-PERFORM
-      *
-                       IF    ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
-                           IF    ( TNYUINRYO-DAY (IDX22)   =   1 )
-                               COMPUTE TNYUKSN-ERR-CNT (IDX23 1)
-                                   =   TNYUKSN-ERR-CNT (IDX23 1)
-                                   +   1
-      *
-                               MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                 (IDX23 1 IDX22)
-                           ELSE
-                               COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
-                                   =   TNYUKSN-ERR-CNT (IDX23 2)
-                                   +   1
-      *
-                               MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                   (IDX23 2 IDX22)
-                           END-IF
-                       ELSE
-                           IF    ( TNYUINRYO-DAY (IDX22)   =   1 )
-                               IF    ( TKHNRYO-HKNCOMBI-DAY (IDX0 IDX22)
-                                                           =   ZERO )
-                                   COMPUTE TNYUKSN-ERR-CNT (IDX23 1)
-                                       =   TNYUKSN-ERR-CNT (IDX23 1)
-                                       +   1
-      *
-                                   MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                   (IDX23 1 IDX22)
-                               ELSE
-                                   IF    ( TNACCT-GAIHAKU-DAY (IDX22)
-                                                   =   ZERO OR 4 OR 5 )
-                                       CONTINUE
-                                   ELSE
-                                       COMPUTE TNYUKSN-ERR-CNT (IDX23 3)
-                                           =   TNYUKSN-ERR-CNT (IDX23 3)
-                                           +   1
-      *
-                                       MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                         (IDX23 3 IDX22)
-                                   END-IF
-                               END-IF
-                           ELSE
-                               COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
-                                   =   TNYUKSN-ERR-CNT (IDX23 2)
-                                   +   1
-      *
-                               MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                       (IDX23 2 IDX22)
-                           END-IF
-                       END-IF
-      *
-                   END-IF
-      *
-               END-PERFORM
-           END-PERFORM
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   TNYUKSN-MAX )
-      *
-              PERFORM VARYING IDX22   FROM    1   BY  1
-                      UNTIL ( IDX22   >   3 )
-      *
-                   IF    ( TNYUKSN-ERR-CNT (IDX0 IDX22) >   ZERO )
-      *
-                       MOVE    TNYUKSN-HKNCOMBI (IDX0)
-                                       TO  WRK-HKNCOMBI
-                       PERFORM 220-HKNCOMBI-GET-SEC
-      *
-                       INITIALIZE  WRK-NISSU-AREA
-                       MOVE    TNYUKSN-ERR-DAY-G (IDX0 IDX22)
-                                       TO  WRK-NISSU-DAY-G
-                       PERFORM 200111-NISSU-HEN-SEC
-      *
-                       MOVE    SPACE       TO  WRK-ERRMES-PLUS
-      *
-                       STRING  WRK-HKNCOMBIMEI DELIMITED   BY  SPACE
-                               WRK-NISSU-MES   DELIMITED   BY  SPACE
-                       INTO    WRK-ERRMES-PLUS
-                       END-STRING
-      *
-                       EVALUATE    IDX22
-                       WHEN    2
-                           MOVE    "990007"    TO  WRK-ERRCD
-                       WHEN    3
-                           MOVE    "990008"    TO  WRK-ERRCD
-                       WHEN    OTHER
-                           MOVE    "990002"    TO  WRK-ERRCD
-                       END-EVALUATE
-      *
-                       INITIALIZE              TERRINF-AREA
-                       PERFORM 215-ERRMES-HEN-SEC
-                   END-IF
-      *
-               END-PERFORM
-      *
-           END-PERFORM
+               PERFORM 900-DBCOMMIT-SEC
+               PERFORM 900-DBSTART-SEC
+               EVALUATE    LNK-S02-RC
+               WHEN    13
+                   MOVE    "990012"    TO  WRK-ERRCD
+               WHEN    14
+                   MOVE    "990002"    TO  WRK-ERRCD
+               WHEN    15
+                   MOVE    "990008"    TO  WRK-ERRCD
+               WHEN    16
+                   MOVE    "990007"    TO  WRK-ERRCD
+               WHEN    17
+                   MOVE    "990013"    TO  WRK-ERRCD
+               WHEN    19
+                   MOVE    "990014"    TO  WRK-ERRCD
+               WHEN    20
+                   MOVE    "990015"    TO  WRK-ERRCD
+               WHEN    21
+                   MOVE    "990016"    TO  WRK-ERRCD
+               WHEN    22
+                   MOVE    "990017"    TO  WRK-ERRCD
+               WHEN    OTHER
+                   MOVE    "990018"    TO  WRK-ERRCD
+               END-EVALUATE
+               INITIALIZE              TERRINF-AREA
+               PERFORM 210-ERRMES-HEN-SEC
+           END-IF
       *
            .
        200111-NYUKSN-CHK-EXT.
@@ -10151,15 +10039,6 @@
            MOVE    ZERO        TO  IDX-TSRYKA
            MOVE    ZERO        TO  FLG-TSRYKA-OVER
            PERFORM 200111-TSRYKA-SRYKA-HEN-SEC
-      *
-           INITIALIZE                  FLG-STATUS-G
-           MOVE    DCACCT-STATUS   TO  WRK-STATUS
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   16 )
-               DIVIDE  WRK-STATUS  BY  2   GIVING  WRK-STATUS
-                       REMAINDER   FLG-STATUS (IDX0)
-           END-PERFORM
       *
            PERFORM VARYING IDX-SRY FROM    1   BY  1
                    UNTIL ( IDX-SRY     >   PTSRY-MAX )
@@ -11765,6 +11644,22 @@
        800-CHK-KIKANCHKCD-EXT.
            EXIT.
       *****************************************************************
+      *    月末日取得処理
+      *****************************************************************
+       800-GETUMATU-SEC      SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY1-AREA
+           MOVE    "71"                TO   LNK-DAY7-IRAI
+           MOVE    WRK-SYMD (1 : 6)    TO   LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                       LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-SYMD
+      *
+           .
+       800-GETUMATU-EXT.
+            EXIT.
+      *****************************************************************
       *    対象患者ファイル読込処理
       *****************************************************************
        900-DTCHK003-READ-SEC           SECTION.
@@ -12118,18 +12013,10 @@
                    IF    ( DTCHK003-PTID   NOT =   DCACCT-PTID )
                        MOVE    1           TO  FLG-DCACCT
                    ELSE
-                       INITIALIZE                  FLG-STATUS-G
-                       MOVE    DCACCT-STATUS   TO  WRK-STATUS
-      *
-                       PERFORM VARYING IDX0    FROM    1   BY  1
-                               UNTIL ( IDX0    >   16 )
-                           DIVIDE  WRK-STATUS  BY 2 GIVING  WRK-STATUS
-                                   REMAINDER   FLG-STATUS (IDX0)
-                       END-PERFORM
       *
                        MOVE    1               TO  FLG-LOOP-END
       *
-                       IF    ( FLG-STS-HKNCOMBI    =   ZERO )
+                       IF    ( DCACCT-STS-NYUINDAY =   ZERO )
       *
                            IF    ( DCACCT-ZAIKAISU =   ZERO )
                                MOVE   ZERO    TO   FLG-LOOP-END
@@ -12214,18 +12101,10 @@
                    IF    ( DTCHK003-PTID   NOT =   DCACCT-PTID )
                        MOVE    1           TO  FLG-DCACCT
                    ELSE
-                       INITIALIZE                  FLG-STATUS-G
-                       MOVE    DCACCT-STATUS   TO  WRK-STATUS
-      *
-                       PERFORM VARYING IDX0    FROM    1   BY  1
-                               UNTIL ( IDX0    >   16 )
-                           DIVIDE  WRK-STATUS  BY 2 GIVING  WRK-STATUS
-                                   REMAINDER   FLG-STATUS (IDX0)
-                       END-PERFORM
       *
                        MOVE    1               TO  FLG-LOOP-END
       *
-                       IF    ( FLG-STS-HKNCOMBI    =   ZERO )
+                       IF    ( DCACCT-STS-NYUINDAY =   ZERO )
       *
                            IF    ( DCACCT-ZAIKAISU =   ZERO )
                                MOVE   ZERO    TO   FLG-LOOP-END

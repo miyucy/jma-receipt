@@ -503,9 +503,9 @@
            05 PIC  X(30)   VALUE   "ます                          ".
       *
            05 PIC  X(06)   VALUE   "990002".
-           05 PIC  X(30)   VALUE   "入院基本料と異なる保険組合せで".
-           05 PIC  X(30)   VALUE   "入院料加算が登録されています  ".
-           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。入".
+           05 PIC  X(30)   VALUE   "院料と異なる保険組合せで入院料".
+           05 PIC  X(30)   VALUE   "加算が登録されています        ".
       *
            05 PIC  X(06)   VALUE   "990003".
            05 PIC  X(30)   VALUE   "内分泌負荷試験の算定点数に誤り".
@@ -528,14 +528,14 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
            05 PIC  X(06)   VALUE   "990007".
-           05 PIC  X(30)   VALUE   "入院料の算定が無い日に入院料加".
-           05 PIC  X(30)   VALUE   "算が算定されています          ".
-           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。入".
+           05 PIC  X(30)   VALUE   "院料の算定が無い日に入院料加算".
+           05 PIC  X(30)   VALUE   "が算定されています            ".
       *
            05 PIC  X(06)   VALUE   "990008".
-           05 PIC  X(30)   VALUE   "外泊日に入院料加算が算定されて".
-           05 PIC  X(30)   VALUE   "います                        ".
-           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。外".
+           05 PIC  X(30)   VALUE   "泊日に入院料加算が算定されてい".
+           05 PIC  X(30)   VALUE   "ます                          ".
       *
            05 PIC  X(06)   VALUE   "990009".
            05 PIC  X(30)   VALUE   "診療年月に院外処方がありません".
@@ -552,8 +552,43 @@
            05 PIC  X(30)   VALUE   "目はありませんでした          ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990012".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。診".
+           05 PIC  X(30)   VALUE   "療年月の入院会計が作成されてい".
+           05 PIC  X(30)   VALUE   "ません                        ".
+      *
+           05 PIC  X(06)   VALUE   "990013".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。入".
+           05 PIC  X(30)   VALUE   "院料の有効期間が切れています  ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990014".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。包".
+           05 PIC  X(30)   VALUE   "括点数の治験減点分の点数を確認".
+           05 PIC  X(30)   VALUE   "してください                  ".
+      *
+           05 PIC  X(06)   VALUE   "990015".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。入".
+           05 PIC  X(30)   VALUE   "院点数に誤りがあります        ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "990016".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。救".
+           05 PIC  X(30)   VALUE   "急搬送診療料算定日に入院料（加".
+           05 PIC  X(30)   VALUE   "算）が算定されています        ".
+      *
+           05 PIC  X(06)   VALUE   "990017".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。他".
+           05 PIC  X(30)   VALUE   "医療機関受診（外泊）の入力に誤".
+           05 PIC  X(30)   VALUE   "りがあります                  ".
+      *
+           05 PIC  X(06)   VALUE   "990018".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。入".
+           05 PIC  X(30)   VALUE   "力内容を確認してください      ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  97.
+           05 ERRMES-OCC   OCCURS  104.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   97.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   104.

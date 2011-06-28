@@ -41,9 +41,17 @@
            03  DCACCT-RECESYUBETU      PIC X(04).
            03  DCACCT-DAY              PIC 9(02).
            03  DCACCT-DAYCNT           PIC 9(03).
-           03  DCACCT-STATUS           PIC 9(05).
            03  DCACCT-NYUGAIKBN        PIC X(01).
            03  DCACCT-ZAIKBN           PIC 9(03).
+           03  DCACCT-STATUS-G.
+               05  DCACCT-STS-NYUKHN   PIC 9(01).
+               05  DCACCT-STS-GAIHAKU  PIC 9(01).
+               05  DCACCT-STS-NYUINDAY PIC 9(01).
+               05  DCACCT-STS-NYUKSN   PIC 9(01).
+               05  DCACCT-STS-NYUGEN   PIC 9(01).
+               05  DCACCT-STS-JITDAY   PIC 9(01).
+               05  DCACCT-STS-SNTDAY   PIC 9(01).
+               05  DCACCT-STS-NODATA   PIC 9(01).
            03  DCACCT-TERMID           PIC X(16).
            03  DCACCT-OPID             PIC X(16).
            03  DCACCT-CREYMD           PIC X(08).

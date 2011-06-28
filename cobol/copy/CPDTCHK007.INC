@@ -26,5 +26,5 @@
            03  DTCHK007-KEY.
                05  DTCHK007-PTID       PIC 9(10).
            03  DTCHK007-ERRHKN         PIC 9(01)
-                                       OCCURS  8.
+                                       OCCURS  10.
            03  DTCHK007-HKNOTHERS      PIC X(01).
