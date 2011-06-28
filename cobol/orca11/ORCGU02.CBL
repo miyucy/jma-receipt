@@ -79,7 +79,7 @@
       *                                     患者番号と一覧内容の連動他
       *  04.06.00    NACL-多々納  10/09/29  入外非表示対応
       *  04.07.00    NACL-多々納  11/07/XX  カルテ病名なし対応
-      *                                     予約選択患者登録遷移対応
+      *                                     予約選択患者登録遷移対応他
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -782,6 +782,7 @@
                        PERFORM 41011-PTNUM-HENSYU-SEC
                        MOVE    4               TO  SPA-GMN-CUR
                    END-IF
+      *ver.4.7
       *        受付取消
                WHEN    "0103"
                    IF      SPA-U2ID1-FLG    =   "OK"
@@ -789,6 +790,7 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *ver.4.7
       *        患者登録へ
                WHEN    "0105"
                    IF      SPA-U2ID1-FLG    =   "OK"
@@ -6076,7 +6078,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    U02-HKNCOMBI-ROW    TO  WRK-U02-HKNCOMB-ROW
            END-IF
-     *
+      *
            MOVE    SPACE                        TO  U02
            INITIALIZE                           U02
            IF      WRK-U02-UKETUKE-ROW NOT =   ZERO
@@ -6510,7 +6512,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0105"
                    STRING  "受付されていません。"
-                           "予約選択を解除して患者登録へ遷移しますか？"
+                           "選択を解除して患者登録へ遷移しますか？"
                                                DELIMITED  BY  SIZE
                                                INTO  WRK-U2ID1MSG
                    END-STRING
