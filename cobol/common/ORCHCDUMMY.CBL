@@ -138,6 +138,7 @@
       *
       *    処方内容編集
            PERFORM 400-PRINT-SEC
+           MOVE    2                   TO  SPA-CLIENT-PRT-FLG
       *
            .
        000-PROC-EXT.

@@ -293,10 +293,12 @@
              03  SPA-ERRMSG                PIC X(80).
       *診療行為処理最大行
              03  SPA-MAX-LINE              PIC 9(03).
-      *クライアント印刷指示区分
+      *クライアント印刷指示フラグ
              03  SPA-CLIENT-PRT-FLG        PIC 9(01).
-      *クライアント印刷指示区分
+      *クライアント印刷指示フラグ
              03  SPA-CLIENT-TEMP-FLG       PIC 9(01).
+      *クライアント印刷ダイアログ表示フラグ
+             03  SPA-CLIENT-SHOWDIALOG     PIC 9(01).
       *
       *ここまで 1,036 bytes
       *
@@ -314,6 +316,6 @@
       *****  03  SPA-WORK                  PIC X(19280).
       *****  03  SPA-WORK                  PIC X(19027).
       ****   03  SPA-WORK                  PIC X(18964).
-             03  SPA-WORK                  PIC X(18962).
+             03  SPA-WORK                  PIC X(18961).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *

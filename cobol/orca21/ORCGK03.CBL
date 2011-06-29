@@ -718,7 +718,7 @@
       *    印刷制御情報取得サブ
       *
            MOVE    SPACE               TO  K03-PANDAPRINT1
-           IF      SPA-CLIENT-PRT-FLG  =   1
+           IF      SPA-CLIENT-PRT-FLG  =   2
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *    クライアント印刷制御情報取得サブ
            INITIALIZE  ORCSPRTCLTRAREA

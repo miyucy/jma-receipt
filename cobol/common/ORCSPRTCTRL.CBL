@@ -129,6 +129,7 @@
                PERFORM 100-CANCEL-SEC
            ELSE
                PERFORM 100-APIADD-SEC
+               MOVE  1                 TO  SPA-CLIENT-PRT-FLG
            END-IF
       *
       *
