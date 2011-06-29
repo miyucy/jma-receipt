@@ -662,13 +662,6 @@
       *    印刷削除
                WHEN    "CLICKED"       ALSO    "B07"
                    MOVE    "0001"      TO  SPA-MIDCD
-      *    クライアント印刷指示(For Test)
-               WHEN    "CLICKED"       ALSO    "B09"
-                 IF  SPA-CLIENT-PRT-FLG =  ZERO
-                   MOVE    2      TO  SPA-CLIENT-PRT-FLG
-                 ELSE
-                   MOVE    ZERO   TO  SPA-CLIENT-PRT-FLG
-                 END-IF
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
