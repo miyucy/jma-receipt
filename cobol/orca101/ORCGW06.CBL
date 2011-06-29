@@ -200,6 +200,16 @@
                        09  SPA-GMN-USER-KANRI-LST  PIC X(40)
                                                    OCCURS  5. 
                    07  SPA-USER-KANRI-MAX      PIC 9(04).  
+      *            クライアント印刷可否
+                   07  SPA-GMN-CLIENT-PRT-LSTG.
+                       09  SPA-GMN-CLIENT-PRT-LST  PIC X(40)
+                                                   OCCURS  2. 
+                   07  SPA-CLIENT-PRT-MAX      PIC 9(04).  
+      *            ダイアログ表示
+                   07  SPA-GMN-DIALOGFLG-LSTG.
+                       09  SPA-GMN-DIALOGFLG-LST   PIC X(40)
+                                                   OCCURS  2. 
+                   07  SPA-DIALOGFLG-MAX       PIC 9(04).  
       *            基本情報の発行区分
                    07  SPA-1001-SKYPRTFLG      PIC  X(01).
                    07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
@@ -243,6 +253,16 @@
                        09  SPA-GMN-USER-KANRI      PIC X(01).
                        09  SPA-GMN-USER-KANRI-F1   PIC X(01).
                        09  SPA-GMN-USER-KANRI-MEI  PIC X(24).
+      *            クライアント印刷可否
+                   07  SPA-GMN-CLIENT-PRT-G. 
+                       09  SPA-GMN-CLIENT-PRT      PIC X(01).
+                       09  SPA-GMN-CLIENT-PRT-F1   PIC X(01).
+                       09  SPA-GMN-CLIENT-PRT-MEI  PIC X(24).
+      *            ダイアログ表示
+                   07  SPA-GMN-DIALOGFLG-G. 
+                       09  SPA-GMN-DIALOGFLG       PIC X(01).
+                       09  SPA-GMN-DIALOGFLG-F1    PIC X(01).
+                       09  SPA-GMN-DIALOGFLG-MEI   PIC X(24).
       *
                05  SPA-PAGE3-G.
       *            他院医療機関情報
@@ -658,6 +678,14 @@
                                        TO  SPA-GMN-USER-KANRI-LST(4)
            MOVE    "4 更新も可(全て)"  TO  SPA-GMN-USER-KANRI-LST(5)
            MOVE    5                   TO  SPA-USER-KANRI-MAX
+      *    クライアント印刷可否
+           MOVE    "0 印刷不可"        TO  SPA-GMN-CLIENT-PRT-LST(1)
+           MOVE    "1 印刷可"          TO  SPA-GMN-CLIENT-PRT-LST(2)
+           MOVE    2                   TO  SPA-CLIENT-PRT-MAX
+      *    ダイアログ表示
+           MOVE    "0 表示しない"      TO  SPA-GMN-DIALOGFLG-LST(1)
+           MOVE    "1 表示する"        TO  SPA-GMN-DIALOGFLG-LST(2)
+           MOVE    2                   TO  SPA-DIALOGFLG-MAX
       *
       *    基本情報の発行フラグ
            PERFORM 3202-KIHON-HEN-SEC
@@ -1418,6 +1446,8 @@
                MOVE    SYS-1010-FORMALFLG      TO  SPA-GMN-FORMALFLG
                MOVE    SYS-1010-CLIENT-SAVE    TO  SPA-GMN-CLIENT-SAVE
                MOVE    SYS-1010-USER-KANRI     TO  SPA-GMN-USER-KANRI
+               MOVE    SYS-1010-CLIENT-PRT     TO  SPA-GMN-CLIENT-PRT
+               MOVE    SYS-1010-DIALOGFLG      TO  SPA-GMN-DIALOGFLG
                PERFORM 20091-PRTFLG-HEN-SEC
       *
                INITIALIZE                     SPA-PAGE3-G
@@ -1519,6 +1549,26 @@
                    MOVE    SPA-GMN-USER-KANRI-LST (IDX)
                                            TO  SPA-GMN-USER-KANRI-G
                    MOVE    SPA-USER-KANRI-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-CLIENT-PRT-MAX
+               IF      SPA-GMN-CLIENT-PRT  =   SPA-GMN-CLIENT-PRT-LST
+                                                      (IDX)(1:1)
+                   MOVE    SPA-GMN-CLIENT-PRT-LST (IDX)
+                                           TO  SPA-GMN-CLIENT-PRT-G
+                   MOVE    SPA-CLIENT-PRT-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-DIALOGFLG-MAX
+               IF      SPA-GMN-DIALOGFLG   =   SPA-GMN-DIALOGFLG-LST
+                                                      (IDX)(1:1)
+                   MOVE    SPA-GMN-DIALOGFLG-LST (IDX)
+                                           TO  SPA-GMN-DIALOGFLG-G
+                   MOVE    SPA-DIALOGFLG-MAX   TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1811,6 +1861,8 @@
            MOVE    W06-FORMALFLG       TO  SPA-GMN-FORMALFLG-G
            MOVE    W06-CLIENT-SAVE     TO  SPA-GMN-CLIENT-SAVE-G
            MOVE    W06-USER-KANRI      TO  SPA-GMN-USER-KANRI-G
+           MOVE    W06-CLIENT-PRT      TO  SPA-GMN-CLIENT-PRT-G
+           MOVE    W06-DIALOGFLG       TO  SPA-GMN-DIALOGFLG-G
       *
       *    他院情報設定画面
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1908,6 +1960,14 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4121-USER-KANRI-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-CLIENT-PRT-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4121-DIALOGFLG-CHK-SEC
            END-IF
       *
            PERFORM VARYING IDX-GRP FROM    1   BY  1
@@ -2594,6 +2654,62 @@
        4121-USER-KANRI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    クライアント印刷可否チェック処理
+      *****************************************************************
+       4121-CLIENT-PRT-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-CLIENT-PRT-MAX
+               IF      SPA-GMN-CLIENT-PRT =   SPA-GMN-CLIENT-PRT-LST
+                                                       (IDX)(1:1)
+                   MOVE    SPA-GMN-CLIENT-PRT-LST (IDX)
+                                               TO  SPA-GMN-CLIENT-PRT-G
+                   MOVE    1                   TO  FLG-CHK
+                   MOVE    SPA-CLIENT-PRT-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO )
+               IF      SPA-GMN-CLIENT-PRT  =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-CLIENT-PRT-G
+               ELSE
+                   MOVE    "0029"          TO  SPA-ERRCD
+                   MOVE    28              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4121-CLIENT-PRT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ダイアログ表示チェック処理
+      *****************************************************************
+       4121-DIALOGFLG-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-DIALOGFLG-MAX
+               IF      SPA-GMN-DIALOGFLG   =   SPA-GMN-DIALOGFLG-LST
+                                                       (IDX)(1:1)
+                   MOVE    SPA-GMN-DIALOGFLG-LST (IDX)
+                                               TO  SPA-GMN-DIALOGFLG-G
+                   MOVE    1                   TO  FLG-CHK
+                   MOVE    SPA-DIALOGFLG-MAX   TO  IDX
+               END-IF
+           END-PERFORM
+           IF     (FLG-CHK             =   ZERO )
+               IF      SPA-GMN-DIALOGFLG   =   SPACE
+                   MOVE    SPACE           TO  SPA-GMN-DIALOGFLG-G
+               ELSE
+                   MOVE    "0030"          TO  SPA-ERRCD
+                   MOVE    29              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4121-DIALOGFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    他院オペレータＩＤチェック処理
       *****************************************************************
        4122-GRPUSERID-CHK-SEC          SECTION.
@@ -3128,6 +3244,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1010-FORMALFLG
            MOVE    SPA-GMN-CLIENT-SAVE     TO  SYS-1010-CLIENT-SAVE
            MOVE    SPA-GMN-USER-KANRI      TO  SYS-1010-USER-KANRI
+           MOVE    SPA-GMN-CLIENT-PRT      TO  SYS-1010-CLIENT-PRT
+           MOVE    SPA-GMN-DIALOGFLG       TO  SYS-1010-DIALOGFLG
       *
            INITIALIZE                          SYS-1010-GRPHOSPINF-G
            MOVE    ZERO                    TO  IDX-GRP
@@ -3712,6 +3830,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE  SPA-USER-KANRI-MAX    TO  W06-USER-KANRI-COUNT
            MOVE  SPA-GMN-USER-KANRI-G  TO  W06-USER-KANRI
+      *    クライアント印刷可否表示
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-CLIENT-PRT-MAX
+               MOVE    SPA-GMN-CLIENT-PRT-LST(IDX)
+                                       TO  W06-CLIENT-PRT-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-CLIENT-PRT-MAX    TO  W06-CLIENT-PRT-COUNT
+           MOVE  SPA-GMN-CLIENT-PRT-G  TO  W06-CLIENT-PRT
+      *    ダイアログ表示
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-DIALOGFLG-MAX
+               MOVE    SPA-GMN-DIALOGFLG-LST(IDX)
+                                       TO  W06-DIALOGFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE  SPA-DIALOGFLG-MAX     TO  W06-DIALOGFLG-COUNT
+           MOVE  SPA-GMN-DIALOGFLG-G   TO  W06-DIALOGFLG
       *
       *    他院情報設定画面
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3870,6 +4004,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0028"
                    MOVE    "職員情報が未登録です"
                                                TO  SPA-ERRMSG
+               WHEN    "0029"
+                   MOVE    "クライアント印刷可否入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0030"
+                   MOVE    "ダイアログ表示フラグ入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
                    "オルカマスターはシステム管理を有効にして下さい"
@@ -4013,6 +4153,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "CLIENT_SAVE"    TO   MCP-WIDGET
                 WHEN    27
                     MOVE  "USER_KANRI"     TO   MCP-WIDGET
+                WHEN    28
+                    MOVE  "CLIENT_PRT"     TO   MCP-WIDGET
+                WHEN    29
+                    MOVE  "DIALOGFLG"      TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -4103,6 +4247,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN     "CLIENT_SAVE"
                    MOVE    27              TO  SPA-GMN-CUR
                WHEN     "USER_KANRI"
+                   MOVE    28              TO  SPA-GMN-CUR
+               WHEN     "CLIENT_PRT"
+                   MOVE    29              TO  SPA-GMN-CUR
+               WHEN     "DIALOGFLG"
                    MOVE    99              TO  SPA-GMN-CUR
       *    他院設定画面
                WHEN     "GRPUSERID01"  THRU    "GRPUSERID08"

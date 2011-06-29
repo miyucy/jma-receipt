@@ -90,12 +90,17 @@
                        09  SYS-1010-GRPHOSPUSERID PIC  X(16).
       *ユーザーログイン権限フラグ
                05  SYS-1010-USER-KANRI     PIC  X(01).
+      *クライアント印刷可否フラグ
+               05  SYS-1010-CLIENT-PRT     PIC  X(01).
+      *ダイアログ表示フラグ
+               05  SYS-1010-DIALOGFLG      PIC  X(01).
       *予備
       **** 03                           PIC  X(175).
       *****03                           PIC  X(174).
       *****03                           PIC  X(168).
       *****03                           PIC  X(06).
-           03  SYS-1010-YOBI            PIC  X(05).
+      *****03                           PIC  X(05).
+           03  SYS-1010-YOBI            PIC  X(03).
       *端末ＩＤ
            03  SYS-1010-TERMID          PIC  X(16).
       *オペーレータＩＤ
