@@ -50,12 +50,6 @@
       *  04.01.00    NACL-多々納  08/01/30  次頁表示の追加
       *  04.05.00    NACL-多々納  09/06/XX  エラーメッセージ修正
       *                                     入力ＣＤ表示追加
-      *  04.07.00    NACL-多々納  12/04/18  一般名称検索対応
-      *  04.07.00    NACL-多々納  12/07/09  労災等名称編集追加
-      *  04.07.00    NACL-多々納  13/03/01  労災レセ電対応
-      *  04.08.00    NACL-多々納  15/09/XX  セット内容展開対応他
-      *  04.08.00    NACL-多々納  16/05/XX  一般名検索・向精神薬記載対応
-      *  05.00.00    NACL-多々納  17/02/XX  酸素等器材金額編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -102,17 +96,6 @@
       *
            03  FLG-KIKAN           PIC 9(01).
            03  FLG-KENSAKU01       PIC 9(01).
-      *H24.4
-           03  FLG-GENERICNAME         PIC 9(01).
-           03  FLG-GENERICPRICE        PIC 9(01).
-           03  FLG-TENSUPLUS           PIC 9(01).
-           03  FLG-PSYCHOTROPIC        PIC 9(01).
-           03  FLG-TENSUPRICE          PIC 9(01).
-      *H27.9
-           03  FLG-SET-SEL             PIC 9(01).
-           03  FLG-SETKBN              PIC 9(01).
-           03  FLG-SETSEQ              PIC 9(01).
-           03  FLG-SETKEN              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -167,16 +150,6 @@
            03  WRK-NOZ             PIC ZZZ.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS      PIC ZZZZZZ9.99.
-           05  WRK-TENSUS2         PIC ZZZZ9.99.
-      *H28.4
-           03  WRK-KISOTEN-CHK.
-               05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
-           03  WRK-KISOTEN-CHK-R    REDEFINES   WRK-KISOTEN-CHK.
-               05  WRK-KISOTEN-R1   PIC 9(07).
-               05  WRK-KISOTEN-R2   PIC 9(02).
-               05  WRK-KISOTEN-R3   PIC 9(01).
-           03  WRK-TENSUS-X6.
-               05  WRK-TENSUS-S4   PIC ZZZZZ9.999.
       *
            03  WRK-MOJI1           PIC X(22).
            03  WRK-MOJI2           PIC X(22).
@@ -210,7 +183,6 @@
       *
            03  WRK-K98-ROW         PIC S9(09).
            03  FLG-GMN-INIT        PIC  9(01).
-           03  WRK-SET-ROW         PIC S9(09).
       *
            03  WRK-ERRMSG          PIC  X(80).
            03  WRK-ERRMSG2         PIC  X(80).
@@ -221,46 +193,6 @@
            03  WRK-NAME2-G.
                05  WRK-NAME21           PIC X(30).
                05  WRK-NAME22           PIC X(40).
-      *
-      *H24.4
-      *    一般名検索
-           03  WRK-GEN-AREA.
-               05  WRK-GEN-YAKKAKJNCD      PIC X(12).
-               05  WRK-GEN-NAME            PIC X(80).
-               05  WRK-GEN-TANI            PIC X(24).
-               05  WRK-GEN-KISOTEN         PIC 9(07)V9(4).
-      *
-           03  IDXG                        PIC 9(04).
-           03  IDX3                        PIC 9(04).
-           03  FLG-SYORI                   PIC 9(01).
-           03  WRK-TENSUS-X2.
-               05  WRK-TENSUS-GX1          PIC X(01).
-      *H28.4   05  WRK-TENSUS-G            PIC ZZZZ9.99.
-               05  WRK-TENSUS-G            PIC X(08).
-               05  WRK-TENSUS-GX2          PIC X(01).
-           03  WRK-NAME                    PIC X(100).
-           03  WRK-MSG-2                   PIC X(10).
-      *
-           03  WRK-PSY-MEI                 PIC X(04).
-      *
-      *H27.9
-           03  WRK-SETTBL-G.
-               05  WRK-TBL-SRYCD           PIC X(09).
-               05  WRK-TBL-INPUCD          PIC X(20).
-               05  WRK-TBL-NAME            PIC X(100).
-               05  WRK-TBL-SETCD           PIC X(06).
-           03  WRK-SET-HEN                 PIC X(08).
-           03  WRK-SRYSYUKBN               PIC X(03).
-           03  WRK-SRYSYUKBNMEI            PIC X(50).
-           03  WRK-GMN-SYORI               PIC X(01).
-      *
-           03  WRK-GENERICNAME             PIC X(200).
-           03  WRK-YAKKAKJNCD              PIC X(12).
-      *H28.4
-       01  TBL-YAKKAKJNCD-AREA.
-           03  TBL-YAKKAKJNCD-OCC          OCCURS   200.
-               05  TBL-YAKKAKJNCD          PIC X(12).
-       01  IDXK                            PIC 9(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -398,9 +330,6 @@
                05  TBL-GRP-MEI     PIC X(40).
                05  TBL-GRP-RMEI    PIC X(20).
       *
-      *緑
-       01  CL-GREEN                PIC X(07)   VALUE   "#00B000".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -416,27 +345,6 @@
       *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
-      *
-      *H24.4
-      *    点数マスタ付加コード
-        01 TENSUPLUS-REC.
-           COPY    "CPTENSUPLUS.INC".
-      *    一般名テーブル
-       01  GENERICNAME-REC.
-           COPY    "CPGENERICNAME.INC".
-      *
-      *    最低薬価マスタ
-       01  GENERICPRICE-REC.
-           COPY    "CPGENERICPRICE.INC".
-      *
-      *
-      *    向精神薬成分コード
-       01  PSYCHOTROPIC-REC.
-           COPY    "CPPSYCHOTROPIC.INC".
-      *v5.0
-      *    点数マスタ器材金額
-        01 TENSU-PRICE-REC.
-           COPY    "CPTENSU-PRICE.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -472,7 +380,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA21SCRAREA.INC".
+           COPY    "K01.INC".
+           COPY    "K02.INC".
+           COPY    "K02N.INC".
+           COPY    "K021.INC".
+           COPY    "K023.INC".
+           COPY    "K03.INC".
+           COPY    "K04.INC".
+           COPY    "K05.INC".
+           COPY    "K051.INC".
+           COPY    "K052.INC".
+           COPY    "K06.INC".
+           COPY    "K061.INC".
+           COPY    "K062.INC".
+           COPY    "K07.INC".
+           COPY    "K08.INC".
+           COPY    "K081.INC".
+           COPY    "K09.INC".
+           COPY    "K10.INC".
+           COPY    "K97.INC".
+           COPY    "K98.INC".
+           COPY    "K99.INC".
+           COPY    "K03X.INC".
+           COPY    "KERR.INC".
+           COPY    "KERR2.INC".
+           COPY    "KID1.INC".
+           COPY    "KID2.INC".
+           COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -588,9 +522,6 @@
            MOVE    "4:コメント"        TO  SPA-K98-USERLST (4)
            MOVE    "5:労災"            TO  SPA-K98-USERLST (5)
            MOVE    "6:システム予約"    TO  SPA-K98-USERLST (6)
-           IF      SPA-SRYYMD          >=  "20130701"
-               MOVE    "7:労災（合成）"    TO  SPA-K98-USERLST (7)
-           END-IF
            MOVE    SPACE               TO  SPA-K98-USER-G
       *
            MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
@@ -616,16 +547,6 @@
       *
            INITIALIZE                      SPA-K98-NAI-SELNUM-G
            INITIALIZE                      SPA-K98-GMN-SELNUM-G
-      *H24.4
-           IF     (SPA-K98-GMN-SYORI       =   "G"  )
-             AND  (SPA-K98-GMN-SYORI2      =   "1"  )
-               INITIALIZE                      WRK-GEN-AREA
-               MOVE    SPA-K98-GMN-INPUTCD  (1)
-                                           TO  WRK-GEN-YAKKAKJNCD
-               MOVE    SPA-K98-GMN-NAME(1) TO  WRK-GEN-NAME
-               MOVE    SPA-K98-GMN-TANI(1) TO  WRK-GEN-TANI
-               MOVE    SPA-K98-GMN-KISOTEN(1)  TO  WRK-GEN-KISOTEN
-           END-IF
       *
            INITIALIZE                  SPA-K98-GMN-TBL
            MOVE    ZERO                TO  SPA-K98-GMN-MAX
@@ -655,15 +576,8 @@
                        PERFORM 310011-KENSA-TENSET-SEC
                    END-IF
                WHEN    OTHER
-      *H26.7
-                   EVALUATE    SPA-K98-GMN-SYORI
-                   WHEN    "G"
-      *                一般名
-                       PERFORM 2901-GENERICNAME-SYORI-SEC
-                   WHEN    OTHER
-      *                その他
-                       PERFORM 3100-KENSAKU-SEC
-                   END-EVALUATE
+      *            その他
+                   PERFORM 3100-KENSAKU-SEC
            END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
@@ -691,16 +605,6 @@
        3100-KENSAKU-SEC            SECTION.
       *
            MOVE     ZERO               TO  FLG-KENSAKU01
-      *!!!
-      *H27.9
-      *    セットコード検索は入力ＣＤのみの検索
-           IF     (SPA-K98-MOTOPG      =   "K05" )
-              AND (SPA-K98-GMN-SYORI   =   "T"   )
-              AND (SPA-GMN5-CUR        =   1     )
-               MOVE    1                   TO  FLG-SETKEN
-           ELSE
-               MOVE    ZERO                TO  FLG-SETKEN
-           END-IF
       *
            IF       SPA-K98-TYPE         =   "1"
                MOVE    1                 TO  FLG-KENSAKU01
@@ -709,14 +613,6 @@
                    MOVE    SPACE         TO  SPA-K98-OLD-SYORI
                END-IF
            END-IF
-      *!!!
-      *H27.9
-      *    セットコード検索は入力ＣＤのみの検索
-           IF     (FLG-SETKEN          =   1     )
-               GO      TO      3100-KENSAKU-EXT
-           END-IF
-      *
-      *
            IF     (SPA-K98-GMN-MAX     =   ZERO  )  AND
                  ((SPA-K98-CDSYUBETU   =   "J"   ) OR
                   (SPA-K98-GMN-SYORI   =   "9"  OR  "U"))
@@ -1339,20 +1235,6 @@
                WHEN    "//c"
       *        コメント
                    MOVE    "U4"            TO  SPA-K98-GMN-SYORI3
-      *H25.6
-               WHEN    "//R"
-               WHEN    "//r"
-      *        労災
-                   MOVE    "U5"            TO  SPA-K98-GMN-SYORI3
-                   MOVE    SPA-K98-USERLST (5) TO  SPA-K98-USER-G
-                   IF     (SPA-K98-GMN-INPUT(4:1)  =   "G"  OR  "g" )
-                      AND (SPA-SRYYMD          >=  "20130701"   )
-      *             労災（合成）
-                       MOVE    "U7"            TO  SPA-K98-GMN-SYORI3
-                       MOVE    SPA-K98-USERLST (7) TO  SPA-K98-USER-G
-                   END-IF
-                   MOVE    SPACE           TO  SPA-K98-GMN-INPUT
-      *
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
                    MOVE    21              TO  SPA-K98-GMN-CUR
@@ -1433,16 +1315,6 @@
                           (FLG-INPUTCD     =   1   )
       *
                PERFORM 31011-INPUTCD-CHK-SEC
-      *H27.9
-      *        セットのみ対象
-               IF      FLG-SETKEN          =   1
-                   IF     (ICD-SRYCD(1:1)      =   "S"  OR  "P")
-                       CONTINUE
-                   ELSE
-                       MOVE    ZERO            TO  FLG-OK
-                   END-IF
-               END-IF
-      *
                IF      FLG-OK              =   1
       *
                    IF     (ICD-DSPNAME     NOT =   SPACE )  AND
@@ -1606,9 +1478,62 @@
            MOVE    IDX                 TO  SPA-K98-GMN-NO     (IDX)
            MOVE    ICD-INPUTCD         TO  SPA-K98-GMN-INPUTCD (IDX)
            MOVE    ICD-SRYCD           TO  SPA-K98-GMN-SRYCD   (IDX)
+           MOVE    TNS-NAME            TO  SPA-K98-GMN-NAME    (IDX)
+           MOVE    TNS-TEN             TO  SPA-K98-GMN-KISOTEN (IDX)
+      *    薬剤・器材の時単位
+           IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
+                MOVE    TNS-TANINAME       TO  SPA-K98-GMN-TANI(IDX)
+           END-IF
       *
-      *    共通編集処理
-           PERFORM 310211-TENSU-KYOHEN-SEC
+      *    診療コードの時、種別
+           IF      TNS-SRYCD (1:1)     =   "1"
+               MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+           END-IF
+      *
+      *----(01.00.01) LINE ADD START ----------------------------------
+      *    診療行為で老人の時、再編集
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-ROUTEKKBN       =   2  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "［老］"      DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   1  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "【後発】"    DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   2  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "【後発有】"  DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *!!
+      *    検査正式名称
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60"
+                                       OR  "64"  )  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "　【"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "】"               DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *
       *    入力ＣＤ
            IF      ICD-DSPSEQ          =   1
@@ -1779,7 +1704,6 @@
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            PERFORM 910-TENSU-SELECT-SEC
       *
-      *
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDX
            PERFORM
@@ -1806,13 +1730,7 @@
       *        システム予約の入力不可分
                IF      SPA-K98-GMN-SYORI3      =   "U6"
                    IF      TNS-SRYCD           >=  "099999911"
-                       IF     (TNS-SRYCD           >=  "099999921"
-      *H29.10                                  AND <=  "099999929" )
-                                               AND <=  "099999949" )
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-CHK
-                       END-IF
+                       MOVE    1               TO  FLG-CHK
                    END-IF
       *            リハビリ算定
                    IF      TNS-SRYCD           =   "099800201"
@@ -1822,34 +1740,6 @@
                                                OR  "0997"
                        MOVE    1               TO  FLG-CHK
                    END-IF
-               END-IF
-      *H25.7
-      *        労災の合成コード対象外
-               IF      SPA-K98-GMN-SYORI3      =   "U5"
-                   IF     (TNS-SRYCD(1:1)           =   "1")
-                   AND    (TNS-DATAKBN              =   "1")
-                   AND    (TNS-KOKUJISKBKBN1        =   3  )
-                       MOVE    1               TO  FLG-CHK
-                       IF     SPA-K98-GMN-ALL      =   "1"
-                          MOVE    ZERO             TO  FLG-CHK
-                       END-IF
-                   END-IF
-               END-IF
-      *        労災の合成コードのみ
-               IF      SPA-K98-GMN-SYORI3      =   "U7"
-                   IF     (TNS-SRYCD(1:1)           =   "1")
-                   AND    (TNS-DATAKBN              =   "1")
-                   AND    (TNS-KOKUJISKBKBN1        =   3  )
-                       CONTINUE
-                   ELSE
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-IF
-      *        労災の外来管理加算（読替）は対象外（レセプト自動記載）
-               IF     (TNS-SRYCD(1:3)           =   "101" )
-               AND    (TNS-SRYKBN           NOT =   "12" )
-               AND    (TNS-GAIKANRIKBN          =   2    )
-                   MOVE    1               TO  FLG-CHK
                END-IF
       *
                IF      FLG-CHK             =   ZERO
@@ -1974,25 +1864,17 @@
                    MOVE    "098999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-K98-GMN-ALL
                WHEN    "U5"
-      *            労災診察（労災コードのみ）
+      *            労災診察
                    MOVE    "key12s"             TO  WRK-PATH
-      *****        MOVE    "100000000"          TO  TNS-SRYCD
-      ****         MOVE    "109999999"          TO  TNSUP-SRYCD
-                   MOVE    "101000000"          TO  TNS-SRYCD
-                   MOVE    "101999999"          TO  TNSUP-SRYCD
-      *H25.7       MOVE    "1"                  TO  SPA-K98-GMN-ALL
+                   MOVE    "100000000"          TO  TNS-SRYCD
+                   MOVE    "109999999"          TO  TNSUP-SRYCD
+                   MOVE    "1"                  TO  SPA-K98-GMN-ALL
                WHEN    "U6"
       *            予約コード
                    MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "099000000"          TO  TNS-SRYCD
                    MOVE    "099999999"          TO  TNSUP-SRYCD
                    MOVE    "1"                  TO  SPA-K98-GMN-ALL
-      *H25.7
-               WHEN    "U7"
-      *            労災（合成コード）
-                   MOVE    "key12s"             TO  WRK-PATH
-                   MOVE    "101000000"          TO  TNS-SRYCD
-                   MOVE    "101999999"          TO  TNSUP-SRYCD
       *TEST
                WHEN    "JK"
       *            自院・器材
@@ -2084,12 +1966,6 @@
       *    病院診療所区分判定
            IF      (TNS-HOSPSRYKBN     =   ZERO        )  OR
                    (TNS-HOSPSRYKBN     =   SPA-HOSPSBT )
-      *H30.4
-      *       短期滞在手術基本２（病院・診療所）
-              OR   (TNS-HOSPSRYKBN     =   3   )
-      *       短期滞在手術基本３（病院のみ）
-              OR  ((TNS-HOSPSRYKBN     =   4   )   AND
-                   (SPA-HOSPSBT        =   1   ))
                CONTINUE
            ELSE
                MOVE   1                TO  FLG-CHK
@@ -2138,9 +2014,70 @@
            MOVE    TNS-SRYCD           TO  SPA-K98-GMN-INPUTCD
                                                             (IDX)
            MOVE    TNS-SRYCD           TO  SPA-K98-GMN-SRYCD(IDX)
-      *    共通編集処理
-           PERFORM 310211-TENSU-KYOHEN-SEC
+           MOVE    TNS-NAME            TO  SPA-K98-GMN-NAME
+                                                             (IDX)
+           MOVE    TNS-TEN             TO  SPA-K98-GMN-KISOTEN
+                                                            (IDX)
+      *     薬剤・器材の時単位
+           IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
+               MOVE    TNS-TANINAME        TO  SPA-K98-GMN-TANI(IDX)
+           END-IF
       *
+      *    診療コードの時、種別
+           IF      SPA-K98-GMN-SYORI   =   "9"
+               CONTINUE
+           ELSE
+               IF      TNS-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+               END-IF
+               IF      TNS-SRYCD (1:3)     =   "099"
+                   MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
+               END-IF
+           END-IF
+      *
+      *    診療行為で老人の時、再編集
+      *****IF     (SPA-K98-GMN-SYORI   =   "8" )  AND
+           IF     (TNS-ROUTEKKBN       =   2   )
+               MOVE    SPACE               TO  SPA-K98-GMN-NAME(IDX)
+               STRING  "［老］"
+                       TNS-NAME            DELIMITED   BY  SIZE
+                       INTO                    SPA-K98-GMN-NAME(IDX)
+               END-STRING
+           END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   1  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "【後発】"    DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   2  )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  "【後発有】"  DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *!!
+      *    検査正式名称
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60"
+                                       OR  "64" )  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "　【"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "】"               DELIMITED   BY  SIZE
+                               INTO        SPA-K98-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *    入力ＣＤ
            PERFORM 3200-SETCD-HEN-SEC
       *
@@ -2217,168 +2154,6 @@
            EXIT.
       *
       *****************************************************************
-      *    点数マスタ共通編集処理
-      *****************************************************************
-       310211-TENSU-KYOHEN-SEC             SECTION.
-      *
-           MOVE    TNS-NAME            TO  SPA-K98-GMN-NAME
-                                                             (IDX)
-           MOVE    TNS-TEN             TO  SPA-K98-GMN-KISOTEN
-                                                            (IDX)
-      *H29.2
-      *    ユーザー
-           IF     (TNS-SRYCD(1:1)      =   "1"
-                                       OR  "6"
-                                       OR  "7" )
-              AND (TNS-MASTER-CLASS    =   2   )
-               MOVE    "2"                 TO  SPA-K98-NAI-MASTER
-                                                            (IDX)
-           END-IF
-      *H29.2
-      *    器材ユーザー金額編集（酸素等）
-           IF     (TNS-SRYCD(1:1)      =   "7" )
-      *        酸素等、都道府県購入価格
-              AND ((TNS-TOKUKIZAISBT1  =   "2"
-                                       OR  "3"
-                                       OR  "4" )  OR
-                   (TNS-TENSIKIBETU    =   "2" ))
-               PERFORM 9103-TENSUPRICE-READ-SEC
-               IF    ( FLG-TENSUPRICE      =   ZERO )
-                 AND ( TNSPR-PRICE     NOT =   ZERO )
-                   MOVE    TNSPR-PRICE         TO  SPA-K98-GMN-KISOTEN
-                                                            (IDX)
-               END-IF
-           END-IF
-      *
-      *H28.4
-      *    薬剤　除算金額（１０で除す）
-           IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
-                  (TNS-TENSIKIBETU     =   4    ) AND
-                  (TNS-TEN             >   ZERO )
-               COMPUTE SPA-K98-GMN-KISOTEN (IDX)
-                                           =   TNS-TEN   /  10
-           END-IF
-      *     薬剤・器材の時単位
-           IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
-               MOVE    TNS-TANINAME        TO  SPA-K98-GMN-TANI(IDX)
-           END-IF
-      *
-      *    診療コードの時、種別
-           IF      SPA-K98-GMN-SYORI   =   "9"
-               CONTINUE
-           ELSE
-               IF      TNS-SRYCD (1:1)     =   "1"
-                   MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-               END-IF
-               IF      TNS-SRYCD (1:3)     =   "099"
-                   MOVE    TNS-SRYKBN          TO  SPA-K98-GMN-TANI(IDX)
-               END-IF
-           END-IF
-      *
-      *    診療行為で老人の時、再編集
-           IF     (TNS-SRYCD(1:1)      =   "1" ) AND
-                  (TNS-ROUTEKKBN       =   2   )
-               MOVE    SPACE               TO  SPA-K98-GMN-NAME(IDX)
-               STRING  "［老］"
-                       TNS-NAME            DELIMITED   BY  SIZE
-                       INTO                    SPA-K98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *H28.6
-      *    薬剤名称
-           IF      TNS-SRYCD (1:1)     =   "6"
-      *        薬価基準コード
-               MOVE    TNS-YAKKAKJNCD      TO  SPA-K98-GMN-INPUTCD(IDX)
-      *        薬剤名称編集
-               PERFORM 310212-YAKUZAI-NAME-SEC
-           END-IF
-      *
-      *    検査正式名称
-           IF     (TNS-SRYCD(1:1)      =   "1") AND
-                  (TNS-SRYKBN          =   "60"
-                                       OR  "64" )  AND
-                  (TNS-FORMALNAME  NOT =   SPACE )  AND
-                  (TNS-FORMALNAME  NOT =   TNS-NAME )
-                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  TNS-NAME           DELIMITED   BY  SPACE
-                        "　【"             DELIMITED   BY  SIZE
-                        TNS-FORMALNAME     DELIMITED   BY  SPACE
-                        "】"               DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                END-STRING
-                PERFORM 310211-KENSA-NAME-SEC
-           END-IF
-      *!!
-      *    医療観察コード名称編集
-           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-                   (TNS-IRYOKANSATUKBN =   4    )
-      *        医療観察区分
-               MOVE    SPACE               TO  SPA-K98-GMN-NAME (IDX)
-               STRING  "【医観】"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-K98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *H29.3
-      *    器材別表区分編集
-           IF     (TNS-SRYCD(1:1)      =   "7" )
-             AND  (TNS-CDKBN-BU        =   "01"
-                                       OR  "08" )
-               MOVE    SPACE               TO  SPA-K98-GMN-NAME (IDX)
-               IF      TNS-CDKBN-BU        =   "01"
-                   STRING  "【在】"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 SPA-K98-GMN-NAME(IDX)
-                   END-STRING
-               ELSE
-                   STRING  "【調】"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 SPA-K98-GMN-NAME(IDX)
-                   END-STRING
-               END-IF
-           END-IF
-      *
-      *H24.6
-      *    労災コード名称編集
-           IF      (TNS-SRYCD(1:3)     =   "101")
-      *    労災（器材）
-           OR     ((TNS-SRYCD(1:1)     =   "7"    )  AND
-                   (TNS-SRYCD(2:5)     =   "88888"))
-      *    労災（コメント）
-           OR     ((TNS-SRYCD(1:1)     =   "8"  )  AND
-                   (TNS-SRYCD(4:1)     =   "8"  ))
-               MOVE    SPACE               TO  SPA-K98-GMN-NAME (IDX)
-               STRING  "【労】"            DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-K98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    公害のコード
-           IF      (TNS-SRYCD (1:3)    =   "102")
-               MOVE    SPACE               TO  SPA-K98-GMN-NAME (IDX)
-               STRING  "【公害】"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-K98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *H25.11
-      *    公務災害のコード
-           IF      (TNS-SRYCD (1:6)    =   "101989")
-               MOVE    SPACE               TO  SPA-K98-GMN-NAME (IDX)
-               STRING  "【労公】"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-K98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-           .
-       310211-TENSU-KYOHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    検査名称再編集処理
       *****************************************************************
        310211-KENSA-NAME-SEC             SECTION.
@@ -2412,108 +2187,6 @@
            EXIT.
       *
       *****************************************************************
-      *    薬剤名称編集処理
-      *****************************************************************
-       310212-YAKUZAI-NAME-SEC             SECTION.
-      *
-      *    向精神薬成分コード検索
-           PERFORM 9102-PSYCHOTROPIC-READ-SEC
-           MOVE    SPACE                TO  WRK-PSY-MEI
-      *    向精神薬設定
-           EVALUATE    PSYCHOTROPIC-CLASS
-               WHEN    "1"
-                   MOVE    "不"            TO  WRK-PSY-MEI
-               WHEN    "2"
-                   MOVE    "睡"            TO  WRK-PSY-MEI
-               WHEN    "3"
-                   MOVE    "う"            TO  WRK-PSY-MEI
-               WHEN    "4"
-                   MOVE    "精"            TO  WRK-PSY-MEI
-           END-EVALUATE
-      *
-      *    一般名記載区分
-           PERFORM 9101-TENSUPLUS-READ-SEC
-           MOVE    SPACE                TO  WRK-MSG-2
-           EVALUATE    TNSP-IPN-KISAIKBN
-               WHEN    1
-                   MOVE    "〔般〕"        TO  WRK-MSG-2
-               WHEN    2
-                   MOVE    "〔２〕"        TO  WRK-MSG-2
-               WHEN    3
-                   MOVE    "〔処〕"        TO  WRK-MSG-2
-           END-EVALUATE
-      *
-      *    後発医薬品再編集
-           EVALUATE    TNS-KOUHATUKBN
-           WHEN    1
-                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "【"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "後発】"           DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                END-STRING
-           WHEN    2
-                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "【"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "後発有】"         DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                END-STRING
-      *H29.3
-           WHEN    3
-                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "【"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "先無加】"         DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                END-STRING
-           WHEN    4
-                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "【"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "加】"         DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                END-STRING
-      *
-           WHEN    7
-                MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-                STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                        "【"
-                        WRK-PSY-MEI        DELIMITED   BY  SPACE
-                        "先発無】"         DELIMITED   BY  SIZE
-                        TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                END-STRING
-           WHEN    OTHER
-               MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
-               IF      WRK-PSY-MEI        =   SPACE
-                    STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                            TNS-NAME           DELIMITED   BY  SIZE
-                                   INTO        SPA-K98-GMN-NAME(IDX)
-                   END-STRING
-               ELSE
-                    STRING  WRK-MSG-2          DELIMITED   BY  SPACE
-                            "【"
-                            WRK-PSY-MEI        DELIMITED   BY  SPACE
-                                  "】"         DELIMITED   BY  SIZE
-                            TNS-NAME           DELIMITED   BY  SIZE
-                               INTO        SPA-K98-GMN-NAME(IDX)
-                    END-STRING
-               END-IF
-           END-EVALUATE
-           .
-       310212-YAKUZAI-NAME-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
@@ -2534,16 +2207,8 @@
            IF      WRK-K98-ROW     NOT =   ZERO
                MOVE    WRK-K98-ROW         TO  K98-ROW
            END-IF
-      *H27.9
-      *    セット展開前の位置へ
-           IF      WRK-SET-ROW     NOT =   ZERO
-               MOVE    WRK-SET-ROW         TO  K98-ROW
-           END-IF
       *
            MOVE    SPA-K98-GMN-INPUT   TO  K98-INPUT
-      *
-      *H27.9    セット展開以外
-           MOVE    SPA-K98-GMN-SYORI   TO  WRK-GMN-SYORI
       *
            IF     (SPA-K98-TYPE        =   "1" )  AND
                   (SPA-K98-CDSYUBETU   =   "6" )
@@ -2555,12 +2220,6 @@
            IF     (SPA-K98-TYPE        =   "1" )  AND
                   (SPA-K98-CDSYUBETU   =   "A" )
                MOVE    SPACE               TO  SPA-K98-GMN-SYORI
-           END-IF
-      *H27.9
-      *    セット展開中は継続
-           IF      WRK-GMN-SYORI       =   "S"
-                                       OR  "T"
-               MOVE    WRK-GMN-SYORI       TO  SPA-K98-GMN-SYORI
            END-IF
       *
            EVALUATE    SPA-K98-GMN-SYORI
@@ -2619,12 +2278,6 @@
       *        セット
                WHEN    "P"
                    MOVE    "セット"            TO  K98-SENTAKU
-      *
-      *H27.9
-      *        セット内容展開
-               WHEN    "S"
-                   MOVE    "≪セット内容確認≫"    TO  K98-SENTAKU
-      *
       *        ユーザー登録
                WHEN    "U"
                    EVALUATE    SPA-K98-GMN-SYORI3
@@ -2670,20 +2323,6 @@
                        WHEN    "U5"
                            MOVE    "労災"
                                                TO  K98-SENTAKU
-      *H25.7
-                           IF     (SPA-SRYYMD      >=  "20130701")
-                               IF     (SPA-K98-GMN-ALL     =   "1" )
-                                   MOVE    "労災（合成コード含む）"
-                                               TO  K98-SENTAKU
-                               ELSE
-                                   MOVE    "労災（合成コード以外）"
-                                               TO  K98-SENTAKU
-                               END-IF
-                           END-IF
-                       WHEN    "U7"
-                           MOVE    "労災合成コード"
-                                               TO  K98-SENTAKU
-      *
                        WHEN    "U6"
                            MOVE    "システム予約コード"
                                                TO  K98-SENTAKU
@@ -2694,20 +2333,6 @@
                            MOVE    "器材（全体）"
                                                TO  K98-SENTAKU
                    END-EVALUATE
-      *H24.4
-      *        一般名
-               WHEN    "G"
-                   MOVE    "【一般名称】"
-                                               TO  K98-SENTAKU
-                   IF      SPA-K98-GMN-SYORI2  =   "1"
-                       IF      SPA-K98-GMN-ALL     =   "1"
-                           MOVE    "【一般名称】（全体）"
-                                               TO  K98-SENTAKU
-                       ELSE
-                           MOVE    "【一般名称】（自院）"
-                                               TO  K98-SENTAKU
-                       END-IF
-                   END-IF
       *        その他
                WHEN    OTHER
                    MOVE    "入力コード全体（自院）"
@@ -2728,29 +2353,16 @@
       *    漢字入力で、入力コードで検索
            IF     (SPA-K98-TYPE        =   "1" )  AND
                   (SPA-K98-CDSYUBETU   =   "J" )
-      *H27.9
-      *        セット内容展開
-           AND    (SPA-K98-GMN-SYORI   NOT =   "S" )
                MOVE    "入力コード全体（自院）"
                                               TO  K98-SENTAKU
            END-IF
       *
-           MOVE    ZERO                TO  IDXG
            PERFORM VARYING   IDX       FROM    1   BY  1
                    UNTIL     IDX       >   SPA-K98-GMN-MAX
       *
-               ADD     1                   TO  IDXG
-               MOVE    IDXG                TO  WRK-NOZ
+               MOVE    IDX                 TO  WRK-NOZ
                MOVE    WRK-NOZ             TO  K98-NO  (IDX)
-               MOVE    IDXG                TO  SPA-K98-NAI-NO(IDX)
-      *H24.4
-      *        一般名記載
-               IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
-                   MOVE    "G**"               TO  K98-NO (IDX)
-                   MOVE    999                 TO  SPA-K98-NAI-NO(IDX)
-                   COMPUTE IDXG            =   IDXG   -   1
-               END-IF
-      *
+               MOVE    IDX                 TO  SPA-K98-NAI-NO(IDX)
       *        検査判断の時、区分を編集
                IF     (SPA-K98-GMN-SYORI       =   "9" )  AND
                       (SPA-K98-GMN-SYORI2      =   SPACE)
@@ -2779,46 +2391,7 @@
                    MOVE    SPA-K98-GMN-KISOTEN(IDX)
                                                TO  WRK-TENSUS
                    MOVE    WRK-TENSUS          TO  K98-KISOTEN (IDX)
-      *H28.4
-      *            小数点以下３位まで表示
-                   MOVE    SPA-K98-GMN-KISOTEN(IDX)
-                                               TO  WRK-KISOTEN-CHK
-                   IF      WRK-KISOTEN-R3  NOT =   ZERO
-                       MOVE    SPA-K98-GMN-KISOTEN(IDX)
-                                               TO  WRK-TENSUS-S4
-                       MOVE    WRK-TENSUS-S4   TO  K98-KISOTEN (IDX)
-                   END-IF
                END-IF
-      *H24.4
-      *        一般名称は、単価記載なし
-               IF     (SPA-K98-GMN-SYORI       =   "G"  )
-                   IF     (SPA-K98-GMN-SYORI2      =   SPACE )   OR
-                          (SPA-K98-GMN-NO-X(IDX)   =   "G"   )
-                       IF      SPA-K98-GMN-KISOTEN(IDX)    =   ZERO
-                           MOVE    SPACE           TO  K98-KISOTEN(IDX)
-                       ELSE
-                           MOVE    SPA-K98-GMN-KISOTEN(IDX)
-                                                   TO  WRK-TENSUS
-                           MOVE    WRK-TENSUS(3:8) TO  WRK-TENSUS-G
-                           MOVE    "("             TO  WRK-TENSUS-GX1
-                           MOVE    ")"             TO  WRK-TENSUS-GX2
-                           MOVE    WRK-TENSUS-X2   TO  K98-KISOTEN(IDX)
-      *H28.4
-      *                    小数点以下３位まで表示
-                           MOVE    SPA-K98-GMN-KISOTEN(IDX)
-                                               TO  WRK-KISOTEN-CHK
-                           IF      WRK-KISOTEN-R3  NOT =   ZERO
-                               MOVE    SPA-K98-GMN-KISOTEN(IDX)
-                                                   TO  WRK-TENSUS-S4
-                               MOVE    WRK-TENSUS-S4(3:8)
-                                                   TO  WRK-TENSUS-G
-                               MOVE    WRK-TENSUS-X2
-                                                   TO  K98-KISOTEN(IDX)
-                           END-IF
-                       END-IF
-                    END-IF
-               END-IF
-      *!!
       *        IF    ((SPA-K98-GMN-KISOTEN(IDX)    =   ZERO  )  AND
       *               (SPA-K98-GMN-SRYCD(IDX)(1:1) =   "S" OR "P")) OR
       *              ((SPA-K98-GMN-SYORI           =   "9"   )  AND
@@ -2844,26 +2417,7 @@
                ELSE
                    MOVE    SPA-K98-GMN-TANI (IDX)  TO  K98-TANI (IDX)
                END-IF
-      *H24.4
-      *        一般名称は、単位記載なし
-               IF     (SPA-K98-GMN-SYORI       =   "G"  )
-                   IF     (SPA-K98-GMN-SYORI2      =   SPACE )   OR
-                          (SPA-K98-GMN-NO-X(IDX)   =   "G"   )
-      *                一般名
-                       MOVE    SPA-K98-GMN-TANI (IDX)
-                                                   TO  K98-TANI (IDX)
-                       MOVE    ALL "*"             TO  K98-SRYKBN (IDX)
-                    END-IF
-               END-IF
-      *
-      *TEST
-      *
                MOVE    "F"             TO  K98-SELECT  (IDX)
-      *H24.4
-               IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
-                   CONTINUE
-               ELSE
-      *
                PERFORM VARYING     IDS     FROM    1   BY  1
                        UNTIL       IDS     >   10
                    IF      SPA-K98-NAI-SELNUM(IDS) NOT =   ZERO
@@ -2873,32 +2427,6 @@
                        END-IF
                    END-IF
                END-PERFORM
-      *H24.4
-               END-IF
-      *H24.4
-      *H27.9
-      *        セット展開
-               IF      SPA-K98-GMN-NO-X(IDX)   =   "S"
-      *            番号
-                   MOVE    "S* "               TO  K98-NO (IDX)
-                   MOVE    999                 TO  SPA-K98-NAI-NO(IDX)
-      *            単価など
-                   IF      SPA-K98-GMN-TANI (IDX)  =   "(数量)"
-                       MOVE    "  (数量)"      TO  K98-KISOTEN(IDX)
-                       MOVE    ALL "-"         TO  K98-TANI (IDX)
-                   ELSE
-                       IF      SPA-K98-GMN-KISOTEN(IDX)    =   ZERO
-                           MOVE    SPACE       TO  K98-KISOTEN(IDX)
-                       END-IF
-                   END-IF
-               END-IF
-      *!!!
-      *H29.1
-      *        ユーザー
-      *        IF      SPA-K98-NAI-MASTER (IDX) =   "2"
-      *            MOVE    CL-GREEN        TO
-      *                               K98-FGCORLOR (IDX)
-      ****     END-IF
            END-PERFORM
       *
            MOVE    SPA-K98-GMN-MAX     TO  K98-COUNT
@@ -3048,12 +2576,10 @@
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "（自院）"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            ELSE
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "（全体）"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            END-IF
       *
            .
@@ -3147,15 +2673,6 @@
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 290-KAKUTEI-SEC
-      *H24.4
-      *        一般名
-               WHEN    "CLICKED"       ALSO    "B02S"
-                   PERFORM 290-GENERIC-SEC
-      *H27.9
-      *        セット内容展開
-               WHEN    "CLICKED"       ALSO    "B05S"
-                   PERFORM 2501-SET-TENKAI-SEC
-      *
            END-EVALUATE
           .
       *
@@ -3242,16 +2759,6 @@
            END-IF
       *
            IF      FLG-KANJI           =   1
-      *H24.4
-      *        一般名処理中
-               IF      SPA-K98-GMN-SYORI   =   "G"
-                   MOVE    "J"                 TO  SPA-K98-CDSYUBETU
-                   MOVE    SPACE               TO  SPA-K98-GMN-SYORI2
-                   MOVE    "2"                 TO  SPA-K98-TYPE
-                   PERFORM                     310-SPA-SET-SEC
-                   GO      TO      41013-INPUT-CHK-EXT
-               END-IF
-      *!
       *        全角入力（点数マスタより）
                MOVE    "J"                 TO  SPA-K98-CDSYUBETU
                MOVE    "1"                 TO  SPA-K98-TYPE
@@ -3374,34 +2881,11 @@
                    MOVE    SPA-K98-NAI-SELNUM(IDX-1)
                                            TO  WRK-NOZ
                    MOVE    WRK-NOZ         TO  SPA-K98-GMN-SELNUM(IDX-1)
-      *H24.4
-                   IF     (SPA-K98-GMN-SYORI   =   "G"  )  AND
-                          (SPA-K98-GMN-SYORI2  =   "1"  )
-                       MOVE    SNUM-OUTNUM         TO  WRK-SELNO
-                       PERFORM 4101101-SELNUM-NAIHEN-SEC
-                   END-IF
                END-IF
            END-IF
       *
            .
        410110-GMN-SPA-EXT.
-           EXIT.
-      *
-      *H24.4
-      *****************************************************************
-      *    番号選択　処理
-      *****************************************************************
-       4101101-SELNUM-NAIHEN-SEC                SECTION.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-K98-GMN-MAX
-               IF      SPA-K98-NAI-NO (IDX)    =   WRK-SELNO
-                   MOVE    IDX             TO  SPA-K98-NAI-SELNUM(IDX-1)
-                   MOVE    SPA-K98-GMN-MAX     TO  IDX
-               END-IF
-           END-PERFORM
-           .
-       4101101-SELNUM-NAIHEN-EXT.
            EXIT.
       *****************************************************************
       *    番号選択　処理
@@ -3415,9 +2899,6 @@
                                            " * "  OR
                                            "  *" 
                IF     (SPA-K98-GMN-SYORI   =   "9"   AND
-                       SPA-K98-GMN-SYORI2  =   SPACE )
-      *H24.4
-               OR     (SPA-K98-GMN-SYORI   =   "G"   AND
                        SPA-K98-GMN-SYORI2  =   SPACE )
                    CONTINUE
                ELSE
@@ -3465,33 +2946,12 @@
            MOVE    ZERO                TO  WRK-SELNO
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K98-GMN-MAX
-      *24.4
-      *        一般名からの検索時
-               IF      SPA-K98-GMN-NO-X(IDX)   =   "G"
-                   MOVE    SPA-K98-NAI-SELNUM (IDX-1)
-                                               TO  WRK-SELNO
-                   MOVE    SPA-K98-GMN-MAX     TO  IDX
-               ELSE
-      *
-                   IF      SPA-K98-NAI-NO (IDX)
-                                               =   SPA-K98-NAI-SELNUM
+               IF      SPA-K98-NAI-NO (IDX)    =   SPA-K98-NAI-SELNUM
                                                             (IDX-1)
-                       MOVE    IDX                 TO  WRK-SELNO
-                       MOVE    SPA-K98-GMN-MAX     TO  IDX
-                   END-IF
+                   MOVE    IDX                 TO  WRK-SELNO
+                   MOVE    SPA-K98-GMN-MAX     TO  IDX
                END-IF
            END-PERFORM
-      *H24.4
-      *    一般名チェック
-           IF      SPA-K98-GMN-SYORI   =   "G"
-               IF      SPA-K98-GMN-SYORI2  =   SPACE
-                   PERFORM 41013-GENERIC-GRP-SEC
-                   MOVE    1               TO  FLG-HENSYU
-               ELSE
-                   PERFORM 41014-KENSA-SEL-SEC
-               END-IF
-               GO     TO   41011-SELNUM-CHK-EXT
-           END-IF
       *
       *    検査チェック
            IF      SPA-K98-GMN-SYORI   =   "9"
@@ -3624,9 +3084,6 @@
       *
            IF      SPA-ERRCD           =   SPACE
                IF      FLG-SYURYOU         =   1
-      *H27.9
-                  AND (FLG-SET-SEL         =   ZERO )
-      *
       *             戻るへ
                     PERFORM 210-BACK
                END-IF
@@ -3754,19 +3211,9 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
                IF      K98-SELECT (IDX)    =   "T"
-      *H24.4
-      *        一般名
-                   IF     (SPA-K98-GMN-NO-X(IDX)    =   "G" )
-                   OR     (SPA-K98-GMN-NO-X(IDX)    =   "S" )
-                       CONTINUE
-                   ELSE
-      *
                    MOVE    SPA-K98-GMN-NO(IDX)  TO  WRK-GMN-SELNO
                    MOVE    IDX                  TO  WRK-SELNO
                    PERFORM 410121-LISTSEL-HEN-SEC 
-      *
-                   END-IF
-      *
                END-IF
            END-PERFORM
       *
@@ -3798,18 +3245,6 @@
            IF      IDX-1               =   ZERO
                CONTINUE
            ELSE
-      *H24.4
-      *        一般名チェック
-               IF      SPA-K98-GMN-SYORI   =   "G"
-                   IF      SPA-K98-GMN-SYORI2  =   SPACE
-                       PERFORM 41013-GENERIC-GRP-SEC
-                       MOVE    1               TO  FLG-HENSYU
-                   ELSE
-                       PERFORM 41014-KENSA-SEL-SEC
-                   END-IF
-                   GO      TO      41012-LISTSEL-EXT
-               END-IF
-      *
       *         検査チェック
                IF      SPA-K98-GMN-SYORI   =   "9"
                    IF      SPA-K98-GMN-SYORI2  =   SPACE
@@ -3874,6 +3309,7 @@
                MOVE    "0002"          TO  SPA-ERRCD
                GO      TO              41011-SELNO-EXT
            END-IF
+      *
            MOVE    WRK-SELNO           TO  IDX
       *
       *****PERFORM 410111-SEL-SYUKBN-CHK-SEC
@@ -4105,10 +3541,6 @@
                    MOVE    "U5"            TO  SPA-K98-GMN-SYORI3
                WHEN    "6"
                    MOVE    "U6"            TO  SPA-K98-GMN-SYORI3
-      *H25.7
-               WHEN    "7"
-                   MOVE    "U7"            TO  SPA-K98-GMN-SYORI3
-      *
                WHEN    OTHER
                    MOVE    "0011"          TO  SPA-ERRCD
                    GO      TO      41014-USER-CHK-EXT
@@ -4180,9 +3612,6 @@
       *
            IF     (SPA-K98-GMN-SYORI   =   "9"   AND
                    SPA-K98-GMN-SYORI2  =   SPACE )
-      *H24.4
-           OR    ((SPA-K98-GMN-SYORI   =   "G"  )  AND
-                  (SPA-K98-GMN-SYORI2  =   SPACE ))
                CONTINUE
            ELSE
       *        入力コードより編集の時、内服（Ｆ２）とする
@@ -4224,516 +3653,6 @@
        290-ALL-SEL-EXT.
            EXIT.
       *
-      *TEST
-      *H24.4
-      *****************************************************************
-      *    一般名検索処理
-      *****************************************************************
-       290-GENERIC-SEC                    SECTION.
-      *
-      *!!　薬剤が選択中であれば、その薬剤の一般名表
-           IF     (SPA-K98-GMN-SYORI   =   "G"  )
-              OR  (SPA-K98-GMN-MAX     =   ZERO )
-               CONTINUE
-           ELSE
-               IF      (SPA-K98-GMN-MAX        =   1    )  AND
-                       (SPA-K98-NAI-SELNUM(1)  =   ZERO )
-                   MOVE    1                   TO  SPA-K98-NAI-SELNUM(1)
-               END-IF
-               IF      (SPA-K98-NAI-SELNUM(1)  >   ZERO )
-      *
-               MOVE    SPA-K98-NAI-SELNUM (1)  TO  WRK-SELNO
-               IF      SPA-K98-GMN-SRYCD (WRK-SELNO)(1:1)  =   "6"
-      *            全角入力でないなら、クリア
-                   IF     (SPA-K98-TYPE        =   "2"  )  AND
-                          (SPA-K98-CDSYUBETU   =   "J"  )
-                       CONTINUE
-                   ELSE
-                       MOVE    SPACE               TO  SPA-K98-CDSYUBETU
-                       MOVE    SPACE               TO  SPA-K98-GMN-INPUT
-                   END-IF
-                   PERFORM 299-TENGENERIC-SEC
-                   IF      FLG-SYORI           =   ZERO
-                       GO      TO      290-GENERIC-EXT
-                   END-IF
-               END-IF
-      *
-               END-IF
-           END-IF
-      *
-           MOVE    "G"                 TO  SPA-K98-GMN-SYORI
-           MOVE    SPACE               TO  SPA-K98-GMN-SYORI2
-           MOVE    "2"                 TO  SPA-K98-TYPE
-           MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
-      *
-           INITIALIZE                      SPA-K98-NAI-SELNUM-G
-           INITIALIZE                      SPA-K98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-K98-SRYCD-G
-           MOVE    SPACE               TO  SPA-K98-GMN-ALL
-      *
-           MOVE    ZERO                TO  SPA-K98-NEXT
-           MOVE    1                   TO  SPA-K98-PAGE
-           IF     (SPA-K98-GMN-INPUT   =   SPACE )
-             OR   (SPA-K98-CDSYUBETU   NOT =   "J"   )
-               INITIALIZE                  SPA-K98-GMN-TBL
-               MOVE    ZERO                TO  SPA-K98-GMN-MAX
-               MOVE    21                  TO  SPA-K98-GMN-CUR
-               MOVE    SPACE               TO  SPA-K98-GMN-INPUT
-               MOVE    SPACE               TO  SPA-K98-CDSYUBETU 
-           ELSE
-      *    ＳＰＡセット
-               PERFORM                     310-SPA-SET-SEC
-           END-IF
-      *
-          .
-       290-GENERIC-EXT.
-           EXIT.
-      *****************************************************************
-      *    一般名検索処理
-      *****************************************************************
-       2901-GENERICNAME-SYORI-SEC      SECTION.
-      *
-           IF      SPA-K98-GMN-SYORI2  =   SPACE
-      *        一般名リスト選択
-               PERFORM 2901-GENERICNAME-HEN-SEC
-           ELSE
-      *        一般名から点数マスタ
-               PERFORM 410131-GENERIC-HENSYU-SEC
-           END-IF
-          .
-       2901-GENERICNAME-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    一般名検索処理
-      *****************************************************************
-       2901-GENERICNAME-HEN-SEC        SECTION.
-      *
-           MOVE    1                   TO  FLG-GMN-INIT
-      *
-           INITIALIZE                      SPA-K98-NAI-SELNUM-G
-           INITIALIZE                      SPA-K98-GMN-SELNUM-G
-      *
-           INITIALIZE                  SPA-K98-GMN-TBL
-           MOVE    ZERO                TO  SPA-K98-GMN-MAX
-           MOVE    ZERO                TO  FLG-MAX
-           MOVE    ZERO                TO  SPA-K98-NEXT
-      *    開始
-           IF     (SPA-K98-PAGE        =   ZERO )
-               MOVE    1                   TO  SPA-K98-PAGE
-           END-IF
-           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
-                                       *   200
-                                       +   1
-      *
-           MOVE    ZERO                TO  WRK-CNT-ENT
-           MOVE    SPACE               TO  WRK-KEY-INPUT
-      *
-      *    検索キー編集
-           INITIALIZE                  ORCSADDSIGNAREA
-           MOVE    "1"                 TO  SADDSIGN-KBN
-           MOVE    SPA-K98-GMN-INPUT   TO  SADDSIGN-STR
-           CALL    "ORCSADDSIGN"       USING
-                                       ORCSADDSIGNAREA
-           MOVE    SADDSIGN-STR        TO  WRK-KEY-INPUT
-      *
-           MOVE    SPACE               TO  GENERICNAME-REC
-           INITIALIZE                      GENERICNAME-REC
-           MOVE    WRK-KEY-INPUT       TO  GENERIC-GENERICNAME
-      *
-           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 9102-GENERICNAME-READ-SEC
-           ELSE
-               INITIALIZE                      GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDX
-           MOVE    SPACE               TO  WRK-GENERICNAME
-           PERFORM
-               UNTIL      (IDX         >    200 )   OR
-                          (FLG-GENERICNAME  =   1   )
-      *H28.4
-      *      同じ名称は対象外
-             IF     (GENERIC-GENERICNAME      =   WRK-GENERICNAME)
-                 CONTINUE
-             ELSE
-      *
-               ADD     1               TO  IDX2
-      *        次ページの時、表示分は読み飛ばし
-               IF      IDX2            >=  WRK-STR
-                   PERFORM 29001-GENERICNAME-HEN-SEC
-               END-IF
-      *
-      *H28.4
-             END-IF
-             MOVE    GENERIC-GENERICNAME   TO  WRK-GENERICNAME
-      *
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 9102-GENERICNAME-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
-      *
-      *
-          .
-       2901-GENERICNAME-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一般名マスタ編集処理
-      *****************************************************************
-       29001-GENERICNAME-HEN-SEC       SECTION.
-      *
-           ADD     1                   TO  IDX
-      *    ２００件オーバーチェック
-           IF      IDX                 >   200
-               MOVE    1                   TO  FLG-MAX
-               MOVE    1                   TO  SPA-K98-NEXT
-               GO      TO      29001-GENERICNAME-HEN-EXT
-           END-IF
-      *
-           ADD     1                   TO  WRK-CNT-ENT
-           MOVE    IDX                 TO  SPA-K98-GMN-NO   (IDX)
-           MOVE    GENERIC-YAKKAKJNCD  TO  SPA-K98-GMN-INPUTCD
-                                                            (IDX)
-           MOVE    GENERIC-YAKKAKJNCD  TO  SPA-K98-GMN-SRYCD(IDX)
-           MOVE    GENERIC-GENERICNAME TO  SPA-K98-GMN-NAME
-                                                             (IDX)
-           MOVE    ZERO                TO  SPA-K98-GMN-KISOTEN
-                                                            (IDX)
-      *    単位
-           MOVE    GENERIC-TANINAME    TO  SPA-K98-GMN-TANI(IDX)
-      *
-      *    金額
-           MOVE    GENERIC-YAKKAKJNCD  TO  WRK-YAKKAKJNCD
-           PERFORM 9201-GENERICPRICE-READ-SEC
-           IF      FLG-GENERICPRICE    =   ZERO
-      *        最低薬価
-               MOVE    GENERICPRICE-PRICE  TO  SPA-K98-GMN-KISOTEN
-                                                              (IDX)
-      *H28.3
-      *        一般名コード
-               MOVE    GENERICPRICE-GECODE TO  SPA-K98-NAI-GECODE
-                                                              (IDX)
-           END-IF
-      *
-           .
-       29001-GENERICNAME-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一般名コードから点数マスタ検索処理
-      *****************************************************************
-       41013-GENERIC-GRP-SEC                   SECTION.
-      *
-           MOVE    1                   TO  SPA-K98-GMN-CUR
-      *
-           IF     (SPA-K98-NAI-SELNUM(IDX-1)
-                                       NOT =   ZERO ) AND
-                  (IDX-1               NOT =   1     ) 
-               MOVE    "0003"          TO  SPA-ERRCD
-               GO      TO      41013-GENERIC-GRP-EXT
-           ELSE
-               IF      SPA-K98-NAI-SELNUM(IDX-1)   =   ZERO
-                   GO      TO      41013-GENERIC-GRP-EXT
-               END-IF
-           END-IF
-      *
-           IF      WRK-SELNO           =   ZERO
-               MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      41013-GENERIC-GRP-EXT
-           END-IF
-      *
-      *    一般名から点数マスタ検索
-           MOVE    "1"                 TO  SPA-K98-GMN-SYORI2
-      *
-           INITIALIZE                      WRK-GEN-AREA
-     ***   MOVE    SPA-K98-GMN-SRYCD(WRK-SELNO)
-     ***                               TO  WRK-GEN-YAKKAKJNCD
-           MOVE    SPA-K98-GMN-INPUTCD(WRK-SELNO)
-                                       TO  WRK-GEN-YAKKAKJNCD
-           MOVE    SPA-K98-GMN-NAME (WRK-SELNO)    TO  WRK-GEN-NAME
-           MOVE    SPA-K98-GMN-TANI (WRK-SELNO)    TO  WRK-GEN-TANI
-           MOVE    SPA-K98-GMN-KISOTEN (WRK-SELNO) TO  WRK-GEN-KISOTEN
-      *
-           INITIALIZE                      SPA-K98-NAI-SELNUM-G
-           INITIALIZE                      SPA-K98-GMN-SELNUM-G
-           MOVE    1                   TO  SPA-K98-PAGE
-           MOVE    ZERO                TO  SPA-K98-NEXT
-      *
-           MOVE    SPACE               TO  SPA-K98-GMN-ALL
-           PERFORM 410131-GENERIC-HENSYU-SEC
-           IF      IDX3                =   ZERO
-      *        全体で検索
-               MOVE    "1"                 TO  SPA-K98-GMN-ALL
-               PERFORM 410131-GENERIC-HENSYU-SEC
-           END-IF
-           .
-       41013-GENERIC-GRP-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一般名コードから点数マスタ検索処理
-      *****************************************************************
-       410131-GENERIC-HENSYU-SEC                   SECTION.
-      *
-      *
-           INITIALIZE                  SPA-K98-GMN-TBL
-           MOVE    ZERO                TO  SPA-K98-GMN-MAX
-           MOVE    ZERO                TO  FLG-MAX
-           MOVE    ZERO                TO  SPA-K98-NEXT
-      *    開始
-           IF     (SPA-K98-PAGE        =   ZERO )
-               MOVE    1                   TO  SPA-K98-PAGE
-           END-IF
-           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
-                                       *   199
-                                       +   1
-      *
-      *    １件目を一般名情報とする
-           MOVE    1                   TO  WRK-CNT-ENT
-           MOVE    1                   TO  IDX
-           MOVE    "G"                 TO  SPA-K98-GMN-NO-X (IDX)
-           MOVE    WRK-GEN-YAKKAKJNCD  TO  SPA-K98-GMN-INPUTCD
-                                                            (IDX)
-           MOVE    "【一般】"          TO  SPA-K98-GMN-SETCD
-                                                            (IDX)
-           MOVE    WRK-GEN-YAKKAKJNCD  TO  SPA-K98-GMN-SRYCD(IDX)
-           MOVE    WRK-GEN-NAME        TO  SPA-K98-GMN-NAME
-                                                             (IDX)
-           MOVE    WRK-GEN-KISOTEN     TO  SPA-K98-GMN-KISOTEN
-                                                            (IDX)
-      *    単位
-           MOVE    WRK-GEN-TANI        TO  SPA-K98-GMN-TANI(IDX)
-           MOVE    999                 TO  SPA-K98-NAI-NO  (IDX)
-      *
-      *H28.5
-      *    一般名称を取得
-           MOVE    SPACE               TO  GENERICNAME-REC
-           INITIALIZE                      GENERICNAME-REC
-           MOVE    WRK-GEN-YAKKAKJNCD  TO  GENERIC-YAKKAKJNCD
-      *
-           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 9102-GENERICNAME-READ-SEC
-           ELSE
-               INITIALIZE                      GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-GENERICNAME     =   1
-               GO      TO   410131-GENERIC-HENSYU-EXT
-           END-IF
-      *
-      *    一般名で一般名を検索する
-           MOVE    GENERIC-GENERICNAME TO  WRK-GENERICNAME
-      *
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDX3
-      *
-           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 9102-GENERICNAME-READ-SEC
-           ELSE
-               INITIALIZE                      GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           PERFORM UNTIL     FLG-GENERICNAME   =   1
-      *        一般名から対象を決定する
-               PERFORM 41013-GENERIC-SYORI-SEC
-      *
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 9102-GENERICNAME-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           MOVE    WRK-CNT-ENT         TO  SPA-K98-GMN-MAX
-           .
-       410131-GENERIC-HENSYU-EXT.
-           EXIT.
-      *
-      *H28.5
-      *****************************************************************
-      *    名称から検索処理
-      *****************************************************************
-       41013-GENERIC-SYORI-SEC   SECTION.
-      *
-      *    薬価基準コードの一致する点数マスタの検索
-           MOVE    GENERIC-YAKKAKJNCD  TO  WRK-YAKKAKJNCD
-      *
-           INITIALIZE                      TNS-TENSU-REC
-           IF      GENERIC-YAKKAKJNCD(12:1)    =   SPACE
-               STRING  GENERIC-YAKKAKJNCD
-                   "%"                 DELIMITED  BY  SPACE
-                                       INTO    TNS-YAKKAKJNCD
-               END-STRING
-           ELSE
-               MOVE    GENERIC-YAKKAKJNCD  TO  TNS-YAKKAKJNCD
-           END-IF
-           IF      SPA-K98-GMN-ALL     =   SPACE
-               MOVE    "key01gj"           TO  WRK-PATH
-           ELSE
-               MOVE    "key01g"            TO  WRK-PATH
-           END-IF
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
-           PERFORM 910-TENSU-SELECT-SEC
-      *
-           PERFORM
-               UNTIL      (IDX         >    200 )   OR
-                          (FLG-TENSU   =   1   )
-               MOVE    ZERO            TO  FLG-CHK
-               IF      WRK-YAKKAKJNCD(10:3)    =  SPACE
-      *            一般名一致のチェック
-                   PERFORM 410131-GENERIC-GECODE-CHK-SEC
-               END-IF
-      *
-               IF      FLG-CHK             =   ZERO
-                   ADD     1               TO  IDX2
-      *            次ページの時、表示分は読み飛ばし
-                   IF      IDX2            >=  WRK-STR
-                       PERFORM 31021-TENSU-HEN-SEC
-      *                行番号変更
-                       ADD     1               TO  IDX3
-                       MOVE    IDX3            TO  SPA-K98-GMN-NO(IDX)
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    WRK-PATH            TO  MCP-PATHNAME
-               PERFORM                     910-TENSU-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       41013-GENERIC-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一般名称検索処理
-      *****************************************************************
-       410131-GENERIC-GECODE-CHK-SEC   SECTION.
-      *
-           MOVE    SPACE               TO  GENERICNAME-REC
-           INITIALIZE                      GENERICNAME-REC
-           MOVE    TNS-YAKKAKJNCD      TO  GENERIC-YAKKAKJNCD
-      *
-           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 9102-GENERICNAME-READ-SEC
-           ELSE
-               INITIALIZE                      GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      GENERIC-GENERICNAME =   WRK-GENERICNAME
-               MOVE    ZERO            TO  FLG-CHK
-           ELSE
-               MOVE    1               TO  FLG-CHK
-           END-IF
-           .
-       410131-GENERIC-GECODE-CHK-EXT.
-           EXIT.
-      *H28.5
-      *H24.4
-      *****************************************************************
-      *    一般名検索処理
-      *****************************************************************
-       299-TENGENERIC-SEC                    SECTION.
-      *
-           MOVE    SPA-K98-NAI-SELNUM (1)  TO  WRK-SELNO
-           MOVE    ZERO                TO  FLG-SYORI
-      *
-           IF      SPA-K98-GMN-INPUTCD (WRK-SELNO) =   SPACE
-               MOVE    "0020"          TO  SPA-ERRCD
-               MOVE    1               TO  FLG-SYORI
-               GO      TO   299-TENGENERIC-EXT
-           END-IF
-      *
-           MOVE    SPACE               TO  GENERICNAME-REC
-           INITIALIZE                      GENERICNAME-REC
-           MOVE    SPA-K98-GMN-INPUTCD (WRK-SELNO)
-                                       TO  GENERIC-YAKKAKJNCD
-      *
-           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 9102-GENERICNAME-READ-SEC
-           ELSE
-               INITIALIZE                      GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-GENERICNAME     =   1
-               MOVE    "0020"          TO  SPA-ERRCD
-               MOVE    1               TO  FLG-SYORI
-               GO      TO   299-TENGENERIC-EXT
-           END-IF
-      *    一般名から点数マスタ検索
-           MOVE    "G"                 TO  SPA-K98-GMN-SYORI
-           MOVE    "1"                 TO  SPA-K98-GMN-SYORI2
-           MOVE    1                   TO  SPA-K98-GMN-CUR
-      *
-           INITIALIZE                      WRK-GEN-AREA
-           MOVE    GENERIC-YAKKAKJNCD  TO  WRK-GEN-YAKKAKJNCD
-           MOVE    GENERIC-GENERICNAME TO  WRK-GEN-NAME
-           MOVE    GENERIC-TANINAME    TO  WRK-GEN-TANI
-      *    最低薬価
-           MOVE    SPA-K98-GMN-INPUTCD (WRK-SELNO)
-                                       TO  WRK-YAKKAKJNCD
-           PERFORM 9201-GENERICPRICE-READ-SEC
-           IF      FLG-GENERICPRICE    =   ZERO
-               MOVE    GENERICPRICE-PRICE  TO  WRK-GEN-KISOTEN
-           END-IF
-      *
-           INITIALIZE                      SPA-K98-NAI-SELNUM-G
-           INITIALIZE                      SPA-K98-GMN-SELNUM-G
-           MOVE    SPACE               TO  SPA-K98-SRYCD-G
-           MOVE    1                   TO  SPA-K98-PAGE
-           MOVE    ZERO                TO  SPA-K98-NEXT
-      *
-           MOVE    "1"                 TO  SPA-K98-GMN-ALL
-           PERFORM 410131-GENERIC-HENSYU-SEC
-           .
-       299-TENGENERIC-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    次ページ処理
       *****************************************************************
@@ -4741,14 +3660,8 @@
       *
            IF      SPA-K98-NEXT        >   ZERO
                ADD     1                   TO  SPA-K98-PAGE
-      *H27.9   セット展開中
-               IF      SPA-K98-GMN-SYORI   =   "S"
-                   PERFORM 2502-SETPAGE-HEN-SEC
-               ELSE
-      *
-      *            ＳＰＡセット
-                   PERFORM                     310-SPA-SET-SEC
-               END-IF
+      *        ＳＰＡセット
+               PERFORM                     310-SPA-SET-SEC
            ELSE
                MOVE    "0006"              TO  SPA-ERRCD
            END-IF
@@ -4766,14 +3679,8 @@
                MOVE    "0007"              TO  SPA-ERRCD
            ELSE
                COMPUTE SPA-K98-PAGE    =   SPA-K98-PAGE  -   1
-      *H27.9   セット展開中
-               IF      SPA-K98-GMN-SYORI   =   "S"
-                   PERFORM 2502-SETPAGE-HEN-SEC
-               ELSE
-      *
-      *            ＳＰＡセット
-                   PERFORM                     310-SPA-SET-SEC
-               END-IF
+      *        ＳＰＡセット
+               PERFORM                     310-SPA-SET-SEC
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF
       *
@@ -4940,9 +3847,6 @@
       *
            MOVE    SPA-K98-MOTOPG      TO  SPA-SAKIPG
            MOVE    "K98"               TO  SPA-MOTOPG
-      *    流用のクリア
-           MOVE    ZERO                TO  SPA-GMN-K07-PAGE
-           MOVE    ZERO                TO  SPA-GMN-K07-MAX
       *
            MOVE    SPACE               TO  LINKAREA
       *
@@ -4965,14 +3869,6 @@
            MOVE    1                   TO  FLG-TOUROKU
            MOVE    ZERO                TO  IDX-N
       *
-      *H27.9
-      *    セット展開は１件目を選択とする
-           IF      SPA-K98-GMN-SYORI   =   "S"
-               MOVE    "1  "               TO  K98-SELNUM (1)
-               MOVE    SPACE               TO  K98-SELNUM (2)
-               MOVE    SPACE               TO  K98-SELNUM (3)
-           END-IF
-      *
            PERFORM 41011-SELNUM-ALLCHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      290-KAKUTEI-EXT
@@ -4984,328 +3880,6 @@
            .
        290-KAKUTEI-EXT.
            EXIT.
-      *
-      *H27.9
-      *****************************************************************
-      *    セット内容展開処理
-      *****************************************************************
-       2501-SET-TENKAI-SEC           SECTION.
-      *
-           IF      SPA-K98-GMN-SYORI   =   "S"
-      *        セット展開解除
-               MOVE    SPA-K98-GMN-INPUTCD (1) TO  WRK-TBL-INPUCD
-               MOVE    SPA-K98-OLD-SYORI   TO  SPA-K98-GMN-SYORI
-      *        コピー句を流用
-               MOVE    SPA-GMN-K07-PAGE    TO  SPA-K98-PAGE
-               MOVE    SPA-GMN-K07-MAX     TO  WRK-SET-ROW
-               PERFORM 310-SPA-SET-SEC
-               MOVE    ZERO                TO  SPA-GMN-K07-PAGE
-               MOVE    ZERO                TO  SPA-GMN-K07-MAX
-               GO      TO      2501-SET-TENKAI-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX-N
-           MOVE    1                   TO  FLG-SET-SEL
-      *
-           PERFORM 41011-SELNUM-ALLCHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      2501-SET-TENKAI-EXT
-           END-IF
-      *
-      *    セット１件のみ選択であること
-           IF     (SPA-K98-SRYCD (1)(1:1)  =   "P"
-                                           OR  "S"  )
-             AND  (SPA-K98-SRYCD (2)       =   SPACE)
-             AND  (SPA-K98-SRYCD (3)       =   SPACE)
-               CONTINUE
-           ELSE
-               MOVE    "0021"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-K98-GMN-CUR
-               GO      TO      2501-SET-TENKAI-EXT
-           END-IF
-      *
-      **** 流用（選択時のページを保存）
-           MOVE    SPA-K98-PAGE        TO  SPA-GMN-K07-PAGE
-           MOVE    K98-ROW             TO  SPA-GMN-K07-MAX
-      *
-           MOVE    SPA-K98-NAI-SELNUM (1)  TO  WRK-SELNO
-           MOVE    SPA-K98-GMN-SRYCD (WRK-SELNO)  TO  WRK-TBL-SRYCD
-           MOVE    SPA-K98-GMN-INPUTCD(WRK-SELNO) TO  WRK-TBL-INPUCD
-           MOVE    SPA-K98-GMN-NAME   (WRK-SELNO) TO  WRK-TBL-NAME
-           MOVE    SPA-K98-GMN-SETCD  (WRK-SELNO) TO  WRK-TBL-SETCD
-      *
-           MOVE    SPA-K98-GMN-SYORI   TO  SPA-K98-OLD-SYORI
-           MOVE    "S"                 TO  SPA-K98-GMN-SYORI
-      *
-           MOVE    1                   TO  FLG-GMN-INIT
-      *
-           INITIALIZE                  SPA-K98-GMN-TBL
-           MOVE    ZERO                TO  SPA-K98-GMN-MAX
-           MOVE    1                   TO  SPA-K98-GMN-NO (1)
-           MOVE    WRK-TBL-SRYCD       TO  SPA-K98-GMN-SRYCD (1)
-           MOVE    WRK-TBL-INPUCD      TO  SPA-K98-GMN-INPUTCD (1)
-           MOVE    WRK-TBL-NAME        TO  SPA-K98-GMN-NAME (1)
-           MOVE    WRK-TBL-SETCD       TO  SPA-K98-GMN-SETCD (1)
-           MOVE    ZERO                TO  SPA-K98-NEXT
-           MOVE    1                   TO  SPA-K98-PAGE
-      *
-           INITIALIZE                  SPA-K98-GMN-SELNUM-G
-           INITIALIZE                  SPA-K98-NAI-SELNUM-G
-      *
-      *    セット内容展開
-           PERFORM 25011-INPUTSET-HEN-SEC
-      *
-           MOVE    1                   TO  SPA-K98-GMN-CUR
-           .
-       2501-SET-TENKAI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    セット内容展開処理
-      *****************************************************************
-       25011-INPUTSET-HEN-SEC           SECTION.
-      *
-           MOVE    1                   TO  SPA-K98-GMN-MAX
-      *    開始
-           IF     (SPA-K98-PAGE        =   ZERO )
-               MOVE    1                   TO  SPA-K98-PAGE
-           END-IF
-           COMPUTE WRK-STR             =  (SPA-K98-PAGE   -   1  )
-                                       *   198
-                                       +   1
-           MOVE    ZERO                TO  SPA-K98-NEXT
-      *
-           MOVE    1                   TO  IDX
-           MOVE    ZERO                TO  IDX2
-      *    入力セットマスタ検索
-           MOVE    SPACE               TO  INPUTSET-REC
-           INITIALIZE                      INPUTSET-REC
-           MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
-           MOVE    WRK-TBL-SETCD       TO  ISET-SETCD
-           MOVE    SPA-SRYYMD          TO  ISET-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  ISET-YUKOEDYMD
-           MOVE    INPUTSET-REC        TO  MCPDATA-REC
-           MOVE    "tbl_inputset"      TO  MCP-TABLE
-           MOVE    "key2"              TO  WRK-MCP-PATHNAME
-      *    セット画面からで期間外の時最後の履歴
-           IF     (SPA-K98-MOTOPG      =   "K05" )
-              AND (WRK-TBL-NAME(1:10)  =   "【期間外】")
-               MOVE    "key9"              TO  WRK-MCP-PATHNAME
-               MOVE    1                   TO  FLG-SETKBN
-           ELSE
-               MOVE    ZERO                TO  FLG-SETKBN
-           END-IF
-      *
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_inputset"      TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 975-INPUTSET-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-INPUTSET
-           END-IF
-           MOVE    ZERO                TO  FLG-SETSEQ
-           PERFORM
-               UNTIL  (FLG-INPUTSET    =   1  )
-                  OR  (SPA-K98-NEXT    =   1  )
-      *
-               IF    ( FLG-SETKBN          =   1  )
-                 AND ( ISET-SETSEQ         =   1  )
-                   IF     (FLG-SETSEQ          =   1  )
-                       MOVE    1           TO  FLG-INPUTSET
-                   END-IF
-                   MOVE    1               TO  FLG-SETSEQ
-               END-IF
-      *
-               IF      FLG-INPUTSET        =   ZERO
-                   ADD     1               TO  IDX2
-                   IF      IDX2            >=  WRK-STR
-                       ADD     1               TO  IDX
-                       IF      IDX             >   200
-                           MOVE    1               TO  SPA-K98-NEXT
-                        ELSE
-                           PERFORM 25011-SET-HENSYU-SEC
-                       END-IF
-                   END-IF
-      *
-                   MOVE    "tbl_inputset"      TO  MCP-TABLE
-                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-                   PERFORM 975-INPUTSET-READ-SEC
-               END-IF
-           END-PERFORM
-      *
-           MOVE    "tbl_inputset"      TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    対象がない時、選択エラー
-      *    IF      IDX2                =   ZERO
-      *        MOVE    1                   TO  SPA-K98-GMN-CUR
-      *    END-IF
-           .
-       25011-INPUTSET-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    セット内容展開処理
-      *****************************************************************
-       25011-SET-HENSYU-SEC           SECTION.
-      *
-      *    １行目に見出し
-           IF      IDX                 =   2
-               MOVE    "S"                 TO  SPA-K98-GMN-NO-X (IDX)
-               MOVE    ALL "-"             TO  SPA-K98-GMN-SRYCD (IDX)
-               MOVE    ALL "-"             TO  SPA-K98-GMN-NAME  (IDX)
-               MOVE    "(数量)"            TO  SPA-K98-GMN-TANI  (IDX)
-               MOVE    "(回数)"            TO  SPA-K98-GMN-SETCD (IDX)
-               ADD    1                    TO  IDX
-           END-IF
-      *
-      *    診療種別テーブルセット
-           CALL    "ORCSSRYSYU"        USING
-                                       MSYU-DATA-REC
-      *
-           MOVE    "S"                 TO  SPA-K98-GMN-NO-X (IDX)
-           MOVE    ISET-INPUTCD        TO  SPA-K98-GMN-SRYCD   (IDX)
-           MOVE    ISET-INPUTCD        TO  SPA-K98-GMN-INPUTCD (IDX)
-           EVALUATE    ISET-INPUTCD(1:1)
-           WHEN   "."
-      *        診療区分
-               MOVE    ISET-INPUTCD(2:3)   TO  WRK-SRYSYUKBN
-      *
-               SET     MSYU-IDX            TO  1
-               SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
-                   AT   END
-                       MOVE    SPACE           TO  WRK-SRYSYUKBNMEI
-                   WHEN    WRK-SRYSYUKBN       =   MSYU-SRYSYUKBN 
-                                                           (MSYU-IDX)
-                       MOVE    MSYU-SRYMEI (MSYU-IDX)
-                                                TO  WRK-SRYSYUKBNMEI
-               END-SEARCH
-               STRING  ISET-INPUTCD        DELIMITED  BY  SPACE
-                       "      *"           DELIMITED  BY  SIZE
-                       WRK-SRYSYUKBNMEI    DELIMITED  BY  SPACE
-                       INTO            SPA-K98-GMN-NAME (IDX)
-               END-STRING
-      *
-           WHEN   "S"
-           WHEN   "P"
-      *        セット名称
-               MOVE    SPACE               TO  INPUTCD-REC
-               MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
-               MOVE    "6"                 TO  ICD-CDSYU
-               MOVE    ISET-INPUTCD(1:6)   TO  ICD-INPUTCD
-               MOVE    INPUTCD-REC         TO  MCPDATA-REC
-               MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_inputcd"       TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM                     930-INPUTCD-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-INPUTCD
-               END-IF
-               MOVE    "tbl_inputcd"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-               IF      FLG-INPUTCD         =   ZERO
-                   STRING  ISET-INPUTCD        DELIMITED  BY  SPACE
-                           "   "               DELIMITED  BY  SIZE
-                           ICD-DSPNAME         DELIMITED  BY  SPACE
-                               INTO       SPA-K98-GMN-NAME (IDX)
-                   END-STRING
-               ELSE
-                   MOVE    ISET-INPUTCD    TO  SPA-K98-GMN-NAME (IDX)
-               END-IF
-      *
-           WHEN   OTHER
-               IF      ISET-COMMENT         =   SPACE
-                   INITIALIZE                  TNS-TENSU-REC
-                   MOVE    ISET-INPUTCD        TO  TNS-SRYCD
-                   PERFORM 9110-TENSU-KEYREAD-SEC
-                   MOVE    SPACE               TO  WRK-SET-HEN
-                   IF      FLG-TENSU           =   1
-                       INITIALIZE                  TNS-TENSU-REC
-                       MOVE    ISET-INPUTCD        TO  TNS-SRYCD
-                       MOVE    "key24"             TO  WRK-PATH
-                       MOVE    WRK-PATH            TO  MCP-PATHNAME
-                       PERFORM 910-TENSU-SELECT-SEC
-                       MOVE    "tbl_tensu"         TO  MCP-TABLE
-                       MOVE    WRK-PATH            TO  MCP-PATHNAME
-                       PERFORM 990-DBCLOSE-SEC
-                       MOVE    "≪削≫　"          TO  WRK-SET-HEN
-                   END-IF
-                   STRING  ISET-INPUTCD        DELIMITED  BY  SPACE
-                           " "                 DELIMITED  BY  SIZE
-                           WRK-SET-HEN         DELIMITED  BY  SPACE
-                           TNS-NAME            DELIMITED  BY  SPACE
-                           INTO       SPA-K98-GMN-NAME (IDX)
-                   END-STRING
-               ELSE
-                   STRING  ISET-INPUTCD        DELIMITED  BY  SPACE
-                           " "                 DELIMITED  BY  SIZE
-                           ISET-COMMENT         DELIMITED  BY  SPACE
-                           INTO       SPA-K98-GMN-NAME (IDX)
-                   END-STRING
-               END-IF
-      *
-               IF     (ISET-INPUTCD(1:1)   =   "6"
-                                           OR  "7" )
-                OR    (ISET-INPUTCD(1:3)   =   "059")
-                   MOVE    ISET-SURYO1     TO  SPA-K98-GMN-KISOTEN(IDX)
-               END-IF
-               IF     (ISET-INPUTCD(1:1)   =   "1" )
-                AND   (ISET-SURYO1         >   1   )
-                   MOVE    ISET-SURYO1     TO  SPA-K98-GMN-KISOTEN(IDX)
-               END-IF
-               IF     (ISET-INPUTCD(1:3)   =   "095"
-                                           OR  "096")
-                AND   (ISET-SURYO1         >   1   )
-                   MOVE    ISET-SURYO1     TO  SPA-K98-GMN-KISOTEN(IDX)
-               END-IF
-               IF     (ISET-KAISU          >   ZERO )
-                AND   (SPA-K98-GMN-SETCD(IDX)  =   SPACE)
-                   MOVE    ISET-KAISU      TO  WRK-NOZ
-                   MOVE    WRK-NOZ         TO  SPA-K98-GMN-SETCD(IDX)
-               END-IF
-      *
-           END-EVALUATE
-           MOVE    IDX                 TO  SPA-K98-GMN-MAX
-           .
-       25011-SET-HENSYU-EXT.
-           EXIT.
-      *****************************************************************
-      *    セット内容展開ページ処理
-      *****************************************************************
-       2502-SETPAGE-HEN-SEC           SECTION.
-      *
-           MOVE    1                   TO  WRK-SELNO
-           MOVE    SPA-K98-GMN-SRYCD (WRK-SELNO)  TO  WRK-TBL-SRYCD
-           MOVE    SPA-K98-GMN-INPUTCD(WRK-SELNO) TO  WRK-TBL-INPUCD
-           MOVE    SPA-K98-GMN-NAME   (WRK-SELNO) TO  WRK-TBL-NAME
-           MOVE    SPA-K98-GMN-SETCD  (WRK-SELNO) TO  WRK-TBL-SETCD
-      *
-           INITIALIZE                  SPA-K98-GMN-TBL
-           MOVE    ZERO                TO  SPA-K98-GMN-MAX
-           MOVE    1                   TO  SPA-K98-GMN-NO (1)
-           MOVE    WRK-TBL-SRYCD       TO  SPA-K98-GMN-SRYCD (1)
-           MOVE    WRK-TBL-INPUCD      TO  SPA-K98-GMN-INPUTCD (1)
-           MOVE    WRK-TBL-NAME        TO  SPA-K98-GMN-NAME (1)
-           MOVE    WRK-TBL-SETCD       TO  SPA-K98-GMN-SETCD (1)
-           MOVE    ZERO                TO  SPA-K98-NEXT
-      *
-           INITIALIZE                  SPA-K98-GMN-SELNUM-G
-           INITIALIZE                  SPA-K98-NAI-SELNUM-G
-      *    セット内容展開
-           PERFORM 25011-INPUTSET-HEN-SEC
-      *
-           MOVE    1                   TO  SPA-K98-GMN-CUR
-          .
-       2502-SETPAGE-HEN-EXT.
-           EXIT.
-      *TEST
       *
       *****************************************************************
       *    自画面編集処理
@@ -5350,13 +3924,6 @@
       *            MOVE
       *            "対象データがありません。"
       **                               TO  SPA-ERRMSG
-      *H24.4
-               WHEN    "0020"
-                   STRING  "このコードの一般名データはありません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-      *
                WHEN    "0005"
                    MOVE
                    "対象データが２００件以上あります。"
@@ -5383,18 +3950,6 @@
                WHEN    "0013"
                    MOVE    "点数は数字９桁で入力して下さい。"
                                        TO  SPA-ERRMSG
-      *H24.4
-               WHEN    "0021"
-                   STRING  "セットコードを１件選択して下さい。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0022"
-                   STRING  "当日に対象ではありません。"
-                           "セット内容展開できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
            END-EVALUATE
       *
       *
@@ -5560,10 +4115,6 @@
                            MOVE
                            "システム予約コードコードがありません"
                                                TO  SPA-ERRMSG
-      *H25.7
-                       WHEN    "U7"
-                           MOVE    "労災合成コードがありません"
-                                               TO  SPA-ERRMSG
                        WHEN    "JK"
                            MOVE    "自院採用の器材コードがありません"
                                                TO  SPA-ERRMSG
@@ -5571,12 +4122,6 @@
                            MOVE    "器材コードがありません"
                                                TO  SPA-ERRMSG
                    END-EVALUATE
-      *H24.4
-               WHEN    "G"
-                   STRING  "対象の一般名はありません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
-                   END-STRING
       *        その他
                WHEN    OTHER
                    EVALUATE     SPA-K98-GMN-INPUT(1:1)
@@ -5699,140 +4244,6 @@
        9110-TENSU-KEYREAD-EXT.
            EXIT.
       *
-      *H24.4
-      *****************************************************************
-      *    点数マスタ付加情報検索処理
-      *****************************************************************
-       9101-TENSUPLUS-READ-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSUPLUS-REC
-           INITIALIZE                      TENSUPLUS-REC
-           MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
-      *
-           MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
-           MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSUPLUS-REC
-                   MOVE    ZERO                TO  FLG-TENSUPLUS
-               ELSE
-                   INITIALIZE                  TENSUPLUS-REC
-                   MOVE    1                   TO  FLG-TENSUPLUS
-               END-IF
-           ELSE
-               INITIALIZE                      TENSUPLUS-REC
-               MOVE    1                   TO  FLG-TENSUPLUS
-           END-IF
-           MOVE    "tbl_tensuplus"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9101-TENSUPLUS-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ付加情報検索処理
-      *****************************************************************
-       9102-GENERICNAME-READ-SEC          SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  GENERICNAME-REC
-               MOVE    ZERO                TO  FLG-GENERICNAME
-           ELSE
-               INITIALIZE                  GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           .
-       9102-GENERICNAME-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    最低薬価マスタ検索処理
-      *****************************************************************
-       9201-GENERICPRICE-READ-SEC                   SECTION.
-      *
-           MOVE    SPACE               TO  GENERICPRICE-REC
-           INITIALIZE                      GENERICPRICE-REC
-      **   MOVE    GENERIC-YAKKAKJNCD  TO  GENERICPRICE-YAKKAKJNCD
-           MOVE    WRK-YAKKAKJNCD      TO  GENERICPRICE-YAKKAKJNCD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
-           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
-           MOVE    "tbl_generic_price"
-                                      TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_generic_price"
-                                          TO  MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
-                   MOVE    ZERO                TO  FLG-GENERICPRICE
-               ELSE
-                   INITIALIZE                  GENERICPRICE-REC
-                   MOVE    1                   TO  FLG-GENERICPRICE
-               END-IF
-           ELSE
-               INITIALIZE                  GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
-           END-IF
-           MOVE    "tbl_generic_price"
-                                      TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       9201-GENERICPRICE-READ-EXT.
-           EXIT.
-      *H24.4
-      *H28.6
-      *****************************************************************
-      *    向精神薬成分コード検索処理
-      *****************************************************************
-       9102-PSYCHOTROPIC-READ-SEC       SECTION.
-      *
-           MOVE    SPACE               TO  PSYCHOTROPIC-REC
-           INITIALIZE                      PSYCHOTROPIC-REC
-           MOVE    TNS-YAKKAKJNCD      TO  PSYCHOTROPIC-CODE
-           MOVE    SPA-SRYYMD          TO  PSYCHOTROPIC-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  PSYCHOTROPIC-YUKOEDYMD
-           MOVE    PSYCHOTROPIC-REC    TO  MCPDATA-REC
-           MOVE    "tbl_psychotropic"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_psychotropic"  TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PSYCHOTROPIC-REC
-                   MOVE    ZERO                TO  FLG-PSYCHOTROPIC
-               ELSE
-                   INITIALIZE                  PSYCHOTROPIC-REC
-                   MOVE    1                   TO  FLG-PSYCHOTROPIC
-               END-IF
-           ELSE
-               INITIALIZE                  PSYCHOTROPIC-REC
-               MOVE    1                   TO  FLG-PSYCHOTROPIC
-           END-IF
-           MOVE    "tbl_psychotropic" TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       9102-PSYCHOTROPIC-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    入力コードマスター読込
       *****************************************************************
@@ -5871,45 +4282,6 @@
            .
        975-INPSET-READ-EXT.
            EXIT.
-      *H29.2
-      *****************************************************************
-      *    点数マスタ器材金額付加情報より編集処理
-      *****************************************************************
-       9103-TENSUPRICE-READ-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSU-PRICE-REC
-           INITIALIZE                  TENSU-PRICE-REC
-           MOVE    SPA-HOSPNUM         TO  TNSPR-HOSPNUM
-           MOVE    TNS-SRYCD           TO  TNSPR-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOEDYMD
-      *
-           MOVE    TENSU-PRICE-REC     TO  MCPDATA-REC
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSU-PRICE-REC
-                   MOVE    ZERO                TO  FLG-TENSUPRICE
-               ELSE
-                   MOVE    1                   TO  FLG-TENSUPRICE
-                   INITIALIZE                      TENSU-PRICE-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPRICE
-               INITIALIZE                      TENSU-PRICE-REC
-           END-IF
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9103-TENSUPRICE-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
