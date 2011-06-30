@@ -679,8 +679,8 @@
            MOVE    "4 更新も可(全て)"  TO  SPA-GMN-USER-KANRI-LST(5)
            MOVE    5                   TO  SPA-USER-KANRI-MAX
       *    クライアント印刷可否
-           MOVE    "0 印刷不可"        TO  SPA-GMN-CLIENT-PRT-LST(1)
-           MOVE    "1 印刷可"          TO  SPA-GMN-CLIENT-PRT-LST(2)
+           MOVE    "0 しない"          TO  SPA-GMN-CLIENT-PRT-LST(1)
+           MOVE    "1 する"            TO  SPA-GMN-CLIENT-PRT-LST(2)
            MOVE    2                   TO  SPA-CLIENT-PRT-MAX
       *    ダイアログ表示
            MOVE    "0 表示しない"      TO  SPA-GMN-DIALOGFLG-LST(1)

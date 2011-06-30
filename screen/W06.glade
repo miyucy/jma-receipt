@@ -1815,7 +1815,7 @@
 	  <y>432</y>
 	  <width>180</width>
 	  <height>24</height>
-	  <label>クライアント印刷可否</label>
+	  <label>クライアント印刷</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>True</wrap>
 	  <xalign>0.5</xalign>
