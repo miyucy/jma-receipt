@@ -7843,10 +7843,25 @@
       *
            PERFORM 4901-PTNYUINRRK-SEL-SEC
       *
-           MOVE    "01"            TO      WRK-SPA-PRT-FLG
-           CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
-                                           PTNYUINRRK-REC
-           MOVE    SPACE           TO      WRK-SPA-PRT-FLG
+           IF    ( PTNYUINRRK-RRKNUM   =   SPA-NAI-I01-PTRRKNUM )
+            AND  ( PTNYUINRRK-TAIINYMD =   "99999999" )
+               MOVE    SPA-NAI-I01-TAIINYMD
+                                   TO  PTNYUINRRK-TAIINYMD
+           END-IF
+      *
+           MOVE    PTNYUINRRK-TAIINYMD (1 : 6)
+                                       TO  WRK-NACCT-SRYYM
+           PERFORM 4801-NYUINACCT-SEL-SEC
+           IF    ( FLG-NYUINACCTARI    =   ZERO )
+               MOVE    "1030"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               MOVE    "01"            TO      WRK-SPA-PRT-FLG
+               CALL    WRK-PRINT-PG    USING   WRK-SPA-AREA
+                                               PTNYUINRRK-REC
+               MOVE    SPACE           TO      WRK-SPA-PRT-FLG
+           END-IF
       *
            .
        480-TAIIN-PRT-EXT.
@@ -22893,9 +22908,23 @@
                                   <=   SPA-GMN-I01-NYUREKILST-CNT )
             AND  ( SPA-NAI-I01-TZITA-FLG (SPA-GMN-I01-NYUREKILST-SEL)
                                    =   ZERO )
-            AND  ( SPA-NAI-I01-TTAIINYMD (SPA-GMN-I01-NYUREKILST-SEL)
-                               NOT =   SPACE )
-               MOVE    WIDGET-NORMAL   TO  I01-B10-STT
+               MOVE    SPA-GMN-I01-NYUREKILST-SEL
+                                   TO   IDX0
+               IF    ( SPA-NAI-I01-TTAIINYMD (IDX0)
+                                       =   SPACE )
+                   IF    ( SPA-NAI-I01-TRRKNUM (IDX0)
+                                       =   SPA-NAI-I01-PTRRKNUM )
+                    AND  ( SPA-GMN-I01-SYORIKBN-CD =   "02" )
+                       MOVE    WIDGET-NORMAL
+                                       TO  I01-B10-STT
+                   ELSE
+                       MOVE    WIDGET-INSENSITIVE
+                                       TO  I01-B10-STT
+                   END-IF
+               ELSE
+                   MOVE    WIDGET-NORMAL
+                                       TO  I01-B10-STT
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE
                                        TO  I01-B10-STT
@@ -23520,10 +23549,10 @@
                MOVE    "月途中の入金（請求）を取消してください"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1029"
-               MOVE    "異動月の会計テーブルが作成されていません"
+               MOVE    "異動月の入院会計が作成されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1030"
-               MOVE    "退院月の会計テーブルが作成されていません"
+               MOVE    "退院月の入院会計が作成されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1031"
                MOVE    "前歴の自院歴が「入院中」です。前歴の継続"
@@ -23571,7 +23600,7 @@
                MOVE    "り新規に作成してください"
                                        TO  SPA-ERRMSG (41 : )
            WHEN    "1042"
-               MOVE    "異動月前月の会計テーブルが作成されていません"
+               MOVE    "異動月前月の入院会計が作成されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1043"
                MOVE    "異動日を７月１日にし、転科転棟転室処理を"

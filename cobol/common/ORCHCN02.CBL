@@ -567,7 +567,7 @@
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
       *
       *            轉情ゥ
-                   MOVE    SNTYMD-TAIINYMD(IDX2)
+                   MOVE    LNK-PTNYUINRRK-TAIINYMD
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG(1:4)    TO  HCN02-TAIINGEN
@@ -619,7 +619,7 @@
                                        TO  LNK-ORCHCN02SUB-NYUINYMD
       *
       *            轉情ゥ
-                   MOVE    SNTYMD-TAIINYMD(IDX2)
+                   MOVE    LNK-PTNYUINRRK-TAIINYMD
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG(1:4)    TO  HCN02-TAIINGEN
@@ -634,7 +634,7 @@
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TAIINDD
                                                    HCN02-KIKANENDDD
                                                    HCN02-TKIKANDD
-                   MOVE    SNTYMD-TAIINYMD(IDX2)
+                   MOVE    LNK-PTNYUINRRK-TAIINYMD
                                        TO  LNK-ORCHCN02SUB-TAIINYMD
       *
                    MOVE    SNTYMD-MAX          TO  IDX2
