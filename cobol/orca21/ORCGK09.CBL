@@ -700,6 +700,7 @@
       *    入外区分設定
            MOVE    SPA-NYUGAIKBN       TO  SPA-K09-NYUGAIKBN
            IF      SPA-K02N-TAIINYMD   =   SPACE
+            AND   (SPA-NAI-NYUIN       =   ZERO  )
                MOVE    "2 外来"            TO  SPA-K09-NYUGAIKBN-LST (1)
                MOVE    1                   TO  SPA-K09-NYUGAIKBN-MAX
            ELSE
