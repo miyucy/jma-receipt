@@ -329,6 +329,7 @@
            COPY    "P02G.INC".
            COPY    "P02G2.INC".
            COPY    "P02K.INC".
+           COPY    "P02H.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".
@@ -1112,6 +1113,8 @@
                                                SPA-P02SCRAREA
                                                P02
            MOVE    SPACE               TO  SPA-ERRCD
+      *    ∏¯»ÒÀ° Ã∞ÏÕ˜ ‘Ω∏∂Ë ¨§ §∑
+           MOVE    "0"                 TO  SPA-NAI-KOHHBTKBN-FLG
       *
       *    £”£–£¡ ‘Ω∏
       *    ª·Ãæ

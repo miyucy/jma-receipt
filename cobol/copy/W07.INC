@@ -315,6 +315,12 @@
                     06  W07-TOWNNAME2KBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-TOWNNAME2KBN-ITEM
                             PIC X(28)   OCCURS  5 TIMES.
+                  05  W07-KOHHBTKBN-COMB.
+                    06  W07-KOHHBTKBN.
+                      07  W07-VALUE   PIC X(28).
+                    06  W07-KOHHBTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-KOHHBTKBN-ITEM
+                            PIC X(28)   OCCURS  5 TIMES.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.

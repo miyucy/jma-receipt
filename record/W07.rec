@@ -419,6 +419,13 @@ W07	{
 					count	int;
 					item	varchar(28)[5];
 				};
+				KOHHBTKBN_COMB	{
+					KOHHBTKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[5];
+				};
 			};
 			TAGNAME2    {
 			    state   int;

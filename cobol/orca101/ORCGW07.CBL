@@ -117,6 +117,7 @@
       *  04.06.00    NACL-多々納  10/09/17  精神療法２０未満加算追加
       *  04.06.00    NACL-多々納  11/02/09  京都府通り名編集区分追加
       *  04.07.00    NACL-多々納  11/06/XX  受付保険組合せ区分追加
+      *  04.07.00    NACL-多々納  11/07/XX  公費法別一覧表示区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -494,6 +495,15 @@
                            11  SPA-GMN-TOWNNAME2KBN-LIST     PIC X(28)
                                                              OCCURS  5.
                        09  SPA-GMN-TOWNNAME2KBN-MAX          PIC 9(02).
+      *                公費法別一覧表示区分
+                       09  SPA-GMN-KOHHBTKBN-G.
+                           11  SPA-GMN-KOHHBTKBN          PIC X(01).
+                           11  SPA-GMN-KOHHBTKBN-F1       PIC X(01).
+                           11  SPA-GMN-KOHHBTKBN-MEI      PIC X(26).
+                       09  SPA-GMN-KOHHBTKBN-COMB.
+                           11  SPA-GMN-KOHHBTKBN-LIST     PIC X(28)
+                                                             OCCURS  5.
+                       09  SPA-GMN-KOHHBTKBN-MAX          PIC 9(02).
       *
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
@@ -1772,6 +1782,12 @@
            MOVE    "1 編集する"
                                    TO  SPA-GMN-TOWNNAME2KBN-LIST (2)
            MOVE    2               TO  SPA-GMN-TOWNNAME2KBN-MAX 
+      *    公費法別一覧表示区分
+           MOVE    "0 表示しない"
+                                   TO  SPA-GMN-KOHHBTKBN-LIST (1)
+           MOVE    "1 表示する"
+                                   TO  SPA-GMN-KOHHBTKBN-LIST (2)
+           MOVE    2               TO  SPA-GMN-KOHHBTKBN-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2817,6 +2833,9 @@
       *        京都府通り名称編集区分
                MOVE    SYS-1017-TOWNNAME2KBN-FLG
                                        TO  SPA-GMN-TOWNNAME2KBN
+      *        公費法別一覧表示区分
+               MOVE    SYS-1017-KOHHBTKBN-FLG
+                                       TO  SPA-GMN-KOHHBTKBN
            END-IF
       *
       *    初期設定
@@ -3050,6 +3069,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-TOWNNAME2KBN-LIST(2)
                                            TO  SPA-GMN-TOWNNAME2KBN-G
+           END-IF
+      *    公費法別一覧表示区分
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHHBTKBN-MAX
+               IF      SPA-GMN-KOHHBTKBN
+                                       =   SPA-GMN-KOHHBTKBN-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-KOHHBTKBN-LIST(IDX)
+                                           TO  SPA-GMN-KOHHBTKBN-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-KOHHBTKBN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-KOHHBTKBN-LIST(1)
+                                           TO  SPA-GMN-KOHHBTKBN-G
            END-IF
       *
            MOVE    201                 TO  SPA-GMN-CUR
@@ -4720,6 +4756,7 @@
            MOVE    W07-POSTKBN         TO  SPA-GMN-POSTKBN-FLG-G
            MOVE    W07-KENMEIKBN       TO  SPA-GMN-KENMEIKBN-FLG-G
            MOVE    W07-TOWNNAME2KBN    TO  SPA-GMN-TOWNNAME2KBN-G
+           MOVE    W07-KOHHBTKBN       TO  SPA-GMN-KOHHBTKBN-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -5008,6 +5045,10 @@
       *            京都府通り名称編集区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-TOWNNAME2KBN-FLG-SEC
+                   END-IF
+      *            公費法別一覧表示区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-KOHHBTKBN-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -6779,6 +6820,31 @@
       *
           .
        4107-TOWNNAME2KBN-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費法別一覧表示区分チェック処理
+      *****************************************************************
+       4107-KOHHBTKBN-FLG-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-KOHHBTKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-KOHHBTKBN
+                                       =   SPA-GMN-KOHHBTKBN-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-KOHHBTKBN-LIST(IDX)
+                                          TO  SPA-GMN-KOHHBTKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    218             TO  SPA-GMN-CUR
+               MOVE    "1018"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-KOHHBTKBN-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -8980,6 +9046,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-POSTKBN-FLG     TO  SYS-1017-POSTKBN-FLG
            MOVE    SPA-GMN-KENMEIKBN-FLG   TO  SYS-1017-KENMEIKBN-FLG
            MOVE    SPA-GMN-TOWNNAME2KBN    TO  SYS-1017-TOWNNAME2KBN-FLG
+           MOVE    SPA-GMN-KOHHBTKBN       TO  SYS-1017-KOHHBTKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -9841,6 +9908,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-TOWNNAME2KBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-TOWNNAME2KBN-MAX   TO  W07-TOWNNAME2KBN-COUNT
+      *    公費法別一覧表示区分
+           MOVE    SPA-GMN-KOHHBTKBN-G     TO  W07-KOHHBTKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHHBTKBN-MAX
+               MOVE    SPA-GMN-KOHHBTKBN-LIST (IDX)
+                                       TO  W07-KOHHBTKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-KOHHBTKBN-MAX   TO  W07-KOHHBTKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -10748,6 +10823,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED BY  SIZE
                                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "1018"
+                   STRING  "公費法別番号毎一覧表示区分が"
+                           "ありません"
+                                                   DELIMITED BY  SIZE
+                                                       INTO  SPA-ERRMSG
+                   END-STRING
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -11141,6 +11222,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "KENMEIKBN"       TO   MCP-WIDGET
                WHEN    217
                    MOVE  "TOWNNAME2KBN"    TO   MCP-WIDGET
+               WHEN    218
+                   MOVE  "KOHHBTKBN"       TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -11498,6 +11581,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KENMEIKBN"
                    MOVE    217              TO  SPA-GMN-CUR
                WHEN    "TOWNNAME2KBN"
+                   MOVE    218              TO  SPA-GMN-CUR
+               WHEN    "KOHHBTKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"

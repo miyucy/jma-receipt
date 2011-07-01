@@ -25,6 +25,7 @@ bind	"P02Y1"		"OpenCOBOL"	"ORCGP02Y1";
 bind	"P02G"		"OpenCOBOL"	"ORCGP02G";
 bind	"P02G2"		"OpenCOBOL"	"ORCGP02G2";
 bind	"P02K"		"OpenCOBOL"	"ORCGP02K";
+bind	"P02H"		"OpenCOBOL"	"ORCGP02H";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
 /*
@@ -58,6 +59,7 @@ data	{
 		P02G;
 		P02G2;
 		P02K;
+		P02H;
 		PERR;
 		PID1;
 		patientmod;

@@ -905,6 +905,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        京都府通り名称編集区分
                MOVE    SYS-1017-TOWNNAME2KBN-FLG
                                            TO  SPA-NAI-TOWNNAME2KBN-FLG
+      *        公費法別一覧表示区分
+               MOVE    SYS-1017-KOHHBTKBN-FLG
+                                           TO  SPA-NAI-KOHHBTKBN-FLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -971,6 +974,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    京都府通り名称編集区分
            IF      SPA-NAI-TOWNNAME2KBN-FLG    =   SPACE
                MOVE    "1"                 TO  SPA-NAI-TOWNNAME2KBN-FLG
+           END-IF
+      *    公費法別一覧表示区分
+           IF      SPA-NAI-KOHHBTKBN-FLG   =   SPACE
+               MOVE    "0"                 TO  SPA-NAI-KOHHBTKBN-FLG
            END-IF
       *
            .

@@ -136,6 +136,7 @@
            COPY    "P02G.INC".
            COPY    "P02G2.INC".
            COPY    "P02K.INC".
+           COPY    "P02H.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".

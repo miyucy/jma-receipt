@@ -45,6 +45,7 @@
       * 03.04.00     NACL-多々納  06/10/30  受給者検証番号警告追加
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
+      * 04.07.00     NACL-多々納  11/07/01  公費一覧表示対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -175,6 +176,11 @@
       *    Ｈ１８．１０改正
            03  WRK-TEKEDYMD            PIC X(08).
            03  WRK-TEKEDYMD-W          PIC X(10).
+      *ver.4.7
+      *    法別チェック
+           03  WRK-HBTNUM              PIC X(02).
+           03  WRK-CHK-KOHNUM          PIC X(03).
+           03  WRK-HBTCNT              PIC 9(02).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -288,6 +294,7 @@
                    UNTIL      (IDX-K       >   3   )  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
                               (SPA-PIDCD   NOT =   SPACE )
+                           OR (SPA-FLG-END         =   1     )
       *        基本チェック
                PERFORM 100-KIHON-CHK-SEC
                IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -299,6 +306,9 @@
            END-PERFORM
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-PIDCD       NOT =   SPACE )
+               GO      TO      000-PROC-EXT
+           END-IF
+           IF     (SPA-FLG-END         =   1     )
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -351,6 +361,9 @@
       *    負担者番号
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1001-FTNJANUM-CHK-SEC
+           END-IF
+           IF     (SPA-FLG-END         =   1     )
+               GO      TO      100-KIHON-CHK-EXT
            END-IF
       *
       *    公費
@@ -536,6 +549,7 @@
       *
            IF     (WRK-MAE-KOHNUM      =   SPACE )  OR
                   (SPA-ERRCD       NOT =   SPACE )
+            OR    (SPA-FLG-END         =   1     )
                CONTINUE
            ELSE
       *    更新の時、保険区分変更時、エラーとする
@@ -649,6 +663,44 @@
                GO      TO      10011-HKNNUM-SET-EXT
            END-IF
       *
+      *ver.4.7
+      *    負担者番号の法別番号から保険番号マスタの公費番号の判定
+           MOVE    ZERO                TO  WRK-HBTCNT
+           MOVE    SPACE               TO  WRK-CHK-KOHNUM
+           MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
+                                       TO  WRK-HBTNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF      WRK-HBTNUM      =   SPA-NAI-HBTNUM (IDX)
+                   ADD     1               TO  WRK-HBTCNT
+                   IF      WRK-HBTCNT      =   1
+                       MOVE    SPA-GMN-KOHNUML (IDX)
+                                               TO  WRK-CHK-KOHNUM
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      SPA-MAE-KOHNUM (IDX-K)  =   SPACE
+               MOVE    WRK-CHK-KOHNUM      TO  WRK-MAE-KOHNUM
+      *        新規で同じ制度が複数ある
+               IF     (WRK-HBTCNT          >   1   )
+      *            公費法別一覧編集区分
+                   IF      SPA-NAI-KOHHBTKBN-FLG   =   "1"
+                       PERFORM 10011-P02H-SYORI-SEC
+                   END-IF
+               END-IF
+           ELSE
+      *        公費種類の変更なし
+               IF      WRK-CHK-KOHNUM      =   SPA-MAE-KOHNUM (IDX-K)
+                   MOVE    SPACE           TO  WRK-MAE-KOHNUM
+               ELSE
+                   MOVE    WRK-CHK-KOHNUM  TO  WRK-MAE-KOHNUM
+               END-IF
+           END-IF
+      *
+      *!!!
+           GO      TO    10011-HKNNUM-SET-EXT
+      *
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
@@ -704,6 +756,21 @@
            .
        10011-HKNNUM-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    公費法別一覧編集画面処理
+      *****************************************************************
+       10011-P02H-SYORI-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-P02H-AREA
+           MOVE    WRK-HBTNUM          TO  SPA-P02H-HBTNUM
+           MOVE    IDX-K               TO  SPA-P02H-KOHIDX
+           MOVE    1                   TO  SPA-FLG-END
+      *
+           .
+       10011-P02H-SYORI-EXT.
+           EXIT.
+      *
       ****************************************************************
       *    変更時保険の種類チェック処理
       ****************************************************************

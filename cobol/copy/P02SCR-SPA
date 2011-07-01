@@ -1677,6 +1677,19 @@
                    07  SPA-P02K-MSG04              PIC X(30).
                    07  SPA-P02K-MSG05              PIC X(30).
       *
+      *    ¸øÈñÀ©ÅÙ°ìÍ÷²èÌÌ¡Ê£Ð£°£²£È¡Ë
+           03  SPA-P02H-AREA.
+               05  SPA-P02H-CUR                PIC 9(01).
+               05  SPA-P02H-HBTNUM             PIC X(02).
+               05  SPA-P02H-KOHIDX             PIC 9(02).
+               05  SPA-P02H-KOHNUM-LST.
+                   07  SPA-P02H-KOHNUM-OCC     OCCURS   10.
+                       09  SPA-P02H-TKOHNUM        PIC X(03).
+                       09  SPA-P02H-TKOHNUMMEI     PIC X(16).
+               05  SPA-P02H-MAX                PIC 9(03).
+               05  SPA-P02H-SELNUM             PIC 9(03).
+               05  SPA-P02H-KOHNUM             PIC X(03).
+      *
       *@@
       *    £Ñ£Ò²èÌÌ¡Ê£Ð£°£²£Ñ¡Ë
            03  SPA-P02Q-AREA.

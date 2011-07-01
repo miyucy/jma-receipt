@@ -93,6 +93,7 @@
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/06/30  ËÜ¿Í²ÈÂ²¶èÊ¬¡¢Êä½õ¶èÊ¬ÊÑ¹¹ÂÐ±þ
       * 04.06.00     NACL-Â¿¡¹Ç¼  11/02/10  µþÅÔÉÜÄÌ¤êÌ¾¾ÎÊÔ½¸ÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  11/06/15  ÊÝ¸±¡¦¸øÈñËèÊÇÊÑ¹¹ÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  11/07/01  ¸øÈñ°ìÍ÷É½¼¨ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -395,6 +396,12 @@
            03  FLG-KOKUHO-CHK          PIC 9(01).
            03  WRK-KOKUHO-CHK          PIC 9(04).
       *!!!!
+      *ver4/7
+           03  WRK-P02-KOHNUM-G        OCCURS   3.
+               05  WRK-P02-KOHNUM      PIC X(03).
+               05  WRK-P02-KOHNUM2     PIC X(01).
+               05  WRK-P02-KOHNUMMEI   PIC X(16).
+      *
       *
       *    ¸øÈñ£Ó£Ï£Ò£ÔÍÑ¡Ê£Ó£Ð£Á¤ÈÆ±¤¸ÎÎ°è¡Ë
        01  WRK-KOUHI-AREA.
@@ -797,6 +804,7 @@
            COPY    "P02G.INC".
            COPY    "P02G2.INC".
            COPY    "P02K.INC".
+           COPY    "P02H.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".
@@ -950,6 +958,10 @@
                    PERFORM 4503-HKNCOMBI-SYORI-SEC
                    PERFORM 310-SPASET-SEC
                    MOVE    1                  TO  SPA-GMN-CUR
+      *ver.4.7 
+      *        ¸øÈñ¼ïÎàÁªÂò
+               WHEN    "P02H"
+                   PERFORM 3010-P02H-HEN-SEC
       *        ³ÎÇ§¥á¥Ã¥»¡¼¥¸
                WHEN    "PID1"
                    PERFORM 3001-PID1-SYORI-SEC
@@ -986,6 +998,40 @@
            MOVE    2                   TO  SPA-GMN-CUR
            .
        3010-P100-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñ¼ïÎàÁªÂò¤è¤ê½èÍý
+      *****************************************************************
+       3010-P02H-HEN-SEC              SECTION.
+      *
+           IF      SPA-P02H-KOHNUM    NOT =   SPACE
+               EVALUATE    SPA-P02H-KOHIDX
+                   WHEN    1
+                       MOVE    SPA-P02H-KOHNUM TO  P02-P02-KOHNUM1
+                       MOVE    "P02_KOHNUM1"   TO  MCP-WIDGET
+                   WHEN    2
+                       MOVE    SPA-P02H-KOHNUM TO  P02-P02-KOHNUM2
+                       MOVE    "P02_KOHNUM2"   TO  MCP-WIDGET
+                   WHEN    3
+                       MOVE    SPA-P02H-KOHNUM TO  P02-P02-KOHNUM3
+                       MOVE    "P02_KOHNUM3"   TO  MCP-WIDGET
+               END-EVALUATE
+           END-IF
+           IF      SPA-P02H-KOHNUM        =   SPACE
+               EVALUATE    SPA-P02H-KOHIDX
+                   WHEN    1
+                       MOVE    "P02_FTNJANUM1"   TO  MCP-WIDGET
+                   WHEN    2
+                       MOVE    "P02_FTNJANUM2"   TO  MCP-WIDGET
+                   WHEN    3
+                       MOVE    "P02_FTNJANUM3"   TO  MCP-WIDGET
+               END-EVALUATE
+           END-IF
+           INITIALIZE                  SPA-P02H-AREA
+           PERFORM 200-ENTRY
+           .
+       3010-P02H-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2019,6 +2065,12 @@
                MOVE    SPACE           TO  SPA-MAE-KOHNUM  (IDY)
                MOVE    SPACE           TO  SPA-MAE-FTNJANUM(IDY)
                MOVE    SPACE           TO  SPA-NAI-PTKOH-KEIFLG(IDY)
+      *        ·Ù¹ð¥Á¥§¥Ã¥¯ºÑ¤ß¤È¤¹¤ë
+               MOVE    1                   TO  SPA-NAI-AGE65 (IDY)
+               MOVE    1                   TO  SPA-NAI-AGECHK(IDY)
+               MOVE    1                   TO  SPA-NAI-FTNCHK(IDY)
+      *        ¼õµë¼ÔÈÖ¹æ·Ù¹ð
+               MOVE    1                   TO  SPA-NAI-JYUCHK(IDY)
            END-IF
       *!API
       *
@@ -2804,6 +2856,20 @@
            IF     (P02-P02-JKYSNUM3    NOT =   SPA-GMN-JKYSNUM (3))
                MOVE    ZERO                TO  SPA-NAI-JYUCHK  (3)
            END-IF
+      *    ¸øÈñ
+           MOVE    P02-P02-KOHNUM1     TO  WRK-P02-KOHNUM-G (1)
+           MOVE    P02-P02-KOHNUM2     TO  WRK-P02-KOHNUM-G (2)
+           MOVE    P02-P02-KOHNUM3     TO  WRK-P02-KOHNUM-G (3)
+           IF      P02-P02-KOHNUM1(1:1)    =   "/"
+               MOVE    SPA-GMN-KOHNUM-G (1)    TO  P02-P02-KOHNUM1
+           END-IF
+           IF      P02-P02-KOHNUM2(1:1)    =   "/"
+               MOVE    SPA-GMN-KOHNUM-G (2)    TO  P02-P02-KOHNUM2
+           END-IF
+           IF      P02-P02-KOHNUM3(1:1)    =   "/"
+               MOVE    SPA-GMN-KOHNUM-G (3)    TO  P02-P02-KOHNUM3
+           END-IF
+      *
       *    ¸øÈñ£±
            MOVE    P02-P02-FTNJANUM1   TO  SPA-GMN-FTNJANUM (1)
            MOVE    P02-P02-KOHNUM1     TO  SPA-GMN-KOHNUM-G (1)
@@ -2969,6 +3035,11 @@
       *
       *    ¸øÈñ
            PERFORM 4102-KOH-CHKALL-SEC
+      *    ¸øÈñË¡ÊÌ°ìÍ÷ÊÔ½¸²èÌÌ¤Ø
+           IF     (SPA-FLG-END     NOT =   ZERO  )  AND
+                  (SPA-P02H-HBTNUM NOT =   SPACE )
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
       *
       *    ¸øÈñ¾ðÊó¥Á¥§¥Ã¥¯¥µ¥Ö
            CALL    "ORCSP03B"          USING   SPA-AREA
@@ -2986,8 +3057,14 @@
                END-IF
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-PIDCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
+                  (SPA-PIDCD       NOT =   SPACE )
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *!!!
+      *    ¸øÈñË¡ÊÌ°ìÍ÷ÊÔ½¸²èÌÌ¤Ø
+           IF     (SPA-FLG-END     NOT =   ZERO  )  AND
+                  (SPA-P02H-HBTNUM NOT =   SPACE )
+               PERFORM 41021-P02H-SYORI-SEC
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
@@ -3064,6 +3141,46 @@
            .
       *
        4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñË¡ÊÌ°ìÍ÷ÊÔ½¸²èÌÌ½èÍý
+      *****************************************************************
+       41021-P02H-SYORI-SEC   SECTION.
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02H"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+           IF      SPA-P02H-MAX        >   1
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+               MOVE    "P02H"              TO  SPA-SAKIPG
+               MOVE    "P02"               TO  SPA-MOTOPG
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "P02H"              TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+           END-IF
+      *
+           MOVE    1                   TO  SPA-FLG-END
+      *
+           .
+       41021-P02H-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3192,6 +3309,33 @@
                PERFORM 41023-PTKOH-SAI-SET-SEC
            END-IF
       **** END-IF
+      *ver.4.7
+           IF     (FLG-KOH-ADD2        =   ZERO )
+             AND  (FLG-KOH-DEL         =   ZERO )
+      *      ¸øÈñË¡ÊÌ°ìÍ÷ÊÔ½¸¶èÊ¬
+             AND  (SPA-NAI-KOHHBTKBN-FLG   =   "1"   )
+      *        ¸øÈñ¼ïÊÌ°ìÍ÷
+               PERFORM VARYING     IDX-K   FROM    1   BY  1
+                   UNTIL      (IDX-K   >   3  )
+                          OR  (SPA-ERRCD   NOT =   SPACE)
+               IF     (WRK-P02-KOHNUM (IDX-K)(1:1) =   "/"   )
+                   MOVE    SPA-NAI-PTKOH-EDANUM(IDX-K)  TO  IDX-KOH
+                   IF     (SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE )
+                       PERFORM 41021-KOHHBTCHEK-SEC
+                   END-IF
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       EVALUATE    IDX-K
+                       WHEN    1
+                           MOVE    21          TO  SPA-GMN-CUR
+                       WHEN    2
+                           MOVE    27          TO  SPA-GMN-CUR
+                       WHEN    3
+                           MOVE    33          TO  SPA-GMN-CUR
+                       END-EVALUATE
+                   END-IF
+               END-IF
+               END-PERFORM
+           END-IF
            .
       *
        4102-KOH-CHKALL-EXT.
@@ -3311,6 +3455,31 @@
            .
       *
        41023-PTKOH-SAI-SET-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ¿·µ¬¤Î»þ°ìÍ÷É½¼¨½èÍý
+      ****************************************************************
+       41021-KOHHBTCHEK-SEC      SECTION.
+      *
+      *    ¿·µ¬¤Î»þ°ìÍ÷É½¼¨
+           IF     (IDX-KOH             =   ZERO  )   OR
+                 ((IDX-KOH             >   ZERO      ) AND
+                  (SPA-PTKOH-SINKIKBN (IDX-KOH)
+                                       =    "1"      ))
+               INITIALIZE                  SPA-P02H-AREA
+               MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
+                                           TO  SPA-P02H-HBTNUM
+               MOVE    IDX-K               TO  SPA-P02H-KOHIDX
+               PERFORM 41021-P02H-SYORI-SEC
+               IF      SPA-P02H-MAX        <=  1
+                   INITIALIZE                  SPA-P02H-AREA
+                   MOVE    ZERO                TO  SPA-FLG-END
+               END-IF
+           END-IF
+           .
+      *
+       41021-KOHHBTCHEK-EXT.
            EXIT.
       *
       ****************************************************************
