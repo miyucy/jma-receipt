@@ -199,6 +199,11 @@
                     07  Q01-BYOMEICD           PIC X(20)    OCCURS 5.
                   06  Q01-BYOMEI-TBL.
                     07  Q01-BYOMEI             PIC X(80)    OCCURS 5.
+                  06  Q01-BYOCOMP-TBL.
+                    07  Q01-CMB-BYOCOMP         OCCURS  5.
+                      08  Q01-BYOCOMP           PIC X(22).
+                      08  Q01-CMB-BYOCOMP-COUNT PIC S9(9)   BINARY.
+                      08  Q01-CMB-BYOCOMP-ITEM  PIC X(22)   OCCURS  5.
                   06  Q01-SCR-BYOLST.
                     07  Q01-BYOLST.
                       08  Q01-BYOLST-COUNT     PIC S9(9)   BINARY.

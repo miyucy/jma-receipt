@@ -158,6 +158,10 @@
                05  FILLER          PIC X(5)    VALUE "DESC".
            03  CONST-ORDER-R       REDEFINES   CONST-ORDER-AREA.
                05  CONST-ORDER     PIC X(5)    OCCURS  2.
+           03  CONST-ZENPOU        PIC X(01)   VALUE "1".
+           03  CONST-BUBUN         PIC X(01)   VALUE "2".
+           03  CONST-KOUHOU        PIC X(01)   VALUE "3".
+           03  CONST-KANZEN        PIC X(01)   VALUE "4".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1729,13 +1733,40 @@
                    PERFORM 900-STR-LEN-GET-SEC
                    MOVE    WRK-STR-LEN         TO  WRK-NUM-LEN
       *
-                   STRING
-                       "(C.BYOMEI LIKE '"      DELIMITED   BY  SIZE
-                       SPA-Q01-BYOMEI (IDX1)   DELIMITED   BY  SPACE
-                       "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
+                   EVALUATE    SPA-Q01-BYOCOMP (IDX1)
+                   WHEN    CONST-BUBUN
+                       STRING
+                           "(C.BYOMEI LIKE '%"     DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDX1)   DELIMITED   BY  SPACE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    CONST-KOUHOU
+                       STRING
+                           "(C.BYOMEI LIKE '%"     DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDX1)   DELIMITED   BY  SPACE
+                           "')"                    DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    CONST-KANZEN
+                       STRING
+                           "(C.BYOMEI =    '"      DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDX1)   DELIMITED   BY  SPACE
+                           "')"                    DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    OTHER
+                       STRING
+                           "(C.BYOMEI LIKE '"      DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDX1)   DELIMITED   BY  SPACE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-EVALUATE
                END-IF
       *
            END-PERFORM
@@ -1835,15 +1866,48 @@
                    PERFORM 900-STR-LEN-GET-SEC
                    MOVE    WRK-STR-LEN     TO  WRK-NUM-LEN
       *
-                   STRING
-                       "("                     DELIMITED   BY  SIZE
-                       WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
-                       ".BYOMEI LIKE '"        DELIMITED   BY  SIZE
-                       SPA-Q01-BYOMEI (IDXA)   DELIMITED   BY  SPACE 
-                       "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
+                   EVALUATE    SPA-Q01-BYOCOMP (IDXA)
+                   WHEN    CONST-BUBUN
+                       STRING
+                           "("                     DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
+                           ".BYOMEI LIKE '%"       DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDXA)   DELIMITED   BY  SPACE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    CONST-KOUHOU
+                       STRING
+                           "("                     DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
+                           ".BYOMEI LIKE '%"       DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDXA)   DELIMITED   BY  SPACE
+                           "')"                    DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    CONST-KANZEN
+                       STRING
+                           "("                     DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
+                           ".BYOMEI = '"           DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDXA)   DELIMITED   BY  SPACE
+                           "')"                    DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    OTHER
+                       STRING
+                           "("                     DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME        DELIMITED   BY  SPACE
+                           ".BYOMEI LIKE '"        DELIMITED   BY  SIZE
+                           SPA-Q01-BYOMEI (IDXA)   DELIMITED   BY  SPACE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-EVALUATE
       *
                    PERFORM 900-SQL-JYOKEN-EDIT3-SEC
       *

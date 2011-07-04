@@ -542,6 +542,41 @@ Q01	{
 				BYOMEI5	{
 					value	varchar(80);
 				};
+				CMB_BYOCOMP1	{
+					BYOCOMP1	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[05];
+				};
+				CMB_BYOCOMP2	{
+					BYOCOMP2	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[05];
+				};
+				CMB_BYOCOMP3	{
+					BYOCOMP3	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[05];
+				};
+				CMB_BYOCOMP4	{
+					BYOCOMP4	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[05];
+				};
+				CMB_BYOCOMP5	{
+					BYOCOMP5	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[05];
+				};
 				SCR_BYOLST	{
 					BYOLST	{
 						count	int;

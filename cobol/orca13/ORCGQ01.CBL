@@ -125,6 +125,7 @@
            03  IDXD                                PIC 9(04).
            03  IDXE                                PIC 9(04).
            03  IDXF                                PIC 9(04).
+           03  IDXG                                PIC 9(04).
            03  IDXZ                                PIC 9(04).
            03  IDX-LEN                             PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
@@ -151,6 +152,7 @@
                05  WRK-SDD                         PIC 9(02).
            03  WRK-HENYMDG                         PIC X(09).
            03  WRK-BYOMEICD                        PIC X(20).
+           03  WRK-BYOMEI                          PIC X(80).
            03  WRK-SRYCD                           PIC X(20).
            03  WRK-MOJI                            PIC 9(03).
            03  WRK-CDSYUBETU                       PIC X(01).
@@ -220,6 +222,7 @@
            03  WRK-SRYSURYO.
                05  WRK-SRYSURYO9        PIC 99999V99999.
            03  WRK-WIDGET-STATUS        PIC S9(9)  BINARY.
+           03  WRK-LEN-MAX              PIC 9(05).
       *
        01  SEL-AREA.
            03  SEL-SRYCD                PIC X(09).
@@ -824,6 +827,15 @@
       *
       *    病名検索コンボ初期処理
            PERFORM 3101-BYOMEI-CMB-SYOKI-SEC
+      *
+      *    病名比較条件コンボ初期処理
+           PERFORM 3101-BYOCOMP-CMB-SYOKI-SEC
+           MOVE    SPA-GMN-Q01-BYOCOMPLST (1)
+                                       TO  SPA-GMN-Q01-BYOCOMP-G (1)
+                                           SPA-GMN-Q01-BYOCOMP-G (2)
+                                           SPA-GMN-Q01-BYOCOMP-G (3)
+                                           SPA-GMN-Q01-BYOCOMP-G (4)
+                                           SPA-GMN-Q01-BYOCOMP-G (5)
       *
       *    診療区分コンボ初期処理
            PERFORM 3101-SRYKBN-CMB-SYOKI-SEC
@@ -1689,6 +1701,30 @@
        3101-BYOMEI-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
+      *    病名比較条件コンボ初期処理
+      *****************************************************************
+       3101-BYOCOMP-CMB-SYOKI-SEC      SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-BYOCOMPLST-G
+      *
+           MOVE    4                   TO  SPA-GMN-Q01-BYOCOMPLST-MAX
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-BYOCOMPL (1)
+           MOVE    "前方"              TO  SPA-GMN-Q01-BYOCOMPMEIL (1)
+      *
+           MOVE    "2"                 TO  SPA-GMN-Q01-BYOCOMPL (2)
+           MOVE    "部分"              TO  SPA-GMN-Q01-BYOCOMPMEIL (2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-Q01-BYOCOMPL (3)
+           MOVE    "後方"              TO  SPA-GMN-Q01-BYOCOMPMEIL (3)
+      *
+           MOVE    "4"                 TO  SPA-GMN-Q01-BYOCOMPL (4)
+           MOVE    "完全"              TO  SPA-GMN-Q01-BYOCOMPMEIL (4)
+      *
+           .
+       3101-BYOCOMP-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
       *    診療区分コンボ初期処理
       *****************************************************************
        3101-SRYKBN-CMB-SYOKI-SEC           SECTION.
@@ -2387,6 +2423,9 @@
       *        病名
                MOVE    Q01-BYOMEI  (IDXB)
                                        TO  SPA-GMN-Q01-BYOMEI  (IDXB)
+      *        病名比較条件
+               MOVE    Q01-BYOCOMP (IDXB)
+                                       TO  SPA-GMN-Q01-BYOCOMP-G (IDXB)
       *        診療行為コード
                MOVE    Q01-SRYCD(IDXB)
                                        TO  SPA-GMN-Q01-SRYCD(IDXB)
@@ -2804,6 +2843,10 @@
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
                PERFORM 4119-BYOMEI-CHK-SEC
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 4119-BYOCOMP-CHK-SEC
+               END-IF
       *
            END-PERFORM
       *
@@ -5156,6 +5199,88 @@
        4119-BYOMEI-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    病名比較条件チェック処理
+      *****************************************************************
+       4119-BYOCOMP-CHK-SEC            SECTION.
+      *
+           MOVE    IDXA                TO  IDX1
+      *
+           COMPUTE WRK-ERR-CUR         =   340 +   IDX1
+      *
+           MOVE    SPA-GMN-Q01-BYOCOMP (IDX1)
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-BYOCOMPLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    "0144"          TO  SPA-ERRCD
+               MOVE    WRK-ERR-CUR     TO  SPA-GMN-Q01-CUR
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-Q01-BYOCOMP-G (IDX1)
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+      *
+             EVALUATE    SPA-GMN-Q01-BYOCOMP (IDX1)
+             WHEN  "1"
+               MOVE    0               TO  FLG-OK
+               PERFORM UNTIL ( FLG-OK  =   1 )
+                   MOVE    1               TO  FLG-OK
+                   IF   (  SPA-GMN-Q01-BYOMEI  (IDX1)(1:2) =   "＊" )
+                       MOVE    SPA-GMN-Q01-BYOMEI  (IDX1)(3:)
+                                       TO  WRK-BYOMEI
+                       MOVE    WRK-BYOMEI
+                                       TO  SPA-GMN-Q01-BYOMEI(IDX1)
+                       MOVE    ZERO    TO  FLG-OK
+                   END-IF
+               END-PERFORM
+             WHEN  "3"
+               MOVE    0               TO  FLG-OK
+               PERFORM UNTIL ( FLG-OK  =   1 )
+                 MOVE    1               TO  FLG-OK
+                 MOVE    SPA-GMN-Q01-BYOMEI  (IDX1)  TO  WRK-STR
+                 PERFORM 800-STR-LEN-GET-SEC
+                 IF    ( WRK-STR-LEN             >=  2 )
+                   IF   (  SPA-GMN-Q01-BYOMEI  (IDX1) (WRK-STR-LEN - 1:)
+                                               = "＊" )
+                       MOVE    SPACE       TO  SPA-GMN-Q01-BYOMEI
+                                               (IDX1) (WRK-STR-LEN - 1:)
+                       MOVE    ZERO        TO  FLG-OK
+                   END-IF
+                 END-IF
+               END-PERFORM
+             WHEN  "4"
+               MOVE    0                   TO  FLG-OK
+               MOVE    1                   TO  IDX0
+                                               IDXG
+               MOVE    SPACE               TO  WRK-BYOMEI
+               MOVE    0                   TO  WRK-LEN-MAX
+               INSPECT WRK-BYOMEI  TALLYING WRK-LEN-MAX FOR ALL " "
+               MOVE    SPA-GMN-Q01-BYOMEI  (IDX1)
+                                           TO  WRK-BYOMEI
+               MOVE    SPACE               TO  SPA-GMN-Q01-BYOMEI (IDX1)
+               PERFORM UNTIL ( IDX0    >=  WRK-LEN-MAX )
+                 MOVE  SPACE               TO  WRK-STR
+      *
+                 UNSTRING  WRK-BYOMEI      DELIMITED   BY  "＊"
+                 INTO      WRK-STR
+                 WITH      POINTER IDX0
+                 END-UNSTRING
+      *
+                 STRING    WRK-STR         DELIMITED   BY  SPACE
+                 INTO      SPA-GMN-Q01-BYOMEI (IDX1)
+                 WITH      POINTER IDXG
+                 END-STRING
+               IF    ( IDX1 = 1 )
+                   DISPLAY "IDX0=" IDX0
+                            SPA-GMN-Q01-BYOMEI (IDX1)(1:30)
+               END-IF
+               END-PERFORM
+             END-EVALUATE
+           END-IF
+      *
+           .
+       4119-BYOCOMP-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    診療行為名チェック処理
       *****************************************************************
        4120-SRYACTSEL-CHK-SEC        SECTION.
@@ -6046,6 +6171,27 @@
        4200-SRYVALCOMPLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    病名比較区分コンボボックスチェック処理
+      *****************************************************************
+       4200-BYOCOMPLST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                    WRK-CMB-ITM-G.
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-Q01-BYOCOMPLST-MAX)
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( WRK-CMB-CD  =   SPA-GMN-Q01-BYOCOMPL
+                                                         (IDX-CMB))
+                   MOVE    SPA-GMN-Q01-BYOCOMPLST  (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+       4200-BYOCOMPLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    テスト患者チェックボタン編集処理
       *****************************************************************
        410-CHKTSTPT-SET-SEC              SECTION.
@@ -6775,6 +6921,12 @@
                INITIALIZE                  SPA-GMN-Q01-BYOMEI-AREA
                                            SPA-NAI-Q01-BYOMEI-AREA
       *
+               MOVE    SPA-GMN-Q01-BYOCOMPLST (1)
+                                       TO  SPA-GMN-Q01-BYOCOMP-G (1)
+                                           SPA-GMN-Q01-BYOCOMP-G (2)
+                                           SPA-GMN-Q01-BYOCOMP-G (3)
+                                           SPA-GMN-Q01-BYOCOMP-G (4)
+                                           SPA-GMN-Q01-BYOCOMP-G (5)
       *
                IF  ( WRK-RDBYOMEI-A-STATE
                                    =   WIDGET-NORMAL )
@@ -7654,6 +7806,9 @@
                INSPECT SPA-Q01-BYOMEI(IDXC)
                        REPLACING   ALL "＊" BY  "%%"
       *
+               MOVE    SPA-GMN-Q01-BYOCOMP(IDXC)
+                                     TO  SPA-Q01-BYOCOMP (IDXC)
+      *
                MOVE    SPA-NAI-Q01-SRYCD (IDXC)
                                            TO  PTSRH-DBSTR
                PERFORM 900-PTSRH-DBESCAPE-SEC
@@ -7904,7 +8059,10 @@
                    IF    ( SPA-Q01-BYOMEI (IDX6)   NOT =   SPACE )
                        IF    ( SPA-Q01-BYOMEI (IDX6)
                                        =   SPA-Q01-BYOMEI (IDX7))
+                        AND  ( SPA-Q01-BYOCOMP (IDX6)
+                                       =   SPA-Q01-BYOCOMP(IDX7))
                            MOVE    SPACE   TO  SPA-Q01-BYOMEI (IDX7)
+                                               SPA-Q01-BYOCOMP(IDX7)
                        END-IF
                    END-IF
       *
@@ -8802,6 +8960,16 @@
       *        病名
                MOVE    SPA-GMN-Q01-BYOMEI  (IDX1)
                                            TO  Q01-BYOMEI  (IDX1)
+      *        病名比較条件
+               MOVE    SPA-GMN-Q01-BYOCOMP-G (IDX1)
+                                   TO  Q01-BYOCOMP (IDX1)
+               MOVE    SPA-GMN-Q01-BYOCOMPLST-MAX
+                                   TO  Q01-CMB-BYOCOMP-COUNT(IDX1)
+               PERFORM VARYING IDXB    FROM    1   BY  1
+                       UNTIL ( IDXB    >  SPA-GMN-Q01-BYOCOMPLST-MAX)
+                   MOVE    SPA-GMN-Q01-BYOCOMPLST (IDXB)
+                               TO  Q01-CMB-BYOCOMP-ITEM(IDX1 IDXB)
+               END-PERFORM
       *        診療行為コード
                MOVE    SPA-GMN-Q01-SRYCD   (IDX1)
                                            TO  Q01-SRYCD(IDX1)
@@ -9356,6 +9524,21 @@
            WHEN   340
                MOVE  "SRYVALITEM"
                                    TO  MCP-WIDGET
+           WHEN   341
+               MOVE  "BYOCOMP1"
+                                   TO  MCP-WIDGET
+           WHEN   342
+               MOVE  "BYOCOMP2"
+                                   TO  MCP-WIDGET
+           WHEN   343
+               MOVE  "BYOCOMP3"
+                                   TO  MCP-WIDGET
+           WHEN   344
+               MOVE  "BYOCOMP4"
+                                   TO  MCP-WIDGET
+           WHEN   345
+               MOVE  "BYOCOMP5"
+                                   TO  MCP-WIDGET
       *
       *    並び順タブ
            WHEN   401
@@ -9609,22 +9792,32 @@
            WHEN   "BYOMEICD1"
                MOVE  304           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEI1"
+               MOVE  341           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOCOMP1"
                MOVE  305           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD2"
                MOVE  306           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEI2"
+               MOVE  342           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOCOMP2"
                MOVE  307           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD3"
                MOVE  308           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEI3"
+               MOVE  343           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOCOMP3"
                MOVE  309           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD4"
                MOVE  310           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEI4"
+               MOVE  344           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOCOMP4"
                MOVE  311           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEICD5"
                MOVE  312           TO  SPA-GMN-Q01-CUR
            WHEN   "BYOMEI5"
+               MOVE  345           TO  SPA-GMN-Q01-CUR
+           WHEN   "BYOCOMP5"
                MOVE  313           TO  SPA-GMN-Q01-CUR
            WHEN   "SRYACTSEL"
                MOVE  323           TO  SPA-GMN-Q01-CUR
@@ -9926,10 +10119,13 @@
                MOVE    "診療行為数値入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0142"
-               MOVE    "診療行為数値項目比較区分入力エラー"
+               MOVE    "診療行為数値項目比較条件入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0143"
                MOVE    "災害該当入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0144"
+               MOVE    "病名比較条件入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
@@ -10076,6 +10272,12 @@
       *
            MOVE    SPACE           TO  Q01
            INITIALIZE                  Q01
+      *
+           MOVE    "1"             TO  Q01-BYOCOMP  (1)
+                                       Q01-BYOCOMP  (2)
+                                       Q01-BYOCOMP  (3)
+                                       Q01-BYOCOMP  (4)
+                                       Q01-BYOCOMP  (5)
       *
            PERFORM 900-SHOUKAIDATA-KEY2-SEL-SEC
       *
@@ -10492,6 +10694,21 @@
                MOVE    SHODATA-ITEM    TO  Q01-BYOMEI   (5)
                                            SPA-NAI-Q01-BYOMEI-OLD 
                                                         (5)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOCOMP1
+               MOVE    SHODATA-ITEM    TO  Q01-BYOCOMP  (1)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOCOMP2
+               MOVE    SHODATA-ITEM    TO  Q01-BYOCOMP  (2)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOCOMP3
+               MOVE    SHODATA-ITEM    TO  Q01-BYOCOMP  (3)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOCOMP4
+               MOVE    SHODATA-ITEM    TO  Q01-BYOCOMP  (4)
+               MOVE    1               TO  FLG-PAGENO-02
+           WHEN    SHKITEMID-BYOCOMP5
+               MOVE    SHODATA-ITEM    TO  Q01-BYOCOMP  (5)
                MOVE    1               TO  FLG-PAGENO-02
            WHEN    SHKITEMID-SRYKBN
                MOVE    SHODATA-ITEM    TO  Q01-SRYKBN
@@ -11631,6 +11848,46 @@
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF
       *
+           IF    ( SPA-GMN-Q01-BYOCOMP(1)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOCOMP1
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOCOMP(1)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOCOMP(2)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOCOMP2
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOCOMP(2)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOCOMP(3)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOCOMP3
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOCOMP(3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOCOMP(4)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOCOMP4
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOCOMP(4)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-BYOCOMP(5)  NOT =   SPACE )
+               MOVE    SHKITEMID-BYOCOMP5
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BYOCOMP(5)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
            IF    ( SPA-GMN-Q01-SRYKBN  NOT =   SPACE )
                MOVE    SHKITEMID-SRYKBN
                                    TO  SHODATA-ITEMID
@@ -12331,6 +12588,7 @@
       *****************************************************************
        800-STR-LEN-GET-SEC                 SECTION.
       *
+           MOVE    500             TO      WRK-STR-LEN
            PERFORM VARYING IDX-LEN FROM    WRK-STR-LEN BY  -1
                UNTIL   ( IDX-LEN   <   1)
                 OR     ( WRK-STR (IDX-LEN : 1) NOT =   SPACE)

@@ -338,6 +338,13 @@
                                13  SPA-GMN-Q01-BYOMEI
                                                        PIC X(80)
                                                        OCCURS  5.
+      *                    ÉÂÌ¾Èæ³Ó¾ò·ï
+                           11  SPA-GMN-Q01-BYOCOMPTBL.
+                               13  SPA-GMN-Q01-BYOCOMP-G
+                                                       OCCURS 5.
+                                   15  SPA-GMN-Q01-BYOCOMP    PIC X(1).
+                                   15  SPA-GMN-Q01-BYOCOMPFL  PIC X(1).
+                                   15  SPA-GMN-Q01-BYOCOMPMEI PIC X(20).
       *                    ÉÂÌ¾¥Æ¡¼¥Ö¥ë
                            11  SPA-GMN-Q01-BYOTBL.
                                13  SPA-GMN-Q01-BYOMEI-MAX  PIC 9(05).
@@ -654,6 +661,12 @@
                                13  SPA-GMN-Q01-UBYOMEIL    PIC X(3).
                                13  SPA-GMN-Q01-UBYOMEIFLL  PIC X(1).
                                13  SPA-GMN-Q01-UBYOMEIMEIL PIC X(20).
+                       09  SPA-GMN-Q01-BYOCOMPLST-G.
+                           11  SPA-GMN-Q01-BYOCOMPLST-MAX  PIC 9(05).
+                           11  SPA-GMN-Q01-BYOCOMPLST      OCCURS 100.
+                               13  SPA-GMN-Q01-BYOCOMPL    PIC X(1).
+                               13  SPA-GMN-Q01-BYOCOMPFLL  PIC X(1).
+                               13  SPA-GMN-Q01-BYOCOMPMEIL PIC X(20).
                        09  SPA-GMN-Q01-SRYVALITEMLST-G.
                            11  SPA-GMN-Q01-SRYVALITEMLST-MAX
                                                             PIC 9(05).
@@ -1160,6 +1173,9 @@
       *
                        09  SPA-Q01-BYOMEI-G.
                            11  SPA-Q01-BYOMEI          PIC X(80)
+                                                       OCCURS  5.
+                       09  SPA-Q01-BYOCOMP-G.
+                           11  SPA-Q01-BYOCOMP         PIC X(01)
                                                        OCCURS  5.
       *
                        09  SPA-Q01-SRYKBN              PIC X(02).
