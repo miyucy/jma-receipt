@@ -3959,22 +3959,6 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label381</name>
-	  <x>40</x>
-	  <y>572</y>
-	  <width>300</width>
-	  <height>20</height>
-	  <label>１７：公費法別番号毎一覧表示区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>KOHHBTKBN_COMB</name>
 	  <x>352</x>
@@ -4206,6 +4190,22 @@
 	  <width>300</width>
 	  <height>16</height>
 	  <label>１：カルテの病名対象</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label381</name>
+	  <x>40</x>
+	  <y>572</y>
+	  <width>300</width>
+	  <height>20</height>
+	  <label>１７：法別毎公費一覧表示区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
