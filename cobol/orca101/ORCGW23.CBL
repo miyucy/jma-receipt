@@ -111,6 +111,26 @@
                        09  SPA-GMN-SKYSUMKBNFL PIC   X(01).
                        09  SPA-GMN-SKYSUMKBNMEI
                                               PIC   X(28).
+                   07  SPA-GMN-SKYPRTKBN-G.
+                       09  SPA-GMN-SKYPRTKBN       PIC   X(01).
+                       09  SPA-GMN-SKYPRTKBNFL     PIC   X(01).
+                       09  SPA-GMN-SKYPRTKBNMEI    PIC   X(38).
+                   07  SPA-GMN-SRYPRTKBN-G.
+                       09  SPA-GMN-SRYPRTKBN       PIC   X(01).
+                       09  SPA-GMN-SRYPRTKBNFL     PIC   X(01).
+                       09  SPA-GMN-SRYPRTKBNMEI    PIC   X(38).
+                   07  SPA-GMN-PTINFREFKBN-G.
+                       09  SPA-GMN-PTINFREFKBN       PIC   X(01).
+                       09  SPA-GMN-PTINFREFKBNFL     PIC   X(01).
+                       09  SPA-GMN-PTINFREFKBNMEI    PIC   X(28).
+                   07  SPA-GMN-PRTJYUN-G.
+                       09  SPA-GMN-PRTJYUN         PIC   X(02).
+                       09  SPA-GMN-PRTJYUNFL       PIC   X(01).
+                       09  SPA-GMN-PRTJYUNMEI      PIC   X(22).
+                   07  SPA-GMN-TAIINGRPKBN-G.
+                       09  SPA-GMN-TAIINGRPKBN     PIC   X(01).
+                       09  SPA-GMN-TAIINGRPKBNFL   PIC   X(01).
+                       09  SPA-GMN-TAIINGRPKBNMEI  PIC   X(28).
                    07  SPA-GMN-NYUKINKBNLST-G.
                        09  SPA-GMN-NYUKINKBN-MAX   PIC   9(03).
                        09  SPA-GMN-NYUKINKBNLST    OCCURS  2.
@@ -147,12 +167,41 @@
                            11  SPA-GMN-DELKBNMEIL
                                                      PIC   X(18).
                    07  SPA-GMN-SKYSUMKBNLST-G.
-                       09  SPA-GMN-SKYSUMKBN-MAX   PIC   9(03).
-                       09  SPA-GMN-SKYSUMKBNLST    OCCURS  2.
-                           11  SPA-GMN-SKYSUMKBNL  PIC   X(01).
-                           11  SPA-GMN-SKYSUMKBNFLL PIC   X(01).
-                           11  SPA-GMN-SKYSUMKBNMEIL
-                                                   PIC   X(28).
+                       09  SPA-GMN-SKYSUMKBN-MAX       PIC   9(03).
+                       09  SPA-GMN-SKYSUMKBNLST        OCCURS  5.
+                           11  SPA-GMN-SKYSUMKBNL      PIC   X(01).
+                           11  SPA-GMN-SKYSUMKBNFLL    PIC   X(01).
+                           11  SPA-GMN-SKYSUMKBNMEIL   PIC   X(28).
+                   07  SPA-GMN-SKYPRTKBNLST-G.
+                       09  SPA-GMN-SKYPRTKBN-MAX       PIC   9(03).
+                       09  SPA-GMN-SKYPRTKBNLST        OCCURS  5.
+                           11  SPA-GMN-SKYPRTKBNL      PIC   X(01).
+                           11  SPA-GMN-SKYPRTKBNFLL    PIC   X(01).
+                           11  SPA-GMN-SKYPRTKBNMEIL   PIC   X(38).
+                   07  SPA-GMN-SRYPRTKBNLST-G.
+                       09  SPA-GMN-SRYPRTKBN-MAX       PIC   9(03).
+                       09  SPA-GMN-SRYPRTKBNLST        OCCURS  5.
+                           11  SPA-GMN-SRYPRTKBNL      PIC   X(01).
+                           11  SPA-GMN-SRYPRTKBNFLL    PIC   X(01).
+                           11  SPA-GMN-SRYPRTKBNMEIL   PIC   X(38).
+                   07  SPA-GMN-PTINFREFKBNLST-G.
+                       09  SPA-GMN-PTINFREFKBN-MAX       PIC   9(03).
+                       09  SPA-GMN-PTINFREFKBNLST        OCCURS  5.
+                           11  SPA-GMN-PTINFREFKBNL      PIC   X(01).
+                           11  SPA-GMN-PTINFREFKBNFLL    PIC   X(01).
+                           11  SPA-GMN-PTINFREFKBNMEIL   PIC   X(28).
+                   07  SPA-GMN-PRTJYUNLST-G.
+                       09  SPA-GMN-PRTJYUN-MAX         PIC   9(03).
+                       09  SPA-GMN-PRTJYUNLST          OCCURS  10.
+                           11  SPA-GMN-PRTJYUNL        PIC   X(02).
+                           11  SPA-GMN-PRTJYUNFLL      PIC   X(01).
+                           11  SPA-GMN-PRTJYUNMEIL     PIC   X(22).
+                   07  SPA-GMN-TAIINGRPKBNLST-G.
+                       09  SPA-GMN-TAIINGRPKBN-MAX     PIC   9(03).
+                       09  SPA-GMN-TAIINGRPKBNLST      OCCURS  5.
+                           11  SPA-GMN-TAIINGRPKBNL    PIC   X(01).
+                           11  SPA-GMN-TAIINGRPKBNFLL  PIC   X(01).
+                           11  SPA-GMN-TAIINGRPKBNMEIL PIC   X(28).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU-VAL.
                        09  SPA-NAI-SEIKYU01   PIC 9(02).
@@ -466,6 +515,74 @@
            MOVE    SPA-GMN-SKYSUMKBNLST(1)
                                        TO  SPA-GMN-SKYSUMKBN-G
       *
+      *
+           MOVE    4                 TO  SPA-GMN-SKYPRTKBN-MAX
+           MOVE    "0"               TO  SPA-GMN-SKYPRTKBNL   (1)
+           MOVE    "発行しない"
+                                     TO  SPA-GMN-SKYPRTKBNMEIL(1)
+           MOVE    "1"               TO  SPA-GMN-SKYPRTKBNL   (2)
+           MOVE    "発行する"        TO  SPA-GMN-SKYPRTKBNMEIL(2)
+      *
+           MOVE    "2"               TO  SPA-GMN-SKYPRTKBNL   (3)
+           MOVE    "発行する（請求あり）"
+                                     TO  SPA-GMN-SKYPRTKBNMEIL(3)
+      *
+           MOVE    "A"               TO  SPA-GMN-SKYPRTKBNL   (4)
+           MOVE    "医療機関情報−入院基本の設定に従う"
+                                     TO  SPA-GMN-SKYPRTKBNMEIL(4)
+           MOVE    SPA-GMN-SKYPRTKBNLST(4)
+                                       TO  SPA-GMN-SKYPRTKBN-G
+      *
+           MOVE    4                 TO  SPA-GMN-SRYPRTKBN-MAX
+           MOVE    "0"               TO  SPA-GMN-SRYPRTKBNL   (1)
+           MOVE    "発行しない"
+                                     TO  SPA-GMN-SRYPRTKBNMEIL(1)
+           MOVE    "1"               TO  SPA-GMN-SRYPRTKBNL   (2)
+           MOVE    "発行する"        TO  SPA-GMN-SRYPRTKBNMEIL(2)
+      *
+           MOVE    "2"               TO  SPA-GMN-SRYPRTKBNL   (3)
+           MOVE    "発行する（請求あり）"
+                                     TO  SPA-GMN-SRYPRTKBNMEIL(3)
+      *
+           MOVE    "A"               TO  SPA-GMN-SRYPRTKBNL   (4)
+           MOVE    "医療機関情報−入院基本の設定に従う"
+                                     TO  SPA-GMN-SRYPRTKBNMEIL(4)
+           MOVE    SPA-GMN-SRYPRTKBNLST(4)
+                                       TO  SPA-GMN-SRYPRTKBN-G
+      *
+           MOVE    2                 TO  SPA-GMN-PTINFREFKBN-MAX
+           MOVE    "0"               TO  SPA-GMN-PTINFREFKBNL   (1)
+           MOVE    "参照しない"
+                                     TO  SPA-GMN-PTINFREFKBNMEIL(1)
+           MOVE    "1"               TO  SPA-GMN-PTINFREFKBNL   (2)
+           MOVE    "参照する"        TO  SPA-GMN-PTINFREFKBNMEIL(2)
+           MOVE    SPA-GMN-PTINFREFKBNLST(2)
+                                     TO  SPA-GMN-PTINFREFKBN-G
+      *
+           MOVE    6                     TO  SPA-GMN-PRTJYUN-MAX
+           MOVE    "01"                  TO  SPA-GMN-PRTJYUNL    (1)
+           MOVE    "病棟番号・カナ氏名順"
+                                         TO  SPA-GMN-PRTJYUNMEIL (1)
+           MOVE    "02"                  TO  SPA-GMN-PRTJYUNL    (2)
+           MOVE    "病棟番号・患者番号順"
+                                         TO  SPA-GMN-PRTJYUNMEIL (2)
+           MOVE    "03"                  TO  SPA-GMN-PRTJYUNL    (3)
+           MOVE    "カナ氏名順"          TO  SPA-GMN-PRTJYUNMEIL (3)
+           MOVE    "04"                  TO  SPA-GMN-PRTJYUNL    (4)
+           MOVE    "患者番号順"          TO  SPA-GMN-PRTJYUNMEIL (4)
+           MOVE    "05"                  TO  SPA-GMN-PRTJYUNL    (5)
+           MOVE    "病棟番号・病室番号順"
+                                         TO  SPA-GMN-PRTJYUNMEIL (5)
+           MOVE    "06"                  TO  SPA-GMN-PRTJYUNL    (6)
+           MOVE    "病室番号順"          TO  SPA-GMN-PRTJYUNMEIL (6)
+           MOVE    SPA-GMN-PRTJYUNLST(01)
+                                         TO  SPA-GMN-PRTJYUN-G
+      *
+           MOVE    1                     TO  SPA-GMN-TAIINGRPKBN-MAX
+           MOVE    "1"                   TO  SPA-GMN-TAIINGRPKBNL (1)
+           MOVE    "退院患者は別に集計する"
+                                         TO  SPA-GMN-TAIINGRPKBNMEIL(1)
+      *
            INITIALIZE                      SYS-5010-REC.
            MOVE    "5010"              TO  SYS-5010-KANRICD.
            MOVE    "*"                 TO  SYS-5010-KBNCD
@@ -560,6 +677,61 @@
                MOVE    SPACE           TO  SPA-GMN-NYUKINPRTKBN-G
            END-IF
       *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SKYPRTKBN-MAX )
+      *
+               IF    ( SYS-5010-SKYPRTKBN
+                                   =   SPA-GMN-SKYPRTKBNL (IDX1))
+                   MOVE    SPA-GMN-SKYPRTKBNLST (IDX1)
+                                       TO  SPA-GMN-SKYPRTKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SRYPRTKBN-MAX )
+      *
+               IF    ( SYS-5010-SRYPRTKBN
+                                   =   SPA-GMN-SRYPRTKBNL (IDX1))
+                   MOVE    SPA-GMN-SRYPRTKBNLST (IDX1)
+                                       TO  SPA-GMN-SRYPRTKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-PTINFREFKBN-MAX )
+      *
+               IF    ( SYS-5010-PTINFREFKBN
+                                   =   SPA-GMN-PTINFREFKBNL (IDX1))
+                   MOVE    SPA-GMN-PTINFREFKBNLST (IDX1)
+                                       TO  SPA-GMN-PTINFREFKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-PRTJYUN-MAX )
+      *
+               IF    ( SYS-5010-PRTJYUN
+                                   =   SPA-GMN-PRTJYUNL (IDX1))
+                   MOVE    SPA-GMN-PRTJYUNLST (IDX1)
+                                       TO  SPA-GMN-PRTJYUN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-TAIINGRPKBN-MAX )
+      *
+               IF    ( SYS-5010-TAIINGRPKBN
+                                   =   SPA-GMN-TAIINGRPKBNL (IDX1))
+                   MOVE    SPA-GMN-TAIINGRPKBNLST (IDX1)
+                                       TO  SPA-GMN-TAIINGRPKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
            .
       *
        310-SPASET-EXT.
@@ -629,6 +801,11 @@
            MOVE    W23-CHGWINDOWKBN    TO  SPA-GMN-CHGWINDOWKBN-G
            MOVE    W23-DELKBN          TO  SPA-GMN-DELKBN-G
            MOVE    W23-SKYSUMKBN       TO  SPA-GMN-SKYSUMKBN-G
+           MOVE    W23-SKYPRTKBN       TO  SPA-GMN-SKYPRTKBN-G
+           MOVE    W23-SRYPRTKBN       TO  SPA-GMN-SRYPRTKBN-G
+           MOVE    W23-PTINFREFKBN     TO  SPA-GMN-PTINFREFKBN-G
+           MOVE    W23-PRTJYUN         TO  SPA-GMN-PRTJYUN-G
+           MOVE    W23-TAIINGRPKBN     TO  SPA-GMN-TAIINGRPKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -639,58 +816,74 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-      *    請求日確認処理（１）
-           PERFORM 4100-SKYYMD-CHK1-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        請求日確認処理（１）
+               PERFORM 4100-SKYYMD-CHK1-SEC
            END-IF
       *
-      *    請求日確認処理（２）
-           PERFORM 4100-SKYYMD-CHK2-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        請求日確認処理（２）
+               PERFORM 4100-SKYYMD-CHK2-SEC
            END-IF
       *
-      *    請求日確認処理（３）
-           PERFORM 4100-SKYYMD-CHK3-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        請求日確認処理（３）
+               PERFORM 4100-SKYYMD-CHK3-SEC
            END-IF
       *
-      *    入金区分チェック
-           PERFORM 4100-NYUKINKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        入金区分チェック
+               PERFORM 4100-NYUKINKBN-CHK-SEC
            END-IF
       *
-      *    入金額印字区分
-           PERFORM 4100-NYUKINPRTKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        入金額印字区分
+               PERFORM 4100-NYUKINPRTKBN-CHK-SEC
            END-IF
       *
-      *    再処理区分チェック
-           PERFORM 4100-SAISYORIKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        再処理区分チェック
+               PERFORM 4100-SAISYORIKBN-CHK-SEC
            END-IF
       *
-      *    自動遷移区分チェック
-           PERFORM 4100-CHGWINDOWKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        自動遷移区分チェック
+               PERFORM 4100-CHGWINDOWKBN-CHK-SEC
            END-IF
       *
-      *    削除区分チェック
-           PERFORM 4100-DELKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        削除区分チェック
+               PERFORM 4100-DELKBN-CHK-SEC
            END-IF
       *
-      *    請求書発行区分チェック
-           PERFORM 4100-SKYSUMKBN-CHK-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        請求書発行区分チェック
+               PERFORM 4100-SKYSUMKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        請求書印刷区分チェック
+               PERFORM 4100-SKYPRTKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        明細書印刷区分チェック
+               PERFORM 4100-SRYPRTKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        患者情報個別参照区分チェック
+               PERFORM 4100-PTINFREFKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        出力順区分チェック
+               PERFORM 4100-PRTJYUN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        退院患者集計区分チェック
+               PERFORM 4100-TAIINGRPKBN-CHK-SEC
            END-IF
       *
            .
@@ -1005,6 +1198,126 @@
       *
        4100-SKYSUMKBN-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    請求書印刷区分チェック処理
+      *****************************************************************
+       4100-SKYPRTKBN-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-SKYPRTKBN-MAX )
+                     OR  ( SPA-GMN-SKYPRTKBN
+                                   =   SPA-GMN-SKYPRTKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-SKYPRTKBN-MAX )
+               MOVE    SPA-GMN-SKYPRTKBNLST(4)
+                                       TO  SPA-GMN-SKYPRTKBN-G
+           ELSE
+               MOVE    SPA-GMN-SKYPRTKBNLST(IDXA)
+                                       TO  SPA-GMN-SKYPRTKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-SKYPRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細書印刷区分チェック処理
+      *****************************************************************
+       4100-SRYPRTKBN-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-SRYPRTKBN-MAX )
+                     OR  ( SPA-GMN-SRYPRTKBN
+                                   =   SPA-GMN-SRYPRTKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-SRYPRTKBN-MAX )
+               MOVE    SPA-GMN-SRYPRTKBNLST(4)
+                                       TO  SPA-GMN-SRYPRTKBN-G
+           ELSE
+               MOVE    SPA-GMN-SRYPRTKBNLST(IDXA)
+                                       TO  SPA-GMN-SRYPRTKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-SRYPRTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者情報個別参照区分チェック処理
+      *****************************************************************
+       4100-PTINFREFKBN-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-PTINFREFKBN-MAX )
+                     OR  ( SPA-GMN-PTINFREFKBN
+                                   =   SPA-GMN-PTINFREFKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-PTINFREFKBN-MAX )
+               MOVE    SPA-GMN-PTINFREFKBNLST(2)
+                                       TO  SPA-GMN-PTINFREFKBN-G
+           ELSE
+               MOVE    SPA-GMN-PTINFREFKBNLST(IDXA)
+                                       TO  SPA-GMN-PTINFREFKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-PTINFREFKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷順チェック処理
+      *****************************************************************
+       4100-PRTJYUN-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-PRTJYUN-MAX )
+                     OR  ( SPA-GMN-PRTJYUN
+                                   =   SPA-GMN-PRTJYUNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-PRTJYUN-MAX )
+               MOVE    SPA-GMN-PRTJYUNLST(1)
+                                       TO  SPA-GMN-PRTJYUN-G
+           ELSE
+               MOVE    SPA-GMN-PRTJYUNLST(IDXA)
+                                       TO  SPA-GMN-PRTJYUN-G
+           END-IF
+      *
+           .
+      *
+       4100-PRTJYUN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院患者集計区分チェック処理
+      *****************************************************************
+       4100-TAIINGRPKBN-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-TAIINGRPKBN-MAX )
+                     OR  ( SPA-GMN-TAIINGRPKBN
+                                   =   SPA-GMN-TAIINGRPKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-TAIINGRPKBN-MAX )
+               MOVE    SPACE           TO  SPA-GMN-TAIINGRPKBN-G
+           ELSE
+               MOVE    SPA-GMN-TAIINGRPKBNLST(IDXA)
+                                       TO  SPA-GMN-TAIINGRPKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-TAIINGRPKBN-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -1065,6 +1378,11 @@
            MOVE    SPA-GMN-CHGWINDOWKBN    TO  SYS-5010-CHGWINDOWKBN
            MOVE    SPA-GMN-DELKBN          TO  SYS-5010-DELKBN
            MOVE    SPA-GMN-SKYSUMKBN       TO  SYS-5010-SKYSUMKBN
+           MOVE    SPA-GMN-SKYPRTKBN       TO  SYS-5010-SKYPRTKBN
+           MOVE    SPA-GMN-SRYPRTKBN       TO  SYS-5010-SRYPRTKBN
+           MOVE    SPA-GMN-PTINFREFKBN     TO  SYS-5010-PTINFREFKBN
+           MOVE    SPA-GMN-PRTJYUN         TO  SYS-5010-PRTJYUN
+           MOVE    SPA-GMN-TAIINGRPKBN     TO  SYS-5010-TAIINGRPKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
@@ -1195,6 +1513,48 @@
                                            TO  W23-SKYSUMKBNLST(IDX1)
            END-PERFORM
       *
+           MOVE    SPA-GMN-SKYPRTKBN-G     TO  W23-SKYPRTKBN
+           MOVE    SPA-GMN-SKYPRTKBN-MAX   TO  W23-SKYPRTKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SKYPRTKBN-MAX )
+               MOVE    SPA-GMN-SKYPRTKBNLST(IDX1)
+                                           TO  W23-SKYPRTKBNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-SRYPRTKBN-G     TO  W23-SRYPRTKBN
+           MOVE    SPA-GMN-SRYPRTKBN-MAX   TO  W23-SRYPRTKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SRYPRTKBN-MAX )
+               MOVE    SPA-GMN-SRYPRTKBNLST(IDX1)
+                                           TO  W23-SRYPRTKBNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-PTINFREFKBN-G     TO  W23-PTINFREFKBN
+           MOVE    SPA-GMN-PTINFREFKBN-MAX   TO  W23-PTINFREFKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-PTINFREFKBN-MAX )
+               MOVE    SPA-GMN-PTINFREFKBNLST(IDX1)
+                                           TO  W23-PTINFREFKBNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-PRTJYUN-G     TO  W23-PRTJYUN
+           MOVE    SPA-GMN-PRTJYUN-MAX   TO  W23-PRTJYUN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-PRTJYUN-MAX )
+               MOVE    SPA-GMN-PRTJYUNLST(IDX1)
+                                           TO  W23-PRTJYUNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-TAIINGRPKBN-G
+                                       TO  W23-TAIINGRPKBN
+           MOVE    SPA-GMN-TAIINGRPKBN-MAX
+                                       TO  W23-TAIINGRPKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-TAIINGRPKBN-MAX )
+               MOVE    SPA-GMN-TAIINGRPKBNLST(IDX1)
+                                       TO  W23-TAIINGRPKBNLST(IDX1)
+           END-PERFORM
+      *
            IF    ( SPA-GMN-NYUKINKBN       =   "1" )
                MOVE    WIDGET-INSENSITIVE  TO  W23-NYUKINPRTKBN-STATE
                                                W23-NYUKINPRTKBNLST-STATE
@@ -1317,6 +1677,16 @@
                    MOVE    "SKYSUMKBN"     TO  MCP-WIDGET
            WHEN    09
                    MOVE    "CHGWINDOWKBN"  TO  MCP-WIDGET
+           WHEN    10
+                   MOVE    "SKYPRTKBN"     TO  MCP-WIDGET
+           WHEN    11
+                   MOVE    "SRYPRTKBN"     TO  MCP-WIDGET
+           WHEN    12
+                   MOVE    "PTINFREFKBN"   TO  MCP-WIDGET
+           WHEN    13
+                   MOVE    "PRTJYUN"       TO  MCP-WIDGET
+           WHEN    14
+                   MOVE    "TAIINGRPKBN"   TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -1347,6 +1717,16 @@
            WHEN    "DELKBN"
                    MOVE    8           TO  SPA-GMN-CUR
            WHEN    "SKYSUMKBN"
+                   MOVE    10          TO  SPA-GMN-CUR
+           WHEN    "SKYPRTKBN"
+                   MOVE    11          TO  SPA-GMN-CUR
+           WHEN    "SRYPRTKBN"
+                   MOVE    12          TO  SPA-GMN-CUR
+           WHEN    "PTINFREFKBN"
+                   MOVE    13          TO  SPA-GMN-CUR
+           WHEN    "PRTJYUN"
+                   MOVE    14          TO  SPA-GMN-CUR
+           WHEN    "TAIINGRPKBN"
                    MOVE    101         TO  SPA-GMN-CUR
            END-EVALUATE
       *

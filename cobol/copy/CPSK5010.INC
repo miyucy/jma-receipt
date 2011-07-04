@@ -63,8 +63,18 @@
                05  SYS-5010-SKYSUMKBN       PIC  X(01).
       *        ¼«Æ°Á«°Ü¶èÊ¬
                05  SYS-5010-CHGWINDOWKBN    PIC  X(01).
+      *        ÀÁµá½ñ°õºþ¶èÊ¬
+               05  SYS-5010-SKYPRTKBN       PIC  X(01).
+      *        ÌÀºÙ½ñ°õºþ¶èÊ¬
+               05  SYS-5010-SRYPRTKBN       PIC  X(01).
+      *        ´µ¼Ô¸ÄÊÌ¾ðÊó»²¾È¶èÊ¬
+               05  SYS-5010-PTINFREFKBN     PIC  X(01).
+      *        ½ÐÎÏ½ç¶èÊ¬
+               05  SYS-5010-PRTJYUN         PIC  X(02).
+      *        Âà±¡´µ¼Ô½¸·×¶èÊ¬
+               05  SYS-5010-TAIINGRPKBN     PIC  X(01).
       *        Í½È÷
-               05  SYS-5010-YOBI2           PIC  X(478).
+               05  SYS-5010-YOBI2           PIC  X(472).
       *Ã¼Ëö£É£Ä
            03  SYS-5010-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

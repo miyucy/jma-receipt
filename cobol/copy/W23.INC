@@ -32,3 +32,24 @@
                 04  W23-SKYSUMKBN          PIC X(30).
                 04  W23-SKYSUMKBN-COUNT    PIC S9(9)   BINARY.
                 04  W23-SKYSUMKBNLST       PIC X(30)   OCCURS  5 TIMES.
+              03  W23-CMB-SKYPRTKBN.
+                04  W23-SKYPRTKBN          PIC X(40).
+                04  W23-SKYPRTKBN-COUNT    PIC S9(9)   BINARY.
+                04  W23-SKYPRTKBNLST       PIC X(40)   OCCURS  5 TIMES.
+              03  W23-CMB-SRYPRTKBN.
+                04  W23-SRYPRTKBN          PIC X(40).
+                04  W23-SRYPRTKBN-COUNT    PIC S9(9)   BINARY.
+                04  W23-SRYPRTKBNLST       PIC X(40)   OCCURS  5 TIMES.
+              03  W23-CMB-PTINFREFKBN.
+                04  W23-PTINFREFKBN        PIC X(30).
+                04  W23-PTINFREFKBN-COUNT  PIC S9(9)   BINARY.
+                04  W23-PTINFREFKBNLST     PIC X(30)   OCCURS  5 TIMES.
+              03  W23-CMB-PRTJYUN.
+                04  W23-PRTJYUN            PIC X(25).
+                04  W23-PRTJYUN-COUNT      PIC S9(9)   BINARY.
+                04  W23-PRTJYUNLST         PIC X(25)   OCCURS  10 TIMES.
+              03  W23-CMB-TAIINGRPKBN.
+                04  W23-TAIINGRPKBN        PIC X(30).
+                04  W23-TAIINGRPKBN-COUNT  PIC S9(9)   BINARY.
+                04  W23-TAIINGRPKBNLST     PIC X(30)   OCCURS  5 TIMES.
+

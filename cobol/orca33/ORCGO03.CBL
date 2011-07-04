@@ -216,6 +216,7 @@
            COPY    "CPSK5000.INC".
            COPY    "CPSK5001.INC".
            COPY    "CPSK5002.INC".
+           COPY    "CPSK5010.INC".
       *
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
@@ -438,32 +439,70 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5000-REC
       *
-           MOVE    SYS-5000-SKYPRTKBN  TO  WRK-CMB-CD
+           INITIALIZE                  SYS-5010-REC
+           MOVE    "5010"          TO  SYS-5010-KANRICD
+           MOVE    "*"             TO  SYS-5010-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-5010-STYUKYMD
+                                       SYS-5010-EDYUKYMD
+           MOVE    SYS-5010-REC    TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5010-REC
+      *
+           MOVE    SYS-5010-SKYPRTKBN
+                                   TO  WRK-CMB-CD
            PERFORM 4200-SKYPRTKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO   SPA-GMN-O03-SKYPRTKBN-G
            ELSE
-               MOVE    SPA-GMN-O03-SKYPRTKBNLST (1)
+               MOVE    SYS-5000-SKYPRTKBN  TO  WRK-CMB-CD
+               PERFORM 4200-SKYPRTKBNLST-CHK-SEC
+               IF    ( WRK-CMB-ITM NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM TO   SPA-GMN-O03-SKYPRTKBN-G
+               ELSE
+                   MOVE    SPA-GMN-O03-SKYPRTKBNLST (1)
                                        TO  SPA-GMN-O03-SKYPRTKBN-G
+               END-IF
            END-IF
       *
-           MOVE    SYS-5000-SRYPRTKBN
+           MOVE    SYS-5010-SRYPRTKBN
                                    TO  WRK-CMB-CD
            PERFORM 4200-SRYPRTKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM NOT =   SPACE )
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-O03-SRYPRTKBN-G
+               MOVE    WRK-CMB-ITM TO   SPA-GMN-O03-SRYPRTKBN-G
            ELSE
-               MOVE    SPA-GMN-O03-SRYPRTKBNLST (1)
+               MOVE    SYS-5000-SRYPRTKBN  TO  WRK-CMB-CD
+               PERFORM 4200-SRYPRTKBNLST-CHK-SEC
+               IF    ( WRK-CMB-ITM NOT =   SPACE )
+                   MOVE    WRK-CMB-ITM TO   SPA-GMN-O03-SRYPRTKBN-G
+               ELSE
+                   MOVE    SPA-GMN-O03-SRYPRTKBNLST (1)
                                        TO  SPA-GMN-O03-SRYPRTKBN-G
+               END-IF
            END-IF
       *
-           MOVE    "1"             TO  WRK-CMB-CD
+           MOVE    SYS-5010-PTINFREFKBN
+                                   TO  WRK-CMB-CD
            PERFORM 4200-PTINFREFKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM NOT =   SPACE )
                MOVE    WRK-CMB-ITM TO  SPA-GMN-O03-PTINFREFKBN-G
            ELSE
-               MOVE    SPA-GMN-O03-PTINFREFKBNLST (1)
-                                       TO  SPA-GMN-O03-PTINFREFKBN-G
+               MOVE    "1"         TO  WRK-CMB-CD
+               PERFORM 4200-PTINFREFKBNLST-CHK-SEC
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-O03-PTINFREFKBN-G
+           END-IF
+      *
+           MOVE    SYS-5010-PRTJYUN
+                                   TO  WRK-CMB-CD
+           PERFORM 4200-PRTJYUNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-O03-PRTJYUN-G
+           ELSE
+               MOVE    SPA-GMN-O03-PRTJYUNLST(01)
+                                   TO  SPA-GMN-O03-PRTJYUN-G
+           END-IF
+      *
+           IF    ( SYS-5010-TAIINGRPKBN    =   "1" )
+               MOVE    "T"         TO  SPA-GMN-O03-CHKTAIIN
            END-IF
       *
            PERFORM 3101-EDIT-PAGE-SEC

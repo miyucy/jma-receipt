@@ -59,5 +59,40 @@ W23	{
 			count	int;
 			item	varchar(30)[5];
 		};
+		CMB_SKYPRTKBN	{
+			SKYPRTKBN	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[5];
+		};
+		CMB_SRYPRTKBN	{
+			SRYPRTKBN	{
+				value	varchar(40);
+			};
+			count	int;
+			item	varchar(40)[5];
+		};
+		CMB_PTINFREFKBN	{
+			PTINFREFKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
+		};
+		CMB_PRTJYUN	{
+			PRTJYUN	{
+				value	varchar(25);
+			};
+			count	int;
+			item	varchar(25)[10];
+		};
+		CMB_TAIINGRPKBN	{
+			TAIINGRPKBN {
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
+		};
 	};
 };
