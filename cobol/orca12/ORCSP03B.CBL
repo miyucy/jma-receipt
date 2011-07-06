@@ -78,6 +78,8 @@
            03  FLG-AUTO            PIC 9(01).
       *
            03  FLG-HKNNUM-CHK      PIC 9(01).
+      *    新規区分
+           03  FLG-KOHINS          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -181,6 +183,7 @@
            03  WRK-HBTNUM              PIC X(02).
            03  WRK-CHK-KOHNUM          PIC X(03).
            03  WRK-HBTCNT              PIC 9(02).
+           03  WRK-MAE-HBTNUM          PIC X(02).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -358,6 +361,14 @@
       ****************************************************************
        100-KIHON-CHK-SEC     SECTION.
       *
+           MOVE    ZERO                TO  FLG-KOHINS
+           MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
+           IF     (IDX-K2              =   ZERO      ) OR
+                  (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                       =    "1"      )
+               MOVE    1                   TO  FLG-KOHINS
+           END-IF
+      *
       *    負担者番号
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1001-FTNJANUM-CHK-SEC
@@ -488,6 +499,7 @@
                    CONTINUE
                ELSE
                    PERFORM 101100-HKNNUM-CHK-SEC
+      *            保険の種類は保険者マスタなしとする
                    IF      FLG-HKNNUM-CHK      =   1
                        MOVE    1               TO  FLG-HKNJAINF
                    END-IF
@@ -496,8 +508,24 @@
       *    保険者番号あり
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNNUM        TO  WRK-MAE-KOHNUM
-      *
                MOVE    HKNJA-IDOYMD        TO  SPA-PTKOH-IDOYMD (IDX-K)
+      *
+      *ver.4.7
+      *        新規で負担者番号再入力時
+               IF     (FLG-KOHINS          =   1     )
+                  AND (SPA-GMN-KOHNUM (IDX-K) NOT =   SPACE )
+                  AND (SPA-GMN-KOHNUM (IDX-K) NOT =   WRK-MAE-KOHNUM)
+                   PERFORM 10110-KOHHBTNUMKBN-SEC
+                   IF     (WRK-KOHHBTNUMKBN    =   ZERO )
+                     OR   (WRK-MAE-HBTNUM      =   SPA-GMN-FTNJANUM
+                                                         (IDX-K) (1:2))
+                       CONTINUE
+                   ELSE
+      *                負担者番号の公費へ
+                       MOVE    SPACE           TO  SPA-GMN-KOHNUM(IDX-K)
+                   END-IF
+               END-IF
+      *
            ELSE
                MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG
                                                                (IDX-K)
@@ -552,13 +580,12 @@
             OR    (SPA-FLG-END         =   1     )
                CONTINUE
            ELSE
-      *    更新の時、保険区分変更時、エラーとする
-               MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
-               IF     (IDX-K2              >   ZERO  ) AND
-                      (SPA-PTKOH-SINKIKBN (IDX-K2)
-                                           =   SPACE  )  AND
-                      (SPA-MAE-KOHNUM (IDX-K)
-                                       NOT =   SPACE    )
+      *        更新の時、保険区分変更時、エラーとする
+      **       MOVE    SPA-NAI-PTKOH-EDANUM(IDX-K) TO  IDX-K2
+      *        IF     (SPA-NAI-PTKOH-KOHID (IDX-K) NOT =   ZERO  )
+      *         AND   (SPA-MAE-KOHNUM (IDX-K)
+      ***                                  NOT =   SPACE )
+               IF      FLG-KOHINS          =   ZERO
                    IF      WRK-MAE-KOHNUM  NOT =   SPA-MAE-KOHNUM(IDX-K)
                        PERFORM 10011-HKNNUM-HENCHK-SEC
                    END-IF
@@ -624,6 +651,7 @@
        10110-KOHHBTNUMKBN-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHHBTNUMKBN
+           MOVE    SPACE               TO  WRK-MAE-HBTNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-KOHMAX
                IF     (SPA-GMN-KOHNUM(IDX-K)
@@ -633,6 +661,9 @@
       *            法別番号チェック区分
                    MOVE    SPA-NAI-KOHHBTNUMKBN (IDX)
                                            TO  WRK-KOHHBTNUMKBN
+      *            法別番号
+                   MOVE    SPA-NAI-HBTNUM (IDX)
+                                           TO  WRK-MAE-HBTNUM
                END-IF
            END-PERFORM
       *
@@ -646,6 +677,7 @@
        10011-HKNNUM-SET-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHHBTNUMKBN
+           MOVE    SPACE               TO  WRK-MAE-HBTNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-KOHMAX
                IF     (SPA-MAE-KOHNUM(IDX-K)
@@ -655,8 +687,18 @@
       *            法別番号チェック区分
                    MOVE    SPA-NAI-KOHHBTNUMKBN (IDX)
                                            TO  WRK-KOHHBTNUMKBN
+                   MOVE    SPA-NAI-HBTNUM (IDX)
+                                           TO  WRK-MAE-HBTNUM
                END-IF
            END-PERFORM
+      *
+      *ver.4.7
+      *    新規で負担者番号再入力時
+           IF     (FLG-KOHINS                 =   1     )
+              AND (SPA-MAE-KOHNUM (IDX-K)     =   SPACE )
+              AND (SPA-GMN-KOHNUM (IDX-K) NOT =   SPACE )
+               PERFORM 10110-KOHHBTNUMKBN-SEC
+           END-IF
       *    法別番号チェック区分をしない
            IF      WRK-KOHHBTNUMKBN    =   ZERO
                MOVE    SPA-MAE-KOHNUM(IDX-K)   TO  WRK-MAE-KOHNUM
@@ -679,7 +721,16 @@
                    END-IF
                END-IF
            END-PERFORM
-      *
+      *    新規で負担者番号再入力時
+           IF     (FLG-KOHINS                  =   1     )
+              AND (SPA-GMN-KOHNUM (IDX-K)  NOT =   SPACE )
+      *        法別番号が変更となった時のみ変更
+               IF     (WRK-MAE-HBTNUM          =   WRK-HBTNUM)
+                   GO      TO      10011-HKNNUM-SET-EXT
+               ELSE
+                   MOVE    SPACE           TO  SPA-MAE-KOHNUM (IDX-K)
+               END-IF
+           END-IF
            IF      SPA-MAE-KOHNUM (IDX-K)  =   SPACE
                MOVE    WRK-CHK-KOHNUM      TO  WRK-MAE-KOHNUM
       *        新規で同じ制度が複数ある
@@ -687,6 +738,10 @@
       *            公費法別一覧編集区分
                    IF      SPA-NAI-KOHHBTKBN-FLG   =   "1"
                        PERFORM 10011-P02H-SYORI-SEC
+                   END-IF
+               ELSE
+                   IF     (WRK-HBTCNT      =   1   )
+                       MOVE    SPACE       TO  SPA-GMN-KOHNUM (IDX-K)
                    END-IF
                END-IF
            ELSE
@@ -805,11 +860,9 @@
        1001-KOHNUM-CHK-SEC           SECTION.
       *
       *    更新の時、保険区分変更時、エラーとする
-           MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
+      ***  MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
            MOVE    ZERO                TO  FLG-CHK
-           IF     (IDX-K2              >   ZERO      ) AND
-                  (SPA-PTKOH-SINKIKBN (IDX-K2)
-                                       =    SPACE    ) AND
+           IF     (FLG-KOHINS          =   ZERO    )  AND
                   (SPA-MAE-KOHNUM (IDX-K)  NOT =   SPACE )
                IF      SPA-GMN-KOHNUM(IDX-K)
                                            =   SPA-MAE-KOHNUM(IDX-K)
@@ -849,9 +902,7 @@
            END-IF
       *!
       *    新規の時、チェック・編集
-           IF     (IDX-K2              =   ZERO    )  OR
-                  (SPA-PTKOH-SINKIKBN (IDX-K2)
-                                       =   "1"      )
+           IF     (FLG-KOHINS          =   1   )
                PERFORM 41011-HKNNUM-SYORI-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    21              TO  SPA-GMN-CUR

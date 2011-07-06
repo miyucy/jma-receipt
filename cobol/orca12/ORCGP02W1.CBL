@@ -453,7 +453,7 @@
       *            受給者番号警告
                    07  WRK-NAI-JYUCHK              PIC 9(01).
       *            確認年月日警告
-                   07  WRK-KOH-KAKUINFLG        PIC 9(01).
+                   07  WRK-KOH-KAKUINFLG           PIC 9(01).
                05  WRK-KOH-MAX             PIC 9(04).
       *
       *    保険組合せ（ＳＰＡと同じ）
@@ -3319,8 +3319,12 @@
                    UNTIL      (IDX-K   >   3  )
                           OR  (SPA-ERRCD   NOT =   SPACE)
                IF     (WRK-P02-KOHNUM (IDX-K)(1:1) =   "/"   )
-                   MOVE    SPA-NAI-PTKOH-EDANUM(IDX-K)  TO  IDX-KOH
-                   IF     (SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE )
+                   MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
+                   IF    ((IDX-K2              =   ZERO      ) OR
+                          (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                               =    "1"      ))
+                    AND   (SPA-GMN-FTNJANUM(IDX-K) NOT =   SPACE )
+      *                新規入力分
                        PERFORM 41021-KOHHBTCHEK-SEC
                    END-IF
                    IF      SPA-ERRCD       NOT =   SPACE
@@ -3463,19 +3467,18 @@
        41021-KOHHBTCHEK-SEC      SECTION.
       *
       *    新規の時一覧表示
-           IF     (IDX-KOH             =   ZERO  )   OR
-                 ((IDX-KOH             >   ZERO      ) AND
-                  (SPA-PTKOH-SINKIKBN (IDX-KOH)
-                                       =    "1"      ))
-               INITIALIZE                  SPA-P02H-AREA
-               MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
-                                           TO  SPA-P02H-HBTNUM
-               MOVE    IDX-K               TO  SPA-P02H-KOHIDX
-               PERFORM 41021-P02H-SYORI-SEC
-               IF      SPA-P02H-MAX        <=  1
-                   INITIALIZE                  SPA-P02H-AREA
-                   MOVE    ZERO                TO  SPA-FLG-END
+           INITIALIZE                  SPA-P02H-AREA
+           MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
+                                       TO  SPA-P02H-HBTNUM
+           MOVE    IDX-K               TO  SPA-P02H-KOHIDX
+           PERFORM 41021-P02H-SYORI-SEC
+           IF      SPA-P02H-MAX        <=  1
+               IF      SPA-P02H-MAX        =   1
+                   MOVE    SPA-P02H-TKOHNUM (1)
+                                           TO  SPA-GMN-KOHNUM (IDX-K)
                END-IF
+               INITIALIZE                  SPA-P02H-AREA
+               MOVE    ZERO                TO  SPA-FLG-END
            END-IF
            .
       *
