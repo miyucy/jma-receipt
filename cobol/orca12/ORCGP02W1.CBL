@@ -3312,8 +3312,6 @@
       *ver.4.7
            IF     (FLG-KOH-ADD2        =   ZERO )
              AND  (FLG-KOH-DEL         =   ZERO )
-      *      ¸øÈñË¡ÊÌ°ìÍ÷ÊÔ½¸¶èÊ¬
-             AND  (SPA-NAI-KOHHBTKBN-FLG   =   "1"   )
       *        ¸øÈñ¼ïÊÌ°ìÍ÷
                PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL      (IDX-K   >   3  )

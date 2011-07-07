@@ -512,19 +512,19 @@
       *
       *ver.4.7
       *        新規で負担者番号再入力時
-               IF     (FLG-KOHINS          =   1     )
-                  AND (SPA-GMN-KOHNUM (IDX-K) NOT =   SPACE )
-                  AND (SPA-GMN-KOHNUM (IDX-K) NOT =   WRK-MAE-KOHNUM)
-                   PERFORM 10110-KOHHBTNUMKBN-SEC
-                   IF     (WRK-KOHHBTNUMKBN    =   ZERO )
-                     OR   (WRK-MAE-HBTNUM      =   SPA-GMN-FTNJANUM
-                                                         (IDX-K) (1:2))
-                       CONTINUE
-                   ELSE
+      *        IF     (FLG-KOHINS          =   1     )
+      *           AND (SPA-GMN-KOHNUM (IDX-K) NOT =   SPACE )
+      *           AND (SPA-GMN-KOHNUM (IDX-K) NOT =   WRK-MAE-KOHNUM)
+      *            PERFORM 10110-KOHHBTNUMKBN-SEC
+      *            IF     (WRK-KOHHBTNUMKBN    =   ZERO )
+      *              OR   (WRK-MAE-HBTNUM      =   SPA-GMN-FTNJANUM
+      *                                                  (IDX-K) (1:2))
+      *                CONTINUE
+      *            ELSE
       *                負担者番号の公費へ
-                       MOVE    SPACE           TO  SPA-GMN-KOHNUM(IDX-K)
-                   END-IF
-               END-IF
+      *                MOVE    SPACE           TO  SPA-GMN-KOHNUM(IDX-K)
+      *            END-IF
+      *****    END-IF
       *
            ELSE
                MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG
@@ -691,14 +691,6 @@
                                            TO  WRK-MAE-HBTNUM
                END-IF
            END-PERFORM
-      *
-      *ver.4.7
-      *    新規で負担者番号再入力時
-           IF     (FLG-KOHINS                 =   1     )
-              AND (SPA-MAE-KOHNUM (IDX-K)     =   SPACE )
-              AND (SPA-GMN-KOHNUM (IDX-K) NOT =   SPACE )
-               PERFORM 10110-KOHHBTNUMKBN-SEC
-           END-IF
       *    法別番号チェック区分をしない
            IF      WRK-KOHHBTNUMKBN    =   ZERO
                MOVE    SPA-MAE-KOHNUM(IDX-K)   TO  WRK-MAE-KOHNUM
@@ -721,27 +713,14 @@
                    END-IF
                END-IF
            END-PERFORM
-      *    新規で負担者番号再入力時
-           IF     (FLG-KOHINS                  =   1     )
-              AND (SPA-GMN-KOHNUM (IDX-K)  NOT =   SPACE )
-      *        法別番号が変更となった時のみ変更
-               IF     (WRK-MAE-HBTNUM          =   WRK-HBTNUM)
-                   GO      TO      10011-HKNNUM-SET-EXT
-               ELSE
-                   MOVE    SPACE           TO  SPA-MAE-KOHNUM (IDX-K)
-               END-IF
-           END-IF
            IF      SPA-MAE-KOHNUM (IDX-K)  =   SPACE
                MOVE    WRK-CHK-KOHNUM      TO  WRK-MAE-KOHNUM
-      *        新規で同じ制度が複数ある
-               IF     (WRK-HBTCNT          >   1   )
-      *            公費法別一覧編集区分
-                   IF      SPA-NAI-KOHHBTKBN-FLG   =   "1"
+      *        公費法別一覧編集区分
+               IF     (SPA-GMN-KOHNUM (IDX-K)  =   SPACE )
+                 AND  (SPA-NAI-KOHHBTKBN-FLG   =   "1"   )
+                   IF     (WRK-HBTCNT          >   1   )
+      *                同じ制度が複数ある
                        PERFORM 10011-P02H-SYORI-SEC
-                   END-IF
-               ELSE
-                   IF     (WRK-HBTCNT      =   1   )
-                       MOVE    SPACE       TO  SPA-GMN-KOHNUM (IDX-K)
                    END-IF
                END-IF
            ELSE
