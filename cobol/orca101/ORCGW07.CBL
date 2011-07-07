@@ -1783,9 +1783,9 @@
                                    TO  SPA-GMN-TOWNNAME2KBN-LIST (2)
            MOVE    2               TO  SPA-GMN-TOWNNAME2KBN-MAX 
       *    公費法別一覧表示区分
-           MOVE    "0 表示しない"
+           MOVE    "0 自動表示しない"
                                    TO  SPA-GMN-KOHHBTKBN-LIST (1)
-           MOVE    "1 表示する"
+           MOVE    "1 自動表示する"
                                    TO  SPA-GMN-KOHHBTKBN-LIST (2)
            MOVE    2               TO  SPA-GMN-KOHHBTKBN-MAX 
       *
