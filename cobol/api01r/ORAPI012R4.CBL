@@ -417,10 +417,10 @@
            IF     (WRK-ERRCD               =   SPACE )
                PERFORM 20012-BIRTHDAY-CHK-SEC
            END-IF
-      *    氏名・生年月日のどちらかを必須
+      *    氏名を必須
            IF      WRK-ERRCD           =   SPACE
-               IF     (WRK-NAME            =   SPACE )  AND
-                      (WRK-BIRTHDAY-STR    =   SPACE )
+               IF     (WRK-NAME            =   SPACE )
+     *******   AND    (WRK-BIRTHDAY-STR    =   SPACE )
                    MOVE    "17"            TO  WRK-ERRCD
                END-IF
            END-IF
@@ -1179,7 +1179,8 @@
                MOVE    "入外区分がありません"
                                                TO  WRK-ERRMSG
            WHEN    "17"
-               MOVE    "検索氏名か開始生年月日を設定して下さい。"
+      ******** MOVE    "検索氏名か開始生年月日を設定して下さい。"
+               MOVE    "検索氏名を設定して下さい。"
                                                TO  WRK-ERRMSG
            WHEN    "20"
                MOVE    "該当患者がありません。"
