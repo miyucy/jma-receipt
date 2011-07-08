@@ -37,7 +37,6 @@
       *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
       *  04.01.01    NACL-森脇    08/01/17  器材点数追加
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶファイル出力対応
-      *  04.08.01    NACL-森脇    14/07/31  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -76,11 +75,6 @@
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
-      *----(04.08.01)--ADD-START---
-      *    エラーファイル 名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //TENSUERR//.
-      *----(04.08.01)--ADD-END-----
       *     
            COPY    "HCML06.INC".
       *
@@ -118,10 +112,8 @@
            03  WRK-PARA-FILE       PIC X(1).
            03  WRK-PARA-CSVDIR     PIC X(100).
            03  WRK-PARA-CSVFILE    PIC X(100).
-      *----(04.08.01)--UPD-START---
-      *     03  TENSUERR            PIC X(100).
-           03  TENSUCSV            PIC X(1024).
-      *----(04.08.01)--UPD-END-----
+           03  TENSUERR            PIC X(100).
+           03  TENSUCSV            PIC X(100).
       *
       *    一時領域
        01  WRK-AREA.
@@ -194,15 +186,10 @@
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       ****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
-           02  FILLER              PIC X(1000).
+           02  FILLER              PIC X(256).
       ****************************************************************
        PROCEDURE               DIVISION
                USING
@@ -232,10 +219,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  SUM-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  TENSUERR
-           INITIALIZE                  TENSUCSV
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -293,14 +276,6 @@
                                     TO  WRK-LNKYMD
            PERFORM 831-YMDCONV12-SEC
            MOVE    WRK-LNKYMD       TO  WRK-MSTYMDH
-      *
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TENSUERR-BASENAME   TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -361,14 +336,11 @@
       *****************************************************************
        300-CSV-SEC                 SECTION.
       *
-      *----(04.08.01)--UPD-START---
-      *     STRING  "/tmp/"             DELIMITED SIZE
-           STRING  SGETTEMP-TEMPDIR    DELIMITED SPACE
+           STRING  "/tmp/"             DELIMITED SIZE
                    WRK-PARA-CSVFILE    DELIMITED SPACE
                    ".wk"               DELIMITED SIZE
                                INTO    TENSUCSV
            END-STRING
-      *----(04.08.01)--UPD-END-----
       *
       *    ＣＳＶファイルを開く
            OPEN    OUTPUT              TENSUCSV-FILE
@@ -511,14 +483,11 @@
            MOVE    "tensu.sh"          TO  SFILESV-SHELLID(1)
            MOVE    1                   TO  SFILESV-SHORI-RENNUM(1)
            MOVE    LNK-PRTKANRI-RENNUM TO  SFILESV-RENNUM(1)
-      *----(04.08.01)--UPD-START---
-      *     MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
-           MOVE    SGETTEMP-TEMPDIR    TO  SFILESV-FOR-FOLDER(1)
+           MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
            STRING  WRK-PARA-CSVFILE        DELIMITED  BY  SPACE
                    ".wk"                   DELIMITED  BY  SIZE
                                    INTO    SFILESV-FOR-DATA (1)
            END-STRING
-      *----(04.08.01)--UPD-END-----
            MOVE    WRK-PARA-CSVDIR     TO  SFILESV-TO-FOLDER(1)
            MOVE    WRK-PARA-CSVFILE    TO  SFILESV-TO-DATA(1)
            MOVE    SUM-KENSU           TO  SFILESV-CNT-ALL(1)
