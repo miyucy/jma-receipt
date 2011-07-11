@@ -44,6 +44,8 @@
                        11  SPA-GMN-I51-FTNRATE       PIC X(05).
       *                入院科
                        11  SPA-GMN-I51-NYUINKA       PIC X(10).
+      *                前回定期請求期間
+                       11  SPA-GMN-I51-TEIKIKIKAN    PIC X(30).
                    09  SPA-GMN-I51-INPUT-AREA.
       *                入院日
                        11  SPA-GMN-I51-NYUINYMD      PIC X(10).
@@ -159,17 +161,34 @@
                        11  SPA-GMN-I51-ZENMISYU-NYU  PIC S9(07).
       *                選択番号
                        11  SPA-GMN-I51-SELNUM        PIC 9(02).
-      *            保険組み合わせリスト
-                   09  SPA-GMN-I51-HKNCOMBILST.
-                       11  SPA-GMN-I51-HKNCOMBILST-CNT
+      *                保険組み合わせリスト
+                       11  SPA-GMN-I51-HKNCOMBILST.
+                           13  SPA-GMN-I51-HKNCOMBILST-CNT
                                                      PIC S9(9)   BINARY.
-                       11  SPA-GMN-I51-HKNCOMBILST-ITM  OCCURS   15.
-                           13  SPA-GMN-I51-TSELNUM   PIC 9(02).
-                           13  SPA-GMN-I51-THKNCOMBI PIC X(50).
-                       11  SPA-GMN-I51-HKNCOMBILST-SEL
-                                                     PIC 9(05).
+                           13  SPA-GMN-I51-HKNCOMBILST-ITM  OCCURS   15.
+                               15  SPA-GMN-I51-TSELNUM   PIC 9(02).
+                               15  SPA-GMN-I51-THKNCOMBI PIC X(50).
+                           13  SPA-GMN-I51-HKNCOMBILST-SEL
+                                                         PIC 9(05).
+      *            請求書兼領収書発行方法
+                   09  SPA-GMN-I51-SKYSUMKBN-G.
+                       11   SPA-GMN-I51-SKYSUMKBN    PIC X(01).
+                       11   SPA-GMN-I51-SKYSUMKBNFL  PIC X(01).
+                       11   SPA-GMN-I51-SKYSUMKBNMEI PIC X(28).
+      *            画面コンボデータ領域
+                   09  SPA-GMN-I51-CMB-DAT-AREA.
+      *                    請求書兼領収書発行方法
+                       11  SPA-GMN-I51-SKYSUMKBNLST-G.
+                           13  SPA-GMN-I51-SKYSUMKBN-MAX
+                                                     PIC 9(5).
+                           13  SPA-GMN-I51-SKYSUMKBNLST
+                                                     OCCURS  4.
+                               15  SPA-GMN-I51-SKYSUMKBNL    PIC X(01).
+                               15  SPA-GMN-I51-SKYSUMKBNFLL  PIC X(01).
+                               15  SPA-GMN-I51-SKYSUMKBNMEIL PIC X(28).
       *
                    09  SPA-NAI-I51-HEAD-AREA.
+                       11  SPA-NAI-I51-LOCK          PIC 9(01).
       *                患者番号エラー状態
                        11  SPA-NAI-I51-PTNUM-ERR     PIC X(04).
       *                患者ＩＤ
@@ -180,9 +199,17 @@
                        11  SPA-NAI-I51-PTRRKNUM      PIC 9(03).
       *                入力データ入院履歴枝番号
                        11  SPA-NAI-I51-PTRRKEDANUM   PIC 9(03).
+      *                前回定期請求開始日
+                       11  SPA-NAI-I51-SKYSTYMD      PIC X(08).
+      *                前回定期請求終了日
+                       11  SPA-NAI-I51-SKYEDYMD      PIC X(08).
+      *                初期表示時算定開始日
+                       11  SPA-NAI-I51-DEFSTYMD      PIC X(08).
                    09  SPA-NAI-I51-INPUT-AREA.
       *                入院日
                        11  SPA-NAI-I51-NYUINYMD      PIC X(08).
+      *                退院日
+                       11  SPA-NAI-I51-TAIINYMD      PIC X(08).
       *                算定開始日
                        11  SPA-NAI-I51-SANTEISTYMD   PIC X(08).
       *                算定終了日
@@ -197,14 +224,16 @@
                                    17  SPA-NAI-I51-SEIKYU-KON
                                                              PIC S9(07).
       *
-                   09  SPA-NAI-I51-HKNCOMBILST.
-                       11  SPA-NAI-I51-HKNCOMBILST-ITM  OCCURS   15.
-                           13  SPA-NAI-I51-TTTLDAT-FLG   PIC 9(01).
-                           13  SPA-NAI-I51-TSYUNOUIDX    PIC 9(02).
-                           13  SPA-NAI-I51-THKNCOMBI-DAT.
-                               15  SPA-NAI-I51-TSELNUM   PIC Z9.
+                       11  SPA-NAI-I51-HKNCOMBILST.
+                           13  SPA-NAI-I51-HKNCOMBILST-ITM   OCCURS  15.
+                               15  SPA-NAI-I51-TTTLDAT-FLG   PIC 9(01).
+                               15  SPA-NAI-I51-TSYUNOUIDX    PIC 9(02).
+                               15  SPA-NAI-I51-THKNCOMBI-DAT.
+                                   17  SPA-NAI-I51-TSELNUM   PIC Z9.
       *  収納データ
          03  SPA-I5-SYUNOU-TBL.
+           05  SPA-I5-SYUNOU-SANTEISTYMD             PIC X(08).
+           05  SPA-I5-SYUNOU-SANTEIEDYMD             PIC X(08).
            05  SPA-I5-SYUNOU-CNT                     PIC 9(05).
            05  SPA-I5-SYUNOU-OCC                     OCCURS  13.
       *      収納合計フラグ  0:収納データ
@@ -213,6 +242,8 @@
              07  SPA-I5-SYUNOU-TTLDAT-FLG            PIC 9(01).
              07  SPA-I5-SYUNOU-YM-S                  PIC X(06).
              07  SPA-I5-SYUNOU-YM-W                  PIC X(06).
+             07  SPA-I5-SYUNOU-SKYSTYMD              PIC X(08).
+             07  SPA-I5-SYUNOU-SKYEDYMD              PIC X(08).
              07  SPA-I5-SYUNOU-HKNCOMBI              PIC X(50).
       *      月別保険組合せ数（月別合計データのみ設定）
              07  SPA-I5-SYUNOU-HKNCOMBI-SU           PIC 9(02).

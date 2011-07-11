@@ -182,6 +182,10 @@
                05  WRK-MEMOID          PIC X(04).
                05  WRK-MEMOIDNO        PIC 9(02).
       *
+           03  WRK-GAISAN-MEMOID-G.
+               05  WRK-GAISAN-MEMOID   PIC X(11).
+               05  WRK-GAISAN-MEMOIDNO PIC 9(02).
+      *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(100).
       *
@@ -219,6 +223,7 @@
            03  TPARA-YUKOSTYMD          PIC X(08).
            03  TPARA-YUKOEDYMD          PIC X(08).
            03  TPARA-MEMO               PIC X(80) OCCURS 10.
+           03  TPARA-GAISAN-MEMO        PIC X(80) OCCURS 10.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -578,6 +583,14 @@
                PERFORM 1001-OPTION-CALL-SEC
                MOVE    WRK-PARA        TO  TPARA-MEMO (IDX-MEMO)
       *
+      *        メモ欄（概算書）
+               MOVE    "GAISAN_MEMO"   TO  WRK-GAISAN-MEMOID
+               MOVE    IDX-MEMO        TO  WRK-GAISAN-MEMOIDNO
+               MOVE    WRK-GAISAN-MEMOID-G
+                                       TO  WRK-PARA-NAME
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA        TO  TPARA-GAISAN-MEMO (IDX-MEMO)
+      *
            END-PERFORM
       *
            .
@@ -620,6 +633,16 @@
            WHEN    "MEMO08"
            WHEN    "MEMO09"
            WHEN    "MEMO10"
+           WHEN    "GAISAN_MEMO01"
+           WHEN    "GAISAN_MEMO02"
+           WHEN    "GAISAN_MEMO03"
+           WHEN    "GAISAN_MEMO04"
+           WHEN    "GAISAN_MEMO05"
+           WHEN    "GAISAN_MEMO06"
+           WHEN    "GAISAN_MEMO07"
+           WHEN    "GAISAN_MEMO08"
+           WHEN    "GAISAN_MEMO09"
+           WHEN    "GAISAN_MEMO10"
                MOVE    ORCSPRGOPTION-OT-PARA (1:80)
                                        TO  KANACHK-MAE-INPUT
            WHEN    "YUKOSTYMD"
@@ -1068,12 +1091,14 @@
            MOVE    WRK-KINGAKU-9       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONSEIKYU
+                                           HCN03-GAISAN-SEIKYU
       *    今回請求額消費税（再掲）
            MOVE    ORCHCN03-SEIKYU-TAX-SAI (IDX-M)
                                        TO WRK-KINGAKU-9
            MOVE    WRK-KINGAKU-9       TO  WRK-ZHENSYU12
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONZEI
+                                           HCN03-GAISAN-ZEI
       *    今回入金額
            MOVE    ORCHCN03-NYUKIN (IDX-M)
                                        TO  WRK-KINGAKU-9
@@ -1081,21 +1106,9 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONNYUKIN
       *
-           MOVE    SPACE               TO  HCN03-LAYER-OPTION
-           STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                   " -L L2 "           DELIMITED  BY  SIZE
-                   "MonpeLayerOut"     DELIMITED  BY  SIZE
-           INTO    HCN03-LAYER-OPTION
-           END-STRING
+           PERFORM 20011-LAYER-HEN-SEC
       *
            IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
-      *
-               MOVE    SPACE               TO  HCN03-LAYER-OPTION
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L L1 "           DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCN03-LAYER-OPTION
-               END-STRING
       *
       *        未収額編集処理
                PERFORM 3102-MISYU-EDIT-SEC
@@ -1106,6 +1119,7 @@
                MOVE    WRK-KINGAKU-9   TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-ZHENSYU24   TO  HCN03-GAI-MISYUKIN
+                                           HCN03-GAISAN-GMISYU
       *
                MOVE    "入 院 未 収 額"
                                        TO  HCN03-LBL-N-MISYU
@@ -1114,6 +1128,7 @@
                MOVE    WRK-KINGAKU-9   TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-ZHENSYU24   TO  HCN03-NYU-MISYUKIN
+                                           HCN03-GAISAN-NMISYU
            END-IF
       *
       *    発行区分
@@ -1134,8 +1149,13 @@
                PERFORM VARYING IDX-MEMO    FROM    1   BY  1
                        UNTIL ( IDX-MEMO    >   CONST-MEMO-MAX )
       *
-                   MOVE    TPARA-MEMO (IDX-MEMO)
+                   IF    ( ORCHCN03-GAISAN-FLG     =   1 )
+                       MOVE    TPARA-GAISAN-MEMO (IDX-MEMO)
                                            TO  HCN03-MEMO (IDX-MEMO)
+                   ELSE
+                       MOVE    TPARA-MEMO (IDX-MEMO)
+                                           TO  HCN03-MEMO (IDX-MEMO)
+                   END-IF
       *
                END-PERFORM
            END-IF
@@ -1190,6 +1210,55 @@
        2001-HCN03-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    レイヤーオプション編集処理
+      *****************************************************************
+       20011-LAYER-HEN-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  HCN03-LAYER-OPTION
+      *
+           IF    ( ORCHCN03-GAISAN-FLG     =   1 )
+               IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
+                   STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
+                           " -L L1 "           DELIMITED  BY  SIZE
+                           " -L L2 "           DELIMITED  BY  SIZE
+                           " -L SKY "          DELIMITED  BY  SIZE
+                           "MonpeLayerOut"     DELIMITED  BY  SIZE
+                   INTO    HCN03-LAYER-OPTION
+                   END-STRING
+               ELSE
+                   STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
+                           " -L L1 "           DELIMITED  BY  SIZE
+                           " -L L2 "           DELIMITED  BY  SIZE
+                           " -L SKY "          DELIMITED  BY  SIZE
+                           " -L G2 "           DELIMITED  BY  SIZE
+                           "MonpeLayerOut"     DELIMITED  BY  SIZE
+                   INTO    HCN03-LAYER-OPTION
+                   END-STRING
+               END-IF
+           ELSE
+               IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
+                   STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
+                           " -L L1 "           DELIMITED  BY  SIZE
+                           " -L G1 "           DELIMITED  BY  SIZE
+                           " -L G2 "           DELIMITED  BY  SIZE
+                           "MonpeLayerOut"     DELIMITED  BY  SIZE
+                   INTO    HCN03-LAYER-OPTION
+                   END-STRING
+               ELSE
+                   STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
+                           " -L L2 "           DELIMITED  BY  SIZE
+                           " -L G1 "           DELIMITED  BY  SIZE
+                           " -L G2 "           DELIMITED  BY  SIZE
+                           "MonpeLayerOut"     DELIMITED  BY  SIZE
+                   INTO    HCN03-LAYER-OPTION
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           .
+       20011-LAYER-HEN-EXT.
+           EXIT.
       *****************************************************************
       *   明細見出し編集処理
       *****************************************************************
@@ -1303,6 +1372,9 @@
            MOVE    HCN03-SKJRYO            TO  HCN03V01-SKJRYO
            MOVE    HCN03-LIFERYO           TO  HCN03V01-LIFERYO
            MOVE    HCN03-LAYER-OPTION      TO  HCN03V01-LAYER-OPTION
+           MOVE    HCN03-GAISAN-SEIKYU     TO  HCN03V01-GAISAN-SEIKYU
+           MOVE    HCN03-GAISAN-GMISYU     TO  HCN03V01-GAISAN-GMISYU
+           MOVE    HCN03-GAISAN-NMISYU     TO  HCN03V01-GAISAN-NMISYU
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   10 )
@@ -1377,6 +1449,10 @@
            MOVE    HCN03-SKJRYO            TO  HCN03V02-SKJRYO
            MOVE    HCN03-LIFERYO           TO  HCN03V02-LIFERYO
            MOVE    HCN03-LAYER-OPTION      TO  HCN03V02-LAYER-OPTION
+           MOVE    HCN03-GAISAN-SEIKYU     TO  HCN03V02-GAISAN-SEIKYU
+           MOVE    HCN03-GAISAN-ZEI        TO  HCN03V02-GAISAN-ZEI
+           MOVE    HCN03-GAISAN-GMISYU     TO  HCN03V02-GAISAN-GMISYU
+           MOVE    HCN03-GAISAN-NMISYU     TO  HCN03V02-GAISAN-NMISYU
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   10 )

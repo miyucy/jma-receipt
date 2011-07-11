@@ -47,3 +47,6 @@
             02  HCN03B-LBLFTNRATE   PIC X(2).
             02  HCN03B-KANANAME PIC X(50).
             02  HCN03B-KNJNAMW  PIC X(30).
+            02  HCN03B-GAISAN-SEIKYU    PIC X(24).
+            02  HCN03B-GAISAN-GMISYU    PIC X(24).
+            02  HCN03B-GAISAN-NMISYU    PIC X(24).

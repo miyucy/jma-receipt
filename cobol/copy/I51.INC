@@ -17,6 +17,9 @@
       ********************************************************************
         02  I51.
       *     02  I51-FIXED3.
+              03  I51-B11-STATE        PIC S9(9) BINARY.
+              03  I51-LBLTEIKI         PIC X(20).
+              03  I51-LBLTEIKIKIKAN    PIC X(30).
               03  I51-LBLGENMEN-G.
 	          05   I51-LBLGENMEN-STYLE PIC X(20).
 	          05   I51-LBLGENMEN       PIC X(30).
@@ -32,6 +35,8 @@
                 04  I51-VALUE   PIC X(5).
               03  I51-NAME.
                 04  I51-VALUE   PIC X(50).
+              03  I51-NAME-STYLE.
+                04  I51-VALUE   PIC X(20).
               03  I51-BIRTHDAY.
                 04  I51-VALUE   PIC X(9).
               03  I51-NENREI.
@@ -158,6 +163,13 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-SELNUM.
                 04  I51-VALUE   PIC S9(2).
+              03  I51-CMB-SKYSUMKBN.
+                04  I51-SKYSUMKBN.
+                  05  I51-VALUE PIC X(30).
+                04  I51-SKYSUMKBN-CNT
+                                PIC S9(9)   BINARY.
+                04  I51-SKYSUMKBN-ITM
+                                PIC X(30)   OCCURS  4 TIMES.
               03  I51-SCROLLEDWINDOW1.
                 04  I51-HKNCOMBILST.
                   05  I51-HKNCOMBILST-CNT  PIC S9(9)   BINARY.

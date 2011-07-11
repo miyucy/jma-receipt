@@ -1,5 +1,14 @@
 I51	{
 	fixed3	{
+		B11	{
+			state   int;
+		};
+		LBLTEIKI	{
+			value	varchar(20);
+		};
+		LBLTEIKIKIKAN	{
+			value	varchar(30);
+		};
 		LBLGENMEN	{
 			style   varchar(20);
 			value	varchar(30);
@@ -21,6 +30,7 @@ I51	{
 		};
 		NAME	{
 			value	varchar(50);
+			style	varchar(20);
 		};
 		BIRTHDAY	{
 			value	varchar(9);
@@ -294,6 +304,13 @@ I51	{
 		};
 		SELNUM	{
 			value	number(2);
+		};
+		CMB_SKYSUMKBN	{
+			SKYSUMKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[04];
 		};
 		scrolledwindow1	{
 			HKNCOMBILST	{
