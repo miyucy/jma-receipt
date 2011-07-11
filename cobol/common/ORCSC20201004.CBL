@@ -733,14 +733,6 @@
                                                             (IDX-Z + 1)
                        END-IF
                    END-IF
-      *H23.11      ÌôºÞ¤Î¿ÇÎÅ¼ïÊÌ
-               WHEN    "6"
-                   IF      WRK-SRYSYUKBN       =   SPACE
-                       IF      WRK-COM-SRYSYUKBN (IDX-Z) NOT =   SPACE
-                           MOVE    WRK-COM-SRYSYUKBN (IDX-Z)
-                                                   TO  WRK-SRYSYUKBN
-                        END-IF
-                   END-IF
            END-EVALUATE
       *
            .
@@ -883,8 +875,6 @@
                MOVE    SPACE               TO  WRK-GMN-TENSU (IDX-Z)
                MOVE    SPACE               TO  WRK-GMN-KAISU (IDX-Z)
                MOVE    ZERO                TO  WRK-GMN-KEI   (IDX-Z)
-               MOVE    ZERO                TO  WRK-COM-SYUTEN1 (IDX-Z)
-               MOVE    ZERO                TO  WRK-COM-SYUTEN2 (IDX-Z)
       *        ¼êµ»Ëè
                INITIALIZE                   WRK-COM-PLUS-AREA(IDX-Z)
       *
@@ -962,17 +952,6 @@
                  ( WRK-CHK-SRYSYUKBN           =   "213"  OR
                                                    "223"  OR
                                                    "233" ) 
-      *ver.4.7
-      *        ±¡³°½èÊý¤ÎÅÀ¿ô
-               IF     (WRK-CHK-SRYSYUKBN       =   "213"  OR
-                                                   "223"  OR
-                                                   "233" )
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-COM-TENSU  (IDX-MAX)
-                                       TO  WRK-COM-INGAITEN (IDX-MAX)
-               END-IF
-      *
                MOVE    ZERO            TO  WRK-COM-KEI    (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-TENSU  (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-YKZTEN (IDX-MAX)
@@ -1534,7 +1513,7 @@
        3003-CHEK-SYORI-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOHOSENN
-      *    ½èÊýäµÎÁ»»Äê
+      *    ½èÊýäµ»»Äê
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    )) OR
@@ -1543,7 +1522,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-SYOHORYO
-      *    ½èÊýäµÎÁ»»Äê
+      *    ½èÊýäµ»»Äê
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))   OR
@@ -4088,7 +4067,7 @@
       *            ¿·À¸»ùÈ½Äê
                    IF     (LNK-ORCSC-NENREI-YY   =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM   =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD   <=  28   )
+                          (LNK-ORCSC-NENREI-DD   <   28   )
                        MOVE    1                 TO  FLG-CHK
                    END-IF
                ELSE
@@ -4108,7 +4087,7 @@
       *            ¿·À¸»ùÈ½Äê
                    IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD    <=  28   )
+                          (LNK-ORCSC-NENREI-DD    <   28   )
                        CONTINUE
                    ELSE
                        MOVE    1                 TO  FLG-CHK
@@ -4253,10 +4232,9 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-      *ver.4.8
-      *               IF      IDX-Y3              >   4
-      *                    MOVE    4               TO  IDX-Y3
-      *****           END-IF
+                      IF      IDX-Y3              >   4
+                           MOVE    4               TO  IDX-Y3
+                      END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -4404,8 +4382,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

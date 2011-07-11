@@ -44,8 +44,6 @@
       *  03.05.01    NACL-多々納  07/07/18  皮下筋肉注射変換なし対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.05.00    NACL-多々納  10/03/XX  Ｈ２２．４改正対応
-      *  04.07.00    NACL-多々納  11/11/25  同日再入院対応
-      *  04.08.00    NACL-多々納  16/06/08  332　の外来対応追加
       *****************************************************************
       *
       *
@@ -93,8 +91,7 @@
            03  FLG-GAZO-ARI        PIC 9(01).
       *
            03  FLG-OUT-OK          PIC 9(01).
-      *    中心静脈あり 
-           03  FLG-SYUGI-CHU       PIC 9(01).
+      *
       *
       *    添字領域
        01  IDX-AREA.
@@ -193,11 +190,6 @@
            03  FLG-SYUJUTU             PIC 9(01).
            03  IDX-CHU                 PIC 9(04).
       *
-      *ver.4.7
-      *    同日再入院分
-           03  WRK-D-DAY               PIC 9(03).
-           03  IDXX                    PIC 9(02).
-           03  IDX-D                   PIC 9(02).
       *
        01  TBL-NISUU-AREA.
            03  TBL-NISUU-OCC           OCCURS   31.
@@ -273,9 +265,6 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
       *
-      *    中心静脈注射
-       01  CON-CHUJYO              PIC X(09)   VALUE   "130004410".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -331,9 +320,6 @@
            COPY    "MCPDATA.INC".
       *DDD COPY    "CPORCMCP.INC".
       *
-      *    診療行為用共通パラメタ
-           COPY    "K01COMMON-SPA".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -366,12 +352,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
-      *
-           IF      LNK-ORCSC-PG        =   "K02"
-               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           ELSE
-               INITIALIZE                      SPA-K01KYOUTU
-           END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -431,7 +411,6 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-SYU
            MOVE    ZERO                TO  FLG-SYUGI
-           MOVE    ZERO                TO  FLG-SYUGI-CHU
            MOVE    ZERO                TO  FLG-MADOKU
            MOVE    ZERO                TO  FLG-SEIBUTU
            INITIALIZE                  WRK-AREA
@@ -468,20 +447,10 @@
                        IF      WRK-GMN-INPUTCD(IDX-Z)  =   ".350"
                                                        OR  ".332"
                                                        OR  ".352"
-      *H28.6
-      *                    H28.4 から、.332 入力可
-                           IF    (SPA-SRYYMD           >=  "20160401")
-                             AND (WRK-GMN-INPUTCD(IDX-Z)
-                                                       =   ".332" )
-                               CONTINUE
-                           ELSE
-      *
                            IF     SPA-NYUGAIKBN        =   "2"
                                MOVE    "9024"          TO  WRK-ERRCD
                                MOVE    "1"             TO  WRK-COM-CUR
                                                                (IDX-Z)
-                           END-IF
-      *
                            END-IF
                        END-IF
                        IF      WRK-GMN-INPUTCD(IDX-Z)  =   ".312"
@@ -565,12 +534,6 @@
                                                                 (IDX-Z)
       *                手技料の位置セット
                        MOVE    IDX-Z               TO  IDX-SYU
-      *!!
-      *                中心静脈注射判定
-                       IF      WRK-COM-INPUTCD (IDX-Z) =   CON-CHUJYO
-                           MOVE    1                   TO  FLG-SYUGI-CHU
-                       END-IF 
-      *!!
                    END-IF
       *            入院時の剤内容のチェック
                    IF     (WRK-COM-DATAKBN (IDX-Z) =   "2" ) AND
@@ -618,16 +581,6 @@
                        MOVE    "9020"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
-      *!!!!
-      *            入院時の中心静脈注射と薬剤は分ける
-                   IF    (SPA-NYUGAIKBN        =   "1" )   AND
-                         (FLG-SYUGI-CHU        =   1   )   AND
-                         (WRK-COM-HKNCOMBI (IDX-Z)
-                                           NOT =   "9999")
-                       MOVE    "9040"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-                   END-IF
-      *!!!!
       *            残量廃棄
                    PERFORM 1006-HAIKI-SYORI-SEC
       *
@@ -644,16 +597,6 @@
                        MOVE    "0039"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
-      *!!!!
-      *H27.1       入院時の中心静脈注射と器材は分ける
-                   IF    (SPA-NYUGAIKBN        =   "1" )   AND
-                         (FLG-SYUGI-CHU        =   1   )   AND
-                         (WRK-COM-HKNCOMBI (IDX-Z)
-                                           NOT =   "9999")
-                       MOVE    "9042"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-                   END-IF
-      *!!!!
            END-EVALUATE
       *
            .
@@ -736,7 +679,7 @@
                    END-IF
                WHEN    "340"
       *            中心静脈注射
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   CON-CHUJYO
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   "130004410"
                        IF     (LNK-ACCT2-SRYCD-JYO1    =   SPACE )  AND
                               (LNK-ACCT2-SRYCD-JYO2    =   SPACE )  AND
                               (LNK-ACCT2-SRYCD         =   SPACE )  AND
@@ -1391,10 +1334,8 @@
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      **              (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
-      **                                               "960") AND
-                      (WRK-COM-SRYKBN   (IDX)  NOT =   "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
                                                        "130003710" OR
                                                        "130003810")
@@ -1406,10 +1347,8 @@
                END-IF
       *        動脈注射は１回のみとする
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      ***             (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
-      ***                                              "960") AND
-                      (WRK-COM-SRYKBN   (IDX)  NOT =   "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130006110" OR
                                                        "130006210")
                    IF      FLG-DOUCHU          =   1
@@ -1625,7 +1564,7 @@
                END-IF
       *
       *        中心静脈の時
-               IF      WRK-COM-INPUTCD (IDX)   =   CON-CHUJYO
+               IF      WRK-COM-INPUTCD (IDX)   =   "130004410"
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
                        IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
@@ -1822,15 +1761,10 @@
                               (SPA-ERRCD        NOT =   SPACE)
              IF   (WRK-COM-HKNCOMBI (IDX) NOT =   "9999")
              AND  (WRK-COM-YAKUHYO  (IDX) NOT =   "1"   )
-      *H27.8 包括剤対象外
-             AND  (WRK-COM-HOUKATU-ZAI(IDX)   =   ZERO  )
-      *
       *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      **              (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
-      **                                               "960") AND
-                      (WRK-COM-SRYKBN   (IDX)  NOT =   "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX)      =   "130009310" OR
                                                        "130003710" OR
                                                        "130003810")
@@ -1917,23 +1851,6 @@
       *****************************************************************
        3001-EKIRYO-SYUKEI-SEC         SECTION.
       *
-      *    同日再入院対応
-           MOVE    ZERO                TO  IDX-D
-           MOVE    1                   TO  IDXX
-           IF     (LNK-ORCSC-SYORIFLG =   "1"    )
-      *        訂正の時のみ対象回数変更
-               IF     (SPA-K02N-DOUKBN     =   "1"  )
-                   MOVE    SPA-K02N-DOUDAY     TO  IDX-D
-                   MOVE    2                   TO  IDXX
-               ELSE
-      *        診療日付＝同日再入院日
-                   IF     (SPA-SRYYMD             =   SPA-K02N-TAIINYMD)
-                       MOVE    SPA-K02N-TAIINYMD(7:2)  TO  IDX-D
-                       MOVE    3                   TO  IDXX
-                   END-IF
-               END-IF
-           END-IF
-      *!!!
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
@@ -1973,10 +1890,6 @@
                       (ACCT-SRYKA         =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI      =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO               TO  FLG-ZAIARI
-                   IF     (IDX-D              >   ZERO )  AND
-                          (ACCT-DAY (IDXX IDX-D)  >  ZERO )
-                       MOVE    1                  TO  FLG-ZAIARI
-                   END-IF
                END-IF
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
@@ -2091,7 +2004,7 @@
                        MOVE    SRY-AUTOKBN (IDX2)  TO  WRK-TEN-AUTO
                    END-IF
       *            手技料（中心静脈）
-                   IF      SRY-SRYCD (IDX2)        =   CON-CHUJYO
+                   IF      SRY-SRYCD (IDX2)        =   "130004410"
                        MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD1
                    END-IF
       *            手技料（麻毒）
@@ -2130,16 +2043,7 @@
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-      *ver.4.7
-      *同日再入院日
-               IF      IDX-D           =   IDY
-                   MOVE    ACCT-DAY (IDXX IDY)     TO  WRK-D-DAY
-               ELSE
-                   MOVE    ACCT-DAY (1    IDY)     TO  WRK-D-DAY
-               END-IF
-      *
-      ******   IF     (ACCT-DAY (1 IDY)    >   ZERO )  AND
-               IF     (WRK-D-DAY           >   ZERO )  AND
+               IF     (ACCT-DAY (1 IDY)    >   ZERO )  AND
                       (TBL-DAY  (IDY)      >   ZERO )
                  IF      WRK-SRYSYUKBN       =   "330"
                    ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA (IDY)
@@ -2147,8 +2051,7 @@
                    ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA-2 (IDY)
                  END-IF
                END-IF
-      ******** IF      ACCT-DAY (1 IDY)    >   ZERO
-               IF      WRK-D-DAY           >   ZERO
+               IF      ACCT-DAY (1 IDY)    >   ZERO
                    IF      WRK-TEN-SRYCD   NOT =   SPACE
                        IF     (TBL-TEN-SRYCD(IDY)  NOT =  SPACE )
                            MOVE    WRK-TEN-SRYCD
@@ -2219,15 +2122,7 @@
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-      *ver.4.7
-      *同日再入院日
-               IF      IDX-D           =   IDY
-                   MOVE    ACCT-DAY (IDXX IDY)     TO  WRK-D-DAY
-               ELSE
-                   MOVE    ACCT-DAY (1    IDY)     TO  WRK-D-DAY
-               END-IF
-      *********IF      ACCT-DAY (1 IDY)    >   ZERO
-               IF      WRK-D-DAY           >   ZERO
+               IF      ACCT-DAY (1 IDY)    >   ZERO
       *            生物学的製剤区分
                    IF      FLG-SEIBUTU         =   1
                        MOVE    1               TO  TBL-IVH2-SEIBUTU(IDY)
@@ -2274,11 +2169,6 @@
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
-      *            同日再日
-                   IF     (IDX-D              >   ZERO )  AND
-                          (ACCT-DAY (IDXX IDX-D)  >  ZERO )
-                       MOVE    1                  TO  FLG-ZAIARI
-                   END-IF
                END-IF
       *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1        =   ZERO
@@ -2302,18 +2192,8 @@
                IF      FLG-ZAIARI          =   1
                   PERFORM VARYING     IDY     FROM    1   BY  1
                           UNTIL       IDY     >   31
-      *ver.4.7
-      *同日再入院日
-                       IF      IDX-D           =   IDY
-                           MOVE    ACCT-DAY (IDXX IDY)     TO  WRK-D-DAY
-                       ELSE
-                           MOVE    ACCT-DAY (1    IDY)     TO  WRK-D-DAY
-                       END-IF
-      *
-      **************** IF      ACCT-DAY (1 IDY)    >   ZERO
-      ***************      MOVE    ACCT-DAY (1 IDY)
-                       IF      WRK-D-DAY       >   ZERO
-                           MOVE    WRK-D-DAY
+                       IF      ACCT-DAY (1 IDY)    >   ZERO
+                           MOVE    ACCT-DAY (1 IDY)
                                                TO  TBL-SYU-DAY(IDY)
                        END-IF
                    END-PERFORM
@@ -2379,7 +2259,7 @@
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-SRYYM
@@ -2403,11 +2283,6 @@
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
-      *ver.4.7     同日再日
-                   IF     (IDX-D              >   ZERO )  AND
-                          (ACCT-DAY (IDXX IDX-D)  >  ZERO )
-                       MOVE    1                  TO  FLG-ZAIARI
-                   END-IF
                END-IF
       *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1       =   ZERO
@@ -2429,15 +2304,8 @@
                    IF      FLG-GAZO-ARI        =   1
                        PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
-      *ver.4.7
-      *同日再入院日
-                           IF      IDX-D           =   IDY
-                               MOVE    ACCT-DAY (IDXX IDY) TO  WRK-D-DAY
-                           ELSE
-                               MOVE    ACCT-DAY (1    IDY) TO  WRK-D-DAY
-                           END-IF
-                           IF      WRK-D-DAY        >   ZERO
-                               MOVE    WRK-D-DAY
+                           IF      ACCT-DAY (1 IDY)    >   ZERO
+                               MOVE    ACCT-DAY (1 IDY)
                                                TO  TBL-GAZ-DAY(IDY)
                            END-IF
                        END-PERFORM
@@ -2599,7 +2467,7 @@
                    IF    ((TBL-TEN-IDX   (IDY)     >   ZERO  )  OR
                           (TBL-TEN-SRYCD (IDY)     =   SPACE )) AND
                           (TBL-TEN-SRYCD2(IDY)     =   SPACE )
-                       MOVE    CON-CHUJYO          TO  TBL-IVHA-SRYCD
+                       MOVE    "130004410"         TO  TBL-IVHA-SRYCD
                                                                (IDY)
                    ELSE
                        IF      TBL-IVH-CHUIDX (IDY)   >   ZERO
@@ -2705,8 +2573,7 @@
       *******                              +   1
       **** END-IF
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL      (IDY     >   31            )
-                           OR (SPA-ERRCD   NOT =   SPACE )
+                   UNTIL       IDY     >   31
       *        ６歳未満
                IF      WRK-BYMD(1:6)       >   SPA-SRYYMD(1:6)
                    MOVE    "130003710"     TO  WRK-SRYCD
@@ -2764,7 +2631,7 @@
                    END-IF
                ELSE
                    IF     (TBL-TEN-IDX  (IDY)  >   ZERO ) AND
-                          (TBL-TEN-SRYCD(IDY)  NOT =   CON-CHUJYO)
+                          (TBL-TEN-SRYCD(IDY)  NOT =   "130004410")
       *                液量エラー
                        MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
                        MOVE    IDY                 TO  IDX-IDY
@@ -2832,8 +2699,7 @@
                    END-IF
                END-IF
       *        画像診断の点滴手技が存在する時
-               IF     (TBL-GAZ-DAY (IDY)   >   ZERO )
-                 AND  (SPA-ERRCD           =   SPACE)
+               IF      TBL-GAZ-DAY (IDY)   >   ZERO
                    IF     (TBL-TEN-SRYCD (IDY) NOT =   SPACE) OR
                           (TBL-TEN-SRYCD2(IDY) NOT =   SPACE)
                        MOVE    "9022"              TO  SPA-ERRCD
@@ -2844,10 +2710,9 @@
                        END-IF
                    END-IF
                    IF      SPA-ERRCD       NOT =   SPACE
-      *
                    IF      TBL-GAZ-IDX (IDY)   >   ZERO
       *                手技料エラー
-      *?????           MOVE    "9022"              TO  SPA-ERRCD
+                       MOVE    "9022"              TO  SPA-ERRCD
                        MOVE    TBL-GAZ-IDX (IDY)   TO  IDX-K
                        MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
@@ -2865,7 +2730,6 @@
                            END-IF
                        END-IF
                    END-IF
-      *
                    END-IF
                END-IF
            END-PERFORM
@@ -3003,7 +2867,7 @@
       *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY   =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM   =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD   <=  28   )
+                          (LNK-ORCSC-NENREI-DD   <   28   )
                        MOVE    1                 TO  FLG-CHK
                    END-IF
                ELSE
@@ -3023,7 +2887,7 @@
       *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD    <=  28   )
+                          (LNK-ORCSC-NENREI-DD    <   28   )
                        CONTINUE
                    ELSE
                        MOVE    1                 TO  FLG-CHK
