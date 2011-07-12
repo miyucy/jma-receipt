@@ -155,6 +155,12 @@
                                                          OCCURS   10.
       *                    ¼¼ÎÁº¹³Û
                            13  SPA-GMN-I51-RMSAGAKU      PIC S9(07).
+      *                    Ä´À°¶â
+                           13  SPA-GMN-I51-CHOSEI-G.
+                               15  SPA-GMN-I51-CHOSEI-OCC
+                                                         OCCURS  2.
+                                   17  SPA-GMN-I51-CHOSEI    PIC S9(07).
+                                   17  SPA-GMN-I51-CHOSEI-X  PIC X(10).
       *                Á°²óÌ¤¼ý³Û¡Ê³°Íè¡Ë
                        11  SPA-GMN-I51-ZENMISYU-GAI  PIC S9(07).
       *                Á°²óÌ¤¼ý³Û¡ÊÆþ±¡¡Ë
@@ -216,10 +222,21 @@
                        11  SPA-NAI-I51-SANTEIEDYMD   PIC X(08).
       *                ÀÁµá¥Ç¡¼¥¿
                        11  SPA-NAI-I51-SEIKYU-AREA.
+                           13  SPA-NAI-I51-CHOSEI-TBL.
+                             14    SPA-NAI-I51-CHOSEI-OCC1
+                                                         OCCURS    15.
+                               15  SPA-NAI-I51-CHOSEI-OCC2
+                                                         OCCURS    2.
+                                   17  SPA-NAI-I51-CHOSEI    PIC S9(07).
+                                   17  SPA-NAI-I51-CHOSEI-X  PIC X(10).
+                                   17  SPA-NAI-I51-CHOSEI-MOT
+                                                             PIC S9(07).
       *                    ÀÁµá¶â³Û
                            13  SPA-NAI-I51-SEIKYU-TBL.
                                15  SPA-NAI-I51-SEIKYU-OCC
                                                          OCCURS    15.
+                                   17  SPA-NAI-I51-SEIKYU-PLUS
+                                                            PIC S9(07).
                                    17  SPA-NAI-I51-SEIKYU    PIC S9(07).
                                    17  SPA-NAI-I51-SEIKYU-KON
                                                              PIC S9(07).

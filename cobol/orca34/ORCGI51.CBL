@@ -95,6 +95,7 @@
            03  FLG-ORCSDAY                 PIC 9(01).
            03  FLG-HKNCOMBILST-ROW PIC 9(01).
            03  FLG-NYUINKA         PIC 9(01).
+           03  FLG-TARGET          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -104,6 +105,7 @@
            03  IDX3                PIC 9(05).
            03  IDX4                PIC 9(05).
            03  IDX5                PIC 9(05).
+           03  IDX7                PIC 9(05).
            03  IDX11               PIC 9(05).
            03  IDX12               PIC 9(05).
            03  IDX15               PIC 9(05).
@@ -113,6 +115,12 @@
            03  IDX-SYU             PIC 9(05).
            03  IDX-M               PIC 9(05).
            03  IDX-MAX             PIC 9(05).
+           03  IDX-CHOSEI          PIC 9(05).
+           03  IDXC                PIC 9(05).
+           03  IDXY                PIC 9(05).
+           03  IDXZ                PIC 9(05).
+           03  IDX-G               PIC 9(05).
+           03  IDX-SUM             PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -192,6 +200,10 @@
            03  WRK-ORG-PG                  PIC X(20).
            03  WRK-PRINT-PG                PIC X(20).
            03  WRK-SEIKYU-PG               PIC X(20).
+           03  WRK-CHOSEITTL               PIC  S9(08).
+           03  WRK-CHOSEI                  PIC  S9(08).
+           03  WRK-IDX                     PIC  9(05).
+           03  WRK-SEIKYU                  PIC S9(08).
       *
        01  WRK-ROW-AREA.
            03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
@@ -515,8 +527,6 @@
       *
            PERFORM                 310-SPA-SET-SEC
       *
-           MOVE    1               TO  SPA-GMN-I51-CUR
-      *
            .
        300-SCREEN-EXT.
            EXIT.
@@ -604,6 +614,8 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I51-SKYSUMKBN-G
            END-IF
       *
+           MOVE    1               TO  SPA-GMN-I51-CUR
+      *
             .
        310-SPA-SET-EXT.
            EXIT.
@@ -661,7 +673,7 @@
            .
        4200-SKYSUMKBNLST-CHK-EXT.
            EXIT.
-      *****************************************************************
+      *****************************************************************	
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
@@ -670,6 +682,7 @@
                                        TO  WRK-HKNCOMBILST-ROW
       *
            MOVE    SPACE               TO  I51
+           INITIALIZE                      I51
       *
            EVALUATE    FLG-HKNCOMBILST-ROW
            WHEN    1
@@ -948,6 +961,12 @@
       *    選択番号
            MOVE    SPA-GMN-I51-SELNUM  TO  I51-SELNUM
       *
+      *    調整金
+           MOVE    SPA-GMN-I51-CHOSEI-X (1)
+                                       TO  I51-CHOSEI (1)
+           MOVE    SPA-GMN-I51-CHOSEI-X (2)
+                                       TO  I51-CHOSEI (2)
+      *
       *    保険組み合わせリスト
            MOVE    SPA-GMN-I51-HKNCOMBILST-CNT
                                        TO  I51-HKNCOMBILST-CNT
@@ -1020,11 +1039,16 @@
                MOVE    SPA-GMN-I51-TEIKIKIKAN  TO  I51-LBLTEIKIKIKAN
            END-IF
       *
-           MOVE    WIDGET-INSENSITIVE    TO  I51-B11-STATE
+           MOVE    WIDGET-INSENSITIVE    TO  I51-CHOSEI-STATE (1)
+                                             I51-CHOSEI-STATE (2)
+                                             I51-B11-STATE
+      *
            IF    ( SPA-NAI-I51-TAIINYMD  =   "99999999" )
             AND  ( SPA-GMN-I51-HKNCOMBILST-CNT >   ZERO )
             AND  ( SPA-NAI-I51-DEFSTYMD  =   SPA-I5-SYUNOU-SANTEISTYMD )
                    MOVE    WIDGET-NORMAL TO  I51-B11-STATE
+                                             I51-CHOSEI-STATE (1)
+                                             I51-CHOSEI-STATE (2)
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -1044,6 +1068,8 @@
                PERFORM 50011-INPUT-CUR-SEC
            END-IF
       *
+           PERFORM 50012-SKIP-CUR-SEC
+      *
            EVALUATE    SPA-GMN-I51-CUR
            WHEN    001
                MOVE    "PTNUM"         TO  MCP-WIDGET
@@ -1051,8 +1077,14 @@
                MOVE    "SANTEISTYMD"   TO  MCP-WIDGET
            WHEN    003
                MOVE    "SANTEIEDYMD"   TO  MCP-WIDGET
+           WHEN    004
+               MOVE    "SKYSUMKBN"     TO  MCP-WIDGET
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
+           WHEN    102
+               MOVE    "CHOSEI1"       TO  MCP-WIDGET
+           WHEN    103
+               MOVE    "CHOSEI2"       TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1068,31 +1100,47 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "PTNUM"
-               MOVE    001             TO  SPA-GMN-I51-CUR
-           WHEN    "SANTEISTYMD"
                MOVE    002             TO  SPA-GMN-I51-CUR
-           WHEN    "SANTEIEDYMD"
+           WHEN    "SANTEISTYMD"
                MOVE    003             TO  SPA-GMN-I51-CUR
-           WHEN    "SELNUM"
-               MOVE    101             TO  SPA-GMN-I51-CUR
-           END-EVALUATE
-      *
-      *
-      *    次カーソル位置を設定
-           EVALUATE    MCP-WIDGET
            WHEN    "SANTEIEDYMD"
                MOVE    212             TO  SPA-GMN-I51-CUR
            WHEN    "SELNUM"
                MOVE    101             TO  SPA-GMN-I51-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-I51-CUR =   SPA-GMN-I51-CUR
-                                           +   1
+           WHEN    "CHOSEI1"
+               MOVE    103             TO  SPA-GMN-I51-CUR
+           WHEN    "CHOSEI2"
+               MOVE    004             TO  SPA-GMN-I51-CUR
+           WHEN    "SKYSUMKBN"
+               MOVE    212             TO  SPA-GMN-I51-CUR
            END-EVALUATE
+      *
            .
       *
        50011-INPUT-CUR-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    カーソルスキップ処理
+      *****************************************************************
+       50012-SKIP-CUR-SEC              SECTION.
+      *
+           IF    ( SPA-GMN-I51-CUR     =   102 )
+               IF    ( I51-CHOSEI-STATE (1)    =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I51-CUR     =   103
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I51-CUR     =   103 )
+               IF    ( I51-CHOSEI-STATE (2)    =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I51-CUR     =   4
+               END-IF
+           END-IF
+      *
+           .
+      *
+       50012-SKIP-CUR-EXT.
+           EXIT.
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
@@ -1115,6 +1163,9 @@
       *    選択
            WHEN    "CLICKED"       ALSO    "B04"
                MOVE    101           TO    SPA-GMN-I51-CUR
+      *    調整金
+           WHEN    "CLICKED"       ALSO    "B05"
+               MOVE    102           TO    SPA-GMN-I51-CUR
       *    氏名検索
            WHEN    "CLICKED"       ALSO    "B09"
                MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -1199,6 +1250,14 @@
                                        TO  WRK-LST-IDX
                    PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
+      *            調整金
+                   MOVE    SPA-NAI-I51-CHOSEI (WRK-LST-IDX 1)
+                                           TO  WRK-Z9
+                   MOVE    WRK-Z9          TO  I51-CHOSEI (1)
+                   MOVE    SPA-NAI-I51-CHOSEI (WRK-LST-IDX 2)
+                                           TO  WRK-Z9
+                   MOVE    WRK-Z9          TO  I51-CHOSEI (2)
+      *
                    MOVE    SPA-GMN-I51-HKNCOMBILST-CNT
                                            TO  IDX1
                END-IF
@@ -1237,6 +1296,10 @@
            MOVE    I51-SANTEISTYMD   TO  SPA-GMN-I51-SANTEISTYMD
            MOVE    I51-SANTEIEDYMD   TO  SPA-GMN-I51-SANTEIEDYMD
       *
+      *    調整金
+           MOVE    I51-CHOSEI(1)   TO  SPA-GMN-I51-CHOSEI-X (1)
+           MOVE    I51-CHOSEI(2)   TO  SPA-GMN-I51-CHOSEI-X (2)
+      *
       *    発行方法
            MOVE    I51-SKYSUMKBN     TO  SPA-GMN-I51-SKYSUMKBN-G
       *
@@ -1273,6 +1336,15 @@
                PERFORM 4100-SANTEIEDYMD-CHK-SEC
            END-IF
       *
+      *    調整金チェック処理
+           PERFORM VARYING IDXC    FROM    1   BY  1
+                   UNTIL ( IDXC    >   2 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               PERFORM 4100-CHOSEI-CHK-SEC
+      *
+           END-PERFORM
+      *
       *    発行方法チェック処理
            IF    ( SPA-ERRCD           =    SPACE )
                PERFORM 4100-SKYSUMKBN-CHK-SEC
@@ -1283,6 +1355,448 @@
        4102-KIHON-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    調整金チェック処理
+      *****************************************************************
+       4100-CHOSEI-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-GMN-I51-HKNCOMBILST-SEL >   ZERO )
+            AND  ( SPA-GMN-I51-HKNCOMBILST-SEL
+                           <=  SPA-GMN-I51-HKNCOMBILST-CNT )
+               CONTINUE
+           ELSE
+               GO  TO  4100-CHOSEI-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-NAI-I51-TSYUNOUIDX
+                                   (SPA-GMN-I51-HKNCOMBILST-SEL)
+                                       TO  IDXZ
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    SPA-GMN-I51-CHOSEI-X (IDXC)   TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-SEISUU         >   7     )   OR
+                  (SNUM-SYOKBN         =   "1"   )
+               MOVE    "0008"              TO  SPA-ERRCD
+               COMPUTE SPA-GMN-I51-CUR
+                   =   101 +   IDXC
+           ELSE
+               MOVE    SNUM-OUTNUM         TO  WRK-CHOSEI
+      *
+               MOVE    IDXZ                TO  IDX-G
+      *
+               PERFORM 4101-CHOSEI-SORT-SEC
+      *
+      *
+      *        合計再計算
+               PERFORM 4101-SEIKYU-KEI-SEC
+      *
+               MOVE    SPA-NAI-I51-CHOSEI (IDXZ IDXC)
+                                       TO  WRK-Z9
+               MOVE    WRK-Z9          TO  SPA-GMN-I51-CHOSEI-X (IDXC)
+      *
+           END-IF
+      *
+      *    今回請求額がゼロ以上であること
+           IF    ( IDXC                =   2 )
+               MOVE    IDXZ        TO  IDX7
+               PERFORM 41001-CHOSEI-SEIKYU-CHK-SEC
+      *
+               PERFORM VARYING IDX7    FROM    1   BY  1
+                       UNTIL ( IDX7    >   SPA-GMN-I51-HKNCOMBILST-CNT )
+                         OR  ( SPA-ERRCD   NOT =   SPACE )
+                   PERFORM 41001-CHOSEI-SEIKYU-CHK-SEC
+                   IF    ( SPA-ERRCD       NOT =   SPACE )
+                       MOVE    IDX7    TO  SPA-GMN-I51-HKNCOMBILST-SEL
+                       MOVE  SPA-GMN-I51-TSELNUM (IDX7)
+                                           TO  SPA-GMN-I51-SELNUM
+      *
+                       MOVE  SPA-NAI-I51-TSYUNOUIDX (SPA-GMN-I51-SELNUM)
+                                           TO  WRK-LST-IDX
+                       PERFORM 3100-SEIKYU-DAT-EDIT-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       4100-CHOSEI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    調整金振り分け処理
+      *****************************************************************
+       4101-CHOSEI-SORT-SEC            SECTION.
+      *
+           COMPUTE WRK-CHOSEITTL
+               =   SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT IDXC)
+               +   WRK-CHOSEI
+               -   SPA-NAI-I51-CHOSEI (IDX-G IDXC)
+      *
+           PERFORM 41001-CHOSEI-SORT-SEC
+      *
+           MOVE    WRK-CHOSEITTL   TO  SPA-NAI-I51-CHOSEI
+                                       (SPA-I5-SYUNOU-CNT IDXC)
+      *
+           .
+       4101-CHOSEI-SORT-EXT.
+           EXIT.
+      *****************************************************************
+      *    調整金振り分け処理
+      *****************************************************************
+       41001-CHOSEI-SORT-SEC           SECTION.
+      *
+           IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX-G)
+                                       =   ZERO )
+               MOVE    WRK-CHOSEI  TO  SPA-NAI-I51-CHOSEI (IDX-G IDXC)
+           ELSE
+               COMPUTE WRK-CHOSEI
+                   =   WRK-CHOSEI  -   SPA-NAI-I51-CHOSEI (IDX-G IDXC)
+      *
+               IF    ( WRK-CHOSEI  >=  ZERO )
+                   PERFORM 410011-CHOSEI-SORT-SEC
+               ELSE
+                   PERFORM 410012-CHOSEI-SORT-SEC
+               END-IF
+           END-IF
+      *
+           .
+       41001-CHOSEI-SORT-EXT.
+           EXIT.
+      *****************************************************************
+      *    調整金振り分け処理（調整金増）
+      *****************************************************************
+       410011-CHOSEI-SORT-SEC          SECTION.
+      *
+           COMPUTE WRK-IDX =   SPA-I5-SYUNOU-CNT   -   1
+      *
+           PERFORM VARYING IDX7    FROM    WRK-IDX     BY  -1
+                   UNTIL ( IDX7        <   1 )
+                    OR   ( WRK-CHOSEI  =   ZERO )
+      *
+               IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX7)
+                                      =   ZERO )
+      *
+                   MOVE    ZERO        TO  FLG-TARGET
+      *
+                   IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX-G)
+                                      =    1 )
+                       IF    ( SPA-I5-SYUNOU-YM-S  (IDX7)
+                                      =    SPA-I5-SYUNOU-YM-S(IDX-G))
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   ELSE
+                           MOVE    1   TO  FLG-TARGET
+                   END-IF
+      *
+                   IF    ( FLG-TARGET  =   1 )
+      *
+                       IF    ( SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                                       <   ZERO )
+                           COMPUTE SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                               =   SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                               +   WRK-CHOSEI
+      *
+                           IF    ( SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                                       >   ZERO )
+                               MOVE    SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                                       TO  WRK-CHOSEI
+                               MOVE    ZERO
+                                       TO  SPA-NAI-I51-CHOSEI(IDX7 IDXC)
+                           ELSE
+                               MOVE    ZERO
+                                       TO  WRK-CHOSEI
+                           END-IF
+                       END-IF
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX7    FROM    1   BY  1
+                   UNTIL ( IDX7        >   WRK-IDX )
+                    OR   ( WRK-CHOSEI  =   ZERO )
+      *
+               IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX7)
+                                      =   ZERO )
+      *
+                   MOVE    ZERO        TO  FLG-TARGET
+      *
+                   IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX-G)
+                                      =    1 )
+                       IF    ( SPA-I5-SYUNOU-YM-S  (IDX7)
+                                      =    SPA-I5-SYUNOU-YM-S(IDX-G))
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   ELSE
+                           MOVE    1   TO  FLG-TARGET
+                   END-IF
+      *
+                   IF    ( FLG-TARGET  =   1 )
+      *
+                       COMPUTE SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                           =   SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                           +   WRK-CHOSEI
+      *
+                       MOVE    ZERO    TO  WRK-CHOSEI
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       410011-CHOSEI-SORT-EXT.
+           EXIT.
+      *****************************************************************
+      *    調整金振り分け処理（調整金減）
+      *****************************************************************
+       410012-CHOSEI-SORT-SEC          SECTION.
+      *
+           COMPUTE WRK-IDX =   SPA-I5-SYUNOU-CNT   -   1
+           MOVE    ZERO            TO  IDX-CHOSEI
+      *
+           PERFORM VARYING IDX7    FROM    WRK-IDX     BY  -1
+                   UNTIL ( IDX7        <   1 )
+                    OR   ( WRK-CHOSEI  =   ZERO )
+      *
+               IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX7)
+                                      =   ZERO )
+      *
+                   MOVE    ZERO        TO  FLG-TARGET
+      *
+                   IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX-G)
+                                      =    1 )
+                       IF    ( SPA-I5-SYUNOU-YM-S  (IDX7)
+                                      =    SPA-I5-SYUNOU-YM-S(IDX-G))
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   ELSE
+                           MOVE    1   TO  FLG-TARGET
+                   END-IF
+      *
+                   IF    ( FLG-TARGET  =   1 )
+      *
+                       IF    ( SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                                       >   ZERO )
+                           COMPUTE SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                               =   SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                               +   WRK-CHOSEI
+      *
+                           IF    ( SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                                       <   ZERO )
+                               MOVE    SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                                       TO  WRK-CHOSEI
+                               MOVE    ZERO
+                                       TO  SPA-NAI-I51-CHOSEI(IDX7 IDXC)
+                           ELSE
+                               MOVE    ZERO
+                                       TO  WRK-CHOSEI
+                           END-IF
+                       END-IF
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX7    FROM    1   BY  1
+                   UNTIL ( IDX7        >   WRK-IDX )
+                    OR   ( WRK-CHOSEI  =   ZERO )
+      *
+               IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX7)
+                                       =   ZERO )
+      *
+                   MOVE    ZERO        TO  FLG-TARGET
+                   IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDX-G)
+                                       =   1 )
+                       IF    ( SPA-I5-SYUNOU-YM-S  (IDX7)
+                                       =   SPA-I5-SYUNOU-YM-S(IDX-G))
+                           MOVE    1   TO  FLG-TARGET
+                       END-IF
+                   ELSE
+                           MOVE    1   TO  FLG-TARGET
+                   END-IF
+      *
+                   IF    ( FLG-TARGET  =   1 )
+      *
+                       MOVE    IDX7    TO  IDX-CHOSEI
+      *
+                       COMPUTE SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                           =   SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                           +   WRK-CHOSEI
+      *
+                       COMPUTE WRK-SEIKYU
+                           =   SPA-NAI-I51-SEIKYU-KON (IDX7)
+                           +   SPA-NAI-I51-CHOSEI (IDX7 1)
+                           +   SPA-NAI-I51-CHOSEI (IDX7 2)
+      *
+                       IF    ( WRK-SEIKYU         >=  ZERO )
+                           MOVE    ZERO    TO  WRK-CHOSEI
+                       ELSE
+                           COMPUTE SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                               =   SPA-NAI-I51-CHOSEI (IDX7 IDXC)
+                               -   WRK-SEIKYU
+                           COMPUTE WRK-CHOSEI
+                               =   WRK-SEIKYU
+                       END-IF
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CHOSEI      NOT     =   ZERO )
+               IF    ( IDX-CHOSEI  NOT     =   ZERO )
+                   COMPUTE SPA-NAI-I51-CHOSEI (IDX-CHOSEI IDXC)
+                       =   SPA-NAI-I51-CHOSEI (IDX-CHOSEI IDXC)
+                       +   WRK-CHOSEI
+               END-IF
+           END-IF
+      *
+           .
+       410012-CHOSEI-SORT-EXT.
+           EXIT.
+      *****************************************************************
+      *    調整後請求額チェック処理
+      *****************************************************************
+       41001-CHOSEI-SEIKYU-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                        TO  WRK-SEIKYU
+      *
+           COMPUTE WRK-SEIKYU
+               =   SPA-NAI-I51-SEIKYU (IDX7)
+      *
+           IF     (WRK-SEIKYU          <   ZERO )
+               MOVE    "0009"      TO  SPA-ERRCD
+               IF    ( SPA-NAI-I51-CHOSEI (IDX7 2)
+                                   NOT =   ZERO )
+                   MOVE    103     TO  SPA-GMN-I51-CUR
+               ELSE
+                   MOVE    102     TO  SPA-GMN-I51-CUR
+               END-IF
+           END-IF
+      *
+           .
+       41001-CHOSEI-SEIKYU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    合計請求額計算処理
+      *****************************************************************
+       4101-SEIKYU-KEI-SEC                  SECTION.
+      *
+      *    合計行編集処理
+           PERFORM 4101-TTL-LINE-EDIT-SEC
+      *
+      *    合計請求額
+           COMPUTE SPA-GMN-I51-SEIGOK  =   SPA-NAI-I51-SEIKYU-PLUS
+                                                (SPA-I5-SYUNOU-CNT)
+                                       +   SPA-GMN-I51-ZENMISYU-NYU
+      *
+           MOVE    SPA-NAI-I51-SEIKYU (IDX-G)
+                                       TO  SPA-GMN-I51-SEIKYU
+      *
+           .
+       4101-SEIKYU-KEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    合計行編集処理
+      *****************************************************************
+       4101-TTL-LINE-EDIT-SEC          SECTION.
+      *
+           MOVE    1               TO  IDX-SUM
+      *
+           COMPUTE WRK-IDX
+               =   SPA-I5-SYUNOU-CNT   -   1
+      *
+           MOVE    ZERO
+                       TO  SPA-NAI-I51-SEIKYU (SPA-I5-SYUNOU-CNT)
+                           SPA-NAI-I51-SEIKYU-PLUS (SPA-I5-SYUNOU-CNT)
+                           SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT 1)
+                           SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT 2)
+      *
+           PERFORM VARYING IDXY    FROM    1   BY  1
+                   UNTIL ( IDXY            >   WRK-IDX )
+      *
+               IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDXY)
+                                           =   1 )
+      *
+                   MOVE    IDXY    TO  IDX-SUM
+                   MOVE    ZERO
+                           TO  SPA-NAI-I51-SEIKYU (IDX-SUM)
+                               SPA-NAI-I51-SEIKYU-PLUS (IDX-SUM)
+                               SPA-NAI-I51-CHOSEI (IDX-SUM 1)
+                               SPA-NAI-I51-CHOSEI (IDX-SUM 2)
+               ELSE
+      *
+                   IF    ( SPA-I5-SYUNOU-TTLDAT-FLG (IDXY)
+                                           =   ZERO )
+      *                今回請求額
+                       COMPUTE SPA-NAI-I51-SEIKYU     (IDXY)
+                           =   SPA-NAI-I51-SEIKYU-KON (IDXY)
+                           +   SPA-NAI-I51-CHOSEI     (IDXY 1)
+                           -   SPA-NAI-I51-CHOSEI-MOT (IDXY 1)
+                           +   SPA-NAI-I51-CHOSEI     (IDXY 2)
+                           -   SPA-NAI-I51-CHOSEI-MOT (IDXY 2)
+      *
+                       MOVE    SPA-NAI-I51-SEIKYU (IDXY)
+                                       TO  SPA-NAI-I51-SEIKYU-PLUS
+                                                              (IDXY)
+      *
+                       IF    ( SPA-NAI-I51-SEIKYU-PLUS (IDXY)
+                                       <   ZERO )
+                               MOVE    ZERO
+                                       TO  SPA-NAI-I51-SEIKYU-PLUS
+                                                              (IDXY)
+                       END-IF
+      *
+      *                請求金額
+                       COMPUTE SPA-NAI-I51-SEIKYU (IDX-SUM)
+                           =   SPA-NAI-I51-SEIKYU (IDX-SUM)
+                           +   SPA-NAI-I51-SEIKYU (IDXY)
+                       COMPUTE SPA-NAI-I51-SEIKYU (SPA-I5-SYUNOU-CNT)
+                           =   SPA-NAI-I51-SEIKYU (SPA-I5-SYUNOU-CNT)
+                           +   SPA-NAI-I51-SEIKYU (IDXY)
+      *
+      *                請求金額（プラス分）
+                       COMPUTE SPA-NAI-I51-SEIKYU-PLUS
+                                                  (IDX-SUM)
+                           =   SPA-NAI-I51-SEIKYU-PLUS
+                                                  (IDX-SUM)
+                           +   SPA-NAI-I51-SEIKYU-PLUS
+                                                  (IDXY)
+                       COMPUTE SPA-NAI-I51-SEIKYU-PLUS
+                                                 (SPA-I5-SYUNOU-CNT)
+                           =   SPA-NAI-I51-SEIKYU-PLUS
+                                                 (SPA-I5-SYUNOU-CNT)
+                           +   SPA-NAI-I51-SEIKYU-PLUS
+                                                 (IDXY)
+      *
+      *                調整金額
+                       COMPUTE SPA-NAI-I51-CHOSEI (IDX-SUM 1)
+                           =   SPA-NAI-I51-CHOSEI (IDX-SUM 1)
+                           +   SPA-NAI-I51-CHOSEI (IDXY 1)
+                       COMPUTE SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT 1)
+                           =   SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT 1)
+                           +   SPA-NAI-I51-CHOSEI (IDXY 1)
+      *
+                       COMPUTE SPA-NAI-I51-CHOSEI (IDX-SUM 2)
+                           =   SPA-NAI-I51-CHOSEI (IDX-SUM 2)
+                           +   SPA-NAI-I51-CHOSEI (IDXY 2)
+                       COMPUTE SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT 2)
+                           =   SPA-NAI-I51-CHOSEI (SPA-I5-SYUNOU-CNT 2)
+                           +   SPA-NAI-I51-CHOSEI (IDXY 2)
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4101-TTL-LINE-EDIT-EXT.
+           EXIT.
       *****************************************************************
       *    患者番号チェック処理
       *****************************************************************
@@ -1975,6 +2489,17 @@
            MOVE    WKRRK-BTUNUM        TO  SYU-BYOTONUM
            MOVE    WKRRK-DRCD1(2:4)    TO  SYU-DRCD
       *
+           MOVE    SPA-NAI-I51-CHOSEI (IDX-SYU 1)
+                                       TO  SYU-CHOSEI1
+           MOVE    SPA-NAI-I51-CHOSEI (IDX-SYU 2)
+                                       TO  SYU-CHOSEI2
+           COMPUTE SYU-CHOSEI
+               =   SYU-CHOSEI1
+               +   SYU-CHOSEI2
+      *
+           COMPUTE SYU-SKYMONEY
+               =   SPA-NAI-I51-SEIKYU (IDX-SYU)
+      *
            IF    ( SYU-SKYMONEY        =   ZERO )
                MOVE    SPACE       TO  SYU-DENPJTIKBN
            ELSE
@@ -2240,6 +2765,8 @@
                GO  TO  451-KARIKEISAN-SYORI-EXT
            END-IF
       *
+           INITIALIZE                      SPA-GMN-I51-SEIKYU-AREA
+                                           SPA-NAI-I51-SEIKYU-AREA
       *
       *    請求データ内部領域を初期化
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -2252,6 +2779,8 @@
                                                    (IDX1)
                                            SPA-NAI-I51-SEIKYU-KON
                                                    (IDX1)
+                                           SPA-NAI-I51-SEIKYU-PLUS
+                                                   (IDX1)
            END-PERFORM
       *
       *    未収データ取得処理
@@ -2260,11 +2789,13 @@
       *    保険組み合わせリスト編集処理
            PERFORM 3100-HKNCOMBILST-EDIT-SEC
       *
-           MOVE    SPA-NAI-I51-TSYUNOUIDX(1)
+           MOVE    SPA-NAI-I51-TSYUNOUIDX(SPA-GMN-I51-SELNUM)
                                    TO  WRK-LST-IDX
       *
       *    請求データ編集処理
            PERFORM 3100-SEIKYU-DAT-EDIT-SEC
+      *
+           MOVE    102             TO  SPA-GMN-I51-CUR
       *
            .
        451-KARIKEISAN-SYORI-EXT.
@@ -3075,6 +3606,16 @@
       *    室料差額
            MOVE    WKSYU-RMSAGAKU          TO  SPA-GMN-I51-RMSAGAKU
       *
+      *    調整金
+           MOVE    SPA-NAI-I51-CHOSEI (WRK-LST-IDX 1)
+                                           TO  SPA-GMN-I51-CHOSEI (1)
+                                               WRK-Z9
+           MOVE    WRK-Z9                  TO  SPA-GMN-I51-CHOSEI-X (1)
+           MOVE    SPA-NAI-I51-CHOSEI (WRK-LST-IDX 2)
+                                           TO  SPA-GMN-I51-CHOSEI (2)
+                                               WRK-Z9
+           MOVE    WRK-Z9                  TO  SPA-GMN-I51-CHOSEI-X (2)
+      *
       *    今回請求額
            MOVE    SPA-NAI-I51-SEIKYU (WRK-LST-IDX)
                                            TO  SPA-GMN-I51-SEIKYU
@@ -3232,8 +3773,16 @@
                                        SPA-NAI-I51-TSELNUM (IDX1)
            END-PERFORM
       *
-           MOVE    1               TO  SPA-GMN-I51-HKNCOMBILST-SEL
-                                       SPA-GMN-I51-SELNUM
+           IF    ( SPA-I5-SYUNOU-CNT   =   SPA-NAI-I51-TSYUNOUIDX
+                                          (SPA-GMN-I51-HKNCOMBILST-CNT))
+               MOVE    SPA-GMN-I51-HKNCOMBILST-CNT
+                                       TO  SPA-GMN-I51-HKNCOMBILST-SEL
+                                           SPA-GMN-I51-SELNUM
+           ELSE
+               MOVE    1               TO  SPA-GMN-I51-HKNCOMBILST-SEL
+                                           SPA-GMN-I51-SELNUM
+           END-IF
+           
       *
             .
        3100-HKNCOMBILST-EDIT-EXT.
@@ -3327,6 +3876,16 @@
            WHEN    "0007"
                MOVE    "該当の患者は既に退院しています"
                                        TO  SPA-ERRMSG
+           WHEN    "0008"
+               MOVE    "調整金入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0009"
+               MOVE
+                   "今回請求額がゼロ以下になります。"
+                                       TO  SPA-ERRMSG(1:)
+               MOVE
+                   "調整金を再入力して下さい"
+                                       TO  SPA-ERRMSG(33:)
            WHEN    "1001"
                MOVE    "患者番号を入力してください"
                                        TO  SPA-ERRMSG

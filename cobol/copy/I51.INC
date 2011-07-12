@@ -147,6 +147,9 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-ROUETC.
                 04  I51-VALUE   PIC X(10).
+              03  I51-CHOSEI-OCC    OCCURS 2.
+                04  I51-CHOSEI  PIC X(10).
+                04  I51-CHOSEI-STATE  PIC S9(9)   BINARY.
               03  I51-SKYMONEY.
                 04  I51-VALUE   PIC X(10).
               03  I51-HKNTEKMONEY.

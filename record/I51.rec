@@ -281,6 +281,14 @@ I51	{
 		ROUETC	{
 			value	varchar(10);
 		};
+		CHOSEI1	{
+			value	varchar(10);
+			state	int;
+		};
+		CHOSEI2	{
+			value	varchar(10);
+			state	int;
+		};
 		SKYMONEY	{
 			value	varchar(10);
 		};
