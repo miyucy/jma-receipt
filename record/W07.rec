@@ -564,6 +564,41 @@ W07	{
 					count	int;
 					item	varchar(60)[5];
 				};
+				GMNHYOKBN1_COMB	{
+					GMNHYOKBN1	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[10];
+				};
+				GMNHYOKBN2_COMB	{
+					GMNHYOKBN2	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[10];
+				};
+				GMNHYOKBN3_COMB	{
+					GMNHYOKBN3	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[10];
+				};
+				GMNHYOKBN4_COMB	{
+					GMNHYOKBN4	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[10];
+				};
+				GMNHYOKBN5_COMB	{
+					GMNHYOKBN5	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[10];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

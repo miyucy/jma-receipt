@@ -118,6 +118,7 @@
       *  04.06.00    NACL-多々納  11/02/09  京都府通り名編集区分追加
       *  04.07.00    NACL-多々納  11/06/XX  受付保険組合せ区分追加
       *  04.07.00    NACL-多々納  11/07/XX  公費法別一覧表示区分追加
+      *                                     リハビリ等表示区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -674,6 +675,21 @@
                            11  SPA-GMN-SEI20KSNKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-SEI20KSNKBN-MAX   PIC 9(01).
+      *
+      *                リハビリ・患者情報表示区分
+                       09  SPA-GMN-GMNHYOKBN-AREA.
+                           11  SPA-GMN-GMNHYOKBN-TBL     OCCURS   5.
+                               13  SPA-GMN-GMNHYOKBN-G.
+                                   14  SPA-GMN-GMNHYOKBN     PIC X(01).
+                                   14  SPA-GMN-GMNHYOKBN-F1  PIC X(01).
+                                   14  SPA-GMN-GMNHYOKBN-MEI PIC X(58).
+                               13  SPA-NAI-GMNHYOKBN         PIC X(01).
+                           11  SPA-GMN-GMNHYOKBN-COMB.
+                               13  SPA-GMN-GMNHYOKBN-LSTG  OCCURS  10.
+                                   14  SPA-GMN-GMNHYOKBN-LST PIC X(60).
+                                   14  SPA-GMN-GMNHYOKBNL    PIC X(01).
+                           11  SPA-GMN-GMNHYOKBN-MAX     PIC 9(01).
+      *
       *                入金・返金額設定区分
                        09  SPA-GMN-NYKHNKKBN-G.
                            11  SPA-GMN-NYKHNKKBN       PIC X(01).
@@ -1912,6 +1928,20 @@
            MOVE    "1 自動算定しない"
                                        TO  SPA-GMN-SEI20KSNKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-SEI20KSNKBN-MAX
+      *ver.4.7
+      *    リハビリ・患者情報表示区分
+           MOVE    "1"                 TO  SPA-GMN-GMNHYOKBNL (1)
+           MOVE    "リハビリ開始日"    TO  SPA-GMN-GMNHYOKBN-LST (1)
+           MOVE    "2"                 TO  SPA-GMN-GMNHYOKBNL (2)
+           MOVE    "禁忌"              TO  SPA-GMN-GMNHYOKBN-LST (2)
+           MOVE    "3"                 TO  SPA-GMN-GMNHYOKBNL (3)
+           MOVE    "アレルギー"        TO  SPA-GMN-GMNHYOKBN-LST (3)
+           MOVE    "4"                 TO  SPA-GMN-GMNHYOKBNL (4)
+           MOVE    "感染症"            TO  SPA-GMN-GMNHYOKBN-LST (4)
+           MOVE    "5"                 TO  SPA-GMN-GMNHYOKBNL (5)
+           MOVE    "コメント"          TO  SPA-GMN-GMNHYOKBN-LST (5)
+           MOVE    5                   TO  SPA-GMN-GMNHYOKBN-MAX
+      *
       *    入金・返金額初期設定区分
            MOVE    "0 今回請求額のみ"  TO  SPA-GMN-NYKHNKKBN-LST(1)
            MOVE    "1 一括入金反映"    TO  SPA-GMN-NYKHNKKBN-LST(2)
@@ -3149,6 +3179,45 @@
            MOVE    SYS-1038-NYKHNKKBN      TO  SPA-GMN-NYKHNKKBN
       *    発行日変更区分
            MOVE    SYS-1038-YMDHENKBN      TO  SPA-GMN-YMDHENKBN
+      *ver.4.7
+      *    リハビリ・患者情報表示区分
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   5
+               MOVE    SYS-1038-GMNHYOKBN (IDX)
+                                           TO  SPA-NAI-GMNHYOKBN (IDX)
+               IF      SYS-1038-GMNHYOKBN (IDX)
+                                           =   SPACE
+      *            初期設定
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    "1"         TO  SPA-NAI-GMNHYOKBN (IDX)
+                   WHEN    2
+                       MOVE    "2"         TO  SPA-NAI-GMNHYOKBN (IDX)
+                   WHEN    3
+                       MOVE    "3"         TO  SPA-NAI-GMNHYOKBN (IDX)
+                   WHEN    4
+                       MOVE    "4"         TO  SPA-NAI-GMNHYOKBN (IDX)
+                   WHEN    5
+                       MOVE    "5"         TO  SPA-NAI-GMNHYOKBN (IDX)
+                   END-EVALUATE
+               END-IF
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING IDY         FROM    1   BY  1
+                       UNTIL   IDY         >   SPA-GMN-GMNHYOKBN-MAX
+                   IF      SPA-NAI-GMNHYOKBN (IDX)
+                                           =   SPA-GMN-GMNHYOKBNL
+                                                             (IDY)
+                       MOVE    SPA-GMN-GMNHYOKBN-LST (IDY)
+                                           TO  SPA-GMN-GMNHYOKBN-G (IDX)
+                       MOVE    1               TO  FLG-OK
+                       MOVE    SPA-GMN-GMNHYOKBN-MAX
+                                               TO  IDY
+                   END-IF
+               END-PERFORM
+               IF      SPA-NAI-GMNHYOKBN (IDX) =   "0"
+                   MOVE    SPACE           TO  SPA-GMN-GMNHYOKBN-G (IDX)
+               END-IF
+           END-PERFORM
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -4778,6 +4847,11 @@
            MOVE    W07-NYKHNKKBN       TO  SPA-GMN-NYKHNKKBN-G
            MOVE    W07-SEI20KSNKBN     TO  SPA-GMN-SEI20KSNKBN-G
            MOVE    W07-YMDHENKBN       TO  SPA-GMN-YMDHENKBN-G
+           MOVE    W07-GMNHYOKBN1      TO  SPA-GMN-GMNHYOKBN-G (1)
+           MOVE    W07-GMNHYOKBN2      TO  SPA-GMN-GMNHYOKBN-G (2)
+           MOVE    W07-GMNHYOKBN3      TO  SPA-GMN-GMNHYOKBN-G (3)
+           MOVE    W07-GMNHYOKBN4      TO  SPA-GMN-GMNHYOKBN-G (4)
+           MOVE    W07-GMNHYOKBN5      TO  SPA-GMN-GMNHYOKBN-G (5)
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -4792,7 +4866,7 @@
            MOVE    W07-S04SRYKBN       TO  SPA-GMN-S04SRYKBN-G
            MOVE    W07-S04KIKANKBN     TO  SPA-GMN-S04KIKANKBN-G
            MOVE    W07-S04DSPKBN       TO  SPA-GMN-S04DSPKBN-G
-           MOVE    W07-S04SUMKBN    TO  SPA-GMN-S04SUMKBN-G
+           MOVE    W07-S04SUMKBN       TO  SPA-GMN-S04SUMKBN-G
            MOVE    W07-S04SYORIKBN     TO  SPA-GMN-S04SYORIKBN-G
            MOVE    W07-S06SKYPRT       TO  SPA-GMN-S06SKYPRT-G
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
@@ -5090,6 +5164,10 @@
       *            精神療法２０未満加算区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-SEI20KSNKBN-CHK-SEC
+                   END-IF
+      *            リハビリ・患者情報表示区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-GMNHYOKBN-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -7210,6 +7288,70 @@
        4108-SEI20KSNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    リハビリ・患者情報表示区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-GMNHYOKBN-CHK-SEC      SECTION.
+      *
+      *    空白を詰める
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX             >=  5    )
+               IF     (SPA-GMN-GMNHYOKBN-G (IDX)   =   SPACE )
+                   PERFORM VARYING     IDY     FROM    IDX BY  1
+                           UNTIL      (IDY             >   5    )
+                       IF     (IDY             NOT =   IDX )
+                       AND    (SPA-GMN-GMNHYOKBN-G (IDY)
+                                               NOT =   SPACE )
+                           MOVE    SPA-GMN-GMNHYOKBN-G (IDY)
+                                               TO  SPA-GMN-GMNHYOKBN-G
+                                                              (IDX)
+                           MOVE    SPACE       TO  SPA-GMN-GMNHYOKBN-G
+                                                              (IDY)
+                           MOVE    5           TO  IDY
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX             >   5    )
+                       OR     (SPA-ERRCD   NOT =   SPACE )
+               MOVE    ZERO                TO  FLG-OK
+               IF      SPA-GMN-GMNHYOKBN-G (IDX)   =   SPACE
+                   MOVE    "0"             TO  SPA-NAI-GMNHYOKBN (IDX)
+                   MOVE    1               TO  FLG-OK
+               END-IF
+               PERFORM VARYING IDY         FROM    1   BY  1
+                       UNTIL  (IDY         >   SPA-GMN-GMNHYOKBN-MAX)
+                           OR (FLG-OK      =   1    )
+                   IF      SPA-GMN-GMNHYOKBN-G (IDX)
+                                           =   SPA-GMN-GMNHYOKBN-LST
+                                                             (IDY)
+                       MOVE    SPA-GMN-GMNHYOKBNL (IDY)
+                                           TO  SPA-NAI-GMNHYOKBN (IDX)
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+               IF      FLG-OK              =   ZERO
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    330             TO  SPA-GMN-CUR
+                   WHEN    2
+                       MOVE    331             TO  SPA-GMN-CUR
+                   WHEN    3
+                       MOVE    332             TO  SPA-GMN-CUR
+                   WHEN    4
+                       MOVE    333             TO  SPA-GMN-CUR
+                   WHEN    5
+                       MOVE    334             TO  SPA-GMN-CUR
+                   END-EVALUATE
+                   MOVE    "2023"          TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           .
+       4108-GMNHYOKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    薬情・お薬手帳対象チェック処理（診療行為機能情報）
       *****************************************************************
        4108-OKUSURIKBN-CHK-SEC      SECTION.
@@ -9107,6 +9249,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SEI20KSNKBN     TO  SYS-1038-SEI20KSNKBN
            MOVE    SPA-GMN-YMDHENKBN       TO  SYS-1038-YMDHENKBN
       *
+           MOVE    SPA-NAI-GMNHYOKBN (1)   TO  SYS-1038-GMNHYOKBN (1)
+           MOVE    SPA-NAI-GMNHYOKBN (2)   TO  SYS-1038-GMNHYOKBN (2)
+           MOVE    SPA-NAI-GMNHYOKBN (3)   TO  SYS-1038-GMNHYOKBN (3)
+           MOVE    SPA-NAI-GMNHYOKBN (4)   TO  SYS-1038-GMNHYOKBN (4)
+           MOVE    SPA-NAI-GMNHYOKBN (5)   TO  SYS-1038-GMNHYOKBN (5)
+      *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
       *    ＤＢ更新処理
@@ -10053,6 +10201,52 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-SEI20KSNKBN-MAX
                                        TO  W07-SEI20KSNKBN-COUNT
+      *    リハビリ・患者情報表示区分（診療行為機能情報）
+           MOVE    SPA-GMN-GMNHYOKBN-G(1)  TO  W07-GMNHYOKBN1
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GMNHYOKBN-MAX
+               MOVE    SPA-GMN-GMNHYOKBN-LST (IDX)
+                                       TO  W07-GMNHYOKBN1-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GMNHYOKBN-MAX
+                                       TO  W07-GMNHYOKBN1-COUNT
+      *
+           MOVE    SPA-GMN-GMNHYOKBN-G(2)  TO  W07-GMNHYOKBN2
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GMNHYOKBN-MAX
+               MOVE    SPA-GMN-GMNHYOKBN-LST (IDX)
+                                       TO  W07-GMNHYOKBN2-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GMNHYOKBN-MAX
+                                       TO  W07-GMNHYOKBN2-COUNT
+      *
+           MOVE    SPA-GMN-GMNHYOKBN-G(3)  TO  W07-GMNHYOKBN3
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GMNHYOKBN-MAX
+               MOVE    SPA-GMN-GMNHYOKBN-LST (IDX)
+                                       TO  W07-GMNHYOKBN3-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GMNHYOKBN-MAX
+                                       TO  W07-GMNHYOKBN3-COUNT
+      *
+           MOVE    SPA-GMN-GMNHYOKBN-G(4)  TO  W07-GMNHYOKBN4
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GMNHYOKBN-MAX
+               MOVE    SPA-GMN-GMNHYOKBN-LST (IDX)
+                                       TO  W07-GMNHYOKBN4-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GMNHYOKBN-MAX
+                                       TO  W07-GMNHYOKBN4-COUNT
+      *
+           MOVE    SPA-GMN-GMNHYOKBN-G(5)  TO  W07-GMNHYOKBN5
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GMNHYOKBN-MAX
+               MOVE    SPA-GMN-GMNHYOKBN-LST (IDX)
+                                       TO  W07-GMNHYOKBN5-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GMNHYOKBN-MAX
+                                       TO  W07-GMNHYOKBN5-COUNT
+      *
       *    薬情・お薬手帳対象（診療行為機能情報）
            MOVE    SPA-GMN-YKJOKUKBN-G TO  W07-YKJOKUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -10899,6 +11093,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2021"
                    MOVE    "発行日変更区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2023"
+                   MOVE    "リハビリ・患者情報表示区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -11264,6 +11461,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "NYKHNKKBN"       TO   MCP-WIDGET
                WHEN    328
                    MOVE  "YMDHENKBN"       TO   MCP-WIDGET
+               WHEN    330
+                   MOVE  "GMNHYOKBN1"      TO   MCP-WIDGET
+               WHEN    331
+                   MOVE  "GMNHYOKBN2"      TO   MCP-WIDGET
+               WHEN    332
+                   MOVE  "GMNHYOKBN3"      TO   MCP-WIDGET
+               WHEN    333
+                   MOVE  "GMNHYOKBN4"      TO   MCP-WIDGET
+               WHEN    334
+                   MOVE  "GMNHYOKBN5"      TO   MCP-WIDGET
       *収納情報
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -11607,7 +11814,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *********    MOVE    320             TO  SPA-GMN-CUR
                    MOVE    310             TO  SPA-GMN-CUR
                WHEN    "SEI20KSNKBN"
+      *ver.4.7     MOVE    320             TO  SPA-GMN-CUR
+                   MOVE    330             TO  SPA-GMN-CUR
+               WHEN    "GMNHYOKBN1"
+                   MOVE    331             TO  SPA-GMN-CUR
+               WHEN    "GMNHYOKBN2"
+                   MOVE    332             TO  SPA-GMN-CUR
+               WHEN    "GMNHYOKBN3"
+                   MOVE    333             TO  SPA-GMN-CUR
+               WHEN    "GMNHYOKBN4"
+                   MOVE    334             TO  SPA-GMN-CUR
+               WHEN    "GMNHYOKBN5"
                    MOVE    320             TO  SPA-GMN-CUR
+      *ver.4.7
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    321             TO  SPA-GMN-CUR
                WHEN    "KAGRPFLG"

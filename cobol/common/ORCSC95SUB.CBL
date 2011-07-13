@@ -646,6 +646,8 @@
                MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
       *        精神療法２０未満加算区分
                MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-SEI20KSNKBN
+      *        リハビリ・患者情報表示区分
+               MOVE    SYS-1038-GMNHYOKBN-G    TO  SPA-GMNHYOKBN-G
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -682,6 +684,14 @@
       *       Ｈ２２年４月から反映
               OR  (SPA-SRYYMD          <   "20100401")
                MOVE    "0"                 TO  SPA-SEI20KSNKBN
+           END-IF
+      *    リハビリ・患者情報表示区分
+           IF      SYS-1038-GMNHYOKBN-G    =   SPACE
+               MOVE    "1"                 TO  SPA-GMNHYOKBN (1)
+               MOVE    "2"                 TO  SPA-GMNHYOKBN (2)
+               MOVE    "3"                 TO  SPA-GMNHYOKBN (3)
+               MOVE    "4"                 TO  SPA-GMNHYOKBN (4)
+               MOVE    "5"                 TO  SPA-GMNHYOKBN (5)
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

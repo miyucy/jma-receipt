@@ -91,8 +91,10 @@
       *
       *        禁忌・アレルギー等情報
                05  SPA-GMN-TABOO-TBL.
-                   07  SPA-GMN-TABOO-REC         OCCURS  32.
-                       09  SPA-GMN-TABOO         PIC X(62).
+      *****        07  SPA-GMN-TABOO-REC         OCCURS  32.
+                   07  SPA-GMN-TABOO-REC2        OCCURS  5.
+                       09  SPA-GMN-TABOO-REC         OCCURS  8.
+                           11  SPA-GMN-TABOO         PIC X(62).
                    07  SPA-TABOO-MAX             PIC 9(04).
       *        急性発症編集日
                05  SPA-GMN-KYUSEI                PIC X(62).

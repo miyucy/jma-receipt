@@ -2123,8 +2123,11 @@
       *
            INITIALIZE                  SPA-GMN-TABOO-TBL
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDY
       *
       *    禁忌１
+           MOVE    1                   TO  IDX
+           MOVE    ZERO                TO  IDY
            IF      PTINF-TABOO-1   NOT =   SPACE
                 MOVE    SPACE              TO  WRK-TABOO-G
                 STRING  "禁忌："           DELIMITED  BY  SIZE
@@ -2139,6 +2142,8 @@
                PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    アレルギー１
+           MOVE    2                   TO  IDX
+           MOVE    ZERO                TO  IDY
            IF      PTINF-ALLERGY-1     NOT =   SPACE
                 MOVE    SPACE              TO  WRK-TABOO-G
                 STRING  "アレルギー："     DELIMITED  BY  SIZE
@@ -2153,6 +2158,8 @@
                PERFORM 4010110-TABOO-HEN-SEC
            END-IF
       *    感染症１
+           MOVE    3                   TO  IDX
+           MOVE    ZERO                TO  IDY
            IF      PTINF-KANSENSYO-1   NOT =   SPACE
                 MOVE    SPACE              TO  WRK-TABOO-G
                 STRING  "感染症："         DELIMITED  BY  SIZE
@@ -2168,6 +2175,8 @@
            END-IF
       *
       *    コメント１
+           MOVE    4                   TO  IDX
+           MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  FLG-COMMENT
            IF      PTINF-COMMENT-1 NOT =   SPACE
                 MOVE    SPACE              TO  WRK-TABOO-G
@@ -2190,9 +2199,10 @@
       *        最初が正常に表示できない時
                IF     (FLG-COMMENT        =   1   )  AND
                       (KANACHK-MAX        >   52 )
-                   ADD     1                  TO  IDX
+                   ADD     1                  TO  IDY
                    MOVE    "コメント：全角半角混在の為表示できません"
-                                              TO  SPA-GMN-TABOO (IDX)
+                                              TO  SPA-GMN-TABOO
+                                                           (IDX IDY)
                ELSE
                    PERFORM 4010110-TABOO-HEN-SEC
                END-IF
@@ -2212,16 +2222,17 @@
                    IF      KANACHK-MAX        <=  62
                        PERFORM 4010110-TABOO-HEN-SEC
                    ELSE
-                       ADD     1                   TO  IDX
+                       ADD     1                   TO  IDY
                        MOVE    "全角半角混在の為表示できません"
-                                               TO  SPA-GMN-TABOO (IDX)
+                                               TO  SPA-GMN-TABOO
+                                                           (IDX IDY)
                    END-IF
                ELSE
                    PERFORM 4010110-TABOO-HEN-SEC
                END-IF
            END-IF
       *
-           MOVE    IDX                 TO  SPA-TABOO-MAX
+      **** MOVE    IDX                 TO  SPA-TABOO-MAX
       *
            .
        401011-TABOO-SET-EXT.
@@ -2234,11 +2245,11 @@
       *
            PERFORM VARYING     IDX-P   FROM    1  BY  1
                    UNTIL      (IDX-P       >   32 )
-                           OR (IDX         >=  32 )
+                           OR (IDY         >=  8  )
                IF      WRK-TABOO (IDX-P)   NOT =   SPACE
-                   ADD     1                   TO  IDX
+                   ADD     1                   TO  IDY
                    MOVE    WRK-TABOO (IDX-P)   TO  SPA-GMN-TABOO
-                                                                (IDX)
+                                                            (IDX IDY)
                END-IF
            END-PERFORM
            .

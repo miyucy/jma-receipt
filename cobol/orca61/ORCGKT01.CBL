@@ -400,6 +400,7 @@
            03  IDX-SN2                 PIC 9(04).
       *
            03  RRK-MAX             PIC 9(04).
+           03  IDY2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -8545,29 +8546,31 @@
                    MOVE    "院内"          TO  KT01-INGAI-LABEL
            END-EVALUATE
       *
+      *    リハビリ・患者情報編集
+           PERFORM 5003-TABBOHEN-SEC
       *    リハビリ発症日
-           MOVE    ZERO               TO  IDY
-           PERFORM  VARYING   IDX     FROM    1   BY  1
-                    UNTIL     IDX         >   7
-               IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
-                   ADD     1                      TO  IDY
-                   MOVE    SPA-GMN-RIHAYMD (IDX)  TO  KT01-TABOO-ITEM
-                                                             (IDY)
-               END-IF
-           END-PERFORM
+      *    MOVE    ZERO               TO  IDY
+      *    PERFORM  VARYING   IDX     FROM    1   BY  1
+      *             UNTIL     IDX         >   7
+      *        IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
+      *            ADD     1                      TO  IDY
+      *            MOVE    SPA-GMN-RIHAYMD (IDX)  TO  KT01-TABOO-ITEM
+      *                                                      (IDY)
+      *        END-IF
+      *    END-PERFORM
       *    急性発症日
-           IF      SPA-GMN-KYUSEI     NOT =   SPACE
-               ADD     1                  TO  IDY
-               MOVE    SPA-GMN-KYUSEI     TO  KT01-TABOO-ITEM(IDY)
-           END-IF
+      *    IF      SPA-GMN-KYUSEI     NOT =   SPACE
+      *        ADD     1                  TO  IDY
+      *        MOVE    SPA-GMN-KYUSEI     TO  KT01-TABOO-ITEM(IDY)
+      *    END-IF
       *    禁忌
-           PERFORM  VARYING   IDX     FROM    1   BY  1
-                    UNTIL    (IDX         >   SPA-TABOO-MAX )
-                          OR (IDY         >=  40   )
-               ADD     1                      TO  IDY
-               MOVE    SPA-GMN-TABOO (IDX)    TO  KT01-TABOO-ITEM
-                                                             (IDY)
-           END-PERFORM
+      *    PERFORM  VARYING   IDX     FROM    1   BY  1
+      *             UNTIL    (IDX         >   SPA-TABOO-MAX )
+      *                   OR (IDY         >=  40   )
+      *        ADD     1                      TO  IDY
+      *        MOVE    SPA-GMN-TABOO (IDX)    TO  KT01-TABOO-ITEM
+      *                                                      (IDY)
+      *****END-PERFORM
            MOVE    IDY                 TO  KT01-TABOO-COUNT
            MOVE    KT01-TABOO-ITEM(1)  TO  KT01-TABOO
       *
@@ -8729,6 +8732,73 @@
            .
        5002-SURYO-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    リハビリ・患者情報編集処理
+      *****************************************************************
+       5003-TABBOHEN-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDY
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL       IDX2    >   5
+               MOVE    ZERO                TO  IDY2
+               EVALUATE    SPA-GMNHYOKBN (IDX2)
+               WHEN    "1"
+      *            リハビリ
+                   MOVE    9              TO  IDY2
+               WHEN    "2"
+      *            禁忌
+                   MOVE    1              TO  IDY2
+               WHEN    "3"
+      *            禁忌
+                   MOVE    2              TO  IDY2
+               WHEN    "4"
+      *            禁忌
+                   MOVE    3              TO  IDY2
+               WHEN    "5"
+      *            禁忌
+                   MOVE    4              TO  IDY2
+               END-EVALUATE
+      *
+               EVALUATE    IDY2
+               WHEN    9
+      *            リハビリ開始日
+                   PERFORM  VARYING   IDX     FROM    1   BY  1
+                            UNTIL    (IDX         >   7  )
+                                 OR  (IDY         >=  40 )
+                       IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
+                           ADD     1               TO  IDY
+                           MOVE    SPA-GMN-RIHAYMD (IDX)
+                                                   TO  KT01-TABOO-ITEM
+                                                               (IDY)
+                       END-IF
+                   END-PERFORM
+      *            急性発症日
+                   IF     (SPA-GMN-KYUSEI     NOT =   SPACE )
+                      AND (IDY                    <   40    )
+                       ADD     1                  TO  IDY
+                       MOVE    SPA-GMN-KYUSEI     TO  KT01-TABOO-ITEM
+                                                              (IDY)
+                   END-IF
+               WHEN    1   THRU   4
+      *            患者情報
+                   PERFORM  VARYING   IDX     FROM    1   BY  1
+                            UNTIL    (IDX         >   8  )
+                                 OR  (IDY         >=  40 )
+                       IF      SPA-GMN-TABOO (IDY2 IDX)
+                                                   NOT =   SPACE
+                           ADD     1               TO  IDY
+                           MOVE    SPA-GMN-TABOO (IDY2 IDX)
+                                                   TO  KT01-TABOO-ITEM
+                                                               (IDY)
+                       END-IF
+                   END-PERFORM
+               END-EVALUATE
+           END-PERFORM
+           .
+       5003-TABBOHEN-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面カーソルセット処理

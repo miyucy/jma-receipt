@@ -437,6 +437,36 @@
                     06  W07-YMDHENKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-YMDHENKBN-ITEM
                             PIC X(60)   OCCURS  5 TIMES.
+                  05  W07-GMNHYOKBN1-COMB.
+                    06  W07-GMNHYOKBN1.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-GMNHYOKBN1-COUNT   PIC S9(9)   BINARY.
+                    06  W07-GMNHYOKBN1-ITEM
+                            PIC X(40)   OCCURS  10 TIMES.
+                  05  W07-GMNHYOKBN2-COMB.
+                    06  W07-GMNHYOKBN2.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-GMNHYOKBN2-COUNT   PIC S9(9)   BINARY.
+                    06  W07-GMNHYOKBN2-ITEM
+                            PIC X(40)   OCCURS  10 TIMES.
+                  05  W07-GMNHYOKBN3-COMB.
+                    06  W07-GMNHYOKBN3.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-GMNHYOKBN3-COUNT   PIC S9(9)   BINARY.
+                    06  W07-GMNHYOKBN3-ITEM
+                            PIC X(40)   OCCURS  10 TIMES.
+                  05  W07-GMNHYOKBN4-COMB.
+                    06  W07-GMNHYOKBN4.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-GMNHYOKBN4-COUNT   PIC S9(9)   BINARY.
+                    06  W07-GMNHYOKBN4-ITEM
+                            PIC X(40)   OCCURS  10 TIMES.
+                  05  W07-GMNHYOKBN5-COMB.
+                    06  W07-GMNHYOKBN5.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-GMNHYOKBN5-COUNT   PIC S9(9)   BINARY.
+                    06  W07-GMNHYOKBN5-ITEM
+                            PIC X(40)   OCCURS  10 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
