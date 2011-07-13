@@ -2795,7 +2795,13 @@
       *    ÀÁµá¥Ç¡¼¥¿ÊÔ½¸½èÍý
            PERFORM 3100-SEIKYU-DAT-EDIT-SEC
       *
-           MOVE    102             TO  SPA-GMN-I51-CUR
+           IF    ( SPA-NAI-I51-TAIINYMD  =   "99999999" )
+            AND  ( SPA-GMN-I51-HKNCOMBILST-CNT >   ZERO )
+            AND  ( SPA-NAI-I51-DEFSTYMD  =   SPA-I5-SYUNOU-SANTEISTYMD )
+               MOVE    102             TO  SPA-GMN-I51-CUR
+           ELSE
+               MOVE    003             TO  SPA-GMN-I51-CUR
+           END-IF
       *
            .
        451-KARIKEISAN-SYORI-EXT.
