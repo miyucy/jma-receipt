@@ -9,6 +9,7 @@ bindapi	"patientget"	"OpenCOBOL"	"ORAPI012R1";
 bindapi	"patientlst1"	"OpenCOBOL"	"ORAPI012R2";
 bindapi	"patientlst2"	"OpenCOBOL"	"ORAPI012R3";
 bindapi	"patientlst3"	"OpenCOBOL"	"ORAPI012R4";
+bindapi	"system01lst"	"OpenCOBOL"	"ORAPI101R1";
 
 
 multiplex_group	api01r;
@@ -23,6 +24,7 @@ data	{
 		patientlst1;
 		patientlst2;
 		patientlst3;
+		system01lst;
 	};
 };
 db "xml" {
@@ -36,6 +38,9 @@ db "xml" {
  xml_patientlst2req;
  xml_patientlst2res;
  xml_patientlst3req;
+ xml_system01_managereq;
+ xml_physicianres;
+ xml_departmentres;
 };
 
 #include "orcadb.inc"

@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI012R1.
+       PROGRAM-ID.         ORAPI101R1.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 患者基本情報取得
+      *  コンポーネント名  : システム管理　診療科・ドクター一覧取得処理
       *  管理者            :
       *  作成日付    作業者        記述
-      *  11/01/XX    NACL−多々納　新規作成
+      *  11/07/13    NACL−多々納　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -45,19 +45,13 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-           03  FLG-PTINF               PIC 9(01).
       *
-           03  FLG-ERR                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
-           03  IDY2                    PIC 9(04).
-           03  IDD                     PIC 9(04).
-           03  IDK                     PIC 9(04).
-           03  IDH                     PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -87,8 +81,15 @@
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
       *
+           03  WRK-MCP-PATHNAME        PIC X(64).
+           03  WRK-ZZ9                 PIC ZZZ9.
+      *
+           03  WRK-CNT                 PIC 9(04).
+      *
        01  WRK-XML-AREA.
-           03  WRK-PTNUM               PIC X(20).
+           03  WRK-IN-DATE                PIC X(10).
+      *
+           03  WRK-IN-YMD                 PIC X(08).
       *
       *
       *****************************************************************
@@ -97,21 +98,15 @@
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *   患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
-      *   患者番号変換サブ
-           COPY    "CPORCSPTNUM.INC".
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      ***  API XML読み込み用定義体
-      ***  COPY    "CPPATIENTXMLREQ.INC".
       *    API XML読み込み用定義体
-           COPY    "CPPATIENTXMLRES.INC".
-      *
-      *    保険組合せセット領域
-           COPY    "CPORCSAPIHKN.INC".
+           COPY    "CPAPISYSTEM01REQ.INC".
+      *    API XML書き込み用定義体（診療科）
+           COPY    "CPDEPARTMENTRES.INC".
+      *    API XML書き込み用定義体（ドクター）
+           COPY    "CPPHYSICIANRES.INC".
       *
       *
       *****************************************************************
@@ -124,12 +119,8 @@
       *    職員情報
            COPY  "CPSK1010.INC".
       *
-      *    患者マスタ−
-       01  PTNUM-REC.
-           COPY    "CPPTNUM.INC".
-      *    患者情報
-       01  PTINF-REC.
-           COPY    "CPPTINF.INC".
+      *    診療内容情報
+           COPY  "CPSK1005.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -145,7 +136,7 @@
        01  SCRAREA.
            COPY    "CPAPIMOD.INC".
            COPY    "CPAPILST.INC".
-           COPY    "CPAPIPTA.INC" .
+           COPY    "CPAPIPTA.INC".
            COPY    "CPAPILST.INC"    REPLACING
                                      //APILST-// BY //APILST2-//.
            COPY    "CPAPILST.INC"    REPLACING
@@ -201,13 +192,14 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
-           INITIALIZE                      XML-PATIENTINFORES
+           INITIALIZE                      XML-DEPARTMENTRES
+           INITIALIZE                      XML-PHYSICIANRES
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE   "Patient Info"       TO  PTRES-RESKEY
+           MOVE   "Patient Info"       TO  DEPTRES-RESKEY
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
@@ -215,8 +207,8 @@
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTRES-INFORMATION-DATE
-           MOVE    WRK-HEN-TIME        TO  PTRES-INFORMATION-TIME
+           MOVE    WRK-HEN-DATE        TO  DEPTRES-INFORMATION-DATE
+           MOVE    WRK-HEN-TIME        TO  DEPTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
            CALL    "ORCSHOSPNUM"       USING
@@ -248,24 +240,42 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           MOVE    APIPTA-PTNUM       TO  WRK-PTNUM
       *    XML情報取り出し
-      *    PERFORM 1000-PTIXMLREAD-SEC
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        GO      TO      200-MAIN-EXT
-      *    END-IF
+           PERFORM 1000-APTLSTREAD-SEC
+           IF      WRK-ERRCD       NOT =   SPACE
+               GO      TO      200-MAIN-EXT
+           END-IF
       *
-           MOVE    ZERO                TO  PTRES-API-RESULT
+           MOVE    ZERO                TO  DEPTRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
+           EVALUATE    APILST5-CLASS
+           WHEN    "01"
+      *        診療科一覧
+               MOVE    1                   TO  FLG-SYORI
+           WHEN    "02"
+      *        ドクター一覧
+               MOVE    2                   TO  FLG-SYORI
+           WHEN    OTHER
+               MOVE    "91"                TO  WRK-ERRCD
+           END-EVALUATE
       *    入力項目チェック処理
-           PERFORM 2001-INPUT-CHK-SEC
-      *
-      *    患者情報処理
            IF      WRK-ERRCD           =   SPACE
-               PERFORM 2002-PTINF-HENSYU-SEC
+               PERFORM 2001-INPUT-CHK-SEC
+           END-IF
+      *
+      *    一覧処理
+           IF      WRK-ERRCD           =   SPACE
+               EVALUATE    APILST5-CLASS
+               WHEN    "01"
+      *            診療科一覧
+                   PERFORM 2002-SRYKA-LIST-SEC
+               WHEN    "02"
+      *            ドクター一覧
+                   PERFORM 2003-DRCD-LIST-SEC
+               END-EVALUATE
            END-IF
       *
            .
@@ -273,75 +283,229 @@
            EXIT.
       *
       *****************************************************************
-      *    患者基本情報設定内容チェック
+      *    XML情報から内容を取り出す
+      *****************************************************************
+       1000-APTLSTREAD-SEC   SECTION.
+      *
+           IF      APILST5-BODY        NOT =   LOW-VALUE
+               DISPLAY "SYS01REQ-OBJECT not low_value"
+           END-IF
+      * XML情報取り出し
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_system01_managereq"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    APILST5-BODY        TO  SYS01REQ-OBJECT
+           MOVE    ZERO                TO  SYS01REQ-MODE
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-SYSTEM01MANAGEREQ
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+               MOVE   "97"             TO  WRK-ERRCD
+               GO     TO      1000-APTLSTREAD-EXT
+           END-IF
+      *
+           MOVE    "XMLREAD"           TO  MCP-FUNC
+           MOVE    "xml_system01_managereq"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    ORCA-BLOB-OBJECT    TO  SYS01REQ-OBJECT
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-SYSTEM01MANAGEREQ
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO  OR  1  )
+               PERFORM 10001-XML-REMAKE-SEC
+           ELSE
+               MOVE   "98"             TO  WRK-ERRCD
+               DISPLAY "XMLREAD failure = " MCP-RC
+           END-IF
+      *
+           MOVE    "XMLCLOSE"          TO  MCP-FUNC
+           MOVE    "xml_system01_managereq"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    ORCA-BLOB-OBJECT    TO  SYS01REQ-OBJECT
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-SYSTEM01MANAGEREQ
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO    OR  1  )
+               CONTINUE
+           END-IF
+      *
+           .
+       1000-APTLSTREAD-EXT.
+           EXIT.
+      *****************************************************************
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
+      *****************************************************************
+       10001-XML-REMAKE-SEC        SECTION.
+      *
+           .
+       10001-XML-REMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-           IF      WRK-PTNUM           =   SPACE
-               MOVE    "01"                TO  WRK-ERRCD
-           END-IF
-      *    患者番号チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20011-PTNUM-CHK-SEC
+           MOVE    SYS01REQ-INFORMATION-DATE   TO  WRK-IN-DATE
+      *    処理日
+           MOVE    SYS01REQ-INFORMATION-DATE   TO  WRK-HEN-DATE
+           MOVE    SPACE                       TO  WRK-HEN-TIME
+           PERFORM 802-DAYHEN02-SEC
+           MOVE    WRK-SYMD            TO  WRK-IN-YMD
+      *    開始日未設定はシステム日付
+           IF      WRK-IN-DATE         =   SPACE
+               MOVE    SPA-SYSYMD          TO  WRK-IN-YMD
+               MOVE    WRK-IN-YMD          TO  WRK-SYMD
+               MOVE    ZERO                TO  WRK-THMS
+               PERFORM 801-DAYHEN01-SEC
+      ***      MOVE    WRK-HEN-DATE        TO  PATLSTRES-START-DATE
            END-IF
            .
        2001-INPUT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    患者番号チェック
+      *    診療科一覧処理
       *****************************************************************
-       20011-PTNUM-CHK-SEC     SECTION.
+       2002-SRYKA-LIST-SEC             SECTION.
       *
-      *    患者番号取得
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
-           MOVE    WRK-PTNUM           TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-                                               SPA-AREA
-           IF      SPTID-RC        NOT =   ZERO
-               MOVE    "10"                TO  WRK-ERRCD
-               GO      TO                  20011-PTNUM-CHK-EXT
+           MOVE    ZERO                TO  IDX
+      *
+      *    診療科
+           MOVE    SPACE               TO  SYS-1005-REC
+           INITIALIZE                      SYS-1005-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+           MOVE    "1005"              TO  SYS-1005-KANRICD
+           MOVE    WRK-IN-YMD          TO  SYS-1005-STYUKYMD
+           MOVE    WRK-IN-YMD          TO  SYS-1005-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1005-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
+           PERFORM
+                   UNTIL       (WRK-ERRCD  NOT =   SPACE)  OR
+                               (FLG-SYSKANRI   =   1    )
+               ADD     1                   TO  IDX
+               IF      IDX                 >   100
+                   MOVE    "10"                TO  WRK-ERRCD
+               ELSE
+                   MOVE    SYSKANRI-REC        TO  SYS-1005-REC
+                   MOVE    SYS-1005-KBNCD(1:2) TO  DEPTRES-DEP-CODE
+                                                                  (IDX)
+                   MOVE    SYS-1005-SRYKANAME  TO  DEPTRES-SRYKANAME
+                                                                  (IDX)
+                   MOVE    SYS-1005-SRYKANAME1 TO  DEPTRES-SRYKANAME1
+                                                                  (IDX)
+                   MOVE    SYS-1005-SRYKANAME2 TO  DEPTRES-SRYKANAME2
+                                                                  (IDX)
+                   MOVE    SYS-1005-SRYKANAME3 TO  DEPTRES-SRYKANAME3
+                                                                  (IDX)
+                   MOVE    SYS-1005-RECESRYKA  TO  DEPTRES-RECESRYKA
+                                                                  (IDX)
+               END-IF
       *
-           MOVE    SPTID-PTNUM         TO  PTRES-PATIENTID
-           MOVE    SPTID-PTNUM         TO  WRK-PTNUM
-           MOVE    SPTID-PTID          TO  SPA-PTID
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
-           INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-           MOVE    SPTID-PTID          TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF       NOT =   ZERO
-               MOVE    "10"                TO  WRK-ERRCD
+           IF      IDX                 =   ZERO
+               MOVE    "11"            TO  WRK-ERRCD
            END-IF
            .
-       20011-PTNUM-CHK-EXT.
+       2002-SRYKA-LIST-EXT.
            EXIT.
       *
       *****************************************************************
-      *    患者基本情報取得
+      *    ドクター一覧処理
       *****************************************************************
-       2002-PTINF-HENSYU-SEC           SECTION.
+       2003-DRCD-LIST-SEC             SECTION.
       *
-           MOVE    PTINF-NAME          TO  PTRES-NAME
-           MOVE    PTINF-KANANAME      TO  PTRES-KANANAME
-           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
-           MOVE    ZERO                TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PTRES-BIRTHDAY
-           MOVE    PTINF-SEX           TO  PTRES-SEX
-           MOVE    PTINF-HOME-POST     TO  PTRES-HOME-ZIP-CODE
-           MOVE    PTINF-HOME-ADRS     TO  PTRES-HOME-ADDRESSES1
-           MOVE    PTINF-HOME-BANTI    TO  PTRES-HOME-ADDRESSES2
-           MOVE    PTINF-HOME-TEL1     TO  PTRES-HOME-HPONE1
-           MOVE    PTINF-HOME-TEL2     TO  PTRES-HOME-HPONE2
+           MOVE    ZERO                TO  IDX
       *
-      *    保険種類変換処理
-           PERFORM 200210-HKNCOMBI-HEN-SEC
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                      SYS-1010-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-IN-YMD          TO  SYS-1010-STYUKYMD
+           MOVE    WRK-IN-YMD          TO  SYS-1010-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM
+                   UNTIL       (WRK-ERRCD  NOT =   SPACE)  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+               IF      SYS-1010-KBNCD(1:1) =   "1"
+      *            ドクターのみ
+                   ADD     1                   TO  IDX
+                   IF      IDX                 >   100
+                       MOVE    "10"                TO  WRK-ERRCD
+                   ELSE
+                       MOVE    SYS-1010-KBNCD(1:5) TO  PHYSRES-DRCD
+                                                                 (IDX)
+      *                氏名
+                       MOVE    SYS-1010-NAME       TO  PHYSRES-NAME
+                                                                 (IDX)
+                       MOVE    SYS-1010-KANANAME   TO  PHYSRES-KANANAME
+                                                                 (IDX)
+      *                医籍登録番号
+                       MOVE    SYS-1010-ISEKINUM   TO  PHYSRES-ISEKINUM
+                                                                 (IDX)
+      *                麻薬ライセンス
+                       MOVE    SYS-1010-MAYAKULICENSE
+                                               TO  PHYSRES-MAYAKULICENSE
+                                                                 (IDX)
+      *                専門科コード
+                       PERFORM VARYING    IDY      FROM    1   BY  1
+                               UNTIL      IDY      >   5
+                           MOVE    SYS-1010-SEMONKACD-X (IDY)
+                                               TO  PHYSRES-SEMONKACD-X
+                                                              (IDX IDY)
+                       END-PERFORM
+                   END-IF
+               END-IF
       *
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      IDX                 =   ZERO
+               MOVE    "11"            TO  WRK-ERRCD
+           END-IF
            .
-       2002-PTINF-HENSYU-EXT.
+       2003-DRCD-LIST-EXT.
            EXIT.
       *
       *****************************************************************
@@ -349,32 +513,49 @@
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
+           IF      FLG-SYORI           =   2
+      *        ドクター一覧
+               PERFORM 3002-PHYSICIAN-MAKE-SEC
+           ELSE
+      *        診療科一覧（ドクター以外はすべて）
+               PERFORM 3001-DEPARTMENT-MAKE-SEC
+           END-IF
+      *
+           .
+       300-PTXMLMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    XML情報書き込み処理（診療科一覧）
+      *****************************************************************
+       3001-DEPARTMENT-MAKE-SEC               SECTION.
+      *
       *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
-               MOVE    "処理終了"          TO  PTRES-API-RESULT-MSG
+               MOVE    "処理終了"          TO  DEPTRES-API-RESULT-MSG
            ELSE
       *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
-               MOVE    WRK-ERRCD           TO  PTRES-API-RESULT
-               MOVE    WRK-ERRMSG          TO  PTRES-API-RESULT-MSG
+               MOVE    WRK-ERRCD           TO  DEPTRES-API-RESULT
+               MOVE    WRK-ERRMSG          TO  DEPTRES-API-RESULT-MSG
            END-IF
       *
-           IF      APIPTA-BODY     NOT =   LOW-VALUE
-               DISPLAY "ACPLSTRES-OBJECT not low_value"
+           IF      APILST5-BODY     NOT =   LOW-VALUE
+               DISPLAY "DEPTRES-OBJECT not low_value"
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_patientinfores"
+           MOVE    "xml_departmentres"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    1                   TO  PTRES-MODE
+           MOVE    1                   TO  DEPTRES-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTINFORES
+                                       XML-DEPARTMENTRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE
@@ -383,12 +564,12 @@
            END-IF
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_patientinfores"
+           MOVE    "xml_departmentres"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTINFORES
+                                       XML-DEPARTMENTRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLWRITE OK      = " MCP-RC
@@ -398,132 +579,105 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_patientinfores"
+           MOVE    "xml_departmentres"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTINFORES
+                                       XML-DEPARTMENTRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLCLOSE OK   = " MCP-RC
-               MOVE    PTRES-OBJECT        TO  APIPTA-BODY 
-               MOVE    "application/xml"   TO  APIPTA-CONTENT-TYPE
+               MOVE    DEPTRES-OBJECT      TO  APILST5-BODY 
+               MOVE    "application/xml"   TO  APILST5-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "patient res xml write failure "
            END-IF
       *
            .
-       300-PTXMLMAKE-EXT.
+       3001-DEPARTMENT-MAKE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    保険種類変換処理
+      *    XML情報書き込み処理（ドクター一覧）
       *****************************************************************
-       200210-HKNCOMBI-HEN-SEC     SECTION.
+       3002-PHYSICIAN-MAKE-SEC               SECTION.
       *
-      *    保険組合せ編集処理
-           INITIALIZE                      ORCSAPIHKNAREA
-           CALL    "ORCSAPIHKN"        USING
+           MOVE   "Patient Info"       TO  PHYSRES-RESKEY
+      *    日付・時間出力編集
+           MOVE    DEPTRES-INFORMATION-DATE
+                                       TO  PHYSRES-INFORMATION-DATE
+           MOVE    DEPTRES-INFORMATION-TIME
+                                       TO  PHYSRES-INFORMATION-TIME
+           MOVE    ZERO                TO  PHYSRES-API-RESULT
+      *    エラーメッセージ編集
+           IF      WRK-ERRCD           =   SPACE
+               MOVE    WRK-KEICD           TO  WRK-ERRCD
+           END-IF
+           IF      WRK-ERRCD           =   SPACE
+      *        正常終了
+               MOVE    "処理終了"          TO  PHYSRES-API-RESULT-MSG
+           ELSE
+      *        エラー・警告メッセージ
+               PERFORM 890-ERRCD-MSG-SEC
+               MOVE    WRK-ERRCD           TO  PHYSRES-API-RESULT
+               MOVE    WRK-ERRMSG          TO  PHYSRES-API-RESULT-MSG
+           END-IF
+      *
+           IF      APILST5-BODY     NOT =   LOW-VALUE
+               DISPLAY "PHYSRES-OBJECT not low_value"
+           END-IF
+      *
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_physicianres"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    1                   TO  PHYSRES-MODE
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-PHYSICIANRES
                                        SPA-AREA
-                                       ORCSAPIHKNAREA
+           IF     (MCP-RC              =   ZERO    OR  1  )
+               CONTINUE
+           ELSE
+               DISPLAY "XMLOPEN failure = " MCP-RC
+           END-IF
       *
-      *    出力領域保険情報編集
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   20  )
-                         OR   (ORCSAPIHKN-THKNCOMBI (IDX)
-                                           =   SPACE  )
-               PERFORM 2002101-HKNHEN-TBL-SEC
-           END-PERFORM
-           .
-       200210-HKNCOMBI-HEN-EXT.
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
+           MOVE    "xml_physicianres"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-PHYSICIANRES
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO    OR  1  )
+               DISPLAY "XMLWRITE OK      = " MCP-RC
+               CONTINUE
+           ELSE
+               DISPLAY "XMLWRITE failure = " MCP-RC
+           END-IF
       *
-      *****************************************************************
-      *    出力領域保険情報編集処理
-      *****************************************************************
-       2002101-HKNHEN-TBL-SEC              SECTION.
-      *
-      *    保険の種類
-           MOVE    ORCSAPIHKN-HKNNUM (IDX)
-                                   TO  PTRES-MAIN-INSURANCE-CLASS (IDX)
-      *    保険者番号
-           MOVE    ORCSAPIHKN-HKNJANUM (IDX)
-                                   TO  PTRES-MAIN-INSURANCE-NUMBER(IDX)
-      *    保険の名称
-           MOVE    ORCSAPIHKN-HKNNUM-NAME (IDX)
-                                   TO  PTRES-MAIN-INSURANCE-NAME(IDX)
-      *    記号
-           MOVE    ORCSAPIHKN-KIGO  (IDX)
-                                   TO  PTRES-MAIN-MARK (IDX)
-      *    番号
-           MOVE    ORCSAPIHKN-NUM  (IDX)
-                                   TO  PTRES-MAIN-NUMBER  (IDX)
-      *    継続区分
-           MOVE    ORCSAPIHKN-CONTKBN  (IDX)
-                                   TO  PTRES-MAIN-CONTINUATION (IDX)
-      *    補助区分
-           MOVE    ORCSAPIHKN-HOJOKBN  (IDX)
-                                   TO  PTRES-MAIN-ASSISTANCE  (IDX)
-      *    本人家族区分
-           MOVE    ORCSAPIHKN-HONKZKKBN  (IDX)
-                                   TO  PTRES-MAIN-FAMILY  (IDX)
-      *    被保険者名
-           MOVE    ORCSAPIHKN-HIHKNJANAME  (IDX)
-                                   TO  PTRES-MAIN-POLICYHOLDER(IDX)
-      *    有効開始日
-           MOVE    ORCSAPIHKN-TEKSTYMD  (IDX)
-                                   TO  PTRES-MAIN-START-DATE (IDX)
-      *    有効終了日
-           MOVE    ORCSAPIHKN-TEKEDYMD  (IDX)
-                                   TO  PTRES-MAIN-END-DATE   (IDX)
-      *    公費情報
-           PERFORM VARYING     IDY2    FROM    1   BY  1
-                   UNTIL       IDY2    >   4
-      *        公費の種類
-               MOVE    ORCSAPIHKN-KOHNUM (IDX IDY2)
-                                       TO  PTRES-INSURANCE-CLASS
-                                                        (IDX IDY2)
-      *        公費の種類名称
-               MOVE    ORCSAPIHKN-KOHNUM-NAME (IDX IDY2)
-                                       TO  PTRES-INSURANCE-NAME
-                                                        (IDX IDY2)
-      *        負担者番号
-               MOVE    ORCSAPIHKN-FTNJANUM (IDX IDY2)
-                                       TO  PTRES-PROVIDER-NUMBER
-                                                        (IDX IDY2)
-      *        受給者番号
-               MOVE    ORCSAPIHKN-JKYSNUM (IDX IDY2)
-                                       TO  PTRES-RECIPIENT-NUMBER
-                                                        (IDX IDY2)
-      *        有効開始日
-               MOVE    ORCSAPIHKN-KOH-TEKSTYMD (IDX IDY2)
-                                       TO  PTRES-INSURANCE-START-DATE
-                                                        (IDX IDY2)
-      *        有効終了日
-               MOVE    ORCSAPIHKN-KOH-TEKEDYMD (IDX IDY2)
-                                       TO  PTRES-INSURANCE-END-DATE
-                                                        (IDX IDY2)
-      *        入院−負担率（割）
-               MOVE    ORCSAPIHKN-RATE-ADMISSION (IDX IDY2)
-                                       TO  PTRES-RATE-ADMISSION
-                                                        (IDX IDY2)
-      *        入院−固定額
-               MOVE    ORCSAPIHKN-MONEY-ADMISSION (IDX IDY2)
-                                       TO  PTRES-MONEY-ADMISSION
-                                                        (IDX IDY2)
-      *        外来−負担率（割）
-               MOVE    ORCSAPIHKN-RATE-OUTPATIENT (IDX IDY2)
-                                       TO  PTRES-RATE-OUTPATIENT
-                                                        (IDX IDY2)
-      *        外来−固定額
-               MOVE    ORCSAPIHKN-MONEY-OUTPATIENT (IDX IDY2)
-                                       TO  PTRES-MONEY-OUTPATIENT
-                                                        (IDX IDY2)
-           END-PERFORM
+           MOVE    "XMLCLOSE"          TO  MCP-FUNC
+           MOVE    "xml_physicianres"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       XML-PHYSICIANRES
+                                       SPA-AREA
+           IF     (MCP-RC              =   ZERO    OR  1  )
+               DISPLAY "XMLCLOSE OK   = " MCP-RC
+               MOVE    PHYSRES-OBJECT      TO  APILST5-BODY 
+               MOVE    "application/xml"   TO  APILST5-CONTENT-TYPE
+           ELSE
+               DISPLAY "XMLCLOSE failure = " MCP-RC
+               DISPLAY "patient res xml write failure "
+           END-IF
       *
            .
-       2002101-HKNHENSYU-EXT.
+       3002-PHYSICIAN-MAKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -584,11 +738,11 @@
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
-           WHEN    "01"
-               MOVE    "患者番号未設定"
-                                               TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "該当患者番号なし"
+               MOVE    "対象が１００件以上となります。"
+                                               TO  WRK-ERRMSG
+           WHEN    "11"
+               MOVE    "対象がありません。"
                                                TO  WRK-ERRMSG
       *共通エラー
            WHEN    "89"
@@ -621,10 +775,10 @@
            WHEN    "91"
                MOVE    "処理区分未設定"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "送信内容に誤りがあります。"
+               MOVE    "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "送信内容の読込ができませんでした"
+               MOVE    "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
                MOVE    "ユーザＩＤ未登録。"
@@ -635,35 +789,23 @@
            EXIT.
       *
       *****************************************************************
-      *    患者基本情報取得
+      *    システム管理読込処理
       *****************************************************************
-       900-PTINF-READ-SEC              SECTION.
+       900-SYSKANRI-READ-SEC            SECTION.
       *
-           MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 910-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               PERFORM 910-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PTINF-REC
-                   MOVE    ZERO                TO  FLG-PTINF
-               ELSE
-                   MOVE    1                   TO  FLG-PTINF
-                   INITIALIZE                  PTINF-REC
-               END-IF
+               MOVE    ZERO                TO  FLG-SYSKANRI
+               MOVE    MCPDATA-REC         TO  SYSKANRI-REC
            ELSE
-               MOVE    1                   TO  FLG-PTINF
-               INITIALIZE                  PTINF-REC
+               MOVE    1                   TO  FLG-SYSKANRI
+               INITIALIZE                      SYSKANRI-REC
            END-IF
-           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            .
-       900-PTINF-READ-EXT.
+       900-SYSKANRI-READ-EXT.
            EXIT.
+      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

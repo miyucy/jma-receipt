@@ -438,6 +438,7 @@ RECORD_files = \
 	patientlst2.rec \
 	patientlst3.rec \
 	P02H.rec \
+	system01lst.rec \
 	
 
 DEF_files = \
@@ -643,6 +644,9 @@ DB_files = \
 	xml_patientlst2req.db \
 	xml_patientlst2res.db \
 	xml_patientlst3req.db \
+	xml_system01_managereq.db \
+	xml_departmentres.db \
+	xml_physicianres.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
