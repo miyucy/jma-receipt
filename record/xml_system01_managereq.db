@@ -2,6 +2,6 @@ xml_system01_managereq {
     object  object;
 	mode	int;
 	system01_managereq {
-		Information_Date	varchar(10);
+		Base_Date		varchar(10);
 	};
 };

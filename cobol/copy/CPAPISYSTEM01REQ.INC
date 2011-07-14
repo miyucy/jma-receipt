@@ -23,5 +23,5 @@
             02  SYS01REQ-MODE           PIC S9(9)   BINARY.
             02  SYS01REQ-REGIST.
       *       ´ð½àÆü
-              03  SYS01REQ-INFORMATION-DATE    PIC X(20).
+              03  SYS01REQ-BASE-DATE    PIC X(10).
       *

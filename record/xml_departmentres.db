@@ -7,6 +7,7 @@ xml_departmentres {
 	Api_Result		varchar(2);
 	Api_Result_Message	varchar(100);
        	Reskey			varchar(100);
+	Base_Date		varchar(10);
 	Department_Information	{
 		Code			varchar(2);
 		WholeName		varchar(80);

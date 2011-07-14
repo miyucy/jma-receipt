@@ -32,9 +32,11 @@
               03  DEPTRES-API-RESULT-MSG      PIC X(100).
       *
               03  DEPTRES-RESKEY              PIC X(100).
+      *       ´ð½àÆü
+              03  DEPTRES-BASE-DATE           PIC X(10).
       *       ¿ÇÎÅ²Ê°ìÍ÷
               03  DEPTRES-DEPARTMET-INFOMATION.
-                  05  DEPTRES-DEPARTMET-INFO      OCCURS   100.
+                 05  DEPTRES-DEPARTMET-INFO      OCCURS   100.
       *               ¿ÇÎÅ²Ê¥³¡¼¥É
                       07  DEPTRES-DEP-CODE        PIC X(2).
       *               ¿ÇÎÅ²ÊÌ¾¾Î

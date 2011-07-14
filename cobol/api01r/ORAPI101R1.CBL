@@ -355,10 +355,10 @@
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-           MOVE    SYS01REQ-INFORMATION-DATE   TO  WRK-IN-DATE
+           MOVE    SYS01REQ-BASE-DATE  TO  WRK-IN-DATE
       *    処理日
-           MOVE    SYS01REQ-INFORMATION-DATE   TO  WRK-HEN-DATE
-           MOVE    SPACE                       TO  WRK-HEN-TIME
+           MOVE    SYS01REQ-BASE-DATE  TO  WRK-HEN-DATE
+           MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD            TO  WRK-IN-YMD
       *    開始日未設定はシステム日付
@@ -367,8 +367,9 @@
                MOVE    WRK-IN-YMD          TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
-      ***      MOVE    WRK-HEN-DATE        TO  PATLSTRES-START-DATE
+               MOVE    WRK-HEN-DATE        TO  WRK-IN-DATE
            END-IF
+           MOVE    WRK-IN-DATE         TO  DEPTRES-BASE-DATE
            .
        2001-INPUT-CHK-EXT.
            EXIT.
@@ -611,6 +612,8 @@
            MOVE    DEPTRES-INFORMATION-TIME
                                        TO  PHYSRES-INFORMATION-TIME
            MOVE    ZERO                TO  PHYSRES-API-RESULT
+      *    基準日 
+           MOVE    WRK-HEN-DATE        TO  PHYSRES-BASE-DATE
       *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD

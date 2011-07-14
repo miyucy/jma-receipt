@@ -32,6 +32,8 @@
               03  PHYSRES-API-RESULT-MSG      PIC X(100).
       *
               03  PHYSRES-RESKEY              PIC X(100).
+      *       基準日
+              03  PHYSRES-BASE-DATE           PIC X(10).
       *       ドクター一覧
               03  PHYSRES-PHYSICIAN-INFOMATION.
                   05  PHYSRES-PHYSICIAN-INFO       OCCURS   100.
