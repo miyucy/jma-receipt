@@ -8,7 +8,7 @@ xml_physicianres {
 	Api_Result_Message	varchar(100);
        	Reskey			varchar(100);
 	Base_Date		varchar(10);
-	physicianres	{
+	Physician_Information	{
 		Code			varchar(5);
 		WholeName		varchar(80);
 		WholeName_inKana	varchar(80);
