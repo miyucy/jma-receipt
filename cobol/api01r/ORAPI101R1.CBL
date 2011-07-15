@@ -258,6 +258,9 @@
            WHEN    "02"
       *        ドクター一覧
                MOVE    2                   TO  FLG-SYORI
+           WHEN    "03"
+      *        職員一覧
+               MOVE    3                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
@@ -275,6 +278,9 @@
                WHEN    "02"
       *            ドクター一覧
                    PERFORM 2003-DRCD-LIST-SEC
+               WHEN    "03"
+      *            職員一覧
+                   PERFORM 2004-SYOCD-LIST-SEC
                END-EVALUATE
            END-IF
       *
@@ -510,15 +516,89 @@
            EXIT.
       *
       *****************************************************************
+      *    職員一覧処理
+      *****************************************************************
+       2004-SYOCD-LIST-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+      *
+           MOVE    SPACE               TO  SYS-1010-REC
+           INITIALIZE                      SYS-1010-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    WRK-IN-YMD          TO  SYS-1010-STYUKYMD
+           MOVE    WRK-IN-YMD          TO  SYS-1010-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM
+                   UNTIL       (WRK-ERRCD  NOT =   SPACE)  OR
+                               (FLG-SYSKANRI   =   1    )
+               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+               IF      SYS-1010-KBNCD(1:1) NOT =   "1"
+      *            ドクター以外
+                   ADD     1                   TO  IDX
+                   IF      IDX                 >   100
+                       MOVE    "10"                TO  WRK-ERRCD
+                   ELSE
+                       MOVE    SYS-1010-KBNCD(1:5) TO  PHYSRES-DRCD
+                                                                 (IDX)
+      *                氏名
+                       MOVE    SYS-1010-NAME       TO  PHYSRES-NAME
+                                                                 (IDX)
+                       MOVE    SYS-1010-KANANAME   TO  PHYSRES-KANANAME
+                                                                 (IDX)
+      *                医籍登録番号
+                       MOVE    SYS-1010-ISEKINUM   TO  PHYSRES-ISEKINUM
+                                                                 (IDX)
+      *                麻薬ライセンス
+                       MOVE    SYS-1010-MAYAKULICENSE
+                                               TO  PHYSRES-MAYAKULICENSE
+                                                                 (IDX)
+      *                専門科コード
+                       PERFORM VARYING    IDY      FROM    1   BY  1
+                               UNTIL      IDY      >   5
+                           MOVE    SYS-1010-SEMONKACD-X (IDY)
+                                               TO  PHYSRES-SEMONKACD-X
+                                                              (IDX IDY)
+                       END-PERFORM
+                   END-IF
+               END-IF
+      *
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      IDX                 =   ZERO
+               MOVE    "11"            TO  WRK-ERRCD
+           END-IF
+           .
+       2004-SYOCD-LIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    XML情報書き込み処理
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
            IF      FLG-SYORI           =   2
-      *        ドクター一覧
+                                       OR  3
+      *        ドクター・職員一覧
                PERFORM 3002-PHYSICIAN-MAKE-SEC
            ELSE
-      *        診療科一覧（ドクター以外はすべて）
+      *        診療科一覧
                PERFORM 3001-DEPARTMENT-MAKE-SEC
            END-IF
       *
