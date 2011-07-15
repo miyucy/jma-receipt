@@ -3170,7 +3170,7 @@
 	  <name>GJIHINAME01</name>
 	  <x>168</x>
 	  <y>52</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3198,7 +3198,7 @@
 	  <name>NJIHINAME10</name>
 	  <x>480</x>
 	  <y>304</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3226,7 +3226,7 @@
 	  <name>NJIHINAME09</name>
 	  <x>480</x>
 	  <y>276</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3254,7 +3254,7 @@
 	  <name>NJIHINAME08</name>
 	  <x>480</x>
 	  <y>248</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3282,7 +3282,7 @@
 	  <name>NJIHINAME07</name>
 	  <x>480</x>
 	  <y>220</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3310,7 +3310,7 @@
 	  <name>NJIHINAME06</name>
 	  <x>480</x>
 	  <y>192</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3338,7 +3338,7 @@
 	  <name>NJIHINAME05</name>
 	  <x>480</x>
 	  <y>164</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3366,7 +3366,7 @@
 	  <name>NJIHINAME04</name>
 	  <x>480</x>
 	  <y>136</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3394,7 +3394,7 @@
 	  <name>NJIHINAME03</name>
 	  <x>480</x>
 	  <y>108</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3422,7 +3422,7 @@
 	  <name>NJIHINAME02</name>
 	  <x>480</x>
 	  <y>80</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3450,7 +3450,7 @@
 	  <name>NJIHINAME01</name>
 	  <x>480</x>
 	  <y>52</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3478,7 +3478,7 @@
 	  <name>GJIHINAME02</name>
 	  <x>168</x>
 	  <y>80</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3506,7 +3506,7 @@
 	  <name>GJIHINAME03</name>
 	  <x>168</x>
 	  <y>108</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3534,7 +3534,7 @@
 	  <name>GJIHINAME10</name>
 	  <x>168</x>
 	  <y>304</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3562,7 +3562,7 @@
 	  <name>GJIHINAME09</name>
 	  <x>168</x>
 	  <y>276</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3590,7 +3590,7 @@
 	  <name>GJIHINAME08</name>
 	  <x>168</x>
 	  <y>248</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3618,7 +3618,7 @@
 	  <name>GJIHINAME07</name>
 	  <x>168</x>
 	  <y>220</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3646,7 +3646,7 @@
 	  <name>GJIHINAME06</name>
 	  <x>168</x>
 	  <y>192</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3674,7 +3674,7 @@
 	  <name>GJIHINAME05</name>
 	  <x>168</x>
 	  <y>164</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3702,7 +3702,7 @@
 	  <name>GJIHINAME04</name>
 	  <x>168</x>
 	  <y>136</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
 	  <signal>
@@ -3730,7 +3730,7 @@
 	  <name>label1675</name>
 	  <x>480</x>
 	  <y>28</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <label>Æþ±¡¼«ÈñÌ¾¾Î</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
@@ -4034,7 +4034,7 @@
 	  <name>label599</name>
 	  <x>168</x>
 	  <y>28</y>
-	  <width>200</width>
+	  <width>168</width>
 	  <height>24</height>
 	  <label>³°Íè¼«ÈñÌ¾¾Î         </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
