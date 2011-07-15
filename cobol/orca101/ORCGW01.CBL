@@ -182,6 +182,7 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDA                               PIC 9(04).
            03  IDX                               PIC 9(04).
            03  IDY                               PIC 9(04).
            03  IDZ                               PIC 9(04).
@@ -233,6 +234,11 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
+       01  WRK-KIKAN-AREA.
+           03  WRK-KIKAN-MAX       PIC 9(05).
+           03  WRK-KIKAN-OCC       OCCURS   200.
+               05  WRK-KIKAN-STYUKYMD  PIC X(08).
+               05  WRK-KIKAN-EDYUKYMD  PIC X(08).
       *             
       *    管理コード一覧
        01  TBL-KANRICD-AREA.
@@ -1137,7 +1143,6 @@
                WHEN    "1005"
       ******** WHEN    "1010"
                WHEN    "1012"
-               WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1210,9 +1215,12 @@
       *        入院指示せん設定
                WHEN    "5007"
                    PERFORM 41049-1043-HEN-SEC
+               WHEN    "1013"
+                   PERFORM 41042-1013-HEN-SEC
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
                    PERFORM 4104-KANRICD-CHK-SYORI-SEC
+      *        請求書自費名称情報
            END-EVALUATE
            .
        4104-KANRICD-CHK-EXT.
@@ -1425,6 +1433,162 @@
            .
        41049-1043-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    請求書自費名称情報編集処理
+      *****************************************************************
+       41042-1013-HEN-SEC              SECTION.
+      *
+      *    システム管理読み込み
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "1013"              TO  SYS-KANRICD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           INITIALIZE                  WRK-KIKAN-AREA
+           MOVE    "00000000"          TO  WRK-KIKAN-STYUKYMD(1)
+           MOVE    1                   TO  IDX
+           PERFORM         UNTIL   FLG-SYSKANRI    =  1
+                           OR      SYS-STYUKYMD    =  "99999999"
+                           OR      IDX            >=  200
+      *
+               IF    ( SYS-KBNCD   =   "2" )
+                   IF    ( SYS-STYUKYMD    NOT =   "00000000" )
+                    AND  ( SYS-STYUKYMD    NOT =   "99999999" )
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    SYS-STYUKYMD    TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE    1               TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"       USING
+                                               STS-AREA-DAY
+                                               LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN TO  SYS-STYUKYMD
+                   END-IF
+               END-IF
+      *
+               IF    ( WRK-KIKAN-STYUKYMD(IDX) <   SYS-STYUKYMD)
+                   IF    ( SYS-STYUKYMD    NOT =   "00000000" )
+                    AND  ( SYS-STYUKYMD    NOT =   "99999999" )
+      *
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    SYS-STYUKYMD    TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE    -1              TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"           USING
+                                                   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN TO  WRK-KIKAN-EDYUKYMD
+                                                                 (IDX)
+                       COMPUTE IDX =   IDX +   1
+                       MOVE    SYS-STYUKYMD    TO  WRK-KIKAN-STYUKYMD
+                                                                 (IDX)
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-READ-SEC
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "99999999"          TO  WRK-KIKAN-EDYUKYMD(IDX)
+           MOVE    IDX                 TO  WRK-KIKAN-MAX
+      *
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY         >   WRK-KIKAN-MAX
+                      OR   IDX         >=  100
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "1013"          TO  SYS-KANRICD
+               MOVE    WRK-KIKAN-EDYUKYMD (IDY)
+                                       TO  SYS-EDYUKYMD
+               MOVE    WRK-KIKAN-STYUKYMD (IDY)
+                                       TO  SYS-STYUKYMD
+               MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC          =   ZERO
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+               ELSE
+                   INITIALIZE              SYSKANRI-REC
+                   MOVE    1           TO  FLG-SYSKANRI
+               END-IF
+      *
+               PERFORM UNTIL FLG-SYSKANRI  =   1
+                        OR   SYS-STYUKYMD  NOT =   "99999999"
+                        OR   SYS-EDYUKYMD  NOT =   "00000000"
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   COMPUTE IDX =   IDX +   1
+                   MOVE    IDX         TO  SPA-GMN-TBANGO (IDX)
+                   MOVE    WRK-KIKAN-STYUKYMD (IDY)
+                                       TO  SPA-NAI-TSTYUKYMD (IDX)
+                   MOVE    WRK-KIKAN-STYUKYMD (IDY)
+                                       TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-TSTYUKYMD (IDX)
+                   MOVE    WRK-KIKAN-EDYUKYMD (IDY)
+                                       TO  SPA-NAI-TEDYUKYMD (IDX)
+                   MOVE    WRK-KIKAN-EDYUKYMD (IDY)
+                                       TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG TO  SPA-GMN-TEDYUKYMD (IDX)
+                   MOVE    IDX         TO  SPA-GMN-MAX
+               END-IF
+           END-PERFORM
+      *
+           EVALUATE    SPA-GMN-MAX
+               WHEN    ZERO
+                   MOVE    3                       TO  SPA-GMN-CUR
+               WHEN    1
+                   MOVE    SPA-GMN-TSTYUKYMD (1)   TO  SPA-GMN-STYUKYMD
+                   MOVE    SPA-NAI-TSTYUKYMD (1)   TO  SPA-NAI-STYUKYMD
+                   MOVE    SPA-GMN-TEDYUKYMD (1)   TO  SPA-GMN-EDYUKYMD
+                   MOVE    SPA-NAI-TEDYUKYMD (1)   TO  SPA-NAI-EDYUKYMD
+                   MOVE    1                       TO  SPA-GMN-SELNUM
+                                                       SPA-NAI-SELNO
+                   MOVE    12                      TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   MOVE    2                       TO  SPA-GMN-CUR
+           END-EVALUATE           
+      *
+           .
+       41042-1013-HEN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    区分コード編集処理
@@ -1468,10 +1632,6 @@
                        MOVE    SYS-1012-SRYNAIYO (1:26)
                                               TO  SPA-GMN-KBNCDMEIL(IDX)
       *
-                   WHEN    "1013"
-                       MOVE    SYSKANRI-REC   TO  SYS-1013-REC
-                       MOVE    SYS-1013-JIHINAME (1:26)
-                                              TO  SPA-GMN-KBNCDMEIL(IDX)
                    WHEN    "1018"
                    WHEN    "1019"
                    WHEN    "1020"
@@ -1600,20 +1760,6 @@
       ***********  IF      WRK-LEN         NOT =   2
                    IF      WRK-LEN             >   2
                        MOVE    "0008"          TO  SPA-ERRCD
-                   END-IF
-               WHEN    "1013"
-                   MOVE    2                   TO  WRK-CODE-MAX
-                   IF      WRK-LEN         NOT =   2
-                       MOVE    "0008"          TO  SPA-ERRCD
-                   END-IF
-                   IF     (SPA-GMN-KBNCD (1:1) NOT =   "1" AND "2")
-                     AND  (SPA-ERRCD           =   SPACE )
-                       MOVE    "0009"          TO  SPA-ERRCD
-                   END-IF
-                   IF     (SPA-GMN-KBNCD (2:1)     <   "0"     OR
-                           SPA-GMN-KBNCD (2:1)     >   "9" )
-                     AND  (SPA-ERRCD           =   SPACE )
-                       MOVE    "0010"          TO  SPA-ERRCD
                    END-IF
                WHEN    "1010"
                    MOVE    SPACE               TO  SPA-GMN-KBNCD
@@ -2008,6 +2154,12 @@
                    GO  TO  4101-KAKUTEI-CHK-EXT
                END-IF
            END-IF
+           IF      SPA-NAI-STYUKYMD        =   ALL "9"
+               AND SPA-GMN-SELNUM          =   ZERO
+                   MOVE    3                   TO  SPA-GMN-CUR
+                   MOVE    "0003"              TO  SPA-ERRCD
+                   GO  TO  4101-KAKUTEI-CHK-EXT
+           END-IF
            IF      SPA-NAI-EDYUKYMD    =   ZERO
                IF      SPA-GMN-EDYUKYMD    =   SPACE
                    MOVE    99999999            TO  SPA-NAI-EDYUKYMD
@@ -2024,7 +2176,6 @@
                WHEN    "1010"
                WHEN    "1014"
                WHEN    "1012"
-               WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -2162,7 +2313,6 @@
                WHEN    "1010"
                WHEN    "1014"
                WHEN    "1012"
-               WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020" 

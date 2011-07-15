@@ -210,8 +210,8 @@
                     06  W02-VALUE   PIC X(100).
                 04  W02-N06-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED29.
-                  05  W02-JIHINAME.
-                    06  W02-VALUE   PIC X(20).
+                  05  W02-GJIHINAME PIC X(20)   OCCURS 10.
+                  05  W02-NJIHINAME PIC X(20)   OCCURS 10.
                 04  W02-N07-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED30.
                   05  W02-SRYNAIYO.

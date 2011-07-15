@@ -72,6 +72,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       *  04.06.01    NACL-°ËÆ£    11/01/28  ¥ê¥¢¥ë¥¿¥¤¥àÁ÷¿®
       *  04.06.02    NACL-°ËÆ£    11/06/17  ´¶À÷¾É¶èÊ¬Á÷¿®
+      *  04.07.00    NACL-ÂÀÅÄ    11/07/14  ¼«ÈñÌ¾¾Î°ì³çÅÐÏ¿ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -439,7 +440,10 @@
                        09  SPA-GMN-CONDITION-WORD PIC X(02).
                        09  SPA-GMN-ICON-FILENAME  PIC X(100).
                    07  SPA-GMN-1013-AREA.
-                       09  SPA-GMN-JIHINAME       PIC X(20).
+                       09  SPA-GMN-GJIHINAME      PIC X(20)
+                                                  OCCURS  10.
+                       09  SPA-GMN-NJIHINAME      PIC X(20)
+                                                  OCCURS  10.
       *¿ÇÎÅÆâÍÆ¾ðÊó
                    07  SPA-GMN-1012-AREA.
                        09  SPA-GMN-SRYNAIYO       PIC X(20).
@@ -538,6 +542,7 @@
       *
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
+           03  CNT-1013            PIC 9(06).
       *
       *    Åº»úÎÎ°è
       *
@@ -571,6 +576,14 @@
                05  WRK-RATE-EDIT-R  REDEFINES    WRK-RATE-EDIT.
                    07  WRK-RATE-EDITR  PIC X(11).
            03  WRK-HOSPSBTW        PIC X(02).
+           03  WRK-1013-KBNCD-G.
+               05  WRK-1013-NYUGAIKBN  PIC X(01).
+               05  WRK-1013-IDX        PIC 9(01).
+           03  WRK-JIHINAME-WIDGET.
+               05  WRK-JIHINAME-WNAME  PIC X(09).
+               05  WRK-JIHINAME-WIDX   PIC 9(02).
+           03  WRK-STYUKYMD            PIC X(08).
+           03  WRK-EDYUKYMD            PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -839,9 +852,17 @@
       *
            IF      SPA-WID1-FLG    =   "OK"
                IF      SPA-WIDCD            =   "1002"
-                   PERFORM 4031-DEL-SEC
+                   IF    ( SPA-W01-KANRICD  NOT =   "1013" )
+                       PERFORM 4031-DEL-SEC
+                   ELSE
+                       PERFORM 4032-DEL-SEC
+                   END-IF
                ELSE
-                   PERFORM 490-KOUSHIN-SEC
+                   IF    ( SPA-W01-KANRICD  NOT =   "1013" )
+                       PERFORM 490-KOUSHIN-SEC
+                   ELSE
+                       PERFORM 491-KOUSHIN-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -1199,7 +1220,6 @@
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
                WHEN    "1012"
-               WHEN    "1013"
                WHEN    "1018"
                WHEN    "1019"
                WHEN    "1020"
@@ -1298,11 +1318,8 @@
                                                SPA-GMN-CONDITION-WORD
                        MOVE    SYS-1018-ICON-FILENAME  TO
                                                SPA-GMN-ICON-FILENAME
-      *    ÀÁµá½ñ¼«ÈñÌ¾¾Î¾ðÊó
                    WHEN    "1013"
-                       MOVE    MCPDATA-REC         TO  SYS-1013-REC
-                       MOVE    SYS-1013-JIHINAME   TO
-                                               SPA-GMN-JIHINAME 
+                       CONTINUE
       *    ¿ÇÎÅÆâÍÆÌ¾¾Î¾ðÊó
                    WHEN    "1012"
                        MOVE    MCPDATA-REC         TO  SYS-1012-REC
@@ -1432,6 +1449,30 @@
                                            TO  SPA-GMN-NYKN-JYOTAI-T-G
                END-EVALUATE
            END-IF 
+      *
+           IF    ( SPA-W01-KANRICD     =   "1013" )
+               IF    ( SPA-W01-SELNUM      >   ZERO )
+                   MOVE    SPA-W01-SEL-STYUKYMD    TO  WRK-STYUKYMD
+               ELSE
+                   MOVE    SPA-W01-STYUKYMD        TO  WRK-STYUKYMD
+               END-IF
+               PERFORM 3108-1013-SEL-SEC
+               IF    ( SPA-W01-SELNUM      =   ZERO )
+                AND  ( WRK-STYUKYMD    NOT =   "00000000" )
+                AND  ( CNT-1013            =   ZERO )
+                   INITIALIZE                  STS-AREA-DAY
+                   INITIALIZE                  LNK-DAY6-AREA
+                   MOVE    "61"            TO  LNK-DAY6-IRAI
+                   MOVE    WRK-STYUKYMD    TO  LNK-DAY6-KIJUN
+                   MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                   MOVE     -1             TO  LNK-DAY6-ZOGEN
+                   CALL    "ORCSDAY"           USING
+                                               STS-AREA-DAY
+                                               LNK-DAY6-AREA
+                   MOVE    LNK-DAY6-KEISAN TO  WRK-STYUKYMD
+                   PERFORM 3108-1013-SEL-SEC
+               END-IF
+           END-IF
       *
       *    ¥ì¥»¥×¥È¾ðÊó¡Ê¼ç²ÊÀßÄê¡Ë
            MOVE    SPACE               TO  SYS-2009-REC
@@ -1950,6 +1991,76 @@
            EXIT.
       *
       *****************************************************************
+      *    ÀÁµá½ñ¼«ÈñÌ¾¾Î¸¡º÷½èÍý
+      *****************************************************************
+       3108-1013-SEL-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  CNT-1013
+      *
+           MOVE    SPACE               TO  SYS-1013-REC
+           INITIALIZE                      SYS-1013-REC
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    WRK-STYUKYMD        TO  SYS-1013-STYUKYMD
+           MOVE    WRK-STYUKYMD        TO  SYS-1013-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
+           MOVE    SYS-1013-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           PERFORM     UNTIL ( FLG-SYSKANRI    =   1 )
+      *
+               MOVE    MCPDATA-REC     TO  SYS-1013-REC
+      *
+               IF   (( SYS-1013-STYUKYMD   =   "00000000" )
+                  AND( SYS-1013-EDYUKYMD   =   "00000000" ))
+                OR  (( SYS-1013-STYUKYMD   =   "99999999" )
+                  AND( SYS-1013-EDYUKYMD   =   "99999999" ))
+                   CONTINUE
+               ELSE
+      *
+                   COMPUTE CNT-1013
+                       =   CNT-1013        +   1
+      *
+                   MOVE    SYS-1013-KBNCD  TO  WRK-1013-KBNCD-G
+      *
+                   EVALUATE    SYS-1013-KBNCD
+                   WHEN    "10"
+                       MOVE    SYS-1013-JIHINAME
+                                   TO  SPA-GMN-NJIHINAME (10)
+                   WHEN    "11"    THRU    "19"
+                       MOVE    SYS-1013-JIHINAME
+                                   TO  SPA-GMN-NJIHINAME (WRK-1013-IDX)
+                   WHEN    "20"
+                       MOVE    SYS-1013-JIHINAME
+                                   TO  SPA-GMN-GJIHINAME (10)
+                   WHEN    "21"    THRU    "29"
+                       MOVE    SYS-1013-JIHINAME
+                                   TO  SPA-GMN-GJIHINAME (WRK-1013-IDX)
+                   END-EVALUATE
+               END-IF
+      *
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           . 
+       3108-1013-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    ³ä°úÎ¨¶èÊ¬ÀßÄê½èÍý
       *****************************************************************
        3101-DISCOUNT-KBN-SET-SEC       SECTION.
@@ -2186,7 +2297,13 @@
            MOVE    W02-CONDITIONWORD   TO  SPA-GMN-CONDITION-WORD
            MOVE    W02-ICONFILENAME    TO  SPA-GMN-ICON-FILENAME
       *
-           MOVE    W02-JIHINAME        TO  SPA-GMN-JIHINAME
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   10 )
+               MOVE    W02-GJIHINAME (IDX1)
+                                       TO  SPA-GMN-GJIHINAME (IDX1)
+               MOVE    W02-NJIHINAME (IDX1)
+                                       TO  SPA-GMN-NJIHINAME (IDX1)
+           END-PERFORM
       *
       *    ¿ÇÎÅÆâÍÆ
            MOVE    W02-SRYNAIYO        TO  SPA-GMN-SRYNAIYO
@@ -2412,18 +2529,43 @@
       *****************************************************************
        41021-KIHON-1013-SEC       SECTION.
       *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-JIHINAME    TO  KANACHK-MAE-INPUT
-           MOVE    20                  TO  KANACHK-MAX-CNT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-JIHINAME
-           IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                  (KANACHK-SYUBETU     =   1     )
-               MOVE    "0012"          TO  SPA-ERRCD
-               MOVE    70              TO  SPA-GMN-CUR
-           END-IF
+           PERFORM VARYING IDX1   FROM     1   BY  1
+                   UNTIL ( IDX1   >    10 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-GJIHINAME (IDX1)
+                                           TO  KANACHK-MAE-INPUT
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-GJIHINAME (IDX1)
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   IDX1    +   69
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1   FROM     1   BY  1
+                   UNTIL ( IDX1   >    10 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-NJIHINAME (IDX1)
+                                           TO  KANACHK-MAE-INPUT
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-NJIHINAME (IDX1)
+               IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                      (KANACHK-SYUBETU     =   1     )
+                   MOVE    "0012"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   IDX1    +   169
+               END-IF
+           END-PERFORM
       *
            .
        41021-KIHON-1013-EXT.
@@ -3769,7 +3911,6 @@
            INITIALIZE                      SYS-1001-REC
            MOVE    SPA-W01-KANRICD         TO  SYS-1001-KANRICD
            EVALUATE    SPA-W01-KANRICD
-               WHEN    "1013"
                WHEN    "1012"
                WHEN    "1018"
                WHEN    "1019"
@@ -3805,6 +3946,122 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4031-DEL-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¼«ÈñÌ¾¾Îºï½ü½èÍý
+      *****************************************************************
+       4032-DEL-SEC                        SECTION.
+      *
+           PERFORM 40321-DEL-SEC
+           IF    ( SPA-ERRCD   =   SPACE )
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
+      *
+           .
+       4032-DEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼«ÈñÌ¾¾Îºï½ü½èÍý
+      *****************************************************************
+       40321-DEL-SEC                       SECTION.
+      *
+           IF    ( SPA-W01-SELNUM      >   ZERO )
+               MOVE    SPA-W01-SEL-STYUKYMD    TO  WRK-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD    TO  WRK-EDYUKYMD
+           ELSE
+               MOVE    SPA-W01-STYUKYMD        TO  WRK-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD        TO  WRK-EDYUKYMD
+           END-IF
+      *
+           MOVE    SPACE               TO  SYS-1013-REC
+           INITIALIZE                      SYS-1013-REC
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    WRK-EDYUKYMD        TO  SYS-1013-STYUKYMD
+           MOVE    WRK-STYUKYMD        TO  SYS-1013-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
+           MOVE    SYS-1013-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               MOVE    MCPDATA-REC     TO  SYS-1013-REC
+               MOVE    SYS-1013-REC    TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 950-DBDELETE-SEC
+               IF    ( MCP-RC      NOT =   ZERO )
+                   MOVE    "1002"      TO  SPA-ERRCD
+               END-IF
+      *
+               IF    ( SPA-ERRCD           =   SPACE )
+                   IF    ( SYS-1013-STYUKYMD   <   WRK-STYUKYMD )
+                       MOVE    SYS-1013-REC    TO  SYSKANRI-REC
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    WRK-STYUKYMD    TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE    -1              TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"           USING
+                                                   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN TO  SYS-EDYUKYMD
+                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 930-DBINSERT-SEC
+                       IF    ( MCP-RC      NOT =   ZERO )
+                           MOVE    "1002"      TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( SPA-ERRCD           =   SPACE )
+                   IF    ( SYS-1013-EDYUKYMD   >   WRK-EDYUKYMD )
+                       MOVE    SYS-1013-REC    TO  SYSKANRI-REC
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    WRK-EDYUKYMD    TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       MOVE     1              TO  LNK-DAY6-ZOGEN
+                       CALL    "ORCSDAY"           USING
+                                                   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN TO  SYS-STYUKYMD
+                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 930-DBINSERT-SEC
+                       IF    ( MCP-RC      NOT =   ZERO )
+                           MOVE    "1002"      TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       40321-DEL-EXT.
+           EXIT.
       *****************************************************************
       *       ÅÐÏ¿Á°½èÍý
       *****************************************************************
@@ -3977,22 +4234,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-USERURL     TO  SYS-1003-USERURL
       *----(03.04.01)--ADD-END-----------------------------------------
                    MOVE    SYS-1003-REC        TO  SYSKANRI-REC
-      * 
-      *    °åÎÅµ¡´Ø¾ðÊó¡¼ÀÁµá½ñ¼«ÈñÌ¾¾Î¾ðÊó
-               WHEN    "1013"    
-                   IF      FLG-SYSKANRI        =   ZERO
-                       MOVE    MCPDATA-REC     TO  SYS-1013-REC
-                   ELSE
-                       MOVE    SPACE           TO  SYS-1013-REC
-                       INITIALIZE                  SYS-1013-REC
-                       MOVE   "1013"           TO  SYS-1013-KANRICD
-                       MOVE    SPA-W01-KBNCD   TO  SYS-1013-KBNCD
-                   END-IF 
-                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1013-STYUKYMD
-                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-1013-EDYUKYMD
-                   MOVE    SPA-GMN-JIHINAME    TO  SYS-1013-JIHINAME
-                   MOVE    SYS-1013-REC        TO  SYSKANRI-REC
-      * 
       * 
       *    ¿ÇÎÅÆâÍÆÌ¾¾Î¾ðÊó
                WHEN    "1012"    
@@ -4169,6 +4410,105 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        490-KOUSHIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ¼«ÈñÌ¾¾ÎÅÐÏ¿½èÍý
+      *****************************************************************
+       491-KOUSHIN-SEC                 SECTION.
+      *
+           PERFORM 40321-DEL-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4911-KOUSHIN-SEC
+           ELSE
+               MOVE    "1001"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       491-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼«ÈñÌ¾¾ÎÅÐÏ¿½èÍý
+      *****************************************************************
+       4911-KOUSHIN-SEC                SECTION.
+      *
+      *    ¹¹¿·Æü¼èÆÀ
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "1013"              TO  SYS-KANRICD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
+           MOVE    SPA-OPID            TO  SYS-OPID
+           MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   10 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-GJIHINAME(IDX)  NOT =   SPACE )
+                   MOVE    SYSKANRI-REC   TO  SYS-1013-REC
+                   IF    ( IDX         =   10 )
+                       MOVE    "20"        TO  SYS-1013-KBNCD
+                   ELSE
+                       MOVE    "2"         TO  WRK-1013-NYUGAIKBN
+                       MOVE    IDX         TO  WRK-1013-IDX
+                       MOVE    WRK-1013-KBNCD-G
+                                           TO  SYS-1013-KBNCD
+                   END-IF
+                   MOVE    SPA-GMN-GJIHINAME(IDX)
+                                           TO  SYS-1013-JIHINAME
+                   MOVE    SYS-1013-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 930-DBINSERT-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "1001"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   10 )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-NJIHINAME(IDX)  NOT =   SPACE )
+                   MOVE    SYSKANRI-REC   TO  SYS-1013-REC
+                   IF    ( IDX         =   10 )
+                       MOVE    "10"        TO  SYS-1013-KBNCD
+                   ELSE
+                       MOVE    "1"         TO  WRK-1013-NYUGAIKBN
+                       MOVE    IDX         TO  WRK-1013-IDX
+                       MOVE    WRK-1013-KBNCD-G
+                                           TO  SYS-1013-KBNCD
+                   END-IF
+                   MOVE    SPA-GMN-NJIHINAME(IDX)
+                                           TO  SYS-1013-JIHINAME
+                   MOVE    SYS-1013-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 930-DBINSERT-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "1001"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
+      *
+           .
+       4911-KOUSHIN-EXT.
+           EXIT.
       *****************************************************************
       *    ´ðËÜ¾ðÊó¤Ç´ü´ÖÊÑ¹¹¤Î»þ¡¢½êºßÃÏ¡¦¹­¹ðÊÑ¹¹½èÍý
       *****************************************************************
@@ -4611,7 +4951,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ICON-FILENAME    TO  W02-ICONFILENAME 
       *
       *    ÀÁµá½ñ¼«ÈñÌ¾¾Î¾ðÊó
-           MOVE    SPA-GMN-JIHINAME     TO  W02-JIHINAME
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+               MOVE    SPA-GMN-GJIHINAME (IDX)
+                                            TO  W02-GJIHINAME (IDX)
+               MOVE    SPA-GMN-NJIHINAME (IDX)
+                                            TO  W02-NJIHINAME (IDX)
+           END-PERFORM
       *
       *    ¿ÇÎÅÆâÍÆÌ¾¾Î¾ðÊó
            MOVE    SPA-GMN-SRYNAIYO    TO  W02-SRYNAIYO
@@ -5116,7 +5462,45 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    62
                     MOVE  "ICONFILENAME"   TO   MCP-WIDGET
                 WHEN    70
-                    MOVE  "JIHINAME"       TO   MCP-WIDGET
+                    MOVE  "GJIHINAME01"    TO   MCP-WIDGET
+                WHEN    71
+                    MOVE  "GJIHINAME02"    TO   MCP-WIDGET
+                WHEN    72
+                    MOVE  "GJIHINAME03"    TO   MCP-WIDGET
+                WHEN    73
+                    MOVE  "GJIHINAME04"    TO   MCP-WIDGET
+                WHEN    74
+                    MOVE  "GJIHINAME05"    TO   MCP-WIDGET
+                WHEN    75
+                    MOVE  "GJIHINAME06"    TO   MCP-WIDGET
+                WHEN    76
+                    MOVE  "GJIHINAME07"    TO   MCP-WIDGET
+                WHEN    77
+                    MOVE  "GJIHINAME08"    TO   MCP-WIDGET
+                WHEN    78
+                    MOVE  "GJIHINAME09"    TO   MCP-WIDGET
+                WHEN    79
+                    MOVE  "GJIHINAME10"    TO   MCP-WIDGET
+                WHEN    170
+                    MOVE  "NJIHINAME01"    TO   MCP-WIDGET
+                WHEN    171
+                    MOVE  "NJIHINAME02"    TO   MCP-WIDGET
+                WHEN    172
+                    MOVE  "NJIHINAME03"    TO   MCP-WIDGET
+                WHEN    173
+                    MOVE  "NJIHINAME04"    TO   MCP-WIDGET
+                WHEN    174
+                    MOVE  "NJIHINAME05"    TO   MCP-WIDGET
+                WHEN    175
+                    MOVE  "NJIHINAME06"    TO   MCP-WIDGET
+                WHEN    176
+                    MOVE  "NJIHINAME07"    TO   MCP-WIDGET
+                WHEN    177
+                    MOVE  "NJIHINAME08"    TO   MCP-WIDGET
+                WHEN    178
+                    MOVE  "NJIHINAME09"    TO   MCP-WIDGET
+                WHEN    179
+                    MOVE  "NJIHINAME10"    TO   MCP-WIDGET
                 WHEN    80
                     MOVE  "SRYNAIYO"       TO   MCP-WIDGET
                 WHEN    81
@@ -5164,6 +5548,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    60  THRU    69
                     MOVE    5                TO  W02-PAGENO
                 WHEN    70  THRU    79
+                WHEN   170  THRU   179
                     MOVE    6                TO  W02-PAGENO
                 WHEN    80  THRU    89
                     MOVE    7                TO  W02-PAGENO
@@ -5304,7 +5689,45 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "ICONFILENAME"
                   MOVE    60               TO  SPA-GMN-CUR
       *       ÀÁµá½ñ¾ðÊó
-              WHEN    "JIHINAME"
+              WHEN    "GJIHINAME01"
+                  MOVE    71               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME02"
+                  MOVE    72               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME03"
+                  MOVE    73               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME04"
+                  MOVE    74               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME05"
+                  MOVE    75               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME06"
+                  MOVE    76               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME07"
+                  MOVE    77               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME08"
+                  MOVE    78               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME09"
+                  MOVE    79               TO  SPA-GMN-CUR
+              WHEN    "GJIHINAME10"
+                  MOVE    170              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME01"
+                  MOVE    171              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME02"
+                  MOVE    172              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME03"
+                  MOVE    173              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME04"
+                  MOVE    174              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME05"
+                  MOVE    175              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME06"
+                  MOVE    176              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME07"
+                  MOVE    177              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME08"
+                  MOVE    178              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME09"
+                  MOVE    179              TO  SPA-GMN-CUR
+              WHEN    "NJIHINAME10"
                   MOVE    70               TO  SPA-GMN-CUR
       *       ¿ÇÎÅÆâÍÆ¾ðÊó
               WHEN    "SRYNAIYO"
@@ -5468,6 +5891,48 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *****************************************************************
+       930-DBINSERT-SEC                 SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       930-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Õ£Ð£Ä£Á£Ô£Å½èÍý
+      *****************************************************************
+       940-DBUPDATE-SEC                 SECTION.
+      *
+           MOVE    "DBUPDATE"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       940-DBUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
+      *****************************************************************
+       950-DBDELETE-SEC                 SECTION.
+      *
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       950-DBDELETE-EXT.
+           EXIT.
       *****************************************************************
       *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
       *****************************************************************

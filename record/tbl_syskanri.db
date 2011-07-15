@@ -392,3 +392,22 @@ path	key23	{
 		;
 	};
 };
+
+path	key24	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key24_csr CURSOR FOR
+		SELECT STYUKYMD,KBNCD
+		FROM ( SELECT DISTINCT(STYUKYMD),'1' AS KBNCD
+               FROM   tbl_syskanri
+               WHERE  HOSPNUM =  :HOSPNUM
+               AND    KANRICD =  :KANRICD
+               UNION
+		       SELECT DISTINCT(EDYUKYMD),'2' AS KBNCD
+               FROM   tbl_syskanri
+               WHERE  HOSPNUM =  :HOSPNUM
+               AND    KANRICD =  :KANRICD
+             ) as kikan
+        ORDER  BY STYUKYMD,KBNCD
+        ; 
+	};
+};

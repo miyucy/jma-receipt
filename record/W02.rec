@@ -328,7 +328,64 @@ W02	{
 	            	state	int;
 	            };
 			fixed29	{
-				JIHINAME	{
+				GJIHINAME01	{
+					value	varchar(20);
+				};
+				GJIHINAME02	{
+					value	varchar(20);
+				};
+				GJIHINAME03	{
+					value	varchar(20);
+				};
+				GJIHINAME04	{
+					value	varchar(20);
+				};
+				GJIHINAME05	{
+					value	varchar(20);
+				};
+				GJIHINAME06	{
+					value	varchar(20);
+				};
+				GJIHINAME07	{
+					value	varchar(20);
+				};
+				GJIHINAME08	{
+					value	varchar(20);
+				};
+				GJIHINAME09	{
+					value	varchar(20);
+				};
+				GJIHINAME10	{
+					value	varchar(20);
+				};
+				NJIHINAME01	{
+					value	varchar(20);
+				};
+				NJIHINAME02	{
+					value	varchar(20);
+				};
+				NJIHINAME03	{
+					value	varchar(20);
+				};
+				NJIHINAME04	{
+					value	varchar(20);
+				};
+				NJIHINAME05	{
+					value	varchar(20);
+				};
+				NJIHINAME06	{
+					value	varchar(20);
+				};
+				NJIHINAME07	{
+					value	varchar(20);
+				};
+				NJIHINAME08	{
+					value	varchar(20);
+				};
+				NJIHINAME09	{
+					value	varchar(20);
+				};
+				NJIHINAME10	{
 					value	varchar(20);
 				};
 			};
