@@ -691,7 +691,7 @@
                    MOVE    "保険の前頁はありません。"
                                                TO  SPA-ERRMSG
                WHEN    "0113"
-                   MOVE    "公費の次頁はありません。"
+                   MOVE    "公費の前頁はありません。"
                                                TO  SPA-ERRMSG
                WHEN    "0114"
                    MOVE    "保険の次頁はありません。"

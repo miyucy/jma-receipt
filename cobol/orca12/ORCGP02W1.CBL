@@ -3609,11 +3609,11 @@
            END-IF
       *ver.4.7
       *    µìÀ«ÍúÎò
-      *    IF    (SPA-NAI-KYUSEIKBN    =   ZERO )
-      *      AND (SPA-P02-SYORI    NOT =   1    )
-      *        MOVE    ZERO                TO  FLG-KYUSEI
-      *        PERFORM 41091-KYUSEI-KOU-SEC
-      ***  END-IF
+           IF    (SPA-NAI-KYUSEIKBN    =   ZERO )
+             AND (SPA-P02-SYORI    NOT =   1    )
+               MOVE    ZERO                TO  FLG-KYUSEI
+               PERFORM 41091-KYUSEI-KOU-SEC
+           END-IF
            .
        4101-NAME-CHK-EXT.
            EXIT.
@@ -4630,11 +4630,11 @@
       *    µìÀ«ÍúÎò¤Î¹¹¿·
      ****  PERFORM 41091-KYUSEI-KOU-SEC
       *    µìÀ«ÍúÎò
-           IF    (SPA-NAI-KYUSEIKBN    =   ZERO )
-             AND (SPA-P02-SYORI    NOT =   1    )
-               MOVE    ZERO                TO  FLG-KYUSEI
-               PERFORM 41091-KYUSEI-KOU-SEC
-           END-IF
+      *    IF    (SPA-NAI-KYUSEIKBN    =   ZERO )
+      *      AND (SPA-P02-SYORI    NOT =   1    )
+      *        MOVE    ZERO                TO  FLG-KYUSEI
+      *        PERFORM 41091-KYUSEI-KOU-SEC
+      *****END-IF
            .
       *
        4109-TOUROKU-CHK-EXT.

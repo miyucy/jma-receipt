@@ -4730,6 +4730,11 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *            老人年齢で老人公費がない時
                    MOVE    "K003"              TO  SPA-ERRCD
                END-IF
+      *ver.4.7
+      *        Ｈ２０．４から退職国保で６５歳以上
+               IF      AGECHK-RJNCHK       =   9
+                   MOVE    "K007"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *TEST
            IF      SPA-ERRCD           =   SPACE
@@ -6773,6 +6778,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "警告！！"
                            "保険組合せに矛盾があります。"
                            "患者登録で保険を登録し直して下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+      *ver.4.7
+               WHEN    "K007"
+                   STRING  "警告！！"
+                           "６５歳以上です。"
+                           "退職国保は対象ではありません。"
                                                 DELIMITED  BY  SIZE
                                                 INTO  SPA-ERRMSG
                    END-STRING
