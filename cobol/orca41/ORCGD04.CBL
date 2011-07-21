@@ -828,6 +828,8 @@
                PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                         OR   ( SPA-GMN-CHKLST-MAX >=   CONST-CHKLST-MAX)
       *
+                 IF    ( CHKSND-BYOMEI     NOT =   SPACE )
+      *
                    COMPUTE IDX-LST =   IDX-LST +   1
                    MOVE    IDX-LST         TO  SPA-GMN-CHKLST-MAX
       *
@@ -848,6 +850,7 @@
                        MOVE    "¸åÊý"          TO  SPA-GMN-TCOMPKBN
                                                                (IDX-LST)
                    END-EVALUATE
+                 END-IF
       *
                    PERFORM 900-CHKSND-KEY2-FET-SEC
       *

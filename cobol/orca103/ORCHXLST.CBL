@@ -1127,6 +1127,8 @@
            END-IF
       *
            EVALUATE    CHKSND-NYUGAIKBN
+           WHEN    "0"
+               MOVE    "¡ß"        TO  B01L-NYUGAIKBNMEI
            WHEN    "1"
                MOVE    "Æþ"        TO  B01L-NYUGAIKBNMEI
            WHEN    "2"

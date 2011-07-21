@@ -1735,6 +1735,8 @@
                    OR    ( SPA-X03-GMN-RCHKLST-MAX
                                           >=   CONST-CHKLST-MAX )
       *
+             IF    ( CHKSND-BYOMEI     NOT =   SPACE )
+      *
                COMPUTE SPA-X03-GMN-RCHKLST-MAX
                    =   SPA-X03-GMN-RCHKLST-MAX +   1
       *
@@ -1755,17 +1757,10 @@
       *
                END-PERFORM
       *
-               IF    ( CHKSND-BYOMEI       =   SPACE )
-                   MOVE    WRK-KEY-CD (1)  TO  SPA-X03-GMN-TRCHK-NAME
+               MOVE    CHKSND-BYOMEI       TO  SPA-X03-GMN-TRCHK-NAME
                                                                (IDXA)
-                   MOVE    1               TO  SPA-X03-NAI-TRCHK-DELFLG
+               MOVE    ZERO                TO  SPA-X03-NAI-TRCHK-DELFLG
                                                                (IDXA)
-               ELSE
-                   MOVE    CHKSND-BYOMEI   TO  SPA-X03-GMN-TRCHK-NAME
-                                                               (IDXA)
-                   MOVE    ZERO            TO  SPA-X03-NAI-TRCHK-DELFLG
-                                                               (IDXA)
-               END-IF
       *
                MOVE    CHKSND-COMPKBN      TO  SPA-X03-GMN-TRCHK-JYKN
                                                                (IDXA)
@@ -1783,6 +1778,7 @@
                                                                (IDXA)
                    END-IF
                END-IF
+             END-IF
       *
                MOVE    "tbl_chksnd"            TO  MCP-TABLE
                MOVE    "key2"                  TO  MCP-PATHNAME

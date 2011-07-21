@@ -110,12 +110,12 @@
                05  SPA-GMN-COMBO-AREA.
                    07  SPA-GMN-NYUGAIKBNLST-G.
                        09  SPA-GMN-NYUGAIKBN-MAX   PIC 9(03).
-                       09  SPA-GMN-NYUGAIKBNLST    OCCURS    2.
+                       09  SPA-GMN-NYUGAIKBNLST    OCCURS    3.
                            11  SPA-GMN-NYUGAIKBNL  PIC X(01).
                            11  SPA-GMN-NYUGAIKBNFLL
                                                    PIC X(01).
                            11  SPA-GMN-NYUGAIKBNMEIL
-                                                   PIC X(10).
+                                                   PIC X(20).
                    07  SPA-GMN-JYKNKBNLST-G.
                        09  SPA-GMN-JYKNKBN-MAX     PIC 9(03).
                        09  SPA-GMN-JYKNKBNLST      OCCURS    5.
@@ -244,6 +244,7 @@
            03  WRK-CMB-CD                  PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM             PIC X(200).
+               05  WRK-CMB-IDX             PIC 9(03).
            03  WRK-ZZ9                     PIC ZZ9.
            03  WRK-SKIP-MAX                PIC 9(05).
            03  WRK-MAE-INPUT               PIC X(100).
@@ -667,13 +668,26 @@
       *
            INITIALIZE                  SPA-GMN-NYUGAIKBNLST-G
       *
-           MOVE    2               TO  SPA-GMN-NYUGAIKBN-MAX
+           IF    ( SPA-X01-CHKKBN  =   "1" OR "2" )
+               MOVE    3           TO  SPA-GMN-NYUGAIKBN-MAX
+               MOVE    "0"         TO  SPA-GMN-NYUGAIKBNL    (1)
+               MOVE    "チェックしない"
+                                   TO  SPA-GMN-NYUGAIKBNMEIL (1)
       *
-           MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL    (1)
-           MOVE    "入院限定"      TO  SPA-GMN-NYUGAIKBNMEIL (1)
+               MOVE    "1"         TO  SPA-GMN-NYUGAIKBNL    (2)
+               MOVE    "入院限定"  TO  SPA-GMN-NYUGAIKBNMEIL (2)
       *
-           MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL    (2)
-           MOVE    "外来限定"      TO  SPA-GMN-NYUGAIKBNMEIL (2)
+               MOVE    "2"         TO  SPA-GMN-NYUGAIKBNL    (3)
+               MOVE    "外来限定"  TO  SPA-GMN-NYUGAIKBNMEIL (3)
+           ELSE
+               MOVE    2           TO  SPA-GMN-NYUGAIKBN-MAX
+      *
+               MOVE    "1"         TO  SPA-GMN-NYUGAIKBNL    (1)
+               MOVE    "入院限定"  TO  SPA-GMN-NYUGAIKBNMEIL (1)
+      *
+               MOVE    "2"         TO  SPA-GMN-NYUGAIKBNL    (2)
+               MOVE    "外来限定"  TO  SPA-GMN-NYUGAIKBNMEIL (2)
+           END-IF
       *
            . 
        3101-NYUGAIKBNLST-EXT.
@@ -915,23 +929,29 @@
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                     OR   ( SPA-GMN-BYOLST-MAX  >=  CONST-BYOLST-MAX )
       *
-               COMPUTE SPA-GMN-BYOLST-MAX
-                   =   SPA-GMN-BYOLST-MAX  +   1
+               IF    ( CHKSND-BYOMEI   NOT =   SPACE )
       *
-               MOVE    SPA-GMN-BYOLST-MAX  TO  IDX-MAX
+                   COMPUTE SPA-GMN-BYOLST-MAX
+                       =   SPA-GMN-BYOLST-MAX  +   1
       *
-               MOVE    CHKSND-BYOMEI       TO  SPA-GMN-TBYOMEI (IDX-MAX)
-               MOVE    CHKSND-COMPKBN      TO  SPA-GMN-TJYKN   (IDX-MAX)
-               MOVE    CHKSND-UTAGAIKBN    TO  SPA-GMN-TUTAGAI (IDX-MAX)
-               MOVE    CHKSND-BYOMEIHENFLG TO  SPA-NAI-TBYOSTATUS
+                   MOVE    SPA-GMN-BYOLST-MAX  TO  IDX-MAX
+      *
+                   MOVE    CHKSND-BYOMEI   TO  SPA-GMN-TBYOMEI (IDX-MAX)
+                   MOVE    CHKSND-COMPKBN  TO  SPA-GMN-TJYKN   (IDX-MAX)
+                   MOVE    CHKSND-UTAGAIKBN
+                                           TO  SPA-GMN-TUTAGAI (IDX-MAX)
+                   MOVE    CHKSND-BYOMEIHENFLG
+                                           TO  SPA-NAI-TBYOSTATUS
                                                                (IDX-MAX)
-               MOVE    CHKSND-CD           TO  WRK-KEY-CD-G
-               PERFORM VARYING IDX0    FROM    1   BY  1
+                   MOVE    CHKSND-CD       TO  WRK-KEY-CD-G
+                   PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-MKCD-MAX )
-                   MOVE    WRK-KEY-CD (IDX0)
-                                           TO  SPA-NAI-TBYOCD
-                                                          (IDX-MAX IDX0)
-               END-PERFORM
+                       MOVE    WRK-KEY-CD (IDX0)
+                                               TO  SPA-NAI-TBYOCD
+                                                      (IDX-MAX IDX0)
+                   END-PERFORM
+      *
+               END-IF
       *
                PERFORM 900-CHKSND-KEY2-FET-SEC
       *
@@ -2810,20 +2830,17 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4101-NYUGAIKBN-SEC              SECTION.
       *
-           EVALUATE    SPA-GMN-NYUGAIKBN
-           WHEN    " "
-               MOVE    "1"         TO  SPA-GMN-NYUGAIKBN
-           WHEN    "1"
-               MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
-           WHEN    "2"
-               MOVE    " "         TO  SPA-GMN-NYUGAIKBN
-           WHEN    OTHER
-               MOVE    " "         TO  SPA-GMN-NYUGAIKBN
-           END-EVALUATE
-      *
            MOVE    SPA-GMN-NYUGAIKBN   TO  WRK-CMB-CD
            PERFORM 4200-NYUGAIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYUGAIKBN-G
+           COMPUTE WRK-CMB-IDX    =    WRK-CMB-IDX +   1
+           IF    ( WRK-CMB-IDX    >    SPA-GMN-NYUGAIKBN-MAX )
+               MOVE    SPACE       TO  SPA-GMN-NYUGAIKBN-G
+           ELSE
+               MOVE    SPA-GMN-NYUGAIKBNLST (WRK-CMB-IDX)
+                                   TO  SPA-GMN-NYUGAIKBN-G
+           END-IF
+      *
+           
       *
            .
        4101-NYUGAIKBN-EXT.
@@ -2933,6 +2950,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
                    MOVE    SPA-GMN-NYUGAIKBNLST (IDX-CMB)
                                    TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
       *
                END-IF
       *
@@ -3241,7 +3259,9 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            IF    ( SPA-ERRCD           =   SPACE )
                IF    ( SPA-GMN-BYOLST-MAX  <=  ZERO )
-                   MOVE    "0108"      TO  SPA-ERRCD
+                   IF    ( SPA-GMN-NYUGAIKBN   NOT =   "0" )
+                       MOVE    "0108"      TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -3339,6 +3359,32 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    "1001"                  TO  SPA-ERRCD
                END-IF
            END-PERFORM
+      *
+           IF    ( SPA-ERRCD           =    SPACE )
+               IF    ( SPA-GMN-NYUGAIKBN   =    "0" )
+                AND  ( SPA-GMN-BYOLST-MAX  =    ZERO )
+                   INITIALIZE                  CHKSND-REC
+                   MOVE    SPA-X01-CHKKBN      TO  CHKSND-CHKKBN
+                   MOVE    SPA-X01-SRYCD       TO  CHKSND-SRYCD
+                   MOVE    SPA-X01-STYUKYMD    TO  CHKSND-YUKOSTYMD
+                   MOVE    SPA-X01-EDYUKYMD    TO  CHKSND-YUKOEDYMD
+                   MOVE    "1"                 TO  CHKSND-CDKBN
+                   MOVE    1                   TO  CHKSND-RENNUM
+                   MOVE    SPA-GMN-NYUGAIKBN   TO  CHKSND-NYUGAIKBN
+                   PERFORM 800-MCNDATE-SEC
+                   MOVE    SMCNDATE-YMD        TO  CHKSND-CREYMD
+                                                   CHKSND-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  CHKSND-UPHMS
+                   MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+                   MOVE    CHKSND-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_chksnd"        TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC              NOT =   ZERO )
+                       MOVE    "1005"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
       *
            IF    ( SPA-ERRCD           =    SPACE )
                IF    ( SPA-X06-MAX         >    ZERO )
@@ -3972,6 +4018,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1004"
+           WHEN    "1005"
                MOVE    "更新ができませんでした"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
