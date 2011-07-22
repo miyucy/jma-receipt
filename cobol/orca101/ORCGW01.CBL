@@ -92,6 +92,8 @@
       *  04.04.00    NACL-太田    08/12/02  公費付加情報設定画面追加
       *  04.04.00    NACL-太田    08/12/04  公害医療機関情報設定画面追加
       *  04.04.00    NACL-太田    09/07/29  出産費用内訳明細情報
+      *  04.07.00    NACL-小豆沢  11/07/22  選択番号未入力のエンター押下で
+      *                                     最新分を選択状態とする
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -978,7 +980,9 @@
            MOVE    W01-SELNUM             TO  SPA-GMN-SELNUM
       *
       *    選択番号チェック
-           IF      SPA-GMN-SELNUM      =   ZERO
+      ***     IF      SPA-GMN-SELNUM      =   ZERO
+           IF     (SPA-GMN-SELNUM      =   ZERO)   AND
+                  (SPA-GMN-MAX         =   ZERO)
                MOVE    3                   TO  SPA-GMN-CUR 
                GO  TO  4101-SELNUM-CHK-EXT 
            ELSE
@@ -986,8 +990,13 @@
                AND     SPA-GMN-SELNUM      <=  SPA-GMN-MAX
                    CONTINUE 
                ELSE
-                   MOVE    "0001"                  TO  SPA-ERRCD
-                   GO  TO  4101-SELNUM-CHK-EXT 
+                   IF   (SPA-GMN-SELNUM   =    ZERO)  AND
+                        (SPA-GMN-MAX      NOT =   ZERO)
+                      MOVE    SPA-GMN-MAX  TO   SPA-GMN-SELNUM
+                   ELSE
+                      MOVE    "0001"                  TO  SPA-ERRCD
+                      GO  TO  4101-SELNUM-CHK-EXT 
+                   END-IF
                END-IF
            END-IF   
       *
