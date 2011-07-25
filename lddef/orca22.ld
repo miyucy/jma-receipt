@@ -19,6 +19,7 @@ bind	"CID2"		"OpenCOBOL"	"ORCGCID2";
 bind	"CID3"		"OpenCOBOL"	"ORCGCID3";
 bind	"CID4"		"OpenCOBOL"	"ORCGCID4";
 bind	"CID5"		"OpenCOBOL"	"ORCGCID5";
+bind	"CID6"		"OpenCOBOL"	"ORCGCID6";
 
 multiplex_group	orca22;
 
@@ -41,6 +42,7 @@ data	{
 		CID3;
 		CID4;
 		CID5;
+		CID6;
 	};
 };
 

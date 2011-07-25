@@ -21,6 +21,9 @@
       *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *
       *  04.06.01    NACL-藤原    10/11/05  補足コメント対応
+      *
+      *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
+      *                                     組み立てへの移行を可能にする
       *****************************************************************
       *
        01  SPA-C01KYOUTU.
@@ -53,6 +56,8 @@
       *検索自院病名コード（コード検索時のみ設定）
            05  SPA-C01-BYOMEIINPUTCD       PIC X(10). 
            05  SPA-C01-INDEX               PIC 9(01).            
+           05  SPA-C01-INDEX-ST            PIC 9(01).            
+           05  SPA-C01-INDEX-ED            PIC 9(01).            
       *検索元コード
            05  SPA-C01-WIDGET              PIC X(10). 
            05  SPA-C01-B10-FLG             PIC 9(01). 
@@ -76,6 +81,7 @@
                07  SPA-CIDCD3              PIC  X(04).
                07  SPA-CIDCD4              PIC  X(04).
                07  SPA-CIDCD5              PIC  X(04).
+               07  SPA-CIDCD6              PIC  X(04).
       *警告画面より
            05  SPA-CID1-AREA. 
                07  SPA-CID1-FLG            PIC  X(02).
@@ -83,4 +89,5 @@
                07  SPA-CID3-FLG            PIC  X(03).
                07  SPA-CID4-FLG            PIC  X(03).
                07  SPA-CID5-FLG            PIC  X(03).
+               07  SPA-CID6-FLG            PIC  X(03).
       *

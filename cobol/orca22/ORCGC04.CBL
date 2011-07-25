@@ -63,6 +63,9 @@
       *                                     登録された場合のチェックを追加
       *  04.06.02    NACL-藤原    10/10/26  同義語変換対応
       *  04.06.03    NACL-藤原    10/11/04  補足コメント対応
+      *
+      *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
+      *                                     組み立てへの移行を可能にする
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -116,6 +119,7 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDXX                PIC 9(04).
+           03  IDYY                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -210,6 +214,9 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
+      *    病名コード検索サブ
+           COPY    "CPORCSBYOMEI.INC".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -236,6 +243,7 @@
            COPY    "CID3.INC".
            COPY    "CID4.INC".
            COPY    "CID5.INC".
+           COPY    "CID6.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -365,7 +373,11 @@
                    END-PERFORM        
                END-IF
       *
-               MOVE    SPACE           TO  SPA-CIDCD2
+      *
+               INITIALIZE                  SPA-CIDCD-AREA
+                                           SPA-CID1-AREA
+               INITIALIZE                  SPA-C04-IKOSAKI-AREA
+                                           SPA-C04-CHANGE-AREA
                                            SPA-ERRCD
                                            WRK-HAISIYMDH
       *      
@@ -383,7 +395,14 @@
                ELSE
                    PERFORM 450-KAKUTEI-SEC
                END-IF
+               INITIALIZE                  SPA-C04-CHANGE-AREA
                GO      TO      300-SCREEN-EXT
+           END-IF
+      *
+      *    病名移行確認画面より
+           IF      SPA-MOTOPG(1:4)     =   "CID6"
+               PERFORM 370-CID6-SET-SEC
+               GO  TO  300-SCREEN-EXT
            END-IF
       *
            PERFORM 310-SPASET-SEC
@@ -868,6 +887,111 @@
            EXIT.
       *
       *****************************************************************
+      *     確認画面６からの戻り処理
+      *****************************************************************
+       370-CID6-SET-SEC            SECTION.
+      *
+           EVALUATE    SPA-CIDCD6
+               WHEN    "0104"
+               WHEN    "0106"
+      *            自院病名コードの移行
+               WHEN    "0109"
+      *            自院病名コード廃止処理
+               WHEN    "0108"
+      *            自院病名コード未コード化病名処理
+                   IF      SPA-CID6-FLG    =   "OK"
+                       MOVE    SPA-C04-IKOSAKI-INDEX
+                                               TO  IDZ
+                       MOVE    SPA-C04-IKOSAKI-INDEX1
+                                               TO  IDX2
+                       MOVE    SPA-C04-IKOSAKI-BYOMEICD
+                                               TO
+                                       SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
+                       MOVE     SPA-C04-IKOSAKI-BYOMEI TO
+                                       SPA-NAI-C04-BYOMEI-O   (IDZ IDX2)
+                       MOVE    SPA-NAI-C04-BYOMEI-O (IDZ 1)
+                                               TO
+                                           SPA-NAI-C04-BYOMEI (IDZ)
+                       PERFORM VARYING IDX2    FROM    2   BY  1
+                               UNTIL   IDX2    >       21
+                               OR      SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
+                                               =   SPACE
+                           STRING   SPA-NAI-C04-BYOMEI (IDZ)
+                                               DELIMITED  BY  SPACE
+                                    SPA-NAI-C04-BYOMEI-O (IDZ IDX2)
+                                               DELIMITED  BY  SPACE
+                                        INTO    SPA-NAI-C04-BYOMEI (IDZ)
+                           END-STRING
+                       END-PERFORM
+      *
+                       INITIALIZE              SPA-C04-CHANGE-INDEX-ST
+                                               SPA-C04-CHANGE-INDEX-ED
+                   END-IF
+                   IF      SPA-CID6-FLG    =   "CHG"
+                       PERFORM VARYING IDXX    FROM
+                                       SPA-C04-CHANGE-INDEX-ST   BY  1
+                               UNTIL   IDXX    >
+                                       SPA-C04-CHANGE-INDEX-ED
+                           INITIALIZE      SPA-NAI-C04-BYOMEI-G (IDXX)
+                       END-PERFORM
+                       MOVE    SPA-C04-CHANGE-INDEX-ST
+                                               TO  IDZ
+                       PERFORM VARYING IDXX    FROM   1   BY  1
+                               UNTIL   IDXX    >      SPA-C04-CHANGE-MAX
+                           MOVE    SPA-C04-CHANGE-BYOMEICD (IDXX)
+                                           TO 
+                                       SPA-NAI-C04-BYOMEICD-O(IDZ IDXX)
+                           MOVE    SPA-C04-CHANGE-BYOMEI   (IDXX)
+                                           TO 
+                                       SPA-NAI-C04-BYOMEI-O  (IDZ IDXX)
+                           MOVE    SPA-NAI-C04-BYOMEI-O (IDZ 1)
+                                               TO
+                                           SPA-NAI-C04-BYOMEI (IDZ)
+                           PERFORM VARYING IDX2    FROM    2   BY  1
+                                   UNTIL   IDX2    >       21
+                                   OR      SPA-NAI-C04-BYOMEICD-O
+                                                          (IDZ IDX2)
+                                               =   SPACE
+                               STRING   SPA-NAI-C04-BYOMEI (IDZ)
+                                               DELIMITED  BY  SPACE
+                                        SPA-NAI-C04-BYOMEI-O (IDZ IDX2)
+                                               DELIMITED  BY  SPACE
+                                        INTO    SPA-NAI-C04-BYOMEI (IDZ)
+                               END-STRING
+                           END-PERFORM        
+                      END-PERFORM
+                   END-IF
+                   IF      SPA-CID6-FLG    =   SPACE
+                       INITIALIZE              SPA-C04-CHANGE-INDEX-ST
+                                               SPA-C04-CHANGE-INDEX-ED
+                   END-IF         
+           END-EVALUATE
+      *     
+           INITIALIZE                  SPA-CIDCD-AREA
+                                       SPA-CID1-AREA
+           INITIALIZE                  SPA-C04-IKOSAKI-AREA
+      *      
+           IF      SPA-C01-INDEX   =   ZERO
+               PERFORM 410022-BYOMEI-HENSYU-SEC
+           ELSE
+               PERFORM 410023-BYOMEI-HENSYU-SEC
+           END-IF 
+      *
+           IF      SPA-C01-INDEX   =   ZERO
+               ADD     1                   TO  SPA-GMN-C04-CUR
+               IF      SPA-GMN-C04-CUR     >   8
+                   MOVE    2                   TO  SPA-GMN-C04-CUR
+               END-IF
+           ELSE
+               PERFORM 450-KAKUTEI-SEC
+           END-IF
+      *
+           INITIALIZE                  SPA-C04-CHANGE-AREA
+           .
+       370-CID6-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -1034,7 +1158,7 @@
       *
            MOVE    SPACE               TO  WRK-HAISIYMDH
       *
-           INITIALIZE                      SPA-NAI-C04-BYOMEI-G (IDZ)
+           INITIALIZE                      SPA-NAI-C04-BYOMEI-OCC (IDZ)
       *
            IF      SPA-GMN-C04-INPUTCD (IDZ)
                                    NOT =   SPACE
@@ -1368,6 +1492,8 @@
                                                SPA-C04-IKOSAKI-INDEX1                    
                                MOVE    "0104"          TO
                                                SPA-CIDCD2
+      *                        別のコードでの組み立てを検索
+                               PERFORM 500-BYOMEI-KENSAKU-SEC
                                GO  TO  4100211-HAISIYMD-CHECK-EXT
                            END-IF
                        ELSE        
@@ -1377,28 +1503,56 @@
                                MOVE    BYOMEI-REC      TO
                                                WRK-BYOMEI-REC
       *
-                               MOVE     SPA-NAI-C04-BYOMEICD-O(IDZ IDX1)
+                               INITIALIZE              SYNONYM-REC
+                                MOVE    SPA-NAI-C04-BYOMEI-O (IDZ IDX1)
+                                                   TO  SYNONYM-BYOMEI
+                               PERFORM 5001-SYNONYM-CHK-SEC
+                               IF      FLG-SYNONYM =   ZERO
+                                   MOVE    SPA-NAI-C04-BYOMEICD-O
+                                                           (IDZ IDX1)
                                                        TO
                                                SPA-C04-IKOMOTO-BYOMEICD
-                               MOVE    SPA-NAI-C04-BYOMEI-O   (IDZ IDX1)
+                                   MOVE    SPA-NAI-C04-BYOMEI-O
+                                                           (IDZ IDX1)
                                                        TO
                                                SPA-C04-IKOMOTO-BYOMEI
-                               MOVE    IDZ             TO
+                                   MOVE    IDZ         TO
                                                SPA-C04-IKOSAKI-INDEX
-                               MOVE    IDX1            TO
+                                   MOVE    IDX1        TO
                                                SPA-C04-IKOSAKI-INDEX1
-                               PERFORM 5001-SYNONYM-CHK-SEC
-                               IF      SPA-CIDCD2  NOT =   SPACE
+                                   MOVE    BYO-BYOMEICD
+                                                       TO
+                                               SPA-C04-IKOSAKI-BYOMEICD
+                                   MOVE    BYO-BYOMEI  TO
+                                               SPA-C04-IKOSAKI-BYOMEI
+                                   MOVE    "0106"      TO  SPA-CIDCD2
+      *                            別のコードでの組み立てを検索
+                                   PERFORM 500-BYOMEI-KENSAKU-SEC
                                    GO  TO  4100211-HAISIYMD-CHECK-EXT
-                               ELSE 
-                                   MOVE    WRK-BYO-HAISIYMD
-                                                           TO  WRK-SYMD
-                                   PERFORM 5002-HIZUKE-HEN-SEC
-                                   MOVE    LNK-DAY2-EDTYMD3
-                                                           TO
-                                                           WRK-HAISIYMDH
-                                   GO  TO  4100211-HAISIYMD-CHECK-EXT
+                               END-IF 
+                               MOVE    WRK-BYO-HAISIYMD
+                                                       TO  WRK-SYMD
+                               PERFORM 5002-HIZUKE-HEN-SEC
+                               MOVE    LNK-DAY2-EDTYMD3
+                                                       TO  WRK-HAISIYMDH
+                               IF      SPA-C02-1042-MSG3-DSPKBN
+                                                            =   "0"
+                                   MOVE    SPA-NAI-C04-BYOMEICD-O
+                                                           (IDZ IDX1)
+                                                       TO
+                                               SPA-C04-IKOMOTO-BYOMEICD
+                                   MOVE    SPA-NAI-C04-BYOMEI-O
+                                                           (IDZ IDX1)
+                                                       TO
+                                               SPA-C04-IKOMOTO-BYOMEI
+                                   MOVE    IDZ         TO
+                                               SPA-C04-IKOSAKI-INDEX
+                                   MOVE    IDX1        TO
+                                               SPA-C04-IKOSAKI-INDEX1
+      *                            別のコードでの組み立てを検索
+                                   PERFORM 500-BYOMEI-KENSAKU-SEC
                                END-IF
+                               GO  TO  4100211-HAISIYMD-CHECK-EXT
                            END-IF
                        END-IF
                    END-IF
@@ -1406,23 +1560,106 @@
                END-IF    
              END-PERFORM
            ELSE
+             MOVE    "0108"              TO  SPA-CIDCD2
              IF      SPA-NAI-C04-BYOMEICD-O (IDZ 1)
                                          =   WRK-CONS-BYOMEICD
                  MOVE    SPA-NAI-C04-BYOMEICD-O (IDZ 1)
-                                         TO    SPA-C04-IKOMOTO-BYOMEICD
+                                         TO  SPA-C04-IKOMOTO-BYOMEICD
                  MOVE    SPA-NAI-C04-BYOMEI-O   (IDZ 1)
-                                         TO    SPA-C04-IKOMOTO-BYOMEI
-                 MOVE    IDZ             TO    SPA-C04-IKOSAKI-INDEX                    
-                 MOVE    1               TO    SPA-C04-IKOSAKI-INDEX1
+                                         TO  SPA-C04-IKOMOTO-BYOMEI
+                 MOVE    IDZ             TO  SPA-C04-IKOSAKI-INDEX                    
+                 INITIALIZE                  SYNONYM-REC
+                 MOVE    SPA-NAI-C04-BYOMEI-O   (IDZ 1)
+                                         TO  SYNONYM-BYOMEI
                  PERFORM 5001-SYNONYM-CHK-SEC
-                 IF      SPA-CIDCD2  NOT =   SPACE                        
-                     GO  TO  4100211-HAISIYMD-CHECK-EXT
-                 END-IF 
+                 IF      FLG-SYNONYM     =   ZERO
+                     MOVE    1           TO  SPA-C04-IKOSAKI-INDEX1
+                     MOVE    BYO-BYOMEICD
+                                         TO  SPA-C04-IKOSAKI-BYOMEICD
+                     MOVE    BYO-BYOMEI  TO  SPA-C04-IKOSAKI-BYOMEI
+                     MOVE    "0106"      TO  SPA-CIDCD2
+                 END-IF
              END-IF
+      *      別のコードでの組み立てを検索
+             PERFORM 500-BYOMEI-KENSAKU-SEC
            END-IF
            .
         4100211-HAISIYMD-CHECK-EXT.
            EXIT.         
+      *
+      *****************************************************************
+      *    別のコードでの組み立てを検索処理
+      *****************************************************************
+       500-BYOMEI-KENSAKU-SEC      SECTION.
+      *
+           IF      SPA-C01-INDEX   =   ZERO           
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL   IDX3    >       6
+                   PERFORM 4101111-BYOMEITOP-HENSYU-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    SPACE               TO  ORCSBYOMEIAREA
+           INITIALIZE                      ORCSBYOMEIAREA
+           MOVE    "1"                 TO  LNK-BYO-SYORI
+           MOVE    SPACE               TO  WRK-BYOMEI
+           MOVE    ZERO                TO  IDYY
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       6
+               IF      SPA-NAI-C04-BYOMEITOP (IDY)
+                                           =   "1"
+                   IF      IDY                 >   IDZ
+                       COMPUTE SPA-C04-CHANGE-INDEX-ED
+                                          =    IDY     -   1
+                       MOVE    6                   TO  IDY
+                   ELSE
+                       MOVE    SPA-NAI-C04-BYOMEI (IDY)
+                                                   TO  WRK-BYOMEI
+                       MOVE    IDY                 TO
+                                               SPA-C04-CHANGE-INDEX-ST
+                   END-IF
+               ELSE
+                   MOVE    IDY                 TO
+                                               SPA-C04-CHANGE-INDEX-ED
+                   STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
+                           SPA-NAI-C04-BYOMEI(IDY) DELIMITED  BY  SPACE
+                                      INTO          WRK-BYOMEI
+                   END-STRING
+               END-IF    
+           END-PERFORM
+           MOVE    WRK-BYOMEI          TO  LNK-BYO-BYOMEI
+           COMPUTE SPA-C04-CHANGE-INDEX-MAX
+                   =   SPA-C04-CHANGE-INDEX-ED -
+                       SPA-C04-CHANGE-INDEX-ST +   1
+      *
+           CALL    "ORCSBYOMEI"        USING   ORCSBYOMEIAREA
+                                               SPA-AREA
+           IF    ( LNK-BYO-BYOMEIHENFLG    =   SPACE )
+           AND   ( LNK-BYO-IKOSAKICD       =   SPACE )
+           AND   ( LNK-BYO-HAISIYMD-ERR    =   ZERO  )
+               MOVE    LNK-BYO-BYOMEI-MAX  TO SPA-C04-CHANGE-MAX
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       LNK-BYO-BYOMEI-MAX
+                   MOVE    LNK-BYO-TBYOMEICD (IDY) TO
+                                           SPA-C04-CHANGE-BYOMEICD(IDY) 
+                   MOVE    LNK-BYO-TBYOMEI   (IDY) TO
+                                           SPA-C04-CHANGE-BYOMEI  (IDY) 
+               END-PERFORM
+      *
+               IF      WRK-HAISIYMDH   NOT =   SPACE
+                   MOVE    "0109"          TO  SPA-CIDCD6
+               ELSE
+                   MOVE    SPA-CIDCD2      TO  SPA-CIDCD6
+                   MOVE    SPACE           TO  SPA-CIDCD2
+               END-IF 
+           ELSE
+               IF      SPA-CIDCD2          =   "0108"
+                   MOVE    SPACE           TO  SPA-CIDCD2
+               END-IF
+           END-IF
+           .
+       500-BYOMEI-KENSAKU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    自院病名コードチェック処理
@@ -1491,12 +1728,12 @@
                    PERFORM VARYING IDX FROM    IDZ BY  1
                            UNTIL   IDX >       6
                        IF      IDX             =   6
-                           INITIALIZE  SPA-NAI-C04-BYOMEI-G (IDX)
+                           INITIALIZE  SPA-NAI-C04-BYOMEI-OCC (IDX)
                                        SPA-GMN-C04-INPUTCD  (IDX)
                        ELSE
                            COMPUTE IDW     =   IDX     +   1
-                           MOVE    SPA-NAI-C04-BYOMEI-G (IDW)
-                                   TO  SPA-NAI-C04-BYOMEI-G (IDX)
+                           MOVE    SPA-NAI-C04-BYOMEI-OCC (IDW)
+                                   TO  SPA-NAI-C04-BYOMEI-OCC (IDX)
                            MOVE    SPA-GMN-C04-INPUTCD   (IDW)
                                    TO  SPA-GMN-C04-INPUTCD  (IDX)
                        END-IF                     
@@ -1508,12 +1745,12 @@
                    PERFORM VARYING IDX FROM    6   BY  -1
                            UNTIL   IDX <       IDZ
                        IF      IDX             =   IDZ
-                           INITIALIZE  SPA-NAI-C04-BYOMEI-G(IDX)
+                           INITIALIZE  SPA-NAI-C04-BYOMEI-OCC(IDX)
                                        SPA-GMN-C04-INPUTCD (IDX)
                        ELSE
                            COMPUTE IDW     =   IDX     -   1
-                           MOVE    SPA-NAI-C04-BYOMEI-G (IDW)
-                                   TO  SPA-NAI-C04-BYOMEI-G(IDX)
+                           MOVE    SPA-NAI-C04-BYOMEI-OCC (IDW)
+                                   TO  SPA-NAI-C04-BYOMEI-OCC(IDX)
                            MOVE    SPA-GMN-C04-INPUTCD   (IDW)
                                    TO  SPA-GMN-C04-INPUTCD  (IDX)
                        END-IF                     
@@ -1523,7 +1760,7 @@
                    GO  TO  41003-INPUTCD-CHK-EXT
            END-EVALUATE                               
       *
-           INITIALIZE              SPA-NAI-C04-BYOMEI-G (IDZ)
+           INITIALIZE              SPA-NAI-C04-BYOMEI-OCC (IDZ)
       *
       *    半角チェック
            IF      C04-INPUTCD (IDZ)   =   SPACE
@@ -1545,7 +1782,8 @@
            MOVE    C04-INPUTCD (IDZ)   TO  SPA-GMN-C04-INPUTCD(IDZ)
       *
            PERFORM 410021-INPUTCD-HENSYU-SEC
-           IF      SPA-CIDCD2      NOT =   SPACE
+           IF    ( SPA-CIDCD2      NOT =   SPACE )
+           OR    ( SPA-CIDCD6      NOT =   SPACE )
                GO  TO  41003-INPUTCD-CHK-EXT
            END-IF     
       *
@@ -1648,9 +1886,6 @@
                                    END-IF
                                END-IF
                        END-EVALUATE
-      *??
-                 DISPLAY "WRK-SEIGYO=" WRK-SEIGYO "#"
-      *??
       *                追加のとき
                        IF      WRK-SEIGYO      =   "+"
                            IF      SPA-GMN-C04-HOSOKUCD (3)
@@ -1676,9 +1911,6 @@
                MOVE    "-"                     TO  WRK-SEIGYO
            END-IF
       *       
-      *??
-                 DISPLAY "WRK-SEIGYO=" WRK-SEIGYO "#"
-      *??
            EVALUATE    WRK-SEIGYO
                WHEN    "-"
                    PERFORM VARYING IDX FROM    IDZ BY  1
@@ -1717,9 +1949,6 @@
            END-EVALUATE                               
       *
            INITIALIZE              SPA-NAI-C04-HOSOKU-G (IDZ)
-      *??
-                 DISPLAY "C04-HOSOKUCD=" IDZ "#" C04-HOSOKUCD (IDZ) "#"
-      *??
       *
       *    半角チェック
            IF      C04-HOSOKUCD (IDZ)   =   SPACE
@@ -1813,7 +2042,8 @@
                PERFORM 410021-INPUTCD-HENSYU-SEC
            END-IF
       *
-           IF      SPA-CIDCD2      NOT =   SPACE
+           IF    ( SPA-CIDCD2      NOT =   SPACE )
+           OR    ( SPA-CIDCD6      NOT =   SPACE )
                GO  TO  410201-BYOMEI-SELECT-EXT
            END-IF
       *
@@ -2246,6 +2476,17 @@
                        MOVE    SPA-C01-INDEX   TO  IDX
                        MOVE    SPA-GMN-C04-INPUTCD  (IDX)
                                                TO  SPA-C01-BYOMEIINPUTCD
+                       IF      SPA-C04-CHANGE-INDEX-ST
+                                               >   ZERO
+                           MOVE    SPA-C04-CHANGE-INDEX-ST
+                                               TO  SPA-C01-INDEX-ST
+                           MOVE    SPA-C04-CHANGE-INDEX-ED
+                                               TO  SPA-C01-INDEX-ED
+                       ELSE
+                           MOVE    SPA-C01-INDEX
+                                               TO  SPA-C01-INDEX-ST
+                                                   SPA-C01-INDEX-ED 
+                       END-IF
                    WHEN    "HOSOKUCD"
                        MOVE    SPA-C01-INDEX   TO  IDX
                        MOVE    SPA-GMN-C04-HOSOKUCD (IDX)
@@ -2267,14 +2508,9 @@
       *
            IF      SPA-C02-1042-MSG2-DSPKBN
                                        =   "1"
-               INITIALIZE                  SPA-C04-IKOSAKI-AREA
-               MOVE    SPACE           TO  SPA-CIDCD2
                GO  TO  5001-SYNONYM-CHK-EXT
            END-IF
       * 
-           INITIALIZE                  SYNONYM-REC
-           MOVE    SPA-C04-IKOMOTO-BYOMEI
-                                   TO  SYNONYM-BYOMEI
            PERFORM 900-SYNONYM-READ-SEC
            IF      FLG-SYNONYM     =   ZERO
       *        同義語マスタから病名検索
@@ -2297,9 +2533,6 @@
                MOVE    BYO-BYOMEICD    TO  SPA-C04-IKOSAKI-BYOMEICD
                MOVE    BYO-BYOMEI      TO  SPA-C04-IKOSAKI-BYOMEI
                MOVE    "0106"          TO  SPA-CIDCD2
-           ELSE
-               INITIALIZE                  SPA-C04-IKOSAKI-AREA
-               MOVE    SPACE           TO  SPA-CIDCD2
            END-IF
       *
            .
@@ -2347,6 +2580,11 @@
       *
            IF      SPA-CIDCD2      NOT =   SPACE
                PERFORM 530-CIDSET2-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+       *
+           IF      SPA-CIDCD6      NOT =   SPACE
+               PERFORM 560-CIDSET6-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
@@ -2671,6 +2909,110 @@
            .
        530-CIDSET2-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    病名移行確認画面表示処理
+      *****************************************************************
+       560-CIDSET6-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SPA-CID6-FLG
+                                           WRK-CIDMSG
+      *
+           EVALUATE    SPA-CIDCD6
+               WHEN    "0104"
+                   STRING  "入力された自院病名の病名は移行病名の扱い"
+                                       DELIMITED  BY  SIZE
+                  "となっていますが、別のコードでの組み立てが可能です"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-CIDMSG
+                   END-STRING
+               WHEN    "0106"
+                   STRING  "入力された自院病名の病名は「傷病名コードの"
+                                       DELIMITED  BY  SIZE
+                   "統一の推進」による推奨病名がありますが、別のコード"
+                                       DELIMITED  BY  SIZE
+                   "での組み立てが可能です"      DELIMITED  BY  SIZE
+                                       INTO    WRK-CIDMSG
+                   END-STRING
+               WHEN    "0109"
+                   STRING
+                       "入力された自院病名の病名は"
+                                               DELIMITED   BY  SIZE 
+                       WRK-HAISIYMDH           DELIMITED   BY  SIZE 
+                       "で廃止の扱いとなっていますが、"
+                                               DELIMITED   BY  SIZE 
+                       "別のコードでの組み立てが可能です"
+                                               DELIMITED   BY  SIZE 
+                                       INTO    WRK-CIDMSG
+                   END-STRING
+               WHEN    "0108"
+                   STRING
+                       "入力された自院病名の病名は"
+                                               DELIMITED   BY  SIZE 
+                       "別のコードでの組み立てが可能です"
+                                               DELIMITED   BY  SIZE 
+                                       INTO    WRK-CIDMSG
+                   END-STRING
+           END-EVALUATE
+           MOVE    SPACE               TO  WRK-HAISIYMDH
+      *
+           MOVE    SPACE               TO  CID6
+           MOVE    WRK-CIDMSG          TO  CID6-MSG
+           MOVE    SPA-C04-IKOMOTO-BYOMEICD
+                                       TO  CID6-BYOMEICD1
+           MOVE    SPA-C04-IKOMOTO-BYOMEI  
+                                       TO  CID6-BYOMEI1
+           EVALUATE    SPA-CIDCD6
+               WHEN    "0108"
+               WHEN    "0109"
+                   MOVE    WIDGET-INSENSITIVE  TO  CID6-B10-STATE
+                   MOVE    "病名コードを置き換えますか"
+                                               TO  CID6-MSG1 
+               WHEN    OTHER
+                   MOVE    SPA-C04-IKOSAKI-BYOMEICD
+                                               TO  CID6-BYOMEICD2
+                   MOVE    SPA-C04-IKOSAKI-BYOMEI
+                                               TO  CID6-BYOMEI2
+                   MOVE    WIDGET-NORMAL       TO  CID6-B10-STATE
+                   MOVE
+            "推奨する病名に置き換えますか、病名コードを置き換えますか"
+                                               TO  CID6-MSG1 
+           END-EVALUATE
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+           MOVE    WIDGET-NORMAL       TO  CID6-B12-STATE
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL       IDX     >   6
+               MOVE    SPA-C04-CHANGE-BYOMEICD (IDX)
+                                       TO  CID6-BYOMEICD (IDX)
+           END-PERFORM
+           MOVE    SPA-C04-CHANGE-BYOMEI (1)
+                                       TO  WRK-BYOMEI
+           PERFORM VARYING IDX FROM    2   BY  1
+                   UNTIL   IDX >       SPA-C04-CHANGE-MAX
+               STRING  WRK-BYOMEI                  DELIMITED   BY  SPACE
+                       "　"                        DELIMITED   BY  SIZE
+                       SPA-C04-CHANGE-BYOMEI (IDX) DELIMITED   BY  SPACE
+                                       INTO    WRK-BYOMEI
+               END-STRING
+           END-PERFORM
+           MOVE    WRK-BYOMEI          TO  CID6-BYOMEI10
+      *
+           MOVE    "C04"               TO  SPA-MOTOPG
+           MOVE    "CID6"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "CID6"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       560-CIDSET6-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    自院病名マスター読込（主キー）

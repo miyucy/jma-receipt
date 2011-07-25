@@ -16,16 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGCID5.
+       PROGRAM-ID.                 ORCGCID6.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 病名登録
-      *  コンポーネント名  : 確認画面（ＣＩＤ５）
+      *  コンポーネント名  : 病名移行確認画面（ＣＩＤ６）
       *  管理者            : 
-      *  06/08/07     NACL-森脇    新規作成
+      *  11/06/21    NACL−藤原   新規作成
       *****************************************************************
       *  プログラム修正履歴
-      *  Maj/Min/Rev  修正者       日付      内容
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,8 +34,6 @@
        FILE-CONTROL.
       *
        DATA                        DIVISION.
-      *FILE                        SECTION.
-      *
       *
        WORKING-STORAGE             SECTION.
       *
@@ -50,24 +48,19 @@
            03  FLG-END             PIC 9(01).
       *
       *****************************************************************
-      *    ファイルレイアウト
-      *****************************************************************
-      *
-      *****************************************************************
-      *    サブプロ用　領域
+      *    サブプロ用領域
       *****************************************************************
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    連絡　領域
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    MCPAREA.
            COPY    "ORCA-SPA".
-      *
            COPY    "LINKAREA".
       *
        01  SCRAREA.
@@ -95,7 +88,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -106,7 +99,7 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"         ALSO    "CLICKED"
+               WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
@@ -117,7 +110,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    初期　処理
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -128,20 +121,20 @@
       *****************************************************************
       *    画面遷移処理
       *****************************************************************
-       200-GMNSENI                 SECTION.
+       200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        戻る
+      *        ＮＯ
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE       TO  SPA-CID5-FLG
+                   MOVE    SPACE           TO  SPA-CID6-FLG
                    PERFORM 210-BACK
-      *        ＣＳＶ出力
-               WHEN    "CLICKED"       ALSO    "B11"
-                   MOVE    "CSV"       TO  SPA-CID5-FLG
+      *        病名置き換え
+               WHEN    "CLICKED"       ALSO    "B10"
+                   MOVE    "OK"            TO  SPA-CID6-FLG
                    PERFORM 210-BACK
-      *        プリンタ出力
+      *        コード置き換え
                WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"        TO  SPA-CID5-FLG
+                   MOVE    "CHG"           TO  SPA-CID6-FLG
                    PERFORM 210-BACK
            END-EVALUATE
       *
@@ -149,34 +142,34 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    戻る　処理
+      *    戻る処理
       *****************************************************************
        210-BACK                    SECTION.
       * 
-           MOVE    SPA-MOTOPG      TO  SPA-SAKIPG
-           MOVE    "CID5"          TO  SPA-MOTOPG
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "CID6"              TO  SPA-MOTOPG
       *
-           MOVE    "JOIN"          TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG      TO  MCP-WINDOW
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1               TO  FLG-END
+           MOVE    1                   TO  FLG-END
       *
            .
        210-BACK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＰＵＴ　処理
+      *    ＰＵＴ処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"      TO  MCP-FUNC
-           CALL   "ORCDBMAIN"      USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
+           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           CALL   "ORCDBMAIN"       USING
+                                        MCPAREA
+                                        MCPDATA-REC
+                                        SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

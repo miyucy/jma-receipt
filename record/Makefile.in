@@ -439,6 +439,7 @@ RECORD_files = \
 	patientlst3.rec \
 	P02H.rec \
 	system01lst.rec \
+	CID6.rec \
 	
 
 DEF_files = \

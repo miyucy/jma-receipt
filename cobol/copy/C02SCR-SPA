@@ -101,6 +101,9 @@
       *  04.06.05    NACL-藤原    10/10/20  難病外来指導管理料対応
       *  04.06.06    NACL-藤原    10/10/26  同義語変換対応
       *  04.06.07    NACL-藤原    10/11/04  補足コメント対応
+      *
+      *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
+      *                                     組み立てへの移行を可能にする
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -341,9 +344,11 @@
                                                            PIC X(10).
                                    15  SPA-NAI-C02-USERBYOMEIFLG
                                                            PIC X(01).
-                                   15  SPA-NAI-C02-BYOMEI-G.
-                                       17  SPA-NAI-C02-BYOMEITOP
+                                   15  SPA-NAI-C02-BYOMEITOP
                                                            PIC X(01).
+                                   15  SPA-NAI-C02-BYOMEISBT
+                                                           PIC X(01).
+                                   15  SPA-NAI-C02-BYOMEI-G.
                                        17  SPA-NAI-C02-BYOMEI  
                                                            PIC X(80).
                                        17  SPA-NAI-C02-CHARTBYOMEI  
@@ -359,8 +364,6 @@
                                        17  SPA-NAI-C02-US-BYOMEIHENFLG
                                                            PIC X(01).
                                        17  SPA-NAI-C02-US-HKNBYOMEIFLG
-                                                           PIC X(01).
-                                       17  SPA-NAI-C02-BYOMEISBT
                                                            PIC X(01).
                                        17  SPA-NAI-C02-HAISIYMD
                                                            PIC 9(08).
@@ -452,16 +455,37 @@
       *            更新フラグ
                        09  SPA-C02-UPDFLG          PIC X(01).
       *            病名コード移行用領域
-                       09  SPA-C02-IKOSAKI-BYOMEICD
-                                                   PIC X(07).
-                       09  SPA-C02-IKOSAKI-BYOMEI  PIC X(200).
-                       09  SPA-C02-IKOSAKI-INDEX   PIC 9(02).  
-                       09  SPA-C02-IKOSAKI-INDEX1  PIC 9(02).  
-                       09  SPA-C02-IKOMOTO-BYOMEICD
-                                                   PIC X(07).
-                       09  SPA-C02-IKOMOTO-BYOMEI  PIC X(200).
-      *            病名コード移行用領域
                        09  SPA-C02-IKOFLG          PIC X(01).
+      *            病名コード移行用領域
+                       09  SPA-C02-IKOSAKI-AREA.
+                           11  SPA-C02-IKOSAKI-BYOMEICD
+                                                       PIC X(07).
+                           11  SPA-C02-IKOSAKI-BYOMEI  PIC X(200).
+                           11  SPA-C02-IKOSAKI-INDEX   PIC 9(02).  
+                           11  SPA-C02-IKOSAKI-INDEX1  PIC 9(02).  
+                           11  SPA-C02-IKOMOTO-BYOMEICD
+                                                       PIC X(07).
+                           11  SPA-C02-IKOMOTO-BYOMEI  PIC X(200).
+      *
+      *            病名コード廃止表示用領域
+                       09  SPA-C02-HAISI-AREA.
+                           11  SPA-C02-HAISI-BYOMEI    PIC X(200).
+                           11  SPA-C02-HAISI-INDEX     PIC 9(02).  
+      *
+      *            病名コードエラー表示用領域
+                       09  SPA-C02-ERR-INDEX           PIC 9(02).
+      *
+      *            病名コード置き換え用領域
+                       09  SPA-C02-CHANGE-AREA. 
+                           11  SPA-C02-CHANGE-INDEX-ST PIC 9(02).  
+                           11  SPA-C02-CHANGE-INDEX-ED PIC 9(02).  
+                           11  SPA-C02-CHANGE-INDEX-MAX
+                                                       PIC 9(02).  
+                           11  SPA-C02-CHANGE-MAX      PIC 9(02).
+                           11  SPA-C02-CHANGE-BYOMEICD PIC X(07)
+                                                       OCCURS  21.  
+                           11  SPA-C02-CHANGE-BYOMEI   PIC X(200)
+                                                       OCCURS  21.  
                05  SPA-C02-MOTOPG             PIC X(08).
       *
       *              
@@ -585,13 +609,14 @@
                                                        PIC X(02).
                                        17  SPA-NAI-C03-BYOMEICD-ERRCD
                                                        PIC X(04).
-                                       17  SPA-NAI-C03-IKOSAKI-BYOMEICD
+                                       17  SPA-NAI-C03-HAISI.
+                                         19 SPA-NAI-C03-IKOSAKI-BYOMEICD
                                                        PIC X(07).
-                                       17  SPA-NAI-C03-IKOSAKI-BYOMEI
+                                         19  SPA-NAI-C03-IKOSAKI-BYOMEI
                                                        PIC X(200).
-                                       17  SPA-NAI-C03-IKOSAKI-ERRCD
+                                         19  SPA-NAI-C03-IKOSAKI-ERRCD
                                                        PIC X(04).
-                                       17  SPA-NAI-C03-HAISIYMD
+                                         19  SPA-NAI-C03-HAISIYMD
                                                        PIC X(22).
                            11  SPA-NAI-C03-UPDFLG      PIC 9(01). 
                            11  SPA-NAI-C03-MANSEIKBN   PIC 9(02).
@@ -620,6 +645,14 @@
       *
       *                病名コードエラー表示用領域
                        09  SPA-C03-ERR-INDEX           PIC 9(02).
+      *
+      *                病名コード置き換え用領域
+                       09  SPA-C03-CHANGE-AREA.
+                           11  SPA-C03-CHANGE-MAX      PIC 9(02).
+                           11  SPA-C03-CHANGE-BYOMEICD PIC X(07)
+                                                       OCCURS  21.  
+                           11  SPA-C03-CHANGE-BYOMEI   PIC X(200)
+                                                       OCCURS  21.  
       *
       *    自院病名検索画面
            03  SPA-C04.
@@ -661,13 +694,16 @@
       *
                05  SPA-NAIB-C04-AREA.
                    07  SPA-NAI-C04-BUNRUICD-IDX    PIC 9(05).
-                   07  SPA-NAI-C04-BYOMEI-G    OCCURS  6.
-                       09  SPA-NAI-C04-BYOMEI      PIC X(80).
+                   07  SPA-NAI-C04-BYOMEI-OCC  OCCURS  6.
                        09  SPA-NAI-C04-BYOMEITOP   PIC X(01).
                        09  SPA-NAI-C04-BYOMEISBT   PIC X(01).
-                       09  SPA-NAI-C04-BYOMEICD-O  PIC X(07)
+                       09  SPA-NAI-C04-BYOMEI-G.
+                           11  SPA-NAI-C04-BYOMEI  PIC X(80).
+                           11  SPA-NAI-C04-BYOMEICD-O
+                                                   PIC X(07)
                                                        OCCURS  21.
-                       09  SPA-NAI-C04-BYOMEI-O    PIC X(80)
+                           11  SPA-NAI-C04-BYOMEI-O
+                                                   PIC X(80)
                                                        OCCURS  21.
                    07  SPA-NAI-C04-HOSOKU-G    OCCURS  3.
                        09  SPA-NAI-C04-HOSOKU-COMMENT
@@ -688,6 +724,18 @@
                        09  SPA-C04-IKOMOTO-BYOMEICD
                                                    PIC X(07).
                        09  SPA-C04-IKOMOTO-BYOMEI  PIC X(200).
+      *
+      *            病名コード置き換え用領域
+                   07  SPA-C04-CHANGE-AREA. 
+                       09  SPA-C04-CHANGE-INDEX-ST PIC 9(02).  
+                       09  SPA-C04-CHANGE-INDEX-ED PIC 9(02).  
+                       09  SPA-C04-CHANGE-INDEX-MAX
+                                                   PIC 9(02).  
+                       09  SPA-C04-CHANGE-MAX      PIC 9(02).
+                       09  SPA-C04-CHANGE-BYOMEICD PIC X(07)
+                                                   OCCURS  21.  
+                       09  SPA-C04-CHANGE-BYOMEI   PIC X(200)
+                                                   OCCURS  21.  
       *            検索対象
                    07  SPA-NAI-C04-B10-WIDGET      PIC X(10).
       *            病名コード移行用領域
@@ -733,13 +781,20 @@
                                13  SPA-NAI-C05-TIKOSAKICD  PIC X(07).
                        09  SPA-NAI-C05-BYOKEN              PIC X(40).
       *                病名コード移行用領域
-                       09  SPA-C05-IKOSAKI-BYOMEICD
-                                                       PIC X(07).
-                       09  SPA-C05-IKOSAKI-BYOMEI      PIC X(200).
-                       09  SPA-C05-IKOSAKI-INDEX       PIC 9(02).  
-                       09  SPA-C05-IKOMOTO-BYOMEICD
-                                                       PIC X(07).
-                       09  SPA-C05-IKOMOTO-BYOMEI      PIC X(200).
+                       09  SPA-C05-IKOSAKI-AREA.
+                           11  SPA-C05-IKOSAKI-BYOMEICD    PIC X(07).
+                           11  SPA-C05-IKOSAKI-BYOMEI      PIC X(200).
+                           11  SPA-C05-IKOSAKI-INDEX       PIC 9(02).  
+                           11  SPA-C05-IKOMOTO-BYOMEICD   PIC X(07).
+                           11  SPA-C05-IKOMOTO-BYOMEI      PIC X(200).
+      *
+      *                病名コード置き換え用領域
+                       09  SPA-C05-CHANGE-AREA.
+                           11  SPA-C05-CHANGE-MAX      PIC 9(02).
+                           11  SPA-C05-CHANGE-BYOMEICD PIC X(07)
+                                                       OCCURS  21.  
+                           11  SPA-C05-CHANGE-BYOMEI   PIC X(200)
+                                                       OCCURS  21.  
       *
                    07  SPA-NAI-C05-SELNO1              PIC 9(04).                             
                    07  SPA-NAI-C05-SELNO2              PIC 9(02).                             

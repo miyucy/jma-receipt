@@ -1,0 +1,52 @@
+CID6	{
+	fixed1	{
+		B10     {
+			state   int;
+		};
+		B12     {
+			state   int;
+		};
+		BYOMEICD1	{
+			value	varchar(10);
+		};
+		BYOMEI1	{
+			value	varchar(70);
+		};
+		BYOMEICD2	{
+			value	varchar(10);
+		};
+		BYOMEI2	{
+			value	varchar(70);
+		};
+		MSG	{
+			value	varchar(120);
+		};
+		BYOMEICD10	{
+			value	varchar(7);
+		};
+		BYOMEICD11	{
+			value	varchar(7);
+		};
+		BYOMEICD12	{
+			value	varchar(7);
+		};
+		BYOMEICD13	{
+			value	varchar(7);
+		};
+		BYOMEICD14	{
+			value	varchar(7);
+		};
+		BYOMEICD15	{
+			value	varchar(7);
+		};
+		BYOMEI10	{
+			value	varchar(90);
+		};
+		MSG1	{
+			value	varchar(80);
+		};
+		MSG2	{
+			value	varchar(120);
+		};
+	};
+};

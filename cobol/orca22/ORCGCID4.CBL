@@ -89,6 +89,7 @@
            COPY    "CID3.INC".
            COPY    "CID4.INC".
            COPY    "CID5.INC".
+           COPY    "CID6.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
