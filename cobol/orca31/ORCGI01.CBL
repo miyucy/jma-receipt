@@ -149,6 +149,8 @@
       *                                     カウント変更
       *  04.03.00    NACL-小豆沢  08/07/08  褥瘡患者管理加算対応
       *  04.03.00    NACL-小豆沢  08/08/11  特定入院料コード取得をサブプロに変更
+      *  04.07.00    NACL-小豆沢  11.07.25  救急・在宅等支援療養病床初期
+      *                                     加算のシステム管理設定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5598,8 +5600,27 @@
                IF    ( WRK-CMB-ITM     =   SPACE )
                    MOVE    "1"         TO  WRK-CMB-CD
       *
+      *            有床診療所一般病床初期加算
                    IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190135470"
                        IF    SYS-5000-IPPANKSNKBN   =   SPACE  OR  "0"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       ELSE
+                           MOVE   "2"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
+      *
+      *            救急・在宅等支援療養病床初期加算（病院）
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190134270"
+                       IF    SYS-5000-KYUKYUKSNKBN   =   SPACE  OR  "0"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       ELSE
+                           MOVE   "2"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
+      *
+      *            救急・在宅等支援療養病床初期加算（診療所）
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190135670"
+                       IF    SYS-5000-KYUKYUKSNKBN   =   SPACE  OR  "0"
                            MOVE   "1"         TO  WRK-CMB-CD
                        ELSE
                            MOVE   "2"         TO  WRK-CMB-CD

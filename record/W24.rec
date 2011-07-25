@@ -218,6 +218,7 @@ W24	{
 			};
 		};
 		frame4	{
+			label	varchar(20);
 			fixed10	{
 				SRYCD01	{
 					value	varchar(9);
@@ -450,6 +451,15 @@ W24	{
 		};
 		CMB_IPPANKSN	{
 			IPPANKSN	{
+				value	varchar(20);
+				state	int;
+			};
+			count	int;
+			item	varchar(20)[05];
+			state	int;
+		};
+		CMB_KYUKYUKSN	{
+			KYUKYUKSN	{
 				value	varchar(20);
 				state	int;
 			};

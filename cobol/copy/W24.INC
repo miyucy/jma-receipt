@@ -75,6 +75,7 @@
                     07  W24-CHIIKIKSN-ITM      PIC X(28)
                                                OCCURS  6.
               04  W24-FRAME4.
+                05  W24-FRAME4-LABEL           PIC X(20).
                 05  W24-FIXED10.
                   06  W24-SRYCD                PIC X(09)
                                                OCCURS 10.
@@ -228,5 +229,15 @@
                 05  W24-IPPANKSN-ITM           PIC X(20)
                                                OCCURS  5.
                 05  W24-IPPANKSN-ITM-STATE     PIC S9(9)
+                                               BINARY.
+              04  W24-CMB-KYUKYUKSN.
+                05  W24-KYUKYUKSN              PIC X(20).
+                05  W24-KYUKYUKSN-STATE        PIC S9(9)
+                                               BINARY.
+                05  W24-KYUKYUKSN-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-KYUKYUKSN-ITM          PIC X(20)
+                                               OCCURS  5.
+                05  W24-KYUKYUKSN-ITM-STATE    PIC S9(9)
                                                BINARY.
 

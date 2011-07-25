@@ -53,6 +53,8 @@
       *  04.04.00    NACL-ÂÀÅÄ    09.07.13  ÀÁµá½ñÈ¯¹ÔÊýË¡ÄÉ²Ã
       *  04.05.00    NACL-ÂÀÅÄ    09.07.23  ¿©»ö½é´üÃÍÀßÄêÄÉ²Ã
       *  04.05.00    NACL-ÂÀÅÄ    10.03.01  ²þÀµÂÐ±þ
+      *  04.07.00    NACL-¾®Æ¦Âô  11.07.25  µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü
+      *                                     ²Ã»»¤ÎÀßÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -697,6 +699,9 @@
       *
       *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-IPPANKSNLST-SET-SEC
+      *
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü
+           PERFORM 310-KYUKYUKSNLST-SET-SEC
       *!!
       *    Âà±¡»þ±¡³°½èÊý¤»¤óÈ¯¹Ô¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-SHOHOUKBNLST-SET-SEC
@@ -1225,6 +1230,25 @@
        310-IPPANKSNLST-SET-EXT.
            EXIT.
       *****************************************************************
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü
+      *****************************************************************
+       310-KYUKYUKSNLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-KYUKYUKSN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-KYUKYUKSNL    (1)
+           MOVE    "½é´ü»»Äê¤·¤Ê¤¤"
+                                   TO  SPA-GMN-W24-KYUKYUKSNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-KYUKYUKSNL    (2)
+           MOVE    "½é´ü»»Äê¤¹¤ë"
+                                   TO  SPA-GMN-W24-KYUKYUKSNMEIL (2)
+      *
+      *
+           .
+       310-KYUKYUKSNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1389,6 +1413,16 @@
            ELSE
                MOVE    SPA-GMN-W24-IPPANKSNLST (1)
                                        TO  SPA-GMN-W24-IPPANKSN-G
+           END-IF
+      *
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    SYS-5000-KYUKYUKSNKBN  TO  WRK-CMB-CD
+           PERFORM 4200-KYUKYUKSNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-KYUKYUKSN-G
+           ELSE
+               MOVE    SPA-GMN-W24-KYUKYUKSNLST (1)
+                                       TO  SPA-GMN-W24-KYUKYUKSN-G
            END-IF
       *
       *    Æþ±¡ÎÁ²Ã»»¾ðÊó
@@ -1939,6 +1973,9 @@
       *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
            MOVE    W24-IPPANKSN        TO  SPA-GMN-W24-IPPANKSN-G
       *
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    W24-KYUKYUKSN       TO  SPA-GMN-W24-KYUKYUKSN-G
+      *
       *    Âà±¡»þ±¡³°½èÊý¤»¤ó¶èÊ¬
            MOVE    W24-SHOHOUKBN       TO  SPA-GMN-W24-SHOHOUKBN-G
       *
@@ -2155,6 +2192,12 @@
       *
       *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4100-IPPANKSN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4100-KYUKYUKSN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2619,6 +2662,10 @@
       *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
            MOVE    SPA-GMN-W24-IPPANKSN
                                    TO  SYS-5000-IPPANKSNKBN
+      *
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    SPA-GMN-W24-KYUKYUKSN
+                                   TO  SYS-5000-KYUKYUKSNKBN
       *
       *    ¸º»»¾ðÊó
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -3471,6 +3518,25 @@
        4100-IPPANKSN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4100-KYUKYUKSN-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-GMN-W24-KYUKYUKSN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-KYUKYUKSNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-KYUKYUKSNLST (1)
+                                       TO  SPA-GMN-W24-KYUKYUKSN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-KYUKYUKSN-G
+           END-IF
+      *
+           .
+      *
+       4100-KYUKYUKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Æþ±¡»þ¿©»öÎÅÍÜ¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -4084,6 +4150,29 @@
        4200-IPPANKSNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-KYUKYUKSNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W24-KYUKYUKSN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-KYUKYUKSNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-KYUKYUKSNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-KYUKYUKSNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆþÎÏ¾ðÊóÎÎ°è½é´ü²½½èÍý
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -4197,6 +4286,8 @@
                                    TO  SPA-GMN-W24-RYOYODSP-G
            MOVE    SPA-GMN-W24-IPPANKSNLST (1)
                                    TO  SPA-GMN-W24-IPPANKSN-G
+           MOVE    SPA-GMN-W24-KYUKYUKSNLST (1)
+                                   TO  SPA-GMN-W24-KYUKYUKSN-G
       *
            MOVE    SPA-GMN-W24-SHOHOUKBNLST    (1)
                                    TO  SPA-GMN-W24-SHOHOUKBN-G
@@ -4861,7 +4952,7 @@
       *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
            MOVE    SPA-GMN-W24-IPPANKSN-G
                                        TO  W24-IPPANKSN
-           MOVE    SPA-GMN-W24-RYOYODSP-MAX
+           MOVE    SPA-GMN-W24-IPPANKSN-MAX
                                        TO  W24-IPPANKSN-CNT
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -4870,6 +4961,21 @@
       *
                MOVE    SPA-GMN-W24-IPPANKSNLST (IDX0)
                                        TO  W24-IPPANKSN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
+      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬
+           MOVE    SPA-GMN-W24-KYUKYUKSN-G
+                                       TO  W24-KYUKYUKSN
+           MOVE    SPA-GMN-W24-KYUKYUKSN-MAX
+                                       TO  W24-KYUKYUKSN-CNT
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   W24-KYUKYUKSN-CNT )
+      *
+      *
+               MOVE    SPA-GMN-W24-KYUKYUKSNLST (IDX0)
+                                       TO  W24-KYUKYUKSN-ITM (IDX0)
       *
            END-PERFORM
       *
@@ -4890,6 +4996,8 @@
            ELSE
                MOVE    "Æþ±¡²Ã»»¡¦¸º»»¾ðÊó"    TO  W24-FRAME3-LABEL
            END-IF
+      *
+           MOVE    "Æþ±¡²ñ·×É½¼¨¾ðÊó"          TO  W24-FRAME4-LABEL
       *
       *    ¹àÌÜ¾õÂÖÊÔ½¸
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -5085,6 +5193,8 @@
                MOVE    "RYOYODSP"      TO MCP-WIDGET
            WHEN    063
                MOVE    "IPPANKSN"      TO MCP-WIDGET
+           WHEN    064
+               MOVE    "KYUKYUKSN"     TO MCP-WIDGET
       *    Âà±¡»þ±¡³°½èÊý¤»¤ó
            WHEN    060
                MOVE    "SHOHOUKBN"     TO MCP-WIDGET
@@ -5230,6 +5340,8 @@
            WHEN    "RYOYODSP"
                MOVE    063             TO  SPA-GMN-W24-CUR
            WHEN    "IPPANKSN"
+               MOVE    064             TO  SPA-GMN-W24-CUR
+           WHEN    "KYUKYUKSN"
                MOVE    008             TO  SPA-GMN-W24-CUR
            END-EVALUATE
       *
