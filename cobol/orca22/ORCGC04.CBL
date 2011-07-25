@@ -2582,7 +2582,7 @@
                PERFORM 530-CIDSET2-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
-       *
+      *
            IF      SPA-CIDCD6      NOT =   SPACE
                PERFORM 560-CIDSET6-SEC
                GO      TO      500-SET-SCREEN-EXT

@@ -1217,7 +1217,7 @@
                    END-IF
                END-IF
            END-IF
-       *
+      *
            IF    ( SPA-CIDCD2          =   SPACE )
            AND   ( SPA-CIDCD6          =   SPACE ) 
            AND   ( SPA-ERRCD           =   SPACE ) 
