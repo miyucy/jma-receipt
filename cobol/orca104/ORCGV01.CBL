@@ -653,7 +653,9 @@
            MOVE    V01-SELNUM             TO  SPA-GMN-SELNUM
       *
       *    選択番号チェック
-           IF      SPA-GMN-SELNUM      =   ZERO
+      ***     IF      SPA-GMN-SELNUM      =   ZERO
+           IF     (SPA-GMN-SELNUM      =   ZERO)   AND
+                  (SPA-GMN-MAX         =   ZERO)
                IF      SPA-GMN-HKNNUM  =   "027"
                    MOVE    6                   TO  SPA-GMN-CUR
                ELSE
@@ -667,8 +669,13 @@
                    CONTINUE
                       
                ELSE
-                   MOVE    "0001"                  TO  SPA-ERRCD
-                   GO  TO  4101-SELNUM-CHK-EXT 
+                   IF   (SPA-GMN-SELNUM   =    ZERO)  AND
+                        (SPA-GMN-MAX      NOT =   ZERO)
+                      MOVE    SPA-GMN-MAX  TO   SPA-GMN-SELNUM
+                   ELSE
+                      MOVE    "0001"                  TO  SPA-ERRCD
+                      GO  TO  4101-SELNUM-CHK-EXT 
+                   END-IF
                END-IF
            END-IF
       *
