@@ -136,6 +136,8 @@
       *                                     自費入院分の記載設定を追加
       *  04.07.02    NACL-藤原    11/06/08  レセ電作成設定時の広域連合作
       *                                     成区分との関連チェックを追加
+      *                                     広域連合作成区分のデフォルト
+      *                                     表示を国保分とまとめるに変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3737,7 +3739,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-GMN-JIHITEKKSIKBN-G
            END-IF                                              
            IF     SPA-GMN-KOUIKIKBN-G  =   SPACE
-               MOVE    SPA-GMN-KOUIKIKBNLST (1)
+               MOVE    SPA-GMN-KOUIKIKBNLST (2)
                                            TO  SPA-GMN-KOUIKIKBN-G
            END-IF                                              
            IF     SPA-GMN-SYAOCRKBN-G  =   SPACE
