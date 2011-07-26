@@ -10,6 +10,7 @@ W24	{
 			value	varchar(10);
 		};
 		frame1	{
+			label	varchar(20);
 			fixed7	{
 				CMB_SKJRYOYO	{
 					SKJRYOYO	{
@@ -283,6 +284,7 @@ W24	{
 			};
 		};
 		frame5	{
+			label	varchar(20);
 			fixed11	{
 				CMB_SENTEIKBN	{
 					SENTEIKBN	{

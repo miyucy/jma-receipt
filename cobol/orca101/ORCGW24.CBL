@@ -4997,7 +4997,9 @@
                MOVE    "入院加算・減算情報"    TO  W24-FRAME3-LABEL
            END-IF
       *
+           MOVE    "食事情報"                  TO  W24-FRAME1-LABEL
            MOVE    "入院会計表示情報"          TO  W24-FRAME4-LABEL
+           MOVE    "選定入院料"                TO  W24-FRAME5-LABEL
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC

@@ -23,6 +23,7 @@
               04  W24-STYUKYMD                 PIC X(10).
               04  W24-EDYUKYMD                 PIC X(10).
               04  W24-FRAME1.
+                05  W24-FRAME1-LABEL           PIC X(20).
                 05  W24-FIXED7.
                   06  W24-CMB-SKJRYOYO.
                     07  W24-SKJRYOYO           PIC X(28).
@@ -82,6 +83,7 @@
                   06  W24-SRYACT               PIC X(30)
                                                OCCURS 10.
               04  W24-FRAME5.
+                05  W24-FRAME5-LABEL           PIC X(20).
                 05  W24-FIXED11.
                   06  W24-CMB-SENTEIKBN.
                     07  W24-SENTEIKBN          PIC X(28).
