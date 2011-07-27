@@ -2964,6 +2964,7 @@
                INITIALIZE                      SYS-200501-REC
                MOVE    SYS-2005-TERMID (1:4)
                                            TO  SYS-200501-TBL (1:4)
+               MOVE    "1"                 TO  SYS-200501-KOUIKIKBN
            END-IF
       *
            IF      SYS-200501-PRTJYUNKBN5   =   SPACE
@@ -3739,7 +3740,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO  SPA-GMN-JIHITEKKSIKBN-G
            END-IF                                              
            IF     SPA-GMN-KOUIKIKBN-G  =   SPACE
-               MOVE    SPA-GMN-KOUIKIKBNLST (2)
+               MOVE    SPA-GMN-KOUIKIKBNLST (1)
                                            TO  SPA-GMN-KOUIKIKBN-G
            END-IF                                              
            IF     SPA-GMN-SYAOCRKBN-G  =   SPACE
