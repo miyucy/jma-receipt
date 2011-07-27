@@ -4494,7 +4494,8 @@
                                     UNTIL   IDY >       31
                                 IF      RECE641-HKNCOMBI
                                                   =
-                                        LNK-NYURECEDEN-HKNCOMBI (1 IDY)
+                                    LNK-NYURECEDEN-HKNCOMBI (1 IDY)  OR
+                                    LNK-NYURECEDEN-HKNCOMBI (2 IDY)
                                     MOVE    0           TO  FLG-TAISYO
                                     MOVE    31          TO  IDY
                                 END-IF 
