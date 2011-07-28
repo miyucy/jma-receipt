@@ -138,6 +138,9 @@
       *  04.06.05    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
       *                                     調査用にcrehms,updhms 追加
+      *
+      *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
+      *                                     「2自費分は含まない」を追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2282,7 +2285,7 @@
       *
       *    帳票編集<入退院履歴>処理
            IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
-                                   =   "1" )               
+                               NOT =   "0" )               
            AND   ( RECE02-NYUINRRK-FLG
                                    =   "1" )               
                PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
