@@ -60,6 +60,7 @@
            03  IDX-DAY                 PIC 9(05).
            03  IDX-MED                 PIC 9(05).
            03  IDXA                    PIC 9(05).
+           03  IDXG                    PIC 9(05).
            03  IDXM                    PIC 9(05).
       *
        01  WRK-AREA.
@@ -73,6 +74,15 @@
            03  WRK-LIFECD-G.
                05  WRK-LIFECD          PIC X(09)
                                        OCCURS  6.
+           03  WRK-KHNCD               PIC X(09).
+           03  WRK-GENCD-G.
+               05  WRK-GENCD           PIC X(09)
+                                       OCCURS  2.
+           03  WRK-GENZAN              PIC S9(09)V999.
+           03  WRK-ZAITEN              PIC S9(09).
+           03  WRK-MEISAISU            PIC 9(05).
+           03  WRK-SRYCDTOTAL          PIC 9(14).
+           03  WRK-ZAITENV99           PIC S9(09)V99.
       *
        01  TNACCT-AREA.
          02    TNACCT-RYOYOCD          PIC X(09)
@@ -161,6 +171,12 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+      *    標欠情報取得パラメタ
+           COPY    "CPORCSHYOUKETU.INC".
+      *
+      *    定数超過情報取得パラメタ
+           COPY    "CPORCSTEISU.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -890,13 +906,24 @@
       *****************************************************************
        200111-INS-NACCT-SEC            SECTION.
       *
+           MOVE    WRK-SRYCD       TO  WRK-KHNCD
+           MOVE    1               TO  WRK-MEISAISU
+           COMPUTE WRK-SRYCDTOTAL
+               =   WRK-SRYCD9
+      *
            PERFORM 900-TENSU-KEY-SEL-SEC
+           MOVE    TNS-TEN         TO  WRK-ZAITEN
       *
            COMPUTE PTINF-MAXZAINUM
                =   PTINF-MAXZAINUM +   1
       *
-           MOVE    TNS-TEN         TO  NACCT-ZAITEN
+           PERFORM 2002-GENZAN-CHK-SEC
+      *
+           MOVE    WRK-ZAITEN      TO  NACCT-ZAITEN
                                        NACCT-SYUTEN1
+           MOVE    WRK-MEISAISU    TO  NACCT-MEISAISU
+                                       NACCT-SURYOUTOTAL
+           MOVE    WRK-SRYCDTOTAL  TO  NACCT-SRYCDTOTAL
            MOVE    PTINF-MAXZAINUM TO  NACCT-ZAINUM
            MOVE    NYUINACCT-REC   TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct" TO  MCP-TABLE
@@ -917,7 +944,16 @@
            MOVE    1               TO  NSRY-RENNUM
            MOVE    "900"           TO  NSRY-SRYSYUKBN
            MOVE    NACCT-SRYKBN    TO  NSRY-SRYKBN
-           MOVE    WRK-SRYCD       TO  NSRY-SRYCD (1)
+           MOVE    WRK-KHNCD       TO  NSRY-SRYCD    (1)
+           MOVE    1               TO  NSRY-SRYSURYO (1)
+           MOVE    WRK-GENCD(1)    TO  NSRY-SRYCD    (2)
+           IF    ( NSRY-SRYCD (2)  NOT =   SPACE )
+               MOVE    1           TO  NSRY-SRYSURYO (2)
+           END-IF
+           MOVE    WRK-GENCD(2)    TO  NSRY-SRYCD    (3)
+           IF    ( NSRY-SRYCD (3)  NOT =   SPACE )
+               MOVE    1           TO  NSRY-SRYSURYO (3)
+           END-IF
            MOVE    NACCT-CREYMD    TO  NSRY-CREYMD
            MOVE    NACCT-UPYMD     TO  NSRY-UPYMD
            MOVE    NACCT-UPHMS     TO  NSRY-UPHMS
@@ -932,6 +968,107 @@
       *
            .
        200111-INS-NACCT-EXT.
+           EXIT.
+      *****************************************************************
+      *    減算チェック処理
+      *****************************************************************
+       2002-GENZAN-CHK-SEC             SECTION.
+      *
+           INITIALIZE                  WRK-GENCD-G
+           MOVE    ZERO            TO  WRK-GENZAN
+      *
+      *    標欠情報取得
+           INITIALIZE                  ORCSHYOUKETU-AREA
+           MOVE    SS011-SRYYM         TO  LNK-HYOUKETU-SANTEIYM
+           CALL    "ORCSHYOUKETU"      USING
+                                       ORCSHYOUKETU-AREA
+                                       SPA-AREA
+           DISPLAY "LNK-HYOUKETU-RC[" LNK-HYOUKETU-RC "]"
+           DISPLAY "1:HST[" LNK-HYOUKETU-STARTYM(1) "]"
+                     "HED[" LNK-HYOUKETU-ENDYM  (1) "]"
+           DISPLAY "2:HST[" LNK-HYOUKETU-STARTYM(2) "]"
+                     "HED[" LNK-HYOUKETU-ENDYM  (2) "]"
+           IF    ( LNK-HYOUKETU-RC     =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE              LNK-HYOUKETU-HENKYAKU-AREA
+           END-IF
+           PERFORM VARYING     IDX0    FROM    1   BY  1
+                   UNTIL      (IDX0    >   2   )
+               IF    ( LNK-HYOUKETU-SRYCD (IDX0)
+                                    NOT =  SPACE )
+                AND  ( SS011-SRYYM     >=  LNK-HYOUKETU-STARTYM(IDX0))
+                AND  ( SS011-SRYYM     <=  LNK-HYOUKETU-ENDYM  (IDX0))
+                   MOVE    LNK-HYOUKETU-SRYCD (IDX0)
+                                       TO  WRK-GENCD (1)
+               END-IF
+           END-PERFORM
+      *
+      *    定数超過
+           INITIALIZE                      ORCSTEISU-AREA
+           MOVE    SS011-SRYYM         TO  LNK-TEISU-SANTEIYM
+           MOVE    WRK-SRYCD           TO  LNK-TEISU-SANTEISRYCD
+           MOVE    "0"                 TO  LNK-TEISU-TOKUTEINYUIN-KBN
+           CALL    "ORCSTEISU"         USING   ORCSTEISU-AREA
+                                               SPA-AREA
+           DISPLAY "LNK-TEISU-RC[" LNK-HYOUKETU-RC "]"
+           DISPLAY "1:HST[" LNK-TEISU-STARTYM(1) "]"
+                     "HED[" LNK-TEISU-ENDYM  (1) "]"
+           DISPLAY "2:HST[" LNK-TEISU-STARTYM(2) "]"
+                     "HED[" LNK-TEISU-ENDYM  (2) "]"
+           IF    ( LNK-TEISU-RC        =   ZERO )
+               CONTINUE
+           ELSE
+               INITIALIZE              LNK-TEISU-HENKYAKU-AREA
+           END-IF
+           PERFORM VARYING     IDX0    FROM    1   BY  1
+                   UNTIL      (IDX0    >   2   )
+               IF    ( LNK-TEISU-SRYCD (IDX0)  NOT =   SPACE )
+                AND  ( SS011-SRYYM     >=  LNK-TEISU-STARTYM(IDX0))
+                AND  ( SS011-SRYYM     <=  LNK-TEISU-ENDYM  (IDX0))
+                   MOVE    LNK-TEISU-SRYCD (IDX0)
+                                       TO  WRK-GENCD (2)
+               END-IF
+           END-PERFORM
+      *
+           IF    ( WRK-GENCD (1)       =   SPACE )
+               MOVE    WRK-GENCD (2)   TO  WRK-GENCD (1)
+               MOVE    SPACE           TO  WRK-GENCD (2)
+           END-IF
+      *
+           PERFORM VARYING IDXG    FROM    1   BY  1
+                   UNTIL ( IDXG    >   2 )
+                    OR   ( WRK-GENCD (IDXG)    =   SPACE )
+      *
+               MOVE    WRK-GENCD (IDXG)    TO  WRK-SRYCD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+      *
+               COMPUTE WRK-GENZAN
+                   =   WRK-GENZAN
+                   + ( WRK-ZAITEN *  TNS-TEN   /   100 )
+      *
+               COMPUTE WRK-MEISAISU
+                   =   WRK-MEISAISU
+                   +   1
+      *
+               COMPUTE WRK-SRYCDTOTAL
+                   =   WRK-SRYCDTOTAL
+                   +   WRK-SRYCD9
+      *
+           END-PERFORM
+      *
+           COMPUTE WRK-ZAITENV99
+               =   WRK-ZAITEN
+               -   WRK-GENZAN
+      *
+           COMPUTE WRK-ZAITEN
+               =   WRK-ZAITENV99
+               +   0.5
+      *
+           .
+      *
+           .
+       2002-GENZAN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
