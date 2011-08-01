@@ -440,6 +440,7 @@ RECORD_files = \
 	P02H.rec \
 	system01lst.rec \
 	CID6.rec \
+	medicalgetmod.rec \
 	
 
 DEF_files = \
@@ -648,6 +649,10 @@ DB_files = \
 	xml_system01_managereq.db \
 	xml_departmentres.db \
 	xml_physicianres.db \
+	xml_medicalgetreq.db \
+	xml_medicalget01res.db \
+	xml_medicalget02res.db \
+	xml_medicalget03res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
